@@ -1,18 +1,18 @@
-package edu.common.dynamicextensions.domain.validationrules;
+package edu.common.dynamicextensions.domain.userinterface;
 
 import java.util.Collection;
 
 /**
  * @version 1.0
- * @created 28-Sep-2006 12:20:08 PM
+ * @created 28-Sep-2006 12:20:09 PM
  */
-public class Rule {
+public class View {
 
 	protected Long id;
 	protected String name;
-	protected Collection ruleParameterCollection;
+	protected Collection containerCollection;
 
-	public Rule(){
+	public View(){
 
 	}
 
@@ -20,8 +20,19 @@ public class Rule {
 
 	}
 	
-	
 
+    /**
+     * @return Returns the containerCollection.
+     */
+    public Collection getContainerCollection() {
+        return containerCollection;
+    }
+    /**
+     * @param containerCollection The containerCollection to set.
+     */
+    public void setContainerCollection(Collection containerCollection) {
+        this.containerCollection = containerCollection;
+    }
     /**
      * @return Returns the id.
      */
@@ -45,17 +56,5 @@ public class Rule {
      */
     public void setName(String name) {
         this.name = name;
-    }
-    /**
-     * @return Returns the ruleParameterCollection.
-     */
-    public Collection getRuleParameterCollection() {
-        return ruleParameterCollection;
-    }
-    /**
-     * @param ruleParameterCollection The ruleParameterCollection to set.
-     */
-    public void setRuleParameterCollection(Collection ruleParameterCollection) {
-        this.ruleParameterCollection = ruleParameterCollection;
     }
 }

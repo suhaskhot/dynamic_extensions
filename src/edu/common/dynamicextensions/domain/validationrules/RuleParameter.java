@@ -1,18 +1,16 @@
 package edu.common.dynamicextensions.domain.validationrules;
 
-import java.util.Collection;
-
 /**
  * @version 1.0
  * @created 28-Sep-2006 12:20:08 PM
  */
-public class Rule {
+public class RuleParameter {
 
 	protected Long id;
 	protected String name;
-	protected Collection ruleParameterCollection;
+	protected String value;
 
-	public Rule(){
+	public RuleParameter(){
 
 	}
 
@@ -47,15 +45,15 @@ public class Rule {
         this.name = name;
     }
     /**
-     * @return Returns the ruleParameterCollection.
+     * @return Returns the value.
      */
-    public Collection getRuleParameterCollection() {
-        return ruleParameterCollection;
+    public String getValue() {
+        return value;
     }
     /**
-     * @param ruleParameterCollection The ruleParameterCollection to set.
+     * @param value The value to set.
      */
-    public void setRuleParameterCollection(Collection ruleParameterCollection) {
-        this.ruleParameterCollection = ruleParameterCollection;
+    public void setValue(String value) {
+        this.value = value;
     }
 }

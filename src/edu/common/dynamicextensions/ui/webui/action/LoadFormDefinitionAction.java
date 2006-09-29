@@ -6,18 +6,16 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import edu.common.cawebeav.actionForm.EntitySelectionForm;
-import edu.common.cawebeav.actionForm.FormDefinitionForm;
-import edu.common.cawebeav.bizlogic.BizLogicFactory;
-import edu.common.cawebeav.util.EntitySession;
-import edu.common.cawebeav.util.global.Constants;
+import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
+import edu.common.dynamicextensions.domain.Entity;
+import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
+import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.logger.Logger;
@@ -29,7 +27,7 @@ import edu.wustl.common.util.logger.Logger;
 public class LoadFormDefinitionAction extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
-		setSessionObject(request);  
+		  
       FormDefinitionForm formDefinitionForm = (FormDefinitionForm) form;
       try {
 			populateExistingFormsList(formDefinitionForm);
@@ -46,22 +44,24 @@ public class LoadFormDefinitionAction extends Action {
      */
     public void populateExistingFormsList(FormDefinitionForm formDefinitionForm) throws DAOException {
       
-       DefaultBizLogic defaultBizLogic =  (DefaultBizLogic)BizLogicFactory.getBizLogic(formDefinitionForm.getFormId());   
+       /*DefaultBizLogic defaultBizLogic =  (DefaultBizLogic)BizLogicFactory.getBizLogic(formDefinitionForm.getFormId());   
        List existingFormsList =  defaultBizLogic.retrieve("Entity");
        if(existingFormsList == null){
     	   existingFormsList = new ArrayList();
-       }
+       }*/
+    	Entity entity = new Entity();
+    	entity.setId(new Long("1"));
+    	entity.setName("Entity");
+    	Entity entity1 = new Entity();
+    	entity1.setId(new Long("3"));
+    	entity1.setName("Entity3");
+    	List existingFormsList = new ArrayList();
+    	existingFormsList.add(entity);
+    	existingFormsList.add(entity1);
+    	if(!formDefinitionForm.getCreateAs().equalsIgnoreCase("formCreatedAsChanged")) {
+    	formDefinitionForm.setCreateAs("");
+    	}
        formDefinitionForm.setExistingFormsList(ActionUtil.getExistingFormsList(existingFormsList));
     }
-	/**
-	 * 
-	 * @param request
-	 */
-	public void setSessionObject(HttpServletRequest request) {
-		HttpSession session = request.getSession();
-		EntitySession entitySession = new EntitySession();
-		entitySession.setEntityIdentifier("");
-        entitySession.setAttributeIdentifier("");
-		session.setAttribute("ENTITY_SESSION",entitySession);
-	}
+	
 }

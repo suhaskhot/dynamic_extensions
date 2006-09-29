@@ -1,6 +1,8 @@
 package edu.common.dynamicextensions.domain;
 
 import edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties;
+import edu.wustl.common.actionForm.AbstractActionForm;
+import edu.wustl.common.exception.AssignDataException;
 
 /**
  * An entity can have multiple associations, where each association has is linked
@@ -100,4 +102,9 @@ public class Association extends Attribute {
     public void setTargetRole(Role targetRole) {
         this.targetRole = targetRole;
     }
+
+	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
+		// TODO Auto-generated method stub
+		
+	}
 }

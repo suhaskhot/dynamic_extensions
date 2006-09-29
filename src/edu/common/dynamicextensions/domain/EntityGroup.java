@@ -2,25 +2,38 @@ package edu.common.dynamicextensions.domain;
 
 import java.util.Collection;
 
+import edu.wustl.common.actionForm.AbstractActionForm;
+import edu.wustl.common.exception.AssignDataException;
+
 /**
  * @version 1.0
  * @created 28-Sep-2006 12:20:08 PM
+ * @hibernate.joined-subclass table="DYEXTN_ENTITY_GROUP"
+ * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class EntityGroup extends AbstractMetadata {
+public class EntityGroup extends AbstractMetadata  implements java.io.Serializable {
 
+    private static final long serialVersionUID = 1234567890L;
+    /**
+     * 
+     */
 	protected Collection entityCollection;
+    /**
+     * 
+     */
 	public Entity rootNodeEntity;
+    /**
+     * 
+     */
 	public Collection entityGroupCollection;
-
+    /**
+     * 
+     *
+     */
 	public EntityGroup(){
 
 	}
 
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
-
-	
     /**
      * @return Returns the entityCollection.
      */
@@ -57,4 +70,9 @@ public class EntityGroup extends AbstractMetadata {
     public void setRootNodeEntity(Entity rootNodeEntity) {
         this.rootNodeEntity = rootNodeEntity;
     }
+
+	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
+		// TODO Auto-generated method stub
+		
+	}
 }

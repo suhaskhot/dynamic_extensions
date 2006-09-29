@@ -1,5 +1,7 @@
 package edu.common.dynamicextensions.domain;
 import edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties;
+import edu.wustl.common.actionForm.AbstractActionForm;
+import edu.wustl.common.exception.AssignDataException;
 
 /**
  * @version 1.0
@@ -70,4 +72,9 @@ public class PrimitiveAttribute extends Attribute {
     public void setIsPrimaryKey(Boolean isPrimaryKey) {
         this.isPrimaryKey = isPrimaryKey;
     }
+
+	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
+		// TODO Auto-generated method stub
+		
+	}
 }

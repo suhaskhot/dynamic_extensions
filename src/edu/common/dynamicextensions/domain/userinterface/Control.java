@@ -1,5 +1,6 @@
 package edu.common.dynamicextensions.domain.userinterface;
 import java.io.Serializable;
+import java.util.Map;
 
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.wustl.common.actionForm.AbstractActionForm;
@@ -140,4 +141,11 @@ public class Control extends AbstractDomainObject implements Serializable{
         // TODO Auto-generated method stub
         
     }
+    
+    public String generateHTML()
+    {
+    	return null;
+    }
+    public void populateAttribute(Map propertiesMap) {
+	}
 }

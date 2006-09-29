@@ -1,5 +1,5 @@
 
-package edu.common.cawebeav.actionForm;
+package edu.common.dynamicextensions.ui.webui.actionform;
 
 
 import java.util.List;
@@ -10,7 +10,7 @@ import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
 
-import edu.common.cawebeav.util.global.Constants;
+import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.util.global.ApplicationProperties;
@@ -122,7 +122,7 @@ public class FormDefinitionForm  extends AbstractActionForm {
         if ( formName == null || validator.isEmpty(String.valueOf(formName))) {
             errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
                     "errors.item.required", ApplicationProperties
-                            .getValue("eav.entity.name")));
+                            .getValue("eav.form.name")));
         }
         return errors;
     }

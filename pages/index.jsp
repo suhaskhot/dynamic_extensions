@@ -1,1 +1,1 @@
-Dyanmic Extensions
+<jsp:forward page="/LoadFormDefinitionAction.do" />

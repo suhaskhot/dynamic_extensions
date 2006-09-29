@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  Note :
+	The dataType field for each of the controls specifies the database attribute type for the field
+	This needs to be as defined in the XML for primitive_data_type->database_type mapping
+	Also note that the names need to match in the 2 sections of the XML-->
+<ui-configurations>
+	<references>
+		<!-- Name of the properties file to be used to fetch the captions for each of the fields
+			Note that the .properties extension should not be specified
+		-->
+		<propertyfilename>uicontrols-captions</propertyfilename>
+	</references>
+
+	<controls>
+		<!--  control tag for each supported control -->
+		<control name="TextControl" display-type="textbox">
+			<!--  Specify the set of attributes for each of the controls here -->
+			<attribute name="attributeName"
+				caption="TextControl.attribute_name_caption"
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+
+			<attribute name="attributeDescription"
+				caption="TextControl.attribute_description_caption"
+				css-classname="formDateSized" display-type="multiline-textbox"
+				default-value="">
+			</attribute>
+
+			<attribute name="attributeFormat"
+				caption="TextControl.attribute_format_caption"
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+			
+			<attribute name="attributeCssClass"
+				caption="TextControl.attribute_cssclass_caption"
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+			
+			<attribute name="attributeTooltip"
+				caption="TextControl.attribute_tooltip_caption"
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+
+			<attribute name="dataType"
+				caption="TextControl.attribute_datatype_caption"
+				css-classname="formDateSized" display-type="combobox"
+				default-value="string">
+				<!--  Set of values for the combobox -->
+				<values>
+					<value>number</value>
+					<value>String</value>
+				</values>
+			</attribute>
+		</control>
+
+<!-- 		 Numeric control if needed to be added 
+		<control name="NumericControl" display-type="textbox">
+			<attribute name="attributeName"
+				caption="NumericControl.attribute_name_caption"
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+
+			<attribute name="attributeDescription"
+				caption="NumericControl.attribute_description_caption"
+				css-classname="formDateSized" display-type="multiline-textbox"
+				default-value="">
+			</attribute>
+
+			<attribute name="attributeMeasurementUnits" caption=""
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+
+			<attribute name="attributeScale" caption=""
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+
+			<attribute name="attributeSize" caption=""
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+
+			<attribute name="dataType"
+				caption="TextControl.attribute_datatype_caption"
+				css-classname="formDateSized" display-type="combobox"
+				default-value="string">
+				<values>
+					<value>number</value>
+					<value>String</value>
+				</values>
+			</attribute>
+		</control>
+	-->	
+		<!-- End of Numeric Control -->
+		
+		<!-- Multiline Control -->
+		<control name="MultilineControl"
+			display-type="multiline-textbox">
+			<attribute name="attributeName"
+				caption="MultilineControl.attribute_name_caption"
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+
+			<attribute name="attributeDescription"
+				caption="MultilineControl.attribute_description_caption"
+				css-classname="" display-type="multiline-textbox"
+				default-value="">
+			</attribute>
+
+			<attribute name="attributeSize"
+				caption="MultilineControl.attribute_size_caption"
+				css-classname="formDateSized" display-type="textbox"
+				default-value="10">
+			</attribute>
+			
+			<attribute name="attributeCssClass"
+				caption="MultilineControl.attribute_cssclass_caption"
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+			
+			<attribute name="attributeTooltip"
+				caption="MultilineControl.attribute_tooltip_caption"
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+
+			<attribute name="dataType"
+				caption="MultilineControl.attribute_datatype_caption"
+				css-classname="formDateSized" display-type="combobox"
+				default-value="String">
+				<values>
+					<value>String</value>
+				</values>
+			</attribute>
+		</control>
+		
+		<control name="ComboboxControl" display-type="combobox">
+			<attribute name="attributeName"
+				caption="ComboboxControl.attribute_name_caption"
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+
+			<attribute name="attributeDescription"
+				caption="ComboboxControl.attribute_description_caption"
+				css-classname="" display-type="multiline-textbox"
+				default-value="">
+			</attribute>
+
+			<attribute name="attributeCssClass"
+				caption="ComboboxControl.attribute_cssclass_caption"
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+			
+			<attribute name="attributeTooltip"
+				caption="ComboboxControl.attribute_tooltip_caption"
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+
+			<attribute name="dataType"
+				caption="ComboboxControl.attribute_datatype_caption"
+				css-classname="formDateSized" display-type="combobox"
+				default-value="String">
+				<values>
+					<value>String</value>
+					<value>number</value>
+					<value>boolean</value>
+				</values>
+			</attribute>
+		</control>
+		
+		<control name="ListBoxControl" display-type="listbox">
+			<attribute name="attributeName"
+				caption="ListBoxControl.attribute_name_caption"
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+
+			<attribute name="attributeDescription"
+				caption="ListBoxControl.attribute_description_caption"
+				css-classname="" display-type="multiline-textbox"
+				default-value="">
+			</attribute>
+
+			<attribute name="attributeCssClass"
+				caption="ListboxControl.attribute_cssclass_caption"
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+			
+			<attribute name="attributeTooltip"
+				caption="ListboxControl.attribute_tooltip_caption"
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+			
+			<attribute name="attributeMultiSelect"
+				caption="ListboxControl.attribute_multiselect_caption"
+				css-classname="formDateSized" display-type="combobox"
+				default-value="false">
+				<values>
+					<value>true</value>
+					<value>false</value>
+				</values>
+			</attribute>
+
+			<attribute name="dataType"
+				caption="ListBoxControl.attribute_datatype_caption"
+				css-classname="formDateSized" display-type="combobox"
+				default-value="String">
+				<values>
+					<value>String</value>
+					<value>number</value>
+					<value>boolean</value>
+				</values>
+			</attribute>
+		</control>
+		
+		<control name="CheckboxControl" display-type="checkbox">
+			<attribute name="attributeName"
+				caption="CheckboxControl.attribute_name_caption"
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+
+			<attribute name="attributeDescription"
+				caption="CheckboxControl.attribute_description_caption"
+				css-classname="" display-type="multiline-textbox"
+				default-value="">
+			</attribute>
+
+			<attribute name="attributeCssClass"
+				caption="CheckboxControl.attribute_cssclass_caption"
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+			
+			<attribute name="attributeTooltip"
+				caption="CheckboxControl.attribute_tooltip_caption"
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+			
+			<attribute name="dataType"
+				caption="ListBoxControl.attribute_datatype_caption"
+				css-classname="formDateSized" display-type="combobox"
+				default-value="String">
+				<values>
+					<value>String</value>
+					<value>number</value>
+					<value>boolean</value>
+				</values>
+			</attribute>
+		</control>
+		
+		<control name="RadioButtonControl" display-type="radiobutton">
+			<attribute name="attributeName"
+				caption="RadioButtonControl.attribute_name_caption"
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+
+			<attribute name="attributeDescription"
+				caption="RadioButtonControl.attribute_description_caption"
+				css-classname="" display-type="multiline-textbox"
+				default-value="">
+			</attribute>
+
+			<attribute name="attributeCssClass"
+				caption="RadioButtonControl.attribute_cssclass_caption"
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+			
+			<attribute name="attributeTooltip"
+				caption="RadioButtonControl.attribute_tooltip_caption"
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+			
+			<attribute name="dataType"
+				caption="RadioButtonControl.attribute_datatype_caption"
+				css-classname="formDateSized" display-type="combobox"
+				default-value="String">
+				<values>
+					<value>String</value>
+					<value>number</value>
+					<value>boolean</value>
+				</values>
+			</attribute>
+		</control>
+		
+		<control name="DateControl" display-type="datePicker">
+			<attribute name="attributeName"
+				caption="DateControl.attribute_name_caption"
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+
+			<attribute name="attributeDescription"
+				caption="DateControl.attribute_description_caption"
+				css-classname="" display-type="multiline-textbox"
+				default-value="">
+			</attribute>
+
+			<attribute name="attributeCssClass"
+				caption="DateControl.attribute_cssclass_caption"
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+			
+			<attribute name="attributeTooltip"
+				caption="DateControl.attribute_tooltip_caption"
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+			
+			<attribute name="dataType"
+				caption="DateControl.attribute_datatype_caption"
+				css-classname="formDateSized" display-type="combobox"
+				default-value="date">
+				<values>
+					<value>date</value>
+				</values>
+			</attribute>
+		</control>
+	</controls>
+	
+	<!--  definitions for the datatype as per the ones supported -->
+	<primitive_data_types>
+		<datatype name="number">
+			<attribute name="attributeDefaultValue" caption=""
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+
+			<attribute name="attributeMeasurementUnits" caption=""
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+
+			<attribute name="attributeScale" caption=""
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+
+			<attribute name="attributeSize" caption=""
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+		</datatype>
+
+		<datatype name="String">
+			<attribute name="attributeDefaultValue" caption=""
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+
+			<attribute name="attributeSize" caption=""
+				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+		</datatype>
+
+		<datatype name="boolean">
+			<attribute name="attributeDefaultValue" caption=""
+				css-classname="formDateSized" display-type="combobox"
+				default-value="true">
+				<values>
+					<value>true</value>
+					<value>false</value>
+				</values>
+			</attribute>
+		</datatype>
+		
+		<datatype name="date">
+			<attribute name="attributeDefaultValue" caption=""
+				css-classname="formDateSized" display-type="datePicker" >
+			</attribute>
+			
+			<attribute name="attributeFormat" caption=""
+				css-classname="formDateSized" display-type="textbox" >
+			</attribute>
+		</datatype>
+		
+	</primitive_data_types>
+</ui-configurations>

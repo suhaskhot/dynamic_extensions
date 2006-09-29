@@ -3,6 +3,8 @@ package edu.common.dynamicextensions.domain;
 /**
  * @version 1.0
  * @created 28-Sep-2006 12:20:08 PM
+ * @hibernate.joined-subclass table="DYEXTN_DATE_ATTRIBUTE" 
+ * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
 public class NumericAttribute extends PrimitiveAttribute {
 
@@ -10,14 +12,19 @@ public class NumericAttribute extends PrimitiveAttribute {
 	/**
 	 * Mesurement units to display for this attribute
 	 */
-	protected String measurementUnits;
+	protected String measurementUnit;
 	/**
-	 * Gets or sets the scale (number of decimal places) of an attribute if the data
+	 * The scale (number of decimal places) of an attribute if the data
 	 * type is number. 
 	 */
 	protected Integer scale;
+	/**
+	 * Size of the numeric field i.e total number of digits before and after decimal places.
+	 */
 	protected Integer size;
-
+	/**
+	 *Empty Constructor.
+	 */
 	public NumericAttribute(){
 
 	}
@@ -25,10 +32,9 @@ public class NumericAttribute extends PrimitiveAttribute {
 	public void finalize() throws Throwable {
 		super.finalize();
 	}
-	
-	
 
     /**
+     * @hibernate.property name="defaultValue" type="long" column="DEFAULT_VALUE" 
      * @return Returns the defaultValue.
      */
     public Long getDefaultValue() {
@@ -41,18 +47,20 @@ public class NumericAttribute extends PrimitiveAttribute {
         this.defaultValue = defaultValue;
     }
     /**
-     * @return Returns the measurementUnits.
+     * @hibernate.property name="measurementUnit" type="string" column="MEASUREMENT_UNIT" 
+     * @return Returns the measurementUnit.
      */
-    public String getMeasurementUnits() {
-        return measurementUnits;
+    public String getMeasurementUnit() {
+        return measurementUnit;
     }
     /**
-     * @param measurementUnits The measurementUnits to set.
+     * @param measurementUnit The measurementUnit to set.
      */
-    public void setMeasurementUnits(String measurementUnits) {
-        this.measurementUnits = measurementUnits;
+    public void setMeasurementUnit(String measurementUnit) {
+        this.measurementUnit = measurementUnit;
     }
     /**
+     *  @hibernate.property name="scale" type="integer" column="SCALE" 
      * @return Returns the scale.
      */
     public Integer getScale() {
@@ -65,6 +73,7 @@ public class NumericAttribute extends PrimitiveAttribute {
         this.scale = scale;
     }
     /**
+     *  @hibernate.property name="size" type="integer" column="SIZE" 
      * @return Returns the size.
      */
     public Integer getSize() {

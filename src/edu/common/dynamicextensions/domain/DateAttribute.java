@@ -5,15 +5,22 @@ import java.util.Date;
 /**
  * @version 1.0
  * @created 28-Sep-2006 12:20:07 PM
+ * @hibernate.joined-subclass table="DYEXTN_DATE_ATTRIBUTE" 
+ * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
 public class DateAttribute extends PrimitiveAttribute {
 
+    /**
+     *  Default value of this date attribute.
+     */
 	protected Date defaultValue;
 	/**
 	 * format of the attribute value (Data entry/display)
 	 */
 	protected String format;
-
+	/**
+	 * Empty Constructor
+	 */
 	public DateAttribute(){
 
 	}
@@ -24,6 +31,7 @@ public class DateAttribute extends PrimitiveAttribute {
 
 	
     /**
+     * @hibernate.property name="defaultValue" type="date" column="DEFAULT_VALUE" 
      * @return Returns the defaultValue.
      */
     public Date getDefaultValue() {
@@ -36,6 +44,7 @@ public class DateAttribute extends PrimitiveAttribute {
         this.defaultValue = defaultValue;
     }
     /**
+     * @hibernate.property name="format" type="string" column="FORMAT" 
      * @return Returns the format.
      */
     public String getFormat() {

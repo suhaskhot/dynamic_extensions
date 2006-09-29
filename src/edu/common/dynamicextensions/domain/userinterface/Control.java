@@ -10,18 +10,40 @@ import edu.wustl.common.exception.AssignDataException;
 /**
  * @version 1.0
  * @created 28-Sep-2006 12:20:07 PM
+ * @hibernate.class table="DYEXTN_CONTROL"
  */
 public class Control extends AbstractDomainObject implements Serializable{
-
+    /**
+     * Unique identifier for the object
+     */
+    protected Long id;
+    /**
+     * The caption of the control.
+     */
 	protected String caption;
+	/**
+	 * The css class that is to be used for this control.
+	 */
 	protected String cssClass;
 	/**
 	 * whether this attribute should be displayed on screen.
 	 */
 	protected Boolean isHidden;
+	/**
+	 * Name of the control.
+	 */
 	protected String name;
+	/**
+	 * Sequence number of the control.This governs in which order it will be shown on the UI.
+	 */
 	protected Integer sequenceNumber;
+	/**
+	 * Tool tip message for the control.
+	 */
 	protected String tooltip;
+	/**
+	 * Attribute to which this control is associated.
+	 */
 	public Attribute attribute;
 
 	public Control(){
@@ -31,10 +53,27 @@ public class Control extends AbstractDomainObject implements Serializable{
 	public void finalize() throws Throwable {
 
 	}
+	 /**
+     * @return
+     * @hibernate.id name="id" column="IDENTIFIER" type="long"
+     * length="30" unsaved-value="null" generator-class="native"
+     * @hibernate.generator-param name="sequence" value="DYEXTN_CONTROL_SEQ"
+     */
+    public Long getId()
+    {
+        return id;
+    }
+
+    public void setId(Long id)
+    {
+        this.id = id;
+    }
 	
 
     /**
+     * @hibernate.many-to-one column ="ATTRIBUTE_ID" class="edu.common.dynamicextensions.domain.Attribute"
      * @return Returns the attribute.
+     *
      */
     public Attribute getAttribute() {
         return attribute;
@@ -46,6 +85,7 @@ public class Control extends AbstractDomainObject implements Serializable{
         this.attribute = attribute;
     }
     /**
+     * @hibernate.property name="caption" type="string" column="CAPTION" 
      * @return Returns the caption.
      */
     public String getCaption() {
@@ -58,6 +98,7 @@ public class Control extends AbstractDomainObject implements Serializable{
         this.caption = caption;
     }
     /**
+     * @hibernate.property name="cssClass" type="string" column="CSS_CLASS" 
      * @return Returns the cssClass.
      */
     public String getCssClass() {
@@ -70,6 +111,7 @@ public class Control extends AbstractDomainObject implements Serializable{
         this.cssClass = cssClass;
     }
     /**
+     * @hibernate.property name="isHidden" type="boolean" column="HIDDEN" 
      * @return Returns the isHidden.
      */
     public Boolean getIsHidden() {
@@ -82,6 +124,7 @@ public class Control extends AbstractDomainObject implements Serializable{
         this.isHidden = isHidden;
     }
     /**
+     * @hibernate.property name="name" type="string" column="NAME" 
      * @return Returns the name.
      */
     public String getName() {
@@ -94,6 +137,7 @@ public class Control extends AbstractDomainObject implements Serializable{
         this.name = name;
     }
     /**
+     * @hibernate.property name="sequenceNumber" type="integer" column="SEQUENCE_NUMBER" 
      * @return Returns the sequenceNumber.
      */
     public Integer getSequenceNumber() {
@@ -106,6 +150,7 @@ public class Control extends AbstractDomainObject implements Serializable{
         this.sequenceNumber = sequenceNumber;
     }
     /**
+     * @hibernate.property name="tooltip" type="string" column="TOOL_TIP" 
      * @return Returns the tooltip.
      */
     public String getTooltip() {
@@ -125,6 +170,7 @@ public class Control extends AbstractDomainObject implements Serializable{
         // TODO Auto-generated method stub
         
     }
+
 
     /* (non-Javadoc)
      * @see edu.wustl.common.domain.AbstractDomainObject#getSystemIdentifier()

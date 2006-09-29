@@ -3,15 +3,22 @@ package edu.common.dynamicextensions.domain;
 /**
  * @version 1.0
  * @created 28-Sep-2006 12:20:08 PM
+ * @hibernate.joined-subclass table="DYEXTN_STRING_ATTRIBUTE" 
+ * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
 public class StringAttribute extends PrimitiveAttribute {
 
+    /**
+     * Default value of this string attribute.
+     */
 	protected String defaultValue;
 	/**
-	 * Gets or sets the size of a field.
+	 * The size of the field.
 	 */
-	protected int size;
-
+	protected Integer size;
+	/**
+	 * Empty Constructor.
+	 */
 	public StringAttribute(){
 
 	}
@@ -22,6 +29,7 @@ public class StringAttribute extends PrimitiveAttribute {
 
 	
     /**
+     * @hibernate.property name="defaultValue" type="string" column="DEFAULT_VALUE" 
      * @return Returns the defaultValue.
      */
     public String getDefaultValue() {
@@ -34,15 +42,16 @@ public class StringAttribute extends PrimitiveAttribute {
         this.defaultValue = defaultValue;
     }
     /**
+     * @hibernate.property name="size" type="integer" column="SIZE" 
      * @return Returns the size.
      */
-    public int getSize() {
+    public Integer getSize() {
         return size;
     }
     /**
      * @param size The size to set.
      */
-    public void setSize(int size) {
+    public void setSize(Integer size) {
         this.size = size;
     }
 }

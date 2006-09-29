@@ -3,10 +3,18 @@ package edu.common.dynamicextensions.domain.userinterface;
 /**
  * @version 1.0
  * @created 28-Sep-2006 12:20:09 PM
+ * @hibernate.joined-subclass table="DYEXTN_TEXT_AREA" 
+ * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
 public class TextArea extends Control {
 
+    /**
+     * Number of columns in the text area.
+     */
 	protected Integer columns;
+	/**
+	 * Number of rows in the text area.
+	 */
 	protected Integer rows;
 
 	public TextArea(){
@@ -19,6 +27,7 @@ public class TextArea extends Control {
 
 	
     /**
+     * @hibernate.property name="columns" type="integer" column="COLUMNS" 
      * @return Returns the columns.
      */
     public Integer getColumns() {
@@ -31,6 +40,7 @@ public class TextArea extends Control {
         this.columns = columns;
     }
     /**
+     * @hibernate.property name="rows" type="integer" column="COLUMNS" 
      * @return Returns the rows.
      */
     public Integer getRows() {

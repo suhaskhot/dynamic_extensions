@@ -3,11 +3,18 @@ package edu.common.dynamicextensions.domain;
 /**
  * @version 1.0
  * @created 28-Sep-2006 12:20:06 PM
+ * @hibernate.joined-subclass table="DYEXTN_BOOLEAN_ATTRIBUTE" 
+ * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
 public class BooleanAttribute extends PrimitiveAttribute {
-
+    /**
+     * Default value for this attribute.
+     */
 	private Boolean defaultValue;
 
+	/**
+	 * Empty Constructor.
+	 */
 	public BooleanAttribute(){
 
 	}
@@ -18,6 +25,7 @@ public class BooleanAttribute extends PrimitiveAttribute {
 
 	
     /**
+     * @hibernate.property name="defaultValue" type="boolean" column="DEFAULT_VALUE" 
      * @return Returns the defaultValue.
      */
     public Boolean getDefaultValue() {

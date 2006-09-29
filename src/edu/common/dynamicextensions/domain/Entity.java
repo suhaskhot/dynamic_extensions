@@ -18,12 +18,11 @@ public class Entity extends AbstractMetadata {
 	 */
 	private static final long serialVersionUID = 1234567890L;
 	/**
-	 * 
-	 * 
+	 * Collection of attributes in this entity.
 	 */
 	protected Collection attributeCollection;
 	/**
-	 * 
+	 * Table property for this entity.
 	 */
 	protected TableProperties tableProperties;
 	/**
@@ -31,14 +30,17 @@ public class Entity extends AbstractMetadata {
 	 */
 	protected Collection entityGroupCollection;
 	/**
-     * 
-	 *
+	 * empty Constructor.
 	 */
 	public Entity(){
 		
 	}
 	
 	/**
+	 * @hibernate.set name="attributeCollection" table="DYEXTN_ATTRIBUTE"
+     * cascade="none" inverse="false" lazy="false"
+     * @hibernate.collection-key column="ATTRIBUTE_ID"
+     * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Attribute"
 	 * @return Returns the attributeCollection.
 	 */
 	public Collection getAttributeCollection() {
@@ -63,6 +65,7 @@ public class Entity extends AbstractMetadata {
 		this.entityGroupCollection = entityGroupCollection;
 	}
 	/**
+	 * @hibernate.many-to-one column ="TABLE_PROPERTY_ID" class="edu.common.dynamicextensions.domain.databaseproperties.TableProperties"
 	 * @return Returns the tableProperties.
 	 */
 	public TableProperties getTableProperties() {

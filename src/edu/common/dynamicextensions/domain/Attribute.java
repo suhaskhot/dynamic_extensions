@@ -11,17 +11,20 @@ import java.util.Collection;
 public abstract class Attribute extends AbstractMetadata   {
     
      /**
-      * 
+      * Collection of rules.
       */   
 	protected Collection ruleCollection;
     /**
-     * 
-     *
+     * Empty constructor
      */
 	public Attribute(){
 
 	}
     /**
+     * @hibernate.set name="ruleCollection" table="DYEXTN_RULE"
+     * cascade="none" inverse="false" lazy="false"
+     * @hibernate.collection-key column="ATTRIBUTE_ID"
+     * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.validationrules.Rule"
      * @return Returns the ruleCollection.
      */
     public Collection getRuleCollection() {

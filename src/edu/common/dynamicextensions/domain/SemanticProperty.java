@@ -9,13 +9,29 @@ import edu.wustl.common.exception.AssignDataException;
 /**
  * @version 1.0
  * @created 28-Sep-2006 12:20:08 PM
+ * @hibernate.class table="DYEXTN_SEMANTIC_PROPERTY"
  */
 public class SemanticProperty extends AbstractDomainObject implements Serializable{
 
+    /**
+     * Unique identifier for the object
+     */
+	protected Long id;
+    /**
+     * The concept code.
+     */
 	protected String conceptCode;
+	/**
+	 * Term
+	 */
 	protected String term;
+	/**
+	 * Thesauras Name
+	 */
 	protected String thesaurasName;
-
+	/**
+	 * Empty Constructor.
+	 */
 	public SemanticProperty(){
 
 	}
@@ -24,8 +40,24 @@ public class SemanticProperty extends AbstractDomainObject implements Serializab
 
 	}
 	
+	 /**
+     * @hibernate.id name="id" column="IDENTIFIER" type="long"
+     * length="30" unsaved-value="null" generator-class="native"
+     * @hibernate.generator-param name="sequence" value="DYEXTN_SEMANTIC_PROPERTY_SEQ"
+     * @return Returns the id.
+     */
+    public Long getId() {
+        return id;
+    }
+    /**
+     * @param id The id to set.
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     /**
+     * @hibernate.property name="conceptCode" type="string" column="CONCEPT_CODE" 
      * @return Returns the conceptCode.
      */
     public String getConceptCode() {
@@ -38,6 +70,7 @@ public class SemanticProperty extends AbstractDomainObject implements Serializab
         this.conceptCode = conceptCode;
     }
     /**
+     * @hibernate.property name="term" type="string" column="TERM" 
      * @return Returns the term.
      */
     public String getTerm() {
@@ -50,6 +83,7 @@ public class SemanticProperty extends AbstractDomainObject implements Serializab
         this.term = term;
     }
     /**
+     * @hibernate.property name="thesaurasName" type="string" column="THESAURAS_NAME" 
      * @return Returns the thesaurasName.
      */
     public String getThesaurasName() {
@@ -74,15 +108,13 @@ public class SemanticProperty extends AbstractDomainObject implements Serializab
      * @see edu.wustl.common.domain.AbstractDomainObject#getSystemIdentifier()
      */
     public Long getSystemIdentifier() {
-        // TODO Auto-generated method stub
-        return null;
+        return id;
     }
 
     /* (non-Javadoc)
      * @see edu.wustl.common.domain.AbstractDomainObject#setSystemIdentifier(java.lang.Long)
      */
-    public void setSystemIdentifier(Long arg0) {
-        // TODO Auto-generated method stub
-        
+    public void setSystemIdentifier(Long systemIdentifier) {
+        systemIdentifier = id;        
     }
 }

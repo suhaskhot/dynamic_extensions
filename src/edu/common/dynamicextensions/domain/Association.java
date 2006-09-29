@@ -5,7 +5,7 @@ import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
 
 /**
- * An entity can have multiple associations, where each association has is linked
+ * An entity can have multiple associations, where each association is linked
  * to another entity.
  * @version 1.0
  * @created 28-Sep-2006 12:20:06 PM
@@ -16,40 +16,41 @@ public class Association extends Attribute implements java.io.Serializable {
     private static final long serialVersionUID = 1234567890L;
 
 	/**
-     * 
+     * Direction of the association.
 	 */
     protected String direction;
     /**
-     * 
+     * The source entity of this association.Source entity is linked to target entity through this association object.
      */
 	protected Entity sourceEntity;
     /**
-     * 
+     * Source role of association.This specifies how the source entity is related to target entity.
      */
 	protected Role sourceRole;
     /**
-     * 
+     * Target role of association.This specifies how the target entity is related to source entity.
      */
 	protected Role targetRole;
     /**
-     * 
+     * The target entity of this association.
      */
 	protected Entity targetEntity;
     
     /**
-     * 
+     * Constraint properties related to this association.
      */
 	public ConstraintProperties constraintProperties;
+	
 	/**
-     * 
-	 *
+     * Empty Constructor.
 	 */
 	public Association(){
 
 	}
    /**
-     * @return Returns the constraintProperties.
-     */
+    * @hibernate.many-to-one column ="CONSTRAINT_PROPERTY_ID" class="edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties"
+    * @return Returns the constraintProperties.
+    */
     public ConstraintProperties getConstraintProperties() {
         return constraintProperties;
     }
@@ -74,6 +75,7 @@ public class Association extends Attribute implements java.io.Serializable {
         this.direction = direction;
     }
     /**
+     * @hibernate.many-to-one column ="SOURCE_ENTITY_ID" class="edu.common.dynamicextensions.domain.Entity"
      * @return Returns the sourceEntity.
      */
     public Entity getSourceEntity() {
@@ -86,6 +88,7 @@ public class Association extends Attribute implements java.io.Serializable {
         this.sourceEntity = sourceEntity;
     }
     /**
+     * @hibernate.many-to-one column ="SOURCE_ROLE_ID" class="edu.common.dynamicextensions.domain.Role"
      * @return Returns the sourceRole.
      */
     public Role getSourceRole() {
@@ -98,6 +101,7 @@ public class Association extends Attribute implements java.io.Serializable {
         this.sourceRole = sourceRole;
     }
     /**
+     *  @hibernate.many-to-one column ="TARGET_ENTITY_ID" class="edu.common.dynamicextensions.domain.Entity"
      * @return Returns the targetEntity.
      */
     public Entity getTargetEntity() {
@@ -110,6 +114,7 @@ public class Association extends Attribute implements java.io.Serializable {
         this.targetEntity = targetEntity;
     }
     /**
+     * @hibernate.many-to-one column ="TARGET_ROLE_ID" class="edu.common.dynamicextensions.domain.Role"
      * @return Returns the targetRole.
      */
     public Role getTargetRole() {

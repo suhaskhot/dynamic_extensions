@@ -9,25 +9,24 @@ import edu.wustl.common.exception.AssignDataException;
 /**
  * @version 1.0
  * @created 28-Sep-2006 12:20:08 PM
+ * @hibernate.class table="DYEXTN_RULE"
  */
 public class Rule extends AbstractDomainObject implements java.io.Serializable {
     
-    protected static final long serialVersionUID = 1234567890L;
     /**
-     * 
+     * Unique identifier for the object
      */
 	protected Long id;
     /**
-     * 
+     * Name of the rule.
      */
 	protected String name;
     /**
-     * 
+     * The rule parameter collection.
      */
 	protected Collection ruleParameterCollection;
 	/**
-     * 
-	 *
+	 * Empty Constructor.
 	 */
 	public Rule(){
 
@@ -48,6 +47,7 @@ public class Rule extends AbstractDomainObject implements java.io.Serializable {
         this.id = id;
     }
     /**
+     * @hibernate.property name="name" type="string" column="NAME" 
      * @return Returns the name.
      */
     public String getName() {
@@ -60,6 +60,10 @@ public class Rule extends AbstractDomainObject implements java.io.Serializable {
         this.name = name;
     }
     /**
+     * @hibernate.set name="ruleParameterCollection" table="DYEXTN_RULE_PARAMETER"
+     * cascade="none" inverse="false" lazy="false"
+     * @hibernate.collection-key column="RULE_ID"
+     * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.validationrules.RuleParameter"
      * @return Returns the ruleParameterCollection.
      */
     public Collection getRuleParameterCollection() {
@@ -95,7 +99,5 @@ public class Rule extends AbstractDomainObject implements java.io.Serializable {
      */
 	public void setSystemIdentifier(Long systemIdentifier) {
         this.id = systemIdentifier;
-		
-		
 	}
 }

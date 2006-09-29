@@ -1,10 +1,16 @@
 package edu.common.dynamicextensions.domain.validationrules;
 
+import java.io.Serializable;
+
+import edu.wustl.common.actionForm.AbstractActionForm;
+import edu.wustl.common.domain.AbstractDomainObject;
+import edu.wustl.common.exception.AssignDataException;
+
 /**
  * @version 1.0
  * @created 28-Sep-2006 12:20:08 PM
  */
-public class RuleParameter {
+public class RuleParameter extends AbstractDomainObject implements Serializable {
 
 	protected Long id;
 	protected String name;
@@ -55,5 +61,29 @@ public class RuleParameter {
      */
     public void setValue(String value) {
         this.value = value;
+    }
+
+    /* (non-Javadoc)
+     * @see edu.wustl.common.domain.AbstractDomainObject#setAllValues(edu.wustl.common.actionForm.AbstractActionForm)
+     */
+    public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
+     * @see edu.wustl.common.domain.AbstractDomainObject#getSystemIdentifier()
+     */
+    public Long getSystemIdentifier() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see edu.wustl.common.domain.AbstractDomainObject#setSystemIdentifier(java.lang.Long)
+     */
+    public void setSystemIdentifier(Long arg0) {
+        // TODO Auto-generated method stub
+        
     }
 }

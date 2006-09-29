@@ -1,10 +1,12 @@
 package edu.common.dynamicextensions.domain.databaseproperties;
 
+import java.io.Serializable;
+
 /**
  * @version 1.0
  * @created 28-Sep-2006 12:20:07 PM
  */
-public class DatabaseProperties {
+public class DatabaseProperties implements  Serializable{
 
 	protected String name;
 

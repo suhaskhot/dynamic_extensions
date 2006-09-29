@@ -1,13 +1,17 @@
 package edu.common.dynamicextensions.domain.userinterface;
+import java.io.Serializable;
 import java.util.Collection;
 
 import edu.common.dynamicextensions.domain.Entity;
+import edu.wustl.common.actionForm.AbstractActionForm;
+import edu.wustl.common.domain.AbstractDomainObject;
+import edu.wustl.common.exception.AssignDataException;
 
 /**
  * @version 1.0
  * @created 28-Sep-2006 12:20:07 PM
  */
-public class Container {
+public class Container extends AbstractDomainObject implements Serializable {
 
 	protected String buttonCss;
 	protected String caption;
@@ -123,5 +127,29 @@ public class Container {
      */
     public void setTitleCss(String titleCss) {
         this.titleCss = titleCss;
+    }
+
+    /* (non-Javadoc)
+     * @see edu.wustl.common.domain.AbstractDomainObject#setAllValues(edu.wustl.common.actionForm.AbstractActionForm)
+     */
+    public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
+     * @see edu.wustl.common.domain.AbstractDomainObject#getSystemIdentifier()
+     */
+    public Long getSystemIdentifier() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see edu.wustl.common.domain.AbstractDomainObject#setSystemIdentifier(java.lang.Long)
+     */
+    public void setSystemIdentifier(Long arg0) {
+        // TODO Auto-generated method stub
+        
     }
 }

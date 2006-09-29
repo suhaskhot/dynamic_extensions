@@ -12,7 +12,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass table="DYEXTN_ENTITY"
  * @hibernate.joined-subclass-key column="IDENTIFIER"  
  */
-public class Entity extends AbstractMetadata  implements java.io.Serializable {
+public class Entity extends AbstractMetadata {
 	/**
 	 * 
 	 */
@@ -75,7 +75,7 @@ public class Entity extends AbstractMetadata  implements java.io.Serializable {
 		this.tableProperties = tableProperties;
 	}
 	
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
+	public void setAllValues(AbstractActionForm arg0)  {
 		// TODO Auto-generated method stub
 		
 	}

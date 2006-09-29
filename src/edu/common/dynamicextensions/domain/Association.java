@@ -9,27 +9,45 @@ import edu.wustl.common.exception.AssignDataException;
  * to another entity.
  * @version 1.0
  * @created 28-Sep-2006 12:20:06 PM
+ * @hibernate.class table="DYEXTN_ASSOCIATION"
  */
-public class Association extends Attribute {
+public class Association extends Attribute implements java.io.Serializable {
 
-	protected String direction;
+    private static final long serialVersionUID = 1234567890L;
+
+	/**
+     * 
+	 */
+    protected String direction;
+    /**
+     * 
+     */
 	protected Entity sourceEntity;
+    /**
+     * 
+     */
 	protected Role sourceRole;
+    /**
+     * 
+     */
 	protected Role targetRole;
+    /**
+     * 
+     */
 	protected Entity targetEntity;
+    
+    /**
+     * 
+     */
 	public ConstraintProperties constraintProperties;
-
+	/**
+     * 
+	 *
+	 */
 	public Association(){
 
 	}
-
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
-	
-	
-
-    /**
+   /**
      * @return Returns the constraintProperties.
      */
     public ConstraintProperties getConstraintProperties() {
@@ -43,6 +61,7 @@ public class Association extends Attribute {
         this.constraintProperties = constraintProperties;
     }
     /**
+     * @hibernate.property name="direction" type="string" column="DIRECTION" 
      * @return Returns the direction.
      */
     public String getDirection() {

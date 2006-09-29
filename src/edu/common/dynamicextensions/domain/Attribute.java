@@ -8,11 +8,8 @@ import java.util.Collection;
  * @hibernate.joined-subclass-key column="IDENTIFIER"  
  *  
  */
-public abstract class Attribute extends AbstractMetadata  implements java.io.Serializable {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1234567890L;
+public abstract class Attribute extends AbstractMetadata   {
+    
      /**
       * 
       */   

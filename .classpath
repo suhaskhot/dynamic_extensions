@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="css"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/activation.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/ant-antlr-1.6.3.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/antlr-2.7.5H3.jar"/>

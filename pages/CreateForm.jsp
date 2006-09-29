@@ -68,7 +68,7 @@
 									</tr>
 									<tr class="formMessage">
 							<td >
-										<html:radio value="ExistingForm" property="createAs">Existing</html:radio>
+										<html:radio value="ExistingForm" property="createAs" onclick="formCreateAsChanged()">Existing</html:radio>
 										</td>
 										 <td class="formField" width="5">
 
@@ -105,7 +105,7 @@
 				</td>
 	
 				<td>
-					<html:button styleClass="actionButton" property="cancelButton" onclick="/Home.do">
+					<html:button styleClass="actionButton" property="cancelButton" onclick="/LoadFormDefinitionAction.do">
 							<bean:message  key="buttons.cancel" />
 					</html:button>
 				</td>	  <td width="275">
@@ -118,6 +118,7 @@
 			
 		</table>
 		<html:hidden property="operation" value=""/>
+		<html:hidden property="createAsTypeChanged" value=""/>
 		<html:hidden property="entityIdentifier" value=""/>
 	  </body>
    </html:form> 

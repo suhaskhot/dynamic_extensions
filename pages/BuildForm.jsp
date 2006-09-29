@@ -24,7 +24,13 @@
 							onClick="controlSelectedAction"
 							height="100%" width="100%">						
 			    </dynamicExtensions:ToolsMenu>
-	  			
+	  			</td>
+	  			<td>
+	  			Controls definition
+	  			</td>
+	  			<td>
+	  			Form Controls Tree
+	  			</td>
 	  		</tr>
 			
 	  	</table>

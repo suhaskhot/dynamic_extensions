@@ -336,69 +336,29 @@ public class ToolBoxTag extends TagSupport {
         int toolsListSize=toolsList.size();
       
         
-        sb.append("\n<div id=\"" + id + "\"  class=\"div_with_scrollbar\"  style=\"height: " + height + "; width:" + width + "; overflow-y: auto;\">");
-        sb.append("\n       <table cellspacing =\"0\" cellpadding =\"0\" id=\"" + id + "tableContainingSelectors\" class=\"tableBorder_styles_selectormenu\">");
+        sb.append("\n<div id=\"" + id + "\"  class=\"formField\"  style=\"height: " + height + "; width:" + width + "; overflow-y: auto;\">");
+        sb.append("\n       <table border=\"3\" cellspacing =\"0\" cellpadding =\"0\" id=\"" + id + "tableContainingSelectors\" class=\"tableBorder_styles_selectormenu\">");
        
         for (int i=0; i < toolsListSize; i++) {
             
             NameValueBean selectedTool = (NameValueBean) toolsList.get(i);
             selectorName = selectorObject;
-            
-          
-           // int i1=0;
             Logger.out.debug("Selector List : " + selectedTool);
             if (selectedTool != null) {
-            	sb.append("\n<tr>\n<td onclick='"+onClick+"('"+ selectedTool.getName() +"')'>"+selectedTool.getValue());
+            //	sb.append("\n<tr>\n<td  class=\"formField\" style=\"border-bottom:#ffffff 1px solid;\" height=\"30\" width=\"20\" onclick='"+onClick+"('"+ selectedTool.getName() +"')'>"+selectedTool.getValue());
             	//sb.append("\n<tr>\n<td>");
-            	//sb.append("<html:link href=\"#\" styleId=\"dataEnter\" onclick='"+ onClick+ "()' >"+selectorName+"</html:link>");
-				sb.append("\n</td>\n</tr>");
-            	
-            	
-				
-				
-            	/*if (i==0) {
-            		sb.append("\n<tr><td onkeydown=\"selectNextItem('" + id + "','" + selectorObject.getDisplayId() + "','" + previousObject.getDisplayId() + "','" + nextObject.getDisplayId() + "','" + onClick + "');\"><table class=\"tableBorder_styles_selectormenu\"><tr>");
-            	} else {
-            		sb.append("\n<tr><td onkeydown=\"selectNextItem('" + id + "','" + selectorObject.getDisplayId() + "','" + previousObject.getDisplayId() + "','" + nextObject.getDisplayId() + "','" + onClick + "');\"><table class=\"tableBorder_styles_selectormenu\"><tr>");
-            	}
-                sb.append("\n<td  class=\"non_selected_properties_subsection_menu\" style=\"border-bottom:#ffffff 1px solid;\" height=\"30\" width=\"20\" background=\"/tap/Common/images/n_selected_prop_menu.gif\"> ");
-                sb.append("\n&nbsp;</td>");
-                sb.append("\n<td id=\"" + id + selectorObject.getDisplayId() + "\" class=\"non_selected_properties_subsection_menu\" style=\"border-bottom:#ffffff 1px solid;\" height=\"30\"  width=\"123\" background=\"/tap/Common/images/n_selected_prop_menu.gif\" onmouseover='showTooltip(this.innerText,this,&quot;" + toolTipName + "&quot;);'");
-                if (isOptionEnabled(selectorObject.getDisplayId())) {
-                    sb.append("\n       onclick=\"if( document.getElementById('" + id + "CurrentSelectorId').value != '" + selectorObject.getDisplayId() + "')");
-                    sb.append("\n               {");
-                    sb.append("\n                       selectorSelected(this,'" + id + "','" + selectorObject.getDisplayId() + "'); ");
-                    sb.append("\n                       " + onClick + "('" + selectorObject.getDisplayId() + "');");
-                    sb.append("\n       }\" >");
-                    sb.append("\n<div class=\"" + styleClass + "\">");
-                    sb.append(selectorName + "\n</div>");
-                    sb.append("\n               </td>");
-                } else {
-                    sb.append("\n  >");
-                    sb.append("\n<div disabled class=\"" + styleClass+"\">");
-                    sb.append(selectorName + "\n</div>");
-                    sb.append("\n               </td>");
-                    
-                }
-                
-                sb.append("\n</tr></table></td></tr> ");*/
+            	//sb.append("\n<html:link href=\"#\" styleId=\"dataEnter\" onclick='tagDeveloperFuncion('deepti')' >dee</html:link>");
+            //	sb.append("<input type=\"button\" onclick=\"tagDeveloperFuncion('"+ selectedTool.getValue()+"')\" value='"+selectedTool.getName()+"'>");
+            	sb.append("\n<tr onclick=\"tagDeveloperFuncion('"+ selectedTool.getValue()+"','"+ id +"');"+onClick+"()\">"+selectedTool.getName()+"</tr>");
+			//	sb.append("\n</td>\n</tr>");
+            	//sb.append(<tr onclick)
             }
         }
         
         sb.append("\n        </table> ");
-       /* sb.append("\n<input type=\"hidden\" id=\"" + id + "CurrentSelectorId\"      name=\"" + id + "CurrentSelectorId\"      value=\"" + selectedToolID + "\">");
-        sb.append("\n<input type=\"hidden\" id=\"" + id + "CurrentFocusedId\"      name=\"" + id + "CurrentSelectorId\"      value=\"" + selectedToolID + "\">");
-        sb.append("\n<script>");
-        
-        if (showSelected.booleanValue()) {
-            sb.append("\n           selectorSelected(document.getElementById('" + id + selectedToolID + "'),'" + id + "',");
-            sb.append("\n '" + selectedToolID + "');");
-        }
-     
-        
-        sb.append("\n</script>");*/
+      
         sb.append("\n</div> ");
-        
+        sb.append("<html:hidden property=\""+id+"_tool\" value=\"\">");
         try {
             JspWriter out = pageContext.getOut();
             out.println(sb.toString());

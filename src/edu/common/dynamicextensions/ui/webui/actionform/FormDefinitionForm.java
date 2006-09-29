@@ -39,6 +39,10 @@ public class FormDefinitionForm  extends AbstractActionForm {
      */
     protected String createAs;
     /**
+     * createAsTypeChanged
+     */
+    protected String createAsTypeChanged;
+    /**
      * existingFormsList
      */
     protected List existingFormsList;
@@ -124,6 +128,12 @@ public class FormDefinitionForm  extends AbstractActionForm {
                     "errors.item.required", ApplicationProperties
                             .getValue("eav.form.name")));
         }
+        if ( createAs == null || validator.isEmpty(String.valueOf(createAs))) {
+            errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
+                    "errors.item.required", ApplicationProperties
+                            .getValue("eav.form.createAs")));
+        }
+        
         return errors;
     }
 
@@ -141,6 +151,14 @@ public class FormDefinitionForm  extends AbstractActionForm {
 
 	public void setSelectForm(String selectForm) {
 		this.selectForm = selectForm;
+	}
+
+	public String getCreateAsTypeChanged() {
+		return createAsTypeChanged;
+	}
+
+	public void setCreateAsTypeChanged(String createAsTypeChanged) {
+		this.createAsTypeChanged = createAsTypeChanged;
 	}
 
 	

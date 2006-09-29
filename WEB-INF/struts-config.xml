@@ -7,6 +7,8 @@ PUBLIC
 <struts-config>
 	
 	<form-beans>
+	<form-bean name="formDefinitionForm" type="edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm"/>
+	<form-bean name="controlsForm" type="edu.common.dynamicextensions.ui.webui.actionform.ControlsForm"/>
 	</form-beans>
 	
 	<!-- Global Exception Definitions -->
@@ -14,6 +16,44 @@ PUBLIC
 	</global-exceptions>
 	
 	<action-mappings>
+		
+		
+		<action path="/LoadFormDefinitionAction" 
+		    type="edu.common.dynamicextensions.ui.webui.action.LoadFormDefinitionAction" 
+		    name="formDefinitionForm"
+			validate="false"
+			input="/LoadFormDefinitionAction.do"
+			scope="request">
+			<forward name="success" path="/pages/CreateForm.jsp" />
+		</action>
+		
+		<action path="/ApplyFormDefinitionAction"
+			type="edu.common.dynamicextensions.ui.webui.action.ApplyFormDefinitionAction"
+			name="formDefinitionForm"
+			validate="true"
+			input="/LoadFormDefinitionAction.do"
+			scope="request">
+		<forward name="success" path="/LoadFormDefinitionAction.do" />
+		<forward name="addControlsToForm" path="/LoadFormControlsAction.do" />
+		</action>	
+		
+		<action path="/LoadFormControlsAction" 
+		    type="edu.common.dynamicextensions.ui.webui.action.LoadFormControlsAction" 
+		    name="controlsForm"
+			validate="false"
+			input="/LoadFormControlsAction.do"
+			scope="request">
+			<forward name="showBuildFormJSP" path="/pages/BuildForm.jsp" />
+		</action>
+		
+		<action path="/ApplyFormControlsAction" 
+		    type="edu.common.dynamicextensions.ui.webui.action.ApplyFormControlsAction" 
+		    name="controlsForm"
+			validate="true"
+			input="/pages/BuildForm.jsp"
+			scope="request">
+			<forward name="success" path="/pages/BuildForm.jsp" />
+		</action>
 	</action-mappings>
 			
 	<message-resources parameter="ApplicationResources" />

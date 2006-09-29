@@ -366,7 +366,17 @@ public class UIControlsConfigurationFactory {
 			}
 		}
 	}
-	public List getConrolsList(String controlName)
+	
+	public List getControlNames()
+	{
+		if(m_UIControlsMap!=null)
+		{
+			return (List)m_UIControlsMap.keySet();
+		}
+		return null;
+	}
+
+	public List getConrolAttributesList(String controlName)
 	{
 		if((controlName!=null)&&(m_UIControlsMap!=null))
 		{
@@ -380,7 +390,7 @@ public class UIControlsConfigurationFactory {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		UIControlsConfigurationFactory UCCF = UIControlsConfigurationFactory.getInstance();
-		List list = UCCF.getConrolsList("TextControl");
+		List list = UCCF.getConrolAttributesList("TextControl");
 		System.out.println(list);
 		//UCCF.displayData();
 		System.out.println("Done");

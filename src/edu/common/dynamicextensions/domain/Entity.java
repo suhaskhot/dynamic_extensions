@@ -3,7 +3,6 @@ import java.util.Collection;
 
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
 import edu.wustl.common.actionForm.AbstractActionForm;
-import edu.wustl.common.exception.AssignDataException;
 
 /**
  * An entity can either have many attributes or many associations

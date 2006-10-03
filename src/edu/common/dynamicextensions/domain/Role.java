@@ -68,7 +68,7 @@ public class Role extends AbstractDomainObject {
         this.associationType = associationType;
     }
     /**
-     * @hibernate.property name="minCardinality" type="integer" column="MAX_CARDINALITY" 
+     * @hibernate.property name="maxCardinality" type="integer" column="MAX_CARDINALITY" 
      * @return Returns the maxCardinality.
      */
     public Integer getMaxCardinality() {

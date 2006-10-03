@@ -33,12 +33,12 @@ public class EntityGroup extends AbstractMetadata  implements java.io.Serializab
 	public EntityGroup(){
 
 	}
-//TODO needs to be changed to many to many relation
+	
     /**
-     * @hibernate.set name="ruleParameterCollection" table="DYEXTN_ENTITY"
+     * @hibernate.set name="entityCollection" table="DYEXTN_ENTITY_GROUP_REL" 
      * cascade="none" inverse="false" lazy="false"
-     * @hibernate.collection-key column="ENTITY_ID"
-     * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Entity"
+     * @hibernate.collection-key column="ENTITY_GROUP_ID"
+     * @hibernate.collection-many-to-many class="edu.common.dynamicextensions.domain.Entity" column="ENTITY_ID"
      * @return Returns the entityCollection.
      */
     public Collection getEntityCollection() {
@@ -50,8 +50,10 @@ public class EntityGroup extends AbstractMetadata  implements java.io.Serializab
     public void setEntityCollection(Collection entityCollection) {
         this.entityCollection = entityCollection;
     }
+    
+    //TODO Needs to be changed.
     /**
-     * @hibernate.set name="ruleParameterCollection" table="DYEXTN_ENTITY_GROUP"
+     * @hibernate.set name="entityGroupCollection" table="DYEXTN_ENTITY_GROUP"
      * cascade="none" inverse="true" lazy="false"
      * @hibernate.collection-key column="ENTITY_GROUP_ID"
      * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.EntityGroup"

@@ -53,6 +53,10 @@ public class Entity extends AbstractMetadata {
 		this.attributeCollection = attributeCollection;
 	}
 	/**
+	 * @hibernate.set name="entityGroupCollection" table="DYEXTN_ENTITY_GROUP_REL" 
+     * cascade="none" inverse="false" lazy="false"
+     * @hibernate.collection-key column="ENTITY_ID"
+     * @hibernate.collection-many-to-many class="edu.common.dynamicextensions.domain.EntityGroup" column="ENTITY_GROUP_ID"
 	 * @return Returns the entityGroupCollection.
 	 */
 	public Collection getEntityGroupCollection() {

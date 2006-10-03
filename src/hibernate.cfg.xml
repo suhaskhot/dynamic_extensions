@@ -15,7 +15,18 @@
     	
         <!-- List of all Mapping files -->
         
-        <mapping resource="edu/common/dynamicextensions/hbm/AbstractMetadata.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/AbstractMetadata1.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/Role.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/SemanticProperty.hbm.xml"/>
+
+        <mapping resource="edu/common/dynamicextensions/hbm/databaseproperties/DatabaseProperties.hbm.xml"/>
+        
+        <mapping resource="edu/common/dynamicextensions/hbm/userinterface/Container.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/userinterface/Control.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/userinterface/View.hbm.xml"/>
+                        
+        <mapping resource="edu/common/dynamicextensions/hbm/validationrules/Rule.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/validationrules/RuleParameter.hbm.xml"/>
         
 
     </session-factory>

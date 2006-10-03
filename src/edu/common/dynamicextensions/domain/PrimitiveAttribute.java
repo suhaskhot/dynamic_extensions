@@ -6,7 +6,8 @@ import edu.wustl.common.exception.AssignDataException;
 /**
  * @version 1.0
  * @created 28-Sep-2006 12:20:08 PM
- * @hibernate.class table="DYEXTN_PRIMITIVE_ATTRIBUTE"
+ * @hibernate.joined-subclass table="DYEXTN_PRIMITIVE_ATTRIBUTE" 
+ * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
 public abstract class PrimitiveAttribute extends Attribute {
 

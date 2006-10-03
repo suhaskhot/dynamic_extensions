@@ -9,7 +9,8 @@ import edu.wustl.common.exception.AssignDataException;
  * to another entity.
  * @version 1.0
  * @created 28-Sep-2006 12:20:06 PM
- * @hibernate.class table="DYEXTN_ASSOCIATION"
+ * @hibernate.joined-subclass table="DYEXTN_ASSOCIATION" 
+ * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
 public class Association extends Attribute implements java.io.Serializable {
 

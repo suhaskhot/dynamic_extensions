@@ -63,24 +63,18 @@
 								<table>
 									<tr class="formMessage">
 									 <td >
-										<html:radio value="NewForm" property="createAs" onclick="formCreateAsChanged()">New</html:radio>
+										<html:radio value="NewForm" property="createAs"> New</html:radio>
 										</td>
 									</tr>
 									<tr class="formMessage">
 							<td >
-										<html:radio value="ExistingForm" property="createAs" onclick="formCreateAsChanged()">Existing</html:radio>
+										<html:radio value="ExistingForm" property="createAs" disabled="true">Existing</html:radio>
 										</td>
 										 <td class="formField" width="5">
+										 <html:select property="selectForm" onchange="formSelectedAction()" styleClass="formDateSized"  size="1"  styleId="selectForm" disabled="true">
+										 									<html:options collection="existingFormsList" labelProperty="name" property="value"/>
+								</html:select>
 
-									<% if(createAs.equals("NewForm")) { %>
-								<html:select property="selectForm" onchange="formSelectedAction()" styleClass="formDateSized"  size="1"  styleId="selectForm" disabled="true">
-									<html:options collection="existingFormsList" labelProperty="name" property="value"/>
-								</html:select>
-								<% } else { %>
-<html:select property="selectForm" onchange="formSelectedAction()" styleClass="formDateSized"  size="1"  styleId="selectForm" disabled="false">
-									<html:options collection="existingFormsList" labelProperty="name" property="value"/>
-								</html:select>
-<% } %>
 							
 							</td>
 									</tr>
@@ -96,7 +90,7 @@
 	 	</table>
 		 <table summary="" align = 'left' cellpadding="5" cellspacing="0" border="0">
 		    <tr height="5">
-			  <td width="165">
+			  <td width="45%">
 				</td>
 				<td>
 					<html:submit styleClass="actionButton">
@@ -105,9 +99,9 @@
 				</td>
 	
 				<td>
-					<html:button styleClass="actionButton" property="cancelButton" onclick="/LoadFormDefinitionAction.do">
+					<html:reset styleClass="actionButton" property="cancelButton">
 							<bean:message  key="buttons.cancel" />
-					</html:button>
+					</html:reset>
 				</td>	  <td width="275">
 				</td>
 				<td>

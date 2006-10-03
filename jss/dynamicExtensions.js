@@ -8,9 +8,12 @@ function nextClicked() {
 	formDefinitionForm.submit();
 }
 
-function controlSelectedAction()
+function controlSelectedAction(controlSelectedValue)
 {
-alert("hi");
+alert(controlSelectedValue);
+	document.getElementById('operation').value='controlSelected';
+	var controlsForm = document.getElementById('controlsForm');
+	controlsForm.submit();
 }
 
 

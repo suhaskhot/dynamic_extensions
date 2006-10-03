@@ -337,7 +337,7 @@ public class ToolBoxTag extends TagSupport {
       
         
         sb.append("\n<div id=\"" + id + "\"  class=\"formField\"  style=\"height: " + height + "; width:" + width + "; overflow-y: auto;\">");
-        sb.append("\n       <table border=\"3\" cellspacing =\"0\" cellpadding =\"0\" id=\"" + id + "tableContainingSelectors\" class=\"tableBorder_styles_selectormenu\">");
+        sb.append("\n       <table border=\"3\" cellspacing =\"0\" cellpadding =\"0\" id=\"" + id + "tableContainingTools\" class=\"tableBorder_styles_selectormenu\">");
        
         for (int i=0; i < toolsListSize; i++) {
             
@@ -349,9 +349,13 @@ public class ToolBoxTag extends TagSupport {
             	//sb.append("\n<tr>\n<td>");
             	//sb.append("\n<html:link href=\"#\" styleId=\"dataEnter\" onclick='tagDeveloperFuncion('deepti')' >dee</html:link>");
             //	sb.append("<input type=\"button\" onclick=\"tagDeveloperFuncion('"+ selectedTool.getValue()+"')\" value='"+selectedTool.getName()+"'>");
-            	sb.append("\n<tr onclick=\"tagDeveloperFuncion('"+ selectedTool.getValue()+"','"+ id +"');"+onClick+"()\">"+selectedTool.getName()+"</tr>");
+            	//sb.append("\n<tr onclick=\"tagDeveloperFuncion('"+ selectedTool.getValue()+"','"+ id +"');"+onClick+"()\">"+selectedTool.getName()+"</tr>");
 			//	sb.append("\n</td>\n</tr>");
             	//sb.append(<tr onclick)
+            	
+            	sb.append("\n<tr onclick=\""+onClick+"('"+selectedTool.getValue()+"')\">"+selectedTool.getName()+"</tr>");
+            	
+            	
             }
         }
         

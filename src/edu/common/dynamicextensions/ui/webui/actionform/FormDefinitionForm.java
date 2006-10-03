@@ -58,7 +58,6 @@ public class FormDefinitionForm  extends AbstractActionForm {
     	 formName = "";
     	 description = "";
     	 createAs = "";
-    	 existingFormsList.clear();        
     }  
     
     /**

@@ -31,14 +31,14 @@ public class LoadFormControlsAction extends Action {
 	}
 	private void populateControlsForm(ControlsForm controlsForm) {
 		List toolsList = new ArrayList();
-		//UIControlsConfigurationFactory uiControlsConfigurationFactory = UIControlsConfigurationFactory.getInstance();
-		//toolsList = uiControlsConfigurationFactory.getControlNames();
+		UIControlsConfigurationFactory uiControlsConfigurationFactory = UIControlsConfigurationFactory.getInstance();
+		toolsList = uiControlsConfigurationFactory.getControlNames();
 		//uiControlsConfigurationFactory.getConrolAttributesList(controlName)
-		toolsList.add("TextBox");
+		/*toolsList.add("TextBox");
 		toolsList.add("RadioButton");
-		toolsList.add("ComboBox");
-		controlsForm.setToolsList(ActionUtil.getToolsList(toolsList));
-		controlsForm.setSelectedTool("selectedTool");
+		toolsList.add("ComboBox");*/
+		controlsForm.setToolsList(toolsList);
+		controlsForm.setSelectedControlAttributesList(new ArrayList());
 	}
 	/**
 	 * 

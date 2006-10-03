@@ -29,9 +29,9 @@ public class ApplyFormDefinitionAction extends Action {
 		FormDefinitionForm formDefinitionForm = (FormDefinitionForm)form;
 		String nextOperation = formDefinitionForm.getOperation();
 		String target = "";
-		/*if (nextOperation.equalsIgnoreCase("addControlsToForm")) {
+		if (nextOperation.equalsIgnoreCase("addControlsToForm")) {
 			target = "addControlsToForm";
-		} else {*/
+		} else {
 			EntityManager entityManager = EntityManager.getInstance(); 
 			String entityIdentifier = formDefinitionForm .getEntityIdentifier();
 			Entity entity = null;
@@ -49,7 +49,7 @@ public class ApplyFormDefinitionAction extends Action {
 				Logger.out.error(entityCreationException.getMessage(), entityCreationException);
 				return mapping.findForward(new String(Constants.FAILURE));
 			} 
-	//	}
+		}
 		return mapping.findForward(target);
 	}  
 	/**

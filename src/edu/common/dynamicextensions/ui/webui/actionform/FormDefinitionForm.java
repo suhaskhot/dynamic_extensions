@@ -55,8 +55,11 @@ public class FormDefinitionForm  extends AbstractActionForm {
      * 
      */
      public void reset() {
-        
-    }
+    	 formName = "";
+    	 description = "";
+    	 createAs = "";
+    	 existingFormsList.clear();        
+    }  
     
     /**
      * Returns the id assigned to form bean.

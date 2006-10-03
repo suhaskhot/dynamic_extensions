@@ -35,6 +35,7 @@ PUBLIC
 			scope="request">
 		<forward name="success" path="/LoadFormDefinitionAction.do" />
 		<forward name="addControlsToForm" path="/LoadFormControlsAction.do" />
+		
 		</action>	
 		
 		<action path="/LoadFormControlsAction" 

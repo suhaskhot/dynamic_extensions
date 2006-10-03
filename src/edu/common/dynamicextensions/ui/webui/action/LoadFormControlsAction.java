@@ -12,6 +12,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.domain.userinterface.UIControlsConfigurationFactory;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 
 /**
@@ -23,19 +24,21 @@ public class LoadFormControlsAction extends Action {
 			HttpServletRequest request, HttpServletResponse response) {
 	//	setSessionObject(request);  
 		ControlsForm controlsForm = (ControlsForm) form;
-		List toolsList = populateControlsForm(controlsForm);
-		request.setAttribute("toolsList",toolsList);
+		
+		populateControlsForm(controlsForm);
+		//request.setAttribute("toolsList",toolsList);
 		return mapping.findForward("showBuildFormJSP");
 	}
-	private List populateControlsForm(ControlsForm controlsForm) {
+	private void populateControlsForm(ControlsForm controlsForm) {
 		List toolsList = new ArrayList();
+		//UIControlsConfigurationFactory uiControlsConfigurationFactory = UIControlsConfigurationFactory.getInstance();
+		//toolsList = uiControlsConfigurationFactory.getControlNames();
+		//uiControlsConfigurationFactory.getConrolAttributesList(controlName)
 		toolsList.add("TextBox");
 		toolsList.add("RadioButton");
 		toolsList.add("ComboBox");
 		controlsForm.setToolsList(ActionUtil.getToolsList(toolsList));
-		controlsForm.setAttributeName("attributeName");
-		controlsForm.setSelectedTool("bsfhjsf");
-		return ActionUtil.getToolsList(toolsList);
+		controlsForm.setSelectedTool("selectedTool");
 	}
 	/**
 	 * 

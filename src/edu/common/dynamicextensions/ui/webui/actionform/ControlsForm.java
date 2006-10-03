@@ -30,7 +30,10 @@ public class ControlsForm extends AbstractActionForm {
 	 * 
 	 */
 	String attributeDescription;
-	
+	/**
+	 * selectedControlAttributesList
+	 */
+	List selectedControlAttributesList;
 	/**
 	 * 
 	 */
@@ -400,6 +403,14 @@ public class ControlsForm extends AbstractActionForm {
 
 	public void setSelectedTool(String selectedTool) {
 		this.selectedTool = selectedTool;
+	}
+
+	public List getSelectedControlAttributesList() {
+		return selectedControlAttributesList;
+	}
+
+	public void setSelectedControlAttributesList(List selectedControlAttributesList) {
+		this.selectedControlAttributesList = selectedControlAttributesList;
 	}
 
 }

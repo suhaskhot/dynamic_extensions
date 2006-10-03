@@ -34,9 +34,16 @@ public abstract class AbstractMetadata extends AbstractDomainObject implements j
 	 * 
 	 */
 	protected Date createdDate;
+    
+    /**
+     * 
+     */
 	
 	protected Collection semanticPropertyCollection;
-	
+	/**
+     * 
+	 *
+	 */
 	public AbstractMetadata(){
 		
 	}

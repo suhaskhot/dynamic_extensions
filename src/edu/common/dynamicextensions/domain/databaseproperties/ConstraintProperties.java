@@ -1,14 +1,28 @@
 package edu.common.dynamicextensions.domain.databaseproperties;
+import edu.common.dynamicextensions.domain.databaseproperties.DatabaseProperties;
 
 /**
  * @version 1.0
- * @created 28-Sep-2006 12:47:21 PM
+ * @created 28-Sep-2006 12:20:07 PM
+ * @hibernate.joined-subclass table="DYEXTN_CONSTRAINT_PROPERTIES" 
+ * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
 public class ConstraintProperties extends DatabaseProperties {
-
+    /**
+     * The source entity key through which constarint is related.
+     * e.g. Used in case of foreign key constraint in one to many relation.
+     */
 	protected String sourceEntityKey;
+	/**
+	 * The target entity key through which constraint is related.
+	 * Used in case of many to many relation.Both source and target entity key is entered in the intermediate table.
+	 */
 	protected String targetEntityKey;
 
+	/**
+	 * Empty constructor
+	 *
+	 */
 	public ConstraintProperties(){
 
 	}
@@ -19,6 +33,7 @@ public class ConstraintProperties extends DatabaseProperties {
 	
 
     /**
+     * @hibernate.property name="sourceEntityKey" type="string" column="SOURCE_ENTITY_KEY" 
      * @return Returns the sourceEntityKey.
      */
     public String getSourceEntityKey() {
@@ -31,6 +46,7 @@ public class ConstraintProperties extends DatabaseProperties {
         this.sourceEntityKey = sourceEntityKey;
     }
     /**
+     * @hibernate.property name="targetEntityKey" type="string" column="TARGET_ENTITY_KEY" 
      * @return Returns the targetEntityKey.
      */
     public String getTargetEntityKey() {

@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -127,7 +128,13 @@ public class UIControlsConfigurationFactory {
 					System.out.println("Properties FileName = " + strPropertiesFileName);
 					if(strPropertiesFileName!=null)
 					{
-						rb_uicontrolsCaptions = ResourceBundle.getBundle(strPropertiesFileName);
+						System.out.println("Loading prop bundle");
+						try {
+							rb_uicontrolsCaptions = ResourceBundle
+									.getBundle(strPropertiesFileName);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}						
 						if(rb_uicontrolsCaptions==null)
 						{
 							System.out.println("Error Loading properties file..");
@@ -230,7 +237,12 @@ public class UIControlsConfigurationFactory {
 											String captionValue = null;
 											if((captionKey!=null)&&(rb_uicontrolsCaptions!=null))
 											{
-												captionValue = rb_uicontrolsCaptions.getString(captionKey);
+												System.out.println("Searchin string "  + captionKey);
+												try {
+													captionValue = rb_uicontrolsCaptions.getString(captionKey);
+												} catch (MissingResourceException e) {
+													captionValue = "";
+												}
 											}
 											else
 											{
@@ -371,7 +383,7 @@ public class UIControlsConfigurationFactory {
 	{
 		if(m_UIControlsMap!=null)
 		{
-			return (List)m_UIControlsMap.keySet();
+			return new ArrayList(m_UIControlsMap.keySet());
 		}
 		return null;
 	}

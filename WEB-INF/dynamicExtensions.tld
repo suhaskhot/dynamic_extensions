@@ -30,10 +30,10 @@
 			<type>java.lang.String</type>
      </attribute>
      <attribute>
-			<name>selectedToolID</name>
+			<name>selectedTool</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-			<type>java.lang.Object</type>
+			<type>java.lang.String</type>
      </attribute>
      <attribute>
 			<name>displayMode</name>

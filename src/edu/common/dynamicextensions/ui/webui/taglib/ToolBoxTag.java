@@ -1,7 +1,6 @@
 package edu.common.dynamicextensions.ui.webui.taglib;
 
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -9,7 +8,6 @@ import java.util.List;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.util.logger.Logger;
 
 
@@ -326,41 +324,18 @@ public class ToolBoxTag extends TagSupport {
             return EVAL_PAGE;
         }
         Logger.out.debug(" Entering Selectors List Tag : doEndTag method");
-        
-        String selectorObject=null;
-      
-        String selectorName = null;       
-        
         StringBuffer sb = new StringBuffer();
-        
         int toolsListSize=toolsList.size();
-      
-        
         sb.append("\n<div id=\"" + id + "\"  class=\"formField\"  style=\"height: " + height + "; width:" + width + "; overflow-y: auto;\">");
         sb.append("\n       <table border=\"3\" cellspacing =\"0\" cellpadding =\"0\" id=\"" + id + "tableContainingTools\" class=\"tableBorder_styles_selectormenu\">");
-       
         for (int i=0; i < toolsListSize; i++) {
-            
-            NameValueBean selectedTool = (NameValueBean) toolsList.get(i);
-            selectorName = selectorObject;
+            String selectedTool =  toolsList.get(i).toString();
             Logger.out.debug("Selector List : " + selectedTool);
             if (selectedTool != null) {
-            //	sb.append("\n<tr>\n<td  class=\"formField\" style=\"border-bottom:#ffffff 1px solid;\" height=\"30\" width=\"20\" onclick='"+onClick+"('"+ selectedTool.getName() +"')'>"+selectedTool.getValue());
-            	//sb.append("\n<tr>\n<td>");
-            	//sb.append("\n<html:link href=\"#\" styleId=\"dataEnter\" onclick='tagDeveloperFuncion('deepti')' >dee</html:link>");
-            //	sb.append("<input type=\"button\" onclick=\"tagDeveloperFuncion('"+ selectedTool.getValue()+"')\" value='"+selectedTool.getName()+"'>");
-            	//sb.append("\n<tr onclick=\"tagDeveloperFuncion('"+ selectedTool.getValue()+"','"+ id +"');"+onClick+"()\">"+selectedTool.getName()+"</tr>");
-			//	sb.append("\n</td>\n</tr>");
-            	//sb.append(<tr onclick)
-            	
-            	sb.append("\n<tr onclick=\""+onClick+"('"+selectedTool.getValue()+"')\">"+selectedTool.getName()+"</tr>");
-            	
-            	
+            	sb.append("\n<tr onclick=\""+onClick+"('"+ selectedTool+"','"+ id +"')\">"+selectedTool+"</tr>");
             }
         }
-        
         sb.append("\n        </table> ");
-      
         sb.append("\n</div> ");
         sb.append("<html:hidden property=\""+id+"_tool\" value=\"\">");
         try {
@@ -368,11 +343,8 @@ public class ToolBoxTag extends TagSupport {
             out.println(sb.toString());
         } catch (Exception e) {
             Logger.out.debug("IO Exception occured. No response generated.");
-           
         }
-        
         Logger.out.debug(" Leaving Selector List Tag");
-        
         return EVAL_PAGE;
     }
     

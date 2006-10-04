@@ -40,7 +40,7 @@ public class ShowHomePageAction extends Action {
 		if (formDetailsObject == null) {
 			formDetailsObject = new FormDetailsObject();
 		}
-		formDetailsObject.updateFormDefinitionForm(formDefinitionForm);
+		formDetailsObject.setFormDefinitionForm(formDefinitionForm);
 		cacheManager.addObjectToCache(sessionId,formDetailsObject);
 		System.out.println(cacheManager.getObjectFromCache(sessionId));
 		System.out.println(cacheManager.getObjectFromCache(sessionId).getFormDefinitionForm().getFormName());

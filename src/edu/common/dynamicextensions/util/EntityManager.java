@@ -1,25 +1,10 @@
 package edu.common.dynamicextensions.util;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-
-import edu.wustl.common.beans.SessionDataBean;
-import edu.wustl.common.bizlogic.QueryBizLogic;
-import edu.wustl.common.dao.DAOFactory;
-import edu.wustl.common.dao.HibernateDAO;
-import edu.wustl.common.dao.JDBCDAO;
-import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
-import edu.wustl.common.util.dbManager.DAOException;
-import edu.wustl.common.util.global.Constants;
-import edu.wustl.common.util.logger.Logger;
+import edu.common.dynamicextensions.domain.Entity;
+import edu.common.dynamicextensions.domain.EntityGroup;
 
 /**
  * This is a singleton class that manages operations related to dynamic entity creation,attributes creation,
@@ -49,9 +34,252 @@ public class EntityManager {
             entityManager = new EntityManager();
         }
         return entityManager;
-    }/*
+    }
     
-    *//**
+   //------------------ Methods related to Entity---------------------------
+    /**
+     * Creates an Entity with the given entity information.Entity is registered in the metadata and a table is created
+     * to store the records.
+     * @param entity the entity to be created.
+     */
+    public void createEntity(Entity entity){
+        
+    }
+    /**
+     * Edits the given entity.
+     * @param entity the entity to be edited.
+     */
+    public void editEntity(Entity entity){
+        
+    }
+    /**
+     * Delets the entity from metadata and drops the related table that stores the entity records.
+     * @param entity the entity to be deleted.
+     */
+    public void deleteEntity(Entity entity){
+        
+    }
+    /**
+     * Delets the entity from metadata and drops the related table that stores the entity records.
+     * @param entityIdentifier the identifier of the entity that is to be deleted.
+     */
+    public void deleteEntity(Long entityIdentifier){
+        
+    }
+    /**
+     * Retrieves the entity with the given identifier.
+     * @param entityIdentifier the identifier of the entity that is to be retrieved.
+     * @return the entity with the given identifier.
+     */
+    public Entity getEntity(Long entityIdentifier){
+        Entity entity = null;
+        return entity;
+    }
+    /**
+     * Retrieves the entity with the given name.
+     * @param entityName name of the entity that is to be retrieved.
+     * @return the entity with the given name.
+     */
+    public Entity getEntity(String entityName){
+        Entity entity = null;
+        return entity;
+    }
+    
+    /**
+     * Return list of all entities in the system.
+     * @return list of all entities in the system.
+     */
+    public List getAllEntities(){
+        List entityList = null;
+        return entityList;
+    }
+    
+    //------------------------End of methods related to Entity
+    
+    //--------- Methods related to data manipulation ----------------------
+    /**
+     * Add a record for the given entity with the data provided in the map.
+     * @param entity entity for which record is to be added.
+     * @param dataMap map containing the actual data to be inserted
+     * with Key - attribute and Value - data for that attribute.
+     */
+    public void  addRecord (Entity entity, Map dataMap){
+        
+    }
+    
+    /**
+     * Add multiple records for the given entity with the data provided in the list.
+     * @param entity entity for which records are to be added.
+     * @param dataMapList list of maps containing the datato be inserted
+     * with Key - attribute and Value - data for that attribute.
+     */
+    public void  addMultipleRecords (Entity entity, List dataMapList){
+        
+    }
+    /**
+     * Retrieves record for the given entity and with the given identifier.
+     * @param entity entity for which record is to be retrieved.
+     * @param recordIdentifier identifier that uniquely determines the record.
+     * @return Map having record for the given entity and with the given identifier 
+     * with Key - attribute and Value - data for that attribute.
+     */
+    public Map getRecord (Entity entity, Long recordIdentifier){
+        Map recordMap = null;
+        return recordMap;
+    }
+    
+    /**
+     * Retrieves the record for the given entity and for the given attributes with the given record identifier.
+     * @param entity entity for which record is to be retrieved.
+     * @param attributeList list of attributes whose value is to be retrieved.
+     * @param recordIdentifier identifier that uniquely determines the record.
+     * @return Map having record for the given entity,attributes and with the given identifier 
+     * with Key - attribute and Value - data for that attribute.
+     */
+    public Map getRecord (Entity entity, List attributeList, Long recordIdentifier){
+        Map recordMap = null;                             
+        return recordMap;
+    }
+    /**
+     * Retrieves all records for the given entity.
+     * @param entity entity for which records are to be retrieved.
+     * @return list of map having record for the given entity 
+     * with Key - attribute and Value - data for that attribute.
+     */
+    public List getAllRecords (Entity entity){
+        List recordsList = null;
+        return recordsList; 
+    }
+    /**
+     * Retrieves all records for the given entity for the given attributes.
+     * @param entity entity for which records are to be retrieved.
+     * @param attributeList list of attributes whose value is to be retrieved.
+     * @return list of map having record for the given entity and given attributes
+     * with Key - attribute and Value - data for that attribute.
+     */
+    public List getAllRecords (Entity entity,List attributeList){
+        List recordList = null;
+        return recordList; 
+    }
+    
+    /**
+     * Edits the record for the given entity and the record identifier with the data in the dataMap.
+     * @param entity entity for which record is to be updated.
+     * @param recordIdentifier identifier that uniquely determines the record.
+     * @param dataMap Map having record for the given entity and with the given identifier 
+     * with Key - attribute and Value - data for that attribute.
+     */
+    public void editRecord (Entity entity, Long recordIdentifier, Map dataMap){
+        
+    }
+    
+    /**
+     * Edits the records for the given entity with the data in the map.
+     * @param entity entity for which records are to be updated.
+     * @param mapOfDataMap map containing key as record identifier and value as dataMap conatining key as Attibute
+     * and value as value of that attribute.
+     */
+    public void editMultipleRecords (Entity entity, Map mapOfDataMap){
+        
+    }
+    
+    /**
+     * Deletes record of the given entity and with the given record identifier.
+     * @param entity entity for which record is to be deleted.
+     * @param recordIdentifier identifier that uniquely determines the record.
+     */
+    public void deleteRecord (Entity entity , Long recordIdentifier){
+        
+    }
+    /**
+     * Deletes records of the given entity and with the given record identifiers list.
+     * @param entity entity for which record is to be deleted.
+     * @param recordIdentifierList list of record identifiers that need to be deleted from the entity.
+     */
+    public void deleteMultipleRecords (Entity entity, List recordIdentifierList){
+        
+    }
+    
+    
+    //---------End of methods related to data manipulation -----------------
+    
+    //------------------------Methods related to entity group ------------------
+    /**
+     * This method creates Entity Group.
+     * @param entityGroup the entity group to be created.
+     */
+     public void createEntityGroup(EntityGroup entityGroup){
+         
+     }
+     /**
+      * This method edits the given Entity Group. 
+      * @param entityGroup the entity group to be edited.
+      */
+     public void editEntityGroup(EntityGroup entityGroup){
+         
+     }
+     /**
+      * Retrieves Entity Group with the given identifier.
+      * @param entityGroupIdentifier entity group identifier. 
+      * @return Entity Group with the given identifier.
+      */
+     public EntityGroup getEntityGroup(Long entityGroupIdentifier){
+         EntityGroup entityGroup = null;
+         return entityGroup; 
+     }
+     /**
+      * Retrieves Entity Group with the given name.
+      * @param entityGroupName name of the Entity Group.
+      * @return Entity Group with the given name.
+      */
+     public EntityGroup getEntityGroup(String entityGroupName){
+         EntityGroup entityGroup = null;
+         return entityGroup; 
+     }
+     
+     /**
+      * Deletes the given Entity Group.
+      * @param entityGroup Entity Group to be deleted.
+      */
+     public void deleteEntityGroup(EntityGroup entityGroup){
+         
+     }
+     /**
+      * Deletes the Entity Group with the given identifier.
+      * @param entityGroupIdentifier entity group identifier. 
+      */
+     public void deleteEntityGroup(Long entityGroupIdentifier){
+         
+     }
+     /**
+      * Deletes the Entity Group with the given name.
+      * @param entityGroupName name of the Entity Group.
+      */
+     public void deleteEntityGroup(String entityGroupName){
+         
+     }
+ //TODO  public EntityGroup getEntityGroup(Condition condition); // Still needs to be decided upon. 
+     //TODO This needs to be discussed.
+    /* *//**
+      * Adds the root node for the Entity Group.
+      *//*
+     public void  addRootNodeForEntityGroup(EntityGroup entityGroup, Entity entity){
+         
+     }
+     public Entity getRootNodeForEntityGroup(EntityGroup entityGroup){
+         Entity entity = null;
+         return entity;
+     }
+     public void deleteRootNodeForEntityGroup(EntityGroup entityGroup){
+         
+     }*/
+     
+     //------------- End of methods related to entity Group----------
+     
+    
+    
+    
+    /**
      * Creates table to store values of attributes of the entity passed.
      * The table name that store entity related data is EAV_ENTITY + (id of the entity).
      * @param entity the entity domain object passed.

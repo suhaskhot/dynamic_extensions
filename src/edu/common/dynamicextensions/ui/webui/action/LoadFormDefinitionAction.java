@@ -15,6 +15,8 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
+import edu.common.dynamicextensions.ui.webui.util.CacheManager;
+import edu.common.dynamicextensions.ui.webui.util.FormDetailsObject;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.logger.Logger;
@@ -41,7 +43,7 @@ public class LoadFormDefinitionAction extends Action {
 	 * 
 	 * @param entitySelectionForm
 	 */
-	public void populateExistingFormsList(FormDefinitionForm formDefinitionForm,HttpServletRequest request) throws DAOException {
+	public void populateExistingFormsList(FormDefinitionForm formDefinitionActionForm,HttpServletRequest request) throws DAOException {
 
 		/*DefaultBizLogic defaultBizLogic =  (DefaultBizLogic)BizLogicFactory.getBizLogic(formDefinitionForm.getFormId());   
        List existingFormsList =  defaultBizLogic.retrieve("Entity");
@@ -57,21 +59,21 @@ public class LoadFormDefinitionAction extends Action {
 		List existingFormsList = new ArrayList();
 		existingFormsList.add(entity);
 		existingFormsList.add(entity1);
+		
+		
 		HttpSession session = request.getSession();
-		if(session.getAttribute("formName") != null) {
-			formDefinitionForm.setFormName((session.getAttribute("formName")).toString());
+		String sessionId = session.getId();
+		CacheManager cacheManager = CacheManager.getInstance();
+		FormDetailsObject formDetailsObject = cacheManager.getObjectFromCache(sessionId);
+		if(formDetailsObject == null) {
+			formDetailsObject = new FormDetailsObject();
 		}
-		if(session.getAttribute("description") != null) {
-			formDefinitionForm.setDescription((session.getAttribute("description")).toString());
-		}
-		if(session.getAttribute("createAs") != null) {
-			formDefinitionForm.setCreateAs((session.getAttribute("createAs")).toString());
+		if(formDetailsObject.getFormDefinitionForm() != null) {
+			formDefinitionActionForm.setFormName(formDetailsObject.getFormDefinitionForm().getFormName());	
+			formDefinitionActionForm.setDescription((formDetailsObject.getFormDefinitionForm().getDescription()));
+			formDefinitionActionForm.setCreateAs((formDetailsObject.getFormDefinitionForm().getCreateAs()));
 		}		
-		if(formDefinitionForm.getCreateAs() == null) {
-			formDefinitionForm.setCreateAs("");
-		} 
-		formDefinitionForm.setExistingFormsList(ActionUtil.getExistingFormsList(existingFormsList));
-
+		formDefinitionActionForm.setExistingFormsList(ActionUtil.getExistingFormsList(existingFormsList));
 	}
 
 }

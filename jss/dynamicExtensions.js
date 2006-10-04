@@ -29,4 +29,10 @@ function showCreateFormView()
 	//controlsForm.action="/dynamicExtensions/pages/createForm.jsp"
 	controlsForm.submit();
 }
+function showHomePage()
+{
+	var formDefinitionForm = document.getElementById('formDefinitionForm');
+	formDefinitionForm.submit();
+}
+
 

@@ -87,9 +87,9 @@
 				</td>
 	
 				<td>
-					<html:reset styleClass="actionButton" property="cancelButton">
+					<html:button styleClass="actionButton" property="cancelButton" onclick="showHomePage()">
 							<bean:message  key="buttons.cancel" />
-					</html:reset>
+					</html:button>
 				</td>	  <td width="65%"/>
 
 				<td align="right">

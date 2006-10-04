@@ -11,8 +11,9 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
+import edu.common.dynamicextensions.ui.webui.util.CacheManager;
+import edu.common.dynamicextensions.ui.webui.util.FormDetailsObject;
 import edu.common.dynamicextensions.util.EntityManager;
-import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.util.global.Constants;
 import edu.wustl.common.util.logger.Logger;
 
@@ -32,9 +33,14 @@ public class ApplyFormDefinitionAction extends Action {
 		String target = "";
 		if (nextOperation.equalsIgnoreCase("addControlsToForm")) {
 			HttpSession session = request.getSession();
-			session.setAttribute("formName", formDefinitionForm.getFormName());
-			session.setAttribute("description", formDefinitionForm.getDescription());
-			session.setAttribute("createAs", formDefinitionForm.getCreateAs());
+			String sessionId = session.getId();
+			CacheManager cacheManager = CacheManager.getInstance();
+			FormDetailsObject formDetailsObject = cacheManager.getObjectFromCache(sessionId);
+			if (formDetailsObject == null) {
+				formDetailsObject = new FormDetailsObject();
+			}
+			formDetailsObject.updateFormDefinitionForm(formDefinitionForm);
+			cacheManager.addObjectToCache(sessionId,formDetailsObject);
 			target = "addControlsToForm";
 		} else {
 			EntityManager entityManager = EntityManager.getInstance(); 
@@ -61,7 +67,7 @@ public class ApplyFormDefinitionAction extends Action {
 	 * 
 	 * @param request
 	 * @return
-	 */
+	 *//*
 	protected SessionDataBean getSessionData(HttpServletRequest request) {
 		Object obj = request.getSession().getAttribute(Constants.SESSION_DATA);
 		if(obj!=null)
@@ -71,10 +77,6 @@ public class ApplyFormDefinitionAction extends Action {
 		}
 		return null;
 		//return (String) request.getSession().getAttribute(Constants.SESSION_DATA);
-	}
-
-
-
-
+	}*/
 
 }

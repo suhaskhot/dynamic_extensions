@@ -15,5 +15,16 @@ public class DatePicker extends Control {
 	public void finalize() throws Throwable {
 		super.finalize();
 	}
+	
+	public String generateHTML()
+    {
+		/*String htmString = "<input class='"+cssClass+"' maxlength='10'  size='10' name='"+name+"' "+
+		"id='"+name+"' /> " +
+        //"<div id='overDiv' style='position:absolute; visibility:hidden; z-index:1000;'></div>" +
+        "<a href=\"javascript:show_calendar('entityDataForm."+name+"',null,null,'MM-DD-YYYY');\">" +
+        "<img src='images\\calendar.gif' width=24 height=22 border=0/> (MM-DD-YYYY)" +
+        "</a> ";*/
+		return "Not Implemented";
+    }
 
 }

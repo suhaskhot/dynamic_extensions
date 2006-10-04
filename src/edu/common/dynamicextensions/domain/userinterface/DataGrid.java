@@ -15,5 +15,10 @@ public class DataGrid extends Control {
 	public void finalize() throws Throwable {
 		super.finalize();
 	}
+	
+	public String generateHTML()
+    {
+    	return "HTML Not Implemented";
+    }
 
 }

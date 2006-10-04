@@ -15,5 +15,18 @@ public class CheckBox extends Control {
 	public void finalize() throws Throwable {
 		super.finalize();
 	}
+	
+	public String generateHTML()
+    {
+    	String htmlString = "<input type='checkbox' " +
+    						"class = '" + cssClass + "' " +
+    						"name = '" + name + "' " +
+    						"value = '" + name + "' " +
+    						"id = '" + name + "' " +
+    						"title = '" + tooltip + "' " 
+    						+">";
+    	System.out.println("Returning " + htmlString);
+    	return htmlString;				
+    }
 
 }

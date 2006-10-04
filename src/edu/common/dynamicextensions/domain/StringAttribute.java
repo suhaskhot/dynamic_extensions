@@ -1,5 +1,8 @@
 package edu.common.dynamicextensions.domain;
 
+import edu.wustl.common.actionForm.AbstractActionForm;
+import edu.wustl.common.exception.AssignDataException;
+
 /**
  * @version 1.0
  * @created 28-Sep-2006 12:20:08 PM
@@ -42,7 +45,7 @@ public class StringAttribute extends PrimitiveAttribute {
         this.defaultValue = defaultValue;
     }
     /**
-     * @hibernate.property name="size" type="integer" column="SIZE" 
+     * @hibernate.property name="size" type="integer" column="MAX_SIZE" 
      * @return Returns the size.
      */
     public Integer getSize() {
@@ -54,4 +57,10 @@ public class StringAttribute extends PrimitiveAttribute {
     public void setSize(Integer size) {
         this.size = size;
     }
+
+    /**
+     * 
+     */
+	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
+	}
 }

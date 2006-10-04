@@ -10,21 +10,20 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
 public class TableProperties extends DatabaseProperties {
-
-    /**
-     * Empty constructor.
-     */
+	
+	/**
+	 * Empty constructor.
+	 */
 	public TableProperties(){
-
+		
 	}
-
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
-
+		
+	/**
+	 * 
+	 */
 	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 }

@@ -17,11 +17,10 @@ public class ColumnProperties extends DatabaseProperties {
 	public ColumnProperties(){
 
 	}
-
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
-
+    
+    /**
+     * 
+     */
 	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
 		// TODO Auto-generated method stub
 		

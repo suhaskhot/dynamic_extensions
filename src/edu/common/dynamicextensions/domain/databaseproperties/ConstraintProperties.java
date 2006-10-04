@@ -28,12 +28,6 @@ public class ConstraintProperties extends DatabaseProperties {
 	public ConstraintProperties(){
 
 	}
-
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
-	
-
     /**
      * @hibernate.property name="sourceEntityKey" type="string" column="SOURCE_ENTITY_KEY" 
      * @return Returns the sourceEntityKey.
@@ -61,8 +55,9 @@ public class ConstraintProperties extends DatabaseProperties {
         this.targetEntityKey = targetEntityKey;
     }
 
+    /**
+     * 
+     */
 	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
-		// TODO Auto-generated method stub
-		
 	}
 }

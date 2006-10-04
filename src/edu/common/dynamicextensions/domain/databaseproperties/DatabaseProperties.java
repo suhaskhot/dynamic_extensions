@@ -23,11 +23,9 @@ public  abstract class DatabaseProperties extends AbstractDomainObject implement
      * 
      *
      */
-
 	public DatabaseProperties(){
 
 	}
-
 	 /**
      * @hibernate.id name="id" column="IDENTIFIER" type="long"
      * length="30" unsaved-value="null" generator-class="native"

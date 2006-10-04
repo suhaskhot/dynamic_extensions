@@ -21,11 +21,6 @@ public class BooleanAttribute extends PrimitiveAttribute {
 	public BooleanAttribute(){
 
 	}
-
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
-
 	
     /**
      * @hibernate.property name="defaultValue" type="boolean" column="DEFAULT_VALUE" 

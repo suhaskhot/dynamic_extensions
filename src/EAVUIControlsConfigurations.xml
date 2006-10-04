@@ -17,38 +17,39 @@
 			<!--  Specify the set of attributes for each of the controls here -->
 			<attribute name="attributeName"
 				caption="TextControl.attribute_name_caption"
-				css-classname="formDateSized" display-type="textbox"
-				default-value="">
+				css-classname="formDateSized" display-type="textbox" noOfCols="30"
+				default-value="" tooltip="Enter the name of the attribute">
 			</attribute>
 
 			<attribute name="attributeDescription"
 				caption="TextControl.attribute_description_caption"
 				css-classname="formDateSized" display-type="multiline-textbox"
-				default-value="">
+				default-value="" tooltip="Enter attribute description"
+				noOfRows="5" noOfCols="20">
 			</attribute>
 
 			<attribute name="attributeFormat"
 				caption="TextControl.attribute_format_caption"
 				css-classname="formDateSized" display-type="textbox"
-				default-value="">
+				default-value="" tooltip="Enter the regular expression for the attribute format">
 			</attribute>
 			
 			<attribute name="attributeCssClass"
 				caption="TextControl.attribute_cssclass_caption"
 				css-classname="formDateSized" display-type="textbox"
-				default-value="">
+				default-value="" tooltip="Stylesheet class to be applied to the attribute">
 			</attribute>
 			
 			<attribute name="attributeTooltip"
 				caption="TextControl.attribute_tooltip_caption"
 				css-classname="formDateSized" display-type="textbox"
-				default-value="">
+				default-value="" tooltip="Tooltip to be displayed">
 			</attribute>
 
 			<attribute name="dataType"
 				caption="TextControl.attribute_datatype_caption"
 				css-classname="formDateSized" display-type="combobox"
-				default-value="string">
+				default-value="string" tooltip="Database datatype of the attribute">
 				<!--  Set of values for the combobox -->
 				<values>
 					<value>number</value>
@@ -68,7 +69,7 @@
 			<attribute name="attributeDescription"
 				caption="NumericControl.attribute_description_caption"
 				css-classname="formDateSized" display-type="multiline-textbox"
-				default-value="">
+				default-value="" noOfRows="5" noOfCols="20">
 			</attribute>
 
 			<attribute name="attributeMeasurementUnits" caption=""
@@ -111,11 +112,17 @@
 			<attribute name="attributeDescription"
 				caption="MultilineControl.attribute_description_caption"
 				css-classname="" display-type="multiline-textbox"
-				default-value="">
+				default-value="" noOfRows="5" noOfCols="20">
 			</attribute>
 
-			<attribute name="attributeSize"
-				caption="MultilineControl.attribute_size_caption"
+			<attribute name="attributeNoOfRows"
+				caption="MultilineControl.attribute_noOfRows_caption"
+				css-classname="formDateSized" display-type="textbox"
+				default-value="10">
+			</attribute>
+			
+			<attribute name="attributenoOfCols"
+				caption="MultilineControl.attribute_noOfCols_caption"
 				css-classname="formDateSized" display-type="textbox"
 				default-value="10">
 			</attribute>
@@ -152,7 +159,7 @@
 			<attribute name="attributeDescription"
 				caption="ComboboxControl.attribute_description_caption"
 				css-classname="" display-type="multiline-textbox"
-				default-value="">
+				default-value="" noOfRows="5" noOfCols="20">
 			</attribute>
 
 			<attribute name="attributeCssClass"
@@ -189,7 +196,7 @@
 			<attribute name="attributeDescription"
 				caption="ListBoxControl.attribute_description_caption"
 				css-classname="" display-type="multiline-textbox"
-				default-value="">
+				default-value="" noOfRows="5" noOfCols="20">
 			</attribute>
 
 			<attribute name="attributeCssClass"
@@ -236,7 +243,7 @@
 			<attribute name="attributeDescription"
 				caption="CheckboxControl.attribute_description_caption"
 				css-classname="" display-type="multiline-textbox"
-				default-value="">
+				default-value="" noOfRows="5" noOfCols="20">
 			</attribute>
 
 			<attribute name="attributeCssClass"
@@ -273,7 +280,7 @@
 			<attribute name="attributeDescription"
 				caption="RadioButtonControl.attribute_description_caption"
 				css-classname="" display-type="multiline-textbox"
-				default-value="">
+				default-value="" noOfRows="5" noOfCols="20">
 			</attribute>
 
 			<attribute name="attributeCssClass"
@@ -310,7 +317,7 @@
 			<attribute name="attributeDescription"
 				caption="DateControl.attribute_description_caption"
 				css-classname="" display-type="multiline-textbox"
-				default-value="">
+				default-value="" noOfRows="5" noOfCols="20">
 			</attribute>
 
 			<attribute name="attributeCssClass"

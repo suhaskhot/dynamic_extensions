@@ -73,7 +73,7 @@ public class DynamicExtensionsServletContextListener implements ServletContextLi
 		Logger.out.info(ApplicationProperties.getValue("logger.conf.filename")
 				+ applicationResourcesPath);
 		
-		 QueryBizLogic.initializeQueryData();
+		 //QueryBizLogic.initializeQueryData();
          
 		Variables.datePattern = "mm-dd-yyyy";
 		Variables.timePattern = "hh-mi-ss";

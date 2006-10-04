@@ -22,10 +22,6 @@ public class ApplyFormControlsAction extends Action {
 	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form,HttpServletRequest request,
 			HttpServletResponse response) {
-		ControlsForm controlsForm = (ControlsForm)form;
-		if(controlsForm.getOperation().equalsIgnoreCase("controlSelected")) {
-			return mapping.findForward("controlSelected");
-		}
 		return mapping.findForward("success");
 	}  
 	/**

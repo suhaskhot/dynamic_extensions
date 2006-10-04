@@ -93,9 +93,9 @@
 				</td>	  <td width="65%"/>
 
 				<td align="right">
-					<html:submit styleClass="actionButton" property="nextButton" onclick="nextClicked()" >
+					<html:button styleClass="actionButton" property="nextButton" onclick="showBuildFormJSP()" >
 							<bean:message  key="buttons.next" />
-					</html:submit>
+					</html:button>
 				</td>
 			
 		</table>

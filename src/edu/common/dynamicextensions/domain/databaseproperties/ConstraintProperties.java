@@ -1,5 +1,7 @@
 package edu.common.dynamicextensions.domain.databaseproperties;
 import edu.common.dynamicextensions.domain.databaseproperties.DatabaseProperties;
+import edu.wustl.common.actionForm.AbstractActionForm;
+import edu.wustl.common.exception.AssignDataException;
 
 /**
  * @version 1.0
@@ -58,4 +60,9 @@ public class ConstraintProperties extends DatabaseProperties {
     public void setTargetEntityKey(String targetEntityKey) {
         this.targetEntityKey = targetEntityKey;
     }
+
+	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -5,7 +5,7 @@ import java.util.Map;
 /**
  * @version 1.0
  * @created 28-Sep-2006 12:20:09 PM
- * @hibernate.joined-subclass table="DYEXTN_TEXT_AREA" 
+ * @hibernate.joined-subclass table="DYEXTN_TEXTAREA" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
 public class TextArea extends Control {
@@ -18,15 +18,13 @@ public class TextArea extends Control {
 	 * Number of rows in the text area.
 	 */
 	protected Integer rows;
-
+	/**
+     * 
+	 *
+	 */
 	public TextArea(){
 
 	}
-
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
-
 
 	/**
 	 * @hibernate.property name="columns" type="integer" column="COLUMNS" 
@@ -55,6 +53,9 @@ public class TextArea extends Control {
 		this.rows = rows;
 	}
 
+    /**
+     * 
+     */
 	public void populateAttribute(Map propertiesMap) {
 		super.populateAttribute(propertiesMap);
 		if(propertiesMap!=null)
@@ -78,6 +79,10 @@ public class TextArea extends Control {
 			columns  = new Integer(UIConfigurationConstants.DEFAULT_NO_OF_COLS_TEXT);
 		}
 	}
+    
+    /**
+     * 
+     */
 
 	public String generateHTML()
 	{

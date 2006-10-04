@@ -7,21 +7,25 @@ import java.util.Map;
 /**
  * @version 1.0
  * @created 28-Sep-2006 12:20:07 PM
- * @hibernate.joined-subclass table="DYEXTN_COMBO_BOX" 
+ * @hibernate.joined-subclass table="DYEXTN_COMBOBOX" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
 public class ComboBox extends Control {
 
 	List listOfValues = null;
+    
+    /**
+     * 
+     *
+     */
 
 	public ComboBox(){
 
 	}
 
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
-
+    /**
+     * 
+     */
 	public void populateAttribute(Map propertiesMap) {
 		super.populateAttribute(propertiesMap);
 		if(propertiesMap!=null)
@@ -37,6 +41,9 @@ public class ComboBox extends Control {
 		}
 	}
 
+    /**
+     * 
+     */
 	public String generateHTML()
 	{
 		String htmlString = "<SELECT " +

@@ -8,14 +8,17 @@ package edu.common.dynamicextensions.domain.userinterface;
  */
 public class DataGrid extends Control {
 
+    /**
+     * 
+     *
+     */
 	public DataGrid(){
 
 	}
-
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
 	
+    /**
+     * 
+     */
 	public String generateHTML()
     {
     	return "HTML Not Implemented";

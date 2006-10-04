@@ -8,13 +8,17 @@ package edu.common.dynamicextensions.domain.userinterface;
  */
 public class CheckBox extends Control {
 
+    /**
+     * 
+     *
+     */
 	public CheckBox(){
 
 	}
 
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
+	/**
+     * 
+	 */
 	
 	public String generateHTML()
     {

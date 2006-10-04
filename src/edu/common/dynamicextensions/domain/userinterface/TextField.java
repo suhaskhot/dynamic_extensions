@@ -5,7 +5,7 @@ import java.util.Map;
 /**
  * @version 1.0
  * @created 28-Sep-2006 12:20:09 PM
- * @hibernate.joined-subclass table="DYEXTN_TEXT_FIELD" 
+ * @hibernate.joined-subclass table="DYEXTN_TEXTFIELD" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
 public class TextField extends Control {
@@ -17,15 +17,15 @@ public class TextField extends Control {
 	 * Boolean value indicating whether this text field is password field.
 	 */
 	protected Boolean isPassword;
+    
+    /**
+     * 
+     *
+     */
 
 	public TextField(){
 
 	}
-
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
-
 
 	/**
 	 * @hibernate.property name="columns" type="integer" column="COLUMNS" 
@@ -54,6 +54,9 @@ public class TextField extends Control {
 		this.isPassword = isPassword;
 	}
 
+    /**
+     * 
+     */
 	public void populateAttribute(Map propertiesMap) {
 		super.populateAttribute(propertiesMap);
 		if(propertiesMap!=null)
@@ -82,6 +85,9 @@ public class TextField extends Control {
 		}
 	}
 
+    /**
+     * 
+     */
 	public String generateHTML()
 	{
 		String htmlString = "<input " + 

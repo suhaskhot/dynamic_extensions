@@ -150,7 +150,7 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 		this.sequenceNumber = sequenceNumber;
 	}
 	/**
-	 * @hibernate.property name="tooltip" type="string" column="TOOL_TIP" 
+	 * @hibernate.property name="tooltip" type="string" column="TOOLTIP" 
 	 * @return Returns the tooltip.
 	 */
 	public String getTooltip() {
@@ -176,15 +176,14 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	 * @see edu.wustl.common.domain.AbstractDomainObject#getSystemIdentifier()
 	 */
 	public Long getSystemIdentifier() {
-		// TODO Auto-generated method stub
-		return null;
+		return id;
 	}
 
 	/* (non-Javadoc)
 	 * @see edu.wustl.common.domain.AbstractDomainObject#setSystemIdentifier(java.lang.Long)
 	 */
-	public void setSystemIdentifier(Long arg0) {
-		// TODO Auto-generated method stub
+	public void setSystemIdentifier(Long id) {
+	this.id = id;
 
 	}
 

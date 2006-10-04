@@ -31,11 +31,11 @@ public class HTMLGeneratorTag extends TagSupport {
 		JspWriter jspWriter = pageContext.getOut();
 		
 		try {
-			jspWriter.print("<table summary='' cellpadding='3' cellspacing='0' border='0' align='center' width = '70%'>");
+			jspWriter.print("<table summary='' cellpadding='3' cellspacing='0' border='1' align='center' >");
 			
 			//Heading Row
-			jspWriter.print("<tr><td class='formMessage' colspan='3'>* indicates a required field</td></tr>");
-			jspWriter.print("<tr><td class='formTitle' height='20' colspan='3'>New Entity</td></tr>");
+			/*jspWriter.print("<tr><td class='formMessage' colspan='3'>* indicates a required field</td></tr>");
+			jspWriter.print("<tr><td class='formTitle' height='20' colspan='3'>New Entity</td></tr>");*/
 			
 			
 			if(uiControlsList!=null)

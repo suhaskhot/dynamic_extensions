@@ -286,8 +286,9 @@ public class UIControlsConfigurationFactory {
 	 * @param attributeNode
 	 * @return String with list of values separated by a separator
 	 */
-	private String getListOfValues(Node attributeNode) {
-		String valuesListString = "",strValue=null;
+	private ArrayList getListOfValues(Node attributeNode) {
+		ArrayList valuesListString = new ArrayList();
+		String strValue=null;
 		if(attributeNode!=null)
 		{
 			NodeList listOfValues  = attributeNode.getChildNodes();
@@ -315,10 +316,10 @@ public class UIControlsConfigurationFactory {
 										if(value!=null)
 										{
 											strValue = value.getNodeValue();
-											System.out.println("StrValue =- " + strValue);
+											System.out.println("StrValue = " + strValue);
 											if(strValue!=null)
 											{
-												valuesListString = valuesListString  + strValue + UIConfigurationConstants.VALUE_SEPARATOR;
+												valuesListString.add(strValue);
 											}
 										}
 									}
@@ -330,8 +331,8 @@ public class UIControlsConfigurationFactory {
 					
 				}
 			}
-			
-		}return valuesListString;
+		}
+		return valuesListString;
 		
 	}
 

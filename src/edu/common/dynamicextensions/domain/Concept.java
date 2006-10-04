@@ -99,8 +99,11 @@ public class Concept extends AbstractDomainObject implements java.io.Serializabl
         this.id = systemIdentifier; 
         
     }
+    
+    /**
+     * 
+     */
 	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
-		// TODO Auto-generated method stub
-		
+				
 	}
 }

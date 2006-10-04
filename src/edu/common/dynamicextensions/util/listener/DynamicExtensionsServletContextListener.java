@@ -6,9 +6,8 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import edu.common.dynamicextensions.util.global.Variables;
-import edu.wustl.common.util.dbManager.HibernateMetaData;
+import edu.wustl.common.bizlogic.QueryBizLogic;
 import edu.wustl.common.util.global.ApplicationProperties;
-import edu.wustl.common.util.global.Constants;
 import edu.wustl.common.util.logger.Logger;
 
 /**
@@ -55,7 +54,7 @@ public class DynamicExtensionsServletContextListener implements ServletContextLi
 		catch (Exception e) {
 			;
 		}
-	
+		
 		
 		/**
 		 * setting system property catissue.home which can be ustilized 
@@ -74,58 +73,18 @@ public class DynamicExtensionsServletContextListener implements ServletContextLi
 		Logger.out.info(ApplicationProperties.getValue("logger.conf.filename")
 				+ applicationResourcesPath);
 		
-		 
-		/*Variables.datePattern = "mm-dd-yyyy";
+		 QueryBizLogic.initializeQueryData();
+         
+		Variables.datePattern = "mm-dd-yyyy";
 		Variables.timePattern = "hh-mi-ss";
 		Variables.dateFormatFunction="TO_CHAR";
 		Variables.timeFormatFunction="TO_CHAR";
 		Variables.dateTostrFunction = "TO_CHAR";
-		Variables.strTodateFunction = "TO_DATE";*/
-		 try
-	        {
-	            
-	            //TODO
-	            // get database name and set variables used in query
-	            Variables.databaseName = HibernateMetaData.getDataBaseName();//Constants.ORACLE_DATABASE;//
-	            System.out.println("DATABASE NAME IS ------------"+Variables.databaseName);
-	            if(Variables.databaseName.equals(Constants.ORACLE_DATABASE))
-	            {
-	            	//set string/function for oracle
-	            	
-	            	Variables.datePattern = "mm-dd-yyyy";
-	            	Variables.timePattern = "hh-mi-ss";
-	            	Variables.dateFormatFunction="TO_CHAR";
-	            	Variables.timeFormatFunction="TO_CHAR";
-	            	Variables.dateTostrFunction = "TO_CHAR";
-	            	Variables.strTodateFunction = "TO_DATE";
-	            }
-	            else if(Variables.databaseName.equals(Constants.MYSQL_DATABASE))
-	            {
-	            	Variables.datePattern = "%m-%d-%Y";
-	            	Variables.timePattern = "%H:%i:%s";
-	            	Variables.dateFormatFunction="DATE_FORMAT";
-	            	Variables.timeFormatFunction="TIME_FORMAT";
-	            	Variables.dateTostrFunction = "TO_CHAR";
-	            	Variables.strTodateFunction = "STR_TO_DATE";
-	            }/*else if(Variables.databaseName.equals(Constants.POSTGRESQL_DATABASE))
-	            {
-	            	Variables.datePattern = "mm-dd-yyyy";
-//	            	Variables.timePattern = "hh-mi-ss";
-//	            	Variables.dateFormatFunction="TO_CHAR";
-//	            	Variables.timeFormatFunction="TO_CHAR";
-//	            	Variables.dateTostrFunction = "TO_CHAR";
-	            	Variables.strTodateFunction = "TO_DATE";
-	            }*/
-	        }
-	        catch (Exception e1)
-	        {
-	            e1.printStackTrace();
-	        }
-		
+		Variables.strTodateFunction = "TO_DATE";
 	}
 	
 	/**
-     * 
+	 * 
 	 */
 	public void contextDestroyed(ServletContextEvent sce) {
 		

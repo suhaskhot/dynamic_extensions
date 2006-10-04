@@ -26,12 +26,12 @@ function showCreateFormView()
 {
 	var controlsForm = document.getElementById('controlsForm');
 	controlsForm.action="/dynamicExtensions/LoadFormDefinitionAction.do";
-	//controlsForm.action="/dynamicExtensions/pages/createForm.jsp"
 	controlsForm.submit();
 }
 function showHomePage()
 {
 	var formDefinitionForm = document.getElementById('formDefinitionForm');
+	formDefinitionForm.action = "/dynamicExtensions/ShowHomePageAction.do";
 	formDefinitionForm.submit();
 }
 

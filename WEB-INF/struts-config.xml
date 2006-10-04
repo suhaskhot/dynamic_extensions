@@ -73,6 +73,15 @@ PUBLIC
 			scope="request">
 			<forward name="success" path="/LoadFormControlsAction.do" />
 		</action>
+		
+		<action path="/ShowHomePageAction" 
+		    type="edu.common.dynamicextensions.ui.webui.action.ShowHomePageAction" 
+		    name="formDefinitionForm"
+			validate="false"
+			input="/pages/CreateForm.jsp"
+			scope="request">
+			<forward name="success" path="/LoadFormDefinitionAction.do" />
+		</action>
 	</action-mappings>
 			
 	<message-resources parameter="ApplicationResources" />

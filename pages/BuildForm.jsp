@@ -38,11 +38,11 @@
 			<td>
 			</td>
 	<td align="right">
-					<html:button styleClass="actionButton" property="prevButton" >
+					<html:button styleClass="actionButton" property="addButton" >
 							<bean:message  key="buttons.addControlToForm" />
 					</html:button>
 			
-					<html:reset styleClass="actionButton" property="nextButton"  >
+					<html:reset styleClass="actionButton" property="clearButton"  >
 							<bean:message  key="buttons.clear" />
 					</html:reset>
 				</td>

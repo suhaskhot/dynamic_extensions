@@ -13,86 +13,74 @@
  <c:set var="createAs" value="${formDefinitionForm.createAs}"/>
  <jsp:useBean id="createAs" type="java.lang.String"/>
 
-   <html:form styleId = "formDefinitionForm" action="/ApplyFormDefinitionAction" >
-	  <body>
+ <html:form styleId = "formDefinitionForm" action="/ApplyFormDefinitionAction" >
+  <body>
+  	<html:errors />  
 	 
-	  	<html:errors />
-         <table align = 'center' width='100%'>
-	          <tr height = 40>
-			     <td >
-			     </td>
-		      </tr>
-		      <tr>
-		     	  <td>
-				  	 <table summary="" align = 'center' cellpadding="3" cellspacing="0" border="2">
+	         <table align = 'center' width='100%' border='1'>
+		          <tr height = 40>	<td>Form Definition</td>	</tr>
+				  <tr>
+		     		<td>
+				  	 <table summary="" align = 'center' cellpadding="3" cellspacing="0" border="1">
 					     <tr>
 						  	 <td class="formMessage" colspan="3">* indicates a required field</td>
 					     </tr>
 					     <tr>
-					           <td class="formTitle" height="20" colspan="3">
+						     <td class="formTitle" height="20" colspan="3">
 									<bean:message key="eav.new.form"/>
-						   		</td>
+							 </td>
 					     </tr>
 					     <tr>
 							<td class="formRequiredNotice" width="5">*</td>
-							
 							<td class="formRequiredLabel">
 								<bean:message key="eav.form.name"/> 
 							</td>
-							
 							<td class="formField">
 								<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="formName" />
 							</td>
 						</tr>
-					     <tr>
-						 		<td class="formRequiredNotice" width="5">&nbsp;</td>
-								<td class="formRequiredLabel">
-									<bean:message key="eav.form.description"/> 
-						 		</td>
-								<td class="formField">
-									<html:textarea styleClass="formDateSized"  rows = "5" cols="40"  property="description" />
-								</td>
-					      </tr>
-					      <tr>
-						  <td class="formRequiredNotice" width="5">*</td>
-							
+					    <tr>
+							<td class="formRequiredNotice" width="5">&nbsp;</td>
 							<td class="formRequiredLabel">
-								<bean:message key="eav.form.createAs"/> 
+									<bean:message key="eav.form.description"/> 
+						 	</td>
+							<td class="formField">
+									<html:textarea styleClass="formDateSized"  rows = "5" cols="40"  property="description" />
 							</td>
-					      	<td class="formField">
-								<table>
+					     </tr>
+					     <tr>
+							 <td class="formRequiredNotice" width="5">*</td>
+							 <td class="formRequiredLabel">
+								<bean:message key="eav.form.createAs"/> 
+							 </td>
+					      	 <td class="formField">
+								<table border='0'>
 									<tr class="formMessage">
 									 <td >
 										<html:radio value="NewForm" property="createAs"> New</html:radio>
 										</td>
 									</tr>
 									<tr class="formMessage">
-							<td >
-										<html:radio value="ExistingForm" property="createAs" disabled="true">Existing</html:radio>
+										<td >
+											<html:radio value="ExistingForm" property="createAs" disabled="true">Existing</html:radio>
 										</td>
-										 <td class="formField" width="5">
-										 <html:select property="selectForm" onchange="formSelectedAction()" styleClass="formDateSized"  size="1"  styleId="selectForm" disabled="true">
-										 									<html:options collection="existingFormsList" labelProperty="name" property="value"/>
-								</html:select>
-
-							
-							</td>
-									</tr>
-								  </table>
-								  </td>
+										<td class="formField" width="5">
+											 <html:select property="selectForm" onchange="formSelectedAction()" styleClass="formDateSized"  size="1"  styleId="selectForm" disabled="true">
+										 	<html:options collection="existingFormsList" labelProperty="name" property="value"/>
+											</html:select>
+									</td>
+								</tr>
+							  </table>
+						  </td>
 					</table>
 			 	</td>
 			 </tr>
 			 <tr height = 10>
 			 	<td>
-			 	</td>
-			 </tr>
-	 	</table>
-		 <table summary="" align = 'left' cellpadding="5" cellspacing="0" border="0">
-		    <tr height="5">
-			  <td width="45%">
-				</td>
-				<td>
+	 <table summary="" align = 'center' cellpadding="5" cellspacing="0" border="0">
+		    <tr height="15">
+		
+							<td align="center">
 					<html:submit styleClass="actionButton">
 							<bean:message  key="buttons.save" />
 					</html:submit>
@@ -102,15 +90,21 @@
 					<html:reset styleClass="actionButton" property="cancelButton">
 							<bean:message  key="buttons.cancel" />
 					</html:reset>
-				</td>	  <td width="275">
-				</td>
-				<td>
-					<html:button styleClass="actionButton" property="nextButton" onclick="nextClicked()" >
+				</td>	  <td width="65%"/>
+
+				<td align="right">
+					<html:submit styleClass="actionButton" property="nextButton" onclick="nextClicked()" >
 							<bean:message  key="buttons.next" />
-					</html:button>
+					</html:submit>
 				</td>
 			
 		</table>
+			 	</td>
+			 </tr>
+	 	</table>
+	
+	
+	
 		<html:hidden property="operation" value=""/>
 		<html:hidden property="createAsTypeChanged" value=""/>
 		<html:hidden property="entityIdentifier" value=""/>

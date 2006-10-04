@@ -11,7 +11,6 @@ function nextClicked() {
 
 function controlSelectedAction(controlSelectedValue)
 {
-
 	document.getElementById('operation').value='controlSelected';
 	document.getElementById('selectedTool').value=controlSelectedValue;
 	var controlsForm = document.getElementById('controlsForm');
@@ -22,5 +21,12 @@ function controlSelectedAction(controlSelectedValue)
 function formCreateAsChanged() {
 
 
+}
+function showCreateFormView()
+{
+	var controlsForm = document.getElementById('controlsForm');
+	controlsForm.action="/dynamicExtensions/LoadFormDefinitionAction.do";
+	//controlsForm.action="/dynamicExtensions/pages/createForm.jsp"
+	controlsForm.submit();
 }
 

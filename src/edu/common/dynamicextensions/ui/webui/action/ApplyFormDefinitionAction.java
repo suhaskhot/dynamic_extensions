@@ -2,6 +2,7 @@ package edu.common.dynamicextensions.ui.webui.action;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -30,6 +31,10 @@ public class ApplyFormDefinitionAction extends Action {
 		String nextOperation = formDefinitionForm.getOperation();
 		String target = "";
 		if (nextOperation.equalsIgnoreCase("addControlsToForm")) {
+			HttpSession session = request.getSession();
+			session.setAttribute("formName", formDefinitionForm.getFormName());
+			session.setAttribute("description", formDefinitionForm.getDescription());
+			session.setAttribute("createAs", formDefinitionForm.getCreateAs());
 			target = "addControlsToForm";
 		} else {
 			EntityManager entityManager = EntityManager.getInstance(); 

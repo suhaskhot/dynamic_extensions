@@ -40,7 +40,7 @@ public class TextArea extends Control {
         this.columns = columns;
     }
     /**
-     * @hibernate.property name="rows" type="integer" column="COLUMNS" 
+     * @hibernate.property name="rows" type="integer" column="ROWS" 
      * @return Returns the rows.
      */
     public Integer getRows() {

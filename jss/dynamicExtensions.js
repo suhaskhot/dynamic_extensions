@@ -3,6 +3,7 @@ function formSelectedAction() {
 }
 
 function nextClicked() {
+
  	document.getElementById('operation').value='addControlsToForm';
 	var formDefinitionForm = document.getElementById('formDefinitionForm');
 	formDefinitionForm.submit();
@@ -10,20 +11,16 @@ function nextClicked() {
 
 function controlSelectedAction(controlSelectedValue)
 {
-alert(controlSelectedValue);
+
 	document.getElementById('operation').value='controlSelected';
+	document.getElementById('selectedTool').value=controlSelectedValue;
 	var controlsForm = document.getElementById('controlsForm');
 	controlsForm.submit();
 }
 
 
 function formCreateAsChanged() {
-alert("hi");
-	/*var formTypeSelected = document.getElementById('createAs').value;
-	var createAsTypeChanged = document.getElementById('createAsTypeChanged');
-    createAsTypeChanged.value = formTypeSelected;
-	var formDefinitionForm = document.getElementById('formDefinitionForm');
-	formDefinitionForm.submit();*/
-	
+
+
 }
 

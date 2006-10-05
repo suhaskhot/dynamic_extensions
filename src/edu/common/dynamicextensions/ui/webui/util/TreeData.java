@@ -30,6 +30,9 @@ public class TreeData {
 	public void setImagesUrl(String url){
 		this.folder = url;
 	}
+	public String getImagesUrl(){
+		return (this.folder);
+	}
 
 	public void add(TNode node){
 		try {

@@ -12,7 +12,6 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
 import edu.common.dynamicextensions.ui.webui.util.TreeData;
-import edu.common.dynamicextensions.ui.webui.util.TreeGenerator;
 
 
 
@@ -25,20 +24,67 @@ import edu.common.dynamicextensions.ui.webui.util.TreeGenerator;
 public class TreeGeneratorTag extends TagSupport {
 
 	private TreeData treeDataObject = null;
-	
+
 	public TreeGeneratorTag()
 	{
 		super();
 	}
-	
+
 	public int doStartTag() throws JspException {
 		JspWriter jspWriter = pageContext.getOut();
 		try {
 			if(treeDataObject!=null)
 			{
+				//Add hidden variable
+				jspWriter.print("<input type='hidden' name='selectedAttrib' value=''>");
+				//Add the actual code for tree generation
 				jspWriter.print("<div  valign='top' scroll='auto' style='overflow:auto;' >");
 				jspWriter.print(treeDataObject.getTree());
 				jspWriter.print("</div>");
+
+				//Add Javascript code
+				String toggleFunctionJSCode=
+					"function toggle(id,p) \n" + 
+					"{ " + 
+						"selId =document.getElementById('selectedAttrib').value; \n" +
+						"if(selId!='')\n" +
+							"document.getElementById(selId).style.fontWeight='normal';\n" +
+						"document.getElementById('selectedAttrib').value='';\n" +
+						"var myChild = document.getElementById(id);\n" +
+						"if((myChild!=null)&&(myChild!=undefined))\n" +
+						"{\n" +
+							"if(myChild.style.display!='block')\n" +
+							"{\n" +
+								"myChild.style.display='block';\n" +
+								"document.getElementById(p).className='folderOpen';\n" +
+							"}\n" +
+							"else\n" +
+							"{\n" +
+								"myChild.style.display='none';\n" +
+								"document.getElementById(p).className='folder';\n" +
+							"}\n" +
+						"}\n" +
+					"}";
+
+				String changeSelectionJSCode =
+					"function changeSelection(str1)\n" +
+					"{	\n" +
+						"selId =document.getElementById('selectedAttrib').value;\n" +
+						"document.getElementById('selectedAttrib').value=str1;\n" +
+						"document.getElementById(str1).style.fontWeight='bold';\n" +
+						"if(selId!='')\n" +
+						"{\n" +
+							"document.getElementById(selId).style.fontWeight='normal';\n" +
+						"}\n" +
+					"}\n" ;
+				jspWriter.print("<script language='JavaScript'> \n" + 
+						"<!-- \n"+
+						toggleFunctionJSCode + 
+						changeSelectionJSCode + 
+						"toggle('N0_0','P00'); \n" + 
+						"// --> \n" +
+				"</script>" );
+
 			}
 			else
 			{
@@ -49,8 +95,8 @@ public class TreeGeneratorTag extends TagSupport {
 		}
 		return EVAL_BODY_INCLUDE;
 	}
-	
-	
+
+
 	public int doEndTag() throws JspException {
 		return EVAL_PAGE;
 	}
@@ -64,5 +110,5 @@ public class TreeGeneratorTag extends TagSupport {
 	public void setTreeDataObject(TreeData treeDataObject) {
 		this.treeDataObject = treeDataObject;
 	}
-	
+
 }

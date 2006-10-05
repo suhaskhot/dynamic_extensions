@@ -13,17 +13,27 @@ package edu.common.dynamicextensions.ui.webui.util;
  */
 public class TreeGenerator {
 
+	private String contextPath = null;
+	
+	public String getContextPath() {
+		return this.contextPath;
+	}
+	public void setContextPath(String contextPath) {
+		this.contextPath = contextPath;
+	}
 	public TreeData getTreeData()
 	{
 		TreeData treedata = new TreeData();
-		TNode node = new TNode("Node-1");
-		node.add("subnode - 1");
-		node.add("subnode - 2");
-		node.add("subnode - 3");
-		node.add("subnode - 4");
-		node.add("subnode - 5");
-		node.add("subnode - 6");
-		node.add("subnode - 7");
+		treedata.setImagesUrl(this.getContextPath() + "/images");
+		System.out.println("Images url  path = " + treedata.getImagesUrl());
+		TNode node = new TNode("Entity 1");
+		node.add("Attribute 1");
+		node.add("Attribute 2");
+		node.add("Attribute 3");
+		node.add("Attribute 4");
+		node.add("Attribute 5");
+		
+		/*node.add("subnode - 7");
 		node.add("subnode - 8");
 		TNode node2 = new TNode("Node-2");
 		node2.add("subnode2 - 1");
@@ -34,8 +44,9 @@ public class TreeGenerator {
 		node2.add("subnode2 - 6");
 		node2.add("subnode2 - 7");
 		node2.add("subnode2 - 8");
+		treedata.add(node2);*/
+		
 		treedata.add(node);
-		treedata.add(node2);
 		return treedata;
 	}
 }

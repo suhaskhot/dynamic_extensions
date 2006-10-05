@@ -7,7 +7,7 @@
     <jsp-version>1.1</jsp-version>
     <short-name>dynamicExtensions</short-name>
     <description>A tag library to build Dynamic Extensions Application.</description>
-    <tag>
+<tag>
      <name>ToolsMenu</name>
      <tag-class>edu.common.dynamicextensions.ui.webui.taglib.ToolBoxTag</tag-class>
 
@@ -91,4 +91,31 @@
 	      <type>java.util.List</type>
 	</attribute>
 </tag>
+
+<tag>
+	<name>generatehtml</name>
+	<tagclass>edu.common.dynamicextensions.ui.webui.taglib.HTMLGeneratorTag</tagclass>
+	<bodycontent>empty</bodycontent>
+	<info></info>
+	<attribute>
+		<name>uiControlsList</name>
+		<required>true</required>
+		<rtexprvalue>true</rtexprvalue>
+		<type>java.util.List</type>
+	</attribute>
+</tag>
+
+<tag>
+	<name>tree</name>
+	<tagclass>edu.common.dynamicextensions.ui.webui.taglib.TreeGeneratorTag</tagclass>
+	<bodycontent>empty</bodycontent>
+	<info></info>
+	<attribute>
+		<name>treeDataObject</name>
+		<required>true</required>
+		<rtexprvalue>true</rtexprvalue>
+		<type>edu.common.dynamicextensions.ui.webui.util.TreeData</type>
+	</attribute>
+</tag>
+
 </taglib>

@@ -57,14 +57,23 @@ public class TextField extends Control {
     /**
      * 
      */
-	public void populateAttribute(Map propertiesMap) {
-		super.populateAttribute(propertiesMap);
+	public void populateAttributes(Map propertiesMap) {
+		super.populateAttributes(propertiesMap);
 		if(propertiesMap!=null)
 		{
 			try {
-				columns = new Integer((String)propertiesMap.get(UIConfigurationConstants.NO_OF_COLS_ATTRIBUTE));
+				String noOfCols  = (String)propertiesMap.get(UIConfigurationConstants.NO_OF_COLS_ATTRIBUTE);
+				if(noOfCols!=null)
+				{
+					columns = new Integer(noOfCols);
+				}
+				else
+				{
+					columns  = new Integer(UIConfigurationConstants.DEFAULT_NO_OF_COLS_TEXT);
+				}
 			} catch (NumberFormatException e) {
 				System.out.println("Error while retrieving no Of columns");
+				e.printStackTrace();
 				columns  = new Integer(UIConfigurationConstants.DEFAULT_NO_OF_COLS_TEXT);
 			}
 			String strIsPassword  = (String)propertiesMap.get(UIConfigurationConstants.ISPASSWORD_ATTRIBUTE);

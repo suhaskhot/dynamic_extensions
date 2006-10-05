@@ -1,5 +1,6 @@
 package edu.common.dynamicextensions.domain.userinterface;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domain.Attribute;
@@ -44,6 +45,10 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	/**
 	 * Attribute to which this control is associated.
 	 */
+	//Map of event handlers
+	//Key : Name of event. Value: event handler name
+	protected Map eventHandlers = null;
+	
 	public Attribute attribute=null;
 
 	public Control(){
@@ -193,13 +198,24 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	public abstract String generateHTML();
 	
 
-	public void populateAttribute(Map propertiesMap) {
+	public void populateAttributes(Map propertiesMap) {
 		if(propertiesMap!=null)
 		{
 			this.caption = (String)propertiesMap.get(UIConfigurationConstants.CAPTION_ATTRIBUTE);
 			this.cssClass = (String)propertiesMap.get(UIConfigurationConstants.CSS_CLASSNAME_ATTRIBUTE);
 			this.name = (String)propertiesMap.get(UIConfigurationConstants.NAME_ATTRIBUTE);
 			this.tooltip = (String)propertiesMap.get(UIConfigurationConstants.TOOLTIP_ATTRIBUTE);
+			this.eventHandlers = (Map)propertiesMap.get(UIConfigurationConstants.EVENT_HANDLERS);
 		}
 	}
+	
+	/*protected String appendEventHandlers()
+	{
+		String eventHandlersString = "";
+		if(eventHandlers!=null)
+		{
+			Set eventHandlers.keySet();
+		}
+		return eventHandlersString;
+	}*/
 }

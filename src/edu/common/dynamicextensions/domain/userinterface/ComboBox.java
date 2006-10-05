@@ -26,8 +26,8 @@ public class ComboBox extends Control {
     /**
      * 
      */
-	public void populateAttribute(Map propertiesMap) {
-		super.populateAttribute(propertiesMap);
+	public void populateAttributes(Map propertiesMap) {
+		super.populateAttributes(propertiesMap);
 		if(propertiesMap!=null)
 		{
 			try {

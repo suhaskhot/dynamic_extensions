@@ -12,6 +12,10 @@ public class UIConfigurationConstants {
 	public static final String UICONTROL_TAGNAME ="control";
 	public static final String REFERENCES_TAGNAME ="references";
 	public static final String PROPERTY_FILENAME_TAGNAME ="propertyfilename";
+	public static final String ATTRIBUTE_NODE_TAGNAME ="attribute";
+	public static final String JSP_INCLUDE_NODE_TAGNAME ="includeJsp";
+	public static final String VALUE_TAGNAME ="value";
+	public static final String EVENT_TAGNAME ="event";
 	public static final String NAME_ATTRIBUTE = "name";
 	public static final String DISPLAY_TYPE_ATTRIBUTE = "display-type";
 	public static final String CAPTION_ATTRIBUTE = "caption";
@@ -22,7 +26,9 @@ public class UIConfigurationConstants {
 	public static final String ISPASSWORD_ATTRIBUTE = "is-password";
 	public static final String NO_OF_ROWS_ATTRIBUTE = "noOfRows";
 	public static final String NO_OF_COLS_ATTRIBUTE = "noOfCols";
+	public static final String EVENT_HANDLER_ATTRIBUTE = "handler-name";
 	public static final String VALUES_LIST= "list-of-values";
+	public static final String EVENT_HANDLERS= "event-handlers";
 	public static final String VALUE_SEPARATOR = "#";
 	
 	

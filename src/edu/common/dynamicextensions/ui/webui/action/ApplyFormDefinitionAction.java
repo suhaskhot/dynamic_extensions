@@ -14,6 +14,7 @@ import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.FormDetailsObject;
 import edu.common.dynamicextensions.util.EntityManager;
+import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.util.global.Constants;
 import edu.wustl.common.util.logger.Logger;
 
@@ -46,12 +47,15 @@ public class ApplyFormDefinitionAction extends Action {
 			EntityManager entityManager = EntityManager.getInstance(); 
 			String entityIdentifier = formDefinitionForm .getEntityIdentifier();
 			Entity entity = null;
+			//----------
+			//----------
+			
 			try {
 				if(entityIdentifier != null && entityIdentifier.equals("")) {
-					entity = new Entity();
-					entity.setId(new Long("2"));
-					entity.setName("EntityName");
-					//entityManager.createEntity(entity);
+					entity = new Entity(formDefinitionForm); 
+//					entity.setId(new Long("2"));
+//					entity.setName("EntityName");
+					entityManager.createEntity(entity);
 				}
 				request.setAttribute("entityIdentifier",entity.getId().toString());
 				target = "success";

@@ -39,7 +39,7 @@ PUBLIC
 			input="/LoadFormDefinitionAction.do"
 			scope="request">
 		<forward name="success" path="/LoadFormDefinitionAction.do" />
-		<forward name="addControlsToForm" path="/LoadFormControlsAction.do" />
+		<forward name="buildForm" path="/LoadFormControlsAction.do" />
 		
 		</action>	
 		
@@ -59,6 +59,8 @@ PUBLIC
 			input="/ApplyFormControlsAction.do"
 			scope="request">
 			<forward name="success" path="/LoadFormControlsAction.do" />
+			<forward name="showCreateFormView" path="/LoadFormDefinitionAction.do" />
+			<forward name="SelectControlAction" path="/SelectControlAction.do" />
 		</action>
 		
 		<action path="/SelectControlAction" 

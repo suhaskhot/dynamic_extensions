@@ -1232,8 +1232,13 @@ public class Constants extends edu.wustl.common.util.global.Constants
     public static final int ENTITY_DATA_INFORMATION_FORM_ID = 305;
     public static final int ENTITY_SELECTION_FORM_ID = 306; 
     
-    
-    
+    public static final String FORM_DEFINITION_FORM = "formDefinitionForm" ;
+    public static final String CONTROLS_FORM = "controlsForm" ;
+    public static final String CACHE_MAP = "cacheMap";
+    public static final String ADD_CONTROLS_TO_FORM = "addControlsToForm";
+    public static final String SHOW_BUILD_FORM_JSP = "showBuildFormJSP";
+    public static final String BUILD_FORM = "buildForm";
+    public static final String SHOW_CREATE_FORM_JSP = "showCreateFormView";
     //Constants for eav end
 	
 	

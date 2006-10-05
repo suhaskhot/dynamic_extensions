@@ -14,6 +14,9 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domain.userinterface.UIControlsConfigurationFactory;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
+import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
+import edu.common.dynamicextensions.ui.webui.util.CacheManager;
+import edu.common.dynamicextensions.util.global.Constants;
 
 /**
  * 
@@ -22,22 +25,23 @@ import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 public class LoadFormControlsAction extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
-	//	setSessionObject(request);  
-		ControlsForm controlsForm = (ControlsForm) form;
-		
-		populateControlsForm(controlsForm);
-		//request.setAttribute("toolsList",toolsList);
-		return mapping.findForward("showBuildFormJSP");
+		ControlsForm cacheForm = (ControlsForm)CacheManager.getObjectFromCache(request,Constants.CONTROLS_FORM);
+		ControlsForm actionForm =null;
+		if(cacheForm != null) {
+			actionForm = (ControlsForm)form;
+			actionForm.update(cacheForm);
+		} else {
+			actionForm = (ControlsForm) form;
+		}
+		populateControlsForm(actionForm);
+		return mapping.findForward(Constants.SHOW_BUILD_FORM_JSP);
 	}
 	private void populateControlsForm(ControlsForm controlsForm) {
 		List toolsList = new ArrayList();
 		UIControlsConfigurationFactory uiControlsConfigurationFactory = UIControlsConfigurationFactory.getInstance();
 		toolsList = uiControlsConfigurationFactory.getControlNames();
-		//uiControlsConfigurationFactory.getConrolAttributesList(controlName)
-		/*toolsList.add("TextBox");
-		toolsList.add("RadioButton");
-		toolsList.add("ComboBox");*/
 		controlsForm.setToolsList(toolsList);
+		controlsForm.setSelectedTool(toolsList.get(0).toString());
 		controlsForm.setSelectedControlAttributesList(new ArrayList());
 	}
 	/**

@@ -10,10 +10,13 @@
  <jsp:useBean id="toolsList" type="java.util.List"/>
 <c:set var="selectedControlAttributesList" value="${controlsForm.selectedControlAttributesList}"/>
  <jsp:useBean id="selectedControlAttributesList" type="java.util.List"/>
+ <c:set var="selectedTool" value="${controlsForm.selectedTool}"/>
+ <jsp:useBean id="selectedTool" type="java.lang.String"/>
+
 <html>
 <head>Build Form 
 <title>Dynamic Extensions</title>
-	 
+	 <html:hidden property="BuildForm_tool" value=""/>
   <body>
 <html:form styleId = "controlsForm" action="/ApplyFormControlsAction" >
 	  	<html:errors />
@@ -23,8 +26,11 @@
 				    <dynamicExtensions:ToolsMenu id="BuildForm" 
 							toolsList = "<%=toolsList%>" 
 							onClick="controlSelectedAction"
+							
 							height="100%" width="100%">						
 			    </dynamicExtensions:ToolsMenu>
+<% System.out.println("selectedTool:   "+selectedTool); %>
+
 	  			</td>
 	  			<td align="top">
 	  			Controls definition
@@ -78,7 +84,8 @@
 			
 		</table>
 	  	<html:hidden property="operation" value=""/>
-	  	<html:hidden property="selectedTool" value=""/>
+			<html:hidden property="selectedTool" value=""/>
+	
 	  	</html:form>
 	  	</body>
 		</head>

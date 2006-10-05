@@ -326,18 +326,20 @@ public class ToolBoxTag extends TagSupport {
         Logger.out.debug(" Entering Selectors List Tag : doEndTag method");
         StringBuffer sb = new StringBuffer();
         int toolsListSize=toolsList.size();
-        sb.append("\n<div id=\"" + id + "\"  class=\"formField\"  style=\"height: " + height + "; width:" + width + "; overflow-y: auto;\">");
+        sb.append("\n<div id=\"" + id + "\"  class=\"formField\"  style=\"height: " + height + "; width:" + width + "; cursor: hand ; overflow-y: auto;\">");
         sb.append("\n       <table border=\"3\" cellspacing =\"0\" cellpadding =\"0\" id=\"" + id + "tableContainingTools\" class=\"tableBorder_styles_selectormenu\">");
         for (int i=0; i < toolsListSize; i++) {
             String selectedTool =  toolsList.get(i).toString();
             Logger.out.debug("Selector List : " + selectedTool);
             if (selectedTool != null) {
-            	sb.append("\n<tr onclick=\""+onClick+"('"+ selectedTool+"','"+ id +"')\">"+selectedTool+"</tr>");
+            	sb.append("\n<tr border=\"3\" onclick=\""+onClick+"('"+ selectedTool+"','"+ id +"')\">"+selectedTool+"</tr>");
+            	//sb.append("\n<tr><input type=\"button\" border=\"3\" onclick=\""+onClick+"('"+ selectedTool+"','"+ id +"')\" value='"+selectedTool+"'/>"+selectedTool+"</tr>");
+            	//sb.append("\n<tr>--------------------------</tr>");
             }
         }
         sb.append("\n        </table> ");
         sb.append("\n</div> ");
-        sb.append("<html:hidden property=\""+id+"_tool\" value=\"\">");
+        sb.append("<html:hidden property=\""+id+"_tool\" value=\"\"/>");
         try {
             JspWriter out = pageContext.getOut();
             out.println(sb.toString());

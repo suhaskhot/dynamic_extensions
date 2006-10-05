@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -16,7 +15,6 @@ import org.apache.struts.action.ActionMapping;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
-import edu.common.dynamicextensions.ui.webui.util.FormDetailsObject;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.logger.Logger;
@@ -28,22 +26,29 @@ import edu.wustl.common.util.logger.Logger;
 public class LoadFormDefinitionAction extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
-
-		FormDefinitionForm formDefinitionForm = (FormDefinitionForm) form;
+		FormDefinitionForm cacheForm = (FormDefinitionForm)CacheManager.getObjectFromCache(request,Constants.FORM_DEFINITION_FORM);
+		FormDefinitionForm actionForm =null;
+		if(cacheForm != null) {
+			actionForm = (FormDefinitionForm)form;
+			actionForm.update(cacheForm);
+		} else {
+			actionForm = (FormDefinitionForm) form;
+		}
 		try {
-			populateExistingFormsList(formDefinitionForm,request);
+			populateExistingFormsList(actionForm,request);
 		} catch (DAOException daoException) {
 			Logger.out.debug("excp "+daoException.getMessage());
 			Logger.out.error(daoException.getMessage(), daoException);
 			return mapping.findForward(new String(Constants.FAILURE));
 		}
+
 		return (mapping.findForward(Constants.SUCCESS));
 	}
 	/**
 	 * 
 	 * @param entitySelectionForm
 	 */
-	public void populateExistingFormsList(FormDefinitionForm formDefinitionActionForm,HttpServletRequest request) throws DAOException {
+	public void populateExistingFormsList(FormDefinitionForm formDefinitionForm,HttpServletRequest request) throws DAOException {
 
 		/*DefaultBizLogic defaultBizLogic =  (DefaultBizLogic)BizLogicFactory.getBizLogic(formDefinitionForm.getFormId());   
        List existingFormsList =  defaultBizLogic.retrieve("Entity");
@@ -59,21 +64,8 @@ public class LoadFormDefinitionAction extends Action {
 		List existingFormsList = new ArrayList();
 		existingFormsList.add(entity);
 		existingFormsList.add(entity1);
-		
-		
-		HttpSession session = request.getSession();
-		String sessionId = session.getId();
-		CacheManager cacheManager = CacheManager.getInstance();
-		FormDetailsObject formDetailsObject = cacheManager.getObjectFromCache(sessionId);
-		if(formDetailsObject == null) {
-			formDetailsObject = new FormDetailsObject();
-		}
-		if(formDetailsObject.getFormDefinitionForm() != null) {
-			formDefinitionActionForm.setFormName(formDetailsObject.getFormDefinitionForm().getFormName());	
-			formDefinitionActionForm.setDescription((formDetailsObject.getFormDefinitionForm().getDescription()));
-			formDefinitionActionForm.setCreateAs((formDetailsObject.getFormDefinitionForm().getCreateAs()));
-		}		
-		formDefinitionActionForm.setExistingFormsList(ActionUtil.getExistingFormsList(existingFormsList));
+
+		formDefinitionForm.setExistingFormsList(ActionUtil.getExistingFormsList(existingFormsList));
 	}
 
 }

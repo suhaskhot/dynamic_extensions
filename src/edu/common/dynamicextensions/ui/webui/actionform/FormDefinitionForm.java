@@ -162,6 +162,14 @@ public class FormDefinitionForm  extends AbstractActionForm {
 	public void setCreateAsTypeChanged(String createAsTypeChanged) {
 		this.createAsTypeChanged = createAsTypeChanged;
 	}
+	
+	public void update(FormDefinitionForm cacheForm) {
+		this.formName = cacheForm.getFormName();
+		this.description = cacheForm.getDescription();
+		this.createAs = cacheForm.getCreateAs();
+		//this.existingFormsList = cacheForm.getExistingFormsList();
+		
+	}
 
 	
 

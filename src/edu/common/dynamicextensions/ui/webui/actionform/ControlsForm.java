@@ -108,6 +108,15 @@ public class ControlsForm extends AbstractActionForm {
 	 * selectedTool
 	 */
 	String selectedTool;
+//Added by deepti for controls form 
+	protected String attributeCssClass;
+	protected String attributeTooltip;
+	protected String attributeNoOfRows ;
+	protected String attributenoOfCols;
+	protected Boolean attributeMultiSelect; 
+	protected String attributeMeasurementUnits;
+	protected String attributeScale;
+	
 	
 	public void reset() {
 		
@@ -340,19 +349,19 @@ public class ControlsForm extends AbstractActionForm {
 	public ActionErrors validate(ActionMapping mapping,
 			HttpServletRequest request) {
 		ActionErrors errors = new ActionErrors();
-		Validator validator = new Validator();
+	/*	Validator validator = new Validator();
 		if (attributeSize == null) {
 			
 		} else if ( !validator.isNumeric(attributeSize)) {
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
 					"eav.validation.numeric", ApplicationProperties
-					.getValue("eav.entity.name")));
+					.getValue("eav.form.name")));
 		} else {
 			    Integer sizeInteger = new Integer(attributeSize);
                 if(sizeInteger.intValue() > 38){
                     errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
                             "eav.validation.numericlarge", ApplicationProperties
-                            .getValue("eav.entity.name")));
+                            .getValue("eav.form.name")));
                     
                 }
         }
@@ -362,7 +371,7 @@ public class ControlsForm extends AbstractActionForm {
 		} else if ( validator.isEmpty(attributeName)) {
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
 					"errors.item.required", ApplicationProperties
-					.getValue("eav.attribute.name")));
+					.getValue("eav.control.name")));
 		}
         
         
@@ -385,33 +394,171 @@ public class ControlsForm extends AbstractActionForm {
             errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
                     "eav.validation.decimalnumeric", ApplicationProperties
                     .getValue("eav.entity.name")));
-        }
+        }*/
 		
 		return errors;
 	}
 
-	public List getToolsList() {
-		return toolsList;
+	/**
+	 * @return the attributeCssClass
+	 */
+	public String getAttributeCssClass() {
+		return attributeCssClass;
 	}
 
-	public void setToolsList(List toolsList) {
-		this.toolsList = toolsList;
-	}
-	public String getSelectedTool() {
-		return selectedTool;
-	}
-
-	public void setSelectedTool(String selectedTool) {
-		this.selectedTool = selectedTool;
+	/**
+	 * @param attributeCssClass the attributeCssClass to set
+	 */
+	public void setAttributeCssClass(String attributeCssClass) {
+		this.attributeCssClass = attributeCssClass;
 	}
 
+	/**
+	 * @return the attributeMeasurementUnits
+	 */
+	public String getAttributeMeasurementUnits() {
+		return attributeMeasurementUnits;
+	}
+
+	/**
+	 * @param attributeMeasurementUnits the attributeMeasurementUnits to set
+	 */
+	public void setAttributeMeasurementUnits(String attributeMeasurementUnits) {
+		this.attributeMeasurementUnits = attributeMeasurementUnits;
+	}
+
+	/**
+	 * @return the attributeMultiSelect
+	 */
+	public Boolean getAttributeMultiSelect() {
+		return attributeMultiSelect;
+	}
+
+	/**
+	 * @param attributeMultiSelect the attributeMultiSelect to set
+	 */
+	public void setAttributeMultiSelect(Boolean attributeMultiSelect) {
+		this.attributeMultiSelect = attributeMultiSelect;
+	}
+
+	/**
+	 * @return the attributenoOfCols
+	 */
+	public String getAttributenoOfCols() {
+		return attributenoOfCols;
+	}
+
+	/**
+	 * @param attributenoOfCols the attributenoOfCols to set
+	 */
+	public void setAttributenoOfCols(String attributenoOfCols) {
+		this.attributenoOfCols = attributenoOfCols;
+	}
+
+	/**
+	 * @return the attributeNoOfRows
+	 */
+	public String getAttributeNoOfRows() {
+		return attributeNoOfRows;
+	}
+
+	/**
+	 * @param attributeNoOfRows the attributeNoOfRows to set
+	 */
+	public void setAttributeNoOfRows(String attributeNoOfRows) {
+		this.attributeNoOfRows = attributeNoOfRows;
+	}
+
+	/**
+	 * @return the attributeScale
+	 */
+	public String getAttributeScale() {
+		return attributeScale;
+	}
+
+	/**
+	 * @param attributeScale the attributeScale to set
+	 */
+	public void setAttributeScale(String attributeScale) {
+		this.attributeScale = attributeScale;
+	}
+
+	/**
+	 * @return the attributeTooltip
+	 */
+	public String getAttributeTooltip() {
+		return attributeTooltip;
+	}
+
+	/**
+	 * @param attributeTooltip the attributeTooltip to set
+	 */
+	public void setAttributeTooltip(String attributeTooltip) {
+		this.attributeTooltip = attributeTooltip;
+	}
+
+	/**
+	 * @return the selectedControlAttributesList
+	 */
 	public List getSelectedControlAttributesList() {
 		return selectedControlAttributesList;
 	}
 
+	/**
+	 * @param selectedControlAttributesList the selectedControlAttributesList to set
+	 */
 	public void setSelectedControlAttributesList(List selectedControlAttributesList) {
 		this.selectedControlAttributesList = selectedControlAttributesList;
 	}
 
+	/**
+	 * @return the selectedTool
+	 */
+	public String getSelectedTool() {
+		return selectedTool;
+	}
+
+	/**
+	 * @param selectedTool the selectedTool to set
+	 */
+	public void setSelectedTool(String selectedTool) {
+		this.selectedTool = selectedTool;
+	}
+
+	/**
+	 * @return the toolsList
+	 */
+	public List getToolsList() {
+		return toolsList;
+	}
+
+	/**
+	 * @param toolsList the toolsList to set
+	 */
+	public void setToolsList(List toolsList) {
+		this.toolsList = toolsList;
+	}
+	
+	public void update(ControlsForm cacheForm) {
+		this.attributeCssClass = cacheForm.getActivityStatus();
+		this.attributeDefaultValue = cacheForm.getAttributeDefaultValue();
+		this.attributeDescription = cacheForm.getAttributeDescription();
+		this.attributeDisplayUnits = cacheForm.getAttributeDisplayUnits();
+		this.attributeFormat = cacheForm.getAttributeFormat();
+		this.attributeIdentifier = cacheForm.getAttributeIdentifier();
+		this.attributeMultiSelect = cacheForm.getAttributeMultiSelect();
+		this.attributeMeasurementUnits = cacheForm.getAttributeMeasurementUnits();
+		this.attributeName = cacheForm.getAttributeName();
+		this.attributenoOfCols = cacheForm.getAttributenoOfCols();
+		this.attributeNoOfRows = cacheForm.getAttributeNoOfRows();
+		this.attributeScale = cacheForm.getAttributeScale();
+		this.attributeSize = cacheForm.getAttributeSize();
+		this.attributeTooltip = cacheForm.getAttributeTooltip();
+		this.attributeValidationRules = cacheForm.getAttributeValidationRules();
+		this.selectedTool = cacheForm.getSelectedTool();
+		
+		
+			
+	}
 }
 

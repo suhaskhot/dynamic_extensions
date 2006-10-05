@@ -4,7 +4,10 @@ package edu.common.dynamicextensions.ui.webui.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
+import edu.common.dynamicextensions.util.global.Constants;
 
 
 /**
@@ -14,30 +17,46 @@ import java.util.Map;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class CacheManager {
-	private static CacheManager cacheManager = null;
-	private CacheManager() {
+	public CacheManager() {
 
+	}	
+	static Map cacheMap;
+	public static void addObjectToCache(HttpServletRequest request,String key, Object formDetailsObject) {
+		HttpSession session = request.getSession();
+		if(session.getAttribute(Constants.CACHE_MAP) == null) {
+			cacheMap = new HashMap();
+		} else {
+			cacheMap = (Map)session.getAttribute(Constants.CACHE_MAP);
+			cacheMap.put(key, formDetailsObject);	
+		}		
 	}
-	private static Map cacheMap = new HashMap();
-
-
-	public static CacheManager getInstance() {
-		if(cacheManager == null ){
-			return new CacheManager();
+	public static Object getObjectFromCache(HttpServletRequest request , String key) {
+		HttpSession session = request.getSession();
+		Object result = null;
+		if(session.getAttribute(Constants.CACHE_MAP) != null) {
+			cacheMap = (Map)session.getAttribute(Constants.CACHE_MAP);
+			result = cacheMap.get(key);
+		} else {
+			//
 		}
-		return cacheManager;
-	}
-	public void addObjectToCache(String sessionId, FormDetailsObject formDetailsObject) {
-		cacheMap.put(sessionId, formDetailsObject);
-	}
-	public FormDetailsObject getObjectFromCache(String sessionId) {
-		FormDetailsObject result = null;
-		result = (FormDetailsObject)cacheMap.get(sessionId);
 		return result;
 	}
-	public void removeObjectToCache(String sessionId, FormDetailsObject formDetailsObject) {
-		cacheMap.remove(sessionId);
+	public static void removeObjectFromCache(HttpServletRequest request , String key) {
+		HttpSession session = request.getSession();
+		if(session.getAttribute(Constants.CACHE_MAP) != null) {
+			cacheMap = (Map)session.getAttribute(Constants.CACHE_MAP);
+			cacheMap.remove(key);
+		} else {
+			
+		}
 	}
-	
-	
+	public static void clearCache(HttpServletRequest request ) {
+		HttpSession session = request.getSession();
+		if(session.getAttribute(Constants.CACHE_MAP) != null) {
+			cacheMap = (Map)session.getAttribute(Constants.CACHE_MAP);
+			cacheMap.clear();
+		}else {
+			
+		}
+	}
 }

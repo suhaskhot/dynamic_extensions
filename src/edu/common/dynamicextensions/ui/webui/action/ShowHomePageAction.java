@@ -22,7 +22,7 @@ public class ShowHomePageAction extends Action {
 	/**
 	 * 
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form,HttpServletRequest request,
+	/*public ActionForward execute(ActionMapping mapping, ActionForm form,HttpServletRequest request,
 			HttpServletResponse response) {
 		FormDefinitionForm formDefinitionForm = (FormDefinitionForm)form;
 		clearForm(formDefinitionForm,request);
@@ -44,6 +44,6 @@ public class ShowHomePageAction extends Action {
 		cacheManager.addObjectToCache(sessionId,formDetailsObject);
 		System.out.println(cacheManager.getObjectFromCache(sessionId));
 		System.out.println(cacheManager.getObjectFromCache(sessionId).getFormDefinitionForm().getFormName());
-	}
+	}*/
 
 }

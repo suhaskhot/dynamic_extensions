@@ -17,6 +17,11 @@ PUBLIC
 	
 	<action-mappings>
 		
+		<action path="/DynamicExtensionHomePage" 
+			type="edu.common.dynamicextensions.ui.webui.action.ForwardAction">
+			
+			<forward name="success" path="/pages/DynamicExtensionHomePage.jsp" />
+		</action>	
 		
 		<action path="/LoadFormDefinitionAction" 
 		    type="edu.common.dynamicextensions.ui.webui.action.LoadFormDefinitionAction" 
@@ -53,7 +58,7 @@ PUBLIC
 			validate="true"
 			input="/ApplyFormControlsAction.do"
 			scope="request">
-			<forward name="controlSelected" path="/SelectControlAction.do" />
+			<forward name="success" path="/LoadFormControlsAction.do" />
 		</action>
 		
 		<action path="/SelectControlAction" 
@@ -74,14 +79,7 @@ PUBLIC
 			<forward name="success" path="/LoadFormControlsAction.do" />
 		</action>
 		
-		<action path="/ShowHomePageAction" 
-		    type="edu.common.dynamicextensions.ui.webui.action.ShowHomePageAction" 
-		    name="formDefinitionForm"
-			validate="false"
-			input="/pages/CreateForm.jsp"
-			scope="request">
-			<forward name="success" path="/LoadFormDefinitionAction.do" />
-		</action>
+	
 	</action-mappings>
 			
 	<message-resources parameter="ApplicationResources" />

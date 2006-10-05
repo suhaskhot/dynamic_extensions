@@ -68,9 +68,7 @@ public class LoadFormDefinitionAction extends Action {
 		if(formDetailsObject == null) {
 			formDetailsObject = new FormDetailsObject();
 		}
-		System.out.println(formDetailsObject);
 		if(formDetailsObject.getFormDefinitionForm() != null) {
-			System.out.println(formDetailsObject.getFormDefinitionForm().getFormName());
 			formDefinitionActionForm.setFormName(formDetailsObject.getFormDefinitionForm().getFormName());	
 			formDefinitionActionForm.setDescription((formDetailsObject.getFormDefinitionForm().getDescription()));
 			formDefinitionActionForm.setCreateAs((formDetailsObject.getFormDefinitionForm().getCreateAs()));

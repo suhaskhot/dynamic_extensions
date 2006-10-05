@@ -1,1 +1,1 @@
-<jsp:forward page="/LoadFormDefinitionAction.do" />
+<jsp:forward page="/DynamicExtensionHomePage.do" />

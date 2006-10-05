@@ -59,9 +59,8 @@
 				</td>
 	
 				<td>
-					<html:reset styleClass="actionButton" property="cancelButton">
-							<bean:message  key="buttons.cancel" />
-					</html:reset>
+<html:reset styleClass="actionButton" property="cancelButton" onclick="showHomePageFromBuildForm()"> <bean:message  key="buttons.cancel" />
+</html:reset>
 				</td>	  <td width="275">
 				</td>
 					  <td width="45%">

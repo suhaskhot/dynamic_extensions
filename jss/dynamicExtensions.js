@@ -28,11 +28,16 @@ function showCreateFormView()
 	controlsForm.action="/dynamicExtensions/LoadFormDefinitionAction.do";
 	controlsForm.submit();
 }
-function showHomePage()
+function showHomePageFromCreateForm()
 {
 	var formDefinitionForm = document.getElementById('formDefinitionForm');
-	formDefinitionForm.action = "/dynamicExtensions/ShowHomePageAction.do";
+	formDefinitionForm.action="/dynamicExtensions/DynamicExtensionHomePage.do";
 	formDefinitionForm.submit();
+}
+function showHomePageFromBuildForm() {
+	var controlsForm = document.getElementById('controlsForm');
+	controlsForm.action="/dynamicExtensions/DynamicExtensionHomePage.do";
+	controlsForm.submit();
 }
 
 

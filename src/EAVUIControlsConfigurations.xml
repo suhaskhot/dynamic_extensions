@@ -20,7 +20,7 @@
 				css-classname="formDateSized" display-type="textbox" noOfCols="30"
 				default-value="" tooltip="Enter the name of the attribute">
 			</attribute>
-
+			<includeJsp name="/pages/test.jsp" ></includeJsp> 
 			<attribute name="attributeDescription"
 				caption="TextControl.attribute_description_caption"
 				css-classname="formDateSized" display-type="multiline-textbox"

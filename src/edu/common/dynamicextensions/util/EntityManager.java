@@ -5,6 +5,16 @@ import java.util.Map;
 
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.EntityGroup;
+import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
+import edu.common.dynamicextensions.util.global.Constants;
+import edu.wustl.common.beans.SessionDataBean;
+import edu.wustl.common.dao.AbstractDAO;
+import edu.wustl.common.dao.DAOFactory;
+import edu.wustl.common.dao.HibernateDAO;
+import edu.wustl.common.dao.JDBCDAO;
+import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
+import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.common.util.logger.Logger;
 
 /**
  * This is a singleton class that manages operations related to dynamic entity creation,attributes creation,
@@ -17,7 +27,7 @@ public class EntityManager {
      * Static instance of the entity manager.
      */
     private static EntityManager entityManager = null;
-  //  DAOFactory daoFactory = DAOFactory.getInstance();
+//    DAOFactory daoFactory = DAOFactory.getInstance();
     
     /**
      * Empty Constructor.
@@ -41,8 +51,75 @@ public class EntityManager {
      * Creates an Entity with the given entity information.Entity is registered in the metadata and a table is created
      * to store the records.
      * @param entity the entity to be created.
+     * @throws DAOException
      */
-    public void createEntity(Entity entity){
+    public void createEntity(Entity entity) throws DAOException{
+//        HibernateDAO hibernateDAO = (HibernateDAO)daoFactory.getDAO(Constants.HIBERNATE_DAO);
+        HibernateDAO hibernateDAO = (HibernateDAO)DAOFactory.getDAO(Constants.HIBERNATE_DAO);
+        try {
+            if(entity == null ) {
+            	throw new DAOException("while createEntity : Entity is Null");
+            }
+            hibernateDAO.openSession(null);
+            hibernateDAO.insert(entity,null,false,false);
+            TableProperties tablePropertiesToSave = new TableProperties();
+            String tableName = getEntityTableName(entity);
+            tablePropertiesToSave.setName(tableName);
+            entity.setTableProperties(tablePropertiesToSave);
+            
+            hibernateDAO.update(entity,null,false,false,false);
+            String entityName = entity.getName();
+            
+            TableProperties tableProperties = entity.getTableProperties();
+            String entityTableName = tableProperties.getName();
+            
+            //Query to create the table with the identifier
+            StringBuffer query = new  StringBuffer("CREATE TABLE "+ entityTableName + "( IDENTIFIER number(19,0) not null, "); 
+            query = query.append("primary key (IDENTIFIER))");
+            Logger.out.debug("[createEntity]Query formed is: "+query.toString());
+            
+            QueryInterfaceManager.fireQuery(query.toString(),"while creating an entity table for "+entityName);
+            //Creating sequence for the table formed.
+            
+            StringBuffer queryToGenerateSeq = new StringBuffer("CREATE SEQUENCE EAV_ENTITY" + entity.getId().toString()+"_SEQ START WITH 1 INCREMENT BY 1 MINVALUE 1");
+            Logger.out.debug("[createEntity -- sequence query ]Query formed is: "+queryToGenerateSeq.toString());
+            QueryInterfaceManager.fireQuery(queryToGenerateSeq.toString(),"while creating a sequence for entity "+entityName);
+            
+            //Entering metadata in tables related to entity that will be used for search
+            
+            //TODO UNCOMMENT LATER
+//            QueryInterfaceManager.insertMetdataOnCreateEntity(entity);
+            hibernateDAO.commit();
+        } catch (DAOException daoException){
+            daoException.printStackTrace();
+            
+            try
+            {  
+                hibernateDAO.rollback();
+            }
+            catch(DAOException daoEx)
+            {
+                throw new DAOException("Exception while hibernate rollback: "+daoEx.getMessage(), daoEx);
+            }
+            
+            throw new DAOException("Exception while creating Entity: "+daoException.getMessage(),daoException);
+        } /*catch (ClassNotFoundException classNotFoundException) {
+            classNotFoundException.printStackTrace();
+            throw new DAOException(classNotFoundException);
+        } */catch (UserNotAuthorizedException userNotAuthorizedException) {
+            userNotAuthorizedException.printStackTrace();
+            throw new DAOException(userNotAuthorizedException);
+        }finally
+        {
+            try
+            {
+                hibernateDAO.closeSession();
+            }
+            catch(DAOException daoEx)
+            {
+                throw new DAOException("Exception while closing the session");
+            }
+        }
         
     }
     /**
@@ -277,6 +354,11 @@ public class EntityManager {
      //------------- End of methods related to entity Group----------
      
     
+    
+     
+     
+     
+     
     
     
     /**
@@ -825,10 +907,11 @@ public class EntityManager {
      * @return
      * @throws DAOException
      * @throws ClassNotFoundException
-     *//*
+     */
     List getResultInList(String queryToGetNextIdentifier, SessionDataBean sessionDataBean, boolean isSecureExecute, boolean hasConditionOnIdentifiedField, Map queryResultObjectDataMap) throws DAOException, ClassNotFoundException{
         List resultList = null;
-        JDBCDAO jdbcDAO = (JDBCDAO)daoFactory.getDAO(Constants.JDBC_DAO);
+//        JDBCDAO jdbcDAO = (JDBCDAO)daoFactory.getDAO(Constants.JDBC_DAO);
+        JDBCDAO jdbcDAO = (JDBCDAO)DAOFactory.getDAO(Constants.JDBC_DAO);
         try {
             jdbcDAO.openSession(null);
             resultList = jdbcDAO.executeQuery(queryToGetNextIdentifier,sessionDataBean,isSecureExecute,hasConditionOnIdentifiedField,queryResultObjectDataMap);
@@ -849,16 +932,16 @@ public class EntityManager {
     }
     
     
-    *//**
+    /**
      * Returns the name of the values tabnle related to the entity.
      * @param entity the entity.
      * @return the name of the values tabnle related to the entity.
-     *//*
+     */
     String getEntityTableName(Entity entity){
         return("EAV_ENTITY"+entity.getId());
     }
     
-    *//**
+    /**
      * Returns the name of the table column for the attribute.
      * @param attribute the attribute.
      * @return the name of the table column for the attribute.
@@ -873,12 +956,12 @@ public class EntityManager {
      * @return
      * @throws DAOException
      * @throws ClassNotFoundException
-     *//*
+     */
     public Long getNextIdentifier(Entity entity)throws DAOException, ClassNotFoundException{
-        
-        String entityTableName = getEntityTableName(entity);
+        TableProperties tableProperties = entity.getTableProperties();
+        String entityTableName = tableProperties.getName();
         StringBuffer queryToGetNextIdentifier = new StringBuffer("SELECT MAX(IDENTIFIER) FROM "+entityTableName);
-        List resultList = getResultInList(queryToGetNextIdentifier.toString(),new SessionDataBean(),false,false,null);
+        List resultList = QueryInterfaceManager.getResultInList(queryToGetNextIdentifier.toString(),new SessionDataBean(),false,false,null);
         if(resultList == null){
             throw new DAOException("Could not fetch the next identifier for table "+entityTableName);
         }
@@ -900,6 +983,6 @@ public class EntityManager {
         id++;
         identifier = new Long(id);
         return identifier;
-    }*/
+    }
     
 }

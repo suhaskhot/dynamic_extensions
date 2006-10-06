@@ -67,7 +67,7 @@ public class View extends AbstractDomainObject implements Serializable{
 	
 	/**
 	 * @hibernate.set name="containerCollection" table="DYEXTN_CONTAINER"
-	 * cascade="none" inverse="false" lazy="false"
+	 * cascade="save-update" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="VIEW_ID"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.userinterface.Container"
 	 * @return Returns the containerCollection.

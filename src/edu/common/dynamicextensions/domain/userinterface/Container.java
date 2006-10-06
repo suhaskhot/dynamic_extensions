@@ -106,7 +106,7 @@ public class Container extends AbstractDomainObject implements Serializable {
     }
     /**
      * @hibernate.set name="controlCollection" table="DYEXTN_CONTROL"
-     * cascade="none" inverse="false" lazy="false"
+     * cascade="save-update" inverse="false" lazy="false"
      * @hibernate.collection-key column="CONTAINER_ID"
      * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.userinterface.Control"
      * @return Returns the controlCollection.

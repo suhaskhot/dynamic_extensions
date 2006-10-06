@@ -18,14 +18,7 @@ public class EntityGroup extends AbstractMetadata  implements java.io.Serializab
      * Collection of entity in this entity group.
      */
 	protected Collection entityCollection;
-    /**
-     * the root node entity of this entity group.
-     */
-	public Entity rootNodeEntity;
-    /**
-     * Entity group collection in this entity. 
-     */
-	public Collection entityGroupCollection;
+     
     /**
      * 
      *
@@ -51,37 +44,7 @@ public class EntityGroup extends AbstractMetadata  implements java.io.Serializab
         this.entityCollection = entityCollection;
     }
     
-    //TODO Needs to be changed.
-    /**
-     * @hibernate.set name="entityGroupCollection" table="DYEXTN_ENTITY_GROUP"
-     * cascade="none" inverse="true" lazy="false"
-     * @hibernate.collection-key column="ENTITY_GROUP_ID"
-     * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.EntityGroup"
-     * @return Returns the entityGroupCollection.
-     */
-    public Collection getEntityGroupCollection() {
-        return entityGroupCollection;
-    }
-    /**
-     * @param entityGroupCollection The entityGroupCollection to set.
-     */
-    public void setEntityGroupCollection(Collection entityGroupCollection) {
-        this.entityGroupCollection = entityGroupCollection;
-    }
-    /**
-     * @hibernate.many-to-one column ="ROOT_NODE_ENTITY_ID" class="edu.common.dynamicextensions.domain.Entity"
-     * @return Returns the rootNodeEntity.
-     */
-    public Entity getRootNodeEntity() {
-        return rootNodeEntity;
-    }
-    /**
-     * @param rootNodeEntity The rootNodeEntity to set.
-     */
-    public void setRootNodeEntity(Entity rootNodeEntity) {
-        this.rootNodeEntity = rootNodeEntity;
-    }
-
+  
 	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
 		// TODO Auto-generated method stub
 		

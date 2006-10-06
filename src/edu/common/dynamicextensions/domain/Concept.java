@@ -1,15 +1,14 @@
 
 package edu.common.dynamicextensions.domain;
 
-import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
-import edu.wustl.common.exception.AssignDataException;
 
 /**
+ * @hibernate.class table="DYEXTN_CONCEPT"
  * @author sujay_narkar
  *
  */
-public class Concept extends AbstractDomainObject implements java.io.Serializable {
+public abstract class Concept extends AbstractDomainObject implements java.io.Serializable {
     
     protected static final long serialVersionUID = 1234567890L;
 
@@ -100,10 +99,5 @@ public class Concept extends AbstractDomainObject implements java.io.Serializabl
         
     }
     
-    /**
-     * 
-     */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
-				
-	}
+    
 }

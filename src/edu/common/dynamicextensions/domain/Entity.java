@@ -1,7 +1,6 @@
 package edu.common.dynamicextensions.domain;
 import java.util.Collection;
 
-import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
 import edu.wustl.common.actionForm.AbstractActionForm;
 
 /**
@@ -23,7 +22,7 @@ public class Entity extends AbstractMetadata {
 	/**
 	 * Table property for this entity.
 	 */
-	protected TableProperties tableProperties;
+	protected Collection tablePropertiesColletion;
 	/**
 	 * 
 	 */
@@ -37,9 +36,9 @@ public class Entity extends AbstractMetadata {
 	
 	/**
 	 * @hibernate.set name="attributeCollection" table="DYEXTN_ATTRIBUTE"
-     * cascade="none" inverse="false" lazy="false"
-     * @hibernate.collection-key column="ATTRIBUTE_ID"
-     * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Attribute"
+	 * cascade="save-update" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="ATTRIBUTE_ID"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Attribute"
 	 * @return Returns the attributeCollection.
 	 */
 	public Collection getAttributeCollection() {
@@ -53,9 +52,9 @@ public class Entity extends AbstractMetadata {
 	}
 	/**
 	 * @hibernate.set name="entityGroupCollection" table="DYEXTN_ENTITY_GROUP_REL" 
-     * cascade="none" inverse="false" lazy="false"
-     * @hibernate.collection-key column="ENTITY_ID"
-     * @hibernate.collection-many-to-many class="edu.common.dynamicextensions.domain.EntityGroup" column="ENTITY_GROUP_ID"
+	 * cascade="none" inverse="true" lazy="false"
+	 * @hibernate.collection-key column="ENTITY_ID"
+	 * @hibernate.collection-many-to-many class="edu.common.dynamicextensions.domain.EntityGroup" column="ENTITY_GROUP_ID"
 	 * @return Returns the entityGroupCollection.
 	 */
 	public Collection getEntityGroupCollection() {
@@ -67,22 +66,26 @@ public class Entity extends AbstractMetadata {
 	public void setEntityGroupCollection(Collection entityGroupCollection) {
 		this.entityGroupCollection = entityGroupCollection;
 	}
-	/**
-	 * @hibernate.many-to-one column ="TABLE_PROPERTY_ID" class="edu.common.dynamicextensions.domain.databaseproperties.TableProperties"
-	 * @return Returns the tableProperties.
-	 */
-	public TableProperties getTableProperties() {
-		return tableProperties;
-	}
-	/**
-	 * @param tableProperties The tableProperties to set.
-	 */
-	public void setTableProperties(TableProperties tableProperties) {
-		this.tableProperties = tableProperties;
-	}
+	
 	
 	public void setAllValues(AbstractActionForm arg0)  {
 		// TODO Auto-generated method stub
 		
+	}
+	/**
+	 * @hibernate.set name="tablePropertiesColletion" table="DYEXTN_TABLE_PROPERTIES" cascade="save-update"
+	 * inverse="false" lazy="false"
+	 * @hibernate.collection-key column="ENTITY_ID"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.databaseproperties.TableProperties"
+	 * @return Returns the tablePropertiesColletion.
+	 */
+	public Collection getTablePropertiesColletion() {
+		return tablePropertiesColletion;
+	}
+	/**
+	 * @param tablePropertiesColletion The tablePropertiesColletion to set.
+	 */
+	public void setTablePropertiesColletion(Collection tablePropertiesColletion) {
+		this.tablePropertiesColletion = tablePropertiesColletion;
 	}
 }

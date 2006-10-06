@@ -34,6 +34,9 @@ public abstract class AbstractMetadata extends AbstractDomainObject implements j
 	 * 
 	 */
 	protected Date createdDate;
+    /**
+     * 
+     */
 	
 	protected Collection semanticPropertyCollection;
 	
@@ -110,7 +113,7 @@ public abstract class AbstractMetadata extends AbstractDomainObject implements j
 	}
 	/**
 	 * @hibernate.set name="semanticPropertyCollection" cascade="save-update"
-	 * inverse="true" lazy="false"
+	 * inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ABSTRACT_METADATA_ID"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.SemanticProperty"
 	 * @return Returns the semanticPropertyCollection.

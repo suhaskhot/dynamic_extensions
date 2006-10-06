@@ -1,5 +1,5 @@
 package edu.common.dynamicextensions.domain;
-import edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties;
+import java.util.Collection;
 
 /**
  * @version 1.0
@@ -21,11 +21,15 @@ public abstract class PrimitiveAttribute extends Attribute {
 	 * Specifies whether this is a primary key.
 	 */
 	protected Boolean isPrimaryKey;
+    /**
+     * 
+     */
+    protected Collection conceptColection;
 	
 	/**
 	 * Column property associated to this primitive attribute.
 	 */
-	protected ColumnProperties columnProperties;
+	protected Collection columnPropertiesCollection;
 	
 	/**
 	 * Empty constructor.
@@ -34,19 +38,7 @@ public abstract class PrimitiveAttribute extends Attribute {
 		
 	}
 	
-	/**
-	 * @hibernate.many-to-one column ="COLUMN_PROPERTY_ID" class="edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties"
-	 * @return Returns the columnProperties.
-	 */
-	public ColumnProperties getColumnProperties() {
-		return columnProperties;
-	}
-	/**
-	 * @param columnProperties The columnProperties to set.
-	 */
-	public void setColumnProperties(ColumnProperties columnProperties) {
-		this.columnProperties = columnProperties;
-	}
+	
 	/**
 	 * @hibernate.property name="isCollection" type="boolean" column="IS_COLLECTION" 
 	 * @return Returns the isCollection.
@@ -87,4 +79,37 @@ public abstract class PrimitiveAttribute extends Attribute {
 		this.isPrimaryKey = isPrimaryKey;
 	}
 	
+	/**
+     * @hibernate.set name="conceptColection" table="DYEXTN_CONCEPT"
+     * cascade="save-update" inverse="false" lazy="false"
+     * @hibernate.collection-key column="PRIMITIVE_ATTRIBUTE_ID"
+     * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Concept" 
+	 * @return Returns the conceptColection.
+	 */
+	public Collection getConceptColection() {
+		return conceptColection;
+	}
+	/**
+	 * @param conceptColection The conceptColection to set.
+	 */
+	public void setConceptColection(Collection conceptColection) {
+		this.conceptColection = conceptColection;
+	}
+	/**
+     * @hibernate.set name="columnPropertiesCollection" table="DYEXTN_COLUMN_PROPERTIES"
+     * cascade="save-update" inverse="false" lazy="false"
+     * @hibernate.collection-key column="PRIMITIVE_ATTRIBUTE_ID"
+     * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties"  
+	 * @return Returns the columnPropertiesCollection.
+	 */
+	public Collection getColumnPropertiesCollection() {
+		return columnPropertiesCollection;
+	}
+	/**
+	 * @param columnPropertiesCollection The columnPropertiesCollection to set.
+	 */
+	public void setColumnPropertiesCollection(
+			Collection columnPropertiesCollection) {
+		this.columnPropertiesCollection = columnPropertiesCollection;
+	}
 }

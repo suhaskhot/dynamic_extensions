@@ -22,7 +22,7 @@ public abstract class Attribute extends AbstractMetadata   {
 	}
     /**
      * @hibernate.set name="ruleCollection" table="DYEXTN_RULE"
-     * cascade="none" inverse="false" lazy="false"
+     * cascade="save-update" inverse="false" lazy="false"
      * @hibernate.collection-key column="ATTRIBUTE_ID"
      * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.validationrules.Rule"
      * @return Returns the ruleCollection.

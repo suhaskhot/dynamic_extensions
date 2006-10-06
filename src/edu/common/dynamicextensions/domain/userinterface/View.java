@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 
+import edu.common.dynamicextensions.domaininterface.userinterface.ViewInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.exception.AssignDataException;
@@ -13,7 +14,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @created 28-Sep-2006 12:20:09 PM
  * @hibernate.class table="DYEXTN_VIEW"
  */
-public class View extends AbstractDomainObject implements Serializable{
+public class View extends AbstractDomainObject implements Serializable,ViewInterface{
 	
 	/**
 	 * Unique identifier for the object

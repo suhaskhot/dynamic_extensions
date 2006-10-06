@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.domain;
 
+import edu.common.dynamicextensions.domaininterface.DoubleAttributeInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
 
@@ -10,7 +11,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @author sujay_narkar
  *
  */
-public class DoubleAttribute extends PrimitiveAttribute { 
+public class DoubleAttribute extends PrimitiveAttribute implements DoubleAttributeInterface{ 
     
     /**
     * Default value for this attribute.

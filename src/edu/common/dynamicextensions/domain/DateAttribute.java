@@ -2,6 +2,7 @@ package edu.common.dynamicextensions.domain;
 
 import java.util.Date;
 
+import edu.common.dynamicextensions.domaininterface.DateAttributeInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
 
@@ -11,7 +12,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass table="DYEXTN_DATE_ATTRIBUTE" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class DateAttribute extends PrimitiveAttribute {
+public class DateAttribute extends PrimitiveAttribute implements DateAttributeInterface{
 
     /**
      *  Default value of this date attribute.

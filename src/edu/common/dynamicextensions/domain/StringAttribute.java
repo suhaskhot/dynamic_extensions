@@ -1,5 +1,6 @@
 package edu.common.dynamicextensions.domain;
 
+import edu.common.dynamicextensions.domaininterface.StringAttributeInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
 
@@ -9,7 +10,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass table="DYEXTN_STRING_ATTRIBUTE" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class StringAttribute extends PrimitiveAttribute {
+public class StringAttribute extends PrimitiveAttribute implements StringAttributeInterface{
 
     /**
      * Default value of this string attribute.

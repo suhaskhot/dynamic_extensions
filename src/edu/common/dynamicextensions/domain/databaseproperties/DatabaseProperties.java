@@ -2,6 +2,7 @@ package edu.common.dynamicextensions.domain.databaseproperties;
 
 import java.io.Serializable;
 
+import edu.common.dynamicextensions.domaininterface.databaseproperties.DatabasePropertiesInterface;
 import edu.wustl.common.domain.AbstractDomainObject;
 
 /**
@@ -9,7 +10,7 @@ import edu.wustl.common.domain.AbstractDomainObject;
  * @created 28-Sep-2006 12:20:07 PM
  * @hibernate.class table="DYEXTN_DATABASE_PROPERTIES"
  */
-public  abstract class DatabaseProperties extends AbstractDomainObject implements  Serializable{
+public  abstract class DatabaseProperties extends AbstractDomainObject implements  Serializable,DatabasePropertiesInterface{
     /**
      * Unique identifier for the object
      */

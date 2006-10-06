@@ -2,6 +2,7 @@ package edu.common.dynamicextensions.domain;
 
 import java.util.Collection;
 
+import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
 
@@ -11,7 +12,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass table="DYEXTN_ENTITY_GROUP"
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class EntityGroup extends AbstractMetadata  implements java.io.Serializable {
+public class EntityGroup extends AbstractMetadata  implements java.io.Serializable,EntityGroupInterface {
 
     private static final long serialVersionUID = 1234567890L;
     /**

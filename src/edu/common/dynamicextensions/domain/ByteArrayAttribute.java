@@ -1,5 +1,6 @@
 package edu.common.dynamicextensions.domain;
 
+import edu.common.dynamicextensions.domaininterface.ByteArrayAttributeInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
 
@@ -9,7 +10,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass table="DYEXTN_BYTE_ARRAY_ATTRIBUTE" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class ByteArrayAttribute extends PrimitiveAttribute {
+public class ByteArrayAttribute extends PrimitiveAttribute implements ByteArrayAttributeInterface{
     /**
      * Content type for this file.
      */

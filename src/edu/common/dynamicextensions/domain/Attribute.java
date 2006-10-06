@@ -1,6 +1,8 @@
 package edu.common.dynamicextensions.domain;
 import java.util.Collection;
 
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+
 /**
  * @version 1.0
  * @created 28-Sep-2006 12:20:06 PM
@@ -8,7 +10,7 @@ import java.util.Collection;
  * @hibernate.joined-subclass-key column="IDENTIFIER"  
  *  
  */
-public abstract class Attribute extends AbstractMetadata   {
+public abstract class Attribute extends AbstractMetadata implements AttributeInterface  {
     
      /**
       * Collection of rules.

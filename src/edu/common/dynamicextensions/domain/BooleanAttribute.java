@@ -1,5 +1,6 @@
 package edu.common.dynamicextensions.domain;
 
+import edu.common.dynamicextensions.domaininterface.BooleanAttributeInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
 
@@ -9,7 +10,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass table="DYEXTN_BOOLEAN_ATTRIBUTE" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class BooleanAttribute extends PrimitiveAttribute {
+public class BooleanAttribute extends PrimitiveAttribute implements BooleanAttributeInterface{
     /**
      * Default value for this attribute.
      */

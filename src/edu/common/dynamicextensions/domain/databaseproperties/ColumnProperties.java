@@ -1,5 +1,6 @@
 package edu.common.dynamicextensions.domain.databaseproperties;
 
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
 
@@ -9,7 +10,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass table="DYEXTN_COLUMN_PROPERTIES" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class ColumnProperties extends DatabaseProperties {
+public class ColumnProperties extends DatabaseProperties implements ColumnPropertiesInterface{
 
     /**
      * Empty constructor

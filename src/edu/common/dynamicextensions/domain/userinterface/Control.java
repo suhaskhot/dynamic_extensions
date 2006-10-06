@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domain.Attribute;
+import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.exception.AssignDataException;
@@ -13,7 +14,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @created 28-Sep-2006 12:20:07 PM
  * @hibernate.class table="DYEXTN_CONTROL"
  */
-public abstract class Control extends AbstractDomainObject implements Serializable{
+public abstract class Control extends AbstractDomainObject implements Serializable,ControlInterface{
 	/**
 	 * Unique identifier for the object
 	 */

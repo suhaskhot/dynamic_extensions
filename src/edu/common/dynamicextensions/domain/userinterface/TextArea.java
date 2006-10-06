@@ -2,13 +2,15 @@ package edu.common.dynamicextensions.domain.userinterface;
 
 import java.util.Map;
 
+import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
+
 /**
  * @version 1.0
  * @created 28-Sep-2006 12:20:09 PM
  * @hibernate.joined-subclass table="DYEXTN_TEXTAREA" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class TextArea extends Control {
+public class TextArea extends Control implements TextAreaInterface {
 
 	/**
 	 * Number of columns in the text area.

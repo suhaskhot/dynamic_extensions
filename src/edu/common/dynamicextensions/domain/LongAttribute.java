@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.domain;
 
+import edu.common.dynamicextensions.domaininterface.LongAttributeInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
 
@@ -10,7 +11,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @author sujay_narkar
  *
  */
-public class LongAttribute extends PrimitiveAttribute { 
+public class LongAttribute extends PrimitiveAttribute implements LongAttributeInterface { 
     /**
      * Default value for this attribute.
      */

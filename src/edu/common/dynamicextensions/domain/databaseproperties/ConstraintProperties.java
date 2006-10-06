@@ -1,5 +1,6 @@
 package edu.common.dynamicextensions.domain.databaseproperties;
 import edu.common.dynamicextensions.domain.databaseproperties.DatabaseProperties;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
 
@@ -9,7 +10,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass table="DYEXTN_CONSTRAINT_PROPERTIES" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class ConstraintProperties extends DatabaseProperties {
+public class ConstraintProperties extends DatabaseProperties implements ConstraintPropertiesInterface{
     /**
      * The source entity key through which constarint is related.
      * e.g. Used in case of foreign key constraint in one to many relation.

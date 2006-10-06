@@ -1,12 +1,14 @@
 package edu.common.dynamicextensions.domain.userinterface;
 
+import edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface;
+
 /**
  * @version 1.0
  * @created 28-Sep-2006 12:20:07 PM
  * @hibernate.joined-subclass table="DYEXTN_DATEPICKER" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class DatePicker extends Control {
+public class DatePicker extends Control implements DatePickerInterface{
 
     /**
      * 

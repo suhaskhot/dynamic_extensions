@@ -2,13 +2,15 @@ package edu.common.dynamicextensions.domain.userinterface;
 
 import java.util.Map;
 
+import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
+
 /**
  * @version 1.0
  * @created 28-Sep-2006 12:20:09 PM
  * @hibernate.joined-subclass table="DYEXTN_TEXTFIELD" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class TextField extends Control {
+public class TextField extends Control implements TextFieldInterface{
 	/**
 	 * Size of the text field to be shown on UI.
 	 */

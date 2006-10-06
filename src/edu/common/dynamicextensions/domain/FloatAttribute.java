@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.domain;
 
+import edu.common.dynamicextensions.domaininterface.FloatAttributeInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
 
@@ -9,7 +10,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass-key column="IDENTIFIER"  
  * @author sujay_narkar
  */
-public class FloatAttribute extends PrimitiveAttribute { 
+public class FloatAttribute extends PrimitiveAttribute implements FloatAttributeInterface{ 
     
      /**
      * Default value for this attribute.

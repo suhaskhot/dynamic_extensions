@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.domain;
 
+import edu.common.dynamicextensions.domaininterface.IntegerAttributeInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
 
@@ -10,7 +11,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  *
  */
-public class IntegerAttribute extends PrimitiveAttribute {
+public class IntegerAttribute extends PrimitiveAttribute implements IntegerAttributeInterface{
 	/**
 	 * Default value for this attribute.
 	 */

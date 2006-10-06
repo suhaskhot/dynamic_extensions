@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import edu.common.dynamicextensions.domain.Entity;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.exception.AssignDataException;
@@ -13,7 +14,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @created 28-Sep-2006 12:20:07 PM
  * @hibernate.class table="DYEXTN_CONTAINER"
  */
-public class Container extends AbstractDomainObject implements Serializable {
+public class Container extends AbstractDomainObject implements Serializable,ContainerInterface {
     /**
      * Unique identifier for the object
      */

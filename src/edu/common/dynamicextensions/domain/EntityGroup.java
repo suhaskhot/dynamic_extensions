@@ -15,6 +15,18 @@ public class EntityGroup extends AbstractMetadata  implements java.io.Serializab
 
     private static final long serialVersionUID = 1234567890L;
     /**
+     * 
+     */
+    protected String shortName;
+    /**
+     * 
+     */
+    protected String longName;
+    /**
+     * 
+     */
+    protected String version;
+    /**
      * Collection of entity in this entity group.
      */
 	protected Collection entityCollection;
@@ -44,9 +56,50 @@ public class EntityGroup extends AbstractMetadata  implements java.io.Serializab
         this.entityCollection = entityCollection;
     }
     
-  
+  /**
+   * 
+   */
 	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
 		// TODO Auto-generated method stub
 		
+	}
+	/**
+     * @hibernate.property name="longName" type="string" column="LONG_NAME" 
+	 * @return Returns the longName.
+	 */
+	public String getLongName() {
+		return longName;
+	}
+	/**
+	 * @param longName The longName to set.
+	 */
+	public void setLongName(String longName) {
+		this.longName = longName;
+	}
+	/**
+     * @hibernate.property name="shortName" type="string" column="SHORT_NAME"  
+	 * @return Returns the shortName.
+	 */
+	public String getShortName() {
+		return shortName;
+	}
+	/**
+	 * @param shortName The shortName to set.
+	 */
+	public void setShortName(String shortName) {
+		this.shortName = shortName;
+	}
+	/**
+     * @hibernate.property name="version" type="string" column="VERSION" 
+	 * @return Returns the version.
+	 */
+	public String getVersion() {
+		return version;
+	}
+	/**
+	 * @param version The version to set.
+	 */
+	public void setVersion(String version) {
+		this.version = version;
 	}
 }

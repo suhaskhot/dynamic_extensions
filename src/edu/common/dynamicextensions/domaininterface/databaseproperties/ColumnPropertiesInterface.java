@@ -8,7 +8,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @author sujay_narkar
  *
  */
-public interface ColumnPropertiesInterface {
+public interface ColumnPropertiesInterface extends DatabasePropertiesInterface{
      /**
      * 
      */

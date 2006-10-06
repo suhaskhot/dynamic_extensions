@@ -8,7 +8,6 @@ import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.beans.SessionDataBean;
-import edu.wustl.common.dao.AbstractDAO;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.HibernateDAO;
 import edu.wustl.common.dao.JDBCDAO;
@@ -353,6 +352,23 @@ public class EntityManager {
       */
      public void deleteEntityGroup(String entityGroupName){
          
+     }
+     
+     /**
+      * 
+      * @param entityGroup
+      * @param entity
+      */
+     public void addEntityToEntityGroup(EntityGroup entityGroup,Entity entity){
+        
+     }
+     /**
+      * 
+      * @param entityGroup
+      * @param entity
+      */
+     public void deleteEntityFromEntityGroup(EntityGroup entityGroup,Entity entity){
+        
      }
  //TODO  public EntityGroup getEntityGroup(Condition condition); // Still needs to be decided upon. 
      //TODO This needs to be discussed.

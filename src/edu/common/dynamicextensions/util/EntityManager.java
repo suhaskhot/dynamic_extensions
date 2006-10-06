@@ -122,6 +122,15 @@ public class EntityManager {
         }
         
     }
+    
+    /**
+     * Create multiple entities.Their metadata is registered andcorresponding tables are created
+     * to store the records.
+     * @param entities
+     */
+    public void createEntities(List entities){
+        
+    }
     /**
      * Edits the given entity.
      * @param entity the entity to be edited.
@@ -167,6 +176,16 @@ public class EntityManager {
      * @return list of all entities in the system.
      */
     public List getAllEntities(){
+        List entityList = null;
+        return entityList;
+    }
+    
+    /**
+     * Return list of entities corresponding to the list of identifiers passed.
+     * @param entityIdentifiers list of entity identifiers.
+     * @return list of entities corresponding to the list of identifiers passed.
+     */
+    public List getEntitiesById(List entityIdentifiers){
         List entityList = null;
         return entityList;
     }

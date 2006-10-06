@@ -11,7 +11,7 @@
 	treeGenerator.setContextPath(request.getContextPath());
 	TreeData treedataObj = treeGenerator.getTreeData();
 %>
-
+<link rel="stylesheet" type="text/css" href="css/stylesheet.css" />
 <script src="jss/dynamicExtensions.js" type="text/javascript"></script>
 
 <c:set var="toolsList" value="${controlsForm.toolsList}"/>
@@ -21,15 +21,16 @@
  <c:set var="userSelectedTool" value="${controlsForm.userSelectedTool}"/>
  <jsp:useBean id="userSelectedTool" type="java.lang.String"/>
 <html>
-<head>Build Form 
+<head>
 <title>Dynamic Extensions</title>
 	 
-  <body>
+  <body >
 <html:form styleId = "controlsForm" action="/ApplyFormControlsAction" >
 	  	<html:errors />
-	  	<table align = 'center' width='100%' border="3">
+	  	<table align = 'center' width='100%' border="3" class="bodyStyle">
+		   <tr height = 40><td/>	<td class='standardBoldText' align='center'>Build Form</td>	</tr>
 	  		<tr>
-	  			<td>  		
+	  			<td class="toolBoxTable">  		
 				    <dynamicExtensions:ToolsMenu id="BuildForm" 
 							toolsList = "<%=toolsList%>" 
 							onClick="controlSelectedAction"
@@ -38,7 +39,6 @@
 			    </dynamicExtensions:ToolsMenu>
 	  			</td>
 	  			<td align="top">
-	  			Controls definition
 	  			<dynamicExtensions:generatehtml uiControlsList="<%=selectedControlAttributesList%>"/>
 	  			
 	  			</td>
@@ -71,7 +71,7 @@
 				</td>
 	
 				<td>
-					<html:reset styleClass="actionButton" property="cancelButton">
+					<html:reset styleClass="actionButton" property="cancelButton" onclick='showHomePageFromBuildForm()'>
 							<bean:message  key="buttons.cancel" />
 					</html:reset>
 				</td>	  <td width="275">

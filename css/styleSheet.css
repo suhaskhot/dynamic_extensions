@@ -15,7 +15,6 @@
   border-left:1px solid #5C5C5C; /* constant: dark gray */
   border-right:1px solid #5C5C5C; /* constant: dark gray */
 }
-
 .formRequiredNotice{ /* for the asterisk cell */
   font-family:arial,helvetica,verdana,sans-serif;
   font-size:1em;
@@ -66,10 +65,41 @@ input.actionButton{ /* optional style for form and action buttons */
   border-top:1px solid #5C5C5C; /* constant: dark gray */
   border-left:1px solid #5C5C5C; /* constant: dark gray */
 }
+.toolBoxTable{ /* for the main table below the labels */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:1.1em;
+  color:#000005; /* constant: black */
+  border-top:1px solid #5C5C5C; /* constant: dark gray */
+  border-left:1px solid #5C5C5C; /* constant: dark gray */
+}
 
 .tableBorder_styles_selectormenu
 {	
 	border-top:1px solid #5C5C5C; /* constant: dark gray */
   	border-left:1px solid #5C5C5C; /* constant: dark gray */
     border-collapse: collapse;
+}
+.standardBoldText
+{ /* for stand-alone text not affected by any cascading text styles */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-weight:bold;
+  font-size:1.0em;
+  color:#000000; /* constant: black */
+}
+.toolLabelText
+{
+font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.8em;
+  font-weight:bold;
+  padding-left:0.8em;
+  background-color:#F4F4F5; /* constant: dark gray */
+  color:#000000; /* constant: white */
+  border-top:1px solid #5C5C5C; /* constant: dark gray */
+  border-left:1px solid #5C5C5C; /* constant: dark gray */
+  border-right:1px solid #5C5C5C; /* constant: dark gray */
+  cursor:hand;
+}
+.bodyStyle 
+{
+ background-color: 9FA2BA; /* constant: dark gray */
 }

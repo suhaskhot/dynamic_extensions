@@ -4,7 +4,7 @@
 <html>
 <head>
 <title>Dynamic Extensions</title>
-<link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
+<link rel="stylesheet" type="text/css" href="css/stylesheet.css" />
 <script src="jss/dynamicExtensions.js" type="text/javascript"></script>
 </head>
  <c:set var="existingFormsList" value="${formDefinitionForm.existingFormsList}"/>
@@ -17,11 +17,11 @@
   <body>
   	<html:errors />  
 	 
-	         <table align = 'center' width='100%' border='1'>
-		          <tr height = 40>	<td>Form Definition</td>	</tr>
+	         <table align = 'center' width='100%' border='0' class="bodyStyle">
+		          <tr height = 40>	<td class='standardBoldText' align='center'>Form Definition</td>	</tr>
 				  <tr>
 		     		<td>
-				  	 <table summary="" align = 'center' cellpadding="3" cellspacing="0" border="1">
+				  	 <table summary="" align = 'center' cellpadding="3" cellspacing="0" border="0">
 					     <tr>
 						  	 <td class="formMessage" colspan="3">* indicates a required field</td>
 					     </tr>
@@ -90,7 +90,7 @@
 					<html:button styleClass="actionButton" property="cancelButton" onclick="showHomePageFromCreateForm()">
 							<bean:message  key="buttons.cancel" />
 					</html:button>
-				</td>	  <td width="65%"/>
+				</td>	  <td width="60%"/>
 
 				<td align="right">
 					<html:button styleClass="actionButton" property="nextButton" onclick="showBuildFormJSP()" >

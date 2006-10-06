@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.domain;
 import java.util.Collection;
 import java.util.Date;
 
+import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.wustl.common.domain.AbstractDomainObject;
 
 /**
@@ -10,7 +11,7 @@ import edu.wustl.common.domain.AbstractDomainObject;
  * @created 28-Sep-2006 12:20:06 PM
  * @hibernate.class table="DYEXTN_ABSTRACT_METADATA"
  */
-public abstract class AbstractMetadata extends AbstractDomainObject implements java.io.Serializable {
+public abstract class AbstractMetadata extends AbstractDomainObject implements java.io.Serializable,AbstractMetadataInterface {
 	
 	protected static final long serialVersionUID = 1234567890L;
 	

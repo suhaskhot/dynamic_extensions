@@ -21,7 +21,7 @@ public class SelectControlAction extends Action {
 			HttpServletResponse response) {
 		ControlsForm controlsForm = (ControlsForm)form;
 		UIControlsConfigurationFactory uiControlsConfigurationFactory = UIControlsConfigurationFactory.getInstance();
-		List controlAttributesList = uiControlsConfigurationFactory.getConrolAttributesList(controlsForm.getSelectedTool());
+		List controlAttributesList = uiControlsConfigurationFactory.getConrolAttributesList(controlsForm.getUserSelectedTool());
 		controlsForm.setSelectedControlAttributesList(controlAttributesList);
 		controlsForm.setToolsList(uiControlsConfigurationFactory.getControlNames());
 		return mapping.findForward("success");

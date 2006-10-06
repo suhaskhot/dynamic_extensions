@@ -2,7 +2,6 @@ package edu.common.dynamicextensions.ui.webui.action;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -12,10 +11,8 @@ import org.apache.struts.action.ActionMapping;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
-import edu.common.dynamicextensions.ui.webui.util.FormDetailsObject;
 import edu.common.dynamicextensions.util.EntityManager;
-import edu.wustl.common.actionForm.AbstractActionForm;
-import edu.wustl.common.util.global.Constants;
+import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.util.logger.Logger;
 
 /**
@@ -32,29 +29,16 @@ public class ApplyFormDefinitionAction extends Action {
 		FormDefinitionForm formDefinitionForm = (FormDefinitionForm)form;
 		String nextOperation = formDefinitionForm.getOperation();
 		String target = "";
-		if (nextOperation.equalsIgnoreCase("addControlsToForm")) {
-			HttpSession session = request.getSession();
-			String sessionId = session.getId();
-			CacheManager cacheManager = CacheManager.getInstance();
-			FormDetailsObject formDetailsObject = cacheManager.getObjectFromCache(sessionId);
-			if (formDetailsObject == null) {
-				formDetailsObject = new FormDetailsObject();
-			}
-			formDetailsObject.updateFormDefinitionForm(formDefinitionForm);
-			cacheManager.addObjectToCache(sessionId,formDetailsObject);
-			target = "addControlsToForm";
+		if (nextOperation.equalsIgnoreCase(Constants.BUILD_FORM)) {
+			CacheManager.addObjectToCache(request, Constants.FORM_DEFINITION_FORM,formDefinitionForm);			
+			target = Constants.BUILD_FORM;
 		} else {
 			EntityManager entityManager = EntityManager.getInstance(); 
 			String entityIdentifier = formDefinitionForm .getEntityIdentifier();
 			Entity entity = null;
-			//----------
-			//----------
-			
 			try {
 				if(entityIdentifier != null && entityIdentifier.equals("")) {
-					entity = new Entity(formDefinitionForm); 
-//					entity.setId(new Long("2"));
-//					entity.setName("EntityName");
+					entity = new Entity(); 
 					entityManager.createEntity(entity);
 				}
 				request.setAttribute("entityIdentifier",entity.getId().toString());

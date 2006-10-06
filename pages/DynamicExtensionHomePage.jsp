@@ -3,13 +3,21 @@
 <head>
 <title>Dynamic Extensions</title>
 </head>
-<body>
-<b>
+
+<table border='0' align='center'>
+<tr >
+<h2>
+
 Dynamic Extensions
-</b>
-</body>
+
+</h2>
+</tr>
 <br>
-<a href="/dynamicExtensions/LoadFormDefinitionAction.do">Create A Form</a> 
+<tr>
+<h4><a align='center' href="/dynamicExtensions/LoadFormDefinitionAction.do">Create A Form</a> 
+</h4>
+</tr>
+</table>
 
 </html>
 

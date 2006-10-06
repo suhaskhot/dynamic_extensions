@@ -69,7 +69,7 @@ PUBLIC
 			validate="false"
 			input="/SelectControlAction.do"
 			scope="request">
-			<forward name="success" path="/pages/BuildForm.jsp" />
+			<forward name="success" path="/LoadFormControlsAction.do" />
 		</action>
 		
 		<action path="/AddControlsAction" 

@@ -83,7 +83,10 @@ public class ToolBoxTag extends TagSupport {
      * This list contains disable options list
      */
     protected List disableList = new ArrayList();
-    
+    /**
+     * selector Id which has to be shown selected initially.
+     */
+    protected String selectedUserOption = null;
     /**
      * selectorTooltipList
      */
@@ -276,9 +279,9 @@ public class ToolBoxTag extends TagSupport {
         	Logger.out.debug(" onClick Function Name is must");
             return false;
         }
-       /* if (selectedToolID == null) {
-        	selectedToolID = ((NameValueBean) toolsList.get(0));
-        }*/
+        if (selectedUserOption == null) {
+        	selectedToolID = toolsList.get(0).toString();
+        }
         if (messageKeys == null) {
             messageKeys = new Boolean(false);
         }
@@ -326,20 +329,28 @@ public class ToolBoxTag extends TagSupport {
         Logger.out.debug(" Entering Selectors List Tag : doEndTag method");
         StringBuffer sb = new StringBuffer();
         int toolsListSize=toolsList.size();
+       
         sb.append("\n<div id=\"" + id + "\"  class=\"formField\"  style=\"height: " + height + "; width:" + width + "; cursor: hand ; overflow-y: auto;\">");
-        sb.append("\n       <table border=\"3\" cellspacing =\"0\" cellpadding =\"0\" id=\"" + id + "tableContainingTools\" class=\"tableBorder_styles_selectormenu\">");
+  //      sb.append("\n       <table border=\"3\" cellspacing =\"0\" cellpadding =\"0\" id=\"" + id + "tableContainingTools\" class=\"tableBorder_styles_selectormenu\">");
+        sb.append("\n<table border=\"4\">");
+        sb.append("<tr><td>");
         for (int i=0; i < toolsListSize; i++) {
-            String selectedTool =  toolsList.get(i).toString();
-            Logger.out.debug("Selector List : " + selectedTool);
-            if (selectedTool != null) {
-            	sb.append("\n<tr border=\"3\" onclick=\""+onClick+"('"+ selectedTool+"','"+ id +"')\">"+selectedTool+"</tr>");
+            String userSelectedTool =  toolsList.get(i).toString();
+            Logger.out.debug("Selector List : " + userSelectedTool);
+            if (userSelectedTool != null) {
+            	
+            	sb.append("\n<tr border=\"3\" onclick=\"tagHandlerFunction('"+userSelectedTool+"');"+onClick+"('"+ userSelectedTool+"','"+ id +"')\">"+userSelectedTool+"</tr>");
             	//sb.append("\n<tr><input type=\"button\" border=\"3\" onclick=\""+onClick+"('"+ selectedTool+"','"+ id +"')\" value='"+selectedTool+"'/>"+selectedTool+"</tr>");
             	//sb.append("\n<tr>--------------------------</tr>");
             }
         }
-        sb.append("\n        </table> ");
+        sb.append("</td></tr>");
+        sb.append("\n</table> ");
         sb.append("\n</div> ");
-        sb.append("<html:hidden property=\""+id+"_tool\" value=\"\"/>");
+       
+       // sb.append("<html:hidden name=\"buildFormTool\" styleId=\"buildFormTool\" property=\"buildFormTool\" value=\"\"/>");
+        sb.append("<input type=\"hidden\" name=\"userSelectedTool\" id=\"userSelectedTool\" value=\""+selectedUserOption+"\"/>");
+       // sb.append("<input type=\"hidden\" name=\"userSelectedTool\" id=\"userSelectedTool\" value=\"\"/>");
         try {
             JspWriter out = pageContext.getOut();
             out.println(sb.toString());
@@ -391,4 +402,16 @@ public class ToolBoxTag extends TagSupport {
     public void setDisableList(List disableList) {
         this.disableList = disableList;
     }
+	/**
+	 * @return the selectedUserOption
+	 */
+	public String getSelectedUserOption() {
+		return selectedUserOption;
+	}
+	/**
+	 * @param selectedUserOption the selectedUserOption to set
+	 */
+	public void setSelectedUserOption(String selectedUserOption) {
+		this.selectedUserOption = selectedUserOption;
+	}
 }

@@ -9,6 +9,10 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
+import edu.common.dynamicextensions.ui.webui.util.CacheManager;
+import edu.common.dynamicextensions.util.global.Constants;
+
 
 /**
  * 
@@ -21,28 +25,9 @@ public class AddControlsAction extends Action {
 	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form,HttpServletRequest request,
 			HttpServletResponse response) {
-		//FormDefinitionForm formDefinitionForm = (FormDefinitionForm)form;
-		/*String nextOperation = formDefinitionForm.getOperation();
-		String target = "";
-		if (nextOperation.equalsIgnoreCase("addControlsToForm")) {
-			target = "addControlsToForm";
-		} else {
-			EntityManager entityManager = EntityManager.getInstance(); 
-			String entityIdentifier = formDefinitionForm .getEntityIdentifier();
-			Entity entity = null;
-			try {
-				if(entityIdentifier != null && entityIdentifier.equals("")) {
-					entity = new Entity(formDefinitionForm );
-					entityManager.createEntity(entity);
-				}
-				request.setAttribute("entityIdentifier",entity.getId().toString());
-				target = "success";
-			}  catch (Exception entityCreationException) {
-				Logger.out.debug("excp "+ entityCreationException.getMessage());
-				Logger.out.error(entityCreationException.getMessage(), entityCreationException);
-				return mapping.findForward(new String(Constants.FAILURE));
-			} 
-		}*/
+		ControlsForm actionForm = (ControlsForm)form;
+		CacheManager.addObjectToCache(request, Constants.CONTROLS_FORM, actionForm);
+		//Add code for add attribute to entity
 		return mapping.findForward("success");
 	}  
 	/**

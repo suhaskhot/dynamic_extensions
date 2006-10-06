@@ -116,6 +116,7 @@ public class ControlsForm extends AbstractActionForm {
 	protected Boolean attributeMultiSelect; 
 	protected String attributeMeasurementUnits;
 	protected String attributeScale;
+	protected String userSelectedTool;
 	
 	
 	public void reset() {
@@ -555,10 +556,26 @@ public class ControlsForm extends AbstractActionForm {
 		this.attributeSize = cacheForm.getAttributeSize();
 		this.attributeTooltip = cacheForm.getAttributeTooltip();
 		this.attributeValidationRules = cacheForm.getAttributeValidationRules();
-		this.selectedTool = cacheForm.getSelectedTool();
+		this.userSelectedTool = cacheForm.getUserSelectedTool();
+		this.selectedControlAttributesList = cacheForm.getSelectedControlAttributesList();
+		this.toolsList = cacheForm.getToolsList();
 		
 		
 			
+	}
+
+	/**
+	 * @return the userSelectedTool
+	 */
+	public String getUserSelectedTool() {
+		return userSelectedTool;
+	}
+
+	/**
+	 * @param userSelectedTool the userSelectedTool to set
+	 */
+	public void setUserSelectedTool(String userSelectedTool) {
+		this.userSelectedTool = userSelectedTool;
 	}
 }
 

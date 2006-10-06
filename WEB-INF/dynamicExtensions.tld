@@ -30,7 +30,7 @@
 			<type>java.lang.String</type>
      </attribute>
      <attribute>
-			<name>selectedTool</name>
+			<name>selectedUserOption</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<type>java.lang.String</type>

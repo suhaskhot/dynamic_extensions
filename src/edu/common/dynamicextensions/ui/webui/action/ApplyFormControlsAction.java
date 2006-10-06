@@ -37,6 +37,9 @@ public class ApplyFormControlsAction extends Action {
 			*/return mapping.findForward("SelectControlAction");
 		}
 		if(actionForm.getOperation().equalsIgnoreCase(Constants.SHOW_CREATE_FORM_JSP)) {
+			ControlsForm cacheForm = (ControlsForm)CacheManager.getObjectFromCache(request,Constants.CONTROLS_FORM);
+			actionForm.setUserSelectedTool(cacheForm.getUserSelectedTool());
+			actionForm.setSelectedControlAttributesList(cacheForm.getSelectedControlAttributesList());
 			CacheManager.addObjectToCache(request,Constants.CONTROLS_FORM , actionForm);
 			return mapping.findForward(Constants.SHOW_CREATE_FORM_JSP);
 		}

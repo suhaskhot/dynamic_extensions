@@ -1,7 +1,9 @@
 function formSelectedAction() {
 	alert("This is a form to be copied");
 }
-
+function tagHandlerFunction(selectedTool) {
+	document.getElementById('userSelectedTool').value=selectedTool;
+}
 
 function showBuildFormJSP() {
 
@@ -10,26 +12,21 @@ function showBuildFormJSP() {
 	formDefinitionForm.submit();
 }
 
-function controlSelectedAction(controlSelectedValue)
+function controlSelectedAction()
 {	
-	document.getElementById('selectedTool').value=controlSelectedValue;
 	document.getElementById('operation').value='controlSelectedAction';
 	var controlsForm = document.getElementById('controlsForm');
-//	controlsForm.action="/dynamicExtensions/SelectControlAction.do";
 	controlsForm.submit();
 }
 
 
 function formCreateAsChanged() {
-
-
 }
 function showCreateFormView()
 {
 
  	document.getElementById('operation').value='showCreateFormView';
 	var controlsForm = document.getElementById('controlsForm');
-	//controlsForm.action="/dynamicExtensions/LoadFormDefinitionAction.do";
 	controlsForm.submit();
 }
 function showHomePageFromCreateForm()
@@ -41,6 +38,12 @@ function showHomePageFromCreateForm()
 function showHomePageFromBuildForm() {
 	var controlsForm = document.getElementById('controlsForm');
 	controlsForm.action="/dynamicExtensions/DynamicExtensionHomePage.do";
+	controlsForm.submit();
+}
+
+function addControlToForm() {
+	var controlsForm = document.getElementById("controlsForm");
+	controlsForm.action="/dynamicExtensions/AddControlsAction.do";
 	controlsForm.submit();
 }
 

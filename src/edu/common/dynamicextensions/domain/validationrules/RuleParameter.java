@@ -2,6 +2,7 @@ package edu.common.dynamicextensions.domain.validationrules;
 
 import java.io.Serializable;
 
+import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.exception.AssignDataException;
@@ -11,7 +12,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @created 28-Sep-2006 12:20:08 PM
  * @hibernate.class table="DYEXTN_RULE_PARAMETER"
  */
-public class RuleParameter extends AbstractDomainObject implements Serializable {
+public class RuleParameter extends AbstractDomainObject implements Serializable,RuleParameterInterface {
     /**
      * Unique identifier for the object
      */
@@ -28,10 +29,6 @@ public class RuleParameter extends AbstractDomainObject implements Serializable 
 	 * Empty constructor.	 
 	 */
 	public RuleParameter(){
-
-	}
-
-	public void finalize() throws Throwable {
 
 	}
 

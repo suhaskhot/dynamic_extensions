@@ -30,21 +30,5 @@ public class AddControlsAction extends Action {
 		//Add code for add attribute to entity
 		return mapping.findForward("success");
 	}  
-	/**
-	 * 
-	 * @param request
-	 * @return
-	 *//*
-	protected SessionDataBean getSessionData(HttpServletRequest request) {
-		Object obj = request.getSession().getAttribute(Constants.SESSION_DATA);
-		if(obj!=null)
-		{
-			SessionDataBean sessionData = (SessionDataBean) obj;
-			return  sessionData;
-		}
-		return null;
-		//return (String) request.getSession().getAttribute(Constants.SESSION_DATA);
-	}*/
-
-
+	
 }

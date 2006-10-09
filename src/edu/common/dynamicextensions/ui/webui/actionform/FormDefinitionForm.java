@@ -167,11 +167,5 @@ public class FormDefinitionForm  extends AbstractActionForm {
 		this.formName = cacheForm.getFormName();
 		this.description = cacheForm.getDescription();
 		this.createAs = cacheForm.getCreateAs();
-		//this.existingFormsList = cacheForm.getExistingFormsList();
-		
 	}
-
-	
-
-
 }

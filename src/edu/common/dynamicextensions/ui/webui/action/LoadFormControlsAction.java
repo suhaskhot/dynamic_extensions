@@ -12,9 +12,9 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.domain.userinterface.UIControlsConfigurationFactory;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
-import edu.common.dynamicextensions.ui.webui.util.UIControlsConfigurationFactory;
 import edu.common.dynamicextensions.util.global.Constants;
 
 /**
@@ -31,7 +31,7 @@ public class LoadFormControlsAction extends Action {
 			actionForm.update(cacheForm);
 			populateControlsForm(actionForm);
 		} else {
-			actionForm = (ControlsForm) form;
+		    actionForm = (ControlsForm) form;
 			List toolsList = new ArrayList();
 			UIControlsConfigurationFactory uiControlsConfigurationFactory = UIControlsConfigurationFactory.getInstance();
 			toolsList = uiControlsConfigurationFactory.getControlNames();
@@ -48,18 +48,5 @@ public class LoadFormControlsAction extends Action {
 		toolsList = uiControlsConfigurationFactory.getControlNames();
 		controlsForm.setToolsList(toolsList);
 		controlsForm.setSelectedControlAttributesList(uiControlsConfigurationFactory.getConrolAttributesList(controlsForm.getUserSelectedTool()));
-		//controlsForm.setBuildFormTool(toolsList.get(0).toString());
-		
 	}
-	/**
-	 * 
-	 * @param request
-	 *//*
-	public void setSessionObject(HttpServletRequest request) {
-		HttpSession session = request.getSession();
-		EntitySession entitySession = new EntitySession();
-		entitySession.setEntityIdentifier("");
-        entitySession.setAttributeIdentifier("");
-		session.setAttribute("ENTITY_SESSION",entitySession);
-	}*/
 }

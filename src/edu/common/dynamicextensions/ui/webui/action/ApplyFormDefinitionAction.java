@@ -51,20 +51,5 @@ public class ApplyFormDefinitionAction extends Action {
 		}
 		return mapping.findForward(target);
 	}  
-	/**
-	 * 
-	 * @param request
-	 * @return
-	 *//*
-	protected SessionDataBean getSessionData(HttpServletRequest request) {
-		Object obj = request.getSession().getAttribute(Constants.SESSION_DATA);
-		if(obj!=null)
-		{
-			SessionDataBean sessionData = (SessionDataBean) obj;
-			return  sessionData;
-		}
-		return null;
-		//return (String) request.getSession().getAttribute(Constants.SESSION_DATA);
-	}*/
-
+	
 }

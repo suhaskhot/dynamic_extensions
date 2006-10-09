@@ -117,8 +117,23 @@ public class ControlsForm extends AbstractActionForm {
 	protected String attributeMeasurementUnits;
 	protected String attributeScale;
 	protected String userSelectedTool;
+	protected String controlAddedToForm;
 	
 	
+	/**
+	 * @return the controlAddedToForm
+	 *//*
+	public String getControlAddedToForm() {
+		return controlAddedToForm;
+	}
+
+	*//**
+	 * @param controlAddedToForm the controlAddedToForm to set
+	 *//*
+	public void setControlAddedToForm(String controlAddedToForm) {
+		this.controlAddedToForm = controlAddedToForm;
+	}*/
+
 	public void reset() {
 		
 	}
@@ -557,11 +572,6 @@ public class ControlsForm extends AbstractActionForm {
 		this.attributeTooltip = cacheForm.getAttributeTooltip();
 		this.attributeValidationRules = cacheForm.getAttributeValidationRules();
 		this.userSelectedTool = cacheForm.getUserSelectedTool();
-		this.selectedControlAttributesList = cacheForm.getSelectedControlAttributesList();
-		this.toolsList = cacheForm.getToolsList();
-		
-		
-			
 	}
 
 	/**

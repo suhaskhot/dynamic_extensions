@@ -29,6 +29,7 @@
 	  	<html:errors />
 	  	<table align = 'center' width='100%' border="3" class="bodyStyle">
 		   <tr height = 40><td/>	<td class='standardBoldText' align='center'>Build Form</td>	</tr>
+		   <tr>	<td/>	   	<td align="center" class="standardBoldText"> <%= userSelectedTool %> </td></tr>
 	  		<tr>
 	  			<td class="toolBoxTable">  		
 				    <dynamicExtensions:ToolsMenu id="BuildForm" 
@@ -50,7 +51,7 @@
 			<td>
 			</td>
 	<td align="right">
-					<html:button styleClass="actionButton" property="addControlToFormButton" onclick="addControlToForm()" >
+					<html:button styleClass="actionButton" property="addControlToFormButton" onclick="addControlToFormTree()" >
 							<bean:message  key="buttons.addControlToForm" />
 					</html:button>
 			
@@ -79,9 +80,9 @@
 					  <td width="45%">
 				</td>
 					<td>
-					<html:submit styleClass="actionButton" property="prevButton" onclick="showCreateFormView()" >
+					<html:button styleClass="actionButton" property="prevButton" onclick="showNextActionConfirmDialog()" >
 							<bean:message  key="buttons.prev" />
-					</html:submit>
+					</html:button>
 				</td>
 				<td>
 					<html:button styleClass="actionButton" property="showPreviewButton" onclick="showPreview()" >
@@ -91,7 +92,7 @@
 			
 		</table>
 	  	<html:hidden property="operation" value=""/>
-
+	<html:hidden property="controlAddedToForm" value=""/>
 	  	<html:hidden property="selectedAttrib" value=""/>
 	  	</html:form>
 	  	</body>

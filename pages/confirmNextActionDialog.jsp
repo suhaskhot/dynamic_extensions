@@ -1,6 +1,6 @@
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
-<link rel="stylesheet" type="text/css" href="css/stylesheet.css" />
+<link rel="stylesheet" type="text/css" href="<%= request.getContextPath()%>/css/stylesheet.css" />
 
 
 <html>
@@ -9,17 +9,26 @@
 
 	 <script language="javascript" src="<%= request.getContextPath()%>/jss/dynamicExtensions.js"></script>
 	</head>
-  <body >
+  <body  class='bodyStyle' >
 <html:form styleId = "controlsForm" action="/ApplyFormControlsAction" >
 	  	<html:errors />
-		<table>
+		<table class='bodyStyle' border='1'>
+		<tr>
+		<table class='bodyStyle'>
 			<tr>
 				<td class='standardBoldText' align='center'> Before going to previous page please select the action to be performed
 				</td>
 			</tr>
 		</table>
+		</tr>
 			<tr>
 			<table align='center'>
+			<tr height="70%">
+				<td/>
+				</tr>	<tr>
+				<td/>
+			</tr>
+			<tr>
 			<td>
 					<html:button styleClass="actionButton" property="prevButton" onclick='showCreateFormJSP();' >
 							<bean:message  key="buttons.prev" />
@@ -35,8 +44,10 @@
 							<bean:message  key="buttons.cancel" />
 					</html:reset>
 			</td>	
+			</tr>
 			</table>
 		</tr>
+		</table>
 		 </html:form>
  	</body>
 

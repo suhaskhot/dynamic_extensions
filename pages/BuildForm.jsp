@@ -62,7 +62,7 @@
 				</tr>
 			
 	  	</table>
-		 <table summary="" align = 'left' cellpadding="5" cellspacing="0" border="0">
+		 <table summary="" align = 'left' cellpadding="5" cellspacing="0" border="0"  class='bodyStyle'>
 		    <tr height="5">
 			
 				<td>

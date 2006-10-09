@@ -29,7 +29,7 @@ public class TextArea extends Control implements TextAreaInterface {
 	}
 
 	/**
-	 * @hibernate.property name="columns" type="integer" column="COLUMNS" 
+	 * @hibernate.property name="columns" type="integer" column="TEXTAREA_COLUMNS" 
 	 * @return Returns the columns.
 	 */
 	public Integer getColumns() {
@@ -42,7 +42,7 @@ public class TextArea extends Control implements TextAreaInterface {
 		this.columns = columns;
 	}
 	/**
-	 * @hibernate.property name="rows" type="integer" column="ROWS" 
+	 * @hibernate.property name="rows" type="integer" column="TEXTAREA_ROWS" 
 	 * @return Returns the rows.
 	 */
 	public Integer getRows() {

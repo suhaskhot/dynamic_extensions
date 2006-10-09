@@ -37,7 +37,7 @@
             table="DYEXTN_CONTAINER"
             lazy="false"
             inverse="false"
-            cascade="none"
+            cascade="save-update"
             sort="unsorted"
         >
 

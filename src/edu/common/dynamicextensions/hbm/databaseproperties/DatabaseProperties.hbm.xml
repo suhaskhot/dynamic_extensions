@@ -58,7 +58,6 @@
         <key
             column="IDENTIFIER"
         />
-
         <property
             name="sourceEntityKey"
             type="string"

@@ -1,5 +1,9 @@
 package edu.common.dynamicextensions.domain;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+
+import edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties;
 
 /**
  * @version 1.0
@@ -102,14 +106,39 @@ public abstract class PrimitiveAttribute extends Attribute {
      * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties"  
 	 * @return Returns the columnPropertiesCollection.
 	 */
-	public Collection getColumnPropertiesCollection() {
+	private Collection getColumnPropertiesCollection() {
 		return columnPropertiesCollection;
 	}
 	/**
 	 * @param columnPropertiesCollection The columnPropertiesCollection to set.
 	 */
-	public void setColumnPropertiesCollection(
+	private void setColumnPropertiesCollection(
 			Collection columnPropertiesCollection) {
 		this.columnPropertiesCollection = columnPropertiesCollection;
 	}
+    
+      /**
+     * 
+     * @return
+     */
+    public ColumnProperties getColumnProperties(){
+        if(columnPropertiesCollection != null){
+            Iterator columnPropertiesIterator = columnPropertiesCollection.iterator();
+            return (ColumnProperties)columnPropertiesIterator.next();
+        } else {
+            return null;   
+        }
+        
+    }
+    
+    /**
+     * 
+     * @param sourceEntity
+     */
+    public void setColumnProperties(ColumnProperties columnProperties){
+        if(columnPropertiesCollection == null){
+            columnPropertiesCollection  = new HashSet();
+        }
+        this.columnPropertiesCollection.add(columnProperties);
+    }
 }

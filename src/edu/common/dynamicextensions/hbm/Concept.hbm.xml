@@ -6,8 +6,8 @@
 
 <hibernate-mapping>
     <class
-        name="edu.common.dynamicextensions.domain.userinterface.Control"
-        table="DYEXTN_CONTROL"
+        name="edu.common.dynamicextensions.domain.Concept"
+        table="DYEXTN_CONCEPT"
         dynamic-update="false"
         dynamic-insert="false"
     >
@@ -20,77 +20,43 @@
             unsaved-value="null"
         >
             <generator class="native">
-                <param name="sequence">DYEXTN_CONTROL_SEQ</param>
+                <param name="sequence">DYEXTN_CONCEPT_SEQ</param>
             </generator>
         </id>
 
-        <many-to-one
-            name="attribute"
-            class="edu.common.dynamicextensions.domain.Attribute"
-            cascade="none"
-            outer-join="auto"
-            update="true"
-            insert="true"
-            column="ATTRIBUTE_ID"
-        />
-
         <property
-            name="caption"
+            name="description"
             type="string"
             update="true"
             insert="true"
-            column="CAPTION"
+            column="DESCRIPTION"
         />
 
         <property
-            name="cssClass"
+            name="publicId"
             type="string"
             update="true"
             insert="true"
-            column="CSS_CLASS"
+            column="PUBLIC_ID"
         />
 
         <property
-            name="isHidden"
-            type="boolean"
-            update="true"
-            insert="true"
-            column="HIDDEN"
-        />
-
-        <property
-            name="name"
+            name="source"
             type="string"
             update="true"
             insert="true"
-            column="NAME"
-        />
-
-        <property
-            name="sequenceNumber"
-            type="integer"
-            update="true"
-            insert="true"
-            column="SEQUENCE_NUMBER"
-        />
-
-        <property
-            name="tooltip"
-            type="string"
-            update="true"
-            insert="true"
-            column="TOOLTIP"
+            column="SOURCE"
         />
 
         <!--
             To add non XDoclet property mappings, create a file named
-                hibernate-properties-Control.xml
+                hibernate-properties-Concept.xml
             containing the additional properties and place it in your merge dir.
         -->
 
         <joined-subclass
-            name="edu.common.dynamicextensions.domain.userinterface.ListBox"
-            table="DYEXTN_LIST_BOX"
+            name="edu.common.dynamicextensions.domain.StringConceptValue"
+            table="DYEXTN_STRING_CONCEPT_VALUE"
             dynamic-update="false"
             dynamic-insert="false"
         >
@@ -99,118 +65,155 @@
         />
 
         <property
-            name="isMultiSelect"
+            name="value"
+            type="string"
+            update="true"
+            insert="true"
+            column="VALUE"
+        />
+
+        </joined-subclass>
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.ByteArrayConceptValue"
+            table="DYEXTN_BARR_CONCEPT_VALUE"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+
+        </joined-subclass>
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.ShortConceptValue"
+            table="DYEXTN_SHORT_CONCEPT_VALUE"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+
+        <property
+            name="value"
+            type="short"
+            update="true"
+            insert="true"
+            column="VALUE"
+        />
+
+        </joined-subclass>
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.LongConceptValue"
+            table="DYEXTN_LONG_CONCEPT_VALUE"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+
+        <property
+            name="value"
+            type="long"
+            update="true"
+            insert="true"
+            column="VALUE"
+        />
+
+        </joined-subclass>
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.IntegerConceptValue"
+            table="DYEXTN_INTEGER_CONCEPT_VALUE"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+
+        <property
+            name="value"
+            type="integer"
+            update="true"
+            insert="true"
+            column="VALUE"
+        />
+
+        </joined-subclass>
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.DateConceptValue"
+            table="DYEXTN_DATE_CONCEPT_VALUE"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+
+        <property
+            name="value"
+            type="date"
+            update="true"
+            insert="true"
+            column="VALUE"
+        />
+
+        </joined-subclass>
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.FloatConceptValue"
+            table="DYEXTN_FLOAT_CONCEPT_VALUE"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+
+        <property
+            name="value"
+            type="float"
+            update="true"
+            insert="true"
+            column="VALUE"
+        />
+
+        </joined-subclass>
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.BooleanConceptValue"
+            table="DYEXTN_BOOLEAN_CONCEPT_VALUE"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+
+        <property
+            name="value"
             type="boolean"
             update="true"
             insert="true"
-            column="MULTISELECT"
+            column="VALUE"
         />
 
         </joined-subclass>
         <joined-subclass
-            name="edu.common.dynamicextensions.domain.userinterface.ComboBox"
-            table="DYEXTN_COMBOBOX"
+            name="edu.common.dynamicextensions.domain.DoubleConceptValue"
+            table="DYEXTN_DOUBLE_CONCEPT_VALUE"
             dynamic-update="false"
             dynamic-insert="false"
         >
         <key
             column="IDENTIFIER"
-        />
-
-        </joined-subclass>
-        <joined-subclass
-            name="edu.common.dynamicextensions.domain.userinterface.TextArea"
-            table="DYEXTN_TEXTAREA"
-            dynamic-update="false"
-            dynamic-insert="false"
-        >
-        <key
-            column="IDENTIFIER"
-        />
-        <property
-            name="columns"
-            type="integer"
-            update="true"
-            insert="true"
-            column="TEXTAREA_COLUMNS"
         />
 
         <property
-            name="rows"
-            type="integer"
+            name="value"
+            type="double"
             update="true"
             insert="true"
-            column="TEXTAREA_ROWS"
-        />
-
-        </joined-subclass>
-        <joined-subclass
-            name="edu.common.dynamicextensions.domain.userinterface.DataGrid"
-            table="DYEXTN_DATA_GRID"
-            dynamic-update="false"
-            dynamic-insert="false"
-        >
-        <key
-            column="IDENTIFIER"
-        />
-
-        </joined-subclass>
-        <joined-subclass
-            name="edu.common.dynamicextensions.domain.userinterface.CheckBox"
-            table="DYEXTN_CHECK_BOX"
-            dynamic-update="false"
-            dynamic-insert="false"
-        >
-        <key
-            column="IDENTIFIER"
-        />
-
-        </joined-subclass>
-        <joined-subclass
-            name="edu.common.dynamicextensions.domain.userinterface.RadioButton"
-            table="DYEXTN_RADIOBUTTON"
-            dynamic-update="false"
-            dynamic-insert="false"
-        >
-        <key
-            column="IDENTIFIER"
-        />
-
-        </joined-subclass>
-        <joined-subclass
-            name="edu.common.dynamicextensions.domain.userinterface.TextField"
-            table="DYEXTN_TEXTFIELD"
-            dynamic-update="false"
-            dynamic-insert="false"
-        >
-        <key
-            column="IDENTIFIER"
-        />
-        <property
-            name="columns"
-            type="integer"
-            update="true"
-            insert="true"
-            column="COLUMNS"
-        />
-
-        <property
-            name="isPassword"
-            type="boolean"
-            update="true"
-            insert="true"
-            column="PASSWORD"
-        />
-
-        </joined-subclass>
-        <joined-subclass
-            name="edu.common.dynamicextensions.domain.userinterface.DatePicker"
-            table="DYEXTN_DATEPICKER"
-            dynamic-update="false"
-            dynamic-insert="false"
-        >
-        <key
-            column="IDENTIFIER"
+            column="VALUE"
         />
 
         </joined-subclass>

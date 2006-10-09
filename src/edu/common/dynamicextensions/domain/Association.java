@@ -1,7 +1,10 @@
 package edu.common.dynamicextensions.domain;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 
+import edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
 
@@ -49,7 +52,7 @@ public class Association extends Attribute implements java.io.Serializable {
 	public Association(){
 		
 	}
-
+	
 	/**
 	 * @hibernate.property name="direction" type="string" column="DIRECTION" 
 	 * @return Returns the direction.
@@ -63,10 +66,9 @@ public class Association extends Attribute implements java.io.Serializable {
 	public void setDirection(String direction) {
 		this.direction = direction;
 	}
-	
-
-	
-
+	/**
+	 * 
+	 */	
 	
 	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
 		// TODO Auto-generated method stub
@@ -79,56 +81,136 @@ public class Association extends Attribute implements java.io.Serializable {
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Entity" 
 	 * @return Returns the sourceEntityCollection.
 	 */
-	public Collection getSourceEntityCollection() {
+	private Collection getSourceEntityCollection() {
 		return sourceEntityCollection;
 	}
 	/**
 	 * @param sourceEntityCollection The sourceEntityCollection to set.
 	 */
-	public void setSourceEntityCollection(Collection sourceEntityCollection) {
+	private void setSourceEntityCollection(Collection sourceEntityCollection) {
 		this.sourceEntityCollection = sourceEntityCollection;
 	}
+	
 	/**
-     * @hibernate.set name="targetEntityCollection" table="DYEXTN_ENTITY"
-     * cascade="save-update" inverse="false" lazy="false"
-     * @hibernate.collection-key column="ASSOCIATION_ID"
-     * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Entity" 
+	 * 
+	 * @return
+	 */
+	public Entity getSourceEntity(){
+		if(sourceEntityCollection != null){
+			Iterator sourceEntityIterator = sourceEntityCollection.iterator();
+			return (Entity)sourceEntityIterator.next();
+		} else {
+			return null;   
+		}
+		
+	}
+	
+	/**
+	 * 
+	 * @param sourceEntity
+	 */
+	public void setSourceEntity(Entity sourceEntity){
+		if(sourceEntityCollection == null){
+			sourceEntityCollection = new HashSet();
+		}
+		this.sourceEntityCollection.add(sourceEntity);
+	}
+	/**
+	 * @hibernate.set name="targetEntityCollection" table="DYEXTN_ENTITY"
+	 * cascade="save-update" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="ASSOCIATION_ID"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Entity" 
 	 * @return Returns the targetEntityCollection.
 	 */
-	public Collection getTargetEntityCollection() {
+	private Collection getTargetEntityCollection() {
 		return targetEntityCollection;
 	}
 	/**
 	 * @param targetEntityCollection The targetEntityCollection to set.
 	 */
-	public void setTargetEntityCollection(Collection targetEntityCollection) {
+	private void setTargetEntityCollection(Collection targetEntityCollection) {
 		this.targetEntityCollection = targetEntityCollection;
 	}
+	
+	
 	/**
-     * @hibernate.set name="sourceRoleCollection" table="DYEXTN_ROLE
-     * cascade="save-update" inverse="false" lazy="false"
-     * @hibernate.collection-key column="ASSOCIATION_ID"
-     * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Role"  
-     * 
+	 * 
+	 * @return
+	 */
+	public Entity getTargetEntity(){
+		if(targetEntityCollection != null){
+			Iterator targetEntityIterator = targetEntityCollection.iterator();
+			return (Entity)targetEntityIterator.next();
+		} else {
+			return null;   
+		}
+		
+	}
+	
+	/**
+	 * 
+	 * @param sourceEntity
+	 */
+	public void setTargetEntity(Entity targetEntity){
+		if(targetEntityCollection == null){
+			targetEntityCollection = new HashSet();
+		}
+		this.targetEntityCollection.add(targetEntity);
+	}
+	/**
+	 * @hibernate.set name="sourceRoleCollection" table="DYEXTN_ROLE
+	 * cascade="save-update" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="ASSOCIATION_ID"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Role"  
+	 * 
 	 * @return Returns the sourceRoleCollection.
 	 */
-	public Collection getSourceRoleCollection() {
+	private Collection getSourceRoleCollection() {
 		return sourceRoleCollection;
 	}
 	/**
 	 * @param sourceRoleCollection The sourceRoleCollection to set.
 	 */
-	public void setSourceRoleCollection(Collection sourceRoleCollection) {
+	private void setSourceRoleCollection(Collection sourceRoleCollection) {
 		this.sourceRoleCollection = sourceRoleCollection;
 	}
+	
+	
 	/**
-     * @hibernate.set name="targetRoleCollection" table="DYEXTN_ROLE
-     * cascade="save-update" inverse="false" lazy="false"
-     * @hibernate.collection-key column="ASSOCIATION_ID"
-     * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Role" 
+	 * 
+	 * @return
+	 */
+	public Role getSourceRole(){
+		if(sourceRoleCollection != null){
+			Iterator sourceRoleIterator = sourceRoleCollection.iterator();
+			return (Role)sourceRoleIterator.next();
+		} else {
+			return null;   
+		}
+		
+	}
+	
+	/**
+	 * 
+	 * @param sourceEntity
+	 */
+	public void setSourceRole(Role sourceRole){
+		if(sourceRoleCollection == null){
+			sourceRoleCollection = new HashSet();
+		}
+		this.sourceRoleCollection.add(sourceRole);
+	}
+	
+	
+	
+	/**
+	 * @hibernate.set name="targetRoleCollection" table="DYEXTN_ROLE
+	 * cascade="save-update" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="ASSOCIATION_ID"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Role" 
 	 * @return Returns the targetRoleCollection.
 	 */
-	public Collection getTargetRoleCollection() {
+	private Collection getTargetRoleCollection() {
 		return targetRoleCollection;
 	}
 	/**
@@ -137,21 +219,76 @@ public class Association extends Attribute implements java.io.Serializable {
 	public void setTargetRoleCollection(Collection targetRoleCollection) {
 		this.targetRoleCollection = targetRoleCollection;
 	}
+	
+	
 	/**
-     * @hibernate.set name="constraintPropertiesCollection" table="DYEXTN_CONSTRAINT_PROPERTIES"
-     * cascade="save-update" inverse="false" lazy="false"
-     * @hibernate.collection-key column="ASSOCIATION_ID"
-     * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties" 
+	 * 
+	 * @return
+	 */
+	public Role getTargetRole(){
+		if(targetRoleCollection != null){
+			Iterator targetRoleIterator = targetRoleCollection.iterator();
+			return (Role)targetRoleIterator.next();
+		} else {
+			return null;   
+		}
+		
+	}
+	
+	/**
+	 * 
+	 * @param sourceEntity
+	 */
+	public void setTargetRole(Role targetRole){
+		if(targetRoleCollection == null){
+			targetRoleCollection = new HashSet();
+		}
+		this.targetRoleCollection.add(targetRole);
+	}
+	/**
+	 * @hibernate.set name="constraintPropertiesCollection" table="DYEXTN_CONSTRAINT_PROPERTIES"
+	 * cascade="save-update" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="ASSOCIATION_ID"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties" 
 	 * @return Returns the constraintPropertiesCollection.
 	 */
-	public Collection getConstraintPropertiesCollection() {
+	private Collection getConstraintPropertiesCollection() {
 		return constraintPropertiesCollection;
 	}
 	/**
 	 * @param constraintPropertiesCollection The constraintPropertiesCollection to set.
 	 */
-	public void setConstraintPropertiesCollection(
+	private void setConstraintPropertiesCollection(
 			Collection constraintPropertiesCollection) {
 		this.constraintPropertiesCollection = constraintPropertiesCollection;
 	}
+	
+	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public ConstraintProperties getConstraintProperties(){
+		if(constraintPropertiesCollection != null){
+			Iterator constraintPropertiesIterator = constraintPropertiesCollection.iterator();
+			return (ConstraintProperties)constraintPropertiesIterator .next();
+		} else {
+			return null;   
+		}
+		
+	}
+	
+    
+	/**
+	 * 
+	 * @param sourceEntity
+	 */
+	public void setConstraintProperties(ConstraintProperties constraintProperties){
+		if(constraintPropertiesCollection == null){
+			constraintPropertiesCollection  = new HashSet();
+		}
+		this.constraintPropertiesCollection .add(constraintProperties);
+	}
+	
 }

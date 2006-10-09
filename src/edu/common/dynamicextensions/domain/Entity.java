@@ -1,6 +1,9 @@
 package edu.common.dynamicextensions.domain;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 
+import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
 import edu.wustl.common.actionForm.AbstractActionForm;
 
 /**
@@ -79,13 +82,39 @@ public class Entity extends AbstractMetadata {
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.databaseproperties.TableProperties"
 	 * @return Returns the tablePropertiesColletion.
 	 */
-	public Collection getTablePropertiesColletion() {
+	private Collection getTablePropertiesColletion() {
 		return tablePropertiesColletion;
 	}
 	/**
 	 * @param tablePropertiesColletion The tablePropertiesColletion to set.
 	 */
-	public void setTablePropertiesColletion(Collection tablePropertiesColletion) {
+	private void setTablePropertiesColletion(Collection tablePropertiesColletion) {
 		this.tablePropertiesColletion = tablePropertiesColletion;
 	}
+    
+    
+    /**
+     * 
+     * @return
+     */
+    public TableProperties getTableProperties(){
+        if(tablePropertiesColletion != null){
+            Iterator tabletPropertiesIterator = tablePropertiesColletion.iterator();
+            return (TableProperties)tabletPropertiesIterator.next();
+        } else {
+            return null;   
+        }
+        
+    }
+    
+    /**
+     * 
+     * @param sourceEntity
+     */
+    public void setTableProperties(TableProperties tableProperties){
+        if(tablePropertiesColletion == null){
+            tablePropertiesColletion  = new HashSet();
+        }
+        this.tablePropertiesColletion .add(tableProperties);
+    }
 }

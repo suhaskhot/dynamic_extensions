@@ -59,7 +59,7 @@
         <set
             name="semanticPropertyCollection"
             lazy="false"
-            inverse="true"
+            inverse="false"
             cascade="save-update"
             sort="unsorted"
         >
@@ -110,32 +110,28 @@
 
         </set>
 
-        <set
-            name="entityGroupCollection"
-            table="DYEXTN_ENTITY_GROUP"
-            lazy="false"
-            inverse="true"
-            cascade="none"
-            sort="unsorted"
-        >
-
-              <key
-                  column="ENTITY_GROUP_ID"
-              />
-
-              <one-to-many
-                  class="edu.common.dynamicextensions.domain.EntityGroup"
-              />
-        </set>
-
-        <many-to-one
-            name="rootNodeEntity"
-            class="edu.common.dynamicextensions.domain.Entity"
-            cascade="none"
-            outer-join="auto"
+        <property
+            name="longName"
+            type="string"
             update="true"
             insert="true"
-            column="ROOT_NODE_ENTITY_ID"
+            column="LONG_NAME"
+        />
+
+        <property
+            name="shortName"
+            type="string"
+            update="true"
+            insert="true"
+            column="SHORT_NAME"
+        />
+
+        <property
+            name="version"
+            type="string"
+            update="true"
+            insert="true"
+            column="VERSION"
         />
 
         </joined-subclass>
@@ -154,7 +150,7 @@
             table="DYEXTN_ATTRIBUTE"
             lazy="false"
             inverse="false"
-            cascade="none"
+            cascade="save-update"
             sort="unsorted"
         >
 
@@ -171,7 +167,7 @@
             name="entityGroupCollection"
             table="DYEXTN_ENTITY_GROUP_REL"
             lazy="false"
-            inverse="false"
+            inverse="true"
             cascade="none"
             sort="unsorted"
         >
@@ -188,15 +184,23 @@
 
         </set>
 
-        <many-to-one
-            name="tableProperties"
-            class="edu.common.dynamicextensions.domain.databaseproperties.TableProperties"
-            cascade="none"
-            outer-join="auto"
-            update="true"
-            insert="true"
-            column="TABLE_PROPERTY_ID"
-        />
+        <set
+            name="tablePropertiesColletion"
+            table="DYEXTN_TABLE_PROPERTIES"
+            lazy="false"
+            inverse="false"
+            cascade="save-update"
+            sort="unsorted"
+        >
+
+              <key
+                  column="ENTITY_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.databaseproperties.TableProperties"
+              />
+        </set>
 
         </joined-subclass>
         <joined-subclass
@@ -214,7 +218,7 @@
             table="DYEXTN_RULE"
             lazy="false"
             inverse="false"
-            cascade="none"
+            cascade="save-update"
             sort="unsorted"
         >
 
@@ -236,17 +240,6 @@
         <key
             column="IDENTIFIER"
         />
-
-        <many-to-one
-            name="columnProperties"
-            class="edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties"
-            cascade="none"
-            outer-join="auto"
-            update="true"
-            insert="true"
-            column="COLUMN_PROPERTY_ID"
-        />
-
         <property
             name="isCollection"
             type="boolean"
@@ -271,9 +264,72 @@
             column="IS_PRIMARY_KEY"
         />
 
+        <set
+            name="conceptColection"
+            table="DYEXTN_CONCEPT"
+            lazy="false"
+            inverse="false"
+            cascade="save-update"
+            sort="unsorted"
+        >
+
+              <key
+                  column="PRIMITIVE_ATTRIBUTE_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.Concept"
+              />
+        </set>
+
+        <set
+            name="columnPropertiesCollection"
+            table="DYEXTN_COLUMN_PROPERTIES"
+            lazy="false"
+            inverse="false"
+            cascade="save-update"
+            sort="unsorted"
+        >
+
+              <key
+                  column="PRIMITIVE_ATTRIBUTE_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties"
+              />
+        </set>
+
         <joined-subclass
-            name="edu.common.dynamicextensions.domain.NumericAttribute"
-            table="DYEXTN_DATE_ATTRIBUTE"
+            name="edu.common.dynamicextensions.domain.ShortAttribute"
+            table="DYEXTN_SHORT_ATTRIBUTE"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+
+        <property
+            name="defaultValue"
+            type="short"
+            update="true"
+            insert="true"
+            column="DEFAULT_VALUE"
+        />
+
+        <property
+            name="measurementUnits"
+            type="string"
+            update="true"
+            insert="true"
+            column="MEASUREMENT_UNITS"
+        />
+
+        </joined-subclass>
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.LongAttribute"
+            table="DYEXTN_LONG_ATTRIBUTE"
             dynamic-update="false"
             dynamic-insert="false"
         >
@@ -290,33 +346,17 @@
         />
 
         <property
-            name="measurementUnit"
+            name="measurementUnits"
             type="string"
             update="true"
             insert="true"
-            column="MEASUREMENT_UNIT"
-        />
-
-        <property
-            name="scale"
-            type="integer"
-            update="true"
-            insert="true"
-            column="SCALE"
-        />
-
-        <property
-            name="size"
-            type="integer"
-            update="true"
-            insert="true"
-            column="SIZE"
+            column="MEASUREMENT_UNITS"
         />
 
         </joined-subclass>
         <joined-subclass
-            name="edu.common.dynamicextensions.domain.ByteArrayAttribute"
-            table="DYEXTN_BYTE_ARRAY_ATTRIBUTE"
+            name="edu.common.dynamicextensions.domain.IntegerAttribute"
+            table="DYEXTN_INTEGER_ATTRIBUTE"
             dynamic-update="false"
             dynamic-insert="false"
         >
@@ -325,11 +365,19 @@
         />
 
         <property
-            name="contentType"
+            name="defaultValue"
+            type="integer"
+            update="true"
+            insert="true"
+            column="DEFAULT_VALUE"
+        />
+
+        <property
+            name="measurementUnits"
             type="string"
             update="true"
             insert="true"
-            column="CONTENT_TYPE"
+            column="MEASUREMENT_UNITS"
         />
 
         </joined-subclass>
@@ -356,7 +404,53 @@
             type="integer"
             update="true"
             insert="true"
-            column="SIZE"
+            column="MAX_SIZE"
+        />
+
+        </joined-subclass>
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.ByteArrayAttribute"
+            table="DYEXTN_BYTE_ARRAY_ATTRIBUTE"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+
+        <property
+            name="contentType"
+            type="string"
+            update="true"
+            insert="true"
+            column="CONTENT_TYPE"
+        />
+
+        </joined-subclass>
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.FloatAttribute"
+            table="DYEXTN_FLOAT_ATTRIBUTE"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+
+        <property
+            name="defaultValue"
+            type="float"
+            update="true"
+            insert="true"
+            column="DEFAULT_VALUE"
+        />
+
+        <property
+            name="measurementUnits"
+            type="string"
+            update="true"
+            insert="true"
+            column="MEASUREMENT_UNITS"
         />
 
         </joined-subclass>
@@ -369,7 +463,6 @@
         <key
             column="IDENTIFIER"
         />
-
         <property
             name="defaultValue"
             type="boolean"
@@ -406,6 +499,33 @@
         />
 
         </joined-subclass>
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.DoubleAttribute"
+            table="DYEXTN_DOUBLE_ATTRIBUTE"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+
+        <property
+            name="defaultValue"
+            type="double"
+            update="true"
+            insert="true"
+            column="DEFAULT_VALUE"
+        />
+
+        <property
+            name="measurementUnits"
+            type="string"
+            update="true"
+            insert="true"
+            column="MEASUREMENT_UNITS"
+        />
+
+        </joined-subclass>
 
         </joined-subclass>
         <joined-subclass
@@ -417,17 +537,6 @@
         <key
             column="IDENTIFIER"
         />
-
-        <many-to-one
-            name="constraintProperties"
-            class="edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties"
-            cascade="none"
-            outer-join="auto"
-            update="true"
-            insert="true"
-            column="CONSTRAINT_PROPERTY_ID"
-        />
-
         <property
             name="direction"
             type="string"
@@ -436,45 +545,93 @@
             column="DIRECTION"
         />
 
-        <many-to-one
-            name="sourceEntity"
-            class="edu.common.dynamicextensions.domain.Entity"
-            cascade="none"
-            outer-join="auto"
-            update="true"
-            insert="true"
-            column="SOURCE_ENTITY_ID"
-        />
+        <set
+            name="sourceEntityCollection"
+            table="DYEXTN_ENTITY"
+            lazy="false"
+            inverse="false"
+            cascade="save-update"
+            sort="unsorted"
+        >
 
-        <many-to-one
-            name="sourceRole"
-            class="edu.common.dynamicextensions.domain.Role"
-            cascade="none"
-            outer-join="auto"
-            update="true"
-            insert="true"
-            column="SOURCE_ROLE_ID"
-        />
+              <key
+                  column="ASSOCIATION_ID"
+              />
 
-        <many-to-one
-            name="targetEntity"
-            class="edu.common.dynamicextensions.domain.Entity"
-            cascade="none"
-            outer-join="auto"
-            update="true"
-            insert="true"
-            column="TARGET_ENTITY_ID"
-        />
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.Entity"
+              />
+        </set>
 
-        <many-to-one
-            name="targetRole"
-            class="edu.common.dynamicextensions.domain.Role"
+        <set
+            name="targetEntityCollection"
+            table="DYEXTN_ENTITY"
+            lazy="false"
+            inverse="false"
+            cascade="save-update"
+            sort="unsorted"
+        >
+
+              <key
+                  column="ASSOCIATION_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.Entity"
+              />
+        </set>
+
+        <set
+            name="sourceRoleCollection"
+            lazy="false"
+            inverse="false"
             cascade="none"
-            outer-join="auto"
-            update="true"
-            insert="true"
-            column="TARGET_ROLE_ID"
-        />
+            sort="unsorted"
+        >
+
+              <key
+                  column="ASSOCIATION_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.Role"
+              />
+        </set>
+
+        <set
+            name="targetRoleCollection"
+            lazy="false"
+            inverse="false"
+            cascade="none"
+            sort="unsorted"
+        >
+
+              <key
+                  column="ASSOCIATION_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.Role"
+              />
+        </set>
+
+        <set
+            name="constraintPropertiesCollection"
+            table="DYEXTN_CONSTRAINT_PROPERTIES"
+            lazy="false"
+            inverse="false"
+            cascade="save-update"
+            sort="unsorted"
+        >
+
+              <key
+                  column="ASSOCIATION_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties"
+              />
+        </set>
 
         </joined-subclass>
 

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
+import edu.common.dynamicextensions.ui.webui.util.UIConfigurationConstants;
 
 /**
  * @version 1.0

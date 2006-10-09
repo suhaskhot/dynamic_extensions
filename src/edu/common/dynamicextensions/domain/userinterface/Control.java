@@ -4,6 +4,7 @@ import java.util.Map;
 
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.ui.webui.util.UIConfigurationConstants;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.exception.AssignDataException;

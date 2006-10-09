@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.domain.userinterface;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
+import edu.common.dynamicextensions.ui.webui.util.UIConfigurationConstants;
 
 /**
  * @version 1.0

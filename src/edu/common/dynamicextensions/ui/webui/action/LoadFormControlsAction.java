@@ -18,10 +18,10 @@ import edu.common.dynamicextensions.ui.webui.util.UIControlsConfigurationFactory
 import edu.common.dynamicextensions.util.global.Constants;
 
 /**
- * 
+ * This class Loads the controls for BuildForm.jsp
  * @author deepti_shelar
  */
-public class LoadFormControlsAction extends Action {
+public class LoadFormControlsAction extends BaseDispatchAction {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		ControlsForm cacheForm = (ControlsForm)CacheManager.getObjectFromCache(request,Constants.CONTROLS_FORM);
@@ -29,24 +29,40 @@ public class LoadFormControlsAction extends Action {
 		if(cacheForm != null) {
 			actionForm = (ControlsForm)form;
 			actionForm.update(cacheForm);
-			populateControlsForm(actionForm);
+			List toolsList = getToolsList();
+			actionForm.setToolsList(toolsList);
+			actionForm.setSelectedControlAttributesList(getSelectedControlAttributesList(actionForm.getUserSelectedTool()));
 		} else {
-		    actionForm = (ControlsForm) form;
-			List toolsList = new ArrayList();
-			UIControlsConfigurationFactory uiControlsConfigurationFactory = UIControlsConfigurationFactory.getInstance();
-			toolsList = uiControlsConfigurationFactory.getControlNames();
+			actionForm = (ControlsForm) form;
+			List toolsList = getToolsList();
 			actionForm.setToolsList(toolsList);
 			actionForm.setUserSelectedTool(toolsList.get(0).toString());
 			actionForm.setSelectedControlAttributesList(new ArrayList());
 		}
-		
+
 		return mapping.findForward(Constants.SHOW_BUILD_FORM_JSP);
 	}
-	private void populateControlsForm(ControlsForm controlsForm) {
+	/**
+	 * Returns the toolsList from the xml file.
+	 * @return
+	 */
+			
+	private List getToolsList(){
 		List toolsList = new ArrayList();
 		UIControlsConfigurationFactory uiControlsConfigurationFactory = UIControlsConfigurationFactory.getInstance();
 		toolsList = uiControlsConfigurationFactory.getControlNames();
-		controlsForm.setToolsList(toolsList);
-		controlsForm.setSelectedControlAttributesList(uiControlsConfigurationFactory.getConrolAttributesList(controlsForm.getUserSelectedTool()));
+		return toolsList;
+	}
+	/**
+	 * Returns the selectedControlAttributesList from the xml file depending upon the tool passed.
+	 * @param userSelectedTool
+	 * @return
+	 */
+	private List getSelectedControlAttributesList(String userSelectedTool)
+	{
+		List selectedControlAttributesList = new ArrayList();
+		UIControlsConfigurationFactory uiControlsConfigurationFactory = UIControlsConfigurationFactory.getInstance();
+		selectedControlAttributesList = uiControlsConfigurationFactory.getConrolAttributesList(userSelectedTool);
+		return selectedControlAttributesList;
 	}
 }

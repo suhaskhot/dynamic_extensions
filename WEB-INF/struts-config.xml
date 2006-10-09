@@ -19,7 +19,6 @@ PUBLIC
 		
 		<action path="/DynamicExtensionHomePage" 
 			type="edu.common.dynamicextensions.ui.webui.action.ForwardAction">
-			
 			<forward name="success" path="/pages/DynamicExtensionHomePage.jsp" />
 		</action>	
 		
@@ -60,7 +59,7 @@ PUBLIC
 			scope="request">
 			<forward name="success" path="/LoadFormControlsAction.do" />
 			<forward name="showCreateFormView" path="/LoadFormDefinitionAction.do" />
-			<forward name="SelectControlAction" path="/SelectControlAction.do" />
+			<forward name="controlSelectedAction" path="/SelectControlAction.do" />
 		</action>
 		
 		<action path="/SelectControlAction" 

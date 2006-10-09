@@ -3,7 +3,6 @@ package edu.common.dynamicextensions.ui.webui.action;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -20,7 +19,7 @@ import edu.wustl.common.util.logger.Logger;
  * @author deepti_shelar
  *
  */
-public class ApplyFormDefinitionAction extends Action {
+public class ApplyFormDefinitionAction extends BaseDispatchAction {
 	/**
 	 * 
 	 */
@@ -42,7 +41,7 @@ public class ApplyFormDefinitionAction extends Action {
 					entityManager.createEntity(entity);
 				}
 				request.setAttribute("entityIdentifier",entity.getId().toString());
-				target = "success";
+				target = Constants.SUCCESS;
 			}  catch (Exception entityCreationException) {
 				Logger.out.debug("excp "+ entityCreationException.getMessage());
 				Logger.out.error(entityCreationException.getMessage(), entityCreationException);

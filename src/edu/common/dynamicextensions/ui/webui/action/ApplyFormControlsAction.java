@@ -18,16 +18,16 @@ import edu.common.dynamicextensions.util.global.Constants;
  * @author deepti_shelar
  *
  */
-public class ApplyFormControlsAction extends Action {
+public class ApplyFormControlsAction extends BaseDispatchAction {
 	/**
 	 * 
 	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form,HttpServletRequest request,
 			HttpServletResponse response) {
 		ControlsForm actionForm = (ControlsForm) form;
-		if(actionForm.getOperation().equalsIgnoreCase("controlSelectedAction")) {
+		if(actionForm.getOperation().equalsIgnoreCase(Constants.CONTROL_SELECTED_ACTION)) {
 			CacheManager.addObjectToCache(request,Constants.CONTROLS_FORM , actionForm);
-			return mapping.findForward("SelectControlAction");
+			return mapping.findForward(Constants.CONTROL_SELECTED_ACTION);
 		}
 		if(actionForm.getOperation().equalsIgnoreCase(Constants.SHOW_CREATE_FORM_JSP)) {
 			return mapping.findForward(Constants.SHOW_CREATE_FORM_JSP);

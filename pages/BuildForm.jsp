@@ -92,7 +92,6 @@
 			
 		</table>
 	  	<html:hidden property="operation" value=""/>
-	<html:hidden property="controlAddedToForm" value=""/>
 	  	<html:hidden property="selectedAttrib" value=""/>
 	  	</html:form>
 	  	</body>

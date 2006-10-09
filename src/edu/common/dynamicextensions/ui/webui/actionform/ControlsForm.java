@@ -556,7 +556,7 @@ public class ControlsForm extends AbstractActionForm {
 	}
 	
 	public void update(ControlsForm cacheForm) {
-		this.attributeCssClass = cacheForm.getActivityStatus();
+		/*this.attributeCssClass = cacheForm.getActivityStatus();
 		this.attributeDefaultValue = cacheForm.getAttributeDefaultValue();
 		this.attributeDescription = cacheForm.getAttributeDescription();
 		this.attributeDisplayUnits = cacheForm.getAttributeDisplayUnits();
@@ -570,7 +570,7 @@ public class ControlsForm extends AbstractActionForm {
 		this.attributeScale = cacheForm.getAttributeScale();
 		this.attributeSize = cacheForm.getAttributeSize();
 		this.attributeTooltip = cacheForm.getAttributeTooltip();
-		this.attributeValidationRules = cacheForm.getAttributeValidationRules();
+		this.attributeValidationRules = cacheForm.getAttributeValidationRules();*/
 		this.userSelectedTool = cacheForm.getUserSelectedTool();
 	}
 

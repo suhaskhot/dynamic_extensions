@@ -6,7 +6,6 @@ function tagHandlerFunction(selectedTool) {
 }
 
 function showBuildFormJSP() {
-
  	document.getElementById('operation').value='buildForm';
 	var formDefinitionForm = document.getElementById('formDefinitionForm');
 	formDefinitionForm.submit();

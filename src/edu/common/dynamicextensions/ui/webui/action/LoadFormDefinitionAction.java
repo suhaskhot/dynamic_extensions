@@ -23,7 +23,7 @@ import edu.wustl.common.util.logger.Logger;
  * @author deepti_shelar
  *
  */
-public class LoadFormDefinitionAction extends Action {
+public class LoadFormDefinitionAction extends BaseDispatchAction {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		FormDefinitionForm cacheForm = (FormDefinitionForm)CacheManager.getObjectFromCache(request,Constants.FORM_DEFINITION_FORM);

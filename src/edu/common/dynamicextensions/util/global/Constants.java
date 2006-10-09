@@ -1239,6 +1239,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
     public static final String SHOW_BUILD_FORM_JSP = "showBuildFormJSP";
     public static final String BUILD_FORM = "buildForm";
     public static final String SHOW_CREATE_FORM_JSP = "showCreateFormView";
+    public static final String CONTROL_SELECTED_ACTION = "controlSelectedAction";
     //Constants for eav end
 	
 	

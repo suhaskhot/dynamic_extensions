@@ -13,7 +13,7 @@ import org.apache.struts.action.ActionMapping;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.UIControlsConfigurationFactory;
 
-public class SelectControlAction extends Action {
+public class SelectControlAction extends BaseDispatchAction {
 	/**
 	 * 
 	 */

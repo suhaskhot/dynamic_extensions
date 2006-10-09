@@ -3,9 +3,6 @@ package edu.common.dynamicextensions.domaininterface;
 
 import java.util.Collection;
 
-import edu.wustl.common.actionForm.AbstractActionForm;
-import edu.wustl.common.exception.AssignDataException;
-
 /**
  * @author geetika_bangard
  */
@@ -19,11 +16,7 @@ public interface EntityGroupInterface extends AbstractMetadataInterface {
      * @param entityCollection The entityCollection to set.
      */
     public void setEntityCollection(Collection entityCollection);
-    
-  /**
-   * 
-   */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException;
+   
 	/**
 	 * @return Returns the longName.
 	 */

@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties;
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
 
@@ -16,7 +17,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass table="DYEXTN_ASSOCIATION" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class Association extends Attribute implements java.io.Serializable {
+public class Association extends Attribute implements java.io.Serializable,AssociationInterface {
 	
 	private static final long serialVersionUID = 1234567890L;
 	

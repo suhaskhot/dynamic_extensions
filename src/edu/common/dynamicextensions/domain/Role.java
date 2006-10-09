@@ -1,5 +1,6 @@
 package edu.common.dynamicextensions.domain;
 
+import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.exception.AssignDataException;
@@ -9,7 +10,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @created 28-Sep-2006 12:20:08 PM
  * @hibernate.class table="DYEXTN_ROLE"
  */
-public class Role extends AbstractDomainObject {
+public class Role extends AbstractDomainObject implements RoleInterface{
     
     /**
      * Unique identifier for the object

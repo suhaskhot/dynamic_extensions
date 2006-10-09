@@ -1,7 +1,6 @@
 package edu.common.dynamicextensions.domain;
 
-import java.io.Serializable;
-
+import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.exception.AssignDataException;
@@ -11,7 +10,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @created 28-Sep-2006 12:20:08 PM
  * @hibernate.class table="DYEXTN_SEMANTIC_PROPERTY"
  */
-public class SemanticProperty extends AbstractDomainObject implements Serializable{
+public class SemanticProperty extends AbstractDomainObject implements SemanticPropertyInterface {
 
     /**
      * Unique identifier for the object
@@ -36,10 +35,6 @@ public class SemanticProperty extends AbstractDomainObject implements Serializab
 
 	}
 
-	public void finalize() throws Throwable {
-
-	}
-	
 	 /**
      * @hibernate.id name="id" column="IDENTIFIER" type="long"
      * length="30" unsaved-value="null" generator-class="native"

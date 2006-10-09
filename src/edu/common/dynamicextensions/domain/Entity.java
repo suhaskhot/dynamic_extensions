@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 
 /**
@@ -13,7 +14,7 @@ import edu.wustl.common.actionForm.AbstractActionForm;
  * @hibernate.joined-subclass table="DYEXTN_ENTITY"
  * @hibernate.joined-subclass-key column="IDENTIFIER"  
  */
-public class Entity extends AbstractMetadata {
+public class Entity extends AbstractMetadata implements java.io.Serializable,EntityInterface {
 	/**
 	 * 
 	 */
@@ -25,7 +26,7 @@ public class Entity extends AbstractMetadata {
 	/**
 	 * Table property for this entity.
 	 */
-	protected Collection tablePropertiesColletion;
+	protected Collection tablePropertiesCollection;
 	/**
 	 * 
 	 */
@@ -82,14 +83,14 @@ public class Entity extends AbstractMetadata {
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.databaseproperties.TableProperties"
 	 * @return Returns the tablePropertiesColletion.
 	 */
-	private Collection getTablePropertiesColletion() {
-		return tablePropertiesColletion;
+	private Collection getTablePropertiesCollection() {
+		return tablePropertiesCollection;
 	}
 	/**
 	 * @param tablePropertiesColletion The tablePropertiesColletion to set.
 	 */
-	private void setTablePropertiesColletion(Collection tablePropertiesColletion) {
-		this.tablePropertiesColletion = tablePropertiesColletion;
+	private void setTablePropertiesCollection(Collection tablePropertiesColletion) {
+		this.tablePropertiesCollection = tablePropertiesColletion;
 	}
     
     
@@ -98,8 +99,8 @@ public class Entity extends AbstractMetadata {
      * @return
      */
     public TableProperties getTableProperties(){
-        if(tablePropertiesColletion != null){
-            Iterator tabletPropertiesIterator = tablePropertiesColletion.iterator();
+        if(tablePropertiesCollection != null){
+            Iterator tabletPropertiesIterator = tablePropertiesCollection.iterator();
             return (TableProperties)tabletPropertiesIterator.next();
         } else {
             return null;   
@@ -112,9 +113,9 @@ public class Entity extends AbstractMetadata {
      * @param sourceEntity
      */
     public void setTableProperties(TableProperties tableProperties){
-        if(tablePropertiesColletion == null){
-            tablePropertiesColletion  = new HashSet();
+        if(tablePropertiesCollection == null){
+            tablePropertiesCollection  = new HashSet();
         }
-        this.tablePropertiesColletion .add(tableProperties);
+        this.tablePropertiesCollection .add(tableProperties);
     }
 }

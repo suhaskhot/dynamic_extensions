@@ -1,6 +1,5 @@
 package edu.common.dynamicextensions.domain.userinterface;
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domain.Attribute;

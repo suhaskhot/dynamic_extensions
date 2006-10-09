@@ -63,7 +63,7 @@ public class ComboBox extends Control implements ComboBoxInterface{
 				strValue = (String)listOfValues.get(i);
 				if((strValue!=null)&&(strValue.trim()!=""))
 				{
-					htmlString = htmlString + "<OPTION VALUE='"+ strValue + "'>" + strValue;
+					htmlString = htmlString + "<OPTION VALUE='"+ strValue + "'>" + strValue + "</OPTION>";
 				}
 			}
 		}

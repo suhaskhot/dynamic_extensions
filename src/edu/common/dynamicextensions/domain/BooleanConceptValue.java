@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.domain;
 
+import edu.common.dynamicextensions.domaininterface.BooleanConceptValueInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
 
@@ -10,7 +11,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @author sujay_narkar
  *
  */
-public class BooleanConceptValue extends Concept {
+public class BooleanConceptValue extends Concept implements BooleanConceptValueInterface {
     
     protected Boolean value;
     

@@ -992,7 +992,7 @@ public class EntityManager {
      * @throws DAOException
      * @throws ClassNotFoundException
      */
-    public Long getNextIdentifier(Entity entity)throws DAOException, ClassNotFoundException{
+    private Long getNextIdentifier(Entity entity)throws DAOException, ClassNotFoundException{
         TableProperties tableProperties = entity.getTableProperties();
         String entityTableName = tableProperties.getName();
         StringBuffer queryToGetNextIdentifier = new StringBuffer("SELECT MAX(IDENTIFIER) FROM "+entityTableName);

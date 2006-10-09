@@ -46,16 +46,7 @@
 				default-value="" tooltip="Tooltip to be displayed">
 			</attribute>
 
-			<attribute name="dataType"
-				caption="TextControl.attribute_datatype_caption"
-				css-classname="formDateSized" display-type="combobox"
-				default-value="string" tooltip="Database datatype of the attribute">
-				<!--  Set of values for the combobox -->
-				<values>
-					<value>number</value>
-					<value>String</value>
-				</values>
-			</attribute>
+
 		</control>
 
 <!-- 		 Numeric control if needed to be added 

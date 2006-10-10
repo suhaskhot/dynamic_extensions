@@ -44,15 +44,14 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	 * Tool tip message for the control.
 	 */
 	protected String tooltip=null;
+	
+	/**
+	 * Value to be shown in the control
+	 */
+	protected String value = null;
 	/**
 	 * Attribute to which this control is associated.
 	 */
-	//Map of event handlers
-	//Key : Name of event. Value: event handler name
-	protected Map eventHandlers = null;
-    /**
-     * 
-     */
 	
 	public Attribute attribute=null;
     
@@ -212,8 +211,16 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 			this.cssClass = (String)propertiesMap.get(UIConfigurationConstants.CSS_CLASSNAME_ATTRIBUTE);
 			this.name = (String)propertiesMap.get(UIConfigurationConstants.NAME_ATTRIBUTE);
 			this.tooltip = (String)propertiesMap.get(UIConfigurationConstants.TOOLTIP_ATTRIBUTE);
-			this.eventHandlers = (Map)propertiesMap.get(UIConfigurationConstants.EVENT_HANDLERS);
+			this.value = (String)propertiesMap.get(UIConfigurationConstants.DEFAULT_VALUE_ATTRIBUTE);
 		}
+	}
+
+	public String getValue() {
+		return this.value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
 	}
 	
 	/*protected String appendEventHandlers()

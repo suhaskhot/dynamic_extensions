@@ -54,12 +54,13 @@ public class EntityManager {
 	 * @param entity the entity to be created.
 	 * @throws DAOException
 	 */
-	public EntityInterface createEntity(Entity entity) throws DynamicExtensionsSystemException{
+	public EntityInterface createEntity(EntityInterface entityInterface) throws DynamicExtensionsSystemException{
 		HibernateDAO hibernateDAO = (HibernateDAO)DAOFactory.getDAO(Constants.HIBERNATE_DAO);
 		try {
 			if(entityInterface == null ) {
 				throw new DAOException("while createEntity : Entity is Null");
 			}
+            Entity entity = (Entity) entityInterface; 
 			hibernateDAO.openSession(null);
 			hibernateDAO.insert(entity,null,false,false);
 			DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();

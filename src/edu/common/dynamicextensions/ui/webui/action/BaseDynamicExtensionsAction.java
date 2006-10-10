@@ -26,7 +26,7 @@ public class BaseDynamicExtensionsAction extends DispatchAction{
 		List errorsList = new ArrayList();
 		if (throwable instanceof DynamicExtensionsApplicationException) {
 			DynamicExtensionsApplicationException appException = (DynamicExtensionsApplicationException)throwable;
-			errorsList.add(appException.getMessage());
+			errorsList.add(appException.getErrorMessage());
 		}else if (throwable instanceof DynamicExtensionsSystemException) {
 			//TODO
 		}

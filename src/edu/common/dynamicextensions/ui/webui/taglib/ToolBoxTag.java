@@ -338,7 +338,7 @@ public class ToolBoxTag extends TagSupport {
             String userSelectedTool =  toolsList.get(i).toString();
             Logger.out.debug("Selector List : " + userSelectedTool);
             if (userSelectedTool != null) {
-            	sb.append("\n<tr><td>");
+            	sb.append("\n<tr><td >");
             	sb.append("\n<input class=\"toolLabelText\" value=\""+userSelectedTool+"\"type=\"label\" border=\"1\" onclick=\"tagHandlerFunction('"+userSelectedTool+"');"+onClick+"('"+ userSelectedTool+"','"+ id +"')\"/>");
             	sb.append("\n</tr></td>");
             	//sb.append("\n<tr><input type=\"button\" border=\"3\" onclick=\""+onClick+"('"+ selectedTool+"','"+ id +"')\" value='"+selectedTool+"'/>"+selectedTool+"</tr>");

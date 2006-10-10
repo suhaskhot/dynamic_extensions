@@ -7,15 +7,12 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
-import edu.wustl.common.util.global.ApplicationProperties;
-import edu.wustl.common.util.global.Validator;
 
 /**
  * @author sujay_narkar
@@ -104,11 +101,7 @@ public class ControlsForm extends AbstractActionForm {
 	 * 
 	 */
 	List toolsList = new ArrayList();
-	/**
-	 * selectedTool
-	 */
-	String selectedTool;
-//Added by deepti for controls form 
+	
 	protected String attributeCssClass;
 	protected String attributeTooltip;
 	protected String attributeNoOfRows ;
@@ -117,23 +110,9 @@ public class ControlsForm extends AbstractActionForm {
 	protected String attributeMeasurementUnits;
 	protected String attributeScale;
 	protected String userSelectedTool;
-	protected String controlAddedToForm;
 	
 	
-	/**
-	 * @return the controlAddedToForm
-	 *//*
-	public String getControlAddedToForm() {
-		return controlAddedToForm;
-	}
-
-	*//**
-	 * @param controlAddedToForm the controlAddedToForm to set
-	 *//*
-	public void setControlAddedToForm(String controlAddedToForm) {
-		this.controlAddedToForm = controlAddedToForm;
-	}*/
-
+	
 	public void reset() {
 		
 	}
@@ -527,19 +506,7 @@ public class ControlsForm extends AbstractActionForm {
 		this.selectedControlAttributesList = selectedControlAttributesList;
 	}
 
-	/**
-	 * @return the selectedTool
-	 */
-	public String getSelectedTool() {
-		return selectedTool;
-	}
-
-	/**
-	 * @param selectedTool the selectedTool to set
-	 */
-	public void setSelectedTool(String selectedTool) {
-		this.selectedTool = selectedTool;
-	}
+	
 
 	/**
 	 * @return the toolsList
@@ -553,6 +520,19 @@ public class ControlsForm extends AbstractActionForm {
 	 */
 	public void setToolsList(List toolsList) {
 		this.toolsList = toolsList;
+	}
+	/**
+	 * @return the userSelectedTool
+	 */
+	public String getUserSelectedTool() {
+		return userSelectedTool;
+	}
+
+	/**
+	 * @param userSelectedTool the userSelectedTool to set
+	 */
+	public void setUserSelectedTool(String userSelectedTool) {
+		this.userSelectedTool = userSelectedTool;
 	}
 	
 	public void update(ControlsForm cacheForm) {
@@ -574,18 +554,6 @@ public class ControlsForm extends AbstractActionForm {
 		this.userSelectedTool = cacheForm.getUserSelectedTool();
 	}
 
-	/**
-	 * @return the userSelectedTool
-	 */
-	public String getUserSelectedTool() {
-		return userSelectedTool;
-	}
-
-	/**
-	 * @param userSelectedTool the userSelectedTool to set
-	 */
-	public void setUserSelectedTool(String userSelectedTool) {
-		this.userSelectedTool = userSelectedTool;
-	}
+	
 }
 

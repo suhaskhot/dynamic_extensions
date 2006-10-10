@@ -11,6 +11,7 @@ package edu.common.dynamicextensions.processor;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.interfaces.EntityInformationInterface;
 import edu.common.dynamicextensions.util.EntityManager;
@@ -60,9 +61,10 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
      * which has all the data required for the creation of the entity.
      * @return EntityInterface Returns the unsaved instance of EntityInterface with populated values taken 
      * from the entityInformationInterface.
-     * @throws DynamicExtensionsSystemException Exception
+     * @throws DynamicExtensionsSystemException
+     * @throws DynamicExtensionsApplicationException
      */
-    public EntityInterface createAndSaveEntity(EntityInformationInterface entityInformationInterface) throws DynamicExtensionsSystemException {
+    public EntityInterface createAndSaveEntity(EntityInformationInterface entityInformationInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException {
         EntityInterface entityInterface = DomainObjectFactory.getInstance().createEntity();
         populateEntity(entityInformationInterface, entityInterface);
         entityInterface = EntityManager.getInstance().createEntity(entityInterface);

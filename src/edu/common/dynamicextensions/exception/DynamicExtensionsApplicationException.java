@@ -25,6 +25,20 @@ public class DynamicExtensionsApplicationException
         extends
             BaseDynamicExtensionsException
 {
-
+    /**
+     * @param wrapException The wrapException to set.
+     */
+    public DynamicExtensionsApplicationException(String message, Exception wrapException) {
+       this.errorMessage = message;
+        this.wrappedException = wrapException;
+    }
+    
+    /**
+     * 
+     * @param message
+     */
+    public DynamicExtensionsApplicationException(String message) {
+        this(message,null);
+    }
     
 }

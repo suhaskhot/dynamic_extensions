@@ -10,6 +10,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.EntityProcessor;
 import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
@@ -48,7 +49,12 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction {
 			} catch (DynamicExtensionsSystemException systemException) {
 				handleException(systemException,new ArrayList());		
 				return mapping.findForward(Constants.SYSTEM_EXCEPTION);
-			}			
+			} catch (DynamicExtensionsApplicationException appException) {
+                // TODO Auto-generated catch block
+			    appException.printStackTrace();
+                handleException(appException,new ArrayList());		
+				return mapping.findForward(Constants.APPLICATION_EXCEPTION);
+            }			
 		}
 		return mapping.findForward(target);
 	}  

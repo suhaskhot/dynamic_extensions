@@ -8,6 +8,7 @@ import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.beans.SessionDataBean;
@@ -54,13 +55,17 @@ public class EntityManager {
 	 * @param entity the entity to be created.
 	 * @throws DAOException
 	 */
-	public EntityInterface createEntity(EntityInterface entityInterface) throws DynamicExtensionsSystemException{
+	public EntityInterface createEntity(EntityInterface entityInterface) throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException{
 		HibernateDAO hibernateDAO = (HibernateDAO)DAOFactory.getDAO(Constants.HIBERNATE_DAO);
 		try {
 			if(entityInterface == null ) {
 				throw new DAOException("while createEntity : Entity is Null");
 			}
-            Entity entity = (Entity) entityInterface; 
+			Entity entity = (Entity)entityInterface;
+			boolean isEntityNameDuplicate = checkForDuplicateEntityName(entity);
+			if(isEntityNameDuplicate)
+			    throw new DynamicExtensionsApplicationException("Duplicate Entity name");
+			
 			hibernateDAO.openSession(null);
 			hibernateDAO.insert(entity,null,false,false);
 			DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
@@ -131,6 +136,25 @@ public class EntityManager {
 	}
 	
 	/**
+     * @param entity
+     * @return
+	 * @throws DAOException
+     */
+    private boolean checkForDuplicateEntityName(Entity entity) throws DAOException {
+       String entityName = entity.getName();
+       HibernateDAO hibernateDAO = (HibernateDAO)DAOFactory.getDAO(Constants.HIBERNATE_DAO);
+       hibernateDAO.openSession(null);
+       String[] selectColumnNames = {"id"};
+       String[] whereColumnNames = {"name"};
+       String[] whereColumnConditions = {"like"};
+       String[] whereColumnValues = {entityName};
+       List resultList = hibernateDAO.retrieve("Entity",selectColumnNames,whereColumnNames,whereColumnConditions,whereColumnValues,null);
+       if(resultList.size() > 0)
+           return true;
+        return false;
+    }
+
+    /**
 	 * Create multiple entities.Their metadata is registered andcorresponding tables are created
 	 * to store the records.
 	 * @param entities

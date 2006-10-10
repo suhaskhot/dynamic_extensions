@@ -31,6 +31,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import edu.common.dynamicextensions.domain.userinterface.Control;
+import edu.wustl.common.beans.NameValueBean;
 
 
 
@@ -45,18 +46,18 @@ import edu.common.dynamicextensions.domain.userinterface.Control;
  * associated attributes.
  */
 public class UIControlsConfigurationFactory {
-	
+
 	private static UIControlsConfigurationFactory m_instance = null;
 	private LinkedHashMap m_UIControlsMap = null;
 	private ResourceBundle rb_displayTypeClassNameMappings = null; 
 	private ResourceBundle rb_uicontrolsCaptions = null;
-	
+
 	private UIControlsConfigurationFactory() {
 		m_UIControlsMap = new LinkedHashMap();
 		rb_displayTypeClassNameMappings = ResourceBundle.getBundle(UIConfigurationConstants.DISPLAYTYPE_CLASSNAME_MAPPING_FILE);
 		parseXML();
 	}
-	
+
 	public static UIControlsConfigurationFactory getInstance()
 	{
 		if(m_instance == null)
@@ -65,7 +66,7 @@ public class UIControlsConfigurationFactory {
 		}
 		return m_instance;
 	}
-	
+
 	/**
 	 * Parse the XML
 	 *
@@ -87,7 +88,7 @@ public class UIControlsConfigurationFactory {
 					if(inputStream!=null)
 					{
 						document = docBuilder.parse(inputStream);
-						
+
 						if(document!=null)
 						{
 							//load properties filename details
@@ -101,7 +102,7 @@ public class UIControlsConfigurationFactory {
 						System.out.println("InputStream null...Please check");
 					}
 				}
-				
+
 			}
 		} catch (FactoryConfigurationError e) {
 			// TODO Auto-generated catch block
@@ -133,7 +134,7 @@ public class UIControlsConfigurationFactory {
 					{
 						try {
 							rb_uicontrolsCaptions = ResourceBundle
-									.getBundle(strPropertiesFileName);
+							.getBundle(strPropertiesFileName);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}						
@@ -146,7 +147,7 @@ public class UIControlsConfigurationFactory {
 			}
 		}
 	}
-	
+
 
 	private void loadUIControlsDetails(NodeList uiControlsList) {
 		if(uiControlsList!=null)
@@ -188,43 +189,30 @@ public class UIControlsConfigurationFactory {
 			for(int i=0;i<noOfAttributes;i++)
 			{
 				Node attributeNode = uiControlAttributes.item(i);
-				
+
 				if(attributeNode!=null)
 				{
 					if(attributeNode.getNodeType() == Node.ELEMENT_NODE)
 					{
-						/*if(attributeNode.getNodeName()!=null)
+						Control attributeDataTypeObject = getAttributeDataTypeObject(attributeNode);
+						if(attributeDataTypeObject!=null)
 						{
-							//if it is JSPinclude Node
-							if(attributeNode.getNodeName().equalsIgnoreCase(UIConfigurationConstants.JSP_INCLUDE_NODE_TAGNAME))
-							{
-								
-							}
-							if(attributeNode.getNodeName().equalsIgnoreCase(UIConfigurationConstants.ATTRIBUTE_NODE_TAGNAME))
-							{
-								//If it is an attribute Node
-*/								Control attributeDataTypeObject = getAttributeDataTypeObject(attributeNode);
-								if(attributeDataTypeObject!=null)
-								{
-									uiControlAttributesList.add(attributeDataTypeObject);
-								}
-							/*}
-						}*/
-
+							uiControlAttributesList.add(attributeDataTypeObject);
+						}
 					}
 				}
 			}
 		}
 		return uiControlAttributesList;
 	}
-	
+
 	private Control getAttributeDataTypeObject(Node attributeNode) {
 		Control controlDataType = null;
 		NamedNodeMap attributeNodeProperties = null;
 		if(attributeNode!=null)
 		{
 			attributeNodeProperties = attributeNode.getAttributes();
-			
+
 			//If JSP Include code
 			if(attributeNode.getNodeName().equalsIgnoreCase(UIConfigurationConstants.JSP_INCLUDE_NODE_TAGNAME))
 			{
@@ -238,14 +226,51 @@ public class UIControlsConfigurationFactory {
 						{
 							JSPInclude jspIncludeControl = new JSPInclude();
 							jspIncludeControl.setJspName(jspIncludeName);
-							System.out.println("JSP Name = " + jspIncludeName);
+							//Get List of params
+							Element jspNode = (Element)attributeNode;
+							NodeList paramsList = jspNode.getElementsByTagName(UIConfigurationConstants.PARAM_TAGNAME);
+							if(paramsList!=null)
+							{
+								System.out.println("Length = " + paramsList.getLength());
+								Node paramNode = null;
+								String paramValue = null,paramName = null;
+								ArrayList paramList = new ArrayList();
+								for(int i=0;i<paramsList.getLength();i++)
+								{
+									paramNode = paramsList.item(i);
+									if((paramNode!=null)&&(paramNode.getNodeType()==Node.ELEMENT_NODE))
+									{
+										NamedNodeMap paramAttributes = paramNode.getAttributes();
+										if(paramAttributes!=null)
+										{
+											Node paramNameNode = null,paramValueNode;
+											paramNameNode = paramAttributes.getNamedItem(UIConfigurationConstants.NAME_ATTRIBUTE);
+											paramValueNode = paramAttributes.getNamedItem(UIConfigurationConstants.VALUE_ATTRIBUTE);
+											if(paramNameNode!=null)
+											{
+												paramName = paramNameNode.getNodeValue();
+											}
+											if(paramValueNode!=null)
+											{
+												paramValue = paramValueNode.getNodeValue();
+											}
+											NameValueBean paramNVB = new NameValueBean(paramName,paramValue);
+											System.out.println(paramNVB.toString());
+											paramList.add(paramNVB);
+										}
+									}
+								}
+								jspIncludeControl.setJspParams(paramList);
+								System.out.println("Set JSP Params as "  + paramList);
+							}
+							//Assign as control data type
 							controlDataType = jspIncludeControl;
-							System.out.println(controlDataType);
+
 						}
 					}
 				}
 			}
-			
+
 			//It it is an Attribute Node
 			if(attributeNode.getNodeName().equalsIgnoreCase(UIConfigurationConstants.ATTRIBUTE_NODE_TAGNAME))
 			{
@@ -355,7 +380,7 @@ public class UIControlsConfigurationFactory {
 					{
 						eventNameNode = eventAttributes.getNamedItem(UIConfigurationConstants.NAME_ATTRIBUTE);
 						eventHandlerNode = eventAttributes.getNamedItem(UIConfigurationConstants.EVENT_HANDLER_ATTRIBUTE);
-						
+
 						if(eventNameNode!=null)
 						{
 							eventName = eventNameNode.getNodeValue();
@@ -364,7 +389,7 @@ public class UIControlsConfigurationFactory {
 						{
 							eventHandlerName = eventHandlerNode.getNodeValue();
 						}
-						
+
 						if((eventName!=null)&&(eventHandlerName!=null))
 						{
 							eventHandlers.put(eventName, eventHandlerName);
@@ -372,11 +397,11 @@ public class UIControlsConfigurationFactory {
 						}
 					}
 				}
-					
+
 			}
 		}
 		return eventHandlers;
-		
+
 	}
 	/**
 	 * @param attributeNode
@@ -385,50 +410,29 @@ public class UIControlsConfigurationFactory {
 	private ArrayList getListOfValues(NodeList setOfValueNodes) {
 		ArrayList valuesListString = new ArrayList();
 		String strValue=null;
-		/*if(attributeNode!=null)
+
+		for(int j=0;j<setOfValueNodes.getLength();j++)
 		{
-			NodeList listOfValues  = attributeNode.getChildNodes();
-			
-			if(listOfValues!=null)
+			Node valueNode =setOfValueNodes.item(j);  	
+			if((valueNode!=null)&&(valueNode.getNodeType()==Node.ELEMENT_NODE))
 			{
-				int noOfValues = listOfValues.getLength();
-				for(int i=0;i<noOfValues;i++)
+				if(valueNode!=null)
 				{
-					Node valuesNode = listOfValues.item(i);
-					if(valuesNode!=null)
+					Node value = valueNode.getFirstChild();
+					if(value!=null)
 					{
-						NodeList setOfValueNodes = valuesNode.getChildNodes();
-						if(setOfValueNodes!=null)
-						{*/
-							for(int j=0;j<setOfValueNodes.getLength();j++)
-							{
-								Node valueNode =setOfValueNodes.item(j);  	
-								
-								if((valueNode!=null)&&(valueNode.getNodeType()==Node.ELEMENT_NODE))
-								{
-									if(valueNode!=null)
-									{
-										Node value = valueNode.getFirstChild();
-										if(value!=null)
-										{
-											strValue = value.getNodeValue();
-											if(strValue!=null)
-											{
-												valuesListString.add(strValue);
-											}
-										}
-									}
-								}
-							}
-						/*}
+						strValue = value.getNodeValue();
+						if(strValue!=null)
+						{
+							valuesListString.add(strValue);
+						}
 					}
-					
-					
 				}
 			}
-		}*/
+		}
+
 		return valuesListString;
-		
+
 	}
 
 	private Map getPropertiesMap(NamedNodeMap attributeNodeProperties) {
@@ -473,7 +477,7 @@ public class UIControlsConfigurationFactory {
 			}
 		}
 	}
-	
+
 	public List getControlNames()
 	{
 		if(m_UIControlsMap!=null)
@@ -502,5 +506,5 @@ public class UIControlsConfigurationFactory {
 		//UCCF.displayData();
 		System.out.println("Done");
 	}
-	
+
 }

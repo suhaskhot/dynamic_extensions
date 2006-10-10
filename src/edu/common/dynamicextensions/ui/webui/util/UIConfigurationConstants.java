@@ -14,9 +14,11 @@ public class UIConfigurationConstants {
 	public static final String PROPERTY_FILENAME_TAGNAME ="propertyfilename";
 	public static final String ATTRIBUTE_NODE_TAGNAME ="attribute";
 	public static final String JSP_INCLUDE_NODE_TAGNAME ="includeJsp";
+	public static final String PARAM_TAGNAME ="param";
 	public static final String VALUE_TAGNAME ="value";
 	public static final String EVENT_TAGNAME ="event";
 	public static final String NAME_ATTRIBUTE = "name";
+	public static final String VALUE_ATTRIBUTE = "value";
 	public static final String DISPLAY_TYPE_ATTRIBUTE = "display-type";
 	public static final String CAPTION_ATTRIBUTE = "caption";
 	public static final String TOOLTIP_ATTRIBUTE = "tooltip";

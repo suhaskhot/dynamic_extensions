@@ -5,8 +5,11 @@
  */
 package edu.common.dynamicextensions.ui.webui.util;
 
+import java.util.List;
+
 import edu.common.dynamicextensions.domain.userinterface.Control;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+
 
 /**
  * @author preeti_munot
@@ -17,6 +20,15 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 public class JSPInclude extends Control {
 
 	private String jspName = null;
+	private List jspParams = null;
+	
+	
+	public List getJspParams() {
+		return this.jspParams;
+	}
+	public void setJspParams(List jspParams) {
+		this.jspParams = jspParams;
+	}
 	public String getJspName() {
 		return this.jspName;
 	}
@@ -24,14 +36,8 @@ public class JSPInclude extends Control {
 		this.jspName = jspName;
 	}
 	public String generateHTML() {
-		if(jspName==null)
-		{
-			jspName="";
+		return null;
 		}
-		//String htmlString = "<jsp:include page='" + jspName +"' />";
-		String htmlString = "<%@ include file='" +  jspName + "' %>";
-		return htmlString;
-	}
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface#setAttribute(edu.common.dynamicextensions.domaininterface.AttributeInterface)
 	 */

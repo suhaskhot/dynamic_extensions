@@ -15,8 +15,7 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
 import edu.common.dynamicextensions.domain.userinterface.Control;
-import edu.common.dynamicextensions.domain.userinterface.JSPInclude;
-import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.ui.webui.util.JSPInclude;
 
 
 

@@ -16,7 +16,7 @@
         <!-- List of all Mapping files -->
         
         <mapping resource="edu/common/dynamicextensions/hbm/AbstractMetadata.hbm.xml"/>
-        <mapping resource="edu/common/dynamicextensions/hbm/Concept.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/PermissibleValue.hbm.xml"/>
         <mapping resource="edu/common/dynamicextensions/hbm/Role.hbm.xml"/>
         <mapping resource="edu/common/dynamicextensions/hbm/SemanticProperty.hbm.xml"/>
 

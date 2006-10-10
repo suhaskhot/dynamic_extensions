@@ -1,43 +1,41 @@
 
 package edu.common.dynamicextensions.domain;
 
-import edu.common.dynamicextensions.domaininterface.FloatConceptValueInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
 
 /**
  * @author sujay_narkar
- * @hibernate.joined-subclass table="DYEXTN_FLOAT_CONCEPT_VALUE" 
+ * @hibernate.joined-subclass table="DYEXTN_INTEGER_CONCEPT_VALUE" 
  * @hibernate.joined-subclass-key column="IDENTIFIER"  
- *
  */
-public class FloatConceptValue extends Concept implements FloatConceptValueInterface {
+public class IntegerValue extends PermissibleValue {
     
     /**
-    * 
-    */
-   protected Float value;
+     * 
+     */
+    protected Integer value;
 
-   /**
-    * 
-    */
+    /**
+     * 
+     */
 	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
-
 	/**
-     * @hibernate.property name="value" type="float" column="VALUE" 
+     * 
+     * @hibernate.property name="value" type="integer" column="VALUE" 
 	 * @return Returns the value.
 	 */
-	public Float getValue() {
+	public Integer getValue() {
 		return value;
 	}
 	/**
 	 * @param value The value to set.
 	 */
-	public void setValue(Float value) {
+	public void setValue(Integer value) {
 		this.value = value;
 	}
 }

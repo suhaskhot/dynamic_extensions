@@ -59,9 +59,6 @@ public class Container extends AbstractDomainObject implements Serializable,Cont
 
 	}
 
-	public void finalize() throws Throwable {
-
-	}
 	
 	/**
      * @return

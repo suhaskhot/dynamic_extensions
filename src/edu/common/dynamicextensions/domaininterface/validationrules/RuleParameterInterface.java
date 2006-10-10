@@ -7,6 +7,11 @@ package edu.common.dynamicextensions.domaininterface.validationrules;
  *
  */
 public interface RuleParameterInterface {
+     /**
+     * @return Returns the id. 
+     */
+    public Long getId();
+
        
     /**
      * @return Returns the name.

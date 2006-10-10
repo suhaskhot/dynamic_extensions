@@ -1,7 +1,6 @@
 
 package edu.common.dynamicextensions.domain;
 
-import edu.common.dynamicextensions.domaininterface.ByteArrayConceptValueInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
 
@@ -11,7 +10,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @author sujay_narkar
  *
  */
-public class ByteArrayConceptValue extends Concept implements ByteArrayConceptValueInterface{
+public class ByteArrayValue extends PermissibleValue {
 
 	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
 		// TODO Auto-generated method stub

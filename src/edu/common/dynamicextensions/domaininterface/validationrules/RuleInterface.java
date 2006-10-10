@@ -8,8 +8,12 @@ import java.util.Collection;
  *
  */
 public interface RuleInterface {
-         
     
+    /**
+     * @return Returns the id. 
+     */
+    public Long getId();
+       
     /**
      * @return Returns the name.
      */

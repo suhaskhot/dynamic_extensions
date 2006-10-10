@@ -14,11 +14,8 @@ import edu.wustl.common.actionForm.AbstractActionForm;
  * @hibernate.joined-subclass table="DYEXTN_ENTITY"
  * @hibernate.joined-subclass-key column="IDENTIFIER"  
  */
-public class Entity extends AbstractMetadata implements java.io.Serializable,EntityInterface {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1234567890L;
+public class Entity extends AbstractMetadata implements EntityInterface {
+	
 	/**
 	 * Collection of attributes in this entity.
 	 */

@@ -3,21 +3,17 @@ package edu.common.dynamicextensions.domaininterface.userinterface;
 import java.util.Collection;
 
 import edu.common.dynamicextensions.domain.Entity;
-import edu.wustl.common.actionForm.AbstractActionForm;
-import edu.wustl.common.exception.AssignDataException;
 
 /**
  * @author geetika_bangard
  */
 public interface ContainerInterface {
-
+    
     /**
      * @return
      */
     public Long getId();
-
-    public void setId(Long id);
-
+    
     /**
      * @return Returns the buttonCss.
      */
@@ -84,18 +80,5 @@ public interface ContainerInterface {
      */
     public void setTitleCss(String titleCss);
 
-    /* (non-Javadoc)
-     * @see edu.wustl.common.domain.AbstractDomainObject#setAllValues(edu.wustl.common.actionForm.AbstractActionForm)
-     */
-    public void setAllValues(AbstractActionForm arg0) throws AssignDataException;
-
-    /* (non-Javadoc)
-     * @see edu.wustl.common.domain.AbstractDomainObject#getSystemIdentifier()
-     */
-    public Long getSystemIdentifier();
-
-    /* (non-Javadoc)
-     * @see edu.wustl.common.domain.AbstractDomainObject#setSystemIdentifier(java.lang.Long)
-     */
-    public void setSystemIdentifier(Long arg0);
+       
 }

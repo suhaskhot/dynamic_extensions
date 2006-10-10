@@ -1,7 +1,6 @@
 
 package edu.common.dynamicextensions.domain;
 
-import edu.common.dynamicextensions.domaininterface.DoubleConceptValueInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
 
@@ -10,7 +9,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass table="DYEXTN_DOUBLE_CONCEPT_VALUE" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class DoubleConceptValue extends Concept implements DoubleConceptValueInterface{
+public class DoubleValue extends PermissibleValue {
     
      /**
      * 

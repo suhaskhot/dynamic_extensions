@@ -3,8 +3,6 @@ package edu.common.dynamicextensions.domaininterface.userinterface;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domain.Attribute;
-import edu.wustl.common.actionForm.AbstractActionForm;
-import edu.wustl.common.exception.AssignDataException;
 
 /**
  * @author geetika_bangard
@@ -15,11 +13,7 @@ public interface ControlInterface {
 	 * @return
 	 */
 	public Long getId();
-	/**
-	 * 
-	 * @param id
-	 */
-	public void setId(Long id);
+	
 
 	/**
 	 * @return Returns the attribute.
@@ -78,12 +72,7 @@ public interface ControlInterface {
 	 * @param tooltip The tooltip to set.
 	 */
 	public void setTooltip(String tooltip);
-
-	/* (non-Javadoc)
-	 * @see edu.wustl.common.domain.AbstractDomainObject#setAllValues(edu.wustl.common.actionForm.AbstractActionForm)
-	 */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException;
-
+	
 
 	/* (non-Javadoc)
 	 * @see edu.wustl.common.domain.AbstractDomainObject#getSystemIdentifier()

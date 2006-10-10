@@ -185,7 +185,7 @@
         </set>
 
         <set
-            name="tablePropertiesColletion"
+            name="tablePropertiesCollection"
             table="DYEXTN_TABLE_PROPERTIES"
             lazy="false"
             inverse="false"
@@ -265,24 +265,6 @@
         />
 
         <set
-            name="conceptColection"
-            table="DYEXTN_CONCEPT"
-            lazy="false"
-            inverse="false"
-            cascade="save-update"
-            sort="unsorted"
-        >
-
-              <key
-                  column="PRIMITIVE_ATTRIBUTE_ID"
-              />
-
-              <one-to-many
-                  class="edu.common.dynamicextensions.domain.Concept"
-              />
-        </set>
-
-        <set
             name="columnPropertiesCollection"
             table="DYEXTN_COLUMN_PROPERTIES"
             lazy="false"
@@ -297,6 +279,24 @@
 
               <one-to-many
                   class="edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties"
+              />
+        </set>
+
+        <set
+            name="dataElementCollection"
+            table="DYEXTN_DATA_ELEMENT"
+            lazy="false"
+            inverse="false"
+            cascade="save-update"
+            sort="unsorted"
+        >
+
+              <key
+                  column="PRIMITIVE_ATTRIBUTE_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.DataElement"
               />
         </set>
 

@@ -1,7 +1,6 @@
 
 package edu.common.dynamicextensions.domain;
 
-import edu.common.dynamicextensions.domaininterface.LongConceptValueInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
 
@@ -10,7 +9,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass table="DYEXTN_LONG_CONCEPT_VALUE" 
  * @hibernate.joined-subclass-key column="IDENTIFIER"  
  */
-public class LongConceptValue extends Concept implements LongConceptValueInterface {
+public class LongValue extends PermissibleValue{
     
     /**
      * 

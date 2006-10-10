@@ -55,10 +55,7 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	public Control(){
 
 	}
-
-	public void finalize() throws Throwable {
-
-	}
+	
 	/**
 	 * @return
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"

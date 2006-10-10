@@ -25,15 +25,16 @@ public abstract class PrimitiveAttribute extends Attribute {
 	 * Specifies whether this is a primary key.
 	 */
 	protected Boolean isPrimaryKey;
-    /**
-     * 
-     */
-    protected Collection conceptColection;
+   
 	
 	/**
 	 * Column property associated to this primitive attribute.
 	 */
 	protected Collection columnPropertiesCollection;
+    /**
+     * 
+     */
+    protected Collection dataElementCollection;
 	
 	/**
 	 * Empty constructor.
@@ -83,22 +84,7 @@ public abstract class PrimitiveAttribute extends Attribute {
 		this.isPrimaryKey = isPrimaryKey;
 	}
 	
-	/**
-     * @hibernate.set name="conceptColection" table="DYEXTN_CONCEPT"
-     * cascade="save-update" inverse="false" lazy="false"
-     * @hibernate.collection-key column="PRIMITIVE_ATTRIBUTE_ID"
-     * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Concept" 
-	 * @return Returns the conceptColection.
-	 */
-	public Collection getConceptColection() {
-		return conceptColection;
-	}
-	/**
-	 * @param conceptColection The conceptColection to set.
-	 */
-	public void setConceptColection(Collection conceptColection) {
-		this.conceptColection = conceptColection;
-	}
+	
 	/**
      * @hibernate.set name="columnPropertiesCollection" table="DYEXTN_COLUMN_PROPERTIES"
      * cascade="save-update" inverse="false" lazy="false"
@@ -140,5 +126,46 @@ public abstract class PrimitiveAttribute extends Attribute {
             columnPropertiesCollection  = new HashSet();
         }
         this.columnPropertiesCollection.add(columnProperties);
+    }
+	/**
+     * @hibernate.set name="dataElementCollection" table="DYEXTN_DATA_ELEMENT"
+     * cascade="save-update" inverse="false" lazy="false"
+     * @hibernate.collection-key column="PRIMITIVE_ATTRIBUTE_ID"
+     * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.DataElement"   
+	 * @return Returns the dataElementCollection.
+	 */
+	private Collection getDataElementCollection() {
+		return dataElementCollection;
+	}
+	/**
+	 * @param dataElementCollection The dataElementCollection to set.
+	 */
+	private void setDataElementCollection(Collection dataElementCollection) {
+		this.dataElementCollection = dataElementCollection;
+	}
+    /**
+     * 
+     * @return
+     */
+    public DataElement getDataElement(){
+        if(dataElementCollection != null){
+            Iterator dataElementIterator = dataElementCollection.iterator();
+            return (DataElement)dataElementIterator.next();
+        } else {
+            return null;   
+        }
+        
+    }
+    
+    
+    /**
+     * 
+     * @param sourceEntity
+     */
+    public void setDataElement(DataElement dataElement){
+        if(dataElementCollection  == null){
+            dataElementCollection   = new HashSet();
+        }
+        this.dataElementCollection .add(dataElement);
     }
 }

@@ -22,6 +22,24 @@ public class DynamicExtensionsSystemException
         extends
             BaseDynamicExtensionsException
 {
-    
-    
+    /**
+     * @param wrapException The wrapException to set.
+     */
+    public DynamicExtensionsSystemException(String message, Exception wrapException) {
+       this.errorMessage = message;
+        this.wrappedException = wrapException;
+    }
+    /**
+     * @param wrapException The wrapException to set.
+     *//*
+    private void DynamicExtensionsSystemException(Exception wrapException) {
+        this(null,wrapException);
+    }*/
+    /**
+     * 
+     * @param message
+     */
+    public DynamicExtensionsSystemException(String message) {
+        this(message,null);
+    }
 }

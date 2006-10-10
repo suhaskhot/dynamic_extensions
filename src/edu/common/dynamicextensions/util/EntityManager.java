@@ -8,6 +8,7 @@ import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.dao.DAOFactory;
@@ -53,13 +54,12 @@ public class EntityManager {
 	 * @param entity the entity to be created.
 	 * @throws DAOException
 	 */
-	public EntityInterface createEntity(EntityInterface entityInterface) throws DAOException{
+	public EntityInterface createEntity(Entity entity) throws DynamicExtensionsSystemException{
 		HibernateDAO hibernateDAO = (HibernateDAO)DAOFactory.getDAO(Constants.HIBERNATE_DAO);
 		try {
 			if(entityInterface == null ) {
 				throw new DAOException("while createEntity : Entity is Null");
 			}
-            Entity entity = (Entity) entityInterface;
 			hibernateDAO.openSession(null);
 			hibernateDAO.insert(entity,null,false,false);
 			DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
@@ -108,13 +108,13 @@ public class EntityManager {
 			}
 			catch(DAOException daoEx)
 			{
-				throw new DAOException("Exception while hibernate rollback: "+daoEx.getMessage(), daoEx);
+				throw new DynamicExtensionsSystemException("Exception while hibernate rollback: "+daoEx.getMessage(), daoEx);
 			}
 			
-			throw new DAOException("Exception while creating Entity: "+daoException.getMessage(),daoException);
+			throw new DynamicExtensionsSystemException("Exception while creating Entity: "+daoException.getMessage(),daoException);
 		} catch (UserNotAuthorizedException userNotAuthorizedException) {
 			userNotAuthorizedException.printStackTrace();
-			throw new DAOException(userNotAuthorizedException);
+			throw new DynamicExtensionsSystemException("userNotAuthorizedException",userNotAuthorizedException);
 		}finally
 		{
 			try
@@ -123,7 +123,7 @@ public class EntityManager {
 			}
 			catch(DAOException daoEx)
 			{
-				throw new DAOException("Exception while closing the session");
+				throw new DynamicExtensionsSystemException("Exception while closing the session");
 			}
 		}
 		

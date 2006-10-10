@@ -6,19 +6,19 @@ import edu.wustl.common.exception.AssignDataException;
 /**
  * @author geetika_bangard
  */
-public interface DoubleConceptValueInterface extends ConceptInterface {
+public interface ShortValueInterface extends PermissibleValueInterface {
 
     /**
-     * 
-     */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException ;
-
+	 * 
+	 */
+	public void setAllValues(AbstractActionForm arg0) throws AssignDataException;
+	
 	/**
 	 * @return Returns the value.
 	 */
-	public Double getValue();
+	public Short getValue();
 	/**
 	 * @param value The value to set.
 	 */
-	public void setValue(Double value);
+	public void setValue(Short value);
 }

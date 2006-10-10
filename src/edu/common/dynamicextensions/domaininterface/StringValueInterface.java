@@ -6,7 +6,7 @@ import edu.wustl.common.exception.AssignDataException;
 /**
  * @author geetika_bangard
  */
-public interface IntegerConceptValueInterface extends ConceptInterface {
+public interface StringValueInterface extends PermissibleValueInterface {
 
     /**
      * 
@@ -16,9 +16,9 @@ public interface IntegerConceptValueInterface extends ConceptInterface {
 	/**
 	 * @return Returns the value.
 	 */
-	public Integer getValue();
+	public String getValue();
 	/**
 	 * @param value The value to set.
 	 */
-	public void setValue(Integer value);
+	public void setValue(String value);
 }

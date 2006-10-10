@@ -6,7 +6,7 @@ import edu.wustl.common.exception.AssignDataException;
 /**
  * @author geetika_bangard
  */
-public interface FloatConceptValueInterface extends ConceptInterface {
+public interface FloatValueInterface extends PermissibleValueInterface {
 
     /**
      * 

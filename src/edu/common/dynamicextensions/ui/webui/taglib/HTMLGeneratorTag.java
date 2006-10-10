@@ -57,7 +57,7 @@ public class HTMLGeneratorTag extends TagSupport {
 								ServletRequest request = pageContext.getRequest();
 								if(request!=null)
 								{
-									request.setAttribute(Constants.JSP_PARAMS, jspinclude.getJspParams());
+									request.setAttribute("jspParams", jspinclude.getJspParams());
 								}
 								pageContext.include(jspinclude.getJspName());
 							} catch (ServletException e) {

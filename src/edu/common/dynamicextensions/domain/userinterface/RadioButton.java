@@ -1,5 +1,6 @@
 package edu.common.dynamicextensions.domain.userinterface;
 
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 
 /**
@@ -38,6 +39,14 @@ public class RadioButton extends Control implements RadioButtonInterface{
 							" >";
 		System.out.println("Returning " + htmlString);
 		return htmlString;	
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface#setAttribute(edu.common.dynamicextensions.domaininterface.AttributeInterface)
+	 */
+	public void setAttribute(AttributeInterface attributeInterface) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 

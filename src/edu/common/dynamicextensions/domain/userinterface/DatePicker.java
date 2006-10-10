@@ -1,5 +1,6 @@
 package edu.common.dynamicextensions.domain.userinterface;
 
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface;
 
 /**
@@ -31,5 +32,12 @@ public class DatePicker extends Control implements DatePickerInterface{
         "</a> ";*/
 		return "Not Implemented";
     }
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface#setAttribute(edu.common.dynamicextensions.domaininterface.AttributeInterface)
+	 */
+	public void setAttribute(AttributeInterface attributeInterface) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

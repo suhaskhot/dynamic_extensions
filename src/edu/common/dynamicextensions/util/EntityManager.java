@@ -3,9 +3,11 @@ package edu.common.dynamicextensions.util;
 import java.util.List;
 import java.util.Map;
 
+import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.dao.DAOFactory;
@@ -51,7 +53,7 @@ public class EntityManager {
 	 * @param entity the entity to be created.
 	 * @throws DAOException
 	 */
-	public void createEntity(Entity entity) throws DAOException{
+	public EntityInterface createEntity(Entity entity) throws DAOException{
 		HibernateDAO hibernateDAO = (HibernateDAO)DAOFactory.getDAO(Constants.HIBERNATE_DAO);
 		try {
 			if(entity == null ) {
@@ -59,12 +61,14 @@ public class EntityManager {
 			}
 			hibernateDAO.openSession(null);
 			hibernateDAO.insert(entity,null,false,false);
-			TableProperties tablePropertiesToSave = new TableProperties();
+			DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+			TableProperties tablePropertiesToSave = (TableProperties) domainObjectFactory.createTableProperties();
 			String tableName = getEntityTableName(entity);
 			tablePropertiesToSave.setName(tableName);
 			entity.setTableProperties(tablePropertiesToSave);
 			
 			hibernateDAO.update(entity,null,false,false,false);
+			hibernateDAO.commit();
 			String entityName = entity.getName();
 			
 			TableProperties tableProperties = entity.getTableProperties();
@@ -86,7 +90,14 @@ public class EntityManager {
 			
 			//TODO UNCOMMENT LATER
 			//            QueryInterfaceManager.insertMetdataOnCreateEntity(entity);
-			hibernateDAO.commit();
+			
+			 Entity savedEntity = null;
+			Long entityId = entity.getId();
+			if(entityId!= null){
+			     savedEntity =  (Entity) hibernateDAO.retrieve(Entity.class.getName(), entityId);
+			}
+			
+			return savedEntity;
 		} catch (DAOException daoException){
 			daoException.printStackTrace();
 			

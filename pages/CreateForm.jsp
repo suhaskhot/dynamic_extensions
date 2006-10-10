@@ -2,6 +2,7 @@
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
  <%@ page import="java.util.Iterator"%>
+  <%@ page import="java.util.List"%>
 <html>
 <head>
 	<title>Dynamic Extensions</title>
@@ -13,8 +14,7 @@
 
 <c:set var="createAs" value="${formDefinitionForm.createAs}"/>
 <jsp:useBean id="createAs" type="java.lang.String"/>
-<c:set var="errorsList" value="${formDefinitionForm.errorsList}"/>
-<jsp:useBean id="errorsList" type="java.util.List"/>
+
 
 <html:form styleId = "formDefinitionForm" action="/ApplyFormDefinitionAction" >
   <body>
@@ -26,21 +26,26 @@
 			  <tr>
 	     		<td>
 			  	 <table summary="" align = 'center' cellpadding="3" cellspacing="0" border="0">
-				  <tr><td class='standardBoldText' align='center'>
-			  <% 
-	Iterator iter = errorsList.iterator();
-			while(iter.hasNext()) {
-				String errormsg = (String) iter.next();
-				if(errormsg != null) {
-				%>
-					<%= errormsg%>
-				<% }} 
-	%>
-	</td></tr>
+				 
 				     <tr>
 					  	 <td class="formMessage" colspan="3">* indicates a required field</td>
 				     </tr>
-					  
+					   <tr class='formMessage' align='left'> 
+			  <% 
+			  List errorsList =(List) request.getAttribute("errorsList");
+			  if(errorsList != null ) { %>
+					  <td>Errors : </td> <td>
+					  <%
+								Iterator iter = errorsList.iterator();
+								while(iter.hasNext()) {
+									String errormsg = (String) iter.next();
+										if(errormsg != null) {
+						%>
+							<%= errormsg%>
+						<% }} }
+				%>
+			</td>
+		</tr>
 				     <tr>
 					     <td class="formTitle" height="20" colspan="3">
 								<bean:message key="eav.new.form"/>

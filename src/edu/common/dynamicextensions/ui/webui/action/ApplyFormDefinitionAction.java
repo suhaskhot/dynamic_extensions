@@ -30,8 +30,8 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction {
 			HttpServletResponse response) {
 		FormDefinitionForm formDefinitionForm = (FormDefinitionForm)form;
 		String target = "";
+		EntityProcessor entityProcessor = EntityProcessor.getInstance();
 		if (formDefinitionForm.getOperation().equalsIgnoreCase(Constants.BUILD_FORM)) {
-			EntityProcessor entityProcessor = EntityProcessor.getInstance();
 			try {
 				EntityInterface entityInterface = entityProcessor.createAndPopulateEntity(formDefinitionForm);
 				CacheManager.addObjectToCache(request, Constants.ENTITY_INTERFACE,entityInterface);			
@@ -41,7 +41,6 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction {
 				return mapping.findForward(Constants.SYSTEM_EXCEPTION);
 			}	
 		} else {// When we click on save 
-			EntityProcessor entityProcessor = EntityProcessor.getInstance();
 			try {
 				EntityInterface entityInterface = entityProcessor.createAndSaveEntity(formDefinitionForm);
 				CacheManager.addObjectToCache(request,Constants.ENTITY_INTERFACE, entityInterface);
@@ -50,11 +49,16 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction {
 				handleException(systemException,new ArrayList());		
 				return mapping.findForward(Constants.SYSTEM_EXCEPTION);
 			} catch (DynamicExtensionsApplicationException appException) {
-                // TODO Auto-generated catch block
-			    appException.printStackTrace();
-			    formDefinitionForm.setErrorsList(handleException(appException,new ArrayList()));	
+			    request.setAttribute("errorsList",handleException(appException,new ArrayList()));	
 			    target = Constants.SUCCESS;
-				//return mapping.findForward(Constants.APPLICATION_EXCEPTION);
+			    /*try {
+					EntityInterface entityInterface = entityProcessor.createAndPopulateEntity(formDefinitionForm);
+					CacheManager.addObjectToCache(request, Constants.ENTITY_INTERFACE,entityInterface);			
+					target = Constants.SUCCESS;
+				} catch (DynamicExtensionsSystemException systemException) {
+					handleException(systemException,new ArrayList());		
+					return mapping.findForward(Constants.SYSTEM_EXCEPTION);
+				}	*/
             }			
 		}
 		return mapping.findForward(target);

@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.domain.validationrules;
 import java.util.Collection;
 
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
+import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.exception.AssignDataException;
@@ -100,5 +101,13 @@ public class Rule extends AbstractDomainObject implements java.io.Serializable,R
      */
 	public void setSystemIdentifier(Long systemIdentifier) {
         this.id = systemIdentifier;
+	}
+    
+    /**
+     * 
+     */
+	public void addRuleParameter(RuleParameterInterface ruleParameterInterface) {
+		// TODO Auto-generated method stub
+		
 	}
 }

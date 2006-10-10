@@ -32,7 +32,7 @@ public interface RuleInterface {
     /**
      * @param ruleParameterCollection The ruleParameterCollection to set.
      */
-    public void setRuleParameterCollection(Collection ruleParameterCollection);
+    public void addRuleParameter(RuleParameterInterface ruleParameterInterface);
    
            
    

@@ -1242,6 +1242,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
     public static final String CONTROL_SELECTED_ACTION = "controlSelectedAction";
     public static final String SYSTEM_EXCEPTION = "systemException";
     public static final String APPLICATION_EXCEPTION = "applicationException";
+    public static final String ENTITY_INTERFACE = "entityInterface";
     //Constants for eav end
 	
 	

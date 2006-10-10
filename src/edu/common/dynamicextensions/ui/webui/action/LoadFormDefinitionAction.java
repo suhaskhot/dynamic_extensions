@@ -45,7 +45,7 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction {
 	 * 
 	 * @param entitySelectionForm
 	 */
-	public void populateExistingFormsList(FormDefinitionForm formDefinitionForm,HttpServletRequest request) 
+	public void populateExistingFormsList(FormDefinitionForm actionForm,HttpServletRequest request) 
 	throws DynamicExtensionsApplicationException ,DynamicExtensionsSystemException{
 
 		/*DefaultBizLogic defaultBizLogic =  (DefaultBizLogic)BizLogicFactory.getBizLogic(formDefinitionForm.getFormId());   
@@ -62,8 +62,8 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction {
 		List existingFormsList = new ArrayList();
 		existingFormsList.add(entity);
 		existingFormsList.add(entity1);
-
-		formDefinitionForm.setExistingFormsList(ActionUtil.getExistingFormsList(existingFormsList));
+		actionForm.setErrorsList(new ArrayList());
+		actionForm.setExistingFormsList(ActionUtil.getExistingFormsList(existingFormsList));
 	}
 
 }

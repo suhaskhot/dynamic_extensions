@@ -28,15 +28,15 @@
 			  	 <table summary="" align = 'center' cellpadding="3" cellspacing="0" border="0">
 				  <tr><td class='standardBoldText' align='center'>
 			  <% 
-					Iterator iter = errorsList.iterator();
-							while(iter.hasNext()) {
-								String errormsg = (String) iter.next();
-								if(errormsg != null) {
-								%>
-									<%= errormsg%>
-								<% }} 
-					%>
-					</td></tr>
+	Iterator iter = errorsList.iterator();
+			while(iter.hasNext()) {
+				String errormsg = (String) iter.next();
+				if(errormsg != null) {
+				%>
+					<%= errormsg%>
+				<% }} 
+	%>
+	</td></tr>
 				     <tr>
 					  	 <td class="formMessage" colspan="3">* indicates a required field</td>
 				     </tr>

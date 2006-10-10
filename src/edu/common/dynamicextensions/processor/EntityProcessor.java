@@ -40,7 +40,7 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
     * this method gets the new instance of the entity processor to the caller.
     * @return EntityProcessor EntityProcessor instance
     */
-    public EntityProcessor getInstance () {
+    public static EntityProcessor getInstance () {
         return new EntityProcessor();
     }
     

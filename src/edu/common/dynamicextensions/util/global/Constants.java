@@ -1240,6 +1240,8 @@ public class Constants extends edu.wustl.common.util.global.Constants
     public static final String BUILD_FORM = "buildForm";
     public static final String SHOW_CREATE_FORM_JSP = "showCreateFormView";
     public static final String CONTROL_SELECTED_ACTION = "controlSelectedAction";
+    public static final String SYSTEM_EXCEPTION = "systemException";
+    public static final String APPLICATION_EXCEPTION = "applicationException";
     //Constants for eav end
 	
 	

@@ -7,48 +7,46 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domain.Entity;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.util.global.Constants;
-import edu.wustl.common.util.dbManager.DAOException;
-import edu.wustl.common.util.logger.Logger;
 
 /**
  * @author deepti_shelar
  *
  */
-public class LoadFormDefinitionAction extends BaseDispatchAction {
+public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
+		FormDefinitionForm actionForm = (FormDefinitionForm)form;
 		FormDefinitionForm cacheForm = (FormDefinitionForm)CacheManager.getObjectFromCache(request,Constants.FORM_DEFINITION_FORM);
-		FormDefinitionForm actionForm =null;
 		if(cacheForm != null) {
-			actionForm = (FormDefinitionForm)form;
 			actionForm.update(cacheForm);
-		} else {
-			actionForm = (FormDefinitionForm) form;
-		}
+		} 
 		try {
 			populateExistingFormsList(actionForm,request);
-		} catch (DAOException daoException) {
-			Logger.out.debug("excp "+daoException.getMessage());
-			Logger.out.error(daoException.getMessage(), daoException);
-			return mapping.findForward(new String(Constants.FAILURE));
+		} catch (DynamicExtensionsApplicationException applicationException) {
+			List errorsList = handleException(applicationException,new ArrayList());
+			actionForm.setErrorsList(errorsList);
+		} catch (DynamicExtensionsSystemException systemException) {
+			handleException(systemException,new ArrayList());		
+			return mapping.findForward(Constants.SYSTEM_EXCEPTION);
 		}
-
 		return (mapping.findForward(Constants.SUCCESS));
 	}
 	/**
 	 * 
 	 * @param entitySelectionForm
 	 */
-	public void populateExistingFormsList(FormDefinitionForm formDefinitionForm,HttpServletRequest request) throws DAOException {
+	public void populateExistingFormsList(FormDefinitionForm formDefinitionForm,HttpServletRequest request) 
+	throws DynamicExtensionsApplicationException ,DynamicExtensionsSystemException{
 
 		/*DefaultBizLogic defaultBizLogic =  (DefaultBizLogic)BizLogicFactory.getBizLogic(formDefinitionForm.getFormId());   
        List existingFormsList =  defaultBizLogic.retrieve("Entity");

@@ -10,15 +10,17 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.ui.interfaces.AttributeInformationInterface;
+import edu.common.dynamicextensions.ui.interfaces.ControlInformationInterface;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
 
 /**
- * @author sujay_narkar
+ * @author deepti_shelar
  *
  */
-public class ControlsForm extends AbstractActionForm {
+public class ControlsForm extends AbstractActionForm implements ControlInformationInterface,AttributeInformationInterface{
 	/**
 	 * Attribute Name
 	 */
@@ -338,61 +340,7 @@ public class ControlsForm extends AbstractActionForm {
 		this.displayChoice = displayChoice;
 	}
 	
-	/**
-	 * Overrides the validate method of ActionForm.
-	 * */
-	public ActionErrors validate(ActionMapping mapping,
-			HttpServletRequest request) {
-		ActionErrors errors = new ActionErrors();
-	/*	Validator validator = new Validator();
-		if (attributeSize == null) {
-			
-		} else if ( !validator.isNumeric(attributeSize)) {
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-					"eav.validation.numeric", ApplicationProperties
-					.getValue("eav.form.name")));
-		} else {
-			    Integer sizeInteger = new Integer(attributeSize);
-                if(sizeInteger.intValue() > 38){
-                    errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-                            "eav.validation.numericlarge", ApplicationProperties
-                            .getValue("eav.form.name")));
-                    
-                }
-        }
-		
-		if (attributeName == null) {
-			
-		} else if ( validator.isEmpty(attributeName)) {
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-					"errors.item.required", ApplicationProperties
-					.getValue("eav.control.name")));
-		}
-        
-        
-		if(referenceValues == null) {
-            
-        }else if ( validator.isEmpty(referenceValues)) {
-            errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-                    "errors.item.required", ApplicationProperties
-                    .getValue("eav.attribute.EnterChoice")));
-        }
-        
-        
-        if(attributeDecimalPlaces == null) {
-            
-        } else if ( validator.isEmpty(attributeDecimalPlaces)) {
-            errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-                    "errors.item.required", ApplicationProperties
-                    .getValue("eav.attribute.DecimalPlaces")));
-        }else if ( !validator.isNumeric(attributeDecimalPlaces)) {
-            errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-                    "eav.validation.decimalnumeric", ApplicationProperties
-                    .getValue("eav.entity.name")));
-        }*/
-		
-		return errors;
-	}
+	
 
 	/**
 	 * @return the attributeCssClass
@@ -552,6 +500,61 @@ public class ControlsForm extends AbstractActionForm {
 		this.attributeTooltip = cacheForm.getAttributeTooltip();
 		this.attributeValidationRules = cacheForm.getAttributeValidationRules();*/
 		this.userSelectedTool = cacheForm.getUserSelectedTool();
+	}
+	/**
+	 * Overrides the validate method of ActionForm.
+	 * */
+	public ActionErrors validate(ActionMapping mapping,
+			HttpServletRequest request) {
+		ActionErrors errors = new ActionErrors();
+	/*	Validator validator = new Validator();
+		if (attributeSize == null) {
+			
+		} else if ( !validator.isNumeric(attributeSize)) {
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
+					"eav.validation.numeric", ApplicationProperties
+					.getValue("eav.form.name")));
+		} else {
+			    Integer sizeInteger = new Integer(attributeSize);
+                if(sizeInteger.intValue() > 38){
+                    errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
+                            "eav.validation.numericlarge", ApplicationProperties
+                            .getValue("eav.form.name")));
+                    
+                }
+        }
+		
+		if (attributeName == null) {
+			
+		} else if ( validator.isEmpty(attributeName)) {
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
+					"errors.item.required", ApplicationProperties
+					.getValue("eav.control.name")));
+		}
+        
+        
+		if(referenceValues == null) {
+            
+        }else if ( validator.isEmpty(referenceValues)) {
+            errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
+                    "errors.item.required", ApplicationProperties
+                    .getValue("eav.attribute.EnterChoice")));
+        }
+        
+        
+        if(attributeDecimalPlaces == null) {
+            
+        } else if ( validator.isEmpty(attributeDecimalPlaces)) {
+            errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
+                    "errors.item.required", ApplicationProperties
+                    .getValue("eav.attribute.DecimalPlaces")));
+        }else if ( !validator.isNumeric(attributeDecimalPlaces)) {
+            errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
+                    "eav.validation.decimalnumeric", ApplicationProperties
+                    .getValue("eav.entity.name")));
+        }*/
+		
+		return errors;
 	}
 
 	

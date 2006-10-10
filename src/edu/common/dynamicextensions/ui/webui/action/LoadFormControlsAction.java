@@ -21,7 +21,7 @@ import edu.common.dynamicextensions.util.global.Constants;
  * This class Loads the controls for BuildForm.jsp
  * @author deepti_shelar
  */
-public class LoadFormControlsAction extends BaseDispatchAction {
+public class LoadFormControlsAction extends BaseDynamicExtensionsAction {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		ControlsForm cacheForm = (ControlsForm)CacheManager.getObjectFromCache(request,Constants.CONTROLS_FORM);

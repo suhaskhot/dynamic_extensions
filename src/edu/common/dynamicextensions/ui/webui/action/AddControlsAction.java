@@ -19,7 +19,7 @@ import edu.common.dynamicextensions.util.global.Constants;
  * @author deepti_shelar
  *
  */
-public class AddControlsAction extends BaseDispatchAction {
+public class AddControlsAction extends BaseDynamicExtensionsAction {
 	/**
 	 * 
 	 */

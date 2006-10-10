@@ -18,7 +18,7 @@ import edu.common.dynamicextensions.util.global.Constants;
  * @author deepti_shelar
  *
  */
-public class ApplyFormControlsAction extends BaseDispatchAction {
+public class ApplyFormControlsAction extends BaseDynamicExtensionsAction {
 	/**
 	 * 
 	 */

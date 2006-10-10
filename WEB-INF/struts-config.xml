@@ -11,9 +11,9 @@ PUBLIC
 	<form-bean name="controlsForm" type="edu.common.dynamicextensions.ui.webui.actionform.ControlsForm"/>
 	</form-beans>
 	
-	<!-- Global Exception Definitions -->
-	<global-exceptions>
-	</global-exceptions>
+	 <global-forwards>
+	    <forward name="systemException" path="/pages/ForwardToError.jsp" />
+	 </global-forwards>
 	
 	<action-mappings>
 		

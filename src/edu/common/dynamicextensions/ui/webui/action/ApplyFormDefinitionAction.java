@@ -8,6 +8,8 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domain.Entity;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.util.EntityManager;
@@ -19,7 +21,7 @@ import edu.wustl.common.util.logger.Logger;
  * @author deepti_shelar
  *
  */
-public class ApplyFormDefinitionAction extends BaseDispatchAction {
+public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction {
 	/**
 	 * 
 	 */
@@ -31,22 +33,25 @@ public class ApplyFormDefinitionAction extends BaseDispatchAction {
 		if (nextOperation.equalsIgnoreCase(Constants.BUILD_FORM)) {
 			CacheManager.addObjectToCache(request, Constants.FORM_DEFINITION_FORM,formDefinitionForm);			
 			target = Constants.BUILD_FORM;
-		} else {
-			EntityManager entityManager = EntityManager.getInstance(); 
+		} else {// When we click on save 
+			//call to RP
+			/*EntityManager entityManager = EntityManager.getInstance(); 
 			String entityIdentifier = formDefinitionForm .getEntityIdentifier();
 			Entity entity = null;
 			try {
 				if(entityIdentifier != null && entityIdentifier.equals("")) {
 					entity = new Entity(); 
-					entityManager.createEntity(entity);
+				//	entityManager.createEntity(entity);
 				}
 				request.setAttribute("entityIdentifier",entity.getId().toString());
 				target = Constants.SUCCESS;
-			}  catch (Exception entityCreationException) {
-				Logger.out.debug("excp "+ entityCreationException.getMessage());
-				Logger.out.error(entityCreationException.getMessage(), entityCreationException);
-				return mapping.findForward(new String(Constants.FAILURE));
-			} 
+			}   catch (DynamicExtensionsApplicationException applicationException) {
+				handleException(applicationException);
+				//return mapping.findForward();
+			} catch (DynamicExtensionsSystemException systemException) {
+				handleException(systemException);		
+				return mapping.findForward(Constants.SYSTEM_EXCEPTION);
+			}*/
 		}
 		return mapping.findForward(target);
 	}  

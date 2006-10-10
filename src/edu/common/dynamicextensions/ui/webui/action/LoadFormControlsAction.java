@@ -34,6 +34,7 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction {
 		} else {
 			actionForm.setUserSelectedTool(toolsList.get(0).toString());
 			actionForm.setSelectedControlAttributesList(getSelectedControlAttributesList(actionForm.getUserSelectedTool()));
+			actionForm.setDataType("");
 		}
 		return mapping.findForward(Constants.SHOW_BUILD_FORM_JSP);
 	}

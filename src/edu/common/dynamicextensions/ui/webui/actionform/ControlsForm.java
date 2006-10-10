@@ -500,6 +500,7 @@ public class ControlsForm extends AbstractActionForm implements ControlInformati
 		this.attributeTooltip = cacheForm.getAttributeTooltip();
 		this.attributeValidationRules = cacheForm.getAttributeValidationRules();*/
 		this.userSelectedTool = cacheForm.getUserSelectedTool();
+		this.dataType = cacheForm.getDataType();
 	}
 	/**
 	 * Overrides the validate method of ActionForm.

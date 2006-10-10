@@ -28,8 +28,7 @@ public class ApplyFormControlsAction extends BaseDynamicExtensionsAction {
 		if(actionForm.getOperation().equalsIgnoreCase(Constants.CONTROL_SELECTED_ACTION)) {
 			CacheManager.addObjectToCache(request,Constants.CONTROLS_FORM , actionForm);
 			return mapping.findForward(Constants.CONTROL_SELECTED_ACTION);
-		}
-		if(actionForm.getOperation().equalsIgnoreCase(Constants.SHOW_CREATE_FORM_JSP)) {
+		} else if(actionForm.getOperation().equalsIgnoreCase(Constants.SHOW_CREATE_FORM_JSP)) {
 			return mapping.findForward(Constants.SHOW_CREATE_FORM_JSP);
 		}
 		return mapping.findForward(Constants.SUCCESS);

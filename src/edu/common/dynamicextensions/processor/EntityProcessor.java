@@ -11,7 +11,6 @@ package edu.common.dynamicextensions.processor;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.interfaces.EntityInformationInterface;
 import edu.common.dynamicextensions.util.EntityManager;
@@ -63,7 +62,7 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
      * from the entityInformationInterface.
      * @throws DynamicExtensionsSystemException Exception
      */
-    public EntityInterface createAndSaveEntity(EntityInformationInterface entityInformationInterface) throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException {
+    public EntityInterface createAndSaveEntity(EntityInformationInterface entityInformationInterface) throws DynamicExtensionsSystemException {
         EntityInterface entityInterface = DomainObjectFactory.getInstance().createEntity();
         populateEntity(entityInformationInterface, entityInterface);
         entityInterface = EntityManager.getInstance().createEntity(entityInterface);
@@ -94,6 +93,21 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
             entityInformationInterface.setFormName(entityInterface.getName());
             entityInformationInterface.setDescription(entityInterface.getDescription());
         }
+    }
+    /**
+     * This method creates a new instance of the EntityInterface from the domain object factory. After the creation
+     * of this instance it populates the entityInterface with the information that is provided through 
+     * the entityInformationInterface which is a parameter to the method.
+     * @param entityInformationInterface Implementation of entityInformationInterface 
+     * which has all the data required for the creation of the entity.
+     * @return EntityInterface Returns the unsaved instance of EntityInterface with populated values taken 
+     * from the entityInformationInterface.
+     * @throws DynamicExtensionsSystemException Exception
+     */
+    public EntityInterface createAndPopulateEntity(EntityInformationInterface entityInformationInterface) throws DynamicExtensionsSystemException {
+        EntityInterface entityInterface = DomainObjectFactory.getInstance().createEntity();
+        populateEntity(entityInformationInterface, entityInterface);
+        return entityInterface;
     }
     
     //public saveEntity(Enti)

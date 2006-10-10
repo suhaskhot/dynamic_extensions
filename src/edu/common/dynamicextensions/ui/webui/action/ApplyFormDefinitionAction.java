@@ -28,11 +28,17 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,HttpServletRequest request,
 			HttpServletResponse response) {
 		FormDefinitionForm formDefinitionForm = (FormDefinitionForm)form;
-		String nextOperation = formDefinitionForm.getOperation();
 		String target = "";
-		if (nextOperation.equalsIgnoreCase(Constants.BUILD_FORM)) {
-			CacheManager.addObjectToCache(request, Constants.FORM_DEFINITION_FORM,formDefinitionForm);			
-			target = Constants.BUILD_FORM;
+		if (formDefinitionForm.getOperation().equalsIgnoreCase(Constants.BUILD_FORM)) {
+			EntityProcessor entityProcessor = EntityProcessor.getInstance();
+			try {
+				EntityInterface entityInterface = entityProcessor.createAndPopulateEntity(formDefinitionForm);
+				CacheManager.addObjectToCache(request, Constants.ENTITY_INTERFACE,entityInterface);			
+				target = Constants.BUILD_FORM;
+			} catch (DynamicExtensionsSystemException systemException) {
+				handleException(systemException,new ArrayList());		
+				return mapping.findForward(Constants.SYSTEM_EXCEPTION);
+			}	
 		} else {// When we click on save 
 			EntityProcessor entityProcessor = EntityProcessor.getInstance();
 			try {
@@ -42,12 +48,9 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction {
 			} catch (DynamicExtensionsSystemException systemException) {
 				handleException(systemException,new ArrayList());		
 				return mapping.findForward(Constants.SYSTEM_EXCEPTION);
-			}			/*}   catch (DynamicExtensionsApplicationException applicationException) {
-			handleException(applicationException,new ArrayList());
-			//return mapping.findForward();*/
-
+			}			
 		}
 		return mapping.findForward(target);
 	}  
-	
+
 }

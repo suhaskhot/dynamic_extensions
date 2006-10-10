@@ -12,13 +12,18 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domain.Entity;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.processor.EntityProcessor;
 import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.util.global.Constants;
 
 /**
+ * This Action class Loads the Primary Information needed for CreateForm.jsp
+ * eg . ErrorsList , ExistingFormsList .
+ * 
  * @author deepti_shelar
  *
  */
@@ -26,9 +31,10 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		FormDefinitionForm actionForm = (FormDefinitionForm)form;
-		FormDefinitionForm cacheForm = (FormDefinitionForm)CacheManager.getObjectFromCache(request,Constants.FORM_DEFINITION_FORM);
-		if(cacheForm != null) {
-			actionForm.update(cacheForm);
+		EntityInterface cacheObject = (EntityInterface)CacheManager.getObjectFromCache(request,Constants.ENTITY_INTERFACE);
+		if(cacheObject != null) {
+			EntityProcessor entityProcessor = EntityProcessor.getInstance();
+			entityProcessor.populateEntityInformation(cacheObject, actionForm);
 		} 
 		try {
 			populateExistingFormsList(actionForm,request);
@@ -56,12 +62,8 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction {
 		Entity entity = new Entity();
 		entity.setId(new Long("1"));
 		entity.setName("Entity");
-		Entity entity1 = new Entity();
-		entity1.setId(new Long("3"));
-		entity1.setName("Entity3");
 		List existingFormsList = new ArrayList();
 		existingFormsList.add(entity);
-		existingFormsList.add(entity1);
 		actionForm.setErrorsList(new ArrayList());
 		actionForm.setExistingFormsList(ActionUtil.getExistingFormsList(existingFormsList));
 	}

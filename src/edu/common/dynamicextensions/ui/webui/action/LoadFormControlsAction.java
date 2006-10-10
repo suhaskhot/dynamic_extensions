@@ -25,28 +25,22 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		ControlsForm cacheForm = (ControlsForm)CacheManager.getObjectFromCache(request,Constants.CONTROLS_FORM);
-		ControlsForm actionForm =null;
+		ControlsForm actionForm = (ControlsForm)form;
+		List toolsList = getToolsList();
+		actionForm.setToolsList(toolsList);
 		if(cacheForm != null) {
-			actionForm = (ControlsForm)form;
 			actionForm.update(cacheForm);
-			List toolsList = getToolsList();
-			actionForm.setToolsList(toolsList);
 			actionForm.setSelectedControlAttributesList(getSelectedControlAttributesList(actionForm.getUserSelectedTool()));
 		} else {
-			actionForm = (ControlsForm) form;
-			List toolsList = getToolsList();
-			actionForm.setToolsList(toolsList);
 			actionForm.setUserSelectedTool(toolsList.get(0).toString());
-			actionForm.setSelectedControlAttributesList(new ArrayList());
+			actionForm.setSelectedControlAttributesList(getSelectedControlAttributesList(actionForm.getUserSelectedTool()));
 		}
-
 		return mapping.findForward(Constants.SHOW_BUILD_FORM_JSP);
 	}
 	/**
 	 * Returns the toolsList from the xml file.
 	 * @return
 	 */
-			
 	private List getToolsList(){
 		List toolsList = new ArrayList();
 		UIControlsConfigurationFactory uiControlsConfigurationFactory = UIControlsConfigurationFactory.getInstance();

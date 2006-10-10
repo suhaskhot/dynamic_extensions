@@ -18,13 +18,20 @@
 			<attribute name="attributeName"
 				caption="TextControl.attribute_name_caption"
 				css-classname="formDateSized" display-type="textbox" noOfCols="30"
-				default-value="" tooltip="Enter the name of the attribute">
+				default-value="Name" tooltip="Enter the name of the attribute">
 			</attribute>
-			<includeJsp name="/pages/test.jsp" ></includeJsp> 
+			
+			<includeJsp name="/pages/DataTypes.jsp" >
+				<params>
+					<param name="String" value="String"></param>
+					<param name="Number" value="Number"></param>
+				</params>
+			</includeJsp> 
+			
 			<attribute name="attributeDescription"
 				caption="TextControl.attribute_description_caption"
 				css-classname="formDateSized" display-type="multiline-textbox"
-				default-value="" tooltip="Enter attribute description"
+				default-value="Description" tooltip="Enter attribute description"
 				noOfRows="5" noOfCols="20">
 			</attribute>
 
@@ -39,6 +46,7 @@
 				css-classname="formDateSized" display-type="textbox"
 				default-value="" tooltip="Stylesheet class to be applied to the attribute">
 			</attribute>
+
 			
 			<attribute name="attributeTooltip"
 				caption="TextControl.attribute_tooltip_caption"
@@ -49,47 +57,7 @@
 
 		</control>
 
-<!-- 		 Numeric control if needed to be added 
-		<control name="NumericControl" display-type="textbox">
-			<attribute name="attributeName"
-				caption="NumericControl.attribute_name_caption"
-				css-classname="formDateSized" display-type="textbox"
-				default-value="">
-			</attribute>
 
-			<attribute name="attributeDescription"
-				caption="NumericControl.attribute_description_caption"
-				css-classname="formDateSized" display-type="multiline-textbox"
-				default-value="" noOfRows="5" noOfCols="20">
-			</attribute>
-
-			<attribute name="attributeMeasurementUnits" caption=""
-				css-classname="formDateSized" display-type="textbox"
-				default-value="">
-			</attribute>
-
-			<attribute name="attributeScale" caption=""
-				css-classname="formDateSized" display-type="textbox"
-				default-value="">
-			</attribute>
-
-			<attribute name="attributeSize" caption=""
-				css-classname="formDateSized" display-type="textbox"
-				default-value="">
-			</attribute>
-
-			<attribute name="dataType"
-				caption="TextControl.attribute_datatype_caption"
-				css-classname="formDateSized" display-type="combobox"
-				default-value="string">
-				<values>
-					<value>number</value>
-					<value>String</value>
-				</values>
-			</attribute>
-		</control>
-	-->	
-		<!-- End of Numeric Control -->
 		
 		<!-- Multiline Control -->
 		<control name="MultilineControl"
@@ -205,13 +173,13 @@
 			<attribute name="attributeMultiSelect"
 				caption="ListboxControl.attribute_multiselect_caption"
 				css-classname="formDateSized" display-type="checkbox"
-				default-value="false">
+				default-value="true">
 			</attribute>
 
 			<attribute name="dataType"
 				caption="ListBoxControl.attribute_datatype_caption"
 				css-classname="formDateSized" display-type="combobox"
-				default-value="String">
+				default-value="number">
 				<values>
 					<value>String</value>
 					<value>number</value>

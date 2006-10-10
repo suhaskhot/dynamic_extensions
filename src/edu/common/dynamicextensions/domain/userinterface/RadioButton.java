@@ -23,13 +23,19 @@ public class RadioButton extends Control implements RadioButtonInterface{
      */
 	public String generateHTML()
 	{
+		String isChecked = "";
+		if((value!=null)&&(value.equalsIgnoreCase("true")))
+		{
+			isChecked="checked";
+		}
 		String htmlString = "<input type='radio' " +
 							"class = '" + cssClass + "' " +
 							"name = '" + name + "' " +
 							"value = '" + name + "' " +
 							"id = '" + name + "' " +
-							"title = '" + tooltip + "' " 
-							+">";
+							"title = '" + tooltip + "' " +
+							isChecked + 
+							" >";
 		System.out.println("Returning " + htmlString);
 		return htmlString;	
 	}

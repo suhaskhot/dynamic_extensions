@@ -106,14 +106,19 @@ public class TextArea extends Control implements TextAreaInterface {
 
 	public String generateHTML()
 	{
+		if(value==null)
+		{
+			value = "";
+		}
 		String htmlString = "<textarea " +
 		"class = '" + cssClass + "' " +
 		"name = '" + name + "' " +
 		"id = '" + name + "' " +
 		"cols = '" + columns.intValue() + "' " +
 		"rows = '" + rows.intValue() + "' " +
-		"title = '" + tooltip + "' " 
-		+">" ;
+		"title = '" + tooltip + "' " +
+		"value = '" + value + "' " + 
+		" >" ;
 		//htmlString = htmlString + defaultvalue
 		htmlString = htmlString  + "</textarea>";
 		System.out.println("Returning " + htmlString);

@@ -61,3 +61,38 @@ function showCreateFormJSP() {
 	controlsForm.submit();
 	window.close();
 }
+
+function changeDataType(datatypeControl)
+{
+	var selectedIdx = datatypeControl.selectedIndex;
+	if(datatypeControl!=null)
+	{
+		for(var i=0; i<datatypeControl.length; i++)
+		{
+			var divForDataTypeId = datatypeControl.options[i].text + "DataType";
+			var divForDataType = document.getElementById(divForDataTypeId);
+			if(divForDataType!=null)
+			{
+				if(selectedIdx == i)
+				{
+					divForDataType.style.display = "block";
+				}
+				else
+				{
+					divForDataType.style.display = "none";
+				}
+			}
+		}
+	}
+}
+
+//Added by Preeti
+function initBuildForm()
+{
+	var dataTypeElt =	document.getElementById("dataType");
+	if(dataTypeElt!=null)
+	{
+	//Load datatype details for selected datatype
+		changeDataType(dataTypeElt);
+	}
+}

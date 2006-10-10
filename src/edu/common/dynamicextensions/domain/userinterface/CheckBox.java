@@ -24,13 +24,19 @@ public class CheckBox extends Control implements CheckBoxInterface{
 	
 	public String generateHTML()
     {
+		String isChecked="";
+		if((value!=null)&&(value.equalsIgnoreCase("true")))
+		{
+			isChecked="checked";
+		}
     	String htmlString = "<input type='checkbox' " +
     						"class = '" + cssClass + "' " +
     						"name = '" + name + "' " +
     						"value = '" + name + "' " +
     						"id = '" + name + "' " +
-    						"title = '" + tooltip + "' " 
-    						+">";
+    						"title = '" + tooltip + "' " +
+    						isChecked +
+    						" >";
     	System.out.println("Returning " + htmlString);
     	return htmlString;				
     }

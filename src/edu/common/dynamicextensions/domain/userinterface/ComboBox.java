@@ -58,13 +58,21 @@ public class ComboBox extends Control implements ComboBoxInterface{
 		if(listOfValues!=null)
 		{
 			int noOfEltsInList = listOfValues.size();
-			String strValue = null;
+			String strValue = null,isSelected = "";
 			for(int i=0;i<noOfEltsInList;i++)
 			{
 				strValue = (String)listOfValues.get(i);
 				if((strValue!=null)&&(strValue.trim()!=""))
 				{
-					htmlString = htmlString + "<OPTION VALUE='"+ strValue + "'>" + strValue + "</OPTION>";
+					if(strValue.equals(value))
+					{
+						isSelected = "SELECTED"; 
+					}
+					else
+					{
+						isSelected = "";
+					}
+					htmlString = htmlString + "<OPTION VALUE='"+ strValue + "' " + isSelected+ " >" + strValue + "</OPTION>";
 				}
 			}
 		}

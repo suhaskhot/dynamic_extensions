@@ -24,7 +24,7 @@
 <head>
 <title>Dynamic Extensions</title>
 	 
-  <body >
+  <body onload="initBuildForm()">
 <html:form styleId = "controlsForm" action="/ApplyFormControlsAction" >
 	  	<html:errors />
 	  	<table align = 'center' width='100%' border="3" class="bodyStyle">

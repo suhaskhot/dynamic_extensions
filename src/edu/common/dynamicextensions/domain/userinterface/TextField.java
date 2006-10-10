@@ -102,11 +102,16 @@ public class TextField extends Control implements TextFieldInterface{
      */
 	public String generateHTML()
 	{
+		if(value==null)
+		{
+			value = "";
+		}
 		String htmlString = "<input " + 
 							"class = '" + cssClass + "' " +
 							"name = '" + name + "' " +
 							"id = '" + name + "' " +
-							"title = '" + tooltip + "'  ";
+							"title = '" + tooltip + "'  " +
+							"value = '" + value + "' " ;
 		if(isPassword.booleanValue()==true)
 		{
 			htmlString  = htmlString + " type='password' " ;

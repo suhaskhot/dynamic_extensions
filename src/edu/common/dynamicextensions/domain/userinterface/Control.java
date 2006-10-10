@@ -3,6 +3,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domain.Attribute;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.ui.webui.util.UIConfigurationConstants;
 import edu.wustl.common.actionForm.AbstractActionForm;
@@ -49,8 +50,16 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	//Map of event handlers
 	//Key : Name of event. Value: event handler name
 	protected Map eventHandlers = null;
+    /**
+     * 
+     */
 	
 	public Attribute attribute=null;
+    
+    /**
+     * 
+     *
+     */
 
 	public Control(){
 
@@ -78,14 +87,14 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	 * @return Returns the attribute.
 	 *
 	 */
-	public Attribute getAttribute() {
+	public AttributeInterface getAttribute() {
 		return attribute;
 	}
 	/**
 	 * @param attribute The attribute to set.
 	 */
-	public void setAttribute(Attribute attribute) {
-		this.attribute = attribute;
+	public void setAttribute(AttributeInterface attributeInterface) {
+		this.attribute = (Attribute)attributeInterface;
 	}
 	/**
 	 * @hibernate.property name="caption" type="string" column="CAPTION" 

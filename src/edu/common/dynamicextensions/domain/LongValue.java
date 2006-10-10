@@ -15,7 +15,7 @@ public class LongValue extends PermissibleValue implements LongValueInterface{
     /**
      * 
      */
-    protected Integer value;
+    protected  Long value;
     /**
      * 
      */
@@ -26,13 +26,13 @@ public class LongValue extends PermissibleValue implements LongValueInterface{
      * @hibernate.property name="value" type="long" column="VALUE"  
 	 * @return Returns the value.
 	 */
-	public Integer getValue() {
+	public Long getValue() {
 		return value;
 	}
 	/**
 	 * @param value The value to set.
 	 */
-	public void setValue(Integer value) {
+	public void setValue(Long value) {
 		this.value = value;
 	}
 }

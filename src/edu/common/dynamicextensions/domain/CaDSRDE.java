@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.domain;
 
+import edu.common.dynamicextensions.domaininterface.CaDSRDEInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
 
@@ -10,7 +11,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass-key column="IDENTIFIER"   
  *
  */
-public class CaDSRDE extends DataElement {
+public class CaDSRDE extends DataElement implements CaDSRDEInterface{
     
     /**
      * 

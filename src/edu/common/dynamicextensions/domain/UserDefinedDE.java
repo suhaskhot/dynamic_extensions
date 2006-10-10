@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.domain;
 
 import java.util.Collection;
 
+import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
 
@@ -12,7 +13,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass-key column="IDENTIFIER"  
  *
  */
-public class UserDefinedDE extends DataElement {
+public class UserDefinedDE extends DataElement implements UserDefinedDEInterface{
     /**
      * 
      */
@@ -39,5 +40,14 @@ public class UserDefinedDE extends DataElement {
 	public void setPermissibleValueCollection(
 			Collection permissibleValueCollection) {
 		this.permissibleValueCollection = permissibleValueCollection;
+	}
+    
+    /**
+     * 
+     * @param permissibleValue
+     */
+	public void addPermissibleValue(PermissibleValue permissibleValue) {
+		// TODO Auto-generated method stub
+		
 	}
 }

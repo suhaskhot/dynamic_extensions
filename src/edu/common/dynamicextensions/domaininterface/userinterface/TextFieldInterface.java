@@ -1,6 +1,5 @@
 package edu.common.dynamicextensions.domaininterface.userinterface;
 
-import java.util.Map;
 
 /**
  * @author geetika_bangard
@@ -24,14 +23,5 @@ public interface TextFieldInterface extends ControlInterface {
 	 */
 	public void setIsPassword(Boolean isPassword);
 
-    /**
-     * 
-     */
-	public void populateAttributes(Map propertiesMap);
-	
-
-    /**
-     * 
-     */
-	public String generateHTML();
+   
 }

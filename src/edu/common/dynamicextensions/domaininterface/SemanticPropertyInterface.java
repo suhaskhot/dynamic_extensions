@@ -8,6 +8,10 @@ package edu.common.dynamicextensions.domaininterface;
  */
 public interface SemanticPropertyInterface {
     
+    /**
+     * @return Returns the id.
+     */
+    public Long getId();
     
     /**
      * @return Returns the conceptCode.
@@ -43,7 +47,5 @@ public interface SemanticPropertyInterface {
      * @param thesaurasName The thesaurasName to set.
      */
     public void setThesaurasName(String thesaurasName);
-       
-
     
 }

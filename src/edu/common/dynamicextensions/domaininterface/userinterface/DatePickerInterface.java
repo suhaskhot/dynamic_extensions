@@ -5,10 +5,6 @@ package edu.common.dynamicextensions.domaininterface.userinterface;
  */
 public interface DatePickerInterface extends ControlInterface {
 
-    /**
-     * 
-	 */
-	
-	public String generateHTML();
+  
     
 }

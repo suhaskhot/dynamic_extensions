@@ -1,20 +1,13 @@
 package edu.common.dynamicextensions.domaininterface;
 
-import edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties;
+
 
 /**
  * @author geetika_bangard
  */
 public interface PrimitiveAttributeInterface extends AttributeInterface {
 
-    /**
-	 * @return Returns the columnProperties.
-	 */
-	public ColumnProperties getColumnProperties();
-	/**
-	 * @param columnProperties The columnProperties to set.
-	 */
-	public void setColumnProperties(ColumnProperties columnProperties);
+   
 	/**
 	 * @return Returns the isCollection.
 	 */
@@ -39,4 +32,15 @@ public interface PrimitiveAttributeInterface extends AttributeInterface {
 	 * @param isPrimaryKey The isPrimaryKey to set.
 	 */
 	public void setIsPrimaryKey(Boolean isPrimaryKey);
+    
+     /**
+      * @return
+     */
+    public DataElementInterface getDataElement();
+     
+    /**
+     * @param sourceEntity
+     */
+    public void setDataElement(DataElementInterface dataElementInterface);
+  
 }

@@ -3,8 +3,6 @@ package edu.common.dynamicextensions.domaininterface;
 
 import java.util.Collection;
 
-import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
-
 /**
  * @author sujay_narkar
  *
@@ -18,7 +16,7 @@ public interface EntityInterface extends AbstractMetadataInterface {
     /**
      * @param attributeCollection The attributeCollection to set.
      */
-    public void setAttributeCollection(Collection attributeCollection); 
+    public void addAttribute(AttributeInterface attributeInterface); 
     
     /**
      * @return Returns the entityGroupCollection.
@@ -28,19 +26,8 @@ public interface EntityInterface extends AbstractMetadataInterface {
     /**
      * @param entityGroupCollection The entityGroupCollection to set.
      */
-    public void setEntityGroupCollection(Collection entityGroupCollection);
-       
-    /**
-     * 
-     * @return
-     */
-    public TableProperties getTableProperties();
-       
-    /**
-     * 
-     * @param sourceEntity
-     */
-    public void setTableProperties(TableProperties tableProperties);
+    public void addEntityGroupInterface(EntityGroupInterface entityGroupInterface);
+      
       
 
 }

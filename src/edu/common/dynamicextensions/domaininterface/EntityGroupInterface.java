@@ -15,7 +15,7 @@ public interface EntityGroupInterface extends AbstractMetadataInterface {
     /**
      * @param entityCollection The entityCollection to set.
      */
-    public void setEntityCollection(Collection entityCollection);
+    public void addEntity(EntityInterface entityInterface);
    
 	/**
 	 * @return Returns the longName.

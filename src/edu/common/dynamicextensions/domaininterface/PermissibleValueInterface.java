@@ -6,5 +6,10 @@ package edu.common.dynamicextensions.domaininterface;
  *
  */
 public interface PermissibleValueInterface {
-
+    
+    /**
+     * @return Returns the id.
+     */
+    public Long getId();
+ 
 }

@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.domain;
 
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.wustl.common.domain.AbstractDomainObject;
 
 /**
@@ -8,7 +9,7 @@ import edu.wustl.common.domain.AbstractDomainObject;
  * @hibernate.class table="DYEXTN_PERMISSIBLE_VALUE" 
  *
  */
-public abstract class PermissibleValue extends AbstractDomainObject implements java.io.Serializable {
+public abstract class PermissibleValue extends AbstractDomainObject implements java.io.Serializable,PermissibleValueInterface {
     
     /**
      * Unique identifier for the object

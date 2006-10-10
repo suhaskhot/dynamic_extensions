@@ -19,14 +19,17 @@ public class ListBox extends Control implements ListBoxInterface{
 	 */
 	
 	List listOfValues = null;
+    /**
+     * 
+     */
 	private Boolean isMultiSelect =null;
-
+    
+    /**
+     * 
+     *
+     */
 	public ListBox(){
 
-	}
-
-	public void finalize() throws Throwable {
-		super.finalize();
 	}
 	
 
@@ -43,7 +46,9 @@ public class ListBox extends Control implements ListBoxInterface{
     public void setIsMultiSelect(Boolean isMultiSelect) {
         this.isMultiSelect = isMultiSelect;
     }
-    
+    /**
+     * 
+     */
     public String generateHTML()
     {
     	String htmlString = "<ul " +
@@ -70,7 +75,10 @@ public class ListBox extends Control implements ListBoxInterface{
     	return htmlString;
     }
     
-	public void populateAttributes(Map propertiesMap) {
+    /**
+     * 
+     */
+    public void populateAttributes(Map propertiesMap) {
 		super.populateAttributes(propertiesMap);
 		if(propertiesMap!=null)
 		{

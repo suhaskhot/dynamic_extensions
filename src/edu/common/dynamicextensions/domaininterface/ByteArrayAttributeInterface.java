@@ -1,13 +1,10 @@
 package edu.common.dynamicextensions.domaininterface;
 
-import edu.wustl.common.actionForm.AbstractActionForm;
-import edu.wustl.common.exception.AssignDataException;
 
 /**
  * @author geetika_bangard
  */
-public interface ByteArrayAttributeInterface extends
-        PrimitiveAttributeInterface {
+public interface ByteArrayAttributeInterface extends PrimitiveAttributeInterface {
     /**
      * @return Returns the contentType.
      */
@@ -17,6 +14,5 @@ public interface ByteArrayAttributeInterface extends
      */
     public void setContentType(String contentType);
 
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException;
 
 }

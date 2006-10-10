@@ -20,6 +20,8 @@ import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.BooleanAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.BooleanValueInterface;
 import edu.common.dynamicextensions.domaininterface.ByteArrayAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.ByteArrayValueInterface;
+import edu.common.dynamicextensions.domaininterface.CaDSRDEInterface;
 import edu.common.dynamicextensions.domaininterface.DateAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.DateValueInterface;
 import edu.common.dynamicextensions.domaininterface.DoubleAttributeInterface;
@@ -168,6 +170,18 @@ public class DomainObjectFactory {
 		ByteArrayAttribute byteArrayAttribute = new ByteArrayAttribute();
 		return byteArrayAttribute;
 	}  
+    
+    
+    /**
+     * 
+     * @return instance of ByteArrayAttribute.
+     */
+    public ByteArrayValueInterface createByteArrayValue(){
+        ByteArrayValue  byteArrayValue  = new ByteArrayValue ();
+        return byteArrayValue;
+    } 
+    
+    
 	/**
 	 * 
 	 * @return instance of DateAttribute.
@@ -395,5 +409,29 @@ public class DomainObjectFactory {
 		RuleParameter ruleParameter = new RuleParameter();
 		return ruleParameter;
 	}
+    
+    /**
+     * 
+     * @return
+     */
+    public CaDSRDEInterface  createCaDSRDE(){
+        CaDSRDE caDSRDE = new CaDSRDE();
+        return caDSRDE;
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    
+    public UserDefinedDE createUserDefinedDE(){
+        UserDefinedDE userDefinedDE = new UserDefinedDE();
+        return userDefinedDE ;
+    }
+    
+   
+    
+    
+   
 	
 }

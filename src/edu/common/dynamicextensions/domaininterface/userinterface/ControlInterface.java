@@ -1,8 +1,6 @@
 package edu.common.dynamicextensions.domaininterface.userinterface;
 
-import java.util.Map;
-
-import edu.common.dynamicextensions.domain.Attribute;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 
 /**
  * @author geetika_bangard
@@ -19,11 +17,11 @@ public interface ControlInterface {
 	 * @return Returns the attribute.
 	 *
 	 */
-	public Attribute getAttribute();
+	public AttributeInterface getAttribute();
 	/**
 	 * @param attribute The attribute to set.
 	 */
-	public void setAttribute(Attribute attribute);
+	public void setAttribute(AttributeInterface attributeInterface);
 	/**
 	 * @return Returns the caption.
 	 */
@@ -72,24 +70,6 @@ public interface ControlInterface {
 	 * @param tooltip The tooltip to set.
 	 */
 	public void setTooltip(String tooltip);
-	
-
-	/* (non-Javadoc)
-	 * @see edu.wustl.common.domain.AbstractDomainObject#getSystemIdentifier()
-	 */
-	public Long getSystemIdentifier();
-
-	/* (non-Javadoc)
-	 * @see edu.wustl.common.domain.AbstractDomainObject#setSystemIdentifier(java.lang.Long)
-	 */
-	public void setSystemIdentifier(Long id);
-
-	/**
-	 * @return return the HTML string for this type of a object
-	 */
-	public abstract String generateHTML();
-	
-
-	public void populateAttributes(Map propertiesMap);
+		
 
 }

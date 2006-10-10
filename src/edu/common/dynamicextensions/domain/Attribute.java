@@ -2,6 +2,7 @@ package edu.common.dynamicextensions.domain;
 import java.util.Collection;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 
 /**
  * @version 1.0
@@ -38,5 +39,10 @@ public abstract class Attribute extends AbstractMetadata implements AttributeInt
     public void setRuleCollection(Collection ruleCollection) {
         this.ruleCollection = ruleCollection;
     }
+
+	public void addRule(RuleInterface ruleInterface) {
+		// TODO Auto-generated method stub
+		
+	}
    
 }

@@ -1,9 +1,7 @@
 
 package edu.common.dynamicextensions.domaininterface;
 
-import edu.common.dynamicextensions.domain.Entity;
-import edu.common.dynamicextensions.domain.Role;
-import edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 
 /**
  * @author sujay_narkar
@@ -16,68 +14,69 @@ public interface AssociationInterface {
     public String getDirection();
     
     /**
+     * @param direction The direction to set.
+     */
+    public void setDirection(String direction);
+          
+    /**
      * 
      * @return
      */
-    public Entity getSourceEntity();
+    public EntityInterface getSourceEntity();
      
     /**
      * 
      * @param sourceEntity
      */
-    public void setSourceEntity(Entity sourceEntity);
+    public void setSourceEntity(EntityInterface sourceEntityInterface);
      
     /**
      * 
      * @return
      */
-    public Entity getTargetEntity();
-  
+    public EntityInterface getTargetEntity();
     
     /**
      * 
      * @param sourceEntity
      */
-    public void setTargetEntity(Entity targetEntity);
+    public void setTargetEntity(EntityInterface targetEntityInterface);
        
     /**
      * 
      * @return
      */
-    public Role getSourceRole();
+    public RoleInterface getSourceRole();
    
     /**
      * 
      * @param sourceEntity
      */
-    public void setSourceRole(Role sourceRole);
+    public void setSourceRole(RoleInterface sourceRoleInterface);
         
     /**
      * 
      * @return
      */
-    public Role getTargetRole();
+    public RoleInterface getTargetRole();
     
     /**
      * 
      * @param sourceEntity
      */
-    public void setTargetRole(Role targetRole);
-      
-    
+    public void setTargetRole(RoleInterface targetRoleInterface);
+
     /**
      * 
      * @return
      */
-    public ConstraintProperties getConstraintProperties();
+    public ConstraintPropertiesInterface getConstraintProperties();
       
-    
-    
     /**
      * 
      * @param sourceEntity
      */
-    public void setConstraintProperties(ConstraintProperties constraintProperties);
+    public void setConstraintProperties(ConstraintPropertiesInterface constraintPropertiesInterface);
     
 
 }

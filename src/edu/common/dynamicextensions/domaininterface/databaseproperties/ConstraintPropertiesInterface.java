@@ -1,13 +1,10 @@
 package edu.common.dynamicextensions.domaininterface.databaseproperties;
 
-import edu.wustl.common.actionForm.AbstractActionForm;
-import edu.wustl.common.exception.AssignDataException;
 
 /**
  * @author geetika_bangard
  */
-public interface ConstraintPropertiesInterface extends
-        DatabasePropertiesInterface {
+public interface ConstraintPropertiesInterface extends DatabasePropertiesInterface {
     
     /**
      * @return Returns the sourceEntityKey.
@@ -26,9 +23,6 @@ public interface ConstraintPropertiesInterface extends
      */
     public void setTargetEntityKey(String targetEntityKey);
 
-    /**
-     * 
-     */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException ;
+    
 
 }

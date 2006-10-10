@@ -6,6 +6,9 @@ import java.util.Iterator;
 
 import edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.RoleInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
 
@@ -96,7 +99,7 @@ public class Association extends Attribute implements java.io.Serializable,Assoc
 	 * 
 	 * @return
 	 */
-	public Entity getSourceEntity(){
+	public EntityInterface getSourceEntity(){
 		if(sourceEntityCollection != null){
 			Iterator sourceEntityIterator = sourceEntityCollection.iterator();
 			return (Entity)sourceEntityIterator.next();
@@ -110,11 +113,11 @@ public class Association extends Attribute implements java.io.Serializable,Assoc
 	 * 
 	 * @param sourceEntity
 	 */
-	public void setSourceEntity(Entity sourceEntity){
+	public void setSourceEntity(EntityInterface sourceEntityInterface){
 		if(sourceEntityCollection == null){
 			sourceEntityCollection = new HashSet();
 		}
-		this.sourceEntityCollection.add(sourceEntity);
+		this.sourceEntityCollection.add(sourceEntityInterface);
 	}
 	/**
 	 * @hibernate.set name="targetEntityCollection" table="DYEXTN_ENTITY"
@@ -138,7 +141,7 @@ public class Association extends Attribute implements java.io.Serializable,Assoc
 	 * 
 	 * @return
 	 */
-	public Entity getTargetEntity(){
+	public EntityInterface getTargetEntity(){
 		if(targetEntityCollection != null){
 			Iterator targetEntityIterator = targetEntityCollection.iterator();
 			return (Entity)targetEntityIterator.next();
@@ -152,11 +155,11 @@ public class Association extends Attribute implements java.io.Serializable,Assoc
 	 * 
 	 * @param sourceEntity
 	 */
-	public void setTargetEntity(Entity targetEntity){
+	public void setTargetEntity(EntityInterface targetEntityInterface){
 		if(targetEntityCollection == null){
 			targetEntityCollection = new HashSet();
 		}
-		this.targetEntityCollection.add(targetEntity);
+		this.targetEntityCollection.add(targetEntityInterface);
 	}
 	/**
 	 * @hibernate.set name="sourceRoleCollection" table="DYEXTN_ROLE
@@ -181,7 +184,7 @@ public class Association extends Attribute implements java.io.Serializable,Assoc
 	 * 
 	 * @return
 	 */
-	public Role getSourceRole(){
+	public RoleInterface getSourceRole(){
 		if(sourceRoleCollection != null){
 			Iterator sourceRoleIterator = sourceRoleCollection.iterator();
 			return (Role)sourceRoleIterator.next();
@@ -195,11 +198,11 @@ public class Association extends Attribute implements java.io.Serializable,Assoc
 	 * 
 	 * @param sourceEntity
 	 */
-	public void setSourceRole(Role sourceRole){
+	public void setSourceRole(RoleInterface sourceRoleInterface){
 		if(sourceRoleCollection == null){
 			sourceRoleCollection = new HashSet();
 		}
-		this.sourceRoleCollection.add(sourceRole);
+		this.sourceRoleCollection.add(sourceRoleInterface);
 	}
 	
 	
@@ -226,7 +229,7 @@ public class Association extends Attribute implements java.io.Serializable,Assoc
 	 * 
 	 * @return
 	 */
-	public Role getTargetRole(){
+	public RoleInterface getTargetRole(){
 		if(targetRoleCollection != null){
 			Iterator targetRoleIterator = targetRoleCollection.iterator();
 			return (Role)targetRoleIterator.next();
@@ -240,11 +243,11 @@ public class Association extends Attribute implements java.io.Serializable,Assoc
 	 * 
 	 * @param sourceEntity
 	 */
-	public void setTargetRole(Role targetRole){
+	public void setTargetRole(RoleInterface targetRoleInterface){
 		if(targetRoleCollection == null){
 			targetRoleCollection = new HashSet();
 		}
-		this.targetRoleCollection.add(targetRole);
+		this.targetRoleCollection.add(targetRoleInterface);
 	}
 	/**
 	 * @hibernate.set name="constraintPropertiesCollection" table="DYEXTN_CONSTRAINT_PROPERTIES"
@@ -270,7 +273,7 @@ public class Association extends Attribute implements java.io.Serializable,Assoc
 	 * 
 	 * @return
 	 */
-	public ConstraintProperties getConstraintProperties(){
+	public ConstraintPropertiesInterface getConstraintProperties(){
 		if(constraintPropertiesCollection != null){
 			Iterator constraintPropertiesIterator = constraintPropertiesCollection.iterator();
 			return (ConstraintProperties)constraintPropertiesIterator .next();
@@ -285,11 +288,11 @@ public class Association extends Attribute implements java.io.Serializable,Assoc
 	 * 
 	 * @param sourceEntity
 	 */
-	public void setConstraintProperties(ConstraintProperties constraintProperties){
+	public void setConstraintProperties(ConstraintPropertiesInterface constraintPropertiesInterface){
 		if(constraintPropertiesCollection == null){
 			constraintPropertiesCollection  = new HashSet();
 		}
-		this.constraintPropertiesCollection .add(constraintProperties);
+		this.constraintPropertiesCollection.add(constraintPropertiesInterface);
 	}
 	
 }

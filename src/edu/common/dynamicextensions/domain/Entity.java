@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 
@@ -115,4 +117,20 @@ public class Entity extends AbstractMetadata implements EntityInterface {
         }
         this.tablePropertiesCollection .add(tableProperties);
     }
+
+    /**
+     * 
+     */
+	public void addAttribute(AttributeInterface attributeInterface) {
+		// TODO Auto-generated method stub
+		
+	}
+
+    /**
+     * 
+     */
+	public void addEntityGroupInterface(EntityGroupInterface entityGroupInterface) {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -3,6 +3,8 @@ package edu.common.dynamicextensions.domaininterface;
 
 import java.util.Collection;
 
+import edu.common.dynamicextensions.domain.PermissibleValue;
+
 /**
  * @author sujay_narkar
  *
@@ -17,6 +19,6 @@ public interface UserDefinedDEInterface extends DataElementInterface {
     /**
      * @param permissibleValueCollection The permissibleValueCollection to set.
      */
-    public void setPermissibleValueCollection(Collection permissibleValueCollection); 
+    public void addPermissibleValue(PermissibleValue permissibleValue); 
 
 }

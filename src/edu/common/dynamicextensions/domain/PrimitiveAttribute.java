@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties;
+import edu.common.dynamicextensions.domaininterface.DataElementInterface;
+import edu.common.dynamicextensions.domaininterface.PrimitiveAttributeInterface;
 
 /**
  * @version 1.0
@@ -11,7 +13,7 @@ import edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties;
  * @hibernate.joined-subclass table="DYEXTN_PRIMITIVE_ATTRIBUTE" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public abstract class PrimitiveAttribute extends Attribute {
+public abstract class PrimitiveAttribute extends Attribute implements PrimitiveAttributeInterface {
 	
 	/**
 	 * Specifies whether this primitive attribute is a collection or not.
@@ -147,7 +149,7 @@ public abstract class PrimitiveAttribute extends Attribute {
      * 
      * @return
      */
-    public DataElement getDataElement(){
+    public DataElementInterface getDataElement(){
         if(dataElementCollection != null){
             Iterator dataElementIterator = dataElementCollection.iterator();
             return (DataElement)dataElementIterator.next();
@@ -162,10 +164,10 @@ public abstract class PrimitiveAttribute extends Attribute {
      * 
      * @param sourceEntity
      */
-    public void setDataElement(DataElement dataElement){
+    public void setDataElement(DataElementInterface dataElementInterface){
         if(dataElementCollection  == null){
             dataElementCollection   = new HashSet();
         }
-        this.dataElementCollection .add(dataElement);
+        this.dataElementCollection .add(dataElementInterface);
     }
 }

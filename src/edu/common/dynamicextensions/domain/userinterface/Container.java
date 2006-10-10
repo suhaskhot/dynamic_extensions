@@ -4,7 +4,9 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import edu.common.dynamicextensions.domain.Entity;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.exception.AssignDataException;
@@ -122,9 +124,11 @@ public class Container extends AbstractDomainObject implements Serializable,Cont
      * @hibernate.many-to-one column ="ENTITY_ID" class="edu.common.dynamicextensions.domain.Entity"
      * @return Returns the entity.
      */
-    public Entity getEntity() {
+    public EntityInterface getEntity() {
         return entity;
     }
+    
+    
     /**
      * @param entity The entity to set.
      */
@@ -208,4 +212,16 @@ public class Container extends AbstractDomainObject implements Serializable,Cont
         // TODO Auto-generated method stub
         
     }
+
+
+	public void addControl(ControlInterface controlInterface) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	public void setEntity(EntityInterface entityInterface) {
+		// TODO Auto-generated method stub
+		
+	}
 }

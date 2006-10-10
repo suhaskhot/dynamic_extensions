@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.domain;
 
+import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.wustl.common.domain.AbstractDomainObject;
 
 /**
@@ -8,7 +9,7 @@ import edu.wustl.common.domain.AbstractDomainObject;
  * @hibernate.class table="DYEXTN_DATA_ELEMENT" 
  *
  */
-public abstract class DataElement extends AbstractDomainObject implements java.io.Serializable {
+public abstract class DataElement extends AbstractDomainObject implements java.io.Serializable,DataElementInterface {
     
     protected static final long serialVersionUID = 1234567890L;
     /**

@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.domain;
 import java.util.Collection;
 
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
 
@@ -102,5 +103,13 @@ public class EntityGroup extends AbstractMetadata  implements java.io.Serializab
 	 */
 	public void setVersion(String version) {
 		this.version = version;
+	}
+
+    /**
+     * 
+     */
+	public void addEntity(EntityInterface entityInterface) {
+		// TODO Auto-generated method stub
+		
 	}
 }

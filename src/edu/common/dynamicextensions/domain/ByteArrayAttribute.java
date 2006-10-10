@@ -24,11 +24,6 @@ public class ByteArrayAttribute extends PrimitiveAttribute implements ByteArrayA
 
 	}
 
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
-	
-	
 
     /**
      * @hibernate.property name="contentType" type="string" column="CONTENT_TYPE" 

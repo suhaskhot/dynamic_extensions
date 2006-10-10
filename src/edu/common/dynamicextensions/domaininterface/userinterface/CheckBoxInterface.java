@@ -5,6 +5,6 @@ package edu.common.dynamicextensions.domaininterface.userinterface;
  */
 public interface CheckBoxInterface extends ControlInterface {
     
-    public String generateHTML();
+   
     
 }

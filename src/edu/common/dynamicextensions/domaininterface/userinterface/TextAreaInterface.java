@@ -1,6 +1,5 @@
 package edu.common.dynamicextensions.domaininterface.userinterface;
 
-import java.util.Map;
 
 /**
  * @author geetika_bangard
@@ -23,15 +22,6 @@ public interface TextAreaInterface extends ControlInterface {
 	 * @param rows The rows to set.
 	 */
 	public void setRows(Integer rows);
-
-    /**
-     * 
-     */
-	public void populateAttributes(Map propertiesMap);
-    
-    /**
-     * 
-     */
-	public String generateHTML();
+ 
 
 }

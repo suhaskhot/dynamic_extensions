@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ViewInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
@@ -103,6 +104,13 @@ public class View extends AbstractDomainObject implements Serializable,ViewInter
 	 */
 	public void setSystemIdentifier(Long id) {
 		this.id = id;
+		
+	}
+    /**
+     * 
+     */
+	public void addContainer(ContainerInterface containerInterface) {
+		// TODO Auto-generated method stub
 		
 	}
 }

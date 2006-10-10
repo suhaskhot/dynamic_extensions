@@ -2,7 +2,7 @@ package edu.common.dynamicextensions.domaininterface.userinterface;
 
 import java.util.Collection;
 
-import edu.common.dynamicextensions.domain.Entity;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 
 /**
  * @author geetika_bangard
@@ -37,15 +37,15 @@ public interface ContainerInterface {
     /**
      * @param controlCollection The controlCollection to set.
      */
-    public void setControlCollection(Collection controlCollection);
+    public void addControl(ControlInterface controlInterface);
     /**
      * @return Returns the entity.
      */
-    public Entity getEntity();
+    public EntityInterface getEntity();
     /**
      * @param entity The entity to set.
      */
-    public void setEntity(Entity entity);
+    public void setEntity(EntityInterface entityInterface);
     /**
      * @return Returns the mainTableCss.
      */

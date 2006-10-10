@@ -2,6 +2,8 @@ package edu.common.dynamicextensions.domaininterface;
 
 import java.util.Collection;
 
+import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
+
 /**
  * @author geetika_bangard
  */
@@ -14,6 +16,6 @@ public interface AttributeInterface extends AbstractMetadataInterface {
     /**
      * @param ruleCollection The ruleCollection to set.
      */
-    public void setRuleCollection(Collection ruleCollection);
+    public void addRule(RuleInterface  ruleInterface);
    
 }

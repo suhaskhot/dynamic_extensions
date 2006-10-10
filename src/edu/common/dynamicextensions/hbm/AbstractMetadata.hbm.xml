@@ -473,33 +473,6 @@
 
         </joined-subclass>
         <joined-subclass
-            name="edu.common.dynamicextensions.domain.DateAttribute"
-            table="DYEXTN_DATE_ATTRIBUTE"
-            dynamic-update="false"
-            dynamic-insert="false"
-        >
-        <key
-            column="IDENTIFIER"
-        />
-
-        <property
-            name="defaultValue"
-            type="date"
-            update="true"
-            insert="true"
-            column="DEFAULT_VALUE"
-        />
-
-        <property
-            name="format"
-            type="string"
-            update="true"
-            insert="true"
-            column="FORMAT"
-        />
-
-        </joined-subclass>
-        <joined-subclass
             name="edu.common.dynamicextensions.domain.DoubleAttribute"
             table="DYEXTN_DOUBLE_ATTRIBUTE"
             dynamic-update="false"
@@ -523,6 +496,33 @@
             update="true"
             insert="true"
             column="MEASUREMENT_UNITS"
+        />
+
+        </joined-subclass>
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.DateAttribute"
+            table="DYEXTN_DATE_ATTRIBUTE"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+
+        <property
+            name="defaultValue"
+            type="date"
+            update="true"
+            insert="true"
+            column="DEFAULT_VALUE"
+        />
+
+        <property
+            name="format"
+            type="string"
+            update="true"
+            insert="true"
+            column="FORMAT"
         />
 
         </joined-subclass>

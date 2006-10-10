@@ -40,6 +40,24 @@
             column="IDENTIFIER"
         />
 
+        <set
+            name="permissibleValueCollection"
+            table="DYEXTN_PERMISSIBLE_VALUE"
+            lazy="false"
+            inverse="false"
+            cascade="save-update"
+            sort="unsorted"
+        >
+
+              <key
+                  column="USER_DEF_DE_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.PermissibleValue"
+              />
+        </set>
+
         </joined-subclass>
         <joined-subclass
             name="edu.common.dynamicextensions.domain.CaDSRDE"

@@ -28,8 +28,6 @@ public class HTMLGeneratorTag extends TagSupport {
 		super();
 	}
 	
-	private static final String TEST_JSP = "/WEB-INF/tags/test.jsp";
-	
 	public int doStartTag() throws JspException {
 		Control controlDataType = null;
 		String controlHtmlString = null,nameOfControl=null;
@@ -110,23 +108,8 @@ public class HTMLGeneratorTag extends TagSupport {
 	}
 	
 	
-	public int doEndTag() throws JspException {/*
-		System.out.println("In Do End tag");
-		 ServletRequest request = pageContext.getRequest();
-	        request.setAttribute("selectedControlsAttributeList",uiControlsList);
-	        
-	        try {
-	            pageContext.include(TEST_JSP);
-	        } catch (ServletException e) {
-	            e.printStackTrace();
-	            //throw new CRMRuntimeException();
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	            //throw new CRMRuntimeException();
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }*/
-	        return EVAL_PAGE;
+	public int doEndTag() throws JspException {
+		    return EVAL_PAGE;
 	}
 	
 	

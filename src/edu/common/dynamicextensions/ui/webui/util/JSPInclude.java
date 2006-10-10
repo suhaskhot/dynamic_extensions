@@ -6,6 +6,7 @@
 package edu.common.dynamicextensions.ui.webui.util;
 
 import edu.common.dynamicextensions.domain.userinterface.Control;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 
 /**
  * @author preeti_munot
@@ -30,6 +31,13 @@ public class JSPInclude extends Control {
 		//String htmlString = "<jsp:include page='" + jspName +"' />";
 		String htmlString = "<%@ include file='" +  jspName + "' %>";
 		return htmlString;
+	}
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface#setAttribute(edu.common.dynamicextensions.domaininterface.AttributeInterface)
+	 */
+	public void setAttribute(AttributeInterface attributeInterface) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

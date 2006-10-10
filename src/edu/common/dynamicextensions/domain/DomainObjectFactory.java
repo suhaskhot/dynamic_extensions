@@ -16,26 +16,26 @@ import edu.common.dynamicextensions.domain.userinterface.TextField;
 import edu.common.dynamicextensions.domain.userinterface.View;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.BooleanAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.BooleanConceptValueInterface;
+import edu.common.dynamicextensions.domaininterface.BooleanValueInterface;
 import edu.common.dynamicextensions.domaininterface.ByteArrayAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.DateAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.DateConceptValueInterface;
+import edu.common.dynamicextensions.domaininterface.DateValueInterface;
 import edu.common.dynamicextensions.domaininterface.DoubleAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.DoubleConceptValueInterface;
+import edu.common.dynamicextensions.domaininterface.DoubleValueInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.FloatAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.FloatConceptValueInterface;
+import edu.common.dynamicextensions.domaininterface.FloatValueInterface;
 import edu.common.dynamicextensions.domaininterface.IntegerAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.IntegerConceptValueInterface;
+import edu.common.dynamicextensions.domaininterface.IntegerValueInterface;
 import edu.common.dynamicextensions.domaininterface.LongAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.LongConceptValueInterface;
+import edu.common.dynamicextensions.domaininterface.LongValueInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.ShortAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.ShortConceptValueInterface;
+import edu.common.dynamicextensions.domaininterface.ShortValueInterface;
 import edu.common.dynamicextensions.domaininterface.StringAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.StringConceptValueInterface;
+import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
@@ -229,67 +229,67 @@ public class DomainObjectFactory {
 	 * 
 	 * @return instance of BooleanConceptValue.
 	 */
-	public BooleanConceptValueInterface createBooleanConceptValue(){
-	    BooleanConceptValue booleanConceptValue = new BooleanConceptValue();
-	    return booleanConceptValue;
+	public BooleanValueInterface createBooleanValue(){
+	    BooleanValue booleanValue = new BooleanValue();
+	    return booleanValue;
 	}
 	
 	/**
 	 * 
 	 * @return instance of DateConceptValue.
 	 */
-	public DateConceptValueInterface createDateConceptValue(){
-	    DateConceptValue dateConceptValue = new DateConceptValue();
-	    return dateConceptValue;
+	public DateValueInterface createDateValue(){
+	    DateValue dateValue = new DateValue();
+	    return dateValue;
 	}
 	/**
 	 * 
 	 * @return instance of DoubleConceptValue.
 	 */
-	public DoubleConceptValueInterface createDoubleConceptValue(){
-	    DoubleConceptValue doubleConceptValue = new DoubleConceptValue();
-	    return doubleConceptValue;
+	public DoubleValueInterface createDoubleValue(){
+	    DoubleValue doubleValue = new DoubleValue();
+	    return doubleValue;
 	}
 	/**
 	 * 
 	 * @return instance of FloatConceptValue.
 	 */
-	public FloatConceptValueInterface createFloatConceptValue(){
-	    FloatConceptValue floatConceptValue = new FloatConceptValue();
-	    return floatConceptValue;
+	public FloatValueInterface createFloatValue(){
+	    FloatValue floatValue = new FloatValue();
+	    return floatValue;
 	}
 	/**
 	 * 
 	 * @return instance of IntegerConceptValue.
 	 */
-	public IntegerConceptValueInterface createIntegerConceptValue(){
-	    IntegerConceptValue integerConceptValue = new IntegerConceptValue();
-	    return integerConceptValue;
+	public IntegerValueInterface createIntegerValue(){
+	    IntegerValue integerValue = new IntegerValue();
+	    return integerValue;
 	}
 	/**
 	 * 
 	 * @return instance of LongConceptValue.
 	 */
-	public LongConceptValueInterface createLongConceptValue(){
-	    LongConceptValue longConceptValue = new LongConceptValue();
-	    return longConceptValue;
+	public LongValueInterface createLongValue(){
+	    LongValue longValue = new LongValue();
+	    return longValue;
 	}
 	/**
 	 * 
 	 * @return instance of ShortConceptValue.
 	 */
-	public ShortConceptValueInterface createShortConceptValue(){
-	    ShortConceptValue shortConceptValue = new ShortConceptValue();
-	    return shortConceptValue;
+	public ShortValueInterface createShortValue(){
+	    ShortValue shortValue = new ShortValue();
+	    return shortValue;
 	}
 	
 	/**
 	 * 
 	 * @return instance of StringConceptValue.
 	 */
-	public StringConceptValueInterface createStringConceptValue(){
-	    StringConceptValue stringConceptValue = new StringConceptValue();
-	    return stringConceptValue;
+	public StringValueInterface createStringValue(){
+	    StringValue stringValue = new StringValue();
+	    return stringValue;
 	}
 	
 	/**

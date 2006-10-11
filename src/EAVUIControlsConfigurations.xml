@@ -52,8 +52,6 @@
 				css-classname="formDateSized" display-type="textbox"
 				default-value="" tooltip="Tooltip to be displayed">
 			</attribute>
-
-
 		</control>
 
 
@@ -283,6 +281,12 @@
 			<attribute name="attributeTooltip"
 				caption="DateControl.attribute_tooltip_caption"
 				css-classname="formDateSized" display-type="textbox"
+				default-value="">
+			</attribute>
+			
+			<attribute name="dateDefaultValue"
+				caption="DateControl.attribute_defaultvalue_caption"
+				css-classname="" display-type="datePicker"
 				default-value="">
 			</attribute>
 		

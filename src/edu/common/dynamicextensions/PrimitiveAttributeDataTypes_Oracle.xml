@@ -31,6 +31,11 @@
 	  	  <database-datatype>Float</database-datatype>
     </Primitive-Attribute>
     
+    <Primitive-Attribute>
+		  <name>Short</name>
+	  	  <database-datatype>Number(3)</database-datatype>
+    </Primitive-Attribute>
+    
      <Primitive-Attribute>
 		  <name>Date</name>
 	  	  <database-datatype>Date</database-datatype>

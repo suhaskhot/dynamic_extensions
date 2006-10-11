@@ -8,22 +8,7 @@ import java.util.List;
  *
  */
 public interface AttributeInformationInterface {
-	/**
-	 * @return Returns the attributeName.
-	 */
-	public String getAttributeName();
-	/**
-	 * @param attributeName The attributeName to set.
-	 */
-	public void setAttributeName(String attributeName);
-	/**
-	 * @return Returns the attributeDescription.
-	 */
-	public String getAttributeDescription();
-	/**
-	 * @param attributeDescription The attributeDescription to set.
-	 */
-	public void setAttributeDescription(String attributeDescription);
+	
 	/**
 	 * Returns the attributesize
 	 * @return

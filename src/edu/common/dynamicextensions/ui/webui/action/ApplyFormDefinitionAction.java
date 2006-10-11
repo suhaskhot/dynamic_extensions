@@ -18,9 +18,15 @@ import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.util.global.Constants;
 
 /**
- * 
+ * This Action class handles two situations , 
+ * 1. When user selects 'Next' from createForm.jsp. This time a call to EntityProcessor will just create an
+ * entity and populate it with actionform's data. This entity is then saved to cache.
+ * 2. When user selects 'Save' from createForm.jsp. This time a call to EntityProcessor will create an
+ * entity and will save it to database. This entity is then saved to cache.
+ * The exception thrown can be of 'Application' type ,in this case the same Screen will be displayed  
+ * added with error messages .
+ * And The exception thrown can be of 'System' type, in this case user will be directed to Error Page.
  * @author deepti_shelar
- *
  */
 public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction {
 	/**
@@ -51,14 +57,6 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction {
 			} catch (DynamicExtensionsApplicationException appException) {
 			    request.setAttribute("errorsList",handleException(appException,new ArrayList()));	
 			    target = Constants.SUCCESS;
-			    /*try {
-					EntityInterface entityInterface = entityProcessor.createAndPopulateEntity(formDefinitionForm);
-					CacheManager.addObjectToCache(request, Constants.ENTITY_INTERFACE,entityInterface);			
-					target = Constants.SUCCESS;
-				} catch (DynamicExtensionsSystemException systemException) {
-					handleException(systemException,new ArrayList());		
-					return mapping.findForward(Constants.SYSTEM_EXCEPTION);
-				}	*/
             }			
 		}
 		return mapping.findForward(target);

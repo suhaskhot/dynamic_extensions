@@ -58,8 +58,6 @@ PUBLIC
 			input="/ApplyFormControlsAction.do"
 			scope="request">
 			<forward name="success" path="/LoadFormControlsAction.do" />
-			<forward name="showCreateFormView" path="/LoadFormDefinitionAction.do" />
-			<forward name="controlSelectedAction" path="/SelectControlAction.do" />
 		</action>
 		
 		<action path="/SelectControlAction" 

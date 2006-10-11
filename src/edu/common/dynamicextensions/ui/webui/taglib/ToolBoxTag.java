@@ -13,9 +13,9 @@ import edu.wustl.common.util.logger.Logger;
 
 /**
  * Custom Tag to display ToolBox Menu
- *       <p> This Tag accepts list of Id-Value pairs among which Values will be displyed in
- * Tools menu. Whenever user clicks on tool Javascript function specified by user is
- * called and ID of the selected tool wil be passed to it as parameter.
+ * <p> This Tag accepts list of toolNames which will be displyed in
+ * Tools menu. Whenever user clicks on any tool Javascript function specified by user is
+ * called and name of the user selected tool wil be passed to it as parameter.
  *
  * @author deepti_shelar
  
@@ -43,10 +43,7 @@ public class ToolBoxTag extends TagSupport {
      */
     protected String onClick = null;
     
-    /**
-     * selector Id which has to be shown selected initially.
-     */
-    protected Object selectedToolID = null;
+   
     /**
      * height
      */
@@ -138,20 +135,7 @@ public class ToolBoxTag extends TagSupport {
         this.onClick = onClick;
     }
     
-    /**
-     * @return Returns the selectedSelectorID.
-     * @since TODO
-     */
-    public Object getSelectedToolID() {
-        return selectedToolID;
-    }
-    /**
-     * @param selectedSelectorID The selectedSelectorID to set.
-     * @since TODO
-     */
-    public void setSelectedToolID(Object selectedToolID) {
-        this.selectedToolID = selectedToolID;
-    }
+    
     
     /**
      * @return Returns the displayMode.
@@ -279,9 +263,7 @@ public class ToolBoxTag extends TagSupport {
         	Logger.out.debug(" onClick Function Name is must");
             return false;
         }
-        if (selectedUserOption == null) {
-        	selectedToolID = toolsList.get(0).toString();
-        }
+       
         if (messageKeys == null) {
             messageKeys = new Boolean(false);
         }
@@ -371,7 +353,6 @@ public class ToolBoxTag extends TagSupport {
         this.toolsList= null;
         this.id = null;
         this.onClick = null;
-        this.selectedToolID = null;
     }
     
     

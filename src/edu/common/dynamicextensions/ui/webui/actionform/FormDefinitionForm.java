@@ -18,7 +18,7 @@ import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.global.Validator;
 
 /**
- * @author sujay_narkar
+ * @author deepti_shelar
  *
  */
 public class FormDefinitionForm  extends AbstractActionForm implements EntityInformationInterface{
@@ -51,13 +51,9 @@ public class FormDefinitionForm  extends AbstractActionForm implements EntityInf
 	 * selectForm;
 	 */
 	protected String selectForm;
-	/**
-	 * errorsList
-	 */
-	protected List errorsList;
+	
 
-
-	/**
+		/**
 	 * Returns the id assigned to form bean.
 	 * @return the id assigned to form bean.
 	 */
@@ -123,7 +119,7 @@ public class FormDefinitionForm  extends AbstractActionForm implements EntityInf
 		this.existingFormsList = existingFormsList;
 	}
 
-	public String getSelectForm() {
+public String getSelectForm() {
 		return selectForm;
 	}
 
@@ -138,18 +134,7 @@ public class FormDefinitionForm  extends AbstractActionForm implements EntityInf
 	public void setCreateAsTypeChanged(String createAsTypeChanged) {
 		this.createAsTypeChanged = createAsTypeChanged;
 	}
-	/**
-	 * @return the errorsList
-	 */
-	public List getErrorsList() {
-		return errorsList;
-	}
-	/**
-	 * @param errorsList the errorsList to set
-	 */
-	public void setErrorsList(List errorsList) {
-		this.errorsList = errorsList;
-	}
+	
 	public void update(FormDefinitionForm cacheForm) {
 		this.formName = cacheForm.getFormName();
 		this.description = cacheForm.getDescription();

@@ -17,6 +17,7 @@ import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
 
 /**
+ * This represents a ActionForm for BuildForm.jsp
  * @author deepti_shelar
  *
  */

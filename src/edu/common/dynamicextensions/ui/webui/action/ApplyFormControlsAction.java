@@ -12,11 +12,12 @@ import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.util.global.Constants;
 
-
 /**
- * 
+ * This class is executed when user selects 'Save'.
+ * The exception thrown can be of 'Application' type ,in this case the same Screen will be displayed  
+ * added with error messages .
+ * And The exception thrown can be of 'System' type, in this case user will be directed to Error Page.
  * @author deepti_shelar
- *
  */
 public class ApplyFormControlsAction extends BaseDynamicExtensionsAction {
 	/**
@@ -25,12 +26,7 @@ public class ApplyFormControlsAction extends BaseDynamicExtensionsAction {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,HttpServletRequest request,
 			HttpServletResponse response) {
 		ControlsForm actionForm = (ControlsForm) form;
-		if(actionForm.getOperation().equalsIgnoreCase(Constants.CONTROL_SELECTED_ACTION)) {
-			CacheManager.addObjectToCache(request,Constants.CONTROLS_FORM , actionForm);
-			return mapping.findForward(Constants.CONTROL_SELECTED_ACTION);
-		} else if(actionForm.getOperation().equalsIgnoreCase(Constants.SHOW_CREATE_FORM_JSP)) {
-			return mapping.findForward(Constants.SHOW_CREATE_FORM_JSP);
-		}
+		CacheManager.addObjectToCache(request,Constants.CONTROLS_FORM , actionForm);
 		return mapping.findForward(Constants.SUCCESS);
 	}  
 }

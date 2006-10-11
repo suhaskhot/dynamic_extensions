@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--  Note :
 	The dataType field for each of the controls specifies the database attribute type for the field
 	This needs to be as defined in the XML for primitive_data_type->database_type mapping
@@ -73,6 +72,12 @@
 				css-classname="" display-type="multiline-textbox"
 				default-value="" noOfRows="5" noOfCols="20">
 			</attribute>
+			
+			<includeJsp name="/pages/DataTypes.jsp" >
+				<params>
+					<param name="String" value="String"></param>
+				</params>
+			</includeJsp>
 
 			<attribute name="attributeNoOfRows"
 				caption="MultilineControl.attribute_noOfRows_caption"
@@ -97,15 +102,6 @@
 				css-classname="formDateSized" display-type="textbox"
 				default-value="">
 			</attribute>
-
-			<attribute name="dataType"
-				caption="MultilineControl.attribute_datatype_caption"
-				css-classname="formDateSized" display-type="combobox"
-				default-value="String">
-				<values>
-					<value>String</value>
-				</values>
-			</attribute>
 		</control>
 		
 		<control name="ComboboxControl" display-type="combobox">
@@ -121,6 +117,14 @@
 				default-value="" noOfRows="5" noOfCols="20">
 			</attribute>
 
+			<includeJsp name="/pages/DataTypes.jsp" >
+				<params>
+					<param name="String" value="String"></param>
+					<param name="Number" value="Number"></param>
+					<param name="Boolean" value="Boolean"></param>
+				</params>
+			</includeJsp>
+
 			<attribute name="attributeCssClass"
 				caption="ComboboxControl.attribute_cssclass_caption"
 				css-classname="formDateSized" display-type="textbox"
@@ -133,16 +137,13 @@
 				default-value="">
 			</attribute>
 
-			<attribute name="dataType"
-				caption="ComboboxControl.attribute_datatype_caption"
-				css-classname="formDateSized" display-type="combobox"
-				default-value="String">
-				<values>
-					<value>String</value>
-					<value>number</value>
-					<value>boolean</value>
-				</values>
-			</attribute>
+			
+			<includeJsp name="/pages/ListValuesSpecification.jsp" >
+				<params>
+					<param name="UserDefined" value="User Defined"></param>
+					<param name="CADSR" value="CA DSR"></param>
+				</params>
+			</includeJsp> 
 		</control>
 		
 		<control name="ListBoxControl" display-type="listbox">
@@ -157,7 +158,14 @@
 				css-classname="" display-type="multiline-textbox"
 				default-value="" noOfRows="5" noOfCols="20">
 			</attribute>
-
+			
+			<includeJsp name="/pages/DataTypes.jsp" >
+				<params>
+					<param name="String" value="String"></param>
+					<param name="Number" value="Number"></param>
+					<param name="Boolean" value="Boolean"></param>
+				</params>
+			</includeJsp>
 			<attribute name="attributeCssClass"
 				caption="ListboxControl.attribute_cssclass_caption"
 				css-classname="formDateSized" display-type="textbox"
@@ -176,16 +184,6 @@
 				default-value="true">
 			</attribute>
 
-			<attribute name="dataType"
-				caption="ListBoxControl.attribute_datatype_caption"
-				css-classname="formDateSized" display-type="combobox"
-				default-value="number">
-				<values>
-					<value>String</value>
-					<value>number</value>
-					<value>boolean</value>
-				</values>
-			</attribute>
 		</control>
 		
 		<control name="CheckboxControl" display-type="checkbox">
@@ -200,7 +198,15 @@
 				css-classname="" display-type="multiline-textbox"
 				default-value="" noOfRows="5" noOfCols="20">
 			</attribute>
-
+			
+			<includeJsp name="/pages/DataTypes.jsp" >
+				<params>
+					<param name="String" value="String"></param>
+					<param name="Number" value="Number"></param>
+					<param name="Boolean" value="Boolean"></param>
+				</params>
+			</includeJsp>
+			
 			<attribute name="attributeCssClass"
 				caption="CheckboxControl.attribute_cssclass_caption"
 				css-classname="formDateSized" display-type="textbox"
@@ -211,17 +217,6 @@
 				caption="CheckboxControl.attribute_tooltip_caption"
 				css-classname="formDateSized" display-type="textbox"
 				default-value="">
-			</attribute>
-			
-			<attribute name="dataType"
-				caption="ListBoxControl.attribute_datatype_caption"
-				css-classname="formDateSized" display-type="combobox"
-				default-value="String">
-				<values>
-					<value>String</value>
-					<value>number</value>
-					<value>boolean</value>
-				</values>
 			</attribute>
 		</control>
 		
@@ -238,6 +233,14 @@
 				default-value="" noOfRows="5" noOfCols="20">
 			</attribute>
 
+			<includeJsp name="/pages/DataTypes.jsp" >
+				<params>
+					<param name="String" value="String"></param>
+					<param name="Number" value="Number"></param>
+					<param name="Boolean" value="Boolean"></param>
+				</params>
+			</includeJsp>
+			
 			<attribute name="attributeCssClass"
 				caption="RadioButtonControl.attribute_cssclass_caption"
 				css-classname="formDateSized" display-type="textbox"
@@ -250,16 +253,6 @@
 				default-value="">
 			</attribute>
 			
-			<attribute name="dataType"
-				caption="RadioButtonControl.attribute_datatype_caption"
-				css-classname="formDateSized" display-type="combobox"
-				default-value="String">
-				<values>
-					<value>String</value>
-					<value>number</value>
-					<value>boolean</value>
-				</values>
-			</attribute>
 		</control>
 		
 		<control name="DateControl" display-type="datePicker">
@@ -274,6 +267,12 @@
 				css-classname="" display-type="multiline-textbox"
 				default-value="" noOfRows="5" noOfCols="20">
 			</attribute>
+			
+			<includeJsp name="/pages/DataTypes.jsp" >
+				<params>
+					<param name="Date" value="Date"></param>
+				</params>
+			</includeJsp>
 
 			<attribute name="attributeCssClass"
 				caption="DateControl.attribute_cssclass_caption"
@@ -286,74 +285,7 @@
 				css-classname="formDateSized" display-type="textbox"
 				default-value="">
 			</attribute>
-			
-			<attribute name="dataType"
-				caption="DateControl.attribute_datatype_caption"
-				css-classname="formDateSized" display-type="combobox"
-				default-value="date">
-				<values>
-					<value>date</value>
-				</values>
-			</attribute>
+		
 		</control>
 	</controls>
-	
-	<!--  definitions for the datatype as per the ones supported -->
-	<primitive_data_types>
-		<datatype name="number">
-			<attribute name="attributeDefaultValue" caption=""
-				css-classname="formDateSized" display-type="textbox"
-				default-value="">
-			</attribute>
-
-			<attribute name="attributeMeasurementUnits" caption=""
-				css-classname="formDateSized" display-type="textbox"
-				default-value="">
-			</attribute>
-
-			<attribute name="attributeScale" caption=""
-				css-classname="formDateSized" display-type="textbox"
-				default-value="">
-			</attribute>
-
-			<attribute name="attributeSize" caption=""
-				css-classname="formDateSized" display-type="textbox"
-				default-value="">
-			</attribute>
-		</datatype>
-
-		<datatype name="String">
-			<attribute name="attributeDefaultValue" caption=""
-				css-classname="formDateSized" display-type="textbox"
-				default-value="">
-			</attribute>
-
-			<attribute name="attributeSize" caption=""
-				css-classname="formDateSized" display-type="textbox"
-				default-value="">
-			</attribute>
-		</datatype>
-
-		<datatype name="boolean">
-			<attribute name="attributeDefaultValue" caption=""
-				css-classname="formDateSized" display-type="combobox"
-				default-value="true">
-				<values>
-					<value>true</value>
-					<value>false</value>
-				</values>
-			</attribute>
-		</datatype>
-		
-		<datatype name="date">
-			<attribute name="attributeDefaultValue" caption=""
-				css-classname="formDateSized" display-type="datePicker" >
-			</attribute>
-			
-			<attribute name="attributeFormat" caption=""
-				css-classname="formDateSized" display-type="textbox" >
-			</attribute>
-		</datatype>
-		
-	</primitive_data_types>
 </ui-configurations>

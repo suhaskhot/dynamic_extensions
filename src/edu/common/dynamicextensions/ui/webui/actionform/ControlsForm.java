@@ -103,6 +103,9 @@ public class ControlsForm extends AbstractActionForm implements ControlInformati
 	/**
 	 * 
 	 */
+	
+	String attributeCaption;
+	Boolean isPassword;
 	List toolsList = new ArrayList();
 	
 	protected String attributeCssClass;
@@ -558,6 +561,26 @@ public class ControlsForm extends AbstractActionForm implements ControlInformati
         }*/
 		
 		return errors;
+	}
+
+	public String getAttributeCaption()
+	{
+		return this.attributeCaption;
+	}
+
+	public void setAttributeCaption(String attributeCaption)
+	{
+		this.attributeCaption = attributeCaption;
+	}
+
+	public Boolean getIsPassword()
+	{
+		return this.isPassword;
+	}
+
+	public void setIsPassword(Boolean isPassword)
+	{
+		this.isPassword = isPassword;
 	}
 
 	

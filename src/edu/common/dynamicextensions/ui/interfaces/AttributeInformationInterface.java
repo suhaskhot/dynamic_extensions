@@ -1,6 +1,5 @@
 package edu.common.dynamicextensions.ui.interfaces;
 
-import java.util.List;
 
 /**
  * 
@@ -26,31 +25,7 @@ public interface AttributeInformationInterface {
 	 * @param attributeFormat The attributeFormat to set.
 	 */
 	public void setAttributeFormat(String attributeFormat);
-	/**
-	 * @return the selectedControlAttributesList
-	 */
-	public List getSelectedControlAttributesList();
-
-	/**
-	 * @param selectedControlAttributesList the selectedControlAttributesList to set
-	 */
-	public void setSelectedControlAttributesList(List selectedControlAttributesList);
-	/**
-	 * @return Returns the dataType.
-	 */
-	public String getDataType();
-	/**
-	 * @param dataType The dataType to set.
-	 */
-	public void setDataType(String dataType);
-	/**
-	 * @return Returns the dataTypeList.
-	 */
-	public List getDataTypeList();
-	/**
-	 * @param dataTypeList The dataTypeList to set.
-	 */
-	public void setDataTypeList(List dataTypeList);
+	
 	/**
 	 * @return Returns the attributeDefaultValue.
 	 */
@@ -75,14 +50,7 @@ public interface AttributeInformationInterface {
 	 * @param attributeDecimalPlaces The attributeDecimalPlaces to set.
 	 */
 	public void setAttributeDecimalPlaces(String attributeDecimalPlaces) ;
-	/**
-	 * @return Returns the choiceList.
-	 */
-	public String getChoiceList() ;
-	/**
-	 * @param choiceList The choiceList to set.
-	 */
-	public void setChoiceList(String choiceList) ;
+	
 	/**
 	 * @return Returns the attributeIdentifier.
 	 */
@@ -91,16 +59,7 @@ public interface AttributeInformationInterface {
 	 * @param attributeIdentifier The attributeIdentifier to set.
 	 */
 	public void setAttributeIdentifier(String attributeIdentifier);
-	/**
-	 * @return the attributeCssClass
-	 */
-	public String getAttributeCssClass() ;
-
-	/**
-	 * @param attributeCssClass the attributeCssClass to set
-	 */
-	public void setAttributeCssClass(String attributeCssClass) ;
-
+	
 	/**
 	 * @return the attributeMeasurementUnits
 	 */
@@ -110,55 +69,4 @@ public interface AttributeInformationInterface {
 	 * @param attributeMeasurementUnits the attributeMeasurementUnits to set
 	 */
 	public void setAttributeMeasurementUnits(String attributeMeasurementUnits);
-
-	/**
-	 * @return the attributeMultiSelect
-	 */
-	public Boolean getAttributeMultiSelect() ;
-
-	/**
-	 * @param attributeMultiSelect the attributeMultiSelect to set
-	 */
-	public void setAttributeMultiSelect(Boolean attributeMultiSelect) ;
-
-	/**
-	 * @return the attributenoOfCols
-	 */
-	public String getAttributenoOfCols() ;
-
-	/**
-	 * @param attributenoOfCols the attributenoOfCols to set
-	 */
-	public void setAttributenoOfCols(String attributenoOfCols) ;
-
-	/**
-	 * @return the attributeNoOfRows
-	 */
-	public String getAttributeNoOfRows() ;
-
-	/**
-	 * @param attributeNoOfRows the attributeNoOfRows to set
-	 */
-	public void setAttributeNoOfRows(String attributeNoOfRows) ;
-
-	/**
-	 * @return the attributeScale
-	 */
-	public String getAttributeScale() ;
-
-	/**
-	 * @param attributeScale the attributeScale to set
-	 */
-	public void setAttributeScale(String attributeScale) ;
-
-	/**
-	 * @return the attributeTooltip
-	 */
-	public String getAttributeTooltip() ;
-
-	/**
-	 * @param attributeTooltip the attributeTooltip to set
-	 */
-	public void setAttributeTooltip(String attributeTooltip) ;
-
 }

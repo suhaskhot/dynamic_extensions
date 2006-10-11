@@ -52,7 +52,7 @@ public class ListBox extends Control implements ListBoxInterface{
      */
     public String generateHTML()
     {
-    	String htmlString = "<ul " +
+    	/*String htmlString = "<ul " +
 					    	"class = '" + cssClass + "' " +
 							"name = '" + name + "' " +
 							"id = '" + name + "' " +
@@ -72,9 +72,44 @@ public class ListBox extends Control implements ListBoxInterface{
 			}
 		}
 		htmlString = htmlString + "</ul>";
-		System.out.println("Returning " + htmlString);;
-    	return htmlString;
-    }
+		System.out.println("Returning " + htmlString);;*/
+    	String strMultiSelect = "";
+    	if((isMultiSelect!=null)&&(isMultiSelect.booleanValue()==true))
+    	{
+    		strMultiSelect = "MULTIPLE " ;
+    	}
+		String htmlString = "<SELECT " + strMultiSelect + 
+							" size = 5" + 
+							"class = '" + cssClass + "' " +
+							"name = '" + name + "' " +
+							"id = '" + name + "' " +
+							"title = '" + tooltip + "' " 
+							+">";
+		if(listOfValues!=null)
+		{
+			int noOfEltsInList = listOfValues.size();
+			String strValue = null,isSelected = "";
+			for(int i=0;i<noOfEltsInList;i++)
+			{
+				strValue = (String)listOfValues.get(i);
+				if((strValue!=null)&&(strValue.trim()!=""))
+				{
+					if(strValue.equals(value))
+					{
+						isSelected = "SELECTED"; 
+					}
+					else
+					{
+						isSelected = "";
+					}
+					htmlString = htmlString + "<OPTION VALUE='"+ strValue + "' " + isSelected+ " >" + strValue + "</OPTION>";
+				}
+			}
+		}
+		htmlString = htmlString + "</SELECT>";
+		System.out.println("Returning " + htmlString);
+		return htmlString;	
+	}
     
     /**
      * 

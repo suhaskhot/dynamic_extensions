@@ -13,6 +13,8 @@
 %>
 <link rel="stylesheet" type="text/css" href="css/stylesheet.css" />
 <script src="jss/dynamicExtensions.js" type="text/javascript"></script>
+<script src="jss/overlib_mini.js" type="text/javascript"></script>
+<script src="jss/calender.js" type="text/javascript"></script>
 
 <c:set var="toolsList" value="${controlsForm.toolsList}"/>
  <jsp:useBean id="toolsList" type="java.util.List"/>

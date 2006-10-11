@@ -24,13 +24,22 @@ public class DatePicker extends Control implements DatePickerInterface{
 	
 	public String generateHTML()
     {
-		/*String htmString = "<input class='"+cssClass+"' maxlength='10'  size='10' name='"+name+"' "+
-		"id='"+name+"' /> " +
-        //"<div id='overDiv' style='position:absolute; visibility:hidden; z-index:1000;'></div>" +
-        "<a href=\"javascript:show_calendar('entityDataForm."+name+"',null,null,'MM-DD-YYYY');\">" +
-        "<img src='images\\calendar.gif' width=24 height=22 border=0/> (MM-DD-YYYY)" +
-        "</a> ";*/
-		return "Not Implemented";
+		 if(value == null){
+	            value="";
+	        }
+	          
+	        String output = "<input class='"+cssClass+"' " +
+	        				 " name='"+name+"'  id='"+name+"' "+
+	        				 " value='"+value+"'/> " +
+	                        "<div id='overDiv' style='position:absolute; visibility:hidden; z-index:1000;'></div>" +
+	                        "<a href=\"javascript:show_calendar('forms(0)."+name+"',null,null,'MM-DD-YYYY');\">" +
+	                        "<img src='images\\calendar.gif' width=24 height=22 border=0/> (MM-DD-YYYY)" +
+	                        "</a> "; 
+	        System.out.println("************"+output);
+
+	        
+	        return output;
+	        
     }
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface#setAttribute(edu.common.dynamicextensions.domaininterface.AttributeInterface)

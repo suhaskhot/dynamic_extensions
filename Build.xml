@@ -20,6 +20,14 @@
 	<property name="oracle.dir" value="${base.dir}/SQL/Oracle"/>
 	<property name="common.dir" value="${base.dir}/SQL/Common"/>
 	
+	<!--Properties set for checkstyle "Tools that generate report of code convention violations"-->
+	<property name="checkstyle.dir" value="${base.dir}/checkstyle"/>
+	<property name="checkstyle.rules.file" value="${checkstyle.dir}/CheckStyleRules.xml"/>
+	<property name="checkstyle.report.formatter" value="${checkstyle.dir}/report_formatter/checkstyle-simple.xsl"/>
+	<property name="checkstyle.report.dir" value="${checkstyle.dir}/checkstyle_reports"/>
+	<property name="checkstyle.unformatted.report" value="${checkstyle.report.dir}/checkstyle_report.xml"/>
+	<property name="checkstyle.formatted.report" value="${checkstyle.report.dir}/checkstyle_report.html"/>
+
 	<path id="app.classpath">
 		<fileset dir="${lib.dir}">
 			<include name="*.jar"/>
@@ -46,7 +54,26 @@
     	<!-- Create the build directory structure used by compile -->
 	    <mkdir dir="${target.dir}"/>
 	    <mkdir dir="${build.dir}"/>
+		
+		<!-- Create the checkstyle report directory-->
+		<delete dir="${checkstyle.report.dir}"/>
+		<mkdir dir="${checkstyle.report.dir}"/>
   	</target>
+	
+	
+	<target name="checkstyle" depends="init" description="Generates a report of code convention violations.">
+		<taskdef resource="checkstyletask.properties" classpath="${extra_lib.dir}/checkstyle-all-3.4.jar"/>  
+
+	    <checkstyle config="${checkstyle.rules.file}" failureProperty="checkstyle.failed" failOnViolation="false">
+	    	<formatter type="xml" tofile="${checkstyle.unformatted.report}"/>
+	      	<fileset dir="${src.dir}" includes="**/*.java"/>
+	    </checkstyle>
+
+	    <style in="${checkstyle.unformatted.report}" out="${checkstyle.formatted.report}" style="${checkstyle.report.formatter}"/>
+	</target>
+	
+	<target name="checkstyle_wrapper" depends="checkstyle" description="Breaks the build is checkstyle detected code conventions violations.">
+	</target>
 	
 	<!-- Compile all files, generated and hand-written -->
     <target name="compile" depends="init">

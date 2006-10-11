@@ -31,8 +31,10 @@ public class AddControlsAction extends BaseDynamicExtensionsAction {
 			HttpServletResponse response) {
 		ControlsForm actionForm = (ControlsForm)form;
 		CacheManager.addObjectToCache(request, Constants.CONTROLS_FORM, actionForm);
-		ControlInterface controlInterface = ControlProcessor.getInstance().createControl(actionForm.getUserSelectedTool());
 		
+		ControlProcessor controlProcessor = ControlProcessor.getInstance();
+		ControlInterface controlInterface =controlProcessor.createControl(actionForm.getUserSelectedTool());
+		controlProcessor.populateControl(actionForm, controlInterface);
 		//Add code for add control to form
 		return mapping.findForward("success");
 	}  

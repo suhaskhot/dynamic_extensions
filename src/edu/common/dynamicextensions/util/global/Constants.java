@@ -1243,6 +1243,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
     public static final String SYSTEM_EXCEPTION = "systemException";
     public static final String APPLICATION_EXCEPTION = "applicationException";
     public static final String ENTITY_INTERFACE = "entityInterface";
+    public static final String CONTAINER_INTERFACE = "containerInterface";
     //Constants for eav end
 	
 	

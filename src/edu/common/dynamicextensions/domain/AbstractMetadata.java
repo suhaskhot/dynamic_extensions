@@ -8,36 +8,39 @@ import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.wustl.common.domain.AbstractDomainObject;
 
 /**
+ * This is an abstract class extended by Entity,Entity group,Attribute.This class stores
+ * basic information needed for metadata objects.  
  * @version 1.0
  * @created 28-Sep-2006 12:20:06 PM
  * @hibernate.class table="DYEXTN_ABSTRACT_METADATA"
+  
  */
 public  abstract class AbstractMetadata extends AbstractDomainObject implements java.io.Serializable,AbstractMetadataInterface {
 	
 	protected static final long serialVersionUID = 1234567890L;
 	
 	/**
-	 * 
+	 * Internally generated identifier.
 	 */
 	protected Long id;
 	/**
-	 * 
+	 * Name of metadata object
 	 */
 	protected String name;
 	/**
-	 * 
+	 * Description of metadata object
 	 */
 	protected String description;
 	/**
-	 * 
+	 * Last updated date for metadata object
 	 */
 	protected Date lastUpdated;
 	/**
-	 * 
+	 * Created date for metadata object
 	 */
 	protected Date createdDate;
     /**
-     * 
+     * Semantic property collection.
      */
 	
 	protected Collection semanticPropertyCollection;
@@ -180,7 +183,7 @@ public  abstract class AbstractMetadata extends AbstractDomainObject implements 
 	}
 
     /**
-     * 
+     * Adds 
      */
 	public void addSemanticProperty(SemanticPropertyInterface semanticPropertyInterface) {
 		// TODO Auto-generated method stub

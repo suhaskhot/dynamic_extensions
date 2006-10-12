@@ -7,78 +7,79 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 /**
  * @author geetika_bangard
  */
-public interface ContainerInterface {
+public interface ContainerInterface 
+{
     
     /**
      * @return
      */
-    public Long getId();
+     Long getId();
     
     /**
      * @return Returns the buttonCss.
      */
-    public String getButtonCss();
+     String getButtonCss();
     /**
      * @param buttonCss The buttonCss to set.
      */
-    public void setButtonCss(String buttonCss);
+     void setButtonCss(String buttonCss);
     /**
      * @return Returns the caption.
      */
-    public String getCaption();
+     String getCaption();
     /**
      * @param caption The caption to set.
      */
-    public void setCaption(String caption);
+     void setCaption(String caption);
     /**
      * @return Returns the controlCollection.
      */
-    public Collection getControlCollection();
+     Collection getControlCollection();
     /**
      * @param controlCollection The controlCollection to set.
      */
-    public void addControl(ControlInterface controlInterface);
+     void addControl(ControlInterface controlInterface);
     /**
      * @return Returns the entity.
      */
-    public EntityInterface getEntity();
+     EntityInterface getEntity();
     /**
      * @param entity The entity to set.
      */
-    public void setEntity(EntityInterface entityInterface);
+     void setEntity(EntityInterface entityInterface);
     /**
      * @return Returns the mainTableCss.
      */
-    public String getMainTableCss();
+     String getMainTableCss();
     /**
      * @param mainTableCss The mainTableCss to set.
      */
-    public void setMainTableCss(String mainTableCss);
+     void setMainTableCss(String mainTableCss);
     /**
      * @return Returns the requiredFieldIndicatior.
      */
-    public String getRequiredFieldIndicatior();
+     String getRequiredFieldIndicatior();
     /**
      * @param requiredFieldIndicatior The requiredFieldIndicatior to set.
      */
-    public void setRequiredFieldIndicatior(String requiredFieldIndicatior);
+     void setRequiredFieldIndicatior(String requiredFieldIndicatior);
     /**
      * @return Returns the requiredFieldWarningMessage.
      */
-    public String getRequiredFieldWarningMessage();
+     String getRequiredFieldWarningMessage();
     /**
      * @param requiredFieldWarningMessage The requiredFieldWarningMessage to set.
      */
-    public void setRequiredFieldWarningMessage(
+     void setRequiredFieldWarningMessage(
             String requiredFieldWarningMessage);
     /**
      * @return Returns the titleCss.
      */
-    public String getTitleCss();
+     String getTitleCss();
     /**
      * @param titleCss The titleCss to set.
      */
-    public void setTitleCss(String titleCss);
+     void setTitleCss(String titleCss);
 
        
 }

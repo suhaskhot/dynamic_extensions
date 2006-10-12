@@ -2,18 +2,21 @@ package edu.common.dynamicextensions.domaininterface;
 
 
 /**
+ * This is a boolean type of primitive attribute.
  * @author geetika_bangard
  */
-public interface BooleanAttributeInterface extends PrimitiveAttributeInterface {
+public interface BooleanAttributeInterface extends PrimitiveAttributeInterface
+{
 
     /**
+     * This field stores the default value for the boolean attribute.
      * @return Returns the defaultValue.
      */
-    public Boolean getDefaultValue();
+     Boolean getDefaultValue();
     /**
      * @param defaultValue The defaultValue to set.
      */
-    public void setDefaultValue(Boolean defaultValue);
+    void setDefaultValue(Boolean defaultValue);
 
   
 }

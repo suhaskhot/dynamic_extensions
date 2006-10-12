@@ -3,15 +3,18 @@ package edu.common.dynamicextensions.domaininterface;
 import java.sql.Date;
 
 /**
+ * This object stores the permissible value of date type.This is a user defined value.
  * @author geetika_bangard
  */
-public interface DateValueInterface extends PermissibleValueInterface {
-  	/**
+public interface DateValueInterface extends PermissibleValueInterface 
+{
+ 	/**
+     * 
 	 * @return Returns the value.
 	 */
-	public Date getValue();
+	 Date getValue();
 	/**
 	 * @param value The value to set.
 	 */
-	public void setValue(Date value) ;
+	void setValue(Date value) ;
 }

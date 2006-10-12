@@ -2,16 +2,19 @@ package edu.common.dynamicextensions.domaininterface;
 
 
 /**
+ * The permissible value of type double. 
  * @author geetika_bangard
  */
-public interface DoubleValueInterface extends PermissibleValueInterface {
+public interface DoubleValueInterface extends PermissibleValueInterface 
+{
 
 	/**
+     * Double permissible value.
 	 * @return Returns the value.
 	 */
-	public Double getValue();
+	 Double getValue();
 	/**
 	 * @param value The value to set.
 	 */
-	public void setValue(Double value);
+	void setValue(Double value);
 }

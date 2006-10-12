@@ -4,79 +4,92 @@ package edu.common.dynamicextensions.domaininterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 
 /**
+ * This interface contains all the information regarding association between the entities.
+ * The association may be of different types like one-to-many,many-to-many or from source - destination,
+ * bidirectional.Entity object contains association collection.Each object in association collection represents 
+ * association of  the entity with other entity.
+ *  Using the information of association object different constraints are added in the dynamically created tables.  
+ * 
  * @author sujay_narkar
  *
  */
-public interface AssociationInterface {
+public interface AssociationInterface
+{
     /**
+     * This is a direction for the association.The direction may be source - destination or
+     * bidirectional. 
      * @return Returns the direction.
      */
-    public String getDirection();
+     String getDirection();
     
     /**
      * @param direction The direction to set.
      */
-    public void setDirection(String direction);
+     void setDirection(String direction);
           
     /**
-     * 
-     * @return
+     * Source entity object in the association.
+     * @return EntityInterface
      */
-    public EntityInterface getSourceEntity();
+     EntityInterface getSourceEntity();
      
     /**
      * 
-     * @param sourceEntity
+     * @param sourceEntityInterface source entity interface to be set.
      */
-    public void setSourceEntity(EntityInterface sourceEntityInterface);
+     void setSourceEntity(EntityInterface sourceEntityInterface);
      
     /**
-     * 
-     * @return
+     * Target entity object for the association
+     * @return EntityInterface
      */
-    public EntityInterface getTargetEntity();
+     EntityInterface getTargetEntity();
     
     /**
      * 
-     * @param sourceEntity
+     * @param targetEntityInterface target entity to be set.
      */
-    public void setTargetEntity(EntityInterface targetEntityInterface);
+     void setTargetEntity(EntityInterface targetEntityInterface);
        
     /**
-     * 
-     * @return
+     * Source role for the association.Source role stores information such as min cardinality,
+     * max cardinality etc information of source entity. 
+     * @return RoleInterface
      */
-    public RoleInterface getSourceRole();
+     RoleInterface getSourceRole();
    
     /**
      * 
-     * @param sourceEntity
+     * @param sourceRoleInterface source role to be set.
      */
-    public void setSourceRole(RoleInterface sourceRoleInterface);
+     void setSourceRole(RoleInterface sourceRoleInterface);
         
     /**
-     * 
-     * @return
+     * Target role for the assoiation.target role stores information such as min cardinality,
+     * max cardinality etc information of target entity. 
+     * @return RoleInterface
      */
-    public RoleInterface getTargetRole();
+     RoleInterface getTargetRole();
     
     /**
      * 
-     * @param sourceEntity
+     * @param targetRoleInterface target role to be set.
      */
-    public void setTargetRole(RoleInterface targetRoleInterface);
+     void setTargetRole(RoleInterface targetRoleInterface);
 
     /**
-     * 
-     * @return
+     * Constraint properties store the database information of the dynamically created  tables 
+     * for the association. e.g. If the association type is many to many we need to store middle table name
+     * and the foreign keys of both the tables. 
+     * @return ConstraintPropertiesInterface
      */
-    public ConstraintPropertiesInterface getConstraintProperties();
+    ConstraintPropertiesInterface getConstraintProperties();
       
     /**
-     * 
-     * @param sourceEntity
+    
+     * @param constraintPropertiesInterface Conatraint properties to be added
      */
-    public void setConstraintProperties(ConstraintPropertiesInterface constraintPropertiesInterface);
+    void setConstraintProperties(ConstraintPropertiesInterface constraintPropertiesInterface);
     
 
 }

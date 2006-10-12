@@ -5,64 +5,73 @@ import java.util.Collection;
 import java.util.Date;
 
 /**
+ * This is an interface extended by EntityInterface,EntityGroupInterface,AttributeInterface.This interface contains
+ * basic information needed for each metadata objects. 
  * @author sujay_narkar
  *
  */
- public interface AbstractMetadataInterface {
+ public interface AbstractMetadataInterface 
+ {
 	
 	/**
+     * The date on which object is created
 	 * @return Returns the createdDate.
 	 */
-	public Date getCreatedDate();
+	 Date getCreatedDate();
 		
 	/**
 	 * @param createdDate The createdDate to set.
 	 */
-	public void setCreatedDate(Date createdDate);
+	 void setCreatedDate(Date createdDate);
 		
 	/**
+     * Description of metdata object
 	 * @return Returns the description.
 	 */
-	public String getDescription();
+	 String getDescription();
 	/**
 	 * @param description The description to set.
 	 */
-	public void setDescription(String description);
+	 void setDescription(String description);
 		
 	/**
+     * Uniqueue id for metadata object.
 	 * @return Returns the id.
 	 */
-	public Long getId();
+	 Long getId();
 		
 	/**
+     * The last updated date of metadata object.
 	 * @return Returns the lastUpdated.
 	 */
-	public Date getLastUpdated();
+	 Date getLastUpdated();
 		
 	/**
 	 * @param lastUpdated The lastUpdated to set.
 	 */
-	public void setLastUpdated(Date lastUpdated);
+	 void setLastUpdated(Date lastUpdated);
 		
 	/**
+     * Name of the metadata object
 	 * @return Returns the name.
 	 */
-	public String getName();
+	 String getName();
 		
 	/**
 	 * @param name The name to set.
 	 */
-	public void setName(String name);
+	 void setName(String name);
 		
 	/**
+     * Semantic property for metadata object.
 	 * @return Returns the semanticPropertyCollection.
 	 */
-	public Collection getSemanticPropertyCollection();
+	 Collection getSemanticPropertyCollection();
 		
 	/**
-	 * @param semanticPropertyCollection The semanticPropertyCollection to set.
+	 * @param semanticPropertyInterface The semanticProperty to set.
 	 */
-	public void addSemanticProperty(SemanticPropertyInterface semanticPropertyInterface); 
+	 void addSemanticProperty(SemanticPropertyInterface semanticPropertyInterface); 
 		
 	
 }

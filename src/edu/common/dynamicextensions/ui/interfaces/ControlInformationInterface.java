@@ -4,7 +4,18 @@ package edu.common.dynamicextensions.ui.interfaces;
  */
 import java.util.List;
 
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+
 public interface ControlInformationInterface {
+	/**
+	 * @return Returns the attribute.
+	 *
+	 */
+	public AttributeInterface getAttribute();
+	/**
+	 * @param attribute The attribute to set.
+	 */
+	public void setAttribute(AttributeInterface attributeInterface);
 
 	public List getSelectedControlAttributesList();
 
@@ -42,12 +53,12 @@ public interface ControlInformationInterface {
 	/**
 	 * @return the attributeCssClass
 	 */
-	public String getAttributeCssClass() ;
+	public String getCssClass() ;
 
 	/**
 	 * @param attributeCssClass the attributeCssClass to set
 	 */
-	public void setAttributeCssClass(String attributeCssClass) ;
+	public void setCssClass(String attributeCssClass) ;
 
 	/**
 	 * @return the attributeMultiSelect
@@ -92,22 +103,22 @@ public interface ControlInformationInterface {
 	/**
 	 * @return the attributeTooltip
 	 */
-	public String getAttributeTooltip() ;
+	public String getTooltip() ;
 
 	/**
 	 * @param attributeTooltip the attributeTooltip to set
 	 */
-	public void setAttributeTooltip(String attributeTooltip) ;
+	public void setTooltip(String attributeTooltip) ;
 
 	/**
 	 * @return the attributeCaption
 	 */
-	public String getAttributeCaption() ;
+	public String getCaption() ;
 
 	/**
 	 * @param attributeTooltip the attributeTooltip to set
 	 */
-	public void setAttributeCaption(String attributeTooltip) ;
+	public void setCaption(String attributeTooltip) ;
 
 	/**
 	 * 

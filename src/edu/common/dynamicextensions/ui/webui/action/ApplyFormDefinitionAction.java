@@ -10,8 +10,10 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.processor.ContainerProcessor;
 import edu.common.dynamicextensions.processor.EntityProcessor;
 import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
@@ -37,6 +39,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction {
 		FormDefinitionForm formDefinitionForm = (FormDefinitionForm)form;
 		String target = "";
 		EntityProcessor entityProcessor = EntityProcessor.getInstance();
+		ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
 		if (formDefinitionForm.getOperation().equalsIgnoreCase(Constants.BUILD_FORM)) {
 			try {
 				EntityInterface entityInterface = entityProcessor.createAndPopulateEntity(formDefinitionForm);
@@ -49,7 +52,9 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction {
 		} else {// When we click on save 
 			try {
 				EntityInterface entityInterface = entityProcessor.createAndSaveEntity(formDefinitionForm);
-				CacheManager.addObjectToCache(request,Constants.ENTITY_INTERFACE, entityInterface);
+				ContainerInterface containerInterface = containerProcessor.createContainer();
+				containerInterface.setEntity(entityInterface);
+				CacheManager.addObjectToCache(request,Constants.CONTAINER_INTERFACE,containerInterface);
 				target = Constants.SUCCESS;
 			} catch (DynamicExtensionsSystemException systemException) {
 				handleException(systemException,new ArrayList());		

@@ -9,6 +9,7 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.processor.AttributeProcessor;
 import edu.common.dynamicextensions.processor.ControlProcessor;
@@ -31,7 +32,8 @@ public class AddControlsAction extends BaseDynamicExtensionsAction {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,HttpServletRequest request,
 			HttpServletResponse response) {
 		ControlsForm actionForm = (ControlsForm)form;
-		EntityInterface entityInterface = (EntityInterface)CacheManager.getObjectFromCache(request, Constants.ENTITY_INTERFACE);
+		ContainerInterface containerInterface = (ContainerInterface)CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+		EntityInterface entityInterface = containerInterface.getEntity();
 		ControlProcessor controlProcessor = ControlProcessor.getInstance();
 		AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
 		try {
@@ -42,8 +44,9 @@ public class AddControlsAction extends BaseDynamicExtensionsAction {
 			controlProcessor.populateControl(actionForm, controlInterface);
 			System.out.println("");
 			entityInterface.addAttribute(attributeInterface);
+			containerInterface.addControl(controlInterface);
+			containerInterface.setEntity(entityInterface);
 			CacheManager.addObjectToCache(request, Constants.CONTROL_INTERFACE, controlInterface);
-			CacheManager.addObjectToCache(request, Constants.ENTITY_INTERFACE, entityInterface);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}

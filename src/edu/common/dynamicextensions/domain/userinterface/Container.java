@@ -52,7 +52,7 @@ public class Container extends AbstractDomainObject implements Serializable,Cont
 	/**
 	 * Entity to which this container is associated.
 	 */
-	public Entity entity;
+	public EntityInterface entity;
 
 	/**
 	 * Empty constructor
@@ -221,7 +221,7 @@ public class Container extends AbstractDomainObject implements Serializable,Cont
 
 
 	public void setEntity(EntityInterface entityInterface) {
-		// TODO Auto-generated method stub
+		entity = entityInterface;
 		
 	}
 }

@@ -33,6 +33,7 @@ public class AddControlsAction extends BaseDynamicExtensionsAction {
 			HttpServletResponse response) {
 		ControlsForm actionForm = (ControlsForm)form;
 		ContainerInterface containerInterface = (ContainerInterface)CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+		if(containerInterface != null) {
 		EntityInterface entityInterface = containerInterface.getEntity();
 		ControlProcessor controlProcessor = ControlProcessor.getInstance();
 		AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
@@ -46,9 +47,11 @@ public class AddControlsAction extends BaseDynamicExtensionsAction {
 			entityInterface.addAttribute(attributeInterface);
 			containerInterface.addControl(controlInterface);
 			containerInterface.setEntity(entityInterface);
+			
 			CacheManager.addObjectToCache(request, Constants.CONTROL_INTERFACE, controlInterface);
 		}catch (Exception e) {
 			e.printStackTrace();
+		}
 		}
 		return mapping.findForward(Constants.SUCCESS);
 	}

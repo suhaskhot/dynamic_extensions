@@ -1,7 +1,8 @@
 package edu.common.dynamicextensions.domaininterface.userinterface;
 
-
 /**
+ * TextFieldInterface stores necessary information for generating TextField control on
+ * dynamically generated user interface.  
  * @author geetika_bangard
  */
 public interface TextFieldInterface extends ControlInterface {

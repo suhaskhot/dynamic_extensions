@@ -3,19 +3,19 @@ package edu.common.dynamicextensions.domaininterface.userinterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 
 /**
+ * This interface stores necessary informations about the control that gets added 
+ * to the Container on dynamically generated User Interface.
  * @author geetika_bangard
  */
 public interface ControlInterface {
     
     /**
+     * Id of the control
 	 * @return
 	 */
 	public Long getId();
-	
-
 	/**
 	 * @return Returns the attribute.
-	 *
 	 */
 	public AttributeInterface getAttribute();
 	/**

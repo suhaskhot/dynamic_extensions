@@ -5,6 +5,8 @@ import java.util.Collection;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 
 /**
+ * This interface stores the necessary information about the container on dynamically generated user interface.
+ * 
  * @author geetika_bangard
  */
 public interface ContainerInterface 

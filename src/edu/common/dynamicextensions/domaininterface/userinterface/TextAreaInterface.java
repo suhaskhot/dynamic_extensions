@@ -1,7 +1,8 @@
 package edu.common.dynamicextensions.domaininterface.userinterface;
 
-
 /**
+ * TextAreaInterface stores necessary information for generating TextArea control on
+ * dynamically generated user interface.  
  * @author geetika_bangard
  */
 public interface TextAreaInterface extends ControlInterface {

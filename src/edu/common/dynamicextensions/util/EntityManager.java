@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.util;
 
 import java.util.Collection;
@@ -30,14 +31,14 @@ public class EntityManager
 	 * Static instance of the entity manager.
 	 */
 	private static EntityManager entityManager = null;
-	
+
 	/**
 	 * Empty Constructor.
 	 */
 	protected EntityManager()
 	{
 	}
-	
+
 	/**
 	 * Returns the instance of the Entity Manager.
 	 * @return entityManager singleton instance of the Entity Manager.
@@ -50,200 +51,196 @@ public class EntityManager
 		}
 		return entityManager;
 	}
-    
-    
-    
-    /**
-     * Mock entity manager can be placed in the entity manager using this method.
-     * @param entityManager
-     */
-    public void setInstance(EntityManager entityManager) {
-        EntityManager.entityManager = entityManager;
-        
-    }
-		
+
+	/**
+	 * Mock entity manager can be placed in the entity manager using this method.
+	 * @param entityManager
+	 */
+	public void setInstance(EntityManager entityManager)
+	{
+		EntityManager.entityManager = entityManager;
+	}
+
 	/**
 	 * Creates an Entity with the given entity information.Entity is registered 
 	 * in the metadata and a table is created to store the records.
 	 * @param entityInterface the entity to be created.
 	 * @throws DynamicExtensionsSystemException system exception 
-     * @throws DynamicExtensionsApplicationException application exception
-     * @return EntityInterface entity interface
-     * 
+	 * @throws DynamicExtensionsApplicationException application exception
+	 * @return EntityInterface entity interface
+	 * 
 	 */
-	public EntityInterface createEntity(EntityInterface entityInterface)
-	throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException
+	public EntityInterface createEntity(EntityInterface entityInterface) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		return null;
 	}
-    
-    /**
-     * 
-     * @param entityName
-     * @return
-     * @throws DynamicExtensionsSystemException
-     * @throws DynamicExtensionsApplicationException
-     */
-    public EntityInterface getEntityByEntityName(String entityName)
-    throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException
-    {
-    	return null;
-    }
-    
-    /**
-     * 
-     * @param attributeName
-     * @return
-     * @throws DynamicExtensionsSystemException
-     * @throws DynamicExtensionsApplicationException
-     */
-    public Collection getEntitiesByAttributeName(String attributeName) 
-    throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException
-    {
-     return null;   
-    }
-    
-    /**
-     * 
-     * @return
-     * @throws DynamicExtensionsSystemException
-     * @throws DynamicExtensionsApplicationException
-     */
-    
-    public Collection getAllEntities()
-    throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException
-    {
-     return null;   
-    }
-	
-    /**
-     * 
-     * @param entityName
-     * @param attributeName
-     * @return
-     * @throws DynamicExtensionsSystemException
-     * @throws DynamicExtensionsApplicationException
-     */
-    public AttributeInterface getAttribute(String entityName,String attributeName)
-    throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException
-    {
-     return null;   
-    }
-    
-    /**
-     * 
-     * @param entityName
-     * @param sourceRoleName
-     * @return
-     * @throws DynamicExtensionsSystemException
-     * @throws DynamicExtensionsApplicationException
-     */
-	
-    public AssociationInterface getAssociation(String entityName,String sourceRoleName)
-    throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException
-    {
-        return null;
-    }
-    
-    /**
-     * 
-     * @param sourceEntityName
-     * @param targetEntityName
-     * @return
-     * @throws DynamicExtensionsSystemException
-     * @throws DynamicExtensionsApplicationException
-     */
-    public Collection getAssociations(String sourceEntityName,String targetEntityName)
-    throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException
-    {
-        return null;
-    }
-    
-    /**
-     * 
-     * @param entityDescription
-     * @return
-     * @throws DynamicExtensionsSystemException
-     * @throws DynamicExtensionsApplicationException
-     */
-    public Collection getEntityByEntityDescription(String entityDescription)
-    throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException
-    {
-        return null;
-    }
-    
-    /**
-     * 
-     * @param attributeDescription
-     * @return
-     * @throws DynamicExtensionsSystemException
-     * @throws DynamicExtensionsApplicationException
-     */
-    public Collection getEntitiesByAttributeDescription(String attributeDescription)
-    throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException
-    {
-        return null;
-    }
-    
-    /**
-     * 
-     * @param entityConceptCode
-     * @return
-     * @throws DynamicExtensionsSystemException
-     * @throws DynamicExtensionsApplicationException
-     */
-    public Collection getEntitiesByEntityConceptCode(String entityConceptCode)
-    throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException
-    {
-        return null;
-    }
-    
-    /**
-     * 
-     * @param entityConceptName
-     * @return
-     * @throws DynamicExtensionsSystemException
-     * @throws DynamicExtensionsApplicationException
-     */
-    public Collection getEntitiesByEntityConceptName(String entityConceptName)
-    throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException
-    {
-        return null;
-    }
-    
-    /**
-     * 
-     * @param attributeConceptCode
-     * @return
-     * @throws DynamicExtensionsSystemException
-     * @throws DynamicExtensionsApplicationException
-     */
-    public Collection getEntitiesByAttributeConceptCode(String attributeConceptCode)
-    throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException
-    {
-        return null;
-    }
-    
-    /**
-     * 
-     * @param attributeConceptname
-     * @return
-     * @throws DynamicExtensionsSystemException
-     * @throws DynamicExtensionsApplicationException
-     */
-    public Collection getEntitiesByAttributeConceptName(String attributeConceptname)
-    throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException
-    {
-        return null;
-    }
-    
-    /**
-     * 
-     * @param entityInterface
-     * @return
-     */
-    public Collection findEntity(EntityInterface entityInterface) {
-        return null;
-    }
-    	
+
+	/**
+	 * 
+	 * @param entityName
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public EntityInterface getEntityByName(String entityName) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param attributeName
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public Collection getEntitiesByAttributeName(String attributeName) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		return null;
+	}
+
+	/**
+	 * 
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+
+	public Collection getAllEntities() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param entityName
+	 * @param attributeName
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public AttributeInterface getAttribute(String entityName, String attributeName) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param entityName
+	 * @param sourceRoleName
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+
+	public AssociationInterface getAssociation(String entityName, String sourceRoleName) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param sourceEntityName
+	 * @param targetEntityName
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public Collection getAssociations(String sourceEntityName, String targetEntityName) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param entityDescription
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public Collection getEntitiesByDescription(String entityDescription) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param attributeDescription
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public Collection getEntitiesByAttributeDescription(String attributeDescription) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param entityConceptCode
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public Collection getEntitiesByConceptCode(String entityConceptCode) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param entityConceptName
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public Collection getEntitiesByConceptName(String entityConceptName) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param attributeConceptCode
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public Collection getEntitiesByAttributeConceptCode(String attributeConceptCode) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param attributeConceptname
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public Collection getEntitiesByAttributeConceptName(String attributeConceptname) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param entityInterface
+	 * @return
+	 */
+	public Collection findEntity(EntityInterface entityInterface)
+	{
+		return null;
+	}
+
 }

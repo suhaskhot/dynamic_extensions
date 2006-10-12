@@ -55,7 +55,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction {
 				handleException(systemException,new ArrayList());		
 				return mapping.findForward(Constants.SYSTEM_EXCEPTION);
 			} catch (DynamicExtensionsApplicationException appException) {
-			    request.setAttribute("errorsList",handleException(appException,new ArrayList()));	
+			    request.setAttribute(Constants.ERRORS_LIST,handleException(appException,new ArrayList()));	
 			    target = Constants.SUCCESS;
             }			
 		}

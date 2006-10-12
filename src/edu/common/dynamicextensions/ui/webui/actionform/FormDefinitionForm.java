@@ -10,6 +10,7 @@ import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.ui.interfaces.ContainerInformationInterface;
 import edu.common.dynamicextensions.ui.interfaces.EntityInformationInterface;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.actionForm.AbstractActionForm;
@@ -21,7 +22,7 @@ import edu.wustl.common.util.global.Validator;
  * @author deepti_shelar
  *
  */
-public class FormDefinitionForm  extends AbstractActionForm implements EntityInformationInterface{
+public class FormDefinitionForm  extends AbstractActionForm implements EntityInformationInterface,ContainerInformationInterface{
 	/**
 	 * Name
 	 */
@@ -51,7 +52,30 @@ public class FormDefinitionForm  extends AbstractActionForm implements EntityInf
 	 * selectForm;
 	 */
 	protected String selectForm;
-	
+	/**
+	 * 
+	 */
+	protected String buttonCss;
+	/**
+	 * 
+	 */
+	protected String caption;
+	/**
+	 * 
+	 */
+	protected String mainTableCss;
+	/**
+	 * 
+	 */
+	protected String requiredFieldIndicatior;
+	/**
+	 * 
+	 */
+	protected String requiredFieldWarningMessage;
+	/**
+	 * 
+	 */
+	protected String titleCss;
 
 		/**
 	 * Returns the id assigned to form bean.
@@ -119,7 +143,7 @@ public class FormDefinitionForm  extends AbstractActionForm implements EntityInf
 		this.existingFormsList = existingFormsList;
 	}
 
-public String getSelectForm() {
+	public String getSelectForm() {
 		return selectForm;
 	}
 
@@ -133,6 +157,44 @@ public String getSelectForm() {
 
 	public void setCreateAsTypeChanged(String createAsTypeChanged) {
 		this.createAsTypeChanged = createAsTypeChanged;
+	}
+	
+	
+	public String getButtonCss() {
+		return buttonCss;
+	}
+	public String getCaption() {
+		return caption;
+	}
+	public String getMainTableCss() {
+		return mainTableCss;
+	}
+	public String getRequiredFieldIndicatior() {
+		return requiredFieldIndicatior;
+	}
+	public String getRequiredFieldWarningMessage() {
+		return requiredFieldWarningMessage;
+	}
+	public String getTitleCss() {
+		return titleCss;
+	}
+	public void setButtonCss(String buttonCss) {
+		this.buttonCss = buttonCss;
+	}
+	public void setCaption(String caption) {
+		this.caption = caption;
+	}
+	public void setMainTableCss(String mainTableCss) {
+		this.mainTableCss = mainTableCss;
+	}
+	public void setRequiredFieldIndicatior(String requiredFieldIndicatior) {
+	this.requiredFieldIndicatior = requiredFieldIndicatior;	
+	}
+	public void setRequiredFieldWarningMessage(String requiredFieldWarningMessage) {
+		this.requiredFieldWarningMessage = requiredFieldWarningMessage;
+	}
+	public void setTitleCss(String titleCss) {
+		this.titleCss = titleCss;
 	}
 	
 	public void update(FormDefinitionForm cacheForm) {

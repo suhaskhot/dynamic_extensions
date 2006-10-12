@@ -21,7 +21,7 @@ public class Entity extends AbstractMetadata implements EntityInterface {
 	/**
 	 * Collection of attributes in this entity.
 	 */
-	protected Collection attributeCollection;
+	protected Collection attributeCollection = new HashSet();
 	/**
 	 * Table property for this entity.
 	 */
@@ -122,8 +122,7 @@ public class Entity extends AbstractMetadata implements EntityInterface {
      * 
      */
 	public void addAttribute(AttributeInterface attributeInterface) {
-		// TODO Auto-generated method stub
-		
+		attributeCollection.add(attributeInterface);		
 	}
 
     /**

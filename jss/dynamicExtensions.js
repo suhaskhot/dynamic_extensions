@@ -14,7 +14,7 @@ function showBuildFormJSP() {
 function controlSelectedAction()
 {	
 	var controlsForm = document.getElementById('controlsForm');
-	controlsForm.action="/dynamicExtensions/SelectControlAction.do";
+	controlsForm.action="/dynamicExtensions/LoadFormControlsAction.do";
 	controlsForm.submit();
 }
 
@@ -33,12 +33,15 @@ function showHomePageFromBuildForm() {
 	controlsForm.submit();
 }
 function addControlToFormTree() {
+	document.getElementById('operation').value='controlAdded';
     var controlsForm=document.getElementById("controlsForm");
 	controlsForm.action="/dynamicExtensions/AddControlsAction.do";
 	controlsForm.submit();
 }
 function addControlToForm() {
+	
 	var arg = window.dialogArguments;
+	arg.document.getElementById('operation').value='controlAdded';
     var controlsForm=arg.document.getElementById("controlsForm");
 	controlsForm.action="/dynamicExtensions/AddControlsAction.do";
 	controlsForm.submit();

@@ -1,15 +1,16 @@
 package edu.common.dynamicextensions.ui.webui.action;
 
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.processor.AttributeProcessor;
 import edu.common.dynamicextensions.processor.ControlProcessor;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
@@ -30,13 +31,22 @@ public class AddControlsAction extends BaseDynamicExtensionsAction {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,HttpServletRequest request,
 			HttpServletResponse response) {
 		ControlsForm actionForm = (ControlsForm)form;
-		CacheManager.addObjectToCache(request, Constants.CONTROLS_FORM, actionForm);
-		
+		EntityInterface entityInterface = (EntityInterface)CacheManager.getObjectFromCache(request, Constants.ENTITY_INTERFACE);
 		ControlProcessor controlProcessor = ControlProcessor.getInstance();
-		ControlInterface controlInterface =controlProcessor.createControl(actionForm.getUserSelectedTool());
-		controlProcessor.populateControl(actionForm, controlInterface);
-		//Add code for add control to form
-		return mapping.findForward("success");
-	}  
-
+		AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
+		try {
+			AttributeInterface attributeInterface = attributeProcessor.createAttribute(actionForm.getDataType());
+			attributeProcessor.populateAttribute(actionForm,attributeInterface);
+			actionForm.setAttribute(attributeInterface);
+			ControlInterface controlInterface = controlProcessor.createControl(actionForm.getUserSelectedTool());
+			controlProcessor.populateControl(actionForm, controlInterface);
+			System.out.println("");
+			entityInterface.addAttribute(attributeInterface);
+			CacheManager.addObjectToCache(request, Constants.CONTROL_INTERFACE, controlInterface);
+			CacheManager.addObjectToCache(request, Constants.ENTITY_INTERFACE, entityInterface);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return mapping.findForward(Constants.SUCCESS);
+	}
 }

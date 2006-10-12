@@ -5,6 +5,7 @@
  */
 package edu.common.dynamicextensions.processor;
 
+import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.ui.interfaces.AttributeInformationInterface;
 
@@ -36,9 +37,19 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param controlsForm
 	 * @return
 	 */
-	public AttributeInterface createAttribute(AttributeInformationInterface attributeInformation)
+	public AttributeInterface createAttribute(String attributeType)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		AttributeInterface attributeInterface = null;
+		if (attributeType.equalsIgnoreCase("String")) {
+			attributeInterface = DomainObjectFactory.getInstance().createStringAttribute();
+		} else if(attributeType.equalsIgnoreCase("Boolean")) {
+			attributeInterface = DomainObjectFactory.getInstance().createBooleanAttribute();
+		} else if(attributeType.equalsIgnoreCase("Date")) {
+			attributeInterface = DomainObjectFactory.getInstance().createDateAttribute();
+		}
+		return attributeInterface;
+	}
+	public void populateAttribute(AttributeInformationInterface attributeInformationInterface,AttributeInterface attributeInterface) {
+	//	attributeInterface.setCreatedDate(attributeInformationInterface.)))
 	}
 }

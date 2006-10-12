@@ -53,7 +53,7 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	 * Attribute to which this control is associated.
 	 */
 	
-	public Attribute attribute=null;
+	public AttributeInterface attribute=null;
     
     /**
      * 

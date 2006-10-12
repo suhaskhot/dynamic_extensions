@@ -41,7 +41,7 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction {
 		try {
 			populateExistingFormsList(actionForm,request);
 		} catch (DynamicExtensionsApplicationException applicationException) {
-			List errorsList = handleException(applicationException,new ArrayList());
+		    request.setAttribute(Constants.ERRORS_LIST,handleException(applicationException,new ArrayList()));	
 		} catch (DynamicExtensionsSystemException systemException) {
 			handleException(systemException,new ArrayList());		
 			return mapping.findForward(Constants.SYSTEM_EXCEPTION);

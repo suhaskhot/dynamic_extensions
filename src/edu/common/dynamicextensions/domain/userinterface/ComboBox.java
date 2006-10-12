@@ -86,7 +86,7 @@ public class ComboBox extends Control implements ComboBoxInterface{
 	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface#setAttribute(edu.common.dynamicextensions.domaininterface.AttributeInterface)
 	 */
 	public void setAttribute(AttributeInterface attributeInterface) {
-		// TODO Auto-generated method stub
+		attribute = attributeInterface;
 		
 	}
 

@@ -7,13 +7,11 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
-import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.UIControlsConfigurationFactory;
 import edu.common.dynamicextensions.util.global.Constants;
 
@@ -29,19 +27,19 @@ import edu.common.dynamicextensions.util.global.Constants;
 public class LoadFormControlsAction extends BaseDynamicExtensionsAction {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
-		ControlsForm cacheForm = (ControlsForm)CacheManager.getObjectFromCache(request,Constants.CONTROLS_FORM);
 		ControlsForm actionForm = (ControlsForm)form;
 		List toolsList = getToolsList();
 		actionForm.setToolsList(toolsList);
-		if(cacheForm != null) {
-			actionForm.update(cacheForm);
-			actionForm.setSelectedControlAttributesList(getSelectedControlAttributesList(actionForm.getUserSelectedTool()));
-		} else {
+		if(actionForm.getUserSelectedTool() == null || actionForm.getOperation().equalsIgnoreCase("controlAdded")){
 			actionForm.setUserSelectedTool(toolsList.get(0).toString());
-			actionForm.setSelectedControlAttributesList(getSelectedControlAttributesList(actionForm.getUserSelectedTool()));
+		} 
+		if(actionForm.getDataType() == null) {
 			actionForm.setDataType("");
+		}
+		if(actionForm.getDisplayChoice() == null) {
 			actionForm.setDisplayChoice("");
 		}
+		actionForm.setSelectedControlAttributesList(getSelectedControlAttributesList(actionForm.getUserSelectedTool()));
 		return mapping.findForward(Constants.SHOW_BUILD_FORM_JSP);
 	}
 	/**

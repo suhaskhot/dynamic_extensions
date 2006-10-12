@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.ui.interfaces.AttributeInformationInterface;
 import edu.common.dynamicextensions.ui.interfaces.ControlInformationInterface;
 import edu.common.dynamicextensions.util.global.Constants;
@@ -21,11 +22,12 @@ import edu.wustl.common.domain.AbstractDomainObject;
  * @author deepti_shelar
  *
  */
-public class ControlsForm extends AbstractActionForm implements ControlInformationInterface,AttributeInformationInterface{
+public class ControlsForm extends AbstractActionForm implements 
+			ControlInformationInterface,AttributeInformationInterface{
 	/**
 	 * Attribute Name
 	 */
-	String attributeName;
+	AttributeInterface attribute;
 	/**
 	 * 
 	 */
@@ -104,12 +106,12 @@ public class ControlsForm extends AbstractActionForm implements ControlInformati
 	 * 
 	 */
 	
-	String attributeCaption;
+	String caption;
 	Boolean isPassword;
 	List toolsList = new ArrayList();
 	
-	protected String attributeCssClass;
-	protected String attributeTooltip;
+	protected String cssClass;
+	protected String tooltip;
 	protected String attributeNoOfRows ;
 	protected String attributenoOfCols;
 	protected Boolean attributeMultiSelect; 
@@ -150,18 +152,7 @@ public class ControlsForm extends AbstractActionForm implements ControlInformati
 	public void setAttributeDescription(String attributeDescription) {
 		this.attributeDescription = attributeDescription;
 	}
-	/**
-	 * @return Returns the attributeName.
-	 */
-	public String getAttributeName() {
-		return attributeName;
-	}
-	/**
-	 * @param attributeName The attributeName to set.
-	 */
-	public void setAttributeName(String attributeName) {
-		this.attributeName = attributeName;
-	}
+	
 	
 	/**
 	 * @return Returns the dataTypeList.
@@ -349,15 +340,15 @@ public class ControlsForm extends AbstractActionForm implements ControlInformati
 	/**
 	 * @return the attributeCssClass
 	 */
-	public String getAttributeCssClass() {
-		return attributeCssClass;
+	public String getCssClass() {
+		return cssClass;
 	}
 
 	/**
-	 * @param attributeCssClass the attributeCssClass to set
+	 * @param cssClass the cssClass to set
 	 */
-	public void setAttributeCssClass(String attributeCssClass) {
-		this.attributeCssClass = attributeCssClass;
+	public void setCssClass(String cssClass) {
+		this.cssClass = cssClass;
 	}
 
 	/**
@@ -430,19 +421,7 @@ public class ControlsForm extends AbstractActionForm implements ControlInformati
 		this.attributeScale = attributeScale;
 	}
 
-	/**
-	 * @return the attributeTooltip
-	 */
-	public String getAttributeTooltip() {
-		return attributeTooltip;
-	}
-
-	/**
-	 * @param attributeTooltip the attributeTooltip to set
-	 */
-	public void setAttributeTooltip(String attributeTooltip) {
-		this.attributeTooltip = attributeTooltip;
-	}
+	
 
 	/**
 	 * @return the selectedControlAttributesList
@@ -563,14 +542,20 @@ public class ControlsForm extends AbstractActionForm implements ControlInformati
 		return errors;
 	}
 
-	public String getAttributeCaption()
-	{
-		return this.attributeCaption;
+	
+
+	/**
+	 * @return the caption
+	 */
+	public String getCaption() {
+		return caption;
 	}
 
-	public void setAttributeCaption(String attributeCaption)
-	{
-		this.attributeCaption = attributeCaption;
+	/**
+	 * @param caption the caption to set
+	 */
+	public void setCaption(String caption) {
+		this.caption = caption;
 	}
 
 	public Boolean getIsPassword()
@@ -581,6 +566,34 @@ public class ControlsForm extends AbstractActionForm implements ControlInformati
 	public void setIsPassword(Boolean isPassword)
 	{
 		this.isPassword = isPassword;
+	}
+
+	/**
+	 * @return the attribute
+	 */
+	public AttributeInterface getAttribute() {
+		return attribute;
+	}
+
+	/**
+	 * @param attribute the attribute to set
+	 */
+	public void setAttribute(AttributeInterface attribute) {
+		this.attribute = attribute;
+	}
+
+	/**
+	 * @return the tooltip
+	 */
+	public String getTooltip() {
+		return tooltip;
+	}
+
+	/**
+	 * @param tooltip the tooltip to set
+	 */
+	public void setTooltip(String tooltip) {
+		this.tooltip = tooltip;
 	}
 
 	

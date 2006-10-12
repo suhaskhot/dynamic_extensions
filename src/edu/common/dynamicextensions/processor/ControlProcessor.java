@@ -10,7 +10,6 @@
 package edu.common.dynamicextensions.processor;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
-import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.ui.interfaces.ControlInformationInterface;
 
@@ -46,36 +45,50 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		ControlInterface controlInterface = null;
 		if(userSelectedControlName.equalsIgnoreCase("TextControl")) {
 			controlInterface = DomainObjectFactory.getInstance().createTextField();
-		}
-		if(userSelectedControlName.equalsIgnoreCase("MultilineControl")) {
+		} else if(userSelectedControlName.equalsIgnoreCase("MultilineControl")) {
 			controlInterface = DomainObjectFactory.getInstance().createTextArea();
-		}
-		if(userSelectedControlName.equalsIgnoreCase("ComboboxControl")) {
+		} else if(userSelectedControlName.equalsIgnoreCase("ComboboxControl")) {
 			controlInterface = DomainObjectFactory.getInstance().createComboBox();
-		}
-		if(userSelectedControlName.equalsIgnoreCase("ListBoxControl")) {
+		} else if(userSelectedControlName.equalsIgnoreCase("ListBoxControl")) {
 			controlInterface = DomainObjectFactory.getInstance().createListBox();
-		}
-		if(userSelectedControlName.equalsIgnoreCase("CheckboxControl")) {
+		} else if(userSelectedControlName.equalsIgnoreCase("CheckboxControl")) {
 			controlInterface = DomainObjectFactory.getInstance().createCheckBox();
-		}
-		if(userSelectedControlName.equalsIgnoreCase("RadioButtonControl")) {
+		} else if(userSelectedControlName.equalsIgnoreCase("RadioButtonControl")) {
 			controlInterface = DomainObjectFactory.getInstance().createRadioButton();
-		}
-		if(userSelectedControlName.equalsIgnoreCase("DateControl")) {
+		} else if(userSelectedControlName.equalsIgnoreCase("DateControl")) {
 			controlInterface = DomainObjectFactory.getInstance().createDatePicker();
 		}
 		return controlInterface;
 	}
 	/**
-     * This method populates the given EntityInterface using the given entityInformationInterface.
-     * @param entityInterface Instance of EntityInterface which is populated using the informationInterface.
-     * @param entityInformationInterface Instance of EntityInformationInterface which is used to populate the entityInterface.
-     */
-    public void populateControl (ControlInformationInterface controlInformationInterface, ControlInterface controlInterface) {
-        if (controlInformationInterface != null && controlInterface != null) {
-        }
-    }
+	 * This method populates the given ControlInterface using the given ControlInformationInterface.
+	 * @param controlInterface Instance of ControlInterface which is populated using the controlInformationInterface.
+	 * @param controlInformationInterface Instance of ControlInformationInterface which is used to populate the controlInterface.
+	 */
+	public void populateControl (ControlInformationInterface controlInformationInterface, ControlInterface controlInterface) {
+		if (controlInformationInterface != null && controlInterface != null) {
+			System.out.println("");
+			controlInterface.setAttribute(controlInformationInterface.getAttribute());
+			controlInterface.setCaption(controlInformationInterface.getCaption());
+			controlInterface.setCssClass(controlInformationInterface.getCssClass());
+			controlInterface.setTooltip(controlInformationInterface.getTooltip());
+		}
+	}
+	/**
+	 * This method will populate the ControlInformationInterface using the EntityInterface so that the 
+	 * information of the Entity can be shown on the user page using the EntityInformationInterface.
+	 * @param entityInterface Instance of EntityInterface from which to populate the informationInterface.
+	 * @param entityInformationInterface Instance of EntityInformationInterface which will be populated using 
+	 * the first parameter that is EntityInterface.
+	 */
+	public void populateControlInformation (ControlInterface controlInterface, ControlInformationInterface controlInformationInterface) {
+		if (controlInterface != null && controlInformationInterface != null) {
+			controlInformationInterface.setAttribute(controlInterface.getAttribute());
+			controlInformationInterface.setCaption(controlInterface.getCaption());
+			controlInformationInterface.setCssClass(controlInterface.getCssClass());
+			controlInformationInterface.setTooltip(controlInterface.getTooltip());
+		}
+	}
 
 
 

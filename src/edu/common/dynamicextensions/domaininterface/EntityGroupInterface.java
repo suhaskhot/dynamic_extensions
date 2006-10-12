@@ -4,7 +4,7 @@ package edu.common.dynamicextensions.domaininterface;
 import java.util.Collection;
 
 /**
- * Entities can be grouped in the 
+ * Entities can be grouped in the form of entity goup.
  * @author geetika_bangard
  */
 public interface EntityGroupInterface extends AbstractMetadataInterface {

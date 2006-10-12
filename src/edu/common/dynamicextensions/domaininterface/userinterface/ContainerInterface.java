@@ -18,6 +18,7 @@ public interface ContainerInterface
      Long getId();
     
     /**
+     * The css style defined for button.
      * @return Returns the buttonCss.
      */
      String getButtonCss();
@@ -26,6 +27,7 @@ public interface ContainerInterface
      */
      void setButtonCss(String buttonCss);
     /**
+     * caption for the container.
      * @return Returns the caption.
      */
      String getCaption();
@@ -34,6 +36,7 @@ public interface ContainerInterface
      */
      void setCaption(String caption);
     /**
+     * The list of user selected controls. 
      * @return Returns the controlCollection.
      */
      Collection getControlCollection();
@@ -42,6 +45,7 @@ public interface ContainerInterface
      */
      void addControl(ControlInterface controlInterface);
     /**
+     * Entity Interface which is added to the container.
      * @return Returns the entity.
      */
      EntityInterface getEntity();
@@ -50,6 +54,7 @@ public interface ContainerInterface
      */
      void setEntity(EntityInterface entityInterface);
     /**
+     * css style for the main table.
      * @return Returns the mainTableCss.
      */
      String getMainTableCss();
@@ -75,6 +80,7 @@ public interface ContainerInterface
      void setRequiredFieldWarningMessage(
             String requiredFieldWarningMessage);
     /**
+     * css style for the Title.
      * @return Returns the titleCss.
      */
      String getTitleCss();

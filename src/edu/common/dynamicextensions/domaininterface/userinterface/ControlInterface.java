@@ -15,6 +15,7 @@ public interface ControlInterface {
 	 */
 	public Long getId();
 	/**
+	 * This can be a primitive type or derived type.
 	 * @return Returns the attribute.
 	 */
 	public AttributeInterface getAttribute();
@@ -23,6 +24,7 @@ public interface ControlInterface {
 	 */
 	public void setAttribute(AttributeInterface attributeInterface);
 	/**
+	 * Caption/Title for the control.
 	 * @return Returns the caption.
 	 */
 	public String getCaption();
@@ -31,6 +33,7 @@ public interface ControlInterface {
 	 */
 	public void setCaption(String caption);
 	/**
+	 * The css specified for the control by user.
 	 * @return Returns the cssClass.
 	 */
 	public String getCssClass();
@@ -39,6 +42,7 @@ public interface ControlInterface {
 	 */
 	public void setCssClass(String cssClass);
 	/**
+	 * If user has chosen it to be kept hidden.
 	 * @return Returns the isHidden.
 	 */
 	public Boolean getIsHidden();
@@ -47,6 +51,7 @@ public interface ControlInterface {
 	 */
 	public void setIsHidden(Boolean isHidden);
 	/**
+	 * Name of the control.
 	 * @return Returns the name.
 	 */
 	public String getName();
@@ -55,6 +60,7 @@ public interface ControlInterface {
 	 */
 	public void setName(String name);
 	/**
+	 * The sequence Number for setting it at the desired place in the tree and so in the UI.
 	 * @return Returns the sequenceNumber.
 	 */
 	public Integer getSequenceNumber();
@@ -63,6 +69,7 @@ public interface ControlInterface {
 	 */
 	public void setSequenceNumber(Integer sequenceNumber);
 	/**
+	 * Tool tip for the control.
 	 * @return Returns the tooltip.
 	 */
 	public String getTooltip();

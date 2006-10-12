@@ -43,7 +43,10 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction {
 		if (formDefinitionForm.getOperation().equalsIgnoreCase(Constants.BUILD_FORM)) {
 			try {
 				EntityInterface entityInterface = entityProcessor.createAndPopulateEntity(formDefinitionForm);
-				CacheManager.addObjectToCache(request, Constants.ENTITY_INTERFACE,entityInterface);			
+				ContainerInterface containerInterface = containerProcessor.createContainer();
+				containerInterface.setEntity(entityInterface);
+				CacheManager.addObjectToCache(request, Constants.ENTITY_INTERFACE,entityInterface);
+				CacheManager.addObjectToCache(request,Constants.CONTAINER_INTERFACE, containerInterface);
 				target = Constants.BUILD_FORM;
 			} catch (DynamicExtensionsSystemException systemException) {
 				handleException(systemException,new ArrayList());		

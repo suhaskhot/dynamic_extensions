@@ -7,18 +7,11 @@
 <c:set var="sourceValues" value="${requestScope.jspParams}"/>
  <jsp:useBean id="sourceValues" type="java.util.List"/>
 
-<c:set var="displayChoice" value="${controlsForm.displayChoice}"/>
- <jsp:useBean id="displayChoice" type="java.lang.String"/>
-
 
 <tr>
 	<td >&nbsp;</td>
 	<td >Source For Values</td>
-	<td >
-		<html:select property="displayChoice"  onchange="changeSourceForValues(this)" >
-			<html:options collection="sourceValues" labelProperty="name" property="value" />
-		</html:select>
-	</td>
+	
 </tr>
 
 <tr>

@@ -10,7 +10,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass-key column="IDENTIFIER"  
  * @author sujay_narkar
  */
-public class FloatAttribute extends PrimitiveAttribute implements FloatAttributeInterface{ 
+public class FloatAttribute extends Attribute implements FloatAttributeInterface{ 
     
      /**
      * Default value for this attribute.

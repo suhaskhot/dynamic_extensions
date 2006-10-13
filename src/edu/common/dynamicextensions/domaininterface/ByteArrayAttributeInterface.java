@@ -6,7 +6,7 @@ package edu.common.dynamicextensions.domaininterface;
  * storing large amount of data such as image file or word file. 
  * @author geetika_bangard
  */
-public interface ByteArrayAttributeInterface extends PrimitiveAttributeInterface 
+public interface ByteArrayAttributeInterface extends AttributeInterface 
 {
     /**
      * The content type for the file to be stored. 

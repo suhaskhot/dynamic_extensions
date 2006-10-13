@@ -1,6 +1,6 @@
 package edu.common.dynamicextensions.domaininterface.userinterface;
 
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 
 /**
  * This interface stores necessary informations about the control that gets added 
@@ -18,11 +18,11 @@ public interface ControlInterface {
 	 * This can be a primitive type or derived type.
 	 * @return Returns the attribute.
 	 */
-	public AttributeInterface getAttribute();
+	public AbstractAttributeInterface getAbstractAttribute();
 	/**
 	 * @param attribute The attribute to set.
 	 */
-	public void setAttribute(AttributeInterface attributeInterface);
+	public void setAbstractAttribute(AbstractAttributeInterface abstractAttributeInterface);
 	/**
 	 * Caption/Title for the control.
 	 * @return Returns the caption.

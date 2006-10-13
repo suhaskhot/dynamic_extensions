@@ -6,7 +6,7 @@ package edu.common.dynamicextensions.domaininterface;
  *  is prepared in the dynamically created tables.
  * @author geetika_bangard
  */
-public interface DoubleAttributeInterface extends PrimitiveAttributeInterface
+public interface DoubleAttributeInterface extends AttributeInterface
 {
   
     /**

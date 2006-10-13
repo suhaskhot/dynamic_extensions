@@ -60,7 +60,8 @@ import edu.common.dynamicextensions.domaininterface.validationrules.RuleParamete
  * @author sujay_narkar
  *
  */
-public class DomainObjectFactory {
+public class DomainObjectFactory
+{
 	
 	/**
 	 * Domain Object Factory Instance
@@ -71,7 +72,8 @@ public class DomainObjectFactory {
 	 * 
 	 *
 	 */
-	protected DomainObjectFactory(){
+	protected DomainObjectFactory()
+    {
 		
 	}
 	
@@ -79,8 +81,10 @@ public class DomainObjectFactory {
 	 * Returns the instance of SegmentationDomainElementFactory
 	 * @return SegmentationDomainElementFactory
 	 */
-	public static synchronized DomainObjectFactory getInstance () {
-		if (domainObjectFactory == null) {
+	public static synchronized DomainObjectFactory getInstance () 
+    {
+		if (domainObjectFactory == null) 
+        {
 			domainObjectFactory= new  DomainObjectFactory();
 		}
 		return domainObjectFactory ;
@@ -90,7 +94,8 @@ public class DomainObjectFactory {
 	 * Returns an object of Entity.
 	 * @return an instance of Entity.
 	 */
-	public EntityInterface createEntity(){
+	public EntityInterface createEntity()
+    {
 		Entity entity = new Entity();
 		return entity;
 	}
@@ -99,7 +104,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return an instance of EntityGroup.
 	 */
-	public EntityGroupInterface createEntityGroup(){
+	public EntityGroupInterface createEntityGroup()
+    {
 		EntityGroup entityGroup = new EntityGroup();
 		return entityGroup;
 	}
@@ -108,7 +114,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return an instance of Association.
 	 */
-	public AssociationInterface createAssociation(){
+	public AssociationInterface createAssociation()
+    {
 		Association association = new Association();
 		return association;
 	}
@@ -116,7 +123,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return an instance of Role.
 	 */
-	public RoleInterface createRole(){
+	public RoleInterface createRole()
+    {
 		Role role = new Role();
 		return role;
 	}
@@ -125,7 +133,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return an instance of SemanticProperty.
 	 */
-	public SemanticPropertyInterface createSemanticProperty() {
+	public SemanticPropertyInterface createSemanticProperty() 
+    {
 		SemanticProperty semanticProperty = new SemanticProperty();
 		return semanticProperty;
 	}
@@ -134,7 +143,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return an instance of ColumnProperties.
 	 */
-	public ColumnPropertiesInterface createColumnProperties(){
+	public ColumnPropertiesInterface createColumnProperties()
+    {
 		ColumnProperties columnProperties = new ColumnProperties();
 		return columnProperties;
 	}
@@ -142,7 +152,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return an instance of TableProperties.
 	 */
-	public TablePropertiesInterface createTableProperties(){
+	public TablePropertiesInterface createTableProperties()
+    {
 		TableProperties tableProperties = new TableProperties();
 		return tableProperties;
 	}
@@ -150,7 +161,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return an instance of ConstraintProperties.
 	 */
-	public ConstraintPropertiesInterface createConstraintProperties(){
+	public ConstraintPropertiesInterface createConstraintProperties()
+    {
 		ConstraintProperties constraintProperties = new ConstraintProperties();
 		return constraintProperties;
 	}
@@ -158,7 +170,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return instance of BooleanAttribute.
 	 */
-	public BooleanAttributeInterface createBooleanAttribute(){
+	public BooleanAttributeInterface createBooleanAttribute()
+    {
 		BooleanAttribute booleanAttribute = new BooleanAttribute();
 		return booleanAttribute;
 	}
@@ -166,7 +179,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return instance of ByteArrayAttribute.
 	 */
-	public ByteArrayAttributeInterface createByteArrayAttribute(){
+	public ByteArrayAttributeInterface createByteArrayAttribute()
+    {
 		ByteArrayAttribute byteArrayAttribute = new ByteArrayAttribute();
 		return byteArrayAttribute;
 	}  
@@ -176,7 +190,8 @@ public class DomainObjectFactory {
      * 
      * @return instance of ByteArrayAttribute.
      */
-    public ByteArrayValueInterface createByteArrayValue(){
+    public ByteArrayValueInterface createByteArrayValue()
+    {
         ByteArrayValue  byteArrayValue  = new ByteArrayValue ();
         return byteArrayValue;
     } 
@@ -186,7 +201,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return instance of DateAttribute.
 	 */
-	public DateAttributeInterface createDateAttribute(){
+	public DateAttributeInterface createDateAttribute()
+    {
 		DateAttribute dateAttribute = new DateAttribute();
 		return dateAttribute;
 	}
@@ -194,7 +210,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return instance of DoubleAttribute.
 	 */
-	public DoubleAttributeInterface createDoubleAttribute(){
+	public DoubleAttributeInterface createDoubleAttribute()
+    {
 		DoubleAttribute doubleAttribute = new DoubleAttribute();
 		return doubleAttribute;
 	}
@@ -203,7 +220,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return instance of FloatAttribute.
 	 */
-	public FloatAttributeInterface createFloatAttribute(){
+	public FloatAttributeInterface createFloatAttribute()
+    {
 		FloatAttribute floatAttribute = new FloatAttribute();
 		return floatAttribute;
 	}
@@ -212,7 +230,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return instance of IntegerAttribute.
 	 */
-	public IntegerAttributeInterface createIntegerAttribute(){
+	public IntegerAttributeInterface createIntegerAttribute()
+    {
 		IntegerAttribute integerAttribute = new IntegerAttribute();
 		return integerAttribute;
 	}
@@ -221,7 +240,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return instance of LongAttribute.
 	 */
-	public LongAttributeInterface createLongAttribute(){
+	public LongAttributeInterface createLongAttribute()
+    {
 		LongAttribute longAttribute = new LongAttribute();
 		return longAttribute;
 	}
@@ -230,7 +250,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return instance of ShortAttribute.
 	 */
-	public ShortAttributeInterface createShortAttribute(){
+	public ShortAttributeInterface createShortAttribute()
+    {
 		ShortAttribute shortAttribute = new ShortAttribute();
 		return shortAttribute;
 	}
@@ -239,7 +260,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return instance of StringAttribute.
 	 */
-	public StringAttributeInterface createStringAttribute(){
+	public StringAttributeInterface createStringAttribute()
+    {
 		StringAttribute stringAttribute = new StringAttribute();
 		return stringAttribute;
 	}
@@ -247,7 +269,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return instance of BooleanConceptValue.
 	 */
-	public BooleanValueInterface createBooleanValue(){
+	public BooleanValueInterface createBooleanValue()
+    {
 		BooleanValue booleanValue = new BooleanValue();
 		return booleanValue;
 	}
@@ -256,7 +279,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return instance of DateConceptValue.
 	 */
-	public DateValueInterface createDateValue(){
+	public DateValueInterface createDateValue()
+    {
 		DateValue dateValue = new DateValue();
 		return dateValue;
 	}
@@ -264,7 +288,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return instance of DoubleConceptValue.
 	 */
-	public DoubleValueInterface createDoubleValue(){
+	public DoubleValueInterface createDoubleValue()
+    {
 		DoubleValue doubleValue = new DoubleValue();
 		return doubleValue;
 	}
@@ -272,7 +297,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return instance of FloatConceptValue.
 	 */
-	public FloatValueInterface createFloatValue(){
+	public FloatValueInterface createFloatValue()
+    {
 		FloatValue floatValue = new FloatValue();
 		return floatValue;
 	}
@@ -280,7 +306,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return instance of IntegerConceptValue.
 	 */
-	public IntegerValueInterface createIntegerValue(){
+	public IntegerValueInterface createIntegerValue()
+    {
 		IntegerValue integerValue = new IntegerValue();
 		return integerValue;
 	}
@@ -288,7 +315,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return instance of LongConceptValue.
 	 */
-	public LongValueInterface createLongValue(){
+	public LongValueInterface createLongValue()
+    {
 		LongValue longValue = new LongValue();
 		return longValue;
 	}
@@ -296,7 +324,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return instance of ShortConceptValue.
 	 */
-	public ShortValueInterface createShortValue(){
+	public ShortValueInterface createShortValue()
+    {
 		ShortValue shortValue = new ShortValue();
 		return shortValue;
 	}
@@ -305,7 +334,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return instance of StringConceptValue.
 	 */
-	public StringValueInterface createStringValue(){
+	public StringValueInterface createStringValue()
+    {
 		StringValue stringValue = new StringValue();
 		return stringValue;
 	}
@@ -314,7 +344,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return instance of CheckBox.
 	 */
-	public CheckBoxInterface createCheckBox(){
+	public CheckBoxInterface createCheckBox()
+    {
 		CheckBox checkBox = new CheckBox();
 		return checkBox;
 	}
@@ -323,7 +354,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return instance of ComboBox.
 	 */
-	public ComboBoxInterface createComboBox(){
+	public ComboBoxInterface createComboBox()
+    {
 		ComboBox comboBox = new ComboBox();
 		return comboBox;
 	}
@@ -332,7 +364,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return instance of Container.
 	 */
-	public ContainerInterface createContainer(){
+	public ContainerInterface createContainer()
+    {
 		Container container = new Container();
 		return container;
 	}
@@ -340,7 +373,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return instance of DataGrid.
 	 */
-	public DataGridInterface createDataGrid(){
+	public DataGridInterface createDataGrid()
+    {
 		DataGrid dataGrid = new DataGrid();
 		return dataGrid;
 	}
@@ -348,7 +382,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return instance of DatePicker.
 	 */
-	public DatePickerInterface createDatePicker(){
+	public DatePickerInterface createDatePicker()
+    {
 		DatePicker datePicker = new DatePicker();
 		return datePicker;
 	}
@@ -356,7 +391,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return instance of ListBox.
 	 */
-	public ListBoxInterface createListBox(){
+	public ListBoxInterface createListBox()
+    {
 		ListBox listBox = new ListBox();
 		return listBox;
 	}
@@ -364,7 +400,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return instance of RadioButton.
 	 */
-	public RadioButtonInterface createRadioButton(){
+	public RadioButtonInterface createRadioButton()
+    {
 		RadioButton radioButton = new RadioButton();
 		return radioButton;
 	}
@@ -372,7 +409,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return instance of TextArea.
 	 */
-	public TextAreaInterface createTextArea(){
+	public TextAreaInterface createTextArea()
+    {
 		TextArea textArea = new TextArea();
 		return textArea;
 	}
@@ -380,7 +418,8 @@ public class DomainObjectFactory {
 	 * 
 	 * @return instance of TextField.
 	 */
-	public TextFieldInterface createTextField(){
+	public TextFieldInterface createTextField()
+    {
 		TextField textField = new TextField();
 		return textField;
 	}
@@ -388,49 +427,51 @@ public class DomainObjectFactory {
 	 * 
 	 * @return instance of View.
 	 */
-	public ViewInterface createView(){
+	public ViewInterface createView()
+    {
 		View view = new View();
 		return view;
 	}
 	/**
 	 * 
-	 * @return
+	 * @return RuleInterface
 	 */
-	public RuleInterface createRule(){
+	public RuleInterface createRule()
+    {
 		Rule rule = new Rule();
 		return rule;
 	}
 	
 	/**
 	 * 
-	 * @return
+	 * @return RuleParameterInterface
 	 */
-	public RuleParameterInterface createRuleParameter(){
+	public RuleParameterInterface createRuleParameter()
+    {
 		RuleParameter ruleParameter = new RuleParameter();
 		return ruleParameter;
 	}
     
     /**
      * 
-     * @return
+     * @return CaDSRDEInterface
      */
-    public CaDSRDEInterface  createCaDSRDE(){
+    public CaDSRDEInterface  createCaDSRDE()
+    {
         CaDSRDE caDSRDE = new CaDSRDE();
         return caDSRDE;
     }
     
     /**
      * 
-     * @return
+     * @return UserDefinedDE
      */
     
-    public UserDefinedDE createUserDefinedDE(){
+    public UserDefinedDE createUserDefinedDE()
+    {
         UserDefinedDE userDefinedDE = new UserDefinedDE();
         return userDefinedDE ;
     }
-    
-   
-    
     
    
 	

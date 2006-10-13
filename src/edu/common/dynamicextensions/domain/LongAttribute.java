@@ -11,7 +11,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @author sujay_narkar
  *
  */
-public class LongAttribute extends PrimitiveAttribute implements LongAttributeInterface { 
+public class LongAttribute extends Attribute implements LongAttributeInterface { 
     /**
      * Default value for this attribute.
      */

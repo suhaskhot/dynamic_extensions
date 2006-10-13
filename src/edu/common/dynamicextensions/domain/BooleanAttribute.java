@@ -10,7 +10,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass table="DYEXTN_BOOLEAN_ATTRIBUTE" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class BooleanAttribute extends PrimitiveAttribute implements BooleanAttributeInterface{
+public class BooleanAttribute extends Attribute implements BooleanAttributeInterface{
     /**
      * Default value for this attribute.
      */

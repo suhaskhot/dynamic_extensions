@@ -5,7 +5,7 @@ package edu.common.dynamicextensions.domaininterface;
  * This is a boolean type of primitive attribute.
  * @author geetika_bangard
  */
-public interface BooleanAttributeInterface extends PrimitiveAttributeInterface
+public interface BooleanAttributeInterface extends AttributeInterface
 {
 
     /**

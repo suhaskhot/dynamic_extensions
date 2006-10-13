@@ -12,11 +12,21 @@ public interface EntityInterface extends AbstractMetadataInterface {
     /**
      * @return Returns the attributeCollection.
      */
+    public Collection getAbstractAttributeCollection();
+    /**
+     * 
+     * @return
+     */
     public Collection getAttributeCollection();
+    /**
+     * 
+     * @return
+     */
+    public Collection getAssociationCollection();
     /**
      * @param attributeCollection The attributeCollection to set.
      */
-    public void addAttribute(AttributeInterface attributeInterface); 
+    public void addAbstractAttribute(AbstractAttributeInterface attributeInterface); 
     
     /**
      * @return Returns the entityGroupCollection.

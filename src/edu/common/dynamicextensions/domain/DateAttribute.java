@@ -12,7 +12,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass table="DYEXTN_DATE_ATTRIBUTE" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class DateAttribute extends PrimitiveAttribute implements DateAttributeInterface {
+public class DateAttribute extends Attribute implements DateAttributeInterface {
 
     /**
      *  Default value of this date attribute.

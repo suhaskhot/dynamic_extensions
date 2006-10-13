@@ -11,7 +11,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @author sujay_narkar
  *
  */
-public class DoubleAttribute extends PrimitiveAttribute implements DoubleAttributeInterface{ 
+public class DoubleAttribute extends Attribute implements DoubleAttributeInterface{ 
     
     /**
     * Default value for this attribute.

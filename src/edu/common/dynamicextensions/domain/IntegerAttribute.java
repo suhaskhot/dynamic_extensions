@@ -11,7 +11,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  *
  */
-public class IntegerAttribute extends PrimitiveAttribute implements IntegerAttributeInterface{
+public class IntegerAttribute extends Attribute implements IntegerAttributeInterface{
 	/**
 	 * Default value for this attribute.
 	 */

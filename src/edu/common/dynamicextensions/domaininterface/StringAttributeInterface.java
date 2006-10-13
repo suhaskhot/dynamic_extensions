@@ -4,7 +4,7 @@ package edu.common.dynamicextensions.domaininterface;
 /**
  * @author geetika_bangard
  */
-public interface StringAttributeInterface extends PrimitiveAttributeInterface {
+public interface StringAttributeInterface extends AttributeInterface {
 
     /**
      * @return Returns the defaultValue.

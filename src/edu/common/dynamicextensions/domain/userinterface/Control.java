@@ -2,8 +2,8 @@ package edu.common.dynamicextensions.domain.userinterface;
 import java.io.Serializable;
 import java.util.Map;
 
-import edu.common.dynamicextensions.domain.Attribute;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domain.AbstractAttribute;
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.ui.webui.util.UIConfigurationConstants;
 import edu.wustl.common.actionForm.AbstractActionForm;
@@ -53,7 +53,7 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	 * Attribute to which this control is associated.
 	 */
 	
-	public AttributeInterface attribute=null;
+	public AbstractAttribute abstractAttribute=null;
     
     /**
      * 
@@ -80,21 +80,7 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 		this.id = id;
 	}
 
-
-	/**
-	 * @hibernate.many-to-one column ="ATTRIBUTE_ID" class="edu.common.dynamicextensions.domain.Attribute"
-	 * @return Returns the attribute.
-	 *
-	 */
-	public AttributeInterface getAttribute() {
-		return attribute;
-	}
-	/**
-	 * @param attribute The attribute to set.
-	 */
-	public void setAttribute(AttributeInterface attributeInterface) {
-		this.attribute = (Attribute)attributeInterface;
-	}
+	
 	/**
 	 * @hibernate.property name="caption" type="string" column="CAPTION" 
 	 * @return Returns the caption.
@@ -232,4 +218,17 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 		}
 		return eventHandlersString;
 	}*/
+	/**
+     * @hibernate.many-to-one column ="ATTRIBUTE_ID" class="edu.common.dynamicextensions.domain.AbstractAttribute"
+	 * @return Returns the abstractAttribute.
+	 */
+	public AbstractAttributeInterface getAbstractAttribute() {
+		return abstractAttribute;
+	}
+	/**
+	 * @param abstractAttribute The abstractAttribute to set.
+	 */
+	public void setAbstractAttribute(AbstractAttributeInterface abstractAttributeInterface) {
+		this.abstractAttribute = (AbstractAttribute)abstractAttributeInterface;
+	}
 }

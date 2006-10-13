@@ -6,7 +6,7 @@ import java.util.Date;
  * This is a primitive attribute of type date.
  * @author geetika_bangard
  */
-public interface DateAttributeInterface extends PrimitiveAttributeInterface 
+public interface DateAttributeInterface extends AttributeInterface 
 {
 
     /**

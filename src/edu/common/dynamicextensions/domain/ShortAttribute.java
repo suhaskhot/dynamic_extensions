@@ -11,7 +11,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @author sujay_narkar
  *
  */
-public class ShortAttribute extends PrimitiveAttribute implements ShortAttributeInterface{ 
+public class ShortAttribute extends Attribute implements ShortAttributeInterface{ 
      /**
         * Default value for this attribute.
         */

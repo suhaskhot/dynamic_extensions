@@ -1,26 +1,46 @@
 package edu.common.dynamicextensions.domaininterface;
 
-import java.util.Collection;
 
-import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 
 /**
- * This interface is extended by AssociationInterface and PrimitiveAttributeInterface.
- * Associations are also treated as attributes.  
- *      Using the information of Attribute object coulmns are perpared in the dynamically create tables.
  * @author geetika_bangard
  */
-public interface AttributeInterface extends AbstractMetadataInterface
-{
+public interface AttributeInterface extends AbstractAttributeInterface {
 
-    /**
-     * Rules are the validation rules associated with attributes.
-     * @return Returns the ruleCollection.
-     */
-     Collection getRuleCollection();
-    /**
-     * @param ruleInterface The ruleInterface to be set.
-     */
-    void addRule(RuleInterface  ruleInterface);
    
+	/**
+	 * @return Returns the isCollection.
+	 */
+	public Boolean getIsCollection() ;
+	/**
+	 * @param isCollection The isCollection to set.
+	 */
+	public void setIsCollection(Boolean isCollection);
+	/**
+	 * @return Returns the isIdentified.
+	 */
+	public Boolean getIsIdentified();
+	/**
+	 * @param isIdentified The isIdentified to set.
+	 */
+	public void setIsIdentified(Boolean isIdentified);
+	/**
+	 * @return Returns the isPrimaryKey.
+	 */
+	public Boolean getIsPrimaryKey();
+	/**
+	 * @param isPrimaryKey The isPrimaryKey to set.
+	 */
+	public void setIsPrimaryKey(Boolean isPrimaryKey);
+    
+     /**
+      * @return
+     */
+    public DataElementInterface getDataElement();
+     
+    /**
+     * @param sourceEntity
+     */
+    public void setDataElement(DataElementInterface dataElementInterface);
+  
 }

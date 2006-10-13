@@ -10,7 +10,7 @@ public interface AttributeInterface extends AbstractAttributeInterface
 {
    
 	/**
-     * 
+     * The attribute can be a co
 	 * @return Returns the isCollection.
 	 */
 	public Boolean getIsCollection() ;

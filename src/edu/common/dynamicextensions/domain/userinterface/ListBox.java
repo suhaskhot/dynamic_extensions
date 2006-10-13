@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
 import edu.common.dynamicextensions.ui.webui.util.UIConfigurationConstants;
 
@@ -142,11 +141,5 @@ public class ListBox extends Control implements ListBoxInterface{
 	}
 
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface#setAttribute(edu.common.dynamicextensions.domaininterface.AttributeInterface)
-	 */
-	public void setAttribute(AbstractAttributeInterface attributeInterface) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 }

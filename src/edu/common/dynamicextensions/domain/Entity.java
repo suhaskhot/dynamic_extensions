@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
@@ -21,7 +21,7 @@ public class Entity extends AbstractMetadata implements EntityInterface {
 	/**
 	 * Collection of attributes in this entity.
 	 */
-	protected Collection attributeCollection = new HashSet();
+	protected Collection abstractAttributeCollection;
 	/**
 	 * Table property for this entity.
 	 */
@@ -37,22 +37,7 @@ public class Entity extends AbstractMetadata implements EntityInterface {
 		
 	}
 	
-	/**
-	 * @hibernate.set name="attributeCollection" table="DYEXTN_ATTRIBUTE"
-	 * cascade="save-update" inverse="false" lazy="false"
-	 * @hibernate.collection-key column="ATTRIBUTE_ID"
-	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Attribute"
-	 * @return Returns the attributeCollection.
-	 */
-	public Collection getAttributeCollection() {
-		return attributeCollection;
-	}
-	/**
-	 * @param attributeCollection The attributeCollection to set.
-	 */
-	public void setAttributeCollection(Collection attributeCollection) {
-		this.attributeCollection = attributeCollection;
-	}
+	
 	/**
 	 * @hibernate.set name="entityGroupCollection" table="DYEXTN_ENTITY_GROUP_REL" 
 	 * cascade="none" inverse="true" lazy="false"
@@ -121,8 +106,9 @@ public class Entity extends AbstractMetadata implements EntityInterface {
     /**
      * 
      */
-	public void addAttribute(AttributeInterface attributeInterface) {
-		attributeCollection.add(attributeInterface);		
+	public void addAbstractAttribute(AbstractAttributeInterface attributeInterface) {
+		// TODO Auto-generated method stub
+		
 	}
 
     /**
@@ -131,5 +117,40 @@ public class Entity extends AbstractMetadata implements EntityInterface {
 	public void addEntityGroupInterface(EntityGroupInterface entityGroupInterface) {
 		// TODO Auto-generated method stub
 		
+	}
+	/**
+     * @hibernate.set name="abstractAttributeCollection" table="DYEXTN_ATTRIBUTE"
+     * cascade="save-update" inverse="false" lazy="false"
+     * @hibernate.collection-key column="ENTIY_ID"
+     * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.AbstractAttribute" 
+	 * @return Returns the abstractAttributeCollection.
+	 */
+	public Collection getAbstractAttributeCollection() {
+		return abstractAttributeCollection;
+	}
+	/**
+	 * @param abstractAttributeCollection The abstractAttributeCollection to set.
+	 */
+	public void setAbstractAttributeCollection(
+			Collection abstractAttributeCollection) {
+		this.abstractAttributeCollection = abstractAttributeCollection;
+	}
+
+
+    /**
+     * 
+     */
+	public Collection getAttributeCollection() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+    /**
+     * 
+     */
+	public Collection getAssociationCollection() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

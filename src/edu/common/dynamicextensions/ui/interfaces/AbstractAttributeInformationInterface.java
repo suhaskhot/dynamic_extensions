@@ -69,4 +69,48 @@ public interface AbstractAttributeInformationInterface {
 	 * @param attributeMeasurementUnits the attributeMeasurementUnits to set
 	 */
 	public void setAttributeMeasurementUnits(String attributeMeasurementUnits);
+	/**
+	 * @return Returns the dataType.
+	 */
+
+	public String getDataType();
+	/**
+	 * @param dataType The dataType to set.
+	 */
+	public void setDataType(String dataType);
+	
+	/**
+	 * Number of digits before decimal 
+	 * @return
+	 */
+	public String getAttributeDigits();
+	
+	/**
+	 * @param attributeDigits : Number of digits before decimal
+	 */
+	public void setAttributeDigits(String attributeDigits);
+	
+	/**
+	 * 
+	 * @return Name
+	 */
+	public String getName();
+	
+	/**
+	 * 
+	 * @param name Name
+	 */
+	public void setName(String name);
+	
+	/**
+	 * 
+	 * @return Description
+	 */
+	public String getDescription();
+	
+	/**
+	 * 
+	 * @param name Description
+	 */
+	public void setDescription(String name);
 }

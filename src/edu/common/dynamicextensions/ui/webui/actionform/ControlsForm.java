@@ -648,6 +648,23 @@ ControlInformationInterface,AbstractAttributeInformationInterface{
     public void setIsMultiSelect(Boolean isMultiSelect) {
     	this.isMultiSelect = isMultiSelect;
     }
-	
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.ui.interfaces.AbstractAttributeInformationInterface#getAttributeDigits()
+	 */
+	public String getAttributeDigits()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.ui.interfaces.AbstractAttributeInformationInterface#setAttributeDigits(java.lang.String)
+	 */
+	public void setAttributeDigits(String attributeDigits)
+	{
+		// TODO Auto-generated method stub
+		
+	}
 }
 

@@ -39,7 +39,7 @@ public class AddControlsAction extends BaseDynamicExtensionsAction {
 			ControlProcessor controlProcessor = ControlProcessor.getInstance();
 			AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
 			try {
-				AbstractAttributeInterface abstractAttributeInterface = attributeProcessor.createAttribute(actionForm.getDataType());
+				AbstractAttributeInterface abstractAttributeInterface = attributeProcessor.createAndPopulateAttribute(actionForm);
 				//attributeProcessor.populateAttribute(actionForm,abstractAttributeInterface);
 				actionForm.setAbstractAttribute(abstractAttributeInterface);
 				ControlInterface controlInterface = controlProcessor.createAndPopulateControl(actionForm.getUserSelectedTool(),actionForm);

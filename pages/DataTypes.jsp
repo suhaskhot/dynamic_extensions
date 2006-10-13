@@ -60,6 +60,16 @@
 					<td width='35%'>Size</td>
 					<td width='50%'><input type="text" name="attributeSize"> </td>
 				</tr>
+				<tr>
+					<td width='8%'>&nbsp;</td>
+					<td width='35%'>Number Of digits</td>
+					<td width='50%'><input type="text" name="attributeDigits"> </td>
+				</tr>
+				<tr>
+					<td width='8%'>&nbsp;</td>
+					<td width='35%'>Decimal</td>
+					<td width='50%'><input type="text" name="attributeDecimalPlaces"> </td>
+				</tr>
 		</table>
 	</div>
 

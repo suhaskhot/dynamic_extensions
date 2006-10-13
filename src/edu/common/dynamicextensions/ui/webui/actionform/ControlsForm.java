@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
 
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
-import edu.common.dynamicextensions.ui.interfaces.AttributeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.ui.interfaces.AbstractAttributeInformationInterface;
 import edu.common.dynamicextensions.ui.interfaces.ControlInformationInterface;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.actionForm.AbstractActionForm;
@@ -23,11 +23,11 @@ import edu.wustl.common.domain.AbstractDomainObject;
  *
  */
 public class ControlsForm extends AbstractActionForm implements 
-			ControlInformationInterface,AttributeInformationInterface{
+				ControlInformationInterface,AbstractAttributeInformationInterface{
 	/**
 	 * Attribute Name
 	 */
-	AttributeInterface attribute;
+	AbstractAttributeInterface  abstractAttribute;
 	/**
 	 * 
 	 */
@@ -40,22 +40,22 @@ public class ControlsForm extends AbstractActionForm implements
 	 * 
 	 */
 	String dataType;
-	
+
 	/**
 	 * 
 	 */
 	List dataTypeList;
-	
+
 	/**
 	 * 
 	 */
 	String attributeSize;
-	
+
 	/**
 	 * 
 	 */   
 	String attributeDefaultValue;
-	
+
 	/**
 	 * 
 	 */    
@@ -64,12 +64,12 @@ public class ControlsForm extends AbstractActionForm implements
 	 * 
 	 */
 	String attributeValidationRules;
-	
+
 	/**
 	 * 
 	 */
 	String attributeDisplayUnits;
-	
+
 	/**
 	 * 
 	 */
@@ -105,11 +105,11 @@ public class ControlsForm extends AbstractActionForm implements
 	/**
 	 * 
 	 */
-	
+
 	String caption;
 	Boolean isPassword;
 	List toolsList = new ArrayList();
-	
+
 	protected String cssClass;
 	protected String tooltip;
 	protected String attributeNoOfRows ;
@@ -118,13 +118,13 @@ public class ControlsForm extends AbstractActionForm implements
 	protected String attributeMeasurementUnits;
 	protected String attributeScale;
 	protected String userSelectedTool;
-	
-	
-	
+
+
+
 	public void reset() {
-		
+
 	}
-	
+
 	/**
 	 * Returns the id assigned to form bean.
 	 * @return the id assigned to form bean.
@@ -136,10 +136,10 @@ public class ControlsForm extends AbstractActionForm implements
 	 * 
 	 */
 	public void setAllValues(AbstractDomainObject abstractDomain)   {
-		
+
 	}
-	
-	
+
+
 	/**
 	 * @return Returns the attributeDescription.
 	 */
@@ -152,8 +152,8 @@ public class ControlsForm extends AbstractActionForm implements
 	public void setAttributeDescription(String attributeDescription) {
 		this.attributeDescription = attributeDescription;
 	}
-	
-	
+
+
 	/**
 	 * @return Returns the dataTypeList.
 	 */
@@ -334,8 +334,8 @@ public class ControlsForm extends AbstractActionForm implements
 	public void setDisplayChoice(String displayChoice) {
 		this.displayChoice = displayChoice;
 	}
-	
-	
+
+
 
 	/**
 	 * @return the attributeCssClass
@@ -421,7 +421,7 @@ public class ControlsForm extends AbstractActionForm implements
 		this.attributeScale = attributeScale;
 	}
 
-	
+
 
 	/**
 	 * @return the selectedControlAttributesList
@@ -437,7 +437,7 @@ public class ControlsForm extends AbstractActionForm implements
 		this.selectedControlAttributesList = selectedControlAttributesList;
 	}
 
-	
+
 
 	/**
 	 * @return the toolsList
@@ -465,7 +465,7 @@ public class ControlsForm extends AbstractActionForm implements
 	public void setUserSelectedTool(String userSelectedTool) {
 		this.userSelectedTool = userSelectedTool;
 	}
-	
+
 	public void update(ControlsForm cacheForm) {
 		/*this.attributeCssClass = cacheForm.getActivityStatus();
 		this.attributeDefaultValue = cacheForm.getAttributeDefaultValue();
@@ -492,9 +492,9 @@ public class ControlsForm extends AbstractActionForm implements
 	public ActionErrors validate(ActionMapping mapping,
 			HttpServletRequest request) {
 		ActionErrors errors = new ActionErrors();
-	/*	Validator validator = new Validator();
+		/*	Validator validator = new Validator();
 		if (attributeSize == null) {
-			
+
 		} else if ( !validator.isNumeric(attributeSize)) {
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
 					"eav.validation.numeric", ApplicationProperties
@@ -505,30 +505,30 @@ public class ControlsForm extends AbstractActionForm implements
                     errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
                             "eav.validation.numericlarge", ApplicationProperties
                             .getValue("eav.form.name")));
-                    
+
                 }
         }
-		
+
 		if (attributeName == null) {
-			
+
 		} else if ( validator.isEmpty(attributeName)) {
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
 					"errors.item.required", ApplicationProperties
 					.getValue("eav.control.name")));
 		}
-        
-        
+
+
 		if(referenceValues == null) {
-            
+
         }else if ( validator.isEmpty(referenceValues)) {
             errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
                     "errors.item.required", ApplicationProperties
                     .getValue("eav.attribute.EnterChoice")));
         }
-        
-        
+
+
         if(attributeDecimalPlaces == null) {
-            
+
         } else if ( validator.isEmpty(attributeDecimalPlaces)) {
             errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
                     "errors.item.required", ApplicationProperties
@@ -538,11 +538,11 @@ public class ControlsForm extends AbstractActionForm implements
                     "eav.validation.decimalnumeric", ApplicationProperties
                     .getValue("eav.entity.name")));
         }*/
-		
+
 		return errors;
 	}
 
-	
+
 
 	/**
 	 * @return the caption
@@ -568,19 +568,7 @@ public class ControlsForm extends AbstractActionForm implements
 		this.isPassword = isPassword;
 	}
 
-	/**
-	 * @return the attribute
-	 */
-	public AttributeInterface getAttribute() {
-		return attribute;
-	}
 
-	/**
-	 * @param attribute the attribute to set
-	 */
-	public void setAttribute(AttributeInterface attribute) {
-		this.attribute = attribute;
-	}
 
 	/**
 	 * @return the tooltip
@@ -596,6 +584,14 @@ public class ControlsForm extends AbstractActionForm implements
 		this.tooltip = tooltip;
 	}
 
-	
+	public AbstractAttributeInterface getAbstractAttribute() {
+		return abstractAttribute;
+	}
+
+	public void setAbstractAttribute(AbstractAttributeInterface abstractAttributeInterface) {
+		abstractAttribute = abstractAttributeInterface;
+	}
+
+
 }
 

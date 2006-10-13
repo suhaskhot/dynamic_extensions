@@ -68,7 +68,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	public void populateControl (ControlInformationInterface controlInformationInterface, ControlInterface controlInterface) {
 		if (controlInformationInterface != null && controlInterface != null) {
 			System.out.println("");
-			controlInterface.setAttribute(controlInformationInterface.getAttribute());
+			controlInterface.setAbstractAttribute(controlInformationInterface.getAbstractAttribute());
 			controlInterface.setCaption(controlInformationInterface.getCaption());
 			controlInterface.setCssClass(controlInformationInterface.getCssClass());
 			controlInterface.setTooltip(controlInformationInterface.getTooltip());
@@ -83,8 +83,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	public void populateControlInformation (ControlInterface controlInterface, ControlInformationInterface controlInformationInterface) {
 		if (controlInterface != null && controlInformationInterface != null) {
-			controlInformationInterface.setAttribute(controlInterface.getAttribute());
-			controlInformationInterface.setCaption(controlInterface.getCaption());
+			controlInformationInterface.setAbstractAttribute(controlInterface.getAbstractAttribute());
 			controlInformationInterface.setCssClass(controlInterface.getCssClass());
 			controlInformationInterface.setTooltip(controlInterface.getTooltip());
 		}

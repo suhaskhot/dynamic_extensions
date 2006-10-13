@@ -5,6 +5,7 @@ import java.util.Map;
 
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
+import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.dao.AbstractDAO;
 import edu.wustl.common.dao.DAOFactory;

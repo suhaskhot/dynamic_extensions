@@ -7,6 +7,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -38,12 +39,12 @@ public class AddControlsAction extends BaseDynamicExtensionsAction {
 		ControlProcessor controlProcessor = ControlProcessor.getInstance();
 		AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
 		try {
-			AttributeInterface attributeInterface = attributeProcessor.createAttribute(actionForm.getDataType());
-			attributeProcessor.populateAttribute(actionForm,attributeInterface);
-			actionForm.setAttribute(attributeInterface);
+			AbstractAttributeInterface abstractAttributeInterface = attributeProcessor.createAttribute(actionForm.getDataType());
+			//attributeProcessor.populateAttribute(actionForm,abstractAttributeInterface);
+			actionForm.setAbstractAttribute(abstractAttributeInterface);
 			ControlInterface controlInterface = controlProcessor.createControl(actionForm.getUserSelectedTool());
 			controlProcessor.populateControl(actionForm, controlInterface);
-			entityInterface.addAttribute(attributeInterface);
+			entityInterface.addAbstractAttribute(abstractAttributeInterface);
 			containerInterface.addControl(controlInterface);
 			containerInterface.setEntity(entityInterface);
 			

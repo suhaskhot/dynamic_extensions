@@ -4,6 +4,7 @@ package edu.common.dynamicextensions.ui.interfaces;
  */
 import java.util.List;
 
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 
 public interface ControlInformationInterface {
@@ -11,11 +12,11 @@ public interface ControlInformationInterface {
 	 * @return Returns the attribute.
 	 *
 	 */
-	public AttributeInterface getAttribute();
+	public AbstractAttributeInterface getAbstractAttribute();
 	/**
 	 * @param attribute The attribute to set.
 	 */
-	public void setAttribute(AttributeInterface attributeInterface);
+	public void setAbstractAttribute(AbstractAttributeInterface attributeInterface);
 
 	public List getSelectedControlAttributesList();
 

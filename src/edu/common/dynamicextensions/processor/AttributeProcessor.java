@@ -7,7 +7,7 @@ package edu.common.dynamicextensions.processor;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
-import edu.common.dynamicextensions.ui.interfaces.AttributeInformationInterface;
+import edu.common.dynamicextensions.ui.interfaces.AbstractAttributeInformationInterface;
 
 /**
  * @author preeti_munot
@@ -52,7 +52,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		}
 		return attributeInterface;
 	}
-	public void populateAttribute(AttributeInformationInterface attributeInformationInterface,AttributeInterface attributeInterface) {
+	public void populateAttribute(AbstractAttributeInformationInterface attributeInformationInterface,AttributeInterface attributeInterface) {
 	//	attributeInterface.setCreatedDate(attributeInformationInterface.)))
 	}
 }

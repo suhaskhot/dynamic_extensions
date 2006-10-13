@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.domain;
 
 import java.util.Collection;
 
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
@@ -21,7 +22,8 @@ public class UserDefinedDE extends DataElement implements UserDefinedDEInterface
     /**
      * 
      */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
+	public void setAllValues(AbstractActionForm arg0) throws AssignDataException 
+    {
 		
 	}
 	/**
@@ -31,14 +33,15 @@ public class UserDefinedDE extends DataElement implements UserDefinedDEInterface
      * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.PermissibleValue" 
 	 * @return Returns the permissibleValueCollection.
 	 */
-	public Collection getPermissibleValueCollection() {
+	public Collection getPermissibleValueCollection() 
+    {
 		return permissibleValueCollection;
 	}
 	/**
 	 * @param permissibleValueCollection The permissibleValueCollection to set.
 	 */
-	public void setPermissibleValueCollection(
-			Collection permissibleValueCollection) {
+	public void setPermissibleValueCollection(Collection permissibleValueCollection) 
+    {
 		this.permissibleValueCollection = permissibleValueCollection;
 	}
     
@@ -46,7 +49,7 @@ public class UserDefinedDE extends DataElement implements UserDefinedDEInterface
      * 
      * @param permissibleValue
      */
-	public void addPermissibleValue(PermissibleValue permissibleValue) {
+	public void addPermissibleValue(PermissibleValueInterface permissibleValueInterface) {
 		// TODO Auto-generated method stub
 		
 	}

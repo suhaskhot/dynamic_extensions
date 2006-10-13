@@ -57,6 +57,8 @@ import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterfac
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
 
 /**
+ * This is a singleton class which provides methods for generating domain objects.
+ * For each domain object a create method is provided. 
  * @author sujay_narkar
  *
  */

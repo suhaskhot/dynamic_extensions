@@ -28,7 +28,7 @@ public class ApplyFormControlsAction extends BaseDynamicExtensionsAction {
 		ControlsForm actionForm = (ControlsForm) form;
 		
 		ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request,Constants.CONTAINER_INTERFACE);
-		actionForm.setOperation("Saved Entity with Attributes Successfully");
+		actionForm.setOperation("controlAdded");
 		return mapping.findForward(Constants.SUCCESS);
 	}  
 }

@@ -40,12 +40,20 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction {
 		String target = "";
 		EntityProcessor entityProcessor = EntityProcessor.getInstance();
 		ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
+		ContainerInterface containerInterface = (ContainerInterface)CacheManager.getObjectFromCache(request,Constants.CONTAINER_INTERFACE);
+		if(containerInterface == null) {
+			 containerInterface = containerProcessor.createContainer();
+		}
+		EntityInterface entityInterface = containerInterface.getEntity();
 		if (formDefinitionForm.getOperation().equalsIgnoreCase(Constants.BUILD_FORM)) {
 			try {
-				EntityInterface entityInterface = entityProcessor.createAndPopulateEntity(formDefinitionForm);
-				ContainerInterface containerInterface = containerProcessor.createContainer();
+				if(entityInterface == null) {
+					entityInterface = entityProcessor.createAndPopulateEntity(formDefinitionForm);
+				} else {
+					entityProcessor.populateEntityInformation(entityInterface, formDefinitionForm);
+				}
 				containerInterface.setEntity(entityInterface);
-				CacheManager.addObjectToCache(request, Constants.ENTITY_INTERFACE,entityInterface);
+				//CacheManager.addObjectToCache(request, Constants.ENTITY_INTERFACE,entityInterface);
 				CacheManager.addObjectToCache(request,Constants.CONTAINER_INTERFACE, containerInterface);
 				target = Constants.BUILD_FORM;
 			} catch (DynamicExtensionsSystemException systemException) {
@@ -54,8 +62,8 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction {
 			}	
 		} else {// When we click on save 
 			try {
-				EntityInterface entityInterface = entityProcessor.createAndSaveEntity(formDefinitionForm);
-				ContainerInterface containerInterface = containerProcessor.createContainer();
+				entityInterface = entityProcessor.createAndSaveEntity(formDefinitionForm);
+				containerInterface = containerProcessor.createContainer();
 				containerInterface.setEntity(entityInterface);
 				CacheManager.addObjectToCache(request,Constants.CONTAINER_INTERFACE,containerInterface);
 				target = Constants.SUCCESS;

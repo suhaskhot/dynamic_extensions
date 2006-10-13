@@ -4,6 +4,7 @@ package edu.common.dynamicextensions.domaininterface.userinterface;
  * dynamically generated user interface.  
  * @author geetika_bangard
  */
-public interface RadioButtonInterface extends ControlInterface {
+public interface RadioButtonInterface extends ControlInterface 
+{
     
 }

@@ -2,16 +2,17 @@ package edu.common.dynamicextensions.domaininterface;
 
 
 /**
+ * The permissible value of type long. 
  * @author geetika_bangard
  */
-public interface LongValueInterface extends PermissibleValueInterface {
-       
+public interface LongValueInterface extends PermissibleValueInterface 
+{
 	/**
 	 * @return Returns the value.
 	 */
-	public Long getValue();
+	Long getValue();
 	/**
 	 * @param value The value to set.
 	 */
-	public void setValue(Long value);
+	void setValue(Long value);
 }

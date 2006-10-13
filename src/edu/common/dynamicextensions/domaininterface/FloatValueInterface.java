@@ -2,16 +2,18 @@ package edu.common.dynamicextensions.domaininterface;
 
 
 /**
+ * The permissible value of type float. 
  * @author geetika_bangard
  */
-public interface FloatValueInterface extends PermissibleValueInterface {
+public interface FloatValueInterface extends PermissibleValueInterface 
+{
     
  	/**
  	 * @return Returns the value.
  	 */
- 	public Float getValue();
+ 	 Float getValue();
  	/**
  	 * @param value The value to set.
  	 */
- 	public void setValue(Float value);
+ 	void setValue(Float value);
 }

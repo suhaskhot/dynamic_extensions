@@ -2,16 +2,18 @@ package edu.common.dynamicextensions.domaininterface;
 
 
 /**
+ * The permissible value of type String. 
  * @author geetika_bangard
  */
-public interface StringValueInterface extends PermissibleValueInterface {
+public interface StringValueInterface extends PermissibleValueInterface 
+{
     
 	/**
 	 * @return Returns the value.
 	 */
-	public String getValue();
+	String getValue();
 	/**
 	 * @param value The value to set.
 	 */
-	public void setValue(String value);
+	void setValue(String value);
 }

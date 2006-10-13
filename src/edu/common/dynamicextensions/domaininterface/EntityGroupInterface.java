@@ -7,39 +7,47 @@ import java.util.Collection;
  * Entities can be grouped in the form of entity goup.
  * @author geetika_bangard
  */
-public interface EntityGroupInterface extends AbstractMetadataInterface {
+public interface EntityGroupInterface extends AbstractMetadataInterface
+{
 
     /**
+     * Returns a collection of entity objects present in the entity group 
      * @return Returns the entityCollection.
      */
-    public Collection getEntityCollection();
+     Collection getEntityCollection();
+    
     /**
-     * @param entityCollection The entityCollection to set.
+     * Adds an entity to the entity group.
+     * @param entityInterface The entity to be added in the entity group.
      */
-    public void addEntity(EntityInterface entityInterface);
+     void addEntity(EntityInterface entityInterface);
    
 	/**
+     * Returns the long name of the entity group
 	 * @return Returns the longName.
 	 */
-	public String getLongName();
+	 String getLongName();
 	/**
 	 * @param longName The longName to set.
 	 */
-	public void setLongName(String longName);
+	 void setLongName(String longName);
+     
 	/**
+     * Returns the short name of the entity group
 	 * @return Returns the shortName.
 	 */
-	public String getShortName();
+	 String getShortName();
 	/**
 	 * @param shortName The shortName to set.
 	 */
-	public void setShortName(String shortName);
+	 void setShortName(String shortName);
 	/**
+     * Returns the version of the entity group. 
 	 * @return Returns the version.
 	 */
-	public String getVersion();
+	 String getVersion();
 	/**
 	 * @param version The version to set.
 	 */
-	public void setVersion(String version);
+	 void setVersion(String version);
 }

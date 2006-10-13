@@ -3,22 +3,23 @@ package edu.common.dynamicextensions.domaininterface;
 
 import java.util.Collection;
 
-import edu.common.dynamicextensions.domain.PermissibleValue;
-
 /**
+ *  When the permissible values for an attribute are user defined the data element is of type
+ *  UserDefinedDE.This type of data element contains collection of user defined permissible values. 
  * @author sujay_narkar
  *
  */
-public interface UserDefinedDEInterface extends DataElementInterface {
+public interface UserDefinedDEInterface extends DataElementInterface 
+{
     
     /**
      * @return Returns the permissibleValueCollection.
      */
-    public Collection getPermissibleValueCollection();
+     Collection getPermissibleValueCollection();
          
     /**
-     * @param permissibleValueCollection The permissibleValueCollection to set.
+     * @param permissibleValueInterface The permissibleValueInterface to be added.
      */
-    public void addPermissibleValue(PermissibleValue permissibleValue); 
+    void addPermissibleValue(PermissibleValueInterface permissibleValueInterface); 
 
 }

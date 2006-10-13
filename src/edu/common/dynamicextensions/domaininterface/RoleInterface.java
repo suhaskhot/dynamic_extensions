@@ -3,58 +3,65 @@ package edu.common.dynamicextensions.domaininterface;
 
 
 /**
+ * For every entity association there are two roles invoved.They are source role and target role.
  * @author sujay_narkar
  *
  */
-public interface RoleInterface {
+public interface RoleInterface 
+{
     
     /**
-     * @return
+     * @return  Long id
      */
-    public Long getId();
+     Long getId();
 
     /**
+     * The association type may be containment or linking.
      * @return Returns the associationType.
      */
-    public String getAssociationType(); 
+     String getAssociationType(); 
    
     
     /**
      * @param associationType The associationType to set.
      */
-    public void setAssociationType(String associationType);
+     void setAssociationType(String associationType);
   
   
     /**
+     * The maximum cardinality for the role. 
      * @return Returns the maxCardinality.
      */
-    public Integer getMaxCardinality();
+     Integer getMaxCardinality();
   
     /**
+     * 
      * @param maxCardinality The maxCardinality to set.
      */
-    public void setMaxCardinality(Integer maxCardinality);
+     void setMaxCardinality(Integer maxCardinality);
     
     /**
+     * The minimum cardinality for the role
      * @hibernate.property name="minCardinality" type="integer" column="MIN_CARDINALITY" 
      * @return Returns the minCardinality.
      */
-    public Integer getMinCardinality();
+     Integer getMinCardinality();
     
     /**
      * @param minCardinality The minCardinality to set.
      */
-    public void setMinCardinality(Integer minCardinality);
+     void setMinCardinality(Integer minCardinality);
         
     /**
+     * name of the role
      * @return Returns the name.
      */
-    public String getName();
+     String getName();
         
     
     /**
      * @param name The name to set.
      */
-    public void setName(String name);
+     void setName(String name);
 
 }

@@ -13,7 +13,7 @@ public interface ContainerInterface
 {
     
     /**
-     * @return
+     * @return Long id
      */
      Long getId();
     
@@ -41,7 +41,7 @@ public interface ContainerInterface
      */
      Collection getControlCollection();
     /**
-     * @param controlCollection The controlCollection to set.
+     * @param controlInterface The controlInterface to be added.
      */
      void addControl(ControlInterface controlInterface);
     /**
@@ -50,7 +50,7 @@ public interface ContainerInterface
      */
      EntityInterface getEntity();
     /**
-     * @param entity The entity to set.
+     * @param entityInterface The entity to set.
      */
      void setEntity(EntityInterface entityInterface);
     /**

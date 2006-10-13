@@ -2,16 +2,18 @@ package edu.common.dynamicextensions.domaininterface;
 
 
 /**
+ * The permissible value of type integer. 
  * @author geetika_bangard
  */
-public interface IntegerValueInterface extends PermissibleValueInterface {
+public interface IntegerValueInterface extends PermissibleValueInterface 
+{
 
 	/**
 	 * @return Returns the value.
 	 */
-	public Integer getValue();
+	 Integer getValue();
 	/**
 	 * @param value The value to set.
 	 */
-	public void setValue(Integer value);
+	 void setValue(Integer value);
 }

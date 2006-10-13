@@ -4,7 +4,8 @@ package edu.common.dynamicextensions.domaininterface.userinterface;
  * dynamically generated user interface.  
  * @author geetika_bangard
  */
-public interface DatePickerInterface extends ControlInterface {
+public interface DatePickerInterface extends ControlInterface
+{
 
   
     

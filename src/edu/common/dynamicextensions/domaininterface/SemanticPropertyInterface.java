@@ -3,49 +3,54 @@ package edu.common.dynamicextensions.domaininterface;
 
 
 /**
+ * For every abstract metadata object semantic properties are associated.
  * @author sujay_narkar
  *
  */
-public interface SemanticPropertyInterface {
+public interface SemanticPropertyInterface 
+{
     
     /**
      * @return Returns the id.
      */
-    public Long getId();
+     Long getId();
     
     /**
+     * Concept code for metadata object
      * @return Returns the conceptCode.
      */
-    public String getConceptCode();
+     String getConceptCode();
     
     
     /**
      * @param conceptCode The conceptCode to set.
      */
-    public void setConceptCode(String conceptCode);
+     void setConceptCode(String conceptCode);
     
     
     /**
+     * Concept name for the metadata object
      * @return Returns the term.
      */
-    public String getTerm();
+     String getTerm();
     
     
     /**
      * @param term The term to set.
      */
-    public void setTerm(String term);
+     void setTerm(String term);
         
     
     /**
+     * ThesaurasName for the metadata object
      * @return Returns the thesaurasName.
      */
-    public String getThesaurasName();
+     String getThesaurasName();
     
     
     /**
      * @param thesaurasName The thesaurasName to set.
      */
-    public void setThesaurasName(String thesaurasName);
+     void setThesaurasName(String thesaurasName);
     
 }

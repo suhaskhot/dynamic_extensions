@@ -2,26 +2,30 @@ package edu.common.dynamicextensions.domaininterface;
 
 
 /**
+ * This is a primitive attribute of type String.Using this information a column of type string is prepared.
  * @author geetika_bangard
  */
-public interface StringAttributeInterface extends AttributeInterface {
+public interface StringAttributeInterface extends AttributeInterface 
+{
 
     /**
+     * Default value of type Strings.
      * @return Returns the defaultValue.
      */
-    public String getDefaultValue();
+     String getDefaultValue();
     /**
      * @param defaultValue The defaultValue to set.
      */
-    public void setDefaultValue(String defaultValue);
+    void setDefaultValue(String defaultValue);
     /**
+     * Size of the string
      * @return Returns the size.
      */
-    public Integer getSize();
+    Integer getSize();
     /**
      * @param size The size to set.
      */
-    public void setSize(Integer size);
+    void setSize(Integer size);
 
     
 }

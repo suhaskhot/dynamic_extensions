@@ -1,7 +1,5 @@
 package edu.common.dynamicextensions.domaininterface;
 
-
-
 /**
  * These are the attributes in the entities.
  * @author geetika_bangard
@@ -10,39 +8,44 @@ public interface AttributeInterface extends AbstractAttributeInterface
 {
    
 	/**
-     * The attribute can be a co
-	 * @return Returns the isCollection.
+     * States that if the attribute is a collection
+     * @return Returns the isCollection.
 	 */
-	public Boolean getIsCollection() ;
+	 Boolean getIsCollection() ;
 	/**
 	 * @param isCollection The isCollection to set.
 	 */
-	public void setIsCollection(Boolean isCollection);
+	 void setIsCollection(Boolean isCollection);
+     
 	/**
+     * States that if the attribute is identified 
 	 * @return Returns the isIdentified.
 	 */
-	public Boolean getIsIdentified();
+	 Boolean getIsIdentified();
 	/**
 	 * @param isIdentified The isIdentified to set.
 	 */
-	public void setIsIdentified(Boolean isIdentified);
+	 void setIsIdentified(Boolean isIdentified);
 	/**
+     * States that if the attribute is a primary key
 	 * @return Returns the isPrimaryKey.
 	 */
-	public Boolean getIsPrimaryKey();
+	 Boolean getIsPrimaryKey();
 	/**
 	 * @param isPrimaryKey The isPrimaryKey to set.
 	 */
-	public void setIsPrimaryKey(Boolean isPrimaryKey);
+	 void setIsPrimaryKey(Boolean isPrimaryKey);
     
      /**
-      * @return
+      * Returns the data element associated with the attribute.The data elment specify the
+      * source of permissible values.
+      * @return DataElementInterface
      */
-    public DataElementInterface getDataElement();
+     DataElementInterface getDataElement();
      
     /**
-     * @param sourceEntity
+     * @param dataElementInterface data element interface
      */
-    public void setDataElement(DataElementInterface dataElementInterface);
+     void setDataElement(DataElementInterface dataElementInterface);
   
 }

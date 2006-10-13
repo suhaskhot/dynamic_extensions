@@ -1,25 +1,26 @@
 package edu.common.dynamicextensions.domaininterface.databaseproperties;
 
 /**
+ * The database properties are the properties of the dynamically created tables or
+ * columns from those tables.
  * @author geetika_bangard
  */
-public interface DatabasePropertiesInterface {
-
+public interface DatabasePropertiesInterface 
+{
     /**
      * 
-     * @return
+     * @return Long id
      */
-    public Long getId();
-   
+    Long getId();
 	
     /**
+     * Name of the table or name of the column
      * @return Returns the name.
      */
-    public String getName();
+    String getName();
     /**
      * @param name The name to set.
      */
-    public void setName(String name);
-    
+    void setName(String name);
    
 }

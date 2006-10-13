@@ -4,39 +4,51 @@ package edu.common.dynamicextensions.domaininterface;
 import java.util.Collection;
 
 /**
+ * Entity object stores information of the entity.For each entity a dynamic table is generated using the metadata
+ * information.
  * @author sujay_narkar
  *
  */
-public interface EntityInterface extends AbstractMetadataInterface {
+public interface EntityInterface extends AbstractMetadataInterface 
+{
     
     /**
+     * Returns the abstract attribute collection
+     * AbstractAttributeCollection contains attributes as well as association objects.
      * @return Returns the attributeCollection.
      */
-    public Collection getAbstractAttributeCollection();
+     Collection getAbstractAttributeCollection();
+     
     /**
-     * 
-     * @return
+     * Returns the attributes of the entity   
+     * @return Collection of AttributeInterface
      */
-    public Collection getAttributeCollection();
+     Collection getAttributeCollection();
+     
     /**
-     * 
-     * @return
+     * Returns the associations of the entity 
+     * @return Collection  of AssociationInterface
      */
-    public Collection getAssociationCollection();
+     Collection getAssociationCollection();
+     
     /**
-     * @param attributeCollection The attributeCollection to set.
+     * The abstractAttributeInterface to be added 
+     * @param abstractAttributeInterface abstract attribute interface 
      */
-    public void addAbstractAttribute(AbstractAttributeInterface attributeInterface); 
+     void addAbstractAttribute(AbstractAttributeInterface abstractAttributeInterface); 
     
     /**
+     * Returns a collection of entity groups having this entity. 
      * @return Returns the entityGroupCollection.
      */
-    public Collection getEntityGroupCollection();
+     Collection getEntityGroupCollection();
     
     /**
-     * @param entityGroupCollection The entityGroupCollection to set.
+     * Adds an entity group to the entity 
+     * @param entityGroupInterface The entityGroupInterface to be added set.
+     * 
      */
-    public void addEntityGroupInterface(EntityGroupInterface entityGroupInterface);
+     void addEntityGroupInterface(EntityGroupInterface entityGroupInterface);
       
       
 

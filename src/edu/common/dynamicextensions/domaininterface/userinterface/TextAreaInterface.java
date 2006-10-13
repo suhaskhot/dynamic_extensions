@@ -5,24 +5,25 @@ package edu.common.dynamicextensions.domaininterface.userinterface;
  * dynamically generated user interface.  
  * @author geetika_bangard
  */
-public interface TextAreaInterface extends ControlInterface {
+public interface TextAreaInterface extends ControlInterface 
+{
     
     /**
 	 * @return Returns the columns.
 	 */
-	public Integer getColumns();
+	Integer getColumns();
 	/**
 	 * @param columns The columns to set.
 	 */
-	public void setColumns(Integer columns);
+	void setColumns(Integer columns);
 	/**
 	 * @return Returns the rows.
 	 */
-	public Integer getRows();
+	Integer getRows();
 	/**
 	 * @param rows The rows to set.
 	 */
-	public void setRows(Integer rows);
+	void setRows(Integer rows);
  
 
 }

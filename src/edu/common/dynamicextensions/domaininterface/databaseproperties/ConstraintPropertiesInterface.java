@@ -2,26 +2,28 @@ package edu.common.dynamicextensions.domaininterface.databaseproperties;
 
 
 /**
+ * These are the data base properties for an association.
  * @author geetika_bangard
  */
-public interface ConstraintPropertiesInterface extends DatabasePropertiesInterface {
+public interface ConstraintPropertiesInterface extends DatabasePropertiesInterface
+{
     
     /**
      * @return Returns the sourceEntityKey.
      */
-    public String getSourceEntityKey();
+    String getSourceEntityKey();
     /**
      * @param sourceEntityKey The sourceEntityKey to set.
      */
-    public void setSourceEntityKey(String sourceEntityKey);
+    void setSourceEntityKey(String sourceEntityKey);
     /**
      * @return Returns the targetEntityKey.
      */
-    public String getTargetEntityKey();
+    String getTargetEntityKey();
     /**
      * @param targetEntityKey The targetEntityKey to set.
      */
-    public void setTargetEntityKey(String targetEntityKey);
+    void setTargetEntityKey(String targetEntityKey);
 
     
 

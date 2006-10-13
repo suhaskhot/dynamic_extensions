@@ -6,29 +6,30 @@ import java.util.Collection;
  * dynamically generated user interface.  
  * @author geetika_bangard
  */
-public interface ViewInterface {
+public interface ViewInterface
+{
     
     /**
 	 * @return Returns the id.
 	 */
-	public Long getId();
+	Long getId();
 	
 	/**
 	 * @return Returns the name.
 	 */
-	public String getName();
+	String getName();
 	/**
 	 * @param name The name to set.
 	 */
-	public void setName(String name) ;
+	void setName(String name) ;
 		
 	/**
 	 * @return Returns the containerCollection.
 	 */
-	public Collection getContainerCollection();
+	Collection getContainerCollection();
 	/**
-	 * @param containerCollection The containerCollection to set.
+	 * @param containerInterface The containerInterface to be added.
 	 */
-	public void addContainer(ContainerInterface containerInterface);
+	void addContainer(ContainerInterface containerInterface);
 	
 }

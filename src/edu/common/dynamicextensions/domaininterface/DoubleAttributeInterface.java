@@ -21,7 +21,7 @@ public interface DoubleAttributeInterface extends AttributeInterface
     void setDefaultValue(Double defaultValue);
     
     /**
-     * The measurement units are shown in the dinamically created user interface.
+     * The measurement units are shown in the dynamically created user interface.
      * The measurement units are meter,kg,cm etc.They are displayed after the user input control. 
      * @return Returns the measurementUnits.
      */

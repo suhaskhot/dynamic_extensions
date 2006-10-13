@@ -3,12 +3,14 @@ package edu.common.dynamicextensions.domaininterface;
 
 
 /**
+ * These are the attributes in the entities.
  * @author geetika_bangard
  */
-public interface AttributeInterface extends AbstractAttributeInterface {
-
+public interface AttributeInterface extends AbstractAttributeInterface 
+{
    
 	/**
+     * 
 	 * @return Returns the isCollection.
 	 */
 	public Boolean getIsCollection() ;

@@ -52,7 +52,7 @@ public class Container extends AbstractDomainObject implements Serializable,Cont
 	/**
 	 * Entity to which this container is associated.
 	 */
-	public EntityInterface entity;
+	public Entity entity;
 
 	/**
 	 * Empty constructor
@@ -129,12 +129,7 @@ public class Container extends AbstractDomainObject implements Serializable,Cont
     }
     
     
-    /**
-     * @param entity The entity to set.
-     */
-    public void setEntity(Entity entity) {
-        this.entity = entity;
-    }
+   
     /**
      * @hibernate.property name="mainTableCss" type="string" column="MAIN_TABLE_CSS" 
      * @return Returns the mainTableCss.
@@ -214,14 +209,20 @@ public class Container extends AbstractDomainObject implements Serializable,Cont
     }
 
 
+    /**
+     * 
+     */
 	public void addControl(ControlInterface controlInterface) {
 		// TODO Auto-generated method stub
 		
 	}
 
+    /**
+     * 
+     */
 
 	public void setEntity(EntityInterface entityInterface) {
-		entity = entityInterface;
+		entity = (Entity)entityInterface;
 		
 	}
 }

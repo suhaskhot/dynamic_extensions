@@ -24,12 +24,12 @@ public interface AbstractAttributeInterface extends AbstractMetadataInterface
     void addRule(RuleInterface  ruleInterface);
     /**
      * 
-     * @return
+     * @return EntityInterface entity interface
      */
     EntityInterface getEntity();
     /**
-     * 
-     * @param entityInterface
+     * Returns an entity associated with the attribute
+     * @param entityInterface entity interface
      */
     
     void setEntity(EntityInterface entityInterface);

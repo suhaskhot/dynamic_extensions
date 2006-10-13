@@ -34,25 +34,28 @@ public class AddControlsAction extends BaseDynamicExtensionsAction {
 			HttpServletResponse response) {
 		ControlsForm actionForm = (ControlsForm)form;
 		ContainerInterface containerInterface = (ContainerInterface)CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-		
-		EntityInterface entityInterface = containerInterface.getEntity();
-		ControlProcessor controlProcessor = ControlProcessor.getInstance();
-		AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
-		try {
-			AbstractAttributeInterface abstractAttributeInterface = attributeProcessor.createAttribute(actionForm.getDataType());
-			//attributeProcessor.populateAttribute(actionForm,abstractAttributeInterface);
-			actionForm.setAbstractAttribute(abstractAttributeInterface);
-			ControlInterface controlInterface = controlProcessor.createControl(actionForm.getUserSelectedTool());
-			controlProcessor.populateControl(actionForm, controlInterface);
-			entityInterface.addAbstractAttribute(abstractAttributeInterface);
-			containerInterface.addControl(controlInterface);
-			containerInterface.setEntity(entityInterface);
-			
-			CacheManager.addObjectToCache(request, Constants.CONTROL_INTERFACE, controlInterface);
-		}catch (Exception e) {
-			e.printStackTrace();
+		if(containerInterface != null) {
+			EntityInterface entityInterface = containerInterface.getEntity();
+			ControlProcessor controlProcessor = ControlProcessor.getInstance();
+			AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
+			try {
+				AbstractAttributeInterface abstractAttributeInterface = attributeProcessor.createAttribute(actionForm.getDataType());
+				//attributeProcessor.populateAttribute(actionForm,abstractAttributeInterface);
+				actionForm.setAbstractAttribute(abstractAttributeInterface);
+				ControlInterface controlInterface = controlProcessor.createControl(actionForm.getUserSelectedTool());
+				controlProcessor.populateControl(actionForm, controlInterface);
+				if(entityInterface != null) {
+					entityInterface.addAbstractAttribute(abstractAttributeInterface);
+					containerInterface.addControl(controlInterface);
+					containerInterface.setEntity(entityInterface);
+				}
+
+				CacheManager.addObjectToCache(request, Constants.CONTROL_INTERFACE, controlInterface);
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
-		
 		return mapping.findForward(Constants.SUCCESS);
 	}
 }

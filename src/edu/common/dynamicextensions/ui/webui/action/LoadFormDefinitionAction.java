@@ -21,6 +21,7 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.EntityProcessor;
@@ -33,15 +34,18 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction {
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		FormDefinitionForm actionForm = (FormDefinitionForm)form;
-		EntityInterface cacheObject = (EntityInterface)CacheManager.getObjectFromCache(request,Constants.ENTITY_INTERFACE);
-		if(cacheObject != null) {
-			EntityProcessor entityProcessor = EntityProcessor.getInstance();
-			entityProcessor.populateEntityInformation(cacheObject, actionForm);
-		} 
+		ContainerInterface containerInterface = (ContainerInterface)CacheManager.getObjectFromCache(request,Constants.CONTAINER_INTERFACE);
+		if(containerInterface != null) {
+			EntityInterface entityInterface = containerInterface.getEntity();
+			if(entityInterface != null) {
+				EntityProcessor entityProcessor = EntityProcessor.getInstance();
+				entityProcessor.populateEntityInformation(entityInterface , actionForm);
+			}
+		}
 		try {
 			populateExistingFormsList(actionForm,request);
 		} catch (DynamicExtensionsApplicationException applicationException) {
-		    request.setAttribute(Constants.ERRORS_LIST,handleException(applicationException,new ArrayList()));	
+			request.setAttribute(Constants.ERRORS_LIST,handleException(applicationException,new ArrayList()));	
 		} catch (DynamicExtensionsSystemException systemException) {
 			handleException(systemException,new ArrayList());		
 			return mapping.findForward(Constants.SYSTEM_EXCEPTION);

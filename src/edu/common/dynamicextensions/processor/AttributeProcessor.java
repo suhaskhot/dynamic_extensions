@@ -40,12 +40,15 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	public AttributeInterface createAttribute(String attributeType)
 	{
 		AttributeInterface attributeInterface = null;
-		if (attributeType.equalsIgnoreCase("String")) {
-			attributeInterface = DomainObjectFactory.getInstance().createStringAttribute();
-		} else if(attributeType.equalsIgnoreCase("Boolean")) {
-			attributeInterface = DomainObjectFactory.getInstance().createBooleanAttribute();
-		} else if(attributeType.equalsIgnoreCase("Date")) {
-			attributeInterface = DomainObjectFactory.getInstance().createDateAttribute();
+		if(attributeType!=null)
+		{
+			if (attributeType.equalsIgnoreCase("String")) {
+				attributeInterface = DomainObjectFactory.getInstance().createStringAttribute();
+			} else if(attributeType.equalsIgnoreCase("Boolean")) {
+				attributeInterface = DomainObjectFactory.getInstance().createBooleanAttribute();
+			} else if(attributeType.equalsIgnoreCase("Date")) {
+				attributeInterface = DomainObjectFactory.getInstance().createDateAttribute();
+			}
 		}
 		return attributeInterface;
 	}

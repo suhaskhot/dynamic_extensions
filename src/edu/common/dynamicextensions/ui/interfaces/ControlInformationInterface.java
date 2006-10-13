@@ -98,36 +98,6 @@ public interface ControlInformationInterface {
 	public void setAttributeMultiSelect(Boolean attributeMultiSelect) ;
 
 	/**
-	 * @return the attributenoOfCols
-	 */
-	public String getAttributenoOfCols() ;
-
-	/**
-	 * @param attributenoOfCols the attributenoOfCols to set
-	 */
-	public void setAttributenoOfCols(String attributenoOfCols) ;
-
-	/**
-	 * @return the attributeNoOfRows
-	 */
-	public String getAttributeNoOfRows() ;
-
-	/**
-	 * @param attributeNoOfRows the attributeNoOfRows to set
-	 */
-	public void setAttributeNoOfRows(String attributeNoOfRows) ;
-
-	/**
-	 * @return the attributeScale
-	 */
-	public String getAttributeScale() ;
-
-	/**
-	 * @param attributeScale the attributeScale to set
-	 */
-	public void setAttributeScale(String attributeScale) ;
-
-	/**
 	 * @return the attributeTooltip
 	 */
 	public String getTooltip() ;

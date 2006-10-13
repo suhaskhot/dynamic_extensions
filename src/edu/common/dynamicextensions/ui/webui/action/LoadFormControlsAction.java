@@ -12,6 +12,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
+import edu.common.dynamicextensions.ui.webui.util.TreeData;
 import edu.common.dynamicextensions.ui.webui.util.UIControlsConfigurationFactory;
 import edu.common.dynamicextensions.util.global.Constants;
 
@@ -39,6 +40,10 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction {
 		if(actionForm.getDisplayChoice() == null) {
 			actionForm.setDisplayChoice("");
 		}
+		if(actionForm.getTreedataObj() == null) {
+			actionForm.setTreedataObj(new TreeData());	
+		}
+		
 		actionForm.setSelectedControlAttributesList(getSelectedControlAttributesList(actionForm.getUserSelectedTool()));
 		return mapping.findForward(Constants.SHOW_BUILD_FORM_JSP);
 	}

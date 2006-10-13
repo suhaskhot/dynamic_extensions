@@ -12,6 +12,7 @@
     <property name="lib.dir" value="${base.dir}/WEB-INF/lib"/>
     <property name="build.dir" value="${base.dir}/build"/>
     <property name="applet.dir" value="${base.dir}/Applet"/>
+	<property name="interface.dir" value="${base.dir}/DynamicExtensionsInterface"/>
 	<property name="hbm.dir" value="${src.dir}/edu/common/dynamicextensions/hbm"/>
 	<property name="extra_lib.dir" value="${base.dir}/extra_lib"/>
 	<property name="generateforce" value="true"/>
@@ -151,6 +152,80 @@
         </jar>
     </target>
 	<!-- Create the Applet JAR Ends-->
+	
+	
+	<!-- Create the Applet JAR Begins-->
+	    <target name="createDynamicExtensionsJAR" depends="compile" >
+	    	
+	        
+	        <copy todir="${interface.dir}/edu/common/dynamicextensions/domain">
+	        	<fileset dir="${target.dir}/edu/common/dynamicextensions/domain">
+	        		<include name="**/*.class"/>
+	           	</fileset>
+	        </copy>	
+	    	
+	       <copy todir="${interface.dir}/edu/common/dynamicextensions/domain/databaseproperties">        	
+	    	   	<fileset dir="${target.dir}/edu/common/dynamicextensions/domain/databaseproperties">
+	        	  		<include name="**/*.class"/>
+	        	</fileset>
+	        </copy>	
+	        	
+           <copy todir="${interface.dir}/edu/common/dynamicextensions/domain/userinterface">
+	        	<fileset dir="${target.dir}/edu/common/dynamicextensions/domain/userinterface">
+	        	  		<include name="**/*.class"/>
+	        	</fileset>
+            </copy>	
+	        	
+            <copy todir="${interface.dir}/edu/common/dynamicextensions/domain/validationrules">
+	        	<fileset dir="${target.dir}/edu/common/dynamicextensions/domain/validationrules">
+	        	   		<include name="**/*.class"/>
+	        	</fileset>
+         	 </copy>
+	    	
+	    	
+	    	 <copy todir="${interface.dir}/edu/common/dynamicextensions/domaininterface">
+	    		   	<fileset dir="${target.dir}/edu/common/dynamicextensions/domaininterface">
+	    		       		<include name="**/*.class"/>
+	    		  	</fileset>
+	         </copy>	
+	    		    	
+	          <copy todir="${interface.dir}/edu/common/dynamicextensions/domaininterface/databaseproperties">        	
+	        	   	<fileset dir="${target.dir}/edu/common/dynamicextensions/domaininterface/databaseproperties">
+	    	        	  		<include name="**/*.class"/>
+	            	</fileset>
+	           </copy>	
+	    		        	
+	           <copy todir="${interface.dir}/edu/common/dynamicextensions/domaininterface/userinterface">
+	    	        	<fileset dir="${target.dir}/edu/common/dynamicextensions/domaininterface/userinterface">
+	    	        	  		<include name="**/*.class"/>
+	    	        	</fileset>
+	            </copy>	
+	    		        	
+	            <copy todir="${interface.dir}/edu/common/dynamicextensions/domaininterface/validationrules">
+	            	<fileset dir="${target.dir}/edu/common/dynamicextensions/domaininterface/validationrules">
+	            	   		<include name="**/*.class"/>
+	            	</fileset>
+	          	 </copy>
+	    	
+	    	 <copy todir="${interface.dir}/edu/common/dynamicextensions/exception">
+	    		   	<fileset dir="${target.dir}/edu/common/dynamicextensions/exception">
+	    		      	 	<include name="**/*.class"/>
+	    		   	</fileset>
+	         </copy>	
+	    		    		        	
+	          <copy todir="${interface.dir}/edu/common/dynamicextensions/entitymanager">
+	               	<fileset dir="${target.dir}/edu/common/dynamicextensions/entitymanager">
+	               	   		<include name="**/*.class"/>
+	              	</fileset>
+	       	 </copy>
+	   	    	
+	        <jar taskname="buildJar" jarfile="${interface.dir}/DynamicExtensions.jar">
+	            <fileset dir="${interface.dir}">
+		            <exclude name="**/CVS*"/>
+		        </fileset>
+	        </jar>
+	    </target>
+		<!-- Create the Applet JAR Ends-->
 	
 	<!-- Creates the WAR (Web Application Archive) file of the application -->
 	<target name="BuildAppWAR" depends="init">

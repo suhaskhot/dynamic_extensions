@@ -9,6 +9,32 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 
 public interface ControlInformationInterface {
 	/**
+	 * 
+	 */
+	public String getName();
+	/**
+	 * @param attribute The attribute to set.
+	 */
+	public void setName(String name);
+	/**
+	 * If user has chosen it to be kept hidden.
+	 * @return Returns the isHidden.
+	 */
+	Boolean getIsHidden();
+	/**
+	 * @param isHidden The isHidden to set.
+	 */
+	void setIsHidden(Boolean isHidden);
+	/**
+	 * The sequence Number for setting it at the desired place in the tree and so in the UI.
+	 * @return Returns the sequenceNumber.
+	 */
+	Integer getSequenceNumber();
+	/**
+	 * @param sequenceNumber The sequenceNumber to set.
+	 */
+	void setSequenceNumber(Integer sequenceNumber);
+	/**
 	 * @return Returns the attribute.
 	 *
 	 */
@@ -136,20 +162,44 @@ public interface ControlInformationInterface {
 
 	/**
 	 * @return the toolsList
-	 */
+	 *//*
 	public List getToolsList(); 
 
-	/**
+	*//**
 	 * @param toolsList the toolsList to set
-	 */
+	 *//*
 	public void setToolsList(List toolsList); 
-	/**
+	*//**
 	 * @return the userSelectedTool
-	 */
+	 *//*
 	public String getUserSelectedTool();
 
-	/**
+	*//**
 	 * @param userSelectedTool the userSelectedTool to set
+	 *//*
+	public void setUserSelectedTool(String userSelectedTool) ;*/
+	/**
+	 * @return Returns the columns.
 	 */
-	public void setUserSelectedTool(String userSelectedTool) ;
+	Integer getColumns();
+	/**
+	 * @param columns The columns to set.
+	 */
+	void setColumns(Integer columns);
+	/**
+	 * @return Returns the rows.
+	 */
+	Integer getRows();
+	/**
+	 * @param rows The rows to set.
+	 */
+	void setRows(Integer rows);
+	/**
+     * @return Returns the isMultiSelect.
+     */
+    Boolean getIsMultiSelect();
+    /**
+     * @param isMultiSelect The isMultiSelect to set.
+     */
+    void setIsMultiSelect(Boolean isMultiSelect) ;
 }

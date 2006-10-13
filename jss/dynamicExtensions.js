@@ -3,6 +3,7 @@ function formSelectedAction() {
 }
 function tagHandlerFunction(selectedTool) {
 	document.getElementById('userSelectedTool').value=selectedTool;
+	
 }
 
 function showBuildFormJSP() {

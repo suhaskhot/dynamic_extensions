@@ -23,7 +23,7 @@ import edu.wustl.common.domain.AbstractDomainObject;
  *
  */
 public class ControlsForm extends AbstractActionForm implements 
-				ControlInformationInterface,AbstractAttributeInformationInterface{
+ControlInformationInterface,AbstractAttributeInformationInterface{
 	/**
 	 * Attribute Name
 	 */
@@ -31,7 +31,7 @@ public class ControlsForm extends AbstractActionForm implements
 	/**
 	 * 
 	 */
-	String attributeDescription;
+	String description;
 	/**
 	 * selectedControlAttributesList
 	 */
@@ -59,7 +59,7 @@ public class ControlsForm extends AbstractActionForm implements
 	/**
 	 * 
 	 */    
-	String attributeFormat;
+	String format;
 	/**
 	 * 
 	 */
@@ -109,8 +109,10 @@ public class ControlsForm extends AbstractActionForm implements
 	String caption;
 	Boolean isPassword;
 	List toolsList = new ArrayList();
-
+	Boolean IsHidden;
+	Integer sequenceNumber;
 	protected String cssClass;
+	protected String name;
 	protected String tooltip;
 	protected String attributeNoOfRows ;
 	protected String attributenoOfCols;
@@ -118,7 +120,9 @@ public class ControlsForm extends AbstractActionForm implements
 	protected String attributeMeasurementUnits;
 	protected String attributeScale;
 	protected String userSelectedTool;
-
+	Integer columns;
+	Integer rows;
+	Boolean isMultiSelect;
 
 
 	public void reset() {
@@ -143,14 +147,14 @@ public class ControlsForm extends AbstractActionForm implements
 	/**
 	 * @return Returns the attributeDescription.
 	 */
-	public String getAttributeDescription() {
-		return attributeDescription;
+	public String getDescription() {
+		return description;
 	}
 	/**
 	 * @param attributeDescription The attributeDescription to set.
 	 */
-	public void setAttributeDescription(String attributeDescription) {
-		this.attributeDescription = attributeDescription;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 
@@ -253,14 +257,14 @@ public class ControlsForm extends AbstractActionForm implements
 	/**
 	 * @return Returns the attributeFormat.
 	 */
-	public String getAttributeFormat() {
-		return attributeFormat;
+	public String getFormat() {
+		return format;
 	}
 	/**
 	 * @param attributeFormat The attributeFormat to set.
 	 */
-	public void setAttributeFormat(String attributeFormat) {
-		this.attributeFormat = attributeFormat;
+	public void setFormat(String format) {
+		this.format = format;
 	}
 	/**
 	 * @return Returns the attributeValidationRules.
@@ -592,6 +596,58 @@ public class ControlsForm extends AbstractActionForm implements
 		abstractAttribute = abstractAttributeInterface;
 	}
 
+	public Integer getColumns() {
+		return columns;
+	}
 
+	public Boolean getIsHidden() {
+		return IsHidden;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public Integer getRows() {
+		return rows;
+	}
+
+	public Integer getSequenceNumber() {
+		return sequenceNumber;
+	}
+
+	public void setColumns(Integer columns) {
+		this.columns = columns; 
+
+	}
+
+	public void setIsHidden(Boolean isHidden) {
+		this.IsHidden = isHidden;
+	}
+
+	public void setName(String name) {
+		this.name = name;		
+	}
+
+	public void setRows(Integer rows) {
+		this.rows = rows;		
+	}
+
+	public void setSequenceNumber(Integer sequenceNumber) {
+		this.sequenceNumber = sequenceNumber;		
+	}
+	/**
+     * @return Returns the isMultiSelect.
+     */
+	public Boolean getIsMultiSelect() {
+    	return isMultiSelect;
+    }
+    /**
+     * @param isMultiSelect The isMultiSelect to set.
+     */
+    public void setIsMultiSelect(Boolean isMultiSelect) {
+    	this.isMultiSelect = isMultiSelect;
+    }
+	
 }
 

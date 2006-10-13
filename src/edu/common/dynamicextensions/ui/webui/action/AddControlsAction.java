@@ -42,8 +42,8 @@ public class AddControlsAction extends BaseDynamicExtensionsAction {
 				AbstractAttributeInterface abstractAttributeInterface = attributeProcessor.createAttribute(actionForm.getDataType());
 				//attributeProcessor.populateAttribute(actionForm,abstractAttributeInterface);
 				actionForm.setAbstractAttribute(abstractAttributeInterface);
-				ControlInterface controlInterface = controlProcessor.createControl(actionForm.getUserSelectedTool());
-				controlProcessor.populateControl(actionForm, controlInterface);
+				ControlInterface controlInterface = controlProcessor.createAndPopulateControl(actionForm.getUserSelectedTool(),actionForm);
+				//controlProcessor.populateControl(actionForm, controlInterface);
 				if(entityInterface != null) {
 					entityInterface.addAbstractAttribute(abstractAttributeInterface);
 					containerInterface.addControl(controlInterface);

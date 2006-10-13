@@ -11,11 +11,14 @@ package edu.common.dynamicextensions.processor;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.ui.interfaces.ControlInformationInterface;
 
 
 /**
- * 
+ * This class processes all the information needed for Control.
  * @author deepti_shelar
  *
  */
@@ -28,7 +31,6 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	protected  ControlProcessor () {
 
 	}
-
 	/**
 	 * this method gets the new instance of the ControlProcessor to the caller.
 	 * @return ControlProcessor ControlProcessor instance
@@ -36,26 +38,38 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	public static ControlProcessor getInstance () {
 		return new ControlProcessor();
 	}
-
 	/**
 	 * This method returns empty domain object of controlInterface.
 	 * @return ControlInterface Returns new instance of ControlInterface from the domain object Factory.
 	 */
-	public ControlInterface createControl(String userSelectedControlName) {
+	public ControlInterface createAndPopulateControl(String userSelectedControlName,
+			ControlInformationInterface controlInformationInterface) {
 		ControlInterface controlInterface = null;
 		if(userSelectedControlName.equalsIgnoreCase("TextControl")) {
 			controlInterface = DomainObjectFactory.getInstance().createTextField();
+			populateControl(controlInformationInterface, controlInterface);
+			((TextFieldInterface)controlInterface).setIsPassword(controlInformationInterface.getIsPassword());
+			((TextFieldInterface)controlInterface).setColumns(controlInformationInterface.getColumns());
 		} else if(userSelectedControlName.equalsIgnoreCase("MultilineControl")) {
+			populateControl(controlInformationInterface, controlInterface);
 			controlInterface = DomainObjectFactory.getInstance().createTextArea();
+			((TextAreaInterface)controlInterface).setColumns(controlInformationInterface.getColumns());
+			((TextAreaInterface)controlInterface).setRows(controlInformationInterface.getRows());
 		} else if(userSelectedControlName.equalsIgnoreCase("ComboboxControl")) {
+			populateControl(controlInformationInterface, controlInterface);
 			controlInterface = DomainObjectFactory.getInstance().createComboBox();
 		} else if(userSelectedControlName.equalsIgnoreCase("ListBoxControl")) {
+			populateControl(controlInformationInterface, controlInterface);
 			controlInterface = DomainObjectFactory.getInstance().createListBox();
+			((ListBoxInterface)controlInterface).setIsMultiSelect(controlInformationInterface.getIsMultiSelect());
 		} else if(userSelectedControlName.equalsIgnoreCase("CheckboxControl")) {
+			populateControl(controlInformationInterface, controlInterface);
 			controlInterface = DomainObjectFactory.getInstance().createCheckBox();
 		} else if(userSelectedControlName.equalsIgnoreCase("RadioButtonControl")) {
+			populateControl(controlInformationInterface, controlInterface);
 			controlInterface = DomainObjectFactory.getInstance().createRadioButton();
 		} else if(userSelectedControlName.equalsIgnoreCase("DateControl")) {
+			populateControl(controlInformationInterface, controlInterface);
 			controlInterface = DomainObjectFactory.getInstance().createDatePicker();
 		}
 		return controlInterface;
@@ -65,34 +79,31 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @param controlInterface Instance of ControlInterface which is populated using the controlInformationInterface.
 	 * @param controlInformationInterface Instance of ControlInformationInterface which is used to populate the controlInterface.
 	 */
-	public void populateControl (ControlInformationInterface controlInformationInterface, ControlInterface controlInterface) {
+	public void populateControl(ControlInformationInterface controlInformationInterface, ControlInterface controlInterface) {
 		if (controlInformationInterface != null && controlInterface != null) {
-			System.out.println("");
 			controlInterface.setAbstractAttribute(controlInformationInterface.getAbstractAttribute());
 			controlInterface.setCaption(controlInformationInterface.getCaption());
 			controlInterface.setCssClass(controlInformationInterface.getCssClass());
 			controlInterface.setTooltip(controlInformationInterface.getTooltip());
+			controlInterface.setIsHidden(controlInformationInterface.getIsHidden());
+			controlInterface.setSequenceNumber(controlInformationInterface.getSequenceNumber());
 		}
 	}
 	/**
-	 * This method will populate the ControlInformationInterface using the EntityInterface so that the 
-	 * information of the Entity can be shown on the user page using the EntityInformationInterface.
-	 * @param entityInterface Instance of EntityInterface from which to populate the informationInterface.
-	 * @param entityInformationInterface Instance of EntityInformationInterface which will be populated using 
-	 * the first parameter that is EntityInterface.
+	 * This method will populate the ControlInformationInterface using the controlInterface so that the 
+	 * information of the Control can be shown on the user page using the ControlInformationInterface.
+	 * @param controlInterface Instance of controlInterface from which to populate the informationInterface.
+	 * @param controlInformationInterface Instance of ControlInformationInterface which will be populated using 
+	 * the first parameter that is controlInterface.
 	 */
-	public void populateControlInformation (ControlInterface controlInterface, ControlInformationInterface controlInformationInterface) {
+	public void populateControlInformation(String selectedControl ,ControlInterface controlInterface, ControlInformationInterface controlInformationInterface) {
 		if (controlInterface != null && controlInformationInterface != null) {
 			controlInformationInterface.setAbstractAttribute(controlInterface.getAbstractAttribute());
 			controlInformationInterface.setCssClass(controlInterface.getCssClass());
 			controlInformationInterface.setTooltip(controlInterface.getTooltip());
+			controlInformationInterface.setCaption(controlInterface.getCaption());
+			controlInformationInterface.setIsHidden(controlInterface.getIsHidden());
+			controlInformationInterface.setSequenceNumber(controlInterface.getSequenceNumber());
 		}
 	}
-
-
-
-
-
-
-
 }

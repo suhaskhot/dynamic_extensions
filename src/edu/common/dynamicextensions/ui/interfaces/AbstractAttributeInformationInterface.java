@@ -20,11 +20,11 @@ public interface AbstractAttributeInformationInterface {
 	/**
 	 * @return Returns the attributeFormat.
 	 */
-	public String getAttributeFormat(); 
+	public String getFormat(); 
 	/**
 	 * @param attributeFormat The attributeFormat to set.
 	 */
-	public void setAttributeFormat(String attributeFormat);
+	public void setFormat(String attributeFormat);
 	
 	/**
 	 * @return Returns the attributeDefaultValue.

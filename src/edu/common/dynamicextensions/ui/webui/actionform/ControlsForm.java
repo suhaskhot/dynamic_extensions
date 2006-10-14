@@ -191,6 +191,8 @@ ControlInformationInterface,AbstractAttributeInformationInterface{
      * 
      */
     protected String selectedControlId;
+    
+    protected String rootName;
 
 	/**
      * 

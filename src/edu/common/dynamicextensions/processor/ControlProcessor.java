@@ -191,7 +191,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		}
 		if(controlInterface instanceof TextFieldInterface)
 		{
-			//Populate flds for text fld interface
+			
 		}
 	}
 }

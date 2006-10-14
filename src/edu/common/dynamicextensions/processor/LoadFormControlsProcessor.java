@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.UIControlsConfigurationFactory;
 import edu.wustl.common.actionForm.AbstractActionForm;
@@ -44,16 +45,28 @@ public class LoadFormControlsProcessor
 		ControlsForm controlsForm = (ControlsForm)actionForm;
         List toolList = getToolsList();
         controlsForm.setToolsList(toolList);
+        List controlAttributesList;
+       
         if(controlsForm.getControlOperation() == null || 
                 controlsForm.getControlOperation().equals(ProcessorConstants.ADD))
         {
-            controlsForm.setUserSelectedTool(toolList.get(0).toString());
+            if(controlsForm.getUserSelectedTool() == null || controlsForm.getUserSelectedTool().equals(""))
+            {
+            	controlsForm.setUserSelectedTool(toolList.get(0).toString());
+            }
             controlsForm.setDataType("");
             controlsForm.setDisplayChoice("");
+            
+            controlAttributesList  = getControlAttributesList(controlsForm.getUserSelectedTool());
+            controlsForm.setSelectedControlAttributesList(controlAttributesList);
         }
-        else 
+        else if(controlsForm.getControlOperation().equals(ProcessorConstants.EDIT))  
         {
             
+            ControlProcessor controlProcessor = ControlProcessor.getInstance();
+            String selectedControlId = controlsForm.getSelectedControlId();
+            ControlInterface controlInterface = containerInterface.getControlInterfaceBySequenceNumber(selectedControlId);
+            controlProcessor.populateControlInformation(controlInterface,controlsForm);
         }
 	}
     
@@ -67,7 +80,23 @@ public class LoadFormControlsProcessor
         toolsList = uiControlsConfigurationFactory.getControlNames();
         return toolsList;
     }
-	
+    
+    /**
+     * Returns the selectedControlAttributesList from the xml file depending upon the tool passed.
+     * @param userSelectedTool
+     * @return
+     */
+    private List getControlAttributesList(String userSelectedTool)
+    {
+        UIControlsConfigurationFactory uiControlsConfigurationFactory = UIControlsConfigurationFactory.getInstance();
+        List controlAttributesList = new ArrayList();
+    
+        controlAttributesList  = uiControlsConfigurationFactory.getConrolAttributesList(userSelectedTool);
+        return controlAttributesList;
+    }
+    
+    
+   
 }
 
 

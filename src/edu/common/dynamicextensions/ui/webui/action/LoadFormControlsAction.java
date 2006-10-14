@@ -1,9 +1,6 @@
 package edu.common.dynamicextensions.ui.webui.action;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,7 +12,6 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInter
 import edu.common.dynamicextensions.processor.LoadFormControlsProcessor;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
-import edu.common.dynamicextensions.ui.webui.util.UIControlsConfigurationFactory;
 import edu.common.dynamicextensions.util.global.Constants;
 
 /**
@@ -35,48 +31,13 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) 
     {
-        
 		ControlsForm actionForm = (ControlsForm)form;
-        
         ContainerInterface containerInterface = (ContainerInterface)CacheManager.getObjectFromCache(request,Constants.CONTAINER_INTERFACE);
-        LoadFormControlsProcessor loadFormControlsProcessor =   LoadFormControlsProcessor.getInstance();
         
+        LoadFormControlsProcessor loadFormControlsProcessor =   LoadFormControlsProcessor.getInstance();
         loadFormControlsProcessor.loadFormControls(actionForm,containerInterface);
+        
         return mapping.findForward(Constants.SHOW_BUILD_FORM_JSP);
         
     }
-        
-		/*List toolsList = getToolsList();
-		actionForm.setToolsList(toolsList);
-		if(actionForm.getUserSelectedTool() == null || actionForm.getOperation().equalsIgnoreCase("controlAdded"))
-        {
-			actionForm.setUserSelectedTool(toolsList.get(0).toString());
-		} 
-		if(actionForm.getDataType() == null) 
-        {
-			actionForm.setDataType("");
-		}
-        
-		if(actionForm.getDisplayChoice() == null) 
-        {
-			actionForm.setDisplayChoice("");
-		}
-		
-		
-		actionForm.setSelectedControlAttributesList(getSelectedControlAttributesList(actionForm.getUserSelectedTool()));
-		return mapping.findForward(Constants.SHOW_BUILD_FORM_JSP);
-	}
-	
-	/**
-	 * Returns the selectedControlAttributesList from the xml file depending upon the tool passed.
-	 * @param userSelectedTool
-	 * @return
-	 */
-	private List getSelectedControlAttributesList(String userSelectedTool)
-	{
-		List selectedControlAttributesList = new ArrayList();
-		UIControlsConfigurationFactory uiControlsConfigurationFactory = UIControlsConfigurationFactory.getInstance();
-		selectedControlAttributesList = uiControlsConfigurationFactory.getConrolAttributesList(userSelectedTool);
-		return selectedControlAttributesList;
-	}
 }

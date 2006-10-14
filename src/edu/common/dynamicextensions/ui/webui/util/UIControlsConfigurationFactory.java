@@ -58,7 +58,7 @@ public final class UIControlsConfigurationFactory {
 		parseXML();
 	}
 
-	public static UIControlsConfigurationFactory getInstance()
+	public synchronized static UIControlsConfigurationFactory getInstance()
 	{
 		if(m_instance == null)
 		{

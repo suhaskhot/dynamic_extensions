@@ -12,6 +12,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.processor.ApplyFormControlsProcessor;
 import edu.common.dynamicextensions.processor.AttributeProcessor;
 import edu.common.dynamicextensions.processor.ControlProcessor;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
@@ -32,31 +33,15 @@ public class AddControlsAction extends BaseDynamicExtensionsAction {
 	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form,HttpServletRequest request,
 			HttpServletResponse response) {
+		//Get controls form
 		ControlsForm actionForm = (ControlsForm)form;
+		//Get container interface from cache
 		ContainerInterface containerInterface = (ContainerInterface)CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-		if(containerInterface != null) {
-			EntityInterface entityInterface = containerInterface.getEntity();
-			ControlProcessor controlProcessor = ControlProcessor.getInstance();
-			AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
-			try {
-				//Create Attribute Interface
-				AbstractAttributeInterface abstractAttributeInterface = attributeProcessor.createAndPopulateAttribute(actionForm);
-				actionForm.setAbstractAttribute(abstractAttributeInterface);
-				//Control Interface
-				ControlInterface controlInterface = controlProcessor.createAndPopulateControl(actionForm.getUserSelectedTool(),actionForm);
-				
-				if(entityInterface != null) {
-					entityInterface.addAbstractAttribute(abstractAttributeInterface);
-					containerInterface.addControl(controlInterface);
-					containerInterface.setEntity(entityInterface);
-				}
-				
-				CacheManager.addObjectToCache(request, Constants.CONTROL_INTERFACE, controlInterface);
-			}
-			catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+		//Add control to form
+		ApplyFormControlsProcessor formControlsProcessor = ApplyFormControlsProcessor.getInstance();
+		formControlsProcessor.addControlToForm(containerInterface, actionForm);
+		//Add back object to cache
+		CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
 		return mapping.findForward(Constants.SUCCESS);
 	}
 }

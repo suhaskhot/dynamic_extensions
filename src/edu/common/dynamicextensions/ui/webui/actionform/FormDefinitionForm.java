@@ -2,6 +2,8 @@
 package edu.common.dynamicextensions.ui.webui.actionform;
 
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +12,7 @@ import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.ui.interfaces.ContainerInformationInterface;
 import edu.common.dynamicextensions.ui.interfaces.EntityInformationInterface;
 import edu.common.dynamicextensions.util.global.Constants;
@@ -19,12 +22,18 @@ import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.global.Validator;
 
 /**
+ * This actionFotm stores information about the Container and the Entity.
  * @author deepti_shelar
  *
  */
 public class FormDefinitionForm  extends AbstractActionForm implements EntityInformationInterface,ContainerInformationInterface{
 	/**
-	 * Name
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * Name : 
 	 */
 	protected String formName;
 
@@ -40,10 +49,6 @@ public class FormDefinitionForm  extends AbstractActionForm implements EntityInf
 	 * CreateAs
 	 */
 	protected String createAs;
-	/**
-	 * createAsTypeChanged
-	 */
-	protected String createAsTypeChanged;
 	/**
 	 * existingFormsList
 	 */
@@ -76,7 +81,12 @@ public class FormDefinitionForm  extends AbstractActionForm implements EntityInf
 	 * 
 	 */
 	protected String titleCss;
-
+	/**
+	 * 
+	 */
+	protected String conceptCode;
+	
+    
 		/**
 	 * Returns the id assigned to form bean.
 	 * @return the id assigned to form bean.
@@ -127,76 +137,117 @@ public class FormDefinitionForm  extends AbstractActionForm implements EntityInf
 	public void setEntityIdentifier(String entityIdentifier) {
 		this.entityIdentifier = entityIdentifier;
 	}
+	/**
+	 * gets CreateAs
+	 */
 	public String getCreateAs() {
 		return createAs;
 	}
-
+	/**
+	 * sets CreateAs
+	 */
 	public void setCreateAs(String createAs) {
 		this.createAs = createAs;
 	}
-
+	/**
+	 * 
+	 */
 	public List getExistingFormsList() {
 		return existingFormsList;
 	}
-
+	/**
+	 * 
+	 */
 	public void setExistingFormsList(List existingFormsList) {
 		this.existingFormsList = existingFormsList;
 	}
-
+	/**
+	 * 
+	 */
 	public String getSelectForm() {
 		return selectForm;
 	}
-
+	/**
+	 * 
+	 */
 	public void setSelectForm(String selectForm) {
 		this.selectForm = selectForm;
 	}
-
-	public String getCreateAsTypeChanged() {
-		return createAsTypeChanged;
-	}
-
-	public void setCreateAsTypeChanged(String createAsTypeChanged) {
-		this.createAsTypeChanged = createAsTypeChanged;
-	}
-	
-	
+	/**
+	 * 
+	 */
 	public String getButtonCss() {
 		return buttonCss;
 	}
+	/**
+	 * 
+	 */
 	public String getCaption() {
 		return caption;
 	}
+	/**
+	 * 
+	 */
 	public String getMainTableCss() {
 		return mainTableCss;
 	}
+	/**
+	 * 
+	 */
 	public String getRequiredFieldIndicatior() {
 		return requiredFieldIndicatior;
 	}
+	/**
+	 * 
+	 */
 	public String getRequiredFieldWarningMessage() {
 		return requiredFieldWarningMessage;
 	}
+	/**
+	 * 
+	 */
 	public String getTitleCss() {
 		return titleCss;
 	}
+	/**
+	 * 
+	 */
 	public void setButtonCss(String buttonCss) {
 		this.buttonCss = buttonCss;
 	}
+	/**
+	 * 
+	 */
 	public void setCaption(String caption) {
 		this.caption = caption;
 	}
+	/**
+	 * 
+	 */
 	public void setMainTableCss(String mainTableCss) {
 		this.mainTableCss = mainTableCss;
 	}
+	/**
+	 * 
+	 */
 	public void setRequiredFieldIndicatior(String requiredFieldIndicatior) {
 	this.requiredFieldIndicatior = requiredFieldIndicatior;	
 	}
+	/**
+	 * 
+	 */
 	public void setRequiredFieldWarningMessage(String requiredFieldWarningMessage) {
 		this.requiredFieldWarningMessage = requiredFieldWarningMessage;
 	}
+	/**
+	 * 
+	 */
 	public void setTitleCss(String titleCss) {
 		this.titleCss = titleCss;
 	}
-	
+	/**
+	 * 
+	 */
 	public void update(FormDefinitionForm cacheForm) {
 		this.formName = cacheForm.getFormName();
 		this.description = cacheForm.getDescription();
@@ -223,6 +274,11 @@ public class FormDefinitionForm  extends AbstractActionForm implements EntityInf
 					"errors.item.required", ApplicationProperties
 					.getValue("eav.form.name")));
 		}
+		if ( caption == null || validator.isEmpty(String.valueOf(caption))) {
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
+					"errors.item.required", ApplicationProperties
+					.getValue("eav.form.title")));
+		}
 		/*if ( createAs == null || validator.isEmpty(String.valueOf(createAs))) {
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
 					"errors.item.required", ApplicationProperties
@@ -231,6 +287,17 @@ public class FormDefinitionForm  extends AbstractActionForm implements EntityInf
 
 		return errors;
 	}
+	/**
+	 * @return the conceptCode
+	 */
+	public String getConceptCode() {
+		return conceptCode;
+	}
+	/**
+	 * @param conceptCode the conceptCode to set
+	 */
+	public void setConceptCode(String conceptCode) {
+		this.conceptCode = conceptCode;
+	}
 	
-
 }

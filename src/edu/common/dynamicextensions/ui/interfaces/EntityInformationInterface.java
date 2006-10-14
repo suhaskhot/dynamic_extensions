@@ -29,4 +29,13 @@ public interface EntityInformationInterface {
 	 * @param createAs The createAs to set.
 	 */
 	public void setCreateAs(String createAs) ;
+	/**
+	 * @param returns ConceptCode .
+	 */
+	public String getConceptCode();
+	/**
+	 * @param ConceptCode The ConceptCode to set.
+	 */
+	public void setConceptCode(String ConceptCode) ;
+	
 }

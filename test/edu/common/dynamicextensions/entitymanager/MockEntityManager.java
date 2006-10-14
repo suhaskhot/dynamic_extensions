@@ -5,11 +5,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-/**
- * 
- */
+import java.util.HashSet;
 
+import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Entity;
+import edu.common.dynamicextensions.domain.StringAttribute;
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 
 /**
@@ -20,7 +22,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 public class MockEntityManager 
 {
 	/**
-	 * This method return the manually created Entities.
+	 * This method returns the manually created Entities.
 	 * @return The Collection of Entities
 	 * @throws DynamicExtensionsApplicationException If Entities can't be created
 	 */
@@ -80,6 +82,22 @@ public class MockEntityManager
 		}
 		
 		return entityCollection;
+	}
+	/**
+	 * This method returns a Dummy Entity populated with a Dummy StringAttribute.
+	 */
+	public Entity createEntity() {
+		Entity entity = new Entity();
+		entity.setId(new Long(1));
+		entity.setDescription("Dummy description");
+		entity.setName("EntityOne");
+		Collection abstractAttributeCollection = new HashSet();
+		StringAttribute strAttr = new StringAttribute();
+		strAttr.setDescription("description");
+		strAttr.setEntity(entity);
+		abstractAttributeCollection.add(strAttr);
+		entity.setAbstractAttributeCollection(abstractAttributeCollection);
+		return entity;
 	}
 
 }

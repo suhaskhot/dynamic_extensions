@@ -15,10 +15,10 @@ import edu.common.dynamicextensions.util.global.Constants;
 
 /**
  * This Action class handles two situations , 
- * 1. When user selects 'Next' from createForm.jsp. This time a call to EntityProcessor will just create an
- * entity and populate it with actionform's data. This entity is then saved to cache.
- * 2. When user selects 'Save' from createForm.jsp. This time a call to EntityProcessor will create an
- * entity and will save it to database. This entity is then saved to cache.
+ * 1. When user selects 'Next' from createForm.jsp. This time a call to ApplyFormDefinitionProcessor
+ * will just create an entity and populate it with actionform's data. This entity is then saved to cache.
+ * 2. When user selects 'Save' from createForm.jsp. This time a call to ApplyFormDefinitionProcessor 
+ * will create an entity and will save it to database. This entity is then saved to cache.
  * The exception thrown can be of 'Application' type ,in this case the same Screen will be displayed  
  * added with error messages .
  * And The exception thrown can be of 'System' type, in this case user will be directed to Error Page.

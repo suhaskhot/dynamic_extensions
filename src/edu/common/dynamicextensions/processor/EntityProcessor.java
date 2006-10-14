@@ -10,7 +10,9 @@
 package edu.common.dynamicextensions.processor;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
+import edu.common.dynamicextensions.domain.SemanticProperty;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -79,6 +81,9 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
         if (entityInformationInterface != null && entityInterface != null) {
             entityInterface.setName(entityInformationInterface.getFormName());
             entityInterface.setDescription(entityInformationInterface.getDescription());
+            SemanticPropertyInterface semanticPropertyInterface = new SemanticProperty();
+            semanticPropertyInterface.setConceptCode(entityInformationInterface.getConceptCode());
+            entityInterface.addSemanticProperty(semanticPropertyInterface);
         }
     }
     

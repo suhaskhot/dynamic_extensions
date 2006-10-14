@@ -72,6 +72,15 @@
 							<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="caption" />
 						</td>
 					</tr>
+					 <tr>
+					 <td class="formRequiredNotice" width="5">&nbsp;</td>
+						<td class="formRequiredLabel">
+							<bean:message key="eav.form.conceptCode"/> 
+						</td>
+						<td class="formField">
+							<html:text styleClass="formDateSized"  maxlength="20" size="40"  property="conceptCode" />
+						</td>
+					</tr>
 				    <tr>
 						<td class="formRequiredNotice" width="5">&nbsp;</td>
 						<td class="formRequiredLabel">
@@ -82,7 +91,7 @@
 						</td>
 				     </tr>
 				     <tr>
-						 <td class="formRequiredNotice" width="5">*</td>
+							<td class="formRequiredNotice" width="5">&nbsp;</td>
 						 <td class="formRequiredLabel">
 							<bean:message key="eav.form.createAs"/> 
 						 </td>
@@ -124,7 +133,6 @@
  	 </tr>
  </table>
 	<html:hidden property="operation" value=""/>
-	<html:hidden property="createAsTypeChanged" value=""/>
 	<html:hidden property="entityIdentifier" value=""/>
   </body>
 </html:form> 

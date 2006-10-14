@@ -2,6 +2,7 @@ package edu.common.dynamicextensions.domain;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
@@ -208,6 +209,9 @@ public  abstract class AbstractMetadata extends AbstractDomainObject implements 
      */
 	public void addSemanticProperty(SemanticPropertyInterface semanticPropertyInterface) 
 	{
-		// TODO Auto-generated method stub
+		if(semanticPropertyCollection == null) {
+			semanticPropertyCollection = new HashSet();
+		}
+		semanticPropertyCollection.add(semanticPropertyInterface);
 	}
 }

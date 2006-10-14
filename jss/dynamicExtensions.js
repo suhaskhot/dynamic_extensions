@@ -36,7 +36,8 @@ function showHomePageFromBuildForm() {
 function addControlToFormTree() {
 	document.getElementById('operation').value='controlAdded';
     var controlsForm=document.getElementById("controlsForm");
-	controlsForm.action="/dynamicExtensions/AddControlsAction.do";
+    controlsForm.action="/dynamicExtensions/AddControlsAction.do";
+    document.getElementById('controlOperation').value='add';
 	controlsForm.submit();
 }
 function addControlToForm() {

@@ -39,6 +39,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 
 	public void addControlToForm(ContainerInterface containerInterface, ControlsForm controlsForm)
 	{
+		System.out.println("Add Control to form");
 		if((containerInterface != null)&&(controlsForm!=null))
 		{
 			try
@@ -51,6 +52,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				ControlInterface controlInterface = null;
 				//Check for operation
 				String controlOperation  = controlsForm.getControlOperation();
+				System.out.println("Control operation = " + controlOperation);
 				if(controlOperation!=null)
 				{
 					//Add new control

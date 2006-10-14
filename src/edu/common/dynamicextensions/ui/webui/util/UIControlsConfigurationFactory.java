@@ -99,7 +99,7 @@ public final class UIControlsConfigurationFactory {
 					}
 					else
 					{
-						System.out.println("InputStream null...Please check");
+						//System.out.println("InputStream null...Please check");
 					}
 				}
 
@@ -129,7 +129,7 @@ public final class UIControlsConfigurationFactory {
 				if(propertyFileName!=null)
 				{
 					String strPropertiesFileName = propertyFileName.getNodeValue();
-					System.out.println("Properties FileName = " + strPropertiesFileName);
+					//System.out.println("Properties FileName = " + strPropertiesFileName);
 					if(strPropertiesFileName!=null)
 					{
 						try {
@@ -140,7 +140,7 @@ public final class UIControlsConfigurationFactory {
 						}						
 						if(rb_uicontrolsCaptions==null)
 						{
-							System.out.println("Error Loading properties file..");
+							//System.out.println("Error Loading properties file..");
 						}
 					}
 				}
@@ -231,7 +231,7 @@ public final class UIControlsConfigurationFactory {
 							NodeList paramsList = jspNode.getElementsByTagName(UIConfigurationConstants.PARAM_TAGNAME);
 							if(paramsList!=null)
 							{
-								System.out.println("Length = " + paramsList.getLength());
+								//System.out.println("Length = " + paramsList.getLength());
 								Node paramNode = null;
 								String paramValue = null,paramName = null;
 								ArrayList paramList = new ArrayList();
@@ -255,13 +255,13 @@ public final class UIControlsConfigurationFactory {
 												paramValue = paramValueNode.getNodeValue();
 											}
 											NameValueBean paramNVB = new NameValueBean(paramName,paramValue);
-											System.out.println(paramNVB.toString());
+											//System.out.println(paramNVB.toString());
 											paramList.add(paramNVB);
 										}
 									}
 								}
 								jspIncludeControl.setJspParams(paramList);
-								System.out.println("Set JSP Params as "  + paramList);
+								//System.out.println("Set JSP Params as "  + paramList);
 							}
 							//Assign as control data type
 							controlDataType = jspIncludeControl;
@@ -323,18 +323,18 @@ public final class UIControlsConfigurationFactory {
 													//Load the values for the node
 													try {
 														NodeList valueNodesList  = attributeNodeElt.getElementsByTagName(UIConfigurationConstants.VALUE_TAGNAME);
-														System.out.println("No Of Values = " + valueNodesList.getLength());
+														//System.out.println("No Of Values = " + valueNodesList.getLength());
 														propertiesMap.put(UIConfigurationConstants.VALUES_LIST,getListOfValues(valueNodesList));
 													} catch (Exception e) {
-														System.out.println("Error while loading the values for control ");
+														//System.out.println("Error while loading the values for control ");
 													}
 													//Load Event Handlers
 													try {
 														NodeList eventNodesList  = attributeNodeElt.getElementsByTagName(UIConfigurationConstants.EVENT_TAGNAME);
-														System.out.println("No Of events = " + eventNodesList.getLength());
+														//System.out.println("No Of events = " + eventNodesList.getLength());
 														propertiesMap.put(UIConfigurationConstants.EVENT_HANDLERS, getEventHandlers(eventNodesList));
 													} catch (Exception e) {
-														System.out.println("Error while loading the values for control ");
+														//System.out.println("Error while loading the values for control ");
 													}
 
 												}
@@ -393,7 +393,7 @@ public final class UIControlsConfigurationFactory {
 						if((eventName!=null)&&(eventHandlerName!=null))
 						{
 							eventHandlers.put(eventName, eventHandlerName);
-							System.out.println("Adding event :" + eventName + " Handler Name :" + eventHandlerName);
+							//System.out.println("Adding event :" + eventName + " Handler Name :" + eventHandlerName);
 						}
 					}
 				}
@@ -471,7 +471,7 @@ public final class UIControlsConfigurationFactory {
 					for(int i=0; i<list.size();i++)
 					{
 						Control dataType = (Control)list.get(i);
-						System.out.println(dataType.generateHTML());
+						//System.out.println(dataType.generateHTML());
 					}
 				}
 			}
@@ -502,9 +502,9 @@ public final class UIControlsConfigurationFactory {
 		// TODO Auto-generated method stub
 		UIControlsConfigurationFactory UCCF = UIControlsConfigurationFactory.getInstance();
 		List list = UCCF.getConrolAttributesList("TextControl");
-		System.out.println(list);
+		//System.out.println(list);
 		//UCCF.displayData();
-		System.out.println("Done");
+		//System.out.println("Done");
 	}
 
 }

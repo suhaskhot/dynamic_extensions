@@ -301,7 +301,41 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				if(size!=null){
 					attributeInformationIntf.setAttributeSize(size.toString());
 				}
+			}else if(attributeInterface instanceof DateAttributeInterface)
+			{
+				attributeInformationIntf.setAttributeDefaultValue(((DateAttributeInterface)attributeInterface).getDefaultValue().toString());
+				attributeInformationIntf.setFormat(((DateAttributeInterface)attributeInterface).getFormat());
 			}
+			else if(attributeInterface instanceof BooleanAttributeInterface)
+			{
+				attributeInformationIntf.setAttributeDefaultValue(((BooleanAttributeInterface)attributeInterface).getDefaultValue().toString());
+			}
+			else if(attributeInterface instanceof IntegerAttributeInterface)
+			{
+				attributeInformationIntf.setAttributeDefaultValue(((IntegerAttributeInterface)attributeInterface).getDefaultValue().toString());
+				attributeInformationIntf.setAttributeMeasurementUnits((((IntegerAttributeInterface)attributeInterface).getMeasurementUnits()).toString());
+			}
+			else if(attributeInterface instanceof ShortAttributeInterface)
+			{
+				attributeInformationIntf.setAttributeDefaultValue(((ShortAttributeInterface)attributeInterface).getDefaultValue().toString());
+				attributeInformationIntf.setAttributeMeasurementUnits((((ShortAttributeInterface)attributeInterface).getMeasurementUnits()).toString());
+			}
+			else if(attributeInterface instanceof LongAttributeInterface)
+			{
+				attributeInformationIntf.setAttributeDefaultValue(((LongAttributeInterface)attributeInterface).getDefaultValue().toString());
+				attributeInformationIntf.setAttributeMeasurementUnits((((LongAttributeInterface)attributeInterface).getMeasurementUnits()).toString());
+			}
+			else if(attributeInterface instanceof FloatAttributeInterface)
+			{
+				attributeInformationIntf.setAttributeDefaultValue(((FloatAttributeInterface)attributeInterface).getDefaultValue().toString());
+				attributeInformationIntf.setAttributeMeasurementUnits((((FloatAttributeInterface)attributeInterface).getMeasurementUnits()).toString());
+			}
+			else if(attributeInterface instanceof DoubleAttributeInterface)
+			{
+				attributeInformationIntf.setAttributeDefaultValue(((DoubleAttributeInterface)attributeInterface).getDefaultValue().toString());
+				attributeInformationIntf.setAttributeMeasurementUnits((((DoubleAttributeInterface)attributeInterface).getMeasurementUnits()).toString());
+			}
+			
 		}
 	}
 }

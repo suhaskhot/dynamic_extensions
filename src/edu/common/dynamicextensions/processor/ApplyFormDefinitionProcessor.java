@@ -4,7 +4,9 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.ui.interfaces.ContainerInformationInterface;
 import edu.common.dynamicextensions.ui.interfaces.EntityInformationInterface;
+import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
 
 public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor{
 	/**
@@ -24,27 +26,28 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * 
 	 * @param containerInterface
 	 */
-	public ContainerInterface addEntityToContainer(ContainerInterface containerInterface,EntityInformationInterface 
-			entityInformationInterface , boolean IsActionSave) {
+	public ContainerInterface addEntityToContainer(ContainerInterface containerInterface,FormDefinitionForm actionForm 
+			,boolean IsActionSave) {
 		ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
 		if(containerInterface == null) {
 			 containerInterface = containerProcessor.createContainer();
 		}
+		containerProcessor.populateContainerInterface(containerInterface, actionForm);
 		EntityProcessor entityProcessor = EntityProcessor.getInstance();
 		EntityInterface entityInterface = containerInterface.getEntity();
 		if(entityInterface == null) {
 			try {
 				if(IsActionSave) {
-					entityInterface = entityProcessor.createAndSaveEntity(entityInformationInterface);
+					entityInterface = entityProcessor.createAndSaveEntity(actionForm);
 				} else 
-					entityInterface = entityProcessor.createAndPopulateEntity(entityInformationInterface);
+					entityInterface = entityProcessor.createAndPopulateEntity(actionForm);
 			} catch (DynamicExtensionsSystemException e) {
 				e.printStackTrace();
 			} catch (DynamicExtensionsApplicationException e) {
 				e.printStackTrace();
 			}
 		} else {
-			entityProcessor.populateEntityInformation(entityInterface, entityInformationInterface);
+			entityProcessor.populateEntityInformation(entityInterface, actionForm);
 		}
 		containerInterface.setEntity(entityInterface);
 		return containerInterface;

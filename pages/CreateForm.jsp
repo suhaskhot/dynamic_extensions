@@ -57,10 +57,19 @@
 				     <tr>
 						<td class="formRequiredNotice" width="5">*</td>
 						<td class="formRequiredLabel">
-							<bean:message key="eav.form.name"/> 
+							<bean:message key="eav.group.title"/> 
 						</td>
 						<td class="formField">
 							<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="formName" />
+						</td>
+					</tr>
+					 <tr>
+						<td class="formRequiredNotice" width="5">*</td>
+						<td class="formRequiredLabel">
+							<bean:message key="eav.form.title"/> 
+						</td>
+						<td class="formField">
+							<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="caption" />
 						</td>
 					</tr>
 				    <tr>

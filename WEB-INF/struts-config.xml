@@ -26,7 +26,14 @@ PUBLIC
 			scope="request">
 			<forward name="showDynamicExtensionsHomePage" path="/pages/DynamicExtensionHomePage.jsp" />
 		</action>
-		
+		<action path="/ApplyFormsIndexAction"
+			type="edu.common.dynamicextensions.ui.webui.action.ApplyFormsIndexAction"
+			name="formsIndexForm"
+			validate="true"
+			input="/DynamicExtensionHomePage.do"
+			scope="request">
+		<forward name="success" path="/LoadFormDefinitionAction.do" />
+		</action>
 		<action path="/LoadFormDefinitionAction" 
 		    type="edu.common.dynamicextensions.ui.webui.action.LoadFormDefinitionAction" 
 		    name="formDefinitionForm"

@@ -25,7 +25,7 @@
 	<head>
 		<bean:message key="table.heading" />
 	</head>
-	
+<html:form styleId='formsIndexForm' action='/ApplyFormsIndexAction'>
 	<body  class='bodyStyle'>
 		
 		<c:set var="entityList" value="${formsIndexForm.entityList}"/>
@@ -34,9 +34,9 @@
 		<table border='0' align='center'>
 			<tr>
 				<td align='left'>
-					<html:button styleClass="actionButton" property="buildForm" >
+					<html:submit styleClass="actionButton" property="buildForm" >
 						<bean:message  key="buttons.build.form" />
-					</html:button>
+					</html:submit>
 				</td>
 			</tr>
 			
@@ -112,13 +112,9 @@
 				</td>
 			</tr>
 			
-			<tr>
-				<td>
-					<h4><a align='center' href="/dynamicExtensions/LoadFormDefinitionAction.do">Create A Form</a>
-					</h4>
-				</td>
-			</tr>			
+			
 		</table>
 	</body>
+	</html:form>
 </html>
 

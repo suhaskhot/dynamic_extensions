@@ -12,7 +12,10 @@
 	page language="java" contentType="text/html" 
     import="java.util.List"
     import="java.util.Collection"
-    import="edu.common.dynamicextensions.entitymanager.EntityManagerInterface"
+	import="edu.common.dynamicextensions.domain.Entity"
+	import="java.util.Iterator"
+	import="java.text.SimpleDateFormat"
+  
 %>
 
 <%-- Stylesheet --%>
@@ -30,26 +33,19 @@
 							
 		<table border='0' align='center'>
 			<tr>
-				<td align='center'>
-					<bean:message key="table.heading" />
-				</td>
-			</tr>
-			
-			<tr>
 				<td align='left'>
-					<html:button>
-						<bean:message key="buttons.build.form" />
+					<html:button styleClass="actionButton" property="buildForm" >
+						<bean:message  key="buttons.build.form" />
 					</html:button>
 				</td>
 			</tr>
 			
 			<tr>
-				<table >				
+				<table table width='100%' cellpadding="0"	cellspacing="0" border='1'>				
 					<tr>
 						<th>
-							<html:checkbox property="dummy"/>
+							
 						</th>
-						
 						<th align='left'>
 							<bean:message key="table.title" />
 						</th>
@@ -64,26 +60,54 @@
 						
 						<th align='left'>
 							<bean:message key="table.status" />
-						</th>			
+						</th>		
 					</tr>
-					
-					<c:forEach items="${entityList}" var="entityInstance">
-					<jsp:useBean id="entityInstance" type="edu.common.dynamicextensions.domaininterface.EntityInterface" />
-					
-			   		<tr>			   		   
-						<td> <html:checkbox property="entityListCheckBox"/> </td>
-			       		<td> <%= entityInstance.getAttribute("Entity", "name") %> </td>
-			       		<td> <%= entityInstance.getAttribute("Entity", "createdDate") %> </td>
-			       		<td> Robert Lloyd </td>
-			       		<td> In Progress </td>
-			       	</tr>
+
+					<tr>
+						<%
+							int i = 0;
+							Iterator entityIterator = entityList.iterator();
+							Entity entity = null;
+							String name = null;
+							String createdDate = null;
+
+							while(entityIterator.hasNext())
+							{
+								entity = (Entity)entityIterator.next();
+								name = entity.getName();
+								createdDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(entity.getCreatedDate());
+						%>
+					</tr>
+					<tr>
+						<td>
+							<%-- <html:checkbox property="entityCheckBoxes[i]" /> --%>
+						</td>
+												
+						<td>
+							<%= name%>
+						</td>
+
+						<td>
+							<%= createdDate%>
+						</td>
+
+						<td> Robert Lloyd </td>
+						
+						<td> In Progress </td>						
+					</tr>
+					<tr>
+			   		    <%
+								i++;
+			   		    	}
+						%>
+					</tr>
 				</table>
 			</tr>
 			
 			<tr>
 				<td align='left'>
-					<html:button>
-						<bean:message key="buttons.delete" />
+					<html:button styleClass="actionButton" property="delete" disabled='true' >
+						<bean:message  key="buttons.delete"/>
 					</html:button>
 				</td>
 			</tr>

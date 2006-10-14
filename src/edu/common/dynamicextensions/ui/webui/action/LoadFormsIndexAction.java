@@ -27,6 +27,8 @@ public class LoadFormsIndexAction extends BaseDynamicExtensionsAction
 	/**
 	 * This method overrides the execute method of the Action class.
 	 * It forwards the action to the DynamicExtension Home page.
+	 * This is the first action called when the dynamicExceptions application is started ,
+	 * So it initialises the cache with a new cacheMap. 
 	 * @param mapping ActionMapping
 	 * @param form ActionForm
 	 * @param request HttpServletRequest

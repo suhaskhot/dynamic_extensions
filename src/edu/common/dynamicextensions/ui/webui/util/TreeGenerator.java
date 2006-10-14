@@ -5,9 +5,6 @@
  */
 package edu.common.dynamicextensions.ui.webui.util;
 
-import java.util.Iterator;
-import java.util.List;
-
 /**
  * @author preeti_munot
  *
@@ -24,23 +21,18 @@ public class TreeGenerator {
 	public void setContextPath(String contextPath) {
 		this.contextPath = contextPath;
 	}
-	public TreeData getTreeData(String entity ,List containerTree)
+	public TreeData getTreeData()
 	{
 		TreeData treedata = new TreeData();
 		treedata.setImagesUrl(this.getContextPath() + "/images");
 		System.out.println("Images url  path = " + treedata.getImagesUrl());
-		
-		TNode node = new TNode(entity);
-		Iterator treeIterator = containerTree.iterator();
-		while(treeIterator.hasNext()) {
-			node.add(treeIterator.next().toString());
-		}
-	/*	node.add("Attribute 1");
+		TNode node = new TNode("Entity 1");
+		node.add("Attribute 1");
 		node.add("Attribute 2");
 		node.add("Attribute 3");
 		node.add("Attribute 4");
 		node.add("Attribute 5");
-		*/
+		
 		/*node.add("subnode - 7");
 		node.add("subnode - 8");
 		TNode node2 = new TNode("Node-2");

@@ -49,29 +49,5 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		containerInterface.setEntity(entityInterface);
 		return containerInterface;
 	}
-	/**
-	 * 
-	 * @param containerInterface
-	 *//*
-	public void saveEntityToContainer(ContainerInterface containerInterface,EntityInformationInterface entityInformationInterface) {
-		ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
-		if(containerInterface == null) {
-			 containerInterface = containerProcessor.createContainer();
-		}
-		EntityProcessor entityProcessor = EntityProcessor.getInstance();
-		EntityInterface entityInterface = containerInterface.getEntity();
-		if(entityInterface == null) {
-			try {
-				entityInterface = entityProcessor.createAndSaveEntity(entityInformationInterface);
-			} catch (DynamicExtensionsApplicationException e) {
-				e.printStackTrace();
-			}catch (DynamicExtensionsSystemException e) {
-				e.printStackTrace();
-			}
-		} else {
-			entityProcessor.populateEntityInformation(entityInterface, entityInformationInterface);
-		}
-		containerInterface.setEntity(entityInterface);
-	}*/
 }
 	

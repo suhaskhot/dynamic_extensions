@@ -6,6 +6,7 @@
 package edu.common.dynamicextensions.processor;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
@@ -38,27 +39,68 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 
 	public void addControlToForm(ContainerInterface containerInterface, ControlsForm controlsForm)
 	{
-		if(containerInterface != null) {
-			EntityInterface entityInterface = containerInterface.getEntity();
-			ControlProcessor controlProcessor = ControlProcessor.getInstance();
-			AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
-			try {
-				//Create Attribute  
-				AbstractAttributeInterface abstractAttributeInterface = attributeProcessor.createAndPopulateAttribute(controlsForm);
-				controlsForm.setAbstractAttribute(abstractAttributeInterface);
-				//Control Interface : Add control
-				ControlInterface controlInterface = controlProcessor.createAndPopulateControl(controlsForm.getUserSelectedTool(),controlsForm);
+		if((containerInterface != null)&&(controlsForm!=null))
+		{
+			try
+			{
+				EntityInterface entityInterface = containerInterface.getEntity();
+				ControlProcessor controlProcessor = ControlProcessor.getInstance();
+				AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
+
+				AbstractAttributeInterface abstractAttributeInterface = null;
+				ControlInterface controlInterface = null;
+				//Check for operation
+				String controlOperation  = controlsForm.getControlOperation();
+				if(controlOperation!=null)
+				{
+					//Add new control
+					if(controlOperation.equalsIgnoreCase(ProcessorConstants.ADD))
+					{
+						System.out.println("Add Control operation");
+						//Create Attribute  
+						abstractAttributeInterface = attributeProcessor.createAndPopulateAttribute(controlsForm);
+						controlsForm.setAbstractAttribute(abstractAttributeInterface);
+						//Control Interface : Add control
+						controlInterface = controlProcessor.createAndPopulateControl(controlsForm.getUserSelectedTool(),controlsForm);
+
+					}else if(controlOperation.equalsIgnoreCase(ProcessorConstants.EDIT))
+					{
+						System.out.println("Edit Control operation");
+						//Get the control from container
+						String selectedControlSeqNumber = controlsForm.getSelectedControlId();
+						System.out.println("Selected Control Seq Number = "  +selectedControlSeqNumber);
+						controlInterface = containerInterface.getControlInterfaceBySequenceNumber(selectedControlSeqNumber);
+
+						//Get Attribute interface from control
+						abstractAttributeInterface = controlInterface.getAbstractAttribute();
+						//update attribute
+						if(abstractAttributeInterface instanceof AttributeInterface){
+							attributeProcessor.populateAttribute((AttributeInterface) abstractAttributeInterface, controlsForm);
+						}else{
+							System.out.println("Error while casting AttributeInterfce expected");
+						}
+						controlsForm.setAbstractAttribute(abstractAttributeInterface);
+						//update control
+						controlProcessor.populateControlInterface(controlsForm.getUserSelectedTool(), controlInterface, controlsForm);
+					}
+				}
 				//Entity Interface  : Add attribute
 				if(entityInterface != null) {
+					System.out.println("Updating entity adding attribte " + abstractAttributeInterface);
 					entityInterface.addAbstractAttribute(abstractAttributeInterface);
 				}
 				//Container : Add control and entity
+				System.out.println("Adding control to container");
 				containerInterface.addControl(controlInterface);
+				
+				System.out.println("Adding entity to conntainer");
 				containerInterface.setEntity(entityInterface);
 			}
-			catch (Exception e) {
-				e.printStackTrace();
+			catch (Exception e)
+			{
+				System.out.println("Exception " + e);
 			}
+
 		}
 	}
 }

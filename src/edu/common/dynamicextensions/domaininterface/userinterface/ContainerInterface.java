@@ -93,7 +93,7 @@ public interface ContainerInterface
       * @param sequenceNumber
       * @return
       */
-     ControlInterface getControlInterfaceBySequenceNumber(String sequenceNumber);
 
+     ControlInterface getControlInterfaceBySequenceNumber(String sequenceNumber);
        
 }

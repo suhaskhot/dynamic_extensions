@@ -49,24 +49,30 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	public ControlInterface createAndPopulateControl(String userSelectedControlName,
 			ControlInformationInterface controlInformationInterface) 
 	{
+		ControlInterface controlInterface  = populateControlInterface(userSelectedControlName, null, controlInformationInterface);
+		return controlInterface;
+	}
+	
+	public ControlInterface populateControlInterface(String userSelectedControlName, ControlInterface controlIntf, ControlInformationInterface controlInformationInterface)
+	{
 		ControlInterface controlInterface = null;
 		System.out.println("User Selected Control = " + userSelectedControlName);
 		if((userSelectedControlName!=null)&&(controlInformationInterface!=null))
 		{
 			if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.TEXT_CONTROL)) {
-				controlInterface = createTextControl(controlInformationInterface);
+				controlInterface = getTextControl(controlIntf, controlInformationInterface);
 			} else if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.MULTILINE_CONTROL)) {
-				controlInterface = createMultiLineControl(controlInformationInterface);
+				controlInterface = getMultiLineControl(controlIntf, controlInformationInterface);
 			} else if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.COMBOBOX_CONTROL)) {
-				controlInterface = createComboBoxControl(controlInformationInterface);
+				controlInterface = getComboBoxControl(controlIntf, controlInformationInterface);
 			} else if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.LISTBOX_CONTROL)) {
-				controlInterface = createListBoxControl(controlInformationInterface);
+				controlInterface = getListBoxControl(controlIntf, controlInformationInterface);
 			} else if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.CHECKBOX_CONTROL)) {
-				controlInterface = createCheckBoxControl(controlInformationInterface);
+				controlInterface = getCheckBoxControl(controlIntf, controlInformationInterface);
 			} else if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.RADIOBUTTON_CONTROL)) {
-				controlInterface = createRadioButtonControl(controlInformationInterface);
+				controlInterface = getRadioButtonControl(controlIntf, controlInformationInterface);
 			} else if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.DATEPICKER_CONTROL)) {
-				controlInterface = createDatePickerControl(controlInformationInterface);
+				controlInterface = getDatePickerControl(controlIntf,controlInformationInterface);
 			}
 		}
 		//Load common properties for controls
@@ -77,102 +83,179 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			controlInterface.setTooltip(controlInformationInterface.getTooltip());
 			controlInterface.setIsHidden(controlInformationInterface.getIsHidden());
 			controlInterface.setSequenceNumber(controlInformationInterface.getSequenceNumber());
-			
+
 			System.out.println("Caption [" + controlInterface.getCaption() + "]");
 			System.out.println("Css Class [" + controlInterface.getCssClass() + "]");
 			System.out.println("Tooltip [" + controlInterface.getTooltip() + "]");
 			System.out.println("Is Hidden [" + controlInterface.getIsHidden() + "]");
 			System.out.println("Seq Number [" + controlInterface.getSequenceNumber() + "]");
-			
+
 		}
 		return controlInterface;
+	
 	}
+	
 	/**
+	 * @param controlInterface 
 	 * @param controlInformationInterface
 	 * @return
 	 */
-	private ControlInterface createDatePickerControl(ControlInformationInterface controlInformationInterface)
+	private ControlInterface getDatePickerControl(ControlInterface controlInterface, ControlInformationInterface controlInformationInterface)
 	{
-		DatePickerInterface datePickerIntf = DomainObjectFactory.getInstance().createDatePicker();
-		System.out.println("Created Date Picker Intf");
+		DatePickerInterface datePickerIntf = null;
+		if(controlInterface == null)
+		{
+			datePickerIntf = DomainObjectFactory.getInstance().createDatePicker();
+			System.out.println("Created Date Picker Intf");
+		}
+		else
+		{
+			datePickerIntf = (DatePickerInterface)controlInterface;
+		}
+		
 		return datePickerIntf;
 	}
 	/**
+	 * @param controlInterface 
 	 * @param controlInformationInterface
 	 * @return
 	 */
-	private ControlInterface createRadioButtonControl(ControlInformationInterface controlInformationInterface)
+	private ControlInterface getRadioButtonControl(ControlInterface controlInterface, ControlInformationInterface controlInformationInterface)
 	{
-		RadioButtonInterface radioButtonIntf = DomainObjectFactory.getInstance().createRadioButton();
-		System.out.println("Created Radio Button Intf");
+		RadioButtonInterface radioButtonIntf = null;
+		if(controlInterface==null)
+		{
+			radioButtonIntf = DomainObjectFactory.getInstance().createRadioButton();
+			System.out.println("Created Radio Button Intf");
+		}
+		else
+		{
+			radioButtonIntf = (RadioButtonInterface) controlInterface;
+		}
+
+		
 		return radioButtonIntf;
 	}
 	/**
+	 * @param controlInterface 
 	 * @param controlInformationInterface
 	 * @return
 	 */
-	private ControlInterface createCheckBoxControl(ControlInformationInterface controlInformationInterface)
+	private ControlInterface getCheckBoxControl(ControlInterface controlInterface, ControlInformationInterface controlInformationInterface)
 	{
-		CheckBoxInterface checkBoxIntf = DomainObjectFactory.getInstance().createCheckBox();
-		System.out.println("Created Check box Intf");
+		CheckBoxInterface checkBoxIntf = null;
+		if(controlInterface == null)
+		{
+			checkBoxIntf = DomainObjectFactory.getInstance().createCheckBox();
+			System.out.println("Created Check box Intf");
+		}
+		else
+		{
+			checkBoxIntf = (CheckBoxInterface)controlInterface;
+		}
+		
 		return checkBoxIntf;
 	}
 	/**
+	 * @param controlInterface 
 	 * @param controlInformationInterface
 	 * @return
 	 */
-	private ControlInterface createListBoxControl(ControlInformationInterface controlInformationInterface)
+	private ControlInterface getListBoxControl(ControlInterface controlInterface, ControlInformationInterface controlInformationInterface)
 	{
-		ListBoxInterface listBoxIntf = DomainObjectFactory.getInstance().createListBox();
-		System.out.println("Created List Intf");
+		ListBoxInterface listBoxIntf = null;
+
+		if(controlInterface==null)
+		{
+			listBoxIntf = DomainObjectFactory.getInstance().createListBox();
+			System.out.println("Created List Intf");
+		}
+		else
+		{
+			listBoxIntf = (ListBoxInterface)controlInterface;
+		}
+		
 		listBoxIntf.setIsMultiSelect(controlInformationInterface.getIsMultiSelect());
 		listBoxIntf.setChoiceList(controlInformationInterface.getDisplayChoiceList());
-		
+
 		System.out.println("Is Multiselect = " + listBoxIntf.getIsMultiSelect());
 		System.out.println("Choice List " + listBoxIntf.getChoiceList());
 		return listBoxIntf;
 	}
 	/**
+	 * @param controlInterface 
 	 * @param controlInformationInterface
 	 * @return
 	 */
-	private ControlInterface createComboBoxControl(ControlInformationInterface controlInformationInterface)
+	private ControlInterface getComboBoxControl(ControlInterface controlInterface, ControlInformationInterface controlInformationInterface)
 	{
-		ComboBoxInterface comboBoxIntf = DomainObjectFactory.getInstance().createComboBox();
+		ComboBoxInterface comboBoxIntf = null;
+		if(controlInterface==null)
+		{
+			comboBoxIntf = DomainObjectFactory.getInstance().createComboBox();
+			System.out.println("Created combobox Intf ");
+		}
+		else
+		{
+			comboBoxIntf = (ComboBoxInterface)controlInterface;
+		}
+
 		comboBoxIntf.setChoiceList(controlInformationInterface.getDisplayChoiceList());
-		System.out.println("Created combobox Intf ");
+		
 		System.out.println("Choice List " + comboBoxIntf.getChoiceList());
 		return comboBoxIntf;
 	}
 	/**
+	 * @param controlInterface 
 	 * @param controlInformationInterface 
 	 * @return
 	 */
-	private ControlInterface createMultiLineControl(ControlInformationInterface controlInformationInterface)
+	private ControlInterface getMultiLineControl(ControlInterface controlInterface, ControlInformationInterface controlInformationInterface)
 	{
-		TextAreaInterface textAreaInf = DomainObjectFactory.getInstance().createTextArea();
-		textAreaInf.setColumns(controlInformationInterface.getColumns());
-		textAreaInf.setRows(controlInformationInterface.getRows());
-		System.out.println("Created Text Area control");
-		System.out.println("No Of rows = " + textAreaInf.getRows());
-		System.out.println("No Of Cols = " + textAreaInf.getColumns());
-		return textAreaInf;
+		TextAreaInterface textAreaIntf = null;
+		if(controlInterface==null)	//If does not exist create it 
+		{
+			textAreaIntf = DomainObjectFactory.getInstance().createTextArea();
+			System.out.println("Created Text Area control");
+		}
+		else
+		{
+			textAreaIntf = (TextAreaInterface)controlInterface;
+		}
+		textAreaIntf.setColumns(controlInformationInterface.getColumns());
+		textAreaIntf.setRows(controlInformationInterface.getRows());
+		
+		System.out.println("No Of rows = " + textAreaIntf.getRows());
+		System.out.println("No Of Cols = " + textAreaIntf.getColumns());
+		return textAreaIntf;
 	}
 	/**
+	 * Creates a new TextControl if control interface is null
+	 * Updates the existing if not null
+	 * @param controlInterface 
 	 * @param controlInformationInterface
 	 * @return
 	 */
-	private ControlInterface createTextControl(ControlInformationInterface controlInformationInterface)
+	private ControlInterface getTextControl(ControlInterface controlInterface, ControlInformationInterface controlInformationInterface)
 	{
-		TextFieldInterface textFldIntf = DomainObjectFactory.getInstance().createTextField();
+		TextFieldInterface textFldIntf = null;
+		if(controlInterface==null)	//If does not exist create it 
+		{
+			textFldIntf = DomainObjectFactory.getInstance().createTextField(); 
+			System.out.println("Created Text control");
+		}
+		else
+		{
+			textFldIntf = (TextFieldInterface)controlInterface;
+		}
 		textFldIntf.setIsPassword(controlInformationInterface.getIsPassword());
 		textFldIntf.setColumns(controlInformationInterface.getColumns());
-		System.out.println("Created Text control");
+		
 		System.out.println("Is Password = " + textFldIntf.getIsPassword());
 		System.out.println("Cols = " + textFldIntf.getColumns());
 		return textFldIntf;
 	}
-	
+
 	/**
 	 * This method will populate the ControlInformationInterface using the controlInterface so that the 
 	 * information of the Control can be shown on the user page using the ControlInformationInterface.

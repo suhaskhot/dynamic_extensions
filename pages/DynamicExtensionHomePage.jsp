@@ -23,8 +23,7 @@
 
 <html>
 	<head>
-		<title><bean:message key="table.heading" /></title>
-		<h3><bean:message key="table.heading" /><h3>
+		<title><bean:message key="table.heading" /></title>		
 	</head>
 	
 
@@ -34,9 +33,13 @@
 		<c:set var="entityList" value="${formsIndexForm.entityList}"/>
  		<jsp:useBean id="entityList" type="java.util.Collection"/>
 							
-		<table cellspacing="5" border='0'>
-			<tr>
-				<td align='left'>
+		<table width='70%' align='center' cellspacing="5" cellspacing="0" border='0'>
+			<tr align='left'>
+				<h3><bean:message key="table.heading" /><h3>
+			</tr>
+
+			<tr align='left'>
+				<td>
 					<html:submit styleClass="actionButton" property="buildForm" >
 						<bean:message  key="buttons.build.form" />
 					</html:submit>
@@ -44,29 +47,29 @@
 			</tr>
 			
 			<tr>
-				<table table width='70%' cellpadding="5" cellspacing="0" border='1'>				
-					<tr>
-						<th width='5%' align='center'>
-							<input type='checkbox' />
-						</th>
-						<th width="30%" align='left'>
-							<bean:message key="table.title" />
-						</th>
-						
-						<th width="15%" align='left'>
-							<bean:message key="table.date" />
-						</th>
-						
-						<th width="15%" lign='left'>
-							<bean:message key="table.createdBy" />
-						</th>
-						
-						<th width="10%" align='left'>
-							<bean:message key="table.status" />
-						</th>		
-					</tr>
-
-					<tr>
+				<td>
+					<table cellpadding="5" cellspacing="0" border='1' align='center'>				
+						<tr>
+							<th width='5%' align='center'>
+								<input type='checkbox' />
+							</th>
+							<th width="30%" align='left'>
+								<bean:message key="table.title" />
+							</th>
+							
+							<th width="15%" align='left'>
+								<bean:message key="table.date" />
+							</th>
+							
+							<th width="15%" lign='left'>
+								<bean:message key="table.createdBy" />
+							</th>
+							
+							<th width="10%" align='left'>
+								<bean:message key="table.status" />
+							</th>		
+						</tr>
+					
 						<%
 							int i = 0;
 							Iterator entityIterator = entityList.iterator();
@@ -80,46 +83,44 @@
 								name = entity.getName();
 								createdDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(entity.getCreatedDate());
 						%>
-					</tr>
-					<tr>
-						<td align='center'>
-							<input type='checkbox' />
-						</td>
-												
-						<td>
-							<%= name%>
-						</td>
-
-						<td>
-							<%= createdDate%>
-						</td>
-
-						<td> Robert Lloyd </td>
 						
-						<td> In Progress </td>						
-					</tr>
-					<tr>
-			   		    <%
+						<tr>
+							<td align='center'>
+								<input type='checkbox' />
+							</td>
+													
+							<td>
+								<%= name%>
+							</td>
+
+							<td>
+								<%= createdDate%>
+							</td>
+
+							<td> Robert Lloyd </td>
+							
+							<td> In Progress </td>						
+						</tr>
+						
+						<%
 								i++;
-			   		    	}
+							}
 						%>
-					</tr>
-				</table>
+						
+					</table>
+				</td>
 			</tr>
-		
-		</table>
-		<table cellspacing="5" border='0'>
-			
-			<tr >
-				<td align='left'>
+
+			<tr>
+				<td width="%20">
 					<html:button styleClass="actionButton" property="delete" disabled='true' >
 						<bean:message  key="buttons.delete"/>
 					</html:button>
 				</td>
 			</tr>
-			
-			
 		</table>
+		
 	</body>
 	</html:form>
 </html>
+

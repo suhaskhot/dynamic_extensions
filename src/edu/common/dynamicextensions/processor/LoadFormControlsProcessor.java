@@ -70,9 +70,10 @@ public class LoadFormControlsProcessor
             ControlInterface controlInterface = containerInterface.getControlInterfaceBySequenceNumber(selectedControlId);
             controlProcessor.populateControlInformation(controlInterface,controlsForm);
             
-            AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
-            attributeProcessor.populateAttribute(controlInterface.getAbstractAttribute(),controlsForm);
             
+            AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
+            attributeProcessor.populateAttributeInformation(controlInterface.getAbstractAttribute(), controlsForm);
+            System.out.println("After Polulate attribute");
         }
         
         controlsForm.setRootName(containerInterface.getCaption());

@@ -85,6 +85,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 						//update attribute
 						if(abstractAttributeInterface instanceof AttributeInterface){
 							attributeProcessor.populateAttribute((AttributeInterface) abstractAttributeInterface, controlsForm);
+							System.out.println("Polulated attribute");
 						}else{
 							System.out.println("Error while casting AttributeInterfce expected");
 						}

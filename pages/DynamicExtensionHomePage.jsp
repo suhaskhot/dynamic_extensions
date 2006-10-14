@@ -51,13 +51,13 @@
 					<table cellpadding="5" cellspacing="0" border='1' align='center'>				
 						<tr>
 							<th width='5%' align='center'>
-								<input type='checkbox' />
+								<input type='checkbox' disabled />
 							</th>
 							<th width="30%" align='left'>
 								<bean:message key="table.title" />
 							</th>
 							
-							<th width="15%" align='left'>
+							<th width="20%" align='left'>
 								<bean:message key="table.date" />
 							</th>
 							

@@ -47,8 +47,9 @@ public class LoadFormControlsProcessor
         if(controlsForm.getControlOperation() == null || 
                 controlsForm.getControlOperation().equals(ProcessorConstants.ADD))
         {
-            actionForm.setUserSelectedTool(toolList.get(0).toString());
-            
+            controlsForm.setUserSelectedTool(toolList.get(0).toString());
+            controlsForm.setDataType("");
+            controlsForm.setDisplayChoice("");
         }
         else 
         {

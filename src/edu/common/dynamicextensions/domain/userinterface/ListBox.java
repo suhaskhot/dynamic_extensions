@@ -141,5 +141,23 @@ public class ListBox extends Control implements ListBoxInterface{
 	}
 
 
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface#getChoiceList()
+	 */
+	public List getChoiceList()
+	{
+		return listOfValues;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface#setChoiceList(java.util.List)
+	 */
+	public void setChoiceList(List list)
+	{
+		listOfValues = list;
+	}
+
+
 	
 }

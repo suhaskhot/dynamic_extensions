@@ -66,6 +66,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 
 	public AttributeInterface createAndPopulateAttribute(AbstractAttributeInformationInterface attributeInformationIntf)
 	{
+		System.out.println("Creating Attribute ");
 		AttributeInterface attributeInterface = null;
 		if(attributeInformationIntf!=null)
 		{
@@ -73,21 +74,22 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			if(attributeType!=null)
 			{
 				if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_STRING)) {
-					//attributeInterface = DomainObjectFactory.getInstance().createStringAttribute();
 					attributeInterface = getInterfaceForStringDataType(attributeInformationIntf);
 				} else if(attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_DATE)) {
-					//attributeInterface = DomainObjectFactory.getInstance().createDateAttribute();
 					attributeInterface = getInterfaceForDateDataType(attributeInformationIntf);
 				}else if(attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_BOOLEAN)) {
-					//attributeInterface = DomainObjectFactory.getInstance().createBooleanAttribute();
 					attributeInterface = getInterfaceForBooleanDataType(attributeInformationIntf);
 				}else if(attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_NUMBER)){
 					attributeInterface = getInterfaceForNumericDataType(attributeInformationIntf);
 				}
+				
+				//Set common attributes
 				if(attributeInterface!=null)
 				{
 					attributeInterface.setName(attributeInformationIntf.getName());
+					System.out.println("Attribute Name = " + attributeInterface.getName());
 					attributeInterface.setDescription(attributeInformationIntf.getDescription());
+					System.out.println("Attribute Desc = " + attributeInterface.getDescription());
 				}
 			}
 		}
@@ -104,6 +106,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		BooleanAttributeInterface booleanAttributeIntf = DomainObjectFactory.getInstance().createBooleanAttribute();
 		Boolean defaultValue = new Boolean(attributeInformationIntf.getAttributeDefaultValue());
 		booleanAttributeIntf.setDefaultValue(defaultValue);
+		System.out.println("Attribute Def Value = " + booleanAttributeIntf.getDefaultValue());
 		return booleanAttributeIntf;
 	}
 
@@ -116,7 +119,9 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		DateAttributeInterface dateAttributeIntf = DomainObjectFactory.getInstance().createDateAttribute();
 		Date defaultValue  = new Date(attributeInformationIntf.getAttributeDefaultValue());
 		dateAttributeIntf.setDefaultValue(defaultValue);
+		System.out.println("Attribute Def Value = " + dateAttributeIntf.getDefaultValue());
 		dateAttributeIntf.setFormat(attributeInformationIntf.getFormat());
+		System.out.println("Attribute Format = " + dateAttributeIntf.getFormat());
 		return dateAttributeIntf;
 	}
 
@@ -126,10 +131,13 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private AttributeInterface getInterfaceForStringDataType(AbstractAttributeInformationInterface attributeInformationIntf)
 	{
+		System.out.println("String Data Tupe");
 		StringAttributeInterface stringAttributeIntf = DomainObjectFactory.getInstance().createStringAttribute();
 		stringAttributeIntf.setDefaultValue(attributeInformationIntf.getAttributeDefaultValue());
+		System.out.println("Attribute Def Value = " + stringAttributeIntf.getDefaultValue());
 		Integer size = new Integer(attributeInformationIntf.getAttributeSize());
 		stringAttributeIntf.setSize(size);
+		System.out.println("Attribute Size = " + stringAttributeIntf.getSize());
 		return stringAttributeIntf;
 	}
 
@@ -161,6 +169,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				noOfDigits = 0;
 			} 
 		}
+		
+		System.out.println("No Of Digits " + noOfDigits + " No Of decimals " + noOfDecimalPlaces);
 		/*
 		 * If number of decimal places is 0 AND number of digits <= SHORT_LENGTH : Short attribute
 		 * If number of decimal places is 0 AND number of digits <= INT_LENGTH : Integer attribute
@@ -174,17 +184,23 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 					numberAttribIntf = DomainObjectFactory.getInstance().createShortAttribute();
 					Short defaultValue = new Short(attributeInformationIntf.getAttributeDefaultValue());
 					((ShortAttributeInterface)numberAttribIntf).setDefaultValue(defaultValue);
+					System.out.println("Attribute Def Value = " + ((ShortAttributeInterface)numberAttribIntf).getDefaultValue());
 					((ShortAttributeInterface)numberAttribIntf).setMeasurementUnits(attributeInformationIntf.getAttributeMeasurementUnits());
+					System.out.println("Attribute Measuremt Attrib = " + ((ShortAttributeInterface)numberAttribIntf).getMeasurementUnits());
 				}else if(noOfDigits <= ProcessorConstants.MAX_NO_OF_DIGITS_INT){
 					numberAttribIntf = DomainObjectFactory.getInstance().createIntegerAttribute();
 					Integer defaultValue = new Integer(attributeInformationIntf.getAttributeDefaultValue());
 					((IntegerAttributeInterface)numberAttribIntf).setDefaultValue(defaultValue);
+					System.out.println("Attribute Def Value = " + ((IntegerAttributeInterface)numberAttribIntf).getDefaultValue());
 					((IntegerAttributeInterface)numberAttribIntf).setMeasurementUnits(attributeInformationIntf.getAttributeMeasurementUnits());
+					System.out.println("Attribute Measuremt Attrib = " + ((IntegerAttributeInterface)numberAttribIntf).getMeasurementUnits());
 				}else if(noOfDigits <= ProcessorConstants.MAX_NO_OF_DIGITS_LONG){
 					numberAttribIntf = DomainObjectFactory.getInstance().createLongAttribute();
 					Long defaultValue = new Long(attributeInformationIntf.getAttributeDefaultValue());
 					((LongAttributeInterface)numberAttribIntf).setDefaultValue(defaultValue);
 					((LongAttributeInterface)numberAttribIntf).setMeasurementUnits(attributeInformationIntf.getAttributeMeasurementUnits());
+					System.out.println("Attribute Def Value = " + ((LongAttributeInterface)numberAttribIntf).getDefaultValue());
+					System.out.println("Attribute Measuremt Attrib = " + ((LongAttributeInterface)numberAttribIntf).getMeasurementUnits());
 				}
 			}
 			else{
@@ -198,11 +214,17 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				Float defaultValue = new Float(attributeInformationIntf.getAttributeDefaultValue());
 				((FloatAttributeInterface)numberAttribIntf).setDefaultValue(defaultValue);
 				((FloatAttributeInterface)numberAttribIntf).setMeasurementUnits(attributeInformationIntf.getAttributeMeasurementUnits());
+				
+				System.out.println("Attribute Def Value = " + ((FloatAttributeInterface)numberAttribIntf).getDefaultValue());
+				System.out.println("Attribute Measuremt Attrib = " + ((FloatAttributeInterface)numberAttribIntf).getMeasurementUnits());
 			}else if(noOfDecimalPlaces <= ProcessorConstants.MAX_NO_OF_DECIMALS_DOUBLE){
 				numberAttribIntf = DomainObjectFactory.getInstance().createDoubleAttribute();
 				Double defaultValue = new Double(attributeInformationIntf.getAttributeDefaultValue());
 				((DoubleAttributeInterface)numberAttribIntf).setDefaultValue(defaultValue);
 				((DoubleAttributeInterface)numberAttribIntf).setMeasurementUnits(attributeInformationIntf.getAttributeMeasurementUnits());
+				
+				System.out.println("Attribute Def Value = " + ((DoubleAttributeInterface)numberAttribIntf).getDefaultValue());
+				System.out.println("Attribute Measuremt Attrib = " + ((DoubleAttributeInterface)numberAttribIntf).getMeasurementUnits());
 			}
 			else{
 				System.out.println("Too many decimal places");

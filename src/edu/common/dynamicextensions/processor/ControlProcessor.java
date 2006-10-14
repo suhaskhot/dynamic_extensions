@@ -10,8 +10,12 @@
 package edu.common.dynamicextensions.processor;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
+import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.ui.interfaces.ControlInformationInterface;
@@ -43,43 +47,29 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @return ControlInterface Returns new instance of ControlInterface from the domain object Factory.
 	 */
 	public ControlInterface createAndPopulateControl(String userSelectedControlName,
-			ControlInformationInterface controlInformationInterface) {
+			ControlInformationInterface controlInformationInterface) 
+	{
 		ControlInterface controlInterface = null;
-		if(userSelectedControlName.equalsIgnoreCase("TextControl")) {
-			controlInterface = DomainObjectFactory.getInstance().createTextField();
-			populateControl(controlInformationInterface, controlInterface);
-			((TextFieldInterface)controlInterface).setIsPassword(controlInformationInterface.getIsPassword());
-			((TextFieldInterface)controlInterface).setColumns(controlInformationInterface.getColumns());
-		} else if(userSelectedControlName.equalsIgnoreCase("MultilineControl")) {
-			populateControl(controlInformationInterface, controlInterface);
-			controlInterface = DomainObjectFactory.getInstance().createTextArea();
-			((TextAreaInterface)controlInterface).setColumns(controlInformationInterface.getColumns());
-			((TextAreaInterface)controlInterface).setRows(controlInformationInterface.getRows());
-		} else if(userSelectedControlName.equalsIgnoreCase("ComboboxControl")) {
-			populateControl(controlInformationInterface, controlInterface);
-			controlInterface = DomainObjectFactory.getInstance().createComboBox();
-		} else if(userSelectedControlName.equalsIgnoreCase("ListBoxControl")) {
-			populateControl(controlInformationInterface, controlInterface);
-			controlInterface = DomainObjectFactory.getInstance().createListBox();
-			((ListBoxInterface)controlInterface).setIsMultiSelect(controlInformationInterface.getIsMultiSelect());
-		} else if(userSelectedControlName.equalsIgnoreCase("CheckboxControl")) {
-			populateControl(controlInformationInterface, controlInterface);
-			controlInterface = DomainObjectFactory.getInstance().createCheckBox();
-		} else if(userSelectedControlName.equalsIgnoreCase("RadioButtonControl")) {
-			populateControl(controlInformationInterface, controlInterface);
-			controlInterface = DomainObjectFactory.getInstance().createRadioButton();
-		} else if(userSelectedControlName.equalsIgnoreCase("DateControl")) {
-			populateControl(controlInformationInterface, controlInterface);
-			controlInterface = DomainObjectFactory.getInstance().createDatePicker();
+		System.out.println("User Selected Control = " + userSelectedControlName);
+		if((userSelectedControlName!=null)&&(controlInformationInterface!=null))
+		{
+			if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.TEXT_CONTROL)) {
+				controlInterface = createTextControl(controlInformationInterface);
+			} else if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.MULTILINE_CONTROL)) {
+				controlInterface = createMultiLineControl(controlInformationInterface);
+			} else if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.COMBOBOX_CONTROL)) {
+				controlInterface = createComboBoxControl(controlInformationInterface);
+			} else if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.LISTBOX_CONTROL)) {
+				controlInterface = createListBoxControl(controlInformationInterface);
+			} else if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.CHECKBOX_CONTROL)) {
+				controlInterface = createCheckBoxControl(controlInformationInterface);
+			} else if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.RADIOBUTTON_CONTROL)) {
+				controlInterface = createRadioButtonControl(controlInformationInterface);
+			} else if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.DATEPICKER_CONTROL)) {
+				controlInterface = createDatePickerControl(controlInformationInterface);
+			}
 		}
-		return controlInterface;
-	}
-	/**
-	 * This method populates the given ControlInterface using the given ControlInformationInterface.
-	 * @param controlInterface Instance of ControlInterface which is populated using the controlInformationInterface.
-	 * @param controlInformationInterface Instance of ControlInformationInterface which is used to populate the controlInterface.
-	 */
-	public void populateControl(ControlInformationInterface controlInformationInterface, ControlInterface controlInterface) {
+		//Load common properties for controls
 		if (controlInformationInterface != null && controlInterface != null) {
 			controlInterface.setAbstractAttribute(controlInformationInterface.getAbstractAttribute());
 			controlInterface.setCaption(controlInformationInterface.getCaption());
@@ -88,7 +78,94 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			controlInterface.setIsHidden(controlInformationInterface.getIsHidden());
 			controlInterface.setSequenceNumber(controlInformationInterface.getSequenceNumber());
 		}
+		return controlInterface;
 	}
+	/**
+	 * @param controlInformationInterface
+	 * @return
+	 */
+	private ControlInterface createDatePickerControl(ControlInformationInterface controlInformationInterface)
+	{
+		DatePickerInterface datePickerIntf = DomainObjectFactory.getInstance().createDatePicker();
+		System.out.println("Created Date Picker Intf");
+		return datePickerIntf;
+	}
+	/**
+	 * @param controlInformationInterface
+	 * @return
+	 */
+	private ControlInterface createRadioButtonControl(ControlInformationInterface controlInformationInterface)
+	{
+		RadioButtonInterface radioButtonIntf = DomainObjectFactory.getInstance().createRadioButton();
+		System.out.println("Created Radio Button Intf");
+		return radioButtonIntf;
+	}
+	/**
+	 * @param controlInformationInterface
+	 * @return
+	 */
+	private ControlInterface createCheckBoxControl(ControlInformationInterface controlInformationInterface)
+	{
+		CheckBoxInterface checkBoxIntf = DomainObjectFactory.getInstance().createCheckBox();
+		System.out.println("Created Check box Intf");
+		return checkBoxIntf;
+	}
+	/**
+	 * @param controlInformationInterface
+	 * @return
+	 */
+	private ControlInterface createListBoxControl(ControlInformationInterface controlInformationInterface)
+	{
+		ListBoxInterface listBoxIntf = DomainObjectFactory.getInstance().createListBox();
+		System.out.println("Created List Intf");
+		listBoxIntf.setIsMultiSelect(controlInformationInterface.getIsMultiSelect());
+		listBoxIntf.setChoiceList(controlInformationInterface.getDisplayChoiceList());
+		
+		System.out.println("Is Multiselect = " + listBoxIntf.getIsMultiSelect());
+		System.out.println("Choice List " + listBoxIntf.getChoiceList());
+		return listBoxIntf;
+	}
+	/**
+	 * @param controlInformationInterface
+	 * @return
+	 */
+	private ControlInterface createComboBoxControl(ControlInformationInterface controlInformationInterface)
+	{
+		ComboBoxInterface comboBoxIntf = DomainObjectFactory.getInstance().createComboBox();
+		comboBoxIntf.setChoiceList(controlInformationInterface.getDisplayChoiceList());
+		System.out.println("Created combobox Intf ");
+		System.out.println("Choice List " + comboBoxIntf.getChoiceList());
+		return comboBoxIntf;
+	}
+	/**
+	 * @param controlInformationInterface 
+	 * @return
+	 */
+	private ControlInterface createMultiLineControl(ControlInformationInterface controlInformationInterface)
+	{
+		TextAreaInterface textAreaInf = DomainObjectFactory.getInstance().createTextArea();
+		textAreaInf.setColumns(controlInformationInterface.getColumns());
+		textAreaInf.setRows(controlInformationInterface.getRows());
+		System.out.println("Created Text Area control");
+		System.out.println("No Of rows = " + textAreaInf.getRows());
+		System.out.println("No Of Cols = " + textAreaInf.getColumns());
+		return textAreaInf;
+	}
+	/**
+	 * @param controlInformationInterface
+	 * @return
+	 */
+	private ControlInterface createTextControl(ControlInformationInterface controlInformationInterface)
+	{
+		TextFieldInterface textFldIntf = DomainObjectFactory.getInstance().createTextField();
+		textFldIntf.setIsPassword(controlInformationInterface.getIsPassword());
+		textFldIntf.setColumns(controlInformationInterface.getColumns());
+		System.out.println("Created Text control");
+		System.out.println("Is Password = " + textFldIntf.getIsPassword());
+		System.out.println("Cols = " + textFldIntf.getColumns());
+		return textFldIntf;
+	}
+	
 	/**
 	 * This method will populate the ControlInformationInterface using the controlInterface so that the 
 	 * information of the Control can be shown on the user page using the ControlInformationInterface.
@@ -96,7 +173,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @param controlInformationInterface Instance of ControlInformationInterface which will be populated using 
 	 * the first parameter that is controlInterface.
 	 */
-	public void populateControlInformation(String selectedControl ,ControlInterface controlInterface, ControlInformationInterface controlInformationInterface) {
+	public void populateControlInformation(ControlInterface controlInterface, ControlInformationInterface controlInformationInterface) {
 		if (controlInterface != null && controlInformationInterface != null) {
 			controlInformationInterface.setAbstractAttribute(controlInterface.getAbstractAttribute());
 			controlInformationInterface.setCssClass(controlInterface.getCssClass());
@@ -104,6 +181,10 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			controlInformationInterface.setCaption(controlInterface.getCaption());
 			controlInformationInterface.setIsHidden(controlInterface.getIsHidden());
 			controlInformationInterface.setSequenceNumber(controlInterface.getSequenceNumber());
+		}
+		if(controlInterface instanceof TextFieldInterface)
+		{
+			//Populate flds for text fld interface
 		}
 	}
 }

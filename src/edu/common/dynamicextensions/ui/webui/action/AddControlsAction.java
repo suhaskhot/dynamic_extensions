@@ -39,17 +39,17 @@ public class AddControlsAction extends BaseDynamicExtensionsAction {
 			ControlProcessor controlProcessor = ControlProcessor.getInstance();
 			AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
 			try {
+				//Create Attribute Interface
 				AbstractAttributeInterface abstractAttributeInterface = attributeProcessor.createAndPopulateAttribute(actionForm);
-				//attributeProcessor.populateAttribute(actionForm,abstractAttributeInterface);
 				actionForm.setAbstractAttribute(abstractAttributeInterface);
+				//Control Interface
 				ControlInterface controlInterface = controlProcessor.createAndPopulateControl(actionForm.getUserSelectedTool(),actionForm);
-				//controlProcessor.populateControl(actionForm, controlInterface);
+				
 				if(entityInterface != null) {
 					entityInterface.addAbstractAttribute(abstractAttributeInterface);
 					containerInterface.addControl(controlInterface);
 					containerInterface.setEntity(entityInterface);
 				}
-
 				CacheManager.addObjectToCache(request, Constants.CONTROL_INTERFACE, controlInterface);
 			}
 			catch (Exception e) {

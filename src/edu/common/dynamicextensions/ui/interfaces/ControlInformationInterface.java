@@ -70,12 +70,12 @@ public interface ControlInformationInterface {
 
 	/**
 	 * @return Returns the choiceList.
-	 */
+	 *//*
 	public String getChoiceList() ;
-	/**
+	*//**
 	 * @param choiceList The choiceList to set.
-	 */
-	public void setChoiceList(String choiceList) ;
+	 *//*
+	public void setChoiceList(String choiceList) ;*/
 
 	/**
 	 * @return the attributeCssClass
@@ -172,4 +172,12 @@ public interface ControlInformationInterface {
      * @param isMultiSelect The isMultiSelect to set.
      */
     void setIsMultiSelect(Boolean isMultiSelect) ;
+    /**
+	 * @return Returns the displayChoiceList.
+	 */
+	public List getDisplayChoiceList(); 
+	/**
+	 * @param displayChoiceList The displayChoiceList to set.
+	 */
+	public void setDisplayChoiceList(List displayChoiceList); 
 }

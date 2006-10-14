@@ -47,7 +47,7 @@ public class LoadFormControlsProcessor
         controlsForm.setToolsList(toolList);
         List controlAttributesList;
        
-        if(controlsForm.getControlOperation() == null || 
+        if(controlsForm.getControlOperation() == null || controlsForm.getControlOperation().equals("") ||
                 controlsForm.getControlOperation().equals(ProcessorConstants.ADD))
         {
             if(controlsForm.getUserSelectedTool() == null || controlsForm.getUserSelectedTool().equals(""))

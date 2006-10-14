@@ -48,7 +48,7 @@ public class LoadFormControlsProcessor
         List controlAttributesList;
        
         if(controlsForm.getControlOperation() == null || controlsForm.getControlOperation().equals("") ||
-                controlsForm.getControlOperation().equals(ProcessorConstants.ADD))
+                controlsForm.getControlOperation().equalsIgnoreCase(ProcessorConstants.ADD))
         {
             if(controlsForm.getUserSelectedTool() == null || controlsForm.getUserSelectedTool().equals(""))
             {
@@ -60,7 +60,7 @@ public class LoadFormControlsProcessor
             controlAttributesList  = getControlAttributesList(controlsForm.getUserSelectedTool());
             controlsForm.setSelectedControlAttributesList(controlAttributesList);
         }
-        else if(controlsForm.getControlOperation().equals(ProcessorConstants.EDIT))  
+        else if(controlsForm.getControlOperation().equalsIgnoreCase(ProcessorConstants.EDIT))  
         {
             ControlProcessor controlProcessor = ControlProcessor.getInstance();
             String selectedControlId = controlsForm.getSelectedControlId();

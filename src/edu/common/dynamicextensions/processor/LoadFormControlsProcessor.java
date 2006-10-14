@@ -58,6 +58,7 @@ public class LoadFormControlsProcessor
             controlsForm.setDisplayChoice("");
             
             controlAttributesList  = getControlAttributesList(controlsForm.getUserSelectedTool());
+            System.out.println("Control Atribute list = " + controlAttributesList);
             controlsForm.setSelectedControlAttributesList(controlAttributesList);
         }
         else if(controlsForm.getControlOperation().equals(ProcessorConstants.EDIT))  
@@ -108,6 +109,5 @@ public class LoadFormControlsProcessor
     
    
 }
-
 
 

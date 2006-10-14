@@ -8,6 +8,7 @@ package edu.common.dynamicextensions.processor;
 import java.util.Date;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.BooleanAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.DateAttributeInterface;
@@ -281,5 +282,20 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 		}
 		return numberAttribIntf;
+	}
+	
+	public void populateAttributeInformation(AbstractAttributeInterface attributeInterface, AbstractAttributeInformationInterface attributeInformationIntf)
+	{
+		if((attributeInformationIntf!=null)&&(attributeInterface!=null))
+		{
+			attributeInformationIntf.setName(attributeInterface.getName());
+			attributeInformationIntf.setDescription(attributeInterface.getDescription());
+			
+			if(attributeInterface instanceof StringAttributeInterface)
+			{
+				attributeInformationIntf.setAttributeDefaultValue(((StringAttributeInterface)attributeInterface).getDefaultValue());
+				//attributeInformationIntf.setAttributeSize(((StringAttributeInterface)attributeInterface).getSize());
+			}
+		}
 	}
 }

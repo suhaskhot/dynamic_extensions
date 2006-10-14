@@ -24,6 +24,7 @@ public class TreeData {
 		try {
 			nodes=new TNodeList();
 		} catch (Exception e) {
+			System.out.println("Exception " + e);
 		}
 	}
 

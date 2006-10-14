@@ -45,7 +45,7 @@ import edu.wustl.common.beans.NameValueBean;
  * Methods of this class will be called to fetch the list of controls and thier
  * associated attributes.
  */
-public class UIControlsConfigurationFactory {
+public final class UIControlsConfigurationFactory {
 
 	private static UIControlsConfigurationFactory m_instance = null;
 	private LinkedHashMap m_UIControlsMap = null;

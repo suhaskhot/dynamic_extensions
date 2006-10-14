@@ -32,6 +32,7 @@ public class BaseDynamicExtensionsAction extends DispatchAction{
 			errorsList.add(appException.getErrorMessage());
 		}else if (throwable instanceof DynamicExtensionsSystemException) {
 			//TODO
+			System.out.println("Exception ");
 		}
 		return errorsList;
 	}

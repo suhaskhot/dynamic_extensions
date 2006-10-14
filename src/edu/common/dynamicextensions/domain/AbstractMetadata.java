@@ -15,7 +15,8 @@ import edu.wustl.common.domain.AbstractDomainObject;
  * @hibernate.class table="DYEXTN_ABSTRACT_METADATA"
   
  */
-public  abstract class AbstractMetadata extends AbstractDomainObject implements java.io.Serializable,AbstractMetadataInterface {
+public  abstract class AbstractMetadata extends AbstractDomainObject implements java.io.Serializable,AbstractMetadataInterface
+{
 	
 	protected static final long serialVersionUID = 1234567890L;
 	
@@ -50,7 +51,8 @@ public  abstract class AbstractMetadata extends AbstractDomainObject implements 
      *
      */
 	
-	public AbstractMetadata(){
+	public AbstractMetadata()
+	{
 		
 	}
 	
@@ -58,26 +60,30 @@ public  abstract class AbstractMetadata extends AbstractDomainObject implements 
 	 * @hibernate.property name="createdDate" type="date" column="CREATED_DATE" 
 	 * @return Returns the createdDate.
 	 */
-	public Date getCreatedDate() {
+	public Date getCreatedDate()
+	{
 		return createdDate;
 	}
 	/**
 	 * @param createdDate The createdDate to set.
 	 */
-	public void setCreatedDate(Date createdDate) {
+	public void setCreatedDate(Date createdDate) 
+	{
 		this.createdDate = createdDate;
 	}
 	/**
 	 * @hibernate.property name="description" type="string" column="DESCRIPTION"
 	 * @return Returns the description.
 	 */
-	public String getDescription() {
+	public String getDescription() 
+	{
 		return description;
 	}
 	/**
 	 * @param description The description to set.
 	 */
-	public void setDescription(String description) {
+	public void setDescription(String description) 
+	{
 		this.description = description;
 	}
 	/**
@@ -86,33 +92,38 @@ public  abstract class AbstractMetadata extends AbstractDomainObject implements 
 	 * @hibernate.generator-param name="sequence" value="DYEXTN_ABSTRACT_METADATA_SEQ"
 	 * @return Returns the id.
 	 */
-	public Long getId() {
+	public Long getId() 
+	{
 		return id;
 	}
 	/**
 	 * @param id The id to set.
 	 */
-	public void setId(Long id) {
+	public void setId(Long id) 
+	{
 		this.id = id;
 	}
 	/**
 	 * @hibernate.property name="lastUpdated" type="date" column="LAST_UPDATED" 
 	 * @return Returns the lastUpdated.
 	 */
-	public Date getLastUpdated() {
+	public Date getLastUpdated() 
+	{
 		return lastUpdated;
 	}
 	/**
 	 * @param lastUpdated The lastUpdated to set.
 	 */
-	public void setLastUpdated(Date lastUpdated) {
+	public void setLastUpdated(Date lastUpdated) 
+	{
 		this.lastUpdated = lastUpdated;
 	}
 	/**
 	 * @hibernate.property name="name" type="string" column="NAME"
 	 * @return Returns the name.
 	 */
-	public String getName() {
+	public String getName() 
+	{
 		return name;
 	}
 	/**

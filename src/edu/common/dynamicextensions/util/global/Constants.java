@@ -918,13 +918,13 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String NAME = "name";
 	
 	
-	public static final String EVENT_PARAMETERS[] = {	Constants.SELECT_OPTION,
+	public static final String[] EVENT_PARAMETERS = {	Constants.SELECT_OPTION,
 							"Cell Specimen Review",	"Check In Check Out", "Collection",
 							"Disposal", "Embedded", "Fixed", "Fluid Specimen Review",
 							"Frozen", "Molecular Specimen Review", "Procedure", "Received",
 							"Spun", "Thaw", "Tissue Specimen Review", "Transfer" };
 	
-	public static final String EVENT_PARAMETERS_COLUMNS[] = { "Identifier",
+	public static final String[] EVENT_PARAMETERS_COLUMNS = { "Identifier",
 											"Event Parameter", "User", "Date / Time", "PageOf"};
 	
 	public static final String [] SHOPPING_CART_COLUMNS = {"","Identifier", 
@@ -988,7 +988,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	
 //	 constants required for Distribution Report
 	public static final String CONFIGURATION_TABLES = "configurationTables";
-	public static final String DISTRIBUTION_TABLE_AlIAS[] = {"CollectionProtReg","Participant","Specimen",
+	public static final String[] DISTRIBUTION_TABLE_ALIAS = {"CollectionProtReg","Participant","Specimen",
 															 "SpecimenCollectionGroup","DistributedItem"};
 	public static final String TABLE_COLUMN_DATA_MAP = "tableColumnDataMap";
 	public static final String CONFIGURE_RESULT_VIEW_ACTION = "ConfigureResultView.do";
@@ -998,7 +998,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String CONFIGURE_DISTRIBUTION_ACTION = "ConfigureDistribution.do";
 	public static final String DISTRIBUTION_REPORT_ACTION = "DistributionReport.do";
 	public static final String DISTRIBUTION_REPORT_SAVE_ACTION="DistributionReportSave.do";
-	public static final String SELECTED_COLUMNS[] = {"Specimen.IDENTIFIER.Identifier : Specimen",
+	public static final String[] SELECTED_COLUMNS = {"Specimen.IDENTIFIER.Identifier : Specimen",
 													"Specimen.TYPE.Type : Specimen",
 													"SpecimenCharacteristics.TISSUE_SITE.Tissue Site : Specimen",
 													"SpecimenCharacteristics.TISSUE_SIDE.Tissue Side : Specimen",
@@ -1191,7 +1191,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String EXP_USERS = "expusers"; 	
 	public static final String PROTOCOL= "protocol";
 	public static final String COHORT = "cohort";
-	public static final String AllUsers = "allusers";
+	public static final String ALLUSERS = "allusers";
 	public static final String GROUP_LIST = "groupList";
 	
 	///

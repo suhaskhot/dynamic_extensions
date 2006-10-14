@@ -52,7 +52,7 @@ public class DynamicExtensionsServletContextListener implements ServletContextLi
 			}
 		}
 		catch (Exception e) {
-			;
+			System.out.println("Exception "  + e);
 		}
 		
 		

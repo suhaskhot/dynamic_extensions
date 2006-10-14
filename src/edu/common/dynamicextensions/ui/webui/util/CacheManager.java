@@ -36,9 +36,7 @@ public class CacheManager {
 		if(session.getAttribute(Constants.CACHE_MAP) != null) {
 			cacheMap = (Map)session.getAttribute(Constants.CACHE_MAP);
 			result = cacheMap.get(key);
-		} else {
-			//
-		}
+		} 
 		return result;
 	}
 	public static void removeObjectFromCache(HttpServletRequest request , String key) {
@@ -46,17 +44,13 @@ public class CacheManager {
 		if(session.getAttribute(Constants.CACHE_MAP) != null) {
 			cacheMap = (Map)session.getAttribute(Constants.CACHE_MAP);
 			cacheMap.remove(key);
-		} else {
-			
-		}
+		} 
 	}
 	public static void clearCache(HttpServletRequest request ) {
 		HttpSession session = request.getSession();
 		if(session.getAttribute(Constants.CACHE_MAP) != null) {
 			cacheMap = (Map)session.getAttribute(Constants.CACHE_MAP);
 			cacheMap.clear();
-		}else {
-			
 		}
 	}
 }

@@ -9,9 +9,6 @@ package edu.common.dynamicextensions.ui.webui.action;
  * And The exception thrown can be of 'System' type, in this case user will be directed to Error Page.
  * @author deepti_shelar
  */
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,12 +16,10 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
-import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
-import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.EntityProcessor;
+import edu.common.dynamicextensions.processor.LoadFormDefinitionProcessor;
 import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.util.global.Constants;
@@ -37,39 +32,9 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction {
 		ContainerInterface containerInterface = (ContainerInterface)CacheManager.getObjectFromCache(request,Constants.CONTAINER_INTERFACE);
 		if(containerInterface != null) {
 			EntityInterface entityInterface = containerInterface.getEntity();
-			if(entityInterface != null) {
-				EntityProcessor entityProcessor = EntityProcessor.getInstance();
-				entityProcessor.populateEntityInformation(entityInterface , actionForm);
-			}
-		}
-		try {
-			populateExistingFormsList(actionForm,request);
-		} catch (DynamicExtensionsApplicationException applicationException) {
-			request.setAttribute(Constants.ERRORS_LIST,handleException(applicationException,new ArrayList()));	
-		} catch (DynamicExtensionsSystemException systemException) {
-			handleException(systemException,new ArrayList());		
-			return mapping.findForward(Constants.SYSTEM_EXCEPTION);
+			LoadFormDefinitionProcessor loadFormDefinitionProcessor = LoadFormDefinitionProcessor.getInstance();
+			loadFormDefinitionProcessor.populateEntityInformation(entityInterface,actionForm);
 		}
 		return (mapping.findForward(Constants.SUCCESS));
 	}
-	/**
-	 * This method populates the actionform with the existing forms list.
-	 * @param entitySelectionForm
-	 */
-	public void populateExistingFormsList(FormDefinitionForm actionForm,HttpServletRequest request) 
-	throws DynamicExtensionsApplicationException ,DynamicExtensionsSystemException{
-
-		/*DefaultBizLogic defaultBizLogic =  (DefaultBizLogic)BizLogicFactory.getBizLogic(formDefinitionForm.getFormId());   
-		List existingFormsList =  defaultBizLogic.retrieve("Entity");
-		if(existingFormsList == null){
-			existingFormsList = new ArrayList();
-		}*/
-		Entity entity = new Entity();
-		entity.setId(new Long("1"));
-		entity.setName("Entity");
-		List existingFormsList = new ArrayList();
-		existingFormsList.add(entity);
-		actionForm.setExistingFormsList(ActionUtil.getExistingFormsList(existingFormsList));
-	}
-
 }

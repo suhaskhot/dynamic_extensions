@@ -9,8 +9,7 @@
 	<link rel="stylesheet" type="text/css" href="css/stylesheet.css" />
 	<script src="jss/dynamicExtensions.js" type="text/javascript"></script>
 </head>
-<c:set var="existingFormsList" value="${formDefinitionForm.existingFormsList}"/>
-<jsp:useBean id="existingFormsList" type="java.util.List"/>
+
 
 <c:set var="createAs" value="${formDefinitionForm.createAs}"/>
 <jsp:useBean id="createAs" type="java.lang.String"/>
@@ -20,7 +19,7 @@
   <body>
   	<html:errors />  
 	
-         <table align = 'center' width='100%' border='0' class="bodyStyle">
+         <table align = 'center' width='100%' border='0'>
 	          <tr height = 40>	<td class='standardBoldText' align='center'>Form Definition</td></tr>
 			
 			  <tr>
@@ -81,16 +80,7 @@
 									<html:radio value="NewForm" property="createAs"> New</html:radio>
 									</td>
 								</tr>
-								<tr class="formMessage">
-									<td >
-										<html:radio value="ExistingForm" property="createAs" disabled="true">Existing</html:radio>
-									</td>
-									<td class="formField" width="5">
-										 <html:select property="selectForm" onchange="formSelectedAction()" styleClass="formDateSized"  size="1"  styleId="selectForm" disabled="true">
-									 	<html:options collection="existingFormsList" labelProperty="name" property="value"/>
-										</html:select>
-								</td>
-					  </tr>
+								
 				  </table>
 			  </td>
 			</table>

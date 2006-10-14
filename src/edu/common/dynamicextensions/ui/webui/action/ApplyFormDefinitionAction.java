@@ -1,7 +1,5 @@
 package edu.common.dynamicextensions.ui.webui.action;
 
-import java.util.ArrayList;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -9,12 +7,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
-import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
-import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.processor.ContainerProcessor;
-import edu.common.dynamicextensions.processor.EntityProcessor;
+import edu.common.dynamicextensions.processor.ApplyFormDefinitionProcessor;
 import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.util.global.Constants;
@@ -38,43 +32,16 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction {
 			HttpServletResponse response) {
 		FormDefinitionForm formDefinitionForm = (FormDefinitionForm)form;
 		String target = "";
-		EntityProcessor entityProcessor = EntityProcessor.getInstance();
-		ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
 		ContainerInterface containerInterface = (ContainerInterface)CacheManager.getObjectFromCache(request,Constants.CONTAINER_INTERFACE);
-		if(containerInterface == null) {
-			 containerInterface = containerProcessor.createContainer();
-		}
-		EntityInterface entityInterface = containerInterface.getEntity();
+		ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor.getInstance();
 		if (formDefinitionForm.getOperation().equalsIgnoreCase(Constants.BUILD_FORM)) {
-			try {
-				if(entityInterface == null) {
-					entityInterface = entityProcessor.createAndPopulateEntity(formDefinitionForm);
-				} else {
-					entityProcessor.populateEntityInformation(entityInterface, formDefinitionForm);
-				}
-				containerInterface.setEntity(entityInterface);
-				CacheManager.addObjectToCache(request,Constants.CONTAINER_INTERFACE, containerInterface);
-				target = Constants.BUILD_FORM;
-			} catch (DynamicExtensionsSystemException systemException) {
-				handleException(systemException,new ArrayList());		
-				return mapping.findForward(Constants.SYSTEM_EXCEPTION);
-			}	
+			containerInterface = applyFormDefinitionProcessor.addEntityToContainer(containerInterface, formDefinitionForm,false);		
+			target = Constants.BUILD_FORM;
 		} else {// When we click on save 
-			try {
-				entityInterface = entityProcessor.createAndSaveEntity(formDefinitionForm);
-				containerInterface = containerProcessor.createContainer();
-				containerInterface.setEntity(entityInterface);
-				CacheManager.addObjectToCache(request,Constants.CONTAINER_INTERFACE,containerInterface);
-				target = Constants.SUCCESS;
-			} catch (DynamicExtensionsSystemException systemException) {
-				handleException(systemException,new ArrayList());		
-				return mapping.findForward(Constants.SYSTEM_EXCEPTION);
-			} catch (DynamicExtensionsApplicationException appException) {
-			    request.setAttribute(Constants.ERRORS_LIST,handleException(appException,new ArrayList()));	
-			    target = Constants.SUCCESS;
-            }			
+			containerInterface = applyFormDefinitionProcessor.addEntityToContainer(containerInterface, formDefinitionForm,true);
+			target = Constants.SUCCESS;
 		}
+		CacheManager.addObjectToCache(request,Constants.CONTAINER_INTERFACE, containerInterface);
 		return mapping.findForward(target);
 	}  
-
 }

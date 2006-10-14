@@ -88,6 +88,12 @@ public interface ContainerInterface
      * @param titleCss The titleCss to set.
      */
      void setTitleCss(String titleCss);
+     /**
+      * 
+      * @param sequenceNumber
+      * @return
+      */
+     ControlInterface getControlInterfaceBySequenceNumber(String sequenceNumber);
 
        
 }

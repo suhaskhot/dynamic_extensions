@@ -77,6 +77,13 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			controlInterface.setTooltip(controlInformationInterface.getTooltip());
 			controlInterface.setIsHidden(controlInformationInterface.getIsHidden());
 			controlInterface.setSequenceNumber(controlInformationInterface.getSequenceNumber());
+			
+			System.out.println("Caption [" + controlInterface.getCaption() + "]");
+			System.out.println("Css Class [" + controlInterface.getCssClass() + "]");
+			System.out.println("Tooltip [" + controlInterface.getTooltip() + "]");
+			System.out.println("Is Hidden [" + controlInterface.getIsHidden() + "]");
+			System.out.println("Seq Number [" + controlInterface.getSequenceNumber() + "]");
+			
 		}
 		return controlInterface;
 	}

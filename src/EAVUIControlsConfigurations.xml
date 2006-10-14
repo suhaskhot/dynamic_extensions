@@ -14,6 +14,12 @@
 		<!--  control tag for each supported control -->
 		<control name="TextControl" display-type="textbox">
 			<!--  Specify the set of attributes for each of the controls here -->
+			<attribute name="caption"
+				caption="TextControl.attribute_caption_caption"
+				css-classname="formDateSized" display-type="textbox"
+				default-value="" tooltip="Caption for the field">
+			</attribute>
+			
 			<attribute name="name"
 				caption="TextControl.attribute_name_caption"
 				css-classname="formDateSized" display-type="textbox" noOfCols="30"
@@ -34,27 +40,20 @@
 				noOfRows="5" noOfCols="20">
 			</attribute>
 
-	<!--		<attribute name="format"
-				caption="TextControl.attribute_format_caption"
-				css-classname="formDateSized" display-type="textbox"
-				default-value="" tooltip="Enter the regular expression for the attribute format">
-			</attribute>
-		-->	
 			<attribute name="cssClass"
 				caption="TextControl.attribute_cssclass_caption"
 				css-classname="formDateSized" display-type="textbox"
 				default-value="" tooltip="Stylesheet class to be applied to the attribute">
 			</attribute>
 
-			
 			<attribute name="tooltip"
 				caption="TextControl.attribute_tooltip_caption"
 				css-classname="formDateSized" display-type="textbox"
 				default-value="" tooltip="Tooltip to be displayed">
 			</attribute>
+			
+			
 		</control>
-
-
 		
 		<!-- Multiline Control -->
 		<control name="MultilineControl"

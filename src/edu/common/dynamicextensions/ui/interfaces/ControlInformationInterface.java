@@ -87,15 +87,6 @@ public interface ControlInformationInterface {
 	 */
 	public void setCssClass(String attributeCssClass) ;
 
-	/**
-	 * @return the attributeMultiSelect
-	 */
-	public Boolean getAttributeMultiSelect() ;
-
-	/**
-	 * @param attributeMultiSelect the attributeMultiSelect to set
-	 */
-	public void setAttributeMultiSelect(Boolean attributeMultiSelect) ;
 
 	/**
 	 * @return the attributeTooltip

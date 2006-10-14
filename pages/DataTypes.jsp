@@ -13,7 +13,7 @@
 
 <tr>
 	<td >&nbsp;</td>
-	<td >Attribute Type</td>
+	<td >Data Input</td>
 	<td >
 		<html:select property="dataType"  onchange="changeDataType(this)" >
 			<html:options collection="dataTypes" labelProperty="name" property="value" />
@@ -27,19 +27,41 @@
 		<table cellspacing='0' cellpadding='0' border='0' width='100%' align='center'>
 			<tr>
 				<td width='8%'>&nbsp;</td>
-				<td width='35%'>Default Value </td>
-				<td width='50%'><input type="text" name="attributeDefaultValue"> </td>
+				<td width='35%'>Text Field Width</td>
+				<td width='50%'><input type="text" name="attributenoOfCols" ></td>
 			</tr>
 			<tr>
 				<td width='8%'>&nbsp;</td>
-				<td width='35%'>Size</td>
+				<td width='35%'>Max Characters</td>
 				<td width='50%'><input type="text" name="attributeSize" ></td>
+			</tr>
+			<tr>
+				<td width='8%'>&nbsp;</td>
+				<td width='35%'>Default Value </td>
+				<td width='50%'><input type="text" name="attributeDefaultValue"> </td>
 			</tr>
 		</table>
 	</div>
 
 	<div id="NumberDataType" style="display:none">
 			<table cellspacing='0' cellpadding='0' border='0' width='100%' align='center'>
+				<tr>
+					<td width='8%'>&nbsp;</td>
+					<td width='35%'>Text Field Width</td>
+					<td width='50%'><input type="text" name="attributeSize" ></td>
+				</tr>
+				<tr>
+					<td width='8%'>&nbsp;</td>
+					<td width='35%'>Digits</td>
+					<td width='50%'><input type="text" name="attributeDigits" ></td>
+				</tr>
+				
+				<tr>
+					<td width='8%'>&nbsp;</td>
+					<td width='35%'>Decimals</td>
+					<td width='50%'><input type="text" name="attributeDecimalPlaces" ></td>
+				</tr>
+				
 				<tr>
 					<td width='8%'>&nbsp;</td>
 					<td width='35%'>Default Value </td>
@@ -50,26 +72,7 @@
 					<td width='35%'>Measurement Units </td>
 					<td width='50%'><input type="text" name="attributeMeasurementUnits"> </td>
 				</tr>
-				<tr>
-					<td width='8%'>&nbsp;</td>
-					<td width='35%'>Scale </td>
-					<td width='50%'><input type="text" name="attributeScale" ></td>
-				</tr>
-				<tr>
-					<td width='8%'>&nbsp;</td>
-					<td width='35%'>Size</td>
-					<td width='50%'><input type="text" name="attributeSize"> </td>
-				</tr>
-				<tr>
-					<td width='8%'>&nbsp;</td>
-					<td width='35%'>Number Of digits</td>
-					<td width='50%'><input type="text" name="attributeDigits"> </td>
-				</tr>
-				<tr>
-					<td width='8%'>&nbsp;</td>
-					<td width='35%'>Decimal</td>
-					<td width='50%'><input type="text" name="attributeDecimalPlaces"> </td>
-				</tr>
+
 		</table>
 	</div>
 

@@ -50,6 +50,7 @@ public class AddControlsAction extends BaseDynamicExtensionsAction {
 					containerInterface.addControl(controlInterface);
 					containerInterface.setEntity(entityInterface);
 				}
+				
 				CacheManager.addObjectToCache(request, Constants.CONTROL_INTERFACE, controlInterface);
 			}
 			catch (Exception e) {

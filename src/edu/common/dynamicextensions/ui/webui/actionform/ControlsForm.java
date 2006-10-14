@@ -83,9 +83,13 @@ ControlInformationInterface,AbstractAttributeInformationInterface{
 	 */
 	String displayChoice;
 	/**
-	 * 
+	 *  number of decimal places
 	 */
 	String attributeDecimalPlaces;
+	/**
+	 * Number of digits in number
+	 */
+	String attributeDigits;
 	/**
 	 * 
 	 */
@@ -107,6 +111,7 @@ ControlInformationInterface,AbstractAttributeInformationInterface{
 	 */
 
 	String caption;
+	String attributeIsPassword; 
 	Boolean isPassword;
 	List toolsList = new ArrayList();
 	Boolean IsHidden;
@@ -116,7 +121,8 @@ ControlInformationInterface,AbstractAttributeInformationInterface{
 	protected String tooltip;
 	protected String attributeNoOfRows ;
 	protected String attributenoOfCols;
-	protected Boolean attributeMultiSelect; 
+	protected String attributeMultiSelect;
+	protected String attributeSequenceNumber;
 	protected String attributeMeasurementUnits;
 	protected String attributeScale;
 	protected String userSelectedTool;
@@ -372,15 +378,16 @@ ControlInformationInterface,AbstractAttributeInformationInterface{
 	/**
 	 * @return the attributeMultiSelect
 	 */
-	public Boolean getAttributeMultiSelect() {
+	public String getAttributeMultiSelect() {
 		return attributeMultiSelect;
 	}
 
 	/**
 	 * @param attributeMultiSelect the attributeMultiSelect to set
 	 */
-	public void setAttributeMultiSelect(Boolean attributeMultiSelect) {
+	public void setAttributeMultiSelect(String attributeMultiSelect) {
 		this.attributeMultiSelect = attributeMultiSelect;
+		isMultiSelect = new Boolean(attributeMultiSelect);
 	}
 
 	/**
@@ -395,6 +402,14 @@ ControlInformationInterface,AbstractAttributeInformationInterface{
 	 */
 	public void setAttributenoOfCols(String attributenoOfCols) {
 		this.attributenoOfCols = attributenoOfCols;
+		try
+		{
+			columns = new Integer(attributenoOfCols);
+		}
+		catch (NumberFormatException e)
+		{
+			columns = new Integer(0);
+		}
 	}
 
 	/**
@@ -409,6 +424,15 @@ ControlInformationInterface,AbstractAttributeInformationInterface{
 	 */
 	public void setAttributeNoOfRows(String attributeNoOfRows) {
 		this.attributeNoOfRows = attributeNoOfRows;
+		try
+		{
+			rows  = new Integer(attributeNoOfRows);
+		}
+		catch (NumberFormatException e)
+		{
+			rows = new Integer(0);
+		}
+		
 	}
 
 	/**
@@ -654,17 +678,44 @@ ControlInformationInterface,AbstractAttributeInformationInterface{
 	 */
 	public String getAttributeDigits()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return attributeDigits;
 	}
 
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.ui.interfaces.AbstractAttributeInformationInterface#setAttributeDigits(java.lang.String)
 	 */
-	public void setAttributeDigits(String attributeDigits)
+	public void setAttributeDigits(String attribDigits)
 	{
-		// TODO Auto-generated method stub
-		
+		attributeDigits = attribDigits;
+	}
+
+	public String getAttributeSequenceNumber()
+	{
+		return this.attributeSequenceNumber;
+	}
+
+	public void setAttributeSequenceNumber(String attributeSequenceNumber)
+	{
+		this.attributeSequenceNumber = attributeSequenceNumber;
+		try
+		{
+			sequenceNumber = new Integer(attributeSequenceNumber);
+		}
+		catch (NumberFormatException e)
+		{
+			sequenceNumber	=	new Integer(0);
+		}
+	}
+
+	public String getAttributeIsPassword()
+	{
+		return this.attributeIsPassword;
+	}
+
+	public void setAttributeIsPassword(String attributeIsPassword)
+	{
+		this.attributeIsPassword = attributeIsPassword;
+		isPassword = new Boolean(attributeIsPassword);
 	}
 }
 

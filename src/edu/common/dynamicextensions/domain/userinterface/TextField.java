@@ -1,5 +1,6 @@
 package edu.common.dynamicextensions.domain.userinterface;
 
+import java.awt.font.TextAttribute;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
@@ -107,12 +108,16 @@ public class TextField extends Control implements TextFieldInterface{
 		{
 			value = "";
 		}
+		//int maxChars = 0;	//Need to be filled from size value of attribute
+		
 		String htmlString = "<input " + 
 							"class = '" + cssClass + "' " +
 							"name = '" + name + "' " +
 							"id = '" + name + "' " +
 							"title = '" + tooltip + "'  " +
-							"value = '" + value + "' " ;
+							"value = '" + value + "' "  +
+							"size = '" + columns.intValue() + "' " ;	//Width of Input Fld  
+							//"maxlength = '" + maxChars + "' ";
 		if(isPassword.booleanValue()==true)
 		{
 			htmlString  = htmlString + " type='password' " ;
@@ -130,7 +135,5 @@ public class TextField extends Control implements TextFieldInterface{
 	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface#setAttribute(edu.common.dynamicextensions.domaininterface.AttributeInterface)
 	 */
 	public void setAttribute(AbstractAttributeInterface attributeInterface) {
-		// TODO Auto-generated method stub
-		
 	}
 }

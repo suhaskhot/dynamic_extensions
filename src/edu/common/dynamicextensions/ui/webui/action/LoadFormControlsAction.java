@@ -11,7 +11,10 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.processor.LoadFormControlsProcessor;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
+import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.UIControlsConfigurationFactory;
 import edu.common.dynamicextensions.util.global.Constants;
 
@@ -34,6 +37,15 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
     {
         
 		ControlsForm actionForm = (ControlsForm)form;
+        
+        ContainerInterface containerInterface = (ContainerInterface)CacheManager.getObjectFromCache(request,Constants.CONTAINER_INTERFACE);
+        LoadFormControlsProcessor loadFormControlsProcessor =   LoadFormControlsProcessor.getInstance();
+        
+        loadFormControlsProcessor.loadFormControls(actionForm,containerInterface);
+        return mapping.findForward(Constants.SHOW_BUILD_FORM_JSP);
+        
+    }
+        
 		/*List toolsList = getToolsList();
 		actionForm.setToolsList(toolsList);
 		if(actionForm.getUserSelectedTool() == null || actionForm.getOperation().equalsIgnoreCase("controlAdded"))
@@ -54,16 +66,7 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 		actionForm.setSelectedControlAttributesList(getSelectedControlAttributesList(actionForm.getUserSelectedTool()));
 		return mapping.findForward(Constants.SHOW_BUILD_FORM_JSP);
 	}
-	/**
-	 * Returns the toolsList from the xml file.
-	 * @return
-	 */
-	private List getToolsList(){
-		List toolsList = new ArrayList();
-		UIControlsConfigurationFactory uiControlsConfigurationFactory = UIControlsConfigurationFactory.getInstance();
-		toolsList = uiControlsConfigurationFactory.getControlNames();
-		return toolsList;
-	}
+	
 	/**
 	 * Returns the selectedControlAttributesList from the xml file depending upon the tool passed.
 	 * @param userSelectedTool

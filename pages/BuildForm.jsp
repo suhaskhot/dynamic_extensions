@@ -120,6 +120,11 @@
 			
 		  	<html:hidden property="operation" value=""/>
 		  	<html:hidden property="selectedAttrib" value=""/>
+
+			<html:hidden property="controlOperation" value=""/>
+			<html:hidden property="selectedControlId" value=""/>
+
+
 	  	</html:form>
   	</body>
 	</head>

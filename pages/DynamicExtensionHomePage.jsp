@@ -34,7 +34,7 @@
  		<jsp:useBean id="entityList" type="java.util.Collection"/>
 							
 		<table width='70%' align='center' cellspacing="5" cellspacing="0" border='0'>
-			<tr align='left'>
+			<tr>
 				<h3><bean:message key="table.heading" /><h3>
 			</tr>
 
@@ -45,10 +45,12 @@
 					</html:submit>
 				</td>
 			</tr>
+
+			<tr><td></td></tr>
 			
 			<tr>
 				<td>
-					<table cellpadding="5" cellspacing="0" border='1' align='center'>				
+					<table width='100%' cellpadding="5" cellspacing="0" border='1' >				
 						<tr>
 							<th width='5%' align='center'>
 								<input type='checkbox' disabled />
@@ -111,8 +113,10 @@
 				</td>
 			</tr>
 
+			<tr><td></td></tr>
+
 			<tr>
-				<td width="%20">
+				<td>
 					<html:button styleClass="actionButton" property="delete" disabled='true' >
 						<bean:message  key="buttons.delete"/>
 					</html:button>

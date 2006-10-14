@@ -17,7 +17,7 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.ui.webui.actionform.FormsIndexForm;
 import edu.common.dynamicextensions.util.global.Constants;
-import edu.common.dynamicextensions.entitymanager.*;
+import edu.common.dynamicextensions.entitymanager.MockEntityManager;
 /**
  * @author chetan_patil
  *

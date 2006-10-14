@@ -52,7 +52,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		ControlInterface controlInterface  = populateControlInterface(userSelectedControlName, null, controlInformationInterface);
 		return controlInterface;
 	}
-	
+
 	public ControlInterface populateControlInterface(String userSelectedControlName, ControlInterface controlIntf, ControlInformationInterface controlInformationInterface)
 	{
 		ControlInterface controlInterface = null;
@@ -92,9 +92,9 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 
 		}
 		return controlInterface;
-	
+
 	}
-	
+
 	/**
 	 * @param controlInterface 
 	 * @param controlInformationInterface
@@ -112,7 +112,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		{
 			datePickerIntf = (DatePickerInterface)controlInterface;
 		}
-		
+
 		return datePickerIntf;
 	}
 	/**
@@ -133,7 +133,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			radioButtonIntf = (RadioButtonInterface) controlInterface;
 		}
 
-		
+
 		return radioButtonIntf;
 	}
 	/**
@@ -153,7 +153,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		{
 			checkBoxIntf = (CheckBoxInterface)controlInterface;
 		}
-		
+
 		return checkBoxIntf;
 	}
 	/**
@@ -174,7 +174,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		{
 			listBoxIntf = (ListBoxInterface)controlInterface;
 		}
-		
+
 		listBoxIntf.setIsMultiSelect(controlInformationInterface.getIsMultiSelect());
 		listBoxIntf.setChoiceList(controlInformationInterface.getDisplayChoiceList());
 
@@ -201,7 +201,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		}
 
 		comboBoxIntf.setChoiceList(controlInformationInterface.getDisplayChoiceList());
-		
+
 		System.out.println("Choice List " + comboBoxIntf.getChoiceList());
 		return comboBoxIntf;
 	}
@@ -224,7 +224,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		}
 		textAreaIntf.setColumns(controlInformationInterface.getColumns());
 		textAreaIntf.setRows(controlInformationInterface.getRows());
-		
+
 		System.out.println("No Of rows = " + textAreaIntf.getRows());
 		System.out.println("No Of Cols = " + textAreaIntf.getColumns());
 		return textAreaIntf;
@@ -250,7 +250,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		}
 		textFldIntf.setIsPassword(controlInformationInterface.getIsPassword());
 		textFldIntf.setColumns(controlInformationInterface.getColumns());
-		
+
 		System.out.println("Is Password = " + textFldIntf.getIsPassword());
 		System.out.println("Cols = " + textFldIntf.getColumns());
 		return textFldIntf;
@@ -274,7 +274,11 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		}
 		if(controlInterface instanceof TextFieldInterface)
 		{
-			
+			controlInformationInterface.setColumns(((TextFieldInterface)controlInterface).getColumns());
+			controlInformationInterface.setIsPassword(((TextFieldInterface)controlInterface).getIsPassword());
+		}else if(controlInterface instanceof ComboBoxInterface)
+		{
+			controlInformationInterface.setDisplayChoiceList(((ComboBoxInterface)controlInterface).getChoiceList());
 		}
 	}
 }

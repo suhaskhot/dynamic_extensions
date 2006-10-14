@@ -67,8 +67,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		return attributeInterface;
 
 	}
-	
-	public void populateAttribute(AttributeInterface attributeInterface, AbstractAttributeInformationInterface attributeInformationIntf)
+
+	public void populateAttribute(AbstractAttributeInterface attributeInterface, AbstractAttributeInformationInterface attributeInformationIntf)
 	{
 		System.out.println("Populating attribute");
 		if((attributeInformationIntf!=null)&&(attributeInterface!=null))
@@ -108,8 +108,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			System.out.println("Either Attribute interface or attribute information interface is null [" + attributeInterface + "] / [" + attributeInformationIntf + "]");
 		}
 	}
-	
-	
+
+
 
 	public AttributeInterface createAndPopulateAttribute(AbstractAttributeInformationInterface attributeInformationIntf)
 	{
@@ -168,7 +168,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		shortAttributeInterface.setMeasurementUnits(attributeInformationIntf.getAttributeMeasurementUnits());
 		System.out.println("Attribute Measuremt Attrib = " + shortAttributeInterface.getMeasurementUnits());
 	}
-	
+
 	/**
 	 * 
 	 * @param integerAttributeInterface
@@ -182,7 +182,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		integerAttributeInterface.setMeasurementUnits(attributeInformationIntf.getAttributeMeasurementUnits());
 		System.out.println("Attribute Measuremt Attrib = " + integerAttributeInterface.getMeasurementUnits());
 	}
-	
+
 	/**
 	 * 
 	 * @param longAttributeInterface
@@ -209,7 +209,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		floatAttributeInterface.setMeasurementUnits(attributeInformationIntf.getAttributeMeasurementUnits());
 		System.out.println("Attribute Measuremt Attrib = " + floatAttributeInterface.getMeasurementUnits());
 	}
-	
+
 	private void populateDoubleAttributeInterface(DoubleAttributeInterface doubleAttributeInterface, AbstractAttributeInformationInterface attributeInformationIntf)
 	{
 		Double defaultValue = new Double(attributeInformationIntf.getAttributeDefaultValue());
@@ -283,18 +283,24 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		}
 		return numberAttribIntf;
 	}
-	
+
 	public void populateAttributeInformation(AbstractAttributeInterface attributeInterface, AbstractAttributeInformationInterface attributeInformationIntf)
 	{
 		if((attributeInformationIntf!=null)&&(attributeInterface!=null))
 		{
 			attributeInformationIntf.setName(attributeInterface.getName());
 			attributeInformationIntf.setDescription(attributeInterface.getDescription());
-			
+			System.out.println("Set name as " + attributeInformationIntf.getName());
+			System.out.println("Set Description as " + attributeInformationIntf.getDescription());
+
+			System.out.println("Instance of " + attributeInterface);
 			if(attributeInterface instanceof StringAttributeInterface)
 			{
 				attributeInformationIntf.setAttributeDefaultValue(((StringAttributeInterface)attributeInterface).getDefaultValue());
-				//attributeInformationIntf.setAttributeSize(((StringAttributeInterface)attributeInterface).getSize());
+				Integer size = ((StringAttributeInterface)attributeInterface).getSize();
+				if(size!=null){
+					attributeInformationIntf.setAttributeSize(size.toString());
+				}
 			}
 		}
 	}

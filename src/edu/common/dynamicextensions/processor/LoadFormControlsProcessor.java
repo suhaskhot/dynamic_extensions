@@ -58,7 +58,6 @@ public class LoadFormControlsProcessor
             controlsForm.setDisplayChoice("");
             
             controlAttributesList  = getControlAttributesList(controlsForm.getUserSelectedTool());
-            System.out.println("Control Atribute list = " + controlAttributesList);
             controlsForm.setSelectedControlAttributesList(controlAttributesList);
         }
         else if(controlsForm.getControlOperation().equals(ProcessorConstants.EDIT))  
@@ -67,6 +66,10 @@ public class LoadFormControlsProcessor
             String selectedControlId = controlsForm.getSelectedControlId();
             ControlInterface controlInterface = containerInterface.getControlInterfaceBySequenceNumber(selectedControlId);
             controlProcessor.populateControlInformation(controlInterface,controlsForm);
+            
+            AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
+            attributeProcessor.populateAttribute(controlInterface.getAbstractAttribute(),controlsForm);
+            
         }
         
         controlsForm.setRootName("Sujay");
@@ -109,5 +112,6 @@ public class LoadFormControlsProcessor
     
    
 }
+
 
 

@@ -23,6 +23,11 @@ public class FormsIndexForm extends AbstractActionForm
 	 * Collection of Entities
 	 */
 	protected Collection entityList = null;
+	
+	/**
+	 * Values of the Check boxes
+	 */
+	protected String[] entityCheckBoxes = null;
 
 	/**
 	 * @return the entityList
@@ -38,6 +43,22 @@ public class FormsIndexForm extends AbstractActionForm
 	public void setEntityList(Collection entityList) 
 	{
 		this.entityList = entityList;
+	}
+	
+	/**
+	 * @return the entityCheckBoxes
+	 */
+	public String[] getEntityCheckBoxes() 
+	{
+		return entityCheckBoxes;
+	}
+
+	/**
+	 * @param entityCheckBoxes the entityCheckBoxes to set
+	 */
+	public void setEntityCheckBoxes(String[] entityCheckBoxes) 
+	{
+		this.entityCheckBoxes = entityCheckBoxes;
 	}
 
 	/**
@@ -64,6 +85,6 @@ public class FormsIndexForm extends AbstractActionForm
 	public void setAllValues(AbstractDomainObject abstractDomainObject) 
 	{		
 		
-	}
+	}	
 	
 }

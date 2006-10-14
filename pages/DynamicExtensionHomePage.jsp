@@ -28,7 +28,7 @@
 	
 
 <html:form styleId='formsIndexForm' action='/ApplyFormsIndexAction'>
-	<body  class='bodyStyle'>
+	<body>
 		
 		<c:set var="entityList" value="${formsIndexForm.entityList}"/>
  		<jsp:useBean id="entityList" type="java.util.Collection"/>

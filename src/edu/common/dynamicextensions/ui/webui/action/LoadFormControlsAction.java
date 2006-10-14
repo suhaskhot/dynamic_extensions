@@ -12,7 +12,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
-import edu.common.dynamicextensions.ui.webui.util.TreeData;
 import edu.common.dynamicextensions.ui.webui.util.UIControlsConfigurationFactory;
 import edu.common.dynamicextensions.util.global.Constants;
 
@@ -25,24 +24,32 @@ import edu.common.dynamicextensions.util.global.Constants;
  * And The exception thrown can be of 'System' type, in this case user will be directed to Error Page.
  * @author deepti_shelar
  */
-public class LoadFormControlsAction extends BaseDynamicExtensionsAction {
+public class LoadFormControlsAction extends BaseDynamicExtensionsAction 
+{
+    /**
+     * 
+     */
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) {
+			HttpServletRequest request, HttpServletResponse response) 
+    {
+        
 		ControlsForm actionForm = (ControlsForm)form;
-		List toolsList = getToolsList();
+		/*List toolsList = getToolsList();
 		actionForm.setToolsList(toolsList);
-		if(actionForm.getUserSelectedTool() == null || actionForm.getOperation().equalsIgnoreCase("controlAdded")){
+		if(actionForm.getUserSelectedTool() == null || actionForm.getOperation().equalsIgnoreCase("controlAdded"))
+        {
 			actionForm.setUserSelectedTool(toolsList.get(0).toString());
 		} 
-		if(actionForm.getDataType() == null) {
+		if(actionForm.getDataType() == null) 
+        {
 			actionForm.setDataType("");
 		}
-		if(actionForm.getDisplayChoice() == null) {
+        
+		if(actionForm.getDisplayChoice() == null) 
+        {
 			actionForm.setDisplayChoice("");
 		}
-		/*if(actionForm.getTreedataObj() == null) {
-			actionForm.setTreedataObj(new TreeData());	
-		}*/
+		
 		
 		actionForm.setSelectedControlAttributesList(getSelectedControlAttributesList(actionForm.getUserSelectedTool()));
 		return mapping.findForward(Constants.SHOW_BUILD_FORM_JSP);

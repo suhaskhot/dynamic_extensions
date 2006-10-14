@@ -55,7 +55,7 @@
 			
 		</control>
 		
-		<!-- Multiline Control -->
+		<!-- Multiline Control
 		<control name="MultilineControl"
 			display-type="multiline-textbox">
 			<attribute name="attributeName"
@@ -99,7 +99,7 @@
 				css-classname="formDateSized" display-type="textbox"
 				default-value="">
 			</attribute>
-		</control>
+		</control>  -->
 		
 		<control name="ComboboxControl" display-type="combobox">
 			<attribute name="attributeName"
@@ -143,7 +143,7 @@
 			</includeJsp> 
 		</control>
 		
-		<control name="ListBoxControl" display-type="listbox">
+		<!--<control name="ListBoxControl" display-type="listbox">
 			<attribute name="attributeName"
 				caption="ListBoxControl.attribute_name_caption"
 				css-classname="formDateSized" display-type="textbox"
@@ -250,7 +250,7 @@
 				default-value="">
 			</attribute>
 			
-		</control>
+		</control>-->
 		
 		<control name="DateControl" display-type="datePicker">
 			<attribute name="attributeName"

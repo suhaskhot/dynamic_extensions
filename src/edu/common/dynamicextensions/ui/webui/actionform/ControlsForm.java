@@ -109,28 +109,92 @@ ControlInformationInterface,AbstractAttributeInformationInterface{
 	/**
 	 * 
 	 */
-
 	String caption;
-	String attributeIsPassword; 
+    /**
+     * 
+     */
+	String attributeIsPassword;
+    /**
+     * 
+     */
 	Boolean isPassword;
+    /**
+     * 
+     */
 	List toolsList = new ArrayList();
+    /**
+     * 
+     */
 	Boolean IsHidden;
+    /**
+     * 
+     */
 	Integer sequenceNumber;
+    /**
+     * 
+     */
 	protected String cssClass;
+    /**
+     * 
+     */
 	protected String name;
+    /**
+     * 
+     */
 	protected String tooltip;
+    /**
+     * 
+     */
 	protected String attributeNoOfRows ;
+    /**
+     * 
+     */
 	protected String attributenoOfCols;
+    /**
+     * 
+     */
 	protected String attributeMultiSelect;
+    /**
+     * 
+     */
 	protected String attributeSequenceNumber;
+    /**
+     * 
+     */
 	protected String attributeMeasurementUnits;
+    /**
+     * 
+     */
 	protected String attributeScale;
+    /**
+     * 
+     */
 	protected String userSelectedTool;
-	Integer columns;
-	Integer rows;
-	Boolean isMultiSelect;
+    /**
+     * 
+     */
+	protected Integer columns;
+    /**
+     * 
+     */
+	protected Integer rows;
+    /**
+     * 
+     */
+	protected Boolean isMultiSelect;
+    
+    /**
+     * 
+     */
+    protected String controlOperation;
+    /**
+     * 
+     */
+    protected String selectedControlId;
 
-
+	/**
+     * 
+	 */
 	public void reset() {
 
 	}
@@ -716,6 +780,30 @@ ControlInformationInterface,AbstractAttributeInformationInterface{
 	{
 		this.attributeIsPassword = attributeIsPassword;
 		isPassword = new Boolean(attributeIsPassword);
+	}
+	/**
+	 * @return Returns the controlOperation.
+	 */
+	public String getControlOperation() {
+		return controlOperation;
+	}
+	/**
+	 * @param controlOperation The controlOperation to set.
+	 */
+	public void setControlOperation(String controlOperation) {
+		this.controlOperation = controlOperation;
+	}
+	/**
+	 * @return Returns the selectedControlId.
+	 */
+	public String getSelectedControlId() {
+		return selectedControlId;
+	}
+	/**
+	 * @param selectedControlId The selectedControlId to set.
+	 */
+	public void setSelectedControlId(String selectedControlId) {
+		this.selectedControlId = selectedControlId;
 	}
 }
 

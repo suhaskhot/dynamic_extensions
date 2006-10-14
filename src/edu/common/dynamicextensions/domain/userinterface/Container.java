@@ -214,8 +214,11 @@ public class Container extends AbstractDomainObject implements Serializable,Cont
 	 * 
 	 */
 	public void addControl(ControlInterface controlInterface) {
-		// TODO Auto-generated method stub
-		
+		if(controlCollection == null)
+        {
+            controlCollection = new HashSet(); 
+        }
+		controlCollection.add(controlInterface);
 	}
 	
 	/**

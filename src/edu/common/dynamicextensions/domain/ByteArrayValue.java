@@ -11,9 +11,10 @@ import edu.wustl.common.exception.AssignDataException;
  * @author sujay_narkar
  *
  */
-public class ByteArrayValue extends PermissibleValue implements ByteArrayValueInterface{
-
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
+public class ByteArrayValue extends PermissibleValue implements ByteArrayValueInterface
+{
+	public void setAllValues(AbstractActionForm arg0) throws AssignDataException 
+	{
 		// TODO Auto-generated method stub
 		
 	}

@@ -11,7 +11,8 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass-key column="IDENTIFIER"   
  *
  */
-public class CaDSRDE extends DataElement implements CaDSRDEInterface{
+public class CaDSRDE extends DataElement implements CaDSRDEInterface
+{
     
     /**
      * 
@@ -22,20 +23,23 @@ public class CaDSRDE extends DataElement implements CaDSRDEInterface{
     /**
      * 
      */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
+	public void setAllValues(AbstractActionForm arg0) throws AssignDataException 
+	{
 	}
 
 	/**
      * @hibernate.property name="publicId" type="string" column="PUBLIC_ID" 
 	 * @return Returns the publicId.
 	 */
-	public String getPublicId() {
+	public String getPublicId() 
+	{
 		return publicId;
 	}
 	/**
 	 * @param publicId The publicId to set.
 	 */
-	public void setPublicId(String publicId) {
+	public void setPublicId(String publicId) 
+	{
 		this.publicId = publicId;
 	}
 }

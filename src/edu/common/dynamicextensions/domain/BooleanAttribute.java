@@ -10,7 +10,8 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass table="DYEXTN_BOOLEAN_ATTRIBUTE" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class BooleanAttribute extends Attribute implements BooleanAttributeInterface{
+public class BooleanAttribute extends Attribute implements BooleanAttributeInterface
+{
     /**
      * Default value for this attribute.
      */
@@ -19,7 +20,8 @@ public class BooleanAttribute extends Attribute implements BooleanAttributeInter
 	/**
 	 * Empty Constructor.
 	 */
-	public BooleanAttribute(){
+	public BooleanAttribute()
+	{
 
 	}
 	
@@ -27,20 +29,23 @@ public class BooleanAttribute extends Attribute implements BooleanAttributeInter
      * @hibernate.property name="defaultValue" type="boolean" column="DEFAULT_VALUE" 
      * @return Returns the defaultValue.
      */
-    public Boolean getDefaultValue() {
+    public Boolean getDefaultValue() 
+    {
         return defaultValue;
     }
     /**
      * @param defaultValue The defaultValue to set.
      */
-    public void setDefaultValue(Boolean defaultValue) {
+    public void setDefaultValue(Boolean defaultValue)
+    {
         this.defaultValue = defaultValue;
     }
 
-    /**
-     * 
-     */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
+   /**
+    * 
+    */
+	public void setAllValues(AbstractActionForm arg0) throws AssignDataException 
+	{
 		// TODO Auto-generated method stub
 		
 	}

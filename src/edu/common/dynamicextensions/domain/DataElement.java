@@ -9,7 +9,8 @@ import edu.wustl.common.domain.AbstractDomainObject;
  * @hibernate.class table="DYEXTN_DATA_ELEMENT" 
  *
  */
-public abstract class DataElement extends AbstractDomainObject implements java.io.Serializable,DataElementInterface {
+public abstract class DataElement extends AbstractDomainObject implements java.io.Serializable,DataElementInterface 
+{
     
     protected static final long serialVersionUID = 1234567890L;
     /**
@@ -20,13 +21,15 @@ public abstract class DataElement extends AbstractDomainObject implements java.i
     /**
      * 
      */
-    public Long getSystemIdentifier() {
+    public Long getSystemIdentifier() 
+    {
         return id;
     }
     /**
      * 
      */
-    public void setSystemIdentifier(Long systemIdentifier) {
+    public void setSystemIdentifier(Long systemIdentifier) 
+    {
         this.id = systemIdentifier; 
         
     }
@@ -37,13 +40,15 @@ public abstract class DataElement extends AbstractDomainObject implements java.i
      * @hibernate.generator-param name="sequence" value="DYEXTN_DATA_ELEMENT_SEQ" 
 	 * @return Returns the id.
 	 */
-	public Long getId() {
+	public Long getId() 
+	{
 		return id;
 	}
 	/**
 	 * @param id The id to set.
 	 */
-	public void setId(Long id) {
+	public void setId(Long id) 
+	{
 		this.id = id;
 	}
 	

@@ -12,7 +12,8 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass table="DYEXTN_DATE_CONCEPT_VALUE" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class DateValue extends PermissibleValue implements DateValueInterface{
+public class DateValue extends PermissibleValue implements DateValueInterface
+{
     /**
      * 
      */
@@ -21,20 +22,23 @@ public class DateValue extends PermissibleValue implements DateValueInterface{
     /**
      * 
      */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
+	public void setAllValues(AbstractActionForm arg0) throws AssignDataException 
+	{
 	}
     
   	/**
      * @hibernate.property name="value" type="date" column="VALUE"   
 	 * @return Returns the value.
 	 */
-	public Date getValue() {
+	public Date getValue() 
+	{
 		return value;
 	}
 	/**
 	 * @param value The value to set.
 	 */
-	public void setValue(Date value) {
+	public void setValue(Date value) 
+	{
 		this.value = value;
 	}
 }

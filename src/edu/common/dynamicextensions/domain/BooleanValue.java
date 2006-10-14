@@ -11,14 +11,16 @@ import edu.wustl.common.exception.AssignDataException;
  * @author sujay_narkar
  *
  */
-public class BooleanValue extends PermissibleValue implements BooleanValueInterface{
+public class BooleanValue extends PermissibleValue implements BooleanValueInterface
+{
     
     protected Boolean value;
     
     /**
      * 
      */
-    public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
+    public void setAllValues(AbstractActionForm arg0) throws AssignDataException 
+    {
      // TODO Auto-generated method stub
     }
 
@@ -27,13 +29,15 @@ public class BooleanValue extends PermissibleValue implements BooleanValueInterf
      * @hibernate.property name="value" type="boolean" column="VALUE" 
 	 * @return Returns the value.
 	 */
-	public Boolean getValue() {
+	public Boolean getValue() 
+	{
 		return value;
 	}
 	/**
 	 * @param value The value to set.
 	 */
-	public void setValue(Boolean value) {
+	public void setValue(Boolean value)
+	{
 		this.value = value;
 	}
 }

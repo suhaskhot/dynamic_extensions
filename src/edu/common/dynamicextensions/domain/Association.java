@@ -20,7 +20,8 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass table="DYEXTN_ASSOCIATION" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class Association extends AbstractAttribute implements java.io.Serializable,AssociationInterface {
+public class Association extends AbstractAttribute implements java.io.Serializable,AssociationInterface 
+{
 	
 	private static final long serialVersionUID = 1234567890L;
 	
@@ -53,7 +54,8 @@ public class Association extends AbstractAttribute implements java.io.Serializab
 	/**
 	 * Empty Constructor.
 	 */
-	public Association(){
+	public Association()
+	{
 		
 	}
 	
@@ -61,20 +63,23 @@ public class Association extends AbstractAttribute implements java.io.Serializab
 	 * @hibernate.property name="direction" type="string" column="DIRECTION" 
 	 * @return Returns the direction.
 	 */
-	public String getDirection() {
+	public String getDirection() 
+	{
 		return direction;
 	}
 	/**
 	 * @param direction The direction to set.
 	 */
-	public void setDirection(String direction) {
+	public void setDirection(String direction) 
+	{
 		this.direction = direction;
 	}
 	/**
 	 * 
 	 */	
 	
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
+	public void setAllValues(AbstractActionForm arg0) throws AssignDataException 
+	{
 		// TODO Auto-generated method stub
 		
 	}
@@ -85,13 +90,15 @@ public class Association extends AbstractAttribute implements java.io.Serializab
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Entity" 
 	 * @return Returns the sourceEntityCollection.
 	 */
-	private Collection getSourceEntityCollection() {
+	private Collection getSourceEntityCollection() 
+	{
 		return sourceEntityCollection;
 	}
 	/**
 	 * @param sourceEntityCollection The sourceEntityCollection to set.
 	 */
-	private void setSourceEntityCollection(Collection sourceEntityCollection) {
+	private void setSourceEntityCollection(Collection sourceEntityCollection)
+	{
 		this.sourceEntityCollection = sourceEntityCollection;
 	}
 	
@@ -99,11 +106,14 @@ public class Association extends AbstractAttribute implements java.io.Serializab
 	 * 
 	 * @return
 	 */
-	public EntityInterface getSourceEntity(){
-		if(sourceEntityCollection != null){
+	public EntityInterface getSourceEntity()
+	{
+		if(sourceEntityCollection != null)
+		{
 			Iterator sourceEntityIterator = sourceEntityCollection.iterator();
 			return (Entity)sourceEntityIterator.next();
-		} else {
+		} else 
+		{
 			return null;   
 		}
 		
@@ -113,8 +123,10 @@ public class Association extends AbstractAttribute implements java.io.Serializab
 	 * 
 	 * @param sourceEntity
 	 */
-	public void setSourceEntity(EntityInterface sourceEntityInterface){
-		if(sourceEntityCollection == null){
+	public void setSourceEntity(EntityInterface sourceEntityInterface)
+	{
+		if(sourceEntityCollection == null)
+		{
 			sourceEntityCollection = new HashSet();
 		}
 		this.sourceEntityCollection.add(sourceEntityInterface);
@@ -126,13 +138,15 @@ public class Association extends AbstractAttribute implements java.io.Serializab
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Entity" 
 	 * @return Returns the targetEntityCollection.
 	 */
-	private Collection getTargetEntityCollection() {
+	private Collection getTargetEntityCollection() 
+	{
 		return targetEntityCollection;
 	}
 	/**
 	 * @param targetEntityCollection The targetEntityCollection to set.
 	 */
-	private void setTargetEntityCollection(Collection targetEntityCollection) {
+	private void setTargetEntityCollection(Collection targetEntityCollection)
+	{
 		this.targetEntityCollection = targetEntityCollection;
 	}
 	
@@ -141,11 +155,14 @@ public class Association extends AbstractAttribute implements java.io.Serializab
 	 * 
 	 * @return
 	 */
-	public EntityInterface getTargetEntity(){
-		if(targetEntityCollection != null){
+	public EntityInterface getTargetEntity()
+	{
+		if(targetEntityCollection != null)
+		{
 			Iterator targetEntityIterator = targetEntityCollection.iterator();
 			return (Entity)targetEntityIterator.next();
-		} else {
+		} else 
+		{
 			return null;   
 		}
 		
@@ -155,8 +172,10 @@ public class Association extends AbstractAttribute implements java.io.Serializab
 	 * 
 	 * @param sourceEntity
 	 */
-	public void setTargetEntity(EntityInterface targetEntityInterface){
-		if(targetEntityCollection == null){
+	public void setTargetEntity(EntityInterface targetEntityInterface)
+	{
+		if(targetEntityCollection == null)
+		{
 			targetEntityCollection = new HashSet();
 		}
 		this.targetEntityCollection.add(targetEntityInterface);
@@ -169,13 +188,15 @@ public class Association extends AbstractAttribute implements java.io.Serializab
 	 * 
 	 * @return Returns the sourceRoleCollection.
 	 */
-	private Collection getSourceRoleCollection() {
+	private Collection getSourceRoleCollection() 
+	{
 		return sourceRoleCollection;
 	}
 	/**
 	 * @param sourceRoleCollection The sourceRoleCollection to set.
 	 */
-	private void setSourceRoleCollection(Collection sourceRoleCollection) {
+	private void setSourceRoleCollection(Collection sourceRoleCollection)
+	{
 		this.sourceRoleCollection = sourceRoleCollection;
 	}
 	
@@ -184,11 +205,14 @@ public class Association extends AbstractAttribute implements java.io.Serializab
 	 * 
 	 * @return
 	 */
-	public RoleInterface getSourceRole(){
-		if(sourceRoleCollection != null){
+	public RoleInterface getSourceRole()
+	{
+		if(sourceRoleCollection != null)
+		{
 			Iterator sourceRoleIterator = sourceRoleCollection.iterator();
 			return (Role)sourceRoleIterator.next();
-		} else {
+		} else 
+		{
 			return null;   
 		}
 		
@@ -198,8 +222,10 @@ public class Association extends AbstractAttribute implements java.io.Serializab
 	 * 
 	 * @param sourceEntity
 	 */
-	public void setSourceRole(RoleInterface sourceRoleInterface){
-		if(sourceRoleCollection == null){
+	public void setSourceRole(RoleInterface sourceRoleInterface)
+	{
+		if(sourceRoleCollection == null)
+		{
 			sourceRoleCollection = new HashSet();
 		}
 		this.sourceRoleCollection.add(sourceRoleInterface);
@@ -214,13 +240,15 @@ public class Association extends AbstractAttribute implements java.io.Serializab
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Role" 
 	 * @return Returns the targetRoleCollection.
 	 */
-	private Collection getTargetRoleCollection() {
+	private Collection getTargetRoleCollection() 
+	{
 		return targetRoleCollection;
 	}
 	/**
 	 * @param targetRoleCollection The targetRoleCollection to set.
 	 */
-	public void setTargetRoleCollection(Collection targetRoleCollection) {
+	public void setTargetRoleCollection(Collection targetRoleCollection) 
+	{
 		this.targetRoleCollection = targetRoleCollection;
 	}
 	
@@ -229,11 +257,14 @@ public class Association extends AbstractAttribute implements java.io.Serializab
 	 * 
 	 * @return
 	 */
-	public RoleInterface getTargetRole(){
-		if(targetRoleCollection != null){
+	public RoleInterface getTargetRole()
+	{
+		if(targetRoleCollection != null)
+		{
 			Iterator targetRoleIterator = targetRoleCollection.iterator();
 			return (Role)targetRoleIterator.next();
-		} else {
+		} else
+		{
 			return null;   
 		}
 		
@@ -243,8 +274,10 @@ public class Association extends AbstractAttribute implements java.io.Serializab
 	 * 
 	 * @param sourceEntity
 	 */
-	public void setTargetRole(RoleInterface targetRoleInterface){
-		if(targetRoleCollection == null){
+	public void setTargetRole(RoleInterface targetRoleInterface)
+	{
+		if(targetRoleCollection == null)
+		{
 			targetRoleCollection = new HashSet();
 		}
 		this.targetRoleCollection.add(targetRoleInterface);
@@ -256,14 +289,16 @@ public class Association extends AbstractAttribute implements java.io.Serializab
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties" 
 	 * @return Returns the constraintPropertiesCollection.
 	 */
-	private Collection getConstraintPropertiesCollection() {
+	private Collection getConstraintPropertiesCollection() 
+	{
 		return constraintPropertiesCollection;
 	}
 	/**
 	 * @param constraintPropertiesCollection The constraintPropertiesCollection to set.
 	 */
 	private void setConstraintPropertiesCollection(
-			Collection constraintPropertiesCollection) {
+			Collection constraintPropertiesCollection) 
+	{
 		this.constraintPropertiesCollection = constraintPropertiesCollection;
 	}
 	
@@ -273,11 +308,14 @@ public class Association extends AbstractAttribute implements java.io.Serializab
 	 * 
 	 * @return
 	 */
-	public ConstraintPropertiesInterface getConstraintProperties(){
-		if(constraintPropertiesCollection != null){
+	public ConstraintPropertiesInterface getConstraintProperties()
+	{
+		if(constraintPropertiesCollection != null)
+		{
 			Iterator constraintPropertiesIterator = constraintPropertiesCollection.iterator();
 			return (ConstraintProperties)constraintPropertiesIterator .next();
-		} else {
+		} else 
+		{
 			return null;   
 		}
 		
@@ -288,8 +326,10 @@ public class Association extends AbstractAttribute implements java.io.Serializab
 	 * 
 	 * @param sourceEntity
 	 */
-	public void setConstraintProperties(ConstraintPropertiesInterface constraintPropertiesInterface){
-		if(constraintPropertiesCollection == null){
+	public void setConstraintProperties(ConstraintPropertiesInterface constraintPropertiesInterface)
+	{
+		if(constraintPropertiesCollection == null)
+		{
 			constraintPropertiesCollection  = new HashSet();
 		}
 		this.constraintPropertiesCollection.add(constraintPropertiesInterface);

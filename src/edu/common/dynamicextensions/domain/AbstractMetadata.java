@@ -129,7 +129,8 @@ public  abstract class AbstractMetadata extends AbstractDomainObject implements 
 	/**
 	 * @param name The name to set.
 	 */
-	public void setName(String name) {
+	public void setName(String name) 
+	{
 		this.name = name;
 	}
 	/**
@@ -139,27 +140,31 @@ public  abstract class AbstractMetadata extends AbstractDomainObject implements 
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.SemanticProperty"
 	 * @return Returns the semanticPropertyCollection.
 	 */
-	public Collection getSemanticPropertyCollection() {
+	public Collection getSemanticPropertyCollection() 
+	{
 		return semanticPropertyCollection;
 	}
 	/**
 	 * @param semanticPropertyCollection The semanticPropertyCollection to set.
 	 */
 	public void setSemanticPropertyCollection(
-			Collection semanticPropertyCollection) {
+			Collection semanticPropertyCollection) 
+	{
 		this.semanticPropertyCollection = semanticPropertyCollection;
 	}
 		
 	/**
 	 * 
 	 */
-	public Long getSystemIdentifier() {
+	public Long getSystemIdentifier() 
+	{
 		return id;
 	}
 	/**
 	 * 
 	 */
-	public void setSystemIdentifier(Long systemIdentifier) {
+	public void setSystemIdentifier(Long systemIdentifier) 
+	{
 		this.id = systemIdentifier; 
 		
 	}
@@ -167,13 +172,16 @@ public  abstract class AbstractMetadata extends AbstractDomainObject implements 
 	/**
 	 * 
 	 */
-	public boolean equals(Object obj) {
+	public boolean equals(Object obj)
+	{
 		boolean eq = false;
-		if (obj instanceof AbstractMetadata) {
+		if (obj instanceof AbstractMetadata) 
+		{
 			AbstractMetadata abstractMetadata = (AbstractMetadata) obj;
 			Long thisId = getId();
 			
-			if (thisId != null && thisId.equals(abstractMetadata.getId())) {
+			if (thisId != null && thisId.equals(abstractMetadata.getId())) 
+			{
 				eq = true;
 			}
 			
@@ -184,10 +192,12 @@ public  abstract class AbstractMetadata extends AbstractDomainObject implements 
 	/**
 	 * 
 	 */ 
-	public int hashCode() {
+	public int hashCode() 
+	{
 		int h = 0;
 		
-		if (getId() != null) {
+		if (getId() != null) 
+		{
 			h += getId().hashCode();
 		}
 		return h;
@@ -196,7 +206,8 @@ public  abstract class AbstractMetadata extends AbstractDomainObject implements 
     /**
      * Adds 
      */
-	public void addSemanticProperty(SemanticPropertyInterface semanticPropertyInterface) {
+	public void addSemanticProperty(SemanticPropertyInterface semanticPropertyInterface) 
+	{
 		// TODO Auto-generated method stub
 	}
 }

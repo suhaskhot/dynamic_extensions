@@ -40,9 +40,9 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction {
 		if(actionForm.getDisplayChoice() == null) {
 			actionForm.setDisplayChoice("");
 		}
-		if(actionForm.getTreedataObj() == null) {
+		/*if(actionForm.getTreedataObj() == null) {
 			actionForm.setTreedataObj(new TreeData());	
-		}
+		}*/
 		
 		actionForm.setSelectedControlAttributesList(getSelectedControlAttributesList(actionForm.getUserSelectedTool()));
 		return mapping.findForward(Constants.SHOW_BUILD_FORM_JSP);

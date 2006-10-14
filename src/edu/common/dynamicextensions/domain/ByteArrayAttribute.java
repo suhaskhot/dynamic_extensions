@@ -10,7 +10,8 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass table="DYEXTN_BYTE_ARRAY_ATTRIBUTE" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class ByteArrayAttribute extends Attribute implements ByteArrayAttributeInterface{
+public class ByteArrayAttribute extends Attribute implements ByteArrayAttributeInterface
+{
     /**
      * Content type for this file.
      */
@@ -20,7 +21,8 @@ public class ByteArrayAttribute extends Attribute implements ByteArrayAttributeI
 	 * Empty Constructor.
 	 *
 	 */
-	public ByteArrayAttribute(){
+	public ByteArrayAttribute()
+	{
 
 	}
 
@@ -29,17 +31,20 @@ public class ByteArrayAttribute extends Attribute implements ByteArrayAttributeI
      * @hibernate.property name="contentType" type="string" column="CONTENT_TYPE" 
      * @return Returns the contentType.
      */
-    public String getContentType() {
+    public String getContentType() 
+    {
         return contentType;
     }
     /**
      * @param contentType The contentType to set.
      */
-    public void setContentType(String contentType) {
+    public void setContentType(String contentType) 
+    {
         this.contentType = contentType;
     }
 
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
+	public void setAllValues(AbstractActionForm arg0) throws AssignDataException 
+	{
 		// TODO Auto-generated method stub
 		
 	}

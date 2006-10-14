@@ -151,7 +151,15 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		System.out.println("String Data Tupe");
 		stringAttributeIntf.setDefaultValue(attributeInformationIntf.getAttributeDefaultValue());
 		System.out.println("Attribute Def Value = " + stringAttributeIntf.getDefaultValue());
-		Integer size = new Integer(attributeInformationIntf.getAttributeSize());
+		Integer size;
+		try
+		{
+			size = new Integer(attributeInformationIntf.getAttributeSize());
+		}
+		catch (NumberFormatException e)
+		{
+			size = new Integer(0);
+		}
 		stringAttributeIntf.setSize(size);
 		System.out.println("Attribute Size = " + stringAttributeIntf.getSize());
 	}
@@ -176,7 +184,15 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private void populateIntegerAttributeInterface(IntegerAttributeInterface integerAttributeInterface, AbstractAttributeInformationInterface attributeInformationIntf)
 	{
-		Integer defaultValue = new Integer(attributeInformationIntf.getAttributeDefaultValue());
+		Integer defaultValue;
+		try
+		{
+			defaultValue = new Integer(attributeInformationIntf.getAttributeDefaultValue());
+		}
+		catch (NumberFormatException e)
+		{
+			defaultValue = new Integer(0);
+		}
 		integerAttributeInterface.setDefaultValue(defaultValue);
 		System.out.println("Attribute Def Value = " + integerAttributeInterface.getDefaultValue());
 		integerAttributeInterface.setMeasurementUnits(attributeInformationIntf.getAttributeMeasurementUnits());

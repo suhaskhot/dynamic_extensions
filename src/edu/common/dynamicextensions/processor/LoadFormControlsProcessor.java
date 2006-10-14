@@ -62,12 +62,22 @@ public class LoadFormControlsProcessor
         }
         else if(controlsForm.getControlOperation().equals(ProcessorConstants.EDIT))  
         {
-            
             ControlProcessor controlProcessor = ControlProcessor.getInstance();
             String selectedControlId = controlsForm.getSelectedControlId();
             ControlInterface controlInterface = containerInterface.getControlInterfaceBySequenceNumber(selectedControlId);
             controlProcessor.populateControlInformation(controlInterface,controlsForm);
         }
+        
+        controlsForm.setRootName("Sujay");
+        
+        List childList = new ArrayList();
+        childList.add("ABC");
+        childList.add("PQR");
+        childList.add("STV");
+        
+        controlsForm.setChildList(childList);
+        
+        
 	}
     
     /**

@@ -191,8 +191,16 @@ ControlInformationInterface,AbstractAttributeInformationInterface{
      * 
      */
     protected String selectedControlId;
+    /**
+     * 
+     */
     
     protected String rootName;
+    
+    /**
+     * 
+     */
+    protected List childList; 
 
 	/**
      * 
@@ -806,6 +814,30 @@ ControlInformationInterface,AbstractAttributeInformationInterface{
 	 */
 	public void setSelectedControlId(String selectedControlId) {
 		this.selectedControlId = selectedControlId;
+	}
+	/**
+	 * @return Returns the childList.
+	 */
+	public List getChildList() {
+		return childList;
+	}
+	/**
+	 * @param childList The childList to set.
+	 */
+	public void setChildList(List childList) {
+		this.childList = childList;
+	}
+	/**
+	 * @return Returns the rootName.
+	 */
+	public String getRootName() {
+		return rootName;
+	}
+	/**
+	 * @param rootName The rootName to set.
+	 */
+	public void setRootName(String rootName) {
+		this.rootName = rootName;
 	}
 }
 

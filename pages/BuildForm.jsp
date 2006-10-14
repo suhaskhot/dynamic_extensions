@@ -13,12 +13,7 @@
 <script src="jss/calender.js" type="text/javascript"></script>
 
 
-<%
-	
-	TreeGenerator treeGenerator = new TreeGenerator();
-	treeGenerator.setContextPath(request.getContextPath());
-	TreeData treedataObj = treeGenerator.getTreeData();
-%>
+
 
 
 	<c:set var="toolsList" value="${controlsForm.toolsList}"/>
@@ -27,8 +22,21 @@
 	<c:set var="selectedControlAttributesList" value="${controlsForm.selectedControlAttributesList}"/>
 	<jsp:useBean id="selectedControlAttributesList" type="java.util.List"/>
 
+	<c:set var="childList" value="${controlsForm.childList}"/>
+	<jsp:useBean id="childList" type="java.util.List"/>
+
+	<c:set var="rootName" value="${controlsForm.rootName}"/>
+ 	<jsp:useBean id="rootName" type="java.lang.String"/>
+
 	<c:set var="userSelectedTool" value="${controlsForm.userSelectedTool}"/>
  	<jsp:useBean id="userSelectedTool" type="java.lang.String"/>
+
+<%
+	
+	TreeGenerator treeGenerator = new TreeGenerator();
+	treeGenerator.setContextPath(request.getContextPath());
+	TreeData treedataObj = treeGenerator.getTreeData(rootName,childList);
+%>
 
 
 <html>

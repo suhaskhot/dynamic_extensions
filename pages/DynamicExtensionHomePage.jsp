@@ -34,13 +34,13 @@
  		<jsp:useBean id="entityList" type="java.util.Collection"/>
 							
 		<table width='70%' align='center' cellspacing="5" cellspacing="0" border='0'>
-			<tr>
+			<tr class="formMessage">
 				<h3><bean:message key="table.heading" /><h3>
 			</tr>
 
 			<tr align='left'>
 				<td>
-					<html:submit styleClass="actionButton" property="buildForm" >
+					<html:submit property="buildForm" >
 						<bean:message  key="buttons.build.form" />
 					</html:submit>
 				</td>
@@ -50,8 +50,8 @@
 			
 			<tr>
 				<td>
-					<table width='100%' cellpadding="5" cellspacing="0" border='1' >				
-						<tr>
+					<table class="dataTable" width='100%' cellpadding="5" cellspacing="0" border='1' >				
+						<tr class="formTitle">
 							<th width='5%' align='center'>
 								<input type='checkbox' disabled />
 							</th>
@@ -63,7 +63,7 @@
 								<bean:message key="table.date" />
 							</th>
 							
-							<th width="15%" lign='left'>
+							<th width="15%" align='left'>
 								<bean:message key="table.createdBy" />
 							</th>
 							
@@ -86,7 +86,7 @@
 								createdDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(entity.getCreatedDate());
 						%>
 						
-						<tr>
+						<tr class="formRequiredNotice">
 							<td align='center'>
 								<input type='checkbox' />
 							</td>
@@ -114,6 +114,7 @@
 			</tr>
 
 			<tr><td></td></tr>
+			<tr><td></td></tr>
 
 			<tr>
 				<td>
@@ -127,4 +128,3 @@
 	</body>
 	</html:form>
 </html>
-

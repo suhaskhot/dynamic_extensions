@@ -65,6 +65,7 @@ input.actionButton{ /* optional style for form and action buttons */
   border-top:1px solid #5C5C5C; /* constant: dark gray */
   border-left:1px solid #5C5C5C; /* constant: dark gray */
 }
+
 .toolBoxTable{ /* for the main table below the labels */
   font-family:arial,helvetica,verdana,sans-serif;
   font-size:1.1em;

@@ -23,15 +23,17 @@
 
 <html>
 	<head>
-		<bean:message key="table.heading" />
+		<h3><bean:message key="table.heading" /><h3>
 	</head>
+	
+
 <html:form styleId='formsIndexForm' action='/ApplyFormsIndexAction'>
 	<body  class='bodyStyle'>
 		
 		<c:set var="entityList" value="${formsIndexForm.entityList}"/>
  		<jsp:useBean id="entityList" type="java.util.Collection"/>
 							
-		<table border='0' align='center'>
+		<table border='0'>
 			<tr>
 				<td align='left'>
 					<html:submit styleClass="actionButton" property="buildForm" >
@@ -43,8 +45,8 @@
 			<tr>
 				<table table width='100%' cellpadding="0"	cellspacing="0" border='1'>				
 					<tr>
-						<th>
-							
+						<th align='left'>
+							<input type='checkbox' />
 						</th>
 						<th align='left'>
 							<bean:message key="table.title" />
@@ -80,7 +82,7 @@
 					</tr>
 					<tr>
 						<td>
-							<%-- <html:checkbox property="entityCheckBoxes[i]" /> --%>
+							<input type='checkbox' />
 						</td>
 												
 						<td>
@@ -103,6 +105,9 @@
 					</tr>
 				</table>
 			</tr>
+		
+</table>
+<table>
 			
 			<tr>
 				<td align='left'>

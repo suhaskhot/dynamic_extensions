@@ -34,4 +34,8 @@ public class ProcessorConstants
 	public static final int MAX_NO_OF_DIGITS_LONG = 15;
 	public static final int MAX_NO_OF_DECIMALS_FLOAT = 5;
 	public static final int MAX_NO_OF_DECIMALS_DOUBLE = 10;
+    
+    public static final String ADD = "Add";
+    public static final String EDIT = "Edit";
+    
 }

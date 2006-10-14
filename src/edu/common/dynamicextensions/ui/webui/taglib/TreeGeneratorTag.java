@@ -64,6 +64,9 @@ public class TreeGeneratorTag extends TagSupport {
 								"document.getElementById(p).className='folder';\n" +
 							"}\n" +
 						"}\n" +
+						"var controlsForm=document.getElementById('controlsForm');\n" +
+					    "controlsForm.action='/dynamicExtensions/AddControlsAction.do'\n;" +
+					    "controlsForm.submit();\n" +
 					"}";
 
 				String changeSelectionJSCode =

@@ -9,6 +9,7 @@ PUBLIC
 	<form-beans>
 	<form-bean name="formDefinitionForm" type="edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm"/>
 	<form-bean name="controlsForm" type="edu.common.dynamicextensions.ui.webui.actionform.ControlsForm"/>
+	<form-bean name="formsIndexForm" type="edu.common.dynamicextensions.ui.webui.actionform.FormsIndexForm" />
 	</form-beans>
 	
 	 <global-forwards>
@@ -18,9 +19,13 @@ PUBLIC
 	<action-mappings>
 		
 		<action path="/DynamicExtensionHomePage" 
-			type="edu.common.dynamicextensions.ui.webui.action.ForwardAction">
-			<forward name="success" path="/pages/DynamicExtensionHomePage.jsp" />
-		</action>	
+			type="edu.common.dynamicextensions.ui.webui.action.LoadFormsIndexAction"
+			name="formsIndexForm"
+			validate="false"
+			input="/LoadFormsIndexAction.do"
+			scope="request">
+			<forward name="showDynamicExtensionsHomePage" path="/pages/DynamicExtensionHomePage.jsp" />
+		</action>
 		
 		<action path="/LoadFormDefinitionAction" 
 		    type="edu.common.dynamicextensions.ui.webui.action.LoadFormDefinitionAction" 

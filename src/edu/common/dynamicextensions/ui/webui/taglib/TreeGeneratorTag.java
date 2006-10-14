@@ -67,8 +67,13 @@ public class TreeGeneratorTag extends TagSupport {
 					"}";
 
 				String changeSelectionJSCode =
-					"function changeSelection(str1)\n" +
+					"function changeSelection(str1,seqno)\n" +
 					"{	\n" +
+						"alert(seqno);\n"+
+						"document.getElementById('controlOperation').value='Edit';\n" +
+						"document.getElementById('selectedControlId').value=seqno ;\n" +
+						"alert(document.getElementById('selectedControlId').value);\n"+
+						"alert(document.getElementById('controlOperation').value);\n"+
 						"selId =document.getElementById('selectedAttrib').value;\n" +
 						"document.getElementById('selectedAttrib').value=str1;\n" +
 						"document.getElementById(str1).style.fontWeight='bold';\n" +

@@ -43,14 +43,14 @@ public class TreeData {
 			System.out.println("Error in treeview during addition of node"+e);
 		}
 	}
-	public void add(String text){
-		add(new TNode(text));
+	public void add(String text,int seqno){
+		add(new TNode(text,seqno));
 	}
-	public TNode createNode(String text){
-		return (new TNode(text));
+	public TNode createNode(String text,int seqno){
+		return (new TNode(text,seqno));
 	}
-	public TNode createNode(String text,String href,String toolTip){
-		return (new TNode(text,href,toolTip));
+	public TNode createNode(String text,String href,String toolTip,int seqno){
+		return (new TNode(text,href,toolTip,seqno));
 	}
 
 	private void print(String text){
@@ -119,7 +119,7 @@ public class TreeData {
 						else		//Means it is a leaf node
 						{
 							id="L" + parent + i ;
-							node.href = "javascript:changeSelection('"+id+"')";
+							node.href = "javascript:changeSelection('"+id+"','"+node.sequenceNumber +"')";
 							if(node.target=="")
 							{
 								node.target=target;
@@ -155,8 +155,8 @@ class TNodeList{
 		v.add(node);
 		length++;
 	}
-	public void add(String text){
-		add(new TNode(text));
+	public void add(String text,int seqno){
+		add(new TNode(text,seqno));
 	}
 	public TNode item(int index){
 		return (TNode)v.get(index);
@@ -168,33 +168,34 @@ class TNode{
 	public String href;
 	public String target="";
 	public String toolTip;
-	public String path = "";
 	public TNodeList childNodes;
 	public String imageUrl="";
 	public int length=0;
-
+	public int sequenceNumber = 0;
+	
 	public TNode(){
 		childNodes = new TNodeList();
 	}
 
-	public TNode(String text){
-		this(text,"");
+	public TNode(String text,int seqno){
+		this(text,"",seqno);
 	}
-	public TNode(String text,String href){
-		this(text,href,"");
+	public TNode(String text,String href,int seqno){
+		this(text,href,"",seqno);
 	}
 
-	public TNode(String text,String href,String toolTip){
+	public TNode(String text,String href,String toolTip,int seqno){
 		this();
 		this.text=text.trim();
 		this.href=href;
 		this.toolTip=toolTip;
+		this.sequenceNumber = seqno;
 	}
 	public void add(TNode TNode){
 		childNodes.add(TNode);
 		length++;
 	}
-	public void add(String text){
-		add(new TNode(text));
+	public void add(String text,int seqno){
+		add(new TNode(text,seqno));
 	}
 }

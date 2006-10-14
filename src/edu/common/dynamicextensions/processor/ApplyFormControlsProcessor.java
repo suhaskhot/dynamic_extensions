@@ -5,14 +5,14 @@
  */
 package edu.common.dynamicextensions.processor;
 
+import java.util.Collection;
+
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
-import edu.common.dynamicextensions.ui.webui.util.CacheManager;
-import edu.common.dynamicextensions.util.global.Constants;
 
 /**
  * @author preeti_munot
@@ -64,6 +64,13 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 						controlsForm.setAbstractAttribute(abstractAttributeInterface);
 						//Control Interface : Add control
 						controlInterface = controlProcessor.createAndPopulateControl(controlsForm.getUserSelectedTool(),controlsForm);
+						Collection controlCollection = containerInterface.getControlCollection();
+						if(controlCollection!=null)
+						{
+							int noOfElts = controlCollection.size();
+							controlInterface.setSequenceNumber(new Integer(noOfElts+1));
+							System.out.println("Deq Number = " + controlInterface.getSequenceNumber());
+						}
 
 					}else if(controlOperation.equalsIgnoreCase(ProcessorConstants.EDIT))
 					{

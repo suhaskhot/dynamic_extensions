@@ -23,17 +23,18 @@
 
 <html>
 	<head>
+		<title><bean:message key="table.heading" /></title>
 		<h3><bean:message key="table.heading" /><h3>
 	</head>
 	
 
-<html:form styleId='formsIndexForm' action='/ApplyFormsIndexAction'>
+	<html:form styleId='formsIndexForm' action='/ApplyFormsIndexAction'>
 	<body>
 		
 		<c:set var="entityList" value="${formsIndexForm.entityList}"/>
  		<jsp:useBean id="entityList" type="java.util.Collection"/>
 							
-		<table border='0'>
+		<table cellspacing="5" border='0'>
 			<tr>
 				<td align='left'>
 					<html:submit styleClass="actionButton" property="buildForm" >
@@ -43,24 +44,24 @@
 			</tr>
 			
 			<tr>
-				<table table width='100%' cellpadding="0"	cellspacing="0" border='1'>				
+				<table table width='70%' cellpadding="5" cellspacing="0" border='1'>				
 					<tr>
-						<th align='left'>
+						<th width='5%' align='center'>
 							<input type='checkbox' />
 						</th>
-						<th align='left'>
+						<th width="30%" align='left'>
 							<bean:message key="table.title" />
 						</th>
 						
-						<th align='left'>
+						<th width="15%" align='left'>
 							<bean:message key="table.date" />
 						</th>
 						
-						<th align='left'>
+						<th width="15%" lign='left'>
 							<bean:message key="table.createdBy" />
 						</th>
 						
-						<th align='left'>
+						<th width="10%" align='left'>
 							<bean:message key="table.status" />
 						</th>		
 					</tr>
@@ -81,7 +82,7 @@
 						%>
 					</tr>
 					<tr>
-						<td>
+						<td align='center'>
 							<input type='checkbox' />
 						</td>
 												
@@ -106,10 +107,10 @@
 				</table>
 			</tr>
 		
-</table>
-<table>
+		</table>
+		<table cellspacing="5" border='0'>
 			
-			<tr>
+			<tr >
 				<td align='left'>
 					<html:button styleClass="actionButton" property="delete" disabled='true' >
 						<bean:message  key="buttons.delete"/>
@@ -122,4 +123,3 @@
 	</body>
 	</html:form>
 </html>
-

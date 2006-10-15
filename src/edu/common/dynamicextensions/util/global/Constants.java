@@ -1249,6 +1249,8 @@ public class Constants extends edu.wustl.common.util.global.Constants
     public static final String CONTROL_OPERATION = "controlOperation";
     public static final String SELECTED_CONTROL_ID = "selectedControlId";
     public static final String USER_SELECTED_TOOL = "userSelectedTool";
+   
+    
     //Constants for eav end
 	
 	

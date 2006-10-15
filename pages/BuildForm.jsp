@@ -129,6 +129,8 @@
 
 			<html:hidden property="controlOperation" value=""/>
 			<html:hidden property="selectedControlId" value=""/>
+			<html:hidden property="toolBoxClicked" value=""/>
+
 
 
 	  	</html:form>

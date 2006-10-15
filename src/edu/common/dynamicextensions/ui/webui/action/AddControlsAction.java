@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.taglibs.standard.tag.common.xml.IfTag;
 
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.processor.ApplyFormControlsProcessor;
@@ -35,8 +36,13 @@ public class AddControlsAction extends BaseDynamicExtensionsAction {
 		//Get container interface from cache
 		ContainerInterface containerInterface = (ContainerInterface)CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 		//Add control to form
-		ApplyFormControlsProcessor formControlsProcessor = ApplyFormControlsProcessor.getInstance();
-		formControlsProcessor.addControlToForm(containerInterface, controlsForm);
+        
+        if (controlsForm.getToolBoxClicked() == null || controlsForm.getToolBoxClicked().equals(""))
+        {
+            ApplyFormControlsProcessor formControlsProcessor = ApplyFormControlsProcessor.getInstance();
+            formControlsProcessor.addControlToForm(containerInterface, controlsForm);
+        }
+		
 		//Add back object to cache
 		CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
         

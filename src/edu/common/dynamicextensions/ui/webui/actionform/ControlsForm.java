@@ -197,7 +197,11 @@ ControlInformationInterface,AbstractAttributeInformationInterface{
     /**
      * 
      */
-    protected List childList; 
+    protected List childList;
+    /**
+     * 
+     */
+    protected String toolBoxClicked;
    
 
 	/**
@@ -824,6 +828,18 @@ ControlInformationInterface,AbstractAttributeInformationInterface{
 	 */
 	public void setRootName(String rootName) {
 		this.rootName = rootName;
+	}
+	/**
+	 * @return Returns the toolBoxClicked.
+	 */
+	public String getToolBoxClicked() {
+		return toolBoxClicked;
+	}
+	/**
+	 * @param toolBoxClicked The toolBoxClicked to set.
+	 */
+	public void setToolBoxClicked(String toolBoxClicked) {
+		this.toolBoxClicked = toolBoxClicked;
 	}
 }
 

@@ -1,5 +1,5 @@
 function formSelectedAction() {
-	alert("This is a form to be copied");
+	//alert("This is a form to be copied");
 }
 function tagHandlerFunction(selectedTool) {
 	document.getElementById('userSelectedTool').value=selectedTool;
@@ -16,8 +16,13 @@ function controlSelectedAction()
 {	
 	var controlOperation = document.getElementById('controlOperation');
 	controlOperation.value = 'Add';
+	
+	var toolBoxClicked = document.getElementById('toolBoxClicked');
+	toolBoxClicked.value = 'True';
+	
+	
 	var controlsForm = document.getElementById('controlsForm');
-	controlsForm.action="/dynamicExtensions/LoadFormControlsAction.do";
+	controlsForm.action="/dynamicExtensions/AddControlsAction.do";
 	controlsForm.submit();
 }
 

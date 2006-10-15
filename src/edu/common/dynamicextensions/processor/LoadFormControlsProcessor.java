@@ -59,7 +59,7 @@ public class LoadFormControlsProcessor
             	userSelectedTool = toolList.get(0).toString();
             }
             controlsForm.setUserSelectedTool(userSelectedTool);
-            controlsForm.setDataType("");
+           
             controlsForm.setDisplayChoice("");
             controlsForm.setDataType("String");
             
@@ -72,16 +72,11 @@ public class LoadFormControlsProcessor
           
             ControlInterface controlInterface = containerInterface.getControlInterfaceBySequenceNumber(selectedControlId);
             controlProcessor.populateControlInformation(controlInterface,controlsForm);
-            
-            
+                 
             AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
             attributeProcessor.populateAttributeInformation(controlInterface.getAbstractAttribute(), controlsForm);
-            
-           
-           
-            System.out.println("After Polulate attribute");
-            
         }
+        
         controlsForm.setDataTypeList(getDataTypeList());
        
         controlsForm.setRootName(containerInterface.getCaption());
@@ -140,9 +135,4 @@ public class LoadFormControlsProcessor
         
         return dataTypeList; 
     }
-  
-   
 }
-
-
-

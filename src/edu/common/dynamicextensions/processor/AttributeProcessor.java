@@ -312,6 +312,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			System.out.println("Instance of " + attributeInterface);
 			if(attributeInterface instanceof StringAttributeInterface)
 			{
+                attributeInformationIntf.setDataType("String");
 				attributeInformationIntf.setAttributeDefaultValue(((StringAttributeInterface)attributeInterface).getDefaultValue());
 				Integer size = ((StringAttributeInterface)attributeInterface).getSize();
 				if(size!=null){
@@ -319,7 +320,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				}
 			}else if(attributeInterface instanceof DateAttributeInterface)
 			{
-				attributeInformationIntf.setAttributeDefaultValue(((DateAttributeInterface)attributeInterface).getDefaultValue().toString());
+               	attributeInformationIntf.setAttributeDefaultValue(((DateAttributeInterface)attributeInterface).getDefaultValue().toString());
 				attributeInformationIntf.setFormat(((DateAttributeInterface)attributeInterface).getFormat());
 			}
 			else if(attributeInterface instanceof BooleanAttributeInterface)
@@ -328,26 +329,31 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 			else if(attributeInterface instanceof IntegerAttributeInterface)
 			{
+                attributeInformationIntf.setDataType("Number");
 				attributeInformationIntf.setAttributeDefaultValue(((IntegerAttributeInterface)attributeInterface).getDefaultValue().toString());
 				attributeInformationIntf.setAttributeMeasurementUnits((((IntegerAttributeInterface)attributeInterface).getMeasurementUnits()).toString());
 			}
 			else if(attributeInterface instanceof ShortAttributeInterface)
 			{
+                attributeInformationIntf.setDataType("Number");
 				attributeInformationIntf.setAttributeDefaultValue(((ShortAttributeInterface)attributeInterface).getDefaultValue().toString());
 				attributeInformationIntf.setAttributeMeasurementUnits((((ShortAttributeInterface)attributeInterface).getMeasurementUnits()).toString());
 			}
 			else if(attributeInterface instanceof LongAttributeInterface)
 			{
+                attributeInformationIntf.setDataType("Number");
 				attributeInformationIntf.setAttributeDefaultValue(((LongAttributeInterface)attributeInterface).getDefaultValue().toString());
 				attributeInformationIntf.setAttributeMeasurementUnits((((LongAttributeInterface)attributeInterface).getMeasurementUnits()).toString());
 			}
 			else if(attributeInterface instanceof FloatAttributeInterface)
 			{
+                attributeInformationIntf.setDataType("Number");
 				attributeInformationIntf.setAttributeDefaultValue(((FloatAttributeInterface)attributeInterface).getDefaultValue().toString());
 				attributeInformationIntf.setAttributeMeasurementUnits((((FloatAttributeInterface)attributeInterface).getMeasurementUnits()).toString());
 			}
 			else if(attributeInterface instanceof DoubleAttributeInterface)
 			{
+                attributeInformationIntf.setDataType("Number");
 				attributeInformationIntf.setAttributeDefaultValue(((DoubleAttributeInterface)attributeInterface).getDefaultValue().toString());
 				attributeInformationIntf.setAttributeMeasurementUnits((((DoubleAttributeInterface)attributeInterface).getMeasurementUnits()).toString());
 			}

@@ -43,45 +43,55 @@ public class LoadFormControlsProcessor
 	 * @param actionForm
 	 * @param containerInterface
 	 */
-	public void loadFormControls(AbstractActionForm actionForm,ContainerInterface containerInterface) 
+	public void loadFormControls(AbstractActionForm actionForm,ContainerInterface containerInterface,
+            String controlOperation,String selectedControlId,String userSelectedTool) 
 	{
 		ControlsForm controlsForm = (ControlsForm)actionForm;
         List toolList = getToolsList();
         controlsForm.setToolsList(toolList);
-        List controlAttributesList;
        
-        if(controlsForm.getControlOperation() == null || controlsForm.getControlOperation().equals("") ||
-                controlsForm.getControlOperation().equalsIgnoreCase(ProcessorConstants.ADD))
+       
+        if(controlOperation == null || controlOperation.equals("") ||
+                controlOperation.equalsIgnoreCase(ProcessorConstants.ADD))
         {
-            if(controlsForm.getUserSelectedTool() == null || controlsForm.getUserSelectedTool().equals(""))
+            if(userSelectedTool == null || userSelectedTool.equals(""))
             {
-            	controlsForm.setUserSelectedTool(toolList.get(0).toString());
+            	userSelectedTool = toolList.get(0).toString();
             }
+            controlsForm.setUserSelectedTool(userSelectedTool);
             controlsForm.setDataType("");
             controlsForm.setDisplayChoice("");
+            controlsForm.setDataType("String");
             
-            controlAttributesList  = getControlAttributesList(controlsForm.getUserSelectedTool());
-            controlsForm.setSelectedControlAttributesList(controlAttributesList);
+            controlsForm.setHtmlFile(userSelectedTool+".jsp");
         }
-        else if(controlsForm.getControlOperation().equalsIgnoreCase(ProcessorConstants.EDIT))  
+        
+        else if(controlOperation.equalsIgnoreCase(ProcessorConstants.EDIT))  
         {
             ControlProcessor controlProcessor = ControlProcessor.getInstance();
-            String selectedControlId = controlsForm.getSelectedControlId();
+          
             ControlInterface controlInterface = containerInterface.getControlInterfaceBySequenceNumber(selectedControlId);
             controlProcessor.populateControlInformation(controlInterface,controlsForm);
             
             
             AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
             attributeProcessor.populateAttributeInformation(controlInterface.getAbstractAttribute(), controlsForm);
+            
+            if(userSelectedTool == null || userSelectedTool.equals(""))
+            {
+                userSelectedTool = toolList.get(0).toString();
+            }
+            controlsForm.setUserSelectedTool(userSelectedTool);
+            controlsForm.setHtmlFile(userSelectedTool + ".jsp");
+           
             System.out.println("After Polulate attribute");
+            
         }
-        
+        controlsForm.setDataTypeList(getDataTypeList());
+       
         controlsForm.setRootName(containerInterface.getCaption());
         controlsForm.setChildList(getChildList(containerInterface));
-        
-        
-        
-	}
+ }
     
     /**
      * Returns the toolsList from the xml file.
@@ -94,19 +104,7 @@ public class LoadFormControlsProcessor
         return toolsList;
     }
     
-    /**
-     * Returns the selectedControlAttributesList from the xml file depending upon the tool passed.
-     * @param userSelectedTool
-     * @return
-     */
-    private List getControlAttributesList(String userSelectedTool)
-    {
-        UIControlsConfigurationFactory uiControlsConfigurationFactory = UIControlsConfigurationFactory.getInstance();
-        List controlAttributesList = new ArrayList();
-    
-        controlAttributesList  = uiControlsConfigurationFactory.getConrolAttributesList(userSelectedTool);
-        return controlAttributesList;
-    }
+  
     
     /**
      * 
@@ -133,8 +131,21 @@ public class LoadFormControlsProcessor
         return childList;
     }
     
-    
-    
+    /**
+     * 
+     * @return
+     */
+    private List getDataTypeList(){
+        List dataTypeList = new ArrayList();
+        NameValueBean nameValueBean1 = new NameValueBean("String","String");
+        dataTypeList.add(nameValueBean1);
+        
+        NameValueBean nameValueBean2 = new NameValueBean("Number","Number");
+        dataTypeList.add(nameValueBean2);
+        
+        return dataTypeList; 
+    }
+  
    
 }
 

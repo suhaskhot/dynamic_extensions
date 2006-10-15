@@ -34,8 +34,14 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 		ControlsForm actionForm = (ControlsForm)form;
         ContainerInterface containerInterface = (ContainerInterface)CacheManager.getObjectFromCache(request,Constants.CONTAINER_INTERFACE);
         
+        String controlOperation = (String)CacheManager.getObjectFromCache(request, Constants.CONTROL_OPERATION);
+        String selectedControlId = (String)CacheManager.getObjectFromCache(request, Constants.SELECTED_CONTROL_ID);
+        String userSelectedTool = (String)CacheManager.getObjectFromCache(request, Constants.USER_SELECTED_TOOL);
+        
+        
+        
         LoadFormControlsProcessor loadFormControlsProcessor =   LoadFormControlsProcessor.getInstance();
-        loadFormControlsProcessor.loadFormControls(actionForm,containerInterface);
+        loadFormControlsProcessor.loadFormControls(actionForm,containerInterface,controlOperation,selectedControlId,userSelectedTool );
         
         return mapping.findForward(Constants.SHOW_BUILD_FORM_JSP);
         

@@ -72,21 +72,12 @@ function changeDataType(datatypeControl)
 	var selectedIdx = datatypeControl.selectedIndex;
 	if(datatypeControl!=null)
 	{
-		for(var i=0; i<datatypeControl.length; i++)
+		var divForDataTypeId = datatypeControl.options[selectedIdx].text + "DataType";
+		var divForDataType = document.getElementById(divForDataTypeId);
+		if(divForDataType!=null)
 		{
-			var divForDataTypeId = datatypeControl.options[i].text + "DataType";
-			var divForDataType = document.getElementById(divForDataTypeId);
-			if(divForDataType!=null)
-			{
-				if(selectedIdx == i)
-				{
-					divForDataType.style.display = "block";
-				}
-				else
-				{
-					divForDataType.style.display = "none";
-				}
-			}
+			var substitutionDiv = document.getElementById('substitutionDiv');
+			substitutionDiv.innerHTML = divForDataType.innerHTML;
 		}
 	}
 }

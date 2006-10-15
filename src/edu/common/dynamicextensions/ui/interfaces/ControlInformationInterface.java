@@ -44,12 +44,9 @@ public interface ControlInformationInterface {
 	 */
 	public void setAbstractAttribute(AbstractAttributeInterface attributeInterface);
 
-	public List getSelectedControlAttributesList();
 
-	/**
-	 * @param selectedControlAttributesList the selectedControlAttributesList to set
-	 */
-	public void setSelectedControlAttributesList(List selectedControlAttributesList);
+
+
 	/**
 	 * @return Returns the dataType.
 	 */

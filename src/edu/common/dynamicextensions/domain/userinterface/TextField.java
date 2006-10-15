@@ -102,7 +102,7 @@ public class TextField extends Control implements TextFieldInterface{
     /**
      * 
      */
-	public String generateHTML()
+	public String generateHTML1()
 	{
 		if(value==null)
 		{
@@ -130,6 +130,18 @@ public class TextField extends Control implements TextFieldInterface{
 		System.out.println("Returning " + htmlString);
 		return htmlString;	
 	}
+    
+    public String generateHTML()
+    {
+        if(value==null)
+        {
+            value = "";
+        }
+    	String htmlString = "<html:text styleClass='" + cssClass + "'  size='"+columns.intValue()+"'  property='"+ name +"' />";
+        
+        return htmlString;
+            
+    }
 
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface#setAttribute(edu.common.dynamicextensions.domaininterface.AttributeInterface)

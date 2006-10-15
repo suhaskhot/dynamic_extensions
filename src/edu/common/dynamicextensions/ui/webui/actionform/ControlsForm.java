@@ -32,10 +32,7 @@ ControlInformationInterface,AbstractAttributeInformationInterface{
 	 * 
 	 */
 	String description;
-	/**
-	 * selectedControlAttributesList
-	 */
-	List selectedControlAttributesList;
+	
 	/**
 	 * 
 	 */
@@ -201,6 +198,7 @@ ControlInformationInterface,AbstractAttributeInformationInterface{
      * 
      */
     protected List childList; 
+   
 
 	/**
      * 
@@ -525,19 +523,7 @@ ControlInformationInterface,AbstractAttributeInformationInterface{
 
 
 
-	/**
-	 * @return the selectedControlAttributesList
-	 */
-	public List getSelectedControlAttributesList() {
-		return selectedControlAttributesList;
-	}
-
-	/**
-	 * @param selectedControlAttributesList the selectedControlAttributesList to set
-	 */
-	public void setSelectedControlAttributesList(List selectedControlAttributesList) {
-		this.selectedControlAttributesList = selectedControlAttributesList;
-	}
+	
 
 
 

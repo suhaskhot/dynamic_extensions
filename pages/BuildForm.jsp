@@ -19,8 +19,10 @@
 	<c:set var="toolsList" value="${controlsForm.toolsList}"/>
 	<jsp:useBean id="toolsList" type="java.util.List"/>
 
-	<c:set var="selectedControlAttributesList" value="${controlsForm.selectedControlAttributesList}"/>
-	<jsp:useBean id="selectedControlAttributesList" type="java.util.List"/>
+	<c:set var="htmlFile" value="${controlsForm.htmlFile}"/>
+	<jsp:useBean id="htmlFile" type="java.lang.String"/>
+
+	<% htmlFile = "/pages/toolTypeHTML/"+ htmlFile;%>
 
 	<c:set var="childList" value="${controlsForm.childList}"/>
 	<jsp:useBean id="childList" type="java.util.List"/>
@@ -64,7 +66,7 @@
 		  			</td>
 		  			
 		  			<td align="top">
-		  				<dynamicExtensions:generatehtml uiControlsList="<%=selectedControlAttributesList%>"/>
+							<jsp:include page="<%=htmlFile%>" />	
 		  			
 		  			</td>
 		  			

@@ -105,7 +105,7 @@ public class TextArea extends Control implements TextAreaInterface {
      * 
      */
 
-	public String generateHTML()
+	public String generateHTML1()
 	{
 		if(value==null)
 		{
@@ -125,6 +125,17 @@ public class TextArea extends Control implements TextAreaInterface {
 		System.out.println("Returning " + htmlString);
 		return htmlString;
 	}
+    
+    
+    /**
+     * 
+     */
+    public String generateHTML()
+    {
+        String htmlString = "<html:textarea styleClass='"+cssClass+"'  rows = '"+rows.intValue()+"' cols='"+columns.intValue()+"'  property='"+name+"'  />";
+        
+        return htmlString;
+    }
 
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface#setAttribute(edu.common.dynamicextensions.domaininterface.AttributeInterface)

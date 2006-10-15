@@ -1,5 +1,7 @@
 package edu.common.dynamicextensions.ui.webui.action;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,14 +31,45 @@ public class AddControlsAction extends BaseDynamicExtensionsAction {
 			HttpServletResponse response) {
 		System.out.println("Add control action");
 		//Get controls form
-		ControlsForm actionForm = (ControlsForm)form;
+		ControlsForm controlsForm = (ControlsForm)form;
 		//Get container interface from cache
 		ContainerInterface containerInterface = (ContainerInterface)CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 		//Add control to form
 		ApplyFormControlsProcessor formControlsProcessor = ApplyFormControlsProcessor.getInstance();
-		formControlsProcessor.addControlToForm(containerInterface, actionForm);
+		formControlsProcessor.addControlToForm(containerInterface, controlsForm);
 		//Add back object to cache
 		CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
-		return mapping.findForward(Constants.SUCCESS);
+        
+        String controlOperation = (String)CacheManager.getObjectFromCache(request, Constants.CONTROL_OPERATION);
+        if(controlOperation == null){
+            CacheManager.addObjectToCache(request, Constants.CONTROL_OPERATION, new String(""));
+        }
+        controlOperation = controlsForm.getControlOperation();
+        CacheManager.addObjectToCache(request, Constants.CONTROL_OPERATION, controlOperation);
+        
+        String selectedControlId = (String)CacheManager.getObjectFromCache(request, Constants.SELECTED_CONTROL_ID);
+        if(selectedControlId == null){
+            CacheManager.addObjectToCache(request, Constants.SELECTED_CONTROL_ID, new String(""));
+        }
+        selectedControlId = controlsForm.getSelectedControlId();
+        CacheManager.addObjectToCache(request, Constants.SELECTED_CONTROL_ID, selectedControlId);
+        
+        String userSelectedTool = (String)CacheManager.getObjectFromCache(request, Constants.USER_SELECTED_TOOL);
+        if(userSelectedTool == null){
+            CacheManager.addObjectToCache(request, Constants.USER_SELECTED_TOOL, new String(""));
+        }
+        userSelectedTool = controlsForm.getUserSelectedTool();
+        CacheManager.addObjectToCache(request, Constants.USER_SELECTED_TOOL, userSelectedTool);
+      
+        
+          ActionForward actionForward = mapping.findForward(Constants.SUCCESS);
+            try 
+            {
+				response.sendRedirect("http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + actionForward .getPath());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		return null;
 	}
 }

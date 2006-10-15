@@ -12,10 +12,6 @@
 <script src="jss/overlib_mini.js" type="text/javascript"></script>
 <script src="jss/calender.js" type="text/javascript"></script>
 
-
-
-
-
 	<c:set var="toolsList" value="${controlsForm.toolsList}"/>
 	<jsp:useBean id="toolsList" type="java.util.List"/>
 

@@ -14,6 +14,8 @@ function showBuildFormJSP() {
 
 function controlSelectedAction()
 {	
+	var controlOperation = document.getElementById('controlOperation');
+	controlOperation.value = 'Add';
 	var controlsForm = document.getElementById('controlsForm');
 	controlsForm.action="/dynamicExtensions/LoadFormControlsAction.do";
 	controlsForm.submit();

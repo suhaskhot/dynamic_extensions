@@ -77,12 +77,7 @@ public class LoadFormControlsProcessor
             AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
             attributeProcessor.populateAttributeInformation(controlInterface.getAbstractAttribute(), controlsForm);
             
-            if(userSelectedTool == null || userSelectedTool.equals(""))
-            {
-                userSelectedTool = toolList.get(0).toString();
-            }
-            controlsForm.setUserSelectedTool(userSelectedTool);
-            controlsForm.setHtmlFile(userSelectedTool + ".jsp");
+           
            
             System.out.println("After Polulate attribute");
             

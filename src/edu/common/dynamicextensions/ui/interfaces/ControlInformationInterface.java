@@ -167,5 +167,15 @@ public interface ControlInformationInterface {
 	/**
 	 * @param displayChoiceList The displayChoiceList to set.
 	 */
-	public void setDisplayChoiceList(List displayChoiceList); 
+	public void setDisplayChoiceList(List displayChoiceList);
+    /**
+     * 
+     * @param userSelectedTool
+     */
+    void setUserSelectedTool(String userSelectedTool);
+    /**
+     * 
+     * @param htmlFile
+     */
+    void setHtmlFile(String htmlFile);
 }

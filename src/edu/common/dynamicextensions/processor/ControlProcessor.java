@@ -274,11 +274,24 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		}
 		if(controlInterface instanceof TextFieldInterface)
 		{
+            controlInformationInterface.setUserSelectedTool(ProcessorConstants.TEXT_CONTROL);
+            controlInformationInterface.setHtmlFile( ProcessorConstants.TEXT_CONTROL + ".jsp");
 			controlInformationInterface.setColumns(((TextFieldInterface)controlInterface).getColumns());
 			controlInformationInterface.setIsPassword(((TextFieldInterface)controlInterface).getIsPassword());
-		}else if(controlInterface instanceof ComboBoxInterface)
+		}
+        else if(controlInterface instanceof ComboBoxInterface)
 		{
+            controlInformationInterface.setUserSelectedTool(ProcessorConstants.COMBOBOX_CONTROL);
+            controlInformationInterface.setHtmlFile( ProcessorConstants.COMBOBOX_CONTROL + ".jsp");
 			controlInformationInterface.setDisplayChoiceList(((ComboBoxInterface)controlInterface).getChoiceList());
 		}
+        else if(controlInterface instanceof DatePickerInterface)
+        {
+            controlInformationInterface.setUserSelectedTool(ProcessorConstants.DATEPICKER_CONTROL);
+            controlInformationInterface.setHtmlFile( ProcessorConstants.DATEPICKER_CONTROL + ".jsp");
+            
+        }
+        
+        
 	}
 }

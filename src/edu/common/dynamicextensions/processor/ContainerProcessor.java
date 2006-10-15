@@ -24,7 +24,7 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor {
 	}
 	public void populateContainerInterface(ContainerInterface containerInterface, ContainerInformationInterface containerInformationInterface) {
 		containerInterface.setButtonCss(containerInformationInterface.getButtonCss());
-		containerInterface.setCaption(containerInformationInterface.getCaption());
+		containerInterface.setCaption(containerInformationInterface.getFormCaption());
 		containerInterface.setMainTableCss(containerInformationInterface.getMainTableCss());
 		containerInterface.setRequiredFieldIndicatior(containerInformationInterface.getRequiredFieldIndicatior());
 		containerInterface.setRequiredFieldWarningMessage(containerInformationInterface.getRequiredFieldWarningMessage());

@@ -40,7 +40,7 @@ public class FormDefinitionForm  extends AbstractActionForm implements EntityInf
 	/**
 	 * Description
 	 */
-	protected String description;
+	protected String formDescription;
 	/**
 	 * Entity Identifier
 	 */
@@ -64,7 +64,7 @@ public class FormDefinitionForm  extends AbstractActionForm implements EntityInf
 	/**
 	 * 
 	 */
-	protected String caption;
+	protected String formCaption;
 	/**
 	 * 
 	 */
@@ -104,14 +104,14 @@ public class FormDefinitionForm  extends AbstractActionForm implements EntityInf
 	/**
 	 * @return Returns the description.
 	 */
-	public String getDescription() {
-		return description;
+	public String getFormDescription() {
+		return formDescription;
 	}
 	/**
 	 * @param description The description to set.
 	 */
-	public void setDescription(String description) {
-		this.description = description;
+	public void setFormDescription(String description) {
+		this.formDescription = description;
 	}
 	/**
 	 * @return Returns the name.
@@ -182,8 +182,8 @@ public class FormDefinitionForm  extends AbstractActionForm implements EntityInf
 	/**
 	 * 
 	 */
-	public String getCaption() {
-		return caption;
+	public String getFormCaption() {
+		return formCaption;
 	}
 	/**
 	 * 
@@ -218,8 +218,8 @@ public class FormDefinitionForm  extends AbstractActionForm implements EntityInf
 	/**
 	 * 
 	 */
-	public void setCaption(String caption) {
-		this.caption = caption;
+	public void setFormCaption(String caption) {
+		this.formCaption = caption;
 	}
 	/**
 	 * 
@@ -250,7 +250,8 @@ public class FormDefinitionForm  extends AbstractActionForm implements EntityInf
 	 */
 	public void update(FormDefinitionForm cacheForm) {
 		this.formName = cacheForm.getFormName();
-		this.description = cacheForm.getDescription();
+		this.formDescription = cacheForm.getFormDescription();
+		this.formCaption = cacheForm.getFormCaption();
 		this.createAs = cacheForm.getCreateAs();
 	}
 	/**
@@ -258,7 +259,7 @@ public class FormDefinitionForm  extends AbstractActionForm implements EntityInf
 	 */
 	public void reset() {
 		formName = "";
-		description = "";
+		formDescription = "";
 		createAs = "";
 	}  
 	/**
@@ -274,7 +275,7 @@ public class FormDefinitionForm  extends AbstractActionForm implements EntityInf
 					"errors.item.required", ApplicationProperties
 					.getValue("eav.form.name")));
 		}
-		if ( caption == null || validator.isEmpty(String.valueOf(caption))) {
+		if ( formCaption == null || validator.isEmpty(String.valueOf(formCaption))) {
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
 					"errors.item.required", ApplicationProperties
 					.getValue("eav.form.title")));

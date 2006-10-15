@@ -32,5 +32,28 @@ public interface DoubleAttributeInterface extends AttributeInterface
      */
     
     void setMeasurementUnits(String measurementUnits);
-  
+    
+    /**
+	 * 
+	 * @return Number of decimal places
+	 */
+	public String getDecimalPlaces();
+	/**
+	 * 
+	 * @param decimalPlaces Number of decimal places
+	 */
+	public void setDecimalPlaces(String decimalPlaces);
+
+	/**
+	 * 
+	 * @return Number of digits
+	 */
+	public String getDigits();
+	/**
+	 * 
+	 * @param digits Number of digits
+	 */
+	public void setDigits(String digits);
+	public String getSize();
+	public void setSize(String size);  
   }

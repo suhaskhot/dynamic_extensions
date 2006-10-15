@@ -78,7 +78,7 @@ public class LoadFormControlsProcessor
         }
         
         controlsForm.setDataTypeList(getDataTypeList());
-       
+        controlsForm.setDisplayChoiceList(displayChoiceListgetDisplayChoiceList());
         controlsForm.setRootName(containerInterface.getCaption());
         controlsForm.setChildList(getChildList(containerInterface));
  }
@@ -134,5 +134,17 @@ public class LoadFormControlsProcessor
         dataTypeList.add(nameValueBean2);
         
         return dataTypeList; 
+    }
+    
+    private List displayChoiceListgetDisplayChoiceList()
+    {
+    	 List dataTypeList = new ArrayList();
+         NameValueBean nameValueBean1 = new NameValueBean("UserDefined","UserDefined");
+         dataTypeList.add(nameValueBean1);
+         /*
+         NameValueBean nameValueBean2 = new NameValueBean("CADSR","CADSR");
+         dataTypeList.add(nameValueBean2);*/
+         
+         return dataTypeList; 
     }
 }

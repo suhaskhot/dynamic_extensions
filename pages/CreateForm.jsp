@@ -69,7 +69,7 @@
 							<bean:message key="eav.form.title"/> 
 						</td>
 						<td class="formField">
-							<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="caption" />
+							<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="formCaption" />
 						</td>
 					</tr>
 					 <tr>
@@ -87,7 +87,7 @@
 								<bean:message key="eav.form.description"/> 
 					 	</td>
 						<td class="formField">
-								<html:textarea styleClass="formDateSized"  rows = "5" cols="40"  property="description" />
+								<html:textarea styleClass="formDateSized"  rows = "5" cols="40"  property="formDescription" />
 						</td>
 				     </tr>
 				     <tr>

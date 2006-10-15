@@ -133,7 +133,7 @@
 			    <table>
 			       <tr>
 						<td class="formRequiredLabel">
-								Attribute Size
+								<bean:message key="eav.att.AttributeSize"/> 
 						</td>
 										
 						<td class="formField">
@@ -143,7 +143,7 @@
 				
 					<tr>
 						<td class="formRequiredLabel">
-								Attribute Digits
+								<bean:message key="eav.att.AttributeDigits"/> 
 						</td>
 										
 						<td class="formField">
@@ -153,7 +153,7 @@
 				
 					<tr>
 						<td class="formRequiredLabel">
-								Attribute Decimal Places
+								<bean:message key="eav.att.AttributeDecimalPlaces"/> 
 						</td>
 										
 						<td class="formField">
@@ -164,7 +164,7 @@
 					
 					<tr>
 						<td class="formRequiredLabel">
-							Attribute Default Value
+							<bean:message key="eav.att.DefaultValue"/> 
 						</td>
 										
 						<td class="formField">
@@ -174,7 +174,7 @@
 				
 					<tr>
 						<td class="formRequiredLabel">
-								Attribute Measurement Units 
+								<bean:message key="eav.att.AttributeMeasurementUnits"/> 
 						</td>
 										
 						<td class="formField">

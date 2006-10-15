@@ -80,7 +80,7 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
     public void populateEntity (EntityInformationInterface entityInformationInterface, EntityInterface entityInterface) {
         if (entityInformationInterface != null && entityInterface != null) {
             entityInterface.setName(entityInformationInterface.getFormName());
-            entityInterface.setDescription(entityInformationInterface.getDescription());
+            entityInterface.setDescription(entityInformationInterface.getFormDescription());
             SemanticPropertyInterface semanticPropertyInterface = new SemanticProperty();
             semanticPropertyInterface.setConceptCode(entityInformationInterface.getConceptCode());
             entityInterface.addSemanticProperty(semanticPropertyInterface);
@@ -97,7 +97,8 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
     public void populateEntityInformation (EntityInterface entityInterface, EntityInformationInterface entityInformationInterface) {
         if (entityInterface != null && entityInformationInterface != null) {
             entityInformationInterface.setFormName(entityInterface.getName());
-            entityInformationInterface.setDescription(entityInterface.getDescription());
+            entityInformationInterface.setFormDescription(entityInterface.getDescription());
+            
         }
     }
     /**

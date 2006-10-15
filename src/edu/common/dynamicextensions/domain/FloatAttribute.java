@@ -60,6 +60,47 @@ public class FloatAttribute extends Attribute implements FloatAttributeInterface
     public void setMeasurementUnits(String measurementUnits) {
         this.measurementUnits = measurementUnits;
     }
+    /**
+     * Number of digits
+     */
+    protected String digits;
+    /**
+     * Number of decimal places
+     */
+    protected String decimalPlaces;
+
+    
+    public String getDecimalPlaces()
+	{
+		return this.decimalPlaces;
+	}
+
+	public void setDecimalPlaces(String decimalPlaces)
+	{
+		this.decimalPlaces = decimalPlaces;
+	}
+
+	public String getDigits()
+	{
+		return this.digits;
+	}
+
+	public void setDigits(String digits)
+	{
+		this.digits = digits;
+	}
+	 protected String size;
+
+     
+     public String getSize()
+	{
+		return this.size;
+	}
+
+	public void setSize(String size)
+	{
+		this.size = size;
+	}
 }
 
 

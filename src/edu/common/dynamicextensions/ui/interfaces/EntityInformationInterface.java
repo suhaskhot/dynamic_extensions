@@ -16,11 +16,11 @@ public interface EntityInformationInterface {
 	/**
 	 * @return Returns the description.
 	 */
-	public String getDescription(); 
+	public String getFormDescription(); 
 	/**
 	 * @param description The description to set.
 	 */
-	public void setDescription(String description); 
+	public void setFormDescription(String description); 
 	/**
 	 * @param returns createAs .
 	 */

@@ -20,9 +20,49 @@ public class ShortAttribute extends Attribute implements ShortAttributeInterface
         * 
         */
        protected String measurementUnits;
-
        
        /**
+        * Number of digits
+        */
+       protected String digits;
+       /**
+        * Number of decimal places
+        */
+       protected String decimalPlaces="0";
+       protected String size;
+
+       
+       public String getSize()
+	{
+		return this.size;
+	}
+
+	public void setSize(String size)
+	{
+		this.size = size;
+	}
+
+	public String getDecimalPlaces()
+	{
+		return this.decimalPlaces;
+	}
+
+	public void setDecimalPlaces(String decimalPlaces)
+	{
+		this.decimalPlaces = decimalPlaces;
+	}
+
+	public String getDigits()
+	{
+		return this.digits;
+	}
+
+	public void setDigits(String digits)
+	{
+		this.digits = digits;
+	}
+
+	/**
         * Empty Constructor.
         */
        public ShortAttribute () {

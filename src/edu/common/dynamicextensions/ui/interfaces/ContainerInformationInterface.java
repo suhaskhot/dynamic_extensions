@@ -54,9 +54,9 @@ public interface ContainerInformationInterface {
       * caption for the container.
       * @return Returns the caption.
       */
-      String getCaption();
+      String getFormCaption();
      /**
       * @param caption The caption to set.
       */
-      void setCaption(String caption);
+      void setFormCaption(String caption);
 }

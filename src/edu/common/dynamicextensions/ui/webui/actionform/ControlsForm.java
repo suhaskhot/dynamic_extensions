@@ -706,6 +706,10 @@ ControlInformationInterface,AbstractAttributeInformationInterface{
 
 	public void setColumns(Integer columns) {
 		this.columns = columns; 
+		if(columns!=null)
+		{
+			this.attributenoOfCols = columns.toString();
+		}
 
 	}
 
@@ -718,7 +722,11 @@ ControlInformationInterface,AbstractAttributeInformationInterface{
 	}
 
 	public void setRows(Integer rows) {
-		this.rows = rows;		
+		this.rows = rows;	
+		if(rows!=null)
+		{
+			this.attributeNoOfRows = rows.toString();
+		}
 	}
 
 	public void setSequenceNumber(Integer sequenceNumber) {
@@ -735,6 +743,10 @@ ControlInformationInterface,AbstractAttributeInformationInterface{
      */
     public void setIsMultiSelect(Boolean isMultiSelect) {
     	this.isMultiSelect = isMultiSelect;
+    	if(isMultiSelect!=null)
+    	{
+    		this.attributeMultiSelect = isMultiSelect.toString();
+    	}
     }
 
 	/* (non-Javadoc)

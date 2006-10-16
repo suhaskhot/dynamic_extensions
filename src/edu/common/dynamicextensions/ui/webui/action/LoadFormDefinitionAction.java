@@ -1,5 +1,6 @@
 
 package edu.common.dynamicextensions.ui.webui.action;
+
 /**
  * This Action class Loads the Primary Information needed for CreateForm.jsp.
  * This will first check if the form object is already present in cache , If yes, it will update
@@ -22,13 +23,14 @@ import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.util.global.Constants;
 
-
-public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction {
-	public ActionForward execute(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) {
-		FormDefinitionForm actionForm = (FormDefinitionForm)form;
-		ContainerInterface containerInterface = (ContainerInterface)CacheManager.getObjectFromCache(request,Constants.CONTAINER_INTERFACE);
-		if(containerInterface != null) {
+public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
+{
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
+	{
+		FormDefinitionForm actionForm = (FormDefinitionForm) form;
+		ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+		if (containerInterface != null)
+		{
 			LoadFormDefinitionProcessor loadFormDefinitionProcessor = LoadFormDefinitionProcessor.getInstance();
 			loadFormDefinitionProcessor.populateContainerInformation(containerInterface, actionForm);
 		}

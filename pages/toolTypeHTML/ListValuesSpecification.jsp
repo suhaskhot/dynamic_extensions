@@ -9,17 +9,19 @@
 
 <div id="UserDefinedValues" style="display:none">
 		<input type="hidden" value="1" name="choiceListCounter" >
-		<table>
+	<table summary="" cellpadding="0" cellspacing="0" border="0" align = 'center' width='100%'>
 			<tr>
-				<td class="formRequiredLabel"><input type="text" name="choiceValue"></td>
+				<td class="formRequiredLabel"><input type="text" maxlength="5" size="10" name="choiceValue"></td>
+					
 				<td class="formField"> <input type="button" name="addChoiceValue" value="Add Value" onclick="addChoiceToList();"></td>
 			</tr>
-			<tr>
-				<td colspan='2'>
-					<table id="choiceListTable" border="1" width="100%" >
+			<tr class="formRequiredLabel">
+		
+				<td class="formRequiredLabel">
+					<table id="choiceListTable" summary="" cellpadding="0" cellspacing="0" border="1" align = 'center' width='100%'> 
 						<tr>
-							<th width="20%"><input type="button" name="btnDelete" value="Delete" onclick="deleteElementsFromChoiceList()" ></th>
-							<th ><bean:message key="eav.att.values"/></th>
+							<th width="10%"><input type="button" name="btnDelete" value="Delete" onclick="deleteElementsFromChoiceList()" ></th>
+							<th width="10%"><bean:message key="eav.att.values"/></th>
 						</tr>
 					</table>
 				</td>
@@ -28,7 +30,7 @@
 	</div>
 
 	<div id="CADSRValues" style="display:none">
-			<table >
+			<table summary="" cellpadding="1" cellspacing="0" border="1" align = 'center' width='100%'>
 				<tr>
 					<td class="formRequiredLabel"> Public Domain Id</td>
 					<td class="formField"><input type="text" name="publicDomainId"></td>

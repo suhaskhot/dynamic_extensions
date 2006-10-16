@@ -14,11 +14,11 @@
   <c:set var="displayChoiceList" value="${controlsForm.displayChoiceList}"/>
   <jsp:useBean id="displayChoiceList" type="java.util.List"/>
 
-<table>
+<table summary="" cellpadding="3" cellspacing="0" border="1" align = 'center' width='100%'>
   <tr>
     <td>
 
-	<table summary="" cellpadding="3" cellspacing="0" border="0" align = 'center' width='70%'>
+	<table summary="" cellpadding="3" cellspacing="0" border="1" align = 'center' width='100%'>
 		<jsp:include page="/pages/toolTypeHTML/CommonControlAttributes.jsp" />
 		 <tr>
 			<td class="formRequiredLabel">

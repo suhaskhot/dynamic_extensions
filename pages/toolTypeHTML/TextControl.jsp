@@ -9,15 +9,18 @@
 <script src="jss/calender.js" type="text/javascript"></script>
 
 <c:set var="dataTypeList" value="${controlsForm.dataTypeList}"/>
- <jsp:useBean id="dataTypeList" type="java.util.List"/>
-
-<table>
+<jsp:useBean id="dataTypeList" type="java.util.List"/>	
+<table summary="" cellpadding="3" cellspacing="0" border="1" align = 'center' width='100%'>
   <tr>
     <td>
 
-	<table summary="" cellpadding="3" cellspacing="0" border="0" align = 'center' width='70%'>
+	<table summary="" cellpadding="3" cellspacing="0" border="1" align = 'center' width='100%'>
 		<jsp:include page="/pages/toolTypeHTML/CommonControlAttributes.jsp" />
-		<tr>
+	
+
+		
+			<tr>
+
 			<td class="formRequiredLabel">
 					<bean:message key="eav.att.TextFieldWidth"/>
 			</td>
@@ -25,6 +28,7 @@
 			<td class="formField">
 					<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="attributenoOfCols" />
 			</td>
+
 		</tr>
 	 </table>
 	</td>

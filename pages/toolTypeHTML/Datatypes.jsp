@@ -3,7 +3,7 @@
 <%@ taglib uri="/WEB-INF/dynamicExtensions.tld" prefix="dynamicExtensions" %>
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
 		<div id="StringDataType" style="display:none">
-			    <table>
+			 <table summary="" cellpadding="3" cellspacing="0" border="1" align = 'center' width='100%'>
 			       	<tr>
 						<td class="formRequiredLabel">
 								<bean:message key="eav.att.MaxCharacters"/>
@@ -27,7 +27,7 @@
 			</div>
 
 			<div id="NumberDataType" style="display:none">
-			    <table>
+			 <table summary="" cellpadding="3" cellspacing="0" border="1" align = 'center' width='100%'>
 			       <tr>
 						<td class="formRequiredLabel">
 								<bean:message key="eav.att.AttributeSize"/>
@@ -81,7 +81,7 @@
 				 </table>
 			</div>
 			<div id="DateDataType" style="display:none">
-			    <table>
+			   <table summary="" cellpadding="3" cellspacing="0" border="1" align = 'center' width='100%'>
 			       <tr>
 						<td class="formRequiredLabel">
 							<bean:message key="eav.att.DefaultValue"/>

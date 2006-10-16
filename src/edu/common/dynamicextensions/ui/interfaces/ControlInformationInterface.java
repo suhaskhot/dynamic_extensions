@@ -178,13 +178,13 @@ public interface ControlInformationInterface {
      * @param htmlFile
      */
     void setHtmlFile(String htmlFile);
-    /**
+   /* *//**
 	 * @return the noOfLines
-	 */
+	 *//*
 	public String getNoOfLines() ;
 
-	/**
+	*//**
 	 * @param noOfLines the noOfLines to set
-	 */
-	public void setNoOfLines(String noOfLines) ;
+	 *//*
+	public void setNoOfLines(String noOfLines) ;*/
 }

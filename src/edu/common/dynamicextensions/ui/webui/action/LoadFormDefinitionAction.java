@@ -16,9 +16,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
-import edu.common.dynamicextensions.processor.EntityProcessor;
 import edu.common.dynamicextensions.processor.LoadFormDefinitionProcessor;
 import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
@@ -31,9 +29,8 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction {
 		FormDefinitionForm actionForm = (FormDefinitionForm)form;
 		ContainerInterface containerInterface = (ContainerInterface)CacheManager.getObjectFromCache(request,Constants.CONTAINER_INTERFACE);
 		if(containerInterface != null) {
-			EntityInterface entityInterface = containerInterface.getEntity();
 			LoadFormDefinitionProcessor loadFormDefinitionProcessor = LoadFormDefinitionProcessor.getInstance();
-			loadFormDefinitionProcessor.populateEntityInformation(entityInterface,actionForm);
+			loadFormDefinitionProcessor.populateContainerInformation(containerInterface, actionForm);
 		}
 		return (mapping.findForward(Constants.SUCCESS));
 	}

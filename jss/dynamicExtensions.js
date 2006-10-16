@@ -117,7 +117,23 @@ function initBuildForm()
 			{
 				for(var i=0;i<choice_array.length;i++)
 				{
-					alert(choice_array[i]);
+					if((choice_array[i]!=null)&&(choice_array[i]!=""))
+					{
+						//Reinitialize counter
+						var choiceListElementCnter = document.getElementById('choiceListCounter');
+						if(choiceListElementCnter !=null)
+						{
+							choiceListElementCnter.value="1";
+						}
+						//Add choice to list
+						var textBox = document.getElementById('choiceValue');
+						if(textBox !=null)
+						{
+							textBox.value = choice_array[i];
+							addChoiceToList();
+						}	
+					}
+					
 				}
 			}
 		}
@@ -150,38 +166,38 @@ function changeSourceForValues(sourceControl)
 
 function addChoiceToList()
 {
-var textBox = document.getElementById('choiceValue');
-var choiceListElementCnter = document.getElementById('choiceListCounter');
-
-var elementNo = 0;
-if(choiceListElementCnter!=null)
-{
-	elementNo = choiceListElementCnter.value;
-}
-
-if((textBox!=null)&&(textBox.value!=""))
-{
-	newValue = textBox.value
-	var choiceListTable  = document.getElementById('choiceListTable');
-
-	if(choiceListTable!=null)
+	var textBox = document.getElementById('choiceValue');
+	var choiceListElementCnter = document.getElementById('choiceListCounter');
+	
+	var elementNo = 0;
+	if(choiceListElementCnter!=null)
 	{
-		var myNewRow = document.all.choiceListTable.insertRow();
-		var myNewCell =  myNewRow.insertCell();
-		var chkBoxId = "chkBox" + elementNo;
-		myNewCell.innerHTML="<input type='checkbox' id='" + chkBoxId +"' >";
-		myNewCell =  myNewRow.insertCell();
-		myNewCell.innerHTML=textBox.value;
-		var choicelist = document.getElementById('choiceList');
-		if(choicelist !=null)
-		{
-			//add to choicelist
-			choicelist.value = choicelist.value + "," + textBox.value;
-		}
-		textBox.value = "";
-		document.getElementById('choiceListCounter').value = (parseInt(elementNo) + 1) + "";
+		elementNo = choiceListElementCnter.value;
 	}
-}
+
+	if((textBox!=null)&&(textBox.value!=""))
+	{
+		newValue = textBox.value
+		var choiceListTable  = document.getElementById('choiceListTable');
+	
+		if(choiceListTable!=null)
+		{
+			var myNewRow = document.all.choiceListTable.insertRow();
+			var myNewCell =  myNewRow.insertCell();
+			var chkBoxId = "chkBox" + elementNo;
+			myNewCell.innerHTML="<input type='checkbox' id='" + chkBoxId +"' >";
+			myNewCell =  myNewRow.insertCell();
+			myNewCell.innerHTML=textBox.value;
+			var choicelist = document.getElementById('choiceList');
+			if(choicelist !=null)
+			{
+				//add to choicelist
+				choicelist.value = choicelist.value + "," + textBox.value;
+			}
+			textBox.value = "";
+			document.getElementById('choiceListCounter').value = (parseInt(elementNo) + 1) + "";
+		}
+	}
 }
 
 function deleteElementsFromChoiceList()

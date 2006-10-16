@@ -2,6 +2,8 @@
 package edu.common.dynamicextensions.domain;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
@@ -50,7 +52,10 @@ public class UserDefinedDE extends DataElement implements UserDefinedDEInterface
      * @param permissibleValue
      */
 	public void addPermissibleValue(PermissibleValueInterface permissibleValueInterface) {
-		// TODO Auto-generated method stub
-		
+		if(this.permissibleValueCollection==null)
+		{
+			this.permissibleValueCollection = new LinkedHashSet();
+		}
+		this.permissibleValueCollection.add(permissibleValueInterface);
 	}
 }

@@ -10,6 +10,7 @@ PUBLIC
 	<form-bean name="formDefinitionForm" type="edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm"/>
 	<form-bean name="controlsForm" type="edu.common.dynamicextensions.ui.webui.actionform.ControlsForm"/>
 	<form-bean name="formsIndexForm" type="edu.common.dynamicextensions.ui.webui.actionform.FormsIndexForm" />
+	<form-bean name="previewForm" type="edu.common.dynamicextensions.ui.webui.actionform.PreviewForm" />
 	</form-beans>
 	
 	 <global-forwards>
@@ -88,6 +89,17 @@ PUBLIC
 			input="/pages/BuildForm.jsp"
 			scope="request">
 			<forward name="success" path="/LoadFormControlsAction.do" />
+			<forward name="loadFormPreviewAction" path="/LoadFormPreviewAction.do" />
+
+		</action>
+		
+		<action path="/LoadFormPreviewAction" 
+		    type="edu.common.dynamicextensions.ui.webui.action.LoadFormPreviewAction" 
+		    name="previewForm"
+			validate="false"
+			input="/LoadFormPreviewAction.do"
+			scope="request">
+			<forward name="showFormPreviewJSP" path="/pages/FormPreview.jsp" />
 		</action>
 		
 	

@@ -115,7 +115,7 @@
 				</td>
 				
 				<td>
-						<html:button styleClass="actionButton" property="showPreviewButton" onclick="showPreview()" >
+						<html:button styleClass="actionButton" property="showPreviewButton" onclick="showFormPreview()" >
 								<bean:message  key="buttons.showPreview" />
 						</html:button>
 				</td>
@@ -128,6 +128,7 @@
 			<html:hidden property="controlOperation" value=""/>
 			<html:hidden property="selectedControlId" value=""/>
 			<html:hidden property="toolBoxClicked" value=""/>
+			<html:hidden property="showPreview" value=""/>
 
 
 

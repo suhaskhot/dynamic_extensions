@@ -251,3 +251,16 @@ function deleteElementsFromChoiceList()
 	}
 	
 }
+
+
+//Added by sujay
+
+function showFormPreview() 
+{
+	var showPreview = document.getElementById('showPreview');
+	showPreview.value = 'True';
+	
+	var controlsForm = document.getElementById('controlsForm');
+	controlsForm.action="/dynamicExtensions/AddControlsAction.do";
+	controlsForm.submit();
+}

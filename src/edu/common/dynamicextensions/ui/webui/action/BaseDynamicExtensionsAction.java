@@ -12,7 +12,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.wustl.common.util.logger.Logger;
 
-public class BaseDynamicExtensionsAction extends DispatchAction{
+public class BaseDynamicExtensionsAction extends DispatchAction {
 	/**
 	 * This method is called from every action class when any of exception is caught,
 	 * Depending upon the type of exception the errorsList will be populated and returned to the action class,

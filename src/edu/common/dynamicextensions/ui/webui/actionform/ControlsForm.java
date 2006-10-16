@@ -202,6 +202,10 @@ ControlInformationInterface,AbstractAttributeInformationInterface{
      * 
      */
     protected String toolBoxClicked;
+    /**
+     * 
+     */
+    protected String showPreview;
    
 
 	/**
@@ -852,6 +856,18 @@ ControlInformationInterface,AbstractAttributeInformationInterface{
 	 */
 	public void setToolBoxClicked(String toolBoxClicked) {
 		this.toolBoxClicked = toolBoxClicked;
+	}
+	/**
+	 * @return Returns the showPreview.
+	 */
+	public String getShowPreview() {
+		return showPreview;
+	}
+	/**
+	 * @param showPreview The showPreview to set.
+	 */
+	public void setShowPreview(String showPreview) {
+		this.showPreview = showPreview;
 	}
 }
 

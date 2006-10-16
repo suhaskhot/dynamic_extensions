@@ -49,10 +49,8 @@
 		  	<table align = 'center' width='100%' border="3" class="bodyStyle">
 			   <tr height = 40><td/>	<td class='standardBoldText' align='center'>Build Form</td>	</tr>
 			   
-			   <tr>	<td/>	   	<td align="center" class="standardBoldText"> <%= userSelectedTool %> </td></tr>
-			   
 		  		<tr>
-		  			<td class="toolBoxTable">  		
+		  			<td class="toolBoxTable" width="10%" >  		
 					    <dynamicExtensions:ToolsMenu id="BuildForm" 
 								toolsList = "<%=toolsList%>" 
 								onClick="controlSelectedAction"

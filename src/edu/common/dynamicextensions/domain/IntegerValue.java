@@ -39,4 +39,11 @@ public class IntegerValue extends PermissibleValue implements IntegerValueInterf
 	public void setValue(Integer value) {
 		this.value = value;
 	}
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domain.PermissibleValue#getValueAsObject()
+	 */
+	public Object getValueAsObject()
+	{
+		return value;
+	}
 }

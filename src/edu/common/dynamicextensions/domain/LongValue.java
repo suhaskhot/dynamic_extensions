@@ -35,4 +35,11 @@ public class LongValue extends PermissibleValue implements LongValueInterface{
 	public void setValue(Long value) {
 		this.value = value;
 	}
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domain.PermissibleValue#getValueAsObject()
+	 */
+	public Object getValueAsObject()
+	{
+		return value;
+	}
 }

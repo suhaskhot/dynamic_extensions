@@ -14,5 +14,5 @@ public interface PermissibleValueInterface
      * @return Returns the id.
      */
     Long getId();
- 
+    public Object getValueAsObject(); 
 }

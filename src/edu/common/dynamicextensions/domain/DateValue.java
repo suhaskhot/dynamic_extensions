@@ -1,7 +1,7 @@
 
 package edu.common.dynamicextensions.domain;
 
-import java.sql.Date;
+import java.util.Date;
 
 import edu.common.dynamicextensions.domaininterface.DateValueInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
@@ -40,5 +40,13 @@ public class DateValue extends PermissibleValue implements DateValueInterface
 	public void setValue(Date value) 
 	{
 		this.value = value;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domain.PermissibleValue#getValueAsObject()
+	 */
+	public Object getValueAsObject()
+	{
+		return value;
 	}
 }

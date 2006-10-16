@@ -46,42 +46,48 @@ public class LoadFormControlsProcessor
 	public void loadFormControls(AbstractActionForm actionForm,ContainerInterface containerInterface,
             String controlOperation,String selectedControlId,String userSelectedTool) 
 	{
-		ControlsForm controlsForm = (ControlsForm)actionForm;
-        List toolList = getToolsList();
-        controlsForm.setToolsList(toolList);
-       
-       
-        if(controlOperation == null || controlOperation.equals("") ||
-                controlOperation.equalsIgnoreCase(ProcessorConstants.ADD))
-        {
-            if(userSelectedTool == null || userSelectedTool.equals(""))
-            {
-            	userSelectedTool = toolList.get(0).toString();
-            }
-            controlsForm.setUserSelectedTool(userSelectedTool);
-           
-            controlsForm.setDisplayChoice("");
-            controlsForm.setDataType("String");
-            
-            controlsForm.setHtmlFile(userSelectedTool+".jsp");
-        }
-        
-        else if(controlOperation.equalsIgnoreCase(ProcessorConstants.EDIT))  
-        {
-            ControlProcessor controlProcessor = ControlProcessor.getInstance();
-          
-            ControlInterface controlInterface = containerInterface.getControlInterfaceBySequenceNumber(selectedControlId);
-            controlProcessor.populateControlInformation(controlInterface,controlsForm);
-                 
-            AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
-            attributeProcessor.populateAttributeInformation(controlInterface.getAbstractAttribute(), controlsForm);
-        }
-        
-        controlsForm.setDataTypeList(getDataTypeList());
-        controlsForm.setDisplayChoiceList(displayChoiceListgetDisplayChoiceList());
-        controlsForm.setRootName(containerInterface.getCaption());
-        controlsForm.setChildList(getChildList(containerInterface));
- }
+		if(containerInterface!=null)
+		{
+			ControlsForm controlsForm = (ControlsForm)actionForm;
+			List toolList = getToolsList();
+			controlsForm.setToolsList(toolList);
+
+
+			if(controlOperation == null || controlOperation.equals("") ||
+					controlOperation.equalsIgnoreCase(ProcessorConstants.ADD))
+			{
+				if(userSelectedTool == null || userSelectedTool.equals(""))
+				{
+					userSelectedTool = toolList.get(0).toString();
+				}
+				controlsForm.setUserSelectedTool(userSelectedTool);
+
+				controlsForm.setDisplayChoice("");
+				controlsForm.setDataType("String");
+
+				controlsForm.setHtmlFile(userSelectedTool+".jsp");
+			}
+
+			else if(controlOperation.equalsIgnoreCase(ProcessorConstants.EDIT))  
+			{
+				ControlProcessor controlProcessor = ControlProcessor.getInstance();
+
+				ControlInterface controlInterface = containerInterface.getControlInterfaceBySequenceNumber(selectedControlId);
+				controlProcessor.populateControlInformation(controlInterface,controlsForm);
+
+				AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
+				if(controlInterface!=null)
+				{
+					attributeProcessor.populateAttributeInformation(controlInterface.getAbstractAttribute(), controlsForm);
+				}
+			}
+
+			controlsForm.setDataTypeList(getDataTypeList());
+			controlsForm.setDisplayChoiceList(displayChoiceListgetDisplayChoiceList());
+			controlsForm.setRootName(containerInterface.getCaption());
+			controlsForm.setChildList(getChildList(containerInterface));
+		}
+	}
     
     /**
      * Returns the toolsList from the xml file.
@@ -132,6 +138,9 @@ public class LoadFormControlsProcessor
         
         NameValueBean nameValueBean2 = new NameValueBean("Number","Number");
         dataTypeList.add(nameValueBean2);
+        
+        NameValueBean nameValueBean3 = new NameValueBean("Date","Date");
+        dataTypeList.add(nameValueBean3);
         
         return dataTypeList; 
     }

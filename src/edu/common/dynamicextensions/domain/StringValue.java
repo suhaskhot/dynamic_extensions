@@ -35,4 +35,11 @@ public class StringValue extends PermissibleValue implements StringValueInterfac
 	public void setValue(String value) {
 		this.value = value;
 	}
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domain.PermissibleValue#getValueAsObject()
+	 */
+	public Object getValueAsObject()
+	{
+		return value;
+	}
 }

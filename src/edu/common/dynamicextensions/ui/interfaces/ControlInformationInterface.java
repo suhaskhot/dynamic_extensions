@@ -162,12 +162,12 @@ public interface ControlInformationInterface {
     void setIsMultiSelect(Boolean isMultiSelect) ;
     /**
 	 * @return Returns the displayChoiceList.
-	 */
+	 *//*
 	public List getDisplayChoiceList(); 
-	/**
+	*//**
 	 * @param displayChoiceList The displayChoiceList to set.
-	 */
-	public void setDisplayChoiceList(List displayChoiceList);
+	 *//*
+	public void setDisplayChoiceList(List displayChoiceList);*/
     /**
      * 
      * @param userSelectedTool

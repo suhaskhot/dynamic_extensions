@@ -31,7 +31,9 @@ public abstract class PermissibleValue extends AbstractDomainObject implements j
 		this.id = id;
 		
 	}
-
+	
+	public abstract Object getValueAsObject();
+	
 	/**
      * @hibernate.id name="id" column="IDENTIFIER" type="long"
      * length="30" unsaved-value="null" generator-class="native"

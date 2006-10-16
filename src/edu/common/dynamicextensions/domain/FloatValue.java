@@ -40,4 +40,11 @@ public class FloatValue extends PermissibleValue implements FloatValueInterface{
 	public void setValue(Float value) {
 		this.value = value;
 	}
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domain.PermissibleValue#getValueAsObject()
+	 */
+	public Object getValueAsObject()
+	{
+		return value;
+	}
 }

@@ -37,4 +37,11 @@ public class ShortValue extends PermissibleValue implements ShortValueInterface{
 	public void setValue(Short value) {
 		this.value = value;
 	}
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domain.PermissibleValue#getValueAsObject()
+	 */
+	public Object getValueAsObject()
+	{
+		return value;
+	}
 }

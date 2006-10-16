@@ -5,19 +5,36 @@
  */
 package edu.common.dynamicextensions.processor;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.StringTokenizer;
 
+import edu.common.dynamicextensions.domain.BooleanValue;
+import edu.common.dynamicextensions.domain.DateValue;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
+import edu.common.dynamicextensions.domain.DoubleValue;
+import edu.common.dynamicextensions.domain.FloatValue;
+import edu.common.dynamicextensions.domain.IntegerValue;
+import edu.common.dynamicextensions.domain.LongValue;
+import edu.common.dynamicextensions.domain.ShortValue;
+import edu.common.dynamicextensions.domain.StringValue;
+import edu.common.dynamicextensions.domain.UserDefinedDE;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.BooleanAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.common.dynamicextensions.domaininterface.DateAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.DateValueInterface;
 import edu.common.dynamicextensions.domaininterface.DoubleAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.FloatAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.IntegerAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.LongAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.ShortAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.StringAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.StringValueInterface;
+import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.ui.interfaces.AbstractAttributeInformationInterface;
 
 /**
@@ -98,6 +115,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 			attributeInterface.setName(attributeInformationIntf.getName());
 			attributeInterface.setDescription(attributeInformationIntf.getDescription());
+			if(attributeInterface instanceof AttributeInterface)
+			{
+				((AttributeInterface)attributeInterface).setDataElement(getDataElementInterface(attributeInformationIntf));
+			}
+			
 		}
 		else
 		{
@@ -106,6 +128,224 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 
+
+	/**
+	 * @param attributeInformationIntf
+	 * @return
+	 */
+	private DataElementInterface getDataElementInterface(AbstractAttributeInformationInterface attributeInformationIntf)
+	{
+		DataElementInterface  dataEltInterface = null;
+		PermissibleValueInterface permissibleValueInterface = null;
+		
+		if(attributeInformationIntf!=null)
+		{
+			String displayChoice = attributeInformationIntf.getDisplayChoice();
+			System.out.println("Display Choice " + displayChoice);
+			if(displayChoice!=null)
+			{
+				if(displayChoice.equalsIgnoreCase("UserDefined"))
+				{
+					dataEltInterface = DomainObjectFactory.getInstance().createUserDefinedDE();
+					System.out.println("User Defined Values");
+					String choiceList = attributeInformationIntf.getChoiceList();
+					System.out.println("Choice List " + choiceList);
+					if(choiceList!=null)
+					{
+						StringTokenizer strTokenizer = new StringTokenizer(choiceList,",");
+						if(strTokenizer!=null)
+						{
+							while(strTokenizer.hasMoreElements())
+							{
+								String choice = strTokenizer.nextToken();
+								if((choice!=null)&&(choice.trim()!=null))
+								{
+									System.out.println("Choice [" + choice + "]");
+									permissibleValueInterface  = getPermissibleValueInterface(attributeInformationIntf, choice);
+									((UserDefinedDE)dataEltInterface).addPermissibleValue(permissibleValueInterface);
+									System.out.println("Added permissible value intf");
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return dataEltInterface;
+	}
+
+	/**
+	 * @param attributeInformationIntf
+	 * @param permissibleValue 
+	 * @return
+	 */
+	private PermissibleValueInterface getPermissibleValueInterface(AbstractAttributeInformationInterface attributeInformationIntf, String permissibleValue)
+	{
+		PermissibleValueInterface permissibleValueIntf = null;
+		if(attributeInformationIntf!=null)
+		{
+			String attributeType = attributeInformationIntf.getDataType();
+			if(attributeType!=null)
+			{
+				if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_STRING)) {
+					permissibleValueIntf = DomainObjectFactory.getInstance().createStringValue();
+					((StringValue)permissibleValueIntf).setValue(permissibleValue); 
+				} else if(attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_DATE)) {
+					permissibleValueIntf = DomainObjectFactory.getInstance().createDateValue();
+					Date value = null;
+					try
+					{
+						value = new Date(permissibleValue);
+					}
+					catch (RuntimeException e)
+					{
+						System.out.println("Exception while storing date value");
+						value = new Date();
+					}
+					((DateValue)permissibleValueIntf).setValue(value);
+				}else if(attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_BOOLEAN)) {
+					permissibleValueIntf = DomainObjectFactory.getInstance().createBooleanValue();
+					Boolean value = null;
+					try
+					{
+						value = new Boolean(permissibleValue);
+					}
+					catch (RuntimeException e)
+					{
+						System.out.println("Exception while storing boolean value");
+						value = new Boolean(false);
+					}
+					((BooleanValue)permissibleValueIntf).setValue(value);
+				}else if(attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_NUMBER)){
+					permissibleValueIntf = getPermissibleValueInterfaceForNumber(attributeInformationIntf, permissibleValue);
+				}
+				
+			}
+		}
+		return permissibleValueIntf;
+	}
+
+	/**
+	 * @param attributeInformationIntf
+	 * @param permissibleValue TODO
+	 * @return
+	 */
+	private PermissibleValueInterface getPermissibleValueInterfaceForNumber(AbstractAttributeInformationInterface attributeInformationIntf, String permissibleValue)
+	{
+
+		PermissibleValueInterface permissibleValueIntf = null;
+		//If it is numberic it can either be float, simple integer, etc based on number of decimals
+		int noOfDecimalPlaces = 0 , noOfDigits = 0;
+		//Number of decimal places 
+
+		String strNoOfDecimalPlaces = attributeInformationIntf.getAttributeDecimalPlaces();
+		if(strNoOfDecimalPlaces!=null){
+			try{
+				noOfDecimalPlaces = Integer.parseInt(strNoOfDecimalPlaces);
+			}catch (NumberFormatException e){
+				noOfDecimalPlaces = 0;
+			} 
+		}
+		//Number of digits
+		String strNoOfDigits = attributeInformationIntf.getAttributeDigits();
+		if(strNoOfDigits!=null){
+			try{
+				noOfDigits = Integer.parseInt(strNoOfDigits);
+			}catch (NumberFormatException e){
+				noOfDigits = 0;
+			} 
+		}
+
+		/*
+		 * If number of decimal places is 0 AND number of digits <= SHORT_LENGTH : Short attribute
+		 * If number of decimal places is 0 AND number of digits <= INT_LENGTH : Integer attribute
+		 * If number of decimal places is 0 AND number of digits <= LONG_LENGTH : Long attribute 
+		 * If Number of decimal places is > 0  <= FLOAT_LENGTH : Float Attribute
+		 * If Number of decimal places is > 0  > FLOAT_LENGTH <DOUBLE_LENGTH : Double Attribute
+		 */
+		if(noOfDecimalPlaces == 0){
+			if(noOfDigits > 0){
+				if(noOfDigits <= ProcessorConstants.MAX_NO_OF_DIGITS_SHORT){
+					permissibleValueIntf = DomainObjectFactory.getInstance().createShortValue();
+					Short value = null;
+					try
+					{
+						value = new Short(permissibleValue);
+					}
+					catch (RuntimeException e)
+					{
+						System.out.println("Exception while storing short value");
+						value = new Short("0");
+					}
+					((ShortValue)permissibleValueIntf).setValue(value);
+				}else if(noOfDigits <= ProcessorConstants.MAX_NO_OF_DIGITS_INT){
+					permissibleValueIntf = DomainObjectFactory.getInstance().createIntegerValue();
+					Integer value = null;
+					try
+					{
+						value = new Integer(permissibleValue);
+					}
+					catch (RuntimeException e)
+					{
+						System.out.println("Exception while storing integer value");
+						value = new Integer("0");
+					}
+					((IntegerValue)permissibleValueIntf).setValue(value);
+				}else if(noOfDigits <= ProcessorConstants.MAX_NO_OF_DIGITS_LONG){
+					permissibleValueIntf = DomainObjectFactory.getInstance().createLongValue();
+					Long value = null;
+					try
+					{
+						value = new Long(permissibleValue);
+					}
+					catch (RuntimeException e)
+					{
+						System.out.println("Exception while storing long value");
+						value = new Long("0");
+					}
+					((LongValue)permissibleValueIntf).setValue(value);
+				}
+			}
+			else{
+				System.out.println("Too many digits");
+			}
+		}
+		else if(noOfDecimalPlaces > 0)
+		{
+			if(noOfDecimalPlaces <= ProcessorConstants.MAX_NO_OF_DECIMALS_FLOAT){
+				permissibleValueIntf = DomainObjectFactory.getInstance().createFloatValue();
+				Float value = null;
+				try
+				{
+					value = new Float(permissibleValue);
+				}
+				catch (RuntimeException e)
+				{
+					System.out.println("Exception while storing long value");
+					value = new Float("0");
+				}
+				((FloatValue)permissibleValueIntf).setValue(value);
+			}else if(noOfDecimalPlaces <= ProcessorConstants.MAX_NO_OF_DECIMALS_DOUBLE){
+				permissibleValueIntf = DomainObjectFactory.getInstance().createDoubleValue();
+				Double value = null;
+				try
+				{
+					value = new Double(permissibleValue);
+				}
+				catch (RuntimeException e)
+				{
+					System.out.println("Exception while storing long value");
+					value = new Double("0");
+				}
+				((DoubleValue)permissibleValueIntf).setValue(value);
+			}
+			else{
+				System.out.println("Too many decimal places");
+			}
+		}
+		return permissibleValueIntf;
+	
+	}
 
 	public AttributeInterface createAndPopulateAttribute(AbstractAttributeInformationInterface attributeInformationIntf)
 	{
@@ -130,7 +370,16 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private void populateDateAttributeInterface(DateAttributeInterface dateAttributeIntf, AbstractAttributeInformationInterface attributeInformationIntf)
 	{
-		Date defaultValue  = new Date(attributeInformationIntf.getAttributeDefaultValue());
+		Date defaultValue;
+		try
+		{
+			defaultValue = new Date(attributeInformationIntf.getAttributeDefaultValue());
+		}
+		catch (RuntimeException e)
+		{
+			System.out.println("Exception while saving date def value");
+			defaultValue = new Date();
+		}
 		dateAttributeIntf.setDefaultValue(defaultValue);
 		dateAttributeIntf.setFormat(attributeInformationIntf.getFormat());
 	}
@@ -304,7 +553,9 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		{
 			attributeInformationIntf.setName(attributeInterface.getName());
 			attributeInformationIntf.setDescription(attributeInterface.getDescription());
-
+			//Permissible values
+			attributeInformationIntf.setChoiceList(getChoiceList(attributeInterface,attributeInformationIntf));
+			System.out.println("Choice List"  + attributeInformationIntf.getChoiceList());
 			if(attributeInterface instanceof StringAttributeInterface)
 			{
                 attributeInformationIntf.setDataType("String");
@@ -315,6 +566,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				}
 			}else if(attributeInterface instanceof DateAttributeInterface)
 			{
+				attributeInformationIntf.setDataType("Date");
                	attributeInformationIntf.setAttributeDefaultValue(((DateAttributeInterface)attributeInterface).getDefaultValue().toString());
 				attributeInformationIntf.setFormat(((DateAttributeInterface)attributeInterface).getFormat());
 			}
@@ -370,9 +622,50 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				attributeInformationIntf.setAttributeDecimalPlaces(((DoubleAttributeInterface)attributeInterface).getDecimalPlaces());
                 attributeInformationIntf.setAttributeDigits((((DoubleAttributeInterface)attributeInterface).getDigits()));
                 attributeInformationIntf.setAttributeSize((((DoubleAttributeInterface)attributeInterface).getSize()));
-			
 			}
 			
 		}
+	}
+
+	/**
+	 * @param attributeInterface
+	 * @param attributeInformationIntf
+	 * @return
+	 */
+	private String getChoiceList(AbstractAttributeInterface attributeInterface, AbstractAttributeInformationInterface attributeInformationIntf)
+	{
+		Object permissibleValueObjectValue = null; 
+		String choiceList = "",choice = null;
+		if((attributeInformationIntf!=null)&&(attributeInterface!=null))
+		{
+			if(attributeInterface instanceof AttributeInterface)
+			{
+				DataElementInterface dataEltInterface = ((AttributeInterface)attributeInterface).getDataElement();
+				if(dataEltInterface!=null)
+				{
+					if(dataEltInterface instanceof UserDefinedDEInterface)
+					{
+						attributeInformationIntf.setDisplayChoice("UserDefined");
+						UserDefinedDEInterface userDefinedDE = (UserDefinedDEInterface)dataEltInterface;
+						Collection userDefinedValues = userDefinedDE.getPermissibleValueCollection();
+						if(userDefinedValues!=null)
+						{
+							PermissibleValueInterface permissibleValueIntf = null;
+							Iterator userDefinedValuesIterator = userDefinedValues.iterator();
+							while(userDefinedValuesIterator.hasNext())
+							{
+								permissibleValueIntf = (PermissibleValueInterface)userDefinedValuesIterator.next();
+								permissibleValueObjectValue = permissibleValueIntf.getValueAsObject();
+								if((permissibleValueObjectValue!=null)&&(permissibleValueObjectValue.toString()!=null) && (permissibleValueObjectValue.toString().trim()!=""))
+								{
+									choiceList =  choiceList + "," + permissibleValueObjectValue.toString().trim();
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return choiceList;
 	}
 }

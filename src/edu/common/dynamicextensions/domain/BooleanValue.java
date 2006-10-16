@@ -40,4 +40,11 @@ public class BooleanValue extends PermissibleValue implements BooleanValueInterf
 	{
 		this.value = value;
 	}
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domain.PermissibleValue#getValueAsObject()
+	 */
+	public Object getValueAsObject()
+	{
+		return value;
+	}
 }

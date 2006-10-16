@@ -113,4 +113,20 @@ public interface AbstractAttributeInformationInterface {
 	 * @param name Description
 	 */
 	public void setDescription(String name);
+	/**
+	 * @return Returns the choiceList.
+	 */
+	public String getChoiceList(); 
+	/**
+	 * @param choiceList The choiceList to set.
+	 */
+	public void setChoiceList(String choiceList);
+	/**
+	 * @return Returns the displayChoice.
+	 */
+	public String getDisplayChoice();
+	/**
+	 * @param displayChoice The displayChoice to set.
+	 */
+	public void setDisplayChoice(String displayChoice);
 }

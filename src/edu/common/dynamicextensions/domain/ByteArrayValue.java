@@ -18,6 +18,12 @@ public class ByteArrayValue extends PermissibleValue implements ByteArrayValueIn
 		// TODO Auto-generated method stub
 		
 	}
-    
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domain.PermissibleValue#getValueAsObject()
+	 */
+	public Object getValueAsObject()
+	{
+		return null;
+	}
 
 }

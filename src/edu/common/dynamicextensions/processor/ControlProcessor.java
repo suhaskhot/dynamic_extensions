@@ -176,10 +176,10 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		}
 
 		listBoxIntf.setIsMultiSelect(controlInformationInterface.getIsMultiSelect());
-		listBoxIntf.setChoiceList(controlInformationInterface.getDisplayChoiceList());
+		//listBoxIntf.setChoiceList(controlInformationInterface.getDisplayChoiceList());
 
 		System.out.println("Is Multiselect = " + listBoxIntf.getIsMultiSelect());
-		System.out.println("Choice List " + listBoxIntf.getChoiceList());
+		//System.out.println("Choice List " + listBoxIntf.getChoiceList());
 		return listBoxIntf;
 	}
 	/**
@@ -200,9 +200,9 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			comboBoxIntf = (ComboBoxInterface)controlInterface;
 		}
 
-		comboBoxIntf.setChoiceList(controlInformationInterface.getDisplayChoiceList());
+		//comboBoxIntf.setChoiceList(controlInformationInterface.getDisplayChoiceList());
 
-		System.out.println("Choice List " + comboBoxIntf.getChoiceList());
+		//System.out.println("Choice List " + comboBoxIntf.getChoiceList());
 		return comboBoxIntf;
 	}
 	/**
@@ -283,7 +283,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		{
             controlInformationInterface.setUserSelectedTool(ProcessorConstants.COMBOBOX_CONTROL);
             controlInformationInterface.setHtmlFile( ProcessorConstants.COMBOBOX_CONTROL + ".jsp");
-			controlInformationInterface.setDisplayChoiceList(((ComboBoxInterface)controlInterface).getChoiceList());
+			//controlInformationInterface.setDisplayChoiceList(((ComboBoxInterface)controlInterface).getChoiceList());
 		}
         else if(controlInterface instanceof DatePickerInterface)
         {

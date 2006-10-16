@@ -38,4 +38,11 @@ public class DoubleValue extends PermissibleValue implements DoubleValueInterfac
 	public void setValue(Double value) {
 		this.value = value;
 	}
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domain.PermissibleValue#getValueAsObject()
+	 */
+	public Object getValueAsObject()
+	{
+		return value;
+	}
 }

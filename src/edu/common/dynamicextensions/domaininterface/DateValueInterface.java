@@ -1,6 +1,6 @@
 package edu.common.dynamicextensions.domaininterface;
 
-import java.sql.Date;
+import java.util.Date;
 
 /**
  * This object stores the permissible value of date type.This is a user defined value.

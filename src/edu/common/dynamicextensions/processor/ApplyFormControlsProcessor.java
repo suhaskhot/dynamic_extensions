@@ -8,6 +8,7 @@ package edu.common.dynamicextensions.processor;
 import java.util.Collection;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
@@ -51,9 +52,12 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				ControlInterface controlInterface = null;
 				//Check for operation
 				String controlOperation  = controlsForm.getControlOperation();
-				System.out.println("Control operation = " + controlOperation);
-				if(controlOperation!=null)
+				System.out.println("Control operation = [" + controlOperation + "]");
+				//Default is add
+				if((controlOperation==null)||(controlOperation.trim().equals("")))
 				{
+					controlOperation  = ProcessorConstants.ADD;
+				}
 					//Add new control
 					if(controlOperation.equalsIgnoreCase(ProcessorConstants.ADD))
 					{
@@ -70,21 +74,22 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 							controlInterface.setSequenceNumber(new Integer(noOfElts+1));
 							System.out.println("Deq Number = " + controlInterface.getSequenceNumber());
 						}
-                        if(entityInterface != null) {
-                            System.out.println("Updating entity adding attribte " + abstractAttributeInterface);
-                            
-                            entityInterface.addAbstractAttribute(abstractAttributeInterface);
-                        }
-                        //Container : Add control and entity
-                        System.out.println("Adding control to container");
-                        containerInterface.addControl(controlInterface);
-                        
-                        System.out.println("Adding entity to conntainer");
-                        containerInterface.setEntity(entityInterface);
+						//Entity Interface  : Add attribute
+						if(entityInterface != null) {
+		                    System.out.println("Updating entity adding attribte " + abstractAttributeInterface);
+		                    
+		                    entityInterface.addAbstractAttribute(abstractAttributeInterface);
+		                }
+		                //Container : Add control and entity
+		                System.out.println("Adding control to container");
+		                containerInterface.addControl(controlInterface);
+		                
+		                System.out.println("Adding entity to conntainer");
+		                containerInterface.setEntity(entityInterface);
 
 					}else if(controlOperation.equalsIgnoreCase(ProcessorConstants.EDIT))
 					{
-						/*System.out.println("Edit Control operation");
+						System.out.println("Edit Control operation");
 						//Get the control from container
 						String selectedControlSeqNumber = controlsForm.getSelectedControlId();
 						System.out.println("Selected Control Seq Number = "  +selectedControlSeqNumber);
@@ -93,25 +98,18 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 						//Get Attribute interface from control
 						abstractAttributeInterface = controlInterface.getAbstractAttribute();
 						//update attribute
-						if(abstractAttributeInterface instanceof AttributeInterface){
-							attributeProcessor.populateAttribute((AttributeInterface) abstractAttributeInterface, controlsForm);
-							System.out.println("Polulated attribute");
-						}else{
-							System.out.println("Error while casting AttributeInterfce expected");
-						}
+						//if(abstractAttributeInterface instanceof AttributeInterface){
+						attributeProcessor.populateAttribute(abstractAttributeInterface, controlsForm);
+						
 						controlsForm.setAbstractAttribute(abstractAttributeInterface);
 						//update control
-						controlProcessor.populateControlInterface(controlsForm.getUserSelectedTool(), controlInterface, controlsForm);*/
+						controlProcessor.populateControlInterface(controlsForm.getUserSelectedTool(), controlInterface, controlsForm);
 					}
-				}
-				//Entity Interface  : Add attribute
-				
 			}
 			catch (Exception e)
 			{
 				System.out.println("Exception " + e);
 			}
-
 		}
 	}
 }

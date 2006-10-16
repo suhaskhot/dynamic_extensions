@@ -38,9 +38,10 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
         String selectedControlId = (String)CacheManager.getObjectFromCache(request, Constants.SELECTED_CONTROL_ID);
         String userSelectedTool = (String)CacheManager.getObjectFromCache(request, Constants.USER_SELECTED_TOOL);
    
-        if(request.getParameter("controlOperation") != null && request.getParameter("userSelectedTool")!= null ){
+        if((request.getParameter("controlOperation") != null) && (request.getParameter("userSelectedTool")!= null)&&(request.getParameter("selectedControlId") != null)){
             controlOperation  = (String) request.getParameter("controlOperation");
             userSelectedTool = (String) request.getParameter("userSelectedTool");
+            selectedControlId = (String)request.getParameter("selectedControlId");
         }
         LoadFormControlsProcessor loadFormControlsProcessor =   LoadFormControlsProcessor.getInstance();
         loadFormControlsProcessor.loadFormControls(actionForm,containerInterface,controlOperation,selectedControlId,userSelectedTool );

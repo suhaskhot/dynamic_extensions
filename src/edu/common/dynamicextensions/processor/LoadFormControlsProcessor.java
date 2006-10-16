@@ -6,8 +6,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.UIControlsConfigurationFactory;
 import edu.wustl.common.actionForm.AbstractActionForm;
@@ -61,7 +65,6 @@ public class LoadFormControlsProcessor
 					userSelectedTool = toolList.get(0).toString();
 				}
 				controlsForm.setUserSelectedTool(userSelectedTool);
-
 				controlsForm.setDisplayChoice("");
 				controlsForm.setDataType("String");
 
@@ -80,6 +83,13 @@ public class LoadFormControlsProcessor
 				{
 					attributeProcessor.populateAttributeInformation(controlInterface.getAbstractAttribute(), controlsForm);
 				}
+				String userSelectedToolName = getUserSelectedToolName(controlInterface);
+				if(userSelectedToolName == null || userSelectedTool.equals(""))
+				{
+					userSelectedToolName = toolList.get(0).toString();
+				}
+				controlsForm.setUserSelectedTool(userSelectedToolName);
+				controlsForm.setHtmlFile(userSelectedToolName+".jsp");
 			}
 
 			controlsForm.setDataTypeList(getDataTypeList());
@@ -90,6 +100,28 @@ public class LoadFormControlsProcessor
 	}
     
     /**
+	 * @param containerInterface
+	 * @return
+	 */
+	private String getUserSelectedToolName(ControlInterface controlInterface)
+	{
+		if(controlInterface!=null)
+		{
+			if(controlInterface instanceof TextFieldInterface)
+			{
+				return ProcessorConstants.TEXT_CONTROL;
+			}else if(controlInterface instanceof ComboBoxInterface)
+			{
+				return ProcessorConstants.COMBOBOX_CONTROL;
+			}else if(controlInterface instanceof DatePickerInterface)
+			{
+				return ProcessorConstants.DATEPICKER_CONTROL;
+			}
+		}
+		return null;
+	}
+
+	/**
      * Returns the toolsList from the xml file.
      * @return
      */

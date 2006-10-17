@@ -6,7 +6,7 @@ package edu.common.dynamicextensions.ui.interfaces;
  * @author deepti_shelar
  *
  */
-public interface AbstractAttributeInformationInterface {
+public interface AbstractAttributeUIBeanInterface {
 	
 	/**
 	 * Returns the attributesize

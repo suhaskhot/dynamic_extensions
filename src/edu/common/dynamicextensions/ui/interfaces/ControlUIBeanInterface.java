@@ -5,9 +5,8 @@ package edu.common.dynamicextensions.ui.interfaces;
 import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 
-public interface ControlInformationInterface {
+public interface ControlUIBeanInterface {
 	/**
 	 * 
 	 */

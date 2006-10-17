@@ -18,7 +18,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterfa
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
-import edu.common.dynamicextensions.ui.interfaces.ControlInformationInterface;
+import edu.common.dynamicextensions.ui.interfaces.ControlUIBeanInterface;
 
 
 /**
@@ -47,41 +47,41 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @return ControlInterface Returns new instance of ControlInterface from the domain object Factory.
 	 */
 	public ControlInterface createAndPopulateControl(String userSelectedControlName,
-			ControlInformationInterface controlInformationInterface) 
+			ControlUIBeanInterface controlUIBeanInterface) 
 	{
-		ControlInterface controlInterface  = populateControlInterface(userSelectedControlName, null, controlInformationInterface);
+		ControlInterface controlInterface  = populateControlInterface(userSelectedControlName, null, controlUIBeanInterface);
 		return controlInterface;
 	}
 
-	public ControlInterface populateControlInterface(String userSelectedControlName, ControlInterface controlIntf, ControlInformationInterface controlInformationInterface)
+	public ControlInterface populateControlInterface(String userSelectedControlName, ControlInterface controlIntf, ControlUIBeanInterface controlUIBeanInterface)
 	{
 		ControlInterface controlInterface = null;
 		System.out.println("User Selected Control = " + userSelectedControlName);
-		if((userSelectedControlName!=null)&&(controlInformationInterface!=null))
+		if((userSelectedControlName!=null)&&(controlUIBeanInterface!=null))
 		{
 			if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.TEXT_CONTROL)) {
-				controlInterface = getTextControl(controlIntf, controlInformationInterface);
+				controlInterface = getTextControl(controlIntf, controlUIBeanInterface);
 			} else if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.MULTILINE_CONTROL)) {
-				controlInterface = getMultiLineControl(controlIntf, controlInformationInterface);
+				controlInterface = getMultiLineControl(controlIntf, controlUIBeanInterface);
 			} else if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.COMBOBOX_CONTROL)) {
-				controlInterface = getComboBoxControl(controlIntf, controlInformationInterface);
+				controlInterface = getComboBoxControl(controlIntf, controlUIBeanInterface);
 			} else if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.LISTBOX_CONTROL)) {
-				controlInterface = getListBoxControl(controlIntf, controlInformationInterface);
+				controlInterface = getListBoxControl(controlIntf, controlUIBeanInterface);
 			} else if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.CHECKBOX_CONTROL)) {
-				controlInterface = getCheckBoxControl(controlIntf, controlInformationInterface);
+				controlInterface = getCheckBoxControl(controlIntf, controlUIBeanInterface);
 			} else if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.RADIOBUTTON_CONTROL)) {
-				controlInterface = getRadioButtonControl(controlIntf, controlInformationInterface);
+				controlInterface = getRadioButtonControl(controlIntf, controlUIBeanInterface);
 			} else if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.DATEPICKER_CONTROL)) {
-				controlInterface = getDatePickerControl(controlIntf,controlInformationInterface);
+				controlInterface = getDatePickerControl(controlIntf,controlUIBeanInterface);
 			}
 		}
 		//Load common properties for controls
-		if (controlInformationInterface != null && controlInterface != null) {
-			controlInterface.setAbstractAttribute(controlInformationInterface.getAbstractAttribute());
-			controlInterface.setCaption(controlInformationInterface.getCaption());
-			controlInterface.setCssClass(controlInformationInterface.getCssClass());
-			controlInterface.setTooltip(controlInformationInterface.getTooltip());
-			controlInterface.setIsHidden(controlInformationInterface.getIsHidden());
+		if (controlUIBeanInterface != null && controlInterface != null) {
+			controlInterface.setAbstractAttribute(controlUIBeanInterface.getAbstractAttribute());
+			controlInterface.setCaption(controlUIBeanInterface.getCaption());
+			controlInterface.setCssClass(controlUIBeanInterface.getCssClass());
+			controlInterface.setTooltip(controlUIBeanInterface.getTooltip());
+			controlInterface.setIsHidden(controlUIBeanInterface.getIsHidden());
 
 			System.out.println("Caption [" + controlInterface.getCaption() + "]");
 			System.out.println("Css Class [" + controlInterface.getCssClass() + "]");
@@ -96,10 +96,10 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 
 	/**
 	 * @param controlInterface 
-	 * @param controlInformationInterface
+	 * @param controlUIBeanInterface
 	 * @return
 	 */
-	private ControlInterface getDatePickerControl(ControlInterface controlInterface, ControlInformationInterface controlInformationInterface)
+	private ControlInterface getDatePickerControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
 	{
 		DatePickerInterface datePickerIntf = null;
 		if(controlInterface == null)
@@ -116,10 +116,10 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	}
 	/**
 	 * @param controlInterface 
-	 * @param controlInformationInterface
+	 * @param controlUIBeanInterface
 	 * @return
 	 */
-	private ControlInterface getRadioButtonControl(ControlInterface controlInterface, ControlInformationInterface controlInformationInterface)
+	private ControlInterface getRadioButtonControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
 	{
 		RadioButtonInterface radioButtonIntf = null;
 		if(controlInterface==null)
@@ -137,10 +137,10 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	}
 	/**
 	 * @param controlInterface 
-	 * @param controlInformationInterface
+	 * @param controlUIBeanInterface
 	 * @return
 	 */
-	private ControlInterface getCheckBoxControl(ControlInterface controlInterface, ControlInformationInterface controlInformationInterface)
+	private ControlInterface getCheckBoxControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
 	{
 		CheckBoxInterface checkBoxIntf = null;
 		if(controlInterface == null)
@@ -157,10 +157,10 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	}
 	/**
 	 * @param controlInterface 
-	 * @param controlInformationInterface
+	 * @param controlUIBeanInterface
 	 * @return
 	 */
-	private ControlInterface getListBoxControl(ControlInterface controlInterface, ControlInformationInterface controlInformationInterface)
+	private ControlInterface getListBoxControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
 	{
 		ListBoxInterface listBoxIntf = null;
 
@@ -174,7 +174,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			listBoxIntf = (ListBoxInterface)controlInterface;
 		}
 
-		listBoxIntf.setIsMultiSelect(controlInformationInterface.getIsMultiSelect());
+		listBoxIntf.setIsMultiSelect(controlUIBeanInterface.getIsMultiSelect());
 		//listBoxIntf.setChoiceList(controlInformationInterface.getDisplayChoiceList());
 
 		System.out.println("Is Multiselect = " + listBoxIntf.getIsMultiSelect());
@@ -183,10 +183,10 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	}
 	/**
 	 * @param controlInterface 
-	 * @param controlInformationInterface
+	 * @param controlUIBeanInterface
 	 * @return
 	 */
-	private ControlInterface getComboBoxControl(ControlInterface controlInterface, ControlInformationInterface controlInformationInterface)
+	private ControlInterface getComboBoxControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
 	{
 		ComboBoxInterface comboBoxIntf = null;
 		if(controlInterface==null)
@@ -206,10 +206,10 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	}
 	/**
 	 * @param controlInterface 
-	 * @param controlInformationInterface 
+	 * @param controlUIBeanInterface 
 	 * @return
 	 */
-	private ControlInterface getMultiLineControl(ControlInterface controlInterface, ControlInformationInterface controlInformationInterface)
+	private ControlInterface getMultiLineControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
 	{
 		TextAreaInterface textAreaIntf = null;
 		if(controlInterface==null)	//If does not exist create it 
@@ -221,8 +221,8 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		{
 			textAreaIntf = (TextAreaInterface)controlInterface;
 		}
-		textAreaIntf.setColumns(controlInformationInterface.getColumns());
-		textAreaIntf.setRows(controlInformationInterface.getRows());
+		textAreaIntf.setColumns(controlUIBeanInterface.getColumns());
+		textAreaIntf.setRows(controlUIBeanInterface.getRows());
 
 		System.out.println("No Of rows = " + textAreaIntf.getRows());
 		System.out.println("No Of Cols = " + textAreaIntf.getColumns());
@@ -232,10 +232,10 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * Creates a new TextControl if control interface is null
 	 * Updates the existing if not null
 	 * @param controlInterface 
-	 * @param controlInformationInterface
+	 * @param controlUIBeanInterface
 	 * @return
 	 */
-	private ControlInterface getTextControl(ControlInterface controlInterface, ControlInformationInterface controlInformationInterface)
+	private ControlInterface getTextControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
 	{
 		TextFieldInterface textFldIntf = null;
 		if(controlInterface==null)	//If does not exist create it 
@@ -247,8 +247,8 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		{
 			textFldIntf = (TextFieldInterface)controlInterface;
 		}
-		textFldIntf.setIsPassword(controlInformationInterface.getIsPassword());
-		textFldIntf.setColumns(controlInformationInterface.getColumns());
+		textFldIntf.setIsPassword(controlUIBeanInterface.getIsPassword());
+		textFldIntf.setColumns(controlUIBeanInterface.getColumns());
 
 		System.out.println("Is Password = " + textFldIntf.getIsPassword());
 		System.out.println("Cols = " + textFldIntf.getColumns());
@@ -256,38 +256,38 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * This method will populate the ControlInformationInterface using the controlInterface so that the 
-	 * information of the Control can be shown on the user page using the ControlInformationInterface.
+	 * This method will populate the ControlUIBeanInterface using the controlInterface so that the 
+	 * information of the Control can be shown on the user page using the ControlUIBeanInterface.
 	 * @param controlInterface Instance of controlInterface from which to populate the informationInterface.
-	 * @param controlInformationInterface Instance of ControlInformationInterface which will be populated using 
+	 * @param controlUIBeanInterface Instance of ControlUIBeanInterface which will be populated using 
 	 * the first parameter that is controlInterface.
 	 */
-	public void populateControlInformation(ControlInterface controlInterface, ControlInformationInterface controlInformationInterface) {
-		if (controlInterface != null && controlInformationInterface != null) {
-			controlInformationInterface.setAbstractAttribute(controlInterface.getAbstractAttribute());
-			controlInformationInterface.setCssClass(controlInterface.getCssClass());
-			controlInformationInterface.setTooltip(controlInterface.getTooltip());
-			controlInformationInterface.setCaption(controlInterface.getCaption());
-			controlInformationInterface.setIsHidden(controlInterface.getIsHidden());
-			controlInformationInterface.setSequenceNumber(controlInterface.getSequenceNumber());
+	public void populateControlInformation(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface) {
+		if (controlInterface != null && controlUIBeanInterface != null) {
+			controlUIBeanInterface.setAbstractAttribute(controlInterface.getAbstractAttribute());
+			controlUIBeanInterface.setCssClass(controlInterface.getCssClass());
+			controlUIBeanInterface.setTooltip(controlInterface.getTooltip());
+			controlUIBeanInterface.setCaption(controlInterface.getCaption());
+			controlUIBeanInterface.setIsHidden(controlInterface.getIsHidden());
+			controlUIBeanInterface.setSequenceNumber(controlInterface.getSequenceNumber());
 		}
 		if(controlInterface instanceof TextFieldInterface)
 		{
-            controlInformationInterface.setUserSelectedTool(ProcessorConstants.TEXT_CONTROL);
-            controlInformationInterface.setHtmlFile( ProcessorConstants.TEXT_CONTROL + ".jsp");
-			controlInformationInterface.setColumns(((TextFieldInterface)controlInterface).getColumns());
-			controlInformationInterface.setIsPassword(((TextFieldInterface)controlInterface).getIsPassword());
+            controlUIBeanInterface.setUserSelectedTool(ProcessorConstants.TEXT_CONTROL);
+            controlUIBeanInterface.setHtmlFile( ProcessorConstants.TEXT_CONTROL + ".jsp");
+			controlUIBeanInterface.setColumns(((TextFieldInterface)controlInterface).getColumns());
+			controlUIBeanInterface.setIsPassword(((TextFieldInterface)controlInterface).getIsPassword());
 		}
         else if(controlInterface instanceof ComboBoxInterface)
 		{
-            controlInformationInterface.setUserSelectedTool(ProcessorConstants.COMBOBOX_CONTROL);
-            controlInformationInterface.setHtmlFile( ProcessorConstants.COMBOBOX_CONTROL + ".jsp");
+            controlUIBeanInterface.setUserSelectedTool(ProcessorConstants.COMBOBOX_CONTROL);
+            controlUIBeanInterface.setHtmlFile( ProcessorConstants.COMBOBOX_CONTROL + ".jsp");
 			//controlInformationInterface.setDisplayChoiceList(((ComboBoxInterface)controlInterface).getChoiceList());
 		}
         else if(controlInterface instanceof DatePickerInterface)
         {
-            controlInformationInterface.setUserSelectedTool(ProcessorConstants.DATEPICKER_CONTROL);
-            controlInformationInterface.setHtmlFile( ProcessorConstants.DATEPICKER_CONTROL + ".jsp");
+            controlUIBeanInterface.setUserSelectedTool(ProcessorConstants.DATEPICKER_CONTROL);
+            controlUIBeanInterface.setHtmlFile( ProcessorConstants.DATEPICKER_CONTROL + ".jsp");
             
         }
         

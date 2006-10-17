@@ -11,7 +11,7 @@ package edu.common.dynamicextensions.processor;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
-import edu.common.dynamicextensions.ui.interfaces.ContainerInformationInterface;
+import edu.common.dynamicextensions.ui.interfaces.ContainerUIBeanInterface;
 
 public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 {
@@ -43,37 +43,37 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * This method populates the given ContainerInterface using the given ContainerInformationInterface.
+	 * This method populates the given ContainerInterface using the given ContainerUIBeanInterface.
 	 * @param containerInterface Instance of containerInterface which is populated using the informationInterface.
-	 * @param ContainerInformationInterface Instance of ContainerInformationInterface which is used to populate the containerInterface.
+	 * @param ContainerUIBeanInterface Instance of ContainerUIBeanInterface which is used to populate the containerInterface.
 	 */
-	public void populateContainerInterface(ContainerInterface containerInterface, ContainerInformationInterface containerInformationInterface)
+	public void populateContainerInterface(ContainerInterface containerInterface, ContainerUIBeanInterface containerUIBeanInterface)
 	{
-		containerInterface.setButtonCss(containerInformationInterface.getButtonCss());
-		containerInterface.setCaption(containerInformationInterface.getFormCaption());
-		containerInterface.setMainTableCss(containerInformationInterface.getMainTableCss());
-		containerInterface.setRequiredFieldIndicatior(containerInformationInterface.getRequiredFieldIndicatior());
-		containerInterface.setRequiredFieldWarningMessage(containerInformationInterface.getRequiredFieldWarningMessage());
-		containerInterface.setTitleCss(containerInformationInterface.getTitleCss());
+		containerInterface.setButtonCss(containerUIBeanInterface.getButtonCss());
+		containerInterface.setCaption(containerUIBeanInterface.getFormCaption());
+		containerInterface.setMainTableCss(containerUIBeanInterface.getMainTableCss());
+		containerInterface.setRequiredFieldIndicatior(containerUIBeanInterface.getRequiredFieldIndicatior());
+		containerInterface.setRequiredFieldWarningMessage(containerUIBeanInterface.getRequiredFieldWarningMessage());
+		containerInterface.setTitleCss(containerUIBeanInterface.getTitleCss());
 	}
 
 	/**
 	 * /**
 	 * This method will populate the containerInformationInterface using the containerInterface so that the 
-	 * information of the Container can be shown on the user page using the EntityInformationInterface.
+	 * information of the Container can be shown on the user page using the EntityUIBeanInterface.
 	 * @param containerInterface Instance of containerInterface from which to populate the informationInterface.
-	 * @param containerInformationInterface Instance of containerInformationInterface which will be populated using 
+	 * @param containerUIBeanInterface Instance of containerInformationInterface which will be populated using 
 	 * the first parameter that is ContainerInterface.
 	 */
 
-	public void populateContainerInformation(ContainerInterface containerInterface, ContainerInformationInterface containerInformationInterface)
+	public void populateContainerInformation(ContainerInterface containerInterface, ContainerUIBeanInterface containerUIBeanInterface)
 	{
-		containerInformationInterface.setButtonCss(containerInterface.getButtonCss());
-		containerInformationInterface.setFormCaption(containerInterface.getCaption());
-		containerInformationInterface.setMainTableCss(containerInterface.getMainTableCss());
-		containerInformationInterface.setRequiredFieldIndicatior(containerInterface.getRequiredFieldIndicatior());
-		containerInformationInterface.setRequiredFieldWarningMessage(containerInterface.getRequiredFieldWarningMessage());
-		containerInformationInterface.setTitleCss(containerInterface.getTitleCss());
+		containerUIBeanInterface.setButtonCss(containerInterface.getButtonCss());
+		containerUIBeanInterface.setFormCaption(containerInterface.getCaption());
+		containerUIBeanInterface.setMainTableCss(containerInterface.getMainTableCss());
+		containerUIBeanInterface.setRequiredFieldIndicatior(containerInterface.getRequiredFieldIndicatior());
+		containerUIBeanInterface.setRequiredFieldWarningMessage(containerInterface.getRequiredFieldWarningMessage());
+		containerUIBeanInterface.setTitleCss(containerInterface.getTitleCss());
 	}
 
 }

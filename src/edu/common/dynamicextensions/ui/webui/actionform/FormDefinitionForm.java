@@ -13,8 +13,8 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
-import edu.common.dynamicextensions.ui.interfaces.ContainerInformationInterface;
-import edu.common.dynamicextensions.ui.interfaces.EntityInformationInterface;
+import edu.common.dynamicextensions.ui.interfaces.ContainerUIBeanInterface;
+import edu.common.dynamicextensions.ui.interfaces.EntityUIBeanInterface;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
@@ -26,7 +26,7 @@ import edu.wustl.common.util.global.Validator;
  * @author deepti_shelar
  *
  */
-public class FormDefinitionForm  extends AbstractActionForm implements EntityInformationInterface,ContainerInformationInterface{
+public class FormDefinitionForm  extends AbstractActionForm implements EntityUIBeanInterface,ContainerUIBeanInterface{
 	/**
 	 * 
 	 */

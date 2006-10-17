@@ -11,8 +11,8 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
-import edu.common.dynamicextensions.ui.interfaces.AbstractAttributeInformationInterface;
-import edu.common.dynamicextensions.ui.interfaces.ControlInformationInterface;
+import edu.common.dynamicextensions.ui.interfaces.AbstractAttributeUIBeanInterface;
+import edu.common.dynamicextensions.ui.interfaces.ControlUIBeanInterface;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
@@ -23,7 +23,7 @@ import edu.wustl.common.domain.AbstractDomainObject;
  *
  */
 public class ControlsForm extends AbstractActionForm implements 
-ControlInformationInterface,AbstractAttributeInformationInterface{
+ControlUIBeanInterface,AbstractAttributeUIBeanInterface{
 	/**
 	 * Attribute Name
 	 */
@@ -754,7 +754,7 @@ ControlInformationInterface,AbstractAttributeInformationInterface{
     }
 
 	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.ui.interfaces.AbstractAttributeInformationInterface#getAttributeDigits()
+	 * @see edu.common.dynamicextensions.ui.interfaces.AbstractAttributeUIBeanInterface#getAttributeDigits()
 	 */
 	public String getAttributeDigits()
 	{
@@ -762,7 +762,7 @@ ControlInformationInterface,AbstractAttributeInformationInterface{
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.ui.interfaces.AbstractAttributeInformationInterface#setAttributeDigits(java.lang.String)
+	 * @see edu.common.dynamicextensions.ui.interfaces.AbstractAttributeUIBeanInterface#setAttributeDigits(java.lang.String)
 	 */
 	public void setAttributeDigits(String attribDigits)
 	{

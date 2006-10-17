@@ -35,7 +35,7 @@ import edu.common.dynamicextensions.domaininterface.ShortAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.StringAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
-import edu.common.dynamicextensions.ui.interfaces.AbstractAttributeInformationInterface;
+import edu.common.dynamicextensions.ui.interfaces.AbstractAttributeUIBeanInterface;
 
 /**
  * @author preeti_munot
@@ -61,7 +61,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		return new AttributeProcessor();
 	}
 
-	public AttributeInterface createAttribute(AbstractAttributeInformationInterface attributeInformationIntf)
+	public AttributeInterface createAttribute(AbstractAttributeUIBeanInterface attributeInformationIntf)
 	{
 		AttributeInterface attributeInterface = null;
 		if(attributeInformationIntf!=null)
@@ -84,7 +84,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 
 	}
 
-	public void populateAttribute(AbstractAttributeInterface attributeInterface, AbstractAttributeInformationInterface attributeInformationIntf)
+	public void populateAttribute(AbstractAttributeInterface attributeInterface, AbstractAttributeUIBeanInterface attributeInformationIntf)
 	{
 		if((attributeInformationIntf!=null)&&(attributeInterface!=null))
 		{
@@ -133,7 +133,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param attributeInformationIntf
 	 * @return
 	 */
-	private DataElementInterface getDataElementInterface(AbstractAttributeInformationInterface attributeInformationIntf)
+	private DataElementInterface getDataElementInterface(AbstractAttributeUIBeanInterface attributeInformationIntf)
 	{
 		DataElementInterface  dataEltInterface = null;
 		PermissibleValueInterface permissibleValueInterface = null;
@@ -179,7 +179,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param permissibleValue 
 	 * @return
 	 */
-	private PermissibleValueInterface getPermissibleValueInterface(AbstractAttributeInformationInterface attributeInformationIntf, String permissibleValue)
+	private PermissibleValueInterface getPermissibleValueInterface(AbstractAttributeUIBeanInterface attributeInformationIntf, String permissibleValue)
 	{
 		PermissibleValueInterface permissibleValueIntf = null;
 		if(attributeInformationIntf!=null)
@@ -230,7 +230,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param permissibleValue TODO
 	 * @return
 	 */
-	private PermissibleValueInterface getPermissibleValueInterfaceForNumber(AbstractAttributeInformationInterface attributeInformationIntf, String permissibleValue)
+	private PermissibleValueInterface getPermissibleValueInterfaceForNumber(AbstractAttributeUIBeanInterface attributeInformationIntf, String permissibleValue)
 	{
 
 		PermissibleValueInterface permissibleValueIntf = null;
@@ -347,7 +347,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	
 	}
 
-	public AttributeInterface createAndPopulateAttribute(AbstractAttributeInformationInterface attributeInformationIntf)
+	public AttributeInterface createAndPopulateAttribute(AbstractAttributeUIBeanInterface attributeInformationIntf)
 	{
 		AttributeInterface attributeInterface = createAttribute(attributeInformationIntf);
 		populateAttribute(attributeInterface, attributeInformationIntf);
@@ -358,7 +358,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param attributeInformationIntf
 	 * @return
 	 */
-	private void populateBooleanAttributeInterface(BooleanAttributeInterface booleanAttributeIntf, AbstractAttributeInformationInterface attributeInformationIntf)
+	private void populateBooleanAttributeInterface(BooleanAttributeInterface booleanAttributeIntf, AbstractAttributeUIBeanInterface attributeInformationIntf)
 	{
 		Boolean defaultValue = new Boolean(attributeInformationIntf.getAttributeDefaultValue());
 		booleanAttributeIntf.setDefaultValue(defaultValue);
@@ -368,7 +368,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param attributeInformationIntf
 	 * @return
 	 */
-	private void populateDateAttributeInterface(DateAttributeInterface dateAttributeIntf, AbstractAttributeInformationInterface attributeInformationIntf)
+	private void populateDateAttributeInterface(DateAttributeInterface dateAttributeIntf, AbstractAttributeUIBeanInterface attributeInformationIntf)
 	{
 		Date defaultValue;
 		try
@@ -388,7 +388,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param attributeInformationIntf
 	 * @return
 	 */
-	private void populateStringAttributeInterface(StringAttributeInterface stringAttributeIntf, AbstractAttributeInformationInterface attributeInformationIntf)
+	private void populateStringAttributeInterface(StringAttributeInterface stringAttributeIntf, AbstractAttributeUIBeanInterface attributeInformationIntf)
 	{
 		stringAttributeIntf.setDefaultValue(attributeInformationIntf.getAttributeDefaultValue());
 		Integer size;
@@ -407,7 +407,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param shortAttributeInterface
 	 * @param attributeInformationIntf
 	 */
-	private void populateShortAttributeInterface(ShortAttributeInterface shortAttributeInterface, AbstractAttributeInformationInterface attributeInformationIntf)
+	private void populateShortAttributeInterface(ShortAttributeInterface shortAttributeInterface, AbstractAttributeUIBeanInterface attributeInformationIntf)
 	{
 		Short defaultValue = new Short(attributeInformationIntf.getAttributeDefaultValue());
 		shortAttributeInterface.setDefaultValue(defaultValue);
@@ -423,7 +423,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param integerAttributeInterface
 	 * @param attributeInformationIntf
 	 */
-	private void populateIntegerAttributeInterface(IntegerAttributeInterface integerAttributeInterface, AbstractAttributeInformationInterface attributeInformationIntf)
+	private void populateIntegerAttributeInterface(IntegerAttributeInterface integerAttributeInterface, AbstractAttributeUIBeanInterface attributeInformationIntf)
 	{
 		Integer defaultValue;
 		try
@@ -447,7 +447,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param longAttributeInterface
 	 * @param attributeInformationIntf
 	 */
-	private void populateLongAttributeInterface(LongAttributeInterface longAttributeInterface, AbstractAttributeInformationInterface attributeInformationIntf)
+	private void populateLongAttributeInterface(LongAttributeInterface longAttributeInterface, AbstractAttributeUIBeanInterface attributeInformationIntf)
 	{
 		Long defaultValue = new Long(attributeInformationIntf.getAttributeDefaultValue());
 		longAttributeInterface.setDefaultValue(defaultValue);
@@ -462,7 +462,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param floatAttributeInterface
 	 * @param attributeInformationIntf
 	 */
-	private void populateFloatAttributeInterface(FloatAttributeInterface floatAttributeInterface, AbstractAttributeInformationInterface attributeInformationIntf)
+	private void populateFloatAttributeInterface(FloatAttributeInterface floatAttributeInterface, AbstractAttributeUIBeanInterface attributeInformationIntf)
 	{
 		Float defaultValue = new Float(attributeInformationIntf.getAttributeDefaultValue());
 		floatAttributeInterface.setDefaultValue(defaultValue);
@@ -473,7 +473,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		
 	}
 
-	private void populateDoubleAttributeInterface(DoubleAttributeInterface doubleAttributeInterface, AbstractAttributeInformationInterface attributeInformationIntf)
+	private void populateDoubleAttributeInterface(DoubleAttributeInterface doubleAttributeInterface, AbstractAttributeUIBeanInterface attributeInformationIntf)
 	{
 		Double defaultValue = new Double(attributeInformationIntf.getAttributeDefaultValue());
 		doubleAttributeInterface.setDefaultValue(defaultValue);
@@ -487,7 +487,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param attributeInformationIntf
 	 * @return
 	 */
-	private AttributeInterface getInterfaceForNumericDataType(AbstractAttributeInformationInterface attributeInformationIntf)
+	private AttributeInterface getInterfaceForNumericDataType(AbstractAttributeUIBeanInterface attributeInformationIntf)
 	{
 		AttributeInterface numberAttribIntf = null;
 		//If it is numberic it can either be float, simple integer, etc based on number of decimals
@@ -547,7 +547,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		return numberAttribIntf;
 	}
 
-	public void populateAttributeInformation(AbstractAttributeInterface attributeInterface, AbstractAttributeInformationInterface attributeInformationIntf)
+	public void populateAttributeInformation(AbstractAttributeInterface attributeInterface, AbstractAttributeUIBeanInterface attributeInformationIntf)
 	{
 		if((attributeInformationIntf!=null)&&(attributeInterface!=null))
 		{
@@ -632,7 +632,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param attributeInformationIntf
 	 * @return
 	 */
-	private String getChoiceList(AbstractAttributeInterface attributeInterface, AbstractAttributeInformationInterface attributeInformationIntf)
+	private String getChoiceList(AbstractAttributeInterface attributeInterface, AbstractAttributeUIBeanInterface attributeInformationIntf)
 	{
 		Object permissibleValueObjectValue = null; 
 		String choiceList = "",choice = null;

@@ -4,7 +4,7 @@ package edu.common.dynamicextensions.ui.interfaces;
  * @author deepti_shelar
  *
  */
-public interface EntityInformationInterface {
+public interface EntityUIBeanInterface {
 	/**
 	 * @return Returns the name.
 	 */

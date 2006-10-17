@@ -1,11 +1,7 @@
 package edu.common.dynamicextensions.ui.interfaces;
 
-import java.util.Collection;
 
-import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
-
-public interface ContainerInformationInterface {
+public interface ContainerUIBeanInterface {
 	 /**
      * css style for the main table.
      * @return Returns the mainTableCss.

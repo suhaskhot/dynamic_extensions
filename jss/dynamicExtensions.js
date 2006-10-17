@@ -270,3 +270,16 @@ function addFormAction()
 	document.getElementById('mode').value = 'AddNewForm';
 	document.getElementById('formsIndexForm').submit;
 }
+
+function radioButtonClicked(obj)
+{
+if(obj.value == 'SingleLine')
+	{
+		document.getElementById('attributeNoOfRows').disabled=true;
+	}
+	if(obj.value == 'MultiLine')
+	{
+
+		document.getElementById('attributeNoOfRows').disabled=false;
+	}
+}

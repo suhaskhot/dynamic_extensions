@@ -60,9 +60,11 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		if((userSelectedControlName!=null)&&(controlUIBeanInterface!=null))
 		{
 			if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.TEXT_CONTROL)) {
-				controlInterface = getTextControl(controlIntf, controlUIBeanInterface);
-			} else if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.MULTILINE_CONTROL)) {
-				controlInterface = getMultiLineControl(controlIntf, controlUIBeanInterface);
+				if(controlUIBeanInterface.getLinesType() != null && controlUIBeanInterface.getLinesType().equalsIgnoreCase("MultiLine")) {
+					controlInterface = getMultiLineControl(controlIntf, controlUIBeanInterface);	
+				} else {
+					controlInterface = getTextControl(controlIntf, controlUIBeanInterface);
+				}
 			} else if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.COMBOBOX_CONTROL)) {
 				controlInterface = getComboBoxControl(controlIntf, controlUIBeanInterface);
 			} else if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.LISTBOX_CONTROL)) {
@@ -273,24 +275,31 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		}
 		if(controlInterface instanceof TextFieldInterface)
 		{
-            controlUIBeanInterface.setUserSelectedTool(ProcessorConstants.TEXT_CONTROL);
-            controlUIBeanInterface.setHtmlFile( ProcessorConstants.TEXT_CONTROL + ".jsp");
+			controlUIBeanInterface.setUserSelectedTool(ProcessorConstants.TEXT_CONTROL);
+			controlUIBeanInterface.setHtmlFile( ProcessorConstants.TEXT_CONTROL + ".jsp");
 			controlUIBeanInterface.setColumns(((TextFieldInterface)controlInterface).getColumns());
 			controlUIBeanInterface.setIsPassword(((TextFieldInterface)controlInterface).getIsPassword());
 		}
-        else if(controlInterface instanceof ComboBoxInterface)
+		else if(controlInterface instanceof ComboBoxInterface)
 		{
-            controlUIBeanInterface.setUserSelectedTool(ProcessorConstants.COMBOBOX_CONTROL);
-            controlUIBeanInterface.setHtmlFile( ProcessorConstants.COMBOBOX_CONTROL + ".jsp");
+			controlUIBeanInterface.setUserSelectedTool(ProcessorConstants.COMBOBOX_CONTROL);
+			controlUIBeanInterface.setHtmlFile( ProcessorConstants.COMBOBOX_CONTROL + ".jsp");
 			//controlInformationInterface.setDisplayChoiceList(((ComboBoxInterface)controlInterface).getChoiceList());
 		}
-        else if(controlInterface instanceof DatePickerInterface)
-        {
-            controlUIBeanInterface.setUserSelectedTool(ProcessorConstants.DATEPICKER_CONTROL);
-            controlUIBeanInterface.setHtmlFile( ProcessorConstants.DATEPICKER_CONTROL + ".jsp");
-            
-        }
-        
-        
+		else if(controlInterface instanceof DatePickerInterface)
+		{
+			controlUIBeanInterface.setUserSelectedTool(ProcessorConstants.DATEPICKER_CONTROL);
+			controlUIBeanInterface.setHtmlFile( ProcessorConstants.DATEPICKER_CONTROL + ".jsp");
+
+		}
+		else if(controlInterface instanceof TextAreaInterface)
+		{
+			controlUIBeanInterface.setUserSelectedTool(ProcessorConstants.MULTILINE_CONTROL);
+			controlUIBeanInterface.setHtmlFile( ProcessorConstants.TEXT_CONTROL + ".jsp");
+			controlUIBeanInterface.setColumns(((TextAreaInterface)controlInterface).getColumns());
+			controlUIBeanInterface.setRows(((TextAreaInterface)controlInterface).getRows());
+		}
+
+
 	}
 }

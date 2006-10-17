@@ -206,7 +206,10 @@ ControlUIBeanInterface,AbstractAttributeUIBeanInterface{
      * 
      */
     protected String showPreview;
-   
+    /**
+     * 
+     */
+	protected String linesType;
 
 	/**
      * 
@@ -868,6 +871,22 @@ ControlUIBeanInterface,AbstractAttributeUIBeanInterface{
 	 */
 	public void setShowPreview(String showPreview) {
 		this.showPreview = showPreview;
+	}
+
+	/**
+	 * @return the linesType
+	 */
+	public String getLinesType()
+	{
+		return linesType;
+	}
+
+	/**
+	 * @param linesType the linesType to set
+	 */
+	public void setLinesType(String linesType)
+	{
+		this.linesType = linesType;
 	}
 }
 

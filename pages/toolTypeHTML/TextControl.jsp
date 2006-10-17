@@ -17,7 +17,23 @@
 	<table summary="" cellpadding="3" cellspacing="0" border="1" align = 'center' width='100%'>
 		<jsp:include page="/pages/toolTypeHTML/CommonControlAttributes.jsp" />
 	
-
+<tr>
+<td class="formRequiredLabel">
+					<bean:message key="eav.control.type"/>
+			</td>
+<td>
+<input type='radio' name='linesType' value='SingleLine' onclick='radioButtonClicked(this)'>SingleLine
+<input type='radio' name='linesType' value='MultiLine' onclick='radioButtonClicked(this)'>MultiLine
+</td>
+</tr>
+		<tr>
+<td class="formRequiredLabel">
+					<bean:message key="eav.text.noOfLines"/>
+			</td>
+	<td class="formField">
+					<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="attributeNoOfRows" />
+			</td>
+</tr>
 		
 			<tr>
 

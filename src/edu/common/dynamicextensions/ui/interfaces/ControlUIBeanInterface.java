@@ -177,13 +177,13 @@ public interface ControlUIBeanInterface {
      * @param htmlFile
      */
     void setHtmlFile(String htmlFile);
-   /* *//**
-	 * @return the noOfLines
-	 *//*
-	public String getNoOfLines() ;
+    /**
+	 * @return the linesType
+	 */
+	public String getLinesType();
 
-	*//**
-	 * @param noOfLines the noOfLines to set
-	 *//*
-	public void setNoOfLines(String noOfLines) ;*/
+	/**
+	 * @param linesType the linesType to set
+	 */
+	public void setLinesType(String linesType);
 }

@@ -67,6 +67,7 @@ public class LoadFormControlsProcessor
 				controlsForm.setUserSelectedTool(userSelectedTool);
 				controlsForm.setDisplayChoice("");
 				controlsForm.setDataType("String");
+				controlsForm.setLinesType("");
 
 				controlsForm.setHtmlFile(userSelectedTool+".jsp");
 			}

@@ -177,4 +177,14 @@ public class Entity extends AbstractMetadata implements EntityInterface
 		// TODO Auto-generated method stub
 		return null;
 	}
+	public void removeAbstractAttribute(AbstractAttributeInterface abstractAttributeInterface)
+	{
+		if(abstractAttributeCollection!=null)
+		{
+			if(abstractAttributeCollection.contains(abstractAttributeInterface))
+			{
+				abstractAttributeCollection.remove(abstractAttributeCollection);
+			}
+		}
+	}
 }

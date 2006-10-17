@@ -125,8 +125,8 @@
 		  	<html:hidden property="operation" value=""/>
 		  	<html:hidden property="selectedAttrib" value=""/>
 
-			<html:hidden property="controlOperation" value=""/>
-			<html:hidden property="selectedControlId" value=""/>
+			<html:hidden property="controlOperation" />
+			<html:hidden property="selectedControlId" />
 			<html:hidden property="toolBoxClicked" value=""/>
 			<html:hidden property="showPreview" value=""/>
 

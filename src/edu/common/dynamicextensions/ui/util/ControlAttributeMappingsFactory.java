@@ -7,7 +7,10 @@ package edu.common.dynamicextensions.ui.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -23,6 +26,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.wustl.common.beans.NameValueBean;
 
 /**
@@ -192,9 +196,21 @@ public class ControlAttributeMappingsFactory
 
 	/**
 	 * @param args
-	 *//*
+	 */
 	public static void main(String[] args) {
 		ControlAttributeMappingsFactory cmf = ControlAttributeMappingsFactory.getInstance();
-	}*/
+		SimpleDateFormat sdf = new SimpleDateFormat(ProcessorConstants.DATE_FORMAT);
+		Date value = null;
+		try
+		{
+			value = sdf.parse("10/03/2006");
+			System.out.println("Here " + value);
+			
+		}
+		catch (ParseException e)
+		{
+			value = new Date();
+		} 
+	}
 
 }

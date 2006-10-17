@@ -38,4 +38,6 @@ public class ProcessorConstants
     public static final String ADD = "Add";
     public static final String EDIT = "Edit";
     
+    //Date Format
+    public static final String DATE_FORMAT = "MM/dd/yyyy";
 }

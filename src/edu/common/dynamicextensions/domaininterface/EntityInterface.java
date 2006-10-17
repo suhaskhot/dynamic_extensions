@@ -49,7 +49,11 @@ public interface EntityInterface extends AbstractMetadataInterface
      * 
      */
      void addEntityGroupInterface(EntityGroupInterface entityGroupInterface);
-      
+     /**
+      * remove attribute from entity attribute collection
+      * @param abstractAttributeInterface
+      */
+     public void removeAbstractAttribute(AbstractAttributeInterface abstractAttributeInterface);    
       
 
 }

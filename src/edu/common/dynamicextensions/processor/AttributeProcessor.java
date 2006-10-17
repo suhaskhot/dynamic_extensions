@@ -5,6 +5,8 @@
  */
 package edu.common.dynamicextensions.processor;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -25,7 +27,6 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.BooleanAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.common.dynamicextensions.domaininterface.DateAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.DateValueInterface;
 import edu.common.dynamicextensions.domaininterface.DoubleAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.FloatAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.IntegerAttributeInterface;
@@ -33,7 +34,6 @@ import edu.common.dynamicextensions.domaininterface.LongAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.ShortAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.StringAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.ui.interfaces.AbstractAttributeUIBeanInterface;
 
@@ -195,9 +195,12 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 					Date value = null;
 					try
 					{
-						value = new Date(permissibleValue);
+						SimpleDateFormat sdf = new SimpleDateFormat(ProcessorConstants.DATE_FORMAT); 
+						value = sdf.parse(permissibleValue);
+						//value = new Date(permissibleValue);
+						
 					}
-					catch (RuntimeException e)
+					catch (ParseException e)
 					{
 						System.out.println("Exception while storing date value");
 						value = new Date();
@@ -373,9 +376,13 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		Date defaultValue;
 		try
 		{
-			defaultValue = new Date(attributeInformationIntf.getAttributeDefaultValue());
+			SimpleDateFormat sdf = new SimpleDateFormat(ProcessorConstants.DATE_FORMAT);
+			System.out.println("Def value = " + attributeInformationIntf.getAttributeDefaultValue());
+			defaultValue = sdf.parse(attributeInformationIntf.getAttributeDefaultValue());
+			//defaultValue = DateFormat.parse(attributeInformationIntf.getAttributeDefaultValue());
 		}
-		catch (RuntimeException e)
+
+		catch (ParseException e)
 		{
 			System.out.println("Exception while saving date def value");
 			defaultValue = new Date();
@@ -558,7 +565,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			System.out.println("Choice List"  + attributeInformationIntf.getChoiceList());
 			if(attributeInterface instanceof StringAttributeInterface)
 			{
-                attributeInformationIntf.setDataType("String");
+                attributeInformationIntf.setDataType(ProcessorConstants.DATATYPE_STRING);
 				attributeInformationIntf.setAttributeDefaultValue(((StringAttributeInterface)attributeInterface).getDefaultValue());
 				Integer size = ((StringAttributeInterface)attributeInterface).getSize();
 				if(size!=null){
@@ -566,17 +573,18 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				}
 			}else if(attributeInterface instanceof DateAttributeInterface)
 			{
-				attributeInformationIntf.setDataType("Date");
+				attributeInformationIntf.setDataType(ProcessorConstants.DATATYPE_DATE);
                	attributeInformationIntf.setAttributeDefaultValue(((DateAttributeInterface)attributeInterface).getDefaultValue().toString());
 				attributeInformationIntf.setFormat(((DateAttributeInterface)attributeInterface).getFormat());
 			}
 			else if(attributeInterface instanceof BooleanAttributeInterface)
 			{
+				attributeInformationIntf.setDataType(ProcessorConstants.DATATYPE_BOOLEAN);
 				attributeInformationIntf.setAttributeDefaultValue(((BooleanAttributeInterface)attributeInterface).getDefaultValue().toString());
 			}
 			else if(attributeInterface instanceof IntegerAttributeInterface)
 			{
-                attributeInformationIntf.setDataType("Number");
+                attributeInformationIntf.setDataType(ProcessorConstants.DATATYPE_NUMBER);
                 attributeInformationIntf.setAttributeDefaultValue(((IntegerAttributeInterface)attributeInterface).getDefaultValue().toString());
 				attributeInformationIntf.setAttributeMeasurementUnits((((IntegerAttributeInterface)attributeInterface).getMeasurementUnits()).toString());
 				attributeInformationIntf.setAttributeDecimalPlaces(((IntegerAttributeInterface)attributeInterface).getDecimalPlaces());
@@ -587,7 +595,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 			else if(attributeInterface instanceof ShortAttributeInterface)
 			{
-                attributeInformationIntf.setDataType("Number");
+                attributeInformationIntf.setDataType(ProcessorConstants.DATATYPE_NUMBER);
 				attributeInformationIntf.setAttributeDefaultValue(((ShortAttributeInterface)attributeInterface).getDefaultValue().toString());
 				attributeInformationIntf.setAttributeMeasurementUnits((((ShortAttributeInterface)attributeInterface).getMeasurementUnits()).toString());
 				attributeInformationIntf.setAttributeDecimalPlaces(((ShortAttributeInterface)attributeInterface).getDecimalPlaces());
@@ -597,7 +605,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 			else if(attributeInterface instanceof LongAttributeInterface)
 			{
-                attributeInformationIntf.setDataType("Number");
+                attributeInformationIntf.setDataType(ProcessorConstants.DATATYPE_NUMBER);
 				attributeInformationIntf.setAttributeDefaultValue(((LongAttributeInterface)attributeInterface).getDefaultValue().toString());
 				attributeInformationIntf.setAttributeMeasurementUnits((((LongAttributeInterface)attributeInterface).getMeasurementUnits()).toString());
 				attributeInformationIntf.setAttributeDecimalPlaces(((LongAttributeInterface)attributeInterface).getDecimalPlaces());
@@ -607,7 +615,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 			else if(attributeInterface instanceof FloatAttributeInterface)
 			{
-                attributeInformationIntf.setDataType("Number");
+                attributeInformationIntf.setDataType(ProcessorConstants.DATATYPE_NUMBER);
 				attributeInformationIntf.setAttributeDefaultValue(((FloatAttributeInterface)attributeInterface).getDefaultValue().toString());
 				attributeInformationIntf.setAttributeMeasurementUnits((((FloatAttributeInterface)attributeInterface).getMeasurementUnits()).toString());
 				attributeInformationIntf.setAttributeDecimalPlaces(((FloatAttributeInterface)attributeInterface).getDecimalPlaces());
@@ -616,7 +624,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 			else if(attributeInterface instanceof DoubleAttributeInterface)
 			{
-                attributeInformationIntf.setDataType("Number");
+                attributeInformationIntf.setDataType(ProcessorConstants.DATATYPE_NUMBER);
 				attributeInformationIntf.setAttributeDefaultValue(((DoubleAttributeInterface)attributeInterface).getDefaultValue().toString());
 				attributeInformationIntf.setAttributeMeasurementUnits((((DoubleAttributeInterface)attributeInterface).getMeasurementUnits()).toString());
 				attributeInformationIntf.setAttributeDecimalPlaces(((DoubleAttributeInterface)attributeInterface).getDecimalPlaces());

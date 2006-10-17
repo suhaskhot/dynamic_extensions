@@ -6,6 +6,7 @@
 package edu.common.dynamicextensions.processor;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -94,12 +95,17 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 						String selectedControlSeqNumber = controlsForm.getSelectedControlId();
 						System.out.println("Selected Control Seq Number = "  +selectedControlSeqNumber);
 						controlInterface = containerInterface.getControlInterfaceBySequenceNumber(selectedControlSeqNumber);
-
-						//Get Attribute interface from control
-						abstractAttributeInterface = controlInterface.getAbstractAttribute();
-						//update attribute
-						//if(abstractAttributeInterface instanceof AttributeInterface){
-						attributeProcessor.populateAttribute(abstractAttributeInterface, controlsForm);
+						
+						//Remove old refernces : From Entity
+						entityInterface.removeAbstractAttribute(controlInterface.getAbstractAttribute());
+						
+						//Create new abstract attribute interface with new datatype
+						abstractAttributeInterface = attributeProcessor.createAndPopulateAttribute(controlsForm);
+						
+						//update in entity
+						entityInterface.addAbstractAttribute(abstractAttributeInterface);
+						//update in control interface
+						controlInterface.setAbstractAttribute(abstractAttributeInterface);
 						
 						controlsForm.setAbstractAttribute(abstractAttributeInterface);
 						//update control
@@ -109,6 +115,31 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 			catch (Exception e)
 			{
 				System.out.println("Exception " + e);
+			}
+		}
+	}
+	/**
+	 * @param abstractAttribute
+	 * @param abstractAttributeInterface
+	 */
+	private void updateEntityAttributeInterface(EntityInterface entityInterface ,AbstractAttributeInterface oldAbstractAttributeInterface, AbstractAttributeInterface newAbstractAttributeInterface)
+	{
+		if((oldAbstractAttributeInterface!=null)&&(newAbstractAttributeInterface!=null)&&(entityInterface!=null))
+		{
+			Collection attributeInterfaceCollection = entityInterface.getAbstractAttributeCollection();
+			AbstractAttributeInterface abstAttribInterface = null;
+			if(attributeInterfaceCollection!=null)
+			{
+				Iterator iterator = attributeInterfaceCollection.iterator();
+				while(iterator.hasNext())
+				{
+					abstAttribInterface  = (AbstractAttributeInterface)iterator.next();
+					
+					if(abstAttribInterface.equals(oldAbstractAttributeInterface))
+					{
+						System.out.println("FOund matching attribute interface");
+					}
+				}
 			}
 		}
 	}

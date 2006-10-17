@@ -1,4 +1,6 @@
+
 package edu.common.dynamicextensions.domain;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -16,8 +18,9 @@ import edu.wustl.common.actionForm.AbstractActionForm;
  * @hibernate.joined-subclass table="DYEXTN_ENTITY"
  * @hibernate.joined-subclass-key column="IDENTIFIER"  
  */
-public class Entity extends AbstractMetadata implements EntityInterface {
-	
+public class Entity extends AbstractMetadata implements EntityInterface
+{
+
 	/**
 	 * Collection of attributes in this entity.
 	 */
@@ -30,14 +33,15 @@ public class Entity extends AbstractMetadata implements EntityInterface {
 	 * 
 	 */
 	protected Collection entityGroupCollection;
+
 	/**
 	 * empty Constructor.
 	 */
-	public Entity(){
-		
+	public Entity()
+	{
+
 	}
-	
-	
+
 	/**
 	 * @hibernate.set name="entityGroupCollection" table="DYEXTN_ENTITY_GROUP_REL" 
 	 * cascade="none" inverse="true" lazy="false"
@@ -45,21 +49,25 @@ public class Entity extends AbstractMetadata implements EntityInterface {
 	 * @hibernate.collection-many-to-many class="edu.common.dynamicextensions.domain.EntityGroup" column="ENTITY_GROUP_ID"
 	 * @return Returns the entityGroupCollection.
 	 */
-	public Collection getEntityGroupCollection() {
+	public Collection getEntityGroupCollection()
+	{
 		return entityGroupCollection;
 	}
+
 	/**
 	 * @param entityGroupCollection The entityGroupCollection to set.
 	 */
-	public void setEntityGroupCollection(Collection entityGroupCollection) {
+	public void setEntityGroupCollection(Collection entityGroupCollection)
+	{
 		this.entityGroupCollection = entityGroupCollection;
 	}
-	
-	
-	public void setAllValues(AbstractActionForm arg0)  {
+
+	public void setAllValues(AbstractActionForm arg0)
+	{
 		// TODO Auto-generated method stub
-		
+
 	}
+
 	/**
 	 * @hibernate.set name="tablePropertiesColletion" table="DYEXTN_TABLE_PROPERTIES" cascade="save-update"
 	 * inverse="false" lazy="false"
@@ -67,92 +75,105 @@ public class Entity extends AbstractMetadata implements EntityInterface {
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.databaseproperties.TableProperties"
 	 * @return Returns the tablePropertiesColletion.
 	 */
-	private Collection getTablePropertiesCollection() {
+	private Collection getTablePropertiesCollection()
+	{
 		return tablePropertiesCollection;
 	}
+
 	/**
 	 * @param tablePropertiesColletion The tablePropertiesColletion to set.
 	 */
-	private void setTablePropertiesCollection(Collection tablePropertiesColletion) {
+	private void setTablePropertiesCollection(Collection tablePropertiesColletion)
+	{
 		this.tablePropertiesCollection = tablePropertiesColletion;
 	}
-    
-    
-    /**
-     * 
-     * @return
-     */
-    public TableProperties getTableProperties(){
-        if(tablePropertiesCollection != null){
-            Iterator tabletPropertiesIterator = tablePropertiesCollection.iterator();
-            return (TableProperties)tabletPropertiesIterator.next();
-        } else {
-            return null;   
-        }
-        
-    }
-    
-    /**
-     * 
-     * @param sourceEntity
-     */
-    public void setTableProperties(TableProperties tableProperties){
-        if(tablePropertiesCollection == null){
-            tablePropertiesCollection  = new HashSet();
-        }
-        this.tablePropertiesCollection .add(tableProperties);
-    }
 
-    /**
-     * 
-     */
-	public void addAbstractAttribute(AbstractAttributeInterface attributeInterface) {
-		if(abstractAttributeCollection == null)
-        {
-            abstractAttributeCollection = new HashSet();
-        }
+	/**
+	 * 
+	 * @return
+	 */
+	public TableProperties getTableProperties()
+	{
+		if (tablePropertiesCollection != null)
+		{
+			Iterator tabletPropertiesIterator = tablePropertiesCollection.iterator();
+			return (TableProperties) tabletPropertiesIterator.next();
+		}
+		else
+		{
+			return null;
+		}
+
+	}
+
+	/**
+	 * 
+	 * @param sourceEntity
+	 */
+	public void setTableProperties(TableProperties tableProperties)
+	{
+		if (tablePropertiesCollection == null)
+		{
+			tablePropertiesCollection = new HashSet();
+		}
+		this.tablePropertiesCollection.add(tableProperties);
+	}
+
+	/**
+	 * 
+	 */
+	public void addAbstractAttribute(AbstractAttributeInterface attributeInterface)
+	{
+		if (abstractAttributeCollection == null)
+		{
+			abstractAttributeCollection = new HashSet();
+		}
 		abstractAttributeCollection.add(attributeInterface);
 	}
 
-    /**
-     * 
-     */
-	public void addEntityGroupInterface(EntityGroupInterface entityGroupInterface) {
-		// TODO Auto-generated method stub
-		
-	}
 	/**
-     * @hibernate.set name="abstractAttributeCollection" table="DYEXTN_ATTRIBUTE"
-     * cascade="save-update" inverse="false" lazy="false"
-     * @hibernate.collection-key column="ENTIY_ID"
-     * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.AbstractAttribute" 
+	 * 
+	 */
+	public void addEntityGroupInterface(EntityGroupInterface entityGroupInterface)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	/**
+	 * @hibernate.set name="abstractAttributeCollection" table="DYEXTN_ATTRIBUTE"
+	 * cascade="save-update" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="ENTIY_ID"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.AbstractAttribute" 
 	 * @return Returns the abstractAttributeCollection.
 	 */
-	public Collection getAbstractAttributeCollection() {
+	public Collection getAbstractAttributeCollection()
+	{
 		return abstractAttributeCollection;
 	}
+
 	/**
 	 * @param abstractAttributeCollection The abstractAttributeCollection to set.
 	 */
-	public void setAbstractAttributeCollection(
-			Collection abstractAttributeCollection) {
+	public void setAbstractAttributeCollection(Collection abstractAttributeCollection)
+	{
 		this.abstractAttributeCollection = abstractAttributeCollection;
 	}
 
-
-    /**
-     * 
-     */
-	public Collection getAttributeCollection() {
+	/**
+	 * 
+	 */
+	public Collection getAttributeCollection()
+	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-
-    /**
-     * 
-     */
-	public Collection getAssociationCollection() {
+	/**
+	 * 
+	 */
+	public Collection getAssociationCollection()
+	{
 		// TODO Auto-generated method stub
 		return null;
 	}

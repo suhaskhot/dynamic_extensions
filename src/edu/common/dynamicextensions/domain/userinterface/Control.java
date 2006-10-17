@@ -43,23 +43,20 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	/**
 	 * Tool tip message for the control.
 	 */
-	protected String tooltip=null;
-	
+	protected String tooltip=null;	
 	/**
 	 * Value to be shown in the control
 	 */
 	protected String value = null;
 	/**
 	 * Attribute to which this control is associated.
-	 */
-	
+	 */	
 	public AbstractAttribute abstractAttribute=null;
     
     /**
      * 
      *
      */
-
 	public Control(){
 
 	}

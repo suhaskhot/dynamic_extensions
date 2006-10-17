@@ -90,10 +90,9 @@ public interface ContainerInterface
      void setTitleCss(String titleCss);
      /**
       * 
-      * @param sequenceNumber
-      * @return
+      * @param sequenceNumber the Sequence Number of the control
+      * @return the Control Interface
       */
-
      ControlInterface getControlInterfaceBySequenceNumber(String sequenceNumber);
        
 }

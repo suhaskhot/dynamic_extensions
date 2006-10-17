@@ -9,45 +9,53 @@ import edu.wustl.common.domain.AbstractDomainObject;
  * @author sujay_narkar
  *
  */
-public class PreviewForm extends AbstractActionForm 
+public class PreviewForm extends AbstractActionForm
 {
-    
-    ContainerInterface containerInterface;
+	private static final long serialVersionUID = -7828307676065035418L;
+	
+	/**
+	 * 
+	 */
+	ContainerInterface containerInterface;
 
-    /**
-     * 
-     */
-	public int getFormId() {
+	/**
+	 * @return The Form identifier
+	 */
+	public int getFormId()
+	{
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-    /**
-     * 
-     */
-	public void setAllValues(AbstractDomainObject arg0) {
+	/**
+	 * @param abstractDomainObject AbstractDomainObject instance
+	 */
+	public void setAllValues(AbstractDomainObject abstractDomainObject)
+	{
 		// TODO Auto-generated method stub
-		
 	}
 
-    /**
-     * 
-     */
-	protected void reset() {
+	/**
+	 * This method resets all values.
+	 */
+	protected void reset()
+	{
 		// TODO Auto-generated method stub
-		
 	}
 
 	/**
 	 * @return Returns the containerInterface.
 	 */
-	public ContainerInterface getContainerInterface() {
+	public ContainerInterface getContainerInterface()
+	{
 		return containerInterface;
 	}
+
 	/**
 	 * @param containerInterface The containerInterface to set.
 	 */
-	public void setContainerInterface(ContainerInterface containerInterface) {
+	public void setContainerInterface(ContainerInterface containerInterface)
+	{
 		this.containerInterface = containerInterface;
 	}
 }

@@ -78,6 +78,10 @@ public interface ControlInterface
 	 * @param tooltip The tooltip to set.
 	 */
 	 void setTooltip(String tooltip);
+	 /**
+	  * @return return the HTML string for this type of a object
+	  */
+	 String generateHTML();
 		
 
 }

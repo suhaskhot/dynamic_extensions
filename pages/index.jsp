@@ -1,5 +1,5 @@
 <%-- Jsp Summary                                                                                 	--%>
-<%-- ---------------------------------------------------------------------------------------------- --%>
-<%-- @author : Deepti Shelar --%>
+<%-- This will forward to DynamicExtensionHomePage.jsp-                                             --%>
+<%-- @author : Deepti Shelar -                                                                      --%>
 
 <jsp:forward page="/DynamicExtensionHomePage.do" />

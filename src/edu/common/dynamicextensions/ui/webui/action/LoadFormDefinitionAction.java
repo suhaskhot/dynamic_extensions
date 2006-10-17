@@ -25,6 +25,10 @@ import edu.common.dynamicextensions.util.global.Constants;
 
 public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 {
+	/**
+	 * This method will call LoadFormDefinitionProcessor to load all the information needed for the form.
+	 * It will then forward the action to CreateForm.jsp. 
+	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 	{
 		FormDefinitionForm actionForm = (FormDefinitionForm) form;

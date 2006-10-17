@@ -1,6 +1,7 @@
 /**
- * 
+ * @title LoadFormsIndexAction. 
  */
+
 package edu.common.dynamicextensions.ui.webui.action;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +14,11 @@ import org.apache.struts.action.ActionMapping;
 import edu.common.dynamicextensions.processor.LoadFormsIndexProcessor;
 import edu.common.dynamicextensions.ui.webui.actionform.FormsIndexForm;
 import edu.common.dynamicextensions.util.global.Constants;
+
 /**
+ * A call to LoadFormsIndexProcessor will get all the existing forms' list.
+ * This action class populates the action form with the reaquired data.And forwards action to 
+ * DynamicExtensionsHomepgae.jsp.  
  * @author chetan_patil
  *
  */
@@ -31,13 +36,11 @@ public class LoadFormsIndexAction extends BaseDynamicExtensionsAction
 	 * @throws Exception on exception
 	 * @return ActionForward
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form, 
-				HttpServletRequest request, HttpServletResponse response) throws Exception 
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		FormsIndexForm loadFormIndexForm = (FormsIndexForm)form;
+		FormsIndexForm loadFormIndexForm = (FormsIndexForm) form;
 		LoadFormsIndexProcessor loadFormsIndexProcessor = LoadFormsIndexProcessor.getInstance();
 		loadFormsIndexProcessor.populateFormsIndex(loadFormIndexForm);
 		return mapping.findForward(Constants.SHOW_DYNAMIC_EXTENSIONS_HOMEPAGE);
 	}
-	
 }

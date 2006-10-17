@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.ui.webui.action;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,24 +25,29 @@ import edu.common.dynamicextensions.util.global.Constants;
  * And The exception thrown can be of 'System' type, in this case user will be directed to Error Page.
  * @author deepti_shelar
  */
-public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction {
+public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
+{
 	/**
-	 * 
+	 * This method will call ApplyFormDefinitionProcessor for actually updating the cache and then
+	 * forwards the action to either BuildForm.jsp or CreateForm.jsp depending on the Operation.
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form,HttpServletRequest request,
-			HttpServletResponse response) {
-		FormDefinitionForm formDefinitionForm = (FormDefinitionForm)form;
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
+	{
+		FormDefinitionForm formDefinitionForm = (FormDefinitionForm) form;
 		String target = "";
-		ContainerInterface containerInterface = (ContainerInterface)CacheManager.getObjectFromCache(request,Constants.CONTAINER_INTERFACE);
+		ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 		ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor.getInstance();
-		if (formDefinitionForm.getOperation().equalsIgnoreCase(Constants.BUILD_FORM)) {
-			containerInterface = applyFormDefinitionProcessor.addEntityToContainer(containerInterface, formDefinitionForm,false);		
+		if (formDefinitionForm.getOperation().equalsIgnoreCase(Constants.BUILD_FORM))
+		{
+			containerInterface = applyFormDefinitionProcessor.addEntityToContainer(containerInterface, formDefinitionForm, false);
 			target = Constants.BUILD_FORM;
-		} else {// When we click on save 
-			containerInterface = applyFormDefinitionProcessor.addEntityToContainer(containerInterface, formDefinitionForm,true);
+		}
+		else
+		{// When we click on save 
+			containerInterface = applyFormDefinitionProcessor.addEntityToContainer(containerInterface, formDefinitionForm, true);
 			target = Constants.SUCCESS;
 		}
-		CacheManager.addObjectToCache(request,Constants.CONTAINER_INTERFACE, containerInterface);
+		CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
 		return mapping.findForward(target);
-	}  
+	}
 }

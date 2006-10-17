@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.processor;
 
 import java.util.ArrayList;
@@ -8,33 +9,45 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.ui.webui.actionform.FormsIndexForm;
 
 /**
- * 
+ * Populates  the actonForm with required data eg. entityList. 
  * @author deepti_shelar
  *
  */
-public class LoadFormsIndexProcessor extends BaseDynamicExtensionsProcessor {
+public class LoadFormsIndexProcessor extends BaseDynamicExtensionsProcessor
+{
 	/**
-	 *
+	 * Default Constructor.
 	 */
-	protected LoadFormsIndexProcessor() {
-		// TODO Auto-generated constructor stub
+	protected LoadFormsIndexProcessor()
+	{
 	}
-	/**
-	 *
-	 */
 
-	public static LoadFormsIndexProcessor getInstance() {
+	/**
+	 * returns the instance of LoadFormsIndexProcessor.
+	 */
+	public static LoadFormsIndexProcessor getInstance()
+	{
 		return new LoadFormsIndexProcessor();
 	}
-	public void populateFormsIndex(FormsIndexForm loadFormIndexForm ) {
+
+	/**
+	 * A call to EntityManager will return the entityList which will then added to actionForm.
+	 * @param loadFormIndexForm
+	 */
+	public void populateFormsIndex(FormsIndexForm loadFormIndexForm)
+	{
 		Collection entityList = null;
-		try {
+		try
+		{
 			entityList = new MockEntityManager().getAllEntities();
-			if(entityList == null) {
+			if (entityList == null)
+			{
 				entityList = new ArrayList();
 			}
 			loadFormIndexForm.setEntityList(entityList);
-		} catch (DynamicExtensionsApplicationException e) {
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
 			e.printStackTrace();
 		}
 	}

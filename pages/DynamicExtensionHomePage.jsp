@@ -1,5 +1,5 @@
 <%-- Jsp Summary                                                                                 	--%>
-<%-- ---------------------------------------------------------------------------------------------- --%>
+<%-- This shows forms' list and also allows user to add a new form or Deletion of a form.           --%>
 <%-- @author : chetan_patil--%>
 
 <%-- TagLibs --%>

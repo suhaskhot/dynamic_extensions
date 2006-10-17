@@ -20,7 +20,6 @@ import edu.common.dynamicextensions.util.global.Constants;
  * This action class populates the action form with the reaquired data.And forwards action to 
  * DynamicExtensionsHomepgae.jsp.  
  * @author chetan_patil
- *
  */
 public class LoadFormsIndexAction extends BaseDynamicExtensionsAction
 {
@@ -36,11 +35,13 @@ public class LoadFormsIndexAction extends BaseDynamicExtensionsAction
 	 * @throws Exception on exception
 	 * @return ActionForward
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public ActionForward execute(ActionMapping mapping, ActionForm form, 
+				HttpServletRequest request, HttpServletResponse response) throws Exception 
 	{
-		FormsIndexForm loadFormIndexForm = (FormsIndexForm) form;
+		FormsIndexForm loadFormIndexForm = (FormsIndexForm)form;
 		LoadFormsIndexProcessor loadFormsIndexProcessor = LoadFormsIndexProcessor.getInstance();
 		loadFormsIndexProcessor.populateFormsIndex(loadFormIndexForm);
 		return mapping.findForward(Constants.SHOW_DYNAMIC_EXTENSIONS_HOMEPAGE);
 	}
+	
 }

@@ -33,6 +33,8 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
  */
 public class MockEntityManager 
 {
+	int identifier = 1;
+	int sequence = 1;
 	/**
 	 * This method returns the manually created Entities.
 	 * 
@@ -137,11 +139,11 @@ public class MockEntityManager
 		EntityInterface entityInterface = null;
 		
 		containerInterface = new Container();
-		containerInterface.setButtonCss("input.actionButton");
+		containerInterface.setButtonCss("actionButton");
 		containerInterface.setCaption("DummyContainer");
 		containerInterface.setMainTableCss("formRequiredLabel");
 		containerInterface.setRequiredFieldIndicatior("*");
-		containerInterface.setRequiredFieldWarningMessage("Warning");
+		containerInterface.setRequiredFieldWarningMessage("indicates mandatory fields.");
 		containerInterface.setTitleCss("formTitle");
 		
 		entityInterface = initializeEntity();
@@ -179,7 +181,7 @@ public class MockEntityManager
 	 * @return Manually created dummy Entity along with its attributes
 	 * @throws DynamicExtensionsApplicationException On failure to create Entity 
 	 */
-	private EntityInterface initializeEntity() throws DynamicExtensionsApplicationException 
+	public EntityInterface initializeEntity() throws DynamicExtensionsApplicationException 
 	{
 		Attribute attribute = null;
 		Entity dummyEntity = new Entity();
@@ -190,21 +192,18 @@ public class MockEntityManager
 		dummyEntity.setDescription("This is a dummy entity");
 		dummyEntity.setLastUpdated(dummyEntity.getCreatedDate());
 
-		Collection abstractAttributeCollection = new HashSet();
-
 		/* Name attribute */
 		attribute = initializeStringAttribute("name", "Daniel Pearl");
-		abstractAttributeCollection.add(attribute);
-
+		dummyEntity.addAbstractAttribute(attribute);
+	
 		/* Date of Joining attribute */
 		attribute = initializeDateAttribute();
-		abstractAttributeCollection.add(attribute);
+		dummyEntity.addAbstractAttribute(attribute);
 
 		/* Gender attribute with its Permissible values */
 		attribute = initializeStringAttribute("gender", "Male");
-		// Set permissible values
-		attribute.setDataElement(initializeDataElement()); 
-		abstractAttributeCollection.add(attribute);
+		attribute.setDataElement(initializeDataElement());
+		dummyEntity.addAbstractAttribute(attribute);
 		
 		/* Description attribute */
 		attribute = initializeStringAttribute("description",
@@ -213,10 +212,8 @@ public class MockEntityManager
 				+ "for his comedic roles in Groundhog Day, Caddyshack, Ghostbusters, and What About Bob?. "
 				+ "He has gained further acclaim for recent dramatic roles, such as in the acclaimed films "
 				+ "Lost In Translation and Broken Flowers.");
-		abstractAttributeCollection.add(attribute);
-
-		dummyEntity.setAbstractAttributeCollection(abstractAttributeCollection);
-
+		dummyEntity.addAbstractAttribute(attribute);
+	
 		return dummyEntity;
 	}
 
@@ -226,13 +223,13 @@ public class MockEntityManager
 	 * @param defaultValue Default value of the Attribute
 	 * @return Manually created StringAttribute instance
 	 */
-	private Attribute initializeStringAttribute(String attributeName, String defaultValue) 
+	public Attribute initializeStringAttribute(String attributeName, String defaultValue) 
 	{
 		StringAttribute stringAttribute = new StringAttribute();
 
 		stringAttribute.setCreatedDate(new Date());
 		stringAttribute.setDescription("This is a dummy StringAttribute");
-		stringAttribute.setId(new Long(1L));
+		stringAttribute.setId(new Long(identifier++));
 		stringAttribute.setIsCollection(new Boolean(false));
 		stringAttribute.setIsIdentified(new Boolean(true));
 		stringAttribute.setIsPrimaryKey(new Boolean(false));
@@ -251,7 +248,7 @@ public class MockEntityManager
 	 * @return Manually created DateAttribute instance
 	 * @throws DynamicExtensionsApplicationException On failure to create Date
 	 */
-	private Attribute initializeDateAttribute() throws DynamicExtensionsApplicationException
+	public Attribute initializeDateAttribute() throws DynamicExtensionsApplicationException
 	{
 		DateAttribute dateAttribute = new DateAttribute();
 		Date dateOfJoining = null;
@@ -266,7 +263,7 @@ public class MockEntityManager
 
 		dateAttribute.setCreatedDate(new Date());
 		dateAttribute.setDescription("This is a dummy DateAttribute");
-		dateAttribute.setId(new Long(1L));
+		dateAttribute.setId(new Long(identifier++));
 		dateAttribute.setIsCollection(new Boolean(false));
 		dateAttribute.setIsIdentified(new Boolean(true));
 		dateAttribute.setIsPrimaryKey(new Boolean(false));
@@ -281,7 +278,7 @@ public class MockEntityManager
 	 * @param abstractAttribute Assosiated Attribute of the Entity
 	 * @return Manually created TextField control instance
 	 */
-	private ControlInterface initializeTextField(AbstractAttribute abstractAttribute)
+	public ControlInterface initializeTextField(AbstractAttribute abstractAttribute)
 	{
 		final int COLUMNS = 50;
 		TextField textField = new TextField();
@@ -292,9 +289,9 @@ public class MockEntityManager
 		textField.setIsPassword(new Boolean(false));
 		
 		textField.setCaption("Employee Name");
-		textField.setSequenceNumber(new Integer(1));
+		textField.setSequenceNumber(new Integer(sequence++));
 		textField.setIsHidden(new Boolean(false));
-		textField.setCssClass("toolLabelText");
+		textField.setCssClass("formField");
 		textField.setTooltip("This is Name of the Employee.");
 
 		return textField;
@@ -304,7 +301,7 @@ public class MockEntityManager
 	 * @param abstractAttribute Assosiated Attribute of the Entity
 	 * @return Manually created TextArea control instance
 	 */
-	private ControlInterface initializeTextArea(AbstractAttribute abstractAttribute)
+	public ControlInterface initializeTextArea(AbstractAttribute abstractAttribute)
 	{
 		final int COLUMNS = 50;
 		final int ROWS = 6;
@@ -316,9 +313,9 @@ public class MockEntityManager
 		textArea.setRows(new Integer(ROWS));
 		
 		textArea.setCaption("Description");
-		textArea.setSequenceNumber(new Integer(4));
+		textArea.setSequenceNumber(new Integer(sequence++));
 		textArea.setIsHidden(new Boolean(false));
-		textArea.setCssClass("toolLabelText");
+		textArea.setCssClass("formField");
 		textArea.setTooltip("This is Description of the Employee.");
 
 		return textArea;
@@ -328,16 +325,16 @@ public class MockEntityManager
 	 * @param abstractAttribute Assosiated Attribute of the Entity
 	 * @return Manually created TextArea control instance
 	 */
-	private ControlInterface initializeDatePicker(AbstractAttribute abstractAttribute)
+	public ControlInterface initializeDatePicker(AbstractAttribute abstractAttribute)
 	{
 		DatePicker datePicker = new DatePicker();
 		
 		datePicker.setAbstractAttribute(abstractAttribute);
 		
 		datePicker.setCaption("Date of Joining");
-		datePicker.setSequenceNumber(new Integer(2));
+		datePicker.setSequenceNumber(new Integer(sequence++));
 		datePicker.setIsHidden(new Boolean(false));
-		datePicker.setCssClass("toolLabelText");
+		datePicker.setCssClass("formField");
 		datePicker.setTooltip("This is Date of Joining of the Employee.");
 
 		return datePicker;
@@ -347,16 +344,16 @@ public class MockEntityManager
 	 * @param abstractAttribute Assosiated Attribute of the Entity
 	 * @return Manually created TextArea control instance
 	 */
-	private ControlInterface initializeComboBox(AbstractAttribute abstractAttribute)
+	public ControlInterface initializeComboBox(AbstractAttribute abstractAttribute)
 	{
 		ComboBox comboBox = new ComboBox();
 		
 		comboBox.setAbstractAttribute(abstractAttribute);
 		
 		comboBox.setCaption("Gender");
-		comboBox.setSequenceNumber(new Integer(3));
+		comboBox.setSequenceNumber(new Integer(sequence));
 		comboBox.setIsHidden(new Boolean(false));
-		comboBox.setCssClass("toolLabelText");
+		comboBox.setCssClass("formField");
 		comboBox.setTooltip("This is Gender of the Employee.");
 
 		return comboBox;
@@ -365,7 +362,7 @@ public class MockEntityManager
 	/**
 	 * @return Manually created DataElement instance
 	 */
-	private DataElementInterface initializeDataElement()
+	public DataElementInterface initializeDataElement()
 	{
 		UserDefinedDE userDefinedDE = new UserDefinedDE();
 		

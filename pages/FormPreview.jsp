@@ -20,7 +20,7 @@
 <%-- Stylesheet --%>
 <link rel="stylesheet" type="text/css" href="css/stylesheet.css" />
 
-<c:set var="containerInterface" value="${previewForm.ContainerInterface}"/>
+<c:set var="containerInterface" value="${previewForm.containerInterface}"/>
 <jsp:useBean id="containerInterface" type="edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface"/>
 
 <html>
@@ -33,32 +33,36 @@
 			
 			<div id='overDiv' style='position:absolute; visibility:hidden; z-index:1000;'></div>
 			
-			<table align='center' width='100%'>
+			<table align='center' width='75%'>				
           		<tr>
   					<td>
-						<table summary="" cellpadding="3" cellspacing="0" border="0" align='center' width = '70%'>
+						<table summary="" cellpadding="3" cellspacing="0" border="1" align='center' width = '100%'>
 							<tr>
-								<td class="formMessage" colspan="3">* indicates a required field.</td>
+								<td class='formTitle' align='center'>
+									<c:out value="${containerInterface.caption}" escapeXml="false" />
+								</td>
 							</tr>
-						
 							<tr>
-								<td class="formTitle" height="20" colspan="3">
-									New Entity
+								<td class="formMessage" colspan="3">
+									<c:out value="${containerInterface.requiredFieldIndicatior}" escapeXml="false" />&nbsp;
+									<c:out value="${containerInterface.requiredFieldWarningMessage}" escapeXml="false" />
 								</td>
 							</tr>
 							
 						<c:forEach items="${containerInterface.controlCollection}" var="controlInterface">
 						<jsp:useBean id="controlInterface" type="edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface" />
 							<tr>
-								<td class="formRequiredNotice" width="5">
+								<td class="formRequiredNotice">
 									<c:out value="${controlInterface.caption}"/>
 								</td>
-								<td class="formRequiredNotice" width="5">
-									<% String generateHTMLStr = controlInterface.generateHTML() %>
-									<c:out value="${generateHTMLStr}">
+								<td class="formRequiredNotice">
+									<% String generateHTMLStr = controlInterface.generateHTML(); %>
+									<% pageContext.setAttribute("generateHTMLStr", generateHTMLStr); %>
+									<c:out value="${generateHTMLStr}" escapeXml="false" />
 								</td>
 							</tr>
 						</c:forEach>
+						
                        	</table>
                 	</td>
                 </tr>
@@ -72,12 +76,13 @@
 						<html:submit styleClass="actionButton">
 							<bean:message  key="buttons.submit" />
 						</html:submit>
-					</td>
+					</td>					
+				</tr>
+				<tr>
+							
 				</tr>
 			</table>
-		</html:form>
+		<%-- </html:form> --%>
 	</body>
 
 </html>
-
-

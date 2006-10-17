@@ -8,6 +8,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.ui.webui.actionform.FormsIndexForm;
+import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.util.global.Constants;
 
 /**
@@ -21,6 +23,11 @@ public class ApplyFormsIndexAction extends BaseDynamicExtensionsAction
 	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 	{
+		FormsIndexForm formsIndexForm = (FormsIndexForm)form;
+		String mode = formsIndexForm.getMode();
+		if(mode != null && mode.equalsIgnoreCase(Constants.ADD_NEW_FORM)) {
+			CacheManager.clearCache(request);
+		}
 		return mapping.findForward(Constants.SUCCESS);
 	}
 }

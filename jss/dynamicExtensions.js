@@ -264,3 +264,9 @@ function showFormPreview()
 	controlsForm.action="/dynamicExtensions/AddControlsAction.do";
 	controlsForm.submit();
 }
+
+function addFormAction()
+{
+	document.getElementById('mode').value = 'AddNewForm';
+	document.getElementById('formsIndexForm').submit;
+}

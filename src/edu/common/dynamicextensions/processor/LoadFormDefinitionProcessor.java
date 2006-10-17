@@ -53,12 +53,12 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	public void populateContainerInformation(ContainerInterface containerInterface, ContainerUIBeanInterface containerUIBeanInterface)
 	{
-		if (containerInterface != null)
+		ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
+		if (containerInterface == null)
 		{
-			System.out.println("");
-			ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
-			populateEntityInformation(containerInterface.getEntity(), ((EntityUIBeanInterface) containerUIBeanInterface));
-			containerProcessor.populateContainerInformation(containerInterface, containerUIBeanInterface);
+			containerInterface = containerProcessor.createContainer();
 		}
+		populateEntityInformation(containerInterface.getEntity(), ((EntityUIBeanInterface) containerUIBeanInterface));
+		containerProcessor.populateContainerInformation(containerInterface, containerUIBeanInterface);
 	}
 }

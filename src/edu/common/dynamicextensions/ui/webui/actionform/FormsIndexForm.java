@@ -1,6 +1,7 @@
 /**
  * 
  */
+
 package edu.common.dynamicextensions.ui.webui.actionform;
 
 import java.util.Collection;
@@ -18,21 +19,41 @@ public class FormsIndexForm extends AbstractActionForm
 	 * 
 	 */
 	private static final long serialVersionUID = 0L;
-	
+
 	/**
 	 * Collection of Entities
 	 */
 	protected Collection entityList = null;
-	
+
 	/**
 	 * Values of the Check boxes
 	 */
 	protected String[] entityCheckBoxes = null;
+	/**
+	 * mode
+	 */
+	protected String mode;
+
+	/**
+	 * @return the mode
+	 */
+	public String getMode()
+	{
+		return mode;
+	}
+
+	/**
+	 * @param mode the mode to set
+	 */
+	public void setMode(String mode)
+	{
+		this.mode = mode;
+	}
 
 	/**
 	 * @return the entityList
 	 */
-	public Collection getEntityList() 
+	public Collection getEntityList()
 	{
 		return entityList;
 	}
@@ -40,15 +61,15 @@ public class FormsIndexForm extends AbstractActionForm
 	/**
 	 * @param entityList the entityList to set
 	 */
-	public void setEntityList(Collection entityList) 
+	public void setEntityList(Collection entityList)
 	{
 		this.entityList = entityList;
 	}
-	
+
 	/**
 	 * @return the entityCheckBoxes
 	 */
-	public String[] getEntityCheckBoxes() 
+	public String[] getEntityCheckBoxes()
 	{
 		return entityCheckBoxes;
 	}
@@ -56,7 +77,7 @@ public class FormsIndexForm extends AbstractActionForm
 	/**
 	 * @param entityCheckBoxes the entityCheckBoxes to set
 	 */
-	public void setEntityCheckBoxes(String[] entityCheckBoxes) 
+	public void setEntityCheckBoxes(String[] entityCheckBoxes)
 	{
 		this.entityCheckBoxes = entityCheckBoxes;
 	}
@@ -64,8 +85,8 @@ public class FormsIndexForm extends AbstractActionForm
 	/**
 	 * Overrides getFormId() method of ActionForm
 	 * @return the form identifier
-	 */	
-	public int getFormId() 
+	 */
+	public int getFormId()
 	{
 		return 0;
 	}
@@ -73,18 +94,18 @@ public class FormsIndexForm extends AbstractActionForm
 	/**
 	 * Overrides reset() method of ActionForm
 	 */
-	protected void reset() 
+	protected void reset()
 	{
-		entityList = null;		
+		entityList = null;
 	}
 
 	/**
 	 * Overrides setAllValues() method of ActionForm
 	 * @param abstractDomainObject AbstractDomainObject
 	 */
-	public void setAllValues(AbstractDomainObject abstractDomainObject) 
-	{		
-		
-	}	
-	
+	public void setAllValues(AbstractDomainObject abstractDomainObject)
+	{
+
+	}
+
 }

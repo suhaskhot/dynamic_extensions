@@ -20,6 +20,7 @@
 
 <%-- Stylesheet --%>
 <link rel="stylesheet" type="text/css" href="css/stylesheet.css" />
+<script src="jss/dynamicExtensions.js" type="text/javascript"></script>
 
 <html>
 	<head>
@@ -40,7 +41,7 @@
 
 			<tr align='left'>
 				<td>
-					<html:submit property="buildForm" >
+					<html:submit property="buildForm" onclick='addFormAction()'>
 						<bean:message  key="buttons.build.form" />
 					</html:submit>
 				</td>
@@ -124,7 +125,7 @@
 				</td>
 			</tr>
 		</table>
-		
+			<html:hidden property="mode" value=""/>
 	</body>
 	</html:form>
 </html>

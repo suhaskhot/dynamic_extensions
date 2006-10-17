@@ -32,11 +32,17 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 	{
 		FormDefinitionForm actionForm = (FormDefinitionForm) form;
-		ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-		if (containerInterface != null)
-		{
-			LoadFormDefinitionProcessor loadFormDefinitionProcessor = LoadFormDefinitionProcessor.getInstance();
+		LoadFormDefinitionProcessor loadFormDefinitionProcessor = LoadFormDefinitionProcessor.getInstance();
+		ContainerInterface containerInterface = null;
+		String mode = actionForm.getMode();
+		if(mode != null && mode.equalsIgnoreCase(Constants.ADD_NEW_FORM)) {
 			loadFormDefinitionProcessor.populateContainerInformation(containerInterface, actionForm);
+		} else {
+			containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+			if (containerInterface != null)
+			{
+				loadFormDefinitionProcessor.populateContainerInformation(containerInterface, actionForm);
+			}
 		}
 		return (mapping.findForward(Constants.SUCCESS));
 	}

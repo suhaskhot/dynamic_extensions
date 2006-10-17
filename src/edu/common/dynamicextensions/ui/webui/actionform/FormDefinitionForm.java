@@ -85,7 +85,26 @@ public class FormDefinitionForm  extends AbstractActionForm implements EntityUIB
 	 * 
 	 */
 	protected String conceptCode;
-	
+	/**
+	 * mode
+	 */
+	protected String mode;
+
+	/**
+	 * @return the mode
+	 */
+	public String getMode()
+	{
+		return mode;
+	}
+
+	/**
+	 * @param mode the mode to set
+	 */
+	public void setMode(String mode)
+	{
+		this.mode = mode;
+	}
     
 		/**
 	 * Returns the id assigned to form bean.

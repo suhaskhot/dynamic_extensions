@@ -10,8 +10,8 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterf
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface;
-import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
+import edu.common.dynamicextensions.ui.util.ControlAttributeMappingsFactory;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.UIControlsConfigurationFactory;
 import edu.wustl.common.actionForm.AbstractActionForm;
@@ -92,7 +92,9 @@ public class LoadFormControlsProcessor
 				controlsForm.setHtmlFile(userSelectedToolName+".jsp");
 			}
 
-			controlsForm.setDataTypeList(getDataTypeList());
+			//controlsForm.setDataTypeList(getDataTypeList());
+			ControlAttributeMappingsFactory controlAttributeMappingsFactory = ControlAttributeMappingsFactory.getInstance(); 
+			controlsForm.setDataTypeList(controlAttributeMappingsFactory.getAttributesForControl(controlsForm.getUserSelectedTool()));
 			controlsForm.setDisplayChoiceList(displayChoiceListgetDisplayChoiceList());
 			controlsForm.setRootName(containerInterface.getCaption());
 			controlsForm.setChildList(getChildList(containerInterface));

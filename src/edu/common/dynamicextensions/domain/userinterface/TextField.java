@@ -102,7 +102,7 @@ public class TextField extends Control implements TextFieldInterface{
     /**
      * 
      */
-	public String generateHTML1()
+	public String generateHTML()
 	{
 		if(value==null)
 		{
@@ -118,7 +118,7 @@ public class TextField extends Control implements TextFieldInterface{
 							"value = '" + value + "' "  +
 							"size = '" + columns.intValue() + "' " ;	//Width of Input Fld  
 							//"maxlength = '" + maxChars + "' ";
-		if(isPassword.booleanValue()==true)
+		if(isPassword != null && isPassword.booleanValue() == true)
 		{
 			htmlString  = htmlString + " type='password' " ;
 		}
@@ -131,18 +131,7 @@ public class TextField extends Control implements TextFieldInterface{
 		return htmlString;	
 	}
     
-    public String generateHTML()
-    {
-        if(value==null)
-        {
-            value = "";
-        }
-    	String htmlString = "<html:text styleClass='" + cssClass + "'  size='"+columns.intValue()+"'  property='"+ name +"' />";
-        
-        return htmlString;
-            
-    }
-
+    
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface#setAttribute(edu.common.dynamicextensions.domaininterface.AttributeInterface)
 	 */

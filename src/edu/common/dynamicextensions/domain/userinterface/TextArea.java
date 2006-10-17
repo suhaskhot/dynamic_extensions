@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.domain.userinterface;
 
 import java.util.Map;
@@ -12,7 +13,8 @@ import edu.common.dynamicextensions.ui.webui.util.UIConfigurationConstants;
  * @hibernate.joined-subclass table="DYEXTN_TEXTAREA" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class TextArea extends Control implements TextAreaInterface {
+public class TextArea extends Control implements TextAreaInterface
+{
 
 	/**
 	 * Number of columns in the text area.
@@ -22,11 +24,13 @@ public class TextArea extends Control implements TextAreaInterface {
 	 * Number of rows in the text area.
 	 */
 	protected Integer rows;
+
 	/**
-     * 
+	 * 
 	 *
 	 */
-	public TextArea(){
+	public TextArea()
+	{
 
 	}
 
@@ -34,39 +38,48 @@ public class TextArea extends Control implements TextAreaInterface {
 	 * @hibernate.property name="columns" type="integer" column="TEXTAREA_COLUMNS" 
 	 * @return Returns the columns.
 	 */
-	public Integer getColumns() {
+	public Integer getColumns()
+	{
 		return columns;
 	}
+
 	/**
 	 * @param columns The columns to set.
 	 */
-	public void setColumns(Integer columns) {
+	public void setColumns(Integer columns)
+	{
 		this.columns = columns;
 	}
+
 	/**
 	 * @hibernate.property name="rows" type="integer" column="TEXTAREA_ROWS" 
 	 * @return Returns the rows.
 	 */
-	public Integer getRows() {
+	public Integer getRows()
+	{
 		return rows;
 	}
+
 	/**
 	 * @param rows The rows to set.
 	 */
-	public void setRows(Integer rows) {
+	public void setRows(Integer rows)
+	{
 		this.rows = rows;
 	}
 
-    /**
-     * 
-     */
-	public void populateAttributes(Map propertiesMap) {
+	/**
+	 * 
+	 */
+	public void populateAttributes(Map propertiesMap)
+	{
 		super.populateAttributes(propertiesMap);
-		if(propertiesMap!=null)
+		if (propertiesMap != null)
 		{
-			try {
-				String noOfRows = (String)propertiesMap.get(UIConfigurationConstants.NO_OF_ROWS_ATTRIBUTE);
-				if(noOfRows!=null)
+			try
+			{
+				String noOfRows = (String) propertiesMap.get(UIConfigurationConstants.NO_OF_ROWS_ATTRIBUTE);
+				if (noOfRows != null)
 				{
 					rows = new Integer(noOfRows);
 				}
@@ -74,74 +87,62 @@ public class TextArea extends Control implements TextAreaInterface {
 				{
 					rows = new Integer(UIConfigurationConstants.DEFAULT_NO_OF_ROWS_TEXT);
 				}
-			} catch (NumberFormatException e) {
+			}
+			catch (NumberFormatException e)
+			{
 				System.out.println("Error while retrieving no Of rows");
 				rows = new Integer(UIConfigurationConstants.DEFAULT_NO_OF_ROWS_TEXT);
 			}
-			try {
-				String noOfCols  = (String)propertiesMap.get(UIConfigurationConstants.NO_OF_COLS_ATTRIBUTE);
-				if(noOfCols!=null)
+			try
+			{
+				String noOfCols = (String) propertiesMap.get(UIConfigurationConstants.NO_OF_COLS_ATTRIBUTE);
+				if (noOfCols != null)
 				{
 					columns = new Integer(noOfCols);
 				}
 				else
 				{
-					columns  = new Integer(UIConfigurationConstants.DEFAULT_NO_OF_COLS_TEXT);
+					columns = new Integer(UIConfigurationConstants.DEFAULT_NO_OF_COLS_TEXT);
 				}
-			} catch (NumberFormatException e) {
+			}
+			catch (NumberFormatException e)
+			{
 				System.out.println("Error while retrieving no Of columns");
 				e.printStackTrace();
-				columns  = new Integer(UIConfigurationConstants.DEFAULT_NO_OF_COLS_TEXT);
+				columns = new Integer(UIConfigurationConstants.DEFAULT_NO_OF_COLS_TEXT);
 			}
 		}
 		else
 		{
 			rows = new Integer(UIConfigurationConstants.DEFAULT_NO_OF_ROWS_TEXT);
-			columns  = new Integer(UIConfigurationConstants.DEFAULT_NO_OF_COLS_TEXT);
+			columns = new Integer(UIConfigurationConstants.DEFAULT_NO_OF_COLS_TEXT);
 		}
 	}
-    
-    /**
-     * 
-     */
 
-	public String generateHTML1()
+	/**
+	 * 
+	 */
+
+	public String generateHTML()
 	{
-		if(value==null)
+		if (value == null)
 		{
 			value = "";
 		}
-		String htmlString = "<textarea " +
-		"class = '" + cssClass + "' " +
-		"name = '" + name + "' " +
-		"id = '" + name + "' " +
-		"cols = '" + columns.intValue() + "' " +
-		"rows = '" + rows.intValue() + "' " +
-		"title = '" + tooltip + "' " +
-		"value = '" + value + "' " + 
-		" >" ;
+		String htmlString = "<textarea " + "class = '" + cssClass + "' " + "name = '" + name + "' " + "id = '" + name + "' " + "cols = '"
+				+ columns.intValue() + "' " + "rows = '" + rows.intValue() + "' " + "title = '" + tooltip + "' " + "value = '" + value + "' " + " >";
 		//htmlString = htmlString + defaultvalue
-		htmlString = htmlString  + "</textarea>";
+		htmlString = htmlString + "</textarea>";
 		System.out.println("Returning " + htmlString);
 		return htmlString;
 	}
-    
-    
-    /**
-     * 
-     */
-    public String generateHTML()
-    {
-        String htmlString = "<html:textarea styleClass='"+cssClass+"'  rows = '"+rows.intValue()+"' cols='"+columns.intValue()+"'  property='"+name+"'  />";
-        
-        return htmlString;
-    }
 
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface#setAttribute(edu.common.dynamicextensions.domaininterface.AttributeInterface)
 	 */
-	public void setAttribute(AbstractAttributeInterface attributeInterface) {
+	public void setAttribute(AbstractAttributeInterface attributeInterface)
+	{
 		// TODO Auto-generated method stub
-		
+
 	}
 }

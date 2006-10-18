@@ -1252,8 +1252,8 @@ public class Constants extends edu.wustl.common.util.global.Constants
     public static final String SELECTED_CONTROL_ID = "selectedControlId";
     public static final String USER_SELECTED_TOOL = "userSelectedTool";
     public static final String ADD_NEW_FORM = "AddNewForm";
-   
-    
+    public static final String MULTI_LINE = "MultiLine";
+    public static final String SINGLE_LINE = "SingleLine";    
     //Constants for eav end
 	
 	

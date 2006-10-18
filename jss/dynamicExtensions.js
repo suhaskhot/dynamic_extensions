@@ -315,3 +315,11 @@ if(obj.value == 'SingleLine')
 	}
 }
 
+// Added by Chetan
+function backToControlForm() 
+{
+	var previewForm = document.getElementById('previewForm');
+	previewForm.action="/dynamicExtensions/LoadFormControlsAction.do";
+	previewForm.submit();
+}
+

@@ -29,7 +29,7 @@
 	</head>
 	
 	<body>
-		<%-- <html:form action="/ApplyEntityDataAction" enctype="multipart/form-data" > --%>
+		<html:form styleId = "previewForm" action="/LoadFormPreviewAction" enctype="multipart/form-data" >
 			
 			<div id='overDiv' style='position:absolute; visibility:hidden; z-index:1000;'></div>
 			
@@ -68,7 +68,7 @@
                 </tr>
             </table>
             
-            <table cellpadding="4" cellspacing="0" border="0"  align='center'>
+            <table cellpadding="4" cellspacing="5" border="0"  align='center'>
 			    <tr height="5">
 			    </tr>
 				<tr>
@@ -78,11 +78,17 @@
 						</html:submit>
 					</td>					
 				</tr>
+				<tr height="5">
+			    </tr>
 				<tr>
-							
+					<td align='center'>
+						<html:button property="backToPrevious"  styleClass="actionButton" onclick="backToControlForm()">
+							<bean:message  key="buttons.backToPrevious" />
+						</html:button>
+					</td>
 				</tr>
 			</table>
-		<%-- </html:form> --%>
+		</html:form>
 	</body>
 
 </html>

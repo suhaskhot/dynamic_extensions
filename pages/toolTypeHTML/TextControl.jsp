@@ -23,7 +23,7 @@
 <td class="formRequiredLabel">
 					<bean:message key="eav.control.type"/>
 			</td>
-<td>
+<td  class="formField">
 <html:radio property='linesType' value='SingleLine' onclick='radioButtonClicked(this)'>SingleLine</html:radio>
 <html:radio property='linesType' value='MultiLine' onclick='radioButtonClicked(this)'>MultiLine</html:radio>
 

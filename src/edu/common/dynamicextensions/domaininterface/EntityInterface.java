@@ -3,6 +3,8 @@ package edu.common.dynamicextensions.domaininterface;
 
 import java.util.Collection;
 
+import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
+
 /**
  * Entity object stores information of the entity.For each entity a dynamic table is generated using the metadata
  * information.
@@ -50,10 +52,16 @@ public interface EntityInterface extends AbstractMetadataInterface
      */
      void addEntityGroupInterface(EntityGroupInterface entityGroupInterface);
      /**
-      * remove attribute from entity attribute collection
+      * The table properties object contains name of the dynamically created table.
+      * @return
+      */
+     TablePropertiesInterface getTableProperties();
+     /**
+      * Removes abstract attribute from attribute collection
       * @param abstractAttributeInterface
       */
-     public void removeAbstractAttribute(AbstractAttributeInterface abstractAttributeInterface);    
+     void removeAbstractAttribute(AbstractAttributeInterface abstractAttributeInterface);
+      
       
 
 }

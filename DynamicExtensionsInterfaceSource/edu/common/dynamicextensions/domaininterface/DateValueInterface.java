@@ -1,0 +1,20 @@
+package edu.common.dynamicextensions.domaininterface;
+
+import java.util.Date;
+
+/**
+ * This object stores the permissible value of date type.This is a user defined value.
+ * @author geetika_bangard
+ */
+public interface DateValueInterface extends PermissibleValueInterface 
+{
+ 	/**
+     * 
+	 * @return Returns the value.
+	 */
+	 Date getValue();
+	/**
+	 * @param value The value to set.
+	 */
+	void setValue(Date value) ;
+}

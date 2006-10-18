@@ -35,9 +35,12 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 		LoadFormDefinitionProcessor loadFormDefinitionProcessor = LoadFormDefinitionProcessor.getInstance();
 		ContainerInterface containerInterface = null;
 		String mode = actionForm.getMode();
-		if(mode != null && mode.equalsIgnoreCase(Constants.ADD_NEW_FORM)) {
+		if (mode != null && mode.equalsIgnoreCase(Constants.ADD_NEW_FORM))
+		{
 			loadFormDefinitionProcessor.populateContainerInformation(containerInterface, actionForm);
-		} else {
+		}
+		else
+		{
 			containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 			if (containerInterface != null)
 			{

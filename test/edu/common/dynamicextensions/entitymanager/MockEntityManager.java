@@ -193,7 +193,7 @@ public class MockEntityManager
 		dummyEntity.setLastUpdated(dummyEntity.getCreatedDate());
 
 		/* Name attribute */
-		attribute = initializeStringAttribute("name", "Daniel Pearl");
+		attribute = initializeStringAttribute("name", "William James Bill Murray");
 		dummyEntity.addAbstractAttribute(attribute);
 	
 		/* Date of Joining attribute */
@@ -209,9 +209,7 @@ public class MockEntityManager
 		attribute = initializeStringAttribute("description",
 				"William James Bill Murray (born September 21, 1950) is an Academy Award-nominated, "
 				+ "Emmy-winning and Golden Globe-winning American comedian and actor. He is most famous "
-				+ "for his comedic roles in Groundhog Day, Caddyshack, Ghostbusters, and What About Bob?. "
-				+ "He has gained further acclaim for recent dramatic roles, such as in the acclaimed films "
-				+ "Lost In Translation and Broken Flowers.");
+				+ "for his comedic roles in Groundhog Day, Caddyshack, Ghostbusters, and What About Bob?.");
 		dummyEntity.addAbstractAttribute(attribute);
 	
 		return dummyEntity;

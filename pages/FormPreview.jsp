@@ -19,7 +19,7 @@
 
 <%-- Stylesheet --%>
 <link rel="stylesheet" type="text/css" href="css/stylesheet.css" />
-
+<script src="jss/dynamicExtensions.js" type="text/javascript"></script>
 <c:set var="containerInterface" value="${previewForm.containerInterface}"/>
 <jsp:useBean id="containerInterface" type="edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface"/>
 
@@ -72,20 +72,18 @@
 			    <tr height="5">
 			    </tr>
 				<tr>
-					<td>
-						<html:submit styleClass="actionButton">
-							<bean:message  key="buttons.submit" />
-						</html:submit>
-					</td>					
-				</tr>
-				<tr height="5">
-			    </tr>
-				<tr>
-					<td align='center'>
+					<td align='left'>
 						<html:button property="backToPrevious"  styleClass="actionButton" onclick="backToControlForm()">
 							<bean:message  key="buttons.backToPrevious" />
 						</html:button>
 					</td>
+					<td align='right'>
+						<html:submit styleClass="actionButton" >
+							<bean:message  key="buttons.submit" />
+						</html:submit>
+					</td>					
+			
+				
 				</tr>
 			</table>
 		</html:form>

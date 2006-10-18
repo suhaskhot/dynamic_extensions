@@ -264,7 +264,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @param controlUIBeanInterface Instance of ControlUIBeanInterface which will be populated using 
 	 * the first parameter that is controlInterface.
 	 */
-	public void populateControlInformation(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface) {
+	public void populateControlUIBeanInterface(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface) {
 		if (controlInterface != null && controlUIBeanInterface != null) {
 			controlUIBeanInterface.setAbstractAttribute(controlInterface.getAbstractAttribute());
 			controlUIBeanInterface.setCssClass(controlInterface.getCssClass());

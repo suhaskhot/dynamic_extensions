@@ -77,12 +77,12 @@ public class LoadFormControlsProcessor
 				ControlProcessor controlProcessor = ControlProcessor.getInstance();
 
 				ControlInterface controlInterface = containerInterface.getControlInterfaceBySequenceNumber(selectedControlId);
-				controlProcessor.populateControlInformation(controlInterface,controlsForm);
+				controlProcessor.populateControlUIBeanInterface(controlInterface,controlsForm);
 
 				AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
 				if(controlInterface!=null)
 				{
-					attributeProcessor.populateAttributeInformation(controlInterface.getAbstractAttribute(), controlsForm);
+					attributeProcessor.populateAttributeUIBeanInterface(controlInterface.getAbstractAttribute(), controlsForm);
 				}
 				String userSelectedToolName = getUserSelectedToolName(controlInterface);
 				if(userSelectedToolName == null || userSelectedTool.equals(""))

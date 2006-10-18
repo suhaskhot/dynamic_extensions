@@ -1,12 +1,4 @@
-/**
- *<p>Title: EntityProcessor</p>
- *<p>Description:  This class acts as a utility class which processes tne entity in various ways as needed
- *and provides methods to the UI layer.This processor class is a POJO and not a framework specific class so 
- *it can be used by all types of presentation layers.  </p>
- *<p>Copyright:TODO</p>
- *@author Vishvesh Mulay
- *@version 1.0
- */ 
+
 package edu.common.dynamicextensions.processor;
 
 import java.util.Iterator;
@@ -19,24 +11,29 @@ import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.interfaces.EntityUIBeanInterface;
-
+import edu.wustl.common.util.Utility;
 
 /**
  *<p>Title: EntityProcessor</p>
- *<p>Description:  This class acts as a utility class which processes tne entity in various ways as needed
- *and provides methods to the UI layer.This processor class is a POJO and not a framework specific class so 
- *it can be used by all types of presentation layers.  </p>
+ *<p>Description:  This class acts as a utility class which processes tne entity .
+ *1 . Creates an Entity.
+ *2 . Saves an Entity.
+ *3 . Populates the cache object.
+ *4. Populates the domain Object.
+ *This processor class is a POJO and not a framework specific class so it can be used by
+ *all types of presentation layers.  </p>
  *@author Vishvesh Mulay
  *@version 1.0
- */ 
+ */
 public class EntityProcessor extends BaseDynamicExtensionsProcessor
 {
 
 	/**
-	 * Protected constructor for entity processor
-	 *
+	 * This is a singleton class so we have a protected constructor , We are providing getInstance method 
+	 * to return the EntityProcessor's instance.
 	 */
-	protected EntityProcessor () {
+	protected EntityProcessor()
+	{
 
 	}
 
@@ -44,7 +41,8 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
 	 * this method gets the new instance of the entity processor to the caller.
 	 * @return EntityProcessor EntityProcessor instance
 	 */
-	public static EntityProcessor getInstance () {
+	public static EntityProcessor getInstance()
+	{
 		return new EntityProcessor();
 	}
 
@@ -52,7 +50,8 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
 	 * This method returns empty domain object of entityInterface.
 	 * @return EntityInterface Returns new instance of EntityInterface from the domain object Factory.
 	 */
-	public EntityInterface createEntity() {
+	public EntityInterface createEntity()
+	{
 		return DomainObjectFactory.getInstance().createEntity();
 	}
 
@@ -67,10 +66,14 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public EntityInterface createAndSaveEntity(EntityUIBeanInterface entityUIBeanInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException {
-		EntityInterface entityInterface = DomainObjectFactory.getInstance().createEntity();
-		populateEntity(entityUIBeanInterface, entityInterface);
-		entityInterface = EntityManager.getInstance().createEntity(entityInterface);
+	public EntityInterface createAndSaveEntity(EntityUIBeanInterface entityUIBeanInterface) throws DynamicExtensionsSystemException,
+	DynamicExtensionsApplicationException
+	{
+		EntityInterface entityInterface = null;
+		if(entityUIBeanInterface != null) {
+			entityInterface = createAndPopulateEntity(entityUIBeanInterface);
+			entityInterface = EntityManager.getInstance().createEntity(entityInterface);
+		}
 		return entityInterface;
 	}
 
@@ -79,13 +82,16 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
 	 * @param entityInterface Instance of EntityInterface which is populated using the informationInterface.
 	 * @param entityUIBeanInterface Instance of EntityUIBeanInterface which is used to populate the entityInterface.
 	 */
-	public void populateEntity (EntityUIBeanInterface entityUIBeanInterface, EntityInterface entityInterface) {
-		if (entityUIBeanInterface != null && entityInterface != null) {
+	public void populateEntity(EntityUIBeanInterface entityUIBeanInterface, EntityInterface entityInterface)
+	{
+		if (entityUIBeanInterface != null && entityInterface != null)
+		{
 			entityInterface.setName(entityUIBeanInterface.getFormName());
 			entityInterface.setDescription(entityUIBeanInterface.getFormDescription());
 			SemanticPropertyInterface semanticPropertyInterface = new SemanticProperty();
 			semanticPropertyInterface.setConceptCode(entityUIBeanInterface.getConceptCode());
-			if(entityInterface.getSemanticPropertyCollection() != null) {
+			if (entityInterface.getSemanticPropertyCollection() != null)
+			{
 				entityInterface.getSemanticPropertyCollection().clear();
 			}
 			entityInterface.addSemanticProperty(semanticPropertyInterface);
@@ -99,19 +105,24 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
 	 * @param entityUIBeanInterface Instance of EntityUIBeanInterface which will be populated using 
 	 * the first parameter that is EntityInterface.
 	 */
-	public void populateEntityInformation (EntityInterface entityInterface, EntityUIBeanInterface entityUIBeanInterface) {
-		if (entityInterface != null && entityUIBeanInterface != null) {
-			entityUIBeanInterface.setFormName(entityInterface.getName());
-			entityUIBeanInterface.setFormDescription(entityInterface.getDescription());
-			if(!entityInterface.getSemanticPropertyCollection().isEmpty()) {
+	public void populateEntityUIBeanInterface(EntityInterface entityInterface, EntityUIBeanInterface entityUIBeanInterface)
+	{
+		if (entityInterface != null && entityUIBeanInterface != null)
+		{
+			entityUIBeanInterface.setFormName(Utility.toString(entityInterface.getName()));
+			entityUIBeanInterface.setFormDescription(Utility.toString(entityInterface.getDescription()));
+			if (!entityInterface.getSemanticPropertyCollection().isEmpty())
+			{
 				Iterator iter = entityInterface.getSemanticPropertyCollection().iterator();
-				while(iter.hasNext()) {
-					String conceptCode = ((SemanticPropertyInterface)iter.next()).getConceptCode();
-					entityUIBeanInterface.setConceptCode(conceptCode);
+				while (iter.hasNext())
+				{
+					String conceptCode = ((SemanticPropertyInterface) iter.next()).getConceptCode();
+					entityUIBeanInterface.setConceptCode(Utility.toString(conceptCode));
 				}
 			}
 		}
 	}
+
 	/**
 	 * This method creates a new instance of the EntityInterface from the domain object factory. After the creation
 	 * of this instance it populates the entityInterface with the information that is provided through 
@@ -122,11 +133,11 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
 	 * from the entityInformationInterface.
 	 * @throws DynamicExtensionsSystemException Exception
 	 */
-	public EntityInterface createAndPopulateEntity(EntityUIBeanInterface entityUIBeanInterface) throws DynamicExtensionsSystemException {
+	public EntityInterface createAndPopulateEntity(EntityUIBeanInterface entityUIBeanInterface) throws DynamicExtensionsSystemException
+	{
 		EntityInterface entityInterface = DomainObjectFactory.getInstance().createEntity();
 		populateEntity(entityUIBeanInterface, entityInterface);
 		return entityInterface;
 	}
 
-	//public saveEntity(Enti)
 }

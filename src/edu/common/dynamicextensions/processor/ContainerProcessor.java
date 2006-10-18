@@ -1,23 +1,27 @@
-/**
- *<p>Title: ContainerProcessor</p>
- *<p>Description:  This class acts as a utility class which processes tne container in various ways as needed
- *and provides methods to the UI layer.This processor class is a POJO and not a framework specific class so 
- *it can be used by all types of presentation layers.  </p>
- *@author Deepti Shelar
- *@version 1.0
- */
 
 package edu.common.dynamicextensions.processor;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.ui.interfaces.ContainerUIBeanInterface;
+import edu.wustl.common.util.Utility;
 
+/**
+ *<p>Title: ContainerProcessor</p>
+ *<p>Description:  This class acts as a utility class which processes tne container.
+ * 1. It creates a new container.
+ * 2. Populates the containerInterface (Cache) object.
+ * 3. Populates the information to UIBean taking form Cache.
+ * This processor class is a POJO and not a framework specific class so it can be used by 
+ * all types of presentation layers.  </p>
+ *@author Deepti Shelar
+ *@version 1.0
+ */
 public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 {
 	/**
-	 * Protected constructor for ControlProcessor
-	 *
+	 * This is a singleton class so we have a protected constructor , We are providing getInstance method 
+	 * to return the ContainerProcessor's instance.
 	 */
 	protected ContainerProcessor()
 	{
@@ -49,12 +53,15 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	public void populateContainerInterface(ContainerInterface containerInterface, ContainerUIBeanInterface containerUIBeanInterface)
 	{
-		containerInterface.setButtonCss(containerUIBeanInterface.getButtonCss());
-		containerInterface.setCaption(containerUIBeanInterface.getFormCaption());
-		containerInterface.setMainTableCss(containerUIBeanInterface.getMainTableCss());
-		containerInterface.setRequiredFieldIndicatior(containerUIBeanInterface.getRequiredFieldIndicatior());
-		containerInterface.setRequiredFieldWarningMessage(containerUIBeanInterface.getRequiredFieldWarningMessage());
-		containerInterface.setTitleCss(containerUIBeanInterface.getTitleCss());
+		if (containerInterface != null && containerUIBeanInterface != null)
+		{
+			containerInterface.setButtonCss(containerUIBeanInterface.getButtonCss());
+			containerInterface.setCaption(containerUIBeanInterface.getFormCaption());
+			containerInterface.setMainTableCss(containerUIBeanInterface.getMainTableCss());
+			containerInterface.setRequiredFieldIndicatior(containerUIBeanInterface.getRequiredFieldIndicatior());
+			containerInterface.setRequiredFieldWarningMessage(containerUIBeanInterface.getRequiredFieldWarningMessage());
+			containerInterface.setTitleCss(containerUIBeanInterface.getTitleCss());
+		}
 	}
 
 	/**
@@ -66,14 +73,17 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 	 * the first parameter that is ContainerInterface.
 	 */
 
-	public void populateContainerInformation(ContainerInterface containerInterface, ContainerUIBeanInterface containerUIBeanInterface)
+	public void populateContainerUIBeanInterface(ContainerInterface containerInterface, ContainerUIBeanInterface containerUIBeanInterface)
 	{
-		containerUIBeanInterface.setButtonCss(containerInterface.getButtonCss());
-		containerUIBeanInterface.setFormCaption(containerInterface.getCaption());
-		containerUIBeanInterface.setMainTableCss(containerInterface.getMainTableCss());
-		containerUIBeanInterface.setRequiredFieldIndicatior(containerInterface.getRequiredFieldIndicatior());
-		containerUIBeanInterface.setRequiredFieldWarningMessage(containerInterface.getRequiredFieldWarningMessage());
-		containerUIBeanInterface.setTitleCss(containerInterface.getTitleCss());
+		if (containerInterface != null && containerUIBeanInterface != null)
+		{
+			containerUIBeanInterface.setButtonCss(Utility.toString(containerInterface.getButtonCss()));
+			containerUIBeanInterface.setFormCaption(Utility.toString(containerInterface.getCaption()));
+			containerUIBeanInterface.setMainTableCss(Utility.toString(containerInterface.getMainTableCss()));
+			containerUIBeanInterface.setRequiredFieldIndicatior(Utility.toString(containerInterface.getRequiredFieldIndicatior()));
+			containerUIBeanInterface.setRequiredFieldWarningMessage(Utility.toString(containerInterface.getRequiredFieldWarningMessage()));
+			containerUIBeanInterface.setTitleCss(Utility.toString(containerInterface.getTitleCss()));
+		}
 	}
 
 }

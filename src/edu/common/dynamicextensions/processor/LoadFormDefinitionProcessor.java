@@ -42,7 +42,7 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		if (entityInterface != null)
 		{
 			EntityProcessor entityProcessor = EntityProcessor.getInstance();
-			entityProcessor.populateEntityInformation(entityInterface, entityUIBeanInterface);
+			entityProcessor.populateEntityUIBeanInterface(entityInterface, entityUIBeanInterface);
 		}
 	}
 
@@ -59,6 +59,6 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 			containerInterface = containerProcessor.createContainer();
 		}
 		populateEntityInformation(containerInterface.getEntity(), ((EntityUIBeanInterface) containerUIBeanInterface));
-		containerProcessor.populateContainerInformation(containerInterface, containerUIBeanInterface);
+		containerProcessor.populateContainerUIBeanInterface(containerInterface, containerUIBeanInterface);
 	}
 }

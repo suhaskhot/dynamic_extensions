@@ -39,7 +39,7 @@ PUBLIC
 		    type="edu.common.dynamicextensions.ui.webui.action.LoadFormDefinitionAction" 
 		    name="formDefinitionForm"
 			validate="false"
-			input="/LoadFormDefinitionAction.do"
+			input="/pages/CreateForm.jsp"
 			scope="request">
 			<forward name="success" path="/pages/CreateForm.jsp" />
 		</action>
@@ -48,7 +48,7 @@ PUBLIC
 			type="edu.common.dynamicextensions.ui.webui.action.ApplyFormDefinitionAction"
 			name="formDefinitionForm"
 			validate="true"
-			input="/LoadFormDefinitionAction.do"
+			input="/pages/CreateForm.jsp"
 			scope="request">
 		<forward name="success" path="/LoadFormDefinitionAction.do" />
 		<forward name="buildForm" path="/LoadFormControlsAction.do" />

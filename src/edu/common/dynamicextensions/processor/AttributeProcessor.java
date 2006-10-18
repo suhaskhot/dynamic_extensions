@@ -554,7 +554,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		return numberAttribIntf;
 	}
 
-	public void populateAttributeInformation(AbstractAttributeInterface attributeInterface, AbstractAttributeUIBeanInterface attributeInformationIntf)
+	public void populateAttributeUIBeanInterface(AbstractAttributeInterface attributeInterface, AbstractAttributeUIBeanInterface attributeInformationIntf)
 	{
 		if((attributeInformationIntf!=null)&&(attributeInterface!=null))
 		{

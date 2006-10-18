@@ -322,4 +322,64 @@ function backToControlForm()
 	previewForm.action="/dynamicExtensions/LoadFormControlsAction.do";
 	previewForm.submit();
 }
+function clearForm()
+{
+var controlsForm = document.getElementById('controlsForm');
 
+if(controlsForm.name != null)
+	{
+	controlsForm.name.value = "";
+	}
+	if(controlsForm.caption != null)
+	{
+	controlsForm.caption.value = "";
+	}
+	if(controlsForm.description != null)
+	{
+	controlsForm.description.value = "";
+	}
+	if(controlsForm.cssClass != null)
+	{
+	controlsForm.cssClass.value = "";
+	}
+	if(controlsForm.tooltip != null)
+	{
+	controlsForm.tooltip.value = "";
+	}
+	
+	
+	if(document.getElementById('attributeSize') != null)
+	{
+	document.getElementById('attributeSize').value = "";
+	}
+	if(document.getElementById('attributeDefaultValue') != null)
+	{
+	document.getElementById('attributeDefaultValue').value = "";
+	}
+	if(document.getElementById('attributeDigits') != null)
+	{
+	document.getElementById('attributeDigits').value = "";
+	}
+	if(document.getElementById('attributeDecimalPlaces') != null)
+	{
+	document.getElementById('attributeDecimalPlaces').value = "";
+	}
+	
+	if(document.getElementById('attributeMeasurementUnits') != null)
+	{
+	document.getElementById('attributeMeasurementUnits').value = "";
+	}
+	if(document.getElementById('format') != null)
+	{
+	document.getElementById('format').value = "";
+	}
+	if(controlsForm.attributeNoOfRows != null)
+	{
+	controlsForm.attributeNoOfRows.value = "";
+	}
+	if(controlsForm.attributenoOfCols != null)
+	{
+	controlsForm.attributenoOfCols.value = "";
+	}
+	
+}

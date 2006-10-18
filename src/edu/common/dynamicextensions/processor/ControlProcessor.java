@@ -279,6 +279,8 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			controlUIBeanInterface.setHtmlFile( ProcessorConstants.TEXT_CONTROL + ".jsp");
 			controlUIBeanInterface.setColumns(((TextFieldInterface)controlInterface).getColumns());
 			controlUIBeanInterface.setIsPassword(((TextFieldInterface)controlInterface).getIsPassword());
+			controlUIBeanInterface.setLinesType("SingleLine");
+			//controlUIBeanInterface.setRows(null);
 		}
 		else if(controlInterface instanceof ComboBoxInterface)
 		{
@@ -298,6 +300,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			controlUIBeanInterface.setHtmlFile( ProcessorConstants.TEXT_CONTROL + ".jsp");
 			controlUIBeanInterface.setColumns(((TextAreaInterface)controlInterface).getColumns());
 			controlUIBeanInterface.setRows(((TextAreaInterface)controlInterface).getRows());
+			controlUIBeanInterface.setLinesType("MultiLine");
 		}
 
 

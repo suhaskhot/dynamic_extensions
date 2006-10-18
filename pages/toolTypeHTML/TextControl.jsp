@@ -10,6 +10,8 @@
 
 <c:set var="dataTypeList" value="${controlsForm.dataTypeList}"/>
 <jsp:useBean id="dataTypeList" type="java.util.List"/>	
+<c:set var="linesType" value="${controlsForm.linesType}"/>
+<jsp:useBean id="linesType" type="java.lang.String"/>	
 <table summary="" cellpadding="3" cellspacing="0" border="1" align = 'center' width='100%'>
   <tr>
     <td>
@@ -22,17 +24,25 @@
 					<bean:message key="eav.control.type"/>
 			</td>
 <td>
-<input type='radio' name='linesType' value='SingleLine' onclick='radioButtonClicked(this)'>SingleLine
-<input type='radio' name='linesType' value='MultiLine' onclick='radioButtonClicked(this)'>MultiLine
+<html:radio property='linesType' value='SingleLine' onclick='radioButtonClicked(this)'>SingleLine</html:radio>
+<html:radio property='linesType' value='MultiLine' onclick='radioButtonClicked(this)'>MultiLine</html:radio>
+
 </td>
 </tr>
 		<tr>
 <td class="formRequiredLabel">
 					<bean:message key="eav.text.noOfLines"/>
 			</td>
+			<% if(linesType.equalsIgnoreCase("SingleLine")) { %>
 	<td class="formField">
-					<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="attributeNoOfRows" />
+					<html:text styleClass="formDateSized" value='' disabled='true' maxlength="100" size="60"  property="attributeNoOfRows" />
 			</td>
+			<% }  else {
+			%>
+				<td class="formField">
+					<html:text styleClass="formDateSized"  disabled='false' maxlength="100" size="60"  property="attributeNoOfRows" />
+			</td>
+			<% } %>
 </tr>
 		
 			<tr>

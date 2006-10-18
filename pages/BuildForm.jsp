@@ -30,7 +30,7 @@
  	<jsp:useBean id="userSelectedTool" type="java.lang.String"/>
 
 <%
-	
+
 	TreeGenerator treeGenerator = new TreeGenerator();
 	treeGenerator.setContextPath(request.getContextPath());
 	TreeData treedataObj = treeGenerator.getTreeData(rootName,childList);
@@ -40,88 +40,87 @@
 <html>
 	<head>
 		<title>Dynamic Extensions</title>
-	 
+
   		<body onload="initBuildForm()">
-  		
+
 		<html:form styleId = "controlsForm" action="/ApplyFormControlsAction" >
 		  <html:errors />
 
-		  	<table align = 'center' width='100%' border="3" class="bodyStyle">
-			   <tr height = 40><td/>	<td class='standardBoldText' align='center'>Build Form</td>	</tr>
-			   
+		  	<table align = 'center' width='100%' border="1" class="formRequiredNotice">
+			   <tr class="formTitle">
+			   		<td colspan="3" align="center">Build Form</td>
+			   	</tr>
+
 		  		<tr>
-		  			<td class="toolBoxTable" width="10%" >  		
-					    <dynamicExtensions:ToolsMenu id="BuildForm" 
-								toolsList = "<%=toolsList%>" 
+		  			<td class="toolBoxTable" width="10%" >
+					    <dynamicExtensions:ToolsMenu id="BuildForm"
+								toolsList = "<%=toolsList%>"
 								onClick="controlSelectedAction"
 								selectedUserOption="<%= userSelectedTool%>"
-								height="100%" width="100%">						
+								height="100%" width="100%">
 				   		 </dynamicExtensions:ToolsMenu>
 		  			</td>
-		  			
+
 		  			<td align="top">
-							<jsp:include page="<%=htmlFile%>" />	
-		  			
+							<jsp:include page="<%=htmlFile%>" />
+
 		  			</td>
-		  			
+
 		  			<td  valign="top" >
-		  				Form Controls Tree
+						<label class="formRequiredLabel">Form Controls Tree</label>
 			  			<dynamicExtensions:tree treeDataObject="<%=treedataObj%>" />
 		  			</td>
 		  		</tr>
-		  		
+
 		  		<tr>
-					<td>
-					</td>
-					
-					<td align="right">
+					<td colspan="2" align="right">
 							<html:button styleClass="actionButton" property="addControlToFormButton" onclick="addControlToFormTree()" >
 										<bean:message  key="buttons.addControlToForm" />
 							</html:button>
-						
+
 							<html:reset styleClass="actionButton" property="clearButton"  >
 										<bean:message  key="buttons.clear" />
 							</html:reset>
 					 </td>
 				</tr>
 		</table>
-		
-		 <table summary="" align = 'left' cellpadding="5" cellspacing="0" border="0"  class='bodyStyle'>
+
+		 <table summary="" align = 'left' cellpadding="5" cellspacing="0"  class='bodyStyle'>
 		    <tr height="5">
-			
+
 				<td>
 						<html:submit styleClass="actionButton">
 							<bean:message  key="buttons.save" />
 						</html:submit>
 				</td>
-		
+
 				<td>
 						<html:reset styleClass="actionButton" property="cancelButton" onclick='showHomePageFromBuildForm()'>
 								<bean:message  key="buttons.cancel" />
 						</html:reset>
-				</td>	
-				
+				</td>
+
 				<td width="275">
 				</td>
-				
-				
+
+
 			    <td width="45%">
 				</td>
-				
+
 				<td>
 						<html:button styleClass="actionButton" property="prevButton" onclick="showNextActionConfirmDialog()" >
 								<bean:message  key="buttons.prev" />
 						</html:button>
 				</td>
-				
+
 				<td>
 						<html:button styleClass="actionButton" property="showPreviewButton" onclick="showFormPreview()" >
 								<bean:message  key="buttons.showPreview" />
 						</html:button>
 				</td>
-				
+
 			</table>
-			
+
 		  	<html:hidden property="operation" value=""/>
 		  	<html:hidden property="selectedAttrib" value=""/>
 

@@ -13,7 +13,7 @@
 			<tr>
 				<td class="formRequiredLabel"><input type="text" maxlength="5" size="10" name="choiceValue"></td>
 					
-				<td class="formField"> <input type="button" name="addChoiceValue" value="Add Value" onclick="addChoiceToList();"></td>
+				<td class="formField"> <input type="button" name="addChoiceValue" value="Add Value" onclick="addChoiceToList(true);"></td>
 			</tr>
 			<tr class="formRequiredLabel">
 		

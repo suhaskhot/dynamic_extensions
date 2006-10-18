@@ -9,7 +9,7 @@
 <jsp:useBean id="dataTypeList" type="java.util.List"/>
 
 	<tr>
-			<td class="formRequiredLabel">
+			<td class="formRequiredLabel" width="25%">
 					<bean:message key="eav.att.Label"/>
 			</td>
 

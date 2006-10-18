@@ -283,6 +283,7 @@ function radioButtonClicked(obj)
 {
 if(obj.value == 'SingleLine')
 	{
+		document.getElementById('attributeNoOfRows').value="";
 		document.getElementById('attributeNoOfRows').disabled=true;
 	}
 	if(obj.value == 'MultiLine')

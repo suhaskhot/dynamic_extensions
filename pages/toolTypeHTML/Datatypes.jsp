@@ -9,7 +9,7 @@
 		<div id="StringDataType" style="display:none">
 			 <table summary="" cellpadding="3" cellspacing="0" border="1" align = 'center' width='100%'>
 			       	<tr>
-						<td class="formRequiredLabel">
+						<td class="formRequiredLabel" width="25%">
 								<bean:message key="eav.att.MaxCharacters"/>
 						</td>
 
@@ -33,7 +33,7 @@
 			<div id="NumberDataType" style="display:none">
 			 <table summary="" cellpadding="3" cellspacing="0" border="1" align = 'center' width='100%'>
 			       <tr>
-						<td class="formRequiredLabel">
+						<td class="formRequiredLabel" width="25%">
 								<bean:message key="eav.att.AttributeSize"/>
 						</td>
 
@@ -88,7 +88,7 @@
 			<div id="DateDataType" style="display:none">
 			   <table summary="" cellpadding="3" cellspacing="0" border="1" align = 'center' width='100%'>
 			       <tr>
-						<td class="formRequiredLabel">
+						<td class="formRequiredLabel" width="25%">
 							<bean:message key="eav.att.DefaultValue"/>
 						</td>
 
@@ -96,7 +96,7 @@
 							<html:text styleClass="formDateSized" styleId="attributeDefaultValue"  maxlength="100" size="60"  property="attributeDefaultValue" />
 
 	                       <a href="javascript:show_calendar('getElementById(\'attributeDefaultValue\')',null,null,'<%=ProcessorConstants.DATE_FORMAT%>');">
-	                        <img src='images\\calendar.gif' width=24 height=22 border=0/> <%=ProcessorConstants.DATE_FORMAT %></a>
+	                        <img src='images\\calendar.gif' width=24 height=22 border=0/><%=ProcessorConstants.DATE_FORMAT%></a>
 						</td>
 					</tr>
 
@@ -114,7 +114,7 @@
 			<div id="BooleanDataType" style="display:none">
 			   <table summary="" cellpadding="3" cellspacing="0" border="1" align = 'center' width='100%'>
 				   <tr>
-						<td class="formRequiredLabel">
+						<td class="formRequiredLabel" width="25%">
 							<bean:message key="eav.att.DefaultValue"/>
 						</td>
 

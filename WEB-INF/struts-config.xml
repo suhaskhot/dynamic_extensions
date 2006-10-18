@@ -102,6 +102,15 @@ PUBLIC
 			<forward name="showFormPreviewJSP" path="/pages/FormPreview.jsp" />
 		</action>
 		
+		<action path="/SaveEntityAction" 
+		    type="edu.common.dynamicextensions.ui.webui.action.SaveEntityAction" 
+		    name="controlsForm"
+			validate="true"
+			input="/SaveEntityAction.do"
+			scope="request">
+			<forward name="success" path="/LoadFormControlsAction.do" />
+		</action>
+		
 	
 	</action-mappings>
 			

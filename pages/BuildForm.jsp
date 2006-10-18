@@ -67,7 +67,7 @@
 		  			</td>
 
 		  			<td  valign="top" >
-						<label class="formRequiredLabel">Form Controls Tree</label>
+						<label class="formRequiredLabel"><bean:message  key="app.FormControlsTreePageHeading" /></label>
 			  			<dynamicExtensions:tree treeDataObject="<%=treedataObj%>" />
 		  			</td>
 		  		</tr>
@@ -89,7 +89,7 @@
 		    <tr height="5">
 
 				<td>
-						<html:submit styleClass="actionButton">
+						<html:submit styleClass="actionButton" onclick="saveEntity()">
 							<bean:message  key="buttons.save" />
 						</html:submit>
 				</td>

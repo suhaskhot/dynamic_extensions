@@ -86,4 +86,9 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 		}
 	}
 
+	public void saveContainer(ContainerInterface containerInterface)
+	{
+		System.out.println("In container interface save method. Saving container ["+ containerInterface +"]" );
+		
+	}
 }

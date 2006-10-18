@@ -383,3 +383,13 @@ if(controlsForm.name != null)
 	}
 	
 }
+
+function saveEntity()
+{
+	var controlsForm = document.getElementById('controlsForm');
+	if(controlsForm!=null)
+	{
+		controlsForm.action="/dynamicExtensions/SaveEntityAction.do";
+		controlsForm.submit();	
+	}
+}

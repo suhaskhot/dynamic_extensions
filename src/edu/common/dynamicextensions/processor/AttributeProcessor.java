@@ -6,7 +6,6 @@
 package edu.common.dynamicextensions.processor;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -197,10 +196,9 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 					Date value = null;
 					try
 					{
-						SimpleDateFormat sdf = new SimpleDateFormat(ProcessorConstants.DATE_FORMAT); 
-						value = sdf.parse(permissibleValue);
-						//value = new Date(permissibleValue);
-						
+						value = Utility.parseDate(permissibleValue);
+						/*SimpleDateFormat sdf = new SimpleDateFormat(ProcessorConstants.DATE_FORMAT); 
+						value = sdf.parse(permissibleValue);*/
 					}
 					catch (ParseException e)
 					{
@@ -375,25 +373,14 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private void populateDateAttributeInterface(DateAttributeInterface dateAttributeIntf, AbstractAttributeUIBeanInterface attributeInformationIntf)
 	{
-		/*Date defaultValue;
-		try
-		{
-			SimpleDateFormat sdf = new SimpleDateFormat(ProcessorConstants.DATE_FORMAT);
-			System.out.println("Def value = " + attributeInformationIntf.getAttributeDefaultValue());
-			defaultValue = sdf.parse(attributeInformationIntf.getAttributeDefaultValue());
-			//defaultValue = DateFormat.parse(attributeInformationIntf.getAttributeDefaultValue());
-		}
-
-		catch (ParseException e)
-		{
-			System.out.println("Exception while saving date def value");
-			defaultValue = new Date();
-		}*/
 		Date defaultValue = null;
 		try
 		{
-			defaultValue = Utility.parseDate(attributeInformationIntf.getAttributeDefaultValue());
-			System.out.println("Date Def Value = " + defaultValue);
+			if(attributeInformationIntf.getAttributeDefaultValue()!=null)
+			{
+				defaultValue = Utility.parseDate(attributeInformationIntf.getAttributeDefaultValue());
+				System.out.println("Date Def Value = " + defaultValue);
+			}
 		}
 		catch (ParseException e)
 		{
@@ -587,10 +574,12 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}else if(attributeInterface instanceof DateAttributeInterface)
 			{
 				attributeInformationIntf.setDataType(ProcessorConstants.DATATYPE_DATE);
-				System.out.println("Date = " + ((DateAttributeInterface)attributeInterface).getDefaultValue().toString());
-				String defaultValue = Utility.parseDateToString(((DateAttributeInterface)attributeInterface).getDefaultValue(),Constants.DATE_PATTERN_MM_DD_YYYY);
-               	attributeInformationIntf.setAttributeDefaultValue(defaultValue);
-               	System.out.println("Date Def valuee returned  = " + defaultValue);
+				if(((DateAttributeInterface)attributeInterface).getDefaultValue()!=null)
+				{
+					String defaultValue = Utility.parseDateToString(((DateAttributeInterface)attributeInterface).getDefaultValue(),Constants.DATE_PATTERN_MM_DD_YYYY);
+					attributeInformationIntf.setAttributeDefaultValue(defaultValue);
+	               	System.out.println("Date Def valuee returned  = " + defaultValue);
+				}
                	attributeInformationIntf.setFormat(((DateAttributeInterface)attributeInterface).getFormat());
 			}
 			else if(attributeInterface instanceof BooleanAttributeInterface)

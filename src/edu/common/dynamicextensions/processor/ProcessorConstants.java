@@ -41,5 +41,5 @@ public class ProcessorConstants
     public static final String EDIT = "Edit";
     
     //Date Format
-    public static final String DATE_FORMAT = Constants.DATE_PATTERN_MM_DD_YYYY;
+    public static final String DATE_FORMAT = "MM-DD-YYYY"; // Constants.DATE_PATTERN_MM_DD_YYYY;
 }

@@ -51,7 +51,7 @@ function addControlToForm() {
 	
 	var arg = window.dialogArguments;
 	arg.document.getElementById('operation').value='controlAdded';
-    var controlsForm=arg.document.getElementById("controlsForm");
+    	var controlsForm=arg.document.getElementById("controlsForm");
 	controlsForm.action="/dynamicExtensions/AddControlsAction.do";
 	controlsForm.submit();
 	window.close();
@@ -106,6 +106,12 @@ function initBuildForm()
 		changeSourceForValues(sourceElt);
 	}
 	
+	//Reinitialize counter
+	var choiceListElementCnter = document.getElementById('choiceListCounter');
+	if(choiceListElementCnter !=null)
+	{
+		choiceListElementCnter.value="1";
+	}
 	var choiceList = document.getElementById("choiceList");
 	if(choiceList!=null)
 	{
@@ -119,18 +125,12 @@ function initBuildForm()
 				{
 					if((choice_array[i]!=null)&&(choice_array[i]!=""))
 					{
-						//Reinitialize counter
-						var choiceListElementCnter = document.getElementById('choiceListCounter');
-						if(choiceListElementCnter !=null)
-						{
-							choiceListElementCnter.value="1";
-						}
 						//Add choice to list
 						var textBox = document.getElementById('choiceValue');
 						if(textBox !=null)
 						{
 							textBox.value = choice_array[i];
-							addChoiceToList();
+							addChoiceToList(false);
 						}	
 					}
 					
@@ -164,8 +164,11 @@ function changeSourceForValues(sourceControl)
 	}
 }
 
-function addChoiceToList()
+//addToChoiceList : indicates whether the choice shld be added to choice list
+//This will be true when called while adding choice at runtime, and false when adding at load time
+function addChoiceToList(addToChoiceList)
 {
+	
 	var textBox = document.getElementById('choiceValue');
 	var choiceListElementCnter = document.getElementById('choiceListCounter');
 	
@@ -192,7 +195,10 @@ function addChoiceToList()
 			if(choicelist !=null)
 			{
 				//add to choicelist
-				choicelist.value = choicelist.value + "," + textBox.value;
+				if(addToChoiceList == true)
+				{
+					choicelist.value = choicelist.value + "," + textBox.value;
+				}
 			}
 			textBox.value = "";
 			document.getElementById('choiceListCounter').value = (parseInt(elementNo) + 1) + "";
@@ -202,6 +208,7 @@ function addChoiceToList()
 
 function deleteElementsFromChoiceList()
 {
+	
 	var valuestable = document.getElementById('choiceListTable');
 	if(valuestable!=null)
 	{
@@ -222,13 +229,14 @@ function deleteElementsFromChoiceList()
 		var chkBox;
 		for(var i=0;i<noOfElements;i++)
 		{
+			
 			chkBoxId = "chkBox" + i;
 	
 			chkBox = document.getElementById(chkBoxId);
-		
 			if(chkBox!=null)
 			{
 				var rowofCheckBox = chkBox.parentElement.parentElement;
+				
 				if(chkBox.checked == true)
 				{
 					if(rowofCheckBox!=null)
@@ -275,7 +283,6 @@ function radioButtonClicked(obj)
 {
 if(obj.value == 'SingleLine')
 	{
-		document.getElementById('attributeNoOfRows').value="";
 		document.getElementById('attributeNoOfRows').disabled=true;
 	}
 	if(obj.value == 'MultiLine')
@@ -284,3 +291,4 @@ if(obj.value == 'SingleLine')
 		document.getElementById('attributeNoOfRows').disabled=false;
 	}
 }
+

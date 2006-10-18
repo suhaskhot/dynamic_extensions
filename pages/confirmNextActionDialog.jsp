@@ -9,48 +9,32 @@
 
 <html>
 <head>
-<title>Dynamic Extensions</title>
-
+	<title>Dynamic Extensions</title>
 	 <script language="javascript" src="<%= request.getContextPath()%>/jss/dynamicExtensions.js"></script>
-	</head>
-  <body  class='bodyStyle' >
+</head>
+<body  class="formRequiredNotice">
 <html:form styleId = "controlsForm" action="/ApplyFormControlsAction" >
 	  	<html:errors />
-		<table class='bodyStyle' border='1'>
-		<tr>
-		<table class='bodyStyle'>
+		<table class="formRequiredNotice" border="0" width="100%" height="100%" >
 			<tr>
-				<td class='standardBoldText' align='center'> Before going to previous page please select the action to be performed
+				<td  align='center'>
+					<bean:message  key="user.saveconfirmation" />
 				</td>
 			</tr>
-		</table>
-		</tr>
+
 			<tr>
-			<table align='center'>
-			<tr height="70%">
-				<td/>
-				</tr>	<tr>
-				<td/>
-			</tr>
-			<tr>
-			<td>
+				<td align="right">
 					<html:button styleClass="actionButton" property="prevButton" onclick='showCreateFormJSP();' >
 							<bean:message  key="buttons.prev" />
 					</html:button>
-			</td>
-			<td>
 					<html:button styleClass="actionButton" property="addControlToFormButton" onclick='addControlToForm();' >
 							<bean:message  key="buttons.addControlToForm" />
 					</html:button>
-			</td>
-			<td>
 					<html:reset styleClass="actionButton" property="cancelButton" onclick='closeWindow();'>
 							<bean:message  key="buttons.cancel" />
 					</html:reset>
-			</td>	
+				</td>
 			</tr>
-			</table>
-		</tr>
 		</table>
 		 </html:form>
  	</body>

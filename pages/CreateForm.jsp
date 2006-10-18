@@ -87,7 +87,7 @@
 								<bean:message key="eav.form.description"/> 
 					 	</td>
 						<td class="formField">
-								<html:textarea styleClass="formDateSized"  rows = "5" cols="40"  property="formDescription" />
+								<html:textarea styleClass="formDateSized"  rows = "3" cols="40"  property="formDescription" />
 						</td>
 				     </tr>
 				     <tr>

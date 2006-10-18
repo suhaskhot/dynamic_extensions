@@ -14,6 +14,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInter
 import edu.common.dynamicextensions.ui.util.ControlAttributeMappingsFactory;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.UIControlsConfigurationFactory;
+import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.beans.NameValueBean;
 
@@ -67,7 +68,7 @@ public class LoadFormControlsProcessor
 				controlsForm.setUserSelectedTool(userSelectedTool);
 				controlsForm.setDisplayChoice("");
 				controlsForm.setDataType("String");
-				controlsForm.setLinesType("");
+				controlsForm.setLinesType(Constants.SINGLE_LINE);
 
 				controlsForm.setHtmlFile(userSelectedTool+".jsp");
 			}

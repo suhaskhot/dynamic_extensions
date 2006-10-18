@@ -45,7 +45,7 @@
 			</td>
 
 			<td class="formField">
-					<html:textarea styleClass="formFieldSized"  rows = "5" cols="40"  property="description"  />
+					<html:textarea styleClass="formFieldSized"  rows = "3" cols="40"  property="description"  />
 			</td>
 		</tr>
 

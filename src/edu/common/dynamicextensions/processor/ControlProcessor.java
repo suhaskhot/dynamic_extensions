@@ -19,6 +19,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInt
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.ui.interfaces.ControlUIBeanInterface;
+import edu.common.dynamicextensions.util.global.Constants;
 
 
 /**
@@ -279,7 +280,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			controlUIBeanInterface.setHtmlFile( ProcessorConstants.TEXT_CONTROL + ".jsp");
 			controlUIBeanInterface.setColumns(((TextFieldInterface)controlInterface).getColumns());
 			controlUIBeanInterface.setIsPassword(((TextFieldInterface)controlInterface).getIsPassword());
-			controlUIBeanInterface.setLinesType("SingleLine");
+			controlUIBeanInterface.setLinesType(Constants.SINGLE_LINE);
 			//controlUIBeanInterface.setRows(null);
 		}
 		else if(controlInterface instanceof ComboBoxInterface)
@@ -300,7 +301,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			controlUIBeanInterface.setHtmlFile( ProcessorConstants.TEXT_CONTROL + ".jsp");
 			controlUIBeanInterface.setColumns(((TextAreaInterface)controlInterface).getColumns());
 			controlUIBeanInterface.setRows(((TextAreaInterface)controlInterface).getRows());
-			controlUIBeanInterface.setLinesType("MultiLine");
+			controlUIBeanInterface.setLinesType(Constants.MULTI_LINE);
 		}
 
 

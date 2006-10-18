@@ -86,6 +86,22 @@ function changeDataType(datatypeControl)
 		{
 			var substitutionDiv = document.getElementById('substitutionDiv');
 			substitutionDiv.innerHTML = divForDataType.innerHTML;
+			
+			//Disable the value specification code for boolean values
+			
+			var valueSpecnDiv = document.getElementById('valueSpecificationDiv');
+			if(valueSpecnDiv!=null)
+			{
+				if(divForDataTypeId == "BooleanDataType")
+				{
+					valueSpecnDiv.style.display = "none";
+				}
+				else
+				{
+					valueSpecnDiv.style.display = "block";
+				}
+			}
+			
 		}
 	}
 }
@@ -151,14 +167,20 @@ function changeSourceForValues(sourceControl)
 			var divForSource = document.getElementById(divForSourceId);
 			if(divForSource!=null)
 			{
-				if(selectedIdx == i)
+				/*if(selectedIdx == i)
 				{
 					divForSource.style.display = "block";
 				}
 				else
 				{
 					divForSource.style.display = "none";
+				}*/
+				var valueSpecnDiv = document.getElementById('valueSpecificationDiv');
+				if(valueSpecnDiv!=null)
+				{
+					valueSpecnDiv.innerHTML = divForSource.innerHTML;
 				}
+				
 			}
 		}
 	}
@@ -168,7 +190,6 @@ function changeSourceForValues(sourceControl)
 //This will be true when called while adding choice at runtime, and false when adding at load time
 function addChoiceToList(addToChoiceList)
 {
-	
 	var textBox = document.getElementById('choiceValue');
 	var choiceListElementCnter = document.getElementById('choiceListCounter');
 	
@@ -180,13 +201,14 @@ function addChoiceToList(addToChoiceList)
 
 	if((textBox!=null)&&(textBox.value!=""))
 	{
-		newValue = textBox.value
+		newValue = textBox.value;
 		var choiceListTable  = document.getElementById('choiceListTable');
 	
 		if(choiceListTable!=null)
 		{
-			var myNewRow = document.all.choiceListTable.insertRow();
+			var myNewRow = choiceListTable.insertRow();
 			var myNewCell =  myNewRow.insertCell();
+			
 			var chkBoxId = "chkBox" + elementNo;
 			myNewCell.innerHTML="<input type='checkbox' id='" + chkBoxId +"' >";
 			myNewCell =  myNewRow.insertCell();

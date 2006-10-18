@@ -41,20 +41,13 @@
 
 		</td>
 	</tr>
+	<tr>
+		<td>
+			<div id="valueSpecificationDiv" style="display:block">
+			</div>
+
+		</td>
+	</tr>
 </table>
 <jsp:include page="/pages/toolTypeHTML/Datatypes.jsp" />
 <jsp:include page="/pages/toolTypeHTML/ListValuesSpecification.jsp" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-

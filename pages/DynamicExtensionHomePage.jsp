@@ -41,7 +41,7 @@
 
 			<tr align='left'>
 				<td>
-					<html:submit property="buildForm" onclick='addFormAction()'>
+					<html:submit property="buildForm" styleClass="buttonStyle" onclick='addFormAction()'>
 						<bean:message  key="buttons.build.form" />
 					</html:submit>
 				</td>

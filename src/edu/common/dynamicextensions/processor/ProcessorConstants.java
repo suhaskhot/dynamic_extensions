@@ -5,6 +5,8 @@
  */
 package edu.common.dynamicextensions.processor;
 
+import edu.wustl.common.util.global.Constants;
+
 /**
  * @author preeti_munot
  *
@@ -39,5 +41,5 @@ public class ProcessorConstants
     public static final String EDIT = "Edit";
     
     //Date Format
-    public static final String DATE_FORMAT = "MM/dd/yyyy";
+    public static final String DATE_FORMAT = Constants.DATE_PATTERN_MM_DD_YYYY;
 }

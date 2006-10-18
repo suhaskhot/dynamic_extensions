@@ -36,6 +36,8 @@ import edu.common.dynamicextensions.domaininterface.ShortAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.StringAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.ui.interfaces.AbstractAttributeUIBeanInterface;
+import edu.wustl.common.util.Utility;
+import edu.wustl.common.util.global.Constants;
 
 /**
  * @author preeti_munot
@@ -373,7 +375,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private void populateDateAttributeInterface(DateAttributeInterface dateAttributeIntf, AbstractAttributeUIBeanInterface attributeInformationIntf)
 	{
-		Date defaultValue;
+		/*Date defaultValue;
 		try
 		{
 			SimpleDateFormat sdf = new SimpleDateFormat(ProcessorConstants.DATE_FORMAT);
@@ -382,6 +384,17 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			//defaultValue = DateFormat.parse(attributeInformationIntf.getAttributeDefaultValue());
 		}
 
+		catch (ParseException e)
+		{
+			System.out.println("Exception while saving date def value");
+			defaultValue = new Date();
+		}*/
+		Date defaultValue = null;
+		try
+		{
+			defaultValue = Utility.parseDate(attributeInformationIntf.getAttributeDefaultValue());
+			System.out.println("Date Def Value = " + defaultValue);
+		}
 		catch (ParseException e)
 		{
 			System.out.println("Exception while saving date def value");
@@ -574,8 +587,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}else if(attributeInterface instanceof DateAttributeInterface)
 			{
 				attributeInformationIntf.setDataType(ProcessorConstants.DATATYPE_DATE);
-               	attributeInformationIntf.setAttributeDefaultValue(((DateAttributeInterface)attributeInterface).getDefaultValue().toString());
-				attributeInformationIntf.setFormat(((DateAttributeInterface)attributeInterface).getFormat());
+				System.out.println("Date = " + ((DateAttributeInterface)attributeInterface).getDefaultValue().toString());
+				String defaultValue = Utility.parseDateToString(((DateAttributeInterface)attributeInterface).getDefaultValue(),Constants.DATE_PATTERN_MM_DD_YYYY);
+               	attributeInformationIntf.setAttributeDefaultValue(defaultValue);
+               	System.out.println("Date Def valuee returned  = " + defaultValue);
+               	attributeInformationIntf.setFormat(((DateAttributeInterface)attributeInterface).getFormat());
 			}
 			else if(attributeInterface instanceof BooleanAttributeInterface)
 			{

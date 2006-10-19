@@ -66,8 +66,8 @@ public class MockEntityManager
 
 		}
 
-		Collection entityCollection = new ArrayList();
-		Entity entity = null;
+		Collection entityInterfaceCollection = new ArrayList();
+		EntityInterface entityInterface = null;
 
 		/* Create dummy entities */
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -94,37 +94,37 @@ public class MockEntityManager
 		/* Populate all dummy entities into a Collection */
 		for (int i = 0; i < dummyEntities.length; i++) 
 		{
-			entity = new Entity();
+			entityInterface = new Entity();
 
-			entity.setName(dummyEntities[i].entityName);
-			entity.setCreatedDate(dummyEntities[i].createdDate);
+			entityInterface.setName(dummyEntities[i].entityName);
+			entityInterface.setCreatedDate(dummyEntities[i].createdDate);
 
-			entityCollection.add(entity);
+			entityInterfaceCollection.add(entityInterface);
 		}
 
-		return entityCollection;
+		return entityInterfaceCollection;
 	}
 
-	/**
-	 * This method returns a Dummy Entity populated with a Dummy
-	 * StringAttribute.
-	 * 
-	 * @return Entity instance
-	 */
-	public Entity createEntity() 
-	{
-		Entity entity = new Entity();
-		entity.setId(new Long(1));
-		entity.setDescription("Dummy description");
-		entity.setName("EntityOne");
-		Collection abstractAttributeCollection = new HashSet();
-		StringAttribute strAttr = new StringAttribute();
-		strAttr.setDescription("description");
-		strAttr.setEntity(entity);
-		abstractAttributeCollection.add(strAttr);
-		entity.setAbstractAttributeCollection(abstractAttributeCollection);
-		return entity;
-	}
+//	/**
+//	 * This method returns a Dummy Entity populated with a Dummy
+//	 * StringAttribute.
+//	 * 
+//	 * @return Entity instance
+//	 */
+//	public Entity createEntity() 
+//	{
+//		Entity entity = new Entity();
+//		entity.setId(new Long(1));
+//		entity.setDescription("Dummy description");
+//		entity.setName("EntityOne");
+//		Collection abstractAttributeCollection = new HashSet();
+//		StringAttribute strAttr = new StringAttribute();
+//		strAttr.setDescription("description");
+//		strAttr.setEntity(entity);
+//		abstractAttributeCollection.add(strAttr);
+//		entity.setAbstractAttributeCollection(abstractAttributeCollection);
+//		return entity;
+//	}
 
 	/**
 	 * This method returns a dummy Container instance populated with dummy

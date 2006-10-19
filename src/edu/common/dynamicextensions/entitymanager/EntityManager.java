@@ -6,7 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,6 +25,7 @@ import edu.common.dynamicextensions.domain.StringAttribute;
 import edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
 import edu.common.dynamicextensions.domain.userinterface.Container;
+import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -33,13 +33,14 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInter
 import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.bizlogic.AbstractBizLogic;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.HibernateDAO;
 import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.dbManager.DBUtil;
-import edu.wustl.common.util.global.Constants;
+
 
 /**
  * This is a singleton class that manages operations related to dynamic entity creation,attributes creation,
@@ -558,20 +559,72 @@ public class EntityManager implements EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Collection getAllEntities() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+    
+    public Collection getAllEntities()
+    throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException
+    {
+    	return getAllObjects(EntityInterface.class.getName());
+    }
+    
+	/**
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getEntityByIdentifier(java.lang.String)
+	 */
+	public EntityInterface getEntityByIdentifier(String identifier) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
+    	return (EntityInterface) getObjectByIdentifier(EntityInterface.class.getName(),identifier);
+	}
+	
+	/**
+	 * This method returns object for a given class name and identifer 
+	 * @param objectName  name of the class of the object
+	 * @param identifier identifier of the object
+	 * @return  obejct
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	private AbstractMetadataInterface getObjectByIdentifier(String objectName,String identifier) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException {
 		AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
-		Collection entityCollection = new HashSet();
+    	AbstractMetadataInterface object;
 		try
 		{
-			entityCollection = bizLogic.retrieve(Entity.class.getName());
+			List objectList = bizLogic.retrieve(objectName,Constants.ID,identifier);
+			
+			if (objectList == null || objectList.size() == 0) {
+				throw new DynamicExtensionsApplicationException("OBJECT_NOT_FOUND");
+			} 
+			
+			object = (EntityInterface) objectList.get(0);
 		}
 		catch (DAOException e)
 		{
 			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
-		return entityCollection;
+    	return object;
 	}
+	
+    /**
+     *  Returns all entities in the whole system for a given type of the object
+     * @return
+     * @throws DynamicExtensionsSystemException
+     * @throws DynamicExtensionsApplicationException
+     */
+    private Collection getAllObjects(String objectName)
+    throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException
+    {
+    	AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
+    	Collection objectList;
+		try
+		{
+			objectList = bizLogic.retrieve(objectName);
+		}
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsSystemException(e.getMessage(),e);
+		}
+    	return objectList;
+    }
+
+
 
 	/**
 	 * Returns an attribute given the entity name and attribute name

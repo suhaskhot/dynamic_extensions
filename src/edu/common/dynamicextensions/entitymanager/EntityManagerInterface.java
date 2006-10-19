@@ -79,6 +79,16 @@ interface EntityManagerInterface
     Collection getAllEntities()
     throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException;
     
+    /**
+     * Returns a single  entity for given identifier
+     * @return
+     * @throws DynamicExtensionsSystemException
+     * @throws DynamicExtensionsApplicationException
+     */
+    
+    public EntityInterface getEntityByIdentifier(String identifier)
+    throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException;
+
     
     /**
      * Returns an attribute given the entity name and attribute name

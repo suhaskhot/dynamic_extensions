@@ -6,6 +6,7 @@ import java.util.Collection;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
@@ -24,14 +25,14 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
  * @author sujay_narkar
  *
  */
-public interface EntityManagerInterface
+interface EntityManagerInterface
 {
     
     /**
      * Sets an instance of entity manager.A mock entity manager can be set using this method.
      * @param entityManager
      */
-    public void setInstance(EntityManager entityManager);
+    void setInstance(EntityManager entityManager);
     
     /**
      * Saves the entity into the database.Also prepares the dynamic tables and associations 
@@ -43,7 +44,7 @@ public interface EntityManagerInterface
      * @throws DynamicExtensionsApplicationException
      */
     
-    public EntityInterface createEntity(EntityInterface entityInterface)
+    EntityInterface createEntity(EntityInterface entityInterface)
     throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException;
     
     /**
@@ -54,7 +55,7 @@ public interface EntityManagerInterface
      * @throws DynamicExtensionsApplicationException
      */
     
-    public EntityInterface getEntityByName(String entityName)
+    EntityInterface getEntityByName(String entityName)
     throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException;
     
     /**
@@ -65,7 +66,7 @@ public interface EntityManagerInterface
      * @throws DynamicExtensionsApplicationException
      */
     
-    public Collection getEntitiesByAttributeName(String attributeName) 
+    Collection getEntitiesByAttributeName(String attributeName) 
     throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException;
     
     /**
@@ -75,7 +76,7 @@ public interface EntityManagerInterface
      * @throws DynamicExtensionsApplicationException
      */
     
-    public Collection getAllEntities()
+    Collection getAllEntities()
     throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException;
     
     
@@ -87,7 +88,7 @@ public interface EntityManagerInterface
      * @throws DynamicExtensionsSystemException
      * @throws DynamicExtensionsApplicationException
      */
-    public AttributeInterface getAttribute(String entityName,String attributeName)
+    AttributeInterface getAttribute(String entityName,String attributeName)
     throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException;
     
     
@@ -100,7 +101,7 @@ public interface EntityManagerInterface
      * @throws DynamicExtensionsApplicationException
      */
     
-    public AssociationInterface getAssociation(String entityName,String sourceRoleName)
+    AssociationInterface getAssociation(String entityName,String sourceRoleName)
     throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException;
     
     /**
@@ -112,7 +113,7 @@ public interface EntityManagerInterface
      * @throws DynamicExtensionsSystemException
      * @throws DynamicExtensionsApplicationException
      */
-    public Collection getAssociations(String sourceEntityName,String targetEntityName)
+    Collection getAssociations(String sourceEntityName,String targetEntityName)
     throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException;
     
     /**
@@ -122,7 +123,7 @@ public interface EntityManagerInterface
      * @throws DynamicExtensionsSystemException
      * @throws DynamicExtensionsApplicationException
      */
-    public Collection getEntityByDescription(String entityDescription)
+    Collection getEntityByDescription(String entityDescription)
     throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException;
     
     /**
@@ -132,7 +133,7 @@ public interface EntityManagerInterface
      * @throws DynamicExtensionsSystemException
      * @throws DynamicExtensionsApplicationException
      */
-    public Collection getEntitiesByAttributeDescription(String attributeDescription)
+    Collection getEntitiesByAttributeDescription(String attributeDescription)
     throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException;
     
     
@@ -143,7 +144,7 @@ public interface EntityManagerInterface
      * @throws DynamicExtensionsSystemException
      * @throws DynamicExtensionsApplicationException
      */
-    public Collection getEntitiesByConceptCode(String entityConceptCode)
+    Collection getEntitiesByConceptCode(String entityConceptCode)
     throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException;
     
     
@@ -154,7 +155,7 @@ public interface EntityManagerInterface
      * @throws DynamicExtensionsSystemException
      * @throws DynamicExtensionsApplicationException
      */
-    public Collection getEntitiesByConceptName(String entityConceptName)
+    Collection getEntitiesByConceptName(String entityConceptName)
     throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException;
     
     /**
@@ -164,17 +165,17 @@ public interface EntityManagerInterface
      * @throws DynamicExtensionsSystemException
      * @throws DynamicExtensionsApplicationException
      */
-    public Collection getEntitiesByAttributeConceptCode(String attributeConceptCode)
+    Collection getEntitiesByAttributeConceptCode(String attributeConceptCode)
     throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException;
     
     /**
      * Returns a collection of entities given the attribute concept name
      * @param attributeConceptname
-     * @return
+     * @return 
      * @throws DynamicExtensionsSystemException
      * @throws DynamicExtensionsApplicationException
      */
-    public Collection getEntitiesByAttributeConceptName(String attributeConceptName)
+    Collection getEntitiesByAttributeConceptName(String attributeConceptName)
     throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException;
     
     
@@ -183,6 +184,18 @@ public interface EntityManagerInterface
      * @param entityInterface
      * @return
      */
-    public Collection findEntity(EntityInterface entityInterface); 
+    Collection findEntity(EntityInterface entityInterface);
+
+    /**
+     * This method is used to save the container into the database.
+     * @param containerInterface container to save
+     * @return ContainerInterface container Interface that is saved.
+     * @throws DynamicExtensionsSystemException Thrown if for any reason operation can not be completed.
+     * @throws DynamicExtensionsApplicationException Thrown if the entity name already exists.
+     * @throws DynamicExtensionsSystemException 
+     */
+    ContainerInterface createContainer(
+            ContainerInterface containerInterface)
+            throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 }

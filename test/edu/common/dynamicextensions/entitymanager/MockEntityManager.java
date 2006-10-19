@@ -8,20 +8,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import edu.common.dynamicextensions.domain.AbstractAttribute;
-import edu.common.dynamicextensions.domain.AbstractMetadata;
-import edu.common.dynamicextensions.domain.Attribute;
-import edu.common.dynamicextensions.domain.DateAttribute;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.StringAttribute;
-import edu.common.dynamicextensions.domain.StringValue;
-import edu.common.dynamicextensions.domain.UserDefinedDE;
-import edu.common.dynamicextensions.domain.userinterface.ComboBox;
-import edu.common.dynamicextensions.domain.userinterface.Container;
-import edu.common.dynamicextensions.domain.userinterface.DatePicker;
-import edu.common.dynamicextensions.domain.userinterface.TextArea;
-import edu.common.dynamicextensions.domain.userinterface.TextField;
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.common.dynamicextensions.domaininterface.DateAttributeInterface;
@@ -29,8 +19,12 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.StringAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 
 /**
@@ -141,12 +135,12 @@ public class MockEntityManager
 	 */
 	public ContainerInterface getContainer(String containerName) throws DynamicExtensionsApplicationException 
 	{
-		
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		ContainerInterface containerInterface = null;
 		ControlInterface controlInterface = null;
 		EntityInterface entityInterface = null;
 		
-		containerInterface = new Container();
+		containerInterface = domainObjectFactory.createContainer();
 		containerInterface.setButtonCss("actionButton");
 		containerInterface.setCaption("DummyContainer");
 		containerInterface.setMainTableCss("formRequiredLabel");
@@ -161,22 +155,22 @@ public class MockEntityManager
 		Iterator abstractAttributeCollectionIterator = abstractAttributeCollection.iterator();
 		while(abstractAttributeCollectionIterator.hasNext())
 		{
-			Attribute attribute = (Attribute)abstractAttributeCollectionIterator.next();
-			if(attribute.getName().equals("name"))
+			AttributeInterface attributeInterface = (AttributeInterface)abstractAttributeCollectionIterator.next();
+			if(attributeInterface.getName().equals("name"))
 			{
-				controlInterface = initializeTextField(attribute);
+				controlInterface = initializeTextField(attributeInterface);
 			}
-			else if(attribute.getName().equals("description"))
+			else if(attributeInterface.getName().equals("description"))
 			{
-				controlInterface = initializeTextArea(attribute);
+				controlInterface = initializeTextArea(attributeInterface);
 			}
-			else if(attribute.getName().equals("dateOfJoining"))
+			else if(attributeInterface.getName().equals("dateOfJoining"))
 			{
-				controlInterface = initializeDatePicker(attribute);
+				controlInterface = initializeDatePicker(attributeInterface);
 			}
-			else if(attribute.getName().equals("gender"))
+			else if(attributeInterface.getName().equals("gender"))
 			{
-				controlInterface = initializeComboBox(attribute);
+				controlInterface = initializeComboBox(attributeInterface);
 			}
 			containerInterface.addControl(controlInterface);
 		}
@@ -192,34 +186,33 @@ public class MockEntityManager
 	public EntityInterface initializeEntity() throws DynamicExtensionsApplicationException 
 	{
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
-		AttributeInterface attributeInterface = null;
+		AbstractAttributeInterface abstractAttributeInterface = null;
 		
 		
 		EntityInterface dummyEntity = domainObjectFactory.createEntity(); 
 
 		dummyEntity.setName("Employee");
-		((AbstractMetadata) dummyEntity).setId(new Long(1L));
 		dummyEntity.setCreatedDate(new Date());
 		dummyEntity.setDescription("This is a dummy entity");
 		dummyEntity.setLastUpdated(dummyEntity.getCreatedDate());
 
 		/* Name attribute */
-		attributeInterface = initializeStringAttribute("name", "William James Bill Murray");
-		dummyEntity.addAbstractAttribute(attributeInterface);
+		abstractAttributeInterface = initializeStringAttribute("name", "William James Bill Murray");
+		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
 	
 		/* Date of Joining attribute */
-		attributeInterface = initializeDateAttribute();
-		dummyEntity.addAbstractAttribute(attributeInterface);
+		abstractAttributeInterface = initializeDateAttribute();
+		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
 
 		/* Gender attribute with its Permissible values */
-		attributeInterface = initializeStringAttribute("gender", "Male");
-		((Attribute) attributeInterface).setDataElement(initializeDataElement());
-		dummyEntity.addAbstractAttribute(attributeInterface);
+		abstractAttributeInterface = initializeStringAttribute("gender", "Male");
+		((AttributeInterface) abstractAttributeInterface).setDataElement(initializeDataElement());
+		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
 		
 		/* Description attribute */
-		attributeInterface = initializeStringAttribute("description",
+		abstractAttributeInterface = initializeStringAttribute("description",
 				"William James Bill Murray is an Academy Award-nominated");
-		dummyEntity.addAbstractAttribute(attributeInterface);
+		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
 	
 		return dummyEntity;
 	}
@@ -282,88 +275,92 @@ public class MockEntityManager
 	}
 
 	/**
-	 * @param abstractAttribute Assosiated Attribute of the Entity
+	 * @param abstractAttributeInterface Assosiated Attribute of the Entity
 	 * @return Manually created TextField control instance
 	 */
-	public ControlInterface initializeTextField(AbstractAttribute abstractAttribute)
+	public ControlInterface initializeTextField(AbstractAttributeInterface abstractAttributeInterface)
 	{
 		final int COLUMNS = 50;
-		TextField textField = new TextField();
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+		TextFieldInterface textFieldInterface = domainObjectFactory.createTextField();
 		
-		textField.setAbstractAttribute(abstractAttribute);
+		textFieldInterface.setAbstractAttribute(abstractAttributeInterface);
 		
-		textField.setColumns(new Integer(COLUMNS));
-		textField.setIsPassword(new Boolean(false));
+		textFieldInterface.setColumns(new Integer(COLUMNS));
+		textFieldInterface.setIsPassword(new Boolean(false));
 		
-		textField.setCaption("Employee Name");
-		textField.setSequenceNumber(new Integer(sequence++));
-		textField.setIsHidden(new Boolean(false));
-		textField.setCssClass("formField");
-		textField.setTooltip("This is Name of the Employee.");
+		textFieldInterface.setCaption("Employee Name");
+		textFieldInterface.setSequenceNumber(new Integer(sequence++));
+		textFieldInterface.setIsHidden(new Boolean(false));
+		textFieldInterface.setCssClass("formField");
+		textFieldInterface.setTooltip("This is Name of the Employee.");
 
-		return textField;
+		return textFieldInterface;
 	}
 	
 	/**
-	 * @param abstractAttribute Assosiated Attribute of the Entity
+	 * @param abstractAttributeInterface Assosiated Attribute of the Entity
 	 * @return Manually created TextArea control instance
 	 */
-	public ControlInterface initializeTextArea(AbstractAttribute abstractAttribute)
+	public ControlInterface initializeTextArea(AbstractAttributeInterface abstractAttributeInterface)
 	{
 		final int COLUMNS = 50;
 		final int ROWS = 6;
-		TextArea textArea = new TextArea();
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+		TextAreaInterface textAreaInterface = domainObjectFactory.createTextArea();
 		
-		textArea.setAbstractAttribute(abstractAttribute);
+		textAreaInterface.setAbstractAttribute(abstractAttributeInterface);
 		
-		textArea.setColumns(new Integer(COLUMNS));
-		textArea.setRows(new Integer(ROWS));
+		textAreaInterface.setColumns(new Integer(COLUMNS));
+		textAreaInterface.setRows(new Integer(ROWS));
 		
-		textArea.setCaption("Description");
-		textArea.setSequenceNumber(new Integer(sequence++));
-		textArea.setIsHidden(new Boolean(false));
-		textArea.setCssClass("formField");
-		textArea.setTooltip("This is Description of the Employee.");
+		textAreaInterface.setCaption("Description");
+		textAreaInterface.setSequenceNumber(new Integer(sequence++));
+		textAreaInterface.setIsHidden(new Boolean(false));
+		textAreaInterface.setCssClass("formField");
+		textAreaInterface.setTooltip("This is Description of the Employee.");
 
-		return textArea;
+		return textAreaInterface;
 	}
 	
 	/**
-	 * @param abstractAttribute Assosiated Attribute of the Entity
+	 * @param abstractAttributeInterface Assosiated Attribute of the Entity
 	 * @return Manually created TextArea control instance
 	 */
-	public ControlInterface initializeDatePicker(AbstractAttribute abstractAttribute)
+	public ControlInterface initializeDatePicker(AbstractAttributeInterface abstractAttributeInterface)
 	{
-		DatePicker datePicker = new DatePicker();
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+		DatePickerInterface datePickerInterface = domainObjectFactory.createDatePicker();
 		
-		datePicker.setAbstractAttribute(abstractAttribute);
+		datePickerInterface.setAbstractAttribute(abstractAttributeInterface);
 		
-		datePicker.setCaption("Date of Joining");
-		datePicker.setSequenceNumber(new Integer(sequence++));
-		datePicker.setIsHidden(new Boolean(false));
-		datePicker.setCssClass("formField");
-		datePicker.setTooltip("This is Date of Joining of the Employee.");
+		datePickerInterface.setCaption("Date of Joining");
+		datePickerInterface.setSequenceNumber(new Integer(sequence++));
+		datePickerInterface.setIsHidden(new Boolean(false));
+		datePickerInterface.setCssClass("formField");
+		datePickerInterface.setTooltip("This is Date of Joining of the Employee.");
 
-		return datePicker;
+		return datePickerInterface;
 	}
 	
 	/**
-	 * @param abstractAttribute Assosiated Attribute of the Entity
+	 * @param abstractAttributeInterface Assosiated Attribute of the Entity
 	 * @return Manually created TextArea control instance
 	 */
-	public ControlInterface initializeComboBox(AbstractAttribute abstractAttribute)
+	public ControlInterface initializeComboBox(AbstractAttributeInterface abstractAttributeInterface)
 	{
-		ComboBox comboBox = new ComboBox();
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+		ComboBoxInterface comboBoxInterface = domainObjectFactory.createComboBox();
 		
-		comboBox.setAbstractAttribute(abstractAttribute);
+		comboBoxInterface.setAbstractAttribute(abstractAttributeInterface);
 		
-		comboBox.setCaption("Gender");
-		comboBox.setSequenceNumber(new Integer(sequence));
-		comboBox.setIsHidden(new Boolean(false));
-		comboBox.setCssClass("formField");
-		comboBox.setTooltip("This is Gender of the Employee.");
+		comboBoxInterface.setCaption("Gender");
+		comboBoxInterface.setSequenceNumber(new Integer(sequence));
+		comboBoxInterface.setIsHidden(new Boolean(false));
+		comboBoxInterface.setCssClass("formField");
+		comboBoxInterface.setTooltip("This is Gender of the Employee.");
 
-		return comboBox;
+		return comboBoxInterface;
 	}
 	
 	/**

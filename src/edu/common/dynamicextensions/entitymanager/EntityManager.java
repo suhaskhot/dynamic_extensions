@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -560,16 +561,16 @@ public class EntityManager implements EntityManagerInterface
 	public Collection getAllEntities() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
-		Collection entityList;
+		Collection entityCollection = new HashSet();
 		try
 		{
-			entityList = bizLogic.retrieve(Entity.class.getName());
+			entityCollection = bizLogic.retrieve(Entity.class.getName());
 		}
 		catch (DAOException e)
 		{
 			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
-		return entityList;
+		return entityCollection;
 	}
 
 	/**

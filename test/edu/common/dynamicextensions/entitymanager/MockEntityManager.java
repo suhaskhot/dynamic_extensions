@@ -27,7 +27,6 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 /**
  * This Class is a mock class to test EntityManager
  * @author chetan_patil
- * @version 2.0
  */
 public class MockEntityManager 
 {

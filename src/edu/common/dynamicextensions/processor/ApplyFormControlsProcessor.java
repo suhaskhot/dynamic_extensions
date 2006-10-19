@@ -80,6 +80,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 		                    System.out.println("Updating entity adding attribte " + abstractAttributeInterface);
 		                    
 		                    entityInterface.addAbstractAttribute(abstractAttributeInterface);
+                            abstractAttributeInterface.setEntity(entityInterface);
 		                }
 		                //Container : Add control and entity
 		                System.out.println("Adding control to container");

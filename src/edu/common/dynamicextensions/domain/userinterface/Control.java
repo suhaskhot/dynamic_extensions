@@ -1,5 +1,8 @@
 package edu.common.dynamicextensions.domain.userinterface;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domain.AbstractAttribute;
@@ -50,8 +53,9 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	protected String value = null;
 	/**
 	 * Attribute to which this control is associated.
-	 */	
-	public AbstractAttribute abstractAttribute=null;
+	 */
+	
+	public Collection abstractAttributeCollection= new HashSet();
     
     /**
      * 
@@ -215,17 +219,37 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 		}
 		return eventHandlersString;
 	}*/
-	/**
-     * @hibernate.many-to-one column ="ATTRIBUTE_ID" class="edu.common.dynamicextensions.domain.AbstractAttribute"
-	 * @return Returns the abstractAttribute.
-	 */
+    
 	public AbstractAttributeInterface getAbstractAttribute() {
-		return abstractAttribute;
+		if (this.abstractAttributeCollection != null && !this.abstractAttributeCollection.isEmpty()) {
+		    Iterator iter = abstractAttributeCollection.iterator();
+            return (AbstractAttribute) iter.next();
+        }
+        return null;
 	}
 	/**
 	 * @param abstractAttribute The abstractAttribute to set.
 	 */
 	public void setAbstractAttribute(AbstractAttributeInterface abstractAttributeInterface) {
-		this.abstractAttribute = (AbstractAttribute)abstractAttributeInterface;
+		this.abstractAttributeCollection.add((AbstractAttribute)abstractAttributeInterface);
 	}
+
+    /**
+     * @hibernate.set name="abstractAttributeCollection" table="DYEXTN_ATTRIBUTE"
+     * cascade="save-update" inverse="false" lazy="false"
+     * @hibernate.collection-key column="CONTROL_ID"
+     * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.AbstractAttribute" 
+     * @return Returns the sourceEntityCollection.
+     */
+    public Collection getAbstractAttributeCollection()
+    {
+        return abstractAttributeCollection;
+    }
+
+    
+    public void setAbstractAttributeCollection(
+            Collection abstractAttributeCollection)
+    {
+        this.abstractAttributeCollection = abstractAttributeCollection;
+    }
 }

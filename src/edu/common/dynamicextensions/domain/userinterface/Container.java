@@ -123,7 +123,8 @@ public class Container extends AbstractDomainObject implements Serializable,Cont
 	}
 	/**
 	 * @hibernate.many-to-one column ="ENTITY_ID" class="edu.common.dynamicextensions.domain.Entity"
-	 * @return Returns the entity.
+     * cascade="save-update" 
+     * @return Returns the entity.
 	 */
 	public EntityInterface getEntity() {
 		return entity;

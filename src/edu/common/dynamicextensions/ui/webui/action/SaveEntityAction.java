@@ -6,6 +6,8 @@
 package edu.common.dynamicextensions.ui.webui.action;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,7 +49,16 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 		
 		//Call container processor save method
 		ContainerProcessor containerProcessor  = ContainerProcessor.getInstance();
-		containerProcessor.saveContainer(containerInterface);
+        try
+        {
+            containerProcessor.saveContainer(containerInterface);
+        }
+        catch (Exception e)
+        {
+            List list = new ArrayList();
+            handleException(e,list);
+            
+        }
 		
 		/*ActionForward actionForward = mapping.findForward(Constants.SUCCESS);
 		actionForward.getPath();

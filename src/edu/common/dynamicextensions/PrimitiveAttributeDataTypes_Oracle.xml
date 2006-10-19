@@ -3,17 +3,17 @@
 <Primitive-Attributes>
     <Primitive-Attribute>
 		  <name>String</name>
-	  	  <database-datatype>varchar2</database-datatype>
+	  	  <database-datatype>varchar2(4000)</database-datatype>
     </Primitive-Attribute>
     
     <Primitive-Attribute>
 		  <name>Boolean</name>
-	  	  <database-datatype>int</database-datatype>
+	  	  <database-datatype>Number(38)</database-datatype>
     </Primitive-Attribute>
     
      <Primitive-Attribute>
 		  <name>Integer</name>
-	  	  <database-datatype>Integer</database-datatype>
+	  	  <database-datatype>Number(38)</database-datatype>
     </Primitive-Attribute>
     
      <Primitive-Attribute>
@@ -28,12 +28,12 @@
     
     <Primitive-Attribute>
 		  <name>Float</name>
-	  	  <database-datatype>Float</database-datatype>
+	  	  <database-datatype>Float(126)</database-datatype>
     </Primitive-Attribute>
     
     <Primitive-Attribute>
 		  <name>Short</name>
-	  	  <database-datatype>Number(3)</database-datatype>
+	  	  <database-datatype>Number(38)</database-datatype>
     </Primitive-Attribute>
     
      <Primitive-Attribute>

@@ -9,8 +9,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import edu.common.dynamicextensions.domain.AbstractAttribute;
+import edu.common.dynamicextensions.domain.AbstractMetadata;
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.DateAttribute;
+import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.StringAttribute;
 import edu.common.dynamicextensions.domain.StringValue;
@@ -20,8 +22,13 @@ import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domain.userinterface.DatePicker;
 import edu.common.dynamicextensions.domain.userinterface.TextArea;
 import edu.common.dynamicextensions.domain.userinterface.TextField;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
+import edu.common.dynamicextensions.domaininterface.DateAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.StringAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.StringValueInterface;
+import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
@@ -29,7 +36,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 /**
  * This Class is a mock class to test EntityManager
  * @author chetan_patil
- * @version 1.0
+ * @version 2.0
  */
 public class MockEntityManager 
 {
@@ -134,6 +141,7 @@ public class MockEntityManager
 	 */
 	public ContainerInterface getContainer(String containerName) throws DynamicExtensionsApplicationException 
 	{
+		
 		ContainerInterface containerInterface = null;
 		ControlInterface controlInterface = null;
 		EntityInterface entityInterface = null;
@@ -183,34 +191,35 @@ public class MockEntityManager
 	 */
 	public EntityInterface initializeEntity() throws DynamicExtensionsApplicationException 
 	{
-		Attribute attribute = null;
-		Entity dummyEntity = new Entity();
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+		AttributeInterface attributeInterface = null;
+		
+		
+		EntityInterface dummyEntity = domainObjectFactory.createEntity(); 
 
 		dummyEntity.setName("Employee");
-		dummyEntity.setId(new Long(1L));
+		((AbstractMetadata) dummyEntity).setId(new Long(1L));
 		dummyEntity.setCreatedDate(new Date());
 		dummyEntity.setDescription("This is a dummy entity");
 		dummyEntity.setLastUpdated(dummyEntity.getCreatedDate());
 
 		/* Name attribute */
-		attribute = initializeStringAttribute("name", "William James Bill Murray");
-		dummyEntity.addAbstractAttribute(attribute);
+		attributeInterface = initializeStringAttribute("name", "William James Bill Murray");
+		dummyEntity.addAbstractAttribute(attributeInterface);
 	
 		/* Date of Joining attribute */
-		attribute = initializeDateAttribute();
-		dummyEntity.addAbstractAttribute(attribute);
+		attributeInterface = initializeDateAttribute();
+		dummyEntity.addAbstractAttribute(attributeInterface);
 
 		/* Gender attribute with its Permissible values */
-		attribute = initializeStringAttribute("gender", "Male");
-		attribute.setDataElement(initializeDataElement());
-		dummyEntity.addAbstractAttribute(attribute);
+		attributeInterface = initializeStringAttribute("gender", "Male");
+		((Attribute) attributeInterface).setDataElement(initializeDataElement());
+		dummyEntity.addAbstractAttribute(attributeInterface);
 		
 		/* Description attribute */
-		attribute = initializeStringAttribute("description",
-				"William James Bill Murray (born September 21, 1950) is an Academy Award-nominated, "
-				+ "Emmy-winning and Golden Globe-winning American comedian and actor. He is most famous "
-				+ "for his comedic roles in Groundhog Day, Caddyshack, Ghostbusters, and What About Bob?.");
-		dummyEntity.addAbstractAttribute(attribute);
+		attributeInterface = initializeStringAttribute("description",
+				"William James Bill Murray is an Academy Award-nominated");
+		dummyEntity.addAbstractAttribute(attributeInterface);
 	
 		return dummyEntity;
 	}
@@ -221,23 +230,23 @@ public class MockEntityManager
 	 * @param defaultValue Default value of the Attribute
 	 * @return Manually created StringAttribute instance
 	 */
-	public Attribute initializeStringAttribute(String attributeName, String defaultValue) 
+	public AttributeInterface initializeStringAttribute(String attributeName, String defaultValue) 
 	{
-		StringAttribute stringAttribute = new StringAttribute();
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+		StringAttributeInterface stringAttributeInterface = domainObjectFactory.createStringAttribute(); 
+		
+		stringAttributeInterface.setCreatedDate(new Date());
+		stringAttributeInterface.setDescription("This is a dummy StringAttribute");
+		stringAttributeInterface.setIsCollection(new Boolean(false));
+		stringAttributeInterface.setIsIdentified(new Boolean(true));
+		stringAttributeInterface.setIsPrimaryKey(new Boolean(false));
+		stringAttributeInterface.setLastUpdated(stringAttributeInterface.getCreatedDate());
+		stringAttributeInterface.setName(attributeName);
 
-		stringAttribute.setCreatedDate(new Date());
-		stringAttribute.setDescription("This is a dummy StringAttribute");
-		stringAttribute.setId(new Long(identifier++));
-		stringAttribute.setIsCollection(new Boolean(false));
-		stringAttribute.setIsIdentified(new Boolean(true));
-		stringAttribute.setIsPrimaryKey(new Boolean(false));
-		stringAttribute.setLastUpdated(stringAttribute.getCreatedDate());
-		stringAttribute.setName(attributeName);
+		stringAttributeInterface.setDefaultValue(defaultValue);
+		stringAttributeInterface.setSize(new Integer(defaultValue.length()));
 
-		stringAttribute.setDefaultValue(defaultValue);
-		stringAttribute.setSize(new Integer(defaultValue.length()));
-
-		return stringAttribute;
+		return stringAttributeInterface;
 	}
 
 	/**
@@ -246,9 +255,10 @@ public class MockEntityManager
 	 * @return Manually created DateAttribute instance
 	 * @throws DynamicExtensionsApplicationException On failure to create Date
 	 */
-	public Attribute initializeDateAttribute() throws DynamicExtensionsApplicationException
+	public AttributeInterface initializeDateAttribute() throws DynamicExtensionsApplicationException
 	{
-		DateAttribute dateAttribute = new DateAttribute();
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+		DateAttributeInterface dateAttributeInterface = domainObjectFactory.createDateAttribute();
 		Date dateOfJoining = null;
 		try 
 		{
@@ -259,17 +269,16 @@ public class MockEntityManager
 			throw new DynamicExtensionsApplicationException("Cannot create DateAttribute", parseException);
 		}
 
-		dateAttribute.setCreatedDate(new Date());
-		dateAttribute.setDescription("This is a dummy DateAttribute");
-		dateAttribute.setId(new Long(identifier++));
-		dateAttribute.setIsCollection(new Boolean(false));
-		dateAttribute.setIsIdentified(new Boolean(true));
-		dateAttribute.setIsPrimaryKey(new Boolean(false));
-		dateAttribute.setLastUpdated(dateAttribute.getCreatedDate());
-		dateAttribute.setName("dateOfJoining");
-		dateAttribute.setDefaultValue(dateOfJoining);
+		dateAttributeInterface.setCreatedDate(new Date());
+		dateAttributeInterface.setDescription("This is a dummy DateAttribute");
+		dateAttributeInterface.setIsCollection(new Boolean(false));
+		dateAttributeInterface.setIsIdentified(new Boolean(true));
+		dateAttributeInterface.setIsPrimaryKey(new Boolean(false));
+		dateAttributeInterface.setLastUpdated(dateAttributeInterface.getCreatedDate());
+		dateAttributeInterface.setName("dateOfJoining");
+		dateAttributeInterface.setDefaultValue(dateOfJoining);
 
-		return dateAttribute;
+		return dateAttributeInterface;
 	}
 
 	/**
@@ -362,24 +371,23 @@ public class MockEntityManager
 	 */
 	public DataElementInterface initializeDataElement()
 	{
-		UserDefinedDE userDefinedDE = new UserDefinedDE();
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+		UserDefinedDEInterface userDefinedDEInterface = domainObjectFactory.createUserDefinedDE(); 
+			//new UserDefinedDE();
 		
-		Collection permissibleValueCollection = new HashSet();
-		StringValue stringValue = null;
+		StringValueInterface stringValueInterface = null;
 		
 		/* First Value */
-		stringValue = new StringValue();
-		stringValue.setValue("Male");
-		permissibleValueCollection.add(stringValue);
-		
+		stringValueInterface = domainObjectFactory.createStringValue();
+		stringValueInterface.setValue("Male");
+		userDefinedDEInterface.addPermissibleValue(stringValueInterface);
+				
 		/* Second Value */
-		stringValue = new StringValue();
-		stringValue.setValue("Female");
-		permissibleValueCollection.add(stringValue);
+		stringValueInterface = domainObjectFactory.createStringValue();
+		stringValueInterface.setValue("Female");
+		userDefinedDEInterface.addPermissibleValue(stringValueInterface);
 		
-		userDefinedDE.setPermissibleValueCollection(permissibleValueCollection);
-		
-		return userDefinedDE;
+		return userDefinedDEInterface;
 	}
 	
 }

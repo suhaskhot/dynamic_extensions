@@ -1,13 +1,11 @@
 
 package edu.common.dynamicextensions.exception;
 
-import java.io.PrintStream;
-import java.io.PrintWriter;
 
 /**
  * @author chetan_patil
  */
-public class DataTypeFactoryInitializationException extends Throwable
+public class DataTypeFactoryInitializationException extends DynamicExtensionsSystemException
 {
 	/**
 	 * 
@@ -63,41 +61,5 @@ public class DataTypeFactoryInitializationException extends Throwable
 	{
 		this.wrapException = wrapException;		
 	}
-
-	/**
-	 * 
-	 */
-	public void printStackTrace()
-	{
-		super.printStackTrace();
-		if (wrapException != null)
-		{
-			wrapException.printStackTrace();
-		}
-	}
-
-	/**
-	 * @param printWriter The PrintWriter
-	 */
-	public void printStackTrace(PrintWriter printWriter)
-	{
-		super.printStackTrace(printWriter);
-		if (wrapException != null)
-		{
-			wrapException.printStackTrace(printWriter);
-		}
-	}
-
-	/**
-	 * @param printStream The PrintStream
-	 */
-	public void printStackTrace(PrintStream printStream)
-	{
-		super.printStackTrace(printStream);
-		if (wrapException != null)
-		{
-			wrapException.printStackTrace(printStream);
-		}
-	}
-
+	
 }

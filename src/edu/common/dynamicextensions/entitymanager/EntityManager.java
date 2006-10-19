@@ -612,7 +612,7 @@ public class EntityManager implements EntityManagerInterface
     throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException
     {
     	AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
-    	Collection objectList;
+    	Collection objectList = HashSet();
 		try
 		{
 			objectList = bizLogic.retrieve(objectName);
@@ -623,8 +623,6 @@ public class EntityManager implements EntityManagerInterface
 		}
     	return objectList;
     }
-
-
 
 	/**
 	 * Returns an attribute given the entity name and attribute name

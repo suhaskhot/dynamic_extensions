@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.Iterator;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
-import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
@@ -40,8 +39,7 @@ public class MockEntityManager
 	 * @return The Collection of Entities
 	 * @throws DynamicExtensionsApplicationException If Entities can't be created
 	 */
-	public Collection getAllEntities()
-			throws DynamicExtensionsApplicationException 
+	public Collection getAllEntities() throws DynamicExtensionsApplicationException 
 	{
 		/**
 		 * This is dummy Entity Class
@@ -64,6 +62,7 @@ public class MockEntityManager
 
 		}
 
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		Collection entityInterfaceCollection = new ArrayList();
 		EntityInterface entityInterface = null;
 
@@ -92,7 +91,7 @@ public class MockEntityManager
 		/* Populate all dummy entities into a Collection */
 		for (int i = 0; i < dummyEntities.length; i++) 
 		{
-			entityInterface = new Entity();
+			entityInterface = domainObjectFactory.createEntity();
 
 			entityInterface.setName(dummyEntities[i].entityName);
 			entityInterface.setCreatedDate(dummyEntities[i].createdDate);

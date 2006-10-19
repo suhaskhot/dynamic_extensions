@@ -144,10 +144,10 @@ public class Entity extends AbstractMetadata implements EntityInterface {
     /**
      * 
      */
-    public Collection getAttributeCollection() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	public Collection getAttributeCollection() {
+		// TODO Auto-generated method stub
+		return this.abstractAttributeCollection;
+	}
 
 
     /**

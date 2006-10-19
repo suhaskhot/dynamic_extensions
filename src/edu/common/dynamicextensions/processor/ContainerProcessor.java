@@ -1,8 +1,14 @@
 
 package edu.common.dynamicextensions.processor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManager;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.interfaces.ContainerUIBeanInterface;
 import edu.wustl.common.util.Utility;
 
@@ -86,9 +92,10 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 		}
 	}
 
-	public void saveContainer(ContainerInterface containerInterface)
+	public void saveContainer(ContainerInterface containerInterface) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
-		System.out.println("In container interface save method. Saving container ["+ containerInterface +"]" );
-		
+	        
+    EntityManager.getInstance().createContainer(containerInterface);
+                        
 	}
 }

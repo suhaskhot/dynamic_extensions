@@ -252,6 +252,19 @@ public class Container extends AbstractDomainObject implements Serializable,Cont
 			}
 		}
 		return null;
-	}  
+	}
+	/**
+	 * 
+	 */
+	public void removeControl(ControlInterface controlInterface)
+	{
+		if((controlInterface!=null)&&(controlCollection!=null))
+		{
+			if(controlCollection.contains(controlInterface))
+			{
+				controlCollection.remove(controlInterface);
+			}
+		}
+	}	
 	
 }

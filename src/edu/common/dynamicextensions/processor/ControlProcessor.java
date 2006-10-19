@@ -57,15 +57,10 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	public ControlInterface populateControlInterface(String userSelectedControlName, ControlInterface controlIntf, ControlUIBeanInterface controlUIBeanInterface)
 	{
 		ControlInterface controlInterface = null;
-		System.out.println("User Selected Control = " + userSelectedControlName);
 		if((userSelectedControlName!=null)&&(controlUIBeanInterface!=null))
 		{
 			if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.TEXT_CONTROL)) {
-				if(controlUIBeanInterface.getLinesType() != null && controlUIBeanInterface.getLinesType().equalsIgnoreCase("MultiLine")) {
-					controlInterface = getMultiLineControl(controlIntf, controlUIBeanInterface);	
-				} else {
 					controlInterface = getTextControl(controlIntf, controlUIBeanInterface);
-				}
 			} else if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.COMBOBOX_CONTROL)) {
 				controlInterface = getComboBoxControl(controlIntf, controlUIBeanInterface);
 			} else if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.LISTBOX_CONTROL)) {
@@ -85,13 +80,6 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			controlInterface.setCssClass(controlUIBeanInterface.getCssClass());
 			controlInterface.setTooltip(controlUIBeanInterface.getTooltip());
 			controlInterface.setIsHidden(controlUIBeanInterface.getIsHidden());
-
-			System.out.println("Caption [" + controlInterface.getCaption() + "]");
-			System.out.println("Css Class [" + controlInterface.getCssClass() + "]");
-			System.out.println("Tooltip [" + controlInterface.getTooltip() + "]");
-			System.out.println("Is Hidden [" + controlInterface.getIsHidden() + "]");
-			System.out.println("Seq Number [" + controlInterface.getSequenceNumber() + "]");
-
 		}
 		return controlInterface;
 
@@ -108,7 +96,6 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		if(controlInterface == null)
 		{
 			datePickerIntf = DomainObjectFactory.getInstance().createDatePicker();
-			System.out.println("Created Date Picker Intf");
 		}
 		else
 		{
@@ -128,7 +115,6 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		if(controlInterface==null)
 		{
 			radioButtonIntf = DomainObjectFactory.getInstance().createRadioButton();
-			System.out.println("Created Radio Button Intf");
 		}
 		else
 		{
@@ -149,7 +135,6 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		if(controlInterface == null)
 		{
 			checkBoxIntf = DomainObjectFactory.getInstance().createCheckBox();
-			System.out.println("Created Check box Intf");
 		}
 		else
 		{
@@ -170,7 +155,6 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		if(controlInterface==null)
 		{
 			listBoxIntf = DomainObjectFactory.getInstance().createListBox();
-			System.out.println("Created List Intf");
 		}
 		else
 		{
@@ -178,10 +162,6 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		}
 
 		listBoxIntf.setIsMultiSelect(controlUIBeanInterface.getIsMultiSelect());
-		//listBoxIntf.setChoiceList(controlInformationInterface.getDisplayChoiceList());
-
-		System.out.println("Is Multiselect = " + listBoxIntf.getIsMultiSelect());
-		//System.out.println("Choice List " + listBoxIntf.getChoiceList());
 		return listBoxIntf;
 	}
 	/**
@@ -195,16 +175,11 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		if(controlInterface==null)
 		{
 			comboBoxIntf = DomainObjectFactory.getInstance().createComboBox();
-			System.out.println("Created combobox Intf ");
 		}
 		else
 		{
 			comboBoxIntf = (ComboBoxInterface)controlInterface;
 		}
-
-		//comboBoxIntf.setChoiceList(controlInformationInterface.getDisplayChoiceList());
-
-		//System.out.println("Choice List " + comboBoxIntf.getChoiceList());
 		return comboBoxIntf;
 	}
 	/**
@@ -212,19 +187,24 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @param controlUIBeanInterface 
 	 * @return
 	 */
-	private ControlInterface getMultiLineControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
+	private ControlInterface getMultiLineTextControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
 	{
+		return null;
+		/*
 		TextAreaInterface textAreaIntf = null;
 		if(controlInterface==null)	//If does not exist create it 
 		{
 			textAreaIntf = DomainObjectFactory.getInstance().createTextArea();
-			System.out.println("Created Text Area control");
 		}
 		else
 		{
-			try
+			if(controlInterface instanceof TextAreaInterface)
 			{
 				textAreaIntf = (TextAreaInterface)controlInterface;
+			}
+			else
+			{
+				//Remove control interface from con
 			}
 			catch (ClassCastException e)
 			{
@@ -235,11 +215,8 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		}
 		textAreaIntf.setColumns(controlUIBeanInterface.getColumns());
 		textAreaIntf.setRows(controlUIBeanInterface.getRows());
-
-		System.out.println("No Of rows = " + textAreaIntf.getRows());
-		System.out.println("No Of Cols = " + textAreaIntf.getColumns());
 		return textAreaIntf;
-	}
+	*/}
 	/**
 	 * Creates a new TextControl if control interface is null
 	 * Updates the existing if not null
@@ -249,33 +226,28 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private ControlInterface getTextControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
 	{
-		TextFieldInterface textFldIntf = null;
-		if(controlInterface==null)	//If does not exist create it 
+		String lineType = controlUIBeanInterface.getLinesType(); 
+		if((lineType!= null) && (lineType.equalsIgnoreCase(ProcessorConstants.LINE_TYPE_MULTILINE))) 
 		{
-			textFldIntf = DomainObjectFactory.getInstance().createTextField(); 
-			System.out.println("Created Text control");
+			return getMultiLineTextControl(controlInterface, controlUIBeanInterface);	
 		}
 		else
 		{
-			try
-			{
-				textFldIntf = (TextFieldInterface)controlInterface;
-			}
-			catch (ClassCastException e)
-			{
-				//If a class cast exception occurs it means that its a text area interface. 
-				//Create a text area interface and return
-				return getMultiLineControl(null, controlUIBeanInterface);
-			}
+			return getSingleLineTextControl(controlInterface,controlUIBeanInterface);
 		}
-		textFldIntf.setIsPassword(controlUIBeanInterface.getIsPassword());
-		textFldIntf.setColumns(controlUIBeanInterface.getColumns());
 
-		System.out.println("Is Password = " + textFldIntf.getIsPassword());
-		System.out.println("Cols = " + textFldIntf.getColumns());
-		return textFldIntf;
 	}
 
+	/**
+	 * @param controlInterface
+	 * @param controlUIBeanInterface
+	 * @return
+	 */
+	private ControlInterface getSingleLineTextControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 	/**
 	 * This method will populate the ControlUIBeanInterface using the controlInterface so that the 
 	 * information of the Control can be shown on the user page using the ControlUIBeanInterface.

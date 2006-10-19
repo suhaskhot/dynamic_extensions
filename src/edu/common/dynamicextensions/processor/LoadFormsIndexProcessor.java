@@ -1,11 +1,15 @@
 
 package edu.common.dynamicextensions.processor;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
 
-import edu.common.dynamicextensions.entitymanager.MockEntityManager;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.actionform.FormsIndexForm;
 
 /**
@@ -33,22 +37,38 @@ public class LoadFormsIndexProcessor extends BaseDynamicExtensionsProcessor
 	/**
 	 * A call to EntityManager will return the entityList which will then added to actionForm.
 	 * @param loadFormIndexForm
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException
 	 */
-	public void populateFormsIndex(FormsIndexForm loadFormIndexForm)
+	public void populateFormsIndex(FormsIndexForm loadFormIndexForm) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
-		Collection entityList = null;
+		Collection entityCollection = null;
 		try
 		{
-			entityList = new MockEntityManager().getAllEntities();
-			if (entityList == null)
+			//entityList = new MockEntityManager().getAllEntities();
+			EntityManager entityManager = EntityManager.getInstance();
+			entityCollection = entityManager.getAllEntities();
+			
+			for(Iterator iterator = entityCollection.iterator(); iterator.hasNext();)
 			{
-				entityList = new ArrayList();
+				EntityInterface entityInterface = (EntityInterface)iterator.next();
+				Date date = entityInterface.getCreatedDate();
+				System.out.println(date);
 			}
-			loadFormIndexForm.setEntityList(entityList);
+			
+			if (entityCollection == null)
+			{
+				entityCollection = new HashSet();
+			}
+			loadFormIndexForm.setEntityCollection(entityCollection);
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{
-			e.printStackTrace();
+			throw e;
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			throw e;
 		}
 	}
 }

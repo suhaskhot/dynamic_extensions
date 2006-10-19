@@ -31,7 +31,7 @@
 	<body>
 		<html:form styleId = "previewForm" action="/LoadFormPreviewAction" enctype="multipart/form-data" >
 			
-			<div id='overDiv' style='position:absolute; visibility:hidden; z-index:1000;'></div>
+			<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 			
 			<table align='center' width='75%'>				
           		<tr>

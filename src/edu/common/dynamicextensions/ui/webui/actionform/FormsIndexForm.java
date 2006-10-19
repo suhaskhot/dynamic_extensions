@@ -23,7 +23,7 @@ public class FormsIndexForm extends AbstractActionForm
 	/**
 	 * Collection of Entities
 	 */
-	protected Collection entityList = null;
+	protected Collection entityCollection = null;
 
 	/**
 	 * Values of the Check boxes
@@ -53,17 +53,17 @@ public class FormsIndexForm extends AbstractActionForm
 	/**
 	 * @return the entityList
 	 */
-	public Collection getEntityList()
+	public Collection getEntityCollection()
 	{
-		return entityList;
+		return entityCollection;
 	}
 
 	/**
 	 * @param entityList the entityList to set
 	 */
-	public void setEntityList(Collection entityList)
+	public void setEntityCollection(Collection entityList)
 	{
-		this.entityList = entityList;
+		this.entityCollection = entityList;
 	}
 
 	/**
@@ -96,7 +96,7 @@ public class FormsIndexForm extends AbstractActionForm
 	 */
 	protected void reset()
 	{
-		entityList = null;
+		entityCollection = null;
 	}
 
 	/**

@@ -24,16 +24,6 @@
             </generator>
         </id>
 
-        <many-to-one
-            name="attribute"
-            class="edu.common.dynamicextensions.domain.Attribute"
-            cascade="none"
-            outer-join="auto"
-            update="true"
-            insert="true"
-            column="ATTRIBUTE_ID"
-        />
-
         <property
             name="caption"
             type="string"
@@ -82,6 +72,24 @@
             column="TOOLTIP"
         />
 
+        <set
+            name="abstractAttributeCollection"
+            table="DYEXTN_ATTRIBUTE"
+            lazy="false"
+            inverse="false"
+            cascade="save-update"
+            sort="unsorted"
+        >
+
+              <key
+                  column="CONTROL_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.AbstractAttribute"
+              />
+        </set>
+
         <!--
             To add non XDoclet property mappings, create a file named
                 hibernate-properties-Control.xml
@@ -97,7 +105,6 @@
         <key
             column="IDENTIFIER"
         />
-
         <property
             name="isMultiSelect"
             type="boolean"

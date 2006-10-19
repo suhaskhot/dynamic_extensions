@@ -40,7 +40,6 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 
 	public void addControlToForm(ContainerInterface containerInterface, ControlsForm controlsForm)
 	{
-		System.out.println("Add Control to form");
 		if((containerInterface != null)&&(controlsForm!=null))
 		{
 			try
@@ -53,94 +52,85 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				ControlInterface controlInterface = null;
 				//Check for operation
 				String controlOperation  = controlsForm.getControlOperation();
-				System.out.println("Control operation = [" + controlOperation + "]");
+
 				//Default is add
 				if((controlOperation==null)||(controlOperation.trim().equals("")))
 				{
 					controlOperation  = ProcessorConstants.ADD;
 				}
-					//Add new control
-					if(controlOperation.equalsIgnoreCase(ProcessorConstants.ADD))
+				//Add new control
+				if(controlOperation.equalsIgnoreCase(ProcessorConstants.ADD))
+				{
+					//Create Attribute  
+					abstractAttributeInterface = attributeProcessor.createAndPopulateAttribute(controlsForm);
+					
+					//if combobox control has been selected then set the DataElement object for set of permissible values
+					String userSelectedControl = controlsForm.getUserSelectedTool(); 
+					if((userSelectedControl!=null)&&(userSelectedControl.equalsIgnoreCase(ProcessorConstants.COMBOBOX_CONTROL)))
 					{
-						System.out.println("Add Control operation");
-						//Create Attribute  
-						abstractAttributeInterface = attributeProcessor.createAndPopulateAttribute(controlsForm);
-						controlsForm.setAbstractAttribute(abstractAttributeInterface);
-						//Control Interface : Add control
-						controlInterface = controlProcessor.createAndPopulateControl(controlsForm.getUserSelectedTool(),controlsForm);
-						Collection controlCollection = containerInterface.getControlCollection();
-						if(controlCollection!=null)
+						if(abstractAttributeInterface instanceof AttributeInterface)
 						{
-							int noOfElts = controlCollection.size();
-							controlInterface.setSequenceNumber(new Integer(noOfElts+1));
-							System.out.println("Deq Number = " + controlInterface.getSequenceNumber());
+							((AttributeInterface)abstractAttributeInterface).setDataElement(attributeProcessor.getDataElementInterface(controlsForm));
 						}
-						//Entity Interface  : Add attribute
-						if(entityInterface != null) {
-		                    System.out.println("Updating entity adding attribte " + abstractAttributeInterface);
-		                    
-		                    entityInterface.addAbstractAttribute(abstractAttributeInterface);
-                            abstractAttributeInterface.setEntity(entityInterface);
-		                }
-		                //Container : Add control and entity
-		                System.out.println("Adding control to container");
-		                containerInterface.addControl(controlInterface);
-		                
-		                System.out.println("Adding entity to conntainer");
-		                containerInterface.setEntity(entityInterface);
-
-					}else if(controlOperation.equalsIgnoreCase(ProcessorConstants.EDIT))
-					{
-						System.out.println("Edit Control operation");
-						//Get the control from container
-						String selectedControlSeqNumber = controlsForm.getSelectedControlId();
-						System.out.println("Selected Control Seq Number = "  +selectedControlSeqNumber);
-						controlInterface = containerInterface.getControlInterfaceBySequenceNumber(selectedControlSeqNumber);
-						
-						//Remove old refernces : From Entity
-						entityInterface.removeAbstractAttribute(controlInterface.getAbstractAttribute());
-						
-						//Create new abstract attribute interface with new datatype
-						abstractAttributeInterface = attributeProcessor.createAndPopulateAttribute(controlsForm);
-						
-						//update in entity
-						entityInterface.addAbstractAttribute(abstractAttributeInterface);
-						//update in control interface
-						controlInterface.setAbstractAttribute(abstractAttributeInterface);
-						
-						controlsForm.setAbstractAttribute(abstractAttributeInterface);
-						//update control
-						controlProcessor.populateControlInterface(controlsForm.getUserSelectedTool(), controlInterface, controlsForm);
 					}
+					
+					//Set attribute in controlInformationInterface object(controlsForm)
+					controlsForm.setAbstractAttribute(abstractAttributeInterface);
+					
+					//Control Interface : Add control
+					controlInterface = controlProcessor.createAndPopulateControl(controlsForm.getUserSelectedTool(),controlsForm);
+					Collection controlCollection = containerInterface.getControlCollection();
+					if(controlCollection!=null)
+					{
+						int noOfElts = controlCollection.size();
+						controlInterface.setSequenceNumber(new Integer(noOfElts+1));
+					}
+
+					//Entity Interface  : Add attribute
+					if(entityInterface != null) {
+						entityInterface.addAbstractAttribute(abstractAttributeInterface);
+						abstractAttributeInterface.setEntity(entityInterface);
+					}
+
+					//Container : Add control and entity
+					containerInterface.addControl(controlInterface);
+					containerInterface.setEntity(entityInterface);
+
+				}else if(controlOperation.equalsIgnoreCase(ProcessorConstants.EDIT))
+				{
+					//Get the control from container
+					String selectedControlSeqNumber = controlsForm.getSelectedControlId();
+					controlInterface = containerInterface.getControlInterfaceBySequenceNumber(selectedControlSeqNumber);
+
+					//Remove old refernces : From Entity
+					entityInterface.removeAbstractAttribute(controlInterface.getAbstractAttribute());
+
+					//Create new abstract attribute interface with new datatype
+					abstractAttributeInterface = attributeProcessor.createAndPopulateAttribute(controlsForm);
+					
+					//if combobox control has been selected then set the DataElement object for set of permissible values
+					String userSelectedControl = controlsForm.getUserSelectedTool(); 
+					if((userSelectedControl!=null)&&(userSelectedControl.equalsIgnoreCase(ProcessorConstants.COMBOBOX_CONTROL)))
+					{
+						if(abstractAttributeInterface instanceof AttributeInterface)
+						{
+							((AttributeInterface)abstractAttributeInterface).setDataElement(attributeProcessor.getDataElementInterface(controlsForm));
+						}
+					}
+					//update in entity
+					entityInterface.addAbstractAttribute(abstractAttributeInterface);
+					//update in control interface
+					controlInterface.setAbstractAttribute(abstractAttributeInterface);
+
+					controlsForm.setAbstractAttribute(abstractAttributeInterface);
+					
+					//update control
+					controlProcessor.populateControlInterface(controlsForm.getUserSelectedTool(), controlInterface, controlsForm);
+				}
 			}
 			catch (Exception e)
 			{
 				System.out.println("Exception " + e);
-			}
-		}
-	}
-	/**
-	 * @param abstractAttribute
-	 * @param abstractAttributeInterface
-	 */
-	private void updateEntityAttributeInterface(EntityInterface entityInterface ,AbstractAttributeInterface oldAbstractAttributeInterface, AbstractAttributeInterface newAbstractAttributeInterface)
-	{
-		if((oldAbstractAttributeInterface!=null)&&(newAbstractAttributeInterface!=null)&&(entityInterface!=null))
-		{
-			Collection attributeInterfaceCollection = entityInterface.getAbstractAttributeCollection();
-			AbstractAttributeInterface abstAttribInterface = null;
-			if(attributeInterfaceCollection!=null)
-			{
-				Iterator iterator = attributeInterfaceCollection.iterator();
-				while(iterator.hasNext())
-				{
-					abstAttribInterface  = (AbstractAttributeInterface)iterator.next();
-					
-					if(abstAttribInterface.equals(oldAbstractAttributeInterface))
-					{
-						System.out.println("FOund matching attribute interface");
-					}
-				}
 			}
 		}
 	}

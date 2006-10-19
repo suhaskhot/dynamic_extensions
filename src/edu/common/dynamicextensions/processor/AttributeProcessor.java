@@ -116,12 +116,6 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 			attributeInterface.setName(attributeInformationIntf.getName());
 			attributeInterface.setDescription(attributeInformationIntf.getDescription());
-			
-			if(attributeInterface instanceof AttributeInterface)
-			{
-				((AttributeInterface)attributeInterface).setDataElement(getDataElementInterface(attributeInformationIntf));
-			}
-			
 		}
 		else
 		{
@@ -135,7 +129,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param attributeInformationIntf
 	 * @return
 	 */
-	private DataElementInterface getDataElementInterface(AbstractAttributeUIBeanInterface attributeInformationIntf)
+	public DataElementInterface getDataElementInterface(AbstractAttributeUIBeanInterface attributeInformationIntf)
 	{
 		DataElementInterface  dataEltInterface = null;
 		PermissibleValueInterface permissibleValueInterface = null;
@@ -143,15 +137,12 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		if(attributeInformationIntf!=null)
 		{
 			String displayChoice = attributeInformationIntf.getDisplayChoice();
-			System.out.println("Display Choice " + displayChoice);
 			if(displayChoice!=null)
 			{
-				if(displayChoice.equalsIgnoreCase("UserDefined"))
+				if(displayChoice.equalsIgnoreCase(ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED))
 				{
 					dataEltInterface = DomainObjectFactory.getInstance().createUserDefinedDE();
-					System.out.println("User Defined Values");
 					String choiceList = attributeInformationIntf.getChoiceList();
-					System.out.println("Choice List " + choiceList);
 					if(choiceList!=null)
 					{
 						StringTokenizer strTokenizer = new StringTokenizer(choiceList,",");
@@ -162,10 +153,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 								String choice = strTokenizer.nextToken();
 								if((choice!=null)&&(choice.trim()!=null))
 								{
-									System.out.println("Choice [" + choice + "]");
 									permissibleValueInterface  = getPermissibleValueInterface(attributeInformationIntf, choice);
 									((UserDefinedDE)dataEltInterface).addPermissibleValue(permissibleValueInterface);
-									System.out.println("Added permissible value intf");
 								}
 							}
 						}

@@ -42,4 +42,12 @@ public class ProcessorConstants
     
     //Date Format
     public static final String DATE_FORMAT = "MM-DD-YYYY"; // Constants.DATE_PATTERN_MM_DD_YYYY;
+    
+    //Types of permisible value sources for Combobox
+    public static final String DISPLAY_CHOICE_USER_DEFINED = "UserDefined";
+    
+    //Single line / multiline line types
+    public static final String LINE_TYPE_MULTILINE = "MultiLine";
+    public static final String LINE_TYPE_SINGLELINE = "SingleLine";
+    
 }

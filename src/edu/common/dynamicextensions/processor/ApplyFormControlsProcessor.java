@@ -125,7 +125,25 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 					controlsForm.setAbstractAttribute(abstractAttributeInterface);
 					
 					//update control
-					controlProcessor.populateControlInterface(controlsForm.getUserSelectedTool(), controlInterface, controlsForm);
+					ControlInterface newControlInterface = controlProcessor.populateControlInterface(controlsForm.getUserSelectedTool(), controlInterface, controlsForm);
+					//If new control interface is same as old one, do nothing. Else remove old ref from container and add new one
+					if((newControlInterface!=null)&&(newControlInterface.equals(controlInterface)))
+					{
+						System.out.println("Same interface modified");
+					}
+					else
+					{
+						System.out.println("Interface NEW");
+						containerInterface.removeControl(controlInterface);
+						
+						//Set Sequence number
+						newControlInterface.setSequenceNumber(controlInterface.getSequenceNumber());
+						
+						//Set abstract attriibute
+						newControlInterface.setAbstractAttribute(abstractAttributeInterface);
+						//add to container
+						containerInterface.addControl(newControlInterface);
+					}
 				}
 			}
 			catch (Exception e)

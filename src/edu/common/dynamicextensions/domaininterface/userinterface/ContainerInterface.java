@@ -94,5 +94,9 @@ public interface ContainerInterface
       * @return the Control Interface
       */
      ControlInterface getControlInterfaceBySequenceNumber(String sequenceNumber);
-       
+     /**
+      * 
+      * @param controlInterface : control interface object to be removed
+      */
+     void removeControl(ControlInterface controlInterface);       
 }

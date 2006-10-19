@@ -78,7 +78,7 @@
 										<bean:message  key="buttons.addControlToForm" />
 							</html:button>
 
-							<html:reset styleClass="actionButton" property="clearButton"  >
+							<html:reset styleClass="actionButton" property="clearButton" onclick="clearForm()" >
 										<bean:message  key="buttons.clear" />
 							</html:reset>
 					 </td>

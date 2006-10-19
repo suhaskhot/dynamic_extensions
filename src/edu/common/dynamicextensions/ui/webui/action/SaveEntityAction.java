@@ -39,12 +39,9 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 		//Get container interface from cache
 		ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 		//Add control to form
-		if (controlsForm.getToolBoxClicked() == null || controlsForm.getToolBoxClicked().equals(""))
-		{
-			ApplyFormControlsProcessor formControlsProcessor = ApplyFormControlsProcessor.getInstance();
-			formControlsProcessor.addControlToForm(containerInterface, controlsForm);
-		}
-
+		ApplyFormControlsProcessor formControlsProcessor = ApplyFormControlsProcessor.getInstance();
+		formControlsProcessor.addControlToForm(containerInterface, controlsForm);
+		
 		//Add back object to cache
 		CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
 		
@@ -52,7 +49,20 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 		ContainerProcessor containerProcessor  = ContainerProcessor.getInstance();
 		containerProcessor.saveContainer(containerInterface);
 		
+		/*ActionForward actionForward = mapping.findForward(Constants.SUCCESS);
+		actionForward.getPath();
+		return actionForward;*/
 		ActionForward actionForward = mapping.findForward(Constants.SUCCESS);
-		return actionForward;
+		try
+		{
+			response.sendRedirect("http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath()
+					+ actionForward.getPath());
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

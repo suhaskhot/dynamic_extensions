@@ -116,6 +116,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 			attributeInterface.setName(attributeInformationIntf.getName());
 			attributeInterface.setDescription(attributeInformationIntf.getDescription());
+			
 			if(attributeInterface instanceof AttributeInterface)
 			{
 				((AttributeInterface)attributeInterface).setDataElement(getDataElementInterface(attributeInformationIntf));

@@ -20,11 +20,12 @@ function controlSelectedAction()
 	var toolBoxClicked = document.getElementById('toolBoxClicked');
 	toolBoxClicked.value = 'True';
 	
-	
+	clearForm();
 	var controlsForm = document.getElementById('controlsForm');
-	controlsForm.action="/dynamicExtensions/AddControlsAction.do";
+	controlsForm.action="/dynamicExtensions/LoadFormControlsAction.do";
 	controlsForm.submit();
 }
+
 
 function formCreateAsChanged() {
 }

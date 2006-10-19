@@ -222,7 +222,16 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		}
 		else
 		{
-			textAreaIntf = (TextAreaInterface)controlInterface;
+			try
+			{
+				textAreaIntf = (TextAreaInterface)controlInterface;
+			}
+			catch (ClassCastException e)
+			{
+				//If a class cast exception occurs it means that its a text field interface. 
+				//Create a text field interface and return
+				return getTextControl(null,controlUIBeanInterface);
+			}
 		}
 		textAreaIntf.setColumns(controlUIBeanInterface.getColumns());
 		textAreaIntf.setRows(controlUIBeanInterface.getRows());
@@ -248,7 +257,16 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		}
 		else
 		{
-			textFldIntf = (TextFieldInterface)controlInterface;
+			try
+			{
+				textFldIntf = (TextFieldInterface)controlInterface;
+			}
+			catch (ClassCastException e)
+			{
+				//If a class cast exception occurs it means that its a text area interface. 
+				//Create a text area interface and return
+				return getMultiLineControl(null, controlUIBeanInterface);
+			}
 		}
 		textFldIntf.setIsPassword(controlUIBeanInterface.getIsPassword());
 		textFldIntf.setColumns(controlUIBeanInterface.getColumns());

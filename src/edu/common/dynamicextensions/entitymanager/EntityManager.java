@@ -614,6 +614,7 @@ public class EntityManager implements EntityManagerInterface
     {
     	AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
     	Collection objectList = new HashSet();
+    	
 		try
 		{
 			objectList = bizLogic.retrieve(objectName);

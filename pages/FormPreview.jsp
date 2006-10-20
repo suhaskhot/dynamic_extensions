@@ -29,6 +29,16 @@
 			<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 			
 			<table align='center' width='75%'>
+				<tr class="formTitle">
+					<td align="center">
+						<logic:messagesPresent message="true">
+									<html:messages message="true" id="msg">
+										<bean:write name="msg" ignore="true"/>
+									</html:messages>
+						</logic:messagesPresent>
+					</td>
+				</tr>
+				<tr><td>&nbsp;</td></tr>
           		<tr>
   					<td>
 						<table summary="" cellpadding="3" cellspacing="0" border="1" align='center' width = '100%'>

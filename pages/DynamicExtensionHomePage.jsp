@@ -29,7 +29,6 @@
 
 	<html:form styleId='formsIndexForm' action='/ApplyFormsIndexAction'>
 	<body>
-		
 		<c:set var="entityCollection" value="${formsIndexForm.entityCollection}"/>
  		<jsp:useBean id="entityCollection" type="java.util.Collection"/>
 		
@@ -37,7 +36,16 @@
 			<tr class="formMessage">
 				<h3><bean:message key="table.heading" /><h3>
 			</tr>
+			<tr class="formTitle">
+				<td align="center">
+				<logic:messagesPresent message="true">
+							<html:messages message="true" id="msg">
+								<bean:write name="msg" ignore="true"/>
+							</html:messages>
+				</logic:messagesPresent>
 
+				</td>
+			</tr>
 			<tr align='left'>
 				<td>
 					<html:submit property="buildForm" styleClass="buttonStyle" onclick='addFormAction()'>

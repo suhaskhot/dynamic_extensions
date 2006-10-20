@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
 
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.processor.ContainerProcessor;
@@ -38,6 +40,7 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
         try
         {
             containerProcessor.saveContainer(containerInterface);
+            saveMessages(request, getSuccessMessage());
             actionForward = mapping.findForward(Constants.SUCCESS);
          }
         catch (Exception e)
@@ -48,4 +51,14 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
         }
         return actionForward;
 	}
+	
+	/**
+	 * Get messages for successful save of entity
+	 */
+	private ActionMessages getSuccessMessage()
+	{
+		ActionMessages actionMessages = new ActionMessages();
+        actionMessages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("app.entitySaveSuccessMessage"));
+        return actionMessages;
+     }
 }

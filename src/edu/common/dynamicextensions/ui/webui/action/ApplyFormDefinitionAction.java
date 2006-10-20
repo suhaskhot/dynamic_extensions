@@ -7,9 +7,12 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.struts.Globals;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
 
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.processor.ApplyFormDefinitionProcessor;
@@ -59,6 +62,9 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 			try
             {
                 containerInterface = applyFormDefinitionProcessor.addEntityToContainer(containerInterface, formDefinitionForm, true);
+                
+                saveMessages(request, getSuccessMessage());
+                
                 target = Constants.SHOW_DYNAMIC_EXTENSIONS_HOMEPAGE;
             }
             catch (Exception e)
@@ -72,4 +78,14 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 		CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
 		return mapping.findForward(target);
 	}
+
+	/**
+	 * 
+	 */
+	private ActionMessages getSuccessMessage()
+	{
+		ActionMessages actionMessages = new ActionMessages();
+        actionMessages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("app.entitySaveSuccessMessage"));
+        return actionMessages;
+     }
 }

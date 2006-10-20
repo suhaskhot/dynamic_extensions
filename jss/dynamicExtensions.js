@@ -305,7 +305,7 @@ function showFormPreview()
 function addFormAction()
 {
 	document.getElementById('mode').value = 'AddNewForm';
-	document.getElementById('formsIndexForm').submit;
+	//document.getElementById('formsIndexForm').submit;
 }
 
 function radioButtonClicked(obj)

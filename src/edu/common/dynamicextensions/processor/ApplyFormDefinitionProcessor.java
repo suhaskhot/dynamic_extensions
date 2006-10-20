@@ -38,8 +38,10 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @param actionForm
 	 * @param IsActionSave
 	 * @return ContainerInterface
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	public ContainerInterface addEntityToContainer(ContainerInterface containerInterface, FormDefinitionForm actionForm, boolean IsActionSave)
+	public ContainerInterface addEntityToContainer(ContainerInterface containerInterface, FormDefinitionForm actionForm, boolean IsActionSave) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
 		if (containerInterface == null)
@@ -51,29 +53,18 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		EntityInterface entityInterface = containerInterface.getEntity();
 		if (entityInterface == null)
 		{
-			try
-			{
-				if (IsActionSave)
-				{
-					entityInterface = entityProcessor.createAndSaveEntity(actionForm);
-				}
-				else
-					entityInterface = entityProcessor.createAndPopulateEntity(actionForm);
-			}
-			catch (DynamicExtensionsSystemException e)
-			{
-				e.printStackTrace();
-			}
-			catch (DynamicExtensionsApplicationException e)
-			{
-				e.printStackTrace();
-			}
+		    entityInterface = entityProcessor.createAndPopulateEntity(actionForm);
 		}
 		else
 		{
 			entityProcessor.populateEntity(actionForm,entityInterface);
 		}
 		containerInterface.setEntity(entityInterface);
+        if(IsActionSave) {
+            containerProcessor.saveContainer(containerInterface);
+        } else {
+           containerProcessor.populateContainerInterface(containerInterface,actionForm);
+        }
 		return containerInterface;
 	}
 }

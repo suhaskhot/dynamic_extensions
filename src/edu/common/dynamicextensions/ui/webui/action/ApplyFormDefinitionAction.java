@@ -1,6 +1,9 @@
 
 package edu.common.dynamicextensions.ui.webui.action;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -39,12 +42,30 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 		ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor.getInstance();
 		if (formDefinitionForm.getOperation().equalsIgnoreCase(Constants.BUILD_FORM))
 		{
-			containerInterface = applyFormDefinitionProcessor.addEntityToContainer(containerInterface, formDefinitionForm, false);
+			try
+            {
+                containerInterface = applyFormDefinitionProcessor.addEntityToContainer(containerInterface, formDefinitionForm, false);
+            }
+            catch (Exception e)
+            {
+                List list = new ArrayList();
+                handleException(e,list);
+            }
+           
 			target = Constants.BUILD_FORM;
 		}
 		else
 		{// When we click on save 
-			containerInterface = applyFormDefinitionProcessor.addEntityToContainer(containerInterface, formDefinitionForm, true);
+			try
+            {
+                containerInterface = applyFormDefinitionProcessor.addEntityToContainer(containerInterface, formDefinitionForm, true);
+            }
+            catch (Exception e)
+            {
+                List list = new ArrayList();
+                handleException(e,list);
+            }
+            
 			target = Constants.SUCCESS;
 		}
 		CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);

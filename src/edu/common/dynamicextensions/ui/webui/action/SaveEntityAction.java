@@ -40,14 +40,15 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 
 		//Get container interface from cache
 		ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-		//Add control to form
+		/*//Add control to form
 		ApplyFormControlsProcessor formControlsProcessor = ApplyFormControlsProcessor.getInstance();
 		formControlsProcessor.addControlToForm(containerInterface, controlsForm);
 		
 		//Add back object to cache
 		CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
 		
-		//Call container processor save method
+		*///Call container processor save method
+        
 		ContainerProcessor containerProcessor  = ContainerProcessor.getInstance();
         try
         {

@@ -61,7 +61,7 @@
         <many-to-one
             name="entity"
             class="edu.common.dynamicextensions.domain.Entity"
-            cascade="save-update"
+            cascade="none"
             outer-join="auto"
             update="true"
             insert="true"

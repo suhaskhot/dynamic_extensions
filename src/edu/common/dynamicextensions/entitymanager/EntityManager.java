@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -211,6 +212,7 @@ public class EntityManager implements EntityManagerInterface
         tableProperties.setName(tableName);
         entity.setTableProperties(tableProperties);
         Collection attributeCollection = entity.getAttributeCollection();
+        entity.setLastUpdated(new Date());
         if (attributeCollection != null && !attributeCollection.isEmpty())
         {
             Iterator iterator = attributeCollection.iterator();
@@ -855,6 +857,7 @@ public class EntityManager implements EntityManagerInterface
             }
             try
             {
+                preSaveProcessContainer(container);
                 hibernateDAO.insert(container, null, false, false);
                 if (container.getEntity() != null)
                 {
@@ -942,6 +945,28 @@ public class EntityManager implements EntityManagerInterface
         }
 
         return container;
+    }
+
+    private void preSaveProcessContainer(Container container)
+    {
+        if (container != null)
+        {
+            if (container.getEntity() != null)
+            {
+                Entity entity = (Entity) container.getEntity();
+                if (entity.getId() != null)
+                {
+                    entity.setLastUpdated(new Date());
+                }
+                else
+                {
+                    entity.setCreatedDate(new Date());
+                    entity.setLastUpdated(entity.getCreatedDate());
+                }
+
+            }
+        }
+
     }
 
     /**
@@ -1063,22 +1088,21 @@ public class EntityManager implements EntityManagerInterface
      * key      attribute name -- name displayed on the UI for the attribute
      * value    column name    -- actual database column name for the attriubute.
      */
-//    private Map getDbColumnNameMap(EntityInterface entity)
-//    {
-//        Map colNameMap = new HashMap();
-//        Iterator attribbuteIterator = entity.getAttributeCollection()
-//                .iterator();
-//        while (attribbuteIterator.hasNext())
-//        {
-//            Attribute attribute = (Attribute) attribbuteIterator.next();
-//            colNameMap.put(attribute.getName(), attribute.getColumnProperties()
-//                    .getName());
-//        }
-//
-//        return colNameMap;
-//    }
-    
-    
+    //    private Map getDbColumnNameMap(EntityInterface entity)
+    //    {
+    //        Map colNameMap = new HashMap();
+    //        Iterator attribbuteIterator = entity.getAttributeCollection()
+    //                .iterator();
+    //        while (attribbuteIterator.hasNext())
+    //        {
+    //            Attribute attribute = (Attribute) attribbuteIterator.next();
+    //            colNameMap.put(attribute.getName(), attribute.getColumnProperties()
+    //                    .getName());
+    //        }
+    //
+    //        return colNameMap;
+    //    }
+
     /**
      * Method generates the next identifier for the table that stores the value of the passes entity.
      * @param entity
@@ -1086,47 +1110,64 @@ public class EntityManager implements EntityManagerInterface
      * @throws DAOException
      * @throws ClassNotFoundException
      */
-    synchronized  private  Long getNextIdentifier(EntityInterface entity) throws DynamicExtensionsSystemException {
-        
+    synchronized private Long getNextIdentifier(EntityInterface entity)
+            throws DynamicExtensionsSystemException
+    {
+
         String entityTableName = entity.getTableProperties().getName();
-        StringBuffer queryToGetNextIdentifier = new StringBuffer("SELECT MAX(IDENTIFIER) FROM " + entityTableName);
+        StringBuffer queryToGetNextIdentifier = new StringBuffer(
+                "SELECT MAX(IDENTIFIER) FROM " + entityTableName);
         List resultList = null;
         try
         {
-            resultList = getResultInList(queryToGetNextIdentifier.toString(),new SessionDataBean(),false,false,null);
+            resultList = getResultInList(queryToGetNextIdentifier.toString(),
+                    new SessionDataBean(), false, false, null);
         }
         catch (DAOException e)
         {
-            throw new DynamicExtensionsSystemException("Could not fetch the next identifier for table "+entityTableName);
+            throw new DynamicExtensionsSystemException(
+                    "Could not fetch the next identifier for table "
+                            + entityTableName);
         }
         catch (ClassNotFoundException e)
         {
-            throw new DynamicExtensionsSystemException("Could not fetch the next identifier for table "+entityTableName);
+            throw new DynamicExtensionsSystemException(
+                    "Could not fetch the next identifier for table "
+                            + entityTableName);
         }
-        
-        if(resultList == null){
-            throw new DynamicExtensionsSystemException("Could not fetch the next identifier for table "+entityTableName);
+
+        if (resultList == null)
+        {
+            throw new DynamicExtensionsSystemException(
+                    "Could not fetch the next identifier for table "
+                            + entityTableName);
         }
-        List internalList = (List)resultList.get(0);
-        if(internalList == null || internalList.isEmpty()){
-            throw new DynamicExtensionsSystemException("Could not fetch the next identifier for table "+entityTableName); 
+        List internalList = (List) resultList.get(0);
+        if (internalList == null || internalList.isEmpty())
+        {
+            throw new DynamicExtensionsSystemException(
+                    "Could not fetch the next identifier for table "
+                            + entityTableName);
         }
-        String idString = (String)(internalList.get(0));
-       
+        String idString = (String) (internalList.get(0));
+
         Long identifier = null;
-        
-        if(idString == null || idString.trim().equals("")){
-            identifier = new Long(0); 
-        } else{
+
+        if (idString == null || idString.trim().equals(""))
+        {
+            identifier = new Long(0);
+        }
+        else
+        {
             identifier = new Long(idString);
         }
-        
+
         long id = identifier.longValue();
         id++;
         identifier = new Long(id);
         return identifier;
     }
-    
+
     /**
      * Executes a query and return result set.
      * @param queryToGetNextIdentifier
@@ -1138,23 +1179,37 @@ public class EntityManager implements EntityManagerInterface
      * @throws DAOException
      * @throws ClassNotFoundException
      */
-    List getResultInList(String queryToGetNextIdentifier, SessionDataBean sessionDataBean, boolean isSecureExecute, boolean hasConditionOnIdentifiedField, Map queryResultObjectDataMap) throws DAOException, ClassNotFoundException{
+    List getResultInList(String queryToGetNextIdentifier,
+            SessionDataBean sessionDataBean, boolean isSecureExecute,
+            boolean hasConditionOnIdentifiedField, Map queryResultObjectDataMap)
+            throws DAOException, ClassNotFoundException
+    {
         List resultList = null;
-        JDBCDAO jdbcDAO = (JDBCDAO)DAOFactory.getDAO(Constants.JDBC_DAO);
-        try {
+        JDBCDAO jdbcDAO = (JDBCDAO) DAOFactory.getDAO(Constants.JDBC_DAO);
+        try
+        {
             jdbcDAO.openSession(null);
-            resultList = jdbcDAO.executeQuery(queryToGetNextIdentifier,sessionDataBean,isSecureExecute,hasConditionOnIdentifiedField,queryResultObjectDataMap);
-        } catch (DAOException daoException) {
+            resultList = jdbcDAO.executeQuery(queryToGetNextIdentifier,
+                    sessionDataBean, isSecureExecute,
+                    hasConditionOnIdentifiedField, queryResultObjectDataMap);
+        }
+        catch (DAOException daoException)
+        {
             daoException.printStackTrace();
-            throw new DAOException("Exception while retrieving the query result",daoException);
-        } finally{
+            throw new DAOException(
+                    "Exception while retrieving the query result", daoException);
+        }
+        finally
+        {
             try
             {
                 jdbcDAO.closeSession();
             }
-            catch(DAOException daoException)
+            catch (DAOException daoException)
             {
-                throw new DAOException("Exception while closing the jdbc session",daoException);
+                throw new DAOException(
+                        "Exception while closing the jdbc session",
+                        daoException);
             }
         }
         return resultList;

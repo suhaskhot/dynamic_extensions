@@ -16,6 +16,9 @@ import org.apache.struts.action.ActionMapping;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.processor.ApplyDataEntryFormProcessor;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.util.global.Constants;
 
@@ -43,9 +46,9 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		Map attributeValueMap = new HashMap();		
 		String value = null;
 
-		for (int sequence = 1; sequence < controlCollection.size(); sequence++)
+		for (int sequence = 1; sequence <= controlCollection.size(); sequence++)
 		{
-			value = request.getParameter("control_" + sequence);
+			value = request.getParameter("Control_" + sequence);
 
 			for (Iterator controlCollectionIterator = controlCollection.iterator(); controlCollectionIterator.hasNext();)
 			{
@@ -57,6 +60,16 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 					break;
 				}
 			}
+		}
+        ApplyDataEntryFormProcessor applyDataEntryFormProcessor = ApplyDataEntryFormProcessor.getInstance();
+        try {
+			applyDataEntryFormProcessor.insertDataEntryForm(containerInterface,attributeValueMap);
+		} catch (DynamicExtensionsApplicationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DynamicExtensionsSystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return (mapping.findForward(Constants.SUCCESS));
 	}

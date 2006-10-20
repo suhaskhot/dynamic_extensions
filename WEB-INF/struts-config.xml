@@ -111,7 +111,7 @@ PUBLIC
 			validate="true"
 			input="/SaveEntityAction.do"
 			scope="request">
-			<forward name="success" path="/LoadFormPreviewAction.do" />
+			<forward name="success" path="/LoadDataEntryFormAction.do" />
 			<forward name="failure" path="/pages/ErrorPage.jsp" />
 		</action>
 		

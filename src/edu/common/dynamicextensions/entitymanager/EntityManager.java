@@ -977,16 +977,7 @@ public class EntityManager implements EntityManagerInterface
             DynamicExtensionsSystemException
     {
         //JDBCDAO jdbcDao = (JDBCDAO) DAOFactory.getDAO(Constants.JDBC_DAO);
-        Session session = null;
-        try
-        {
-            session = DBUtil.currentSession();
-        }
-        catch (HibernateException e1)
-        {
-            throw new DynamicExtensionsSystemException(
-                    "Can not execute query...Session can not be obtained");
-        }
+       
 
         if (entity == null || dataValue == null || dataValue.isEmpty())
         {
@@ -994,9 +985,10 @@ public class EntityManager implements EntityManagerInterface
                     "Input to insert data is null");
         }
 
-        StringBuffer columnNameString = new StringBuffer("IDENTIFIER , ");
+        StringBuffer columnNameString = new StringBuffer("IDENTIFIER ");
         Long identifier = getNextIdentifier(entity);
-        StringBuffer columnValuesString = new StringBuffer();
+        StringBuffer columnValuesString = new StringBuffer(identifier.toString() + " ");
+        
         String tableName = entity.getTableProperties().getName();
 
         //        Map colNameMap = getDbColumnNameMap(entity);
@@ -1010,6 +1002,8 @@ public class EntityManager implements EntityManagerInterface
                     .next();
             if (attribute instanceof AttributeInterface)
             {
+                columnNameString.append(" , ");
+                columnValuesString.append(" , ");
                 String dbColumnName = ((AttributeInterface) attribute)
                         .getColumnProperties().getName();
                 Object value = dataValue.get(attribute);
@@ -1017,12 +1011,6 @@ public class EntityManager implements EntityManagerInterface
                 columnNameString.append(dbColumnName);
                 value = getFormattedValue(attribute, value);
                 columnValuesString.append(value);
-
-                if (uiColumnSetIter.hasNext())
-                {
-                    columnNameString.append(" , ");
-                    columnValuesString.append(" , ");
-                }
             }
             else
             {
@@ -1036,7 +1024,18 @@ public class EntityManager implements EntityManagerInterface
         query.append(" ) VALUES (");
         query.append(columnValuesString);
         query.append(" ) ");
-
+        Session session = null;
+        try
+        {
+            DBUtil.closeSession();
+            session = DBUtil.currentSession();
+            
+        }
+        catch (HibernateException e1)
+        {
+            throw new DynamicExtensionsSystemException(
+                    "Can not execute query...Session can not be obtained");
+        }
         Connection conn;
         try
         {
@@ -1044,6 +1043,7 @@ public class EntityManager implements EntityManagerInterface
             PreparedStatement statement = conn.prepareStatement(query
                     .toString());
             statement.executeUpdate();
+            conn.commit();
         }
         catch (Exception e)
         {
@@ -1051,6 +1051,14 @@ public class EntityManager implements EntityManagerInterface
                     "Cannot execute query... connection can not be obtained");
         }
 
+        finally {
+         try {
+			DBUtil.closeSession();
+		} catch (HibernateException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}   
+        }
         //jdbcDao.executeUpdate(query.toString());
 
     }

@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.entitymanager;
 
 import java.util.Collection;
+import java.util.Map;
 
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -207,5 +208,13 @@ interface EntityManagerInterface
     ContainerInterface createContainer(
             ContainerInterface containerInterface)
             throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
+    
+    /**
+     * This method inserts one record for the entity.
+     */
+    void insertData(EntityInterface entity, Map dataValue)
+            throws DynamicExtensionsApplicationException,
+            DynamicExtensionsSystemException;
+
 
 }

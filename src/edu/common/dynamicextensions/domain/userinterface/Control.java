@@ -3,12 +3,10 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 
 import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
-import edu.common.dynamicextensions.ui.webui.util.UIConfigurationConstants;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.exception.AssignDataException;
@@ -112,59 +110,68 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	 * @hibernate.property name="isHidden" type="boolean" column="HIDDEN" 
 	 * @return Returns the isHidden.
 	 */
-	public Boolean getIsHidden() {
+	public Boolean getIsHidden() 
+    {
 		return isHidden;
 	}
 	/**
 	 * @param isHidden The isHidden to set.
 	 */
-	public void setIsHidden(Boolean isHidden) {
+	public void setIsHidden(Boolean isHidden) 
+    {
 		this.isHidden = isHidden;
 	}
 	/**
 	 * @hibernate.property name="name" type="string" column="NAME" 
 	 * @return Returns the name.
 	 */
-	public String getName() {
+	public String getName() 
+    {
 		return name;
 	}
 	/**
 	 * @param name The name to set.
 	 */
-	public void setName(String name) {
+	public void setName(String name) 
+    {
 		this.name = name;
 	}
 	/**
 	 * @hibernate.property name="sequenceNumber" type="integer" column="SEQUENCE_NUMBER" 
 	 * @return Returns the sequenceNumber.
 	 */
-	public Integer getSequenceNumber() {
+	public Integer getSequenceNumber() 
+    {
 		return sequenceNumber;
 	}
 	/**
 	 * @param sequenceNumber The sequenceNumber to set.
 	 */
-	public void setSequenceNumber(Integer sequenceNumber) {
+	public void setSequenceNumber(Integer sequenceNumber) 
+    {
 		this.sequenceNumber = sequenceNumber;
 	}
 	/**
 	 * @hibernate.property name="tooltip" type="string" column="TOOLTIP" 
 	 * @return Returns the tooltip.
 	 */
-	public String getTooltip() {
+	public String getTooltip() 
+    {
 		return tooltip;
 	}
 	/**
 	 * @param tooltip The tooltip to set.
 	 */
-	public void setTooltip(String tooltip) {
+	public void setTooltip(String tooltip) 
+    {
 		this.tooltip = tooltip;
 	}
 
 	/* (non-Javadoc)
 	 * @see edu.wustl.common.domain.AbstractDomainObject#setAllValues(edu.wustl.common.actionForm.AbstractActionForm)
 	 */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
+	public void setAllValues(AbstractActionForm arg0) throws AssignDataException 
+    {
 		// TODO Auto-generated method stub
 
 	}
@@ -173,14 +180,16 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	/* (non-Javadoc)
 	 * @see edu.wustl.common.domain.AbstractDomainObject#getSystemIdentifier()
 	 */
-	public Long getSystemIdentifier() {
+	public Long getSystemIdentifier() 
+    {
 		return id;
 	}
 
 	/* (non-Javadoc)
 	 * @see edu.wustl.common.domain.AbstractDomainObject#setSystemIdentifier(java.lang.Long)
 	 */
-	public void setSystemIdentifier(Long id) {
+	public void setSystemIdentifier(Long id) 
+    {
 	this.id = id;
 
 	}
@@ -189,37 +198,28 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	 * @return return the HTML string for this type of a object
 	 */
 	public abstract String generateHTML();
-	
+	/**
+     * 
+	 * @return
+	 */
 
-	public void populateAttributes(Map propertiesMap) {
-		if(propertiesMap!=null)
-		{
-			this.caption = (String)propertiesMap.get(UIConfigurationConstants.CAPTION_ATTRIBUTE);
-			this.cssClass = (String)propertiesMap.get(UIConfigurationConstants.CSS_CLASSNAME_ATTRIBUTE);
-			this.name = (String)propertiesMap.get(UIConfigurationConstants.NAME_ATTRIBUTE);
-			this.tooltip = (String)propertiesMap.get(UIConfigurationConstants.TOOLTIP_ATTRIBUTE);
-			this.value = (String)propertiesMap.get(UIConfigurationConstants.DEFAULT_VALUE_ATTRIBUTE);
-		}
-	}
-
-	public String getValue() {
+	public String getValue() 
+    {
 		return this.value;
 	}
 
-	public void setValue(String value) {
+    /**
+     * 
+     * @param value
+     */
+	public void setValue(String value) 
+    {
 		this.value = value;
 	}
 	
-	/*protected String appendEventHandlers()
-	{
-		String eventHandlersString = "";
-		if(eventHandlers!=null)
-		{
-			Set eventHandlers.keySet();
-		}
-		return eventHandlersString;
-	}*/
-    
+/**
+ * 
+ */
 	public AbstractAttributeInterface getAbstractAttribute() {
 		if (this.abstractAttributeCollection != null && !this.abstractAttributeCollection.isEmpty()) {
 		    Iterator iter = abstractAttributeCollection.iterator();
@@ -245,11 +245,28 @@ public abstract class Control extends AbstractDomainObject implements Serializab
     {
         return abstractAttributeCollection;
     }
-
     
+    /**
+     * 
+     * @param abstractAttributeCollection
+     */
     public void setAbstractAttributeCollection(
             Collection abstractAttributeCollection)
     {
         this.abstractAttributeCollection = abstractAttributeCollection;
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public String getHTMLComponentName()
+    {
+        if(this.getSequenceNumber() != null) 
+        {
+            return "Control_" + this.getSequenceNumber();
+        }
+        return null;
+        
     }
 }

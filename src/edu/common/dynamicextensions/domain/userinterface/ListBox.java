@@ -1,11 +1,8 @@
 package edu.common.dynamicextensions.domain.userinterface;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
-import edu.common.dynamicextensions.ui.webui.util.UIConfigurationConstants;
 
 /**
  * @version 1.0
@@ -13,7 +10,8 @@ import edu.common.dynamicextensions.ui.webui.util.UIConfigurationConstants;
  * @hibernate.joined-subclass table="DYEXTN_LIST_BOX" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class ListBox extends Control implements ListBoxInterface{
+public class ListBox extends Control implements ListBoxInterface
+{
 	/**
 	 * Boolean indicating whether multi selects are allowed in the list box.
 	 */
@@ -110,35 +108,7 @@ public class ListBox extends Control implements ListBoxInterface{
 		return htmlString;	
 	}
     
-    /**
-     * 
-     */
-    public void populateAttributes(Map propertiesMap) {
-		super.populateAttributes(propertiesMap);
-		if(propertiesMap!=null)
-		{
-			//List Of values initialization
-			try {
-				//List of values should be a list of String values
-				listOfValues  = (List)propertiesMap.get(UIConfigurationConstants.VALUES_LIST);
-				System.out.println("List Of values = " + listOfValues);
-			} catch (Exception e) {
-				e.printStackTrace();
-				listOfValues = new ArrayList();
-			}
-			
-			//Is Multiselect initialization
-			String strIsMultiselect = (String)propertiesMap.get(UIConfigurationConstants.ISMULTISELECT_ATTRIBUTE);
-			if((strIsMultiselect!=null)&&(strIsMultiselect.equalsIgnoreCase("true")))
-			{
-				isMultiSelect = new Boolean(true);
-			}
-			else 
-			{
-				isMultiSelect = new Boolean(false);
-			}
-		}
-	}
+  
 
 
 	/* (non-Javadoc)
@@ -157,6 +127,9 @@ public class ListBox extends Control implements ListBoxInterface{
 	{
 		listOfValues = list;
 	}
+
+
+	
 
 
 	

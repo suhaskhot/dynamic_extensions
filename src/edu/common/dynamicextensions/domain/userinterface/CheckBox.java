@@ -9,7 +9,8 @@ import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterf
  * @hibernate.joined-subclass table="DYEXTN_CHECK_BOX" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class CheckBox extends Control implements CheckBoxInterface{
+public class CheckBox extends Control implements CheckBoxInterface
+{
 
     /**
      * 
@@ -49,5 +50,7 @@ public class CheckBox extends Control implements CheckBoxInterface{
 		// TODO Auto-generated method stub
 		
 	}
+
+	
 
 }

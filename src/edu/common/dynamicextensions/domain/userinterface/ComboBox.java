@@ -1,11 +1,8 @@
 package edu.common.dynamicextensions.domain.userinterface;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
-import edu.common.dynamicextensions.ui.webui.util.UIConfigurationConstants;
 
 /**
  * @version 1.0
@@ -13,7 +10,8 @@ import edu.common.dynamicextensions.ui.webui.util.UIConfigurationConstants;
  * @hibernate.joined-subclass table="DYEXTN_COMBOBOX" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class ComboBox extends Control implements ComboBoxInterface{
+public class ComboBox extends Control implements ComboBoxInterface
+{
 
 	List listOfValues = null;
     
@@ -26,24 +24,7 @@ public class ComboBox extends Control implements ComboBoxInterface{
 
 	}
 
-    /**
-     * 
-     */
-	public void populateAttributes(Map propertiesMap) {
-		super.populateAttributes(propertiesMap);
-		if(propertiesMap!=null)
-		{
-			try {
-				//List of values should be a list of String values
-				listOfValues  = (List)propertiesMap.get(UIConfigurationConstants.VALUES_LIST);
-				System.out.println("List Of values = " + listOfValues);
-			} catch (Exception e) {
-				e.printStackTrace();
-				listOfValues = new ArrayList();
-			}
-		}
-	}
-
+  
     /**
      * 
      */
@@ -51,8 +32,8 @@ public class ComboBox extends Control implements ComboBoxInterface{
 	{
 		String htmlString = "<SELECT " +
 							"class = '" + cssClass + "' " +
-							"name = '" + name + "' " +
-							"id = '" + name + "' " +
+							"name = '" + getHTMLComponentName() + "' " +
+							"id = '" + getHTMLComponentName() + "' " +
 							"title = '" + tooltip + "' " 
 							+">";
 		if(listOfValues!=null)
@@ -97,6 +78,9 @@ public class ComboBox extends Control implements ComboBoxInterface{
 		listOfValues = list;
 		
 	}
+
+
+	
 
 	
 

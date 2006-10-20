@@ -9,7 +9,8 @@ import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInt
  * @hibernate.joined-subclass table="DYEXTN_RADIOBUTTON" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class RadioButton extends Control implements RadioButtonInterface{
+public class RadioButton extends Control implements RadioButtonInterface
+{
 
     /**
      * 
@@ -48,6 +49,8 @@ public class RadioButton extends Control implements RadioButtonInterface{
 		// TODO Auto-generated method stub
 		
 	}
+
+  
 	
 
 }

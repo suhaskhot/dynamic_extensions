@@ -11,6 +11,8 @@ PUBLIC
 	<form-bean name="controlsForm" type="edu.common.dynamicextensions.ui.webui.actionform.ControlsForm"/>
 	<form-bean name="formsIndexForm" type="edu.common.dynamicextensions.ui.webui.actionform.FormsIndexForm" />
 	<form-bean name="previewForm" type="edu.common.dynamicextensions.ui.webui.actionform.PreviewForm" />
+	<form-bean name="dataEntryForm" type="edu.common.dynamicextensions.ui.webui.actionform.DataEntryForm" />
+	
 	</form-beans>
 	
 	 <global-forwards>
@@ -90,7 +92,7 @@ PUBLIC
 			input="/pages/BuildForm.jsp"
 			scope="request">
 			<forward name="success" path="/LoadFormControlsAction.do" />
-			<forward name="loadFormPreviewAction" path="/LoadFormPreviewAction.do" />
+			<forward name="loadFormPreviewAction" path="/LoadDataEntryFormAction.do" />
 
 		</action>
 		
@@ -112,6 +114,26 @@ PUBLIC
 			<forward name="success" path="/LoadFormPreviewAction.do" />
 			<forward name="failure" path="/pages/ErrorPage.jsp" />
 		</action>
+		
+		<action path="/LoadDataEntryFormAction" 
+		    type="edu.common.dynamicextensions.ui.webui.action.LoadDataEntryFormAction" 
+		    name="dataEntryForm"
+			validate="false"
+			input="/LoadDataEntryFormAction.do"
+			scope="request">
+			<forward name="Success" path="/pages/dataEntry/dataEntry.jsp" />
+		</action>
+		
+		<action path="/ApplyDataEntryFormAction" 
+		    type="edu.common.dynamicextensions.ui.webui.action.ApplyDataEntryFormAction" 
+		    name="dataEntryForm"
+			validate="false"
+			input="/LoadDataEntryFormAction.do"
+			scope="request">
+			<forward name="Success" path="/pages/dataEntry/dataEntry.jsp" />
+		</action>
+		
+		
 		
 	
 	</action-mappings>

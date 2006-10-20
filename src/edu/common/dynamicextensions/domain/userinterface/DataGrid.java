@@ -9,7 +9,8 @@ import edu.common.dynamicextensions.domaininterface.userinterface.DataGridInterf
  * @hibernate.joined-subclass table="DYEXTN_DATA_GRID" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class DataGrid extends Control implements DataGridInterface{
+public class DataGrid extends Control implements DataGridInterface
+{
 
     /**
      * 
@@ -34,5 +35,7 @@ public class DataGrid extends Control implements DataGridInterface{
 		// TODO Auto-generated method stub
 		
 	}
+
+	
 
 }

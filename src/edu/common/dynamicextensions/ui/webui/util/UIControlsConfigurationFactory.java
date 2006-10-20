@@ -339,7 +339,7 @@ public final class UIControlsConfigurationFactory {
 
 												}
 												//Populate attributes in the datatype class
-												controlDataType.populateAttributes(propertiesMap);	
+												//controlDataType.populateAttributes(propertiesMap);	
 											}
 										}
 									}

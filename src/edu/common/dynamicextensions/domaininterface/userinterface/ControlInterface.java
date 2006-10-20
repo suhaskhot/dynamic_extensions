@@ -82,6 +82,11 @@ public interface ControlInterface
 	  * @return return the HTML string for this type of a object
 	  */
 	 String generateHTML();
+     /**
+      * 
+      * @return
+      */
+     String getHTMLComponentName();
 		
 
 }

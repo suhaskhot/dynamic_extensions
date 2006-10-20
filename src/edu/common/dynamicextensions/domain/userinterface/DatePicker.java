@@ -9,7 +9,8 @@ import edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInte
  * @hibernate.joined-subclass table="DYEXTN_DATEPICKER" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class DatePicker extends Control implements DatePickerInterface{
+public class DatePicker extends Control implements DatePickerInterface
+{
 
     /**
      * 
@@ -29,10 +30,9 @@ public class DatePicker extends Control implements DatePickerInterface{
 	        }
 	          
 	        String output = "<input class='"+cssClass+"' " +
-	        				 " name='"+name+"'  id='"+name+"' "+
-	        				 " value='"+value+"'/> " +
-	                        "<div id='overDiv' style='position:absolute; visibility:hidden; z-index:1000;'></div>" +
-	                        "<a href=\"javascript:show_calendar('forms(0)."+name+"',null,null,'MM-DD-YYYY');\">" +
+	        				" name='"+getHTMLComponentName()+"'  id='"+getHTMLComponentName()+"' "+
+	        				" value='"+value+"'/> " +
+	                        "<a href=\"javascript:show_calendar('forms(0)."+getHTMLComponentName()+"',null,null,'MM-DD-YYYY');\">" +
 	                        "<img src='images\\calendar.gif' width=24 height=22 border=0/> (MM-DD-YYYY)" +
 	                        "</a> "; 
 	        System.out.println("************"+output);
@@ -48,5 +48,6 @@ public class DatePicker extends Control implements DatePickerInterface{
 		// TODO Auto-generated method stub
 		
 	}
+	
 
 }

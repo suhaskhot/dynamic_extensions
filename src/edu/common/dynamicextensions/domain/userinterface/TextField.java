@@ -1,11 +1,7 @@
 package edu.common.dynamicextensions.domain.userinterface;
 
-import java.awt.font.TextAttribute;
-import java.util.Map;
-
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
-import edu.common.dynamicextensions.ui.webui.util.UIConfigurationConstants;
 
 /**
  * @version 1.0
@@ -13,7 +9,8 @@ import edu.common.dynamicextensions.ui.webui.util.UIConfigurationConstants;
  * @hibernate.joined-subclass table="DYEXTN_TEXTFIELD" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class TextField extends Control implements TextFieldInterface{
+public class TextField extends Control implements TextFieldInterface
+{
 	/**
 	 * Size of the text field to be shown on UI.
 	 */
@@ -59,46 +56,7 @@ public class TextField extends Control implements TextFieldInterface{
 		this.isPassword = isPassword;
 	}
 
-    /**
-     * 
-     */
-	public void populateAttributes(Map propertiesMap) {
-		super.populateAttributes(propertiesMap);
-		if(propertiesMap!=null)
-		{
-			try {
-				String noOfCols  = (String)propertiesMap.get(UIConfigurationConstants.NO_OF_COLS_ATTRIBUTE);
-				if(noOfCols!=null)
-				{
-					columns = new Integer(noOfCols);
-				}
-				else
-				{
-					columns  = new Integer(UIConfigurationConstants.DEFAULT_NO_OF_COLS_TEXT);
-				}
-			} catch (NumberFormatException e) {
-				System.out.println("Error while retrieving no Of columns");
-				e.printStackTrace();
-				columns  = new Integer(UIConfigurationConstants.DEFAULT_NO_OF_COLS_TEXT);
-			}
-			String strIsPassword  = (String)propertiesMap.get(UIConfigurationConstants.ISPASSWORD_ATTRIBUTE);
-			if((strIsPassword!=null)&&(strIsPassword.equalsIgnoreCase("true")))
-			{
-				isPassword = new Boolean(true);
-			}
-			else
-			{
-				isPassword = new Boolean(false);
-			}
-
-		}
-		else
-		{
-			columns  = new Integer(UIConfigurationConstants.DEFAULT_NO_OF_COLS_TEXT);
-			isPassword = new Boolean(false);
-		}
-	}
-
+  
     /**
      * 
      */
@@ -112,8 +70,8 @@ public class TextField extends Control implements TextFieldInterface{
 		
 		String htmlString = "<input " + 
 							"class = '" + cssClass + "' " +
-							"name = '" + name + "' " +
-							"id = '" + name + "' " +
+							"name = '" + getHTMLComponentName() + "' " +
+							"id = '" + getHTMLComponentName() + "' " +
 							"title = '" + tooltip + "'  " +
 							"value = '" + value + "' "  +
 							"size = '" + columns.intValue() + "' " ;	//Width of Input Fld  
@@ -135,6 +93,9 @@ public class TextField extends Control implements TextFieldInterface{
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface#setAttribute(edu.common.dynamicextensions.domaininterface.AttributeInterface)
 	 */
-	public void setAttribute(AbstractAttributeInterface attributeInterface) {
+	public void setAttribute(AbstractAttributeInterface attributeInterface)
+    {
 	}
+
+	
 }

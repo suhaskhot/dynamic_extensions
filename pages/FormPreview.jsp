@@ -42,8 +42,8 @@
           		<tr>
   					<td>
 						<table summary="" cellpadding="3" cellspacing="0" border="1" align='center' width = '100%'>
-							<tr>
-								<td class='formTitle' align='center'>
+							<tr class='formTitle' align='center'>
+								<td>
 									<c:out value="${containerInterface.caption}" escapeXml="false" />
 								</td>
 							</tr>

@@ -24,14 +24,20 @@
   	<html:errors />  
 	
          <table align = 'center' width='100%' border='0'>
-	          <tr height = 40>	<td class='standardBoldText' align='center'>Form Definition</td></tr>
+	          <tr height = 40>	
+	          	<td class='standardBoldText' align='center'>
+			         <bean:message key="app.CreateFormTitle"/>
+			  	 </td>
+			   </tr>
 			
 			  <tr>
 	     		<td>
 			  	 <table summary="" align = 'center' cellpadding="3" cellspacing="0" border="0">
 				 
 				     <tr>
-					  	 <td class="formMessage" colspan="3">* indicates a required field</td>
+					  	 <td class="formMessage" colspan="3">
+						  	 <bean:message key="app.requiredMessage"/>
+					  	 </td>
 				     </tr>
 					   <tr class='formMessage' align='left'> 
 			  <% 

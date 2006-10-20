@@ -291,6 +291,12 @@ function showFormPreview()
 	var showPreview = document.getElementById('showPreview');
 	showPreview.value = 'True';
 	
+	var entitySaved = document.getElementById('entitySaved');
+
+	if(entitySaved!=null)
+	{
+		entitySaved.value="";
+	}	
 	var controlsForm = document.getElementById('controlsForm');
 	controlsForm.action="/dynamicExtensions/AddControlsAction.do";
 	controlsForm.submit();
@@ -387,10 +393,31 @@ if(controlsForm.name != null)
 
 function saveEntity()
 {
+	var entitySaved = document.getElementById('entitySaved');
+	if(entitySaved!=null)
+	{	
+		entitySaved.value='true';
+	}
 	var controlsForm = document.getElementById('controlsForm');
 	if(controlsForm!=null)
 	{
 		controlsForm.action="/dynamicExtensions/SaveEntityAction.do";
 		//controlsForm.submit();	
+	}
+}
+
+function loadPreviewForm()
+{
+	var entitySaved = document.getElementById('entitySaved');
+	if(entitySaved!=null)
+	{
+		if(entitySaved.value=='true')
+		{
+			var backBtn = document.getElementById('backToPrevious');
+			if(backBtn!=null)
+			{
+				backBtn.disabled='true';
+			}
+		}
 	}
 }

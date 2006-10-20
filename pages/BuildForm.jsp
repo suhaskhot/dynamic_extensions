@@ -123,7 +123,7 @@
 
 		  	<html:hidden property="operation" value=""/>
 		  	<html:hidden property="selectedAttrib" value=""/>
-
+			<input type="hidden" name="entitySaved" />
 			<html:hidden property="controlOperation" />
 			<html:hidden property="selectedControlId" />
 			<html:hidden property="toolBoxClicked" value=""/>

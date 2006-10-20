@@ -23,9 +23,9 @@
 		<title><bean:message key="table.heading" /></title>
 	</head>
 	
-	<body>
+	<body onload="loadPreviewForm()">
 		<html:form styleId = "previewForm" action="/LoadFormPreviewAction" enctype="multipart/form-data" >
-			
+			<html:hidden property="entitySaved" />
 			<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 			
 			<table align='center' width='75%'>

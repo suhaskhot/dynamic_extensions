@@ -5,7 +5,6 @@
  */
 package edu.common.dynamicextensions.ui.webui.action;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,9 +16,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
-import edu.common.dynamicextensions.processor.ApplyFormControlsProcessor;
 import edu.common.dynamicextensions.processor.ContainerProcessor;
-import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.util.global.Constants;
 
@@ -33,48 +30,22 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 {
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 	{
-		//Save entity to cache
-		System.out.println("Save entity");
-		//Get controls form
-		ControlsForm controlsForm = (ControlsForm) form;
-
+		ActionForward actionForward = null;
 		//Get container interface from cache
 		ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-		/*//Add control to form
-		ApplyFormControlsProcessor formControlsProcessor = ApplyFormControlsProcessor.getInstance();
-		formControlsProcessor.addControlToForm(containerInterface, controlsForm);
-		
-		//Add back object to cache
-		CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
-		
-		*///Call container processor save method
-        
-		ContainerProcessor containerProcessor  = ContainerProcessor.getInstance();
+		//Call container processor save method
+        ContainerProcessor containerProcessor  = ContainerProcessor.getInstance();
         try
         {
             containerProcessor.saveContainer(containerInterface);
-        }
+            actionForward = mapping.findForward(Constants.SUCCESS);
+         }
         catch (Exception e)
         {
             List list = new ArrayList();
             handleException(e,list);
-            
+            actionForward = mapping.findForward(Constants.SYSTEM_EXCEPTION);
         }
-		
-		/*ActionForward actionForward = mapping.findForward(Constants.SUCCESS);
-		actionForward.getPath();
-		return actionForward;*/
-		ActionForward actionForward = mapping.findForward(Constants.SUCCESS);
-		try
-		{
-			response.sendRedirect("http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath()
-					+ actionForward.getPath());
-		}
-		catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+        return actionForward;
 	}
 }

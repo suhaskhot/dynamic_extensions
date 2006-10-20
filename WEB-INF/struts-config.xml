@@ -52,6 +52,7 @@ PUBLIC
 			scope="request">
 		<forward name="success" path="/LoadFormDefinitionAction.do" />
 		<forward name="buildForm" path="/LoadFormControlsAction.do" />
+		<forward name="showDynamicExtensionsHomePage" path="/DynamicExtensionHomePage.do" />
 		
 		</action>	
 		
@@ -108,7 +109,8 @@ PUBLIC
 			validate="true"
 			input="/SaveEntityAction.do"
 			scope="request">
-			<forward name="success" path="/LoadFormControlsAction.do" />
+			<forward name="success" path="/LoadFormPreviewAction.do" />
+			<forward name="failure" path="/pages/ErrorPage.jsp" />
 		</action>
 		
 	

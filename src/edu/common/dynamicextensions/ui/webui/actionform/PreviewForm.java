@@ -13,6 +13,7 @@ public class PreviewForm extends AbstractActionForm
 {
 	private static final long serialVersionUID = -7828307676065035418L;
 	
+	String entitySaved;
 	/**
 	 * 
 	 */
@@ -57,5 +58,15 @@ public class PreviewForm extends AbstractActionForm
 	public void setContainerInterface(ContainerInterface containerInterface)
 	{
 		this.containerInterface = containerInterface;
+	}
+
+	public String getEntitySaved()
+	{
+		return this.entitySaved;
+	}
+
+	public void setEntitySaved(String entitySaved)
+	{
+		this.entitySaved = entitySaved;
 	}
 }

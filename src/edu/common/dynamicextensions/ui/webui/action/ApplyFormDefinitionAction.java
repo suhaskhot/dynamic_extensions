@@ -59,14 +59,15 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 			try
             {
                 containerInterface = applyFormDefinitionProcessor.addEntityToContainer(containerInterface, formDefinitionForm, true);
+                target = Constants.SHOW_DYNAMIC_EXTENSIONS_HOMEPAGE;
             }
             catch (Exception e)
             {
                 List list = new ArrayList();
                 handleException(e,list);
+                target = Constants.SYSTEM_EXCEPTION;
             }
             
-			target = Constants.SUCCESS;
 		}
 		CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
 		return mapping.findForward(target);

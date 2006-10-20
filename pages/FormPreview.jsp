@@ -10,11 +10,6 @@
 <%-- Imports --%>
 <%@	
 	page language="java" contentType="text/html" 
-    import="java.util.List"
-    import="java.util.Collection"
-	import="edu.common.dynamicextensions.domain.Entity"
-	import="java.util.Iterator"
-	import="java.text.SimpleDateFormat"  
 %>
 
 <%-- Stylesheet --%>
@@ -33,7 +28,7 @@
 			
 			<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 			
-			<table align='center' width='75%'>				
+			<table align='center' width='75%'>
           		<tr>
   					<td>
 						<table summary="" cellpadding="3" cellspacing="0" border="1" align='center' width = '100%'>

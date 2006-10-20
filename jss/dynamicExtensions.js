@@ -391,6 +391,6 @@ function saveEntity()
 	if(controlsForm!=null)
 	{
 		controlsForm.action="/dynamicExtensions/SaveEntityAction.do";
-		controlsForm.submit();	
+		//controlsForm.submit();	
 	}
 }

@@ -24,7 +24,7 @@ public class QueryInterfaceManager {
      * Static instance of the entity manager.
      */
     private static EntityManager entityManager = EntityManager.getInstance();
-    AbstractDAO daoFactory = DAOFactory.getDAO(Constants.HIBERNATE_DAO);
+    AbstractDAO daoFactory = DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
 //    DAOFactory daoFactory = DAOFactory.getInstance();
     
     
@@ -45,7 +45,7 @@ public class QueryInterfaceManager {
          //Inserting data into CATISSUE_QUERY_TABLE_DATA table
          //TODO see this if to be changed 
         String aliasName = "ALIAS_"+entity.getId(); 
-        TableProperties tableProperties = entity.getTableProperties();
+        TableProperties tableProperties =(TableProperties) entity.getTableProperties();
         String entityTableName = tableProperties.getName();
         String queryToInsertDataInQueryTableData = "INSERT INTO CATISSUE_QUERY_TABLE_DATA" +
         "(TABLE_ID,TABLE_NAME,DISPLAY_NAME,ALIAS_NAME,PRIVILEGE_ID, FOR_SQI) VALUES( "+tableIdentifier+" , '"+ entityTableName+
@@ -73,7 +73,7 @@ public class QueryInterfaceManager {
      */
     static void  fireQuery(String query, String msg) throws DAOException{
 //        JDBCDAO jdbcDAO = (JDBCDAO)daoFactory.getDAO(Constants.JDBC_DAO);
-        JDBCDAO jdbcDAO = (JDBCDAO)DAOFactory.getDAO(Constants.JDBC_DAO);
+        JDBCDAO jdbcDAO = (JDBCDAO)DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
         if(query == null){
     		throw new DAOException("Query passed is null");
     	}
@@ -112,7 +112,7 @@ public class QueryInterfaceManager {
      */   
     static List getResultInList(String queryToGetNextIdentifier, SessionDataBean sessionDataBean, boolean isSecureExecute, boolean hasConditionOnIdentifiedField, Map queryResultObjectDataMap) throws DAOException, ClassNotFoundException{
         List resultList = null;
-        JDBCDAO jdbcDAO = (JDBCDAO)DAOFactory.getDAO(Constants.JDBC_DAO);
+        JDBCDAO jdbcDAO = (JDBCDAO)DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
         try {
             jdbcDAO.openSession(null);
             resultList = jdbcDAO.executeQuery(queryToGetNextIdentifier,sessionDataBean,isSecureExecute,hasConditionOnIdentifiedField,queryResultObjectDataMap);
@@ -231,7 +231,7 @@ public class QueryInterfaceManager {
         return nextSequence;
     }*/
     private  static String getNextSequence(String tableName, String primaryKeyColumnName) throws ClassNotFoundException, DAOException{
-        JDBCDAO jdbcDAO = (JDBCDAO)DAOFactory.getDAO(Constants.JDBC_DAO);
+        JDBCDAO jdbcDAO = (JDBCDAO)DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
         String queryToGetNextIdentifier =" SELECT MAX("+ primaryKeyColumnName +") FROM "+tableName;
         jdbcDAO.openSession(null);
         List resultList = jdbcDAO.executeQuery(queryToGetNextIdentifier,new SessionDataBean(),false,false,null);

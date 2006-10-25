@@ -973,18 +973,6 @@ public class EntityManager
             throws DynamicExtensionsApplicationException,
             DynamicExtensionsSystemException
     {
-        //JDBCDAO jdbcDao = (JDBCDAO) DAOFactory.getDAO(Constants.JDBC_DAO);
-        Session session = null;
-        try
-        {
-            session = DBUtil.currentSession();
-        }
-        catch (HibernateException e1)
-        {
-            throw new DynamicExtensionsSystemException(
-                    "Can not execute query...Session can not be obtained");
-        }
-
         if (entity == null || dataValue == null || dataValue.isEmpty())
         {
             throw new DynamicExtensionsSystemException(
@@ -993,7 +981,7 @@ public class EntityManager
 
         StringBuffer columnNameString = new StringBuffer("IDENTIFIER , ");
         Long identifier = getNextIdentifier(entity);
-        StringBuffer columnValuesString = new StringBuffer();
+        StringBuffer columnValuesString = new StringBuffer(identifier.toString());
         String tableName = entity.getTableProperties().getName();
 
         //        Map colNameMap = getDbColumnNameMap(entity);
@@ -1034,21 +1022,19 @@ public class EntityManager
         query.append(columnValuesString);
         query.append(" ) ");
 
-        Connection conn;
-        try
-        {
-            conn = session.connection();
-            PreparedStatement statement = conn.prepareStatement(query
-                    .toString());
-            statement.executeUpdate();
-        }
-        catch (Exception e)
-        {
-            throw new DynamicExtensionsSystemException(
-                    "Cannot execute query... connection can not be obtained");
-        }
+		try
+		{
+			JDBCDAO jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
+			jdbcDao.openSession(null);
+			jdbcDao.executeUpdate(query.toString());
+			jdbcDao.commit();
+			jdbcDao.closeSession();
+		}
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsSystemException("Error while inserting data",e);
+		}
 
-        //jdbcDao.executeUpdate(query.toString());
 
     }
 

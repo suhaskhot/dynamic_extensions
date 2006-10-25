@@ -117,7 +117,7 @@ public class EntityManager
             DynamicExtensionsApplicationException
     {
         Entity entity = (Entity) entityInterface;
-        HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory
+        HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance()
                 .getDAO(Constants.HIBERNATE_DAO);
         Stack stack = null;
         try
@@ -845,7 +845,7 @@ public class EntityManager
         }
         else
         {
-            HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory
+            HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance()
                     .getDAO(Constants.HIBERNATE_DAO);
             Stack stack = null;
             try
@@ -1181,7 +1181,7 @@ public class EntityManager
             throws DAOException, ClassNotFoundException
     {
         List resultList = null;
-        JDBCDAO jdbcDAO = (JDBCDAO) DAOFactory.getDAO(Constants.JDBC_DAO);
+        JDBCDAO jdbcDAO = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
         try
         {
             jdbcDAO.openSession(null);

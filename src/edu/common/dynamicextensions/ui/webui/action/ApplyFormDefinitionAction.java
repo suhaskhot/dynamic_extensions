@@ -63,7 +63,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
             {
                 containerInterface = applyFormDefinitionProcessor.addEntityToContainer(containerInterface, formDefinitionForm, true);
                 
-                saveMessages(request, getSuccessMessage());
+                saveMessages(request, getSuccessMessage(formDefinitionForm));
                 
                 target = Constants.SHOW_DYNAMIC_EXTENSIONS_HOMEPAGE;
             }
@@ -82,10 +82,11 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	/**
 	 * 
 	 */
-	private ActionMessages getSuccessMessage()
+	private ActionMessages getSuccessMessage(FormDefinitionForm formDefinitionForm)
 	{
 		ActionMessages actionMessages = new ActionMessages();
-        actionMessages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("app.entitySaveSuccessMessage"));
+		String formName =formDefinitionForm.getFormName(); 
+        actionMessages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("app.entitySaveSuccessMessage",formName));
         return actionMessages;
      }
 }

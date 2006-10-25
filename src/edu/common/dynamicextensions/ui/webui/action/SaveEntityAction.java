@@ -40,7 +40,12 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
         try
         {
             containerProcessor.saveContainer(containerInterface);
-            saveMessages(request, getSuccessMessage());
+            String formName = "";
+            if((containerInterface!=null)&&(containerInterface.getEntity()!=null))
+            {
+            	formName = containerInterface.getEntity().getName();
+            }
+            saveMessages(request, getSuccessMessage(formName));
             actionForward = mapping.findForward(Constants.SUCCESS);
          }
         catch (Exception e)
@@ -55,10 +60,10 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 	/**
 	 * Get messages for successful save of entity
 	 */
-	private ActionMessages getSuccessMessage()
+	private ActionMessages getSuccessMessage(String formName)
 	{
 		ActionMessages actionMessages = new ActionMessages();
-        actionMessages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("app.entitySaveSuccessMessage"));
+        actionMessages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("app.entitySaveSuccessMessage",formName));
         return actionMessages;
      }
 }

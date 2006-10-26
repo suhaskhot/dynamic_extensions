@@ -17,4 +17,6 @@ public class Constants
 	public static final String CONTROL_TAGNAME = "control";
 	public static final String ATTRIBUTE_TAGNAME = "attribute-name";
 	public static final String NAME_ATTRIBUTE= "name";
+    public static final String DEFAULT_TERM = "defaultTerm";
+    public static final String DEFAULT_THESAURAS_NAME= "defaultName";
 }

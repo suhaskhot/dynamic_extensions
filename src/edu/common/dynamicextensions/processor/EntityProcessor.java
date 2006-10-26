@@ -1,16 +1,17 @@
 
 package edu.common.dynamicextensions.processor;
 
+import java.util.Collection;
 import java.util.Iterator;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
-import edu.common.dynamicextensions.domain.SemanticProperty;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.interfaces.EntityUIBeanInterface;
+import edu.common.dynamicextensions.ui.util.SemanticPropertyBuilderUtil;
 import edu.wustl.common.util.Utility;
 
 /**
@@ -88,13 +89,13 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
 		{
 			entityInterface.setName(entityUIBeanInterface.getFormName());
 			entityInterface.setDescription(entityUIBeanInterface.getFormDescription());
-			SemanticPropertyInterface semanticPropertyInterface = new SemanticProperty();
-			semanticPropertyInterface.setConceptCode(entityUIBeanInterface.getConceptCode());
-			if (entityInterface.getSemanticPropertyCollection() != null)
-			{
-				entityInterface.getSemanticPropertyCollection().clear();
-			}
-			entityInterface.addSemanticProperty(semanticPropertyInterface);
+			Collection collection =  SemanticPropertyBuilderUtil.getSymanticPropertyCollection(entityUIBeanInterface.getConceptCode());
+			if (collection != null && !collection.isEmpty()) {
+			    Iterator iterator = collection.iterator();
+                while (iterator.hasNext()) {
+                    entityInterface.addSemanticProperty((SemanticPropertyInterface) iterator.next());
+                }
+            }
 		}
 	}
 
@@ -117,7 +118,7 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
 				while (iter.hasNext())
 				{
 					String conceptCode = ((SemanticPropertyInterface) iter.next()).getConceptCode();
-					entityUIBeanInterface.setConceptCode(Utility.toString(conceptCode));
+					entityUIBeanInterface.setConceptCode(SemanticPropertyBuilderUtil.getConceptCodeString(entityInterface));
 				}
 			}
 		}

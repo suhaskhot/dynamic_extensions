@@ -14,6 +14,10 @@
 
 <%-- Stylesheet --%>
 <link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
+<script src="jss/calendarComponent.js"></script>
+<SCRIPT>var imgsrc="images/";</SCRIPT>
+<LINK href="css/calanderComponent.css" type=text/css rel=stylesheet>
+
 <script src="jss/dynamicExtensions.js" type="text/javascript"></script>
 <c:set var="containerInterface" value="${previewForm.containerInterface}"/>
 <jsp:useBean id="containerInterface" type="edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface"/>
@@ -24,7 +28,7 @@
 	</head>
 
 	<body onload="loadPreviewForm()">
-		<html:form styleId = "previewForm" action="/ApplyDataEntryFormAction" enctype="multipart/form-data" >
+		<html:form styleId = "previewForm" action="/LoadFormPreviewAction" enctype="multipart/form-data" >
 			<html:hidden property="entitySaved" />
 			<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 
@@ -90,7 +94,7 @@
 						</html:button>
 					</td>
 					<td align='right'>
-						<html:submit styleClass="actionButton" >
+						<html:submit styleClass="actionButton"  onclick="addDynamicData()">
 							<bean:message  key="buttons.submit" />
 						</html:submit>
 					</td>

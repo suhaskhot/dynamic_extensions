@@ -49,7 +49,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		for (int sequence = 1; sequence <= controlCollection.size(); sequence++)
 		{
 			value = request.getParameter("Control_" + sequence);
-
+			System.out.println("Value = " +  value);	
 			for (Iterator controlCollectionIterator = controlCollection.iterator(); controlCollectionIterator.hasNext();)
 			{
 				controlInterface = (ControlInterface) controlCollectionIterator.next();
@@ -64,13 +64,15 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
         ApplyDataEntryFormProcessor applyDataEntryFormProcessor = ApplyDataEntryFormProcessor.getInstance();
         try {
 			applyDataEntryFormProcessor.insertDataEntryForm(containerInterface,attributeValueMap);
+			System.out.println(mapping.findForward(Constants.SUCCESS).toString());
+			return (mapping.findForward(Constants.SUCCESS));
 		} catch (DynamicExtensionsApplicationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return (mapping.findForward(Constants.SYSTEM_EXCEPTION));
 		} catch (DynamicExtensionsSystemException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return (mapping.findForward(Constants.SYSTEM_EXCEPTION));
 		}
-		return (mapping.findForward(Constants.SUCCESS));
+		
 	}
 }

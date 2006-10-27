@@ -567,5 +567,13 @@ function changeDateType(dateType)
 	{
 		defValueTxtBox.disabled=false;
 	}
-	
+}
+
+function addDynamicData()
+{
+	var previewForm = document.getElementById('previewForm');
+	if(previewForm!=null)
+	{
+		previewForm.action="/dynamicExtensions/ApplyDataEntryFormAction.do";
+	}
 }

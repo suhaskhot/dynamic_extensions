@@ -1,9 +1,6 @@
 
 package edu.common.dynamicextensions.processor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;

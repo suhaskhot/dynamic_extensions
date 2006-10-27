@@ -23,6 +23,10 @@ import edu.common.dynamicextensions.ui.webui.util.TreeData;
  */
 public class TreeGeneratorTag extends TagSupport {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private TreeData treeDataObject = null;
 
 	public TreeGeneratorTag()

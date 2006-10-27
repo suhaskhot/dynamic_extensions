@@ -16,7 +16,6 @@ import edu.common.dynamicextensions.domain.DateValue;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.DoubleValue;
 import edu.common.dynamicextensions.domain.LongValue;
-import edu.common.dynamicextensions.domain.SemanticProperty;
 import edu.common.dynamicextensions.domain.StringValue;
 import edu.common.dynamicextensions.domain.UserDefinedDE;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
@@ -235,7 +234,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 
 		PermissibleValueInterface permissibleValueIntf = null;
 		//If it is numberic it can either be float, simple integer, etc based on number of decimals
-		int noOfDecimalPlaces = 0 , noOfDigits = 0;
+		int noOfDecimalPlaces = 0  ;
 		//Number of decimal places 
 
 		String strNoOfDecimalPlaces = attributeInformationIntf.getAttributeDecimalPlaces();
@@ -523,7 +522,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	{
 		AttributeInterface numberAttribIntf = null;
 		//If it is numberic it can either be float, simple integer, etc based on number of decimals
-		int noOfDecimalPlaces = 0 , noOfDigits = 0;
+		int noOfDecimalPlaces = 0;
 		//Number of decimal places 
 
 		String strNoOfDecimalPlaces = attributeInformationIntf.getAttributeDecimalPlaces();
@@ -704,7 +703,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	private String getChoiceList(AbstractAttributeInterface attributeInterface, AbstractAttributeUIBeanInterface attributeInformationIntf)
 	{
 		Object permissibleValueObjectValue = null; 
-		String choiceList = "",choice = null;
+		String choiceList = "";
 		if((attributeInformationIntf!=null)&&(attributeInterface!=null))
 		{
 			if(attributeInterface instanceof AttributeInterface)

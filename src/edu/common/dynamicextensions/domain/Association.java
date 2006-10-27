@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.domain;
 
 import java.util.Collection;
@@ -20,11 +21,11 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass table="DYEXTN_ASSOCIATION" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class Association extends AbstractAttribute implements java.io.Serializable,AssociationInterface 
+public class Association extends AbstractAttribute implements java.io.Serializable, AssociationInterface
 {
-	
+
 	private static final long serialVersionUID = 1234567890L;
-	
+
 	/**
 	 * Direction of the association.
 	 */
@@ -45,44 +46,47 @@ public class Association extends AbstractAttribute implements java.io.Serializab
 	 * The target entity of this association.
 	 */
 	protected Collection targetEntityCollection;
-	
+
 	/**
 	 * Constraint properties related to this association.
 	 */
 	public Collection constraintPropertiesCollection;
-	
+
 	/**
 	 * Empty Constructor.
 	 */
 	public Association()
 	{
-		
+
 	}
-	
+
 	/**
 	 * @hibernate.property name="direction" type="string" column="DIRECTION" 
 	 * @return Returns the direction.
 	 */
-	public String getDirection() 
+	public String getDirection()
 	{
 		return direction;
 	}
+
 	/**
 	 * @param direction The direction to set.
 	 */
-	public void setDirection(String direction) 
+	public void setDirection(String direction)
 	{
 		this.direction = direction;
 	}
+
 	/**
 	 * 
-	 */	
-	
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException 
+	 */
+
+	public void setAllValues(AbstractActionForm arg0) throws AssignDataException
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
+
 	/**
 	 * @hibernate.set name="sourceEntityCollection" table="DYEXTN_ENTITY"
 	 * cascade="save-update" inverse="false" lazy="false"
@@ -90,10 +94,11 @@ public class Association extends AbstractAttribute implements java.io.Serializab
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Entity" 
 	 * @return Returns the sourceEntityCollection.
 	 */
-	private Collection getSourceEntityCollection() 
+	private Collection getSourceEntityCollection()
 	{
 		return sourceEntityCollection;
 	}
+
 	/**
 	 * @param sourceEntityCollection The sourceEntityCollection to set.
 	 */
@@ -101,36 +106,38 @@ public class Association extends AbstractAttribute implements java.io.Serializab
 	{
 		this.sourceEntityCollection = sourceEntityCollection;
 	}
-	
+
 	/**
 	 * 
 	 * @return
 	 */
 	public EntityInterface getSourceEntity()
 	{
-		if(sourceEntityCollection != null)
+		if (sourceEntityCollection != null)
 		{
 			Iterator sourceEntityIterator = sourceEntityCollection.iterator();
-			return (Entity)sourceEntityIterator.next();
-		} else 
-		{
-			return null;   
+			return (Entity) sourceEntityIterator.next();
 		}
-		
+		else
+		{
+			return null;
+		}
+
 	}
-	
+
 	/**
 	 * 
 	 * @param sourceEntity
 	 */
 	public void setSourceEntity(EntityInterface sourceEntityInterface)
 	{
-		if(sourceEntityCollection == null)
+		if (sourceEntityCollection == null)
 		{
 			sourceEntityCollection = new HashSet();
 		}
 		this.sourceEntityCollection.add(sourceEntityInterface);
 	}
+
 	/**
 	 * @hibernate.set name="targetEntityCollection" table="DYEXTN_ENTITY"
 	 * cascade="save-update" inverse="false" lazy="false"
@@ -138,10 +145,11 @@ public class Association extends AbstractAttribute implements java.io.Serializab
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Entity" 
 	 * @return Returns the targetEntityCollection.
 	 */
-	private Collection getTargetEntityCollection() 
+	private Collection getTargetEntityCollection()
 	{
 		return targetEntityCollection;
 	}
+
 	/**
 	 * @param targetEntityCollection The targetEntityCollection to set.
 	 */
@@ -149,37 +157,38 @@ public class Association extends AbstractAttribute implements java.io.Serializab
 	{
 		this.targetEntityCollection = targetEntityCollection;
 	}
-	
-	
+
 	/**
 	 * 
 	 * @return
 	 */
 	public EntityInterface getTargetEntity()
 	{
-		if(targetEntityCollection != null)
+		if (targetEntityCollection != null)
 		{
 			Iterator targetEntityIterator = targetEntityCollection.iterator();
-			return (Entity)targetEntityIterator.next();
-		} else 
-		{
-			return null;   
+			return (Entity) targetEntityIterator.next();
 		}
-		
+		else
+		{
+			return null;
+		}
+
 	}
-	
+
 	/**
 	 * 
 	 * @param sourceEntity
 	 */
 	public void setTargetEntity(EntityInterface targetEntityInterface)
 	{
-		if(targetEntityCollection == null)
+		if (targetEntityCollection == null)
 		{
 			targetEntityCollection = new HashSet();
 		}
 		this.targetEntityCollection.add(targetEntityInterface);
 	}
+
 	/**
 	 * @hibernate.set name="sourceRoleCollection" table="DYEXTN_ROLE
 	 * cascade="save-update" inverse="false" lazy="false"
@@ -188,10 +197,11 @@ public class Association extends AbstractAttribute implements java.io.Serializab
 	 * 
 	 * @return Returns the sourceRoleCollection.
 	 */
-	private Collection getSourceRoleCollection() 
+	private Collection getSourceRoleCollection()
 	{
 		return sourceRoleCollection;
 	}
+
 	/**
 	 * @param sourceRoleCollection The sourceRoleCollection to set.
 	 */
@@ -199,40 +209,38 @@ public class Association extends AbstractAttribute implements java.io.Serializab
 	{
 		this.sourceRoleCollection = sourceRoleCollection;
 	}
-	
-	
+
 	/**
 	 * 
 	 * @return
 	 */
 	public RoleInterface getSourceRole()
 	{
-		if(sourceRoleCollection != null)
+		if (sourceRoleCollection != null)
 		{
 			Iterator sourceRoleIterator = sourceRoleCollection.iterator();
-			return (Role)sourceRoleIterator.next();
-		} else 
-		{
-			return null;   
+			return (Role) sourceRoleIterator.next();
 		}
-		
+		else
+		{
+			return null;
+		}
+
 	}
-	
+
 	/**
 	 * 
 	 * @param sourceEntity
 	 */
 	public void setSourceRole(RoleInterface sourceRoleInterface)
 	{
-		if(sourceRoleCollection == null)
+		if (sourceRoleCollection == null)
 		{
 			sourceRoleCollection = new HashSet();
 		}
 		this.sourceRoleCollection.add(sourceRoleInterface);
 	}
-	
-	
-	
+
 	/**
 	 * @hibernate.set name="targetRoleCollection" table="DYEXTN_ROLE
 	 * cascade="save-update" inverse="false" lazy="false"
@@ -240,48 +248,50 @@ public class Association extends AbstractAttribute implements java.io.Serializab
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Role" 
 	 * @return Returns the targetRoleCollection.
 	 */
-	private Collection getTargetRoleCollection() 
+	private Collection getTargetRoleCollection()
 	{
 		return targetRoleCollection;
 	}
+
 	/**
 	 * @param targetRoleCollection The targetRoleCollection to set.
 	 */
-	public void setTargetRoleCollection(Collection targetRoleCollection) 
+	public void setTargetRoleCollection(Collection targetRoleCollection)
 	{
 		this.targetRoleCollection = targetRoleCollection;
 	}
-	
-	
+
 	/**
 	 * 
 	 * @return
 	 */
 	public RoleInterface getTargetRole()
 	{
-		if(targetRoleCollection != null)
+		if (targetRoleCollection != null)
 		{
 			Iterator targetRoleIterator = targetRoleCollection.iterator();
-			return (Role)targetRoleIterator.next();
-		} else
-		{
-			return null;   
+			return (Role) targetRoleIterator.next();
 		}
-		
+		else
+		{
+			return null;
+		}
+
 	}
-	
+
 	/**
 	 * 
 	 * @param sourceEntity
 	 */
 	public void setTargetRole(RoleInterface targetRoleInterface)
 	{
-		if(targetRoleCollection == null)
+		if (targetRoleCollection == null)
 		{
 			targetRoleCollection = new HashSet();
 		}
 		this.targetRoleCollection.add(targetRoleInterface);
 	}
+
 	/**
 	 * @hibernate.set name="constraintPropertiesCollection" table="DYEXTN_CONSTRAINT_PROPERTIES"
 	 * cascade="save-update" inverse="false" lazy="false"
@@ -289,50 +299,48 @@ public class Association extends AbstractAttribute implements java.io.Serializab
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties" 
 	 * @return Returns the constraintPropertiesCollection.
 	 */
-	private Collection getConstraintPropertiesCollection() 
+	private Collection getConstraintPropertiesCollection()
 	{
 		return constraintPropertiesCollection;
 	}
+
 	/**
 	 * @param constraintPropertiesCollection The constraintPropertiesCollection to set.
 	 */
-	private void setConstraintPropertiesCollection(
-			Collection constraintPropertiesCollection) 
+	private void setConstraintPropertiesCollection(Collection constraintPropertiesCollection)
 	{
 		this.constraintPropertiesCollection = constraintPropertiesCollection;
 	}
-	
-	
-	
+
 	/**
 	 * 
 	 * @return
 	 */
 	public ConstraintPropertiesInterface getConstraintProperties()
 	{
-		if(constraintPropertiesCollection != null)
+		if (constraintPropertiesCollection != null)
 		{
 			Iterator constraintPropertiesIterator = constraintPropertiesCollection.iterator();
-			return (ConstraintProperties)constraintPropertiesIterator .next();
-		} else 
-		{
-			return null;   
+			return (ConstraintProperties) constraintPropertiesIterator.next();
 		}
-		
+		else
+		{
+			return null;
+		}
+
 	}
-	
-    
+
 	/**
 	 * 
 	 * @param sourceEntity
 	 */
 	public void setConstraintProperties(ConstraintPropertiesInterface constraintPropertiesInterface)
 	{
-		if(constraintPropertiesCollection == null)
+		if (constraintPropertiesCollection == null)
 		{
-			constraintPropertiesCollection  = new HashSet();
+			constraintPropertiesCollection = new HashSet();
 		}
 		this.constraintPropertiesCollection.add(constraintPropertiesInterface);
 	}
-	
+
 }

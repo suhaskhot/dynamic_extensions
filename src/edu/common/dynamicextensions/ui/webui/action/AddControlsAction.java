@@ -42,17 +42,13 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 
 		//Get container interface from cache
 		ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-		
+
 		//Add control to form
 		ApplyFormControlsProcessor formControlsProcessor = ApplyFormControlsProcessor.getInstance();
 		formControlsProcessor.addControlToForm(containerInterface, controlsForm);
-		
+
 		//Add back object to cache
 		CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
-
-		/*//call methos
-		populateCacheObjects(request, controlsForm);
-*/
 		ActionForward actionForward = mapping.findForward(Constants.SUCCESS);
 		try
 		{
@@ -61,42 +57,9 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
 	}
 
-	/**
-	 * 
-	 *
-	 */
-	public void populateCacheObjects(HttpServletRequest request, ControlsForm controlsForm)
-	{
-
-		/*String controlOperation = (String) CacheManager.getObjectFromCache(request, Constants.CONTROL_OPERATION);
-		if (controlOperation == null)
-		{
-			CacheManager.addObjectToCache(request, Constants.CONTROL_OPERATION, new String(""));
-		}*/
-		String controlOperation = controlsForm.getControlOperation();
-		//CacheManager.addObjectToCache(request, Constants.CONTROL_OPERATION, controlOperation);
-
-		/*String selectedControlId = (String) CacheManager.getObjectFromCache(request, Constants.SELECTED_CONTROL_ID);
-		if (selectedControlId == null)
-		{
-			CacheManager.addObjectToCache(request, Constants.SELECTED_CONTROL_ID, new String(""));
-		}
-		*/
-		String selectedControlId = controlsForm.getSelectedControlId();
-		//CacheManager.addObjectToCache(request, Constants.SELECTED_CONTROL_ID, selectedControlId);
-
-		/*String userSelectedTool = (String) CacheManager.getObjectFromCache(request, Constants.USER_SELECTED_TOOL);
-		if (userSelectedTool == null)
-		{
-			CacheManager.addObjectToCache(request, Constants.USER_SELECTED_TOOL, new String(""));
-		}
-		*/
-		String userSelectedTool = controlsForm.getUserSelectedTool();
-	}
 }

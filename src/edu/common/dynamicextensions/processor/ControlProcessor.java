@@ -19,7 +19,6 @@ import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInt
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.ui.interfaces.ControlUIBeanInterface;
-import edu.common.dynamicextensions.util.global.Constants;
 
 
 /**
@@ -81,7 +80,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		if (controlUIBeanInterface != null && controlInterface != null) {
 			controlInterface.setAbstractAttribute(controlUIBeanInterface.getAbstractAttribute());
 			controlInterface.setCaption(controlUIBeanInterface.getCaption());
-			//controlInterface.setCssClass(controlUIBeanInterface.getCssClass());
+			//controlInterface.setCssClass(ProcessorConstants.DEFAULT_CSS_CLASS);
 			controlInterface.setTooltip(controlUIBeanInterface.getTooltip());
 			controlInterface.setIsHidden(controlUIBeanInterface.getIsHidden());
 		}

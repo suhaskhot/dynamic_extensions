@@ -35,6 +35,6 @@ public class UIConfigurationConstants {
 	
 	
 	//Default values for textfield / textarea
-	public static final int DEFAULT_NO_OF_ROWS_TEXT = 5;
-	public static final int DEFAULT_NO_OF_COLS_TEXT = 20;
+	public static final int DEFAULT_NO_OF_ROWS_TEXT = 3;
+	public static final int DEFAULT_NO_OF_COLS_TEXT = 30;
 }

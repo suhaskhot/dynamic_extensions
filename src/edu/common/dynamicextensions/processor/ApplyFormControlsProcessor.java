@@ -6,7 +6,6 @@
 package edu.common.dynamicextensions.processor;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;

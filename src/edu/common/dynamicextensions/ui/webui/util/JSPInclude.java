@@ -19,6 +19,10 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
  */
 public class JSPInclude extends Control {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String jspName = null;
 	private List jspParams = null;
 	

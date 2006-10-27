@@ -1,6 +1,5 @@
+
 package edu.common.dynamicextensions.ui.webui.actionform;
-
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +25,16 @@ import edu.wustl.common.util.global.Validator;
  * @author deepti_shelar
  *
  */
-public class ControlsForm extends AbstractActionForm implements 
-ControlUIBeanInterface,AbstractAttributeUIBeanInterface{
+public class ControlsForm extends AbstractActionForm implements ControlUIBeanInterface, AbstractAttributeUIBeanInterface
+{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	/**
 	 * Attribute Name
 	 */
-	AbstractAttributeInterface  abstractAttribute;
+	AbstractAttributeInterface abstractAttribute;
 	/**
 	 * 
 	 */
@@ -39,9 +42,9 @@ ControlUIBeanInterface,AbstractAttributeUIBeanInterface{
 	/**
 	 * Concept code
 	 */
-	
+
 	String attributeConceptCode;
-	
+
 	/**
 	 * 
 	 */
@@ -59,12 +62,12 @@ ControlUIBeanInterface,AbstractAttributeUIBeanInterface{
 
 	/**
 	 * 
-	 */   
+	 */
 	String attributeDefaultValue;
 
 	/**
 	 * 
-	 */    
+	 */
 	String format;
 	/**
 	 * 
@@ -116,115 +119,116 @@ ControlUIBeanInterface,AbstractAttributeUIBeanInterface{
 	 * 
 	 */
 	String caption;
-    /**
-     * 
-     */
+	/**
+	 * 
+	 */
 	String attributeIsPassword;
-    /**
-     * 
-     */
+	/**
+	 * 
+	 */
 	Boolean isPassword;
-    /**
-     * 
-     */
+	/**
+	 * 
+	 */
 	List toolsList = new ArrayList();
-    /**
-     * 
-     */
+	/**
+	 * 
+	 */
 	Boolean IsHidden;
-    /**
-     * 
-     */
+	/**
+	 * 
+	 */
 	Integer sequenceNumber;
-    /**
-     * 
-     */
+	/**
+	 * 
+	 */
 	protected String cssClass;
-    /**
-     * 
-     */
+	/**
+	 * 
+	 */
 	protected String name;
-    /**
-     * 
-     */
+	/**
+	 * 
+	 */
 	protected String tooltip;
-    /**
-     * 
-     */
-	protected String attributeNoOfRows ;
-    /**
-     * 
-     */
+	/**
+	 * 
+	 */
+	protected String attributeNoOfRows;
+	/**
+	 * 
+	 */
 	protected String attributenoOfCols;
-    /**
-     * 
-     */
+	/**
+	 * 
+	 */
 	protected String attributeMultiSelect;
-    /**
-     * 
-     */
+	/**
+	 * 
+	 */
 	protected String attributeSequenceNumber;
-    /**
-     * 
-     */
+	/**
+	 * 
+	 */
 	protected String attributeMeasurementUnits;
-    /**
-     * 
-     */
+	/**
+	 * 
+	 */
 	protected String attributeScale;
-    /**
-     * 
-     */
+	/**
+	 * 
+	 */
 	protected String userSelectedTool;
-    /**
-     * 
-     */
+	/**
+	 * 
+	 */
 	protected Integer columns;
-    /**
-     * 
-     */
+	/**
+	 * 
+	 */
 	protected Integer rows;
-    /**
-     * 
-     */
+	/**
+	 * 
+	 */
 	protected Boolean isMultiSelect;
-    
-    /**
-     * 
-     */
-    protected String controlOperation;
-    /**
-     * 
-     */
-    protected String selectedControlId;
-    /**
-     * 
-     */
-    
-    protected String rootName;
-    
-    /**
-     * 
-     */
-    protected List childList;
-    /**
-     * 
-     */
-    protected String toolBoxClicked;
-    /**
-     * 
-     */
-    protected String showPreview;
-    /**
-     * 
-     */
+
+	/**
+	 * 
+	 */
+	protected String controlOperation;
+	/**
+	 * 
+	 */
+	protected String selectedControlId;
+	/**
+	 * 
+	 */
+
+	protected String rootName;
+
+	/**
+	 * 
+	 */
+	protected List childList;
+	/**
+	 * 
+	 */
+	protected String toolBoxClicked;
+	/**
+	 * 
+	 */
+	protected String showPreview;
+	/**
+	 * 
+	 */
 	protected String linesType;
 	protected String dateValueType;
 
 	/**
-     * 
+	 * 
 	 */
-	public void reset() {
+	public void reset()
+	{
 
 	}
 
@@ -232,253 +236,320 @@ ControlUIBeanInterface,AbstractAttributeUIBeanInterface{
 	 * Returns the id assigned to form bean.
 	 * @return the id assigned to form bean.
 	 */
-	public int getFormId() {
+	public int getFormId()
+	{
 		return Constants.ATTRIBUTE_FORM_ID;
 	}
+
 	/**
 	 * 
 	 */
-	public void setAllValues(AbstractDomainObject abstractDomain)   {
+	public void setAllValues(AbstractDomainObject abstractDomain)
+	{
 
 	}
-
 
 	/**
 	 * @return Returns the attributeDescription.
 	 */
-	public String getDescription() {
+	public String getDescription()
+	{
 		return description;
 	}
+
 	/**
 	 * @param attributeDescription The attributeDescription to set.
 	 */
-	public void setDescription(String description) {
+	public void setDescription(String description)
+	{
 		this.description = description;
 	}
-
 
 	/**
 	 * @return Returns the dataTypeList.
 	 */
-	public List getDataTypeList() {
+	public List getDataTypeList()
+	{
 		return dataTypeList;
 	}
+
 	/**
 	 * @param dataTypeList The dataTypeList to set.
 	 */
-	public void setDataTypeList(List dataTypeList) {
+	public void setDataTypeList(List dataTypeList)
+	{
 		this.dataTypeList = dataTypeList;
 	}
+
 	/**
 	 * @return Returns the dataType.
 	 */
-	public String getDataType() {
+	public String getDataType()
+	{
 		return dataType;
 	}
+
 	/**
 	 * @param dataType The dataType to set.
 	 */
-	public void setDataType(String dataType) {
+	public void setDataType(String dataType)
+	{
 		this.dataType = dataType;
 	}
+
 	/**
 	 * @return Returns the dataTypeChanged.
 	 */
-	public String getDataTypeChanged() {
+	public String getDataTypeChanged()
+	{
 		return dataTypeChanged;
 	}
+
 	/**
 	 * @param dataTypeChanged The dataTypeChanged to set.
 	 */
-	public void setDataTypeChanged(String dataTypeChanged) {
+	public void setDataTypeChanged(String dataTypeChanged)
+	{
 		this.dataTypeChanged = dataTypeChanged;
 	}
+
 	/**
 	 * @return Returns the htmlFile.
 	 */
-	public String getHtmlFile() {
+	public String getHtmlFile()
+	{
 		return htmlFile;
 	}
+
 	/**
 	 * @param htmlFile The htmlFile to set.
 	 */
-	public void setHtmlFile(String htmlFile) {
+	public void setHtmlFile(String htmlFile)
+	{
 		this.htmlFile = htmlFile;
 	}
+
 	/**
 	 * @return Returns the attributeSize.
 	 */
-	public String getAttributeSize() {
+	public String getAttributeSize()
+	{
 		return attributeSize;
 	}
+
 	/**
 	 * @param attributeSize The attributeSize to set.
 	 */
-	public void setAttributeSize(String attributeSize) {
+	public void setAttributeSize(String attributeSize)
+	{
 		this.attributeSize = attributeSize;
 	}
+
 	/**
 	 * @return Returns the choiceList.
 	 */
-	public String getChoiceList() {
+	public String getChoiceList()
+	{
 		return choiceList;
 	}
+
 	/**
 	 * @param choiceList The choiceList to set.
 	 */
-	public void setChoiceList(String choiceList) {
+	public void setChoiceList(String choiceList)
+	{
 		this.choiceList = choiceList;
 	}
+
 	/**
 	 * @return Returns the attributeDefaultValue.
 	 */
-	public String getAttributeDefaultValue() {
+	public String getAttributeDefaultValue()
+	{
 		return attributeDefaultValue;
 	}
+
 	/**
 	 * @param attributeDefaultValue The attributeDefaultValue to set.
 	 */
-	public void setAttributeDefaultValue(String attributeDefaultValue) {
+	public void setAttributeDefaultValue(String attributeDefaultValue)
+	{
 		this.attributeDefaultValue = attributeDefaultValue;
 	}
+
 	/**
 	 * @return Returns the attributeDisplayUnits.
 	 */
-	public String getAttributeDisplayUnits() {
+	public String getAttributeDisplayUnits()
+	{
 		return attributeDisplayUnits;
 	}
+
 	/**
 	 * @param attributeDisplayUnits The attributeDisplayUnits to set.
 	 */
-	public void setAttributeDisplayUnits(String attributeDisplayUnits) {
+	public void setAttributeDisplayUnits(String attributeDisplayUnits)
+	{
 		this.attributeDisplayUnits = attributeDisplayUnits;
 	}
+
 	/**
 	 * @return Returns the attributeFormat.
 	 */
-	public String getFormat() {
+	public String getFormat()
+	{
 		return format;
 	}
+
 	/**
 	 * @param attributeFormat The attributeFormat to set.
 	 */
-	public void setFormat(String format) {
+	public void setFormat(String format)
+	{
 		this.format = format;
 	}
+
 	/**
 	 * @return Returns the attributeValidationRules.
 	 */
-	public String getAttributeValidationRules() {
+	public String getAttributeValidationRules()
+	{
 		return attributeValidationRules;
 	}
+
 	/**
 	 * @param attributeValidationRules The attributeValidationRules to set.
 	 */
-	public void setAttributeValidationRules(String attributeValidationRules) {
+	public void setAttributeValidationRules(String attributeValidationRules)
+	{
 		this.attributeValidationRules = attributeValidationRules;
 	}
+
 	/**
 	 * @return Returns the attributeIdentifier.
 	 */
-	public String getAttributeIdentifier() {
+	public String getAttributeIdentifier()
+	{
 		return attributeIdentifier;
 	}
+
 	/**
 	 * @param attributeIdentifier The attributeIdentifier to set.
 	 */
-	public void setAttributeIdentifier(String attributeIdentifier) {
+	public void setAttributeIdentifier(String attributeIdentifier)
+	{
 		this.attributeIdentifier = attributeIdentifier;
 	}
+
 	/**
 	 * @return Returns the displayChoiceList.
 	 */
-	public List getDisplayChoiceList() {
+	public List getDisplayChoiceList()
+	{
 		return displayChoiceList;
 	}
+
 	/**
 	 * @param displayChoiceList The displayChoiceList to set.
 	 */
-	public void setDisplayChoiceList(List displayChoiceList) {
+	public void setDisplayChoiceList(List displayChoiceList)
+	{
 		this.displayChoiceList = displayChoiceList;
 	}
+
 	/**
 	 * @return Returns the attributeDecimalPlaces.
 	 */
-	public String getAttributeDecimalPlaces() {
+	public String getAttributeDecimalPlaces()
+	{
 		return attributeDecimalPlaces;
 	}
+
 	/**
 	 * @param attributeDecimalPlaces The attributeDecimalPlaces to set.
 	 */
-	public void setAttributeDecimalPlaces(String attributeDecimalPlaces) {
+	public void setAttributeDecimalPlaces(String attributeDecimalPlaces)
+	{
 		this.attributeDecimalPlaces = attributeDecimalPlaces;
 	}
+
 	/**
 	 * @return Returns the referenceValues.
 	 */
-	public String getReferenceValues() {
+	public String getReferenceValues()
+	{
 		return referenceValues;
 	}
+
 	/**
 	 * @param referenceValues The referenceValues to set.
 	 */
-	public void setReferenceValues(String referenceValues) {
+	public void setReferenceValues(String referenceValues)
+	{
 		this.referenceValues = referenceValues;
 	}
+
 	/**
 	 * @return Returns the displayChoice.
 	 */
-	public String getDisplayChoice() {
+	public String getDisplayChoice()
+	{
 		return displayChoice;
 	}
+
 	/**
 	 * @param displayChoice The displayChoice to set.
 	 */
-	public void setDisplayChoice(String displayChoice) {
+	public void setDisplayChoice(String displayChoice)
+	{
 		this.displayChoice = displayChoice;
 	}
-
-
 
 	/**
 	 * @return the attributeCssClass
 	 */
-	public String getCssClass() {
+	public String getCssClass()
+	{
 		return cssClass;
 	}
 
 	/**
 	 * @param cssClass the cssClass to set
 	 */
-	public void setCssClass(String cssClass) {
+	public void setCssClass(String cssClass)
+	{
 		this.cssClass = cssClass;
 	}
 
 	/**
 	 * @return the attributeMeasurementUnits
 	 */
-	public String getAttributeMeasurementUnits() {
+	public String getAttributeMeasurementUnits()
+	{
 		return attributeMeasurementUnits;
 	}
 
 	/**
 	 * @param attributeMeasurementUnits the attributeMeasurementUnits to set
 	 */
-	public void setAttributeMeasurementUnits(String attributeMeasurementUnits) {
+	public void setAttributeMeasurementUnits(String attributeMeasurementUnits)
+	{
 		this.attributeMeasurementUnits = attributeMeasurementUnits;
 	}
 
 	/**
 	 * @return the attributeMultiSelect
 	 */
-	public String getAttributeMultiSelect() {
+	public String getAttributeMultiSelect()
+	{
 		return attributeMultiSelect;
 	}
 
 	/**
 	 * @param attributeMultiSelect the attributeMultiSelect to set
 	 */
-	public void setAttributeMultiSelect(String attributeMultiSelect) {
+	public void setAttributeMultiSelect(String attributeMultiSelect)
+	{
 		this.attributeMultiSelect = attributeMultiSelect;
 		isMultiSelect = new Boolean(attributeMultiSelect);
 	}
@@ -486,14 +557,16 @@ ControlUIBeanInterface,AbstractAttributeUIBeanInterface{
 	/**
 	 * @return the attributenoOfCols
 	 */
-	public String getAttributenoOfCols() {
+	public String getAttributenoOfCols()
+	{
 		return attributenoOfCols;
 	}
 
 	/**
 	 * @param attributenoOfCols the attributenoOfCols to set
 	 */
-	public void setAttributenoOfCols(String attributenoOfCols) {
+	public void setAttributenoOfCols(String attributenoOfCols)
+	{
 		this.attributenoOfCols = attributenoOfCols;
 		try
 		{
@@ -508,105 +581,111 @@ ControlUIBeanInterface,AbstractAttributeUIBeanInterface{
 	/**
 	 * @return the attributeNoOfRows
 	 */
-	public String getAttributeNoOfRows() {
+	public String getAttributeNoOfRows()
+	{
 		return attributeNoOfRows;
 	}
 
 	/**
 	 * @param attributeNoOfRows the attributeNoOfRows to set
 	 */
-	public void setAttributeNoOfRows(String attributeNoOfRows) {
+	public void setAttributeNoOfRows(String attributeNoOfRows)
+	{
 		this.attributeNoOfRows = attributeNoOfRows;
 		try
 		{
-			rows  = new Integer(attributeNoOfRows);
+			rows = new Integer(attributeNoOfRows);
 		}
 		catch (NumberFormatException e)
 		{
 			rows = new Integer(0);
 		}
-		
+
 	}
 
 	/**
 	 * @return the attributeScale
 	 */
-	public String getAttributeScale() {
+	public String getAttributeScale()
+	{
 		return attributeScale;
 	}
 
 	/**
 	 * @param attributeScale the attributeScale to set
 	 */
-	public void setAttributeScale(String attributeScale) {
+	public void setAttributeScale(String attributeScale)
+	{
 		this.attributeScale = attributeScale;
 	}
-
-
-
-	
-
-
 
 	/**
 	 * @return the toolsList
 	 */
-	public List getToolsList() {
+	public List getToolsList()
+	{
 		return toolsList;
 	}
 
 	/**
 	 * @param toolsList the toolsList to set
 	 */
-	public void setToolsList(List toolsList) {
+	public void setToolsList(List toolsList)
+	{
 		this.toolsList = toolsList;
 	}
+
 	/**
 	 * @return the userSelectedTool
 	 */
-	public String getUserSelectedTool() {
+	public String getUserSelectedTool()
+	{
 		return userSelectedTool;
 	}
 
 	/**
 	 * @param userSelectedTool the userSelectedTool to set
 	 */
-	public void setUserSelectedTool(String userSelectedTool) {
+	public void setUserSelectedTool(String userSelectedTool)
+	{
 		this.userSelectedTool = userSelectedTool;
 	}
 
-	public void update(ControlsForm cacheForm) {
+	public void update(ControlsForm cacheForm)
+	{
 		/*this.attributeCssClass = cacheForm.getActivityStatus();
-		this.attributeDefaultValue = cacheForm.getAttributeDefaultValue();
-		this.attributeDescription = cacheForm.getAttributeDescription();
-		this.attributeDisplayUnits = cacheForm.getAttributeDisplayUnits();
-		this.attributeFormat = cacheForm.getAttributeFormat();
-		this.attributeIdentifier = cacheForm.getAttributeIdentifier();
-		this.attributeMultiSelect = cacheForm.getAttributeMultiSelect();
-		this.attributeMeasurementUnits = cacheForm.getAttributeMeasurementUnits();
-		this.attributeName = cacheForm.getAttributeName();
-		this.attributenoOfCols = cacheForm.getAttributenoOfCols();
-		this.attributeNoOfRows = cacheForm.getAttributeNoOfRows();
-		this.attributeScale = cacheForm.getAttributeScale();
-		this.attributeSize = cacheForm.getAttributeSize();
-		this.attributeTooltip = cacheForm.getAttributeTooltip();
-		this.attributeValidationRules = cacheForm.getAttributeValidationRules();*/
+		 this.attributeDefaultValue = cacheForm.getAttributeDefaultValue();
+		 this.attributeDescription = cacheForm.getAttributeDescription();
+		 this.attributeDisplayUnits = cacheForm.getAttributeDisplayUnits();
+		 this.attributeFormat = cacheForm.getAttributeFormat();
+		 this.attributeIdentifier = cacheForm.getAttributeIdentifier();
+		 this.attributeMultiSelect = cacheForm.getAttributeMultiSelect();
+		 this.attributeMeasurementUnits = cacheForm.getAttributeMeasurementUnits();
+		 this.attributeName = cacheForm.getAttributeName();
+		 this.attributenoOfCols = cacheForm.getAttributenoOfCols();
+		 this.attributeNoOfRows = cacheForm.getAttributeNoOfRows();
+		 this.attributeScale = cacheForm.getAttributeScale();
+		 this.attributeSize = cacheForm.getAttributeSize();
+		 this.attributeTooltip = cacheForm.getAttributeTooltip();
+		 this.attributeValidationRules = cacheForm.getAttributeValidationRules();*/
 		this.userSelectedTool = cacheForm.getUserSelectedTool();
 		this.dataType = cacheForm.getDataType();
 		this.displayChoice = cacheForm.getDisplayChoice();
 	}
-	
+
 	/**
 	 * @return the caption
 	 */
-	public String getCaption() {
+	public String getCaption()
+	{
 		return caption;
 	}
 
 	/**
 	 * @param caption the caption to set
 	 */
-	public void setCaption(String caption) {
+	public void setCaption(String caption)
+	{
 		this.caption = caption;
 	}
 
@@ -620,94 +699,110 @@ ControlUIBeanInterface,AbstractAttributeUIBeanInterface{
 		this.isPassword = isPassword;
 	}
 
-
-
 	/**
 	 * @return the tooltip
 	 */
-	public String getTooltip() {
+	public String getTooltip()
+	{
 		return tooltip;
 	}
 
 	/**
 	 * @param tooltip the tooltip to set
 	 */
-	public void setTooltip(String tooltip) {
+	public void setTooltip(String tooltip)
+	{
 		this.tooltip = tooltip;
 	}
 
-	public AbstractAttributeInterface getAbstractAttribute() {
+	public AbstractAttributeInterface getAbstractAttribute()
+	{
 		return abstractAttribute;
 	}
 
-	public void setAbstractAttribute(AbstractAttributeInterface abstractAttributeInterface) {
+	public void setAbstractAttribute(AbstractAttributeInterface abstractAttributeInterface)
+	{
 		abstractAttribute = abstractAttributeInterface;
 	}
 
-	public Integer getColumns() {
+	public Integer getColumns()
+	{
 		return columns;
 	}
 
-	public Boolean getIsHidden() {
+	public Boolean getIsHidden()
+	{
 		return IsHidden;
 	}
 
-	public String getName() {
+	public String getName()
+	{
 		return name;
 	}
 
-	public Integer getRows() {
+	public Integer getRows()
+	{
 		return rows;
 	}
 
-	public Integer getSequenceNumber() {
+	public Integer getSequenceNumber()
+	{
 		return sequenceNumber;
 	}
 
-	public void setColumns(Integer columns) {
-		this.columns = columns; 
-		if(columns!=null)
+	public void setColumns(Integer columns)
+	{
+		this.columns = columns;
+		if (columns != null)
 		{
 			this.attributenoOfCols = columns.toString();
 		}
 
 	}
 
-	public void setIsHidden(Boolean isHidden) {
+	public void setIsHidden(Boolean isHidden)
+	{
 		this.IsHidden = isHidden;
 	}
 
-	public void setName(String name) {
-		this.name = name;		
+	public void setName(String name)
+	{
+		this.name = name;
 	}
 
-	public void setRows(Integer rows) {
-		this.rows = rows;	
-		if(rows!=null)
+	public void setRows(Integer rows)
+	{
+		this.rows = rows;
+		if (rows != null)
 		{
 			this.attributeNoOfRows = rows.toString();
 		}
 	}
 
-	public void setSequenceNumber(Integer sequenceNumber) {
-		this.sequenceNumber = sequenceNumber;		
+	public void setSequenceNumber(Integer sequenceNumber)
+	{
+		this.sequenceNumber = sequenceNumber;
 	}
+
 	/**
-     * @return Returns the isMultiSelect.
-     */
-	public Boolean getIsMultiSelect() {
-    	return isMultiSelect;
-    }
-    /**
-     * @param isMultiSelect The isMultiSelect to set.
-     */
-    public void setIsMultiSelect(Boolean isMultiSelect) {
-    	this.isMultiSelect = isMultiSelect;
-    	if(isMultiSelect!=null)
-    	{
-    		this.attributeMultiSelect = isMultiSelect.toString();
-    	}
-    }
+	 * @return Returns the isMultiSelect.
+	 */
+	public Boolean getIsMultiSelect()
+	{
+		return isMultiSelect;
+	}
+
+	/**
+	 * @param isMultiSelect The isMultiSelect to set.
+	 */
+	public void setIsMultiSelect(Boolean isMultiSelect)
+	{
+		this.isMultiSelect = isMultiSelect;
+		if (isMultiSelect != null)
+		{
+			this.attributeMultiSelect = isMultiSelect.toString();
+		}
+	}
 
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.ui.interfaces.AbstractAttributeUIBeanInterface#getAttributeDigits()
@@ -739,7 +834,7 @@ ControlUIBeanInterface,AbstractAttributeUIBeanInterface{
 		}
 		catch (NumberFormatException e)
 		{
-			sequenceNumber	=	new Integer(0);
+			sequenceNumber = new Integer(0);
 		}
 	}
 
@@ -753,76 +848,100 @@ ControlUIBeanInterface,AbstractAttributeUIBeanInterface{
 		this.attributeIsPassword = attributeIsPassword;
 		isPassword = new Boolean(attributeIsPassword);
 	}
+
 	/**
 	 * @return Returns the controlOperation.
 	 */
-	public String getControlOperation() {
+	public String getControlOperation()
+	{
 		return controlOperation;
 	}
+
 	/**
 	 * @param controlOperation The controlOperation to set.
 	 */
-	public void setControlOperation(String controlOperation) {
+	public void setControlOperation(String controlOperation)
+	{
 		this.controlOperation = controlOperation;
 	}
+
 	/**
 	 * @return Returns the selectedControlId.
 	 */
-	public String getSelectedControlId() {
+	public String getSelectedControlId()
+	{
 		return selectedControlId;
 	}
+
 	/**
 	 * @param selectedControlId The selectedControlId to set.
 	 */
-	public void setSelectedControlId(String selectedControlId) {
+	public void setSelectedControlId(String selectedControlId)
+	{
 		this.selectedControlId = selectedControlId;
 	}
+
 	/**
 	 * @return Returns the childList.
 	 */
-	public List getChildList() {
+	public List getChildList()
+	{
 		return childList;
 	}
+
 	/**
 	 * @param childList The childList to set.
 	 */
-	public void setChildList(List childList) {
+	public void setChildList(List childList)
+	{
 		this.childList = childList;
 	}
+
 	/**
 	 * @return Returns the rootName.
 	 */
-	public String getRootName() {
+	public String getRootName()
+	{
 		return rootName;
 	}
+
 	/**
 	 * @param rootName The rootName to set.
 	 */
-	public void setRootName(String rootName) {
+	public void setRootName(String rootName)
+	{
 		this.rootName = rootName;
 	}
+
 	/**
 	 * @return Returns the toolBoxClicked.
 	 */
-	public String getToolBoxClicked() {
+	public String getToolBoxClicked()
+	{
 		return toolBoxClicked;
 	}
+
 	/**
 	 * @param toolBoxClicked The toolBoxClicked to set.
 	 */
-	public void setToolBoxClicked(String toolBoxClicked) {
+	public void setToolBoxClicked(String toolBoxClicked)
+	{
 		this.toolBoxClicked = toolBoxClicked;
 	}
+
 	/**
 	 * @return Returns the showPreview.
 	 */
-	public String getShowPreview() {
+	public String getShowPreview()
+	{
 		return showPreview;
 	}
+
 	/**
 	 * @param showPreview The showPreview to set.
 	 */
-	public void setShowPreview(String showPreview) {
+	public void setShowPreview(String showPreview)
+	{
 		this.showPreview = showPreview;
 	}
 
@@ -842,8 +961,6 @@ ControlUIBeanInterface,AbstractAttributeUIBeanInterface{
 		this.linesType = linesType;
 	}
 
-	
-
 	public String getAttributeConceptCode()
 	{
 		return this.attributeConceptCode;
@@ -853,41 +970,38 @@ ControlUIBeanInterface,AbstractAttributeUIBeanInterface{
 	{
 		this.attributeConceptCode = attributeConceptCode;
 	}
+
 	/**
 	 * Overrides the validate method of ActionForm.
 	 * */
-	public ActionErrors validate(ActionMapping mapping,
-			HttpServletRequest request) {
+	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request)
+	{
 		ActionErrors errors = new ActionErrors();
 		Validator validator = new Validator();
-		if ( name == null || validator.isEmpty(String.valueOf(name))) {
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-					"errors.item.required", ApplicationProperties
-					.getValue("eav.att.Name")));
-		}
-		
-		if (caption == null || validator.isEmpty(String.valueOf(caption))) {
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-					"errors.item.required", ApplicationProperties
-					.getValue("eav.att.Label")));
-		}
-		if (dataType == null || validator.isEmpty(String.valueOf(dataType))) {
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-					"errors.item.required", ApplicationProperties
-					.getValue("eav.att.DataInput")));
-		}
-		
-		//Special case for text Control
-		if((dataType!=null)&&(dataType.equalsIgnoreCase(ProcessorConstants.TEXT_CONTROL)))
+		if (name == null || validator.isEmpty(String.valueOf(name)))
 		{
-			getErrorsForTextControl(validator,errors);
-		}
-		//Special case for combobox Control
-		if((dataType!=null)&&(dataType.equalsIgnoreCase(ProcessorConstants.COMBOBOX_CONTROL)))
-		{
-			getErrorsForComboboxControl(validator,errors);
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.Name")));
 		}
 
+		if (caption == null || validator.isEmpty(String.valueOf(caption)))
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.Label")));
+		}
+		if (dataType == null || validator.isEmpty(String.valueOf(dataType)))
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.DataInput")));
+		}
+
+		//Special case for text Control
+		if ((dataType != null) && (dataType.equalsIgnoreCase(ProcessorConstants.TEXT_CONTROL)))
+		{
+			getErrorsForTextControl(validator, errors);
+		}
+		//Special case for combobox Control
+		if ((dataType != null) && (dataType.equalsIgnoreCase(ProcessorConstants.COMBOBOX_CONTROL)))
+		{
+			getErrorsForComboboxControl(validator, errors);
+		}
 
 		return errors;
 	}
@@ -898,10 +1012,9 @@ ControlUIBeanInterface,AbstractAttributeUIBeanInterface{
 	 */
 	private void getErrorsForComboboxControl(Validator validator, ActionErrors errors)
 	{
-		if (attributeMultiSelect == null || validator.isEmpty(String.valueOf(attributeMultiSelect))) {
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-					"errors.item.required", ApplicationProperties
-					.getValue("eav.att.ListBoxType")));
+		if (attributeMultiSelect == null || validator.isEmpty(String.valueOf(attributeMultiSelect)))
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.ListBoxType")));
 		}
 	}
 
@@ -911,10 +1024,9 @@ ControlUIBeanInterface,AbstractAttributeUIBeanInterface{
 	 */
 	private void getErrorsForTextControl(Validator validator, ActionErrors errors)
 	{
-		if (linesType == null || validator.isEmpty(String.valueOf(linesType))) {
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-					"errors.item.required", ApplicationProperties
-					.getValue("eav.control.type")));
+		if (linesType == null || validator.isEmpty(String.valueOf(linesType)))
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.control.type")));
 		}
 	}
 
@@ -927,6 +1039,5 @@ ControlUIBeanInterface,AbstractAttributeUIBeanInterface{
 	{
 		this.dateValueType = dateValueType;
 	}
-	
-}
 
+}

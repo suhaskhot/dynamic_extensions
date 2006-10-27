@@ -9,13 +9,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -456,7 +454,7 @@ public final class UIControlsConfigurationFactory {
 		return propertiesMap;
 	}
 
-	private void displayData()
+	/*private void displayData()
 	{
 		if(m_UIControlsMap!=null)
 		{
@@ -470,13 +468,13 @@ public final class UIControlsConfigurationFactory {
 				{
 					for(int i=0; i<list.size();i++)
 					{
-						Control dataType = (Control)list.get(i);
+						//Control dataType = (Control)list.get(i);
 						//System.out.println(dataType.generateHTML());
 					}
 				}
 			}
 		}
-	}
+	}*/
 
 	public List getControlNames()
 	{
@@ -497,7 +495,7 @@ public final class UIControlsConfigurationFactory {
 	}
 	/**
 	 * @param args
-	 */
+	 *//*
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		UIControlsConfigurationFactory UCCF = UIControlsConfigurationFactory.getInstance();
@@ -505,6 +503,6 @@ public final class UIControlsConfigurationFactory {
 		//System.out.println(list);
 		//UCCF.displayData();
 		//System.out.println("Done");
-	}
+	}*/
 
 }

@@ -61,13 +61,32 @@ public class ProcessorConstants
     public static final String DATE_VALUE_NONE = "None";
     public static final String 	DATE_VALUE_TODAY = "Today";
     public static final String DATE_VALUE_SELECT = "Select";
+    
     /*DEFAULT VALUE CONSTANTS*/
+    //Default value for create entity as new/from existing
     public static final String DEFAULT_CREATEAS = CREATE_AS_NEW;
+    
+    //default type of list : single line : combobox
     public static final String DEFAULT_LIST_TYPE = LIST_TYPE_SINGLE_SELECT;
+    
+    //default selected control : text control
     public static final String DEFAULT_SELECTED_CONTROL = TEXT_CONTROL;
+    
+    //default specification of list values : User defined 
     public static final String DEFAULT_DISPLAY_CHOICE_TYPE = DISPLAY_CHOICE_USER_DEFINED;
+    
+    //default line type for text : single line
     public static final String DEFAULT_LINE_TYPE = LINE_TYPE_SINGLELINE;
+    
+    //default data type : text/string
     public static final String DEFAULT_DATA_TYPE = DATATYPE_STRING;
+    
+    //default date format
     public static final String DEFAULT_DATE_FORMAT = DATE_FORMAT_DATEONLY;
+    
+    //Default date value  : Select date
     public static final String DEFAULT_DATE_VALUE = DATE_VALUE_SELECT;
+    
+    /*//Default css class for controls
+    public static final String DEFAULT_CSS_CLASS = "formDateSized";*/
 }

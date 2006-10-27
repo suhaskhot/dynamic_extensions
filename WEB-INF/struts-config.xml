@@ -130,7 +130,7 @@ PUBLIC
 			validate="false"
 			input="/LoadDataEntryFormAction.do"
 			scope="request">
-			<forward name="success" path="/pages/FormPreview.jsp" />
+			<forward name="success" path="/LoadFormPreviewAction.do" />
 		</action>
 		
 		

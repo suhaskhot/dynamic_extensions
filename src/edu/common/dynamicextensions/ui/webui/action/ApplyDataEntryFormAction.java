@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -64,8 +66,8 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
         ApplyDataEntryFormProcessor applyDataEntryFormProcessor = ApplyDataEntryFormProcessor.getInstance();
         try {
 			applyDataEntryFormProcessor.insertDataEntryForm(containerInterface,attributeValueMap);
-			System.out.println(mapping.findForward(Constants.SUCCESS).toString());
-			return (mapping.findForward(Constants.SUCCESS));
+			saveMessages(request, getSuccessMessage());
+            return (mapping.findForward(Constants.SUCCESS));
 		} catch (DynamicExtensionsApplicationException e) {
 			e.printStackTrace();
 			return (mapping.findForward(Constants.SYSTEM_EXCEPTION));
@@ -73,6 +75,14 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			e.printStackTrace();
 			return (mapping.findForward(Constants.SYSTEM_EXCEPTION));
 		}
-		
 	}
+	/**
+	 * Get messages for successful save of entity
+	 */
+	private ActionMessages getSuccessMessage()
+	{
+		ActionMessages actionMessages = new ActionMessages();
+        actionMessages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("app.successfulDataInsertionMessage"));
+        return actionMessages;
+     }
 }

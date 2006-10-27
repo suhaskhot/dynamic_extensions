@@ -24,7 +24,7 @@
 	</head>
 
 	<body onload="loadPreviewForm()">
-		<html:form styleId = "previewForm" action="/LoadFormPreviewAction" enctype="multipart/form-data" >
+		<html:form styleId = "previewForm" action="/ApplyDataEntryFormAction" enctype="multipart/form-data" >
 			<html:hidden property="entitySaved" />
 			<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 

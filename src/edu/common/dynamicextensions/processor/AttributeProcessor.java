@@ -15,10 +15,8 @@ import edu.common.dynamicextensions.domain.BooleanValue;
 import edu.common.dynamicextensions.domain.DateValue;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.DoubleValue;
-import edu.common.dynamicextensions.domain.FloatValue;
-import edu.common.dynamicextensions.domain.IntegerValue;
 import edu.common.dynamicextensions.domain.LongValue;
-import edu.common.dynamicextensions.domain.ShortValue;
+import edu.common.dynamicextensions.domain.SemanticProperty;
 import edu.common.dynamicextensions.domain.StringValue;
 import edu.common.dynamicextensions.domain.UserDefinedDE;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
@@ -31,10 +29,12 @@ import edu.common.dynamicextensions.domaininterface.FloatAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.IntegerAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.LongAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
+import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.ShortAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.StringAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.ui.interfaces.AbstractAttributeUIBeanInterface;
+import edu.common.dynamicextensions.ui.util.SemanticPropertyBuilderUtil;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.global.Constants;
 
@@ -116,12 +116,14 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 			attributeInterface.setName(attributeInformationIntf.getName());
 			attributeInterface.setDescription(attributeInformationIntf.getDescription());
-			
-			if(attributeInterface instanceof AttributeInterface)
-			{
-				//((AttributeInterface)attributeInterface).setDataElement(getDataElementInterface(attributeInformationIntf));
+
+			Collection collection =  SemanticPropertyBuilderUtil.getSymanticPropertyCollection(attributeInformationIntf.getAttributeConceptCode());
+			if (collection != null && !collection.isEmpty()) {
+				Iterator iterator = collection.iterator();
+				while (iterator.hasNext()) {
+					attributeInterface.addSemanticProperty((SemanticPropertyInterface) iterator.next());
+				}
 			}
-			
 		}
 		else
 		{
@@ -139,7 +141,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	{
 		DataElementInterface  dataEltInterface = null;
 		PermissibleValueInterface permissibleValueInterface = null;
-		
+
 		if(attributeInformationIntf!=null)
 		{
 			String displayChoice = attributeInformationIntf.getDisplayChoice();
@@ -193,8 +195,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 					try
 					{
 						value = Utility.parseDate(permissibleValue);
-						/*SimpleDateFormat sdf = new SimpleDateFormat(ProcessorConstants.DATE_FORMAT); 
-						value = sdf.parse(permissibleValue);*/
+
 					}
 					catch (ParseException e)
 					{
@@ -218,7 +219,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				}else if(attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_NUMBER)){
 					permissibleValueIntf = getPermissibleValueInterfaceForNumber(attributeInformationIntf, permissibleValue);
 				}
-				
+
 			}
 		}
 		return permissibleValueIntf;
@@ -245,7 +246,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				noOfDecimalPlaces = 0;
 			} 
 		}
-		//Number of digits
+		/*//Number of digits
 		String strNoOfDigits = attributeInformationIntf.getAttributeDigits();
 		if(strNoOfDigits!=null){
 			try{
@@ -255,7 +256,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			} 
 		}
 
-		/*
+
 		 * If number of decimal places is 0 AND number of digits <= SHORT_LENGTH : Short attribute
 		 * If number of decimal places is 0 AND number of digits <= INT_LENGTH : Integer attribute
 		 * If number of decimal places is 0 AND number of digits <= LONG_LENGTH : Long attribute 
@@ -263,7 +264,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		 * If Number of decimal places is > 0  > FLOAT_LENGTH <DOUBLE_LENGTH : Double Attribute
 		 */
 		if(noOfDecimalPlaces == 0){
-			if(noOfDigits > 0){
+			/*if(noOfDigits > 0){
 				if(noOfDigits <= ProcessorConstants.MAX_NO_OF_DIGITS_SHORT){
 					permissibleValueIntf = DomainObjectFactory.getInstance().createShortValue();
 					Short value = null;
@@ -290,28 +291,28 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 						value = new Integer("0");
 					}
 					((IntegerValue)permissibleValueIntf).setValue(value);
-				}else if(noOfDigits <= ProcessorConstants.MAX_NO_OF_DIGITS_LONG){
-					permissibleValueIntf = DomainObjectFactory.getInstance().createLongValue();
-					Long value = null;
-					try
-					{
-						value = new Long(permissibleValue);
-					}
-					catch (RuntimeException e)
-					{
-						System.out.println("Exception while storing long value");
-						value = new Long("0");
-					}
-					((LongValue)permissibleValueIntf).setValue(value);
-				}
+				}else if(noOfDigits <= ProcessorConstants.MAX_NO_OF_DIGITS_LONG){*/
+			permissibleValueIntf = DomainObjectFactory.getInstance().createLongValue();
+			Long value = null;
+			try
+			{
+				value = new Long(permissibleValue);
+			}
+			catch (RuntimeException e)
+			{
+				System.out.println("Exception while storing long value");
+				value = new Long("0");
+			}
+			((LongValue)permissibleValueIntf).setValue(value);
+			/*	}
 			}
 			else{
 				System.out.println("Too many digits");
-			}
+			}*/
 		}
 		else if(noOfDecimalPlaces > 0)
 		{
-			if(noOfDecimalPlaces <= ProcessorConstants.MAX_NO_OF_DECIMALS_FLOAT){
+			/*if(noOfDecimalPlaces <= ProcessorConstants.MAX_NO_OF_DECIMALS_FLOAT){
 				permissibleValueIntf = DomainObjectFactory.getInstance().createFloatValue();
 				Float value = null;
 				try
@@ -324,26 +325,26 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 					value = new Float("0");
 				}
 				((FloatValue)permissibleValueIntf).setValue(value);
-			}else if(noOfDecimalPlaces <= ProcessorConstants.MAX_NO_OF_DECIMALS_DOUBLE){
-				permissibleValueIntf = DomainObjectFactory.getInstance().createDoubleValue();
-				Double value = null;
-				try
-				{
-					value = new Double(permissibleValue);
-				}
-				catch (RuntimeException e)
-				{
-					System.out.println("Exception while storing long value");
-					value = new Double("0");
-				}
-				((DoubleValue)permissibleValueIntf).setValue(value);
+			}else if(noOfDecimalPlaces <= ProcessorConstants.MAX_NO_OF_DECIMALS_DOUBLE){*/
+			permissibleValueIntf = DomainObjectFactory.getInstance().createDoubleValue();
+			Double value = null;
+			try
+			{
+				value = new Double(permissibleValue);
 			}
+			catch (RuntimeException e)
+			{
+				System.out.println("Exception while storing long value");
+				value = new Double("0");
+			}
+			((DoubleValue)permissibleValueIntf).setValue(value);
+			/*}
 			else{
 				System.out.println("Too many decimal places");
-			}
+			}*/
 		}
 		return permissibleValueIntf;
-	
+
 	}
 
 	public AttributeInterface createAndPopulateAttribute(AbstractAttributeUIBeanInterface attributeInformationIntf)
@@ -369,19 +370,32 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private void populateDateAttributeInterface(DateAttributeInterface dateAttributeIntf, AbstractAttributeUIBeanInterface attributeInformationIntf)
 	{
+		String dateValueType = attributeInformationIntf.getDateValueType();
 		Date defaultValue = null;
-		try
+		if(dateValueType!=null)
 		{
-			if(attributeInformationIntf.getAttributeDefaultValue()!=null)
+			try
 			{
-				defaultValue = Utility.parseDate(attributeInformationIntf.getAttributeDefaultValue());
-				System.out.println("Date Def Value = " + defaultValue);
+				if(dateValueType.equalsIgnoreCase(ProcessorConstants.DATE_VALUE_TODAY))
+				{
+					String todaysDate = Utility.parseDateToString(new Date(), Constants.DATE_PATTERN_MM_DD_YYYY);
+					defaultValue = Utility.parseDate(todaysDate);
+				}
+				else if(dateValueType.equalsIgnoreCase(ProcessorConstants.DATE_VALUE_SELECT))
+				{
+					if(attributeInformationIntf.getAttributeDefaultValue()!=null)
+					{
+						defaultValue = Utility.parseDate(attributeInformationIntf.getAttributeDefaultValue());
+						System.out.println("Date Def Value = " + defaultValue);
+					}
+				}
+
 			}
-		}
-		catch (ParseException e)
-		{
-			System.out.println("Exception while saving date def value");
-			defaultValue = new Date();
+			catch (ParseException e)
+			{
+				System.out.println("Exception while saving date def value");
+				defaultValue = new Date();
+			}
 		}
 		dateAttributeIntf.setDefaultValue(defaultValue);
 		dateAttributeIntf.setFormat(attributeInformationIntf.getFormat());
@@ -412,13 +426,16 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private void populateShortAttributeInterface(ShortAttributeInterface shortAttributeInterface, AbstractAttributeUIBeanInterface attributeInformationIntf)
 	{
-		Short defaultValue = new Short(attributeInformationIntf.getAttributeDefaultValue());
-		shortAttributeInterface.setDefaultValue(defaultValue);
+		if(attributeInformationIntf.getAttributeDefaultValue()!=null)
+		{
+			Short defaultValue = new Short(attributeInformationIntf.getAttributeDefaultValue());
+			shortAttributeInterface.setDefaultValue(defaultValue);
+		}
 		shortAttributeInterface.setMeasurementUnits(attributeInformationIntf.getAttributeMeasurementUnits());
 		shortAttributeInterface.setDecimalPlaces(attributeInformationIntf.getAttributeDecimalPlaces());
 		shortAttributeInterface.setDigits(attributeInformationIntf.getAttributeDigits());
 		shortAttributeInterface.setSize(attributeInformationIntf.getAttributeSize());
-		
+
 	}
 
 	/**
@@ -428,21 +445,24 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private void populateIntegerAttributeInterface(IntegerAttributeInterface integerAttributeInterface, AbstractAttributeUIBeanInterface attributeInformationIntf)
 	{
-		Integer defaultValue;
-		try
+		if(attributeInformationIntf.getAttributeDefaultValue()!=null)
 		{
-			defaultValue = new Integer(attributeInformationIntf.getAttributeDefaultValue());
+			Integer defaultValue;
+			try
+			{
+				defaultValue = new Integer(attributeInformationIntf.getAttributeDefaultValue());
+			}
+			catch (NumberFormatException e)
+			{
+				defaultValue = new Integer(0);
+			}
+			integerAttributeInterface.setDefaultValue(defaultValue);
 		}
-		catch (NumberFormatException e)
-		{
-			defaultValue = new Integer(0);
-		}
-		integerAttributeInterface.setDefaultValue(defaultValue);
 		integerAttributeInterface.setMeasurementUnits(attributeInformationIntf.getAttributeMeasurementUnits());
 		integerAttributeInterface.setDecimalPlaces(attributeInformationIntf.getAttributeDecimalPlaces());
 		integerAttributeInterface.setDigits(attributeInformationIntf.getAttributeDigits());
 		integerAttributeInterface.setSize(attributeInformationIntf.getAttributeSize());
-		
+
 	}
 
 	/**
@@ -452,13 +472,16 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private void populateLongAttributeInterface(LongAttributeInterface longAttributeInterface, AbstractAttributeUIBeanInterface attributeInformationIntf)
 	{
-		Long defaultValue = new Long(attributeInformationIntf.getAttributeDefaultValue());
-		longAttributeInterface.setDefaultValue(defaultValue);
+		if(attributeInformationIntf.getAttributeDefaultValue()!=null)
+		{
+			Long defaultValue = new Long(attributeInformationIntf.getAttributeDefaultValue());
+			longAttributeInterface.setDefaultValue(defaultValue);
+		}
 		longAttributeInterface.setMeasurementUnits(attributeInformationIntf.getAttributeMeasurementUnits());
 		longAttributeInterface.setDecimalPlaces(attributeInformationIntf.getAttributeDecimalPlaces());
 		longAttributeInterface.setDigits(attributeInformationIntf.getAttributeDigits());
 		longAttributeInterface.setSize(attributeInformationIntf.getAttributeSize());
-		
+
 	}
 	/**
 	 * 
@@ -467,19 +490,25 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private void populateFloatAttributeInterface(FloatAttributeInterface floatAttributeInterface, AbstractAttributeUIBeanInterface attributeInformationIntf)
 	{
-		Float defaultValue = new Float(attributeInformationIntf.getAttributeDefaultValue());
-		floatAttributeInterface.setDefaultValue(defaultValue);
+		if(attributeInformationIntf.getAttributeDefaultValue()!=null)
+		{
+			Float defaultValue = new Float(attributeInformationIntf.getAttributeDefaultValue());
+			floatAttributeInterface.setDefaultValue(defaultValue);
+		}
 		floatAttributeInterface.setMeasurementUnits(attributeInformationIntf.getAttributeMeasurementUnits());
 		floatAttributeInterface.setDecimalPlaces(attributeInformationIntf.getAttributeDecimalPlaces());
 		floatAttributeInterface.setDigits(attributeInformationIntf.getAttributeDigits());
 		floatAttributeInterface.setSize(attributeInformationIntf.getAttributeSize());
-		
+
 	}
 
 	private void populateDoubleAttributeInterface(DoubleAttributeInterface doubleAttributeInterface, AbstractAttributeUIBeanInterface attributeInformationIntf)
 	{
-		Double defaultValue = new Double(attributeInformationIntf.getAttributeDefaultValue());
-		doubleAttributeInterface.setDefaultValue(defaultValue);
+		if(attributeInformationIntf.getAttributeDefaultValue()!=null)
+		{
+			Double defaultValue = new Double(attributeInformationIntf.getAttributeDefaultValue());
+			doubleAttributeInterface.setDefaultValue(defaultValue);
+		}
 		doubleAttributeInterface.setMeasurementUnits(attributeInformationIntf.getAttributeMeasurementUnits());
 		doubleAttributeInterface.setDecimalPlaces(attributeInformationIntf.getAttributeDecimalPlaces());
 		doubleAttributeInterface.setDigits(attributeInformationIntf.getAttributeDigits());
@@ -505,7 +534,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				noOfDecimalPlaces = 0;
 			} 
 		}
-		//Number of digits
+		/*//Number of digits
 		String strNoOfDigits = attributeInformationIntf.getAttributeDigits();
 		if(strNoOfDigits!=null){
 			try{
@@ -515,13 +544,13 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			} 
 		}
 
-		/*
+
 		 * If number of decimal places is 0 AND number of digits <= SHORT_LENGTH : Short attribute
 		 * If number of decimal places is 0 AND number of digits <= INT_LENGTH : Integer attribute
 		 * If number of decimal places is 0 AND number of digits <= LONG_LENGTH : Long attribute 
 		 * If Number of decimal places is > 0  <= FLOAT_LENGTH : Float Attribute
 		 * If Number of decimal places is > 0  > FLOAT_LENGTH <DOUBLE_LENGTH : Double Attribute
-		 */
+
 		if(noOfDecimalPlaces == 0){
 			if(noOfDigits > 0){
 				if(noOfDigits <= ProcessorConstants.MAX_NO_OF_DIGITS_SHORT){
@@ -535,17 +564,21 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			else{
 				System.out.println("Too many digits");
 			}
-		}
-		else if(noOfDecimalPlaces > 0)
+		}*/
+		if(noOfDecimalPlaces==0)
 		{
-			if(noOfDecimalPlaces <= ProcessorConstants.MAX_NO_OF_DECIMALS_FLOAT){
+			numberAttribIntf = DomainObjectFactory.getInstance().createLongAttribute();
+		}
+		if(noOfDecimalPlaces > 0)
+		{
+			/*if(noOfDecimalPlaces <= ProcessorConstants.MAX_NO_OF_DECIMALS_FLOAT){
 				numberAttribIntf = DomainObjectFactory.getInstance().createFloatAttribute();
-			}else if(noOfDecimalPlaces <= ProcessorConstants.MAX_NO_OF_DECIMALS_DOUBLE){
-				numberAttribIntf = DomainObjectFactory.getInstance().createDoubleAttribute();
-			}
+			}else if(noOfDecimalPlaces <= ProcessorConstants.MAX_NO_OF_DECIMALS_DOUBLE){*/
+			numberAttribIntf = DomainObjectFactory.getInstance().createDoubleAttribute();
+			/*}
 			else{
 				System.out.println("Too many decimal places");
-			}
+			}*/
 		}
 		return numberAttribIntf;
 	}
@@ -556,12 +589,20 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		{
 			attributeInformationIntf.setName(attributeInterface.getName());
 			attributeInformationIntf.setDescription(attributeInterface.getDescription());
+
+			//Concept code
+			//attributeInformationIntf.setAttributeConceptCode(getConceptCode(attributeInterface.getSemanticPropertyCollection()));
+			if (!attributeInterface.getSemanticPropertyCollection().isEmpty())
+			{
+				attributeInformationIntf.setAttributeConceptCode(SemanticPropertyBuilderUtil.getConceptCodeString(attributeInterface));
+			}
+
 			//Permissible values
 			attributeInformationIntf.setChoiceList(getChoiceList(attributeInterface,attributeInformationIntf));
-			System.out.println("Choice List"  + attributeInformationIntf.getChoiceList());
+
 			if(attributeInterface instanceof StringAttributeInterface)
 			{
-                attributeInformationIntf.setDataType(ProcessorConstants.DATATYPE_STRING);
+				attributeInformationIntf.setDataType(ProcessorConstants.DATATYPE_STRING);
 				attributeInformationIntf.setAttributeDefaultValue(((StringAttributeInterface)attributeInterface).getDefaultValue());
 				Integer size = ((StringAttributeInterface)attributeInterface).getSize();
 				if(size!=null){
@@ -574,67 +615,86 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				{
 					String defaultValue = Utility.parseDateToString(((DateAttributeInterface)attributeInterface).getDefaultValue(),Constants.DATE_PATTERN_MM_DD_YYYY);
 					attributeInformationIntf.setAttributeDefaultValue(defaultValue);
-	               	System.out.println("Date Def valuee returned  = " + defaultValue);
+					System.out.println("Date Def valuee returned  = " + defaultValue);
 				}
-               	attributeInformationIntf.setFormat(((DateAttributeInterface)attributeInterface).getFormat());
+				attributeInformationIntf.setFormat(((DateAttributeInterface)attributeInterface).getFormat());
 			}
 			else if(attributeInterface instanceof BooleanAttributeInterface)
 			{
 				attributeInformationIntf.setDataType(ProcessorConstants.DATATYPE_BOOLEAN);
-				attributeInformationIntf.setAttributeDefaultValue(((BooleanAttributeInterface)attributeInterface).getDefaultValue().toString());
+				if(((BooleanAttributeInterface)attributeInterface).getDefaultValue()!=null)
+				{
+					attributeInformationIntf.setAttributeDefaultValue(((BooleanAttributeInterface)attributeInterface).getDefaultValue().toString());
+				}
 			}
 			else if(attributeInterface instanceof IntegerAttributeInterface)
 			{
-                attributeInformationIntf.setDataType(ProcessorConstants.DATATYPE_NUMBER);
-                attributeInformationIntf.setAttributeDefaultValue(((IntegerAttributeInterface)attributeInterface).getDefaultValue().toString());
-				attributeInformationIntf.setAttributeMeasurementUnits((((IntegerAttributeInterface)attributeInterface).getMeasurementUnits()).toString());
+				attributeInformationIntf.setDataType(ProcessorConstants.DATATYPE_NUMBER);
+				if(((IntegerAttributeInterface)attributeInterface).getDefaultValue()!=null)
+				{
+					attributeInformationIntf.setAttributeDefaultValue(((IntegerAttributeInterface)attributeInterface).getDefaultValue().toString());
+				}
+				attributeInformationIntf.setAttributeMeasurementUnits((((IntegerAttributeInterface)attributeInterface).getMeasurementUnits()));
 				attributeInformationIntf.setAttributeDecimalPlaces(((IntegerAttributeInterface)attributeInterface).getDecimalPlaces());
-                attributeInformationIntf.setAttributeDigits((((IntegerAttributeInterface)attributeInterface).getDigits()));
+				attributeInformationIntf.setAttributeDigits((((IntegerAttributeInterface)attributeInterface).getDigits()));
 				attributeInformationIntf.setAttributeSize((((IntegerAttributeInterface)attributeInterface).getSize()));
-				
-				
+
+
 			}
 			else if(attributeInterface instanceof ShortAttributeInterface)
 			{
-                attributeInformationIntf.setDataType(ProcessorConstants.DATATYPE_NUMBER);
-				attributeInformationIntf.setAttributeDefaultValue(((ShortAttributeInterface)attributeInterface).getDefaultValue().toString());
-				attributeInformationIntf.setAttributeMeasurementUnits((((ShortAttributeInterface)attributeInterface).getMeasurementUnits()).toString());
+				attributeInformationIntf.setDataType(ProcessorConstants.DATATYPE_NUMBER);
+				if(((ShortAttributeInterface)attributeInterface).getDefaultValue()!=null)
+				{
+					attributeInformationIntf.setAttributeDefaultValue(((ShortAttributeInterface)attributeInterface).getDefaultValue().toString());
+				}
+				attributeInformationIntf.setAttributeMeasurementUnits((((ShortAttributeInterface)attributeInterface).getMeasurementUnits()));
 				attributeInformationIntf.setAttributeDecimalPlaces(((ShortAttributeInterface)attributeInterface).getDecimalPlaces());
-                attributeInformationIntf.setAttributeDigits((((ShortAttributeInterface)attributeInterface).getDigits()));
-                attributeInformationIntf.setAttributeSize((((ShortAttributeInterface)attributeInterface).getSize()));
-				
+				attributeInformationIntf.setAttributeDigits((((ShortAttributeInterface)attributeInterface).getDigits()));
+				attributeInformationIntf.setAttributeSize((((ShortAttributeInterface)attributeInterface).getSize()));
+
 			}
 			else if(attributeInterface instanceof LongAttributeInterface)
 			{
-                attributeInformationIntf.setDataType(ProcessorConstants.DATATYPE_NUMBER);
-				attributeInformationIntf.setAttributeDefaultValue(((LongAttributeInterface)attributeInterface).getDefaultValue().toString());
-				attributeInformationIntf.setAttributeMeasurementUnits((((LongAttributeInterface)attributeInterface).getMeasurementUnits()).toString());
+				attributeInformationIntf.setDataType(ProcessorConstants.DATATYPE_NUMBER);
+				if(((LongAttributeInterface)attributeInterface).getDefaultValue()!=null)
+				{
+					attributeInformationIntf.setAttributeDefaultValue(((LongAttributeInterface)attributeInterface).getDefaultValue().toString());
+				}
+				attributeInformationIntf.setAttributeMeasurementUnits((((LongAttributeInterface)attributeInterface).getMeasurementUnits()));
 				attributeInformationIntf.setAttributeDecimalPlaces(((LongAttributeInterface)attributeInterface).getDecimalPlaces());
-                attributeInformationIntf.setAttributeDigits((((LongAttributeInterface)attributeInterface).getDigits()));
-                attributeInformationIntf.setAttributeSize((((LongAttributeInterface)attributeInterface).getSize()));
-				
+				attributeInformationIntf.setAttributeDigits((((LongAttributeInterface)attributeInterface).getDigits()));
+				attributeInformationIntf.setAttributeSize((((LongAttributeInterface)attributeInterface).getSize()));
+
 			}
 			else if(attributeInterface instanceof FloatAttributeInterface)
 			{
-                attributeInformationIntf.setDataType(ProcessorConstants.DATATYPE_NUMBER);
-				attributeInformationIntf.setAttributeDefaultValue(((FloatAttributeInterface)attributeInterface).getDefaultValue().toString());
-				attributeInformationIntf.setAttributeMeasurementUnits((((FloatAttributeInterface)attributeInterface).getMeasurementUnits()).toString());
+				attributeInformationIntf.setDataType(ProcessorConstants.DATATYPE_NUMBER);
+				if(((FloatAttributeInterface)attributeInterface).getDefaultValue()!=null)
+				{
+					attributeInformationIntf.setAttributeDefaultValue(((FloatAttributeInterface)attributeInterface).getDefaultValue().toString());
+				}
+				attributeInformationIntf.setAttributeMeasurementUnits((((FloatAttributeInterface)attributeInterface).getMeasurementUnits()));
 				attributeInformationIntf.setAttributeDecimalPlaces(((FloatAttributeInterface)attributeInterface).getDecimalPlaces());
-                attributeInformationIntf.setAttributeDigits((((FloatAttributeInterface)attributeInterface).getDigits()));
-                attributeInformationIntf.setAttributeSize((((FloatAttributeInterface)attributeInterface).getSize()));
+				attributeInformationIntf.setAttributeDigits((((FloatAttributeInterface)attributeInterface).getDigits()));
+				attributeInformationIntf.setAttributeSize((((FloatAttributeInterface)attributeInterface).getSize()));
 			}
 			else if(attributeInterface instanceof DoubleAttributeInterface)
 			{
-                attributeInformationIntf.setDataType(ProcessorConstants.DATATYPE_NUMBER);
-				attributeInformationIntf.setAttributeDefaultValue(((DoubleAttributeInterface)attributeInterface).getDefaultValue().toString());
-				attributeInformationIntf.setAttributeMeasurementUnits((((DoubleAttributeInterface)attributeInterface).getMeasurementUnits()).toString());
+				attributeInformationIntf.setDataType(ProcessorConstants.DATATYPE_NUMBER);
+				if(((DoubleAttributeInterface)attributeInterface).getDefaultValue()!=null)
+				{
+					attributeInformationIntf.setAttributeDefaultValue(((DoubleAttributeInterface)attributeInterface).getDefaultValue().toString());
+				}
+				attributeInformationIntf.setAttributeMeasurementUnits((((DoubleAttributeInterface)attributeInterface).getMeasurementUnits()));
 				attributeInformationIntf.setAttributeDecimalPlaces(((DoubleAttributeInterface)attributeInterface).getDecimalPlaces());
-                attributeInformationIntf.setAttributeDigits((((DoubleAttributeInterface)attributeInterface).getDigits()));
-                attributeInformationIntf.setAttributeSize((((DoubleAttributeInterface)attributeInterface).getSize()));
+				attributeInformationIntf.setAttributeDigits((((DoubleAttributeInterface)attributeInterface).getDigits()));
+				attributeInformationIntf.setAttributeSize((((DoubleAttributeInterface)attributeInterface).getSize()));
 			}
-			
+
 		}
 	}
+
 
 	/**
 	 * @param attributeInterface

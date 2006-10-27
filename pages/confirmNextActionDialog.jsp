@@ -4,7 +4,7 @@
 
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
-<link rel="stylesheet" type="text/css" href="<%= request.getContextPath()%>/css/stylesheet.css" />
+<link rel="stylesheet" type="text/css" href="<%= request.getContextPath()%>/css/styleSheet.css" />
 
 
 <html>

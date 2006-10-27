@@ -6,10 +6,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.ui.util.ControlAttributeMappingsFactory;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
@@ -63,13 +65,19 @@ public class LoadFormControlsProcessor
 			{
 				if(userSelectedTool == null || userSelectedTool.equals(""))
 				{
-					userSelectedTool = toolList.get(0).toString();
+					//userSelectedTool = toolList.get(0).toString();
+					userSelectedTool = ProcessorConstants.DEFAULT_SELECTED_CONTROL;
 				}
 				controlsForm.setUserSelectedTool(userSelectedTool);
-				controlsForm.setDisplayChoice("");
-				controlsForm.setDataType("String");
-				controlsForm.setLinesType(Constants.SINGLE_LINE);
-
+				controlsForm.setDisplayChoice(ProcessorConstants.DEFAULT_DISPLAY_CHOICE_TYPE);
+				
+				ControlAttributeMappingsFactory controlAttributeMappingsFactory = ControlAttributeMappingsFactory.getInstance();
+				controlsForm.setDataTypeList(controlAttributeMappingsFactory.getAttributesForControl(controlsForm.getUserSelectedTool()));
+				controlsForm.setDataType(ProcessorConstants.DEFAULT_DATA_TYPE);
+				controlsForm.setLinesType(ProcessorConstants.DEFAULT_LINE_TYPE);
+				controlsForm.setAttributeMultiSelect(ProcessorConstants.DEFAULT_LIST_TYPE);
+				controlsForm.setDateValueType(ProcessorConstants.DEFAULT_DATE_VALUE);
+				controlsForm.setFormat(ProcessorConstants.DEFAULT_DATE_FORMAT);
 				controlsForm.setHtmlFile(userSelectedTool+".jsp");
 			}
 
@@ -86,24 +94,62 @@ public class LoadFormControlsProcessor
 					attributeProcessor.populateAttributeUIBeanInterface(controlInterface.getAbstractAttribute(), controlsForm);
 				}
 				String userSelectedToolName = getUserSelectedToolName(controlInterface);
-				if(userSelectedToolName == null || userSelectedTool.equals(""))
+				if(userSelectedToolName == null || userSelectedToolName.equals(""))
 				{
-					userSelectedToolName = toolList.get(0).toString();
+					//userSelectedToolName = toolList.get(0).toString();
+					userSelectedToolName = ProcessorConstants.DEFAULT_SELECTED_CONTROL;
 				}
 				controlsForm.setUserSelectedTool(userSelectedToolName);
 				controlsForm.setHtmlFile(userSelectedToolName+".jsp");
+				if(controlsForm.getAttributeMultiSelect()==null)
+				{
+					controlsForm.setAttributeMultiSelect(ProcessorConstants.DEFAULT_LIST_TYPE);
+				}
 			}
 
 			//controlsForm.setDataTypeList(getDataTypeList());
 			ControlAttributeMappingsFactory controlAttributeMappingsFactory = ControlAttributeMappingsFactory.getInstance(); 
 			controlsForm.setDataTypeList(controlAttributeMappingsFactory.getAttributesForControl(controlsForm.getUserSelectedTool()));
-			controlsForm.setDisplayChoiceList(displayChoiceListgetDisplayChoiceList());
-			controlsForm.setRootName(containerInterface.getCaption());
+			controlsForm.setDisplayChoiceList(getDisplayChoiceList());
+			//Set Entity Name as root
+			EntityInterface entity = containerInterface.getEntity();
+			if(entity!=null)
+			{
+				controlsForm.setRootName(entity.getName());
+			}
+			else 
+			{
+				controlsForm.setRootName("");
+			}
 			controlsForm.setChildList(getChildList(containerInterface));
 		}
 	}
     
     /**
+	 * @param userSelectedTool
+	 * @return
+	 *//*
+	private String getHTMLFileName(String userSelectedTool)
+	{
+		String htmlFileName = null;
+		if(userSelectedTool!=null)
+		{
+			if(userSelectedTool.equalsIgnoreCase("Text Control"))
+			{
+				htmlFileName = ProcessorConstants.TEXT_CONTROL + ".jsp";
+			}else if(userSelectedTool.equalsIgnoreCase("Combobox Control"))
+			{
+				htmlFileName = ProcessorConstants.COMBOBOX_CONTROL + ".jsp";
+			}
+			if(userSelectedTool.equalsIgnoreCase("Date Control"))
+			{
+				htmlFileName = ProcessorConstants.COMBOBOX_CONTROL + ".jsp";
+			}
+		}
+		return htmlFileName;
+	}*/
+
+	/**
 	 * @param containerInterface
 	 * @return
 	 */
@@ -120,6 +166,9 @@ public class LoadFormControlsProcessor
 			}else if(controlInterface instanceof DatePickerInterface)
 			{
 				return ProcessorConstants.DATEPICKER_CONTROL;
+			}else if(controlInterface instanceof TextAreaInterface)
+			{
+				return ProcessorConstants.TEXT_CONTROL;
 			}
 		}
 		return null;
@@ -166,7 +215,7 @@ public class LoadFormControlsProcessor
     /**
      * 
      * @return
-     */
+     *//*
     private List getDataTypeList(){
         List dataTypeList = new ArrayList();
         NameValueBean nameValueBean1 = new NameValueBean("String","String");
@@ -179,9 +228,9 @@ public class LoadFormControlsProcessor
         dataTypeList.add(nameValueBean3);
         
         return dataTypeList; 
-    }
+    }*/
     
-    private List displayChoiceListgetDisplayChoiceList()
+    private List getDisplayChoiceList()
     {
     	 List dataTypeList = new ArrayList();
          NameValueBean nameValueBean1 = new NameValueBean("UserDefined","UserDefined");

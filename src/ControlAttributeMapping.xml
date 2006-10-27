@@ -1,13 +1,13 @@
 <controls>
 	<control name="TextControl">
-		<attribute-name>String</attribute-name>
+		<attribute-name>Text</attribute-name>
 		<attribute-name>Number</attribute-name>
 	</control>
 
 	<control name="ComboboxControl">
-		<attribute-name>String</attribute-name>
+		<attribute-name>Text</attribute-name>
 		<attribute-name>Number</attribute-name>
-		<attribute-name>Boolean</attribute-name>
+		<attribute-name>Yes/No</attribute-name>
 	</control>
 
 	<control name="DateControl">

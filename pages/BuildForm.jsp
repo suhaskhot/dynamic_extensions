@@ -7,7 +7,7 @@
 <%@ page import="edu.common.dynamicextensions.ui.webui.util.TreeData"%>
 <%@ page import="edu.common.dynamicextensions.ui.webui.util.TreeGenerator"%>
 
-<link rel="stylesheet" type="text/css" href="css/stylesheet.css" />
+<link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
 <script src="jss/dynamicExtensions.js" type="text/javascript"></script>
 <script src="jss/overlib_mini.js" type="text/javascript"></script>
 <script src="jss/calender.js" type="text/javascript"></script>
@@ -46,13 +46,30 @@
 		<html:form styleId = "controlsForm" action="/ApplyFormControlsAction" >
 		  <html:errors />
 
-		  	<table align = 'center' width='100%' border="1" class="formRequiredNotice">
+		  	<table align = 'center' width='100%' border="1" class="formRequiredNotice" cellspacing="0" cellpadding="0" >
+
 			   <tr class="formTitle">
-			   		<td colspan="3" align="center">Build Form</td>
+			   		<td colspan="3" align="center">
+			   			<bean:message  key="app.formControlsPage.heading" />
+			   		</td>
 			   	</tr>
+				<tr><td colspan="3" >&nbsp;</td></tr>
+				<tr>
+					<td class="formFieldSized1" >
+						<bean:message  key="app.formControlsToolBox.heading" />
+					</td>
+
+					<td class="formFieldSized1" >
+						<%=userSelectedTool%> <bean:message  key="app.formControl.properties" />
+					</td>
+
+					<td class="formFieldSized1" >
+						<bean:message  key="app.formControlsTree.heading" />
+					</td>
+				</tr>
 
 		  		<tr>
-		  			<td class="toolBoxTable" width="10%" >
+		  			<td class="toolBoxTable" width="10%" align="left">
 					    <dynamicExtensions:ToolsMenu id="BuildForm"
 								toolsList = "<%=toolsList%>"
 								onClick="controlSelectedAction"
@@ -61,7 +78,7 @@
 				   		 </dynamicExtensions:ToolsMenu>
 		  			</td>
 
-		  			<td align="top">
+		  			<td align="top" width="70%">
 							<jsp:include page="<%=htmlFile%>" />
 
 		  			</td>
@@ -78,9 +95,9 @@
 										<bean:message  key="buttons.addControlToForm" />
 							</html:button>
 
-							<html:reset styleClass="actionButton" property="clearButton" onclick="clearForm()" >
+							<!--<html:reset styleClass="actionButton" property="clearButton" onclick="clearForm()" >
 										<bean:message  key="buttons.clear" />
-							</html:reset>
+							</html:reset>-->
 					 </td>
 				</tr>
 		</table>

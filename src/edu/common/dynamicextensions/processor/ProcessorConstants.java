@@ -5,7 +5,6 @@
  */
 package edu.common.dynamicextensions.processor;
 
-import edu.wustl.common.util.global.Constants;
 
 /**
  * @author preeti_munot
@@ -25,7 +24,7 @@ public class ProcessorConstants
 	public static final String DATEPICKER_CONTROL  = "DateControl";
 
 	//Datattype constants 
-	public static final String DATATYPE_STRING = "String";
+	public static final String DATATYPE_STRING = "Text";
 	public static final String DATATYPE_DATE = "Date";
 	public static final String DATATYPE_BOOLEAN = "Boolean";
 	public static final String DATATYPE_NUMBER = "Number";
@@ -50,4 +49,25 @@ public class ProcessorConstants
     public static final String LINE_TYPE_MULTILINE = "MultiLine";
     public static final String LINE_TYPE_SINGLELINE = "SingleLine";
     
+    //Single and multi list box
+    public static final String LIST_TYPE_MULTI_SELECT = "MultiSelect";
+    public static final String LIST_TYPE_SINGLE_SELECT = "SingleSelect";
+    public static final String CREATE_AS_NEW = "NewForm";
+    //Date formats
+    public static final String DATE_FORMAT_DATEONLY = "DateOnly";
+    public static final String DATE_FORMAT_DATEANDTIME = "DateAndTime";
+    
+    //Date Values
+    public static final String DATE_VALUE_NONE = "None";
+    public static final String 	DATE_VALUE_TODAY = "Today";
+    public static final String DATE_VALUE_SELECT = "Select";
+    /*DEFAULT VALUE CONSTANTS*/
+    public static final String DEFAULT_CREATEAS = CREATE_AS_NEW;
+    public static final String DEFAULT_LIST_TYPE = LIST_TYPE_SINGLE_SELECT;
+    public static final String DEFAULT_SELECTED_CONTROL = TEXT_CONTROL;
+    public static final String DEFAULT_DISPLAY_CHOICE_TYPE = DISPLAY_CHOICE_USER_DEFINED;
+    public static final String DEFAULT_LINE_TYPE = LINE_TYPE_SINGLELINE;
+    public static final String DEFAULT_DATA_TYPE = DATATYPE_STRING;
+    public static final String DEFAULT_DATE_FORMAT = DATE_FORMAT_DATEONLY;
+    public static final String DEFAULT_DATE_VALUE = DATE_VALUE_SELECT;
 }

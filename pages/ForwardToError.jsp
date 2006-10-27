@@ -8,7 +8,7 @@
 <title>Dynamic Extensions</title>
 </head>
 <body  class='bodyStyle'>
-	<link rel="stylesheet" type="text/css" href="css/stylesheet.css" />
+	<link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
 	<table border='0' align='center' >
 		<tr >
 			<td align='center'>

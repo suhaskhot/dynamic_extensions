@@ -8,64 +8,86 @@
 <c:set var="dataTypeList" value="${controlsForm.dataTypeList}"/>
 <jsp:useBean id="dataTypeList" type="java.util.List"/>
 
-	<tr>
-			<td class="formRequiredLabel" width="25%">
-					<bean:message key="eav.att.Label"/>
-			</td>
+			<tr>
+				<td class="formRequiredNotice" width="2%">
+						*
+				</td>
 
-			<td class="formField">
-					<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="caption" />
-			</td>
-		</tr>
+				<td class="formRequiredLabel">
+						<bean:message key="eav.att.Name"/>
+				</td>
 
-		<tr>
-			<td class="formRequiredLabel">
-					<bean:message key="eav.att.Name"/>
-			</td>
+				<td class="formField">
+						<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="name" />
+				</td>
+			</tr>
 
-			<td class="formField">
-					<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="name" />
-			</td>
-		</tr>
+			<tr>
+					<td class="formRequiredNotice" width="2%">
+							*
+					</td>
 
-		<tr>
-			<td class="formRequiredLabel">
-					<bean:message key="eav.att.DataInput"/>
-			</td>
+				<td class="formRequiredLabel" width="25%">
+						<bean:message key="eav.att.Label"/>
+				</td>
 
-			<td class="formField">
-					<html:select property="dataType"  onchange="changeDataType(this)" >
-						<html:options collection="dataTypeList" labelProperty="name" property="value" />
-					</html:select>
-			</td>
-		</tr>
-		<tr>
-			<td class="formRequiredLabel">
-					<bean:message key="eav.att.Description"/>
-			</td>
+				<td class="formField">
+						<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="caption" />
+				</td>
+			</tr>
+			<tr>
+				<td class="formRequiredNotice" width="2%">
+						&nbsp;
+				</td>
 
-			<td class="formField">
-					<html:textarea styleClass="formFieldSized"  rows = "3" cols="40"  property="description"  />
-			</td>
-		</tr>
+				<td class="formRequiredLabel" width="25%">
+					<bean:message key="eav.form.conceptCode"/>
+				</td>
 
-		<tr>
-			<td class="formRequiredLabel">
-					<bean:message key="eav.att.CSSClassName"/>
-			</td>
+				<td class="formField">
+						<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="attributeConceptCode" />
+				</td>
 
-			<td class="formField">
-					<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="cssClass" />
-			</td>
-		</tr>
+			</tr>
 
 
-		<tr>
-			<td class="formRequiredLabel">
-					<bean:message key="eav.att.Tooltip"/>
-			</td>
+			<tr>
+				<td class="formRequiredNotice" width="2%">
+									&nbsp;
+							</td>
 
-			<td class="formField">
+				<td class="formRequiredLabel">
+						<bean:message key="eav.att.Description"/>
+				</td>
+
+				<td class="formField">
+						<html:textarea rows = "3" cols="28"  property="description"  />
+				</td>
+			</tr>
+
+			<tr>
+				<td class="formRequiredNotice" width="2%">
+												&nbsp;
+							</td>
+				<td class="formRequiredLabel">
+						<bean:message key="eav.att.Tooltip"/>
+				</td>
+
+				<td class="formField">
 					<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="tooltip" />
-			</td>
-		</tr>
+				</td>
+			</tr>
+
+
+		<!--	<tr>
+				<td class="formRequiredLabel">
+						<bean:message key="eav.att.CSSClassName"/>
+				</td>
+
+				<td class="formField">
+						<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="cssClass" />
+				</td>
+			</tr>
+		-->
+
+

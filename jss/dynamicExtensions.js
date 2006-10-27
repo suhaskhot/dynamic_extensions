@@ -81,31 +81,36 @@ function changeDataType(datatypeControl)
 	var selectedIdx = datatypeControl.selectedIndex;
 	if(datatypeControl!=null)
 	{
-		var divForDataTypeId = datatypeControl.options[selectedIdx].text + "DataType";
-		var divForDataType = document.getElementById(divForDataTypeId);
-		if(divForDataType!=null)
+		if(datatypeControl.options!=null)
 		{
-			var substitutionDiv = document.getElementById('substitutionDiv');
-			substitutionDiv.innerHTML = divForDataType.innerHTML;
-			
-			//Disable the value specification code for boolean values
-			
-			var valueSpecnDiv = document.getElementById('valueSpecificationDiv');
-			if(valueSpecnDiv!=null)
+			var divForDataTypeId = datatypeControl.options[selectedIdx].text + "DataType";
+			var divForDataType = document.getElementById(divForDataTypeId);
+			if(divForDataType!=null)
 			{
-				if(divForDataTypeId == "BooleanDataType")
+				var substitutionDiv = document.getElementById('substitutionDiv');
+				substitutionDiv.innerHTML = divForDataType.innerHTML;
+
+				//Disable the value specification code for boolean values
+
+				var valueSpecnDiv = document.getElementById('valueSpecificationDiv');
+				if(valueSpecnDiv!=null)
 				{
-					valueSpecnDiv.style.display = "none";
+					if(divForDataTypeId == "BooleanDataType")
+					{
+						valueSpecnDiv.style.display = "none";
+					}
+					else
+					{
+						valueSpecnDiv.style.display = "block";
+					}
 				}
-				else
-				{
-					valueSpecnDiv.style.display = "block";
-				}
+
 			}
-			
 		}
 	}
 }
+
+
 
 function initBuildForm()
 {
@@ -116,12 +121,12 @@ function initBuildForm()
 		changeDataType(dataTypeElt);
 	}
 	
-	var sourceElt =document.getElementById("displayChoice");
+	/*var sourceElt =document.getElementById("displayChoice");
 	if(sourceElt!=null)
 	{
-	//Load source details for selected sourcetype
+		//Load source details for selected sourcetype
 		changeSourceForValues(sourceElt);
-	}
+	}*/
 	
 	//Reinitialize counter
 	var choiceListElementCnter = document.getElementById('choiceListCounter');
@@ -129,6 +134,10 @@ function initBuildForm()
 	{
 		choiceListElementCnter.value="1";
 	}
+	addChoicesFromListToTable();
+}
+function addChoicesFromListToTable()
+{
 	var choiceList = document.getElementById("choiceList");
 	if(choiceList!=null)
 	{
@@ -156,36 +165,44 @@ function initBuildForm()
 		}
 	}
 }
-
-function changeSourceForValues(sourceControl)
+/*function changeSourceForValues(sourceControl)
 {
 	if(sourceControl!=null)
 	{
 		var selectedIdx = sourceControl.selectedIndex;
-		for(var i=0; i<sourceControl.length; i++)
+		if(sourceControl.options!=null)
 		{
-			var divForSourceId = sourceControl.options[i].text + "Values";
-			var divForSource = document.getElementById(divForSourceId);
+			for(var i=0; i<sourceControl.length; i++)
+			{
+				var divForSourceId = sourceControl.options[i].text + "Values";
+
+				var divForSource = document.getElementById(divForSourceId);
+				if(divForSource!=null)
+				{
+					var valueSpecnDiv = document.getElementById('valueSpecificationDiv');
+					if(valueSpecnDiv!=null)
+					{
+						valueSpecnDiv.innerHTML = divForSource.innerHTML;
+					}
+
+				}
+			}
+		}
+		else
+		{
+			var divForSource = document.getElementById("UserDefinedValues");
 			if(divForSource!=null)
 			{
-				/*if(selectedIdx == i)
-				{
-					divForSource.style.display = "block";
-				}
-				else
-				{
-					divForSource.style.display = "none";
-				}*/
 				var valueSpecnDiv = document.getElementById('valueSpecificationDiv');
 				if(valueSpecnDiv!=null)
 				{
 					valueSpecnDiv.innerHTML = divForSource.innerHTML;
 				}
-				
+
 			}
 		}
 	}
-}
+}*/
 
 //addToChoiceList : indicates whether the choice shld be added to choice list
 //This will be true when called while adding choice at runtime, and false when adding at load time
@@ -208,12 +225,17 @@ function addChoiceToList(addToChoiceList)
 		if(choiceListTable!=null)
 		{
 			var myNewRow = choiceListTable.insertRow();
-			var myNewCell =  myNewRow.insertCell();
-			
-			var chkBoxId = "chkBox" + elementNo;
-			myNewCell.innerHTML="<input type='checkbox' id='" + chkBoxId +"' >";
+			var myNewCell =  null;
+			//Radio button for default value selection
 			myNewCell =  myNewRow.insertCell();
+			myNewCell.setAttribute("className","formMessage");
+			myNewCell.innerHTML="<input type='radio' name='attributeDefaultValue' value='"+textBox.value+"'>"  ;
+			
+			//Text 
+			myNewCell =  myNewRow.insertCell();
+			myNewCell.setAttribute("className","formMessage");
 			myNewCell.innerHTML=textBox.value;
+			
 			var choicelist = document.getElementById('choiceList');
 			if(choicelist !=null)
 			{
@@ -225,13 +247,18 @@ function addChoiceToList(addToChoiceList)
 			}
 			textBox.value = "";
 			document.getElementById('choiceListCounter').value = (parseInt(elementNo) + 1) + "";
+			
+			//Checkbox for delete
+			myNewCell =  myNewRow.insertCell();
+			myNewCell.setAttribute("className","formMessage");
+			var chkBoxId = "chkBox" + elementNo;
+			myNewCell.innerHTML="<input type='checkbox' id='" + chkBoxId +"' >";
 		}
 	}
 }
 
 function deleteElementsFromChoiceList()
 {
-	
 	var valuestable = document.getElementById('choiceListTable');
 	if(valuestable!=null)
 	{
@@ -298,7 +325,7 @@ function showFormPreview()
 		entitySaved.value="";
 	}	
 	var controlsForm = document.getElementById('controlsForm');
-	controlsForm.action="/dynamicExtensions/AddControlsAction.do";
+	controlsForm.action="/dynamicExtensions/LoadFormPreviewAction.do";
 	controlsForm.submit();
 }
 
@@ -314,11 +341,13 @@ if(obj.value == 'SingleLine')
 	{
 		document.getElementById('attributeNoOfRows').value="";
 		document.getElementById('attributeNoOfRows').disabled=true;
+		document.getElementById('noOfLines').disabled=true;
 	}
 	if(obj.value == 'MultiLine')
 	{
 
 		document.getElementById('attributeNoOfRows').disabled=false;
+		document.getElementById('noOfLines').disabled=false;
 	}
 }
 
@@ -389,7 +418,14 @@ if(controlsForm.name != null)
 	{
 	controlsForm.attributenoOfCols.value = "";
 	}
-	
+	if(controlsForm.attributeConceptCode != null)
+	{
+	controlsForm.attributeConceptCode.value = "";
+	}
+	if(controlsForm.choiceList != null)
+	{
+	controlsForm.choiceList.value = "";
+	}
 }
 
 function saveEntity()
@@ -421,4 +457,112 @@ function loadPreviewForm()
 			}
 		}
 	}
+}
+
+function listTypeChanged(obj)
+{
+	if(obj.value == 'SingleSelect')
+	{
+		document.getElementById('attributeNoOfRows').value="";
+		document.getElementById('attributeNoOfRows').disabled=true;
+	}
+	if(obj.value == 'MultiSelect')
+	{
+
+		document.getElementById('attributeNoOfRows').disabled=false;
+	}
+}
+function listDataTypeChanged(listControl)
+{
+	if(listControl!=null)
+	{
+		var selectedDataType = listControl.value;
+		if(selectedDataType=="Yes/No")
+		{
+			deleteAllElementsFromChoiceTable();
+			//Clear choice list
+			var choiceList = document.getElementById('choiceList');
+			if(choiceList!=null)
+			{
+				choiceList.value = "true,false";	//True and false values for yes/no flds
+				addChoicesFromListToTable();
+			}
+			
+			//Disable add btn
+			var addBtn = document.getElementById('addChoiceValue');
+			if(addBtn!=null)
+			{
+				addBtn.disabled=true;
+			}
+			
+			//Disable delete button
+			var deleteBtn = document.getElementById('deleteChoiceValue');
+			if(deleteBtn!=null)
+			{
+				deleteBtn.disabled=true;
+			}
+		}
+		else
+		{
+		
+			//Enable add btn
+			var addBtn = document.getElementById('addChoiceValue');
+			if(addBtn!=null)
+			{
+				addBtn.disabled=false;
+			}
+
+			//Enable delete button
+			var deleteBtn = document.getElementById('deleteChoiceValue');
+			if(deleteBtn!=null)
+			{
+				deleteBtn.disabled=false;
+			}
+		}
+	}
+}
+
+function deleteAllElementsFromChoiceTable()
+{
+	var valuestable = document.getElementById('choiceListTable');
+	
+	if(valuestable!=null)
+	{
+		var choiceListElementCnter = document.getElementById('choiceListCounter');
+		var noOfElements = 0;
+		if(choiceListElementCnter!=null)
+		{
+			noOfElements = parseInt(choiceListElementCnter.value);
+		}
+		
+		for(i=0; i<noOfElements; i++)
+		{
+			var chkBoxId = "chkBox" + i;
+			chkBox = document.getElementById(chkBoxId);
+			if(chkBox!=null)
+			{
+				chkBox.checked = true;
+			}
+		}
+		deleteElementsFromChoiceList();
+	}
+}
+
+//When Date type is changed :  Disable default value txt box for None and Todays date option
+function changeDateType(dateType)
+{	
+	if(dateType!=null)
+	{
+		dateTypeValue =dateType.value;
+	}
+	var defValueTxtBox = document.getElementById('attributeDefaultValue');
+	if((dateTypeValue == "None")||(dateTypeValue == "Today"))
+	{
+		defValueTxtBox.disabled=true;
+	}
+	else
+	{
+		defValueTxtBox.disabled=false;
+	}
+	
 }

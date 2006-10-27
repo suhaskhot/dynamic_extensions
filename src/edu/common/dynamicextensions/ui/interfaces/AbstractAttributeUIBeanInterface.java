@@ -129,4 +129,19 @@ public interface AbstractAttributeUIBeanInterface {
 	 * @param displayChoice The displayChoice to set.
 	 */
 	public void setDisplayChoice(String displayChoice);
+	/**
+	 * 
+	 * @return Concept code
+	 */
+	public String getAttributeConceptCode();
+
+	/**
+	 * 
+	 * @param conceptCode Concept code
+	 */
+	public void setAttributeConceptCode(String conceptCode);
+	
+	public String getDateValueType();
+
+	public void setDateValueType(String dateValueType);
 }

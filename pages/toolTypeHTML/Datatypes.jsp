@@ -6,9 +6,12 @@
 <script src="jss/overlib_mini.js" type="text/javascript"></script>
 <script src="jss/calender.js" type="text/javascript"></script>
 
-		<div id="StringDataType" style="display:none">
-			 <table summary="" cellpadding="3" cellspacing="0" border="1" align = 'center' width='100%'>
+		<div id="TextDataType" style="display:none">
+			 <table summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
 			       	<tr>
+			       			<td class="formRequiredNotice" width="2%">
+									 		&nbsp;
+		 					</td>
 						<td class="formRequiredLabel" width="25%">
 								<bean:message key="eav.att.MaxCharacters"/>
 						</td>
@@ -19,20 +22,23 @@
 					</tr>
 
 					<tr>
+						<td class="formRequiredNotice" width="2%">
+									 			&nbsp;
+		 				</td>
 						<td class="formRequiredLabel">
 								<bean:message key="eav.att.DefaultValue"/>
 						</td>
 
 						<td class="formField">
-								<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="attributeDefaultValue" /> 
+								<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="attributeDefaultValue" />
 						</td>
 					</tr>
 				 </table>
 			</div>
 
 			<div id="NumberDataType" style="display:none">
-			 <table summary="" cellpadding="3" cellspacing="0" border="1" align = 'center' width='100%'>
-			       <tr>
+			 <table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%'>
+			       <!--<tr>
 						<td class="formRequiredLabel" width="25%">
 								<bean:message key="eav.att.AttributeSize"/>
 						</td>
@@ -43,7 +49,7 @@
 					</tr>
 
 					<tr>
-						<td class="formRequiredLabel">
+						<td class="formRequiredLabel" width="25%">
 								<bean:message key="eav.att.AttributeDigits"/>
 						</td>
 
@@ -51,9 +57,12 @@
 								<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="attributeDigits" />
 						</td>
 					</tr>
-
+-->
 					<tr>
-						<td class="formRequiredLabel">
+						<td class="formRequiredNotice" width="2%">
+								&nbsp;
+						</td>
+						<td class="formRequiredLabel" width="25%">
 								<bean:message key="eav.att.AttributeDecimalPlaces"/>
 						</td>
 
@@ -64,7 +73,10 @@
 
 
 					<tr>
-						<td class="formRequiredLabel">
+						<td class="formRequiredNotice" width="2%">
+														 			&nbsp;
+		 				</td>
+						<td class="formRequiredLabel" width="25%">
 							<bean:message key="eav.att.DefaultValue"/>
 						</td>
 
@@ -74,7 +86,10 @@
 					</tr>
 
 					<tr>
-						<td class="formRequiredLabel">
+						<td class="formRequiredNotice" width="2%">
+														 			&nbsp;
+		 				</td>
+						<td class="formRequiredLabel" width="25%">
 								<bean:message key="eav.att.AttributeMeasurementUnits"/>
 						</td>
 
@@ -86,8 +101,11 @@
 			</div>
 <div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 			<div id="DateDataType" style="display:none">
-			   <table summary="" cellpadding="3" cellspacing="0" border="1" align = 'center' width='100%'>
+			   <table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%'>
 			       <tr>
+			    	   <td class="formRequiredNotice" width="2%">
+				   									 			&nbsp;
+		 				</td>
 						<td class="formRequiredLabel" width="25%">
 							<bean:message key="eav.att.DefaultValue"/>
 						</td>
@@ -101,7 +119,10 @@
 					</tr>
 
 					<tr>
-						<td class="formRequiredLabel">
+						<td class="formRequiredNotice" width="2%">
+							*
+		 				</td>
+						<td class="formRequiredLabel" width="25%">
 								<bean:message key="eav.att.Format"/>
 						</td>
 
@@ -114,6 +135,9 @@
 			<div id="BooleanDataType" style="display:none">
 			   <table summary="" cellpadding="3" cellspacing="0" border="1" align = 'center' width='100%'>
 				   <tr>
+						<td class="formRequiredNotice" width="2%">
+							*
+		 				</td>
 						<td class="formRequiredLabel" width="25%">
 							<bean:message key="eav.att.DefaultValue"/>
 						</td>

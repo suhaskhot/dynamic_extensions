@@ -2,8 +2,6 @@
 package edu.common.dynamicextensions.ui.webui.actionform;
 
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,7 +10,6 @@ import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
 
-import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.ui.interfaces.ContainerUIBeanInterface;
 import edu.common.dynamicextensions.ui.interfaces.EntityUIBeanInterface;
 import edu.common.dynamicextensions.util.global.Constants;
@@ -49,6 +46,7 @@ public class FormDefinitionForm  extends AbstractActionForm implements EntityUIB
 	 * CreateAs
 	 */
 	protected String createAs;
+	
 	/**
 	 * existingFormsList
 	 */
@@ -89,6 +87,11 @@ public class FormDefinitionForm  extends AbstractActionForm implements EntityUIB
 	 * mode
 	 */
 	protected String mode;
+	
+	public FormDefinitionForm()
+	{
+		createAs = "NewForm";
+	}
 
 	/**
 	 * @return the mode
@@ -294,18 +297,19 @@ public class FormDefinitionForm  extends AbstractActionForm implements EntityUIB
 					"errors.item.required", ApplicationProperties
 					.getValue("eav.form.name")));
 		}
-		if ( formCaption == null || validator.isEmpty(String.valueOf(formCaption))) {
+		
+		if (conceptCode == null || validator.isEmpty(String.valueOf(conceptCode))) {
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
 					"errors.item.required", ApplicationProperties
-					.getValue("eav.form.title")));
+					.getValue("eav.form.conceptCode")));
 		}
-		/*if ( createAs == null || validator.isEmpty(String.valueOf(createAs))) {
+		
+		if (createAs == null || validator.isEmpty(String.valueOf(createAs))) {
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
 					"errors.item.required", ApplicationProperties
 					.getValue("eav.form.createAs")));
-		}*/
-
-		return errors;
+		}
+	return errors;
 	}
 	/**
 	 * @return the conceptCode

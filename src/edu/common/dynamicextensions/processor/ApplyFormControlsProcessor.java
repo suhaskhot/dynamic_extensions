@@ -133,7 +133,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 					}
 					else
 					{
-						System.out.println("Interface NEW");
+						
 						containerInterface.removeControl(controlInterface);
 						
 						//Set Sequence number

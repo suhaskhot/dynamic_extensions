@@ -81,7 +81,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		if (controlUIBeanInterface != null && controlInterface != null) {
 			controlInterface.setAbstractAttribute(controlUIBeanInterface.getAbstractAttribute());
 			controlInterface.setCaption(controlUIBeanInterface.getCaption());
-			controlInterface.setCssClass(controlUIBeanInterface.getCssClass());
+			//controlInterface.setCssClass(controlUIBeanInterface.getCssClass());
 			controlInterface.setTooltip(controlUIBeanInterface.getTooltip());
 			controlInterface.setIsHidden(controlUIBeanInterface.getIsHidden());
 		}
@@ -285,7 +285,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			controlUIBeanInterface.setHtmlFile( ProcessorConstants.TEXT_CONTROL + ".jsp");
 			controlUIBeanInterface.setColumns(((TextFieldInterface)controlInterface).getColumns());
 			controlUIBeanInterface.setIsPassword(((TextFieldInterface)controlInterface).getIsPassword());
-			controlUIBeanInterface.setLinesType(Constants.SINGLE_LINE);
+			controlUIBeanInterface.setLinesType(ProcessorConstants.LINE_TYPE_SINGLELINE);
 			//controlUIBeanInterface.setRows(null);
 		}
 		else if(controlInterface instanceof ComboBoxInterface)
@@ -306,7 +306,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			controlUIBeanInterface.setHtmlFile( ProcessorConstants.TEXT_CONTROL + ".jsp");
 			controlUIBeanInterface.setColumns(((TextAreaInterface)controlInterface).getColumns());
 			controlUIBeanInterface.setRows(((TextAreaInterface)controlInterface).getRows());
-			controlUIBeanInterface.setLinesType(Constants.MULTI_LINE);
+			controlUIBeanInterface.setLinesType(ProcessorConstants.LINE_TYPE_MULTILINE);
 		}
 
 

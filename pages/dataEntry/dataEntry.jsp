@@ -18,7 +18,7 @@
 %>
 
 <%-- Stylesheet --%>
-<link rel="stylesheet" type="text/css" href="css/stylesheet.css" />
+<link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
 <script src="jss/dynamicExtensions.js" type="text/javascript"></script>
 
 <script src="jss/script.js" type="text/javascript"></script>

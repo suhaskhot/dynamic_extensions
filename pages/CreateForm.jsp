@@ -10,7 +10,7 @@
 <html>
 <head>
 	<title>Dynamic Extensions</title>
-	<link rel="stylesheet" type="text/css" href="css/stylesheet.css" />
+	<link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
 	<script src="jss/dynamicExtensions.js" type="text/javascript"></script>
 </head>
 
@@ -21,100 +21,108 @@
 
 <html:form styleId = "formDefinitionForm" action="/ApplyFormDefinitionAction" >
   <body>
-  	<html:errors />  
-	
-         <table align = 'center' width='100%' border='0'>
-	          <tr height = 40>	
-	          	<td class='standardBoldText' align='center'>
-			         <bean:message key="app.CreateFormTitle"/>
-			  	 </td>
-			   </tr>
-			
-			  <tr>
+  	<html:errors />
+
+         <table align = 'center' width='50%' border='0'>
+         <tr><td/></tr>
+         <tr><td/></tr>
+	          <tr>
 	     		<td>
 			  	 <table summary="" align = 'center' cellpadding="3" cellspacing="0" border="0">
-				 
+					<tr >
+						<td class="formTitle" align='left' colspan="3" >
+							 <bean:message key="app.CreateFormTitle"/>
+						 </td>
+			   		</tr>
+			   		<tr><td/></tr>
+			   		<tr><td/></tr>
 				     <tr>
 					  	 <td class="formMessage" colspan="3">
 						  	 <bean:message key="app.requiredMessage"/>
 					  	 </td>
 				     </tr>
-					   <tr class='formMessage' align='left'> 
-			  <% 
-			  List errorsList =(List) request.getAttribute("errorsList");
-			  if(errorsList != null ) { %>
-					  <td>Errors : </td> <td>
-					  <%
-								Iterator iter = errorsList.iterator();
-								while(iter.hasNext()) {
-									String errormsg = (String) iter.next();
-										if(errormsg != null) {
-						%>
-							<%= errormsg%>
-						<% }} }
-				%>
-			</td>
-		</tr>
+					  <tr class='formMessage' align='left'>
+						  <%
+						  List errorsList =(List) request.getAttribute("errorsList");
+						  if(errorsList != null ) { %>
+								  <td>Errors : </td> <td>
+								  <%
+											Iterator iter = errorsList.iterator();
+											while(iter.hasNext()) {
+												String errormsg = (String) iter.next();
+													if(errormsg != null) {
+									%>
+										<%= errormsg%>
+									<% }} }
+							%>
+						</td>
+					</tr>
 				     <tr>
-					     <td class="formTitle" height="20" colspan="3">
+					     <td class="formTitle" colspan="3">
 								<bean:message key="eav.new.form"/>
 						 </td>
 				     </tr>
-				     <tr>
-						<td class="formRequiredNotice" width="5">*</td>
+				    <!-- <tr>
+						<td class="formRequiredNotice" width="5%">*</td>
 						<td class="formRequiredLabel">
-							<bean:message key="eav.group.title"/> 
+							<bean:message key="eav.group.title"/>
+						</td>
+						<td class="formField">
+							<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="formName" />
+						</td>
+					</tr>-->
+					 <tr>
+						<td class="formRequiredNotice" width="5%">*</td>
+						<td class="formRequiredLabel">
+							<bean:message key="eav.form.title"/>
 						</td>
 						<td class="formField">
 							<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="formName" />
 						</td>
 					</tr>
 					 <tr>
-						<td class="formRequiredNotice" width="5">*</td>
+					 <td class="formRequiredNotice" >*</td>
 						<td class="formRequiredLabel">
-							<bean:message key="eav.form.title"/> 
-						</td>
-						<td class="formField">
-							<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="formCaption" />
-						</td>
-					</tr>
-					 <tr>
-					 <td class="formRequiredNotice" width="5">&nbsp;</td>
-						<td class="formRequiredLabel">
-							<bean:message key="eav.form.conceptCode"/> 
+							<bean:message key="eav.form.conceptCode"/>
 						</td>
 						<td class="formField">
 							<html:text styleClass="formDateSized"  maxlength="20" size="40"  property="conceptCode" />
 						</td>
 					</tr>
 				    <tr>
-						<td class="formRequiredNotice" width="5">&nbsp;</td>
+						<td class="formRequiredNotice" >&nbsp;</td>
 						<td class="formRequiredLabel">
-								<bean:message key="eav.form.description"/> 
+								<bean:message key="eav.form.description"/>
 					 	</td>
 						<td class="formField">
 								<html:textarea styleClass="formDateSized"  rows = "3" cols="40"  property="formDescription" />
 						</td>
 				     </tr>
-				     <tr>
-							<td class="formRequiredNotice" width="5">&nbsp;</td>
+				      <tr>
+							<td class="formRequiredNotice" >*</td>
 						 <td class="formRequiredLabel">
-							<bean:message key="eav.form.createAs"/> 
+							<bean:message key="eav.form.createAs"/>
 						 </td>
 				      	 <td class="formField">
 							<table border='0'>
 								<tr class="formMessage">
-								 <td >
-									<html:radio value="NewForm" property="createAs"> New</html:radio>
+									 <td >
+										<html:radio property="createAs" value="NewForm">
+											<bean:message key="eav.createnewentity.title"/>
+										</html:radio>
+
+										<html:radio property="createAs" value="ExistingForm">
+											<bean:message key="eav.existingentity.title"/>
+										</html:radio>
 									</td>
 								</tr>
-								
-				  </table>
-			  </td>
+					 		</table>
+			 		 	</td>
+			 		 </tr>
 			</table>
 	 	</td>
 	 </tr>
-	 <tr height = 10>
+	 <tr >
 	 	<td>
 		 <table summary="" align = 'center' cellpadding="5" cellspacing="0" border="0">
 	    	<tr height="15">
@@ -141,4 +149,5 @@
 	<html:hidden property="operation" value=""/>
 	<html:hidden property="entityIdentifier" value=""/>
   </body>
-</html:form> 
+</html:form>
+</html>

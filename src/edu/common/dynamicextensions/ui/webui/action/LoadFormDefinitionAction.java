@@ -19,6 +19,7 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.processor.LoadFormDefinitionProcessor;
+import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.util.global.Constants;
@@ -47,6 +48,7 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 				loadFormDefinitionProcessor.populateContainerInformation(containerInterface, actionForm);
 			}
 		}
+		actionForm.setCreateAs(ProcessorConstants.DEFAULT_CREATEAS);
 		return (mapping.findForward(Constants.SUCCESS));
 	}
 }

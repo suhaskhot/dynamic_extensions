@@ -7,15 +7,19 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.interfaces.AbstractAttributeUIBeanInterface;
 import edu.common.dynamicextensions.ui.interfaces.ControlUIBeanInterface;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
+import edu.wustl.common.util.global.ApplicationProperties;
+import edu.wustl.common.util.global.Validator;
 
 /**
  * This represents a ActionForm for BuildForm.jsp
@@ -32,6 +36,11 @@ ControlUIBeanInterface,AbstractAttributeUIBeanInterface{
 	 * 
 	 */
 	String description;
+	/**
+	 * Concept code
+	 */
+	
+	String attributeConceptCode;
 	
 	/**
 	 * 
@@ -210,6 +219,7 @@ ControlUIBeanInterface,AbstractAttributeUIBeanInterface{
      * 
      */
 	protected String linesType;
+	protected String dateValueType;
 
 	/**
      * 
@@ -585,64 +595,7 @@ ControlUIBeanInterface,AbstractAttributeUIBeanInterface{
 		this.dataType = cacheForm.getDataType();
 		this.displayChoice = cacheForm.getDisplayChoice();
 	}
-	/**
-	 * Overrides the validate method of ActionForm.
-	 * */
-	public ActionErrors validate(ActionMapping mapping,
-			HttpServletRequest request) {
-		ActionErrors errors = new ActionErrors();
-		/*	Validator validator = new Validator();
-		if (attributeSize == null) {
-
-		} else if ( !validator.isNumeric(attributeSize)) {
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-					"eav.validation.numeric", ApplicationProperties
-					.getValue("eav.form.name")));
-		} else {
-			    Integer sizeInteger = new Integer(attributeSize);
-                if(sizeInteger.intValue() > 38){
-                    errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-                            "eav.validation.numericlarge", ApplicationProperties
-                            .getValue("eav.form.name")));
-
-                }
-        }
-
-		if (attributeName == null) {
-
-		} else if ( validator.isEmpty(attributeName)) {
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-					"errors.item.required", ApplicationProperties
-					.getValue("eav.control.name")));
-		}
-
-
-		if(referenceValues == null) {
-
-        }else if ( validator.isEmpty(referenceValues)) {
-            errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-                    "errors.item.required", ApplicationProperties
-                    .getValue("eav.attribute.EnterChoice")));
-        }
-
-
-        if(attributeDecimalPlaces == null) {
-
-        } else if ( validator.isEmpty(attributeDecimalPlaces)) {
-            errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-                    "errors.item.required", ApplicationProperties
-                    .getValue("eav.attribute.DecimalPlaces")));
-        }else if ( !validator.isNumeric(attributeDecimalPlaces)) {
-            errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-                    "eav.validation.decimalnumeric", ApplicationProperties
-                    .getValue("eav.entity.name")));
-        }*/
-
-		return errors;
-	}
-
-
-
+	
 	/**
 	 * @return the caption
 	 */
@@ -888,5 +841,92 @@ ControlUIBeanInterface,AbstractAttributeUIBeanInterface{
 	{
 		this.linesType = linesType;
 	}
+
+	
+
+	public String getAttributeConceptCode()
+	{
+		return this.attributeConceptCode;
+	}
+
+	public void setAttributeConceptCode(String attributeConceptCode)
+	{
+		this.attributeConceptCode = attributeConceptCode;
+	}
+	/**
+	 * Overrides the validate method of ActionForm.
+	 * */
+	public ActionErrors validate(ActionMapping mapping,
+			HttpServletRequest request) {
+		ActionErrors errors = new ActionErrors();
+		Validator validator = new Validator();
+		if ( name == null || validator.isEmpty(String.valueOf(name))) {
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
+					"errors.item.required", ApplicationProperties
+					.getValue("eav.att.Name")));
+		}
+		
+		if (caption == null || validator.isEmpty(String.valueOf(caption))) {
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
+					"errors.item.required", ApplicationProperties
+					.getValue("eav.att.Label")));
+		}
+		if (dataType == null || validator.isEmpty(String.valueOf(dataType))) {
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
+					"errors.item.required", ApplicationProperties
+					.getValue("eav.att.DataInput")));
+		}
+		
+		//Special case for text Control
+		if((dataType!=null)&&(dataType.equalsIgnoreCase(ProcessorConstants.TEXT_CONTROL)))
+		{
+			getErrorsForTextControl(validator,errors);
+		}
+		//Special case for combobox Control
+		if((dataType!=null)&&(dataType.equalsIgnoreCase(ProcessorConstants.COMBOBOX_CONTROL)))
+		{
+			getErrorsForComboboxControl(validator,errors);
+		}
+
+
+		return errors;
+	}
+
+	/**
+	 * @param validator
+	 * @param errors
+	 */
+	private void getErrorsForComboboxControl(Validator validator, ActionErrors errors)
+	{
+		if (attributeMultiSelect == null || validator.isEmpty(String.valueOf(attributeMultiSelect))) {
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
+					"errors.item.required", ApplicationProperties
+					.getValue("eav.att.ListBoxType")));
+		}
+	}
+
+	/**
+	 * @param validator 
+	 * @param errors
+	 */
+	private void getErrorsForTextControl(Validator validator, ActionErrors errors)
+	{
+		if (linesType == null || validator.isEmpty(String.valueOf(linesType))) {
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
+					"errors.item.required", ApplicationProperties
+					.getValue("eav.control.type")));
+		}
+	}
+
+	public String getDateValueType()
+	{
+		return this.dateValueType;
+	}
+
+	public void setDateValueType(String dateValueType)
+	{
+		this.dateValueType = dateValueType;
+	}
+	
 }
 

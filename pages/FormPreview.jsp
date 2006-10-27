@@ -13,7 +13,7 @@
 %>
 
 <%-- Stylesheet --%>
-<link rel="stylesheet" type="text/css" href="css/stylesheet.css" />
+<link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
 <script src="jss/dynamicExtensions.js" type="text/javascript"></script>
 <c:set var="containerInterface" value="${previewForm.containerInterface}"/>
 <jsp:useBean id="containerInterface" type="edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface"/>

@@ -979,7 +979,7 @@ public class EntityManager
                     "Input to insert data is null");
         }
 
-        StringBuffer columnNameString = new StringBuffer("IDENTIFIER , ");
+        StringBuffer columnNameString = new StringBuffer("IDENTIFIER ");
         Long identifier = getNextIdentifier(entity);
         StringBuffer columnValuesString = new StringBuffer(identifier.toString());
         String tableName = entity.getTableProperties().getName();
@@ -995,6 +995,8 @@ public class EntityManager
                     .next();
             if (attribute instanceof AttributeInterface)
             {
+                columnNameString.append(" , ");
+                columnValuesString.append(" , ");
                 String dbColumnName = ((AttributeInterface) attribute)
                         .getColumnProperties().getName();
                 Object value = dataValue.get(attribute);
@@ -1003,12 +1005,7 @@ public class EntityManager
                 value = getFormattedValue(attribute, value);
                 columnValuesString.append(value);
 
-                if (uiColumnSetIter.hasNext())
-                {
-                    columnNameString.append(" , ");
-                    columnValuesString.append(" , ");
-                }
-            }
+             }
             else
             {
                 //TODO Process associations here.
@@ -1027,7 +1024,7 @@ public class EntityManager
 			JDBCDAO jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
 			jdbcDao.openSession(null);
 			jdbcDao.executeUpdate(query.toString());
-			jdbcDao.commit();
+			//jdbcDao.commit();
 			jdbcDao.closeSession();
 		}
 		catch (DAOException e)

@@ -354,9 +354,12 @@ if(obj.value == 'SingleLine')
 // Added by Chetan
 function backToControlForm() 
 {
-	var dataEntryForm = document.getElementById('dataEntryForm');
-	dataEntryForm.action="/dynamicExtensions/LoadFormControlsAction.do";
-	dataEntryForm.submit();
+	var previewForm = document.getElementById('previewForm');
+	if(previewForm!=null)
+	{
+		previewForm.action="/dynamicExtensions/LoadFormControlsAction.do";
+		previewForm.submit();
+	}
 }
 
 function clearForm()

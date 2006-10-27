@@ -10,7 +10,6 @@
 <%-- Imports --%>
 <%@
 	page language="java" contentType="text/html"
-    import="java.util.List"
     import="java.util.Collection"
 	import="edu.common.dynamicextensions.domaininterface.EntityInterface"
 	import="java.util.Iterator"
@@ -64,7 +63,8 @@
 						<table class="dataTable" width='100%' cellpadding="4" cellspacing="0" border='1' >
 							<tr class="formTitle">
 								<th width='5%' align='center'>
-									<input type='checkbox' disabled />
+								<!--<input type='checkbox' disabled />-->
+									<bean:message key="table.serialNumber" />
 								</th>
 								<th width="30%" align='left'>
 									<bean:message key="table.title" />
@@ -75,19 +75,23 @@
 								</th>
 
 								<th width="15%" align='left'>
+									<bean:message key="table.description" />
+								</th>
+								<!-- <th width="15%" align='left'>
 									<bean:message key="table.createdBy" />
 								</th>
 
 								<th width="10%" align='left'>
 									<bean:message key="table.status" />
-								</th>
+								</th>-->
 							</tr>
 
 							<%
 								int i = 0;
 								EntityInterface entityInterface = null;
 								String name = "";
-								String createdDate = "";
+								String description = "";
+								String createdDate = "&nbsp;";
 
 								if(entityCollection != null)
 								{
@@ -103,11 +107,16 @@
 										{
 											createdDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(entityInterface.getCreatedDate());
 										}
+										if(entityInterface.getDescription() != null)
+										{
+											description = entityInterface.getDescription();
+										}
 							%>
 
 								<tr class="formRequiredNotice">
 									<td align='center'>
-										<input type='checkbox' />
+										<!--  <input type='checkbox' />-->
+											<%=i+1%>
 									</td>
 
 									<td>
@@ -118,9 +127,13 @@
 										<%= createdDate%>
 									</td>
 
-									<td> Robert Lloyd </td>
+									<td>
+										<%=description %>
+									</td>	
+									<!-- <td> Robert Lloyd </td>
 
 									<td> In Progress </td>
+									-->
 								</tr>
 
 							<%
@@ -137,13 +150,14 @@
 			<tr><td></td></tr>
 			<tr><td></td></tr>
 
-			<tr>
+			<!--  <tr>
 				<td>
 					<html:button styleClass="actionButton" property="delete" disabled='true' >
 						<bean:message  key="buttons.delete"/>
 					</html:button>
 				</td>
 			</tr>
+			-->
 		</table>
 			<html:hidden property="mode" value=""/>
 	</body>

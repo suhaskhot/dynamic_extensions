@@ -89,7 +89,7 @@ PUBLIC
 		    type="edu.common.dynamicextensions.ui.webui.action.AddControlsAction" 
 		    name="controlsForm"
 			validate="true"
-			input="/pages/BuildForm.jsp"
+			input="/LoadFormControlsAction.do"
 			scope="request">
 			<forward name="success" path="/LoadFormControlsAction.do" />
 			<forward name="loadFormPreviewAction" path="/LoadDataEntryFormAction.do" />
@@ -108,10 +108,10 @@ PUBLIC
 		<action path="/SaveEntityAction" 
 		    type="edu.common.dynamicextensions.ui.webui.action.SaveEntityAction" 
 		    name="controlsForm"
-			validate="true"
+			validate="false"
 			input="/SaveEntityAction.do"
 			scope="request">
-			<forward name="success" path="/LoadDataEntryFormAction.do" />
+			<forward name="success" path="/LoadFormPreviewAction.do" />
 			<forward name="failure" path="/pages/ErrorPage.jsp" />
 		</action>
 		
@@ -121,7 +121,7 @@ PUBLIC
 			validate="false"
 			input="/LoadDataEntryFormAction.do"
 			scope="request">
-			<forward name="Success" path="/pages/dataEntry/dataEntry.jsp" />
+			<forward name="Success" path="/pages/FormPreview.jsp" />
 		</action>
 		
 		<action path="/ApplyDataEntryFormAction" 

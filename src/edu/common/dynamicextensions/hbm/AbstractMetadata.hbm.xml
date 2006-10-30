@@ -186,6 +186,14 @@
               />
         </set>
 
+        <property
+            name="isNullable"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="IS_NULLABLE"
+        />
+
         <joined-subclass
             name="edu.common.dynamicextensions.domain.ShortAttribute"
             table="DYEXTN_SHORT_ATTRIBUTE"
@@ -630,7 +638,7 @@
             table="DYEXTN_ATTRIBUTE"
             lazy="false"
             inverse="false"
-            cascade="save-update"
+            cascade="all-delete-orphan"
             sort="unsorted"
         >
 

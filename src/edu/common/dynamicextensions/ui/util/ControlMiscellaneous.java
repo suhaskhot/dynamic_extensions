@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Vector;
 
-import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.UserDefinedDE;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;

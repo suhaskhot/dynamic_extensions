@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.domain.userinterface;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
+import edu.common.dynamicextensions.ui.util.ControlMiscellaneous;
 
 /**
  * @version 1.0
@@ -23,12 +24,10 @@ public class TextArea extends Control implements TextAreaInterface
 	protected Integer rows;
 
 	/**
-	 * 
-	 *
+	 * Empty Constructor 
 	 */
 	public TextArea()
 	{
-
 	}
 
 	/**
@@ -65,22 +64,22 @@ public class TextArea extends Control implements TextAreaInterface
 		this.rows = rows;
 	}
 
-
-
 	/**
-	 * 
+	 * This method generates the HTML code for TextArea control on the HTML form
+	 * @return HTML code for TextArea
 	 */
-
 	public String generateHTML()
 	{
-		if (value == null)
+		String defaultValue = this.value;
+		if (this.value == null)
 		{
-			value = "";
+			defaultValue = ControlMiscellaneous.getDefaultValue(this.getAbstractAttribute());
 		}
-		String htmlString = "<textarea " + "class = '" + cssClass + "' " + "name = '" + getHTMLComponentName() + "' " + "id = '" + getHTMLComponentName() + "' " + "cols = '"
-				+ columns.intValue() + "' " + "rows = '" + rows.intValue() + "' " + "title = '" + tooltip + "' " + "value = '" + value + "' " + " >";
-		//htmlString = htmlString + defaultvalue
-		htmlString = htmlString + "</textarea>";
+		
+		String htmlString = "<textarea " + "class = '" + this.cssClass + "' " + "name = '" + getHTMLComponentName() + "' " + "id = '" + getHTMLComponentName() + "' " + "cols = '"
+				+ columns.intValue() + "' " + "rows = '" + rows.intValue() + "' " + "title = '" + this.tooltip + "'>";
+		htmlString += defaultValue + "</textarea>";
+		
 		System.out.println("Returning " + htmlString);
 		return htmlString;
 	}

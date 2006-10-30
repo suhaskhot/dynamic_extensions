@@ -1,7 +1,9 @@
+
 package edu.common.dynamicextensions.domain.userinterface;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
+import edu.common.dynamicextensions.ui.util.ControlMiscellaneous;
 
 /**
  * @version 1.0
@@ -12,45 +14,46 @@ import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInt
 public class RadioButton extends Control implements RadioButtonInterface
 {
 
-    /**
-     * 
-     *
-     */
-	public RadioButton(){
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Empty Constructor 
+	 */
+	public RadioButton()
+	{
 	}
-	
-    /**
-     * 
-     */
+
+	/**
+	 * This method generates the HTML code for RadioButton control on the HTML form
+	 * @return HTML code for RadioButton
+	 */
 	public String generateHTML()
 	{
-		String isChecked = "";
-		if((value!=null)&&(value.equalsIgnoreCase("true")))
+		String isChecked = this.value;
+		if (this.value == null)
 		{
-			isChecked="checked";
+			isChecked = ControlMiscellaneous.getDefaultValue(this.getAbstractAttribute());
 		}
-		String htmlString = "<input type='radio' " +
-							"class = '" + cssClass + "' " +
-							"name = '" + name + "' " +
-							"value = '" + name + "' " +
-							"id = '" + name + "' " +
-							"title = '" + tooltip + "' " +
-							isChecked + 
-							" >";
-		System.out.println("Returning " + htmlString);
-		return htmlString;	
+
+		if (isChecked.equalsIgnoreCase("true"))
+		{
+			isChecked = "checked";
+		}
+		String htmlString = "<input type='radio' " + "class = '" + cssClass + "' " + "name = '" + name + "' " + "value = '" + name + "' " + "id = '"
+				+ name + "' " + "title = '" + tooltip + "' " + isChecked + " >";
+		
+		System.out.println("Returning " + htmlString);		
+		return htmlString;
 	}
 
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface#setAttribute(edu.common.dynamicextensions.domaininterface.AttributeInterface)
 	 */
-	public void setAttribute(AbstractAttributeInterface attributeInterface) {
-		// TODO Auto-generated method stub
-		
+	public void setAttribute(AbstractAttributeInterface attributeInterface)
+	{
 	}
-
-  
-	
 
 }

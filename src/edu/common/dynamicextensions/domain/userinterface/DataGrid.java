@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.domain.userinterface;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
@@ -12,30 +13,26 @@ import edu.common.dynamicextensions.domaininterface.userinterface.DataGridInterf
 public class DataGrid extends Control implements DataGridInterface
 {
 
-    /**
-     * 
-     *
-     */
-	public DataGrid(){
-
+	/**
+	 * Empty Constructor
+	 */
+	public DataGrid()
+	{
 	}
-	
-    /**
-     * 
-     */
+
+	/**
+	 * 
+	 */
 	public String generateHTML()
-    {
-    	return "HTML Not Implemented";
-    }
+	{
+		return "HTML Not Implemented";
+	}
 
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface#setAttribute(edu.common.dynamicextensions.domaininterface.AttributeInterface)
 	 */
-	public void setAttribute(AbstractAttributeInterface attributeInterface) {
-		// TODO Auto-generated method stub
-		
+	public void setAttribute(AbstractAttributeInterface attributeInterface)
+	{
 	}
-
-	
 
 }

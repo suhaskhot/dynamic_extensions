@@ -216,5 +216,33 @@ interface EntityManagerInterface
             throws DynamicExtensionsApplicationException,
             DynamicExtensionsSystemException;
 
+    /**
+     * This method is used to update the existing entity into the database. This method compares the edited entity with the database copy of that 
+     * entity and checks following differences.
+     * <BR>
+     * Newly added attributes. <BR>
+     * Updated attribute in terms of changed data type <BR> 
+     * Updated attributes in terms of changed (added/removed) constraints (UNIQUE, NOT NULL)<BR>
+     * @param entityInterface Edited entity interface 
+     * @return EntityInterface Saved entity
+     * @throws DynamicExtensionsSystemException This exception is thrown in case of any system error
+     * @throws DynamicExtensionsApplicationException This exception is thrown in case of any application error
+     */
+    public EntityInterface editEntity(EntityInterface entityInterface)
+            throws DynamicExtensionsSystemException,
+            DynamicExtensionsApplicationException;
+    
+    /**
+     * This method is used to save the container into the database.
+     * @param containerInterface container to save
+     * @return ContainerInterface container Interface that is saved.
+     * @throws DynamicExtensionsSystemException Thrown if for any reason operation can not be completed.
+     * @throws DynamicExtensionsApplicationException Thrown if the entity name already exists.
+     * @throws DynamicExtensionsSystemException 
+     */
+    public ContainerInterface editContainer(
+            ContainerInterface containerInterface)
+            throws DynamicExtensionsApplicationException,
+            DynamicExtensionsSystemException;
 
 }

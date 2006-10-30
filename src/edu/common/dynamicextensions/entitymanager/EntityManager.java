@@ -1,4 +1,3 @@
-
 package edu.common.dynamicextensions.entitymanager;
 
 import java.sql.Connection;
@@ -59,8 +58,9 @@ import edu.wustl.common.util.dbManager.DBUtil;
  * EntityManager class using setInstancxe method on startup.  
  * 
  *    
- * @author geetika_bangard
- * @author vishvesh_mulay
+ * @author Geetika Bangard
+ * @author Vishvesh Mulay
+ * @author Rahul Ner
  */
 public class EntityManager
         implements
@@ -117,77 +117,7 @@ public class EntityManager
             DynamicExtensionsApplicationException
     {
         Entity entity = (Entity) entityInterface;
-        HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance()
-                .getDAO(Constants.HIBERNATE_DAO);
-        Stack stack = null;
-        try
-        {
-            checkForDuplicateEntityName(entity);
-
-            try
-            {
-                hibernateDAO.openSession(null);
-                hibernateDAO.insert(entity, null, false, false);
-                postSaveProcessEntity(entity);
-                hibernateDAO.update(entity, null, false, false, false);
-                stack = executeDataTableQueries(entity);
-            }
-
-            catch (UserNotAuthorizedException e)
-            {
-
-                throw new DynamicExtensionsApplicationException(
-                        "User is not authorised to perform this action", e);
-            }
-            hibernateDAO.commit();
-        }
-
-        catch (DAOException e)
-        {
-            try
-            {
-
-                hibernateDAO.rollback();
-                if (stack != null)
-                {
-                    rollbackQueries(stack, DBUtil.getConnection(), entity);
-                }
-            }
-            catch (Exception e1)
-            {
-                throw new DynamicExtensionsSystemException(
-                        "Exception occured while rolling back the session", e1);
-            }
-            throw new DynamicExtensionsSystemException(e.getMessage(), e);
-        }
-        catch (DynamicExtensionsSystemException e)
-        {
-            try
-            {
-                hibernateDAO.rollback();
-            }
-            catch (Exception e1)
-            {
-                throw new DynamicExtensionsSystemException(
-                        "Exception occured while rolling back the session", e1);
-            }
-            throw new DynamicExtensionsSystemException(
-                    "Exception occured while creating data table for entity", e);
-        }
-        finally
-        {
-            try
-            {
-                hibernateDAO.closeSession();
-            }
-            catch (DAOException e)
-            {
-                e.printStackTrace();
-                throw new DynamicExtensionsSystemException(
-                        "Exception occured while closing the session", e);
-            }
-
-        }
+        entity = saveOrUpdateEntity(entityInterface, true);
         return entity;
     }
 
@@ -203,10 +133,13 @@ public class EntityManager
      */
     private void postSaveProcessEntity(Entity entity)
     {
-        TableProperties tableProperties = new TableProperties();
-        String tableName = TABLE_NAME_PREFIX + UNDERSCORE + entity.getId();
-        tableProperties.setName(tableName);
-        entity.setTableProperties(tableProperties);
+        if (entity.getTableProperties() == null)
+        {
+            TableProperties tableProperties = new TableProperties();
+            String tableName = TABLE_NAME_PREFIX + UNDERSCORE + entity.getId();
+            tableProperties.setName(tableName);
+            entity.setTableProperties(tableProperties);
+        }
         Collection attributeCollection = entity.getAttributeCollection();
         entity.setLastUpdated(new Date());
         if (attributeCollection != null && !attributeCollection.isEmpty())
@@ -216,15 +149,14 @@ public class EntityManager
             {
                 AbstractAttribute attribute = (AbstractAttribute) iterator
                         .next();
-
-                ColumnProperties colProperties = new ColumnProperties();
-                String colName = COLUMN_NAME_PREFIX + UNDERSCORE
-                        + attribute.getId();
-                colProperties.setName(colName);
-                if (attribute instanceof Attribute)
+                if (attribute instanceof Attribute
+                        && ((Attribute) attribute).getColumnProperties() == null)
                 {
+                    ColumnProperties colProperties = new ColumnProperties();
+                    String colName = COLUMN_NAME_PREFIX + UNDERSCORE
+                            + attribute.getId();
+                    colProperties.setName(colName);
                     ((Attribute) attribute).setColumnProperties(colProperties);
-
                 }
             }
         }
@@ -247,13 +179,15 @@ public class EntityManager
     /**
      * This method executes the queries which generate and or manipulate the data table associated with the entity.
      * @param entity Entity for which the data table queries are to be executed.
+     * @param reverseQueryList2 
+     * @param queryList2 
      * @param hibernateDAO 
      * @param session Hibernate Session through which connection is obtained to fire the queries.
      * @throws DynamicExtensionsSystemException Whenever there is any exception , this exception is thrown with proper message and the exception is 
      * wrapped inside this exception.
      */
-    private Stack executeDataTableQueries(Entity entity)
-            throws DynamicExtensionsSystemException
+    private Stack executeDataTableQueries(Entity entity, List queryList,
+            List reverseQueryList) throws DynamicExtensionsSystemException
     {
         Session session = null;
         try
@@ -268,8 +202,7 @@ public class EntityManager
                     "Unable to exectute the data table queries .....Cannot access sesssion",
                     e1);
         }
-        List reverseQueryList = new LinkedList();
-        List queryList = getQueryList(entity, reverseQueryList);
+
         Stack reverseQuerysubStack = new Stack();
         Iterator reverseQueryListIterator = reverseQueryList.iterator();
 
@@ -349,6 +282,8 @@ public class EntityManager
                 catch (SQLException e)
                 {
                     LogFatalError(e, entity);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 finally
                 {
@@ -432,7 +367,8 @@ public class EntityManager
             {
                 AbstractAttribute attribute = (AbstractAttribute) attributeIterator
                         .next();
-                String attributeQueryPart = getQueryPartForAbstractAttribute(attribute);
+                String attributeQueryPart = getQueryPartForAbstractAttribute(
+                        attribute, true);
                 query = query.append(attributeQueryPart);
                 query = query.append(COMMA);
             }
@@ -467,7 +403,8 @@ public class EntityManager
      * @return String query part of that attribute.
      * @throws DynamicExtensionsSystemException 
      */
-    private String getQueryPartForAbstractAttribute(AbstractAttribute attribute)
+    private String getQueryPartForAbstractAttribute(
+            AbstractAttribute attribute, boolean processUniqueConstraint)
             throws DynamicExtensionsSystemException
     {
         String attributeQuery = null;
@@ -477,7 +414,8 @@ public class EntityManager
             {
                 try
                 {
-                    attributeQuery = getQueryPartForAttribute((Attribute) attribute);
+                    attributeQuery = getQueryPartForAttribute(
+                            (Attribute) attribute, processUniqueConstraint);
                 }
                 catch (DataTypeFactoryInitializationException e)
                 {
@@ -510,15 +448,37 @@ public class EntityManager
      * @return String query part of the primitive attribute.
      * @throws DataTypeFactoryInitializationException 
      */
-    private String getQueryPartForAttribute(Attribute attribute)
-            throws DataTypeFactoryInitializationException
+    private String getQueryPartForAttribute(Attribute attribute,
+            boolean processUniqueConstraint)
+            throws DynamicExtensionsSystemException
     {
+
+        //TODO IS UNIQUE AND NOT NULL TO BE ADDED HERE 
         String attributeQuery = null;
         if (attribute != null)
         {
             String columnName = attribute.getColumnProperties().getName();
+            String isUnique = "";
+            String nullConstraint = "";
+            if (processUniqueConstraint && attribute.getIsPrimaryKey())
+            {
+                
+                isUnique = CONSTRAINT_KEYWORD + WHITESPACE
+                        + attribute.getColumnProperties().getName()
+                        + UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX + WHITESPACE
+                        + UNIQUE_KEYWORD;
+
+                nullConstraint = "NULL";
+                
+                if (!attribute.getIsNullable())
+                {
+                    nullConstraint = "NOT NULL";
+                }
+            }
+
             attributeQuery = columnName + " "
-                    + getDatabaseTypeAndSize(attribute);
+                    + getDatabaseTypeAndSize(attribute) + WHITESPACE + isUnique
+                    + WHITESPACE + nullConstraint;
         }
         return attributeQuery;
     }
@@ -527,31 +487,41 @@ public class EntityManager
      * This method returns the database type and size of the attribute passed to it which becomes the part of the query for that attribute.
      * @param attribute Attribute object for which to get the database type and size.
      * @return String that specifies the data base type and size.
+     * @throws DynamicExtensionsSystemException 
      * @throws DataTypeFactoryInitializationException 
      */
     private String getDatabaseTypeAndSize(Attribute attribute)
-            throws DataTypeFactoryInitializationException
+            throws DynamicExtensionsSystemException
+
     {
-        DataTypeFactory dataTypeFactory = DataTypeFactory.getInstance();
-        if (attribute instanceof StringAttribute)
+        try
         {
-            return dataTypeFactory.getDatabaseDataType("String");
+            DataTypeFactory dataTypeFactory = DataTypeFactory.getInstance();
+            if (attribute instanceof StringAttribute)
+            {
+                return dataTypeFactory.getDatabaseDataType("String");
+            }
+            else if (attribute instanceof IntegerAttribute)
+            {
+                return dataTypeFactory.getDatabaseDataType("Integer");
+            }
+            else if (attribute instanceof DateAttribute)
+            {
+                return dataTypeFactory.getDatabaseDataType("Date");
+            }
+            else if (attribute instanceof FloatAttribute)
+            {
+                return dataTypeFactory.getDatabaseDataType("Float");
+            }
+            else if (attribute instanceof FloatAttribute)
+            {
+                return dataTypeFactory.getDatabaseDataType("Boolean");
+            }
         }
-        else if (attribute instanceof IntegerAttribute)
+        catch (DataTypeFactoryInitializationException e)
         {
-            return dataTypeFactory.getDatabaseDataType("Integer");
-        }
-        else if (attribute instanceof DateAttribute)
-        {
-            return dataTypeFactory.getDatabaseDataType("Date");
-        }
-        else if (attribute instanceof FloatAttribute)
-        {
-            return dataTypeFactory.getDatabaseDataType("Float");
-        }
-        else if (attribute instanceof FloatAttribute)
-        {
-            return dataTypeFactory.getDatabaseDataType("Boolean");
+            throw new DynamicExtensionsSystemException(
+                    "Could Not get data type attribute", e);
         }
 
         return null;
@@ -865,7 +835,11 @@ public class EntityManager
                 {
                     postSaveProcessEntity(entity);
                     hibernateDAO.update(entity, null, false, false, false);
-                    stack = executeDataTableQueries(entity);
+                    List reverseQueryList = new LinkedList();
+                    List queryList = getQueryList(entity, reverseQueryList);
+
+                    stack = executeDataTableQueries(entity, queryList,
+                            reverseQueryList);
                 }
                 hibernateDAO.commit();
             }
@@ -949,6 +923,149 @@ public class EntityManager
         return container;
     }
 
+    
+    /**
+     * This method is used to save the container into the database.
+     * @param containerInterface container to save
+     * @return ContainerInterface container Interface that is saved.
+     * @throws DynamicExtensionsSystemException Thrown if for any reason operation can not be completed.
+     * @throws DynamicExtensionsApplicationException Thrown if the entity name already exists.
+     * @throws DynamicExtensionsSystemException 
+     */
+    public ContainerInterface editContainer(
+            ContainerInterface containerInterface)
+            throws DynamicExtensionsApplicationException,
+            DynamicExtensionsSystemException
+    {
+        Container container = (Container) containerInterface;
+        Entity entity = (Entity) container.getEntity();
+        if (container == null)
+        {
+            throw new DynamicExtensionsSystemException(
+                    "Container passed is null");
+        }
+        else
+        {
+            HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance()
+                    .getDAO(Constants.HIBERNATE_DAO);
+        
+            
+            Stack stack = null;
+            Entity databaseCopy = null;
+            try
+            {
+                if (container.getEntity() != null)
+                {
+                    Long id = entity.getId();
+                     hibernateDAO.openSession(null);
+                     List entityList = hibernateDAO.retrieve(Entity.class.getName(),
+                             Constants.ID, id);
+                     if (entityList != null && !entityList.isEmpty())
+                     {
+                         databaseCopy = (Entity) entityList.get(0);
+                     }
+                     hibernateDAO.closeSession();
+                }
+                hibernateDAO.openSession(null);
+            }
+            catch (DAOException e)
+            {
+                throw new DynamicExtensionsSystemException(
+                        "Exception occured while opening a session to save the container.");
+            }
+            try
+            {
+                preSaveProcessContainer(container);
+                hibernateDAO.update(container, null, false, false,false);
+                if (container.getEntity() != null)
+                {
+                    postSaveProcessEntity(entity);
+                    hibernateDAO.update(entity, null, false, false, false);
+                    stack = executeUpdateDataTableQueries(entity, databaseCopy);
+                }
+                hibernateDAO.commit();
+            }
+            catch (DAOException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                try
+                {
+                    hibernateDAO.rollback();
+                    if (stack != null)
+                    {
+                        rollbackQueries(stack, DBUtil.getConnection(), entity);
+                    }
+                }
+                catch (DAOException e1)
+                {
+                    throw new DynamicExtensionsSystemException(
+                            "Error while rolling back the session", e1);
+                }
+                catch (DynamicExtensionsSystemException e1)
+                {
+                    throw new DynamicExtensionsSystemException(
+                            "Error while rolling back the data table queries for the entity",
+                            e1);
+                }
+                catch (HibernateException e2)
+                {
+                    throw new DynamicExtensionsSystemException(
+                            "Error while getting connection to roll back the session.",
+                            e2);
+                }
+            }
+            catch (UserNotAuthorizedException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                try
+                {
+                    hibernateDAO.rollback();
+                }
+                catch (DAOException e1)
+                {
+                    throw new DynamicExtensionsSystemException(
+                            "Error while rolling back the session", e1);
+                }
+            }
+            catch (DynamicExtensionsSystemException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                try
+                {
+                    hibernateDAO.rollback();
+                }
+                catch (DAOException e1)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                    throw new DynamicExtensionsSystemException(
+                            "Error while executing the data table queries for entity",
+                            e1);
+                }
+            }
+            finally
+            {
+                try
+                {
+                    hibernateDAO.closeSession();
+                }
+                catch (DAOException e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                    throw new DynamicExtensionsSystemException(
+                            "Error while closing the session", e);
+                }
+            }
+        }
+
+        return container;
+    }
+
+    
     private void preSaveProcessContainer(Container container)
     {
         if (container.getEntity() != null)
@@ -1019,22 +1136,21 @@ public class EntityManager
         query.append(columnValuesString);
         query.append(" ) ");
 
-		try
-		{
-			JDBCDAO jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
-			jdbcDao.openSession(null);
-			jdbcDao.executeUpdate(query.toString());
-			//jdbcDao.commit();
-			jdbcDao.closeSession();
-		}
-		catch (DAOException e)
-		{
-			throw new DynamicExtensionsSystemException("Error while inserting data",e);
-		}
-
-
+        try
+        {
+            JDBCDAO jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
+            jdbcDao.openSession(null);
+            jdbcDao.executeUpdate(query.toString());
+            //jdbcDao.commit();
+            jdbcDao.closeSession();
+        }
+        catch (DAOException e)
+        {
+            throw new DynamicExtensionsSystemException("Error while inserting data",e);
+        }
     }
-
+    
+    
     private String getFormattedValue(AbstractAttribute attribute, Object value)
     {
         String formattedvalue = null;
@@ -1158,13 +1274,14 @@ public class EntityManager
      * @throws DAOException
      * @throws ClassNotFoundException
      */
-    List getResultInList(String queryToGetNextIdentifier,
+    private List getResultInList(String queryToGetNextIdentifier,
             SessionDataBean sessionDataBean, boolean isSecureExecute,
             boolean hasConditionOnIdentifiedField, Map queryResultObjectDataMap)
             throws DAOException, ClassNotFoundException
     {
         List resultList = null;
-        JDBCDAO jdbcDAO = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
+        JDBCDAO jdbcDAO = (JDBCDAO) DAOFactory.getInstance().getDAO(
+                Constants.JDBC_DAO);
         try
         {
             jdbcDAO.openSession(null);
@@ -1194,4 +1311,313 @@ public class EntityManager
         return resultList;
     }
 
+    /**
+     * This method is used to update the existing entity into the database. This method compares the edited entity with the database copy of that 
+     * entity and checks following differences.
+     * <BR>
+     * Newly added attributes. <BR>
+     * Updated attribute in terms of changed data type <BR> 
+     * Updated attributes in terms of changed (added/removed) constraints (UNIQUE, NOT NULL)<BR>
+     * @param entityInterface Edited entity interface 
+     * @return EntityInterface Saved entity
+     * @throws DynamicExtensionsSystemException This exception is thrown in case of any system error
+     * @throws DynamicExtensionsApplicationException This exception is thrown in case of any application error
+     */
+    public EntityInterface editEntity(EntityInterface entityInterface)
+            throws DynamicExtensionsSystemException,
+            DynamicExtensionsApplicationException
+    {
+        Entity entity = (Entity) entityInterface;
+        if (entityInterface == null)
+        {
+            throw new DynamicExtensionsSystemException(
+                    "Entity is null...can not update");
+        }
+        else if (entityInterface.getId() == null)
+        {
+            return createEntity(entityInterface);
+        }
+        else
+        {
+            entity = saveOrUpdateEntity(entityInterface, false);
+        }
+        return entity;
+    }
+
+    private Entity saveOrUpdateEntity(EntityInterface entityInterface,
+            boolean isNew) throws DynamicExtensionsApplicationException,
+            DynamicExtensionsSystemException
+    {
+        Entity entity = (Entity) entityInterface;
+        HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance()
+                .getDAO(Constants.HIBERNATE_DAO);
+        Stack stack = null;
+        try
+        {
+            checkForDuplicateEntityName(entity);
+
+            if (isNew)
+            {
+                hibernateDAO.openSession(null);
+                hibernateDAO.insert(entity, null, false, false);
+                postSaveProcessEntity(entity);
+                hibernateDAO.update(entity, null, false, false, false);
+
+                List reverseQueryList = new LinkedList();
+                List queryList = getQueryList(entity, reverseQueryList);
+
+                stack = executeDataTableQueries(entity, queryList,
+                        reverseQueryList);
+            }
+            else
+            {
+                Long id = entity.getId();
+                hibernateDAO.openSession(null);
+                List entityList = hibernateDAO.retrieve(Entity.class.getName(),
+                        Constants.ID, id);
+                Entity databaseCopy = null;
+                if (entityList != null && !entityList.isEmpty())
+                {
+                    databaseCopy = (Entity) entityList.get(0);
+                }
+                hibernateDAO.closeSession();
+                hibernateDAO.openSession(null);
+                hibernateDAO.update(entity, null, false, false, false);
+                postSaveProcessEntity(entity);
+                hibernateDAO.update(entity, null, false, false, false);
+                stack = executeUpdateDataTableQueries(entity, databaseCopy);
+            }
+            hibernateDAO.commit();
+        }
+        catch (UserNotAuthorizedException e)
+        {
+
+            throw new DynamicExtensionsApplicationException(
+                    "User is not authorised to perform this action", e);
+        }
+        catch (DAOException e)
+        {
+            try
+            {
+                hibernateDAO.rollback();
+                if (stack != null)
+                {
+                    rollbackQueries(stack, DBUtil.getConnection(), entity);
+                }
+            }
+            catch (Exception e1)
+            {
+                throw new DynamicExtensionsSystemException(
+                        "Exception occured while rolling back the session", e1);
+            }
+            throw new DynamicExtensionsSystemException(e.getMessage(), e);
+        }
+        catch (DynamicExtensionsSystemException e)
+        {
+            try
+            {
+                hibernateDAO.rollback();
+            }
+            catch (Exception e1)
+            {
+                throw new DynamicExtensionsSystemException(
+                        "Exception occured while rolling back the session", e1);
+            }
+            throw new DynamicExtensionsSystemException(
+                    "Exception occured while creating data table for entity", e);
+        }
+        finally
+        {
+            try
+            {
+                hibernateDAO.closeSession();
+            }
+            catch (DAOException e)
+            {
+                e.printStackTrace();
+                throw new DynamicExtensionsSystemException(
+                        "Exception occured while closing the session", e);
+            }
+
+        }
+        return entity;
+    }
+
+    private Stack executeUpdateDataTableQueries(Entity entity,
+            Entity databaseCopy) throws DynamicExtensionsSystemException,
+            DynamicExtensionsApplicationException
+    {
+        Stack rollBackQueryStack = null;
+        Collection attributeCollection = entity
+                .getAbstractAttributeCollection();
+        if (attributeCollection != null && !attributeCollection.isEmpty())
+        {
+            Iterator attributeIterator = attributeCollection.iterator();
+            List attributeQueryList = new ArrayList();
+            List attributeRollbackQueryList = new ArrayList();
+            while (attributeIterator.hasNext())
+            {
+                AbstractAttribute abstractAttribute = (AbstractAttribute) attributeIterator
+                        .next();
+                AbstractAttribute abstractSavedAttribute = (AbstractAttribute) databaseCopy
+                        .getAttributeByIdentifier(abstractAttribute.getId());
+
+                if (abstractAttribute instanceof Attribute)
+                {
+                    Attribute attribute = (Attribute) abstractAttribute;
+                    Attribute savedAttribute = (Attribute) abstractSavedAttribute;
+
+                    if (savedAttribute == null)
+                    {
+                        String attributeQuery = processAddAttribute(attribute,
+                                attributeRollbackQueryList);
+                        attributeQueryList.add(attributeQuery);
+                    }
+                    else
+                    {
+                        List modifiedAttributeQueryList = processModifyAttribute(
+                                attribute, savedAttribute,
+                                attributeRollbackQueryList);
+                        attributeQueryList.addAll(modifiedAttributeQueryList);
+                    }
+
+                }
+
+            }
+
+            rollBackQueryStack = executeDataTableQueries(entity,
+                    attributeQueryList, attributeRollbackQueryList);
+        }
+
+        return rollBackQueryStack;
+    }
+
+    private List processModifyAttribute(Attribute attribute,
+            Attribute savedAttribute, List attributeRollbackQueryList)
+            throws DynamicExtensionsSystemException,
+            DynamicExtensionsApplicationException
+    {
+        List modifyAttributeQueryList = new ArrayList();
+        String tableName = attribute.getEntity().getTableProperties().getName();
+        String columnName = attribute.getColumnProperties().getName();
+        boolean attributemodifiedFlag = false; 
+/*        if (isAttributeChanged(attribute, savedAttribute))
+        {
+*/
+            String modifyAttributeQuery = getQueryPartForAbstractAttribute(
+                    attribute, false);
+            modifyAttributeQuery = ALTER_TABLE + WHITESPACE + tableName
+                    + WHITESPACE + MODIFY_KEYWORD + WHITESPACE
+                    + modifyAttributeQuery;
+
+            String modifyAttributeRollbackQuery = getQueryPartForAbstractAttribute(
+                    savedAttribute, false);
+            modifyAttributeRollbackQuery = ALTER_TABLE + WHITESPACE + tableName
+                    + WHITESPACE + MODIFY_KEYWORD + WHITESPACE
+                    + modifyAttributeRollbackQuery;
+            //process nullable
+            if (attribute.getIsNullable() && !savedAttribute.getIsNullable())
+            {
+                attributemodifiedFlag = true;
+                modifyAttributeQuery = modifyAttributeQuery + WHITESPACE
+                        + NULL_KEYWORD;
+                modifyAttributeRollbackQuery = modifyAttributeRollbackQuery
+                        + WHITESPACE + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD;
+            }
+            else if (!attribute.getIsNullable()
+                    && savedAttribute.getIsNullable())
+            {
+                attributemodifiedFlag = true;
+                modifyAttributeQuery = modifyAttributeQuery
+                        + WHITESPACE + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD;
+                modifyAttributeRollbackQuery = modifyAttributeRollbackQuery
+                        + WHITESPACE + NULL_KEYWORD;
+            }
+
+            if (attributemodifiedFlag) {
+            modifyAttributeQueryList.add(modifyAttributeQuery);
+            attributeRollbackQueryList.add(modifyAttributeRollbackQuery);
+            }
+
+/*        }
+*/
+        if (attribute.getIsPrimaryKey() && !savedAttribute.getIsPrimaryKey())
+        {
+            
+            String uniqueConstraintQuery = ALTER_TABLE + WHITESPACE + tableName
+                    + WHITESPACE + ADD_KEYWORD + WHITESPACE
+                    + CONSTRAINT_KEYWORD + WHITESPACE 
+                    + columnName + UNDERSCORE 
+                    + UNIQUE_CONSTRAINT_SUFFIX + WHITESPACE + UNIQUE_KEYWORD + WHITESPACE + OPENING_BRACKET + columnName + CLOSING_BRACKET;
+            String uniqueConstraintRollbackQuery = ALTER_TABLE + WHITESPACE
+                    + tableName + WHITESPACE + DROP_KEYWORD + WHITESPACE
+                    + CONSTRAINT_KEYWORD + WHITESPACE
+                    + columnName + UNDERSCORE
+                    + UNIQUE_CONSTRAINT_SUFFIX;
+
+            modifyAttributeQueryList.add(uniqueConstraintQuery);
+            attributeRollbackQueryList.add(uniqueConstraintRollbackQuery);
+
+        }
+        else if (!attribute.getIsPrimaryKey()
+                && savedAttribute.getIsPrimaryKey())
+        {
+            String uniqueConstraintQuery = ALTER_TABLE + WHITESPACE + tableName
+                    + WHITESPACE + DROP_KEYWORD + WHITESPACE
+                    + CONSTRAINT_KEYWORD + WHITESPACE
+                    + columnName + UNDERSCORE
+                    + UNIQUE_CONSTRAINT_SUFFIX;
+            String uniqueConstraintRollbackQuery = ALTER_TABLE + WHITESPACE
+                    + tableName + WHITESPACE + ADD_KEYWORD + WHITESPACE
+                    + CONSTRAINT_KEYWORD + WHITESPACE
+                    + columnName + UNDERSCORE
+                    + UNIQUE_CONSTRAINT_SUFFIX + WHITESPACE + UNIQUE_KEYWORD + WHITESPACE + OPENING_BRACKET + columnName + CLOSING_BRACKET;
+
+            modifyAttributeQueryList.add(uniqueConstraintQuery);
+            attributeRollbackQueryList.add(uniqueConstraintRollbackQuery);
+        }
+
+        return modifyAttributeQueryList;
+    }
+
+    /**
+     * @param abstractAttribute
+     * @param abstractSavedAttribute
+     * @return
+     * @throws DynamicExtensionsSystemException
+     */
+    private boolean isAttributeChanged(Attribute attribute,
+            Attribute savedAttribute) throws DynamicExtensionsSystemException
+    {
+
+        if (!getDatabaseTypeAndSize(attribute).equals(
+                getDatabaseTypeAndSize(savedAttribute)))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private String processAddAttribute(Attribute attribute,
+            List attributeRollbackQueryList)
+            throws DynamicExtensionsSystemException,
+            DynamicExtensionsApplicationException
+    {
+
+        String columnName = attribute.getColumnProperties().getName();
+        String tableName = attribute.getEntity().getTableProperties().getName();
+
+        String newAttributeQuery = ALTER_TABLE + WHITESPACE + tableName
+                + WHITESPACE + ADD_KEYWORD + WHITESPACE
+                + getQueryPartForAbstractAttribute(attribute, true);
+
+        String newAttributeRollbackQuery = ALTER_TABLE + WHITESPACE + tableName
+                + WHITESPACE + DROP_KEYWORD + WHITESPACE + COLUMN_KEYWORD
+                + WHITESPACE + columnName;
+
+        attributeRollbackQueryList.add(newAttributeRollbackQuery);
+
+        return newAttributeQuery;
+    }
 }

@@ -28,8 +28,11 @@ public abstract class Attribute extends AbstractAttribute implements AttributeIn
 	/**
 	 * Specifies whether this is a primary key.
 	 */
-	protected Boolean isPrimaryKey;
-   
+	protected Boolean isPrimaryKey = new Boolean(false);
+   /**
+    * Specifies whether the column is nullable or not
+    */
+    protected Boolean isNullable = new Boolean(true);
 	
 	/**
 	 * Column property associated to this primitive attribute.
@@ -190,5 +193,22 @@ public abstract class Attribute extends AbstractAttribute implements AttributeIn
             dataElementCollection   = new HashSet();
         }
         this.dataElementCollection .add(dataElementInterface);
+    }
+
+
+    /**
+     * @hibernate.property name="isNullable" type="boolean" column="IS_NULLABLE" 
+     * @return Returns the isNullable.
+     */
+    public Boolean getIsNullable()
+    {
+        return isNullable;
+    }
+
+
+    
+    public void setIsNullable(Boolean isNullable)
+    {
+        this.isNullable = isNullable;
     }
 }

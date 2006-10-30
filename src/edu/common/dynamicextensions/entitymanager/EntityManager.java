@@ -1150,7 +1150,12 @@ public class EntityManager
         }
     }
     
-    
+    /**
+     * 
+     * @param attribute
+     * @param value
+     * @return
+     */
     private String getFormattedValue(AbstractAttribute attribute, Object value)
     {
         String formattedvalue = null;
@@ -1344,6 +1349,15 @@ public class EntityManager
         return entity;
     }
 
+    /**
+     * This method is used by create as well as edit entity methods. This method holds all the common part 
+     * related to saving the entity into the database and also handling the exceptions .
+     * @param entityInterface Entity to be stored in the database.
+     * @param isNew flag for whether it is a save or update.
+     * @return Entity . Stored instance of the entity.
+     * @throws DynamicExtensionsApplicationException System exception in case of any fatal errors.
+     * @throws DynamicExtensionsSystemException Thrown in case of duplicate name or authentication failure.
+     */
     private Entity saveOrUpdateEntity(EntityInterface entityInterface,
             boolean isNew) throws DynamicExtensionsApplicationException,
             DynamicExtensionsSystemException
@@ -1443,6 +1457,16 @@ public class EntityManager
         return entity;
     }
 
+    /**
+     * This method is used to execute the data table queries for entity in case of editing the entity.
+     * This method takes each attribute of the entity and then scans for any changes and builds the alter query
+     * for each attribute for the entity.
+     * @param entity Entity for which to generate and execute the alter queries.
+     * @param databaseCopy Old database copy of the entity.
+     * @return Stack Stack holding the rollback queries in case of any exception
+     * @throws DynamicExtensionsSystemException System exception in case of any fatal error
+     * @throws DynamicExtensionsApplicationException Thrown in case of authentication failure or duplicate name.
+     */
     private Stack executeUpdateDataTableQueries(Entity entity,
             Entity databaseCopy) throws DynamicExtensionsSystemException,
             DynamicExtensionsApplicationException
@@ -1492,6 +1516,18 @@ public class EntityManager
         return rollBackQueryStack;
     }
 
+    /**
+     * This method takes the edited attribtue and its database copy and then looks for any change
+     * Changes that are tracked in terms of data table query are 
+     * Change in the constraint NOT NULL AND UNIQUE
+     * <BR> Change in the database type of the column.
+     * @param attribute edited Attribute 
+     * @param savedAttribute original database copy of the edited attribute.
+     * @param attributeRollbackQueryList This list is updated with the roll back queries for the actual queries.
+     * @return List list of strings which hold the queries for the changed attribute.
+     * @throws DynamicExtensionsSystemException
+     * @throws DynamicExtensionsApplicationException
+     */
     private List processModifyAttribute(Attribute attribute,
             Attribute savedAttribute, List attributeRollbackQueryList)
             throws DynamicExtensionsSystemException,
@@ -1580,7 +1616,8 @@ public class EntityManager
         return modifyAttributeQueryList;
     }
 
-    /**
+    /**This method returns true if the new attribute is actually changed with regards to its database copy.
+     * Otherwise it returns false.
      * @param abstractAttribute
      * @param abstractSavedAttribute
      * @return
@@ -1599,6 +1636,14 @@ public class EntityManager
         return false;
     }
 
+    /**
+     * This method builds the query part for the newly added attribute.
+     * @param attribute Newly added attribute in the entity.
+     * @param attributeRollbackQueryList This list is updated with the rollback queries for the actual queries.
+     * @return Srting The actual query part for the new attribute.
+     * @throws DynamicExtensionsSystemException
+     * @throws DynamicExtensionsApplicationException
+     */
     private String processAddAttribute(Attribute attribute,
             List attributeRollbackQueryList)
             throws DynamicExtensionsSystemException,

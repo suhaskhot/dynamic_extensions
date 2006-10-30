@@ -365,6 +365,7 @@ create table DYEXTN_PRIMITIVE_ATTRIBUTE (
    IS_COLLECTION number(1,0),
    IS_IDENTIFIED number(1,0),
    IS_PRIMARY_KEY number(1,0),
+   IS_NULLABLE number(1,0),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_ASSOCIATION (
@@ -449,3 +450,4 @@ create sequence DYEXTN_VIEW_SEQ;
 create sequence DYEXTN_CONTROL_SEQ;
 create sequence DYEXTN_RULE_SEQ;
 create sequence DYEXTN_DATA_ELEMENT_SEQ;
+;

@@ -3,7 +3,7 @@ package edu.common.dynamicextensions.domain.userinterface;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface;
-import edu.common.dynamicextensions.ui.util.ControlMiscellaneous;
+import edu.common.dynamicextensions.ui.util.ControlsUtility;
 
 /**
  * @version 1.0
@@ -30,7 +30,7 @@ public class DatePicker extends Control implements DatePickerInterface
 		String defaultValue = this.value;
 		if (value == null)
 		{
-			defaultValue = ControlMiscellaneous.getDefaultValue(this.getAbstractAttribute());
+			defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
 		}
 
 		String output = "<input class='" + cssClass + "' " + " name='" + getHTMLComponentName() + "'  id='" + getHTMLComponentName() + "' "
@@ -49,8 +49,6 @@ public class DatePicker extends Control implements DatePickerInterface
 	 */
 	public void setAttribute(AbstractAttributeInterface attributeInterface)
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 }

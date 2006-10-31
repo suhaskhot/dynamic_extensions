@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.entitymanager;
 
 import java.text.ParseException;
@@ -28,22 +29,24 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
  * This Class is a mock class to test EntityManager
  * @author chetan_patil
  */
-public class MockEntityManager 
+public class MockEntityManager
 {
 	int identifier = 1;
 	int sequence = 1;
+
 	/**
 	 * This method returns the manually created Entities.
 	 * 
 	 * @return The Collection of Entities
 	 * @throws DynamicExtensionsApplicationException If Entities can't be created
 	 */
-	public Collection getAllEntities() throws DynamicExtensionsApplicationException 
+	@SuppressWarnings("unchecked")
+	public Collection getAllEntities() throws DynamicExtensionsApplicationException
 	{
 		/**
 		 * This is dummy Entity Class
 		 */
-		final class DummyEntity 
+		final class DummyEntity
 		{
 			private String entityName;
 			Date createdDate;
@@ -53,7 +56,7 @@ public class MockEntityManager
 			 * @param entityName Name of an Entity
 			 * @param createdDate Date of Entity creation
 			 */
-			DummyEntity(String entityName, Date createdDate) 
+			DummyEntity(String entityName, Date createdDate)
 			{
 				this.entityName = entityName;
 				this.createdDate = createdDate;
@@ -68,27 +71,21 @@ public class MockEntityManager
 		/* Create dummy entities */
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		DummyEntity[] dummyEntities = null;
-		try 
+		try
 		{
-			dummyEntities = new DummyEntity[]{
-					new DummyEntity("Pathology Entity", dateFormat
-							.parse("2006-10-15 14:15:20")),
-					new DummyEntity("Health Annotation", dateFormat
-							.parse("2006-10-16 14:16:21")),
-					new DummyEntity("Pathology Entity", dateFormat
-							.parse("2006-10-17 14:17:22")),
-					new DummyEntity("Pathology Entity", dateFormat
-							.parse("2006-10-18 14:18:23")),
-					new DummyEntity("Pathology Entity", dateFormat
-							.parse("2006-10-19 14:19:24")),};
-		} 
-		catch (ParseException parseException) 
+			dummyEntities = new DummyEntity[]{new DummyEntity("Pathology Entity", dateFormat.parse("2006-10-15 14:15:20")),
+					new DummyEntity("Health Annotation", dateFormat.parse("2006-10-16 14:16:21")),
+					new DummyEntity("Pathology Entity", dateFormat.parse("2006-10-17 14:17:22")),
+					new DummyEntity("Pathology Entity", dateFormat.parse("2006-10-18 14:18:23")),
+					new DummyEntity("Pathology Entity", dateFormat.parse("2006-10-19 14:19:24")),};
+		}
+		catch (ParseException parseException)
 		{
 			throw new DynamicExtensionsApplicationException("Cannot create Dummy Entities.", parseException);
 		}
 
 		/* Populate all dummy entities into a Collection */
-		for (int i = 0; i < dummyEntities.length; i++) 
+		for (int i = 0; i < dummyEntities.length; i++)
 		{
 			entityInterface = domainObjectFactory.createEntity();
 
@@ -101,27 +98,6 @@ public class MockEntityManager
 		return entityInterfaceCollection;
 	}
 
-//	/**
-//	 * This method returns a Dummy Entity populated with a Dummy
-//	 * StringAttribute.
-//	 * 
-//	 * @return Entity instance
-//	 */
-//	public Entity createEntity() 
-//	{
-//		Entity entity = new Entity();
-//		entity.setId(new Long(1));
-//		entity.setDescription("Dummy description");
-//		entity.setName("EntityOne");
-//		Collection abstractAttributeCollection = new HashSet();
-//		StringAttribute strAttr = new StringAttribute();
-//		strAttr.setDescription("description");
-//		strAttr.setEntity(entity);
-//		abstractAttributeCollection.add(strAttr);
-//		entity.setAbstractAttributeCollection(abstractAttributeCollection);
-//		return entity;
-//	}
-
 	/**
 	 * This method returns a dummy Container instance populated with dummy
 	 * Controls, Entity and its attributes.	 * 
@@ -129,13 +105,13 @@ public class MockEntityManager
 	 * @return Container instance
 	 * @throws DynamicExtensionsApplicationException On failure to create Container instance
 	 */
-	public ContainerInterface getContainer(String containerName) throws DynamicExtensionsApplicationException 
+	public ContainerInterface getContainer(String containerName) throws DynamicExtensionsApplicationException
 	{
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		ContainerInterface containerInterface = null;
 		ControlInterface controlInterface = null;
 		EntityInterface entityInterface = null;
-		
+
 		containerInterface = domainObjectFactory.createContainer();
 		containerInterface.setButtonCss("actionButton");
 		containerInterface.setCaption("DummyContainer");
@@ -143,28 +119,28 @@ public class MockEntityManager
 		containerInterface.setRequiredFieldIndicatior("*");
 		containerInterface.setRequiredFieldWarningMessage("indicates mandatory fields.");
 		containerInterface.setTitleCss("formTitle");
-		
+
 		entityInterface = initializeEntity();
 		containerInterface.setEntity(entityInterface);
 
 		Collection abstractAttributeCollection = entityInterface.getAbstractAttributeCollection();
 		Iterator abstractAttributeCollectionIterator = abstractAttributeCollection.iterator();
-		while(abstractAttributeCollectionIterator.hasNext())
+		while (abstractAttributeCollectionIterator.hasNext())
 		{
-			AttributeInterface attributeInterface = (AttributeInterface)abstractAttributeCollectionIterator.next();
-			if(attributeInterface.getName().equals("name"))
+			AttributeInterface attributeInterface = (AttributeInterface) abstractAttributeCollectionIterator.next();
+			if (attributeInterface.getName().equals("name"))
 			{
 				controlInterface = initializeTextField(attributeInterface);
 			}
-			else if(attributeInterface.getName().equals("description"))
+			else if (attributeInterface.getName().equals("description"))
 			{
 				controlInterface = initializeTextArea(attributeInterface);
 			}
-			else if(attributeInterface.getName().equals("dateOfJoining"))
+			else if (attributeInterface.getName().equals("dateOfJoining"))
 			{
 				controlInterface = initializeDatePicker(attributeInterface);
 			}
-			else if(attributeInterface.getName().equals("gender"))
+			else if (attributeInterface.getName().equals("gender"))
 			{
 				controlInterface = initializeComboBox(attributeInterface);
 			}
@@ -179,13 +155,12 @@ public class MockEntityManager
 	 * @return Manually created dummy Entity along with its attributes
 	 * @throws DynamicExtensionsApplicationException On failure to create Entity 
 	 */
-	public EntityInterface initializeEntity() throws DynamicExtensionsApplicationException 
+	public EntityInterface initializeEntity() throws DynamicExtensionsApplicationException
 	{
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		AbstractAttributeInterface abstractAttributeInterface = null;
-		
-		
-		EntityInterface dummyEntity = domainObjectFactory.createEntity(); 
+
+		EntityInterface dummyEntity = domainObjectFactory.createEntity();
 
 		dummyEntity.setName("Employee");
 		dummyEntity.setCreatedDate(new Date());
@@ -195,7 +170,7 @@ public class MockEntityManager
 		/* Name attribute */
 		abstractAttributeInterface = initializeStringAttribute("name", "William James Bill Murray");
 		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
-	
+
 		/* Date of Joining attribute */
 		abstractAttributeInterface = initializeDateAttribute();
 		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
@@ -204,12 +179,11 @@ public class MockEntityManager
 		abstractAttributeInterface = initializeStringAttribute("gender", "Male");
 		((AttributeInterface) abstractAttributeInterface).setDataElement(initializeDataElement());
 		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
-		
+
 		/* Description attribute */
-		abstractAttributeInterface = initializeStringAttribute("description",
-				"William James Bill Murray is an Academy Award-nominated");
+		abstractAttributeInterface = initializeStringAttribute("description", "William James Bill Murray is an Academy Award-nominated");
 		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
-	
+
 		return dummyEntity;
 	}
 
@@ -219,11 +193,11 @@ public class MockEntityManager
 	 * @param defaultValue Default value of the Attribute
 	 * @return Manually created StringAttribute instance
 	 */
-	public AttributeInterface initializeStringAttribute(String attributeName, String defaultValue) 
+	public AttributeInterface initializeStringAttribute(String attributeName, String defaultValue)
 	{
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
-		StringAttributeInterface stringAttributeInterface = domainObjectFactory.createStringAttribute(); 
-		
+		StringAttributeInterface stringAttributeInterface = domainObjectFactory.createStringAttribute();
+
 		stringAttributeInterface.setCreatedDate(new Date());
 		stringAttributeInterface.setDescription("This is a dummy StringAttribute");
 		stringAttributeInterface.setIsCollection(new Boolean(false));
@@ -249,11 +223,11 @@ public class MockEntityManager
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		DateAttributeInterface dateAttributeInterface = domainObjectFactory.createDateAttribute();
 		Date dateOfJoining = null;
-		try 
+		try
 		{
 			dateOfJoining = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("1983-10-21 14:15:20");
-		} 
-		catch (ParseException parseException) 
+		}
+		catch (ParseException parseException)
 		{
 			throw new DynamicExtensionsApplicationException("Cannot create DateAttribute", parseException);
 		}
@@ -279,12 +253,12 @@ public class MockEntityManager
 		final int COLUMNS = 50;
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		TextFieldInterface textFieldInterface = domainObjectFactory.createTextField();
-		
+
 		textFieldInterface.setAbstractAttribute(abstractAttributeInterface);
-		
+
 		textFieldInterface.setColumns(new Integer(COLUMNS));
 		textFieldInterface.setIsPassword(new Boolean(false));
-		
+
 		textFieldInterface.setCaption("Employee Name");
 		textFieldInterface.setSequenceNumber(new Integer(sequence++));
 		textFieldInterface.setIsHidden(new Boolean(false));
@@ -293,7 +267,7 @@ public class MockEntityManager
 
 		return textFieldInterface;
 	}
-	
+
 	/**
 	 * @param abstractAttributeInterface Assosiated Attribute of the Entity
 	 * @return Manually created TextArea control instance
@@ -304,12 +278,12 @@ public class MockEntityManager
 		final int ROWS = 6;
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		TextAreaInterface textAreaInterface = domainObjectFactory.createTextArea();
-		
+
 		textAreaInterface.setAbstractAttribute(abstractAttributeInterface);
-		
+
 		textAreaInterface.setColumns(new Integer(COLUMNS));
 		textAreaInterface.setRows(new Integer(ROWS));
-		
+
 		textAreaInterface.setCaption("Description");
 		textAreaInterface.setSequenceNumber(new Integer(sequence++));
 		textAreaInterface.setIsHidden(new Boolean(false));
@@ -318,7 +292,7 @@ public class MockEntityManager
 
 		return textAreaInterface;
 	}
-	
+
 	/**
 	 * @param abstractAttributeInterface Assosiated Attribute of the Entity
 	 * @return Manually created TextArea control instance
@@ -327,9 +301,9 @@ public class MockEntityManager
 	{
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		DatePickerInterface datePickerInterface = domainObjectFactory.createDatePicker();
-		
+
 		datePickerInterface.setAbstractAttribute(abstractAttributeInterface);
-		
+
 		datePickerInterface.setCaption("Date of Joining");
 		datePickerInterface.setSequenceNumber(new Integer(sequence++));
 		datePickerInterface.setIsHidden(new Boolean(false));
@@ -338,7 +312,7 @@ public class MockEntityManager
 
 		return datePickerInterface;
 	}
-	
+
 	/**
 	 * @param abstractAttributeInterface Assosiated Attribute of the Entity
 	 * @return Manually created TextArea control instance
@@ -347,9 +321,9 @@ public class MockEntityManager
 	{
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		ComboBoxInterface comboBoxInterface = domainObjectFactory.createComboBox();
-		
+
 		comboBoxInterface.setAbstractAttribute(abstractAttributeInterface);
-		
+
 		comboBoxInterface.setCaption("Gender");
 		comboBoxInterface.setSequenceNumber(new Integer(sequence));
 		comboBoxInterface.setIsHidden(new Boolean(false));
@@ -358,29 +332,29 @@ public class MockEntityManager
 
 		return comboBoxInterface;
 	}
-	
+
 	/**
 	 * @return Manually created DataElement instance
 	 */
 	public DataElementInterface initializeDataElement()
 	{
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
-		UserDefinedDEInterface userDefinedDEInterface = domainObjectFactory.createUserDefinedDE(); 
-			//new UserDefinedDE();
-		
+		UserDefinedDEInterface userDefinedDEInterface = domainObjectFactory.createUserDefinedDE();
+		//new UserDefinedDE();
+
 		StringValueInterface stringValueInterface = null;
-		
+
 		/* First Value */
 		stringValueInterface = domainObjectFactory.createStringValue();
 		stringValueInterface.setValue("Male");
 		userDefinedDEInterface.addPermissibleValue(stringValueInterface);
-				
+
 		/* Second Value */
 		stringValueInterface = domainObjectFactory.createStringValue();
 		stringValueInterface.setValue("Female");
 		userDefinedDEInterface.addPermissibleValue(stringValueInterface);
-		
+
 		return userDefinedDEInterface;
 	}
-	
+
 }

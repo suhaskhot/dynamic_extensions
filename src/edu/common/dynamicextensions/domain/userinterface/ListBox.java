@@ -6,7 +6,7 @@ import java.util.List;
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
-import edu.common.dynamicextensions.ui.util.ControlMiscellaneous;
+import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.wustl.common.beans.NameValueBean;
 
 /**
@@ -76,12 +76,12 @@ public class ListBox extends Control implements ListBoxInterface
 
 		if (this.value == null)
 		{
-			defaultValue = ControlMiscellaneous.getDefaultValue(this.getAbstractAttribute());
+			defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
 		}
 
 		if (listOfValues == null)
 		{
-			nameValueBeanList = ControlMiscellaneous.populateListOfValues((AttributeInterface)this.getAbstractAttribute());
+			nameValueBeanList = ControlsUtility.populateListOfValues((AttributeInterface)this.getAbstractAttribute());
 		}
 
 		for (NameValueBean nameValueBean : nameValueBeanList)

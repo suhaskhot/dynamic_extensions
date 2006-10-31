@@ -3,7 +3,7 @@ package edu.common.dynamicextensions.domain.userinterface;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
-import edu.common.dynamicextensions.ui.util.ControlMiscellaneous;
+import edu.common.dynamicextensions.ui.util.ControlsUtility;
 
 /**
  * @version 1.0
@@ -35,7 +35,7 @@ public class RadioButton extends Control implements RadioButtonInterface
 		String isChecked = this.value;
 		if (this.value == null)
 		{
-			isChecked = ControlMiscellaneous.getDefaultValue(this.getAbstractAttribute());
+			isChecked = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
 		}
 
 		if (isChecked.equalsIgnoreCase("true"))

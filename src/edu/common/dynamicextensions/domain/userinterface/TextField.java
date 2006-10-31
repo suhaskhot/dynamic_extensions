@@ -3,7 +3,7 @@ package edu.common.dynamicextensions.domain.userinterface;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
-import edu.common.dynamicextensions.ui.util.ControlMiscellaneous;
+import edu.common.dynamicextensions.ui.util.ControlsUtility;
 
 /**
  * @version 1.0
@@ -78,7 +78,7 @@ public class TextField extends Control implements TextFieldInterface
 		String defaultValue = this.value;
 		if (this.value == null)
 		{
-			defaultValue = ControlMiscellaneous.getDefaultValue(this.getAbstractAttribute());
+			defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
 		}
 		
 		String htmlString = "<input " + "class = '" + cssClass + "' " + "name = '" + getHTMLComponentName() + "' " + "id = '"

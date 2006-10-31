@@ -3,7 +3,7 @@ package edu.common.dynamicextensions.domain.userinterface;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
-import edu.common.dynamicextensions.ui.util.ControlMiscellaneous;
+import edu.common.dynamicextensions.ui.util.ControlsUtility;
 
 /**
  * @version 1.0
@@ -73,7 +73,7 @@ public class TextArea extends Control implements TextAreaInterface
 		String defaultValue = this.value;
 		if (this.value == null)
 		{
-			defaultValue = ControlMiscellaneous.getDefaultValue(this.getAbstractAttribute());
+			defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
 		}
 		
 		String htmlString = "<textarea " + "class = '" + this.cssClass + "' " + "name = '" + getHTMLComponentName() + "' " + "id = '" + getHTMLComponentName() + "' " + "cols = '"

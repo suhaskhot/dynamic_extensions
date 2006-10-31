@@ -1,6 +1,3 @@
-<%-- Jsp Summary                                                                                 	--%>
-<%-- This shows forms' list and also allows user to add a new form or Deletion of a form.           --%>
-<%-- @author : chetan_patil--%>
 
 <%-- TagLibs --%>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
@@ -25,12 +22,10 @@
 		<title><bean:message key="table.heading" /></title>
 	</head>
 
-
 	<html:form styleId='formsIndexForm' action='/ApplyFormsIndexAction'>
 	<body>
 		<c:set var="entityCollection" value="${formsIndexForm.entityCollection}"/>
  		<jsp:useBean id="entityCollection" type="java.util.Collection"/>
-
 		<table width='70%' align='center' cellspacing="5" cellspacing="0" border='0'>
 			<tr class="formMessage">
 				<td>
@@ -74,74 +69,29 @@
 									<bean:message key="table.date" />
 								</th>
 
-								<th width="15%" align='left'>
+								<!--  <th width="15%" align='left'>
 									<bean:message key="table.description" />
 								</th>
-								<!-- <th width="15%" align='left'>
+								-->
+								 <th width="15%" align='left'>
 									<bean:message key="table.createdBy" />
 								</th>
 
 								<th width="10%" align='left'>
 									<bean:message key="table.status" />
-								</th>-->
+								</th>
 							</tr>
 
-							<%
-								int i = 0;
-								EntityInterface entityInterface = null;
-								String name = "";
-								String description = "";
-								String createdDate = "&nbsp;";
-
-								if(entityCollection != null)
-								{
-									Iterator entityIterator = entityCollection.iterator();
-									while(entityIterator.hasNext())
-									{
-										entityInterface = (EntityInterface)entityIterator.next();
-										if(entityInterface.getName() != null)
-										{
-											name = entityInterface.getName();
-										}
-										if(entityInterface.getCreatedDate() != null)
-										{
-											createdDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(entityInterface.getCreatedDate());
-										}
-										if(entityInterface.getDescription() != null)
-										{
-											description = entityInterface.getDescription();
-										}
-							%>
-
-								<tr class="formRequiredNotice">
-									<td align='center'>
-										<!--  <input type='checkbox' />-->
-											<%=i+1%>
-									</td>
-
-									<td>
-										<%= name%>
-									</td>
-
-									<td>
-										<%= createdDate%>
-									</td>
-
-									<td>
-										<%=description %>
-									</td>	
-									<!-- <td> Robert Lloyd </td>
-
-									<td> In Progress </td>
-									-->
-								</tr>
-
-							<%
-										i++;
-									}
-								}
-							%>
-
+							<c:forEach items="${entityCollection}" var="entityInterface" varStatus="elements">
+								<jsp:useBean id="entityInterface" type="edu.common.dynamicextensions.domaininterface.EntityInterface" />
+								<tr>
+									<td> <c:out value='${elements.count}' /></td>
+									<td><c:out value='${entityInterface.name}' /></td>
+									<td><c:out value='${entityInterface.createdDate}'/> </td>
+									<td><c:out value='admin'/></td>
+									<td><c:out value='In Progress' /></td>
+							</tr>
+							</c:forEach>
 						</table>
 					</div>
 				</td>

@@ -1,0 +1,56 @@
+<controls>
+	<control name="TextControl" displayLabel="eav.caption.TextControlCaption" jspName="TextControl.jsp">
+	<validations>
+			<validation-rule name="required"></validation-rule>
+	</validations>
+	<datatypes>
+		<dataType name="Text">
+			<validations>
+				<validation-rule name=""></validation-rule>
+			</validations>
+		</dataType>
+		<dataType name="Number" >
+			<validations>
+				<validation-rule name=""></validation-rule>
+			</validations>
+		</dataType>
+	</datatypes>
+	</control>
+	
+	<control name="ComboboxControl" displayLabel="eav.caption.ComboboxControlCaption" jspName="ComboboxControl.jsp">
+	<validations>
+			<validation-rule name="required"></validation-rule>
+	</validations>
+	<datatypes>
+		<dataType name="Text">
+			<validations>
+			<validation-rule name=""></validation-rule>
+			</validations>
+		</dataType>
+		<dataType name="Number" >
+			<validations>
+			<validation-rule name=""></validation-rule>
+			</validations>
+		</dataType>
+		<dataType name="Yes/No" >
+			<validations>
+			<validation-rule name=""></validation-rule>
+			</validations>
+		</dataType>
+	</datatypes>
+	</control>
+	
+	<control name="DateControl" displayLabel="eav.caption.DateControlCaption" jspName="DateControl.jsp">
+	<validations>
+			<validation-rule name="required"></validation-rule>
+	</validations>
+	<datatypes>
+		<dataType name="Date">
+			<validations>
+				<validation-rule name="date"></validation-rule>			
+			</validations>
+		</dataType>
+	</datatypes>
+	</control>
+	
+</controls>

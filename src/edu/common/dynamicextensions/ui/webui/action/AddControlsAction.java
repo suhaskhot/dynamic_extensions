@@ -16,7 +16,7 @@ import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.util.global.Constants;
 
-/*
+/**
  * This class is executed when user selects 'Add to Form'.
  * The exception thrown can be of 'Application' type ,in this case the same Screen will be displayed  
  * added with error messages .

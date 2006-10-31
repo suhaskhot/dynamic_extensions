@@ -13,7 +13,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterfa
 import edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
-import edu.common.dynamicextensions.ui.util.ControlAttributeMappingsFactory;
+import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.UIControlsConfigurationFactory;
 import edu.wustl.common.actionForm.AbstractActionForm;
@@ -70,8 +70,8 @@ public class LoadFormControlsProcessor
 				controlsForm.setUserSelectedTool(userSelectedTool);
 				controlsForm.setDisplayChoice(ProcessorConstants.DEFAULT_DISPLAY_CHOICE_TYPE);
 				
-				ControlAttributeMappingsFactory controlAttributeMappingsFactory = ControlAttributeMappingsFactory.getInstance();
-				controlsForm.setDataTypeList(controlAttributeMappingsFactory.getAttributesForControl(controlsForm.getUserSelectedTool()));
+				ControlConfigurationsFactory controlConfigurationsFactory = ControlConfigurationsFactory.getInstance();
+				controlsForm.setDataTypeList(controlConfigurationsFactory.getControlsDataTypes(controlsForm.getUserSelectedTool()));
 				controlsForm.setDataType(ProcessorConstants.DEFAULT_DATA_TYPE);
 				controlsForm.setLinesType(ProcessorConstants.DEFAULT_LINE_TYPE);
 				controlsForm.setAttributeMultiSelect(ProcessorConstants.DEFAULT_LIST_TYPE);
@@ -107,8 +107,8 @@ public class LoadFormControlsProcessor
 			}
 
 			//controlsForm.setDataTypeList(getDataTypeList());
-			ControlAttributeMappingsFactory controlAttributeMappingsFactory = ControlAttributeMappingsFactory.getInstance(); 
-			controlsForm.setDataTypeList(controlAttributeMappingsFactory.getAttributesForControl(controlsForm.getUserSelectedTool()));
+			ControlConfigurationsFactory controlConfigurationsFactory = ControlConfigurationsFactory.getInstance(); 
+			controlsForm.setDataTypeList(controlConfigurationsFactory.getControlsDataTypes(controlsForm.getUserSelectedTool()));
 			controlsForm.setDisplayChoiceList(getDisplayChoiceList());
 			//Set Entity Name as root
 			EntityInterface entity = containerInterface.getEntity();

@@ -244,5 +244,16 @@ interface EntityManagerInterface
             ContainerInterface containerInterface)
             throws DynamicExtensionsApplicationException,
             DynamicExtensionsSystemException;
+    
+    
+    /**
+     * Returns a particular record for the given recordId of the given entityId
+     * @param entityId
+     * @param recordId
+     * @return Map key - attribute name 
+     *             value - attribute value  
+     */
+    Map getRecordById(EntityInterface entity, Long recordId) throws DynamicExtensionsSystemException,
+    DynamicExtensionsApplicationException;
 
 }

@@ -1668,4 +1668,12 @@ public class EntityManager
 
         return newAttributeQuery;
     }
+
+	/**
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getRecordById(edu.common.dynamicextensions.domaininterface.EntityInterface, java.lang.Long)
+	 */
+	public Map getRecordById(EntityInterface entity, Long recordId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		return null;
+	}
 }

@@ -397,7 +397,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 		}
 		dateAttributeIntf.setDefaultValue(defaultValue);
-		dateAttributeIntf.setFormat(attributeInformationIntf.getFormat());
+		//dateAttributeIntf.setFormat(attributeInformationIntf.getFormat());
+		dateAttributeIntf.setFormat(Constants.DATE_PATTERN_MM_DD_YYYY);
 	}
 
 	/**

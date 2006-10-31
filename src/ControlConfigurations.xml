@@ -1,53 +1,53 @@
 <controls>
-	<control name="TextControl" displayLabel="eav.caption.TextControlCaption" jspName="TextControl.jsp">
+	<control name="TextControl" display-label="eav.caption.TextControlCaption" jspName="TextControl.jsp">
 	<validations>
-			<validation-rule name="required"></validation-rule>
+			<common-validation-rule name="required" isImplicit="false"></common-validation-rule>
 	</validations>
 	<datatypes>
 		<dataType name="Text">
 			<validations>
-				<validation-rule name=""></validation-rule>
+				<validation-rule name="" isImplicit="false"></validation-rule>
 			</validations>
 		</dataType>
 		<dataType name="Number" >
 			<validations>
-				<validation-rule name=""></validation-rule>
+				<validation-rule name="" isImplicit="false"></validation-rule>
 			</validations>
 		</dataType>
 	</datatypes>
 	</control>
 	
-	<control name="ComboboxControl" displayLabel="eav.caption.ComboboxControlCaption" jspName="ComboboxControl.jsp">
+	<control name="ComboboxControl" display-label="eav.caption.ComboboxControlCaption" jspName="ComboboxControl.jsp">
 	<validations>
-			<validation-rule name="required"></validation-rule>
+			<common-validation-rule name="required"></common-validation-rule>
 	</validations>
 	<datatypes>
 		<dataType name="Text">
 			<validations>
-			<validation-rule name=""></validation-rule>
+			<validation-rule name="" isImplicit="false"></validation-rule>
 			</validations>
 		</dataType>
 		<dataType name="Number" >
 			<validations>
-			<validation-rule name=""></validation-rule>
+			<validation-rule name="" isImplicit="false"></validation-rule>
 			</validations>
 		</dataType>
 		<dataType name="Yes/No" >
 			<validations>
-			<validation-rule name=""></validation-rule>
+			<validation-rule name="" isImplicit="false"></validation-rule>
 			</validations>
 		</dataType>
 	</datatypes>
 	</control>
 	
-	<control name="DateControl" displayLabel="eav.caption.DateControlCaption" jspName="DateControl.jsp">
+	<control name="DateControl" display-label="eav.caption.DateControlCaption" jspName="DateControl.jsp">
 	<validations>
-			<validation-rule name="required"></validation-rule>
+			<common-validation-rule name="required" isImplicit="false"></common-validation-rule>
 	</validations>
 	<datatypes>
 		<dataType name="Date">
 			<validations>
-				<validation-rule name="date"></validation-rule>			
+				<validation-rule name="date" isImplicit="false"></validation-rule>			
 			</validations>
 		</dataType>
 	</datatypes>

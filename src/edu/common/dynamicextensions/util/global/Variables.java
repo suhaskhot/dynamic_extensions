@@ -20,4 +20,5 @@ public class Variables extends edu.wustl.common.util.global.Variables
     public static Vector databaseDefinitions=new Vector();
     public static String databaseDriver=new String();
     public static String[] databasenames;
+    public static boolean containerFlag = true;
 }

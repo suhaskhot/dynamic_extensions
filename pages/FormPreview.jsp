@@ -29,12 +29,56 @@
 
 	<body onload="loadPreviewForm()">
 		<html:form styleId = "previewForm" action="/LoadFormPreviewAction" enctype="multipart/form-data" >
-			<html:hidden property="entitySaved" />
+		<html:errors />
+				<html:hidden property="entitySaved" />
 			<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
+<table valign="top"  align='left' width='90%' height="90%" border='0' cellspacing="0" cellpadding="0" class="tbBorders1" >
+ <!-- Main Page heading -->
+ <tr><td class="formFieldSized1" ><bean:message key="app.title.MainPageTitle" /></td></tr>
+	  <tr>
+		<td valign="top" >
+		 <table valign="top" summary="" align='left' width='100%' cellspacing="0" cellpadding="3"  >
+			<tr >
+				<td class="formTitle" align='left' colspan="3" >
+				<!-- Menu tabs -->
+					 <table valign="top" summary="" cellpadding="0" cellspacing="0" border="0" height="5%">
+								 <tr>
+								   <!-- link 1 begins -->
+								   <td height="20" class="mainMenuItem" onmouseover="changeMenuStyle(this,'mainMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'mainMenuItem'),hideCursor()" >
+									 <a href="pages/DefineGroup.jsp" class="mainMenuLink"><bean:message key="app.title.DefineGroupTabTitle" /></a>
+								   </td>
+								   <!-- link 1 ends -->
+								   <td><img src="images/mainMenuSeparator.gif" width="1" height="16" alt="" /></td>
+								  <!-- link 2 begins -->
+								  <td height="20" class="mainMenuItem" onmouseout="changeMenuStyle(this,'mainMenuItem'),hideCursor()"  onmouseover="changeMenuStyle(this,'mainMenuItemOver'),showCursor()" >
+									  <a href="#" class="mainMenuLink"><bean:message key="app.title.DefineFormTabTitle" /></a>
+								   </td>
+								   <!-- link 2 ends -->
+									<td><img src="images/mainMenuSeparator.gif" width="1" height="16" alt="" /></td>
 
+								   <!-- link 3 begins -->
+									<td height="20" class="mainMenuItem" onmouseover="changeMenuStyle(this,'mainMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'mainMenuItem'),hideCursor()" >
+										<a href="#" onclick="javascript:backToControlForm()" class="mainMenuLink"><bean:message key="app.title.BuildFormTabTitle" /></a>
+								   </td>
+
+								  <!-- link 3 ends -->
+								   <td><img src="images/mainMenuSeparator.gif" width="1" height="16" alt="" /></td>
+								  <!-- link 4 begins -->
+								   <td height="20" class="mainMenuItemSelected" >
+									 <a href="#" class="mainMenuLink"><bean:message key="app.title.PreviewTabTitle" /></a>
+								   </td>
+								   <!-- link 4 ends -->
+								   <td><img src="images/mainMenuSeparator.gif" width="1" height="16" alt="" /></td>
+								</tr>
+						 </table>
+<!-- menu ends -->
+				 </td>
+			</tr>
+			<tr>
+			<td valign="top" >
 			<table align='center' width='80%'  >
-				<tr class="formTitle">
-					<td align="center">
+				<tr >
+					<td align="center" class="formTitle">
 						<logic:messagesPresent message="true">
 									<html:messages message="true" id="msg">
 										<bean:write name="msg" ignore="true"/>
@@ -83,7 +127,8 @@
                 	</td>
                 </tr>
             </table>
-
+            </td></tr>
+			<tr><td>
             <table cellpadding="4" cellspacing="5" border="0"  align='center'>
 			    <tr height="5">
 			    </tr>
@@ -100,7 +145,8 @@
 					</td>
 				</tr>
 			</table>
+			</td></tr>
+		</table>
 		</html:form>
 	</body>
-
 </html>

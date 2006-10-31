@@ -45,18 +45,63 @@
 
 		<html:form styleId = "controlsForm" action="/ApplyFormControlsAction" >
 		  <html:errors />
+<table valign="top"  align='left' width='90%' height="90%" border='0' cellspacing="0" cellpadding="0" class="tbBorders1" >
+         <!-- Main Page heading -->
+         <tr><td class="formFieldSized1" ><bean:message key="app.title.MainPageTitle" /></td></tr>
 
-		  	<table align = 'center' width='100%' border="1" class="formRequiredNotice" cellspacing="0" cellpadding="0" >
+	          <tr>
+	     		<td valign="top" >
+			  	 <table valign="top" summary="" align='left' width='100%' cellspacing="0" cellpadding="3"  >
+					<tr >
+						<td class="formTitle" align='left' colspan="3" >
+						<!-- Menu tabs -->
+							 <table valign="top" summary="" cellpadding="0" cellspacing="0" border="0" height="5%">
+							             <tr>
+							               <!-- link 1 begins -->
+							               <td height="20" class="mainMenuItem" onmouseover="changeMenuStyle(this,'mainMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'mainMenuItem'),hideCursor()" >
+							                 <a href="pages/DefineGroup.jsp" class="mainMenuLink"><bean:message key="app.title.DefineGroupTabTitle" /></a>
+							               </td>
+							               <!-- link 1 ends -->
+							 			   <td><img src="images/mainMenuSeparator.gif" width="1" height="16" alt="" /></td>
+							 			  <!-- link 2 begins -->
+							 			  <td height="20" class="mainMenuItem" onmouseout="changeMenuStyle(this,'mainMenuItem'),hideCursor()"  onmouseover="changeMenuStyle(this,'mainMenuItemOver'),showCursor()" >
+											  <a href="javascript:showNextActionConfirmDialog()" class="mainMenuLink"><bean:message key="app.title.DefineFormTabTitle" /></a>
+							               </td>
+							               <!-- link 2 ends -->
+							 			 	<td><img src="images/mainMenuSeparator.gif" width="1" height="16" alt="" /></td>
 
-			   <tr class="formTitle">
+							               <!-- link 3 begins -->
+							                <td height="20" class="mainMenuItemSelected" >
+										   		<a href="#" class="mainMenuLink"><bean:message key="app.title.BuildFormTabTitle" /></a>
+							               </td>
+
+							              <!-- link 3 ends -->
+							               <td><img src="images/mainMenuSeparator.gif" width="1" height="16" alt="" /></td>
+							 		      <!-- link 4 begins -->
+							               <td height="20" class="mainMenuItem" onmouseover="changeMenuStyle(this,'mainMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'mainMenuItem'),hideCursor()" >
+							                 <a href="javascript:showFormPreview()" class="mainMenuLink"><bean:message key="app.title.PreviewTabTitle" /></a>
+							               </td>
+							               <!-- link 4 ends -->
+							               <td><img src="images/mainMenuSeparator.gif" width="1" height="16" alt="" /></td>
+							 			</tr>
+							     </table>
+<!-- menu ends -->
+						 </td>
+			   		</tr>
+			<tr><td ><%=rootName%> </td></tr>
+
+			<tr>
+			<td valign="top" >
+		  	<table align = 'center' width='100%'  class="tbBorders1" cellspacing="0" cellpadding="0" >
+
+			   <!--<tr class="formTitle">
 			   		<td colspan="3" align="center">
 			   			<bean:message  key="app.formControlsPage.heading" />
 			   		</td>
-			   	</tr>
-				<tr><td colspan="3" >&nbsp;</td></tr>
+			   	</tr>-->
 				<tr>
 					<td class="formFieldSized1" >
-						<bean:message  key="app.formControlsToolBox.heading" />
+						&nbsp;
 					</td>
 
 					<td class="formFieldSized1" >
@@ -78,12 +123,12 @@
 				   		 </dynamicExtensions:ToolsMenu>
 		  			</td>
 
-		  			<td align="top" width="70%">
+		  			<td align="top" width="70%" >
 							<jsp:include page="<%=htmlFile%>" />
 
 		  			</td>
 
-		  			<td  valign="top" >
+		  			<td  valign="top">
 						<label class="formRequiredLabel"><bean:message  key="app.FormControlsTreePageHeading" /></label>
 			  			<dynamicExtensions:tree treeDataObject="<%=treedataObj%>" />
 		  			</td>
@@ -101,7 +146,10 @@
 					 </td>
 				</tr>
 		</table>
-
+		</td>
+		</tr>
+		<tr>
+		<td valign="top" >
 		 <table summary="" align = 'left' cellpadding="5" cellspacing="0"  class='bodyStyle'>
 		    <tr height="5">
 
@@ -137,7 +185,9 @@
 				</td>
 
 			</table>
-
+		</td>
+		</tr>
+		</table>
 		  	<html:hidden property="operation" value=""/>
 		  	<html:hidden property="selectedAttrib" value=""/>
 			<input type="hidden" name="entitySaved" />

@@ -641,6 +641,9 @@ public class EntityManager
         try
         {
             objectList = bizLogic.retrieve(objectName);
+            if(objectList  == null) {
+            	objectList = new HashSet();
+            }
         }
         catch (DAOException e)
         {

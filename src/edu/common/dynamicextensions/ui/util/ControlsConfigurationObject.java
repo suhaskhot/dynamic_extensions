@@ -73,4 +73,32 @@ public class ControlsConfigurationObject
 	{
 		this.dataTypesList = dataTypesList;
 	}
+	/**
+	 * @return the commonValidationRules
+	 */
+	public List getCommonValidationRules()
+	{
+		return commonValidationRules;
+	}
+	/**
+	 * @param commonValidationRules the commonValidationRules to set
+	 */
+	public void setCommonValidationRules(List commonValidationRules)
+	{
+		this.commonValidationRules = commonValidationRules;
+	}
+	/**
+	 * @return the dataTypeValidationRules
+	 */
+	public Map getDataTypeValidationRules()
+	{
+		return dataTypeValidationRules;
+	}
+	/**
+	 * @param dataTypeValidationRules the dataTypeValidationRules to set
+	 */
+	public void setDataTypeValidationRules(Map dataTypeValidationRules)
+	{
+		this.dataTypeValidationRules = dataTypeValidationRules;
+	}
 }

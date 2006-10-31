@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -28,18 +30,23 @@ import edu.wustl.common.beans.NameValueBean;
 
 /**
  * @author preeti_munot
+ * @author deepti_shelar
  *
- * Class which parses the Controls - Attributes mappings 
+ * 
  */
 public class ControlConfigurationsFactory
 {
 	private static ControlConfigurationsFactory m_instance = null;
 	private Map controlsConfigurationMap = null;
+	private Map rulesConfigurationMap = null;
 
 	private ControlConfigurationsFactory()
 	{
 		controlsConfigurationMap = new HashMap();
-		parseXML();
+		rulesConfigurationMap = new HashMap();
+		parseXML("RuleConfigurations.xml");
+		parseXML("ControlConfigurations.xml");
+		System.out.println("");
 	}
 
 	public synchronized static ControlConfigurationsFactory getInstance()
@@ -55,11 +62,9 @@ public class ControlConfigurationsFactory
 	 * Parse the XML
 	 *
 	 */
-	private void parseXML()
+	private void parseXML(String configurationFileName)
 	{
-		String configurationFileName = "ControlConfigurations.xml";
 		Document document = null;
-		//Load the XML Document
 		try
 		{
 			final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -76,7 +81,15 @@ public class ControlConfigurationsFactory
 
 						if (document != null)
 						{
-							loadControlConfigurations(document);
+							if (configurationFileName.equalsIgnoreCase("RuleConfigurations.xml"))
+							{
+								loadRuleConfigurations(document);
+							}
+							else if (configurationFileName.equalsIgnoreCase("ControlConfigurations.xml"))
+							{
+								loadControlConfigurations(document);
+							}
+
 						}
 					}
 					else
@@ -104,6 +117,114 @@ public class ControlConfigurationsFactory
 			e.printStackTrace();
 		}
 	}
+
+	/**
+	 * 
+	 * @param document
+	 */
+	private void loadRuleConfigurations(Document document)
+	{
+		if (document != null)
+		{
+			try
+			{
+				NodeList validationRulesList = document.getElementsByTagName(Constants.VALIDATION_RULE);
+				if (validationRulesList != null)
+				{
+					int noOfRules = validationRulesList.getLength();
+					Node validationRuleNode = null, ruleDisplayLabelNode = null, ruleNameNode = null, ruleClassNode = null;
+					Node errorKey = null, errorKeyNameNode = null;
+					NamedNodeMap ruleAttributes = null, errorKeysList = null;
+					NodeList ruleParameters = null, childNodes = null;
+					String ruleName = null, errorKeyValue = null;
+					Map ruleParametersMap = new HashMap();
+					for (int i = 0; i < noOfRules; i++)
+					{
+						validationRuleNode = validationRulesList.item(i);
+						if (validationRuleNode != null)
+						{
+							RuleConfigurationObject ruleConfigurationObject = new RuleConfigurationObject();
+							ruleAttributes = validationRuleNode.getAttributes();
+							if (ruleAttributes != null)
+							{
+								ruleDisplayLabelNode = ruleAttributes.getNamedItem(Constants.DISPLAY_LABEL);
+								ruleNameNode = ruleAttributes.getNamedItem(Constants.RULE_NAME);
+								ruleClassNode = ruleAttributes.getNamedItem(Constants.RULE_CLASS);
+								if (ruleDisplayLabelNode != null && ruleNameNode != null && ruleClassNode != null)
+								{
+									ruleName = ruleNameNode.getNodeValue();
+									ruleConfigurationObject.setDisplayLabel(ruleDisplayLabelNode.getNodeValue());
+									ruleConfigurationObject.setRuleName(ruleName);
+									ruleConfigurationObject.setRuleClassName(ruleClassNode.getNodeValue());
+								}
+							}
+							ruleParameters = ((Element) validationRuleNode).getElementsByTagName(Constants.PARAM);
+							if (ruleParameters.getLength() != 0)
+							{
+								ruleParametersMap.put(ruleName, loadRuleParameters(ruleParameters));
+								ruleConfigurationObject.setRuleParametersMap(ruleParametersMap);
+							}
+							childNodes = ((Element) validationRuleNode).getElementsByTagName(Constants.ERROR_KEY);
+							errorKey = childNodes.item(0);
+							errorKeysList = errorKey.getAttributes();
+							if (errorKeysList != null)
+							{
+								errorKeyNameNode = errorKeysList.getNamedItem(Constants.NAME);
+								errorKeyValue = errorKeyNameNode.getNodeValue();
+								ruleConfigurationObject.setErrorKey(errorKeyValue);
+							}
+							rulesConfigurationMap.put(ruleName, ruleConfigurationObject);
+
+						}
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+				System.out.println(e.getStackTrace());
+
+			}
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private List loadRuleParameters(NodeList ruleParameters)
+	{
+		ArrayList ruleParametersAttributes = new ArrayList();
+		if (ruleParameters != null)
+		{
+			NameValueBean nameValueBeanAttribute = null;
+			NamedNodeMap paramAttributes = null;
+			Node paramLabelNode = null, paramNameNode = null, paramNode = null;
+			String paramLabel = null, paramName = null;
+			int noOfParameters = ruleParameters.getLength();
+			for (int i = 0; i < noOfParameters; i++)
+			{
+				paramNode = ruleParameters.item(i);
+				paramAttributes = paramNode.getAttributes();
+				if (paramAttributes != null)
+				{
+					paramLabelNode = paramAttributes.getNamedItem(Constants.PARAM_LABEL);
+					paramNameNode = paramAttributes.getNamedItem(Constants.PARAM_NAME);
+					if (paramLabelNode != null && paramNameNode != null)
+					{
+						paramLabel = paramLabelNode.getNodeValue();
+						paramName = paramNameNode.getNodeValue();
+					}
+				}
+				if (paramName != null && paramLabel != null)
+				{
+					nameValueBeanAttribute = new NameValueBean(paramName, paramLabel);
+					ruleParametersAttributes.add(nameValueBeanAttribute);
+				}
+			}
+		}
+		return (ArrayList) ruleParametersAttributes;
+	}
+
 	/**
 	 * 
 	 * @param document
@@ -116,237 +237,263 @@ public class ControlConfigurationsFactory
 			if (controlsList != null)
 			{
 				ControlsConfigurationObject controlsConfigurationObject;
+				List listOfControls = new ArrayList();
 				Node controlNode = null, controlNameNode = null, displayLabelNode = null, jspNameNode = null;
-				NodeList controlDataTypesNodesList = null ,controlCommonValidationRules = null;
+				NodeList controlDataTypesNodesList = null, controlCommonValidationRules = null;
 				NamedNodeMap controlAttributes = null;
-				String controlName = null;
+				String controlName = null, displayLabel = null;
+				NameValueBean nameValueBean = null;
 				int noOfControls = controlsList.getLength();
+
 				for (int i = 0; i < noOfControls; i++)
 				{
 					controlNode = controlsList.item(i);
 					if (controlNode != null)
 					{
+						List commonValidationRulesList = new ArrayList();
 						controlsConfigurationObject = new ControlsConfigurationObject();
 						controlAttributes = controlNode.getAttributes();
 						if (controlAttributes != null)
 						{
-							controlNameNode = controlAttributes.getNamedItem(Constants.NAME_ATTRIBUTE);
+							controlNameNode = controlAttributes.getNamedItem(Constants.NAME);
 							displayLabelNode = controlAttributes.getNamedItem(Constants.DISPLAY_LABEL);
 							jspNameNode = controlAttributes.getNamedItem(Constants.JSP_NAME);
 							if (controlNameNode != null && displayLabelNode != null && jspNameNode != null)
 							{
 								controlName = controlNameNode.getNodeValue();
+								displayLabel = displayLabelNode.getNodeValue();
+								nameValueBean = new NameValueBean(controlName,displayLabel);
+								listOfControls.add(nameValueBean);
 								controlsConfigurationObject.setControlName(controlName);
-								controlsConfigurationObject.setDisplayLabel(displayLabelNode.getNodeValue());
+								controlsConfigurationObject.setDisplayLabel(displayLabel);
 								controlsConfigurationObject.setJspName(jspNameNode.getNodeValue());
 							}
 						}
 						controlDataTypesNodesList = ((Element) controlNode).getElementsByTagName(Constants.DATA_TYPE_TAGNAME);
-						controlsConfigurationObject.setDataTypesList(getControlDataTypes(controlDataTypesNodesList));
-						//controlsConfigurationObject.setValidationRules()
+						controlDataTypesNodesList.getLength();
+						/*for(int j=0;j<controlDataTypesNodesList.getLength();j++) {
+							controlDataTypesNodesList.item(j);
+						}*/
+						List dataTypesList = getChildNodesList(controlDataTypesNodesList);
+						/*Iterator dataTypesIterator = dataTypesList.iterator();
+						List dataTypeValidations = new ArrayList();
+						while (dataTypesIterator.hasNext())
+						{
+							String dataType = (String) dataTypesIterator.next();
+							dataTypeValidations = getDataTypeValidationRules(dataType,controlNode);
+						}*/
+
+						controlsConfigurationObject.setDataTypesList(getNameValueBeansList(dataTypesList));
+						controlCommonValidationRules = ((Element) controlNode).getElementsByTagName(Constants.COMMON_VALIDATION_RULE);
+						List commonValidationsList = getChildNodesList(controlCommonValidationRules);
+						Iterator rulesIterator = commonValidationsList.iterator();
+						RuleConfigurationObject ruleObject = null;
+						while (rulesIterator.hasNext())
+						{
+							String ruleName = (String) rulesIterator.next();
+							ruleObject = (RuleConfigurationObject) rulesConfigurationMap.get(ruleName);
+							commonValidationRulesList.add(ruleObject);
+						}
+						controlsConfigurationObject.setCommonValidationRules(commonValidationRulesList);
 						controlsConfigurationMap.put(controlName, controlsConfigurationObject);
-						/*controlCommonValidationRules = ((Element) controlNode).getElementsByTagName(Constants.VALIDATION_RULE);
-						controlsConfigurationMap.put(arg0, arg1)getControlDataTypes(controlCommonValidationRules);
-*/
+						controlsConfigurationMap.put("ListOfControls", listOfControls);
 					}
 				}
 			}
 		}
+		System.out.println("");
 	}
+
+	/**
+	 * 
+	 * @param dataTypeName
+	 * @return
+	 */
+	private List getDataTypeValidationRules(String dataTypeName,Node controlNode)
+	{
+		List dataTypeValidations = new ArrayList();
+		NodeList rules;
+		Node ruleNode = null ,ruleAttributeNode = null;
+		String attrName  ="" , attrValue="",ruleNodeName = "";
+		NamedNodeMap ruleAttributes = null; 
+		if(controlNode != null && dataTypeName != null)
+		{
+			rules = ((Element)controlNode).getElementsByTagName(Constants.VALIDATION_RULE);
+			for(int i=0;i<rules.getLength();i++)
+			{
+				ruleNode = rules.item(i);
+				ruleAttributes = ruleNode.getAttributes();
+				if(ruleAttributes != null) {
+					for(int j=0;j<ruleAttributes.getLength();j++)
+					{
+						ruleAttributeNode = ruleAttributes.item(j);
+						attrName = ruleAttributeNode.getNodeName();
+						attrValue = ruleAttributeNode.getNodeValue();
+						if(attrName != null && attrValue != null && attrName.equalsIgnoreCase(Constants.NAME)) {
+							dataTypeValidations.add(attrValue);
+						}
+
+					}
+				}
+			}
+		}
+		return dataTypeValidations;
+	}
+
 	/**
 	 * 
 	 * @param controlDataTypesNodesList
 	 * @return
 	 */
-	private ArrayList getControlDataTypes(NodeList controlDataTypesNodesList)
+	private ArrayList getChildNodesList(NodeList mappedNodesList)
 	{
-		ArrayList dataTypesNames = new ArrayList();
-		if(controlDataTypesNodesList != null) 
+		ArrayList childNodesList = new ArrayList();
+		if (mappedNodesList != null)
 		{
-			NameValueBean nameValueBeanAttribute = null;
-			NamedNodeMap controlDataTypes = null;
-			Node dataTypeNameNode = null , dataTypeNode = null;
-			String dataTypeName = null ;
-			int noOfDataTypes = controlDataTypesNodesList.getLength();
-			for(int i=0;i<noOfDataTypes;i++) {
-				dataTypeNode = controlDataTypesNodesList.item(i);
-				controlDataTypes = dataTypeNode.getAttributes();
-				if (controlDataTypes != null)
+			NamedNodeMap childNodes = null;
+			Node childNameNode = null, childNode = null;
+			String childNodeName = null;
+			int noOfChildNodes = mappedNodesList.getLength();
+			for (int i = 0; i < noOfChildNodes; i++)
+			{
+				childNode = mappedNodesList.item(i);
+				childNodes = childNode.getAttributes();
+				if (childNodes != null)
 				{
-					dataTypeNameNode = controlDataTypes.getNamedItem(Constants.NAME_ATTRIBUTE);
-					if (dataTypeNameNode != null)
+					childNameNode = childNodes.getNamedItem(Constants.NAME);
+					if (childNameNode != null)
 					{
-						dataTypeName = dataTypeNameNode.getNodeValue();
+						childNodeName = childNameNode.getNodeValue();
+						childNodesList.add(childNodeName);
 					}
-				}
-			//	dataTypeName = dataTypeNameNode.getNodeValue();
-				if (dataTypeName != null)
-				{
-					nameValueBeanAttribute = new NameValueBean(dataTypeName, dataTypeName);
-					dataTypesNames.add(nameValueBeanAttribute);
 				}
 			}
 		}
-		return dataTypesNames;
+		return childNodesList;
 	}
 	/**
 	 * 
-	 * @param controlCommonValidationRules
+	 * @param dataTypesList
 	 * @return
 	 */
-	private ArrayList getControlValidationRules(NodeList controlCommonValidationRules)
+	private List getNameValueBeansList(List dataTypesList)
 	{
-		ArrayList validationRuleNames = new ArrayList();
-		if(controlCommonValidationRules != null) 
+		List nameValueBeansList = new ArrayList();
+		Iterator iter = dataTypesList.iterator();
+		NameValueBean nameValueBeanAttribute;
+		String nodeName = "";
+		while (iter.hasNext())
 		{
-			NameValueBean nameValueBeanAttribute = null;
-			Node validationRuleNode = null;
-			String validationRuleName = null ;
-			int noOfValidationRules = controlCommonValidationRules.getLength();
-			for(int i=0 ; i<noOfValidationRules ; i++) {
-				validationRuleNode = controlCommonValidationRules.item(i);
-				validationRuleName = validationRuleNode.getNodeValue();
-				if (validationRuleName != null)
-				{
-					nameValueBeanAttribute = new NameValueBean(validationRuleName, validationRuleName);
-					validationRuleNames.add(nameValueBeanAttribute);
-				}
-			}
+			nodeName = (String) iter.next();
+			nameValueBeanAttribute = new NameValueBean(nodeName, nodeName);
+			nameValueBeansList.add(nameValueBeanAttribute);
 		}
-		return validationRuleNames;
+
+		return nameValueBeansList;
 	}
+	
 	/**
 	 * 
 	 * @param controlName
 	 * @return
 	 */
-	public ArrayList getControlsDataTypes(String controlName) {
+	public ArrayList getControlsDataTypes(String controlName)
+	{
 		ArrayList dataTypesList = null;
-		if ((controlName != null) && (controlsConfigurationMap != null)) {
+		if ((controlName != null) && (controlsConfigurationMap != null))
+		{
 			ControlsConfigurationObject controlsConfigurationObject = (ControlsConfigurationObject) controlsConfigurationMap.get(controlName);
-			if(controlsConfigurationObject != null) {
-				dataTypesList = (ArrayList)controlsConfigurationObject.getDataTypesList();
+			if (controlsConfigurationObject != null)
+			{
+				dataTypesList = (ArrayList) controlsConfigurationObject.getDataTypesList();
 			}
 		}
 		return dataTypesList;
 	}
 
-
-
-
+	/**
+	 * 
+	 * @param controlName
+	 * @return
+	 */
+	public String getControlJspName(String controlName)
+	{
+		String jspName = null;
+		if ((controlName != null) && (controlsConfigurationMap != null))
+		{
+			ControlsConfigurationObject controlsConfigurationObject = (ControlsConfigurationObject) controlsConfigurationMap.get(controlName);
+			if (controlsConfigurationObject != null)
+			{
+				jspName = controlsConfigurationObject.getJspName();
+			}
+		}
+		return jspName;
+	}
 
 	/**
-	 * @param document
-	 *//*
-	private void loadControlAttributeMappings(Document document)
-	{
-		if (document != null)
-		{
-			NodeList controlsList = document.getElementsByTagName(Constants.CONTROL_TAGNAME);
-			if (controlsList != null)
-			{
-				NodeList dataTypesNodeList = null;
-				Node controlNode = null, controlNameNode = null;
-				NamedNodeMap controlAttributes = null;
-				String controlName = null;
-				ArrayList mappedDataTypes = null;
-
-				int noOfControls = controlsList.getLength();
-				for (int i = 0; i < noOfControls; i++)
-				{
-					mappedDataTypes = new ArrayList();
-					controlNode = controlsList.item(i);
-					if (controlNode != null)
-					{
-						//Get control attributes
-						controlAttributes = controlNode.getAttributes();
-						if (controlAttributes != null)
-						{
-							controlNameNode = controlAttributes.getNamedItem(Constants.NAME_ATTRIBUTE);
-							if (controlNameNode != null)
-							{
-								controlName = controlNameNode.getNodeValue();
-								dataTypesNodeList = ((Element) controlNode).getElementsByTagName(Constants.DATA_TYPE_TAGNAME);
-								if (controlName != null)
-								{
-									//Get control attribute mappings
-									mappedDataTypes = getMappedDataTypes(dataTypesNodeList);
-									if (mappedDataTypes != null)
-									{
-										System.out.println(mappedDataTypes);
-										m_controlAttributeMap.put(controlName, mappedDataTypes);
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	  *//**
-	  * @param attributeNamesNodeList
-	  * @return
-	  *//*
-	private ArrayList getMappedDataTypes(NodeList dataTypesNodeList)
-	{
-		ArrayList mappedAttributeNames = new ArrayList();
-		Node attributeNameNode = null, attributeNameValueNode = null;
-		String attributeName = null;
-		NameValueBean nameValueBeanAttribute = null;
-		int noOfAttributes = 0;
-		if (dataTypesNodeList != null)
-		{
-			noOfAttributes = dataTypesNodeList.getLength();
-			for (int j = 0; j < noOfAttributes; j++)
-			{
-				attributeNameNode = dataTypesNodeList.item(j);
-				if ((attributeNameNode != null) && (attributeNameNode.getNodeType() == Node.ELEMENT_NODE))
-				{
-					attributeNameValueNode = attributeNameNode.getFirstChild();
-					if (attributeNameValueNode != null)
-					{
-						attributeName = attributeNameValueNode.getNodeValue();
-						if (attributeName != null)
-						{
-							nameValueBeanAttribute = new NameValueBean(attributeName, attributeName);
-							mappedAttributeNames.add(nameValueBeanAttribute);
-						}
-					}
-				}
-			}
-		}
-		return mappedAttributeNames;
-	}*/
-
-	/*public List getAttributesForControl(String controlName)
-	{
-		if ((controlName != null) && (m_controlAttributeMap != null))
-		{
-			return (List) m_controlAttributeMap.get(controlName);
-		}
-		return null;
-	}
+	 * 
+	 * @param controlName
+	 * @return
 	 */
+	public String getControlDisplatLabel(String controlName)
+	{
+		String displayLabel = null;
+		if ((controlName != null) && (controlsConfigurationMap != null))
+		{
+			ControlsConfigurationObject controlsConfigurationObject = (ControlsConfigurationObject) controlsConfigurationMap.get(controlName);
+			if (controlsConfigurationObject != null)
+			{
+				displayLabel = controlsConfigurationObject.getDisplayLabel();
+			}
+		}
+		return displayLabel;
+	}
+
+	/**
+	 * 
+	 * @param controlName
+	 * @return
+	 */
+	public ArrayList getImplicitRules(String controlName)
+	{
+		ArrayList implicitRules = null;
+
+		return implicitRules;
+	}
+
+	/**
+	 * 
+	 * @param controlName
+	 * @return
+	 */
+	public ArrayList getExplicitRules(String controlName)
+	{
+		ArrayList explicitRules = null;
+
+		return explicitRules;
+	}
+
 	/**
 	 * @param args
 	 *//*
-	public static void main(String[] args) {
-	 ControlConfigurationsFactory cmf = ControlConfigurationsFactory.getInstance();
-	 cmf.parseXML();
-	 SimpleDateFormat sdf = new SimpleDateFormat(ProcessorConstants.DATE_FORMAT);
-	 Date value = null;
-	 try
-	 {
-	 value = sdf.parse("10/03/2006");
-	 System.out.println("Here " + value);
+	public static void main(String[] args)
+	{
+		ControlConfigurationsFactory cmf = ControlConfigurationsFactory.getInstance();
+		cmf.getListOfControls();
+	}*/
+	/**
+	 * 
+	 *
+	 */
+	public List getListOfControls()
+	{
+		ArrayList listOfControls = null;
+		if (controlsConfigurationMap != null)
+		{
+			listOfControls = (ArrayList)controlsConfigurationMap.get("ListOfControls");
+		}
+		return listOfControls;
+	}
 
-	 }
-	 catch (ParseException e)
-	 {
-	 value = new Date();
-	 } 
-	 }*/
 
 }

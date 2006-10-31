@@ -28,7 +28,7 @@ public class DataTypeFactory
 	/**
 	 * 
 	 */
-	private Map dataTypeMap;
+	private Map<String, String> dataTypeMap;
 	
 	/**
 	 * Empty constructor
@@ -60,7 +60,7 @@ public class DataTypeFactory
 	 */
 	public final Map populateDataTypeMap(String xmlFileName) throws DataTypeFactoryInitializationException
 	{
-		dataTypeMap = new HashMap();
+		dataTypeMap = new HashMap<String, String>();
 
 		SAXReader saxReader = new SAXReader();
 		InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(xmlFileName);

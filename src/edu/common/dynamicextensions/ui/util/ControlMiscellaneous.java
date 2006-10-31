@@ -83,9 +83,24 @@ public class ControlMiscellaneous
 		else if (abstractAttribute instanceof DateAttributeInterface)
 		{
 			DateAttributeInterface dateAttribute = (DateAttributeInterface) abstractAttribute;
-			defaultValue = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(dateAttribute.getDefaultValue());
+			defaultValue = new SimpleDateFormat(getDateFormat(dateAttribute)).format(dateAttribute.getDefaultValue());
 		}
 		return defaultValue;
+	}
+	
+	/**
+	 * This method returns the prescribed date format for the given DateAttribute
+	 * @param attribute the DateAttribute
+	 * @return the date format String
+	 */
+	public static String getDateFormat(AttributeInterface dateAttribute)
+	{
+		String dateFormat = ((DateAttributeInterface)dateAttribute).getFormat();
+		if(dateFormat == null)
+		{
+			dateFormat = "";
+		}
+		return dateFormat;
 	}
 	
 	/**

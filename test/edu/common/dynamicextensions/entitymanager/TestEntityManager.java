@@ -93,7 +93,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 				if(attribute instanceof StringAttributeInterface) {
 					dataValue.put(attribute,"temp" + i); 	
 				} else if(attribute instanceof DateAttributeInterface) {
-				//	dataValue.put(attribute,new Date().toString()); 	
+					dataValue.put(attribute,"11-01-2006"); 	
 				}
 
 				i++;

@@ -36,7 +36,13 @@ public class DynamicExtensionsBaseTestCase extends TestCase
     {
         // TODO Auto-generated method stub
         Logger.out = org.apache.log4j.Logger.getLogger("dynamicExtensions.logger");
-        edu.common.dynamicextensions.util.global.Variables.containerFlag = false;
+        Variables.containerFlag = false;
+        Variables.datePattern = "mm-dd-yyyy";
+		Variables.timePattern = "hh-mi-ss";
+		Variables.dateFormatFunction="TO_CHAR";
+		Variables.timeFormatFunction="TO_CHAR";
+		Variables.dateTostrFunction = "TO_CHAR";
+		Variables.strTodateFunction = "TO_DATE";
     }
     
     protected void tearDown()

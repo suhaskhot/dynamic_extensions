@@ -49,12 +49,13 @@ public class LoadFormControlsProcessor
 	 * @param actionForm
 	 * @param containerInterface
 	 */
-	public void loadFormControls(AbstractActionForm actionForm,ContainerInterface containerInterface,
-			String controlOperation,String selectedControlId,String userSelectedTool) 
+	public void loadFormControls(ControlsForm controlsForm,ContainerInterface containerInterface) 
 	{
-		if(containerInterface!=null)
+		if((containerInterface!=null)&&(controlsForm!=null))
 		{
-			ControlsForm controlsForm = (ControlsForm)actionForm;
+			String controlOperation = controlsForm.getControlOperation();
+			String userSelectedTool = controlsForm.getUserSelectedTool();
+			
 			ControlConfigurationsFactory controlConfigurationsFactory = ControlConfigurationsFactory.getInstance();
 			if(controlOperation == null || controlOperation.equals("") ||
 					controlOperation.equalsIgnoreCase(ProcessorConstants.ADD))
@@ -87,8 +88,8 @@ public class LoadFormControlsProcessor
 
 			else if(controlOperation.equalsIgnoreCase(ProcessorConstants.EDIT))  
 			{
+				String selectedControlId = controlsForm.getSelectedControlId();
 				ControlProcessor controlProcessor = ControlProcessor.getInstance();
-
 				ControlInterface controlInterface = containerInterface.getControlInterfaceBySequenceNumber(selectedControlId);
 				controlProcessor.populateControlUIBeanInterface(controlInterface,controlsForm);
 

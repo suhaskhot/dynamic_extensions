@@ -990,11 +990,11 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	{
 		ActionErrors errors = new ActionErrors();
 		Validator validator = new Validator();
-		if (name == null || validator.isEmpty(String.valueOf(name)))
+		/*if (name == null || validator.isEmpty(String.valueOf(name)))
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.Name")));
 		}
-
+*/
 		if (caption == null || validator.isEmpty(String.valueOf(caption)))
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.Label")));

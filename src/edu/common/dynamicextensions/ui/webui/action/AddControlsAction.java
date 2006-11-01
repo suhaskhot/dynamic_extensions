@@ -31,7 +31,6 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 	{
-		System.out.println("Add control action");
 		//Get controls form
 		ControlsForm controlsForm = (ControlsForm) form;
 

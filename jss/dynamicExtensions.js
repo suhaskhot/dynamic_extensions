@@ -76,36 +76,18 @@ function showCreateFormJSP() {
 }
 
 //Added by Preeti
-function changeDataType(datatypeControl)
+function dataFldDataTypeChanged(datatypeControl)
 {
-	var selectedIdx = datatypeControl.selectedIndex;
 	if(datatypeControl!=null)
 	{
-		if(datatypeControl.options!=null)
+		var selectedDatatype = datatypeControl.value;
+		var divForDataTypeId = selectedDatatype + "DataType";
+		var divForDataType = document.getElementById(divForDataTypeId);
+		
+		if(divForDataType!=null)
 		{
-			var divForDataTypeId = datatypeControl.options[selectedIdx].text + "DataType";
-			var divForDataType = document.getElementById(divForDataTypeId);
-			if(divForDataType!=null)
-			{
-				var substitutionDiv = document.getElementById('substitutionDiv');
-				substitutionDiv.innerHTML = divForDataType.innerHTML;
-
-				//Disable the value specification code for boolean values
-
-				var valueSpecnDiv = document.getElementById('valueSpecificationDiv');
-				if(valueSpecnDiv!=null)
-				{
-					if(divForDataTypeId == "BooleanDataType")
-					{
-						valueSpecnDiv.style.display = "none";
-					}
-					else
-					{
-						valueSpecnDiv.style.display = "block";
-					}
-				}
-
-			}
+			var substitutionDiv = document.getElementById('substitutionDiv');
+			substitutionDiv.innerHTML = divForDataType.innerHTML;
 		}
 	}
 }
@@ -114,11 +96,12 @@ function changeDataType(datatypeControl)
 
 function initBuildForm()
 {
-	var dataTypeElt = document.getElementById("dataType");
+	var dataTypeElt = document.getElementById("initialDataType");
+	
 	if(dataTypeElt!=null)
 	{
-	//Load datatype details for selected datatype
-		changeDataType(dataTypeElt);
+		//Load datatype details for selected datatype
+		dataFldDataTypeChanged(dataTypeElt);
 	}
 	
 	/*var sourceElt =document.getElementById("displayChoice");

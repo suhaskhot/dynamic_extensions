@@ -6,6 +6,7 @@
 package edu.common.dynamicextensions.processor;
 
 import java.util.Collection;
+import com.sun.org.apache.xml.internal.serializer.ToUnknownStream;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -60,6 +61,12 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				//Add new control
 				if(controlOperation.equalsIgnoreCase(ProcessorConstants.ADD))
 				{
+					//Set Name of the attribute in controlsForm.
+					//It is not accepted from UI. It has to be derived from caption
+					String attributeName = deriveAttributeNameFromCaption(controlsForm.getCaption());
+					System.out.println("Attribute Caption = [" + controlsForm.getCaption() +"] Name = ["+attributeName  +"]");
+					controlsForm.setName(attributeName);
+					
 					//Create Attribute  
 					abstractAttributeInterface = attributeProcessor.createAndPopulateAttribute(controlsForm);
 					
@@ -97,6 +104,11 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 
 				}else if(controlOperation.equalsIgnoreCase(ProcessorConstants.EDIT))
 				{
+					//Set Name of the attribute in controlsForm.
+					//It is not accepted from UI. It has to be derived from caption
+					String attributeName = deriveAttributeNameFromCaption(controlsForm.getCaption());
+					System.out.println("Attribute Caption = [" + controlsForm.getCaption() +"] Name = ["+attributeName  +"]");
+					controlsForm.setName(attributeName);
 					//Get the control from container
 					String selectedControlSeqNumber = controlsForm.getSelectedControlId();
 					controlInterface = containerInterface.getControlInterfaceBySequenceNumber(selectedControlSeqNumber);
@@ -150,5 +162,34 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				System.out.println("Exception " + e);
 			}
 		}
+	}
+	/**
+	 * @param caption
+	 * @return
+	 */
+	private String deriveAttributeNameFromCaption(String caption)
+	{
+		String attributeName = "";
+		if(caption!=null)
+		{
+			String[] wordsInCaption = caption.split(" ");
+			String word = null; 
+			if(wordsInCaption!=null)
+			{
+				int noOfWords = wordsInCaption.length;
+				char firstCharacter ;
+				for(int i=0;i<noOfWords;i++)
+				{
+					word = wordsInCaption[i];
+					if((word!=null)&&(word.trim().equalsIgnoreCase("")==false))
+					{
+						firstCharacter = word.charAt(0);
+						word  = word.replaceFirst(firstCharacter+"", Character.toUpperCase(firstCharacter)+"");
+						attributeName = attributeName + word;
+					}
+				}
+			}
+		}
+		return attributeName;
 	}
 }

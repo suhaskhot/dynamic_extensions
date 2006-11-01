@@ -95,6 +95,10 @@ public class LoadDataEntryFormProcessor
 				}
 			}
 			dataEntryForm.setContainerInterface(containerInterface);
+			if(dataEntryForm.getShowFormPreview() == null)
+			{
+				dataEntryForm.setShowFormPreview("");
+			}
 		}
 		catch (DynamicExtensionsSystemException dynamicExtensionsSystemException)
 		{

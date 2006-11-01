@@ -10,7 +10,6 @@ PUBLIC
 	<form-bean name="formDefinitionForm" type="edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm"/>
 	<form-bean name="controlsForm" type="edu.common.dynamicextensions.ui.webui.actionform.ControlsForm"/>
 	<form-bean name="formsIndexForm" type="edu.common.dynamicextensions.ui.webui.actionform.FormsIndexForm" />
-	<form-bean name="previewForm" type="edu.common.dynamicextensions.ui.webui.actionform.PreviewForm" />
 	<form-bean name="dataEntryForm" type="edu.common.dynamicextensions.ui.webui.actionform.DataEntryForm" />
 	
 	</form-beans>
@@ -92,26 +91,18 @@ PUBLIC
 			input="/LoadFormControlsAction.do"
 			scope="request">
 			<forward name="success" path="/LoadFormControlsAction.do" />
-			<forward name="loadFormPreviewAction" path="/LoadDataEntryFormAction.do" />
+			<forward name="loadFormPreviewAction" path="/LoadDataEntryFormAction.do?showFormPreview=true" />
 
 		</action>
 		
-		<action path="/LoadFormPreviewAction" 
-		    type="edu.common.dynamicextensions.ui.webui.action.LoadFormPreviewAction" 
-		    name="previewForm"
-			validate="false"
-			input="/LoadFormPreviewAction.do"
-			scope="request">
-			<forward name="showFormPreviewJSP" path="/pages/FormPreview.jsp" />
-		</action>
-		
+			
 		<action path="/SaveEntityAction" 
 		    type="edu.common.dynamicextensions.ui.webui.action.SaveEntityAction" 
 		    name="controlsForm"
 			validate="false"
 			input="/SaveEntityAction.do"
 			scope="request">
-			<forward name="success" path="/LoadFormPreviewAction.do" />
+			<forward name="success" path="/LoadDataEntryFormAction.do?showFormPreview=flase" />
 			<forward name="failure" path="/pages/ErrorPage.jsp" />
 		</action>
 		

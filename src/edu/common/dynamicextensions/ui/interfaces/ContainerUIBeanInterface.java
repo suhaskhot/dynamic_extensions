@@ -55,4 +55,14 @@ public interface ContainerUIBeanInterface {
       * @param caption The caption to set.
       */
       void setFormCaption(String caption);
+      /**
+       * 
+       * @return
+       */
+  	  String getFormName();
+  	 /**
+  	  * 
+  	  * @param formName
+  	  */ 
+  	 void setFormName(String formName);
 }

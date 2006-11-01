@@ -59,7 +59,7 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 		if (containerInterface != null && containerUIBeanInterface != null)
 		{
 			containerInterface.setButtonCss(containerUIBeanInterface.getButtonCss());
-			containerInterface.setCaption(containerUIBeanInterface.getFormCaption());
+			containerInterface.setCaption(containerUIBeanInterface.getFormName());
 			containerInterface.setMainTableCss(containerUIBeanInterface.getMainTableCss());
 			containerInterface.setRequiredFieldIndicatior(containerUIBeanInterface.getRequiredFieldIndicatior());
 			containerInterface.setRequiredFieldWarningMessage(containerUIBeanInterface.getRequiredFieldWarningMessage());
@@ -81,7 +81,8 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 		if (containerInterface != null && containerUIBeanInterface != null)
 		{
 			containerUIBeanInterface.setButtonCss(Utility.toString(containerInterface.getButtonCss()));
-			containerUIBeanInterface.setFormCaption(Utility.toString(containerInterface.getCaption()));
+			//containerUIBeanInterface.setFormCaption(Utility.toString(containerInterface.getCaption()));
+			containerUIBeanInterface.setFormName(containerInterface.getCaption());
 			containerUIBeanInterface.setMainTableCss(Utility.toString(containerInterface.getMainTableCss()));
 			containerUIBeanInterface.setRequiredFieldIndicatior(Utility.toString(containerInterface.getRequiredFieldIndicatior()));
 			containerUIBeanInterface.setRequiredFieldWarningMessage(Utility.toString(containerInterface.getRequiredFieldWarningMessage()));

@@ -308,7 +308,7 @@ function showFormPreview()
 		entitySaved.value="";
 	}	
 	var controlsForm = document.getElementById('controlsForm');
-	controlsForm.action="/dynamicExtensions/LoadFormPreviewAction.do";
+	controlsForm.action="/dynamicExtensions/LoadDataEntryFormAction.do?showFormPreview=true";
 	controlsForm.submit();
 }
 

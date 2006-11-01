@@ -24,6 +24,7 @@ public class Constants
 	
 	public static final String VALIDATION_RULE = "validation-rule";
 	public static final String COMMON_VALIDATION_RULE  = "common-validation-rule";
+	public static final String IS_IMPLICIT  = "isImplicit";
 	
 	public static final String RULE_NAME = "rule-name";
 	public static final String RULE_CLASS = "rule-class";

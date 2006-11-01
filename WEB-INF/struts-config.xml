@@ -95,7 +95,6 @@ PUBLIC
 
 		</action>
 		
-			
 		<action path="/SaveEntityAction" 
 		    type="edu.common.dynamicextensions.ui.webui.action.SaveEntityAction" 
 		    name="controlsForm"
@@ -121,7 +120,7 @@ PUBLIC
 			validate="false"
 			input="/LoadDataEntryFormAction.do"
 			scope="request">
-			<forward name="success" path="/LoadFormPreviewAction.do" />
+			<forward name="success" path="/LoadDataEntryFormAction.do?showFormPreview=flase" />
 		</action>
 		
 		

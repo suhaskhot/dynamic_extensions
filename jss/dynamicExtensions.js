@@ -337,11 +337,11 @@ if(obj.value == 'SingleLine')
 // Added by Chetan
 function backToControlForm() 
 {
-	var previewForm = document.getElementById('previewForm');
-	if(previewForm!=null)
+	var dataEntryForm = document.getElementById('dataEntryForm');
+	if(dataEntryForm != null)
 	{
-		previewForm.action="/dynamicExtensions/LoadFormControlsAction.do";
-		previewForm.submit();
+		dataEntryForm.action="/dynamicExtensions/LoadFormControlsAction.do";
+		dataEntryForm.submit();
 	}
 }
 

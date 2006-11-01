@@ -125,16 +125,17 @@
            	</tr>
 			<tr><td valign="top" colspan="7">
 				<table cellpadding="4" cellspacing="5" border="0"  align='center'>
-					<tr height="5">
-					</tr>
+					<tr height="5"></tr>
 					<tr>
 						<td align='left'>
-							<html:button property="backToPrevious"  styleClass="actionButton" onclick="backToControlForm()">
-								<bean:message  key="buttons.backToPrevious" />
-							</html:button>
+							<c:if test='${showFormPreview  == "true"}'>
+								<html:button property="backToPrevious"  styleClass="actionButton" onclick="backToControlForm()">
+									<bean:message  key="buttons.backToPrevious" />
+								</html:button>
+							</c:if>
 						</td>
-						<td align='right'>
 						
+						<td align='right'>						
 						<c:choose>
 					  	    <c:when test='${showFormPreview  == "true"}'>
 								<html:submit styleClass="actionButton"  onclick="addDynamicData()" disabled="true">
@@ -148,10 +149,7 @@
 								</html:submit>
 					 		</c:otherwise>
 						 		
-			     		</c:choose>
-								
-						 	
-								
+			     		</c:choose>								
 						</td>
 					</tr>
 				</table>

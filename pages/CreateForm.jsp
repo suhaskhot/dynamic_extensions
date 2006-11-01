@@ -147,7 +147,7 @@
 		  <tr valign = "top">
 		  
 	 	 	<td colspan="7" style = "border-top:0px;border-left:0px">
-	 		 <table class= "formLabel" summary="" align = 'left' width="100%" valign="top" cellpadding="5" cellspacing="0" border="0">
+	 		 <table class= "formLabelBorderless" summary="" align = 'left' width="100%" valign="top" cellpadding="5" cellspacing="0" border="0">
 	 	    	<tr>
 	 				<td align="left">
 	 					<html:submit styleClass="actionButton">

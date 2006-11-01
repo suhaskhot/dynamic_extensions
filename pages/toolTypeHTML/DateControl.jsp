@@ -27,14 +27,14 @@
   	<td>
   		<table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%'>
 		   <tr>
-				<td class="formRequiredNotice" width="2%">
+				<td class="formRequiredNoticeWithoutBorder" width="2%">
 					*
 				</td>
-				<td class="formRequiredLabel" width="25%">
+				<td class="formRequiredLabelWithoutBorder" width="25%">
 						<bean:message key="eav.att.Format"/>
 				</td>
 
-				<td class="formField">
+				<td class="formFieldWithoutBorder">
 					<html:radio property="format" value="<%=ProcessorConstants.DATE_FORMAT_DATEONLY%>" >
 						<bean:message key="eav.att.DateFormatDateOnlyTitle"/>
 					</html:radio>
@@ -45,13 +45,13 @@
 				</td>
 			</tr>
 			<tr>
-			   <td class="formRequiredNotice" width="2%">
+			   <td class="formRequiredNoticeWithoutBorder" width="2%">
 						&nbsp;
 				</td>
-				<td class="formRequiredLabel" width="25%">
+				<td class="formRequiredLabelWithoutBorder" width="25%">
 					<bean:message key="eav.att.DefaultValue"/>
 				</td>
-				<td class="formField">
+				<td class="formFieldWithoutBorder">
 					<html:radio property="dateValueType" value="<%=ProcessorConstants.DATE_VALUE_NONE%>" onclick="changeDateType(this)">
 						<bean:message key="eav.att.DateValueNone"/>
 					</html:radio>
@@ -65,13 +65,13 @@
 				</td>
 			</tr>
 			<tr >
-				<td class="formRequiredNotice" width="2%">
+				<td class="formRequiredNoticeWithoutBorder" width="2%">
 									&nbsp;
 				</td>
-				<td class="formRequiredLabel" width="25%">
+				<td class="formRequiredLabelWithoutBorder" width="25%">
 					&nbsp;
 				</td>
-				<td class="formField" >
+				<td class="formFieldWithoutBorder" >
 					<html:text property='attributeDefaultValue'  styleClass="formDateSized" maxlength="100" size="60"></html:text>
 					<A onclick="showCalendar('attributeDefaultValue',2006,10,26,'MM-dd-yyyy','controlsForm','attributeDefaultValue',event,1900,2020);" href="javascript://"><IMG alt="This is a Calendar" src="images/calendar.gif" border=0></A>
 					<DIV id=slcalcodattributeDefaultValue style="Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px">

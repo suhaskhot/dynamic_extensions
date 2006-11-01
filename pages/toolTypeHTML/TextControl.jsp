@@ -15,14 +15,14 @@
 <jsp:useBean id="selectedDataType" type="java.lang.String"/>
 
 
-<table summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%' class = "tbBordersAllbordersBlack" >
+<table summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
   <tr>
     <td>
 
-	<table summary="" cellpadding="3"  cellspacing="0"  align = 'center' width='100%' >
+	<table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%' >
 		<jsp:include page="/pages/toolTypeHTML/CommonControlAttributes.jsp" />
 
-		<tr>
+		<tr valign="top">
 			<td class="formRequiredNoticeWithoutBorder" width="2%">
 		 			&nbsp;
 		 	</td>
@@ -34,7 +34,7 @@
 				<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="attributenoOfCols" />
 			</td>
 		</tr>
-		<tr>
+		<tr valign="top">
 			<td class="formRequiredNoticeWithoutBorder" width="2%">
 				 			*
 		 	</td>
@@ -63,12 +63,36 @@
 	</td>
  </tr>
 
-	<tr>
+	<tr valign="top">
 		<td>
 			<div id="substitutionDiv">
 			</div>
 
 		</td>
+	</tr>
+	<tr valign="top">
+	<td>
+		<table summary="" cellpadding="3" cellspacing="0"  align = 'center' valign="top">
+		<tr>
+			<td class="formRequiredNoticeWithoutBorder" width="2%">
+					&nbsp;
+			</td>
+			<td class="formRequiredLabelWithoutBorder" width="25%">&nbsp;</td>
+			<td class="formFieldWithoutBorder" align="left">
+				<html:checkbox property="attributeIdentified"><bean:message key="app.att.isIdentified" /></html:checkbox>
+			</td>
+		</tr>
+		<tr valign="top">
+				<td class="formRequiredNoticeWithoutBorder" width="2%">
+						&nbsp;
+				</td>
+				<td class="formRequiredLabelWithoutBorder" width="25%">&nbsp;</td>
+				<td class="formFieldWithoutBorder" align="left">
+					<html:checkbox  property="attributeIsPassword"><bean:message key="app.att.isPassword" /></html:checkbox>
+				</td>
+		</tr>
+		</table>
+	</td>
 	</tr>
 </table>
 <jsp:include page="/pages/toolTypeHTML/Datatypes.jsp" />

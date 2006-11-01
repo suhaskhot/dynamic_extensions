@@ -115,7 +115,14 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 			attributeInterface.setName(attributeInformationIntf.getName());
 			attributeInterface.setDescription(attributeInformationIntf.getDescription());
-
+			
+			//Set is identified
+			if(attributeInterface instanceof AttributeInterface)
+			{
+				Boolean isIdentified = new Boolean(attributeInformationIntf.getAttributeIdentified());
+				((AttributeInterface)attributeInterface).setIsIdentified(isIdentified);
+			}
+			
 			Collection collection =  SemanticPropertyBuilderUtil.getSymanticPropertyCollection(attributeInformationIntf.getAttributeConceptCode());
 			if (collection != null && !collection.isEmpty()) {
 				Iterator iterator = collection.iterator();
@@ -589,9 +596,17 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		{
 			attributeInformationIntf.setName(attributeInterface.getName());
 			attributeInformationIntf.setDescription(attributeInterface.getDescription());
-
+			
+			//is Identified
+			if(attributeInterface instanceof AttributeInterface)
+			{
+				Boolean isIdentified = ((AttributeInterface)attributeInterface).getIsIdentified();
+				if(isIdentified!=null)
+				{
+					attributeInformationIntf.setAttributeIdentified(isIdentified.toString());	
+				}
+			}
 			//Concept code
-			//attributeInformationIntf.setAttributeConceptCode(getConceptCode(attributeInterface.getSemanticPropertyCollection()));
 			if (!attributeInterface.getSemanticPropertyCollection().isEmpty())
 			{
 				attributeInformationIntf.setAttributeConceptCode(SemanticPropertyBuilderUtil.getConceptCodeString(attributeInterface));

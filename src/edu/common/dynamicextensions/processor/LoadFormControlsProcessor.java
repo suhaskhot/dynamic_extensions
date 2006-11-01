@@ -64,10 +64,6 @@ public class LoadFormControlsProcessor
 				{
 					userSelectedTool = ProcessorConstants.DEFAULT_SELECTED_CONTROL;
 				}
-				//List of tools/controls
-				controlsForm.setToolsList(controlConfigurationsFactory.getListOfControls());
-
-
 				//Default Data type
 				controlsForm.setDataType(ProcessorConstants.DEFAULT_DATA_TYPE);
 
@@ -113,6 +109,8 @@ public class LoadFormControlsProcessor
 
 			}
 			controlsForm.setUserSelectedTool(userSelectedTool);
+			//List of tools/controls
+			controlsForm.setToolsList(controlConfigurationsFactory.getListOfControls());
 			controlsForm.setSelectedControlCaption(getSelectedControlCaption(controlConfigurationsFactory.getControlDisplayLabel(userSelectedTool)));
 			String jspName = controlConfigurationsFactory.getControlJspName(userSelectedTool);
 			if(jspName==null)

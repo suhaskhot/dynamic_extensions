@@ -144,4 +144,6 @@ public interface AbstractAttributeUIBeanInterface {
 	public String getDateValueType();
 
 	public void setDateValueType(String dateValueType);
+	public String getAttributeIdentified();
+	public void setAttributeIdentified(String attributeIdentified);
 }

@@ -22,7 +22,7 @@
 				</td>
 			</tr>-->
 
-			<tr>
+			<tr valign="top">
 					<td class="formRequiredNoticeWithoutBorder" width="2%">
 							*
 					</td>
@@ -35,7 +35,7 @@
 						<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="caption" />
 				</td>
 			</tr>
-			<tr>
+			<tr valign="top">
 				<td class="formRequiredNoticeWithoutBorder" width="2%">
 						&nbsp;
 				</td>
@@ -51,7 +51,7 @@
 			</tr>
 
 
-			<tr>
+			<tr valign="top">
 				<td class="formRequiredNoticeWithoutBorder" width="2%">
 									&nbsp;
 							</td>

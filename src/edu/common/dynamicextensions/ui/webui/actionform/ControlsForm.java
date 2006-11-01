@@ -229,6 +229,19 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	protected String[] validationRules;
 	protected List validationRulesList ;
 	protected String selectedControlCaption;
+	/**
+	 * is attribute identified
+	 */
+	protected String attributeIdentified;
+	public String getAttributeIdentified()
+	{
+		return this.attributeIdentified;
+	}
+
+	public void setAttributeIdentified(String attributeIdentified)
+	{
+		this.attributeIdentified = attributeIdentified;
+	}
 
 	public String getSelectedControlCaption()
 	{
@@ -713,6 +726,10 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	public void setIsPassword(Boolean isPassword)
 	{
 		this.isPassword = isPassword;
+		if(isPassword!=null)
+		{
+			this.attributeIsPassword = isPassword.toString();
+		}
 	}
 
 	/**

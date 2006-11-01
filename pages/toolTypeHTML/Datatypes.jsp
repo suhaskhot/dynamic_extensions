@@ -10,7 +10,8 @@
 
 		<div id="TextDataType" style="display:none">
 			 <table summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
-			 <tr>
+
+			 <tr valign="top">
 			 			<td class="formRequiredNoticeWithoutBorder" width="2%">
 			 					 			*
 			 		 	</td>
@@ -22,7 +23,7 @@
 			 			<html:radio property='linesType' value='MultiLine' onclick='radioButtonClicked(this)'>Multi Line</html:radio>
 			 			</td>
 			 		</tr>
-			 		<tr>
+			 		<tr valign="top">
 			 			<td class="formRequiredNoticeWithoutBorder" width="2%">
 			 				&nbsp;
 			 		 	</td>
@@ -43,8 +44,8 @@
 			 								<html:text styleClass="formDateSized"  disabled='false' maxlength="100" size="60"  property="attributeNoOfRows" />
 			 						</td>
 			 						<% } %>
-		</tr>
-			       	<tr>
+					</tr>
+			       	<tr valign="top">
 			       			<td class="formRequiredNoticeWithoutBorder" width="2%">
 									 		&nbsp;
 		 					</td>
@@ -57,7 +58,7 @@
 						</td>
 					</tr>
 
-					<tr>
+					<tr valign="top">
 						<td class="formRequiredNoticeWithoutBorder" width="2%">
 									 			&nbsp;
 		 				</td>

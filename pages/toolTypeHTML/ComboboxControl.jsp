@@ -25,12 +25,12 @@
 
 	<table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%' >
 		<jsp:include page="/pages/toolTypeHTML/CommonControlAttributes.jsp" />
-		<html:hidden property="displayChoice" value="UserDefined"/>
+		<!--<html:hidden property="displayChoice" value="UserDefined"/>-->
 		<!--  <tr>
-			<td class="formRequiredLabel">
+			<td class="formRequiredLabelWithoutBorder">
 				<bean:message key="eav.att.SourceForValues"/>
 			</td>
-			<td class="formField">
+			<td class="formFieldWithoutBorder">
 				<html:select property="displayChoice"  onchange="changeSourceForValues(this)" >
 					<html:options collection="displayChoiceList" labelProperty="name" property="value" />
 				</html:select>
@@ -38,14 +38,14 @@
 			<html:hidden property="choiceList" />
 		</tr> -->
 		 <tr>
-		 	<td class="formRequiredNotice" width="2%">
+		 	<td class="formRequiredNoticeWithoutBorder" width="2%">
 		 				*
 		 	</td>
 
-			<td class="formRequiredLabel">
+			<td class="formRequiredLabelWithoutBorder">
 				<bean:message key="eav.att.ListBoxType"/>
 			</td>
-			<td class="formField">
+			<td class="formFieldWithoutBorder">
 					<html:radio property="attributeMultiSelect" value="<%=ProcessorConstants.LIST_TYPE_SINGLE_SELECT%>" onchange="listTypeChanged(this)" >
 						<bean:message key="eav.att.ListBoxSingleTitle"/>
 					</html:radio>
@@ -56,34 +56,34 @@
 			</td>
 		</tr>
 		<tr>
-					<td class="formRequiredNotice" width="2%">
+					<td class="formRequiredNoticeWithoutBorder" width="2%">
 								&nbsp;
 					</td>
 
-				<td class="formRequiredLabel" disabled="true">
+				<td class="formRequiredLabelWithoutBorder" disabled="true">
 						<bean:message key="eav.att.ListBoxDisplayLines"/>
 				</td>
 						<% if(listType.equalsIgnoreCase(ProcessorConstants.LIST_TYPE_SINGLE_SELECT)) { %>
-				<td class="formField">
+				<td class="formFieldWithoutBorder">
 								<html:text styleClass="formDateSized" value='' disabled='true' maxlength="100" size="60"  property="attributeNoOfRows" />
 						</td>
 						<% }  else {
 						%>
-							<td class="formField">
+							<td class="formFieldWithoutBorder">
 								<html:text styleClass="formDateSized"   maxlength="100" size="60"  property="attributeNoOfRows" />
 						</td>
 						<% } %>
 		</tr>
 
 		 <tr>
-		 	<td class="formRequiredNotice" width="2%">
+		 	<td class="formRequiredNoticeWithoutBorder" width="2%">
 		 			*
 		 	</td>
 
-			<td class="formRequiredLabel">
+			<td class="formRequiredLabelWithoutBorder">
 				<bean:message key="eav.att.DataInput"></bean:message>
 			</td>
-			<td class="formField">
+			<td class="formFieldWithoutBorder">
 				<c:forEach items="${dataTypeList}" var="dataTypeObj">
 					<jsp:useBean id="dataTypeObj" type="edu.wustl.common.beans.NameValueBean" />
 						<c:set var="dataTypeValue" value="${dataTypeObj.value}" />
@@ -99,34 +99,52 @@
 
 
 		<tr>
-			<td class="formRequiredNotice" width="2%">
+			<td class="formRequiredNoticeWithoutBorder" width="2%">
 					 			&nbsp;
 		 	</td>
-			<td class="formRequiredLabel"><bean:message key="eav.att.ListBoxOptionTypes"></bean:message></td>
-			<td>
-				<input type="hidden" value="1" name="choiceListCounter" >
-					<table summary="" cellpadding="0" cellspacing="0" border="0" align = 'center' width='100%'>
-						<tr>
-							<td class="formRequiredLabel" width="100%" align="right" >
-								<input type="text" class="formDateSized" name="choiceValue" maxlength="100" size="60" >
-								<input type="button" name="addChoiceValue" value="Add" onclick="addChoiceToList(true);">
-							</td>
-						</tr>
-						<tr class="formRequiredLabel">
-							<td class="formRequiredLabel" >
-								<table id="choiceListTable" summary="" cellpadding="0" cellspacing="0" border="1" width="100%">
-									<tr>
+			<td class="formRequiredLabelWithoutBorder" ><bean:message key="eav.att.ListBoxOptionTypes"></bean:message></td>
+			<td  class="formFieldWithoutBorder">
+				<c:forEach items="${displayChoiceList}" var="choiceType">
+					<jsp:useBean id="choiceType" type="edu.wustl.common.beans.NameValueBean" />
+						<c:set var="choiceTypeValue" value="${choiceType.value}" />
+						<jsp:useBean id="choiceTypeValue" type="java.lang.String" />
+						<html:radio property="displayChoice" value="<%=choiceTypeValue%>">
+							<c:out value="${choiceType.name}"/>
+						</html:radio>
 
-										<th width="10%" class="formLabel">
+				</c:forEach>
+			</td>
+		</tr>
+		<tr>
+			<td class="formRequiredNoticeWithoutBorder" valign="top" width="2%">
+								&nbsp;
+			</td>
+			<td class="formRequiredLabelWithoutBorder" valign="top">&nbsp;</td>
+			<td valign="top">
+				<input type="hidden" value="1" name="choiceListCounter" >
+					<table summary="" cellpadding="0" cellspacing="0" border="0" align = 'center' valign="top" width='100%'>
+						<THEAD>
+							<tr valign="top">
+								<th class="formRequiredLabelWithoutBorder" width="100%"  >
+									<input type="text" class="formDateSized" name="choiceValue" maxlength="100" size="60" >
+									<input type="button" name="addChoiceValue" value="Add" onclick="addChoiceToList(true);">
+								</th>
+							</tr>
+						</thead>
+						<tr  class="formRequiredLabelWithoutBorder">
+							<td class="formRequiredLabelWithoutBorder" >
+								<div style="padding : 1px;  height : 100px; width:'85%'; overflow : auto; " >
+								<table id="choiceListTable" summary="" cellpadding="0" cellspacing="0" border="1" >
+									<tr>
+										<th width="10%" class="formRequiredLabelWithoutBorder">
 											<bean:message key="eav.att.DefaultValue"/>
 										</th>
-										<th class="formLabel">
+										<th class="formRequiredLabelWithoutBorder">
 											<bean:message key="eav.att.values"/>
 										</th>
-										<th width="15%" class="formLabel">
+										<th width="15%" class="formRequiredLabelWithoutBorder">
 											<input type="button" name="deleteChoiceValue" value="Delete" onclick="deleteElementsFromChoiceList()" >
 										</th>
-
 									</tr>
 								</table>
 							</td>
@@ -134,6 +152,15 @@
 					</table>
 			</td>
 	</tr>
+	<tr>
+				<td class="formRequiredNoticeWithoutBorder" width="2%">
+						&nbsp;
+				</td>
+				<td class="formRequiredLabelWithoutBorder" width="25%">&nbsp;</td>
+				<td class="formFieldWithoutBorder" align="left">
+					<html:checkbox property="attributeIdentified"><bean:message key="app.att.isIdentified" /></html:checkbox>
+				</td>
+		</tr>
 	 </table>
 	</td>
  </tr>

@@ -26,6 +26,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import edu.common.dynamicextensions.validation.ValidatorRuleInterface;
 import edu.wustl.common.beans.NameValueBean;
 
 /**
@@ -639,9 +640,30 @@ public class ControlConfigurationsFactory
 		}
 		return listOfDisplayLabels;
 	}
-	{
-		
-	}
+	
+    /**
+     * This method returns rule instance for given rule name
+     * @param ruleName
+     * @return
+     */
+    public ValidatorRuleInterface getValidatorRule(String ruleName) {
+    	RuleConfigurationObject ruleConfiguration =  (RuleConfigurationObject) rulesConfigurationMap.get(ruleName);
+    	ValidatorRuleInterface ruleInterface;
+    	
+    	Class ruleClass;
+
+    	try
+		{
+			ruleClass = Class.forName(ruleConfiguration.getRuleClassName());
+			ruleInterface = (ValidatorRuleInterface) ruleClass.newInstance();
+		}
+		catch (Exception e)
+		{
+			return null;	
+		}
+    	return ruleInterface;
+    }
+	
 	/**
 	 * @param args
 	 */

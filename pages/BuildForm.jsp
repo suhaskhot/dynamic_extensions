@@ -29,10 +29,6 @@
 
 	<c:set var="userSelectedTool" value="${controlsForm.userSelectedTool}"/>
  	<jsp:useBean id="userSelectedTool" type="java.lang.String"/>
- 	
- 	<c:set var="selectedControlCaption" value="${controlsForm.selectedControlCaption}"/>
- 	<jsp:useBean id="selectedControlCaption" type="java.lang.String"/>
- 	
 
 <%
 
@@ -50,14 +46,15 @@
 
 		<html:form styleId = "controlsForm" action="/ApplyFormControlsAction" >
 		  <html:errors />
-<table valign="top"  align='left' width='90%' height="90%" border='0' cellspacing="0" cellpadding="0" class="tbBorders1" >
+<table valign="top" style = "border-right:0px"  border = 1 align='right' width='90%' height="100%" border='0' cellspacing="0" cellpadding="0" class="tbBorders1" >
          <!-- Main Page heading -->
-         <tr><td class="formFieldSized1" ><bean:message key="app.title.MainPageTitle" /></td></tr>
+         <tr style = "border-bottom:0px"><td class = "tbBordersAllbordersNone" width = '30px'>&nbsp;</td><td class="tbBordersAllbordersNone formFieldSized1" ><bean:message key="app.title.MainPageTitle" /></td></tr>
 
-	          <tr>
-	     		<td valign="top" >
-			  	 <table valign="top" summary="" align='left' width='100%' cellspacing="0" cellpadding="3"  >
-					<tr >
+	          <tr valign = "top">
+			  <td class = "tbBordersAllbordersNone" width = '30px'>&nbsp;</td>
+	     		<td class="tbBordersAllbordersNone valign="top" >
+			  	 <table valign="top" summary="" align='left' width='95%' height = 95% cellspacing="0" cellpadding="3" class = "tbBordersAllbordersBlack" >
+					<tr valign = "top" >
 					   <td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onclick="alert('This page is still under construction and will be available in the next release');">
 						 <bean:message key="app.title.DefineGroupTabTitle" />
 					   </td>
@@ -77,52 +74,73 @@
 					</tr>
 
 
-			<tr>
+			<tr valign = "top">
 			<td valign="top" colspan="7" >
-					<table align = 'center' width='100%'  class="tbBorders1" cellspacing="0" cellpadding="0" >
+					<table align = 'center' width='100%' height = '100%' class="tbBordersAllbordersNone" cellspacing="0" cellpadding="0" >
 
-					   <!--<tr class="formTitle">
+					   <!--<tr valign = "top" class="formTitle">
 							<td colspan="3" align="center">
 								<bean:message  key="app.formControlsPage.heading" />
 							</td>
 						</tr>-->
-						<tr>
+						<tr style = "padding-left:5px" valign = "top">
 							<td class="formFieldSized1" >
 								<%=rootName%>
 							</td>
 
-							<td class="formFieldSized1" >
-								<%=selectedControlCaption%> <bean:message  key="app.formControl.properties" />
+							<td style = "padding-left:10px" class="formFieldSized1" >
+								<%=userSelectedTool%> <bean:message  key="app.formControl.properties" />
 							</td>
 
-							<td class="formFieldSized1" >
+							<td style = "padding-left:30px" class="formFieldSized1" >
 								<bean:message  key="app.formControlsTree.heading" />
 							</td>
 						</tr>
 
-						<tr>
-							<td class="toolBoxTable" width="10%" align="left">
-								<dynamicExtensions:ToolsMenu id="BuildForm"
-										toolsList = "<%=toolsList%>"
-										onClick="controlSelectedAction"
-										selectedUserOption="<%= userSelectedTool%>"
-										height="100%" width="100%">
-								 </dynamicExtensions:ToolsMenu>
+						<tr valign = "top">
+							<td style = "padding-left:5px" height = 100% >
+								<table height = '100%'  class="tbBordersAllbordersBlack" cellspacing="0" cellpadding="0" >
+									<tr valign = "top" height = '100%' >	
+										<td  height = '100%' width = '100%' class="toolBoxTable"  align="center">
+											<dynamicExtensions:ToolsMenu id="BuildForm"
+													toolsList = "<%=toolsList%>"
+													onClick="controlSelectedAction"
+													selectedUserOption="<%= userSelectedTool%>"
+													>
+											 </dynamicExtensions:ToolsMenu>
+										</td>
+									</tr>
+									<tr height = 100%>
+										<td>&nbsp;
+										</td>
+									</tr>
+								</table>
+							</td>
+							
+							<td  style = "padding-left:10px" align="top" width = 65%>
+							<table height = '100%' width = '100%' class="tbBordersAllbordersBlack" cellspacing="0" cellpadding="0">
+								<tr height = '100%' width = '100%'>
+									<td height = '100%' width = '100%'>
+										<jsp:include page="<%=htmlFile%>" />
+									</td>
+								<tr>
+							</table>
 							</td>
 
-							<td align="top" width="70%" >
-									<jsp:include page="<%=htmlFile%>" />
+							<td style = "padding-left:30px" valign="top">
+								<table height = '100%' width = 95%  class="tbBordersAllbordersBlack" cellspacing="0" cellpadding="0">
+									<tr valign = "top" height = '100%' width = 100%>
+										<td  height = '100%' width = 100%>
+											Your table structure goes here.
+										</td>
+									</tr>
+								</table>
 
-							</td>
-
-							<td  valign="top">
-								<label class="formRequiredLabel"><bean:message  key="app.FormControlsTreePageHeading" /></label>
-								<dynamicExtensions:tree treeDataObject="<%=treedataObj%>" />
 							</td>
 						</tr>
 
-						<tr>
-							<td colspan="2" align="right">
+						<tr colspan="2" valign = "top" align="right">
+							<td style = "padding-top:3px" colspan="2" align="right">
 									<html:button styleClass="actionButton" property="addControlToFormButton" onclick="addControlToFormTree()" >
 												<bean:message  key="buttons.addControlToForm" />
 									</html:button>
@@ -131,14 +149,30 @@
 												<bean:message  key="buttons.clear" />
 									</html:reset>-->
 							 </td>
+							 <td style = "padding-left:30px" >
+								<table summary="" align = 'left' cellpadding="3" cellspacing="0">
+									<tr>
+										<td>
+											<input type = "button" name = "upButton" value = "Up" onclick = ""/>
+										</td>
+										<td>
+											<input type = "button" name = "upButton" value = "down" onclick = ""/>
+										</td>
+										<td>
+											<input type = "button" name = "upButton" value = "Delete" onclick = ""/>
+										</td>
+
+									</tr>
+								</table>
+							 </td>
 						</tr>
 				</table>
 			</td>
 			</tr>
-		<tr>
+		<tr valign = "top" >
 		<td valign="top" colspan="7">
-			 <table summary="" align = 'left' cellpadding="5" cellspacing="0"  class='bodyStyle'>
-				<tr height="5">
+			 <table class= "formLabelBorderless" summary="" align = 'left' cellpadding="5" cellspacing="0"  class='bodyStyle'>
+				<tr valign = "top" height="5">
 
 					<td>
 							<html:submit styleClass="actionButton" onclick="saveEntity()">
@@ -187,6 +221,5 @@
 
 	  	</html:form>
   	</body>
-  </head>
-	
+	</head>
 </html>

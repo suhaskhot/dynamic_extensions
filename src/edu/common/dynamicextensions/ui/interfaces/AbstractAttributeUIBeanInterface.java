@@ -140,10 +140,26 @@ public interface AbstractAttributeUIBeanInterface {
 	 * @param conceptCode Concept code
 	 */
 	public void setAttributeConceptCode(String conceptCode);
-	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getDateValueType();
 
+	/**
+	 * 
+	 * @param dateValueType
+	 */
 	public void setDateValueType(String dateValueType);
-	public String getAttributeIdentified();
-	public void setAttributeIdentified(String attributeIdentified);
+	
+	/**
+	 * 
+	 * @return
+	 */
+	String[] getValidationRules();
+	/**
+	 * 
+	 * @param validationRules
+	 */
+	void setValidationRules(String[] validationRules);
 }

@@ -68,7 +68,7 @@ import edu.wustl.common.util.logger.Logger;
 public class EntityManager
         implements
             EntityManagerInterface,
-            EntityManagerConstantsInterface
+            EntityManagerConstantsInterface, EntityManagerExceptionConstantsInterface
 {
 
     /**
@@ -210,7 +210,7 @@ public class EntityManager
             e1.printStackTrace();
             throw new DynamicExtensionsSystemException(
                     "Unable to exectute the data table queries .....Cannot access sesssion",
-                    e1);
+                    e1, DYEXTN_S_002);
         }
 
         Stack reverseQuerysubStack = new Stack();
@@ -250,7 +250,7 @@ public class EntityManager
                         rollbackQueries(reverseQuerysubStack, conn, entity);
                         throw new DynamicExtensionsSystemException(
                                 "Exception occured while forming the data tables for entity",
-                                e);
+                                e, DYEXTN_S_002);
                     }
                 }
             }
@@ -258,7 +258,7 @@ public class EntityManager
         catch (HibernateException e)
         {
             throw new DynamicExtensionsSystemException(
-                    "Cannot obtain connection to execute the data query", e);
+                    "Cannot obtain connection to execute the data query", e, DYEXTN_S_001);
         }
 
         return reverseQuerysubStack;
@@ -299,9 +299,11 @@ public class EntityManager
                 }
                 finally
                 {
-                    throw new DynamicExtensionsSystemException(
+                    DynamicExtensionsSystemException ex = new DynamicExtensionsSystemException(
                             "Queries rolled back....Could not create data table for the entity"
                                     + entity);
+                    ex.setErrorCode(DYEXTN_S_000);
+                    throw ex;
                 }
 
             }
@@ -318,10 +320,10 @@ public class EntityManager
      */
     private void LogFatalError(SQLException e, Entity entity)
     {
-        Logger.out.debug("***Fatal Error.. Incosistent data table and metadata information for the entity -" + entity.getName());
-        Logger.out.debug("Please check the table -" + entity.getTableProperties().getName());
-        Logger.out.debug("The cause of the exception is - " + e.getMessage());
-        Logger.out.debug("The detailed log is : " );
+        Logger.out.error("***Fatal Error.. Incosistent data table and metadata information for the entity -" + entity.getName());
+        Logger.out.error("Please check the table -" + entity.getTableProperties().getName());
+        Logger.out.error("The cause of the exception is - " + e.getMessage());
+        Logger.out.error("The detailed log is : " );
         e.printStackTrace();
 
     }
@@ -1427,7 +1429,7 @@ public class EntityManager
         {
 
             throw new DynamicExtensionsApplicationException(
-                    "User is not authorised to perform this action", e);
+                    "User is not authorised to perform this action", e, DYEXTN_A_002);
         }
         catch (DAOException e)
         {
@@ -1442,9 +1444,9 @@ public class EntityManager
             catch (Exception e1)
             {
                 throw new DynamicExtensionsSystemException(
-                        "Exception occured while rolling back the session", e1);
+                        "Exception occured while rolling back the session", e1, DYEXTN_S_001);
             }
-            throw new DynamicExtensionsSystemException(e.getMessage(), e);
+            throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
         }
         catch (DynamicExtensionsSystemException e)
         {
@@ -1455,10 +1457,9 @@ public class EntityManager
             catch (Exception e1)
             {
                 throw new DynamicExtensionsSystemException(
-                        "Exception occured while rolling back the session", e1);
+                        "Exception occured while rolling back the session", e1, DYEXTN_S_001);
             }
-            throw new DynamicExtensionsSystemException(
-                    "Exception occured while creating data table for entity", e);
+            throw e;
         }
         finally
         {
@@ -1471,7 +1472,7 @@ public class EntityManager
             {
                 e.printStackTrace();
                 throw new DynamicExtensionsSystemException(
-                        "Exception occured while closing the session", e);
+                        "Exception occured while closing the session", e, DYEXTN_S_001);
             }
 
         }

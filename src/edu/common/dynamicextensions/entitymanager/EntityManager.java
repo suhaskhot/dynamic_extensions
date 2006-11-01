@@ -1704,11 +1704,13 @@ public class EntityManager
 	public Map getRecordById(EntityInterface entity, Long recordId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Map recordValues = new HashMap();
-		Collection attributesCollection = entity.getAttributeCollection();
 
 		if (entity == null || entity.getId() == null || recordId == null) {
 			throw new DynamicExtensionsSystemException("Invalid Input");
 		}
+
+		Collection attributesCollection = entity.getAttributeCollection();
+
 		String tableName = entity.getTableProperties().getName();
 		String[] selectColumnName = new String[attributesCollection.size()];
 		String[] whereColumnName = new String[] {IDENTIFIER}; 

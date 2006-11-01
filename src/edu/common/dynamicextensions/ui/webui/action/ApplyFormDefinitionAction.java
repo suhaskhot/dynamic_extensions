@@ -51,7 +51,11 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
             catch (Exception e)
             {
                 List list = new ArrayList();
-                handleException(e,list);
+                boolean isSystemException = handleException(e,list);
+                saveErrors(request,getErrorMessages(list,""));
+                if (isSystemException) {
+                target = Constants.SYSTEM_EXCEPTION;
+                }
             }
            
 			target = Constants.BUILD_FORM;
@@ -69,8 +73,12 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
             catch (Exception e)
             {
                 List list = new ArrayList();
-                handleException(e,list);
+                boolean isSystemException = handleException(e,list);
+                String formName =formDefinitionForm.getFormName();
+                saveErrors(request,getErrorMessages(list, formName));
+                if (isSystemException) {
                 target = Constants.SYSTEM_EXCEPTION;
+                }
             }
             
 		}

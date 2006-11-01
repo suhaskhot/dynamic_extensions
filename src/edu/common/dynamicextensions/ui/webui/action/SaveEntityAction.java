@@ -37,10 +37,11 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 		ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 		//Call container processor save method
         ContainerProcessor containerProcessor  = ContainerProcessor.getInstance();
+        String formName = "";
         try
         {
             containerProcessor.saveContainer(containerInterface);
-            String formName = "";
+            
             if((containerInterface!=null)&&(containerInterface.getEntity()!=null))
             {
             	formName = containerInterface.getEntity().getName();
@@ -51,8 +52,11 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
         catch (Exception e)
         {
             List list = new ArrayList();
-            handleException(e,list);
+            boolean isSystemException = handleException(e,list);
+            saveErrors(request,getErrorMessages(list,formName));
+            if (isSystemException) {
             actionForward = mapping.findForward(Constants.SYSTEM_EXCEPTION);
+            }
         }
         return actionForward;
 	}

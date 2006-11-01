@@ -4,8 +4,11 @@ package edu.common.dynamicextensions.ui.webui.action;
  * @author deepti_shelar
  */
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
 import org.apache.struts.actions.DispatchAction;
 
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
@@ -22,18 +25,37 @@ public class BaseDynamicExtensionsAction extends DispatchAction {
 	 * @param errorMessagesList
 	 * @return errorsList
 	 */
-	protected List handleException(Throwable throwable,List errorMessagesList){
+	protected boolean handleException(Throwable throwable,List errorMessagesList){
 		Logger.out.error(throwable.getStackTrace(), throwable);
 		Logger.out.debug(throwable.getStackTrace(), throwable);
 		//TODO check how the logging should be done.
-		List errorsList = new ArrayList();
+		boolean isSystemException = false;
+        if (errorMessagesList == null) {
+            errorMessagesList = new ArrayList();
+        }
 		if (throwable instanceof DynamicExtensionsApplicationException) {
 			DynamicExtensionsApplicationException appException = (DynamicExtensionsApplicationException)throwable;
-			errorsList.add(appException.getErrorMessage());
+			String errorCode = appException.getErrorCode();
+            errorMessagesList.add(errorCode);
 		}else if (throwable instanceof DynamicExtensionsSystemException) {
-			//TODO
-			System.out.println("Exception ");
+            DynamicExtensionsSystemException systemException = (DynamicExtensionsSystemException)throwable;
+            String errorCode = systemException.getErrorCode();
+            errorMessagesList.add(errorCode);
+            isSystemException = true;
 		}
-		return errorsList;
+		return isSystemException;
 	}
+    
+    protected ActionErrors getErrorMessages(List stringList, String formName)
+    {
+        ActionErrors actionErrors = new ActionErrors();
+        if (stringList != null && !stringList.isEmpty()) {
+            Iterator iterator = stringList.iterator();
+            while (iterator.hasNext()) {
+                actionErrors.add(ActionErrors.GLOBAL_ERROR, new ActionError((String)iterator.next()));
+            }
+        }
+       
+        return actionErrors;
+    }
 }

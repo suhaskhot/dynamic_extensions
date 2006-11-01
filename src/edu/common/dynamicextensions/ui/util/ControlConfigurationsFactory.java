@@ -569,13 +569,15 @@ public class ControlConfigurationsFactory
 				explicitRules = (ArrayList) getListOfRules(controlsConfigurationObject.getCommonExplicitRules());
 				Map map = controlsConfigurationObject.getDataTypeExplicitRules();
 				List rulesList = (ArrayList) map.get(dataType);
-				Iterator iter = rulesList.iterator();
-				while (iter.hasNext())
-				{
-					String ruleName = iter.next().toString();
-					if (!ruleName.equalsIgnoreCase(""))
+				if(rulesList != null) {
+					Iterator iter = rulesList.iterator();
+					while (iter.hasNext())
 					{
-						explicitRules.add(ruleName);
+						String ruleName = iter.next().toString();
+						if (!ruleName.equalsIgnoreCase(""))
+						{
+							explicitRules.add(ruleName);
+						}
 					}
 				}
 			}
@@ -610,7 +612,7 @@ public class ControlConfigurationsFactory
 		{
 			ruleConfigurationObject = (RuleConfigurationObject) rulesConfigurationMap.get(ruleName);	
 		}
-		
+
 		return ruleConfigurationObject;
 	}
 
@@ -640,19 +642,19 @@ public class ControlConfigurationsFactory
 		}
 		return listOfDisplayLabels;
 	}
-	
-    /**
-     * This method returns rule instance for given rule name
-     * @param ruleName
-     * @return
-     */
-    public ValidatorRuleInterface getValidatorRule(String ruleName) {
-    	RuleConfigurationObject ruleConfiguration =  (RuleConfigurationObject) rulesConfigurationMap.get(ruleName);
-    	ValidatorRuleInterface ruleInterface;
-    	
-    	Class ruleClass;
 
-    	try
+	/**
+	 * This method returns rule instance for given rule name
+	 * @param ruleName
+	 * @return
+	 */
+	public ValidatorRuleInterface getValidatorRule(String ruleName) {
+		RuleConfigurationObject ruleConfiguration =  (RuleConfigurationObject) rulesConfigurationMap.get(ruleName);
+		ValidatorRuleInterface ruleInterface;
+
+		Class ruleClass;
+
+		try
 		{
 			ruleClass = Class.forName(ruleConfiguration.getRuleClassName());
 			ruleInterface = (ValidatorRuleInterface) ruleClass.newInstance();
@@ -661,9 +663,9 @@ public class ControlConfigurationsFactory
 		{
 			return null;	
 		}
-    	return ruleInterface;
-    }
-	
+		return ruleInterface;
+	}
+
 	/**
 	 * @param args
 	 */

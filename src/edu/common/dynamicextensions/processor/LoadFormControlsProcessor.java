@@ -82,9 +82,12 @@ public class LoadFormControlsProcessor
 				controlsForm.setFormat(ProcessorConstants.DEFAULT_DATE_FORMAT);
 				
 				//Default validationRules
+				
+				controlsForm.setTextValidationRulesList(getListOfValidationRules
+						(userSelectedTool,ProcessorConstants.DATATYPE_STRING));
+				controlsForm.setNumberValidationRulesList(getListOfValidationRules
+						(userSelectedTool,ProcessorConstants.DATATYPE_NUMBER));
 				controlsForm.setValidationRules(new String[5]);
-				controlsForm.setValidationRulesList(getListOfValidationRules
-						(ProcessorConstants.DEFAULT_SELECTED_CONTROL,ProcessorConstants.DEFAULT_DATA_TYPE));
 			}
 
 			else if(controlOperation.equalsIgnoreCase(ProcessorConstants.EDIT))  

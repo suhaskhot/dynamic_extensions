@@ -227,7 +227,9 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	 * 
 	 */
 	protected String[] validationRules;
-	protected List validationRulesList ;
+	protected List textValidationRulesList ;
+	protected List numberValidationRulesList ;
+	
 	protected String selectedControlCaption;
 	/**
 	 * is attribute identified
@@ -1089,20 +1091,37 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		this.validationRules = validationRules;
 	}
 
+	
 	/**
-	 * @return the validationRulesList
+	 * @return the numberValidationRulesList
 	 */
-	public List getValidationRulesList()
+	public List getNumberValidationRulesList()
 	{
-		return validationRulesList;
+		return numberValidationRulesList;
 	}
 
 	/**
-	 * @param validationRulesList the validationRulesList to set
+	 * @param numberValidationRulesList the numberValidationRulesList to set
 	 */
-	public void setValidationRulesList(List validationRulesList)
+	public void setNumberValidationRulesList(List numberValidationRulesList)
 	{
-		this.validationRulesList = validationRulesList;
+		this.numberValidationRulesList = numberValidationRulesList;
+	}
+
+	/**
+	 * @return the textValidationRulesList
+	 */
+	public List getTextValidationRulesList()
+	{
+		return textValidationRulesList;
+	}
+
+	/**
+	 * @param textValidationRulesList the textValidationRulesList to set
+	 */
+	public void setTextValidationRulesList(List textValidationRulesList)
+	{
+		this.textValidationRulesList = textValidationRulesList;
 	}
 
 }

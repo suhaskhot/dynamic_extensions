@@ -1349,3 +1349,9 @@ textarea.formFieldSized20{ /* Used by Mandar for the comments used in autoevents
   border-bottom:1px solid #5C5C5C; /* constant: dark gray */
   cursor:hand;
 }
+input.formParamSized{ /* for the form elements themselves and with a constant width (on elements) */
+  font-family:arial,helvetica,verdana,sans-serif;
+  border:1px solid #5C5C5C; /* constant: dark gray */
+  font-size:1em;
+  width:5em;
+}

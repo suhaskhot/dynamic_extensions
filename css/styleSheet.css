@@ -273,6 +273,13 @@ FORM BEGINS
   border-bottom:1px solid #5C5C5C; /* constant: dark gray */
 }
 
+.formRequiredNoticeWithoutBorder{ /* for the asterisk cell */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:1em;
+ 
+  color:#000000; /* constant: black */
+}
+
 .formRequiredNoticeWithoutLeftBorder{ /* for notoce without left border*/
   font-family:arial,helvetica,verdana,sans-serif;
   font-size:1em;
@@ -319,9 +326,8 @@ FORM BEGINS
   font-family:arial,helvetica,verdana,sans-serif;
   font-size:0.7em;
   font-weight:bold;
-  background-color:#F4F4F5; /* constant: light gray */
   color:#000000; /* constant: black	*/
-  border-bottom:1px solid #5C5C5C; /* constant: dark gray */
+  
   text-align:left;
 }
 
@@ -428,6 +434,12 @@ td.formField{ /* for the cell that contains the form elements */
   border-bottom:1px solid #5C5C5C; /* constant: dark gray */
   background-color:#F4F4F5; /* constant: light gray */
 }
+td.formFieldWithoutBorder{ /* for the cell that contains the form elements */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.7em;
+  color:#000000; /* constant: black */
+}
+
 td.formFieldBottom{ /* for the cell with only bottom border needed */
   font-family:arial,helvetica,verdana,sans-serif;
   font-size:0.7em;
@@ -985,6 +997,20 @@ td.formFieldAddMore{ /* for the cell that contains the form elements */
   border-top:0px /* constant: dark gray */
   border-left:1px solid #000000; /* constant: dark gray */
   border-right:1px solid #000000; /* constant: dark gray */
+}
+
+.tbBordersAllbordersBlack{ /* for block table with border 1 */
+  border-bottom:1px solid #000000; /* constant: dark gray */
+  border-top:1px  solid #000000;/* constant: dark gray */
+  border-left:1px solid #000000; /* constant: dark gray */
+  border-right:1px solid #000000; /* constant: dark gray */
+}
+
+.tbBordersAllbordersNone {
+border-right:0px;
+border-top:0px;
+border-left:0px;
+border-bottom:0px;
 }
 
 td.formFieldNoBorders{ /* for the cell that contains the form elements */

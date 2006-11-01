@@ -1,5 +1,6 @@
 package edu.common.dynamicextensions.domain;
 import java.util.Collection;
+import java.util.HashSet;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -50,12 +51,14 @@ public abstract class AbstractAttribute extends AbstractMetadata implements Abst
     }
 
     /**
-     * 
+     * adds a rule to this attribute
      */
 	public void addRule(RuleInterface ruleInterface) 
 	{
-		// TODO Auto-generated method stub
-		
+		if (ruleCollection == null) {
+			ruleCollection = new HashSet();
+		}
+		ruleCollection.add(ruleInterface);
 	}
    
 	/**
@@ -73,5 +76,15 @@ public abstract class AbstractAttribute extends AbstractMetadata implements Abst
 	public void setEntity(EntityInterface entityInterface) 
 	{
 		this.entity = (Entity)entityInterface;
+	}
+	
+	/*
+	 * @see edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface#removeRule(edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface)
+	 */
+	public void removeRule(RuleInterface ruleInterface)
+	{
+		if (ruleCollection != null && ruleCollection.contains(ruleInterface)) {
+			ruleCollection.remove(ruleInterface);
+		}
 	}
 }

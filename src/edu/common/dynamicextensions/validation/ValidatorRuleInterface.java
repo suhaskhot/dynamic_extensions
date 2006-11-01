@@ -1,0 +1,30 @@
+
+package edu.common.dynamicextensions.validation;
+
+import java.util.Map;
+
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+
+
+/**
+ * Any validator that is to be invoked for a attribute of an dynamic extension entity
+ * should implement this interface.
+ * @author sujay_narkar
+ * @author Rahul Ner
+ */
+public interface ValidatorRuleInterface {
+    
+    /**
+     * This method validates input attribute for a particular validation
+     * for input valueObject.
+     * 
+     * @param attribute  attribute to be validated
+     * @param valueObject  value of the object 
+     * @param paramMap RuleConfigurations.xml defines parameter for particular rule.
+     *                               key = parameter name
+     *                               value = parameter value
+     * @return 
+     */
+     boolean validate(AttributeInterface attribute,Object valueObject,Map paramMap) throws DynamicExtensionsApplicationException; 
+}

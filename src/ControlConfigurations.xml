@@ -1,58 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <controls>
-	<control name="TextControl" display-label="eav.caption.TextControlCaption" jspName="TextControl.jsp">
-	<validations>
-			<common-validation-rule name="required" isImplicit="false"></common-validation-rule>
-			<common-validation-rule name="number" isImplicit="false"></common-validation-rule>
-	</validations>
-	<datatypes>
-		<dataType name="Text">
-			<validations>
-				<validation-rule name="number" isImplicit="true"></validation-rule>
-				<validation-rule name="range" isImplicit="false"></validation-rule>
-			</validations>
-		</dataType>
-		<dataType name="Number" >
-			<validations>
-				<validation-rule name="number" isImplicit="false"></validation-rule>
-			</validations>
-		</dataType>
-	</datatypes>
-	</control>
-	<control name="ComboboxControl" display-label="eav.caption.ComboboxControlCaption" jspName="ComboboxControl.jsp">
-	<validations>
-			<common-validation-rule name="required"></common-validation-rule>
-	</validations>
-	<datatypes>
-		<dataType name="Text">
-			<validations>
-			<validation-rule name="required" isImplicit="false"></validation-rule>
-			</validations>
-		</dataType>
-		<dataType name="Number" >
-			<validations>
-			<validation-rule name="number" isImplicit="false"></validation-rule>
-			</validations>
-		</dataType>
-		<dataType name="Yes/No" >
-			<validations>
-			<validation-rule name="required" isImplicit="false"></validation-rule>
-			</validations>
-		</dataType>
-	</datatypes>
-	</control>
-	<control name="DateControl" display-label="eav.caption.DateControlCaption" jspName="DateControl.jsp">
-	<validations>
-			<common-validation-rule name="required" isImplicit="false"></common-validation-rule>
-	</validations>
-	<datatypes>
-		<dataType name="Date">
-			<validations>
-				<validation-rule name="date" isImplicit="false"></validation-rule>			
-			</validations>
-		</dataType>
-	</datatypes>
-	</control>
-	
-	
-	</controls>
-	
+  <!-- rules for text control start-->
+  
+  <control name="TextControl" display-label="eav.caption.TextControlCaption" jspName="TextControl.jsp">
+    <validations>
+      <common-validation-rule name="required" isImplicit="false">
+      </common-validation-rule>
+      <common-validation-rule name="unique" isImplicit="false">
+      </common-validation-rule>
+    </validations>
+    <datatypes>
+      <dataType name="Text">
+        <validations>
+        </validations>
+      </dataType>
+      <dataType name="Number" >
+        <validations>
+          <validation-rule name="number" isImplicit="true">
+          </validation-rule>
+          <validation-rule name="range" isImplicit="false">
+          </validation-rule>
+        </validations>
+      </dataType>
+    </datatypes>
+  </control>
+  <!-- rules for text control end-->
+  
+  <!-- rules for Date control start-->
+  
+  <control name="DateControl" display-label="eav.caption.DateControlCaption" jspName="DateControl.jsp">
+    <validations>
+      <common-validation-rule name="required" isImplicit="false">
+      </common-validation-rule>
+    </validations>
+    <datatypes>
+      <dataType name="Date">
+        <validations>
+          <validation-rule name="date" isImplicit="true">
+          </validation-rule>
+          <validation-rule name="dateRange" isImplicit="false">
+          </validation-rule>
+        </validations>
+      </dataType>
+    </datatypes>
+  </control>
+  <!-- rules for Date control end-->
+  
+  <!-- rules for ComboboxControl control start-->
+  
+  <control name="ComboboxControl" display-label="eav.caption.ComboboxControlCaption" jspName="ComboboxControl.jsp">
+    <validations>
+      <common-validation-rule name="required">
+      </common-validation-rule>
+    </validations>
+    <datatypes>
+      <dataType name="Text">
+        <validations>
+        </validations>
+      </dataType>
+      <dataType name="Number" >
+        <validations>
+        </validations>
+      </dataType>
+      <dataType name="Yes/No" >
+        <validations>
+        </validations>
+      </dataType>
+    </datatypes>
+  </control>
+  <!-- rules for ComboboxControl control end-->
+  
+</controls>

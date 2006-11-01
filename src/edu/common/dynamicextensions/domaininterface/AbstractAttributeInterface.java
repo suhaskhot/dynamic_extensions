@@ -22,6 +22,12 @@ public interface AbstractAttributeInterface extends AbstractMetadataInterface
      * @param ruleInterface The ruleInterface to be set.
      */
     void addRule(RuleInterface  ruleInterface);
+    
+    /**
+     * Removes given rule from this attribute
+     * @param ruleInterface
+     */
+    void removeRule(RuleInterface ruleInterface);
     /**
      * 
      * @return EntityInterface entity interface

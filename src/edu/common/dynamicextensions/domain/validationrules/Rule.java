@@ -1,6 +1,7 @@
 package edu.common.dynamicextensions.domain.validationrules;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
@@ -104,10 +105,12 @@ public class Rule extends AbstractDomainObject implements java.io.Serializable,R
 	}
     
     /**
-     * 
+     * Adds a rule parameter to this rule
      */
 	public void addRuleParameter(RuleParameterInterface ruleParameterInterface) {
-		// TODO Auto-generated method stub
-		
+		if (ruleParameterCollection == null) {
+			ruleParameterCollection = new HashSet();
+		}
+		ruleParameterCollection.add(ruleParameterInterface);
 	}
 }

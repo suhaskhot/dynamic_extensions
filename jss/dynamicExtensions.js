@@ -69,7 +69,7 @@ function showNextActionConfirmDialog()
 }
 function showCreateFormJSP() {
 	var arg = window.dialogArguments;
-    var controlsForm=arg.document.getElementById("controlsForm");
+    	var controlsForm=arg.document.getElementById("controlsForm");
 	controlsForm.action="/dynamicExtensions/LoadFormDefinitionAction.do";
 	controlsForm.submit();
 	window.close();
@@ -576,4 +576,10 @@ function addDynamicData()
 	{
 		previewForm.action="/dynamicExtensions/ApplyDataEntryFormAction.do";
 	}
+}
+function showFormDefinitionPage()
+{
+	var previewForm = document.getElementById('previewForm');
+	previewForm.action="/dynamicExtensions/LoadFormDefinitionAction.do";
+	previewForm.submit();
 }

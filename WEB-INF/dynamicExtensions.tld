@@ -91,12 +91,9 @@
 	      <type>java.util.List</type>
 	</attribute>
 </tag>
-
 <tag>
 	<name>generatehtml</name>
-	<tagclass>edu.common.dynamicextensions.ui.webui.taglib.HTMLGeneratorTag</tagclass>
-	<bodycontent>empty</bodycontent>
-	<info></info>
+	<tag-class>edu.common.dynamicextensions.ui.webui.taglib.HTMLGeneratorTag</tag-class>
 	<attribute>
 		<name>uiControlsList</name>
 		<required>true</required>
@@ -107,9 +104,7 @@
 
 <tag>
 	<name>tree</name>
-	<tagclass>edu.common.dynamicextensions.ui.webui.taglib.TreeGeneratorTag</tagclass>
-	<bodycontent>empty</bodycontent>
-	<info></info>
+	<tag-class>edu.common.dynamicextensions.ui.webui.taglib.TreeGeneratorTag</tag-class>
 	<attribute>
 		<name>treeDataObject</name>
 		<required>true</required>

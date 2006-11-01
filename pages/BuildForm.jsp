@@ -9,6 +9,7 @@
 
 <link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
 <script src="jss/dynamicExtensions.js" type="text/javascript"></script>
+<script src="jss/script.js" type="text/javascript"></script>
 <script src="jss/overlib_mini.js" type="text/javascript"></script>
 <script src="jss/calender.js" type="text/javascript"></script>
 
@@ -53,140 +54,122 @@
 	     		<td valign="top" >
 			  	 <table valign="top" summary="" align='left' width='100%' cellspacing="0" cellpadding="3"  >
 					<tr >
-						<td class="formTitle" align='left' colspan="3" >
-						<!-- Menu tabs -->
-							 <table valign="top" summary="" cellpadding="0" cellspacing="0" border="0" height="5%">
-							             <tr>
-							               <!-- link 1 begins -->
-							               <td height="20" class="mainMenuItem" onmouseover="changeMenuStyle(this,'mainMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'mainMenuItem'),hideCursor()" >
-							                 <a href="pages/DefineGroup.jsp" class="mainMenuLink"><bean:message key="app.title.DefineGroupTabTitle" /></a>
-							               </td>
-							               <!-- link 1 ends -->
-							 			   <td><img src="images/mainMenuSeparator.gif" width="1" height="16" alt="" /></td>
-							 			  <!-- link 2 begins -->
-							 			  <td height="20" class="mainMenuItem" onmouseout="changeMenuStyle(this,'mainMenuItem'),hideCursor()"  onmouseover="changeMenuStyle(this,'mainMenuItemOver'),showCursor()" >
-											  <a href="javascript:showNextActionConfirmDialog()" class="mainMenuLink"><bean:message key="app.title.DefineFormTabTitle" /></a>
-							               </td>
-							               <!-- link 2 ends -->
-							 			 	<td><img src="images/mainMenuSeparator.gif" width="1" height="16" alt="" /></td>
+					   <td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onclick="alert('This page is still under construction and will be available in the next release');">
+						 <bean:message key="app.title.DefineGroupTabTitle" />
+					   </td>
 
-							               <!-- link 3 begins -->
-							                <td height="20" class="mainMenuItemSelected" >
-										   		<a href="#" class="mainMenuLink"><bean:message key="app.title.BuildFormTabTitle" /></a>
-							               </td>
+					   <td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onClick="showNextActionConfirmDialog()">
+						 <bean:message key="app.title.DefineFormTabTitle" />
+					   </td>
 
-							              <!-- link 3 ends -->
-							               <td><img src="images/mainMenuSeparator.gif" width="1" height="16" alt="" /></td>
-							 		      <!-- link 4 begins -->
-							               <td height="20" class="mainMenuItem" onmouseover="changeMenuStyle(this,'mainMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'mainMenuItem'),hideCursor()" >
-							                 <a href="javascript:showFormPreview()" class="mainMenuLink"><bean:message key="app.title.PreviewTabTitle" /></a>
-							               </td>
-							               <!-- link 4 ends -->
-							               <td><img src="images/mainMenuSeparator.gif" width="1" height="16" alt="" /></td>
-							 			</tr>
-							     </table>
-<!-- menu ends -->
-						 </td>
-			   		</tr>
-			<tr><td ><%=rootName%> </td></tr>
+					   <td height="20" class="tabMenuItemSelected" >
+						 <bean:message key="app.title.BuildFormTabTitle" />
+					   </td>
+
+					   <td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onClick="showFormPreview()" >
+						 <bean:message key="app.title.PreviewTabTitle" />
+					   </td>
+					   <td width="50%" class="tabMenuSeparator" colspan="3">&nbsp;</td>
+					</tr>
+
 
 			<tr>
-			<td valign="top" >
-		  	<table align = 'center' width='100%'  class="tbBorders1" cellspacing="0" cellpadding="0" >
+			<td valign="top" colspan="7" >
+					<table align = 'center' width='100%'  class="tbBorders1" cellspacing="0" cellpadding="0" >
 
-			   <!--<tr class="formTitle">
-			   		<td colspan="3" align="center">
-			   			<bean:message  key="app.formControlsPage.heading" />
-			   		</td>
-			   	</tr>-->
-				<tr>
-					<td class="formFieldSized1" >
-						&nbsp;
-					</td>
+					   <!--<tr class="formTitle">
+							<td colspan="3" align="center">
+								<bean:message  key="app.formControlsPage.heading" />
+							</td>
+						</tr>-->
+						<tr>
+							<td class="formFieldSized1" >
+								<%=rootName%>
+							</td>
 
-					<td class="formFieldSized1" >
-						<%=userSelectedTool%> <bean:message  key="app.formControl.properties" />
-					</td>
+							<td class="formFieldSized1" >
+								<%=userSelectedTool%> <bean:message  key="app.formControl.properties" />
+							</td>
 
-					<td class="formFieldSized1" >
-						<bean:message  key="app.formControlsTree.heading" />
-					</td>
-				</tr>
+							<td class="formFieldSized1" >
+								<bean:message  key="app.formControlsTree.heading" />
+							</td>
+						</tr>
 
-		  		<tr>
-		  			<td class="toolBoxTable" width="10%" align="left">
-					    <dynamicExtensions:ToolsMenu id="BuildForm"
-								toolsList = "<%=toolsList%>"
-								onClick="controlSelectedAction"
-								selectedUserOption="<%= userSelectedTool%>"
-								height="100%" width="100%">
-				   		 </dynamicExtensions:ToolsMenu>
-		  			</td>
+						<tr>
+							<td class="toolBoxTable" width="10%" align="left">
+								<dynamicExtensions:ToolsMenu id="BuildForm"
+										toolsList = "<%=toolsList%>"
+										onClick="controlSelectedAction"
+										selectedUserOption="<%= userSelectedTool%>"
+										height="100%" width="100%">
+								 </dynamicExtensions:ToolsMenu>
+							</td>
 
-		  			<td align="top" width="70%" >
-							<jsp:include page="<%=htmlFile%>" />
+							<td align="top" width="70%" >
+									<jsp:include page="<%=htmlFile%>" />
 
-		  			</td>
+							</td>
 
-		  			<td  valign="top">
-						<label class="formRequiredLabel"><bean:message  key="app.FormControlsTreePageHeading" /></label>
-			  			<dynamicExtensions:tree treeDataObject="<%=treedataObj%>" />
-		  			</td>
-		  		</tr>
+							<td  valign="top">
+								<label class="formRequiredLabel"><bean:message  key="app.FormControlsTreePageHeading" /></label>
+								<dynamicExtensions:tree treeDataObject="<%=treedataObj%>" />
+							</td>
+						</tr>
 
-		  		<tr>
-					<td colspan="2" align="right">
-							<html:button styleClass="actionButton" property="addControlToFormButton" onclick="addControlToFormTree()" >
-										<bean:message  key="buttons.addControlToForm" />
-							</html:button>
+						<tr>
+							<td colspan="2" align="right">
+									<html:button styleClass="actionButton" property="addControlToFormButton" onclick="addControlToFormTree()" >
+												<bean:message  key="buttons.addControlToForm" />
+									</html:button>
 
-							<!--<html:reset styleClass="actionButton" property="clearButton" onclick="clearForm()" >
-										<bean:message  key="buttons.clear" />
-							</html:reset>-->
-					 </td>
-				</tr>
-		</table>
-		</td>
-		</tr>
+									<!--<html:reset styleClass="actionButton" property="clearButton" onclick="clearForm()" >
+												<bean:message  key="buttons.clear" />
+									</html:reset>-->
+							 </td>
+						</tr>
+				</table>
+			</td>
+			</tr>
 		<tr>
-		<td valign="top" >
-		 <table summary="" align = 'left' cellpadding="5" cellspacing="0"  class='bodyStyle'>
-		    <tr height="5">
+		<td valign="top" colspan="7">
+			 <table summary="" align = 'left' cellpadding="5" cellspacing="0"  class='bodyStyle'>
+				<tr height="5">
 
-				<td>
-						<html:submit styleClass="actionButton" onclick="saveEntity()">
-							<bean:message  key="buttons.save" />
-						</html:submit>
-				</td>
+					<td>
+							<html:submit styleClass="actionButton" onclick="saveEntity()">
+								<bean:message  key="buttons.save" />
+							</html:submit>
+					</td>
 
-				<td>
-						<html:reset styleClass="actionButton" property="cancelButton" onclick='showHomePageFromBuildForm()'>
-								<bean:message  key="buttons.cancel" />
-						</html:reset>
-				</td>
+					<td>
+							<html:reset styleClass="actionButton" property="cancelButton" onclick='showHomePageFromBuildForm()'>
+									<bean:message  key="buttons.cancel" />
+							</html:reset>
+					</td>
 
-				<td width="275">
-				</td>
+					<td width="275">
+					</td>
 
 
-			    <td width="45%">
-				</td>
+					<td width="45%">
+					</td>
 
-				<td>
-						<html:button styleClass="actionButton" property="prevButton" onclick="showNextActionConfirmDialog()" >
-								<bean:message  key="buttons.prev" />
-						</html:button>
-				</td>
+					<td>
+							<html:button styleClass="actionButton" property="prevButton" onclick="showNextActionConfirmDialog()" >
+									<bean:message  key="buttons.prev" />
+							</html:button>
+					</td>
 
-				<td>
-						<html:button styleClass="actionButton" property="showPreviewButton" onclick="showFormPreview()" >
-								<bean:message  key="buttons.showPreview" />
-						</html:button>
-				</td>
+					<td>
+							<html:button styleClass="actionButton" property="showPreviewButton" onclick="showFormPreview()" >
+									<bean:message  key="buttons.showPreview" />
+							</html:button>
+					</td>
 
-			</table>
-		</td>
-		</tr>
+				</table>
+			</td>
+			</tr>
 		</table>
 		  	<html:hidden property="operation" value=""/>
 		  	<html:hidden property="selectedAttrib" value=""/>

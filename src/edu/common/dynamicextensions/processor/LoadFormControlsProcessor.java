@@ -77,6 +77,7 @@ public class LoadFormControlsProcessor
 				controlsForm.setAttributeMultiSelect(ProcessorConstants.DEFAULT_LIST_TYPE);
 				controlsForm.setDateValueType(ProcessorConstants.DEFAULT_DATE_VALUE);
 				controlsForm.setFormat(ProcessorConstants.DEFAULT_DATE_FORMAT);
+				
 				controlsForm.setHtmlFile(userSelectedTool+".jsp");
 			}
 

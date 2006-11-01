@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -1702,6 +1703,59 @@ public class EntityManager
 	 */
 	public Map getRecordById(EntityInterface entity, Long recordId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		return null;
+		Map recordValues = new HashMap();
+		Collection attributesCollection = entity.getAttributeCollection();
+
+		if (entity == null || entity.getId() == null || recordId == null) {
+			throw new DynamicExtensionsSystemException("Invalid Input");
+		}
+		String tableName = entity.getTableProperties().getName();
+		String[] selectColumnName = new String[attributesCollection.size()];
+		String[] whereColumnName = new String[] {IDENTIFIER}; 
+		String[] whereColumnCondition = new String[] {"="}; 
+		Object[] whereColumnValue = new Object[] {recordId}; 
+		
+
+		Iterator attriIterator = attributesCollection.iterator();
+		Map columnNameMap = new HashMap();
+		int index = 0;
+		while (attriIterator.hasNext())
+		{
+			AttributeInterface attribute = (AttributeInterface) attriIterator.next();
+			String dbColumnName = attribute.getColumnProperties().getName();
+			String uiColumnName = attribute.getName();
+			selectColumnName[index] = dbColumnName;
+			columnNameMap.put(dbColumnName, uiColumnName);
+			index++;
+		}
+
+		try
+		{
+			JDBCDAO jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
+			jdbcDao.openSession(null);
+			List result = jdbcDao.retrieve(tableName, selectColumnName,whereColumnName,whereColumnCondition,whereColumnValue,null);
+			List innerList = null;
+			
+			if (result != null && result.size() !=0 ) {
+				innerList = (List) result.get(0);
+			}
+			if (innerList != null)
+			{
+				for (int i = 0; i < innerList.size(); i++)
+				{
+					String value = (String) innerList.get(i);
+					String dbColumnName = selectColumnName[i];
+					String uiColumnName = (String) columnNameMap.get(dbColumnName);
+					recordValues.put(uiColumnName, value);
+				}
+			}
+
+			jdbcDao.closeSession();
+		}
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
+		}
+		return recordValues;
 	}
 }

@@ -7,7 +7,17 @@
  */ 
 package edu.common.dynamicextensions.entitymanager;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import edu.common.dynamicextensions.domain.Entity;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.DateAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.StringAttributeInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
 
 
@@ -61,6 +71,55 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         
         
         
+    }
+    
+    public void testGetRecordById() {
+    	
+    	try
+		{
+    		EntityManagerInterface entityManagerInterface =  EntityManager.getInstance();
+            
+    		Entity entity = (Entity) new MockEntityManager().initializeEntity();
+            entity = (Entity) entityManagerInterface.createEntity(entity);
+
+			Entity newEntity = (Entity) entityManagerInterface.getEntityByIdentifier(entity.getId().toString());
+			Map dataValue = new HashMap();
+			
+			Iterator attrIterator = newEntity.getAttributeCollection().iterator();
+			int i = 0;
+			while(attrIterator.hasNext()) {
+				AttributeInterface attribute = (AttributeInterface) attrIterator.next();
+				
+				if(attribute instanceof StringAttributeInterface) {
+					dataValue.put(attribute,"temp" + i); 	
+				} else if(attribute instanceof DateAttributeInterface) {
+				//	dataValue.put(attribute,new Date().toString()); 	
+				}
+
+				i++;
+			}
+			
+			
+			entityManagerInterface.insertData(newEntity, dataValue);
+			
+			assertEquals("Employee",entity.getName());
+			Map map = EntityManager.getInstance().getRecordById(entity, new Long(1));
+			
+			System.out.println(map);;
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			fail("Exception occured");
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			fail("Exception occured");
+		}
+    	
     }
 
  

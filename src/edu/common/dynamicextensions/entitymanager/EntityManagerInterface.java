@@ -26,7 +26,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
  * @author sujay_narkar
  *
  */
-interface EntityManagerInterface
+public interface EntityManagerInterface
 {
     
     /**

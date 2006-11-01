@@ -88,5 +88,17 @@ public interface ControlInterface
       */
      String getHTMLComponentName();
 		
+     /**
+ 	 * 
+ 	 * @return
+ 	 */
+
+ 	 String getValue();
+ 	 
+ 	/**
+ 	 * 
+ 	 * @param value
+ 	 */
+ 	 void setValue(String value);
 
 }

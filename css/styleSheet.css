@@ -982,7 +982,7 @@ td.formFieldAddMore{ /* for the cell that contains the form elements */
 }
 .tbBorders1{ /* for block table with border 1 */
   border-bottom:1px solid #000000; /* constant: dark gray */
-  border-top:1px solid #000000; /* constant: dark gray */
+  border-top:0px /* constant: dark gray */
   border-left:1px solid #000000; /* constant: dark gray */
   border-right:1px solid #000000; /* constant: dark gray */
 }

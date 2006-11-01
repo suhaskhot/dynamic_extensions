@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.entitymanager;
 
 import java.sql.Connection;
@@ -46,6 +47,7 @@ import edu.wustl.common.dao.JDBCDAO;
 import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.dbManager.DBUtil;
+import edu.wustl.common.util.logger.Logger;
 
 /**
  * This is a singleton class that manages operations related to dynamic entity creation,attributes creation,
@@ -103,6 +105,11 @@ public class EntityManager
 
     }
 
+    private void logDebug(String methodName, String message)
+    {
+        Logger.out.debug("[EntityManager.]" + methodName + "()--" + message);
+    }
+
     /**
      * Creates an Entity with the given entity information.Entity is registered 
      * in the metadata and a table is created to store the records.
@@ -116,8 +123,10 @@ public class EntityManager
             throws DynamicExtensionsSystemException,
             DynamicExtensionsApplicationException
     {
+        logDebug("createEntity", "Entering method");
         Entity entity = (Entity) entityInterface;
         entity = saveOrUpdateEntity(entityInterface, true);
+        logDebug("createEntity", "Exiting method");
         return entity;
     }
 
@@ -282,7 +291,9 @@ public class EntityManager
                 catch (SQLException e)
                 {
                     LogFatalError(e, entity);
-                } catch (Exception e) {
+                }
+                catch (Exception e)
+                {
                     e.printStackTrace();
                 }
                 finally
@@ -306,7 +317,11 @@ public class EntityManager
      */
     private void LogFatalError(SQLException e, Entity entity)
     {
-        // TODO Auto-generated method stub
+        Logger.out.debug("***Fatal Error.. Incosistent data table and metadata information for the entity -" + entity.getName());
+        Logger.out.debug("Please check the table -" + entity.getTableProperties().getName());
+        Logger.out.debug("The cause of the exception is - " + e.getMessage());
+        Logger.out.debug("The detailed log is : " );
+        e.printStackTrace();
 
     }
 
@@ -462,14 +477,14 @@ public class EntityManager
             String nullConstraint = "";
             if (processUniqueConstraint && attribute.getIsPrimaryKey())
             {
-                
+
                 isUnique = CONSTRAINT_KEYWORD + WHITESPACE
                         + attribute.getColumnProperties().getName()
                         + UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX + WHITESPACE
                         + UNIQUE_KEYWORD;
 
                 nullConstraint = "NULL";
-                
+
                 if (!attribute.getIsNullable())
                 {
                     nullConstraint = "NOT NULL";
@@ -926,7 +941,6 @@ public class EntityManager
         return container;
     }
 
-    
     /**
      * This method is used to save the container into the database.
      * @param containerInterface container to save
@@ -951,8 +965,7 @@ public class EntityManager
         {
             HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance()
                     .getDAO(Constants.HIBERNATE_DAO);
-        
-            
+
             Stack stack = null;
             Entity databaseCopy = null;
             try
@@ -960,14 +973,14 @@ public class EntityManager
                 if (container.getEntity() != null)
                 {
                     Long id = entity.getId();
-                     hibernateDAO.openSession(null);
-                     List entityList = hibernateDAO.retrieve(Entity.class.getName(),
-                             Constants.ID, id);
-                     if (entityList != null && !entityList.isEmpty())
-                     {
-                         databaseCopy = (Entity) entityList.get(0);
-                     }
-                     hibernateDAO.closeSession();
+                    hibernateDAO.openSession(null);
+                    List entityList = hibernateDAO.retrieve(Entity.class
+                            .getName(), Constants.ID, id);
+                    if (entityList != null && !entityList.isEmpty())
+                    {
+                        databaseCopy = (Entity) entityList.get(0);
+                    }
+                    hibernateDAO.closeSession();
                 }
                 hibernateDAO.openSession(null);
             }
@@ -979,7 +992,7 @@ public class EntityManager
             try
             {
                 preSaveProcessContainer(container);
-                hibernateDAO.update(container, null, false, false,false);
+                hibernateDAO.update(container, null, false, false, false);
                 if (container.getEntity() != null)
                 {
                     postSaveProcessEntity(entity);
@@ -1068,7 +1081,6 @@ public class EntityManager
         return container;
     }
 
-    
     private void preSaveProcessContainer(Container container)
     {
         if (container.getEntity() != null)
@@ -1101,7 +1113,8 @@ public class EntityManager
 
         StringBuffer columnNameString = new StringBuffer("IDENTIFIER ");
         Long identifier = getNextIdentifier(entity);
-        StringBuffer columnValuesString = new StringBuffer(identifier.toString());
+        StringBuffer columnValuesString = new StringBuffer(identifier
+                .toString());
         String tableName = entity.getTableProperties().getName();
 
         //        Map colNameMap = getDbColumnNameMap(entity);
@@ -1125,7 +1138,7 @@ public class EntityManager
                 value = getFormattedValue(attribute, value);
                 columnValuesString.append(value);
 
-             }
+            }
             else
             {
                 //TODO Process associations here.
@@ -1141,7 +1154,8 @@ public class EntityManager
 
         try
         {
-            JDBCDAO jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
+            JDBCDAO jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(
+                    Constants.JDBC_DAO);
             jdbcDao.openSession(null);
             jdbcDao.executeUpdate(query.toString());
             //jdbcDao.commit();
@@ -1149,10 +1163,11 @@ public class EntityManager
         }
         catch (DAOException e)
         {
-            throw new DynamicExtensionsSystemException("Error while inserting data",e);
+            throw new DynamicExtensionsSystemException(
+                    "Error while inserting data", e);
         }
     }
-    
+
     /**
      * 
      * @param attribute
@@ -1365,6 +1380,7 @@ public class EntityManager
             boolean isNew) throws DynamicExtensionsApplicationException,
             DynamicExtensionsSystemException
     {
+        logDebug("saveOrUpdateEntity", "Entering method");
         Entity entity = (Entity) entityInterface;
         HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance()
                 .getDAO(Constants.HIBERNATE_DAO);
@@ -1448,6 +1464,7 @@ public class EntityManager
             try
             {
                 hibernateDAO.closeSession();
+
             }
             catch (DAOException e)
             {
@@ -1457,6 +1474,7 @@ public class EntityManager
             }
 
         }
+        logDebug("saveOrUpdateEntity", "Exiting Method");
         return entity;
     }
 
@@ -1474,6 +1492,7 @@ public class EntityManager
             Entity databaseCopy) throws DynamicExtensionsSystemException,
             DynamicExtensionsApplicationException
     {
+        logDebug("executeUpdateDataTableQueries", "Entering method");
         Stack rollBackQueryStack = null;
         Collection attributeCollection = entity
                 .getAbstractAttributeCollection();
@@ -1498,6 +1517,14 @@ public class EntityManager
                     {
                         String attributeQuery = processAddAttribute(attribute,
                                 attributeRollbackQueryList);
+                        logDebug("executeUpdateDataTableQueries", "Query "
+                                + attributeQueryList.size() + "= "
+                                + attributeQuery);
+                        logDebug("executeUpdateDataTableQueries",
+                                "roll back Query "
+                                        + attributeRollbackQueryList
+                                                .get(attributeRollbackQueryList
+                                                        .size() - 1));
                         attributeQueryList.add(attributeQuery);
                     }
                     else
@@ -1515,7 +1542,7 @@ public class EntityManager
             rollBackQueryStack = executeDataTableQueries(entity,
                     attributeQueryList, attributeRollbackQueryList);
         }
-
+        logDebug("executeUpdateDataTableQueries", "Exiting method");
         return rollBackQueryStack;
     }
 
@@ -1539,59 +1566,60 @@ public class EntityManager
         List modifyAttributeQueryList = new ArrayList();
         String tableName = attribute.getEntity().getTableProperties().getName();
         String columnName = attribute.getColumnProperties().getName();
-        boolean attributemodifiedFlag = false; 
-/*        if (isAttributeChanged(attribute, savedAttribute))
+        boolean attributemodifiedFlag = false;
+        /*        if (isAttributeChanged(attribute, savedAttribute))
+         {
+         */
+        String modifyAttributeQuery = getQueryPartForAbstractAttribute(
+                attribute, false);
+        modifyAttributeQuery = ALTER_TABLE + WHITESPACE + tableName
+                + WHITESPACE + MODIFY_KEYWORD + WHITESPACE
+                + modifyAttributeQuery;
+
+        String modifyAttributeRollbackQuery = getQueryPartForAbstractAttribute(
+                savedAttribute, false);
+        modifyAttributeRollbackQuery = ALTER_TABLE + WHITESPACE + tableName
+                + WHITESPACE + MODIFY_KEYWORD + WHITESPACE
+                + modifyAttributeRollbackQuery;
+        //process nullable
+        if (attribute.getIsNullable() && !savedAttribute.getIsNullable())
         {
-*/
-            String modifyAttributeQuery = getQueryPartForAbstractAttribute(
-                    attribute, false);
-            modifyAttributeQuery = ALTER_TABLE + WHITESPACE + tableName
-                    + WHITESPACE + MODIFY_KEYWORD + WHITESPACE
-                    + modifyAttributeQuery;
+            attributemodifiedFlag = true;
+            modifyAttributeQuery = modifyAttributeQuery + WHITESPACE
+                    + NULL_KEYWORD;
+            modifyAttributeRollbackQuery = modifyAttributeRollbackQuery
+                    + WHITESPACE + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD;
+        }
+        else if (!attribute.getIsNullable() && savedAttribute.getIsNullable())
+        {
+            attributemodifiedFlag = true;
+            modifyAttributeQuery = modifyAttributeQuery + WHITESPACE
+                    + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD;
+            //TODO add default constraint
+            modifyAttributeRollbackQuery = modifyAttributeRollbackQuery
+                    + WHITESPACE + NULL_KEYWORD;
+        }
 
-            String modifyAttributeRollbackQuery = getQueryPartForAbstractAttribute(
-                    savedAttribute, false);
-            modifyAttributeRollbackQuery = ALTER_TABLE + WHITESPACE + tableName
-                    + WHITESPACE + MODIFY_KEYWORD + WHITESPACE
-                    + modifyAttributeRollbackQuery;
-            //process nullable
-            if (attribute.getIsNullable() && !savedAttribute.getIsNullable())
-            {
-                attributemodifiedFlag = true;
-                modifyAttributeQuery = modifyAttributeQuery + WHITESPACE
-                        + NULL_KEYWORD;
-                modifyAttributeRollbackQuery = modifyAttributeRollbackQuery
-                        + WHITESPACE + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD;
-            }
-            else if (!attribute.getIsNullable()
-                    && savedAttribute.getIsNullable())
-            {
-                attributemodifiedFlag = true;
-                modifyAttributeQuery = modifyAttributeQuery
-                        + WHITESPACE + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD;
-                modifyAttributeRollbackQuery = modifyAttributeRollbackQuery
-                        + WHITESPACE + NULL_KEYWORD;
-            }
-
-            if (attributemodifiedFlag) {
+        if (attributemodifiedFlag)
+        {
             modifyAttributeQueryList.add(modifyAttributeQuery);
             attributeRollbackQueryList.add(modifyAttributeRollbackQuery);
-            }
+        }
 
-/*        }
-*/
+        /*        }
+         */
         if (attribute.getIsPrimaryKey() && !savedAttribute.getIsPrimaryKey())
         {
-            
+
             String uniqueConstraintQuery = ALTER_TABLE + WHITESPACE + tableName
                     + WHITESPACE + ADD_KEYWORD + WHITESPACE
-                    + CONSTRAINT_KEYWORD + WHITESPACE 
-                    + columnName + UNDERSCORE 
-                    + UNIQUE_CONSTRAINT_SUFFIX + WHITESPACE + UNIQUE_KEYWORD + WHITESPACE + OPENING_BRACKET + columnName + CLOSING_BRACKET;
+                    + CONSTRAINT_KEYWORD + WHITESPACE + columnName + UNDERSCORE
+                    + UNIQUE_CONSTRAINT_SUFFIX + WHITESPACE + UNIQUE_KEYWORD
+                    + WHITESPACE + OPENING_BRACKET + columnName
+                    + CLOSING_BRACKET;
             String uniqueConstraintRollbackQuery = ALTER_TABLE + WHITESPACE
                     + tableName + WHITESPACE + DROP_KEYWORD + WHITESPACE
-                    + CONSTRAINT_KEYWORD + WHITESPACE
-                    + columnName + UNDERSCORE
+                    + CONSTRAINT_KEYWORD + WHITESPACE + columnName + UNDERSCORE
                     + UNIQUE_CONSTRAINT_SUFFIX;
 
             modifyAttributeQueryList.add(uniqueConstraintQuery);
@@ -1603,14 +1631,14 @@ public class EntityManager
         {
             String uniqueConstraintQuery = ALTER_TABLE + WHITESPACE + tableName
                     + WHITESPACE + DROP_KEYWORD + WHITESPACE
-                    + CONSTRAINT_KEYWORD + WHITESPACE
-                    + columnName + UNDERSCORE
+                    + CONSTRAINT_KEYWORD + WHITESPACE + columnName + UNDERSCORE
                     + UNIQUE_CONSTRAINT_SUFFIX;
             String uniqueConstraintRollbackQuery = ALTER_TABLE + WHITESPACE
                     + tableName + WHITESPACE + ADD_KEYWORD + WHITESPACE
-                    + CONSTRAINT_KEYWORD + WHITESPACE
-                    + columnName + UNDERSCORE
-                    + UNIQUE_CONSTRAINT_SUFFIX + WHITESPACE + UNIQUE_KEYWORD + WHITESPACE + OPENING_BRACKET + columnName + CLOSING_BRACKET;
+                    + CONSTRAINT_KEYWORD + WHITESPACE + columnName + UNDERSCORE
+                    + UNIQUE_CONSTRAINT_SUFFIX + WHITESPACE + UNIQUE_KEYWORD
+                    + WHITESPACE + OPENING_BRACKET + columnName
+                    + CLOSING_BRACKET;
 
             modifyAttributeQueryList.add(uniqueConstraintQuery);
             attributeRollbackQueryList.add(uniqueConstraintRollbackQuery);

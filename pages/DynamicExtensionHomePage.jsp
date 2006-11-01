@@ -85,11 +85,11 @@
 							<c:forEach items="${entityCollection}" var="entityInterface" varStatus="elements">
 								<jsp:useBean id="entityInterface" type="edu.common.dynamicextensions.domaininterface.EntityInterface" />
 								<tr>
-									<td> <c:out value='${elements.count}' /></td>
-									<td><c:out value='${entityInterface.name}' /></td>
-									<td><c:out value='${entityInterface.createdDate}'/> </td>
-									<td><c:out value='admin'/></td>
-									<td><c:out value='In Progress' /></td>
+									<td> <c:out value='${elements.count}' />&nbsp</td>
+									<td><c:out value='${entityInterface.name}' />&nbsp</td>
+									<td><c:out value='${entityInterface.createdDate}'/>&nbsp</td>
+									<td><c:out value='admin'/>&nbsp</td>
+									<td><c:out value='In Progress' />&nbsp</td>
 							</tr>
 							</c:forEach>
 						</table>

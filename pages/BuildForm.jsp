@@ -6,7 +6,9 @@
 
 <%@ page import="edu.common.dynamicextensions.ui.webui.util.TreeData"%>
 <%@ page import="edu.common.dynamicextensions.ui.webui.util.TreeGenerator"%>
-
+<%@ page import="edu.common.dynamicextensions.ui.webui.util.ControlInformationObject"%>
+<%@ page import="java.util.List"%>
+<%@ page import="java.util.ArrayList"%>
 <link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
 <script src="jss/dynamicExtensions.js" type="text/javascript"></script>
 <script src="jss/script.js" type="text/javascript"></script>
@@ -30,11 +32,18 @@
 	<c:set var="userSelectedTool" value="${controlsForm.userSelectedTool}"/>
  	<jsp:useBean id="userSelectedTool" type="java.lang.String"/>
 
+	<c:set var="controlInformationObjectList" value="${controlsForm.childList}"/>
+	<jsp:useBean id="controlInformationObjectList" type="java.util.List"/>
 <%
 
 	TreeGenerator treeGenerator = new TreeGenerator();
 	treeGenerator.setContextPath(request.getContextPath());
 	TreeData treedataObj = treeGenerator.getTreeData(rootName,childList);
+	controlInformationObjectList = new ArrayList();
+	controlInformationObjectList.add( new ControlInformationObject("name","Text","1"));
+	controlInformationObjectList.add( new ControlInformationObject("job id","Combo","2"));
+	controlInformationObjectList.add( new ControlInformationObject("joining date","Date","3"));
+	pageContext.setAttribute("controlInformationObjectList",controlInformationObjectList);
 %>
 
 
@@ -131,7 +140,35 @@
 								<table height = '100%' width = 95%  class="tbBordersAllbordersBlack" cellspacing="0" cellpadding="0">
 									<tr valign = "top" height = '100%' width = 100%>
 										<td  height = '100%' width = 100%>
-											Your table structure goes here.
+											<table border = 1  height = 100% width =100% cellpadding="0" cellspacing="0" >
+												<c:forEach var="controlInfoObj" items = "${controlInformationObjectList}" varStatus="counter" > 
+												<c:set var="controlName" value="${controlInfoObj.controlName}"/>
+												<jsp:useBean id="controlName" type="java.lang.String"/>
+
+												<c:set var="controlType" value="${controlInfoObj.controlType}"/>
+												<jsp:useBean id="controlType" type="java.lang.String"/>
+
+												<c:set var="identifier" value="${controlInfoObj.identifier}"/>
+												<jsp:useBean id="identifier" type="java.lang.String"/>
+
+													<tr height = "5%" id = "<%=identifier%>" onclick = "">
+														<td>
+															<input type = "checkbox" name = "check" disabled id = "<%=identifier%>"/>
+														</td>
+														<td>
+															<%=controlName%>
+														</td>
+														<td>
+															<%=controlType%>
+														</td>
+													</tr>
+
+												</c:forEach> 
+												<tr height = 100%>
+													<td>&nbsp;
+													</td>
+												</tr>
+											</table>
 										</td>
 									</tr>
 								</table>

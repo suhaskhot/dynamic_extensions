@@ -121,12 +121,12 @@ PUBLIC
 			validate="false"
 			input="/LoadDataEntryFormAction.do"
 			scope="request">
-			<forward name="Success" path="/pages/FormPreview.jsp" />
+			<forward name="Success" path="/pages/dataEntry/dataEntry.jsp" />
 		</action>
 		
 		<action path="/ApplyDataEntryFormAction" 
 		    type="edu.common.dynamicextensions.ui.webui.action.ApplyDataEntryFormAction" 
-		    name="previewForm"
+		    name="dataEntryForm"
 			validate="false"
 			input="/LoadDataEntryFormAction.do"
 			scope="request">

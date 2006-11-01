@@ -605,7 +605,7 @@ public class ControlConfigurationsFactory
 	public RuleConfigurationObject getRuleObject(String ruleName)
 	{
 		RuleConfigurationObject ruleConfigurationObject = null;
-		if(ruleName != null)
+		if(ruleName != null && rulesConfigurationMap != null)
 		{
 			ruleConfigurationObject = (RuleConfigurationObject) rulesConfigurationMap.get(ruleName);	
 		}

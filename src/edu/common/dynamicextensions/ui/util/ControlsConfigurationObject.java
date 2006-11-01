@@ -14,8 +14,13 @@ public class ControlsConfigurationObject
 	private String displayLabel;
 	private String jspName;
 	private List commonValidationRules ;
+	private List commonImplicitRules ;
+	private List commonExplicitRules ;
 	private Map dataTypeValidationRules ;
 	private List dataTypesList ;
+	private Map dataTypeImplicitRules ;
+	private Map dataTypeExplicitRules ;
+	
 	
 	/**
 	 * @return the controlName
@@ -100,5 +105,61 @@ public class ControlsConfigurationObject
 	public void setDataTypeValidationRules(Map dataTypeValidationRules)
 	{
 		this.dataTypeValidationRules = dataTypeValidationRules;
+	}
+	/**
+	 * @return the dataTypeExplicitRules
+	 */
+	public Map getDataTypeExplicitRules()
+	{
+		return dataTypeExplicitRules;
+	}
+	/**
+	 * @param dataTypeExplicitRules the dataTypeExplicitRules to set
+	 */
+	public void setDataTypeExplicitRules(Map dataTypeExplicitRules)
+	{
+		this.dataTypeExplicitRules = dataTypeExplicitRules;
+	}
+	/**
+	 * @return the dataTypeImplicitRules
+	 */
+	public Map getDataTypeImplicitRules()
+	{
+		return dataTypeImplicitRules;
+	}
+	/**
+	 * @param dataTypeImplicitRules the dataTypeImplicitRules to set
+	 */
+	public void setDataTypeImplicitRules(Map dataTypeImplicitRules)
+	{
+		this.dataTypeImplicitRules = dataTypeImplicitRules;
+	}
+	/**
+	 * @return the commonExplicitRules
+	 */
+	public List getCommonExplicitRules()
+	{
+		return commonExplicitRules;
+	}
+	/**
+	 * @param commonExplicitRules the commonExplicitRules to set
+	 */
+	public void setCommonExplicitRules(List commonExplicitRules)
+	{
+		this.commonExplicitRules = commonExplicitRules;
+	}
+	/**
+	 * @return the commonImplicitRules
+	 */
+	public List getCommonImplicitRules()
+	{
+		return commonImplicitRules;
+	}
+	/**
+	 * @param commonImplicitRules the commonImplicitRules to set
+	 */
+	public void setCommonImplicitRules(List commonImplicitRules)
+	{
+		this.commonImplicitRules = commonImplicitRules;
 	}
 }

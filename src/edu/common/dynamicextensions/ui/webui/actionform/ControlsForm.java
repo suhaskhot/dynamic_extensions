@@ -223,7 +223,11 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	 */
 	protected String linesType;
 	protected String dateValueType;
-	
+	/**
+	 * 
+	 */
+	protected String[] validationRules;
+	protected List validationRulesList ;
 	protected String selectedControlCaption;
 
 	public String getSelectedControlCaption()
@@ -1050,6 +1054,38 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	public void setDateValueType(String dateValueType)
 	{
 		this.dateValueType = dateValueType;
+	}
+
+	/**
+	 * @return the validationRules
+	 */
+	public String[] getValidationRules()
+	{
+		return validationRules;
+	}
+
+	/**
+	 * @param validationRules the validationRules to set
+	 */
+	public void setValidationRules(String[] validationRules)
+	{
+		this.validationRules = validationRules;
+	}
+
+	/**
+	 * @return the validationRulesList
+	 */
+	public List getValidationRulesList()
+	{
+		return validationRulesList;
+	}
+
+	/**
+	 * @param validationRulesList the validationRulesList to set
+	 */
+	public void setValidationRulesList(List validationRulesList)
+	{
+		this.validationRulesList = validationRulesList;
 	}
 
 }

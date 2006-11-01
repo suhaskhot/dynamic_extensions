@@ -2,21 +2,22 @@
 	<control name="TextControl" display-label="eav.caption.TextControlCaption" jspName="TextControl.jsp">
 	<validations>
 			<common-validation-rule name="required" isImplicit="false"></common-validation-rule>
+			<common-validation-rule name="number" isImplicit="false"></common-validation-rule>
 	</validations>
 	<datatypes>
 		<dataType name="Text">
 			<validations>
-				<validation-rule name="" isImplicit="false"></validation-rule>
+				<validation-rule name="number" isImplicit="true"></validation-rule>
+				<validation-rule name="range" isImplicit="false"></validation-rule>
 			</validations>
 		</dataType>
 		<dataType name="Number" >
 			<validations>
-				<validation-rule name="" isImplicit="false"></validation-rule>
+				<validation-rule name="number" isImplicit="false"></validation-rule>
 			</validations>
 		</dataType>
 	</datatypes>
 	</control>
-	
 	<control name="ComboboxControl" display-label="eav.caption.ComboboxControlCaption" jspName="ComboboxControl.jsp">
 	<validations>
 			<common-validation-rule name="required"></common-validation-rule>
@@ -24,22 +25,21 @@
 	<datatypes>
 		<dataType name="Text">
 			<validations>
-			<validation-rule name="" isImplicit="false"></validation-rule>
+			<validation-rule name="required" isImplicit="false"></validation-rule>
 			</validations>
 		</dataType>
 		<dataType name="Number" >
 			<validations>
-			<validation-rule name="" isImplicit="false"></validation-rule>
+			<validation-rule name="number" isImplicit="false"></validation-rule>
 			</validations>
 		</dataType>
 		<dataType name="Yes/No" >
 			<validations>
-			<validation-rule name="" isImplicit="false"></validation-rule>
+			<validation-rule name="required" isImplicit="false"></validation-rule>
 			</validations>
 		</dataType>
 	</datatypes>
 	</control>
-	
 	<control name="DateControl" display-label="eav.caption.DateControlCaption" jspName="DateControl.jsp">
 	<validations>
 			<common-validation-rule name="required" isImplicit="false"></common-validation-rule>
@@ -53,4 +53,6 @@
 	</datatypes>
 	</control>
 	
-</controls>
+	
+	</controls>
+	

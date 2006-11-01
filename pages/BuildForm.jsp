@@ -29,6 +29,10 @@
 
 	<c:set var="userSelectedTool" value="${controlsForm.userSelectedTool}"/>
  	<jsp:useBean id="userSelectedTool" type="java.lang.String"/>
+ 	
+ 	<c:set var="selectedControlCaption" value="${controlsForm.selectedControlCaption}"/>
+ 	<jsp:useBean id="selectedControlCaption" type="java.lang.String"/>
+ 	
 
 <%
 
@@ -88,7 +92,7 @@
 							</td>
 
 							<td class="formFieldSized1" >
-								<%=userSelectedTool%> <bean:message  key="app.formControl.properties" />
+								<%=selectedControlCaption%> <bean:message  key="app.formControl.properties" />
 							</td>
 
 							<td class="formFieldSized1" >
@@ -183,5 +187,6 @@
 
 	  	</html:form>
   	</body>
-	</head>
+  </head>
+	
 </html>

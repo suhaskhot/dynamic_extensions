@@ -4,10 +4,12 @@ package edu.common.dynamicextensions.ui.webui.taglib;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.util.logger.Logger;
 
 
@@ -364,6 +366,7 @@ public class ToolBoxTag extends TagSupport
 	 */
 	public int doEndTag() 
 	{
+		ResourceBundle resourceBundle = initializeResourceBundle();
 		if (!isDataValid()) 
 		{
 			return EVAL_PAGE;
@@ -374,22 +377,33 @@ public class ToolBoxTag extends TagSupport
 		sb.append("\n<table class=\"toolBoxTable\" border=\"0\">");
 		sb.append("<tr>");
 		Iterator toolsListIterator = toolsList.iterator();
-		String toolName = "";
+		String toolName = null,toolCaption=null;
+		NameValueBean tool = null;
 		while(toolsListIterator.hasNext())
 		{
-			toolName  =  (String)toolsListIterator.next();
-			Logger.out.debug("Selector List : " + toolName);
-			if (toolName  != null) 
+			tool = (NameValueBean)toolsListIterator.next();
+			if(tool!=null)
 			{
-				if(selectedUserOption != null && toolName.equals(selectedUserOption))
+				toolName  =  tool.getName();
+				toolCaption = getToolCaptionFromResourceBundle(resourceBundle,tool.getValue());
+
+				Logger.out.debug("Tool [" + toolName +"] Caption [" + toolCaption +"]" );
+				if ((toolName  != null)&&(toolCaption!=null)) 
 				{
-					sb.append("\n<input style = 'background-color:#A1A1A1;' class=\"toolLabelText\" value=\""+ toolName +"\"type=\"label\" id='"+toolName +"' border=\"1\" onclick=\"tagHandlerFunction('"+toolName +"');"+onClick+"('"+ toolName +"','"+ id +"')\"/>");
-				} 
-				else 
-				{
-					sb.append("\n<input class=\"toolLabelText\" value=\""+ toolName +"\"type=\"label\" id='"+toolName +"' border=\"1\" onclick=\"tagHandlerFunction('"+toolName +"');"+onClick+"('"+ toolName +"','"+ id +"')\"/>");
+					if(selectedUserOption != null && toolName.equals(selectedUserOption))
+					{
+						sb.append("\n<input style = 'background-color:#A1A1A1;' class=\"toolLabelText\" value=\""+ toolCaption +"\"type=\"label\" id='"+toolName +"' border=\"1\" onclick=\"tagHandlerFunction('"+toolName +"');"+onClick+"('"+ toolName +"','"+ id +"')\"/>");
+					} 
+					else 
+					{
+						sb.append("\n<input class=\"toolLabelText\" value=\""+ toolCaption +"\"type=\"label\" id='"+toolName +"' border=\"1\" onclick=\"tagHandlerFunction('"+toolName +"');"+onClick+"('"+ toolName +"','"+ id +"')\"/>");
+					}
+					sb.append("\n</tr></td>");
 				}
-				sb.append("\n</tr></td>");
+				else
+				{
+					Logger.out.debug("Either tool name or caption is null. Please check");
+				}
 			}
 		}
 		sb.append("</tr>");
@@ -409,6 +423,30 @@ public class ToolBoxTag extends TagSupport
 		return EVAL_PAGE;
 	}
 
+	/**
+	 * @return
+	 */
+	private ResourceBundle initializeResourceBundle()
+	{
+		ResourceBundle resourceBundle = ResourceBundle.getBundle("ApplicationResources");
+		return resourceBundle;
+	}
+	/**
+	 * @param resourceBundle 
+	 * @param value
+	 * @return
+	 */
+	private String getToolCaptionFromResourceBundle(ResourceBundle resourceBundle, String captionKey)
+	{
+		if((captionKey!=null)&&(resourceBundle!=null))
+		{
+			return resourceBundle.getString(captionKey);
+		}
+		else
+		{
+			return null;
+		}
+	}
 	/**
 	 * Releases acquired resources.
 	 * @since TODO

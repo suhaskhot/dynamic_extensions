@@ -435,7 +435,7 @@ public class ControlConfigurationsFactory
 	 * @param controlName
 	 * @return
 	 */
-	public String getControlDisplatLabel(String controlName)
+	public String getControlDisplayLabel(String controlName)
 	{
 		String displayLabel = null;
 		if ((controlName != null) && (controlsConfigurationMap != null))

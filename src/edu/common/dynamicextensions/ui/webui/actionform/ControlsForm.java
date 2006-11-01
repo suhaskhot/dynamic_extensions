@@ -223,6 +223,18 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	 */
 	protected String linesType;
 	protected String dateValueType;
+	
+	protected String selectedControlCaption;
+
+	public String getSelectedControlCaption()
+	{
+		return this.selectedControlCaption;
+	}
+
+	public void setSelectedControlCaption(String selectedControlCaption)
+	{
+		this.selectedControlCaption = selectedControlCaption;
+	}
 
 	/**
 	 * 

@@ -29,6 +29,17 @@ public class DynamicExtensionsSystemException
        this.errorMessage = message;
         this.wrappedException = wrapException;
     }
+    
+    /**
+     * @param wrapException The wrapException to set.
+     */
+    public DynamicExtensionsSystemException(String message, Exception wrapException, String errorCode) {
+       this.errorMessage = message;
+        this.wrappedException = wrapException;
+        this.errorCode = errorCode;
+    }
+    
+    
     /**
      * @param wrapException The wrapException to set.
      *//*

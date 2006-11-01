@@ -145,12 +145,21 @@ public interface AbstractAttributeUIBeanInterface {
 	 * @return
 	 */
 	public String getDateValueType();
-
+/**
+ * 
+ * @param dateValueType
+ */
+	public void setDateValueType(String dateValueType);
 	/**
 	 * 
-	 * @param dateValueType
+	 * @return
 	 */
-	public void setDateValueType(String dateValueType);
+	public String getAttributeIdentified();
+	/**
+	 * 
+	 * @param attributeIdentified
+	 */
+	public void setAttributeIdentified(String attributeIdentified);
 	
 	/**
 	 * 
@@ -162,4 +171,5 @@ public interface AbstractAttributeUIBeanInterface {
 	 * @param validationRules
 	 */
 	void setValidationRules(String[] validationRules);
+}
 }

@@ -626,6 +626,22 @@ public class ControlConfigurationsFactory
 		}
 		return listOfControls;
 	}
+	public List getRuleDisplayLabels(List ruleNamesList)
+	{
+		List listOfDisplayLabels = new ArrayList();
+		Iterator iter = (Iterator)ruleNamesList.iterator();
+		RuleConfigurationObject ruleConfigurationObject = null;
+		while(iter.hasNext())
+		{
+			String ruleName = iter.next().toString();
+			ruleConfigurationObject = (RuleConfigurationObject) rulesConfigurationMap.get(ruleName);	
+			listOfDisplayLabels.add(ruleConfigurationObject.getDisplayLabel());
+		}
+		return listOfDisplayLabels;
+	}
+	{
+		
+	}
 	/**
 	 * @param args
 	 */

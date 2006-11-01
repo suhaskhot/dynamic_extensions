@@ -84,6 +84,11 @@ public class LoadFormControlsProcessor
 				controlsForm.setDateValueType(ProcessorConstants.DEFAULT_DATE_VALUE);
 				//Date format
 				controlsForm.setFormat(ProcessorConstants.DEFAULT_DATE_FORMAT);
+				
+				//Default validationRules
+				controlsForm.setValidationRules(new String[5]);
+				controlsForm.setValidationRulesList(getListOfValidationRules
+						(ProcessorConstants.DEFAULT_SELECTED_CONTROL,ProcessorConstants.DEFAULT_DATA_TYPE));
 			}
 
 			else if(controlOperation.equalsIgnoreCase(ProcessorConstants.EDIT))  
@@ -211,5 +216,19 @@ public class LoadFormControlsProcessor
 			}
 		}
 		return null;
+	}
+	/**
+	 * 
+	 * @param controlName
+	 * @param dataTypeName
+	 * @return
+	 */
+	private List getListOfValidationRules(String controlName , String dataTypeName)
+	{
+		List validationRulesList = new ArrayList() ,ruleDisplayLabelsList = new ArrayList();
+		ControlConfigurationsFactory ccf = ControlConfigurationsFactory.getInstance();
+		validationRulesList = ccf.getExplicitRules(controlName, dataTypeName);
+		ruleDisplayLabelsList = ccf.getRuleDisplayLabels(validationRulesList);
+		return ruleDisplayLabelsList;
 	}
 }

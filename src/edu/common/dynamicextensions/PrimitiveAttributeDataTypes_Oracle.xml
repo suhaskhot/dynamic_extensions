@@ -23,7 +23,7 @@
     
     <Primitive-Attribute>
 		  <name>Double</name>
-	  	  <database-datatype>Number(38,127)</database-datatype>
+	  	  <database-datatype>Number(38)</database-datatype>
     </Primitive-Attribute>
     
     <Primitive-Attribute>

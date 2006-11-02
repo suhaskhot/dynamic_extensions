@@ -720,7 +720,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				}
 			}
 			//Concept code
-			if (!attributeInterface.getSemanticPropertyCollection().isEmpty())
+			if (attributeInterface.getSemanticPropertyCollection() != null && !attributeInterface.getSemanticPropertyCollection().isEmpty())
 			{
 				attributeInformationIntf.setAttributeConceptCode(SemanticPropertyBuilderUtil.getConceptCodeString(attributeInterface));
 			}

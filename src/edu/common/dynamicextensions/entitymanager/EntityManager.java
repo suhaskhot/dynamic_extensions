@@ -23,9 +23,12 @@ import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.DateAttribute;
+import edu.common.dynamicextensions.domain.DoubleAttribute;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.FloatAttribute;
 import edu.common.dynamicextensions.domain.IntegerAttribute;
+import edu.common.dynamicextensions.domain.LongAttribute;
+import edu.common.dynamicextensions.domain.ShortAttribute;
 import edu.common.dynamicextensions.domain.StringAttribute;
 import edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
@@ -495,7 +498,21 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 			else if (attribute instanceof FloatAttribute)
 			{
 				return dataTypeFactory.getDatabaseDataType("Boolean");
-			}
+			} 
+			else if (attribute instanceof DoubleAttribute)
+			{
+				return dataTypeFactory.getDatabaseDataType("Double");
+			} 
+			else if (attribute instanceof LongAttribute)
+			{
+				return dataTypeFactory.getDatabaseDataType("Long");
+			} 
+			else if (attribute instanceof ShortAttribute)
+			{
+				return dataTypeFactory.getDatabaseDataType("Short");
+			} 
+			
+
 		}
 		catch (DataTypeFactoryInitializationException e)
 		{

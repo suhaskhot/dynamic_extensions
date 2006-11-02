@@ -566,3 +566,43 @@ function showFormDefinitionPage()
 	previewForm.action="/dynamicExtensions/LoadFormDefinitionAction.do";
 	previewForm.submit();
 }
+function showTooltip(text,obj,message) {
+	var tooltip = "";
+	var w1 = obj.scrollWidth;
+	var w2 = obj.offsetWidth;
+	var difference = w1-w2;
+	if(difference > 0) {
+		tooltip = text;
+		obj.title = tooltip;
+	} else {
+		if(message != null)
+		{ 
+		  tooltip = message;
+		  obj.title = tooltip;
+		} else {
+			if(obj.tagName != "IMG") {
+			  obj.title = "";
+			}  
+		}
+	}
+}
+
+function hideTooltip() {
+     //alert('ashwini');
+      el = document.getElementById("akvtooltip");
+	  //alert(el.innerHTML);
+	  if( el != null) 
+	   el.style.visibility="hidden";
+	//  el.removeNode();
+}
+
+function controlClicked(ths) {
+	var prevRow = document.getElementById('previousControl').value;
+	if (prevRow != null && prevRow != '' && prevRow != undefined) 
+	{
+	document.getElementById(prevRow).className = "deSelectedControl";
+	}
+
+	document.getElementById('previousControl').value = ths.id;
+	ths.className = "selectedControl";
+}

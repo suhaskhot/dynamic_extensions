@@ -40,7 +40,7 @@
 	treeGenerator.setContextPath(request.getContextPath());
 	TreeData treedataObj = treeGenerator.getTreeData(rootName,childList);
 	controlInformationObjectList = new ArrayList();
-	controlInformationObjectList.add( new ControlInformationObject("name","Text","1"));
+	controlInformationObjectList.add( new ControlInformationObject("namafdfdaetyyyyyyyyyyyyyyyyfae","Text","1"));
 	controlInformationObjectList.add( new ControlInformationObject("job id","Combo","2"));
 	controlInformationObjectList.add( new ControlInformationObject("joining date","Date","3"));
 	pageContext.setAttribute("controlInformationObjectList",controlInformationObjectList);
@@ -126,8 +126,8 @@
 								</table>
 							</td>
 							
-							<td  style = "padding-left:10px" align="top" width = 65%>
-							<table height = '100%' width = '100%' class="tbBordersAllbordersBlack" cellspacing="0" cellpadding="0">
+							<td  style = "padding-left:10px" align="top" width = 50%>
+							<table align ="left" height = '100%' width = '100%' class="tbBordersAllbordersBlack" cellspacing="0" cellpadding="0">
 								<tr height = '100%' width = '100%'>
 									<td height = '100%' width = '100%'>
 										<jsp:include page="<%=htmlFile%>" />
@@ -151,15 +151,21 @@
 												<c:set var="identifier" value="${controlInfoObj.identifier}"/>
 												<jsp:useBean id="identifier" type="java.lang.String"/>
 
-													<tr height = "5%" id = "<%=identifier%>" onclick = "">
-														<td>
+													<tr height = "5%" id = "<%=identifier%>" onclick = "controlClicked(this);" style = "cursor:hand">
+														<td class="formMessage">
+														
 															<input type = "checkbox" name = "check" disabled id = "<%=identifier%>"/>
+														
 														</td>
-														<td>
+														<td class="formMessage" style="padding-left:2px">
+														<div noWrap='true' style='overflow-x:hidden; text-overflow:ellipsis; width:60px;' onmouseout = "hideTooltip();" onmouseover = "showTooltip(this.innerHTML,this,this.innerHTML);">
 															<%=controlName%>
+															</div>
 														</td>
-														<td>
+														<td class="formMessage" style="padding-left:2px">
+														<div noWrap='true' style='overflow-x:hidden; text-overflow:ellipsis; width:60px;' onmouseover = "showTooltip(this.innerHTML,this,this.innerHTML);" onmouseout = "hideTooltip();">
 															<%=controlType%>
+															</div>
 														</td>
 													</tr>
 
@@ -190,13 +196,13 @@
 								<table summary="" align = 'left' cellpadding="3" cellspacing="0">
 									<tr>
 										<td>
-											<input type = "button" name = "upButton" value = "Up" onclick = ""/>
+											<input type = "button" name = "upButton" value = "Up" disabled onclick = ""/>
 										</td>
 										<td>
-											<input type = "button" name = "upButton" value = "down" onclick = ""/>
+											<input type = "button" name = "upButton" value = "down" disabled onclick = ""/>
 										</td>
 										<td>
-											<input type = "button" name = "upButton" value = "Delete" onclick = ""/>
+											<input type = "button" name = "upButton" value = "Delete" disabled onclick = ""/>
 										</td>
 
 									</tr>
@@ -249,6 +255,7 @@
 		  	<html:hidden property="operation" value=""/>
 		  	<html:hidden property="selectedAttrib" value=""/>
 			<input type="hidden" name="entitySaved" />
+			<input type="hidden" id = "previousControl" name="previousControl" value = "" />
 			<html:hidden property="controlOperation" />
 			<html:hidden property="selectedControlId" />
 			<html:hidden property="toolBoxClicked" value=""/>

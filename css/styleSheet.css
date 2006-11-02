@@ -1355,3 +1355,11 @@ input.formParamSized{ /* for the form elements themselves and with a constant wi
   font-size:1em;
   width:5em;
 }
+.selectedControl
+{
+background-color:#475B82;
+}
+.deSelectedControl
+{
+background-color:auto;
+}

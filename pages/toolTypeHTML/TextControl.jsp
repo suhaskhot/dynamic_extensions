@@ -94,5 +94,13 @@
 		</table>
 	</td>
 	</tr>
+	<tr>
+		<td>
+			<div id="substitutionDivRules">
+			</div>
+
+		</td>
+	</tr>
 </table>
 <jsp:include page="/pages/toolTypeHTML/Datatypes.jsp" />
+<jsp:include page="/pages/ValidationRules.jsp" />

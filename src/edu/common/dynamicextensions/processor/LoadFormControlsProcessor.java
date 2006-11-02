@@ -3,8 +3,10 @@ package edu.common.dynamicextensions.processor;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -16,7 +18,6 @@ import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterf
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
-import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.beans.NameValueBean;
 
 /**
@@ -81,13 +82,8 @@ public class LoadFormControlsProcessor
 				//Date format
 				controlsForm.setFormat(ProcessorConstants.DEFAULT_DATE_FORMAT);
 				
-				//Default validationRules
-				
-				controlsForm.setTextValidationRulesList(getListOfValidationRules
-						(userSelectedTool,ProcessorConstants.DATATYPE_STRING));
-				controlsForm.setNumberValidationRulesList(getListOfValidationRules
-						(userSelectedTool,ProcessorConstants.DATATYPE_NUMBER));
-				controlsForm.setValidationRules(new String[5]);
+				controlsForm.setControlRuleMap(getControlRulesMap(userSelectedTool));
+		//TODO check if need to be changed
 			}
 
 			else if(controlOperation.equalsIgnoreCase(ProcessorConstants.EDIT))  
@@ -224,12 +220,9 @@ public class LoadFormControlsProcessor
 	 * @param dataTypeName
 	 * @return
 	 */
-	private List getListOfValidationRules(String controlName , String dataTypeName)
+	private Map getControlRulesMap(String controlName)
 	{
-		List validationRulesList = new ArrayList() ,ruleDisplayLabelsList = new ArrayList();
 		ControlConfigurationsFactory ccf = ControlConfigurationsFactory.getInstance();
-		validationRulesList = ccf.getExplicitRules(controlName, dataTypeName);
-		ruleDisplayLabelsList = ccf.getRuleDisplayLabels(validationRulesList);
-		return ruleDisplayLabelsList;
+		return ccf.getRulesMap(controlName);
 	}
 }

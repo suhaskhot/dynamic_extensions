@@ -5,87 +5,77 @@
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
 <%@page import="java.util.Iterator" %>
-<c:set var="textRulesList" value="${controlsForm.textValidationRulesList}"/>
-<jsp:useBean id="textRulesList" type="java.util.List"/>
-<c:set var="numberRulesList" value="${controlsForm.numberValidationRulesList}"/>
-<jsp:useBean id="numberRulesList" type="java.util.List"/>
-<div id="TextDataType" style="display:none">
-			 <table summary="" cellpadding="3" cellspacing="0" align = 'left' width='100%'>
+<%@page import="java.util.Map" %>
+<%@page import="java.util.List" %>
+<%@page import="edu.common.dynamicextensions.ui.util.RuleConfigurationObject" %>
+<%@page import="edu.wustl.common.beans.NameValueBean" %>
+<c:set var="controlRuleMap" value="${controlsForm.controlRuleMap}"/>
+<jsp:useBean id="controlRuleMap" type="java.util.Map"/>
+<%
+						Iterator iter = controlRuleMap.keySet().iterator();
+							while (iter.hasNext())
+							{
+							String dataType = (String)iter.next();
+							List listofRules = (List)controlRuleMap.get(dataType);
+							String divName = dataType+"Div";							%>
 
-			 <tr>
+<div id="<%= divName%>" style="display:none">
+			 <table summary="" cellpadding="3" cellspacing="0" align = 'left' width='100%'>
+			 <tr align="top">
 				<td class="formRequiredNoticeWithoutBorder" width="2%">
 			 					 			&nbsp
 			 		 	</td>
-
-			 			<td class="formRequiredLabelWithoutBorder">
+			 			<td class="formRequiredLabelWithoutBorder" >
 			 				<bean:message key="eav.control.validation"/>
 			 			</td>
-
-			 		<td  class="formFieldWithoutBorder">
-						<% Iterator iter = textRulesList.iterator();
-							while (iter.hasNext())
-							{
-								String ruleLabel = iter.next().toString();
-							
-							%>
-								
-								<td  class="formFieldWithoutBorder">
-			 					<html:checkbox property='validationRules' value='Required' ><%= ruleLabel %></html:checkbox>
-							</td>
-							<% } %>
-							</td>
+						<td  class="formFieldWithoutBorder">
+							<table>
+						<% Iterator rulesIter = listofRules.iterator();
+								while(rulesIter.hasNext())
+								{
+										RuleConfigurationObject ruleObject = (RuleConfigurationObject)rulesIter.next();
+										String ruleLabel =ruleObject.getDisplayLabel();
+										String ruleName = ruleObject.getRuleName();
+										List params = ruleObject.getRuleParametersList();
+						%>
+					
+						<tr>
 			 			
-			 		</tr>
-			 </table>
-</div>
-
-<div id="NumberDataType" style="display:none">
-			 <table summary="" cellpadding="3" cellspacing="0" align = 'left' width='100%'>
-
-			 <tr>
-			 <td class="formRequiredNoticeWithoutBorder" width="2%">
-			 					 &nbsp;			
-			 		 	</td>
-			 			<td class="formRequiredLabelWithoutBorder">
-			 				<bean:message key="eav.control.validation"/>
-			 			</td>
-			 			<td  class="formFieldWithoutBorder">
-						<% Iterator iter1 = numberRulesList.iterator();
-							while (iter1.hasNext())
-							{
-								String ruleLabel = iter1.next().toString();
-							
-							%>
-							<tr><td/><td/><td  class="formFieldWithoutBorder">
-			 					<html:checkbox property='validationRules' value='Required' ><%= ruleLabel %></html:checkbox>
-							</td></tr>
-							<% if (ruleLabel.equalsIgnoreCase("Range")) {
-								%>
-						
-								<tr>
-								<td class="formRequiredNoticeWithoutBorder" width="2%">
-									&nbsp;
+								<td  class="formFieldWithoutBorder">
+			 						<html:checkbox property='validationRules' value="<%= ruleName%>"><%= ruleLabel %></html:checkbox>
 								</td>
-								<td class="formRequiredLabelWithoutBorder">
-										<bean:message key="eav.range.min"/>
-								</td>
-												<td class="formFieldWithoutBorder">
-									<html:text styleClass="formParamSized"  maxlength="100" size="10"  property="attributenoOfCols" />
-								</td>
-									<td class="formRequiredNoticeWithoutBorder" width="2%">
-										&nbsp;
-								</td>
-								<td class="formRequiredLabelWithoutBorder">
-										<bean:message key="eav.range.max"/>
-								</td>
-												<td class="formFieldWithoutBorder">
-									<html:text styleClass="formParamSized"  maxlength="100" size="10"  property="attributenoOfCols" />
-								</td>
-							</tr>
+								</tr>
+								
+										<tr>
+								<% if (params != null) {
+									 Iterator paramsIter = params.iterator(); %>
+									 <tr>
+									<td class="formRequiredLabelWithoutBorder" >
+												<bean:message key="eav.range.warning"/>
+			 							</td>
+										</tr>
+										<%
+									while(paramsIter.hasNext())
+									{
+											NameValueBean paramObject = (NameValueBean)paramsIter.next();
+											String paramLabel =paramObject.getValue();
+											String paramName = paramObject.getName();
+										%>
+									<tr>	
+										<td class="formRequiredLabelWithoutBorder" >
+												<%= paramLabel%>
+			 							</td>
+										<td class="formFieldWithoutBorder">
+											<html:text styleClass="formParamSized"  maxlength="100" size="60"  property="<%= paramName%>" />
+										</td>
+									</tr>
 							<% } %>
-							<tr>
-							<% } %>
-			 			</td>
-			 		</tr>
-			 </table>
+						<% } %>
+						</tr>
+			 		<% } %>
+				 </table>
+				</td>
+			 </tr>
+		 </table>
 </div>
+<% } %>

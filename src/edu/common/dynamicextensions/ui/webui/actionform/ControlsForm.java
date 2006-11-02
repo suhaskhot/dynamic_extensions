@@ -223,11 +223,25 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	 * 
 	 */
 	protected String linesType;
+	/**
+	 * 
+	 */
 	protected String dateValueType;
 	/**
 	 * 
 	 */
 	protected String[] validationRules = new String[0];
+	/**
+	 * 
+	 */
+	protected String min;
+	/**
+	 * 
+	 */
+	protected String max;
+	/**
+	 * 
+	 */
 	protected Map controlRuleMap;
 	/**
 	 * 
@@ -1115,5 +1129,37 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	public List getListOfRules(String dataTypeName)
 	{
 		return  (List)controlRuleMap.get(dataTypeName);
+	}
+
+	/**
+	 * @return the max
+	 */
+	public String getMax()
+	{
+		return max;
+	}
+
+	/**
+	 * @param max the max to set
+	 */
+	public void setMax(String max)
+	{
+		this.max = max;
+	}
+
+	/**
+	 * @return the min
+	 */
+	public String getMin()
+	{
+		return min;
+	}
+
+	/**
+	 * @param min the min to set
+	 */
+	public void setMin(String min)
+	{
+		this.min = min;
 	}
 }

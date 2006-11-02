@@ -89,10 +89,23 @@ function dataFldDataTypeChanged(datatypeControl)
 			var substitutionDiv = document.getElementById('substitutionDiv');
 			substitutionDiv.innerHTML = divForDataType.innerHTML;
 		}
+		insertRules(datatypeControl);
 	}
 }
 
-
+function insertRules(datatypeControl)
+{
+		var selectedDatatype = datatypeControl.value;
+		var divForDataTypeId = selectedDatatype + "Div";
+	
+		var divForDataType = document.getElementById(divForDataTypeId);
+		
+		if(divForDataType!=null)
+		{
+			var substitutionDivRules = document.getElementById('substitutionDivRules');
+			substitutionDivRules.innerHTML = divForDataType.innerHTML;
+		}
+}
 
 function initBuildForm()
 {

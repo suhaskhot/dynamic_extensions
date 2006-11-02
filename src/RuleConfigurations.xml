@@ -30,9 +30,9 @@
   <validation-rule display-label="DateRange" rule-name="dateRange" rule-class="edu.common.dynamicextensions.validation.DateRangeValidator">
     <error-key name="eav.validation.dateRange">
     </error-key>
-    <param param-name="minDate" param-label="Minimum Date">
+    <param param-name="min" param-label="Minimum Date">
     </param>
-    <param param-name="maxDate" param-label="Maximum Date">
+    <param param-name="max" param-label="Maximum Date">
     </param>
   </validation-rule>
 </validator-rules>

@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -43,6 +44,7 @@ import edu.common.dynamicextensions.ui.interfaces.AbstractAttributeUIBeanInterfa
 import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
 import edu.common.dynamicextensions.ui.util.RuleConfigurationObject;
 import edu.common.dynamicextensions.ui.util.SemanticPropertyBuilderUtil;
+import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.global.Constants;
 
@@ -186,15 +188,16 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	{
 		Collection<RuleParameterInterface> RuleParameterCollection = new HashSet<RuleParameterInterface>();
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory .getInstance(); 
-		Map ruleParametersMap = ruleConfigurationObject.getRuleParametersMap();
-		Set<Map.Entry> ruleParametersSet = ruleParametersMap.entrySet();
-		if(ruleParametersMap != null && !ruleParametersMap.isEmpty())
+		List ruleParametersList = ruleConfigurationObject.getRuleParametersList();
+		if(ruleParametersList != null )
 		{
 			StringBuffer operationNameBuff = null;
-
-			for(Map.Entry ruleParameter: ruleParametersSet)
+			Iterator ruleParametersListIter = ruleParametersList.iterator();
+			while(ruleParametersListIter.hasNext())
 			{
-				String paramName = (String )ruleParameter.getKey();
+				NameValueBean param = (NameValueBean)ruleParametersListIter.next();
+
+				String paramName = param.getName();
 				operationNameBuff = new StringBuffer(paramName);
 				operationNameBuff.setCharAt(0, Character.toUpperCase(operationNameBuff.charAt(0)));				
 				String methodName = "get" + operationNameBuff.toString();
@@ -235,7 +238,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 
 
 
-				ruleParameter.getValue();
+				//ruleParameter.getValue();
 
 			}
 		}

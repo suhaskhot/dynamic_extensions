@@ -172,4 +172,3 @@ public interface AbstractAttributeUIBeanInterface {
 	 */
 	void setValidationRules(String[] validationRules);
 }
-}

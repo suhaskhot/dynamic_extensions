@@ -7,6 +7,15 @@ package edu.common.dynamicextensions.domaininterface.userinterface;
 public interface DatePickerInterface extends ControlInterface
 {
 
-  
+	/**
+ 	 * 
+ 	 * @return date value type as None/Today's date/selected date
+ 	 */
+ 	public String getDateValueType();
+ 	/**
+ 	 * 
+ 	 * @param dateValueType None/Today's date/selected date
+ 	 */
+ 	public void setDateValueType(String dateValueType);  
     
 }

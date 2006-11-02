@@ -93,5 +93,23 @@ public class TextArea extends Control implements TextAreaInterface
 
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface#getIsPassword()
+	 */
+	public Boolean getIsPassword()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface#setIsPassword(java.lang.Boolean)
+	 */
+	public void setIsPassword(Boolean isPassword)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 }

@@ -130,7 +130,7 @@
 									<input type="button" name="addChoiceValue" value="Add" onclick="addChoiceToList(true);">
 								</th>
 							</tr>
-						</thead>
+						</thead>dateValueType
 						<tr  class="formRequiredLabelWithoutBorder">
 							<td class="formRequiredLabelWithoutBorder" >
 								<div style="padding : 1px;  height : 100px; width:'85%'; overflow : auto; " >
@@ -153,14 +153,14 @@
 			</td>
 	</tr>
 	<tr>
-				<td class="formRequiredNoticeWithoutBorder" width="2%">
-						&nbsp;
-				</td>
-				<td class="formRequiredLabelWithoutBorder" width="25%">&nbsp;</td>
-				<td class="formFieldWithoutBorder" align="left">
-					<html:checkbox property="attributeIdentified"><bean:message key="app.att.isIdentified" /></html:checkbox>
-				</td>
-		</tr>
+			<td class="formRequiredNoticeWithoutBorder" width="2%">
+					&nbsp;
+			</td>
+			<td class="formRequiredLabelWithoutBorder" width="25%">&nbsp;</td>
+			<td class="formFieldWithoutBorder" align="left">
+				<html:checkbox property="attributeIdentified" value="true"><bean:message key="app.att.isIdentified" /></html:checkbox>
+			</td>
+	</tr>
 	 </table>
 	</td>
  </tr>

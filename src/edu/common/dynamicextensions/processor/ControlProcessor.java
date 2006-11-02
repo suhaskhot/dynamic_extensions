@@ -105,7 +105,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		{
 			datePickerIntf = (DatePickerInterface)controlInterface;
 		}
-
+		datePickerIntf.setDateValueType(controlUIBeanInterface.getDateValueType());
 		return datePickerIntf;
 	}
 	/**
@@ -280,32 +280,24 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		}
 		if(controlInterface instanceof TextFieldInterface)
 		{
-			controlUIBeanInterface.setUserSelectedTool(ProcessorConstants.TEXT_CONTROL);
-			controlUIBeanInterface.setHtmlFile( ProcessorConstants.TEXT_CONTROL + ".jsp");
 			controlUIBeanInterface.setColumns(((TextFieldInterface)controlInterface).getColumns());
 			controlUIBeanInterface.setIsPassword(((TextFieldInterface)controlInterface).getIsPassword());
 			controlUIBeanInterface.setLinesType(ProcessorConstants.LINE_TYPE_SINGLELINE);
-			//controlUIBeanInterface.setRows(null);
 		}
 		else if(controlInterface instanceof ComboBoxInterface)
 		{
-			controlUIBeanInterface.setUserSelectedTool(ProcessorConstants.COMBOBOX_CONTROL);
-			controlUIBeanInterface.setHtmlFile( ProcessorConstants.COMBOBOX_CONTROL + ".jsp");
-			//controlInformationInterface.setDisplayChoiceList(((ComboBoxInterface)controlInterface).getChoiceList());
+			
 		}
 		else if(controlInterface instanceof DatePickerInterface)
 		{
-			controlUIBeanInterface.setUserSelectedTool(ProcessorConstants.DATEPICKER_CONTROL);
-			controlUIBeanInterface.setHtmlFile( ProcessorConstants.DATEPICKER_CONTROL + ".jsp");
-
+			controlUIBeanInterface.setDateValueType(((DatePickerInterface)controlInterface).getDateValueType());
 		}
 		else if(controlInterface instanceof TextAreaInterface)
 		{
-			controlUIBeanInterface.setUserSelectedTool(ProcessorConstants.MULTILINE_CONTROL);
-			controlUIBeanInterface.setHtmlFile( ProcessorConstants.TEXT_CONTROL + ".jsp");
 			controlUIBeanInterface.setColumns(((TextAreaInterface)controlInterface).getColumns());
 			controlUIBeanInterface.setRows(((TextAreaInterface)controlInterface).getRows());
 			controlUIBeanInterface.setLinesType(ProcessorConstants.LINE_TYPE_MULTILINE);
+			controlUIBeanInterface.setIsPassword(((TextAreaInterface)controlInterface).getIsPassword());
 		}
 
 

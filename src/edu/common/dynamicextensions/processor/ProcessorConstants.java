@@ -5,6 +5,8 @@
  */
 package edu.common.dynamicextensions.processor;
 
+import edu.wustl.common.util.global.Constants;
+
 
 /**
  * @author preeti_munot
@@ -26,7 +28,7 @@ public class ProcessorConstants
 	//Datattype constants 
 	public static final String DATATYPE_STRING = "Text";
 	public static final String DATATYPE_DATE = "Date";
-	public static final String DATATYPE_BOOLEAN = "Boolean";
+	public static final String DATATYPE_BOOLEAN = "Yes/No";
 	public static final String DATATYPE_NUMBER = "Number";
 
 	//Max number of digits/decimals for various datatypes
@@ -39,8 +41,9 @@ public class ProcessorConstants
     public static final String ADD = "Add";
     public static final String EDIT = "Edit";
     
-    //Date Format
-    public static final String DATE_FORMAT = "MM-DD-YYYY"; // Constants.DATE_PATTERN_MM_DD_YYYY;
+    //Date Formats
+    public static final String DATE_ONLY_FORMAT = Constants.DATE_PATTERN_MM_DD_YYYY;
+    public static final String DATE_TIME_FORMAT = Constants.TIMESTAMP_PATTERN;
     
     //Types of permisible value sources for Combobox
     public static final String DISPLAY_CHOICE_USER_DEFINED = "UserDefined";
@@ -54,8 +57,8 @@ public class ProcessorConstants
     public static final String LIST_TYPE_SINGLE_SELECT = "SingleSelect";
     public static final String CREATE_AS_NEW = "NewForm";
     //Date formats
-    public static final String DATE_FORMAT_DATEONLY = "DateOnly";
-    public static final String DATE_FORMAT_DATEANDTIME = "DateAndTime";
+    public static final String DATE_FORMAT_OPTION_DATEONLY = "DateOnly";
+    public static final String DATE_FORMAT_OPTION_DATEANDTIME = "DateAndTime";
     
     //Date Values
     public static final String DATE_VALUE_NONE = "None";
@@ -82,7 +85,7 @@ public class ProcessorConstants
     public static final String DEFAULT_DATA_TYPE = DATATYPE_STRING;
     
     //default date format
-    public static final String DEFAULT_DATE_FORMAT = DATE_FORMAT_DATEONLY;
+    public static final String DEFAULT_DATE_FORMAT = DATE_FORMAT_OPTION_DATEONLY;
     
     //Default date value  : Select date
     public static final String DEFAULT_DATE_VALUE = DATE_VALUE_SELECT;

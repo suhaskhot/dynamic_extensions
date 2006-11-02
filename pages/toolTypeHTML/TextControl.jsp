@@ -79,7 +79,7 @@
 			</td>
 			<td class="formRequiredLabelWithoutBorder" width="25%">&nbsp;</td>
 			<td class="formFieldWithoutBorder" align="left">
-				<html:checkbox property="attributeIdentified"><bean:message key="app.att.isIdentified" /></html:checkbox>
+				<html:checkbox property="attributeIdentified" value="true"><bean:message key="app.att.isIdentified" /></html:checkbox>
 			</td>
 		</tr>
 		<tr valign="top">
@@ -88,7 +88,7 @@
 				</td>
 				<td class="formRequiredLabelWithoutBorder" width="25%">&nbsp;</td>
 				<td class="formFieldWithoutBorder" align="left">
-					<html:checkbox  property="attributeIsPassword"><bean:message key="app.att.isPassword" /></html:checkbox>
+					<html:checkbox  property="attributeIsPassword" value="true"><bean:message key="app.att.isPassword" /></html:checkbox>
 				</td>
 		</tr>
 		</table>

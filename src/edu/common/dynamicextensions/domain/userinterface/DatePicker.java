@@ -13,7 +13,7 @@ import edu.common.dynamicextensions.ui.util.ControlsUtility;
  */
 public class DatePicker extends Control implements DatePickerInterface
 {
-
+	String dateValueType = null;
 	/**
 	 * Empty Constructor
 	 */
@@ -49,6 +49,22 @@ public class DatePicker extends Control implements DatePickerInterface
 	 */
 	public void setAttribute(AbstractAttributeInterface attributeInterface)
 	{
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface#getDateValueType()
+	 */
+	public String getDateValueType()
+	{
+		return dateValueType;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface#setDateValueType(java.lang.String)
+	 */
+	public void setDateValueType(String dateValueType)
+	{
+		this.dateValueType = dateValueType;	
 	}
 
 }

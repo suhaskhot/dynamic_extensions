@@ -186,4 +186,14 @@ public interface ControlUIBeanInterface {
 	 * @param linesType the linesType to set
 	 */
 	public void setLinesType(String linesType);
+	/**
+ 	 * 
+ 	 * @return date value type as None/Today's date/selected date
+ 	 */
+ 	public String getDateValueType();
+ 	/**
+ 	 * 
+ 	 * @param dateValueType None/Today's date/selected date
+ 	 */
+ 	public void setDateValueType(String dateValueType);
 }

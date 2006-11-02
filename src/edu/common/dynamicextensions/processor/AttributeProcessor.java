@@ -506,8 +506,18 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 		}
 		dateAttributeIntf.setDefaultValue(defaultValue);
-		//dateAttributeIntf.setFormat(attributeInformationIntf.getFormat());
-		dateAttributeIntf.setFormat(Constants.DATE_PATTERN_MM_DD_YYYY);
+//		Set Date format based on the UI selection : DATE ONLY or DATE And TIME
+		if(attributeInformationIntf.getFormat()!=null)
+		{
+			if(attributeInformationIntf.getFormat().equalsIgnoreCase(ProcessorConstants.DATE_FORMAT_OPTION_DATEONLY))
+			{
+				dateAttributeIntf.setFormat(ProcessorConstants.DATE_ONLY_FORMAT);
+			}
+			else if(attributeInformationIntf.getFormat().equalsIgnoreCase(ProcessorConstants.DATE_FORMAT_OPTION_DATEANDTIME))
+			{
+				dateAttributeIntf.setFormat(ProcessorConstants.DATE_TIME_FORMAT);
+			}
+		}
 	}
 
 	/**
@@ -732,9 +742,23 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				{
 					String defaultValue = Utility.parseDateToString(((DateAttributeInterface)attributeInterface).getDefaultValue(),Constants.DATE_PATTERN_MM_DD_YYYY);
 					attributeInformationIntf.setAttributeDefaultValue(defaultValue);
-					System.out.println("Date Def valuee returned  = " + defaultValue);
 				}
-				attributeInformationIntf.setFormat(((DateAttributeInterface)attributeInterface).getFormat());
+				String dateFormat = ((DateAttributeInterface)attributeInterface).getFormat();
+				if(dateFormat!=null)
+				{
+					if(dateFormat.equalsIgnoreCase(ProcessorConstants.DATE_ONLY_FORMAT))
+					{
+						attributeInformationIntf.setFormat(ProcessorConstants.DATE_FORMAT_OPTION_DATEONLY);
+					}
+					else if(dateFormat.equalsIgnoreCase(ProcessorConstants.DATE_TIME_FORMAT))
+					{
+						attributeInformationIntf.setFormat(ProcessorConstants.DATE_FORMAT_OPTION_DATEANDTIME);
+					} 
+				}
+				else //Default will be date only
+				{
+					attributeInformationIntf.setFormat(ProcessorConstants.DATE_FORMAT_OPTION_DATEONLY);
+				}
 			}
 			else if(attributeInterface instanceof BooleanAttributeInterface)
 			{

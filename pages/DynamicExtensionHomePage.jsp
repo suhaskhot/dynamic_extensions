@@ -7,10 +7,8 @@
 <%-- Imports --%>
 <%@
 	page language="java" contentType="text/html"
-    import="java.util.Collection"
-	import="edu.common.dynamicextensions.domaininterface.EntityInterface"
-	import="java.util.Iterator"
-	import="java.text.SimpleDateFormat"
+	import="java.lang.String"
+	import="java.lang.Long"
 %>
 
 <%-- Stylesheet --%>
@@ -24,8 +22,8 @@
 
 	<html:form styleId='formsIndexForm' action='/ApplyFormsIndexAction'>
 	<body>
-		<c:set var="entityCollection" value="${formsIndexForm.entityCollection}"/>
- 		<jsp:useBean id="entityCollection" type="java.util.Collection"/>
+		<c:set var="containerCollection" value="${formsIndexForm.containerCollection}"/>
+ 		<jsp:useBean id="containerCollection" type="java.util.Collection"/>
 		<table width='70%' align='center' cellspacing="5" cellspacing="0" border='0'>
 			<tr class="formMessage">
 				<td>
@@ -82,12 +80,24 @@
 								</th>
 							</tr>
 
-							<c:forEach items="${entityCollection}" var="entityInterface" varStatus="elements">
-								<jsp:useBean id="entityInterface" type="edu.common.dynamicextensions.domaininterface.EntityInterface" />
+							<c:forEach items="${containerCollection}" var="containerInterface" varStatus="elements">
+								<jsp:useBean id="containerInterface" type="edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface" />
 								<tr>
-									<td> <c:out value='${elements.count}' />&nbsp</td>
-									<td><c:out value='${entityInterface.name}' />&nbsp</td>
-									<td><c:out value='${entityInterface.createdDate}'/>&nbsp</td>
+									<td><c:out value='${elements.count}' />&nbsp</td>
+									<td>
+										<%
+ 											String containerIdentifier = containerInterface.getId().toString();
+ 											String target = "/dynamicExtensions/LoadDataEntryFormAction.do?containerIdentifier=" + containerIdentifier;
+ 										%>
+										<html:link href='<%=target%>'>
+											<c:out value='${containerInterface.caption}' />&nbsp
+										</html:link>
+									</td>
+									<td>
+										<c:set var="entityInterface" value="${containerInterface.entity}"/>
+ 										<jsp:useBean id="entityInterface" type="edu.common.dynamicextensions.domaininterface.EntityInterface"/>
+										<c:out value='${entityInterface.createdDate}'/>&nbsp
+									</td>
 									<td><c:out value='admin'/>&nbsp</td>
 									<td><c:out value='In Progress' />&nbsp</td>
 							</tr>

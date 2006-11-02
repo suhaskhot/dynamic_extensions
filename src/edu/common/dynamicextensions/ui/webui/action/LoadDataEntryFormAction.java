@@ -35,8 +35,8 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 		String recordId = request.getParameter("recordId");
 
 		LoadDataEntryFormProcessor loadDataEntryFormProcessor = LoadDataEntryFormProcessor.getInstance();
-		loadDataEntryFormProcessor.loadDataEntryForm((AbstractActionForm) form, containerInterface, containerIdentifier, recordId);
-
+		containerInterface = loadDataEntryFormProcessor.loadDataEntryForm((AbstractActionForm) form, containerInterface, containerIdentifier, recordId);
+		CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
 		return mapping.findForward("Success");
 	}
 

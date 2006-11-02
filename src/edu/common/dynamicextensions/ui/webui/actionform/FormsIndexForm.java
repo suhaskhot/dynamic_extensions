@@ -23,12 +23,12 @@ public class FormsIndexForm extends AbstractActionForm
 	/**
 	 * Collection of Entities
 	 */
-	protected Collection entityCollection = null;
+	protected Collection containerCollection = null;
 
 	/**
 	 * Values of the Check boxes
 	 */
-	protected String[] entityCheckBoxes = null;
+	protected String[] containerCheckBoxes = null;
 	/**
 	 * mode
 	 */
@@ -51,35 +51,35 @@ public class FormsIndexForm extends AbstractActionForm
 	}
 
 	/**
-	 * @return the entityList
+	 * @return the containerList
 	 */
-	public Collection getEntityCollection()
+	public Collection getContainerCollection()
 	{
-		return entityCollection;
+		return containerCollection;
 	}
 
 	/**
-	 * @param entityList the entityList to set
+	 * @param containerList the containerList to set
 	 */
-	public void setEntityCollection(Collection entityList)
+	public void setContainerCollection(Collection containerList)
 	{
-		this.entityCollection = entityList;
+		this.containerCollection = containerList;
 	}
 
 	/**
-	 * @return the entityCheckBoxes
+	 * @return the containerCheckBoxes
 	 */
-	public String[] getEntityCheckBoxes()
+	public String[] getContainerCheckBoxes()
 	{
-		return entityCheckBoxes;
+		return containerCheckBoxes;
 	}
 
 	/**
-	 * @param entityCheckBoxes the entityCheckBoxes to set
+	 * @param containerCheckBoxes the containerCheckBoxes to set
 	 */
-	public void setEntityCheckBoxes(String[] entityCheckBoxes)
+	public void setContainerCheckBoxes(String[] containerCheckBoxes)
 	{
-		this.entityCheckBoxes = entityCheckBoxes;
+		this.containerCheckBoxes = containerCheckBoxes;
 	}
 
 	/**
@@ -96,7 +96,7 @@ public class FormsIndexForm extends AbstractActionForm
 	 */
 	protected void reset()
 	{
-		entityCollection = null;
+		containerCollection = null;
 	}
 
 	/**
@@ -105,7 +105,6 @@ public class FormsIndexForm extends AbstractActionForm
 	 */
 	public void setAllValues(AbstractDomainObject abstractDomainObject)
 	{
-
 	}
 
 }

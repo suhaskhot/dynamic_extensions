@@ -23,11 +23,20 @@ public class ApplyFormsIndexAction extends BaseDynamicExtensionsAction
 	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 	{
-		FormsIndexForm formsIndexForm = (FormsIndexForm)form;
+		FormsIndexForm formsIndexForm = (FormsIndexForm) form;
+		ActionForward actionForward = null;
 		String mode = formsIndexForm.getMode();
-		if(mode != null && mode.equalsIgnoreCase(Constants.ADD_NEW_FORM)) {
+		if (mode != null && mode.equalsIgnoreCase(Constants.ADD_NEW_FORM))
+		{
 			CacheManager.clearCache(request);
+			actionForward = mapping.findForward(Constants.SUCCESS);
 		}
-		return mapping.findForward(Constants.SUCCESS);
+		else if (mode != null && mode.equalsIgnoreCase(Constants.INSERT_DATA))
+		{
+			CacheManager.clearCache(request);
+			actionForward = mapping.findForward(Constants.INSERT_DATA);
+		}
+		
+		return  mapping.findForward(Constants.SUCCESS);
 	}
 }

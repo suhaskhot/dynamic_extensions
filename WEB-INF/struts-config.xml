@@ -34,7 +34,8 @@ PUBLIC
 			validate="true"
 			input="/DynamicExtensionHomePage.do"
 			scope="request">
-		<forward name="success" path="/LoadFormDefinitionAction.do" />
+			<forward name="success" path="/LoadFormDefinitionAction.do" />
+			<forward name="insertData" path="/LoadDataEntryFormAction.do" />
 		</action>
 		<action path="/LoadFormDefinitionAction" 
 		    type="edu.common.dynamicextensions.ui.webui.action.LoadFormDefinitionAction" 

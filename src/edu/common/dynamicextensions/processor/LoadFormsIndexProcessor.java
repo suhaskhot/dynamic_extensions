@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -42,25 +43,23 @@ public class LoadFormsIndexProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	public void populateFormsIndex(FormsIndexForm loadFormIndexForm) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
-		Collection entityCollection = null;
+		Collection<ContainerInterface> containerCollection = null;
 		try
 		{
-			//entityList = new MockEntityManager().getAllEntities();
 			EntityManager entityManager = EntityManager.getInstance();
-			entityCollection = entityManager.getAllEntities();
+			containerCollection = entityManager.getAllContainers();
 			
-			for(Iterator iterator = entityCollection.iterator(); iterator.hasNext();)
+			/*for(ContainerInterface container: containerCollection)
 			{
-				EntityInterface entityInterface = (EntityInterface)iterator.next();
-				Date date = entityInterface.getCreatedDate();
-				System.out.println(date);
-			}
+				EntityInterface entity = container.getEntity();
+				Date date = entity.getCreatedDate();
+			}*/
 			
-			if (entityCollection == null)
+			if (containerCollection == null)
 			{
-				entityCollection = new HashSet();
+				containerCollection = new HashSet<ContainerInterface>();
 			}
-			loadFormIndexForm.setEntityCollection(entityCollection);
+			loadFormIndexForm.setContainerCollection(containerCollection);
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{

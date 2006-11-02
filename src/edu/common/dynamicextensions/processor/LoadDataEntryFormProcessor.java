@@ -18,7 +18,7 @@ import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.actionForm.AbstractActionForm;
 
 /**
- * @author sujay_narkar
+ * @author sujay_narkar, chetan_patil
  *
  */
 public class LoadDataEntryFormProcessor 
@@ -30,7 +30,6 @@ public class LoadDataEntryFormProcessor
 	 */
 	protected LoadDataEntryFormProcessor() 
 	{
-
 	}
 
 	/**
@@ -40,7 +39,6 @@ public class LoadDataEntryFormProcessor
 	public static LoadDataEntryFormProcessor getInstance () 
 	{
 		return new LoadDataEntryFormProcessor();
-
 	}
 
 	/**
@@ -51,7 +49,7 @@ public class LoadDataEntryFormProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 */
 	@SuppressWarnings("unchecked")
-	public void loadDataEntryForm(AbstractActionForm actionForm,ContainerInterface containerInterface,String containerIdentifier,
+	public ContainerInterface loadDataEntryForm(AbstractActionForm actionForm,ContainerInterface containerInterface,String containerIdentifier,
 			String recordId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException  
 	{
 		try
@@ -59,7 +57,7 @@ public class LoadDataEntryFormProcessor
 			DataEntryForm dataEntryForm = (DataEntryForm) actionForm;
 			Map recordMap = null;
 			
-			if(containerInterface == null)
+			if(containerInterface == null || containerIdentifier != null)
 			{
 				containerInterface = DynamicExtensionsUtility.getContainerByIdentifier(containerIdentifier);
 			}
@@ -108,6 +106,8 @@ public class LoadDataEntryFormProcessor
 		{
 			throw dynamicExtensionsApplicationException;
 		}
+		
+		return containerInterface;
 	}
 
 }

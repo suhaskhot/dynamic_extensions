@@ -45,7 +45,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		AbstractAttributeInterface abstractAttributeInterface = null;
 		ControlInterface controlInterface = null;
 		
-		Map attributeValueMap = new HashMap();		
+		Map<AbstractAttributeInterface, String> attributeValueMap = new HashMap<AbstractAttributeInterface, String>();		
 		String value = null;
 
 		for (int sequence = 1; sequence <= controlCollection.size(); sequence++)

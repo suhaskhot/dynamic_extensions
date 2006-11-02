@@ -41,9 +41,31 @@
 		<html:errors />
 				<html:hidden property="entitySaved" />
 			<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
-<table valign="top"  align='left' width='90%' height="90%" border='0' cellspacing="0" cellpadding="0" class="tbBorders1" >
+			
+	 <c:choose>
+	    <c:when test='${showFormPreview  == "true"}'> 			
+				<table valign="top"  align='left' width='90%' height="90%" border='0' cellspacing="0" cellpadding="0" class="tbBorders1" >
+		</c:when>
+		
+		<c:otherwise>
+			<table valign="top"  align='left' width='90%' height="90%" border='0' cellspacing="0" cellpadding="0"  >
+		</c:otherwise>	
+	</c:choose>					
+				
  <!-- Main Page heading -->
- <tr ><td class="formFieldSized1"><bean:message key="app.title.MainPageTitle" /></td></tr>
+	 <tr>
+		 <td class="formFieldSized1">
+		 
+		 <c:choose>
+			    <c:when test='${showFormPreview  == "true"}'> 
+				 		<bean:message key="app.title.MainPageTitle" />
+			 	</c:when>	
+		</c:choose>			
+	 		
+	 		
+	 	 </td>
+	 </tr>
+	 
 	  <tr valign="top">
 		<td >
 		<table valign="top" summary="" align='left' width='100%' cellspacing="0" cellpadding="3"  >
@@ -98,7 +120,7 @@
 											<c:set var="entityInterface" value="${containerInterface.entity}" />
 											<jsp:useBean id="entityInterface" type="edu.common.dynamicextensions.domaininterface.EntityInterface" />
 
-											<c:out value="${entityInterface.name}" escapeXml="false" />
+											Insert data for &nbsp;<c:out value="${entityInterface.name}" escapeXml="false" />
 										</td>
 									</tr>
 

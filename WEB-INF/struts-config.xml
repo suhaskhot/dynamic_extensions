@@ -123,6 +123,15 @@ PUBLIC
 			<forward name="success" path="/LoadDataEntryFormAction.do?showFormPreview=flase" />
 		</action>
 		
+		<action path="/DynamicExtensionsInterfaceAction" 
+		    type="edu.common.dynamicextensions.interfaceactions.DynamicExtensionsInterfaceAction" 
+		    name="dataEntryForm"
+			validate="false"
+			input="/LoadDataEntryFormAction.do"
+			scope="request">
+			<forward name="success" path="/LoadDataEntryFormAction.do?showFormPreview=flase" />
+		</action>
+		
 		
 		
 	

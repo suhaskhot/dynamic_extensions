@@ -34,7 +34,7 @@ public class DatePicker extends Control implements DatePickerInterface
 		}
 
 		String output = "<input class='" + cssClass + "' " + " name='" + getHTMLComponentName() + "'  id='" + getHTMLComponentName() + "' "
-				+ " value='" + defaultValue + "'/> " + "<A onclick=\"showCalendar('" + getHTMLComponentName() + "',2006,10,26,'MM-dd-yyyy','previewForm','"
+				+ " value='" + defaultValue + "'/> " + "<A onclick=\"showCalendar('" + getHTMLComponentName() + "',2006,10,26,'MM-dd-yyyy','dataEntryForm','"
 				+ getHTMLComponentName()
 				+ "',event,1900,2020);\" href=\"javascript://\"><IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0></A>"
 				+ "<DIV id=slcalcod" + getHTMLComponentName()

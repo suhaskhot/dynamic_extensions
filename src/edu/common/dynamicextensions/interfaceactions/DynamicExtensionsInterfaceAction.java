@@ -6,26 +6,28 @@ import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Iterator;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+
+import org.apache.struts.action.Action;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
-public class DynamicExtensionsInterfaceAction extends HttpServlet 
+public class DynamicExtensionsInterfaceAction extends Action 
 {
-	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		doPost(req, res);
-	}
 	
-	public void doPost(HttpServletRequest req, HttpServletResponse res)
-			throws ServletException, IOException {
+	
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest req, HttpServletResponse res) throws IOException
+	{
 	
 		BufferedReader bufferedReader=new BufferedReader(req.getReader());
 		Object json = null;
@@ -79,6 +81,7 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet
 		    PrintWriter out=res.getWriter();
     	    out.write(entityInterfaceJSONArray.toString());
 		}
+		return mapping.findForward("success");
 
 	}
 }

@@ -32,19 +32,11 @@
 	<c:set var="userSelectedTool" value="${controlsForm.userSelectedTool}"/>
  	<jsp:useBean id="userSelectedTool" type="java.lang.String"/>
 
+ 	<c:set var="selectedControlCaption" value="${controlsForm.selectedControlCaption}"/>
+ 	<jsp:useBean id="selectedControlCaption" type="java.lang.String"/>
+
 	<c:set var="controlInformationObjectList" value="${controlsForm.childList}"/>
 	<jsp:useBean id="controlInformationObjectList" type="java.util.List"/>
-<%
-
-	TreeGenerator treeGenerator = new TreeGenerator();
-	treeGenerator.setContextPath(request.getContextPath());
-	TreeData treedataObj = treeGenerator.getTreeData(rootName,childList);
-	controlInformationObjectList = new ArrayList();
-	controlInformationObjectList.add( new ControlInformationObject("namafdfdaetyyyyyyyyyyyyyyyyfae","Text","1"));
-	controlInformationObjectList.add( new ControlInformationObject("job id","Combo","2"));
-	controlInformationObjectList.add( new ControlInformationObject("joining date","Date","3"));
-	pageContext.setAttribute("controlInformationObjectList",controlInformationObjectList);
-%>
 
 
 <html>
@@ -93,16 +85,16 @@
 							</td>
 						</tr>-->
 						<tr style = "padding-left:5px" valign = "top">
-							<td class="formFieldSized1" >
+							<td class="formMessage" >
 								<%=rootName%>
 							</td>
 
-							<td style = "padding-left:10px" class="formFieldSized1" >
-								<%=userSelectedTool%> <bean:message  key="app.formControl.properties" />
+							<td style = "padding-left:10px" class="formMessage" >
+								<%=selectedControlCaption%> <bean:message  key="app.formControl.properties" />
 							</td>
 
-							<td style = "padding-left:30px" class="formFieldSized1" >
-								<bean:message  key="app.formControlsTree.heading" />
+							<td style = "padding-left:30px" class="formMessage" >
+								&nbsp;
 							</td>
 						</tr>
 
@@ -141,6 +133,11 @@
 									<tr valign = "top" height = '100%' width = 100%>
 										<td  height = '100%' width = 100%>
 											<table border = 1  height = 100% width =100% cellpadding="0" cellspacing="0" >
+											<thead>
+												<tr>
+													<th class="formLabel" colspan="3"><bean:message  key="app.formControlsTree.heading" /></th>
+												</tr>
+											</thead>
 												<c:forEach var="controlInfoObj" items = "${controlInformationObjectList}" varStatus="counter" >
 												<c:set var="controlName" value="${controlInfoObj.controlName}"/>
 												<jsp:useBean id="controlName" type="java.lang.String"/>
@@ -150,8 +147,8 @@
 
 												<c:set var="identifier" value="${controlInfoObj.identifier}"/>
 												<jsp:useBean id="identifier" type="java.lang.String"/>
-
-													<tr height = "5%" id = "<%=identifier%>" onclick = "controlClicked(this);" style = "cursor:hand">
+												<tbody>
+													<tr height = "5%" id = "<%=identifier%>" onclick = "controlSelected(this);" style = "cursor:hand">
 														<td class="formMessage">
 
 															<input type = "checkbox" name = "check" disabled id = "<%=identifier%>"/>
@@ -168,7 +165,7 @@
 															</div>
 														</td>
 													</tr>
-
+												</tbody>
 												</c:forEach>
 												<tr height = 100%>
 													<td>&nbsp;

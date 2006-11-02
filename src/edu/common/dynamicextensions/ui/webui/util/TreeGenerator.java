@@ -41,7 +41,6 @@ public class TreeGenerator {
 	{
 		TreeData treedata = new TreeData();
 		treedata.setImagesUrl(this.getContextPath() + "/images");
-		System.out.println("Images url  path = " + treedata.getImagesUrl());
 		TNode node = new TNode(rootName,0);
 		String name = null;
 		String sequenceNumber = null;
@@ -66,26 +65,10 @@ public class TreeGenerator {
 						seqno = 0;
 					}
 					node.add(name, seqno);
-					System.out.println("added [" +name  +"] [" +seqno + "]");
 				}
 			}
 		}
-        
-	
-		
-		/*node.add("subnode - 7");
-		node.add("subnode - 8");
-		TNode node2 = new TNode("Node-2");
-		node2.add("subnode2 - 1");
-		node2.add("subnode2 - 2");
-		node2.add("subnode2 - 3");
-		node2.add("subnode2 - 4");
-		node2.add("subnode2 - 5");
-		node2.add("subnode2 - 6");
-		node2.add("subnode2 - 7");
-		node2.add("subnode2 - 8");
-		treedata.add(node2);*/
-		
+      
 		treedata.add(node);
 		return treedata;
 	}

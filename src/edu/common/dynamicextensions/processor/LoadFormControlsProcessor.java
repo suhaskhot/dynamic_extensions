@@ -3,7 +3,6 @@ package edu.common.dynamicextensions.processor;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +17,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterf
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
+import edu.common.dynamicextensions.ui.webui.util.ControlInformationObject;
 import edu.wustl.common.beans.NameValueBean;
 
 /**
@@ -99,7 +99,7 @@ public class LoadFormControlsProcessor
 					attributeProcessor.populateAttributeUIBeanInterface(controlInterface.getAbstractAttribute(), controlsForm);
 				}
 
-				userSelectedTool = getUserSelectedToolName(controlInterface);
+				userSelectedTool = getControlName(controlInterface);
 				if(userSelectedTool == null || userSelectedTool.equals(""))
 				{
 					userSelectedTool = ProcessorConstants.DEFAULT_SELECTED_CONTROL;
@@ -110,7 +110,7 @@ public class LoadFormControlsProcessor
 			controlsForm.setUserSelectedTool(userSelectedTool);
 			//List of tools/controls
 			controlsForm.setToolsList(controlConfigurationsFactory.getListOfControls());
-			controlsForm.setSelectedControlCaption(getSelectedControlCaption(controlConfigurationsFactory.getControlDisplayLabel(userSelectedTool)));
+			controlsForm.setSelectedControlCaption(getControlCaption(controlConfigurationsFactory.getControlDisplayLabel(userSelectedTool)));
 			String jspName = controlConfigurationsFactory.getControlJspName(userSelectedTool);
 			if(jspName==null)
 			{
@@ -145,7 +145,7 @@ public class LoadFormControlsProcessor
 	 * @param containerInterface
 	 * @return
 	 */
-	private String getUserSelectedToolName(ControlInterface controlInterface)
+	private String getControlName(ControlInterface controlInterface)
 	{
 		if(controlInterface!=null)
 		{
@@ -177,14 +177,20 @@ public class LoadFormControlsProcessor
 		Collection controlCollection = containerInterface.getControlCollection();
 		Iterator controlIterator = controlCollection.iterator();
 		ControlInterface controlInterface = null;
-		NameValueBean nameValueBean;
+		ControlInformationObject controlInformationObject = null;
+		String controlCaption =null,controlDatatype = null,controlSequenceNumber=null,controlName = null;
+		ControlConfigurationsFactory controlConfigurationsFactory = ControlConfigurationsFactory.getInstance();
 		while(controlIterator.hasNext())
 		{
 			controlInterface =  (ControlInterface) controlIterator.next();
 			if(controlInterface.getCaption() != null && !controlInterface.getCaption().equals(""))
 			{
-				nameValueBean = new NameValueBean(controlInterface.getCaption(),controlInterface.getSequenceNumber());
-				childList.add(nameValueBean);
+				controlCaption = controlInterface.getCaption();
+				controlSequenceNumber = controlInterface.getSequenceNumber()+"";
+				controlName = getControlName(controlInterface);
+				controlDatatype = getControlCaption(controlConfigurationsFactory.getControlDisplayLabel(controlName));
+				controlInformationObject = new ControlInformationObject(controlCaption,controlDatatype,controlSequenceNumber);
+				childList.add(controlInformationObject);
 			}
 
 		}
@@ -202,7 +208,7 @@ public class LoadFormControlsProcessor
 
 		return dataTypeList; 
 	}
-	public String getSelectedControlCaption(String captionKey)
+	public String getControlCaption(String captionKey)
 	{
 		if(captionKey!=null)
 		{

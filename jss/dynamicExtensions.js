@@ -617,13 +617,21 @@ function hideTooltip() {
 	//  el.removeNode();
 }
 
-function controlClicked(ths) {
+function controlSelected(ths) {
 	var prevRow = document.getElementById('previousControl').value;
 	if (prevRow != null && prevRow != '' && prevRow != undefined) 
 	{
-		document.getElementById(prevRow).className = "deSelectedControl";
+		document.getElementById(prevRow).className = "tableItemUnselected";
 	}
 
 	document.getElementById('previousControl').value = ths.id;
-	ths.className = "selectedControl";
+	ths.className = "tableItemSelected";
+	
+	//Added by Preeti
+	document.getElementById('controlOperation').value='Edit';
+	document.getElementById('selectedControlId').value=ths.id;
+	
+	var controlsForm=document.getElementById('controlsForm');
+    controlsForm.action='/dynamicExtensions/LoadFormControlsAction.do';
+    controlsForm.submit();
 }

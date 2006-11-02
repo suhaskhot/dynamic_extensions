@@ -1004,6 +1004,15 @@ td.formFieldAddMore{ /* for the cell that contains the form elements */
   border-top:1px  solid #000000;/* constant: dark gray */
   border-left:1px solid #000000; /* constant: dark gray */
   border-right:1px solid #000000; /* constant: dark gray */
+
+}
+
+.tbBordersAllbordersBlackGryBackgnd{ /* for block table with border 1 */
+  border-bottom:1px solid #000000; /* constant: dark gray */
+  border-top:1px  solid #000000;/* constant: dark gray */
+  border-left:1px solid #000000; /* constant: dark gray */
+  border-right:1px solid #000000; /* constant: dark gray */
+  background-color:#F4F4F5; /* constant: light gray */
 }
 
 .tbBordersAllbordersNone {
@@ -1355,11 +1364,19 @@ input.formParamSized{ /* for the form elements themselves and with a constant wi
   font-size:1em;
   width:5em;
 }
-.selectedControl
+.tableItemSelected
 {
-background-color:#475B82;
+font-family:arial;
+  font-size:0.6em;
+  background-color:#FFFFFF; /*#797C9C;  darker */
+  color:#000000;  /* constant: white */
+  text-decoration:none;
 }
-.deSelectedControl
+.tableItemUnselected
 {
-background-color:auto;
+  font-family:arial;
+  font-size:0.6em;
+  background-color:#C9C9CD; 
+  color:#000000;  /* constant: white */
+  text-decoration:none;
 }

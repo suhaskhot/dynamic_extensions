@@ -24,7 +24,6 @@ public class TreeData {
 		try {
 			nodes=new TNodeList();
 		} catch (Exception e) {
-			System.out.println("Exception " + e);
 		}
 	}
 
@@ -40,7 +39,6 @@ public class TreeData {
 			nodes.add(node);
 			length++;
 		} catch (Exception e) {
-			System.out.println("Error in treeview during addition of node"+e);
 		}
 	}
 	public void add(String text,int seqno){
@@ -62,7 +60,6 @@ public class TreeData {
 		buf = new StringBuffer();
 
 		try {
-			System.out.println("Entering get tree function");
 			print("<style>ul.tree{display:none;margin-left:17px;}li.folder{list-style-image: url("+ folder +"/plus.gif);}li.folderOpen{list-style-image: url("+ folder +"/minus.gif);}li.file{FONT-WEIGHT:normal;list-style-image: url("+ folder +"/dot.gif);}a.treeview{color:"+ color +";font-family:verdana;font-size:9pt;}a.treeview:link {text-decoration:none;}a.treeview:visited{text-decoration:none;}a.treeview:hover {text-decoration:underline;}</style>");
 			//print("<input type=hidden id=\"selectedAttrib\" value=\"\"  name=\"selAttrib\" > ");
 			if(nodes!=null)

@@ -99,7 +99,6 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		if(controlInterface == null)
 		{
 			datePickerIntf = DomainObjectFactory.getInstance().createDatePicker();
-			System.out.println("Created Date Picker Intf");
 		}
 		else
 		{
@@ -119,7 +118,6 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		if(controlInterface==null)
 		{
 			radioButtonIntf = DomainObjectFactory.getInstance().createRadioButton();
-			System.out.println("Created Radio Button Intf");
 		}
 		else
 		{
@@ -140,7 +138,6 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		if(controlInterface == null)
 		{
 			checkBoxIntf = DomainObjectFactory.getInstance().createCheckBox();
-			System.out.println("Created Check box Intf");
 		}
 		else
 		{
@@ -161,7 +158,6 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		if(controlInterface==null)
 		{
 			listBoxIntf = DomainObjectFactory.getInstance().createListBox();
-			System.out.println("Created List Intf");
 		}
 		else
 		{
@@ -169,10 +165,6 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		}
 
 		listBoxIntf.setIsMultiSelect(controlUIBeanInterface.getIsMultiSelect());
-		//listBoxIntf.setChoiceList(controlInformationInterface.getDisplayChoiceList());
-
-		System.out.println("Is Multiselect = " + listBoxIntf.getIsMultiSelect());
-		//System.out.println("Choice List " + listBoxIntf.getChoiceList());
 		return listBoxIntf;
 	}
 	/**
@@ -186,16 +178,11 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		if(controlInterface==null)
 		{
 			comboBoxIntf = DomainObjectFactory.getInstance().createComboBox();
-			System.out.println("Created combobox Intf ");
 		}
 		else
 		{
 			comboBoxIntf = (ComboBoxInterface)controlInterface;
 		}
-
-		//comboBoxIntf.setChoiceList(controlInformationInterface.getDisplayChoiceList());
-
-		//System.out.println("Choice List " + comboBoxIntf.getChoiceList());
 		return comboBoxIntf;
 	}
 	/**
@@ -223,9 +210,6 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		}
 		textAreaIntf.setColumns(controlUIBeanInterface.getColumns());
 		textAreaIntf.setRows(controlUIBeanInterface.getRows());
-
-		System.out.println("No Of rows = " + textAreaIntf.getRows());
-		System.out.println("No Of Cols = " + textAreaIntf.getColumns());
 		return textAreaIntf;
 	}
 	/**
@@ -241,7 +225,6 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		if(controlInterface==null)	//If does not exist create it 
 		{
 			textFldIntf = DomainObjectFactory.getInstance().createTextField(); 
-			System.out.println("Created Text control");
 		}
 		else
 		{
@@ -257,8 +240,6 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		textFldIntf.setIsPassword(controlUIBeanInterface.getIsPassword());
 		textFldIntf.setColumns(controlUIBeanInterface.getColumns());
 
-		System.out.println("Is Password = " + textFldIntf.getIsPassword());
-		System.out.println("Cols = " + textFldIntf.getColumns());
 		return textFldIntf;
 	}
 
@@ -299,7 +280,6 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			controlUIBeanInterface.setLinesType(ProcessorConstants.LINE_TYPE_MULTILINE);
 			controlUIBeanInterface.setIsPassword(((TextAreaInterface)controlInterface).getIsPassword());
 		}
-
 
 	}
 }

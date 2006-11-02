@@ -5,10 +5,15 @@
  */
 package edu.common.dynamicextensions.processor;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import edu.common.dynamicextensions.domain.BooleanValue;
@@ -32,7 +37,11 @@ import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.ShortAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.StringAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
+import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
+import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
 import edu.common.dynamicextensions.ui.interfaces.AbstractAttributeUIBeanInterface;
+import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
+import edu.common.dynamicextensions.ui.util.RuleConfigurationObject;
 import edu.common.dynamicextensions.ui.util.SemanticPropertyBuilderUtil;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.global.Constants;
@@ -115,14 +124,14 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 			attributeInterface.setName(attributeInformationIntf.getName());
 			attributeInterface.setDescription(attributeInformationIntf.getDescription());
-			
+
 			//Set is identified
 			if(attributeInterface instanceof AttributeInterface)
 			{
 				Boolean isIdentified = new Boolean(attributeInformationIntf.getAttributeIdentified());
 				((AttributeInterface)attributeInterface).setIsIdentified(isIdentified);
 			}
-			
+
 			Collection collection =  SemanticPropertyBuilderUtil.getSymanticPropertyCollection(attributeInformationIntf.getAttributeConceptCode());
 			if (collection != null && !collection.isEmpty()) {
 				Iterator iterator = collection.iterator();
@@ -130,15 +139,108 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 					attributeInterface.addSemanticProperty((SemanticPropertyInterface) iterator.next());
 				}
 			}
+			populateRules(attributeInterface,attributeInformationIntf);
 		}
 		else
 		{
 			System.out.println("Either Attribute interface or attribute information interface is null [" + attributeInterface + "] / [" + attributeInformationIntf + "]");
 		}
+
 	}
 
+	/**
+	 * 
+	 * @param attributeInterface
+	 * @param attributeInformationIntf
+	 */
+	public void populateRules(AbstractAttributeInterface abstractAttributeInterface,AbstractAttributeUIBeanInterface attributeInformationIntf)
+	{
+		String[] validationRules  = attributeInformationIntf.getValidationRules();
+		if(validationRules != null)
+		{
+			String validationRule = "";
+			ControlConfigurationsFactory configurationsFactory = ControlConfigurationsFactory.getInstance();
+			RuleConfigurationObject ruleConfigurationObject;
+			DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+			RuleInterface ruleInterface;
+			for (int counter= 0 ; counter < validationRules.length;counter++)
+			{
+				validationRule = validationRules[counter];
+				ruleConfigurationObject = configurationsFactory.getRuleObject(validationRule);
+				ruleInterface = domainObjectFactory.createRule();
+				ruleInterface.setName(ruleConfigurationObject.getRuleName());
+				abstractAttributeInterface.addRule(ruleInterface);
+
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @param ruleConfigurationObject
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private Collection getRuleParameterCollection(RuleConfigurationObject ruleConfigurationObject,
+			AbstractAttributeUIBeanInterface abstractAttributeUIBeanInterface)
+	{
+		Collection<RuleParameterInterface> RuleParameterCollection = new HashSet<RuleParameterInterface>();
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory .getInstance(); 
+		Map ruleParametersMap = ruleConfigurationObject.getRuleParametersMap();
+		Set<Map.Entry> ruleParametersSet = ruleParametersMap.entrySet();
+		if(ruleParametersMap != null && !ruleParametersMap.isEmpty())
+		{
+			StringBuffer operationNameBuff = null;
+
+			for(Map.Entry ruleParameter: ruleParametersSet)
+			{
+				String paramName = (String )ruleParameter.getKey();
+				operationNameBuff = new StringBuffer(paramName);
+				operationNameBuff.setCharAt(0, Character.toUpperCase(operationNameBuff.charAt(0)));				
+				String methodName = "get" + operationNameBuff.toString();
+
+				try {
+					Class clas = Class.forName("edu.common.dynamicextensions.ui.interfaces.AbstractAttributeUIBeanInterface");
+					Class[] types = new Class[] {};
+
+					Method method = clas.getMethod(methodName, types);
+					Object result = method.invoke(abstractAttributeUIBeanInterface, new Object[0]);
+					RuleParameterInterface ruleParameterInterface =   domainObjectFactory.createRuleParameter();
+					ruleParameterInterface.setName(paramName);
+					ruleParameterInterface.setValue(result.toString());
+					RuleParameterCollection.add(ruleParameterInterface);
+
+				} catch (SecurityException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NoSuchMethodException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
 
+
+				ruleParameter.getValue();
+
+			}
+		}
+		return RuleParameterCollection;
+	}
 	/**
 	 * @param attributeInformationIntf
 	 * @return
@@ -596,7 +698,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		{
 			attributeInformationIntf.setName(attributeInterface.getName());
 			attributeInformationIntf.setDescription(attributeInterface.getDescription());
-			
+
 			//is Identified
 			if(attributeInterface instanceof AttributeInterface)
 			{

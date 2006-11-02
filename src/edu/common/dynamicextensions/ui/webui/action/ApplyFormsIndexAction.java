@@ -37,6 +37,7 @@ public class ApplyFormsIndexAction extends BaseDynamicExtensionsAction
 			actionForward = mapping.findForward(Constants.INSERT_DATA);
 		}
 		
-		return  mapping.findForward(Constants.SUCCESS);
+		//return mapping.findForward(Constants.SUCCESS);
+		return actionForward;
 	}
 }

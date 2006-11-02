@@ -150,8 +150,8 @@
 						<td class="formFieldWithoutBorder">
 							<html:text styleClass="formDateSized" styleId="attributeDefaultValue"  maxlength="100" size="60"  property="attributeDefaultValue" />
 
-	                       <a href="javascript:show_calendar('getElementById(\'attributeDefaultValue\')',null,null,'<%=ProcessorConstants.DATE_FORMAT%>');">
-	                        <img src='images\\calendar.gif' width=24 height=22 border=0/><%=ProcessorConstants.DATE_FORMAT%></a>
+	                       <a href="javascript:show_calendar('getElementById(\'attributeDefaultValue\')',null,null,'<%=ProcessorConstants.DATE_ONLY_FORMAT%>');">
+	                        <img src='images\\calendar.gif' width=24 height=22 border=0/><%=ProcessorConstants.DATE_ONLY_FORMAT%></a>
 						</td>
 					</tr>
 

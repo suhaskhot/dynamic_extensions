@@ -61,7 +61,7 @@
 
 	          <tr valign = "top">
 			  <td class = "tbBordersAllbordersNone" width = '30px'>&nbsp;</td>
-	     		<td class="tbBordersAllbordersNone valign="top" >
+	     		<td class="tbBordersAllbordersNone" valign="top" >
 			  	 <table valign="top" summary="" align='left' width='95%' height = 95% cellspacing="0" cellpadding="3" class = "tbBordersAllbordersBlack" >
 					<tr valign = "top" >
 					   <td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onclick="alert('This page is still under construction and will be available in the next release');">
@@ -108,8 +108,8 @@
 
 						<tr valign = "top">
 							<td style = "padding-left:5px" height = 100% >
-								<table height = '100%'  class="tbBordersAllbordersBlack" cellspacing="0" cellpadding="0" >
-									<tr valign = "top" height = '100%' >	
+								<table height = '100%'  class="tbBordersAllbordersBlack" cellspacing="0" cellpadding="0"  valign = "top">
+									<tr valign = "top" height = '100%' >
 										<td  height = '100%' width = '100%' class="toolBoxTable"  align="center">
 											<dynamicExtensions:ToolsMenu id="BuildForm"
 													toolsList = "<%=toolsList%>"
@@ -125,10 +125,10 @@
 									</tr>
 								</table>
 							</td>
-							
-							<td  style = "padding-left:10px" align="top" width = 50%>
-							<table align ="left" height = '100%' width = '100%' class="tbBordersAllbordersBlack" cellspacing="0" cellpadding="0">
-								<tr height = '100%' width = '100%'>
+
+							<td valign = "top"  style = "padding-left:10px" valign="top" width = 50%>
+							<table valign = "top" align ="left" height = '100%' width = '100%' class="tbBordersAllbordersBlack" cellspacing="0" cellpadding="0">
+								<tr height = '100%' width = '100%' valign = "top">
 									<td height = '100%' width = '100%'>
 										<jsp:include page="<%=htmlFile%>" />
 									</td>
@@ -141,7 +141,7 @@
 									<tr valign = "top" height = '100%' width = 100%>
 										<td  height = '100%' width = 100%>
 											<table border = 1  height = 100% width =100% cellpadding="0" cellspacing="0" >
-												<c:forEach var="controlInfoObj" items = "${controlInformationObjectList}" varStatus="counter" > 
+												<c:forEach var="controlInfoObj" items = "${controlInformationObjectList}" varStatus="counter" >
 												<c:set var="controlName" value="${controlInfoObj.controlName}"/>
 												<jsp:useBean id="controlName" type="java.lang.String"/>
 
@@ -153,9 +153,9 @@
 
 													<tr height = "5%" id = "<%=identifier%>" onclick = "controlClicked(this);" style = "cursor:hand">
 														<td class="formMessage">
-														
+
 															<input type = "checkbox" name = "check" disabled id = "<%=identifier%>"/>
-														
+
 														</td>
 														<td class="formMessage" style="padding-left:2px">
 														<div noWrap='true' style='overflow-x:hidden; text-overflow:ellipsis; width:60px;' onmouseout = "hideTooltip();" onmouseover = "showTooltip(this.innerHTML,this,this.innerHTML);">
@@ -169,7 +169,7 @@
 														</td>
 													</tr>
 
-												</c:forEach> 
+												</c:forEach>
 												<tr height = 100%>
 													<td>&nbsp;
 													</td>

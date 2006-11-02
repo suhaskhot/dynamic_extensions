@@ -22,7 +22,9 @@ public class TextArea extends Control implements TextAreaInterface
 	 * Number of rows in the text area.
 	 */
 	protected Integer rows;
-
+	//password
+	protected Boolean isPassword;
+	
 	/**
 	 * Empty Constructor 
 	 */
@@ -80,7 +82,6 @@ public class TextArea extends Control implements TextAreaInterface
 				+ columns.intValue() + "' " + "rows = '" + rows.intValue() + "' " + "title = '" + this.tooltip + "'>";
 		htmlString += defaultValue + "</textarea>";
 		
-		System.out.println("Returning " + htmlString);
 		return htmlString;
 	}
 
@@ -99,7 +100,7 @@ public class TextArea extends Control implements TextAreaInterface
 	public Boolean getIsPassword()
 	{
 		// TODO Auto-generated method stub
-		return null;
+		return isPassword;
 	}
 
 	/* (non-Javadoc)
@@ -107,7 +108,7 @@ public class TextArea extends Control implements TextAreaInterface
 	 */
 	public void setIsPassword(Boolean isPassword)
 	{
-		// TODO Auto-generated method stub
+		this.isPassword = isPassword;
 		
 	}
 

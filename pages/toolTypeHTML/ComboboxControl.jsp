@@ -126,11 +126,11 @@
 						<THEAD>
 							<tr valign="top">
 								<th class="formRequiredLabelWithoutBorder" width="100%"  >
-									<input type="text" class="formDateSized" name="choiceValue" maxlength="100" size="60" >
+									<input type="text"  name="choiceValue" size="28">
 									<input type="button" name="addChoiceValue" value="Add" onclick="addChoiceToList(true);">
 								</th>
 							</tr>
-						</thead>dateValueType
+						</thead>
 						<tr  class="formRequiredLabelWithoutBorder">
 							<td class="formRequiredLabelWithoutBorder" >
 								<div style="padding : 1px;  height : 100px; width:'85%'; overflow : auto; " >

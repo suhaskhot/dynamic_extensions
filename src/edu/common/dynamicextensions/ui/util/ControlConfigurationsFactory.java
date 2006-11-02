@@ -142,7 +142,6 @@ public class ControlConfigurationsFactory
 					NamedNodeMap ruleAttributes = null, errorKeysList = null;
 					NodeList ruleParameters = null, childNodes = null;
 					String ruleName = null, errorKeyValue = null;
-					Map ruleParametersMap = new HashMap();
 					for (int i = 0; i < noOfRules; i++)
 					{
 						validationRuleNode = validationRulesList.item(i);
@@ -166,8 +165,7 @@ public class ControlConfigurationsFactory
 							ruleParameters = ((Element) validationRuleNode).getElementsByTagName(Constants.PARAM);
 							if (ruleParameters.getLength() != 0)
 							{
-								ruleParametersMap.put(ruleName, loadRuleParameters(ruleParameters));
-								ruleConfigurationObject.setRuleParametersMap(ruleParametersMap);
+								ruleConfigurationObject.setRuleParametersList(loadRuleParameters(ruleParameters));
 							}
 							childNodes = ((Element) validationRuleNode).getElementsByTagName(Constants.ERROR_KEY);
 							errorKey = childNodes.item(0);
@@ -669,12 +667,43 @@ public class ControlConfigurationsFactory
 	/**
 	 * @param args
 	 */
-	/*
+	
 	 public static void main(String[] args)
 	 {
 	 ControlConfigurationsFactory cmf = ControlConfigurationsFactory.getInstance();
-	 cmf.getImplicitRules("TextControl", "Text");
-	 cmf.getExplicitRules("TextControl", "Text");
+	// cmf.getImplicitRules("TextControl", "Text");
+	 //cmf.getExplicitRules("TextControl", "Text");
 	 //cmf.getListOfControls();
-	 }*/
+	 cmf.getRulesMap("TextControl");
+	 }
+	 /**
+	  * 
+	  */
+	 public Map getRulesMap(String controlName) {
+		 Map rulesMap = new HashMap();
+		 ControlsConfigurationObject ccf = (ControlsConfigurationObject)controlsConfigurationMap.get(controlName);
+		 List dataTypes = ccf.getDataTypesList();
+		 List rules = new ArrayList() ;
+		 String dataType = null;
+		 Iterator iter1 = null;
+		 Iterator iter = dataTypes.iterator();
+		 while(iter.hasNext()) {
+			 dataType = ((NameValueBean)iter.next()).getName();
+			 rules = (ArrayList)getExplicitRules(controlName ,dataType );
+			 iter1 = rules.iterator();
+			 List ruleObjects = new ArrayList();
+			 while(iter1.hasNext())
+			 {
+				 
+				 String ruleName = (String)iter1.next();
+				 ruleObjects.add(getRuleObject(ruleName));
+				 
+			 }
+			 rulesMap.put(dataType,ruleObjects);
+		 }
+		  
+		 return rulesMap ;
+	 }
+	 
+	 
 }

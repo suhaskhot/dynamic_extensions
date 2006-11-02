@@ -1,5 +1,6 @@
 package edu.common.dynamicextensions.ui.util;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -13,7 +14,7 @@ public class RuleConfigurationObject
 	private String ruleName;
 	private String ruleClassName;
 	private String errorKey;
-	private Map ruleParametersMap = null;
+	private List ruleParametersList = null;
 	/**
 	 * @return the displayLabel
 	 */
@@ -73,17 +74,18 @@ public class RuleConfigurationObject
 		this.ruleName = ruleName;
 	}
 	/**
-	 * @return the ruleParametersMap
+	 * @return the ruleParametersList
 	 */
-	public Map getRuleParametersMap()
+	public List getRuleParametersList()
 	{
-		return ruleParametersMap;
+		return ruleParametersList;
 	}
 	/**
-	 * @param ruleParametersMap the ruleParametersMap to set
+	 * @param ruleParametersList the ruleParametersList to set
 	 */
-	public void setRuleParametersMap(Map ruleParametersMap)
+	public void setRuleParametersList(List ruleParametersList)
 	{
-		this.ruleParametersMap = ruleParametersMap;
+		this.ruleParametersList = ruleParametersList;
 	}
+	
 }

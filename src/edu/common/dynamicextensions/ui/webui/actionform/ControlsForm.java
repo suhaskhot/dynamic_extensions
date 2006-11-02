@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.ui.webui.actionform;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -226,10 +227,11 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	/**
 	 * 
 	 */
-	protected String[] validationRules;
-	protected List textValidationRulesList ;
-	protected List numberValidationRulesList ;
-	
+	protected String[] validationRules = new String[0];
+	protected Map controlRuleMap;
+	/**
+	 * 
+	 */
 	protected String selectedControlCaption;
 	/**
 	 * is attribute identified
@@ -1017,7 +1019,7 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.Name")));
 		}
-*/
+		 */
 		if (caption == null || validator.isEmpty(String.valueOf(caption)))
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.Label")));
@@ -1091,37 +1093,27 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		this.validationRules = validationRules;
 	}
 
-	
 	/**
-	 * @return the numberValidationRulesList
+	 * @return the controlRuleMap
 	 */
-	public List getNumberValidationRulesList()
+	public Map getControlRuleMap()
 	{
-		return numberValidationRulesList;
+		return controlRuleMap;
 	}
 
 	/**
-	 * @param numberValidationRulesList the numberValidationRulesList to set
+	 * @param controlRuleMap the controlRuleMap to set
 	 */
-	public void setNumberValidationRulesList(List numberValidationRulesList)
+	public void setControlRuleMap(Map controlRuleMap)
 	{
-		this.numberValidationRulesList = numberValidationRulesList;
+		this.controlRuleMap = controlRuleMap;
 	}
 
 	/**
-	 * @return the textValidationRulesList
+	 * 
 	 */
-	public List getTextValidationRulesList()
+	public List getListOfRules(String dataTypeName)
 	{
-		return textValidationRulesList;
+		return  (List)controlRuleMap.get(dataTypeName);
 	}
-
-	/**
-	 * @param textValidationRulesList the textValidationRulesList to set
-	 */
-	public void setTextValidationRulesList(List textValidationRulesList)
-	{
-		this.textValidationRulesList = textValidationRulesList;
-	}
-
 }

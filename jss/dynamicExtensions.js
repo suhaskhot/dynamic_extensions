@@ -412,6 +412,14 @@ if(controlsForm.name != null)
 	{
 	controlsForm.choiceList.value = "";
 	}
+	if(document.getElementById('attributeIsPassword') != null)
+	{
+		document.getElementById('attributeIsPassword').value = "";
+	}
+	if(document.getElementById('attributeIdentified') != null)
+	{
+		document.getElementById('attributeIdentified').value = "";
+	}
 }
 
 function saveEntity()
@@ -600,7 +608,7 @@ function controlClicked(ths) {
 	var prevRow = document.getElementById('previousControl').value;
 	if (prevRow != null && prevRow != '' && prevRow != undefined) 
 	{
-	document.getElementById(prevRow).className = "deSelectedControl";
+		document.getElementById(prevRow).className = "deSelectedControl";
 	}
 
 	document.getElementById('previousControl').value = ths.id;

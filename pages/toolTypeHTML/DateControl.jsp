@@ -35,11 +35,11 @@
 				</td>
 
 				<td class="formFieldWithoutBorder">
-					<html:radio property="format" value="<%=ProcessorConstants.DATE_FORMAT_DATEONLY%>" >
+					<html:radio property="format" value="<%=ProcessorConstants.DATE_FORMAT_OPTION_DATEONLY%>" >
 						<bean:message key="eav.att.DateFormatDateOnlyTitle"/>
 					</html:radio>
 
-					<html:radio property="format" value="<%=ProcessorConstants.DATE_FORMAT_DATEANDTIME%>" disabled="true">
+					<html:radio property="format" value="<%=ProcessorConstants.DATE_FORMAT_OPTION_DATEANDTIME%>" disabled="true">
 						<bean:message key="eav.att.DateFormatDateAndTimeTitle"/>
 					</html:radio>
 				</td>

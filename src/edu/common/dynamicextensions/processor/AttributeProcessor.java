@@ -13,8 +13,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 import edu.common.dynamicextensions.domain.BooleanValue;
@@ -745,6 +743,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				{
 					String defaultValue = Utility.parseDateToString(((DateAttributeInterface)attributeInterface).getDefaultValue(),Constants.DATE_PATTERN_MM_DD_YYYY);
 					attributeInformationIntf.setAttributeDefaultValue(defaultValue);
+				}
+				else
+				{
+					attributeInformationIntf.setAttributeDefaultValue("");
 				}
 				String dateFormat = ((DateAttributeInterface)attributeInterface).getFormat();
 				if(dateFormat!=null)

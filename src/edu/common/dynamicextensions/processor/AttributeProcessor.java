@@ -8,6 +8,7 @@ package edu.common.dynamicextensions.processor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -644,6 +645,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		doubleAttributeInterface.setDecimalPlaces(attributeInformationIntf.getAttributeDecimalPlaces());
 		doubleAttributeInterface.setDigits(attributeInformationIntf.getAttributeDigits());
 		doubleAttributeInterface.setSize(attributeInformationIntf.getAttributeSize());
+		//doubleAttributeInterface.setValidationRules(attributeInformationIntf.getValidationRules());
 	}
 
 	/**
@@ -713,11 +715,48 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		}
 		return numberAttribIntf;
 	}
-
+	/**
+	 * 
+	 * @param attributeInterface
+	 * @param attributeInformationIntf
+	 */
+	private void populateAttributeValidationRules(AbstractAttributeInterface attributeInterface, AbstractAttributeUIBeanInterface attributeInformationIntf)
+	{
+		String [] ruleNames = null;
+		List names = new ArrayList();
+		int i = 0;
+		if(attributeInterface.getRuleCollection() != null && !attributeInterface.getRuleCollection().isEmpty())
+		{
+			Iterator rulesIter = attributeInterface.getRuleCollection().iterator();
+			ruleNames = new String[attributeInterface.getRuleCollection().size()];
+			while(rulesIter.hasNext())
+			{
+				RuleInterface rule = (RuleInterface)rulesIter.next();
+				ruleNames[i++] = rule.getName();
+				if(rule.getRuleParameterCollection() != null && !rule.getRuleParameterCollection().isEmpty())
+				{
+					Iterator paramIter = rule.getRuleParameterCollection().iterator();
+					while(paramIter.hasNext())
+					{
+						RuleParameterInterface param = (RuleParameterInterface)paramIter.next();
+						if(param.getName().equalsIgnoreCase("min"))
+						{
+							attributeInformationIntf.setMin(param.getValue());
+						} else if(param.getName().equalsIgnoreCase("max"))
+						{
+							attributeInformationIntf.setMax(param.getValue());
+						}
+					}
+				}
+			}
+		}
+		attributeInformationIntf.setValidationRules(ruleNames);
+	}
 	public void populateAttributeUIBeanInterface(AbstractAttributeInterface attributeInterface, AbstractAttributeUIBeanInterface attributeInformationIntf)
 	{
 		if((attributeInformationIntf!=null)&&(attributeInterface!=null))
 		{
+			System.out.println("");
 			attributeInformationIntf.setName(attributeInterface.getName());
 			attributeInformationIntf.setDescription(attributeInterface.getDescription());
 
@@ -735,7 +774,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			{
 				attributeInformationIntf.setAttributeConceptCode(SemanticPropertyBuilderUtil.getConceptCodeString(attributeInterface));
 			}
-
+			populateAttributeValidationRules(attributeInterface , attributeInformationIntf);
 			//Permissible values
 			attributeInformationIntf.setChoiceList(getChoiceList(attributeInterface,attributeInformationIntf));
 

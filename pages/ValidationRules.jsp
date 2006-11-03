@@ -7,10 +7,14 @@
 <%@page import="java.util.Iterator" %>
 <%@page import="java.util.Map" %>
 <%@page import="java.util.List" %>
+<script src="jss/calender.js" type="text/javascript"></script>
+<script src="jss/calendarComponent.js"></script>
 <%@page import="edu.common.dynamicextensions.ui.util.RuleConfigurationObject" %>
 <%@page import="edu.wustl.common.beans.NameValueBean" %>
 <c:set var="controlRuleMap" value="${controlsForm.controlRuleMap}"/>
 <jsp:useBean id="controlRuleMap" type="java.util.Map"/>
+<c:set var="controlName" value="${controlsForm.userSelectedTool}"/>
+<jsp:useBean id="controlName" type="java.lang.String"/>
 <%
 						Iterator iter = controlRuleMap.keySet().iterator();
 							while (iter.hasNext())
@@ -46,8 +50,10 @@
 						<% } %> &nbsp;</td>
 			 			
 						<td  class="formFieldWithoutBorder">
-			 						<html:checkbox property='validationRules' value="<%= ruleName%>"><bean:message key="<%=ruleLabel %>"/></html:checkbox>
+			 						<html:checkbox  property='validationRules' value="<%= ruleName%>"></html:checkbox >
+									<bean:message key="<%=ruleLabel %>"/>
 						</td>
+					
 					</tr>
 								
 									
@@ -72,9 +78,18 @@
 &nbsp;	&nbsp;											
 												<%= paramLabel%>&nbsp
 												<html:text styleClass="formParamSized"  maxlength="100" size="60"  property="<%= paramName%>" />
+												<% if (controlName.equalsIgnoreCase("DateControl"))
+													{ String divId = "slcalcod"+ paramName ;
+												%>
+												
+												<A onclick="showCalendar('<%= paramName%>',2006,10,26,'MM-dd-yyyy','controlsForm','<%= paramName%>',event,1900,2020);" href="javascript://"><IMG alt="This is a Calendar" src="images/calendar.gif" border=0></A>
+
+												<DIV id=<%=divId%> style="Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px">
+													<SCRIPT>printCalendar('<%= paramName%>',26,10,2006);</SCRIPT>
+												</DIV>
+													<%} %>
 			 							</td>
 							</tr>
-								
 							<% } %>
 						
 						<% } %>

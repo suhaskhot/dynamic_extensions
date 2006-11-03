@@ -164,5 +164,16 @@
 	 </table>
 	</td>
  </tr>
+ </tr>
+		<tr>
+		<td>
+			<div id="substitutionDivRules">
+			</div>
+
+		</td>
+	</tr>
+
+
+<jsp:include page="/pages/ValidationRules.jsp" />
 </table>
 

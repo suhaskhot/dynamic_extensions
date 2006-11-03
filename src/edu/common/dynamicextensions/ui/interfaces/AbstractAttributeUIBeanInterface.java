@@ -7,7 +7,7 @@ package edu.common.dynamicextensions.ui.interfaces;
  *
  */
 public interface AbstractAttributeUIBeanInterface {
-	
+
 	/**
 	 * Returns the attributesize
 	 * @return
@@ -25,7 +25,7 @@ public interface AbstractAttributeUIBeanInterface {
 	 * @param attributeFormat The attributeFormat to set.
 	 */
 	public void setFormat(String attributeFormat);
-	
+
 	/**
 	 * @return Returns the attributeDefaultValue.
 	 */
@@ -50,7 +50,7 @@ public interface AbstractAttributeUIBeanInterface {
 	 * @param attributeDecimalPlaces The attributeDecimalPlaces to set.
 	 */
 	public void setAttributeDecimalPlaces(String attributeDecimalPlaces) ;
-	
+
 	/**
 	 * @return Returns the attributeIdentifier.
 	 */
@@ -59,7 +59,7 @@ public interface AbstractAttributeUIBeanInterface {
 	 * @param attributeIdentifier The attributeIdentifier to set.
 	 */
 	public void setAttributeIdentifier(String attributeIdentifier);
-	
+
 	/**
 	 * @return the attributeMeasurementUnits
 	 */
@@ -78,36 +78,36 @@ public interface AbstractAttributeUIBeanInterface {
 	 * @param dataType The dataType to set.
 	 */
 	public void setDataType(String dataType);
-	
+
 	/**
 	 * Number of digits before decimal 
 	 * @return
 	 */
 	public String getAttributeDigits();
-	
+
 	/**
 	 * @param attributeDigits : Number of digits before decimal
 	 */
 	public void setAttributeDigits(String attributeDigits);
-	
+
 	/**
 	 * 
 	 * @return Name
 	 */
 	public String getName();
-	
+
 	/**
 	 * 
 	 * @param name Name
 	 */
 	public void setName(String name);
-	
+
 	/**
 	 * 
 	 * @return Description
 	 */
 	public String getDescription();
-	
+
 	/**
 	 * 
 	 * @param name Description
@@ -145,10 +145,10 @@ public interface AbstractAttributeUIBeanInterface {
 	 * @return
 	 */
 	public String getDateValueType();
-/**
- * 
- * @param dateValueType
- */
+	/**
+	 * 
+	 * @param dateValueType
+	 */
 	public void setDateValueType(String dateValueType);
 	/**
 	 * 
@@ -160,7 +160,7 @@ public interface AbstractAttributeUIBeanInterface {
 	 * @param attributeIdentified
 	 */
 	public void setAttributeIdentified(String attributeIdentified);
-	
+
 	/**
 	 * 
 	 * @return
@@ -171,4 +171,23 @@ public interface AbstractAttributeUIBeanInterface {
 	 * @param validationRules
 	 */
 	void setValidationRules(String[] validationRules);
+	/**
+	 * @return the max
+	 */
+	String getMax();
+
+	/**
+	 * @param max the max to set
+	 */
+	void setMax(String max);
+
+	/**
+	 * @return the min
+	 */
+	String getMin();
+
+	/**
+	 * @param min the min to set
+	 */
+	void setMin(String min);
 }

@@ -163,12 +163,19 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			RuleConfigurationObject ruleConfigurationObject;
 			DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 			RuleInterface ruleInterface;
+			Collection<RuleParameterInterface> ruleParameterCollection = new HashSet<RuleParameterInterface>();
 			for (int counter= 0 ; counter < validationRules.length;counter++)
 			{
 				validationRule = validationRules[counter];
 				ruleConfigurationObject = configurationsFactory.getRuleObject(validationRule);
 				ruleInterface = domainObjectFactory.createRule();
 				ruleInterface.setName(ruleConfigurationObject.getRuleName());
+				
+				ruleParameterCollection = getRuleParameterCollection(ruleConfigurationObject, attributeInformationIntf);
+				if(ruleParameterCollection != null && !(ruleParameterCollection.isEmpty()))
+				{
+					ruleInterface.setRuleParameterCollection(ruleParameterCollection);
+				}
 				abstractAttributeInterface.addRule(ruleInterface);
 
 			}
@@ -208,7 +215,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 					Object result = method.invoke(abstractAttributeUIBeanInterface, new Object[0]);
 					RuleParameterInterface ruleParameterInterface =   domainObjectFactory.createRuleParameter();
 					ruleParameterInterface.setName(paramName);
-					ruleParameterInterface.setValue(result.toString());
+					if(result != null)
+					{
+						ruleParameterInterface.setValue(result.toString());
+					}
 					RuleParameterCollection.add(ruleParameterInterface);
 
 				} catch (SecurityException e) {
@@ -240,6 +250,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 
 			}
 		}
+		
 		return RuleParameterCollection;
 	}
 	/**

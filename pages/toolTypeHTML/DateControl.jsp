@@ -15,17 +15,17 @@
  <jsp:useBean id="dataTypeList" type="java.util.List"/>
 <html:hidden property="dataType" value="<%=ProcessorConstants.DATATYPE_DATE%>"/>
 
-<table summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
+<table border="2" summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
   <tr>
     <td>
-		<table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%'>
+		<table border="2" summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%'>
 				<jsp:include page="/pages/toolTypeHTML/CommonControlAttributes.jsp" />
 		</table>
 	</td>
  </tr>
   <tr>
   	<td>
-  		<table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%'>
+  		<table border="2" summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%'>
 		   <tr>
 				<td class="formRequiredNoticeWithoutBorder" width="2%">
 					*
@@ -94,16 +94,17 @@
 
   	</td>
   </tr>
-</tr>
-		<tr>
+
+	<tr>
 		<td>
 			<div id="substitutionDivRules">
 			</div>
-
 		</td>
 	</tr>
+	<jsp:include page="/pages/ValidationRules.jsp" />
+	
 
+</tr>
 
-<jsp:include page="/pages/ValidationRules.jsp" />
 
 </table>

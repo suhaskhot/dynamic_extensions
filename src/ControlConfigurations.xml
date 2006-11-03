@@ -50,7 +50,7 @@
   
   <control name="ComboboxControl" display-label="eav.caption.ComboboxControlCaption" jspName="ComboboxControl.jsp">
     <validations>
-      <common-validation-rule name="required">
+      <common-validation-rule name="required" isImplicit="false">
       </common-validation-rule>
     </validations>
     <datatypes>

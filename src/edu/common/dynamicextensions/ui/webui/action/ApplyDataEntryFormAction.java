@@ -4,6 +4,7 @@ package edu.common.dynamicextensions.ui.webui.action;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +24,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ApplyDataEntryFormProcessor;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.validation.ValidatorUtil;
 
 /**
  * This class is invoked on Apply click action.
@@ -65,6 +67,11 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		}
         ApplyDataEntryFormProcessor applyDataEntryFormProcessor = ApplyDataEntryFormProcessor.getInstance();
         try {
+
+        	List errorList = ValidatorUtil.validateEntity(attributeValueMap);
+        	if (errorList.size()  != 0) {
+        		
+        	}
 			applyDataEntryFormProcessor.insertDataEntryForm(containerInterface,attributeValueMap);
 			saveMessages(request, getSuccessMessage());
             return (mapping.findForward(Constants.SUCCESS));

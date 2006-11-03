@@ -9,10 +9,13 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
@@ -184,7 +187,17 @@ public class LoadFormControlsProcessor
 			}else if(controlInterface instanceof TextAreaInterface)
 			{
 				return ProcessorConstants.TEXT_CONTROL;
+			}else if(controlInterface instanceof RadioButtonInterface)
+			{
+				return ProcessorConstants.RADIOBUTTON_CONTROL;
+			}else if(controlInterface instanceof CheckBoxInterface)
+			{
+				return ProcessorConstants.CHECKBOX_CONTROL;
+			}else if(controlInterface instanceof FileUploadInterface)
+			{
+				return ProcessorConstants.FILEUPLOAD_CONTROL;
 			}
+			
 		}
 		return null;
 	}

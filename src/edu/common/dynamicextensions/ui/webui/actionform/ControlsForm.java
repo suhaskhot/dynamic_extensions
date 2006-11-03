@@ -1058,11 +1058,7 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.Label")));
 		}
-		if (dataType == null || validator.isEmpty(String.valueOf(dataType)))
-		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.DataInput")));
-		}
-
+		
 		//Special case for text Control
 		if ((dataType != null) && (dataType.equalsIgnoreCase(ProcessorConstants.TEXT_CONTROL)))
 		{
@@ -1087,6 +1083,11 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.ListBoxType")));
 		}
+		if (dataType == null || validator.isEmpty(String.valueOf(dataType)))
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.DataInput")));
+		}
+
 	}
 
 	/**
@@ -1099,6 +1100,11 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.control.type")));
 		}
+		if (dataType == null || validator.isEmpty(String.valueOf(dataType)))
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.DataInput")));
+		}
+
 	}
 
 	public String getDateValueType()

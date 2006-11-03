@@ -89,7 +89,7 @@
 				<html:checkbox property="attributeIdentified" value="true"><bean:message key="app.att.isIdentified" /></html:checkbox>
 			</td>
 		</tr>
-			</tr>
+	</tr>
 	</table>
 
   	</td>

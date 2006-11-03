@@ -24,6 +24,7 @@ public class ProcessorConstants
 	public static final String CHECKBOX_CONTROL  = "CheckboxControl";
 	public static final String RADIOBUTTON_CONTROL  = "RadioButtonControl";
 	public static final String DATEPICKER_CONTROL  = "DateControl";
+	public static final String FILEUPLOAD_CONTROL = "FileUploadControl";
 
 	//Datattype constants 
 	public static final String DATATYPE_STRING = "Text";

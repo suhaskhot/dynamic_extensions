@@ -14,6 +14,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterf
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
@@ -74,6 +75,8 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 				controlInterface = getRadioButtonControl(controlIntf, controlUIBeanInterface);
 			} else if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.DATEPICKER_CONTROL)) {
 				controlInterface = getDatePickerControl(controlIntf,controlUIBeanInterface);
+			}else if(userSelectedControlName.equalsIgnoreCase(ProcessorConstants.FILEUPLOAD_CONTROL)) {
+				controlInterface = getFileUploadControl(controlIntf,controlUIBeanInterface);
 			}
 		}
 		//Load common properties for controls
@@ -88,6 +91,15 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 
 	}
 
+	/**
+	 * @param controlIntf
+	 * @param controlUIBeanInterface
+	 * @return
+	 */
+	private ControlInterface getFileUploadControl(ControlInterface controlIntf, ControlUIBeanInterface controlUIBeanInterface)
+	{
+		return null;
+	}
 	/**
 	 * @param controlInterface 
 	 * @param controlUIBeanInterface
@@ -280,6 +292,17 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			controlUIBeanInterface.setLinesType(ProcessorConstants.LINE_TYPE_MULTILINE);
 			controlUIBeanInterface.setIsPassword(((TextAreaInterface)controlInterface).getIsPassword());
 		}
-
+		else if(controlInterface instanceof CheckBoxInterface)
+		{
+			
+		}
+		else if(controlInterface instanceof RadioButtonInterface)
+		{
+			
+		}
+		else if(controlInterface instanceof FileUploadInterface)
+		{
+			
+		}
 	}
 }

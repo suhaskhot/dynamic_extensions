@@ -56,10 +56,10 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				//Default is add
 				if((controlOperation==null)||(controlOperation.trim().equals("")))
 				{
-					controlOperation  = ProcessorConstants.ADD;
+					controlOperation  = ProcessorConstants.OPERATION_ADD;
 				}
 				//Add new control
-				if(controlOperation.equalsIgnoreCase(ProcessorConstants.ADD))
+				if(controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_ADD))
 				{
 					//Set Name of the attribute in controlsForm.
 					//It is not accepted from UI. It has to be derived from caption
@@ -102,7 +102,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 					containerInterface.addControl(controlInterface);
 					containerInterface.setEntity(entityInterface);
 
-				}else if(controlOperation.equalsIgnoreCase(ProcessorConstants.EDIT))
+				}else if(controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_EDIT))
 				{
 					//Set Name of the attribute in controlsForm.
 					//It is not accepted from UI. It has to be derived from caption

@@ -12,6 +12,7 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.processor.ApplyFormControlsProcessor;
+import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.util.global.Constants;
@@ -38,7 +39,10 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 		{
 			return mapping.findForward(Constants.LOAD_FORM_PREVIEW_ACTION);
 		}
-
+		if((controlsForm.getDataType()!=null)&&(controlsForm.getDataType().equals(ProcessorConstants.DATATYPE_NUMBER)))
+		{
+			initializeMeasurementUnits(controlsForm);
+		}
 		//Get container interface from cache
 		ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 
@@ -59,6 +63,20 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	/**
+	 * 
+	 */
+	private void initializeMeasurementUnits(ControlsForm controlsForm)
+	{
+		//Handle special case of measurement units
+		//If measurement unit is other, value of measurement unit is value of txtMeasurementUnit.
+		if((controlsForm.getAttributeMeasurementUnits()!=null)&&(controlsForm.getAttributeMeasurementUnits().equalsIgnoreCase(ProcessorConstants.MEASUREMENT_UNIT_OTHER)))
+		{
+			controlsForm.setAttributeMeasurementUnits(controlsForm.getMeasurementUnitOther());
+		}
+		
 	}
 
 }

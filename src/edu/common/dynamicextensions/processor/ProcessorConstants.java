@@ -38,8 +38,9 @@ public class ProcessorConstants
 	public static final int MAX_NO_OF_DECIMALS_FLOAT = 5;
 	public static final int MAX_NO_OF_DECIMALS_DOUBLE = 10;
     
-    public static final String ADD = "Add";
-    public static final String EDIT = "Edit";
+	//Operations on UI.
+    public static final String OPERATION_ADD = "Add";
+    public static final String OPERATION_EDIT = "Edit";
     
     //Date Formats
     public static final String DATE_ONLY_FORMAT = Constants.DATE_PATTERN_MM_DD_YYYY;
@@ -47,6 +48,10 @@ public class ProcessorConstants
     
     //Types of permisible value sources for Combobox
     public static final String DISPLAY_CHOICE_USER_DEFINED = "UserDefined";
+    public static final String DISPLAY_CHOICE_CDE = "CDE";
+    
+    //Measurement unit OTHER for numeric fields
+    public static final String MEASUREMENT_UNIT_OTHER = "other";
     
     //Single line / multiline line types
     public static final String LINE_TYPE_MULTILINE = "MultiLine";
@@ -90,6 +95,5 @@ public class ProcessorConstants
     //Default date value  : Select date
     public static final String DEFAULT_DATE_VALUE = DATE_VALUE_SELECT;
     
-    /*//Default css class for controls
-    public static final String DEFAULT_CSS_CLASS = "formDateSized";*/
+
 }

@@ -60,10 +60,10 @@ public class LoadFormControlsProcessor
 			ControlConfigurationsFactory controlConfigurationsFactory = ControlConfigurationsFactory.getInstance();
 			if(controlOperation == null || controlOperation.equals("")) 
 			{
-				controlOperation = ProcessorConstants.ADD;
+				controlOperation = ProcessorConstants.OPERATION_ADD;
 				controlsForm.setControlOperation(controlOperation);
 			}
-			if(controlOperation.equalsIgnoreCase(ProcessorConstants.ADD))
+			if(controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_ADD))
 			{
 				if(userSelectedTool == null || userSelectedTool.equals(""))
 				{
@@ -90,7 +90,7 @@ public class LoadFormControlsProcessor
 				//TODO check if need to be changed
 			}
 
-			else if(controlOperation.equalsIgnoreCase(ProcessorConstants.EDIT))  
+			else if(controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_EDIT))  
 			{
 				String selectedControlId = controlsForm.getSelectedControlId();
 				ControlProcessor controlProcessor = ControlProcessor.getInstance();
@@ -108,8 +108,6 @@ public class LoadFormControlsProcessor
 				{
 					userSelectedTool = ProcessorConstants.DEFAULT_SELECTED_CONTROL;
 				}
-
-
 			}
 			controlsForm.setUserSelectedTool(userSelectedTool);
 			//List of tools/controls
@@ -143,7 +141,27 @@ public class LoadFormControlsProcessor
 			}
 			controlsForm.setChildList(getChildList(containerInterface));
 			controlsForm.setControlRuleMap(getControlRulesMap(userSelectedTool));
+			//measurement units list
+			if(controlsForm.getMeasurementUnitsList()==null)
+			{
+				controlsForm.setMeasurementUnitsList(getListOfMeasurementUnits());
+			}
 		}
+	}
+
+	/**
+	 * @return
+	 */
+	private List getListOfMeasurementUnits()
+	{
+		List<String> measurementUnits = new ArrayList<String>();
+		measurementUnits.add("inches");
+		measurementUnits.add("cm");
+		measurementUnits.add("gms");
+		measurementUnits.add("kms");
+		measurementUnits.add("kgs");
+		measurementUnits.add(ProcessorConstants.MEASUREMENT_UNIT_OTHER);
+		return measurementUnits;
 	}
 
 	/**

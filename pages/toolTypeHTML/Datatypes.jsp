@@ -3,10 +3,16 @@
 <%@ taglib uri="/WEB-INF/dynamicExtensions.tld" prefix="dynamicExtensions" %>
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
 <%@page import="edu.common.dynamicextensions.processor.ProcessorConstants" %>
+<%@page import="edu.common.dynamicextensions.processor.ProcessorConstants" %>
 <script src="jss/overlib_mini.js" type="text/javascript"></script>
 <script src="jss/calender.js" type="text/javascript"></script>
+
 <c:set var="linesType" value="${controlsForm.linesType}"/>
 <jsp:useBean id="linesType" type="java.lang.String"/>
+
+<c:set var="measurementUnitsList" value="${controlsForm.measurementUnitsList}"/>
+<jsp:useBean id="measurementUnitsList" type="java.util.List"/>
+
 
 		<div id="TextDataType" style="display:none">
 			 <table summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
@@ -75,26 +81,7 @@
 
 			<div id="NumberDataType" style="display:none">
 			 <table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%'>
-			       <!--<tr>
-						<td class="formRequiredLabelWithoutBorder" width="25%">
-								<bean:message key="eav.att.AttributeSize"/>
-						</td>
 
-						<td class="formFieldWithoutBorder">
-								<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="attributeSize" />
-						</td>
-					</tr>
-
-					<tr>
-						<td class="formRequiredLabelWithoutBorder" width="25%">
-								<bean:message key="eav.att.AttributeDigits"/>
-						</td>
-
-						<td class="formFieldWithoutBorder">
-								<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="attributeDigits" />
-						</td>
-					</tr>
--->
 					<tr>
 						<td class="formRequiredNoticeWithoutBorder" width="2%">
 								&nbsp;
@@ -131,7 +118,17 @@
 						</td>
 
 						<td class="formFieldWithoutBorder">
-								<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="attributeMeasurementUnits" />
+								<!--<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="attributeMeasurementUnits" />-->
+								<html:select styleClass="formDateSized"  property="attributeMeasurementUnits" onchange="measurementUnitsChanged(this)">
+
+								<c:forEach items="${measurementUnitsList}" var="measurementUnit">
+									<jsp:useBean id="measurementUnit" type="java.lang.String" />
+										<html:option  value='<%=measurementUnit%>' >
+										</html:option>
+								</c:forEach>
+								</html:select>
+
+								<html:text styleClass="formDateSized15"  property="measurementUnitOther" disabled="true"></html:text>
 						</td>
 					</tr>
 				 </table>
@@ -169,23 +166,4 @@
 					</tr>
 				 </table>
 			</div>
-			<div id="BooleanDataType" style="display:none">
-			   <table summary="" cellpadding="3" cellspacing="0" border="1" align = 'center' width='100%'>
-				   <tr>
-						<td class="formRequiredNoticeWithoutBorder" width="2%">
-							*
-		 				</td>
-						<td class="formRequiredLabelWithoutBorder" width="25%">
-							<bean:message key="eav.att.DefaultValue"/>
-						</td>
-
-						<td class="formFieldWithoutBorder">
-							<html:select property="attributeDefaultValue" >
-								<html:option  value="true">true</html:option>
-								<html:option  value="false">false</html:option>
-							</html:select>
-						</td>
-					</tr>
-
-				 </table>
 			</div>

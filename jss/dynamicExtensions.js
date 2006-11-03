@@ -131,6 +131,11 @@ function initBuildForm()
 		choiceListElementCnter.value="1";
 	}
 	addChoicesFromListToTable();
+	
+	//If other option is selected in measurement units, enable the text box next to it
+	var cboMeasurementUnits = document.getElementById('attributeMeasurementUnits');
+	measurementUnitsChanged(cboMeasurementUnits);
+	
 }
 function addChoicesFromListToTable()
 {
@@ -405,6 +410,10 @@ if(controlsForm.name != null)
 	{
 	document.getElementById('attributeMeasurementUnits').value = "";
 	}
+	if(document.getElementById('measurementUnitOther') != null)
+	{
+	document.getElementById('measurementUnitOther').value = "";
+	}
 	if(document.getElementById('format') != null)
 	{
 	document.getElementById('format').value = "";
@@ -634,4 +643,23 @@ function controlSelected(ths) {
 	var controlsForm=document.getElementById('controlsForm');
     controlsForm.action='/dynamicExtensions/LoadFormControlsAction.do';
     controlsForm.submit();
+}
+
+function measurementUnitsChanged(cboMeasuremtUnits)
+{
+	if(cboMeasuremtUnits!=null)
+	{
+		var txtMeasurementUnitOther = document.getElementById('measurementUnitOther');
+		if(txtMeasurementUnitOther!=null)
+		{
+			if(cboMeasuremtUnits.value =="other")
+			{
+				txtMeasurementUnitOther.disabled=false;
+			}
+			else
+			{
+				txtMeasurementUnitOther.disabled=true;
+			}
+		}
+	}
 }

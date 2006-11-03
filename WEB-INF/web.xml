@@ -29,6 +29,11 @@ PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
  
   
  <!-- Standard Action Servlet Configuration (with debugging) -->
+ 
+	 <servlet>
+			<servlet-name>DynamicExtensionsInterfaceAction</servlet-name>
+			<servlet-class>edu.common.dynamicextensions.interfaceactions.DynamicExtensionsInterfaceAction</servlet-class>
+     </servlet>
 
    <servlet>
      <servlet-name>action</servlet-name>
@@ -55,6 +60,12 @@ PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
    </servlet>
    
  <!-- Standard Action Servlet Mapping -->
+ 
+   <servlet-mapping>
+       <servlet-name>DynamicExtensionsInterfaceAction</servlet-name>
+	   <url-pattern>/DynamicExtensionsInterfaceAction</url-pattern>
+   </servlet-mapping>
+         
   <servlet-mapping>
      <servlet-name>action</servlet-name>
      <url-pattern>*.do</url-pattern>

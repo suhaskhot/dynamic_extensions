@@ -2,34 +2,38 @@ package edu.common.dynamicextensions.interfaceactions;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Iterator;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
-public class DynamicExtensionsInterfaceAction extends Action 
-{
+public class DynamicExtensionsInterfaceAction extends  HttpServlet {
+    /**
+     * 
+     */
+	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		doPost(req, res);
+	}
 	
-	
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest req, HttpServletResponse res) throws IOException
-	{
-	
-		BufferedReader bufferedReader=new BufferedReader(req.getReader());
+    /**
+     * 
+     */
+	public void doPost(HttpServletRequest req, HttpServletResponse res)
+	throws ServletException, IOException {
+		
+			BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(req.getInputStream()));
 		Object json = null;
 		try {
 			json = bufferedReader.readLine();
@@ -38,7 +42,7 @@ public class DynamicExtensionsInterfaceAction extends Action
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	
+		
 		
 		JSONObject requestObject = new JSONObject(json.toString());
 		
@@ -49,7 +53,7 @@ public class DynamicExtensionsInterfaceAction extends Action
 		
 		//depending upon the operation execute the appropriate steps
 		if (operation.equalsIgnoreCase("getAllEntities")==true) {
-			String userId = requestObject.get("entityId").toString();
+			
 			EntityManager entityManager = EntityManager.getInstance();
 			Collection entityCollection = null;
 			try {
@@ -76,12 +80,12 @@ public class DynamicExtensionsInterfaceAction extends Action
 					entityInterfaceJSONArray.put(entityInterfaceJSONObject);
 				}
 			}
-		       
-		    res.setContentType("text/javascript");
-		    PrintWriter out=res.getWriter();
-    	    out.write(entityInterfaceJSONArray.toString());
+			
+			res.setContentType("text/javascript");
+			PrintWriter out=res.getWriter();
+			out.write(entityInterfaceJSONArray.toString());
 		}
-		return mapping.findForward("success");
-
+		
+		
 	}
 }

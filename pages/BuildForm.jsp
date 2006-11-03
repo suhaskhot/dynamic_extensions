@@ -4,7 +4,11 @@
 <%@ taglib uri="/WEB-INF/dynamicExtensions.tld" prefix="dynamicExtensions" %>
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
 
-
+<%@ page import="edu.common.dynamicextensions.ui.webui.util.TreeData"%>
+<%@ page import="edu.common.dynamicextensions.ui.webui.util.TreeGenerator"%>
+<%@ page import="edu.common.dynamicextensions.ui.webui.util.ControlInformationObject"%>
+<%@ page import="java.util.List"%>
+<%@ page import="java.util.ArrayList"%>
 <link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
 <script src="jss/dynamicExtensions.js" type="text/javascript"></script>
 <script src="jss/script.js" type="text/javascript"></script>
@@ -33,10 +37,6 @@
 
 	<c:set var="controlInformationObjectList" value="${controlsForm.childList}"/>
 	<jsp:useBean id="controlInformationObjectList" type="java.util.List"/>
-	
-	<c:set var="controlOperation" value="${controlsForm.controlOperation}"/>
-	<jsp:useBean id="controlOperation" type="java.lang.String"/>
-	
 
 
 <html>
@@ -181,19 +181,10 @@
 
 						<tr colspan="2" valign = "top" align="right">
 							<td style = "padding-top:3px" colspan="2" align="right">
-							 <c:choose>
-							 <c:when test='${controlOperation == "Edit" || controlOperation == "edit"}'>
-									<html:button styleClass="actionButton" property="addControlToFormButton" onclick="addControlToFormTree()" >
-												<bean:message  key="buttons.editControl" />
-									</html:button>
-							</c:when>
-
-						 	<c:otherwise>
 									<html:button styleClass="actionButton" property="addControlToFormButton" onclick="addControlToFormTree()" >
 												<bean:message  key="buttons.addControlToForm" />
 									</html:button>
-					 		</c:otherwise>
-					 		</c:choose>
+
 									<!--<html:reset styleClass="actionButton" property="clearButton" onclick="clearForm()" >
 												<bean:message  key="buttons.clear" />
 									</html:reset>-->

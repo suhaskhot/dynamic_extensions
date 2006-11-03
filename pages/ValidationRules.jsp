@@ -26,7 +26,7 @@
 							%>
 
 <div id="<%= divName%>" style="display:none">
-			 <table border="2" summary="" cellpadding="3" cellspacing="0" align = 'left' width='100%'>
+			 <table summary="" cellpadding="3" cellspacing="0" align = 'left' width='100%'>
 			 <hr>
 			
 						

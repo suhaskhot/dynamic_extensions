@@ -251,6 +251,26 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	 * is attribute identified
 	 */
 	protected String attributeIdentified;
+	/**
+	 * List of measurement units
+	 */
+	protected List measurementUnitsList;
+	/**
+	 * This field will only be used if measurement unit "other" has been selected
+	 */
+	protected String measurementUnitOther;
+	
+	
+	public List getMeasurementUnitsList()
+	{
+		return this.measurementUnitsList;
+	}
+
+	public void setMeasurementUnitsList(List measurementUnitsList)
+	{
+		this.measurementUnitsList = measurementUnitsList;
+	}
+
 	public String getAttributeIdentified()
 	{
 		return this.attributeIdentified;
@@ -1161,5 +1181,15 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	public void setMin(String min)
 	{
 		this.min = min;
+	}
+
+	public String getMeasurementUnitOther()
+	{
+		return this.measurementUnitOther;
+	}
+
+	public void setMeasurementUnitOther(String measurementUnitOther)
+	{
+		this.measurementUnitOther = measurementUnitOther;
 	}
 }

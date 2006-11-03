@@ -56,10 +56,14 @@ public class LoadFormControlsProcessor
 		{
 			String controlOperation = controlsForm.getControlOperation();
 			String userSelectedTool = controlsForm.getUserSelectedTool();
-			
+
 			ControlConfigurationsFactory controlConfigurationsFactory = ControlConfigurationsFactory.getInstance();
-			if(controlOperation == null || controlOperation.equals("") ||
-					controlOperation.equalsIgnoreCase(ProcessorConstants.ADD))
+			if(controlOperation == null || controlOperation.equals("")) 
+			{
+				controlOperation = ProcessorConstants.ADD;
+				controlsForm.setControlOperation(controlOperation);
+			}
+			if(controlOperation.equalsIgnoreCase(ProcessorConstants.ADD))
 			{
 				if(userSelectedTool == null || userSelectedTool.equals(""))
 				{
@@ -81,9 +85,9 @@ public class LoadFormControlsProcessor
 				controlsForm.setDateValueType(ProcessorConstants.DEFAULT_DATE_VALUE);
 				//Date format
 				controlsForm.setFormat(ProcessorConstants.DEFAULT_DATE_FORMAT);
-				
+
 				controlsForm.setControlRuleMap(getControlRulesMap(userSelectedTool));
-		//TODO check if need to be changed
+				//TODO check if need to be changed
 			}
 
 			else if(controlOperation.equalsIgnoreCase(ProcessorConstants.EDIT))  

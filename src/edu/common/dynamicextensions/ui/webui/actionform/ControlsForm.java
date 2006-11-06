@@ -135,7 +135,7 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	/**
 	 * 
 	 */
-	Boolean IsHidden;
+	Boolean isHidden;
 	/**
 	 * 
 	 */
@@ -259,33 +259,56 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	 * This field will only be used if measurement unit "other" has been selected
 	 */
 	protected String measurementUnitOther;
-	
-	
+
+	/**
+	 * 
+	 * @return List MeasurementUnitsList
+	 */
 	public List getMeasurementUnitsList()
 	{
 		return this.measurementUnitsList;
 	}
 
+	/**
+	 * 
+	 * @param measurementUnitsList list of measurementUnits
+	 */
 	public void setMeasurementUnitsList(List measurementUnitsList)
 	{
 		this.measurementUnitsList = measurementUnitsList;
 	}
 
+	/**
+	 *  
+	 * @return String AttributeIdentified
+	 */
 	public String getAttributeIdentified()
 	{
 		return this.attributeIdentified;
 	}
 
+	/**
+	 * 
+	 * @param attributeIdentified attributeIdentified
+	 */
 	public void setAttributeIdentified(String attributeIdentified)
 	{
 		this.attributeIdentified = attributeIdentified;
 	}
 
+	/**
+	 * 
+	 * @return String selectedControlCaption
+	 */
 	public String getSelectedControlCaption()
 	{
 		return this.selectedControlCaption;
 	}
 
+	/**
+	 * 
+	 * @param selectedControlCaption selectedControlCaption
+	 */
 	public void setSelectedControlCaption(String selectedControlCaption)
 	{
 		this.selectedControlCaption = selectedControlCaption;
@@ -309,7 +332,7 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	}
 
 	/**
-	 * 
+	 * @param abstractDomain abstractDomain
 	 */
 	public void setAllValues(AbstractDomainObject abstractDomain)
 	{
@@ -325,7 +348,7 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	}
 
 	/**
-	 * @param attributeDescription The attributeDescription to set.
+	 * @param description The attributeDescription to set.
 	 */
 	public void setDescription(String description)
 	{
@@ -469,7 +492,7 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	}
 
 	/**
-	 * @param attributeFormat The attributeFormat to set.
+	 * @param format The attributeFormat to set.
 	 */
 	public void setFormat(String format)
 	{
@@ -718,28 +741,6 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		this.userSelectedTool = userSelectedTool;
 	}
 
-	public void update(ControlsForm cacheForm)
-	{
-		/*this.attributeCssClass = cacheForm.getActivityStatus();
-		 this.attributeDefaultValue = cacheForm.getAttributeDefaultValue();
-		 this.attributeDescription = cacheForm.getAttributeDescription();
-		 this.attributeDisplayUnits = cacheForm.getAttributeDisplayUnits();
-		 this.attributeFormat = cacheForm.getAttributeFormat();
-		 this.attributeIdentifier = cacheForm.getAttributeIdentifier();
-		 this.attributeMultiSelect = cacheForm.getAttributeMultiSelect();
-		 this.attributeMeasurementUnits = cacheForm.getAttributeMeasurementUnits();
-		 this.attributeName = cacheForm.getAttributeName();
-		 this.attributenoOfCols = cacheForm.getAttributenoOfCols();
-		 this.attributeNoOfRows = cacheForm.getAttributeNoOfRows();
-		 this.attributeScale = cacheForm.getAttributeScale();
-		 this.attributeSize = cacheForm.getAttributeSize();
-		 this.attributeTooltip = cacheForm.getAttributeTooltip();
-		 this.attributeValidationRules = cacheForm.getAttributeValidationRules();*/
-		this.userSelectedTool = cacheForm.getUserSelectedTool();
-		this.dataType = cacheForm.getDataType();
-		this.displayChoice = cacheForm.getDisplayChoice();
-	}
-
 	/**
 	 * @return the caption
 	 */
@@ -756,15 +757,23 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		this.caption = caption;
 	}
 
+	/**
+	 * 
+	 * @return Boolean isPassword
+	 */
 	public Boolean getIsPassword()
 	{
 		return this.isPassword;
 	}
 
+	/**
+	 * 
+	 * @param isPassword isPassword
+	 */
 	public void setIsPassword(Boolean isPassword)
 	{
 		this.isPassword = isPassword;
-		if(isPassword!=null)
+		if (isPassword != null)
 		{
 			this.attributeIsPassword = isPassword.toString();
 		}
@@ -786,41 +795,74 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		this.tooltip = tooltip;
 	}
 
+	/**
+	 * 
+	 * @return AbstractAttributeInterface abstractAttributeInterface
+	 */
 	public AbstractAttributeInterface getAbstractAttribute()
 	{
 		return abstractAttribute;
 	}
 
+	/**
+	 * 
+	 * @param abstractAttributeInterface abstractAttributeInterface
+	 */
 	public void setAbstractAttribute(AbstractAttributeInterface abstractAttributeInterface)
 	{
 		abstractAttribute = abstractAttributeInterface;
 	}
+
+	/**
+	 * 
+	 * @return Integer columns
+	 */
 
 	public Integer getColumns()
 	{
 		return columns;
 	}
 
+	/**
+	 * 
+	 * @return Boolean isHidden
+	 */
 	public Boolean getIsHidden()
 	{
-		return IsHidden;
+		return isHidden;
 	}
 
+	/**
+	 * 
+	 * @return name name 
+	 */
 	public String getName()
 	{
 		return name;
 	}
 
+	/**
+	 * 
+	 * @return Integer  rows
+	 */
 	public Integer getRows()
 	{
 		return rows;
 	}
 
+	/**
+	 * 
+	 * @return Integer sequenceNumber
+	 */
 	public Integer getSequenceNumber()
 	{
 		return sequenceNumber;
 	}
 
+	/**
+	 * 
+	 * @param columns Integer columns
+	 */
 	public void setColumns(Integer columns)
 	{
 		this.columns = columns;
@@ -831,16 +873,28 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 
 	}
 
+	/**
+	 * 
+	 * @param isHidden isHidden
+	 */
 	public void setIsHidden(Boolean isHidden)
 	{
-		this.IsHidden = isHidden;
+		this.isHidden = isHidden;
 	}
 
+	/**
+	 * 
+	 * @param name name to be set
+	 */
 	public void setName(String name)
 	{
 		this.name = name;
 	}
 
+	/**
+	 * 
+	 * @param rows Integer rows
+	 */
 	public void setRows(Integer rows)
 	{
 		this.rows = rows;
@@ -850,6 +904,10 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		}
 	}
 
+	/**
+	 * 
+	 * @param sequenceNumber Integer sequenceNumber
+	 */
 	public void setSequenceNumber(Integer sequenceNumber)
 	{
 		this.sequenceNumber = sequenceNumber;
@@ -875,7 +933,8 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		}
 	}
 
-	/* (non-Javadoc)
+	/** 
+	 * (non-Javadoc)
 	 * @see edu.common.dynamicextensions.ui.interfaces.AbstractAttributeUIBeanInterface#getAttributeDigits()
 	 */
 	public String getAttributeDigits()
@@ -883,7 +942,8 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		return attributeDigits;
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * (non-Javadoc)
 	 * @see edu.common.dynamicextensions.ui.interfaces.AbstractAttributeUIBeanInterface#setAttributeDigits(java.lang.String)
 	 */
 	public void setAttributeDigits(String attribDigits)
@@ -891,11 +951,19 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		attributeDigits = attribDigits;
 	}
 
+	/**
+	 * 
+	 * @return attributeSequenceNumber attributeSequenceNumber
+	 */
 	public String getAttributeSequenceNumber()
 	{
 		return this.attributeSequenceNumber;
 	}
 
+	/**
+	 *  
+	 * @param attributeSequenceNumber attributeSequenceNumber
+	 */
 	public void setAttributeSequenceNumber(String attributeSequenceNumber)
 	{
 		this.attributeSequenceNumber = attributeSequenceNumber;
@@ -909,11 +977,19 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		}
 	}
 
+	/**
+	 * 
+	 * @return String attributeIsPassword
+	 */
 	public String getAttributeIsPassword()
 	{
 		return this.attributeIsPassword;
 	}
 
+	/**
+	 * 
+	 * @param attributeIsPassword attributeIsPassword
+	 */
 	public void setAttributeIsPassword(String attributeIsPassword)
 	{
 		this.attributeIsPassword = attributeIsPassword;
@@ -1032,11 +1108,17 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		this.linesType = linesType;
 	}
 
+	/**
+	 * @return attributeConceptCode
+	 */
 	public String getAttributeConceptCode()
 	{
 		return this.attributeConceptCode;
 	}
 
+	/**
+	 * @param attributeConceptCode attributeConceptCode
+	 */
 	public void setAttributeConceptCode(String attributeConceptCode)
 	{
 		this.attributeConceptCode = attributeConceptCode;
@@ -1044,21 +1126,24 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 
 	/**
 	 * Overrides the validate method of ActionForm.
-	 * */
+	 * @param mapping ActionMapping mapping
+	 * @param request HttpServletRequest request
+	 * @return ActionErrors ActionErrors
+	 */
 	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request)
 	{
 		ActionErrors errors = new ActionErrors();
 		Validator validator = new Validator();
 		/*if (name == null || validator.isEmpty(String.valueOf(name)))
-		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.Name")));
-		}
+		 {
+		 errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.Name")));
+		 }
 		 */
 		if (caption == null || validator.isEmpty(String.valueOf(caption)))
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.Label")));
 		}
-		
+
 		//Special case for text Control
 		if ((dataType != null) && (dataType.equalsIgnoreCase(ProcessorConstants.TEXT_CONTROL)))
 		{
@@ -1074,8 +1159,8 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	}
 
 	/**
-	 * @param validator
-	 * @param errors
+	 * @param validator validator
+	 * @param errors errors
 	 */
 	private void getErrorsForComboboxControl(Validator validator, ActionErrors errors)
 	{
@@ -1091,8 +1176,8 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	}
 
 	/**
-	 * @param validator 
-	 * @param errors
+	 * @param validator  validator
+	 * @param errors errors
 	 */
 	private void getErrorsForTextControl(Validator validator, ActionErrors errors)
 	{
@@ -1107,11 +1192,17 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 
 	}
 
+	/**
+	 * @return String dateValueType
+	 */
 	public String getDateValueType()
 	{
 		return this.dateValueType;
 	}
 
+	/**
+	 * @param dateValueType String dateValueType
+	 */
 	public void setDateValueType(String dateValueType)
 	{
 		this.dateValueType = dateValueType;
@@ -1150,11 +1241,12 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	}
 
 	/**
-	 * 
+	 * @param dataTypeName String dataTypeName
+	 * @return List ListOfRules
 	 */
 	public List getListOfRules(String dataTypeName)
 	{
-		return  (List)controlRuleMap.get(dataTypeName);
+		return (List) controlRuleMap.get(dataTypeName);
 	}
 
 	/**
@@ -1189,11 +1281,19 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		this.min = min;
 	}
 
+	/**
+	 * 
+	 * @return String measurementUnitOther
+	 */
 	public String getMeasurementUnitOther()
 	{
 		return this.measurementUnitOther;
 	}
 
+	/**
+	 * 
+	 * @param measurementUnitOther measurementUnitOther
+	 */
 	public void setMeasurementUnitOther(String measurementUnitOther)
 	{
 		this.measurementUnitOther = measurementUnitOther;

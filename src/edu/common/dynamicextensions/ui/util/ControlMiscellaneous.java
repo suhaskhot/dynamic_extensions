@@ -1,6 +1,7 @@
 /**
  * 
  */
+
 package edu.common.dynamicextensions.ui.util;
 
 import java.text.SimpleDateFormat;
@@ -87,7 +88,7 @@ public class ControlMiscellaneous
 		}
 		return defaultValue;
 	}
-	
+
 	/**
 	 * This method returns the prescribed date format for the given DateAttribute
 	 * @param attribute the DateAttribute
@@ -95,14 +96,14 @@ public class ControlMiscellaneous
 	 */
 	public static String getDateFormat(AttributeInterface dateAttribute)
 	{
-		String dateFormat = ((DateAttributeInterface)dateAttribute).getFormat();
-		if(dateFormat == null)
+		String dateFormat = ((DateAttributeInterface) dateAttribute).getFormat();
+		if (dateFormat == null)
 		{
 			dateFormat = "";
 		}
 		return dateFormat;
 	}
-	
+
 	/**
 	 * This method populates the List of Values of the ListBox in the NameValueBean Collection.
 	 * @return List of pair of Name and its corresponding Value.

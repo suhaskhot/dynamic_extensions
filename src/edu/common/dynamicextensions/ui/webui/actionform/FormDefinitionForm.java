@@ -1,7 +1,6 @@
 
 package edu.common.dynamicextensions.ui.webui.actionform;
 
-
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +22,8 @@ import edu.wustl.common.util.global.Validator;
  * @author deepti_shelar
  *
  */
-public class FormDefinitionForm  extends AbstractActionForm implements EntityUIBeanInterface,ContainerUIBeanInterface{
+public class FormDefinitionForm extends AbstractActionForm implements EntityUIBeanInterface, ContainerUIBeanInterface
+{
 	/**
 	 * 
 	 */
@@ -46,7 +46,7 @@ public class FormDefinitionForm  extends AbstractActionForm implements EntityUIB
 	 * CreateAs
 	 */
 	protected String createAs;
-	
+
 	/**
 	 * existingFormsList
 	 */
@@ -87,7 +87,10 @@ public class FormDefinitionForm  extends AbstractActionForm implements EntityUIB
 	 * mode
 	 */
 	protected String mode;
-	
+	/**
+	 * default constructor
+	 *
+	 */
 	public FormDefinitionForm()
 	{
 		createAs = "NewForm";
@@ -108,220 +111,271 @@ public class FormDefinitionForm  extends AbstractActionForm implements EntityUIB
 	{
 		this.mode = mode;
 	}
-    
-		/**
+
+	/**
 	 * Returns the id assigned to form bean.
 	 * @return the id assigned to form bean.
 	 */
-	public int getFormId() {
+	public int getFormId()
+	{
 		return Constants.ENTITY_FORM_ID;
 	}
+
 	/**
-	 * 
+	 * @param abstractDomain abstractDomain
 	 */
-	public void setAllValues(AbstractDomainObject abstractDomain)   {
+	public void setAllValues(AbstractDomainObject abstractDomain)
+	{
 
 	}
 
 	/**
 	 * @return Returns the description.
 	 */
-	public String getFormDescription() {
+	public String getFormDescription()
+	{
 		return formDescription;
 	}
+
 	/**
 	 * @param description The description to set.
 	 */
-	public void setFormDescription(String description) {
+	public void setFormDescription(String description)
+	{
 		this.formDescription = description;
 	}
+
 	/**
 	 * @return Returns the name.
 	 */
-	public String getFormName() {
+	public String getFormName()
+	{
 		return formName;
 	}
+
 	/**
-	 * @param name The name to set.
+	 * @param formName The name to set.
 	 */
-	public void setFormName(String formName) {
+	public void setFormName(String formName)
+	{
 		this.formName = formName;
 	}
+
 	/**
 	 * @return Returns the entityIdentifier.
 	 */
-	public String getEntityIdentifier() {
+	public String getEntityIdentifier()
+	{
 		return entityIdentifier;
 	}
+
 	/**
 	 * @param entityIdentifier The entityIdentifier to set.
 	 */
-	public void setEntityIdentifier(String entityIdentifier) {
+	public void setEntityIdentifier(String entityIdentifier)
+	{
 		this.entityIdentifier = entityIdentifier;
 	}
+
 	/**
 	 * gets CreateAs
+	 * @return String createAs
 	 */
-	public String getCreateAs() {
+	public String getCreateAs()
+	{
 		return createAs;
 	}
+
 	/**
-	 * sets CreateAs
+	 * @param createAs createAs
 	 */
-	public void setCreateAs(String createAs) {
+	public void setCreateAs(String createAs)
+	{
 		this.createAs = createAs;
 	}
+
 	/**
-	 * 
+	 * @return existingFormsList
 	 */
-	public List getExistingFormsList() {
+	public List getExistingFormsList()
+	{
 		return existingFormsList;
 	}
+
 	/**
-	 * 
+	 * @param existingFormsList existingFormsList
 	 */
-	public void setExistingFormsList(List existingFormsList) {
+	public void setExistingFormsList(List existingFormsList)
+	{
 		this.existingFormsList = existingFormsList;
 	}
+
 	/**
-	 * 
+	 * @return String selectForm
 	 */
-	public String getSelectForm() {
+	public String getSelectForm()
+	{
 		return selectForm;
 	}
+
 	/**
-	 * 
+	 * @param selectForm selectForm
 	 */
-	public void setSelectForm(String selectForm) {
+	public void setSelectForm(String selectForm)
+	{
 		this.selectForm = selectForm;
 	}
+
 	/**
-	 * 
+	 * @return buttonCss
 	 */
-	public String getButtonCss() {
+	public String getButtonCss()
+	{
 		return buttonCss;
 	}
+
 	/**
-	 * 
+	 * @return formCaption
 	 */
-	public String getFormCaption() {
+	public String getFormCaption()
+	{
 		return formCaption;
 	}
+
 	/**
-	 * 
+	 * @return mainTableCss
 	 */
-	public String getMainTableCss() {
+	public String getMainTableCss()
+	{
 		return mainTableCss;
 	}
+
 	/**
-	 * 
+	 * @return  requiredFieldIndicatior
 	 */
-	public String getRequiredFieldIndicatior() {
+	public String getRequiredFieldIndicatior()
+	{
 		return requiredFieldIndicatior;
 	}
+
 	/**
-	 * 
+	 * @return requiredFieldWarningMessage
 	 */
-	public String getRequiredFieldWarningMessage() {
+	public String getRequiredFieldWarningMessage()
+	{
 		return requiredFieldWarningMessage;
 	}
+
 	/**
-	 * 
+	 * @return titleCss
 	 */
-	public String getTitleCss() {
+	public String getTitleCss()
+	{
 		return titleCss;
 	}
+
 	/**
-	 * 
+	 * @param buttonCss buttonCss
 	 */
-	public void setButtonCss(String buttonCss) {
+	public void setButtonCss(String buttonCss)
+	{
 		this.buttonCss = buttonCss;
 	}
+
 	/**
-	 * 
+	 * @param caption FormCaption
 	 */
-	public void setFormCaption(String caption) {
+	public void setFormCaption(String caption)
+	{
 		this.formCaption = caption;
 	}
+
 	/**
-	 * 
+	 * @param mainTableCss MainTableCss
 	 */
-	public void setMainTableCss(String mainTableCss) {
+	public void setMainTableCss(String mainTableCss)
+	{
 		this.mainTableCss = mainTableCss;
 	}
+
 	/**
-	 * 
+	 * @param requiredFieldIndicatior requiredFieldIndicatior
 	 */
-	public void setRequiredFieldIndicatior(String requiredFieldIndicatior) {
-	this.requiredFieldIndicatior = requiredFieldIndicatior;	
+	public void setRequiredFieldIndicatior(String requiredFieldIndicatior)
+	{
+		this.requiredFieldIndicatior = requiredFieldIndicatior;
 	}
+
 	/**
-	 * 
+	 * @param requiredFieldWarningMessage requiredFieldWarningMessage
 	 */
-	public void setRequiredFieldWarningMessage(String requiredFieldWarningMessage) {
+	public void setRequiredFieldWarningMessage(String requiredFieldWarningMessage)
+	{
 		this.requiredFieldWarningMessage = requiredFieldWarningMessage;
 	}
-	/**
-	 * 
+
+	/** 
+	 * @param titleCss titleCss
 	 */
-	public void setTitleCss(String titleCss) {
+	public void setTitleCss(String titleCss)
+	{
 		this.titleCss = titleCss;
 	}
+
+
+
 	/**
 	 * 
 	 */
-	public void update(FormDefinitionForm cacheForm) {
-		this.formName = cacheForm.getFormName();
-		this.formDescription = cacheForm.getFormDescription();
-		this.formCaption = cacheForm.getFormCaption();
-		this.createAs = cacheForm.getCreateAs();
-	}
-	/**
-	 * 
-	 */
-	public void reset() {
+	public void reset()
+	{
 		formName = "";
 		formDescription = "";
 		createAs = "";
-	}  
+	}
+
 	/**
 	 * Overrides the validate method of ActionForm.
+	 * @param mapping ActionMapping mapping
+	 * @param request HttpServletRequest request
+	 * @return ActionErrors
 	 * */
-	public ActionErrors validate(ActionMapping mapping,
-			HttpServletRequest request) {
+	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request)
+	{
 		ActionErrors errors = new ActionErrors();
 		Validator validator = new Validator();
 
-		if ( formName == null || validator.isEmpty(String.valueOf(formName))) {
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-					"errors.item.required", ApplicationProperties
-					.getValue("eav.form.name")));
+		if (formName == null || validator.isEmpty(String.valueOf(formName)))
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.form.name")));
 		}
-		
-		if (conceptCode == null || validator.isEmpty(String.valueOf(conceptCode))) {
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-					"errors.item.required", ApplicationProperties
-					.getValue("eav.form.conceptCode")));
+
+		if (conceptCode == null || validator.isEmpty(String.valueOf(conceptCode)))
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.form.conceptCode")));
 		}
-		
-		if (createAs == null || validator.isEmpty(String.valueOf(createAs))) {
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-					"errors.item.required", ApplicationProperties
-					.getValue("eav.form.createAs")));
+
+		if (createAs == null || validator.isEmpty(String.valueOf(createAs)))
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.form.createAs")));
 		}
-	return errors;
+		return errors;
 	}
+
 	/**
 	 * @return the conceptCode
 	 */
-	public String getConceptCode() {
+	public String getConceptCode()
+	{
 		return conceptCode;
 	}
+
 	/**
 	 * @param conceptCode the conceptCode to set
 	 */
-	public void setConceptCode(String conceptCode) {
+	public void setConceptCode(String conceptCode)
+	{
 		this.conceptCode = conceptCode;
 	}
-	
+
 }

@@ -35,26 +35,32 @@ import edu.wustl.common.beans.NameValueBean;
  *
  * 
  */
-public class ControlConfigurationsFactory
+public final class ControlConfigurationsFactory
 {
 	private static ControlConfigurationsFactory m_instance = null;
 	private Map controlsConfigurationMap = null;
 	private Map rulesConfigurationMap = null;
 
+	/**
+	 * private constructor for ControlConfigurationsFactory.
+	 * This will initialise maps for controls and their appropriate rules.
+	 * The call to pareseXML will parse two configuration files in order to 
+	 * fill the data in thier objects.
+	 *
+	 */
 	private ControlConfigurationsFactory()
 	{
 		controlsConfigurationMap = new HashMap();
 		rulesConfigurationMap = new HashMap();
 		parseXML("RuleConfigurations.xml");
 		parseXML("ControlConfigurations.xml");
-		System.out.println("");
 	}
 
 	/**
 	 * 
-	 * @return
+	 * @return ControlConfigurationsFactory instance of ControlConfigurationsFactory
 	 */
-	public synchronized static ControlConfigurationsFactory getInstance()
+	public static synchronized ControlConfigurationsFactory getInstance()
 	{
 		if (m_instance == null)
 		{
@@ -65,18 +71,18 @@ public class ControlConfigurationsFactory
 
 	/**
 	 * Parse the XML
-	 *
+	 * @param configurationFileName name of the file to be parsed.
 	 */
 	private void parseXML(String configurationFileName)
 	{
 		Document document = null;
 		try
 		{
-			final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			final DocumentBuilderFactory FACTORY = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = null;
-			if (factory != null)
+			if (FACTORY != null)
 			{
-				docBuilder = factory.newDocumentBuilder();
+				docBuilder = FACTORY.newDocumentBuilder();
 				if (docBuilder != null)
 				{
 					InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(configurationFileName);
@@ -124,8 +130,8 @@ public class ControlConfigurationsFactory
 	}
 
 	/**
-	 * 
-	 * @param document
+	 * This method wil parese the ruleConfiguraions xml file and wil populate the ruleConfigurationObject.
+	 * @param document to be pared
 	 */
 	private void loadRuleConfigurations(Document document)
 	{
@@ -192,7 +198,8 @@ public class ControlConfigurationsFactory
 	}
 
 	/**
-	 * 
+	 * @param ruleParameters list Of Nodes
+	 * @return List list of ruleParameters.
 	 */
 	private List loadRuleParameters(NodeList ruleParameters)
 	{
@@ -229,8 +236,8 @@ public class ControlConfigurationsFactory
 	}
 
 	/**
-	 * 
-	 * @param document
+	 * This method wil parese the ControlConfigurations xml file and will populate the controlsConfigurationObject
+	 * @param document to be parsed.
 	 */
 	private void loadControlConfigurations(Document document)
 	{
@@ -325,10 +332,10 @@ public class ControlConfigurationsFactory
 	}
 
 	/**
-	 * 
-	 * @param rulesList
-	 * @param implicitRulesList
-	 * @return
+	 * Gets all ImplicitExplicitRules 
+	 * @param rulesList list of rules
+	 * @param implicitRulesList list of the rules which will not be shown on ui
+	 * @return List of addition of the rules which will be shown on ui and which will not be shown on ui.
 	 */
 	private List getImplicitExplicitRules(List rulesList, List implicitRulesList)
 	{
@@ -355,8 +362,8 @@ public class ControlConfigurationsFactory
 
 	/**
 	 * 
-	 * @param ruleValidationsList
-	 * @return
+	 * @param ruleValidationsList list of ruleNames
+	 * @return List of ruleObjects.
 	 */
 	private List getRuleObjectsList(List ruleValidationsList)
 	{
@@ -373,9 +380,10 @@ public class ControlConfigurationsFactory
 	}
 
 	/**
-	 * 
-	 * @param dataTypeName
-	 * @return
+	 * This method gets all the ValidationRules associated with the dataType selected by user
+	 * @param dataTypeName name of datatype selected by user
+	 * @param controlNode node
+	 * @return List ValidationRules associated with the dataType selected by user
 	 */
 	private List getDataTypeValidationRules(String dataTypeName, Node controlNode)
 	{
@@ -411,9 +419,10 @@ public class ControlConfigurationsFactory
 	}
 
 	/**
-	 * 
-	 * @param controlDataTypesNodesList
-	 * @return
+	 * Method common for various method to get the list of childnodes.
+	 * @param mappedNodesList nodesList
+	 * @param key key for parentNode
+	 * @return ArrayList list of childNodes
 	 */
 	private ArrayList getChildNodesList(NodeList mappedNodesList, String key)
 	{
@@ -443,9 +452,9 @@ public class ControlConfigurationsFactory
 	}
 
 	/**
-	 * 
-	 * @param dataTypesList
-	 * @return
+	 * This method converts the the passed list into namevalue beans objects list in order to hepl in rendering Ui.
+	 * @param dataTypesList list Of all dataTypes
+	 * @return List NameValueBeansList
 	 */
 	private List getNameValueBeansList(List dataTypesList)
 	{
@@ -465,8 +474,8 @@ public class ControlConfigurationsFactory
 
 	/**
 	 * 
-	 * @param controlName
-	 * @return
+	 * @param controlName name of the control selected by user
+	 * @return List dataTypes associated with the selected control
 	 */
 	public List getControlsDataTypes(String controlName)
 	{
@@ -483,9 +492,9 @@ public class ControlConfigurationsFactory
 	}
 
 	/**
-	 * 
-	 * @param controlName
-	 * @return
+	 * Returns the jspname for the selected control by user.
+	 * @param controlName name of the control selected by user
+	 * @return String jspname associated with the control
 	 */
 	public String getControlJspName(String controlName)
 	{
@@ -503,8 +512,8 @@ public class ControlConfigurationsFactory
 
 	/**
 	 * 
-	 * @param controlName
-	 * @return
+	 * @param controlName name of the control selected by user
+	 * @return ControlDisplayLabel DisplayLabel for the control selected by user
 	 */
 	public String getControlDisplayLabel(String controlName)
 	{
@@ -521,9 +530,10 @@ public class ControlConfigurationsFactory
 	}
 
 	/**
-	 * 
-	 * @param controlName
-	 * @return
+	 * Returns ImplicitRules : The rules which are not going to be shown on ui.
+	 * @param controlName name of the control selected by user
+	 * @param dataType dataType selected by user.
+	 * @return ArrayList list of all the rules related to control and its datatType selected.
 	 */
 	public ArrayList getImplicitRules(String controlName, String dataType)
 	{
@@ -551,9 +561,10 @@ public class ControlConfigurationsFactory
 	}
 
 	/**
-	 * 
-	 * @param controlName
-	 * @return
+	 * Returns ExplicitRules : The rules which are will be shown on ui.
+	 * @param controlName selected by user
+	 * @param dataType selected by user
+	 * @return ArrayList list of all the Explicit rules related to control and its datatType selected.
 	 */
 	public ArrayList getExplicitRules(String controlName, String dataType)
 	{
@@ -567,7 +578,8 @@ public class ControlConfigurationsFactory
 				explicitRules = (ArrayList) getListOfRules(controlsConfigurationObject.getCommonExplicitRules());
 				Map map = controlsConfigurationObject.getDataTypeExplicitRules();
 				List rulesList = (ArrayList) map.get(dataType);
-				if(rulesList != null) {
+				if (rulesList != null)
+				{
 					Iterator iter = rulesList.iterator();
 					while (iter.hasNext())
 					{
@@ -584,9 +596,9 @@ public class ControlConfigurationsFactory
 	}
 
 	/**
-	 * 
-	 * @param rules
-	 * @return
+	 * Returns the list in String format
+	 * @param rules list of rules
+	 * @return listOfRules 
 	 */
 	private List getListOfRules(List rules)
 	{
@@ -601,22 +613,24 @@ public class ControlConfigurationsFactory
 	}
 
 	/**
-	 * 
+	 * gets the RuleConfigurationObject given a name of the rule.
+	 * @param ruleName name  of the rule
+	 * @return RuleConfigurationObject
 	 */
 	public RuleConfigurationObject getRuleObject(String ruleName)
 	{
 		RuleConfigurationObject ruleConfigurationObject = null;
-		if(ruleName != null && rulesConfigurationMap != null)
+		if (ruleName != null && rulesConfigurationMap != null)
 		{
-			ruleConfigurationObject = (RuleConfigurationObject) rulesConfigurationMap.get(ruleName);	
+			ruleConfigurationObject = (RuleConfigurationObject) rulesConfigurationMap.get(ruleName);
 		}
 
 		return ruleConfigurationObject;
 	}
 
 	/**
-	 * 
-	 *
+	 * Gets all the controls required at the time of loading
+	 * @return List of controls
 	 */
 	public List getListOfControls()
 	{
@@ -627,15 +641,21 @@ public class ControlConfigurationsFactory
 		}
 		return listOfControls;
 	}
+
+	/**
+	 * Gets the DisplayLabels of the rules.
+	 * @param ruleNamesList list of rules
+	 * @return List list of DisplayLabels
+	 */
 	public List getRuleDisplayLabels(List ruleNamesList)
 	{
 		List listOfDisplayLabels = new ArrayList();
-		Iterator iter = (Iterator)ruleNamesList.iterator();
+		Iterator iter = (Iterator) ruleNamesList.iterator();
 		RuleConfigurationObject ruleConfigurationObject = null;
-		while(iter.hasNext())
+		while (iter.hasNext())
 		{
 			String ruleName = iter.next().toString();
-			ruleConfigurationObject = (RuleConfigurationObject) rulesConfigurationMap.get(ruleName);	
+			ruleConfigurationObject = (RuleConfigurationObject) rulesConfigurationMap.get(ruleName);
 			listOfDisplayLabels.add(ruleConfigurationObject.getDisplayLabel());
 		}
 		return listOfDisplayLabels;
@@ -643,11 +663,12 @@ public class ControlConfigurationsFactory
 
 	/**
 	 * This method returns rule instance for given rule name
-	 * @param ruleName
-	 * @return
+	 * @param ruleName name of the rule
+	 * @return ValidatorRuleInterface class instance of the rulename passed.
 	 */
-	public ValidatorRuleInterface getValidatorRule(String ruleName) {
-		RuleConfigurationObject ruleConfiguration =  (RuleConfigurationObject) rulesConfigurationMap.get(ruleName);
+	public ValidatorRuleInterface getValidatorRule(String ruleName)
+	{
+		RuleConfigurationObject ruleConfiguration = (RuleConfigurationObject) rulesConfigurationMap.get(ruleName);
 		ValidatorRuleInterface ruleInterface;
 
 		Class ruleClass;
@@ -659,51 +680,42 @@ public class ControlConfigurationsFactory
 		}
 		catch (Exception e)
 		{
-			return null;	
+			return null;
 		}
 		return ruleInterface;
 	}
 
 	/**
-	 * @param args
+	 * 
+	 * @param controlName selected by user
+	 * @return Map of rules
 	 */
-	
-	 public static void main(String[] args)
-	 {
-	 ControlConfigurationsFactory cmf = ControlConfigurationsFactory.getInstance();
-	// cmf.getImplicitRules("TextControl", "Text");
-	 //cmf.getExplicitRules("TextControl", "Text");
-	 //cmf.getListOfControls();
-	 cmf.getRulesMap("TextControl");
-	 }
-	 /**
-	  * 
-	  */
-	 public Map getRulesMap(String controlName) {
-		 Map rulesMap = new HashMap();
-		 ControlsConfigurationObject ccf = (ControlsConfigurationObject)controlsConfigurationMap.get(controlName);
-		 List dataTypes = ccf.getDataTypesList();
-		 List rules = new ArrayList() ;
-		 String dataType = null;
-		 Iterator iter1 = null;
-		 Iterator iter = dataTypes.iterator();
-		 while(iter.hasNext()) {
-			 dataType = ((NameValueBean)iter.next()).getName();
-			 rules = (ArrayList)getExplicitRules(controlName ,dataType );
-			 iter1 = rules.iterator();
-			 List ruleObjects = new ArrayList();
-			 while(iter1.hasNext())
-			 {
-				 
-				 String ruleName = (String)iter1.next();
-				 ruleObjects.add(getRuleObject(ruleName));
-				 
-			 }
-			 rulesMap.put(dataType,ruleObjects);
-		 }
-		  
-		 return rulesMap ;
-	 }
-	 
-	 
+	public Map getRulesMap(String controlName)
+	{
+		Map rulesMap = new HashMap();
+		ControlsConfigurationObject ccf = (ControlsConfigurationObject) controlsConfigurationMap.get(controlName);
+		List dataTypes = ccf.getDataTypesList();
+		List rules = new ArrayList();
+		String dataType = null;
+		Iterator iter1 = null;
+		Iterator iter = dataTypes.iterator();
+		while (iter.hasNext())
+		{
+			dataType = ((NameValueBean) iter.next()).getName();
+			rules = (ArrayList) getExplicitRules(controlName, dataType);
+			iter1 = rules.iterator();
+			List ruleObjects = new ArrayList();
+			while (iter1.hasNext())
+			{
+
+				String ruleName = (String) iter1.next();
+				ruleObjects.add(getRuleObject(ruleName));
+
+			}
+			rulesMap.put(dataType, ruleObjects);
+		}
+
+		return rulesMap;
+	}
+
 }

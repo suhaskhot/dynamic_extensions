@@ -1,41 +1,52 @@
+
 package edu.common.dynamicextensions.ui.interfaces;
+
 /**
  * 
  * @author deepti_shelar
  *
  */
-public interface EntityUIBeanInterface {
+ public interface EntityUIBeanInterface
+ {
 	/**
 	 * @return Returns the name.
 	 */
-	public String getFormName();
+	 String getFormName();
+
 	/**
-	 * @param name The name to set.
+	 * @param formName The name to set to the form.
 	 */
-	public void setFormName(String formName); 
+	 void setFormName(String formName);
+
 	/**
 	 * @return Returns the description.
 	 */
-	public String getFormDescription(); 
+	 String getFormDescription();
+
 	/**
 	 * @param description The description to set.
 	 */
-	public void setFormDescription(String description); 
+	 void setFormDescription(String description);
+
 	/**
-	 * @param returns createAs .
+	 * 
+	 * @return String CreateAs
 	 */
-	public String getCreateAs();
+	 String getCreateAs();
+
 	/**
 	 * @param createAs The createAs to set.
 	 */
-	public void setCreateAs(String createAs) ;
+	 void setCreateAs(String createAs);
+
 	/**
-	 * @param returns ConceptCode .
+	 * @return String conceptCode .
 	 */
-	public String getConceptCode();
+	 String getConceptCode();
+
 	/**
-	 * @param ConceptCode The ConceptCode to set.
+	 * @param conceptCode The ConceptCode to set.
 	 */
-	public void setConceptCode(String ConceptCode) ;
-	
+	 void setConceptCode(String conceptCode);
+
 }

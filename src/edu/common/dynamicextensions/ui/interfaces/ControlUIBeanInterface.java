@@ -1,4 +1,6 @@
+
 package edu.common.dynamicextensions.ui.interfaces;
+
 /**
  * @author deepti_shelar
  */
@@ -6,194 +8,219 @@ import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 
-public interface ControlUIBeanInterface {
+ public interface ControlUIBeanInterface
+{
 	/**
 	 * 
+	 * @return String name
 	 */
-	public String getName();
+	 String getName();
+
 	/**
-	 * @param attribute The attribute to set.
+	 * @param name The name to set.
 	 */
-	public void setName(String name);
+	 void setName(String name);
+
 	/**
 	 * If user has chosen it to be kept hidden.
 	 * @return Returns the isHidden.
 	 */
 	Boolean getIsHidden();
+
 	/**
 	 * @param isHidden The isHidden to set.
 	 */
 	void setIsHidden(Boolean isHidden);
+
 	/**
 	 * The sequence Number for setting it at the desired place in the tree and so in the UI.
 	 * @return Returns the sequenceNumber.
 	 */
 	Integer getSequenceNumber();
+
 	/**
 	 * @param sequenceNumber The sequenceNumber to set.
 	 */
 	void setSequenceNumber(Integer sequenceNumber);
+
 	/**
 	 * @return Returns the attribute.
 	 *
 	 */
-	public AbstractAttributeInterface getAbstractAttribute();
+	 AbstractAttributeInterface getAbstractAttribute();
+
 	/**
-	 * @param attribute The attribute to set.
+	 * @param attributeInterface The AbstractAttribute to set.
 	 */
-	public void setAbstractAttribute(AbstractAttributeInterface attributeInterface);
-
-
-
+	 void setAbstractAttribute(AbstractAttributeInterface attributeInterface);
 
 	/**
 	 * @return Returns the dataType.
 	 */
 
-	public String getDataType();
+	 String getDataType();
+
 	/**
 	 * @param dataType The dataType to set.
 	 */
-	public void setDataType(String dataType);
+	 void setDataType(String dataType);
+
 	/**
 	 * @return Returns the dataTypeList.
 	 */
-	public List getDataTypeList();
+	 List getDataTypeList();
+
 	/**
 	 * @param dataTypeList The dataTypeList to set.
 	 */
-	public void setDataTypeList(List dataTypeList);
+	 void setDataTypeList(List dataTypeList);
 
 	/**
 	 * @return Returns the choiceList.
-	 *//*
-	public String getChoiceList() ;
-	*//**
+	 */
+	/*
+	  String getChoiceList() ;
+	 *//**
 	 * @param choiceList The choiceList to set.
-	 *//*
-	public void setChoiceList(String choiceList) ;*/
+	 */
+	/*
+	  void setChoiceList(String choiceList) ;*/
 
 	/**
 	 * @return the attributeCssClass
 	 */
-	public String getCssClass() ;
+	 String getCssClass();
 
 	/**
 	 * @param attributeCssClass the attributeCssClass to set
 	 */
-	public void setCssClass(String attributeCssClass) ;
-
+	 void setCssClass(String attributeCssClass);
 
 	/**
 	 * @return the attributeTooltip
 	 */
-	public String getTooltip() ;
+	 String getTooltip();
 
 	/**
 	 * @param attributeTooltip the attributeTooltip to set
 	 */
-	public void setTooltip(String attributeTooltip) ;
+	 void setTooltip(String attributeTooltip);
 
 	/**
 	 * @return the attributeCaption
 	 */
-	public String getCaption() ;
+	 String getCaption();
 
 	/**
 	 * @param attributeTooltip the attributeTooltip to set
 	 */
-	public void setCaption(String attributeTooltip) ;
+	 void setCaption(String attributeTooltip);
 
 	/**
 	 * 
 	 * @return If the control is a password field
 	 */
-	public Boolean getIsPassword();
+	 Boolean getIsPassword();
 
 	/**
 	 * 
 	 * @param isPassword If it is a password field set as true
 	 */
-	public void setIsPassword(Boolean isPassword);
-
+	 void setIsPassword(Boolean isPassword);
 
 	/**
 	 * @return the toolsList
-	 *//*
-	public List getToolsList(); 
+	 */
+	/*
+	  List getToolsList(); 
 
-	*//**
+	 *//**
 	 * @param toolsList the toolsList to set
-	 *//*
-	public void setToolsList(List toolsList); 
-	*//**
+	 */
+	/*
+	  void setToolsList(List toolsList); 
+	 *//**
 	 * @return the userSelectedTool
-	 *//*
-	public String getUserSelectedTool();
+	 */
+	/*
+	  String getUserSelectedTool();
 
-	*//**
+	 *//**
 	 * @param userSelectedTool the userSelectedTool to set
-	 *//*
-	public void setUserSelectedTool(String userSelectedTool) ;*/
+	 */
+	/*
+	  void setUserSelectedTool(String userSelectedTool) ;*/
 	/**
 	 * @return Returns the columns.
 	 */
 	Integer getColumns();
+
 	/**
 	 * @param columns The columns to set.
 	 */
 	void setColumns(Integer columns);
+
 	/**
 	 * @return Returns the rows.
 	 */
 	Integer getRows();
+
 	/**
 	 * @param rows The rows to set.
 	 */
 	void setRows(Integer rows);
+
 	/**
-     * @return Returns the isMultiSelect.
-     */
-    Boolean getIsMultiSelect();
-    /**
-     * @param isMultiSelect The isMultiSelect to set.
-     */
-    void setIsMultiSelect(Boolean isMultiSelect) ;
-    /**
+	 * @return Returns the isMultiSelect.
+	 */
+	Boolean getIsMultiSelect();
+
+	/**
+	 * @param isMultiSelect The isMultiSelect to set.
+	 */
+	void setIsMultiSelect(Boolean isMultiSelect);
+
+	/**
 	 * @return Returns the displayChoiceList.
-	 *//*
-	public List getDisplayChoiceList(); 
-	*//**
+	 */
+	/*
+	  List getDisplayChoiceList(); 
+	 *//**
 	 * @param displayChoiceList The displayChoiceList to set.
-	 *//*
-	public void setDisplayChoiceList(List displayChoiceList);*/
-    /**
-     * 
-     * @param userSelectedTool
-     */
-    void setUserSelectedTool(String userSelectedTool);
-    /**
-     * 
-     * @param htmlFile
-     */
-    void setHtmlFile(String htmlFile);
-    /**
+	 */
+	/*
+	  void setDisplayChoiceList(List displayChoiceList);*/
+	/**
+	 * 
+	 * @param userSelectedTool userSelected Control
+	 */
+	void setUserSelectedTool(String userSelectedTool);
+
+	/**
+	 * 
+	 * @param htmlFile htmlFile to be inserted
+	 */
+	void setHtmlFile(String htmlFile);
+
+	/**
 	 * @return the linesType
 	 */
-	public String getLinesType();
+	 String getLinesType();
 
 	/**
 	 * @param linesType the linesType to set
 	 */
-	public void setLinesType(String linesType);
+	 void setLinesType(String linesType);
+
 	/**
- 	 * 
- 	 * @return date value type as None/Today's date/selected date
- 	 */
- 	public String getDateValueType();
- 	/**
- 	 * 
- 	 * @param dateValueType None/Today's date/selected date
- 	 */
- 	public void setDateValueType(String dateValueType);
+	 * 
+	 * @return date value type as None/Today's date/selected date
+	 */
+	 String getDateValueType();
+
+	/**
+	 * 
+	 * @param dateValueType None/Today's date/selected date
+	 */
+	 void setDateValueType(String dateValueType);
 }

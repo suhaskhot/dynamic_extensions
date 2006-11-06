@@ -1,9 +1,10 @@
-/**
- * 
- */
 
 package edu.common.dynamicextensions.ui.util;
 
+/**
+ * This class defines miscellaneous methods that are commonly used by many Control objects. * 
+ * @author chetan_patil
+ */
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.List;
@@ -32,10 +33,6 @@ import edu.common.dynamicextensions.domaininterface.StringAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.wustl.common.beans.NameValueBean;
 
-/**
- * This class defines miscellaneous methods that are commonly used by many Control objects. * 
- * @author chetan_patil
- */
 public class ControlsUtility
 {
 	/**
@@ -237,7 +234,7 @@ public class ControlsUtility
 	private static NameValueBean getPermissibleLongValue(PermissibleValueInterface permissibleValue)
 	{
 		LongValueInterface longValue = (LongValueInterface) permissibleValue;
-		NameValueBean nameValueBean =  null;
+		NameValueBean nameValueBean = null;
 
 		if (longValue != null && longValue.getValue() != null)
 		{
@@ -251,8 +248,8 @@ public class ControlsUtility
 	private static NameValueBean getPermissibleIntegerValue(PermissibleValueInterface permissibleValue)
 	{
 		IntegerValueInterface integerValue = (IntegerValueInterface) permissibleValue;
-		NameValueBean nameValueBean =  null;
-		
+		NameValueBean nameValueBean = null;
+
 		if (integerValue != null && integerValue.getValue() != null)
 		{
 			nameValueBean = new NameValueBean();
@@ -266,7 +263,7 @@ public class ControlsUtility
 	{
 		ShortValueInterface shortValue = (ShortValueInterface) permissibleValue;
 		NameValueBean nameValueBean = null;
-		
+
 		if (shortValue != null && shortValue.getValue() != null)
 		{
 			nameValueBean = new NameValueBean();
@@ -279,8 +276,8 @@ public class ControlsUtility
 	private static NameValueBean getPermissibleBooleanValue(PermissibleValueInterface permissibleValue)
 	{
 		BooleanValueInterface booleanValue = (BooleanValueInterface) permissibleValue;
-		NameValueBean nameValueBean =  null;
-		
+		NameValueBean nameValueBean = null;
+
 		if (booleanValue != null && booleanValue.getValue() != null)
 		{
 			nameValueBean = new NameValueBean();
@@ -294,7 +291,7 @@ public class ControlsUtility
 	{
 		StringValueInterface stringValue = (StringValueInterface) permissibleValue;
 		NameValueBean nameValueBean = null;
-		
+
 		if (stringValue != null && stringValue.getValue() != null)
 		{
 			nameValueBean = new NameValueBean();

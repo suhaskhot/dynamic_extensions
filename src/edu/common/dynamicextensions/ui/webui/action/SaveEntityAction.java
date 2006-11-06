@@ -3,6 +3,7 @@
  * @author
  *
  */
+
 package edu.common.dynamicextensions.ui.webui.action;
 
 import java.util.ArrayList;
@@ -30,44 +31,54 @@ import edu.common.dynamicextensions.util.global.Constants;
  */
 public class SaveEntityAction extends BaseDynamicExtensionsAction
 {
+	/**
+	 * @param mapping ActionMapping mapping
+	 * @param form ActionForm form
+	 * @param  request HttpServletRequest request
+	 * @param response HttpServletResponse response
+	 * @return ActionForward forward to next action
+	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 	{
 		ActionForward actionForward = null;
 		//Get container interface from cache
 		ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 		//Call container processor save method
-        ContainerProcessor containerProcessor  = ContainerProcessor.getInstance();
-        String formName = "";
-        try
-        {
-            containerProcessor.saveContainer(containerInterface);
-            
-            if((containerInterface!=null)&&(containerInterface.getEntity()!=null))
-            {
-            	formName = containerInterface.getEntity().getName();
-            }
-            saveMessages(request, getSuccessMessage(formName));
-            actionForward = mapping.findForward(Constants.SUCCESS);
-         }
-        catch (Exception e)
-        {
-            List list = new ArrayList();
-            boolean isSystemException = handleException(e,list);
-            saveErrors(request,getErrorMessages(list,formName));
-            if (isSystemException) {
-            actionForward = mapping.findForward(Constants.SYSTEM_EXCEPTION);
-            }
-        }
-        return actionForward;
+		ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
+		String formName = "";
+		try
+		{
+			containerProcessor.saveContainer(containerInterface);
+
+			if ((containerInterface != null) && (containerInterface.getEntity() != null))
+			{
+				formName = containerInterface.getEntity().getName();
+			}
+			saveMessages(request, getSuccessMessage(formName));
+			actionForward = mapping.findForward(Constants.SUCCESS);
+		}
+		catch (Exception e)
+		{
+			List list = new ArrayList();
+			boolean isSystemException = handleException(e, list);
+			saveErrors(request, getErrorMessages(list, formName));
+			if (isSystemException)
+			{
+				actionForward = mapping.findForward(Constants.SYSTEM_EXCEPTION);
+			}
+		}
+		return actionForward;
 	}
-	
+
 	/**
 	 * Get messages for successful save of entity
+	 * @param formName formname
+	 * @return ActionMessages messages 
 	 */
 	private ActionMessages getSuccessMessage(String formName)
 	{
 		ActionMessages actionMessages = new ActionMessages();
-        actionMessages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("app.entitySaveSuccessMessage",formName));
-        return actionMessages;
-     }
+		actionMessages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("app.entitySaveSuccessMessage", formName));
+		return actionMessages;
+	}
 }

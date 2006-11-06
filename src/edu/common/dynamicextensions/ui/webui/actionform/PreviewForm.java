@@ -12,7 +12,7 @@ import edu.wustl.common.domain.AbstractDomainObject;
 public class PreviewForm extends AbstractActionForm
 {
 	private static final long serialVersionUID = -7828307676065035418L;
-	
+
 	String entitySaved;
 	/**
 	 * 
@@ -60,11 +60,19 @@ public class PreviewForm extends AbstractActionForm
 		this.containerInterface = containerInterface;
 	}
 
+	/**
+	 * 
+	 * @return entitySaved
+	 */
 	public String getEntitySaved()
 	{
 		return this.entitySaved;
 	}
 
+	/**
+	 * 
+	 * @param entitySaved entitySaved
+	 */
 	public void setEntitySaved(String entitySaved)
 	{
 		this.entitySaved = entitySaved;

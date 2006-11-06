@@ -1,176 +1,199 @@
-package edu.common.dynamicextensions.ui.interfaces;
 
+package edu.common.dynamicextensions.ui.interfaces;
 
 /**
  * 
  * @author deepti_shelar
  *
  */
-public interface AbstractAttributeUIBeanInterface {
+public interface AbstractAttributeUIBeanInterface
+{
 
 	/**
 	 * Returns the attributesize
-	 * @return
+	 * @return String AttributeSize
 	 */
-	public String getAttributeSize() ;
+	String getAttributeSize();
+
 	/**
 	 * @param attributeSize The attributeSize to set.
 	 */
-	public void setAttributeSize(String attributeSize);
+	void setAttributeSize(String attributeSize);
+
 	/**
 	 * @return Returns the attributeFormat.
 	 */
-	public String getFormat(); 
+	 String getFormat();
+
 	/**
 	 * @param attributeFormat The attributeFormat to set.
 	 */
-	public void setFormat(String attributeFormat);
+	 void setFormat(String attributeFormat);
 
 	/**
 	 * @return Returns the attributeDefaultValue.
 	 */
-	public String getAttributeDefaultValue() ;
+	 String getAttributeDefaultValue();
+
 	/**
 	 * @param attributeDefaultValue The attributeDefaultValue to set.
 	 */
-	public void setAttributeDefaultValue(String attributeDefaultValue) ;
+	 void setAttributeDefaultValue(String attributeDefaultValue);
+
 	/**
 	 * @return Returns the attributeDisplayUnits.
 	 */
-	public String getAttributeDisplayUnits() ;
+	 String getAttributeDisplayUnits();
+
 	/**
 	 * @param attributeDisplayUnits The attributeDisplayUnits to set.
 	 */
-	public void setAttributeDisplayUnits(String attributeDisplayUnits) ;
+	 void setAttributeDisplayUnits(String attributeDisplayUnits);
+
 	/**
 	 * @return Returns the attributeDecimalPlaces.
 	 */
-	public String getAttributeDecimalPlaces() ;
+	 String getAttributeDecimalPlaces();
+
 	/**
 	 * @param attributeDecimalPlaces The attributeDecimalPlaces to set.
 	 */
-	public void setAttributeDecimalPlaces(String attributeDecimalPlaces) ;
+	 void setAttributeDecimalPlaces(String attributeDecimalPlaces);
 
 	/**
 	 * @return Returns the attributeIdentifier.
 	 */
-	public String getAttributeIdentifier() ;
+	 String getAttributeIdentifier();
+
 	/**
 	 * @param attributeIdentifier The attributeIdentifier to set.
 	 */
-	public void setAttributeIdentifier(String attributeIdentifier);
+	 void setAttributeIdentifier(String attributeIdentifier);
 
 	/**
 	 * @return the attributeMeasurementUnits
 	 */
-	public String getAttributeMeasurementUnits() ;
+	 String getAttributeMeasurementUnits();
 
 	/**
 	 * @param attributeMeasurementUnits the attributeMeasurementUnits to set
 	 */
-	public void setAttributeMeasurementUnits(String attributeMeasurementUnits);
+	 void setAttributeMeasurementUnits(String attributeMeasurementUnits);
+
 	/**
 	 * @return Returns the dataType.
 	 */
 
-	public String getDataType();
+	 String getDataType();
+
 	/**
 	 * @param dataType The dataType to set.
 	 */
-	public void setDataType(String dataType);
+	 void setDataType(String dataType);
 
 	/**
 	 * Number of digits before decimal 
-	 * @return
+	 * @return String AttributeDigits
 	 */
-	public String getAttributeDigits();
+	 String getAttributeDigits();
 
 	/**
 	 * @param attributeDigits : Number of digits before decimal
 	 */
-	public void setAttributeDigits(String attributeDigits);
+	 void setAttributeDigits(String attributeDigits);
 
 	/**
 	 * 
 	 * @return Name
 	 */
-	public String getName();
+	 String getName();
 
 	/**
 	 * 
 	 * @param name Name
 	 */
-	public void setName(String name);
+	 void setName(String name);
 
 	/**
 	 * 
 	 * @return Description
 	 */
-	public String getDescription();
+	 String getDescription();
 
 	/**
 	 * 
 	 * @param name Description
 	 */
-	public void setDescription(String name);
+	 void setDescription(String name);
+
 	/**
 	 * @return Returns the choiceList.
 	 */
-	public String getChoiceList(); 
+	 String getChoiceList();
+
 	/**
 	 * @param choiceList The choiceList to set.
 	 */
-	public void setChoiceList(String choiceList);
+	 void setChoiceList(String choiceList);
+
 	/**
 	 * @return Returns the displayChoice.
 	 */
-	public String getDisplayChoice();
+	 String getDisplayChoice();
+
 	/**
 	 * @param displayChoice The displayChoice to set.
 	 */
-	public void setDisplayChoice(String displayChoice);
+	 void setDisplayChoice(String displayChoice);
+
 	/**
 	 * 
 	 * @return Concept code
 	 */
-	public String getAttributeConceptCode();
+	 String getAttributeConceptCode();
 
 	/**
 	 * 
 	 * @param conceptCode Concept code
 	 */
-	public void setAttributeConceptCode(String conceptCode);
-	/**
-	 * 
-	 * @return
-	 */
-	public String getDateValueType();
-	/**
-	 * 
-	 * @param dateValueType
-	 */
-	public void setDateValueType(String dateValueType);
-	/**
-	 * 
-	 * @return
-	 */
-	public String getAttributeIdentified();
-	/**
-	 * 
-	 * @param attributeIdentified
-	 */
-	public void setAttributeIdentified(String attributeIdentified);
+	 void setAttributeConceptCode(String conceptCode);
 
 	/**
 	 * 
-	 * @return
+	 * @return String DateValueType
 	 */
-	String[] getValidationRules();
+	 String getDateValueType();
+
 	/**
 	 * 
-	 * @param validationRules
+	 * @param dateValueType dateValueType
+	 */
+	 void setDateValueType(String dateValueType);
+
+	/**
+	 * 
+	 * @return String AttributeIdentified
+	 */
+	 String getAttributeIdentified();
+
+	/**
+	 * 
+	 * @param attributeIdentified attributeIdentified
+	 */
+	 void setAttributeIdentified(String attributeIdentified);
+
+	/**
+	 * Returns validationRules : value of checkbox fields selected by user
+	 * @return String[] ValidationRules
+	 */
+	String[] getValidationRules();
+
+	/**
+	 * 
+	 * @param validationRules value of checkbox fields
 	 */
 	void setValidationRules(String[] validationRules);
+
 	/**
 	 * @return the max
 	 */

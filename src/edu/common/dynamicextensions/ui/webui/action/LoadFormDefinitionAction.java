@@ -29,6 +29,12 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 	/**
 	 * This method will call LoadFormDefinitionProcessor to load all the information needed for the form.
 	 * It will then forward the action to CreateForm.jsp. 
+	 * 
+	 * @param mapping ActionMapping mapping
+	 * @param form ActionForm form
+	 * @param  request HttpServletRequest request
+	 * @param response HttpServletResponse response
+	 * @return ActionForward forward to next action
 	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 	{

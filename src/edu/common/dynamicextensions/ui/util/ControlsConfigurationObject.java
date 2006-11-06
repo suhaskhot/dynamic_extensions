@@ -72,7 +72,7 @@ public class ControlsConfigurationObject
 		return dataTypesList;
 	}
 	/**
-	 * @param dataTypes the dataTypes to set
+	 * @param dataTypesList the dataTypes to set
 	 */
 	public void setDataTypesList(List dataTypesList)
 	{

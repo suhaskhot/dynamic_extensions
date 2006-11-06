@@ -28,7 +28,11 @@ import edu.common.dynamicextensions.util.global.Constants;
 public class AddControlsAction extends BaseDynamicExtensionsAction
 {
 	/**
-	 * 
+	 * @param mapping ActionMapping mapping
+	 * @param form ActionForm form
+	 * @param  request HttpServletRequest request
+	 * @param response HttpServletResponse response
+	 * @return ActionForward forward to next action
 	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 	{
@@ -66,7 +70,8 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * 
+	 * This method initializes MeasurementUnits needed for the actionForm
+	 * @param controlsForm actionForm
 	 */
 	private void initializeMeasurementUnits(ControlsForm controlsForm)
 	{

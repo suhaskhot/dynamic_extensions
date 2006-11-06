@@ -1,5 +1,5 @@
-package edu.common.dynamicextensions.ui.webui.action;
 
+package edu.common.dynamicextensions.ui.webui.action;
 
 import java.util.Iterator;
 import java.util.List;
@@ -27,33 +27,40 @@ import edu.common.dynamicextensions.util.global.Constants;
  * And The exception thrown can be of 'System' type, in this case user will be directed to Error Page.
  * @author deepti_shelar
  */
-public class LoadFormControlsAction extends BaseDynamicExtensionsAction 
+public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 {
 	/**
-	 * 
+	 * @param mapping ActionMapping mapping
+	 * @param form ActionForm form
+	 * @param  request HttpServletRequest request
+	 * @param response HttpServletResponse response
+	 * @return ActionForward forward to next action
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) 
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 	{
-		ControlsForm actionForm = (ControlsForm)form;
-		ContainerInterface containerInterface = (ContainerInterface)CacheManager.getObjectFromCache(request,Constants.CONTAINER_INTERFACE);
+		ControlsForm actionForm = (ControlsForm) form;
+		ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 
-		LoadFormControlsProcessor loadFormControlsProcessor =   LoadFormControlsProcessor.getInstance();
-		loadFormControlsProcessor.loadFormControls(actionForm,containerInterface);
+		LoadFormControlsProcessor loadFormControlsProcessor = LoadFormControlsProcessor.getInstance();
+		loadFormControlsProcessor.loadFormControls(actionForm, containerInterface);
 
-		if((actionForm.getDataType()!=null)&&(actionForm.getDataType().equals(ProcessorConstants.DATATYPE_NUMBER)))
+		if ((actionForm.getDataType() != null) && (actionForm.getDataType().equals(ProcessorConstants.DATATYPE_NUMBER)))
 		{
 			initializeMeasurementUnits(actionForm);
 		}
 		return mapping.findForward(Constants.SHOW_BUILD_FORM_JSP);
 
 	}
+	/**
+	 * Initialises MeasurementUnits
+	 * @param controlsForm actionform
+	 */
 	private void initializeMeasurementUnits(ControlsForm controlsForm)
 	{
-		if((controlsForm!=null)&&(controlsForm.getAttributeMeasurementUnits()!=null))
+		if ((controlsForm != null) && (controlsForm.getAttributeMeasurementUnits() != null))
 		{
 			//If value is not contained in the list, make "other" option as selected and value in textbox
-			if(!containsValue(controlsForm.getMeasurementUnitsList(),controlsForm.getAttributeMeasurementUnits()))
+			if (!containsValue(controlsForm.getMeasurementUnitsList(), controlsForm.getAttributeMeasurementUnits()))
 			{
 				controlsForm.setMeasurementUnitOther(controlsForm.getAttributeMeasurementUnits());
 				controlsForm.setAttributeMeasurementUnits(ProcessorConstants.MEASUREMENT_UNIT_OTHER);
@@ -67,26 +74,27 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 		{
 			controlsForm.setMeasurementUnitOther("");
 		}
-		
+
 	}
+
 	/**
 	 * Test whether the list contains a value
 	 * @param measurementUnitsList :List of strings
-	 * @param attributeMeasurementUnits
-	 * @return
+	 * @param attributeMeasurementUnit attributeMeasurementUnit
+	 * @return boolean whether the list contains a value
 	 */
 	private boolean containsValue(List measurementUnitsList, String attributeMeasurementUnit)
 	{
 		String measurementUnit = null;
-		if((measurementUnitsList!=null)&&(attributeMeasurementUnit!=null))
+		if ((measurementUnitsList != null) && (attributeMeasurementUnit != null))
 		{
 			Iterator iter = measurementUnitsList.iterator();
-			if(iter!=null)
+			if (iter != null)
 			{
-				while(iter.hasNext())
+				while (iter.hasNext())
 				{
-					measurementUnit = (String)iter.next();
-					if(attributeMeasurementUnit.equals(measurementUnit))
+					measurementUnit = (String) iter.next();
+					if (attributeMeasurementUnit.equals(measurementUnit))
 					{
 						return true;
 					}

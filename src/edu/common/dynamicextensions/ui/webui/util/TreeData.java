@@ -238,14 +238,14 @@ public class TreeData
 
 class TNodeList
 {
-	Vector<TNode> childNodeList = null;
+	Vector childNodeList = null;
 	private int length = 0;
 
 	/**
 	 */
 	public TNodeList()
 	{
-		childNodeList = new Vector<TNode>();
+		childNodeList = new Vector();
 	}
 
 	/**

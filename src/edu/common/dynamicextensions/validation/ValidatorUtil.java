@@ -30,10 +30,10 @@ public class ValidatorUtil
 	 *                           value -- value that user has entred for this attribute
 	 * @return errorList if any
 	 */
-	public static List<String> validateEntity(Map attributeValueMap)
+	public static List validateEntity(Map attributeValueMap)
 	{
 
-		List<String> errorList = new ArrayList<String>();
+		List errorList = new ArrayList();
 
 		Set attributeSet = attributeValueMap.keySet();
 
@@ -51,8 +51,7 @@ public class ValidatorUtil
 			while (attributeRuleIterator.hasNext())
 			{
 				RuleInterface ruleInterface = (RuleInterface) attributeRuleIterator.next();
-				ValidatorRuleInterface validatorRule = ControlConfigurationsFactory.getInstance()
-						.getValidatorRule(ruleInterface.getName());
+				ValidatorRuleInterface validatorRule = ControlConfigurationsFactory.getInstance().getValidatorRule(ruleInterface.getName());
 				Object valueObject = attributeValueMap.get(attribute);
 				Map paramMap = getParamMap(ruleInterface);
 				try
@@ -61,8 +60,7 @@ public class ValidatorUtil
 				}
 				catch (DynamicExtensionsValidationException e)
 				{
-					String errorMessage = ApplicationProperties.getValue(e.getErrorCode(), e
-							.getPlaceHolderList());
+					String errorMessage = ApplicationProperties.getValue(e.getErrorCode(), e.getPlaceHolderList());
 					errorList.add(errorMessage);
 				}
 			}
@@ -72,8 +70,8 @@ public class ValidatorUtil
 
 	/**
 	 * 
-	 * @param attributeRule
-	 * @return
+	 * @param ruleInterface  :Rule interface
+	 * @return Map of parameters
 	 */
 	public static Map getParamMap(RuleInterface ruleInterface)
 	{
@@ -85,8 +83,7 @@ public class ValidatorUtil
 
 			while (paramIterator.hasNext())
 			{
-				RuleParameterInterface ruleParameterInterface = (RuleParameterInterface) paramIterator
-						.next();
+				RuleParameterInterface ruleParameterInterface = (RuleParameterInterface) paramIterator.next();
 				paramMap.put(ruleParameterInterface.getName(), ruleParameterInterface.getValue());
 			}
 		}

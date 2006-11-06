@@ -24,7 +24,7 @@ public class CacheManager
 
 	}
 
-	static Map<String, Object> cacheMap;
+	static Map cacheMap;
 
 	/**
 	 * Add object to cache 
@@ -32,7 +32,7 @@ public class CacheManager
 	 * @param key : Key to be used while storing object in cache
 	 * @param formDetailsObject : Object to be stored in cache
 	 */
-	@SuppressWarnings("unchecked")
+	
 	public static void addObjectToCache(HttpServletRequest request, String key, Object formDetailsObject)
 	{
 		HttpSession session = request.getSession();
@@ -40,14 +40,19 @@ public class CacheManager
 
 		if (cacheMap == null)
 		{
-			cacheMap = new HashMap<String, Object>();
+			cacheMap = new HashMap();
 			session.setAttribute(Constants.CACHE_MAP, cacheMap);
 		}
 		cacheMap.put(key, formDetailsObject);
 
 	}
 
-	@SuppressWarnings("unchecked")
+	/**
+	 * Get object from cache for specified key
+	 * @param request : Request object
+	 * @param key : Key to search
+	 * @return : Object for specified key
+	 */
 	public static Object getObjectFromCache(HttpServletRequest request, String key)
 	{
 		HttpSession session = request.getSession();
@@ -55,30 +60,35 @@ public class CacheManager
 
 		if (session.getAttribute(Constants.CACHE_MAP) != null)
 		{
-			cacheMap = (Map<String, Object>) session.getAttribute(Constants.CACHE_MAP);
+			cacheMap = (Map) session.getAttribute(Constants.CACHE_MAP);
 			result = cacheMap.get(key);
 		}
 		return result;
 	}
-
-	@SuppressWarnings("unchecked")
+	/**
+	 * Remove object from cache
+	 * @param request : HTTP request object
+	 * @param key : Key for which object should be removed from cache
+	 */
 	public static void removeObjectFromCache(HttpServletRequest request, String key)
 	{
 		HttpSession session = request.getSession();
 		if (session.getAttribute(Constants.CACHE_MAP) != null)
 		{
-			cacheMap = (Map<String, Object>) session.getAttribute(Constants.CACHE_MAP);
+			cacheMap = (Map) session.getAttribute(Constants.CACHE_MAP);
 			cacheMap.remove(key);
 		}
 	}
-
-	@SuppressWarnings("unchecked")
+	/**
+	 * Clear cache object
+	 * @param request HTTP Request object
+	 */
 	public static void clearCache(HttpServletRequest request)
 	{
 		HttpSession session = request.getSession();
 		if (session.getAttribute(Constants.CACHE_MAP) != null)
 		{
-			cacheMap = (Map<String, Object>) session.getAttribute(Constants.CACHE_MAP);
+			cacheMap = (Map) session.getAttribute(Constants.CACHE_MAP);
 			cacheMap.clear();
 		}
 	}

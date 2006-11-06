@@ -162,81 +162,19 @@
 	
 	<!-- Create dynamic extensions jar Begins-->
 	    <target name="createDynamicExtensionsInterfaceJAR" depends="compile" >
-	    	
-	        
-	        <copy todir="${interface.dir}/edu/common/dynamicextensions/domain">
-	        	<fileset dir="${target.dir}/edu/common/dynamicextensions/domain">
-	        		<include name="**/*.class"/>
-	           	</fileset>
-	        </copy>	
-	    	
-	        <copy todir="${interface.dir}/edu/common/dynamicextensions/domain/databaseproperties">        	
-	    	   	<fileset dir="${target.dir}/edu/common/dynamicextensions/domain/databaseproperties">
-	        	  		<include name="**/*.class"/>
-	        	</fileset>
-	        </copy>	
-	        	
-            <copy todir="${interface.dir}/edu/common/dynamicextensions/domain/userinterface">
-	        	<fileset dir="${target.dir}/edu/common/dynamicextensions/domain/userinterface">
-	        	  		<include name="**/*.class"/>
-	        	</fileset>
-            </copy>	
-	        	
-            <copy todir="${interface.dir}/edu/common/dynamicextensions/domain/validationrules">
-	        	<fileset dir="${target.dir}/edu/common/dynamicextensions/domain/validationrules">
-	        	   		<include name="**/*.class"/>
-	        	</fileset>
-         	</copy>
-	    	
-	    	
-	    	<copy todir="${interface.dir}/edu/common/dynamicextensions/domaininterface">
-	    		   	<fileset dir="${target.dir}/edu/common/dynamicextensions/domaininterface">
-	    		       		<include name="**/*.class"/>
-	    		  	</fileset>
-	        </copy>	
-	    		    	
-	        <copy todir="${interface.dir}/edu/common/dynamicextensions/domaininterface/databaseproperties">        	
-	        	   	<fileset dir="${target.dir}/edu/common/dynamicextensions/domaininterface/databaseproperties">
-	    	        	  		<include name="**/*.class"/>
-	            	</fileset>
-	        </copy>	
-	    		        	
-	        <copy todir="${interface.dir}/edu/common/dynamicextensions/domaininterface/userinterface">
-	    	        	<fileset dir="${target.dir}/edu/common/dynamicextensions/domaininterface/userinterface">
-	    	        	  		<include name="**/*.class"/>
-	    	        	</fileset>
-	        </copy>	
-	    		        	
-	        <copy todir="${interface.dir}/edu/common/dynamicextensions/domaininterface/validationrules">
-	            	<fileset dir="${target.dir}/edu/common/dynamicextensions/domaininterface/validationrules">
-	            	   		<include name="**/*.class"/>
-	            	</fileset>
-	        </copy>
-	    	
-	    	<copy todir="${interface.dir}/edu/common/dynamicextensions/exception">
-	    		   	<fileset dir="${target.dir}/edu/common/dynamicextensions/exception">
-	    		      	 	<include name="**/*.class"/>
-	    		   	</fileset>
-	        </copy>	
-	    		    		        	
-	        <copy todir="${interface.dir}/edu/common/dynamicextensions/entitymanager">
-	               	<fileset dir="${target.dir}/edu/common/dynamicextensions/entitymanager">
-	               	   		<include name="**/*.class"/>
-	              	</fileset>
-	       	</copy>
-	   	    	
-	        <jar taskname="buildJar" jarfile="${interface.dir}/DynamicExtensions.jar">
-	            <fileset dir="${interface.dir}">
-		            <exclude name="**/CVS*"/>
-		        </fileset>
-	        	
+    	   <jar taskname="buildJar" jarfile="${interface.dir}/DynamicExtensions.jar">
+	    		<fileset dir="${target.dir}" >
+	    				<include name="**/domain/**/*.class"/>
+	    				<include name="**/domaininterface/**/*.class"/>
+	    				<include name="**/exception/*.class"/>
+	    				<include name="**/entitymanager/**.class"/>
+    		    </fileset>
 	        	 <manifest>
 	        	      <attribute name="Built-By" value="Sujay Narkar"/>
 	        	 	 
 	        	      <section name="${DynamicExtensions.jar.details}">
 	        	        <attribute name="Version" value="${DynamicExtensions.jar.version}"/>
 	        	      	<attribute name="Creation date" value="${DynamicExtensions.jar.creationDate}"/>
-	        	      	
 	        	      </section>
 	        	 </manifest>
 	        </jar>
@@ -244,72 +182,13 @@
 	<!-- Create dynamic extensions jar Begins-->
 	
 	<target name="createDynamicExtensionsInterfaceSourceZip" depends="compile" >
-	    	
-	  	 <copy todir="${interface.src.dir}/edu/common/dynamicextensions/domain">
-	       	<fileset dir="${src.dir}/edu/common/dynamicextensions/domain">
-	          		<include name="**/*.java"/>
-	       	</fileset>
-	     </copy>	
-	              		
-	        	
-	    <copy todir="${interface.src.dir}/edu/common/dynamicextensions/domain/databaseproperties">
-	       	<fileset dir="${src.dir}/edu/common/dynamicextensions/domain/databaseproperties">
-	           		<include name="**/*.java"/>
-	       	</fileset>
-	    </copy>      
-	        	 	        		
-	   <copy todir="${interface.src.dir}/edu/common/dynamicextensions/domain/userinterface">
-	       	<fileset dir="${src.dir}/edu/common/dynamicextensions/domain/userinterface">
-	       		<include name="**/*.java"/>
-	       	</fileset>
-	   </copy>       
-	    	        			    
-	    <copy todir="${interface.src.dir}/edu/common/dynamicextensions/domain/validationrules">
-	       	<fileset dir="${src.dir}/edu/common/dynamicextensions/domain/validationrules">
-	       		<include name="**/*.java"/>
-	       	</fileset>
-	    </copy>       
-	        	
-	    <copy todir="${interface.src.dir}/edu/common/dynamicextensions/domaininterface">
-	       	<fileset dir="${src.dir}/edu/common/dynamicextensions/domaininterface">
-	      		<include name="**/*.java"/>
-	       	</fileset>
-	     </copy>       
-	               		
-	      <copy todir="${interface.src.dir}/edu/common/dynamicextensions/domaininterface/databaseproperties">
-	    	<fileset dir="${src.dir}/edu/common/dynamicextensions/domaininterface/databaseproperties">
-	    		<include name="**/*.java"/>
-	       	</fileset>
-	     </copy> 	               		
-	    	        		
-	     <copy todir="${interface.src.dir}/edu/common/dynamicextensions/domaininterface/userinterface">
-	       	<fileset dir="${src.dir}/edu/common/dynamicextensions/domaininterface/userinterface">
-	    		<include name="**/*.java"/>
-	       	</fileset>
-	      </copy>
-	    
-   		<copy todir="${interface.src.dir}/edu/common/dynamicextensions/domaininterface/validationrules">
-	       	<fileset dir="${src.dir}/edu/common/dynamicextensions/domaininterface/validationrules">
-	    		<include name="**/*.java"/>
-	       	</fileset>
-	    </copy>
-	           
-      	<copy todir="${interface.src.dir}/edu/common/dynamicextensions/exception">
-	       	<fileset dir="${src.dir}/edu/common/dynamicextensions/exception">
-  		    		<include name="**/*.java"/>
-	       	</fileset>
-	    </copy>
-	     
-       	<copy todir="${interface.src.dir}/edu/common/dynamicextensions/entitymanager">
-	       	<fileset dir="${src.dir}/edu/common/dynamicextensions/entitymanager">
-     		    		<include name="**/*.java"/>
-	       	</fileset>
-	    </copy>
-	    	               		
-		<zip destfile="${interface.src.dir}/DynamicExtensions-src.zip">
-	       	<fileset dir="${interface.src.dir}" includes="**/*">
-		       
-	 		</fileset>	       	 	
+		<zip destfile="${interface.src.dir}/DynamicExtensions-src.zip" >
+		      	<fileset dir="${src.dir}" >
+	    				<include name="**/domain/**/*.java"/>
+	    				<include name="**/domaininterface/**/*.java"/>
+	    				<include name="**/exception/*.java"/>
+	    				<include name="**/entitymanager/**.java"/>
+	    		 </fileset>
 	   </zip>
 	</target>
 	

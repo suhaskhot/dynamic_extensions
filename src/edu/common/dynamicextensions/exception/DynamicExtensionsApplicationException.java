@@ -4,9 +4,12 @@
  *<p>Copyright:TODO</p>
  *@author Vishvesh Mulay
  *@version 1.0
- */ 
+ */
+
 package edu.common.dynamicextensions.exception;
 
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *<p>Title: DynamicExtensionsApplicationException</p>
@@ -20,33 +23,63 @@ package edu.common.dynamicextensions.exception;
  *</p>
  *@author Vishvesh Mulay
  *@version 1.0
- */ 
-public class DynamicExtensionsApplicationException
-        extends
-            BaseDynamicExtensionsException
+ */
+public class DynamicExtensionsApplicationException extends BaseDynamicExtensionsException
 {
-    /**
-     * @param wrapException The wrapException to set.
-     */
-    public DynamicExtensionsApplicationException(String message, Exception wrapException) {
-       this.errorMessage = message;
-        this.wrappedException = wrapException;
-    }
-    /**
-     * @param wrapException The wrapException to set.
-     */
-    public DynamicExtensionsApplicationException(String message, Exception wrapException, String errorCode) {
-        this.errorMessage = message;
-         this.wrappedException = wrapException;
-         this.errorCode = errorCode;
-     }
-    
-    /**
-     * 
-     * @param message
-     */
-    public DynamicExtensionsApplicationException(String message) {
-        this(message,null);
-    }
-    
+
+	/**
+	 * @param wrapException The wrapException to set.
+	 */
+	public DynamicExtensionsApplicationException(String message, Exception wrapException)
+	{
+		this.errorMessage = message;
+		this.wrappedException = wrapException;
+	}
+
+	/**
+	 * @param wrapException The wrapException to set.
+	 */
+	public DynamicExtensionsApplicationException(String message, Exception wrapException,
+			String errorCode)
+	{
+		this.errorMessage = message;
+		this.wrappedException = wrapException;
+		this.errorCode = errorCode;
+	}
+
+	/**
+	 * 
+	 * @param message
+	 */
+	public DynamicExtensionsApplicationException(String message)
+	{
+		this(message, null);
+	}
+
+	/**
+	 * @param message
+	 * @param wrapException
+	 * @param errorCode
+	 */
+	public DynamicExtensionsApplicationException(String message, Exception wrapException,
+			String errorCode, List<String> placeHolders)
+	{
+		this.errorMessage = message;
+		this.wrappedException = wrapException;
+		this.errorCode = errorCode;
+		this.placeHolderList = placeHolders;
+
+	}
+
+	/**
+	 * @param message
+	 * @param wrapException
+	 * @param errorCode
+	 */
+	public DynamicExtensionsApplicationException(String message, Exception wrapException,
+			String errorCode, String singlePlaceHolder)
+	{
+		this(message, wrapException, errorCode);
+		this.placeHolderList.add(singlePlaceHolder);
+	}
 }

@@ -18,6 +18,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInte
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.ControlInformationObject;
@@ -52,8 +53,9 @@ public class LoadFormControlsProcessor
 	 * 
 	 * @param actionForm
 	 * @param containerInterface
+	 * @throws DynamicExtensionsSystemException dynamicExtensionsSystemException
 	 */
-	public void loadFormControls(ControlsForm controlsForm, ContainerInterface containerInterface)
+	public void loadFormControls(ControlsForm controlsForm, ContainerInterface containerInterface) throws DynamicExtensionsSystemException
 	{
 		if ((containerInterface != null) && (controlsForm != null))
 		{
@@ -212,8 +214,9 @@ public class LoadFormControlsProcessor
 	 * 
 	 * @param containerInterface
 	 * @return
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	private List getChildList(ContainerInterface containerInterface)
+	private List getChildList(ContainerInterface containerInterface) throws DynamicExtensionsSystemException
 	{
 		List<ControlInformationObject> childList = new ArrayList<ControlInformationObject>();
 		Collection controlCollection = containerInterface.getControlCollection();
@@ -269,8 +272,9 @@ public class LoadFormControlsProcessor
 	 * @param controlName
 	 * @param dataTypeName
 	 * @return
+	 * @throws DynamicExtensionsSystemException dynamicExtensionsSystemException
 	 */
-	private Map getControlRulesMap(String controlName)
+	private Map getControlRulesMap(String controlName) throws DynamicExtensionsSystemException
 	{
 		ControlConfigurationsFactory ccf = ControlConfigurationsFactory.getInstance();
 		return ccf.getRulesMap(controlName);

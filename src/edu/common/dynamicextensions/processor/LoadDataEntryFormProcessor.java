@@ -45,66 +45,56 @@ public class LoadDataEntryFormProcessor
 	 * 
 	 * @param actionForm
 	 * @param containerInterface
-	 * @throws DynamicExtensionsSystemException 
-	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException DynamicExtensionsApplicationException
 	 */
 	@SuppressWarnings("unchecked")
 	public ContainerInterface loadDataEntryForm(AbstractActionForm actionForm, ContainerInterface containerInterface, String containerIdentifier,
 			String recordId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		try
+
+		DataEntryForm dataEntryForm = (DataEntryForm) actionForm;
+		Map recordMap = null;
+
+		if (containerInterface == null || containerIdentifier != null)
 		{
-			DataEntryForm dataEntryForm = (DataEntryForm) actionForm;
-			Map recordMap = null;
+			containerInterface = DynamicExtensionsUtility.getContainerByIdentifier(containerIdentifier);
+		}
 
-			if (containerInterface == null || containerIdentifier != null)
+		if (recordId != null)
+		{
+			//Get corresponding Entity of the Container
+			EntityInterface entity = containerInterface.getEntity();
+			// Get corresponding Control Collection of the Container
+			Collection<ControlInterface> controlCollection = containerInterface.getControlCollection();
+
+			//Get Records of the corresponding Entity
+			EntityManagerInterface entityManager = EntityManager.getInstance();
+			recordMap = entityManager.getRecordById(entity, Long.valueOf(recordId));
+
+			Set<Map.Entry> recordSet = recordMap.entrySet();
+			for (Map.Entry recordNode : recordSet)
 			{
-				containerInterface = DynamicExtensionsUtility.getContainerByIdentifier(containerIdentifier);
-			}
+				String recordAttributeName = (String) recordNode.getKey();
+				String recordAttributeValue = (String) recordNode.getValue();
 
-			if (recordId != null)
-			{
-				//Get corresponding Entity of the Container
-				EntityInterface entity = containerInterface.getEntity();
-				// Get corresponding Control Collection of the Container
-				Collection<ControlInterface> controlCollection = containerInterface.getControlCollection();
-
-				//Get Records of the corresponding Entity
-				EntityManagerInterface entityManager = EntityManager.getInstance();
-				recordMap = entityManager.getRecordById(entity, Long.valueOf(recordId));
-
-				Set<Map.Entry> recordSet = recordMap.entrySet();
-				for (Map.Entry recordNode : recordSet)
+				for (ControlInterface control : controlCollection)
 				{
-					String recordAttributeName = (String) recordNode.getKey();
-					String recordAttributeValue = (String) recordNode.getValue();
-
-					for (ControlInterface control : controlCollection)
+					AbstractAttributeInterface controlAbstractAttribute = control.getAbstractAttribute();
+					if (controlAbstractAttribute.getName().equals(recordAttributeName))
 					{
-						AbstractAttributeInterface controlAbstractAttribute = control.getAbstractAttribute();
-						if (controlAbstractAttribute.getName().equals(recordAttributeName))
+						if (recordAttributeValue != null)
 						{
-							if (recordAttributeValue != null)
-							{
-								control.setValue(recordAttributeValue);
-							}
+							control.setValue(recordAttributeValue);
 						}
 					}
 				}
 			}
-			dataEntryForm.setContainerInterface(containerInterface);
-			if (dataEntryForm.getShowFormPreview() == null)
-			{
-				dataEntryForm.setShowFormPreview("");
-			}
 		}
-		catch (DynamicExtensionsSystemException dynamicExtensionsSystemException)
+		dataEntryForm.setContainerInterface(containerInterface);
+		if (dataEntryForm.getShowFormPreview() == null)
 		{
-			throw dynamicExtensionsSystemException;
-		}
-		catch (DynamicExtensionsApplicationException dynamicExtensionsApplicationException)
-		{
-			throw dynamicExtensionsApplicationException;
+			dataEntryForm.setShowFormPreview("");
 		}
 
 		return containerInterface;

@@ -37,21 +37,6 @@ public class LoadFormPreviewProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	public void populatePreviewForm(ContainerInterface containerInterface, PreviewForm previewForm) throws DynamicExtensionsApplicationException
 	{
-		try
-		{
-			//containerInterface = new MockEntityManager().getContainer("dummyEntity");
-			if (containerInterface != null)
-			{
-				previewForm.setContainerInterface(containerInterface);
-			}
-			else
-			{
-				throw new DynamicExtensionsApplicationException("Container does not exists.");
-			}
-		}
-		catch (DynamicExtensionsApplicationException dynamicExtensionsApplicationException)
-		{
-			throw dynamicExtensionsApplicationException;
-		}
+		previewForm.setContainerInterface(containerInterface);
 	}
 }

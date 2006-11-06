@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.processor;
 
 import java.lang.reflect.InvocationTargetException;
@@ -33,6 +34,7 @@ import edu.common.dynamicextensions.domaininterface.StringAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.interfaces.AbstractAttributeUIBeanInterface;
 import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
 import edu.common.dynamicextensions.ui.util.RuleConfigurationObject;
@@ -97,7 +99,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 
 	}
 
-	public void populateAttribute(AbstractAttributeInterface attributeInterface, AbstractAttributeUIBeanInterface attributeInformationIntf)
+	public void populateAttribute(AbstractAttributeInterface attributeInterface, AbstractAttributeUIBeanInterface attributeInformationIntf) throws DynamicExtensionsSystemException
 	{
 		if ((attributeInformationIntf != null) && (attributeInterface != null))
 		{
@@ -166,8 +168,9 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * 
 	 * @param attributeInterface
 	 * @param attributeInformationIntf
+	 * @throws DynamicExtensionsSystemException dynamicExtensionsSystemException
 	 */
-	public void populateRules(AbstractAttributeInterface abstractAttributeInterface, AbstractAttributeUIBeanInterface attributeInformationIntf)
+	public void populateRules(AbstractAttributeInterface abstractAttributeInterface, AbstractAttributeUIBeanInterface attributeInformationIntf) throws DynamicExtensionsSystemException
 	{
 		String[] validationRules = attributeInformationIntf.getValidationRules();
 		if (validationRules != null)
@@ -200,10 +203,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * 
 	 * @param ruleConfigurationObject
 	 * @return
+	 * @throws DynamicExtensionsSystemException DynamicExtensionsSystemException
 	 */
 	@SuppressWarnings("unchecked")
 	private Collection<RuleParameterInterface> getRuleParameterCollection(RuleConfigurationObject ruleConfigurationObject,
-			AbstractAttributeUIBeanInterface abstractAttributeUIBeanInterface)
+			AbstractAttributeUIBeanInterface abstractAttributeUIBeanInterface) throws DynamicExtensionsSystemException
 	{
 		Collection<RuleParameterInterface> RuleParameterCollection = new HashSet<RuleParameterInterface>();
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
@@ -237,31 +241,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 					RuleParameterCollection.add(ruleParameterInterface);
 
 				}
-				catch (SecurityException e)
+				catch (Exception e)
 				{
-					e.printStackTrace();
+					throw new DynamicExtensionsSystemException(e.getMessage(),e);
 				}
-				catch (NoSuchMethodException e)
-				{
-					e.printStackTrace();
-				}
-				catch (IllegalArgumentException e)
-				{
-					e.printStackTrace();
-				}
-				catch (IllegalAccessException e)
-				{
-					e.printStackTrace();
-				}
-				catch (InvocationTargetException e)
-				{
-					e.printStackTrace();
-				}
-
-				catch (ClassNotFoundException e)
-				{
-					e.printStackTrace();
-				}
+			
 			}
 		}
 
@@ -495,7 +479,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 
 	}
 
-	public AttributeInterface createAndPopulateAttribute(AbstractAttributeUIBeanInterface attributeInformationIntf)
+	public AttributeInterface createAndPopulateAttribute(AbstractAttributeUIBeanInterface attributeInformationIntf) throws DynamicExtensionsSystemException
 	{
 		AttributeInterface attributeInterface = createAttribute(attributeInformationIntf);
 		populateAttribute(attributeInterface, attributeInformationIntf);

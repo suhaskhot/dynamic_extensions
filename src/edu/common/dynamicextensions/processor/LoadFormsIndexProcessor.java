@@ -41,30 +41,13 @@ public class LoadFormsIndexProcessor extends BaseDynamicExtensionsProcessor
 	public void populateFormsIndex(FormsIndexForm loadFormIndexForm) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		Collection<ContainerInterface> containerCollection = null;
-		try
+		EntityManager entityManager = EntityManager.getInstance();
+		containerCollection = entityManager.getAllContainers();
+		if (containerCollection == null)
 		{
-			EntityManager entityManager = EntityManager.getInstance();
-			containerCollection = entityManager.getAllContainers();
-
-			/*for(ContainerInterface container: containerCollection)
-			 {
-			 EntityInterface entity = container.getEntity();
-			 Date date = entity.getCreatedDate();
-			 }*/
-
-			if (containerCollection == null)
-			{
-				containerCollection = new HashSet<ContainerInterface>();
-			}
-			loadFormIndexForm.setContainerCollection(containerCollection);
+			containerCollection = new HashSet<ContainerInterface>();
 		}
-		catch (DynamicExtensionsApplicationException e)
-		{
-			throw e;
-		}
-		catch (DynamicExtensionsSystemException e)
-		{
-			throw e;
-		}
+		loadFormIndexForm.setContainerCollection(containerCollection);
 	}
+
 }

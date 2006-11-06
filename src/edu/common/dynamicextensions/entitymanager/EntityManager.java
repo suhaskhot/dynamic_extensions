@@ -68,7 +68,11 @@ import edu.wustl.common.util.logger.Logger;
  * @author Vishvesh Mulay
  * @author Rahul Ner
  */
-public class EntityManager implements EntityManagerInterface, EntityManagerConstantsInterface, EntityManagerExceptionConstantsInterface
+public class EntityManager
+		implements
+			EntityManagerInterface,
+			EntityManagerConstantsInterface,
+			EntityManagerExceptionConstantsInterface
 {
 
 	/**
@@ -120,8 +124,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @return EntityInterface entity interface
 	 * 
 	 */
-	public EntityInterface createEntity(EntityInterface entityInterface) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public EntityInterface createEntity(EntityInterface entityInterface)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		logDebug("createEntity", "Entering method");
 		Entity entity = (Entity) entityInterface;
@@ -157,7 +161,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 			while (iterator.hasNext())
 			{
 				AbstractAttribute attribute = (AbstractAttribute) iterator.next();
-				if (attribute instanceof Attribute && ((Attribute) attribute).getColumnProperties() == null)
+				if (attribute instanceof Attribute
+						&& ((Attribute) attribute).getColumnProperties() == null)
 				{
 					ColumnProperties colProperties = new ColumnProperties();
 					String colName = COLUMN_NAME_PREFIX + UNDERSCORE + attribute.getId();
@@ -175,7 +180,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @param entity Entity whose name's uniqueness is to be checked.
 	 * @throws DynamicExtensionsApplicationException This will basically act as a duplicate name  exception.
 	 */
-	private void checkForDuplicateEntityName(Entity entity) throws DynamicExtensionsApplicationException
+	private void checkForDuplicateEntityName(Entity entity)
+			throws DynamicExtensionsApplicationException
 	{
 		// TODO Auto-generated method stub
 
@@ -191,7 +197,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @throws DynamicExtensionsSystemException Whenever there is any exception , this exception is thrown with proper message and the exception is 
 	 * wrapped inside this exception.
 	 */
-	private Stack executeDataTableQueries(Entity entity, List queryList, List reverseQueryList) throws DynamicExtensionsSystemException
+	private Stack executeDataTableQueries(Entity entity, List queryList, List reverseQueryList)
+			throws DynamicExtensionsSystemException
 	{
 		Session session = null;
 		try
@@ -202,7 +209,9 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 		{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-			throw new DynamicExtensionsSystemException("Unable to exectute the data table queries .....Cannot access sesssion", e1, DYEXTN_S_002);
+			throw new DynamicExtensionsSystemException(
+					"Unable to exectute the data table queries .....Cannot access sesssion", e1,
+					DYEXTN_S_002);
 		}
 
 		Stack reverseQuerysubStack = new Stack();
@@ -224,7 +233,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 					}
 					catch (SQLException e)
 					{
-						throw new DynamicExtensionsSystemException("Exception occured while executing the data table query", e);
+						throw new DynamicExtensionsSystemException(
+								"Exception occured while executing the data table query", e);
 					}
 					try
 					{
@@ -237,14 +247,17 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 					catch (SQLException e)
 					{
 						rollbackQueries(reverseQuerysubStack, conn, entity);
-						throw new DynamicExtensionsSystemException("Exception occured while forming the data tables for entity", e, DYEXTN_S_002);
+						throw new DynamicExtensionsSystemException(
+								"Exception occured while forming the data tables for entity", e,
+								DYEXTN_S_002);
 					}
 				}
 			}
 		}
 		catch (HibernateException e)
 		{
-			throw new DynamicExtensionsSystemException("Cannot obtain connection to execute the data query", e, DYEXTN_S_001);
+			throw new DynamicExtensionsSystemException(
+					"Cannot obtain connection to execute the data query", e, DYEXTN_S_001);
 		}
 
 		return reverseQuerysubStack;
@@ -260,7 +273,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @param conn
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private void rollbackQueries(Stack reverseQueryList, Connection conn, Entity entity) throws DynamicExtensionsSystemException
+	private void rollbackQueries(Stack reverseQueryList, Connection conn, Entity entity)
+			throws DynamicExtensionsSystemException
 	{
 		if (reverseQueryList != null && !reverseQueryList.isEmpty())
 		{
@@ -285,7 +299,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 				finally
 				{
 					DynamicExtensionsSystemException ex = new DynamicExtensionsSystemException(
-							"Queries rolled back....Could not create data table for the entity" + entity);
+							"Queries rolled back....Could not create data table for the entity"
+									+ entity);
 					ex.setErrorCode(DYEXTN_S_000);
 					throw ex;
 				}
@@ -304,7 +319,9 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 */
 	private void LogFatalError(SQLException e, Entity entity)
 	{
-		Logger.out.error("***Fatal Error.. Incosistent data table and metadata information for the entity -" + entity.getName());
+		Logger.out
+				.error("***Fatal Error.. Incosistent data table and metadata information for the entity -"
+						+ entity.getName());
 		Logger.out.error("Please check the table -" + entity.getTableProperties().getName());
 		Logger.out.error("The cause of the exception is - " + e.getMessage());
 		Logger.out.error("The detailed log is : ");
@@ -320,11 +337,13 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @return List of all the data table queries
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private List getQueryList(Entity entity, List reverseQueryList) throws DynamicExtensionsSystemException
+	private List getQueryList(Entity entity, List reverseQueryList)
+			throws DynamicExtensionsSystemException
 	{
 		List queryList = new ArrayList();
 		String mainTableQuery = getEntityMainDataTableQuery(entity, reverseQueryList);
-		List associationTableQueryList = getDataTableQueriesForAssociationsInEntity(entity, reverseQueryList);
+		List associationTableQueryList = getDataTableQueriesForAssociationsInEntity(entity,
+				reverseQueryList);
 		queryList.add(mainTableQuery);
 		queryList.addAll(associationTableQueryList);
 		return queryList;
@@ -349,11 +368,13 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @return String The method returns the "CREATE TABLE" query for the data table query for the entity passed.
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private String getEntityMainDataTableQuery(Entity entity, List reverseQueryList) throws DynamicExtensionsSystemException
+	private String getEntityMainDataTableQuery(Entity entity, List reverseQueryList)
+			throws DynamicExtensionsSystemException
 	{
 		String dataType = getDataTypeForIdentifier();
 		String tableName = entity.getTableProperties().getName();
-		StringBuffer query = new StringBuffer(CREATE_TABLE + " " + tableName + " " + OPENING_BRACKET + " " + IDENTIFIER + " " + dataType + COMMA);
+		StringBuffer query = new StringBuffer(CREATE_TABLE + " " + tableName + " "
+				+ OPENING_BRACKET + " " + IDENTIFIER + " " + dataType + COMMA);
 		Collection attributeCollection = entity.getAttributeCollection();
 		if (attributeCollection != null && !attributeCollection.isEmpty())
 		{
@@ -395,8 +416,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @return String query part of that attribute.
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private String getQueryPartForAbstractAttribute(AbstractAttribute attribute, boolean processUniqueConstraint)
-			throws DynamicExtensionsSystemException
+	private String getQueryPartForAbstractAttribute(AbstractAttribute attribute,
+			boolean processUniqueConstraint) throws DynamicExtensionsSystemException
 	{
 		String attributeQuery = null;
 		if (attribute != null)
@@ -405,11 +426,13 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 			{
 				try
 				{
-					attributeQuery = getQueryPartForAttribute((Attribute) attribute, processUniqueConstraint);
+					attributeQuery = getQueryPartForAttribute((Attribute) attribute,
+							processUniqueConstraint);
 				}
 				catch (DataTypeFactoryInitializationException e)
 				{
-					throw new DynamicExtensionsSystemException("Exception occured while retrieving the database type of the attribute");
+					throw new DynamicExtensionsSystemException(
+							"Exception occured while retrieving the database type of the attribute");
 				}
 			}
 			else if (attribute instanceof Association)
@@ -437,7 +460,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @return String query part of the primitive attribute.
 	 * @throws DataTypeFactoryInitializationException 
 	 */
-	private String getQueryPartForAttribute(Attribute attribute, boolean processUniqueConstraint) throws DynamicExtensionsSystemException
+	private String getQueryPartForAttribute(Attribute attribute, boolean processUniqueConstraint)
+			throws DynamicExtensionsSystemException
 	{
 
 		//TODO IS UNIQUE AND NOT NULL TO BE ADDED HERE 
@@ -450,8 +474,9 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 			if (processUniqueConstraint && attribute.getIsPrimaryKey())
 			{
 
-				isUnique = CONSTRAINT_KEYWORD + WHITESPACE + attribute.getColumnProperties().getName() + UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX
-						+ WHITESPACE + UNIQUE_KEYWORD;
+				isUnique = CONSTRAINT_KEYWORD + WHITESPACE
+						+ attribute.getColumnProperties().getName() + UNDERSCORE
+						+ UNIQUE_CONSTRAINT_SUFFIX + WHITESPACE + UNIQUE_KEYWORD;
 
 				nullConstraint = "NULL";
 
@@ -461,7 +486,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 				}
 			}
 
-			attributeQuery = columnName + " " + getDatabaseTypeAndSize(attribute) + WHITESPACE + isUnique + WHITESPACE + nullConstraint;
+			attributeQuery = columnName + " " + getDatabaseTypeAndSize(attribute) + WHITESPACE
+					+ isUnique + WHITESPACE + nullConstraint;
 		}
 		return attributeQuery;
 	}
@@ -473,7 +499,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @throws DynamicExtensionsSystemException 
 	 * @throws DataTypeFactoryInitializationException 
 	 */
-	private String getDatabaseTypeAndSize(Attribute attribute) throws DynamicExtensionsSystemException
+	private String getDatabaseTypeAndSize(Attribute attribute)
+			throws DynamicExtensionsSystemException
 
 	{
 		try
@@ -498,20 +525,19 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 			else if (attribute instanceof FloatAttribute)
 			{
 				return dataTypeFactory.getDatabaseDataType("Boolean");
-			} 
+			}
 			else if (attribute instanceof DoubleAttribute)
 			{
 				return dataTypeFactory.getDatabaseDataType("Double");
-			} 
+			}
 			else if (attribute instanceof LongAttribute)
 			{
 				return dataTypeFactory.getDatabaseDataType("Long");
-			} 
+			}
 			else if (attribute instanceof ShortAttribute)
 			{
 				return dataTypeFactory.getDatabaseDataType("Short");
-			} 
-			
+			}
 
 		}
 		catch (DataTypeFactoryInitializationException e)
@@ -540,7 +566,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public EntityInterface getEntityByName(String entityName) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public EntityInterface getEntityByName(String entityName)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		return null;
 	}
@@ -552,7 +579,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Collection getEntitiesByAttributeName(String attributeName) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public Collection getEntitiesByAttributeName(String attributeName)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		return null;
 	}
@@ -563,13 +591,15 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Collection getAllEntities() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public Collection getAllEntities() throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		return getAllObjects(EntityInterface.class.getName());
 	}
 
 	@SuppressWarnings("unchecked")
-	public Collection<ContainerInterface> getAllContainers() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public Collection<ContainerInterface> getAllContainers()
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		return getAllObjects(ContainerInterface.class.getName());
 	}
@@ -577,7 +607,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getEntityByIdentifier(java.lang.String)
 	 */
-	public EntityInterface getEntityByIdentifier(String identifier) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public EntityInterface getEntityByIdentifier(String identifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		return (EntityInterface) getObjectByIdentifier(EntityInterface.class.getName(), identifier);
 	}
@@ -590,8 +621,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private AbstractMetadataInterface getObjectByIdentifier(String objectName, String identifier) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	private AbstractMetadataInterface getObjectByIdentifier(String objectName, String identifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
 		AbstractMetadataInterface object;
@@ -619,7 +650,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private Collection getAllObjects(String objectName) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private Collection getAllObjects(String objectName) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
 		Collection objectList = new HashSet();
@@ -647,8 +679,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public AttributeInterface getAttribute(String entityName, String attributeName) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public AttributeInterface getAttribute(String entityName, String attributeName)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		return null;
 	}
@@ -662,8 +694,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @throws DynamicExtensionsApplicationException
 	 */
 
-	public AssociationInterface getAssociation(String entityName, String sourceRoleName) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public AssociationInterface getAssociation(String entityName, String sourceRoleName)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		return null;
 	}
@@ -677,8 +709,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Collection getAssociations(String sourceEntityName, String targetEntityName) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public Collection getAssociations(String sourceEntityName, String targetEntityName)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		return null;
 	}
@@ -690,7 +722,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Collection getEntityByDescription(String entityDescription) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public Collection getEntityByDescription(String entityDescription)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		return null;
 	}
@@ -702,8 +735,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Collection getEntitiesByAttributeDescription(String attributeDescription) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public Collection getEntitiesByAttributeDescription(String attributeDescription)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		return null;
 	}
@@ -715,8 +748,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Collection getEntitiesByConceptCode(String entityConceptCode) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public Collection getEntitiesByConceptCode(String entityConceptCode)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		return null;
 	}
@@ -728,8 +761,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Collection getEntitiesByConceptName(String entityConceptName) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public Collection getEntitiesByConceptName(String entityConceptName)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		return null;
 	}
@@ -741,8 +774,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Collection getEntitiesByAttributeConceptCode(String attributeConceptCode) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public Collection getEntitiesByAttributeConceptCode(String attributeConceptCode)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		return null;
 	}
@@ -754,8 +787,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Collection getEntitiesByAttributeConceptName(String attributeConceptName) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public Collection getEntitiesByAttributeConceptName(String attributeConceptName)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		return null;
 	}
@@ -778,8 +811,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @throws DynamicExtensionsApplicationException Thrown if the entity name already exists.
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public ContainerInterface createContainer(ContainerInterface containerInterface) throws DynamicExtensionsApplicationException,
-			DynamicExtensionsSystemException
+	public ContainerInterface createContainer(ContainerInterface containerInterface)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		Container container = (Container) containerInterface;
 		Entity entity = (Entity) container.getEntity();
@@ -789,7 +822,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 		}
 		else
 		{
-			HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
+			HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
+					Constants.HIBERNATE_DAO);
 			Stack stack = null;
 			try
 			{
@@ -797,7 +831,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 			}
 			catch (DAOException e)
 			{
-				throw new DynamicExtensionsSystemException("Exception occured while opening a session to save the container.");
+				throw new DynamicExtensionsSystemException(
+						"Exception occured while opening a session to save the container.");
 			}
 			try
 			{
@@ -828,15 +863,18 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 				}
 				catch (DAOException e1)
 				{
-					throw new DynamicExtensionsSystemException("Error while rolling back the session", e1);
+					throw new DynamicExtensionsSystemException(
+							"Error while rolling back the session", e1);
 				}
 				catch (DynamicExtensionsSystemException e1)
 				{
-					throw new DynamicExtensionsSystemException("Error while rolling back the data table queries for the entity", e1);
+					throw new DynamicExtensionsSystemException(
+							"Error while rolling back the data table queries for the entity", e1);
 				}
 				catch (HibernateException e2)
 				{
-					throw new DynamicExtensionsSystemException("Error while getting connection to roll back the session.", e2);
+					throw new DynamicExtensionsSystemException(
+							"Error while getting connection to roll back the session.", e2);
 				}
 			}
 			catch (UserNotAuthorizedException e)
@@ -849,7 +887,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 				}
 				catch (DAOException e1)
 				{
-					throw new DynamicExtensionsSystemException("Error while rolling back the session", e1);
+					throw new DynamicExtensionsSystemException(
+							"Error while rolling back the session", e1);
 				}
 			}
 			catch (DynamicExtensionsSystemException e)
@@ -864,7 +903,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 				{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					throw new DynamicExtensionsSystemException("Error while executing the data table queries for entity", e1);
+					throw new DynamicExtensionsSystemException(
+							"Error while executing the data table queries for entity", e1);
 				}
 			}
 			finally
@@ -893,8 +933,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @throws DynamicExtensionsApplicationException Thrown if the entity name already exists.
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public ContainerInterface editContainer(ContainerInterface containerInterface) throws DynamicExtensionsApplicationException,
-			DynamicExtensionsSystemException
+	public ContainerInterface editContainer(ContainerInterface containerInterface)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		Container container = (Container) containerInterface;
 		Entity entity = (Entity) container.getEntity();
@@ -904,7 +944,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 		}
 		else
 		{
-			HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
+			HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
+					Constants.HIBERNATE_DAO);
 
 			Stack stack = null;
 			Entity databaseCopy = null;
@@ -914,7 +955,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 				{
 					Long id = entity.getId();
 					hibernateDAO.openSession(null);
-					List entityList = hibernateDAO.retrieve(Entity.class.getName(), Constants.ID, id);
+					List entityList = hibernateDAO.retrieve(Entity.class.getName(), Constants.ID,
+							id);
 					if (entityList != null && !entityList.isEmpty())
 					{
 						databaseCopy = (Entity) entityList.get(0);
@@ -925,7 +967,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 			}
 			catch (DAOException e)
 			{
-				throw new DynamicExtensionsSystemException("Exception occured while opening a session to save the container.");
+				throw new DynamicExtensionsSystemException(
+						"Exception occured while opening a session to save the container.");
 			}
 			try
 			{
@@ -953,15 +996,18 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 				}
 				catch (DAOException e1)
 				{
-					throw new DynamicExtensionsSystemException("Error while rolling back the session", e1);
+					throw new DynamicExtensionsSystemException(
+							"Error while rolling back the session", e1);
 				}
 				catch (DynamicExtensionsSystemException e1)
 				{
-					throw new DynamicExtensionsSystemException("Error while rolling back the data table queries for the entity", e1);
+					throw new DynamicExtensionsSystemException(
+							"Error while rolling back the data table queries for the entity", e1);
 				}
 				catch (HibernateException e2)
 				{
-					throw new DynamicExtensionsSystemException("Error while getting connection to roll back the session.", e2);
+					throw new DynamicExtensionsSystemException(
+							"Error while getting connection to roll back the session.", e2);
 				}
 			}
 			catch (UserNotAuthorizedException e)
@@ -974,7 +1020,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 				}
 				catch (DAOException e1)
 				{
-					throw new DynamicExtensionsSystemException("Error while rolling back the session", e1);
+					throw new DynamicExtensionsSystemException(
+							"Error while rolling back the session", e1);
 				}
 			}
 			catch (DynamicExtensionsSystemException e)
@@ -989,7 +1036,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 				{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					throw new DynamicExtensionsSystemException("Error while executing the data table queries for entity", e1);
+					throw new DynamicExtensionsSystemException(
+							"Error while executing the data table queries for entity", e1);
 				}
 			}
 			finally
@@ -1030,7 +1078,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#insertData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map)
 	 */
-	public void insertData(EntityInterface entity, Map dataValue) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	public void insertData(EntityInterface entity, Map dataValue)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		if (entity == null || dataValue == null || dataValue.isEmpty())
 		{
@@ -1054,7 +1103,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 			{
 				columnNameString.append(" , ");
 				columnValuesString.append(" , ");
-				String dbColumnName = ((AttributeInterface) attribute).getColumnProperties().getName();
+				String dbColumnName = ((AttributeInterface) attribute).getColumnProperties()
+						.getName();
 				Object value = dataValue.get(attribute);
 
 				columnNameString.append(dbColumnName);
@@ -1107,7 +1157,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 		}
 		else if (attribute instanceof DateAttribute)
 		{
-			formattedvalue = Variables.strTodateFunction + "('" + value + "','" + Variables.datePattern + "')";
+			formattedvalue = Variables.strTodateFunction + "('" + value + "','"
+					+ Variables.datePattern + "')";
 		}
 		else
 		{
@@ -1147,33 +1198,40 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @throws DAOException
 	 * @throws ClassNotFoundException
 	 */
-	synchronized private Long getNextIdentifier(EntityInterface entity) throws DynamicExtensionsSystemException
+	synchronized private Long getNextIdentifier(EntityInterface entity)
+			throws DynamicExtensionsSystemException
 	{
 
 		String entityTableName = entity.getTableProperties().getName();
-		StringBuffer queryToGetNextIdentifier = new StringBuffer("SELECT MAX(IDENTIFIER) FROM " + entityTableName);
+		StringBuffer queryToGetNextIdentifier = new StringBuffer("SELECT MAX(IDENTIFIER) FROM "
+				+ entityTableName);
 		List resultList = null;
 		try
 		{
-			resultList = getResultInList(queryToGetNextIdentifier.toString(), new SessionDataBean(), false, false, null);
+			resultList = getResultInList(queryToGetNextIdentifier.toString(),
+					new SessionDataBean(), false, false, null);
 		}
 		catch (DAOException e)
 		{
-			throw new DynamicExtensionsSystemException("Could not fetch the next identifier for table " + entityTableName);
+			throw new DynamicExtensionsSystemException(
+					"Could not fetch the next identifier for table " + entityTableName);
 		}
 		catch (ClassNotFoundException e)
 		{
-			throw new DynamicExtensionsSystemException("Could not fetch the next identifier for table " + entityTableName);
+			throw new DynamicExtensionsSystemException(
+					"Could not fetch the next identifier for table " + entityTableName);
 		}
 
 		if (resultList == null)
 		{
-			throw new DynamicExtensionsSystemException("Could not fetch the next identifier for table " + entityTableName);
+			throw new DynamicExtensionsSystemException(
+					"Could not fetch the next identifier for table " + entityTableName);
 		}
 		List internalList = (List) resultList.get(0);
 		if (internalList == null || internalList.isEmpty())
 		{
-			throw new DynamicExtensionsSystemException("Could not fetch the next identifier for table " + entityTableName);
+			throw new DynamicExtensionsSystemException(
+					"Could not fetch the next identifier for table " + entityTableName);
 		}
 		String idString = (String) (internalList.get(0));
 
@@ -1205,16 +1263,17 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @throws DAOException
 	 * @throws ClassNotFoundException
 	 */
-	private List getResultInList(String queryToGetNextIdentifier, SessionDataBean sessionDataBean, boolean isSecureExecute,
-			boolean hasConditionOnIdentifiedField, Map queryResultObjectDataMap) throws DAOException, ClassNotFoundException
+	private List getResultInList(String queryToGetNextIdentifier, SessionDataBean sessionDataBean,
+			boolean isSecureExecute, boolean hasConditionOnIdentifiedField,
+			Map queryResultObjectDataMap) throws DAOException, ClassNotFoundException
 	{
 		List resultList = null;
 		JDBCDAO jdbcDAO = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
 		try
 		{
 			jdbcDAO.openSession(null);
-			resultList = jdbcDAO.executeQuery(queryToGetNextIdentifier, sessionDataBean, isSecureExecute, hasConditionOnIdentifiedField,
-					queryResultObjectDataMap);
+			resultList = jdbcDAO.executeQuery(queryToGetNextIdentifier, sessionDataBean,
+					isSecureExecute, hasConditionOnIdentifiedField, queryResultObjectDataMap);
 		}
 		catch (DAOException daoException)
 		{
@@ -1247,7 +1306,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @throws DynamicExtensionsSystemException This exception is thrown in case of any system error
 	 * @throws DynamicExtensionsApplicationException This exception is thrown in case of any application error
 	 */
-	public EntityInterface editEntity(EntityInterface entityInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public EntityInterface editEntity(EntityInterface entityInterface)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Entity entity = (Entity) entityInterface;
 		if (entityInterface == null)
@@ -1274,12 +1334,13 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @throws DynamicExtensionsApplicationException System exception in case of any fatal errors.
 	 * @throws DynamicExtensionsSystemException Thrown in case of duplicate name or authentication failure.
 	 */
-	private Entity saveOrUpdateEntity(EntityInterface entityInterface, boolean isNew) throws DynamicExtensionsApplicationException,
-			DynamicExtensionsSystemException
+	private Entity saveOrUpdateEntity(EntityInterface entityInterface, boolean isNew)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		logDebug("saveOrUpdateEntity", "Entering method");
 		Entity entity = (Entity) entityInterface;
-		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
+		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
+				Constants.HIBERNATE_DAO);
 		Stack stack = null;
 		try
 		{
@@ -1319,7 +1380,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 		catch (UserNotAuthorizedException e)
 		{
 
-			throw new DynamicExtensionsApplicationException("User is not authorised to perform this action", e, DYEXTN_A_002);
+			throw new DynamicExtensionsApplicationException(
+					"User is not authorised to perform this action", e, DYEXTN_A_002);
 		}
 		catch (DAOException e)
 		{
@@ -1333,7 +1395,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 			}
 			catch (Exception e1)
 			{
-				throw new DynamicExtensionsSystemException("Exception occured while rolling back the session", e1, DYEXTN_S_001);
+				throw new DynamicExtensionsSystemException(
+						"Exception occured while rolling back the session", e1, DYEXTN_S_001);
 			}
 			throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
 		}
@@ -1345,7 +1408,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 			}
 			catch (Exception e1)
 			{
-				throw new DynamicExtensionsSystemException("Exception occured while rolling back the session", e1, DYEXTN_S_001);
+				throw new DynamicExtensionsSystemException(
+						"Exception occured while rolling back the session", e1, DYEXTN_S_001);
 			}
 			throw e;
 		}
@@ -1359,7 +1423,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 			catch (DAOException e)
 			{
 				e.printStackTrace();
-				throw new DynamicExtensionsSystemException("Exception occured while closing the session", e, DYEXTN_S_001);
+				throw new DynamicExtensionsSystemException(
+						"Exception occured while closing the session", e, DYEXTN_S_001);
 			}
 
 		}
@@ -1377,8 +1442,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @throws DynamicExtensionsSystemException System exception in case of any fatal error
 	 * @throws DynamicExtensionsApplicationException Thrown in case of authentication failure or duplicate name.
 	 */
-	private Stack executeUpdateDataTableQueries(Entity entity, Entity databaseCopy) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	private Stack executeUpdateDataTableQueries(Entity entity, Entity databaseCopy)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		logDebug("executeUpdateDataTableQueries", "Entering method");
 		Stack rollBackQueryStack = null;
@@ -1391,7 +1456,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 			while (attributeIterator.hasNext())
 			{
 				AbstractAttribute abstractAttribute = (AbstractAttribute) attributeIterator.next();
-				AbstractAttribute abstractSavedAttribute = (AbstractAttribute) databaseCopy.getAttributeByIdentifier(abstractAttribute.getId());
+				AbstractAttribute abstractSavedAttribute = (AbstractAttribute) databaseCopy
+						.getAttributeByIdentifier(abstractAttribute.getId());
 
 				if (abstractAttribute instanceof Attribute)
 				{
@@ -1400,15 +1466,19 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 
 					if (savedAttribute == null)
 					{
-						String attributeQuery = processAddAttribute(attribute, attributeRollbackQueryList);
-						logDebug("executeUpdateDataTableQueries", "Query " + attributeQueryList.size() + "= " + attributeQuery);
+						String attributeQuery = processAddAttribute(attribute,
+								attributeRollbackQueryList);
+						logDebug("executeUpdateDataTableQueries", "Query "
+								+ attributeQueryList.size() + "= " + attributeQuery);
 						logDebug("executeUpdateDataTableQueries", "roll back Query "
-								+ attributeRollbackQueryList.get(attributeRollbackQueryList.size() - 1));
+								+ attributeRollbackQueryList
+										.get(attributeRollbackQueryList.size() - 1));
 						attributeQueryList.add(attributeQuery);
 					}
 					else
 					{
-						List modifiedAttributeQueryList = processModifyAttribute(attribute, savedAttribute, attributeRollbackQueryList);
+						List modifiedAttributeQueryList = processModifyAttribute(attribute,
+								savedAttribute, attributeRollbackQueryList);
 						attributeQueryList.addAll(modifiedAttributeQueryList);
 					}
 
@@ -1416,7 +1486,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 
 			}
 
-			rollBackQueryStack = executeDataTableQueries(entity, attributeQueryList, attributeRollbackQueryList);
+			rollBackQueryStack = executeDataTableQueries(entity, attributeQueryList,
+					attributeRollbackQueryList);
 		}
 		logDebug("executeUpdateDataTableQueries", "Exiting method");
 		return rollBackQueryStack;
@@ -1434,8 +1505,9 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private List processModifyAttribute(Attribute attribute, Attribute savedAttribute, List attributeRollbackQueryList)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private List processModifyAttribute(Attribute attribute, Attribute savedAttribute,
+			List attributeRollbackQueryList) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		List modifyAttributeQueryList = new ArrayList();
 		String tableName = attribute.getEntity().getTableProperties().getName();
@@ -1445,21 +1517,26 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 		 {
 		 */
 		String modifyAttributeQuery = getQueryPartForAbstractAttribute(attribute, false);
-		modifyAttributeQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + MODIFY_KEYWORD + WHITESPACE + modifyAttributeQuery;
+		modifyAttributeQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + MODIFY_KEYWORD
+				+ WHITESPACE + modifyAttributeQuery;
 
-		String modifyAttributeRollbackQuery = getQueryPartForAbstractAttribute(savedAttribute, false);
-		modifyAttributeRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + MODIFY_KEYWORD + WHITESPACE + modifyAttributeRollbackQuery;
+		String modifyAttributeRollbackQuery = getQueryPartForAbstractAttribute(savedAttribute,
+				false);
+		modifyAttributeRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE
+				+ MODIFY_KEYWORD + WHITESPACE + modifyAttributeRollbackQuery;
 		//process nullable
 		if (attribute.getIsNullable() && !savedAttribute.getIsNullable())
 		{
 			attributemodifiedFlag = true;
 			modifyAttributeQuery = modifyAttributeQuery + WHITESPACE + NULL_KEYWORD;
-			modifyAttributeRollbackQuery = modifyAttributeRollbackQuery + WHITESPACE + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD;
+			modifyAttributeRollbackQuery = modifyAttributeRollbackQuery + WHITESPACE + NOT_KEYWORD
+					+ WHITESPACE + NULL_KEYWORD;
 		}
 		else if (!attribute.getIsNullable() && savedAttribute.getIsNullable())
 		{
 			attributemodifiedFlag = true;
-			modifyAttributeQuery = modifyAttributeQuery + WHITESPACE + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD;
+			modifyAttributeQuery = modifyAttributeQuery + WHITESPACE + NOT_KEYWORD + WHITESPACE
+					+ NULL_KEYWORD;
 			//TODO add default constraint
 			modifyAttributeRollbackQuery = modifyAttributeRollbackQuery + WHITESPACE + NULL_KEYWORD;
 		}
@@ -1475,11 +1552,13 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 		if (attribute.getIsPrimaryKey() && !savedAttribute.getIsPrimaryKey())
 		{
 
-			String uniqueConstraintQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + ADD_KEYWORD + WHITESPACE + CONSTRAINT_KEYWORD
-					+ WHITESPACE + columnName + UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX + WHITESPACE + UNIQUE_KEYWORD + WHITESPACE + OPENING_BRACKET
-					+ columnName + CLOSING_BRACKET;
-			String uniqueConstraintRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + DROP_KEYWORD + WHITESPACE + CONSTRAINT_KEYWORD
-					+ WHITESPACE + columnName + UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX;
+			String uniqueConstraintQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE
+					+ ADD_KEYWORD + WHITESPACE + CONSTRAINT_KEYWORD + WHITESPACE + columnName
+					+ UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX + WHITESPACE + UNIQUE_KEYWORD
+					+ WHITESPACE + OPENING_BRACKET + columnName + CLOSING_BRACKET;
+			String uniqueConstraintRollbackQuery = ALTER_TABLE + WHITESPACE + tableName
+					+ WHITESPACE + DROP_KEYWORD + WHITESPACE + CONSTRAINT_KEYWORD + WHITESPACE
+					+ columnName + UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX;
 
 			modifyAttributeQueryList.add(uniqueConstraintQuery);
 			attributeRollbackQueryList.add(uniqueConstraintRollbackQuery);
@@ -1487,11 +1566,13 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 		}
 		else if (!attribute.getIsPrimaryKey() && savedAttribute.getIsPrimaryKey())
 		{
-			String uniqueConstraintQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + DROP_KEYWORD + WHITESPACE + CONSTRAINT_KEYWORD
-					+ WHITESPACE + columnName + UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX;
-			String uniqueConstraintRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + ADD_KEYWORD + WHITESPACE + CONSTRAINT_KEYWORD
-					+ WHITESPACE + columnName + UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX + WHITESPACE + UNIQUE_KEYWORD + WHITESPACE + OPENING_BRACKET
-					+ columnName + CLOSING_BRACKET;
+			String uniqueConstraintQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE
+					+ DROP_KEYWORD + WHITESPACE + CONSTRAINT_KEYWORD + WHITESPACE + columnName
+					+ UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX;
+			String uniqueConstraintRollbackQuery = ALTER_TABLE + WHITESPACE + tableName
+					+ WHITESPACE + ADD_KEYWORD + WHITESPACE + CONSTRAINT_KEYWORD + WHITESPACE
+					+ columnName + UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX + WHITESPACE
+					+ UNIQUE_KEYWORD + WHITESPACE + OPENING_BRACKET + columnName + CLOSING_BRACKET;
 
 			modifyAttributeQueryList.add(uniqueConstraintQuery);
 			attributeRollbackQueryList.add(uniqueConstraintRollbackQuery);
@@ -1507,7 +1588,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private boolean isAttributeChanged(Attribute attribute, Attribute savedAttribute) throws DynamicExtensionsSystemException
+	private boolean isAttributeChanged(Attribute attribute, Attribute savedAttribute)
+			throws DynamicExtensionsSystemException
 	{
 
 		if (!getDatabaseTypeAndSize(attribute).equals(getDatabaseTypeAndSize(savedAttribute)))
@@ -1526,18 +1608,18 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private String processAddAttribute(Attribute attribute, List attributeRollbackQueryList) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	private String processAddAttribute(Attribute attribute, List attributeRollbackQueryList)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 
 		String columnName = attribute.getColumnProperties().getName();
 		String tableName = attribute.getEntity().getTableProperties().getName();
 
-		String newAttributeQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + ADD_KEYWORD + WHITESPACE
-				+ getQueryPartForAbstractAttribute(attribute, true);
+		String newAttributeQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + ADD_KEYWORD
+				+ WHITESPACE + getQueryPartForAbstractAttribute(attribute, true);
 
-		String newAttributeRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + DROP_KEYWORD + WHITESPACE + COLUMN_KEYWORD
-				+ WHITESPACE + columnName;
+		String newAttributeRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE
+				+ DROP_KEYWORD + WHITESPACE + COLUMN_KEYWORD + WHITESPACE + columnName;
 
 		attributeRollbackQueryList.add(newAttributeRollbackQuery);
 
@@ -1547,7 +1629,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getRecordById(edu.common.dynamicextensions.domaininterface.EntityInterface, java.lang.Long)
 	 */
-	public Map getRecordById(EntityInterface entity, Long recordId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public Map getRecordById(EntityInterface entity, Long recordId)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Map recordValues = new HashMap();
 
@@ -1581,7 +1664,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 		{
 			JDBCDAO jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
 			jdbcDao.openSession(null);
-			List result = jdbcDao.retrieve(tableName, selectColumnName, whereColumnName, whereColumnCondition, whereColumnValue, null);
+			List result = jdbcDao.retrieve(tableName, selectColumnName, whereColumnName,
+					whereColumnCondition, whereColumnValue, null);
 			List innerList = null;
 
 			if (result != null && result.size() != 0)

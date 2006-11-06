@@ -1,4 +1,3 @@
-
 package edu.common.dynamicextensions.entitymanager;
 
 import java.util.Collection;
@@ -43,7 +42,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	EntityInterface createEntity(EntityInterface entityInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	EntityInterface createEntity(EntityInterface entityInterface)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * Returns an entity object given the entity name; 
@@ -52,7 +52,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	EntityInterface getEntityByName(String entityName) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	EntityInterface getEntityByName(String entityName) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException;
 
 	/**
 	 * Returns a collection of entities having attribute with the given name  
@@ -61,7 +62,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	Collection getEntitiesByAttributeName(String attributeName) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	Collection getEntitiesByAttributeName(String attributeName)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * Returns all entities in the whole system
@@ -69,7 +71,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	Collection getAllEntities() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	Collection getAllEntities() throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException;
 
 	/**
 	 * Returns all Containers in the whole system
@@ -77,7 +80,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	Collection<ContainerInterface> getAllContainers() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	Collection<ContainerInterface> getAllContainers() throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException;
 
 	/**
 	 * Returns a single  entity for given identifier
@@ -85,7 +89,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public EntityInterface getEntityByIdentifier(String identifier) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	public EntityInterface getEntityByIdentifier(String identifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * Returns an attribute given the entity name and attribute name
@@ -95,8 +100,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	AttributeInterface getAttribute(String entityName, String attributeName) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException;
+	AttributeInterface getAttribute(String entityName, String attributeName)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * Returns an association object given the entity name and source role name
@@ -106,8 +111,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	AssociationInterface getAssociation(String entityName, String sourceRoleName) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException;
+	AssociationInterface getAssociation(String entityName, String sourceRoleName)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * Returns a collection of association objects given the source entity name and
@@ -118,8 +123,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	Collection getAssociations(String sourceEntityName, String targetEntityName) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException;
+	Collection getAssociations(String sourceEntityName, String targetEntityName)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * Returns a collection of entity objects given the entity description
@@ -128,7 +133,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	Collection getEntityByDescription(String entityDescription) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	Collection getEntityByDescription(String entityDescription)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * Returns a collection of Entity objects given the attribute description
@@ -137,8 +143,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	Collection getEntitiesByAttributeDescription(String attributeDescription) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException;
+	Collection getEntitiesByAttributeDescription(String attributeDescription)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * Returns a collection of entities given the entity concept code.
@@ -147,7 +153,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	Collection getEntitiesByConceptCode(String entityConceptCode) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	Collection getEntitiesByConceptCode(String entityConceptCode)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * Returns a collection of entity objects given the entity concept name.
@@ -156,7 +163,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	Collection getEntitiesByConceptName(String entityConceptName) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	Collection getEntitiesByConceptName(String entityConceptName)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * Returns a collection of entities given attribute concept code. 
@@ -165,8 +173,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	Collection getEntitiesByAttributeConceptCode(String attributeConceptCode) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException;
+	Collection getEntitiesByAttributeConceptCode(String attributeConceptCode)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * Returns a collection of entities given the attribute concept name
@@ -175,8 +183,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	Collection getEntitiesByAttributeConceptName(String attributeConceptName) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException;
+	Collection getEntitiesByAttributeConceptName(String attributeConceptName)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * Returns a collection of entity objects given the entity object with specific criteria. 
@@ -193,13 +201,14 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsApplicationException Thrown if the entity name already exists.
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	ContainerInterface createContainer(ContainerInterface containerInterface) throws DynamicExtensionsApplicationException,
-			DynamicExtensionsSystemException;
+	ContainerInterface createContainer(ContainerInterface containerInterface)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
 	 * This method inserts one record for the entity.
 	 */
-	void insertData(EntityInterface entity, Map dataValue) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
+	void insertData(EntityInterface entity, Map dataValue)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
 	 * This method is used to update the existing entity into the database. This method compares the edited entity with the database copy of that 
@@ -213,7 +222,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException This exception is thrown in case of any system error
 	 * @throws DynamicExtensionsApplicationException This exception is thrown in case of any application error
 	 */
-	public EntityInterface editEntity(EntityInterface entityInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	public EntityInterface editEntity(EntityInterface entityInterface)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * This method is used to save the container into the database.
@@ -223,8 +233,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsApplicationException Thrown if the entity name already exists.
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public ContainerInterface editContainer(ContainerInterface containerInterface) throws DynamicExtensionsApplicationException,
-			DynamicExtensionsSystemException;
+	public ContainerInterface editContainer(ContainerInterface containerInterface)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
 	 * Returns a particular record for the given recordId of the given entityId
@@ -233,6 +243,7 @@ public interface EntityManagerInterface
 	 * @return Map key - attribute name 
 	 *             value - attribute value  
 	 */
-	Map getRecordById(EntityInterface entity, Long recordId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	Map getRecordById(EntityInterface entity, Long recordId)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 }

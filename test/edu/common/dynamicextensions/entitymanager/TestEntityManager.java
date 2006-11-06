@@ -19,32 +19,48 @@ import edu.common.dynamicextensions.domaininterface.StringAttributeInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
+import edu.wustl.common.util.logger.Logger;
 
 public class TestEntityManager extends DynamicExtensionsBaseTestCase
 {
 
+	/**
+	 * 
+	 */
 	public TestEntityManager()
 	{
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * @param arg0 name
+	 */
 	public TestEntityManager(String arg0)
 	{
 		super(arg0);
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * @see edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase#setUp()
+	 */
 	protected void setUp()
 	{
 		super.setUp();
 	}
 
+	/**
+	 * @see edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase#tearDown()
+	 */
 	protected void tearDown()
 	{
 		super.tearDown();
 	}
 
+	/**
+	 * 
+	 */
 	public void testCreateEntity()
 	{
 		try
@@ -62,7 +78,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		catch (Exception e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getMessage());
 			fail("Exception occured");
 		}
 
@@ -108,18 +124,18 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			assertEquals("Employee", entity.getName());
 			Map map = EntityManager.getInstance().getRecordById(entity, new Long(1));
 
-			System.out.println(map);;
+			//System.out.println(map);;
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getMessage());
 			fail("Exception occured");
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getMessage());
 			fail("Exception occured");
 		}
 
@@ -144,13 +160,13 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		catch (DynamicExtensionsSystemException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getMessage());
 			fail("Exception occured");
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getMessage());
 			fail("Exception occured");
 		}
 
@@ -182,7 +198,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		catch (DynamicExtensionsApplicationException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getMessage());
 			fail("Unexpected Exception occured");
 		}
 
@@ -198,7 +214,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		catch (DynamicExtensionsApplicationException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getMessage());
 		}
 
 		try
@@ -215,7 +231,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		catch (DynamicExtensionsApplicationException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getMessage());
 		}
 
 	}

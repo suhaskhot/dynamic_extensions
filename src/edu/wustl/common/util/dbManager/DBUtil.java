@@ -1,9 +1,8 @@
+
 package edu.wustl.common.util.dbManager;
 
-import java.io.File;
 import java.io.InputStream;
 import java.sql.Connection;
-import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -28,92 +27,105 @@ import edu.wustl.common.util.logger.Logger;
  */
 public class DBUtil
 {
+
 	//A factory for DB Session which provides the Connection for client. 
-	private static  SessionFactory m_sessionFactory;
+	private static SessionFactory sessionFactory;
 
 	//ThreadLocal to hold the Session for the current executing thread. 
-	private static final ThreadLocal threadLocal = new ThreadLocal();
+	private static final ThreadLocal ThreadLocal_Instance = new ThreadLocal();
 	//Initialize the session Factory in the Static block.
-   
-	static 
+
+	static
 	{
-        if (Variables.containerFlag) {
-    		try
-    		{
-    			Configuration cfg = new Configuration();
-    			m_sessionFactory = cfg.configure().buildSessionFactory();
-    			HibernateMetaData.initHibernateMetaData(cfg);
-    		}
-    		catch(Exception ex)
-    		{
-    			ex.printStackTrace();
-    		    Logger.out.debug("Exception: "+ex.getMessage(),ex);
-    			throw new RuntimeException(ex.getMessage());
-    		}
-        }
-        else {
-    		try
-    		{
-    		InputStream inputStream = DBUtil.class.getClassLoader().getResourceAsStream("TestHibernate.cfg.xml");
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setValidating(false);
-            DocumentBuilder docBuilder = null;
-            docBuilder = factory.newDocumentBuilder();
-            Document doc = docBuilder.parse(inputStream);
-    		Configuration cfg = new Configuration();
-    		m_sessionFactory = cfg.configure(doc).buildSessionFactory();
-    		HibernateMetaData.initHibernateMetaData(cfg);
-    		}
-    		catch(Exception ex)
-    		{
-    		ex.printStackTrace();
-    		Logger.out.debug("Exception: "+ex.getMessage(),ex);
-    		throw new RuntimeException(ex.getMessage());
-    		}
-        }
+		if (Variables.containerFlag)
+		{
+			try
+			{
+				Configuration cfg = new Configuration();
+				sessionFactory = cfg.configure().buildSessionFactory();
+				HibernateMetaData.initHibernateMetaData(cfg);
+			}
+			catch (Exception ex)
+			{
+				Logger.out.debug("Exception: " + ex.getMessage(), ex);
+				throw new RuntimeException(ex.getMessage());
+			}
+		}
+		else
+		{
+			try
+			{
+				InputStream inputStream = DBUtil.class.getClassLoader().getResourceAsStream(
+						"TestHibernate.cfg.xml");
+				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+				factory.setValidating(false);
+				DocumentBuilder docBuilder = null;
+				docBuilder = factory.newDocumentBuilder();
+				Document doc = docBuilder.parse(inputStream);
+				Configuration cfg = new Configuration();
+				sessionFactory = cfg.configure(doc).buildSessionFactory();
+				HibernateMetaData.initHibernateMetaData(cfg);
+			}
+			catch (Exception ex)
+			{
+				Logger.out.debug("Exception: " + ex.getMessage(), ex);
+				throw new RuntimeException(ex.getMessage());
+			}
+		}
 	}
 
 	/**
 	 * Follows the singleton pattern and returns only current opened session.
-	 * @return Returns the current db session.  
+	 * @return Returns the current db session.
+	 * @throws HibernateException HibernateExeption  
 	 * */
 	public static Session currentSession() throws HibernateException
 	{
-		Session s = (Session) threadLocal.get();
-		System.out.println("**********************Session in DBUTIL " + s);
+		Session s = (Session) ThreadLocal_Instance.get();
+		Logger.out.debug("**********************Session in DBUTIL " + s);
 		//Open a new Session, if this Thread has none yet
 		if (s == null)
 		{
-			s = m_sessionFactory.openSession();
-//			try
-//			{
-//			//	s.connection().setAutoCommit(false);
-//			}
-//			catch(SQLException ex)
-//			{
-//				throw new HibernateException(ex.getMessage(),ex);
-//			}
-			threadLocal.set(s);
+			s = sessionFactory.openSession();
+			//			try
+			//			{
+			//			//	s.connection().setAutoCommit(false);
+			//			}
+			//			catch(SQLException ex)
+			//			{
+			//				throw new HibernateException(ex.getMessage(),ex);
+			//			}
+			ThreadLocal_Instance.set(s);
 		}
 		return s;
 	}
 
 	/**
 	 * Close the currently opened session.
+	 * @throws HibernateException HibernateException
 	 * */
 	public static void closeSession() throws HibernateException
 	{
-		Session s = (Session) threadLocal.get(); 
-		threadLocal.set(null);
+		Session s = (Session) ThreadLocal_Instance.get();
+		ThreadLocal_Instance.set(null);
 		if (s != null)
+		{
 			s.close();
+		}
 	}
-	
+
+	/**
+	 * @return Connection
+	 * @throws HibernateException HibernateException
+	 */
 	public static Connection getConnection() throws HibernateException
 	{
 		return currentSession().connection();
 	}
-	
+
+	/**
+	 * @throws HibernateException HibernateException
+	 */
 	public static void closeConnection() throws HibernateException
 	{
 		closeSession();

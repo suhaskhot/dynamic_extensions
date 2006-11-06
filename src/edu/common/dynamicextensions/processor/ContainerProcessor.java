@@ -51,8 +51,8 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 
 	/**
 	 * This method populates the given ContainerInterface using the given ContainerUIBeanInterface.
-	 * @param containerInterface Instance of containerInterface which is populated using the informationInterface.
-	 * @param ContainerUIBeanInterface Instance of ContainerUIBeanInterface which is used to populate the containerInterface.
+	 * @param containerInterface : Instance of containerInterface which is populated using the informationInterface.
+	 * @param containerUIBeanInterface : Instance of ContainerUIBeanInterface which is used to populate the containerInterface.
 	 */
 	public void populateContainerInterface(ContainerInterface containerInterface, ContainerUIBeanInterface containerUIBeanInterface)
 	{
@@ -90,13 +90,22 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 		}
 	}
 
+	/**
+	 * 
+	 * @param containerInterface : Container object 
+	 * @throws DynamicExtensionsApplicationException : Exception thrown by Entity Manager
+	 * @throws DynamicExtensionsSystemException :  Exception thrown by Entity Manager
+	 */
 	public void saveContainer(ContainerInterface containerInterface) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
-	if (containerInterface.getId() == null) {        
-    EntityManager.getInstance().createContainer(containerInterface);
-    } else {
-        EntityManager.getInstance().editContainer(containerInterface);
-    }
-                        
+		if (containerInterface.getId() == null)
+		{
+			EntityManager.getInstance().createContainer(containerInterface);
+		}
+		else
+		{
+			EntityManager.getInstance().editContainer(containerInterface);
+		}
+
 	}
 }

@@ -1,6 +1,7 @@
 /**
  * 
  */
+
 package edu.common.dynamicextensions.processor;
 
 import java.util.Map;
@@ -22,9 +23,9 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	 * Default Constructor
 	 */
 	public ApplyDataEntryFormProcessor()
-	{		
+	{
 	}
-	
+
 	/**
 	 * This method returns the instance of ApplyDataEntryFormProcessor.
 	 * @return ApplyDataEntryFormProcessor Instance of ApplyDataEntryFormProcessor
@@ -33,7 +34,7 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	{
 		return new ApplyDataEntryFormProcessor();
 	}
-	
+
 	/**
 	 * This method will pass the values entered into the controls to EntityManager to insert them in Database.
 	 * @param containerInterface The container of who's value of Control are to be populated. 
@@ -41,12 +42,13 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException on Application exception
 	 * @throws DynamicExtensionsSystemException on System exception
 	 */
-	public void insertDataEntryForm(ContainerInterface containerInterface, Map attributeValueMap) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	public void insertDataEntryForm(ContainerInterface containerInterface, Map attributeValueMap) throws DynamicExtensionsApplicationException,
+			DynamicExtensionsSystemException
 	{
 		try
 		{
 			EntityManager entityManager = EntityManager.getInstance();
-			
+
 			EntityInterface entityInterface = containerInterface.getEntity();
 			entityManager.insertData(entityInterface, attributeValueMap);
 		}
@@ -59,5 +61,5 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 			throw e;
 		}
 	}
-	
+
 }

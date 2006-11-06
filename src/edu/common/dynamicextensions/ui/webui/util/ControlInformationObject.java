@@ -4,9 +4,9 @@
  *<p>Copyright:TODO</p>
  *@author Vishvesh Mulay
  *@version 1.0
- */ 
-package edu.common.dynamicextensions.ui.webui.util;
+ */
 
+package edu.common.dynamicextensions.ui.webui.util;
 
 /**
  * @author vishvesh_mulay
@@ -15,57 +15,71 @@ package edu.common.dynamicextensions.ui.webui.util;
 
 public class ControlInformationObject
 {
-    private String controlName;
-    
-    private String controlType;
-    
-    private String identifier;
+	private String controlName;
 
-    
-    public String getControlName()
-    {
-        return controlName;
-    }
+	private String controlType;
 
-    
-    public void setControlName(String controlName)
-    {
-        this.controlName = controlName;
-    }
+	private String identifier;
 
-    
-    public String getControlType()
-    {
-        return controlType;
-    }
+	/**
+	 * Retuurn the control name
+	 * @return : Control Name
+	 */
+	public String getControlName()
+	{
+		return controlName;
+	}
+	/**
+	 * @param controlName : Name of the control
+	 */
+	public void setControlName(String controlName)
+	{
+		this.controlName = controlName;
+	}
+	/**
+	 * @return : type of control
+	 */
+	public String getControlType()
+	{
+		return controlType;
+	}
 
-    
-    public void setControlType(String controlType)
-    {
-        this.controlType = controlType;
-    }
+	/**
+	 * 
+	 * @param controlType Control type
+	 */
+	public void setControlType(String controlType)
+	{
+		this.controlType = controlType;
+	}
+	/**
+	 * 
+	 * @return :  control identifier
+	 */
+	public String getIdentifier()
+	{
+		return identifier;
+	}
+	/**
+	 * 
+	 * @param identifier : identifier for the control
+	 */
+	public void setIdentifier(String identifier)
+	{
+		this.identifier = identifier;
+	}
+	/**
+	 * 
+	 * @param name : Name of the control
+	 * @param type : Type of control
+	 * @param identifier : Unique Identifier for the control
+	 */
+	public ControlInformationObject(String name, String type, String identifier)
+	{
+		super();
+		controlName = name;
+		controlType = type;
+		this.identifier = identifier;
+	}
 
-    
-    public String getIdentifier()
-    {
-        return identifier;
-    }
-
-    
-    public void setIdentifier(String identifier)
-    {
-        this.identifier = identifier;
-    }
-
-
-    public ControlInformationObject(String name, String type, String identifier)
-    {
-        super();
-        // TODO Auto-generated constructor stub
-        controlName = name;
-        controlType = type;
-        this.identifier = identifier;
-    }
-
-    
 }

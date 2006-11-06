@@ -71,10 +71,10 @@ public class QueryInterfaceManager
 	/**
 	 * Fires query to the database using JDBC DAO.
 	 * @param query the query to be fired.
-	 * @param msg
-	 * @throws DAOException
+	 * @param msg : Message
+	 * @throws DAOException : DAO Exception
 	 */
-	
+
 	static void fireQuery(String query, String msg) throws DAOException
 	{
 		//        JDBCDAO jdbcDAO = (JDBCDAO)daoFactory.getDAO(Constants.JDBC_DAO);
@@ -91,7 +91,6 @@ public class QueryInterfaceManager
 		}
 		catch (DAOException ex)
 		{
-			ex.printStackTrace();
 			Logger.out.error("Exception caught while firing the query in EntityManager: " + ex.getMessage());
 
 			try
@@ -109,14 +108,14 @@ public class QueryInterfaceManager
 
 	/**
 	 * Executes a query and return result set.
-	 * @param queryToGetNextIdentifier
-	 * @param sessionDataBean
-	 * @param isSecureExecute
-	 * @param hasConditionOnIdentifiedField
-	 * @param queryResultObjectDataMap
-	 * @return
-	 * @throws DAOException
-	 * @throws ClassNotFoundException
+	 * @param queryToGetNextIdentifier : query string
+	 * @param sessionDataBean : session data bean 
+ 	 * @param isSecureExecute : boolean flag isSecureExecute
+	 * @param hasConditionOnIdentifiedField : boolean flag hasConditionOnIdentifiedField
+	 * @param queryResultObjectDataMap : Query Rslt Map
+	 * @return results of query execn as a List
+	 * @throws DAOException : DAO Exception
+	 * @throws ClassNotFoundException : Class not found exception
 	 */
 	static List getResultInList(String queryToGetNextIdentifier, SessionDataBean sessionDataBean, boolean isSecureExecute,
 			boolean hasConditionOnIdentifiedField, Map queryResultObjectDataMap) throws DAOException, ClassNotFoundException
@@ -131,7 +130,6 @@ public class QueryInterfaceManager
 		}
 		catch (DAOException daoException)
 		{
-			daoException.printStackTrace();
 			throw new DAOException("Exception while retrieving the query result", daoException);
 		}
 		finally
@@ -242,6 +240,14 @@ public class QueryInterfaceManager
 	 nextSequence =(String)(internalList.get(0)); 
 	 return nextSequence;
 	 }*/
+	
+	/**
+	 * @param tableName : Name of the table
+	 * @param primaryKeyColumnName : name of the primary key column
+	 * @return Next Sequence
+	 * @throws ClassNotFoundException : Class not found exception
+	 * @throws DAOException : DAO Exception 
+	 */
 	private static String getNextSequence(String tableName, String primaryKeyColumnName) throws ClassNotFoundException, DAOException
 	{
 		JDBCDAO jdbcDAO = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);

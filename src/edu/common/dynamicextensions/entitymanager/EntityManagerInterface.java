@@ -207,7 +207,7 @@ public interface EntityManagerInterface
 	/**
 	 * This method inserts one record for the entity.
 	 */
-	void insertData(EntityInterface entity, Map dataValue)
+	Long insertData(EntityInterface entity, Map dataValue)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**

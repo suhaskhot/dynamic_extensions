@@ -1078,7 +1078,7 @@ public class EntityManager
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#insertData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map)
 	 */
-	public void insertData(EntityInterface entity, Map dataValue)
+	public Long insertData(EntityInterface entity, Map dataValue)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		if (entity == null || dataValue == null || dataValue.isEmpty())
@@ -1136,6 +1136,8 @@ public class EntityManager
 		{
 			throw new DynamicExtensionsSystemException("Error while inserting data", e);
 		}
+		
+		return identifier;
 	}
 
 	/**

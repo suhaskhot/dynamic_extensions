@@ -1,12 +1,8 @@
-
 package edu.common.dynamicextensions.processor;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 
-import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
@@ -48,13 +44,13 @@ public class LoadFormsIndexProcessor extends BaseDynamicExtensionsProcessor
 		{
 			EntityManager entityManager = EntityManager.getInstance();
 			containerCollection = entityManager.getAllContainers();
-			
+
 			/*for(ContainerInterface container: containerCollection)
-			{
-				EntityInterface entity = container.getEntity();
-				Date date = entity.getCreatedDate();
-			}*/
-			
+			 {
+			 EntityInterface entity = container.getEntity();
+			 Date date = entity.getCreatedDate();
+			 }*/
+
 			if (containerCollection == null)
 			{
 				containerCollection = new HashSet<ContainerInterface>();

@@ -27,14 +27,14 @@ import edu.wustl.common.beans.NameValueBean;
  * @author sujay_narkar
  *
  */
-public class LoadFormControlsProcessor 
+public class LoadFormControlsProcessor
 {
 
 	/**
 	 * Protected constructor for entity processor
 	 *
 	 */
-	protected LoadFormControlsProcessor () 
+	protected LoadFormControlsProcessor()
 	{
 
 	}
@@ -43,7 +43,7 @@ public class LoadFormControlsProcessor
 	 * this method gets the new instance of the entity processor to the caller.
 	 * @return EntityProcessor EntityProcessor instance
 	 */
-	public static LoadFormControlsProcessor getInstance () 
+	public static LoadFormControlsProcessor getInstance()
 	{
 		return new LoadFormControlsProcessor();
 	}
@@ -53,22 +53,22 @@ public class LoadFormControlsProcessor
 	 * @param actionForm
 	 * @param containerInterface
 	 */
-	public void loadFormControls(ControlsForm controlsForm,ContainerInterface containerInterface) 
+	public void loadFormControls(ControlsForm controlsForm, ContainerInterface containerInterface)
 	{
-		if((containerInterface!=null)&&(controlsForm!=null))
+		if ((containerInterface != null) && (controlsForm != null))
 		{
 			String controlOperation = controlsForm.getControlOperation();
 			String userSelectedTool = controlsForm.getUserSelectedTool();
 
 			ControlConfigurationsFactory controlConfigurationsFactory = ControlConfigurationsFactory.getInstance();
-			if(controlOperation == null || controlOperation.equals("")) 
+			if (controlOperation == null || controlOperation.equals(""))
 			{
 				controlOperation = ProcessorConstants.OPERATION_ADD;
 				controlsForm.setControlOperation(controlOperation);
 			}
-			if(controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_ADD))
+			if (controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_ADD))
 			{
-				if(userSelectedTool == null || userSelectedTool.equals(""))
+				if (userSelectedTool == null || userSelectedTool.equals(""))
 				{
 					userSelectedTool = ProcessorConstants.DEFAULT_SELECTED_CONTROL;
 				}
@@ -93,21 +93,21 @@ public class LoadFormControlsProcessor
 				//TODO check if need to be changed
 			}
 
-			else if(controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_EDIT))  
+			else if (controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_EDIT))
 			{
 				String selectedControlId = controlsForm.getSelectedControlId();
 				ControlProcessor controlProcessor = ControlProcessor.getInstance();
 				ControlInterface controlInterface = containerInterface.getControlInterfaceBySequenceNumber(selectedControlId);
-				controlProcessor.populateControlUIBeanInterface(controlInterface,controlsForm);
+				controlProcessor.populateControlUIBeanInterface(controlInterface, controlsForm);
 
 				AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
-				if(controlInterface!=null)
+				if (controlInterface != null)
 				{
 					attributeProcessor.populateAttributeUIBeanInterface(controlInterface.getAbstractAttribute(), controlsForm);
 				}
 
 				userSelectedTool = getControlName(controlInterface);
-				if(userSelectedTool == null || userSelectedTool.equals(""))
+				if (userSelectedTool == null || userSelectedTool.equals(""))
 				{
 					userSelectedTool = ProcessorConstants.DEFAULT_SELECTED_CONTROL;
 				}
@@ -117,7 +117,7 @@ public class LoadFormControlsProcessor
 			controlsForm.setToolsList(controlConfigurationsFactory.getListOfControls());
 			controlsForm.setSelectedControlCaption(getControlCaption(controlConfigurationsFactory.getControlDisplayLabel(userSelectedTool)));
 			String jspName = controlConfigurationsFactory.getControlJspName(userSelectedTool);
-			if(jspName==null)
+			if (jspName == null)
 			{
 				jspName = "";
 			}
@@ -128,24 +128,24 @@ public class LoadFormControlsProcessor
 
 			controlsForm.setDisplayChoiceList(getDisplayChoiceList());
 
-			if(controlsForm.getAttributeMultiSelect()==null)
+			if (controlsForm.getAttributeMultiSelect() == null)
 			{
 				controlsForm.setAttributeMultiSelect(ProcessorConstants.DEFAULT_LIST_TYPE);
 			}
 			//Set Entity Name as root
 			EntityInterface entity = containerInterface.getEntity();
-			if(entity!=null)
+			if (entity != null)
 			{
 				controlsForm.setRootName(entity.getName());
 			}
-			else 
+			else
 			{
 				controlsForm.setRootName("");
 			}
 			controlsForm.setChildList(getChildList(containerInterface));
 			controlsForm.setControlRuleMap(getControlRulesMap(userSelectedTool));
 			//measurement units list
-			if(controlsForm.getMeasurementUnitsList()==null)
+			if (controlsForm.getMeasurementUnitsList() == null)
 			{
 				controlsForm.setMeasurementUnitsList(getListOfMeasurementUnits());
 			}
@@ -155,7 +155,7 @@ public class LoadFormControlsProcessor
 	/**
 	 * @return
 	 */
-	private List getListOfMeasurementUnits()
+	private List<String> getListOfMeasurementUnits()
 	{
 		List<String> measurementUnits = new ArrayList<String>();
 		measurementUnits.add("inches");
@@ -173,31 +173,37 @@ public class LoadFormControlsProcessor
 	 */
 	private String getControlName(ControlInterface controlInterface)
 	{
-		if(controlInterface!=null)
+		if (controlInterface != null)
 		{
-			if(controlInterface instanceof TextFieldInterface)
+			if (controlInterface instanceof TextFieldInterface)
 			{
 				return ProcessorConstants.TEXT_CONTROL;
-			}else if(controlInterface instanceof ComboBoxInterface)
+			}
+			else if (controlInterface instanceof ComboBoxInterface)
 			{
 				return ProcessorConstants.COMBOBOX_CONTROL;
-			}else if(controlInterface instanceof DatePickerInterface)
+			}
+			else if (controlInterface instanceof DatePickerInterface)
 			{
 				return ProcessorConstants.DATEPICKER_CONTROL;
-			}else if(controlInterface instanceof TextAreaInterface)
+			}
+			else if (controlInterface instanceof TextAreaInterface)
 			{
 				return ProcessorConstants.TEXT_CONTROL;
-			}else if(controlInterface instanceof RadioButtonInterface)
+			}
+			else if (controlInterface instanceof RadioButtonInterface)
 			{
 				return ProcessorConstants.RADIOBUTTON_CONTROL;
-			}else if(controlInterface instanceof CheckBoxInterface)
+			}
+			else if (controlInterface instanceof CheckBoxInterface)
 			{
 				return ProcessorConstants.CHECKBOX_CONTROL;
-			}else if(controlInterface instanceof FileUploadInterface)
+			}
+			else if (controlInterface instanceof FileUploadInterface)
 			{
 				return ProcessorConstants.FILEUPLOAD_CONTROL;
 			}
-			
+
 		}
 		return null;
 	}
@@ -209,23 +215,23 @@ public class LoadFormControlsProcessor
 	 */
 	private List getChildList(ContainerInterface containerInterface)
 	{
-		List childList = new ArrayList();
+		List<ControlInformationObject> childList = new ArrayList<ControlInformationObject>();
 		Collection controlCollection = containerInterface.getControlCollection();
 		Iterator controlIterator = controlCollection.iterator();
 		ControlInterface controlInterface = null;
 		ControlInformationObject controlInformationObject = null;
-		String controlCaption =null,controlDatatype = null,controlSequenceNumber=null,controlName = null;
+		String controlCaption = null, controlDatatype = null, controlSequenceNumber = null, controlName = null;
 		ControlConfigurationsFactory controlConfigurationsFactory = ControlConfigurationsFactory.getInstance();
-		while(controlIterator.hasNext())
+		while (controlIterator.hasNext())
 		{
-			controlInterface =  (ControlInterface) controlIterator.next();
-			if(controlInterface.getCaption() != null && !controlInterface.getCaption().equals(""))
+			controlInterface = (ControlInterface) controlIterator.next();
+			if (controlInterface.getCaption() != null && !controlInterface.getCaption().equals(""))
 			{
 				controlCaption = controlInterface.getCaption();
-				controlSequenceNumber = controlInterface.getSequenceNumber()+"";
+				controlSequenceNumber = controlInterface.getSequenceNumber() + "";
 				controlName = getControlName(controlInterface);
 				controlDatatype = getControlCaption(controlConfigurationsFactory.getControlDisplayLabel(controlName));
-				controlInformationObject = new ControlInformationObject(controlCaption,controlDatatype,controlSequenceNumber);
+				controlInformationObject = new ControlInformationObject(controlCaption, controlDatatype, controlSequenceNumber);
 				childList.add(controlInformationObject);
 			}
 
@@ -235,27 +241,29 @@ public class LoadFormControlsProcessor
 
 	private List getDisplayChoiceList()
 	{
-		List dataTypeList = new ArrayList();
-		NameValueBean nameValueBean1 = new NameValueBean("UserDefined","UserDefined");
+		List<NameValueBean> dataTypeList = new ArrayList<NameValueBean>();
+		NameValueBean nameValueBean1 = new NameValueBean("UserDefined", "UserDefined");
 		dataTypeList.add(nameValueBean1);
 		/*
-         NameValueBean nameValueBean2 = new NameValueBean("CADSR","CADSR");
-         dataTypeList.add(nameValueBean2);*/
+		 NameValueBean nameValueBean2 = new NameValueBean("CADSR","CADSR");
+		 dataTypeList.add(nameValueBean2);*/
 
-		return dataTypeList; 
+		return dataTypeList;
 	}
+
 	public String getControlCaption(String captionKey)
 	{
-		if(captionKey!=null)
+		if (captionKey != null)
 		{
 			ResourceBundle resourceBundle = ResourceBundle.getBundle("ApplicationResources");
-			if(resourceBundle!=null)
+			if (resourceBundle != null)
 			{
 				return resourceBundle.getString(captionKey);
 			}
 		}
 		return null;
 	}
+
 	/**
 	 * 
 	 * @param controlName

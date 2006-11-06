@@ -1,9 +1,3 @@
-/*
- * Created on Oct 11, 2006
- * @author
- *
- */
-
 package edu.common.dynamicextensions.processor;
 
 import java.lang.reflect.InvocationTargetException;

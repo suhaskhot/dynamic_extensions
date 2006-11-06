@@ -63,15 +63,16 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
 	 * @param entityUIBeanInterface Implementation of entityInformationInterface 
 	 * which has all the data required for the creation of the entity.
 	 * @return EntityInterface Returns the unsaved instance of EntityInterface with populated values taken 
-	 * from the entityInformationInterface.
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
+	 * from the entityInformationInterface : Exception thrown by Entity Manager
+	 * @throws DynamicExtensionsSystemException : Exception thrown by Entity Manager
+	 * @throws DynamicExtensionsApplicationException : Exception thrown by Entity Manager
 	 */
 	public EntityInterface createAndSaveEntity(EntityUIBeanInterface entityUIBeanInterface) throws DynamicExtensionsSystemException,
-	DynamicExtensionsApplicationException
+			DynamicExtensionsApplicationException
 	{
 		EntityInterface entityInterface = null;
-		if(entityUIBeanInterface != null) {
+		if (entityUIBeanInterface != null)
+		{
 			entityInterface = createAndPopulateEntity(entityUIBeanInterface);
 			entityInterface = EntityManager.getInstance().createEntity(entityInterface);
 		}
@@ -89,13 +90,15 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
 		{
 			entityInterface.setName(entityUIBeanInterface.getFormName());
 			entityInterface.setDescription(entityUIBeanInterface.getFormDescription());
-			Collection collection =  SemanticPropertyBuilderUtil.getSymanticPropertyCollection(entityUIBeanInterface.getConceptCode());
-			if (collection != null && !collection.isEmpty()) {
-			    Iterator iterator = collection.iterator();
-                while (iterator.hasNext()) {
-                    entityInterface.addSemanticProperty((SemanticPropertyInterface) iterator.next());
-                }
-            }
+			Collection collection = SemanticPropertyBuilderUtil.getSymanticPropertyCollection(entityUIBeanInterface.getConceptCode());
+			if (collection != null && !collection.isEmpty())
+			{
+				Iterator iterator = collection.iterator();
+				while (iterator.hasNext())
+				{
+					entityInterface.addSemanticProperty((SemanticPropertyInterface) iterator.next());
+				}
+			}
 		}
 	}
 

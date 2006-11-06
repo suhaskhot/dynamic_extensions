@@ -34,8 +34,8 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 
 	/**
 	 * A call to EntityProcessor will update the actionform with the data from cacheObject. 
-	 * @param entityInterface
-	 * @param entityUIBeanInterface
+	 * @param entityInterface : Entity Interface Domain Object 
+	 * @param entityUIBeanInterface : UI Bean object containing entity information added by user on UI
 	 */
 	private void populateEntityInformation(EntityInterface entityInterface, EntityUIBeanInterface entityUIBeanInterface)
 	{
@@ -48,8 +48,8 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 
 	/**
 	 * A call to ContainerProcessor will update the actionform with the data from cacheObject. 
-	 * @param containerInterface
-	 * @param containerUIBeanInterface
+	 * @param containerInterface : Container interface
+	 * @param containerUIBeanInterface : container UI Bean Interface object containing information added by user
 	 */
 	public void populateContainerInformation(ContainerInterface containerInterface, ContainerUIBeanInterface containerUIBeanInterface)
 	{

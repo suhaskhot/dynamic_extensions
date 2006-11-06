@@ -21,14 +21,14 @@ import edu.wustl.common.actionForm.AbstractActionForm;
  * @author sujay_narkar, chetan_patil
  *
  */
-public class LoadDataEntryFormProcessor 
+public class LoadDataEntryFormProcessor
 {
 
 	/**
-	 * Protected constructor for entity processor
+	 * 
 	 *
 	 */
-	protected LoadDataEntryFormProcessor() 
+	protected LoadDataEntryFormProcessor()
 	{
 	}
 
@@ -36,7 +36,7 @@ public class LoadDataEntryFormProcessor
 	 * this method gets the new instance of the entity processor to the caller.
 	 * @return EntityProcessor EntityProcessor instance
 	 */
-	public static LoadDataEntryFormProcessor getInstance () 
+	public static LoadDataEntryFormProcessor getInstance()
 	{
 		return new LoadDataEntryFormProcessor();
 	}
@@ -49,15 +49,15 @@ public class LoadDataEntryFormProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 */
 	@SuppressWarnings("unchecked")
-	public ContainerInterface loadDataEntryForm(AbstractActionForm actionForm,ContainerInterface containerInterface,String containerIdentifier,
-			String recordId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException  
+	public ContainerInterface loadDataEntryForm(AbstractActionForm actionForm, ContainerInterface containerInterface, String containerIdentifier,
+			String recordId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		try
 		{
 			DataEntryForm dataEntryForm = (DataEntryForm) actionForm;
 			Map recordMap = null;
-			
-			if(containerInterface == null || containerIdentifier != null)
+
+			if (containerInterface == null || containerIdentifier != null)
 			{
 				containerInterface = DynamicExtensionsUtility.getContainerByIdentifier(containerIdentifier);
 			}
@@ -78,13 +78,13 @@ public class LoadDataEntryFormProcessor
 				{
 					String recordAttributeName = (String) recordNode.getKey();
 					String recordAttributeValue = (String) recordNode.getValue();
-					
+
 					for (ControlInterface control : controlCollection)
 					{
 						AbstractAttributeInterface controlAbstractAttribute = control.getAbstractAttribute();
 						if (controlAbstractAttribute.getName().equals(recordAttributeName))
 						{
-							if(recordAttributeValue != null)
+							if (recordAttributeValue != null)
 							{
 								control.setValue(recordAttributeValue);
 							}
@@ -93,7 +93,7 @@ public class LoadDataEntryFormProcessor
 				}
 			}
 			dataEntryForm.setContainerInterface(containerInterface);
-			if(dataEntryForm.getShowFormPreview() == null)
+			if (dataEntryForm.getShowFormPreview() == null)
 			{
 				dataEntryForm.setShowFormPreview("");
 			}
@@ -106,7 +106,7 @@ public class LoadDataEntryFormProcessor
 		{
 			throw dynamicExtensionsApplicationException;
 		}
-		
+
 		return containerInterface;
 	}
 

@@ -1,12 +1,5 @@
-/*
- * Created on Oct 17, 2006
- * @author
- *
- */
-
 package edu.common.dynamicextensions.ui.util;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,16 +9,14 @@ import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.validation.ValidatorRuleInterface;
 import edu.wustl.common.beans.NameValueBean;
 
@@ -46,12 +37,14 @@ public final class ControlConfigurationsFactory
 	 * This will initialise maps for controls and their appropriate rules.
 	 * The call to pareseXML will parse two configuration files in order to 
 	 * fill the data in thier objects.
+	 * @throws DynamicExtensionsSystemException  dynamicExtensionsSystemException
 	 *
 	 */
-	private ControlConfigurationsFactory()
+	private ControlConfigurationsFactory() throws DynamicExtensionsSystemException 
 	{
 		controlsConfigurationMap = new HashMap();
 		rulesConfigurationMap = new HashMap();
+		
 		parseXML("RuleConfigurations.xml");
 		parseXML("ControlConfigurations.xml");
 	}
@@ -59,8 +52,9 @@ public final class ControlConfigurationsFactory
 	/**
 	 * 
 	 * @return ControlConfigurationsFactory instance of ControlConfigurationsFactory
+	 * @throws DynamicExtensionsSystemException dynamicExtensionsSystemException
 	 */
-	public static synchronized ControlConfigurationsFactory getInstance()
+	public static synchronized ControlConfigurationsFactory getInstance() throws DynamicExtensionsSystemException 
 	{
 		if (m_instance == null)
 		{
@@ -72,8 +66,9 @@ public final class ControlConfigurationsFactory
 	/**
 	 * Parse the XML
 	 * @param configurationFileName name of the file to be parsed.
+	 * @throws DynamicExtensionsSystemException dynamicExtensionsSystemException
 	 */
-	private void parseXML(String configurationFileName)
+	private void parseXML(String configurationFileName) throws DynamicExtensionsSystemException
 	{
 		Document document = null;
 		try
@@ -111,29 +106,19 @@ public final class ControlConfigurationsFactory
 
 			}
 		}
-		catch (FactoryConfigurationError e)
+		catch (Exception e)
 		{
-			e.printStackTrace();
+			throw new DynamicExtensionsSystemException(e.getMessage(),e);
 		}
-		catch (ParserConfigurationException e)
-		{
-			e.printStackTrace();
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-		catch (SAXException e)
-		{
-			e.printStackTrace();
-		}
+		
 	}
 
 	/**
 	 * This method wil parese the ruleConfiguraions xml file and wil populate the ruleConfigurationObject.
 	 * @param document to be pared
+	 * @throws DynamicExtensionsSystemException dynamicExtensionsSystemException
 	 */
-	private void loadRuleConfigurations(Document document)
+	private void loadRuleConfigurations(Document document) throws DynamicExtensionsSystemException
 	{
 		if (document != null)
 		{
@@ -190,8 +175,7 @@ public final class ControlConfigurationsFactory
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
-				System.out.println(e.getStackTrace());
+				throw new DynamicExtensionsSystemException(e.getMessage(),e);
 
 			}
 		}
@@ -665,8 +649,9 @@ public final class ControlConfigurationsFactory
 	 * This method returns rule instance for given rule name
 	 * @param ruleName name of the rule
 	 * @return ValidatorRuleInterface class instance of the rulename passed.
+	 * @throws DynamicExtensionsSystemException dynamicExtensionsSystemException
 	 */
-	public ValidatorRuleInterface getValidatorRule(String ruleName)
+	public ValidatorRuleInterface getValidatorRule(String ruleName) throws DynamicExtensionsSystemException
 	{
 		RuleConfigurationObject ruleConfiguration = (RuleConfigurationObject) rulesConfigurationMap.get(ruleName);
 		ValidatorRuleInterface ruleInterface;
@@ -680,7 +665,7 @@ public final class ControlConfigurationsFactory
 		}
 		catch (Exception e)
 		{
-			return null;
+			throw new DynamicExtensionsSystemException(e.getMessage(),e);
 		}
 		return ruleInterface;
 	}
@@ -704,7 +689,7 @@ public final class ControlConfigurationsFactory
 			dataType = ((NameValueBean) iter.next()).getName();
 			rules = (ArrayList) getExplicitRules(controlName, dataType);
 			iter1 = rules.iterator();
-			List ruleObjects = new ArrayList();
+			List ruleObjects = new ArrayList<RuleConfigurationObject>();
 			while (iter1.hasNext())
 			{
 

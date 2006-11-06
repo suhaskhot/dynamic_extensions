@@ -25,11 +25,10 @@ public class BaseDynamicExtensionsAction extends DispatchAction
 	 * eg : In case of  DynamicExtensionsApplicationException , errorsList will contain error messages.
 	 * In case of DynamicExtensionsSystemException , errorsList will be empty.
 	 * @param throwable exception reference
-	 * @param errorMessagesList list of error messages
-	 * @param errorMessagesList
+	 * @param <String>errorMessagesList list of error messages
 	 * @return boolean flag to determine whether this is a systemexception or an applicationException 
 	 */
-	protected boolean handleException(Throwable throwable, List errorMessagesList)
+	protected boolean handleException(Throwable throwable, List <String>errorMessagesList)
 	{
 		Logger.out.error(throwable.getStackTrace(), throwable);
 		Logger.out.debug(throwable.getStackTrace(), throwable);
@@ -37,7 +36,7 @@ public class BaseDynamicExtensionsAction extends DispatchAction
 		boolean isSystemException = false;
 		if (errorMessagesList == null)
 		{
-			errorMessagesList = new ArrayList();
+			errorMessagesList = new ArrayList<String>();
 		}
 		if (throwable instanceof DynamicExtensionsApplicationException)
 		{

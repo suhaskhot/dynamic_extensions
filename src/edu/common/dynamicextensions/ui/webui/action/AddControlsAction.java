@@ -1,7 +1,8 @@
 
 package edu.common.dynamicextensions.ui.webui.action;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -62,11 +63,17 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 			response.sendRedirect("http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath()
 					+ actionForward.getPath());
 		}
-		catch (IOException e)
+		catch (Exception e)
 		{
-			e.printStackTrace();
+			List list = new ArrayList();
+			boolean isSystemException = handleException(e, list);
+			saveErrors(request, getErrorMessages(list, null));
+			if (isSystemException)
+			{
+				actionForward = mapping.findForward(Constants.SYSTEM_EXCEPTION);
+			}
 		}
-		return null;
+		return actionForward;
 	}
 
 	/**

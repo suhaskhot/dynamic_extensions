@@ -45,21 +45,9 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	public void insertDataEntryForm(ContainerInterface containerInterface, Map attributeValueMap) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException
 	{
-		try
-		{
 			EntityManager entityManager = EntityManager.getInstance();
-
 			EntityInterface entityInterface = containerInterface.getEntity();
 			entityManager.insertData(entityInterface, attributeValueMap);
-		}
-		catch (DynamicExtensionsApplicationException e)
-		{
-			throw e;
-		}
-		catch (DynamicExtensionsSystemException e)
-		{
-			throw e;
-		}
 	}
 
 }

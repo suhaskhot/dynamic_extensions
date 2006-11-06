@@ -14,7 +14,6 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
-import edu.wustl.common.util.logger.Logger;
 
 /**
  * @author preeti_munot
@@ -28,6 +27,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 	 * Protected constructor for ControlProcessor
 	 *
 	 */
+	
 	protected ApplyFormControlsProcessor()
 	{
 
@@ -45,12 +45,11 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 	 * @param containerInterface : Container object
 	 * @param controlsForm : UI Information as form object
 	 */
-	public void addControlToForm(ContainerInterface containerInterface, ControlsForm controlsForm)
+	public void addControlToForm(ContainerInterface containerInterface, ControlsForm controlsForm) 
 	{
 		if ((containerInterface != null) && (controlsForm != null))
 		{
-			try
-			{
+			
 				EntityInterface entityInterface = containerInterface.getEntity();
 				ControlProcessor controlProcessor = ControlProcessor.getInstance();
 				AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
@@ -163,12 +162,9 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 					}
 				}
 			}
-			catch (Exception e)
-			{
-				Logger.out.fatal(e);
-			}
+			
 		}
-	}
+	
 
 	/**
 	 * 

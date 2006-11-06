@@ -23,11 +23,11 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 public class DynamicExtensionsInterfaceAction extends HttpServlet
 {
 	/**
-	 * @param req HttpServletRequest  
+	 * Do get method calls do post method
+	 * @param req HttpServletRequest
 	 * @param res HttpServletResponse 
-	 * @throws ServletException servletException
-	 * @throws IOException ioException
-	 * 
+	 * @throws ServletException servlet exception
+	 * @throws IOException io exception
 	 */
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
 	{
@@ -35,11 +35,11 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet
 	}
 
 	/**
-	 * @param req HttpServletRequest  
+	 * Do post method of the servlet
+	 * @param req HttpServletRequest
 	 * @param res HttpServletResponse 
-	 * @throws ServletException servletException
-	 * @throws IOException ioException
-	 * 
+	 * @throws ServletException servlet exception
+	 * @throws IOException io exception
 	 */
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
 	{
@@ -65,13 +65,7 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet
 		String operation = requestObject.getString("operation");
 
 		//depending upon the operation execute the appropriate steps
-		boolean flag = false;
 		if (operation.equalsIgnoreCase("getAllEntities"))
-		{
-			flag = true;
-		}
-		
-		if (flag)
 		{
 
 			EntityManager entityManager = EntityManager.getInstance();
@@ -95,9 +89,10 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet
 			{
 				Iterator entityIterator = entityCollection.iterator();
 				EntityInterface entityInterface;
-				JSONObject entityInterfaceJSONObject = new JSONObject();
+
 				while (entityIterator.hasNext())
 				{
+					JSONObject entityInterfaceJSONObject = new JSONObject();
 					entityInterface = (EntityInterface) entityIterator.next();
 					entityInterfaceJSONObject.put("entityName", entityInterface.getName());
 					entityInterfaceJSONObject.put("entityIdentifier", entityInterface.getId());

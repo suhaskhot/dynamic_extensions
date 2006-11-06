@@ -32,7 +32,7 @@ public class DBUtil
 	private static SessionFactory sessionFactory;
 
 	//ThreadLocal to hold the Session for the current executing thread. 
-	private static final ThreadLocal ThreadLocal_Instance = new ThreadLocal();
+	private static final ThreadLocal THREADLOCAL_INSTANCE = new ThreadLocal();
 	//Initialize the session Factory in the Static block.
 
 	static
@@ -81,7 +81,7 @@ public class DBUtil
 	 * */
 	public static Session currentSession() throws HibernateException
 	{
-		Session s = (Session) ThreadLocal_Instance.get();
+		Session s = (Session) THREADLOCAL_INSTANCE.get();
 		Logger.out.debug("**********************Session in DBUTIL " + s);
 		//Open a new Session, if this Thread has none yet
 		if (s == null)
@@ -95,7 +95,7 @@ public class DBUtil
 			//			{
 			//				throw new HibernateException(ex.getMessage(),ex);
 			//			}
-			ThreadLocal_Instance.set(s);
+			THREADLOCAL_INSTANCE.set(s);
 		}
 		return s;
 	}
@@ -106,8 +106,8 @@ public class DBUtil
 	 * */
 	public static void closeSession() throws HibernateException
 	{
-		Session s = (Session) ThreadLocal_Instance.get();
-		ThreadLocal_Instance.set(null);
+		Session s = (Session) THREADLOCAL_INSTANCE.get();
+		THREADLOCAL_INSTANCE.set(null);
 		if (s != null)
 		{
 			s.close();

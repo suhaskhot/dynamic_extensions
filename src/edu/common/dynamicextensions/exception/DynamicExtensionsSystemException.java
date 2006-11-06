@@ -4,9 +4,9 @@
  *<p>Copyright:TODO</p>
  *@author Vishvesh Mulay
  *@version 1.0
- */ 
-package edu.common.dynamicextensions.exception;
+ */
 
+package edu.common.dynamicextensions.exception;
 
 /**
  *<p>Title:DynamicExtensionsSystemException </p>
@@ -17,40 +17,49 @@ package edu.common.dynamicextensions.exception;
  *and error page is shown to the user specifying that fatal error has occured.
  *Proper logging should be done with the detailed stack trace using the wrapped exception.</p>
  *@author Vishvesh Mulay
- */ 
+ */
 public class DynamicExtensionsSystemException
         extends
             BaseDynamicExtensionsException
 {
+
     /**
      * @param wrapException The wrapException to set.
+     * @param message message
      */
-    public DynamicExtensionsSystemException(String message, Exception wrapException) {
-       this.errorMessage = message;
+    public DynamicExtensionsSystemException(String message,
+            Exception wrapException)
+    {
+        this.errorMessage = message;
         this.wrappedException = wrapException;
     }
-    
+
     /**
      * @param wrapException The wrapException to set.
+     * @param errorCode error code
+     * @param message message
      */
-    public DynamicExtensionsSystemException(String message, Exception wrapException, String errorCode) {
-       this.errorMessage = message;
+    public DynamicExtensionsSystemException(String message,
+            Exception wrapException, String errorCode)
+    {
+        this.errorMessage = message;
         this.wrappedException = wrapException;
         this.errorCode = errorCode;
     }
-    
-    
+
     /**
      * @param wrapException The wrapException to set.
-     *//*
-    private void DynamicExtensionsSystemException(Exception wrapException) {
-        this(null,wrapException);
-    }*/
+     */
+    /*
+     private void DynamicExtensionsSystemException(Exception wrapException) {
+     this(null,wrapException);
+     }*/
     /**
      * 
-     * @param message
+     * @param message message
      */
-    public DynamicExtensionsSystemException(String message) {
-        this(message,null);
+    public DynamicExtensionsSystemException(String message)
+    {
+        this(message, null);
     }
 }

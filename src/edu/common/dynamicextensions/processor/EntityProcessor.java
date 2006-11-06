@@ -29,114 +29,131 @@ import edu.wustl.common.util.Utility;
 public class EntityProcessor extends BaseDynamicExtensionsProcessor
 {
 
-	/**
-	 * This is a singleton class so we have a protected constructor , We are providing getInstance method 
-	 * to return the EntityProcessor's instance.
-	 */
-	protected EntityProcessor()
-	{
+    /**
+     * This is a singleton class so we have a protected constructor , We are providing getInstance method 
+     * to return the EntityProcessor's instance.
+     */
+    protected EntityProcessor()
+    {
 
-	}
+    }
 
-	/**
-	 * this method gets the new instance of the entity processor to the caller.
-	 * @return EntityProcessor EntityProcessor instance
-	 */
-	public static EntityProcessor getInstance()
-	{
-		return new EntityProcessor();
-	}
+    /**
+     * this method gets the new instance of the entity processor to the caller.
+     * @return EntityProcessor EntityProcessor instance
+     */
+    public static EntityProcessor getInstance()
+    {
+        return new EntityProcessor();
+    }
 
-	/**
-	 * This method returns empty domain object of entityInterface.
-	 * @return EntityInterface Returns new instance of EntityInterface from the domain object Factory.
-	 */
-	public EntityInterface createEntity()
-	{
-		return DomainObjectFactory.getInstance().createEntity();
-	}
+    /**
+     * This method returns empty domain object of entityInterface.
+     * @return EntityInterface Returns new instance of EntityInterface from the domain object Factory.
+     */
+    public EntityInterface createEntity()
+    {
+        return DomainObjectFactory.getInstance().createEntity();
+    }
 
-	/**
-	 * This method creates a new instance of the EntityInterface from the domain object factory. After the creation
-	 * of this instance it populates the entityInterface with the information that is provided through 
-	 * the entityInformationInterface which is a parameter to the method.
-	 * @param entityUIBeanInterface Implementation of entityInformationInterface 
-	 * which has all the data required for the creation of the entity.
-	 * @return EntityInterface Returns the unsaved instance of EntityInterface with populated values taken 
-	 * from the entityInformationInterface : Exception thrown by Entity Manager
-	 * @throws DynamicExtensionsSystemException : Exception thrown by Entity Manager
-	 * @throws DynamicExtensionsApplicationException : Exception thrown by Entity Manager
-	 */
-	public EntityInterface createAndSaveEntity(EntityUIBeanInterface entityUIBeanInterface) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
-	{
-		EntityInterface entityInterface = null;
-		if (entityUIBeanInterface != null)
-		{
-			entityInterface = createAndPopulateEntity(entityUIBeanInterface);
-			entityInterface = EntityManager.getInstance().createEntity(entityInterface);
-		}
-		return entityInterface;
-	}
+    /**
+     * This method creates a new instance of the EntityInterface from the domain object factory. After the creation
+     * of this instance it populates the entityInterface with the information that is provided through 
+     * the entityInformationInterface which is a parameter to the method.
+     * @param entityUIBeanInterface Implementation of entityInformationInterface 
+     * which has all the data required for the creation of the entity.
+     * @return EntityInterface Returns the unsaved instance of EntityInterface with populated values taken 
+     * from the entityInformationInterface.
+     * @throws DynamicExtensionsSystemException in case of system error
+     * @throws DynamicExtensionsApplicationException in case of application error.
+     */
+    public EntityInterface createAndSaveEntity(
+            EntityUIBeanInterface entityUIBeanInterface)
+            throws DynamicExtensionsSystemException,
+            DynamicExtensionsApplicationException
+    {
+        EntityInterface entityInterface = null;
+        if (entityUIBeanInterface != null)
+        {
+            entityInterface = createAndPopulateEntity(entityUIBeanInterface);
+            entityInterface = EntityManager.getInstance().createEntity(
+                    entityInterface);
+        }
+        return entityInterface;
+    }
 
-	/**
-	 * This method populates the given EntityInterface using the given entityInformationInterface.
-	 * @param entityInterface Instance of EntityInterface which is populated using the informationInterface.
-	 * @param entityUIBeanInterface Instance of EntityUIBeanInterface which is used to populate the entityInterface.
-	 */
-	public void populateEntity(EntityUIBeanInterface entityUIBeanInterface, EntityInterface entityInterface)
-	{
-		if (entityUIBeanInterface != null && entityInterface != null)
-		{
-			entityInterface.setName(entityUIBeanInterface.getFormName());
-			entityInterface.setDescription(entityUIBeanInterface.getFormDescription());
-			Collection collection = SemanticPropertyBuilderUtil.getSymanticPropertyCollection(entityUIBeanInterface.getConceptCode());
-			if (collection != null && !collection.isEmpty())
-			{
-				Iterator iterator = collection.iterator();
-				while (iterator.hasNext())
-				{
-					entityInterface.addSemanticProperty((SemanticPropertyInterface) iterator.next());
-				}
-			}
-		}
-	}
+    /**
+     * This method populates the given EntityInterface using the given entityInformationInterface.
+     * @param entityInterface Instance of EntityInterface which is populated using the informationInterface.
+     * @param entityUIBeanInterface Instance of EntityUIBeanInterface which is used to populate the entityInterface.
+     */
+    public void populateEntity(EntityUIBeanInterface entityUIBeanInterface,
+            EntityInterface entityInterface)
+    {
+        if (entityUIBeanInterface != null && entityInterface != null)
+        {
+            entityInterface.setName(entityUIBeanInterface.getFormName());
+            entityInterface.setDescription(entityUIBeanInterface
+                    .getFormDescription());
+            Collection collection = SemanticPropertyBuilderUtil
+                    .getSymanticPropertyCollection(entityUIBeanInterface
+                            .getConceptCode());
+            if (collection != null && !collection.isEmpty())
+            {
+                Iterator iterator = collection.iterator();
+                while (iterator.hasNext())
+                {
+                    entityInterface
+                            .addSemanticProperty((SemanticPropertyInterface) iterator
+                                    .next());
+                }
+            }
+        }
+    }
 
-	/**
-	 * This method will populate the EntityUIBeanInterface using the EntityInterface so that the 
-	 * information of the Entity can be shown on the user page using the EntityUIBeanInterface.
-	 * @param entityInterface Instance of EntityInterface from which to populate the informationInterface.
-	 * @param entityUIBeanInterface Instance of EntityUIBeanInterface which will be populated using 
-	 * the first parameter that is EntityInterface.
-	 */
-	public void populateEntityUIBeanInterface(EntityInterface entityInterface, EntityUIBeanInterface entityUIBeanInterface)
-	{
-		if (entityInterface != null && entityUIBeanInterface != null)
-		{
-			entityUIBeanInterface.setFormName(Utility.toString(entityInterface.getName()));
-			entityUIBeanInterface.setFormDescription(Utility.toString(entityInterface.getDescription()));
-			if (!entityInterface.getSemanticPropertyCollection().isEmpty())
-			{
-				entityUIBeanInterface.setConceptCode(SemanticPropertyBuilderUtil.getConceptCodeString(entityInterface));
-			}
-		}
-	}
+    /**
+     * This method will populate the EntityUIBeanInterface using the EntityInterface so that the 
+     * information of the Entity can be shown on the user page using the EntityUIBeanInterface.
+     * @param entityInterface Instance of EntityInterface from which to populate the informationInterface.
+     * @param entityUIBeanInterface Instance of EntityUIBeanInterface which will be populated using 
+     * the first parameter that is EntityInterface.
+     */
+    public void populateEntityUIBeanInterface(EntityInterface entityInterface,
+            EntityUIBeanInterface entityUIBeanInterface)
+    {
+        if (entityInterface != null && entityUIBeanInterface != null)
+        {
+            entityUIBeanInterface.setFormName(Utility.toString(entityInterface
+                    .getName()));
+            entityUIBeanInterface.setFormDescription(Utility
+                    .toString(entityInterface.getDescription()));
+            if (!entityInterface.getSemanticPropertyCollection().isEmpty())
+            {
+                entityUIBeanInterface
+                        .setConceptCode(SemanticPropertyBuilderUtil
+                                .getConceptCodeString(entityInterface));
+            }
+        }
+    }
 
-	/**
-	 * This method creates a new instance of the EntityInterface from the domain object factory. After the creation
-	 * of this instance it populates the entityInterface with the information that is provided through 
-	 * the entityInformationInterface which is a parameter to the method.
-	 * @param entityUIBeanInterface Implementation of entityInformationInterface 
-	 * which has all the data required for the creation of the entity.
-	 * @return EntityInterface Returns the unsaved instance of EntityInterface with populated values taken 
-	 * from the entityInformationInterface.
-	 * @throws DynamicExtensionsSystemException Exception
-	 */
-	public EntityInterface createAndPopulateEntity(EntityUIBeanInterface entityUIBeanInterface) throws DynamicExtensionsSystemException
-	{
-		EntityInterface entityInterface = DomainObjectFactory.getInstance().createEntity();
-		populateEntity(entityUIBeanInterface, entityInterface);
-		return entityInterface;
-	}
+    /**
+     * This method creates a new instance of the EntityInterface from the domain object factory. After the creation
+     * of this instance it populates the entityInterface with the information that is provided through 
+     * the entityInformationInterface which is a parameter to the method.
+     * @param entityUIBeanInterface Implementation of entityInformationInterface 
+     * which has all the data required for the creation of the entity.
+     * @return EntityInterface Returns the unsaved instance of EntityInterface with populated values taken 
+     * from the entityInformationInterface.
+     * @throws DynamicExtensionsSystemException Exception
+     */
+    public EntityInterface createAndPopulateEntity(
+            EntityUIBeanInterface entityUIBeanInterface)
+            throws DynamicExtensionsSystemException
+    {
+        EntityInterface entityInterface = DomainObjectFactory.getInstance()
+                .createEntity();
+        populateEntity(entityUIBeanInterface, entityInterface);
+        return entityInterface;
+    }
 
 }

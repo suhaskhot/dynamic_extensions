@@ -12,8 +12,9 @@ import java.util.Set;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
-import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
 import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
+import edu.wustl.common.util.global.ApplicationProperties;
 
 /**
  * @author Sujay Narkar
@@ -50,16 +51,18 @@ public class ValidatorUtil
 			while (attributeRuleIterator.hasNext())
 			{
 				RuleInterface ruleInterface = (RuleInterface) attributeRuleIterator.next();
-				ValidatorRuleInterface validatorRule = ControlConfigurationsFactory.getInstance().getValidatorRule(ruleInterface.getName());
+				ValidatorRuleInterface validatorRule = ControlConfigurationsFactory.getInstance()
+						.getValidatorRule(ruleInterface.getName());
 				Object valueObject = attributeValueMap.get(attribute);
 				Map paramMap = getParamMap(ruleInterface);
 				try
 				{
 					validatorRule.validate(attribute, valueObject, paramMap);
 				}
-				catch (DynamicExtensionsApplicationException e)
+				catch (DynamicExtensionsValidationException e)
 				{
-					String errorMessage = e.getErrorMessage();
+					String errorMessage = ApplicationProperties.getValue(e.getErrorCode(), e
+							.getPlaceHolderList());
 					errorList.add(errorMessage);
 				}
 			}
@@ -82,7 +85,8 @@ public class ValidatorUtil
 
 			while (paramIterator.hasNext())
 			{
-				RuleParameterInterface ruleParameterInterface = (RuleParameterInterface) paramIterator.next();
+				RuleParameterInterface ruleParameterInterface = (RuleParameterInterface) paramIterator
+						.next();
 				paramMap.put(ruleParameterInterface.getName(), ruleParameterInterface.getValue());
 			}
 		}

@@ -29,10 +29,10 @@ public class ValidatorUtil
 	 *                           value -- value that user has entred for this attribute
 	 * @return errorList if any
 	 */
-	public static List validateEntity(Map attributeValueMap)
+	public static List<String> validateEntity(Map attributeValueMap)
 	{
 
-		List errorList = new ArrayList();
+		List<String> errorList = new ArrayList<String>();
 
 		Set attributeSet = attributeValueMap.keySet();
 
@@ -50,7 +50,7 @@ public class ValidatorUtil
 			while (attributeRuleIterator.hasNext())
 			{
 				RuleInterface ruleInterface = (RuleInterface) attributeRuleIterator.next();
-				ValidatorRuleInterface validatorRule = ControlConfigurationsFactory.getInstance().getValidatorRule(ruleInterface.getName()); 
+				ValidatorRuleInterface validatorRule = ControlConfigurationsFactory.getInstance().getValidatorRule(ruleInterface.getName());
 				Object valueObject = attributeValueMap.get(attribute);
 				Map paramMap = getParamMap(ruleInterface);
 				try
@@ -59,7 +59,8 @@ public class ValidatorUtil
 				}
 				catch (DynamicExtensionsApplicationException e)
 				{
-					errorList.add(e.getMessage());
+					String errorMessage = e.getErrorMessage();
+					errorList.add(errorMessage);
 				}
 			}
 		}
@@ -75,13 +76,15 @@ public class ValidatorUtil
 	{
 		Map paramMap = new HashMap();
 		Collection ruleParamCollection = ruleInterface.getRuleParameterCollection();
-		Iterator paramIterator = ruleParamCollection.iterator();
-
-		while (paramIterator.hasNext())
+		if (ruleParamCollection != null && !ruleParamCollection.isEmpty())
 		{
-			RuleParameterInterface ruleParameterInterface = (RuleParameterInterface) paramIterator
-					.next();
-			paramMap.put(ruleParameterInterface.getName(), ruleParameterInterface.getValue());
+			Iterator paramIterator = ruleParamCollection.iterator();
+
+			while (paramIterator.hasNext())
+			{
+				RuleParameterInterface ruleParameterInterface = (RuleParameterInterface) paramIterator.next();
+				paramMap.put(ruleParameterInterface.getName(), ruleParameterInterface.getValue());
+			}
 		}
 		return paramMap;
 	}

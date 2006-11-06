@@ -3,13 +3,14 @@ package edu.common.dynamicextensions.ui.webui.action;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -40,24 +41,24 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @param response HttpServletResponse
 	 * @return ActionForward
 	 */
+	@SuppressWarnings("unchecked")
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 	{
 		ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-		Collection controlCollection = containerInterface.getControlCollection();
+		Collection<ControlInterface> controlCollection = containerInterface.getControlCollection();
 		AbstractAttributeInterface abstractAttributeInterface = null;
-		ControlInterface controlInterface = null;
-		
-		Map<AbstractAttributeInterface, String> attributeValueMap = new HashMap<AbstractAttributeInterface, String>();		
+		//ControlInterface controlInterface = null;
+
+		Map<AbstractAttributeInterface, String> attributeValueMap = new HashMap<AbstractAttributeInterface, String>();
 		String value = null;
 
 		for (int sequence = 1; sequence <= controlCollection.size(); sequence++)
 		{
 			value = request.getParameter("Control_" + sequence);
-			System.out.println("Value = " +  value);	
-			for (Iterator controlCollectionIterator = controlCollection.iterator(); controlCollectionIterator.hasNext();)
+			System.out.println("Value = " + value);
+			for (ControlInterface controlInterface : controlCollection)
 			{
-				controlInterface = (ControlInterface) controlCollectionIterator.next();
-				if(sequence == controlInterface.getSequenceNumber().intValue())
+				if (sequence == controlInterface.getSequenceNumber().intValue())
 				{
 					abstractAttributeInterface = controlInterface.getAbstractAttribute();
 					attributeValueMap.put(abstractAttributeInterface, value);
@@ -65,31 +66,52 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				}
 			}
 		}
-        ApplyDataEntryFormProcessor applyDataEntryFormProcessor = ApplyDataEntryFormProcessor.getInstance();
-        try {
 
-        	List errorList = ValidatorUtil.validateEntity(attributeValueMap);
-        	if (errorList.size()  != 0) {
-        		
-        	}
-			applyDataEntryFormProcessor.insertDataEntryForm(containerInterface,attributeValueMap);
-			saveMessages(request, getSuccessMessage());
-            return (mapping.findForward(Constants.SUCCESS));
-		} catch (DynamicExtensionsApplicationException e) {
-			e.printStackTrace();
-			return (mapping.findForward(Constants.SYSTEM_EXCEPTION));
-		} catch (DynamicExtensionsSystemException e) {
+		ApplyDataEntryFormProcessor applyDataEntryFormProcessor = ApplyDataEntryFormProcessor.getInstance();
+		try
+		{
+			List<String> errorList = ValidatorUtil.validateEntity(attributeValueMap);
+			if (errorList.size() != 0)
+			{
+				saveMessages(request, getErrorMessages(errorList));
+			}
+			else
+			{
+				applyDataEntryFormProcessor.insertDataEntryForm(containerInterface, attributeValueMap);
+				saveMessages(request, getSuccessMessage());
+			}
+			return (mapping.findForward(Constants.SUCCESS));
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
 			e.printStackTrace();
 			return (mapping.findForward(Constants.SYSTEM_EXCEPTION));
 		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+			return (mapping.findForward(Constants.SYSTEM_EXCEPTION));
+		}
+		
 	}
+
 	/**
 	 * Get messages for successful save of entity
 	 */
 	private ActionMessages getSuccessMessage()
 	{
 		ActionMessages actionMessages = new ActionMessages();
-        actionMessages.add(ActionMessages.GLOBAL_MESSAGE,new ActionMessage("app.successfulDataInsertionMessage"));
-        return actionMessages;
-     }
+		actionMessages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("app.successfulDataInsertionMessage"));
+		return actionMessages;
+	}
+
+	public ActionErrors getErrorMessages(List<String> errorList)
+	{
+		ActionErrors errors = new ActionErrors();
+		for (String errorMessage : errorList)
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(errorMessage));
+		}
+		return errors;
+	}
 }

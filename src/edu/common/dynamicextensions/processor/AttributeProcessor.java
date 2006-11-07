@@ -591,18 +591,26 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	private void populateStringAttributeInterface(StringAttributeInterface stringAttributeIntf,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsApplicationException
 			{
-		stringAttributeIntf.setDefaultValue(attributeUIBeanInformationIntf.getAttributeDefaultValue());
-		Integer size;
-		try
-		{
-			size = new Integer(attributeUIBeanInformationIntf.getAttributeSize());
-		}
-		catch (NumberFormatException e)
-		{
-			throw new DynamicExtensionsApplicationException(e.getMessage(), e);
-		}
-		stringAttributeIntf.setSize(size);
-			}
+				stringAttributeIntf.setDefaultValue(attributeUIBeanInformationIntf.getAttributeDefaultValue());
+				Integer size;
+				try
+				{
+					System.out.println("Size = " +attributeUIBeanInformationIntf.getAttributeSize() );
+					if ((attributeUIBeanInformationIntf.getAttributeSize()!=null)&&(attributeUIBeanInformationIntf.getAttributeSize().trim().equals("")))
+					{
+						size = new Integer(0);
+					}
+					else
+					{
+						size = new Integer(attributeUIBeanInformationIntf.getAttributeSize());
+					}
+				}
+				catch (NumberFormatException e)
+				{
+					throw new DynamicExtensionsApplicationException(e.getMessage(), e);
+				}
+				stringAttributeIntf.setSize(size);
+	}
 
 	/**
 	 * 
@@ -638,7 +646,14 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			Integer defaultValue;
 			try
 			{
-				defaultValue = new Integer(attributeUIBeanInformationIntf.getAttributeDefaultValue());
+				if (attributeUIBeanInformationIntf.getAttributeDefaultValue().trim().equals(""))
+				{
+					defaultValue = new Integer(0);	//Assume 0 for blank fields
+				}
+				else
+				{
+					defaultValue = new Integer(attributeUIBeanInformationIntf.getAttributeDefaultValue());
+				}
 			}
 			catch (NumberFormatException e)
 			{
@@ -732,7 +747,14 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		{
 			try
 			{
-				noOfDecimalPlaces = Integer.parseInt(strNoOfDecimalPlaces);
+				if (strNoOfDecimalPlaces.trim().equals(""))
+				{
+					noOfDecimalPlaces = new Integer(0);	//Assume 0 for blank values
+				}
+				else
+				{
+					noOfDecimalPlaces = Integer.parseInt(strNoOfDecimalPlaces);
+				}
 			}
 			catch (NumberFormatException e)
 			{

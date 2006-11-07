@@ -658,9 +658,6 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	public void setAttributenoOfCols(String attributenoOfCols)
 	{
 		this.attributenoOfCols = attributenoOfCols;
-
-		columns = new Integer(attributenoOfCols);
-
 	}
 
 	/**
@@ -677,9 +674,6 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	public void setAttributeNoOfRows(String attributeNoOfRows)
 	{
 		this.attributeNoOfRows = attributeNoOfRows;
-
-		rows = new Integer(attributeNoOfRows);
-
 	}
 
 	/**
@@ -809,6 +803,14 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 
 	public Integer getColumns()
 	{
+		if((attributenoOfCols!=null)&&(attributenoOfCols.trim().equals("")))
+		{
+			columns = new Integer(0);	//blank values will be considered as 0
+		}
+		else
+		{
+			columns = new Integer(attributenoOfCols);
+		}
 		return columns;
 	}
 
@@ -836,6 +838,15 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	 */
 	public Integer getRows()
 	{
+		if((attributeNoOfRows!=null)&&(attributeNoOfRows.trim().equals("")))
+		{
+			rows = new Integer(0);	//blank values will be considered as 0
+		}
+		else
+		{
+			rows = new Integer(attributeNoOfRows);
+		}
+
 		return rows;
 	}
 
@@ -845,6 +856,14 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	 */
 	public Integer getSequenceNumber()
 	{
+		if((attributeSequenceNumber!=null)&&(attributeSequenceNumber.trim().equals("")))
+		{
+			sequenceNumber = new Integer(0);	//blank values will be considered as 0
+		}
+		else
+		{
+			sequenceNumber = new Integer(attributeSequenceNumber);
+		}
 		return sequenceNumber;
 	}
 
@@ -956,9 +975,6 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	public void setAttributeSequenceNumber(String attributeSequenceNumber)
 	{
 		this.attributeSequenceNumber = attributeSequenceNumber;
-
-		sequenceNumber = new Integer(attributeSequenceNumber);
-
 	}
 
 	/**
@@ -1109,74 +1125,6 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	}
 
 	/**
-	 * Overrides the validate method of ActionForm.
-	 * @param mapping ActionMapping mapping
-	 * @param request HttpServletRequest request
-	 * @return ActionErrors ActionErrors
-	 */
-	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request)
-	{
-		ActionErrors errors = new ActionErrors();
-		Validator validator = new Validator();
-		/*if (name == null || validator.isEmpty(String.valueOf(name)))
-		 {
-		 errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.Name")));
-		 }
-		 */
-		if (caption == null || validator.isEmpty(String.valueOf(caption)))
-		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.Label")));
-		}
-
-		//Special case for text Control
-		if ((dataType != null) && (dataType.equalsIgnoreCase(ProcessorConstants.TEXT_CONTROL)))
-		{
-			getErrorsForTextControl(validator, errors);
-		}
-		//Special case for combobox Control
-		if ((dataType != null) && (dataType.equalsIgnoreCase(ProcessorConstants.COMBOBOX_CONTROL)))
-		{
-			getErrorsForComboboxControl(validator, errors);
-		}
-
-		return errors;
-	}
-
-	/**
-	 * @param validator validator
-	 * @param errors errors
-	 */
-	private void getErrorsForComboboxControl(Validator validator, ActionErrors errors)
-	{
-		if (attributeMultiSelect == null || validator.isEmpty(String.valueOf(attributeMultiSelect)))
-		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.ListBoxType")));
-		}
-		if (dataType == null || validator.isEmpty(String.valueOf(dataType)))
-		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.DataInput")));
-		}
-
-	}
-
-	/**
-	 * @param validator  validator
-	 * @param errors errors
-	 */
-	private void getErrorsForTextControl(Validator validator, ActionErrors errors)
-	{
-		if (linesType == null || validator.isEmpty(String.valueOf(linesType)))
-		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.control.type")));
-		}
-		if (dataType == null || validator.isEmpty(String.valueOf(dataType)))
-		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.DataInput")));
-		}
-
-	}
-
-	/**
 	 * @return String dateValueType
 	 */
 	public String getDateValueType()
@@ -1282,4 +1230,245 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	{
 		this.measurementUnitOther = measurementUnitOther;
 	}
+
+	/**
+	 * Overrides the validate method of ActionForm.
+	 * @param mapping ActionMapping mapping
+	 * @param request HttpServletRequest request
+	 * @return ActionErrors ActionErrors
+	 */
+	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request)
+	{
+		ActionErrors errors = new ActionErrors();
+		Validator validator = new Validator();
+
+		if (caption == null || validator.isEmpty(String.valueOf(caption)))
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.Label")));
+		}
+		validateControlFields(validator,errors);
+		return errors;
+	}
+
+	/**
+	 * @param validator :validator
+	 * @param errors : action errors 
+	 * 
+	 */
+	private void validateControlFields(Validator validator, ActionErrors errors)
+	{
+		if(userSelectedTool!=null)
+		{
+			//Special case for text Control
+			if (userSelectedTool.equalsIgnoreCase((ProcessorConstants.TEXT_CONTROL)))
+			{
+				getErrorsForTextControl(validator, errors);
+			}else if (userSelectedTool.equalsIgnoreCase((ProcessorConstants.COMBOBOX_CONTROL)))
+			{
+				//Special case for combobox Control
+				getErrorsForComboboxControl(validator, errors);
+			}else if (userSelectedTool.equalsIgnoreCase((ProcessorConstants.DATEPICKER_CONTROL)))
+			{
+				//Special case for Date picker Control
+				getErrorsForDatePickerControl(validator, errors);
+			}else if (userSelectedTool.equalsIgnoreCase((ProcessorConstants.FILEUPLOAD_CONTROL)))
+			{
+				//Special case for File upload Control
+				getErrorsForFileUploadControl(validator, errors);
+			}
+
+		} 
+	}
+
+	/**
+	 * @param validator :validator
+	 * @param errors : action errors
+	 */
+	private void getErrorsForFileUploadControl(Validator validator, ActionErrors errors)
+	{
+	}
+
+	/**
+	 * @param validator :validator
+	 * @param errors : action errors
+	 */
+	private void getErrorsForDatePickerControl(Validator validator, ActionErrors errors)
+	{
+		//check for date format of default value fld
+		//if dateValueType is "Select" then default value cannot be blank and shld be valid date
+		if(dateValueType!=null)
+		{
+			if(dateValueType.trim().equalsIgnoreCase(ProcessorConstants.DATE_VALUE_SELECT))
+			{
+				if((attributeDefaultValue==null)||(validator.checkDate(attributeDefaultValue)==false))
+				{
+					errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.date.format", ApplicationProperties.getValue("eav.att.DefaultValue")));
+				}
+			}
+		}
+		else
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.DefaultValue")));
+		}
+	}
+
+
+
+	/**
+	 * @param validator :validator
+	 * @param errors : action errors
+	 */
+	private void getErrorsForComboboxControl(Validator validator, ActionErrors errors)
+	{
+		if (attributeMultiSelect == null || validator.isEmpty(String.valueOf(attributeMultiSelect)))
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.ListBoxType")));
+		}
+		if (dataType == null || validator.isEmpty(String.valueOf(dataType)))
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.DataInput")));
+		}
+		//NUMBER OF ROWS SHLD BE NUMERIC
+		if((attributeMultiSelect!=null)&&(attributeMultiSelect.equals(ProcessorConstants.LIST_TYPE_MULTI_SELECT)))
+		{
+			if(!isNumeric(attributeNoOfRows,validator))
+			{
+				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.numericField", ApplicationProperties.getValue("eav.att.ListBoxDisplayLines")));
+			}
+		}
+	}
+
+	/**
+	 * @param validator :validator
+	 * @param errors : action errors
+	 */
+	private void getErrorsForTextControl(Validator validator, ActionErrors errors)
+	{
+		//REQUIRED FIELDS VALIDATION
+		checkRequiredFieldsForTextControl(validator,errors);
+
+		//NUMERIC FIELDS VALIDATION
+
+		//1. Check for text field width
+		if(!isNumeric(attributenoOfCols,validator))
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.numericField", ApplicationProperties.getValue("eav.att.TextFieldWidth")));
+		}
+
+		//check errors if datatype is String
+		if((dataType!=null)&&(dataType.equals(ProcessorConstants.DATATYPE_STRING)))
+		{
+			getErrorsForStringDatatype(validator,errors);
+		}
+
+		//Check errors if datatype is number
+		if((dataType!=null)&&(dataType.equals(ProcessorConstants.DATATYPE_NUMBER)))
+		{
+			getErrorsForNumericDatatype(validator,errors);
+		}
+
+
+	}
+
+	/** @param validator
+	 * @param errors
+	 */
+	private void getErrorsForNumericDatatype(Validator validator, ActionErrors errors)
+	{
+		/*
+		 *	For number datatype validate:
+		 *	1) Precision : numeric
+		 *	2) Default value is numeric
+		 */
+		if(!isNumeric(attributeDecimalPlaces,validator))
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.numericField", ApplicationProperties.getValue("eav.att.AttributeDecimalPlaces")));
+		}
+
+		//Numeric default value
+		if(!(isNumeric(attributeDefaultValue,validator)||(validator.isDouble(attributeDefaultValue))))
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.numericField", ApplicationProperties.getValue("eav.att.DefaultValue")));
+		}
+	}
+
+	/**
+	 * @param validator
+	 * @param errors
+	 */
+	private void getErrorsForStringDatatype(Validator validator, ActionErrors errors)
+	{
+		/*
+		 *	For string datatype validate:
+		 *  1) Lines type : Singleline/Multiline specified  : REQUIRED 
+		 *	2) Max number of chars(size)  : Numeric
+		 *	3) If linesType is multiline the Number of rows()  : Numeric
+		 */
+
+		//Atleast one of singleline/ multiline should be selected		
+		if (linesType == null || validator.isEmpty(String.valueOf(linesType)))
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.control.type")));
+		}
+
+		//Size : maximum characters shld be numeric
+		if(!isNumeric(attributeSize,validator))
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.numericField", ApplicationProperties.getValue("eav.att.MaxCharacters")));
+		}
+
+		//Number of lines for multiline textbox shld be numeric
+		if((linesType!=null)&&(linesType.equals(ProcessorConstants.LINE_TYPE_MULTILINE)))
+		{
+			if(!isNumeric(attributeNoOfRows,validator))
+			{
+				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.numericField", ApplicationProperties.getValue("eav.text.noOfLines")));
+			}
+		}
+	}
+
+
+	/*attributenoOfCols 
+		attributeNoOfRows
+		attributeSize
+		attributeDefaultValue
+		attributeDecimalPlaces*/
+
+	/**
+	 * 
+	 */
+	private void checkRequiredFieldsForTextControl(Validator validator, ActionErrors errors)
+	{
+		//Datatype either numeric or string shld be selected
+		if (dataType == null || validator.isEmpty(String.valueOf(dataType)))
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.DataInput")));
+		}
+
+	}
+
+	/**
+	 * Test if a string represents a numeric fld.
+	 * Will return false if fld is null or is not a numeric fld. Blank fld will be considered as valid
+	 * @param stringFld
+	 * @return
+	 */
+	private boolean isNumeric(String stringFld,Validator validator)
+	{
+		if(stringFld!=null)
+		{
+			if(stringFld.trim().equals(""))
+			{
+				return true;	//Blank fields are considered valid. Assume thier value as 0
+			}
+			else
+			{
+				return (validator.isNumeric(stringFld));
+			}
+		}
+		return false;
+	}
+
+
+
 }

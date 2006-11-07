@@ -1,9 +1,6 @@
 
 package edu.common.dynamicextensions.ui.webui.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -35,10 +32,11 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 	 * @param response HttpServletResponse response
 	 * @return ActionForward forward to next action
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) 
 	{
 		//Get controls form
 		ControlsForm controlsForm = (ControlsForm) form;
+		ActionForward actionForward = null;
 
 		if (controlsForm.getShowPreview() != null && !controlsForm.getShowPreview().equals(""))
 		{
@@ -53,11 +51,18 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 
 		//Add control to form
 		ApplyFormControlsProcessor formControlsProcessor = ApplyFormControlsProcessor.getInstance();
-		formControlsProcessor.addControlToForm(containerInterface, controlsForm);
+		try
+		{
+			formControlsProcessor.addControlToForm(containerInterface, controlsForm);
+		}
+		catch (Exception e)
+		{
+			String actionForwardString = catchException(e,request);
+			actionForward = mapping.findForward(actionForwardString);
+		}
 
-		//Add back object to cache
 		CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
-		ActionForward actionForward = mapping.findForward(Constants.SUCCESS);
+		actionForward = mapping.findForward(Constants.SUCCESS);
 		try
 		{
 			response.sendRedirect("http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath()
@@ -65,13 +70,8 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 		}
 		catch (Exception e)
 		{
-			List list = new ArrayList();
-			boolean isSystemException = handleException(e, list);
-			saveErrors(request, getErrorMessages(list, null));
-			if (isSystemException)
-			{
-				actionForward = mapping.findForward(Constants.SYSTEM_EXCEPTION);
-			}
+			String actionForwardString = catchException(e,request);
+			actionForward = mapping.findForward(actionForwardString);
 		}
 		return actionForward;
 	}

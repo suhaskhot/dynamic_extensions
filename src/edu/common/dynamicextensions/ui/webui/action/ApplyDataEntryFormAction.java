@@ -9,8 +9,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.struts.action.ActionError;
-import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -20,8 +18,6 @@ import org.apache.struts.action.ActionMessages;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
-import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
-import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ApplyDataEntryFormProcessor;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.util.global.Constants;
@@ -39,7 +35,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @param form ActionForm
 	 * @param request HttpServletRequest
 	 * @param response HttpServletResponse
-	 * @return ActionForward
+	 * @return ActionForward ActionForward
 	 */
 	@SuppressWarnings("unchecked")
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
@@ -55,7 +51,6 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		for (int sequence = 1; sequence <= controlCollection.size(); sequence++)
 		{
 			value = request.getParameter("Control_" + sequence);
-			System.out.println("Value = " + value);
 			for (ControlInterface controlInterface : controlCollection)
 			{
 				if (sequence == controlInterface.getSequenceNumber().intValue())
@@ -68,35 +63,42 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		}
 
 		ApplyDataEntryFormProcessor applyDataEntryFormProcessor = ApplyDataEntryFormProcessor.getInstance();
+
+		List<String> errorList;
 		try
 		{
-			List<String> errorList = ValidatorUtil.validateEntity(attributeValueMap);
-			if (errorList.size() != 0)
-			{
-				saveMessages(request, getErrorMessages(errorList));
-			}
-			else
+			errorList = ValidatorUtil.validateEntity(attributeValueMap);
+		}
+		catch (Exception e)
+		{
+			String actionForwardString = catchException(e, request);
+			return (mapping.findForward(actionForwardString));
+		}
+		if (errorList.size() != 0)
+		{
+			saveMessages(request, getErrorMessages(errorList));
+		}
+		else
+		{
+			try
 			{
 				applyDataEntryFormProcessor.insertDataEntryForm(containerInterface, attributeValueMap);
-				saveMessages(request, getSuccessMessage());
 			}
-			return (mapping.findForward(Constants.SUCCESS));
+			catch (Exception e)
+			{
+				String actionForwardString = catchException(e, request);
+				return (mapping.findForward(actionForwardString));
+			}
+
+			saveMessages(request, getSuccessMessage());
 		}
-		catch (DynamicExtensionsApplicationException e)
-		{
-			e.printStackTrace();
-			return (mapping.findForward(Constants.SYSTEM_EXCEPTION));
-		}
-		catch (DynamicExtensionsSystemException e)
-		{
-			e.printStackTrace();
-			return (mapping.findForward(Constants.SYSTEM_EXCEPTION));
-		}
-		
+		return (mapping.findForward(Constants.SUCCESS));
+
 	}
 
 	/**
 	 * Get messages for successful save of entity
+	 * @return ActionMessages ActionMessages
 	 */
 	private ActionMessages getSuccessMessage()
 	{
@@ -105,13 +107,13 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		return actionMessages;
 	}
 
-	public ActionErrors getErrorMessages(List<String> errorList)
-	{
-		ActionErrors errors = new ActionErrors();
-		for (String errorMessage : errorList)
-		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(errorMessage));
-		}
-		return errors;
-	}
+	/*public ActionErrors getErrorMessages(List<String> errorList)
+	 {
+	 ActionErrors errors = new ActionErrors();
+	 for (String errorMessage : errorList)
+	 {
+	 errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(errorMessage));
+	 }
+	 return errors;
+	 }*/
 }

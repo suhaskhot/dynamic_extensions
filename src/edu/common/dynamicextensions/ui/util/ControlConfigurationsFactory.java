@@ -30,7 +30,7 @@ public final class ControlConfigurationsFactory
 {
 	private static ControlConfigurationsFactory m_instance = null;
 	private Map controlsConfigurationMap = null;
-	private Map rulesConfigurationMap = null;
+	private Map<String,RuleConfigurationObject> rulesConfigurationMap = null;
 
 	/**
 	 * private constructor for ControlConfigurationsFactory.
@@ -43,7 +43,7 @@ public final class ControlConfigurationsFactory
 	private ControlConfigurationsFactory() throws DynamicExtensionsSystemException 
 	{
 		controlsConfigurationMap = new HashMap();
-		rulesConfigurationMap = new HashMap();
+		rulesConfigurationMap = new HashMap<String,RuleConfigurationObject>();
 		
 		parseXML("RuleConfigurations.xml");
 		parseXML("ControlConfigurations.xml");
@@ -187,7 +187,7 @@ public final class ControlConfigurationsFactory
 	 */
 	private List loadRuleParameters(NodeList ruleParameters)
 	{
-		ArrayList ruleParametersAttributes = new ArrayList();
+		ArrayList<NameValueBean> ruleParametersAttributes = new ArrayList<NameValueBean>();
 		if (ruleParameters != null)
 		{
 			NameValueBean nameValueBeanAttribute = null;
@@ -231,7 +231,7 @@ public final class ControlConfigurationsFactory
 			if (controlsList != null)
 			{
 				ControlsConfigurationObject controlsConfigurationObject = null;
-				List listOfControls = new ArrayList();
+				List<NameValueBean> listOfControls = new ArrayList<NameValueBean>();
 				Node controlNode = null, controlNameNode = null, displayLabelNode = null, jspNameNode = null, dataTypeNode = null;
 				NodeList controlDataTypesNodesList = null, controlCommonValidationRules = null;
 				NamedNodeMap controlAttributes = null;
@@ -244,7 +244,7 @@ public final class ControlConfigurationsFactory
 					controlNode = controlsList.item(i);
 					if (controlNode != null)
 					{
-						List commonValidationRulesList = new ArrayList(), dataTypeValidationRulesList = new ArrayList(), dataTypeRuleObjectsList = new ArrayList();
+						List dataTypeValidationRulesList = new ArrayList(), dataTypeRuleObjectsList = new ArrayList();
 						List implicitRulesList = null, implicitExplicitRulesList = null;
 						NodeList dataTypeRulesList = null;
 						controlsConfigurationObject = new ControlsConfigurationObject();
@@ -351,7 +351,7 @@ public final class ControlConfigurationsFactory
 	 */
 	private List getRuleObjectsList(List ruleValidationsList)
 	{
-		List ruleObjectsList = new ArrayList();
+		List<RuleConfigurationObject> ruleObjectsList = new ArrayList<RuleConfigurationObject>();
 		Iterator rulesIterator = ruleValidationsList.iterator();
 		RuleConfigurationObject ruleObject = null;
 		while (rulesIterator.hasNext())
@@ -368,13 +368,13 @@ public final class ControlConfigurationsFactory
 	 * @param dataTypeName name of datatype selected by user
 	 * @param controlNode node
 	 * @return List ValidationRules associated with the dataType selected by user
-	 */
+	 *//*
 	private List getDataTypeValidationRules(String dataTypeName, Node controlNode)
 	{
-		List dataTypeValidations = new ArrayList();
+		List<String> dataTypeValidations = new ArrayList<String>();
 		NodeList rules;
 		Node ruleNode = null, ruleAttributeNode = null;
-		String attrName = "", attrValue = "", ruleNodeName = "";
+		String attrName = "", attrValue = "";
 		NamedNodeMap ruleAttributes = null;
 		if (controlNode != null && dataTypeName != null)
 		{
@@ -400,7 +400,7 @@ public final class ControlConfigurationsFactory
 			}
 		}
 		return dataTypeValidations;
-	}
+	}*/
 
 	/**
 	 * Method common for various method to get the list of childnodes.
@@ -410,7 +410,7 @@ public final class ControlConfigurationsFactory
 	 */
 	private ArrayList getChildNodesList(NodeList mappedNodesList, String key)
 	{
-		ArrayList childNodesList = new ArrayList();
+		ArrayList<String> childNodesList = new ArrayList<String>();
 		if (mappedNodesList != null)
 		{
 			NamedNodeMap childNodes = null;
@@ -442,7 +442,7 @@ public final class ControlConfigurationsFactory
 	 */
 	private List getNameValueBeansList(List dataTypesList)
 	{
-		List nameValueBeansList = new ArrayList();
+		List<NameValueBean> nameValueBeansList = new ArrayList<NameValueBean>();
 		Iterator iter = dataTypesList.iterator();
 		NameValueBean nameValueBeanAttribute;
 		String nodeName = "";
@@ -521,13 +521,13 @@ public final class ControlConfigurationsFactory
 	 */
 	public ArrayList getImplicitRules(String controlName, String dataType)
 	{
-		ArrayList implicitRules = new ArrayList();
+		ArrayList<String> implicitRules = new ArrayList<String>();
 		if ((controlName != null) && (controlsConfigurationMap != null))
 		{
 			ControlsConfigurationObject controlsConfigurationObject = (ControlsConfigurationObject) controlsConfigurationMap.get(controlName);
 			if (controlsConfigurationObject != null)
 			{
-				implicitRules = (ArrayList) getListOfRules(controlsConfigurationObject.getCommonImplicitRules());
+				implicitRules = (ArrayList<String>) getListOfRules(controlsConfigurationObject.getCommonImplicitRules());
 				Map map = controlsConfigurationObject.getDataTypeImplicitRules();
 				List rulesList = (ArrayList) map.get(dataType);
 				Iterator iter = rulesList.iterator();
@@ -552,14 +552,14 @@ public final class ControlConfigurationsFactory
 	 */
 	public ArrayList getExplicitRules(String controlName, String dataType)
 	{
-		ArrayList explicitRules = new ArrayList();
+		ArrayList<String> explicitRules = new ArrayList<String>();
 		if ((controlName != null) && (controlsConfigurationMap != null))
 		{
 			ControlsConfigurationObject controlsConfigurationObject = (ControlsConfigurationObject) controlsConfigurationMap.get(controlName);
 
 			if (controlsConfigurationObject != null)
 			{
-				explicitRules = (ArrayList) getListOfRules(controlsConfigurationObject.getCommonExplicitRules());
+				explicitRules = (ArrayList<String>) getListOfRules(controlsConfigurationObject.getCommonExplicitRules());
 				Map map = controlsConfigurationObject.getDataTypeExplicitRules();
 				List rulesList = (ArrayList) map.get(dataType);
 				if (rulesList != null)
@@ -586,7 +586,7 @@ public final class ControlConfigurationsFactory
 	 */
 	private List getListOfRules(List rules)
 	{
-		ArrayList listOfRules = new ArrayList();
+		ArrayList<String> listOfRules = new ArrayList<String>();
 
 		Iterator iter = rules.iterator();
 		while (iter.hasNext())
@@ -633,7 +633,7 @@ public final class ControlConfigurationsFactory
 	 */
 	public List getRuleDisplayLabels(List ruleNamesList)
 	{
-		List listOfDisplayLabels = new ArrayList();
+		List<String> listOfDisplayLabels = new ArrayList<String>();
 		Iterator iter = (Iterator) ruleNamesList.iterator();
 		RuleConfigurationObject ruleConfigurationObject = null;
 		while (iter.hasNext())
@@ -677,7 +677,7 @@ public final class ControlConfigurationsFactory
 	 */
 	public Map getRulesMap(String controlName)
 	{
-		Map rulesMap = new HashMap();
+		Map<String,List<RuleConfigurationObject>> rulesMap = new HashMap<String,List<RuleConfigurationObject>>();
 		ControlsConfigurationObject ccf = (ControlsConfigurationObject) controlsConfigurationMap.get(controlName);
 		List dataTypes = ccf.getDataTypesList();
 		List rules = new ArrayList();
@@ -689,7 +689,7 @@ public final class ControlConfigurationsFactory
 			dataType = ((NameValueBean) iter.next()).getName();
 			rules = (ArrayList) getExplicitRules(controlName, dataType);
 			iter1 = rules.iterator();
-			List ruleObjects = new ArrayList<RuleConfigurationObject>();
+			List<RuleConfigurationObject> ruleObjects = new ArrayList<RuleConfigurationObject>();
 			while (iter1.hasNext())
 			{
 

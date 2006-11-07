@@ -6,8 +6,9 @@ package edu.common.dynamicextensions.ui.webui.action;
  * @author deepti_shelar
  */
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
@@ -15,6 +16,7 @@ import org.apache.struts.actions.DispatchAction;
 
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.util.logger.Logger;
 
 public class BaseDynamicExtensionsAction extends DispatchAction
@@ -32,7 +34,6 @@ public class BaseDynamicExtensionsAction extends DispatchAction
 	{
 		Logger.out.error(throwable.getStackTrace(), throwable);
 		Logger.out.debug(throwable.getStackTrace(), throwable);
-		//TODO check how the logging should be done.
 		boolean isSystemException = false;
 		if (errorMessagesList == null)
 		{
@@ -56,22 +57,38 @@ public class BaseDynamicExtensionsAction extends DispatchAction
 
 	/**
 	 * 
-	 * @param stringList list of error messages
-	 * @param formName name of the form
+	 * @param errorList List<String> list of error messages
 	 * @return ActionErrors list of error messages 
 	 */
-	protected ActionErrors getErrorMessages(List stringList, String formName)
+	protected ActionErrors getErrorMessages(List<String> errorList)
 	{
 		ActionErrors actionErrors = new ActionErrors();
-		if (stringList != null && !stringList.isEmpty())
+		if (errorList != null && !errorList.isEmpty())
 		{
-			Iterator iterator = stringList.iterator();
-			while (iterator.hasNext())
+			for (String errorMessage : errorList)
 			{
-				actionErrors.add(ActionErrors.GLOBAL_ERROR, new ActionError((String) iterator.next()));
+				actionErrors.add(ActionErrors.GLOBAL_ERROR, new ActionError(errorMessage));
 			}
 		}
 
 		return actionErrors;
 	}
+	/**
+	 * 
+	 * @param e Exception e 
+	 * @param request HttpServletRequest request
+	 */
+	protected String catchException(Exception e, HttpServletRequest request)
+	{
+		List<String> list = new ArrayList<String>();
+		boolean isSystemException = handleException(e, list);
+		saveErrors(request, getErrorMessages(list));
+		String actionForwardString = "";
+		if (isSystemException)
+		{
+			actionForwardString = Constants.SYSTEM_EXCEPTION;
+		}
+		return actionForwardString;
+	}
+	
 }

@@ -63,7 +63,7 @@ public class ActionUtil
 	 */
 	public static List getExistingFormsList(List formsList)
 	{
-		List existingFormsList = new ArrayList();
+		List<NameValueBean> existingFormsList = new ArrayList<NameValueBean>();
 		Entity entity;
 		Iterator listIterator = formsList.iterator();
 		while (listIterator.hasNext())
@@ -85,7 +85,7 @@ public class ActionUtil
 	 */
 	public static List getToolsList(List list)
 	{
-		List toolsList = new ArrayList();
+		List<NameValueBean> toolsList = new ArrayList<NameValueBean>();
 		Iterator listIterator = list.iterator();
 		while (listIterator.hasNext())
 		{

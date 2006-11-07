@@ -13,6 +13,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 
@@ -46,8 +47,9 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 	 * @param containerInterface : Container object
 	 * @param controlsForm : UI Information as form object
 	 * @throws DynamicExtensionsSystemException dynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException DynamicExtensionsApplicationException
 	 */
-	public void addControlToForm(ContainerInterface containerInterface, ControlsForm controlsForm) throws DynamicExtensionsSystemException 
+	public void addControlToForm(ContainerInterface containerInterface, ControlsForm controlsForm) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException 
 	{
 		if ((containerInterface != null) && (controlsForm != null))
 		{

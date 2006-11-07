@@ -658,14 +658,9 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	public void setAttributenoOfCols(String attributenoOfCols)
 	{
 		this.attributenoOfCols = attributenoOfCols;
-		try
-		{
-			columns = new Integer(attributenoOfCols);
-		}
-		catch (NumberFormatException e)
-		{
-			columns = new Integer(0);
-		}
+
+		columns = new Integer(attributenoOfCols);
+
 	}
 
 	/**
@@ -682,14 +677,8 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	public void setAttributeNoOfRows(String attributeNoOfRows)
 	{
 		this.attributeNoOfRows = attributeNoOfRows;
-		try
-		{
-			rows = new Integer(attributeNoOfRows);
-		}
-		catch (NumberFormatException e)
-		{
-			rows = new Integer(0);
-		}
+
+		rows = new Integer(attributeNoOfRows);
 
 	}
 
@@ -967,14 +956,9 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	public void setAttributeSequenceNumber(String attributeSequenceNumber)
 	{
 		this.attributeSequenceNumber = attributeSequenceNumber;
-		try
-		{
-			sequenceNumber = new Integer(attributeSequenceNumber);
-		}
-		catch (NumberFormatException e)
-		{
-			sequenceNumber = new Integer(0);
-		}
+
+		sequenceNumber = new Integer(attributeSequenceNumber);
+
 	}
 
 	/**

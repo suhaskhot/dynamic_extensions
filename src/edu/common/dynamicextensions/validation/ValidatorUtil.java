@@ -35,7 +35,7 @@ public class ValidatorUtil
 	public static List validateEntity(Map attributeValueMap) throws DynamicExtensionsSystemException
 	{
 
-		List errorList = new ArrayList();
+		List<String> errorList = new ArrayList<String>();
 
 		Set attributeSet = attributeValueMap.keySet();
 
@@ -77,7 +77,7 @@ public class ValidatorUtil
 	 */
 	public static Map getParamMap(RuleInterface ruleInterface)
 	{
-		Map paramMap = new HashMap();
+		Map<String,String> paramMap = new HashMap<String,String>();
 		Collection ruleParamCollection = ruleInterface.getRuleParameterCollection();
 		if (ruleParamCollection != null && !ruleParamCollection.isEmpty())
 		{

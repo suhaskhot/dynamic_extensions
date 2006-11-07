@@ -46,6 +46,7 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet
 
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(req.getInputStream()));
 		Object json = null;
+		JSONArray entityInterfaceJSONArray = new JSONArray();
 		try
 		{
 			json = bufferedReader.readLine();
@@ -53,13 +54,11 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			generateOutput(res, entityInterfaceJSONArray);
 		}
 
 		JSONObject requestObject = new JSONObject(json.toString());
-
-		JSONArray entityInterfaceJSONArray = new JSONArray();
 
 		//check which operation needs to be performed
 		String operation = requestObject.getString("operation");
@@ -76,13 +75,14 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet
 			}
 			catch (DynamicExtensionsSystemException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				generateOutput(res, entityInterfaceJSONArray);
+
 			}
 			catch (DynamicExtensionsApplicationException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				generateOutput(res, entityInterfaceJSONArray);
 			}
 
 			if (entityCollection != null)
@@ -101,10 +101,21 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet
 				}
 			}
 
-			res.setContentType("text/javascript");
-			PrintWriter out = res.getWriter();
-			out.write(entityInterfaceJSONArray.toString());
+			generateOutput(res, entityInterfaceJSONArray);
 		}
 
+	}
+
+	/**
+	 * 
+	 * @param res
+	 * @param entityInterfaceJSONArray
+	 * @throws IOException IOException
+	 */
+	private void generateOutput(HttpServletResponse res, JSONArray entityInterfaceJSONArray) throws IOException
+	{
+		res.setContentType("text/javascript");
+		PrintWriter out = res.getWriter();
+		out.write(entityInterfaceJSONArray.toString());
 	}
 }

@@ -1,9 +1,6 @@
 
 package edu.common.dynamicextensions.ui.webui.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -56,15 +53,8 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 			}
 			catch (Exception e)
 			{
-				List list = new ArrayList();
-				boolean isSystemException = handleException(e, list);
-				saveErrors(request, getErrorMessages(list, ""));
-				if (isSystemException)
-				{
-					target = Constants.SYSTEM_EXCEPTION;
-				}
+				target = catchException(e, request);
 			}
-
 			target = Constants.BUILD_FORM;
 		}
 		else
@@ -72,21 +62,12 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 			try
 			{
 				containerInterface = applyFormDefinitionProcessor.addEntityToContainer(containerInterface, formDefinitionForm, true);
-
 				saveMessages(request, getSuccessMessage(formDefinitionForm));
-
 				target = Constants.SHOW_DYNAMIC_EXTENSIONS_HOMEPAGE;
 			}
 			catch (Exception e)
 			{
-				List list = new ArrayList();
-				boolean isSystemException = handleException(e, list);
-				String formName = formDefinitionForm.getFormName();
-				saveErrors(request, getErrorMessages(list, formName));
-				if (isSystemException)
-				{
-					target = Constants.SYSTEM_EXCEPTION;
-				}
+				target = catchException(e, request);
 			}
 
 		}

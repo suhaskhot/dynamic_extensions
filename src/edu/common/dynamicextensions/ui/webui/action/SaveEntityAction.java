@@ -6,9 +6,6 @@
 
 package edu.common.dynamicextensions.ui.webui.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -59,13 +56,8 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 		}
 		catch (Exception e)
 		{
-			List list = new ArrayList();
-			boolean isSystemException = handleException(e, list);
-			saveErrors(request, getErrorMessages(list, formName));
-			if (isSystemException)
-			{
-				actionForward = mapping.findForward(Constants.SYSTEM_EXCEPTION);
-			}
+			String actionForwardString = catchException(e,request);
+			actionForward = mapping.findForward(actionForwardString);
 		}
 		return actionForward;
 	}

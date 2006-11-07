@@ -50,9 +50,17 @@
 						<% } %> &nbsp;</td>
 			 			
 						<td  class="formFieldWithoutBorder">
-			 						<html:checkbox  property='validationRules' value="<%= ruleName%>"></html:checkbox >
-									<bean:message key="<%=ruleLabel %>"/>
+			 						<html:multibox  property='tempValidationRules' value="<%= ruleName%>" onclick="ruleSelected(this)">
+									<bean:message key="<%= ruleLabel%>"/>
+									</html:multibox>
+									<bean:message key="<%= ruleLabel%>"/>
+
+																	
+
 						</td>
+
+
+
 					
 					</tr>
 								

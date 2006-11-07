@@ -103,7 +103,15 @@ function insertRules(datatypeControl)
 		if(divForDataType!=null)
 		{
 			var substitutionDivRules = document.getElementById('substitutionDivRules');
-			substitutionDivRules.innerHTML = divForDataType.innerHTML;
+			var tempInnerHTML  = divForDataType.innerHTML;
+            while (tempInnerHTML.indexOf("tempValidationRules") != -1)
+			{
+			       tempInnerHTML = tempInnerHTML.replace("tempValidationRules","validationRules")
+			 }
+
+             
+
+			substitutionDivRules.innerHTML = tempInnerHTML;
 		}
 }
 
@@ -661,5 +669,17 @@ function measurementUnitsChanged(cboMeasuremtUnits)
 				txtMeasurementUnitOther.disabled=true;
 			}
 		}
+	}
+}
+function ruleSelected(ruleObject)
+{
+	if(ruleObject.value == 'range') 
+	{
+		if(ruleObject.checked ==false)
+		{
+			document.getElementById('min').value='';
+			document.getElementById('max').value='';
+		}
+
 	}
 }

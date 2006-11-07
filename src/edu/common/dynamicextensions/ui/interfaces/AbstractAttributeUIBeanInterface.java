@@ -213,4 +213,13 @@ public interface AbstractAttributeUIBeanInterface
 	 * @param min the min to set
 	 */
 	void setMin(String min);
+	/**
+	 * @return the tempValidationRules
+	 */
+	public String[] getTempValidationRules();
+
+	/**
+	 * @param tempValidationRules the tempValidationRules to set
+	 */
+	public void setTempValidationRules(String[] tempValidationRules);
 }

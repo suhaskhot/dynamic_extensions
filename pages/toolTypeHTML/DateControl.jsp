@@ -80,7 +80,7 @@
 					[MM-DD-YYYY or MM/DD/YYYY]&nbsp;
 
 				</td>
-		<tr>
+	<!-- 	<tr>
 			<td class="formRequiredNoticeWithoutBorder" width="2%">
 					&nbsp;
 			</td>
@@ -89,6 +89,7 @@
 				<html:checkbox property="attributeIdentified" value="true"><bean:message key="app.att.isIdentified" /></html:checkbox>
 			</td>
 		</tr>
+	-->	
 			</tr>
 	</table>
 

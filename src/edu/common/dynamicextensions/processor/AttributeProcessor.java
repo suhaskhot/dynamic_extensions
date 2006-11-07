@@ -592,24 +592,27 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsApplicationException
 			{
 				stringAttributeIntf.setDefaultValue(attributeUIBeanInformationIntf.getAttributeDefaultValue());
-				Integer size;
+				Integer size=null;
 				try
 				{
-					System.out.println("Size = " +attributeUIBeanInformationIntf.getAttributeSize() );
-					if ((attributeUIBeanInformationIntf.getAttributeSize()!=null)&&(attributeUIBeanInformationIntf.getAttributeSize().trim().equals("")))
+					if (attributeUIBeanInformationIntf.getAttributeSize()!=null)
 					{
-						size = new Integer(0);
+						if(attributeUIBeanInformationIntf.getAttributeSize().trim().equals(""))
+						{
+							size = new Integer(0);
+						}
+						else
+						{
+							size = new Integer(attributeUIBeanInformationIntf.getAttributeSize());
+						}
 					}
-					else
-					{
-						size = new Integer(attributeUIBeanInformationIntf.getAttributeSize());
-					}
+					stringAttributeIntf.setSize(size);
 				}
 				catch (NumberFormatException e)
 				{
 					throw new DynamicExtensionsApplicationException(e.getMessage(), e);
 				}
-				stringAttributeIntf.setSize(size);
+				
 	}
 
 	/**

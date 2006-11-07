@@ -103,7 +103,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 					}
 
 					//Entity Interface  : Add attribute
-					if (entityInterface != null)
+					if ((entityInterface != null)&&(abstractAttributeInterface!=null))
 					{
 						entityInterface.addAbstractAttribute(abstractAttributeInterface);
 						abstractAttributeInterface.setEntity(entityInterface);

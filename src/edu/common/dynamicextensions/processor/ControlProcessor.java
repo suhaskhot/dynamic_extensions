@@ -111,8 +111,6 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		{
 			controlInterface.setAbstractAttribute(controlUIBeanInterface.getAbstractAttribute());
 			controlInterface.setCaption(controlUIBeanInterface.getCaption());
-			//controlInterface.setCssClass(ProcessorConstants.DEFAULT_CSS_CLASS);
-			controlInterface.setTooltip(controlUIBeanInterface.getTooltip());
 			controlInterface.setIsHidden(controlUIBeanInterface.getIsHidden());
 		}
 		return controlInterface;

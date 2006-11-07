@@ -96,5 +96,7 @@ public class ProcessorConstants
     //Default date value  : Select date
     public static final String DEFAULT_DATE_VALUE = DATE_VALUE_SELECT;
     
+    //Checkbox default value
+    public static final String DEFAULT_CHECKBOX_VALUE = "checked";
 
 }

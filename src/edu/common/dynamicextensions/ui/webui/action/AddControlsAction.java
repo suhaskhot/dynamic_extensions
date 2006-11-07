@@ -1,9 +1,6 @@
 
 package edu.common.dynamicextensions.ui.webui.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -77,7 +74,6 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 			String actionForwardString = catchException(e,request);
 			return(mapping.findForward(actionForwardString));
 		}
-		return null;
 	}
 
 	/**

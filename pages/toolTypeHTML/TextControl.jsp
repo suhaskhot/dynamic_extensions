@@ -73,7 +73,7 @@
 	<tr valign="top">
 	<td>
 		<table summary="" cellpadding="3" cellspacing="0"  align = 'center' valign="top">
-		<tr>
+		<!-- <tr>
 			<td class="formRequiredNoticeWithoutBorder" width="2%">
 					&nbsp;
 			</td>
@@ -82,6 +82,7 @@
 				<html:checkbox property="attributeIdentified" value="true"><bean:message key="app.att.isIdentified" /></html:checkbox>
 			</td>
 		</tr>
+		-->
 		<tr valign="top">
 				<td class="formRequiredNoticeWithoutBorder" width="2%">
 						&nbsp;

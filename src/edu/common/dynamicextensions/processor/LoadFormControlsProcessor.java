@@ -60,7 +60,7 @@ public class LoadFormControlsProcessor
 		if ((containerInterface != null) && (controlsForm != null))
 		{
 			String controlOperation = controlsForm.getControlOperation();
-			String userSelectedTool = controlsForm.getUserSelectedTool();
+			
 
 			ControlConfigurationsFactory controlConfigurationsFactory = ControlConfigurationsFactory.getInstance();
 			if (controlOperation == null || controlOperation.equals(""))
@@ -70,50 +70,16 @@ public class LoadFormControlsProcessor
 			}
 			if (controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_ADD))
 			{
-				if (userSelectedTool == null || userSelectedTool.equals(""))
-				{
-					userSelectedTool = ProcessorConstants.DEFAULT_SELECTED_CONTROL;
-				}
-				//Default Data type
-				controlsForm.setDataType(ProcessorConstants.DEFAULT_DATA_TYPE);
-
-				//Set default display choice 
-				controlsForm.setDisplayChoice(ProcessorConstants.DEFAULT_DISPLAY_CHOICE_TYPE);
-
-				//Default single line type
-				controlsForm.setLinesType(ProcessorConstants.DEFAULT_LINE_TYPE);
-
-				//Default list type
-				controlsForm.setAttributeMultiSelect(ProcessorConstants.DEFAULT_LIST_TYPE);
-
-				//Date value type
-				controlsForm.setDateValueType(ProcessorConstants.DEFAULT_DATE_VALUE);
-				//Date format
-				controlsForm.setFormat(ProcessorConstants.DEFAULT_DATE_FORMAT);
-
-				controlsForm.setControlRuleMap(getControlRulesMap(userSelectedTool));
+				addControl(controlsForm);
 			}
 
 			else if (controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_EDIT))
 			{
 				String selectedControlId = controlsForm.getSelectedControlId();
-				ControlProcessor controlProcessor = ControlProcessor.getInstance();
-				ControlInterface controlInterface = containerInterface.getControlInterfaceBySequenceNumber(selectedControlId);
-				controlProcessor.populateControlUIBeanInterface(controlInterface, controlsForm);
-
-				AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
-				if (controlInterface != null)
-				{
-					attributeProcessor.populateAttributeUIBeanInterface(controlInterface.getAbstractAttribute(), controlsForm);
-				}
-
-				userSelectedTool = getControlName(controlInterface);
-				if (userSelectedTool == null || userSelectedTool.equals(""))
-				{
-					userSelectedTool = ProcessorConstants.DEFAULT_SELECTED_CONTROL;
-				}
+				ControlInterface selectedControl = containerInterface.getControlInterfaceBySequenceNumber(selectedControlId);
+				editControl(selectedControl,controlsForm);
 			}
-			controlsForm.setUserSelectedTool(userSelectedTool);
+			String userSelectedTool = controlsForm.getUserSelectedTool();
 			//List of tools/controls
 			controlsForm.setToolsList(controlConfigurationsFactory.getListOfControls());
 			controlsForm.setSelectedControlCaption(getControlCaption(controlConfigurationsFactory.getControlDisplayLabel(userSelectedTool)));
@@ -122,17 +88,10 @@ public class LoadFormControlsProcessor
 			{
 				jspName = "";
 			}
-
 			controlsForm.setHtmlFile(jspName);
 			//Data types for selected control
 			controlsForm.setDataTypeList(controlConfigurationsFactory.getControlsDataTypes(userSelectedTool));
 
-			controlsForm.setDisplayChoiceList(getDisplayChoiceList());
-
-			if (controlsForm.getAttributeMultiSelect() == null)
-			{
-				controlsForm.setAttributeMultiSelect(ProcessorConstants.DEFAULT_LIST_TYPE);
-			}
 			//Set Entity Name as root
 			EntityInterface entity = containerInterface.getEntity();
 			if (entity != null)
@@ -145,12 +104,145 @@ public class LoadFormControlsProcessor
 			}
 			controlsForm.setChildList(getChildList(containerInterface));
 			controlsForm.setControlRuleMap(getControlRulesMap(userSelectedTool));
-			//measurement units list
-			if (controlsForm.getMeasurementUnitsList() == null)
+		}
+	}
+
+	/**
+	 * @param controlsForm
+	 */
+	private void addControl(ControlsForm controlsForm)
+	{
+		String userSelectedTool = controlsForm.getUserSelectedTool();
+		if (userSelectedTool == null || userSelectedTool.equals(""))
+		{
+			userSelectedTool = ProcessorConstants.DEFAULT_SELECTED_CONTROL;
+		}
+		controlsForm.setUserSelectedTool(userSelectedTool);
+		//Initialize default values for controls
+		initializeControlDefaultValues(userSelectedTool,controlsForm);
+	}
+
+	/**
+	 * 
+	 */
+	private void editControl(ControlInterface controlInterface,ControlsForm controlsForm)
+	{
+		ControlProcessor controlProcessor = ControlProcessor.getInstance();
+		controlProcessor.populateControlUIBeanInterface(controlInterface, controlsForm);
+
+		AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
+		if (controlInterface != null)
+		{
+			attributeProcessor.populateAttributeUIBeanInterface(controlInterface.getAbstractAttribute(), controlsForm);
+		}
+
+		String userSelectedTool = getControlName(controlInterface);
+		if (userSelectedTool == null || userSelectedTool.equals(""))
+		{
+			userSelectedTool = ProcessorConstants.DEFAULT_SELECTED_CONTROL;
+		}
+		controlsForm.setUserSelectedTool(userSelectedTool);
+
+	}
+
+	/**
+	 * @param userSelectedTool 
+	 * @param controlsForm
+	 */
+	private void initializeControlDefaultValues(String userSelectedTool, ControlsForm controlsForm)
+	{
+		if((userSelectedTool!=null)&&(controlsForm!=null))
+		{
+			if(userSelectedTool.equals(ProcessorConstants.TEXT_CONTROL))
 			{
-				controlsForm.setMeasurementUnitsList(getListOfMeasurementUnits());
+				initializeTextControlDefaultValues(controlsForm);
+			}else if(userSelectedTool.equals(ProcessorConstants.COMBOBOX_CONTROL))
+			{
+				initializeComboboxControlDefaultValues(controlsForm);
+			}
+			else if(userSelectedTool.equals(ProcessorConstants.DATEPICKER_CONTROL))
+			{
+				initializeDatePickerControlDefaultValues(controlsForm);
+			}
+			else if(userSelectedTool.equals(ProcessorConstants.CHECKBOX_CONTROL))
+			{
+				initializeCheckBoxControlDefaultValues(controlsForm);
+			}
+			else if(userSelectedTool.equals(ProcessorConstants.RADIOBUTTON_CONTROL))
+			{
+				initializeOptionButtonControlDefaultValues(controlsForm);
+			}
+			else if(userSelectedTool.equals(ProcessorConstants.FILEUPLOAD_CONTROL))
+			{
+				initializeFileUploadControlDefaultValues(controlsForm);
 			}
 		}
+	}
+
+	/**
+	 * 
+	 */
+	private void initializeFileUploadControlDefaultValues(ControlsForm controlsForm)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	/**
+	 * 
+	 */
+	private void initializeOptionButtonControlDefaultValues(ControlsForm controlsForm)
+	{
+		//List of display choices
+		controlsForm.setDisplayChoiceList(getDisplayChoiceList());
+		//Set default display choice 
+		controlsForm.setDisplayChoice(ProcessorConstants.DEFAULT_DISPLAY_CHOICE_TYPE);
+	}
+
+	/**
+	 * 
+	 */
+	private void initializeCheckBoxControlDefaultValues(ControlsForm controlsForm)
+	{
+		controlsForm.setAttributeDefaultValue(ProcessorConstants.DEFAULT_CHECKBOX_VALUE);
+	}
+
+	/**
+	 * 
+	 */
+	private void initializeDatePickerControlDefaultValues(ControlsForm controlsForm)
+	{
+		//Date value type
+		controlsForm.setDateValueType(ProcessorConstants.DEFAULT_DATE_VALUE);
+
+		//Date format
+		controlsForm.setFormat(ProcessorConstants.DEFAULT_DATE_FORMAT);
+	}
+
+	/**
+	 * 
+	 */
+	private void initializeComboboxControlDefaultValues(ControlsForm controlsForm)
+	{
+		//List of display choices
+		controlsForm.setDisplayChoiceList(getDisplayChoiceList());
+		//Set default display choice 
+		controlsForm.setDisplayChoice(ProcessorConstants.DEFAULT_DISPLAY_CHOICE_TYPE);
+		//Default list type
+		controlsForm.setAttributeMultiSelect(ProcessorConstants.DEFAULT_LIST_TYPE);
+	}
+
+	/**
+	 * 
+	 */
+	private void initializeTextControlDefaultValues(ControlsForm controlsForm)
+	{
+		//Default Data type
+		controlsForm.setDataType(ProcessorConstants.DEFAULT_DATA_TYPE);
+		//Default single line type
+		controlsForm.setLinesType(ProcessorConstants.DEFAULT_LINE_TYPE);
+		//measurement units list
+		controlsForm.setMeasurementUnitsList(getListOfMeasurementUnits());
 	}
 
 	/**

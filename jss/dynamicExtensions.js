@@ -125,12 +125,12 @@ function initBuildForm()
 		dataFldDataTypeChanged(dataTypeElt);
 	}
 	
-	/*var sourceElt =document.getElementById("displayChoice");
+	var sourceElt =document.getElementById("displayChoice");
 	if(sourceElt!=null)
 	{
 		//Load source details for selected sourcetype
 		changeSourceForValues(sourceElt);
-	}*/
+	}
 	
 	//Reinitialize counter
 	var choiceListElementCnter = document.getElementById('choiceListCounter');
@@ -174,44 +174,28 @@ function addChoicesFromListToTable()
 		}
 	}
 }
-/*function changeSourceForValues(sourceControl)
+function changeSourceForValues(sourceControl)
 {
 	if(sourceControl!=null)
 	{
-		var selectedIdx = sourceControl.selectedIndex;
-		if(sourceControl.options!=null)
+		var sourceForValues = sourceControl.value;
+		if(sourceForValues!=null)
 		{
-			for(var i=0; i<sourceControl.length; i++)
-			{
-				var divForSourceId = sourceControl.options[i].text + "Values";
+			var divForSourceId = sourceForValues + "Values";
 
-				var divForSource = document.getElementById(divForSourceId);
-				if(divForSource!=null)
-				{
-					var valueSpecnDiv = document.getElementById('valueSpecificationDiv');
-					if(valueSpecnDiv!=null)
-					{
-						valueSpecnDiv.innerHTML = divForSource.innerHTML;
-					}
-
-				}
-			}
-		}
-		else
-		{
-			var divForSource = document.getElementById("UserDefinedValues");
+			var divForSource = document.getElementById(divForSourceId);
 			if(divForSource!=null)
 			{
-				var valueSpecnDiv = document.getElementById('valueSpecificationDiv');
+				var valueSpecnDiv = document.getElementById('optionValuesSpecificationDiv');
 				if(valueSpecnDiv!=null)
 				{
 					valueSpecnDiv.innerHTML = divForSource.innerHTML;
 				}
-
 			}
+		
 		}
 	}
-}*/
+}
 
 //addToChoiceList : indicates whether the choice shld be added to choice list
 //This will be true when called while adding choice at runtime, and false when adding at load time

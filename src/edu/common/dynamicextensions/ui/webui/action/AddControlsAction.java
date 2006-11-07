@@ -61,7 +61,7 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 		catch (Exception e)
 		{
 			String actionForwardString = catchException(e,request);
-			actionForward = mapping.findForward(actionForwardString);
+			return(mapping.findForward(actionForwardString));
 		}
 
 		CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
@@ -73,13 +73,8 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 		}
 		catch (Exception e)
 		{
-			List list = new ArrayList();
-			boolean isSystemException = handleException(e, list);
-			saveErrors(request, getErrorMessages(list));
-			if (isSystemException)
-			{
-				actionForward = mapping.findForward(Constants.SYSTEM_EXCEPTION);
-			}
+			String actionForwardString = catchException(e,request);
+			return(mapping.findForward(actionForwardString));
 		}
 		return null;
 	}

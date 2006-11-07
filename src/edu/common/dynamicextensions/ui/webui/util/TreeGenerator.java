@@ -61,15 +61,9 @@ public class TreeGenerator
 				{
 					name = childElt.getName();
 					sequenceNumber = childElt.getValue();
-					try
-					{
-						seqno = Integer.parseInt(sequenceNumber);
-					}
-					catch (NumberFormatException e)
-					{
-						Logger.out.error("NumberFormatException while parsing sequence number. Initializing to 0");
-						seqno = 0;
-					}
+
+					seqno = Integer.parseInt(sequenceNumber);
+
 					node.add(name, seqno);
 				}
 			}

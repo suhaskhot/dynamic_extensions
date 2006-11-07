@@ -42,7 +42,7 @@ public class LoadFormControlsProcessor
 
 	/**
 	 * this method gets the new instance of the entity processor to the caller.
-	 * @return EntityProcessor EntityProcessor instance
+	 * @return LoadFormControlsProcessor LoadFormControlsProcessor instance
 	 */
 	public static LoadFormControlsProcessor getInstance()
 	{
@@ -51,8 +51,8 @@ public class LoadFormControlsProcessor
 
 	/**
 	 * 
-	 * @param actionForm
-	 * @param containerInterface
+	 * @param controlsForm ControlsForm
+	 * @param containerInterface ContainerInterface
 	 * @throws DynamicExtensionsSystemException dynamicExtensionsSystemException
 	 */
 	public void loadFormControls(ControlsForm controlsForm, ContainerInterface containerInterface) throws DynamicExtensionsSystemException
@@ -92,7 +92,6 @@ public class LoadFormControlsProcessor
 				controlsForm.setFormat(ProcessorConstants.DEFAULT_DATE_FORMAT);
 
 				controlsForm.setControlRuleMap(getControlRulesMap(userSelectedTool));
-				//TODO check if need to be changed
 			}
 
 			else if (controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_EDIT))
@@ -155,7 +154,8 @@ public class LoadFormControlsProcessor
 	}
 
 	/**
-	 * @return
+	 * Gets List of Measurement Units
+	 * @return List<String>
 	 */
 	private List<String> getListOfMeasurementUnits()
 	{
@@ -170,8 +170,8 @@ public class LoadFormControlsProcessor
 	}
 
 	/**
-	 * @param containerInterface
-	 * @return
+	 * @param controlInterface ControlInterface
+	 * @return String ControlName
 	 */
 	private String getControlName(ControlInterface controlInterface)
 	{
@@ -211,10 +211,10 @@ public class LoadFormControlsProcessor
 	}
 
 	/**
-	 * 
-	 * @param containerInterface
-	 * @return
-	 * @throws DynamicExtensionsSystemException 
+	 *  
+	 * @param containerInterface containerInterface
+	 * @return List ChildList
+	 * @throws DynamicExtensionsSystemException DynamicExtensionsSystemException
 	 */
 	private List getChildList(ContainerInterface containerInterface) throws DynamicExtensionsSystemException
 	{
@@ -242,6 +242,10 @@ public class LoadFormControlsProcessor
 		return childList;
 	}
 
+	/**
+	 * 
+	 * @return List DisplayChoiceList
+	 */
 	private List getDisplayChoiceList()
 	{
 		List<NameValueBean> dataTypeList = new ArrayList<NameValueBean>();
@@ -254,6 +258,11 @@ public class LoadFormControlsProcessor
 		return dataTypeList;
 	}
 
+	/**
+	 * 
+	 * @param captionKey String captionKey
+	 * @return String ControlCaption
+	 */
 	public String getControlCaption(String captionKey)
 	{
 		if (captionKey != null)
@@ -269,9 +278,9 @@ public class LoadFormControlsProcessor
 
 	/**
 	 * 
-	 * @param controlName
-	 * @param dataTypeName
-	 * @return
+	 * @param controlName name of the control
+	 * @param dataTypeName name of datatype
+	 * @return Map ControlRulesMap
 	 * @throws DynamicExtensionsSystemException dynamicExtensionsSystemException
 	 */
 	private Map getControlRulesMap(String controlName) throws DynamicExtensionsSystemException

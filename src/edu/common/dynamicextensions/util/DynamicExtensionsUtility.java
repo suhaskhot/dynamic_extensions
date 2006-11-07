@@ -32,14 +32,7 @@ public class DynamicExtensionsUtility
 			DynamicExtensionsApplicationException
 	{
 		ContainerInterface containerInterface = null;
-		try
-		{
-			containerInterface = (ContainerInterface) getObjectByIdentifier(ContainerInterface.class.getName(), containerIdentifier);			
-		}
-		catch (DynamicExtensionsApplicationException dynamicExtensionsApplicationException)
-		{
-			throw new DynamicExtensionsApplicationException("CONTAINER_NOT_FOUND", dynamicExtensionsApplicationException);
-		}
+		containerInterface = (ContainerInterface) getObjectByIdentifier(ContainerInterface.class.getName(), containerIdentifier);
 		return containerInterface;
 	}
 
@@ -62,7 +55,7 @@ public class DynamicExtensionsUtility
 
 			if (objectList == null || objectList.isEmpty())
 			{
-				throw new DynamicExtensionsApplicationException("OBJECT_NOT_FOUND");
+				throw new DynamicExtensionsSystemException("OBJECT_NOT_FOUND");
 			}
 
 			object = objectList.get(0);

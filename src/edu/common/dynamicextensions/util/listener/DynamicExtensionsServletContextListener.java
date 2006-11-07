@@ -43,17 +43,10 @@ public class DynamicExtensionsServletContextListener implements ServletContextLi
 		 * Creating Logs Folder inside catissue home
 		 */
 		File logfolder = null;
-		try
+		logfolder = new File(Variables.dynamicExtensionsHome + "/Logs");
+		if (!logfolder.exists())
 		{
-			logfolder = new File(Variables.dynamicExtensionsHome + "/Logs");
-			if (!logfolder.exists())
-			{
-				logfolder.mkdir();
-			}
-		}
-		catch (Exception e)
-		{
-			Logger.out.fatal(e);
+			logfolder.mkdir();
 		}
 
 		/**

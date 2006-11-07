@@ -26,6 +26,7 @@ public class LoadFormsIndexProcessor extends BaseDynamicExtensionsProcessor
 
 	/**
 	 * returns the instance of LoadFormsIndexProcessor.
+	 * @return LoadFormsIndexProcessor instance of LoadFormsIndexProcessor
 	 */
 	public static LoadFormsIndexProcessor getInstance()
 	{
@@ -34,9 +35,9 @@ public class LoadFormsIndexProcessor extends BaseDynamicExtensionsProcessor
 
 	/**
 	 * A call to EntityManager will return the entityList which will then added to actionForm.
-	 * @param loadFormIndexForm
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException
+	 * @param loadFormIndexForm FormsIndexForm
+	 * @throws DynamicExtensionsApplicationException  DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException DynamicExtensionsSystemException
 	 */
 	public void populateFormsIndex(FormsIndexForm loadFormIndexForm) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{

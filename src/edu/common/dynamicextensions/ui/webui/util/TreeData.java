@@ -30,14 +30,7 @@ public class TreeData
 	 */
 	public TreeData()
 	{
-		try
-		{
-			nodes = new TNodeList();
-		}
-		catch (Exception e)
-		{
-			Logger.out.error(e);
-		}
+		nodes = new TNodeList();
 	}
 
 	/**
@@ -63,15 +56,8 @@ public class TreeData
 	 */
 	public void add(TNode node)
 	{
-		try
-		{
-			nodes.add(node);
-			length++;
-		}
-		catch (Exception e)
-		{
-			Logger.out.error(e);
-		}
+		nodes.add(node);
+		length++;
 	}
 
 	/**
@@ -125,31 +111,25 @@ public class TreeData
 	{
 		buf = new StringBuffer();
 
-		try
+		print("<style>ul.tree{display:none;margin-left:17px;}li.folder{list-style-image: url("
+				+ folder
+				+ "/plus.gif);}li.folderOpen{list-style-image: url("
+				+ folder
+				+ "/minus.gif);}li.file{FONT-WEIGHT:normal;list-style-image: url("
+				+ folder
+				+ "/dot.gif);}a.treeview{color:"
+				+ color
+				+ ";font-family:verdana;font-size:9pt;}a.treeview:link {text-decoration:none;}a.treeview:visited{text-decoration:none;}a.treeview:hover {text-decoration:underline;}</style>");
+		//print("<input type=hidden id=\"selectedAttrib\" value=\"\"  name=\"selAttrib\" > ");
+		if (nodes != null)
 		{
-			print("<style>ul.tree{display:none;margin-left:17px;}li.folder{list-style-image: url("
-					+ folder
-					+ "/plus.gif);}li.folderOpen{list-style-image: url("
-					+ folder
-					+ "/minus.gif);}li.file{FONT-WEIGHT:normal;list-style-image: url("
-					+ folder
-					+ "/dot.gif);}a.treeview{color:"
-					+ color
-					+ ";font-family:verdana;font-size:9pt;}a.treeview:link {text-decoration:none;}a.treeview:visited{text-decoration:none;}a.treeview:hover {text-decoration:underline;}</style>");
-			//print("<input type=hidden id=\"selectedAttrib\" value=\"\"  name=\"selAttrib\" > ");
-			if (nodes != null)
-			{
-				loopThru(nodes, "0");
-			}
-			else
-			{
-				Logger.out.error("Nodes List Is null(get Tree)");
-			}
+			loopThru(nodes, "0");
 		}
-		catch (Exception e)
+		else
 		{
-			Logger.out.error("Error in tree generation " + e);
+			Logger.out.error("Nodes List Is null(get Tree)");
 		}
+
 		return buf.toString();
 	}
 
@@ -160,81 +140,77 @@ public class TreeData
 	 */
 	private void loopThru(TNodeList nodeList, String parent)
 	{
-		try
+
+		if (nodeList != null)
 		{
-			if (nodeList != null)
+			boolean hasChild;
+			String style;
+			String id = "";
+			if (parent != "0")
 			{
-				boolean hasChild;
-				String style;
-				String id = "";
-				if (parent != "0")
+				id = "N" + parent;
+				print("<ul class=tree id='" + id + "' >");
+			}
+			else
+			{
+				id = "N" + parent;
+				print("<ul  id='" + id + "' >");
+			}
+			for (int i = 0; i < nodeList.getLength(); i++)
+			{
+				TNode node = nodeList.item(i);
+				if (node != null)
 				{
-					id = "N" + parent;
-					print("<ul class=tree id='" + id + "' >");
-				}
-				else
-				{
-					id = "N" + parent;
-					print("<ul  id='" + id + "' >");
-				}
-				for (int i = 0; i < nodeList.getLength(); i++)
-				{
-					TNode node = nodeList.item(i);
-					if (node != null)
+					if (node.getChildNodes().getLength() > 0)
 					{
-						if (node.getChildNodes().getLength() > 0)
-						{
-							hasChild = true;
-						}
-						else
-						{
-							hasChild = false;
-						}
+						hasChild = true;
+					}
+					else
+					{
+						hasChild = false;
+					}
 
-						if (node.getImageUrl()== "")
+					if (node.getImageUrl()== "")
+					{
+						style = "style = 'FONT-WEIGHT:normal;'";
+					}
+					else
+					{
+						style = "style='list-style-image: url(" + node.getImageUrl() + ");'";
+					}
+					if (hasChild)
+					{
+						id = "P" + parent + i;
+						print("<li " + style + " class=folder id='" + id + "'><a class=treeview href=\"javascript:toggle('N" + parent + "_" + i
+								+ "','P" + parent + i + "')\">" + node.getText() + "</a>");
+					}
+					else
+						//Means it is a leaf node
+					{
+						id = "L" + parent + i;
+						node.setHref("javascript:changeSelection('" + id + "','" + node.getSequenceNumber() + "')");
+						if (node.getTarget() == "")
 						{
-							style = "style = 'FONT-WEIGHT:normal;'";
+							node.setTarget(target);
 						}
-						else
-						{
-							style = "style='list-style-image: url(" + node.getImageUrl() + ");'";
-						}
-						if (hasChild)
-						{
-							id = "P" + parent + i;
-							print("<li " + style + " class=folder id='" + id + "'><a class=treeview href=\"javascript:toggle('N" + parent + "_" + i
-									+ "','P" + parent + i + "')\">" + node.getText() + "</a>");
-						}
-						else
-							//Means it is a leaf node
-						{
-							id = "L" + parent + i;
-							node.setHref("javascript:changeSelection('" + id + "','" + node.getSequenceNumber() + "')");
-							if (node.getTarget() == "")
-							{
-								node.setTarget(target);
-							}
-							print("<li " + style + " class=file><a class=treeview href=\"" + node.getHref() + "\"  title=\"" + node.getToolTip() + "\" id='"
-									+ id + "'>" + node.getText() + "</a>");
-						}
+						print("<li " + style + " class=file><a class=treeview href=\"" + node.getHref() + "\"  title=\"" + node.getToolTip() + "\" id='"
+								+ id + "'>" + node.getText() + "</a>");
+					}
 
-						if (hasChild)
-						{
-							loopThru(node.getChildNodes(), parent + "_" + i);
-						}
+					if (hasChild)
+					{
+						loopThru(node.getChildNodes(), parent + "_" + i);
+					}
 
-						print("</li>");
-					}//If node != null
-				}//End of For
-				print("</ul>");
-			}//End of if nodelist ! null
-		}
-		catch (Exception e)
-		{
-			Logger.out.error("Error in parsing schema tree");
-		}
+					print("</li>");
+				}//If node != null
+			}//End of For
+			print("</ul>");
+		}//End of if nodelist ! null
 	}
+
 }
+
 
 class TNodeList
 {

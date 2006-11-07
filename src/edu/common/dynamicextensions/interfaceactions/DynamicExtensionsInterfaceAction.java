@@ -108,8 +108,8 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet
 
 	/**
 	 * 
-	 * @param res
-	 * @param entityInterfaceJSONArray
+	 * @param res HttpServletResponse
+	 * @param entityInterfaceJSONArray JSONArray
 	 * @throws IOException IOException
 	 */
 	private void generateOutput(HttpServletResponse res, JSONArray entityInterfaceJSONArray) throws IOException

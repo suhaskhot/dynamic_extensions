@@ -36,10 +36,6 @@ public class DynamicExtensionsUtility
 		{
 			containerInterface = (ContainerInterface) getObjectByIdentifier(ContainerInterface.class.getName(), containerIdentifier);			
 		}
-		catch (DynamicExtensionsSystemException dynamicExtensionsSystemException)
-		{
-			throw dynamicExtensionsSystemException;
-		}
 		catch (DynamicExtensionsApplicationException dynamicExtensionsApplicationException)
 		{
 			throw new DynamicExtensionsApplicationException("CONTAINER_NOT_FOUND", dynamicExtensionsApplicationException);

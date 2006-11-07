@@ -4,7 +4,8 @@
  *<p>Copyright:TODO</p>
  *@author Vishvesh Mulay
  *@version 1.0
- */ 
+ */
+
 package edu.common.dynamicextensions.util;
 
 import java.sql.Connection;
@@ -16,70 +17,77 @@ import edu.common.dynamicextensions.util.global.Variables;
 import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.logger.Logger;
 
-
-
 public class DynamicExtensionsBaseTestCase extends TestCase
 {
 
-    public DynamicExtensionsBaseTestCase()
-    {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+	/**
+	 * 
+	 */
+	public DynamicExtensionsBaseTestCase()
+	{
+		super();
+		
+	}
 
-    public DynamicExtensionsBaseTestCase(String arg0)
-    {
-        super(arg0);
-    }
+	/**
+	 * @param arg0 name
+	 */
+	public DynamicExtensionsBaseTestCase(String arg0)
+	{
+		super(arg0);
+	}
 
-    protected void setUp()
-    {
-        // TODO Auto-generated method stub
-        Logger.out = org.apache.log4j.Logger.getLogger("dynamicExtensions.logger");
-        Variables.containerFlag = false;
-        Variables.datePattern = "mm-dd-yyyy";
+	/**
+	 * @see junit.framework.TestCase#setUp()
+	 */
+	protected void setUp()
+	{
+		
+		Logger.out = org.apache.log4j.Logger.getLogger("dynamicExtensions.logger");
+		Variables.containerFlag = false;
+		Variables.datePattern = "mm-dd-yyyy";
 		Variables.timePattern = "hh-mi-ss";
-		Variables.dateFormatFunction="TO_CHAR";
-		Variables.timeFormatFunction="TO_CHAR";
+		Variables.dateFormatFunction = "TO_CHAR";
+		Variables.timeFormatFunction = "TO_CHAR";
 		Variables.dateTostrFunction = "TO_CHAR";
 		Variables.strTodateFunction = "TO_DATE";
-    }
-    
-    protected void tearDown()
-    {
-        // TODO Auto-generated method stub
-        //super.tearDown();
-        Variables.hibernateCfgFileName = "hibernate.cfg.xml";
-    }
-    
-    protected void executeQuery(String query)
-    {
-//      Checking whether the data table is created properly or not.
-        Connection conn = null;
-        try
-        {
-            conn = DBUtil.getConnection();
-        }
-        catch (HibernateException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        java.sql.PreparedStatement statement = null;
-        try
-        {
-            statement = conn.prepareStatement(query);
-            statement.executeUpdate();
-        }
-        catch (SQLException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            fail();
-        }
-        
-    }
+	}
 
-    
-   
+	/**
+	 * @see junit.framework.TestCase#tearDown()
+	 */
+	protected void tearDown()
+	{
+		Variables.containerFlag = true;
+	}
+
+	/**
+	 * @param query query to be executed
+	 */
+	protected void executeQuery(String query)
+	{
+		//      Checking whether the data table is created properly or not.
+		Connection conn = null;
+		try
+		{
+			conn = DBUtil.getConnection();
+		}
+		catch (HibernateException e)
+		{
+			e.printStackTrace();
+		}
+		java.sql.PreparedStatement statement = null;
+		try
+		{
+			statement = conn.prepareStatement(query);
+			statement.executeUpdate();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+
+	}
+
 }

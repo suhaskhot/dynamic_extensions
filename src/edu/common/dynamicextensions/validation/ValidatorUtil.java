@@ -12,6 +12,7 @@ import java.util.Set;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
 import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
 import edu.wustl.common.util.global.ApplicationProperties;
@@ -29,8 +30,9 @@ public class ValidatorUtil
 	 * @param attributeValueMap  key -- AttributeInterface
 	 *                           value -- value that user has entred for this attribute
 	 * @return errorList if any
+	 * @throws DynamicExtensionsSystemException : Exception 
 	 */
-	public static List validateEntity(Map attributeValueMap)
+	public static List validateEntity(Map attributeValueMap) throws DynamicExtensionsSystemException
 	{
 
 		List errorList = new ArrayList();

@@ -816,13 +816,15 @@ public class EntityManager
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		Container container = (Container) containerInterface;
-		Entity entity = (Entity) container.getEntity();
+		
 		if (container == null)
 		{
 			throw new DynamicExtensionsSystemException("Container passed is null");
 		}
+        
 		else
 		{
+            Entity entity = (Entity) container.getEntity();
 			HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
 					Constants.HIBERNATE_DAO);
 			Stack stack = null;

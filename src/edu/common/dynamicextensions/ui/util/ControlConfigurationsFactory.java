@@ -47,6 +47,7 @@ public final class ControlConfigurationsFactory
 		
 		parseXML("RuleConfigurations.xml");
 		parseXML("ControlConfigurations.xml");
+		System.out.println("");
 	}
 
 	/**
@@ -559,7 +560,7 @@ public final class ControlConfigurationsFactory
 
 			if (controlsConfigurationObject != null)
 			{
-				explicitRules = (ArrayList<String>) getListOfRules(controlsConfigurationObject.getCommonExplicitRules());
+				//explicitRules = (ArrayList<String>) getListOfRules(controlsConfigurationObject.getCommonExplicitRules());
 				Map map = controlsConfigurationObject.getDataTypeExplicitRules();
 				List rulesList = (ArrayList) map.get(dataType);
 				if (rulesList != null)
@@ -699,8 +700,41 @@ public final class ControlConfigurationsFactory
 			}
 			rulesMap.put(dataType, ruleObjects);
 		}
-
+		List commonRules = new ArrayList();
+		commonRules = (ArrayList) getCommonExplicitRules(controlName);
+		iter1 = commonRules.iterator();
+		List<RuleConfigurationObject> commonRuleObjects = new ArrayList<RuleConfigurationObject>();
+		while (iter1.hasNext())
+		{
+			String ruleName = (String) iter1.next();
+			commonRuleObjects.add(getRuleObject(ruleName));
+		}
+		rulesMap.put("commons", commonRuleObjects);
 		return rulesMap;
+	}
+	/**
+	 * Returns ExplicitRules : The rules which are will be shown on ui.
+	 * @param controlName selected by user
+	 * @param dataType selected by user
+	 * @return ArrayList list of all the Explicit rules related to control and its datatType selected.
+	 */
+	public ArrayList getCommonExplicitRules(String controlName)
+	{
+		ArrayList<String> explicitRules = new ArrayList<String>();
+		if ((controlName != null) && (controlsConfigurationMap != null))
+		{
+			ControlsConfigurationObject controlsConfigurationObject = (ControlsConfigurationObject) controlsConfigurationMap.get(controlName);
+			if (controlsConfigurationObject != null)
+			{
+				explicitRules = (ArrayList<String>) getListOfRules(controlsConfigurationObject.getCommonExplicitRules());
+			}
+		}
+		return explicitRules;
+	}
+	public static void main(String[] args) throws DynamicExtensionsSystemException
+	{
+		ControlConfigurationsFactory ccf = ControlConfigurationsFactory.getInstance();
+		ccf.getRulesMap("TextControl");
 	}
 
 }

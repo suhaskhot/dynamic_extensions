@@ -66,17 +66,11 @@
 		display-label="eav.caption.DateControlCaption"
 		jspName="DateControl.jsp">
 		<validations>
+		<common-validation-rule name="dateRange" isImplicit="false">
+			</common-validation-rule>
 		</validations>
 		<datatypes>
-			<dataType name="Date">
-				<validations>
-					<validation-rule name="date" isImplicit="true">
-					</validation-rule>
-					<validation-rule name="dateRange"
-						isImplicit="false">
-					</validation-rule>
-				</validations>
-			</dataType>
+			
 		</datatypes>
 	</control>
 	<!-- rules for Date control end-->

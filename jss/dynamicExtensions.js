@@ -89,36 +89,38 @@ function dataFldDataTypeChanged(datatypeControl)
 			var substitutionDiv = document.getElementById('substitutionDiv');
 			substitutionDiv.innerHTML = divForDataType.innerHTML;
 		}
-		insertRules(datatypeControl);
+		 insertRules(datatypeControl);
 	}
 }
-
 function insertRules(datatypeControl)
 {
+	
 		var selectedDatatype = datatypeControl.value;
 		var divForDataTypeId = selectedDatatype + "Div";
-	
+
 		var divForDataType = document.getElementById(divForDataTypeId);
-		
+		var divForCommonRule = document.getElementById("commonsDiv");
+
+
 		if(divForDataType!=null)
 		{
 			var substitutionDivRules = document.getElementById('substitutionDivRules');
-			var tempInnerHTML  = divForDataType.innerHTML;
+			var tempInnerHTML  = divForCommonRule.innerHTML + divForDataType.innerHTML;
+	
             while (tempInnerHTML.indexOf("tempValidationRules") != -1)
 			{
-			       tempInnerHTML = tempInnerHTML.replace("tempValidationRules","validationRules")
+			       tempInnerHTML = tempInnerHTML.replace("tempValidationRules","validationRules");
+				   
 			 }
-
-             
-
+		
 			substitutionDivRules.innerHTML = tempInnerHTML;
 		}
 }
 
+
 function initBuildForm()
 {
 	var dataTypeElt = document.getElementById("initialDataType");
-	
 	if(dataTypeElt!=null)
 	{
 		//Load datatype details for selected datatype

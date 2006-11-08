@@ -179,6 +179,8 @@ public class LoadFormControlsProcessor
 			{
 				initializeFileUploadControlDefaultValues(controlsForm);
 			}
+			/*controlsForm.setValidationRules(new String[] {""});
+			controlsForm.setTempValidationRules(new String[] {""});*/
 		}
 	}
 

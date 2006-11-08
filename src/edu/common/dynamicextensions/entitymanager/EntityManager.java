@@ -1407,6 +1407,10 @@ public class EntityManager
 			try
 			{
 				hibernateDAO.rollback();
+                if (stack != null)
+                {
+                    rollbackQueries(stack, DBUtil.getConnection(), entity);
+                }
 			}
 			catch (Exception e1)
 			{

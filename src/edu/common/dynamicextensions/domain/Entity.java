@@ -56,7 +56,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	/**
 	 * This method returns the Collection of the EntityGroups.
 	 * @hibernate.set name="entityGroupCollection" table="DYEXTN_ENTITY_GROUP_REL" 
-	 * cascade="none" inverse="true" lazy="false"
+	 * cascade="save-update" inverse="true" lazy="false"
 	 * @hibernate.collection-key column="ENTITY_ID"
 	 * @hibernate.collection-many-to-many class="edu.common.dynamicextensions.domain.EntityGroup" column="ENTITY_GROUP_ID"
 	 * @return the Collection of the Entities.
@@ -147,13 +147,18 @@ public class Entity extends AbstractMetadata implements EntityInterface
 		abstractAttributeCollection.add(abstractAttribute);
 	}
 
-	/**
-	 * This method adds an EntityGroup to the Entity's Collection of EntityGroup.
-	 * @param entityGroup EntityGroup to be added.
-	 */
-	public void addEntityGroupInterface(EntityGroupInterface entityGroup)
-	{
-	}
+     /**
+     * 
+     */
+    public void addEntityGroupInterface(
+            EntityGroupInterface entityGroupInterface)
+    {
+        if (this.entityGroupCollection == null) {
+            entityGroupCollection = new HashSet<EntityGroupInterface>();
+        }
+        entityGroupCollection.add(entityGroupInterface);
+
+    }
 
 	/**
 	 * This method returns the Collection of AbstractAttribute.

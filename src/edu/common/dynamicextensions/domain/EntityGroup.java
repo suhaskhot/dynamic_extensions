@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.domain;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -53,7 +54,7 @@ public class EntityGroup extends AbstractMetadata implements java.io.Serializabl
 	/**
 	 * This method returns the Collection of the Entities in the group.
 	 * @hibernate.set name="entityCollection" table="DYEXTN_ENTITY_GROUP_REL" 
-	 * cascade="none" inverse="false" lazy="false"
+	 * cascade="save-update" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ENTITY_GROUP_ID"
 	 * @hibernate.collection-many-to-many class="edu.common.dynamicextensions.domain.Entity" column="ENTITY_ID"
 	 * @return Returns the Collection of the Entities in the group.
@@ -138,12 +139,14 @@ public class EntityGroup extends AbstractMetadata implements java.io.Serializabl
 		this.version = version;
 	}
 
-	/**
-	 * This method adds an Entity to the Entity group.
-	 * @param entity an Entity to be added to the group.
-	 */
-	public void addEntity(EntityInterface entity)
-	{
-	}
-	
+     /**
+     * 
+     */
+    public void addEntity(EntityInterface entityInterface) {
+        if (this.entityCollection == null) {
+            entityCollection = new HashSet<EntityInterface>();
+        }
+        entityCollection.add(entityInterface);
+        
+    }
 }

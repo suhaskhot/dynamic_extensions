@@ -170,20 +170,20 @@ public class MockEntityManager
 		/* Name attribute */
 		abstractAttributeInterface = initializeStringAttribute("name", "William James Bill Murray");
 		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
-
+        abstractAttributeInterface.setEntity(dummyEntity);
 		/* Date of Joining attribute */
 		abstractAttributeInterface = initializeDateAttribute();
 		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
-
+        abstractAttributeInterface.setEntity(dummyEntity);
 		/* Gender attribute with its Permissible values */
 		abstractAttributeInterface = initializeStringAttribute("gender", "Male");
 		((AttributeInterface) abstractAttributeInterface).setDataElement(initializeDataElement());
 		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
-
+        abstractAttributeInterface.setEntity(dummyEntity);
 		/* Description attribute */
 		abstractAttributeInterface = initializeStringAttribute("description", "William James Bill Murray is an Academy Award-nominated");
 		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
-
+        abstractAttributeInterface.setEntity(dummyEntity);
 		return dummyEntity;
 	}
 

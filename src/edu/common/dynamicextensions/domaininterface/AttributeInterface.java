@@ -37,7 +37,16 @@ public interface AttributeInterface extends AbstractAttributeInterface
 	 * @param isPrimaryKey The isPrimaryKey to set.
 	 */
 	 void setIsPrimaryKey(Boolean isPrimaryKey);
-    
+     /**
+     * States that if the attribute is a primary key
+     * @return Returns the isPrimaryKey.
+     */
+     Boolean getIsNullable();
+    /**
+     * @param isPrimaryKey The isPrimaryKey to set.
+     */
+     void setIsNullable(Boolean isPrimaryKey);
+     
      /**
       * Returns the data element associated with the attribute.The data elment specify the
       * source of permissible values.

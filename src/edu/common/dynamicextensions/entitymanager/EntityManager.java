@@ -129,6 +129,7 @@ public class EntityManager
 	{
 		logDebug("createEntity", "Entering method");
 		Entity entity = (Entity) entityInterface;
+		preSaveProcessEntity(entity);
 		entity = saveOrUpdateEntity(entityInterface, true);
 		logDebug("createEntity", "Exiting method");
 		return entity;
@@ -1058,11 +1059,21 @@ public class EntityManager
 		return container;
 	}
 
+	/**
+	 * @param container container
+	 */
 	private void preSaveProcessContainer(Container container)
 	{
-		if (container.getEntity() != null)
-		{
-			Entity entity = (Entity) container.getEntity();
+		if (container.getEntity() != null) {
+           preSaveProcessEntity(container.getEntity());     
+		}
+	}
+	
+	/**
+	 * @param entity entity
+	 */
+	private void preSaveProcessEntity(EntityInterface entity)
+	{
 			if (entity.getId() != null)
 			{
 				entity.setLastUpdated(new Date());
@@ -1072,8 +1083,8 @@ public class EntityManager
 				entity.setCreatedDate(new Date());
 				entity.setLastUpdated(entity.getCreatedDate());
 			}
-		}
 	}
+	
 
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#insertData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map)

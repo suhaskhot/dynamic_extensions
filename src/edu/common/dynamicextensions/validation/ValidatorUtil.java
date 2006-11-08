@@ -20,25 +20,23 @@ import edu.wustl.common.util.global.ApplicationProperties;
 /**
  * @author Sujay Narkar
  * @author Rahul Ner
- *
  */
 
 public class ValidatorUtil
 {
 
 	/**
-	 * @param attributeValueMap  key -- AttributeInterface
-	 *                           value -- value that user has entred for this attribute
+	 * @param attributeValueMap  key - AttributeInterface
+	 *                           value - value that user has entred for this attribute
 	 * @return errorList if any
 	 * @throws DynamicExtensionsSystemException : Exception 
 	 */
-	public static List validateEntity(Map attributeValueMap) throws DynamicExtensionsSystemException
+	public static List<String> validateEntity(Map attributeValueMap) throws DynamicExtensionsSystemException
 	{
 
 		List<String> errorList = new ArrayList<String>();
 
 		Set attributeSet = attributeValueMap.keySet();
-
 		if (attributeSet == null || attributeSet.isEmpty())
 		{
 			return errorList;
@@ -49,6 +47,11 @@ public class ValidatorUtil
 		{
 			AttributeInterface attribute = (AttributeInterface) attributeIterator.next();
 			Collection attributeRuleCollection = attribute.getRuleCollection();
+			if (attributeRuleCollection == null || attributeRuleCollection.isEmpty())
+			{
+				return errorList;
+			}
+			
 			Iterator attributeRuleIterator = attributeRuleCollection.iterator();
 			while (attributeRuleIterator.hasNext())
 			{
@@ -67,6 +70,7 @@ public class ValidatorUtil
 				}
 			}
 		}
+		
 		return errorList;
 	}
 
@@ -75,20 +79,18 @@ public class ValidatorUtil
 	 * @param ruleInterface  :Rule interface
 	 * @return Map of parameters
 	 */
-	public static Map getParamMap(RuleInterface ruleInterface)
+	public static Map<String, String> getParamMap(RuleInterface ruleInterface)
 	{
-		Map<String,String> paramMap = new HashMap<String,String>();
-		Collection ruleParamCollection = ruleInterface.getRuleParameterCollection();
+		Map<String, String> paramMap = new HashMap<String, String>();
+		Collection<RuleParameterInterface> ruleParamCollection = ruleInterface.getRuleParameterCollection();
 		if (ruleParamCollection != null && !ruleParamCollection.isEmpty())
 		{
-			Iterator paramIterator = ruleParamCollection.iterator();
-
-			while (paramIterator.hasNext())
+			for(RuleParameterInterface ruleParameter: ruleParamCollection)
 			{
-				RuleParameterInterface ruleParameterInterface = (RuleParameterInterface) paramIterator.next();
-				paramMap.put(ruleParameterInterface.getName(), ruleParameterInterface.getValue());
+				paramMap.put(ruleParameter.getName(), ruleParameter.getValue());
 			}
 		}
 		return paramMap;
 	}
+	
 }

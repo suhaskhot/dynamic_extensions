@@ -29,7 +29,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 	 * Protected constructor for ControlProcessor
 	 *
 	 */
-	
+
 	protected ApplyFormControlsProcessor()
 	{
 
@@ -53,122 +53,136 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 	{
 		if ((containerInterface != null) && (controlsForm != null))
 		{
-			
-				EntityInterface entityInterface = containerInterface.getEntity();
-				ControlProcessor controlProcessor = ControlProcessor.getInstance();
-				AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
 
-				AbstractAttributeInterface abstractAttributeInterface = null;
-				ControlInterface controlInterface = null;
-				//Check for operation
-				String controlOperation = controlsForm.getControlOperation();
+			EntityInterface entityInterface = containerInterface.getEntity();
+			ControlProcessor controlProcessor = ControlProcessor.getInstance();
+			AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
 
-				//Default is add
-				if ((controlOperation == null) || (controlOperation.trim().equals("")))
+			AbstractAttributeInterface abstractAttributeInterface = null;
+			ControlInterface controlInterface = null;
+			//Check for operation
+			String controlOperation = controlsForm.getControlOperation();
+
+			//Default is add
+			if ((controlOperation == null) || (controlOperation.trim().equals("")))
+			{
+				controlOperation = ProcessorConstants.OPERATION_ADD;
+			}
+			//Add new control
+			if (controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_ADD))
+			{
+				//Set Name of the attribute in controlsForm.
+				//It is not accepted from UI. It has to be derived from caption
+				String attributeName = deriveAttributeNameFromCaption(controlsForm.getCaption());
+				controlsForm.setName(attributeName);
+
+				//Create Attribute  
+				abstractAttributeInterface = attributeProcessor.createAndPopulateAttribute(controlsForm);
+
+				//if combobox control has been selected then set the DataElement object for set of permissible values
+				String userSelectedControl = controlsForm.getUserSelectedTool();
+				if ((userSelectedControl != null) && (userSelectedControl.equalsIgnoreCase(ProcessorConstants.COMBOBOX_CONTROL)))
 				{
-					controlOperation = ProcessorConstants.OPERATION_ADD;
+					if (abstractAttributeInterface instanceof AttributeInterface)
+					{
+						((AttributeInterface) abstractAttributeInterface)
+						.setDataElement(attributeProcessor.getDataElementInterface(controlsForm));
+					}
 				}
-				//Add new control
-				if (controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_ADD))
+
+				//Set attribute in controlInformationInterface object(controlsForm)
+				controlsForm.setAbstractAttribute(abstractAttributeInterface);
+
+				//Control Interface : Add control
+				controlInterface = controlProcessor.createAndPopulateControl(controlsForm.getUserSelectedTool(), controlsForm);
+				Collection controlCollection = containerInterface.getControlCollection();
+				if (controlCollection != null)
 				{
-					//Set Name of the attribute in controlsForm.
-					//It is not accepted from UI. It has to be derived from caption
-					String attributeName = deriveAttributeNameFromCaption(controlsForm.getCaption());
-					controlsForm.setName(attributeName);
-
-					//Create Attribute  
-					abstractAttributeInterface = attributeProcessor.createAndPopulateAttribute(controlsForm);
-
-					//if combobox control has been selected then set the DataElement object for set of permissible values
-					String userSelectedControl = controlsForm.getUserSelectedTool();
-					if ((userSelectedControl != null) && (userSelectedControl.equalsIgnoreCase(ProcessorConstants.COMBOBOX_CONTROL)))
-					{
-						if (abstractAttributeInterface instanceof AttributeInterface)
-						{
-							((AttributeInterface) abstractAttributeInterface)
-									.setDataElement(attributeProcessor.getDataElementInterface(controlsForm));
-						}
-					}
-
-					//Set attribute in controlInformationInterface object(controlsForm)
-					controlsForm.setAbstractAttribute(abstractAttributeInterface);
-
-					//Control Interface : Add control
-					controlInterface = controlProcessor.createAndPopulateControl(controlsForm.getUserSelectedTool(), controlsForm);
-					Collection controlCollection = containerInterface.getControlCollection();
-					if (controlCollection != null)
-					{
-						int noOfElts = controlCollection.size();
-						controlInterface.setSequenceNumber(new Integer(noOfElts + 1));
-					}
-
-					//Entity Interface  : Add attribute
-					if ((entityInterface != null)&&(abstractAttributeInterface!=null))
-					{
-						entityInterface.addAbstractAttribute(abstractAttributeInterface);
-						abstractAttributeInterface.setEntity(entityInterface);
-					}
-
-					//Container : Add control and entity
-					containerInterface.addControl(controlInterface);
-					containerInterface.setEntity(entityInterface);
-
+					int noOfElts = controlCollection.size();
+					controlInterface.setSequenceNumber(new Integer(noOfElts + 1));
 				}
-				else if (controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_EDIT))
+
+				//Entity Interface  : Add attribute
+				if ((entityInterface != null)&&(abstractAttributeInterface!=null))
 				{
-					//Set Name of the attribute in controlsForm.
-					//It is not accepted from UI. It has to be derived from caption
-					String attributeName = deriveAttributeNameFromCaption(controlsForm.getCaption());
-					controlsForm.setName(attributeName);
-					//Get the control from container
-					String selectedControlSeqNumber = controlsForm.getSelectedControlId();
-					controlInterface = containerInterface.getControlInterfaceBySequenceNumber(selectedControlSeqNumber);
-
-					//Remove old refernces : From Entity
-					entityInterface.removeAbstractAttribute(controlInterface.getAbstractAttribute());
-
-					//Create new abstract attribute interface with new datatype
-					abstractAttributeInterface = attributeProcessor.createAndPopulateAttribute(controlsForm);
-
-					//if combobox control has been selected then set the DataElement object for set of permissible values
-					String userSelectedControl = controlsForm.getUserSelectedTool();
-					if ((userSelectedControl != null) && (userSelectedControl.equalsIgnoreCase(ProcessorConstants.COMBOBOX_CONTROL)))
-					{
-						if (abstractAttributeInterface instanceof AttributeInterface)
-						{
-							((AttributeInterface) abstractAttributeInterface)
-									.setDataElement(attributeProcessor.getDataElementInterface(controlsForm));
-						}
-					}
-					//update in entity
 					entityInterface.addAbstractAttribute(abstractAttributeInterface);
-					//update in control interface
-					controlInterface.setAbstractAttribute(abstractAttributeInterface);
+					abstractAttributeInterface.setEntity(entityInterface);
+				}
 
-					controlsForm.setAbstractAttribute(abstractAttributeInterface);
+				//Container : Add control and entity
+				containerInterface.addControl(controlInterface);
+				containerInterface.setEntity(entityInterface);
 
-					//update control
-					ControlInterface newControlInterface = controlProcessor.populateControlInterface(controlsForm.getUserSelectedTool(),
-							controlInterface, controlsForm);
-					//If new control interface is same as old one, do nothing. Else remove old ref from container and add new one
-					if ((newControlInterface != null) && (!newControlInterface.equals(controlInterface)))
-					{
-						//Remove control from container
-						containerInterface.removeControl(controlInterface);
+			}
+			else if (controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_EDIT))
+			{
+				//Set Name of the attribute in controlsForm.
+				//It is not accepted from UI. It has to be derived from caption
+				String attributeName = deriveAttributeNameFromCaption(controlsForm.getCaption());
+				controlsForm.setName(attributeName);
+				//Get the control from container
+				String selectedControlSeqNumber = controlsForm.getSelectedControlId();
+				controlInterface = containerInterface.getControlInterfaceBySequenceNumber(selectedControlSeqNumber);
 
-						//Set Sequence number
-						newControlInterface.setSequenceNumber(controlInterface.getSequenceNumber());
+				//Remove old refernces : From Entity
+				entityInterface.removeAbstractAttribute(controlInterface.getAbstractAttribute());
 
-						//Set abstract attriibute
-						newControlInterface.setAbstractAttribute(abstractAttributeInterface);
-						//add to container
-						containerInterface.addControl(newControlInterface);
-					}
+				//Create new abstract attribute interface with new datatype
+				abstractAttributeInterface = attributeProcessor.createAndPopulateAttribute(controlsForm);
+
+				setPermissibleValues(attributeProcessor,abstractAttributeInterface,controlsForm);
+				//update in entity
+				entityInterface.addAbstractAttribute(abstractAttributeInterface);
+				//update in control interface
+				controlInterface.setAbstractAttribute(abstractAttributeInterface);
+
+				controlsForm.setAbstractAttribute(abstractAttributeInterface);
+
+				//update control
+				ControlInterface newControlInterface = controlProcessor.populateControlInterface(controlsForm.getUserSelectedTool(),
+						controlInterface, controlsForm);
+				//If new control interface is same as old one, do nothing. Else remove old ref from container and add new one
+				if ((newControlInterface != null) && (!newControlInterface.equals(controlInterface)))
+				{
+					//Remove control from container
+					containerInterface.removeControl(controlInterface);
+
+					//Set Sequence number
+					newControlInterface.setSequenceNumber(controlInterface.getSequenceNumber());
+
+					//Set abstract attriibute
+					newControlInterface.setAbstractAttribute(abstractAttributeInterface);
+					//add to container
+					containerInterface.addControl(newControlInterface);
 				}
 			}
-			
 		}
-	
+
+	}
+
+
+	/**
+	 * @param abstractAttributeInterface
+	 * @param controlsForm
+	 * @throws DynamicExtensionsApplicationException :Exception
+	 */
+	private void setPermissibleValues(AttributeProcessor attributeProcessor, AbstractAttributeInterface abstractAttributeInterface, ControlsForm controlsForm) throws DynamicExtensionsApplicationException
+	{
+		//if combobox/optionbutton control has been selected then set the DataElement object for set of permissible values
+		String userSelectedControl = controlsForm.getUserSelectedTool();
+		if (userSelectedControl != null)
+		{
+			if((userSelectedControl.equalsIgnoreCase(ProcessorConstants.COMBOBOX_CONTROL))||(userSelectedControl.equalsIgnoreCase(ProcessorConstants.RADIOBUTTON_CONTROL)))
+			{
+				if (abstractAttributeInterface instanceof AttributeInterface)
+				{
+					((AttributeInterface) abstractAttributeInterface)
+					.setDataElement(attributeProcessor.getDataElementInterface(controlsForm));
+				}
+			}
+		}
+		
+	}
 
 	/**
 	 * 

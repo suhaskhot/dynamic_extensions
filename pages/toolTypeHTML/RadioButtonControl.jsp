@@ -3,6 +3,7 @@
 <%@ taglib uri="/WEB-INF/dynamicExtensions.tld" prefix="dynamicExtensions" %>
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
 
+<%@page import="edu.common.dynamicextensions.processor.ProcessorConstants"%>
 <%@page import="edu.wustl.common.beans.NameValueBean"%>
 <link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
 <script src="jss/dynamicExtensions.js" type="text/javascript"></script>
@@ -20,7 +21,7 @@
 	<table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%' >
 		<jsp:include page="/pages/toolTypeHTML/CommonControlAttributes.jsp" />
 
-		<tr>
+		<tr valign="top">
 			<td class="formRequiredNoticeWithoutBorder" width="2%">
 					 			&nbsp;
 		 	</td>
@@ -48,7 +49,8 @@
 		</div>
 	</td>
  <tr>
-
 </table>
+<html:hidden property="dataType" value ="<%=ProcessorConstants.DATATYPE_STRING%>"/>/>
+
 <jsp:include page="/pages/toolTypeHTML/ListValuesSpecification.jsp" />
 

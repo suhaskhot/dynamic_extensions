@@ -150,12 +150,14 @@ function initBuildForm()
 function addChoicesFromListToTable()
 {
 	var choiceList = document.getElementById("choiceList");
+	
 	if(choiceList!=null)
 	{
 		var choiceListValue = choiceList.value;
 		if((choiceListValue!=null)&&(choiceListValue!=""))
 		{
 			var choice_array=choiceListValue.split(",");
+
 			if(choice_array!=null)
 			{
 				for(var i=0;i<choice_array.length;i++)
@@ -203,7 +205,7 @@ function changeSourceForValues(sourceControl)
 //This will be true when called while adding choice at runtime, and false when adding at load time
 function addChoiceToList(addToChoiceList)
 {
-	var textBox = document.getElementById('choiceValue');
+	var optionName = document.getElementById('optionName');
 	var choiceListElementCnter = document.getElementById('choiceListCounter');
 	
 	var elementNo = 0;
@@ -212,24 +214,22 @@ function addChoiceToList(addToChoiceList)
 		elementNo = choiceListElementCnter.value;
 	}
 
-	if((textBox!=null)&&(textBox.value!=""))
+	if((optionName!=null)&&(optionName.value!=""))
 	{
-		newValue = textBox.value;
+		newValue = optionName.value;
 		var choiceListTable  = document.getElementById('choiceListTable');
 	
 		if(choiceListTable!=null)
 		{
 			var myNewRow = choiceListTable.insertRow();
 			var myNewCell =  null;
-			//Radio button for default value selection
-			myNewCell =  myNewRow.insertCell();
-			myNewCell.setAttribute("className","formMessage");
-			myNewCell.innerHTML="<input type='radio' name='attributeDefaultValue' value='"+textBox.value+"'>"  ;
 			
-			//Text 
+			//Add Option to table
 			myNewCell =  myNewRow.insertCell();
 			myNewCell.setAttribute("className","formMessage");
-			myNewCell.innerHTML=textBox.value;
+			myNewCell.setAttribute("width","10%");
+			var chkBoxId = "chkBox" + elementNo;
+			myNewCell.innerHTML = "<input type='checkbox' id='" + chkBoxId +"' value='"+optionName.value + "'>"   + optionName.value;
 			
 			var choicelist = document.getElementById('choiceList');
 			if(choicelist !=null)
@@ -237,17 +237,14 @@ function addChoiceToList(addToChoiceList)
 				//add to choicelist
 				if(addToChoiceList == true)
 				{
-					choicelist.value = choicelist.value + "," + textBox.value;
+					choicelist.value = choicelist.value + "," + optionName.value;
 				}
 			}
-			textBox.value = "";
+			optionName.value = "";
+			
+			//increment number of elements count
 			document.getElementById('choiceListCounter').value = (parseInt(elementNo) + 1) + "";
 			
-			//Checkbox for delete
-			myNewCell =  myNewRow.insertCell();
-			myNewCell.setAttribute("className","formMessage");
-			var chkBoxId = "chkBox" + elementNo;
-			myNewCell.innerHTML="<input type='checkbox' id='" + chkBoxId +"' >";
 		}
 	}
 }
@@ -272,39 +269,81 @@ function deleteElementsFromChoiceList()
 		
 		var chkBoxId = "";
 		var chkBox;
+		
 		for(var i=0;i<noOfElements;i++)
 		{
 			
 			chkBoxId = "chkBox" + i;
-	
+			
 			chkBox = document.getElementById(chkBoxId);
+			
 			if(chkBox!=null)
 			{
 				var rowofCheckBox = chkBox.parentElement.parentElement;
-				
 				if(chkBox.checked == true)
 				{
 					if(rowofCheckBox!=null)
 					{
 						var rowIndexOfChkBox = rowofCheckBox.rowIndex;
+			
 						if(rowIndexOfChkBox!=null)
 						{
-							valuestable.deleteRow(rowIndexOfChkBox);//since first row is header
+							valuestable.deleteRow(rowIndexOfChkBox);
 						}
 					}
 				}
 				else
 				{
 					//Add to choice list if not selected
-					choicelist.value = choicelist.value + ","  + rowofCheckBox.cells[1].innerHTML  ;
+					choicelist.value = choicelist.value + ","  + chkBox.value;
 				}
 				
 			}
 		}
 	}
-	
 }
+function setDefaultValue()
+{
+	var defaultValue = document.getElementById('attributeDefaultValue');
+	defaultValue.value = "";
+	var valuestable = document.getElementById('choiceListTable');
+	if(valuestable!=null)
+	{
+		
+		var choiceListElementCnter = document.getElementById('choiceListCounter');
+		var noOfElements = 0;
+		if(choiceListElementCnter!=null)
+		{
+			noOfElements = parseInt(choiceListElementCnter.value);
+		}
 
+		var chkBoxId = "";
+		var chkBox;
+
+		for(var i=0;i<noOfElements;i++)
+		{
+
+			chkBoxId = "chkBox" + i;
+
+			chkBox = document.getElementById(chkBoxId);
+
+			if(chkBox!=null)
+			{
+				var rowofCheckBox = chkBox.parentElement.parentElement;
+				if(chkBox.checked == true)
+				{
+					defaultValue.value = defaultValue.value + ","  + chkBox.value; 
+					chkBox.checked = false;
+					rowofCheckBox.style.fontWeight='bold';
+				}
+				else
+				{
+					rowofCheckBox.style.fontWeight='normal';
+				}
+			}
+		}
+ 	}
+}
 
 //Added by sujay
 
@@ -669,3 +708,4 @@ function ruleSelected(ruleObject)
 
 	}
 }
+

@@ -1020,7 +1020,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				{
 					if (dataEltInterface instanceof UserDefinedDEInterface)
 					{
-						attributeUIBeanInformationIntf.setDisplayChoice("UserDefined");
+						attributeUIBeanInformationIntf.setDisplayChoice(ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED);
 						UserDefinedDEInterface userDefinedDE = (UserDefinedDEInterface) dataEltInterface;
 						Collection userDefinedValues = userDefinedDE.getPermissibleValueCollection();
 						if (userDefinedValues != null)

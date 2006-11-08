@@ -6,9 +6,6 @@
 		display-label="eav.caption.TextControlCaption"
 		jspName="TextControl.jsp">
 		<validations>
-			<common-validation-rule name="required"
-				isImplicit="false">
-			</common-validation-rule>
 			<common-validation-rule name="unique" isImplicit="false">
 			</common-validation-rule>
 		</validations>
@@ -18,8 +15,6 @@
 			</dataType>
 			<dataType name="Number">
 				<validations>
-					<validation-rule name="number" isImplicit="true">
-					</validation-rule>
 					<validation-rule name="range" isImplicit="false">
 					</validation-rule>
 				</validations>
@@ -71,9 +66,6 @@
 		display-label="eav.caption.DateControlCaption"
 		jspName="DateControl.jsp">
 		<validations>
-			<common-validation-rule name="required"
-				isImplicit="false">
-			</common-validation-rule>
 		</validations>
 		<datatypes>
 			<dataType name="Date">

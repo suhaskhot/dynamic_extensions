@@ -234,6 +234,11 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	/**
 	 * 
 	 */
+	protected String[] tempValidationRules = new String[] {""};
+	
+	/**
+	 * 
+	 */
 	protected String min;
 	/**
 	 * 
@@ -1468,7 +1473,21 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		}
 		return false;
 	}
+	/**
+	 * @return the tempValidationRules
+	 */
+	public String[] getTempValidationRules()
+	{
+		return tempValidationRules;
+	}
 
+	/**
+	 * @param tempValidationRules the tempValidationRules to set
+	 */
+	public void setTempValidationRules(String[] tempValidationRules)
+	{
+		this.tempValidationRules = tempValidationRules;
+	}
 
 
 }

@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AssociationInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
@@ -150,6 +148,8 @@ public class Entity extends AbstractMetadata implements EntityInterface
 			abstractAttributeCollection = new HashSet<AbstractAttributeInterface>();
 		}
 		abstractAttributeCollection.add(abstractAttribute);
+		abstractAttribute.setEntity(this);
+		
 	}
 
      /**

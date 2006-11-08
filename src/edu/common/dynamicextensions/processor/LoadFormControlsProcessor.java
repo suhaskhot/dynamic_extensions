@@ -60,7 +60,7 @@ public class LoadFormControlsProcessor
 		if ((containerInterface != null) && (controlsForm != null))
 		{
 			String controlOperation = controlsForm.getControlOperation();
-			
+
 
 			ControlConfigurationsFactory controlConfigurationsFactory = ControlConfigurationsFactory.getInstance();
 			if (controlOperation == null || controlOperation.equals(""))
@@ -79,7 +79,12 @@ public class LoadFormControlsProcessor
 				ControlInterface selectedControl = containerInterface.getControlInterfaceBySequenceNumber(selectedControlId);
 				editControl(selectedControl,controlsForm);
 			}
+			
 			String userSelectedTool = controlsForm.getUserSelectedTool();
+			
+			//Initialize default values for controls
+			initializeControlDefaultValues(userSelectedTool,controlsForm);
+			
 			//List of tools/controls
 			controlsForm.setToolsList(controlConfigurationsFactory.getListOfControls());
 			controlsForm.setSelectedControlCaption(getControlCaption(controlConfigurationsFactory.getControlDisplayLabel(userSelectedTool)));
@@ -118,8 +123,6 @@ public class LoadFormControlsProcessor
 			userSelectedTool = ProcessorConstants.DEFAULT_SELECTED_CONTROL;
 		}
 		controlsForm.setUserSelectedTool(userSelectedTool);
-		//Initialize default values for controls
-		initializeControlDefaultValues(userSelectedTool,controlsForm);
 	}
 
 	/**
@@ -194,9 +197,15 @@ public class LoadFormControlsProcessor
 	private void initializeOptionButtonControlDefaultValues(ControlsForm controlsForm)
 	{
 		//List of display choices
-		controlsForm.setDisplayChoiceList(getDisplayChoiceList());
+		if(controlsForm.getDisplayChoiceList()==null)
+		{
+			controlsForm.setDisplayChoiceList(getDisplayChoiceList());
+		}
 		//Set default display choice 
-		controlsForm.setDisplayChoice(ProcessorConstants.DEFAULT_DISPLAY_CHOICE_TYPE);
+		if(controlsForm.getDisplayChoice()==null)
+		{
+			controlsForm.setDisplayChoice(ProcessorConstants.DEFAULT_DISPLAY_CHOICE_TYPE);
+		}
 	}
 
 	/**
@@ -204,7 +213,10 @@ public class LoadFormControlsProcessor
 	 */
 	private void initializeCheckBoxControlDefaultValues(ControlsForm controlsForm)
 	{
-		controlsForm.setAttributeDefaultValue(ProcessorConstants.DEFAULT_CHECKBOX_VALUE);
+		if(controlsForm.getAttributeDefaultValue()==null)
+		{
+			controlsForm.setAttributeDefaultValue(ProcessorConstants.DEFAULT_CHECKBOX_VALUE);
+		}
 	}
 
 	/**
@@ -213,10 +225,15 @@ public class LoadFormControlsProcessor
 	private void initializeDatePickerControlDefaultValues(ControlsForm controlsForm)
 	{
 		//Date value type
-		controlsForm.setDateValueType(ProcessorConstants.DEFAULT_DATE_VALUE);
-
+		if(controlsForm.getDateValueType()==null)
+		{
+			controlsForm.setDateValueType(ProcessorConstants.DEFAULT_DATE_VALUE);
+		}
 		//Date format
-		controlsForm.setFormat(ProcessorConstants.DEFAULT_DATE_FORMAT);
+		if(controlsForm.getFormat()==null)
+		{
+			controlsForm.setFormat(ProcessorConstants.DEFAULT_DATE_FORMAT);
+		}
 	}
 
 	/**
@@ -225,11 +242,20 @@ public class LoadFormControlsProcessor
 	private void initializeComboboxControlDefaultValues(ControlsForm controlsForm)
 	{
 		//List of display choices
-		controlsForm.setDisplayChoiceList(getDisplayChoiceList());
-		//Set default display choice 
-		controlsForm.setDisplayChoice(ProcessorConstants.DEFAULT_DISPLAY_CHOICE_TYPE);
+		if(controlsForm.getDisplayChoiceList()==null)
+		{
+			controlsForm.setDisplayChoiceList(getDisplayChoiceList());
+		}
+		//Set default display choice
+		if(controlsForm.getDisplayChoice()==null)
+		{
+			controlsForm.setDisplayChoice(ProcessorConstants.DEFAULT_DISPLAY_CHOICE_TYPE);
+		}
 		//Default list type
-		controlsForm.setAttributeMultiSelect(ProcessorConstants.DEFAULT_LIST_TYPE);
+		if(controlsForm.getAttributeMultiSelect()==null)
+		{
+			controlsForm.setAttributeMultiSelect(ProcessorConstants.DEFAULT_LIST_TYPE);
+		}
 	}
 
 	/**
@@ -238,11 +264,21 @@ public class LoadFormControlsProcessor
 	private void initializeTextControlDefaultValues(ControlsForm controlsForm)
 	{
 		//Default Data type
-		controlsForm.setDataType(ProcessorConstants.DEFAULT_DATA_TYPE);
+		if(controlsForm.getDataType()==null)
+		{
+			controlsForm.setDataType(ProcessorConstants.DEFAULT_DATA_TYPE);
+		}
 		//Default single line type
-		controlsForm.setLinesType(ProcessorConstants.DEFAULT_LINE_TYPE);
+		if(controlsForm.getLinesType()==null)
+		{
+			controlsForm.setLinesType(ProcessorConstants.DEFAULT_LINE_TYPE);
+		}
+
 		//measurement units list
-		controlsForm.setMeasurementUnitsList(getListOfMeasurementUnits());
+		if(controlsForm.getMeasurementUnitsList()==null)
+		{
+			controlsForm.setMeasurementUnitsList(getListOfMeasurementUnits());
+		}
 	}
 
 	/**

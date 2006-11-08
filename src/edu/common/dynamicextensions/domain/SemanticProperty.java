@@ -9,6 +9,8 @@ import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.exception.AssignDataException;
 
 /**
+ * For every abstract metadata object semantic properties are associated.
+ * This Class represents the Semantic Properties of a Metadata.
  * @version 1.0
  * @created 28-Sep-2006 12:20:08 PM
  * @hibernate.class table="DYEXTN_SEMANTIC_PROPERTY"

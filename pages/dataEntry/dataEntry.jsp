@@ -124,23 +124,32 @@
 										</td>
 									</tr>
 
+									
+									<c:set var="dummyControlCollection" value="${containerInterface.controlCollection}" />
+									<jsp:useBean id="dummyControlCollection" type="java.util.Collection" />
 
-								<c:forEach items="${containerInterface.controlCollection}" var="controlInterface">
-								<jsp:useBean id="controlInterface" type="edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface" />
-									<tr>
-										<td class="formRequiredNotice" width="2%">
-											&nbsp;
-										</td>
-										<td class="formRequiredLabel" width="20%">
-											<c:out value="${controlInterface.caption}"/>
-										</td>
-										<td class="formField">
-											<% String generateHTMLStr = controlInterface.generateHTML(); %>
-											<% pageContext.setAttribute("generateHTMLStr", generateHTMLStr); %>
-											<c:out value="${generateHTMLStr}" escapeXml="false" />
-										</td>
-									</tr>
-								</c:forEach>
+									<% for(int sequenceNumber = 1; sequenceNumber <= dummyControlCollection.size(); sequenceNumber++) { %>
+										
+										<c:forEach items="${containerInterface.controlCollection}" var="control">
+										<jsp:useBean id="control" type="edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface" />
+										
+											<% if(sequenceNumber == control.getSequenceNumber().intValue()) { %>
+												<tr>
+													<td class="formRequiredNotice" width="2%">
+														&nbsp;
+													</td>
+													<td class="formRequiredLabel" width="20%">
+														<c:out value="${control.caption}"/>
+													</td>
+													<td class="formField">
+														<% String generateHTMLStr = control.generateHTML(); %>
+														<% pageContext.setAttribute("generateHTMLStr", generateHTMLStr); %>
+														<c:out value="${generateHTMLStr}" escapeXml="false" />
+													</td>
+												</tr>											
+											<% } %>
+										</c:forEach>
+									<% } %>
 
 								</table>
 							</td>

@@ -27,12 +27,12 @@ public interface RuleInterface {
     /**
      * @return Returns the ruleParameterCollection.
      */
-    public Collection getRuleParameterCollection();
+    public Collection<RuleParameterInterface> getRuleParameterCollection();
     
     /**
      * @param ruleParameterCollection The ruleParameterCollection to set.
      */
-    public void setRuleParameterCollection(Collection ruleParameterCollection);
+    public void setRuleParameterCollection(Collection<RuleParameterInterface> ruleParameterCollection);
    
            
    

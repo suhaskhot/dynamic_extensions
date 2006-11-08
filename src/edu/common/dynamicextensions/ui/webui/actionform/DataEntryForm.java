@@ -19,11 +19,16 @@ public class DataEntryForm extends AbstractActionForm
 	/**
 	 * 
 	 */
-	String entitySaved;
+	protected String entitySaved;
 	/**
 	 * 
 	 */
-	String showFormPreview;
+	protected String showFormPreview;
+
+	/**
+	 * 
+	 */
+	protected ContainerInterface containerInterface;
 
 	/**
 	 * @return int formId
@@ -39,8 +44,6 @@ public class DataEntryForm extends AbstractActionForm
 	 */
 	public void setAllValues(AbstractDomainObject arg0)
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	/**
@@ -48,11 +51,7 @@ public class DataEntryForm extends AbstractActionForm
 	 */
 	protected void reset()
 	{
-		// TODO Auto-generated method stub
-
 	}
-
-	protected ContainerInterface containerInterface;
 
 	/**
 	 * @return Returns the container.
@@ -83,7 +82,6 @@ public class DataEntryForm extends AbstractActionForm
 	 * 
 	 * @param entitySaved entitySaved
 	 */
-
 	public void setEntitySaved(String entitySaved)
 	{
 		this.entitySaved = entitySaved;
@@ -106,4 +104,5 @@ public class DataEntryForm extends AbstractActionForm
 	{
 		this.showFormPreview = showFormPreview;
 	}
+
 }

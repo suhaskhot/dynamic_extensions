@@ -1,56 +1,53 @@
 
 package edu.common.dynamicextensions.domaininterface;
 
-
 /**
  * For every abstract metadata object semantic properties are associated.
  * @author sujay_narkar
- *
  */
-public interface SemanticPropertyInterface 
+public interface SemanticPropertyInterface
 {
-    
-    /**
-     * @return Returns the id.
-     */
-     Long getId();
-    
-    /**
-     * Concept code for metadata object
-     * @return Returns the conceptCode.
-     */
-     String getConceptCode();
-    
-    
-    /**
-     * @param conceptCode The conceptCode to set.
-     */
-     void setConceptCode(String conceptCode);
-    
-    
-    /**
-     * Concept name for the metadata object
-     * @return Returns the term.
-     */
-     String getTerm();
-    
-    
-    /**
-     * @param term The term to set.
-     */
-     void setTerm(String term);
-        
-    
-    /**
-     * ThesaurasName for the metadata object
-     * @return Returns the thesaurasName.
-     */
-     String getThesaurasName();
-    
-    
-    /**
-     * @param thesaurasName The thesaurasName to set.
-     */
-     void setThesaurasName(String thesaurasName);
-    
+
+	/**
+	 * This method returns the Unique identifier.
+	 * @return the Unique identifier.
+	 */
+	Long getId();
+
+	/**
+	 * This method returns the concept code.
+	 * @return the concept code.
+	 */
+	String getConceptCode();
+
+	/**
+	 * This method sets the concept code.
+	 * @param conceptCode the concept code to be set.
+	 */
+	void setConceptCode(String conceptCode);
+
+	/**
+	 * This method returns the tem i.e. concept name. 
+	 * @return Returns the term i.e. concept name
+	 */
+	String getTerm();
+
+	/**
+	 * This method sets the term.
+	 * @param term the term to be set.
+	 */
+	void setTerm(String term);
+
+	/**
+	 * This method returns the thesaurus name.
+	 * @return the thesaurus name.
+	 */
+	String getThesaurasName();
+
+	/**
+	 * This method sets the thesauras name.
+	 * @param thesaurasName the thesauras name to be set.
+	 */
+	void setThesaurasName(String thesaurasName);
+
 }

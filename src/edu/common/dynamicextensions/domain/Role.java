@@ -174,5 +174,5 @@ public class Role extends AbstractDomainObject implements RoleInterface
 	public void setSystemIdentifier(Long id)
 	{
 	}
-	
+
 }

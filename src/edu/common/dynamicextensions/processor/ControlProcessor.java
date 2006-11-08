@@ -174,17 +174,17 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private ControlInterface getCheckBoxControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
 	{
-		CheckBoxInterface checkBoxIntf = null;
+		CheckBoxInterface checkBox = null;
 		if (controlInterface == null)
 		{
-			checkBoxIntf = DomainObjectFactory.getInstance().createCheckBox();
+			checkBox = DomainObjectFactory.getInstance().createCheckBox();
 		}
 		else
 		{
-			checkBoxIntf = (CheckBoxInterface) controlInterface;
+			checkBox = (CheckBoxInterface) controlInterface;
 		}
 
-		return checkBoxIntf;
+		return checkBox;
 	}
 
 	/**

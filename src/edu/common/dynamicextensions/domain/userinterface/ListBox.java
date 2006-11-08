@@ -3,7 +3,6 @@ package edu.common.dynamicextensions.domain.userinterface;
 
 import java.util.List;
 
-import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
@@ -71,7 +70,7 @@ public class ListBox extends Control implements ListBoxInterface
 		{
 			strMultiSelect = "MULTIPLE ";
 		}
-		String htmlString = "<SELECT " + strMultiSelect + " size = 5" + "class = '" + cssClass + "' " + "name = '" + name + "' " + "id = '" + name
+		String htmlString = "<SELECT " + strMultiSelect + " size = 5" + "class = '" + cssClass + "' " + "name = '" + this.name + "' " + "id = '" + name
 				+ "' " + "title = '" + tooltip + "' " + ">";
 
 		if (this.value == null)

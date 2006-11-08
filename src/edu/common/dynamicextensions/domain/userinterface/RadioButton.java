@@ -42,10 +42,10 @@ public class RadioButton extends Control implements RadioButtonInterface
 		{
 			isChecked = "checked";
 		}
-		String htmlString = "<input type='radio' " + "class = '" + cssClass + "' " + "name = '" + name + "' " + "value = '" + name + "' " + "id = '"
+		String htmlString = "<input type='radio' " + "class = '" + cssClass + "' " + "name = '" + getHTMLComponentName() + "' " + "value = '" + name + "' " + "id = '"
 				+ name + "' " + "title = '" + tooltip + "' " + isChecked + " >";
 		
-		System.out.println("Returning " + htmlString);		
+		System.out.println("Returning " + htmlString);
 		return htmlString;
 	}
 

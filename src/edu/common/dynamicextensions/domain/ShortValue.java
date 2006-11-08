@@ -33,9 +33,9 @@ public class ShortValue extends PermissibleValue implements ShortValueInterface
 	}
 
 	/**
-	 * This method returns the predefined value of DateValue.
+	 * This method returns the predefined value of ShortValue.
 	 * @hibernate.property name="value" type="short" column="VALUE"  
-	 * @return the predefined value of DateValue.
+	 * @return the predefined value of ShortValue.
 	 */
 	public Short getValue()
 	{
@@ -43,7 +43,7 @@ public class ShortValue extends PermissibleValue implements ShortValueInterface
 	}
 
 	/**
-	 * This method sets the value of DateValue to the given value.
+	 * This method sets the value of ShortValue to the given value.
 	 * @param value the value to be set.
 	 */
 	public void setValue(Short value)
@@ -52,7 +52,7 @@ public class ShortValue extends PermissibleValue implements ShortValueInterface
 	}
 
 	/**
-	 * This method returns the value of DateValue downcasted to the Object.
+	 * This method returns the value of ShortValue downcasted to the Object.
 	 * @return the value of the DateValue downcasted to the Object.
 	 */
 	public Object getValueAsObject()

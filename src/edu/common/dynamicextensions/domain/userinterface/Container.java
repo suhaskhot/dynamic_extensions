@@ -22,6 +22,10 @@ import edu.wustl.common.exception.AssignDataException;
 public class Container extends AbstractDomainObject implements Serializable, ContainerInterface
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8092366994778601914L;
+	/**
 	 * Unique identifier for the object
 	 */
 	protected Long id;
@@ -52,7 +56,7 @@ public class Container extends AbstractDomainObject implements Serializable, Con
 	/**
 	 * Collection of controls that are in this container.
 	 */
-	protected Collection controlCollection = new HashSet();
+	protected Collection<ControlInterface> controlCollection = new HashSet<ControlInterface>();
 	/**
 	 * Entity to which this container is associated.
 	 */
@@ -63,7 +67,6 @@ public class Container extends AbstractDomainObject implements Serializable, Con
 	 */
 	public Container()
 	{
-
 	}
 
 	/**
@@ -123,7 +126,7 @@ public class Container extends AbstractDomainObject implements Serializable, Con
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.userinterface.Control"
 	 * @return Returns the controlCollection.
 	 */
-	public Collection getControlCollection()
+	public Collection<ControlInterface> getControlCollection()
 	{
 		return controlCollection;
 	}
@@ -131,7 +134,7 @@ public class Container extends AbstractDomainObject implements Serializable, Con
 	/**
 	 * @param controlCollection The controlCollection to set.
 	 */
-	public void setControlCollection(Collection controlCollection)
+	public void setControlCollection(Collection<ControlInterface> controlCollection)
 	{
 		this.controlCollection = controlCollection;
 	}
@@ -248,7 +251,7 @@ public class Container extends AbstractDomainObject implements Serializable, Con
 	{
 		if (controlCollection == null)
 		{
-			controlCollection = new HashSet();
+			controlCollection = new HashSet<ControlInterface>();
 		}
 		controlCollection.add(controlInterface);
 	}

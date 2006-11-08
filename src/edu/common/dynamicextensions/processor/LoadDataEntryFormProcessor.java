@@ -25,15 +25,14 @@ public class LoadDataEntryFormProcessor
 {
 
 	/**
-	 * 
-	 *
+	 * Empty Constructor
 	 */
 	protected LoadDataEntryFormProcessor()
 	{
 	}
 
 	/**
-	 * this method gets the new instance of the entity processor to the caller.
+	 * This method gets the new instance of the entity processor to the caller.
 	 * @return EntityProcessor EntityProcessor instance
 	 */
 	public static LoadDataEntryFormProcessor getInstance()

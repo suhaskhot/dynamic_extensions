@@ -39,7 +39,7 @@ public interface ContainerInterface
      * The list of user selected controls. 
      * @return Returns the controlCollection.
      */
-     Collection getControlCollection();
+     Collection<ControlInterface> getControlCollection();
     /**
      * @param controlInterface The controlInterface to be added.
      */

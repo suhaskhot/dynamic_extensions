@@ -37,7 +37,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @param response HttpServletResponse
 	 * @return ActionForward ActionForward
 	 */
-	@SuppressWarnings("unchecked")
+	//@SuppressWarnings("unchecked")
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 	{
 		ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);

@@ -1,6 +1,9 @@
+
 package edu.common.dynamicextensions.ui.util;
 
 import java.util.List;
+
+import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
 
 /**
  * 
@@ -13,7 +16,8 @@ public class RuleConfigurationObject
 	private String ruleName;
 	private String ruleClassName;
 	private String errorKey;
-	private List ruleParametersList = null;
+	private List<RuleParameterInterface> ruleParametersList = null;
+
 	/**
 	 * @return the displayLabel
 	 */
@@ -21,6 +25,7 @@ public class RuleConfigurationObject
 	{
 		return displayLabel;
 	}
+
 	/**
 	 * @param displayLabel the displayLabel to set
 	 */
@@ -28,6 +33,7 @@ public class RuleConfigurationObject
 	{
 		this.displayLabel = displayLabel;
 	}
+
 	/**
 	 * @return the errorKey
 	 */
@@ -35,6 +41,7 @@ public class RuleConfigurationObject
 	{
 		return errorKey;
 	}
+
 	/**
 	 * @param errorKey the errorKey to set
 	 */
@@ -42,8 +49,7 @@ public class RuleConfigurationObject
 	{
 		this.errorKey = errorKey;
 	}
-	
-	
+
 	/**
 	 * @return the ruleClassName
 	 */
@@ -51,6 +57,7 @@ public class RuleConfigurationObject
 	{
 		return ruleClassName;
 	}
+
 	/**
 	 * @param ruleClassName the ruleClassName to set
 	 */
@@ -58,6 +65,7 @@ public class RuleConfigurationObject
 	{
 		this.ruleClassName = ruleClassName;
 	}
+
 	/**
 	 * @return the ruleName
 	 */
@@ -65,6 +73,7 @@ public class RuleConfigurationObject
 	{
 		return ruleName;
 	}
+
 	/**
 	 * @param ruleName the ruleName to set
 	 */
@@ -72,19 +81,21 @@ public class RuleConfigurationObject
 	{
 		this.ruleName = ruleName;
 	}
+
 	/**
 	 * @return the ruleParametersList
 	 */
-	public List getRuleParametersList()
+	public List<RuleParameterInterface> getRuleParametersList()
 	{
 		return ruleParametersList;
 	}
+
 	/**
 	 * @param ruleParametersList the ruleParametersList to set
 	 */
-	public void setRuleParametersList(List ruleParametersList)
+	public void setRuleParametersList(List<RuleParameterInterface> ruleParametersList)
 	{
 		this.ruleParametersList = ruleParametersList;
 	}
-	
+
 }

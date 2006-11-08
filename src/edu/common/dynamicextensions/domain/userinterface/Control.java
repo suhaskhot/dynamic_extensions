@@ -24,47 +24,52 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	 * Unique identifier for the object
 	 */
 	protected Long id = null;
+	
 	/**
 	 * The caption of the control.
 	 */
 	protected String caption = null;
+	
 	/**
 	 * The css class that is to be used for this control.
 	 */
 	protected String cssClass = null;
+	
 	/**
 	 * whether this attribute should be displayed on screen.
 	 */
 	protected Boolean isHidden = null;
+	
 	/**
 	 * Name of the control.
 	 */
 	protected String name = null;
+	
 	/**
 	 * Sequence number of the control.This governs in which order it will be shown on the UI.
 	 */
 	protected Integer sequenceNumber = null;
+	
 	/**
 	 * Tool tip message for the control.
 	 */
 	protected String tooltip = null;
+	
 	/**
 	 * Value to be shown in the control
 	 */
 	protected String value = null;
+	
 	/**
 	 * Attribute to which this control is associated.
 	 */
-
-	public Collection abstractAttributeCollection = new HashSet();
+	public Collection<AbstractAttributeInterface> abstractAttributeCollection = new HashSet<AbstractAttributeInterface>();
 
 	/**
-	 * 
-	 *
+	 * Empty Constructor
 	 */
 	public Control()
 	{
-
 	}
 
 	/**
@@ -190,8 +195,6 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	 */
 	public void setAllValues(AbstractActionForm arg0) throws AssignDataException
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	/* (non-Javadoc)
@@ -208,7 +211,6 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	public void setSystemIdentifier(Long id)
 	{
 		this.id = id;
-
 	}
 
 	/**
@@ -217,17 +219,14 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	public abstract String generateHTML();
 
 	/**
-	 * 
 	 * @return
 	 */
-
 	public String getValue()
 	{
 		return this.value;
 	}
 
 	/**
-	 * 
 	 * @param value
 	 */
 	public void setValue(String value)
@@ -242,8 +241,8 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	{
 		if (this.abstractAttributeCollection != null && !this.abstractAttributeCollection.isEmpty())
 		{
-			Iterator iter = abstractAttributeCollection.iterator();
-			return (AbstractAttribute) iter.next();
+			Iterator iterator = abstractAttributeCollection.iterator();
+			return (AbstractAttribute) iterator.next();
 		}
 		return null;
 	}
@@ -263,7 +262,7 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.AbstractAttribute" 
 	 * @return Returns the sourceEntityCollection.
 	 */
-	public Collection getAbstractAttributeCollection()
+	public Collection<AbstractAttributeInterface> getAbstractAttributeCollection()
 	{
 		return abstractAttributeCollection;
 	}
@@ -272,13 +271,12 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	 * 
 	 * @param abstractAttributeCollection
 	 */
-	public void setAbstractAttributeCollection(Collection abstractAttributeCollection)
+	public void setAbstractAttributeCollection(Collection<AbstractAttributeInterface> abstractAttributeCollection)
 	{
-		this.abstractAttributeCollection = abstractAttributeCollection;
+		this.abstractAttributeCollection = abstractAttributeCollection;		
 	}
 
 	/**
-	 * 
 	 * @return String
 	 */
 	public String getHTMLComponentName()
@@ -289,4 +287,5 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 		}
 		return null;
 	}
+	
 }

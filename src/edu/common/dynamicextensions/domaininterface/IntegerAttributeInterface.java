@@ -9,20 +9,22 @@ public interface IntegerAttributeInterface extends AttributeInterface
 {
 
 	/**
-	 * Default value of type integer.
-	 * @return Returns the defaultValue.
+	 * This method returns the default value of this Attribute.
+	 * @return the default value of this Attribute.
 	 */
 	Integer getDefaultValue();
 
 	/**
+	 * This method sets the default value of IntegerAttribute to given Integer value.
 	 * @param defaultValue The defaultValue to set.
 	 */
 	void setDefaultValue(Integer defaultValue);
 
 	/**
+	 * This method returns the measurement units of this Attribute.
 	 * The measurement units are shown in the dynamically created user interface.
-	 * The measurement units are meter,kg,cm etc.They are displayed after the user input control. 
-	 * @return Returns the measurementUnits.
+	 * The measurement units are meter,kg,cm etc. They are displayed after the user input control. 
+	 * @return the measurement units of this Attribute.
 	 */
 	String getMeasurementUnits();
 

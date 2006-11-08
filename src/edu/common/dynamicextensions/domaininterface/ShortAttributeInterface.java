@@ -21,9 +21,9 @@ public interface ShortAttributeInterface extends AttributeInterface
 	void setDefaultValue(Short defaultValue);
 
 	/**
-	 * The measurement units are shown in the dynamically created user interface.
-	 * The measurement units are meter,kg,cm etc.They are displayed after the user input control.
 	 * This method returns the measurement units of this Attribute.
+	 * The measurement units are shown in the dynamically created user interface.
+	 * The measurement units are meter,kg,cm etc. They are displayed after the user input control.
 	 * @return the measurement units of this Attribute.
 	 */
 	String getMeasurementUnits();

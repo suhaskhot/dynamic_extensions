@@ -19,7 +19,7 @@ public interface EntityManagerExceptionConstantsInterface
      String DYEXTN_S_002 = "DYEXTN_S_002";
 
     //Exception constant in case of user not authenticated
-     String DYEXTN_A_001 = "DYEXTN_A_002";
+     String DYEXTN_A_001 = "DYEXTN_A_001";
     
     //Exception constant in case of fatal system exception
      String DYEXTN_S_000 = "DYEXTN_A_000";

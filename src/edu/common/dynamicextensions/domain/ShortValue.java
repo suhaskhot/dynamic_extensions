@@ -10,38 +10,54 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass table="DYEXTN_SHORT_CONCEPT_VALUE" 
  * @hibernate.joined-subclass-key column="IDENTIFIER"  
  */
-public class ShortValue extends PermissibleValue implements ShortValueInterface{
-	
+public class ShortValue extends PermissibleValue implements ShortValueInterface
+{
+
 	/**
-	 * 
+	 * Serial Version Unique Identifier
+	 */
+	private static final long serialVersionUID = 5377962679920380224L;
+
+	/**
+	 * The predefined Date value.
 	 */
 	protected Short value;
+
 	/**
-	 * 
+	 * Set all values from the form
+	 * @param abstractActionForm the ActionForm
+	 * @throws AssignDataException if data is not in proper format.
 	 */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
-		// TODO Auto-generated method stub
-		
+	public void setAllValues(AbstractActionForm abstractActionForm) throws AssignDataException
+	{
 	}
-	
+
 	/**
-     * @hibernate.property name="value" type="short" column="VALUE"  
-	 * @return Returns the value.
+	 * This method returns the predefined value of DateValue.
+	 * @hibernate.property name="value" type="short" column="VALUE"  
+	 * @return the predefined value of DateValue.
 	 */
-	public Short getValue() {
+	public Short getValue()
+	{
 		return value;
 	}
+
 	/**
-	 * @param value The value to set.
+	 * This method sets the value of DateValue to the given value.
+	 * @param value the value to be set.
 	 */
-	public void setValue(Short value) {
+	public void setValue(Short value)
+	{
 		this.value = value;
 	}
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domain.PermissibleValue#getValueAsObject()
+
+	/**
+	 * This method returns the value of DateValue downcasted to the Object.
+	 * @return the value of the DateValue downcasted to the Object.
 	 */
 	public Object getValueAsObject()
 	{
 		return value;
 	}
+	
 }

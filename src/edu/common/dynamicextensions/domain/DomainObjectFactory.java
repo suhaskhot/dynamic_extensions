@@ -64,417 +64,430 @@ import edu.common.dynamicextensions.domaininterface.validationrules.RuleParamete
  */
 public class DomainObjectFactory
 {
-	
+
 	/**
 	 * Domain Object Factory Instance
 	 */
 	private static DomainObjectFactory domainObjectFactory;
-	
+
 	/**
-	 * 
-	 *
+	 * Empty Constructor
 	 */
 	protected DomainObjectFactory()
-    {
-		
+	{
 	}
-	
+
 	/**
-	 * Returns the instance of SegmentationDomainElementFactory
-	 * @return SegmentationDomainElementFactory
+	 * This method returns the instance of SegmentationDomainElementFactory.
+	 * @return the instance of SegmentationDomainElementFactory.
 	 */
-	public static synchronized DomainObjectFactory getInstance () 
-    {
-		if (domainObjectFactory == null) 
-        {
-			domainObjectFactory= new  DomainObjectFactory();
+	public static synchronized DomainObjectFactory getInstance()
+	{
+		if (domainObjectFactory == null)
+		{
+			domainObjectFactory = new DomainObjectFactory();
 		}
-		return domainObjectFactory ;
+		return domainObjectFactory;
 	}
-	
+
 	/**
-	 * Returns an object of Entity.
+	 * This method creates an object of Entity.
 	 * @return an instance of Entity.
 	 */
 	public EntityInterface createEntity()
-    {
+	{
 		Entity entity = new Entity();
 		return entity;
 	}
-	
+
 	/**
-	 * 
+	 * This method creates an object of EntityGroup
 	 * @return an instance of EntityGroup.
 	 */
 	public EntityGroupInterface createEntityGroup()
-    {
+	{
 		EntityGroup entityGroup = new EntityGroup();
 		return entityGroup;
 	}
-	
+
 	/**
-	 * 
+	 * This method creates an object of Association
 	 * @return an instance of Association.
 	 */
 	public AssociationInterface createAssociation()
-    {
+	{
 		Association association = new Association();
 		return association;
 	}
+
 	/**
-	 * 
+	 * This method creates an object of Role
 	 * @return an instance of Role.
 	 */
 	public RoleInterface createRole()
-    {
+	{
 		Role role = new Role();
 		return role;
 	}
-	
+
 	/**
-	 * 
+	 * This method creates an object of SemanticProperty.
 	 * @return an instance of SemanticProperty.
 	 */
-	public SemanticPropertyInterface createSemanticProperty() 
-    {
+	public SemanticPropertyInterface createSemanticProperty()
+	{
 		SemanticProperty semanticProperty = new SemanticProperty();
 		return semanticProperty;
 	}
-	
+
 	/**
-	 * 
+	 * This method creates an object of ColunmProperties.
 	 * @return an instance of ColumnProperties.
 	 */
 	public ColumnPropertiesInterface createColumnProperties()
-    {
+	{
 		ColumnProperties columnProperties = new ColumnProperties();
 		return columnProperties;
 	}
+
 	/**
-	 * 
+	 * This method creates an object of TableProperties.
 	 * @return an instance of TableProperties.
 	 */
 	public TablePropertiesInterface createTableProperties()
-    {
+	{
 		TableProperties tableProperties = new TableProperties();
 		return tableProperties;
 	}
+
 	/**
-	 * 
+	 * This method creates an object of ConstraintProperties
 	 * @return an instance of ConstraintProperties.
 	 */
 	public ConstraintPropertiesInterface createConstraintProperties()
-    {
+	{
 		ConstraintProperties constraintProperties = new ConstraintProperties();
 		return constraintProperties;
 	}
+
 	/**
-	 * 
-	 * @return instance of BooleanAttribute.
+	 * This method creates an object of BooleanAttribute.
+	 * @return an instance of BooleanAttribute.
 	 */
 	public BooleanAttributeInterface createBooleanAttribute()
-    {
+	{
 		BooleanAttribute booleanAttribute = new BooleanAttribute();
 		return booleanAttribute;
 	}
+
 	/**
-	 * 
-	 * @return instance of ByteArrayAttribute.
+	 * This method creates an object of ByteArrayAttribute.
+	 * @return an instance of ByteArrayAttribute.
 	 */
 	public ByteArrayAttributeInterface createByteArrayAttribute()
-    {
+	{
 		ByteArrayAttribute byteArrayAttribute = new ByteArrayAttribute();
 		return byteArrayAttribute;
-	}  
-    
-    
-    /**
-     * 
-     * @return instance of ByteArrayAttribute.
-     */
-    public ByteArrayValueInterface createByteArrayValue()
-    {
-        ByteArrayValue  byteArrayValue  = new ByteArrayValue ();
-        return byteArrayValue;
-    } 
-    
-    
+	}
+
 	/**
-	 * 
-	 * @return instance of DateAttribute.
+	 * This method creates an object of ByteArrayValue.
+	 * @return an instance of ByteArrayAttribute.
+	 */
+	public ByteArrayValueInterface createByteArrayValue()
+	{
+		ByteArrayValue byteArrayValue = new ByteArrayValue();
+		return byteArrayValue;
+	}
+
+	/**
+	 * This method creates an object of DateAttribute.
+	 * @return an instance of DateAttribute.
 	 */
 	public DateAttributeInterface createDateAttribute()
-    {
+	{
 		DateAttribute dateAttribute = new DateAttribute();
 		return dateAttribute;
 	}
+
 	/**
-	 * 
-	 * @return instance of DoubleAttribute.
+	 * This method creates an object of DoubleAttribute.
+	 * @return an instance of DoubleAttribute.
 	 */
 	public DoubleAttributeInterface createDoubleAttribute()
-    {
+	{
 		DoubleAttribute doubleAttribute = new DoubleAttribute();
 		return doubleAttribute;
 	}
-	
+
 	/**
-	 * 
-	 * @return instance of FloatAttribute.
+	 * This method creates an object of FloatAttribute.
+	 * @return an instance of FloatAttribute.
 	 */
 	public FloatAttributeInterface createFloatAttribute()
-    {
+	{
 		FloatAttribute floatAttribute = new FloatAttribute();
 		return floatAttribute;
 	}
-	
+
 	/**
-	 * 
-	 * @return instance of IntegerAttribute.
+	 * This method creates an object of IntegerAttribute.
+	 * @return an instance of IntegerAttribute.
 	 */
 	public IntegerAttributeInterface createIntegerAttribute()
-    {
+	{
 		IntegerAttribute integerAttribute = new IntegerAttribute();
 		return integerAttribute;
 	}
-	
+
 	/**
-	 * 
-	 * @return instance of LongAttribute.
+	 * This method creates an object of LongAttribute.
+	 * @return an instance of LongAttribute.
 	 */
 	public LongAttributeInterface createLongAttribute()
-    {
+	{
 		LongAttribute longAttribute = new LongAttribute();
 		return longAttribute;
 	}
-	
+
 	/**
-	 * 
-	 * @return instance of ShortAttribute.
+	 * This method creates an object of ShortAttribute
+	 * @return an instance of ShortAttribute.
 	 */
 	public ShortAttributeInterface createShortAttribute()
-    {
+	{
 		ShortAttribute shortAttribute = new ShortAttribute();
 		return shortAttribute;
 	}
-	
+
 	/**
-	 * 
-	 * @return instance of StringAttribute.
+	 * This method creates an object of StringAttribute.
+	 * @return an instance of StringAttribute.
 	 */
 	public StringAttributeInterface createStringAttribute()
-    {
+	{
 		StringAttribute stringAttribute = new StringAttribute();
 		return stringAttribute;
 	}
+
 	/**
-	 * 
-	 * @return instance of BooleanConceptValue.
+	 * This method creates an object of BooleanValue.
+	 * @return an instance of BooleanValue.
 	 */
 	public BooleanValueInterface createBooleanValue()
-    {
+	{
 		BooleanValue booleanValue = new BooleanValue();
 		return booleanValue;
 	}
-	
+
 	/**
-	 * 
-	 * @return instance of DateConceptValue.
+	 * This method creates an object of DateValue.
+	 * @return an instance of DateValue.
 	 */
 	public DateValueInterface createDateValue()
-    {
+	{
 		DateValue dateValue = new DateValue();
 		return dateValue;
 	}
+
 	/**
-	 * 
-	 * @return instance of DoubleConceptValue.
+	 * This method creates an object of DoubleValue.
+	 * @return an instance of DoubleValue.
 	 */
 	public DoubleValueInterface createDoubleValue()
-    {
+	{
 		DoubleValue doubleValue = new DoubleValue();
 		return doubleValue;
 	}
+
 	/**
-	 * 
-	 * @return instance of FloatConceptValue.
+	 * This This method creates an object of FloatValue.
+	 * @return an instance of FloatValue.
 	 */
 	public FloatValueInterface createFloatValue()
-    {
+	{
 		FloatValue floatValue = new FloatValue();
 		return floatValue;
 	}
+
 	/**
-	 * 
-	 * @return instance of IntegerConceptValue.
+	 * This method creates an object of IntegerValue.
+	 * @return an instance of IntegerValue.
 	 */
 	public IntegerValueInterface createIntegerValue()
-    {
+	{
 		IntegerValue integerValue = new IntegerValue();
 		return integerValue;
 	}
+
 	/**
-	 * 
-	 * @return instance of LongConceptValue.
+	 * This method creates an object of LongValue.
+	 * @return an instance of LongValue.
 	 */
 	public LongValueInterface createLongValue()
-    {
+	{
 		LongValue longValue = new LongValue();
 		return longValue;
 	}
+
 	/**
-	 * 
-	 * @return instance of ShortConceptValue.
+	 * This method creates an object of ShortValue.
+	 * @return an instance of ShortValue.
 	 */
 	public ShortValueInterface createShortValue()
-    {
+	{
 		ShortValue shortValue = new ShortValue();
 		return shortValue;
 	}
-	
+
 	/**
-	 * 
-	 * @return instance of StringConceptValue.
+	 * This method creates an object of StringValue.
+	 * @return an instance of StringValue.
 	 */
 	public StringValueInterface createStringValue()
-    {
+	{
 		StringValue stringValue = new StringValue();
 		return stringValue;
 	}
-	
+
 	/**
-	 * 
-	 * @return instance of CheckBox.
+	 * This method creates an object of CheckBox.
+	 * @return an instance of CheckBox.
 	 */
 	public CheckBoxInterface createCheckBox()
-    {
+	{
 		CheckBox checkBox = new CheckBox();
 		return checkBox;
 	}
-	
+
 	/**
-	 * 
-	 * @return instance of ComboBox.
+	 * This method creates an object of ComboBox
+	 * @return an instance of ComboBox.
 	 */
 	public ComboBoxInterface createComboBox()
-    {
+	{
 		ComboBox comboBox = new ComboBox();
 		return comboBox;
 	}
-	
+
 	/**
-	 * 
-	 * @return instance of Container.
+	 * This method creates an object of Container.
+	 * @return an instance of Container.
 	 */
 	public ContainerInterface createContainer()
-    {
+	{
 		Container container = new Container();
 		return container;
 	}
+
 	/**
-	 * 
-	 * @return instance of DataGrid.
+	 * This method creates an object of DataGrid.
+	 * @return an instance of DataGrid.
 	 */
 	public DataGridInterface createDataGrid()
-    {
+	{
 		DataGrid dataGrid = new DataGrid();
 		return dataGrid;
 	}
+
 	/**
-	 * 
-	 * @return instance of DatePicker.
+	 * This method creates an object of DatePicker.
+	 * @return an instance of DatePicker.
 	 */
 	public DatePickerInterface createDatePicker()
-    {
+	{
 		DatePicker datePicker = new DatePicker();
 		return datePicker;
 	}
+
 	/**
-	 * 
-	 * @return instance of ListBox.
+	 * This method creates an object of ListBox.
+	 * @return an instance of ListBox.
 	 */
 	public ListBoxInterface createListBox()
-    {
+	{
 		ListBox listBox = new ListBox();
 		return listBox;
 	}
+
 	/**
-	 * 
-	 * @return instance of RadioButton.
+	 * This method creates an object of RadioButton.
+	 * @return an instance of RadioButton.
 	 */
 	public RadioButtonInterface createRadioButton()
-    {
+	{
 		RadioButton radioButton = new RadioButton();
 		return radioButton;
 	}
+
 	/**
-	 * 
-	 * @return instance of TextArea.
+	 * This method creates an object of TextArea. 
+	 * @return an instance of TextArea.
 	 */
 	public TextAreaInterface createTextArea()
-    {
+	{
 		TextArea textArea = new TextArea();
 		return textArea;
 	}
+
 	/**
-	 * 
-	 * @return instance of TextField.
+	 * This method creates an object of TextField.
+	 * @return an instance of TextField.
 	 */
 	public TextFieldInterface createTextField()
-    {
+	{
 		TextField textField = new TextField();
 		return textField;
 	}
+
 	/**
-	 * 
-	 * @return instance of View.
+	 * This method creates an object of View.
+	 * @return an instance of View.
 	 */
 	public ViewInterface createView()
-    {
+	{
 		View view = new View();
 		return view;
 	}
+
 	/**
-	 * 
-	 * @return RuleInterface
+	 * This method creates an object of Rule.
+	 * @return an instance of Rule.
 	 */
 	public RuleInterface createRule()
-    {
+	{
 		Rule rule = new Rule();
 		return rule;
 	}
-	
+
 	/**
-	 * 
-	 * @return RuleParameterInterface
+	 * This method creates an object of RuleParameter.
+	 * @return an instance of RuleParameter.
 	 */
 	public RuleParameterInterface createRuleParameter()
-    {
+	{
 		RuleParameter ruleParameter = new RuleParameter();
 		return ruleParameter;
 	}
-    
-    /**
-     * 
-     * @return CaDSRDEInterface
-     */
-    public CaDSRDEInterface  createCaDSRDE()
-    {
-        CaDSRDE caDSRDE = new CaDSRDE();
-        return caDSRDE;
-    }
-    
-    /**
-     * 
-     * @return UserDefinedDE
-     */
-    
-    public UserDefinedDE createUserDefinedDE()
-    {
-        UserDefinedDE userDefinedDE = new UserDefinedDE();
-        return userDefinedDE ;
-    }
-    
-   
-	
+
+	/**
+	 * This method creates an object of CaDSRDE.
+	 * @return an instance of CaDSRDE.
+	 */
+	public CaDSRDEInterface createCaDSRDE()
+	{
+		CaDSRDE caDSRDE = new CaDSRDE();
+		return caDSRDE;
+	}
+
+	/**
+	 * This method creates an object of UserDefinedDE.
+	 * @return an instance of UserDefinedDE.
+	 */
+	public UserDefinedDE createUserDefinedDE()
+	{
+		UserDefinedDE userDefinedDE = new UserDefinedDE();
+		return userDefinedDE;
+	}
+
 }

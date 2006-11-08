@@ -5,14 +5,21 @@ package edu.common.dynamicextensions.domaininterface;
  * When the value domain for an attribute is user defined,the data element object is of type CaDSRDE 
  * and this object contains a collection of permissible values.  
  * @author sujay_narkar
- *
+
  */
 public interface PermissibleValueInterface 
 {
     
     /**
-     * @return Returns the id.
+     * This method returns the unique identifier.
+     * @return the unique identifier.
      */
     Long getId();
-    public Object getValueAsObject(); 
+    
+    /**
+	 * This method returns the value of DateValue downcasted to the Object.
+	 * @return the value of the DateValue downcasted to the Object.
+	 */
+    Object getValueAsObject();
+    
 }

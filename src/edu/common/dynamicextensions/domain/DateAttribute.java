@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.domain;
 
 import java.util.Date;
@@ -12,59 +13,76 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass table="DYEXTN_DATE_ATTRIBUTE" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class DateAttribute extends Attribute implements DateAttributeInterface 
+public class DateAttribute extends Attribute implements DateAttributeInterface
 {
 
-    /**
-     *  Default value of this date attribute.
-     */
+	/**
+	 * Serial Version Unique Identifier
+	 */
+	private static final long serialVersionUID = 5655678242696814276L;
+
+	/**
+	 *  Default value of this date attribute.
+	 */
 	protected Date defaultValue;
+
 	/**
 	 * format of the attribute value (Data entry/display)
 	 */
 	protected String format;
+
 	/**
 	 * Empty Constructor
 	 */
 	public DateAttribute()
 	{
-
 	}
-	
-    /**
-     * @hibernate.property name="defaultValue" type="date" column="DEFAULT_VALUE" 
-     * @return Returns the defaultValue.
-     */
-    public Date getDefaultValue() 
-    {
-        return defaultValue;
-    }
-    /**
-     * @param defaultValue The defaultValue to set.
-     */
-    public void setDefaultValue(Date defaultValue) 
-    {
-        this.defaultValue = defaultValue;
-    }
-    /**
-     * @hibernate.property name="format" type="string" column="FORMAT" 
-     * @return Returns the format.
-     */
-    public String getFormat() 
-    {
-        return format;
-    }
-    /**
-     * @param format The format to set.
-     */
-    public void setFormat(String format) 
-    {
-        this.format = format;
-    }
 
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException 
+	/**
+	 * This method returns the default value of the DateAttribute.
+	 * @hibernate.property name="defaultValue" type="date" column="DEFAULT_VALUE" 
+	 * @return the default value of the DateAttribute.
+	 */
+	public Date getDefaultValue()
 	{
-		// TODO Auto-generated method stub
-		
+		return defaultValue;
 	}
+
+	/**
+	 * This method sets the default value of the DateAttribute.
+	 * @param defaultValue The default value to be set.
+	 */
+	public void setDefaultValue(Date defaultValue)
+	{
+		this.defaultValue = defaultValue;
+	}
+
+	/**
+	 * This method returns the format of the DateAttribute.
+	 * @hibernate.property name="format" type="string" column="FORMAT" 
+	 * @return the format of the DateAttribute.
+	 */
+	public String getFormat()
+	{
+		return format;
+	}
+
+	/**
+	 * This method sets the format of the DateAttribute.
+	 * @param format the format to be set.
+	 */
+	public void setFormat(String format)
+	{
+		this.format = format;
+	}
+
+	/**
+	 * Set all values from the form
+	 * @param abstractActionForm the ActionForm
+	 * @throws AssignDataException if data is not in proper format.
+	 */
+	public void setAllValues(AbstractActionForm abstractActionForm) throws AssignDataException
+	{
+	}
+
 }

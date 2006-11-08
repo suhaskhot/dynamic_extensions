@@ -1,22 +1,23 @@
-package edu.common.dynamicextensions.domaininterface;
 
+package edu.common.dynamicextensions.domaininterface;
 
 /**
  * This is a primitive attribute of type byte array.This type of primitive attribute  can be used for
  * storing large amount of data such as image file or word file. 
  * @author geetika_bangard
  */
-public interface ByteArrayAttributeInterface extends AttributeInterface 
+public interface ByteArrayAttributeInterface extends AttributeInterface
 {
-    /**
-     * The content type for the file to be stored. 
-     * @return Returns the contentType.
-     */
-     String getContentType();
-    /**
-     * @param contentType The contentType to set.
-     */
-    void setContentType(String contentType);
+	/**
+	 * This method returns the Content type of the binary data (or file), e.g. JPG, DOC etc..
+	 * @return the Content type of the binary data (or file).
+	 */
+	String getContentType();
 
+	/**
+	 * This method sets the Content type of the binary data (or file) to be stored.
+	 * @param contentType The contentType to be set.
+	 */
+	void setContentType(String contentType);
 
 }

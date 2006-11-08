@@ -2,7 +2,6 @@
 package edu.common.dynamicextensions.domain;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
@@ -11,51 +10,66 @@ import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
 
 /**
+ * This Class represents the UserDefined DataElements
  * @author sujay_narkar
  * @hibernate.joined-subclass table="DYEXTN_USERDEFINED_DE"
- * @hibernate.joined-subclass-key column="IDENTIFIER"  
- *
+ * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
-public class UserDefinedDE extends DataElement implements UserDefinedDEInterface{
-    /**
-     * 
-     */
-    Collection permissibleValueCollection;
-    /**
-     * 
-     */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException 
-    {
-		
-	}
+public class UserDefinedDE extends DataElement implements UserDefinedDEInterface
+{
+
 	/**
-     * @hibernate.set name="permissibleValueCollection" table="DYEXTN_PERMISSIBLE_VALUE"
-     * cascade="save-update" inverse="false" lazy="false"
-     * @hibernate.collection-key column="USER_DEF_DE_ID"
-     * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.PermissibleValue" 
-	 * @return Returns the permissibleValueCollection.
+	 * Serial Version Unique Identifier
 	 */
-	public Collection getPermissibleValueCollection() 
-    {
+	private static final long serialVersionUID = 1148563078444213122L;
+
+	/**
+	 * Collection of PermissibleValues
+	 */
+	Collection<PermissibleValueInterface> permissibleValueCollection;
+
+	/**
+	 * Set all values from the form
+	 * @param abstractActionForm the ActionForm
+	 * @throws AssignDataException if data is not in proper format.
+	 */
+	public void setAllValues(AbstractActionForm abstractActionForm) throws AssignDataException
+	{
+	}
+
+	/**
+	 * This method returns the Collection of PermissibleValues.
+	 * @hibernate.set name="permissibleValueCollection" table="DYEXTN_PERMISSIBLE_VALUE"
+	 * cascade="save-update" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="USER_DEF_DE_ID"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.PermissibleValue" 
+	 * @return the Collection of PermissibleValues.
+	 */
+	public Collection<PermissibleValueInterface> getPermissibleValueCollection()
+	{
 		return permissibleValueCollection;
 	}
+
 	/**
+	 * This method sets the permissibleValueCollection to the given Collection of PermissibleValues.
 	 * @param permissibleValueCollection The permissibleValueCollection to set.
 	 */
-	public void setPermissibleValueCollection(Collection permissibleValueCollection) 
-    {
+	public void setPermissibleValueCollection(Collection<PermissibleValueInterface> permissibleValueCollection)
+	{
 		this.permissibleValueCollection = permissibleValueCollection;
 	}
-    
-    /**
-     * 
-     * @param permissibleValue
-     */
-	public void addPermissibleValue(PermissibleValueInterface permissibleValueInterface) {
-		if(this.permissibleValueCollection==null)
+
+	/**
+	 * This method adds a PermissibleValue to the Collection of PermissibleValues.
+	 * @param permissibleValue the PermissibleValue to be added.
+	 */
+	public void addPermissibleValue(PermissibleValueInterface permissibleValue)
+	{
+		if (this.permissibleValueCollection == null)
 		{
-			this.permissibleValueCollection = new LinkedHashSet();
+			this.permissibleValueCollection = new LinkedHashSet<PermissibleValueInterface>();
 		}
-		this.permissibleValueCollection.add(permissibleValueInterface);
+		this.permissibleValueCollection.add(permissibleValue);
 	}
+
 }

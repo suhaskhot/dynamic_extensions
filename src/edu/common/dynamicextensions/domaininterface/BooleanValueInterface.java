@@ -1,19 +1,23 @@
-package edu.common.dynamicextensions.domaininterface;
 
+package edu.common.dynamicextensions.domaininterface;
 
 /**
  * This object stores the permissible value of boolean type.This is a user defined value.
  * @author geetika_bangard
  */
-public interface BooleanValueInterface extends PermissibleValueInterface 
+public interface BooleanValueInterface extends PermissibleValueInterface
 {
-           
-   	/**
-   	 * @return Returns the value.
-   	 */
-   	Boolean getValue();
-   	/**
-   	 * @param value The value to set.
-   	 */
-   	void setValue(Boolean value);
+
+	/**
+	 * This method returns the value of the BooleanValue.
+	 * @return the value of the BooleanValue.
+	 */
+	Boolean getValue();
+
+	/**
+	 * This method sets the value of the BooleanValue.
+	 * @param value the value to be set.
+	 */
+	void setValue(Boolean value);
+
 }

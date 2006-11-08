@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.domain;
 
 import edu.common.dynamicextensions.domaininterface.BooleanAttributeInterface;
@@ -12,9 +13,14 @@ import edu.wustl.common.exception.AssignDataException;
  */
 public class BooleanAttribute extends Attribute implements BooleanAttributeInterface
 {
-    /**
-     * Default value for this attribute.
-     */
+	/**
+	 * Serial Version Unique Identifier
+	 */
+	private static final long serialVersionUID = 8224962984309772858L;
+
+	/**
+	 * Default value for this attribute.
+	 */
 	private Boolean defaultValue;
 
 	/**
@@ -22,31 +28,34 @@ public class BooleanAttribute extends Attribute implements BooleanAttributeInter
 	 */
 	public BooleanAttribute()
 	{
-
 	}
-	
-    /**
-     * @hibernate.property name="defaultValue" type="boolean" column="DEFAULT_VALUE" 
-     * @return Returns the defaultValue.
-     */
-    public Boolean getDefaultValue() 
-    {
-        return defaultValue;
-    }
-    /**
-     * @param defaultValue The defaultValue to set.
-     */
-    public void setDefaultValue(Boolean defaultValue)
-    {
-        this.defaultValue = defaultValue;
-    }
 
-   /**
-    * 
-    */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException 
+	/**
+	 * This method returns the default value of this Attribute. 
+	 * @hibernate.property name="defaultValue" type="boolean" column="DEFAULT_VALUE" 
+	 * @return the default value of this Attribute.
+	 */
+	public Boolean getDefaultValue()
 	{
-		// TODO Auto-generated method stub
-		
+		return defaultValue;
 	}
+
+	/**
+	 * This method sets the default value of this Attribute.
+	 * @param defaultValue the defaultValue to be set.
+	 */
+	public void setDefaultValue(Boolean defaultValue)
+	{
+		this.defaultValue = defaultValue;
+	}
+
+	/**
+	 * Set all values from the form
+	 * @param abstractActionForm the ActionForm
+	 * @throws AssignDataException if data is not in proper format.
+	 */
+	public void setAllValues(AbstractActionForm abstractActionForm) throws AssignDataException
+	{
+	}
+
 }

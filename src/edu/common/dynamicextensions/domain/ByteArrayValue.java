@@ -13,13 +13,23 @@ import edu.wustl.common.exception.AssignDataException;
  */
 public class ByteArrayValue extends PermissibleValue implements ByteArrayValueInterface
 {
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException 
+	/**
+	 * Sserial Version Unique Identifier
+	 */
+	private static final long serialVersionUID = -5535531891478617220L;
+	
+	/**
+	 * Set all values from the form
+	 * @param abstractActionForm the ActionForm
+	 * @throws AssignDataException if data is not in proper format.
+	 */
+	public void setAllValues(AbstractActionForm abstractActionForm) throws AssignDataException 
 	{
-		// TODO Auto-generated method stub
-		
 	}
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domain.PermissibleValue#getValueAsObject()
+	
+	/**
+	 * This method returns the value of ByteArrayValue downcasted to the Object.
+	 * @return the value of ByteArrayValue downcasted to the Object.
 	 */
 	public Object getValueAsObject()
 	{

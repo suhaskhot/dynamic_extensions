@@ -10,15 +10,18 @@ package edu.common.dynamicextensions.domaininterface;
  */
 public interface CaDSRDEInterface extends DataElementInterface
 {
-    
-    /**
-     * Public id from caDSR for the attribute.
-     * @return Returns the publicId.
-     */
-     String getPublicId();
-    
-    /**
-     * @param publicId The publicId to set.
-     */
-    void setPublicId(String publicId);
+
+	/**
+	 * This method returns the public identifier.
+	 * @hibernate.property name="publicId" type="string" column="PUBLIC_ID" 
+	 * @return the public identifier.
+	 */
+	String getPublicId();
+
+	/**
+	 * This method sets the public identifier.
+	 * @param publicId the public identifier to be set.
+	 */
+	void setPublicId(String publicId);
+	
 }

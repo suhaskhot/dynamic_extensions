@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.domain;
 
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
@@ -6,129 +7,172 @@ import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.exception.AssignDataException;
 
 /**
+ * This Class represents the role of the Association.
  * @version 1.0
  * @created 28-Sep-2006 12:20:08 PM
  * @hibernate.class table="DYEXTN_ROLE"
  */
-public class Role extends AbstractDomainObject implements RoleInterface{
-    
-    /**
-     * Unique identifier for the object
-     */
-    protected Long id;
+public class Role extends AbstractDomainObject implements RoleInterface
+{
+
 	/**
-     * The association type : containment or linking
+	 * Serial Version Unique Identifier
+	 */
+	private static final long serialVersionUID = 8674217047857771139L;
+
+	/**
+	 * Unique identifier for the object
+	 */
+	protected Long id;
+
+	/**
+	 * The association type : containment or linking
 	 */
 	protected String associationType;
-    /**
-     *  Maximum cardinality of this role.
-     */
-	protected Integer maxCardinality;
-    /**
-     * Minimum cardinality of this role.
-     */
-	protected Integer minCardinality;
-    /**
-     * Name of the role.
-     */
-	protected String name;
-    /**
-     * Empty constructor.
-     */
-	public Role(){
 
+	/**
+	 *  Maximum cardinality of this role.
+	 */
+	protected Integer maxCardinality;
+
+	/**
+	 * Minimum cardinality of this role.
+	 */
+	protected Integer minCardinality;
+
+	/**
+	 * Name of the role.
+	 */
+	protected String name;
+
+	/**
+	 * Empty constructor.
+	 */
+	public Role()
+	{
+	}
+
+	/**
+	 * This method returns the Unique identifier of this Object.
+	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
+	 * length="30" unsaved-value="null" generator-class="native"
+	 * @hibernate.generator-param name="sequence" value="DYEXTN_ROLE_SEQ"
+	 * @return the Unique identifier of this Object.
+	 */
+	public Long getId()
+	{
+		return id;
+	}
+
+	/**
+	 * This method sets the Unique identifier of this Object.
+	 * @param id the Unique identifier to be set.
+	 */
+	public void setId(Long id)
+	{
+		this.id = id;
+	}
+
+	/**
+	 * This method returns the type of Association.
+	 * @hibernate.property name="associationType" type="string" column="ASSOCIATION_TYPE"
+	 * @return the type of Association. 
+	 */
+	public String getAssociationType()
+	{
+		return associationType;
+	}
+
+	/**
+	 * This method sets the type of Association. 
+	 * @param associationType the type of Association to be set.
+	 */
+	public void setAssociationType(String associationType)
+	{
+		this.associationType = associationType;
+	}
+
+	/**
+	 * This method returns the maximum cardinality.
+	 * @hibernate.property name="maxCardinality" type="integer" column="MAX_CARDINALITY" 
+	 * @return the maximum cardinality.
+	 */
+	public Integer getMaxCardinality()
+	{
+		return maxCardinality;
+	}
+
+	/**
+	 * This method sets the maximum cardinality.
+	 * @param maxCardinality the value to be set as maximum cardinality.
+	 */
+	public void setMaxCardinality(Integer maxCardinality)
+	{
+		this.maxCardinality = maxCardinality;
+	}
+
+	/**
+	 * This method returns the minimum cardinality.
+	 * @hibernate.property name="minCardinality" type="integer" column="MIN_CARDINALITY" 
+	 * @return Returns the minimum cardinality.
+	 */
+	public Integer getMinCardinality()
+	{
+		return minCardinality;
+	}
+
+	/**
+	 * This method sets the minimum cardinality.
+	 * @param minCardinality the value to be set as minimum cardinality.
+	 */
+	public void setMinCardinality(Integer minCardinality)
+	{
+		this.minCardinality = minCardinality;
+	}
+
+	/**
+	 * This method returns the name of the role.
+	 * @hibernate.property name="name" type="string" column="NAME" 
+	 * @return the name of the role.
+	 */
+	public String getName()
+	{
+		return name;
+	}
+
+	/**
+	 * This method sets the name of the role.
+	 * @param name the name to be set.
+	 */
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
+	/**
+	 * Set all values from the form
+	 * @param abstractActionForm the ActionForm
+	 * @throws AssignDataException if data is not in proper format.
+	 */
+	public void setAllValues(AbstractActionForm abstractActionForm) throws AssignDataException
+	{
+	}
+
+	/**
+	 * This method returns the Unique identifier of this Object.
+	 * @return the Unique identifier of this Object.
+	 */
+	public Long getSystemIdentifier()
+	{
+		return null;
+	}
+
+	/**
+	 * This method sets the Unique identifier of this Object.
+	 * @param id the Unique identifier to be set.
+	 */
+	public void setSystemIdentifier(Long id)
+	{
 	}
 	
-	/**
-     * @return
-     * @hibernate.id name="id" column="IDENTIFIER" type="long"
-     * length="30" unsaved-value="null" generator-class="native"
-     * @hibernate.generator-param name="sequence" value="DYEXTN_ROLE_SEQ"
-     */
-    public Long getId()
-    {
-        return id;
-    }
-
-    public void setId(Long id)
-    {
-        this.id = id;
-    }
-
-    /**
-     * @hibernate.property name="associationType" type="string" column="ASSOCIATION_TYPE"
-     * @return Returns the associationType.
-     */
-    public String getAssociationType() {
-        return associationType;
-    }
-    /**
-     * @param associationType The associationType to set.
-     */
-    public void setAssociationType(String associationType) {
-        this.associationType = associationType;
-    }
-    /**
-     * @hibernate.property name="maxCardinality" type="integer" column="MAX_CARDINALITY" 
-     * @return Returns the maxCardinality.
-     */
-    public Integer getMaxCardinality() {
-        return maxCardinality;
-    }
-    /**
-     * @param maxCardinality The maxCardinality to set.
-     */
-    public void setMaxCardinality(Integer maxCardinality) {
-        this.maxCardinality = maxCardinality;
-    }
-    /**
-     * @hibernate.property name="minCardinality" type="integer" column="MIN_CARDINALITY" 
-     * @return Returns the minCardinality.
-     */
-    public Integer getMinCardinality() {
-        return minCardinality;
-    }
-    /**
-     * @param minCardinality The minCardinality to set.
-     */
-    public void setMinCardinality(Integer minCardinality) {
-        this.minCardinality = minCardinality;
-    }
-    /**
-     * @hibernate.property name="name" type="string" column="NAME" 
-     * @return Returns the name.
-     */
-    public String getName() {
-        return name;
-    }
-    /**
-     * @param name The name to set.
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /* (non-Javadoc)
-     * @see edu.wustl.common.domain.AbstractDomainObject#setAllValues(edu.wustl.common.actionForm.AbstractActionForm)
-     */
-    public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
-        // TODO Auto-generated method stub
-        
-    }
-
-    /* (non-Javadoc)
-     * @see edu.wustl.common.domain.AbstractDomainObject#getSystemIdentifier()
-     */
-    public Long getSystemIdentifier() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see edu.wustl.common.domain.AbstractDomainObject#setSystemIdentifier(java.lang.Long)
-     */
-    public void setSystemIdentifier(Long arg0) {
-        // TODO Auto-generated method stub
-        
-    }
 }

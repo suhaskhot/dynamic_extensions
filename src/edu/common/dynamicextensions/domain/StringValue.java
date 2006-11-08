@@ -10,36 +10,54 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass table="DYEXTN_STRING_CONCEPT_VALUE" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class StringValue extends PermissibleValue implements StringValueInterface{
-    
-    protected String value;
-    
-    /**
-     * 
-     */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
-		// TODO Auto-generated method stub
-		
+public class StringValue extends PermissibleValue implements StringValueInterface
+{
+
+	/**
+	 * Serial Version Unique Identifier
+	 */
+	private static final long serialVersionUID = 6552718005216538542L;
+
+	/**
+	 * The predefined String value.
+	 */
+	protected String value;
+
+	/**
+	 * Set all values from the form
+	 * @param abstractActionForm the ActionForm
+	 * @throws AssignDataException if data is not in proper format.
+	 */
+	public void setAllValues(AbstractActionForm abstractActionForm) throws AssignDataException
+	{
 	}
 
 	/**
-     * @hibernate.property name="value" type="string" column="VALUE"  
-	 * @return Returns the value.
+	 * This method returns the predefined value of StringValue.
+	 * @hibernate.property name="value" type="string" column="VALUE"  
+	 * @return the predefined value of StringValue.
 	 */
-	public String getValue() {
+	public String getValue()
+	{
 		return value;
 	}
+
 	/**
-	 * @param value The value to set.
+	 * This method sets the value of DateValue to the given value.
+	 * @param value the value to be set.
 	 */
-	public void setValue(String value) {
+	public void setValue(String value)
+	{
 		this.value = value;
 	}
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domain.PermissibleValue#getValueAsObject()
+
+	/**
+	 * This method returns the value of DateValue downcasted to the Object.
+	 * @return the value of the DateValue downcasted to the Object.
 	 */
 	public Object getValueAsObject()
 	{
 		return value;
 	}
+	
 }

@@ -10,40 +10,54 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass table="DYEXTN_INTEGER_CONCEPT_VALUE" 
  * @hibernate.joined-subclass-key column="IDENTIFIER"  
  */
-public class IntegerValue extends PermissibleValue implements IntegerValueInterface{
-    
-    /**
-     * 
-     */
-    protected Integer value;
+public class IntegerValue extends PermissibleValue implements IntegerValueInterface
+{
 
-    /**
-     * 
-     */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
-		
-		
+	/**
+	 * Serial Version Unique Identifier
+	 */
+	private static final long serialVersionUID = -1598647162647981710L;
+	
+	/**
+	 * The predefined Integer value.
+	 */
+	protected Integer value;
+
+	/**
+	 * Set all values from the form
+	 * @param abstractActionForm the ActionForm
+	 * @throws AssignDataException if data is not in proper format.
+	 */
+	public void setAllValues(AbstractActionForm abstractActionForm) throws AssignDataException
+	{
 	}
 
 	/**
-     * 
-     * @hibernate.property name="value" type="integer" column="VALUE" 
-	 * @return Returns the value.
+	 * This method returns the predefined value of IntegerValue.
+	 * @hibernate.property name="value" type="integer" column="VALUE" 
+	 * @return the predefined value of IntegerValue.
 	 */
-	public Integer getValue() {
+	public Integer getValue()
+	{
 		return value;
 	}
+
 	/**
-	 * @param value The value to set.
+	 * This method sets the value of IntegerValue to the given value.
+	 * @param value the value to be set.
 	 */
-	public void setValue(Integer value) {
+	public void setValue(Integer value)
+	{
 		this.value = value;
 	}
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domain.PermissibleValue#getValueAsObject()
+
+	/**
+	 * This method returns the value of DateValue downcasted to the Object.
+	 * @return the value of the DateValue downcasted to the Object.
 	 */
 	public Object getValueAsObject()
 	{
 		return value;
 	}
+	
 }

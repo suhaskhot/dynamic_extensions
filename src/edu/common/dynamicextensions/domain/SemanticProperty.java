@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.domain;
 
 import java.io.Serializable;
@@ -12,106 +13,144 @@ import edu.wustl.common.exception.AssignDataException;
  * @created 28-Sep-2006 12:20:08 PM
  * @hibernate.class table="DYEXTN_SEMANTIC_PROPERTY"
  */
-public class SemanticProperty extends AbstractDomainObject implements SemanticPropertyInterface,Serializable {
+public class SemanticProperty extends AbstractDomainObject implements SemanticPropertyInterface, Serializable
+{
 
-    /**
-     * Unique identifier for the object
-     */
+	/**
+	 * Serial Version Unique Identifier
+	 */
+	private static final long serialVersionUID = -1955066885211283279L;
+
+	/**
+	 * Unique identifier for the object
+	 */
 	protected Long id;
-    /**
-     * The concept code.
-     */
+
+	/**
+	 * The concept code.
+	 */
 	protected String conceptCode;
+
 	/**
 	 * Term
 	 */
 	protected String term;
+
 	/**
 	 * Thesauras Name
 	 */
 	protected String thesaurasName;
+
 	/**
 	 * Empty Constructor.
 	 */
-	public SemanticProperty(){
-
+	public SemanticProperty()
+	{
 	}
 
-	 /**
-     * @hibernate.id name="id" column="IDENTIFIER" type="long"
-     * length="30" unsaved-value="null" generator-class="native"
-     * @hibernate.generator-param name="sequence" value="DYEXTN_SEMANTIC_PROPERTY_SEQ"
-     * @return Returns the id.
-     */
-    public Long getId() {
-        return id;
-    }
-    /**
-     * @param id The id to set.
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
+	/**
+	 * This method returns the Unique identifier.
+	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
+	 * length="30" unsaved-value="null" generator-class="native"
+	 * @hibernate.generator-param name="sequence" value="DYEXTN_SEMANTIC_PROPERTY_SEQ"
+	 * @return the Unique identifier.
+	 */
+	public Long getId()
+	{
+		return id;
+	}
 
-    /**
-     * @hibernate.property name="conceptCode" type="string" column="CONCEPT_CODE" 
-     * @return Returns the conceptCode.
-     */
-    public String getConceptCode() {
-        return conceptCode;
-    }
-    /**
-     * @param conceptCode The conceptCode to set.
-     */
-    public void setConceptCode(String conceptCode) {
-        this.conceptCode = conceptCode;
-    }
-    /**
-     * @hibernate.property name="term" type="string" column="TERM" 
-     * @return Returns the term.
-     */
-    public String getTerm() {
-        return term;
-    }
-    /**
-     * @param term The term to set.
-     */
-    public void setTerm(String term) {
-        this.term = term;
-    }
-    /**
-     * @hibernate.property name="thesaurasName" type="string" column="THESAURAS_NAME" 
-     * @return Returns the thesaurasName.
-     */
-    public String getThesaurasName() {
-        return thesaurasName;
-    }
-    /**
-     * @param thesaurasName The thesaurasName to set.
-     */
-    public void setThesaurasName(String thesaurasName) {
-        this.thesaurasName = thesaurasName;
-    }
+	/**
+	 * This method sets the Unique identifier.
+	 * @param id the Unique identifier to be set.
+	 */
+	public void setId(Long id)
+	{
+		this.id = id;
+	}
 
-    /* (non-Javadoc)
-     * @see edu.wustl.common.domain.AbstractDomainObject#setAllValues(edu.wustl.common.actionForm.AbstractActionForm)
-     */
-    public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
-        // TODO Auto-generated method stub
-        
-    }
+	/**
+	 * This method returns the concept code.
+	 * @hibernate.property name="conceptCode" type="string" column="CONCEPT_CODE" 
+	 * @return the concept code.
+	 */
+	public String getConceptCode()
+	{
+		return conceptCode;
+	}
 
-    /* (non-Javadoc)
-     * @see edu.wustl.common.domain.AbstractDomainObject#getSystemIdentifier()
-     */
-    public Long getSystemIdentifier() {
-        return id;
-    }
+	/**
+	 * This method sets the concept code.
+	 * @param conceptCode the concept code to be set.
+	 */
+	public void setConceptCode(String conceptCode)
+	{
+		this.conceptCode = conceptCode;
+	}
 
-    /* (non-Javadoc)
-     * @see edu.wustl.common.domain.AbstractDomainObject#setSystemIdentifier(java.lang.Long)
-     */
-    public void setSystemIdentifier(Long systemIdentifier) {
-        systemIdentifier = id;        
-    }
+	/**
+	 * This method returns the tem i.e. concept name. 
+	 * @hibernate.property name="term" type="string" column="TERM" 
+	 * @return Returns the term i.e. concept name
+	 */
+	public String getTerm()
+	{
+		return term;
+	}
+
+	/**
+	 * This method sets the term.
+	 * @param term the term to be set.
+	 */
+	public void setTerm(String term)
+	{
+		this.term = term;
+	}
+
+	/**
+	 * This method returns the thesaurus name.
+	 * @hibernate.property name="thesaurasName" type="string" column="THESAURAS_NAME" 
+	 * @return the thesaurus name.
+	 */
+	public String getThesaurasName()
+	{
+		return thesaurasName;
+	}
+
+	/**
+	 * This method sets the thesauras name.
+	 * @param thesaurasName the thesauras name to be set.
+	 */
+	public void setThesaurasName(String thesaurasName)
+	{
+		this.thesaurasName = thesaurasName;
+	}
+
+	/**
+	 * Set all values from the form
+	 * @param abstractActionForm the ActionForm
+	 * @throws AssignDataException if data is not in proper format.
+	 */
+	public void setAllValues(AbstractActionForm abstractActionForm) throws AssignDataException
+	{
+	}
+
+	/**
+	 * This method returns the Unique identifier of this Object.
+	 * @return the Unique identifier of this Object.
+	 */
+	public Long getSystemIdentifier()
+	{
+		return id;
+	}
+
+	/**
+	 * This method sets the Unique identifier of this Object.
+	 * @param id the Unique identifier to be set.
+	 */
+	public void setSystemIdentifier(Long id)
+	{
+		this.id = id;
+	}
+
 }

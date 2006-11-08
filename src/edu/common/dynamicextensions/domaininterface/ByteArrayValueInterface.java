@@ -7,6 +7,4 @@ package edu.common.dynamicextensions.domaininterface;
  */
 public interface ByteArrayValueInterface extends PermissibleValueInterface
 {
-
-    
 }

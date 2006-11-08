@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.domain;
 
 import edu.common.dynamicextensions.domaininterface.ByteArrayAttributeInterface;
@@ -12,40 +13,49 @@ import edu.wustl.common.exception.AssignDataException;
  */
 public class ByteArrayAttribute extends Attribute implements ByteArrayAttributeInterface
 {
-    /**
-     * Content type for this file.
-     */
+	/**
+	 * Serial Version Unique Identifier
+	 */
+	private static final long serialVersionUID = 7925152800204580441L;
+
+	/**
+	 * Content type for this file.
+	 */
 	protected String contentType;
 
 	/**
 	 * Empty Constructor.
-	 *
 	 */
 	public ByteArrayAttribute()
 	{
-
 	}
 
-
-    /**
-     * @hibernate.property name="contentType" type="string" column="CONTENT_TYPE" 
-     * @return Returns the contentType.
-     */
-    public String getContentType() 
-    {
-        return contentType;
-    }
-    /**
-     * @param contentType The contentType to set.
-     */
-    public void setContentType(String contentType) 
-    {
-        this.contentType = contentType;
-    }
-
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException 
+	/**
+	 * This method returns the Content type of the binary data (or file), e.g. JPG, DOC etc..
+	 * @hibernate.property name="contentType" type="string" column="CONTENT_TYPE" 
+	 * @return the Content type of the binary data (or file).
+	 */
+	public String getContentType()
 	{
-		// TODO Auto-generated method stub
-		
+		return contentType;
 	}
+
+	/**
+	 * This method sets the Content type of the binary data (or file) to be stored.
+	 * @param contentType The contentType to be set.
+	 */
+	public void setContentType(String contentType)
+	{
+		this.contentType = contentType;
+	}
+
+	/**
+	 * Set all values from the form
+	 * @param abstractActionForm the ActionForm
+	 * @throws AssignDataException if data is not in proper format.
+	 */
+	public void setAllValues(AbstractActionForm abstractActionForm) throws AssignDataException
+	{
+	}
+	
 }

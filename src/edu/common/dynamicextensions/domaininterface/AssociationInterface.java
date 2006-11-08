@@ -15,74 +15,76 @@ import edu.common.dynamicextensions.domaininterface.databaseproperties.Constrain
  */
 public interface AssociationInterface
 {
-    /**
-     * This is a direction for the association.The direction may be source - destination or
-     * bidirectional. 
-     * @return Returns the direction.
-     */
-     String getDirection();
-    
-    /**
-     * @param direction The direction to set.
-     */
-     void setDirection(String direction);
-          
-    /**
-     * Source entity object in the association.
-     * @return EntityInterface
-     */
-     EntityInterface getSourceEntity();
-     
-    /**
-     * 
-     * @param sourceEntityInterface source entity interface to be set.
-     */
-     void setSourceEntity(EntityInterface sourceEntityInterface);
-     
-    /**
-     * Target entity object for the association
-     * @return EntityInterface
-     */
-     EntityInterface getTargetEntity();
-    
-    /**
-     * 
-     * @param targetEntityInterface target entity to be set.
-     */
-     void setTargetEntity(EntityInterface targetEntityInterface);
-       
-    /**
-     * Source role for the association.Source role stores information such as min cardinality,
-     * max cardinality etc information of source entity. 
-     * @return RoleInterface
-     */
-     RoleInterface getSourceRole();
-   
-    /**
-     * 
-     * @param sourceRoleInterface source role to be set.
-     */
-     void setSourceRole(RoleInterface sourceRoleInterface);
-        
-    /**
-     * Target role for the assoiation.target role stores information such as min cardinality,
-     * max cardinality etc information of target entity. 
-     * @return RoleInterface
-     */
-     RoleInterface getTargetRole();
-    
-    /**
-     * 
-     * @param targetRoleInterface target role to be set.
-     */
-     void setTargetRole(RoleInterface targetRoleInterface);
+	/**
+	 * This method returns the direction of the Association. 
+	 * It can be Source to Destination or vice versa or bidirectional.
+	 * @return the direction of the Association
+	 */
+	String getDirection();
 
-    /**
-     * Constraint properties store the database information of the dynamically created  tables 
-     * for the association. e.g. If the association type is many to many we need to store middle table name
-     * and the foreign keys of both the tables. 
-     * @return ConstraintPropertiesInterface
-     */
-    ConstraintPropertiesInterface getConstraintProperties();
-    
+	/**
+	 * This method sets the direction of the Association.
+	 * @param direction the direction of the Association to be set.
+	 */
+	void setDirection(String direction);
+
+	/**
+	 * This method returns the source Entity of this Association.
+	 * @return the source Entity of this Association.
+	 */
+	EntityInterface getSourceEntity();
+
+	/**
+	 * This method sets the source Entity of the Association.
+	 * @param sourceEntity the Entity to be set as source of the Association.
+	 */
+	void setSourceEntity(EntityInterface sourceEntity);
+
+	/**
+	 * This method returns the target Entity of the Association.
+	 * @return the target Entity of the Association
+	 */
+	EntityInterface getTargetEntity();
+
+	/**
+	 * This method sets the target Entity of the Association to the given Entity.
+	 * @param targetEntity the Entity to be set as target Entity of the Association.
+	 */
+	void setTargetEntity(EntityInterface targetEntity);
+
+	/**
+	 * This method returns the source Role of the Association. Source role represents information 
+	 * such as minimum cardinality, maximum cardinality etc., information of source entity. 
+	 * @return the source Role of the Association.
+	 */
+	RoleInterface getSourceRole();
+
+	/**
+	 * This method sets the source Role of the Association.
+	 * @param sourceRole the Role to be set as source Role.
+	 */
+	void setSourceRole(RoleInterface sourceRole);
+
+	/**
+	 * This method returns the targetRole of the Association. Target role represents information
+	 * such as minimum cardinality, maximum cardinality etc., information of target entity. 
+	 * @return the targetRole of the Association.
+	 */
+	RoleInterface getTargetRole();
+
+	/**
+	 * This method sets the target Role of the Association.
+	 * @param targetRole the Role to be set as targetRole of the Association.
+	 */
+	void setTargetRole(RoleInterface targetRole);
+
+	/**
+	 * This method returns the ConstraintProperties of the Association.
+	 * Constraint properties represents the database information of the dynamically created tables 
+	 * for the association. e.g. If the association type is many to many we need to store middle table name
+	 * and the foreign keys of both the tables. 
+	 * @return the ConstraintProperties of the Association.
+	 */
+	ConstraintPropertiesInterface getConstraintProperties();
+
 }

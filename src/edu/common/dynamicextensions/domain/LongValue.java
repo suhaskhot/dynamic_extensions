@@ -10,36 +10,54 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass table="DYEXTN_LONG_CONCEPT_VALUE" 
  * @hibernate.joined-subclass-key column="IDENTIFIER"  
  */
-public class LongValue extends PermissibleValue implements LongValueInterface{
-    
-    /**
-     * 
-     */
-    protected  Long value;
-    /**
-     * 
-     */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
-	}
-    
+public class LongValue extends PermissibleValue implements LongValueInterface
+{
+
 	/**
-     * @hibernate.property name="value" type="long" column="VALUE"  
-	 * @return Returns the value.
+	 * Serial Version Unique Identifier
 	 */
-	public Long getValue() {
+	private static final long serialVersionUID = -3038941708523130752L;
+
+	/**
+	 * The predefined Long value.
+	 */
+	protected Long value;
+
+	/**
+	 * Set all values from the form
+	 * @param abstractActionForm the ActionForm
+	 * @throws AssignDataException if data is not in proper format.
+	 */
+	public void setAllValues(AbstractActionForm abstractActionForm) throws AssignDataException
+	{
+	}
+
+	/**
+	 * This method returns the predefined value of LongValue.
+	 * @hibernate.property name="value" type="long" column="VALUE"  
+	 * @return the predefined value of LongValue.
+	 */
+	public Long getValue()
+	{
 		return value;
 	}
+
 	/**
-	 * @param value The value to set.
+	 * This method sets the value of LongValue to the given value.
+	 * @param value the value to be set.
 	 */
-	public void setValue(Long value) {
+	public void setValue(Long value)
+	{
 		this.value = value;
 	}
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domain.PermissibleValue#getValueAsObject()
+
+	/**
+	 * This method returns the value of DateValue downcasted to the Object.
+	 * @return the value of the DateValue downcasted to the Object.
 	 */
 	public Object getValueAsObject()
 	{
 		return value;
 	}
+	
 }

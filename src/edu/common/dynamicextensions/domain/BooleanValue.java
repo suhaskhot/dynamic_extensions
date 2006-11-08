@@ -13,38 +13,52 @@ import edu.wustl.common.exception.AssignDataException;
  */
 public class BooleanValue extends PermissibleValue implements BooleanValueInterface
 {
-    
-    protected Boolean value;
-    
-    /**
-     * 
-     */
-    public void setAllValues(AbstractActionForm arg0) throws AssignDataException 
-    {
-     // TODO Auto-generated method stub
-    }
 
-   
 	/**
-     * @hibernate.property name="value" type="boolean" column="VALUE" 
-	 * @return Returns the value.
+	 * Serial Version Unique Identifier
 	 */
-	public Boolean getValue() 
+	private static final long serialVersionUID = 6775534423957386289L;
+	
+	/**
+	 * The value to be stored.
+	 */
+	protected Boolean value;
+
+	/**
+	 * Set all values from the form
+	 * @param abstractActionForm the ActionForm
+	 * @throws AssignDataException if data is not in proper format.
+	 */
+	public void setAllValues(AbstractActionForm abstractActionForm) throws AssignDataException
+	{
+	}
+
+	/**
+	 * This method returns the value of the BooleanValue.
+	 * @hibernate.property name="value" type="boolean" column="VALUE" 
+	 * @return the value of the BooleanValue.
+	 */
+	public Boolean getValue()
 	{
 		return value;
 	}
+
 	/**
-	 * @param value The value to set.
+	 * This method sets the value of the BooleanValue.
+	 * @param value the value to be set.
 	 */
 	public void setValue(Boolean value)
 	{
 		this.value = value;
 	}
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domain.PermissibleValue#getValueAsObject()
+
+	/**
+	 * This method returns the value of BooleanValue downcasted to the Object.
+	 * @return the value of BooleanValue downcasted to the Object.
 	 */
 	public Object getValueAsObject()
 	{
 		return value;
 	}
+	
 }

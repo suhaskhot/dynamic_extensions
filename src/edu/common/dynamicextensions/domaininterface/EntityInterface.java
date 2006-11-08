@@ -11,57 +11,56 @@ import edu.common.dynamicextensions.domaininterface.databaseproperties.TableProp
  * @author sujay_narkar
  *
  */
-public interface EntityInterface extends AbstractMetadataInterface 
+public interface EntityInterface extends AbstractMetadataInterface
 {
-    
-    /**
-     * Returns the abstract attribute collection
-     * AbstractAttributeCollection contains attributes as well as association objects.
-     * @return Returns the attributeCollection.
-     */
-     Collection getAbstractAttributeCollection();
-     
-    /**
-     * Returns the attributes of the entity   
-     * @return Collection of AttributeInterface
-     */
-     Collection getAttributeCollection();
-     
-    /**
-     * Returns the associations of the entity 
-     * @return Collection  of AssociationInterface
-     */
-     Collection getAssociationCollection();
-     
-    /**
-     * The abstractAttributeInterface to be added 
-     * @param abstractAttributeInterface abstract attribute interface 
-     */
-     void addAbstractAttribute(AbstractAttributeInterface abstractAttributeInterface); 
-    
-    /**
-     * Returns a collection of entity groups having this entity. 
-     * @return Returns the entityGroupCollection.
-     */
-     Collection getEntityGroupCollection();
-    
-    /**
-     * Adds an entity group to the entity 
-     * @param entityGroupInterface The entityGroupInterface to be added set.
-     * 
-     */
-     void addEntityGroupInterface(EntityGroupInterface entityGroupInterface);
-     /**
-      * The table properties object contains name of the dynamically created table.
-      * @return
-      */
-     TablePropertiesInterface getTableProperties();
-     /**
-      * Removes abstract attribute from attribute collection
-      * @param abstractAttributeInterface
-      */
-     void removeAbstractAttribute(AbstractAttributeInterface abstractAttributeInterface);
-      
-      
+
+	/**
+	 * This method returns the Collection of AbstractAttribute.
+	 * @return the Collection of AbstractAttribute.
+	 */
+	Collection<AbstractAttributeInterface> getAbstractAttributeCollection();
+
+	/**
+	 * This method return the Collection of Attributes.
+	 * @return the Collection of Attributes.
+	 */
+	Collection getAttributeCollection();
+
+	/**
+	 * This method return the Collection of Association.
+	 * @return the Collection of Association.
+	 */
+	Collection getAssociationCollection();
+
+	/**
+	 * The abstractAttributeInterface to be added 
+	 * @param abstractAttributeInterface abstract attribute interface 
+	 */
+	void addAbstractAttribute(AbstractAttributeInterface abstractAttribute);
+
+	/**
+	 * Returns a collection of entity groups having this entity. 
+	 * @return Returns the entityGroupCollection.
+	 */
+	Collection<EntityGroupInterface> getEntityGroupCollection();
+
+	/**
+	 * Adds an entity group to the entity 
+	 * @param entityGroupInterface The entityGroupInterface to be added set.
+	 * 
+	 */
+	void addEntityGroupInterface(EntityGroupInterface entityGroup);
+
+	/**
+	 * The table properties object contains name of the dynamically created table.
+	 * @return
+	 */
+	TablePropertiesInterface getTableProperties();
+
+	/**
+	 * This method removes an AbstractAttribute from the Entity's Collection of AbstractAttribute.
+	 * @param abstractAttribute an AbstractAttribute to be removed.
+	 */
+	void removeAbstractAttribute(AbstractAttributeInterface abstractAttribute);
 
 }

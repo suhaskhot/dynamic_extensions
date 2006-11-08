@@ -11,40 +11,54 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass-key column="IDENTIFIER"  
  *
  */
-public class FloatValue extends PermissibleValue implements FloatValueInterface{
-    
-    /**
-    * 
-    */
-   protected Float value;
-
-   /**
-    * 
-    */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
-		// TODO Auto-generated method stub
-		
-	}
-
+public class FloatValue extends PermissibleValue implements FloatValueInterface
+{
 
 	/**
-     * @hibernate.property name="value" type="float" column="VALUE" 
-	 * @return Returns the value.
+	 * Serial Version Unique Identifier
 	 */
-	public Float getValue() {
+	private static final long serialVersionUID = 8774354583244985478L;
+
+	/**
+	 * The predefined Float value.
+	 */
+	protected Float value;
+
+	/**
+	 * Set all values from the form
+	 * @param abstractActionForm the ActionForm
+	 * @throws AssignDataException if data is not in proper format.
+	 */
+	public void setAllValues(AbstractActionForm abstractActionForm) throws AssignDataException
+	{
+	}
+
+	/**
+	 * This method returns the predefined value of FloatValue.
+	 * @hibernate.property name="value" type="float" column="VALUE" 
+	 * @return Returns the predefined value of FloatValue.
+	 */
+	public Float getValue()
+	{
 		return value;
 	}
+
 	/**
-	 * @param value The value to set.
+	 * This method sets the value of FloatValue to the given value.
+	 * @param value the value to be set.
 	 */
-	public void setValue(Float value) {
+	public void setValue(Float value)
+	{
 		this.value = value;
 	}
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domain.PermissibleValue#getValueAsObject()
+
+	/**
+	 * This method returns the value of FloatValue downcasted to the Object.
+	 * @return the value of the DateValue downcasted to the Object.
 	 */
 	public Object getValueAsObject()
 	{
 		return value;
 	}
+
 }

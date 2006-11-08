@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.domaininterface;
 
 import java.util.Collection;
@@ -13,31 +14,40 @@ import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterfac
 public interface AbstractAttributeInterface extends AbstractMetadataInterface
 {
 
-    /**
-     * Rules are the validation rules associated with attributes.
-     * @return Returns the ruleCollection.
-     */
-     Collection getRuleCollection();
-    /**
-     * @param ruleInterface The ruleInterface to be set.
-     */
-    void addRule(RuleInterface  ruleInterface);
-    
-    /**
-     * Removes given rule from this attribute
-     * @param ruleInterface
-     */
-    void removeRule(RuleInterface ruleInterface);
-    /**
-     * 
-     * @return EntityInterface entity interface
-     */
-    EntityInterface getEntity();
-    /**
-     * Returns an entity associated with the attribute
-     * @param entityInterface entity interface
-     */
-    
-    void setEntity(EntityInterface entityInterface);
-   
+	/**
+	 * This method returns the Collection of rules.
+	 * @return Collection the ruleCollection associated with the Attribute.
+	 */
+	Collection<RuleInterface> getRuleCollection();
+
+	/**
+	 * This method sets the ruleCollection field member to given rule Collection.
+	 * @param ruleCollection The ruleCollection to set.
+	 */
+	void setRuleCollection(Collection<RuleInterface> ruleCollection);
+
+	/**
+	 * This method adds a rule to this Attribute.
+	 * @param ruleInterface A Rule instance
+	 */
+	void addRule(RuleInterface ruleInterface);
+
+	/**
+	 * This method removes the Rule form the Collection of Rules of this Attribute. 
+	 * ruleInterface the Rule instance to be removed
+	 */
+	void removeRule(RuleInterface ruleInterface);
+
+	/**
+	 * This method returns the Entity associated with this Attribute.
+	 * @return EntityInterface the Entity associated with the Attribute.
+	 */
+	EntityInterface getEntity();
+
+	/**
+	 * This method sets the Entity associated with this Attribute.
+	 * @param entityInterface The entity to be set.
+	 */
+	void setEntity(EntityInterface entityInterface);
+
 }

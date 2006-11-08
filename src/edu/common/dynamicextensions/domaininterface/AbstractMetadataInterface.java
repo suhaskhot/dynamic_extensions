@@ -10,68 +10,79 @@ import java.util.Date;
  * @author sujay_narkar
  *
  */
- public interface AbstractMetadataInterface 
- {
-	
+public interface AbstractMetadataInterface
+{
+
 	/**
-     * The date on which object is created
-	 * @return Returns the createdDate.
+	 * This method returns the Created Date of the AbstractMetadata.
+	 * @return the createdDate of the AbstractMetadata.
 	 */
-	 Date getCreatedDate();
-		
+	Date getCreatedDate();
+
 	/**
+	 * This method sets the Created Date of the AbstractMetadata.
 	 * @param createdDate The createdDate to set.
 	 */
-	 void setCreatedDate(Date createdDate);
-		
+	void setCreatedDate(Date createdDate);
+
 	/**
-     * Description of metdata object
-	 * @return Returns the description.
+	 * This method returns the description of the AbstractMetadata.
+	 * @return the description of the AbstractMetadata.
 	 */
-	 String getDescription();
+	String getDescription();
+
 	/**
+	 * This method sets the description of the AbstractMetadata.
 	 * @param description The description to set.
 	 */
-	 void setDescription(String description);
-		
+	void setDescription(String description);
+
 	/**
-     * Uniqueue id for metadata object.
-	 * @return Returns the id.
+	 * This method returns the unique identifier of the AbstractMetadata.
+	 * @return the identifier of the AbstractMetadata.
 	 */
-	 Long getId();
-		
+	Long getId();
+
 	/**
-     * The last updated date of metadata object.
+	 * This method sets the unique identifier of the AbstractMetadata.
+	 * @param id The identifier to set.
+	 */
+	void setId(Long id);
+
+	/**
+	 * The last updated date of metadata object.
 	 * @return Returns the lastUpdated.
 	 */
-	 Date getLastUpdated();
-		
+	Date getLastUpdated();
+
 	/**
-	 * @param lastUpdated The lastUpdated to set.
+	 * The method sets the date of last updation of the meta data to the given date.
+	 * @param lastUpdated the date to be set as last updation date.
 	 */
-	 void setLastUpdated(Date lastUpdated);
-		
+	void setLastUpdated(Date lastUpdated);
+
 	/**
-     * Name of the metadata object
-	 * @return Returns the name.
+	 * This method returns the name of the AbstractMetadata.
+	 * @return the name of the AbstractMetadata.
 	 */
-	 String getName();
-		
+	String getName();
+
 	/**
-	 * @param name The name to set.
+	 * This method sets the name of the AbstractMetadata to the given name.
+	 * @param name the name to be set.
 	 */
-	 void setName(String name);
-		
+	void setName(String name);
+
 	/**
-     * Semantic property for metadata object.
-	 * @return Returns the semanticPropertyCollection.
+	 * This method returns the Collection of SemanticProperties of the AbstractMetadata.
+	 * @return the Collection of SemanticProperties of the AbstractMetadata.
 	 */
-	 Collection getSemanticPropertyCollection();
-		
+	Collection<SemanticPropertyInterface> getSemanticPropertyCollection();
+
 	/**
-	 * @param semanticPropertyInterface The semanticProperty to set.
+	 * This method adds a SemanticProperty to the AbstractMetadata.
+	 * @param semanticPropertyInterface A SemanticProperty to be added.
 	 */
-	 void addSemanticProperty(SemanticPropertyInterface semanticPropertyInterface); 
-		
-	
+	void addSemanticProperty(SemanticPropertyInterface semanticProperty);
+
 }

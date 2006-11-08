@@ -8,45 +8,58 @@ import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
 
 /**
+ * This Class represents the per-defined Date value of the Attribute.
  * @author sujay_narkar
  * @hibernate.joined-subclass table="DYEXTN_DATE_CONCEPT_VALUE" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
 public class DateValue extends PermissibleValue implements DateValueInterface
 {
-    /**
-     * 
-     */
-    protected Date value;
+	/**
+	 * Serial Version Unique Identifier
+	 */
+	private static final long serialVersionUID = 3381430917859885601L;
 
-    /**
-     * 
-     */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException 
+	/**
+	 * The predefined Date value.
+	 */
+	protected Date value;
+
+	/**
+	 * Set all values from the form
+	 * @param abstractActionForm the ActionForm
+	 * @throws AssignDataException if data is not in proper format.
+	 */
+	public void setAllValues(AbstractActionForm abstractActionForm) throws AssignDataException
 	{
 	}
-    
-  	/**
-     * @hibernate.property name="value" type="date" column="VALUE"   
-	 * @return Returns the value.
+
+	/**
+	 * This method returns the predefined value of DateValue.
+	 * @hibernate.property name="value" type="date" column="VALUE"   
+	 * @return the predefined value of DateValue.
 	 */
-	public Date getValue() 
+	public Date getValue()
 	{
 		return value;
 	}
+
 	/**
-	 * @param value The value to set.
+	 * This method sets the value of DateValue to the given value.
+	 * @param value the value to be set.
 	 */
-	public void setValue(Date value) 
+	public void setValue(Date value)
 	{
 		this.value = value;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domain.PermissibleValue#getValueAsObject()
+	/**
+	 * This method returns the value of DateValue downcasted to the Object.
+	 * @return the value of the DateValue downcasted to the Object.
 	 */
 	public Object getValueAsObject()
 	{
 		return value;
 	}
+
 }

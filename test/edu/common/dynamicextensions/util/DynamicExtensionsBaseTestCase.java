@@ -9,6 +9,7 @@
 package edu.common.dynamicextensions.util;
 
 import java.sql.Connection;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 import junit.framework.TestCase;
@@ -89,5 +90,37 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 		}
 
 	}
+	
+	/**
+	 * @param query query to be executed
+	 * @return  ResultSetMetaData
+	 */
+	protected ResultSetMetaData executeQueryForMetadata(String query)
+	{
+		//      Checking whether the data table is created properly or not.
+		Connection conn = null;
+		try
+		{
+			conn = DBUtil.getConnection();
+		}
+		catch (HibernateException e)
+		{
+			e.printStackTrace();
+		}
+		java.sql.PreparedStatement statement = null;
+		try
+		{
+			statement = conn.prepareStatement(query);
+			return statement.executeQuery().getMetaData();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+
+		return null;
+	}
+
 
 }

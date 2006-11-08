@@ -55,20 +55,29 @@ public class DBUtil
 		{
 			try
 			{
+				System.out.println("HI2");
 				InputStream inputStream = DBUtil.class.getClassLoader().getResourceAsStream(
 						"TestHibernate.cfg.xml");
+				
+				System.out.println("is" + inputStream);
 				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 				factory.setValidating(false);
 				DocumentBuilder docBuilder = null;
 				docBuilder = factory.newDocumentBuilder();
+				System.out.println("parsing");
 				Document doc = docBuilder.parse(inputStream);
+				System.out.println("parsed");
 				Configuration cfg = new Configuration();
+				System.out.println("building");
 				sessionFactory = cfg.configure(doc).buildSessionFactory();
 				HibernateMetaData.initHibernateMetaData(cfg);
+				System.out.println("builed");
+			
 			}
 			catch (Exception ex)
 			{
 				Logger.out.debug("Exception: " + ex.getMessage(), ex);
+				System.out.println(ex.getStackTrace());
 				throw new RuntimeException(ex.getMessage());
 			}
 		}

@@ -102,7 +102,12 @@ public abstract class AbstractAttribute extends AbstractMetadata implements Abst
 	 */
 	public void setEntity(EntityInterface entityInterface)
 	{
-		this.entity = (Entity) entityInterface;
+		if (entityInterface != null)
+		{
+			this.entity = (Entity)entityInterface;
+			//TODO //entityInterface.addAbstractAttribute(this);
+		}
+
 	}
 
 }

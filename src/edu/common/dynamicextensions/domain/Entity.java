@@ -140,6 +140,11 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	 */
 	public void addAbstractAttribute(AbstractAttributeInterface abstractAttribute)
 	{
+		if (abstractAttribute == null)
+		{
+			return;
+		}
+		
 		if (abstractAttributeCollection == null)
 		{
 			abstractAttributeCollection = new HashSet<AbstractAttributeInterface>();

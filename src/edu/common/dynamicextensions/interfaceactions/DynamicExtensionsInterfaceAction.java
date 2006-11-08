@@ -64,7 +64,7 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet
 		String operation = requestObject.getString("operation");
 
 		//depending upon the operation execute the appropriate steps
-		if (operation.equalsIgnoreCase("getAllEntities"))
+		if (operation.equalsIgnoreCase("getAllContainers"))
 		{
 
 			EntityManager entityManager = EntityManager.getInstance();
@@ -94,8 +94,8 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet
 				{
 					JSONObject entityInterfaceJSONObject = new JSONObject();
 					entityInterface = (EntityInterface) entityIterator.next();
-					entityInterfaceJSONObject.put("entityName", entityInterface.getName());
-					entityInterfaceJSONObject.put("entityIdentifier", entityInterface.getId());
+					entityInterfaceJSONObject.put("containerName", entityInterface.getName());
+					entityInterfaceJSONObject.put("containerIdentifier", entityInterface.getId());
 
 					entityInterfaceJSONArray.put(entityInterfaceJSONObject);
 				}

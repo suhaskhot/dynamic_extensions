@@ -1,9 +1,13 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
+import java.util.List;
+
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
+import edu.wustl.common.beans.NameValueBean;
 
 /**
  * @version 1.0
@@ -32,27 +36,43 @@ public class RadioButton extends Control implements RadioButtonInterface
 	 */
 	public String generateHTML()
 	{
-		String isChecked = this.value;
-		if (this.value == null)
+		List<NameValueBean> nameValueBeanList = null;
+		String htmlString = "";
+
+		String defaultValue = this.value;
+		if (defaultValue == null)
 		{
-			isChecked = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
+			defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
 		}
 
-		if (isChecked.equalsIgnoreCase("true"))
+		nameValueBeanList = ControlsUtility.populateListOfValues((AttributeInterface) this.getAbstractAttribute());
+
+		String htmlComponentName = getHTMLComponentName();
+
+		for (NameValueBean nameValueBean : nameValueBeanList)
 		{
-			isChecked = "checked";
+			if (nameValueBean.getValue().equals(defaultValue))
+			{
+				htmlString += "<br><input type='radio' " + "class = '" + cssClass + "' " + "name = '" + htmlComponentName + "' " + "value = '"
+						+ nameValueBean.getValue() + "' " + "id = '" + name + "' " + "title = '" + tooltip + "' checked> " + nameValueBean.getName()
+						+ "</br>";
+			}
+			else
+			{
+				htmlString += "<br><input type='radio' " + "class = '" + cssClass + "' " + "name = '" + htmlComponentName + "' " + "value = '"
+				+ nameValueBean.getValue() + "' " + "id = '" + name + "' " + "title = '" + tooltip + "'> " + nameValueBean.getName()
+				+ "</br>";
+			}
 		}
-		String htmlString = "<input type='radio' " + "class = '" + cssClass + "' " + "name = '" + getHTMLComponentName() + "' " + "value = '" + name + "' " + "id = '"
-				+ name + "' " + "title = '" + tooltip + "' " + isChecked + " >";
-		
-		System.out.println("Returning " + htmlString);
+
 		return htmlString;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface#setAttribute(edu.common.dynamicextensions.domaininterface.AttributeInterface)
+	/**
+	 * This method sets the corresponding Attribute of this control.
+	 * @param abstractAttribute the AbstractAttribute to be set. 
 	 */
-	public void setAttribute(AbstractAttributeInterface attributeInterface)
+	public void setAttribute(AbstractAttributeInterface abstractAttribute)
 	{
 	}
 

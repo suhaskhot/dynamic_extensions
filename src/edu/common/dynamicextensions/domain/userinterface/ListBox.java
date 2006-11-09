@@ -95,8 +95,7 @@ public class ListBox extends Control implements ListBoxInterface
 			}
 		}
 		htmlString = htmlString + "</SELECT>";
-
-		System.out.println("Returning " + htmlString);
+		
 		return htmlString;
 	}
 

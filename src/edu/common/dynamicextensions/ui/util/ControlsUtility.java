@@ -129,7 +129,6 @@ public class ControlsUtility
 	 * This method populates the List of Values of the ListBox in the NameValueBean Collection.
 	 * @return List of pair of Name and its corresponding Value.
 	 */
-	@SuppressWarnings("unchecked")
 	public static List<NameValueBean> populateListOfValues(AttributeInterface attribute)
 	{
 		List<NameValueBean> nameValueBeanList = null;

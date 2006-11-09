@@ -140,6 +140,7 @@ function initBuildForm()
 	{
 		choiceListElementCnter.value="1";
 	}
+	
 	addChoicesFromListToTable();
 	
 	//If other option is selected in measurement units, enable the text box next to it
@@ -150,7 +151,6 @@ function initBuildForm()
 function addChoicesFromListToTable()
 {
 	var choiceList = document.getElementById("choiceList");
-	
 	if(choiceList!=null)
 	{
 		var choiceListValue = choiceList.value;
@@ -165,7 +165,7 @@ function addChoicesFromListToTable()
 					if((choice_array[i]!=null)&&(choice_array[i]!=""))
 					{
 						//Add choice to list
-						var textBox = document.getElementById('choiceValue');
+						var textBox = document.getElementById('optionName');
 						if(textBox !=null)
 						{
 							textBox.value = choice_array[i];
@@ -475,6 +475,11 @@ if(controlsForm.name != null)
 	{
 		document.getElementById('attributeIdentified').value = "";
 	}
+	if(document.getElementById('choiceList') != null)
+	{
+		document.getElementById('choiceList').value = "";
+	}
+	
 }
 
 function saveEntity()

@@ -50,7 +50,7 @@
 	</td>
  <tr>
 </table>
-<html:hidden property="dataType" value ="<%=ProcessorConstants.DATATYPE_STRING%>"/>/>
+<html:hidden property="dataType" value ="<%=ProcessorConstants.DATATYPE_STRING%>"/>
 
 <jsp:include page="/pages/toolTypeHTML/ListValuesSpecification.jsp" />
 

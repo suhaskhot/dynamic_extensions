@@ -94,7 +94,7 @@
 
 				</c:forEach>
 			</td>
-			<html:hidden property="choiceList" />
+
 		</tr>
 
 

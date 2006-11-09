@@ -89,6 +89,7 @@
 					<html:hidden property="attributeDefaultValue" />
 				</table>
 			</td>
+			<html:hidden property="choiceList" />
 	</tr>
 	</table>
 </div>

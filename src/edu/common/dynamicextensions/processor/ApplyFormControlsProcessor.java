@@ -78,18 +78,10 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 
 				//Create Attribute  
 				abstractAttributeInterface = attributeProcessor.createAndPopulateAttribute(controlsForm);
-
-				//if combobox control has been selected then set the DataElement object for set of permissible values
-				String userSelectedControl = controlsForm.getUserSelectedTool();
-				if ((userSelectedControl != null) && (userSelectedControl.equalsIgnoreCase(ProcessorConstants.COMBOBOX_CONTROL)))
-				{
-					if (abstractAttributeInterface instanceof AttributeInterface)
-					{
-						((AttributeInterface) abstractAttributeInterface)
-						.setDataElement(attributeProcessor.getDataElementInterface(controlsForm));
-					}
-				}
-
+				
+				//Set permisible values
+				setPermissibleValues(attributeProcessor,abstractAttributeInterface,controlsForm);
+				
 				//Set attribute in controlInformationInterface object(controlsForm)
 				controlsForm.setAbstractAttribute(abstractAttributeInterface);
 
@@ -159,7 +151,6 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 		}
 
 	}
-
 
 	/**
 	 * @param abstractAttributeInterface

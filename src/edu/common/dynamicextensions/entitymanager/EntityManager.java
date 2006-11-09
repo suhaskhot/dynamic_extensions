@@ -112,7 +112,9 @@ public class EntityManager
 
 	private void logDebug(String methodName, String message)
 	{
+		
 		Logger.out.debug("[EntityManager.]" + methodName + "()--" + message);
+		
 	}
 
 	/**

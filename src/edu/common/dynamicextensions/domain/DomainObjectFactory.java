@@ -9,6 +9,7 @@ import edu.common.dynamicextensions.domain.userinterface.ComboBox;
 import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domain.userinterface.DataGrid;
 import edu.common.dynamicextensions.domain.userinterface.DatePicker;
+import edu.common.dynamicextensions.domain.userinterface.FileUploadControl;
 import edu.common.dynamicextensions.domain.userinterface.ListBox;
 import edu.common.dynamicextensions.domain.userinterface.RadioButton;
 import edu.common.dynamicextensions.domain.userinterface.TextArea;
@@ -48,6 +49,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterf
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.DataGridInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
@@ -439,6 +441,17 @@ public class DomainObjectFactory
 		TextField textField = new TextField();
 		return textField;
 	}
+	
+	/**
+	 * This method creates an object of File Upload Control.
+	 * @return an instance of TextField.
+	 */
+	public FileUploadInterface createFileUploadControl()
+	{
+		FileUploadControl fileUpload = new FileUploadControl();
+		return fileUpload;
+	}
+
 
 	/**
 	 * This method creates an object of View.

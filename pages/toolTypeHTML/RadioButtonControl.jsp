@@ -25,7 +25,7 @@
 			<td class="formRequiredNoticeWithoutBorder" width="2%">
 					 			&nbsp;
 		 	</td>
-			<td class="formRequiredLabelWithoutBorder" ><bean:message key="eav.att.ListBoxOptionTypes"></bean:message></td>
+			<td class="formRequiredLabelWithoutBorder" ><bean:message key="eav.att.RadioButtonOptionTypes"></bean:message></td>
 			<td  class="formFieldWithoutBorder">
 				<c:forEach items="${displayChoiceList}" var="choiceType">
 					<jsp:useBean id="choiceType" type="edu.wustl.common.beans.NameValueBean" />

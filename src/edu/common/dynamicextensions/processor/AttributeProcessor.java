@@ -19,6 +19,7 @@ import edu.common.dynamicextensions.domain.UserDefinedDE;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.BooleanAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.ByteArrayAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.common.dynamicextensions.domaininterface.DateAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.DoubleAttributeInterface;
@@ -100,6 +101,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				{
 					attributeInterface = DomainObjectFactory.getInstance().createBooleanAttribute();
 				}
+				else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_BYTEARRAY))
+				{
+					attributeInterface = DomainObjectFactory.getInstance().createByteArrayAttribute();
+				}
 				else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_NUMBER))
 				{
 					attributeInterface = getInterfaceForNumericDataType(attributeUIBeanInformationIntf);
@@ -137,6 +142,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			else if (attributeInterface instanceof DateAttributeInterface)
 			{
 				populateDateAttributeInterface((DateAttributeInterface) attributeInterface, attributeUIBeanInformationIntf);
+			}
+			else if (attributeInterface instanceof ByteArrayAttributeInterface)
+			{
+				populateByteArrayAttributeInterface((ByteArrayAttributeInterface) attributeInterface, attributeUIBeanInformationIntf);
 			}
 			else if (attributeInterface instanceof ShortAttributeInterface)
 			{
@@ -186,6 +195,15 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 					+ attributeUIBeanInformationIntf + "]");
 		}
 
+	}
+
+	/**
+	 * @param interface1
+	 * @param attributeUIBeanInformationIntf
+	 */
+	private void populateByteArrayAttributeInterface(ByteArrayAttributeInterface interface1, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
+	{
+		//TODO : Code for byte array attribute initialization 
 	}
 
 	/**

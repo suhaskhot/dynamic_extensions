@@ -210,6 +210,8 @@ function changeSourceForValues(sourceControl)
 function addChoiceToList(addToChoiceList)
 {
 	var optionName = document.getElementById('optionName');
+	var optionConceptCode = document.getElementById('optionConceptCode');
+	var optionDescription = document.getElementById('optionDescription');
 	var choiceListElementCnter = document.getElementById('choiceListCounter');
 	
 	var elementNo = 0;
@@ -246,7 +248,14 @@ function addChoiceToList(addToChoiceList)
 				}
 			}
 			optionName.value = "";
-			
+			if(optionConceptCode!=null)
+			{
+				optionConceptCode.value="";
+			}
+			if(optionDescription!=null)
+			{
+				optionDescription.value="";
+			}
 			//increment number of elements count
 			document.getElementById('choiceListCounter').value = (parseInt(elementNo) + 1) + "";
 			
@@ -313,7 +322,7 @@ function initializeOptionsDefaultValue()
 	var defaultValue = document.getElementById('attributeDefaultValue');
 	if((defaultValue!=null)&&(valuestable!=null))
 	{
-		var rowForDefaultValue = document.getElementById(defaultValue.value);
+		var rowForDefaultValue = document.getElementById(defaultValue.value+"");
 		if(rowForDefaultValue!=null)
 		{
 			rowForDefaultValue.style.fontWeight='bold';

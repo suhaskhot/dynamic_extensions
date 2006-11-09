@@ -260,11 +260,16 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	 * List of measurement units
 	 */
 	protected List measurementUnitsList;
+	
 	/**
 	 * This field will only be used if measurement unit "other" has been selected
 	 */
 	protected String measurementUnitOther;
 
+	/**
+	 * list of file formats
+	 */
+	protected List fileFormatsList;
 	/**
 	 * 
 	 * @return List MeasurementUnitsList
@@ -1487,6 +1492,16 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	public void setTempValidationRules(String[] tempValidationRules)
 	{
 		this.tempValidationRules = tempValidationRules;
+	}
+
+	public List getFileFormatsList()
+	{
+		return this.fileFormatsList;
+	}
+
+	public void setFileFormatsList(List fileFormatsList)
+	{
+		this.fileFormatsList = fileFormatsList;
 	}
 
 

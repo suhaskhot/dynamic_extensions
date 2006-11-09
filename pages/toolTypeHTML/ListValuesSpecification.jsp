@@ -46,44 +46,35 @@
 					</td>
 					<td class="formRequiredLabelWithoutBorder">&nbsp;</td>
 					<td  class="formFieldWithoutBorder">
-							<input type="button" name="addChoiceValue" value="Add Option" onclick="addChoiceToList(true);">
+							<html:button styleClass="actionButton" property="addChoiceValue" onclick="addChoiceToList(true)" >
+									<bean:message  key="eav.button.AddOption" />
+							</html:button>
+							<!--<input type="button" name="addChoiceValue" value="Add Option" onclick=";">-->
 					</td>
 	</tr>
 	<tr valign="top">
 		<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-		<td class="formRequiredLabelWithoutBorder">&nbsp;</td>
+		<td class="formRequiredLabelWithoutBorder"><bean:message key="eav.att.OptionList"/></td>
 		<td  class="formFieldWithoutBorder">
 				<table summary="" cellpadding="0" cellspacing="0" border="0" align = 'center' valign="top" width='100%'>
-					<!-- <THEAD>
-						<tr valign="top">
-							<th class="formRequiredLabelWithoutBorder" width="100%"  >
-							<!--<input type="text"  name="choiceValue" size="28">
-								<input type="button" name="addChoiceValue" value="Add" onclick="addChoiceToList(true);">
-							</th>
-						</tr>
-					</thead>-->
 					<tr  class="formRequiredLabelWithoutBorder">
 						<td class="formRequiredLabelWithoutBorder" >
 							<div style="padding : 1px;  height : 50px; width:'95%'; overflow : auto; " >
 							<table id="choiceListTable" summary="" cellpadding="0" cellspacing="0" border="1" width="100%">
-								<!--<tr>
-									<td width="10%" class="formRequiredLabelWithoutBorder">
-										<bean:message key="eav.att.DefaultValue"/>
-									</th>
-									<td class="formRequiredLabelWithoutBorder">
-										<bean:message key="eav.att.values"/>
-									</th>
-									<td width="15%" class="formRequiredLabelWithoutBorder">
-										<input type="button" name="deleteChoiceValue" value="Delete" onclick="deleteElementsFromChoiceList()" >
-									</th>
-								</tr>-->
 							</table>
 						</td>
 					</tr>
 					<tr valign="top">
 						<td align="left" class="formRequiredLabelWithoutBorder" width="100%"  >
-							<input type="button" name="btnSetDefaultValue" value="Make Default" onclick="setDefaultValue()">
+							<html:button styleClass="actionButton" property="btnSetDefaultValue"  onclick="setDefaultValue()">
+									<bean:message  key="eav.button.SetDefaultOption" />
+							 </html:button>
+							 <html:button styleClass="actionButton" property="btnDeleteChoiceValue"  onclick="deleteElementsFromChoiceList()">
+									<bean:message  key="eav.button.DeleteOption" />
+							 </html:button>
+							<!--<input type="button" name="btnSetDefaultValue" value="Make Default" onclick="setDefaultValue()">
 							<input type="button" name="btnDeleteChoiceValue" value="Delete" onclick="deleteElementsFromChoiceList()" >
+							-->
 						</td>
 					</tr>
 					<html:hidden property="attributeDefaultValue" />

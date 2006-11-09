@@ -15,6 +15,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterf
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
@@ -122,9 +123,19 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @param controlUIBeanInterface : Control UI Information interface containing information added by user on UI
 	 * @return : Control interface populated with required information for File upload
 	 */
-	private ControlInterface getFileUploadControl(ControlInterface controlIntf, ControlUIBeanInterface controlUIBeanInterface)
+	private ControlInterface getFileUploadControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
 	{
-		return null;
+		FileUploadInterface fileUploadInterface= null;
+		if (controlInterface == null)
+		{
+			fileUploadInterface = DomainObjectFactory.getInstance().createFileUploadControl();
+		}
+		else
+		{
+			fileUploadInterface = (FileUploadInterface) controlInterface;
+		}
+		fileUploadInterface.setColumns(controlUIBeanInterface.getColumns());
+		return fileUploadInterface;
 	}
 
 	/**
@@ -299,8 +310,6 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		if (controlInterface != null && controlUIBeanInterface != null)
 		{
 			controlUIBeanInterface.setAbstractAttribute(controlInterface.getAbstractAttribute());
-			controlUIBeanInterface.setCssClass(controlInterface.getCssClass());
-			controlUIBeanInterface.setTooltip(controlInterface.getTooltip());
 			controlUIBeanInterface.setCaption(controlInterface.getCaption());
 			controlUIBeanInterface.setIsHidden(controlInterface.getIsHidden());
 			controlUIBeanInterface.setSequenceNumber(controlInterface.getSequenceNumber());
@@ -333,10 +342,10 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		else if (controlInterface instanceof RadioButtonInterface)
 		{
 
-		}
+		}*/
 		else if (controlInterface instanceof FileUploadInterface)
 		{
-
-		}*/
+			controlUIBeanInterface.setColumns(((FileUploadInterface) controlInterface).getColumns());
+		}
 	}
 }

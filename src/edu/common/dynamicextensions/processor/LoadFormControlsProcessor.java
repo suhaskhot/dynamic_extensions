@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import com.puppycrawl.tools.checkstyle.api.FileSetCheck;
+
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
@@ -189,8 +191,25 @@ public class LoadFormControlsProcessor
 	 */
 	private void initializeFileUploadControlDefaultValues(ControlsForm controlsForm)
 	{
-		// TODO Auto-generated method stub
+		if(controlsForm.getFileFormatsList()==null)
+		{
+			controlsForm.setFileFormatsList(getFileFormatsList());
+		}
+	}
 
+	/**
+	 * @return
+	 */
+	private List getFileFormatsList()
+	{
+		ArrayList fileFormatsList = new ArrayList();
+		fileFormatsList.add("bmp");
+		fileFormatsList.add("jpeg");
+		fileFormatsList.add("gif");
+		fileFormatsList.add("doc");
+		fileFormatsList.add("xls");
+		fileFormatsList.add("pdf");
+		return fileFormatsList;
 	}
 
 	/**

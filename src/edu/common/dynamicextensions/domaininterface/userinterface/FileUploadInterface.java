@@ -14,4 +14,14 @@ package edu.common.dynamicextensions.domaininterface.userinterface;
  */
 public interface FileUploadInterface extends ControlInterface  
 {
+	/**
+	 * 
+	 * @return Number of columns (size of text box shown on UI)
+	 */
+	public Integer getColumns();
+	/**
+	 * 
+	 * @param columns  Number of columns (size of text box shown on UI)
+	 */
+	public void setColumns(Integer columns);
 }

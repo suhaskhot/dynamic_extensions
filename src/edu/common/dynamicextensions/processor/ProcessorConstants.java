@@ -11,8 +11,6 @@ import edu.wustl.common.util.global.Constants;
 /**
  * @author preeti_munot
  *
- * To change the template for this generated type comment go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class ProcessorConstants
 {
@@ -31,6 +29,7 @@ public class ProcessorConstants
 	public static final String DATATYPE_DATE = "Date";
 	public static final String DATATYPE_BOOLEAN = "Yes/No";
 	public static final String DATATYPE_NUMBER = "Number";
+	public static final String DATATYPE_BYTEARRAY = "ByteArray";
 
 	//Max number of digits/decimals for various datatypes
 	public static final int MAX_NO_OF_DIGITS_SHORT = 5;

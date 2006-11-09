@@ -143,6 +143,10 @@ function initBuildForm()
 	
 	addChoicesFromListToTable();
 	
+	//Initilialize default value for list of options
+	initializeOptionsDefaultValue();
+	
+	
 	//If other option is selected in measurement units, enable the text box next to it
 	var cboMeasurementUnits = document.getElementById('attributeMeasurementUnits');
 	measurementUnitsChanged(cboMeasurementUnits);
@@ -226,6 +230,7 @@ function addChoiceToList(addToChoiceList)
 			
 			//Add Option to table
 			myNewCell =  myNewRow.insertCell();
+			myNewCell.setAttribute("id",optionName.value);
 			myNewCell.setAttribute("className","formMessage");
 			myNewCell.setAttribute("width","10%");
 			var chkBoxId = "chkBox" + elementNo;
@@ -302,10 +307,24 @@ function deleteElementsFromChoiceList()
 		}
 	}
 }
+function initializeOptionsDefaultValue()
+{
+	var valuestable = document.getElementById('choiceListTable');
+	var defaultValue = document.getElementById('attributeDefaultValue');
+	if((defaultValue!=null)&&(valuestable!=null))
+	{
+		var rowForDefaultValue = document.getElementById(defaultValue.value);
+		if(rowForDefaultValue!=null)
+		{
+			rowForDefaultValue.style.fontWeight='bold';
+		}
+	}
+}
 function setDefaultValue()
 {
 	var defaultValue = document.getElementById('attributeDefaultValue');
 	defaultValue.value = "";
+	var defaultValueSelected = false;
 	var valuestable = document.getElementById('choiceListTable');
 	if(valuestable!=null)
 	{
@@ -330,14 +349,16 @@ function setDefaultValue()
 			if(chkBox!=null)
 			{
 				var rowofCheckBox = chkBox.parentElement.parentElement;
-				if(chkBox.checked == true)
+				if((chkBox.checked == true)&&(defaultValueSelected==false))
 				{
-					defaultValue.value = defaultValue.value + ","  + chkBox.value; 
+					defaultValue.value = chkBox.value; 
 					chkBox.checked = false;
 					rowofCheckBox.style.fontWeight='bold';
+					defaultValueSelected = true;
 				}
 				else
 				{
+					chkBox.checked = false;	
 					rowofCheckBox.style.fontWeight='normal';
 				}
 			}

@@ -20,6 +20,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInter
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.processor.ApplyDataEntryFormProcessor;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
+import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.validation.ValidatorUtil;
 
@@ -65,35 +66,36 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		ApplyDataEntryFormProcessor applyDataEntryFormProcessor = ApplyDataEntryFormProcessor.getInstance();
 
 		List<String> errorList;
-		try
+		try 
 		{
 			errorList = ValidatorUtil.validateEntity(attributeValueMap);
+			Long recordIdentifier = new Long(-1);
+
+			if (errorList.size() != 0)
+			{
+				saveMessages(request, getErrorMessages(errorList));
+			}
+			else
+			{
+				recordIdentifier = applyDataEntryFormProcessor.insertDataEntryForm(containerInterface, attributeValueMap);
+				saveMessages(request, getSuccessMessage());
+			}
+
+			String calllbackURL = (String) CacheManager.getObjectFromCache(request, Constants.CALLBACK_URL);
+			if (calllbackURL != null && !calllbackURL.equals(""))
+			{
+				calllbackURL = calllbackURL + "?" + WebUIManager.getRecordIdentifierParameterName() + "=" + recordIdentifier ;
+				CacheManager.clearCache(request);
+				response.sendRedirect(calllbackURL);
+				return null;
+			}
 		}
 		catch (Exception e)
 		{
 			String actionForwardString = catchException(e, request);
 			return (mapping.findForward(actionForwardString));
 		}
-		if (errorList.size() != 0)
-		{
-			saveMessages(request, getErrorMessages(errorList));
-		}
-		else
-		{
-			try
-			{
-				applyDataEntryFormProcessor.insertDataEntryForm(containerInterface, attributeValueMap);
-			}
-			catch (Exception e)
-			{
-				String actionForwardString = catchException(e, request);
-				return (mapping.findForward(actionForwardString));
-			}
-
-			saveMessages(request, getSuccessMessage());
-		}
 		return (mapping.findForward(Constants.SUCCESS));
-
 	}
 
 	/**

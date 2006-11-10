@@ -41,13 +41,15 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	 * @param attributeValueMap The Map of Attribute and their corresponding values from controls.
 	 * @throws DynamicExtensionsApplicationException on Application exception
 	 * @throws DynamicExtensionsSystemException on System exception
+	 * @return recordIdentifier Record identifier of the last saved record. 
 	 */
-	public void insertDataEntryForm(ContainerInterface containerInterface, Map attributeValueMap) throws DynamicExtensionsApplicationException,
+	public Long insertDataEntryForm(ContainerInterface containerInterface, Map attributeValueMap) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException
 	{
 			EntityManager entityManager = EntityManager.getInstance();
 			EntityInterface entityInterface = containerInterface.getEntity();
-			entityManager.insertData(entityInterface, attributeValueMap);
+			Long recordIdentifier = entityManager.insertData(entityInterface, attributeValueMap);
+			return recordIdentifier;
 	}
 
 }

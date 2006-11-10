@@ -34,6 +34,11 @@ public interface WebUIManagerConstants
 	/**
 	 * 
 	 */
+	String OPERATION_STATUS_PARAMETER_NAME =  "operationStatus";
+		
+	/**
+	 * 
+	 */
 	String CONTAINER_NAME = "containerName";
 	/**
 	 * 

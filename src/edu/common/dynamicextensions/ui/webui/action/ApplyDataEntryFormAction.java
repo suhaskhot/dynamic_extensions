@@ -2,7 +2,7 @@
 package edu.common.dynamicextensions.ui.webui.action;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +38,6 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @param response HttpServletResponse
 	 * @return ActionForward ActionForward
 	 */
-	//@SuppressWarnings("unchecked")
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 	{
 		ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
@@ -46,7 +45,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		AbstractAttributeInterface abstractAttributeInterface = null;
 		//ControlInterface controlInterface = null;
 
-		Map<AbstractAttributeInterface, String> attributeValueMap = new HashMap<AbstractAttributeInterface, String>();
+		Map<AbstractAttributeInterface, String> attributeValueMap = new LinkedHashMap<AbstractAttributeInterface, String>();
 		String value = null;
 
 		for (int sequence = 1; sequence <= controlCollection.size(); sequence++)

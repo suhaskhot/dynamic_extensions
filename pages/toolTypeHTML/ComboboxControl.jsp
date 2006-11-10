@@ -75,7 +75,7 @@
 						<% } %>
 		</tr>
 
-		 <tr>
+		<!--  <tr>
 		 	<td class="formRequiredNoticeWithoutBorder" width="2%">
 		 			*
 		 	</td>
@@ -88,15 +88,15 @@
 					<jsp:useBean id="dataTypeObj" type="edu.wustl.common.beans.NameValueBean" />
 						<c:set var="dataTypeValue" value="${dataTypeObj.value}" />
 						<jsp:useBean id="dataTypeValue" type="java.lang.String" />
-						<html:radio property="dataType" value="<%=dataTypeValue%>" onclick="listDataTypeChanged(this)" >
+						<html:radio property="dataType" value="" onclick="listDataTypeChanged(this)" >
 							<c:out value="${dataTypeObj.name}"/>
 						</html:radio>
 
 				</c:forEach>
 			</td>
-
+		
 		</tr>
-
+		 -->
 
 		<tr>
 			<td class="formRequiredNoticeWithoutBorder" width="2%">
@@ -127,6 +127,7 @@
  		</div>
  	</td>
  <tr>
+ <html:hidden property="dataType" value ="<%=ProcessorConstants.DATATYPE_STRING%>"/>
 </table>
 <jsp:include page="/pages/toolTypeHTML/ListValuesSpecification.jsp" />
 

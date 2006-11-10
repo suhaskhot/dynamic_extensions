@@ -21,7 +21,7 @@
 				</td>
 	</tr>
 
-	<tr valign="top">
+	<!--<tr valign="top">
 					<td class="formRequiredNoticeWithoutBorder" width="2%">
 										&nbsp;
 					</td>
@@ -39,7 +39,7 @@
 					<td  class="formFieldWithoutBorder">
 						<textarea rows = "3" cols="28" name="optionDescription" class="formDateSized" ></textarea>
 					</td>
-	</tr>
+	</tr>-->
 	<tr valign="top">
 					<td class="formRequiredNoticeWithoutBorder" width="2%">
 										&nbsp;

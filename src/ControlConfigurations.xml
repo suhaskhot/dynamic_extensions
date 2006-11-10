@@ -75,11 +75,11 @@
 	</control>
 	<!-- rules for Date control end-->
 	
-	<!-- rules for File Upload control start-->
+	<!-- rules for File Upload control start
 	<control name="FileUploadControl"
 		display-label="eav.caption.FileUploadControlCaption"
 		jspName="FileUploadControl.jsp">
 	</control>
-	<!-- rules for File Upload control end-->
+	 rules for File Upload control end-->
 	
 </controls>

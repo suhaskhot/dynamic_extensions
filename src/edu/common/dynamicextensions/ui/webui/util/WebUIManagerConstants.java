@@ -31,4 +31,18 @@ public interface WebUIManagerConstants
 	 * 
 	 */
 	String RECORD_IDENTIFIER_PARAMETER_NAME =  "recordId";
+	/**
+	 * 
+	 */
+	String CONTAINER_NAME = "containerName";
+	/**
+	 * 
+	 */
+	String CONTAINER_IDENTIFIER = "containerIdentifier";
+	/**
+	 * 
+	 */
+	String GET_ALL_CONTAINERS = "getAllContainers";
+	
+	
 }

@@ -13,6 +13,8 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.processor.LoadFormsIndexProcessor;
 import edu.common.dynamicextensions.ui.webui.actionform.FormsIndexForm;
+import edu.common.dynamicextensions.ui.webui.util.CacheManager;
+import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.global.Constants;
 
 /**
@@ -38,6 +40,13 @@ public class LoadFormsIndexAction extends BaseDynamicExtensionsAction
 	public ActionForward execute(ActionMapping mapping, ActionForm form, 
 				HttpServletRequest request, HttpServletResponse response) throws Exception 
 	{
+		String callBackURL = request.getParameter(WebUIManagerConstants.CALLBACK_URL_PARAM_NAME);
+		if (callBackURL != null && !callBackURL.equals(""))
+		{
+			CacheManager.clearCache(request);
+			CacheManager.addObjectToCache(request, Constants.CALLBACK_URL, callBackURL);
+		}
+		
 		FormsIndexForm loadFormIndexForm = (FormsIndexForm)form;
 		LoadFormsIndexProcessor loadFormsIndexProcessor = LoadFormsIndexProcessor.getInstance();
 		loadFormsIndexProcessor.populateFormsIndex(loadFormIndexForm);

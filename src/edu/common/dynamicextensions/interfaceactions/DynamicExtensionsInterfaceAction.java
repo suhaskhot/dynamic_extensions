@@ -19,8 +19,9 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 
-public class DynamicExtensionsInterfaceAction extends HttpServlet
+public class DynamicExtensionsInterfaceAction extends HttpServlet implements WebUIManagerConstants
 {
 	/**
 	 * Do get method calls do post method
@@ -64,7 +65,7 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet
 		String operation = requestObject.getString("operation");
 
 		//depending upon the operation execute the appropriate steps
-		if (operation.equalsIgnoreCase("getAllContainers"))
+		if (operation.equalsIgnoreCase(GET_ALL_CONTAINERS))
 		{
 
 			EntityManager entityManager = EntityManager.getInstance();
@@ -94,8 +95,8 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet
 				{
 					JSONObject entityInterfaceJSONObject = new JSONObject();
 					entityInterface = (EntityInterface) entityIterator.next();
-					entityInterfaceJSONObject.put("containerName", entityInterface.getName());
-					entityInterfaceJSONObject.put("containerIdentifier", entityInterface.getId());
+					entityInterfaceJSONObject.put(CONTAINER_NAME, entityInterface.getName());
+					entityInterfaceJSONObject.put(CONTAINER_IDENTIFIER, entityInterface.getId());
 
 					entityInterfaceJSONArray.put(entityInterfaceJSONObject);
 				}

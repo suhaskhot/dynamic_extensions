@@ -52,6 +52,13 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 				formName = containerInterface.getEntity().getName();
 			}
 			saveMessages(request, getSuccessMessage(formName));
+			String calllbackURL = (String) CacheManager.getObjectFromCache(request,Constants.CALLBACK_URL);
+			if (calllbackURL != null && !calllbackURL.equals(""))
+			{
+				CacheManager.clearCache(request);
+				response.sendRedirect(calllbackURL);
+				return null;
+			}
 			actionForward = mapping.findForward(Constants.SUCCESS);
 		}
 		catch (Exception e)

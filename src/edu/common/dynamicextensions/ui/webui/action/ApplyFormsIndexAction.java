@@ -33,14 +33,24 @@ public class ApplyFormsIndexAction extends BaseDynamicExtensionsAction
 		FormsIndexForm formsIndexForm = (FormsIndexForm) form;
 		ActionForward actionForward = null;
 		String mode = formsIndexForm.getMode();
-		if (mode != null && mode.equalsIgnoreCase(Constants.ADD_NEW_FORM))
+		if (mode != null && mode.equalsIgnoreCase(Constants.ADD_NEW_FORM)
+				&&	CacheManager.getObjectFromCache(request, Constants.CALLBACK_URL) == null)
 		{
 			CacheManager.clearCache(request);
+		}
+		else if (mode != null && mode.equalsIgnoreCase(Constants.INSERT_DATA)
+				&& CacheManager.getObjectFromCache(request, Constants.CALLBACK_URL) == null)
+		{
+			CacheManager.clearCache(request);
+		}
+		
+		
+		if (mode != null && mode.equalsIgnoreCase(Constants.ADD_NEW_FORM))
+		{
 			actionForward = mapping.findForward(Constants.SUCCESS);
 		}
 		else if (mode != null && mode.equalsIgnoreCase(Constants.INSERT_DATA))
 		{
-			CacheManager.clearCache(request);
 			actionForward = mapping.findForward(Constants.INSERT_DATA);
 		}
 		

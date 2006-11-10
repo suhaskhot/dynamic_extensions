@@ -1,7 +1,10 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
+import edu.common.dynamicextensions.domain.LongAttribute;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.DoubleAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.LongAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 
@@ -22,7 +25,7 @@ public class TextField extends Control implements TextFieldInterface
 	 * Size of the text field to be shown on UI.
 	 */
 	protected Integer columns;
-	
+
 	/**
 	 * Boolean value indicating whether this text field is password field.
 	 */
@@ -80,12 +83,18 @@ public class TextField extends Control implements TextFieldInterface
 		{
 			defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
 		}
-		
+
 		String htmlString = "<input " + "class = '" + cssClass + "' " + "name = '" + getHTMLComponentName() + "' " + "id = '"
 				+ getHTMLComponentName() + "' " + "title = '" + tooltip + "'  " + "value = '" + defaultValue + "' " + "size = '" + columns.intValue()
 				+ "' ";
-		
-		if (isPassword != null && isPassword.booleanValue() == true)
+
+		String measurementUnit = getMeasurementUnit(this.getAbstractAttribute());
+		if(measurementUnit != null)
+		{
+			htmlString += "&nbps" + measurementUnit;
+		}
+
+		if (isPassword != null && isPassword.booleanValue())
 		{
 			htmlString = htmlString + " type='password' ";
 		}
@@ -94,16 +103,37 @@ public class TextField extends Control implements TextFieldInterface
 			htmlString = htmlString + " type='text' ";
 		}
 		htmlString += ">";
-		
-		System.out.println("Returning " + htmlString);
+
 		return htmlString;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface#setAttribute(edu.common.dynamicextensions.domaininterface.AttributeInterface)
+	/**
+	 * This method sets the associated AbstractAttribute of this Control. 
+	 * @param abstractAttribute AbstractAttribute to be associated.
 	 */
-	public void setAttribute(AbstractAttributeInterface attributeInterface)
+	public void setAttribute(AbstractAttributeInterface abstractAttribute)
 	{
+	}
+
+	/**
+	 * This method returns the measurement units of the numeric attribute associated with this Control.
+	 * @param abstractAttribute AbstractAttribute whose measurement units are to be known.
+	 * @return the measurement units of the numeric attribute associated with this Control.
+	 */
+	private String getMeasurementUnit(AbstractAttributeInterface abstractAttribute)
+	{
+		String measurementUnit = null;
+		if (abstractAttribute instanceof LongAttributeInterface)
+		{
+			LongAttributeInterface longAttribute = (LongAttributeInterface)abstractAttribute;
+			measurementUnit = longAttribute.getMeasurementUnits();
+		}
+		else if (abstractAttribute instanceof DoubleAttributeInterface)
+		{
+			DoubleAttributeInterface doubleAttribute = (DoubleAttributeInterface)abstractAttribute;
+			measurementUnit = doubleAttribute.getMeasurementUnits();
+		}
+		return measurementUnit;
 	}
 
 }

@@ -49,15 +49,16 @@ public class CheckBox extends Control implements CheckBoxInterface
 			htmlString = "<input type='checkbox' class = '" + this.cssClass + "' name = '" + getHTMLComponentName() + "' " + "value = \"true\" "
 					+ "id = '" + this.name + "' title = '" + this.tooltip + "'>";
 		}
-		//System.out.println("Returning " + htmlString);
+		
 		return htmlString;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface#setAttribute(edu.common.dynamicextensions.domaininterface.AttributeInterface)
+	/**
+	 * This method sets the corresponding AbstractAttribute of this Control.
+	 * @param abstractAttribute AbstractAttribute to be set. 
 	 */
-	public void setAttribute(AbstractAttributeInterface attributeInterface)
+	public void setAttribute(AbstractAttributeInterface abstractAttribute)
 	{
 	}
-
+	
 }

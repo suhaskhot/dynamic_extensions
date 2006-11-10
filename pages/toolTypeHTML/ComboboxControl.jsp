@@ -46,11 +46,11 @@
 				<bean:message key="eav.att.ListBoxType"/>
 			</td>
 			<td class="formFieldWithoutBorder">
-					<html:radio property="attributeMultiSelect" value="<%=ProcessorConstants.LIST_TYPE_SINGLE_SELECT%>" onchange="listTypeChanged(this)" >
+					<html:radio property="attributeMultiSelect" value="<%=ProcessorConstants.LIST_TYPE_SINGLE_SELECT%>" onclick="listTypeChanged(this)" >
 						<bean:message key="eav.att.ListBoxSingleTitle"/>
 					</html:radio>
 
-					<html:radio property="attributeMultiSelect" value="<%=ProcessorConstants.LIST_TYPE_MULTI_SELECT%>" onchange="listTypeChanged(this)" disabled="true">
+					<html:radio property="attributeMultiSelect" value="<%=ProcessorConstants.LIST_TYPE_MULTI_SELECT%>" onclick="listTypeChanged(this)" >
 						<bean:message key="eav.att.ListBoxMultiLineTitle"/>
 					</html:radio>
 			</td>
@@ -60,15 +60,19 @@
 								&nbsp;
 					</td>
 
-				<td class="formRequiredLabelWithoutBorder" disabled="true">
-						<bean:message key="eav.att.ListBoxDisplayLines"/>
-				</td>
+
 						<% if(listType.equalsIgnoreCase(ProcessorConstants.LIST_TYPE_SINGLE_SELECT)) { %>
-				<td class="formFieldWithoutBorder">
+						<td class="formRequiredLabelWithoutBorder" disabled="true" id="lblNumberOfRows">
+							<bean:message key="eav.att.ListBoxDisplayLines"/>
+						</td>
+						<td class="formFieldWithoutBorder">
 								<html:text styleClass="formDateSized" value='' disabled='true' maxlength="100" size="60"  property="attributeNoOfRows" />
 						</td>
 						<% }  else {
 						%>
+						<td class="formRequiredLabelWithoutBorder"  id="lblNumberOfRows">
+							<bean:message key="eav.att.ListBoxDisplayLines"/>
+						</td>
 							<td class="formFieldWithoutBorder">
 								<html:text styleClass="formDateSized"   maxlength="100" size="60"  property="attributeNoOfRows" />
 						</td>
@@ -94,7 +98,7 @@
 
 				</c:forEach>
 			</td>
-		
+
 		</tr>
 		 -->
 

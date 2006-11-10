@@ -15,6 +15,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInter
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
@@ -329,6 +330,10 @@ public class LoadFormControlsProcessor
 				return ProcessorConstants.TEXT_CONTROL;
 			}
 			else if (controlInterface instanceof ComboBoxInterface)
+			{
+				return ProcessorConstants.COMBOBOX_CONTROL;
+			}
+			else if (controlInterface instanceof ListBoxInterface)
 			{
 				return ProcessorConstants.COMBOBOX_CONTROL;
 			}

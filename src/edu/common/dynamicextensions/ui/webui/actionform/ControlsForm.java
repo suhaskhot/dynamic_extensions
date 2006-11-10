@@ -256,10 +256,16 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	 * is attribute identified
 	 */
 	protected String attributeIdentified;
+	
+	/**
+	 * is attribute mandatory
+	 */
+	protected String attributeMandatory;
 	/**
 	 * List of measurement units
 	 */
 	protected List measurementUnitsList;
+	
 	
 	/**
 	 * This field will only be used if measurement unit "other" has been selected
@@ -270,6 +276,12 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	 * list of file formats
 	 */
 	protected List fileFormatsList;
+	/**
+	 * display as url
+	 */
+	protected List attributeDisplayAsURL;
+	
+	
 	/**
 	 * 
 	 * @return List MeasurementUnitsList
@@ -651,7 +663,10 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	public void setAttributeMultiSelect(String attributeMultiSelect)
 	{
 		this.attributeMultiSelect = attributeMultiSelect;
-		isMultiSelect = new Boolean(attributeMultiSelect);
+		if(attributeMultiSelect!=null)
+		{
+			isMultiSelect = new Boolean(attributeMultiSelect.equals(ProcessorConstants.LIST_TYPE_MULTI_SELECT));
+		}
 	}
 
 	/**
@@ -945,9 +960,9 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	public void setIsMultiSelect(Boolean isMultiSelect)
 	{
 		this.isMultiSelect = isMultiSelect;
-		if (isMultiSelect != null)
+		if ((isMultiSelect != null)&&(isMultiSelect==true))
 		{
-			this.attributeMultiSelect = isMultiSelect.toString();
+			this.attributeMultiSelect = ProcessorConstants.LIST_TYPE_MULTI_SELECT;
 		}
 	}
 
@@ -1502,6 +1517,26 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	public void setFileFormatsList(List fileFormatsList)
 	{
 		this.fileFormatsList = fileFormatsList;
+	}
+
+	public String getAttributeMandatory()
+	{
+		return this.attributeMandatory;
+	}
+
+	public void setAttributeMandatory(String attributeMandatory)
+	{
+		this.attributeMandatory = attributeMandatory;
+	}
+
+	public List getAttributeDisplayAsURL()
+	{
+		return this.attributeDisplayAsURL;
+	}
+
+	public void setAttributeDisplayAsURL(List attributeDisplayAsURL)
+	{
+		this.attributeDisplayAsURL = attributeDisplayAsURL;
 	}
 
 

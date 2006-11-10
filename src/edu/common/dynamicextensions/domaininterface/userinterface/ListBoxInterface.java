@@ -29,5 +29,15 @@ public interface ListBoxInterface extends ControlInterface
 	 * @param list : List of choices
 	 */
 	public void setChoiceList(List list);
+	/**
+	 * 
+	 * @return Size of list box : Number of rows
+	 */
+	public Integer getNoOfRows();
+	/**
+	 * 
+	 * @param noOfRows Size of list box : Number of rows
+	 */
+	public void setNoOfRows(Integer noOfRows);
   
 }

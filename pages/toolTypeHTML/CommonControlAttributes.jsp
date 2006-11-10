@@ -65,7 +65,7 @@
 				</td>
 			</tr>
 			
-			<tr>
+			<tr valign="top">
 				<td class="formRequiredNoticeWithoutBorder" width="2%">
 						&nbsp;
 				</td>
@@ -73,7 +73,18 @@
 				<td class="formFieldWithoutBorder" align="left">
 					<html:checkbox property="attributeIdentified" value="true"><bean:message key="app.att.isIdentified" /></html:checkbox>
 				</td>
-		</tr>
+			</tr>
+			<tr valign="top">
+				<td class="formRequiredNoticeWithoutBorder" width="2%">
+						&nbsp;
+				</td>
+				<td class="formRequiredLabelWithoutBorder" width="25%">&nbsp;</td>
+				<td class="formFieldWithoutBorder" align="left">
+					<html:checkbox property="attributeMandatory" value="true">
+						<bean:message key="app.att.isMandatory" />
+					</html:checkbox>
+				</td>
+			</tr>
 		<tr>
 			<td colspan="3"><hr></td>
 		</tr>

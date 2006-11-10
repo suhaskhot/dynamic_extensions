@@ -547,13 +547,26 @@ function listTypeChanged(obj)
 {
 	if(obj.value == 'SingleSelect')
 	{
-		document.getElementById('attributeNoOfRows').value="";
-		document.getElementById('attributeNoOfRows').disabled=true;
+		if(document.getElementById('attributeNoOfRows')!=null)
+		{
+			document.getElementById('attributeNoOfRows').value="";
+			document.getElementById('attributeNoOfRows').disabled=true;
+		}
+		if(document.getElementById('lblNumberOfRows')!=null)
+		{
+			document.getElementById('lblNumberOfRows').disabled=true;
+		}
 	}
 	if(obj.value == 'MultiSelect')
 	{
-
-		document.getElementById('attributeNoOfRows').disabled=false;
+		if(document.getElementById('attributeNoOfRows')!=null)
+		{
+			document.getElementById('attributeNoOfRows').disabled=false;
+		}
+		if(document.getElementById('lblNumberOfRows')!=null)
+		{
+			document.getElementById('lblNumberOfRows').disabled=false;
+		}
 	}
 }
 function listDataTypeChanged(listControl)

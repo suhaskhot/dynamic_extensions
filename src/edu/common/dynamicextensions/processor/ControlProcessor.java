@@ -84,7 +84,14 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			}
 			else if (userSelectedControlName.equalsIgnoreCase(ProcessorConstants.COMBOBOX_CONTROL))
 			{
-				controlInterface = getComboBoxControl(controlIntf, controlUIBeanInterface);
+				if ((controlUIBeanInterface.getIsMultiSelect()!= null) && (controlUIBeanInterface.getIsMultiSelect().booleanValue()==true))
+				{
+					controlInterface = getListBoxControl(controlIntf, controlUIBeanInterface);
+				}
+				else
+				{
+					controlInterface = getComboBoxControl(controlIntf, controlUIBeanInterface);
+				}
 			}
 			else if (userSelectedControlName.equalsIgnoreCase(ProcessorConstants.LISTBOX_CONTROL))
 			{
@@ -205,7 +212,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private ControlInterface getListBoxControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
 	{
-		ListBoxInterface listBoxIntf = null;
+		/*ListBoxInterface listBoxIntf = null;
 
 		if (controlInterface == null)
 		{
@@ -217,6 +224,26 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		}
 
 		listBoxIntf.setIsMultiSelect(controlUIBeanInterface.getIsMultiSelect());
+		return listBoxIntf;*/
+		ListBoxInterface listBoxIntf = null;
+
+		if (controlInterface == null) //If does not exist create it 
+		{
+			listBoxIntf = DomainObjectFactory.getInstance().createListBox();
+		}
+		else
+		{
+			if (controlInterface instanceof ComboBoxInterface)
+			{
+				listBoxIntf = (ListBoxInterface) controlInterface;
+			}
+			else
+			{
+				listBoxIntf = DomainObjectFactory.getInstance().createListBox();
+			}
+		}
+		listBoxIntf.setIsMultiSelect(controlUIBeanInterface.getIsMultiSelect());
+		listBoxIntf.setNoOfRows(controlUIBeanInterface.getRows());
 		return listBoxIntf;
 	}
 
@@ -227,7 +254,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private ControlInterface getComboBoxControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
 	{
-		ComboBoxInterface comboBoxIntf = null;
+		/*ComboBoxInterface comboBoxIntf = null;
 		if (controlInterface == null)
 		{
 			comboBoxIntf = DomainObjectFactory.getInstance().createComboBox();
@@ -236,7 +263,26 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		{
 			comboBoxIntf = (ComboBoxInterface) controlInterface;
 		}
+		return comboBoxIntf;*/
+
+		ComboBoxInterface comboBoxIntf = null;
+		if (controlInterface == null) //If does not exist create it 
+		{
+			comboBoxIntf = DomainObjectFactory.getInstance().createComboBox();
+		}
+		else
+		{
+			if (controlInterface instanceof ComboBoxInterface)
+			{
+				comboBoxIntf = (ComboBoxInterface) controlInterface;
+			}
+			else
+			{
+				comboBoxIntf = DomainObjectFactory.getInstance().createComboBox();
+			}
+		}
 		return comboBoxIntf;
+	
 	}
 
 	/**
@@ -330,6 +376,11 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			controlUIBeanInterface.setRows(((TextAreaInterface) controlInterface).getRows());
 			controlUIBeanInterface.setLinesType(ProcessorConstants.LINE_TYPE_MULTILINE);
 			controlUIBeanInterface.setIsPassword(((TextAreaInterface) controlInterface).getIsPassword());
+		}
+		else if (controlInterface instanceof ListBoxInterface)
+		{
+			controlUIBeanInterface.setIsMultiSelect(((ListBoxInterface) controlInterface).getIsMultiSelect());
+			controlUIBeanInterface.setRows(((ListBoxInterface) controlInterface).getNoOfRows());
 		}
 		/*else if (controlInterface instanceof ComboBoxInterface)
 		{

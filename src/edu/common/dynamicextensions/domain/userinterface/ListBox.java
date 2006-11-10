@@ -31,6 +31,18 @@ public class ListBox extends Control implements ListBoxInterface
 	 * 
 	 */
 	private Boolean isMultiSelect = null;
+	
+	private Integer noOfRows = null;
+
+	public Integer getNoOfRows()
+	{
+		return this.noOfRows;
+	}
+
+	public void setNoOfRows(Integer noOfRows)
+	{
+		this.noOfRows = noOfRows;
+	}
 
 	/**
 	 * Default Constructor

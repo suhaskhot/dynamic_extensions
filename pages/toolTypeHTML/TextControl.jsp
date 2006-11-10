@@ -92,6 +92,15 @@
 					<html:checkbox  property="attributeIsPassword" value="true"><bean:message key="app.att.isPassword" /></html:checkbox>
 				</td>
 		</tr>
+		<tr valign="top">
+			<td class="formRequiredNoticeWithoutBorder" width="2%">
+					&nbsp;
+			</td>
+			<td class="formRequiredLabelWithoutBorder" width="25%">&nbsp;</td>
+			<td class="formFieldWithoutBorder" align="left">
+				<html:checkbox  property="attributeDisplayAsURL" value="true"><bean:message key="app.att.displayAsURL" /></html:checkbox>
+			</td>
+		</tr>
 		</table>
 	</td>
 	</tr>

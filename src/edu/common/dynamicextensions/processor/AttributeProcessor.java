@@ -645,7 +645,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	private void populateShortAttributeInterface(ShortAttributeInterface shortAttributeInterface,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
 	{
-		if (attributeUIBeanInformationIntf.getAttributeDefaultValue() != null)
+		if((attributeUIBeanInformationIntf.getAttributeDefaultValue() != null)&&(!attributeUIBeanInformationIntf.getAttributeDefaultValue().trim().equals("")))
 		{
 			Short defaultValue = new Short(attributeUIBeanInformationIntf.getAttributeDefaultValue());
 			shortAttributeInterface.setDefaultValue(defaultValue);
@@ -699,7 +699,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	private void populateLongAttributeInterface(LongAttributeInterface longAttributeInterface,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
 	{
-		if (attributeUIBeanInformationIntf.getAttributeDefaultValue() != null)
+		if((attributeUIBeanInformationIntf.getAttributeDefaultValue() != null)&&(!attributeUIBeanInformationIntf.getAttributeDefaultValue().trim().equals("")))
 		{
 			Long defaultValue = new Long(attributeUIBeanInformationIntf.getAttributeDefaultValue());
 			longAttributeInterface.setDefaultValue(defaultValue);
@@ -718,7 +718,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	private void populateFloatAttributeInterface(FloatAttributeInterface floatAttributeInterface,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
 	{
-		if (attributeUIBeanInformationIntf.getAttributeDefaultValue() != null)
+		if((attributeUIBeanInformationIntf.getAttributeDefaultValue() != null)&&(!attributeUIBeanInformationIntf.getAttributeDefaultValue().trim().equals("")))
 		{
 			Float defaultValue = new Float(attributeUIBeanInformationIntf.getAttributeDefaultValue());
 			floatAttributeInterface.setDefaultValue(defaultValue);
@@ -737,7 +737,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	private void populateDoubleAttributeInterface(DoubleAttributeInterface doubleAttributeInterface,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
 	{
-		if (attributeUIBeanInformationIntf.getAttributeDefaultValue() != null)
+		if((attributeUIBeanInformationIntf.getAttributeDefaultValue() != null)&&(!attributeUIBeanInformationIntf.getAttributeDefaultValue().trim().equals("")))
 		{
 			Double defaultValue = new Double(attributeUIBeanInformationIntf.getAttributeDefaultValue());
 			doubleAttributeInterface.setDefaultValue(defaultValue);

@@ -379,9 +379,6 @@ function setDefaultValue()
 
 function showFormPreview() 
 {
-	var showPreview = document.getElementById('showPreview');
-	showPreview.value = 'True';
-	
 	var entitySaved = document.getElementById('entitySaved');
 
 	if(entitySaved!=null)

@@ -53,13 +53,12 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 	{
 		if ((containerInterface != null) && (controlsForm != null))
 		{
-
 			EntityInterface entityInterface = containerInterface.getEntity();
 			ControlProcessor controlProcessor = ControlProcessor.getInstance();
 			AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
-
 			AbstractAttributeInterface abstractAttributeInterface = null;
 			ControlInterface controlInterface = null;
+			
 			//Check for operation
 			String controlOperation = controlsForm.getControlOperation();
 
@@ -68,6 +67,12 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 			{
 				controlOperation = ProcessorConstants.OPERATION_ADD;
 			}
+			
+			if((controlsForm.getDataType()!=null)&&(controlsForm.getDataType().equals(ProcessorConstants.DATATYPE_NUMBER)))
+			{
+				initializeMeasurementUnits(controlsForm);
+			}
+			
 			//Add new control
 			if (controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_ADD))
 			{
@@ -205,5 +210,18 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 			}
 		}
 		return attributeName;
+	}
+	/**
+	 * This method initializes MeasurementUnits needed for the actionForm
+	 * @param controlsForm actionForm
+	 */
+	private void initializeMeasurementUnits(ControlsForm controlsForm)
+	{
+		//Handle special case of measurement units
+		//If measurement unit is other, value of measurement unit is value of txtMeasurementUnit.
+		if((controlsForm.getAttributeMeasurementUnits()!=null)&&(controlsForm.getAttributeMeasurementUnits().equalsIgnoreCase(ProcessorConstants.MEASUREMENT_UNIT_OTHER)))
+		{
+			controlsForm.setAttributeMeasurementUnits(controlsForm.getMeasurementUnitOther());
+		}
 	}
 }

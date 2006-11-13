@@ -10,7 +10,6 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.processor.ApplyFormControlsProcessor;
-import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.util.global.Constants;
@@ -36,35 +35,19 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 	{
 		//Get controls form
 		ControlsForm controlsForm = (ControlsForm) form;
-		ActionForward actionForward = null;
-
-		if (controlsForm.getShowPreview() != null && !controlsForm.getShowPreview().equals(""))
-		{
-			return mapping.findForward(Constants.LOAD_FORM_PREVIEW_ACTION);
-		}
-		if((controlsForm.getDataType()!=null)&&(controlsForm.getDataType().equals(ProcessorConstants.DATATYPE_NUMBER)))
-		{
-			initializeMeasurementUnits(controlsForm);
-		}
-		//Get container interface from cache
-		ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-
-		//Add control to form
-		ApplyFormControlsProcessor formControlsProcessor = ApplyFormControlsProcessor.getInstance();
 		try
 		{
+			//Get container interface from cache
+			ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+			//Add control to form
+			ApplyFormControlsProcessor formControlsProcessor = ApplyFormControlsProcessor.getInstance();
 			formControlsProcessor.addControlToForm(containerInterface, controlsForm);
-		}
-		catch (Exception e)
-		{
-			String actionForwardString = catchException(e,request);
-			return(mapping.findForward(actionForwardString));
-		}
-
-		CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
-		actionForward = mapping.findForward(Constants.SUCCESS);
-		try
-		{
+			
+			//Store back container object to cache
+			CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
+			
+			//Go to next page
+			ActionForward actionForward = mapping.findForward(Constants.SUCCESS);
 			response.sendRedirect("http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath()
 					+ actionForward.getPath());
 			return null;
@@ -74,21 +57,9 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 			String actionForwardString = catchException(e,request);
 			return(mapping.findForward(actionForwardString));
 		}
+
 	}
 
-	/**
-	 * This method initializes MeasurementUnits needed for the actionForm
-	 * @param controlsForm actionForm
-	 */
-	private void initializeMeasurementUnits(ControlsForm controlsForm)
-	{
-		//Handle special case of measurement units
-		//If measurement unit is other, value of measurement unit is value of txtMeasurementUnit.
-		if((controlsForm.getAttributeMeasurementUnits()!=null)&&(controlsForm.getAttributeMeasurementUnits().equalsIgnoreCase(ProcessorConstants.MEASUREMENT_UNIT_OTHER)))
-		{
-			controlsForm.setAttributeMeasurementUnits(controlsForm.getMeasurementUnitOther());
-		}
-		
-	}
+
 
 }

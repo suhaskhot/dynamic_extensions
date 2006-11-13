@@ -218,7 +218,7 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	/**
 	 * 
 	 */
-	protected String showPreview;
+	//protected String showPreview;
 	/**
 	 * 
 	 */
@@ -1103,19 +1103,19 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 
 	/**
 	 * @return Returns the showPreview.
-	 */
+	 *//*
 	public String getShowPreview()
 	{
 		return showPreview;
 	}
 
-	/**
+	*//**
 	 * @param showPreview The showPreview to set.
-	 */
+	 *//*
 	public void setShowPreview(String showPreview)
 	{
 		this.showPreview = showPreview;
-	}
+	}*/
 
 	/**
 	 * @return the linesType
@@ -1451,13 +1451,6 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 			}
 		}
 	}
-
-
-	/*attributenoOfCols 
-		attributeNoOfRows
-		attributeSize
-		attributeDefaultValue
-		attributeDecimalPlaces*/
 
 	/**
 	 * 

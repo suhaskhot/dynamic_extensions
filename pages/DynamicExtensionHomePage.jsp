@@ -19,11 +19,11 @@
 	<head>
 		<title><bean:message key="table.heading" /></title>
 	</head>
+	<html:errors/>
 
 	<html:form styleId='formsIndexForm' action='/ApplyFormsIndexAction'>
 	<body>
-		<c:set var="containerCollection" value="${formsIndexForm.containerCollection}"/>
- 		<jsp:useBean id="containerCollection" type="java.util.Collection"/>
+ 		
 		<table width='70%' align='center' cellspacing="5" cellspacing="0" border='0'>
 			<tr class="formMessage">
 				<td>
@@ -33,15 +33,15 @@
 			<tr >
 				<td align="left"><bean:message key="app.formpage.heading" /></td>
 			</tr>
+			<!-- Messages to be displayed -->
 			<tr >
 				<td class="formTitle" align="center">
-				<logic:messagesPresent message="true">
-							<html:messages message="true" id="msg">
-								<bean:write name="msg" ignore="true"/>
-							</html:messages>
-				</logic:messagesPresent>
+					<html:messages message="true" id="msg">
+						<bean:write name="msg" ignore="true"/>
+					</html:messages>
 				</td>
 			</tr>
+			<!--  Build new form button -->
 			<tr align='left'>
 				<td>
 					<html:submit property="buildForm" styleClass="buttonStyle" onclick='addFormAction()'>
@@ -53,10 +53,11 @@
 			<tr>
 				<td>
 					<div style="border : solid 1px ; padding : 1px; width : 800px; height : 400px; overflow : auto; ">
+					<!-- table displaying entities already present in the database -->
 						<table class="dataTable" width='100%' cellpadding="4" cellspacing="0" border='1' >
+						<thead>
 							<tr class="formTitle">
 								<th width='5%' align='center'>
-								<!--<input type='checkbox' disabled />-->
 									<bean:message key="table.serialNumber" />
 								</th>
 								<th width="30%" align='left'>
@@ -79,7 +80,10 @@
 									<bean:message key="table.status" />
 								</th>
 							</tr>
-
+						</thead>
+							<c:set var="containerCollection" value="${formsIndexForm.containerCollection}"/>
+					 		<jsp:useBean id="containerCollection" type="java.util.Collection"/>
+					 		
 							<c:forEach items="${containerCollection}" var="containerInterface" varStatus="elements">
 								<jsp:useBean id="containerInterface" type="edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface" />
 								<tr>
@@ -109,15 +113,6 @@
 
 			<tr><td></td></tr>
 			<tr><td></td></tr>
-
-			<!--  <tr>
-				<td>
-					<html:button styleClass="actionButton" property="delete" disabled='true' >
-						<bean:message  key="buttons.delete"/>
-					</html:button>
-				</td>
-			</tr>
-			-->
 		</table>
 			<html:hidden property="mode" value=""/>
 	</body>

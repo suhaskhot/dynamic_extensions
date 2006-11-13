@@ -256,10 +256,6 @@
 			<html:hidden property="controlOperation" />
 			<html:hidden property="selectedControlId" />
 			<html:hidden property="toolBoxClicked" value=""/>
-			<html:hidden property="showPreview" value=""/>
-
-
-
 	  	</html:form>
   	</body>
 	</head>

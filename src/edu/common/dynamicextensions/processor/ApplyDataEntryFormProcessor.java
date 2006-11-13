@@ -18,7 +18,6 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
  */
 public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 {
-
 	/**
 	 * Default Constructor
 	 */

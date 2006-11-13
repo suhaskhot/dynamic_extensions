@@ -13,7 +13,7 @@
 	 <script language="javascript" src="<%= request.getContextPath()%>/jss/dynamicExtensions.js"></script>
 </head>
 <body  class="formRequiredNotice">
-<html:form styleId = "controlsForm" action="/ApplyFormControlsAction" >
+<html:form styleId = "controlsForm" action="/LoadFormControlsAction" >
 	  	<html:errors />
 		<table class="formRequiredNotice" border="0" width="100%" height="100%" >
 			<tr>

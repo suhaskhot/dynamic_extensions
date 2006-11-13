@@ -38,25 +38,24 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 	{
 		ActionForward actionForward = null;
-		//Get container interface from cache
-		ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-		//Call container processor save method
-		ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
-		String formName = "";
 		try
 		{
+			//Get container interface from cache
+			ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+			//Call container processor save method
+			ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
+			String formName = "";
 			containerProcessor.saveContainer(containerInterface);
-
 			if ((containerInterface != null) && (containerInterface.getEntity() != null))
 			{
 				formName = containerInterface.getEntity().getName();
 			}
 			saveMessages(request, getSuccessMessage(formName));
-			String calllbackURL = (String) CacheManager.getObjectFromCache(request,Constants.CALLBACK_URL);
-			if (calllbackURL != null && !calllbackURL.equals(""))
+			String callbackURL = (String) CacheManager.getObjectFromCache(request,Constants.CALLBACK_URL);
+			if (callbackURL != null && !callbackURL.equals(""))
 			{
 				CacheManager.clearCache(request);
-				response.sendRedirect(calllbackURL);
+				response.sendRedirect(callbackURL);
 				return null;
 			}
 			actionForward = mapping.findForward(Constants.SUCCESS);

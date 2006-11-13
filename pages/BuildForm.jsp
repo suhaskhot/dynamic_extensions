@@ -45,7 +45,7 @@
 
   		<body onload="initBuildForm()">
 
-		<html:form styleId = "controlsForm" action="/ApplyFormControlsAction" >
+		<html:form styleId = "controlsForm"  action="/LoadFormControlsAction">
 		  <html:errors />
 <table valign="top" style = "border-right:0px"  border = 1 align='right' width='90%' height="100%" border='0' cellspacing="0" cellpadding="0" class="tbBorders1" >
          <!-- Main Page heading -->

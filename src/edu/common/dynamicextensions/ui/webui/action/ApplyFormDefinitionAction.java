@@ -45,33 +45,30 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 		String target = "";
 		ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 		ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor.getInstance();
-		if (formDefinitionForm.getOperation().equalsIgnoreCase(Constants.BUILD_FORM))
+		boolean saveEntity = true;
+		try
 		{
-			try
+			if((formDefinitionForm.getOperation()!=null)&&(formDefinitionForm.getOperation().equalsIgnoreCase(Constants.BUILD_FORM)))
 			{
-				containerInterface = applyFormDefinitionProcessor.addEntityToContainer(containerInterface, formDefinitionForm, false);
+				saveEntity = false;
+				target = Constants.BUILD_FORM;
 			}
-			catch (Exception e)
-			{
-				target = catchException(e, request);
-			}
-			target = Constants.BUILD_FORM;
-		}
-		else
-		{// When we click on save 
-			try
-			{
-				containerInterface = applyFormDefinitionProcessor.addEntityToContainer(containerInterface, formDefinitionForm, true);
-				saveMessages(request, getSuccessMessage(formDefinitionForm));
+			else
+			{// When we click on save 
+				saveEntity = true;
 				target = Constants.SHOW_DYNAMIC_EXTENSIONS_HOMEPAGE;
 			}
-			catch (Exception e)
+			containerInterface = applyFormDefinitionProcessor.addEntityToContainer(containerInterface, formDefinitionForm, saveEntity);
+			if(saveEntity = true)
 			{
-				target = catchException(e, request);
+				saveMessages(request, getSuccessMessage(formDefinitionForm));
 			}
-
+			CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
 		}
-		CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
+		catch (Exception e)
+		{
+			target = catchException(e, request);
+		}
 		return mapping.findForward(target);
 	}
 

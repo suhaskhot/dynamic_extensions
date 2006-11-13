@@ -36,7 +36,6 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		
 		String callBackURL = request.getParameter(WebUIManagerConstants.CALLBACK_URL_PARAM_NAME);
 		if (callBackURL != null && !callBackURL.equals(""))
 		{

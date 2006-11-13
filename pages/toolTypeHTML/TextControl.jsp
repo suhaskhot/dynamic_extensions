@@ -41,12 +41,7 @@
 			<td class="formRequiredLabelWithoutBorder">
 					<bean:message key="eav.att.DataInput"/>
 			</td>
-
-			<!--<td class="formFieldWithoutBorder">
-					<html:select property="dataType"  onchange="changeDataType(this)" >
-						<html:options collection="dataTypeList" labelProperty="name" property="value" />
-					</html:select>
-			</td>-->
+			
 			<td class="formFieldWithoutBorder">
 				<c:forEach items="${dataTypeList}" var="dataTypeObj">
 					<jsp:useBean id="dataTypeObj" type="edu.wustl.common.beans.NameValueBean" />
@@ -98,7 +93,9 @@
 			</td>
 			<td class="formRequiredLabelWithoutBorder" width="25%">&nbsp;</td>
 			<td class="formFieldWithoutBorder" align="left">
-				<html:checkbox  property="attributeDisplayAsURL" value="true"><bean:message key="app.att.displayAsURL" /></html:checkbox>
+				<html:checkbox  property="attributeDisplayAsURL" value="true">
+					<bean:message key="app.att.displayAsURL" />
+				</html:checkbox>
 			</td>
 		</tr>
 		</table>

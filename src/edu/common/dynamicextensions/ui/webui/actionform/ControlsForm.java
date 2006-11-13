@@ -279,7 +279,7 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	/**
 	 * display as url
 	 */
-	protected List attributeDisplayAsURL;
+	protected String attributeDisplayAsURL;
 	
 	
 	/**
@@ -1522,12 +1522,12 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		this.attributeMandatory = attributeMandatory;
 	}
 
-	public List getAttributeDisplayAsURL()
+	public String getAttributeDisplayAsURL()
 	{
 		return this.attributeDisplayAsURL;
 	}
 
-	public void setAttributeDisplayAsURL(List attributeDisplayAsURL)
+	public void setAttributeDisplayAsURL(String attributeDisplayAsURL)
 	{
 		this.attributeDisplayAsURL = attributeDisplayAsURL;
 	}

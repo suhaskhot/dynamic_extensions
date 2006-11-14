@@ -179,7 +179,28 @@
 	        	 </manifest>
 	        </jar>
 	    </target>
+	<!-- Create dynamic extensions jar Ends-->
+	
+	
 	<!-- Create dynamic extensions jar Begins-->
+		    <target name="createDynamicExtensionsCommunicationJAR" depends="compile" >
+	    	   <jar taskname="buildJar" jarfile="DynamicExtensionsCommunication.jar">
+		    		<fileset dir="${target.dir}" >
+		    				<include name="**/WebUIManager.class"/>
+			    			<include name="**/WebUIManagerConstants.class"/>
+	 	  		    </fileset>
+	    	   	
+		        	 <manifest>
+		        	      <attribute name="Built-By" value="Sujay Narkar"/>
+		        	 	 
+		        	      <section name="${DynamicExtensions.jar.details}">
+		        	        <attribute name="Version" value="${DynamicExtensions.jar.version}"/>
+		        	      	<attribute name="Creation date" value="${DynamicExtensions.jar.creationDate}"/>
+		        	      </section>
+		        	 </manifest>
+		        </jar>
+		    </target>
+		<!-- Create dynamic extensions jar Ends-->
 	
 	<target name="createDynamicExtensionsInterfaceSourceZip" depends="compile" >
 		<zip destfile="${interface.src.dir}/DynamicExtensions-src.zip" >

@@ -7,7 +7,7 @@
 	
     <session-factory>
     	<property name="show_sql">true</property>
-    	<property name="dialect">net.sf.hibernate.dialect.PostgreSQLDialect</property>	
+    	<property name="dialect">net.sf.hibernate.dialect.Oracle9Dialect</property>	
         <property name="connection.datasource">java:/cawebeav</property>
         <property name="hibernate.transaction.factory_class">net.sf.hibernate.transaction.JDBCTransactionFactory</property>
 		<property name="transaction.manager_lookup_class">net.sf.hibernate.transaction.JBossTransactionManagerLookup</property>

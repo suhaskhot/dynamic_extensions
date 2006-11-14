@@ -51,54 +51,54 @@ alter table DYEXTN_ASSOCIATION drop constraint FK10468424BC7298A9;
 alter table DYEXTN_RADIOBUTTON drop constraint FK16F5BA90BC7298A9;
 alter table DYEXTN_DATEPICKER drop constraint FKFEADD199BC7298A9;
 alter table DYEXTN_CADSRDE drop constraint FK588A2509BC7298A9;
-drop table DYEXTN_ENTITY_GROUP_REL;
-drop table DYEXTN_COLUMN_PROPERTIES;
-drop table DYEXTN_USERDEFINED_DE;
-drop table DYEXTN_DATABASE_PROPERTIES;
-drop table DYEXTN_INTEGER_ATTRIBUTE;
-drop table DYEXTN_CONSTRAINT_PROPERTIES;
-drop table DYEXTN_FLOAT_CONCEPT_VALUE;
-drop table DYEXTN_TEXTFIELD;
-drop table DYEXTN_ROLE;
-drop table DYEXTN_RULE;
-drop table DYEXTN_BYTE_ARRAY_ATTRIBUTE;
-drop table DYEXTN_PERMISSIBLE_VALUE;
-drop table DYEXTN_CHECK_BOX;
-drop table DYEXTN_TABLE_PROPERTIES;
-drop table DYEXTN_INTEGER_CONCEPT_VALUE;
-drop table DYEXTN_STRING_CONCEPT_VALUE;
-drop table DYEXTN_FLOAT_ATTRIBUTE;
-drop table DYEXTN_TEXTAREA;
-drop table DYEXTN_DOUBLE_CONCEPT_VALUE;
-drop table DYEXTN_ENTITY_GROUP;
-drop table DYEXTN_DATA_ELEMENT;
-drop table DYEXTN_LIST_BOX;
-drop table DYEXTN_BOOLEAN_CONCEPT_VALUE;
-drop table DYEXTN_STRING_ATTRIBUTE;
-drop table DYEXTN_CONTROL;
-drop table DYEXTN_LONG_CONCEPT_VALUE;
-drop table DYEXTN_BOOLEAN_ATTRIBUTE;
-drop table DYEXTN_ATTRIBUTE;
-drop table DYEXTN_RULE_PARAMETER;
-drop table DYEXTN_ABSTRACT_METADATA;
-drop table DYEXTN_DATE_CONCEPT_VALUE;
-drop table DYEXTN_SHORT_CONCEPT_VALUE;
-drop table DYEXTN_VIEW;
-drop table DYEXTN_SEMANTIC_PROPERTY;
-drop table DYEXTN_DOUBLE_ATTRIBUTE;
-drop table DYEXTN_BARR_CONCEPT_VALUE;
-drop table DYEXTN_ENTITY;
-drop table DYEXTN_LONG_ATTRIBUTE;
-drop table DYEXTN_DATA_GRID;
-drop table DYEXTN_COMBOBOX;
-drop table DYEXTN_CONTAINER;
-drop table DYEXTN_DATE_ATTRIBUTE;
-drop table DYEXTN_SHORT_ATTRIBUTE;
-drop table DYEXTN_PRIMITIVE_ATTRIBUTE;
-drop table DYEXTN_ASSOCIATION;
-drop table DYEXTN_RADIOBUTTON;
-drop table DYEXTN_DATEPICKER;
-drop table DYEXTN_CADSRDE;
+drop table DYEXTN_ENTITY_GROUP_REL cascade constraints;
+drop table DYEXTN_COLUMN_PROPERTIES cascade constraints;
+drop table DYEXTN_USERDEFINED_DE cascade constraints;
+drop table DYEXTN_DATABASE_PROPERTIES cascade constraints;
+drop table DYEXTN_INTEGER_ATTRIBUTE cascade constraints;
+drop table DYEXTN_CONSTRAINT_PROPERTIES cascade constraints;
+drop table DYEXTN_FLOAT_CONCEPT_VALUE cascade constraints;
+drop table DYEXTN_TEXTFIELD cascade constraints;
+drop table DYEXTN_ROLE cascade constraints;
+drop table DYEXTN_RULE cascade constraints;
+drop table DYEXTN_BYTE_ARRAY_ATTRIBUTE cascade constraints;
+drop table DYEXTN_PERMISSIBLE_VALUE cascade constraints;
+drop table DYEXTN_CHECK_BOX cascade constraints;
+drop table DYEXTN_TABLE_PROPERTIES cascade constraints;
+drop table DYEXTN_INTEGER_CONCEPT_VALUE cascade constraints;
+drop table DYEXTN_STRING_CONCEPT_VALUE cascade constraints;
+drop table DYEXTN_FLOAT_ATTRIBUTE cascade constraints;
+drop table DYEXTN_TEXTAREA cascade constraints;
+drop table DYEXTN_DOUBLE_CONCEPT_VALUE cascade constraints;
+drop table DYEXTN_ENTITY_GROUP cascade constraints;
+drop table DYEXTN_DATA_ELEMENT cascade constraints;
+drop table DYEXTN_LIST_BOX cascade constraints;
+drop table DYEXTN_BOOLEAN_CONCEPT_VALUE cascade constraints;
+drop table DYEXTN_STRING_ATTRIBUTE cascade constraints;
+drop table DYEXTN_CONTROL cascade constraints;
+drop table DYEXTN_LONG_CONCEPT_VALUE cascade constraints;
+drop table DYEXTN_BOOLEAN_ATTRIBUTE cascade constraints;
+drop table DYEXTN_ATTRIBUTE cascade constraints;
+drop table DYEXTN_RULE_PARAMETER cascade constraints;
+drop table DYEXTN_ABSTRACT_METADATA cascade constraints;
+drop table DYEXTN_DATE_CONCEPT_VALUE cascade constraints;
+drop table DYEXTN_SHORT_CONCEPT_VALUE cascade constraints;
+drop table DYEXTN_VIEW cascade constraints;
+drop table DYEXTN_SEMANTIC_PROPERTY cascade constraints;
+drop table DYEXTN_DOUBLE_ATTRIBUTE cascade constraints;
+drop table DYEXTN_BARR_CONCEPT_VALUE cascade constraints;
+drop table DYEXTN_ENTITY cascade constraints;
+drop table DYEXTN_LONG_ATTRIBUTE cascade constraints;
+drop table DYEXTN_DATA_GRID cascade constraints;
+drop table DYEXTN_COMBOBOX cascade constraints;
+drop table DYEXTN_CONTAINER cascade constraints;
+drop table DYEXTN_DATE_ATTRIBUTE cascade constraints;
+drop table DYEXTN_SHORT_ATTRIBUTE cascade constraints;
+drop table DYEXTN_PRIMITIVE_ATTRIBUTE cascade constraints;
+drop table DYEXTN_ASSOCIATION cascade constraints;
+drop table DYEXTN_RADIOBUTTON cascade constraints;
+drop table DYEXTN_DATEPICKER cascade constraints;
+drop table DYEXTN_CADSRDE cascade constraints;
 drop sequence DYEXTN_SEMANTIC_PROPERTY_SEQ;
 drop sequence DYEXTN_PERMISSIBLEVAL_SEQ;
 drop sequence DYEXTN_CONTAINER_SEQ;
@@ -111,279 +111,279 @@ drop sequence DYEXTN_CONTROL_SEQ;
 drop sequence DYEXTN_RULE_SEQ;
 drop sequence DYEXTN_DATA_ELEMENT_SEQ;
 create table DYEXTN_ENTITY_GROUP_REL (
-   ENTITY_GROUP_ID int8 not null,
-   ENTITY_ID int8 not null,
+   ENTITY_GROUP_ID number(19,0) not null,
+   ENTITY_ID number(19,0) not null,
    primary key (ENTITY_GROUP_ID, ENTITY_ID)
 );
 create table DYEXTN_COLUMN_PROPERTIES (
-   IDENTIFIER int8 not null,
-   PRIMITIVE_ATTRIBUTE_ID int8,
+   IDENTIFIER number(19,0) not null,
+   PRIMITIVE_ATTRIBUTE_ID number(19,0),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_USERDEFINED_DE (
-   IDENTIFIER int8 not null,
+   IDENTIFIER number(19,0) not null,
    primary key (IDENTIFIER)
 );
 create table DYEXTN_DATABASE_PROPERTIES (
-   IDENTIFIER int8 not null,
-   NAME varchar(255),
+   IDENTIFIER number(19,0) not null,
+   NAME varchar2(255),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_INTEGER_ATTRIBUTE (
-   IDENTIFIER int8 not null,
-   DEFAULT_VALUE int4,
-   MEASUREMENT_UNITS varchar(255),
+   IDENTIFIER number(19,0) not null,
+   DEFAULT_VALUE number(10,0),
+   MEASUREMENT_UNITS varchar2(255),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_CONSTRAINT_PROPERTIES (
-   IDENTIFIER int8 not null,
-   SOURCE_ENTITY_KEY varchar(255),
-   TARGET_ENTITY_KEY varchar(255),
-   ASSOCIATION_ID int8,
+   IDENTIFIER number(19,0) not null,
+   SOURCE_ENTITY_KEY varchar2(255),
+   TARGET_ENTITY_KEY varchar2(255),
+   ASSOCIATION_ID number(19,0),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_FLOAT_CONCEPT_VALUE (
-   IDENTIFIER int8 not null,
-   VALUE float4,
+   IDENTIFIER number(19,0) not null,
+   VALUE float,
    primary key (IDENTIFIER)
 );
 create table DYEXTN_TEXTFIELD (
-   IDENTIFIER int8 not null,
-   COLUMNS int4,
-   PASSWORD bool,
+   IDENTIFIER number(19,0) not null,
+   COLUMNS number(10,0),
+   PASSWORD number(1,0),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_ROLE (
-   IDENTIFIER int8 not null,
-   ASSOCIATION_TYPE varchar(255),
-   MAX_CARDINALITY int4,
-   MIN_CARDINALITY int4,
-   NAME varchar(255),
-   ASSOCIATION_ID int8,
+   IDENTIFIER number(19,0) not null,
+   ASSOCIATION_TYPE varchar2(255),
+   MAX_CARDINALITY number(10,0),
+   MIN_CARDINALITY number(10,0),
+   NAME varchar2(255),
+   ASSOCIATION_ID number(19,0),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_RULE (
-   IDENTIFIER int8 not null,
-   NAME varchar(255),
-   ATTRIBUTE_ID int8,
+   IDENTIFIER number(19,0) not null,
+   NAME varchar2(255),
+   ATTRIBUTE_ID number(19,0),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_BYTE_ARRAY_ATTRIBUTE (
-   IDENTIFIER int8 not null,
-   CONTENT_TYPE varchar(255),
+   IDENTIFIER number(19,0) not null,
+   CONTENT_TYPE varchar2(255),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_PERMISSIBLE_VALUE (
-   IDENTIFIER int8 not null,
-   USER_DEF_DE_ID int8,
+   IDENTIFIER number(19,0) not null,
+   USER_DEF_DE_ID number(19,0),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_CHECK_BOX (
-   IDENTIFIER int8 not null,
+   IDENTIFIER number(19,0) not null,
    primary key (IDENTIFIER)
 );
 create table DYEXTN_TABLE_PROPERTIES (
-   IDENTIFIER int8 not null,
-   ENTITY_ID int8,
+   IDENTIFIER number(19,0) not null,
+   ENTITY_ID number(19,0),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_INTEGER_CONCEPT_VALUE (
-   IDENTIFIER int8 not null,
-   VALUE int4,
+   IDENTIFIER number(19,0) not null,
+   VALUE number(10,0),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_STRING_CONCEPT_VALUE (
-   IDENTIFIER int8 not null,
-   VALUE varchar(255),
+   IDENTIFIER number(19,0) not null,
+   VALUE varchar2(255),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_FLOAT_ATTRIBUTE (
-   IDENTIFIER int8 not null,
-   DEFAULT_VALUE float4,
-   MEASUREMENT_UNITS varchar(255),
+   IDENTIFIER number(19,0) not null,
+   DEFAULT_VALUE float,
+   MEASUREMENT_UNITS varchar2(255),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_TEXTAREA (
-   IDENTIFIER int8 not null,
-   TEXTAREA_COLUMNS int4,
-   TEXTAREA_ROWS int4,
+   IDENTIFIER number(19,0) not null,
+   TEXTAREA_COLUMNS number(10,0),
+   TEXTAREA_ROWS number(10,0),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_DOUBLE_CONCEPT_VALUE (
-   IDENTIFIER int8 not null,
-   VALUE float8,
+   IDENTIFIER number(19,0) not null,
+   VALUE double precision,
    primary key (IDENTIFIER)
 );
 create table DYEXTN_ENTITY_GROUP (
-   IDENTIFIER int8 not null,
-   LONG_NAME varchar(255),
-   SHORT_NAME varchar(255),
-   VERSION varchar(255),
+   IDENTIFIER number(19,0) not null,
+   LONG_NAME varchar2(255),
+   SHORT_NAME varchar2(255),
+   VERSION varchar2(255),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_DATA_ELEMENT (
-   IDENTIFIER int8 not null,
-   PRIMITIVE_ATTRIBUTE_ID int8,
+   IDENTIFIER number(19,0) not null,
+   PRIMITIVE_ATTRIBUTE_ID number(19,0),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_LIST_BOX (
-   IDENTIFIER int8 not null,
-   MULTISELECT bool,
+   IDENTIFIER number(19,0) not null,
+   MULTISELECT number(1,0),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_BOOLEAN_CONCEPT_VALUE (
-   IDENTIFIER int8 not null,
-   VALUE bool,
+   IDENTIFIER number(19,0) not null,
+   VALUE number(1,0),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_STRING_ATTRIBUTE (
-   IDENTIFIER int8 not null,
-   DEFAULT_VALUE varchar(255),
-   MAX_SIZE int4,
+   IDENTIFIER number(19,0) not null,
+   DEFAULT_VALUE varchar2(255),
+   MAX_SIZE number(10,0),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_CONTROL (
-   IDENTIFIER int8 not null,
-   CAPTION varchar(255),
-   CSS_CLASS varchar(255),
-   HIDDEN bool,
-   NAME varchar(255),
-   SEQUENCE_NUMBER int4,
-   TOOLTIP varchar(255),
-   CONTAINER_ID int8,
+   IDENTIFIER number(19,0) not null,
+   CAPTION varchar2(255),
+   CSS_CLASS varchar2(255),
+   HIDDEN number(1,0),
+   NAME varchar2(255),
+   SEQUENCE_NUMBER number(10,0),
+   TOOLTIP varchar2(255),
+   CONTAINER_ID number(19,0),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_LONG_CONCEPT_VALUE (
-   IDENTIFIER int8 not null,
-   VALUE int8,
+   IDENTIFIER number(19,0) not null,
+   VALUE number(19,0),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_BOOLEAN_ATTRIBUTE (
-   IDENTIFIER int8 not null,
-   DEFAULT_VALUE bool,
+   IDENTIFIER number(19,0) not null,
+   DEFAULT_VALUE number(1,0),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_ATTRIBUTE (
-   IDENTIFIER int8 not null,
-   ENTIY_ID int8,
-   CONTROL_ID int8,
+   IDENTIFIER number(19,0) not null,
+   ENTIY_ID number(19,0),
+   CONTROL_ID number(19,0),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_RULE_PARAMETER (
-   IDENTIFIER int8 not null,
-   NAME varchar(255),
-   VALUE varchar(255),
-   RULE_ID int8,
+   IDENTIFIER number(19,0) not null,
+   NAME varchar2(255),
+   VALUE varchar2(255),
+   RULE_ID number(19,0),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_ABSTRACT_METADATA (
-   IDENTIFIER int8 not null,
+   IDENTIFIER number(19,0) not null,
    CREATED_DATE date,
-   DESCRIPTION varchar(255),
+   DESCRIPTION varchar2(255),
    LAST_UPDATED date,
-   NAME varchar(255),
+   NAME varchar2(255),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_DATE_CONCEPT_VALUE (
-   IDENTIFIER int8 not null,
+   IDENTIFIER number(19,0) not null,
    VALUE date,
    primary key (IDENTIFIER)
 );
 create table DYEXTN_SHORT_CONCEPT_VALUE (
-   IDENTIFIER int8 not null,
-   VALUE int2,
+   IDENTIFIER number(19,0) not null,
+   VALUE number(5,0),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_VIEW (
-   IDENTIFIER int8 not null,
-   NAME varchar(255),
+   IDENTIFIER number(19,0) not null,
+   NAME varchar2(255),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_SEMANTIC_PROPERTY (
-   IDENTIFIER int8 not null,
-   CONCEPT_CODE varchar(255),
-   TERM varchar(255),
-   THESAURAS_NAME varchar(255),
-   ABSTRACT_METADATA_ID int8,
+   IDENTIFIER number(19,0) not null,
+   CONCEPT_CODE varchar2(255),
+   TERM varchar2(255),
+   THESAURAS_NAME varchar2(255),
+   ABSTRACT_METADATA_ID number(19,0),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_DOUBLE_ATTRIBUTE (
-   IDENTIFIER int8 not null,
-   DEFAULT_VALUE float8,
-   MEASUREMENT_UNITS varchar(255),
+   IDENTIFIER number(19,0) not null,
+   DEFAULT_VALUE double precision,
+   MEASUREMENT_UNITS varchar2(255),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_BARR_CONCEPT_VALUE (
-   IDENTIFIER int8 not null,
+   IDENTIFIER number(19,0) not null,
    primary key (IDENTIFIER)
 );
 create table DYEXTN_ENTITY (
-   IDENTIFIER int8 not null,
-   ASSOCIATION_ID int8,
+   IDENTIFIER number(19,0) not null,
+   ASSOCIATION_ID number(19,0),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_LONG_ATTRIBUTE (
-   IDENTIFIER int8 not null,
-   DEFAULT_VALUE int8,
-   MEASUREMENT_UNITS varchar(255),
+   IDENTIFIER number(19,0) not null,
+   DEFAULT_VALUE number(19,0),
+   MEASUREMENT_UNITS varchar2(255),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_DATA_GRID (
-   IDENTIFIER int8 not null,
+   IDENTIFIER number(19,0) not null,
    primary key (IDENTIFIER)
 );
 create table DYEXTN_COMBOBOX (
-   IDENTIFIER int8 not null,
+   IDENTIFIER number(19,0) not null,
    primary key (IDENTIFIER)
 );
 create table DYEXTN_CONTAINER (
-   IDENTIFIER int8 not null,
-   BUTTON_CSS varchar(255),
-   CAPTION varchar(255),
-   ENTITY_ID int8,
-   MAIN_TABLE_CSS varchar(255),
-   REQUIRED_FIELD_INDICATOR varchar(255),
-   REQUIRED_FIELD_WARNING_MESSAGE varchar(255),
-   TITLE_CSS varchar(255),
-   VIEW_ID int8,
+   IDENTIFIER number(19,0) not null,
+   BUTTON_CSS varchar2(255),
+   CAPTION varchar2(255),
+   ENTITY_ID number(19,0),
+   MAIN_TABLE_CSS varchar2(255),
+   REQUIRED_FIELD_INDICATOR varchar2(255),
+   REQUIRED_FIELD_WARNING_MESSAGE varchar2(255),
+   TITLE_CSS varchar2(255),
+   VIEW_ID number(19,0),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_DATE_ATTRIBUTE (
-   IDENTIFIER int8 not null,
+   IDENTIFIER number(19,0) not null,
    DEFAULT_VALUE date,
-   FORMAT varchar(255),
+   FORMAT varchar2(255),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_SHORT_ATTRIBUTE (
-   IDENTIFIER int8 not null,
-   DEFAULT_VALUE int2,
-   MEASUREMENT_UNITS varchar(255),
+   IDENTIFIER number(19,0) not null,
+   DEFAULT_VALUE number(5,0),
+   MEASUREMENT_UNITS varchar2(255),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_PRIMITIVE_ATTRIBUTE (
-   IDENTIFIER int8 not null,
-   IS_COLLECTION bool,
-   IS_IDENTIFIED bool,
-   IS_PRIMARY_KEY bool,
-   IS_NULLABLE bool,
+   IDENTIFIER number(19,0) not null,
+   IS_COLLECTION number(1,0),
+   IS_IDENTIFIED number(1,0),
+   IS_PRIMARY_KEY number(1,0),
+   IS_NULLABLE number(1,0),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_ASSOCIATION (
-   IDENTIFIER int8 not null,
-   DIRECTION varchar(255),
+   IDENTIFIER number(19,0) not null,
+   DIRECTION varchar2(255),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_RADIOBUTTON (
-   IDENTIFIER int8 not null,
+   IDENTIFIER number(19,0) not null,
    primary key (IDENTIFIER)
 );
 create table DYEXTN_DATEPICKER (
-   IDENTIFIER int8 not null,
+   IDENTIFIER number(19,0) not null,
    primary key (IDENTIFIER)
 );
 create table DYEXTN_CADSRDE (
-   IDENTIFIER int8 not null,
-   PUBLIC_ID varchar(255),
+   IDENTIFIER number(19,0) not null,
+   PUBLIC_ID varchar2(255),
    primary key (IDENTIFIER)
 );
 alter table DYEXTN_ENTITY_GROUP_REL add constraint FK5A0D835A992A67D7 foreign key (ENTITY_GROUP_ID) references DYEXTN_ENTITY_GROUP;
@@ -450,3 +450,4 @@ create sequence DYEXTN_VIEW_SEQ;
 create sequence DYEXTN_CONTROL_SEQ;
 create sequence DYEXTN_RULE_SEQ;
 create sequence DYEXTN_DATA_ELEMENT_SEQ;
+;

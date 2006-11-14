@@ -18,6 +18,8 @@ import org.apache.struts.action.ActionMessages;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.processor.ContainerProcessor;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
+import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
+import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.global.Constants;
 
 /**
@@ -54,6 +56,7 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 			String callbackURL = (String) CacheManager.getObjectFromCache(request,Constants.CALLBACK_URL);
 			if (callbackURL != null && !callbackURL.equals(""))
 			{
+				calllbackURL = calllbackURL + "?" +  WebUIManager.getOperationStatusParameterName() + "=" + WebUIManagerConstants.SUCCESS;
 				CacheManager.clearCache(request);
 				response.sendRedirect(callbackURL);
 				return null;

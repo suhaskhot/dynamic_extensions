@@ -31,6 +31,9 @@
 <c:set var="showFormPreview" value="${dataEntryForm.showFormPreview}"/>
 <jsp:useBean id="showFormPreview" type="java.lang.String"/>
 
+<c:set var="recordId" value="${dataEntryForm.recordId}"/>
+<jsp:useBean id="recordId" type="java.lang.String"/>
+
 <html>
 	<head>
 		<title><bean:message key="table.heading" /></title>
@@ -178,9 +181,17 @@
 							</c:when>
 										  	  
 						 	<c:otherwise>	
-							 	<html:submit styleClass="actionButton"  onclick="addDynamicData()">
-								 	<bean:message  key="buttons.submit" />
-								</html:submit>
+						 		<c:choose>
+					  	  			 <c:when test='${recordId  == ""}'>
+										 	<html:submit styleClass="actionButton"  onclick="addDynamicData()">
+											 	<bean:message  key="buttons.submit" />
+											</html:submit>
+									 </c:when>
+										  	  
+									 <c:otherwise>		
+									 </c:otherwise>
+						 		</c:choose>			 	
+								 	
 					 		</c:otherwise>
 						 		
 			     		</c:choose>								

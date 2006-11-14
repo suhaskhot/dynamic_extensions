@@ -72,5 +72,14 @@ public class WebUIManager implements WebUIManagerConstants
 	{
 		return RECORD_IDENTIFIER_PARAMETER_NAME;
 	}
+	
+	/**
+	 * The parameter to be set in the request which specifies status of the operation 
+	 *
+	 */
+	public static String getOperationStatusParameterName()
+	{
+		return OPERATION_STATUS_PARAMETER_NAME;
+	}
 
 }

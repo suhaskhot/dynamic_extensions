@@ -29,6 +29,10 @@ public class DataEntryForm extends AbstractActionForm
 	 * 
 	 */
 	protected ContainerInterface containerInterface;
+	/**
+	 * 
+	 */
+	protected String recordId;
 
 	/**
 	 * @return int formId
@@ -103,6 +107,16 @@ public class DataEntryForm extends AbstractActionForm
 	public void setShowFormPreview(String showFormPreview)
 	{
 		this.showFormPreview = showFormPreview;
+	}
+
+	public String getRecordId()
+	{
+		return recordId;
+	}
+
+	public void setRecordId(String recordId)
+	{
+		this.recordId = recordId;
 	}
 
 }

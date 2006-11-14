@@ -95,7 +95,14 @@ public class LoadDataEntryFormProcessor
 		{
 			dataEntryForm.setShowFormPreview("");
 		}
-
+		if(recordId != null)
+		{
+			dataEntryForm.setRecordId(recordId);
+		}
+		else
+		{
+			dataEntryForm.setRecordId("");
+		}
 		return containerInterface;
 	}
 

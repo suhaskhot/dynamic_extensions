@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -69,10 +69,10 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet implements Web
 		{
 
 			EntityManager entityManager = EntityManager.getInstance();
-			Collection entityCollection = null;
+			Collection containerCollection = null;
 			try
 			{
-				entityCollection = entityManager.getAllEntities();
+				containerCollection  = entityManager.getAllContainers();
 			}
 			catch (DynamicExtensionsSystemException e)
 			{
@@ -86,19 +86,19 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet implements Web
 				generateOutput(res, entityInterfaceJSONArray);
 			}
 
-			if (entityCollection != null)
+			if (containerCollection  != null)
 			{
-				Iterator entityIterator = entityCollection.iterator();
-				EntityInterface entityInterface;
+				Iterator entityIterator = containerCollection .iterator();
+				ContainerInterface containerInterface ;
 
 				while (entityIterator.hasNext())
 				{
-					JSONObject entityInterfaceJSONObject = new JSONObject();
-					entityInterface = (EntityInterface) entityIterator.next();
-					entityInterfaceJSONObject.put(CONTAINER_NAME, entityInterface.getName());
-					entityInterfaceJSONObject.put(CONTAINER_IDENTIFIER, entityInterface.getId());
+					JSONObject containerInterfaceJSONObject = new JSONObject();
+					containerInterface  = (ContainerInterface) entityIterator.next();
+					containerInterfaceJSONObject.put(CONTAINER_NAME, containerInterface.getCaption());
+					containerInterfaceJSONObject.put(CONTAINER_IDENTIFIER, containerInterface .getId());
 
-					entityInterfaceJSONArray.put(entityInterfaceJSONObject);
+					entityInterfaceJSONArray.put(containerInterfaceJSONObject );
 				}
 			}
 

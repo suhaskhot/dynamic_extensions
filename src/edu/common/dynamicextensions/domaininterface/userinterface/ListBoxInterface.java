@@ -1,43 +1,48 @@
-package edu.common.dynamicextensions.domaininterface.userinterface;
 
-import java.util.List;
+package edu.common.dynamicextensions.domaininterface.userinterface;
 
 /**
  * ListBoxInterface stores necessary information for generating ListBox control on
  * dynamically generated user interface.  
  * @author geetika_bangard
  */
-public interface ListBoxInterface extends ControlInterface 
+public interface ListBoxInterface extends ControlInterface
 {
 
-    /**
-     * @return Returns the isMultiSelect.
-     */
-    Boolean getIsMultiSelect();
-    /**
-     * @param isMultiSelect The isMultiSelect to set.
-     */
-    void setIsMultiSelect(Boolean isMultiSelect) ;
-    
-    /**
-     * 
-     * @return List of choices 
-     */
-	public List getChoiceList();
 	/**
-	 * 
-	 * @param list : List of choices
+	 * This method returns whether the ListBox has a multiselect property or not.
+	 * @hibernate.property name="isMultiSelect" type="boolean" column="MULTISELECT" 
+	 * @return whether the ListBox has a multiselect property or not.
 	 */
-	public void setChoiceList(List list);
+	Boolean getIsMultiSelect();
+
 	/**
-	 * 
-	 * @return Size of list box : Number of rows
+	 * This method sets whether the ListBox has a multiselect property or not.
+	 * @param isMultiSelect the Boolean value indicating whether the ListBox has a multiselect property or not.
 	 */
-	public Integer getNoOfRows();
+	void setIsMultiSelect(Boolean isMultiSelect);
+
+	//    /**
+	//     * 
+	//     * @return List of choices 
+	//     */
+	//	public List getChoiceList();
+	//	/**
+	//	 * 
+	//	 * @param list : List of choices
+	//	 */
+	//	public void setChoiceList(List list);
+	
 	/**
-	 * 
-	 * @param noOfRows Size of list box : Number of rows
+	 * This method returns the Number of rows to be displayed on the UI for ListBox.
+	 * @return the Number of rows to be displayed on the UI for ListBox.
 	 */
-	public void setNoOfRows(Integer noOfRows);
-  
+	Integer getNoOfRows();
+
+	/**
+	 * This method sets the Number of rows to be displayed on the UI for ListBox.
+	 * @param noOfRows the Number of rows to be set for ListBox.
+	 */
+	void setNoOfRows(Integer noOfRows);
+
 }

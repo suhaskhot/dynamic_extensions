@@ -18,27 +18,38 @@ public class ListBox extends Control implements ListBoxInterface
 {
 
 	/**
-	 * 
+	 * Serial Version Unique Identifier
 	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Boolean indicating whether multi selects are allowed in the list box.
 	 */
-	List listOfValues = null;
-
-	/**
-	 * 
-	 */
 	private Boolean isMultiSelect = null;
 	
+	/**
+	 * Number of rows to be displayed on the UI for ListBox.
+	 */
 	private Integer noOfRows = null;
+	
+	/**
+	 * The list of values to be displayed in the ListBox
+	 */
+	private List listOfValues = null;
 
+	/**
+	 * This method returns the Number of rows to be displayed on the UI for ListBox.
+	 * @return the Number of rows to be displayed on the UI for ListBox.
+	 */
 	public Integer getNoOfRows()
 	{
 		return this.noOfRows;
 	}
 
+	/**
+	 * This method sets the Number of rows to be displayed on the UI for ListBox.
+	 * @param noOfRows the Number of rows to be set for ListBox.
+	 */
 	public void setNoOfRows(Integer noOfRows)
 	{
 		this.noOfRows = noOfRows;
@@ -52,8 +63,9 @@ public class ListBox extends Control implements ListBoxInterface
 	}
 
 	/**
+	 * This method returns whether the ListBox has a multiselect property or not.
 	 * @hibernate.property name="isMultiSelect" type="boolean" column="MULTISELECT" 
-	 * @return Returns the isMultiSelect.
+	 * @return whether the ListBox has a multiselect property or not.
 	 */
 	public Boolean getIsMultiSelect()
 	{
@@ -61,7 +73,8 @@ public class ListBox extends Control implements ListBoxInterface
 	}
 
 	/**
-	 * @param isMultiSelect The isMultiSelect to set.
+	 * This method sets whether the ListBox has a multiselect property or not.
+	 * @param isMultiSelect the Boolean value indicating whether the ListBox has a multiselect property or not.
 	 */
 	public void setIsMultiSelect(Boolean isMultiSelect)
 	{
@@ -70,7 +83,7 @@ public class ListBox extends Control implements ListBoxInterface
 
 	/**
 	 * This method generates the HTML code to display the ListBox Control on the form.
-	 * @return HTML code for ListBox Control
+	 * @return HTML code for ListBox Control.
 	 */
 	public String generateHTML()
 	{
@@ -82,7 +95,7 @@ public class ListBox extends Control implements ListBoxInterface
 		{
 			strMultiSelect = "MULTIPLE ";
 		}
-		String htmlString = "<SELECT " + strMultiSelect + " size = 5" + "class = '" + cssClass + "' " + "name = '" + this.name + "' " + "id = '" + name
+		String htmlString = "<SELECT " + strMultiSelect + " size = " + this.noOfRows + "class = '" + cssClass + "' " + "name = '" + this.name + "' " + "id = '" + name
 				+ "' " + "title = '" + tooltip + "' " + ">";
 
 		if (this.value == null)
@@ -109,22 +122,6 @@ public class ListBox extends Control implements ListBoxInterface
 		htmlString = htmlString + "</SELECT>";
 		
 		return htmlString;
-	}
-
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface#getChoiceList()
-	 */
-	public List getChoiceList()
-	{
-		return listOfValues;
-	}
-
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface#setChoiceList(java.util.List)
-	 */
-	public void setChoiceList(List list)
-	{
-		listOfValues = list;
 	}
 
 }

@@ -74,7 +74,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	}
 
 	/**
-	 * Set all values from the form
+	 * This method set all values from the form.
 	 * @param abstractActionForm the ActionForm
 	 * @throws AssignDataException if data is not in proper format.
 	 */

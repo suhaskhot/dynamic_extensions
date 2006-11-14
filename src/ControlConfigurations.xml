@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <controls>
-	<!-- rules for text control start-->
 
+	<!-- rules for text control start-->
 	<control name="TextControl"
 		display-label="eav.caption.TextControlCaption"
 		jspName="TextControl.jsp">
@@ -61,7 +61,6 @@
 	<!-- rules for ComboboxControl control end-->
 
 	<!-- rules for Date control start-->
-
 	<control name="DateControl"
 		display-label="eav.caption.DateControlCaption"
 		jspName="DateControl.jsp">

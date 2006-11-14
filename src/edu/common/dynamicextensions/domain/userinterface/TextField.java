@@ -1,7 +1,6 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
-import edu.common.dynamicextensions.domain.LongAttribute;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.DoubleAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.LongAttributeInterface;
@@ -9,6 +8,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInter
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 
 /**
+ * This Class represents the TextField (TextBox) of the HTML page. 
  * @version 1.0
  * @created 28-Sep-2006 12:20:09 PM
  * @hibernate.joined-subclass table="DYEXTN_TEXTFIELD" 
@@ -89,7 +89,7 @@ public class TextField extends Control implements TextFieldInterface
 				+ "' ";
 
 		String measurementUnit = getMeasurementUnit(this.getAbstractAttribute());
-		if(measurementUnit != null)
+		if (measurementUnit != null)
 		{
 			htmlString += "&nbps" + measurementUnit;
 		}
@@ -125,12 +125,12 @@ public class TextField extends Control implements TextFieldInterface
 		String measurementUnit = null;
 		if (abstractAttribute instanceof LongAttributeInterface)
 		{
-			LongAttributeInterface longAttribute = (LongAttributeInterface)abstractAttribute;
+			LongAttributeInterface longAttribute = (LongAttributeInterface) abstractAttribute;
 			measurementUnit = longAttribute.getMeasurementUnits();
 		}
 		else if (abstractAttribute instanceof DoubleAttributeInterface)
 		{
-			DoubleAttributeInterface doubleAttribute = (DoubleAttributeInterface)abstractAttribute;
+			DoubleAttributeInterface doubleAttribute = (DoubleAttributeInterface) abstractAttribute;
 			measurementUnit = doubleAttribute.getMeasurementUnits();
 		}
 		return measurementUnit;

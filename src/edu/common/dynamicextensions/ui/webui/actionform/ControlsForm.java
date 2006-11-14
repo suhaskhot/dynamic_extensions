@@ -211,10 +211,7 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	 * 
 	 */
 	protected List childList;
-	/**
-	 * 
-	 */
-	protected String toolBoxClicked;
+	
 	/**
 	 * 
 	 */
@@ -1085,22 +1082,7 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		this.rootName = rootName;
 	}
 
-	/**
-	 * @return Returns the toolBoxClicked.
-	 */
-	public String getToolBoxClicked()
-	{
-		return toolBoxClicked;
-	}
-
-	/**
-	 * @param toolBoxClicked The toolBoxClicked to set.
-	 */
-	public void setToolBoxClicked(String toolBoxClicked)
-	{
-		this.toolBoxClicked = toolBoxClicked;
-	}
-
+	
 	/**
 	 * @return Returns the showPreview.
 	 *//*

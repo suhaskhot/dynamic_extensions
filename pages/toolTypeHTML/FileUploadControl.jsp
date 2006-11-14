@@ -17,13 +17,13 @@
 
 <html:hidden property="dataType" value ="<%=ProcessorConstants.DATATYPE_BYTEARRAY%>"/>
 <table  summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
-  <tr>
+  <!--<tr>
     <td>
 		<table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%'>
 				<jsp:include page="/pages/toolTypeHTML/CommonControlAttributes.jsp" />
 		</table>
 	</td>
- </tr>
+ </tr>-->
   <tr>
   	<td>
   		<table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%'>

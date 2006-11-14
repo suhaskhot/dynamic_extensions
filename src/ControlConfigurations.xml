@@ -4,7 +4,7 @@
 	<!-- rules for text control start-->
 	<control name="TextControl"
 		display-label="eav.caption.TextControlCaption"
-		jspName="TextControl.jsp">
+		jspName="/pages/toolTypeHTML/TextControl.jsp">
 		<validations>
 			<common-validation-rule name="unique" isImplicit="false">
 			</common-validation-rule>
@@ -26,21 +26,21 @@
 	<!-- rules for Checkbox control start-->
 	<control name="CheckboxControl"
 		display-label="eav.caption.CheckboxControlCaption"
-		jspName="CheckboxControl.jsp">
+		jspName="/pages/toolTypeHTML/CheckboxControl.jsp">
 	</control>
 	<!-- rules for CheckboxControl control end-->
 
 	<!-- rules for Radio button control start-->
 	<control name="RadioButtonControl"
 		display-label="eav.caption.RadioButtonControlCaption"
-		jspName="RadioButtonControl.jsp">
+		jspName="/pages/toolTypeHTML/RadioButtonControl.jsp">
 	</control>
 	<!-- rules for Radio button  control end-->
 
 	<!-- rules for ComboboxControl control start-->
 	<control name="ComboboxControl"
 		display-label="eav.caption.ComboboxControlCaption"
-		jspName="ComboboxControl.jsp">
+		jspName="/pages/toolTypeHTML/ComboboxControl.jsp">
 		<validations>
 			<common-validation-rule name="required"
 				isImplicit="false">
@@ -63,7 +63,7 @@
 	<!-- rules for Date control start-->
 	<control name="DateControl"
 		display-label="eav.caption.DateControlCaption"
-		jspName="DateControl.jsp">
+		jspName="/pages/toolTypeHTML/DateControl.jsp">
 		<validations>
 		<common-validation-rule name="dateRange" isImplicit="false">
 			</common-validation-rule>
@@ -77,7 +77,7 @@
 	<!-- rules for File Upload control start
 	<control name="FileUploadControl"
 		display-label="eav.caption.FileUploadControlCaption"
-		jspName="FileUploadControl.jsp">
+		jspName="/pages/toolTypeHTML/FileUploadControl.jsp">
 	</control>
 	 rules for File Upload control end-->
 	

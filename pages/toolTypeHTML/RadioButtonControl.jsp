@@ -19,14 +19,14 @@
     <td>
 
 	<table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%' >
-		<jsp:include page="/pages/toolTypeHTML/CommonControlAttributes.jsp" />
-
 		<tr valign="top">
 			<td class="formRequiredNoticeWithoutBorder" width="2%">
 					 			&nbsp;
 		 	</td>
-			<td class="formRequiredLabelWithoutBorder" ><bean:message key="eav.att.RadioButtonOptionTypes"></bean:message></td>
-			<td  class="formFieldWithoutBorder">
+			<td class="formRequiredLabelWithoutBorder" width="25%" >
+				<bean:message key="eav.att.RadioButtonOptionTypes"></bean:message>
+			</td>
+			<td class="formFieldWithoutBorder">
 				<c:forEach items="${displayChoiceList}" var="choiceType">
 					<jsp:useBean id="choiceType" type="edu.wustl.common.beans.NameValueBean" />
 						<c:set var="choiceTypeValue" value="${choiceType.value}" />

@@ -16,13 +16,13 @@
 <html:hidden property="dataType" value="<%=ProcessorConstants.DATATYPE_DATE%>"/>
 
 <table  summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
-  <tr>
+  <!--<tr>
     <td>
 		<table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%'>
 				<jsp:include page="/pages/toolTypeHTML/CommonControlAttributes.jsp" />
 		</table>
 	</td>
- </tr>
+ </tr>-->
   <tr>
   	<td>
   		<table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%'>
@@ -89,14 +89,14 @@
 				<html:checkbox property="attributeIdentified" value="true"><bean:message key="app.att.isIdentified" /></html:checkbox>
 			</td>
 		</tr>
-	-->	
+	-->
 			</tr>
 	</table>
 
   	</td>
   </tr>
 
-	
+
 </tr>
 
 

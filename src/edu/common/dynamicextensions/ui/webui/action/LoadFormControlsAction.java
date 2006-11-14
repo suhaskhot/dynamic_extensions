@@ -39,19 +39,26 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 	 * @throws DynamicExtensionsSystemException DynamicExtensionsSystemException
 	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
-			throws DynamicExtensionsSystemException
 	{
-		ControlsForm actionForm = (ControlsForm) form;
-		ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-
-		LoadFormControlsProcessor loadFormControlsProcessor = LoadFormControlsProcessor.getInstance();
-		loadFormControlsProcessor.loadFormControls(actionForm, containerInterface);
-
-		if ((actionForm.getDataType() != null) && (actionForm.getDataType().equals(ProcessorConstants.DATATYPE_NUMBER)))
+		try
 		{
-			initializeMeasurementUnits(actionForm);
+			ControlsForm actionForm = (ControlsForm) form;
+			ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+
+			LoadFormControlsProcessor loadFormControlsProcessor = LoadFormControlsProcessor.getInstance();
+			loadFormControlsProcessor.loadFormControls(actionForm, containerInterface);
+
+			if ((actionForm.getDataType() != null) && (actionForm.getDataType().equals(ProcessorConstants.DATATYPE_NUMBER)))
+			{
+				initializeMeasurementUnits(actionForm);
+			}
+			return mapping.findForward(Constants.SHOW_BUILD_FORM_JSP);
 		}
-		return mapping.findForward(Constants.SHOW_BUILD_FORM_JSP);
+		catch (DynamicExtensionsSystemException e)
+		{
+			String actionForwardString = catchException(e,request);
+			return(mapping.findForward(actionForwardString));
+		}
 
 	}
 

@@ -20,13 +20,13 @@
     <td>
 
 	<table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%' >
-		<jsp:include page="/pages/toolTypeHTML/CommonControlAttributes.jsp" />
+		<!--<jsp:include page="/pages/toolTypeHTML/CommonControlAttributes.jsp" />-->
 
 		<tr valign="top">
 			<td class="formRequiredNoticeWithoutBorder" width="2%">
 		 			&nbsp;
 		 	</td>
-			<td class="formRequiredLabelWithoutBorder">
+			<td class="formRequiredLabelWithoutBorder" width="25%">
 					<bean:message key="eav.att.TextFieldWidth"/>
 			</td>
 
@@ -38,10 +38,10 @@
 			<td class="formRequiredNoticeWithoutBorder" width="2%">
 				 			*
 		 	</td>
-			<td class="formRequiredLabelWithoutBorder">
+			<td class="formRequiredLabelWithoutBorder" width="25%">
 					<bean:message key="eav.att.DataInput"/>
 			</td>
-			
+
 			<td class="formFieldWithoutBorder">
 				<c:forEach items="${dataTypeList}" var="dataTypeObj">
 					<jsp:useBean id="dataTypeObj" type="edu.wustl.common.beans.NameValueBean" />
@@ -53,11 +53,11 @@
 				</c:forEach>
 			</td>
 		</tr>
-	<input type="hidden" name="initialDataType" value="<%=selectedDataType%>">
+
 	 </table>
 	</td>
  </tr>
-
+<input type="hidden" name="initialDataType" value="<%=selectedDataType%>">
 	<tr valign="top">
 		<td>
 			<div id="substitutionDiv">

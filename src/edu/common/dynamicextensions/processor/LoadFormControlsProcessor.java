@@ -62,7 +62,6 @@ public class LoadFormControlsProcessor
 		{
 			String controlOperation = controlsForm.getControlOperation();
 
-
 			ControlConfigurationsFactory controlConfigurationsFactory = ControlConfigurationsFactory.getInstance();
 			if (controlOperation == null || controlOperation.equals(""))
 			{

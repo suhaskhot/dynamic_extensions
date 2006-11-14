@@ -379,6 +379,14 @@ FORM BEGINS
   border-left:1px solid #5C5C5C; /* constant: dark gray */
   border-right:1px solid #5C5C5C; /* constant: dark gray */
 }
+.formTitleGray{ /* for header cells (top) of forms */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.7em;
+  font-weight:bold;
+  background-color:#F4F4F5; /* constant: dark gray */
+  color:#000000; /* constant: white */
+  border-bottom:1px solid #5C5C5C; /* constant: dark gray */
+}
 .formSubTableTitle{ /* for subtitles in the table */
   font-family:arial,helvetica,verdana,sans-serif;
   font-size:0.8em;

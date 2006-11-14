@@ -8,26 +8,13 @@
 <c:set var="dataTypeList" value="${controlsForm.dataTypeList}"/>
 <jsp:useBean id="dataTypeList" type="java.util.List"/>
 
-			<!--<tr>
-				<td class="formRequiredNoticeWithoutBorder" width="2%">
+<table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%' >
+			<tr valign="top">
+				<td  class="formRequiredNoticeWithoutBorder" width="2%">
 						*
 				</td>
 
-				<td class="formRequiredLabelWithoutBorder">
-						<bean:message key="eav.att.Name"/>
-				</td>
-
-				<td class="formFieldWithoutBorder">
-						<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="name" />
-				</td>
-			</tr>-->
-
-			<tr valign="top">
-					<td class="formRequiredNoticeWithoutBorder" width="2%">
-							*
-					</td>
-
-				<td class="formRequiredLabelWithoutBorder" width="25%">
+				<td class="formRequiredLabelWithoutBorder" width="15%">
 						<bean:message key="eav.att.Label"/>
 				</td>
 
@@ -40,7 +27,7 @@
 						&nbsp;
 				</td>
 
-				<td class="formRequiredLabelWithoutBorder" width="25%">
+				<td class="formRequiredLabelWithoutBorder" width="15%">
 					<bean:message key="eav.form.conceptCode"/>
 				</td>
 
@@ -56,35 +43,23 @@
 									&nbsp;
 							</td>
 
-				<td class="formRequiredLabelWithoutBorder">
+				<td class="formRequiredLabelWithoutBorder" width="15%">
 						<bean:message key="eav.att.Description"/>
 				</td>
 
 				<td class="formFieldWithoutBorder">
-						<html:textarea rows = "3" cols="28"  property="description"  />
+						<html:textarea styleClass="formDateSized" rows = "3" cols="28"  property="description"  />
 				</td>
 			</tr>
-			
+
 			<tr valign="top">
 				<td class="formRequiredNoticeWithoutBorder" width="2%">
 						&nbsp;
 				</td>
-				<td class="formRequiredLabelWithoutBorder" width="25%">&nbsp;</td>
+				<td class="formRequiredLabelWithoutBorder" width="15%">&nbsp;</td>
 				<td class="formFieldWithoutBorder" align="left">
 					<html:checkbox property="attributeIdentified" value="true"><bean:message key="app.att.isIdentified" /></html:checkbox>
 				</td>
 			</tr>
-			<tr valign="top">
-				<td class="formRequiredNoticeWithoutBorder" width="2%">
-						&nbsp;
-				</td>
-				<td class="formRequiredLabelWithoutBorder" width="25%">&nbsp;</td>
-				<td class="formFieldWithoutBorder" align="left">
-					<html:checkbox property="attributeMandatory" value="true">
-						<bean:message key="app.att.isMandatory" />
-					</html:checkbox>
-				</td>
-			</tr>
-		<tr>
-			<td colspan="3"><hr></td>
-		</tr>
+	</tr>
+	</table>

@@ -13,17 +13,11 @@
 <LINK href="css/calanderComponent.css" type=text/css rel=stylesheet>
 <html:hidden property="dataType" value="<%=ProcessorConstants.DATATYPE_STRING%>"/>
 
-<table  summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
-  <tr>
-    <td>
-		<table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%'>
-				<jsp:include page="/pages/toolTypeHTML/CommonControlAttributes.jsp" />
-		</table>
-	</td>
- </tr>
+<table  summary="" align = 'center' width='100%'>
+
   <tr>
   	<td>
-  		<table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%'>
+  		<table summary=""  align = 'center' width='100%'>
 		   <tr>
 				<td class="formRequiredNoticeWithoutBorder" width="2%">
 					*
@@ -42,7 +36,7 @@
 					</html:radio>
 				</td>
 			</tr>
-			
+
 	</table>
 
   	</td>

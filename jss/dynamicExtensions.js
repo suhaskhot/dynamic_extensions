@@ -3,7 +3,7 @@ function formSelectedAction() {
 }
 function tagHandlerFunction(selectedTool) {
 	document.getElementById('userSelectedTool').value=selectedTool;
-	
+	alert(document.getElementById('userSelectedTool').value);
 }
 
 function showBuildFormJSP() {
@@ -15,14 +15,12 @@ function showBuildFormJSP() {
 function controlSelectedAction()
 {	
 	var controlOperation = document.getElementById('controlOperation');
-	controlOperation.value = 'Add';
-	
-	var toolBoxClicked = document.getElementById('toolBoxClicked');
-	toolBoxClicked.value = 'True';
+	//controlOperation.value = 'Add';
 	
 	clearForm();
+	
 	var controlsForm = document.getElementById('controlsForm');
-	controlsForm.action="/dynamicExtensions/LoadFormControlsAction.do";
+	controlsForm.action="/dynamicExtensions/SelectControlAction.do";
 	controlsForm.submit();
 }
 
@@ -42,9 +40,9 @@ function showHomePageFromBuildForm() {
 	controlsForm.submit();
 }
 function addControlToFormTree() {
-	document.getElementById('operation').value='controlAdded';
-    var controlsForm=document.getElementById("controlsForm");
-    controlsForm.action="/dynamicExtensions/AddControlsAction.do";
+       document.getElementById('operation').value='controlAdded';
+   	var controlsForm=document.getElementById("controlsForm");
+     controlsForm.action="/dynamicExtensions/AddControlsAction.do";
 //    document.getElementById('controlOperation').value='add';
 	controlsForm.submit();
 }
@@ -427,7 +425,7 @@ function clearForm()
 {
 var controlsForm = document.getElementById('controlsForm');
 
-if(controlsForm.name != null)
+	/*if(controlsForm.name != null)
 	{
 	controlsForm.name.value = "";
 	}
@@ -438,7 +436,7 @@ if(controlsForm.name != null)
 	if(controlsForm.description != null)
 	{
 	controlsForm.description.value = "";
-	}
+	}*/
 	if(controlsForm.cssClass != null)
 	{
 	controlsForm.cssClass.value = "";
@@ -486,10 +484,10 @@ if(controlsForm.name != null)
 	{
 	controlsForm.attributenoOfCols.value = "";
 	}
-	if(controlsForm.attributeConceptCode != null)
+	/*if(controlsForm.attributeConceptCode != null)
 	{
 	controlsForm.attributeConceptCode.value = "";
-	}
+	}*/
 	if(controlsForm.choiceList != null)
 	{
 	controlsForm.choiceList.value = "";
@@ -498,10 +496,10 @@ if(controlsForm.name != null)
 	{
 		document.getElementById('attributeIsPassword').value = "";
 	}
-	if(document.getElementById('attributeIdentified') != null)
+	/*if(document.getElementById('attributeIdentified') != null)
 	{
 		document.getElementById('attributeIdentified').value = "";
-	}
+	}*/
 	if(document.getElementById('choiceList') != null)
 	{
 		document.getElementById('choiceList').value = "";

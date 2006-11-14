@@ -15,7 +15,7 @@
 				<td class="formRequiredNoticeWithoutBorder" width="2%">
 									&nbsp;
 				</td>
-				<td class="formRequiredLabelWithoutBorder"><bean:message key="eav.att.OptionLabel"/></td>
+				<td class="formRequiredLabelWithoutBorder" width="25%"><bean:message key="eav.att.OptionLabel"/></td>
 				<td  class="formFieldWithoutBorder">
 					<input type="text" name="optionName" class="formDateSized" value='' maxlength="100" size="60" >
 				</td>
@@ -25,7 +25,7 @@
 					<td class="formRequiredNoticeWithoutBorder" width="2%">
 										&nbsp;
 					</td>
-					<td class="formRequiredLabelWithoutBorder"><bean:message key="eav.att.OptionConceptCode"/></td>
+					<td class="formRequiredLabelWithoutBorder" width="25%">><bean:message key="eav.att.OptionConceptCode"/></td>
 					<td  class="formFieldWithoutBorder">
 						<input type="text" name="optionConceptCode" class="formDateSized" value='' maxlength="100" size="60" >
 					</td>
@@ -44,7 +44,7 @@
 					<td class="formRequiredNoticeWithoutBorder" width="2%">
 										&nbsp;
 					</td>
-					<td class="formRequiredLabelWithoutBorder">&nbsp;</td>
+					<td class="formRequiredLabelWithoutBorder" width="25%">&nbsp;</td>
 					<td  class="formFieldWithoutBorder">
 							<html:button styleClass="actionButton" property="addChoiceValue" onclick="addChoiceToList(true)" >
 									<bean:message  key="eav.button.AddOption" />
@@ -54,7 +54,7 @@
 	</tr>
 	<tr valign="top">
 		<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-		<td class="formRequiredLabelWithoutBorder"><bean:message key="eav.att.OptionList"/></td>
+		<td class="formRequiredLabelWithoutBorder" width="25%"><bean:message key="eav.att.OptionList"/></td>
 		<td  class="formFieldWithoutBorder">
 				<table summary="" cellpadding="0" cellspacing="0" border="0" align = 'center' valign="top" width='100%'>
 					<tr  class="formRequiredLabelWithoutBorder">

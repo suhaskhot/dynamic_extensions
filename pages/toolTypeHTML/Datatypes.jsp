@@ -17,11 +17,11 @@
 		<div id="TextDataType" style="display:none">
 			 <table summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
 
-			 <tr valign="top">
+			 	<tr valign="top">
 			 			<td class="formRequiredNoticeWithoutBorder" width="2%">
 			 					 			*
 			 		 	</td>
-			 			<td class="formRequiredLabelWithoutBorder">
+			 			<td class="formRequiredLabelWithoutBorder" width="25%">
 			 								<bean:message key="eav.control.type"/>
 			 						</td>
 			 			<td  class="formFieldWithoutBorder">
@@ -68,7 +68,7 @@
 						<td class="formRequiredNoticeWithoutBorder" width="2%">
 									 			&nbsp;
 		 				</td>
-						<td class="formRequiredLabelWithoutBorder">
+						<td class="formRequiredLabelWithoutBorder" width="25%">
 								<bean:message key="eav.att.DefaultValue"/>
 						</td>
 
@@ -132,38 +132,4 @@
 						</td>
 					</tr>
 				 </table>
-			</div>
-<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
-			<div id="DateDataType" style="display:none">
-			   <table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%'>
-			       <tr>
-			    	   <td class="formRequiredNoticeWithoutBorder" width="2%">
-				   									 			&nbsp;
-		 				</td>
-						<td class="formRequiredLabelWithoutBorder" width="25%">
-							<bean:message key="eav.att.DefaultValue"/>
-						</td>
-
-						<td class="formFieldWithoutBorder">
-							<html:text styleClass="formDateSized" styleId="attributeDefaultValue"  maxlength="100" size="60"  property="attributeDefaultValue" />
-
-	                       <a href="javascript:show_calendar('getElementById(\'attributeDefaultValue\')',null,null,'<%=ProcessorConstants.DATE_ONLY_FORMAT%>');">
-	                        <img src='images\\calendar.gif' width=24 height=22 border=0/><%=ProcessorConstants.DATE_ONLY_FORMAT%></a>
-						</td>
-					</tr>
-
-					<tr>
-						<td class="formRequiredNoticeWithoutBorder" width="2%">
-							*
-		 				</td>
-						<td class="formRequiredLabelWithoutBorder" width="25%">
-								<bean:message key="eav.att.Format"/>
-						</td>
-
-						<td class="formFieldWithoutBorder">
-								<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="format" />
-						</td>
-					</tr>
-				 </table>
-			</div>
 			</div>

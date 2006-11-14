@@ -67,22 +67,13 @@ PUBLIC
 			<forward name="showBuildFormJSP" path="/pages/BuildForm.jsp" />
 		</action>
 		
-		<action path="/ApplyFormControlsAction" 
-		    type="edu.common.dynamicextensions.ui.webui.action.ApplyFormControlsAction" 
-		    name="controlsForm"
-			validate="true"
-			input="/ApplyFormControlsAction.do"
-			scope="request">
-			<forward name="success" path="/LoadFormControlsAction.do" />
-		</action>
-		
 		<action path="/SelectControlAction" 
 		    type="edu.common.dynamicextensions.ui.webui.action.SelectControlAction" 
 		    name="controlsForm"
 			validate="false"
 			input="/SelectControlAction.do"
 			scope="request">
-			<forward name="success" path="/LoadFormControlsAction.do" />
+			<forward name="success" path="/pages/BuildForm.jsp" />
 		</action>
 		
 		<action path="/AddControlsAction" 

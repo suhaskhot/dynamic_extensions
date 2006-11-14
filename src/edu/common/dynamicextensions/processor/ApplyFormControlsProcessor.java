@@ -16,6 +16,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterfa
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 
 /**
  * @author preeti_munot
@@ -109,7 +110,6 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				//Container : Add control and entity
 				containerInterface.addControl(controlInterface);
 				containerInterface.setEntity(entityInterface);
-
 			}
 			else if (controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_EDIT))
 			{
@@ -120,7 +120,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				//Get the control from container
 				String selectedControlSeqNumber = controlsForm.getSelectedControlId();
 				controlInterface = containerInterface.getControlInterfaceBySequenceNumber(selectedControlSeqNumber);
-
+				
 				//Remove old refernces : From Entity
 				entityInterface.removeAbstractAttribute(controlInterface.getAbstractAttribute());
 
@@ -134,10 +134,23 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				controlInterface.setAbstractAttribute(abstractAttributeInterface);
 
 				controlsForm.setAbstractAttribute(abstractAttributeInterface);
-
-				//update control
+				
+				String oldControlType =  DynamicExtensionsUtility.getControlName(controlInterface); 
+				String newControlType = controlsForm.getUserSelectedTool();
+				ControlInterface newControlInterface = null;
+				if(!oldControlType.equals(newControlType))
+				{
+					newControlInterface = controlProcessor.createAndPopulateControl(newControlType, controlsForm);
+				}
+				else
+				{
+					newControlInterface = controlProcessor.populateControlInterface(controlsForm.getUserSelectedTool(),	controlInterface, controlsForm);
+				}
+					
+				
+				/*//update control
 				ControlInterface newControlInterface = controlProcessor.populateControlInterface(controlsForm.getUserSelectedTool(),
-						controlInterface, controlsForm);
+						controlInterface, controlsForm);*/
 				//If new control interface is same as old one, do nothing. Else remove old ref from container and add new one
 				if ((newControlInterface != null) && (!newControlInterface.equals(controlInterface)))
 				{

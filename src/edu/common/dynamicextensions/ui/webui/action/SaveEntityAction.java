@@ -56,7 +56,7 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 			String callbackURL = (String) CacheManager.getObjectFromCache(request,Constants.CALLBACK_URL);
 			if (callbackURL != null && !callbackURL.equals(""))
 			{
-				calllbackURL = calllbackURL + "?" +  WebUIManager.getOperationStatusParameterName() + "=" + WebUIManagerConstants.SUCCESS;
+				callbackURL = callbackURL + "?" +  WebUIManager.getOperationStatusParameterName() + "=" + WebUIManagerConstants.SUCCESS;
 				CacheManager.clearCache(request);
 				response.sendRedirect(callbackURL);
 				return null;

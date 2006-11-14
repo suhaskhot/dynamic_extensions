@@ -23,6 +23,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.ControlInformationObject;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.beans.NameValueBean;
 
 /**
@@ -139,7 +140,7 @@ public class LoadFormControlsProcessor
 			attributeProcessor.populateAttributeUIBeanInterface(controlInterface.getAbstractAttribute(), controlsForm);
 		}
 
-		String userSelectedTool = getControlName(controlInterface);
+		String userSelectedTool = DynamicExtensionsUtility.getControlName(controlInterface);
 		if (userSelectedTool == null || userSelectedTool.equals(""))
 		{
 			userSelectedTool = ProcessorConstants.DEFAULT_SELECTED_CONTROL;
@@ -316,50 +317,7 @@ public class LoadFormControlsProcessor
 		return measurementUnits;
 	}
 
-	/**
-	 * @param controlInterface ControlInterface
-	 * @return String ControlName
-	 */
-	private String getControlName(ControlInterface controlInterface)
-	{
-		if (controlInterface != null)
-		{
-			if (controlInterface instanceof TextFieldInterface)
-			{
-				return ProcessorConstants.TEXT_CONTROL;
-			}
-			else if (controlInterface instanceof ComboBoxInterface)
-			{
-				return ProcessorConstants.COMBOBOX_CONTROL;
-			}
-			else if (controlInterface instanceof ListBoxInterface)
-			{
-				return ProcessorConstants.COMBOBOX_CONTROL;
-			}
-			else if (controlInterface instanceof DatePickerInterface)
-			{
-				return ProcessorConstants.DATEPICKER_CONTROL;
-			}
-			else if (controlInterface instanceof TextAreaInterface)
-			{
-				return ProcessorConstants.TEXT_CONTROL;
-			}
-			else if (controlInterface instanceof RadioButtonInterface)
-			{
-				return ProcessorConstants.RADIOBUTTON_CONTROL;
-			}
-			else if (controlInterface instanceof CheckBoxInterface)
-			{
-				return ProcessorConstants.CHECKBOX_CONTROL;
-			}
-			else if (controlInterface instanceof FileUploadInterface)
-			{
-				return ProcessorConstants.FILEUPLOAD_CONTROL;
-			}
-
-		}
-		return null;
-	}
+	
 
 	/**
 	 *  
@@ -383,7 +341,7 @@ public class LoadFormControlsProcessor
 			{
 				controlCaption = controlInterface.getCaption();
 				controlSequenceNumber = controlInterface.getSequenceNumber() + "";
-				controlName = getControlName(controlInterface);
+				controlName = DynamicExtensionsUtility.getControlName(controlInterface);
 				controlDatatype = getControlCaption(controlConfigurationsFactory.getControlDisplayLabel(controlName));
 				controlInformationObject = new ControlInformationObject(controlCaption, controlDatatype, controlSequenceNumber);
 				childList.add(controlInformationObject);

@@ -3,7 +3,7 @@ function formSelectedAction() {
 }
 function tagHandlerFunction(selectedTool) {
 	document.getElementById('userSelectedTool').value=selectedTool;
-	alert(document.getElementById('userSelectedTool').value);
+	
 }
 
 function showBuildFormJSP() {
@@ -15,7 +15,7 @@ function showBuildFormJSP() {
 function controlSelectedAction()
 {	
 	var controlOperation = document.getElementById('controlOperation');
-	//controlOperation.value = 'Add';
+//	controlOperation.value = 'Add';
 	
 	clearForm();
 	
@@ -23,7 +23,6 @@ function controlSelectedAction()
 	controlsForm.action="/dynamicExtensions/SelectControlAction.do";
 	controlsForm.submit();
 }
-
 
 function formCreateAsChanged() {
 }

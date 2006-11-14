@@ -7,9 +7,19 @@ package edu.common.dynamicextensions.util;
 import java.util.List;
 
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
+import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.bizlogic.AbstractBizLogic;
 import edu.wustl.common.util.dbManager.DAOException;
@@ -65,5 +75,49 @@ public class DynamicExtensionsUtility
 			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
 		return object;
+	}
+	/**
+	 * @param controlInterface ControlInterface
+	 * @return String ControlName
+	 */
+	public static String getControlName(ControlInterface controlInterface)
+	{
+		if (controlInterface != null)
+		{
+			if (controlInterface instanceof TextFieldInterface)
+			{
+				return ProcessorConstants.TEXT_CONTROL;
+			}
+			else if (controlInterface instanceof ComboBoxInterface)
+			{
+				return ProcessorConstants.COMBOBOX_CONTROL;
+			}
+			else if (controlInterface instanceof ListBoxInterface)
+			{
+				return ProcessorConstants.LISTBOX_CONTROL;
+			}
+			else if (controlInterface instanceof DatePickerInterface)
+			{
+				return ProcessorConstants.DATEPICKER_CONTROL;
+			}
+			else if (controlInterface instanceof TextAreaInterface)
+			{
+				return ProcessorConstants.MULTILINE_CONTROL;
+			}
+			else if (controlInterface instanceof RadioButtonInterface)
+			{
+				return ProcessorConstants.RADIOBUTTON_CONTROL;
+			}
+			else if (controlInterface instanceof CheckBoxInterface)
+			{
+				return ProcessorConstants.CHECKBOX_CONTROL;
+			}
+			else if (controlInterface instanceof FileUploadInterface)
+			{
+				return ProcessorConstants.FILEUPLOAD_CONTROL;
+			}
+
+		}
+		return null;
 	}
 }

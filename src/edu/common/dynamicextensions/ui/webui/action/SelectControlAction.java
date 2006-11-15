@@ -85,15 +85,19 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 			controlsForm.setDataTypeList(controlConfigurationsFactory.getControlsDataTypes(userSelectedTool));
 
 			ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+			
 			//Set Entity Name as root
-			EntityInterface entity = containerInterface.getEntity();
-			if (entity != null)
+			if(containerInterface!=null)
 			{
-				controlsForm.setRootName(entity.getName());
-			}
-			else
-			{
-				controlsForm.setRootName("");
+				EntityInterface entity = containerInterface.getEntity();
+				if (entity != null)
+				{
+					controlsForm.setRootName(entity.getName());
+				}
+				else
+				{
+					controlsForm.setRootName("");
+				}
 			}
 //			Initialize default values for controls
 			initializeControlDefaultValues(userSelectedTool,controlsForm);

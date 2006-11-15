@@ -21,6 +21,7 @@ public class Constants
 	public static final String DEFAULT_THESAURAS_NAME= "defaultName";
 	public static final String DISPLAY_LABEL = "display-label";
 	public static final String JSP_NAME = "jspName";
+	public static final String IMAGE_PATH = "image-path";
 	
 	public static final String VALIDATION_RULE = "validation-rule";
 	public static final String COMMON_VALIDATION_RULE  = "common-validation-rule";

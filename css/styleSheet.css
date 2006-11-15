@@ -386,6 +386,7 @@ FORM BEGINS
   background-color:#F4F4F5; /* constant: dark gray */
   color:#000000; /* constant: white */
   border-bottom:1px solid #5C5C5C; /* constant: dark gray */
+  padding-left:0.7em;
 }
 .formSubTableTitle{ /* for subtitles in the table */
   font-family:arial,helvetica,verdana,sans-serif;
@@ -1365,6 +1366,24 @@ textarea.formFieldSized20{ /* Used by Mandar for the comments used in autoevents
   border-right:1px solid #5C5C5C; /* constant: dark gray */
   border-bottom:1px solid #5C5C5C; /* constant: dark gray */
   cursor:hand;
+  width:12em;
+  text-align=left
+}
+.toolLabelTextSelected
+{
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.7em;
+  font-weight:bold;
+  padding-left:0.8em;
+  background-color:#A1A1A1; 
+  color:#000000; /* constant: white */
+  border-top:1px solid #5C5C5C; /* constant: dark gray */
+  border-left:1px solid #5C5C5C; /* constant: dark gray */
+  border-right:1px solid #5C5C5C; /* constant: dark gray */
+  border-bottom:1px solid #5C5C5C; /* constant: dark gray */
+  cursor:hand;
+  width:12em;
+  text-align=left
 }
 input.formParamSized{ /* for the form elements themselves and with a constant width (on elements) */
   font-family:arial,helvetica,verdana,sans-serif;

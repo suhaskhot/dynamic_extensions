@@ -9,6 +9,8 @@ import java.util.ResourceBundle;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.util.logger.Logger;
 
@@ -383,10 +385,18 @@ public class ToolBoxTag extends TagSupport
 	 * Process the end of this tag.
 	 * Generates HTML to be rendered.
 	 * @return int EVAL_PAGE
-	 * @since TODO
 	 */
 	public int doEndTag()
 	{
+		ControlConfigurationsFactory controlConfigurationsFactory=null;
+		try
+		{
+			controlConfigurationsFactory = ControlConfigurationsFactory.getInstance();
+		}
+		catch (DynamicExtensionsSystemException e1)
+		{
+			Logger.out.error(e1);
+		}
 		ResourceBundle resourceBundle = initializeResourceBundle();
 		if (!isDataValid())
 		{
@@ -397,10 +407,12 @@ public class ToolBoxTag extends TagSupport
 		sb.append("\n<div id=\"" + id + "\"  class=\"formField\"  style=\"height: " + height + "; width:" + width
 				+ "; cursor: hand ; overflow-y: auto;\">");
 		sb.append("\n<table class=\"toolBoxTable\" border=\"0\">");
-		sb.append("<tr>");
+		
 		Iterator toolsListIterator = toolsList.iterator();
 		String toolName = null, toolCaption = null;
 		NameValueBean tool = null;
+		String imagePath = null;
+		String classname = null;
 		while (toolsListIterator.hasNext())
 		{
 			tool = (NameValueBean) toolsListIterator.next();
@@ -408,23 +420,29 @@ public class ToolBoxTag extends TagSupport
 			{
 				toolName = tool.getName();
 				toolCaption = getToolCaptionFromResourceBundle(resourceBundle, tool.getValue());
-
+				if(controlConfigurationsFactory!=null)
+				{
+					imagePath = controlConfigurationsFactory.getControlImagePath(toolName);
+				}
 				Logger.out.debug("Tool [" + toolName + "] Caption [" + toolCaption + "]");
 				if ((toolName != null) && (toolCaption != null))
 				{
+					sb.append("<tr><td width='100%' align='center'>");
 					if (selectedUserOption != null && toolName.equals(selectedUserOption))
 					{
-						sb.append("\n<input style = 'background-color:#A1A1A1;' class=\"toolLabelText\" value=\"" + toolCaption
-								+ "\"type=\"label\" id='" + toolName + "' border=\"1\" onclick=\"tagHandlerFunction('" + toolName + "');" + onClick
-								+ "('" + toolName + "','" + id + "')\"/>");
+						classname="toolLabelTextSelected";
 					}
 					else
 					{
-						sb.append("\n<input class=\"toolLabelText\" value=\"" + toolCaption + "\"type=\"label\" id='" + toolName
-								+ "' border=\"1\" onclick=\"tagHandlerFunction('" + toolName + "');" + onClick + "('" + toolName + "','" + id
-								+ "')\"/>");
+						classname = "toolLabelText";
 					}
-					sb.append("\n</tr></td>");
+					sb.append("\n<label class='" + classname + "' value=\"" + toolCaption
+							+ "\" id='" + toolName + "' border=\"1\" onclick=\"tagHandlerFunction('" + toolName + "');" + onClick
+							+ "('" + toolName + "','" + id + "')\"/>");
+					sb.append("<img align=\"left\" src='" + imagePath + "' />&nbsp;");
+					sb.append(toolCaption);
+					sb.append("</label>");
+					sb.append("\n</td></tr>");
 				}
 				else
 				{

@@ -94,7 +94,7 @@ public class DynamicExtensionsUtility
 			}
 			else if (controlInterface instanceof ListBoxInterface)
 			{
-				return ProcessorConstants.LISTBOX_CONTROL;
+				return ProcessorConstants.COMBOBOX_CONTROL;
 			}
 			else if (controlInterface instanceof DatePickerInterface)
 			{
@@ -102,7 +102,7 @@ public class DynamicExtensionsUtility
 			}
 			else if (controlInterface instanceof TextAreaInterface)
 			{
-				return ProcessorConstants.MULTILINE_CONTROL;
+				return ProcessorConstants.TEXT_CONTROL;
 			}
 			else if (controlInterface instanceof RadioButtonInterface)
 			{

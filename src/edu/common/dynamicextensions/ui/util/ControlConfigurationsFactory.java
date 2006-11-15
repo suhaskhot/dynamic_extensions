@@ -46,7 +46,6 @@ public final class ControlConfigurationsFactory
 
 		parseXML("RuleConfigurations.xml");
 		parseXML("ControlConfigurations.xml");
-		System.out.println("");
 	}
 
 	/**
@@ -230,7 +229,7 @@ public final class ControlConfigurationsFactory
 			{
 				ControlsConfigurationObject controlsConfigurationObject = null;
 				List<NameValueBean> listOfControls = new ArrayList<NameValueBean>();
-				Node controlNode = null, controlNameNode = null, displayLabelNode = null, jspNameNode = null, dataTypeNode = null;
+				Node controlNode = null, controlNameNode = null, displayLabelNode = null, jspNameNode = null, dataTypeNode = null,imageFilePathNode=null;
 				NodeList controlDataTypesNodesList = null, controlCommonValidationRules = null;
 				NamedNodeMap controlAttributes = null;
 				String controlName = null, displayLabel = null;
@@ -254,6 +253,7 @@ public final class ControlConfigurationsFactory
 							controlNameNode = controlAttributes.getNamedItem(Constants.NAME);
 							displayLabelNode = controlAttributes.getNamedItem(Constants.DISPLAY_LABEL);
 							jspNameNode = controlAttributes.getNamedItem(Constants.JSP_NAME);
+							imageFilePathNode = controlAttributes.getNamedItem(Constants.IMAGE_PATH);
 							if (controlNameNode != null && displayLabelNode != null && jspNameNode != null)
 							{
 								controlName = controlNameNode.getNodeValue();
@@ -263,6 +263,10 @@ public final class ControlConfigurationsFactory
 								controlsConfigurationObject.setControlName(controlName);
 								controlsConfigurationObject.setDisplayLabel(displayLabel);
 								controlsConfigurationObject.setJspName(jspNameNode.getNodeValue());
+							}
+							if(imageFilePathNode!=null)
+							{
+								controlsConfigurationObject.setImageFilePath(imageFilePathNode.getNodeValue());
 							}
 						}
 						List commonImplicitRules = new ArrayList();
@@ -494,6 +498,25 @@ public final class ControlConfigurationsFactory
 			}
 		}
 		return jspName;
+	}
+	
+	/**
+	 * Returns the jspname for the selected control by user.
+	 * @param controlName name of the control selected by user
+	 * @return String jspname associated with the control
+	 */
+	public String getControlImagePath(String controlName)
+	{
+		String imagepath = null;
+		if ((controlName != null) && (controlsConfigurationMap != null))
+		{
+			ControlsConfigurationObject controlsConfigurationObject = (ControlsConfigurationObject) controlsConfigurationMap.get(controlName);
+			if (controlsConfigurationObject != null)
+			{
+				imagepath = controlsConfigurationObject.getImageFilePath();
+			}
+		}
+		return imagepath;
 	}
 
 	/**

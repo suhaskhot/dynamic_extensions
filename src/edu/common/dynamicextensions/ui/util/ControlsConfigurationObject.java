@@ -13,6 +13,7 @@ public class ControlsConfigurationObject
 	private String controlName;
 	private String displayLabel;
 	private String jspName;
+	private String imageFilePath;
 	private List commonValidationRules ;
 	private List commonImplicitRules ;
 	private List commonExplicitRules ;
@@ -161,5 +162,13 @@ public class ControlsConfigurationObject
 	public void setCommonImplicitRules(List commonImplicitRules)
 	{
 		this.commonImplicitRules = commonImplicitRules;
+	}
+	public String getImageFilePath()
+	{
+		return this.imageFilePath;
+	}
+	public void setImageFilePath(String imageFilePath)
+	{
+		this.imageFilePath = imageFilePath;
 	}
 }

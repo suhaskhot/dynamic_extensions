@@ -751,3 +751,104 @@ function ruleSelected(ruleObject)
 	}
 }
 
+function deleteControl()
+{
+	checkAttribute = document.controlsForm.checkAttribute;
+	
+	for(i = checkAttribute.length-1; i >= 0; i--)
+	{
+		//alert(i);
+		if(checkAttribute[i].checked)
+		{
+			//alert(checkAttribute[i].value);
+			//alert((document.getElementById(checkAttribute[i].value + "rowNum")).value);
+			var startPoint = (document.getElementById(checkAttribute[i].value + "rowNum")).value;
+			deleteRow('controlList', startPoint)
+
+		}
+	}
+
+	 resetRowNum(checkAttribute);
+}
+
+
+function resetRowNum(checkAttribute)
+{
+	for(i = 0; i < checkAttribute.length; i++)
+	{
+		(document.getElementById(checkAttribute[i].value + "rowNum")).value = i + 1 ;
+	}
+}
+
+function deleteRow(tableId, startPoint)
+{
+	var tab = document.getElementById(tableId);
+	tab.deleteRow(startPoint);
+}
+
+
+function decreaseSequencenumber()
+{
+
+checkAttribute = document.controlsForm.checkAttribute;
+	for(i = 0; i < checkAttribute.length; i++)
+	{
+		if(checkAttribute[i].checked)
+		{
+			//alert(checkAttribute[i].value);
+			//alert((document.getElementById(checkAttribute[i].value + "rowNum")).value);
+			var startPoint = (document.getElementById(checkAttribute[i].value + "rowNum")).value;
+			moveRowsUp('controlList',startPoint,1);
+		}
+	}
+
+	resetRowNum(checkAttribute);
+}
+
+
+
+function moveRowsUp (tableId, startPoint, counter)
+{
+	var tab = document.getElementById(tableId);
+	for (var i = 0 ; i < counter; i++) 
+	{
+		if (startPoint == 1)
+		{
+			break;
+		}
+		tab.moveRow(startPoint,startPoint-1);
+		startPoint +=1;
+	}
+}
+
+
+function increaseSequencenumber()
+{
+  
+	checkAttribute = document.controlsForm.checkAttribute;
+	
+	for(i = checkAttribute.length-1; i >= 0; i--)
+	{
+		//alert(i);
+		if(checkAttribute[i].checked)
+		{
+			//alert(checkAttribute[i].value);
+			//alert((document.getElementById(checkAttribute[i].value + "rowNum")).value);
+			var startPoint = (document.getElementById(checkAttribute[i].value + "rowNum")).value;
+			moveRowsDown('controlList',startPoint,1);
+		}
+	}
+
+	resetRowNum(checkAttribute);
+}
+
+function moveRowsDown(tableId, startPoint, counter)
+{
+	var tab = document.getElementById(tableId);
+	for (var i = 0 ; i < counter; i++) 
+	{
+		tab.moveRow(startPoint,parseInt(startPoint)+1);
+		startPoint -=1;
+	}
+}
+

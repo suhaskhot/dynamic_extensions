@@ -702,6 +702,7 @@ function hideTooltip() {
 }
 
 function controlSelected(ths) {
+	
 	var prevRow = document.getElementById('previousControl').value;
 	if (prevRow != null && prevRow != '' && prevRow != undefined) 
 	{
@@ -789,19 +790,15 @@ function deleteRow(tableId, startPoint)
 
 function decreaseSequencenumber()
 {
-
-checkAttribute = document.controlsForm.checkAttribute;
+	checkAttribute = document.controlsForm.checkAttribute;
 	for(i = 0; i < checkAttribute.length; i++)
 	{
 		if(checkAttribute[i].checked)
 		{
-			//alert(checkAttribute[i].value);
-			//alert((document.getElementById(checkAttribute[i].value + "rowNum")).value);
 			var startPoint = (document.getElementById(checkAttribute[i].value + "rowNum")).value;
 			moveRowsUp('controlList',startPoint,1);
 		}
 	}
-
 	resetRowNum(checkAttribute);
 }
 
@@ -824,21 +821,15 @@ function moveRowsUp (tableId, startPoint, counter)
 
 function increaseSequencenumber()
 {
-  
-	checkAttribute = document.controlsForm.checkAttribute;
-	
+  	checkAttribute = document.controlsForm.checkAttribute;
 	for(i = checkAttribute.length-1; i >= 0; i--)
 	{
-		//alert(i);
 		if(checkAttribute[i].checked)
 		{
-			//alert(checkAttribute[i].value);
-			//alert((document.getElementById(checkAttribute[i].value + "rowNum")).value);
 			var startPoint = (document.getElementById(checkAttribute[i].value + "rowNum")).value;
 			moveRowsDown('controlList',startPoint,1);
 		}
 	}
-
 	resetRowNum(checkAttribute);
 }
 

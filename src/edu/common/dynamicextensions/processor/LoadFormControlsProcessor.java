@@ -78,14 +78,14 @@ public class LoadFormControlsProcessor
 			{
 				String selectedControlId = controlsForm.getSelectedControlId();
 				ControlInterface selectedControl = containerInterface.getControlInterfaceBySequenceNumber(selectedControlId);
-				editControl(selectedControl,controlsForm);
+				editControl(selectedControl, controlsForm);
 			}
-			
+
 			String userSelectedTool = controlsForm.getUserSelectedTool();
-			
+
 			//Initialize default values for controls
-			initializeControlDefaultValues(userSelectedTool,controlsForm);
-			
+			initializeControlDefaultValues(userSelectedTool, controlsForm);
+
 			//List of tools/controls
 			controlsForm.setToolsList(controlConfigurationsFactory.getListOfControls());
 			controlsForm.setSelectedControlCaption(getControlCaption(controlConfigurationsFactory.getControlDisplayLabel(userSelectedTool)));
@@ -129,7 +129,7 @@ public class LoadFormControlsProcessor
 	/**
 	 * 
 	 */
-	private void editControl(ControlInterface controlInterface,ControlsForm controlsForm)
+	private void editControl(ControlInterface controlInterface, ControlsForm controlsForm)
 	{
 		ControlProcessor controlProcessor = ControlProcessor.getInstance();
 		controlProcessor.populateControlUIBeanInterface(controlInterface, controlsForm);
@@ -155,33 +155,34 @@ public class LoadFormControlsProcessor
 	 */
 	private void initializeControlDefaultValues(String userSelectedTool, ControlsForm controlsForm)
 	{
-		if((userSelectedTool!=null)&&(controlsForm!=null))
+		if ((userSelectedTool != null) && (controlsForm != null))
 		{
-			if(userSelectedTool.equals(ProcessorConstants.TEXT_CONTROL))
+			if (userSelectedTool.equals(ProcessorConstants.TEXT_CONTROL))
 			{
 				initializeTextControlDefaultValues(controlsForm);
-			}else if(userSelectedTool.equals(ProcessorConstants.COMBOBOX_CONTROL))
+			}
+			else if (userSelectedTool.equals(ProcessorConstants.COMBOBOX_CONTROL))
 			{
 				initializeComboboxControlDefaultValues(controlsForm);
 			}
-			else if(userSelectedTool.equals(ProcessorConstants.DATEPICKER_CONTROL))
+			else if (userSelectedTool.equals(ProcessorConstants.DATEPICKER_CONTROL))
 			{
 				initializeDatePickerControlDefaultValues(controlsForm);
 			}
-			else if(userSelectedTool.equals(ProcessorConstants.CHECKBOX_CONTROL))
+			else if (userSelectedTool.equals(ProcessorConstants.CHECKBOX_CONTROL))
 			{
 				initializeCheckBoxControlDefaultValues(controlsForm);
 			}
-			else if(userSelectedTool.equals(ProcessorConstants.RADIOBUTTON_CONTROL))
+			else if (userSelectedTool.equals(ProcessorConstants.RADIOBUTTON_CONTROL))
 			{
 				initializeOptionButtonControlDefaultValues(controlsForm);
 			}
-			else if(userSelectedTool.equals(ProcessorConstants.FILEUPLOAD_CONTROL))
+			else if (userSelectedTool.equals(ProcessorConstants.FILEUPLOAD_CONTROL))
 			{
 				initializeFileUploadControlDefaultValues(controlsForm);
 			}
 			/*controlsForm.setValidationRules(new String[] {""});
-			controlsForm.setTempValidationRules(new String[] {""});*/
+			 controlsForm.setTempValidationRules(new String[] {""});*/
 		}
 	}
 
@@ -190,7 +191,7 @@ public class LoadFormControlsProcessor
 	 */
 	private void initializeFileUploadControlDefaultValues(ControlsForm controlsForm)
 	{
-		if(controlsForm.getFileFormatsList()==null)
+		if (controlsForm.getFileFormatsList() == null)
 		{
 			controlsForm.setFileFormatsList(getFileFormatsList());
 		}
@@ -217,12 +218,12 @@ public class LoadFormControlsProcessor
 	private void initializeOptionButtonControlDefaultValues(ControlsForm controlsForm)
 	{
 		//List of display choices
-		if(controlsForm.getDisplayChoiceList()==null)
+		if (controlsForm.getDisplayChoiceList() == null)
 		{
 			controlsForm.setDisplayChoiceList(getDisplayChoiceList());
 		}
 		//Set default display choice 
-		if(controlsForm.getDisplayChoice()==null)
+		if (controlsForm.getDisplayChoice() == null)
 		{
 			controlsForm.setDisplayChoice(ProcessorConstants.DEFAULT_DISPLAY_CHOICE_TYPE);
 		}
@@ -233,7 +234,7 @@ public class LoadFormControlsProcessor
 	 */
 	private void initializeCheckBoxControlDefaultValues(ControlsForm controlsForm)
 	{
-		if(controlsForm.getAttributeDefaultValue()==null)
+		if (controlsForm.getAttributeDefaultValue() == null)
 		{
 			controlsForm.setAttributeDefaultValue(ProcessorConstants.DEFAULT_CHECKBOX_VALUE);
 		}
@@ -245,12 +246,12 @@ public class LoadFormControlsProcessor
 	private void initializeDatePickerControlDefaultValues(ControlsForm controlsForm)
 	{
 		//Date value type
-		if(controlsForm.getDateValueType()==null)
+		if (controlsForm.getDateValueType() == null)
 		{
 			controlsForm.setDateValueType(ProcessorConstants.DEFAULT_DATE_VALUE);
 		}
 		//Date format
-		if(controlsForm.getFormat()==null)
+		if (controlsForm.getFormat() == null)
 		{
 			controlsForm.setFormat(ProcessorConstants.DEFAULT_DATE_FORMAT);
 		}
@@ -262,17 +263,17 @@ public class LoadFormControlsProcessor
 	private void initializeComboboxControlDefaultValues(ControlsForm controlsForm)
 	{
 		//List of display choices
-		if(controlsForm.getDisplayChoiceList()==null)
+		if (controlsForm.getDisplayChoiceList() == null)
 		{
 			controlsForm.setDisplayChoiceList(getDisplayChoiceList());
 		}
 		//Set default display choice
-		if(controlsForm.getDisplayChoice()==null)
+		if (controlsForm.getDisplayChoice() == null)
 		{
 			controlsForm.setDisplayChoice(ProcessorConstants.DEFAULT_DISPLAY_CHOICE_TYPE);
 		}
 		//Default list type
-		if(controlsForm.getAttributeMultiSelect()==null)
+		if (controlsForm.getAttributeMultiSelect() == null)
 		{
 			controlsForm.setAttributeMultiSelect(ProcessorConstants.DEFAULT_LIST_TYPE);
 		}
@@ -284,18 +285,18 @@ public class LoadFormControlsProcessor
 	private void initializeTextControlDefaultValues(ControlsForm controlsForm)
 	{
 		//Default Data type
-		if(controlsForm.getDataType()==null)
+		if (controlsForm.getDataType() == null)
 		{
 			controlsForm.setDataType(ProcessorConstants.DEFAULT_DATA_TYPE);
 		}
 		//Default single line type
-		if(controlsForm.getLinesType()==null)
+		if (controlsForm.getLinesType() == null)
 		{
 			controlsForm.setLinesType(ProcessorConstants.DEFAULT_LINE_TYPE);
 		}
 
 		//measurement units list
-		if(controlsForm.getMeasurementUnitsList()==null)
+		if (controlsForm.getMeasurementUnitsList() == null)
 		{
 			controlsForm.setMeasurementUnitsList(getListOfMeasurementUnits());
 		}
@@ -317,8 +318,6 @@ public class LoadFormControlsProcessor
 		return measurementUnits;
 	}
 
-	
-
 	/**
 	 *  
 	 * @param containerInterface containerInterface
@@ -329,24 +328,28 @@ public class LoadFormControlsProcessor
 	{
 		List<ControlInformationObject> childList = new ArrayList<ControlInformationObject>();
 		Collection controlCollection = containerInterface.getControlCollection();
-		Iterator controlIterator = controlCollection.iterator();
+
 		ControlInterface controlInterface = null;
 		ControlInformationObject controlInformationObject = null;
 		String controlCaption = null, controlDatatype = null, controlSequenceNumber = null, controlName = null;
 		ControlConfigurationsFactory controlConfigurationsFactory = ControlConfigurationsFactory.getInstance();
-		while (controlIterator.hasNext())
+		if (controlCollection != null)
 		{
-			controlInterface = (ControlInterface) controlIterator.next();
-			if (controlInterface.getCaption() != null && !controlInterface.getCaption().equals(""))
+			for (int counter = 1; counter <= controlCollection.size(); counter++)
 			{
-				controlCaption = controlInterface.getCaption();
-				controlSequenceNumber = controlInterface.getSequenceNumber() + "";
-				controlName = DynamicExtensionsUtility.getControlName(controlInterface);
-				controlDatatype = getControlCaption(controlConfigurationsFactory.getControlDisplayLabel(controlName));
-				controlInformationObject = new ControlInformationObject(controlCaption, controlDatatype, controlSequenceNumber);
-				childList.add(controlInformationObject);
-			}
+				controlInterface = DynamicExtensionsUtility.getControlBySequenceNumber(controlCollection, counter);
+				if (controlInterface.getCaption() != null && !controlInterface.getCaption().equals(""))
+				{
+					controlCaption = controlInterface.getCaption();
+					controlSequenceNumber = controlInterface.getSequenceNumber() + "";
+					controlName = DynamicExtensionsUtility.getControlName(controlInterface);
+					controlDatatype = getControlCaption(controlConfigurationsFactory.getControlDisplayLabel(controlName));
+					controlInformationObject = new ControlInformationObject(controlCaption, controlDatatype, controlSequenceNumber);
+					childList.add(controlInformationObject);
+				}
 
+			}
+			DynamicExtensionsUtility.resetSequenceNumberChanged(controlCollection);
 		}
 		return childList;
 	}

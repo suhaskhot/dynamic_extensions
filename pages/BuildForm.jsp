@@ -35,6 +35,7 @@
 	<html:form styleId = "controlsForm"  action="/LoadFormControlsAction">
 	<html:errors />
 
+  	    <% int generator = 0; %>
 		<table valign="top" style = "border-right:0px"  border = 1 align='right' width='90%' height="100%" border='0' cellspacing="0" cellpadding="0" class="tbBorders1" >
 		     <!-- Main Page heading -->
 	         <tr style = "border-bottom:0px">
@@ -133,7 +134,7 @@
 												<table valign="top" height = '100%' width = "100%"  cellspacing="0" cellpadding="0">
 													<tr valign = "top" height = '100%' >
 														<td  height = '100%' width = 100%>
-															<table border="1" cellspacing="0"  class="tbBordersAllbordersBlack" height = "100%" width ="100%" >
+															<table id='controlList' border="1" cellspacing="0"  class="tbBordersAllbordersBlack" height = "100%" width ="100%" >
 															<thead>
 																<tr>
 																	<th colspan="3" align="left" class="formTitleGray"><bean:message  key="app.formControlsTree.heading" /></th>
@@ -149,21 +150,30 @@
 																<c:set var="identifier" value="${controlInfoObj.identifier}"/>
 																<jsp:useBean id="identifier" type="java.lang.String"/>
 															<tbody>
-																	<tr  id = "<%=identifier%>" onclick = "controlSelected(this);" style = "cursor:hand">
-																		<td class="formMessage" width="2%">
-																			<input type = "checkbox" name = "check" disabled id = "<%=identifier%>"/>
-																		</td>
-																		<td class="formMessage" width="25%" >
-																		<div noWrap='true' style='overflow-x:hidden; text-overflow:ellipsis; width:60px;' onmouseout = "hideTooltip();" onmouseover = "showTooltip(this.innerHTML,this,this.innerHTML);">
-																			<%=controlName%>
-																			</div>
-																		</td>
-																		<td class="formMessage" >
-																		<div noWrap='true' style='overflow-x:hidden; text-overflow:ellipsis; width:60px;' onmouseover = "showTooltip(this.innerHTML,this,this.innerHTML);" onmouseout = "hideTooltip();">
-																			<%=controlType%>
-																			</div>
-																		</td>
-																	</tr>
+															
+															
+															
+															<tr height = "5%"   style = "cursor:hand">
+																<td class="formMessage">
+																	<input type = "checkbox" name = "checkAttribute"  id = "<%=identifier%>" value = "<%=identifier%>"  />
+																	<input type = "hidden"  id = "sequenceNumbers" name = "sequenceNumbers" value = "<%=generator+1%>"  />
+																	<%String hiddenRowId = identifier + "rowNum";%>	
+																	<input type = "hidden"  id = "<%=hiddenRowId%>" name = "<%=hiddenRowId%>" value = "<%=generator++ + 1%>"  />
+																</td>
+																<td class="formMessage" style="padding-left:2px">
+																	<div id = "<%=identifier%>" noWrap='true' style='overflow-x:hidden; text-overflow:ellipsis; width:60px;' onmouseout = "hideTooltip();" onmouseover = "showTooltip(this.innerHTML,this,this.innerHTML);" onclick = "controlSelected(this);">
+																		<%=controlName%>
+																		</div>
+																</td>
+																
+																<td class="formMessage" style="padding-left:2px">
+																	<div noWrap='true' style='overflow-x:hidden; text-overflow:ellipsis; width:60px;' onmouseover = "showTooltip(this.innerHTML,this,this.innerHTML);" onmouseout = "hideTooltip();">
+																		<%=controlType%>
+																	</div>
+																</td>
+															</tr>
+																	
+															
 															</tbody>
 																</c:forEach>
 																<tr height = "100%">
@@ -195,9 +205,9 @@
 										</td>
 										<td width="2%">&nbsp;</td>
 										<td  valign="top" height="100%" >
-											<input  type = "button" class="actionButton"  name = "upButton" value = "Up" disabled onclick = "" align="left"/>
-											<input  type = "button" class="actionButton"  name = "downButton" value = "Down" disabled onclick = "" align="left"/>
-											<input type = "button" class="actionButton"  name = "deleteButton" value = "Delete" disabled onclick = "" align="right"/>
+											<input type = "button" name = "upButton" value = "Up"  onclick = "decreaseSequencenumber()"/>
+											<input type = "button" name = "downButton" value = "down"  onclick = "increaseSequencenumber()"/>
+											<input type = "button" name = "deleteButton" value = "Delete"  onclick = "deleteControl()"/>
 
 										</td>
 									</tr>
@@ -235,6 +245,7 @@
 			<input type="hidden" id = "previousControl" name="previousControl" value = "" />
 			<html:hidden property="controlOperation" />
 			<html:hidden property="selectedControlId" />
+			<html:hidden property="sequenceNumbers"  value=""/>
 
 	  	</td>
 	  	</tr>

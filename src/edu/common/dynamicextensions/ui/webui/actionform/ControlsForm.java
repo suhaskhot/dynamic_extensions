@@ -277,6 +277,10 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	 * display as url
 	 */
 	protected String attributeDisplayAsURL;
+	/**
+	 * 
+	 */
+	protected String[]sequenceNumbers;
 	
 	
 	/**
@@ -1512,6 +1516,16 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	public void setAttributeDisplayAsURL(String attributeDisplayAsURL)
 	{
 		this.attributeDisplayAsURL = attributeDisplayAsURL;
+	}
+
+	public String[] getSequenceNumbers()
+	{
+		return sequenceNumbers;
+	}
+
+	public void setSequenceNumbers(String[] sequenceNumbers)
+	{
+		this.sequenceNumbers = sequenceNumbers;
 	}
 
 

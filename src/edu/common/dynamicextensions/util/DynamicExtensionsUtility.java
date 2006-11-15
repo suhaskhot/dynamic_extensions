@@ -4,6 +4,8 @@
 
 package edu.common.dynamicextensions.util;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
@@ -119,5 +121,45 @@ public class DynamicExtensionsUtility
 
 		}
 		return null;
+	}
+	/**
+	 * 
+	 * @param controlCollectio
+	 * @param sequenceNumber
+	 * @return
+	 */
+	public static ControlInterface getControlBySequenceNumber(Collection controlCollection, int sequenceNumber)
+	{
+		Iterator controlIterator = controlCollection.iterator();
+		ControlInterface controlInterface = null;
+		while (controlIterator.hasNext())
+		{
+			controlInterface = (ControlInterface) controlIterator.next();
+			if (controlInterface.getSequenceNumber() != null && controlInterface.getSequenceNumber() == sequenceNumber
+					&& !controlInterface.getSequenceNumberChanged())
+			{
+				controlInterface.setSequenceNumberChanged(true);
+				return controlInterface;
+			}
+		}
+		return controlInterface;
+	}
+
+	/**
+	 * 
+	 * @param controlCollection
+	 */
+	public static void resetSequenceNumberChanged(Collection controlCollection)
+	{
+		if (controlCollection != null)
+		{
+			Iterator controlIterator = controlCollection.iterator();
+			ControlInterface controlInterface = null;
+			while (controlIterator.hasNext())
+			{
+				controlInterface = (ControlInterface) controlIterator.next();
+				controlInterface.setSequenceNumberChanged(false);
+			}
+		}
 	}
 }

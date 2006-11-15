@@ -64,6 +64,10 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	 * Attribute to which this control is associated.
 	 */
 	public Collection<AbstractAttributeInterface> abstractAttributeCollection = new HashSet<AbstractAttributeInterface>();
+	/**
+	 * 
+	 */
+	public Boolean sequenceNumberChanged = false;
 
 	/**
 	 * Empty Constructor
@@ -286,6 +290,24 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 			return "Control_" + this.getSequenceNumber();
 		}
 		return null;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public Boolean getSequenceNumberChanged()
+	{
+		return sequenceNumberChanged;
+	}
+
+	/**
+	 * 
+	 * @param sequenceNumberChanged
+	 */
+	public void setSequenceNumberChanged(Boolean sequenceNumberChanged)
+	{
+		this.sequenceNumberChanged = sequenceNumberChanged;
 	}
 	
 }

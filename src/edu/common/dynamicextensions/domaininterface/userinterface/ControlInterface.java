@@ -100,5 +100,15 @@ public interface ControlInterface
  	 * @param value
  	 */
  	 void setValue(String value);
+ 	 /**
+ 	  * 
+ 	  * @return
+ 	  */
+ 	public Boolean getSequenceNumberChanged();
+ 	/**
+ 	 * 
+ 	 * @param sequenceNumberChanged
+ 	 */
+ 	public void setSequenceNumberChanged(Boolean sequenceNumberChanged);
  	
 }

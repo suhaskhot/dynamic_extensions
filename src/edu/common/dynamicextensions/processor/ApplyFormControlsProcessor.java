@@ -7,6 +7,8 @@
 package edu.common.dynamicextensions.processor;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -44,13 +46,15 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 	{
 		return new ApplyFormControlsProcessor();
 	}
+
 	/**
 	 * @param containerInterface : Container object
 	 * @param controlsForm : UI Information as form object
 	 * @throws DynamicExtensionsSystemException dynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException DynamicExtensionsApplicationException
 	 */
-	public void addControlToForm(ContainerInterface containerInterface, ControlsForm controlsForm) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException 
+	public void addControlToForm(ContainerInterface containerInterface, ControlsForm controlsForm) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		if ((containerInterface != null) && (controlsForm != null))
 		{
@@ -59,7 +63,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 			AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
 			AbstractAttributeInterface abstractAttributeInterface = null;
 			ControlInterface controlInterface = null;
-			
+
 			//Check for operation
 			String controlOperation = controlsForm.getControlOperation();
 
@@ -68,12 +72,17 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 			{
 				controlOperation = ProcessorConstants.OPERATION_ADD;
 			}
-			
-			if((controlsForm.getDataType()!=null)&&(controlsForm.getDataType().equals(ProcessorConstants.DATATYPE_NUMBER)))
+
+			if ((controlsForm.getDataType() != null) && (controlsForm.getDataType().equals(ProcessorConstants.DATATYPE_NUMBER)))
 			{
 				initializeMeasurementUnits(controlsForm);
 			}
-			
+
+			if (controlsForm.getSequenceNumbers() != null && controlsForm.getSequenceNumbers().length > 0)
+			{
+				applySequenceNumbers(containerInterface, controlsForm.getSequenceNumbers());
+			}
+
 			//Add new control
 			if (controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_ADD))
 			{
@@ -84,10 +93,10 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 
 				//Create Attribute  
 				abstractAttributeInterface = attributeProcessor.createAndPopulateAttribute(controlsForm);
-				
+
 				//Set permisible values
-				setPermissibleValues(attributeProcessor,abstractAttributeInterface,controlsForm);
-				
+				setPermissibleValues(attributeProcessor, abstractAttributeInterface, controlsForm);
+
 				//Set attribute in controlInformationInterface object(controlsForm)
 				controlsForm.setAbstractAttribute(abstractAttributeInterface);
 
@@ -101,7 +110,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				}
 
 				//Entity Interface  : Add attribute
-				if ((entityInterface != null)&&(abstractAttributeInterface!=null))
+				if ((entityInterface != null) && (abstractAttributeInterface != null))
 				{
 					entityInterface.addAbstractAttribute(abstractAttributeInterface);
 					abstractAttributeInterface.setEntity(entityInterface);
@@ -120,37 +129,37 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				//Get the control from container
 				String selectedControlSeqNumber = controlsForm.getSelectedControlId();
 				controlInterface = containerInterface.getControlInterfaceBySequenceNumber(selectedControlSeqNumber);
-				
+
 				//Remove old refernces : From Entity
 				entityInterface.removeAbstractAttribute(controlInterface.getAbstractAttribute());
 
 				//Create new abstract attribute interface with new datatype
 				abstractAttributeInterface = attributeProcessor.createAndPopulateAttribute(controlsForm);
 
-				setPermissibleValues(attributeProcessor,abstractAttributeInterface,controlsForm);
+				setPermissibleValues(attributeProcessor, abstractAttributeInterface, controlsForm);
 				//update in entity
 				entityInterface.addAbstractAttribute(abstractAttributeInterface);
 				//update in control interface
 				controlInterface.setAbstractAttribute(abstractAttributeInterface);
 
 				controlsForm.setAbstractAttribute(abstractAttributeInterface);
-				
-				String oldControlType =  DynamicExtensionsUtility.getControlName(controlInterface); 
+
+				String oldControlType = DynamicExtensionsUtility.getControlName(controlInterface);
 				String newControlType = controlsForm.getUserSelectedTool();
 				ControlInterface newControlInterface = null;
-				if(!oldControlType.equals(newControlType))
+				if (!oldControlType.equals(newControlType))
 				{
 					newControlInterface = controlProcessor.createAndPopulateControl(newControlType, controlsForm);
 				}
 				else
 				{
-					newControlInterface = controlProcessor.populateControlInterface(controlsForm.getUserSelectedTool(),	controlInterface, controlsForm);
+					newControlInterface = controlProcessor.populateControlInterface(controlsForm.getUserSelectedTool(), controlInterface,
+							controlsForm);
 				}
-					
-				
+
 				/*//update control
-				ControlInterface newControlInterface = controlProcessor.populateControlInterface(controlsForm.getUserSelectedTool(),
-						controlInterface, controlsForm);*/
+				 ControlInterface newControlInterface = controlProcessor.populateControlInterface(controlsForm.getUserSelectedTool(),
+				 controlInterface, controlsForm);*/
 				//If new control interface is same as old one, do nothing. Else remove old ref from container and add new one
 				if ((newControlInterface != null) && (!newControlInterface.equals(controlInterface)))
 				{
@@ -175,22 +184,23 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 	 * @param controlsForm
 	 * @throws DynamicExtensionsApplicationException :Exception
 	 */
-	private void setPermissibleValues(AttributeProcessor attributeProcessor, AbstractAttributeInterface abstractAttributeInterface, ControlsForm controlsForm) throws DynamicExtensionsApplicationException
+	private void setPermissibleValues(AttributeProcessor attributeProcessor, AbstractAttributeInterface abstractAttributeInterface,
+			ControlsForm controlsForm) throws DynamicExtensionsApplicationException
 	{
 		//if combobox/optionbutton control has been selected then set the DataElement object for set of permissible values
 		String userSelectedControl = controlsForm.getUserSelectedTool();
 		if (userSelectedControl != null)
 		{
-			if((userSelectedControl.equalsIgnoreCase(ProcessorConstants.COMBOBOX_CONTROL))||(userSelectedControl.equalsIgnoreCase(ProcessorConstants.RADIOBUTTON_CONTROL)))
+			if ((userSelectedControl.equalsIgnoreCase(ProcessorConstants.COMBOBOX_CONTROL))
+					|| (userSelectedControl.equalsIgnoreCase(ProcessorConstants.RADIOBUTTON_CONTROL)))
 			{
 				if (abstractAttributeInterface instanceof AttributeInterface)
 				{
-					((AttributeInterface) abstractAttributeInterface)
-					.setDataElement(attributeProcessor.getDataElementInterface(controlsForm));
+					((AttributeInterface) abstractAttributeInterface).setDataElement(attributeProcessor.getDataElementInterface(controlsForm));
 				}
 			}
 		}
-		
+
 	}
 
 	/**
@@ -224,6 +234,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 		}
 		return attributeName;
 	}
+
 	/**
 	 * This method initializes MeasurementUnits needed for the actionForm
 	 * @param controlsForm actionForm
@@ -232,9 +243,62 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 	{
 		//Handle special case of measurement units
 		//If measurement unit is other, value of measurement unit is value of txtMeasurementUnit.
-		if((controlsForm.getAttributeMeasurementUnits()!=null)&&(controlsForm.getAttributeMeasurementUnits().equalsIgnoreCase(ProcessorConstants.MEASUREMENT_UNIT_OTHER)))
+		if ((controlsForm.getAttributeMeasurementUnits() != null)
+				&& (controlsForm.getAttributeMeasurementUnits().equalsIgnoreCase(ProcessorConstants.MEASUREMENT_UNIT_OTHER)))
 		{
 			controlsForm.setAttributeMeasurementUnits(controlsForm.getMeasurementUnitOther());
+		}
+	}
+
+	/**
+	 * 
+	 * @param entityInterface
+	 * @param sequenceNumbers
+	 */
+	private void applySequenceNumbers(ContainerInterface containerInterface, String[] sequenceNumbers)
+	{
+		Collection controlCollection = containerInterface.getControlCollection();
+		ControlInterface controlInterface;
+		int sequenceNumber;
+		if (controlCollection != null && controlCollection.size() > 0 && sequenceNumbers != null && sequenceNumbers.length > 0)
+		{
+			for (int counter = 0; counter < sequenceNumbers.length - 1; counter++)
+			{
+				sequenceNumber = new Integer(sequenceNumbers[counter]).intValue();
+				controlInterface = DynamicExtensionsUtility.getControlBySequenceNumber(controlCollection, sequenceNumber);
+				controlInterface.setSequenceNumber(new Integer(counter + 1));
+			}
+			deleteControls(containerInterface, sequenceNumbers.length);
+			DynamicExtensionsUtility.resetSequenceNumberChanged(controlCollection);
+		}
+	}
+
+	/**
+	 * 
+	 * @param controlCollection
+	 */
+	private void deleteControls(ContainerInterface containerInterface, int sequenceNumbersCount)
+	{
+		Collection controlCollection = containerInterface.getControlCollection();
+		if (sequenceNumbersCount == 1)
+		{
+			containerInterface.getControlCollection().retainAll(new HashSet());
+
+		}
+		else
+		{
+			Iterator controlIterator = controlCollection.iterator();
+			ControlInterface controlInterface;
+			while (controlIterator.hasNext())
+			{
+				controlInterface = (ControlInterface) controlIterator.next();
+				if (!controlInterface.getSequenceNumberChanged())
+				{
+					controlIterator.remove();
+				}
+
+			}
+
 		}
 	}
 }

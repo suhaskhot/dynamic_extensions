@@ -50,7 +50,7 @@
 		     		<!-- tabs start -->
 				  	 <table valign="top" summary="" align='left' width='95%' height = "95%" cellspacing="0" cellpadding="3" class = "tbBordersAllbordersBlack" >
 						<tr valign = "top" >
-						   <td class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onclick="alert('This page is still under construction and will be available in the next release');document.location.href='/pages/DefineGroup.jsp';">
+						   <td class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onclick="showDefineGroupPage('controlsForm')">
 							 <bean:message key="app.title.DefineGroupTabTitle" />
 						   </td>
 

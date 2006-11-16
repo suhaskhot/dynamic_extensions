@@ -31,7 +31,7 @@
 			</td>
 
 			<td class="formFieldWithoutBorder">
-				<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="attributenoOfCols" />
+				<html:text styleClass="formFieldSized5"  maxlength="100" size="60"  property="attributenoOfCols" />
 			</td>
 		</tr>
 		<tr valign="top">

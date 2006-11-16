@@ -76,7 +76,7 @@
 			<c:choose>
 			    <c:when test='${showFormPreview  == "true"}'> 
 					<tr valign="top">
-					   <td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onclick="alert('This page is still under construction and will be available in the next release');">
+					   <td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onclick="showDefineGroupPage('dataEntryForm')">
 						 <bean:message key="app.title.DefineGroupTabTitle" />
 					   </td>
 		

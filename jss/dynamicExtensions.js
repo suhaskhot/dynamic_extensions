@@ -38,6 +38,14 @@ function showHomePageFromBuildForm() {
 	controlsForm.action="/dynamicExtensions/DynamicExtensionHomePage.do";
 	controlsForm.submit();
 }
+
+function showHomePageFromCreateGroup()
+{
+	var groupForm = document.getElementById('groupForm');
+	groupForm.action="/dynamicExtensions/DynamicExtensionHomePage.do";
+	groupForm.submit();
+}
+
 function addControlToFormTree() {
        document.getElementById('operation').value='controlAdded';
    	var controlsForm=document.getElementById("controlsForm");
@@ -692,13 +700,13 @@ function showTooltip(text,obj,message) {
 	}
 }
 
-function hideTooltip() {
-     //alert('ashwini');
-      el = document.getElementById("akvtooltip");
-	  //alert(el.innerHTML);
-	  if( el != null) 
-	   el.style.visibility="hidden";
-	//  el.removeNode();
+function hideTooltip() 
+{
+  el = document.getElementById("akvtooltip");
+  if( el != null)
+  {
+  	 el.style.visibility="hidden";
+  }
 }
 
 function controlSelected(ths) {
@@ -758,14 +766,10 @@ function deleteControl()
 	
 	for(i = checkAttribute.length-1; i >= 0; i--)
 	{
-		//alert(i);
 		if(checkAttribute[i].checked)
 		{
-			//alert(checkAttribute[i].value);
-			//alert((document.getElementById(checkAttribute[i].value + "rowNum")).value);
 			var startPoint = (document.getElementById(checkAttribute[i].value + "rowNum")).value;
 			deleteRow('controlList', startPoint)
-
 		}
 	}
 
@@ -842,4 +846,60 @@ function moveRowsDown(tableId, startPoint, counter)
 		startPoint -=1;
 	}
 }
+function showDefineGroupPage(formName)
+{
+	var form = document.getElementById(formName+'');
+	if(form!=null)
+	{
+		form.action="/dynamicExtensions/LoadGroupDefinitionAction.do";
+		form.submit();		
+	}
+}
 
+function changeGroupSource(groupSrc)
+{
+	if(groupSrc!=null)
+	{
+		var divForGrpDetails = document.getElementById('groupDetailsDiv');
+		var divForGrpSrc = document.getElementById(groupSrc.value+"Div");
+		if((divForGrpSrc!=null)&&(divForGrpDetails!=null))
+		{
+			divForGrpDetails.innerHTML = divForGrpSrc.innerHTML;
+		}
+	}
+}
+
+function initDefineGroupForm()
+{
+	changeGroupSource(document.getElementById('createGroupAs'));
+}
+
+function showDefineFormJSP()
+{
+	var groupForm = document.getElementById('groupForm');
+	var groupOperation = document.getElementById('groupOperation');
+	if(groupOperation!=null)
+	{
+		groupOperation.value = "showNextPage";
+	}
+	if(groupForm!=null)
+	{
+		groupForm.action = "/dynamicExtensions/ApplyGroupDefinitionAction.do";
+		groupForm.submit();
+	}
+}
+
+function saveGroup()
+{
+	var groupForm = document.getElementById('groupForm');
+	var groupOperation = document.getElementById('groupOperation');
+	if(groupOperation!=null)
+	{
+		groupOperation.value = "savegroup";
+	}
+	if(groupForm!=null)
+	{
+		groupForm.action = "/dynamicExtensions/ApplyGroupDefinitionAction.do";
+		groupForm.submit();
+	}
+}

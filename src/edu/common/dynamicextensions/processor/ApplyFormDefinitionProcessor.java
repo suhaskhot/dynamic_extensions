@@ -6,6 +6,7 @@ package edu.common.dynamicextensions.processor;
  * to update the Actionforms by retriving data form Cache.
  * @author deepti_shelar
  */
+import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
@@ -70,5 +71,18 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 			containerProcessor.populateContainerInterface(containerInterface, actionForm);
 		}
 		return containerInterface;
+	}
+
+	/**
+	 * @param entityGroup : Entity Group containing entity
+	 * @param entity : Entity to be associated
+	 */
+	public void associateEntityToGroup(EntityGroupInterface entityGroup, EntityInterface entity)
+	{
+		if((entityGroup!=null)&&(entity!=null))
+		{
+			entityGroup.addEntity(entity);
+			entity.addEntityGroupInterface(entityGroup);
+		}
 	}
 }

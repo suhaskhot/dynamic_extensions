@@ -66,7 +66,7 @@
 							<bean:message key="eav.att.ListBoxDisplayLines"/>
 						</td>
 						<td class="formFieldWithoutBorder">
-								<html:text styleClass="formDateSized" value='' disabled='true' maxlength="100" size="60"  property="attributeNoOfRows" />
+								<html:text styleClass="formFieldSized5" value='' disabled='true' maxlength="100" size="60"  property="attributeNoOfRows" />
 						</td>
 						<% }  else {
 						%>
@@ -74,7 +74,7 @@
 							<bean:message key="eav.att.ListBoxDisplayLines"/>
 						</td>
 							<td class="formFieldWithoutBorder">
-								<html:text styleClass="formDateSized"   maxlength="100" size="60"  property="attributeNoOfRows" />
+								<html:text styleClass="formFieldSized5"   maxlength="100" size="60"  property="attributeNoOfRows" />
 						</td>
 						<% } %>
 		</tr>

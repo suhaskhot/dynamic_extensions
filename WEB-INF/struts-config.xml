@@ -11,7 +11,7 @@ PUBLIC
 	<form-bean name="controlsForm" type="edu.common.dynamicextensions.ui.webui.actionform.ControlsForm"/>
 	<form-bean name="formsIndexForm" type="edu.common.dynamicextensions.ui.webui.actionform.FormsIndexForm" />
 	<form-bean name="dataEntryForm" type="edu.common.dynamicextensions.ui.webui.actionform.DataEntryForm" />
-	
+	<form-bean name="groupForm" type="edu.common.dynamicextensions.ui.webui.actionform.GroupForm" />
 	</form-beans>
 	
 	 <global-forwards>
@@ -28,13 +28,30 @@ PUBLIC
 			scope="request">
 			<forward name="showDynamicExtensionsHomePage" path="/pages/DynamicExtensionHomePage.jsp" />
 		</action>
+		<action path="/LoadGroupDefinitionAction" 
+			type="edu.common.dynamicextensions.ui.webui.action.LoadGroupDefinitionAction"
+			name="groupForm"
+			validate="false"
+			input="/LoadGroupDefinitionAction.do"
+			scope="request">
+			<forward name="success" path="/pages/DefineGroup.jsp" />
+		</action>
+		<action path="/ApplyGroupDefinitionAction" 
+			type="edu.common.dynamicextensions.ui.webui.action.ApplyGroupDefinitionAction"
+			name="groupForm"
+			validate="true"
+			input="/LoadGroupDefinitionAction.do"
+			scope="request">
+			<forward name="success" path="/LoadFormDefinitionAction.do" />
+			<forward name="showDynamicExtensionsHomePage" path="/DynamicExtensionHomePage.do" />
+		</action>
 		<action path="/ApplyFormsIndexAction"
 			type="edu.common.dynamicextensions.ui.webui.action.ApplyFormsIndexAction"
 			name="formsIndexForm"
 			validate="true"
 			input="/DynamicExtensionHomePage.do"
 			scope="request">
-			<forward name="success" path="/LoadFormDefinitionAction.do" />
+			<forward name="success" path="/LoadGroupDefinitionAction.do" />
 			<forward name="insertData" path="/LoadDataEntryFormAction.do" />
 		</action>
 		<action path="/LoadFormDefinitionAction" 
@@ -50,7 +67,7 @@ PUBLIC
 			type="edu.common.dynamicextensions.ui.webui.action.ApplyFormDefinitionAction"
 			name="formDefinitionForm"
 			validate="true"
-			input="/pages/CreateForm.jsp"
+			input="/LoadFormDefinitionAction.do"
 			scope="request">
 		<forward name="success" path="/LoadFormDefinitionAction.do" />
 		<forward name="buildForm" path="/LoadFormControlsAction.do" />

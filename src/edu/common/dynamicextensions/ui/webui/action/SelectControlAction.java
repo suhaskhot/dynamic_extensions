@@ -31,8 +31,6 @@ import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInt
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.processor.AttributeProcessor;
-import edu.common.dynamicextensions.processor.ControlProcessor;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
@@ -112,42 +110,7 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 			return(mapping.findForward(actionForwardString));
 		}
 	}
-	/**
-	 * @param controlsForm
-	 */
-	private void addControl(ControlsForm controlsForm)
-	{
-		String userSelectedTool = controlsForm.getUserSelectedTool();
-		if (userSelectedTool == null || userSelectedTool.equals(""))
-		{
-			userSelectedTool = ProcessorConstants.DEFAULT_SELECTED_CONTROL;
-		}
-		controlsForm.setUserSelectedTool(userSelectedTool);
-	}
-
-	/**
-	 * 
-	 */
-	private void editControl(ControlInterface controlInterface,ControlsForm controlsForm)
-	{
-		ControlProcessor controlProcessor = ControlProcessor.getInstance();
-		controlProcessor.populateControlUIBeanInterface(controlInterface, controlsForm);
-
-		AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
-		if (controlInterface != null)
-		{
-			attributeProcessor.populateAttributeUIBeanInterface(controlInterface.getAbstractAttribute(), controlsForm);
-		}
-
-		String userSelectedTool = getControlName(controlInterface);
-		if (userSelectedTool == null || userSelectedTool.equals(""))
-		{
-			userSelectedTool = ProcessorConstants.DEFAULT_SELECTED_CONTROL;
-		}
-		controlsForm.setUserSelectedTool(userSelectedTool);
-
-	}
-
+	
 	/**
 	 * @param userSelectedTool 
 	 * @param controlsForm
@@ -427,16 +390,5 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 		return null;
 	}
 
-	/**
-	 * 
-	 * @param controlName name of the control
-	 * @param dataTypeName name of datatype
-	 * @return Map ControlRulesMap
-	 * @throws DynamicExtensionsSystemException dynamicExtensionsSystemException
-	 */
-	private Map getControlRulesMap(String controlName) throws DynamicExtensionsSystemException
-	{
-		ControlConfigurationsFactory ccf = ControlConfigurationsFactory.getInstance();
-		return ccf.getRulesMap(controlName);
-	}
+	
 }

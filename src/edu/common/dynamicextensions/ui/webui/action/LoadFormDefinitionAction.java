@@ -17,6 +17,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.processor.LoadFormDefinitionProcessor;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
@@ -38,23 +39,54 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 	{
-		FormDefinitionForm actionForm = (FormDefinitionForm) form;
+		FormDefinitionForm formDefinitionForm = (FormDefinitionForm) form;
+		populateContainerInformation(request,formDefinitionForm);
+		formDefinitionForm.setGroupName(getGroupName(request));
+		formDefinitionForm.setCreateAs(ProcessorConstants.DEFAULT_FORM_CREATEAS);
+		return (mapping.findForward(Constants.SUCCESS));
+	}
+
+	/**
+	 * @param request
+	 */
+	private void populateContainerInformation(HttpServletRequest request,FormDefinitionForm formDefinitionForm)
+	{
 		LoadFormDefinitionProcessor loadFormDefinitionProcessor = LoadFormDefinitionProcessor.getInstance();
 		ContainerInterface containerInterface = null;
-		String mode = actionForm.getMode();
+		String mode = formDefinitionForm.getMode();
+		
 		if (mode != null && mode.equalsIgnoreCase(Constants.ADD_NEW_FORM))
 		{
-			loadFormDefinitionProcessor.populateContainerInformation(containerInterface, actionForm);
+			loadFormDefinitionProcessor.populateContainerInformation(containerInterface, formDefinitionForm);
 		}
 		else
 		{
 			containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 			if (containerInterface != null)
 			{
-				loadFormDefinitionProcessor.populateContainerInformation(containerInterface, actionForm);
+				loadFormDefinitionProcessor.populateContainerInformation(containerInterface, formDefinitionForm);
 			}
 		}
-		actionForm.setCreateAs(ProcessorConstants.DEFAULT_CREATEAS);
-		return (mapping.findForward(Constants.SUCCESS));
 	}
+
+	/**
+	 * @param request
+	 * @return
+	 */
+	private String getGroupName(HttpServletRequest request)
+	{
+		String groupName = null;
+		//Get group object from cache and return it
+		EntityGroupInterface entityGroup = (EntityGroupInterface) CacheManager.getObjectFromCache(request, Constants.ENTITYGROUP_INTERFACE);
+		if(entityGroup!=null)
+		{
+			groupName = entityGroup.getName();
+		}
+		else
+		{
+			groupName = "";
+		}
+		return groupName;
+	}
+	
 }

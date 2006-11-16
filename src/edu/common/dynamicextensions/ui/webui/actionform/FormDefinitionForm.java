@@ -9,6 +9,7 @@ import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.interfaces.ContainerUIBeanInterface;
 import edu.common.dynamicextensions.ui.interfaces.EntityUIBeanInterface;
 import edu.common.dynamicextensions.util.global.Constants;
@@ -87,13 +88,26 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	 * mode
 	 */
 	protected String mode;
+	
+	protected String groupName;
+	
+	public String getGroupName()
+	{
+		return this.groupName;
+	}
+
+	public void setGroupName(String groupName)
+	{
+		this.groupName = groupName;
+	}
+
 	/**
 	 * default constructor
 	 *
 	 */
 	public FormDefinitionForm()
 	{
-		createAs = "NewForm";
+		createAs = ProcessorConstants.DEFAULT_FORM_CREATEAS;
 	}
 
 	/**

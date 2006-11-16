@@ -9,7 +9,6 @@ package edu.common.dynamicextensions.ui.webui.util;
 import java.util.List;
 
 import edu.wustl.common.beans.NameValueBean;
-import edu.wustl.common.util.logger.Logger;
 
 /**
  * @author preeti_munot

@@ -70,9 +70,16 @@ public class ProcessorConstants
     public static final String 	DATE_VALUE_TODAY = "Today";
     public static final String DATE_VALUE_SELECT = "Select";
     
+    //Group Constants
+    public static final String GROUP_CREATEAS_NEW ="NewGroup";
+    public static final String GROUP_CREATEFROM_EXISTING ="ExistingGroup";
+    	//Group operations
+    public static final String SAVE_GROUP = "savegroup";
+    public static final String SHOW_NEXT_PAGE = "showNextPage";
+    
     /*DEFAULT VALUE CONSTANTS*/
     //Default value for create entity as new/from existing
-    public static final String DEFAULT_CREATEAS = CREATE_AS_NEW;
+    public static final String DEFAULT_FORM_CREATEAS = CREATE_AS_NEW;
     
     //default type of list : single line : combobox
     public static final String DEFAULT_LIST_TYPE = LIST_TYPE_SINGLE_SELECT;
@@ -97,5 +104,6 @@ public class ProcessorConstants
     
     //Checkbox default value
     public static final String DEFAULT_CHECKBOX_VALUE = "checked";
-
+    //Default value for group create as
+    public static final String DEFAULT_GROUP_CREATEAS=  GROUP_CREATEAS_NEW ;
 }

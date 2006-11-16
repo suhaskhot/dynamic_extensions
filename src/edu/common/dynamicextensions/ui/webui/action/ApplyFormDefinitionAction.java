@@ -10,6 +10,7 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
+import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.processor.ApplyFormDefinitionProcessor;
 import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
@@ -58,7 +59,15 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 				saveEntity = true;
 				target = Constants.SHOW_DYNAMIC_EXTENSIONS_HOMEPAGE;
 			}
+			//Add entity to container
 			containerInterface = applyFormDefinitionProcessor.addEntityToContainer(containerInterface, formDefinitionForm, saveEntity);
+			
+			//Associate entity to group from cache
+			EntityGroupInterface entityGroup =(EntityGroupInterface) CacheManager.getObjectFromCache(request, Constants.ENTITYGROUP_INTERFACE);
+			if(entityGroup!=null)
+			{
+				applyFormDefinitionProcessor.associateEntityToGroup(entityGroup,containerInterface.getEntity());
+			}
 			if(saveEntity = true)
 			{
 				saveMessages(request, getSuccessMessage(formDefinitionForm));

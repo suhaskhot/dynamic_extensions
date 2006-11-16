@@ -16,6 +16,9 @@
 
 <html:form styleId = "formDefinitionForm" action="/ApplyFormDefinitionAction" >
   <body>
+  
+<c:set var="groupName" value="${formDefinitionForm.groupName}"/>
+<jsp:useBean id="groupName" type="java.lang.String"/>
      <table style = "border-right:0px" border = 1 valign="top"  align='right' width='90%' height="100%" border='0' cellspacing="0" cellpadding="0" class="tbBorders1" >
          <!-- Main Page heading -->
          <tr style = "border-bottom:0px"><td style = "border-right:0px;border-bottom:0px" width = '30px'>&nbsp;</td><td style = "border-left:0px;border-bottom:0px" class="formFieldSized1" ><bean:message key="app.title.MainPageTitle" /></td></tr>
@@ -24,7 +27,7 @@
 	     		<td style = "border-left:0px;border-top:0px;border-bottom:0px" valign="top" >
 	     		 <table valign="top" summary="" align='left' width='90%' height = '90%' cellspacing="0" cellpadding="3" class = "tbBordersAllbordersBlack" >
 					<tr >
-					   <td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onclick="alert('This page is still under construction and will be available in the next release');">
+					   <td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onclick="showDefineGroupPage('formDefinitionForm')">
 						 <bean:message key="app.title.DefineGroupTabTitle" />
 					   </td>
 
@@ -41,21 +44,7 @@
 					   </td>
 					   <td width="50%" class="tabMenuSeparator" colspan="3">&nbsp;</td>
 					</tr>
-
-				   <!--  <tr>
-					     <td class="formTitle" colspan="3">
-								<bean:message key="eav.new.form"/>
-						 </td>
-				     </tr>-->
-				    <!-- <tr>
-						<td class="formRequiredNoticeWithoutBorder" width="5%">*</td>
-						<td class="formRequiredLabelWithoutBorder">
-							<bean:message key="eav.group.title"/>
-						</td>
-						<td class="formFieldWithoutBorder">
-							<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="formName" />
-						</td>
-					</tr>-->
+				  
 					<tr valign = "top"><td colspan="7"><html:errors /></td></tr>
 					<tr  valign="top" >
 					<td colspan="7" class = "tbBordersAllbordersNone"  >
@@ -68,7 +57,7 @@
 												<input  type="button" value="Add Form" disabled >
 											</td>
 										</tr>
-										<tr><td >Tree will appear here</td></tr>
+										<tr><td ><%=groupName%></td></tr>
 										<tr height = 100%> <td> &nbsp;</td>
 									</table>
 								</td>

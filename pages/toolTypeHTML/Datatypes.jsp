@@ -2,8 +2,7 @@
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
 <%@ taglib uri="/WEB-INF/dynamicExtensions.tld" prefix="dynamicExtensions" %>
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
-<%@page import="edu.common.dynamicextensions.processor.ProcessorConstants" %>
-<%@page import="edu.common.dynamicextensions.processor.ProcessorConstants" %>
+
 <script src="jss/overlib_mini.js" type="text/javascript"></script>
 <script src="jss/calender.js" type="text/javascript"></script>
 
@@ -38,7 +37,7 @@
 			 							<bean:message key="eav.text.noOfLines"/>
 			 						</td>
 			 				<td class="formFieldWithoutBorder">
-			 								<html:text styleClass="formDateSized" value='' disabled='true' maxlength="100" size="60"  property="attributeNoOfRows" />
+			 								<html:text styleClass="formFieldSized5" value='' disabled='true' maxlength="100" size="60"  property="attributeNoOfRows" />
 			 						</td>
 			 						<% }  else {
 			 						%>
@@ -47,7 +46,7 @@
 			 							</td>
 
 			 							<td class="formFieldWithoutBorder">
-			 								<html:text styleClass="formDateSized"  disabled='false' maxlength="100" size="60"  property="attributeNoOfRows" />
+			 								<html:text styleClass="formFieldSized5"  disabled='false' maxlength="100" size="60"  property="attributeNoOfRows" />
 			 						</td>
 			 						<% } %>
 					</tr>
@@ -60,7 +59,7 @@
 						</td>
 
 						<td class="formFieldWithoutBorder">
-								<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="attributeSize" />
+								<html:text styleClass="formFieldSized5"  maxlength="100" size="60"  property="attributeSize" />
 						</td>
 					</tr>
 
@@ -91,7 +90,7 @@
 						</td>
 
 						<td class="formFieldWithoutBorder">
-								<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="attributeDecimalPlaces" />
+								<html:text styleClass="formFieldSized5"  maxlength="100" size="60"  property="attributeDecimalPlaces" />
 						</td>
 					</tr>
 
@@ -105,7 +104,7 @@
 						</td>
 
 						<td class="formFieldWithoutBorder">
-							<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="attributeDefaultValue" />
+							<html:text styleClass="formFieldSized5"  maxlength="100" size="60"  property="attributeDefaultValue" />
 						</td>
 					</tr>
 
@@ -128,7 +127,7 @@
 								</c:forEach>
 								</html:select>
 
-								<html:text styleClass="formDateSized15"  property="measurementUnitOther" disabled="true"></html:text>
+								<html:text styleClass="formFieldVerySmallSized"  property="measurementUnitOther" disabled="true"></html:text>
 						</td>
 					</tr>
 				 </table>

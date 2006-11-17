@@ -103,9 +103,7 @@
 	</tr>
 	<tr>
 		<td>
-			<div id="substitutionDivRules">
-			</div>
-
+			<div id="substitutionDivRules"></div>
 		</td>
 	</tr>
 </table>

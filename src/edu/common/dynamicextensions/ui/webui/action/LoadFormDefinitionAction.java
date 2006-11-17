@@ -42,7 +42,21 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 	{
 		FormDefinitionForm formDefinitionForm = (FormDefinitionForm) form;
-		populateContainerInformation(request,formDefinitionForm);
+		
+		try
+		{
+			populateContainerInformation(request,formDefinitionForm);
+		}
+		catch (DynamicExtensionsSystemException dynamicExtensionsSystemException)
+		{
+			String actionForwardString = catchException(dynamicExtensionsSystemException, request);
+			return(mapping.findForward(actionForwardString));
+		}
+		catch (DynamicExtensionsApplicationException dynamicExtensionsApplicationException)
+		{
+			String actionForwardString = catchException(dynamicExtensionsApplicationException, request);
+			return(mapping.findForward(actionForwardString));
+		}
 		formDefinitionForm.setGroupName(getGroupName(request));
 		formDefinitionForm.setCreateAs(ProcessorConstants.DEFAULT_FORM_CREATEAS);
 		return (mapping.findForward(Constants.SUCCESS));

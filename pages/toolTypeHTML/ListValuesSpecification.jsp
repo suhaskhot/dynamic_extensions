@@ -58,10 +58,10 @@
 				<table summary="" cellpadding="0" cellspacing="0" border="0" align = 'center' valign="top" width='100%'>
 					<tr  class="formRequiredLabelWithoutBorder">
 						<td class="formRequiredLabelWithoutBorder" >
-							<div style="padding : 1px;  height : 50px; width:'95%'; overflow : auto; " >
-							<table id="choiceListTable" summary="" cellpadding="0" cellspacing="0" border="1" width="100%">
-								<TR><td>&nbsp;</td></tr>
-								<TR><td>&nbsp;</td></tr>
+							<div style="padding : 1px;  height : 50px; width:'80%'; overflow : auto; " >
+							<table id="choiceListTable" summary="" cellpadding="0" cellspacing="0"  width="100%" class="tbBordersAllbordersBlack">
+								<TR><td class="formFieldBottom">&nbsp;</td></tr>
+								<TR><td class="formFieldBottom">&nbsp;</td></tr>
 								<input type="hidden" value="0" id="currentRowIndex">
 							</table>
 						</td>

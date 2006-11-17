@@ -12,6 +12,7 @@ import org.apache.struts.action.ActionMapping;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.interfaces.ContainerUIBeanInterface;
 import edu.common.dynamicextensions.ui.interfaces.EntityUIBeanInterface;
+import edu.common.dynamicextensions.ui.webui.util.TreeData;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
@@ -95,7 +96,7 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	protected String containerIdentifier;
 	
 	protected String groupName;
-	
+	protected TreeData treeData;
 	public String getGroupName()
 	{
 		return this.groupName;
@@ -425,6 +426,16 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	public void setOperationMode(String operationMode)
 	{
 		this.operationMode = operationMode;
+	}
+
+	public TreeData getTreeData()
+	{
+		return this.treeData;
+	}
+
+	public void setTreeData(TreeData treeData)
+	{
+		this.treeData = treeData;
 	}
 
 }

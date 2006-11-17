@@ -6,17 +6,9 @@ function tagHandlerFunction(selectedTool) {
 	
 }
 
-function showBuildFormJSP(operationMode)
-{
-	if(operationMode == 'EditForm')
-	{
-		document.getElementById('operation').value=operationMode;
-	}
-	else
-	{
- 		document.getElementById('operation').value='buildForm';
- 	}
- 	var formDefinitionForm = document.getElementById('formDefinitionForm');
+function showBuildFormJSP() {
+ 	document.getElementById('operation').value='buildForm';
+	var formDefinitionForm = document.getElementById('formDefinitionForm');
 	formDefinitionForm.submit();
 }
 
@@ -258,7 +250,7 @@ function addChoiceToList(addToChoiceList)
 				//Add Option to table
 					
 				myNewCell.setAttribute("id",optionName.value);
-				myNewCell.setAttribute("className","formMessage");
+				myNewCell.setAttribute("className","formFieldBottom");
 				myNewCell.setAttribute("width","10%");
 				var chkBoxId = "chkBox" + elementNo;
 				myNewCell.innerHTML = "<input type='checkbox' id='" + chkBoxId +"' value='"+optionName.value + "'>"   + optionName.value;
@@ -426,7 +418,7 @@ function showFormPreview()
 
 function addFormAction()
 {
-	document.getElementById('operationMode').value = 'AddNewForm';
+	document.getElementById('mode').value = 'AddNewForm';
 	//document.getElementById('formsIndexForm').submit;
 }
 
@@ -785,21 +777,7 @@ function ruleSelected(ruleObject)
 			document.getElementById('min').value='';
 			document.getElementById('max').value='';
 		}
-	}
-}
 
-//added to set edit mode for an entity
-function setEditOperationMode(target)
-{
-	var operationMode = document.getElementById('operationMode');
-	if(operationMode != null)
-	{
-		document.getElementById('operationMode').value = 'EditForm';
-		//document.getElementById('containerIdentifier').value = id;
-		var formsIndexForm = document.getElementById('formsIndexForm');
-    	//formsIndexForm.action = '/dynamicExtensions/LoadFormDefinitionAction.do';
-    	formsIndexForm.action = target;
-    	formsIndexForm.submit();
 	}
 }
 

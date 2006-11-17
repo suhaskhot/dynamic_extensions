@@ -276,7 +276,6 @@ FORM BEGINS
 .formRequiredNoticeWithoutBorder{ /* for the asterisk cell */
   font-family:arial,helvetica,verdana,sans-serif;
   font-size:1em;
- 
   color:#000000; /* constant: black */
 }
 

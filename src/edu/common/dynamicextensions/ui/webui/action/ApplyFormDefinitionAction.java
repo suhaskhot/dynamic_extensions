@@ -66,13 +66,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 				saveEntity = true;
 				target = Constants.SHOW_DYNAMIC_EXTENSIONS_HOMEPAGE;
 			}
-			
-			//Associate entity to group from cache
-			EntityGroupInterface entityGroup =(EntityGroupInterface) CacheManager.getObjectFromCache(request, Constants.ENTITYGROUP_INTERFACE);
-			if(entityGroup!=null)
-			{
-				applyFormDefinitionProcessor.associateEntityToGroup(entityGroup,containerInterface.getEntity());
-			}
+
 			if(saveEntity = true)
 			{
 				saveMessages(request, getSuccessMessage(formDefinitionForm));
@@ -83,6 +77,15 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 				containerInterface = applyFormDefinitionProcessor.addEntityToContainer(containerInterface, formDefinitionForm, saveEntity);
 				CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
 			}
+			if(containerInterface!=null)
+			{
+				//Associate entity to group from cache
+				EntityGroupInterface entityGroup =(EntityGroupInterface) CacheManager.getObjectFromCache(request, Constants.ENTITYGROUP_INTERFACE);
+				if(entityGroup!=null)
+				{
+					applyFormDefinitionProcessor.associateEntityToGroup(entityGroup,containerInterface.getEntity());
+				}
+			}			
 		}
 		catch (Exception e)
 		{

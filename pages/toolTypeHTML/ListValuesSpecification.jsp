@@ -51,18 +51,16 @@
 							</html:button>
 					</td>
 	</tr>
-	<tr valign="top">
+	<tr valign="top" id="optionsListRow" style="display:none;" >
 		<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
 		<td class="formRequiredLabelWithoutBorder" width="25%"><bean:message key="eav.att.OptionList"/></td>
 		<td  class="formFieldWithoutBorder">
+			<!--<div id="optionsListDiv" style="display:none;">-->
 				<table summary="" cellpadding="0" cellspacing="0" border="0" align = 'center' valign="top" width='100%'>
 					<tr  class="formRequiredLabelWithoutBorder">
 						<td class="formRequiredLabelWithoutBorder" >
 							<div style="padding : 1px;  height : 50px; width:'80%'; overflow : auto; " >
 							<table id="choiceListTable" summary="" cellpadding="0" cellspacing="0"  width="100%" class="tbBordersAllbordersBlack">
-								<TR><td class="formFieldBottom">&nbsp;</td></tr>
-								<TR><td class="formFieldBottom">&nbsp;</td></tr>
-								<input type="hidden" value="0" id="currentRowIndex">
 							</table>
 						</td>
 					</tr>
@@ -79,6 +77,7 @@
 					<html:hidden property="attributeDefaultValue" />
 				</table>
 			</td>
+		<!--</div>-->
 			<html:hidden property="choiceList" />
 	</tr>
 	</table>

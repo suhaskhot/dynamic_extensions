@@ -10,6 +10,9 @@ package edu.common.dynamicextensions.ui.webui.action;
  * And The exception thrown can be of 'System' type, in this case user will be directed to Error Page.
  * @author deepti_shelar
  */
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -25,7 +28,10 @@ import edu.common.dynamicextensions.processor.LoadFormDefinitionProcessor;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
+import edu.common.dynamicextensions.ui.webui.util.TreeData;
+import edu.common.dynamicextensions.ui.webui.util.TreeGenerator;
 import edu.common.dynamicextensions.util.global.Constants;
+import edu.wustl.common.beans.NameValueBean;
 
 public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 {
@@ -57,7 +63,9 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 			String actionForwardString = catchException(dynamicExtensionsApplicationException, request);
 			return(mapping.findForward(actionForwardString));
 		}
-		formDefinitionForm.setGroupName(getGroupName(request));
+		String groupName = getGroupName(request);
+		formDefinitionForm.setGroupName(groupName);
+		formDefinitionForm.setTreeData(getEntityTree(groupName));
 		formDefinitionForm.setCreateAs(ProcessorConstants.DEFAULT_FORM_CREATEAS);
 		return (mapping.findForward(Constants.SUCCESS));
 	}
@@ -116,5 +124,30 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 		}
 		return groupName;
 	}
+	/**
+	 * @param request
+	 */
+	private TreeData getEntityTree(String groupName)
+	{
+		if(groupName!=null)
+		{
+			TreeGenerator treeGenerator = new TreeGenerator();
+			List childList = getChildList();
+			return treeGenerator.getTreeData(groupName, childList);
+		}
+		return null;
+	}
+
+	/**
+	 * @return List of children for the tree
+	 */
+	private List getChildList()
+	{
+		ArrayList<NameValueBean> treeChildList = new ArrayList<NameValueBean>(); 
+		NameValueBean treeChildNode = new NameValueBean("New Form","1");
+		treeChildList.add(treeChildNode);
+		return treeChildList;
+	}
+
 	
 }

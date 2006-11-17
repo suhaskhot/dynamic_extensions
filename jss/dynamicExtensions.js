@@ -212,6 +212,8 @@ function changeSourceForValues(sourceControl)
 
 //addToChoiceList : indicates whether the choice shld be added to choice list
 //This will be true when called while adding choice at runtime, and false when adding at load time
+//addToChoiceList : indicates whether the choice shld be added to choice list
+//This will be true when called while adding choice at runtime, and false when adding at load time
 function addChoiceToList(addToChoiceList)
 {
 	var optionName = document.getElementById('optionName');
@@ -232,50 +234,42 @@ function addChoiceToList(addToChoiceList)
 	
 		if(choiceListTable!=null)
 		{
-			var myNewRow = null;var myNewCell =  null;
-			currentRowIndex = document.getElementById('currentRowIndex');
-			if(currentRowIndex !=null)
+			var myNewRow = choiceListTable.insertRow();
+			var myNewCell =  null;
+			
+			//Add Option to table
+			myNewCell =  myNewRow.insertCell();
+			myNewCell.setAttribute("id",optionName.value);
+			myNewCell.setAttribute("className","formFieldBottom");
+			myNewCell.setAttribute("width","10%");
+			var chkBoxId = "chkBox" + elementNo;
+			myNewCell.innerHTML = "<input type='checkbox' id='" + chkBoxId +"' value='"+optionName.value + "'>"   + optionName.value;
+			
+			var choicelist = document.getElementById('choiceList');
+			if(choicelist !=null)
 			{
-				
-				if(currentRowIndex.value<2)
+				//add to choicelist
+				if(addToChoiceList == true)
 				{
-					myNewRow = choiceListTable.rows[currentRowIndex.value];
-					myNewCell =  myNewRow.cells[0];
+					choicelist.value = choicelist.value + "," + optionName.value;
 				}
-				else
-				{
-					myNewRow = choiceListTable.insertRow();
-					myNewCell =  myNewRow.insertCell();
-				}
-				//Add Option to table
-					
-				myNewCell.setAttribute("id",optionName.value);
-				myNewCell.setAttribute("className","formFieldBottom");
-				myNewCell.setAttribute("width","10%");
-				var chkBoxId = "chkBox" + elementNo;
-				myNewCell.innerHTML = "<input type='checkbox' id='" + chkBoxId +"' value='"+optionName.value + "'>"   + optionName.value;
-
-				var choicelist = document.getElementById('choiceList');
-				if(choicelist !=null)
-				{
-					//add to choicelist
-					if(addToChoiceList == true)
-					{
-						choicelist.value = choicelist.value + "," + optionName.value;
-					}
-				}
-				optionName.value = "";
-				if(optionConceptCode!=null)
-				{
-					optionConceptCode.value="";
-				}
-				if(optionDescription!=null)
-				{
-					optionDescription.value="";
-				}
-				//increment number of elements count
-				document.getElementById('choiceListCounter').value = (parseInt(elementNo) + 1) + "";
-				document.getElementById('currentRowIndex').value = (parseInt(currentRowIndex.value)+1)+"";
+			}
+			optionName.value = "";
+			if(optionConceptCode!=null)
+			{
+				optionConceptCode.value="";
+			}
+			if(optionDescription!=null)
+			{
+				optionDescription.value="";
+			}
+			//increment number of elements count
+			document.getElementById('choiceListCounter').value = (parseInt(elementNo) + 1) + "";
+			//Display row for option list if no of rows > 0
+			var noOfRows = choiceListTable.rows.length;
+			if(noOfRows>0)
+			{
+				document.getElementById('optionsListRow').style.display = "block";
 			}
 			
 		}
@@ -305,7 +299,7 @@ function deleteElementsFromChoiceList()
 		
 		for(var i=0;i<noOfElements;i++)
 		{
-			var currentRowIndex = document.getElementById('currentRowIndex').value;
+			
 			chkBoxId = "chkBox" + i;
 			
 			chkBox = document.getElementById(chkBoxId);
@@ -318,27 +312,26 @@ function deleteElementsFromChoiceList()
 					if(rowofCheckBox!=null)
 					{
 						var rowIndexOfChkBox = rowofCheckBox.rowIndex;
+			
 						if(rowIndexOfChkBox!=null)
 						{
-							
-							if(currentRowIndex>2)		//Delete row only if index <2, minimum 2 rows to be maintained
-							{
-								valuestable.deleteRow(rowIndexOfChkBox);
-							}
-							else
-							{
-								valuestable.rows[rowIndexOfChkBox].cells[0].innerHTML = "&nbsp;";
-							}
+							valuestable.deleteRow(rowIndexOfChkBox);
 						}
 					}
-				document.getElementById('currentRowIndex').value = (parseInt(currentRowIndex.value)-1)+"";		
 				}
 				else
 				{
 					//Add to choice list if not selected
 					choicelist.value = choicelist.value + ","  + chkBox.value;
 				}
+				
 			}
+		}
+		//Hide row for option list if no of rows < 0
+		var noOfRows = valuestable.rows.length;
+		if(noOfRows<=0)
+		{
+			document.getElementById('optionsListRow').style.display = "none";
 		}
 	}
 }

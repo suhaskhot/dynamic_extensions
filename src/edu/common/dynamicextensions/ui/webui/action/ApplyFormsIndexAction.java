@@ -48,12 +48,15 @@ public class ApplyFormsIndexAction extends BaseDynamicExtensionsAction
 		if (mode != null && mode.equalsIgnoreCase(Constants.ADD_NEW_FORM))
 		{
 			actionForward = mapping.findForward(Constants.SUCCESS);
-		}
-		else if (mode != null && mode.equalsIgnoreCase(Constants.INSERT_DATA))
+		}else if (mode != null && mode.equalsIgnoreCase(Constants.INSERT_DATA))
 		{
 			actionForward = mapping.findForward(Constants.INSERT_DATA);
 		}
-		
+		if (mode != null && mode.equalsIgnoreCase(""))
+		{
+			CacheManager.clearCache(request);
+			actionForward = mapping.findForward(Constants.SUCCESS);
+		}
 		return actionForward;
 	}
 }

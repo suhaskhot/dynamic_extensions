@@ -48,7 +48,7 @@
 				</td>
 
 				<td class="formFieldWithoutBorder">
-						<html:textarea styleClass="formDateSized" rows = "3" cols="28"  property="description"  />
+						<html:textarea styleClass="formFieldSmallSized" rows = "3" cols="28"  property="description"  />
 				</td>
 			</tr>
 

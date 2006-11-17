@@ -45,7 +45,9 @@ public class TreeGenerator
 	public TreeData getTreeData(String rootName, List childList)
 	{
 		TreeData treedata = new TreeData();
-		treedata.setImagesUrl(this.getContextPath() + "/images");
+		/*treedata.setImagesUrl(this.getContextPath() + "/images");*/
+		treedata.setImagesUrl("images/");
+		
 		TNode node = new TNode(rootName, 0);
 		String name = null;
 		String sequenceNumber = null;
@@ -60,9 +62,7 @@ public class TreeGenerator
 				{
 					name = childElt.getName();
 					sequenceNumber = childElt.getValue();
-
 					seqno = Integer.parseInt(sequenceNumber);
-
 					node.add(name, seqno);
 				}
 			}

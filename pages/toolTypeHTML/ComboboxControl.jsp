@@ -24,19 +24,7 @@
     <td>
 
 	<table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%' >
-		<!--<jsp:include page="/pages/toolTypeHTML/CommonControlAttributes.jsp" />-->
-		<!--<html:hidden property="displayChoice" value="UserDefined"/>-->
-		<!--  <tr>
-			<td class="formRequiredLabelWithoutBorder">
-				<bean:message key="eav.att.SourceForValues"/>
-			</td>
-			<td class="formFieldWithoutBorder">
-				<html:select property="displayChoice"  onchange="changeSourceForValues(this)" >
-					<html:options collection="displayChoiceList" labelProperty="name" property="value" />
-				</html:select>
-			</td>
-			<html:hidden property="choiceList" />
-		</tr> -->
+		
 		 <tr>
 		 	<td class="formRequiredNoticeWithoutBorder" width="2%">
 		 				*
@@ -78,45 +66,29 @@
 						</td>
 						<% } %>
 		</tr>
-
-		<!--  <tr>
-		 	<td class="formRequiredNoticeWithoutBorder" width="2%">
-		 			*
-		 	</td>
-
-			<td class="formRequiredLabelWithoutBorder">
-				<bean:message key="eav.att.DataInput"></bean:message>
-			</td>
-			<td class="formFieldWithoutBorder">
-				<c:forEach items="${dataTypeList}" var="dataTypeObj">
-					<jsp:useBean id="dataTypeObj" type="edu.wustl.common.beans.NameValueBean" />
-						<c:set var="dataTypeValue" value="${dataTypeObj.value}" />
-						<jsp:useBean id="dataTypeValue" type="java.lang.String" />
-						<html:radio property="dataType" value="" onclick="listDataTypeChanged(this)" >
-							<c:out value="${dataTypeObj.name}"/>
-						</html:radio>
-
-				</c:forEach>
-			</td>
-
-		</tr>
-		 -->
-
 		<tr>
 			<td class="formRequiredNoticeWithoutBorder" width="2%">
 					 			&nbsp;
 		 	</td>
 			<td class="formRequiredLabelWithoutBorder" width="25%"><bean:message key="eav.att.ListBoxOptionTypes"></bean:message></td>
 			<td  class="formFieldWithoutBorder">
-				<c:forEach items="${displayChoiceList}" var="choiceType">
+				<!--<c:forEach items="${displayChoiceList}" var="choiceType">
 					<jsp:useBean id="choiceType" type="edu.wustl.common.beans.NameValueBean" />
 						<c:set var="choiceTypeValue" value="${choiceType.value}" />
 						<jsp:useBean id="choiceTypeValue" type="java.lang.String" />
-						<html:radio property="displayChoice" value="<%=choiceTypeValue%>" onchange="changeSourceForValues">
+						<html:radio property="displayChoice" value="" onchange="changeSourceForValues">
 							<c:out value="${choiceType.name}"/>
 						</html:radio>
-
-				</c:forEach>
+				</c:forEach>-->
+				<html:radio property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED%>" >
+					<bean:message key="eav.att.OptionsUserDefined"/>
+				</html:radio>
+				<html:radio property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_CDE%>" disabled="true">
+					<bean:message key="eav.att.OptionsCDE"/>
+				</html:radio>
+				<html:radio property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_LOOKUP%>" disabled="true">
+					<bean:message key="eav.att.OptionsLookup"/>
+				</html:radio>
 			</td>
 		</tr>
 

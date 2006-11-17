@@ -405,7 +405,7 @@ public class ToolBoxTag extends TagSupport
 		Logger.out.debug(" Entering Selectors List Tag : doEndTag method");
 		StringBuffer sb = new StringBuffer();
 		sb.append("\n<div id=\"" + id + "\"  class=\"formField\"  style=\"height: " + height + "; width:" + width
-				+ "; cursor: hand ; overflow-y: auto;\">");
+				+ ";  overflow-y: auto;\">");
 		sb.append("\n<table class=\"toolBoxTable\" border=\"0\">");
 		
 		Iterator toolsListIterator = toolsList.iterator();
@@ -431,14 +431,19 @@ public class ToolBoxTag extends TagSupport
 					if (selectedUserOption != null && toolName.equals(selectedUserOption))
 					{
 						classname="toolLabelTextSelected";
+						sb.append("\n<label class='" + classname + "' value=\"" + toolCaption
+								+ "\" id='" + toolName + "' border=\"1\" />");
 					}
 					else
 					{
 						classname = "toolLabelText";
+						sb.append("\n<label class='" + classname + "' value=\"" + toolCaption
+								+ "\" id='" + toolName + "' border=\"1\" onclick=\"tagHandlerFunction('" + toolName + "');" + onClick
+								+ "('" + toolName + "','" + id + "')\"/>");
 					}
-					sb.append("\n<label class='" + classname + "' value=\"" + toolCaption
+					/*sb.append("\n<label class='" + classname + "' value=\"" + toolCaption
 							+ "\" id='" + toolName + "' border=\"1\" onclick=\"tagHandlerFunction('" + toolName + "');" + onClick
-							+ "('" + toolName + "','" + id + "')\"/>");
+							+ "('" + toolName + "','" + id + "')\"/>");*/
 					sb.append("<img align=\"left\" src='" + imagePath + "' />&nbsp;");
 					sb.append(toolCaption);
 					sb.append("</label>");

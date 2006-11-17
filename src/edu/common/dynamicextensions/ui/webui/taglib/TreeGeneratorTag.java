@@ -64,12 +64,11 @@ public class TreeGeneratorTag extends TagSupport
 						+ "myChild.style.display='none';\n" + "document.getElementById(p).className='folder';\n" + "}\n" + "}\n" + "}";
 
 				String changeSelectionJSCode = "function changeSelection(str1,seqno)\n" + "{	\n" 
-						+ "document.getElementById('controlOperation').value='Edit';\n" + "document.getElementById('selectedControlId').value=seqno ;\n"
 						+ "selId =document.getElementById('selectedAttrib').value;\n" + "document.getElementById('selectedAttrib').value=str1;\n"
 						+ "document.getElementById(str1).style.fontWeight='bold';\n" + "if(selId!='')\n" + "{\n"
 						+ "document.getElementById(selId).style.fontWeight='normal';\n" + "}\n"
 						+ "var controlsForm=document.getElementById('controlsForm');\n"
-						+ "controlsForm.action='/dynamicExtensions/LoadFormControlsAction.do'\n;" + "controlsForm.submit();\n" + "}\n";
+						+"}\n";
 				jspWriter.print("<script language='JavaScript'> \n" + "<!-- \n" + toggleFunctionJSCode + changeSelectionJSCode
 						+ "toggle('N0_0','P00'); \n" + "// --> \n" + "</script>");
 

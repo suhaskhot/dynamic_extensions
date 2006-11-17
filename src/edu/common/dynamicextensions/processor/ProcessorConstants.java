@@ -49,6 +49,7 @@ public class ProcessorConstants
     //Types of permisible value sources for Combobox
     public static final String DISPLAY_CHOICE_USER_DEFINED = "UserDefined";
     public static final String DISPLAY_CHOICE_CDE = "CDE";
+    public static final String DISPLAY_CHOICE_LOOKUP = "Lookup";
     
     //Measurement unit OTHER for numeric fields
     public static final String MEASUREMENT_UNIT_OTHER = "other";

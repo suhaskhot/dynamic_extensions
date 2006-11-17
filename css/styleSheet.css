@@ -533,7 +533,7 @@ input.formFieldSmallSized,textarea.formFieldSmallSized,select.formFieldSmallSize
   font-family:arial,helvetica,verdana,sans-serif;
   border:1px solid #5C5C5C; /* constant: dark gray */
   font-size:1em;
-  width:20em;
+  width:22em;
 }
 input.formFieldVerySmallSized,textarea.formFieldVerySmallSized,select.formFieldVerySmallSized{ /* for the form elements themselves and with a constant width (on elements) */
   font-family:arial,helvetica,verdana,sans-serif;
@@ -598,12 +598,15 @@ td.formFieldWithNoTopBorder{ /* for the cell that contains the form elements */
   border-bottom:1px solid #5C5C5C; /* constant: dark gray */
   border-left:1px solid #5C5C5C; /* constant: dark gray */
   background-color:#F4F4F5; /* constant: light gray */
+  font-weight:bold;
 }
 .formFieldSized10{ /* for the form elements themselves and with a constant width (on elements) */
   font-family:arial,helvetica,verdana,sans-serif;
   border:1px solid #5C5C5C; /* constant: dark gray */
   font-size:1em;
-	width:10em;
+  width:10em;
+  
+  
 }
 .formFieldSized15{ /* for the form elements themselves and with a constant width (on elements) */
   font-family:arial,helvetica,verdana,sans-serif;
@@ -1376,14 +1379,14 @@ textarea.formFieldSized20{ /* Used by Mandar for the comments used in autoevents
   font-weight:bold;
   padding-left:0.8em;
   background-color:#A1A1A1; 
-  color:#000000; /* constant: white */
+  color:#FFFFFF; /* constant: white */
   border-top:1px solid #5C5C5C; /* constant: dark gray */
   border-left:1px solid #5C5C5C; /* constant: dark gray */
   border-right:1px solid #5C5C5C; /* constant: dark gray */
   border-bottom:1px solid #5C5C5C; /* constant: dark gray */
-  cursor:hand;
   width:12em;
   text-align=left
+  
 }
 input.formParamSized{ /* for the form elements themselves and with a constant width (on elements) */
   font-family:arial,helvetica,verdana,sans-serif;

@@ -67,9 +67,9 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 				userSelectedTool = ProcessorConstants.DEFAULT_SELECTED_CONTROL;
 			}
 			controlsForm.setUserSelectedTool(userSelectedTool);
-			
+
 			ControlConfigurationsFactory controlConfigurationsFactory = ControlConfigurationsFactory.getInstance();
-			
+
 			//List of tools/controls
 			controlsForm.setToolsList(controlConfigurationsFactory.getListOfControls());
 			controlsForm.setSelectedControlCaption(getControlCaption(controlConfigurationsFactory.getControlDisplayLabel(userSelectedTool)));
@@ -83,7 +83,7 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 			controlsForm.setDataTypeList(controlConfigurationsFactory.getControlsDataTypes(userSelectedTool));
 
 			ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-			
+
 			//Set Entity Name as root
 			if(containerInterface!=null)
 			{
@@ -99,7 +99,7 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 			}
 //			Initialize default values for controls
 			initializeControlDefaultValues(userSelectedTool,controlsForm);
-			
+
 			controlsForm.setChildList(getChildList(containerInterface));
 			controlsForm.setControlRuleMap(controlConfigurationsFactory.getRulesMap(userSelectedTool));
 			return mapping.findForward("success");
@@ -110,7 +110,7 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 			return(mapping.findForward(actionForwardString));
 		}
 	}
-	
+
 	/**
 	 * @param userSelectedTool 
 	 * @param controlsForm
@@ -195,7 +195,7 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 	 */
 	private void initializeCheckBoxControlDefaultValues(ControlsForm controlsForm)
 	{
-		if(controlsForm.getAttributeDefaultValue()==null)
+		if((controlsForm.getAttributeDefaultValue()==null)||((controlsForm.getAttributeDefaultValue().trim().equals(""))))
 		{
 			controlsForm.setAttributeDefaultValue(ProcessorConstants.DEFAULT_CHECKBOX_VALUE);
 		}
@@ -246,12 +246,12 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 	private void initializeTextControlDefaultValues(ControlsForm controlsForm)
 	{
 		//Default Data type
-		if(controlsForm.getDataType()==null)
+		if((controlsForm.getDataType()==null)||(controlsForm.getDataType().trim().equals("")))
 		{
 			controlsForm.setDataType(ProcessorConstants.DEFAULT_DATA_TYPE);
 		}
 		//Default single line type
-		if(controlsForm.getLinesType()==null)
+		if((controlsForm.getLinesType()==null)||(controlsForm.getLinesType().trim().equals("")))
 		{
 			controlsForm.setLinesType(ProcessorConstants.DEFAULT_LINE_TYPE);
 		}
@@ -333,25 +333,29 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 	private List getChildList(ContainerInterface containerInterface) throws DynamicExtensionsSystemException
 	{
 		List<ControlInformationObject> childList = new ArrayList<ControlInformationObject>();
-		Collection controlCollection = containerInterface.getControlCollection();
-		Iterator controlIterator = controlCollection.iterator();
-		ControlInterface controlInterface = null;
-		ControlInformationObject controlInformationObject = null;
-		String controlCaption = null, controlDatatype = null, controlSequenceNumber = null, controlName = null;
-		ControlConfigurationsFactory controlConfigurationsFactory = ControlConfigurationsFactory.getInstance();
-		while (controlIterator.hasNext())
-		{
-			controlInterface = (ControlInterface) controlIterator.next();
-			if (controlInterface.getCaption() != null && !controlInterface.getCaption().equals(""))
-			{
-				controlCaption = controlInterface.getCaption();
-				controlSequenceNumber = controlInterface.getSequenceNumber() + "";
-				controlName = getControlName(controlInterface);
-				controlDatatype = getControlCaption(controlConfigurationsFactory.getControlDisplayLabel(controlName));
-				controlInformationObject = new ControlInformationObject(controlCaption, controlDatatype, controlSequenceNumber);
-				childList.add(controlInformationObject);
-			}
 
+		if(containerInterface!=null)
+		{
+			Collection controlCollection = containerInterface.getControlCollection();
+			Iterator controlIterator = controlCollection.iterator();
+			ControlInterface controlInterface = null;
+			ControlInformationObject controlInformationObject = null;
+			String controlCaption = null, controlDatatype = null, controlSequenceNumber = null, controlName = null;
+			ControlConfigurationsFactory controlConfigurationsFactory = ControlConfigurationsFactory.getInstance();
+			while (controlIterator.hasNext())
+			{
+				controlInterface = (ControlInterface) controlIterator.next();
+				if (controlInterface.getCaption() != null && !controlInterface.getCaption().equals(""))
+				{
+					controlCaption = controlInterface.getCaption();
+					controlSequenceNumber = controlInterface.getSequenceNumber() + "";
+					controlName = getControlName(controlInterface);
+					controlDatatype = getControlCaption(controlConfigurationsFactory.getControlDisplayLabel(controlName));
+					controlInformationObject = new ControlInformationObject(controlCaption, controlDatatype, controlSequenceNumber);
+					childList.add(controlInformationObject);
+				}
+
+			}
 		}
 		return childList;
 	}
@@ -390,5 +394,5 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 		return null;
 	}
 
-	
+
 }

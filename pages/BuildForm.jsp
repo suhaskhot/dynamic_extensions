@@ -29,6 +29,9 @@
 	<c:set var="controlInformationObjectList" value="${controlsForm.childList}"/>
 	<jsp:useBean id="controlInformationObjectList" type="java.util.List"/>
 
+	<c:set var="selectedControlCaption" value="${controlsForm.selectedControlCaption}"/>
+ 	<jsp:useBean id="selectedControlCaption" type="java.lang.String"/>
+
 	<!-- Main HTML Code -->
   	<body onload="initBuildForm()">
 
@@ -69,7 +72,7 @@
 						</tr>
 					<!-- tab end -->
 						<tr valign = "top" >
-							<td valign="top" colspan="7" class="formMessage" >
+							<td valign="top" colspan="7" class="formFieldNoBorders" >
 									 <bean:message key="app.title.formName" /><%=rootName%>
 							</td>
 						</tr>
@@ -112,7 +115,9 @@
 																	<table valign = "top" align ="left" height = '100%' width = '100%' class="tbBordersAllbordersBlack" cellspacing="0" cellpadding="0">
 																		<thead>
 																			<tr >
-																				<th align="left" class="formTitleGray"><bean:message key="app.formControl.properties" /></th>
+																				<th align="left" class="formTitleGray">
+																					<%=selectedControlCaption%> <bean:message key="app.formControl.properties" />
+																				</th>
 																			</tr>
 																		</thead>
 																		<tr height = '100%' width = '100%' valign = "top">
@@ -150,14 +155,14 @@
 																<c:set var="identifier" value="${controlInfoObj.identifier}"/>
 																<jsp:useBean id="identifier" type="java.lang.String"/>
 															<tbody>
-															
-															
-															
+
+
+
 															<tr height = "5%"   style = "cursor:hand">
 																<td class="formMessage">
 																	<input type = "checkbox" name = "checkAttribute"  id = "<%=identifier%>" value = "<%=identifier%>"  />
 																	<input type = "hidden"  id = "sequenceNumbers" name = "sequenceNumbers" value = "<%=generator+1%>"  />
-																	<%String hiddenRowId = identifier + "rowNum";%>	
+																	<%String hiddenRowId = identifier + "rowNum";%>
 																	<input type = "hidden"  id = "<%=hiddenRowId%>" name = "<%=hiddenRowId%>" value = "<%=generator++ + 1%>"  />
 																</td>
 																<td class="formMessage" style="padding-left:2px">
@@ -165,15 +170,15 @@
 																		<%=controlName%>
 																		</div>
 																</td>
-																
+
 																<td class="formMessage" style="padding-left:2px">
 																	<div noWrap='true' style='overflow-x:hidden; text-overflow:ellipsis; width:60px;' onmouseover = "showTooltip(this.innerHTML,this,this.innerHTML);" onmouseout = "hideTooltip();">
 																		<%=controlType%>
 																	</div>
 																</td>
 															</tr>
-																	
-															
+
+
 															</tbody>
 																</c:forEach>
 																<tr height = "100%">

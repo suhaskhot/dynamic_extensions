@@ -77,7 +77,7 @@
 					<DIV id=slcalcodattributeDefaultValue style="Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px">
 						<SCRIPT>printCalendar('attributeDefaultValue',26,10,2006);</SCRIPT>
 					</DIV>
-					[MM-DD-YYYY or MM/DD/YYYY]&nbsp;
+					[MM-DD-YYYY]&nbsp;
 
 				</td>
 	<!-- 	<tr>

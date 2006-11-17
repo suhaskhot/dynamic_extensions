@@ -233,7 +233,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		}
 		else
 		{
-			if (controlInterface instanceof ComboBoxInterface)
+			if (controlInterface instanceof ListBoxInterface)
 			{
 				listBoxIntf = (ListBoxInterface) controlInterface;
 			}

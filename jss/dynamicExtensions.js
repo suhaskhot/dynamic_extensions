@@ -240,37 +240,51 @@ function addChoiceToList(addToChoiceList)
 	
 		if(choiceListTable!=null)
 		{
-			var myNewRow = choiceListTable.insertRow();
-			var myNewCell =  null;
-			
-			//Add Option to table
-			myNewCell =  myNewRow.insertCell();
-			myNewCell.setAttribute("id",optionName.value);
-			myNewCell.setAttribute("className","formMessage");
-			myNewCell.setAttribute("width","10%");
-			var chkBoxId = "chkBox" + elementNo;
-			myNewCell.innerHTML = "<input type='checkbox' id='" + chkBoxId +"' value='"+optionName.value + "'>"   + optionName.value;
-			
-			var choicelist = document.getElementById('choiceList');
-			if(choicelist !=null)
+			var myNewRow = null;var myNewCell =  null;
+			currentRowIndex = document.getElementById('currentRowIndex');
+			if(currentRowIndex !=null)
 			{
-				//add to choicelist
-				if(addToChoiceList == true)
+				
+				if(currentRowIndex.value<2)
 				{
-					choicelist.value = choicelist.value + "," + optionName.value;
+					myNewRow = choiceListTable.rows[currentRowIndex.value];
+					myNewCell =  myNewRow.cells[0];
 				}
+				else
+				{
+					myNewRow = choiceListTable.insertRow();
+					myNewCell =  myNewRow.insertCell();
+				}
+				//Add Option to table
+					
+				myNewCell.setAttribute("id",optionName.value);
+				myNewCell.setAttribute("className","formMessage");
+				myNewCell.setAttribute("width","10%");
+				var chkBoxId = "chkBox" + elementNo;
+				myNewCell.innerHTML = "<input type='checkbox' id='" + chkBoxId +"' value='"+optionName.value + "'>"   + optionName.value;
+
+				var choicelist = document.getElementById('choiceList');
+				if(choicelist !=null)
+				{
+					//add to choicelist
+					if(addToChoiceList == true)
+					{
+						choicelist.value = choicelist.value + "," + optionName.value;
+					}
+				}
+				optionName.value = "";
+				if(optionConceptCode!=null)
+				{
+					optionConceptCode.value="";
+				}
+				if(optionDescription!=null)
+				{
+					optionDescription.value="";
+				}
+				//increment number of elements count
+				document.getElementById('choiceListCounter').value = (parseInt(elementNo) + 1) + "";
+				document.getElementById('currentRowIndex').value = (parseInt(currentRowIndex.value)+1)+"";
 			}
-			optionName.value = "";
-			if(optionConceptCode!=null)
-			{
-				optionConceptCode.value="";
-			}
-			if(optionDescription!=null)
-			{
-				optionDescription.value="";
-			}
-			//increment number of elements count
-			document.getElementById('choiceListCounter').value = (parseInt(elementNo) + 1) + "";
 			
 		}
 	}
@@ -299,7 +313,7 @@ function deleteElementsFromChoiceList()
 		
 		for(var i=0;i<noOfElements;i++)
 		{
-			
+			var currentRowIndex = document.getElementById('currentRowIndex').value;
 			chkBoxId = "chkBox" + i;
 			
 			chkBox = document.getElementById(chkBoxId);
@@ -312,19 +326,26 @@ function deleteElementsFromChoiceList()
 					if(rowofCheckBox!=null)
 					{
 						var rowIndexOfChkBox = rowofCheckBox.rowIndex;
-			
 						if(rowIndexOfChkBox!=null)
 						{
-							valuestable.deleteRow(rowIndexOfChkBox);
+							
+							if(currentRowIndex>2)		//Delete row only if index <2, minimum 2 rows to be maintained
+							{
+								valuestable.deleteRow(rowIndexOfChkBox);
+							}
+							else
+							{
+								valuestable.rows[rowIndexOfChkBox].cells[0].innerHTML = "&nbsp;";
+							}
 						}
 					}
+				document.getElementById('currentRowIndex').value = (parseInt(currentRowIndex.value)-1)+"";		
 				}
 				else
 				{
 					//Add to choice list if not selected
 					choicelist.value = choicelist.value + ","  + chkBox.value;
 				}
-				
 			}
 		}
 	}

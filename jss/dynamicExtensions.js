@@ -418,7 +418,7 @@ function showFormPreview()
 
 function addFormAction()
 {
-	document.getElementById('mode').value = 'AddNewForm';
+	document.getElementById('operationMode').value = 'AddNewForm';
 	//document.getElementById('formsIndexForm').submit;
 }
 
@@ -908,6 +908,14 @@ function showDefineFormJSP()
 		groupForm.action = "/dynamicExtensions/ApplyGroupDefinitionAction.do";
 		groupForm.submit();
 	}
+}
+
+function setEditOperationMode(target)
+{
+	document.getElementById('operationMode').value = 'EditForm';
+	var formsIndexForm = document.getElementById('formsIndexForm');
+	formsIndexForm.action = target;
+	formsIndexForm.submit();
 }
 
 function saveGroup()

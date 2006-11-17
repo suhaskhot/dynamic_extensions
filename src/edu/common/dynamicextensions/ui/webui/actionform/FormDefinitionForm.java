@@ -96,7 +96,9 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	protected String containerIdentifier;
 	
 	protected String groupName;
+	
 	protected TreeData treeData;
+	
 	public String getGroupName()
 	{
 		return this.groupName;

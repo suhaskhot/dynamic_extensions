@@ -21,7 +21,7 @@ public class ComboBox extends Control implements ComboBoxInterface
 	 * 
 	 */
 	private static final long serialVersionUID = 3062212342005513616L;
-	
+
 	/**
 	 * 
 	 */
@@ -43,8 +43,8 @@ public class ComboBox extends Control implements ComboBoxInterface
 		List<NameValueBean> nameValueBeanList = null;
 		String defaultValue = this.value;
 
-		String htmlString = "<SELECT class = '" + cssClass + "' name = '" + getHTMLComponentName() + "' " + "id = '" 
-							+ getHTMLComponentName() + "' title = '" + tooltip + "'>";
+		String htmlString = "<SELECT class = '" + cssClass + "' name = '" + getHTMLComponentName() + "' " + "id = '" + getHTMLComponentName()
+				+ "' title = '" + tooltip + "'>";
 
 		if (this.value == null)
 		{
@@ -53,7 +53,7 @@ public class ComboBox extends Control implements ComboBoxInterface
 
 		if (listOfValues == null)
 		{
-			nameValueBeanList = ControlsUtility.populateListOfValues((AttributeInterface)this.getAbstractAttribute());
+			nameValueBeanList = ControlsUtility.populateListOfValues((AttributeInterface) this.getAbstractAttribute());
 		}
 
 		for (NameValueBean nameValueBean : nameValueBeanList)
@@ -68,25 +68,25 @@ public class ComboBox extends Control implements ComboBoxInterface
 			}
 		}
 		htmlString = htmlString + "</SELECT>";
-		
+
 		System.out.println("Returning " + htmlString);
 		return htmlString;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface#getChoiceList()
+	/**
+	 * 
 	 */
 	public List getChoiceList()
 	{
 		return listOfValues;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface#setChoiceList(java.util.List)
+	/**
+	 * 
 	 */
 	public void setChoiceList(List list)
 	{
 		listOfValues = list;
 	}
-	
+
 }

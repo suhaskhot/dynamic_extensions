@@ -102,8 +102,6 @@ public class RuleParameter extends AbstractDomainObject implements Serializable,
 	 */
 	public void setAllValues(AbstractActionForm arg0) throws AssignDataException
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	/* (non-Javadoc)
@@ -120,6 +118,5 @@ public class RuleParameter extends AbstractDomainObject implements Serializable,
 	public void setSystemIdentifier(Long systemIdentifier)
 	{
 		this.id = systemIdentifier;
-
 	}
 }

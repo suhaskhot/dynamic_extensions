@@ -83,7 +83,7 @@ public class TextField extends Control implements TextFieldInterface
 		{
 			defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
 		}
-
+		
 		String htmlString = "<input " + "class = '" + cssClass + "' " + "name = '" + getHTMLComponentName() + "' " + "id = '"
 				+ getHTMLComponentName() + "' " + "title = '" + tooltip + "'  " + "value = '" + defaultValue + "' " + "size = '" + columns.intValue()
 				+ "' ";

@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.domain.userinterface;
 
 import java.io.Serializable;
@@ -15,58 +16,72 @@ import edu.wustl.common.exception.AssignDataException;
  * @created 28-Sep-2006 12:20:09 PM
  * @hibernate.class table="DYEXTN_VIEW"
  */
-public class View extends AbstractDomainObject implements Serializable,ViewInterface{
-	
+public class View extends AbstractDomainObject implements Serializable, ViewInterface
+{
+
 	/**
-	 * Unique identifier for the object
+	 * Serial Version Unique Identifier
+	 */
+	private static final long serialVersionUID = 2285685823617305296L;
+
+	/**
+	 * Unique Identifier for the object
 	 */
 	protected Long id;
+
 	/**
-	 * Name of the view.
+	 * Name of the View.
 	 */
 	protected String name;
+
 	/**
 	 * Collection of container for this view.
 	 */
-	protected Collection containerCollection = new HashSet();
-	
+	protected Collection<ContainerInterface> containerCollection = new HashSet<ContainerInterface>();
+
 	/**
-	 * 
-	 *
+	 * Empty Constructor
 	 */
-	public View(){
-		
+	public View()
+	{
 	}
+
 	/**
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
 	 * length="30" unsaved-value="null" generator-class="native"
 	 * @hibernate.generator-param name="sequence" value="DYEXTN_VIEW_SEQ"
 	 * @return Returns the id.
 	 */
-	public Long getId() {
+	public Long getId()
+	{
 		return id;
 	}
+
 	/**
 	 * @param id The id to set.
 	 */
-	public void setId(Long id) {
+	public void setId(Long id)
+	{
 		this.id = id;
 	}
+
 	/**
 	 * @hibernate.property name="name" type="string" column="NAME" 
 	 * @return Returns the name.
 	 */
-	public String getName() {
+	public String getName()
+	{
 		return name;
 	}
+
 	/**
 	 * @param name The name to set.
 	 */
-	public void setName(String name) {
+	public void setName(String name)
+	{
 		this.name = name;
 	}
-	
-	
+
 	/**
 	 * @hibernate.set name="containerCollection" table="DYEXTN_CONTAINER"
 	 * cascade="save-update" inverse="false" lazy="false"
@@ -74,43 +89,47 @@ public class View extends AbstractDomainObject implements Serializable,ViewInter
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.userinterface.Container"
 	 * @return Returns the containerCollection.
 	 */
-	public Collection getContainerCollection() {
+	public Collection<ContainerInterface> getContainerCollection()
+	{
 		return containerCollection;
 	}
+
 	/**
 	 * @param containerCollection The containerCollection to set.
 	 */
-	public void setContainerCollection(Collection containerCollection) {
+	public void setContainerCollection(Collection<ContainerInterface> containerCollection)
+	{
 		this.containerCollection = containerCollection;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see edu.wustl.common.domain.AbstractDomainObject#setAllValues(edu.wustl.common.actionForm.AbstractActionForm)
 	 */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
-		// TODO Auto-generated method stub
-		
+	public void setAllValues(AbstractActionForm arg0) throws AssignDataException
+	{
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see edu.wustl.common.domain.AbstractDomainObject#getSystemIdentifier()
 	 */
-	public Long getSystemIdentifier() {
+	public Long getSystemIdentifier()
+	{
 		return id;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see edu.wustl.common.domain.AbstractDomainObject#setSystemIdentifier(java.lang.Long)
 	 */
-	public void setSystemIdentifier(Long id) {
+	public void setSystemIdentifier(Long id)
+	{
 		this.id = id;
-		
 	}
-    /**
-     * 
-     */
-	public void addContainer(ContainerInterface containerInterface) {
-		// TODO Auto-generated method stub
-		
+
+	/**
+	 * This method adds a Container to the Collection of Container of the View.
+	 * @param container the Container instance to be added.
+	 */
+	public void addContainer(ContainerInterface container)
+	{
 	}
 }

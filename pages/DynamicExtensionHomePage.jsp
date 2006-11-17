@@ -21,34 +21,16 @@
 	</head>
 	<html:errors/>
 
-	<html:form styleId='formsIndexForm' action='/ApplyFormsIndexAction'>
-	<body>
- 		
-		<table width='70%' align='center' cellspacing="5" cellspacing="0" border='0'>
-			<tr class="formMessage">
-				<td>
-					<h3><bean:message key="table.heading" /></h3>
-				</td>
-			</tr>
-			<tr >
-				<td align="left"><bean:message key="app.formpage.heading" /></td>
-			</tr>
-			<!-- Messages to be displayed -->
-			<tr >
-				<td class="formTitle" align="center">
-					<html:messages message="true" id="msg">
-						<bean:write name="msg" ignore="true"/>
-					</html:messages>
-				</td>
-			</tr>
-			<!--  Build new form button -->
-			<tr align='left'>
-				<td>
-					<html:submit property="buildForm" styleClass="buttonStyle" onclick='addFormAction()'>
-						<bean:message  key="buttons.build.form" />
-					</html:submit>
-				</td>
-			</tr>
+<html:form styleId='formsIndexForm' action='/ApplyFormsIndexAction'> <body>
+
+
+<html:hidden property="operationMode"/>
+
+<table width='70%' align='center' cellspacing="5" cellspacing="0" border='0'> <tr class="formMessage"> <td> <h3><bean:message key="table.heading" /></h3> </td> </tr> <tr > <td align="left"><bean:message key="app.formpage.heading" /></td> </tr>
+
+<!-- Messages to be displayed --> <tr > <td class="formTitle" align="center"> <html:messages message="true" id="msg"> <bean:write name="msg" ignore="true"/> </html:messages> </td> </tr>
+
+<!--  Build new form button --> <tr align='left'> <td> <html:submit property="buildForm" styleClass="buttonStyle" onclick='addFormAction()'> <bean:message  key="buttons.build.form" /> </html:submit> </td> </tr>
 
 			<tr>
 				<td>
@@ -60,19 +42,19 @@
 								<th width='5%' align='center'>
 									<bean:message key="table.serialNumber" />
 								</th>
-								<th width="30%" align='left'>
+								<th width="25%" align='left'>
 									<bean:message key="table.title" />
+								</th>
+								
+								<th width="5%" align='left'>
+									<bean:message key="app.edit" />
 								</th>
 
 								<th width="20%" align='left'>
 									<bean:message key="table.date" />
 								</th>
 
-								<!--  <th width="15%" align='left'>
-									<bean:message key="table.description" />
-								</th>
-								-->
-								 <th width="15%" align='left'>
+								<th width="15%" align='left'>
 									<bean:message key="table.createdBy" />
 								</th>
 
@@ -87,14 +69,25 @@
 							<c:forEach items="${containerCollection}" var="containerInterface" varStatus="elements">
 								<jsp:useBean id="containerInterface" type="edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface" />
 								<tr>
-									<td><c:out value='${elements.count}' />&nbsp</td>
+									<td>				
+										<c:out value='${elements.count}' />&nbsp
+									</td>
+									
 									<td>
 										<%
- 											String containerIdentifier = containerInterface.getId().toString();
- 											String target = "/dynamicExtensions/LoadDataEntryFormAction.do?containerIdentifier=" + containerIdentifier;
+ 											String cont_Id = containerInterface.getId().toString();
+ 											String target = "/dynamicExtensions/LoadDataEntryFormAction.do?containerIdentifier=" + cont_Id;
  										%>
 										<html:link href='<%=target%>'>
-											<c:out value='${containerInterface.caption}' />&nbsp
+											&nbsp<c:out value='${containerInterface.caption}' />
+										</html:link>
+									</td>
+									<td>
+										<%
+ 											target = "setEditOperationMode('/dynamicExtensions/LoadFormDefinitionAction.do?containerIdentifier=" + cont_Id + "');"; 											
+ 										%>
+										<html:link href='#' onclick="<%=target%>" >
+											<bean:message key="app.edit" />&nbsp
 										</html:link>
 									</td>
 									<td>
@@ -114,7 +107,7 @@
 			<tr><td></td></tr>
 			<tr><td></td></tr>
 		</table>
-			<html:hidden property="mode" value=""/>
+
 	</body>
 	</html:form>
 </html>

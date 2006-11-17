@@ -1,39 +1,41 @@
 
 package edu.common.dynamicextensions.domaininterface.validationrules;
 
-
 /**
+ * Rules are the validations put by the end user on the Attributes of the Enitites they create.
  * @author sujay_narkar
- *
+ * @version 1.0
  */
-public interface RuleParameterInterface {
-     /**
-     * @return Returns the id. 
-     */
-    public Long getId();
+public interface RuleParameterInterface
+{
+	/**
+	 * This method returns the Unique Identifier of the Object.
+	 * @return the Unique Identifier of the Object.
+	 */
+	public Long getId();
 
-       
-    /**
-     * @return Returns the name.
-     */
-    public String getName();
-        
-    /**
-     * @param name The name to set.
-     */
-    public void setName(String name);
-    
-    
-    /**
-     * @return Returns the value.
-     */
-    public String getValue();
-    
-    
-    /**
-     * @param value The value to set.
-     */
-    public void setValue(String value);
+	/**
+	 * This method returns the name of the parameter of the Rule.
+	 * @return the name of the Rule.
+	 */
+	public String getName();
 
+	/**
+	 * This method sets the name of the parameter of the Rule.
+	 * @param name the name to be set.
+	 */
+	public void setName(String name);
+
+	/**
+	 * This method returns the value of the parameter of the Rule.
+	 * @return the value of the parameter of the Rule.
+	 */
+	public String getValue();
+
+	/**
+	 * This method sets the value of the parameter of the Rule.
+	 * @return the value of the parameter to be set.
+	 */
+	public void setValue(String value);
 
 }

@@ -52,13 +52,14 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 			{
 				initializeMeasurementUnits(actionForm);
 			}
-			return mapping.findForward(Constants.SHOW_BUILD_FORM_JSP);
+			//return mapping.findForward(Constants.SHOW_BUILD_FORM_JSP);
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
 			String actionForwardString = catchException(e,request);
 			return(mapping.findForward(actionForwardString));
 		}
+		return mapping.findForward(Constants.SHOW_BUILD_FORM_JSP);
 
 	}
 

@@ -44,23 +44,28 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	{
 		FormDefinitionForm formDefinitionForm = (FormDefinitionForm) form;
 		String target = "";
+		String operation = "";
 		ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 		ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor.getInstance();
 		boolean saveEntity = true;
 		try
 		{
-			if((formDefinitionForm.getOperation()!=null)&&(formDefinitionForm.getOperation().equalsIgnoreCase(Constants.BUILD_FORM)))
+			operation = formDefinitionForm.getOperation();
+			if ((operation != null) && (operation.equalsIgnoreCase(Constants.BUILD_FORM)))
 			{
 				saveEntity = false;
 				target = Constants.BUILD_FORM;
 			}
+			else if ((operation != null) && (operation.equalsIgnoreCase(Constants.EDIT_FORM)))
+			{// When we click on Next or Save in Edit Mode 
+				saveEntity = true;
+				target = Constants.BUILD_FORM;
+			}
 			else
-			{// When we click on save 
+			{// When we click on save in Add Mode
 				saveEntity = true;
 				target = Constants.SHOW_DYNAMIC_EXTENSIONS_HOMEPAGE;
 			}
-			//Add entity to container
-			containerInterface = applyFormDefinitionProcessor.addEntityToContainer(containerInterface, formDefinitionForm, saveEntity);
 			
 			//Associate entity to group from cache
 			EntityGroupInterface entityGroup =(EntityGroupInterface) CacheManager.getObjectFromCache(request, Constants.ENTITYGROUP_INTERFACE);
@@ -72,7 +77,12 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 			{
 				saveMessages(request, getSuccessMessage(formDefinitionForm));
 			}
-			CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
+			//If not in Edit mode, then save the Container in Database and Add the same to the Cache manager.
+			if (operation != null && !operation.equalsIgnoreCase(Constants.EDIT_FORM))
+			{
+				containerInterface = applyFormDefinitionProcessor.addEntityToContainer(containerInterface, formDefinitionForm, saveEntity);
+				CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
+			}
 		}
 		catch (Exception e)
 		{

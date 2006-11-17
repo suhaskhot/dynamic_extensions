@@ -19,6 +19,8 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.LoadFormDefinitionProcessor;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
@@ -48,23 +50,35 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 
 	/**
 	 * @param request
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	private void populateContainerInformation(HttpServletRequest request,FormDefinitionForm formDefinitionForm)
+	private void populateContainerInformation(HttpServletRequest request, FormDefinitionForm formDefinitionForm)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		LoadFormDefinitionProcessor loadFormDefinitionProcessor = LoadFormDefinitionProcessor.getInstance();
-		ContainerInterface containerInterface = null;
-		String mode = formDefinitionForm.getMode();
+		ContainerInterface container = null;
 		
-		if (mode != null && mode.equalsIgnoreCase(Constants.ADD_NEW_FORM))
+		String operationMode = formDefinitionForm.getOperationMode();
+		
+		String containerIdentifier = request.getParameter("containerIdentifier");
+		
+		if (operationMode != null && operationMode.equalsIgnoreCase(Constants.ADD_NEW_FORM))
 		{
-			loadFormDefinitionProcessor.populateContainerInformation(containerInterface, formDefinitionForm);
+			loadFormDefinitionProcessor.populateContainerInformation(container, formDefinitionForm);
+		}
+		else if (operationMode != null && operationMode.equalsIgnoreCase(Constants.EDIT_FORM))
+		{
+			container = loadFormDefinitionProcessor.getContainerForEditing(containerIdentifier);
+			loadFormDefinitionProcessor.populateContainerInformation(container, formDefinitionForm);
+			CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, container);
 		}
 		else
 		{
-			containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-			if (containerInterface != null)
+			container = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+			if (container != null)
 			{
-				loadFormDefinitionProcessor.populateContainerInformation(containerInterface, formDefinitionForm);
+				loadFormDefinitionProcessor.populateContainerInformation(container, formDefinitionForm);
 			}
 		}
 	}

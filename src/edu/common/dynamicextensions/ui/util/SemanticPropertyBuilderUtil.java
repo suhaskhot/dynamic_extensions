@@ -34,7 +34,7 @@ public class SemanticPropertyBuilderUtil
 	 * @param conceptCodes Comma separated string of concept codes.
 	 * @return Collection collection of semantic property objects.
 	 */
-	public static Collection getSymanticPropertyCollection(String conceptCodes)
+	public static Collection<SemanticPropertyInterface> getSymanticPropertyCollection(String conceptCodes)
 	{
 		if (conceptCodes == null || conceptCodes.trim().length() == 0)
 		{
@@ -42,26 +42,29 @@ public class SemanticPropertyBuilderUtil
 		}
 		else
 		{
-			Collection collection = new HashSet();
+			Collection<SemanticPropertyInterface> semanticPropertyCollection = new HashSet<SemanticPropertyInterface>();
 			String[] individualConceptCodes = conceptCodes.split("[,]");
 			DomainObjectFactory factory = DomainObjectFactory.getInstance();
-			for (int i = 0; i < individualConceptCodes.length; i++)
+			
+			SemanticPropertyInterface semanticPropertyInterface = null;
+			for (int index = 0; index < individualConceptCodes.length; index++)
 			{
-				String conceptCode = individualConceptCodes[i];
+				String conceptCode = individualConceptCodes[index];
 				if (conceptCode != null && conceptCode.trim().length() != 0)
 				{
-					SemanticPropertyInterface semanticPropertyInterface = factory.createSemanticProperty();
+					semanticPropertyInterface = factory.createSemanticProperty();
 					semanticPropertyInterface.setConceptCode(conceptCode.trim());
 					//TODO Check how to fetch the thesauras name and term for the semantic property.
 					semanticPropertyInterface.setTerm(Constants.DEFAULT_TERM);
 					semanticPropertyInterface.setThesaurasName(Constants.DEFAULT_THESAURAS_NAME);
-					collection.add(semanticPropertyInterface);
+					semanticPropertyCollection.add(semanticPropertyInterface);
 				}
 			}
-			return collection;
+			return semanticPropertyCollection;
 		}
 
 	}
+
 	/**
 	 * Returns the ConceptCodeString.
 	 * @param abstractMetadataInterface  AbstractMetadataInterface contains the SemanticPropertyCollection

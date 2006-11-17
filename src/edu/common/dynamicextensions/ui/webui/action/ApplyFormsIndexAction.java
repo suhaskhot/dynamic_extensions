@@ -32,7 +32,7 @@ public class ApplyFormsIndexAction extends BaseDynamicExtensionsAction
 	{
 		FormsIndexForm formsIndexForm = (FormsIndexForm) form;
 		ActionForward actionForward = null;
-		String mode = formsIndexForm.getMode();
+		String mode = formsIndexForm.getOperationMode();
 		if (mode != null && mode.equalsIgnoreCase(Constants.ADD_NEW_FORM)
 				&&	CacheManager.getObjectFromCache(request, Constants.CALLBACK_URL) == null)
 		{

@@ -9,22 +9,27 @@ public interface ConstraintPropertiesInterface extends DatabasePropertiesInterfa
 {
     
     /**
-     * @return Returns the sourceEntityKey.
+     * This method returns the key of the source Entity. 
+     * @return the key of the source Entity. 
      */
     String getSourceEntityKey();
+    
     /**
-     * @param sourceEntityKey The sourceEntityKey to set.
+     * This method sets the key of the source Entity. 
+     * @param sourceEntityKey the key of the source Entity to be set. 
      */
     void setSourceEntityKey(String sourceEntityKey);
+    
     /**
-     * @return Returns the targetEntityKey.
+     * This method returns the key of the target Entity. 
+     * @return the key of the source Entity. 
      */
     String getTargetEntityKey();
+    
     /**
-     * @param targetEntityKey The targetEntityKey to set.
+     * This method sets the key of the target Entity. 
+     * @param targetEntityKey the key of the source Entity to be set.
      */
     void setTargetEntityKey(String targetEntityKey);
-
-    
 
 }

@@ -84,10 +84,15 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	 * 
 	 */
 	protected String conceptCode;
+	
 	/**
 	 * mode
 	 */
 	protected String mode;
+	
+	protected String operationMode;
+	
+	protected String containerIdentifier;
 	
 	protected String groupName;
 	
@@ -336,8 +341,6 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 		this.titleCss = titleCss;
 	}
 
-
-
 	/**
 	 * 
 	 */
@@ -390,6 +393,38 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	public void setConceptCode(String conceptCode)
 	{
 		this.conceptCode = conceptCode;
+	}
+
+	/**
+	 * @return the containerIdentifier
+	 */
+	public String getContainerIdentifier()
+	{
+		return containerIdentifier;
+	}
+
+	/**
+	 * @param containerIdentifier the containerIdentifier to set
+	 */
+	public void setContainerIdentifier(String containerIdentifier)
+	{
+		this.containerIdentifier = containerIdentifier;
+	}
+
+	/**
+	 * @return the operationMode
+	 */
+	public String getOperationMode()
+	{
+		return operationMode;
+	}
+
+	/**
+	 * @param operationMode the operationMode to set
+	 */
+	public void setOperationMode(String operationMode)
+	{
+		this.operationMode = operationMode;
 	}
 
 }

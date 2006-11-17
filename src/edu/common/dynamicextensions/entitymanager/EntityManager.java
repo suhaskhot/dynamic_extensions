@@ -1650,10 +1650,10 @@ public class EntityManager
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getRecordById(edu.common.dynamicextensions.domaininterface.EntityInterface, java.lang.Long)
 	 */
-	public Map getRecordById(EntityInterface entity, Long recordId)
+	public Map<String, String> getRecordById(EntityInterface entity, Long recordId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		Map recordValues = new HashMap();
+		Map<String, String> recordValues = new HashMap<String, String>();
 
 		if (entity == null || entity.getId() == null || recordId == null)
 		{
@@ -1669,7 +1669,7 @@ public class EntityManager
 		Object[] whereColumnValue = new Object[]{recordId};
 
 		Iterator attriIterator = attributesCollection.iterator();
-		Map columnNameMap = new HashMap();
+		Map<String, String> columnNameMap = new HashMap<String, String>();
 		int index = 0;
 		while (attriIterator.hasNext())
 		{

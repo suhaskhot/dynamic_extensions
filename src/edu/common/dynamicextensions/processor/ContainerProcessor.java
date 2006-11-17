@@ -28,7 +28,6 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	protected ContainerProcessor()
 	{
-
 	}
 
 	/**
@@ -106,6 +105,5 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 		{
 			EntityManager.getInstance().editContainer(containerInterface);
 		}
-
 	}
 }

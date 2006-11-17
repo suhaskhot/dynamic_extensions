@@ -243,7 +243,7 @@ public interface EntityManagerInterface
 	 * @return Map key - attribute name 
 	 *             value - attribute value  
 	 */
-	Map getRecordById(EntityInterface entity, Long recordId)
+	Map<String, String> getRecordById(EntityInterface entity, Long recordId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 }

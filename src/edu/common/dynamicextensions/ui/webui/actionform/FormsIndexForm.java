@@ -33,9 +33,10 @@ public class FormsIndexForm extends AbstractActionForm
 	 * mode
 	 */
 	protected String mode;
+	protected String operationMode;
 
 	/**
-	 * @return the mode
+	 * @return the operationMode
 	 */
 	public String getMode()
 	{
@@ -105,6 +106,26 @@ public class FormsIndexForm extends AbstractActionForm
 	 */
 	public void setAllValues(AbstractDomainObject abstractDomainObject)
 	{
+	}
+
+	/**
+	 * @return the operationMode
+	 */
+	public String getOperationMode()
+	{
+		return operationMode;
+	}
+
+	/**
+	 * @param operationMode the operationMode to set
+	 */
+	public void setOperationMode(String operationMode)
+	{
+		this.operationMode = operationMode;
+		if(operationMode==null)
+		{
+			this.operationMode = "";
+		}
 	}
 
 }

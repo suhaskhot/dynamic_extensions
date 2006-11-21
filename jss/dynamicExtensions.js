@@ -99,28 +99,37 @@ function dataFldDataTypeChanged(datatypeControl)
 }
 function insertRules(datatypeControl)
 {
-	var selectedDatatype = datatypeControl.value;
-	var divForDataTypeId = selectedDatatype + "Div";
+	
+		var selectedDatatype = datatypeControl.value;
+		var divForDataTypeId = selectedDatatype + "Div";
 
-	var divForDataType = document.getElementById(divForDataTypeId);
-	var divForCommonRule = document.getElementById("commonsDiv");
+		var divForDataType = document.getElementById(divForDataTypeId);
+		var divForCommonRule = document.getElementById("commonsDiv");
 
-	if(divForDataType!=null)
-	{
-		var substitutionDivRules = document.getElementById('substitutionDivRules');
-		var tempInnerHTML  = divForCommonRule.innerHTML + divForDataType.innerHTML;
 
-        while(tempInnerHTML.indexOf("tempValidationRules") != -1)
+		if(divForDataType!=null)
 		{
-			tempInnerHTML = tempInnerHTML.replace("tempValidationRules","validationRules");
+			var substitutionDivRules = document.getElementById('substitutionDivRules');
+			var tempInnerHTML  = divForCommonRule.innerHTML + divForDataType.innerHTML;
+	
+            while (tempInnerHTML.indexOf("tempValidationRules") != -1)
+			{
+			       tempInnerHTML = tempInnerHTML.replace("tempValidationRules","validationRules");
+				   
+			 }
+		
+			substitutionDivRules.innerHTML = tempInnerHTML;
 		}
-		substitutionDivRules.innerHTML = tempInnerHTML;
-	}
 }
 
 
 function initBuildForm()
 {
+	//If single line textbox, dont show row for noOfLines
+	if(document.getElementById("linesTypeHidden")!=null)
+	{
+		textBoxTypeChange(document.getElementById("linesTypeHidden")); 
+	}
 	var dataTypeElt = document.getElementById("initialDataType");
 	if(dataTypeElt!=null)
 	{
@@ -152,6 +161,12 @@ function initBuildForm()
 	var cboMeasurementUnits = document.getElementById('attributeMeasurementUnits');
 	measurementUnitsChanged(cboMeasurementUnits);
 	
+	//List box type : Combo-box or List box
+	var attributeMultiSelect = document.getElementById('hiddenIsMultiSelect');
+	if(attributeMultiSelect!=null)
+	{
+		listTypeChanged(attributeMultiSelect);
+	}
 }
 function addChoicesFromListToTable()
 {
@@ -411,19 +426,15 @@ function addFormAction()
 	//document.getElementById('formsIndexForm').submit;
 }
 
-function radioButtonClicked(obj)
+function textBoxTypeChange(obj)
 {
-if(obj.value == 'SingleLine')
+	if(obj.value == 'SingleLine')
 	{
-		document.getElementById('attributeNoOfRows').value="";
-		document.getElementById('attributeNoOfRows').disabled=true;
-		document.getElementById('noOfLines').disabled=true;
+		document.getElementById('rowForNumberOfLines').style.display="none";
 	}
 	if(obj.value == 'MultiLine')
 	{
-
-		document.getElementById('attributeNoOfRows').disabled=false;
-		document.getElementById('noOfLines').disabled=false;
+		document.getElementById('rowForNumberOfLines').style.display="block";
 	}
 }
 
@@ -557,27 +568,19 @@ function loadPreviewForm()
 
 function listTypeChanged(obj)
 {
-	if(obj.value == 'SingleSelect')
+	if(obj!=null)
 	{
-		if(document.getElementById('attributeNoOfRows')!=null)
+		var rowForDisplayHeight = document.getElementById('rowForDisplayHeight');
+		if(rowForDisplayHeight!=null)
 		{
-			document.getElementById('attributeNoOfRows').value="";
-			document.getElementById('attributeNoOfRows').disabled=true;
-		}
-		if(document.getElementById('lblNumberOfRows')!=null)
-		{
-			document.getElementById('lblNumberOfRows').disabled=true;
-		}
-	}
-	if(obj.value == 'MultiSelect')
-	{
-		if(document.getElementById('attributeNoOfRows')!=null)
-		{
-			document.getElementById('attributeNoOfRows').disabled=false;
-		}
-		if(document.getElementById('lblNumberOfRows')!=null)
-		{
-			document.getElementById('lblNumberOfRows').disabled=false;
+			if(obj.value == 'SingleSelect')
+			{
+				rowForDisplayHeight.style.display="none";
+			}
+			if(obj.value == 'MultiSelect')
+			{
+				rowForDisplayHeight.style.display="block";
+			}
 		}
 	}
 }
@@ -749,10 +752,15 @@ function measurementUnitsChanged(cboMeasuremtUnits)
 			if(cboMeasuremtUnits.value =="other")
 			{
 				txtMeasurementUnitOther.disabled=false;
+				txtMeasurementUnitOther.style.display="inline";
+				txtMeasurementUnitOther.focus();
+				
 			}
 			else
 			{
+				txtMeasurementUnitOther.value="";
 				txtMeasurementUnitOther.disabled=true;
+				txtMeasurementUnitOther.style.display="none";
 			}
 		}
 	}

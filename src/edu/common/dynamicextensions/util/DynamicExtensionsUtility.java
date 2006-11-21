@@ -9,6 +9,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -196,5 +199,16 @@ public class DynamicExtensionsUtility
 			Variables.strTodateFunction = "STR_TO_DATE";
 		}
 	}
-
+	public static AttributeTypeInformationInterface getAttributeTypeInformation(AbstractAttributeInterface abstractAttributeInterface)
+	{
+		AttributeTypeInformationInterface attributeTypeInformation = null;
+		if(abstractAttributeInterface!=null)
+		{
+			if(abstractAttributeInterface instanceof AttributeInterface)
+			{
+				attributeTypeInformation = ((AttributeInterface)abstractAttributeInterface).getAttributeTypeInformation();
+			}
+		}
+		return attributeTypeInformation;
+	}	
 }

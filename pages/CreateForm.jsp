@@ -64,7 +64,7 @@
 								<td width="30%" valign="top" >
 									<table width="100%" height = '100%' class = "tbBordersAllbordersBlack" >
 										<tr valign="top"  width="100%">
-											<td  align="left" class= "formLabelLeftBorderless">
+											<td  align="left" class= "formLabelLeftBorderless" >
 												<input  type="button" value="Add Form" disabled >
 											</td>
 										</tr>

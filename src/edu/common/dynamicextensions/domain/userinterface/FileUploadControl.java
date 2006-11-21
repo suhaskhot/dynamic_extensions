@@ -25,4 +25,22 @@ public class FileUploadControl extends Control implements FileUploadInterface
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface#getColumns()
+	 */
+	public Integer getColumns()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface#setColumns(java.lang.Integer)
+	 */
+	public void setColumns(Integer columns)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
 }

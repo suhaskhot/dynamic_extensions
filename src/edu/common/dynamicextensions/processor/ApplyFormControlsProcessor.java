@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
@@ -194,9 +194,10 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 			if ((userSelectedControl.equalsIgnoreCase(ProcessorConstants.COMBOBOX_CONTROL))
 					|| (userSelectedControl.equalsIgnoreCase(ProcessorConstants.RADIOBUTTON_CONTROL)))
 			{
-				if (abstractAttributeInterface instanceof AttributeInterface)
+				AttributeTypeInformationInterface attributeTypeInformationIntf = DynamicExtensionsUtility.getAttributeTypeInformation(abstractAttributeInterface);
+				if (attributeTypeInformationIntf!=null)
 				{
-					((AttributeInterface) abstractAttributeInterface).setDataElement(attributeProcessor.getDataElementInterface(controlsForm));
+					attributeTypeInformationIntf.setDataElement(attributeProcessor.getDataElementInterface(controlsForm));
 				}
 			}
 		}

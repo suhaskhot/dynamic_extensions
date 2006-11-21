@@ -97,13 +97,6 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	public void saveContainer(ContainerInterface containerInterface) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
-		if (containerInterface.getId() == null)
-		{
-			EntityManager.getInstance().createContainer(containerInterface);
-		}
-		else
-		{
-			EntityManager.getInstance().editContainer(containerInterface);
-		}
+		EntityManager.getInstance().persistContainer(containerInterface);
 	}
 }

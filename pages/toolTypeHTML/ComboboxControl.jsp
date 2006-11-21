@@ -18,13 +18,13 @@
 
   <c:set var="listType" value="${controlsForm.attributeMultiSelect}"/>
 <jsp:useBean id="listType" type="java.lang.String"/>
-
+<input type="hidden" name="hiddenIsMultiSelect" value="<%=listType%>">
 <table summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
   <tr>
     <td>
 
 	<table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%' >
-		
+
 		 <tr>
 		 	<td class="formRequiredNoticeWithoutBorder" width="2%">
 		 				*
@@ -43,28 +43,17 @@
 					</html:radio>
 			</td>
 		</tr>
-		<tr>
+		<tr id="rowForDisplayHeight">
 					<td class="formRequiredNoticeWithoutBorder" width="2%">
 								&nbsp;
 					</td>
+					<td class="formRequiredLabelWithoutBorder"  >
+						<bean:message key="eav.att.ListBoxDisplayLines"/>
+					</td>
+					<td class="formFieldWithoutBorder">
+						<html:text styleClass="formFieldSized5" maxlength="100" size="60"  property="attributeNoOfRows" />
+					</td>
 
-
-						<% if(listType.equalsIgnoreCase(ProcessorConstants.LIST_TYPE_SINGLE_SELECT)) { %>
-						<td class="formRequiredLabelWithoutBorder" disabled="true" id="lblNumberOfRows">
-							<bean:message key="eav.att.ListBoxDisplayLines"/>
-						</td>
-						<td class="formFieldWithoutBorder">
-								<html:text styleClass="formFieldSized5" value='' disabled='true' maxlength="100" size="60"  property="attributeNoOfRows" />
-						</td>
-						<% }  else {
-						%>
-						<td class="formRequiredLabelWithoutBorder"  id="lblNumberOfRows">
-							<bean:message key="eav.att.ListBoxDisplayLines"/>
-						</td>
-							<td class="formFieldWithoutBorder">
-								<html:text styleClass="formFieldSized5"   maxlength="100" size="60"  property="attributeNoOfRows" />
-						</td>
-						<% } %>
 		</tr>
 		<tr>
 			<td class="formRequiredNoticeWithoutBorder" width="2%">

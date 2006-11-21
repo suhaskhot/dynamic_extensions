@@ -9,6 +9,7 @@ import java.util.Map;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
+import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
@@ -45,7 +46,7 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	public Long insertDataEntryForm(ContainerInterface containerInterface, Map attributeValueMap) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException
 	{
-			EntityManager entityManager = EntityManager.getInstance();
+			EntityManagerInterface entityManager = EntityManager.getInstance();
 			EntityInterface entityInterface = containerInterface.getEntity();
 			Long recordIdentifier = entityManager.insertData(entityInterface, attributeValueMap);
 			return recordIdentifier;

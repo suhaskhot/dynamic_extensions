@@ -1,11 +1,14 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
+import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.LongAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.DoubleAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.LongAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
+import edu.wustl.common.util.logger.Logger;
 
 /**
  * This Class represents the TextField (TextBox) of the HTML page. 
@@ -83,10 +86,10 @@ public class TextField extends Control implements TextFieldInterface
 		{
 			defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
 		}
-		
+
 		String htmlString = "<input " + "class = '" + cssClass + "' " + "name = '" + getHTMLComponentName() + "' " + "id = '"
-				+ getHTMLComponentName() + "' " + "title = '" + tooltip + "'  " + "value = '" + defaultValue + "' " + "size = '" + columns.intValue()
-				+ "' ";
+		+ getHTMLComponentName() + "' " + "title = '" + tooltip + "'  " + "value = '" + defaultValue + "' " + "size = '" + columns.intValue()
+		+ "' ";
 
 		String measurementUnit = getMeasurementUnit(this.getAbstractAttribute());
 		if (measurementUnit != null)
@@ -109,9 +112,9 @@ public class TextField extends Control implements TextFieldInterface
 
 	/**
 	 * This method sets the associated AbstractAttribute of this Control. 
-	 * @param abstractAttribute AbstractAttribute to be associated.
+	 * @param abstractAttributeInterface AbstractAttribute to be associated.
 	 */
-	public void setAttribute(AbstractAttributeInterface abstractAttribute)
+	public void setAttribute(AbstractAttributeInterface abstractAttributeInterface)
 	{
 	}
 
@@ -123,15 +126,23 @@ public class TextField extends Control implements TextFieldInterface
 	private String getMeasurementUnit(AbstractAttributeInterface abstractAttribute)
 	{
 		String measurementUnit = null;
-		if (abstractAttribute instanceof LongAttributeInterface)
+		AttributeTypeInformationInterface attributeTypeInformationInterface = DynamicExtensionsUtility.getAttributeTypeInformation(abstractAttribute);
+		if(attributeTypeInformationInterface!=null)
 		{
-			LongAttributeInterface longAttribute = (LongAttributeInterface) abstractAttribute;
-			measurementUnit = longAttribute.getMeasurementUnits();
-		}
-		else if (abstractAttribute instanceof DoubleAttributeInterface)
-		{
-			DoubleAttributeInterface doubleAttribute = (DoubleAttributeInterface) abstractAttribute;
-			measurementUnit = doubleAttribute.getMeasurementUnits();
+			if (attributeTypeInformationInterface instanceof LongAttributeTypeInformation)
+			{
+				LongAttributeTypeInformation longAttribute = (LongAttributeTypeInformation) abstractAttribute;
+				measurementUnit = longAttribute.getMeasurementUnits();
+			}
+			else if (attributeTypeInformationInterface instanceof DoubleAttributeTypeInformation)
+			{
+				DoubleAttributeTypeInformation doubleAttribute = (DoubleAttributeTypeInformation) abstractAttribute;
+				measurementUnit = doubleAttribute.getMeasurementUnits();
+			}
+			else 
+			{
+				Logger.out.error("Attribute Type not known ["+ attributeTypeInformationInterface +"]" );
+			}
 		}
 		return measurementUnit;
 	}

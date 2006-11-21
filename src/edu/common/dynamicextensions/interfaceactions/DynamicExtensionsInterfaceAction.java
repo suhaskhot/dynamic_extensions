@@ -17,6 +17,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
+import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
@@ -68,7 +69,7 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet implements Web
 		if (operation.equalsIgnoreCase(GET_ALL_CONTAINERS))
 		{
 
-			EntityManager entityManager = EntityManager.getInstance();
+			EntityManagerInterface entityManager = EntityManager.getInstance();
 			Collection containerCollection = null;
 			try
 			{

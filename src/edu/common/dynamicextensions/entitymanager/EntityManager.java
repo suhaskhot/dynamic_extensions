@@ -168,7 +168,7 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 		}
 		catch (BaseDynamicExtensionsException e)
 		{
-			rollbackQueries(stack, entity);
+			rollbackQueries(stack, entity,e);
 
 			if (e instanceof DynamicExtensionsApplicationException)
 			{
@@ -188,7 +188,7 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 			}
 			catch (DAOException e)
 			{
-				rollbackQueries(stack, entity);
+				rollbackQueries(stack, entity,e);
 			}
 		}
 		return entityInterface;
@@ -604,8 +604,9 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	 * @param conn
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private void rollbackQueries(Stack reverseQueryList, Entity entity) throws DynamicExtensionsSystemException
+	private void rollbackQueries(Stack reverseQueryList, Entity entity, Exception e) throws DynamicExtensionsSystemException
 	{
+        String message = "";
 		if (reverseQueryList != null && !reverseQueryList.isEmpty())
 		{
 
@@ -613,31 +614,33 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 			try
 			{
 				conn = DBUtil.getConnection();
-			}
+                while (!reverseQueryList.empty())
+                {
+                    String query = (String) reverseQueryList.pop();
+                    PreparedStatement statement = null;
+                    statement = conn.prepareStatement(query);
+                    statement.executeUpdate();
+                }
+            }               
 			catch (HibernateException e1)
 			{
-				throw new DynamicExtensionsSystemException(e1.getMessage(), e1, DYEXTN_S_001);
+                message  = e1.getMessage();
+				
 			}
-
-			while (!reverseQueryList.empty())
-			{
-				String query = (String) reverseQueryList.pop();
-				PreparedStatement statement = null;
-				try
-				{
-					statement = conn.prepareStatement(query);
-					statement.executeUpdate();
-				}
-				catch (SQLException e)
-				{
-					LogFatalError(e, entity);
-				}
-			}
+            catch (SQLException exc)
+            {
+                message  = exc.getMessage();
+                LogFatalError(exc, entity);
+            }
+			finally {
+                DynamicExtensionsSystemException ex = new DynamicExtensionsSystemException(
+                        message,e);
+                ex.setErrorCode(DYEXTN_S_000);
+                throw ex;
+            }
+			
 		}
-		DynamicExtensionsSystemException ex = new DynamicExtensionsSystemException(
-				"Queries rolled back....Could not create data table for the entity" + entity);
-		ex.setErrorCode(DYEXTN_S_000);
-		throw ex;
+		
 
 	}
 
@@ -1173,13 +1176,13 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 		}
 		catch (DAOException e)
 		{
-			rollbackQueries(rollbackQueryStack, entity);
+			rollbackQueries(rollbackQueryStack, entity,e);
 			throw new DynamicExtensionsSystemException("Exception occured while opening a session to save the container.");
 		}
 		catch (UserNotAuthorizedException e)
 		{
 			// TODO Auto-generated catch block
-			rollbackQueries(rollbackQueryStack, entity);
+			rollbackQueries(rollbackQueryStack, entity,e);
 			e.printStackTrace();
 		}
 		finally
@@ -1190,7 +1193,7 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 			}
 			catch (DAOException e)
 			{
-				rollbackQueries(rollbackQueryStack, entity);
+				rollbackQueries(rollbackQueryStack, entity,e);
 			}
 		}
 

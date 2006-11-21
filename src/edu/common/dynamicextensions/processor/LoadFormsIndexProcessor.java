@@ -6,6 +6,7 @@ import java.util.HashSet;
 
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
+import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.actionform.FormsIndexForm;
@@ -42,7 +43,7 @@ public class LoadFormsIndexProcessor extends BaseDynamicExtensionsProcessor
 	public void populateFormsIndex(FormsIndexForm loadFormIndexForm) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		Collection<ContainerInterface> containerCollection = null;
-		EntityManager entityManager = EntityManager.getInstance();
+		EntityManagerInterface entityManager = EntityManager.getInstance();
 		containerCollection = entityManager.getAllContainers();
 		if (containerCollection == null)
 		{

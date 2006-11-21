@@ -30,6 +30,21 @@ public class Container extends AbstractDomainObject implements Serializable, Con
 	 */
 	protected Long id;
 	/**
+	 * @return
+	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
+	 * length="30" unsaved-value="null" generator-class="native"
+	 * @hibernate.generator-param name="sequence" value="DYEXTN_CONTAINER_SEQ"
+	 */
+	public Long getId()
+	{
+		return id;
+	}
+
+	public void setId(Long id)
+	{
+		this.id = id;
+	}
+	/**
 	 * css for the buttons on the container.
 	 */
 	protected String buttonCss;
@@ -69,21 +84,7 @@ public class Container extends AbstractDomainObject implements Serializable, Con
 	{
 	}
 
-	/**
-	 * @return
-	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
-	 * length="30" unsaved-value="null" generator-class="native"
-	 * @hibernate.generator-param name="sequence" value="DYEXTN_CONTAINER_SEQ"
-	 */
-	public Long getId()
-	{
-		return id;
-	}
 
-	public void setId(Long id)
-	{
-		this.id = id;
-	}
 
 	/**
 	 * @hibernate.property name="buttonCss" type="string" column="BUTTON_CSS" 
@@ -141,7 +142,7 @@ public class Container extends AbstractDomainObject implements Serializable, Con
 
 	/**
 	 * @hibernate.many-to-one column ="ENTITY_ID" class="edu.common.dynamicextensions.domain.Entity"
-	 * cascade="save-update" 
+	 * cascade="none" 
 	 * @return Returns the entity.
 	 */
 	public EntityInterface getEntity()

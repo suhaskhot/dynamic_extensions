@@ -13,23 +13,24 @@ import java.util.Vector;
 import edu.common.dynamicextensions.domain.UserDefinedDE;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
-import edu.common.dynamicextensions.domaininterface.BooleanAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.BooleanTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.BooleanValueInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
-import edu.common.dynamicextensions.domaininterface.DateAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.DateTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.DateValueInterface;
-import edu.common.dynamicextensions.domaininterface.DoubleAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.DoubleTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.DoubleValueInterface;
-import edu.common.dynamicextensions.domaininterface.FloatAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.FloatTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.FloatValueInterface;
-import edu.common.dynamicextensions.domaininterface.IntegerAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.IntegerTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.IntegerValueInterface;
-import edu.common.dynamicextensions.domaininterface.LongAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.LongTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.LongValueInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
-import edu.common.dynamicextensions.domaininterface.ShortAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.ShortTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.ShortValueInterface;
-import edu.common.dynamicextensions.domaininterface.StringAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.StringTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.wustl.common.beans.NameValueBean;
 
@@ -43,81 +44,82 @@ public class ControlsUtility
 	public static String getDefaultValue(AbstractAttributeInterface abstractAttribute)
 	{
 		String defaultValue = null;
-		if (abstractAttribute instanceof StringAttributeInterface)
+        AttributeTypeInformationInterface abstractAttributeType =  ((AttributeInterface) abstractAttribute).getAttributeTypeInformation();
+		if (abstractAttributeType instanceof StringTypeInformationInterface)
 		{
-			StringAttributeInterface stringAttribute = (StringAttributeInterface) abstractAttribute;
+			StringTypeInformationInterface stringAttribute = (StringTypeInformationInterface) abstractAttributeType;
 			if (stringAttribute != null && stringAttribute.getDefaultValue() != null)
 			{
-				defaultValue = stringAttribute.getDefaultValue();
+				defaultValue = ((StringValueInterface)stringAttribute.getDefaultValue()).getValue();
 			}
 		}
-		else if (abstractAttribute instanceof BooleanAttributeInterface)
+		else if (abstractAttributeType instanceof BooleanTypeInformationInterface)
 		{
-			BooleanAttributeInterface booleanAttribute = (BooleanAttributeInterface) abstractAttribute;
+			BooleanTypeInformationInterface booleanAttribute = (BooleanTypeInformationInterface) abstractAttributeType;
 			if (booleanAttribute != null && booleanAttribute.getDefaultValue() != null)
 			{
-				defaultValue = booleanAttribute.getDefaultValue().toString();
+				defaultValue = ((BooleanValueInterface) booleanAttribute.getDefaultValue()).getValue().toString();
 			}
 		}
-		else if (abstractAttribute instanceof IntegerAttributeInterface)
+		else if (abstractAttributeType instanceof IntegerTypeInformationInterface)
 		{
-			IntegerAttributeInterface integerAttribute = (IntegerAttributeInterface) abstractAttribute;
+			IntegerTypeInformationInterface integerAttribute = (IntegerTypeInformationInterface) abstractAttributeType;
 			if (integerAttribute != null && integerAttribute.getDefaultValue() != null)
 			{
 				defaultValue = integerAttribute.getDefaultValue().toString();
 			}
 		}
-		else if (abstractAttribute instanceof LongAttributeInterface)
+		else if (abstractAttributeType instanceof LongTypeInformationInterface)
 		{
-			LongAttributeInterface longAttribute = (LongAttributeInterface) abstractAttribute;
+			LongTypeInformationInterface longAttribute = (LongTypeInformationInterface) abstractAttributeType;
 			if (longAttribute != null && longAttribute.getDefaultValue() != null)
 			{
-				defaultValue = longAttribute.getDefaultValue().toString();
+				defaultValue = ((LongValueInterface)longAttribute.getDefaultValue()).getValue().toString();
 			}
 		}
-		else if (abstractAttribute instanceof DoubleAttributeInterface)
+		else if (abstractAttributeType instanceof DoubleTypeInformationInterface)
 		{
-			DoubleAttributeInterface doubleAttribute = (DoubleAttributeInterface) abstractAttribute;
+			DoubleTypeInformationInterface doubleAttribute = (DoubleTypeInformationInterface) abstractAttributeType;
 			if (doubleAttribute != null && doubleAttribute.getDefaultValue() != null)
 			{
-				defaultValue = doubleAttribute.getDefaultValue().toString();
+				defaultValue = ((DoubleValueInterface) doubleAttribute.getDefaultValue()).getValue().toString();
 			}
 		}
-		else if (abstractAttribute instanceof FloatAttributeInterface)
+		else if (abstractAttributeType instanceof FloatTypeInformationInterface)
 		{
-			FloatAttributeInterface floatAttribute = (FloatAttributeInterface) abstractAttribute;
+			FloatTypeInformationInterface floatAttribute = (FloatTypeInformationInterface) abstractAttributeType;
 			if (floatAttribute != null && floatAttribute.getDefaultValue() != null)
 			{
-				defaultValue = floatAttribute.getDefaultValue().toString();
+				defaultValue = ((FloatValueInterface) floatAttribute.getDefaultValue()).getValue().toString();
 			}
 		}
-		else if (abstractAttribute instanceof ShortAttributeInterface)
+		else if (abstractAttributeType instanceof ShortTypeInformationInterface)
 		{
-			ShortAttributeInterface shortAttribute = (ShortAttributeInterface) abstractAttribute;
+			ShortTypeInformationInterface shortAttribute = (ShortTypeInformationInterface) abstractAttributeType;
 			if (shortAttribute != null && shortAttribute.getDefaultValue() != null)
 			{
-				defaultValue = shortAttribute.getDefaultValue().toString();
+				defaultValue = ((ShortValueInterface)shortAttribute.getDefaultValue()).getValue().toString();
 			}
 		}
-		else if (abstractAttribute instanceof DateAttributeInterface)
+		else if (abstractAttributeType instanceof DateTypeInformationInterface)
 		{
-			DateAttributeInterface dateAttribute = (DateAttributeInterface) abstractAttribute;
+			DateTypeInformationInterface dateAttribute = (DateTypeInformationInterface) abstractAttributeType;
 			if (dateAttribute != null && dateAttribute.getDefaultValue() != null)
 			{
-				defaultValue = new SimpleDateFormat(getDateFormat(dateAttribute)).format(dateAttribute.getDefaultValue());
+				defaultValue = new SimpleDateFormat(getDateFormat(dateAttribute)).format(((DateValueInterface)dateAttribute.getDefaultValue()).getValue());
 			}
 		}
 		return defaultValue;
 	}
 
 	/**
-	 * This method returns the prescribed date format for the given DateAttribute
-	 * @param attribute the DateAttribute
+	 * This method returns the prescribed date format for the given DateAttributeTypeInformation
+	 * @param attribute the DateAttributeTypeInformation
 	 * @return the date format String
 	 */
-	public static String getDateFormat(AttributeInterface dateAttribute)
+	public static String getDateFormat(AttributeTypeInformationInterface dateAttribute)
 	{
-		String dateFormat = ((DateAttributeInterface) dateAttribute).getFormat();
+		String dateFormat = ((DateTypeInformationInterface) dateAttribute).getFormat();
 		if (dateFormat == null)
 		{
 			dateFormat = "";
@@ -133,7 +135,7 @@ public class ControlsUtility
 	{
 		List<NameValueBean> nameValueBeanList = null;
 		NameValueBean nameValueBean = null;
-		DataElementInterface dataElement = attribute.getDataElement();
+		DataElementInterface dataElement = attribute.getAttributeTypeInformation().getDataElement();
 
 		if (dataElement != null)
 		{
@@ -151,7 +153,7 @@ public class ControlsUtility
 						}
 						else if (permissibleValue instanceof DateValueInterface)
 						{
-							DateAttributeInterface dateAttribute = (DateAttributeInterface) attribute;
+							DateTypeInformationInterface dateAttribute = (DateTypeInformationInterface) attribute;
 							nameValueBean = getPermissibleDateValue(permissibleValue, dateAttribute);
 						}
 						else if (permissibleValue instanceof DoubleValueInterface)
@@ -186,7 +188,7 @@ public class ControlsUtility
 		return nameValueBeanList;
 	}
 
-	private static NameValueBean getPermissibleDateValue(PermissibleValueInterface permissibleValue, DateAttributeInterface dateAttribute)
+	private static NameValueBean getPermissibleDateValue(PermissibleValueInterface permissibleValue, DateTypeInformationInterface dateAttribute)
 	{
 		DateValueInterface dateValue = (DateValueInterface) permissibleValue;
 		NameValueBean nameValueBean = null;

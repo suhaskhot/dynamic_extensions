@@ -62,5 +62,29 @@ public interface EntityInterface extends AbstractMetadataInterface
 	 * @param abstractAttribute an AbstractAttribute to be removed.
 	 */
 	void removeAbstractAttribute(AbstractAttributeInterface abstractAttribute);
+	
+	/**
+	 * This method adds attribute interface to the abstract attribute collection.
+	 * @param attributeInterface
+	 */
+	void addAttribute(AttributeInterface attributeInterface);
+	
+	/**
+	 * This method adds attribute interface to the abstract attribute collection.
+	 * @param attributeInterface
+	 */
+	void removeAttribute(AttributeInterface attributeInterface);
+	
+	/**
+	 * This method removes association interface from the abstract attribute collection.
+	 * @param associationInterface
+	 */
+	public void addAssociation(AssociationInterface associationInterface);
+	
+	/**
+	 * This method removes association interface from the abstract attribute collection.
+	 * @param associationInterface
+	 */
+	public void removeAssociation(AssociationInterface associationInterface);
 
 }

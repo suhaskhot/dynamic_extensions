@@ -39,6 +39,17 @@
         -->
 
         <joined-subclass
+            name="edu.common.dynamicextensions.domain.databaseproperties.TableProperties"
+            table="DYEXTN_TABLE_PROPERTIES"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+
+        </joined-subclass>
+        <joined-subclass
             name="edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties"
             table="DYEXTN_COLUMN_PROPERTIES"
             dynamic-update="false"
@@ -72,17 +83,6 @@
             update="true"
             insert="true"
             column="TARGET_ENTITY_KEY"
-        />
-
-        </joined-subclass>
-        <joined-subclass
-            name="edu.common.dynamicextensions.domain.databaseproperties.TableProperties"
-            table="DYEXTN_TABLE_PROPERTIES"
-            dynamic-update="false"
-            dynamic-insert="false"
-        >
-        <key
-            column="IDENTIFIER"
         />
 
         </joined-subclass>

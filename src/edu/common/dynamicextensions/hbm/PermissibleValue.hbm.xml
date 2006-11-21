@@ -24,12 +24,86 @@
             </generator>
         </id>
 
+        <property
+            name="description"
+            type="string"
+            update="true"
+            insert="true"
+            column="DESCRIPTION"
+        />
+
+        <set
+            name="semanticPropertyCollection"
+            lazy="false"
+            inverse="false"
+            cascade="save-update"
+            sort="unsorted"
+        >
+
+              <key
+                  column="ABSTRACT_VALUE_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.SemanticProperty"
+              />
+        </set>
+
         <!--
             To add non XDoclet property mappings, create a file named
                 hibernate-properties-PermissibleValue.xml
             containing the additional properties and place it in your merge dir.
         -->
 
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.DoubleValue"
+            table="DYEXTN_DOUBLE_CONCEPT_VALUE"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+
+        <property
+            name="value"
+            type="double"
+            update="true"
+            insert="true"
+            column="VALUE"
+        />
+
+        </joined-subclass>
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.ByteArrayValue"
+            table="DYEXTN_BARR_CONCEPT_VALUE"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+
+        </joined-subclass>
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.BooleanValue"
+            table="DYEXTN_BOOLEAN_CONCEPT_VALUE"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+
+        <property
+            name="value"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="VALUE"
+        />
+
+        </joined-subclass>
         <joined-subclass
             name="edu.common.dynamicextensions.domain.DateValue"
             table="DYEXTN_DATE_CONCEPT_VALUE"
@@ -69,25 +143,6 @@
 
         </joined-subclass>
         <joined-subclass
-            name="edu.common.dynamicextensions.domain.DoubleValue"
-            table="DYEXTN_DOUBLE_CONCEPT_VALUE"
-            dynamic-update="false"
-            dynamic-insert="false"
-        >
-        <key
-            column="IDENTIFIER"
-        />
-
-        <property
-            name="value"
-            type="double"
-            update="true"
-            insert="true"
-            column="VALUE"
-        />
-
-        </joined-subclass>
-        <joined-subclass
             name="edu.common.dynamicextensions.domain.LongValue"
             table="DYEXTN_LONG_CONCEPT_VALUE"
             dynamic-update="false"
@@ -103,17 +158,6 @@
             update="true"
             insert="true"
             column="VALUE"
-        />
-
-        </joined-subclass>
-        <joined-subclass
-            name="edu.common.dynamicextensions.domain.ByteArrayValue"
-            table="DYEXTN_BARR_CONCEPT_VALUE"
-            dynamic-update="false"
-            dynamic-insert="false"
-        >
-        <key
-            column="IDENTIFIER"
         />
 
         </joined-subclass>
@@ -149,25 +193,6 @@
         <property
             name="value"
             type="short"
-            update="true"
-            insert="true"
-            column="VALUE"
-        />
-
-        </joined-subclass>
-        <joined-subclass
-            name="edu.common.dynamicextensions.domain.BooleanValue"
-            table="DYEXTN_BOOLEAN_CONCEPT_VALUE"
-            dynamic-update="false"
-            dynamic-insert="false"
-        >
-        <key
-            column="IDENTIFIER"
-        />
-
-        <property
-            name="value"
-            type="boolean"
             update="true"
             insert="true"
             column="VALUE"

@@ -6,6 +6,7 @@ import java.io.File;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Variables;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
@@ -66,12 +67,7 @@ public class DynamicExtensionsServletContextListener implements ServletContextLi
 
 		//QueryBizLogic.initializeQueryData();
 
-		Variables.datePattern = "mm-dd-yyyy";
-		Variables.timePattern = "hh-mi-ss";
-		Variables.dateFormatFunction = "TO_CHAR";
-		Variables.timeFormatFunction = "TO_CHAR";
-		Variables.dateTostrFunction = "TO_CHAR";
-		Variables.strTodateFunction = "TO_DATE";
+        DynamicExtensionsUtility.initialiseApplicationVariables();
 	}
 
 	/**

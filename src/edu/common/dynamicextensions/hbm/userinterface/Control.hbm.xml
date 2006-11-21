@@ -126,45 +126,8 @@
 
         </joined-subclass>
         <joined-subclass
-            name="edu.common.dynamicextensions.domain.userinterface.TextArea"
-            table="DYEXTN_TEXTAREA"
-            dynamic-update="false"
-            dynamic-insert="false"
-        >
-        <key
-            column="IDENTIFIER"
-        />
-        <property
-            name="columns"
-            type="integer"
-            update="true"
-            insert="true"
-            column="TEXTAREA_COLUMNS"
-        />
-
-        <property
-            name="rows"
-            type="integer"
-            update="true"
-            insert="true"
-            column="TEXTAREA_ROWS"
-        />
-
-        </joined-subclass>
-        <joined-subclass
             name="edu.common.dynamicextensions.domain.userinterface.DataGrid"
             table="DYEXTN_DATA_GRID"
-            dynamic-update="false"
-            dynamic-insert="false"
-        >
-        <key
-            column="IDENTIFIER"
-        />
-
-        </joined-subclass>
-        <joined-subclass
-            name="edu.common.dynamicextensions.domain.userinterface.CheckBox"
-            table="DYEXTN_CHECK_BOX"
             dynamic-update="false"
             dynamic-insert="false"
         >
@@ -198,7 +161,7 @@
             type="integer"
             update="true"
             insert="true"
-            column="COLUMNS"
+            column="NO_OF_COLUMNS"
         />
 
         <property
@@ -206,13 +169,50 @@
             type="boolean"
             update="true"
             insert="true"
-            column="PASSWORD"
+            column="IS_PASSWORD"
         />
 
         </joined-subclass>
         <joined-subclass
             name="edu.common.dynamicextensions.domain.userinterface.DatePicker"
             table="DYEXTN_DATEPICKER"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+
+        </joined-subclass>
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.userinterface.TextArea"
+            table="DYEXTN_TEXTAREA"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+        <property
+            name="columns"
+            type="integer"
+            update="true"
+            insert="true"
+            column="TEXTAREA_COLUMNS"
+        />
+
+        <property
+            name="rows"
+            type="integer"
+            update="true"
+            insert="true"
+            column="TEXTAREA_ROWS"
+        />
+
+        </joined-subclass>
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.userinterface.CheckBox"
+            table="DYEXTN_CHECK_BOX"
             dynamic-update="false"
             dynamic-insert="false"
         >

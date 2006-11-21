@@ -26,6 +26,22 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	protected Long id = null;
 	
 	/**
+	 * @return
+	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
+	 * length="30" unsaved-value="null" generator-class="native"
+	 * @hibernate.generator-param name="sequence" value="DYEXTN_CONTROL_SEQ"
+	 */
+	public Long getId()
+	{
+		return id;
+	}
+
+	public void setId(Long id)
+	{
+		this.id = id;
+	}
+	
+	/**
 	 * The caption of the control.
 	 */
 	protected String caption = null;
@@ -76,21 +92,7 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	{
 	}
 
-	/**
-	 * @return
-	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
-	 * length="30" unsaved-value="null" generator-class="native"
-	 * @hibernate.generator-param name="sequence" value="DYEXTN_CONTROL_SEQ"
-	 */
-	public Long getId()
-	{
-		return id;
-	}
-
-	public void setId(Long id)
-	{
-		this.id = id;
-	}
+	
 
 	/**
 	 * @hibernate.property name="caption" type="string" column="CAPTION" 

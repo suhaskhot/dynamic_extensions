@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.domaininterface;
 
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
+import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
 
 /**
  * This interface contains all the information regarding association between the entities.
@@ -13,32 +14,20 @@ import edu.common.dynamicextensions.domaininterface.databaseproperties.Constrain
  * @author sujay_narkar
  *
  */
-public interface AssociationInterface
+public interface AssociationInterface extends AbstractAttributeInterface
 {
 	/**
 	 * This method returns the direction of the Association. 
 	 * It can be Source to Destination or vice versa or bidirectional.
 	 * @return the direction of the Association
 	 */
-	String getDirection();
+	AssociationDirection getAssociationDirection();
 
 	/**
 	 * This method sets the direction of the Association.
 	 * @param direction the direction of the Association to be set.
 	 */
-	void setDirection(String direction);
-
-	/**
-	 * This method returns the source Entity of this Association.
-	 * @return the source Entity of this Association.
-	 */
-	EntityInterface getSourceEntity();
-
-	/**
-	 * This method sets the source Entity of the Association.
-	 * @param sourceEntity the Entity to be set as source of the Association.
-	 */
-	void setSourceEntity(EntityInterface sourceEntity);
+	void setAssociationDirection(AssociationDirection direction);
 
 	/**
 	 * This method returns the target Entity of the Association.

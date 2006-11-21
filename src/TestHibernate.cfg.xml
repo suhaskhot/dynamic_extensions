@@ -3,13 +3,31 @@
 <hibernate-configuration>
 	
     <session-factory>
-    	<property name="show_sql">true</property>
-    	<property name="dialect">net.sf.hibernate.dialect.Oracle9Dialect</property>	
-        <property name="hibernate.transaction.factory_class">net.sf.hibernate.transaction.JDBCTransactionFactory</property>
+    	<property name="show_sql">false</property>
+    	<property name="hibernate.transaction.factory_class">net.sf.hibernate.transaction.JDBCTransactionFactory</property>
+
+<!-- oracle settings-->    	
+<!--    
+  	    <property name="dialect">net.sf.hibernate.dialect.Oracle9Dialect</property>	
         <property name="hibernate.connection.driver_class">oracle.jdbc.driver.OracleDriver</property>
-        <property name="hibernate.connection.username">chetan</property>
-        <property name="hibernate.connection.password">chetan123</property>
+        <property name="hibernate.connection.username">vishvesh</property>
+        <property name="hibernate.connection.password">vishvesh123</property>
         <property name="hibernate.connection.url">jdbc:oracle:thin:@caelmir:1521:caelmir</property>
+-->        
+<!-- oracle settings end-->           
+        
+        
+<!-- My sql settings -->
+       	<property name="dialect">net.sf.hibernate.dialect.MySQLDialect</property>	
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+       	<property name="hibernate.jdbc.batch_size">0</property>
+       	<property name="hibernate.connection.username">catissue_core</property>
+        <property name="hibernate.connection.password">catissue_core</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost/dynext</property>
+<!-- My sql settings end -->       	
+       	
+
+
         
         <!--property name="connection.datasource">java:/cawebeav</property>
        	<property name="transaction.manager_lookup_class">net.sf.hibernate.transaction.JBossTransactionManagerLookup</property>
@@ -18,9 +36,11 @@
         <!-- List of all Mapping files -->
         
         <mapping resource="edu/common/dynamicextensions/hbm/AbstractMetadata.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/AttributeTypeInformation.hbm.xml"/>
         <mapping resource="edu/common/dynamicextensions/hbm/PermissibleValue.hbm.xml"/>
         <mapping resource="edu/common/dynamicextensions/hbm/Role.hbm.xml"/>
         <mapping resource="edu/common/dynamicextensions/hbm/SemanticProperty.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/TaggedValue.hbm.xml"/>
         <mapping resource="edu/common/dynamicextensions/hbm/DataElement.hbm.xml"/>
 
         <mapping resource="edu/common/dynamicextensions/hbm/databaseproperties/DatabaseProperties.hbm.xml"/>
@@ -31,6 +51,8 @@
                         
         <mapping resource="edu/common/dynamicextensions/hbm/validationrules/Rule.hbm.xml"/>
         <mapping resource="edu/common/dynamicextensions/hbm/validationrules/RuleParameter.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/EntityManagerHQL.hbm.xml"/>
+        
         
 
     </session-factory>

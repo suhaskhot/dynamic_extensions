@@ -18,29 +18,22 @@ import edu.common.dynamicextensions.domain.userinterface.View;
 import edu.common.dynamicextensions.domain.validationrules.Rule;
 import edu.common.dynamicextensions.domain.validationrules.RuleParameter;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
-import edu.common.dynamicextensions.domaininterface.BooleanAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.BooleanValueInterface;
-import edu.common.dynamicextensions.domaininterface.ByteArrayAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.ByteArrayValueInterface;
 import edu.common.dynamicextensions.domaininterface.CaDSRDEInterface;
-import edu.common.dynamicextensions.domaininterface.DateAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.DateValueInterface;
-import edu.common.dynamicextensions.domaininterface.DoubleAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.DoubleValueInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.common.dynamicextensions.domaininterface.FloatAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.FloatValueInterface;
-import edu.common.dynamicextensions.domaininterface.IntegerAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.IntegerValueInterface;
-import edu.common.dynamicextensions.domaininterface.LongAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.LongValueInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
-import edu.common.dynamicextensions.domaininterface.ShortAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.ShortValueInterface;
-import edu.common.dynamicextensions.domaininterface.StringAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
+import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
@@ -57,6 +50,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInter
 import edu.common.dynamicextensions.domaininterface.userinterface.ViewInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManager;
 
 /**
  * This is a singleton class which provides methods for generating domain objects.
@@ -90,6 +84,17 @@ public class DomainObjectFactory
 			domainObjectFactory = new DomainObjectFactory();
 		}
 		return domainObjectFactory;
+	}
+	
+	
+	/**
+	 * Mock entity manager can be placed in the entity manager using this method.
+	 * @param entityManager
+	 */
+	public void setInstance(DomainObjectFactory domainObjectFactory)
+	{
+		this.domainObjectFactory = domainObjectFactory;
+
 	}
 
 	/**
@@ -172,105 +177,114 @@ public class DomainObjectFactory
 		return constraintProperties;
 	}
 
-	/**
-	 * This method creates an object of BooleanAttribute.
-	 * @return an instance of BooleanAttribute.
-	 */
-	public BooleanAttributeInterface createBooleanAttribute()
-	{
-		BooleanAttribute booleanAttribute = new BooleanAttribute();
-		return booleanAttribute;
-	}
-
-	/**
-	 * This method creates an object of ByteArrayAttribute.
-	 * @return an instance of ByteArrayAttribute.
-	 */
-	public ByteArrayAttributeInterface createByteArrayAttribute()
-	{
-		ByteArrayAttribute byteArrayAttribute = new ByteArrayAttribute();
-		return byteArrayAttribute;
-	}
-
-	/**
-	 * This method creates an object of ByteArrayValue.
-	 * @return an instance of ByteArrayAttribute.
-	 */
-	public ByteArrayValueInterface createByteArrayValue()
-	{
-		ByteArrayValue byteArrayValue = new ByteArrayValue();
-		return byteArrayValue;
-	}
-
-	/**
-	 * This method creates an object of DateAttribute.
-	 * @return an instance of DateAttribute.
-	 */
-	public DateAttributeInterface createDateAttribute()
-	{
-		DateAttribute dateAttribute = new DateAttribute();
-		return dateAttribute;
-	}
-
-	/**
-	 * This method creates an object of DoubleAttribute.
-	 * @return an instance of DoubleAttribute.
-	 */
-	public DoubleAttributeInterface createDoubleAttribute()
-	{
-		DoubleAttribute doubleAttribute = new DoubleAttribute();
-		return doubleAttribute;
-	}
-
-	/**
-	 * This method creates an object of FloatAttribute.
-	 * @return an instance of FloatAttribute.
-	 */
-	public FloatAttributeInterface createFloatAttribute()
-	{
-		FloatAttribute floatAttribute = new FloatAttribute();
-		return floatAttribute;
-	}
-
-	/**
-	 * This method creates an object of IntegerAttribute.
-	 * @return an instance of IntegerAttribute.
-	 */
-	public IntegerAttributeInterface createIntegerAttribute()
-	{
-		IntegerAttribute integerAttribute = new IntegerAttribute();
-		return integerAttribute;
-	}
-
-	/**
-	 * This method creates an object of LongAttribute.
-	 * @return an instance of LongAttribute.
-	 */
-	public LongAttributeInterface createLongAttribute()
-	{
-		LongAttribute longAttribute = new LongAttribute();
-		return longAttribute;
-	}
-
-	/**
-	 * This method creates an object of ShortAttribute
-	 * @return an instance of ShortAttribute.
-	 */
-	public ShortAttributeInterface createShortAttribute()
-	{
-		ShortAttribute shortAttribute = new ShortAttribute();
-		return shortAttribute;
-	}
-
-	/**
-	 * This method creates an object of StringAttribute.
-	 * @return an instance of StringAttribute.
-	 */
-	public StringAttributeInterface createStringAttribute()
-	{
-		StringAttribute stringAttribute = new StringAttribute();
-		return stringAttribute;
-	}
+    /**
+     * 
+     * @return instance of BooleanAttributeTypeInformation.
+     */
+    public AttributeInterface createBooleanAttribute()
+    {
+        Attribute booleanAttribute = new Attribute();
+        booleanAttribute.setAttributeTypeInformation(new BooleanAttributeTypeInformation());
+        return booleanAttribute;
+    }
+    /**
+     * 
+     * @return instance of ByteArrayAttributeTypeInformation.
+     */
+    public AttributeInterface createByteArrayAttribute()
+    {
+        Attribute byteArrayAttribute = new Attribute();
+        byteArrayAttribute.setAttributeTypeInformation(new ByteArrayAttributeTypeInformation());
+        return byteArrayAttribute;
+    }  
+    
+    
+    /**
+     * 
+     * @return instance of ByteArrayAttributeTypeInformation.
+     */
+    public ByteArrayValueInterface createByteArrayValue()
+    {
+        ByteArrayValue  byteArrayValue  = new ByteArrayValue ();
+        return byteArrayValue;
+    } 
+    
+    
+    /**
+     * 
+     * @return instance of DateAttributeTypeInformation.
+     */
+    public AttributeInterface createDateAttribute()
+    {
+        Attribute dateAttribute = new Attribute();
+        dateAttribute.setAttributeTypeInformation(new DateAttributeTypeInformation());
+        return dateAttribute;
+    }
+    /**
+     * 
+     * @return instance of DoubleAttributeTypeInformation.
+     */
+    public AttributeInterface createDoubleAttribute()
+    {
+        Attribute doubleAttribute = new Attribute();
+        doubleAttribute.setAttributeTypeInformation(new DoubleAttributeTypeInformation());
+        return doubleAttribute;
+    }
+    
+    /**
+     * 
+     * @return instance of FloatAttributeTypeInformation.
+     */
+    public AttributeInterface createFloatAttribute()
+    {
+        Attribute floatAttribute = new Attribute();
+        floatAttribute.setAttributeTypeInformation(new FloatAttributeTypeInformation());
+        return floatAttribute;
+    }
+    
+    /**
+     * 
+     * @return instance of IntegerAttributeTypeInformation.
+     */
+    public AttributeInterface createIntegerAttribute()
+    {
+        Attribute integerAttribute = new Attribute();
+        integerAttribute.setAttributeTypeInformation(new IntegerAttributeTypeInformation());
+        return integerAttribute;
+    }
+    
+    /**
+     * 
+     * @return instance of LongAttributeTypeInformation.
+     */
+    public AttributeInterface createLongAttribute()
+    {
+        Attribute longAttribute = new Attribute();
+        longAttribute.setAttributeTypeInformation(new LongAttributeTypeInformation());
+        return longAttribute;
+    }
+    
+    /**
+     * 
+     * @return instance of ShortAttributeTypeInformation.
+     */
+    public AttributeInterface createShortAttribute()
+    {
+        Attribute shortAttribute = new Attribute();
+        shortAttribute.setAttributeTypeInformation(new ShortAttributeTypeInformation());
+        return shortAttribute;
+    }
+    
+    /**
+     * 
+     * @return instance of StringAttributeTypeInformation.
+     */
+    public AttributeInterface createStringAttribute()
+    {
+        Attribute stringAttribute = new Attribute();
+        stringAttribute.setAttributeTypeInformation(new StringAttributeTypeInformation());
+        return stringAttribute;
+    }
 
 	/**
 	 * This method creates an object of BooleanValue.
@@ -502,5 +516,15 @@ public class DomainObjectFactory
 		UserDefinedDE userDefinedDE = new UserDefinedDE();
 		return userDefinedDE;
 	}
+
+    /**
+     * This method creates an object of UserDefinedDE.
+     * @return an instance of UserDefinedDE.
+     */
+    public TaggedValueInterface createTaggedValue()
+    {
+        TaggedValueInterface taggedValueInterface = new TaggedValue();
+        return taggedValueInterface;
+    }
 
 }

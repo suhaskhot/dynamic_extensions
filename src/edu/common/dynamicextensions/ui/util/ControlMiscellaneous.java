@@ -12,23 +12,23 @@ import java.util.Vector;
 import edu.common.dynamicextensions.domain.UserDefinedDE;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
-import edu.common.dynamicextensions.domaininterface.BooleanAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.BooleanTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.BooleanValueInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
-import edu.common.dynamicextensions.domaininterface.DateAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.DateTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.DateValueInterface;
-import edu.common.dynamicextensions.domaininterface.DoubleAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.DoubleTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.DoubleValueInterface;
-import edu.common.dynamicextensions.domaininterface.FloatAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.FloatTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.FloatValueInterface;
-import edu.common.dynamicextensions.domaininterface.IntegerAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.IntegerTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.IntegerValueInterface;
-import edu.common.dynamicextensions.domaininterface.LongAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.LongTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.LongValueInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
-import edu.common.dynamicextensions.domaininterface.ShortAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.ShortTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.ShortValueInterface;
-import edu.common.dynamicextensions.domaininterface.StringAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.StringTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.wustl.common.beans.NameValueBean;
 
@@ -45,58 +45,58 @@ public class ControlMiscellaneous
 	 */
 	public static String getDefaultValue(AbstractAttributeInterface abstractAttribute)
 	{
-		String defaultValue = null;
-		if (abstractAttribute instanceof StringAttributeInterface)
-		{
-			StringAttributeInterface stringAttribute = (StringAttributeInterface) abstractAttribute;
-			defaultValue = stringAttribute.getDefaultValue();
-		}
-		else if (abstractAttribute instanceof BooleanAttributeInterface)
-		{
-			BooleanAttributeInterface booleanAttribute = (BooleanAttributeInterface) abstractAttribute;
-			defaultValue = booleanAttribute.getDefaultValue().toString();
-		}
-		else if (abstractAttribute instanceof IntegerAttributeInterface)
-		{
-			IntegerAttributeInterface integerAttribute = (IntegerAttributeInterface) abstractAttribute;
-			defaultValue = integerAttribute.getDefaultValue().toString();
-		}
-		else if (abstractAttribute instanceof LongAttributeInterface)
-		{
-			LongAttributeInterface longAttribute = (LongAttributeInterface) abstractAttribute;
-			defaultValue = longAttribute.getDefaultValue().toString();
-		}
-		else if (abstractAttribute instanceof DoubleAttributeInterface)
-		{
-			DoubleAttributeInterface doubleAttribute = (DoubleAttributeInterface) abstractAttribute;
-			defaultValue = doubleAttribute.getDefaultValue().toString();
-		}
-		else if (abstractAttribute instanceof FloatAttributeInterface)
-		{
-			FloatAttributeInterface floatAttribute = (FloatAttributeInterface) abstractAttribute;
-			defaultValue = floatAttribute.getDefaultValue().toString();
-		}
-		else if (abstractAttribute instanceof ShortAttributeInterface)
-		{
-			ShortAttributeInterface shortAttribute = (ShortAttributeInterface) abstractAttribute;
-			defaultValue = shortAttribute.getDefaultValue().toString();
-		}
-		else if (abstractAttribute instanceof DateAttributeInterface)
-		{
-			DateAttributeInterface dateAttribute = (DateAttributeInterface) abstractAttribute;
-			defaultValue = new SimpleDateFormat(getDateFormat(dateAttribute)).format(dateAttribute.getDefaultValue());
-		}
-		return defaultValue;
+//		String defaultValue = null;
+//		if (abstractAttribute instanceof StringTypeInformationInterface)
+//		{
+//			StringTypeInformationInterface stringAttribute = (StringTypeInformationInterface) abstractAttribute;
+//			defaultValue = stringAttribute.getDefaultValue();
+//		}
+//		else if (abstractAttribute instanceof BooleanTypeInformationInterface)
+//		{
+//			BooleanTypeInformationInterface booleanAttribute = (BooleanTypeInformationInterface) abstractAttribute;
+//			defaultValue = booleanAttribute.getDefaultValue().toString();
+//		}
+//		else if (abstractAttribute instanceof IntegerTypeInformationInterface)
+//		{
+//			IntegerTypeInformationInterface integerAttribute = (IntegerTypeInformationInterface) abstractAttribute;
+//			defaultValue = integerAttribute.getDefaultValue().toString();
+//		}
+//		else if (abstractAttribute instanceof LongTypeInformationInterface)
+//		{
+//			LongTypeInformationInterface longAttribute = (LongTypeInformationInterface) abstractAttribute;
+//			defaultValue = longAttribute.getDefaultValue().toString();
+//		}
+//		else if (abstractAttribute instanceof DoubleTypeInformationInterface)
+//		{
+//			DoubleTypeInformationInterface doubleAttribute = (DoubleTypeInformationInterface) abstractAttribute;
+//			defaultValue = doubleAttribute.getDefaultValue().toString();
+//		}
+//		else if (abstractAttribute instanceof FloatTypeInformationInterface)
+//		{
+//			FloatTypeInformationInterface floatAttribute = (FloatTypeInformationInterface) abstractAttribute;
+//			defaultValue = floatAttribute.getDefaultValue().toString();
+//		}
+//		else if (abstractAttribute instanceof ShortTypeInformationInterface)
+//		{
+//			ShortTypeInformationInterface shortAttribute = (ShortTypeInformationInterface) abstractAttribute;
+//			defaultValue = shortAttribute.getDefaultValue().toString();
+//		}
+//		else if (abstractAttribute instanceof DateTypeInformationInterface)
+//		{
+//			DateTypeInformationInterface dateAttribute = (DateTypeInformationInterface) abstractAttribute;
+//			defaultValue = new SimpleDateFormat(getDateFormat(dateAttribute)).format(dateAttribute.getDefaultValue());
+//		}
+		return "";
 	}
 
 	/**
-	 * This method returns the prescribed date format for the given DateAttribute
-	 * @param attribute the DateAttribute
+	 * This method returns the prescribed date format for the given DateAttributeTypeInformation
+	 * @param attribute the DateAttributeTypeInformation
 	 * @return the date format String
 	 */
 	public static String getDateFormat(AttributeInterface dateAttribute)
 	{
-		String dateFormat = ((DateAttributeInterface) dateAttribute).getFormat();
+		String dateFormat = ((DateTypeInformationInterface) dateAttribute).getFormat();
 		if (dateFormat == null)
 		{
 			dateFormat = "";
@@ -111,55 +111,55 @@ public class ControlMiscellaneous
 	@SuppressWarnings("unchecked")
 	public static List<NameValueBean> populateListOfValues(AttributeInterface attribute)
 	{
-		List<NameValueBean> nameValueBeanList = new Vector<NameValueBean>();
-
-		NameValueBean nameValueBean = null;
-		DataElementInterface dataElement = attribute.getDataElement();
-
-		if (dataElement != null)
-		{
-			if (dataElement instanceof UserDefinedDE)
-			{
-				Collection<PermissibleValueInterface> permissibleValueCollection = ((UserDefinedDE) dataElement).getPermissibleValueCollection();
-				for (PermissibleValueInterface permissibleValue : permissibleValueCollection)
-				{
-					if (permissibleValue instanceof StringValueInterface)
-					{
-						nameValueBean = getPermissibleStringValue(permissibleValue);
-					}
-					else if (permissibleValue instanceof DateValueInterface)
-					{
-						nameValueBean = getPermissibleDateValue(permissibleValue);
-					}
-					else if (permissibleValue instanceof DoubleValueInterface)
-					{
-						nameValueBean = getPermissibleDoubleValue(permissibleValue);
-					}
-					else if (permissibleValue instanceof FloatValueInterface)
-					{
-						nameValueBean = getPermissibleFloatValue(permissibleValue);
-					}
-					else if (permissibleValue instanceof LongValueInterface)
-					{
-						nameValueBean = getPermissibleLongValue(permissibleValue);
-					}
-					else if (permissibleValue instanceof IntegerValueInterface)
-					{
-						nameValueBean = getPermissibleIntegerValue(permissibleValue);
-					}
-					else if (permissibleValue instanceof ShortValueInterface)
-					{
-						nameValueBean = getPermissibleShortValue(permissibleValue);
-					}
-					else if (permissibleValue instanceof BooleanValueInterface)
-					{
-						nameValueBean = getPermissibleBooleanValue(permissibleValue);
-					}
-					nameValueBeanList.add(nameValueBean);
-				}
-			}
-		}
-		return nameValueBeanList;
+//		List<NameValueBean> nameValueBeanList = new Vector<NameValueBean>();
+//
+//		NameValueBean nameValueBean = null;
+//		DataElementInterface dataElement = attribute.getDataElement();
+//
+//		if (dataElement != null)
+//		{
+//			if (dataElement instanceof UserDefinedDE)
+//			{
+//				Collection<PermissibleValueInterface> permissibleValueCollection = ((UserDefinedDE) dataElement).getPermissibleValueCollection();
+//				for (PermissibleValueInterface permissibleValue : permissibleValueCollection)
+//				{
+//					if (permissibleValue instanceof StringValueInterface)
+//					{
+//						nameValueBean = getPermissibleStringValue(permissibleValue);
+//					}
+//					else if (permissibleValue instanceof DateValueInterface)
+//					{
+//						nameValueBean = getPermissibleDateValue(permissibleValue);
+//					}
+//					else if (permissibleValue instanceof DoubleValueInterface)
+//					{
+//						nameValueBean = getPermissibleDoubleValue(permissibleValue);
+//					}
+//					else if (permissibleValue instanceof FloatValueInterface)
+//					{
+//						nameValueBean = getPermissibleFloatValue(permissibleValue);
+//					}
+//					else if (permissibleValue instanceof LongValueInterface)
+//					{
+//						nameValueBean = getPermissibleLongValue(permissibleValue);
+//					}
+//					else if (permissibleValue instanceof IntegerValueInterface)
+//					{
+//						nameValueBean = getPermissibleIntegerValue(permissibleValue);
+//					}
+//					else if (permissibleValue instanceof ShortValueInterface)
+//					{
+//						nameValueBean = getPermissibleShortValue(permissibleValue);
+//					}
+//					else if (permissibleValue instanceof BooleanValueInterface)
+//					{
+//						nameValueBean = getPermissibleBooleanValue(permissibleValue);
+//					}
+//					nameValueBeanList.add(nameValueBean);
+//				}
+//			}
+//		}
+		return null;
 	}
 	/**
 	 * 

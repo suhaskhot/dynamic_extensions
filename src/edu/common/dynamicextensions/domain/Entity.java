@@ -6,8 +6,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
@@ -74,7 +77,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	}
 
 	/**
-	 * This method set all values from the form.
+	 * Set all values from the form
 	 * @param abstractActionForm the ActionForm
 	 * @throws AssignDataException if data is not in proper format.
 	 */
@@ -152,7 +155,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 		
 	}
 
-     /**
+    /**
      * 
      */
     public void addEntityGroupInterface(
@@ -191,18 +194,38 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	 * This method return the Collection of Attributes.
 	 * @return the Collection of Attributes.
 	 */
-	public Collection getAttributeCollection()
+	public Collection<AttributeInterface> getAttributeCollection()
 	{
-		return this.abstractAttributeCollection;
+        Collection<AttributeInterface> attributeCollection = new HashSet();
+        if (abstractAttributeCollection != null && !abstractAttributeCollection.isEmpty()) {
+            Iterator attributeIterator = abstractAttributeCollection.iterator();
+            while (attributeIterator.hasNext()) {
+                Object object = attributeIterator.next();
+                if (object instanceof AttributeInterface) {
+                    attributeCollection.add((AttributeInterface) object);
+                }
+            }
+        }
+        return attributeCollection;
 	}
 
 	/**
 	 * This method return the Collection of Association.
 	 * @return the Collection of Association.
 	 */
-	public Collection getAssociationCollection()
+	public Collection<AssociationInterface> getAssociationCollection()
 	{
-		return null;
+		Collection<AssociationInterface> associationCollection = new HashSet();
+        if (abstractAttributeCollection != null && !abstractAttributeCollection.isEmpty()) {
+            Iterator associationIterator = abstractAttributeCollection.iterator();
+            while (associationIterator.hasNext()) {
+                Object object = associationIterator.next();
+                if (object instanceof AssociationInterface) {
+                    associationCollection.add((AssociationInterface) object);
+                }
+            }
+        }
+        return associationCollection;
 	}
 
 	/**
@@ -215,8 +238,8 @@ public class Entity extends AbstractMetadata implements EntityInterface
 		{
 			if (abstractAttributeCollection.contains(abstractAttribute))
 			{
-				abstractAttributeCollection.remove(abstractAttributeCollection);
-			}
+				abstractAttributeCollection.remove(abstractAttribute);
+ 			}
 		}
 	}
 
@@ -242,5 +265,47 @@ public class Entity extends AbstractMetadata implements EntityInterface
 		}
 		return abstractAttribute;
 	}
+	
+	
+	/**
+	 * This method adds attribute interface to the abstract attribute collection.
+	 * @param attributeInterface
+	 */
+	public void addAttribute(AttributeInterface attributeInterface)
+	{
+		addAbstractAttribute(attributeInterface);
+		
+	}
+	
+	/** 
+	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#removeAttribute(edu.common.dynamicextensions.domaininterface.AttributeInterface)
+	 */
+	public void removeAttribute(AttributeInterface attributeInterface)
+	{
+		removeAbstractAttribute(attributeInterface);
+		
+	}
+	
+	/**
+	 * This method adds association interface to the abstract attribute collection.
+	 * @param associationInterface
+	 */
+	public void addAssociation(AssociationInterface associationInterface)
+	{
+		addAbstractAttribute(associationInterface);
+	}
+
+
+	/** 
+	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#removeAssociation(edu.common.dynamicextensions.domaininterface.AssociationInterface)
+	 */
+	public void removeAssociation(AssociationInterface associationInterface)
+	{
+		removeAbstractAttribute(associationInterface);
+		
+	}
+
+	
+	
 
 }

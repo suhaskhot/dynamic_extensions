@@ -59,23 +59,21 @@ public interface AttributeInterface extends AbstractAttributeInterface
 	void setIsNullable(Boolean isNullable);
 
 	/**
-	 * This method returns the DataElement associated with the Attribute. 
-	 * The data elment specify the source of permissible values.
-	 * @return the DataElement associated with the Attribute.
-	 */
-	DataElementInterface getDataElement();
-
-	/**
-	 * This method sets the DataElement of the Attribute.
-	 * @param dataElement the DataElement to be set.
-	 */
-	void setDataElement(DataElementInterface dataElement);
-
-	/**
-	 * This method returns the ColumnProperties of the Attribute.
-	 * ColumnProperties represents the properties of the Column in the Database. 
-	 * @return the ColumnProperties of the Attribute.
+	 * Column properties object contains database column name  
+	 * @return ColumnPropertiesInterface ColumnPropertiesInterface
 	 */
 	ColumnPropertiesInterface getColumnProperties();
 
+	/**
+	 * 
+	 * @return AttributeTypeInformationInterface
+	 */
+	AttributeTypeInformationInterface getAttributeTypeInformation();
+
+	
+	/**
+	 * @param attributeTypeInformationInterface attributeTypeInformationInterface
+	 */
+	void setAttributeTypeInformation(
+			AttributeTypeInformationInterface attributeTypeInformationInterface);
 }

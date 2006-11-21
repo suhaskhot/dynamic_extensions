@@ -2,6 +2,8 @@
 package edu.common.dynamicextensions.domain;
 
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
+import edu.common.dynamicextensions.util.global.Constants.AssociationType;
+import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.exception.AssignDataException;
@@ -78,7 +80,7 @@ public class Role extends AbstractDomainObject implements RoleInterface
 	 * @hibernate.property name="associationType" type="string" column="ASSOCIATION_TYPE"
 	 * @return the type of Association. 
 	 */
-	public String getAssociationType()
+	private String getAssociationType()
 	{
 		return associationType;
 	}
@@ -87,7 +89,7 @@ public class Role extends AbstractDomainObject implements RoleInterface
 	 * This method sets the type of Association. 
 	 * @param associationType the type of Association to be set.
 	 */
-	public void setAssociationType(String associationType)
+	private void setAssociationType(String associationType)
 	{
 		this.associationType = associationType;
 	}
@@ -173,6 +175,56 @@ public class Role extends AbstractDomainObject implements RoleInterface
 	 */
 	public void setSystemIdentifier(Long id)
 	{
+	}
+
+	/**
+	 * @see edu.common.dynamicextensions.domaininterface.RoleInterface#getMaximumCardinality()
+	 */
+	public Cardinality getMaximumCardinality()
+	{
+		return Cardinality.get(getMaxCardinality());
+	}
+
+	/**
+	 * @see edu.common.dynamicextensions.domaininterface.RoleInterface#setMaximumCardinality(edu.common.dynamicextensions.util.global.Constants.Cardinality)
+	 */
+	public void setMaximumCardinality(Cardinality maxCardinality)
+	{
+		setMaxCardinality(maxCardinality.getValue());
+
+	}
+
+	/**
+	 * @see edu.common.dynamicextensions.domaininterface.RoleInterface#getMinimumCardinality()
+	 */
+	public Cardinality getMinimumCardinality()
+	{
+		return Cardinality.get(getMinCardinality());
+	}
+
+	/**
+	 * @see edu.common.dynamicextensions.domaininterface.RoleInterface#setMinimumCardinality(edu.common.dynamicextensions.util.global.Constants.Cardinality)
+	 */
+	public void setMinimumCardinality(Cardinality minCardinality)
+	{
+		setMinCardinality(minCardinality.getValue());
+	}
+
+
+	/**
+	 * @see edu.common.dynamicextensions.domaininterface.RoleInterface#getAssociationsType()
+	 */
+	public AssociationType getAssociationsType()
+	{
+		return AssociationType.get(getAssociationType());
+	}
+
+	/**
+	 * @see edu.common.dynamicextensions.domaininterface.RoleInterface#setAssociationsType(edu.common.dynamicextensions.util.global.Constants.AssociationType)
+	 */
+	public void setAssociationsType(AssociationType associationType)
+	{
+		 setAssociationType(associationType.getValue());
 	}
 
 }

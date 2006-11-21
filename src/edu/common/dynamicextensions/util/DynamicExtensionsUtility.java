@@ -23,6 +23,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.Variables;
 import edu.wustl.common.bizlogic.AbstractBizLogic;
 import edu.wustl.common.util.dbManager.DAOException;
 
@@ -162,4 +163,38 @@ public class DynamicExtensionsUtility
 			}
 		}
 	}
+	
+	/**
+	 * 
+	 */
+	public static void initialiseApplicationVariables()
+	{
+		if (Variables.databaseName == null || Variables.databaseName.trim().length() == 0
+				|| Variables.datePattern.trim().length() != 0)
+		{
+			return;
+		}
+
+		if (Variables.databaseName.equals(Constants.ORACLE_DATABASE))
+		{
+			//set string/function for oracle
+
+			Variables.datePattern = "mm-dd-yyyy";
+			Variables.timePattern = "hh-mi-ss";
+			Variables.dateFormatFunction = "TO_CHAR";
+			Variables.timeFormatFunction = "TO_CHAR";
+			Variables.dateTostrFunction = "TO_CHAR";
+			Variables.strTodateFunction = "TO_DATE";
+		}
+		else
+		{
+			Variables.datePattern = "%m-%d-%Y";
+			Variables.timePattern = "%H:%i:%s";
+			Variables.dateFormatFunction = "DATE_FORMAT";
+			Variables.timeFormatFunction = "TIME_FORMAT";
+			Variables.dateTostrFunction = "TO_CHAR";
+			Variables.strTodateFunction = "STR_TO_DATE";
+		}
+	}
+
 }

@@ -12,6 +12,7 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
+import edu.common.dynamicextensions.util.global.Variables;
 
 /**
  * This is a Singleton class which parses the XML file that consists of mapping between PrimitiveAttribute 
@@ -20,6 +21,7 @@ import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationExcep
  */
 public class DataTypeFactory
 {
+
 	/**
 	 * 
 	 */
@@ -29,7 +31,7 @@ public class DataTypeFactory
 	 * 
 	 */
 	private Map<String, String> dataTypeMap;
-	
+
 	/**
 	 * Empty constructor
 	 */
@@ -42,12 +44,15 @@ public class DataTypeFactory
 	 * @return DataTypeFactory instance
 	 * @throws DataTypeFactoryInitializationException on Exception
 	 */
-	public static synchronized DataTypeFactory getInstance() throws DataTypeFactoryInitializationException
+	public static synchronized DataTypeFactory getInstance()
+			throws DataTypeFactoryInitializationException
 	{
 		if (dataTypeFactory == null)
 		{
 			dataTypeFactory = new DataTypeFactory();
-			dataTypeFactory.populateDataTypeMap("PrimitiveAttributeDataTypes_Oracle.xml");
+			String dataTypeMappingFileName = "PrimitiveAttributeDataTypes" + "_"
+					+ Variables.databaseName + ".xml";
+			dataTypeFactory.populateDataTypeMap(dataTypeMappingFileName);
 		}
 		return dataTypeFactory;
 	}
@@ -58,7 +63,8 @@ public class DataTypeFactory
 	 * @return dataType Map
 	 * @throws DataTypeFactoryInitializationException on Exception
 	 */
-	public final Map populateDataTypeMap(String xmlFileName) throws DataTypeFactoryInitializationException
+	public final Map populateDataTypeMap(String xmlFileName)
+			throws DataTypeFactoryInitializationException
 	{
 		dataTypeMap = new HashMap<String, String>();
 
@@ -74,14 +80,15 @@ public class DataTypeFactory
 			Element databaseDataType = null;
 
 			Element primitiveAttributesElement = document.getRootElement();
-			Iterator primitiveAttributeElementIterator = primitiveAttributesElement.elementIterator("Primitive-Attribute");
+			Iterator primitiveAttributeElementIterator = primitiveAttributesElement
+					.elementIterator("Primitive-Attribute");
 
 			Element primitiveAttributeElement = null;
-			
+
 			while (primitiveAttributeElementIterator.hasNext())
 			{
 				primitiveAttributeElement = (Element) primitiveAttributeElementIterator.next();
-				
+
 				name = primitiveAttributeElement.element("name");
 				databaseDataType = primitiveAttributeElement.element("database-datatype");
 
@@ -92,7 +99,7 @@ public class DataTypeFactory
 		{
 			throw new DataTypeFactoryInitializationException(documentException);
 		}
-		
+
 		return dataTypeMap;
 	}
 
@@ -103,12 +110,13 @@ public class DataTypeFactory
 	 * @return String The name of Database datatype
 	 * @throws DataTypeFactoryInitializationException If dataTypeMap is unpopulated
 	 */
-	public String getDatabaseDataType(String primitiveAttribute) throws DataTypeFactoryInitializationException
+	public String getDatabaseDataType(String primitiveAttribute)
+			throws DataTypeFactoryInitializationException
 	{
 		String databaseDataType = null;
-		if(dataTypeMap != null)
+		if (dataTypeMap != null)
 		{
-			databaseDataType = (String)dataTypeMap.get(primitiveAttribute);
+			databaseDataType = (String) dataTypeMap.get(primitiveAttribute);
 		}
 		else
 		{
@@ -116,5 +124,5 @@ public class DataTypeFactory
 		}
 		return databaseDataType;
 	}
-	
+
 }

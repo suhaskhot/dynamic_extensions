@@ -6,8 +6,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
+import edu.wustl.common.actionForm.AbstractActionForm;
+import edu.wustl.common.exception.AssignDataException;
 
 /**
  * Entites have attributes that distinguishes them form other entities.
@@ -17,7 +20,7 @@ import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPro
  * @hibernate.joined-subclass table="DYEXTN_PRIMITIVE_ATTRIBUTE" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public abstract class Attribute extends AbstractAttribute implements AttributeInterface
+public class Attribute extends AbstractAttribute implements AttributeInterface
 {
 
 	/**
@@ -44,11 +47,62 @@ public abstract class Attribute extends AbstractAttribute implements AttributeIn
 	 * Column property associated to this primitive attribute.
 	 */
 	protected Collection<ColumnPropertiesInterface> columnPropertiesCollection;
+    
+    /**
+     * 
+     */
+    protected Collection<AttributeTypeInformationInterface> attributeTypeInformationCollection;
+    
+    /**
+     * @hibernate.set name="attributeTypeInformationCollection" table="DYEXTN_ATTRIBUTE_TYPE_INFO"
+     * cascade="all-delete-orphan" inverse="false" lazy="false"
+     * @hibernate.collection-key column="PRIMITIVE_ATTRIBUTE_ID"
+     * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.AttributeTypeInformation"   
+     * @return Returns the attributeTypeInformationCollection.
+     */
+    private Collection<AttributeTypeInformationInterface> getAttributeTypeInformationCollection()
+    {
+        return attributeTypeInformationCollection;
+    }
+    /**
+     * @param dataElementCollection The dataElementCollection to set.
+     */
+    private void setAttributeTypeInformationCollection(Collection<AttributeTypeInformationInterface> attributeTypeInformationCollection) 
+    {
+        this.attributeTypeInformationCollection = attributeTypeInformationCollection;
+    }
+    /**
+     * 
+     * @return AttributeTypeInformationInterface
+     */
+    public AttributeTypeInformationInterface getAttributeTypeInformation()
+    {
+        if(attributeTypeInformationCollection != null){
+            Iterator attributeTypeInformationIterator = attributeTypeInformationCollection.iterator();
+            return (AttributeTypeInformationInterface) attributeTypeInformationIterator.next();
+        } else {
+            return null;   
+        }
+        
+    }
+    
+    /**
+     * 
+     * @return AttributeTypeInformationInterface
+     */
+    public void  setAttributeTypeInformation(AttributeTypeInformationInterface  attributeTypeInformationInterface)
+    {
+        if(attributeTypeInformationCollection  == null)
+        {
+            attributeTypeInformationCollection   = new HashSet();
+        } else {
+        	attributeTypeInformationCollection.clear();
+        }
+        
+        this.attributeTypeInformationCollection .add(attributeTypeInformationInterface);
+        
+    }
 
-	/**
-	 * The Collection of the DataElements that represents the Pre-defined values of the Attribute.
-	 */
-	protected Collection<DataElementInterface> dataElementCollection;
 
 	/**
 	 * Empty constructor.
@@ -165,56 +219,6 @@ public abstract class Attribute extends AbstractAttribute implements AttributeIn
 	}
 
 	/**
-	 * This method returns the Collection of the DataElements of the Attribute.
-	 * @hibernate.set name="dataElementCollection" table="DYEXTN_DATA_ELEMENT"
-	 * cascade="save-update" inverse="false" lazy="false"
-	 * @hibernate.collection-key column="PRIMITIVE_ATTRIBUTE_ID"
-	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.DataElement"   
-	 * @return the Collection of the DataElements of the Attribute.
-	 */
-	private Collection<DataElementInterface> getDataElementCollection()
-	{
-		return dataElementCollection;
-	}
-
-	/**
-	 * This method sets the dataElementCollection to the given Collection of the DataElement.
-	 * @param dataElementCollection the Collection of the DataElemnet to be set.
-	 */
-	private void setDataElementCollection(Collection<DataElementInterface> dataElementCollection)
-	{
-		this.dataElementCollection = dataElementCollection;
-	}
-
-	/**
-	 * This method returns the DataElement associated with the Attribute. 
-	 * @return the DataElement associated with the Attribute.
-	 */
-	public DataElementInterface getDataElement()
-	{
-		DataElementInterface dataElement = null;
-		if (dataElementCollection != null)
-		{
-			Iterator dataElementIterator = dataElementCollection.iterator();
-			dataElement = (DataElementInterface) dataElementIterator.next();
-		}
-		return dataElement;
-	}
-
-	/**
-	 * This method sets the DataElement of the Attribute.
-	 * @param dataElement the DataElement to be set.
-	 */
-	public void setDataElement(DataElementInterface dataElement)
-	{
-		if (dataElementCollection == null)
-		{
-			dataElementCollection = new HashSet<DataElementInterface>();
-		}
-		this.dataElementCollection.add(dataElement);
-	}
-
-	/**
 	 * This method returns whether the Attribute is nullable or not.
 	 * @hibernate.property name="isNullable" type="boolean" column="IS_NULLABLE" 
 	 * @return whether the Attribute is nullable or not.
@@ -232,5 +236,14 @@ public abstract class Attribute extends AbstractAttribute implements AttributeIn
 	{
 		this.isNullable = isNullable;
 	}
+    
+    /**
+     * @see edu.wustl.common.domain.AbstractDomainObject#setAllValues(edu.wustl.common.actionForm.AbstractActionForm)
+     */
+    public void setAllValues(AbstractActionForm abstractForm) throws AssignDataException
+    {
+        // TODO Auto-generated method stub
+        
+    }
 
 }

@@ -76,7 +76,7 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
         if (entityUIBeanInterface != null)
         {
             entityInterface = createAndPopulateEntity(entityUIBeanInterface);
-            entityInterface = EntityManager.getInstance().createEntity(
+            entityInterface = EntityManager.getInstance().persistEntity(
                     entityInterface);
         }
         return entityInterface;

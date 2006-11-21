@@ -39,7 +39,7 @@ public class TextField extends Control implements TextFieldInterface
 	}
 
 	/**
-	 * @hibernate.property name="columns" type="integer" column="COLUMNS" 
+	 * @hibernate.property name="columns" type="integer" column="NO_OF_COLUMNS" 
 	 * @return Returns the columns.
 	 */
 	public Integer getColumns()
@@ -56,7 +56,7 @@ public class TextField extends Control implements TextFieldInterface
 	}
 
 	/**
-	 * @hibernate.property name="isPassword" type="boolean" column="PASSWORD" 
+	 * @hibernate.property name="isPassword" type="boolean" column="IS_PASSWORD" 
 	 * @return Returns the isPassword.
 	 */
 	public Boolean getIsPassword()

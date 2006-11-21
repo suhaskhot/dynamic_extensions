@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+    
+ <hibernate-mapping>   
+    <query name="getEntitiesByConceptCode">
+       from Entity entity 
+		   	join entity.semanticPropertyCollection semanticProperty 
+		   		where semanticProperty.conceptCode = ? 
+	</query>
+	
+	<query name="getAssociation">
+		from Association association
+           		where  association.entity.name = ?
+           		AND association.sourceRole.name = ?
+       			   	
+	</query>
+	
+	<query name="getAssociations">
+       from Association association
+	       	where association.entity.id = ? AND 
+       			   	association.targetEntity.id = ?
+	</query>
+	
+	
+	
+	
+	</hibernate-mapping>
+    

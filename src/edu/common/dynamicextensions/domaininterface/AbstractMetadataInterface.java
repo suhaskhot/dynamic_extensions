@@ -84,5 +84,23 @@ public interface AbstractMetadataInterface
 	 * @param semanticPropertyInterface A SemanticProperty to be added.
 	 */
 	void addSemanticProperty(SemanticPropertyInterface semanticProperty);
+    /**
+     * 
+     * @return
+     */
+    Collection<TaggedValueInterface> getTaggedValueCollection();
+    /**
+     * Setter method for taggedValueCollection
+     * @param taggedValueCollection Collection of tagged values.
+     */
+    void setTaggedValueCollection(
+            Collection<TaggedValueInterface> taggedValueCollection);
+   
+    /**
+     * 
+     * @param taggedValueInterface
+     */
+    void addTaggedValue(TaggedValueInterface taggedValueInterface);
+    
 
 }

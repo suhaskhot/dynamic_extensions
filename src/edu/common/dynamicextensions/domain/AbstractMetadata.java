@@ -7,6 +7,7 @@ import java.util.HashSet;
 
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
+import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.wustl.common.domain.AbstractDomainObject;
 
 /**
@@ -29,6 +30,26 @@ public abstract class AbstractMetadata extends AbstractDomainObject implements j
 	 */
 	protected Long id;
 
+	/**
+	 * This method returns the unique identifier of the AbstractMetadata.
+	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
+	 * length="30" unsaved-value="null" generator-class="native"
+	 * @hibernate.generator-param name="sequence" value="DYEXTN_ABSTRACT_METADATA_SEQ"
+	 * @return the identifier of the AbstractMetadata.
+	 */
+	public Long getId()
+	{
+		return id;
+	}
+
+	/**
+	 * This method sets the unique identifier of the AbstractMetadata.
+	 * @param id The identifier to set.
+	 */
+	public void setId(Long id)
+	{
+		this.id = id;
+	}
 	/**
 	 * Name of metadata object
 	 */
@@ -54,6 +75,10 @@ public abstract class AbstractMetadata extends AbstractDomainObject implements j
 	 */
 	protected Collection<SemanticPropertyInterface> semanticPropertyCollection;
 
+    /**
+     * Semantic property collection.
+     */
+    protected Collection<TaggedValueInterface> taggedValueCollection;
 	/**
 	 * Empty Constructor
 	 */
@@ -99,26 +124,7 @@ public abstract class AbstractMetadata extends AbstractDomainObject implements j
 		this.description = description;
 	}
 
-	/**
-	 * This method returns the unique identifier of the AbstractMetadata.
-	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
-	 * length="30" unsaved-value="null" generator-class="native"
-	 * @hibernate.generator-param name="sequence" value="DYEXTN_ABSTRACT_METADATA_SEQ"
-	 * @return the identifier of the AbstractMetadata.
-	 */
-	public Long getId()
-	{
-		return id;
-	}
 
-	/**
-	 * This method sets the unique identifier of the AbstractMetadata.
-	 * @param id The identifier to set.
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
-	}
 
 	/**
 	 * This method returns the date of last updation of the meta data.
@@ -226,13 +232,15 @@ public abstract class AbstractMetadata extends AbstractDomainObject implements j
 	 */
 	public int hashCode()
 	{
-		int hashCode = 0;
 
-		if (getId() != null)
-		{
-			hashCode += getId().hashCode();
-		}
-		return hashCode;
+		return 1;
+//				int hashCode = 0;
+//
+//		if (getId() != null)
+//		{
+//			hashCode += getId().hashCode();
+//		}
+//		return hashCode;
 	}
 
 	/**
@@ -247,5 +255,47 @@ public abstract class AbstractMetadata extends AbstractDomainObject implements j
 		}
 		semanticPropertyCollection.add(semanticPropertyInterface);
 	}
+
+    /**
+     * This method returns the Collection of TaggedValue of the AbstractMetadata.
+     * @hibernate.set name="taggedValueCollection" cascade="all-delete-orphan"
+     * inverse="false" lazy="false"
+     * @hibernate.collection-key column="ABSTRACT_METADATA_ID"
+     * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.TaggedValue"
+     * @return the Collection of TaggedValue of the AbstractMetadata.
+     */
+    public Collection<TaggedValueInterface> getTaggedValueCollection()
+    {
+        return taggedValueCollection;
+    }
+
+    /**
+     * Setter method for taggedValueCollection
+     * @param taggedValueCollection Collection of tagged values.
+     */
+    public void setTaggedValueCollection(
+            Collection<TaggedValueInterface> taggedValueCollection)
+    {
+        this.taggedValueCollection = taggedValueCollection;
+    }
+    /**
+     * 
+     * @param taggedValueInterface
+     */
+    public void addTaggedValue(TaggedValueInterface taggedValueInterface)
+    {
+        if (taggedValueInterface == null)
+        {
+            return;
+        }
+        
+        if (taggedValueCollection == null)
+        {
+        	taggedValueCollection = new HashSet<TaggedValueInterface>();
+        }
+        taggedValueCollection.add(taggedValueInterface);
+        
+        
+    }
 
 }

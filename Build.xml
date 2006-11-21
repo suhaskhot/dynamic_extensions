@@ -8,6 +8,7 @@
 	
 	<property name="base.dir" value="."/>
     <property name="src.dir" value="src"/>
+	<property name="test.dir" value="test"/>	
     <property name="target.dir" value="WEB-INF/classes"/>
     <property name="lib.dir" value="${base.dir}/WEB-INF/lib"/>
     <property name="build.dir" value="${base.dir}/build"/>
@@ -16,8 +17,7 @@
 	<property name="interface.src.dir" value="${base.dir}/DynamicExtensionsInterfaceSource"/>
 	<property name="javadoc.dir" value="${base.dir}/JavaDoc"/>
 	<property name="javadoc.zip" value="DynamicExtensionsJavaDoc.zip"/>
-	
-	
+		
 
 	<property name="hbm.dir" value="${src.dir}/edu/common/dynamicextensions/hbm"/>
 	<property name="extra_lib.dir" value="${base.dir}/extra_lib"/>
@@ -34,6 +34,9 @@
 	<property name="checkstyle.report.dir" value="${checkstyle.dir}/checkstyle_reports"/>
 	<property name="checkstyle.unformatted.report" value="${checkstyle.report.dir}/checkstyle_report.xml"/>
 	<property name="checkstyle.formatted.report" value="${checkstyle.report.dir}/checkstyle_report.html"/>
+	
+	<property name="temp.hdoclet.dir" value="${base.dir}/temp"/>
+
 
 	<path id="app.classpath">
 		<fileset dir="${lib.dir}">
@@ -164,52 +167,49 @@
 	    <target name="createDynamicExtensionsInterfaceJAR" depends="compile" >
     	   <jar taskname="buildJar" jarfile="${interface.dir}/DynamicExtensions.jar">
 	    		<fileset dir="${target.dir}" >
-	    				<include name="**/domain/**/*.class"/>
+		    			<include name="**/domain/**/*.class"/>
 	    				<include name="**/domaininterface/**/*.class"/>
-	    				<include name="**/exception/*.class"/>
 	    				<include name="**/entitymanager/**.class"/>
-    		    </fileset>
+	    				<include name="**/exception/*.class"/>
+		    			<include name="**/hbm/**/*.*"/>
+		    			<include name="**/dynamicextensions/util/**/*.*"/>
+		    			<include name="**/common/util/**/*.*"/>
+		    			<include name="**/dynamicextensions/bizlogic/**/*.class"/>
+	    				<include name="*.properties"/>
+	    				<include name="*.xml"/>
+		    			<exclude name="**/*Test*.class"/>
+	    			
+	   		    </fileset>
 	        	 <manifest>
-	        	      <attribute name="Built-By" value="Sujay Narkar"/>
+	        	      <attribute name="Built-By" value="${DynamicExtensions.jar.creator}"/>
 	        	 	 
 	        	      <section name="${DynamicExtensions.jar.details}">
 	        	        <attribute name="Version" value="${DynamicExtensions.jar.version}"/>
-	        	      	<attribute name="Creation date" value="${DynamicExtensions.jar.creationDate}"/>
+	        	      	<attribute name="Date" value="${DynamicExtensions.jar.date}"/>
 	        	      </section>
 	        	 </manifest>
 	        </jar>
 	    </target>
-	<!-- Create dynamic extensions jar Ends-->
-	
-	
 	<!-- Create dynamic extensions jar Begins-->
-		    <target name="createDynamicExtensionsCommunicationJAR" depends="compile" >
-	    	   <jar taskname="buildJar" jarfile="DynamicExtensionsCommunication.jar">
-		    		<fileset dir="${target.dir}" >
-		    				<include name="**/WebUIManager.class"/>
-			    			<include name="**/WebUIManagerConstants.class"/>
-	 	  		    </fileset>
-	    	   	
-		        	 <manifest>
-		        	      <attribute name="Built-By" value="Sujay Narkar"/>
-		        	 	 
-		        	      <section name="${DynamicExtensions.jar.details}">
-		        	        <attribute name="Version" value="${DynamicExtensions.jar.version}"/>
-		        	      	<attribute name="Creation date" value="${DynamicExtensions.jar.creationDate}"/>
-		        	      </section>
-		        	 </manifest>
-		        </jar>
-		    </target>
-		<!-- Create dynamic extensions jar Ends-->
 	
 	<target name="createDynamicExtensionsInterfaceSourceZip" depends="compile" >
 		<zip destfile="${interface.src.dir}/DynamicExtensions-src.zip" >
 		      	<fileset dir="${src.dir}" >
-	    				<include name="**/domain/**/*.java"/>
-	    				<include name="**/domaininterface/**/*.java"/>
-	    				<include name="**/exception/*.java"/>
-	    				<include name="**/entitymanager/**.java"/>
+		      		<include name="**/domain/**/*.java"/>
+    				<include name="**/domaininterface/**/*.java"/>
+    				<include name="**/entitymanager/**.java"/>
+	    			<include name="**/dynamicextensions/bizlogic/**/*.java"/>
+    				<include name="**/exception/*.java"/>
+	    			<include name="**/hbm/**/*.*"/>
+	    			<include name="**/dynamicextensions/util/**/*.java"/>
+	    			<include name="**/common/util/**/*.java"/>
+	 				<include name="*.properties"/>
+	  				<include name="*.xml"/>
 	    		 </fileset>
+			
+			<fileset dir="${test.dir}" >
+					      		
+				    		 </fileset>
 	   </zip>
 	</target>
 	
@@ -278,19 +278,19 @@
 	      	</java>
 	    </target>
     
-	<!-- Generates the Hibernate mapping (HBM) files which are used in mapping 
+		<!-- Generates the Hibernate mapping (HBM) files which are used in mapping 
 		 the domain objects to database schema of the application. 
 		 This generates the HBM files from the XDoclet tags written in the domain object classes. -->
-    <target name="generateHBM" description="Generates Hibernate class descriptor files.">
+    <target name="generateHBM" description="Generates Hibernate class descriptor files." depends="remove-generics">
     	<!-- Define the hibernatedoclet task -->    	
     	<taskdef name="hibernatedoclet" classname="xdoclet.modules.hibernate.HibernateDocletTask">
     		<classpath refid="xdoclet.classpath"/>
 		</taskdef>    
 		
 		<!-- Execute the hibernatedoclet task -->		
-		<hibernatedoclet destdir="${src.dir}" excludedtags="@version,@author,@todo"
+		<hibernatedoclet destdir="${src.dir}" excludedtags="@version,@author,@todo,@param,@return"
 					     force="${generateforce}" mergedir="${src.dir}" verbose="false">
-			<fileset dir="${src.dir}">
+			<fileset dir="${temp.hdoclet.dir}">
 				<include name="**/domain/**/*.java"/>
 			</fileset>
     		<hibernate version="2.0"/>
@@ -315,6 +315,9 @@
     	<delete>
             <fileset dir="${src.dir}/edu/common/dynamicextensions/domain" includes="**/*.hbm.xml"/>
         </delete>
+    	
+    	<delete dir="${temp.hdoclet.dir}" />
+    	
     </target>
 
 	<target name="DBInitialized_MySQL">
@@ -399,19 +402,13 @@
 	<target name="javadoc" description="Generate the documentation">
 		<mkdir dir="${javadoc.dir}" />
 		<javadoc access="private" packagenames="edu.common.*" destdir="${javadoc.dir}" author="true" version="true" windowtitle="Dynamic Extensions API" maxmemory="512m" classpathref="app.classpath" breakiterator="yes">
-
-						
 			 <fileset dir="${src.dir}" defaultexcludes="yes">
-			      <include name="edu/common/dynamicextensions/domain/**"/>
-			 	  <include name="edu/common/dynamicextensions/domain/databaseproperties/**"/>
-			 	  <include name="edu/common/dynamicextensions/domain/userinterface/**"/>
-			 	  <include name="edu/common/dynamicextensions/domain/validationrules/**"/>
-			 	  <include name="edu/common/dynamicextensions/domaininterface/**"/>
-			 	  <include name="edu/common/dynamicextensions/domaininterface/databaseproperties/**"/>
- 	 		 	  <include name="edu/common/dynamicextensions/domaininterface/userinterface/**"/>
-			 	  <include name="edu/common/dynamicextensions/domaininterface/validationrules/**"/>
-			 	  <include name="edu/common/dynamicextensions/exception/**"/>
-			 	  <include name="edu/common/dynamicextensions/entitymanager/**"/>		 	
+			 	<include name="**/domain/**/*.java"/>
+				<include name="**/domaininterface/**/*.java"/>
+			 	<include name="**/entitymanager/**.java"/>
+			 	<include name="**/exception/*.java"/>
+			 	<include name="**/dynamicextensions/util/**/*.java"/>
+			 	<include name="**/common/util/**/*.java"/>
 		    </fileset>
 
 			<bottom>
@@ -474,5 +471,47 @@
 			
 		<zip destfile="${base.dir}/caTissue_Core_Installable.zip" basedir="${zip.dir}"></zip>
 		<delete dir="${zip.dir}"/>
+	</target>
+	
+	<!-- Create dynamic extensions jar Begins-->
+		    <target name="createDynamicExtensionsCommunicationJAR" depends="compile" >
+	    	   <jar taskname="buildJar" jarfile="DynamicExtensionsCommunication.jar">
+		    		<fileset dir="${target.dir}" >
+		    				<include name="**/WebUIManager.class"/>
+			    			<include name="**/WebUIManagerConstants.class"/>
+	 	  		    </fileset>
+	    	   	
+		        	 <manifest>
+		        	      <attribute name="Built-By" value="Sujay Narkar"/>
+		        	 	 
+		        	      <section name="${DynamicExtensions.jar.details}">
+		        	        <attribute name="Version" value="${DynamicExtensions.jar.version}"/>
+		        	      	<attribute name="Creation date" value="${DynamicExtensions.jar.creationDate}"/>
+		        	      </section>
+		        	 </manifest>
+		        </jar>
+		    </target>
+		<!-- Create dynamic extensions jar Ends-->
+	
+	<!-- Since XDoclet isn't already able to parse java 1.5 source code,
+	we remove all references to generics and for each loops. 
+	this is temporary task and needs to be removed,once we uses hibernate annotations.
+	-->
+	<target name="remove-generics" >
+	  <mkdir dir="${temp.hdoclet.dir}" />	
+	  <property name="generics.match.pattern" value="&lt;[\w\[\]]+(&lt;\w+&gt;)?,?[\w\[\]]*(&lt;\w+&gt;)?&gt;|(for\s?\(.+:.+\))"/>
+	  <echo message="Pattern used to remove generics : ${generics.match.pattern}"/>
+	  <copy toDir="${temp.hdoclet.dir}" overwrite="true">
+	    <fileset dir="${src.dir}">
+	      <include name="**/*.java"/>
+	    </fileset>
+	  </copy>
+	  <replaceregexp byline="true" flags="g">
+	    <fileset dir="${temp.hdoclet.dir}">
+	      <include name="**/*.java"/>
+	    </fileset>
+	    <regexp pattern="${generics.match.pattern}"/>
+	    <substitution expression=""/>
+	  </replaceregexp>
 	</target>
 </project>

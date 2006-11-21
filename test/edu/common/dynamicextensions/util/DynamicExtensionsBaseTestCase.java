@@ -122,5 +122,35 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 		return null;
 	}
 
+	/**
+	 * @param query query to be executed
+	 * @return  ResultSetMetaData
+	 */
+	protected ResultSetMetaData executeQueryDDL(String query)
+	{
+		//      Checking whether the data table is created properly or not.
+		Connection conn = null;
+		try
+		{
+			conn = DBUtil.getConnection();
+		}
+		catch (HibernateException e)
+		{
+			e.printStackTrace();
+		}
+		java.sql.PreparedStatement statement = null;
+		try
+		{
+			statement = conn.prepareStatement(query);
+			statement.execute(query);
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+
+		return null;
+	}
 
 }

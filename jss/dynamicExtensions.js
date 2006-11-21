@@ -167,6 +167,13 @@ function initBuildForm()
 	{
 		listTypeChanged(attributeMultiSelect);
 	}
+	
+	//Date page initializations
+	var dateValueType = document.getElementById('initialDateValueType');
+	if(dateValueType!=null)
+	{
+		changeDateType(dateValueType);
+	}
 }
 function addChoicesFromListToTable()
 {
@@ -453,28 +460,6 @@ function clearForm()
 {
 var controlsForm = document.getElementById('controlsForm');
 
-	/*if(controlsForm.name != null)
-	{
-	controlsForm.name.value = "";
-	}
-	if(controlsForm.caption != null)
-	{
-	controlsForm.caption.value = "";
-	}
-	if(controlsForm.description != null)
-	{
-	controlsForm.description.value = "";
-	}*/
-	if(controlsForm.cssClass != null)
-	{
-	controlsForm.cssClass.value = "";
-	}
-	if(controlsForm.tooltip != null)
-	{
-	controlsForm.tooltip.value = "";
-	}
-	
-	
 	if(document.getElementById('attributeSize') != null)
 	{
 	document.getElementById('attributeSize').value = "";
@@ -512,10 +497,6 @@ var controlsForm = document.getElementById('controlsForm');
 	{
 	controlsForm.attributenoOfCols.value = "";
 	}
-	/*if(controlsForm.attributeConceptCode != null)
-	{
-	controlsForm.attributeConceptCode.value = "";
-	}*/
 	if(controlsForm.choiceList != null)
 	{
 	controlsForm.choiceList.value = "";
@@ -524,10 +505,6 @@ var controlsForm = document.getElementById('controlsForm');
 	{
 		document.getElementById('attributeIsPassword').value = "";
 	}
-	/*if(document.getElementById('attributeIdentified') != null)
-	{
-		document.getElementById('attributeIdentified').value = "";
-	}*/
 	if(document.getElementById('choiceList') != null)
 	{
 		document.getElementById('choiceList').value = "";
@@ -667,14 +644,15 @@ function changeDateType(dateType)
 	{
 		dateTypeValue =dateType.value;
 	}
-	var defValueTxtBox = document.getElementById('attributeDefaultValue');
+//	var defValueTxtBox = document.getElementById('attributeDefaultValue');
+	var rowForDefaultValue = document.getElementById('rowForDateDefaultValue');
 	if((dateTypeValue == "None")||(dateTypeValue == "Today"))
 	{
-		defValueTxtBox.disabled=true;
+		rowForDefaultValue.style.display="none";
 	}
 	else
 	{
-		defValueTxtBox.disabled=false;
+		rowForDefaultValue.style.display="block";
 	}
 }
 

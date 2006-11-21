@@ -16,8 +16,9 @@
   <c:set var="displayChoiceList" value="${controlsForm.displayChoiceList}"/>
   <jsp:useBean id="displayChoiceList" type="java.util.List"/>
 
-  <c:set var="listType" value="${controlsForm.attributeMultiSelect}"/>
+<c:set var="listType" value="${controlsForm.attributeMultiSelect}"/>
 <jsp:useBean id="listType" type="java.lang.String"/>
+
 <input type="hidden" name="hiddenIsMultiSelect" value="<%=listType%>">
 <table summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
   <tr>

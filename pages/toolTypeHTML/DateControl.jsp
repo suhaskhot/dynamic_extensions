@@ -12,17 +12,15 @@
 <LINK href="css/calanderComponent.css" type=text/css rel=stylesheet>
 
 <c:set var="dataTypeList" value="${controlsForm.dataTypeList}"/>
- <jsp:useBean id="dataTypeList" type="java.util.List"/>
+<jsp:useBean id="dataTypeList" type="java.util.List"/>
+
+<c:set var="dateValueType" value="${controlsForm.dateValueType}"/>
+<jsp:useBean id="dateValueType" type="java.lang.String"/>
+
+
 <html:hidden property="dataType" value="<%=ProcessorConstants.DATATYPE_DATE%>"/>
 
 <table  summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
-  <!--<tr>
-    <td>
-		<table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%'>
-				<jsp:include page="/pages/toolTypeHTML/CommonControlAttributes.jsp" />
-		</table>
-	</td>
- </tr>-->
   <tr>
   	<td>
   		<table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%'>
@@ -52,6 +50,7 @@
 					<bean:message key="eav.att.DefaultValue"/>
 				</td>
 				<td class="formFieldWithoutBorder">
+					<input type="hidden" name="initialDateValueType" value="<%=dateValueType%>">
 					<html:radio property="dateValueType" value="<%=ProcessorConstants.DATE_VALUE_NONE%>" onclick="changeDateType(this)">
 						<bean:message key="eav.att.DateValueNone"/>
 					</html:radio>
@@ -64,7 +63,7 @@
 					</html:radio>
 				</td>
 			</tr>
-			<tr >
+			<tr id="rowForDateDefaultValue">
 				<td class="formRequiredNoticeWithoutBorder" width="2%">
 									&nbsp;
 				</td>
@@ -78,18 +77,7 @@
 						<SCRIPT>printCalendar('attributeDefaultValue',26,10,2006);</SCRIPT>
 					</DIV>
 					[MM-DD-YYYY]&nbsp;
-
 				</td>
-	<!-- 	<tr>
-			<td class="formRequiredNoticeWithoutBorder" width="2%">
-					&nbsp;
-			</td>
-			<td class="formRequiredLabelWithoutBorder" width="25%">&nbsp;</td>
-			<td class="formFieldWithoutBorder" align="left">
-				<html:checkbox property="attributeIdentified" value="true"><bean:message key="app.att.isIdentified" /></html:checkbox>
-			</td>
-		</tr>
-	-->
 			</tr>
 	</table>
 

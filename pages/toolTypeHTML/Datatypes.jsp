@@ -20,9 +20,9 @@
 			 			<td class="formRequiredNoticeWithoutBorder" width="2%">
 			 					 			*
 			 		 	</td>
-			 			<td class="formRequiredLabelWithoutBorder" width="25%">
-			 								<bean:message key="eav.control.type"/>
-			 						</td>
+			 			<td class="formRequiredLabelWithoutBorder" width="30%">
+			 				<bean:message key="eav.control.type"/> :
+			 			</td>
 			 			<td  class="formFieldWithoutBorder">
 			 			<html:radio property='linesType' value='SingleLine' onclick='radioButtonClicked(this)'>Single</html:radio>
 			 			<html:radio property='linesType' value='MultiLine' onclick='radioButtonClicked(this)'>Multi Line</html:radio>
@@ -34,7 +34,7 @@
 			 		 	</td>
 			 						<% if(linesType.equalsIgnoreCase("SingleLine")) { %>
 			 						<td class="formRequiredLabelWithoutBorder" id="noOfLines" disabled="true">
-			 							<bean:message key="eav.text.noOfLines"/>
+			 							<bean:message key="eav.text.noOfLines"/> :
 			 						</td>
 			 				<td class="formFieldWithoutBorder">
 			 								<html:text styleClass="formFieldSized5" value='' disabled='true' maxlength="100" size="60"  property="attributeNoOfRows" />
@@ -42,7 +42,7 @@
 			 						<% }  else {
 			 						%>
 			 							<td class="formRequiredLabelWithoutBorder" id="noOfLines">
-			 								<bean:message key="eav.text.noOfLines"/>
+			 								<bean:message key="eav.text.noOfLines"/> :
 			 							</td>
 
 			 							<td class="formFieldWithoutBorder">
@@ -54,8 +54,8 @@
 			       			<td class="formRequiredNoticeWithoutBorder" width="2%">
 									 		&nbsp;
 		 					</td>
-						<td class="formRequiredLabelWithoutBorder" width="25%">
-								<bean:message key="eav.att.MaxCharacters"/>
+						<td class="formRequiredLabelWithoutBorder" width="30%">
+								<bean:message key="eav.att.MaxCharacters"/> :
 						</td>
 
 						<td class="formFieldWithoutBorder">
@@ -67,8 +67,8 @@
 						<td class="formRequiredNoticeWithoutBorder" width="2%">
 									 			&nbsp;
 		 				</td>
-						<td class="formRequiredLabelWithoutBorder" width="25%">
-								<bean:message key="eav.att.DefaultValue"/>
+						<td class="formRequiredLabelWithoutBorder" width="30%">
+								<bean:message key="eav.att.DefaultValue"/> :
 						</td>
 
 						<td class="formFieldWithoutBorder">
@@ -85,8 +85,8 @@
 						<td class="formRequiredNoticeWithoutBorder" width="2%">
 								&nbsp;
 						</td>
-						<td class="formRequiredLabelWithoutBorder" width="25%">
-								<bean:message key="eav.att.AttributeDecimalPlaces"/>
+						<td class="formRequiredLabelWithoutBorder" width="30%">
+								<bean:message key="eav.att.AttributeDecimalPlaces"/> :
 						</td>
 
 						<td class="formFieldWithoutBorder">
@@ -97,10 +97,10 @@
 
 					<tr>
 						<td class="formRequiredNoticeWithoutBorder" width="2%">
-														 			&nbsp;
+							&nbsp;
 		 				</td>
-						<td class="formRequiredLabelWithoutBorder" width="25%">
-							<bean:message key="eav.att.DefaultValue"/>
+						<td class="formRequiredLabelWithoutBorder" width="30%">
+							<bean:message key="eav.att.DefaultValue"/> :
 						</td>
 
 						<td class="formFieldWithoutBorder">
@@ -112,8 +112,8 @@
 						<td class="formRequiredNoticeWithoutBorder" width="2%">
 														 			&nbsp;
 		 				</td>
-						<td class="formRequiredLabelWithoutBorder" width="25%">
-								<bean:message key="eav.att.AttributeMeasurementUnits"/>
+						<td class="formRequiredLabelWithoutBorder" width="30%">
+								<bean:message key="eav.att.AttributeMeasurementUnits"/> :
 						</td>
 
 						<td class="formFieldWithoutBorder">

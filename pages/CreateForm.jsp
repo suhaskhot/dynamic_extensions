@@ -64,7 +64,7 @@
 								<td width="30%" valign="top" >
 									<table width="100%" height = '100%' class = "tbBordersAllbordersBlack" >
 										<tr valign="top"  width="100%">
-											<td  align="left">
+											<td  align="left" class= "formLabelLeftBorderless">
 												<input  type="button" value="Add Form" disabled >
 											</td>
 										</tr>
@@ -101,7 +101,7 @@
 										<tr valign = "top">
 											<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
 											<td class="formRequiredLabelWithoutBorder"  width="20%">
-												<bean:message key="eav.form.title"/>
+												<bean:message key="eav.form.title"/> :
 											</td>
 											<td class="formFieldWithoutBorder" >
 												<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="formName" />
@@ -110,7 +110,7 @@
 										<tr valign = "top">
 											<td class="formRequiredNoticeWithoutBorder" width="2%" >*</td>
 											<td class="formRequiredLabelWithoutBorder" width="20%">
-												<bean:message key="eav.form.conceptCode"/>
+												<bean:message key="eav.form.conceptCode"/> :
 											</td>
 											<td class="formFieldWithoutBorder">
 												<html:text styleClass="formDateSized"  maxlength="20" size="40"  property="conceptCode" />
@@ -119,7 +119,7 @@
 										<tr valign = "top">
 											<td class="formRequiredNoticeWithoutBorder" width="2%" >&nbsp;</td>
 											<td class="formRequiredLabelWithoutBorder" width="20%">
-													<bean:message key="eav.form.description"/>
+													<bean:message key="eav.form.description"/> :
 											</td>
 											<td class="formFieldWithoutBorder">
 													<html:textarea styleClass="formFieldSmallSized"  rows = "3" cols="28"  property="formDescription" />
@@ -128,7 +128,7 @@
 										 <tr valign = "top">
 											<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
 											 <td class="formRequiredLabelWithoutBorder" width="20%">
-												<bean:message key="eav.form.createAs"/>
+												<bean:message key="eav.form.createAs"/> :
 											 </td>
 											 <td class="formFieldWithoutBorder">
 												<table border='0'>

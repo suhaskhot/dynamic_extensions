@@ -15,7 +15,7 @@
 				</td>
 
 				<td class="formRequiredLabelWithoutBorder" width="15%">
-						<bean:message key="eav.att.Label"/>
+						<bean:message key="eav.att.Label"/> :
 				</td>
 
 				<td class="formFieldWithoutBorder">
@@ -28,7 +28,7 @@
 				</td>
 
 				<td class="formRequiredLabelWithoutBorder" width="15%">
-					<bean:message key="eav.form.conceptCode"/>
+					<bean:message key="eav.form.conceptCode"/> :
 				</td>
 
 				<td class="formFieldWithoutBorder">
@@ -44,7 +44,7 @@
 							</td>
 
 				<td class="formRequiredLabelWithoutBorder" width="15%">
-						<bean:message key="eav.att.Description"/>
+						<bean:message key="eav.att.Description"/> :
 				</td>
 
 				<td class="formFieldWithoutBorder">

@@ -139,10 +139,6 @@ public class TextField extends Control implements TextFieldInterface
 				DoubleAttributeTypeInformation doubleAttribute = (DoubleAttributeTypeInformation) abstractAttribute;
 				measurementUnit = doubleAttribute.getMeasurementUnits();
 			}
-			else 
-			{
-				Logger.out.error("Attribute Type not known ["+ attributeTypeInformationInterface +"]" );
-			}
 		}
 		return measurementUnit;
 	}

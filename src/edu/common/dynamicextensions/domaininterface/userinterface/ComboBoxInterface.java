@@ -1,7 +1,7 @@
+
 package edu.common.dynamicextensions.domaininterface.userinterface;
 
 import java.util.List;
-
 
 /**
  * ComboBoxInterface stores necessary information for generating ComboBox control on
@@ -11,14 +11,14 @@ import java.util.List;
 public interface ComboBoxInterface extends ControlInterface
 {
 	/**
-	 * 
-	 * @return List of choices
+	 * This method returns the list of values that are displayed as choices.
+	 * @return the list of values that are displayed as choices.
 	 */
-	public List getChoiceList();
-	
+	List getChoiceList();
+
 	/**
-	 * 
-	 * @param list : List of choices
+	 * This method sets the list of values that are displayed as choices.
+	 * @param choiceList the List of values that is to set as ChoiceList.
 	 */
-	public void setChoiceList(List list);
+	void setChoiceList(List choiceList);
 }

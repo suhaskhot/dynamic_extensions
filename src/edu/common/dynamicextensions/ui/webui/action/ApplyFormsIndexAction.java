@@ -26,7 +26,6 @@ public class ApplyFormsIndexAction extends BaseDynamicExtensionsAction
 	 * @param  request HttpServletRequest request
 	 * @param response HttpServletResponse response
 	 * @return ActionForward forward to next action
-	 *
 	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 	{

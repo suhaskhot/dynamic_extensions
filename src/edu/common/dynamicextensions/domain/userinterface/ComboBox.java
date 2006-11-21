@@ -18,12 +18,12 @@ public class ComboBox extends Control implements ComboBoxInterface
 {
 
 	/**
-	 * 
+	 * Serial Version Unique Identifier. 
 	 */
 	private static final long serialVersionUID = 3062212342005513616L;
 
 	/**
-	 * 
+	 * List of Choices.
 	 */
 	List listOfValues = null;
 
@@ -67,14 +67,14 @@ public class ComboBox extends Control implements ComboBoxInterface
 				htmlString += "<OPTION VALUE='" + nameValueBean.getValue() + "'>" + nameValueBean.getName();
 			}
 		}
-		htmlString = htmlString + "</SELECT>";
+		htmlString += "</SELECT>";
 
-		System.out.println("Returning " + htmlString);
 		return htmlString;
 	}
 
 	/**
-	 * 
+	 * This method returns the list of values that are displayed as choices.
+	 * @return the list of values that are displayed as choices.
 	 */
 	public List getChoiceList()
 	{
@@ -82,11 +82,12 @@ public class ComboBox extends Control implements ComboBoxInterface
 	}
 
 	/**
-	 * 
+	 * This method sets the list of values that are displayed as choices.
+	 * @param choiceList the List of values that is to set as ChoiceList.
 	 */
-	public void setChoiceList(List list)
+	public void setChoiceList(List choiceList)
 	{
-		listOfValues = list;
+		listOfValues = choiceList;
 	}
 
 }

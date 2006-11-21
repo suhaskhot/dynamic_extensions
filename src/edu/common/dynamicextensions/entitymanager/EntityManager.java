@@ -67,6 +67,8 @@ import edu.wustl.common.util.logger.Logger;
  * @author Geetika Bangard
  * @author Vishvesh Mulay
  * @author Rahul Ner
+ * @author Sujay Narkar
+ * 
  */
 public class EntityManager
 		implements

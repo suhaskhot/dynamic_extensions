@@ -25,13 +25,17 @@
 <c:set var="treeData" value="${formDefinitionForm.treeData}"/>
 <jsp:useBean id="treeData" type="edu.common.dynamicextensions.ui.webui.util.TreeData"/>
 
-
      <table style = "border-right:0px" border = 1 valign="top"  align='right' width='90%' height="100%" border='0' cellspacing="0" cellpadding="0" class="tbBorders1" >
          <!-- Main Page heading -->
-         <tr style = "border-bottom:0px"><td style = "border-right:0px;border-bottom:0px" width = '30px'>&nbsp;</td><td style = "border-left:0px;border-bottom:0px" class="formFieldSized1" ><bean:message key="app.title.MainPageTitle" /></td></tr>
-	          <tr>
-	            <td style = "border-top:0px;border-right:0px" width = '10px'>&nbsp;</td>
-	     		<td style = "border-left:0px;border-top:0px;border-bottom:0px" valign="top" >
+         <tr style = "border-bottom:0px">
+         	<td style = "border-right:0px;border-bottom:0px" width = '30px'>&nbsp;</td>
+         	<td style = "border-left:0px;border-bottom:0px" class="formFieldSized1" >
+         		<bean:message key="app.title.MainPageTitle" />
+         	</td>
+         </tr>
+	     <tr>
+            <td style = "border-top:0px;border-right:0px" width = '10px'>&nbsp;</td>
+    		<td style = "border-left:0px;border-top:0px;border-bottom:0px" valign="top" >
 	     		 <table valign="top" summary="" align='left' width='90%' height = '90%' cellspacing="0" cellpadding="3" class = "tbBordersAllbordersBlack" >
 					<tr >
 					   <td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onclick="showDefineGroupPage('formDefinitionForm')">
@@ -53,9 +57,10 @@
 					</tr>
 
 					<tr  valign="top" >
-					<td colspan="7" class = "tbBordersAllbordersNone"  >
-						<table align = "top" width="100%" height = '100%'>
+						<td colspan="7" class = "tbBordersAllbordersNone"  >
+						<table align = "top" width="100%" height = '100%' cellspacing="0">
 							<tr valign="top"  >
+								<!--  Tree display -->
 								<td width="30%" valign="top" >
 									<table width="100%" height = '100%' class = "tbBordersAllbordersBlack" >
 										<tr valign="top"  width="100%">
@@ -93,7 +98,7 @@
 												 <html:errors/>
 											 </td>
 										</tr>
-										 <tr valign = "top">
+										<tr valign = "top">
 											<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
 											<td class="formRequiredLabelWithoutBorder"  width="20%">
 												<bean:message key="eav.form.title"/>
@@ -102,8 +107,8 @@
 												<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="formName" />
 											</td>
 										</tr>
-										 <tr valign = "top">
-										 <td class="formRequiredNoticeWithoutBorder" width="2%" >*</td>
+										<tr valign = "top">
+											<td class="formRequiredNoticeWithoutBorder" width="2%" >*</td>
 											<td class="formRequiredLabelWithoutBorder" width="20%">
 												<bean:message key="eav.form.conceptCode"/>
 											</td>
@@ -120,7 +125,7 @@
 													<html:textarea styleClass="formFieldSmallSized"  rows = "3" cols="28"  property="formDescription" />
 											</td>
 										 </tr>
-										  <tr valign = "top">
+										 <tr valign = "top">
 											<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
 											 <td class="formRequiredLabelWithoutBorder" width="20%">
 												<bean:message key="eav.form.createAs"/>
@@ -132,7 +137,6 @@
 															<html:radio property="createAs" value="NewForm">
 																<bean:message key="eav.createnewentity.title"/>
 															</html:radio>
-
 															<html:radio property="createAs" value="ExistingForm" disabled="true">
 																<bean:message key="eav.existingentity.title"/>
 															</html:radio>
@@ -142,46 +146,37 @@
 											</td>
 										 </tr>
 										 <tr height = '100%' valign = "top">
-											<td>&nbsp;
-											</td>
+											<td colspan="3">&nbsp;</td>
 										 </tr>
 									</table>
 								</td>
 							</tr>
+							<tr height="5%" valign = "top"   class= "formLabelBorderless"  >
+								<td align="left" >
+									<html:submit styleClass="actionButton">
+										<bean:message  key="buttons.save" />
+									</html:submit>
+									<html:button styleClass="actionButton" property="cancelButton" onclick="showHomePageFromCreateForm()">
+														<bean:message  key="buttons.cancel" />
+									</html:button>
+								</td>
 
+								<td  align="right"   >
+									<html:button styleClass="actionButton" property="nextButton" onclick="showBuildFormJSP()" >
+														<bean:message  key="buttons.next" />
+									</html:button>
+								</td>
+							</tr>
 					</table>
 				</td>
 			 </tr>
-		  <tr valign = "top">
-
-	 	 	<td colspan="7" style = "border-top:0px;border-left:0px">
-	 		 <table class= "formLabelBorderless" summary="" align = 'left' width="100%" valign="top" cellpadding="5" cellspacing="0" border="0">
-	 	    	<tr>
-	 				<td align="left">
-	 					<html:submit styleClass="actionButton">
-	 						<bean:message  key="buttons.save" />
-	 					</html:submit>
-					</td>
-					<td width = 10px>&nbsp;</td>
-					<td>
-	 					<html:button styleClass="actionButton" property="cancelButton" onclick="showHomePageFromCreateForm()">
-							<bean:message  key="buttons.cancel" />
-	 					</html:button>
-	 				</td>
-	 				<td width =100%>
-	 					&nbsp;
-	 				</td>
-	 				<td align="right">
-	 					<html:button styleClass="actionButton" property="nextButton" onclick="showBuildFormJSP()" >
-	 						<bean:message  key="buttons.next" />
-	 					</html:button>
-	 				</td>
-	 		</table>
-	  	</td>
-	</tr>
+		</table>
+	</td>
+</tr>
 </table>
-	<html:hidden property="operation" value=""/>
-	<html:hidden property="entityIdentifier" value=""/>
+
   </body>
+<html:hidden property="operation" value=""/>
+<html:hidden property="entityIdentifier" value=""/>
 </html:form>
 </html>

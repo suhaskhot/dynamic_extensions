@@ -1,3 +1,4 @@
+<%-- @author : Preeti Munot --%>
 
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html" %>
@@ -19,7 +20,7 @@
 
 <html:form styleId = "groupForm"  action="/LoadGroupDefinitionAction">
 <input type="hidden" name="groupOperation" value="">
-        <table border="1" valign="top"  align='right' width='90%' height="100%" border='0' cellspacing="0" cellpadding="0"  >
+        <table valign="top"  align='right' width='90%' height="100%" border='0' cellspacing="0" cellpadding="0"  >
 		         <!-- Main Page heading -->
 		         <tr valign="top" style = "border-bottom:0px">
 		         	<td style = "border-right:0px;border-bottom:0px" width = '30px'>&nbsp;</td>
@@ -49,12 +50,8 @@
 							</tr>
 							<tr height="100%" valign="top" >
 								<td height = '100%' colspan="7">
-									<table valign = "top" cellspacing="0" cellpadding="3"  align="left" width="100%" height = '100%' class = "tbBordersAllbordersBlack"  >
-										<tr valign = "top">
-											 <td class="formFieldWithNoTopBorder" colspan="3">
-												 <bean:message key="app.DefineGroupTitle"/>
-											 </td>
-										</tr>
+									<table valign = "top" cellspacing="0" cellpadding="4"  align="left" width="100%" height = '100%' class = "tbBordersAllbordersBlack"  >
+
 										<tr valign = "top">
 											 <td class="formMessage" colspan="3">
 												 <bean:message key="app.requiredMessage"/>
@@ -70,12 +67,12 @@
 												&nbsp;
 											 </td>
 										</tr>
-										<tr valign = "top">
+										<tr valign = "top" class="rowWithBottomPadding">
 											<td  class="formRequiredNoticeWithoutBorder" width="2%">*</td>
-											<td class="formRequiredLabelWithoutBorder" width="15%">
-												<bean:message key="eav.att.GroupType"/>
+											<td class="formRequiredLabelWithoutBorder" width="12%">
+												<bean:message key="eav.att.GroupType"/> :
 											</td>
-											<td class="formMessage">
+											<td class="formFieldWithoutBorder" align="left">
 												<html:radio property="createGroupAs" value="NewGroup" onclick="changeGroupSource(this)">
 													<bean:message key="eav.att.NewGroup"/>
 												</html:radio>
@@ -86,11 +83,11 @@
 											</td>
 										</tr>
 										 <tr  valign = "top" >
-											 <td colspan="3" valign = "top">
+											 <td colspan="3" valign = "top" class="cellWithNoLeftBottomPadding">
 											 	<div id="groupDetailsDiv" > </div>
 											 </td>
 										</tr>
-										<tr  >
+										<tr >
 											 <td height = '100%'  class="formFieldSized3" colspan="3">
 												 &nbsp;
 											 </td>
@@ -103,6 +100,7 @@
 									<html:button styleClass="actionButton" property="saveButton" onclick="saveGroup()">
 										<bean:message  key="buttons.save" />
 	 								</html:button>
+
 									<html:button styleClass="actionButton" property="cancelButton" onclick="showHomePageFromCreateGroup()">
 										<bean:message  key="buttons.cancel" />
 	 								</html:button>
@@ -112,23 +110,19 @@
 										<bean:message  key="buttons.next" />
 	 								</html:button>
 								</td>
-
-							</tr>
-							<tr height = '100%'  valign = "top" >
-								<td height = '100%' colspan="7">&nbsp;</td>
 							</tr>
 						</table>
 					</td>
 				</tr>
 		</table>
 <div id="NewGroupDiv" style="display:none">
-	<table valign = "top" cellspacing="0" cellpadding="3"  align="left" width="100%" height = '100%'>
+	<table  valign = "top" cellspacing="0" cellpadding="3" width="100%" height = '100%'>
 
-		<tr valign = "top">
+		<tr valign = "top"  class="rowWithBottomPadding">
 			<td  class="formRequiredNoticeWithoutBorder" width="2%">*</td>
-			<td class="formRequiredLabelWithoutBorder" width="15%">
+			<td class="formRequiredLabelWithoutBorder" width="12%">
 			<label for="groupName">
-				<bean:message key="eav.att.GroupTitle"/>
+				<bean:message key="eav.att.GroupTitle"/> :
 			</label>
 			</td>
 			<td class="formFieldWithoutBorder">
@@ -136,12 +130,12 @@
 			</td>
 		</tr>
 
-		<tr valign = "top">
+		<tr valign = "top"  class="rowWithBottomPadding">
 			<td class="formRequiredNoticeWithoutBorder" width="2%" >&nbsp;</td>
-			<td class="formRequiredLabelWithoutBorder" width="15%">
+			<td class="formRequiredLabelWithoutBorder" width="12%">
 			<label for="groupDescription">
-				<bean:message key="eav.form.description"/>
-			</label>	
+				<bean:message key="eav.form.description"/> :
+			</label>
 			</td>
 			<td class="formFieldWithoutBorder">
 				<html:textarea styleClass="formFieldSmallSized"  rows = "3" cols="28" styleId="groupDescription"  property="groupDescription" />
@@ -150,13 +144,13 @@
 		 </table>
 </div>
 <div id="ExistingGroupDiv" style="display:none">
-	<table valign = "top" cellspacing="0" cellpadding="3"  align="left" width="100%" height = '100%' >
-		<tr valign = "top">
+	<table valign = "top" cellspacing="0" cellpadding="4"  align="left" width="100%" height = '100%' >
+		<tr valign = "top"  class="rowWithBottomPadding">
 			<td class="formRequiredNoticeWithoutBorder" width="2%" >&nbsp;</td>
-			<td class="formRequiredLabelWithoutBorder" width="15%">
+			<td class="formRequiredLabelWithoutBorder" width="12%">
 				&nbsp;
 			</td>
-			<td class="formFieldWithoutBorder">
+			<td class="formFieldWithoutBorder"  class="rowWithBottomPadding">
 				<html:select styleClass="formDateSized"  property="groupName" >
 					<c:forEach items="${groupsList}" var="groupname">
 						<jsp:useBean id="groupname" type="java.lang.String" />
@@ -168,9 +162,6 @@
 	 </table>
 </div>
 </html:form>
-
-
 </body>
-
 </html>
 

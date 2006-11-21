@@ -276,7 +276,9 @@ FORM BEGINS
 .formRequiredNoticeWithoutBorder{ /* for the asterisk cell */
   font-family:arial,helvetica,verdana,sans-serif;
   font-size:1em;
-  color:#000000; /* constant: black */
+  color:red; /* constant: red */
+  padding-left:0.3em;
+  vertical-align:middle;
 }
 
 .formRequiredNoticeWithoutLeftBorder{ /* for notoce without left border*/
@@ -326,8 +328,8 @@ FORM BEGINS
   font-size:0.7em;
   font-weight:bold;
   color:#000000; /* constant: black	*/
-  
   text-align:left;
+  vertical-align:middle;
 }
 
 .formRequiredLabelLeft{ /* for the required form labels */
@@ -637,6 +639,7 @@ input.actionButton{ /* optional style for form and action buttons */
   font-family:arial,helvetica,verdana,sans-serif;
   font-size:0.7em;
   color:#000000; /* constant: black */
+  padding-left:0.3em;
 }
 .normalForm{ /* for a general form in a content page */
   border:1px solid #5C5C5C; /* constant: dark gray */
@@ -1408,4 +1411,13 @@ font-family:arial;
   background-color:#C9C9CD; 
   color:#000000;  /* constant: white */
   text-decoration:none;
+}
+.cellWithNoLeftBottomPadding
+{
+padding-left:0em;
+padding-top:0em;
+}
+.rowWithBottomPadding
+{
+padding-bottom:3em;
 }

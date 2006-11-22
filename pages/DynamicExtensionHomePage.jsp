@@ -13,8 +13,8 @@
 %>
 
 <%-- Stylesheet --%>
-<link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
-<script src="jss/dynamicExtensions.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/styleSheet.css" />
+<script src="<%=request.getContextPath()%>/jss/dynamicExtensions.js" type="text/javascript"></script>
 
 <html>
 	<head>

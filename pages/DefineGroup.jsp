@@ -5,37 +5,17 @@
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
 <%@page import="java.util.List" %>
 
-<link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
+<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/styleSheet.css" />
 
-<script src="jss/script.js" type="text/javascript"></script>
-<script src="jss/dynamicExtensions.js" type="text/javascript"></script>
+<script src="<%=request.getContextPath()%>/jss/script.js" type="text/javascript"></script>
+<script src="<%=request.getContextPath()%>/jss/dynamicExtensions.js" type="text/javascript">
+</script>
 
 <html>
 	<head>
 		<title>Dynamic Extensions</title>
 
-		<script>
-			function changeGroupSource(groupSrc)
-			{
-				alert('in group src');
-				alert(groupSrc);
-				if(groupSrc!=null)
-				{
-					var divForGrpDetails = document.getElementById('groupDetailsDiv');
-					var divForGrpSrc = document.getElementById(groupSrc.value+"Div");
-					if((divForGrpSrc!=null)&&(divForGrpDetails!=null))
-					{
-						divForGrpDetails.innerHTML = divForGrpSrc.innerHTML;
-					}
-				}
-			}
-			
-			function initDefineGroupForm()
-			{
-				alert('in init define group form');
-				changeGroupSource(document.getElementById('createGroupAs'));
-			}
-		</script>		
+		
 	</head>
 	
 	<body onload="initDefineGroupForm();">

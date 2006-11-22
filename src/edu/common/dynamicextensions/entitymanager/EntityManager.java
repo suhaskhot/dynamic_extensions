@@ -144,6 +144,7 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 	public EntityInterface persistEntity(EntityInterface entityInterface) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
+		logDebug("persistEntity","entering the method");
 		Entity entity = (Entity) entityInterface;
 		boolean isEntitySaved = true;
 		if (entity.getId() == null)
@@ -164,6 +165,7 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 		}
 		catch (DAOException e)
 		{
+			logDebug("persistEntity",DynamicExtensionsUtility.getStackTrace(e));
 			throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
 		}
 		catch (BaseDynamicExtensionsException e)
@@ -191,6 +193,7 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 				rollbackQueries(stack, entity,e);
 			}
 		}
+		logDebug("persistEntity","exiting the method");
 		return entityInterface;
 	}
 	
@@ -419,7 +422,8 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 		entity.setLastUpdated(new Date());
 		if (attributeCollection != null && !attributeCollection.isEmpty())
 		{
-			Iterator iterator = attributeCollection.iterator();
+			Collection tempAttributeCollection = new HashSet(attributeCollection);
+			Iterator iterator = tempAttributeCollection.iterator();	
 			while (iterator.hasNext())
 			{
 				AbstractAttribute attribute = (AbstractAttribute) iterator.next();
@@ -633,6 +637,7 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
                 LogFatalError(exc, entity);
             }
 			finally {
+				logDebug("rollbackQueries",DynamicExtensionsUtility.getStackTrace(e));
                 DynamicExtensionsSystemException ex = new DynamicExtensionsSystemException(
                         message,e);
                 ex.setErrorCode(DYEXTN_S_000);
@@ -1493,11 +1498,12 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 		}
 		catch (UserNotAuthorizedException e)
 		{
-
+			logDebug("saveOrUpdateEntity",DynamicExtensionsUtility.getStackTrace(e));
 			throw new DynamicExtensionsApplicationException("User is not authorised to perform this action", e, DYEXTN_A_002);
 		}
 		catch (Exception e)
 		{
+			logDebug("saveOrUpdateEntity",DynamicExtensionsUtility.getStackTrace(e));
 			throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
 		}
 

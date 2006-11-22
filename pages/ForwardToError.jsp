@@ -8,7 +8,7 @@
 	</head>
 	
 	<body  class='bodyStyle'>
-		<link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
+		<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/styleSheet.css" />
 		<table border='0' align='center' >
 			<tr>
 				<td align='center'>

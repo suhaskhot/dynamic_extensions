@@ -8,8 +8,8 @@
 <%@page import="java.util.Iterator" %>
 <%@page import="java.util.Map" %>
 <%@page import="java.util.List" %>
-<script src="jss/calender.js" type="text/javascript"></script>
-<script src="jss/calendarComponent.js"></script>
+<script src="<%=request.getContextPath()%>/jss/calender.js" type="text/javascript"></script>
+<script src="<%=request.getContextPath()%>/jss/calendarComponent.js"></script>
 <%@page import="edu.common.dynamicextensions.ui.util.RuleConfigurationObject" %>
 <%@page import="edu.wustl.common.beans.NameValueBean" %>
 

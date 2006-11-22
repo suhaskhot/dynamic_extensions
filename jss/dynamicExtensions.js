@@ -1,5 +1,5 @@
 function formSelectedAction() {
-	//alert("This is a form to be copied");
+	
 }
 function tagHandlerFunction(selectedTool) {
 	document.getElementById('userSelectedTool').value=selectedTool;
@@ -860,11 +860,10 @@ function showDefineGroupPage(formName)
 
 function changeGroupSource(groupSrc)
 {
-	//alert('in group src');
-	//alert('sujay' + groupSrc);
+	
 	if(groupSrc!=null)
 	{
-		//alert('groupSrc not null');
+		
 		var divForGrpDetails = document.getElementById('groupDetailsDiv');
 		var divForGrpSrc = document.getElementById(groupSrc.value+"Div");
 		if((divForGrpSrc!=null)&&(divForGrpDetails!=null))
@@ -876,13 +875,13 @@ function changeGroupSource(groupSrc)
 
 function initDefineGroupForm()
 {
-	//alert('in init define group form');
+	
 	changeGroupSource(document.getElementById('createGroupAs'));
 }
 
 function showDefineFormJSP()
 {
-	//alert('showDefineFormJSP');
+	
 	var groupForm = document.getElementById('groupForm');
 	var groupOperation = document.getElementById('groupOperation');
 	if(groupOperation!=null)

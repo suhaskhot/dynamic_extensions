@@ -13,7 +13,7 @@
 <c:set var="measurementUnitsList" value="${controlsForm.measurementUnitsList}"/>
 <jsp:useBean id="measurementUnitsList" type="java.util.List"/>
 
-<input type="hidden" name="linesTypeHidden" value='<%=linesType%>' >
+<input type="hidden" id = 'linesTypeHidden'  name="linesTypeHidden" value='<%=linesType%>' />
 		<div id="TextDataType" style="display:none">
 			 <table summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
 

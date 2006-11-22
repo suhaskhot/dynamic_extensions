@@ -11,6 +11,187 @@
 		<script src="jss/dynamicExtensions.js" type="text/javascript"></script>
 		<script src="jss/script.js" type="text/javascript"></script>
 		<title>Dynamic Extensions</title>
+		
+		<script>
+
+				function changeDateType(dateType)
+				{	
+					if(dateType!=null)
+					{
+						dateTypeValue =dateType.value;
+					}
+				//	var defValueTxtBox = document.getElementById('attributeDefaultValue');
+					var rowForDefaultValue = document.getElementById('rowForDateDefaultValue');
+					if((dateTypeValue == "None")||(dateTypeValue == "Today"))
+					{
+						rowForDefaultValue.style.display="none";
+					}
+					else
+					{
+						rowForDefaultValue.style.display="block";
+					}
+				}
+
+				function listTypeChanged(obj)
+					{
+						if(obj!=null)
+						{
+							var rowForDisplayHeight = document.getElementById('rowForDisplayHeight');
+							if(rowForDisplayHeight!=null)
+							{
+								if(obj.value == 'SingleSelect')
+								{
+									rowForDisplayHeight.style.display="none";
+								}
+								if(obj.value == 'MultiSelect')
+								{
+									rowForDisplayHeight.style.display="block";
+								}
+							}
+						}
+					}
+				function initializeOptionsDefaultValue()
+				{
+					var valuestable = document.getElementById('choiceListTable');
+					var defaultValue = document.getElementById('attributeDefaultValue');
+					if((defaultValue!=null)&&(valuestable!=null))
+					{
+						var rowForDefaultValue = document.getElementById(defaultValue.value+"");
+						if(rowForDefaultValue!=null)
+						{
+							rowForDefaultValue.style.fontWeight='bold';
+						}
+					}
+				}
+
+				function changeSourceForValues(sourceControl)
+				{
+					if(sourceControl!=null)
+					{
+						var sourceForValues = sourceControl.value;
+						if(sourceForValues!=null)
+						{
+							var divForSourceId = sourceForValues + "Values";
+
+							var divForSource = document.getElementById(divForSourceId);
+							if(divForSource!=null)
+							{
+								var valueSpecnDiv = document.getElementById('optionValuesSpecificationDiv');
+								if(valueSpecnDiv!=null)
+								{
+									valueSpecnDiv.innerHTML = divForSource.innerHTML;
+								}
+							}
+						
+						}
+					}
+				}
+
+			function dataFldDataTypeChanged(datatypeControl)
+			{
+				if(datatypeControl!=null)
+				{
+					var selectedDatatype = datatypeControl.value;
+					var divForDataTypeId = selectedDatatype + "DataType";
+					var divForDataType = document.getElementById(divForDataTypeId);
+					
+					if(divForDataType!=null)
+					{
+						var substitutionDiv = document.getElementById('substitutionDiv');
+						substitutionDiv.innerHTML = divForDataType.innerHTML;
+					}
+					 insertRules(datatypeControl);
+				}
+			}
+			function insertRules(datatypeControl)
+			{
+				var selectedDatatype = datatypeControl.value;
+				var divForDataTypeId = selectedDatatype + "Div";
+
+				var divForDataType = document.getElementById(divForDataTypeId);
+				var divForCommonRule = document.getElementById("commonsDiv");
+
+				if(divForDataType!=null)
+				{
+					var tempInnerHTML = "<table><tr><td>" + divForCommonRule.innerHTML + "</td></tr><tr><td>" + divForDataType.innerHTML;
+
+					while (tempInnerHTML.indexOf("tempValidationRules") != -1)
+					{
+						tempInnerHTML = tempInnerHTML.replace("tempValidationRules","validationRules");
+					}
+
+					var substitutionDivRules = document.getElementById('substitutionDivRules');
+					substitutionDivRules.innerHTML = tempInnerHTML;
+				}
+			}
+
+			function textBoxTypeChange(obj)
+			{
+				if(obj.value == 'SingleLine')
+				{
+					document.getElementById('rowForNumberOfLines').style.display="none";
+				}
+				if(obj.value == 'MultiLine')
+				{
+					document.getElementById('rowForNumberOfLines').style.display="block";
+				}
+			}
+
+			function initBuildForm()
+			{
+				alert('Sujay');
+				//If single line textbox, dont show row for noOfLines
+				if(document.getElementById("linesTypeHidden")!=null)
+				{
+					textBoxTypeChange(document.getElementById("linesTypeHidden")); 
+				}
+				var dataTypeElt = document.getElementById("initialDataType");
+				if(dataTypeElt!=null)
+				{
+					//Load datatype details for selected datatype
+					dataFldDataTypeChanged(dataTypeElt);
+				}
+				
+				var sourceElt =document.getElementById("displayChoice");
+				if(sourceElt!=null)
+				{
+					//Load source details for selected sourcetype
+					changeSourceForValues(sourceElt);
+				}
+				
+				//Reinitialize counter
+				var choiceListElementCnter = document.getElementById('choiceListCounter');
+				if(choiceListElementCnter !=null)
+				{
+					choiceListElementCnter.value="1";
+				}
+				
+				addChoicesFromListToTable();
+				
+				//Initilialize default value for list of options
+				initializeOptionsDefaultValue();
+				
+				
+				//If other option is selected in measurement units, enable the text box next to it
+				var cboMeasurementUnits = document.getElementById('attributeMeasurementUnits');
+				measurementUnitsChanged(cboMeasurementUnits);
+				
+				//List box type : Combo-box or List box
+				var attributeMultiSelect = document.getElementById('hiddenIsMultiSelect');
+				if(attributeMultiSelect!=null)
+				{
+					listTypeChanged(attributeMultiSelect);
+				}
+				
+				//Date page initializations
+				var dateValueType = document.getElementById('initialDateValueType');
+				if(dateValueType!=null)
+				{
+					changeDateType(dateValueType);
+				}
+			}
+			
+		</script>
 	</head>
 
 	<!-- Initializations -->
@@ -145,6 +326,7 @@
 																	<th colspan="3" align="left" class="formTitleGray"><bean:message  key="app.formControlsTree.heading" /></th>
 																</tr>
 															</thead>
+															<tbody>
 																<c:forEach var="controlInfoObj" items = "${controlInformationObjectList}" varStatus="counter" >
 																<c:set var="controlName" value="${controlInfoObj.controlName}"/>
 																<jsp:useBean id="controlName" type="java.lang.String"/>
@@ -154,7 +336,7 @@
 
 																<c:set var="identifier" value="${controlInfoObj.identifier}"/>
 																<jsp:useBean id="identifier" type="java.lang.String"/>
-															<tbody>
+															
 
 
 
@@ -179,12 +361,14 @@
 															</tr>
 
 
-															</tbody>
+														
 																</c:forEach>
+																	
 																<tr height = "100%">
 																	<td>&nbsp;
 																	</td>
 																</tr>
+																</tbody>
 															</table>
 														</td>
 													</tr>
@@ -244,17 +428,15 @@
 				</td>
 			</tr>
 		</table>
-		  	<html:hidden property="operation" value=""/>
-		  	<html:hidden property="selectedAttrib" value=""/>
-			<input type="hidden" name="entitySaved" />
+		  	<html:hidden styleId ='operation'  property="operation" value=""/>
+		  	<html:hidden styleId = 'selectedAttrib' property="selectedAttrib" value=""/>
+			<input type="hidden" name="entitySaved" id = 'entitySaved'  />
 			<input type="hidden" id = "previousControl" name="previousControl" value = "" />
-			<html:hidden property="controlOperation" />
-			<html:hidden property="selectedControlId" />
-			<html:hidden property="sequenceNumbers"  value=""/>
+			<html:hidden styleId = 'controlOperation' property="controlOperation" />
+			<html:hidden styleId = 'selectedControlId' property="selectedControlId" />
+			<html:hidden styleId = 'sequenceNumbers' property="sequenceNumbers"  value=""/>
 
-	  	</td>
-	  	</tr>
-	  	</table>
+	  
 	  	</html:form>
   	</body>
 

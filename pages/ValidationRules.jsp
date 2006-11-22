@@ -59,7 +59,7 @@
 							</td>
 				 			
 							<td class="formFieldWithoutBorder">
-		 						<html:multibox  property='tempValidationRules' value="<%= ruleName%>" onclick="ruleSelected(this)">
+		 						<html:multibox  styleId = 'tempValidationRules' property='tempValidationRules' value="<%= ruleName%>" onclick="ruleSelected(this)">
 									<bean:message key="<%= ruleLabel%>"/>
 								</html:multibox>
 								<bean:message key="<%= ruleLabel%>"/>
@@ -88,7 +88,7 @@
 	
 										<td class="formRequiredLabelWithoutBorder" align="center">
 											&nbsp;&nbsp;&nbsp;&nbsp;<%= paramLabel%>&nbsp
-											<html:text styleClass="formParamSized"  maxlength="100" size="60"  property="<%= paramName%>" />
+											<html:text styleId ="<%= paramName%>" styleClass="formParamSized"  maxlength="100" size="60"  property="<%= paramName%>" />
 											<% 
 												if(controlName.equalsIgnoreCase("DateControl"))
 												{ 

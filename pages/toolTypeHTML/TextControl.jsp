@@ -3,10 +3,7 @@
 <%@ taglib uri="/WEB-INF/dynamicExtensions.tld" prefix="dynamicExtensions" %>
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
 
-<link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
-<script src="jss/dynamicExtensions.js" type="text/javascript"></script>
-<script src="jss/overlib_mini.js" type="text/javascript"></script>
-<script src="jss/calender.js" type="text/javascript"></script>
+
 
 <c:set var="dataTypeList" value="${controlsForm.dataTypeList}"/>
 <jsp:useBean id="dataTypeList" type="java.util.List"/>
@@ -53,7 +50,7 @@
 	
 	<tr valign="top">
 		<td>
-			<input type="hidden" name="initialDataType" value="<%=selectedDataType%>">
+			<input type="hidden" id = 'initialDataType' name="initialDataType" value="<%=selectedDataType%>"/>
 			<div id="substitutionDiv">
 				
 			</div>
@@ -95,3 +92,6 @@
 </table>
 <jsp:include page="/pages/toolTypeHTML/Datatypes.jsp" />
 <jsp:include page="/pages/ValidationRules.jsp" />
+
+
+

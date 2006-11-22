@@ -927,4 +927,68 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		}
 		
 	}
+	
+	/**
+	 * Purpose is to test the self referencing of the entity. 
+	 * Scenario - user(*)------>(1)User
+	 *                   creator   
+	 */
+	public void testCreateEntityWithSelfReferencingBidirectionManyToManyAssociation()
+	{
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		// create user 
+		EntityInterface user = factory.createEntity();
+		AttributeInterface userNameAttribute = factory.createStringAttribute();
+		userNameAttribute.setName("user name");
+		user.setName("user");
+		user.addAbstractAttribute(userNameAttribute);
+
+		// Associate user (*)------ >(1)user       
+		AssociationInterface association = factory.createAssociation();
+
+		association.setTargetEntity(user);
+		association.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
+		association.setName("primaryInvestigator");
+		association.setSourceRole(getRole(AssociationType.ASSOCIATION, "subpi", Cardinality.ONE, Cardinality.MANY));
+		association.setTargetRole(getRole(AssociationType.ASSOCIATION, "pi", Cardinality.ONE, Cardinality.MANY));
+
+		user.addAbstractAttribute(association);
+
+		try
+		{
+
+			EntityInterface savedUser = entityManager.persistEntity(user);
+
+			String tableName = user.getTableProperties().getName();
+
+			assertNotNull(tableName);
+
+			ResultSetMetaData metaData = executeQueryForMetadata("select * from " + tableName);
+			assertEquals(2, metaData.getColumnCount());
+
+			metaData = executeQueryForMetadata("select * from " + association.getConstraintProperties().getName());
+			assertEquals(3, metaData.getColumnCount());
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+
+		catch (DynamicExtensionsApplicationException e)
+		{
+			e.printStackTrace();
+			fail();
+
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			fail();
+
+		}
+
+	}
 }

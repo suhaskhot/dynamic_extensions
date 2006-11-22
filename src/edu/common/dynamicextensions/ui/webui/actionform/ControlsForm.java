@@ -236,9 +236,9 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	/**option names
 	 *  
 	 */
-	protected String []optionNames = new String[0];
-	protected String []optionDescriptions= new String[0];
-	protected String []optionConceptCodes= new String[0];
+	protected String []optionNames ;
+	protected String []optionDescriptions;
+	protected String []optionConceptCodes;
 	
 	protected List optionDetails;
 	/**

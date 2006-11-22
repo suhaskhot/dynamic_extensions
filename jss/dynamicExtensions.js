@@ -216,7 +216,20 @@ function changeSourceForValues(sourceControl)
 				var valueSpecnDiv = document.getElementById('optionValuesSpecificationDiv');
 				if(valueSpecnDiv!=null)
 				{
-					valueSpecnDiv.innerHTML = divForSource.innerHTML;
+					var divForSourceHTML = divForSource.innerHTML;
+					while (divForSourceHTML.indexOf("tempOptionNames") != -1)
+					{
+						divForSourceHTML = divForSourceHTML.replace("tempOptionNames","optionNames");
+					}
+					while (divForSourceHTML.indexOf("tempOptionDescriptions") != -1)
+					{
+						divForSourceHTML = divForSourceHTML.replace("tempOptionDescriptions","optionDescriptions");
+					}
+					while (divForSourceHTML.indexOf("tempOptionConceptCodes") != -1)
+					{
+						divForSourceHTML = divForSourceHTML.replace("tempOptionConceptCodes","optionConceptCodes");
+					}
+					valueSpecnDiv.innerHTML = divForSourceHTML ;
 				}
 			}
 		

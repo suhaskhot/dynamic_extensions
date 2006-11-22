@@ -83,8 +83,8 @@
 			</table>
 		</td>
 	</tr>
-	<tr>
-		<td>
+	<tr width="100%">
+		<td width="100%">
 			<hr/>
 			<div id="substitutionDivRules"></div>
 		</td>

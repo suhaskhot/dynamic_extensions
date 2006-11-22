@@ -92,7 +92,7 @@
 								<jsp:useBean id="containerInterface" type="edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface" />
 									<tr>
 										<td>
-											<c:out value='${elements.count}' />&nbsp
+											<c:out value='${elements.count}' />&nbsp;
 										</td>
 										<td>
 											<%
@@ -100,7 +100,7 @@
 	 											String target = "/dynamicExtensions/LoadDataEntryFormAction.do?containerIdentifier=" + cont_Id;
 	 										%>
 											<html:link href='<%=target%>'>
-												&nbsp<c:out value='${containerInterface.caption}' />
+												&nbsp;<c:out value='${containerInterface.caption}' />
 											</html:link>
 										</td>
 										<td>
@@ -108,16 +108,16 @@
 	 											target = "setEditOperationMode('/dynamicExtensions/LoadFormDefinitionAction.do?containerIdentifier=" + cont_Id + "');"; 											
 	 										%>
 											<html:link href='#' onclick="<%=target%>" >
-												<bean:message key="app.edit" />&nbsp
+												<bean:message key="app.edit" />&nbsp;
 											</html:link>
 										</td>
 										<td>
 											<c:set var="entityInterface" value="${containerInterface.entity}"/>
 	 										<jsp:useBean id="entityInterface" type="edu.common.dynamicextensions.domaininterface.EntityInterface"/>
-											<c:out value='${entityInterface.createdDate}'/>&nbsp
+											<c:out value='${entityInterface.createdDate}'/>&nbsp;
 										</td>
 										<td><c:out value='admin'/>&nbsp</td>
-										<td><c:out value='In Progress' />&nbsp</td>
+										<td><c:out value='In Progress' />&nbsp;</td>
 									</tr>
 								</c:forEach>
 							</table>

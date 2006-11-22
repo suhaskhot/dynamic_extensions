@@ -31,89 +31,87 @@
 %>
 		<div id="<%= divName%>" style="display:none">
 			<table summary="" cellpadding="3" cellspacing="0" align = 'left' width='100%'>
-			<hr>
-				<% 	
-					Iterator rulesIter = listofRules.iterator();
-					while(rulesIter.hasNext())
-					{
-						RuleConfigurationObject ruleObject = (RuleConfigurationObject)rulesIter.next();
-						String ruleLabel =ruleObject.getDisplayLabel();
-						String ruleName = ruleObject.getRuleName();
-						List params = ruleObject.getRuleParametersList();
-				%>
-						<tr align="top">
-					        <td class="formRequiredNoticeWithoutBorder" width="2%">
-				 				&nbsp
-				 		 	</td>
-				 		 	
-				 			<td class="formRequiredLabelWithoutBorder" width="25%">
-								<% 
-									if (isFirst)
-									{ 
-								%>
-				 						<bean:message key="eav.control.validation"/>
-								<% 
-									}
-								%>
-								&nbsp;
-							</td>
-				 			
-							<td class="formFieldWithoutBorder">
-		 						<html:multibox  styleId = 'tempValidationRules' property='tempValidationRules' value="<%= ruleName%>" onclick="ruleSelected(this)">
-									<bean:message key="<%= ruleLabel%>"/>
-								</html:multibox>
-								<bean:message key="<%= ruleLabel%>"/>
-							</td>
-						</tr>
-								
-									
+			<% 	
+				Iterator rulesIter = listofRules.iterator();
+				while(rulesIter.hasNext())
+				{
+					RuleConfigurationObject ruleObject = (RuleConfigurationObject)rulesIter.next();
+					String ruleLabel =ruleObject.getDisplayLabel();
+					String ruleName = ruleObject.getRuleName();
+					List params = ruleObject.getRuleParametersList();
+			%>
+					<tr align="top">
+				        <td class="formRequiredNoticeWithoutBorder" width="2%">
+			 				&nbsp
+			 		 	</td>
+			 		 	
+			 			<td class="formRequiredLabelWithoutBorder" width="25%">
 						<% 
-							if(params != null) 
-							{
-								Iterator paramsIter = params.iterator(); 
-								while(paramsIter.hasNext())
-								{
-									NameValueBean paramObject = (NameValueBean)paramsIter.next();
-									String paramLabel =paramObject.getValue();
-									String paramName = paramObject.getName();
+							if (isFirst)
+							{ 
 						%>
-								 	<tr>
-								        <td class="formRequiredNoticeWithoutBorder" width="2%">
-			 					 			&nbsp
-										</td>
-										
-										<td class="formRequiredNoticeWithoutBorder" width="25%">
-											&nbsp
-										</td> 
-	
-										<td class="formRequiredLabelWithoutBorder" align="center">
-											&nbsp;&nbsp;&nbsp;&nbsp;<%= paramLabel%>&nbsp
-											<html:text styleId ="<%= paramName%>" styleClass="formParamSized"  maxlength="100" size="60"  property="<%= paramName%>" />
-											<% 
-												if(controlName.equalsIgnoreCase("DateControl"))
-												{ 
-													String divId = "slcalcod"+ paramName ;
-											%>
-													<A onclick="showCalendar('<%= paramName%>',2006,10,26,'MM-dd-yyyy','controlsForm','<%= paramName%>',event,1900,2020);" href="javascript://"><IMG alt="This is a Calendar" src="images/calendar.gif" border=0></A>
-													<DIV id=<%=divId%> style="Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px">
-														<SCRIPT>printCalendar('<%= paramName%>',26,10,2006);</SCRIPT>
-													</DIV>
-											<%
-												} //end if(controlName.equalsIgnoreCase("DateControl"))
-											%>
-			 							</td>
-									</tr>
-							<%
-								} // end while(paramsIter.hasNext())
-							%>
-						
+		 						<bean:message key="eav.control.validation"/>
+						<% 
+							}
+						%>
+							&nbsp;
+						</td>
+			 			
+						<td class="formFieldWithoutBorder">
+	 						<html:multibox  styleId = 'tempValidationRules' property='tempValidationRules' value="<%= ruleName%>" onclick="ruleSelected(this)">
+								<bean:message key="<%= ruleLabel%>"/>
+							</html:multibox>
+							<bean:message key="<%= ruleLabel%>"/>
+						</td>
+					</tr>
+							
+								
+					<% 
+						if(params != null) 
+						{
+							Iterator paramsIter = params.iterator(); 
+							while(paramsIter.hasNext())
+							{
+								NameValueBean paramObject = (NameValueBean)paramsIter.next();
+								String paramLabel =paramObject.getValue();
+								String paramName = paramObject.getName();
+					%>
+							 	<tr>
+							        <td class="formRequiredNoticeWithoutBorder" width="2%">
+		 					 			&nbsp
+									</td>
+									
+									<td class="formRequiredNoticeWithoutBorder" width="25%">
+										&nbsp
+									</td> 
+
+									<td class="formRequiredLabelWithoutBorder" align="center">
+										&nbsp;&nbsp;&nbsp;&nbsp;<%= paramLabel%>&nbsp
+										<html:text styleId ="<%= paramName%>" styleClass="formParamSized"  maxlength="100" size="60"  property="<%= paramName%>" />
+									<% 
+										if(controlName.equalsIgnoreCase("DateControl"))
+										{ 
+											String divId = "slcalcod"+ paramName ;
+									%>
+											<A onclick="showCalendar('<%= paramName%>',2006,10,26,'MM-dd-yyyy','controlsForm','<%= paramName%>',event,1900,2020);" href="javascript://"><IMG alt="This is a Calendar" src="images/calendar.gif" border=0></A>
+											<DIV id=<%=divId%> style="Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px">
+												<SCRIPT>printCalendar('<%= paramName%>',26,10,2006);</SCRIPT>
+											</DIV>
+									<%
+										} //end if(controlName.equalsIgnoreCase("DateControl"))
+									%>
+		 							</td>
+								</tr>
 						<%
-							} // end if(params != null)
-						%>					
-		 		<% 
-		 				isFirst = false;
-		 			} // while(rulesIter.hasNext())
-		 		%>
+							} // end while(paramsIter.hasNext())
+						%>
+					<%
+						} // end if(params != null)
+					%>					
+	 		<% 
+	 				isFirst = false;
+	 			} // while(rulesIter.hasNext())
+	 		%>
 			</table>
 		</div>
 <%

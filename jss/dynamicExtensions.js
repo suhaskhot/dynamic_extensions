@@ -99,27 +99,24 @@ function dataFldDataTypeChanged(datatypeControl)
 }
 function insertRules(datatypeControl)
 {
-	
-		var selectedDatatype = datatypeControl.value;
-		var divForDataTypeId = selectedDatatype + "Div";
+	var selectedDatatype = datatypeControl.value;
+	var divForDataTypeId = selectedDatatype + "Div";
 
-		var divForDataType = document.getElementById(divForDataTypeId);
-		var divForCommonRule = document.getElementById("commonsDiv");
+	var divForDataType = document.getElementById(divForDataTypeId);
+	var divForCommonRule = document.getElementById("commonsDiv");
 
+	if(divForDataType!=null)
+	{
+		var tempInnerHTML = "<table><tr><td>" + divForCommonRule.innerHTML + "</td></tr><tr><td>" + divForDataType.innerHTML;
 
-		if(divForDataType!=null)
+		while (tempInnerHTML.indexOf("tempValidationRules") != -1)
 		{
-			var substitutionDivRules = document.getElementById('substitutionDivRules');
-			var tempInnerHTML  = divForCommonRule.innerHTML + divForDataType.innerHTML;
-	
-            while (tempInnerHTML.indexOf("tempValidationRules") != -1)
-			{
-			       tempInnerHTML = tempInnerHTML.replace("tempValidationRules","validationRules");
-				   
-			 }
-		
-			substitutionDivRules.innerHTML = tempInnerHTML;
+			tempInnerHTML = tempInnerHTML.replace("tempValidationRules","validationRules");
 		}
+
+		var substitutionDivRules = document.getElementById('substitutionDivRules');
+		substitutionDivRules.innerHTML = tempInnerHTML;
+	}
 }
 
 

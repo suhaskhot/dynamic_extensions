@@ -50,10 +50,12 @@
 			 </table>
 		</td>
  	</tr>
-	<input type="hidden" name="initialDataType" value="<%=selectedDataType%>">
+	
 	<tr valign="top">
 		<td>
+			<input type="hidden" name="initialDataType" value="<%=selectedDataType%>">
 			<div id="substitutionDiv">
+				
 			</div>
 
 		</td>
@@ -86,6 +88,7 @@
 	</tr>
 	<tr>
 		<td>
+			<hr/>
 			<div id="substitutionDivRules"></div>
 		</td>
 	</tr>

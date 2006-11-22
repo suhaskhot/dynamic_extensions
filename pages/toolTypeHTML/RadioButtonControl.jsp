@@ -5,10 +5,7 @@
 
 <%@page import="edu.common.dynamicextensions.processor.ProcessorConstants"%>
 <%@page import="edu.wustl.common.beans.NameValueBean"%>
-<link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
-<script src="jss/dynamicExtensions.js" type="text/javascript"></script>
-<script src="jss/overlib_mini.js" type="text/javascript"></script>
-<script src="jss/calender.js" type="text/javascript"></script>
+
 
   <c:set var="displayChoiceList" value="${controlsForm.displayChoiceList}"/>
   <jsp:useBean id="displayChoiceList" type="java.util.List"/>
@@ -31,15 +28,15 @@
 					<jsp:useBean id="choiceType" type="edu.wustl.common.beans.NameValueBean" />
 						<c:set var="choiceTypeValue" value="${choiceType.value}" />
 						<jsp:useBean id="choiceTypeValue" type="java.lang.String" />
-						<html:radio property="displayChoice" value="" onchange="changeSourceForValues()">
+						<html:radio styleId ='displayChoice' property="displayChoice" value="" onchange="changeSourceForValues()">
 							<c:out value="${choiceType.name}"/>
 						</html:radio>
 
 				</c:forEach>-->
-				<html:radio property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED%>" >
+				<html:radio styleId = 'displayChoice' property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED%>" >
 					<bean:message key="eav.att.OptionsUserDefined"/>
 				</html:radio>
-				<html:radio property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_CDE%>" disabled="true" >
+				<html:radio styleId= 'displayChoice' property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_CDE%>" disabled="true" >
 					<bean:message key="eav.att.OptionsCDE"/>
 				</html:radio>
 			</td>
@@ -56,7 +53,7 @@
 	</td>
  <tr>
 </table>
-<html:hidden property="dataType" value ="<%=ProcessorConstants.DATATYPE_STRING%>"/>
+<html:hidden styleId = 'dataType' property="dataType" value ="<%=ProcessorConstants.DATATYPE_STRING%>"/>
 
 <jsp:include page="/pages/toolTypeHTML/ListValuesSpecification.jsp" />
 

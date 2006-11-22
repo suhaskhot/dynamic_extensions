@@ -25,7 +25,7 @@
 					</td>
 
 					<td class="formFieldWithoutBorder">
-						<html:text styleClass="formFieldSized5"  maxlength="100" size="60"  property="attributenoOfCols" />
+						<html:text styleClass="formFieldSized5"  maxlength="100" size="60"  styleId ='attributenoOfCols' property="attributenoOfCols" />
 					</td>
 				</tr>
 				<tr valign="top">
@@ -38,7 +38,7 @@
 						<jsp:useBean id="dataTypeObj" type="edu.wustl.common.beans.NameValueBean" />
 								<c:set var="dataTypeValue" value="${dataTypeObj.value}" />
 								<jsp:useBean id="dataTypeValue" type="java.lang.String" />
-								<html:radio property="dataType" value="<%=dataTypeValue%>" onclick="dataFldDataTypeChanged(this)" >
+								<html:radio styleId='dataType' property="dataType" value="<%=dataTypeValue%>" onclick="dataFldDataTypeChanged(this)" >
 									<c:out value="${dataTypeObj.name}"/>
 								</html:radio>
 						</c:forEach>
@@ -66,7 +66,7 @@
 					</td>
 					<td class="formRequiredLabelWithoutBorder" width="30%">&nbsp;</td>
 					<td class="formFieldWithoutBorder" align="left">
-						<html:checkbox  property="attributeIsPassword" value="true"><bean:message key="app.att.isPassword" /></html:checkbox>
+						<html:checkbox styleId= 'attributeIsPassword'  property="attributeIsPassword" value="true"><bean:message key="app.att.isPassword" /></html:checkbox>
 					</td>
 			</tr>
 			<tr valign="top">
@@ -75,7 +75,7 @@
 				</td>
 				<td class="formRequiredLabelWithoutBorder" width="30%">&nbsp;</td>
 				<td class="formFieldWithoutBorder" align="left">
-					<html:checkbox  property="attributeDisplayAsURL" value="true">
+					<html:checkbox  styleId = 'attributeDisplayAsURL' property="attributeDisplayAsURL" value="true">
 						<bean:message key="app.att.displayAsURL" />
 					</html:checkbox>
 				</td>

@@ -10,14 +10,14 @@
 <div id="UserDefinedValues" style="display:none">
 	<input type="hidden" value="1" name="choiceListCounter" >
 	<table summary="" valign="top" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
-<html:hidden property="choiceList" />
+<html:hidden styleId ='choiceList' property="choiceList" />
 	 <tr valign="top">
 				<td class="formRequiredNoticeWithoutBorder" width="2%">
 									&nbsp;
 				</td>
 				<td class="formRequiredLabelWithoutBorder" width="25%"><bean:message key="eav.att.OptionLabel"/></td>
 				<td  class="formFieldWithoutBorder">
-					<input type="text" name="optionName" class="formDateSized" value='' maxlength="100" size="60" >
+					<input type="text"  id = 'optionName' name="optionName" class="formDateSized" value='' maxlength="100" size="60" >
 				</td>
 	</tr>
 
@@ -27,7 +27,7 @@
 					</td>
 					<td class="formRequiredLabelWithoutBorder" width="25%"><bean:message key="eav.att.OptionConceptCode"/></td>
 					<td  class="formFieldWithoutBorder">
-						<input type="text" name="optionConceptCode" class="formDateSized" value='' maxlength="100" size="60" >
+						<input type="text" id = 'optionConceptCode' name="optionConceptCode" class="formDateSized" value='' maxlength="100" size="60" >
 					</td>
 	</tr>
 
@@ -37,7 +37,7 @@
 					</td>
 					<td class="formRequiredLabelWithoutBorder"><bean:message key="eav.att.OptionDescription"/></td>
 					<td  class="formFieldWithoutBorder">
-						<textarea rows = "3" cols="28" name="optionDescription" class="formFieldSmallSized" ></textarea>
+						<textarea rows = "3" cols="28" id = 'optionDescription' name="optionDescription" class="formFieldSmallSized" ></textarea>
 					</td>
 	</tr>
 	<tr valign="top">
@@ -46,7 +46,7 @@
 					</td>
 					<td class="formRequiredLabelWithoutBorder" width="25%">&nbsp;</td>
 					<td  class="formFieldWithoutBorder" align="left" >
-							<html:button styleClass="actionButton" property="addChoiceValue" onclick="addChoiceToList(true)" >
+							<html:button styleClass="actionButton" styleId = 'addChoiceValue'  property="addChoiceValue" onclick="addChoiceToList(true)" >
 									<bean:message  key="eav.button.AddOption" />
 							</html:button>
 					</td>
@@ -74,11 +74,11 @@
 							 </html:button>
 						</td>
 					</tr>
-					<html:hidden property="attributeDefaultValue" />
+					<html:hidden styleId = 'attributeDefaultValue' property="attributeDefaultValue" />
 				</table>
 			</td>
 		<!--</div>-->
-			<html:hidden property="choiceList" />
+			<html:hidden styleId = 'choiceList' property="choiceList" />
 	</tr>
 	</table>
 </div>

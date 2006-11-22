@@ -4,8 +4,7 @@
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
 <%@page import="edu.common.dynamicextensions.processor.ProcessorConstants"%>
 
-<script src="jss/overlib_mini.js" type="text/javascript"></script>
-<script src="jss/calender.js" type="text/javascript"></script>
+
 
 <c:set var="linesType" value="${controlsForm.linesType}"/>
 <jsp:useBean id="linesType" type="java.lang.String"/>
@@ -25,10 +24,10 @@
 			 				<bean:message key="eav.control.type"/> :
 			 			</td>
 			 			<td  class="formFieldWithoutBorder">
-			 			<html:radio property='linesType' value='<%=ProcessorConstants.LINE_TYPE_SINGLELINE%>' onclick='textBoxTypeChange(this)'>
+			 			<html:radio styleId = 'linesType' property='linesType' value='<%=ProcessorConstants.LINE_TYPE_SINGLELINE%>' onclick='textBoxTypeChange(this)'>
 				 			<bean:message key="eav.att.TextBoxSingleLineTitle"/>
 			 			</html:radio>
-			 			<html:radio property='linesType' value='<%=ProcessorConstants.LINE_TYPE_MULTILINE%>' onclick='textBoxTypeChange(this)'>
+			 			<html:radio styleId = 'linesType' property='linesType' value='<%=ProcessorConstants.LINE_TYPE_MULTILINE%>' onclick='textBoxTypeChange(this)'>
 				 			<bean:message key="eav.att.TextBoxMultiLineTitle"/>
 			 			</html:radio>
 			 			</td>
@@ -41,7 +40,7 @@
 							<bean:message key="eav.text.noOfLines"/> :
 						</td>
 						<td class="formFieldWithoutBorder">
-								<html:text styleClass="formFieldSized5"  maxlength="100" size="60"  property="attributeNoOfRows" />
+								<html:text styleClass="formFieldSized5"  maxlength="100" size="60"  styleId ='attributeNoOfRows' property="attributeNoOfRows" />
 						</td>
 					</tr>
 			       	<tr valign="top">
@@ -53,7 +52,7 @@
 						</td>
 
 						<td class="formFieldWithoutBorder">
-								<html:text styleClass="formFieldSized5"  maxlength="100" size="60"  property="attributeSize" />
+								<html:text styleClass="formFieldSized5"  maxlength="100" size="60"  styleId = 'attributeSize' property="attributeSize" />
 						</td>
 					</tr>
 
@@ -66,7 +65,7 @@
 						</td>
 
 						<td class="formFieldWithoutBorder">
-								<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="attributeDefaultValue" />
+								<html:text styleClass="formDateSized"  maxlength="100" size="60"  styleId = 'attributeDefaultValue' property="attributeDefaultValue" />
 						</td>
 					</tr>
 				 </table>
@@ -84,7 +83,7 @@
 						</td>
 
 						<td class="formFieldWithoutBorder">
-								<html:text styleClass="formFieldSized5"  maxlength="100" size="60"  property="attributeDecimalPlaces" />
+								<html:text styleClass="formFieldSized5"  maxlength="100" size="60"  styleId = 'attributeDecimalPlaces' property="attributeDecimalPlaces" />
 						</td>
 					</tr>
 
@@ -98,7 +97,7 @@
 						</td>
 
 						<td class="formFieldWithoutBorder">
-							<html:text styleClass="formFieldSized5"  maxlength="100" size="60"  property="attributeDefaultValue" />
+							<html:text styleClass="formFieldSized5"  maxlength="100" size="60"  styleId='attributeDefaultValue'  property="attributeDefaultValue" />
 						</td>
 					</tr>
 
@@ -111,14 +110,14 @@
 						</td>
 
 						<td class="formFieldWithoutBorder" >
-							<html:select styleClass="formDateSized"  property="attributeMeasurementUnits" onchange="measurementUnitsChanged(this)">
+							<html:select styleClass="formDateSized" styleId = 'attributeMeasurementUnits'  property="attributeMeasurementUnits" onchange="measurementUnitsChanged(this)">
 								<c:forEach items="${measurementUnitsList}" var="measurementUnit">
 									<jsp:useBean id="measurementUnit" type="java.lang.String" />
 										<html:option  value='<%=measurementUnit%>' >
 										</html:option>
 								</c:forEach>
 							</html:select>
-							<html:text styleClass="formFieldSized5"  property="measurementUnitOther"  ></html:text>
+							<html:text styleClass="formFieldSized5"  property="measurementUnitOther" styleId = 'measurementUnitOther'></html:text>
 						</td>
 					</tr>
 				 </table>

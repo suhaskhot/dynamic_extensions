@@ -5,10 +5,7 @@
 
 <%@page import="edu.common.dynamicextensions.processor.ProcessorConstants"%>
 <%@page import="edu.wustl.common.beans.NameValueBean"%>
-<link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
-<script src="jss/dynamicExtensions.js" type="text/javascript"></script>
-<script src="jss/overlib_mini.js" type="text/javascript"></script>
-<script src="jss/calender.js" type="text/javascript"></script>
+
 
 <c:set var="dataTypeList" value="${controlsForm.dataTypeList}"/>
  <jsp:useBean id="dataTypeList" type="java.util.List"/>
@@ -19,7 +16,7 @@
 <c:set var="listType" value="${controlsForm.attributeMultiSelect}"/>
 <jsp:useBean id="listType" type="java.lang.String"/>
 
-<input type="hidden" name="hiddenIsMultiSelect" value="<%=listType%>">
+<input styleId = 'hiddenIsMultiSelect' type="hidden" name="hiddenIsMultiSelect" value="<%=listType%>">
 <table summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
   <tr>
     <td>
@@ -35,11 +32,11 @@
 				<bean:message key="eav.att.ListBoxType"/>
 			</td>
 			<td class="formFieldWithoutBorder">
-					<html:radio property="attributeMultiSelect" value="<%=ProcessorConstants.LIST_TYPE_SINGLE_SELECT%>" onclick="listTypeChanged(this)" >
+					<html:radio styleId = 'attributeMultiSelect' property="attributeMultiSelect" value="<%=ProcessorConstants.LIST_TYPE_SINGLE_SELECT%>" onclick="listTypeChanged(this)" >
 						<bean:message key="eav.att.ListBoxSingleTitle"/>
 					</html:radio>
 
-					<html:radio property="attributeMultiSelect" value="<%=ProcessorConstants.LIST_TYPE_MULTI_SELECT%>" onclick="listTypeChanged(this)" >
+					<html:radio id = 'attributeMultiSelect' property="attributeMultiSelect" value="<%=ProcessorConstants.LIST_TYPE_MULTI_SELECT%>" onclick="listTypeChanged(this)" >
 						<bean:message key="eav.att.ListBoxMultiLineTitle"/>
 					</html:radio>
 			</td>
@@ -52,7 +49,7 @@
 						<bean:message key="eav.att.ListBoxDisplayLines"/>
 					</td>
 					<td class="formFieldWithoutBorder">
-						<html:text styleClass="formFieldSized5" maxlength="100" size="60"  property="attributeNoOfRows" />
+						<html:text styleClass="formFieldSized5" maxlength="100" size="60" styleId = 'attributeNoOfRows'  property="attributeNoOfRows" />
 					</td>
 
 		</tr>
@@ -66,17 +63,17 @@
 					<jsp:useBean id="choiceType" type="edu.wustl.common.beans.NameValueBean" />
 						<c:set var="choiceTypeValue" value="${choiceType.value}" />
 						<jsp:useBean id="choiceTypeValue" type="java.lang.String" />
-						<html:radio property="displayChoice" value="" onchange="changeSourceForValues">
+						<html:radio styleId = 'displayChoice' property="displayChoice" value="" onchange="changeSourceForValues">
 							<c:out value="${choiceType.name}"/>
 						</html:radio>
 				</c:forEach>-->
-				<html:radio property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED%>" >
+				<html:radio styleId = 'displayChoice' property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED%>" >
 					<bean:message key="eav.att.OptionsUserDefined"/>
 				</html:radio>
-				<html:radio property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_CDE%>" disabled="true">
+				<html:radio styleId= 'displayChoice' property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_CDE%>" disabled="true">
 					<bean:message key="eav.att.OptionsCDE"/>
 				</html:radio>
-				<html:radio property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_LOOKUP%>" disabled="true">
+				<html:radio styleId = 'displayChoice' property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_LOOKUP%>" disabled="true">
 					<bean:message key="eav.att.OptionsLookup"/>
 				</html:radio>
 			</td>
@@ -93,7 +90,7 @@
  		</div>
  	</td>
  <tr>
- <html:hidden property="dataType" value ="<%=ProcessorConstants.DATATYPE_STRING%>"/>
+ <html:hidden styleId= 'dataType' property="dataType" value ="<%=ProcessorConstants.DATATYPE_STRING%>"/>
 </table>
 <jsp:include page="/pages/toolTypeHTML/ListValuesSpecification.jsp" />
 

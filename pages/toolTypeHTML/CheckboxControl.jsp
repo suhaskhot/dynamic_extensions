@@ -4,14 +4,10 @@
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
 <%@page import="edu.common.dynamicextensions.processor.ProcessorConstants" %>
 
-<link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
-<script src="jss/dynamicExtensions.js" type="text/javascript"></script>
-<script src="jss/overlib_mini.js" type="text/javascript"></script>
-<script src="jss/calender.js" type="text/javascript"></script>
-<script src="jss/calendarComponent.js"></script>
+
 <SCRIPT>var imgsrc="images/";</SCRIPT>
-<LINK href="css/calanderComponent.css" type=text/css rel=stylesheet>
-<html:hidden property="dataType" value="<%=ProcessorConstants.DATATYPE_STRING%>"/>
+
+<html:hidden styleId = 'dataType'  property="dataType" value="<%=ProcessorConstants.DATATYPE_STRING%>"/>
 
 <table  summary="" align = 'center' width='100%'>
 
@@ -27,11 +23,11 @@
 				</td>
 
 				<td class="formFieldWithoutBorder">
-					<html:radio property="attributeDefaultValue" value="checked" >
+					<html:radio styleId = 'attributeDefaultValue' property="attributeDefaultValue" value="checked" >
 						<bean:message key="eav.att.CheckedAttributeTitle"/>
 					</html:radio>
 
-					<html:radio property="attributeDefaultValue" value="unchecked">
+					<html:radio styleId= 'attributeDefaultValue' property="attributeDefaultValue" value="unchecked">
 						<bean:message key="eav.att.UnCheckedAttributeTitle"/>
 					</html:radio>
 				</td>

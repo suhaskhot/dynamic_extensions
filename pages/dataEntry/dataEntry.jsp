@@ -39,7 +39,7 @@
 	<body onload="loadPreviewForm()">
 		<html:form styleId = "dataEntryForm" action="/ApplyDataEntryFormAction" enctype="multipart/form-data" >
 			<html:errors />
-			<html:hidden property="entitySaved" />
+			<html:hidden styleId = 'entitySaved' property="entitySaved" />
 			<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 		
 			<!-- Table Tag -->
@@ -168,7 +168,7 @@
 										<tr>
 											<td align='left'>
 												<c:if test='${showFormPreview  == "true"}'>
-													<html:button property="backToPrevious"  styleClass="actionButton" onclick="backToControlForm()">
+													<html:button styleId = 'backToPrevious' property="backToPrevious"  styleClass="actionButton" onclick="backToControlForm()">
 														<bean:message  key="buttons.backToPrevious" />
 													</html:button>
 												</c:if>

@@ -19,7 +19,7 @@
 				</td>
 
 				<td class="formFieldWithoutBorder">
-						<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="caption" />
+						<html:text styleClass="formDateSized"  maxlength="100" size="60" styleId = 'caption'  property="caption" />
 				</td>
 			</tr>
 			<tr valign="top">
@@ -32,7 +32,7 @@
 				</td>
 
 				<td class="formFieldWithoutBorder">
-						<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="attributeConceptCode" />
+						<html:text styleClass="formDateSized"  maxlength="100" size="60"  styleId = 'attributeConceptCode' property="attributeConceptCode" />
 				</td>
 
 			</tr>
@@ -48,7 +48,7 @@
 				</td>
 
 				<td class="formFieldWithoutBorder">
-						<html:textarea styleClass="formFieldSmallSized" rows = "3" cols="28"  property="description"  />
+						<html:textarea styleClass="formFieldSmallSized" rows = "3" cols="28"  styleId ='description' property="description"  />
 				</td>
 			</tr>
 
@@ -58,7 +58,7 @@
 				</td>
 				<td class="formRequiredLabelWithoutBorder" width="15%">&nbsp;</td>
 				<td class="formFieldWithoutBorder" align="left">
-					<html:checkbox property="attributeIdentified" value="true"><bean:message key="app.att.isIdentified" /></html:checkbox>
+					<html:checkbox styleId = 'attributeIdentified' property="attributeIdentified" value="true"><bean:message key="app.att.isIdentified" /></html:checkbox>
 				</td>
 			</tr>
 	</tr>

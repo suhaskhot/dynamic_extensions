@@ -8,8 +8,15 @@
 	<!-- HTML Head section -->
 	<head>
 		<link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
+		<LINK href="css/calanderComponent.css" type=text/css rel=stylesheet>
 		<script src="jss/dynamicExtensions.js" type="text/javascript"></script>
 		<script src="jss/script.js" type="text/javascript"></script>
+		<script src="jss/overlib_mini.js" type="text/javascript"></script>
+		<script src="jss/calender.js" type="text/javascript"></script>
+		<script src="jss/calendarComponent.js"></script>
+
+
+
 		<title>Dynamic Extensions</title>
 		
 		<script>

@@ -104,7 +104,7 @@
 												<bean:message key="eav.form.title"/> :
 											</td>
 											<td class="formFieldWithoutBorder" >
-												<html:text styleClass="formDateSized"  maxlength="100" size="60"  property="formName" />
+												<html:text styleClass="formDateSized"  maxlength="100" size="60"  styleId= 'formName' property="formName" />
 											</td>
 										</tr>
 										<tr valign = "top">
@@ -113,7 +113,7 @@
 												<bean:message key="eav.form.conceptCode"/> :
 											</td>
 											<td class="formFieldWithoutBorder">
-												<html:text styleClass="formDateSized"  maxlength="20" size="40"  property="conceptCode" />
+												<html:text styleClass="formDateSized"  maxlength="20" size="40"  styleId = 'conceptCode' property="conceptCode" />
 											</td>
 										</tr>
 										<tr valign = "top">
@@ -122,7 +122,7 @@
 													<bean:message key="eav.form.description"/> :
 											</td>
 											<td class="formFieldWithoutBorder">
-													<html:textarea styleClass="formFieldSmallSized"  rows = "3" cols="28"  property="formDescription" />
+													<html:textarea styleClass="formFieldSmallSized"  rows = "3" cols="28"  styleId = 'formDescription' property="formDescription" />
 											</td>
 										 </tr>
 										 <tr valign = "top">
@@ -134,10 +134,10 @@
 												<table border='0'>
 													<tr class="formMessage">
 														 <td >
-															<html:radio property="createAs" value="NewForm">
+															<html:radio styleId= 'createAs' property="createAs" value="NewForm">
 																<bean:message key="eav.createnewentity.title"/>
 															</html:radio>
-															<html:radio property="createAs" value="ExistingForm" disabled="true">
+															<html:radio styleId = 'createAs' property="createAs" value="ExistingForm" disabled="true">
 																<bean:message key="eav.existingentity.title"/>
 															</html:radio>
 														</td>

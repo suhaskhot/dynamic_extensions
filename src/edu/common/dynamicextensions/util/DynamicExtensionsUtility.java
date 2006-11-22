@@ -4,6 +4,9 @@
 
 package edu.common.dynamicextensions.util;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -211,4 +214,16 @@ public class DynamicExtensionsUtility
 		}
 		return attributeTypeInformation;
 	}	
+	
+	/**
+	 * This method converts stack trace to the string representation
+	 * @param aThrowable   throwable object
+	 * @return String representation  of the stack trace
+	 */
+	public static String getStackTrace(Throwable throwable) {
+	    final Writer result = new StringWriter();
+	    final PrintWriter printWriter = new PrintWriter(result);
+	    throwable.printStackTrace(printWriter);
+	    return result.toString();
+	}
 }

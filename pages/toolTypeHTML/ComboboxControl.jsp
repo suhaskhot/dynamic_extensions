@@ -63,17 +63,17 @@
 					<jsp:useBean id="choiceType" type="edu.wustl.common.beans.NameValueBean" />
 						<c:set var="choiceTypeValue" value="${choiceType.value}" />
 						<jsp:useBean id="choiceTypeValue" type="java.lang.String" />
-						<html:radio styleId = 'displayChoice' property="displayChoice" value="" onchange="changeSourceForValues">
+						<html:radio property="displayChoice" value="" onchange="changeSourceForValues">
 							<c:out value="${choiceType.name}"/>
 						</html:radio>
 				</c:forEach>-->
-				<html:radio styleId = 'displayChoice' property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED%>" >
+				<html:radio property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED%>" >
 					<bean:message key="eav.att.OptionsUserDefined"/>
 				</html:radio>
-				<html:radio styleId= 'displayChoice' property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_CDE%>" disabled="true">
+				<html:radio  property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_CDE%>" disabled="true">
 					<bean:message key="eav.att.OptionsCDE"/>
 				</html:radio>
-				<html:radio styleId = 'displayChoice' property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_LOOKUP%>" disabled="true">
+				<html:radio property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_LOOKUP%>" disabled="true">
 					<bean:message key="eav.att.OptionsLookup"/>
 				</html:radio>
 			</td>

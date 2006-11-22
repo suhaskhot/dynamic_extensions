@@ -79,8 +79,16 @@ public class SemanticPropertyBuilderUtil
 		}
 		else
 		{
-			StringBuffer conceptCode = new StringBuffer();
-			Iterator iterator = abstractMetadataInterface.getSemanticPropertyCollection().iterator();
+			return getConceptCodeString(abstractMetadataInterface.getSemanticPropertyCollection());
+		}
+	}
+	
+	public  static String getConceptCodeString(Collection<SemanticPropertyInterface> semanticPropertyCollection)
+	{
+		StringBuffer conceptCode = new StringBuffer();
+		if(semanticPropertyCollection!=null)
+		{
+			Iterator iterator = semanticPropertyCollection.iterator();
 			while (iterator.hasNext())
 			{
 				SemanticPropertyInterface semanticPropertyInterface = (SemanticPropertyInterface) iterator.next();
@@ -90,8 +98,7 @@ public class SemanticPropertyBuilderUtil
 					conceptCode.append(",");
 				}
 			}
-			return conceptCode.toString();
 		}
-
+		return conceptCode.toString();
 	}
 }

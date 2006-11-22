@@ -93,8 +93,7 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
         if (entityUIBeanInterface != null && entityInterface != null)
         {
             entityInterface.setName(entityUIBeanInterface.getFormName());
-            entityInterface.setDescription(entityUIBeanInterface
-                    .getFormDescription());
+            entityInterface.setDescription(entityUIBeanInterface.getFormDescription());
             Collection collection = SemanticPropertyBuilderUtil
                     .getSymanticPropertyCollection(entityUIBeanInterface
                             .getConceptCode());
@@ -103,8 +102,7 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
                 Iterator iterator = collection.iterator();
                 while (iterator.hasNext())
                 {
-                    entityInterface
-                            .addSemanticProperty((SemanticPropertyInterface) iterator
+                    entityInterface.addSemanticProperty((SemanticPropertyInterface) iterator
                                     .next());
                 }
             }

@@ -1,6 +1,8 @@
 
 package edu.common.dynamicextensions.ui.interfaces;
 
+import java.util.List;
+
 /**
  * 
  * @author deepti_shelar
@@ -222,4 +224,21 @@ public interface AbstractAttributeUIBeanInterface
 	 * @param tempValidationRules the tempValidationRules to set
 	 */
 	public void setTempValidationRules(String[] tempValidationRules);
+	
+
+	public String[] getOptionConceptCodes();
+
+	public void setOptionConceptCodes(String[] optionConceptCodes);
+
+	public String[] getOptionDescriptions();
+
+	public void setOptionDescriptions(String[] optionDescriptions);
+	
+	public String[] getOptionNames();
+
+	public void setOptionNames(String[] optionNames);
+	
+	public List getOptionDetails();
+	
+	public void setOptionDetails(List optionDetails);
 }

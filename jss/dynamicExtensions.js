@@ -147,7 +147,7 @@ function initBuildForm()
 		choiceListElementCnter.value="1";
 	}
 	
-	addChoicesFromListToTable();
+	//addChoicesFromListToTable();
 	
 	//Initilialize default value for list of options
 	initializeOptionsDefaultValue();
@@ -259,6 +259,14 @@ function addChoiceToList(addToChoiceList)
 			var chkBoxId = "chkBox" + elementNo;
 			myNewCell.innerHTML = "<input type='checkbox' id='" + chkBoxId +"' value='"+optionName.value + "'>"   + optionName.value;
 			
+			myNewCell =  myNewRow.insertCell();
+			myNewCell.setAttribute("style","display:none;");
+			
+			//Add hidden variables for option names, option description and option concept codes
+			myNewCell.innerHTML  = "<input type='hidden' name='optionNames' value='" + optionName.value + "' >" 
+					       +"<input type='hidden' name='optionDescriptions' value='" + optionDescription.value + "' >" 
+					       +"<input type='hidden' name='optionConceptCodes' value='" + optionConceptCode.value + "' >" ;
+			
 			var choicelist = document.getElementById('choiceList');
 			if(choicelist !=null)
 			{
@@ -268,6 +276,7 @@ function addChoiceToList(addToChoiceList)
 					choicelist.value = choicelist.value + "," + optionName.value;
 				}
 			}
+			
 			optionName.value = "";
 			if(optionConceptCode!=null)
 			{
@@ -288,6 +297,7 @@ function addChoiceToList(addToChoiceList)
 			
 		}
 	}
+	
 }
 
 function deleteElementsFromChoiceList()

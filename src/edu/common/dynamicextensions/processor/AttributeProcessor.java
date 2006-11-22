@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.processor;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -51,6 +52,7 @@ import edu.common.dynamicextensions.ui.interfaces.AbstractAttributeUIBeanInterfa
 import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
 import edu.common.dynamicextensions.ui.util.RuleConfigurationObject;
 import edu.common.dynamicextensions.ui.util.SemanticPropertyBuilderUtil;
+import edu.common.dynamicextensions.ui.webui.util.OptionValueObject;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.util.Utility;
@@ -353,23 +355,39 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				if (displayChoice.equalsIgnoreCase(ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED))
 				{
 					dataEltInterface = DomainObjectFactory.getInstance().createUserDefinedDE();
-					String choiceList = attributeUIBeanInformationIntf.getChoiceList();
+					/*String choiceList = attributeUIBeanInformationIntf.getChoiceList();
 					if (choiceList != null)
 					{
 						StringTokenizer strTokenizer = new StringTokenizer(choiceList, ",");
 						if (strTokenizer != null)
 						{
 							while (strTokenizer.hasMoreElements())
-							{
-								String choice = strTokenizer.nextToken();
-								if ((choice != null) && (choice.trim() != null))
+							{*/
+								//String choice = strTokenizer.nextToken();
+								String[] optionNames = attributeUIBeanInformationIntf.getOptionNames();
+								String[] optionDescriptions = attributeUIBeanInformationIntf.getOptionDescriptions();
+								String[] optionConceptCodes = attributeUIBeanInformationIntf.getOptionConceptCodes();
+								String optionName = null,optionDesc = null,optionConceptCode = null;
+								Collection<SemanticPropertyInterface> semanticPropertiesForOptions = null;
+								
+								if(optionNames!=null)
 								{
-									permissibleValueInterface = getPermissibleValueInterface(attributeUIBeanInformationIntf, choice);
-									((UserDefinedDE) dataEltInterface).addPermissibleValue(permissibleValueInterface);
+									for(int i=0;i<optionNames.length;i++)
+									{
+										optionName = optionNames[i];  
+										optionDesc = optionDescriptions[i];
+										optionConceptCode = optionConceptCodes[i];
+										semanticPropertiesForOptions = SemanticPropertyBuilderUtil.getSymanticPropertyCollection(optionConceptCode);
+										if ((optionName != null) && (optionName.trim() != null))
+										{
+											permissibleValueInterface = getPermissibleValueInterface(attributeUIBeanInformationIntf, optionName,optionDesc,semanticPropertiesForOptions);
+											((UserDefinedDE) dataEltInterface).addPermissibleValue(permissibleValueInterface);
+										}
+									}
 								}
-							}
+							/*}
 						}
-					}
+					}*/
 				}
 			}
 		}
@@ -383,7 +401,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException  : dynamicExtensionsApplicationException
 	 */
 	private PermissibleValueInterface getPermissibleValueInterface(AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf,
-			String permissibleValue) throws DynamicExtensionsApplicationException
+			String permissibleValue,String permissibleValueDesc,Collection permissibleValueSematicPropColln) throws DynamicExtensionsApplicationException
 			{
 		PermissibleValueInterface permissibleValueIntf = null;
 		if (attributeUIBeanInformationIntf != null)
@@ -397,22 +415,29 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 					{
 						permissibleValueIntf = DomainObjectFactory.getInstance().createStringValue();
 						((StringValue) permissibleValueIntf).setValue(permissibleValue);
+						((StringValue) permissibleValueIntf).setDescription(permissibleValueDesc);
+						((StringValue) permissibleValueIntf).setSemanticPropertyCollection(permissibleValueSematicPropColln);
 					}
 					else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_DATE))
 					{
 						permissibleValueIntf = DomainObjectFactory.getInstance().createDateValue();
 						Date value = Utility.parseDate(permissibleValue);
 						((DateValue) permissibleValueIntf).setValue(value);
+						((DateValue) permissibleValueIntf).setDescription(permissibleValueDesc);
+						((DateValue) permissibleValueIntf).setSemanticPropertyCollection(permissibleValueSematicPropColln);
+
 					}
 					else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_BOOLEAN))
 					{
 						permissibleValueIntf = DomainObjectFactory.getInstance().createBooleanValue();
 						Boolean value = new Boolean(permissibleValue);
 						((BooleanValue) permissibleValueIntf).setValue(value);
+						((BooleanValue) permissibleValueIntf).setDescription(permissibleValueDesc);
+						((BooleanValue) permissibleValueIntf).setSemanticPropertyCollection(permissibleValueSematicPropColln);
 					}
 					else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_NUMBER))
 					{
-						permissibleValueIntf = getPermissibleValueInterfaceForNumber(attributeUIBeanInformationIntf, permissibleValue);
+						permissibleValueIntf = getPermissibleValueInterfaceForNumber(attributeUIBeanInformationIntf, permissibleValue,permissibleValueDesc,permissibleValueSematicPropColln);
 					}
 				}
 				catch (Exception e)
@@ -422,6 +447,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 
 			}
 		}
+		
 		return permissibleValueIntf;
 			}
 
@@ -432,14 +458,13 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException :Exception
 	 */
 	private PermissibleValueInterface getPermissibleValueInterfaceForNumber(AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf,
-			String permissibleValue) throws DynamicExtensionsApplicationException
+			String permissibleValue,String permissibleValueDesc,Collection permissibleValueSematicPropColln) throws DynamicExtensionsApplicationException
 			{
 
 		PermissibleValueInterface permissibleValueIntf = null;
 		//If it is numberic it can either be float, simple integer, etc based on number of decimals
 		int noOfDecimalPlaces = 0;
 		//Number of decimal places 
-
 		String strNoOfDecimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces();
 		if (strNoOfDecimalPlaces != null)
 		{
@@ -459,53 +484,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				throw new DynamicExtensionsApplicationException(e.getMessage(), e);
 			}
 		}
-		/*//Number of digits
-		 String strNoOfDigits = attributeInformationIntf.getAttributeDigits();
-		 if(strNoOfDigits!=null){
-		 try{
-		 noOfDigits = Integer.parseInt(strNoOfDigits);
-		 }catch (NumberFormatException e){
-		 noOfDigits = 0;
-		 } 
-		 }
-
-
-		 * If number of decimal places is 0 AND number of digits <= SHORT_LENGTH : Short attribute
-		 * If number of decimal places is 0 AND number of digits <= INT_LENGTH : Integer attribute
-		 * If number of decimal places is 0 AND number of digits <= LONG_LENGTH : Long attribute 
-		 * If Number of decimal places is > 0  <= FLOAT_LENGTH : Float Attribute
-		 * If Number of decimal places is > 0  > FLOAT_LENGTH <DOUBLE_LENGTH : Double Attribute
-		 */
+		
 		if (noOfDecimalPlaces == 0)
 		{
-			/*if(noOfDigits > 0){
-			 if(noOfDigits <= ProcessorConstants.MAX_NO_OF_DIGITS_SHORT){
-			 permissibleValueIntf = DomainObjectFactory.getInstance().createShortValue();
-			 Short value = null;
-			 try
-			 {
-			 value = new Short(permissibleValue);
-			 }
-			 catch (RuntimeException e)
-			 {
-			 System.out.println("Exception while storing short value");
-			 value = new Short("0");
-			 }
-			 ((ShortValue)permissibleValueIntf).setValue(value);
-			 }else if(noOfDigits <= ProcessorConstants.MAX_NO_OF_DIGITS_INT){
-			 permissibleValueIntf = DomainObjectFactory.getInstance().createIntegerValue();
-			 Integer value = null;
-			 try
-			 {
-			 value = new Integer(permissibleValue);
-			 }
-			 catch (RuntimeException e)
-			 {
-			 System.out.println("Exception while storing integer value");
-			 value = new Integer("0");
-			 }
-			 ((IntegerValue)permissibleValueIntf).setValue(value);
-			 }else if(noOfDigits <= ProcessorConstants.MAX_NO_OF_DIGITS_LONG){*/
+			
 			permissibleValueIntf = DomainObjectFactory.getInstance().createLongValue();
 			Long value = null;
 			try
@@ -517,28 +499,12 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				throw new DynamicExtensionsApplicationException(e.getMessage(), e);
 			}
 			((LongValue) permissibleValueIntf).setValue(value);
-			/*	}
-			 }
-			 else{
-			 System.out.println("Too many digits");
-			 }*/
+			((LongValue) permissibleValueIntf).setDescription(permissibleValueDesc);
+			((LongValue) permissibleValueIntf).setSemanticPropertyCollection(permissibleValueSematicPropColln);
 		}
 		else if (noOfDecimalPlaces > 0)
 		{
-			/*if(noOfDecimalPlaces <= ProcessorConstants.MAX_NO_OF_DECIMALS_FLOAT){
-			 permissibleValueIntf = DomainObjectFactory.getInstance().createFloatValue();
-			 Float value = null;
-			 try
-			 {
-			 value = new Float(permissibleValue);
-			 }
-			 catch (RuntimeException e)
-			 {
-			 System.out.println("Exception while storing long value");
-			 value = new Float("0");
-			 }
-			 ((FloatValue)permissibleValueIntf).setValue(value);
-			 }else if(noOfDecimalPlaces <= ProcessorConstants.MAX_NO_OF_DECIMALS_DOUBLE){*/
+			
 			permissibleValueIntf = DomainObjectFactory.getInstance().createDoubleValue();
 			Double value = null;
 			try
@@ -550,10 +516,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				throw new DynamicExtensionsApplicationException(e.getMessage(), e);
 			}
 			((DoubleValue) permissibleValueIntf).setValue(value);
-			/*}
-			 else{
-			 System.out.println("Too many decimal places");
-			 }*/
+			((DoubleValue) permissibleValueIntf).setDescription(permissibleValueDesc);
+			((DoubleValue) permissibleValueIntf).setSemanticPropertyCollection(permissibleValueSematicPropColln);
 		}
 		return permissibleValueIntf;
 
@@ -1160,6 +1124,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private String getChoiceList(AbstractAttributeInterface attributeInterface, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
 	{
+		ArrayList<OptionValueObject> optionDetails = new ArrayList<OptionValueObject>();
 		Object permissibleValueObjectValue = null;
 		String choiceList = "";
 		if ((attributeUIBeanInformationIntf != null) && (attributeInterface != null))
@@ -1187,8 +1152,24 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 										&& (permissibleValueObjectValue.toString().trim() != ""))
 								{
 									choiceList = choiceList + "," + permissibleValueObjectValue.toString().trim();
+									//optionNames.add(permissibleValueObjectValue.toString().trim());
+									OptionValueObject optionDetail = new OptionValueObject();
+									optionDetail.setOptionName(permissibleValueObjectValue.toString().trim());
+									if(permissibleValueIntf instanceof StringValue)
+									{
+										/*optionDescriptions.add(((StringValue)permissibleValueIntf).getDescription());
+										optionConceptCodes.add(SemanticPropertyBuilderUtil.getConceptCodeString(((StringValue)permissibleValueIntf).getSemanticPropertyCollection()));
+										*/
+										optionDetail.setOptionDescription(((StringValue)permissibleValueIntf).getDescription());
+										optionDetail.setOptionConceptCode(SemanticPropertyBuilderUtil.getConceptCodeString(((StringValue)permissibleValueIntf).getSemanticPropertyCollection()));
+									}
+									optionDetails.add(optionDetail);
 								}
 							}
+							attributeUIBeanInformationIntf.setOptionDetails(optionDetails);
+							/*attributeUIBeanInformationIntf.setOptionNames((String[])optionNames.toArray(new String[optionNames.size()]));
+							attributeUIBeanInformationIntf.setOptionDescriptions((String[])optionDescriptions.toArray(new String[optionDescriptions.size()]));
+							attributeUIBeanInformationIntf.setOptionConceptCodes((String[])optionConceptCodes.toArray(new String[optionConceptCodes.size()]));*/
 						}
 					}
 				}

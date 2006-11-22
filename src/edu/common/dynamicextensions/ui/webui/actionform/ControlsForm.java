@@ -233,6 +233,14 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	 */
 	protected String[] tempValidationRules = new String[] {""};
 	
+	/**option names
+	 *  
+	 */
+	protected String []optionNames = new String[0];
+	protected String []optionDescriptions= new String[0];
+	protected String []optionConceptCodes= new String[0];
+	
+	protected List optionDetails;
 	/**
 	 * 
 	 */
@@ -1528,5 +1536,43 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		this.sequenceNumbers = sequenceNumbers;
 	}
 
+	public String[] getOptionConceptCodes()
+	{
+		return this.optionConceptCodes;
+	}
 
+	public void setOptionConceptCodes(String[] optionConceptCodes)
+	{
+		this.optionConceptCodes = optionConceptCodes;
+	}
+
+	public String[] getOptionDescriptions()
+	{
+		return this.optionDescriptions;
+	}
+
+	public void setOptionDescriptions(String[] optionDescriptions)
+	{
+		this.optionDescriptions = optionDescriptions;
+	}
+
+	public String[] getOptionNames()
+	{
+		return this.optionNames;
+	}
+
+	public void setOptionNames(String[] optionNames)
+	{
+		this.optionNames = optionNames;
+	}
+
+	public List getOptionDetails()
+	{
+		return this.optionDetails;
+	}
+
+	public void setOptionDetails(List optionDetails)
+	{
+		this.optionDetails = optionDetails;
+	}
 }

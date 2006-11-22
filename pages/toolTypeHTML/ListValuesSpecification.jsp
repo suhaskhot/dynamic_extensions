@@ -2,10 +2,7 @@
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
 <%@ taglib uri="/WEB-INF/dynamicExtensions.tld" prefix="dynamicExtensions" %>
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
-
-<!--<c:set var="displayChoiceList" value="${controlsForm.displayChoiceList}"/>
-<jsp:useBean id="displayChoiceList" type="java.util.List"/>
--->
+<%@page import="edu.common.dynamicextensions.ui.webui.util.OptionValueObject"%>
 
 <div id="UserDefinedValues" style="display:none">
 	<input type="hidden" value="1" name="choiceListCounter" >
@@ -51,7 +48,7 @@
 							</html:button>
 					</td>
 	</tr>
-	<tr valign="top" id="optionsListRow" style="display:none;" >
+	<tr valign="top" id="optionsListRow" style="display:block;" >
 		<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
 		<td class="formRequiredLabelWithoutBorder" width="25%"><bean:message key="eav.att.OptionList"/></td>
 		<td  class="formFieldWithoutBorder">
@@ -61,6 +58,27 @@
 						<td class="formRequiredLabelWithoutBorder" >
 							<div style="padding : 1px;  height : 50px; width:'80%'; overflow : auto; " >
 							<table id="choiceListTable" summary="" cellpadding="0" cellspacing="0"  width="100%" class="tbBordersAllbordersBlack">
+								<c:forEach items="${controlsForm.optionDetails}" var="optionDetail"  varStatus="elements">
+								<jsp:useBean id="optionDetail" type="edu.common.dynamicextensions.ui.webui.util.OptionValueObject" />
+									<c:set var="optionName" value="${optionDetail.optionName}"/>
+								    <jsp:useBean id="optionName" type="java.lang.String"/>
+
+								    <c:set var="rowId" value="${elements.count}"/>
+								    <jsp:useBean id="rowId" type="java.lang.Integer"/>
+
+
+								<tr>
+									<td id="<%=optionName%>" class="formFieldBottom" width="10%">
+										<input type='checkbox' id='chkBox<%=rowId%>' value="<%=optionName%>" >
+										<%=optionName%>
+									</td>
+									<td>
+										<input type='hidden' name='optionNames' value='<%=optionName%>' >
+										<input type='hidden' name='optionDescriptions' value='${optionDetail.optionDescription}' >
+
+									</td>
+								</tr>
+							</c:forEach>
 							</table>
 						</td>
 					</tr>

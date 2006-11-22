@@ -107,7 +107,7 @@ function insertRules(datatypeControl)
 
 	if(divForDataType!=null)
 	{
-		var tempInnerHTML = "<table width="100%"><tr><td width="100%">" + divForCommonRule.innerHTML + "</td></tr><tr><td width="100%">" + divForDataType.innerHTML;
+		var tempInnerHTML = "<table width=\"100%\"><tr><td width=\"100%\">" + divForCommonRule.innerHTML + "</td></tr><tr><td width=\"100%\">" + divForDataType.innerHTML;
 
 		while (tempInnerHTML.indexOf("tempValidationRules") != -1)
 		{

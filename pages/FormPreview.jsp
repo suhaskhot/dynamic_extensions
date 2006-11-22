@@ -13,14 +13,14 @@
 %>
 
 <%-- Stylesheet --%>
-<link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
+<link rel="stylesheet" type="text/css" href="css/styleSheet.css"/>
+<link href="css/calanderComponent.css" type=text/css rel=stylesheet/>
+
 <script src="jss/calendarComponent.js"></script>
 <script src="jss/script.js" type="text/javascript"></script>
-
-<SCRIPT>var imgsrc="images/";</SCRIPT>
-<LINK href="css/calanderComponent.css" type=text/css rel=stylesheet>
-
+<script>var imgsrc="images/";</script>
 <script src="jss/dynamicExtensions.js" type="text/javascript"></script>
+
 <c:set var="containerInterface" value="${previewForm.containerInterface}"/>
 <jsp:useBean id="containerInterface" type="edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface"/>
 

@@ -11,16 +11,40 @@
 	<link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
 	<script src="jss/script.js" type="text/javascript"></script>
 	<script src="jss/dynamicExtensions.js" type="text/javascript"></script>
+
+	<script>
+		function changeGroupSource(groupSrc)
+{
+	alert('in group src');
+	alert(groupSrc);
+	if(groupSrc!=null)
+	{
+		var divForGrpDetails = document.getElementById('groupDetailsDiv');
+		var divForGrpSrc = document.getElementById(groupSrc.value+"Div");
+		if((divForGrpSrc!=null)&&(divForGrpDetails!=null))
+		{
+			divForGrpDetails.innerHTML = divForGrpSrc.innerHTML;
+		}
+	}
+}
+
+function initDefineGroupForm()
+{
+	alert('in init define group form');
+	changeGroupSource(document.getElementById('createGroupAs'));
+}
+	</script>
+	
 </head>
-  <body onload="initDefineGroupForm()">
+  <body onload="initDefineGroupForm();">
 
 <!-- Menu tabs -->
 <c:set var="groupsList" value="${groupForm.groupList}"/>
 <jsp:useBean id="groupsList" type="java.util.List"/>
 
 <html:form styleId = "groupForm"  action="/LoadGroupDefinitionAction">
-<input type="hidden" name="groupOperation" value="">
-        <table valign="top"  align='right' width='90%' height="100%" border='0' cellspacing="0" cellpadding="0"  >
+<input type="hidden" name="groupOperation" value=""/>
+        <table valign="top"  align='right' width='90%' height="100%" border='0' cellspacing="0" cellpadding="0" >
 		         <!-- Main Page heading -->
 		         <tr valign="top" style = "border-bottom:0px">
 		         	<td style = "border-right:0px;border-bottom:0px" width = '30px'>&nbsp;</td>
@@ -73,7 +97,7 @@
 												<bean:message key="eav.att.GroupType"/> :
 											</td>
 											<td class="formFieldWithoutBorder" align="left">
-												<html:radio property="createGroupAs" value="NewGroup" onclick="changeGroupSource(this)">
+												<html:radio styleId = 'createGroupAs' property="createGroupAs" value="NewGroup" onclick="changeGroupSource(this)">
 													<bean:message key="eav.att.NewGroup"/>
 												</html:radio>
 

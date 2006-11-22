@@ -24,7 +24,7 @@
 <html:form styleId='formsIndexForm' action='/ApplyFormsIndexAction'> <body>
 
 
-<html:hidden property="operationMode"/>
+<html:hidden styleId = "operationMode" property="operationMode"/>
 
 <table width='70%' align='center' cellspacing="5" cellspacing="0" border='0'> <tr class="formMessage"> <td> <h3><bean:message key="table.heading" /></h3> </td> </tr> <tr > <td align="left"><bean:message key="app.formpage.heading" /></td> </tr>
 

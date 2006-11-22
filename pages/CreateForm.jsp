@@ -176,7 +176,7 @@
 </table>
 
   </body>
-<html:hidden property="operation" value=""/>
-<html:hidden property="entityIdentifier" value=""/>
+<html:hidden styleId = 'operation' property="operation" value=""/>
+<html:hidden styleId = 'entityIdentifier'  property="entityIdentifier" value=""/>
 </html:form>
 </html>

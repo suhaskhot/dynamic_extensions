@@ -32,11 +32,11 @@
 				<bean:message key="eav.att.ListBoxType"/>
 			</td>
 			<td class="formFieldWithoutBorder">
-					<html:radio styleId = 'attributeMultiSelect' property="attributeMultiSelect" value="<%=ProcessorConstants.LIST_TYPE_SINGLE_SELECT%>" onclick="listTypeChanged(this)" >
+					<html:radio  property="attributeMultiSelect" value="<%=ProcessorConstants.LIST_TYPE_SINGLE_SELECT%>" onclick="listTypeChanged(this)" >
 						<bean:message key="eav.att.ListBoxSingleTitle"/>
 					</html:radio>
 
-					<html:radio id = 'attributeMultiSelect' property="attributeMultiSelect" value="<%=ProcessorConstants.LIST_TYPE_MULTI_SELECT%>" onclick="listTypeChanged(this)" >
+					<html:radio property="attributeMultiSelect" value="<%=ProcessorConstants.LIST_TYPE_MULTI_SELECT%>" onclick="listTypeChanged(this)" >
 						<bean:message key="eav.att.ListBoxMultiLineTitle"/>
 					</html:radio>
 			</td>

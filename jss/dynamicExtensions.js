@@ -15,10 +15,7 @@ function showBuildFormJSP() {
 function controlSelectedAction()
 {	
 	var controlOperation = document.getElementById('controlOperation');
-//	controlOperation.value = 'Add';
-	
 	clearForm();
-	
 	var controlsForm = document.getElementById('controlsForm');
 	controlsForm.action="/dynamicExtensions/SelectControlAction.do";
 	controlsForm.submit();
@@ -50,7 +47,6 @@ function addControlToFormTree() {
        document.getElementById('operation').value='controlAdded';
    	var controlsForm=document.getElementById("controlsForm");
      controlsForm.action="/dynamicExtensions/AddControlsAction.do";
-//    document.getElementById('controlOperation').value='add';
 	controlsForm.submit();
 }
 function addControlToForm() {
@@ -140,14 +136,33 @@ function initBuildForm()
 		changeSourceForValues(sourceElt);
 	}
 	
-	//Reinitialize counter
+	//Change visibilty of row displaying options list based on the number of rows.
+	var choiceListTable = document.getElementById('choiceListTable');
+	if(choiceListTable!=null)
+	{
+		var noOfRows = choiceListTable.rows.length;
+		if(noOfRows>0)
+		{
+			document.getElementById('optionsListRow').style.display = "block";
+		}
+		else
+		{
+			document.getElementById('optionsListRow').style.display = "none";
+		}
+	}
+	
+	//Reinitialize counter for number of options
 	var choiceListElementCnter = document.getElementById('choiceListCounter');
 	if(choiceListElementCnter !=null)
 	{
-		choiceListElementCnter.value="1";
+		var noOfChoices = 1;
+		if(choiceListTable!=null)
+		{
+			noOfChoices = choiceListTable.rows.length;	
+		}
+		choiceListElementCnter.value=noOfChoices+"";
 	}
 	
-	//addChoicesFromListToTable();
 	
 	//Initilialize default value for list of options
 	initializeOptionsDefaultValue();
@@ -171,36 +186,7 @@ function initBuildForm()
 		changeDateType(dateValueType);
 	}
 }
-function addChoicesFromListToTable()
-{
-	var choiceList = document.getElementById("choiceList");
-	if(choiceList!=null)
-	{
-		var choiceListValue = choiceList.value;
-		if((choiceListValue!=null)&&(choiceListValue!=""))
-		{
-			var choice_array=choiceListValue.split(",");
 
-			if(choice_array!=null)
-			{
-				for(var i=0;i<choice_array.length;i++)
-				{
-					if((choice_array[i]!=null)&&(choice_array[i]!=""))
-					{
-						//Add choice to list
-						var textBox = document.getElementById('optionName');
-						if(textBox !=null)
-						{
-							textBox.value = choice_array[i];
-							addChoiceToList(false);
-						}	
-					}
-					
-				}
-			}
-		}
-	}
-}
 function changeSourceForValues(sourceControl)
 {
 	if(sourceControl!=null)
@@ -248,12 +234,14 @@ function addChoiceToList(addToChoiceList)
 	var optionDescription = document.getElementById('optionDescription');
 	var choiceListElementCnter = document.getElementById('choiceListCounter');
 	
-	var elementNo = 0;
+	var elementNo = 1;
 	if(choiceListElementCnter!=null)
 	{
-		elementNo = choiceListElementCnter.value;
+		elementNo = parseInt(choiceListElementCnter.value) + 1 ;
 	}
-
+	//increment number of elements count
+	document.getElementById('choiceListCounter').value = elementNo + "";
+	
 	if((optionName!=null)&&(optionName.value!=""))
 	{
 		newValue = optionName.value;
@@ -269,6 +257,7 @@ function addChoiceToList(addToChoiceList)
 			myNewCell.setAttribute("id",optionName.value);
 			myNewCell.setAttribute("className","formFieldBottom");
 			myNewCell.setAttribute("width","10%");
+			
 			var chkBoxId = "chkBox" + elementNo;
 			myNewCell.innerHTML = "<input type='checkbox' id='" + chkBoxId +"' value='"+optionName.value + "'>"   + optionName.value;
 			
@@ -280,15 +269,6 @@ function addChoiceToList(addToChoiceList)
 					       +"<input type='hidden' name='optionDescriptions' value='" + optionDescription.value + "' >" 
 					       +"<input type='hidden' name='optionConceptCodes' value='" + optionConceptCode.value + "' >" ;
 			
-			var choicelist = document.getElementById('choiceList');
-			if(choicelist !=null)
-			{
-				//add to choicelist
-				if(addToChoiceList == true)
-				{
-					choicelist.value = choicelist.value + "," + optionName.value;
-				}
-			}
 			
 			optionName.value = "";
 			if(optionConceptCode!=null)
@@ -299,8 +279,7 @@ function addChoiceToList(addToChoiceList)
 			{
 				optionDescription.value="";
 			}
-			//increment number of elements count
-			document.getElementById('choiceListCounter').value = (parseInt(elementNo) + 1) + "";
+			
 			//Display row for option list if no of rows > 0
 			var noOfRows = choiceListTable.rows.length;
 			if(noOfRows>0)
@@ -318,27 +297,20 @@ function deleteElementsFromChoiceList()
 	var valuestable = document.getElementById('choiceListTable');
 	if(valuestable!=null)
 	{
-		//Clear choice list
-		var choicelist = document.getElementById('choiceList');
-		if(choicelist !=null)
-		{
-			choicelist.value = "";
-		}
+		
 		var choiceListElementCnter = document.getElementById('choiceListCounter');
 		var noOfElements = 0;
 		if(choiceListElementCnter!=null)
 		{
 			noOfElements = parseInt(choiceListElementCnter.value);
 		}
-		
 		var chkBoxId = "";
 		var chkBox;
 		
-		for(var i=0;i<noOfElements;i++)
+		for(var i=1;i<=noOfElements;i++)
 		{
 			
 			chkBoxId = "chkBox" + i;
-			
 			chkBox = document.getElementById(chkBoxId);
 			
 			if(chkBox!=null)
@@ -349,19 +321,12 @@ function deleteElementsFromChoiceList()
 					if(rowofCheckBox!=null)
 					{
 						var rowIndexOfChkBox = rowofCheckBox.rowIndex;
-			
 						if(rowIndexOfChkBox!=null)
 						{
 							valuestable.deleteRow(rowIndexOfChkBox);
 						}
 					}
 				}
-				else
-				{
-					//Add to choice list if not selected
-					choicelist.value = choicelist.value + ","  + chkBox.value;
-				}
-				
 			}
 		}
 		//Hide row for option list if no of rows < 0
@@ -393,7 +358,6 @@ function setDefaultValue()
 	var valuestable = document.getElementById('choiceListTable');
 	if(valuestable!=null)
 	{
-		
 		var choiceListElementCnter = document.getElementById('choiceListCounter');
 		var noOfElements = 0;
 		if(choiceListElementCnter!=null)
@@ -404,7 +368,7 @@ function setDefaultValue()
 		var chkBoxId = "";
 		var chkBox;
 
-		for(var i=0;i<noOfElements;i++)
+		for(var i=1;i<=noOfElements;i++)
 		{
 
 			chkBoxId = "chkBox" + i;
@@ -516,19 +480,11 @@ var controlsForm = document.getElementById('controlsForm');
 	{
 	controlsForm.attributenoOfCols.value = "";
 	}
-	if(controlsForm.choiceList != null)
-	{
-	controlsForm.choiceList.value = "";
-	}
+	
 	if(document.getElementById('attributeIsPassword') != null)
 	{
 		document.getElementById('attributeIsPassword').value = "";
 	}
-	if(document.getElementById('choiceList') != null)
-	{
-		document.getElementById('choiceList').value = "";
-	}
-	
 }
 
 function saveEntity()
@@ -580,55 +536,7 @@ function listTypeChanged(obj)
 		}
 	}
 }
-function listDataTypeChanged(listControl)
-{
-	if(listControl!=null)
-	{
-		var selectedDataType = listControl.value;
-		if(selectedDataType=="Yes/No")
-		{
-			deleteAllElementsFromChoiceTable();
-			//Clear choice list
-			var choiceList = document.getElementById('choiceList');
-			if(choiceList!=null)
-			{
-				choiceList.value = "true,false";	//True and false values for yes/no flds
-				addChoicesFromListToTable();
-			}
-			
-			//Disable add btn
-			var addBtn = document.getElementById('addChoiceValue');
-			if(addBtn!=null)
-			{
-				addBtn.disabled=true;
-			}
-			
-			//Disable delete button
-			var deleteBtn = document.getElementById('deleteChoiceValue');
-			if(deleteBtn!=null)
-			{
-				deleteBtn.disabled=true;
-			}
-		}
-		else
-		{
-		
-			//Enable add btn
-			var addBtn = document.getElementById('addChoiceValue');
-			if(addBtn!=null)
-			{
-				addBtn.disabled=false;
-			}
 
-			//Enable delete button
-			var deleteBtn = document.getElementById('deleteChoiceValue');
-			if(deleteBtn!=null)
-			{
-				deleteBtn.disabled=false;
-			}
-		}
-	}
-}
 
 function deleteAllElementsFromChoiceTable()
 {

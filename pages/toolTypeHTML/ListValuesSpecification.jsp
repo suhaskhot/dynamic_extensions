@@ -5,9 +5,9 @@
 <%@page import="edu.common.dynamicextensions.ui.webui.util.OptionValueObject"%>
 
 <div id="UserDefinedValues" style="display:none">
-	<input type="hidden" value="1" name="choiceListCounter" >
+	<input type="hidden" value="1" id ="choiceListCounter"  name="choiceListCounter" >
 	<table summary="" valign="top" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
-<html:hidden styleId ='choiceList' property="choiceList" />
+
 	 <tr valign="top">
 				<td class="formRequiredNoticeWithoutBorder" width="2%">
 									&nbsp;
@@ -52,7 +52,7 @@
 		<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
 		<td class="formRequiredLabelWithoutBorder" width="25%"><bean:message key="eav.att.OptionList"/></td>
 		<td  class="formFieldWithoutBorder">
-			<!--<div id="optionsListDiv" style="display:none;">-->
+
 				<table summary="" cellpadding="0" cellspacing="0" border="0" align = 'center' valign="top" width='100%'>
 					<tr  class="formRequiredLabelWithoutBorder">
 						<td class="formRequiredLabelWithoutBorder" >
@@ -73,15 +73,15 @@
 
 								    <c:set var="rowId" value="${elements.count}"/>
 								    <jsp:useBean id="rowId" type="java.lang.Integer"/>
-								<tr>
-									<td  class="formFieldBottom" width="10%">
-										<input type='checkbox' name='chkBox<%=rowId%>' id='chkBox<%=rowId%>' value="<%=optionName%>" >
+								<tr id="<%=optionName%>" >
+									<td  class="formFieldBottom" width="10%" >
+										<input type='checkbox' id='chkBox<%=rowId%>' name='chkBox<%=rowId%>' id='chkBox<%=rowId%>' value="<%=optionName%>" >
 										<%=optionName%>
 									</td>
 									<td>
-										<input type='hidden' name='tempOptionNames' value='<%=optionName%>' >
-										<input type='hidden' name='tempOptionDescriptions' value='<%=optionDesc%>' >
-										<input type='hidden' name='tempOptionConceptCodes' value='<%=optionConceptCode%>' >
+										<input type='hidden' id='tempOptionNames' name='tempOptionNames' value='<%=optionName%>' >
+										<input type='hidden' id='tempOptionDescriptions' name='tempOptionDescriptions' value='<%=optionDesc%>' >
+										<input type='hidden' id='tempOptionConceptCodes' name='tempOptionConceptCodes' value='<%=optionConceptCode%>' >
 									</td>
 								</tr>
 								</c:forEach>
@@ -102,8 +102,8 @@
 					<html:hidden styleId = 'attributeDefaultValue' property="attributeDefaultValue" />
 				</table>
 			</td>
-		<!--</div>-->
-			<html:hidden styleId = 'choiceList' property="choiceList" />
+
+
 	</tr>
 	</table>
 </div>

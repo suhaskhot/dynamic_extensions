@@ -117,7 +117,7 @@
 											</td>
 										</tr>
 										<tr valign = "top">
-											<td class="formRequiredNoticeWithoutBorder" width="2%" >*</td>
+											<td class="formRequiredNoticeWithoutBorder" width="2%" >&nbsp;</td>
 											<td class="formRequiredLabelWithoutBorder" width="20%">
 												<bean:message key="eav.form.conceptCode"/> :
 											</td>

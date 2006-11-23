@@ -41,9 +41,9 @@
 			 </table>
 		</td>
  	</tr>
+ 	<input type="hidden" id = 'initialDataType' name="initialDataType" value="<%=selectedDataType%>"/>
 	<tr valign="top">
 		<td>
-			<input type="hidden" id = 'initialDataType' name="initialDataType" value="<%=selectedDataType%>"/>
 			<div id="substitutionDiv"></div>
 		</td>
 	</tr>

@@ -239,6 +239,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 			if (abstractAttributeCollection.contains(abstractAttribute))
 			{
 				abstractAttributeCollection.remove(abstractAttribute);
+				abstractAttribute.setEntity(null);
  			}
 		}
 	}
@@ -256,7 +257,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 		{
 			for (AbstractAttributeInterface attributeIterator : abstractAttributeCollection)
 			{
-				if (attributeIterator.getId().equals(id))
+				if (attributeIterator.getId() != null && attributeIterator.getId().equals(id))
 				{
 					abstractAttribute = attributeIterator;
 					break;

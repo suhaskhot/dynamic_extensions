@@ -991,4 +991,353 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		}
 
 	}
+	
+	/**
+	 * This test case test for adding a new associatiion bet 2 entities 
+	 * 
+	 * for oracle it should throw exception.
+	 * for mysql  it works.  
+	 */
+	public void testAddAssociationAfterSave()
+	{
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		// create user 
+		EntityInterface user = factory.createEntity();
+		AttributeInterface userNameAttribute = factory.createStringAttribute();
+		userNameAttribute.setName("user name");
+		user.setName("user");
+		user.addAbstractAttribute(userNameAttribute);
+		
+		
+		try
+		{
+			user = entityManager.persistEntity(user);
+
+			// create study 
+			EntityInterface study = factory.createEntity();
+			AttributeInterface studyNameAttribute = factory.createStringAttribute();
+			studyNameAttribute.setName("study name");
+			study.setName("study");
+			study.addAbstractAttribute(studyNameAttribute);
+
+			// Associate user (1)------ >(*)study       
+			AssociationInterface association = factory.createAssociation();
+
+			association.setTargetEntity(study);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("primaryInvestigator");
+			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator", Cardinality.ZERO, Cardinality.MANY));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study", Cardinality.ZERO, Cardinality.ONE));
+
+			user.addAbstractAttribute(association);
+			
+
+			EntityInterface savedUser = entityManager.persistEntity(user);
+
+			ResultSetMetaData metaData = executeQueryForMetadata("select * from " + user.getTableProperties().getName());
+			assertEquals(3, metaData.getColumnCount());
+			
+			
+//			 Associate user (1) <------>(*)study       
+			AssociationInterface association1 = factory.createAssociation();
+
+			association1.setTargetEntity(study);
+			association1.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
+			association1.setName("primaryInvestigator");
+			association1.setSourceRole(getRole(AssociationType.ASSOCIATION, "association1", Cardinality.ZERO, Cardinality.ONE));
+			association1.setTargetRole(getRole(AssociationType.ASSOCIATION, "association1", Cardinality.ZERO, Cardinality.MANY));
+
+			savedUser.addAbstractAttribute(association1);
+			
+			savedUser = entityManager.persistEntity(savedUser);
+
+			metaData = executeQueryForMetadata("select * from " + study.getTableProperties().getName());
+			assertEquals(3, metaData.getColumnCount());
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+
+		catch (DynamicExtensionsApplicationException e)
+		{
+			e.printStackTrace();
+			fail();
+
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			fail();
+
+		}
+
+	}
+	
+	/**
+	 * This test case test for removing an association bet 2 existing entities 
+	 */
+	public void testRemoveAssociationAfterSave()
+	{
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		// create user 
+		EntityInterface user = factory.createEntity();
+		AttributeInterface userNameAttribute = factory.createStringAttribute();
+		userNameAttribute.setName("user name");
+		user.setName("user");
+		user.addAbstractAttribute(userNameAttribute);
+		
+		
+		try
+		{
+			user = entityManager.persistEntity(user);
+
+			// create study 
+			EntityInterface study = factory.createEntity();
+			AttributeInterface studyNameAttribute = factory.createStringAttribute();
+			studyNameAttribute.setName("study name");
+			study.setName("study");
+			study.addAbstractAttribute(studyNameAttribute);
+
+			// Associate user (1)------ >(*)study   
+			RoleInterface sourceRole = getRole(AssociationType.ASSOCIATION, "association1", Cardinality.ZERO, Cardinality.MANY);
+			RoleInterface targetRole = getRole(AssociationType.ASSOCIATION, "association1", Cardinality.ZERO, Cardinality.ONE);
+            AssociationInterface association = getAssociation(user, AssociationDirection.SRC_DESTINATION, "prim", sourceRole, targetRole);
+			
+			user.addAbstractAttribute(association);
+			user = entityManager.persistEntity(user);
+			ResultSetMetaData metaData = executeQueryForMetadata("select * from " + user.getTableProperties().getName());
+			assertEquals(3, metaData.getColumnCount());
+			
+			user.removeAssociation(association);
+			user = entityManager.persistEntity(user);
+
+			metaData = executeQueryForMetadata("select * from " + user.getTableProperties().getName());
+			assertEquals(2, metaData.getColumnCount());
+			
+			
+			sourceRole = getRole(AssociationType.ASSOCIATION, "association1", Cardinality.ZERO, Cardinality.MANY);
+			targetRole = getRole(AssociationType.ASSOCIATION, "association1", Cardinality.ZERO, Cardinality.MANY);
+            association = getAssociation(user, AssociationDirection.SRC_DESTINATION, "prim", sourceRole, targetRole);
+
+            user.addAbstractAttribute(association);
+			user = entityManager.persistEntity(user);
+
+			assertTrue(isTablePresent(association.getConstraintProperties().getName()));
+			metaData = executeQueryForMetadata("select * from " + association.getConstraintProperties().getName());
+			assertEquals(3, metaData.getColumnCount());
+
+			user.removeAssociation(association);
+			user = entityManager.persistEntity(user);
+
+			assertFalse(isTablePresent(association.getConstraintProperties().getName()));
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+
+		catch (DynamicExtensionsApplicationException e)
+		{
+			e.printStackTrace();
+			fail();
+
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			fail();
+
+		}
+
+	}
+	
+	/**
+	 * This test case test for removing an association bet 2 existing entities
+	 * Before- SRC-DESTINATION
+	 * After - BIDIRECTIONAL 
+	 */
+	public void testEditAssociationDirection1AfterSave()
+	{
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		// create user 
+		EntityInterface user = factory.createEntity();
+		AttributeInterface userNameAttribute = factory.createStringAttribute();
+		userNameAttribute.setName("user name");
+		user.setName("user");
+		user.addAbstractAttribute(userNameAttribute);
+		
+		// create study 
+		EntityInterface study = factory.createEntity();
+		AttributeInterface studyNameAttribute = factory.createStringAttribute();
+		studyNameAttribute.setName("study name");
+		study.setName("study");
+		study.addAbstractAttribute(studyNameAttribute);
+
+		
+		// Associate user (1)------ >(*)study   
+		RoleInterface sourceRole = getRole(AssociationType.ASSOCIATION, "association1", Cardinality.ZERO, Cardinality.MANY);
+		RoleInterface targetRole = getRole(AssociationType.ASSOCIATION, "association1", Cardinality.ZERO, Cardinality.ONE);
+        AssociationInterface association = getAssociation(study, AssociationDirection.SRC_DESTINATION, "prim", sourceRole, targetRole);
+		
+		user.addAbstractAttribute(association);
+
+		
+		
+		try
+		{
+			user = entityManager.persistEntity(user);
+			
+			ResultSetMetaData metaData = executeQueryForMetadata("select * from " + user.getTableProperties().getName());
+			assertEquals(3, metaData.getColumnCount());
+			metaData = executeQueryForMetadata("select * from " + study.getTableProperties().getName());
+			assertEquals(2, metaData.getColumnCount());
+			
+			association.getSourceRole().setMaximumCardinality(Cardinality.ONE);
+			association.getTargetRole().setMaximumCardinality(Cardinality.MANY);
+			association.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
+			
+			user = entityManager.persistEntity(user);
+			
+			metaData = executeQueryForMetadata("select * from " + user.getTableProperties().getName());
+			assertEquals(2, metaData.getColumnCount());
+			metaData = executeQueryForMetadata("select * from " + study.getTableProperties().getName());
+			assertEquals(3, metaData.getColumnCount());
+			
+			
+			EntityInterface savedUser = entityManager.getEntityByIdentifier(user.getId().toString());
+			assertEquals(1,savedUser.getAssociationCollection().size());
+			
+			EntityInterface savedStudy = entityManager.getEntityByIdentifier(study.getId().toString());
+			assertEquals(1,savedStudy.getAssociationCollection().size());
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+
+		catch (DynamicExtensionsApplicationException e)
+		{
+			e.printStackTrace();
+			fail();
+
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			fail();
+
+		}
+
+	}
+	
+	/**
+	 * This test case test for removing an association bet 2 existing entities
+	 * Before-  BIDIRECTIONAL
+	 * After -  SRC-DESTINATION
+	 * system generated association should get removed.
+	 */
+	public void testEditAssociationDirectionAfterSave()
+	{
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		// create user 
+		EntityInterface user = factory.createEntity();
+		AttributeInterface userNameAttribute = factory.createStringAttribute();
+		userNameAttribute.setName("user name");
+		user.setName("user");
+		user.addAbstractAttribute(userNameAttribute);
+		
+		// create study 
+		EntityInterface study = factory.createEntity();
+		AttributeInterface studyNameAttribute = factory.createStringAttribute();
+		studyNameAttribute.setName("study name");
+		study.setName("study");
+		study.addAbstractAttribute(studyNameAttribute);
+
+		
+		// Associate user (1)------ >(*)study   
+		RoleInterface sourceRole = getRole(AssociationType.ASSOCIATION, "association1", Cardinality.ZERO, Cardinality.MANY);
+		RoleInterface targetRole = getRole(AssociationType.ASSOCIATION, "association1", Cardinality.ZERO, Cardinality.ONE);
+        AssociationInterface association = getAssociation(study, AssociationDirection.BI_DIRECTIONAL, "prim", sourceRole, targetRole);
+		
+		user.addAbstractAttribute(association);
+
+		
+		
+		try
+		{
+			user = entityManager.persistEntity(user);
+			
+			ResultSetMetaData metaData = executeQueryForMetadata("select * from " + user.getTableProperties().getName());
+			assertEquals(3, metaData.getColumnCount());
+			metaData = executeQueryForMetadata("select * from " + study.getTableProperties().getName());
+			assertEquals(2, metaData.getColumnCount());
+			
+			association.getSourceRole().setMaximumCardinality(Cardinality.ONE);
+			association.getTargetRole().setMaximumCardinality(Cardinality.MANY);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			
+			user = entityManager.persistEntity(user);
+			
+			metaData = executeQueryForMetadata("select * from " + user.getTableProperties().getName());
+			assertEquals(2, metaData.getColumnCount());
+			metaData = executeQueryForMetadata("select * from " + study.getTableProperties().getName());
+			assertEquals(3, metaData.getColumnCount());
+			
+			
+			EntityInterface savedUser = entityManager.getEntityByIdentifier(user.getId().toString());
+			assertEquals(1,savedUser.getAssociationCollection().size());
+			
+			EntityInterface savedStudy = entityManager.getEntityByIdentifier(study.getId().toString());
+			assertEquals(0,savedStudy.getAssociationCollection().size());
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+
+		catch (DynamicExtensionsApplicationException e)
+		{
+			e.printStackTrace();
+			fail();
+
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			fail();
+
+		}
+
+	}
+	
+	/**
+	 * @param targetEntity
+	 * @param associationDirection
+	 * @param assoName
+	 * @param sourceRole
+	 * @param targetRole
+	 * @return
+	 */
+	private AssociationInterface  getAssociation(EntityInterface targetEntity, AssociationDirection associationDirection, String assoName, RoleInterface sourceRole, RoleInterface targetRole) {
+		AssociationInterface association = DomainObjectFactory.getInstance().createAssociation();
+		association.setTargetEntity(targetEntity);
+		association.setAssociationDirection(associationDirection);
+		association.setName(assoName);
+		association.setSourceRole(sourceRole);
+		association.setTargetRole(targetRole);
+        return association;
+	}
 }

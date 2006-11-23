@@ -152,5 +152,33 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 
 		return null;
 	}
+	
+	/**
+	 * @param tableName
+	 * @return
+	 */
+	protected boolean  isTablePresent(String tableName) {
+		Connection conn = null;
+		String query = "select * from " + tableName;
+		try
+		{
+			conn = DBUtil.getConnection();
+		}
+		catch (HibernateException e)
+		{
+			e.printStackTrace();
+		}
+		java.sql.PreparedStatement statement = null;
+		try
+		{
+			statement = conn.prepareStatement(query);
+			statement.executeQuery();
+		}
+		catch (SQLException e)
+		{
+			return false;
+		}
+		return true;
+	}
 
 }

@@ -74,7 +74,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 
 			for (Cardinality cardinality : cardinalities)
 			{
-				if (cardinality.getValue() == value)
+				if (cardinality.getValue().equals(value))
 				{
 					return cardinality;
 				}

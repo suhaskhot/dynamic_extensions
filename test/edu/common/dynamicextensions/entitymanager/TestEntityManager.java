@@ -918,4 +918,69 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			}
 			
 		}
+        
+      
+        /**
+         * Test case to check the behaviour when first entity is saved with a collection attribute and then the that 
+         * attribute is made non-collection. Expected behavior is that after editing the attribute in
+         * such a way the column for that attribute should get added to the data table. This column was not present in
+         * earlier scenario when the attribue was a collection attribute. 
+         */
+        public void testEditEntityWithCollectionAttribute()
+        {
+            try
+            {
+                EntityManagerInterface entityManager = EntityManager.getInstance();
+                DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+                // create user 
+                EntityInterface user = factory.createEntity();
+                AttributeInterface userNameAttribute = factory.createStringAttribute();
+                userNameAttribute.setName("user name");
+                userNameAttribute.setIsCollection(true);
+                user.setName("user");
+                user.addAbstractAttribute(userNameAttribute);
+
+                user = (Entity) EntityManager.getInstance().persistEntity(user);
+                
+                Entity newEntity = (Entity) EntityManager.getInstance().getEntityByIdentifier(
+                        user.getId().toString());
+                assertEquals(user.getName(), newEntity.getName());
+                
+                String tableName = newEntity.getTableProperties().getName();
+                assertTrue(isTablePresent(tableName));
+                ResultSetMetaData metaData = executeQueryForMetadata("select * from " + tableName);
+                assertEquals(1, metaData.getColumnCount());
+                
+                
+                userNameAttribute = (AttributeInterface) newEntity.getAttributeByIdentifier(userNameAttribute.getId());
+                userNameAttribute.setIsCollection(false);
+                
+                newEntity = (Entity) EntityManager.getInstance().persistEntity(newEntity);
+                
+                tableName = newEntity.getTableProperties().getName();
+                assertTrue(isTablePresent(tableName));
+                metaData = executeQueryForMetadata("select * from " + tableName);
+                assertEquals(2, metaData.getColumnCount());
+                
+                userNameAttribute = (AttributeInterface) newEntity.getAttributeByIdentifier(userNameAttribute.getId());
+                userNameAttribute.setIsCollection(true);
+                
+                newEntity = (Entity) EntityManager.getInstance().persistEntity(newEntity);
+                
+                tableName = newEntity.getTableProperties().getName();
+                assertTrue(isTablePresent(tableName));
+                metaData = executeQueryForMetadata("select * from " + tableName);
+                assertEquals(1, metaData.getColumnCount());
+                
+            }
+            catch (Exception e)
+            {
+                //TODO Auto-generated catch block
+                Logger.out.debug(e.getMessage());
+                e.printStackTrace();
+                fail("Exception occured");
+            }
+
+        }
 }

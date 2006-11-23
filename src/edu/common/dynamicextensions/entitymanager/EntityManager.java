@@ -838,7 +838,10 @@ public class EntityManager
 			Iterator attributeIterator = attributeCollection.iterator();
 			while (attributeIterator.hasNext())
 			{
-				AbstractAttribute attribute = (AbstractAttribute) attributeIterator.next();
+				Attribute attribute = (Attribute) attributeIterator.next();
+                if (attribute.getIsCollection()) {
+                    continue;
+                }
 				String attributeQueryPart = getQueryPartForAbstractAttribute(attribute, true);
 				query = query.append(attributeQueryPart);
 				query = query.append(COMMA);
@@ -1829,7 +1832,7 @@ public class EntityManager
 				Attribute savedAttribute = (Attribute) databaseCopy
 						.getAttributeByIdentifier(attribute.getId());
 
-				if (savedAttribute == null)
+				if (savedAttribute == null || (!attribute.getIsCollection() && savedAttribute.getIsCollection()))
 				{
 					String attributeQuery = processAddAttribute(attribute,
 							attributeRollbackQueryList);
@@ -2086,7 +2089,7 @@ public class EntityManager
 					Attribute attribute = (Attribute) entity
 							.getAttributeByIdentifier(savedAbstractAttribute.getId());;
 					// removed ??
-					if (attribute == null)
+					if (attribute == null || (attribute.getIsCollection() && !savedAttribute.getIsCollection()))
 					{
 						String columnName = savedAttribute.getColumnProperties().getName();
 

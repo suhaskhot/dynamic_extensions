@@ -148,7 +148,7 @@ public abstract class AttributeTypeInformation extends AbstractDomainObject
 	 */
 	public PermissibleValueInterface getDefaultValue()
 	{
-		if (defaultValueCollection != null)
+		if (defaultValueCollection != null && !defaultValueCollection.isEmpty())
 		{
 			Iterator dataElementIterator = defaultValueCollection.iterator();
 			return (PermissibleValueInterface) dataElementIterator.next();

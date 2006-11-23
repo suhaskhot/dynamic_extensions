@@ -1,38 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <validator-rules>
   <validation-rule display-label="eav.rule.required" rule-name="required" rule-class="edu.common.dynamicextensions.validation.RequiredValidator">
-    <error-key name="eav.validation.required">
-    </error-key>
+    <error-key name="eav.validation.required" />    
   </validation-rule>
   
   <validation-rule display-label="eav.rule.range" rule-name="range" rule-class="edu.common.dynamicextensions.validation.RangeValidator">
-    <error-key name="eav.validation.range">
-    </error-key>
-    <param param-name="min" param-label="Minimum Value">
-    </param>
-    <param param-name="max" param-label="Maximum Value">
-    </param>
+    <error-key name="eav.validation.range" />
+    <param param-name="min" param-label="Minimum Value" />
+    <param param-name="max" param-label="Maximum Value" />
   </validation-rule>
   
   <validation-rule display-label="eav.rule.number" rule-name="number" rule-class="edu.common.dynamicextensions.validation.NumberValidator">
-    <error-key name="eav.validation.number">
-    </error-key>
+    <error-key name="eav.validation.number" />
   </validation-rule>
   
   <validation-rule display-label="eav.rule.date" rule-name="date" rule-class="edu.common.dynamicextensions.validation.DateValidator">
-    <error-key name="eav.validation.date">
-    </error-key>
+    <error-key name="eav.validation.date" />
   </validation-rule>
+  
   <validation-rule display-label="eav.rule.unique" rule-name="unique" rule-class="edu.common.dynamicextensions.validation.UniqueValidator">
-    <error-key name="eav.validation.unique">
-    </error-key>
+    <error-key name="eav.validation.unique" />
   </validation-rule>
+  
   <validation-rule display-label="eav.rule.daterange" rule-name="dateRange" rule-class="edu.common.dynamicextensions.validation.DateRangeValidator">
-    <error-key name="eav.validation.dateRange">
-    </error-key>
-    <param param-name="min" param-label="Minimum Date">
-    </param>
-    <param param-name="max" param-label="Maximum Date">
-    </param>
+    <error-key name="eav.validation.dateRange" />
+    <param param-name="min" param-label="Minimum Date" />
+    <param param-name="max" param-label="Maximum Date" />
   </validation-rule>
 </validator-rules>

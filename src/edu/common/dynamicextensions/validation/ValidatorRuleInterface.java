@@ -27,6 +27,6 @@ public interface ValidatorRuleInterface
 	 * @return  boolean if no error it return true
 	 * @throws DynamicExtensionsValidationException : Validation Exception
 	 */
-	boolean validate(AttributeInterface attribute, Object valueObject, Map paramMap)
+	boolean validate(AttributeInterface attribute, Object valueObject, Map<String, String> parameterMap)
 			throws DynamicExtensionsValidationException;
 }

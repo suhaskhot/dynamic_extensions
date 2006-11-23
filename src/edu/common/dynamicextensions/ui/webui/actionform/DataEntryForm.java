@@ -1,6 +1,8 @@
 
 package edu.common.dynamicextensions.ui.webui.actionform;
 
+import java.util.List;
+
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
@@ -33,6 +35,10 @@ public class DataEntryForm extends AbstractActionForm
 	 * 
 	 */
 	protected String recordId;
+	/**
+	 * 
+	 */
+	protected List<String> errorList;
 
 	/**
 	 * @return int formId
@@ -117,6 +123,22 @@ public class DataEntryForm extends AbstractActionForm
 	public void setRecordId(String recordId)
 	{
 		this.recordId = recordId;
+	}
+
+	/**
+	 * @return the errorList
+	 */
+	public List<String> getErrorList()
+	{
+		return errorList;
+	}
+
+	/**
+	 * @param errorList the errorList to set
+	 */
+	public void setErrorList(List<String> errorList)
+	{
+		this.errorList = errorList;
 	}
 
 }

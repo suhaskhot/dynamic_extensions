@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
@@ -31,37 +32,34 @@ public class ValidatorUtil
 	 * @return errorList if any
 	 * @throws DynamicExtensionsSystemException : Exception 
 	 */
-	public static List<String> validateEntity(Map attributeValueMap) throws DynamicExtensionsSystemException
+	public static List<String> validateEntity(Map<AbstractAttributeInterface, String> attributeValueMap) throws DynamicExtensionsSystemException
 	{
 
 		List<String> errorList = new ArrayList<String>();
 
-		Set attributeSet = attributeValueMap.keySet();
+		Set<Map.Entry<AbstractAttributeInterface, String>> attributeSet = attributeValueMap.entrySet();
 		if (attributeSet == null || attributeSet.isEmpty())
 		{
 			return errorList;
 		}
 
-		Iterator attributeIterator = attributeSet.iterator();
-		while (attributeIterator.hasNext())
+		for(Map.Entry<AbstractAttributeInterface, String> attributeValueNode : attributeSet)
 		{
-			AttributeInterface attribute = (AttributeInterface) attributeIterator.next();
-			Collection attributeRuleCollection = attribute.getRuleCollection();
+			AttributeInterface attribute = (AttributeInterface)attributeValueNode.getKey();
+			Collection<RuleInterface> attributeRuleCollection = attribute.getRuleCollection();
 			if (attributeRuleCollection == null || attributeRuleCollection.isEmpty())
 			{
 				return errorList;
 			}
 			
-			Iterator attributeRuleIterator = attributeRuleCollection.iterator();
-			while (attributeRuleIterator.hasNext())
+			for(RuleInterface rule: attributeRuleCollection)
 			{
-				RuleInterface ruleInterface = (RuleInterface) attributeRuleIterator.next();
-				ValidatorRuleInterface validatorRule = ControlConfigurationsFactory.getInstance().getValidatorRule(ruleInterface.getName());
-				Object valueObject = attributeValueMap.get(attribute);
-				Map paramMap = getParamMap(ruleInterface);
+				ValidatorRuleInterface validatorRule = ControlConfigurationsFactory.getInstance().getValidatorRule(rule.getName());
+				Object valueObject = attributeValueMap.get(attribute);				
+				Map<String, String> parameterMap = getParamMap(rule);
 				try
 				{
-					validatorRule.validate(attribute, valueObject, paramMap);
+					validatorRule.validate(attribute, valueObject, parameterMap);
 				}
 				catch (DynamicExtensionsValidationException e)
 				{
@@ -75,22 +73,24 @@ public class ValidatorUtil
 	}
 
 	/**
-	 * 
-	 * @param ruleInterface  :Rule interface
-	 * @return Map of parameters
+	 * This method returns the Map of parameters of the Rule.
+	 * @param ruleInterface the Rule instance whose Map of parameter are to be fetched.
+	 * @return the Map of parameters of the Rule.
+	 * 					key - name of parameter
+	 * 					value - value of parameter
 	 */
-	public static Map<String, String> getParamMap(RuleInterface ruleInterface)
+	public static Map<String, String> getParamMap(RuleInterface rule)
 	{
-		Map<String, String> paramMap = new HashMap<String, String>();
-		Collection<RuleParameterInterface> ruleParamCollection = ruleInterface.getRuleParameterCollection();
+		Map<String, String> parameterMap = new HashMap<String, String>();
+		Collection<RuleParameterInterface> ruleParamCollection = rule.getRuleParameterCollection();
 		if (ruleParamCollection != null && !ruleParamCollection.isEmpty())
 		{
 			for(RuleParameterInterface ruleParameter: ruleParamCollection)
 			{
-				paramMap.put(ruleParameter.getName(), ruleParameter.getValue());
+				parameterMap.put(ruleParameter.getName(), ruleParameter.getValue());
 			}
 		}
-		return paramMap;
+		return parameterMap;
 	}
 	
 }

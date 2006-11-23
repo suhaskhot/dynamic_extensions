@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.struts.Globals;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -19,6 +20,7 @@ import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.processor.ApplyDataEntryFormProcessor;
+import edu.common.dynamicextensions.ui.webui.actionform.DataEntryForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
@@ -65,7 +67,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 
 		ApplyDataEntryFormProcessor applyDataEntryFormProcessor = ApplyDataEntryFormProcessor.getInstance();
 
-		List<String> errorList;
+		List<String> errorList = null;
 		try
 		{
 			errorList = ValidatorUtil.validateEntity(attributeValueMap);
@@ -73,7 +75,9 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 
 			if (errorList.size() != 0)
 			{
-				saveMessages(request, getErrorMessages(errorList));
+				//saveErrors(request, getErrorMessages(errorList));
+				DataEntryForm dataEntryForm = (DataEntryForm)form;
+				dataEntryForm.setErrorList(errorList);
 			}
 			else
 			{
@@ -109,14 +113,5 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		actionMessages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("app.successfulDataInsertionMessage"));
 		return actionMessages;
 	}
-
-	/*public ActionErrors getErrorMessages(List<String> errorList)
-	 {
-	 ActionErrors errors = new ActionErrors();
-	 for (String errorMessage : errorList)
-	 {
-	 errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(errorMessage));
-	 }
-	 return errors;
-	 }*/
+	
 }

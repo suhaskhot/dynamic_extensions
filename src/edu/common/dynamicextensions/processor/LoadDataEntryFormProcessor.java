@@ -1,7 +1,9 @@
 
 package edu.common.dynamicextensions.processor;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -53,7 +55,7 @@ public class LoadDataEntryFormProcessor
 	{
 
 		DataEntryForm dataEntryForm = (DataEntryForm) actionForm;
-		Map recordMap = null;
+		Map<String, String> recordMap = null;
 
 		if (containerInterface == null || containerIdentifier != null)
 		{
@@ -71,11 +73,11 @@ public class LoadDataEntryFormProcessor
 			EntityManagerInterface entityManager = EntityManager.getInstance();
 			recordMap = entityManager.getRecordById(entity, Long.valueOf(recordId));
 
-			Set<Map.Entry> recordSet = recordMap.entrySet();
-			for (Map.Entry recordNode : recordSet)
+			Set<Map.Entry<String, String>> recordSet = recordMap.entrySet();
+			for (Map.Entry<String, String> recordNode : recordSet)
 			{
-				String recordAttributeName = (String) recordNode.getKey();
-				String recordAttributeValue = (String) recordNode.getValue();
+				String recordAttributeName = recordNode.getKey();
+				String recordAttributeValue = recordNode.getValue();
 
 				for (ControlInterface control : controlCollection)
 				{
@@ -91,6 +93,11 @@ public class LoadDataEntryFormProcessor
 			}
 		}
 		dataEntryForm.setContainerInterface(containerInterface);
+		if(dataEntryForm.getErrorList() == null)
+		{
+			List<String> errorList = new ArrayList<String>();
+			dataEntryForm.setErrorList(errorList);
+		}
 		if (dataEntryForm.getShowFormPreview() == null)
 		{
 			dataEntryForm.setShowFormPreview("");

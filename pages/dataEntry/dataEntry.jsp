@@ -5,20 +5,22 @@
 <%-- TagLibs --%>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html" %>
+<%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
 
 <%-- Imports --%>
-<%@
-	page language="java" contentType="text/html"
-%>
+<%@ page language="java" contentType="text/html" %>
+<%@ page import="org.apache.struts.action.ActionErrors" %>
+<%@ page import="org.apache.struts.action.ActionMessages" %>
 
 <%-- Stylesheet --%>
 <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/styleSheet.css" />
+<link href="<%=request.getContextPath()%>/css/calanderComponent.css" type=text/css rel=stylesheet />
+
 <script src="<%=request.getContextPath()%>/jss/calendarComponent.js"></script>
 <script src="<%=request.getContextPath()%>/jss/script.js" type="text/javascript"></script>
+<script>var imgsrc="images/";</script>
 
-<SCRIPT>var imgsrc="images/";</SCRIPT>
-<LINK href="<%=request.getContextPath()%>/css/calanderComponent.css" type=text/css rel=stylesheet>
 
 <script src="<%=request.getContextPath()%>/jss/dynamicExtensions.js" type="text/javascript"></script>
 <script src="<%=request.getContextPath()%>/jss/overlib_mini.js" type="text/javascript"></script>
@@ -31,20 +33,22 @@
 <c:set var="showFormPreview" value="${dataEntryForm.showFormPreview}"/>
 <jsp:useBean id="showFormPreview" type="java.lang.String"/>
 
+<c:set var="errorList" value="${dataEntryForm.errorList}"/>
+<jsp:useBean id="errorList" type="java.util.List"/>
+
 <html>
 	<head>
 		<title><bean:message key="table.heading" /></title>
 	</head>
 
 	<body onload="loadPreviewForm()">
-		<html:form styleId = "dataEntryForm" action="/ApplyDataEntryFormAction" enctype="multipart/form-data" >
-			<html:errors />
-			<html:hidden styleId = 'entitySaved' property="entitySaved" />
+		<html:form styleId="dataEntryForm" action="/ApplyDataEntryFormAction" enctype="multipart/form-data" >
+			<html:hidden styleId='entitySaved' property="entitySaved" />
 			<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 		
 			<!-- Table Tag -->
 			<c:choose>
-			    <c:when test='${showFormPreview  == "true"}'>
+			    <c:when test='${showFormPreview == "true"}'>
 			    	<table valign="top" style="border-right:1px" border=1 align='center' width='90%' height="90%" border='0' cellspacing="0" cellpadding="0" class="tbBorders1" >
 				</c:when>
 				
@@ -59,7 +63,7 @@
 						<c:choose>
 							<c:when test='${showFormPreview  == "true"}'> 
 								<bean:message key="app.title.MainPageTitle" />
-								</c:when>
+							</c:when>
 						</c:choose>
 					</td>
 				</tr>
@@ -93,13 +97,34 @@
 							
 							<tr valign="top">
 								<td colspan="7">
-									<table align='center' width='80%'  >
+									<table align='center' width='80%'>
 										<tr >
 											<td align="center" class="formTitle">
+												<!--<logic:messagesPresent message="false">
+													<ul>
+												 		<html:messages id="error" message="false">
+												 			<li><bean:write name="error"/></li>
+												 		</html:messages> 
+													</ul> 
+												</logic:messagesPresent>-->
+												
+												<%
+													if(errorList.size() != 0)
+													{
+												%>
+														<c:forEach items="${errorList}" var="error">
+														<jsp:useBean id="error" type="java.lang.String" />
+															<c:out value="${error}"/><br />
+														</c:forEach>
+												<%
+													}
+												%>
 												<logic:messagesPresent message="true">
-															<html:messages message="true" id="msg">
-																<bean:write name="msg" ignore="true"/>
-															</html:messages>
+													<ul>
+														<html:messages id="msg" message="true"> 
+															<li><bean:write name="msg"/></li>
+													 	</html:messages>
+													</ul>
 												</logic:messagesPresent>
 											</td>
 										</tr>

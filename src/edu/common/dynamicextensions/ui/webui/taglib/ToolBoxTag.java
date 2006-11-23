@@ -427,7 +427,7 @@ public class ToolBoxTag extends TagSupport
 				Logger.out.debug("Tool [" + toolName + "] Caption [" + toolCaption + "]");
 				if ((toolName != null) && (toolCaption != null))
 				{
-					sb.append("<tr><td width='100%' align='center'>");
+					sb.append("<tr><td width='100%' ");
 					if (selectedUserOption != null && toolName.equals(selectedUserOption))
 					{
 						classname="toolLabelTextSelected";

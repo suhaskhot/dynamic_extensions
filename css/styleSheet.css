@@ -1356,13 +1356,14 @@ textarea.formFieldSized20{ /* Used by Mandar for the comments used in autoevents
  display:none;
 }
 
-/* For tool box
+/* For tool box*/
 .toolBoxTable{ /* for the main table below the labels */
   font-family:arial,helvetica,verdana,sans-serif;
   font-size:1.1em;
   color:#000005; /* constant: black */
   border-top:1px solid #5C5C5C; /* constant: dark gray */
   border-left:1px solid #5C5C5C; /* constant: dark gray */
+  text-align:left;
 }
 
 .toolLabelText
@@ -1378,7 +1379,8 @@ textarea.formFieldSized20{ /* Used by Mandar for the comments used in autoevents
   border-right:1px solid #5C5C5C; /* constant: dark gray */
   border-bottom:1px solid #5C5C5C; /* constant: dark gray */
   width:12em;
-  text-align=left;
+  overflow:auto;
+  text-align:left;
   cursor:pointer;
   cursor:hand
 }
@@ -1395,7 +1397,8 @@ textarea.formFieldSized20{ /* Used by Mandar for the comments used in autoevents
   border-right:1px solid #5C5C5C; /* constant: dark gray */
   border-bottom:1px solid #5C5C5C; /* constant: dark gray */
   width:12em;
-  text-align=left
+  overflow:auto;
+  text-align:left;
 }
 input.formParamSized
 { /* for the form elements themselves and with a constant width (on elements) */

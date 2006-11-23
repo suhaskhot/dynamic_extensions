@@ -143,7 +143,7 @@ function initBuildForm()
 		var noOfRows = choiceListTable.rows.length;
 		if(noOfRows>0)
 		{
-			document.getElementById('optionsListRow').style.display = "block";
+			document.getElementById('optionsListRow').style.display = "";
 		}
 		else
 		{
@@ -203,6 +203,7 @@ function changeSourceForValues(sourceControl)
 				if(valueSpecnDiv!=null)
 				{
 					var divForSourceHTML = divForSource.innerHTML;
+					
 					while (divForSourceHTML.indexOf("tempOptionNames") != -1)
 					{
 						divForSourceHTML = divForSourceHTML.replace("tempOptionNames","optionNames");
@@ -223,8 +224,6 @@ function changeSourceForValues(sourceControl)
 	}
 }
 
-//addToChoiceList : indicates whether the choice shld be added to choice list
-//This will be true when called while adding choice at runtime, and false when adding at load time
 //addToChoiceList : indicates whether the choice shld be added to choice list
 //This will be true when called while adding choice at runtime, and false when adding at load time
 function addChoiceToList(addToChoiceList)
@@ -249,25 +248,26 @@ function addChoiceToList(addToChoiceList)
 	
 		if(choiceListTable!=null)
 		{
-			var myNewRow = choiceListTable.insertRow();
+			var myNewRow = choiceListTable.insertRow(choiceListTable.rows.length);
 			var myNewCell =  null;
 			
 			//Add Option to table
-			myNewCell =  myNewRow.insertCell();
+			myNewCell =  myNewRow.insertCell(myNewRow.cells.length);
 			myNewCell.setAttribute("id",optionName.value);
+			myNewCell.setAttribute("class","formFieldBottom");
 			myNewCell.setAttribute("className","formFieldBottom");
 			myNewCell.setAttribute("width","10%");
 			
 			var chkBoxId = "chkBox" + elementNo;
-			myNewCell.innerHTML = "<input type='checkbox' id='" + chkBoxId +"' value='"+optionName.value + "'>"   + optionName.value;
+			myNewCell.innerHTML = "<input type='checkbox' id='" + chkBoxId +"' value='"+optionName.value + "' />" + optionName.value;
 			
-			myNewCell =  myNewRow.insertCell();
+			myNewCell =  myNewRow.insertCell(myNewRow.cells.length);
 			myNewCell.setAttribute("style","display:none;");
 			
 			//Add hidden variables for option names, option description and option concept codes
-			myNewCell.innerHTML  = "<input type='hidden' name='optionNames' value='" + optionName.value + "' >" 
-					       +"<input type='hidden' name='optionDescriptions' value='" + optionDescription.value + "' >" 
-					       +"<input type='hidden' name='optionConceptCodes' value='" + optionConceptCode.value + "' >" ;
+			myNewCell.innerHTML  = "<input type='hidden' id='optionNames' name='optionNames' value='" + optionName.value + "' />" 
+					       +"<input type='hidden' id='optionDescriptions' name='optionDescriptions' value='" + optionDescription.value + "' />" 
+					       +"<input type='hidden' id='optionConceptCodes' name='optionConceptCodes' value='" + optionConceptCode.value + "' />" ;
 			
 			
 			optionName.value = "";
@@ -284,7 +284,7 @@ function addChoiceToList(addToChoiceList)
 			var noOfRows = choiceListTable.rows.length;
 			if(noOfRows>0)
 			{
-				document.getElementById('optionsListRow').style.display = "block";
+				document.getElementById('optionsListRow').style.display = "";
 			}
 			
 		}
@@ -312,10 +312,10 @@ function deleteElementsFromChoiceList()
 			
 			chkBoxId = "chkBox" + i;
 			chkBox = document.getElementById(chkBoxId);
-			
 			if(chkBox!=null)
 			{
-				var rowofCheckBox = chkBox.parentElement.parentElement;
+				var rowofCheckBox = chkBox.parentNode.parentNode ;
+				
 				if(chkBox.checked == true)
 				{
 					if(rowofCheckBox!=null)
@@ -377,7 +377,7 @@ function setDefaultValue()
 
 			if(chkBox!=null)
 			{
-				var rowofCheckBox = chkBox.parentElement.parentElement;
+				var rowofCheckBox = chkBox.parentNode.parentNode;
 				if((chkBox.checked == true)&&(defaultValueSelected==false))
 				{
 					defaultValue.value = chkBox.value; 
@@ -424,7 +424,7 @@ function textBoxTypeChange(obj)
 	}
 	if(obj.value == 'MultiLine')
 	{
-		document.getElementById('rowForNumberOfLines').style.display="block";
+		document.getElementById('rowForNumberOfLines').style.display="";
 	}
 }
 
@@ -531,7 +531,7 @@ function listTypeChanged(obj)
 			}
 			if(obj.value == 'MultiSelect')
 			{
-				rowForDisplayHeight.style.display="block";
+				rowForDisplayHeight.style.display="";
 			}
 		}
 	}
@@ -579,7 +579,7 @@ function changeDateType(dateType)
 	}
 	else
 	{
-		rowForDefaultValue.style.display="block";
+		rowForDefaultValue.style.display="";
 	}
 }
 

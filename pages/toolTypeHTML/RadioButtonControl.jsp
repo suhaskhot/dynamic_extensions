@@ -21,18 +21,9 @@
 					 			&nbsp;
 		 	</td>
 			<td class="formRequiredLabelWithoutBorder" width="25%" >
-				<bean:message key="eav.att.RadioButtonOptionTypes"></bean:message>
+				<bean:message key="eav.att.RadioButtonOptionTypes"></bean:message> :
 			</td>
 			<td class="formFieldWithoutBorder">
-				<!--<c:forEach items="${displayChoiceList}" var="choiceType">
-					<jsp:useBean id="choiceType" type="edu.wustl.common.beans.NameValueBean" />
-						<c:set var="choiceTypeValue" value="${choiceType.value}" />
-						<jsp:useBean id="choiceTypeValue" type="java.lang.String" />
-						<html:radio styleId ='displayChoice' property="displayChoice" value="" onchange="changeSourceForValues()">
-							<c:out value="${choiceType.name}"/>
-						</html:radio>
-
-				</c:forEach>-->
 				<html:radio styleId = 'displayChoice' property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED%>" >
 					<bean:message key="eav.att.OptionsUserDefined"/>
 				</html:radio>

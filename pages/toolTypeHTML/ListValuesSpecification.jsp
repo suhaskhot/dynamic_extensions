@@ -12,7 +12,7 @@
 				<td class="formRequiredNoticeWithoutBorder" width="2%">
 									&nbsp;
 				</td>
-				<td class="formRequiredLabelWithoutBorder" width="25%"><bean:message key="eav.att.OptionLabel"/></td>
+				<td class="formRequiredLabelWithoutBorder" width="25%"><bean:message key="eav.att.OptionLabel"/> : </td>
 				<td  class="formFieldWithoutBorder">
 					<input type="text"  id = 'optionName' name="optionName" class="formDateSized" value='' maxlength="100" size="60" >
 				</td>
@@ -22,7 +22,7 @@
 					<td class="formRequiredNoticeWithoutBorder" width="2%">
 										&nbsp;
 					</td>
-					<td class="formRequiredLabelWithoutBorder" width="25%"><bean:message key="eav.att.OptionConceptCode"/></td>
+					<td class="formRequiredLabelWithoutBorder" width="25%"><bean:message key="eav.att.OptionConceptCode"/> : </td>
 					<td  class="formFieldWithoutBorder">
 						<input type="text" id = 'optionConceptCode' name="optionConceptCode" class="formDateSized" value='' maxlength="100" size="60" >
 					</td>
@@ -32,7 +32,7 @@
 					<td class="formRequiredNoticeWithoutBorder" width="2%">
 										&nbsp;
 					</td>
-					<td class="formRequiredLabelWithoutBorder"><bean:message key="eav.att.OptionDescription"/></td>
+					<td class="formRequiredLabelWithoutBorder"><bean:message key="eav.att.OptionDescription"/> : </td>
 					<td  class="formFieldWithoutBorder">
 						<textarea rows = "3" cols="28" id = 'optionDescription' name="optionDescription" class="formFieldSmallSized" ></textarea>
 					</td>
@@ -50,7 +50,7 @@
 	</tr>
 	<tr valign="top" id="optionsListRow" style="display:block;" >
 		<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-		<td class="formRequiredLabelWithoutBorder" width="25%"><bean:message key="eav.att.OptionList"/></td>
+		<td class="formRequiredLabelWithoutBorder" width="25%"><bean:message key="eav.att.OptionList"/> : </td>
 		<td  class="formFieldWithoutBorder">
 
 				<table summary="" cellpadding="0" cellspacing="0" border="0" align = 'center' valign="top" width='100%'>

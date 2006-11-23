@@ -405,7 +405,7 @@ public class ToolBoxTag extends TagSupport
 		Logger.out.debug(" Entering Selectors List Tag : doEndTag method");
 		StringBuffer sb = new StringBuffer();
 		sb.append("\n<div id=\"" + id + "\"  class=\"formField\"  style=\"height: " + height + "; width:" + width
-				+ ";  overflow-y: auto;\">");
+				+ ";  overflow-y: auto; \">");
 		sb.append("\n<table class=\"toolBoxTable\" border=\"0\">");
 		
 		Iterator toolsListIterator = toolsList.iterator();

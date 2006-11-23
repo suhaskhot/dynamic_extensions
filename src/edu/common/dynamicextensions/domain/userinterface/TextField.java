@@ -8,7 +8,6 @@ import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInte
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.wustl.common.util.logger.Logger;
 
 /**
  * This Class represents the TextField (TextBox) of the HTML page. 
@@ -94,7 +93,7 @@ public class TextField extends Control implements TextFieldInterface
 		String measurementUnit = getMeasurementUnit(this.getAbstractAttribute());
 		if (measurementUnit != null)
 		{
-			htmlString += "&nbps" + measurementUnit;
+			htmlString += "&nbps;" + measurementUnit;
 		}
 
 		if (isPassword != null && isPassword.booleanValue())
@@ -131,16 +130,15 @@ public class TextField extends Control implements TextFieldInterface
 		{
 			if (attributeTypeInformationInterface instanceof LongAttributeTypeInformation)
 			{
-				LongAttributeTypeInformation longAttribute = (LongAttributeTypeInformation) abstractAttribute;
+				LongAttributeTypeInformation longAttribute = (LongAttributeTypeInformation) attributeTypeInformationInterface;
 				measurementUnit = longAttribute.getMeasurementUnits();
 			}
 			else if (attributeTypeInformationInterface instanceof DoubleAttributeTypeInformation)
 			{
-				DoubleAttributeTypeInformation doubleAttribute = (DoubleAttributeTypeInformation) abstractAttribute;
+				DoubleAttributeTypeInformation doubleAttribute = (DoubleAttributeTypeInformation) attributeTypeInformationInterface;
 				measurementUnit = doubleAttribute.getMeasurementUnits();
 			}
 		}
 		return measurementUnit;
 	}
-
 }

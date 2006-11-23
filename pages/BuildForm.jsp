@@ -15,8 +15,6 @@
 		<script src="<%=request.getContextPath()%>/jss/calender.js" type="text/javascript"></script>
 		<script src="<%=request.getContextPath()%>/jss/calendarComponent.js"></script>
 
-
-
 		<title>Dynamic Extensions</title>
 				
 	</head>

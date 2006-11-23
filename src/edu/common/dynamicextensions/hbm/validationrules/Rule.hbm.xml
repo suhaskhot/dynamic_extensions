@@ -37,7 +37,7 @@
             table="DYEXTN_RULE_PARAMETER"
             lazy="false"
             inverse="false"
-            cascade="none"
+            cascade="all-delete-orphan"
             sort="unsorted"
         >
 

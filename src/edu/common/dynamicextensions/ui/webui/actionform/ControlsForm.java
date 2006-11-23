@@ -100,10 +100,7 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	 * Number of digits in number
 	 */
 	String attributeDigits;
-	/**
-	 * 
-	 */
-	String choiceList;
+	
 	/**
 	 * 
 	 */
@@ -466,22 +463,7 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		this.attributeSize = attributeSize;
 	}
 
-	/**
-	 * @return Returns the choiceList.
-	 */
-	public String getChoiceList()
-	{
-		return choiceList;
-	}
-
-	/**
-	 * @param choiceList The choiceList to set.
-	 */
-	public void setChoiceList(String choiceList)
-	{
-		this.choiceList = choiceList;
-	}
-
+	
 	/**
 	 * @return Returns the attributeDefaultValue.
 	 */

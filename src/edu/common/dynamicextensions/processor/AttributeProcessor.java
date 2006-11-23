@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.BooleanValue;
@@ -104,21 +103,22 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			String attributeType = attributeUIBeanInformationIntf.getDataType();
 			if (attributeType != null)
 			{
+				DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 				if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_STRING))
 				{
-					attributeInterface = DomainObjectFactory.getInstance().createStringAttribute();
+					attributeInterface = domainObjectFactory.createStringAttribute();
 				}
 				else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_DATE))
 				{
-					attributeInterface = DomainObjectFactory.getInstance().createDateAttribute();
+					attributeInterface = domainObjectFactory.createDateAttribute();
 				}
 				else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_BOOLEAN))
 				{
-					attributeInterface = DomainObjectFactory.getInstance().createBooleanAttribute();
+					attributeInterface = domainObjectFactory.createBooleanAttribute();
 				}
 				else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_BYTEARRAY))
 				{
-					attributeInterface = DomainObjectFactory.getInstance().createByteArrayAttribute();
+					attributeInterface = domainObjectFactory.createByteArrayAttribute();
 				}
 				else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_NUMBER))
 				{
@@ -146,32 +146,19 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	{
 		if ((attributeUIBeanInformationIntf != null) && (attributeInterface != null))
 		{
-			AttributeTypeInformationInterface attributeTypeInformation = DynamicExtensionsUtility.getAttributeTypeInformation(attributeInterface);
-			if(attributeTypeInformation!=null)
-			{
-				populateSpecificAttributeInformation(attributeTypeInformation,attributeUIBeanInformationIntf);
-			}
+			//populate information specific to attribute type
+			populateAttributeSpecificInfo(attributeInterface,attributeUIBeanInformationIntf);
 
-			attributeInterface.setName(attributeUIBeanInformationIntf.getName());
-			attributeInterface.setDescription(attributeUIBeanInformationIntf.getDescription());
+			//populate information common to attributes
+			populateAttributeCommomInfo(attributeInterface,attributeUIBeanInformationIntf);
 
 			//Set is identified
-			if (attributeInterface instanceof AttributeInterface)
-			{
-				Boolean isIdentified = new Boolean(attributeUIBeanInformationIntf.getAttributeIdentified());
-				((AttributeInterface) attributeInterface).setIsIdentified(isIdentified);
-			}
+			populateIsIdentifiedInfo(attributeInterface,attributeUIBeanInformationIntf.getAttributeIdentified());
 
-			Collection collection = SemanticPropertyBuilderUtil.getSymanticPropertyCollection(attributeUIBeanInformationIntf
-					.getAttributeConceptCode());
-			if (collection != null && !collection.isEmpty())
-			{
-				Iterator iterator = collection.iterator();
-				while (iterator.hasNext())
-				{
-					attributeInterface.addSemanticProperty((SemanticPropertyInterface) iterator.next());
-				}
-			}
+			//set concept codes
+			populateSemanticPropertiesInfo(attributeInterface,attributeUIBeanInformationIntf.getAttributeConceptCode());
+
+			//populate rules
 			populateRules(attributeInterface, attributeUIBeanInformationIntf);
 		}
 		else
@@ -183,12 +170,55 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
+	 * @param attributeInterface
+	 * @param attributeUIBeanInformationIntf
+	 */
+	private void populateAttributeCommomInfo(AbstractAttributeInterface attributeInterface, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
+	{
+		//Set name of attribute
+		attributeInterface.setName(attributeUIBeanInformationIntf.getName());
+		//desc of attribute
+		attributeInterface.setDescription(attributeUIBeanInformationIntf.getDescription());
+	}
+
+	/**
+	 * @param attributeInterface
+	 * @param attributeUIBeanInformationIntf
+	 */
+	private void populateIsIdentifiedInfo(AbstractAttributeInterface attributeInterface, String strIsIdentified)
+	{
+		if (attributeInterface instanceof AttributeInterface)
+		{
+			Boolean isIdentified = new Boolean(strIsIdentified);
+			((AttributeInterface) attributeInterface).setIsIdentified(isIdentified);
+		}
+	}
+
+	/**
+	 * @param attributeInterface
+	 * @param attributeUIBeanInformationIntf
+	 */
+	private void populateSemanticPropertiesInfo(AbstractAttributeInterface attributeInterface,String attributeConceptCode)
+	{
+		Collection collection = SemanticPropertyBuilderUtil.getSymanticPropertyCollection(attributeConceptCode);
+		if (collection != null && !collection.isEmpty())
+		{
+			Iterator iterator = collection.iterator();
+			while (iterator.hasNext())
+			{
+				attributeInterface.addSemanticProperty((SemanticPropertyInterface) iterator.next());
+			}
+		}
+	}
+
+	/**
 	 * @param attributeTypeInformation
 	 * @param attributeUIBeanInformationIntf 
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	private void populateSpecificAttributeInformation(AttributeTypeInformationInterface attributeTypeInformation, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsApplicationException
+	private void populateAttributeSpecificInfo(AbstractAttributeInterface attributeInterface, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsApplicationException
 	{
+		AttributeTypeInformationInterface attributeTypeInformation = DynamicExtensionsUtility.getAttributeTypeInformation(attributeInterface);
 		if((attributeTypeInformation!=null)&&(attributeUIBeanInformationIntf!=null))
 		{
 			if (attributeTypeInformation instanceof StringAttributeTypeInformation)
@@ -355,39 +385,29 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				if (displayChoice.equalsIgnoreCase(ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED))
 				{
 					dataEltInterface = DomainObjectFactory.getInstance().createUserDefinedDE();
-					/*String choiceList = attributeUIBeanInformationIntf.getChoiceList();
-					if (choiceList != null)
+
+					String[] optionNames = attributeUIBeanInformationIntf.getOptionNames();
+					String[] optionDescriptions = attributeUIBeanInformationIntf.getOptionDescriptions();
+					String[] optionConceptCodes = attributeUIBeanInformationIntf.getOptionConceptCodes();
+					String optionName = null,optionDesc = null,optionConceptCode = null;
+					Collection<SemanticPropertyInterface> semanticPropertiesForOptions = null;
+
+					if(optionNames!=null)
 					{
-						StringTokenizer strTokenizer = new StringTokenizer(choiceList, ",");
-						if (strTokenizer != null)
+						for(int i=0;i<optionNames.length;i++)
 						{
-							while (strTokenizer.hasMoreElements())
-							{*/
-								//String choice = strTokenizer.nextToken();
-								String[] optionNames = attributeUIBeanInformationIntf.getOptionNames();
-								String[] optionDescriptions = attributeUIBeanInformationIntf.getOptionDescriptions();
-								String[] optionConceptCodes = attributeUIBeanInformationIntf.getOptionConceptCodes();
-								String optionName = null,optionDesc = null,optionConceptCode = null;
-								Collection<SemanticPropertyInterface> semanticPropertiesForOptions = null;
-								
-								if(optionNames!=null)
-								{
-									for(int i=0;i<optionNames.length;i++)
-									{
-										optionName = optionNames[i];  
-										optionDesc = optionDescriptions[i];
-										optionConceptCode = optionConceptCodes[i];
-										semanticPropertiesForOptions = SemanticPropertyBuilderUtil.getSymanticPropertyCollection(optionConceptCode);
-										if ((optionName != null) && (optionName.trim() != null))
-										{
-											permissibleValueInterface = getPermissibleValueInterface(attributeUIBeanInformationIntf, optionName,optionDesc,semanticPropertiesForOptions);
-											((UserDefinedDE) dataEltInterface).addPermissibleValue(permissibleValueInterface);
-										}
-									}
-								}
-							/*}
+							optionName = optionNames[i];  
+							optionDesc = optionDescriptions[i];
+							optionConceptCode = optionConceptCodes[i];
+							semanticPropertiesForOptions = SemanticPropertyBuilderUtil.getSymanticPropertyCollection(optionConceptCode);
+							if ((optionName != null) && (optionName.trim() != null))
+							{
+								permissibleValueInterface = getPermissibleValueInterface(attributeUIBeanInformationIntf, optionName,optionDesc,semanticPropertiesForOptions);
+								((UserDefinedDE) dataEltInterface).addPermissibleValue(permissibleValueInterface);
+							}
 						}
-					}*/
+					}
+
 				}
 			}
 		}
@@ -447,7 +467,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 
 			}
 		}
-		
+
 		return permissibleValueIntf;
 			}
 
@@ -484,10 +504,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				throw new DynamicExtensionsApplicationException(e.getMessage(), e);
 			}
 		}
-		
+
 		if (noOfDecimalPlaces == 0)
 		{
-			
+
 			permissibleValueIntf = DomainObjectFactory.getInstance().createLongValue();
 			Long value = null;
 			try
@@ -504,7 +524,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		}
 		else if (noOfDecimalPlaces > 0)
 		{
-			
+
 			permissibleValueIntf = DomainObjectFactory.getInstance().createDoubleValue();
 			Double value = null;
 			try
@@ -792,51 +812,14 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				throw new DynamicExtensionsApplicationException(e.getMessage(), e);
 			}
 		}
-		/*//Number of digits
-		 String strNoOfDigits = attributeInformationIntf.getAttributeDigits();
-		 if(strNoOfDigits!=null){
-		 try{
-		 noOfDigits = Integer.parseInt(strNoOfDigits);
-		 }catch (NumberFormatException e){
-		 noOfDigits = 0;
-		 } 
-		 }
-
-
-		 * If number of decimal places is 0 AND number of digits <= SHORT_LENGTH : Short attribute
-		 * If number of decimal places is 0 AND number of digits <= INT_LENGTH : Integer attribute
-		 * If number of decimal places is 0 AND number of digits <= LONG_LENGTH : Long attribute 
-		 * If Number of decimal places is > 0  <= FLOAT_LENGTH : Float Attribute
-		 * If Number of decimal places is > 0  > FLOAT_LENGTH <DOUBLE_LENGTH : Double Attribute
-
-		 if(noOfDecimalPlaces == 0){
-		 if(noOfDigits > 0){
-		 if(noOfDigits <= ProcessorConstants.MAX_NO_OF_DIGITS_SHORT){
-		 numberAttribIntf = DomainObjectFactory.getInstance().createShortAttribute();
-		 }else if(noOfDigits <= ProcessorConstants.MAX_NO_OF_DIGITS_INT){
-		 numberAttribIntf = DomainObjectFactory.getInstance().createIntegerAttribute();
-		 }else if(noOfDigits <= ProcessorConstants.MAX_NO_OF_DIGITS_LONG){
-		 numberAttribIntf = DomainObjectFactory.getInstance().createLongAttribute();
-		 }
-		 }
-		 else{
-		 System.out.println("Too many digits");
-		 }
-		 }*/
+		
 		if (noOfDecimalPlaces == 0)
 		{
 			numberAttribIntf = DomainObjectFactory.getInstance().createLongAttribute();
 		}
 		if (noOfDecimalPlaces > 0)
 		{
-			/*if(noOfDecimalPlaces <= ProcessorConstants.MAX_NO_OF_DECIMALS_FLOAT){
-			 numberAttribIntf = DomainObjectFactory.getInstance().createFloatAttribute();
-			 }else if(noOfDecimalPlaces <= ProcessorConstants.MAX_NO_OF_DECIMALS_DOUBLE){*/
 			numberAttribIntf = DomainObjectFactory.getInstance().createDoubleAttribute();
-			/*}
-			 else{
-			 System.out.println("Too many decimal places");
-			 }*/
 		}
 		return numberAttribIntf;
 	}
@@ -911,7 +894,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 			populateAttributeValidationRules(attributeInterface, attributeUIBeanInformationIntf);
 			//Permissible values
-			attributeUIBeanInformationIntf.setChoiceList(getChoiceList(attributeInterface, attributeUIBeanInformationIntf));
+			setOptionsInformation(attributeInterface, attributeUIBeanInformationIntf);
 			populateAttributeInformationInUIBean(attributeInterface,attributeUIBeanInformationIntf);
 
 		}
@@ -1122,11 +1105,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param attributeUIBeanInformationIntf    : UI Bean containing attribute information to be displayed on UI 
 	 * @return Comma separated list of permissible values
 	 */
-	private String getChoiceList(AbstractAttributeInterface attributeInterface, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
+	private void setOptionsInformation(AbstractAttributeInterface attributeInterface, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
 	{
 		ArrayList<OptionValueObject> optionDetails = new ArrayList<OptionValueObject>();
 		Object permissibleValueObjectValue = null;
-		String choiceList = "";
+		
 		if ((attributeUIBeanInformationIntf != null) && (attributeInterface != null))
 		{
 			AttributeTypeInformationInterface attributeTypeInformationInterface = DynamicExtensionsUtility.getAttributeTypeInformation(attributeInterface); 
@@ -1151,15 +1134,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 								if ((permissibleValueObjectValue != null) && (permissibleValueObjectValue.toString() != null)
 										&& (permissibleValueObjectValue.toString().trim() != ""))
 								{
-									choiceList = choiceList + "," + permissibleValueObjectValue.toString().trim();
-									//optionNames.add(permissibleValueObjectValue.toString().trim());
 									OptionValueObject optionDetail = new OptionValueObject();
 									optionDetail.setOptionName(permissibleValueObjectValue.toString().trim());
 									if(permissibleValueIntf instanceof StringValue)
 									{
-										/*optionDescriptions.add(((StringValue)permissibleValueIntf).getDescription());
-										optionConceptCodes.add(SemanticPropertyBuilderUtil.getConceptCodeString(((StringValue)permissibleValueIntf).getSemanticPropertyCollection()));
-										*/
 										optionDetail.setOptionDescription(((StringValue)permissibleValueIntf).getDescription());
 										optionDetail.setOptionConceptCode(SemanticPropertyBuilderUtil.getConceptCodeString(((StringValue)permissibleValueIntf).getSemanticPropertyCollection()));
 									}
@@ -1167,14 +1145,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 								}
 							}
 							attributeUIBeanInformationIntf.setOptionDetails(optionDetails);
-							/*attributeUIBeanInformationIntf.setOptionNames((String[])optionNames.toArray(new String[optionNames.size()]));
-							attributeUIBeanInformationIntf.setOptionDescriptions((String[])optionDescriptions.toArray(new String[optionDescriptions.size()]));
-							attributeUIBeanInformationIntf.setOptionConceptCodes((String[])optionConceptCodes.toArray(new String[optionConceptCodes.size()]));*/
 						}
 					}
 				}
 			}
 		}
-		return choiceList;
 	}
 }

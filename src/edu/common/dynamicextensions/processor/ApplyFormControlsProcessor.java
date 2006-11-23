@@ -98,10 +98,10 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 
 				//Create Attribute  
 				abstractAttributeInterface = attributeProcessor.createAndPopulateAttribute(controlsForm);
-
+				
 				//Set permisible values
 				setPermissibleValues(attributeProcessor, abstractAttributeInterface, controlsForm);
-
+				
 				//Set attribute in controlInformationInterface object(controlsForm)
 				controlsForm.setAbstractAttribute(abstractAttributeInterface);
 

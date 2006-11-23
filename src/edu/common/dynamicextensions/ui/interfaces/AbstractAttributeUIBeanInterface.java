@@ -128,16 +128,7 @@ public interface AbstractAttributeUIBeanInterface
 	 */
 	 void setDescription(String name);
 
-	/**
-	 * @return Returns the choiceList.
-	 */
-	 String getChoiceList();
-
-	/**
-	 * @param choiceList The choiceList to set.
-	 */
-	 void setChoiceList(String choiceList);
-
+	
 	/**
 	 * @return Returns the displayChoice.
 	 */

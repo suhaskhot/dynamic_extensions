@@ -11,6 +11,8 @@
 package edu.common.dynamicextensions.processor;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
@@ -212,21 +214,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private ControlInterface getListBoxControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
 	{
-		/*ListBoxInterface listBoxIntf = null;
-
-		if (controlInterface == null)
-		{
-			listBoxIntf = DomainObjectFactory.getInstance().createListBox();
-		}
-		else
-		{
-			listBoxIntf = (ListBoxInterface) controlInterface;
-		}
-
-		listBoxIntf.setIsMultiSelect(controlUIBeanInterface.getIsMultiSelect());
-		return listBoxIntf;*/
 		ListBoxInterface listBoxIntf = null;
-
 		if (controlInterface == null) //If does not exist create it 
 		{
 			listBoxIntf = DomainObjectFactory.getInstance().createListBox();
@@ -244,6 +232,12 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		}
 		listBoxIntf.setIsMultiSelect(controlUIBeanInterface.getIsMultiSelect());
 		listBoxIntf.setNoOfRows(controlUIBeanInterface.getRows());
+		//Set isCollection=true in the attribute
+		AttributeInterface controlAttribute = (AttributeInterface)controlUIBeanInterface.getAbstractAttribute();
+		if(controlAttribute!=null)
+		{
+			controlAttribute.setIsCollection(new Boolean(true));
+		}
 		return listBoxIntf;
 	}
 

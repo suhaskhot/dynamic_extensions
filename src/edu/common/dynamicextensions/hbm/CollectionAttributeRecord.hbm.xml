@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+    <class
+        name="edu.common.dynamicextensions.domain.CollectionAttributeRecord"
+        table="DYEXTN_COLLECTION_ATTR_RECORD"
+        dynamic-update="false"
+        dynamic-insert="false"
+    >
+
+        <id
+            name="id"
+            column="IDENTIFIER"
+            type="long"
+            length="30"
+            unsaved-value="null"
+        >
+            <generator class="native">
+                <param name="sequence">DYEXTN_COLLECTION_ATTR_REC_SEQ</param>
+            </generator>
+        </id>
+
+        <many-to-one
+            name="entity"
+            class="edu.common.dynamicextensions.domain.Entity"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="ENTIY_ID"
+        />
+
+        <many-to-one
+            name="attribute"
+            class="edu.common.dynamicextensions.domain.Attribute"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="ATTRIBUTE_ID"
+        />
+
+        <property
+            name="recordId"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="RECORD_ID"
+        />
+
+        <property
+            name="value"
+            type="string"
+            update="true"
+            insert="true"
+            column="RECORD_VALUE"
+            length="4000"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-CollectionAttributeRecord.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

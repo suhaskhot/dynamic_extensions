@@ -52,7 +52,7 @@
         <mapping resource="edu/common/dynamicextensions/hbm/validationrules/Rule.hbm.xml"/>
         <mapping resource="edu/common/dynamicextensions/hbm/validationrules/RuleParameter.hbm.xml"/>
         <mapping resource="edu/common/dynamicextensions/hbm/EntityManagerHQL.hbm.xml"/>
-        
+        <mapping resource="edu/common/dynamicextensions/hbm/CollectionAttributeRecord.hbm.xml"/>
         
 
     </session-factory>

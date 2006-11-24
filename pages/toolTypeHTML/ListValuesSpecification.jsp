@@ -48,12 +48,11 @@
 							</html:button>
 					</td>
 	</tr>
-	<tr valign="top" id="optionsListRow" style="display:block;" >
+	<tr valign="top" id="optionsListRow" >
 		<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
 		<td class="formRequiredLabelWithoutBorder" width="25%"><bean:message key="eav.att.OptionList"/> : </td>
 		<td  class="formFieldWithoutBorder">
-
-				<table summary="" cellpadding="0" cellspacing="0" border="0" align = 'center' valign="top" width='100%'>
+			<table summary="" cellpadding="0" cellspacing="0" border="0" align = 'center' valign="top" width='100%'>
 					<tr  class="formRequiredLabelWithoutBorder">
 						<td class="formRequiredLabelWithoutBorder" >
 							<div style="padding : 1px;  height : 50px; width:'80%'; overflow : auto; " >
@@ -102,8 +101,6 @@
 					<html:hidden styleId = 'attributeDefaultValue' property="attributeDefaultValue" />
 				</table>
 			</td>
-
-
 	</tr>
 	</table>
 </div>

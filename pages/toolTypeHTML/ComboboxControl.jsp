@@ -16,7 +16,7 @@
 <c:set var="listType" value="${controlsForm.attributeMultiSelect}"/>
 <jsp:useBean id="listType" type="java.lang.String"/>
 
-<input styleId = 'hiddenIsMultiSelect' type="hidden" name="hiddenIsMultiSelect" value="<%=listType%>">
+<input id = 'hiddenIsMultiSelect' type="hidden" name="hiddenIsMultiSelect" value="<%=listType%>">
 <table summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
   <tr>
     <td>
@@ -59,21 +59,13 @@
 		 	</td>
 			<td class="formRequiredLabelWithoutBorder" width="25%"><bean:message key="eav.att.ListBoxOptionTypes"></bean:message></td>
 			<td  class="formFieldWithoutBorder">
-				<!--<c:forEach items="${displayChoiceList}" var="choiceType">
-					<jsp:useBean id="choiceType" type="edu.wustl.common.beans.NameValueBean" />
-						<c:set var="choiceTypeValue" value="${choiceType.value}" />
-						<jsp:useBean id="choiceTypeValue" type="java.lang.String" />
-						<html:radio property="displayChoice" value="" onchange="changeSourceForValues">
-							<c:out value="${choiceType.name}"/>
-						</html:radio>
-				</c:forEach>-->
-				<html:radio property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED%>" >
+				<html:radio styleId="displayChoice" property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED%>" >
 					<bean:message key="eav.att.OptionsUserDefined"/>
 				</html:radio>
-				<html:radio  property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_CDE%>" disabled="true">
+				<html:radio styleId="displayChoice"  property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_CDE%>" disabled="true">
 					<bean:message key="eav.att.OptionsCDE"/>
 				</html:radio>
-				<html:radio property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_LOOKUP%>" disabled="true">
+				<html:radio styleId="displayChoice" property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_LOOKUP%>" disabled="true">
 					<bean:message key="eav.att.OptionsLookup"/>
 				</html:radio>
 			</td>
@@ -89,7 +81,7 @@
 
  		</div>
  	</td>
- <tr>
+ </tr>
  <html:hidden styleId= 'dataType' property="dataType" value ="<%=ProcessorConstants.DATATYPE_STRING%>"/>
 </table>
 <jsp:include page="/pages/toolTypeHTML/ListValuesSpecification.jsp" />

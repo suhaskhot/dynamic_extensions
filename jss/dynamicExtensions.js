@@ -66,7 +66,7 @@ function showNextActionConfirmDialog()
 {
 	var  url="/dynamicExtensions/pages/confirmNextActionDialog.jsp";
 	 var properties = "dialogHeight: 200px; dialogWidth: 350px; dialogTop: 300px; dialogLeft: 350px; edge: Sunken; center: Yes; resizable: Yes; status: No; help:no"
-     window.showModalDialog(url, window, properties);
+	 window.showModalDialog(url, window, properties);
 }
 function showCreateFormJSP() {
 	var arg = window.dialogArguments;
@@ -130,6 +130,7 @@ function initBuildForm()
 	}
 	
 	var sourceElt =document.getElementById("displayChoice");
+	
 	if(sourceElt!=null)
 	{
 		//Load source details for selected sourcetype
@@ -192,6 +193,7 @@ function changeSourceForValues(sourceControl)
 	if(sourceControl!=null)
 	{
 		var sourceForValues = sourceControl.value;
+		
 		if(sourceForValues!=null)
 		{
 			var divForSourceId = sourceForValues + "Values";

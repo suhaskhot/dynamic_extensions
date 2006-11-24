@@ -109,7 +109,7 @@ public class RangeValidator implements ValidatorRuleInterface
 		}
 		else if (parameterName.equals("max"))
 		{
-			if (Long.parseLong(value) > Long.parseLong(parameterValue))
+			if (Double.parseDouble(value) > Double.parseDouble(parameterValue))
 			{
 				throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Range.Maximum", attributeName);
 			}

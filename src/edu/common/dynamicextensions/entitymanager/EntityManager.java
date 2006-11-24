@@ -1696,9 +1696,10 @@ public class EntityManager
 		}
 		else if (attributeInformation instanceof DateAttributeTypeInformation)
 		{
-            String dateValue = Utility.parseDateToString(((Date) value), Variables.datePattern);
-			formattedvalue = Variables.strTodateFunction + "('" + dateValue + "','"
-					+ Variables.datePattern + "')";
+            String format = ((DateAttributeTypeInformation) attributeInformation).getFormat();
+            String str = Utility.parseDateToString(((Date) value), format);
+			formattedvalue = Variables.strTodateFunction + "('" + str + "','"
+					+ format + "')";
 		}
 		else
 		{

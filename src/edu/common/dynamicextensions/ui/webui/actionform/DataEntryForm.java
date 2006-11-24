@@ -39,6 +39,10 @@ public class DataEntryForm extends AbstractActionForm
 	 * 
 	 */
 	protected List<String> errorList;
+	/**
+	 * 
+	 */
+	protected String[] multibox;
 
 	/**
 	 * @return int formId

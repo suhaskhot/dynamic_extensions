@@ -44,69 +44,78 @@ public class ControlsUtility
 	public static String getDefaultValue(AbstractAttributeInterface abstractAttribute)
 	{
 		String defaultValue = null;
-        AttributeTypeInformationInterface abstractAttributeType =  ((AttributeInterface) abstractAttribute).getAttributeTypeInformation();
-		if (abstractAttributeType instanceof StringTypeInformationInterface)
+		AttributeTypeInformationInterface abstractAttributeType = null;
+		
+		if (abstractAttribute != null)
 		{
-			StringTypeInformationInterface stringAttribute = (StringTypeInformationInterface) abstractAttributeType;
-			if (stringAttribute != null && stringAttribute.getDefaultValue() != null)
-			{
-				defaultValue = ((StringValueInterface)stringAttribute.getDefaultValue()).getValue();
-			}
+			abstractAttributeType = ((AttributeInterface) abstractAttribute).getAttributeTypeInformation();
 		}
-		else if (abstractAttributeType instanceof BooleanTypeInformationInterface)
+		if (abstractAttributeType != null)
 		{
-			BooleanTypeInformationInterface booleanAttribute = (BooleanTypeInformationInterface) abstractAttributeType;
-			if (booleanAttribute != null && booleanAttribute.getDefaultValue() != null)
+			if (abstractAttributeType instanceof StringTypeInformationInterface)
 			{
-				defaultValue = ((BooleanValueInterface) booleanAttribute.getDefaultValue()).getValue().toString();
+				StringTypeInformationInterface stringAttribute = (StringTypeInformationInterface) abstractAttributeType;
+				if (stringAttribute != null && stringAttribute.getDefaultValue() != null)
+				{
+					defaultValue = ((StringValueInterface) stringAttribute.getDefaultValue()).getValue();
+				}
 			}
-		}
-		else if (abstractAttributeType instanceof IntegerTypeInformationInterface)
-		{
-			IntegerTypeInformationInterface integerAttribute = (IntegerTypeInformationInterface) abstractAttributeType;
-			if (integerAttribute != null && integerAttribute.getDefaultValue() != null)
+			else if (abstractAttributeType instanceof BooleanTypeInformationInterface)
 			{
-				defaultValue = integerAttribute.getDefaultValue().toString();
+				BooleanTypeInformationInterface booleanAttribute = (BooleanTypeInformationInterface) abstractAttributeType;
+				if (booleanAttribute != null && booleanAttribute.getDefaultValue() != null)
+				{
+					defaultValue = ((BooleanValueInterface) booleanAttribute.getDefaultValue()).getValue().toString();
+				}
 			}
-		}
-		else if (abstractAttributeType instanceof LongTypeInformationInterface)
-		{
-			LongTypeInformationInterface longAttribute = (LongTypeInformationInterface) abstractAttributeType;
-			if (longAttribute != null && longAttribute.getDefaultValue() != null)
+			else if (abstractAttributeType instanceof IntegerTypeInformationInterface)
 			{
-				defaultValue = ((LongValueInterface)longAttribute.getDefaultValue()).getValue().toString();
+				IntegerTypeInformationInterface integerAttribute = (IntegerTypeInformationInterface) abstractAttributeType;
+				if (integerAttribute != null && integerAttribute.getDefaultValue() != null)
+				{
+					defaultValue = integerAttribute.getDefaultValue().toString();
+				}
 			}
-		}
-		else if (abstractAttributeType instanceof DoubleTypeInformationInterface)
-		{
-			DoubleTypeInformationInterface doubleAttribute = (DoubleTypeInformationInterface) abstractAttributeType;
-			if (doubleAttribute != null && doubleAttribute.getDefaultValue() != null)
+			else if (abstractAttributeType instanceof LongTypeInformationInterface)
 			{
-				defaultValue = ((DoubleValueInterface) doubleAttribute.getDefaultValue()).getValue().toString();
+				LongTypeInformationInterface longAttribute = (LongTypeInformationInterface) abstractAttributeType;
+				if (longAttribute != null && longAttribute.getDefaultValue() != null)
+				{
+					defaultValue = ((LongValueInterface) longAttribute.getDefaultValue()).getValue().toString();
+				}
 			}
-		}
-		else if (abstractAttributeType instanceof FloatTypeInformationInterface)
-		{
-			FloatTypeInformationInterface floatAttribute = (FloatTypeInformationInterface) abstractAttributeType;
-			if (floatAttribute != null && floatAttribute.getDefaultValue() != null)
+			else if (abstractAttributeType instanceof DoubleTypeInformationInterface)
 			{
-				defaultValue = ((FloatValueInterface) floatAttribute.getDefaultValue()).getValue().toString();
+				DoubleTypeInformationInterface doubleAttribute = (DoubleTypeInformationInterface) abstractAttributeType;
+				if (doubleAttribute != null && doubleAttribute.getDefaultValue() != null)
+				{
+					defaultValue = ((DoubleValueInterface) doubleAttribute.getDefaultValue()).getValue().toString();
+				}
 			}
-		}
-		else if (abstractAttributeType instanceof ShortTypeInformationInterface)
-		{
-			ShortTypeInformationInterface shortAttribute = (ShortTypeInformationInterface) abstractAttributeType;
-			if (shortAttribute != null && shortAttribute.getDefaultValue() != null)
+			else if (abstractAttributeType instanceof FloatTypeInformationInterface)
 			{
-				defaultValue = ((ShortValueInterface)shortAttribute.getDefaultValue()).getValue().toString();
+				FloatTypeInformationInterface floatAttribute = (FloatTypeInformationInterface) abstractAttributeType;
+				if (floatAttribute != null && floatAttribute.getDefaultValue() != null)
+				{
+					defaultValue = ((FloatValueInterface) floatAttribute.getDefaultValue()).getValue().toString();
+				}
 			}
-		}
-		else if (abstractAttributeType instanceof DateTypeInformationInterface)
-		{
-			DateTypeInformationInterface dateAttribute = (DateTypeInformationInterface) abstractAttributeType;
-			if (dateAttribute != null && dateAttribute.getDefaultValue() != null)
+			else if (abstractAttributeType instanceof ShortTypeInformationInterface)
 			{
-				defaultValue = new SimpleDateFormat(getDateFormat(dateAttribute)).format(((DateValueInterface)dateAttribute.getDefaultValue()).getValue());
+				ShortTypeInformationInterface shortAttribute = (ShortTypeInformationInterface) abstractAttributeType;
+				if (shortAttribute != null && shortAttribute.getDefaultValue() != null)
+				{
+					defaultValue = ((ShortValueInterface) shortAttribute.getDefaultValue()).getValue().toString();
+				}
+			}
+			else if (abstractAttributeType instanceof DateTypeInformationInterface)
+			{
+				DateTypeInformationInterface dateAttribute = (DateTypeInformationInterface) abstractAttributeType;
+				if (dateAttribute != null && dateAttribute.getDefaultValue() != null)
+				{
+					defaultValue = new SimpleDateFormat(getDateFormat(dateAttribute)).format(((DateValueInterface) dateAttribute.getDefaultValue())
+							.getValue());
+				}
 			}
 		}
 		return defaultValue;

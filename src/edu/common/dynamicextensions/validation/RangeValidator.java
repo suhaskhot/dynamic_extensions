@@ -9,7 +9,6 @@ import edu.common.dynamicextensions.domain.LongAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
-import edu.wustl.common.util.global.ApplicationProperties;
 
 /**
  * @author Rahul Ner
@@ -78,5 +77,5 @@ public class RangeValidator implements ValidatorRuleInterface
 		}
 		return true;
 	}
-
+	
 }

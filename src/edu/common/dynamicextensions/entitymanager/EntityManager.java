@@ -264,7 +264,7 @@ public class EntityManager
 	private List<String> getCollectionAttributeRecordValues(Long entityId, Long attributeId,Long recordId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		CollectionAttributeRecord collectionAttributeRecord = getCollectionAttributeRecord(entityId, attributeId, recordId);
+		CollectionAttributeRecord collectionAttributeRecord = getCollectionAttributeRecord(entityId, attributeId, recordId,null);
 		Collection <CollectionAttributeRecordValue>recordValueCollection = collectionAttributeRecord.getValueCollection();
 		
 		List<String> valueList = new ArrayList<String>();
@@ -280,15 +280,18 @@ public class EntityManager
 	 * @param recordId
 	 * @return
 	 */
-	private CollectionAttributeRecord getCollectionAttributeRecord(Long entityId, Long attributeId,Long recordId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException{
+	private CollectionAttributeRecord getCollectionAttributeRecord(Long entityId, Long attributeId,Long recordId,HibernateDAO hibernateDao) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException{
 	
 		Map substitutionParameterMap = new HashMap();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entityId));
 		substitutionParameterMap.put("1", new HQLPlaceHolderObject("long", attributeId));
 		substitutionParameterMap.put("2", new HQLPlaceHolderObject("long", recordId));
-		
-
-		Collection recordCollection = executeHQL("getCollectionAttributeRecord", substitutionParameterMap);
+        Collection recordCollection = null;
+		if (hibernateDao == null) {
+		recordCollection = executeHQL("getCollectionAttributeRecord", substitutionParameterMap);
+        } else {
+        recordCollection = executeHQL(hibernateDao,"getCollectionAttributeRecord", substitutionParameterMap);
+        }
 		CollectionAttributeRecord collectionAttributeRecord = (CollectionAttributeRecord) recordCollection.iterator().next();
 		return collectionAttributeRecord;
 	}
@@ -1544,7 +1547,7 @@ public class EntityManager
 				Object value = dataValue.get(primitiveAttribute);
 				
 				if(primitiveAttribute.getIsCollection()) {
-					  CollectionAttributeRecord collectionRecord = getCollectionAttributeRecord(entity.getId(),primitiveAttribute.getId(), recordId);
+					  CollectionAttributeRecord collectionRecord = getCollectionAttributeRecord(entity.getId(),primitiveAttribute.getId(), recordId,null);
 					  List<String> listOfValues = (List<String>) value;
 					  
 					  if (!listOfValues.isEmpty() ) {
@@ -2587,5 +2590,115 @@ public class EntityManager
 		return q;
 
 	}
+    
+
+    /** 
+     * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#deleteRecord(edu.common.dynamicextensions.domaininterface.EntityInterface, java.lang.Long)
+     */
+    public boolean deleteRecord(EntityInterface entity, Long recordId)
+            throws DynamicExtensionsApplicationException,
+            DynamicExtensionsSystemException
+    {
+        boolean isRecordDeleted = false;
+        Collection attributeCollection = entity.getAttributeCollection();
+
+        HibernateDAO hibernateDAO = null;
+        DAOFactory factory = DAOFactory.getInstance();
+        hibernateDAO = (HibernateDAO) factory.getDAO(Constants.HIBERNATE_DAO);
+
+        try
+        {
+
+            hibernateDAO.openSession(null);
+            if (attributeCollection != null && !attributeCollection.isEmpty())
+            {
+                Iterator iterator = attributeCollection.iterator();
+                while (iterator.hasNext())
+                {
+                    AttributeInterface attribute = (AttributeInterface) iterator
+                            .next();
+                    if (attribute.getIsCollection())
+                    {
+                        CollectionAttributeRecord collectionAttributeRecord = getCollectionAttributeRecord(
+                                entity.getId(), attribute.getId(), recordId,
+                                hibernateDAO);
+                        hibernateDAO.delete(collectionAttributeRecord);
+                    }
+                }
+            }
+            Connection conn = DBUtil.getConnection();
+            StringBuffer query = new StringBuffer();
+            query.append(DELETE_KEYWORD + WHITESPACE
+                    + entity.getTableProperties().getName() + WHITESPACE
+                    + WHERE_KEYWORD + WHITESPACE + IDENTIFIER + WHITESPACE
+                    + EQUAL + WHITESPACE + recordId.toString());
+            logDebug("deleteRecord", "QUERY for delete record is : "
+                    + query.toString());
+            PreparedStatement statement = conn.prepareStatement(query
+                    .toString());
+            statement.executeUpdate();
+            hibernateDAO.commit();
+            isRecordDeleted = true;
+        }
+        catch (Exception e)
+        {
+            try
+            {
+                hibernateDAO.rollback();
+            }
+            catch (DAOException e1)
+            {
+                throw new DynamicExtensionsSystemException(e.getMessage(), e,
+                        DYEXTN_S_001);
+            }
+            throw new DynamicExtensionsSystemException(e.getMessage(), e,
+                    DYEXTN_S_001);
+        }
+        finally
+        {
+            try
+            {
+                hibernateDAO.closeSession();
+            }
+            catch (DAOException e1)
+            {
+                throw new DynamicExtensionsSystemException(e1.getMessage(), e1,
+                        DYEXTN_S_001);
+            }
+        }
+
+        return isRecordDeleted;
+    }
+    
+
+    /**
+     * 
+     * @param hibernateDAO
+     * @param queryName
+     * @param substitutionParameterMap
+     * @return
+     * @throws DynamicExtensionsSystemException 
+     */
+    private Collection executeHQL(HibernateDAO hibernateDAO, String queryName,
+            Map substitutionParameterMap)
+            throws DynamicExtensionsSystemException
+    {
+        Collection entityCollection = new HashSet();
+
+        try
+        {
+            Query query = substitutionParameterForQuery(queryName,
+                    substitutionParameterMap);
+            entityCollection = query.list();
+        }
+        catch (HibernateException e)
+        {
+            throw new DynamicExtensionsSystemException(e.getMessage(), e,
+                    DYEXTN_S_001);
+        }
+
+        return entityCollection;
+
+    }
 
 }

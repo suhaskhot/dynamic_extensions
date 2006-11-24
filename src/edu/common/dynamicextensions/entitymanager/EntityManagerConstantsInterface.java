@@ -23,6 +23,8 @@ public interface EntityManagerConstantsInterface
     String ADD_KEYWORD = "ADD";
     String MODIFY_KEYWORD = "MODIFY";
     String DEFAULT_KEYWORD = "DEFAULT";
+    String DELETE_KEYWORD = "DELETE FROM";
+    String WHERE_KEYWORD = "WHERE";
     String CONSTRAINT_KEYWORD = "CONSTRAINT";
     String UNIQUE_KEYWORD = "UNIQUE";
     String COLUMN_KEYWORD = "COLUMN";

@@ -32,6 +32,7 @@ public interface EntityManagerConstantsInterface
     String OPENING_BRACKET = "(";
     String CLOSING_BRACKET = ")";
     String COMMA = ",";
+    String EQUAL = "=";
     String WHITESPACE = " ";
     String IDENTIFIER = "IDENTIFIER";
     String PRIMARY_KEY_CONSTRAINT_FOR_ENTITY_DATA_TABLE = "primary key (IDENTIFIER)";

@@ -23,6 +23,7 @@ import edu.common.dynamicextensions.domain.IntegerAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.IntegerValue;
 import edu.common.dynamicextensions.domain.LongAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.LongValue;
+import edu.common.dynamicextensions.domain.PermissibleValue;
 import edu.common.dynamicextensions.domain.ShortAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.ShortValue;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
@@ -55,7 +56,6 @@ import edu.common.dynamicextensions.ui.webui.util.OptionValueObject;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.util.Utility;
-import edu.wustl.common.util.global.Constants;
 import edu.wustl.common.util.logger.Logger;
 
 /**
@@ -375,7 +375,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	throws DynamicExtensionsApplicationException
 	{
 		DataElementInterface dataEltInterface = null;
-		PermissibleValueInterface permissibleValueInterface = null;
+		PermissibleValueInterface permissibleValue = null;
 
 		if (attributeUIBeanInformationIntf != null)
 		{
@@ -402,8 +402,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 							semanticPropertiesForOptions = SemanticPropertyBuilderUtil.getSymanticPropertyCollection(optionConceptCode);
 							if ((optionName != null) && (optionName.trim() != null))
 							{
-								permissibleValueInterface = getPermissibleValueInterface(attributeUIBeanInformationIntf, optionName,optionDesc,semanticPropertiesForOptions);
-								((UserDefinedDE) dataEltInterface).addPermissibleValue(permissibleValueInterface);
+								permissibleValue = getPermissibleValue(attributeUIBeanInformationIntf, optionName,optionDesc,semanticPropertiesForOptions);
+								((UserDefinedDE) dataEltInterface).addPermissibleValue(permissibleValue);
 							}
 						}
 					}
@@ -420,7 +420,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @return Permissible value object for given permissible value 
 	 * @throws DynamicExtensionsApplicationException  : dynamicExtensionsApplicationException
 	 */
-	private PermissibleValueInterface getPermissibleValueInterface(AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf,
+	private PermissibleValueInterface getPermissibleValue(AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf,
 			String permissibleValue,String permissibleValueDesc,Collection permissibleValueSematicPropColln) throws DynamicExtensionsApplicationException
 			{
 		PermissibleValueInterface permissibleValueIntf = null;
@@ -435,29 +435,28 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 					{
 						permissibleValueIntf = DomainObjectFactory.getInstance().createStringValue();
 						((StringValue) permissibleValueIntf).setValue(permissibleValue);
-						((StringValue) permissibleValueIntf).setDescription(permissibleValueDesc);
-						((StringValue) permissibleValueIntf).setSemanticPropertyCollection(permissibleValueSematicPropColln);
 					}
 					else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_DATE))
 					{
 						permissibleValueIntf = DomainObjectFactory.getInstance().createDateValue();
-						Date value = Utility.parseDate(permissibleValue);
+						Date value = Utility.parseDate(permissibleValue,ProcessorConstants.DATE_ONLY_FORMAT);
 						((DateValue) permissibleValueIntf).setValue(value);
-						((DateValue) permissibleValueIntf).setDescription(permissibleValueDesc);
-						((DateValue) permissibleValueIntf).setSemanticPropertyCollection(permissibleValueSematicPropColln);
-
 					}
 					else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_BOOLEAN))
 					{
 						permissibleValueIntf = DomainObjectFactory.getInstance().createBooleanValue();
 						Boolean value = new Boolean(permissibleValue);
 						((BooleanValue) permissibleValueIntf).setValue(value);
-						((BooleanValue) permissibleValueIntf).setDescription(permissibleValueDesc);
-						((BooleanValue) permissibleValueIntf).setSemanticPropertyCollection(permissibleValueSematicPropColln);
 					}
 					else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_NUMBER))
 					{
 						permissibleValueIntf = getPermissibleValueInterfaceForNumber(attributeUIBeanInformationIntf, permissibleValue,permissibleValueDesc,permissibleValueSematicPropColln);
+					}
+					//populate common properties
+					if(permissibleValueIntf instanceof PermissibleValue)
+					{
+						((PermissibleValue) permissibleValueIntf).setDescription(permissibleValueDesc);
+						((PermissibleValue) permissibleValueIntf).setSemanticPropertyCollection(permissibleValueSematicPropColln);
 					}
 				}
 				catch (Exception e)
@@ -519,8 +518,6 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				throw new DynamicExtensionsApplicationException(e.getMessage(), e);
 			}
 			((LongValue) permissibleValueIntf).setValue(value);
-			((LongValue) permissibleValueIntf).setDescription(permissibleValueDesc);
-			((LongValue) permissibleValueIntf).setSemanticPropertyCollection(permissibleValueSematicPropColln);
 		}
 		else if (noOfDecimalPlaces > 0)
 		{
@@ -536,8 +533,6 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				throw new DynamicExtensionsApplicationException(e.getMessage(), e);
 			}
 			((DoubleValue) permissibleValueIntf).setValue(value);
-			((DoubleValue) permissibleValueIntf).setDescription(permissibleValueDesc);
-			((DoubleValue) permissibleValueIntf).setSemanticPropertyCollection(permissibleValueSematicPropColln);
 		}
 		return permissibleValueIntf;
 
@@ -588,14 +583,14 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			{
 				if (dateValueType.equalsIgnoreCase(ProcessorConstants.DATE_VALUE_TODAY))
 				{
-					String todaysDate = Utility.parseDateToString(new Date(), Constants.DATE_PATTERN_MM_DD_YYYY);
-					defaultValue = Utility.parseDate(todaysDate);
+					String todaysDate = Utility.parseDateToString(new Date(), ProcessorConstants.DATE_ONLY_FORMAT);
+					defaultValue = Utility.parseDate(todaysDate,ProcessorConstants.DATE_ONLY_FORMAT);
 				}
 				else if (dateValueType.equalsIgnoreCase(ProcessorConstants.DATE_VALUE_SELECT))
 				{
 					if (attributeUIBeanInformationIntf.getAttributeDefaultValue() != null)
 					{
-						defaultValue = Utility.parseDate(attributeUIBeanInformationIntf.getAttributeDefaultValue());
+						defaultValue = Utility.parseDate(attributeUIBeanInformationIntf.getAttributeDefaultValue(),ProcessorConstants.DATE_ONLY_FORMAT);
 					}
 				}
 
@@ -812,7 +807,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				throw new DynamicExtensionsApplicationException(e.getMessage(), e);
 			}
 		}
-		
+
 		if (noOfDecimalPlaces == 0)
 		{
 			numberAttribIntf = DomainObjectFactory.getInstance().createLongAttribute();
@@ -1055,7 +1050,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		if (datAttributeInformation.getDefaultValue() != null)
 		{
 			String defaultValue = Utility.parseDateToString((Date)datAttributeInformation.getDefaultValue().getValueAsObject(),
-					Constants.DATE_PATTERN_MM_DD_YYYY);
+					ProcessorConstants.DATE_ONLY_FORMAT);
 			attributeUIBeanInformationIntf.setAttributeDefaultValue(defaultValue);
 		}
 		else
@@ -1108,8 +1103,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	private void setOptionsInformation(AbstractAttributeInterface attributeInterface, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
 	{
 		ArrayList<OptionValueObject> optionDetails = new ArrayList<OptionValueObject>();
-		Object permissibleValueObjectValue = null;
-		
+
+
 		if ((attributeUIBeanInformationIntf != null) && (attributeInterface != null))
 		{
 			AttributeTypeInformationInterface attributeTypeInformationInterface = DynamicExtensionsUtility.getAttributeTypeInformation(attributeInterface); 
@@ -1130,24 +1125,64 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 							while (userDefinedValuesIterator.hasNext())
 							{
 								permissibleValueIntf = (PermissibleValueInterface) userDefinedValuesIterator.next();
-								permissibleValueObjectValue = permissibleValueIntf.getValueAsObject();
-								if ((permissibleValueObjectValue != null) && (permissibleValueObjectValue.toString() != null)
-										&& (permissibleValueObjectValue.toString().trim() != ""))
-								{
-									OptionValueObject optionDetail = new OptionValueObject();
-									optionDetail.setOptionName(permissibleValueObjectValue.toString().trim());
-									if(permissibleValueIntf instanceof StringValue)
-									{
-										optionDetail.setOptionDescription(((StringValue)permissibleValueIntf).getDescription());
-										optionDetail.setOptionConceptCode(SemanticPropertyBuilderUtil.getConceptCodeString(((StringValue)permissibleValueIntf).getSemanticPropertyCollection()));
-									}
-									optionDetails.add(optionDetail);
-								}
+								optionDetails.add(getOptionDetails(permissibleValueIntf));
 							}
-							attributeUIBeanInformationIntf.setOptionDetails(optionDetails);
 						}
+						attributeUIBeanInformationIntf.setOptionDetails(optionDetails);
 					}
 				}
+			}
+		}
+	}
+
+	/**
+	 * @param permissibleValueIntf
+	 * @return
+	 */
+	private OptionValueObject getOptionDetails(PermissibleValueInterface permissibleValueIntf)
+	{
+		if(permissibleValueIntf!=null)
+		{
+			Object permissibleValueObjectValue = permissibleValueIntf.getValueAsObject();
+			if ((permissibleValueObjectValue != null) && (permissibleValueObjectValue.toString() != null)
+					&& (permissibleValueObjectValue.toString().trim() != ""))
+			{
+				OptionValueObject optionDetail = new OptionValueObject();
+				optionDetail.setOptionName(permissibleValueObjectValue.toString().trim());
+				if(permissibleValueIntf instanceof PermissibleValue)
+				{
+					populateOptionDetails(optionDetail,((PermissibleValue)permissibleValueIntf));
+				}
+				return optionDetail;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * @param optionValue 
+	 * @param permissibleValueIntf
+	 */
+	private void populateOptionDetails(OptionValueObject optionValue, PermissibleValue permissibleValue)
+	{
+		if((optionValue!=null)&&(permissibleValue!=null))
+		{
+			if(permissibleValue.getDescription()!=null)
+			{
+				optionValue.setOptionDescription(permissibleValue.getDescription());
+			}
+			else
+			{
+				optionValue.setOptionDescription("");	
+			}
+			String optionConceptCode = SemanticPropertyBuilderUtil.getConceptCodeString(permissibleValue.getSemanticPropertyCollection());
+			if(optionConceptCode!=null)
+			{
+				optionValue.setOptionConceptCode(optionConceptCode);
+			}
+			else
+			{
+				optionValue.setOptionConceptCode("");	
 			}
 		}
 	}

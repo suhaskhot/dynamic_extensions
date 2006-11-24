@@ -50,7 +50,6 @@ import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInter
 import edu.common.dynamicextensions.domaininterface.userinterface.ViewInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
-import edu.common.dynamicextensions.entitymanager.EntityManager;
 
 /**
  * This is a singleton class which provides methods for generating domain objects.
@@ -93,7 +92,7 @@ public class DomainObjectFactory
 	 */
 	public void setInstance(DomainObjectFactory domainObjectFactory)
 	{
-		this.domainObjectFactory = domainObjectFactory;
+		DomainObjectFactory.domainObjectFactory = domainObjectFactory;
 
 	}
 
@@ -285,7 +284,87 @@ public class DomainObjectFactory
         stringAttribute.setAttributeTypeInformation(new StringAttributeTypeInformation());
         return stringAttribute;
     }
-
+    
+    /**
+     * 
+     * @return instance of BooleanAttributeTypeInformation.
+     */
+    public AttributeTypeInformation createBooleanAttributeTypeInformation()
+    {
+        return new BooleanAttributeTypeInformation();
+    }
+    /**
+     * 
+     * @return instance of ByteArrayAttributeTypeInformation.
+     */
+    public AttributeTypeInformation createByteArrayAttributeTypeInformation()
+    {
+        return new ByteArrayAttributeTypeInformation();
+    }  
+    
+    /**
+     * 
+     * @return instance of DateAttributeTypeInformation.
+     */
+    public AttributeTypeInformation createDateAttributeTypeInformation()
+    {
+        return new DateAttributeTypeInformation();
+    }
+    /**
+     * 
+     * @return instance of DoubleAttributeTypeInformation.
+     */
+    public AttributeTypeInformation createDoubleAttributeTypeInformation()
+    {
+       return new DoubleAttributeTypeInformation();
+    }
+    
+    /**
+     * 
+     * @return instance of FloatAttributeTypeInformation.
+     */
+    public AttributeTypeInformation createFloatAttributeTypeInformation()
+    {
+        return new FloatAttributeTypeInformation();
+    }
+    
+    /**
+     * 
+     * @return instance of IntegerAttributeTypeInformation.
+     */
+    public AttributeTypeInformation createIntegerAttributeTypeInformation()
+    {
+        return new IntegerAttributeTypeInformation();
+    }
+    
+    /**
+     * 
+     * @return instance of LongAttributeTypeInformation.
+     */
+    public AttributeTypeInformation createLongAttributeTypeInformation()
+    {
+        return new LongAttributeTypeInformation();
+    }
+    
+    /**
+     * 
+     * @return instance of ShortAttributeTypeInformation.
+     */
+    public AttributeTypeInformation createShortAttributeTypeInformation()
+    {
+        return new ShortAttributeTypeInformation();
+    }
+    
+    /**
+     * 
+     * @return instance of StringAttributeTypeInformation.
+     */
+    public AttributeTypeInformation createStringAttributeTypeInformation()
+    {
+       return new StringAttributeTypeInformation();
+    }
+    
+    
 	/**
 	 * This method creates an object of BooleanValue.
 	 * @return an instance of BooleanValue.

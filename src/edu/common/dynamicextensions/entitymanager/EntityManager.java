@@ -66,6 +66,7 @@ import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.HibernateDAO;
 import edu.wustl.common.dao.JDBCDAO;
 import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
+import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.logger.Logger;
@@ -1550,13 +1551,15 @@ public class EntityManager
 		}
 		else if (attributeInformation instanceof DateAttributeTypeInformation)
 		{
-			formattedvalue = Variables.strTodateFunction + "('" + value + "','"
+            String dateValue = Utility.parseDateToString(((Date) value), Variables.datePattern);
+			formattedvalue = Variables.strTodateFunction + "('" + dateValue + "','"
 					+ Variables.datePattern + "')";
 		}
 		else
 		{
 			formattedvalue = value.toString();
 		}
+        logDebug("getFormattedValue","The formatted value for attribute " + attribute.getName() + "is " + formattedvalue);
 		return formattedvalue;
 
 	}
@@ -2394,8 +2397,6 @@ public class EntityManager
 
 		catch (HibernateException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 			throw new DynamicExtensionsSystemException("Error while rolling back the session", e);
 		}
 
@@ -2407,8 +2408,6 @@ public class EntityManager
 			}
 			catch (DAOException e)
 			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 				throw new DynamicExtensionsSystemException("Error while closing the session", e);
 			}
 		}

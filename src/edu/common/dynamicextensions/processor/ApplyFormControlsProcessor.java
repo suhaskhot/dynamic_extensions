@@ -135,15 +135,26 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				String selectedControlSeqNumber = controlsForm.getSelectedControlId();
 				controlInterface = containerInterface.getControlInterfaceBySequenceNumber(selectedControlSeqNumber);
 
-				//Remove old refernces : From Entity
+				/*
+				 * CODE COMMENTED BY PREETI : 24 Nov 2006
+				 * The attribute reference need not be removed. Its type information needs to be updated as per the 
+				 * new design 
+				 * 
+				 * //Remove old refernces : From Entity
 				entityInterface.removeAbstractAttribute(controlInterface.getAbstractAttribute());
 
 				//Create new abstract attribute interface with new datatype
 				abstractAttributeInterface = attributeProcessor.createAndPopulateAttribute(controlsForm);
-
-				setPermissibleValues(attributeProcessor, abstractAttributeInterface, controlsForm);
+				
 				//update in entity
 				entityInterface.addAbstractAttribute(abstractAttributeInterface);
+				*/
+				
+				//***********New Code starts here*********
+				abstractAttributeInterface = controlInterface.getAbstractAttribute();
+				attributeProcessor.updateAttributeInformation(abstractAttributeInterface,controlsForm);
+				setPermissibleValues(attributeProcessor, abstractAttributeInterface, controlsForm);
+				
 				//update in control interface
 				controlInterface.setAbstractAttribute(abstractAttributeInterface);
 

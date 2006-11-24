@@ -52,6 +52,7 @@ import edu.common.dynamicextensions.ui.interfaces.AbstractAttributeUIBeanInterfa
 import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
 import edu.common.dynamicextensions.ui.util.RuleConfigurationObject;
 import edu.common.dynamicextensions.ui.util.SemanticPropertyBuilderUtil;
+import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.OptionValueObject;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.beans.NameValueBean;
@@ -122,7 +123,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				}
 				else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_NUMBER))
 				{
-					attributeInterface = getInterfaceForNumericDataType(attributeUIBeanInformationIntf);
+					int noOfDecimals = DynamicExtensionsUtility.convertStringToInt(attributeUIBeanInformationIntf.getAttributeDecimalPlaces());
+					attributeInterface = getInterfaceForNumericDataType(noOfDecimals);
 				}
 			}
 		}
@@ -778,36 +780,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * 
 	 * @param attributeUIBeanInformationIntf : UI Bean containing attribute information entered by user on UI
 	 * @return Attribute for appropriate numeric data type based on number of decimal places and digits 
-	 * @throws DynamicExtensionsApplicationException : Exception
 	 */
-	private AttributeInterface getInterfaceForNumericDataType(AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
-	throws DynamicExtensionsApplicationException
+	private AttributeInterface getInterfaceForNumericDataType(int noOfDecimalPlaces)
 	{
 		AttributeInterface numberAttribIntf = null;
 		//If it is numberic it can either be float, simple integer, etc based on number of decimals
-		int noOfDecimalPlaces = 0;
-		//Number of decimal places 
-
-		String strNoOfDecimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces();
-		if (strNoOfDecimalPlaces != null)
-		{
-			try
-			{
-				if (strNoOfDecimalPlaces.trim().equals(""))
-				{
-					noOfDecimalPlaces = new Integer(0); //Assume 0 for blank values
-				}
-				else
-				{
-					noOfDecimalPlaces = Integer.parseInt(strNoOfDecimalPlaces);
-				}
-			}
-			catch (NumberFormatException e)
-			{
-				throw new DynamicExtensionsApplicationException(e.getMessage(), e);
-			}
-		}
-
 		if (noOfDecimalPlaces == 0)
 		{
 			numberAttribIntf = DomainObjectFactory.getInstance().createLongAttribute();
@@ -1185,5 +1162,84 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				optionValue.setOptionConceptCode("");	
 			}
 		}
+	}
+
+	/**
+	 * @param abstractAttributeInterface
+	 * @param controlsForm
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	public void updateAttributeInformation(AbstractAttributeInterface abstractAttributeInformation, AbstractAttributeUIBeanInterface attributeUIBeanInformation) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	{
+		if((abstractAttributeInformation!=null)&&(attributeUIBeanInformation!=null))
+		{
+			if(abstractAttributeInformation instanceof AttributeInterface)
+			{
+				AttributeInterface attributeInformation = (AttributeInterface)abstractAttributeInformation;
+				AttributeTypeInformationInterface attributeTypeInformation = createAttributeTypeInformation(attributeUIBeanInformation);
+				attributeInformation.setAttributeTypeInformation(attributeTypeInformation);
+				populateAttribute(attributeInformation, attributeUIBeanInformation);
+			}
+		}
+	}
+
+	/**
+	 * @param attributeUIBeanInformation
+	 * @throws DynamicExtensionsApplicationException 
+	 */
+	private AttributeTypeInformationInterface createAttributeTypeInformation(AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsApplicationException
+	{
+		AttributeTypeInformationInterface attributeTypeInformation = null;
+		if (attributeUIBeanInformationIntf != null)
+		{
+			String attributeType = attributeUIBeanInformationIntf.getDataType();
+			if (attributeType != null)
+			{
+				DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+				if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_STRING))
+				{
+					attributeTypeInformation = domainObjectFactory.createStringAttributeTypeInformation();
+				}
+				else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_DATE))
+				{
+					attributeTypeInformation = domainObjectFactory.createDateAttributeTypeInformation();
+				}
+				else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_BOOLEAN))
+				{
+					attributeTypeInformation = domainObjectFactory.createBooleanAttributeTypeInformation();
+				}
+				else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_BYTEARRAY))
+				{
+					attributeTypeInformation = domainObjectFactory.createByteArrayAttributeTypeInformation();
+				}
+				else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_NUMBER))
+				{
+					int noOfDecimals = DynamicExtensionsUtility.convertStringToInt(attributeUIBeanInformationIntf.getAttributeDecimalPlaces());
+					attributeTypeInformation = getInterfaceForNumericDataTypeInformation(noOfDecimals);
+				}
+			}
+		}
+		return attributeTypeInformation;
+	}
+	/**
+	 * 
+	 * @param attributeUIBeanInformationIntf : UI Bean containing attribute information entered by user on UI
+	 * @return Attribute for appropriate numeric data type based on number of decimal places and digits 
+	 */
+	private AttributeTypeInformationInterface getInterfaceForNumericDataTypeInformation(int noOfDecimalPlaces)
+	
+	{
+		AttributeTypeInformationInterface numberAttribIntf = null;
+		//If it is numberic it can either be float, simple integer, etc based on number of decimals
+		if (noOfDecimalPlaces == 0)
+		{
+			numberAttribIntf = DomainObjectFactory.getInstance().createLongAttributeTypeInformation();
+		}
+		if (noOfDecimalPlaces > 0)
+		{
+			numberAttribIntf = DomainObjectFactory.getInstance().createDoubleAttributeTypeInformation();
+		}
+		return numberAttribIntf;
 	}
 }

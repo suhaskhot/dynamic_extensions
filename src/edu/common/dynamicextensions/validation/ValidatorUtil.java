@@ -32,18 +32,18 @@ public class ValidatorUtil
 	 * @return errorList if any
 	 * @throws DynamicExtensionsSystemException : Exception 
 	 */
-	public static List<String> validateEntity(Map<AbstractAttributeInterface, String> attributeValueMap) throws DynamicExtensionsSystemException
+	public static List<String> validateEntity(Map<AbstractAttributeInterface, Object> attributeValueMap) throws DynamicExtensionsSystemException
 	{
 
 		List<String> errorList = new ArrayList<String>();
 
-		Set<Map.Entry<AbstractAttributeInterface, String>> attributeSet = attributeValueMap.entrySet();
+		Set<Map.Entry<AbstractAttributeInterface, Object>> attributeSet = attributeValueMap.entrySet();
 		if (attributeSet == null || attributeSet.isEmpty())
 		{
 			return errorList;
 		}
 
-		for(Map.Entry<AbstractAttributeInterface, String> attributeValueNode : attributeSet)
+		for(Map.Entry<AbstractAttributeInterface, Object> attributeValueNode : attributeSet)
 		{
 			AttributeInterface attribute = (AttributeInterface)attributeValueNode.getKey();
 			Collection<RuleInterface> attributeRuleCollection = attribute.getRuleCollection();

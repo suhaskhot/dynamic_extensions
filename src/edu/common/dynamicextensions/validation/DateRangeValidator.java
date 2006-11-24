@@ -20,7 +20,6 @@ public class DateRangeValidator implements ValidatorRuleInterface
 	public boolean validate(AttributeInterface attribute, Object valueObject, Map paramMap)
 			throws DynamicExtensionsValidationException
 	{
-
 		return true;
 	}
 

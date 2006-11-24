@@ -2,7 +2,6 @@
 package edu.common.dynamicextensions.ui.webui.action;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -53,7 +52,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 
 		Map<AbstractAttributeInterface, Object> attributeValueMap = new LinkedHashMap<AbstractAttributeInterface, Object>();
 		String value = null;
-		List valueList;
+		List<String> valueList = null;
 
 		for (int sequence = 1; sequence <= controlCollection.size(); sequence++)
 		{
@@ -72,7 +71,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			if (controlInterface != null && controlInterface instanceof ListBoxInterface)
 			{
 				String[] stringArray = (String[]) request.getParameterValues("Control_" + sequence);
-				valueList = new ArrayList();
+				valueList = new ArrayList<String>();
 				if (stringArray != null)
 				{
 					for (int counter = 0; counter < stringArray.length; counter++)
@@ -86,7 +85,6 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			{
 				value = request.getParameter("Control_" + sequence);
 				attributeValueMap.put(abstractAttributeInterface, value);
-
 			}
 
 		}

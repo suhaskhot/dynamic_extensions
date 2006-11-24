@@ -7,7 +7,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
 
 /**
- * @author Rahul Ner
+ * @author chetan_patil
  *
  */
 public class DateValidator implements ValidatorRuleInterface

@@ -15,6 +15,7 @@
 			</dataType>
 			<dataType name="Number">
 				<validations>
+					<validation-rule name="number" isImplicit="true" />
 					<validation-rule name="range" isImplicit="false" />
 				</validations>
 			</dataType>

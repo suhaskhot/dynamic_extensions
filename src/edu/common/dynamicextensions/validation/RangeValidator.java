@@ -11,71 +11,109 @@ import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInte
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
 
 /**
- * @author Rahul Ner
- *
+ * This Class validates the range of the numeric data entered by the user. It checks whether the value entered is between the 
+ * specified range. The extreme values of the range are obtained from the RuleParameter of the Rule instance. 
+ * @author chetan_patil
+ * @version 1.0
  */
 public class RangeValidator implements ValidatorRuleInterface
 {
 
 	/**
-	 * @see edu.common.dynamicextensions.validation.ValidatorRuleInterface#validate(edu.common.dynamicextensions.domaininterface.AttributeInterface, java.lang.Object, java.util.Map)
+	 * This method implements the validate method of the ValidatorRuleInterface.
+	 * This method validates the numeric data entered by the user against the maximum and the 
+	 * minimum values of the rule.
+	 * @param attribute the Attribute whose corresponding value is to be verified.
+	 * @param valueObject the value entered by the user.
+	 * @param parameterMap the parameters of the Rule.
+	 * @throws DynamicExtensionsValidationException if the value is not following the range Rule. 
+	 */
+	public boolean validate(AttributeInterface attribute, Object valueObject, Map<String, String> parameterMap)
+			throws DynamicExtensionsValidationException
+	{
+		boolean valid = true;
+		String attributeName = attribute.getName();
+
+		if (valueObject != null && !((String) valueObject).trim().equals(""))
+		{
+			AttributeTypeInformationInterface attributeTypeInformation = attribute.getAttributeTypeInformation();
+			if (attributeTypeInformation != null)
+			{
+				String value = (String) valueObject;
+
+				Set<Map.Entry<String, String>> parameterSet = parameterMap.entrySet();
+				for (Map.Entry<String, String> parameter : parameterSet)
+				{
+					if (attributeTypeInformation instanceof LongAttributeTypeInformation)
+					{
+						checkLongValidation(parameter, attributeName, value);
+					}
+					else if (attributeTypeInformation instanceof DoubleAttributeTypeInformation)
+					{
+						checkDoubleValidation(parameter, attributeName, value);
+					}
+				}
+			}
+		}
+		return valid;
+	}
+
+	/**
+	 * This method verifies if the number is a proper Long value or not.
+	 * @param parameter the parameter of the rule in form of <ParameterName, Value> pair. 
+	 * @param attributeName the name of the Attribute.
+	 * @param value the value to be verified.
 	 * @throws DynamicExtensionsValidationException
 	 */
-	public boolean validate(AttributeInterface attribute, Object valueObject, Map<String, String> parameterMap) throws DynamicExtensionsValidationException
+	private void checkLongValidation(Map.Entry<String, String> parameter, String attributeName, String value)
+			throws DynamicExtensionsValidationException
 	{
-		String attributeName = attribute.getName();
-		
-		if (valueObject == null || ((String) valueObject).trim().equals(""))
+		String parameterName = parameter.getKey();
+		String parameterValue = parameter.getValue();
+
+		if (parameterName.equals("min"))
 		{
-			throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.RequiredValidator", attributeName);
-		}
-		else
-		{
-			String value = (String)valueObject;
-			AttributeTypeInformationInterface attributeTypeInformation = attribute.getAttributeTypeInformation();
-			Set<Map.Entry<String, String>> parameterSet = parameterMap.entrySet();
-			for(Map.Entry<String, String> parameter : parameterSet)
+			if (Long.parseLong(value) < Long.parseLong(parameterValue))
 			{
-				String parameterName = parameter.getKey();
-				String parameterValue = parameter.getValue();
-				
-				if(attributeTypeInformation instanceof LongAttributeTypeInformation )
-				{
-					if(parameterName.equals("min"))
-					{
-						if(Long.parseLong(value) < Long.parseLong(parameterValue))
-						{
-							throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Range.Minimum", attributeName);
-						}
-					}
-					else if(parameterName.equals("max"))
-					{
-						if(Long.parseLong(value) > Long.parseLong(parameterValue))
-						{
-							throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Range.Maximum", attributeName);
-						}
-					}
-				}
-				else if(attributeTypeInformation instanceof DoubleAttributeTypeInformation )
-				{
-					if(parameterName.equals("min"))
-					{
-						if(Double.parseDouble(value) < Double.parseDouble(parameterValue))
-						{
-							throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Range.Minimum", attributeName);
-						}
-					}
-					else if(parameterName.equals("max"))
-					{
-						if(Double.parseDouble(value) > Double.parseDouble(parameterValue))
-						{
-							throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Range.Maximum", attributeName);
-						}
-					}
-				}
-			}			
+				throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Range.Minimum", attributeName);
+			}
 		}
-		return true;
+		else if (parameterName.equals("max"))
+		{
+			if (Long.parseLong(value) > Long.parseLong(parameterValue))
+			{
+				throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Range.Maximum", attributeName);
+			}
+		}
 	}
-	
+
+	/**
+	 * This method verifies if the number is a proper Double value or not.
+	 * @param parameter the parameter of the rule in form of <ParameterName, Value> pair. 
+	 * @param attributeName the name of the Attribute.
+	 * @param value the value to be verified.
+	 * @throws DynamicExtensionsValidationException
+	 */
+	private void checkDoubleValidation(Map.Entry<String, String> parameter, String attributeName, String value)
+			throws DynamicExtensionsValidationException
+	{
+		String parameterName = parameter.getKey();
+		String parameterValue = parameter.getValue();
+
+		if (parameterName.equals("min"))
+		{
+			if (Double.parseDouble(value) < Double.parseDouble(parameterValue))
+			{
+				throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Range.Minimum", attributeName);
+			}
+		}
+		else if (parameterName.equals("max"))
+		{
+			if (Long.parseLong(value) > Long.parseLong(parameterValue))
+			{
+				throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Range.Maximum", attributeName);
+			}
+		}
+	}
+
 }

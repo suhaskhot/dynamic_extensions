@@ -48,7 +48,7 @@ public class DynamicExtensionsUtility
 	 * @throws DynamicExtensionsApplicationException on Application exception
 	 */
 	public static ContainerInterface getContainerByIdentifier(String containerIdentifier) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	DynamicExtensionsApplicationException
 	{
 		ContainerInterface containerInterface = null;
 		containerInterface = (ContainerInterface) getObjectByIdentifier(ContainerInterface.class.getName(), containerIdentifier);
@@ -64,7 +64,7 @@ public class DynamicExtensionsUtility
 	 * @throws DynamicExtensionsApplicationException on Application exception
 	 */
 	private static Object getObjectByIdentifier(String objectName, String identifier) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	DynamicExtensionsApplicationException
 	{
 		AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
 		Object object = null;
@@ -169,7 +169,7 @@ public class DynamicExtensionsUtility
 			}
 		}
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -214,16 +214,46 @@ public class DynamicExtensionsUtility
 		}
 		return attributeTypeInformation;
 	}	
-	
+
 	/**
 	 * This method converts stack trace to the string representation
 	 * @param aThrowable   throwable object
 	 * @return String representation  of the stack trace
 	 */
 	public static String getStackTrace(Throwable throwable) {
-	    final Writer result = new StringWriter();
-	    final PrintWriter printWriter = new PrintWriter(result);
-	    throwable.printStackTrace(printWriter);
-	    return result.toString();
+		final Writer result = new StringWriter();
+		final PrintWriter printWriter = new PrintWriter(result);
+		throwable.printStackTrace(printWriter);
+		return result.toString();
 	}
+	/**
+	 * Converts string to integer
+	 * @param string
+	 * @return
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public static int convertStringToInt(String string) throws DynamicExtensionsApplicationException
+	{
+		int intValue = 0; 
+		if (string != null)
+		{
+			try
+			{
+				if (string.trim().equals(""))
+				{
+					intValue = 0; //Assume 0 for blank values
+				}
+				else
+				{
+					intValue = Integer.parseInt(string);
+				}
+			}
+			catch (NumberFormatException e)
+			{
+				throw new DynamicExtensionsApplicationException(e.getMessage(), e);
+			}
+		}
+		return intValue;
+	}
+
 }

@@ -26,7 +26,7 @@ public class Attribute extends AbstractAttribute implements AttributeInterface
 	/**
 	 * Specifies whether this primitive attribute is a collection or not.
 	 */
-	protected Boolean isCollection;
+	protected Boolean isCollection = false;
 
 	/**
 	 * Specifies whether this is an identified field or not.

@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.domain;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -15,7 +16,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @author Rahul Ner 
  * @hibernate.class  table="DYEXTN_COLLECTION_ATTR_RECORD"
  */
-public class CollectionAttributeRecord extends AbstractDomainObject implements Serializable
+public class CollectionAttributeRecord implements Serializable
 {
 
 	/**
@@ -53,13 +54,13 @@ public class CollectionAttributeRecord extends AbstractDomainObject implements S
 	/**
 	 * value of this collectionRecord.
 	 */
-	protected String value;
+	protected Collection<CollectionAttributeRecordValue> valueCollection;
 
 	/**
 	 * This method returns the unique identifier of the AbstractMetadata.
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
 	 * length="30" unsaved-value="null" generator-class="native"
-	 * @hibernate.generator-param name="sequence" value="DYEXTN_COLLECTION_ATTR_REC_SEQ"
+	 * @hibernate.generator-param name="sequence" value="DE_COLLECTION_ATTR_REC_SEQ"
 	 * @return the identifier of the AbstractMetadata.
 	 */
 	public Long getId()
@@ -134,28 +135,26 @@ public class CollectionAttributeRecord extends AbstractDomainObject implements S
 		this.recordId = recordId;
 	}
 
+	
 	/**
-	 * This method returns the value of the collectionRecord.
-	 * @hibernate.property name="value" type="string" column="RECORD_VALUE" length="4000"
-	 * @return the value of the collectionRecord.
+	 * This method returns the Collection of AbstractAttribute.
+	 * @hibernate.set name="valueCollection" table="DE_COLL_ATTR_RECORD_VALUES"
+	 * cascade="all-delete-orphan" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="COLLECTION_ATTR_RECORD_ID"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.CollectionAttributeRecordValue" 
+	 * @return the Collection of AbstractAttribute.
 	 */
-	public String getValue()
+	public Collection<CollectionAttributeRecordValue> getValueCollection()
 	{
-		return value;
-	}
-
-	/**
-	 * @param value The value to set.
-	 */
-	public void setValue(String value)
-	{
-		this.value = value;
+		return valueCollection;
 	}
 
 	
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException
+	/**
+	 * @param valueCollection The valueCollection to set.
+	 */
+	public void setValueCollection(Collection<CollectionAttributeRecordValue> valueCollection)
 	{
-		// TODO Auto-generated method stub
-		
+		this.valueCollection = valueCollection;
 	}
 }

@@ -8,12 +8,15 @@
 
 package edu.common.dynamicextensions.entitymanager;
 
+import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domain.Attribute;
@@ -983,4 +986,72 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             }
 
         }
+        
+        /**
+    	 * This method test for inserting data for a multi select attribute
+    	 */
+    	public void testInsertDataWithMultiSelectAttribute()
+    	{
+    		Entity entity = new Entity();
+    		entity.setName("Stock Quote");
+    		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+    		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+    		try
+    		{
+
+    			//Edit entity
+    			AttributeInterface floatAtribute = factory.createFloatAttribute();
+    			floatAtribute.setName("Price");
+    			
+    			AttributeInterface commentsAttributes = factory.createStringAttribute();
+    			commentsAttributes.setName("comments");
+    			commentsAttributes.setIsCollection(true);
+
+    			entity.addAbstractAttribute(floatAtribute);
+    			entity.addAbstractAttribute(commentsAttributes);
+
+    			EntityInterface savedEntity = entityManagerInterface.persistEntity(entity);
+
+    			Map dataValue = new HashMap();
+    			dataValue.put(floatAtribute, "15.90");
+    			List<String> commentsValues = new ArrayList<String>();
+    			commentsValues.add("comments1");
+    			commentsValues.add("comments2");
+    			commentsValues.add("comments3");
+    			commentsValues.add("comments4");
+    			
+    			dataValue.put(commentsAttributes, commentsValues);
+    			
+    			entityManagerInterface.insertData(savedEntity, dataValue);
+
+
+    			
+    			ResultSet resultSet = executeQuery("select * from "
+    					+ savedEntity.getTableProperties().getName());
+    			resultSet.next();
+                assertEquals(1,resultSet.getInt(1));
+                ResultSetMetaData metadata = resultSet.getMetaData();
+                assertEquals(2, metadata.getColumnCount());
+    			
+    		}
+    		catch (DynamicExtensionsSystemException e)
+    		{
+    			fail();
+    			Logger.out.debug(e.getStackTrace());
+    		}
+    		catch (DynamicExtensionsApplicationException e)
+    		{
+    			fail();
+    			Logger.out.debug(e.getStackTrace());
+    		}
+    		catch (Exception e)
+    		{
+    			e.printStackTrace();
+    			fail();
+
+    			Logger.out.debug(e.getStackTrace());
+    		}
+
+    	}
 }

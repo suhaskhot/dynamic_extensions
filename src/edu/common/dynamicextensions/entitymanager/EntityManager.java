@@ -24,6 +24,8 @@ import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.CollectionAttributeRecord;
+import edu.common.dynamicextensions.domain.CollectionAttributeRecordValue;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
@@ -253,7 +255,33 @@ public class EntityManager
 		return entityGroupInterface;
 
 	}
+	
 
+	/**
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAssociations(java.lang.Long, java.lang.Long)
+	 */
+	private List<String> getCollectionAttributeRecord(Long entityId, Long attributeId,Long recordId)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		
+		Map substitutionParameterMap = new HashMap();
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entityId));
+		substitutionParameterMap.put("1", new HQLPlaceHolderObject("long", attributeId));
+		substitutionParameterMap.put("2", new HQLPlaceHolderObject("long", recordId));
+		
+
+		Collection recordCollection = executeHQL("getCollectionAttributeRecord", substitutionParameterMap);
+		CollectionAttributeRecord collectionAttributeRecord = (CollectionAttributeRecord) recordCollection.iterator().next();
+		Collection <CollectionAttributeRecordValue>recordValueCollection = collectionAttributeRecord.getValueCollection();
+		
+		List<String> valueList = new ArrayList<String>();
+		for(CollectionAttributeRecordValue recordValue :recordValueCollection) {
+			valueList.add(recordValue.getValue());
+		}
+		return valueList;	
+	}
+
+	
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAssociations(java.lang.Long, java.lang.Long)
 	 */
@@ -839,7 +867,7 @@ public class EntityManager
 			while (attributeIterator.hasNext())
 			{
 				Attribute attribute = (Attribute) attributeIterator.next();
-                if (attribute.getIsCollection()) {
+                if (attribute.getIsCollection() != null && attribute.getIsCollection()) {
                     continue;
                 }
 				String attributeQueryPart = getQueryPartForAbstractAttribute(attribute, true);
@@ -1386,8 +1414,9 @@ public class EntityManager
 		StringBuffer columnValuesString = new StringBuffer(identifier.toString());
 		String tableName = entity.getTableProperties().getName();
 
-		//        Map colNameMap = getDbColumnNameMap(entity);
-
+		List<CollectionAttributeRecord> collectionRecords = new ArrayList<CollectionAttributeRecord>();
+		
+		
 		Set uiColumnSet = dataValue.keySet();
 		Iterator uiColumnSetIter = uiColumnSet.iterator();
 
@@ -1396,16 +1425,22 @@ public class EntityManager
 			AbstractAttribute attribute = (AbstractAttribute) uiColumnSetIter.next();
 			if (attribute instanceof AttributeInterface)
 			{
-				columnNameString.append(" , ");
-				columnValuesString.append(" , ");
-				String dbColumnName = ((AttributeInterface) attribute).getColumnProperties()
-						.getName();
-				Object value = dataValue.get(attribute);
+				AttributeInterface primitiveAttribute = (AttributeInterface) attribute ;
+				Object value = dataValue.get(primitiveAttribute);
+				
+				if(primitiveAttribute.getIsCollection()) {
+					CollectionAttributeRecord collectionRecord = populateCollectionAttributeRecord(entity,primitiveAttribute,identifier,(List<String>) value);
+					collectionRecords.add(collectionRecord);
+				} else {
+					columnNameString.append(" , ");
+					columnValuesString.append(" , ");
+					String dbColumnName = primitiveAttribute.getColumnProperties()
+							.getName();
 
-				columnNameString.append(dbColumnName);
-				value = getFormattedValue(attribute, value);
-				columnValuesString.append(value);
-
+					columnNameString.append(dbColumnName);
+					value = getFormattedValue(attribute, value);
+					columnValuesString.append(value);
+				}
 			}
 			else
 			{
@@ -1419,21 +1454,78 @@ public class EntityManager
 		query.append(columnValuesString);
 		query.append(" ) ");
 
+		HibernateDAO hibernateDAO = null;
 		try
-		{
-			JDBCDAO jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
-			jdbcDao.openSession(null);
+		{   
 			logDebug("insertData", "Query is: " + query.toString());
-			jdbcDao.executeUpdate(query.toString());
-			jdbcDao.commit();
-			jdbcDao.closeSession();
+
+			DAOFactory factory = DAOFactory.getInstance();
+			hibernateDAO = (HibernateDAO) factory.getDAO(Constants.HIBERNATE_DAO);
+
+			hibernateDAO.openSession(null);
+		    Connection conn = DBUtil.getConnection();
+			PreparedStatement statement = conn.prepareStatement(query.toString());
+			statement.executeUpdate();
+			
+			for(CollectionAttributeRecord collectionAttributeRecord : collectionRecords) {
+				//logDebug("insertData", "Inserting multi select: " +  collectionAttributeRecord.getValue());
+				hibernateDAO.insert(collectionAttributeRecord, null, false, false);
+			}
+			
+			hibernateDAO.commit();
 		}
-		catch (DAOException e)
+		catch (Exception e)
 		{
+			try
+			{
+				hibernateDAO.rollback();
+			}
+			catch (DAOException e1)
+			{
+				throw new DynamicExtensionsSystemException("Error while inserting data", e1);
+			}
 			throw new DynamicExtensionsSystemException("Error while inserting data", e);
+		}
+		finally {
+			try
+			{
+				hibernateDAO.closeSession();
+			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException("Error while inserting data", e);
+			}
+			
 		}
 
 		return identifier;
+	}
+
+	/**
+	 * This method returns a list of <CollectionAttributeRecord> that for a particular multiselect attribute of 
+	 * the entity.
+	 * 
+	 * @param entity entity for which data has been entered.
+	 * @param primitiveAttribute attribute for which data has been entered.
+	 * @param identifier id of the record
+	 * @param values List of values for this multiselect attribute
+	 * @return  list of <CollectionAttributeRecord>
+	 */
+	private CollectionAttributeRecord populateCollectionAttributeRecord(EntityInterface entity, AttributeInterface primitiveAttribute, Long identifier, List<String> values)
+	{
+		HashSet<CollectionAttributeRecordValue> valueCollection = new HashSet<CollectionAttributeRecordValue>();
+		CollectionAttributeRecord record = new CollectionAttributeRecord();
+		record.setEntity(entity);
+		record.setAttribute(primitiveAttribute);
+		record.setRecordId(identifier);
+		for(String value :values) {
+			CollectionAttributeRecordValue collectionAttributeRecordValue = new CollectionAttributeRecordValue();
+			collectionAttributeRecordValue.setValue(value);
+			valueCollection.add(collectionAttributeRecordValue);
+		}
+		record.setValueCollection(valueCollection);
+		
+		return record;
 	}
 
 	/**
@@ -2008,9 +2100,10 @@ public class EntityManager
 		}
 
 		Collection attributesCollection = entity.getAttributeCollection();
+		List<AttributeInterface> collectionAtributes = new ArrayList<AttributeInterface>();
 
 		String tableName = entity.getTableProperties().getName();
-		String[] selectColumnName = new String[attributesCollection.size()];
+		List<String>  selectColumnNameList = new ArrayList<String> ();
 		String[] whereColumnName = new String[]{IDENTIFIER};
 		String[] whereColumnCondition = new String[]{"="};
 		Object[] whereColumnValue = new Object[]{recordId};
@@ -2021,17 +2114,30 @@ public class EntityManager
 		while (attriIterator.hasNext())
 		{
 			AttributeInterface attribute = (AttributeInterface) attriIterator.next();
-			String dbColumnName = attribute.getColumnProperties().getName();
-			String uiColumnName = attribute.getName();
-			selectColumnName[index] = dbColumnName;
-			columnNameMap.put(dbColumnName, uiColumnName);
-			index++;
+			
+			if (attribute.getIsCollection()) {
+				collectionAtributes.add(attribute);
+			} else {
+				String dbColumnName = attribute.getColumnProperties().getName();
+				String uiColumnName = attribute.getName();
+				selectColumnNameList.add(dbColumnName);
+				//selectColumnName[index] = dbColumnName;
+				columnNameMap.put(dbColumnName, uiColumnName);
+				index++;
+			}
 		}
 
+		String[] selectColumnName = new String[selectColumnNameList.size()];
+		for(int i = 0; i < selectColumnNameList.size() ;i++) {
+			selectColumnName[i] = selectColumnNameList.get(i);
+		}
+		
+		JDBCDAO jdbcDao = null;
 		try
 		{
-			JDBCDAO jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
+			jdbcDao  = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
 			jdbcDao.openSession(null);
+			
 			List result = jdbcDao.retrieve(tableName, selectColumnName, whereColumnName,
 					whereColumnCondition, whereColumnValue, null);
 			List innerList = null;
@@ -2051,11 +2157,25 @@ public class EntityManager
 				}
 			}
 
-			jdbcDao.closeSession();
+			for(AttributeInterface attribute: collectionAtributes) {
+				List<String> valueList = getCollectionAttributeRecord(entity.getId(),attribute.getId(),recordId);
+				recordValues.put(attribute.getName(), valueList);
+			}
+
 		}
 		catch (DAOException e)
 		{
 			throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
+		} finally {
+			
+			try
+			{
+				jdbcDao.closeSession();
+			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
+			}
 		}
 		return recordValues;
 	}

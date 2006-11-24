@@ -9,6 +9,7 @@
 package edu.common.dynamicextensions.util;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
@@ -64,8 +65,9 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 
 	/**
 	 * @param query query to be executed
+	 * @return 
 	 */
-	protected void executeQuery(String query)
+	protected ResultSet executeQuery(String query)
 	{
 		//      Checking whether the data table is created properly or not.
 		Connection conn = null;
@@ -81,7 +83,7 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 		try
 		{
 			statement = conn.prepareStatement(query);
-			statement.executeUpdate();
+			return statement.executeQuery();
 		}
 		catch (SQLException e)
 		{
@@ -89,6 +91,7 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 			fail();
 		}
 
+		return null;
 	}
 	
 	/**

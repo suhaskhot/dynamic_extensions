@@ -36,7 +36,7 @@
 		<mapping resource="edu/common/dynamicextensions/hbm/AttributeTypeInformation.hbm.xml"/>
 		<mapping resource="edu/common/dynamicextensions/hbm/EntityManagerHQL.hbm.xml"/>
         <mapping resource="edu/common/dynamicextensions/hbm/CollectionAttributeRecord.hbm.xml"/>
-		
+	   <mapping resource="edu/common/dynamicextensions/hbm/CollectionAttributeRecordValue.hbm.xml"/>
 		
         <mapping resource="edu/common/dynamicextensions/hbm/databaseproperties/DatabaseProperties.hbm.xml"/>
         <mapping resource="edu/common/dynamicextensions/hbm/userinterface/Container.hbm.xml"/>

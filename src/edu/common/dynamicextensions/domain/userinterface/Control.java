@@ -258,6 +258,7 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	 */
 	public void setAbstractAttribute(AbstractAttributeInterface abstractAttributeInterface)
 	{
+		this.abstractAttributeCollection.clear();
 		this.abstractAttributeCollection.add((AbstractAttribute) abstractAttributeInterface);
 	}
 
@@ -268,7 +269,7 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.AbstractAttribute" 
 	 * @return Returns the sourceEntityCollection.
 	 */
-	public Collection<AbstractAttributeInterface> getAbstractAttributeCollection()
+	private Collection<AbstractAttributeInterface> getAbstractAttributeCollection()
 	{
 		return abstractAttributeCollection;
 	}
@@ -277,7 +278,7 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	 * 
 	 * @param abstractAttributeCollection
 	 */
-	public void setAbstractAttributeCollection(Collection<AbstractAttributeInterface> abstractAttributeCollection)
+	private void setAbstractAttributeCollection(Collection<AbstractAttributeInterface> abstractAttributeCollection)
 	{
 		this.abstractAttributeCollection = abstractAttributeCollection;		
 	}

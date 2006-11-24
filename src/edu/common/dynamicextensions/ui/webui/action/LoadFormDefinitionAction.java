@@ -48,7 +48,6 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 	{
 		FormDefinitionForm formDefinitionForm = (FormDefinitionForm) form;
-		
 		try
 		{
 			populateContainerInformation(request,formDefinitionForm);

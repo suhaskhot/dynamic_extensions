@@ -1,7 +1,10 @@
 
 package edu.common.dynamicextensions.ui.webui.action;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +12,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.struts.Globals;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -19,6 +21,7 @@ import org.apache.struts.action.ActionMessages;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
 import edu.common.dynamicextensions.processor.ApplyDataEntryFormProcessor;
 import edu.common.dynamicextensions.ui.webui.actionform.DataEntryForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
@@ -48,21 +51,44 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		AbstractAttributeInterface abstractAttributeInterface = null;
 		//ControlInterface controlInterface = null;
 
-		Map<AbstractAttributeInterface, String> attributeValueMap = new LinkedHashMap<AbstractAttributeInterface, String>();
+		Map<AbstractAttributeInterface, Object> attributeValueMap = new LinkedHashMap<AbstractAttributeInterface, Object>();
 		String value = null;
+		List valueList;
 
 		for (int sequence = 1; sequence <= controlCollection.size(); sequence++)
 		{
-			value = request.getParameter("Control_" + sequence);
-			for (ControlInterface controlInterface : controlCollection)
+			Iterator controlIterator = controlCollection.iterator();
+			ControlInterface controlInterface = null;
+
+			while (controlIterator.hasNext())
 			{
+				controlInterface = (ControlInterface) controlIterator.next();
 				if (sequence == controlInterface.getSequenceNumber().intValue())
 				{
 					abstractAttributeInterface = controlInterface.getAbstractAttribute();
-					attributeValueMap.put(abstractAttributeInterface, value);
 					break;
 				}
 			}
+			if (controlInterface != null && controlInterface instanceof ListBoxInterface)
+			{
+				String[] stringArray = (String[]) request.getParameterValues("Control_" + sequence);
+				valueList = new ArrayList();
+				if (stringArray != null)
+				{
+					for (int counter = 0; counter < stringArray.length; counter++)
+					{
+						valueList.add(stringArray[counter]);
+					}
+				}
+				attributeValueMap.put(abstractAttributeInterface, valueList);
+			}
+			else
+			{
+				value = request.getParameter("Control_" + sequence);
+				attributeValueMap.put(abstractAttributeInterface, value);
+
+			}
+
 		}
 
 		ApplyDataEntryFormProcessor applyDataEntryFormProcessor = ApplyDataEntryFormProcessor.getInstance();
@@ -76,7 +102,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			if (errorList.size() != 0)
 			{
 				//saveErrors(request, getErrorMessages(errorList));
-				DataEntryForm dataEntryForm = (DataEntryForm)form;
+				DataEntryForm dataEntryForm = (DataEntryForm) form;
 				dataEntryForm.setErrorList(errorList);
 			}
 			else
@@ -113,5 +139,5 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		actionMessages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("app.successfulDataInsertionMessage"));
 		return actionMessages;
 	}
-	
+
 }

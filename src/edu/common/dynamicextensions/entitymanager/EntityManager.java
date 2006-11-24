@@ -261,18 +261,10 @@ public class EntityManager
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAssociations(java.lang.Long, java.lang.Long)
 	 */
-	private List<String> getCollectionAttributeRecord(Long entityId, Long attributeId,Long recordId)
+	private List<String> getCollectionAttributeRecordValues(Long entityId, Long attributeId,Long recordId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		
-		Map substitutionParameterMap = new HashMap();
-		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entityId));
-		substitutionParameterMap.put("1", new HQLPlaceHolderObject("long", attributeId));
-		substitutionParameterMap.put("2", new HQLPlaceHolderObject("long", recordId));
-		
-
-		Collection recordCollection = executeHQL("getCollectionAttributeRecord", substitutionParameterMap);
-		CollectionAttributeRecord collectionAttributeRecord = (CollectionAttributeRecord) recordCollection.iterator().next();
+		CollectionAttributeRecord collectionAttributeRecord = getCollectionAttributeRecord(entityId, attributeId, recordId);
 		Collection <CollectionAttributeRecordValue>recordValueCollection = collectionAttributeRecord.getValueCollection();
 		
 		List<String> valueList = new ArrayList<String>();
@@ -281,6 +273,26 @@ public class EntityManager
 		}
 		return valueList;	
 	}
+	
+	/**
+	 * @param entityId
+	 * @param attributeId
+	 * @param recordId
+	 * @return
+	 */
+	private CollectionAttributeRecord getCollectionAttributeRecord(Long entityId, Long attributeId,Long recordId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException{
+	
+		Map substitutionParameterMap = new HashMap();
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entityId));
+		substitutionParameterMap.put("1", new HQLPlaceHolderObject("long", attributeId));
+		substitutionParameterMap.put("2", new HQLPlaceHolderObject("long", recordId));
+		
+
+		Collection recordCollection = executeHQL("getCollectionAttributeRecord", substitutionParameterMap);
+		CollectionAttributeRecord collectionAttributeRecord = (CollectionAttributeRecord) recordCollection.iterator().next();
+		return collectionAttributeRecord;
+	}
+	
 
 	
 	/**
@@ -1430,7 +1442,7 @@ public class EntityManager
 				Object value = dataValue.get(primitiveAttribute);
 				
 				if(primitiveAttribute.getIsCollection()) {
-					CollectionAttributeRecord collectionRecord = populateCollectionAttributeRecord(entity,primitiveAttribute,identifier,(List<String>) value);
+					CollectionAttributeRecord collectionRecord = populateCollectionAttributeRecord(null,entity,primitiveAttribute,identifier,(List<String>) value);
 					collectionRecords.add(collectionRecord);
 				} else {
 					columnNameString.append(" , ");
@@ -1501,10 +1513,134 @@ public class EntityManager
 
 		return identifier;
 	}
+	
+	
+	/**
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#editData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map, java.lang.Long)
+	 */
+	public boolean editData(EntityInterface entity, Map dataValue,Long recordId)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	{
+		if (entity == null || dataValue == null || dataValue.isEmpty())
+		{
+			throw new DynamicExtensionsSystemException("Input to edit data is null");
+		}
+
+		StringBuffer updateColumnString = new StringBuffer();
+		String tableName = entity.getTableProperties().getName();
+
+		List<CollectionAttributeRecord> collectionRecords = new ArrayList<CollectionAttributeRecord>();
+		List<CollectionAttributeRecord> deleteCollectionRecords = new ArrayList<CollectionAttributeRecord>();
+		
+		Set uiColumnSet = dataValue.keySet();
+		Iterator uiColumnSetIter = uiColumnSet.iterator();
+
+		while (uiColumnSetIter.hasNext())
+		{
+			AbstractAttribute attribute = (AbstractAttribute) uiColumnSetIter.next();
+			if (attribute instanceof AttributeInterface)
+			{
+				AttributeInterface primitiveAttribute = (AttributeInterface) attribute ;
+				Object value = dataValue.get(primitiveAttribute);
+				
+				if(primitiveAttribute.getIsCollection()) {
+					  CollectionAttributeRecord collectionRecord = getCollectionAttributeRecord(entity.getId(),primitiveAttribute.getId(), recordId);
+					  List<String> listOfValues = (List<String>) value;
+					  
+					  if (!listOfValues.isEmpty() ) {
+						  collectionRecord = populateCollectionAttributeRecord(collectionRecord,entity,primitiveAttribute,recordId,(List<String>) value);
+						  collectionRecords.add(collectionRecord);
+					  }
+					  
+					  if (collectionRecord != null && listOfValues.isEmpty()) {
+						  deleteCollectionRecords.add(collectionRecord);
+					  }
+					
+				} else {
+					String dbColumnName = primitiveAttribute.getColumnProperties()
+					.getName();
+					
+					if(updateColumnString.length() != 0 ) {
+						updateColumnString.append(WHITESPACE + COMMA + WHITESPACE);
+					}
+
+					updateColumnString.append(dbColumnName);
+					updateColumnString.append(WHITESPACE + EQUAL + WHITESPACE);
+					value = getFormattedValue(attribute, value);
+					updateColumnString.append(value);
+				}
+			}
+		}
+
+		StringBuffer query = null;
+		if (updateColumnString.length() != 0) {
+			query = new StringBuffer("UPDATE " + tableName + " SET ");
+			query.append(updateColumnString);
+			query.append(" where ");
+			query.append(IDENTIFIER);
+			query.append(WHITESPACE + EQUAL + WHITESPACE);
+			query.append(recordId);
+			
+		}
+		HibernateDAO hibernateDAO = null;
+		try
+		{   
+
+			DAOFactory factory = DAOFactory.getInstance();
+			hibernateDAO = (HibernateDAO) factory.getDAO(Constants.HIBERNATE_DAO);
+
+			hibernateDAO.openSession(null);
+		    
+			if(updateColumnString.length() != 0) {
+				logDebug("editData", "Query is: " + query.toString());
+				Connection conn = DBUtil.getConnection();
+				PreparedStatement statement = conn.prepareStatement(query.toString());
+				statement.executeUpdate();
+		    }
+			
+			for(CollectionAttributeRecord collectionAttributeRecord : collectionRecords) {
+				logDebug("editData", "updating multi select: " +  collectionAttributeRecord.getValueCollection());
+				hibernateDAO.update(collectionAttributeRecord, null, false, false,false);
+			}
+			
+			for(CollectionAttributeRecord collectionAttributeRecord : deleteCollectionRecords) {
+				logDebug("editData", "deleting multi select: " +  collectionAttributeRecord.getValueCollection());
+				hibernateDAO.update(collectionAttributeRecord, null, false, false,false);
+			}
+			
+			hibernateDAO.commit();
+		}
+		catch (Exception e)
+		{
+			try
+			{
+				hibernateDAO.rollback();
+			}
+			catch (DAOException e1)
+			{
+				throw new DynamicExtensionsSystemException("Error while editing data", e1);
+			}
+			throw new DynamicExtensionsSystemException("Error while editing data", e);
+		}
+		finally {
+			try
+			{
+				hibernateDAO.closeSession();
+			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException("Error while editing data", e);
+			}
+			
+		}
+
+		return true;
+	}
 
 	/**
 	 * This method returns a list of <CollectionAttributeRecord> that for a particular multiselect attribute of 
 	 * the entity.
+	 * @param collectionRecord 
 	 * 
 	 * @param entity entity for which data has been entered.
 	 * @param primitiveAttribute attribute for which data has been entered.
@@ -1512,21 +1648,27 @@ public class EntityManager
 	 * @param values List of values for this multiselect attribute
 	 * @return  list of <CollectionAttributeRecord>
 	 */
-	private CollectionAttributeRecord populateCollectionAttributeRecord(EntityInterface entity, AttributeInterface primitiveAttribute, Long identifier, List<String> values)
+	private CollectionAttributeRecord populateCollectionAttributeRecord(CollectionAttributeRecord collectionRecord, EntityInterface entity, AttributeInterface primitiveAttribute, Long identifier, List<String> values)
 	{
-		HashSet<CollectionAttributeRecordValue> valueCollection = new HashSet<CollectionAttributeRecordValue>();
-		CollectionAttributeRecord record = new CollectionAttributeRecord();
-		record.setEntity(entity);
-		record.setAttribute(primitiveAttribute);
-		record.setRecordId(identifier);
+		if (collectionRecord == null) {
+			collectionRecord = new CollectionAttributeRecord();
+			collectionRecord.setValueCollection(new HashSet<CollectionAttributeRecordValue>());
+		} else {
+			collectionRecord.getValueCollection().clear();
+		}
+		Collection<CollectionAttributeRecordValue> valueCollection = collectionRecord.getValueCollection();
+		
+		
+		collectionRecord.setEntity(entity);
+		collectionRecord.setAttribute(primitiveAttribute);
+		collectionRecord.setRecordId(identifier);
 		for(String value :values) {
 			CollectionAttributeRecordValue collectionAttributeRecordValue = new CollectionAttributeRecordValue();
 			collectionAttributeRecordValue.setValue(value);
 			valueCollection.add(collectionAttributeRecordValue);
 		}
-		record.setValueCollection(valueCollection);
 		
-		return record;
+		return collectionRecord;
 	}
 
 	/**
@@ -2161,7 +2303,7 @@ public class EntityManager
 			}
 
 			for(AttributeInterface attribute: collectionAtributes) {
-				List<String> valueList = getCollectionAttributeRecord(entity.getId(),attribute.getId(),recordId);
+				List<String> valueList = getCollectionAttributeRecordValues(entity.getId(),attribute.getId(),recordId);
 				recordValues.put(attribute.getName(), valueList);
 			}
 

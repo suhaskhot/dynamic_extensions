@@ -1054,4 +1054,180 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     		}
 
     	}
+    	
+    	
+    	/**
+    	 * This method test for updating record for an entity.
+    	 */
+    	public void testEditRecord()
+    	{
+    		Entity study = new Entity();
+    		study.setName("Study");
+    		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+    		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+    		try
+    		{
+
+    			AttributeInterface name = factory.createStringAttribute();
+    			name.setName("Study name");
+    			
+
+    			AttributeInterface userNames = factory.createStringAttribute();
+    			userNames.setName("users");
+    			
+    			AttributeInterface studyDate = factory.createDateAttribute();
+    			studyDate.setName("Date");
+
+    			study.addAbstractAttribute(name);
+    			study.addAbstractAttribute(userNames);
+    			study.addAbstractAttribute(studyDate);
+    			
+    			EntityInterface savedStudy = entityManagerInterface.persistEntity(study);
+
+
+    			Map dataValue = new HashMap();
+    			
+    			dataValue.put(name, "Java Study");
+    			dataValue.put(userNames, "a");
+    			dataValue.put(studyDate, "11-20-2006");
+    			
+    			
+    			Long recordId = entityManagerInterface.insertData(savedStudy, dataValue);
+    			
+    			Map map  = entityManagerInterface.getRecordById(savedStudy, recordId);
+    			
+    			String userName = (String) map.get("users");
+    			assertEquals("a",userName);
+    			
+
+    			dataValue.put(userNames, "b");
+    			dataValue.put(studyDate, "12-20-2006");
+    			
+    			
+    			entityManagerInterface.editData(savedStudy, dataValue,recordId);
+    			
+    			map  = entityManagerInterface.getRecordById(savedStudy, recordId);
+    			userName = (String) map.get("users");
+    			assertEquals("b",userName);
+    			assertEquals("12-20-2006",(String) map.get("Date"));
+    			
+    			
+    			
+
+    		}
+    		catch (DynamicExtensionsSystemException e)
+    		{
+    			fail();
+    			Logger.out.debug(e.getStackTrace());
+    		}
+    		catch (DynamicExtensionsApplicationException e)
+    		{
+    			fail();
+    			Logger.out.debug(e.getStackTrace());
+    		}
+    		catch (Exception e)
+    		{
+    			e.printStackTrace();
+    			fail();
+
+    			Logger.out.debug(e.getStackTrace());
+    		}
+
+    	}
+    	
+    	
+    	**
+   	 * This method test for updating data for a multi select attribute
+   	 */
+   	public void testEditRecordWithMultiselectAttrubteUpdate()
+   	{
+   		Entity study = new Entity();
+   		study.setName("Study");
+   		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+   		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+   		try
+   		{
+
+   			AttributeInterface name = factory.createStringAttribute();
+   			name.setName("Study name");
+   			
+   			AttributeInterface studyDate = factory.createDateAttribute();
+   			studyDate.setName("Date");
+   			
+
+   			AttributeInterface userNames = factory.createStringAttribute();
+   			userNames.setName("users");
+   			userNames.setIsCollection(true);
+
+   			study.addAttribute(name);
+   			study.addAttribute(userNames);
+   			study.addAttribute(studyDate);
+   			EntityInterface savedStudy = entityManagerInterface.persistEntity(study);
+
+
+   			Map dataValue = new HashMap();
+   			List<String> userNameList = new ArrayList<String>();
+   			userNameList.add("a");
+   			userNameList.add("b");
+   			userNameList.add("c");
+   			
+   			
+   			dataValue.put(name, "Java Study");
+   			dataValue.put(userNames, userNameList);
+   			dataValue.put(studyDate, "11-20-2006");
+
+   		
+   			
+   			Long recordId = entityManagerInterface.insertData(savedStudy, dataValue);
+   			
+   			Map map  = entityManagerInterface.getRecordById(savedStudy, recordId);
+   			
+   			int noOfUsers = ((List) map.get("users")).size();
+   			assertEquals(3,noOfUsers);
+   			System.out.println(map);
+   			
+   			dataValue.clear();
+   			userNameList.clear();
+   			userNameList.add("d");
+
+   			dataValue.put(userNames, userNameList);
+   			dataValue.put(studyDate, "12-20-2006");
+
+
+   			
+   			
+   			entityManagerInterface.editData(savedStudy, dataValue,recordId);
+   			
+   			map  = entityManagerInterface.getRecordById(savedStudy, recordId);
+   			noOfUsers = ((List) map.get("users")).size();
+   			assertEquals(1,noOfUsers);
+   			assertEquals("12-20-2006",(String) map.get("Date"));
+
+   			System.out.println(map);
+   			
+   			
+   			
+
+   		}
+   		catch (DynamicExtensionsSystemException e)
+   		{
+   			fail();
+   			Logger.out.debug(e.getStackTrace());
+   		}
+   		catch (DynamicExtensionsApplicationException e)
+   		{
+   			fail();
+   			Logger.out.debug(e.getStackTrace());
+   		}
+   		catch (Exception e)
+   		{
+   			e.printStackTrace();
+   			fail();
+
+   			Logger.out.debug(e.getStackTrace());
+   		}
+
+   	}
 }

@@ -24,6 +24,12 @@
        			   	association.targetEntity.id = ?
 	</query>
 	
+	<query name="getCollectionAttributeRecord">
+       from CollectionAttributeRecord collectionAttributeRecord
+	       	where collectionAttributeRecord.entity.id = ? AND 
+       			   	collectionAttributeRecord.attribute.id = ? AND
+       			   	     collectionAttributeRecord.recordId = ?
+	</query>
 	
 	
 	

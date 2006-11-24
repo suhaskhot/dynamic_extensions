@@ -33,14 +33,14 @@ public class RangeValidator implements ValidatorRuleInterface
 	{
 		boolean valid = true;
 		String attributeName = attribute.getName();
-
+		
 		if (valueObject != null && !((String) valueObject).trim().equals(""))
 		{
 			AttributeTypeInformationInterface attributeTypeInformation = attribute.getAttributeTypeInformation();
 			if (attributeTypeInformation != null)
 			{
 				String value = (String) valueObject;
-
+				
 				Set<Map.Entry<String, String>> parameterSet = parameterMap.entrySet();
 				for (Map.Entry<String, String> parameter : parameterSet)
 				{
@@ -70,17 +70,27 @@ public class RangeValidator implements ValidatorRuleInterface
 	{
 		String parameterName = parameter.getKey();
 		String parameterValue = parameter.getValue();
+		Long longValue = null;
 
+		try
+		{
+			longValue = Long.parseLong(value);
+		}
+		catch(NumberFormatException numberFormatException)
+		{
+			throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Number", attributeName);
+		}
+		
 		if (parameterName.equals("min"))
 		{
-			if (Long.parseLong(value) < Long.parseLong(parameterValue))
+			if (longValue < Long.parseLong(parameterValue))
 			{
 				throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Range.Minimum", attributeName);
 			}
 		}
 		else if (parameterName.equals("max"))
 		{
-			if (Long.parseLong(value) > Long.parseLong(parameterValue))
+			if (longValue > Long.parseLong(parameterValue))
 			{
 				throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Range.Maximum", attributeName);
 			}
@@ -99,17 +109,26 @@ public class RangeValidator implements ValidatorRuleInterface
 	{
 		String parameterName = parameter.getKey();
 		String parameterValue = parameter.getValue();
+		Double doubleValue = null;
 
+		try
+		{
+			doubleValue = Double.parseDouble(value);
+		}
+		catch(NumberFormatException numberFormatException)
+		{
+			throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Number", attributeName);
+		}
 		if (parameterName.equals("min"))
 		{
-			if (Double.parseDouble(value) < Double.parseDouble(parameterValue))
+			if (doubleValue < Double.parseDouble(parameterValue))
 			{
 				throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Range.Minimum", attributeName);
 			}
 		}
 		else if (parameterName.equals("max"))
 		{
-			if (Double.parseDouble(value) > Double.parseDouble(parameterValue))
+			if (doubleValue > Double.parseDouble(parameterValue))
 			{
 				throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Range.Maximum", attributeName);
 			}

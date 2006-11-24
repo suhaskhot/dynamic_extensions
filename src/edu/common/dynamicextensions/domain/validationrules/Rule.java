@@ -88,7 +88,7 @@ public class Rule extends AbstractDomainObject implements java.io.Serializable, 
 	/**
 	 * This method returns the Collection of RuleParameters.
 	 * @hibernate.set name="ruleParameterCollection" table="DYEXTN_RULE_PARAMETER"
-	 * cascade="none" inverse="false" lazy="false"
+	 * cascade="all-delete-orphan" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="RULE_ID"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.validationrules.RuleParameter"
 	 * @return the Collection of RuleParameters.

@@ -25,8 +25,8 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.class table="DYEXTN_ATTRIBUTE_TYPE_INFO"
  */
 public abstract class AttributeTypeInformation extends AbstractDomainObject
-		implements
-			AttributeTypeInformationInterface
+implements
+AttributeTypeInformationInterface
 {
 
 	/**
@@ -38,7 +38,7 @@ public abstract class AttributeTypeInformation extends AbstractDomainObject
 	 * Unique identifier for the object
 	 */
 	protected Long id;
-	
+
 	/**
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
 	 * length="30" unsaved-value="null" generator-class="native"
@@ -68,7 +68,7 @@ public abstract class AttributeTypeInformation extends AbstractDomainObject
 	 */
 	protected Collection<PermissibleValueInterface> defaultValueCollection;
 
-	
+
 	/**
 	 * @hibernate.set name="dataElementCollection" table="DYEXTN_DATA_ELEMENT"
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"
@@ -98,13 +98,12 @@ public abstract class AttributeTypeInformation extends AbstractDomainObject
 		if (dataElementCollection != null)
 		{
 			Iterator dataElementIterator = dataElementCollection.iterator();
-			return (DataElement) dataElementIterator.next();
+			if(dataElementIterator.hasNext())
+			{
+				return (DataElement) dataElementIterator.next();
+			}
 		}
-		else
-		{
-			return null;
-		}
-
+		return null;
 	}
 
 	/**
@@ -139,8 +138,8 @@ public abstract class AttributeTypeInformation extends AbstractDomainObject
 	{
 		this.defaultValueCollection = defaultValueCollection;
 	}
-	
-	
+
+
 
 	/**
 	 * 
@@ -173,7 +172,7 @@ public abstract class AttributeTypeInformation extends AbstractDomainObject
 		this.defaultValueCollection.add(permissibleValueInterface);
 	}
 
-	
+
 
 	/**
 	 * 
@@ -194,5 +193,5 @@ public abstract class AttributeTypeInformation extends AbstractDomainObject
 
 	}
 
-	
+
 }

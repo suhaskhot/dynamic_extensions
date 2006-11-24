@@ -20,7 +20,7 @@
             unsaved-value="null"
         >
             <generator class="native">
-                <param name="sequence">DYEXTN_COLLECTION_ATTR_REC_SEQ</param>
+                <param name="sequence">DE_COLLECTION_ATTR_REC_SEQ</param>
             </generator>
         </id>
 
@@ -31,7 +31,7 @@
             outer-join="auto"
             update="true"
             insert="true"
-            column="ENTIY_ID"
+            column="ENTITY_ID"
         />
 
         <many-to-one
@@ -52,14 +52,23 @@
             column="RECORD_ID"
         />
 
-        <property
-            name="value"
-            type="string"
-            update="true"
-            insert="true"
-            column="RECORD_VALUE"
-            length="4000"
-        />
+        <set
+            name="valueCollection"
+            table="DE_COLL_ATTR_RECORD_VALUES"
+            lazy="false"
+            inverse="false"
+            cascade="all-delete-orphan"
+            sort="unsorted"
+        >
+
+              <key
+                  column="COLLECTION_ATTR_RECORD_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.CollectionAttributeRecordValue"
+              />
+        </set>
 
         <!--
             To add non XDoclet property mappings, create a file named

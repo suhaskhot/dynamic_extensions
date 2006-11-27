@@ -8,18 +8,18 @@ import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 
- public interface ControlUIBeanInterface
+public interface ControlUIBeanInterface
 {
 	/**
 	 * 
 	 * @return String name
 	 */
-	 String getName();
+	String getName();
 
 	/**
 	 * @param name The name to set.
 	 */
-	 void setName(String name);
+	void setName(String name);
 
 	/**
 	 * If user has chosen it to be kept hidden.
@@ -47,109 +47,109 @@ import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 	 * @return Returns the attribute.
 	 *
 	 */
-	 AbstractAttributeInterface getAbstractAttribute();
+	AbstractAttributeInterface getAbstractAttribute();
 
 	/**
 	 * @param attributeInterface The AbstractAttribute to set.
 	 */
-	 void setAbstractAttribute(AbstractAttributeInterface attributeInterface);
+	void setAbstractAttribute(AbstractAttributeInterface attributeInterface);
 
 	/**
 	 * @return Returns the dataType.
 	 */
 
-	 String getDataType();
+	String getDataType();
 
 	/**
 	 * @param dataType The dataType to set.
 	 */
-	 void setDataType(String dataType);
+	void setDataType(String dataType);
 
 	/**
 	 * @return Returns the dataTypeList.
 	 */
-	 List getDataTypeList();
+	List getDataTypeList();
 
 	/**
 	 * @param dataTypeList The dataTypeList to set.
 	 */
-	 void setDataTypeList(List dataTypeList);
+	void setDataTypeList(List dataTypeList);
 
 	/**
 	 * @return Returns the choiceList.
 	 */
 	/*
-	  String getChoiceList() ;
+	 String getChoiceList() ;
 	 *//**
 	 * @param choiceList The choiceList to set.
 	 */
 	/*
-	  void setChoiceList(String choiceList) ;*/
+	 void setChoiceList(String choiceList) ;*/
 
 	/**
 	 * @return the attributeCssClass
 	 */
-	 String getCssClass();
+	String getCssClass();
 
 	/**
 	 * @param attributeCssClass the attributeCssClass to set
 	 */
-	 void setCssClass(String attributeCssClass);
+	void setCssClass(String attributeCssClass);
 
 	/**
 	 * @return the attributeTooltip
 	 */
-	 String getTooltip();
+	String getTooltip();
 
 	/**
 	 * @param attributeTooltip the attributeTooltip to set
 	 */
-	 void setTooltip(String attributeTooltip);
+	void setTooltip(String attributeTooltip);
 
 	/**
 	 * @return the attributeCaption
 	 */
-	 String getCaption();
+	String getCaption();
 
 	/**
 	 * @param attributeTooltip the attributeTooltip to set
 	 */
-	 void setCaption(String attributeTooltip);
+	void setCaption(String attributeTooltip);
 
 	/**
 	 * 
 	 * @return If the control is a password field
 	 */
-	 Boolean getIsPassword();
+	Boolean getIsPassword();
 
 	/**
 	 * 
 	 * @param isPassword If it is a password field set as true
 	 */
-	 void setIsPassword(Boolean isPassword);
+	void setIsPassword(Boolean isPassword);
 
 	/**
 	 * @return the toolsList
 	 */
 	/*
-	  List getToolsList(); 
+	 List getToolsList(); 
 
 	 *//**
 	 * @param toolsList the toolsList to set
 	 */
 	/*
-	  void setToolsList(List toolsList); 
+	 void setToolsList(List toolsList); 
 	 *//**
 	 * @return the userSelectedTool
 	 */
 	/*
-	  String getUserSelectedTool();
+	 String getUserSelectedTool();
 
 	 *//**
 	 * @param userSelectedTool the userSelectedTool to set
 	 */
 	/*
-	  void setUserSelectedTool(String userSelectedTool) ;*/
+	 void setUserSelectedTool(String userSelectedTool) ;*/
 	/**
 	 * @return Returns the columns.
 	 */
@@ -184,12 +184,12 @@ import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 	 * @return Returns the displayChoiceList.
 	 */
 	/*
-	  List getDisplayChoiceList(); 
+	 List getDisplayChoiceList(); 
 	 *//**
 	 * @param displayChoiceList The displayChoiceList to set.
 	 */
 	/*
-	  void setDisplayChoiceList(List displayChoiceList);*/
+	 void setDisplayChoiceList(List displayChoiceList);*/
 	/**
 	 * 
 	 * @param userSelectedTool userSelected Control
@@ -205,22 +205,34 @@ import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 	/**
 	 * @return the linesType
 	 */
-	 String getLinesType();
+	String getLinesType();
 
 	/**
 	 * @param linesType the linesType to set
 	 */
-	 void setLinesType(String linesType);
+	void setLinesType(String linesType);
 
 	/**
 	 * 
 	 * @return date value type as None/Today's date/selected date
 	 */
-	 String getDateValueType();
+	String getDateValueType();
 
 	/**
 	 * 
 	 * @param dateValueType None/Today's date/selected date
 	 */
-	 void setDateValueType(String dateValueType);
+	void setDateValueType(String dateValueType);
+
+	/**
+	 * Returns validationRules : value of checkbox fields selected by user
+	 * @return String[] ValidationRules
+	 */
+	String[] getValidationRules();
+
+	/**
+	 * 
+	 * @param validationRules value of checkbox fields
+	 */
+	void setValidationRules(String[] validationRules);
 }

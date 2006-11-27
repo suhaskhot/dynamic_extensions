@@ -284,18 +284,17 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	throws DynamicExtensionsSystemException
 	{
 		String[] validationRules = attributeUIBeanInformationIntf.getValidationRules();
-		/*if (validationRules != null && validationRules.length == 0)
-		{
-			validationRules = attributeUIBeanInformationIntf.getTempValidationRules();
-		}*/
+		ControlConfigurationsFactory configurationsFactory = null;
 		if (validationRules != null && validationRules.length != 0)
 		{
 			String validationRule = "";
-			ControlConfigurationsFactory configurationsFactory = ControlConfigurationsFactory.getInstance();
-			RuleConfigurationObject ruleConfigurationObject;
+			configurationsFactory = ControlConfigurationsFactory.getInstance();
+			RuleConfigurationObject ruleConfigurationObject = null;
+			
 			DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
-			RuleInterface ruleInterface;
+			RuleInterface ruleInterface = null;
 			Collection<RuleParameterInterface> ruleParameterCollection = new HashSet<RuleParameterInterface>();
+			
 			for (int counter = 0; counter < validationRules.length; counter++)
 			{
 				validationRule = validationRules[counter];
@@ -309,9 +308,9 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 					ruleInterface.setRuleParameterCollection(ruleParameterCollection);
 				}
 				abstractAttributeInterface.addRule(ruleInterface);
-
 			}
 		}
+		
 	}
 
 	/**

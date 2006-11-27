@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.ui.util;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -17,6 +18,8 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import edu.common.dynamicextensions.domain.DomainObjectFactory;
+import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.validation.ValidatorRuleInterface;
 import edu.wustl.common.beans.NameValueBean;
@@ -229,13 +232,13 @@ public final class ControlConfigurationsFactory
 			{
 				ControlsConfigurationObject controlsConfigurationObject = null;
 				List<NameValueBean> listOfControls = new ArrayList<NameValueBean>();
-				Node controlNode = null, controlNameNode = null, displayLabelNode = null, jspNameNode = null, dataTypeNode = null,imageFilePathNode=null;
+				Node controlNode = null, controlNameNode = null, displayLabelNode = null, jspNameNode = null, dataTypeNode = null, imageFilePathNode = null;
 				NodeList controlDataTypesNodesList = null, controlCommonValidationRules = null;
 				NamedNodeMap controlAttributes = null;
 				String controlName = null, displayLabel = null;
 				NameValueBean nameValueBean = null;
 				Map dataTypeRulesMap = null, dataTypeImplicitRulesMap = null, dataTypeExplicitRulesMap = null;
-				
+
 				int noOfControls = controlsList.getLength();
 				for (int i = 0; i < noOfControls; i++)
 				{
@@ -245,7 +248,7 @@ public final class ControlConfigurationsFactory
 						List dataTypeValidationRulesList = new ArrayList(), dataTypeRuleObjectsList = new ArrayList();
 						List implicitRulesList = null, implicitExplicitRulesList = null;
 						NodeList dataTypeRulesList = null;
-						
+
 						controlsConfigurationObject = new ControlsConfigurationObject();
 						controlAttributes = controlNode.getAttributes();
 						if (controlAttributes != null)
@@ -259,22 +262,25 @@ public final class ControlConfigurationsFactory
 								controlName = controlNameNode.getNodeValue();
 								displayLabel = displayLabelNode.getNodeValue();
 								nameValueBean = new NameValueBean(controlName, displayLabel);
+
 								listOfControls.add(nameValueBean);
+
 								controlsConfigurationObject.setControlName(controlName);
 								controlsConfigurationObject.setDisplayLabel(displayLabel);
 								controlsConfigurationObject.setJspName(jspNameNode.getNodeValue());
 							}
-							if(imageFilePathNode!=null)
+							if (imageFilePathNode != null)
 							{
 								controlsConfigurationObject.setImageFilePath(imageFilePathNode.getNodeValue());
 							}
 						}
+
 						List commonImplicitRules = new ArrayList();
 						List commonExplicitRules = new ArrayList();
 						controlCommonValidationRules = ((Element) controlNode).getElementsByTagName(Constants.COMMON_VALIDATION_RULE);
 						List commonValidationsList = getChildNodesList(controlCommonValidationRules, Constants.NAME);
 						implicitRulesList = getChildNodesList(controlCommonValidationRules, Constants.IS_IMPLICIT);
-						for(int j = 0; j < implicitRulesList.size(); j++)
+						for (int j = 0; j < implicitRulesList.size(); j++)
 						{
 							if (implicitRulesList.get(j).toString().equalsIgnoreCase("false"))
 							{
@@ -289,23 +295,26 @@ public final class ControlConfigurationsFactory
 						controlsConfigurationObject.setCommonValidationRules(getRuleObjectsList(commonValidationsList));
 						controlsConfigurationObject.setCommonExplicitRules(commonExplicitRules);
 						controlsConfigurationObject.setCommonImplicitRules(commonImplicitRules);
-						
-						controlDataTypesNodesList = ((Element) controlNode).getElementsByTagName(Constants.DATA_TYPE_TAGNAME);						
+
+						controlDataTypesNodesList = ((Element) controlNode).getElementsByTagName(Constants.DATA_TYPE_TAGNAME);
 						List dataTypesList = getChildNodesList(controlDataTypesNodesList, Constants.NAME);
-						
+
 						dataTypeRulesMap = new HashMap();
 						dataTypeImplicitRulesMap = new HashMap();
 						dataTypeExplicitRulesMap = new HashMap();
-						
+
 						for (int j = 0; j < dataTypesList.size(); j++)
 						{
 							dataTypeNode = controlDataTypesNodesList.item(j);
 							dataTypeRulesList = ((Element) dataTypeNode).getElementsByTagName(Constants.VALIDATION_RULE);
 							dataTypeValidationRulesList = getChildNodesList(dataTypeRulesList, Constants.NAME);
+
 							implicitRulesList = getChildNodesList(dataTypeRulesList, Constants.IS_IMPLICIT);
 							implicitExplicitRulesList = getImplicitExplicitRules(dataTypeValidationRulesList, implicitRulesList);
+
 							dataTypeImplicitRulesMap.put(dataTypesList.get(j), implicitExplicitRulesList.get(0));
 							dataTypeExplicitRulesMap.put(dataTypesList.get(j), implicitExplicitRulesList.get(1));
+
 							dataTypeRuleObjectsList = getRuleObjectsList(dataTypeValidationRulesList);
 							dataTypeRulesMap.put(dataTypesList.get(j), dataTypeRuleObjectsList);
 						}
@@ -319,6 +328,53 @@ public final class ControlConfigurationsFactory
 				}
 			}
 		}
+	}
+
+	/**
+	 * @param controlName
+	 * @return
+	 */
+	public Collection<RuleInterface> getAllImplicitRules(String controlName)
+	{
+		Collection<RuleInterface> allImplicitRules = new ArrayList<RuleInterface>();
+
+		ControlsConfigurationObject controlsConfiguration = (ControlsConfigurationObject) controlsConfigurationMap.get(controlName);
+		List<RuleInterface> commonImplicitRuleList = controlsConfiguration.getCommonImplicitRules();
+		if (commonImplicitRuleList != null && commonImplicitRuleList.size() > 0)
+		{
+			for(RuleInterface rule: commonImplicitRuleList)
+			{
+				allImplicitRules.add(rule);
+			}
+		}
+
+		Map dataTypeImplicitRulesMap = controlsConfiguration.getDataTypeImplicitRules();
+		Collection<RuleInterface> dataImpliciteRules = dataTypeImplicitRulesMap.values();
+
+		if (dataImpliciteRules != null && dataImpliciteRules.size() > 0)
+		{
+			Iterator dataImpliciteRulesIterator = dataImpliciteRules.iterator();
+			List ruleNameList;
+
+			while (dataImpliciteRulesIterator.hasNext())
+			{
+				ruleNameList = (List) dataImpliciteRulesIterator.next();
+				if (ruleNameList != null)
+				{
+					Iterator ruleNameIterator = ruleNameList.iterator();
+					String ruleName;
+					while (ruleNameIterator.hasNext())
+					{
+						ruleName = (String) ruleNameIterator.next();
+						RuleInterface ruleInterface = DomainObjectFactory.getInstance().createRule();
+						ruleInterface.setName(ruleName);
+						allImplicitRules.add(ruleInterface);
+					}
+				}
+			}
+		}
+
+		return allImplicitRules;
 	}
 
 	/**
@@ -499,7 +555,7 @@ public final class ControlConfigurationsFactory
 		}
 		return jspName;
 	}
-	
+
 	/**
 	 * Returns the jspname for the selected control by user.
 	 * @param controlName name of the control selected by user

@@ -27,48 +27,51 @@ public class NumberValidator implements ValidatorRuleInterface
 	public boolean validate(AttributeInterface attribute, Object valueObject, Map<String, String> parameterMap)
 			throws DynamicExtensionsValidationException
 	{
-//		boolean valid = false;
-//		if (valueObject != null && !((String) valueObject).trim().equals(""))
-//		{
-//			AttributeTypeInformationInterface attributeTypeInformation = attribute.getAttributeTypeInformation();
-//			String attributeName = attribute.getName();
-//			String value = (String) valueObject;
-//
-//			if (attributeTypeInformation != null)
-//			{
-//				if (attributeTypeInformation instanceof LongAttributeTypeInformation)
-//				{
-//					try
-//					{
-//						Long numberValue = new Long(value);
-//						if (numberValue != null)
-//						{
-//							valid = true;
-//						}
-//					}
-//					catch (NumberFormatException numberFormatException)
-//					{
-//						throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Number", attributeName);
-//					}
-//				}
-//				else if (attributeTypeInformation instanceof DoubleAttributeTypeInformation)
-//				{
-//					try
-//					{
-//						Double numberValue = new Double(value);
-//						if (numberValue != null)
-//						{
-//							valid = true;
-//						}
-//					}
-//					catch (NumberFormatException numberFormatException)
-//					{
-//						throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Number", attributeName);
-//					}
-//				}
-//			}
-//		}
-//		return valid;
-		return true;
+		boolean isValid = false;
+		AttributeTypeInformationInterface attributeTypeInformation = attribute.getAttributeTypeInformation();
+		String attributeName = attribute.getName();
+		if (valueObject != null && !((String) valueObject).equals(""))
+		{			
+			String value = (String) valueObject;
+
+			if (attributeTypeInformation != null)
+			{
+				if (attributeTypeInformation instanceof LongAttributeTypeInformation)
+				{
+					try
+					{
+						Long numberValue = new Long(value);
+						if (numberValue != null)
+						{
+							isValid = true;
+						}
+					}
+					catch (NumberFormatException numberFormatException)
+					{
+						throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Number", attributeName);
+					}
+				}
+				else if (attributeTypeInformation instanceof DoubleAttributeTypeInformation)
+				{
+					try
+					{
+						Double numberValue = new Double(value);
+						if (numberValue != null)
+						{
+							isValid = true;
+						}
+					}
+					catch (NumberFormatException numberFormatException)
+					{
+						throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Number", attributeName);
+					}
+				}
+			}
+		}
+		else
+		{
+			throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Number", attributeName);
+		}
+		return isValid;
 	}
 }

@@ -56,37 +56,34 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 
 		for (int sequence = 1; sequence <= controlCollection.size(); sequence++)
 		{
-			Iterator controlIterator = controlCollection.iterator();
-			ControlInterface controlInterface = null;
-
-			while (controlIterator.hasNext())
+			for(ControlInterface controlInterface: controlCollection)
 			{
-				controlInterface = (ControlInterface) controlIterator.next();
 				if (sequence == controlInterface.getSequenceNumber().intValue())
 				{
 					abstractAttributeInterface = controlInterface.getAbstractAttribute();
+					
+					if (controlInterface != null && controlInterface instanceof ListBoxInterface)
+					{
+						String[] selectedListValues = (String[]) request.getParameterValues("Control_" + sequence);
+						valueList = new ArrayList<String>();
+						if (selectedListValues != null)
+						{
+							for (int counter = 0; counter < selectedListValues.length; counter++)
+							{
+								valueList.add(selectedListValues[counter]);
+							}
+						}
+						attributeValueMap.put(abstractAttributeInterface, valueList);
+					}
+					else
+					{
+						value = request.getParameter("Control_" + sequence);
+						attributeValueMap.put(abstractAttributeInterface, value);
+					}
+					
 					break;
 				}
 			}
-			if (controlInterface != null && controlInterface instanceof ListBoxInterface)
-			{
-				String[] stringArray = (String[]) request.getParameterValues("Control_" + sequence);
-				valueList = new ArrayList<String>();
-				if (stringArray != null)
-				{
-					for (int counter = 0; counter < stringArray.length; counter++)
-					{
-						valueList.add(stringArray[counter]);
-					}
-				}
-				attributeValueMap.put(abstractAttributeInterface, valueList);
-			}
-			else
-			{
-				value = request.getParameter("Control_" + sequence);
-				attributeValueMap.put(abstractAttributeInterface, value);
-			}
-
 		}
 
 		ApplyDataEntryFormProcessor applyDataEntryFormProcessor = ApplyDataEntryFormProcessor.getInstance();

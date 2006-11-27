@@ -10,7 +10,11 @@
 
 package edu.common.dynamicextensions.processor;
 
+import java.util.Collection;
+import java.util.Iterator;
+
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
@@ -21,7 +25,10 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterfa
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
+import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.interfaces.ControlUIBeanInterface;
+import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
 
 /**
  * This class processes all the information needed for Control.
@@ -53,21 +60,24 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @param userSelectedControlName : Name of the User Selected Control 
 	 * @param controlUIBeanInterface : Control UI Information interface containing information added by user on UI
 	 * @return : Control interface populated with required information
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	public ControlInterface createAndPopulateControl(String userSelectedControlName, ControlUIBeanInterface controlUIBeanInterface)
+	public ControlInterface createAndPopulateControl(String userSelectedControlName, ControlUIBeanInterface controlUIBeanInterface) throws DynamicExtensionsSystemException
 	{
 		ControlInterface controlInterface = populateControlInterface(userSelectedControlName, null, controlUIBeanInterface);
 		return controlInterface;
 	}
+
 	/**
 	 * 
 	 * @param userSelectedControlName : Name of the User Selected Control 
 	 * @param controlIntf : Control Interface (Domain Object Interface)
 	 * @param controlUIBeanInterface : Control UI Information interface containing information added by user on UI
 	 * @return : Control interface populated with required information
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	public ControlInterface populateControlInterface(String userSelectedControlName, ControlInterface controlIntf,
-			ControlUIBeanInterface controlUIBeanInterface)
+			ControlUIBeanInterface controlUIBeanInterface) throws DynamicExtensionsSystemException
 	{
 		ControlInterface controlInterface = null;
 		if ((userSelectedControlName != null) && (controlUIBeanInterface != null))
@@ -85,7 +95,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			}
 			else if (userSelectedControlName.equalsIgnoreCase(ProcessorConstants.COMBOBOX_CONTROL))
 			{
-				if ((controlUIBeanInterface.getIsMultiSelect()!= null) && (controlUIBeanInterface.getIsMultiSelect().booleanValue()==true))
+				if ((controlUIBeanInterface.getIsMultiSelect() != null) && (controlUIBeanInterface.getIsMultiSelect().booleanValue() == true))
 				{
 					controlInterface = getListBoxControl(controlIntf, controlUIBeanInterface);
 				}
@@ -122,6 +132,35 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			controlInterface.setCaption(controlUIBeanInterface.getCaption());
 			controlInterface.setIsHidden(controlUIBeanInterface.getIsHidden());
 		}
+
+		AbstractAttributeInterface abstractAttribute = controlInterface.getAbstractAttribute();
+		if (abstractAttribute != null && controlUIBeanInterface.getValidationRules() != null && controlUIBeanInterface.getValidationRules().length == 0)
+		{
+			Collection<RuleInterface> ruleCollection = abstractAttribute.getRuleCollection();
+			Collection tempRuleCollection; 
+			if (ruleCollection == null ||  ruleCollection.size() == 0)
+			{
+				ControlConfigurationsFactory controlConfigurationsFactory = ControlConfigurationsFactory.getInstance();
+				if (userSelectedControlName != null)
+				{
+					tempRuleCollection = controlConfigurationsFactory.getAllImplicitRules(userSelectedControlName.trim());
+					Iterator tempRuleIterator = tempRuleCollection.iterator();
+					RuleInterface ruleInterface;
+					while(tempRuleIterator.hasNext())
+					{
+						ruleInterface = (RuleInterface) tempRuleIterator.next();
+						if(ruleInterface.getName() != null && !ruleInterface.getName().equals(""))
+						{
+							abstractAttribute.addRule(ruleInterface);
+						}
+						
+					}
+					
+					
+				}
+			}
+		}
+
 		return controlInterface;
 
 	}
@@ -133,7 +172,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private ControlInterface getFileUploadControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
 	{
-		FileUploadInterface fileUploadInterface= null;
+		FileUploadInterface fileUploadInterface = null;
 		if (controlInterface == null)
 		{
 			fileUploadInterface = DomainObjectFactory.getInstance().createFileUploadControl();
@@ -232,8 +271,8 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		listBoxIntf.setIsMultiSelect(controlUIBeanInterface.getIsMultiSelect());
 		listBoxIntf.setNoOfRows(controlUIBeanInterface.getRows());
 		//Set isCollection=true in the attribute
-		AttributeInterface controlAttribute = (AttributeInterface)controlUIBeanInterface.getAbstractAttribute();
-		if(controlAttribute!=null)
+		AttributeInterface controlAttribute = (AttributeInterface) controlUIBeanInterface.getAbstractAttribute();
+		if (controlAttribute != null)
 		{
 			controlAttribute.setIsCollection(new Boolean(true));
 		}
@@ -248,15 +287,15 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	private ControlInterface getComboBoxControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
 	{
 		/*ComboBoxInterface comboBoxIntf = null;
-		if (controlInterface == null)
-		{
-			comboBoxIntf = DomainObjectFactory.getInstance().createComboBox();
-		}
-		else
-		{
-			comboBoxIntf = (ComboBoxInterface) controlInterface;
-		}
-		return comboBoxIntf;*/
+		 if (controlInterface == null)
+		 {
+		 comboBoxIntf = DomainObjectFactory.getInstance().createComboBox();
+		 }
+		 else
+		 {
+		 comboBoxIntf = (ComboBoxInterface) controlInterface;
+		 }
+		 return comboBoxIntf;*/
 
 		ComboBoxInterface comboBoxIntf = null;
 		if (controlInterface == null) //If does not exist create it 
@@ -275,7 +314,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			}
 		}
 		return comboBoxIntf;
-	
+
 	}
 
 	/**
@@ -376,17 +415,17 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			controlUIBeanInterface.setRows(((ListBoxInterface) controlInterface).getNoOfRows());
 		}
 		/*else if (controlInterface instanceof ComboBoxInterface)
-		{
-			//Do things specific for combobox control
-		}
-		else if (controlInterface instanceof CheckBoxInterface)
-		{
+		 {
+		 //Do things specific for combobox control
+		 }
+		 else if (controlInterface instanceof CheckBoxInterface)
+		 {
 
-		}
-		else if (controlInterface instanceof RadioButtonInterface)
-		{
+		 }
+		 else if (controlInterface instanceof RadioButtonInterface)
+		 {
 
-		}*/
+		 }*/
 		else if (controlInterface instanceof FileUploadInterface)
 		{
 			controlUIBeanInterface.setColumns(((FileUploadInterface) controlInterface).getColumns());

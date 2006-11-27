@@ -118,7 +118,7 @@ public class EntityManager
 			//TODO needs to chk for host application's log4j
 			Logger.configure("");
 		}
-
+		
 		DynamicExtensionsUtility.initialiseApplicationVariables();
 
 		return entityManagerInterface;
@@ -886,7 +886,8 @@ public class EntityManager
                 if (attribute.getIsCollection() != null && attribute.getIsCollection()) {
                     continue;
                 }
-				String attributeQueryPart = getQueryPartForAbstractAttribute(attribute, true);
+                String type = "";
+				String attributeQueryPart = getQueryPartForAbstractAttribute(attribute,type, true);
 				query = query.append(attributeQueryPart);
 				query = query.append(COMMA);
 			}
@@ -920,7 +921,7 @@ public class EntityManager
 	 * @return String query part of that attribute.
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private String getQueryPartForAbstractAttribute(AbstractAttribute attribute,
+	private String getQueryPartForAbstractAttribute(AbstractAttribute attribute, String type,
 			boolean processUniqueConstraint) throws DynamicExtensionsSystemException
 	{
 		String attributeQuery = null;
@@ -930,7 +931,7 @@ public class EntityManager
 			{
 				try
 				{
-					attributeQuery = getQueryPartForAttribute((Attribute) attribute,
+					attributeQuery = getQueryPartForAttribute((Attribute) attribute, type,
 							processUniqueConstraint);
 				}
 				catch (DataTypeFactoryInitializationException e)
@@ -1043,7 +1044,7 @@ public class EntityManager
 	 * @return String query part of the primitive attribute.
 	 * @throws DataTypeFactoryInitializationException 
 	 */
-	private String getQueryPartForAttribute(Attribute attribute, boolean processConstraints)
+	private String getQueryPartForAttribute(Attribute attribute,String type ,  boolean processConstraints)
 			throws DynamicExtensionsSystemException
 	{
 
@@ -1079,7 +1080,7 @@ public class EntityManager
 
 			}
 
-			attributeQuery = columnName + " " + getDatabaseTypeAndSize(attribute) + WHITESPACE
+			attributeQuery = columnName + WHITESPACE + type + WHITESPACE + getDatabaseTypeAndSize(attribute) + WHITESPACE
 					+ defaultConstraint + WHITESPACE + isUnique + WHITESPACE + nullConstraint;
 		}
 		return attributeQuery;
@@ -1697,6 +1698,9 @@ public class EntityManager
 		else if (attributeInformation instanceof DateAttributeTypeInformation)
 		{
             String format = ((DateAttributeTypeInformation) attributeInformation).getFormat();
+            if (format == null) {
+                format = Constants.DATE_PATTERN_MM_DD_YYYY;
+            }
             String str = null;
             if(value instanceof Date) {
                 str = Utility.parseDateToString(((Date) value), format);
@@ -2128,35 +2132,70 @@ public class EntityManager
 		String newTypeClass = attribute.getAttributeTypeInformation().getClass().getName();
 		String oldTypeClass = savedAttribute.getAttributeTypeInformation().getClass().getName();
 
+       String type = "";
+       String modify = MODIFY_KEYWORD;
+       String str = Variables.databaseName;
 		if (!newTypeClass.equals(oldTypeClass))
 		{
 			attributemodifiedFlag = true;
+            
+            
 		}
+        if (str.equalsIgnoreCase(Constants.POSTGRESQL_DATABASE)) {
+            type = "TYPE";
+            modify = ALTER_KEYWORD;
+        }
 
-		String modifyAttributeQuery = getQueryPartForAbstractAttribute(attribute, false);
-		modifyAttributeQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + MODIFY_KEYWORD
+		String modifyAttributeQuery = getQueryPartForAbstractAttribute(attribute,type, false);
+		modifyAttributeQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + modify
 				+ WHITESPACE + modifyAttributeQuery;
 
-		String modifyAttributeRollbackQuery = getQueryPartForAbstractAttribute(savedAttribute,
+		String modifyAttributeRollbackQuery = getQueryPartForAbstractAttribute(savedAttribute,type,
 				false);
 		modifyAttributeRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE
-				+ MODIFY_KEYWORD + WHITESPACE + modifyAttributeRollbackQuery;
+				+ modify + WHITESPACE +   modifyAttributeRollbackQuery;
 		//process nullable
-		if (attribute.getIsNullable() && !savedAttribute.getIsNullable())
-		{
-			attributemodifiedFlag = true;
-			modifyAttributeQuery = modifyAttributeQuery + WHITESPACE + NULL_KEYWORD;
-			modifyAttributeRollbackQuery = modifyAttributeRollbackQuery + WHITESPACE + NOT_KEYWORD
-					+ WHITESPACE + NULL_KEYWORD;
-		}
-		else if (!attribute.getIsNullable() && savedAttribute.getIsNullable())
-		{
-			attributemodifiedFlag = true;
-			modifyAttributeQuery = modifyAttributeQuery + WHITESPACE + NOT_KEYWORD + WHITESPACE
-					+ NULL_KEYWORD;
-			//TODO add default constraint
-			modifyAttributeRollbackQuery = modifyAttributeRollbackQuery + WHITESPACE + NULL_KEYWORD;
-		}
+        String nullQueryKeyword = "";
+        String nullQueryRollbackKeyword = "";
+        String constraintCondition = "";
+        String constraintRollbackcondition = "";
+        if (attribute.getIsNullable() && !savedAttribute.getIsNullable())
+        {
+            constraintCondition = DROP_KEYWORD;
+            constraintRollbackcondition = SET_KEYWORD;
+            nullQueryKeyword = WHITESPACE + NULL_KEYWORD + WHITESPACE ;
+            nullQueryRollbackKeyword = WHITESPACE + NOT_KEYWORD
+            + WHITESPACE + NULL_KEYWORD + WHITESPACE;
+        }
+        else if (!attribute.getIsNullable() && savedAttribute.getIsNullable())
+        {
+            constraintCondition = SET_KEYWORD;
+            constraintRollbackcondition = DROP_KEYWORD;
+            nullQueryKeyword = WHITESPACE + NOT_KEYWORD
+            + WHITESPACE + NULL_KEYWORD + WHITESPACE;
+            nullQueryRollbackKeyword = WHITESPACE + NULL_KEYWORD + WHITESPACE ;
+            
+        }
+        if (!str.equalsIgnoreCase(Constants.POSTGRESQL_DATABASE)) {
+            
+            if (!constraintCondition.equalsIgnoreCase("") && !constraintRollbackcondition.equalsIgnoreCase("")) {
+                attributemodifiedFlag = true;
+                modifyAttributeQuery = modifyAttributeQuery + nullQueryKeyword;
+                modifyAttributeRollbackQuery = modifyAttributeRollbackQuery + nullQueryRollbackKeyword;
+                
+            }
+    		
+        } else {
+            if (!constraintCondition.equalsIgnoreCase("") && !constraintRollbackcondition.equalsIgnoreCase("")) {
+            String nullPartQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE
+            + modify + WHITESPACE + columnName + WHITESPACE + constraintCondition + WHITESPACE +  NOT_KEYWORD + WHITESPACE + NULL_KEYWORD; 
+            String nullPartRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE
+            + modify + WHITESPACE + columnName + WHITESPACE + constraintRollbackcondition + WHITESPACE + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD;  
+            modifyAttributeQueryList.add(nullPartQuery);
+            attributeRollbackQueryList.add(nullPartRollbackQuery);
+            }
+            
+        }
 
 		if (attributemodifiedFlag)
 		{
@@ -2230,9 +2269,9 @@ public class EntityManager
 
 		String columnName = attribute.getColumnProperties().getName();
 		String tableName = attribute.getEntity().getTableProperties().getName();
-
+        String type = "";
 		String newAttributeQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + ADD_KEYWORD
-				+ WHITESPACE + getQueryPartForAbstractAttribute(attribute, true);
+				+ WHITESPACE + getQueryPartForAbstractAttribute(attribute,type, true);
 
 		String newAttributeRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE
 				+ DROP_KEYWORD + WHITESPACE + COLUMN_KEYWORD + WHITESPACE + columnName;
@@ -2372,10 +2411,11 @@ public class EntityManager
 						String removeAttributeQuery = ALTER_TABLE + WHITESPACE + tableName
 								+ WHITESPACE + DROP_KEYWORD + WHITESPACE + COLUMN_KEYWORD
 								+ WHITESPACE + columnName;
+                        String type = "";
 
 						String removeAttributeQueryRollBackQuery = ALTER_TABLE + WHITESPACE
 								+ tableName + WHITESPACE + ADD_KEYWORD + WHITESPACE
-								+ getQueryPartForAbstractAttribute(attribute, true);
+								+ getQueryPartForAbstractAttribute(attribute,type , true);
 
 						attributeQueryList.add(removeAttributeQuery);
 						attributeRollbackQueryList.add(removeAttributeQueryRollBackQuery);

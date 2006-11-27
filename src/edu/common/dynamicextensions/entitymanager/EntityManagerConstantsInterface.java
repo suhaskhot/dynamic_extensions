@@ -17,7 +17,8 @@ public interface EntityManagerConstantsInterface
     String ASSOCIATION_COLUMN_PREFIX = "DE_E";
     
     String CREATE_TABLE = "CREATE TABLE ";
-    String ALTER_TABLE = "ALTER TABLE";
+    String ALTER_KEYWORD = "ALTER";
+    String ALTER_TABLE = ALTER_KEYWORD + " TABLE";
     String DROP_KEYWORD = "DROP";
     String TABLE_KEYWORD = "TABLE";
     String ADD_KEYWORD = "ADD";
@@ -29,6 +30,7 @@ public interface EntityManagerConstantsInterface
     String UNIQUE_KEYWORD = "UNIQUE";
     String COLUMN_KEYWORD = "COLUMN";
     String NULL_KEYWORD = "NULL";
+    String SET_KEYWORD = "SET";
     String NOT_KEYWORD = "NOT";
     String UNIQUE_CONSTRAINT_SUFFIX = "UC";
     String OPENING_BRACKET = "(";

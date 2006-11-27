@@ -67,7 +67,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 				target = Constants.SHOW_DYNAMIC_EXTENSIONS_HOMEPAGE;
 			}
 
-			if(saveEntity = true)
+			if(saveEntity == true)
 			{
 				saveMessages(request, getSuccessMessage(formDefinitionForm));
 			}

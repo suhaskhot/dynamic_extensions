@@ -12,10 +12,10 @@
 	<title>Dynamic Extensions</title>
 	 <script language="javascript" src="<%= request.getContextPath()%>/jss/dynamicExtensions.js"></script>
 </head>
-<body  class="formRequiredNotice">
+<body>
 <html:form styleId = "controlsForm" action="/LoadFormControlsAction" >
 	  	<html:errors />
-		<table class="formRequiredNotice" border="0" width="100%" height="100%" >
+		<table  border="0" width="100%" height="100%" >
 			<tr>
 				<td  align='center'>
 					<bean:message  key="user.saveconfirmation" />

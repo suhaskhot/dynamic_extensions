@@ -10,6 +10,7 @@
 	page language="java" contentType="text/html"
 	import="java.lang.String"
 	import="java.lang.Long"
+	import="edu.common.dynamicextensions.util.global.Variables"
 %>
 
 <%-- Stylesheet --%>
@@ -29,7 +30,8 @@
 				<tr class="formMessage">
 					<td>
 						<h3>
-							<bean:message key="table.heading" />
+						
+							<bean:message key="table.heading" />(<bean:message key="application.version"/>: <%=Variables.applicationCvsTag%>)
 						</h3>
 					</td>
 				</tr>

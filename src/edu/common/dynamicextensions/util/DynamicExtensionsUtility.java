@@ -31,7 +31,10 @@ import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Variables;
 import edu.wustl.common.bizlogic.AbstractBizLogic;
+import edu.wustl.common.util.CVSTagReader;
 import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.common.util.global.ApplicationProperties;
+import edu.wustl.common.util.logger.Logger;
 
 /**
  * @author chetan_patil
@@ -175,6 +178,19 @@ public class DynamicExtensionsUtility
 	 */
 	public static void initialiseApplicationVariables()
 	{
+		String fileName = Variables.dynamicExtensionsHome + System.getProperty("file.separator")+ ApplicationProperties.getValue("application.version.file");
+        CVSTagReader cvsTagReader = new CVSTagReader();
+        String cvsTag = cvsTagReader.readTag(fileName);
+        Variables.applicationCvsTag = cvsTag;
+        Logger.out.info("========================================================");
+        Logger.out.info("Application Information");
+        Logger.out.info("Name: "+Variables.applicationName);
+        Logger.out.info("Version: "+Variables.applicationVersion);
+        Logger.out.info("CVS TAG: "+Variables.applicationCvsTag);
+        Logger.out.info("Path: "+ Variables.applicationHome);
+        Logger.out.info("Database Name: "+Variables.databaseName);
+        Logger.out.info("========================================================");  
+        
 		if (Variables.databaseName == null || Variables.databaseName.trim().length() == 0
 				|| Variables.datePattern.trim().length() != 0)
 		{
@@ -201,6 +217,8 @@ public class DynamicExtensionsUtility
 			Variables.dateTostrFunction = "TO_CHAR";
 			Variables.strTodateFunction = "STR_TO_DATE";
 		}
+		
+		     
 	}
 	public static AttributeTypeInformationInterface getAttributeTypeInformation(AbstractAttributeInterface abstractAttributeInterface)
 	{

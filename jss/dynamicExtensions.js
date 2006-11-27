@@ -14,8 +14,7 @@ function showBuildFormJSP() {
 
 function controlSelectedAction()
 {	
-	var controlOperation = document.getElementById('controlOperation');
-	clearForm();
+	clearControlAttributes();
 	var controlsForm = document.getElementById('controlsForm');
 	controlsForm.action="/dynamicExtensions/SelectControlAction.do";
 	controlsForm.submit();
@@ -44,6 +43,7 @@ function showHomePageFromCreateGroup()
 }
 
 function addControlToFormTree() {
+	
        document.getElementById('operation').value='controlAdded';
    	var controlsForm=document.getElementById("controlsForm");
      controlsForm.action="/dynamicExtensions/AddControlsAction.do";
@@ -66,6 +66,29 @@ function addControlToForm() {
 		}
 	}
 	window.close();
+}
+
+function cancelControlOpern(addBtnCaption,formTitle)
+{
+	clearCommonAttributes();
+	clearControlAttributes();
+	changeOperationMode(addBtnCaption,formTitle);
+}
+
+function changeOperationMode(addBtnCaption,formTitle)
+{
+	if(document.getElementById('controlOperation')!=null)
+	{
+		document.getElementById('controlOperation').value="Add";
+	}
+	if(document.getElementById('addControlToFormButton')!=null)
+	{
+		document.getElementById('addControlToFormButton').value=addBtnCaption;
+	}
+	if(document.getElementById('formTitle')!=null)
+	{
+		document.getElementById('formTitle').innerHTML=formTitle;
+	}
 }
 
 function closeWindow() {
@@ -163,31 +186,11 @@ function initBuildForm()
 	}
 	
 	//Change visibilty of row displaying options list based on the number of rows.
-	var choiceListTable = document.getElementById('choiceListTable');
-	if(choiceListTable!=null)
-	{
-		var noOfRows = choiceListTable.rows.length;
-		if(noOfRows>0)
-		{
-			document.getElementById('optionsListRow').style.display = "";
-		}
-		else
-		{
-			document.getElementById('optionsListRow').style.display = "none";
-		}
-	}
+	changeChoiceListTableDisplay();
+	
 	
 	//Reinitialize counter for number of options
-	var choiceListElementCnter = document.getElementById('choiceListCounter');
-	if(choiceListElementCnter !=null)
-	{
-		var noOfChoices = 1;
-		if(choiceListTable!=null)
-		{
-			noOfChoices = choiceListTable.rows.length;	
-		}
-		choiceListElementCnter.value=noOfChoices+"";
-	}
+	initializeChoiceListCounter();
 	
 	
 	//Initilialize default value for list of options
@@ -212,7 +215,36 @@ function initBuildForm()
 		changeDateType(dateValueType);
 	}
 }
-
+function changeChoiceListTableDisplay()
+{
+	var choiceListTable = document.getElementById('choiceListTable');
+	if(choiceListTable!=null)
+	{
+		var noOfRows = choiceListTable.rows.length;
+		if(noOfRows>0)
+		{
+			document.getElementById('optionsListRow').style.display = "";
+		}
+		else
+		{
+			document.getElementById('optionsListRow').style.display = "none";
+		}
+	}
+}
+function initializeChoiceListCounter()
+{
+	var choiceListElementCnter = document.getElementById('choiceListCounter');
+	var choiceListTable = document.getElementById('choiceListTable');
+	if(choiceListElementCnter !=null)
+	{
+		var noOfChoices = 1;
+		if(choiceListTable!=null)
+		{
+			noOfChoices = choiceListTable.rows.length;	
+		}
+		choiceListElementCnter.value=noOfChoices+"";
+	}
+}
 function changeSourceForValues(sourceControl)
 {
 	if(sourceControl!=null)
@@ -466,7 +498,24 @@ function backToControlForm()
 	}
 }
 
-function clearForm()
+function clearCommonAttributes()
+{
+	if(document.getElementById('caption') != null)
+	{
+		document.getElementById('caption').value = "";
+	}
+	if(document.getElementById('attributeConceptCode') != null)
+	{
+		document.getElementById('attributeConceptCode').value = "";
+	}
+	if(document.getElementById('description') != null)
+	{
+		document.getElementById('description').value = "";
+	}
+}
+
+
+function clearControlAttributes()
 {
 var controlsForm = document.getElementById('controlsForm');
 
@@ -511,6 +560,26 @@ var controlsForm = document.getElementById('controlsForm');
 	if(document.getElementById('attributeIsPassword') != null)
 	{
 		document.getElementById('attributeIsPassword').value = "";
+	}
+	
+	if(document.getElementById('choiceListTable') != null)
+	{
+		deleteAllRows(document.getElementById('choiceListTable'));
+		//Change visibilty of row displaying options list based on the number of rows.
+		changeChoiceListTableDisplay();
+			
+		//Reinitialize counter for number of options
+		initializeChoiceListCounter();
+	
+	}
+	
+}
+function deleteAllRows(table)
+{
+	var noOfRows = table.rows.length;
+	for(var i=noOfRows-1;i>=0;i--)
+	{
+		table.deleteRow(i);
 	}
 }
 

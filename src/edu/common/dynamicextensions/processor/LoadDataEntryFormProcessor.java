@@ -20,7 +20,8 @@ import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.actionForm.AbstractActionForm;
 
 /**
- * @author sujay_narkar, chetan_patil
+ * @author sujay_narkar
+ * @author chetan_patil
  *
  */
 public class LoadDataEntryFormProcessor
@@ -49,9 +50,8 @@ public class LoadDataEntryFormProcessor
 	 * @throws DynamicExtensionsSystemException DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException DynamicExtensionsApplicationException
 	 */
-	@SuppressWarnings("unchecked")
 	public ContainerInterface loadDataEntryForm(AbstractActionForm actionForm, ContainerInterface containerInterface, String containerIdentifier,
-			String recordId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+			String recordIdentifier) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 
 		DataEntryForm dataEntryForm = (DataEntryForm) actionForm;
@@ -62,7 +62,7 @@ public class LoadDataEntryFormProcessor
 			containerInterface = DynamicExtensionsUtility.getContainerByIdentifier(containerIdentifier);
 		}
 
-		if (recordId != null)
+		if (recordIdentifier != null)
 		{
 			//Get corresponding Entity of the Container
 			EntityInterface entity = containerInterface.getEntity();
@@ -71,7 +71,7 @@ public class LoadDataEntryFormProcessor
 
 			//Get Records of the corresponding Entity
 			EntityManagerInterface entityManager = EntityManager.getInstance();
-			recordMap = entityManager.getRecordById(entity, Long.valueOf(recordId));
+			recordMap = entityManager.getRecordById(entity, Long.valueOf(recordIdentifier));
 
 			Set<Map.Entry<String, String>> recordSet = recordMap.entrySet();
 			for (Map.Entry<String, String> recordNode : recordSet)
@@ -102,13 +102,13 @@ public class LoadDataEntryFormProcessor
 		{
 			dataEntryForm.setShowFormPreview("");
 		}
-		if(recordId != null)
+		if(recordIdentifier != null)
 		{
-			dataEntryForm.setRecordId(recordId);
+			dataEntryForm.setRecordIdentifier(recordIdentifier);
 		}
 		else
 		{
-			dataEntryForm.setRecordId("");
+			dataEntryForm.setRecordIdentifier("");
 		}
 		return containerInterface;
 	}

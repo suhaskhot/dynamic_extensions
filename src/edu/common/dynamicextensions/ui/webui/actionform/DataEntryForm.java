@@ -34,22 +34,22 @@ public class DataEntryForm extends AbstractActionForm
 	/**
 	 * 
 	 */
-	protected String recordId;
+	protected String recordIdentifier;
 	/**
 	 * 
 	 */
 	protected List<String> errorList;
+
 	/**
 	 * 
 	 */
-	protected String[] multibox;
+	protected String isEdit;
 
 	/**
 	 * @return int formId
 	 */
 	public int getFormId()
 	{
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -119,14 +119,14 @@ public class DataEntryForm extends AbstractActionForm
 		this.showFormPreview = showFormPreview;
 	}
 
-	public String getRecordId()
+	public String getRecordIdentifier()
 	{
-		return recordId;
+		return recordIdentifier;
 	}
 
-	public void setRecordId(String recordId)
+	public void setRecordIdentifier(String recordIdentifier)
 	{
-		this.recordId = recordId;
+		this.recordIdentifier = recordIdentifier;
 	}
 
 	/**
@@ -143,6 +143,22 @@ public class DataEntryForm extends AbstractActionForm
 	public void setErrorList(List<String> errorList)
 	{
 		this.errorList = errorList;
+	}
+
+	/**
+	 * @return the operation
+	 */
+	public String getIsEdit()
+	{
+		return isEdit;
+	}
+
+	/**
+	 * @param operation the operation to set
+	 */
+	public void setIsEdit(String isEdit)
+	{
+		this.isEdit = isEdit;
 	}
 
 }

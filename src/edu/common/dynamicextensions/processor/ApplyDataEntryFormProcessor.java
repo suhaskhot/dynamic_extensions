@@ -6,6 +6,7 @@ package edu.common.dynamicextensions.processor;
 
 import java.util.Map;
 
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
@@ -43,13 +44,22 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsSystemException on System exception
 	 * @return recordIdentifier Record identifier of the last saved record. 
 	 */
-	public Long insertDataEntryForm(ContainerInterface containerInterface, Map attributeValueMap) throws DynamicExtensionsApplicationException,
-			DynamicExtensionsSystemException
+	public String insertDataEntryForm(ContainerInterface container, Map<AbstractAttributeInterface, Object> attributeValueMap)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
-			EntityManagerInterface entityManager = EntityManager.getInstance();
-			EntityInterface entityInterface = containerInterface.getEntity();
-			Long recordIdentifier = entityManager.insertData(entityInterface, attributeValueMap);
-			return recordIdentifier;
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+		EntityInterface entity = container.getEntity();
+		Long recordIdentifier = entityManager.insertData(entity, attributeValueMap);
+		return recordIdentifier.toString();
+	}
+
+	public Boolean editDataEntryForm(ContainerInterface container, Map<AbstractAttributeInterface, ?> attributeValueMap, Long recordIdentifier)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	{
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+		EntityInterface entity = container.getEntity();
+		Boolean edited = entityManager.editData(entity, attributeValueMap, recordIdentifier);
+		return edited;
 	}
 
 }

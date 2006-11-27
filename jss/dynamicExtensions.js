@@ -679,14 +679,21 @@ function changeDateType(dateType)
 	}
 }
 
-function addDynamicData()
+function addDynamicData(recordIdentifier)
 {
-	var previewForm = document.getElementById('previewForm');
-	if(previewForm!=null)
-	{
-		previewForm.action="/dynamicExtensions/ApplyDataEntryFormAction.do";
+	var dataEntryForm = document.getElementById('dataEntryForm');
+	
+	if(dataEntryForm!=null)
+	{		
+		if(recordIdentifier != null || recordIdentifier != "")
+		{
+			document.getElementById('recordIdentifier').value = recordIdentifier;
+			document.getElementById('isEdit').value = "true";
+		}
+		dataEntryForm.action="/dynamicExtensions/ApplyDataEntryFormAction.do";
 	}
 }
+
 function showFormDefinitionPage()
 {
 	var previewForm = document.getElementById('previewForm');

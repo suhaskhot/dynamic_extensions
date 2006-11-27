@@ -20,8 +20,6 @@
 <script src="<%=request.getContextPath()%>/jss/calendarComponent.js"></script>
 <script src="<%=request.getContextPath()%>/jss/script.js" type="text/javascript"></script>
 <script>var imgsrc="images/";</script>
-
-
 <script src="<%=request.getContextPath()%>/jss/dynamicExtensions.js" type="text/javascript"></script>
 <script src="<%=request.getContextPath()%>/jss/overlib_mini.js" type="text/javascript"></script>
 <script src="<%=request.getContextPath()%>/jss/calender.js" type="text/javascript"></script>
@@ -206,12 +204,19 @@
 															<bean:message  key="buttons.submit" />
 														</html:submit>
 													</c:when>
-						 							<c:otherwise>	
-												 		<html:submit styleClass="actionButton" onclick="addDynamicData()">
-													 		<bean:message  key="buttons.submit" />
+						 							<c:otherwise>
+						 								<c:set var="recordIdentifier" value="${dataEntryForm.recordIdentifier}" />
+						 								<jsp:useBean id="recordIdentifier" type="java.lang.String"/>
+						 								<html:hidden styleId='recordIdentifier' property="recordIdentifier" value=""/>
+						 								<html:hidden styleId='isEdit' property="isEdit" value=""/>
+						 								<% 
+						 									String target = "addDynamicData(" + recordIdentifier + ")";
+						 								%>
+												 		<html:submit styleClass="actionButton" onclick="<%=target%>" >
+														 		<bean:message  key="buttons.submit" />
 														</html:submit>
 					 								</c:otherwise>
-			     								</c:choose>								
+			     								</c:choose>	
 											</td>
 										</tr>
 									</table>
@@ -220,7 +225,7 @@
 						</table>
 					</td>
 				</tr>
-			</table>
-		</html:form>
+			</table>			
+		</html:form>		
 	</body>
 </html>

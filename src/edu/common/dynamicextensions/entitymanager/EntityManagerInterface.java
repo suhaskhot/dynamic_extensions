@@ -221,7 +221,7 @@ public interface EntityManagerInterface
 	/**
 	 * This method inserts one record for the entity.
 	 */
-	Long insertData(EntityInterface entity, Map<AbstractAttributeInterface, String> dataValue) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
+	Long insertData(EntityInterface entity, Map<AbstractAttributeInterface, Object> dataValue) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
 	 * Returns a particular record for the given recordId of the given entityId
@@ -253,7 +253,7 @@ public interface EntityManagerInterface
      * @throws DynamicExtensionsApplicationException
      * @throws DynamicExtensionsSystemException
      */
-    boolean editData(EntityInterface entity, Map dataValue, Long recordId)
+    boolean editData(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, Long recordId)
             throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 }

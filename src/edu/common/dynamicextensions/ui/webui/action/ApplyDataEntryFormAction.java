@@ -94,14 +94,20 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		List<String> errorList = null;
 		try
 		{
+			DataEntryForm dataEntryForm = (DataEntryForm) form;
 			errorList = ValidatorUtil.validateEntity(attributeValueMap);
-			Long recordIdentifier = new Long(-1);
+			String recordIdentifier = dataEntryForm.getRecordIdentifier();
+			String isEdit =  dataEntryForm.getIsEdit();
 
 			if (errorList.size() != 0)
 			{
 				//saveErrors(request, getErrorMessages(errorList));
-				DataEntryForm dataEntryForm = (DataEntryForm) form;
 				dataEntryForm.setErrorList(errorList);
+			}
+			else if(isEdit.equals("true") && (recordIdentifier != null || recordIdentifier != ""))
+			{
+				Boolean edited = applyDataEntryFormProcessor.editDataEntryForm(containerInterface, attributeValueMap, Long.valueOf(recordIdentifier));
+				saveMessages(request, getSuccessMessage());
 			}
 			else
 			{

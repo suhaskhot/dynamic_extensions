@@ -56,11 +56,6 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 	public void addControlToForm(ContainerInterface containerInterface, ControlsForm controlsForm) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
-		System.out.println("Option Names Array"  + controlsForm.getOptionNames());
-		/*if(controlsForm.getOptionNames()!=null)
-		{
-			System.out.println("controlsForm.getOptionName() = "  + controlsForm.getOptionNames());
-		}*/
 		if ((containerInterface != null) && (controlsForm != null))
 		{
 			EntityInterface entityInterface = containerInterface.getEntity();

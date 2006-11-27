@@ -33,6 +33,8 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 	protected String groupDescription; 
 	protected List groupList;
 	protected String groupOperation;
+	protected String operationMode;
+	protected String containerIdentifier;
 	public String getGroupOperation()
 	{
 		return this.groupOperation;
@@ -132,6 +134,22 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.NewGroup")));
 		}
 		return errors;
+	}
+	public String getContainerIdentifier()
+	{
+		return this.containerIdentifier;
+	}
+	public void setContainerIdentifier(String containerIdentifier)
+	{
+		this.containerIdentifier = containerIdentifier;
+	}
+	public String getOperationMode()
+	{
+		return this.operationMode;
+	}
+	public void setOperationMode(String operationMode)
+	{
+		this.operationMode = operationMode;
 	}
 
 }

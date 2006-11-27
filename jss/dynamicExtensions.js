@@ -51,11 +51,20 @@ function addControlToFormTree() {
 }
 function addControlToForm() {
 	
-	var arg = window.dialogArguments;
-	arg.document.getElementById('operation').value='controlAdded';
-    	var controlsForm=arg.document.getElementById("controlsForm");
-	controlsForm.action="/dynamicExtensions/AddControlsAction.do";
-	controlsForm.submit();
+	if (window.dialogArguments) 
+	{
+	    window.opener = window.dialogArguments;
+	}
+	if(window.opener!=null)
+	{
+		window.opener.document.getElementById('operation').value='controlAdded';
+		var controlsForm=window.opener.document.getElementById("controlsForm");
+		if(controlsForm!=null)
+		{
+			controlsForm.action="/dynamicExtensions/AddControlsAction.do";
+			controlsForm.submit();	
+		}
+	}
 	window.close();
 }
 
@@ -65,14 +74,30 @@ function closeWindow() {
 function showNextActionConfirmDialog()
 {
 	var  url="/dynamicExtensions/pages/confirmNextActionDialog.jsp";
-	 var properties = "dialogHeight: 200px; dialogWidth: 350px; dialogTop: 300px; dialogLeft: 350px; edge: Sunken; center: Yes; resizable: Yes; status: No; help:no"
-	 window.showModalDialog(url, window, properties);
+	
+	 if (window.showModalDialog) 
+	 {
+	 	var modalDialogProperties = "dialogHeight: 200px; dialogWidth: 350px; dialogTop: 300px; dialogLeft: 350px; edge: Sunken; center: Yes; resizable: Yes; status: No; help:no";
+	 	window.showModalDialog(url,window,modalDialogProperties);
+	 }
+	 else
+	 {
+	 	var windowProperties = "height=200,width=350,top=300,left=350,toolbar=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=yes ,modal=yes";
+	 	window.open(url, window, windowProperties);
+	
+	 }
 }
 function showCreateFormJSP() {
-	var arg = window.dialogArguments;
-    	var controlsForm=arg.document.getElementById("controlsForm");
-	controlsForm.action="/dynamicExtensions/LoadFormDefinitionAction.do";
-	controlsForm.submit();
+	if (window.dialogArguments) 
+	{
+		window.opener = window.dialogArguments;
+	}
+    	var controlsForm=window.opener.document.getElementById("controlsForm");
+    	if(controlsForm!=null)
+    	{
+		controlsForm.action="/dynamicExtensions/LoadFormDefinitionAction.do";
+		controlsForm.submit();
+	}
 	window.close();
 }
 
@@ -839,4 +864,36 @@ function saveGroup()
 		groupForm.action = "/dynamicExtensions/ApplyGroupDefinitionAction.do";
 		groupForm.submit();
 	}
+}
+function toggle(id,p) 
+{
+	selId =document.getElementById('selectedAttrib').value; 
+	if(selId!='')
+		document.getElementById(selId).style.fontWeight='normal';
+	document.getElementById('selectedAttrib').value='';
+	var myChild = document.getElementById(id);
+	if((myChild!=null)&&(myChild!=undefined))
+	{
+		if(myChild.style.display!='block')
+		{
+			myChild.style.display='block';
+			document.getElementById(p).className='folderOpen';
+		}
+		else
+		{
+			myChild.style.display='none';
+			document.getElementById(p).className='folder';
+		}
+	}
+}
+function changeSelection(str1,seqno)
+{	
+	selId =document.getElementById('selectedAttrib').value;
+	document.getElementById('selectedAttrib').value=str1;
+	document.getElementById(str1).style.fontWeight='bold';
+	if(selId!='')
+	{
+		document.getElementById(selId).style.fontWeight='normal';
+	}
+	var controlsForm=document.getElementById('controlsForm');
 }

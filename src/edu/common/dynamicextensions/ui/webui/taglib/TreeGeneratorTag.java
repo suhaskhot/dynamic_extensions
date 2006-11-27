@@ -49,7 +49,7 @@ public class TreeGeneratorTag extends TagSupport
 			if (treeDataObject != null)
 			{
 				//Add hidden variable
-				jspWriter.print("<input type='hidden' name='selectedAttrib' value=''>");
+				jspWriter.print("<input type='hidden' id='selectedAttrib' name='selectedAttrib' value=''>");
 				//Add the actual code for tree generation
 				jspWriter.print("<div  valign='top' scroll='auto' style='overflow:auto;' >");
 				jspWriter.print(treeDataObject.getTree());
@@ -69,7 +69,7 @@ public class TreeGeneratorTag extends TagSupport
 						+ "document.getElementById(selId).style.fontWeight='normal';\n" + "}\n"
 						+ "var controlsForm=document.getElementById('controlsForm');\n"
 						+"}\n";
-				jspWriter.print("<script language='JavaScript'> \n" + "<!-- \n" + toggleFunctionJSCode + changeSelectionJSCode
+				jspWriter.print("<script language='JavaScript'> \n" + "<!-- \n" //+ toggleFunctionJSCode + changeSelectionJSCode
 						+ "toggle('N0_0','P00'); \n" + "// --> \n" + "</script>");
 
 			}

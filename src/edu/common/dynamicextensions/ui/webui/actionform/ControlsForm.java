@@ -15,6 +15,7 @@ import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.interfaces.AbstractAttributeUIBeanInterface;
 import edu.common.dynamicextensions.ui.interfaces.ControlUIBeanInterface;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
@@ -1457,7 +1458,7 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 			}
 			else
 			{
-				return (validator.isNumeric(stringFld));
+				return (DynamicExtensionsUtility.isNumeric(stringFld));
 			}
 		}
 		return false;
@@ -1557,4 +1558,9 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	{
 		this.optionDetails = optionDetails;
 	}
+	/*public static void main(String args[])
+	{
+		Validator validator = new Validator();
+		System.out.println(validator.isNumeric("0"));
+	}*/
 }

@@ -38,7 +38,7 @@
 						<bean:message key="app.formpage.heading" />
 					</td>
 				</tr>
-	
+
 				<!-- Messages to be displayed -->
 				<tr>
 					<td class="formTitle" align="center">
@@ -47,7 +47,7 @@
 						</html:messages>
 					</td>
 				</tr>
-	
+
 				<!--  Build new form button -->
 				<tr align='left'>
 					<td>
@@ -56,7 +56,7 @@
 						</html:submit>
 					</td>
 				</tr>
-				
+
 				<tr>
 					<td>
 						<div style="border:solid 1px; padding:1px; width:800px; height:400px; overflow:auto;">
@@ -69,25 +69,25 @@
 										</th>
 										<th width="25%" align='left'>
 											<bean:message key="table.title" />
-										</th>									
+										</th>
 										<th width="5%" align='left'>
 											<bean:message key="app.edit" />
-										</th>	
+										</th>
 										<th width="20%" align='left'>
 											<bean:message key="table.date" />
-										</th>	
+										</th>
 										<th width="15%" align='left'>
 											<bean:message key="table.createdBy" />
-										</th>	
+										</th>
 										<th width="10%" align='left'>
 											<bean:message key="table.status" />
 										</th>
 									</tr>
 								</thead>
-								
+
 								<c:set var="containerCollection" value="${formsIndexForm.containerCollection}"/>
 						 		<jsp:useBean id="containerCollection" type="java.util.Collection"/>
-						 		
+
 								<c:forEach items="${containerCollection}" var="containerInterface" varStatus="elements">
 								<jsp:useBean id="containerInterface" type="edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface" />
 									<tr>
@@ -105,7 +105,7 @@
 										</td>
 										<td>
 											<%
-	 											target = "setEditOperationMode('/dynamicExtensions/LoadFormDefinitionAction.do?containerIdentifier=" + cont_Id + "');"; 											
+	 											target = "setEditOperationMode('/dynamicExtensions//LoadGroupDefinitionAction.do?containerIdentifier=" + cont_Id + "');";
 	 										%>
 											<html:link href='#' onclick="<%=target%>" >
 												<bean:message key="app.edit" />&nbsp;

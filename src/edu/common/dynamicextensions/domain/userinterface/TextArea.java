@@ -15,6 +15,10 @@ public class TextArea extends Control implements TextAreaInterface
 {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 201964699680324430L;
+	/**
 	 * Number of columns in the text area.
 	 */
 	protected Integer columns;
@@ -89,31 +93,32 @@ public class TextArea extends Control implements TextAreaInterface
 		return htmlString;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface#setAttribute(edu.common.dynamicextensions.domaininterface.AttributeInterface)
+	/**
+	 * This method associates the Attribute to this Control.
+	 * @param attribute the Attribute to be associated.
 	 */
-	public void setAttribute(AbstractAttributeInterface attributeInterface)
+	public void setAttribute(AbstractAttributeInterface attribute)
 	{
-		// TODO Auto-generated method stub
-
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface#getIsPassword()
+	/**
+	 * This method returns the Boolean indicating whether the value is to be shown in password style or not.
+	 * If Boolean is true then show value as password otherwise not.
+	 * @return the Boolean indicating whether the value is to be shown in password style or not.
 	 */
 	public Boolean getIsPassword()
 	{
-		// TODO Auto-generated method stub
 		return isPassword;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface#setIsPassword(java.lang.Boolean)
+	/**
+	 * This method sets the Boolean indicating whether the value is to be shown in password style or not.
+	 * If Boolean is true then show value as password otherwise not.
+	 * @param isPassword the Boolean indicating whether the value is to be shown in password style or not.
 	 */
 	public void setIsPassword(Boolean isPassword)
 	{
-		this.isPassword = isPassword;
-		
+		this.isPassword = isPassword;		
 	}
 
 	

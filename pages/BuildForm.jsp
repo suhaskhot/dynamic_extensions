@@ -2,6 +2,7 @@
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
 <%@ taglib uri="/WEB-INF/dynamicExtensions.tld" prefix="dynamicExtensions" %>
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
+<%@page import="edu.common.dynamicextensions.processor.ProcessorConstants"%>
 <%@ page import="java.util.List"%>
 
 <html>
@@ -16,7 +17,14 @@
 		<script src="<%=request.getContextPath()%>/jss/calendarComponent.js"></script>
 
 		<title>Dynamic Extensions</title>
-				
+	 <script language="JavaScript" type="text/javascript">
+		function initCancelOperation()
+	 	{
+	    	var addControlBtnCaption = '<bean:message  key="buttons.addControlToForm" />';
+	    	var addControlFormTitle = '<bean:message key="app.title.addAttributes" />';
+	    	cancelControlOpern(addControlBtnCaption,addControlFormTitle);
+	    }
+ 	 </script>
 	</head>
 
 	<!-- Initializations -->
@@ -91,7 +99,16 @@
 												<table class="tbBordersAllbordersBlack" height = "100%" width ="100%" >
 													<thead>
 														<tr>
-															<th align="left" class="formTitleGray"><bean:message key="app.title.addAttributes" /></th>
+
+														<c:choose>
+															<c:when test='${controlsForm.controlOperation == "Edit"}'>
+																<td id="formTitle" align="left" class="formTitleGray"><bean:message key="app.title.editAttributes" /></th>
+															</c:when>
+
+															<c:otherwise>
+																<td id="formTitle"  align="left" class="formTitleGray"><bean:message key="app.title.addAttributes" /></th>
+															</c:otherwise>
+														</c:choose>
 														</tr>
 													</thead>
 													<tr>
@@ -161,7 +178,7 @@
 
 																<c:set var="identifier" value="${controlInfoObj.identifier}"/>
 																<jsp:useBean id="identifier" type="java.lang.String"/>
-															
+
 
 
 
@@ -186,9 +203,9 @@
 															</tr>
 
 
-														
+
 																</c:forEach>
-																	
+
 																<tr height = "100%">
 																	<td>&nbsp;
 																	</td>
@@ -215,6 +232,9 @@
 										<td align="right" valign="top" width = "75%" >
 											<html:button styleClass="actionButton" property="addControlToFormButton" onclick="addControlToFormTree()" >
 												<bean:message  key="buttons.addControlToForm" />
+											</html:button>
+											<html:button styleClass="actionButton" property="cancelControlOperation" onclick="initCancelOperation()">
+												<bean:message  key="buttons.cancel" />
 											</html:button>
 										</td>
 										<td width="2%">&nbsp;</td>
@@ -261,7 +281,7 @@
 			<html:hidden styleId = 'selectedControlId' property="selectedControlId" />
 			<html:hidden styleId = 'sequenceNumbers' property="sequenceNumbers"  value=""/>
 
-	  
+
 	  	</html:form>
   	</body>
 

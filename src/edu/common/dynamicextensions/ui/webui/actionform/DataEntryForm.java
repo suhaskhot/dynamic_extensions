@@ -34,16 +34,13 @@ public class DataEntryForm extends AbstractActionForm
 	/**
 	 * 
 	 */
-	protected String recordIdentifier;
+	protected String recordIdentifier = "abc";
 	/**
 	 * 
 	 */
 	protected List<String> errorList;
 
-	/**
-	 * 
-	 */
-	protected String isEdit;
+	
 
 	/**
 	 * @return int formId
@@ -145,20 +142,6 @@ public class DataEntryForm extends AbstractActionForm
 		this.errorList = errorList;
 	}
 
-	/**
-	 * @return the operation
-	 */
-	public String getIsEdit()
-	{
-		return isEdit;
-	}
-
-	/**
-	 * @param operation the operation to set
-	 */
-	public void setIsEdit(String isEdit)
-	{
-		this.isEdit = isEdit;
-	}
+	
 
 }

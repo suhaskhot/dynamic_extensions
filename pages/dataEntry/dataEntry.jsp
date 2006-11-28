@@ -41,6 +41,10 @@
 
 	<body onload="loadPreviewForm()">
 		<html:form styleId="dataEntryForm" action="/ApplyDataEntryFormAction" enctype="multipart/form-data" >
+		
+			<c:set var="recordIdentifier" value="${dataEntryForm.recordIdentifier}" />
+			<jsp:useBean id="recordIdentifier" type="java.lang.String"/>
+			
 			<html:hidden styleId='entitySaved' property="entitySaved" />
 			<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 		
@@ -205,14 +209,13 @@
 														</html:submit>
 													</c:when>
 						 							<c:otherwise>
-						 								<c:set var="recordIdentifier" value="${dataEntryForm.recordIdentifier}" />
-						 								<jsp:useBean id="recordIdentifier" type="java.lang.String"/>
-						 								<html:hidden styleId='recordIdentifier' property="recordIdentifier" value=""/>
+						 								
+						 								
 						 								<html:hidden styleId='isEdit' property="isEdit" value=""/>
 						 								<% 
 						 									String target = "addDynamicData(" + recordIdentifier + ")";
 						 								%>
-												 		<html:submit styleClass="actionButton" onclick="<%=target%>" >
+												 		<html:submit styleClass="actionButton"  >
 														 		<bean:message  key="buttons.submit" />
 														</html:submit>
 					 								</c:otherwise>
@@ -225,7 +228,12 @@
 						</table>
 					</td>
 				</tr>
-			</table>			
+			</table>
+			
+			<input type="hidden" name="recordIdentifier" value="<%=recordIdentifier%>"/> 
+			<%=recordIdentifier
+			%>
+		
 		</html:form>		
 	</body>
 </html>

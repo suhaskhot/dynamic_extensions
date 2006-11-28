@@ -133,7 +133,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			controlInterface.setIsHidden(controlUIBeanInterface.getIsHidden());
 		}
 
-		AbstractAttributeInterface abstractAttribute = controlInterface.getAbstractAttribute();
+		/*AbstractAttributeInterface abstractAttribute = controlInterface.getAbstractAttribute();
 		if (abstractAttribute != null && controlUIBeanInterface.getValidationRules() != null && controlUIBeanInterface.getValidationRules().length == 0)
 		{
 			Collection<RuleInterface> ruleCollection = abstractAttribute.getRuleCollection();
@@ -159,7 +159,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 					
 				}
 			}
-		}
+		}*/
 
 		return controlInterface;
 

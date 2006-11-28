@@ -94,8 +94,8 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
         {
             entityInterface.setName(entityUIBeanInterface.getFormName());
             entityInterface.setDescription(entityUIBeanInterface.getFormDescription());
-            Collection collection = SemanticPropertyBuilderUtil
-                    .getSymanticPropertyCollection(entityUIBeanInterface
+            entityInterface.removeAllSemanticProperties();
+            Collection collection = SemanticPropertyBuilderUtil.getSymanticPropertyCollection(entityUIBeanInterface
                             .getConceptCode());
             if (collection != null && !collection.isEmpty())
             {

@@ -202,6 +202,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private void populateSemanticPropertiesInfo(AbstractAttributeInterface attributeInterface, String attributeConceptCode)
 	{
+		attributeInterface.removeAllSemanticProperties();
 		Collection collection = SemanticPropertyBuilderUtil.getSymanticPropertyCollection(attributeConceptCode);
 		if (collection != null && !collection.isEmpty())
 		{

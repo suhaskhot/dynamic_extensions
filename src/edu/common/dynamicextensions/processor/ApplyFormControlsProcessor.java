@@ -167,9 +167,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 							controlsForm);
 				}
 
-				/*//update control
-				 ControlInterface newControlInterface = controlProcessor.populateControlInterface(controlsForm.getUserSelectedTool(),
-				 controlInterface, controlsForm);*/
+				//update control
 				//If new control interface is same as old one, do nothing. Else remove old ref from container and add new one
 				if ((newControlInterface != null) && (!newControlInterface.equals(controlInterface)))
 				{

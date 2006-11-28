@@ -42,7 +42,8 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String ENTITYGROUP_INTERFACE = "entityGroupInterface";
 	public static final String ERRORS_LIST = "errorsList";
 	public static final String SHOW_DYNAMIC_EXTENSIONS_HOMEPAGE = "showDynamicExtensionsHomePage";
-
+	public static final String SUCCESS="success";
+		
 	public static final String CONTROL_OPERATION = "controlOperation";
 	public static final String SELECTED_CONTROL_ID = "selectedControlId";
 	public static final String USER_SELECTED_TOOL = "userSelectedTool";

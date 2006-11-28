@@ -46,7 +46,7 @@ public class LoadGroupDefinitionAction extends BaseDynamicExtensionsAction
 		loadGroup(request, groupForm);
 		
 		groupForm.setGroupList(getListOfGroups());
-		return mapping.findForward("success"); 
+		return mapping.findForward(Constants.SUCCESS); 
 	}
 
 	/**

@@ -172,8 +172,6 @@ public class LoadFormControlsProcessor
 			{
 				initializeFileUploadControlDefaultValues(controlsForm);
 			}
-			/*controlsForm.setValidationRules(new String[] {""});
-			 controlsForm.setTempValidationRules(new String[] {""});*/
 		}
 	}
 
@@ -225,7 +223,7 @@ public class LoadFormControlsProcessor
 	 */
 	private void initializeCheckBoxControlDefaultValues(ControlsForm controlsForm)
 	{
-		if (controlsForm.getAttributeDefaultValue() == null)
+		if((controlsForm.getAttributeDefaultValue()==null)||((controlsForm.getAttributeDefaultValue().trim().equals(""))))
 		{
 			controlsForm.setAttributeDefaultValue(ProcessorConstants.DEFAULT_CHECKBOX_VALUE);
 		}

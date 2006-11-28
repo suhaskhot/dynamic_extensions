@@ -84,6 +84,17 @@ public interface AbstractMetadataInterface
 	 * @param semanticPropertyInterface A SemanticProperty to be added.
 	 */
 	void addSemanticProperty(SemanticPropertyInterface semanticProperty);
+	
+	/**
+	 * This method removes a SemanticProperty from the AbstractMetadata.
+	 * @param semanticPropertyInterface A SemanticProperty to be removed.
+	 */
+	public void removeSemanticProperty(SemanticPropertyInterface semanticPropertyInterface);
+	
+	/**
+	 * This method removes all SemanticProperties from AbstractMetadata.
+	 */
+	public void removeAllSemanticProperties();
     /**
      * 
      * @return

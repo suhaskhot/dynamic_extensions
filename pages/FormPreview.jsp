@@ -36,7 +36,7 @@
 			<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 <table valign="top"  align='left' width='90%' height="90%" border='0' cellspacing="0" cellpadding="0" class="tbBorders1" >
  <!-- Main Page heading -->
- <tr ><td class="formFieldSized1"><bean:message key="app.title.MainPageTitle" /></td></tr>
+ <tr ><td class="formFieldNoBorders"><bean:message key="app.title.MainPageTitle" /></td></tr>
 	  <tr valign="top">
 		<td >
 		<table valign="top" summary="" align='left' width='100%' cellspacing="0" cellpadding="3"  >

@@ -61,7 +61,7 @@
 				
  				<!-- Main Page heading -->
 				<tr>
-					<td class="formFieldSized1">
+					<td class="formFieldNoBorders">
 						<c:choose>
 							<c:when test='${showFormPreview  == "true"}'> 
 								<bean:message key="app.title.MainPageTitle" />

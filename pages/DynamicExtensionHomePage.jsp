@@ -36,7 +36,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td align="left">
+					<td class="formMessage" align="left">
 						<bean:message key="app.formpage.heading" />
 					</td>
 				</tr>

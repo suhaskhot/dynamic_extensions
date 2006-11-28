@@ -57,7 +57,7 @@
 		     <!-- Main Page heading -->
 	         <tr style = "border-bottom:0px">
 	         	<td class = "tbBordersAllbordersNone" >&nbsp;</td>
-	         	<td class="tbBordersAllbordersNone formFieldSized1" ><bean:message key="app.title.MainPageTitle" /></td>
+	         	<td class="formFieldNoBorders" ><bean:message key="app.title.MainPageTitle" /></td>
 	         </tr>
 
 	         <!-- Tabs -->

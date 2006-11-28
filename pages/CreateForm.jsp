@@ -38,7 +38,7 @@
          <!-- Main Page heading -->
          <tr style = "border-bottom:0px">
          	<td style = "border-right:0px;border-bottom:0px" width = '30px'>&nbsp;</td>
-         	<td style = "border-left:0px;border-bottom:0px" class="formFieldSized1" >
+         	<td style = "border-left:0px;border-bottom:0px" class="formFieldNoBorders" >
          		<bean:message key="app.title.MainPageTitle" />
          	</td>
          </tr>

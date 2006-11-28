@@ -49,6 +49,10 @@ public class ComboBox extends Control implements ComboBoxInterface
 		if (this.value == null)
 		{
 			defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
+			if (defaultValue == null || defaultValue.length() == 0)
+			{
+				defaultValue = "";
+			}
 		}
 
 		if (listOfValues == null)
@@ -56,15 +60,18 @@ public class ComboBox extends Control implements ComboBoxInterface
 			nameValueBeanList = ControlsUtility.populateListOfValues((AttributeInterface) this.getAbstractAttribute());
 		}
 
-		for (NameValueBean nameValueBean : nameValueBeanList)
+		if (nameValueBeanList != null && nameValueBeanList.size() > 0)
 		{
-			if (nameValueBean.getValue().equals(defaultValue))
+			for (NameValueBean nameValueBean : nameValueBeanList)
 			{
-				htmlString += "<OPTION VALUE='" + nameValueBean.getValue() + "' SELECTED>" + nameValueBean.getName();
-			}
-			else
-			{
-				htmlString += "<OPTION VALUE='" + nameValueBean.getValue() + "'>" + nameValueBean.getName();
+				if (nameValueBean.getValue().equals(defaultValue))
+				{
+					htmlString += "<OPTION VALUE='" + nameValueBean.getValue() + "' SELECTED>" + nameValueBean.getName();
+				}
+				else
+				{
+					htmlString += "<OPTION VALUE='" + nameValueBean.getValue() + "'>" + nameValueBean.getName();
+				}
 			}
 		}
 		htmlString += "</SELECT>";

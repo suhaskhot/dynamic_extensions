@@ -84,8 +84,6 @@ public class Container extends AbstractDomainObject implements Serializable, Con
 	{
 	}
 
-
-
 	/**
 	 * @hibernate.property name="buttonCss" type="string" column="BUTTON_CSS" 
 	 * @return Returns the buttonCss.

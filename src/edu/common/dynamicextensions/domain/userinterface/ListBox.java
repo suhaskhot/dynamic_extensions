@@ -26,12 +26,12 @@ public class ListBox extends Control implements ListBoxInterface
 	 * Boolean indicating whether multi selects are allowed in the list box.
 	 */
 	private Boolean isMultiSelect = null;
-	
+
 	/**
 	 * Number of rows to be displayed on the UI for ListBox.
 	 */
 	private Integer noOfRows = null;
-	
+
 	/**
 	 * The list of values to be displayed in the ListBox
 	 */
@@ -95,32 +95,39 @@ public class ListBox extends Control implements ListBoxInterface
 		{
 			strMultiSelect = "MULTIPLE ";
 		}
-		String htmlString = "<SELECT " + strMultiSelect + " size = " + this.noOfRows + "class = '" + cssClass + "' " + "' name = '" + getHTMLComponentName() + "' " + "id = '" + name
-				+ "' " + "title = '" + tooltip + "' " + ">";
+		String htmlString = "<SELECT " + strMultiSelect + " size = " + this.noOfRows + "class = '" + cssClass + "' " + "' name = '"
+				+ getHTMLComponentName() + "' " + "id = '" + name + "' " + "title = '" + tooltip + "' " + ">";
 
 		if (this.value == null)
 		{
 			defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
+			if (defaultValue == null || defaultValue.length() == 0)
+			{
+				defaultValue = "";
+			}
 		}
 
 		if (listOfValues == null)
 		{
-			nameValueBeanList = ControlsUtility.populateListOfValues((AttributeInterface)this.getAbstractAttribute());
+			nameValueBeanList = ControlsUtility.populateListOfValues((AttributeInterface) this.getAbstractAttribute());
 		}
 
-		for (NameValueBean nameValueBean : nameValueBeanList)
+		if (nameValueBeanList != null && nameValueBeanList.size() > 0)
 		{
-			if (nameValueBean.getValue().equals(defaultValue))
+			for (NameValueBean nameValueBean : nameValueBeanList)
 			{
-				htmlString += "<OPTION VALUE='" + nameValueBean.getValue() + "' SELECTED>" + nameValueBean.getName();
-			}
-			else
-			{
-				htmlString += "<OPTION VALUE='" + nameValueBean.getValue() + "'>" + nameValueBean.getName();
+				if (nameValueBean.getValue().equals(defaultValue))
+				{
+					htmlString += "<OPTION VALUE='" + nameValueBean.getValue() + "' SELECTED>" + nameValueBean.getName();
+				}
+				else
+				{
+					htmlString += "<OPTION VALUE='" + nameValueBean.getValue() + "'>" + nameValueBean.getName();
+				}
 			}
 		}
 		htmlString = htmlString + "</SELECT>";
-		
+
 		return htmlString;
 	}
 

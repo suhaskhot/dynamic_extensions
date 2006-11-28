@@ -15,6 +15,7 @@ import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 public class DatePicker extends Control implements DatePickerInterface
 {
 	String dateValueType = null;
+
 	/**
 	 * Empty Constructor
 	 */
@@ -32,15 +33,21 @@ public class DatePicker extends Control implements DatePickerInterface
 		if (value == null)
 		{
 			defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
+			if (defaultValue == null)
+			{
+				defaultValue = "";
+			}
 		}
 
 		String output = "<input class='" + cssClass + "' " + " name='" + getHTMLComponentName() + "'  id='" + getHTMLComponentName() + "' "
-				+ " value='" + defaultValue + "'/> " + "<A onclick=\"showCalendar('" + getHTMLComponentName() + "'," + DynamicExtensionsUtility.getCurrentYear() + "," + DynamicExtensionsUtility.getCurrentMonth() + ","+DynamicExtensionsUtility.getCurrentDay() +",'MM-dd-yyyy','dataEntryForm','"
-				+ getHTMLComponentName()
+				+ " value='" + defaultValue + "'/> " + "<A onclick=\"showCalendar('" + getHTMLComponentName() + "',"
+				+ DynamicExtensionsUtility.getCurrentYear() + "," + DynamicExtensionsUtility.getCurrentMonth() + ","
+				+ DynamicExtensionsUtility.getCurrentDay() + ",'MM-dd-yyyy','dataEntryForm','" + getHTMLComponentName()
 				+ "',event,1900,2020);\" href=\"javascript://\"><IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0></A>"
 				+ "<DIV id=slcalcod" + getHTMLComponentName()
 				+ " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">" + "<SCRIPT>printCalendar('"
-				+ getHTMLComponentName() + "',"+DynamicExtensionsUtility.getCurrentDay() + "," + DynamicExtensionsUtility.getCurrentMonth()+"," + DynamicExtensionsUtility.getCurrentYear()+");</SCRIPT>" + "</DIV>" + "[MM-DD-YYYY]&nbsp;";
+				+ getHTMLComponentName() + "'," + DynamicExtensionsUtility.getCurrentDay() + "," + DynamicExtensionsUtility.getCurrentMonth() + ","
+				+ DynamicExtensionsUtility.getCurrentYear() + ");</SCRIPT>" + "</DIV>" + "[MM-DD-YYYY]&nbsp;";
 
 		return output;
 	}
@@ -65,7 +72,7 @@ public class DatePicker extends Control implements DatePickerInterface
 	 */
 	public void setDateValueType(String dateValueType)
 	{
-		this.dateValueType = dateValueType;	
+		this.dateValueType = dateValueType;
 	}
 
 }

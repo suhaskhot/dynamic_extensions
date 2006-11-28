@@ -50,20 +50,23 @@ public class RadioButton extends Control implements RadioButtonInterface
 		String htmlComponentName = getHTMLComponentName();
 		if (defaultValue != null)
 		{
-			for (NameValueBean nameValueBean : nameValueBeanList)
+			if (nameValueBeanList != null && nameValueBeanList.size() > 0)
 			{
-				String optionName = nameValueBean.getName();
-				if (nameValueBean.getValue().equals(defaultValue))
+				for (NameValueBean nameValueBean : nameValueBeanList)
 				{
-					htmlString += "<input type='radio' " + "class = '" + cssClass + "' " + "name = '" + htmlComponentName + "' " + "value = '"
-							+ nameValueBean.getValue() + "' " + "id = '" + optionName + "' " + "title = '" + tooltip + "' checked> "
-							+ "<label for=\""+ optionName + "\">" + optionName + "</label> ";
-				}
-				else
-				{
-					htmlString += "<input type='radio' " + "class = '" + cssClass + "' " + "name = '" + htmlComponentName + "' " + "value = '"
-							+ nameValueBean.getValue() + "' " + "id = '" + optionName + "' " + "title = '" + tooltip + "'> "
-							+ "<label for=\""+ optionName + "\">" + optionName + "</label> ";
+					String optionName = nameValueBean.getName();
+					if (nameValueBean.getValue().equals(defaultValue))
+					{
+						htmlString += "<input type='radio' " + "class = '" + cssClass + "' " + "name = '" + htmlComponentName + "' " + "value = '"
+								+ nameValueBean.getValue() + "' " + "id = '" + optionName + "' " + "title = '" + tooltip + "' checked> "
+								+ "<label for=\"" + optionName + "\">" + optionName + "</label> ";
+					}
+					else
+					{
+						htmlString += "<input type='radio' " + "class = '" + cssClass + "' " + "name = '" + htmlComponentName + "' " + "value = '"
+								+ nameValueBean.getValue() + "' " + "id = '" + optionName + "' " + "title = '" + tooltip + "'> " + "<label for=\""
+								+ optionName + "\">" + optionName + "</label> ";
+					}
 				}
 			}
 		}

@@ -50,7 +50,7 @@ public class CheckBox extends Control implements CheckBoxInterface
 			htmlString = "<input type='checkbox' class = '" + this.cssClass + "' name = '" + htmlComponentName + "' " + "value = \"true\" "
 					+ "id = '" + htmlComponentName + "' title = '" + this.tooltip + "'>";
 		}
-		
+
 		return htmlString;
 	}
 
@@ -61,5 +61,5 @@ public class CheckBox extends Control implements CheckBoxInterface
 	public void setAttribute(AbstractAttributeInterface abstractAttribute)
 	{
 	}
-	
+
 }

@@ -63,11 +63,7 @@ public class ControlsUtility
 				StringTypeInformationInterface stringAttribute = (StringTypeInformationInterface) abstractAttributeType;
 				if (stringAttribute != null)
 				{
-					StringValueInterface stringValue = (StringValueInterface) stringAttribute.getDefaultValue();
-					if (stringValue != null)
-					{
-						defaultValue = stringValue.getValue();
-					}
+					defaultValue = getDefaultString(stringAttribute);
 				}
 			}
 			else if (abstractAttributeType instanceof BooleanTypeInformationInterface)
@@ -75,15 +71,7 @@ public class ControlsUtility
 				BooleanTypeInformationInterface booleanAttribute = (BooleanTypeInformationInterface) abstractAttributeType;
 				if (booleanAttribute != null)
 				{
-					BooleanValueInterface booleanValue = (BooleanValueInterface) booleanAttribute.getDefaultValue();
-					if (booleanValue != null)
-					{
-						Boolean defaultBoolean = booleanValue.getValue();
-						if (defaultBoolean != null)
-						{
-							defaultValue = defaultBoolean.toString();
-						}
-					}
+					defaultValue=getDefaultBoolean(booleanAttribute);
 				}
 			}
 			else if (abstractAttributeType instanceof IntegerTypeInformationInterface)
@@ -91,15 +79,7 @@ public class ControlsUtility
 				IntegerTypeInformationInterface integerAttribute = (IntegerTypeInformationInterface) abstractAttributeType;
 				if (integerAttribute != null)
 				{
-					IntegerValueInterface integerValue = (IntegerValueInterface) integerAttribute.getDefaultValue();
-					if (integerValue != null)
-					{
-						Integer defaultInteger = integerValue.getValue();
-						if (defaultInteger != null)
-						{
-							defaultValue = defaultInteger.toString();
-						}
-					}
+					defaultValue = getDefaultInteger(integerAttribute);
 				}
 			}
 			else if (abstractAttributeType instanceof LongTypeInformationInterface)
@@ -107,15 +87,7 @@ public class ControlsUtility
 				LongTypeInformationInterface longAttribute = (LongTypeInformationInterface) abstractAttributeType;
 				if (longAttribute != null)
 				{
-					LongValueInterface longValue = (LongValueInterface) longAttribute.getDefaultValue();
-					if (longValue != null)
-					{
-						Long defaultLong = longValue.getValue();
-						if (defaultLong != null)
-						{
-							defaultValue = defaultLong.toString();
-						}
-					}
+					defaultValue = getDefaultLong(longAttribute);
 				}
 			}
 			else if (abstractAttributeType instanceof DoubleTypeInformationInterface)
@@ -123,15 +95,7 @@ public class ControlsUtility
 				DoubleTypeInformationInterface doubleAttribute = (DoubleTypeInformationInterface) abstractAttributeType;
 				if (doubleAttribute != null)
 				{
-					DoubleValueInterface doubleValue = (DoubleValueInterface) doubleAttribute.getDefaultValue();
-					if (doubleValue != null)
-					{
-						Double defaultDouble = doubleValue.getValue();
-						if (defaultDouble != null)
-						{
-							defaultValue = defaultDouble.toString();
-						}
-					}
+					defaultValue = getDefaultDouble(doubleAttribute);
 				}
 			}
 			else if (abstractAttributeType instanceof FloatTypeInformationInterface)
@@ -139,15 +103,7 @@ public class ControlsUtility
 				FloatTypeInformationInterface floatAttribute = (FloatTypeInformationInterface) abstractAttributeType;
 				if (floatAttribute != null)
 				{
-					FloatValueInterface floatValue = (FloatValueInterface) floatAttribute.getDefaultValue();
-					if (floatValue != null)
-					{
-						Float defaultFloat = floatValue.getValue();
-						if (defaultFloat != null)
-						{
-							defaultValue = defaultFloat.toString();
-						}
-					}
+					defaultValue = getDefaultFloat(floatAttribute);
 				}
 			}
 			else if (abstractAttributeType instanceof ShortTypeInformationInterface)
@@ -155,15 +111,7 @@ public class ControlsUtility
 				ShortTypeInformationInterface shortAttribute = (ShortTypeInformationInterface) abstractAttributeType;
 				if (shortAttribute != null)
 				{
-					ShortValueInterface shortValue = (ShortValueInterface) shortAttribute.getDefaultValue();
-					if (shortValue != null)
-					{
-						Short defaultShort = shortValue.getValue();
-						if (defaultShort != null)
-						{
-							defaultValue = defaultShort.toString();
-						}
-					}
+					defaultValue = getDefaultShort(shortAttribute);
 				}
 			}
 			else if (abstractAttributeType instanceof DateTypeInformationInterface)
@@ -171,16 +119,124 @@ public class ControlsUtility
 				DateTypeInformationInterface dateAttribute = (DateTypeInformationInterface) abstractAttributeType;
 				if (dateAttribute != null)
 				{
-					DateValueInterface dateValue = (DateValueInterface) dateAttribute.getDefaultValue();
-					if (dateValue != null)
-					{
-						Date defaultDate = dateValue.getValue();
-						if (defaultDate != null)
-						{
-							defaultValue = new SimpleDateFormat(getDateFormat(dateAttribute)).format(defaultDate);
-						}
-					}
+					defaultValue = getDefaultDate(dateAttribute);
 				}
+			}
+		}
+		return defaultValue;
+	}
+	
+	private static String getDefaultString(StringTypeInformationInterface stringAttribute)
+	{
+		String defaultValue = null;
+		StringValueInterface stringValue = (StringValueInterface) stringAttribute.getDefaultValue();
+		if (stringValue != null)
+		{
+			defaultValue = stringValue.getValue();
+		}
+		return defaultValue;
+	}
+	
+	private static String getDefaultBoolean(BooleanTypeInformationInterface booleanAttribute)
+	{
+		String defaultValue = null;
+		BooleanValueInterface booleanValue = (BooleanValueInterface) booleanAttribute.getDefaultValue();
+		if (booleanValue != null)
+		{
+			Boolean defaultBoolean = booleanValue.getValue();
+			if (defaultBoolean != null)
+			{
+				defaultValue = defaultBoolean.toString();
+			}
+		}
+		return defaultValue;
+	}
+
+	private static String getDefaultInteger(IntegerTypeInformationInterface integerAttribute)
+	{
+		String defaultValue = null;
+		IntegerValueInterface integerValue = (IntegerValueInterface) integerAttribute.getDefaultValue();
+		if (integerValue != null)
+		{
+			Integer defaultInteger = integerValue.getValue();
+			if (defaultInteger != null)
+			{
+				defaultValue = defaultInteger.toString();
+			}
+		}
+		return defaultValue;
+	}
+
+	private static String getDefaultLong(LongTypeInformationInterface longAttribute)
+	{
+		String defaultValue = null;
+		LongValueInterface longValue = (LongValueInterface) longAttribute.getDefaultValue();
+		if (longValue != null)
+		{
+			Long defaultLong = longValue.getValue();
+			if (defaultLong != null)
+			{
+				defaultValue = defaultLong.toString();
+			}
+		}
+		return defaultValue;
+	}
+
+	private static String getDefaultDouble(DoubleTypeInformationInterface doubleAttribute)
+	{
+		String defaultValue = null;
+		DoubleValueInterface doubleValue = (DoubleValueInterface) doubleAttribute.getDefaultValue();
+		if (doubleValue != null)
+		{
+			Double defaultDouble = doubleValue.getValue();
+			if (defaultDouble != null)
+			{
+				defaultValue = defaultDouble.toString();
+			}
+		}
+		return defaultValue;
+	}
+
+	private static String getDefaultFloat(FloatTypeInformationInterface floatAttribute)
+	{
+		String defaultValue = null;
+		FloatValueInterface floatValue = (FloatValueInterface) floatAttribute.getDefaultValue();
+		if (floatValue != null)
+		{
+			Float defaultFloat = floatValue.getValue();
+			if (defaultFloat != null)
+			{
+				defaultValue = defaultFloat.toString();
+			}
+		}
+		return defaultValue;
+	}
+
+	private static String getDefaultShort(ShortTypeInformationInterface shortAttribute)
+	{
+		String defaultValue = null;
+		ShortValueInterface shortValue = (ShortValueInterface) shortAttribute.getDefaultValue();
+		if (shortValue != null)
+		{
+			Short defaultShort = shortValue.getValue();
+			if (defaultShort != null)
+			{
+				defaultValue = defaultShort.toString();
+			}
+		}
+		return defaultValue;
+	}
+
+	private static String getDefaultDate(DateTypeInformationInterface dateAttribute)
+	{
+		String defaultValue = null;
+		DateValueInterface dateValue = (DateValueInterface) dateAttribute.getDefaultValue();
+		if (dateValue != null)
+		{
+			Date defaultDate = dateValue.getValue();
+			if (defaultDate != null)
+			{
+				defaultValue = new SimpleDateFormat(getDateFormat(dateAttribute)).format(defaultDate);
 			}
 		}
 		return defaultValue;
@@ -289,7 +345,6 @@ public class ControlsUtility
 			nameValueBean.setName(doubleValue.getValue().doubleValue());
 			nameValueBean.setValue(doubleValue.getValue().doubleValue());
 		}
-
 		return nameValueBean;
 	}
 
@@ -377,7 +432,6 @@ public class ControlsUtility
 		return nameValueBean;
 	}
 
-
 	/**
 	 * 
 	 * @param entityInterface
@@ -405,13 +459,12 @@ public class ControlsUtility
 	 * 
 	 * @param controlCollection
 	 */
-	public static  void deleteControls(ContainerInterface containerInterface, int sequenceNumbersCount)
+	public static void deleteControls(ContainerInterface containerInterface, int sequenceNumbersCount)
 	{
 		Collection controlCollection = containerInterface.getControlCollection();
 		if (sequenceNumbersCount == 1)
 		{
 			containerInterface.getControlCollection().retainAll(new HashSet());
-
 		}
 		else
 		{
@@ -424,9 +477,7 @@ public class ControlsUtility
 				{
 					controlIterator.remove();
 				}
-
 			}
-
 		}
 	}
 

@@ -255,6 +255,29 @@ public abstract class AbstractMetadata extends AbstractDomainObject implements j
 		}
 		semanticPropertyCollection.add(semanticPropertyInterface);
 	}
+	
+	/**
+	 * This method removes a SemanticProperty from the AbstractMetadata.
+	 * @param semanticPropertyInterface A SemanticProperty to be removed.
+	 */
+	public void removeSemanticProperty(SemanticPropertyInterface semanticPropertyInterface)
+	{
+		if ((semanticPropertyCollection != null)&&(semanticPropertyCollection.contains(semanticPropertyInterface)))
+		{
+			semanticPropertyCollection.remove(semanticPropertyInterface);
+		}
+	}
+	
+	/**
+	 * This method removes all SemanticProperties from AbstractMetadata.
+	 */
+	public void removeAllSemanticProperties()
+	{
+		if (semanticPropertyCollection != null)
+		{
+			semanticPropertyCollection.clear();
+		}
+	}
 
     /**
      * This method returns the Collection of TaggedValue of the AbstractMetadata.

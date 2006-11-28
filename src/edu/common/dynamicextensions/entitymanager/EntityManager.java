@@ -1070,7 +1070,7 @@ public class EntityManager
 					nullConstraint = "NOT NULL";
 				}
 
-				if (attribute.getAttributeTypeInformation().getDefaultValue() != null)
+				if (attribute.getAttributeTypeInformation().getDefaultValue() != null && attribute.getAttributeTypeInformation().getDefaultValue().getValueAsObject() != null )
 				{
 					defaultConstraint = DEFAULT_KEYWORD
 							+ WHITESPACE

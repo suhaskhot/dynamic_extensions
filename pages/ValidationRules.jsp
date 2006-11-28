@@ -12,7 +12,7 @@
 <script src="<%=request.getContextPath()%>/jss/calendarComponent.js"></script>
 <%@page import="edu.common.dynamicextensions.ui.util.RuleConfigurationObject" %>
 <%@page import="edu.wustl.common.beans.NameValueBean" %>
-
+<%@page import="edu.common.dynamicextensions.util.DynamicExtensionsUtility" %>
 
 <c:set var="controlRuleMap" value="${controlsForm.controlRuleMap}"/>
 <jsp:useBean id="controlRuleMap" type="java.util.Map"/>
@@ -82,11 +82,11 @@
 										{ 
 											String divId = "slcalcod"+ paramName ;
 									%>
-											<A onclick="showCalendar('<%= paramName%>',2006,10,26,'MM-dd-yyyy','controlsForm','<%= paramName%>',event,1900,2020);" href="javascript://">
+											<A onclick="showCalendar('<%= paramName%>',<%=DynamicExtensionsUtility.getCurrentYear()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentDay()%>,'MM-dd-yyyy','controlsForm','<%= paramName%>',event,1900,2020);" href="javascript://">
 												<IMG alt="This is a Calendar" src="images/calendar.gif" border=0>
 											</A>
 											<DIV id=<%=divId%> style="Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px">
-												<SCRIPT>printCalendar('<%= paramName%>',26,10,2006);</SCRIPT>
+												<SCRIPT>printCalendar('<%= paramName%>',<%=DynamicExtensionsUtility.getCurrentDay()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentYear()%>);</SCRIPT>
 											</DIV>
 									<%
 										} //end if(controlName.equalsIgnoreCase("DateControl"))

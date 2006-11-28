@@ -3,6 +3,8 @@
 <%@ taglib uri="/WEB-INF/dynamicExtensions.tld" prefix="dynamicExtensions" %>
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
 <%@page import="edu.common.dynamicextensions.processor.ProcessorConstants" %>
+<%@page import="edu.common.dynamicextensions.util.DynamicExtensionsUtility" %>
+<%@page import="java.util.Date" %>
 
 <SCRIPT>var imgsrc="images/";</SCRIPT>
 
@@ -11,6 +13,7 @@
 
 <c:set var="dateValueType" value="${controlsForm.dateValueType}"/>
 <jsp:useBean id="dateValueType" type="java.lang.String"/>
+
 
 
 <html:hidden styleId = 'dataType' property="dataType" value="<%=ProcessorConstants.DATATYPE_DATE%>"/>
@@ -67,9 +70,9 @@
 				</td>
 				<td class="formFieldWithoutBorder" >
 					<html:text styleId = 'attributeDefaultValue' property='attributeDefaultValue'  styleClass="formFieldVerySmallSized" maxlength="100" size="60"></html:text>
-					<A onclick="showCalendar('attributeDefaultValue',2006,10,26,'MM-dd-yyyy','controlsForm','attributeDefaultValue',event,1900,2020);" href="javascript://"><IMG alt="This is a Calendar" src="images/calendar.gif" border=0></A>
+					<A onclick="showCalendar('attributeDefaultValue',<%=DynamicExtensionsUtility.getCurrentYear()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentDay()%>,'MM-dd-yyyy','controlsForm','attributeDefaultValue',event,1900,2020);" href="javascript://"><IMG alt="This is a Calendar" src="images/calendar.gif" border=0></A>
 					<DIV id=slcalcodattributeDefaultValue style="Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px">
-						<SCRIPT>printCalendar('attributeDefaultValue',26,10,2006);</SCRIPT>
+						<SCRIPT>printCalendar('attributeDefaultValue',<%=DynamicExtensionsUtility.getCurrentDay()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentYear()%>);</SCRIPT>
 					</DIV>
 					[MM-DD-YYYY]&nbsp;
 				</td>

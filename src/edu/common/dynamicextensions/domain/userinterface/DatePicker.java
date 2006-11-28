@@ -4,6 +4,7 @@ package edu.common.dynamicextensions.domain.userinterface;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 
 /**
  * @version 1.0
@@ -34,12 +35,12 @@ public class DatePicker extends Control implements DatePickerInterface
 		}
 
 		String output = "<input class='" + cssClass + "' " + " name='" + getHTMLComponentName() + "'  id='" + getHTMLComponentName() + "' "
-				+ " value='" + defaultValue + "'/> " + "<A onclick=\"showCalendar('" + getHTMLComponentName() + "',2006,10,26,'MM-dd-yyyy','dataEntryForm','"
+				+ " value='" + defaultValue + "'/> " + "<A onclick=\"showCalendar('" + getHTMLComponentName() + "'," + DynamicExtensionsUtility.getCurrentYear() + "," + DynamicExtensionsUtility.getCurrentMonth() + ","+DynamicExtensionsUtility.getCurrentDay() +",'MM-dd-yyyy','dataEntryForm','"
 				+ getHTMLComponentName()
 				+ "',event,1900,2020);\" href=\"javascript://\"><IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0></A>"
 				+ "<DIV id=slcalcod" + getHTMLComponentName()
 				+ " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">" + "<SCRIPT>printCalendar('"
-				+ getHTMLComponentName() + "',26,10,2006);</SCRIPT>" + "</DIV>" + "[MM-DD-YYYY]&nbsp;";
+				+ getHTMLComponentName() + "',"+DynamicExtensionsUtility.getCurrentDay() + "," + DynamicExtensionsUtility.getCurrentMonth()+"," + DynamicExtensionsUtility.getCurrentYear()+");</SCRIPT>" + "</DIV>" + "[MM-DD-YYYY]&nbsp;";
 
 		return output;
 	}

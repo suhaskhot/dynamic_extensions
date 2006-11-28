@@ -45,6 +45,7 @@ public class ProcessorConstants
     //Date Formats
     public static final String DATE_ONLY_FORMAT = Constants.DATE_PATTERN_MM_DD_YYYY;
     public static final String DATE_TIME_FORMAT = Constants.TIMESTAMP_PATTERN;
+    public static final String DATE_SEPARATOR = Constants.DATE_SEPARATOR;
     
     //Types of permisible value sources for Combobox
     public static final String DISPLAY_CHOICE_USER_DEFINED = "UserDefined";

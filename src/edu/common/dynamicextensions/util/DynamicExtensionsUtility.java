@@ -7,6 +7,7 @@ package edu.common.dynamicextensions.util;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -297,5 +298,18 @@ public class DynamicExtensionsUtility
         }
     }
     
+    public static int getCurrentDay()
+    {
+    	return Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+    }
+    
+    public static int getCurrentMonth()
+    {
+    	return (Calendar.getInstance().get(Calendar.MONTH)+1);
+    }
+    public static int getCurrentYear()
+    {
+    	return Calendar.getInstance().get(Calendar.YEAR);
+    }
 
 }

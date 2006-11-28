@@ -1390,8 +1390,9 @@ public class EntityManager
 
 	/**
 	 * @param container container
+	 * @throws DynamicExtensionsApplicationException 
 	 */
-	private void preSaveProcessContainer(Container container)
+	private void preSaveProcessContainer(Container container) throws DynamicExtensionsApplicationException
 	{
 		if (container.getEntity() != null)
 		{
@@ -1401,9 +1402,11 @@ public class EntityManager
 
 	/**
 	 * @param entity entity
+	 * @throws DynamicExtensionsApplicationException 
 	 */
-	private void preSaveProcessEntity(EntityInterface entity)
+	private void preSaveProcessEntity(EntityInterface entity) throws DynamicExtensionsApplicationException
 	{
+        validateEntityForSaving(entity);
 		if (entity.getId() != null)
 		{
 			entity.setLastUpdated(new Date());
@@ -1415,7 +1418,38 @@ public class EntityManager
 		}
 	}
 
-	/**
+	private void validateEntityForSaving(EntityInterface entity) throws DynamicExtensionsApplicationException
+    {
+        
+        validateName(entity.getName());
+        Collection collection = entity.getAbstractAttributeCollection();
+        if (collection != null && !collection.isEmpty()) {
+            Iterator iterator = collection.iterator();
+            while(iterator.hasNext()) {
+                AbstractMetadataInterface abstractMetadataInterface = (AbstractMetadataInterface) iterator.next();
+                validateName(abstractMetadataInterface.getName());
+            }
+        }
+        
+        
+        if (entity.getDescription() != null && entity.getDescription().length() > 1000) {
+            throw new DynamicExtensionsApplicationException("Entity description size exceeded ", null, DYEXTN_A_004);
+        }
+        return;
+    }
+    
+    private void validateName(String name) throws DynamicExtensionsApplicationException {
+        /**
+         * Constant representing valid names for a TAP object that goes into a folder
+         */
+        final String VALIDCHARSREGEX = "[^\\\\/:*?\"<>&;|']*";
+        
+        if (name == null || name.trim().length()==0 || !name.matches(VALIDCHARSREGEX)) {
+            throw new DynamicExtensionsApplicationException("Entity name invalid", null, DYEXTN_A_003);
+        }
+    }
+
+    /**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#insertData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map)
 	 */
 	public Long insertData(EntityInterface entity, Map dataValue)
@@ -1906,6 +1940,11 @@ public class EntityManager
 			throw new DynamicExtensionsApplicationException(
 					"User is not authorised to perform this action", e, DYEXTN_A_002);
 		}
+        catch (DynamicExtensionsApplicationException e)
+        {
+            logDebug("saveOrUpdateEntity", DynamicExtensionsUtility.getStackTrace(e));
+            throw e;
+        }
 		catch (Exception e)
 		{
 			logDebug("saveOrUpdateEntity", DynamicExtensionsUtility.getStackTrace(e));

@@ -26,6 +26,11 @@ public interface EntityManagerExceptionConstantsInterface
     
     //Exception constant in case of data type factory not initialised
      String DYEXTN_A_002 = "DYEXTN_A_002";
+     
+    // Exception constant in case of entity name is invalid for saving
+     String DYEXTN_A_003 = "DYEXTN_A_003";
+     // Exception constant in case of entity description exceeds maximum length.
+     String DYEXTN_A_004 = "DYEXTN_A_004";
 
     
     

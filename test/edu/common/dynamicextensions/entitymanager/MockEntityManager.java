@@ -26,7 +26,9 @@ import edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInte
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Variables;
+import edu.wustl.common.util.Utility;
 
 /**
  * This Class is a mock class to test EntityManager
@@ -171,10 +173,10 @@ public class MockEntityManager
 		dummyEntity.setLastUpdated(dummyEntity.getCreatedDate());
 
 		
-//		/* Date of Joining attribute */
-//		abstractAttributeInterface = initializeDateAttribute();
-//		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
-//        abstractAttributeInterface.setEntity(dummyEntity);
+		/* Date of Joining attribute */
+		abstractAttributeInterface = initializeDateAttribute();
+		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
+        abstractAttributeInterface.setEntity(dummyEntity);
 		/* Gender attribute with its Permissible values */
 		abstractAttributeInterface = initializeStringAttribute("gender", "Male");
 		((AttributeInterface) abstractAttributeInterface).getAttributeTypeInformation().setDataElement(initializeDataElement());
@@ -251,7 +253,15 @@ public class MockEntityManager
 		dateAttribute.setName("dateOfJoining");
 		SimpleDateFormat dateFormat = new SimpleDateFormat(Variables.datePattern);
        
-        defaultValue.setValue( java.sql.Date.valueOf("1982-11-11"));
+        try
+        {
+            defaultValue.setValue( Utility.parseDate("11-11-1982",Constants.DATE_PATTERN_MM_DD_YYYY));
+        }
+        catch (ParseException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
       
         
 		dateAttribute.getAttributeTypeInformation().setDefaultValue(defaultValue);

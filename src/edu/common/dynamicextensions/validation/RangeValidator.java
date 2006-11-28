@@ -1,6 +1,8 @@
 
 package edu.common.dynamicextensions.validation;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,14 +35,14 @@ public class RangeValidator implements ValidatorRuleInterface
 	{
 		boolean valid = true;
 		String attributeName = attribute.getName();
-		
+
 		if (valueObject != null && !((String) valueObject).trim().equals(""))
 		{
 			AttributeTypeInformationInterface attributeTypeInformation = attribute.getAttributeTypeInformation();
 			if (attributeTypeInformation != null)
 			{
 				String value = (String) valueObject;
-				
+
 				Set<Map.Entry<String, String>> parameterSet = parameterMap.entrySet();
 				for (Map.Entry<String, String> parameter : parameterSet)
 				{
@@ -76,23 +78,32 @@ public class RangeValidator implements ValidatorRuleInterface
 		{
 			longValue = Long.parseLong(value);
 		}
-		catch(NumberFormatException numberFormatException)
+		catch (NumberFormatException numberFormatException)
 		{
 			throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Number", attributeName);
 		}
-		
+
+		List<String> placeHolders = null;
 		if (parameterName.equals("min"))
 		{
 			if (longValue < Long.parseLong(parameterValue))
 			{
-				throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Range.Minimum", attributeName);
+				placeHolders = new ArrayList<String>();
+				placeHolders.add(attributeName);
+				placeHolders.add(parameterValue);
+
+				throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Range.Minimum", placeHolders);
 			}
 		}
 		else if (parameterName.equals("max"))
 		{
 			if (longValue > Long.parseLong(parameterValue))
 			{
-				throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Range.Maximum", attributeName);
+				placeHolders = new ArrayList<String>();
+				placeHolders.add(attributeName);
+				placeHolders.add(parameterValue);
+
+				throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Range.Maximum", placeHolders);
 			}
 		}
 	}
@@ -115,14 +126,20 @@ public class RangeValidator implements ValidatorRuleInterface
 		{
 			doubleValue = Double.parseDouble(value);
 		}
-		catch(NumberFormatException numberFormatException)
+		catch (NumberFormatException numberFormatException)
 		{
 			throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Number", attributeName);
 		}
+
+		List<String> placeHolders = null;
 		if (parameterName.equals("min"))
 		{
 			if (doubleValue < Double.parseDouble(parameterValue))
 			{
+				placeHolders = new ArrayList<String>();
+				placeHolders.add(attributeName);
+				placeHolders.add(parameterValue);
+
 				throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Range.Minimum", attributeName);
 			}
 		}
@@ -130,6 +147,10 @@ public class RangeValidator implements ValidatorRuleInterface
 		{
 			if (doubleValue > Double.parseDouble(parameterValue))
 			{
+				placeHolders = new ArrayList<String>();
+				placeHolders.add(attributeName);
+				placeHolders.add(parameterValue);
+
 				throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Range.Maximum", attributeName);
 			}
 		}

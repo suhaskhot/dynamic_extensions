@@ -334,46 +334,23 @@ public final class ControlConfigurationsFactory
 	 * @param controlName
 	 * @return
 	 */
-	public Collection<RuleInterface> getAllImplicitRules(String controlName)
+	public List getAllImplicitRules(String controlName, String dataType)
 	{
-		Collection<RuleInterface> allImplicitRules = new ArrayList<RuleInterface>();
+		List<String> allImplicitRules = new ArrayList<String>();
 
 		ControlsConfigurationObject controlsConfiguration = (ControlsConfigurationObject) controlsConfigurationMap.get(controlName);
-		List<RuleInterface> commonImplicitRuleList = controlsConfiguration.getCommonImplicitRules();
-		if (commonImplicitRuleList != null && commonImplicitRuleList.size() > 0)
+		List<String> commonImplicitRuleList = controlsConfiguration.getCommonImplicitRules();
+		if (commonImplicitRuleList != null || commonImplicitRuleList.size() > 0)
 		{
-			for(RuleInterface rule: commonImplicitRuleList)
-			{
-				allImplicitRules.add(rule);
-			}
+			allImplicitRules.addAll(commonImplicitRuleList);
 		}
-
+		
 		Map dataTypeImplicitRulesMap = controlsConfiguration.getDataTypeImplicitRules();
-		Collection<RuleInterface> dataImpliciteRules = dataTypeImplicitRulesMap.values();
-
-		if (dataImpliciteRules != null && dataImpliciteRules.size() > 0)
+		List dataTypeImplicitRuleList = (List) dataTypeImplicitRulesMap.get(dataType);
+		if (dataTypeImplicitRuleList != null || dataTypeImplicitRuleList.size() > 0)
 		{
-			Iterator dataImpliciteRulesIterator = dataImpliciteRules.iterator();
-			List ruleNameList;
-
-			while (dataImpliciteRulesIterator.hasNext())
-			{
-				ruleNameList = (List) dataImpliciteRulesIterator.next();
-				if (ruleNameList != null)
-				{
-					Iterator ruleNameIterator = ruleNameList.iterator();
-					String ruleName;
-					while (ruleNameIterator.hasNext())
-					{
-						ruleName = (String) ruleNameIterator.next();
-						RuleInterface ruleInterface = DomainObjectFactory.getInstance().createRule();
-						ruleInterface.setName(ruleName);
-						allImplicitRules.add(ruleInterface);
-					}
-				}
-			}
+			allImplicitRules.addAll(dataTypeImplicitRuleList);
 		}
-
 		return allImplicitRules;
 	}
 

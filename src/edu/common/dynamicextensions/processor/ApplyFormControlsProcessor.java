@@ -92,7 +92,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				controlsForm.setName(attributeName);
 
 				//Create Attribute  
-				abstractAttributeInterface = attributeProcessor.createAndPopulateAttribute(controlsForm);
+				abstractAttributeInterface = attributeProcessor.createAndPopulateAttribute(controlsForm.getUserSelectedTool(),controlsForm);
 				
 				//Set permisible values
 				setPermissibleValues(attributeProcessor, abstractAttributeInterface, controlsForm);
@@ -147,7 +147,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				
 				//***********New Code starts here*********
 				abstractAttributeInterface = controlInterface.getAbstractAttribute();
-				attributeProcessor.updateAttributeInformation(abstractAttributeInterface,controlsForm);
+				attributeProcessor.updateAttributeInformation(controlsForm.getUserSelectedTool(),abstractAttributeInterface,controlsForm);
 				setPermissibleValues(attributeProcessor, abstractAttributeInterface, controlsForm);
 				
 				//update in control interface

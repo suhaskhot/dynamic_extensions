@@ -141,8 +141,9 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 *  @throws DynamicExtensionsSystemException : Exception
 	 *  @throws DynamicExtensionsApplicationException : Excedption
 	 */
-	public void populateAttribute(AbstractAttributeInterface attributeInterface, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public void populateAttribute(String userSelectedControlName, AbstractAttributeInterface attributeInterface,
+			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		if ((attributeUIBeanInformationIntf != null) && (attributeInterface != null))
 		{
@@ -159,7 +160,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			populateSemanticPropertiesInfo(attributeInterface, attributeUIBeanInformationIntf.getAttributeConceptCode());
 
 			//populate rules
-			populateRules(attributeInterface, attributeUIBeanInformationIntf);
+			populateRules(userSelectedControlName, attributeInterface, attributeUIBeanInformationIntf);
 		}
 		else
 		{
@@ -282,24 +283,39 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param attributeUIBeanInformationIntf : UI Bean containing rule information specified by the user
 	 * @throws DynamicExtensionsSystemException : dynamicExtensionsSystemException
 	 */
-	public void populateRules(AbstractAttributeInterface abstractAttributeInterface, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
-			throws DynamicExtensionsSystemException
+	public void populateRules(String userSelectedControlName, AbstractAttributeInterface abstractAttributeInterface,
+			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsSystemException
 	{
 		String[] validationRules = attributeUIBeanInformationIntf.getValidationRules();
-		ControlConfigurationsFactory configurationsFactory = null;
-		if (validationRules != null && validationRules.length != 0)
+		String[] allValidationRules = null;
+		ControlConfigurationsFactory configurationsFactory = ControlConfigurationsFactory.getInstance();;
+
+		List implicitRuleList = configurationsFactory.getAllImplicitRules(userSelectedControlName, attributeUIBeanInformationIntf.getDataType());
+		allValidationRules = new String[validationRules.length + implicitRuleList.size()];
+
+		for (int i = 0; i < validationRules.length; i++)
+		{
+			allValidationRules[i] = validationRules[i];
+		}
+
+		for (int i = 0; i < implicitRuleList.size(); i++)
+		{
+			allValidationRules[validationRules.length + i] = (String) implicitRuleList.get(i);
+		}
+
+		if (allValidationRules != null && allValidationRules.length != 0)
 		{
 			String validationRule = "";
-			configurationsFactory = ControlConfigurationsFactory.getInstance();
+
 			RuleConfigurationObject ruleConfigurationObject = null;
 
 			DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 			RuleInterface ruleInterface = null;
 			Collection<RuleParameterInterface> ruleParameterCollection = new HashSet<RuleParameterInterface>();
 
-			for (int counter = 0; counter < validationRules.length; counter++)
+			for (int counter = 0; counter < allValidationRules.length; counter++)
 			{
-				validationRule = validationRules[counter];
+				validationRule = allValidationRules[counter];
 				ruleConfigurationObject = configurationsFactory.getRuleObject(validationRule);
 				ruleInterface = domainObjectFactory.createRule();
 				ruleInterface.setName(ruleConfigurationObject.getRuleName());
@@ -547,11 +563,12 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsSystemException : Exception
 	 * @throws DynamicExtensionsApplicationException : Exception
 	 */
-	public AttributeInterface createAndPopulateAttribute(AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public AttributeInterface createAndPopulateAttribute(String userSelectedControlName,
+			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		AttributeInterface attributeInterface = createAttribute(attributeUIBeanInformationIntf);
-		populateAttribute(attributeInterface, attributeUIBeanInformationIntf);
+		populateAttribute(userSelectedControlName, attributeInterface, attributeUIBeanInformationIntf);
 		return attributeInterface;
 	}
 
@@ -1191,7 +1208,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public void updateAttributeInformation(AbstractAttributeInterface abstractAttributeInformation,
+	public void updateAttributeInformation(String userSelectedControlName, AbstractAttributeInterface abstractAttributeInformation,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformation) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException
 	{
@@ -1202,7 +1219,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				AttributeInterface attributeInformation = (AttributeInterface) abstractAttributeInformation;
 				AttributeTypeInformationInterface attributeTypeInformation = createAttributeTypeInformation(attributeUIBeanInformation);
 				attributeInformation.setAttributeTypeInformation(attributeTypeInformation);
-				populateAttribute(attributeInformation, attributeUIBeanInformation);
+				populateAttribute(userSelectedControlName, attributeInformation, attributeUIBeanInformation);
 			}
 		}
 	}

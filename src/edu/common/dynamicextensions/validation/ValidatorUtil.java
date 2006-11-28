@@ -42,19 +42,19 @@ public class ValidatorUtil
 			return errorList;
 		}
 
-		for(Map.Entry<AbstractAttributeInterface, Object> attributeValueNode : attributeSet)
+		for (Map.Entry<AbstractAttributeInterface, Object> attributeValueNode : attributeSet)
 		{
-			AttributeInterface attribute = (AttributeInterface)attributeValueNode.getKey();
+			AttributeInterface attribute = (AttributeInterface) attributeValueNode.getKey();
 			Collection<RuleInterface> attributeRuleCollection = attribute.getRuleCollection();
 			if (attributeRuleCollection == null || attributeRuleCollection.isEmpty())
 			{
 				return errorList;
 			}
-			
-			for(RuleInterface rule: attributeRuleCollection)
+
+			for (RuleInterface rule : attributeRuleCollection)
 			{
 				ValidatorRuleInterface validatorRule = ControlConfigurationsFactory.getInstance().getValidatorRule(rule.getName());
-				Object valueObject = attributeValueMap.get(attribute);				
+				Object valueObject = attributeValueMap.get(attribute);
 				Map<String, String> parameterMap = getParamMap(rule);
 				try
 				{
@@ -67,7 +67,7 @@ public class ValidatorUtil
 				}
 			}
 		}
-		
+
 		return errorList;
 	}
 
@@ -84,12 +84,12 @@ public class ValidatorUtil
 		Collection<RuleParameterInterface> ruleParamCollection = rule.getRuleParameterCollection();
 		if (ruleParamCollection != null && !ruleParamCollection.isEmpty())
 		{
-			for(RuleParameterInterface ruleParameter: ruleParamCollection)
+			for (RuleParameterInterface ruleParameter : ruleParamCollection)
 			{
 				parameterMap.put(ruleParameter.getName(), ruleParameter.getValue());
 			}
 		}
 		return parameterMap;
 	}
-	
+
 }

@@ -4,6 +4,11 @@
 
 package edu.common.dynamicextensions.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -198,7 +203,7 @@ public class DynamicExtensionsUtility
 			return;
 		}
 
-		if (Variables.databaseName.equals(Constants.ORACLE_DATABASE))
+		if (!Variables.databaseName.equals(Constants.MYSQL_DATABASE))
 		{
 			//set string/function for oracle
 
@@ -311,5 +316,30 @@ public class DynamicExtensionsUtility
     {
     	return Calendar.getInstance().get(Calendar.YEAR);
     }
+    
+    /**
+    *
+    * @param originalObject Object
+    * @return Object
+    */
+   public static Object cloneObject(Object originalObject) {
+           Object clonedObject = null;
+           try {
+               ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+               ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+               objectOutputStream.writeObject(originalObject);
+               //retrieve back
+               ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+               ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+               clonedObject = objectInputStream.readObject();
+           } catch (IOException ioe) {
+
+               ioe.printStackTrace();
+           } catch (ClassNotFoundException cnfe) {
+               cnfe.printStackTrace();
+           }
+
+           return clonedObject;
+       }
 
 }

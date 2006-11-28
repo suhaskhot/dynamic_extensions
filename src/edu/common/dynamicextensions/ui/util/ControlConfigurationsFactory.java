@@ -347,7 +347,7 @@ public final class ControlConfigurationsFactory
 		
 		Map dataTypeImplicitRulesMap = controlsConfiguration.getDataTypeImplicitRules();
 		List dataTypeImplicitRuleList = (List) dataTypeImplicitRulesMap.get(dataType);
-		if (dataTypeImplicitRuleList != null || dataTypeImplicitRuleList.size() > 0)
+		if (dataTypeImplicitRuleList != null && dataTypeImplicitRuleList.size() > 0)
 		{
 			allImplicitRules.addAll(dataTypeImplicitRuleList);
 		}

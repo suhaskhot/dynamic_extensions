@@ -7,6 +7,8 @@ package edu.common.dynamicextensions.ui.util;
  */
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -32,6 +34,9 @@ import edu.common.dynamicextensions.domaininterface.ShortTypeInformationInterfac
 import edu.common.dynamicextensions.domaininterface.ShortValueInterface;
 import edu.common.dynamicextensions.domaininterface.StringTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.beans.NameValueBean;
 
 public class ControlsUtility
@@ -309,6 +314,59 @@ public class ControlsUtility
 			nameValueBean.setValue(stringValue.getValue().trim());
 		}
 		return nameValueBean;
+	}
+	
+	
+	/**
+	 * 
+	 * @param entityInterface
+	 * @param sequenceNumbers
+	 */
+	public static void applySequenceNumbers(ContainerInterface containerInterface, String[] sequenceNumbers)
+	{
+		Collection controlCollection = containerInterface.getControlCollection();
+		ControlInterface controlInterface;
+		int sequenceNumber;
+		if (controlCollection != null && controlCollection.size() > 0 && sequenceNumbers != null && sequenceNumbers.length > 0)
+		{
+			for (int counter = 0; counter < sequenceNumbers.length - 1; counter++)
+			{
+				sequenceNumber = new Integer(sequenceNumbers[counter]).intValue();
+				controlInterface = DynamicExtensionsUtility.getControlBySequenceNumber(controlCollection, sequenceNumber);
+				controlInterface.setSequenceNumber(new Integer(counter + 1));
+			}
+			deleteControls(containerInterface, sequenceNumbers.length);
+			DynamicExtensionsUtility.resetSequenceNumberChanged(controlCollection);
+		}
+	}
+
+	/**
+	 * 
+	 * @param controlCollection
+	 */
+	public static  void deleteControls(ContainerInterface containerInterface, int sequenceNumbersCount)
+	{
+		Collection controlCollection = containerInterface.getControlCollection();
+		if (sequenceNumbersCount == 1)
+		{
+			containerInterface.getControlCollection().retainAll(new HashSet());
+
+		}
+		else
+		{
+			Iterator controlIterator = controlCollection.iterator();
+			ControlInterface controlInterface;
+			while (controlIterator.hasNext())
+			{
+				controlInterface = (ControlInterface) controlIterator.next();
+				if (!controlInterface.getSequenceNumberChanged())
+				{
+					controlIterator.remove();
+				}
+
+			}
+
+		}
 	}
 
 }

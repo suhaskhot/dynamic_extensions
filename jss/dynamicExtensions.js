@@ -788,9 +788,10 @@ function ruleSelected(ruleObject)
 
 function deleteControl()
 {
+
 	checkAttribute = document.controlsForm.checkAttribute;
-	
-	for(i = checkAttribute.length-1; i >= 0; i--)
+	//alert(checkAttribute.length);
+	for(i = 0; i < checkAttribute.length-1; i++)
 	{
 		if(checkAttribute[i].checked)
 		{
@@ -798,14 +799,15 @@ function deleteControl()
 			deleteRow('controlList', startPoint)
 		}
 	}
+	resetRowNum(checkAttribute);
 
-	 resetRowNum(checkAttribute);
+
 }
 
 
 function resetRowNum(checkAttribute)
 {
-	for(i = 0; i < checkAttribute.length; i++)
+	for(i = 0; i < checkAttribute.length-1; i++)
 	{
 		(document.getElementById(checkAttribute[i].value + "rowNum")).value = i + 1 ;
 	}
@@ -821,7 +823,7 @@ function deleteRow(tableId, startPoint)
 function decreaseSequencenumber()
 {
 	checkAttribute = document.controlsForm.checkAttribute;
-	for(i = 0; i < checkAttribute.length; i++)
+	for(i = 0; i < checkAttribute.length-1; i++)
 	{
 		if(checkAttribute[i].checked)
 		{
@@ -852,12 +854,18 @@ function moveRowsUp (tableId, startPoint, counter)
 function increaseSequencenumber()
 {
   	checkAttribute = document.controlsForm.checkAttribute;
-	for(i = checkAttribute.length-1; i >= 0; i--)
+	
+	for(i = 0; i < checkAttribute.length-1; i++)
 	{
 		if(checkAttribute[i].checked)
 		{
 			var startPoint = (document.getElementById(checkAttribute[i].value + "rowNum")).value;
-			moveRowsDown('controlList',startPoint,1);
+			//alert(startPoint);
+			//alert(checkAttribute.length-1);
+			if(startPoint != checkAttribute.length-1)
+			{
+				moveRowsDown('controlList',startPoint,1);
+			}
 		}
 	}
 	resetRowNum(checkAttribute);

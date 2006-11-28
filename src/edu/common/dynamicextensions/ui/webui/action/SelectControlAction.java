@@ -33,9 +33,11 @@ import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInter
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
+import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.ControlInformationObject;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.beans.NameValueBean;
 
@@ -95,6 +97,11 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 				else
 				{
 					controlsForm.setRootName("");
+				}
+				
+				if (controlsForm.getSequenceNumbers() != null && controlsForm.getSequenceNumbers().length > 0)
+				{
+					ControlsUtility.applySequenceNumbers(containerInterface, controlsForm.getSequenceNumbers());
 				}
 			}
 //			Initialize default values for controls
@@ -393,6 +400,8 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 		}
 		return null;
 	}
+	
+	
 
 
 }

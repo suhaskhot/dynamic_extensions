@@ -7,8 +7,6 @@
 package edu.common.dynamicextensions.processor;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
@@ -17,6 +15,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInter
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 
@@ -80,7 +79,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 
 			if (controlsForm.getSequenceNumbers() != null && controlsForm.getSequenceNumbers().length > 0)
 			{
-				applySequenceNumbers(containerInterface, controlsForm.getSequenceNumbers());
+				ControlsUtility.applySequenceNumbers(containerInterface, controlsForm.getSequenceNumbers());
 			}
 
 			//Add new control
@@ -261,56 +260,8 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 			controlsForm.setAttributeMeasurementUnits(controlsForm.getMeasurementUnitOther());
 		}
 	}
+	
+	
 
-	/**
-	 * 
-	 * @param entityInterface
-	 * @param sequenceNumbers
-	 */
-	private void applySequenceNumbers(ContainerInterface containerInterface, String[] sequenceNumbers)
-	{
-		Collection controlCollection = containerInterface.getControlCollection();
-		ControlInterface controlInterface;
-		int sequenceNumber;
-		if (controlCollection != null && controlCollection.size() > 0 && sequenceNumbers != null && sequenceNumbers.length > 0)
-		{
-			for (int counter = 0; counter < sequenceNumbers.length - 1; counter++)
-			{
-				sequenceNumber = new Integer(sequenceNumbers[counter]).intValue();
-				controlInterface = DynamicExtensionsUtility.getControlBySequenceNumber(controlCollection, sequenceNumber);
-				controlInterface.setSequenceNumber(new Integer(counter + 1));
-			}
-			deleteControls(containerInterface, sequenceNumbers.length);
-			DynamicExtensionsUtility.resetSequenceNumberChanged(controlCollection);
-		}
-	}
 
-	/**
-	 * 
-	 * @param controlCollection
-	 */
-	private void deleteControls(ContainerInterface containerInterface, int sequenceNumbersCount)
-	{
-		Collection controlCollection = containerInterface.getControlCollection();
-		if (sequenceNumbersCount == 1)
-		{
-			containerInterface.getControlCollection().retainAll(new HashSet());
-
-		}
-		else
-		{
-			Iterator controlIterator = controlCollection.iterator();
-			ControlInterface controlInterface;
-			while (controlIterator.hasNext())
-			{
-				controlInterface = (ControlInterface) controlIterator.next();
-				if (!controlInterface.getSequenceNumberChanged())
-				{
-					controlIterator.remove();
-				}
-
-			}
-
-		}
-	}
 }

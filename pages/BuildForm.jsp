@@ -280,6 +280,7 @@
 			<html:hidden styleId = 'controlOperation' property="controlOperation" />
 			<html:hidden styleId = 'selectedControlId' property="selectedControlId" />
 			<html:hidden styleId = 'sequenceNumbers' property="sequenceNumbers"  value=""/>
+			<input type="hidden" id = "checkAttribute" name="checkAttribute" value = "" />
 
 
 	  	</html:form>

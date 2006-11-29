@@ -674,12 +674,12 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
                     .getInstance();
             EntityInterface savedEntity = entityManagerInterface
                     .persistEntity(entity);
-            assertEquals(savedEntity.getAbstractAttributeCollection(), null);
+            fail();
         }
         catch (DynamicExtensionsApplicationException e)
         {
-            fail();
-            Logger.out.debug(e.getStackTrace());
+            
+            Logger.out.debug("Exception should occur coz the attribute is null.. validation should fail");
         }
         catch (DynamicExtensionsSystemException e)
         {
@@ -696,6 +696,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     public void testCreateEntityNull()
     {
         EntityInterface entity = new Entity();
+        entity.setName("test");
         EntityManagerInterface entityManagerInterface = EntityManager
                 .getInstance();
         entity.setCreatedDate(null);
@@ -738,7 +739,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
                     .createIntegerAttribute();
             ssn.setName("SSN of participant");
             entity.addAbstractAttribute(ssn);
-
+            entity.setName("test");
             entity = (Entity) EntityManager.getInstance().persistEntity(entity);
 
             ResultSetMetaData metaData = executeQueryForMetadata("select * from "
@@ -793,7 +794,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
                     .createIntegerAttribute();
             ssn.setName("SSN of participant");
             entity.addAbstractAttribute(ssn);
-
+            entity.setName("test");
             entity = (Entity) EntityManager.getInstance().persistEntity(entity);
 
             Map dataValue = new HashMap();

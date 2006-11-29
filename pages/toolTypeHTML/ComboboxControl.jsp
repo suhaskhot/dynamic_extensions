@@ -29,7 +29,7 @@
 		 	</td>
 
 			<td class="formRequiredLabelWithoutBorder" width="25%">
-				<bean:message key="eav.att.ListBoxType"/>
+				<bean:message key="eav.att.ListBoxType"/> : 
 			</td>
 			<td class="formFieldWithoutBorder">
 					<html:radio  property="attributeMultiSelect" value="<%=ProcessorConstants.LIST_TYPE_SINGLE_SELECT%>" onclick="listTypeChanged(this)" >
@@ -46,7 +46,7 @@
 								&nbsp;
 					</td>
 					<td class="formRequiredLabelWithoutBorder"  >
-						<bean:message key="eav.att.ListBoxDisplayLines"/>
+						<bean:message key="eav.att.ListBoxDisplayLines"/> : 
 					</td>
 					<td class="formFieldWithoutBorder">
 						<html:text styleClass="formFieldSized5" maxlength="100" size="60" styleId = 'attributeNoOfRows'  property="attributeNoOfRows" />
@@ -57,7 +57,9 @@
 			<td class="formRequiredNoticeWithoutBorder" width="2%">
 					 			&nbsp;
 		 	</td>
-			<td class="formRequiredLabelWithoutBorder" width="25%"><bean:message key="eav.att.ListBoxOptionTypes"></bean:message></td>
+			<td class="formRequiredLabelWithoutBorder" width="25%">
+				<bean:message key="eav.att.ListBoxOptionTypes"></bean:message> : 
+			</td>
 			<td  class="formFieldWithoutBorder">
 				<html:radio styleId="displayChoice" property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED%>" >
 					<bean:message key="eav.att.OptionsUserDefined"/>

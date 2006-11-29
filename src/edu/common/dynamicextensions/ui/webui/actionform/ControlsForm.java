@@ -283,7 +283,7 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	/**
 	 * list of file formats
 	 */
-	protected List fileFormatsList;
+	protected List<String> supportedFileFormatsList;
 	/**
 	 * display as url
 	 */
@@ -1493,14 +1493,14 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		this.tempValidationRules = tempValidationRules;
 	}
 
-	public List getFileFormatsList()
+	public List<String> getSupportedFileFormatsList()
 	{
-		return this.fileFormatsList;
+		return this.supportedFileFormatsList;
 	}
 
-	public void setFileFormatsList(List fileFormatsList)
+	public void setSupportedFileFormatsList(List<String> fileFormatsList)
 	{
-		this.fileFormatsList = fileFormatsList;
+		this.supportedFileFormatsList = fileFormatsList;
 	}
 
 	public String getAttributeMandatory()

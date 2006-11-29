@@ -19,7 +19,7 @@
 					*
 				</td>
 				<td class="formRequiredLabelWithoutBorder" width="25%">
-						<bean:message key="eav.att.DefaultValue"/>
+						<bean:message key="eav.att.DefaultValue"/> : 
 				</td>
 
 				<td class="formFieldWithoutBorder">
@@ -32,9 +32,7 @@
 					</html:radio>
 				</td>
 			</tr>
-
 	</table>
-
   	</td>
   </tr>
 </table>

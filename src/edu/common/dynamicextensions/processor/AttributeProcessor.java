@@ -284,8 +284,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		if((fileAttributeInformation!=null)&&(attributeUIBeanInformationIntf!=null))
 		{
 			//Set File Size
-			Float fileSize = new Float(attributeUIBeanInformationIntf.getAttributeSize());
-			fileAttributeInformation.setMaxFileSize(fileSize);
+			if((attributeUIBeanInformationIntf.getAttributeSize()!=null)&&(!attributeUIBeanInformationIntf.getAttributeSize().trim().equals("")))
+			{
+				Float fileSize = new Float(attributeUIBeanInformationIntf.getAttributeSize());
+				fileAttributeInformation.setMaxFileSize(fileSize);
+			}
 			
 			//Set list of extensions supported
 			fileAttributeInformation.setFileExtensionCollection(getFileExtensionCollection(attributeUIBeanInformationIntf.getFileFormats(),attributeUIBeanInformationIntf.getFormat()));

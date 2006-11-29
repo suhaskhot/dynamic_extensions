@@ -180,18 +180,51 @@ public class LoadFormControlsProcessor
 	 */
 	private void initializeFileUploadControlDefaultValues(ControlsForm controlsForm)
 	{
-		if (controlsForm.getFileFormatsList() == null)
+		if (controlsForm.getSupportedFileFormatsList() == null)
 		{
-			controlsForm.setFileFormatsList(getFileFormatsList());
+			controlsForm.setSupportedFileFormatsList(getFileFormatsList());
 		}
+		initializeFileFormats(controlsForm);
+	}
+	/**
+	 * This method will separate out the file formats explicitly specified by the user
+	 * from the supported file format list. 
+	 * @param controlsForm
+	 */
+	private void initializeFileFormats(ControlsForm controlsForm)
+	{
+		String unsupportedFileFormatList = null;
+		List<String> supportedFileFormats = controlsForm.getSupportedFileFormatsList();
+		String[] userSelectedFileFormats = controlsForm.getFileFormats();
+		if(userSelectedFileFormats!=null)
+		{
+			int noOfSelectedFormats = userSelectedFileFormats.length;
+			String selectedFileFormat = null;
+			for(int i=0;i<noOfSelectedFormats;i++)
+			{
+				selectedFileFormat = userSelectedFileFormats[i];
+				if(!DynamicExtensionsUtility.isStringInList(selectedFileFormat, supportedFileFormats))
+				{
+					if((unsupportedFileFormatList==null)||(unsupportedFileFormatList.equals("")))
+					{
+						unsupportedFileFormatList = selectedFileFormat;
+					}
+					else
+					{
+						unsupportedFileFormatList = unsupportedFileFormatList + ProcessorConstants.FILE_FORMATS_SEPARATOR  + selectedFileFormat;
+					}
+				}
+			}
+		}
+		controlsForm.setFormat(unsupportedFileFormatList);
 	}
 
 	/**
-	 * @return
+	 * @return list of file formats available for file control
 	 */
 	private List getFileFormatsList()
 	{
-		ArrayList fileFormatsList = new ArrayList();
+		ArrayList<String> fileFormatsList = new ArrayList<String>();
 		fileFormatsList.add("bmp");
 		fileFormatsList.add("jpeg");
 		fileFormatsList.add("gif");
@@ -200,7 +233,6 @@ public class LoadFormControlsProcessor
 		fileFormatsList.add("pdf");
 		return fileFormatsList;
 	}
-
 	/**
 	 * 
 	 */

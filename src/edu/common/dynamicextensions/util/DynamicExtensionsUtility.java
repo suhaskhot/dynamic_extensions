@@ -12,6 +12,7 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
@@ -342,4 +343,29 @@ public class DynamicExtensionsUtility
            return clonedObject;
        }
 
+	
+	/**
+	 * @param string : string to be checked
+	 * @param list: List that is to be checked if string is contained
+	 * @return check if a string is contained in the passed list and return true if yes
+	 */
+	public static boolean isStringInList(String string,List<String> list)
+	{
+		boolean isContainedInList = false;
+		if((string!=null)&&(list!=null))
+		{
+			String listString  = null;
+			Iterator<String> iterator = list.iterator();
+			while(iterator.hasNext())
+			{
+				listString = iterator.next();
+				if(string.equals(listString))
+				{
+					isContainedInList = true;
+					break;
+				}
+			}
+		}
+		return isContainedInList;
+	}
 }

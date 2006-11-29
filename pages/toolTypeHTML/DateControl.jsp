@@ -27,7 +27,7 @@
 					*
 				</td>
 				<td class="formRequiredLabelWithoutBorder" width="25%">
-						<bean:message key="eav.att.Format"/>
+						<bean:message key="eav.att.Format"/> : 
 				</td>
 
 				<td class="formFieldWithoutBorder">
@@ -45,7 +45,7 @@
 						&nbsp;
 				</td>
 				<td class="formRequiredLabelWithoutBorder" width="25%">
-					<bean:message key="eav.att.DefaultValue"/>
+					<bean:message key="eav.att.DefaultValue"/> : 
 				</td>
 				<td class="formFieldWithoutBorder">
 					<input type="hidden" id = 'initialDateValueType' name="initialDateValueType" value="<%=dateValueType%>">

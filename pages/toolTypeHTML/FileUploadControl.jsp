@@ -8,8 +8,8 @@
 <SCRIPT>var imgsrc="images/";</SCRIPT>
 
 
-<c:set var="fileFormatsList" value="${controlsForm.fileFormatsList}"/>
-<jsp:useBean id="fileFormatsList" type="java.util.List"/>
+<c:set var="supportedFileFormatsList" value="${controlsForm.supportedFileFormatsList}"/>
+<jsp:useBean id="supportedFileFormatsList" type="java.util.List"/>
 
 <html:hidden styleId = 'dataType' property="dataType" value ="<%=ProcessorConstants.DATATYPE_FILE%>"/>
 <table  summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
@@ -27,25 +27,25 @@
 				<td class="formRequiredNoticeWithoutBorder" width="2%">
 					&nbsp;
 				</td>
-				<td class="formRequiredLabelWithoutBorder" width="25%">
-						<bean:message key="eav.att.TextFieldWidth"/>
+				<td class="formRequiredLabelWithoutBorder" width="28%">
+						<bean:message key="eav.att.TextFieldWidth"/> :
 				</td>
 
 				<td class="formFieldWithoutBorder">
-					<html:text styleClass="formDateSized"  maxlength="100" size="60"  styleId = 'attributenoOfCols' property="attributenoOfCols" />
+					<html:text styleClass="formFieldSized5"  maxlength="100" size="60"  styleId = 'attributenoOfCols' property="attributenoOfCols" />
 				</td>
 			</tr>
 			<tr>
 				<td class="formRequiredNoticeWithoutBorder" width="2%">
 					&nbsp;
 				</td>
-				<td class="formRequiredLabelWithoutBorder" width="25%">
-						<bean:message key="eav.att.FileFormatsList"/>
+				<td class="formRequiredLabelWithoutBorder" width="28%">
+						<bean:message key="eav.att.FileFormatsList"/> :
 				</td>
 
 				<td class="formFieldWithoutBorder">
-					<html:select multiple="true" size="4" styleId = 'fileFormats'  property="fileFormats">
-						<c:forEach items="${fileFormatsList}" var="fileformat">
+					<html:select multiple="true" size="4" styleId = 'fileFormats'  property="fileFormats" >
+						<c:forEach items="${supportedFileFormatsList}" var="fileformat">
 							<jsp:useBean id="fileformat" type="java.lang.String" />
 								<html:option  value='<%=fileformat%>' >
 								</html:option>
@@ -53,28 +53,28 @@
 					</html:select>
 				</td>
 			</tr>
-			<tr disabled>
+			<tr >
 				<td class="formRequiredNoticeWithoutBorder" width="2%">
 					&nbsp;
 				</td>
-				<td class="formRequiredLabelWithoutBorder" width="25%">
-					<bean:message key="eav.att.FileFormat"/>
+				<td class="formRequiredLabelWithoutBorder" width="28%">
+					<bean:message key="eav.att.FileFormat"/> :
 				</td>
 
 				<td class="formFieldWithoutBorder">
-					<html:text styleClass="formDateSized"  maxlength="100" size="60" styleId = 'format' property="format" />
+					<html:text styleClass="formFieldSized5"  maxlength="100" size="60" styleId = 'format' property="format" />
 				</td>
 			</tr>
 			<tr>
 				<td class="formRequiredNoticeWithoutBorder" width="2%">
 					&nbsp;
 				</td>
-				<td class="formRequiredLabelWithoutBorder" width="25%">
-					<bean:message key="eav.att.MaximumFileSize"/>
+				<td class="formRequiredLabelWithoutBorder" width="28%">
+					<bean:message key="eav.att.MaximumFileSize"/> :
 				</td>
 
 				<td class="formFieldWithoutBorder">
-					<html:text styleClass="formDateSized"  maxlength="100" size="60" styleId ='attributeSize'  property="attributeSize" />
+					<html:text styleClass="formFieldSized5"  maxlength="100" size="60" styleId ='attributeSize'  property="attributeSize" />
 					<bean:message key="app.maxFileSizeUnit"/>
 				</td>
 			</tr>

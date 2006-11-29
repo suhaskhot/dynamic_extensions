@@ -2909,7 +2909,7 @@ public class EntityManager
 				while (iterator.hasNext())
 				{
 					AttributeInterface attribute = (AttributeInterface) iterator.next();
-					if (attribute.getIsCollection())
+					if (attribute.getIsCollection() || attribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
 					{
 						AttributeRecord collectionAttributeRecord = getAttributeRecord(entity
 								.getId(), attribute.getId(), recordId, hibernateDAO);

@@ -1768,5 +1768,84 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		}
 	}	
 
+	/**
+	 * This method tests for creating a entity with file attribute.
+	 */
+	public void testDeleteRecordForFileAttribute()
+	{
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		
+		EntityInterface user = factory.createEntity();
+		user.setName("User");
+
+		AttributeInterface age = factory.createIntegerAttribute();
+		age.setName("Age");
+		user.addAbstractAttribute(age);
+
+		AttributeInterface resume = factory.createFileAttribute();
+		resume.setName("Resume");
+		user.addAbstractAttribute(resume);
+
+		Collection<FileExtension> allowedExtn = new HashSet<FileExtension>();
+
+		FileExtension txtExtn = new FileExtension();
+		txtExtn.setFileExtension("txt");
+		allowedExtn.add(txtExtn);
+
+		FileExtension pdfExtn = new FileExtension();
+		pdfExtn.setFileExtension("pdf");
+		allowedExtn.add(pdfExtn);
+
+		allowedExtn.add(txtExtn);
+		allowedExtn.add(pdfExtn);
+
+		((FileAttributeTypeInformation) resume.getAttributeTypeInformation()).setMaxFileSize(20F);
+		((FileAttributeTypeInformation) resume.getAttributeTypeInformation())
+				.setFileExtensionCollection(allowedExtn);
+
+		try
+		{
+			user = entityManager.persistEntity(user);
+
+			FileAttributeRecordValue fileRecord = new FileAttributeRecordValue();
+			fileRecord.setContentType("PDF");
+			fileRecord.setFileName("tp.java");
+			String fileContent = "this is content of the file";
+			fileRecord.setFileContent(fileContent.getBytes());
+
+			Map dataValue = new HashMap();
+			dataValue.put(age, "45");
+			dataValue.put(resume, fileRecord);
+			
+
+			
+			Long recordId = entityManager.insertData(user, dataValue);
+			
+			dataValue = entityManager.getRecordById(user, recordId);
+			
+			
+            ResultSet resultSet = executeQuery("select count(*) from dyextn_attribute_record");
+            resultSet.next();
+            int beforeCnt =  resultSet.getInt(1);
+            resultSet.close();
+            
+			entityManager.deleteRecord(user, recordId);
+			
+            resultSet = executeQuery("select count(*) from dyextn_attribute_record");
+            resultSet.next();
+            int afterCnt =  resultSet.getInt(1);
+            
+            assertEquals(1,beforeCnt - afterCnt );
+			
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+		
+	}
 
 }

@@ -1102,7 +1102,9 @@ public class EntityManager
 					nullConstraint = "NOT NULL";
 				}
 
-				if (attribute.getAttributeTypeInformation().getDefaultValue() != null)
+				if (attribute.getAttributeTypeInformation().getDefaultValue() != null
+						&& attribute.getAttributeTypeInformation().getDefaultValue()
+								.getValueAsObject() != null)
 				{
 					defaultConstraint = DEFAULT_KEYWORD
 							+ WHITESPACE
@@ -1425,6 +1427,7 @@ public class EntityManager
 	 * @param container container
 	 */
 	private void preSaveProcessContainer(Container container)
+			throws DynamicExtensionsApplicationException
 	{
 		if (container.getEntity() != null)
 		{
@@ -1436,7 +1439,9 @@ public class EntityManager
 	 * @param entity entity
 	 */
 	private void preSaveProcessEntity(EntityInterface entity)
+			throws DynamicExtensionsApplicationException
 	{
+		validateEntityForSaving(entity);
 		if (entity.getId() != null)
 		{
 			entity.setLastUpdated(new Date());
@@ -1580,7 +1585,6 @@ public class EntityManager
 		List<AttributeRecord> collectionRecords = new ArrayList<AttributeRecord>();
 		List<AttributeRecord> deleteCollectionRecords = new ArrayList<AttributeRecord>();
 		List<AttributeRecord> fileRecords = new ArrayList<AttributeRecord>();
-		
 
 		Set uiColumnSet = dataValue.keySet();
 		Iterator uiColumnSetIter = uiColumnSet.iterator();
@@ -1611,10 +1615,12 @@ public class EntityManager
 						deleteCollectionRecords.add(collectionRecord);
 					}
 
-				} else if (primitiveAttribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation) {
+				}
+				else if (primitiveAttribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
+				{
 					FileAttributeRecordValue fileRecordValue = (FileAttributeRecordValue) value;
 					AttributeRecord fileRecord = getAttributeRecord(entity.getId(),
-							primitiveAttribute.getId(), recordId,null);
+							primitiveAttribute.getId(), recordId, null);
 					fileRecord.setFileRecord(fileRecordValue);
 					fileRecords.add(fileRecord);
 				}
@@ -2015,6 +2021,11 @@ public class EntityManager
 			logDebug("saveOrUpdateEntity", DynamicExtensionsUtility.getStackTrace(e));
 			throw new DynamicExtensionsApplicationException(
 					"User is not authorised to perform this action", e, DYEXTN_A_002);
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			logDebug("saveOrUpdateEntity", DynamicExtensionsUtility.getStackTrace(e));
+			throw e;
 		}
 		catch (Exception e)
 		{
@@ -2494,7 +2505,7 @@ public class EntityManager
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getRecordById(edu.common.dynamicextensions.domaininterface.EntityInterface, java.lang.Long)
 	 */
-public Map getRecordById(EntityInterface entity, Long recordId)
+	public Map getRecordById(EntityInterface entity, Long recordId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Map recordValues = new HashMap();
@@ -2507,7 +2518,6 @@ public Map getRecordById(EntityInterface entity, Long recordId)
 		Collection attributesCollection = entity.getAttributeCollection();
 		List<AttributeInterface> collectionAttributes = new ArrayList<AttributeInterface>();
 		List<AttributeInterface> fileAttributes = new ArrayList<AttributeInterface>();
-		
 
 		String tableName = entity.getTableProperties().getName();
 		List<String> selectColumnNameList = new ArrayList<String>();
@@ -2525,7 +2535,9 @@ public Map getRecordById(EntityInterface entity, Long recordId)
 			if (attribute.getIsCollection())
 			{
 				collectionAttributes.add(attribute);
-			} else if(attribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation) {
+			}
+			else if (attribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
+			{
 				fileAttributes.add(attribute);
 			}
 			else
@@ -2584,8 +2596,8 @@ public Map getRecordById(EntityInterface entity, Long recordId)
 			 */
 			for (AttributeInterface attribute : fileAttributes)
 			{
-				FileAttributeRecordValue fileRecordValue = getFileAttributeRecordValue(entity.getId(),
-						attribute.getId(), recordId);
+				FileAttributeRecordValue fileRecordValue = getFileAttributeRecordValue(entity
+						.getId(), attribute.getId(), recordId);
 				recordValues.put(attribute.getName(), fileRecordValue);
 			}
 
@@ -2608,6 +2620,7 @@ public Map getRecordById(EntityInterface entity, Long recordId)
 		}
 		return recordValues;
 	}
+
 	/**
 	 * This method processes all the attributes that previoulsy saved but removed by editing.
 	 * @param entity
@@ -2967,6 +2980,53 @@ public Map getRecordById(EntityInterface entity, Long recordId)
 
 		return entityCollection;
 
+	}
+
+	/**
+	 * @param entity
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	private void validateEntityForSaving(EntityInterface entity)
+			throws DynamicExtensionsApplicationException
+	{
+
+		validateName(entity.getName());
+		Collection collection = entity.getAbstractAttributeCollection();
+		if (collection != null && !collection.isEmpty())
+		{
+			Iterator iterator = collection.iterator();
+			while (iterator.hasNext())
+			{
+				AbstractMetadataInterface abstractMetadataInterface = (AbstractMetadataInterface) iterator
+						.next();
+				validateName(abstractMetadataInterface.getName());
+			}
+		}
+
+		if (entity.getDescription() != null && entity.getDescription().length() > 1000)
+		{
+			throw new DynamicExtensionsApplicationException("Entity description size exceeded ",
+					null, DYEXTN_A_004);
+		}
+		return;
+	}
+
+	/**
+	 * @param name
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	private void validateName(String name) throws DynamicExtensionsApplicationException
+	{
+		/**
+		 * Constant representing valid names for a TAP object that goes into a folder
+		 */
+		final String VALIDCHARSREGEX = "[^\\\\/:*?\"<>&;|']*";
+
+		if (name == null || name.trim().length() == 0 || !name.matches(VALIDCHARSREGEX))
+		{
+			throw new DynamicExtensionsApplicationException("Entity name invalid", null,
+					DYEXTN_A_003);
+		}
 	}
 
 }

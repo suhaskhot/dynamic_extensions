@@ -39,6 +39,7 @@
 
 
 	<path id="app.classpath">
+		<pathelement location="${base.dir}/lib/postgresql-8.1-405.jdbc3.jar"/>
 		<fileset dir="${lib.dir}">
 			<include name="*.jar"/>
 		</fileset>
@@ -89,11 +90,7 @@
     <target name="compile" depends="init">
         <javac destdir="${target.dir}" includes="**/*.*" includeAntRuntime="false">
             <src path="${src.dir}"/>
-            <classpath>
-              <fileset dir="${lib.dir}">
-                  <include name="*.jar"/>
-              </fileset>
-            </classpath>       
+            <classpath refid="app.classpath"/>
         </javac>
     	<copy todir="${target.dir}">
     		<fileset dir="${src.dir}">

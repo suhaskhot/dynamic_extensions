@@ -99,6 +99,8 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			{
 				//saveErrors(request, getErrorMessages(errorList));
 				dataEntryForm.setErrorList(errorList);
+				return (mapping.findForward(Constants.SUCCESS));
+				
 			}
 			else if(recordIdentifier != null && !recordIdentifier.equals(""))
 			{

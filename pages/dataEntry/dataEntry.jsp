@@ -231,8 +231,7 @@
 			</table>
 			
 			<input type="hidden" name="recordIdentifier" value="<%=recordIdentifier%>"/> 
-			<%=recordIdentifier
-			%>
+			
 		
 		</html:form>		
 	</body>

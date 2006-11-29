@@ -104,6 +104,43 @@
 
         </joined-subclass>
         <joined-subclass
+            name="edu.common.dynamicextensions.domain.FileAttributeTypeInformation"
+            table="DYEXTN_FILE_TYPE_INFO"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+
+        <set
+            name="fileExtensionCollection"
+            table="DYEXTN_FILE_EXTENSIONS"
+            lazy="false"
+            inverse="false"
+            cascade="all-delete-orphan"
+            sort="unsorted"
+        >
+
+              <key
+                  column="ATTRIBUTE_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.FileExtension"
+              />
+        </set>
+
+        <property
+            name="maxFileSize"
+            type="float"
+            update="true"
+            insert="true"
+            column="MAX_FILE_SIZE"
+        />
+
+        </joined-subclass>
+        <joined-subclass
             name="edu.common.dynamicextensions.domain.StringAttributeTypeInformation"
             table="DYEXTN_STRING_TYPE_INFO"
             dynamic-update="false"

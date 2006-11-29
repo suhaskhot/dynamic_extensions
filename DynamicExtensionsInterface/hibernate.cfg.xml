@@ -12,18 +12,20 @@
     	<property name="transaction.manager_lookup_class">net.sf.hibernate.transaction.JBossTransactionManagerLookup</property>
     	
 <!-- oracle settings-->   
+ <!--	
   	    <property name="dialect">net.sf.hibernate.dialect.Oracle9Dialect</property>	
         <property name="hibernate.connection.driver_class">oracle.jdbc.driver.OracleDriver</property>
+-->
+        
 <!-- oracle settings end-->  
 
 <!-- My sql settings -->
-<!--
        	<property name="dialect">net.sf.hibernate.dialect.MySQLDialect</property>	
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
        	<property name="hibernate.jdbc.batch_size">0</property>
--->       	
 <!-- My sql settings end -->     
 
+    	
         <!-- List of all Mapping files -->
         
         <mapping resource="edu/common/dynamicextensions/hbm/AbstractMetadata.hbm.xml"/>
@@ -39,6 +41,8 @@
         <mapping resource="edu/common/dynamicextensions/hbm/FileAttributeRecordValue.hbm.xml"/>
         <mapping resource="edu/common/dynamicextensions/hbm/FileExtension.hbm.xml"/>
         
+	   
+		
         <mapping resource="edu/common/dynamicextensions/hbm/databaseproperties/DatabaseProperties.hbm.xml"/>
         <mapping resource="edu/common/dynamicextensions/hbm/userinterface/Container.hbm.xml"/>
         <mapping resource="edu/common/dynamicextensions/hbm/userinterface/Control.hbm.xml"/>
@@ -46,6 +50,7 @@
                         
         <mapping resource="edu/common/dynamicextensions/hbm/validationrules/Rule.hbm.xml"/>
         <mapping resource="edu/common/dynamicextensions/hbm/validationrules/RuleParameter.hbm.xml"/>
+        
     </session-factory>
     
 </hibernate-configuration>

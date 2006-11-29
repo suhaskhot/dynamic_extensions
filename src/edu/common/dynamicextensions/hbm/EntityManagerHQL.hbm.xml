@@ -25,7 +25,7 @@
 	</query>
 	
 	<query name="getCollectionAttributeRecord">
-       from CollectionAttributeRecord collectionAttributeRecord
+       from AttributeRecord collectionAttributeRecord
 	       	where collectionAttributeRecord.entity.id = ? AND 
        			   	collectionAttributeRecord.attribute.id = ? AND
        			   	     collectionAttributeRecord.recordId = ?

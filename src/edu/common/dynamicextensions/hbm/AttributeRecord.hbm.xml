@@ -6,8 +6,8 @@
 
 <hibernate-mapping>
     <class
-        name="edu.common.dynamicextensions.domain.CollectionAttributeRecord"
-        table="DYEXTN_COLLECTION_ATTR_RECORD"
+        name="edu.common.dynamicextensions.domain.AttributeRecord"
+        table="DYEXTN_ATTRIBUTE_RECORD"
         dynamic-update="false"
         dynamic-insert="false"
     >
@@ -20,7 +20,7 @@
             unsaved-value="null"
         >
             <generator class="native">
-                <param name="sequence">DE_COLLECTION_ATTR_REC_SEQ</param>
+                <param name="sequence">DE_ATTR_REC_SEQ</param>
             </generator>
         </id>
 
@@ -70,9 +70,27 @@
               />
         </set>
 
+        <set
+            name="fileRecordCollection"
+            table="DE_FILE_ATTR_RECORD_VALUES"
+            lazy="false"
+            inverse="false"
+            cascade="all-delete-orphan"
+            sort="unsorted"
+        >
+
+              <key
+                  column="RECORD_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.FileAttributeRecordValue"
+              />
+        </set>
+
         <!--
             To add non XDoclet property mappings, create a file named
-                hibernate-properties-CollectionAttributeRecord.xml
+                hibernate-properties-AttributeRecord.xml
             containing the additional properties and place it in your merge dir.
         -->
 

@@ -15,15 +15,20 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domain.Attribute;
+import edu.common.dynamicextensions.domain.AttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.EntityGroup;
+import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
+import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.FileExtension;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
 import edu.common.dynamicextensions.domain.userinterface.Container;
@@ -36,6 +41,7 @@ import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
+import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.logger.Logger;
 
 public class TestEntityManager extends DynamicExtensionsBaseTestCase
@@ -1355,5 +1361,412 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         }
 
     }
+    
+    /**
+     * This method edits an existing attribute to a file type attribute.
+     */
+    public void testEditFileAttribute()
+    {
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		// create user 
+		EntityInterface user = factory.createEntity();
+		user.setName("User");
+		AttributeInterface resume = factory.createStringAttribute();
+		resume.setName("Resume");
+		user.addAbstractAttribute(resume);
+
+		
+		try
+		
+		
+		{  
+			
+			ResultSet rs = executeQuery("select count(*) from dyextn_file_extensions");
+			rs.next();
+			int beforeCount = rs.getInt(1);
+			System.out.println(beforeCount);
+			
+			
+			
+			// save the entity
+			user = entityManager.persistEntity(user);
+			ResultSetMetaData metaData = executeQueryForMetadata("select * from " + user.getTableProperties().getName());
+			assertEquals(2, metaData.getColumnCount());
+			
+			
+			//Edit attribute: change attribute type to file attrbiute type.
+			Collection<FileExtension> allowedExtn = new HashSet<FileExtension>();
+
+			FileExtension txtExtn = new FileExtension();
+			txtExtn.setFileExtension("txt");
+			allowedExtn.add(txtExtn);
+			
+			FileExtension pdfExtn = new FileExtension();
+			pdfExtn.setFileExtension("pdf");
+			allowedExtn.add(pdfExtn);
+			
+			
+			allowedExtn.add(txtExtn);
+			allowedExtn.add(pdfExtn);
+			
+			AttributeTypeInformation fileTypeInformation = factory.createFileAttributeTypeInformation();
+			
+			((FileAttributeTypeInformation) fileTypeInformation).setMaxFileSize(20F);
+			((FileAttributeTypeInformation) fileTypeInformation).setFileExtensionCollection(allowedExtn);
+			
+			resume.setAttributeTypeInformation(fileTypeInformation);
+			
+			
+			
+			user = entityManager.persistEntity(user);
+			
+			DBUtil.closeConnection();
+			//DBUtil.Connection();
+			
+			metaData = executeQueryForMetadata("select * from " + user.getTableProperties().getName());
+			assertEquals(1, metaData.getColumnCount());
+			
+			 //executeQuery("select * from dyextn_file_extensions");
+			
+
+		} catch(Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+    }	
+//
+	/**
+     * This method tests for creating a entity with file attribute.
+     */
+    public void testCreateFileAttribute()
+    {
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		// create user 
+		EntityInterface user = factory.createEntity();
+		user.setName("User");
+		AttributeInterface resume = factory.createFileAttribute();
+		resume.setName("Resume");
+		user.addAbstractAttribute(resume);
+		
+		
+		Collection<FileExtension> allowedExtn = new HashSet<FileExtension>();
+
+		FileExtension txtExtn = new FileExtension();
+		txtExtn.setFileExtension("txt");
+		allowedExtn.add(txtExtn);
+		
+		FileExtension pdfExtn = new FileExtension();
+		pdfExtn.setFileExtension("pdf");
+		allowedExtn.add(pdfExtn);
+		
+		
+		allowedExtn.add(txtExtn);
+		allowedExtn.add(pdfExtn);
+		
+		((FileAttributeTypeInformation) resume.getAttributeTypeInformation()).setMaxFileSize(20F);
+		((FileAttributeTypeInformation) resume.getAttributeTypeInformation()).setFileExtensionCollection(allowedExtn);
+		
+		try
+		{
+			ResultSet rs = executeQuery("select count(*) from dyextn_file_extensions");
+			rs.next();
+			int beforeCount = rs.getInt(1);
+			
+			user = entityManager.persistEntity(user);
+			ResultSetMetaData metaData = executeQueryForMetadata("select * from " + user.getTableProperties().getName());
+			assertEquals(1, metaData.getColumnCount());
+
+		} catch(Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+    }
+
+	/**
+	 * This method tests for creating a entity with file attribute.
+	 */
+	public void testInsertRecordForFileAttribute1()
+	{
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		// create user 
+		EntityInterface user = factory.createEntity();
+		user.setName("User");
+
+		AttributeInterface age = factory.createIntegerAttribute();
+		age.setName("Age");
+		user.addAbstractAttribute(age);
+
+		AttributeInterface resume = factory.createFileAttribute();
+		resume.setName("Resume");
+		user.addAbstractAttribute(resume);
+
+		Collection<FileExtension> allowedExtn = new HashSet<FileExtension>();
+
+		FileExtension txtExtn = new FileExtension();
+		txtExtn.setFileExtension("txt");
+		allowedExtn.add(txtExtn);
+
+		FileExtension pdfExtn = new FileExtension();
+		pdfExtn.setFileExtension("pdf");
+		allowedExtn.add(pdfExtn);
+
+		allowedExtn.add(txtExtn);
+		allowedExtn.add(pdfExtn);
+
+		((FileAttributeTypeInformation) resume.getAttributeTypeInformation()).setMaxFileSize(20F);
+		((FileAttributeTypeInformation) resume.getAttributeTypeInformation())
+				.setFileExtensionCollection(allowedExtn);
+
+		try
+		{
+			user = entityManager.persistEntity(user);
+
+			FileAttributeRecordValue fileRecord = new FileAttributeRecordValue();
+			fileRecord.setContentType("PDF");
+			fileRecord.setFileName("tp.java");
+			String fileContent = "this is cntent of the file";
+			//File f = new File("C:\\BinaryBlobType.java");
+			fileRecord.setFileContent(fileContent.getBytes());
+
+			Map dataValue = new HashMap();
+			dataValue.put(age, "45");
+			dataValue.put(resume, fileRecord);
+			
+			Long recordId = entityManager.insertData(user, dataValue);
+			
+			ResultSet resultSet = executeQuery("select count(*) from "
+                    + user.getTableProperties().getName());
+            resultSet.next();
+            assertEquals(1, resultSet.getInt(1));
+			
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
+	
+	/**
+	 * This method tests for creating a entity with file attribute.
+	 */
+	public void testInsertRecordForFileAttribute()
+	{
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		// create user 
+		EntityInterface user = factory.createEntity();
+		user.setName("User");
+
+		AttributeInterface age = factory.createIntegerAttribute();
+		age.setName("Age");
+		user.addAbstractAttribute(age);
+
+		AttributeInterface resume = factory.createFileAttribute();
+		resume.setName("Resume");
+		user.addAbstractAttribute(resume);
+
+		Collection<FileExtension> allowedExtn = new HashSet<FileExtension>();
+
+		FileExtension txtExtn = new FileExtension();
+		txtExtn.setFileExtension("txt");
+		allowedExtn.add(txtExtn);
+
+		FileExtension pdfExtn = new FileExtension();
+		pdfExtn.setFileExtension("pdf");
+		allowedExtn.add(pdfExtn);
+
+		allowedExtn.add(txtExtn);
+		allowedExtn.add(pdfExtn);
+
+		((FileAttributeTypeInformation) resume.getAttributeTypeInformation()).setMaxFileSize(20F);
+		((FileAttributeTypeInformation) resume.getAttributeTypeInformation())
+				.setFileExtensionCollection(allowedExtn);
+
+		try
+		{
+			user = entityManager.persistEntity(user);
+
+			FileAttributeRecordValue fileRecord = new FileAttributeRecordValue();
+			fileRecord.setContentType("PDF");
+			fileRecord.setFileName("tp.java");
+			String fileContent = "this is cntent of the file";
+			//File f = new File("C:\\BinaryBlobType.java");
+			fileRecord.setFileContent(fileContent.getBytes());
+
+			Map dataValue = new HashMap();
+			dataValue.put(age, "45");
+			dataValue.put(resume, fileRecord);
+			
+			Long recordId = entityManager.insertData(user, dataValue);
+			
+			ResultSet resultSet = executeQuery("select count(*) from "
+                    + user.getTableProperties().getName());
+            resultSet.next();
+            assertEquals(1, resultSet.getInt(1));
+			
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
+	
+	
+	/**
+	 * This method tests for creating a entity with file attribute.
+	 */
+	public void testGerRecordForFileAttribute()
+	{
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		// create user 
+		EntityInterface user = factory.createEntity();
+		user.setName("User");
+
+		AttributeInterface age = factory.createIntegerAttribute();
+		age.setName("Age");
+		user.addAbstractAttribute(age);
+
+		AttributeInterface resume = factory.createFileAttribute();
+		resume.setName("Resume");
+		user.addAbstractAttribute(resume);
+
+		Collection<FileExtension> allowedExtn = new HashSet<FileExtension>();
+
+		FileExtension txtExtn = new FileExtension();
+		txtExtn.setFileExtension("txt");
+		allowedExtn.add(txtExtn);
+
+		FileExtension pdfExtn = new FileExtension();
+		pdfExtn.setFileExtension("pdf");
+		allowedExtn.add(pdfExtn);
+
+		allowedExtn.add(txtExtn);
+		allowedExtn.add(pdfExtn);
+
+		((FileAttributeTypeInformation) resume.getAttributeTypeInformation()).setMaxFileSize(20F);
+		((FileAttributeTypeInformation) resume.getAttributeTypeInformation())
+				.setFileExtensionCollection(allowedExtn);
+
+		try
+		{
+			user = entityManager.persistEntity(user);
+
+			FileAttributeRecordValue fileRecord = new FileAttributeRecordValue();
+			fileRecord.setContentType("PDF");
+			fileRecord.setFileName("tp.java");
+			String fileContent = "this is content of the file";
+			fileRecord.setFileContent(fileContent.getBytes());
+
+			Map dataValue = new HashMap();
+			dataValue.put(age, "45");
+			dataValue.put(resume, fileRecord);
+			
+			Long recordId = entityManager.insertData(user, dataValue);
+			
+			dataValue = entityManager.getRecordById(user, recordId);
+			
+			assertEquals("45", dataValue.get("Age"));
+			assertEquals("tp.java", ((FileAttributeRecordValue) dataValue.get("Resume")).getFileName());
+			
+			
+			System.out.println(dataValue);
+			
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
+	
+	/**
+	 * This method tests for creating a entity with file attribute.
+	 */
+	public void testEditRecordForFileAttribute()
+	{
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		// create user 
+		EntityInterface user = factory.createEntity();
+		user.setName("User");
+
+		AttributeInterface age = factory.createIntegerAttribute();
+		age.setName("Age");
+		user.addAbstractAttribute(age);
+
+		AttributeInterface resume = factory.createFileAttribute();
+		resume.setName("Resume");
+		user.addAbstractAttribute(resume);
+
+		Collection<FileExtension> allowedExtn = new HashSet<FileExtension>();
+
+		FileExtension txtExtn = new FileExtension();
+		txtExtn.setFileExtension("txt");
+		allowedExtn.add(txtExtn);
+
+		FileExtension pdfExtn = new FileExtension();
+		pdfExtn.setFileExtension("pdf");
+		allowedExtn.add(pdfExtn);
+
+		allowedExtn.add(txtExtn);
+		allowedExtn.add(pdfExtn);
+
+		((FileAttributeTypeInformation) resume.getAttributeTypeInformation()).setMaxFileSize(20F);
+		((FileAttributeTypeInformation) resume.getAttributeTypeInformation())
+				.setFileExtensionCollection(allowedExtn);
+
+		try
+		{
+			user = entityManager.persistEntity(user);
+
+			FileAttributeRecordValue fileRecord = new FileAttributeRecordValue();
+			fileRecord.setContentType("PDF");
+			fileRecord.setFileName("tp.java");
+			String fileContent = "this is content of the file";
+			fileRecord.setFileContent(fileContent.getBytes());
+
+			Map dataValue = new HashMap();
+			dataValue.put(age, "45");
+			dataValue.put(resume, fileRecord);
+			
+			Long recordId = entityManager.insertData(user, dataValue);
+			recordId = entityManager.insertData(user, dataValue);
+			
+			//dataValue = entityManager.getRecordById(user, recordId);
+			
+			dataValue.clear();
+			fileRecord.setFileName("new file name");
+			fileRecord.setFileContent("modified file contents".getBytes());
+			dataValue.put(resume, fileRecord);			
+			entityManager.editData(user, dataValue,recordId);
+			
+			dataValue = entityManager.getRecordById(user, recordId);
+
+			assertEquals("new file name", ((FileAttributeRecordValue) dataValue.get("Resume")).getFileName());
+			
+			System.out.println(dataValue);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}	
+
 
 }

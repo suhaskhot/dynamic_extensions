@@ -3,29 +3,27 @@ package edu.common.dynamicextensions.domain;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.wustl.common.actionForm.AbstractActionForm;
-import edu.wustl.common.domain.AbstractDomainObject;
-import edu.wustl.common.exception.AssignDataException;
 
 /**
  * This Class represents the a single record for multi select attribute.
  * 
  * @author Rahul Ner 
- * @hibernate.class  table="DYEXTN_COLLECTION_ATTR_RECORD"
+ * @hibernate.class  table="DYEXTN_ATTRIBUTE_RECORD"
  */
-public class CollectionAttributeRecord implements Serializable
+public class AttributeRecord implements Serializable
 {
 
 	/**
 	 * Empty Constructor.
 	 */
-	public CollectionAttributeRecord()
+	public AttributeRecord()
 	{
 	}
-	
+
 	/**
 	 * Serial Version Unique Identifier
 	 */
@@ -57,10 +55,15 @@ public class CollectionAttributeRecord implements Serializable
 	protected Collection<CollectionAttributeRecordValue> valueCollection;
 
 	/**
+	 * 
+	 */
+	protected Collection<FileAttributeRecordValue> fileRecordCollection;
+
+	/**
 	 * This method returns the unique identifier of the AbstractMetadata.
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
 	 * length="30" unsaved-value="null" generator-class="native"
-	 * @hibernate.generator-param name="sequence" value="DE_COLLECTION_ATTR_REC_SEQ"
+	 * @hibernate.generator-param name="sequence" value="DE_ATTR_REC_SEQ"
 	 * @return the identifier of the AbstractMetadata.
 	 */
 	public Long getId()
@@ -135,7 +138,6 @@ public class CollectionAttributeRecord implements Serializable
 		this.recordId = recordId;
 	}
 
-	
 	/**
 	 * This method returns the Collection of AbstractAttribute.
 	 * @hibernate.set name="valueCollection" table="DE_COLL_ATTR_RECORD_VALUES"
@@ -149,7 +151,6 @@ public class CollectionAttributeRecord implements Serializable
 		return valueCollection;
 	}
 
-	
 	/**
 	 * @param valueCollection The valueCollection to set.
 	 */
@@ -157,4 +158,52 @@ public class CollectionAttributeRecord implements Serializable
 	{
 		this.valueCollection = valueCollection;
 	}
+
+
+	/**
+	 * This method return Returns the fileRecord.
+	 * @hibernate.set name="fileRecordCollection" table="DE_FILE_ATTR_RECORD_VALUES"
+	 * cascade="all-delete-orphan" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="RECORD_ID"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.FileAttributeRecordValue" 
+	 * @return Returns the fileRecord.
+	 */
+	private Collection<FileAttributeRecordValue> getFileRecordCollection()
+	{
+		return fileRecordCollection;
+	}
+
+	/**
+	 * @param fileRecord The fileRecord to set.
+	 */
+	private void setFileRecordCollection(Collection<FileAttributeRecordValue> fileRecordCollection)
+	{
+		this.fileRecordCollection = fileRecordCollection;
+	}
+
+	/**
+	 * @return Returns the fileRecord.
+	 */
+	public FileAttributeRecordValue getFileRecord()
+	{
+		if (fileRecordCollection != null)
+		{
+			return fileRecordCollection.iterator().next();
+		}
+		return null;
+	}
+
+	/**
+	 * @param fileRecord The fileRecord to set.
+	 */
+	public void setFileRecord(FileAttributeRecordValue fileRecord)
+	{
+		if (fileRecordCollection == null)
+		{
+			fileRecordCollection = new HashSet<FileAttributeRecordValue>();
+		}
+		this.fileRecordCollection.clear();
+		this.fileRecordCollection.add(fileRecord);
+	}
+
 }

@@ -605,5 +605,24 @@ public class DomainObjectFactory
         TaggedValueInterface taggedValueInterface = new TaggedValue();
         return taggedValueInterface;
     }
+    
+    /**
+     * 
+     * @return  fileAttribute.
+     */
+    public AttributeInterface createFileAttribute()
+    {
+        Attribute fileAttribute = new Attribute();
+        fileAttribute.setAttributeTypeInformation(new FileAttributeTypeInformation());
+        return fileAttribute;
+    }
 
+    /**
+     * 
+     * @return instance of StringAttributeTypeInformation.
+     */
+    public AttributeTypeInformation createFileAttributeTypeInformation()
+    {
+       return new FileAttributeTypeInformation();
+    }
 }

@@ -761,6 +761,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		// create study 
 		EntityInterface study = factory.createEntity();
+		study.setName("Study");
 
 		// Associate  User(1) <---->(*)Study 
 		AssociationInterface association = factory.createAssociation();
@@ -896,6 +897,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		// create study 
 		EntityInterface study = factory.createEntity();
+		study.setName("study name");
 
 		// Associate  User(1) <---->(*)Study 
 		AssociationInterface association = factory.createAssociation();

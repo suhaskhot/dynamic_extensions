@@ -216,20 +216,63 @@ public interface AbstractAttributeUIBeanInterface
 	 */
 	public void setTempValidationRules(String[] tempValidationRules);
 	
-
+	/**
+	 * get the list of concept codes for a particular attribute 
+	 * @return list of concept codes for each option of attribute
+	 */
 	public String[] getOptionConceptCodes();
-
+	
+	/**
+	 * set the list of concept codes for a particular attribute 
+	 * @param list of concept codes for each option of attribute
+	 */
 	public void setOptionConceptCodes(String[] optionConceptCodes);
 
+	/**
+	 * set the list of descriptions for each option of an attribute 
+	 * @param list of description for each option of attribute
+	 */
 	public String[] getOptionDescriptions();
 
+	/**
+	 * 
+	 * @param optionDescriptions : list of description for each option of attribute
+	 */
 	public void setOptionDescriptions(String[] optionDescriptions);
 	
+	/**
+	 * 
+	 * @return list of names for each option of attribute
+	 */
 	public String[] getOptionNames();
 
+	/**
+	 * 
+	 * @param optionNames list of names for each option of attribute
+	 */
 	public void setOptionNames(String[] optionNames);
 	
+	/**
+	 * 
+	 * @return OptionDetailObject list containing option name, description and concept code for each option
+	 */
 	public List getOptionDetails();
 	
+	/**
+	 * 
+	 * @param OptionDetailObject list containing option name, description and concept code for each option
+	 */
 	public void setOptionDetails(List optionDetails);
+	
+	/**
+	 * 
+	 * @return List of file formats supported for a file control/attribute.
+	 */
+	public String[] getFileFormats();
+
+	/**
+	 * 
+	 * @param fileFormats List of file formats supported for a file control/attribute.
+	 */
+	public void setFileFormats(String[] fileFormats);
 }

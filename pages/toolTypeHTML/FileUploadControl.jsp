@@ -11,7 +11,7 @@
 <c:set var="fileFormatsList" value="${controlsForm.fileFormatsList}"/>
 <jsp:useBean id="fileFormatsList" type="java.util.List"/>
 
-<html:hidden styleId = 'dataType' property="dataType" value ="<%=ProcessorConstants.DATATYPE_BYTEARRAY%>"/>
+<html:hidden styleId = 'dataType' property="dataType" value ="<%=ProcessorConstants.DATATYPE_FILE%>"/>
 <table  summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
   <!--<tr>
     <td>
@@ -44,7 +44,7 @@
 				</td>
 
 				<td class="formFieldWithoutBorder">
-					<html:select multiple="true" size="4" styleId = 'format'  property="format">
+					<html:select multiple="true" size="4" styleId = 'fileFormats'  property="fileFormats">
 						<c:forEach items="${fileFormatsList}" var="fileformat">
 							<jsp:useBean id="fileformat" type="java.lang.String" />
 								<html:option  value='<%=fileformat%>' >

@@ -80,7 +80,7 @@
 	</control>
 	<!-- rules for Date control end-->
 	
-	<!-- rules for File Upload control start
+	<!-- rules for File Upload control start -->
 	<control name="FileUploadControl"
 		display-label="eav.caption.FileUploadControlCaption"
 		jspName="/pages/toolTypeHTML/FileUploadControl.jsp"
@@ -89,5 +89,5 @@
 			<common-validation-rule name="required" isImplicit="false" />
 		</validations>
 	</control>
-	 rules for File Upload control end-->	
+	<!-- rules for File Upload control end-->	
 </controls>

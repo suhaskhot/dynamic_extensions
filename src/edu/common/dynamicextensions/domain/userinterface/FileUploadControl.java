@@ -16,6 +16,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInte
 public class FileUploadControl extends Control implements FileUploadInterface
 {
 
+	Integer columns = null;
 	/** 
 	 * @see edu.common.dynamicextensions.domain.userinterface.Control#generateHTML()
 	 */
@@ -30,8 +31,7 @@ public class FileUploadControl extends Control implements FileUploadInterface
 	 */
 	public Integer getColumns()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return columns;
 	}
 
 	/* (non-Javadoc)
@@ -39,8 +39,7 @@ public class FileUploadControl extends Control implements FileUploadInterface
 	 */
 	public void setColumns(Integer columns)
 	{
-		// TODO Auto-generated method stub
-		
+		this.columns = columns;
 	}
 
 }

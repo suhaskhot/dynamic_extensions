@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.BooleanValue;
@@ -17,6 +18,8 @@ import edu.common.dynamicextensions.domain.DateValue;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DoubleValue;
+import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.FileExtension;
 import edu.common.dynamicextensions.domain.FloatAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.FloatValue;
 import edu.common.dynamicextensions.domain.IntegerAttributeTypeInformation;
@@ -118,6 +121,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_BYTEARRAY))
 				{
 					attributeInterface = domainObjectFactory.createByteArrayAttribute();
+				}
+				else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_FILE))
+				{
+					attributeInterface = domainObjectFactory.createFileAttribute();
 				}
 				else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_NUMBER))
 				{
@@ -241,6 +248,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			{
 				populateByteArrayAttributeInterface((ByteArrayAttributeTypeInformation) attributeTypeInformation, attributeUIBeanInformationIntf);
 			}
+			else if (attributeTypeInformation instanceof FileAttributeTypeInformation)
+			{
+				populateFileAttributeInterface((FileAttributeTypeInformation) attributeTypeInformation, attributeUIBeanInformationIntf);
+			}
 			else if (attributeTypeInformation instanceof ShortAttributeTypeInformation)
 			{
 				populateShortAttributeInterface((ShortAttributeTypeInformation) attributeTypeInformation, attributeUIBeanInformationIntf);
@@ -265,13 +276,76 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * @param interface1
+	 * @param information
 	 * @param attributeUIBeanInformationIntf
+	 */
+	private void populateFileAttributeInterface(FileAttributeTypeInformation fileAttributeInformation, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
+	{
+		if((fileAttributeInformation!=null)&&(attributeUIBeanInformationIntf!=null))
+		{
+			//Set File Size
+			Float fileSize = new Float(attributeUIBeanInformationIntf.getAttributeSize());
+			fileAttributeInformation.setMaxFileSize(fileSize);
+			
+			//Set list of extensions supported
+			fileAttributeInformation.setFileExtensionCollection(getFileExtensionCollection(attributeUIBeanInformationIntf.getFileFormats(),attributeUIBeanInformationIntf.getFormat()));
+		}
+	}
+
+	/**
+	 * @param fileFormats : List of file formats selected by user
+	 * @param fileFormatsString Comma separated set of file formats specified by the user explicitly
+	 * @return
+	 */
+	private Collection<FileExtension> getFileExtensionCollection(String[] fileFormats, String fileFormatsString)
+	{
+		Collection<FileExtension> fileExtensionCollection = new HashSet<FileExtension>();
+		if(fileFormats!=null)
+		{
+			int noOfFileFormats = fileFormats.length;
+			for(int i=0;i<noOfFileFormats;i++)
+			{
+				fileExtensionCollection.add(getFileExtension(fileFormats[i]));
+			}
+		}
+		if(fileFormatsString!=null)
+		{
+			StringTokenizer stringTokenizer = new StringTokenizer(fileFormatsString,ProcessorConstants.FILE_FORMATS_SEPARATOR);
+			if(stringTokenizer!=null)
+			{
+				while(stringTokenizer.hasMoreElements())
+				{
+					fileExtensionCollection.add(getFileExtension(stringTokenizer.nextToken()));
+				}
+			}
+		}
+		return fileExtensionCollection;
+		
+	}
+
+	/**
+	 * @param string
+	 * @return
+	 */
+	private FileExtension getFileExtension(String string)
+	{
+		FileExtension fileExtension = null;
+		if(string!=null)
+		{
+			fileExtension = new FileExtension();
+			fileExtension.setFileExtension(string);
+		}
+		return fileExtension;
+	}
+
+	/**
+	 * @param byteArrayAttribute : Byte Array Attribute
+	 * @param attributeUIBeanInformationIntf : UI bean containing information entered  by the user
 	 */
 	private void populateByteArrayAttributeInterface(ByteArrayAttributeTypeInformation byteArrayAttribute,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
 	{
-		//TODO : Code for byte array attribute initialization 
+		//TODO : Code for byte array attribute initialization
 	}
 
 	/**
@@ -920,6 +994,16 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				populateBooleanAttributeUIBeanInterface((BooleanAttributeTypeInformation) attributeTypeInformationInterface,
 						attributeUIBeanInformationIntf);
 			}
+			else if (attributeTypeInformationInterface instanceof ByteArrayAttributeTypeInformation)
+			{
+				populateByteArrayAttributeUIBeanInterface((ByteArrayAttributeTypeInformation) attributeTypeInformationInterface,
+						attributeUIBeanInformationIntf);
+			}
+			else if (attributeTypeInformationInterface instanceof FileAttributeTypeInformation)
+			{
+				populateFileAttributeUIBeanInterface((FileAttributeTypeInformation) attributeTypeInformationInterface,
+						attributeUIBeanInformationIntf);
+			}
 			else if (attributeTypeInformationInterface instanceof IntegerAttributeTypeInformation)
 			{
 				populateIntegerAttributeUIBeanInterface((IntegerAttributeTypeInformation) attributeTypeInformationInterface,
@@ -947,6 +1031,58 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 
 			}
 		}
+	}
+
+	/**
+	 * @param information
+	 * @param attributeUIBeanInformationIntf
+	 */
+	private void populateFileAttributeUIBeanInterface(FileAttributeTypeInformation fileAttributeInformation, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
+	{
+		attributeUIBeanInformationIntf.setDataType(ProcessorConstants.DATATYPE_FILE);
+		if(fileAttributeInformation.getMaxFileSize()!=null)
+		{
+			attributeUIBeanInformationIntf.setAttributeSize(fileAttributeInformation.getMaxFileSize().toString());
+		}
+		attributeUIBeanInformationIntf.setFileFormats(getFileFormats(fileAttributeInformation));
+	}
+	
+
+	/**
+	 * @param fileAttributeInformation
+	 * @return
+	 */
+	private String[] getFileFormats(FileAttributeTypeInformation fileAttributeInformation)
+	{
+		ArrayList<String> fileFormatList = new ArrayList<String>();
+		if(fileAttributeInformation!=null)
+		{
+			FileExtension fileExtn = null;
+			Collection<FileExtension> fileExtensionColln = fileAttributeInformation.getFileExtensionCollection();
+			if(fileExtensionColln!=null)
+			{
+				Iterator<FileExtension> iterator = fileExtensionColln.iterator();
+				while(iterator.hasNext())
+				{
+					fileExtn = iterator.next();
+					if(fileExtn!=null)
+					{
+						fileFormatList.add(fileExtn.getFileExtension());
+					}
+				}
+			}
+		}
+		return fileFormatList.toArray(new String[fileFormatList.size()]);
+	}
+
+	/**
+	 * @param information
+	 * @param attributeUIBeanInformationIntf
+	 */
+	private void populateByteArrayAttributeUIBeanInterface(ByteArrayAttributeTypeInformation information, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 
 	/**
@@ -1254,6 +1390,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_BYTEARRAY))
 				{
 					attributeTypeInformation = domainObjectFactory.createByteArrayAttributeTypeInformation();
+				}
+				else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_FILE))
+				{
+					attributeTypeInformation = domainObjectFactory.createFileAttributeTypeInformation();
 				}
 				else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_NUMBER))
 				{

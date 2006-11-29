@@ -30,6 +30,7 @@ public class ProcessorConstants
 	public static final String DATATYPE_BOOLEAN = "Yes/No";
 	public static final String DATATYPE_NUMBER = "Number";
 	public static final String DATATYPE_BYTEARRAY = "ByteArray";
+	public static final String DATATYPE_FILE = "File";
 
 	//Max number of digits/decimals for various datatypes
 	public static final int MAX_NO_OF_DIGITS_SHORT = 5;
@@ -78,6 +79,9 @@ public class ProcessorConstants
     	//Group operations
     public static final String SAVE_GROUP = "savegroup";
     public static final String SHOW_NEXT_PAGE = "showNextPage";
+    
+    //separator for specifying file formats
+    public static final String FILE_FORMATS_SEPARATOR = ",";
     
     /*DEFAULT VALUE CONSTANTS*/
     //Default value for create entity as new/from existing

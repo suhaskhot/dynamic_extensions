@@ -10,11 +10,7 @@
 
 package edu.common.dynamicextensions.processor;
 
-import java.util.Collection;
-import java.util.Iterator;
-
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
-import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
@@ -25,10 +21,8 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterfa
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
-import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.interfaces.ControlUIBeanInterface;
-import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
 
 /**
  * This class processes all the information needed for Control.
@@ -182,6 +176,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			fileUploadInterface = (FileUploadInterface) controlInterface;
 		}
 		fileUploadInterface.setColumns(controlUIBeanInterface.getColumns());
+		
 		return fileUploadInterface;
 	}
 

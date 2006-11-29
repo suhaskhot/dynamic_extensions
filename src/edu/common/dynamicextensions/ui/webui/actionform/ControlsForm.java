@@ -231,6 +231,11 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	 */
 	protected String[] tempValidationRules = new String[] {""};
 	
+	/**
+	 * File formats for file control
+	 */
+	protected String[] fileFormats;
+	
 	/**option names
 	 *  
 	 */
@@ -1288,6 +1293,15 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	 */
 	private void getErrorsForFileUploadControl(Validator validator, ActionErrors errors)
 	{
+		//Numeric default value
+		if(!(isNumeric(attributeSize,validator)||(validator.isDouble(attributeSize))))
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.numericField", ApplicationProperties.getValue("eav.att.MaximumFileSize")));
+		}
+		if(!isNumeric(attributenoOfCols,validator))
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.numericField", ApplicationProperties.getValue("eav.att.TextFieldWidth")));
+		}
 	}
 
 	/**
@@ -1563,4 +1577,14 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		Validator validator = new Validator();
 		System.out.println(validator.isNumeric("0"));
 	}*/
+
+	public String[] getFileFormats()
+	{
+		return this.fileFormats;
+	}
+
+	public void setFileFormats(String[] fileFormats)
+	{
+		this.fileFormats = fileFormats;
+	}
 }

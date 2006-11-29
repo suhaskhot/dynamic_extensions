@@ -56,7 +56,7 @@ public class TreeGeneratorTag extends TagSupport
 				jspWriter.print("</div>");
 
 				//Add Javascript code
-				String toggleFunctionJSCode = "function toggle(id,p) \n" + "{ " + "selId =document.getElementById('selectedAttrib').value; \n"
+			/*	String toggleFunctionJSCode = "function toggle(id,p) \n" + "{ " + "selId =document.getElementById('selectedAttrib').value; \n"
 						+ "if(selId!='')\n" + "document.getElementById(selId).style.fontWeight='normal';\n"
 						+ "document.getElementById('selectedAttrib').value='';\n" + "var myChild = document.getElementById(id);\n"
 						+ "if((myChild!=null)&&(myChild!=undefined))\n" + "{\n" + "if(myChild.style.display!='block')\n" + "{\n"
@@ -68,7 +68,7 @@ public class TreeGeneratorTag extends TagSupport
 						+ "document.getElementById(str1).style.fontWeight='bold';\n" + "if(selId!='')\n" + "{\n"
 						+ "document.getElementById(selId).style.fontWeight='normal';\n" + "}\n"
 						+ "var controlsForm=document.getElementById('controlsForm');\n"
-						+"}\n";
+						+"}\n";*/
 				jspWriter.print("<script language='JavaScript'> \n" + "<!-- \n" //+ toggleFunctionJSCode + changeSelectionJSCode
 						+ "toggle('N0_0','P00'); \n" + "// --> \n" + "</script>");
 

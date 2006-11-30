@@ -11,6 +11,8 @@ import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
@@ -55,7 +57,7 @@ public class LoadDataEntryFormProcessor
 	{
 
 		DataEntryForm dataEntryForm = (DataEntryForm) actionForm;
-		Map<String, String> recordMap = null;
+		Map<String, Object> recordMap = null;
 
 		if (containerInterface == null || containerIdentifier != null)
 		{
@@ -73,20 +75,23 @@ public class LoadDataEntryFormProcessor
 			EntityManagerInterface entityManager = EntityManager.getInstance();
 			recordMap = entityManager.getRecordById(entity, Long.valueOf(recordIdentifier));
 
-			Set<Map.Entry<String, String>> recordSet = recordMap.entrySet();
-			for (Map.Entry<String, String> recordNode : recordSet)
+			Set<Map.Entry<String,Object>> recordSet = recordMap.entrySet();
+			for (Map.Entry<String,Object> recordNode : recordSet)
 			{
 				String recordAttributeName = recordNode.getKey();
-				String recordAttributeValue = recordNode.getValue();
+				
 
-				for (ControlInterface control : controlCollection)
+				for (ControlInterface controlInterface : controlCollection)
 				{
-					AbstractAttributeInterface controlAbstractAttribute = control.getAbstractAttribute();
+					
+					AbstractAttributeInterface controlAbstractAttribute = controlInterface.getAbstractAttribute();
+					
+					Object recordAttributeValue = recordNode.getValue();
 					if (controlAbstractAttribute.getName().equals(recordAttributeName))
 					{
 						if (recordAttributeValue != null)
 						{
-							control.setValue(recordAttributeValue);
+							controlInterface.setValue(recordAttributeValue);
 						}
 					}
 				}

@@ -230,7 +230,7 @@ public interface EntityManagerInterface
 	 * @return Map key - attribute name 
 	 *             value - attribute value  
 	 */
-	Map<String, String> getRecordById(EntityInterface entity, Long recordId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	Map<String, Object> getRecordById(EntityInterface entity, Long recordId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
     /**
      * This method deletes a particular record for an entity.

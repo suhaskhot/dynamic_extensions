@@ -94,11 +94,7 @@ import edu.wustl.common.util.logger.Logger;
  * @author vishvesh_mulay
  *
  */
-public class EntityManager
-		implements
-			EntityManagerInterface,
-			EntityManagerConstantsInterface,
-			EntityManagerExceptionConstantsInterface
+public class EntityManager implements EntityManagerInterface, EntityManagerConstantsInterface, EntityManagerExceptionConstantsInterface
 {
 
 	/**
@@ -157,8 +153,8 @@ public class EntityManager
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#persistEntity(edu.common.dynamicextensions.domaininterface.EntityInterface)
 	 */
-	public EntityInterface persistEntity(EntityInterface entityInterface)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public EntityInterface persistEntity(EntityInterface entityInterface) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		logDebug("persistEntity", "entering the method");
 		Entity entity = (Entity) entityInterface;
@@ -168,16 +164,14 @@ public class EntityManager
 			isEntitySaved = false;
 		}
 
-		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
-				Constants.HIBERNATE_DAO);
+		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
 		Stack stack = new Stack();
 
 		try
 		{
 			hibernateDAO.openSession(null);
 
-			entityInterface = saveOrUpdateEntity(entityInterface, hibernateDAO, stack,
-					isEntitySaved);
+			entityInterface = saveOrUpdateEntity(entityInterface, hibernateDAO, stack, isEntitySaved);
 
 			hibernateDAO.commit();
 		}
@@ -222,8 +216,8 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public EntityGroupInterface createEntityGroup(EntityGroupInterface entityGroupInterface)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public EntityGroupInterface createEntityGroup(EntityGroupInterface entityGroupInterface) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		logDebug("createEntityGroup", "Entering method");
 		EntityGroup entityGroup = (EntityGroup) entityGroupInterface;
@@ -236,8 +230,7 @@ public class EntityManager
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getEntityGroupByShortName(java.lang.String)
 	 */
-	public EntityGroupInterface getEntityGroupByShortName(String entityGroupShortName)
-			throws DynamicExtensionsSystemException
+	public EntityGroupInterface getEntityGroupByShortName(String entityGroupShortName) throws DynamicExtensionsSystemException
 	{
 		EntityGroupInterface entityGroupInterface = null;
 		Collection entityGroupCollection = new HashSet();
@@ -249,12 +242,10 @@ public class EntityManager
 
 		try
 		{
-			entityGroupCollection = defaultBizLogic.retrieve(EntityGroup.class.getName(),
-					"shortName", entityGroupShortName);
+			entityGroupCollection = defaultBizLogic.retrieve(EntityGroup.class.getName(), "shortName", entityGroupShortName);
 			if (entityGroupCollection != null && entityGroupCollection.size() > 0)
 			{
-				entityGroupInterface = (EntityGroupInterface) entityGroupCollection.iterator()
-						.next();
+				entityGroupInterface = (EntityGroupInterface) entityGroupCollection.iterator().next();
 			}
 		}
 		catch (DAOException e)
@@ -268,14 +259,11 @@ public class EntityManager
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAssociations(java.lang.Long, java.lang.Long)
 	 */
-	private List<String> getCollectionAttributeRecordValues(Long entityId, Long attributeId,
-			Long recordId) throws DynamicExtensionsSystemException,
+	private List<String> getCollectionAttributeRecordValues(Long entityId, Long attributeId, Long recordId) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
-		AttributeRecord collectionAttributeRecord = getAttributeRecord(entityId, attributeId,
-				recordId, null);
-		Collection<CollectionAttributeRecordValue> recordValueCollection = collectionAttributeRecord
-				.getValueCollection();
+		AttributeRecord collectionAttributeRecord = getAttributeRecord(entityId, attributeId, recordId, null);
+		Collection<CollectionAttributeRecordValue> recordValueCollection = collectionAttributeRecord.getValueCollection();
 
 		List<String> valueList = new ArrayList<String>();
 		for (CollectionAttributeRecordValue recordValue : recordValueCollection)
@@ -294,9 +282,8 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private FileAttributeRecordValue getFileAttributeRecordValue(Long entityId, Long attributeId,
-			Long recordId) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	private FileAttributeRecordValue getFileAttributeRecordValue(Long entityId, Long attributeId, Long recordId)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 
 		AttributeRecord record = getAttributeRecord(entityId, attributeId, recordId, null);
@@ -309,9 +296,8 @@ public class EntityManager
 	 * @param recordId
 	 * @return
 	 */
-	private AttributeRecord getAttributeRecord(Long entityId, Long attributeId, Long recordId,
-			HibernateDAO hibernateDao) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	private AttributeRecord getAttributeRecord(Long entityId, Long attributeId, Long recordId, HibernateDAO hibernateDao)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 
 		Map substitutionParameterMap = new HashMap();
@@ -325,19 +311,17 @@ public class EntityManager
 		}
 		else
 		{
-			recordCollection = executeHQL(hibernateDao, "getCollectionAttributeRecord",
-					substitutionParameterMap);
+			recordCollection = executeHQL(hibernateDao, "getCollectionAttributeRecord", substitutionParameterMap);
 		}
-		AttributeRecord collectionAttributeRecord = (AttributeRecord) recordCollection.iterator()
-				.next();
+		AttributeRecord collectionAttributeRecord = (AttributeRecord) recordCollection.iterator().next();
 		return collectionAttributeRecord;
 	}
 
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAssociations(java.lang.Long, java.lang.Long)
 	 */
-	public Collection<AssociationInterface> getAssociations(Long sourceEntityId, Long targetEntityId)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public Collection<AssociationInterface> getAssociations(Long sourceEntityId, Long targetEntityId) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		Map substitutionParameterMap = new HashMap();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", sourceEntityId));
@@ -353,8 +337,7 @@ public class EntityManager
 	 * @param entityGroupShortName
 	 * @return
 	 */
-	public EntityInterface getEntityByName(String entityName)
-			throws DynamicExtensionsSystemException
+	public EntityInterface getEntityByName(String entityName) throws DynamicExtensionsSystemException
 	{
 		EntityInterface entityInterface = null;
 		if (entityName == null || entityName.equals(""))
@@ -365,8 +348,7 @@ public class EntityManager
 		List entityInterfaceList = new ArrayList();
 		try
 		{
-			entityInterfaceList = defaultBizLogic.retrieve(Entity.class.getName(), "name",
-					entityName);
+			entityInterfaceList = defaultBizLogic.retrieve(Entity.class.getName(), "name", entityName);
 		}
 		catch (DAOException e)
 		{
@@ -389,30 +371,27 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public AttributeInterface getAttribute(String entityName, String attributeName)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public AttributeInterface getAttribute(String entityName, String attributeName) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		AttributeInterface attributeInterface = null;
 		AbstractAttributeInterface abstractAttributeInterface;
 		String name;
-		if (entityName == null || entityName.equals("") || attributeName == null
-				|| attributeName.equals(""))
+		if (entityName == null || entityName.equals("") || attributeName == null || attributeName.equals(""))
 		{
 			return attributeInterface;
 		}
 		EntityInterface entityInterface = getEntityByName(entityName);
 		if (entityInterface != null)
 		{
-			Collection abstractAttributeCollection = entityInterface
-					.getAbstractAttributeCollection();
+			Collection abstractAttributeCollection = entityInterface.getAbstractAttributeCollection();
 			if (abstractAttributeCollection != null)
 			{
 				Iterator abstractAttributeIterator = abstractAttributeCollection.iterator();
 
 				while (abstractAttributeIterator.hasNext())
 				{
-					abstractAttributeInterface = (AbstractAttributeInterface) abstractAttributeIterator
-							.next();
+					abstractAttributeInterface = (AbstractAttributeInterface) abstractAttributeIterator.next();
 					if (abstractAttributeInterface instanceof AttributeInterface)
 					{
 						attributeInterface = (AttributeInterface) abstractAttributeInterface;
@@ -439,8 +418,8 @@ public class EntityManager
 	 * @throws DynamicExtensionsApplicationException
 	 */
 
-	public AssociationInterface getAssociation(String entityName, String sourceRoleName)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public AssociationInterface getAssociation(String entityName, String sourceRoleName) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		Map substitutionParameterMap = new HashMap();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("string", entityName));
@@ -458,13 +437,12 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Collection<EntityInterface> getEntitiesByConceptCode(String entityConceptCode)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public Collection<EntityInterface> getEntitiesByConceptCode(String entityConceptCode) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		Map substitutionParameterMap = new HashMap();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("string", entityConceptCode));
-		Collection entityCollection = executeHQL("getEntitiesByConceptCode",
-				substitutionParameterMap);
+		Collection entityCollection = executeHQL("getEntitiesByConceptCode", substitutionParameterMap);
 		return entityCollection;
 	}
 
@@ -474,8 +452,7 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Collection<EntityInterface> getAllEntities() throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public Collection<EntityInterface> getAllEntities() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		return getAllObjects(EntityInterface.class.getName());
 	}
@@ -483,8 +460,7 @@ public class EntityManager
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getEntityByIdentifier(java.lang.String)
 	 */
-	public EntityInterface getEntityByIdentifier(String identifier)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public EntityInterface getEntityByIdentifier(String identifier) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		return (EntityInterface) getObjectByIdentifier(EntityInterface.class.getName(), identifier);
 	}
@@ -505,9 +481,8 @@ public class EntityManager
 	 * @throws UserNotAuthorizedException 
 	 * @throws DAOException 
 	 */
-	private void postSaveProcessEntity(Entity entity, HibernateDAO hibernateDAO,
-			Stack rollbackQueryStack) throws DynamicExtensionsApplicationException,
-			DynamicExtensionsSystemException, DAOException, UserNotAuthorizedException
+	private void postSaveProcessEntity(Entity entity, HibernateDAO hibernateDAO, Stack rollbackQueryStack)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException, DAOException, UserNotAuthorizedException
 	{
 		if (entity.getTableProperties() == null)
 		{
@@ -525,8 +500,7 @@ public class EntityManager
 			while (iterator.hasNext())
 			{
 				AbstractAttribute attribute = (AbstractAttribute) iterator.next();
-				if (attribute instanceof Attribute
-						&& ((Attribute) attribute).getColumnProperties() == null)
+				if (attribute instanceof Attribute && ((Attribute) attribute).getColumnProperties() == null)
 				{
 					ColumnProperties colProperties = new ColumnProperties();
 					String colName = COLUMN_NAME_PREFIX + UNDERSCORE + attribute.getId();
@@ -536,16 +510,14 @@ public class EntityManager
 				else if (attribute instanceof AssociationInterface)
 				{
 					Association association = (Association) attribute;
-					ConstraintPropertiesInterface constraintProperties = association
-							.getConstraintProperties();
+					ConstraintPropertiesInterface constraintProperties = association.getConstraintProperties();
 					//					if (constraintProperties == null)
 					//					{
 					EntityInterface targetEntity = association.getTargetEntity();
 					if (targetEntity.getId() == null)
 					{
 						boolean isEntitySaved = false;
-						targetEntity = saveOrUpdateEntity(targetEntity, hibernateDAO,
-								rollbackQueryStack, isEntitySaved);
+						targetEntity = saveOrUpdateEntity(targetEntity, hibernateDAO, rollbackQueryStack, isEntitySaved);
 					}
 					populateConstraintProperties(association);
 
@@ -564,8 +536,8 @@ public class EntityManager
 	 * @throws UserNotAuthorizedException 
 	 * @throws DAOException 
 	 */
-	private void populateSystemGeneratedAssociation(Association association,
-			HibernateDAO hibernateDAO) throws DAOException, UserNotAuthorizedException
+	private void populateSystemGeneratedAssociation(Association association, HibernateDAO hibernateDAO) throws DAOException,
+			UserNotAuthorizedException
 	{
 		Association systemGeneratedAssociation = getSystemGeneratedAssociation(association);
 		if (association.getAssociationDirection() == AssociationDirection.BI_DIRECTIONAL)
@@ -580,10 +552,8 @@ public class EntityManager
 				constraintPropertiesSysGen = systemGeneratedAssociation.getConstraintProperties();
 			}
 			constraintPropertiesSysGen.setName(association.getConstraintProperties().getName());
-			constraintPropertiesSysGen.setSourceEntityKey(association.getConstraintProperties()
-					.getTargetEntityKey());
-			constraintPropertiesSysGen.setTargetEntityKey(association.getConstraintProperties()
-					.getSourceEntityKey());
+			constraintPropertiesSysGen.setSourceEntityKey(association.getConstraintProperties().getTargetEntityKey());
+			constraintPropertiesSysGen.setTargetEntityKey(association.getConstraintProperties().getSourceEntityKey());
 
 			systemGeneratedAssociation.setName(association.getName());
 			systemGeneratedAssociation.setDescription(association.getDescription());
@@ -617,8 +587,7 @@ public class EntityManager
 			while (associationIterator.hasNext())
 			{
 				Association associationInterface = (Association) associationIterator.next();
-				if (associationInterface.getIsSystemGenerated()
-						&& associationInterface.getSourceRole().equals(association.getTargetRole())
+				if (associationInterface.getIsSystemGenerated() && associationInterface.getSourceRole().equals(association.getTargetRole())
 						&& associationInterface.getTargetRole().equals(association.getSourceRole()))
 				{
 					return associationInterface;
@@ -644,30 +613,24 @@ public class EntityManager
 		Cardinality targetMaxCardinality = targetRole.getMaximumCardinality();
 		if (sourceMaxCardinality == Cardinality.MANY && targetMaxCardinality == Cardinality.MANY)
 		{
-			constraintProperties.setSourceEntityKey(ASSOCIATION_COLUMN_PREFIX + UNDERSCORE + "S"
-					+ UNDERSCORE + sourceEntity.getId() + UNDERSCORE + association.getId()
-					+ UNDERSCORE + IDENTIFIER);
-			constraintProperties.setTargetEntityKey(ASSOCIATION_COLUMN_PREFIX + UNDERSCORE + "T"
-					+ UNDERSCORE + targetEntity.getId() + UNDERSCORE + association.getId()
-					+ UNDERSCORE + IDENTIFIER);
-			constraintProperties.setName(ASSOCIATION_NAME_PREFIX + UNDERSCORE
-					+ sourceEntity.getId() + UNDERSCORE + targetEntity.getId() + UNDERSCORE
+			constraintProperties.setSourceEntityKey(ASSOCIATION_COLUMN_PREFIX + UNDERSCORE + "S" + UNDERSCORE + sourceEntity.getId() + UNDERSCORE
+					+ association.getId() + UNDERSCORE + IDENTIFIER);
+			constraintProperties.setTargetEntityKey(ASSOCIATION_COLUMN_PREFIX + UNDERSCORE + "T" + UNDERSCORE + targetEntity.getId() + UNDERSCORE
+					+ association.getId() + UNDERSCORE + IDENTIFIER);
+			constraintProperties.setName(ASSOCIATION_NAME_PREFIX + UNDERSCORE + sourceEntity.getId() + UNDERSCORE + targetEntity.getId() + UNDERSCORE
 					+ +association.getId());
 		}
-		else if (sourceMaxCardinality == Cardinality.MANY
-				&& targetMaxCardinality == Cardinality.ONE)
+		else if (sourceMaxCardinality == Cardinality.MANY && targetMaxCardinality == Cardinality.ONE)
 		{
-			constraintProperties.setSourceEntityKey(ASSOCIATION_COLUMN_PREFIX + UNDERSCORE
-					+ targetEntity.getId() + UNDERSCORE + association.getId() + UNDERSCORE
-					+ IDENTIFIER);
+			constraintProperties.setSourceEntityKey(ASSOCIATION_COLUMN_PREFIX + UNDERSCORE + targetEntity.getId() + UNDERSCORE + association.getId()
+					+ UNDERSCORE + IDENTIFIER);
 			constraintProperties.setTargetEntityKey(null);
 			constraintProperties.setName(sourceEntity.getTableProperties().getName());
 		}
 		else
 		{
-			constraintProperties.setTargetEntityKey(ASSOCIATION_COLUMN_PREFIX + UNDERSCORE
-					+ sourceEntity.getId() + UNDERSCORE + association.getId() + UNDERSCORE
-					+ IDENTIFIER);
+			constraintProperties.setTargetEntityKey(ASSOCIATION_COLUMN_PREFIX + UNDERSCORE + sourceEntity.getId() + UNDERSCORE + association.getId()
+					+ UNDERSCORE + IDENTIFIER);
 			constraintProperties.setSourceEntityKey(null);
 			constraintProperties.setName(targetEntity.getTableProperties().getName());
 		}
@@ -682,8 +645,7 @@ public class EntityManager
 	 * @param entity Entity whose name's uniqueness is to be checked.
 	 * @throws DynamicExtensionsApplicationException This will basically act as a duplicate name  exception.
 	 */
-	private void checkForDuplicateEntityName(Entity entity)
-			throws DynamicExtensionsApplicationException
+	private void checkForDuplicateEntityName(Entity entity) throws DynamicExtensionsApplicationException
 	{
 		// TODO Auto-generated method stub
 
@@ -700,8 +662,7 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException Whenever there is any exception , this exception is thrown with proper message and the exception is 
 	 * wrapped inside this exception.
 	 */
-	private Stack executeQueries(List queryList, List reverseQueryList, Stack rollbackQueryStack)
-			throws DynamicExtensionsSystemException
+	private Stack executeQueries(List queryList, List reverseQueryList, Stack rollbackQueryStack) throws DynamicExtensionsSystemException
 	{
 		Session session = null;
 		try
@@ -712,9 +673,7 @@ public class EntityManager
 		{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-			throw new DynamicExtensionsSystemException(
-					"Unable to exectute the data table queries .....Cannot access sesssion", e1,
-					DYEXTN_S_002);
+			throw new DynamicExtensionsSystemException("Unable to exectute the data table queries .....Cannot access sesssion", e1, DYEXTN_S_002);
 		}
 
 		Iterator reverseQueryListIterator = reverseQueryList.iterator();
@@ -736,8 +695,7 @@ public class EntityManager
 					}
 					catch (SQLException e)
 					{
-						throw new DynamicExtensionsSystemException(
-								"Exception occured while executing the data table query", e);
+						throw new DynamicExtensionsSystemException("Exception occured while executing the data table query", e);
 					}
 					try
 					{
@@ -750,17 +708,14 @@ public class EntityManager
 					catch (SQLException e)
 					{
 						//                        rollbackQueries(rollbackQueryStack, conn, entity);
-						throw new DynamicExtensionsSystemException(
-								"Exception occured while forming the data tables for entity", e,
-								DYEXTN_S_002);
+						throw new DynamicExtensionsSystemException("Exception occured while forming the data tables for entity", e, DYEXTN_S_002);
 					}
 				}
 			}
 		}
 		catch (HibernateException e)
 		{
-			throw new DynamicExtensionsSystemException(
-					"Cannot obtain connection to execute the data query", e, DYEXTN_S_001);
+			throw new DynamicExtensionsSystemException("Cannot obtain connection to execute the data query", e, DYEXTN_S_001);
 		}
 
 		return rollbackQueryStack;
@@ -776,8 +731,7 @@ public class EntityManager
 	 * @param conn
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private void rollbackQueries(Stack reverseQueryList, Entity entity, Exception e)
-			throws DynamicExtensionsSystemException
+	private void rollbackQueries(Stack reverseQueryList, Entity entity, Exception e) throws DynamicExtensionsSystemException
 	{
 		String message = "";
 		if (reverseQueryList != null && !reverseQueryList.isEmpty())
@@ -808,8 +762,7 @@ public class EntityManager
 			finally
 			{
 				logDebug("rollbackQueries", DynamicExtensionsUtility.getStackTrace(e));
-				DynamicExtensionsSystemException ex = new DynamicExtensionsSystemException(message,
-						e);
+				DynamicExtensionsSystemException ex = new DynamicExtensionsSystemException(message, e);
 				ex.setErrorCode(DYEXTN_S_000);
 				throw ex;
 			}
@@ -827,9 +780,7 @@ public class EntityManager
 	 */
 	private void LogFatalError(Exception e, Entity entity)
 	{
-		Logger.out
-				.error("***Fatal Error.. Incosistent data table and metadata information for the entity -"
-						+ entity.getName());
+		Logger.out.error("***Fatal Error.. Incosistent data table and metadata information for the entity -" + entity.getName());
 		Logger.out.error("Please check the table -" + entity.getTableProperties().getName());
 		Logger.out.error("The cause of the exception is - " + e.getMessage());
 		Logger.out.error("The detailed log is : ");
@@ -848,14 +799,12 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException 
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	private List getCreateEntityQueryList(Entity entity, List reverseQueryList,
-			HibernateDAO hibernateDAO, Stack rollbackQueryStack)
+	private List getCreateEntityQueryList(Entity entity, List reverseQueryList, HibernateDAO hibernateDAO, Stack rollbackQueryStack)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		List queryList = new ArrayList();
 		String mainTableQuery = getEntityMainDataTableQuery(entity, reverseQueryList);
-		List associationTableQueryList = getDataTableQueriesForAssociationsInEntity(entity,
-				reverseQueryList, hibernateDAO, rollbackQueryStack);
+		List associationTableQueryList = getDataTableQueriesForAssociationsInEntity(entity, reverseQueryList, hibernateDAO, rollbackQueryStack);
 		queryList.add(mainTableQuery);
 		queryList.addAll(associationTableQueryList);
 		return queryList;
@@ -871,8 +820,7 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException 
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	private List getDataTableQueriesForAssociationsInEntity(Entity entity, List reverseQueryList,
-			HibernateDAO hibernateDAO, Stack rollbackQueryStack)
+	private List getDataTableQueriesForAssociationsInEntity(Entity entity, List reverseQueryList, HibernateDAO hibernateDAO, Stack rollbackQueryStack)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		List associationQueryList = new ArrayList();
@@ -882,15 +830,13 @@ public class EntityManager
 			Iterator associationIterator = associationCollection.iterator();
 			while (associationIterator.hasNext())
 			{
-				AssociationInterface association = (AssociationInterface) associationIterator
-						.next();
+				AssociationInterface association = (AssociationInterface) associationIterator.next();
 				if (((Association) association).getIsSystemGenerated())
 				{
 					continue;
 				}
 				boolean isAddAssociationQuery = true;
-				String associationQuery = getQueryPartForAssociation(association, reverseQueryList,
-						isAddAssociationQuery);
+				String associationQuery = getQueryPartForAssociation(association, reverseQueryList, isAddAssociationQuery);
 				associationQueryList.add(associationQuery);
 			}
 		}
@@ -904,13 +850,11 @@ public class EntityManager
 	 * @return String The method returns the "CREATE TABLE" query for the data table query for the entity passed.
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private String getEntityMainDataTableQuery(Entity entity, List reverseQueryList)
-			throws DynamicExtensionsSystemException
+	private String getEntityMainDataTableQuery(Entity entity, List reverseQueryList) throws DynamicExtensionsSystemException
 	{
 		String dataType = getDataTypeForIdentifier();
 		String tableName = entity.getTableProperties().getName();
-		StringBuffer query = new StringBuffer(CREATE_TABLE + " " + tableName + " "
-				+ OPENING_BRACKET + " " + IDENTIFIER + " " + dataType + COMMA);
+		StringBuffer query = new StringBuffer(CREATE_TABLE + " " + tableName + " " + OPENING_BRACKET + " " + IDENTIFIER + " " + dataType + COMMA);
 		Collection attributeCollection = entity.getAttributeCollection();
 		if (attributeCollection != null && !attributeCollection.isEmpty())
 		{
@@ -959,8 +903,8 @@ public class EntityManager
 	 * @return String query part of that attribute.
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private String getQueryPartForAbstractAttribute(AbstractAttribute attribute, String type,
-			boolean processUniqueConstraint) throws DynamicExtensionsSystemException
+	private String getQueryPartForAbstractAttribute(AbstractAttribute attribute, String type, boolean processUniqueConstraint)
+			throws DynamicExtensionsSystemException
 	{
 		String attributeQuery = null;
 		if (attribute != null)
@@ -969,13 +913,11 @@ public class EntityManager
 			{
 				try
 				{
-					attributeQuery = getQueryPartForAttribute((Attribute) attribute, type,
-							processUniqueConstraint);
+					attributeQuery = getQueryPartForAttribute((Attribute) attribute, type, processUniqueConstraint);
 				}
 				catch (DataTypeFactoryInitializationException e)
 				{
-					throw new DynamicExtensionsSystemException(
-							"Exception occured while retrieving the database type of the attribute");
+					throw new DynamicExtensionsSystemException("Exception occured while retrieving the database type of the attribute");
 				}
 			}
 			else if (attribute instanceof Association)
@@ -993,8 +935,7 @@ public class EntityManager
 	 * @return String query part of the association.
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private String getQueryPartForAssociation(AssociationInterface association,
-			List reverseQueryList, boolean isAddAssociationQuery)
+	private String getQueryPartForAssociation(AssociationInterface association, List reverseQueryList, boolean isAddAssociationQuery)
 			throws DynamicExtensionsSystemException
 	{
 		logDebug("getQueryPartForAssociation", "Entering method");
@@ -1014,14 +955,12 @@ public class EntityManager
 		{
 			tableName = constraintProperties.getName();
 
-			query.append(CREATE_TABLE + WHITESPACE + tableName + WHITESPACE + OPENING_BRACKET
-					+ WHITESPACE + IDENTIFIER + WHITESPACE + dataType + COMMA);
+			query.append(CREATE_TABLE + WHITESPACE + tableName + WHITESPACE + OPENING_BRACKET + WHITESPACE + IDENTIFIER + WHITESPACE + dataType
+					+ COMMA);
 			query.append(constraintProperties.getSourceEntityKey() + WHITESPACE + dataType + COMMA);
-			query.append(constraintProperties.getTargetEntityKey() + WHITESPACE + dataType + COMMA
-					+ WHITESPACE);
+			query.append(constraintProperties.getTargetEntityKey() + WHITESPACE + dataType + COMMA + WHITESPACE);
 			query.append(PRIMARY_KEY_CONSTRAINT_FOR_ENTITY_DATA_TABLE + CLOSING_BRACKET);
-			String rollbackQuery = DROP_KEYWORD + WHITESPACE + TABLE_KEYWORD + WHITESPACE
-					+ tableName;
+			String rollbackQuery = DROP_KEYWORD + WHITESPACE + TABLE_KEYWORD + WHITESPACE + tableName;
 
 			if (isAddAssociationQuery)
 			{
@@ -1033,20 +972,17 @@ public class EntityManager
 				query = new StringBuffer(rollbackQuery);
 			}
 		}
-		else if (sourceMaxCardinality == Cardinality.MANY
-				&& targetMaxCardinality == Cardinality.ONE)
+		else if (sourceMaxCardinality == Cardinality.MANY && targetMaxCardinality == Cardinality.ONE)
 		{
 			tableName = sourceEntity.getTableProperties().getName();
 			String columnName = constraintProperties.getSourceEntityKey();
-			query.append(getAddAttributeQuery(tableName, columnName, dataType, reverseQueryList,
-					isAddAssociationQuery));
+			query.append(getAddAttributeQuery(tableName, columnName, dataType, reverseQueryList, isAddAssociationQuery));
 		}
 		else
 		{
 			tableName = targetEntity.getTableProperties().getName();
 			String columnName = constraintProperties.getTargetEntityKey();
-			query.append(getAddAttributeQuery(tableName, columnName, dataType, reverseQueryList,
-					isAddAssociationQuery));
+			query.append(getAddAttributeQuery(tableName, columnName, dataType, reverseQueryList, isAddAssociationQuery));
 
 		}
 
@@ -1054,17 +990,15 @@ public class EntityManager
 		return query.toString();
 	}
 
-	private String getAddAttributeQuery(String tableName, String columnName, String dataType,
-			List reverseQueryList, boolean isAddAssociationQuery)
+	private String getAddAttributeQuery(String tableName, String columnName, String dataType, List reverseQueryList, boolean isAddAssociationQuery)
 	{
 		StringBuffer query = new StringBuffer();
-		query.append(ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + ADD_KEYWORD + WHITESPACE
-				+ OPENING_BRACKET + WHITESPACE);
+		query.append(ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + ADD_KEYWORD + WHITESPACE + OPENING_BRACKET + WHITESPACE);
 		query.append(columnName + WHITESPACE + dataType + WHITESPACE + CLOSING_BRACKET);
-		String rollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + DROP_KEYWORD
-				+ WHITESPACE + COLUMN_KEYWORD + WHITESPACE + columnName;
+		String rollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + DROP_KEYWORD + WHITESPACE + COLUMN_KEYWORD + WHITESPACE
+				+ columnName;
 
-//		query.append(REFERENCES_KEYWORD + WHITESPACE + sourceEntity.getTableProperties().getName() + OPENING_BRACKET + IDENTIFIER + CLOSING_BRACKET + COMMA);
+		//		query.append(REFERENCES_KEYWORD + WHITESPACE + sourceEntity.getTableProperties().getName() + OPENING_BRACKET + IDENTIFIER + CLOSING_BRACKET + COMMA);
 
 		if (isAddAssociationQuery)
 		{
@@ -1084,8 +1018,7 @@ public class EntityManager
 	 * @return String query part of the primitive attribute.
 	 * @throws DataTypeFactoryInitializationException 
 	 */
-	private String getQueryPartForAttribute(Attribute attribute, String type,
-			boolean processConstraints) throws DynamicExtensionsSystemException
+	private String getQueryPartForAttribute(Attribute attribute, String type, boolean processConstraints) throws DynamicExtensionsSystemException
 	{
 
 		String attributeQuery = null;
@@ -1099,9 +1032,8 @@ public class EntityManager
 			{
 				if (attribute.getIsPrimaryKey())
 				{
-					isUnique = CONSTRAINT_KEYWORD + WHITESPACE
-							+ attribute.getColumnProperties().getName() + UNDERSCORE
-							+ UNIQUE_CONSTRAINT_SUFFIX + WHITESPACE + UNIQUE_KEYWORD;
+					isUnique = CONSTRAINT_KEYWORD + WHITESPACE + attribute.getColumnProperties().getName() + UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX
+							+ WHITESPACE + UNIQUE_KEYWORD;
 				}
 				nullConstraint = "NULL";
 
@@ -1111,19 +1043,15 @@ public class EntityManager
 				}
 
 				if (attribute.getAttributeTypeInformation().getDefaultValue() != null
-						&& attribute.getAttributeTypeInformation().getDefaultValue()
-								.getValueAsObject() != null)
+						&& attribute.getAttributeTypeInformation().getDefaultValue().getValueAsObject() != null)
 				{
-					defaultConstraint = DEFAULT_KEYWORD
-							+ WHITESPACE
-							+ getFormattedValue(attribute, attribute.getAttributeTypeInformation()
-									.getDefaultValue().getValueAsObject());
+					defaultConstraint = DEFAULT_KEYWORD + WHITESPACE
+							+ getFormattedValue(attribute, attribute.getAttributeTypeInformation().getDefaultValue().getValueAsObject());
 				}
 
 			}
 
-			attributeQuery = columnName + WHITESPACE + type + WHITESPACE
-					+ getDatabaseTypeAndSize(attribute) + WHITESPACE + defaultConstraint
+			attributeQuery = columnName + WHITESPACE + type + WHITESPACE + getDatabaseTypeAndSize(attribute) + WHITESPACE + defaultConstraint
 					+ WHITESPACE + isUnique + WHITESPACE + nullConstraint;
 		}
 		return attributeQuery;
@@ -1136,15 +1064,13 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException 
 	 * @throws DataTypeFactoryInitializationException 
 	 */
-	private String getDatabaseTypeAndSize(Attribute attribute)
-			throws DynamicExtensionsSystemException
+	private String getDatabaseTypeAndSize(Attribute attribute) throws DynamicExtensionsSystemException
 
 	{
 		try
 		{
 			DataTypeFactory dataTypeFactory = DataTypeFactory.getInstance();
-			AttributeTypeInformationInterface attributeInformation = attribute
-					.getAttributeTypeInformation();
+			AttributeTypeInformationInterface attributeInformation = attribute.getAttributeTypeInformation();
 			if (attributeInformation instanceof StringAttributeTypeInformation)
 			{
 				return dataTypeFactory.getDatabaseDataType("String");
@@ -1205,8 +1131,7 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Collection getEntitiesByAttributeName(String attributeName)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public Collection getEntitiesByAttributeName(String attributeName) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		return null;
 	}
@@ -1214,8 +1139,7 @@ public class EntityManager
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllContainers()
 	 */
-	public Collection<ContainerInterface> getAllContainers()
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public Collection<ContainerInterface> getAllContainers() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		return getAllObjects(ContainerInterface.class.getName());
 	}
@@ -1228,8 +1152,8 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private AbstractMetadataInterface getObjectByIdentifier(String objectName, String identifier)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private AbstractMetadataInterface getObjectByIdentifier(String objectName, String identifier) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
 		AbstractMetadataInterface object;
@@ -1257,8 +1181,7 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private Collection getAllObjects(String objectName) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	private Collection getAllObjects(String objectName) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
 		Collection objectList = new HashSet();
@@ -1285,8 +1208,7 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Collection getEntityByDescription(String entityDescription)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public Collection getEntityByDescription(String entityDescription) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		return null;
 	}
@@ -1298,8 +1220,8 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Collection getEntitiesByAttributeDescription(String attributeDescription)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public Collection getEntitiesByAttributeDescription(String attributeDescription) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		return null;
 	}
@@ -1311,8 +1233,8 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Collection getEntitiesByConceptName(String entityConceptName)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public Collection getEntitiesByConceptName(String entityConceptName) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		return null;
 	}
@@ -1324,8 +1246,8 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Collection getEntitiesByAttributeConceptCode(String attributeConceptCode)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public Collection getEntitiesByAttributeConceptCode(String attributeConceptCode) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		return null;
 	}
@@ -1337,8 +1259,8 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Collection getEntitiesByAttributeConceptName(String attributeConceptName)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public Collection getEntitiesByAttributeConceptName(String attributeConceptName) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		return null;
 	}
@@ -1361,8 +1283,8 @@ public class EntityManager
 	 * @throws DynamicExtensionsApplicationException Thrown if the entity name already exists.
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public ContainerInterface persistContainer(ContainerInterface containerInterface)
-			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	public ContainerInterface persistContainer(ContainerInterface containerInterface) throws DynamicExtensionsApplicationException,
+			DynamicExtensionsSystemException
 	{
 		Container container = (Container) containerInterface;
 		Stack rollbackQueryStack = new Stack();
@@ -1372,8 +1294,7 @@ public class EntityManager
 		}
 
 		Entity entity = (Entity) container.getEntity();
-		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
-				Constants.HIBERNATE_DAO);
+		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
 		boolean isentitySaved = true;
 		if (entity != null && entity.getId() == null)
 		{
@@ -1390,7 +1311,7 @@ public class EntityManager
 			if (entity != null)
 			{
 				saveOrUpdateEntity(entity, hibernateDAO, rollbackQueryStack, isentitySaved);
-                
+
 			}
 			preSaveProcessContainer(container);
 			if (isContainerSaved)
@@ -1407,8 +1328,7 @@ public class EntityManager
 		catch (DAOException e)
 		{
 			rollbackQueries(rollbackQueryStack, entity, e);
-			throw new DynamicExtensionsSystemException(
-					"Exception occured while opening a session to save the container.");
+			throw new DynamicExtensionsSystemException("Exception occured while opening a session to save the container.");
 		}
 		catch (UserNotAuthorizedException e)
 		{
@@ -1435,8 +1355,7 @@ public class EntityManager
 	/**
 	 * @param container container
 	 */
-	private void preSaveProcessContainer(Container container)
-			throws DynamicExtensionsApplicationException
+	private void preSaveProcessContainer(Container container) throws DynamicExtensionsApplicationException
 	{
 		if (container.getEntity() != null)
 		{
@@ -1447,11 +1366,10 @@ public class EntityManager
 	/**
 	 * @param entity entity
 	 */
-	private void preSaveProcessEntity(EntityInterface entity)
-			throws DynamicExtensionsApplicationException
+	private void preSaveProcessEntity(EntityInterface entity) throws DynamicExtensionsApplicationException
 	{
 		validateEntityForSaving(entity);
-        correctCardinalities(entity);
+		correctCardinalities(entity);
 		if (entity.getId() != null)
 		{
 			entity.setLastUpdated(new Date());
@@ -1467,39 +1385,44 @@ public class EntityManager
 	 * @param entity
 	 */
 	private void correctCardinalities(EntityInterface entity) throws DynamicExtensionsApplicationException
-    {
-        Collection associationCollection = entity.getAssociationCollection();
-        if (associationCollection != null && !associationCollection.isEmpty()) {
-            Iterator iterator = associationCollection.iterator();
-            while (iterator.hasNext()) {
-                Association association = (Association) iterator.next();
-                swapCardinality(association.getSourceRole());
-                swapCardinality(association.getTargetRole());
-                
-            }
-        }
-        
-    }
+	{
+		Collection associationCollection = entity.getAssociationCollection();
+		if (associationCollection != null && !associationCollection.isEmpty())
+		{
+			Iterator iterator = associationCollection.iterator();
+			while (iterator.hasNext())
+			{
+				Association association = (Association) iterator.next();
+				swapCardinality(association.getSourceRole());
+				swapCardinality(association.getTargetRole());
 
-    /**
-     * @param role
-     * @throws DynamicExtensionsApplicationException 
-     */
-    private void swapCardinality (RoleInterface role) throws DynamicExtensionsApplicationException {
-        if (role.getMinimumCardinality().equals(Cardinality.MANY) || role.getMaximumCardinality().equals(Cardinality.ZERO)) {
-            Cardinality e = role.getMinimumCardinality();
-            role.setMinimumCardinality(role.getMaximumCardinality());
-            role.setMaximumCardinality(e);
-        }
-        if (role.getMaximumCardinality().equals(Cardinality.ZERO)) {
-            throw new DynamicExtensionsApplicationException("Cardinality constraint violated",null,DYEXTN_A_005);
-        }
-    }
-    /**
+			}
+		}
+
+	}
+
+	/**
+	 * @param role
+	 * @throws DynamicExtensionsApplicationException 
+	 */
+	private void swapCardinality(RoleInterface role) throws DynamicExtensionsApplicationException
+	{
+		if (role.getMinimumCardinality().equals(Cardinality.MANY) || role.getMaximumCardinality().equals(Cardinality.ZERO))
+		{
+			Cardinality e = role.getMinimumCardinality();
+			role.setMinimumCardinality(role.getMaximumCardinality());
+			role.setMaximumCardinality(e);
+		}
+		if (role.getMaximumCardinality().equals(Cardinality.ZERO))
+		{
+			throw new DynamicExtensionsApplicationException("Cardinality constraint violated", null, DYEXTN_A_005);
+		}
+	}
+
+	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#insertData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map)
 	 */
-	public Long insertData(EntityInterface entity, Map dataValue)
-			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	public Long insertData(EntityInterface entity, Map dataValue) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		if (entity == null || dataValue == null || dataValue.isEmpty())
 		{
@@ -1516,28 +1439,27 @@ public class EntityManager
 		Set uiColumnSet = dataValue.keySet();
 		Iterator uiColumnSetIter = uiColumnSet.iterator();
 		List<String> queryList = new ArrayList<String>();
-        Object value = null;
+		Object value = null;
 		while (uiColumnSetIter.hasNext())
 		{
 			AbstractAttribute attribute = (AbstractAttribute) uiColumnSetIter.next();
-            value = dataValue.get(attribute);
+			value = dataValue.get(attribute);
 			if (attribute instanceof AttributeInterface)
 			{
 				AttributeInterface primitiveAttribute = (AttributeInterface) attribute;
-				
 
 				if (primitiveAttribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
 				{
-					AttributeRecord fileRecord = populateFileAttributeRecord(null, entity,
-							primitiveAttribute, identifier, (FileAttributeRecordValue) value);
+					AttributeRecord fileRecord = populateFileAttributeRecord(null, entity, primitiveAttribute, identifier,
+							(FileAttributeRecordValue) value);
 					attributeRecords.add(fileRecord);
 					continue;
 				}
 
 				if (primitiveAttribute.getIsCollection())
 				{
-					AttributeRecord collectionRecord = populateCollectionAttributeRecord(null,
-							entity, primitiveAttribute, identifier, (List<String>) value);
+					AttributeRecord collectionRecord = populateCollectionAttributeRecord(null, entity, primitiveAttribute, identifier,
+							(List<String>) value);
 					attributeRecords.add(collectionRecord);
 				}
 				else
@@ -1553,7 +1475,7 @@ public class EntityManager
 			}
 			else
 			{
-                queryList.add(getAssociationInsertDataQuery((AssociationInterface) attribute, (Long)value,identifier));
+				queryList.add(getAssociationInsertDataQuery((AssociationInterface) attribute, (Long) value, identifier));
 			}
 		}
 
@@ -1562,7 +1484,7 @@ public class EntityManager
 		query.append(" ) VALUES (");
 		query.append(columnValuesString);
 		query.append(" ) ");
-        queryList.add(0,query.toString());
+		queryList.add(0, query.toString());
 		HibernateDAO hibernateDAO = null;
 		try
 		{
@@ -1573,11 +1495,12 @@ public class EntityManager
 
 			hibernateDAO.openSession(null);
 			Connection conn = DBUtil.getConnection();
-            for (String queryString:queryList) {
-            logDebug("insertData", "Query for insert data is : " + queryString);
-			PreparedStatement statement = conn.prepareStatement(queryString);
-			statement.executeUpdate();
-            }
+			for (String queryString : queryList)
+			{
+				logDebug("insertData", "Query for insert data is : " + queryString);
+				PreparedStatement statement = conn.prepareStatement(queryString);
+				statement.executeUpdate();
+			}
 			for (AttributeRecord collectionAttributeRecord : attributeRecords)
 			{
 				//logDebug("insertData", "Inserting multi select: " +  collectionAttributeRecord.getValue());
@@ -1614,86 +1537,96 @@ public class EntityManager
 		return identifier;
 	}
 
-	private String getAssociationInsertDataQuery(AssociationInterface associationInterface, Long targetRecordId, Long sourceRecordId) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
-    {
-        Association association = (Association) associationInterface;
-        verifyCardinalityConstraints (associationInterface, targetRecordId);
-        String tableName = association.getConstraintProperties().getName();
-        String sourceKey = association.getConstraintProperties().getSourceEntityKey();
-        String targetKey = association.getConstraintProperties().getTargetEntityKey();
-        StringBuffer query = new StringBuffer();
-        if (sourceKey != null && targetKey != null && sourceKey.trim().length() != 0 && targetKey.trim().length() != 0) {
-            Long id = getNextIdentifier(tableName);
-            query.append("INSERT INTO " + tableName + " ( ");
-            query.append(IDENTIFIER + "," + sourceKey + "," + targetKey);
-            query.append(" ) VALUES (");
-            query.append(id.toString());
-            query.append(COMMA);
-            query.append(sourceRecordId.toString());
-            query.append(COMMA);
-            query.append(targetRecordId.toString());
-            query.append(CLOSING_BRACKET);
-        } else if (sourceKey != null && sourceKey.trim().length() != 0) {
-            query.append(UPDATE_KEYWORD);
-            query.append(WHITESPACE + tableName);
-            query.append(WHITESPACE + SET_KEYWORD + WHITESPACE + sourceKey + EQUAL + targetRecordId + WHITESPACE);
-            query.append(WHERE_KEYWORD + WHITESPACE + IDENTIFIER + EQUAL + sourceRecordId);
-            
-        } else {
-            query.append(UPDATE_KEYWORD);
-            query.append(WHITESPACE + tableName);
-            query.append(WHITESPACE + SET_KEYWORD + WHITESPACE + targetKey + EQUAL + sourceRecordId + WHITESPACE);
-            query.append(WHERE_KEYWORD + WHITESPACE +  IDENTIFIER + EQUAL + targetRecordId);
-        }
+	private String getAssociationInsertDataQuery(AssociationInterface associationInterface, Long targetRecordId, Long sourceRecordId)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	{
+		Association association = (Association) associationInterface;
+		verifyCardinalityConstraints(associationInterface, targetRecordId);
+		String tableName = association.getConstraintProperties().getName();
+		String sourceKey = association.getConstraintProperties().getSourceEntityKey();
+		String targetKey = association.getConstraintProperties().getTargetEntityKey();
+		StringBuffer query = new StringBuffer();
+		if (sourceKey != null && targetKey != null && sourceKey.trim().length() != 0 && targetKey.trim().length() != 0)
+		{
+			Long id = getNextIdentifier(tableName);
+			query.append("INSERT INTO " + tableName + " ( ");
+			query.append(IDENTIFIER + "," + sourceKey + "," + targetKey);
+			query.append(" ) VALUES (");
+			query.append(id.toString());
+			query.append(COMMA);
+			query.append(sourceRecordId.toString());
+			query.append(COMMA);
+			query.append(targetRecordId.toString());
+			query.append(CLOSING_BRACKET);
+		}
+		else if (sourceKey != null && sourceKey.trim().length() != 0)
+		{
+			query.append(UPDATE_KEYWORD);
+			query.append(WHITESPACE + tableName);
+			query.append(WHITESPACE + SET_KEYWORD + WHITESPACE + sourceKey + EQUAL + targetRecordId + WHITESPACE);
+			query.append(WHERE_KEYWORD + WHITESPACE + IDENTIFIER + EQUAL + sourceRecordId);
 
-        return query.toString();
-    }
+		}
+		else
+		{
+			query.append(UPDATE_KEYWORD);
+			query.append(WHITESPACE + tableName);
+			query.append(WHITESPACE + SET_KEYWORD + WHITESPACE + targetKey + EQUAL + sourceRecordId + WHITESPACE);
+			query.append(WHERE_KEYWORD + WHITESPACE + IDENTIFIER + EQUAL + targetRecordId);
+		}
 
-    private void verifyCardinalityConstraints(AssociationInterface association, Long value) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
-    {
-        EntityInterface sourceEntity = association.getEntity();
-        EntityInterface targetEntity = association.getTargetEntity();
-        RoleInterface sourceRole = association.getSourceRole();
-        RoleInterface targetRole = association.getTargetRole();
-        Cardinality sourceMaxCardinality = sourceRole.getMaximumCardinality();
-        Cardinality targetMaxCardinality = targetRole.getMaximumCardinality();
-        Cardinality sourceMinCardinality = sourceRole.getMinimumCardinality();
-        Cardinality targetMinCardinality = targetRole.getMinimumCardinality();
-        String columnName = "";
-        String tableName = "";
-        if (targetMaxCardinality == Cardinality.ONE)
-        {
-            if (sourceMaxCardinality == Cardinality.MANY) {
-                tableName = sourceEntity.getTableProperties().getName();
-                columnName = association.getConstraintProperties().getSourceEntityKey();
-            }
-            else if (sourceMaxCardinality == Cardinality.ONE) {
-                tableName = targetEntity.getTableProperties().getName();
-                columnName = association.getConstraintProperties().getTargetEntityKey();
-            }
-            String query = SELECT_KEYWORD + WHITESPACE + COUNT_KEYWORD + OPENING_BRACKET + "*" + CLOSING_BRACKET +
-            WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName + WHITESPACE + WHERE_KEYWORD + WHITESPACE + columnName + WHITESPACE + EQUAL + WHITESPACE +
-            value.toString();
-            ResultSet resultSet = executeQuery(query);
-            try
-            {
-                if (resultSet.getInt(1)!= 0) {
-                    throw new DynamicExtensionsApplicationException("Cardinality constraint violated",null,DYEXTN_A_005);
-                }
-            }
-            catch (SQLException e)
-            {
-                throw new DynamicExtensionsSystemException(e.getMessage(),e);
-            }
-            
-        }
-    }
+		return query.toString();
+	}
 
-    /**
+	private void verifyCardinalityConstraints(AssociationInterface association, Long value) throws DynamicExtensionsApplicationException,
+			DynamicExtensionsSystemException
+	{
+		EntityInterface sourceEntity = association.getEntity();
+		EntityInterface targetEntity = association.getTargetEntity();
+		RoleInterface sourceRole = association.getSourceRole();
+		RoleInterface targetRole = association.getTargetRole();
+		Cardinality sourceMaxCardinality = sourceRole.getMaximumCardinality();
+		Cardinality targetMaxCardinality = targetRole.getMaximumCardinality();
+		Cardinality sourceMinCardinality = sourceRole.getMinimumCardinality();
+		Cardinality targetMinCardinality = targetRole.getMinimumCardinality();
+		String columnName = "";
+		String tableName = "";
+		if (targetMaxCardinality == Cardinality.ONE)
+		{
+			if (sourceMaxCardinality == Cardinality.MANY)
+			{
+				tableName = sourceEntity.getTableProperties().getName();
+				columnName = association.getConstraintProperties().getSourceEntityKey();
+			}
+			else if (sourceMaxCardinality == Cardinality.ONE)
+			{
+				tableName = targetEntity.getTableProperties().getName();
+				columnName = association.getConstraintProperties().getTargetEntityKey();
+			}
+			String query = SELECT_KEYWORD + WHITESPACE + COUNT_KEYWORD + OPENING_BRACKET + "*" + CLOSING_BRACKET + WHITESPACE + FROM_KEYWORD
+					+ WHITESPACE + tableName + WHITESPACE + WHERE_KEYWORD + WHITESPACE + columnName + WHITESPACE + EQUAL + WHITESPACE
+					+ value.toString();
+			ResultSet resultSet = executeQuery(query);
+			try
+			{
+				if (resultSet.getInt(1) != 0)
+				{
+					throw new DynamicExtensionsApplicationException("Cardinality constraint violated", null, DYEXTN_A_005);
+				}
+			}
+			catch (SQLException e)
+			{
+				throw new DynamicExtensionsSystemException(e.getMessage(), e);
+			}
+
+		}
+	}
+
+	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#editData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map, java.lang.Long)
 	 */
-	public boolean editData(EntityInterface entity, Map dataValue, Long recordId)
-			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	public boolean editData(EntityInterface entity, Map dataValue, Long recordId) throws DynamicExtensionsApplicationException,
+			DynamicExtensionsSystemException
 	{
 		if (entity == null || dataValue == null || dataValue.isEmpty())
 		{
@@ -1720,14 +1653,13 @@ public class EntityManager
 
 				if (primitiveAttribute.getIsCollection())
 				{
-					AttributeRecord collectionRecord = getAttributeRecord(entity.getId(),
-							primitiveAttribute.getId(), recordId, null);
+					AttributeRecord collectionRecord = getAttributeRecord(entity.getId(), primitiveAttribute.getId(), recordId, null);
 					List<String> listOfValues = (List<String>) value;
 
 					if (!listOfValues.isEmpty())
 					{
-						collectionRecord = populateCollectionAttributeRecord(collectionRecord,
-								entity, primitiveAttribute, recordId, (List<String>) value);
+						collectionRecord = populateCollectionAttributeRecord(collectionRecord, entity, primitiveAttribute, recordId,
+								(List<String>) value);
 						collectionRecords.add(collectionRecord);
 					}
 
@@ -1740,8 +1672,7 @@ public class EntityManager
 				else if (primitiveAttribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
 				{
 					FileAttributeRecordValue fileRecordValue = (FileAttributeRecordValue) value;
-					AttributeRecord fileRecord = getAttributeRecord(entity.getId(),
-							primitiveAttribute.getId(), recordId, null);
+					AttributeRecord fileRecord = getAttributeRecord(entity.getId(), primitiveAttribute.getId(), recordId, null);
 					fileRecord.setFileRecord(fileRecordValue);
 					fileRecords.add(fileRecord);
 				}
@@ -1792,22 +1723,19 @@ public class EntityManager
 
 			for (AttributeRecord collectionAttributeRecord : collectionRecords)
 			{
-				logDebug("editData", "updating multi select: "
-						+ collectionAttributeRecord.getValueCollection());
+				logDebug("editData", "updating multi select: " + collectionAttributeRecord.getValueCollection());
 				hibernateDAO.update(collectionAttributeRecord, null, false, false, false);
 			}
 
 			for (AttributeRecord collectionAttributeRecord : deleteCollectionRecords)
 			{
-				logDebug("editData", "deleting multi select: "
-						+ collectionAttributeRecord.getValueCollection());
+				logDebug("editData", "deleting multi select: " + collectionAttributeRecord.getValueCollection());
 				hibernateDAO.update(collectionAttributeRecord, null, false, false, false);
 			}
 
 			for (AttributeRecord fileRecord : fileRecords)
 			{
-				logDebug("editData", "updating filereocrd for multi select: "
-						+ fileRecord.getFileRecord().getFileName());
+				logDebug("editData", "updating filereocrd for multi select: " + fileRecord.getFileRecord().getFileName());
 				hibernateDAO.update(fileRecord, null, false, false, false);
 			}
 
@@ -1852,9 +1780,8 @@ public class EntityManager
 	 * @param values List of values for this multiselect attribute
 	 * @return  list of <AttributeRecord>
 	 */
-	private AttributeRecord populateCollectionAttributeRecord(AttributeRecord collectionRecord,
-			EntityInterface entity, AttributeInterface primitiveAttribute, Long identifier,
-			List<String> values)
+	private AttributeRecord populateCollectionAttributeRecord(AttributeRecord collectionRecord, EntityInterface entity,
+			AttributeInterface primitiveAttribute, Long identifier, List<String> values)
 	{
 		if (collectionRecord == null)
 		{
@@ -1865,8 +1792,7 @@ public class EntityManager
 		{
 			collectionRecord.getValueCollection().clear();
 		}
-		Collection<CollectionAttributeRecordValue> valueCollection = collectionRecord
-				.getValueCollection();
+		Collection<CollectionAttributeRecordValue> valueCollection = collectionRecord.getValueCollection();
 
 		collectionRecord.setEntity(entity);
 		collectionRecord.setAttribute(primitiveAttribute);
@@ -1890,9 +1816,8 @@ public class EntityManager
 	 * @param value
 	 * @return
 	 */
-	private AttributeRecord populateFileAttributeRecord(AttributeRecord fileRecord,
-			EntityInterface entity, AttributeInterface primitiveAttribute, Long identifier,
-			FileAttributeRecordValue value)
+	private AttributeRecord populateFileAttributeRecord(AttributeRecord fileRecord, EntityInterface entity, AttributeInterface primitiveAttribute,
+			Long identifier, FileAttributeRecordValue value)
 	{
 		if (fileRecord == null)
 		{
@@ -1917,8 +1842,7 @@ public class EntityManager
 	private String getFormattedValue(AbstractAttribute attribute, Object value)
 	{
 		String formattedvalue = null;
-		AttributeTypeInformationInterface attributeInformation = ((Attribute) attribute)
-				.getAttributeTypeInformation();
+		AttributeTypeInformationInterface attributeInformation = ((Attribute) attribute).getAttributeTypeInformation();
 		if (attribute == null)
 		{
 			formattedvalue = null;
@@ -1945,15 +1869,13 @@ public class EntityManager
 				str = (String) value;
 			}
 
-			formattedvalue = Variables.strTodateFunction + "('" + str + "','"
-					+ Variables.datePattern + "')";
+			formattedvalue = Variables.strTodateFunction + "('" + str + "','" + Variables.datePattern + "')";
 		}
 		else
 		{
 			formattedvalue = value.toString();
 		}
-		logDebug("getFormattedValue", "The formatted value for attribute " + attribute.getName()
-				+ "is " + formattedvalue);
+		logDebug("getFormattedValue", "The formatted value for attribute " + attribute.getName() + "is " + formattedvalue);
 		return formattedvalue;
 
 	}
@@ -1988,40 +1910,32 @@ public class EntityManager
 	 * @throws DAOException
 	 * @throws ClassNotFoundException
 	 */
-	synchronized private Long getNextIdentifier(String entityTableName)
-			throws DynamicExtensionsSystemException
+	synchronized private Long getNextIdentifier(String entityTableName) throws DynamicExtensionsSystemException
 	{
 
-	
-		StringBuffer queryToGetNextIdentifier = new StringBuffer("SELECT MAX(IDENTIFIER) FROM "
-				+ entityTableName);
+		StringBuffer queryToGetNextIdentifier = new StringBuffer("SELECT MAX(IDENTIFIER) FROM " + entityTableName);
 		List resultList = null;
 		try
 		{
-			resultList = getResultInList(queryToGetNextIdentifier.toString(),
-					new SessionDataBean(), false, false, null);
+			resultList = getResultInList(queryToGetNextIdentifier.toString(), new SessionDataBean(), false, false, null);
 		}
 		catch (DAOException e)
 		{
-			throw new DynamicExtensionsSystemException(
-					"Could not fetch the next identifier for table " + entityTableName);
+			throw new DynamicExtensionsSystemException("Could not fetch the next identifier for table " + entityTableName);
 		}
 		catch (ClassNotFoundException e)
 		{
-			throw new DynamicExtensionsSystemException(
-					"Could not fetch the next identifier for table " + entityTableName);
+			throw new DynamicExtensionsSystemException("Could not fetch the next identifier for table " + entityTableName);
 		}
 
 		if (resultList == null)
 		{
-			throw new DynamicExtensionsSystemException(
-					"Could not fetch the next identifier for table " + entityTableName);
+			throw new DynamicExtensionsSystemException("Could not fetch the next identifier for table " + entityTableName);
 		}
 		List internalList = (List) resultList.get(0);
 		if (internalList == null || internalList.isEmpty())
 		{
-			throw new DynamicExtensionsSystemException(
-					"Could not fetch the next identifier for table " + entityTableName);
+			throw new DynamicExtensionsSystemException("Could not fetch the next identifier for table " + entityTableName);
 		}
 		String idString = (String) (internalList.get(0));
 
@@ -2053,17 +1967,16 @@ public class EntityManager
 	 * @throws DAOException
 	 * @throws ClassNotFoundException
 	 */
-	private List getResultInList(String queryToGetNextIdentifier, SessionDataBean sessionDataBean,
-			boolean isSecureExecute, boolean hasConditionOnIdentifiedField,
-			Map queryResultObjectDataMap) throws DAOException, ClassNotFoundException
+	private List getResultInList(String queryToGetNextIdentifier, SessionDataBean sessionDataBean, boolean isSecureExecute,
+			boolean hasConditionOnIdentifiedField, Map queryResultObjectDataMap) throws DAOException, ClassNotFoundException
 	{
 		List resultList = null;
 		JDBCDAO jdbcDAO = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
 		try
 		{
 			jdbcDAO.openSession(null);
-			resultList = jdbcDAO.executeQuery(queryToGetNextIdentifier, sessionDataBean,
-					isSecureExecute, hasConditionOnIdentifiedField, queryResultObjectDataMap);
+			resultList = jdbcDAO.executeQuery(queryToGetNextIdentifier, sessionDataBean, isSecureExecute, hasConditionOnIdentifiedField,
+					queryResultObjectDataMap);
 		}
 		catch (DAOException daoException)
 		{
@@ -2095,9 +2008,8 @@ public class EntityManager
 	 * @throws DynamicExtensionsApplicationException System exception in case of any fatal errors.
 	 * @throws DynamicExtensionsSystemException Thrown in case of duplicate name or authentication failure.
 	 */
-	private EntityInterface saveOrUpdateEntity(EntityInterface entityInterface,
-			HibernateDAO hibernateDAO, Stack rollbackQueryStack, boolean isEntitySaved)
-			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	private EntityInterface saveOrUpdateEntity(EntityInterface entityInterface, HibernateDAO hibernateDAO, Stack rollbackQueryStack,
+			boolean isEntitySaved) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		logDebug("saveOrUpdateEntity", "Entering method");
 
@@ -2125,13 +2037,11 @@ public class EntityManager
 
 			if (!isEntitySaved)
 			{
-				queryList = getCreateEntityQueryList(entity, reverseQueryList, hibernateDAO,
-						rollbackQueryStack);
+				queryList = getCreateEntityQueryList(entity, reverseQueryList, hibernateDAO, rollbackQueryStack);
 			}
 			else
 			{
-				queryList = getUpdateEntityQueryList(entity, (Entity) databaseCopy,
-						reverseQueryList);
+				queryList = getUpdateEntityQueryList(entity, (Entity) databaseCopy, reverseQueryList);
 			}
 
 			executeQueries(queryList, reverseQueryList, rollbackQueryStack);
@@ -2140,8 +2050,7 @@ public class EntityManager
 		catch (UserNotAuthorizedException e)
 		{
 			logDebug("saveOrUpdateEntity", DynamicExtensionsUtility.getStackTrace(e));
-			throw new DynamicExtensionsApplicationException(
-					"User is not authorised to perform this action", e, DYEXTN_A_002);
+			throw new DynamicExtensionsApplicationException("User is not authorised to perform this action", e, DYEXTN_A_002);
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{
@@ -2168,16 +2077,13 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException System exception in case of any fatal error
 	 * @throws DynamicExtensionsApplicationException Thrown in case of authentication failure or duplicate name.
 	 */
-	private List getUpdateEntityQueryList(Entity entity, Entity databaseCopy,
-			List attributeRollbackQueryList) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	private List getUpdateEntityQueryList(Entity entity, Entity databaseCopy, List attributeRollbackQueryList)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		logDebug("getUpdateEntityQueryList", "Entering method");
 
-		List updateAttributeQueryList = getUpdateAttributeQueryList(entity, databaseCopy,
-				attributeRollbackQueryList);
-		List updateassociationsQueryList = getUpdateAssociationsQueryList(entity, databaseCopy,
-				attributeRollbackQueryList);
+		List updateAttributeQueryList = getUpdateAttributeQueryList(entity, databaseCopy, attributeRollbackQueryList);
+		List updateassociationsQueryList = getUpdateAssociationsQueryList(entity, databaseCopy, attributeRollbackQueryList);
 
 		List updateQueryList = new ArrayList();
 
@@ -2194,8 +2100,8 @@ public class EntityManager
 	 * @param attributeRollbackQueryList
 	 * @return
 	 */
-	private List getUpdateAssociationsQueryList(Entity entity, Entity databaseCopy,
-			List attributeRollbackQueryList) throws DynamicExtensionsSystemException
+	private List getUpdateAssociationsQueryList(Entity entity, Entity databaseCopy, List attributeRollbackQueryList)
+			throws DynamicExtensionsSystemException
 	{
 		logDebug("getUpdateAssociationsQueryList", "Entering method");
 		List associationsQueryList = new ArrayList();
@@ -2210,8 +2116,7 @@ public class EntityManager
 			while (associationIterator.hasNext())
 			{
 				Association association = (Association) associationIterator.next();
-				Association associationDatabaseCopy = (Association) databaseCopy
-						.getAttributeByIdentifier(association.getId());
+				Association associationDatabaseCopy = (Association) databaseCopy.getAttributeByIdentifier(association.getId());
 
 				if (association.getIsSystemGenerated())
 				{
@@ -2220,8 +2125,7 @@ public class EntityManager
 				if (associationDatabaseCopy == null)
 				{
 					isAddAssociationQuery = true;
-					String newAssociationQuery = getQueryPartForAssociation(association,
-							attributeRollbackQueryList, isAddAssociationQuery);
+					String newAssociationQuery = getQueryPartForAssociation(association, attributeRollbackQueryList, isAddAssociationQuery);
 					associationsQueryList.add(newAssociationQuery);
 				}
 				else
@@ -2229,21 +2133,18 @@ public class EntityManager
 					if (isCardinalityChanged(association, associationDatabaseCopy))
 					{
 						isAddAssociationQuery = false;
-						String savedAssociationRemoveQuery = getQueryPartForAssociation(
-								associationDatabaseCopy, attributeRollbackQueryList,
+						String savedAssociationRemoveQuery = getQueryPartForAssociation(associationDatabaseCopy, attributeRollbackQueryList,
 								isAddAssociationQuery);
 						associationsQueryList.add(savedAssociationRemoveQuery);
 
 						isAddAssociationQuery = true;
-						String newAssociationAddQuery = getQueryPartForAssociation(association,
-								attributeRollbackQueryList, isAddAssociationQuery);
+						String newAssociationAddQuery = getQueryPartForAssociation(association, attributeRollbackQueryList, isAddAssociationQuery);
 						associationsQueryList.add(newAssociationAddQuery);
 					}
 				}
 			}
 		}
-		processRemovedAssociation(entity, databaseCopy, associationsQueryList,
-				attributeRollbackQueryList);
+		processRemovedAssociation(entity, databaseCopy, associationsQueryList, attributeRollbackQueryList);
 
 		logDebug("getUpdateAssociationsQueryList", "Exiting method");
 		return associationsQueryList;
@@ -2254,19 +2155,15 @@ public class EntityManager
 	 * @param associationDatabaseCopy
 	 * @return
 	 */
-	private boolean isCardinalityChanged(Association association,
-			Association associationDatabaseCopy)
+	private boolean isCardinalityChanged(Association association, Association associationDatabaseCopy)
 	{
 		Cardinality sourceMaxCardinality = association.getSourceRole().getMaximumCardinality();
 		Cardinality targetMaxCardinality = association.getTargetRole().getMaximumCardinality();
 
-		Cardinality sourceMaxCardinalityDatabaseCopy = associationDatabaseCopy.getSourceRole()
-				.getMaximumCardinality();
-		Cardinality targetMaxCardinalityDatabaseCopy = associationDatabaseCopy.getTargetRole()
-				.getMaximumCardinality();
+		Cardinality sourceMaxCardinalityDatabaseCopy = associationDatabaseCopy.getSourceRole().getMaximumCardinality();
+		Cardinality targetMaxCardinalityDatabaseCopy = associationDatabaseCopy.getTargetRole().getMaximumCardinality();
 
-		if (!sourceMaxCardinality.equals(sourceMaxCardinalityDatabaseCopy)
-				|| !targetMaxCardinality.equals(targetMaxCardinalityDatabaseCopy))
+		if (!sourceMaxCardinality.equals(sourceMaxCardinalityDatabaseCopy) || !targetMaxCardinality.equals(targetMaxCardinalityDatabaseCopy))
 		{
 			return true;
 		}
@@ -2281,8 +2178,7 @@ public class EntityManager
 	 * @param attributeRollbackQueryList
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private void processRemovedAssociation(Entity entity, Entity databaseCopy,
-			List associationsQueryList, List attributeRollbackQueryList)
+	private void processRemovedAssociation(Entity entity, Entity databaseCopy, List associationsQueryList, List attributeRollbackQueryList)
 			throws DynamicExtensionsSystemException
 	{
 		logDebug("processRemovedAssociation", "Entering method");
@@ -2296,15 +2192,13 @@ public class EntityManager
 			while (savedAssociationIterator.hasNext())
 			{
 				Association savedAssociation = (Association) savedAssociationIterator.next();
-				Association association = (Association) entity
-						.getAttributeByIdentifier(savedAssociation.getId());;
+				Association association = (Association) entity.getAttributeByIdentifier(savedAssociation.getId());;
 
 				// removed ??
 				if (association == null)
 				{
 					boolean isAddAssociationQuery = false;
-					String removeAssociationQuery = getQueryPartForAssociation(savedAssociation,
-							attributeRollbackQueryList, isAddAssociationQuery);
+					String removeAssociationQuery = getQueryPartForAssociation(savedAssociation, attributeRollbackQueryList, isAddAssociationQuery);
 					associationsQueryList.add(removeAssociationQuery);
 				}
 			}
@@ -2312,9 +2206,8 @@ public class EntityManager
 		logDebug("processRemovedAssociation", "Exiting method");
 	}
 
-	private List getUpdateAttributeQueryList(Entity entity, Entity databaseCopy,
-			List attributeRollbackQueryList) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	private List getUpdateAttributeQueryList(Entity entity, Entity databaseCopy, List attributeRollbackQueryList)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		logDebug("getUpdateAttributeQueryList", "Entering method");
 		Collection attributeCollection = entity.getAttributeCollection();
@@ -2327,27 +2220,23 @@ public class EntityManager
 			while (attributeIterator.hasNext())
 			{
 				Attribute attribute = (Attribute) attributeIterator.next();
-				Attribute savedAttribute = (Attribute) databaseCopy
-						.getAttributeByIdentifier(attribute.getId());
+				Attribute savedAttribute = (Attribute) databaseCopy.getAttributeByIdentifier(attribute.getId());
 
 				if (savedAttribute == null || isAttributeColumnToBeAdded(attribute, savedAttribute))
 				{
-					String attributeQuery = processAddAttribute(attribute,
-							attributeRollbackQueryList);
+					String attributeQuery = processAddAttribute(attribute, attributeRollbackQueryList);
 					attributeQueryList.add(attributeQuery);
 				}
 				else
 				{
-					List modifiedAttributeQueryList = processModifyAttribute(attribute,
-							savedAttribute, attributeRollbackQueryList);
+					List modifiedAttributeQueryList = processModifyAttribute(attribute, savedAttribute, attributeRollbackQueryList);
 					attributeQueryList.addAll(modifiedAttributeQueryList);
 				}
 
 			}
 
 		}
-		processRemovedAttributes(entity, databaseCopy, attributeQueryList,
-				attributeRollbackQueryList);
+		processRemovedAttributes(entity, databaseCopy, attributeQueryList, attributeRollbackQueryList);
 		logDebug("getUpdateAttributeQueryList", "Exiting method");
 		return attributeQueryList;
 	}
@@ -2376,8 +2265,7 @@ public class EntityManager
 	 * This method returns true if a attribute is changed such that its column needs to be added.
 	 * @return
 	 */
-	private boolean isAttributeColumnToBeAdded(AttributeInterface attribute,
-			AttributeInterface dataBaseCopy)
+	private boolean isAttributeColumnToBeAdded(AttributeInterface attribute, AttributeInterface dataBaseCopy)
 	{
 		boolean columnAdd = false;
 
@@ -2388,10 +2276,8 @@ public class EntityManager
 		else
 		{
 
-			AttributeTypeInformationInterface attributeTypeInfo = attribute
-					.getAttributeTypeInformation();
-			AttributeTypeInformationInterface attributeTypeInfoDatabaseCopy = attribute
-					.getAttributeTypeInformation();
+			AttributeTypeInformationInterface attributeTypeInfo = attribute.getAttributeTypeInformation();
+			AttributeTypeInformationInterface attributeTypeInfoDatabaseCopy = attribute.getAttributeTypeInformation();
 
 			if (!(attributeTypeInfo instanceof FileAttributeTypeInformation)
 					&& (attributeTypeInfoDatabaseCopy instanceof FileAttributeTypeInformation))
@@ -2407,8 +2293,7 @@ public class EntityManager
 	 * This method returns true if a attribute is changed such that its column needs to be removed.
 	 * @return
 	 */
-	private boolean isAttributeColumnToBeRemoved(AttributeInterface attribute,
-			AttributeInterface dataBaseCopy)
+	private boolean isAttributeColumnToBeRemoved(AttributeInterface attribute, AttributeInterface dataBaseCopy)
 	{
 		boolean columnRemoved = false;
 
@@ -2419,10 +2304,8 @@ public class EntityManager
 		else
 		{
 
-			AttributeTypeInformationInterface attributeTypeInfo = attribute
-					.getAttributeTypeInformation();
-			AttributeTypeInformationInterface attributeTypeInfoDatabaseCopy = dataBaseCopy
-					.getAttributeTypeInformation();
+			AttributeTypeInformationInterface attributeTypeInfo = attribute.getAttributeTypeInformation();
+			AttributeTypeInformationInterface attributeTypeInfoDatabaseCopy = dataBaseCopy.getAttributeTypeInformation();
 
 			if ((attributeTypeInfo instanceof FileAttributeTypeInformation)
 					&& !(attributeTypeInfoDatabaseCopy instanceof FileAttributeTypeInformation))
@@ -2446,9 +2329,8 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private List processModifyAttribute(Attribute attribute, Attribute savedAttribute,
-			List attributeRollbackQueryList) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	private List processModifyAttribute(Attribute attribute, Attribute savedAttribute, List attributeRollbackQueryList)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		List modifyAttributeQueryList = new ArrayList();
 
@@ -2479,13 +2361,10 @@ public class EntityManager
 		}
 
 		String modifyAttributeQuery = getQueryPartForAbstractAttribute(attribute, type, false);
-		modifyAttributeQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + modify
-				+ WHITESPACE + modifyAttributeQuery;
+		modifyAttributeQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + modify + WHITESPACE + modifyAttributeQuery;
 
-		String modifyAttributeRollbackQuery = getQueryPartForAbstractAttribute(savedAttribute,
-				type, false);
-		modifyAttributeRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + modify
-				+ WHITESPACE + modifyAttributeRollbackQuery;
+		String modifyAttributeRollbackQuery = getQueryPartForAbstractAttribute(savedAttribute, type, false);
+		modifyAttributeRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + modify + WHITESPACE + modifyAttributeRollbackQuery;
 		//process nullable
 		String nullQueryKeyword = "";
 		String nullQueryRollbackKeyword = "";
@@ -2496,8 +2375,7 @@ public class EntityManager
 			constraintCondition = DROP_KEYWORD;
 			constraintRollbackcondition = SET_KEYWORD;
 			nullQueryKeyword = WHITESPACE + NULL_KEYWORD + WHITESPACE;
-			nullQueryRollbackKeyword = WHITESPACE + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD
-					+ WHITESPACE;
+			nullQueryRollbackKeyword = WHITESPACE + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD + WHITESPACE;
 		}
 		else if (!attribute.getIsNullable() && savedAttribute.getIsNullable())
 		{
@@ -2510,29 +2388,23 @@ public class EntityManager
 		if (!str.equalsIgnoreCase(Constants.POSTGRESQL_DATABASE))
 		{
 
-			if (!constraintCondition.equalsIgnoreCase("")
-					&& !constraintRollbackcondition.equalsIgnoreCase(""))
+			if (!constraintCondition.equalsIgnoreCase("") && !constraintRollbackcondition.equalsIgnoreCase(""))
 			{
 				attributemodifiedFlag = true;
 				modifyAttributeQuery = modifyAttributeQuery + nullQueryKeyword;
-				modifyAttributeRollbackQuery = modifyAttributeRollbackQuery
-						+ nullQueryRollbackKeyword;
+				modifyAttributeRollbackQuery = modifyAttributeRollbackQuery + nullQueryRollbackKeyword;
 
 			}
 
 		}
 		else
 		{
-			if (!constraintCondition.equalsIgnoreCase("")
-					&& !constraintRollbackcondition.equalsIgnoreCase(""))
+			if (!constraintCondition.equalsIgnoreCase("") && !constraintRollbackcondition.equalsIgnoreCase(""))
 			{
-				String nullPartQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + modify
-						+ WHITESPACE + columnName + WHITESPACE + constraintCondition + WHITESPACE
-						+ NOT_KEYWORD + WHITESPACE + NULL_KEYWORD;
-				String nullPartRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE
-						+ modify + WHITESPACE + columnName + WHITESPACE
-						+ constraintRollbackcondition + WHITESPACE + NOT_KEYWORD + WHITESPACE
-						+ NULL_KEYWORD;
+				String nullPartQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + modify + WHITESPACE + columnName + WHITESPACE
+						+ constraintCondition + WHITESPACE + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD;
+				String nullPartRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + modify + WHITESPACE + columnName + WHITESPACE
+						+ constraintRollbackcondition + WHITESPACE + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD;
 				modifyAttributeQueryList.add(nullPartQuery);
 				attributeRollbackQueryList.add(nullPartRollbackQuery);
 			}
@@ -2550,13 +2422,11 @@ public class EntityManager
 		if (attribute.getIsPrimaryKey() && !savedAttribute.getIsPrimaryKey())
 		{
 
-			String uniqueConstraintQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE
-					+ ADD_KEYWORD + WHITESPACE + CONSTRAINT_KEYWORD + WHITESPACE + columnName
-					+ UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX + WHITESPACE + UNIQUE_KEYWORD
-					+ WHITESPACE + OPENING_BRACKET + columnName + CLOSING_BRACKET;
-			String uniqueConstraintRollbackQuery = ALTER_TABLE + WHITESPACE + tableName
-					+ WHITESPACE + DROP_KEYWORD + WHITESPACE + CONSTRAINT_KEYWORD + WHITESPACE
-					+ columnName + UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX;
+			String uniqueConstraintQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + ADD_KEYWORD + WHITESPACE + CONSTRAINT_KEYWORD
+					+ WHITESPACE + columnName + UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX + WHITESPACE + UNIQUE_KEYWORD + WHITESPACE + OPENING_BRACKET
+					+ columnName + CLOSING_BRACKET;
+			String uniqueConstraintRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + DROP_KEYWORD + WHITESPACE + CONSTRAINT_KEYWORD
+					+ WHITESPACE + columnName + UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX;
 
 			modifyAttributeQueryList.add(uniqueConstraintQuery);
 			attributeRollbackQueryList.add(uniqueConstraintRollbackQuery);
@@ -2564,13 +2434,11 @@ public class EntityManager
 		}
 		else if (!attribute.getIsPrimaryKey() && savedAttribute.getIsPrimaryKey())
 		{
-			String uniqueConstraintQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE
-					+ DROP_KEYWORD + WHITESPACE + CONSTRAINT_KEYWORD + WHITESPACE + columnName
-					+ UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX;
-			String uniqueConstraintRollbackQuery = ALTER_TABLE + WHITESPACE + tableName
-					+ WHITESPACE + ADD_KEYWORD + WHITESPACE + CONSTRAINT_KEYWORD + WHITESPACE
-					+ columnName + UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX + WHITESPACE
-					+ UNIQUE_KEYWORD + WHITESPACE + OPENING_BRACKET + columnName + CLOSING_BRACKET;
+			String uniqueConstraintQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + DROP_KEYWORD + WHITESPACE + CONSTRAINT_KEYWORD
+					+ WHITESPACE + columnName + UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX;
+			String uniqueConstraintRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + ADD_KEYWORD + WHITESPACE + CONSTRAINT_KEYWORD
+					+ WHITESPACE + columnName + UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX + WHITESPACE + UNIQUE_KEYWORD + WHITESPACE + OPENING_BRACKET
+					+ columnName + CLOSING_BRACKET;
 
 			modifyAttributeQueryList.add(uniqueConstraintQuery);
 			attributeRollbackQueryList.add(uniqueConstraintRollbackQuery);
@@ -2585,8 +2453,7 @@ public class EntityManager
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private boolean isAttributeChanged(Attribute attribute, Attribute savedAttribute)
-			throws DynamicExtensionsSystemException
+	private boolean isAttributeChanged(Attribute attribute, Attribute savedAttribute) throws DynamicExtensionsSystemException
 	{
 
 		if (!getDatabaseTypeAndSize(attribute).equals(getDatabaseTypeAndSize(savedAttribute)))
@@ -2605,18 +2472,18 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private String processAddAttribute(Attribute attribute, List attributeRollbackQueryList)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private String processAddAttribute(Attribute attribute, List attributeRollbackQueryList) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 
 		String columnName = attribute.getColumnProperties().getName();
 		String tableName = attribute.getEntity().getTableProperties().getName();
 		String type = "";
-		String newAttributeQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + ADD_KEYWORD
-				+ WHITESPACE + getQueryPartForAbstractAttribute(attribute, type, true);
+		String newAttributeQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + ADD_KEYWORD + WHITESPACE
+				+ getQueryPartForAbstractAttribute(attribute, type, true);
 
-		String newAttributeRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE
-				+ DROP_KEYWORD + WHITESPACE + COLUMN_KEYWORD + WHITESPACE + columnName;
+		String newAttributeRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + DROP_KEYWORD + WHITESPACE + COLUMN_KEYWORD
+				+ WHITESPACE + columnName;
 
 		attributeRollbackQueryList.add(newAttributeRollbackQuery);
 
@@ -2626,8 +2493,7 @@ public class EntityManager
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getRecordById(edu.common.dynamicextensions.domaininterface.EntityInterface, java.lang.Long)
 	 */
-	public Map getRecordById(EntityInterface entity, Long recordId)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public Map getRecordById(EntityInterface entity, Long recordId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Map recordValues = new HashMap();
 
@@ -2684,32 +2550,33 @@ public class EntityManager
 			jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
 			jdbcDao.openSession(null);
 
-			List result = jdbcDao.retrieve(tableName, selectColumnName, whereColumnName,
-					whereColumnCondition, whereColumnValue, null);
-			List innerList = null;
+			if (selectColumnName.length != 0)
+			{
+				List result = jdbcDao.retrieve(tableName, selectColumnName, whereColumnName, whereColumnCondition, whereColumnValue, null);
+				List innerList = null;
 
-			if (result != null && result.size() != 0)
-			{
-				innerList = (List) result.get(0);
-			}
-			if (innerList != null)
-			{
-				for (int i = 0; i < innerList.size(); i++)
+				if (result != null && result.size() != 0)
 				{
-					String value = (String) innerList.get(i);
-					String dbColumnName = selectColumnName[i];
-					String uiColumnName = (String) columnNameMap.get(dbColumnName);
-					recordValues.put(uiColumnName, value);
+					innerList = (List) result.get(0);
 				}
-			}
+				if (innerList != null)
+				{
+					for (int i = 0; i < innerList.size(); i++)
+					{
+						String value = (String) innerList.get(i);
+						String dbColumnName = selectColumnName[i];
+						String uiColumnName = (String) columnNameMap.get(dbColumnName);
+						recordValues.put(uiColumnName, value);
+					}
+				}
 
+			}
 			/*
 			 * process any multi select attributes
 			 */
 			for (AttributeInterface attribute : collectionAttributes)
 			{
-				List<String> valueList = getCollectionAttributeRecordValues(entity.getId(),
-						attribute.getId(), recordId);
+				List<String> valueList = getCollectionAttributeRecordValues(entity.getId(), attribute.getId(), recordId);
 				recordValues.put(attribute.getName(), valueList);
 			}
 			/*
@@ -2717,8 +2584,7 @@ public class EntityManager
 			 */
 			for (AttributeInterface attribute : fileAttributes)
 			{
-				FileAttributeRecordValue fileRecordValue = getFileAttributeRecordValue(entity
-						.getId(), attribute.getId(), recordId);
+				FileAttributeRecordValue fileRecordValue = getFileAttributeRecordValue(entity.getId(), attribute.getId(), recordId);
 				recordValues.put(attribute.getName(), fileRecordValue);
 			}
 
@@ -2750,8 +2616,7 @@ public class EntityManager
 	 * @param attributeRollbackQueryList
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private void processRemovedAttributes(Entity entity, Entity databaseCopy,
-			List attributeQueryList, List attributeRollbackQueryList)
+	private void processRemovedAttributes(Entity entity, Entity databaseCopy, List attributeQueryList, List attributeRollbackQueryList)
 			throws DynamicExtensionsSystemException
 	{
 		Collection savedAttributeCollection = databaseCopy.getAbstractAttributeCollection();
@@ -2762,27 +2627,22 @@ public class EntityManager
 			Iterator savedAttributeIterator = savedAttributeCollection.iterator();
 			while (savedAttributeIterator.hasNext())
 			{
-				AbstractAttribute savedAbstractAttribute = (AbstractAttribute) savedAttributeIterator
-						.next();
+				AbstractAttribute savedAbstractAttribute = (AbstractAttribute) savedAttributeIterator.next();
 
 				if (savedAbstractAttribute instanceof Attribute)
 				{
 					Attribute savedAttribute = (Attribute) savedAbstractAttribute;
-					Attribute attribute = (Attribute) entity
-							.getAttributeByIdentifier(savedAbstractAttribute.getId());;
+					Attribute attribute = (Attribute) entity.getAttributeByIdentifier(savedAbstractAttribute.getId());;
 					// removed ??
-					if (attribute == null
-							|| isAttributeColumnToBeRemoved(attribute, savedAttribute))
+					if (attribute == null || isAttributeColumnToBeRemoved(attribute, savedAttribute))
 					{
 						String columnName = savedAttribute.getColumnProperties().getName();
 
-						String removeAttributeQuery = ALTER_TABLE + WHITESPACE + tableName
-								+ WHITESPACE + DROP_KEYWORD + WHITESPACE + COLUMN_KEYWORD
+						String removeAttributeQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + DROP_KEYWORD + WHITESPACE + COLUMN_KEYWORD
 								+ WHITESPACE + columnName;
 						String type = "";
 
-						String removeAttributeQueryRollBackQuery = ALTER_TABLE + WHITESPACE
-								+ tableName + WHITESPACE + ADD_KEYWORD + WHITESPACE
+						String removeAttributeQueryRollBackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + ADD_KEYWORD + WHITESPACE
 								+ getQueryPartForAbstractAttribute(savedAttribute, type, true);
 
 						attributeQueryList.add(removeAttributeQuery);
@@ -2821,14 +2681,12 @@ public class EntityManager
 	 * @throws DynamicExtensionsApplicationException System exception in case of any fatal errors.
 	 * @throws DynamicExtensionsSystemException Thrown in case of duplicate name or authentication failure.
 	 */
-	private EntityGroup saveOrUpdateEntityGroup(EntityGroupInterface entityGroupInterface,
-			boolean isNew) throws DynamicExtensionsApplicationException,
-			DynamicExtensionsSystemException
+	private EntityGroup saveOrUpdateEntityGroup(EntityGroupInterface entityGroupInterface, boolean isNew)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		logDebug("saveOrUpdateEntityGroup", "Entering method");
 		EntityGroup entityGroup = (EntityGroup) entityGroupInterface;
-		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
-				Constants.HIBERNATE_DAO);
+		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
 		Stack stack = null;
 		try
 		{
@@ -2843,8 +2701,7 @@ public class EntityManager
 			{
 				Long id = entityGroup.getId();
 				hibernateDAO.openSession(null);
-				List entityGroupList = hibernateDAO.retrieve(EntityGroup.class.getName(),
-						Constants.ID, id);
+				List entityGroupList = hibernateDAO.retrieve(EntityGroup.class.getName(), Constants.ID, id);
 				EntityGroup databaseCopy = null;
 				if (entityGroupList != null && !entityGroupList.isEmpty())
 				{
@@ -2861,8 +2718,7 @@ public class EntityManager
 		catch (UserNotAuthorizedException e)
 		{
 
-			throw new DynamicExtensionsApplicationException(
-					"User is not authorised to perform this action", e, DYEXTN_A_002);
+			throw new DynamicExtensionsApplicationException("User is not authorised to perform this action", e, DYEXTN_A_002);
 		}
 		catch (DAOException e)
 		{
@@ -2873,8 +2729,7 @@ public class EntityManager
 			}
 			catch (Exception e1)
 			{
-				throw new DynamicExtensionsSystemException(
-						"Exception occured while rolling back the session", e1, DYEXTN_S_001);
+				throw new DynamicExtensionsSystemException("Exception occured while rolling back the session", e1, DYEXTN_S_001);
 			}
 			throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
 		}
@@ -2888,8 +2743,7 @@ public class EntityManager
 			catch (DAOException e)
 			{
 				e.printStackTrace();
-				throw new DynamicExtensionsSystemException(
-						"Exception occured while closing the session", e, DYEXTN_S_001);
+				throw new DynamicExtensionsSystemException("Exception occured while closing the session", e, DYEXTN_S_001);
 			}
 
 		}
@@ -2903,8 +2757,7 @@ public class EntityManager
 	 * @param entityGroup Entity Group whose name's uniqueness is to be checked.
 	 * @throws DynamicExtensionsApplicationException This will basically act as a duplicate name exception.
 	 */
-	private void checkForDuplicateEntityGroupName(EntityGroup entityGroup)
-			throws DynamicExtensionsApplicationException
+	private void checkForDuplicateEntityGroupName(EntityGroup entityGroup) throws DynamicExtensionsApplicationException
 	{
 		// TODO Auto-generated method stub
 	}
@@ -2918,20 +2771,18 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private Collection executeHQL(String queryName, Map substitutionParameterMap)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private Collection executeHQL(String queryName, Map substitutionParameterMap) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		Collection entityCollection = new HashSet();
-		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
-				Constants.HIBERNATE_DAO);
+		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
 		try
 		{
 			hibernateDAO.openSession(null);
 		}
 		catch (DAOException e)
 		{
-			throw new DynamicExtensionsSystemException(
-					"Exception occured while opening a session to save the container.");
+			throw new DynamicExtensionsSystemException("Exception occured while opening a session to save the container.");
 		}
 		try
 		{
@@ -2950,8 +2801,7 @@ public class EntityManager
 			}
 			catch (DAOException e1)
 			{
-				throw new DynamicExtensionsSystemException("Error while rolling back the session",
-						e1);
+				throw new DynamicExtensionsSystemException("Error while rolling back the session", e1);
 			}
 
 		}
@@ -2980,15 +2830,13 @@ public class EntityManager
 	 * @param substitutionParameterMap
 	 * @throws HibernateException 
 	 */
-	private Query substitutionParameterForQuery(String queryName, Map substitutionParameterMap)
-			throws HibernateException
+	private Query substitutionParameterForQuery(String queryName, Map substitutionParameterMap) throws HibernateException
 	{
 		Session session = DBUtil.currentSession();
 		Query q = session.getNamedQuery(queryName);
 		for (int counter = 0; counter < substitutionParameterMap.size(); counter++)
 		{
-			HQLPlaceHolderObject hPlaceHolderObject = (HQLPlaceHolderObject) substitutionParameterMap
-					.get(counter + "");
+			HQLPlaceHolderObject hPlaceHolderObject = (HQLPlaceHolderObject) substitutionParameterMap.get(counter + "");
 			String objectType = hPlaceHolderObject.getType();
 			if (objectType.equals("string"))
 			{
@@ -3010,8 +2858,7 @@ public class EntityManager
 	/** 
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#deleteRecord(edu.common.dynamicextensions.domaininterface.EntityInterface, java.lang.Long)
 	 */
-	public boolean deleteRecord(EntityInterface entity, Long recordId)
-			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	public boolean deleteRecord(EntityInterface entity, Long recordId) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		boolean isRecordDeleted = false;
 		Collection attributeCollection = entity.getAttributeCollection();
@@ -3032,17 +2879,15 @@ public class EntityManager
 					AttributeInterface attribute = (AttributeInterface) iterator.next();
 					if (attribute.getIsCollection() || attribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
 					{
-						AttributeRecord collectionAttributeRecord = getAttributeRecord(entity
-								.getId(), attribute.getId(), recordId, hibernateDAO);
+						AttributeRecord collectionAttributeRecord = getAttributeRecord(entity.getId(), attribute.getId(), recordId, hibernateDAO);
 						hibernateDAO.delete(collectionAttributeRecord);
 					}
 				}
 			}
 			Connection conn = DBUtil.getConnection();
 			StringBuffer query = new StringBuffer();
-			query.append(DELETE_KEYWORD + WHITESPACE + entity.getTableProperties().getName()
-					+ WHITESPACE + WHERE_KEYWORD + WHITESPACE + IDENTIFIER + WHITESPACE + EQUAL
-					+ WHITESPACE + recordId.toString());
+			query.append(DELETE_KEYWORD + WHITESPACE + entity.getTableProperties().getName() + WHITESPACE + WHERE_KEYWORD + WHITESPACE + IDENTIFIER
+					+ WHITESPACE + EQUAL + WHITESPACE + recordId.toString());
 			logDebug("deleteRecord", "QUERY for delete record is : " + query.toString());
 			PreparedStatement statement = conn.prepareStatement(query.toString());
 			statement.executeUpdate();
@@ -3084,8 +2929,7 @@ public class EntityManager
 	 * @return
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private Collection executeHQL(HibernateDAO hibernateDAO, String queryName,
-			Map substitutionParameterMap) throws DynamicExtensionsSystemException
+	private Collection executeHQL(HibernateDAO hibernateDAO, String queryName, Map substitutionParameterMap) throws DynamicExtensionsSystemException
 	{
 		Collection entityCollection = new HashSet();
 
@@ -3107,8 +2951,7 @@ public class EntityManager
 	 * @param entity
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private void validateEntityForSaving(EntityInterface entity)
-			throws DynamicExtensionsApplicationException
+	private void validateEntityForSaving(EntityInterface entity) throws DynamicExtensionsApplicationException
 	{
 
 		validateName(entity.getName());
@@ -3118,16 +2961,14 @@ public class EntityManager
 			Iterator iterator = collection.iterator();
 			while (iterator.hasNext())
 			{
-				AbstractMetadataInterface abstractMetadataInterface = (AbstractMetadataInterface) iterator
-						.next();
+				AbstractMetadataInterface abstractMetadataInterface = (AbstractMetadataInterface) iterator.next();
 				validateName(abstractMetadataInterface.getName());
 			}
 		}
 
 		if (entity.getDescription() != null && entity.getDescription().length() > 1000)
 		{
-			throw new DynamicExtensionsApplicationException("Entity description size exceeded ",
-					null, DYEXTN_A_004);
+			throw new DynamicExtensionsApplicationException("Entity description size exceeded ", null, DYEXTN_A_004);
 		}
 		return;
 	}
@@ -3145,35 +2986,33 @@ public class EntityManager
 
 		if (name == null || name.trim().length() == 0 || !name.matches(VALIDCHARSREGEX))
 		{
-			throw new DynamicExtensionsApplicationException("Entity name invalid", null,
-					DYEXTN_A_003);
+			throw new DynamicExtensionsApplicationException("Entity name invalid", null, DYEXTN_A_003);
 		}
 	}
 
-    /**
-     * @param query query to be executed
-     * @return 
-     * @throws DynamicExtensionsSystemException 
-     */
-    protected ResultSet executeQuery(String query) throws DynamicExtensionsSystemException
-    {
-        
-        Connection conn = null;
-        try
-        {
-            conn = DBUtil.getConnection();
-            Statement statement = null;
-            statement = conn.createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
-            resultSet.next();
-            return resultSet;
-        }
-        
-        catch (Exception e)
-        {
-            throw new DynamicExtensionsSystemException(e.getMessage(),e);
-        }
+	/**
+	 * @param query query to be executed
+	 * @return 
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	protected ResultSet executeQuery(String query) throws DynamicExtensionsSystemException
+	{
 
-        
-    }
+		Connection conn = null;
+		try
+		{
+			conn = DBUtil.getConnection();
+			Statement statement = null;
+			statement = conn.createStatement();
+			ResultSet resultSet = statement.executeQuery(query);
+			resultSet.next();
+			return resultSet;
+		}
+
+		catch (Exception e)
+		{
+			throw new DynamicExtensionsSystemException(e.getMessage(), e);
+		}
+
+	}
 }

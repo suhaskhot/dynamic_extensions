@@ -5,7 +5,9 @@
  */
 package edu.common.dynamicextensions.domain.userinterface;
 
+import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface;
+import edu.wustl.common.util.global.ApplicationProperties;
 
 /**
  * @author preeti_munot
@@ -22,7 +24,13 @@ public class FileUploadControl extends Control implements FileUploadInterface
 	 */
 	public String generateHTML()
 	{
-		String htmlString = "<input type= \"file\" " +  "name = \"value(" + getHTMLComponentName() + ")\" " + "id = \""
+		FileAttributeRecordValue fileAttributeRecordValue = (FileAttributeRecordValue) this.value;
+		String htmlString = "";
+		if(fileAttributeRecordValue!= null && fileAttributeRecordValue.getFileName() != null)
+		{
+			htmlString = ApplicationProperties.getValue("eav.file.fileName") + "&nbsp;" + fileAttributeRecordValue.getFileName();
+		}
+		htmlString = htmlString + "&nbsp;<input type= \"file\" " +  "name = \"value(" + getHTMLComponentName() + ")\" " + "id = \""
 		+ getHTMLComponentName() + "\"/>";
 		return htmlString;
 	}

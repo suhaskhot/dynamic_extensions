@@ -5,6 +5,10 @@ package edu.common.dynamicextensions.ui.util;
  * This class defines miscellaneous methods that are commonly used by many Control objects. * 
  * @author chetan_patil
  */
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
@@ -479,6 +483,50 @@ public class ControlsUtility
 				}
 			}
 		}
+	}
+	
+	/**
+	 * 
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 */
+	public static byte[] getBytesFromFile(File file) throws IOException
+	{
+		InputStream inputStream = new FileInputStream(file);
+
+		// Get the size of the file
+		long length = file.length();
+
+		// You cannot create an array using a long type.
+		// It needs to be an int type.
+		// Before converting to an int type, check
+		// to ensure that file is not larger than Integer.MAX_VALUE.
+		if (length > Integer.MAX_VALUE)
+		{
+			// File is too large
+		}
+
+		// Create the byte array to hold the data
+		byte[] fileInBytes = new byte[(int) length];
+
+		// Read in the bytes
+		int offset = 0;
+		int numRead = 0;
+		while (offset < fileInBytes.length && (numRead = inputStream.read(fileInBytes, offset, fileInBytes.length - offset)) >= 0)
+		{
+			offset += numRead;
+		}
+
+		// Ensure all the bytes have been read in
+		if (offset < fileInBytes.length)
+		{
+			throw new IOException("Could not completely read file " + file.getName());
+		}
+
+		// Close the input stream and return bytes
+		inputStream.close();
+		return fileInBytes;
 	}
 
 }

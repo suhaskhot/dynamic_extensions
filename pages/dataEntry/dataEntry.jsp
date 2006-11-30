@@ -40,7 +40,7 @@
 	</head>
 
 	<body onload="loadPreviewForm()">
-		<html:form styleId="dataEntryForm" action="/ApplyDataEntryFormAction" enctype="multipart/form-data" >
+		<html:form styleId="dataEntryForm" action="/ApplyDataEntryFormAction" enctype="multipart/form-data" method="post">
 		
 			<c:set var="recordIdentifier" value="${dataEntryForm.recordIdentifier}" />
 			<jsp:useBean id="recordIdentifier" type="java.lang.String"/>
@@ -232,6 +232,7 @@
 			
 			<input type="hidden" name="recordIdentifier" value="<%=recordIdentifier%>"/> 
 			
+		
 		
 		</html:form>		
 	</body>

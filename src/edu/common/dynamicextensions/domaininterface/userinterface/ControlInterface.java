@@ -93,13 +93,13 @@ public interface ControlInterface
  	 * @return
  	 */
 
- 	 String getValue();
+ 	 Object getValue();
  	 
  	/**
  	 * 
  	 * @param value
  	 */
- 	 void setValue(String value);
+ 	 void setValue(Object value);
  	 /**
  	  * 
  	  * @return

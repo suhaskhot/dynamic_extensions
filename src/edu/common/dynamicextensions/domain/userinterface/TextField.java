@@ -80,7 +80,7 @@ public class TextField extends Control implements TextFieldInterface
 	 */
 	public String generateHTML()
 	{
-		String defaultValue = this.value;
+		String defaultValue = (String) this.value;
 		if (this.value == null)
 		{
 			defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());

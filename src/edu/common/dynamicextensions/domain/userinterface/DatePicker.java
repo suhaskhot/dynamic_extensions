@@ -29,7 +29,7 @@ public class DatePicker extends Control implements DatePickerInterface
 	 */
 	public String generateHTML()
 	{
-		String defaultValue = this.value;
+		String defaultValue = (String)this.value;
 		if (value == null)
 		{
 			defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());

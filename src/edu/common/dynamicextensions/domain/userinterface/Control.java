@@ -74,7 +74,7 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	/**
 	 * Value to be shown in the control
 	 */
-	protected String value = null;
+	protected Object value = null;
 	
 	/**
 	 * Attribute to which this control is associated.
@@ -227,7 +227,7 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	/**
 	 * @return
 	 */
-	public String getValue()
+	public Object getValue()
 	{
 		return this.value;
 	}
@@ -235,7 +235,7 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	/**
 	 * @param value
 	 */
-	public void setValue(String value)
+	public void setValue(Object value)
 	{
 		this.value = value;
 	}

@@ -2,6 +2,8 @@ package edu.common.dynamicextensions.domain;
 
 import java.io.Serializable;
 
+import edu.common.dynamicextensions.domaininterface.FileAttributeRecordValueInterface;
+
 
 /**
  * This Class represents the a single value for multi select attribute.
@@ -9,7 +11,7 @@ import java.io.Serializable;
  * @author Rahul Ner 
  * @hibernate.class  table="DE_FILE_ATTR_RECORD_VALUES"
  */
-public class FileAttributeRecordValue extends DynamicExtensionBaseDomainObject implements Serializable
+public class FileAttributeRecordValue extends DynamicExtensionBaseDomainObject implements Serializable,FileAttributeRecordValueInterface
 {
 
 	/**

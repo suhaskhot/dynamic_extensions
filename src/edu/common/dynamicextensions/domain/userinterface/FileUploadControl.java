@@ -9,12 +9,12 @@ import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInte
 
 /**
  * @author preeti_munot
- *
- * To change the template for this generated type comment go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
+ * @hibernate.joined-subclass table="DYEXTN_FILE_UPLOAD" 
+ * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
 public class FileUploadControl extends Control implements FileUploadInterface
 {
+	
 
 	Integer columns = null;
 	/** 
@@ -22,20 +22,22 @@ public class FileUploadControl extends Control implements FileUploadInterface
 	 */
 	public String generateHTML()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		String htmlString = "<input type= \"file\" " +  "name = \"value(" + getHTMLComponentName() + ")\" " + "id = \""
+		+ getHTMLComponentName() + "\"/>";
+		return htmlString;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface#getColumns()
+	/**
+	 * @hibernate.property name="columns" type="integer" column="NO_OF_COLUMNS" 
+	 * @return Returns the columns.
 	 */
 	public Integer getColumns()
 	{
 		return columns;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface#setColumns(java.lang.Integer)
+	/**
+	 * 
 	 */
 	public void setColumns(Integer columns)
 	{

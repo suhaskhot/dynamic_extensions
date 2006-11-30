@@ -1,7 +1,9 @@
 
 package edu.common.dynamicextensions.ui.webui.actionform;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
@@ -40,7 +42,46 @@ public class DataEntryForm extends AbstractActionForm
 	 */
 	protected List<String> errorList;
 
-	
+	/**
+	 * 
+	 */
+	protected Map valueMap = new HashMap();
+
+	/**
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	public void setValue(String key, Object value)
+	{
+		valueMap.put(key, value);
+	}
+
+	/**
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public Object getValue(String key)
+	{
+		return valueMap.get(key);
+	}
+
+	/**
+	 * @return Returns the valueMap.
+	 */
+	public Map getValueMap()
+	{
+		return valueMap;
+	}
+
+	/**
+	 * @param valueMap The valueMap to set.
+	 */
+	public void setValueMap(Map valueMap)
+	{
+		this.valueMap = valueMap;
+	}
 
 	/**
 	 * @return int formId
@@ -141,7 +182,5 @@ public class DataEntryForm extends AbstractActionForm
 	{
 		this.errorList = errorList;
 	}
-
-	
 
 }

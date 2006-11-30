@@ -88,7 +88,7 @@ public class ListBox extends Control implements ListBoxInterface
 	public String generateHTML()
 	{
 		List<NameValueBean> nameValueBeanList = null;
-		String defaultValue = this.value;
+		String defaultValue = (String) this.value;
 
 		String strMultiSelect = "";
 		if ((isMultiSelect != null) && (isMultiSelect.booleanValue() == true))

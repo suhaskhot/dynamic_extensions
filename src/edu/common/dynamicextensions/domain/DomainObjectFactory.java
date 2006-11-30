@@ -625,4 +625,13 @@ public class DomainObjectFactory
     {
        return new FileAttributeTypeInformation();
     }
+    
+    /**
+     * 
+     * @return
+     */
+    public FileAttributeRecordValue createFileAttributeRecordValue()
+    {
+    	return new FileAttributeRecordValue(); 
+    }
 }

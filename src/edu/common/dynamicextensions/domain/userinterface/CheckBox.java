@@ -32,7 +32,7 @@ public class CheckBox extends Control implements CheckBoxInterface
 	 */
 	public String generateHTML()
 	{
-		String isChecked = this.value;
+		String isChecked = (String) this.value;
 		String htmlString = null;
 		if (this.value == null)
 		{

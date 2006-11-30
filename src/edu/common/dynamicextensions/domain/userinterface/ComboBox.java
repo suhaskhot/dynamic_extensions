@@ -41,7 +41,7 @@ public class ComboBox extends Control implements ComboBoxInterface
 	public String generateHTML()
 	{
 		List<NameValueBean> nameValueBeanList = null;
-		String defaultValue = this.value;
+		String defaultValue = (String)this.value;
 
 		String htmlString = "<SELECT class = '" + cssClass + "' name = '" + getHTMLComponentName() + "' " + "id = '" + getHTMLComponentName()
 				+ "' title = '" + tooltip + "'>";

@@ -3,7 +3,9 @@ package edu.common.dynamicextensions.entitymanager;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -87,6 +89,10 @@ import edu.wustl.common.util.logger.Logger;
  * @author Geetika Bangard
  * @author Vishvesh Mulay
  * @author Rahul Ner
+ */
+/**
+ * @author vishvesh_mulay
+ *
  */
 public class EntityManager
 		implements
@@ -655,7 +661,7 @@ public class EntityManager
 					+ targetEntity.getId() + UNDERSCORE + association.getId() + UNDERSCORE
 					+ IDENTIFIER);
 			constraintProperties.setTargetEntityKey(null);
-			constraintProperties.setName(null);
+			constraintProperties.setName(sourceEntity.getTableProperties().getName());
 		}
 		else
 		{
@@ -663,7 +669,7 @@ public class EntityManager
 					+ sourceEntity.getId() + UNDERSCORE + association.getId() + UNDERSCORE
 					+ IDENTIFIER);
 			constraintProperties.setSourceEntityKey(null);
-			constraintProperties.setName(null);
+			constraintProperties.setName(targetEntity.getTableProperties().getName());
 		}
 		association.setConstraintProperties(constraintProperties);
 
@@ -1384,6 +1390,7 @@ public class EntityManager
 			if (entity != null)
 			{
 				saveOrUpdateEntity(entity, hibernateDAO, rollbackQueryStack, isentitySaved);
+                
 			}
 			preSaveProcessContainer(container);
 			if (isContainerSaved)
@@ -1444,6 +1451,7 @@ public class EntityManager
 			throws DynamicExtensionsApplicationException
 	{
 		validateEntityForSaving(entity);
+        correctCardinalities(entity);
 		if (entity.getId() != null)
 		{
 			entity.setLastUpdated(new Date());
@@ -1456,6 +1464,37 @@ public class EntityManager
 	}
 
 	/**
+	 * @param entity
+	 */
+	private void correctCardinalities(EntityInterface entity) throws DynamicExtensionsApplicationException
+    {
+        Collection associationCollection = entity.getAssociationCollection();
+        if (associationCollection != null && !associationCollection.isEmpty()) {
+            Iterator iterator = associationCollection.iterator();
+            while (iterator.hasNext()) {
+                Association association = (Association) iterator.next();
+                swapCardinality(association.getSourceRole());
+                swapCardinality(association.getTargetRole());
+                
+            }
+        }
+        
+    }
+
+    /**
+     * @param role
+     * @throws DynamicExtensionsApplicationException 
+     */
+    private void swapCardinality (RoleInterface role) throws DynamicExtensionsApplicationException {
+        if (role.getMinimumCardinality().equals(Cardinality.MANY)) {
+            role.setMinimumCardinality(role.getMaximumCardinality());
+            role.setMaximumCardinality(Cardinality.MANY);
+        }
+        if (role.getMaximumCardinality().equals(Cardinality.ZERO)) {
+            throw new DynamicExtensionsApplicationException("Cardinality constraint violated",null,DYEXTN_A_005);
+        }
+    }
+    /**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#insertData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map)
 	 */
 	public Long insertData(EntityInterface entity, Map dataValue)
@@ -1467,7 +1506,7 @@ public class EntityManager
 		}
 
 		StringBuffer columnNameString = new StringBuffer("IDENTIFIER ");
-		Long identifier = getNextIdentifier(entity);
+		Long identifier = getNextIdentifier(entity.getTableProperties().getName());
 		StringBuffer columnValuesString = new StringBuffer(identifier.toString());
 		String tableName = entity.getTableProperties().getName();
 
@@ -1475,14 +1514,16 @@ public class EntityManager
 
 		Set uiColumnSet = dataValue.keySet();
 		Iterator uiColumnSetIter = uiColumnSet.iterator();
-
+		List<String> queryList = new ArrayList<String>();
+        Object value = null;
 		while (uiColumnSetIter.hasNext())
 		{
 			AbstractAttribute attribute = (AbstractAttribute) uiColumnSetIter.next();
+            value = dataValue.get(attribute);
 			if (attribute instanceof AttributeInterface)
 			{
 				AttributeInterface primitiveAttribute = (AttributeInterface) attribute;
-				Object value = dataValue.get(primitiveAttribute);
+				
 
 				if (primitiveAttribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
 				{
@@ -1511,7 +1552,7 @@ public class EntityManager
 			}
 			else
 			{
-				//TODO Process associations here.
+                queryList.add(getAssociationInsertDataQuery((AssociationInterface) attribute, (Long)value,identifier));
 			}
 		}
 
@@ -1520,7 +1561,7 @@ public class EntityManager
 		query.append(" ) VALUES (");
 		query.append(columnValuesString);
 		query.append(" ) ");
-
+        queryList.add(0,query.toString());
 		HibernateDAO hibernateDAO = null;
 		try
 		{
@@ -1531,9 +1572,11 @@ public class EntityManager
 
 			hibernateDAO.openSession(null);
 			Connection conn = DBUtil.getConnection();
-			PreparedStatement statement = conn.prepareStatement(query.toString());
+            for (String queryString:queryList) {
+            logDebug("insertData", "Query for insert data is : " + queryString);
+			PreparedStatement statement = conn.prepareStatement(queryString);
 			statement.executeUpdate();
-
+            }
 			for (AttributeRecord collectionAttributeRecord : attributeRecords)
 			{
 				//logDebug("insertData", "Inserting multi select: " +  collectionAttributeRecord.getValue());
@@ -1570,7 +1613,82 @@ public class EntityManager
 		return identifier;
 	}
 
-	/**
+	private String getAssociationInsertDataQuery(AssociationInterface associationInterface, Long targetRecordId, Long sourceRecordId) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+    {
+        Association association = (Association) associationInterface;
+        verifyCardinalityConstraints (associationInterface, targetRecordId);
+        String tableName = association.getConstraintProperties().getName();
+        String sourceKey = association.getConstraintProperties().getSourceEntityKey();
+        String targetKey = association.getConstraintProperties().getTargetEntityKey();
+        StringBuffer query = new StringBuffer();
+        if (sourceKey != null && targetKey != null && sourceKey.trim().length() != 0 && targetKey.trim().length() != 0) {
+            Long id = getNextIdentifier(tableName);
+            query.append("INSERT INTO " + tableName + " ( ");
+            query.append(IDENTIFIER + "," + sourceKey + "," + targetKey);
+            query.append(" ) VALUES (");
+            query.append(id.toString());
+            query.append(COMMA);
+            query.append(sourceRecordId.toString());
+            query.append(COMMA);
+            query.append(targetRecordId.toString());
+            query.append(CLOSING_BRACKET);
+        } else if (sourceKey != null && sourceKey.trim().length() != 0) {
+            query.append(UPDATE_KEYWORD);
+            query.append(WHITESPACE + tableName);
+            query.append(WHITESPACE + SET_KEYWORD + WHITESPACE + sourceKey + EQUAL + targetRecordId + WHITESPACE);
+            query.append(WHERE_KEYWORD + WHITESPACE + IDENTIFIER + EQUAL + sourceRecordId);
+            
+        } else {
+            query.append(UPDATE_KEYWORD);
+            query.append(WHITESPACE + tableName);
+            query.append(WHITESPACE + SET_KEYWORD + WHITESPACE + targetKey + EQUAL + sourceRecordId + WHITESPACE);
+            query.append(WHERE_KEYWORD + WHITESPACE +  IDENTIFIER + EQUAL + targetRecordId);
+        }
+
+        return query.toString();
+    }
+
+    private void verifyCardinalityConstraints(AssociationInterface association, Long value) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+    {
+        EntityInterface sourceEntity = association.getEntity();
+        EntityInterface targetEntity = association.getTargetEntity();
+        RoleInterface sourceRole = association.getSourceRole();
+        RoleInterface targetRole = association.getTargetRole();
+        Cardinality sourceMaxCardinality = sourceRole.getMaximumCardinality();
+        Cardinality targetMaxCardinality = targetRole.getMaximumCardinality();
+        Cardinality sourceMinCardinality = sourceRole.getMinimumCardinality();
+        Cardinality targetMinCardinality = targetRole.getMinimumCardinality();
+        String columnName = "";
+        String tableName = "";
+        if (targetMaxCardinality == Cardinality.ONE)
+        {
+            if (sourceMaxCardinality == Cardinality.MANY) {
+                tableName = sourceEntity.getTableProperties().getName();
+                columnName = association.getConstraintProperties().getSourceEntityKey();
+            }
+            else if (sourceMaxCardinality == Cardinality.ONE) {
+                tableName = targetEntity.getTableProperties().getName();
+                columnName = association.getConstraintProperties().getTargetEntityKey();
+            }
+            String query = SELECT_KEYWORD + WHITESPACE + COUNT_KEYWORD + OPENING_BRACKET + "*" + CLOSING_BRACKET +
+            WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName + WHITESPACE + WHERE_KEYWORD + WHITESPACE + columnName + WHITESPACE + EQUAL + WHITESPACE +
+            value.toString();
+            ResultSet resultSet = executeQuery(query);
+            try
+            {
+                if (resultSet.getInt(1)!= 0) {
+                    throw new DynamicExtensionsApplicationException("Cardinality constraint violated",null,DYEXTN_A_005);
+                }
+            }
+            catch (SQLException e)
+            {
+                throw new DynamicExtensionsSystemException(e.getMessage(),e);
+            }
+            
+        }
+    }
+
+    /**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#editData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map, java.lang.Long)
 	 */
 	public boolean editData(EntityInterface entity, Map dataValue, Long recordId)
@@ -1869,11 +1987,11 @@ public class EntityManager
 	 * @throws DAOException
 	 * @throws ClassNotFoundException
 	 */
-	synchronized private Long getNextIdentifier(EntityInterface entity)
+	synchronized private Long getNextIdentifier(String entityTableName)
 			throws DynamicExtensionsSystemException
 	{
 
-		String entityTableName = entity.getTableProperties().getName();
+	
 		StringBuffer queryToGetNextIdentifier = new StringBuffer("SELECT MAX(IDENTIFIER) FROM "
 				+ entityTableName);
 		List resultList = null;
@@ -1982,7 +2100,7 @@ public class EntityManager
 	{
 		logDebug("saveOrUpdateEntity", "Entering method");
 
-		Entity entity = (Entity) entityInterface;
+		Entity entity = (Entity) entityInterface;//(Entity) DynamicExtensionsUtility.cloneObject(entityInterface);
 		List reverseQueryList = new LinkedList();
 		List queryList = null;
 
@@ -3031,4 +3149,30 @@ public class EntityManager
 		}
 	}
 
+    /**
+     * @param query query to be executed
+     * @return 
+     * @throws DynamicExtensionsSystemException 
+     */
+    protected ResultSet executeQuery(String query) throws DynamicExtensionsSystemException
+    {
+        
+        Connection conn = null;
+        try
+        {
+            conn = DBUtil.getConnection();
+            Statement statement = null;
+            statement = conn.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            resultSet.next();
+            return resultSet;
+        }
+        
+        catch (Exception e)
+        {
+            throw new DynamicExtensionsSystemException(e.getMessage(),e);
+        }
+
+        
+    }
 }

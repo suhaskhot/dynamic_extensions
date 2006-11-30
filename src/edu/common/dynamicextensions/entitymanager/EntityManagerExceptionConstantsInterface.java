@@ -31,6 +31,9 @@ public interface EntityManagerExceptionConstantsInterface
      String DYEXTN_A_003 = "DYEXTN_A_003";
      // Exception constant in case of entity description exceeds maximum length.
      String DYEXTN_A_004 = "DYEXTN_A_004";
+//   Exception constant in case of association's cardinalities are invalid
+     String DYEXTN_A_005 = "DYEXTN_A_005";
+     
 
     
     

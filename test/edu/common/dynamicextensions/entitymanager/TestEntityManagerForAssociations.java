@@ -1639,7 +1639,159 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
     }
 
-	
+
+    /**
+     * This test case is to check the constraint violation in case when the maximum cardinality for target is one. 
+     * So in this test case we try to insert data such that the same target entity record is associated with the 
+     * source entity record twice. After the first insertion is successful, when the second insertion takes place
+     * at that time constraint violation fails and application exception is thrown.
+     */
+    public void testInsertDataForConstraintViolationForManyToOne()
+    {
+        
+        EntityManagerInterface entityManagerInterface = EntityManager
+                .getInstance();
+        DomainObjectFactory factory = DomainObjectFactory.getInstance();
+        EntityInterface savedEntity = null;
+        try
+        {
+
+//          create user 
+            EntityInterface user = factory.createEntity();
+            AttributeInterface userNameAttribute = factory.createStringAttribute();
+            userNameAttribute.setName("user name");
+            user.setName("user");
+            user.addAbstractAttribute(userNameAttribute);
+
+            
+//          create study 
+            EntityInterface study = factory.createEntity();
+            AttributeInterface studyNameAttribute = factory.createStringAttribute();
+            studyNameAttribute.setName("study name");
+            study.setName("study");
+            study.addAbstractAttribute(studyNameAttribute);
+            
+//          Associate user (1)------ >(*)study       
+            AssociationInterface association = factory.createAssociation();
+            association.setTargetEntity(study);
+            association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+            association.setName("primaryInvestigator");
+            association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator", Cardinality.ZERO, Cardinality.MANY));
+            association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study", Cardinality.ZERO, Cardinality.ONE));
+
+            user.addAbstractAttribute(association);
+
+
+            savedEntity = entityManagerInterface
+                    .persistEntity(user);
+
+            Map dataValue = new HashMap();
+            dataValue.put(userNameAttribute, "rahul");
+            dataValue.put(association, 1L);
+
+            entityManagerInterface.insertData(savedEntity, dataValue);
+            ResultSet resultSet = executeQuery("select * from "
+                    + savedEntity.getTableProperties().getName());
+            resultSet.next();
+            assertEquals(1, resultSet.getInt(1));
+            
+            entityManagerInterface.insertData(savedEntity, dataValue);
+            
+           fail();
+
+        }
+        catch (DynamicExtensionsSystemException e)
+        {
+            fail();
+            Logger.out.debug(e.getStackTrace());
+        }
+        catch (DynamicExtensionsApplicationException e)
+        {
+            
+            ResultSet resultSet = executeQuery("select * from "
+                    + savedEntity.getTableProperties().getName());
+            try
+            {
+                resultSet.next();
+                assertEquals(1, resultSet.getInt(1));
+            }
+            catch (SQLException e1)
+            {
+                fail();
+                e1.printStackTrace();
+            }
+            
+            Logger.out.debug("constraint validation should fail...because max target cardinality is one");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            fail();
+
+            Logger.out.debug(e.getStackTrace());
+        }
+
+    }
+
+    /**
+     * This test case is to check the scenario when user adds maximum cardinality less than the minimum cardinality
+     * In such case DE internally corrects these cardinalities by swapping the minimum and maximum cardinalities.
+     */
+    public void testInsertDataForInvalidCardinalities()
+    {
+        
+        EntityManagerInterface entityManagerInterface = EntityManager
+                .getInstance();
+        DomainObjectFactory factory = DomainObjectFactory.getInstance();
+        EntityInterface savedEntity = null;
+        try
+        {
+
+//          create user 
+            EntityInterface user = factory.createEntity();
+            AttributeInterface userNameAttribute = factory.createStringAttribute();
+            userNameAttribute.setName("user name");
+            user.setName("user");
+            user.addAbstractAttribute(userNameAttribute);
+
+            
+//          create study 
+            EntityInterface study = factory.createEntity();
+            AttributeInterface studyNameAttribute = factory.createStringAttribute();
+            studyNameAttribute.setName("study name");
+            study.setName("study");
+            study.addAbstractAttribute(studyNameAttribute);
+            
+//          Associate user (1)------ >(*)study       
+            AssociationInterface association = factory.createAssociation();
+            association.setTargetEntity(study);
+            association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+            association.setName("primaryInvestigator");
+            association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator", Cardinality.MANY, Cardinality.ZERO));
+            association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study", Cardinality.ONE, Cardinality.ZERO));
+
+            user.addAbstractAttribute(association);
+            savedEntity = entityManagerInterface
+                    .persistEntity(user);
+
+            Map dataValue = new HashMap();
+            dataValue.put(userNameAttribute, "rahul");
+            dataValue.put(association, 1L);
+
+            entityManagerInterface.insertData(savedEntity, dataValue);
+            ResultSet resultSet = executeQuery("select * from "
+                    + savedEntity.getTableProperties().getName());
+            resultSet.next();
+            assertEquals(1, resultSet.getInt(1));
+         }
+        catch (Exception e)
+        {
+            fail();
+            Logger.out.debug(e.getStackTrace());
+        }
+       
+    }
+    
 	/**
 	 * @param targetEntity
 	 * @param associationDirection

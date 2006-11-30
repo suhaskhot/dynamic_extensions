@@ -140,7 +140,7 @@ public class RangeValidator implements ValidatorRuleInterface
 				placeHolders.add(attributeName);
 				placeHolders.add(parameterValue);
 
-				throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Range.Minimum", attributeName);
+				throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Range.Minimum", placeHolders);
 			}
 		}
 		else if (parameterName.equals("max"))
@@ -151,7 +151,7 @@ public class RangeValidator implements ValidatorRuleInterface
 				placeHolders.add(attributeName);
 				placeHolders.add(parameterValue);
 
-				throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Range.Maximum", attributeName);
+				throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Range.Maximum", placeHolders);
 			}
 		}
 	}

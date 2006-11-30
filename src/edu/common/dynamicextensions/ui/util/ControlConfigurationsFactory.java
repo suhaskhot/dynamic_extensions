@@ -331,23 +331,25 @@ public final class ControlConfigurationsFactory
 	 * @param controlName
 	 * @return
 	 */
-	public List getAllImplicitRules(String controlName, String dataType)
+	public List<String> getAllImplicitRules(String controlName, String dataType)
 	{
 		List<String> allImplicitRules = new ArrayList<String>();
 
 		ControlsConfigurationObject controlsConfiguration = (ControlsConfigurationObject) controlsConfigurationMap.get(controlName);
+
+		Map dataTypeImplicitRulesMap = controlsConfiguration.getDataTypeImplicitRules();
+		List<String> dataTypeImplicitRuleList = (List) dataTypeImplicitRulesMap.get(dataType);
+		if (dataTypeImplicitRuleList != null && dataTypeImplicitRuleList.size() > 0)
+		{
+			allImplicitRules.addAll(dataTypeImplicitRuleList);
+		}
+
 		List<String> commonImplicitRuleList = controlsConfiguration.getCommonImplicitRules();
 		if (commonImplicitRuleList != null || commonImplicitRuleList.size() > 0)
 		{
 			allImplicitRules.addAll(commonImplicitRuleList);
 		}
-		
-		Map dataTypeImplicitRulesMap = controlsConfiguration.getDataTypeImplicitRules();
-		List dataTypeImplicitRuleList = (List) dataTypeImplicitRulesMap.get(dataType);
-		if (dataTypeImplicitRuleList != null && dataTypeImplicitRuleList.size() > 0)
-		{
-			allImplicitRules.addAll(dataTypeImplicitRuleList);
-		}
+
 		return allImplicitRules;
 	}
 

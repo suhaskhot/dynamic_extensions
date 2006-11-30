@@ -100,12 +100,14 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				//saveErrors(request, getErrorMessages(errorList));
 				dataEntryForm.setErrorList(errorList);
 				return (mapping.findForward(Constants.SUCCESS));
-				
 			}
 			else if(recordIdentifier != null && !recordIdentifier.equals(""))
 			{
 				Boolean edited = applyDataEntryFormProcessor.editDataEntryForm(containerInterface, attributeValueMap, Long.valueOf(recordIdentifier));
-				saveMessages(request, getSuccessMessage());
+				if (edited.booleanValue())
+				{
+					saveMessages(request, getSuccessMessage());
+				}				
 			}
 			else
 			{

@@ -279,19 +279,21 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param information
 	 * @param attributeUIBeanInformationIntf
 	 */
-	private void populateFileAttributeInterface(FileAttributeTypeInformation fileAttributeInformation, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
+	private void populateFileAttributeInterface(FileAttributeTypeInformation fileAttributeInformation,
+			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
 	{
-		if((fileAttributeInformation!=null)&&(attributeUIBeanInformationIntf!=null))
+		if ((fileAttributeInformation != null) && (attributeUIBeanInformationIntf != null))
 		{
 			//Set File Size
-			if((attributeUIBeanInformationIntf.getAttributeSize()!=null)&&(!attributeUIBeanInformationIntf.getAttributeSize().trim().equals("")))
+			if ((attributeUIBeanInformationIntf.getAttributeSize() != null) && (!attributeUIBeanInformationIntf.getAttributeSize().trim().equals("")))
 			{
 				Float fileSize = new Float(attributeUIBeanInformationIntf.getAttributeSize());
 				fileAttributeInformation.setMaxFileSize(fileSize);
 			}
-			
+
 			//Set list of extensions supported
-			fileAttributeInformation.setFileExtensionCollection(getFileExtensionCollection(attributeUIBeanInformationIntf.getFileFormats(),attributeUIBeanInformationIntf.getFormat()));
+			fileAttributeInformation.setFileExtensionCollection(getFileExtensionCollection(attributeUIBeanInformationIntf.getFileFormats(),
+					attributeUIBeanInformationIntf.getFormat()));
 		}
 	}
 
@@ -303,27 +305,27 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	private Collection<FileExtension> getFileExtensionCollection(String[] fileFormats, String fileFormatsString)
 	{
 		Collection<FileExtension> fileExtensionCollection = new HashSet<FileExtension>();
-		if(fileFormats!=null)
+		if (fileFormats != null)
 		{
 			int noOfFileFormats = fileFormats.length;
-			for(int i=0;i<noOfFileFormats;i++)
+			for (int i = 0; i < noOfFileFormats; i++)
 			{
 				fileExtensionCollection.add(getFileExtension(fileFormats[i]));
 			}
 		}
-		if(fileFormatsString!=null)
+		if (fileFormatsString != null)
 		{
-			StringTokenizer stringTokenizer = new StringTokenizer(fileFormatsString,ProcessorConstants.FILE_FORMATS_SEPARATOR);
-			if(stringTokenizer!=null)
+			StringTokenizer stringTokenizer = new StringTokenizer(fileFormatsString, ProcessorConstants.FILE_FORMATS_SEPARATOR);
+			if (stringTokenizer != null)
 			{
-				while(stringTokenizer.hasMoreElements())
+				while (stringTokenizer.hasMoreElements())
 				{
 					fileExtensionCollection.add(getFileExtension(stringTokenizer.nextToken()));
 				}
 			}
 		}
 		return fileExtensionCollection;
-		
+
 	}
 
 	/**
@@ -333,7 +335,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	private FileExtension getFileExtension(String string)
 	{
 		FileExtension fileExtension = null;
-		if(string!=null)
+		if (string != null)
 		{
 			fileExtension = new FileExtension();
 			fileExtension.setFileExtension(string);
@@ -364,56 +366,99 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	public void populateRules(String userSelectedControlName, AbstractAttributeInterface abstractAttributeInterface,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsSystemException
 	{
-		String[] validationRules = attributeUIBeanInformationIntf.getValidationRules();
-		String[] allValidationRules = null;
-		ControlConfigurationsFactory configurationsFactory = ControlConfigurationsFactory.getInstance();;
+		ControlConfigurationsFactory configurationsFactory = ControlConfigurationsFactory.getInstance();
+		HashSet<String> allValidationRules = new HashSet<String>();
 
-		List implicitRuleList = configurationsFactory.getAllImplicitRules(userSelectedControlName, attributeUIBeanInformationIntf.getDataType());
-		allValidationRules = new String[validationRules.length + implicitRuleList.size()];
-
-		for (int i = 0; i < validationRules.length; i++)
+		// Collect all the applicable Rule names 
+		List<String> implicitRuleList = null;
+		Long attributeIdentifier = abstractAttributeInterface.getId();
+		if (attributeIdentifier == null)
 		{
-			allValidationRules[i] = validationRules[i];
-		}
-
-		for (int i = 0; i < implicitRuleList.size(); i++)
-		{
-			allValidationRules[validationRules.length + i] = (String) implicitRuleList.get(i);
-		}
-
-		if (allValidationRules != null && allValidationRules.length != 0)
-		{
-			String validationRule = "";
-
-			RuleConfigurationObject ruleConfigurationObject = null;
-
-			DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
-			RuleInterface ruleInterface = null;
-			Collection<RuleParameterInterface> ruleParameterCollection = new HashSet<RuleParameterInterface>();
-
-			for (int counter = 0; counter < allValidationRules.length; counter++)
+			implicitRuleList = configurationsFactory.getAllImplicitRules(userSelectedControlName, attributeUIBeanInformationIntf.getDataType());
+			for (String implicitRule : implicitRuleList)
 			{
-				validationRule = allValidationRules[counter];
-				ruleConfigurationObject = configurationsFactory.getRuleObject(validationRule);
-				ruleInterface = domainObjectFactory.createRule();
-				ruleInterface.setName(ruleConfigurationObject.getRuleName());
+				allValidationRules.add(implicitRule);
+			}
+		}
 
-				ruleParameterCollection = getRuleParameterCollection(ruleConfigurationObject, attributeUIBeanInformationIntf);
-				if (ruleParameterCollection != null && !(ruleParameterCollection.isEmpty()))
+		String[] validationRules = attributeUIBeanInformationIntf.getValidationRules();
+		for (int i = 0; i < validationRules.length - 1; i++)
+		{
+			allValidationRules.add(validationRules[i]);
+		}
+
+		Collection<RuleInterface> attributeRuleCollection = abstractAttributeInterface.getRuleCollection();
+		if (attributeRuleCollection != null)
+		{
+			HashSet<RuleInterface> obsoleteRules = new HashSet<RuleInterface>();
+			HashSet<RuleInterface> newRules = new HashSet<RuleInterface>();
+			for (RuleInterface rule : attributeRuleCollection)
+			{
+				String attributeRuleName = rule.getName();
+				if (allValidationRules.contains(attributeRuleName) == false)
 				{
-					ruleInterface.setRuleParameterCollection(ruleParameterCollection);
+					obsoleteRules.add(rule);
 				}
-				abstractAttributeInterface.addRule(ruleInterface);
+				else
+				{
+					obsoleteRules.add(rule);
+					rule = instantiateRule(attributeRuleName, attributeUIBeanInformationIntf);
+					newRules.add(rule);
+					allValidationRules.remove(attributeRuleName);
+				}
+
+			}
+			attributeRuleCollection.removeAll(obsoleteRules);
+			attributeRuleCollection.addAll(newRules);
+		}
+
+		if (allValidationRules != null && allValidationRules.size() > 0)
+		{
+			for (String validationRule : allValidationRules)
+			{
+				RuleInterface rule = instantiateRule(validationRule, attributeUIBeanInformationIntf);
+				abstractAttributeInterface.addRule(rule);
 			}
 		}
 	}
 
 	/**
-	 * 
-	 * @param ruleConfigurationObject : Rule configuration object
-	 * @param abstractAttributeUIBeanInterface : UI Bean for attribute information
-	 * @return : Collection of rule parameters
-	 * @throws DynamicExtensionsSystemException DynamicExtensionsSystemException
+	 * This method populates and returns a new Rule depending upon the Rule name
+	 * @param validationRule
+	 * @param attributeUIBeanInformationIntf
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private RuleInterface instantiateRule(String validationRule, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
+			throws DynamicExtensionsSystemException
+	{
+		RuleConfigurationObject ruleConfigurationObject = null;
+		RuleInterface rule = null;
+
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+		ControlConfigurationsFactory configurationsFactory = ControlConfigurationsFactory.getInstance();
+		Collection<RuleParameterInterface> ruleParameterCollection = new HashSet<RuleParameterInterface>();
+
+		ruleConfigurationObject = configurationsFactory.getRuleObject(validationRule);
+		ruleParameterCollection = getRuleParameterCollection(ruleConfigurationObject, attributeUIBeanInformationIntf);
+
+		rule = domainObjectFactory.createRule();
+		rule.setName(ruleConfigurationObject.getRuleName());
+
+		if (ruleParameterCollection != null && !(ruleParameterCollection.isEmpty()))
+		{
+			rule.setRuleParameterCollection(ruleParameterCollection);
+		}
+
+		return rule;
+	}
+
+	/**
+	 * This method populates and returns the Collection of parameters of the Rule. 
+	 * @param ruleConfigurationObject the Rule configuration object
+	 * @param abstractAttributeUIBeanInterface the UI Bean for attribute information
+	 * @return the Collection of parameters of the Rule. 
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private Collection<RuleParameterInterface> getRuleParameterCollection(RuleConfigurationObject ruleConfigurationObject,
 			AbstractAttributeUIBeanInterface abstractAttributeUIBeanInterface) throws DynamicExtensionsSystemException
@@ -1004,8 +1049,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 			else if (attributeTypeInformationInterface instanceof FileAttributeTypeInformation)
 			{
-				populateFileAttributeUIBeanInterface((FileAttributeTypeInformation) attributeTypeInformationInterface,
-						attributeUIBeanInformationIntf);
+				populateFileAttributeUIBeanInterface((FileAttributeTypeInformation) attributeTypeInformationInterface, attributeUIBeanInformationIntf);
 			}
 			else if (attributeTypeInformationInterface instanceof IntegerAttributeTypeInformation)
 			{
@@ -1040,16 +1084,16 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param information
 	 * @param attributeUIBeanInformationIntf
 	 */
-	private void populateFileAttributeUIBeanInterface(FileAttributeTypeInformation fileAttributeInformation, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
+	private void populateFileAttributeUIBeanInterface(FileAttributeTypeInformation fileAttributeInformation,
+			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
 	{
 		attributeUIBeanInformationIntf.setDataType(ProcessorConstants.DATATYPE_FILE);
-		if(fileAttributeInformation.getMaxFileSize()!=null)
+		if (fileAttributeInformation.getMaxFileSize() != null)
 		{
 			attributeUIBeanInformationIntf.setAttributeSize(fileAttributeInformation.getMaxFileSize().toString());
 		}
 		attributeUIBeanInformationIntf.setFileFormats(getFileFormats(fileAttributeInformation));
 	}
-	
 
 	/**
 	 * @param fileAttributeInformation
@@ -1058,17 +1102,17 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	private String[] getFileFormats(FileAttributeTypeInformation fileAttributeInformation)
 	{
 		ArrayList<String> fileFormatList = new ArrayList<String>();
-		if(fileAttributeInformation!=null)
+		if (fileAttributeInformation != null)
 		{
 			FileExtension fileExtn = null;
 			Collection<FileExtension> fileExtensionColln = fileAttributeInformation.getFileExtensionCollection();
-			if(fileExtensionColln!=null)
+			if (fileExtensionColln != null)
 			{
 				Iterator<FileExtension> iterator = fileExtensionColln.iterator();
-				while(iterator.hasNext())
+				while (iterator.hasNext())
 				{
 					fileExtn = iterator.next();
-					if(fileExtn!=null)
+					if (fileExtn != null)
 					{
 						fileFormatList.add(fileExtn.getFileExtension());
 					}
@@ -1082,10 +1126,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param information
 	 * @param attributeUIBeanInformationIntf
 	 */
-	private void populateByteArrayAttributeUIBeanInterface(ByteArrayAttributeTypeInformation information, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
+	private void populateByteArrayAttributeUIBeanInterface(ByteArrayAttributeTypeInformation information,
+			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/**

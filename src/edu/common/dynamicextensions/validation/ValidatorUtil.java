@@ -4,6 +4,7 @@ package edu.common.dynamicextensions.validation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,15 +34,15 @@ public class ValidatorUtil
 	 */
 	public static List<String> validateEntity(Map<AbstractAttributeInterface, Object> attributeValueMap) throws DynamicExtensionsSystemException
 	{
-
 		List<String> errorList = new ArrayList<String>();
-
+		HashSet<String> errorSet = new HashSet<String>();
+		
 		Set<Map.Entry<AbstractAttributeInterface, Object>> attributeSet = attributeValueMap.entrySet();
 		if (attributeSet == null || attributeSet.isEmpty())
 		{
 			return errorList;
 		}
-
+		
 		for (Map.Entry<AbstractAttributeInterface, Object> attributeValueNode : attributeSet)
 		{
 			AttributeInterface attribute = (AttributeInterface) attributeValueNode.getKey();
@@ -63,11 +64,15 @@ public class ValidatorUtil
 				catch (DynamicExtensionsValidationException e)
 				{
 					String errorMessage = ApplicationProperties.getValue(e.getErrorCode(), e.getPlaceHolderList());
-					errorList.add(errorMessage);
+					errorSet.add(errorMessage);
 				}
 			}
 		}
-
+		
+		for(String error: errorSet)
+		{
+			errorList.add(error);
+		}
 		return errorList;
 	}
 

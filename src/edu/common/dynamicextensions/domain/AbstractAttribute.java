@@ -42,7 +42,7 @@ public abstract class AbstractAttribute extends AbstractMetadata implements Abst
 	/**
 	 * This method returns the Collection of rules.
 	 * @hibernate.set name="ruleCollection" table="DYEXTN_RULE"
-	 * cascade="save-update" inverse="false" lazy="false"
+	 * cascade="all-delete-orphan" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ATTRIBUTE_ID"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.validationrules.Rule"
 	 * @return Collection the ruleCollection associated with the Attribute.

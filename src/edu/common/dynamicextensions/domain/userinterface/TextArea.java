@@ -85,7 +85,7 @@ public class TextArea extends Control implements TextAreaInterface
 				defaultValue = "";
 			}
 		}
-				
+		
 		String htmlString = "<textarea " + "class = '" + this.cssClass + "' " + "name = '" + getHTMLComponentName() + "' " + "id = '" + getHTMLComponentName() + "' " + "cols = '"
 				+ columns.intValue() + "' " + "rows = '" + rows.intValue() + "' " + "title = '" + this.tooltip + "'>";
 		htmlString += defaultValue + "</textarea>";

@@ -1486,9 +1486,10 @@ public class EntityManager
      * @throws DynamicExtensionsApplicationException 
      */
     private void swapCardinality (RoleInterface role) throws DynamicExtensionsApplicationException {
-        if (role.getMinimumCardinality().equals(Cardinality.MANY)) {
+        if (role.getMinimumCardinality().equals(Cardinality.MANY) || role.getMaximumCardinality().equals(Cardinality.ZERO)) {
+            Cardinality e = role.getMinimumCardinality();
             role.setMinimumCardinality(role.getMaximumCardinality());
-            role.setMaximumCardinality(Cardinality.MANY);
+            role.setMaximumCardinality(e);
         }
         if (role.getMaximumCardinality().equals(Cardinality.ZERO)) {
             throw new DynamicExtensionsApplicationException("Cardinality constraint violated",null,DYEXTN_A_005);

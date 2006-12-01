@@ -56,6 +56,7 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 				}
 			}
 			controlsForm.setControlOperation(oldControlOperation);
+			controlsForm.setChildList(ControlsUtility.getChildList(containerInterface));
 			return mapping.findForward(Constants.SUCCESS);
 		}
 		catch (DynamicExtensionsSystemException e)

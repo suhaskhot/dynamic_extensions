@@ -12,6 +12,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInter
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
+import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.ControlInformationObject;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
@@ -79,7 +80,7 @@ public class LoadFormControlsProcessor
 
 			//List of tools/controls
 			controlsForm.setToolsList(controlConfigurationsFactory.getListOfControls());
-			controlsForm.setSelectedControlCaption(getControlCaption(controlConfigurationsFactory.getControlDisplayLabel(userSelectedTool)));
+			controlsForm.setSelectedControlCaption(ControlsUtility.getControlCaption(controlConfigurationsFactory.getControlDisplayLabel(userSelectedTool)));
 			String jspName = controlConfigurationsFactory.getControlJspName(userSelectedTool);
 			if (jspName == null)
 			{
@@ -99,7 +100,7 @@ public class LoadFormControlsProcessor
 			{
 				controlsForm.setRootName("");
 			}
-			controlsForm.setChildList(getChildList(containerInterface));
+			controlsForm.setChildList(ControlsUtility.getChildList(containerInterface));
 			controlsForm.setControlRuleMap(getControlRulesMap(userSelectedTool));
 		}
 	}
@@ -339,41 +340,7 @@ public class LoadFormControlsProcessor
 		return measurementUnits;
 	}
 
-	/**
-	 *  
-	 * @param containerInterface containerInterface
-	 * @return List ChildList
-	 * @throws DynamicExtensionsSystemException DynamicExtensionsSystemException
-	 */
-	private List getChildList(ContainerInterface containerInterface) throws DynamicExtensionsSystemException
-	{
-		List<ControlInformationObject> childList = new ArrayList<ControlInformationObject>();
-		Collection controlCollection = containerInterface.getControlCollection();
-
-		ControlInterface controlInterface = null;
-		ControlInformationObject controlInformationObject = null;
-		String controlCaption = null, controlDatatype = null, controlSequenceNumber = null, controlName = null;
-		ControlConfigurationsFactory controlConfigurationsFactory = ControlConfigurationsFactory.getInstance();
-		if (controlCollection != null)
-		{
-			for (int counter = 1; counter <= controlCollection.size(); counter++)
-			{
-				controlInterface = DynamicExtensionsUtility.getControlBySequenceNumber(controlCollection, counter);
-				if (controlInterface.getCaption() != null && !controlInterface.getCaption().equals(""))
-				{
-					controlCaption = controlInterface.getCaption();
-					controlSequenceNumber = controlInterface.getSequenceNumber() + "";
-					controlName = DynamicExtensionsUtility.getControlName(controlInterface);
-					controlDatatype = getControlCaption(controlConfigurationsFactory.getControlDisplayLabel(controlName));
-					controlInformationObject = new ControlInformationObject(controlCaption, controlDatatype, controlSequenceNumber);
-					childList.add(controlInformationObject);
-				}
-
-			}
-			DynamicExtensionsUtility.resetSequenceNumberChanged(controlCollection);
-		}
-		return childList;
-	}
+	
 
 	/**
 	 * 
@@ -391,23 +358,7 @@ public class LoadFormControlsProcessor
 		return dataTypeList;
 	}
 
-	/**
-	 * 
-	 * @param captionKey String captionKey
-	 * @return String ControlCaption
-	 */
-	public String getControlCaption(String captionKey)
-	{
-		if (captionKey != null)
-		{
-			ResourceBundle resourceBundle = ResourceBundle.getBundle("ApplicationResources");
-			if (resourceBundle != null)
-			{
-				return resourceBundle.getString(captionKey);
-			}
-		}
-		return null;
-	}
+	
 
 	/**
 	 * 

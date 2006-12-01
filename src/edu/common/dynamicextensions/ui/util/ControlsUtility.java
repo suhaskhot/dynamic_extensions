@@ -10,11 +10,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.Vector;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
@@ -27,6 +29,7 @@ import edu.common.dynamicextensions.domaininterface.DateTypeInformationInterface
 import edu.common.dynamicextensions.domaininterface.DateValueInterface;
 import edu.common.dynamicextensions.domaininterface.DoubleTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.DoubleValueInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.FloatTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.FloatValueInterface;
 import edu.common.dynamicextensions.domaininterface.IntegerTypeInformationInterface;
@@ -41,6 +44,8 @@ import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.ui.webui.util.ControlInformationObject;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.beans.NameValueBean;
 
@@ -479,6 +484,8 @@ public class ControlsUtility
 				controlInterface = (ControlInterface) controlIterator.next();
 				if (!controlInterface.getSequenceNumberChanged())
 				{
+					EntityInterface entityInterface = containerInterface.getEntity();
+					entityInterface.removeAbstractAttribute(controlInterface.getAbstractAttribute());
 					controlIterator.remove();
 				}
 			}
@@ -527,6 +534,60 @@ public class ControlsUtility
 		// Close the input stream and return bytes
 		inputStream.close();
 		return fileInBytes;
+	}
+	
+	/**
+	 *  
+	 * @param containerInterface containerInterface
+	 * @return List ChildList
+	 * @throws DynamicExtensionsSystemException DynamicExtensionsSystemException
+	 */
+	public static List getChildList(ContainerInterface containerInterface) throws DynamicExtensionsSystemException
+	{
+		List<ControlInformationObject> childList = new ArrayList<ControlInformationObject>();
+		Collection controlCollection = containerInterface.getControlCollection();
+
+		ControlInterface controlInterface = null;
+		ControlInformationObject controlInformationObject = null;
+		String controlCaption = null, controlDatatype = null, controlSequenceNumber = null, controlName = null;
+		ControlConfigurationsFactory controlConfigurationsFactory = ControlConfigurationsFactory.getInstance();
+		if (controlCollection != null)
+		{
+			for (int counter = 1; counter <= controlCollection.size(); counter++)
+			{
+				controlInterface = DynamicExtensionsUtility.getControlBySequenceNumber(controlCollection, counter);
+				if (controlInterface.getCaption() != null && !controlInterface.getCaption().equals(""))
+				{
+					controlCaption = controlInterface.getCaption();
+					controlSequenceNumber = controlInterface.getSequenceNumber() + "";
+					controlName = DynamicExtensionsUtility.getControlName(controlInterface);
+					controlDatatype = getControlCaption(controlConfigurationsFactory.getControlDisplayLabel(controlName));
+					controlInformationObject = new ControlInformationObject(controlCaption, controlDatatype, controlSequenceNumber);
+					childList.add(controlInformationObject);
+				}
+
+			}
+			DynamicExtensionsUtility.resetSequenceNumberChanged(controlCollection);
+		}
+		return childList;
+	}
+	
+	/**
+	 * 
+	 * @param captionKey String captionKey
+	 * @return String ControlCaption
+	 */
+	public static String getControlCaption(String captionKey)
+	{
+		if (captionKey != null)
+		{
+			ResourceBundle resourceBundle = ResourceBundle.getBundle("ApplicationResources");
+			if (resourceBundle != null)
+			{
+				return resourceBundle.getString(captionKey);
+			}
+		}
+		return null;
 	}
 
 }

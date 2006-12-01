@@ -16,6 +16,7 @@ alter table DE_FILE_ATTR_RECORD_VALUES drop constraint FKE68334E7E150DFC9;
 alter table DYEXTN_STRING_TYPE_INFO drop constraint FKDA35FE02BC7298A9;
 alter table DYEXTN_SHORT_CONCEPT_VALUE drop constraint FKC1945ABABC7298A9;
 alter table DYEXTN_FLOAT_TYPE_INFO drop constraint FK7E1C0693BC7298A9;
+alter table DYEXTN_FILE_UPLOAD drop constraint FK2FAD41E7BC7298A9;
 alter table DYEXTN_BARR_CONCEPT_VALUE drop constraint FK89D27DF7BC7298A9;
 alter table DYEXTN_ENTITY drop constraint FK8B243640BC7298A9;
 alter table DYEXTN_INTEGER_TYPE_INFO drop constraint FK5F9CB235BC7298A9;
@@ -77,6 +78,7 @@ drop table DYEXTN_ABSTRACT_METADATA cascade constraints;
 drop table DYEXTN_STRING_TYPE_INFO cascade constraints;
 drop table DYEXTN_SHORT_CONCEPT_VALUE cascade constraints;
 drop table DYEXTN_FLOAT_TYPE_INFO cascade constraints;
+drop table DYEXTN_FILE_UPLOAD cascade constraints;
 drop table DYEXTN_BARR_CONCEPT_VALUE cascade constraints;
 drop table DYEXTN_ENTITY cascade constraints;
 drop table DYEXTN_INTEGER_TYPE_INFO cascade constraints;
@@ -121,8 +123,8 @@ drop sequence DYEXTN_PERMISSIBLEVAL_SEQ;
 drop sequence DYEXTN_SEMANTIC_PROPERTY_SEQ;
 drop sequence DYEXTN_ATTRIBUTE_TYPE_INFO_SEQ;
 drop sequence DYEXTN_RULE_PARAMETER_SEQ;
-drop sequence DE_FILE_ATTR_REC_VALUES_SEQ;
 drop sequence DYEXTN_ABSTRACT_METADATA_SEQ;
+drop sequence DE_FILE_ATTR_REC_VALUES_SEQ;
 drop sequence DYEXTN_VIEW_SEQ;
 drop sequence DYEXTN_CONTROL_SEQ;
 drop sequence DYEXTN_RULE_SEQ;
@@ -214,6 +216,11 @@ create table DYEXTN_SHORT_CONCEPT_VALUE (
 create table DYEXTN_FLOAT_TYPE_INFO (
    IDENTIFIER number(19,0) not null,
    MEASUREMENT_UNITS varchar2(255),
+   primary key (IDENTIFIER)
+);
+create table DYEXTN_FILE_UPLOAD (
+   IDENTIFIER number(19,0) not null,
+   NO_OF_COLUMNS number(10,0),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_BARR_CONCEPT_VALUE (
@@ -469,6 +476,7 @@ alter table DE_FILE_ATTR_RECORD_VALUES add constraint FKE68334E7E150DFC9 foreign
 alter table DYEXTN_STRING_TYPE_INFO add constraint FKDA35FE02BC7298A9 foreign key (IDENTIFIER) references DYEXTN_ATTRIBUTE_TYPE_INFO;
 alter table DYEXTN_SHORT_CONCEPT_VALUE add constraint FKC1945ABABC7298A9 foreign key (IDENTIFIER) references DYEXTN_PERMISSIBLE_VALUE;
 alter table DYEXTN_FLOAT_TYPE_INFO add constraint FK7E1C0693BC7298A9 foreign key (IDENTIFIER) references DYEXTN_ATTRIBUTE_TYPE_INFO;
+alter table DYEXTN_FILE_UPLOAD add constraint FK2FAD41E7BC7298A9 foreign key (IDENTIFIER) references DYEXTN_CONTROL;
 alter table DYEXTN_BARR_CONCEPT_VALUE add constraint FK89D27DF7BC7298A9 foreign key (IDENTIFIER) references DYEXTN_PERMISSIBLE_VALUE;
 alter table DYEXTN_ENTITY add constraint FK8B243640BC7298A9 foreign key (IDENTIFIER) references DYEXTN_ABSTRACT_METADATA;
 alter table DYEXTN_INTEGER_TYPE_INFO add constraint FK5F9CB235BC7298A9 foreign key (IDENTIFIER) references DYEXTN_ATTRIBUTE_TYPE_INFO;
@@ -519,8 +527,8 @@ create sequence DYEXTN_PERMISSIBLEVAL_SEQ;
 create sequence DYEXTN_SEMANTIC_PROPERTY_SEQ;
 create sequence DYEXTN_ATTRIBUTE_TYPE_INFO_SEQ;
 create sequence DYEXTN_RULE_PARAMETER_SEQ;
-create sequence DE_FILE_ATTR_REC_VALUES_SEQ;
 create sequence DYEXTN_ABSTRACT_METADATA_SEQ;
+create sequence DE_FILE_ATTR_REC_VALUES_SEQ;
 create sequence DYEXTN_VIEW_SEQ;
 create sequence DYEXTN_CONTROL_SEQ;
 create sequence DYEXTN_RULE_SEQ;

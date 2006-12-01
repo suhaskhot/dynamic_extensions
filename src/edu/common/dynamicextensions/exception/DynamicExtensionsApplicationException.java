@@ -32,8 +32,7 @@ public class DynamicExtensionsApplicationException extends BaseDynamicExtensions
 	 */
 	public DynamicExtensionsApplicationException(String message, Exception wrapException)
 	{
-		this.errorMessage = message;
-		this.wrappedException = wrapException;
+		super(message, wrapException);
 	}
 
 	/**
@@ -42,9 +41,7 @@ public class DynamicExtensionsApplicationException extends BaseDynamicExtensions
 	public DynamicExtensionsApplicationException(String message, Exception wrapException,
 			String errorCode)
 	{
-		this.errorMessage = message;
-		this.wrappedException = wrapException;
-		this.errorCode = errorCode;
+		super(message, wrapException,errorCode);
 	}
 
 	/**
@@ -53,7 +50,7 @@ public class DynamicExtensionsApplicationException extends BaseDynamicExtensions
 	 */
 	public DynamicExtensionsApplicationException(String message)
 	{
-		this(message, null);
+		super(message);
 	}
 
 	/**
@@ -64,10 +61,8 @@ public class DynamicExtensionsApplicationException extends BaseDynamicExtensions
 	public DynamicExtensionsApplicationException(String message, Exception wrapException,
 			String errorCode, List<String> placeHolders)
 	{
-		this.errorMessage = message;
-		this.wrappedException = wrapException;
-		this.errorCode = errorCode;
-		this.placeHolderList = placeHolders;
+		super(message, wrapException,errorCode);
+		
 
 	}
 

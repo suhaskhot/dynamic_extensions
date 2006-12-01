@@ -1562,8 +1562,8 @@ public class EntityManager
 			else
 			{
 				List<Long> recordIdList = (List<Long>) value;
-				queryList.add(getAssociationInsertDataQuery((AssociationInterface) attribute,
-						recordIdList, identifier));
+				queryList.add(getAssociationInsertDataQuery((AssociationInterface) attribute,recordIdList,
+						 identifier));
 			}
 		}
 
@@ -1687,7 +1687,6 @@ public class EntityManager
 
 		return query.toString();
 	}
-
 	private void verifyCardinalityConstraints(AssociationInterface association,
 			List<Long> recordIdList) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException
@@ -1728,7 +1727,6 @@ public class EntityManager
 
 		}
 	}
-
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#editData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map, java.lang.Long)
 	 */
@@ -1749,14 +1747,15 @@ public class EntityManager
 
 		Set uiColumnSet = dataValue.keySet();
 		Iterator uiColumnSetIter = uiColumnSet.iterator();
-
+		List associationRemoveDataQueryList = new ArrayList();
+		List associationInsertDataQueryList = new ArrayList();
 		while (uiColumnSetIter.hasNext())
 		{
 			AbstractAttribute attribute = (AbstractAttribute) uiColumnSetIter.next();
+			Object value = dataValue.get(attribute);
 			if (attribute instanceof AttributeInterface)
 			{
 				AttributeInterface primitiveAttribute = (AttributeInterface) attribute;
-				Object value = dataValue.get(primitiveAttribute);
 
 				if (primitiveAttribute.getIsCollection())
 				{
@@ -1800,7 +1799,26 @@ public class EntityManager
 					updateColumnString.append(value);
 				}
 			}
+			else
+			{
+				String removeQuery = getAssociationRemoveDataQuery(((Association) attribute),
+						recordId);
+				if (removeQuery != null && removeQuery.trim().length() != 0)
+				{
+					associationRemoveDataQueryList.add(removeQuery);
+				}
+				String insertQuery = getAssociationInsertDataQuery(((Association) attribute), (List<Long>)value,
+						recordId);
+				if (insertQuery != null && insertQuery.trim().length() != 0)
+				{
+					associationInsertDataQueryList.add(insertQuery);
+				}
+			}
 		}
+
+		List<String> editDataQueryList = new ArrayList<String>();
+		editDataQueryList.addAll(associationRemoveDataQueryList);
+		editDataQueryList.addAll(associationInsertDataQueryList);
 
 		StringBuffer query = null;
 		if (updateColumnString.length() != 0)
@@ -1813,6 +1831,7 @@ public class EntityManager
 			query.append(recordId);
 
 		}
+		editDataQueryList.add(query.toString());
 		HibernateDAO hibernateDAO = null;
 		try
 		{
@@ -1824,10 +1843,14 @@ public class EntityManager
 
 			if (updateColumnString.length() != 0)
 			{
-				logDebug("editData", "Query is: " + query.toString());
+
 				Connection conn = DBUtil.getConnection();
-				PreparedStatement statement = conn.prepareStatement(query.toString());
-				statement.executeUpdate();
+				for (String queryString : editDataQueryList)
+				{
+					logDebug("editData", "Query is: " + queryString.toString());
+					PreparedStatement statement = conn.prepareStatement(queryString);
+					statement.executeUpdate();
+				}
 			}
 
 			for (AttributeRecord collectionAttributeRecord : collectionRecords)
@@ -1879,6 +1902,32 @@ public class EntityManager
 		}
 
 		return true;
+	}
+
+	private String getAssociationRemoveDataQuery(Association association, Long recordId)
+	{
+		String tableName = association.getConstraintProperties().getName();
+		String sourceKey = association.getConstraintProperties().getSourceEntityKey();
+		String targetKey = association.getConstraintProperties().getTargetEntityKey();
+		StringBuffer query = new StringBuffer();
+		if (sourceKey != null && targetKey != null && sourceKey.trim().length() != 0
+				&& targetKey.trim().length() != 0)
+		{
+			query.append(DELETE_KEYWORD + WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName
+					+ WHITESPACE + WHERE_KEYWORD + WHITESPACE + sourceKey);
+			query.append(WHITESPACE + EQUAL);
+			query.append(recordId.toString());
+		}
+		else if (targetKey != null && targetKey.trim().length() != 0)
+		{
+			query.append(UPDATE_KEYWORD);
+			query.append(WHITESPACE + tableName);
+			query.append(WHITESPACE + SET_KEYWORD + WHITESPACE + targetKey + EQUAL + WHITESPACE
+					+ "null" + WHITESPACE);
+			query.append(WHERE_KEYWORD + WHITESPACE + targetKey + EQUAL + recordId);
+		}
+
+		return query.toString();
 	}
 
 	/**
@@ -2336,7 +2385,8 @@ public class EntityManager
 			{
 				Association savedAssociation = (Association) savedAssociationIterator.next();
 				Association association = (Association) entity
-						.getAttributeByIdentifier(savedAssociation.getId());;
+						.getAttributeByIdentifier(savedAssociation.getId());
+				;
 
 				// removed ??
 				if (association == null)
@@ -2736,25 +2786,22 @@ public class EntityManager
 			jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
 			jdbcDao.openSession(null);
 
-			if (selectColumnName.length != 0)
-			{
-				List result = jdbcDao.retrieve(tableName, selectColumnName, whereColumnName,
-						whereColumnCondition, whereColumnValue, null);
-				List innerList = null;
+			List result = jdbcDao.retrieve(tableName, selectColumnName, whereColumnName,
+					whereColumnCondition, whereColumnValue, null);
+			List innerList = null;
 
-				if (result != null && result.size() != 0)
+			if (result != null && result.size() != 0)
+			{
+				innerList = (List) result.get(0);
+			}
+			if (innerList != null)
+			{
+				for (int i = 0; i < innerList.size(); i++)
 				{
-					innerList = (List) result.get(0);
-				}
-				if (innerList != null)
-				{
-					for (int i = 0; i < innerList.size(); i++)
-					{
-						String value = (String) innerList.get(i);
-						String dbColumnName = selectColumnName[i];
-						String uiColumnName = (String) columnNameMap.get(dbColumnName);
-						recordValues.put(uiColumnName, value);
-					}
+					String value = (String) innerList.get(i);
+					String dbColumnName = selectColumnName[i];
+					String uiColumnName = (String) columnNameMap.get(dbColumnName);
+					recordValues.put(uiColumnName, value);
 				}
 			}
 
@@ -2796,7 +2843,7 @@ public class EntityManager
 		}
 		return recordValues;
 	}
-
+	
 	/**
 	 * @param entity
 	 * @param recordId
@@ -2884,6 +2931,7 @@ public class EntityManager
 		return associationValuesMap;
 	}
 
+
 	/**
 	 * @param query
 	 * @return
@@ -2909,7 +2957,7 @@ public class EntityManager
 		}
 		return associationRecordValues;
 	}
-
+	
 	/**
 	 * This method processes all the attributes that previoulsy saved but removed by editing.
 	 * @param entity
@@ -2937,7 +2985,8 @@ public class EntityManager
 				{
 					Attribute savedAttribute = (Attribute) savedAbstractAttribute;
 					Attribute attribute = (Attribute) entity
-							.getAttributeByIdentifier(savedAbstractAttribute.getId());;
+							.getAttributeByIdentifier(savedAbstractAttribute.getId());
+					;
 					// removed ??
 					if (attribute == null
 							|| isAttributeColumnToBeRemoved(attribute, savedAttribute))

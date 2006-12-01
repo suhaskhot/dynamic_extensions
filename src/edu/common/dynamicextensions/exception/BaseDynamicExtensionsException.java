@@ -22,33 +22,52 @@ public abstract class BaseDynamicExtensionsException extends Exception
 			DynamicExtensionExceptionInterface
 {
 
-	/**Instance of the wrapped exception that is thrown from the previous layer*/
-	protected Throwable wrappedException;
-	/**A unique error code from which the cause of the exception can be displayed to the user.*/
-	protected String errorCode;
-
 	/**Detailed error message explaining the cause of the exception*/
-	protected String errorMessage;
+	protected String errorCode;
 
 	protected List<String> placeHolderList = new ArrayList<String>();
 
+	 /**
+     * @param wrapException The wrapException to set.
+     * @param errorCode error code
+     * @param message message
+     */
+    public BaseDynamicExtensionsException(String message,
+            Exception wrapException, String errorCode)
+    {
+    	super(message,wrapException);
+        this.errorCode = errorCode;
+    }
+	
 	/**
-	 * Getter method for errorMessage
-	 * @return errorMessage errorMessage that is set.
+     * @param wrapException The wrapException to set.
+     * @param message message
+     */
+    public BaseDynamicExtensionsException(String message,
+            Exception wrapException)
+    {
+    	super(message,wrapException);
+    }
+    
+    /**
+	 * @param message
+	 * @param wrapException
+	 * @param errorCode
 	 */
-	public String getErrorMessage()
+	public BaseDynamicExtensionsException(String message, Exception wrapException,
+			String errorCode, List<String> placeHolders)
 	{
-		return errorMessage;
+		this(message,wrapException,errorCode);
+		this.placeHolderList = placeHolders;
 	}
-
-	/**
-	 * Setter method for errorMessage.
-	 * @param errorMessage errorMessage to set
-	 */
-	public void setErrorMessage(String errorMessage)
-	{
-		this.errorMessage = errorMessage;
-	}
+    /**
+     * 
+     * @param message message
+     */
+    public BaseDynamicExtensionsException(String message)
+    {
+       super(message);
+    }
 
 	/**
 	 * Getter method for errorCode
@@ -68,25 +87,6 @@ public abstract class BaseDynamicExtensionsException extends Exception
 		this.errorCode = errorCode;
 	}
 
-	/**
-	 * Getter method for wrappedException
-	 * @return wrappedException wrappedException that is set
-	 */
-	public Throwable getWrappedException()
-	{
-		return wrappedException;
-	}
-
-	/**
-	 * Setter method for wrappedException 
-	 * @param wrappedException wrappedException instance to set.
-	 */
-	public void setWrappedException(Throwable wrappedException)
-	{
-		this.wrappedException = wrappedException;
-	}
-
-	
 	/**
 	 * @return Returns the placeHolderList.
 	 */

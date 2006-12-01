@@ -30,8 +30,7 @@ public class DynamicExtensionsSystemException
     public DynamicExtensionsSystemException(String message,
             Exception wrapException)
     {
-        this.errorMessage = message;
-        this.wrappedException = wrapException;
+    	super(message,wrapException);
     }
 
     /**
@@ -42,9 +41,7 @@ public class DynamicExtensionsSystemException
     public DynamicExtensionsSystemException(String message,
             Exception wrapException, String errorCode)
     {
-        this.errorMessage = message;
-        this.wrappedException = wrapException;
-        this.errorCode = errorCode;
+       super(message,wrapException,errorCode);
     }
 
     /**

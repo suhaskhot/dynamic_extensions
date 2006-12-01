@@ -1813,7 +1813,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
           assertEquals(2,targetRecordIdList.size());
           assertEquals(1L,targetRecordIdList.get(0));
-          assertEquals(2L,targetRecordIdList.get(0));
+          assertEquals(2L,targetRecordIdList.get(1));
           
             
 
@@ -1891,7 +1891,9 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
             
             dataValue.clear();
             dataValue.put(userNameAttribute, "rahul");
-            dataValue.put(association, 1L);
+            List<Long> targetIdList = new ArrayList<Long>();
+            targetIdList.add(1L);
+            dataValue.put(association, targetIdList);
             
 
             Long recordId = entityManagerInterface.insertData(savedEntity, dataValue);
@@ -1929,12 +1931,12 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
     
     
     /**
-     * This test case is to check the constraint violation in case when the maximum cardinality for target is one. 
+     * This test case is to check the constraint violation in case when the  source cardinality for target is one && maximum cardinality for target is one. 
      * So in this test case we try to insert data such that the same target entity record is associated with the 
      * source entity record twice. After the first insertion is successful, when the second insertion takes place
-     * at that time constraint violation fails and application exception is thrown.
+     * at that time constraint violation should  fail
      */
-    public void testInsertDataForConstraintViolationForManyToOne()
+    public void testInsertDataForConstraintViolationForOneToOne()
     {
         
         EntityManagerInterface entityManagerInterface = EntityManager
@@ -1964,7 +1966,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
             association.setTargetEntity(study);
             association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
             association.setName("primaryInvestigator");
-            association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator", Cardinality.ZERO, Cardinality.MANY));
+            association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator", Cardinality.ZERO, Cardinality.ONE));
             association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study", Cardinality.ZERO, Cardinality.ONE));
 
             user.addAbstractAttribute(association);
@@ -1972,12 +1974,22 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
             savedEntity = entityManagerInterface
                     .persistEntity(user);
-
+            
             Map dataValue = new HashMap();
+            dataValue.clear();
+            dataValue.put(studyNameAttribute, "study1");
+            entityManagerInterface.insertData(study, dataValue);
+
+            dataValue.clear();
             dataValue.put(userNameAttribute, "rahul");
-            dataValue.put(association, 1L);
+            List<Long> targetIdList = new ArrayList<Long>();
+            targetIdList.add(1L);
+            dataValue.put(association, targetIdList);
 
             entityManagerInterface.insertData(savedEntity, dataValue);
+            
+
+           
             ResultSet resultSet = executeQuery("select * from "
                     + savedEntity.getTableProperties().getName());
             resultSet.next();
@@ -1985,7 +1997,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
             
             entityManagerInterface.insertData(savedEntity, dataValue);
             
-           fail();
+            fail();
 
         }
         catch (DynamicExtensionsSystemException e)
@@ -2064,7 +2076,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
             Map dataValue = new HashMap();
             dataValue.put(userNameAttribute, "rahul");
-            dataValue.put(association, 1L);
+            List<Long> targetIdList = new ArrayList<Long>();
+            targetIdList.add(1L);
+
+            dataValue.put(association,targetIdList);
 
             entityManagerInterface.insertData(savedEntity, dataValue);
             ResultSet resultSet = executeQuery("select * from "

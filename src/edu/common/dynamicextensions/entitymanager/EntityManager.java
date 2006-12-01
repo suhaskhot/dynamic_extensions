@@ -1562,7 +1562,7 @@ public class EntityManager
 			else
 			{
 				List<Long> recordIdList = (List<Long>) value;
-				queryList.add(getAssociationInsertDataQuery((AssociationInterface) attribute,recordIdList,
+				queryList.addAll(getAssociationInsertDataQuery((AssociationInterface) attribute,recordIdList,
 						 identifier));
 			}
 		}
@@ -1625,10 +1625,11 @@ public class EntityManager
 		return identifier;
 	}
 
-	private String getAssociationInsertDataQuery(AssociationInterface associationInterface,
+	private List<String> getAssociationInsertDataQuery(AssociationInterface associationInterface,
 			List<Long> recordIdList, Long sourceRecordId)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
+		List<String> queryList = new ArrayList<String>();
 		Association association = (Association) associationInterface;
 		verifyCardinalityConstraints(associationInterface, recordIdList);
 		String tableName = association.getConstraintProperties().getName();
@@ -1640,18 +1641,13 @@ public class EntityManager
 				&& targetKey.trim().length() != 0)
 		{
 
-			query.append("INSERT INTO " + tableName + " ( ");
-			query.append(IDENTIFIER + "," + sourceKey + "," + targetKey);
-			query.append(" ) VALUES ");
 
 			for (int i = 0; i < recordIdList.size(); i++)
 			{
-				if (i != 0)
-				{
-					query.append(COMMA);
-				}
-
-				query.append(OPENING_BRACKET);
+				query = new StringBuffer();
+				query.append("INSERT INTO " + tableName + " ( ");
+				query.append(IDENTIFIER + "," + sourceKey + "," + targetKey);
+				query.append(" ) VALUES ( ");
 				query.append(id.toString());
 				query.append(COMMA);
 				query.append(sourceRecordId.toString());
@@ -1659,6 +1655,9 @@ public class EntityManager
 				query.append(recordIdList.get(i));
 				query.append(CLOSING_BRACKET);
 				id++; //TODO this is not thread safe ,so needs to find a another solution.
+				
+				queryList.add(query.toString());
+				
 			}
 
 		}
@@ -1669,6 +1668,7 @@ public class EntityManager
 			query.append(WHITESPACE + SET_KEYWORD + WHITESPACE + sourceKey + EQUAL
 					+ recordIdList.get(0) + WHITESPACE);
 			query.append(WHERE_KEYWORD + WHITESPACE + IDENTIFIER + EQUAL + sourceRecordId);
+			queryList.add(query.toString());
 
 		}
 		else
@@ -1683,9 +1683,10 @@ public class EntityManager
 					+ WHITESPACE);
 			query.append(WHERE_KEYWORD + WHITESPACE + IDENTIFIER + WHITESPACE + IN_KEYWORD
 					+ WHITESPACE + recordIdString);
+			queryList.add(query.toString());
 		}
 
-		return query.toString();
+		return queryList;
 	}
 	private void verifyCardinalityConstraints(AssociationInterface association,
 			List<Long> recordIdList) throws DynamicExtensionsApplicationException,
@@ -1807,11 +1808,11 @@ public class EntityManager
 				{
 					associationRemoveDataQueryList.add(removeQuery);
 				}
-				String insertQuery = getAssociationInsertDataQuery(((Association) attribute), (List<Long>)value,
+				List insertQuery = getAssociationInsertDataQuery(((Association) attribute), (List<Long>)value,
 						recordId);
-				if (insertQuery != null && insertQuery.trim().length() != 0)
+				if (insertQuery != null && insertQuery.size() != 0)
 				{
-					associationInsertDataQueryList.add(insertQuery);
+					associationInsertDataQueryList.addAll(insertQuery);
 				}
 			}
 		}
@@ -1820,18 +1821,18 @@ public class EntityManager
 		editDataQueryList.addAll(associationRemoveDataQueryList);
 		editDataQueryList.addAll(associationInsertDataQueryList);
 
-		StringBuffer query = null;
+		
 		if (updateColumnString.length() != 0)
 		{
-			query = new StringBuffer("UPDATE " + tableName + " SET ");
+			StringBuffer query = new StringBuffer("UPDATE " + tableName + " SET ");
 			query.append(updateColumnString);
 			query.append(" where ");
 			query.append(IDENTIFIER);
 			query.append(WHITESPACE + EQUAL + WHITESPACE);
 			query.append(recordId);
-
+			editDataQueryList.add(query.toString());
 		}
-		editDataQueryList.add(query.toString());
+		
 		HibernateDAO hibernateDAO = null;
 		try
 		{

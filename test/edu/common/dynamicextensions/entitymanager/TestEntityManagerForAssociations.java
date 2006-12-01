@@ -11,8 +11,10 @@ package edu.common.dynamicextensions.entitymanager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domain.Association;
@@ -1442,20 +1444,24 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
             entityManagerInterface.insertData(study, dataValue);
             
             dataValue.clear();
+            List<Long> targetIdList = new ArrayList<Long>();
+            targetIdList.add(1L);
+            targetIdList.add(2L);  
+            
             dataValue.put(userNameAttribute, "rahul");
-            dataValue.put(association, 1L);
+            dataValue.put(association, targetIdList);
 
             entityManagerInterface.insertData(savedEntity, dataValue);
             
             dataValue.clear();
             dataValue.put(userNameAttribute, "vishvesh");
-            dataValue.put(association, 2L);
+            dataValue.put(association, targetIdList);
             entityManagerInterface.insertData(savedEntity, dataValue);
 
             ResultSet resultSet = executeQuery("select count(*) from "
                     + association.getConstraintProperties().getName());
             resultSet.next();
-            assertEquals(2, resultSet.getInt(1));
+            assertEquals(4, resultSet.getInt(1));
         }
         catch (DynamicExtensionsSystemException e)
         {
@@ -1529,14 +1535,13 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
             entityManagerInterface.insertData(study, dataValue);
             
             dataValue.clear();
-            dataValue.put(userNameAttribute, "rahul");
-            dataValue.put(association, 1L);
-
-            entityManagerInterface.insertData(savedEntity, dataValue);
+            List<Long> targetIdList = new ArrayList<Long>();
+            targetIdList.add(1L);
+            targetIdList.add(2L);            
             
-            dataValue.clear();
-            dataValue.put(userNameAttribute, "vishvesh");
-            dataValue.put(association, 2L);
+            dataValue.put(userNameAttribute, "rahul");
+            dataValue.put(association, targetIdList);
+
             entityManagerInterface.insertData(savedEntity, dataValue);
 
             ResultSet resultSet = executeQuery("select count(*) from "
@@ -1607,8 +1612,11 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
                     .persistEntity(user);
 
             Map dataValue = new HashMap();
+            List<Long> targetIdList = new ArrayList<Long>();
+            targetIdList.add(1L);
             dataValue.put(userNameAttribute, "rahul");
-            dataValue.put(association, 1L);
+            
+            dataValue.put(association,targetIdList);
 
             entityManagerInterface.insertData(savedEntity, dataValue);
 
@@ -1639,7 +1647,287 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
     }
 
+    /**
+	 * This method test for inserting data for a multi select attribute
+	 */
+	public void testEditDataForAssociationMany2One()
+	{
 
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		try
+		{
+
+			//          create user 
+			EntityInterface user = factory.createEntity();
+			AttributeInterface userNameAttribute = factory.createStringAttribute();
+			userNameAttribute.setName("user name");
+			user.setName("user");
+			user.addAbstractAttribute(userNameAttribute);
+
+			//          create study 
+			EntityInterface study = factory.createEntity();
+			AttributeInterface studyNameAttribute = factory.createStringAttribute();
+			studyNameAttribute.setName("study name");
+			study.setName("study");
+			study.addAbstractAttribute(studyNameAttribute);
+
+			//          Associate user (1)------ >(*)study       
+			AssociationInterface association = factory.createAssociation();
+			association.setTargetEntity(study);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("primaryInvestigator");
+			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
+					Cardinality.ZERO, Cardinality.MANY));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
+					Cardinality.ZERO, Cardinality.ONE));
+
+			user.addAbstractAttribute(association);
+
+			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
+
+			Map dataValue = new HashMap();
+			List<Long> targetIdList = new ArrayList<Long>();
+			targetIdList.add(1L);
+			dataValue.put(userNameAttribute, "rahul");
+
+			dataValue.put(association, targetIdList);
+
+			Long recordId = entityManagerInterface.insertData(savedEntity, dataValue);
+
+			dataValue.clear();
+			dataValue.put(userNameAttribute, "vishvesh");
+			dataValue.put(association, targetIdList);
+			Long recordId1 = entityManagerInterface.insertData(savedEntity, dataValue);
+
+			dataValue.clear();
+			dataValue = entityManagerInterface.getRecordById(savedEntity, recordId);
+			List targetRecordIdList = (List) dataValue.get(association);
+			System.out.println(dataValue);
+			assertEquals(1, targetRecordIdList.size());
+			assertEquals(1L, targetRecordIdList.get(0));
+			
+			dataValue.clear();
+			dataValue = entityManagerInterface.getRecordById(savedEntity, recordId1);
+			 targetRecordIdList = (List) dataValue.get(association);
+			System.out.println(dataValue);
+			assertEquals(1, targetRecordIdList.size());
+			assertEquals(1L, targetRecordIdList.get(0));
+
+
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+			fail();
+			Logger.out.debug(e.getStackTrace());
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			e.printStackTrace();
+			fail();
+			Logger.out.debug(e.getStackTrace());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+
+			Logger.out.debug(e.getStackTrace());
+		}
+
+	}
+
+	/**
+	 * This method test for inserting data for a multi select attribute
+	 */
+    public void testGetRecordByIdAssociationMany2Many()
+    {
+        
+        EntityManagerInterface entityManagerInterface = EntityManager
+                .getInstance();
+        DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+        try
+        {
+
+//          create user 
+            EntityInterface user = factory.createEntity();
+            AttributeInterface userNameAttribute = factory.createStringAttribute();
+            userNameAttribute.setName("user name");
+            user.setName("user");
+            user.addAbstractAttribute(userNameAttribute);
+
+            
+//          create study 
+            EntityInterface study = factory.createEntity();
+            AttributeInterface studyNameAttribute = factory.createStringAttribute();
+            studyNameAttribute.setName("study name");
+            study.setName("study");
+            study.addAbstractAttribute(studyNameAttribute);
+            
+//          Associate user (1)------ >(*)study       
+            AssociationInterface association = factory.createAssociation();
+            association.setTargetEntity(study);
+            association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+            association.setName("primaryInvestigator");
+            association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator", Cardinality.ZERO, Cardinality.MANY));
+            association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study", Cardinality.ZERO, Cardinality.MANY));
+
+            user.addAbstractAttribute(association);
+
+
+            EntityInterface savedEntity = entityManagerInterface
+                    .persistEntity(user);
+
+            Map dataValue = new HashMap();
+            
+            dataValue.put(studyNameAttribute, "study");
+            entityManagerInterface.insertData(study, dataValue);
+            dataValue.clear();
+            dataValue.put(studyNameAttribute, "study1");
+            entityManagerInterface.insertData(study, dataValue);
+            
+            dataValue.clear();
+            List<Long> targetIdList = new ArrayList<Long>();
+            targetIdList.add(1L);
+            targetIdList.add(2L);  
+            
+            dataValue.put(userNameAttribute, "rahul");
+            dataValue.put(association, targetIdList);
+
+            Long recordId = entityManagerInterface.insertData(savedEntity, dataValue);
+            
+            dataValue.clear();
+            dataValue.put(userNameAttribute, "vishvesh");
+            dataValue.put(association, targetIdList);
+            entityManagerInterface.insertData(savedEntity, dataValue);
+
+            dataValue.clear();
+            dataValue =          entityManagerInterface.getRecordById(savedEntity, recordId);
+            
+          List targetRecordIdList = (List) dataValue.get(association);
+          
+          System.out.println(dataValue);
+
+          assertEquals(2,targetRecordIdList.size());
+          assertEquals(1L,targetRecordIdList.get(0));
+          assertEquals(2L,targetRecordIdList.get(0));
+          
+            
+
+        }
+        catch (DynamicExtensionsSystemException e)
+        {
+            fail();
+            Logger.out.debug(e.getStackTrace());
+        }
+        catch (DynamicExtensionsApplicationException e)
+        {
+            fail();
+            Logger.out.debug(e.getStackTrace());
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            fail();
+
+            Logger.out.debug(e.getStackTrace());
+        }
+
+    } 
+
+	 /**
+     * This method test for inserting data for a multi select attribute
+     */
+    public void testGetRecordByIdForOne2ManyAssociation()
+    {
+        
+        EntityManagerInterface entityManagerInterface = EntityManager
+                .getInstance();
+        DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+        try
+        {
+
+//          create user 
+            EntityInterface user = factory.createEntity();
+            AttributeInterface userNameAttribute = factory.createStringAttribute();
+            userNameAttribute.setName("user name");
+            user.setName("user");
+            user.addAbstractAttribute(userNameAttribute);
+
+            
+//          create study 
+            EntityInterface study = factory.createEntity();
+            AttributeInterface studyNameAttribute = factory.createStringAttribute();
+            studyNameAttribute.setName("study name");
+            study.setName("study");
+            study.addAbstractAttribute(studyNameAttribute);
+            
+//          Associate user (1)------ >(*)study       
+            AssociationInterface association = factory.createAssociation();
+            association.setTargetEntity(study);
+            association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+            association.setName("primaryInvestigator");
+            association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator", Cardinality.ZERO, Cardinality.ONE));
+            association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study", Cardinality.ZERO, Cardinality.MANY));
+
+            user.addAbstractAttribute(association);
+
+
+            EntityInterface savedEntity = entityManagerInterface
+                    .persistEntity(user);
+
+            Map dataValue = new HashMap();
+            
+            dataValue.put(studyNameAttribute, "study");
+            entityManagerInterface.insertData(study, dataValue);
+            
+            dataValue.clear();
+            dataValue.put(studyNameAttribute, "study1");
+            entityManagerInterface.insertData(study, dataValue);
+            
+            dataValue.clear();
+            dataValue.put(userNameAttribute, "rahul");
+            dataValue.put(association, 1L);
+            
+
+            Long recordId = entityManagerInterface.insertData(savedEntity, dataValue);
+            dataValue.clear();
+            
+            
+            dataValue = entityManagerInterface.getRecordById(savedEntity,recordId);
+            List targetRecordIdList = (List) dataValue.get(association);
+            
+            System.out.println(dataValue);
+
+            assertEquals(1,targetRecordIdList.size());
+            assertEquals(1L,targetRecordIdList.get(0));
+            
+        }
+        catch (DynamicExtensionsSystemException e)
+        {
+            fail();
+            Logger.out.debug(e.getStackTrace());
+        }
+        catch (DynamicExtensionsApplicationException e)
+        {
+            fail();
+            Logger.out.debug(e.getStackTrace());
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            fail();
+
+            Logger.out.debug(e.getStackTrace());
+        }
+
+    }    
+    
+    
     /**
      * This test case is to check the constraint violation in case when the maximum cardinality for target is one. 
      * So in this test case we try to insert data such that the same target entity record is associated with the 
@@ -1791,7 +2079,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
         }
        
     }
-    
+	
 	/**
 	 * @param targetEntity
 	 * @param associationDirection
@@ -1809,4 +2097,6 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		association.setTargetRole(targetRole);
         return association;
 	}
+	
+	
 }

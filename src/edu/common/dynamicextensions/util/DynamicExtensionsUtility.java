@@ -196,12 +196,7 @@ public class DynamicExtensionsUtility
         Logger.out.info("Path: "+ Variables.applicationHome);
         Logger.out.info("Database Name: "+Variables.databaseName);
         Logger.out.info("========================================================");  
-        
-		if (Variables.databaseName == null || Variables.databaseName.trim().length() == 0
-				|| Variables.datePattern.trim().length() != 0)
-		{
-			return;
-		}
+      
 
 		if (!Variables.databaseName.equals(Constants.MYSQL_DATABASE))
 		{

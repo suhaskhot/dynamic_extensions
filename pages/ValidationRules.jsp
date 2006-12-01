@@ -28,7 +28,6 @@
 		String dataType = (String)iter.next();
 		List listofRules = (List)controlRuleMap.get(dataType);
 		String divName = dataType+"Div";			
-		
 %>
 		<div id="<%= divName%>" style="display:none">
 			<table summary="" cellpadding="3" cellspacing="0" align = 'left' width='100%'>
@@ -82,12 +81,19 @@
 										{ 
 											String divId = "slcalcod"+ paramName ;
 									%>
-											<A onclick="showCalendar('<%= paramName%>',<%=DynamicExtensionsUtility.getCurrentYear()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentDay()%>,'MM-dd-yyyy','controlsForm','<%= paramName%>',event,1900,2020);" href="javascript://">
+										<!--	<A onclick="showCalendar('<%= paramName%>',<%=DynamicExtensionsUtility.getCurrentYear()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentDay()%>,'MM-dd-yyyy','controlsForm','<%= paramName%>',event,1900,2020);" href="javascript://">
 												<IMG alt="This is a Calendar" src="images/calendar.gif" border=0>
 											</A>
 											<DIV id=<%=divId%> style="Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px">
 												<SCRIPT>printCalendar('<%= paramName%>',<%=DynamicExtensionsUtility.getCurrentDay()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentYear()%>);</SCRIPT>
 											</DIV>
+										-->	
+										<A onclick="showCalendar('<%= paramName%>',2006,12,1,'MM-dd-yyyy','controlsForm','<%= paramName%>',event,1900,2020);" href="javascript://">
+											<IMG alt="This is a Calendar" src="images/calendar.gif" border=0>
+										</A>
+										<DIV id=slcalcod<%= paramName%> style="Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px">
+										<SCRIPT>printCalendar('<%= paramName%>',1,12,2006);</SCRIPT>
+										</DIV>[MM-DD-YYYY]
 									<%
 										} //end if(controlName.equalsIgnoreCase("DateControl"))
 									%>
@@ -98,8 +104,8 @@
 						%>
 					<%
 						} // end if(params != null)
-					%>					
-	 		<% 
+					%>
+	 		<%
 	 				isFirst = false;
 	 			} // while(rulesIter.hasNext())
 	 		%>

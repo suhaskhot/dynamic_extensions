@@ -29,6 +29,7 @@ public class ControlInformationObject
 	{
 		return controlName;
 	}
+
 	/**
 	 * @param controlName : Name of the control
 	 */
@@ -36,6 +37,7 @@ public class ControlInformationObject
 	{
 		this.controlName = controlName;
 	}
+
 	/**
 	 * @return : type of control
 	 */
@@ -52,6 +54,7 @@ public class ControlInformationObject
 	{
 		this.controlType = controlType;
 	}
+
 	/**
 	 * 
 	 * @return :  control identifier
@@ -60,6 +63,7 @@ public class ControlInformationObject
 	{
 		return identifier;
 	}
+
 	/**
 	 * 
 	 * @param identifier : identifier for the control
@@ -68,6 +72,7 @@ public class ControlInformationObject
 	{
 		this.identifier = identifier;
 	}
+
 	/**
 	 * 
 	 * @param name : Name of the control

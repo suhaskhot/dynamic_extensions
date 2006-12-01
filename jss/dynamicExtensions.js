@@ -138,29 +138,35 @@ function dataFldDataTypeChanged(datatypeControl)
 			var substitutionDiv = document.getElementById('substitutionDiv');
 			substitutionDiv.innerHTML = divForDataType.innerHTML;
 		}
-		 insertRules(datatypeControl);
-	}
+		insertRules(datatypeControl);
+	}	
 }
+
 function insertRules(datatypeControl)
 {
 	var selectedDatatype = datatypeControl.value;
 	var divForDataTypeId = selectedDatatype + "Div";
 
-	var divForDataType = document.getElementById(divForDataTypeId);
+	var tempInnerHTML = "<table width=\"100%\">";
 	var divForCommonRule = document.getElementById("commonsDiv");
-
-	if(divForDataType!=null)
+	if(divForCommonRule != null)
 	{
-		var tempInnerHTML = "<table width=\"100%\"><tr><td width=\"100%\">" + divForCommonRule.innerHTML + "</td></tr><tr><td width=\"100%\">" + divForDataType.innerHTML;
-
+		tempInnerHTML = tempInnerHTML + "<tr><td width=\"100%\">" + divForCommonRule.innerHTML + "</tr></td>";
+	
+		var divForDataType = document.getElementById(divForDataTypeId);
+		if(divForDataType!=null)
+		{
+			tempInnerHTML = tempInnerHTML + "<tr><td width=\"100%\">" + divForDataType.innerHTML + "</tr></td>";
+		}
+		
 		while (tempInnerHTML.indexOf("tempValidationRules") != -1)
 		{
 			tempInnerHTML = tempInnerHTML.replace("tempValidationRules","validationRules");
 		}
-
 		var substitutionDivRules = document.getElementById('substitutionDivRules');
 		substitutionDivRules.innerHTML = tempInnerHTML;
 	}
+	tempInnerHTML = tempInnerHTML + "</table>"
 }
 
 function initBuildForm()
@@ -176,7 +182,11 @@ function initBuildForm()
 		//Load datatype details for selected datatype
 		dataFldDataTypeChanged(dataTypeElt);
 	}
-	
+	else
+	{
+		insertRules("");
+	}
+		
 	var sourceElt =document.getElementById("displayChoice");
 	
 	if(sourceElt!=null)
@@ -683,7 +693,7 @@ function addDynamicData(recordIdentifier)
 {
 	var dataEntryForm = document.getElementById('dataEntryForm');
 	
-	if(dataEntryForm!=null)
+	if(dataEntryForm != null)
 	{		
 		if(recordIdentifier != null || recordIdentifier != "")
 		{
@@ -691,6 +701,16 @@ function addDynamicData(recordIdentifier)
 			document.getElementById('isEdit').value = "true";
 		}
 		dataEntryForm.action="/dynamicExtensions/ApplyDataEntryFormAction.do";
+	}
+}
+
+function checkTextLength(controlName, maxChars)
+{
+	var textControl = document.getElementById(controlName);
+	if(textControl.value.length > maxChars)
+	{
+ 		alert("Maximum number of characters (including spaces) you can enter is " + maxChars +".");
+ 		element.focus();
 	}
 }
 
@@ -788,37 +808,20 @@ function ruleSelected(ruleObject)
 
 function deleteControl()
 {
-	checkAttribute = document.controlsForm.checkAttribute;
-	var length = parseInt(checkAttribute.length)-1;
-	var startPointArray = new Array();
-	var stratPointIndex = 0;
-	for( counter = 0; counter < length ; counter++)
-	{
-		if(checkAttribute[counter].checked)
-		{
-			var startPoint = (document.getElementById(checkAttribute[counter].value + "rowNum")).value;
-			startPointArray[stratPointIndex] = startPoint;
-			stratPointIndex = parseInt(stratPointIndex) + 1;
-		}
-	}
 
-	for(startPointCounter = 0 ; startPointCounter < startPointArray.length;startPointCounter++)
+	checkAttribute = document.controlsForm.checkAttribute;
+	//alert(checkAttribute.length);
+	for(i = 0; i < checkAttribute.length-1; i++)
 	{
-		deleteRow('controlList', startPointArray[startPointCounter]);
-		resetStartPointArray(startPointArray,startPointArray[startPointCounter])
+		if(checkAttribute[i].checked)
+		{
+			var startPoint = (document.getElementById(checkAttribute[i].value + "rowNum")).value;
+			deleteRow('controlList', startPoint)
+		}
 	}
 	resetRowNum(checkAttribute);
-}
 
-function resetStartPointArray(startPointArray,value)
-{
-	for(counter = 0 ; counter  < startPointArray.length;counter++)
-	{
-		if(startPointArray[counter] > value )
-		{
-			startPointArray[counter] = startPointArray[counter] -1 ;
-		}
-	}
+
 }
 
 

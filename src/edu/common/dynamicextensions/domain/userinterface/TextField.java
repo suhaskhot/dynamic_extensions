@@ -3,7 +3,9 @@ package edu.common.dynamicextensions.domain.userinterface;
 
 import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.LongAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
@@ -84,15 +86,15 @@ public class TextField extends Control implements TextFieldInterface
 		if (this.value == null)
 		{
 			defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
-			if(defaultValue == null || (defaultValue.length() == 0))
+			if (defaultValue == null || (defaultValue.length() == 0))
 			{
 				defaultValue = "";
 			}
 		}
 
-		String htmlString = "<input " + "class = '" + cssClass + "' " + "name = '" + getHTMLComponentName() + "' " + "id = '"
-		+ getHTMLComponentName() + "' " + "title = '" + tooltip + "'  " + "value = '" + defaultValue + "' " + "size = '" + columns.intValue()
-		+ "' ";
+		String htmlComponentName = getHTMLComponentName();
+		String htmlString = "<input " + "class = '" + cssClass + "' " + "name = '" + htmlComponentName + "' " + "id = '" + htmlComponentName + "' "
+				+ "title = '" + tooltip + "'  " + "value = '" + defaultValue + "' " + "size = '" + columns.intValue() + "' ";
 
 		String measurementUnit = getMeasurementUnit(this.getAbstractAttribute());
 		if (measurementUnit != null)
@@ -108,8 +110,25 @@ public class TextField extends Control implements TextFieldInterface
 		{
 			htmlString = htmlString + " type='text' ";
 		}
-		htmlString += ">";
 
+		int maxChars = 0;
+		AttributeInterface attribute = (AttributeInterface) this.getAbstractAttribute();
+		if (attribute != null)
+		{
+			StringAttributeTypeInformation stringAttributeTypeInformation = (StringAttributeTypeInformation) attribute.getAttributeTypeInformation();
+			if (stringAttributeTypeInformation != null)
+			{
+				maxChars = stringAttributeTypeInformation.getSize().intValue();
+			}
+		}
+		if (maxChars != 0)
+		{
+			htmlString += "maxlength='" + maxChars + "'>";
+		}
+		else
+		{
+			htmlString += "/>";
+		}
 		return htmlString;
 	}
 
@@ -130,7 +149,7 @@ public class TextField extends Control implements TextFieldInterface
 	{
 		String measurementUnit = null;
 		AttributeTypeInformationInterface attributeTypeInformationInterface = DynamicExtensionsUtility.getAttributeTypeInformation(abstractAttribute);
-		if(attributeTypeInformationInterface!=null)
+		if (attributeTypeInformationInterface != null)
 		{
 			if (attributeTypeInformationInterface instanceof LongAttributeTypeInformation)
 			{

@@ -151,7 +151,7 @@ public class EntityManager
 	{
 
 		Logger.out.debug("[EntityManager.]" + methodName + "()--" + message);
-		System.out.println("[EntityManager.]" + methodName + "()--" + message);
+		//System.out.println("[EntityManager.]" + methodName + "()--" + message);
 	}
 
 	/**
@@ -1561,8 +1561,9 @@ public class EntityManager
 			}
 			else
 			{
+				List<Long> recordIdList = (List<Long>) value;
 				queryList.add(getAssociationInsertDataQuery((AssociationInterface) attribute,
-						(Long) value, identifier));
+						recordIdList, identifier));
 			}
 		}
 
@@ -1625,52 +1626,71 @@ public class EntityManager
 	}
 
 	private String getAssociationInsertDataQuery(AssociationInterface associationInterface,
-			Long targetRecordId, Long sourceRecordId) throws DynamicExtensionsApplicationException,
-			DynamicExtensionsSystemException
+			List<Long> recordIdList, Long sourceRecordId)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		Association association = (Association) associationInterface;
-		verifyCardinalityConstraints(associationInterface, targetRecordId);
+		verifyCardinalityConstraints(associationInterface, recordIdList);
 		String tableName = association.getConstraintProperties().getName();
 		String sourceKey = association.getConstraintProperties().getSourceEntityKey();
 		String targetKey = association.getConstraintProperties().getTargetEntityKey();
 		StringBuffer query = new StringBuffer();
+		Long id = getNextIdentifier(tableName);
 		if (sourceKey != null && targetKey != null && sourceKey.trim().length() != 0
 				&& targetKey.trim().length() != 0)
 		{
-			Long id = getNextIdentifier(tableName);
+
 			query.append("INSERT INTO " + tableName + " ( ");
 			query.append(IDENTIFIER + "," + sourceKey + "," + targetKey);
-			query.append(" ) VALUES (");
-			query.append(id.toString());
-			query.append(COMMA);
-			query.append(sourceRecordId.toString());
-			query.append(COMMA);
-			query.append(targetRecordId.toString());
-			query.append(CLOSING_BRACKET);
+			query.append(" ) VALUES ");
+
+			for (int i = 0; i < recordIdList.size(); i++)
+			{
+				if (i != 0)
+				{
+					query.append(COMMA);
+				}
+
+				query.append(OPENING_BRACKET);
+				query.append(id.toString());
+				query.append(COMMA);
+				query.append(sourceRecordId.toString());
+				query.append(COMMA);
+				query.append(recordIdList.get(i));
+				query.append(CLOSING_BRACKET);
+				id++; //TODO this is not thread safe ,so needs to find a another solution.
+			}
+
 		}
 		else if (sourceKey != null && sourceKey.trim().length() != 0)
 		{
 			query.append(UPDATE_KEYWORD);
 			query.append(WHITESPACE + tableName);
-			query.append(WHITESPACE + SET_KEYWORD + WHITESPACE + sourceKey + EQUAL + targetRecordId
-					+ WHITESPACE);
+			query.append(WHITESPACE + SET_KEYWORD + WHITESPACE + sourceKey + EQUAL
+					+ recordIdList.get(0) + WHITESPACE);
 			query.append(WHERE_KEYWORD + WHITESPACE + IDENTIFIER + EQUAL + sourceRecordId);
 
 		}
 		else
 		{
+			String recordIdString = recordIdList.toString();
+			recordIdString = recordIdString.replace("[", OPENING_BRACKET);
+			recordIdString = recordIdString.replace("]", CLOSING_BRACKET);
+
 			query.append(UPDATE_KEYWORD);
 			query.append(WHITESPACE + tableName);
 			query.append(WHITESPACE + SET_KEYWORD + WHITESPACE + targetKey + EQUAL + sourceRecordId
 					+ WHITESPACE);
-			query.append(WHERE_KEYWORD + WHITESPACE + IDENTIFIER + EQUAL + targetRecordId);
+			query.append(WHERE_KEYWORD + WHITESPACE + IDENTIFIER + WHITESPACE + IN_KEYWORD
+					+ WHITESPACE + recordIdString);
 		}
 
 		return query.toString();
 	}
 
-	private void verifyCardinalityConstraints(AssociationInterface association, Long value)
-			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	private void verifyCardinalityConstraints(AssociationInterface association,
+			List<Long> recordIdList) throws DynamicExtensionsApplicationException,
+			DynamicExtensionsSystemException
 	{
 		EntityInterface sourceEntity = association.getEntity();
 		EntityInterface targetEntity = association.getTargetEntity();
@@ -1682,22 +1702,16 @@ public class EntityManager
 		Cardinality targetMinCardinality = targetRole.getMinimumCardinality();
 		String columnName = "";
 		String tableName = "";
-		if (targetMaxCardinality == Cardinality.ONE)
+		if (targetMaxCardinality == Cardinality.ONE && sourceMaxCardinality == Cardinality.ONE)
 		{
-			if (sourceMaxCardinality == Cardinality.MANY)
-			{
-				tableName = sourceEntity.getTableProperties().getName();
-				columnName = association.getConstraintProperties().getSourceEntityKey();
-			}
-			else if (sourceMaxCardinality == Cardinality.ONE)
-			{
-				tableName = targetEntity.getTableProperties().getName();
-				columnName = association.getConstraintProperties().getTargetEntityKey();
-			}
+
+			tableName = targetEntity.getTableProperties().getName();
+			columnName = association.getConstraintProperties().getTargetEntityKey();
+
 			String query = SELECT_KEYWORD + WHITESPACE + COUNT_KEYWORD + OPENING_BRACKET + "*"
 					+ CLOSING_BRACKET + WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName
 					+ WHITESPACE + WHERE_KEYWORD + WHITESPACE + columnName + WHITESPACE + EQUAL
-					+ WHITESPACE + value.toString();
+					+ WHITESPACE + recordIdList.get(0);
 			ResultSet resultSet = executeQuery(query);
 			try
 			{
@@ -2650,6 +2664,17 @@ public class EntityManager
 
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getRecordById(edu.common.dynamicextensions.domaininterface.EntityInterface, java.lang.Long)
+	 * Value in the map depends on the type of the attribute as explaned below.<br>
+	 * Map 
+	 *    key    - Attribute Name
+	 *    Value  - List<String> --           multiselect attribute.
+	 *             FileAttributeRecordValue  File attribute.
+	 *             List<Long>                Association
+	 *                  if One-One   |____   List will contain only 1 record id that is of target entity's record
+	 *                     Many-One  | 
+	 *                  otherwise it will contains one or more reocrd ids.   
+	 *                                                      
+	 *             String                    Other attribute type.
 	 */
 	public Map getRecordById(EntityInterface entity, Long recordId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -2697,6 +2722,8 @@ public class EntityManager
 			}
 		}
 
+		recordValues.putAll(getAssociationGetRecordQueryList(entity, recordId));
+
 		String[] selectColumnName = new String[selectColumnNameList.size()];
 		for (int i = 0; i < selectColumnNameList.size(); i++)
 		{
@@ -2729,8 +2756,8 @@ public class EntityManager
 						recordValues.put(uiColumnName, value);
 					}
 				}
-
 			}
+
 			/*
 			 * process any multi select attributes
 			 */
@@ -2768,6 +2795,119 @@ public class EntityManager
 			}
 		}
 		return recordValues;
+	}
+
+	/**
+	 * @param entity
+	 * @param recordId
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private Map<Association, List<Long>> getAssociationGetRecordQueryList(EntityInterface entity,
+			Long recordId) throws DynamicExtensionsSystemException
+	{
+
+		Collection associationCollection = entity.getAssociationCollection();
+		Iterator associationIterator = associationCollection.iterator();
+		StringBuffer manyToOneAssociationsGetReocrdQuery = new StringBuffer();
+		manyToOneAssociationsGetReocrdQuery.append(SELECT_KEYWORD + WHITESPACE);
+		List<Association> manyToOneAssociationList = new ArrayList<Association>();
+		String comma = "";
+
+		Map<Association, List<Long>> associationValuesMap = new HashMap<Association, List<Long>>();
+
+		while (associationIterator.hasNext())
+		{
+			Association association = (Association) associationIterator.next();
+
+			String tableName = association.getConstraintProperties().getName();
+			String sourceKey = association.getConstraintProperties().getSourceEntityKey();
+			String targetKey = association.getConstraintProperties().getTargetEntityKey();
+			StringBuffer query = new StringBuffer();
+
+			if (sourceKey != null && targetKey != null && sourceKey.trim().length() != 0
+					&& targetKey.trim().length() != 0)
+			{ /* Many to many*/
+				query.append(SELECT_KEYWORD + WHITESPACE + targetKey);
+				query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName + WHITESPACE);
+				query
+						.append(WHITESPACE + WHERE_KEYWORD + WHITESPACE + sourceKey + EQUAL
+								+ recordId);
+				associationValuesMap.put(association, getAssociationRecordValues(query.toString()));
+			}
+			else if (sourceKey != null && sourceKey.trim().length() != 0)
+			{
+				/* Many to one*/
+				if (manyToOneAssociationList.size() != 0)
+				{
+					manyToOneAssociationsGetReocrdQuery.append(COMMA);
+				}
+				manyToOneAssociationsGetReocrdQuery.append(WHITESPACE + sourceKey + WHITESPACE);
+				manyToOneAssociationList.add(association);
+			}
+			else
+			{
+				/* one to many or one to one*/
+				query.append(SELECT_KEYWORD + WHITESPACE + IDENTIFIER);
+				query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName + WHITESPACE);
+				query
+						.append(WHITESPACE + WHERE_KEYWORD + WHITESPACE + targetKey + EQUAL
+								+ recordId);
+				associationValuesMap.put(association, getAssociationRecordValues(query.toString()));
+			}
+		}
+
+		manyToOneAssociationsGetReocrdQuery.append(WHITESPACE + FROM_KEYWORD + WHITESPACE
+				+ entity.getTableProperties().getName() + WHITESPACE);
+		manyToOneAssociationsGetReocrdQuery.append(WHITESPACE + WHERE_KEYWORD + WHITESPACE
+				+ IDENTIFIER + EQUAL + recordId);
+
+		int noOfMany2OneAsso = manyToOneAssociationList.size();
+		if (noOfMany2OneAsso != 0)
+		{
+			try
+			{
+				ResultSet resultSet = executeQuery(manyToOneAssociationsGetReocrdQuery.toString());
+				for (int i = 0; i < noOfMany2OneAsso; i++)
+				{
+					Long targetRecordId = resultSet.getLong(i + 1);
+					List<Long> valueList = new ArrayList<Long>();
+					valueList.add(targetRecordId);
+					associationValuesMap.put(manyToOneAssociationList.get(i), valueList);
+				}
+			}
+			catch (SQLException e)
+			{
+				throw new DynamicExtensionsSystemException("Exception in query execution", e);
+			}
+		}
+		return associationValuesMap;
+	}
+
+	/**
+	 * @param query
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private List<Long> getAssociationRecordValues(String query)
+			throws DynamicExtensionsSystemException
+	{
+		List<Long> associationRecordValues = new ArrayList();
+		try
+		{
+			ResultSet resultSet = executeQuery(query);
+			do
+			{
+				Long recordId = resultSet.getLong(1);
+				associationRecordValues.add(recordId);
+			}
+			while (resultSet.next());
+		}
+		catch (Exception e)
+		{
+			throw new DynamicExtensionsSystemException("Exception in query execution", e);
+		}
+		return associationRecordValues;
 	}
 
 	/**
@@ -3200,6 +3340,14 @@ public class EntityManager
 
 		catch (Exception e)
 		{
+			try
+			{
+				conn.rollback();
+			}
+			catch (SQLException e1)
+			{
+				throw new DynamicExtensionsSystemException(e.getMessage(), e);
+			}
 			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
 

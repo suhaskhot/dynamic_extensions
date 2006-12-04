@@ -67,25 +67,6 @@
         -->
 
         <joined-subclass
-            name="edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation"
-            table="DYEXTN_DOUBLE_TYPE_INFO"
-            dynamic-update="false"
-            dynamic-insert="false"
-        >
-        <key
-            column="IDENTIFIER"
-        />
-
-        <property
-            name="measurementUnits"
-            type="string"
-            update="true"
-            insert="true"
-            column="MEASUREMENT_UNITS"
-        />
-
-        </joined-subclass>
-        <joined-subclass
             name="edu.common.dynamicextensions.domain.ByteArrayAttributeTypeInformation"
             table="DYEXTN_BYTE_ARRAY_TYPE_INFO"
             dynamic-update="false"
@@ -160,63 +141,6 @@
 
         </joined-subclass>
         <joined-subclass
-            name="edu.common.dynamicextensions.domain.ShortAttributeTypeInformation"
-            table="DYEXTN_SHORT_TYPE_INFO"
-            dynamic-update="false"
-            dynamic-insert="false"
-        >
-        <key
-            column="IDENTIFIER"
-        />
-
-        <property
-            name="measurementUnits"
-            type="string"
-            update="true"
-            insert="true"
-            column="MEASUREMENT_UNITS"
-        />
-
-        </joined-subclass>
-        <joined-subclass
-            name="edu.common.dynamicextensions.domain.IntegerAttributeTypeInformation"
-            table="DYEXTN_INTEGER_TYPE_INFO"
-            dynamic-update="false"
-            dynamic-insert="false"
-        >
-        <key
-            column="IDENTIFIER"
-        />
-
-        <property
-            name="measurementUnits"
-            type="string"
-            update="true"
-            insert="true"
-            column="MEASUREMENT_UNITS"
-        />
-
-        </joined-subclass>
-        <joined-subclass
-            name="edu.common.dynamicextensions.domain.LongAttributeTypeInformation"
-            table="DYEXTN_LONG_TYPE_INFO"
-            dynamic-update="false"
-            dynamic-insert="false"
-        >
-        <key
-            column="IDENTIFIER"
-        />
-
-        <property
-            name="measurementUnits"
-            type="string"
-            update="true"
-            insert="true"
-            column="MEASUREMENT_UNITS"
-        />
-
-        </joined-subclass>
-        <joined-subclass
             name="edu.common.dynamicextensions.domain.DateAttributeTypeInformation"
             table="DYEXTN_DATE_TYPE_INFO"
             dynamic-update="false"
@@ -245,6 +169,79 @@
         />
 
         </joined-subclass>
+        
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation"
+            table="DYEXTN_DOUBLE_TYPE_INFO"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+        <property
+            name="measurementUnits"
+            type="string"
+            update="true"
+            insert="true"
+            column="MEASUREMENT_UNITS"
+        />
+
+        </joined-subclass>
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.ShortAttributeTypeInformation"
+            table="DYEXTN_SHORT_TYPE_INFO"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+        <property
+            name="measurementUnits"
+            type="string"
+            update="true"
+            insert="true"
+            column="MEASUREMENT_UNITS"
+        />
+
+        </joined-subclass>
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.IntegerAttributeTypeInformation"
+            table="DYEXTN_INTEGER_TYPE_INFO"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+        <property
+            name="measurementUnits"
+            type="string"
+            update="true"
+            insert="true"
+            column="MEASUREMENT_UNITS"
+        />
+
+        </joined-subclass>
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.LongAttributeTypeInformation"
+            table="DYEXTN_LONG_TYPE_INFO"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+        <property
+            name="measurementUnits"
+            type="string"
+            update="true"
+            insert="true"
+            column="MEASUREMENT_UNITS"
+        />
+
+        </joined-subclass>
         <joined-subclass
             name="edu.common.dynamicextensions.domain.FloatAttributeTypeInformation"
             table="DYEXTN_FLOAT_TYPE_INFO"
@@ -254,7 +251,6 @@
         <key
             column="IDENTIFIER"
         />
-
         <property
             name="measurementUnits"
             type="string"

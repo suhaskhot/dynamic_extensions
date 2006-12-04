@@ -9,7 +9,7 @@ import edu.wustl.common.domain.AbstractDomainObject;
  * @author sujay_narkar
  * @hibernate.class table="DYEXTN_DATA_ELEMENT"
  */
-public abstract class DataElement extends AbstractDomainObject implements java.io.Serializable, DataElementInterface
+public abstract class DataElement extends DynamicExtensionBaseDomainObject implements DataElementInterface
 {
 
 	/**
@@ -17,28 +17,6 @@ public abstract class DataElement extends AbstractDomainObject implements java.i
 	 */
 	protected static final long serialVersionUID = 1234567890L;
 
-	/**
-	 * The unique identifier
-	 */
-	protected Long id;
-
-	/**
-	 * This method returns the unique identifier of DataElement.
-	 * @return the unique identifier of DataElement.
-	 */
-	public Long getSystemIdentifier()
-	{
-		return id;
-	}
-
-	/**
-	 * This method sets the unique identifier of DataElement.
-	 * @param systemIdentifier the unique identifier to be set.
-	 */
-	public void setSystemIdentifier(Long systemIdentifier)
-	{
-		this.id = systemIdentifier;
-	}
 
 	/**
 	 * This method returns the unique identifier of DataElement.
@@ -51,14 +29,4 @@ public abstract class DataElement extends AbstractDomainObject implements java.i
 	{
 		return id;
 	}
-
-	/**
-	 * This method sets the unique identifier of DataElement.
-	 * @param id the unique identifier to be set.
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
-	}
-
 }

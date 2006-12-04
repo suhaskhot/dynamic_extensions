@@ -42,7 +42,7 @@ public class EntityGroup extends AbstractMetadata implements java.io.Serializabl
 	/**
 	 * Collection of Entity in this Entity group.
 	 */
-	protected Collection<EntityInterface> entityCollection;
+	protected Collection<EntityInterface> entityCollection = new HashSet<EntityInterface>();
 
 	/**
 	 * Empty Constructor
@@ -71,15 +71,6 @@ public class EntityGroup extends AbstractMetadata implements java.io.Serializabl
 	public void setEntityCollection(Collection<EntityInterface> entityCollection)
 	{
 		this.entityCollection = entityCollection;
-	}
-
-	/**
-	 * Set all values from the form
-	 * @param abstractActionForm the ActionForm
-	 * @throws AssignDataException if data is not in proper format.
-	 */
-	public void setAllValues(AbstractActionForm abstractActionForm) throws AssignDataException
-	{
 	}
 
 	/**

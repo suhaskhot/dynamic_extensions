@@ -31,13 +31,6 @@ public class DoubleAttributeTypeInformation extends AttributeTypeInformation imp
 
 	}
 
-	/** (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domain.AttributeTypeInformation#setAllValues(edu.wustl.common.actionForm.AbstractActionForm)
-	 */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException
-	{
-	}
-
 	/**
 	 * @hibernate.property name="measurementUnits" type="string" column="MEASUREMENT_UNITS"  
 	 * @return Returns the measurementUnits.
@@ -98,13 +91,5 @@ public class DoubleAttributeTypeInformation extends AttributeTypeInformation imp
 
 	protected String size;
 
-	//     public String getSize()
-	//	{
-	//		return this.size;
-	//	}
-	//
-	//	public void setSize(String size)
-	//	{
-	//		this.size = size;
-	//	}
+
 }

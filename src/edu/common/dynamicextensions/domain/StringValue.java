@@ -24,15 +24,6 @@ public class StringValue extends PermissibleValue implements StringValueInterfac
 	protected String value;
 
 	/**
-	 * Set all values from the form
-	 * @param abstractActionForm the ActionForm
-	 * @throws AssignDataException if data is not in proper format.
-	 */
-	public void setAllValues(AbstractActionForm abstractActionForm) throws AssignDataException
-	{
-	}
-
-	/**
 	 * This method returns the predefined value of StringValue.
 	 * @hibernate.property name="value" type="string" column="VALUE"  
 	 * @return the predefined value of StringValue.

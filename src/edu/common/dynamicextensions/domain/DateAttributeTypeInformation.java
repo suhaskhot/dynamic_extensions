@@ -58,15 +58,4 @@ public class DateAttributeTypeInformation extends AttributeTypeInformation
         this.format = format;
     }
 
-
-    /**
-     * Set all values from the form
-     * @see edu.common.dynamicextensions.domain.AttributeTypeInformation#setAllValues(edu.wustl.common.actionForm.AbstractActionForm)
-     */
-    public void setAllValues(AbstractActionForm arg0)
-            throws AssignDataException
-    {
-        // TODO Auto-generated method stub
-
-    }
 }

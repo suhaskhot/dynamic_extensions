@@ -23,11 +23,8 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.class table="DYEXTN_TAGGED_VALUE"
  * 
  */
-public class TaggedValue extends AbstractDomainObject
-        implements
-            TaggedValueInterface,
-            Serializable
-{
+public class TaggedValue extends DynamicExtensionBaseDomainObject
+        implements TaggedValueInterface {
 
     public TaggedValue()
     {
@@ -44,10 +41,6 @@ public class TaggedValue extends AbstractDomainObject
      * Value part of the tagged value
      */
     String value;
-    /**
-     * Unique identifier for the object
-     */
-    Long id;
 
     /**
      * This method returns the Unique identifier.
@@ -61,14 +54,6 @@ public class TaggedValue extends AbstractDomainObject
         return id;
     }
 
-    /**
-     * This method sets the Unique identifier.
-     * @param id the Unique identifier to be set.
-     */
-    public void setId(Long id)
-    {
-        this.id = id;
-    }
 
     /**
      * This method returns the key.
@@ -102,14 +87,4 @@ public class TaggedValue extends AbstractDomainObject
     {
         this.value = value;
     }
-
-    /**
-     * @see edu.wustl.common.domain.AbstractDomainObject#setAllValues(edu.wustl.common.actionForm.AbstractActionForm)
-     */
-    public void setAllValues(AbstractActionForm arg0)
-            throws AssignDataException
-    {
-
-    }
-
 }

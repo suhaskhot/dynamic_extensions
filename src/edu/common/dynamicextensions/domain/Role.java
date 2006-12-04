@@ -14,18 +14,13 @@ import edu.wustl.common.exception.AssignDataException;
  * @created 28-Sep-2006 12:20:08 PM
  * @hibernate.class table="DYEXTN_ROLE"
  */
-public class Role extends AbstractDomainObject implements RoleInterface
+public class Role extends DynamicExtensionBaseDomainObject implements RoleInterface
 {
 
 	/**
 	 * Serial Version Unique Identifier
 	 */
 	private static final long serialVersionUID = 8674217047857771139L;
-
-	/**
-	 * Unique identifier for the object
-	 */
-	protected Long id;
 
 	/**
 	 * The association type : containment or linking
@@ -64,15 +59,6 @@ public class Role extends AbstractDomainObject implements RoleInterface
 	public Long getId()
 	{
 		return id;
-	}
-
-	/**
-	 * This method sets the Unique identifier of this Object.
-	 * @param id the Unique identifier to be set.
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
 	}
 
 	/**
@@ -151,31 +137,6 @@ public class Role extends AbstractDomainObject implements RoleInterface
 		this.name = name;
 	}
 
-	/**
-	 * Set all values from the form
-	 * @param abstractActionForm the ActionForm
-	 * @throws AssignDataException if data is not in proper format.
-	 */
-	public void setAllValues(AbstractActionForm abstractActionForm) throws AssignDataException
-	{
-	}
-
-	/**
-	 * This method returns the Unique identifier of this Object.
-	 * @return the Unique identifier of this Object.
-	 */
-	public Long getSystemIdentifier()
-	{
-		return null;
-	}
-
-	/**
-	 * This method sets the Unique identifier of this Object.
-	 * @param id the Unique identifier to be set.
-	 */
-	public void setSystemIdentifier(Long id)
-	{
-	}
 
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.RoleInterface#getMaximumCardinality()

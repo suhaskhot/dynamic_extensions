@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -19,16 +20,12 @@ import edu.wustl.common.exception.AssignDataException;
  * @created 28-Sep-2006 12:20:07 PM
  * @hibernate.class table="DYEXTN_CONTAINER"
  */
-public class Container extends AbstractDomainObject implements Serializable, ContainerInterface
+public class Container extends DynamicExtensionBaseDomainObject implements Serializable, ContainerInterface
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 8092366994778601914L;
-	/**
-	 * Unique identifier for the object
-	 */
-	protected Long id;
 	/**
 	 * @return
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
@@ -40,10 +37,6 @@ public class Container extends AbstractDomainObject implements Serializable, Con
 		return id;
 	}
 
-	public void setId(Long id)
-	{
-		this.id = id;
-	}
 	/**
 	 * css for the buttons on the container.
 	 */
@@ -214,33 +207,6 @@ public class Container extends AbstractDomainObject implements Serializable, Con
 	public void setTitleCss(String titleCss)
 	{
 		this.titleCss = titleCss;
-	}
-
-	/* (non-Javadoc)
-	 * @see edu.wustl.common.domain.AbstractDomainObject#setAllValues(edu.wustl.common.actionForm.AbstractActionForm)
-	 */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see edu.wustl.common.domain.AbstractDomainObject#getSystemIdentifier()
-	 */
-	public Long getSystemIdentifier()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see edu.wustl.common.domain.AbstractDomainObject#setSystemIdentifier(java.lang.Long)
-	 */
-	public void setSystemIdentifier(Long arg0)
-	{
-		// TODO Auto-generated method stub
-
 	}
 
 	/**

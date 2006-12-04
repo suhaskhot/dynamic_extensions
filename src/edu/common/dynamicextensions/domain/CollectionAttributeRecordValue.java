@@ -9,12 +9,8 @@ import java.io.Serializable;
  * @author Rahul Ner 
  * @hibernate.class  table="DE_COLL_ATTR_RECORD_VALUES"
  */
-public class CollectionAttributeRecordValue implements Serializable
+public class CollectionAttributeRecordValue extends DynamicExtensionBaseDomainObject
 {
-	/**
-	 * 
-	 */
-	protected Long id;
 
 	/**
 	 * 
@@ -54,14 +50,6 @@ public class CollectionAttributeRecordValue implements Serializable
 		return id;
 	}
 
-	/**
-	 * This method sets the unique identifier of the AbstractMetadata.
-	 * @param id The identifier to set.
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
-	}
 	
 	
 }

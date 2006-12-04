@@ -27,13 +27,6 @@ public class FloatAttributeTypeInformation extends AttributeTypeInformation impl
 
 	}
 
-	/** (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domain.AttributeTypeInformation#setAllValues(edu.wustl.common.actionForm.AbstractActionForm)
-	 */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException
-	{
-	}
-
 	/**
 	 * @hibernate.property name="measurementUnits" type="string" column="MEASUREMENT_UNITS"  
 	 * @return Returns the measurementUnits.
@@ -95,16 +88,5 @@ public class FloatAttributeTypeInformation extends AttributeTypeInformation impl
 	{
 		this.digits = digits;
 	}
-	//	 protected String size;
-	//
-	//     
-	//     public String getSize()
-	//	{
-	///		return this.size;
-	//	}
-	//
-	//	public void setSize(String size)
-	//	{
-	//		this.size = size;
-	//	}
+
 }

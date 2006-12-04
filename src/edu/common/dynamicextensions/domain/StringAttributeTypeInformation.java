@@ -58,10 +58,4 @@ public class StringAttributeTypeInformation extends AttributeTypeInformation imp
 		this.size = size;
 	}
 
-	/*** (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domain.AttributeTypeInformation#setAllValues(edu.wustl.common.actionForm.AbstractActionForm)
-	 */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException
-	{
-	}
 }

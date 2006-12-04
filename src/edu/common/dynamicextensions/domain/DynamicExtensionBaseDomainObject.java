@@ -1,8 +1,7 @@
 
 package edu.common.dynamicextensions.domain;
 
-import java.io.Serializable;
-
+import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.exception.AssignDataException;
@@ -12,8 +11,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @author Rahul Ner
  */
 public abstract class DynamicExtensionBaseDomainObject extends AbstractDomainObject
-		implements
-			Serializable
+		implements DynamicExtensionBaseDomainObjectInterface
 {
 
 	/**
@@ -40,5 +38,62 @@ public abstract class DynamicExtensionBaseDomainObject extends AbstractDomainObj
 	public void setId(Long id)
 	{
 		this.id = id;
+	}
+	
+	/**
+	 * This method returns the System Identifier of the AbstractMetadata.
+	 * @return Long the unique System Identifier of the AbstractMetadata.
+	 */
+	public Long getSystemIdentifier()
+	{
+		return id;
+	}
+
+	/**
+	 * This method sets the unique System Identifier of the AbstractMetadata.
+	 * @param systemIdentifier the System Identifier to be set.
+	 */
+	public void setSystemIdentifier(Long systemIdentifier)
+	{
+		this.id = systemIdentifier;
+	}
+	
+	/**
+	 * This method overrides the equals method of the Object Class.
+	 * This method checks the equality of the AbstractMetadata objects.
+	 * @return boolean true if the both AbstractMetadata objects are equal otherwise false. 
+	 */
+	public boolean equals(Object obj)
+	{
+		boolean equals = false;
+		if (obj instanceof DynamicExtensionBaseDomainObject)
+		{
+			DynamicExtensionBaseDomainObject object = (DynamicExtensionBaseDomainObject) obj;
+			Long thisId = getId();
+
+			if (thisId != null && thisId.equals(object.getId()))
+			{
+				equals = true;
+			}
+		}
+		return equals;
+	}
+	
+	/**
+	 * This method overrides the equals method of the Object Class.
+	 * It returns the HashCode of this AttributeMetadata instance.
+	 * @return int The HashCode of the AttributeMetadata instance.
+	 */
+	public int hashCode()
+	{
+
+		return 1;
+//				int hashCode = 0;
+//
+//		if (getId() != null)
+//		{
+//			hashCode += getId().hashCode();
+//		}
+//		return hashCode;
 	}
 }

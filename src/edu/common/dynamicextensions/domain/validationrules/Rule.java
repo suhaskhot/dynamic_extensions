@@ -2,8 +2,10 @@
 package edu.common.dynamicextensions.domain.validationrules;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 
+import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
@@ -15,7 +17,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @created 28-Sep-2006 12:20:08 PM
  * @hibernate.class table="DYEXTN_RULE"
  */
-public class Rule extends AbstractDomainObject implements java.io.Serializable, RuleInterface
+public class Rule extends DynamicExtensionBaseDomainObject implements RuleInterface
 {
 
 	/**
@@ -23,10 +25,6 @@ public class Rule extends AbstractDomainObject implements java.io.Serializable, 
 	 */
 	private static final long serialVersionUID = 6495330944005526400L;
 
-	/**
-	 * Unique identifier for the object
-	 */
-	protected Long id;
 
 	/**
 	 * Name of the rule.
@@ -36,7 +34,7 @@ public class Rule extends AbstractDomainObject implements java.io.Serializable, 
 	/**
 	 * The Collection of RuleParameter.
 	 */
-	protected Collection<RuleParameterInterface> ruleParameterCollection;
+	protected Collection<RuleParameterInterface> ruleParameterCollection = new HashSet<RuleParameterInterface>();
 
 	/**
 	 * Empty Constructor.
@@ -55,15 +53,6 @@ public class Rule extends AbstractDomainObject implements java.io.Serializable, 
 	public Long getId()
 	{
 		return id;
-	}
-
-	/**
-	 * This method sets the Unique Identifier of the Object.
-	 * @param id the Unique Identifer to be set.
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
 	}
 
 	/**
@@ -107,32 +96,6 @@ public class Rule extends AbstractDomainObject implements java.io.Serializable, 
 		this.ruleParameterCollection = ruleParameterCollection;
 	}
 
-	/**
-	 * This method set all values from the form.
-	 * @param abstractActionForm the ActionForm
-	 * @throws AssignDataException if data is not in proper format.
-	 */
-	public void setAllValues(AbstractActionForm abstractActionForm) throws AssignDataException
-	{
-	}
-
-	/**
-	 * This method returns the System Identifier.
-	 * @return the System Identifier
-	 */
-	public Long getSystemIdentifier()
-	{
-		return this.id;
-	}
-
-	/**
-	 * This method sets the System Identifier.
-	 * @param systemIdentifier the System Identifer to be set.
-	 */
-	public void setSystemIdentifier(Long systemIdentifier)
-	{
-		this.id = systemIdentifier;
-	}
 
 	/**
 	 * This method adds a RuleParameter to the Collection of RuleParameter.

@@ -49,13 +49,4 @@ public class ByteArrayAttributeTypeInformation extends AttributeTypeInformation 
 		this.contentType = contentType;
 	}
 
-	/**
-	 * Set all values from the form
-	 * @param abstractActionForm the ActionForm
-	 * @throws AssignDataException if data is not in proper format.
-	 */
-	public void setAllValues(AbstractActionForm abstractActionForm) throws AssignDataException
-	{
-	}
-	
 }

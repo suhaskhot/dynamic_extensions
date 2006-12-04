@@ -22,9 +22,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
 public class Association extends AbstractAttribute
-		implements
-			java.io.Serializable,
-			AssociationInterface
+		implements AssociationInterface
 {
 
 	/**
@@ -55,7 +53,7 @@ public class Association extends AbstractAttribute
 	/**
 	 * Constraint properties related to this association.
 	 */
-	public Collection<ConstraintPropertiesInterface> constraintPropertiesCollection;
+	public Collection<ConstraintPropertiesInterface> constraintPropertiesCollection = new HashSet<ConstraintPropertiesInterface>();
 
 	/**
 	 * 
@@ -87,15 +85,6 @@ public class Association extends AbstractAttribute
 	{
 
 		this.direction = direction;
-	}
-
-	/**
-	 * Set all values from the form
-	 * @param abstractActionForm the ActionForm
-	 * @throws AssignDataException if data is not in proper format.
-	 */
-	public void setAllValues(AbstractActionForm abstractActionForm) throws AssignDataException
-	{
 	}
 
 	/**
@@ -190,7 +179,7 @@ public class Association extends AbstractAttribute
 	public ConstraintPropertiesInterface getConstraintProperties()
 	{
 		ConstraintPropertiesInterface contraintProperties = null;
-		if (constraintPropertiesCollection != null)
+		if (constraintPropertiesCollection != null && !constraintPropertiesCollection.isEmpty())
 		{
 			Iterator constraintPropertiesIterator = constraintPropertiesCollection.iterator();
 			contraintProperties = (ConstraintPropertiesInterface) constraintPropertiesIterator

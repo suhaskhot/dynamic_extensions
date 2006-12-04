@@ -56,9 +56,4 @@ public class ConstraintProperties extends DatabaseProperties implements Constrai
         this.targetEntityKey = targetEntityKey;
     }
 
-    /**
-     * 
-     */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
-	}
 }

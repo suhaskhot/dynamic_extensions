@@ -25,7 +25,7 @@ public class FileAttributeTypeInformation extends AttributeTypeInformation
 	/**
 	 * allowed file types for this attribute
 	 */
-	Collection<FileExtension> fileExtensionCollection;
+	Collection<FileExtension> fileExtensionCollection = new HashSet<FileExtension>();
 
 	/**
 	 * Empty Constructor.

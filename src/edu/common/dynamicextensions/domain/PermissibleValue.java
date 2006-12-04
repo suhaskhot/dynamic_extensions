@@ -2,8 +2,10 @@
 package edu.common.dynamicextensions.domain;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
+import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.wustl.common.domain.AbstractDomainObject;
 
 /**
@@ -11,16 +13,9 @@ import edu.wustl.common.domain.AbstractDomainObject;
  * @hibernate.class table="DYEXTN_PERMISSIBLE_VALUE" 
  *
  */
-public abstract class PermissibleValue extends AbstractDomainObject
-		implements
-			java.io.Serializable,
-			PermissibleValueInterface
+public abstract class PermissibleValue extends DynamicExtensionBaseDomainObject
+		implements PermissibleValueInterface
 {
-
-	/**
-	 * Unique identifier for the object
-	 */
-	protected Long id;
 
 	/**
 	 * 
@@ -31,7 +26,7 @@ public abstract class PermissibleValue extends AbstractDomainObject
 	 * Semantic property collection.
 	 */
 
-	protected Collection semanticPropertyCollection;
+	protected Collection<SemanticPropertyInterface> semanticPropertyCollection = new HashSet<SemanticPropertyInterface>();
 
 	/**
 	 * @hibernate.property name="description" type="string" column="DESCRIPTION" 
@@ -51,23 +46,6 @@ public abstract class PermissibleValue extends AbstractDomainObject
 		this.description = description;
 	}
 
-	/**
-	 * @return id
-	 */
-	public Long getSystemIdentifier()
-	{
-		return id;
-	}
-
-
-	/**
-	 * @param id long
-	 */
-	public void setSystemIdentifier(Long id)
-	{
-		this.id = id;
-
-	}
 
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.PermissibleValueInterface#getValueAsObject()
@@ -83,14 +61,6 @@ public abstract class PermissibleValue extends AbstractDomainObject
 	public Long getId()
 	{
 		return id;
-	}
-
-	/**
-	 * @param id The id to set.
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
 	}
 
 	/**

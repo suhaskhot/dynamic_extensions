@@ -19,12 +19,4 @@ public class ColumnProperties extends DatabaseProperties implements ColumnProper
 
 	}
     
-    /**
-     * 
-     */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

@@ -45,12 +45,12 @@ public class Attribute extends AbstractAttribute implements AttributeInterface
 	/**
 	 * Column property associated to this primitive attribute.
 	 */
-	protected Collection<ColumnPropertiesInterface> columnPropertiesCollection;
+	protected Collection<ColumnPropertiesInterface> columnPropertiesCollection = new HashSet<ColumnPropertiesInterface>();
     
     /**
      * 
      */
-    protected Collection<AttributeTypeInformationInterface> attributeTypeInformationCollection;
+    protected Collection<AttributeTypeInformationInterface> attributeTypeInformationCollection = new HashSet<AttributeTypeInformationInterface>();
     
     /**
      * @hibernate.set name="attributeTypeInformationCollection" table="DYEXTN_ATTRIBUTE_TYPE_INFO"
@@ -196,7 +196,7 @@ public class Attribute extends AbstractAttribute implements AttributeInterface
 	public ColumnPropertiesInterface getColumnProperties()
 	{
 		ColumnPropertiesInterface columnProperties = null;
-		if (columnPropertiesCollection != null)
+		if (columnPropertiesCollection != null && !columnPropertiesCollection.isEmpty())
 		{
 			Iterator columnPropertiesIterator = columnPropertiesCollection.iterator();
 			columnProperties = (ColumnPropertiesInterface) columnPropertiesIterator.next();
@@ -236,13 +236,5 @@ public class Attribute extends AbstractAttribute implements AttributeInterface
 		this.isNullable = isNullable;
 	}
     
-    /**
-     * @see edu.wustl.common.domain.AbstractDomainObject#setAllValues(edu.wustl.common.actionForm.AbstractActionForm)
-     */
-    public void setAllValues(AbstractActionForm abstractForm) throws AssignDataException
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
+ 
 }

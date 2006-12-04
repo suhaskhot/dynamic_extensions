@@ -2,6 +2,7 @@ package edu.common.dynamicextensions.domain.databaseproperties;
 
 import java.io.Serializable;
 
+import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.DatabasePropertiesInterface;
 import edu.wustl.common.domain.AbstractDomainObject;
 
@@ -10,11 +11,7 @@ import edu.wustl.common.domain.AbstractDomainObject;
  * @created 28-Sep-2006 12:20:07 PM
  * @hibernate.class table="DYEXTN_DATABASE_PROPERTIES"
  */
-public  abstract class DatabaseProperties extends AbstractDomainObject implements  Serializable,DatabasePropertiesInterface{
-    /**
-     * Unique identifier for the object
-     */
-	protected Long id;
+public  abstract class DatabaseProperties extends DynamicExtensionBaseDomainObject implements  Serializable,DatabasePropertiesInterface{
 	/**
 	 * Name of the database property.
 	 */
@@ -36,12 +33,6 @@ public  abstract class DatabaseProperties extends AbstractDomainObject implement
     public Long getId() {
         return id;
     }
-    /**
-     * @param id The id to set.
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
 	
     /**
      * @hibernate.property name="name" type="string" column="NAME" 
@@ -56,18 +47,6 @@ public  abstract class DatabaseProperties extends AbstractDomainObject implement
     public void setName(String name) {
         this.name = name;
     }
-    
-    /**
-     * 
-     */
-    public Long getSystemIdentifier() {
-        return id;
-    }
-    /**
-     * 
-     */
-    public void setSystemIdentifier(Long systemIdentifier) {
-        this.id = systemIdentifier; 
-        
-    }
+ 
+
 }

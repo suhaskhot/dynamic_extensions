@@ -24,15 +24,6 @@ public class LongValue extends PermissibleValue implements LongValueInterface
 	protected Long value;
 
 	/**
-	 * Set all values from the form
-	 * @param abstractActionForm the ActionForm
-	 * @throws AssignDataException if data is not in proper format.
-	 */
-	public void setAllValues(AbstractActionForm abstractActionForm) throws AssignDataException
-	{
-	}
-
-	/**
 	 * This method returns the predefined value of LongValue.
 	 * @hibernate.property name="value" type="long" column="VALUE"  
 	 * @return the predefined value of LongValue.

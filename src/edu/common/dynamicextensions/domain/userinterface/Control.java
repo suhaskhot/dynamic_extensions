@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import edu.common.dynamicextensions.domain.AbstractAttribute;
+import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
@@ -18,13 +19,8 @@ import edu.wustl.common.exception.AssignDataException;
  * @created 28-Sep-2006 12:20:07 PM
  * @hibernate.class table="DYEXTN_CONTROL"
  */
-public abstract class Control extends AbstractDomainObject implements Serializable, ControlInterface
+public abstract class Control extends DynamicExtensionBaseDomainObject implements Serializable, ControlInterface
 {
-	/**
-	 * Unique identifier for the object
-	 */
-	protected Long id = null;
-	
 	/**
 	 * @return
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
@@ -36,11 +32,6 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 		return id;
 	}
 
-	public void setId(Long id)
-	{
-		this.id = id;
-	}
-	
 	/**
 	 * The caption of the control.
 	 */
@@ -194,29 +185,6 @@ public abstract class Control extends AbstractDomainObject implements Serializab
 	public void setTooltip(String tooltip)
 	{
 		this.tooltip = tooltip;
-	}
-
-	/* (non-Javadoc)
-	 * @see edu.wustl.common.domain.AbstractDomainObject#setAllValues(edu.wustl.common.actionForm.AbstractActionForm)
-	 */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException
-	{
-	}
-
-	/* (non-Javadoc)
-	 * @see edu.wustl.common.domain.AbstractDomainObject#getSystemIdentifier()
-	 */
-	public Long getSystemIdentifier()
-	{
-		return id;
-	}
-
-	/* (non-Javadoc)
-	 * @see edu.wustl.common.domain.AbstractDomainObject#setSystemIdentifier(java.lang.Long)
-	 */
-	public void setSystemIdentifier(Long id)
-	{
-		this.id = id;
 	}
 
 	/**

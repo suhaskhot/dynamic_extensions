@@ -30,7 +30,7 @@ public abstract class AbstractAttribute extends AbstractMetadata implements Abst
 	/**
 	 * Collection of rules.
 	 */
-	protected Collection<RuleInterface> ruleCollection;
+	protected Collection<RuleInterface> ruleCollection = new HashSet<RuleInterface>();
 
 	/**
 	 * Empty constructor

@@ -32,18 +32,6 @@ public class ShortAttributeTypeInformation extends AttributeTypeInformation impl
 	 */
 	protected String decimalPlaces = "0";
 
-	//protected String size;
-
-	//   public String getSize()
-	//{
-	//	return this.size;
-	//}
-	//
-	//public void setSize(String size)
-	//	{
-	//		this.size = size;
-	//	}
-
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.ShortTypeInformationInterface#getDecimalPlaces()
 	 */
@@ -85,13 +73,6 @@ public class ShortAttributeTypeInformation extends AttributeTypeInformation impl
 	public ShortAttributeTypeInformation()
 	{
 
-	}
-
-	/** (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domain.AttributeTypeInformation#setAllValues(edu.wustl.common.actionForm.AbstractActionForm)
-	 */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException
-	{
 	}
 
 	/**

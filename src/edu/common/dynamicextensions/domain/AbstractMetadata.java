@@ -17,7 +17,7 @@ import edu.wustl.common.domain.AbstractDomainObject;
  * @created 28-Sep-2006 12:20:06 PM
  * @hibernate.class table="DYEXTN_ABSTRACT_METADATA" 
  */
-public abstract class AbstractMetadata extends AbstractDomainObject implements java.io.Serializable, AbstractMetadataInterface
+public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject implements AbstractMetadataInterface
 {
 
 	/**
@@ -25,11 +25,7 @@ public abstract class AbstractMetadata extends AbstractDomainObject implements j
 	 */
 	protected static final long serialVersionUID = 1234567890L;
 
-	/**
-	 * Internally generated identifier.
-	 */
-	protected Long id;
-
+	
 	/**
 	 * This method returns the unique identifier of the AbstractMetadata.
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
@@ -42,14 +38,6 @@ public abstract class AbstractMetadata extends AbstractDomainObject implements j
 		return id;
 	}
 
-	/**
-	 * This method sets the unique identifier of the AbstractMetadata.
-	 * @param id The identifier to set.
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
-	}
 	/**
 	 * Name of metadata object
 	 */
@@ -73,12 +61,12 @@ public abstract class AbstractMetadata extends AbstractDomainObject implements j
 	/**
 	 * Semantic property collection.
 	 */
-	protected Collection<SemanticPropertyInterface> semanticPropertyCollection;
+	protected Collection<SemanticPropertyInterface> semanticPropertyCollection = new HashSet<SemanticPropertyInterface>();
 
     /**
      * Semantic property collection.
      */
-    protected Collection<TaggedValueInterface> taggedValueCollection;
+    protected Collection<TaggedValueInterface> taggedValueCollection = new HashSet<TaggedValueInterface>();
 	/**
 	 * Empty Constructor
 	 */
@@ -185,64 +173,6 @@ public abstract class AbstractMetadata extends AbstractDomainObject implements j
 	{
 		this.semanticPropertyCollection = semanticPropertyCollection;
 	}
-
-	/**
-	 * This method returns the System Identifier of the AbstractMetadata.
-	 * @return Long the unique System Identifier of the AbstractMetadata.
-	 */
-	public Long getSystemIdentifier()
-	{
-		return id;
-	}
-
-	/**
-	 * This method sets the unique System Identifier of the AbstractMetadata.
-	 * @param systemIdentifier the System Identifier to be set.
-	 */
-	public void setSystemIdentifier(Long systemIdentifier)
-	{
-		this.id = systemIdentifier;
-	}
-
-	/**
-	 * This method overrides the equals method of the Object Class.
-	 * This method checks the equality of the AbstractMetadata objects.
-	 * @return boolean true if the both AbstractMetadata objects are equal otherwise false. 
-	 */
-	public boolean equals(Object obj)
-	{
-		boolean equals = false;
-		if (obj instanceof AbstractMetadata)
-		{
-			AbstractMetadata abstractMetadata = (AbstractMetadata) obj;
-			Long thisId = getId();
-
-			if (thisId != null && thisId.equals(abstractMetadata.getId()))
-			{
-				equals = true;
-			}
-		}
-		return equals;
-	}
-
-	/**
-	 * This method overrides the equals method of the Object Class.
-	 * It returns the HashCode of this AttributeMetadata instance.
-	 * @return int The HashCode of the AttributeMetadata instance.
-	 */
-	public int hashCode()
-	{
-
-		return 1;
-//				int hashCode = 0;
-//
-//		if (getId() != null)
-//		{
-//			hashCode += getId().hashCode();
-//		}
-//		return hashCode;
-	}
-
 	/**
 	 * This method adds a SemanticProperty to the AbstractMetadata.
 	 * @param semanticPropertyInterface A SemanticProperty to be added.

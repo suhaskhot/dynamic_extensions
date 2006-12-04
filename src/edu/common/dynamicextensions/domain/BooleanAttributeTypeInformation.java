@@ -20,13 +20,5 @@ public class BooleanAttributeTypeInformation extends AttributeTypeInformation
 
 	}
 	
-   /**
-    * @param arg0 action form
-    * @throws AssignDataException AssignDataException 
-    */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException 
-	{
-		// TODO Auto-generated method stub
-		
-	}
+
 }

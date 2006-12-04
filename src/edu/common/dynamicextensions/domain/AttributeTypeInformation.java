@@ -24,7 +24,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @created 28-Sep-2006 12:20:07 PM
  * @hibernate.class table="DYEXTN_ATTRIBUTE_TYPE_INFO"
  */
-public abstract class AttributeTypeInformation extends AbstractDomainObject
+public abstract class AttributeTypeInformation extends DynamicExtensionBaseDomainObject
 implements
 AttributeTypeInformationInterface
 {
@@ -33,11 +33,6 @@ AttributeTypeInformationInterface
 	 * Serial Version Unique Identifief
 	 */
 	protected static final long serialVersionUID = 1234567890L;
-
-	/**
-	 * Unique identifier for the object
-	 */
-	protected Long id;
 
 	/**
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
@@ -51,22 +46,14 @@ AttributeTypeInformationInterface
 	}
 
 	/**
-	 * @param id The id to set.
+	 * 
 	 */
-	public void setId(Long id)
-	{
-		this.id = id;
-	}
+	protected Collection<DataElementInterface> dataElementCollection = new HashSet<DataElementInterface>();
 
 	/**
 	 * 
 	 */
-	protected Collection dataElementCollection;
-
-	/**
-	 * 
-	 */
-	protected Collection<PermissibleValueInterface> defaultValueCollection;
+	protected Collection<PermissibleValueInterface> defaultValueCollection = new HashSet<PermissibleValueInterface>();
 
 
 	/**
@@ -183,15 +170,4 @@ AttributeTypeInformationInterface
 		super();
 		// TODO Auto-generated constructor stub
 	}
-
-	/**
-	 * 
-	 */
-	public void setAllValues(AbstractActionForm abstractForm) throws AssignDataException
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-
 }

@@ -15,18 +15,13 @@ import edu.wustl.common.exception.AssignDataException;
  * @created 28-Sep-2006 12:20:08 PM
  * @hibernate.class table="DYEXTN_SEMANTIC_PROPERTY"
  */
-public class SemanticProperty extends AbstractDomainObject implements SemanticPropertyInterface, Serializable
+public class SemanticProperty extends DynamicExtensionBaseDomainObject implements SemanticPropertyInterface, Serializable
 {
 
 	/**
 	 * Serial Version Unique Identifier
 	 */
 	private static final long serialVersionUID = -1955066885211283279L;
-
-	/**
-	 * Unique identifier for the object
-	 */
-	protected Long id;
 
 	/**
 	 * The concept code.
@@ -60,15 +55,6 @@ public class SemanticProperty extends AbstractDomainObject implements SemanticPr
 	public Long getId()
 	{
 		return id;
-	}
-
-	/**
-	 * This method sets the Unique identifier.
-	 * @param id the Unique identifier to be set.
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
 	}
 
 	/**
@@ -128,31 +114,6 @@ public class SemanticProperty extends AbstractDomainObject implements SemanticPr
 		this.thesaurasName = thesaurasName;
 	}
 
-	/**
-	 * Set all values from the form
-	 * @param abstractActionForm the ActionForm
-	 * @throws AssignDataException if data is not in proper format.
-	 */
-	public void setAllValues(AbstractActionForm abstractActionForm) throws AssignDataException
-	{
-	}
 
-	/**
-	 * This method returns the Unique identifier of this Object.
-	 * @return the Unique identifier of this Object.
-	 */
-	public Long getSystemIdentifier()
-	{
-		return id;
-	}
-
-	/**
-	 * This method sets the Unique identifier of this Object.
-	 * @param id the Unique identifier to be set.
-	 */
-	public void setSystemIdentifier(Long id)
-	{
-		this.id = id;
-	}
 
 }

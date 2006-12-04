@@ -14,7 +14,7 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
  * @author Rahul Ner 
  * @hibernate.class  table="DYEXTN_ATTRIBUTE_RECORD"
  */
-public class AttributeRecord implements Serializable
+public class AttributeRecord extends DynamicExtensionBaseDomainObject
 {
 
 	/**
@@ -28,11 +28,6 @@ public class AttributeRecord implements Serializable
 	 * Serial Version Unique Identifier
 	 */
 	protected static final long serialVersionUID = 1234567890L;
-
-	/**
-	 * Internally generated identifier.
-	 */
-	protected Long id;
 
 	/**
 	 * Entity to which this collectionRecord belongs
@@ -52,12 +47,12 @@ public class AttributeRecord implements Serializable
 	/**
 	 * value of this collectionRecord.
 	 */
-	protected Collection<CollectionAttributeRecordValue> valueCollection;
+	protected Collection<CollectionAttributeRecordValue> valueCollection = new HashSet<CollectionAttributeRecordValue>();
 
 	/**
 	 * 
 	 */
-	protected Collection<FileAttributeRecordValue> fileRecordCollection;
+	protected Collection<FileAttributeRecordValue> fileRecordCollection = new HashSet<FileAttributeRecordValue>();
 
 	/**
 	 * This method returns the unique identifier of the AbstractMetadata.
@@ -71,15 +66,7 @@ public class AttributeRecord implements Serializable
 		return id;
 	}
 
-	/**
-	 * This method sets the unique identifier of the AbstractMetadata.
-	 * @param id The identifier to set.
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
-	}
-
+	
 	/**
 	 * This method returns the Entity associated with this collectionRecord.
 	 * @hibernate.many-to-one column="ENTITY_ID" class="edu.common.dynamicextensions.domain.Entity" constrained="true"

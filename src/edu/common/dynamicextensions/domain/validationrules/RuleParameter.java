@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.domain.validationrules;
 
 import java.io.Serializable;
 
+import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
@@ -14,18 +15,13 @@ import edu.wustl.common.exception.AssignDataException;
  * @created 28-Sep-2006 12:20:08 PM
  * @hibernate.class table="DYEXTN_RULE_PARAMETER"
  */
-public class RuleParameter extends AbstractDomainObject implements Serializable, RuleParameterInterface
+public class RuleParameter extends DynamicExtensionBaseDomainObject implements Serializable, RuleParameterInterface
 {
 	
 	/**
 	 * Serial Version Unique Identifier
 	 */
 	private static final long serialVersionUID = 7900652797513990927L;
-	
-	/**
-	 * Unique identifier for the object
-	 */
-	protected Long id;
 	
 	/**
 	 * Name of the rule parameter.
@@ -53,14 +49,6 @@ public class RuleParameter extends AbstractDomainObject implements Serializable,
 	public Long getId()
 	{
 		return id;
-	}
-
-	/**
-	 * @param id The id to set.
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
 	}
 
 	/**
@@ -97,26 +85,4 @@ public class RuleParameter extends AbstractDomainObject implements Serializable,
 		this.value = value;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.wustl.common.domain.AbstractDomainObject#setAllValues(edu.wustl.common.actionForm.AbstractActionForm)
-	 */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException
-	{
-	}
-
-	/* (non-Javadoc)
-	 * @see edu.wustl.common.domain.AbstractDomainObject#getSystemIdentifier()
-	 */
-	public Long getSystemIdentifier()
-	{
-		return id;
-	}
-
-	/* (non-Javadoc)
-	 * @see edu.wustl.common.domain.AbstractDomainObject#setSystemIdentifier(java.lang.Long)
-	 */
-	public void setSystemIdentifier(Long systemIdentifier)
-	{
-		this.id = systemIdentifier;
-	}
 }

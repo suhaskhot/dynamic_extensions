@@ -19,15 +19,6 @@ public class ByteArrayValue extends PermissibleValue implements ByteArrayValueIn
 	private static final long serialVersionUID = -5535531891478617220L;
 	
 	/**
-	 * Set all values from the form
-	 * @param abstractActionForm the ActionForm
-	 * @throws AssignDataException if data is not in proper format.
-	 */
-	public void setAllValues(AbstractActionForm abstractActionForm) throws AssignDataException 
-	{
-	}
-	
-	/**
 	 * This method returns the value of ByteArrayValue downcasted to the Object.
 	 * @return the value of ByteArrayValue downcasted to the Object.
 	 */

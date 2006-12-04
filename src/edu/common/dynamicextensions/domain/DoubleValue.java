@@ -24,15 +24,6 @@ public class DoubleValue extends PermissibleValue implements DoubleValueInterfac
 	protected Double value;
 
 	/**
-	 * Set all values from the form
-	 * @param abstractActionForm the ActionForm
-	 * @throws AssignDataException if data is not in proper format.
-	 */
-	public void setAllValues(AbstractActionForm abstractActionForm) throws AssignDataException
-	{
-	}
-
-	/**
 	 * This method returns the predefined value of DoubleValue.
 	 * @hibernate.property name="value" type="double" column="VALUE"   
 	 * @return the predefined value of DoubleValue.

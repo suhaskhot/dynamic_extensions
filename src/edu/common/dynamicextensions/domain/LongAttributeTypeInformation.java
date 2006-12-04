@@ -32,13 +32,6 @@ public class LongAttributeTypeInformation extends AttributeTypeInformation imple
 
 	}
 
-	/**Set all values from the form
-	 * @see edu.common.dynamicextensions.domain.AttributeTypeInformation#setAllValues(edu.wustl.common.actionForm.AbstractActionForm)
-	 */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException
-	{
-	}
-
 	/**
 	 * This method returns the measurement units of this Attribute.
 	 * @hibernate.property name="measurementUnits" type="string" column="MEASUREMENT_UNITS"  
@@ -100,16 +93,5 @@ public class LongAttributeTypeInformation extends AttributeTypeInformation imple
 	{
 		this.digits = digits;
 	}
-	//	 protected String size;
-	//
-	//     
-	//     public String getSize()
-	//	{
-	//		return this.size;
-	//	}
-	//
-	//	public void setSize(String size)
-	//	{
-	//		this.size = size;
-	//	}
+
 }

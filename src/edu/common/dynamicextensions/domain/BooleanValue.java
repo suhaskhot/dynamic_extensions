@@ -25,15 +25,6 @@ public class BooleanValue extends PermissibleValue implements BooleanValueInterf
 	protected Boolean value;
 
 	/**
-	 * Set all values from the form
-	 * @param abstractActionForm the ActionForm
-	 * @throws AssignDataException if data is not in proper format.
-	 */
-	public void setAllValues(AbstractActionForm abstractActionForm) throws AssignDataException
-	{
-	}
-
-	/**
 	 * This method returns the value of the BooleanValue.
 	 * @hibernate.property name="value" type="boolean" column="VALUE" 
 	 * @return the value of the BooleanValue.

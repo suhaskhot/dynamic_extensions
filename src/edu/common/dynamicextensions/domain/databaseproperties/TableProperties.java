@@ -19,24 +19,5 @@ public class TableProperties extends DatabaseProperties implements TableProperti
 		
 	}
 	
-	/**
-     * 
-     * @param actionForm
-     */
-    public  TableProperties(AbstractActionForm actionForm){
-        setAllValues(actionForm);
-    }
-		
-	/**
-	 * 
-	 */
-	public void setAllValues(AbstractActionForm abstractForm)  {
-		// TODO Auto-generated method stub
-	    FormDefinitionForm tablePropertiesForm = (FormDefinitionForm)abstractForm;
-        if(tablePropertiesForm.getFormName() != null){
-        	this.name = tablePropertiesForm.getFormName();
-        }
-		
-	}
 	
 }

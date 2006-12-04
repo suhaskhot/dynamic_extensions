@@ -34,17 +34,18 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	/**
 	 * Collection of attributes in this entity.
 	 */
-	protected Collection<AbstractAttributeInterface> abstractAttributeCollection;
+	protected Collection<AbstractAttributeInterface> abstractAttributeCollection = new HashSet<AbstractAttributeInterface>();
 
 	/**
 	 * Table property for this entity.
 	 */
-	protected Collection<TablePropertiesInterface> tablePropertiesCollection;
+	protected Collection<TablePropertiesInterface> tablePropertiesCollection = new HashSet<TablePropertiesInterface>();
+	
 
 	/**
 	 * Collection of EntityGroup.
 	 */
-	protected Collection<EntityGroupInterface> entityGroupCollection;
+	protected Collection<EntityGroupInterface> entityGroupCollection = new HashSet<EntityGroupInterface>();
 
 	/**
 	 * Empty Constructor.
@@ -76,15 +77,6 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	}
 
 	/**
-	 * Set all values from the form
-	 * @param abstractActionForm the ActionForm
-	 * @throws AssignDataException if data is not in proper format.
-	 */
-	public void setAllValues(AbstractActionForm abstractActionForm)
-	{
-	}
-
-	/**
 	 * This method returns the Collection of TableProperties of this Entity.
 	 * @hibernate.set name="tablePropertiesColletion" table="DYEXTN_TABLE_PROPERTIES" cascade="save-update"
 	 * inverse="false" lazy="false"
@@ -113,7 +105,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	public TablePropertiesInterface getTableProperties()
 	{
 		TablePropertiesInterface tableProperties = null;
-		if (tablePropertiesCollection != null)
+		if (tablePropertiesCollection != null && !tablePropertiesCollection.isEmpty())
 		{
 			Iterator tabletPropertiesIterator = tablePropertiesCollection.iterator();
 			tableProperties = (TablePropertiesInterface) tabletPropertiesIterator.next();

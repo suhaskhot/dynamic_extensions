@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.domain;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
@@ -26,7 +27,7 @@ public class UserDefinedDE extends DataElement implements UserDefinedDEInterface
 	/**
 	 * Collection of PermissibleValues
 	 */
-	Collection<PermissibleValueInterface> permissibleValueCollection;
+	Collection<PermissibleValueInterface> permissibleValueCollection = new HashSet<PermissibleValueInterface>();
 
 	/**
 	 * Set all values from the form

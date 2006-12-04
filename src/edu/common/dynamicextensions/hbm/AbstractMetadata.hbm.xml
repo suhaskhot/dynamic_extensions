@@ -111,7 +111,7 @@
             table="DYEXTN_RULE"
             lazy="false"
             inverse="false"
-            cascade="save-update"
+            cascade="all-delete-orphan"
             sort="unsorted"
         >
 

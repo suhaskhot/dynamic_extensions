@@ -3,9 +3,7 @@ package edu.common.dynamicextensions.entitymanager;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -26,20 +24,12 @@ import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.AttributeRecord;
-import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.CollectionAttributeRecordValue;
-import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
-import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
-import edu.common.dynamicextensions.domain.FloatAttributeTypeInformation;
-import edu.common.dynamicextensions.domain.IntegerAttributeTypeInformation;
-import edu.common.dynamicextensions.domain.LongAttributeTypeInformation;
-import edu.common.dynamicextensions.domain.ShortAttributeTypeInformation;
-import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
@@ -48,29 +38,24 @@ import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.BaseDynamicExtensionsException;
-import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
-import edu.common.dynamicextensions.util.global.Variables;
 import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
-import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.bizlogic.AbstractBizLogic;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.HibernateDAO;
 import edu.wustl.common.dao.JDBCDAO;
 import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
-import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.logger.Logger;
@@ -90,10 +75,6 @@ import edu.wustl.common.util.logger.Logger;
  * @author Vishvesh Mulay
  * @author Rahul Ner
  */
-/**
- * @author vishvesh_mulay
- *
- */
 public class EntityManager
 		implements
 			EntityManagerInterface,
@@ -105,6 +86,16 @@ public class EntityManager
 	 * Static instance of the entity manager.
 	 */
 	private static EntityManagerInterface entityManagerInterface = null;
+
+	/**
+	 * 
+	 */
+	private static DynamicExtensionBaseQueryBuilder queryBuilder = new DynamicExtensionBaseQueryBuilder();
+
+	/**
+	 * 
+	 */
+	EntityManagerUtil entityManagerUtil = new EntityManagerUtil();
 
 	/**
 	 * Empty Constructor.
@@ -149,9 +140,7 @@ public class EntityManager
 	 */
 	private void logDebug(String methodName, String message)
 	{
-
 		Logger.out.debug("[EntityManager.]" + methodName + "()--" + message);
-		//System.out.println("[EntityManager.]" + methodName + "()--" + message);
 	}
 
 	/**
@@ -298,7 +287,6 @@ public class EntityManager
 			Long recordId) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
-
 		AttributeRecord record = getAttributeRecord(entityId, attributeId, recordId, null);
 		return record.getFileRecord();
 	}
@@ -344,7 +332,6 @@ public class EntityManager
 		substitutionParameterMap.put("1", new HQLPlaceHolderObject("long", targetEntityId));
 
 		Collection associationCollection = executeHQL("getAssociations", substitutionParameterMap);
-
 		return associationCollection;
 	}
 
@@ -538,8 +525,6 @@ public class EntityManager
 					Association association = (Association) attribute;
 					ConstraintPropertiesInterface constraintProperties = association
 							.getConstraintProperties();
-					//					if (constraintProperties == null)
-					//					{
 					EntityInterface targetEntity = association.getTargetEntity();
 					if (targetEntity.getId() == null)
 					{
@@ -551,9 +536,6 @@ public class EntityManager
 
 					populateSystemGeneratedAssociation(association, hibernateDAO);
 				}
-
-				//				}
-
 			}
 		}
 	}
@@ -690,84 +672,6 @@ public class EntityManager
 	}
 
 	/**
-	 * This method executes the queries which generate and or manipulate the data table associated with the entity.
-	 * @param entity Entity for which the data table queries are to be executed.
-	 * @param rollbackQueryStack 
-	 * @param reverseQueryList2 
-	 * @param queryList2 
-	 * @param hibernateDAO 
-	 * @param session Hibernate Session through which connection is obtained to fire the queries.
-	 * @throws DynamicExtensionsSystemException Whenever there is any exception , this exception is thrown with proper message and the exception is 
-	 * wrapped inside this exception.
-	 */
-	private Stack executeQueries(List queryList, List reverseQueryList, Stack rollbackQueryStack)
-			throws DynamicExtensionsSystemException
-	{
-		Session session = null;
-		try
-		{
-			session = DBUtil.currentSession();
-		}
-		catch (HibernateException e1)
-		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			throw new DynamicExtensionsSystemException(
-					"Unable to exectute the data table queries .....Cannot access sesssion", e1,
-					DYEXTN_S_002);
-		}
-
-		Iterator reverseQueryListIterator = reverseQueryList.iterator();
-
-		try
-		{
-			Connection conn = session.connection();
-			if (queryList != null && !queryList.isEmpty())
-			{
-				Iterator queryListIterator = queryList.iterator();
-				while (queryListIterator.hasNext())
-				{
-					String query = (String) queryListIterator.next();
-					System.out.println("Query: " + query);
-					PreparedStatement statement = null;
-					try
-					{
-						statement = conn.prepareStatement(query);
-					}
-					catch (SQLException e)
-					{
-						throw new DynamicExtensionsSystemException(
-								"Exception occured while executing the data table query", e);
-					}
-					try
-					{
-						statement.executeUpdate();
-						if (reverseQueryListIterator.hasNext())
-						{
-							rollbackQueryStack.push(reverseQueryListIterator.next());
-						}
-					}
-					catch (SQLException e)
-					{
-						//                        rollbackQueries(rollbackQueryStack, conn, entity);
-						throw new DynamicExtensionsSystemException(
-								"Exception occured while forming the data tables for entity", e,
-								DYEXTN_S_002);
-					}
-				}
-			}
-		}
-		catch (HibernateException e)
-		{
-			throw new DynamicExtensionsSystemException(
-					"Cannot obtain connection to execute the data query", e, DYEXTN_S_001);
-		}
-
-		return rollbackQueryStack;
-
-	}
-
-	/**
 	 * This method is called when there any exception occurs while generating the data table queries for the entity. Valid scenario is 
 	 * that if we need to fire Q1 Q2 and Q3 in order to create the data tables and Q1 Q2 get fired successfully and exception occurs 
 	 * while executing query Q3 then this method receives the query list which holds the set of queries which negate the effect of 
@@ -835,367 +739,6 @@ public class EntityManager
 		Logger.out.error("The detailed log is : ");
 		e.printStackTrace();
 
-	}
-
-	/**
-	 * This method builds the list of all the queries that need to be executed in order to create the data table for the entity and its associations.
-	 * @param entity Entity for which to get the queries.
-	 * @param reverseQueryList For every data table query the method builds one more query which negats the effect of that data table query. All such
-	 * reverse queries are added in this list.
-	 * @param rollbackQueryStack 
-	 * @param hibernateDAO 
-	 * @return List of all the data table queries
-	 * @throws DynamicExtensionsSystemException 
-	 * @throws DynamicExtensionsApplicationException 
-	 */
-	private List getCreateEntityQueryList(Entity entity, List reverseQueryList,
-			HibernateDAO hibernateDAO, Stack rollbackQueryStack)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
-	{
-		List queryList = new ArrayList();
-		String mainTableQuery = getEntityMainDataTableQuery(entity, reverseQueryList);
-		List associationTableQueryList = getDataTableQueriesForAssociationsInEntity(entity,
-				reverseQueryList, hibernateDAO, rollbackQueryStack);
-		queryList.add(mainTableQuery);
-		queryList.addAll(associationTableQueryList);
-		return queryList;
-	}
-
-	/**
-	 * This method returns all the CREATE table entries for associations present in the entity.
-	 * @param entity Entity object from which to get the associations.
-	 * @param reverseQueryList Reverse query list that holds the reverse queries.
-	 * @param rollbackQueryStack 
-	 * @param hibernateDAO 
-	 * @return
-	 * @throws DynamicExtensionsSystemException 
-	 * @throws DynamicExtensionsApplicationException 
-	 */
-	private List getDataTableQueriesForAssociationsInEntity(Entity entity, List reverseQueryList,
-			HibernateDAO hibernateDAO, Stack rollbackQueryStack)
-			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
-	{
-		List associationQueryList = new ArrayList();
-		Collection associationCollection = entity.getAssociationCollection();
-		if (associationCollection != null && !associationCollection.isEmpty())
-		{
-			Iterator associationIterator = associationCollection.iterator();
-			while (associationIterator.hasNext())
-			{
-				AssociationInterface association = (AssociationInterface) associationIterator
-						.next();
-				if (((Association) association).getIsSystemGenerated())
-				{
-					continue;
-				}
-				boolean isAddAssociationQuery = true;
-				String associationQuery = getQueryPartForAssociation(association, reverseQueryList,
-						isAddAssociationQuery);
-				associationQueryList.add(associationQuery);
-			}
-		}
-		return associationQueryList;
-	}
-
-	/**
-	 * This method returns the main data table CREATE query that is associated with the entity.
-	 * @param entity Entity for which to create the data table query.
-	 * @param reverseQueryList Reverse query list which holds the query to negate the data table query.
-	 * @return String The method returns the "CREATE TABLE" query for the data table query for the entity passed.
-	 * @throws DynamicExtensionsSystemException 
-	 */
-	private String getEntityMainDataTableQuery(Entity entity, List reverseQueryList)
-			throws DynamicExtensionsSystemException
-	{
-		String dataType = getDataTypeForIdentifier();
-		String tableName = entity.getTableProperties().getName();
-		StringBuffer query = new StringBuffer(CREATE_TABLE + " " + tableName + " "
-				+ OPENING_BRACKET + " " + IDENTIFIER + " " + dataType + COMMA);
-		Collection attributeCollection = entity.getAttributeCollection();
-		if (attributeCollection != null && !attributeCollection.isEmpty())
-		{
-			Iterator attributeIterator = attributeCollection.iterator();
-			while (attributeIterator.hasNext())
-			{
-				Attribute attribute = (Attribute) attributeIterator.next();
-
-				if (isAttributeColumnToBeExcluded(attribute))
-				{
-					continue;
-				}
-
-				String type = "";
-				String attributeQueryPart = getQueryPartForAbstractAttribute(attribute, type, true);
-				query = query.append(attributeQueryPart);
-				query = query.append(COMMA);
-			}
-		}
-		query = query.append(PRIMARY_KEY_CONSTRAINT_FOR_ENTITY_DATA_TABLE + ")");
-		String reverseQuery = getReverseQueryForEntityDataTable(entity);
-		reverseQueryList.add(reverseQuery);
-		return query.toString();
-	}
-
-	/**
-	 * This method gives the opposite query to negate the effect of "CREATE TABLE" query for the data table for the entity. 
-	 * @param entity Entity for which query generation is done.
-	 * @return String query that basically holds the "DROP TABLE" query.
-	 */
-	private String getReverseQueryForEntityDataTable(Entity entity)
-	{
-		String query = null;
-		if (entity != null && entity.getTableProperties() != null)
-		{
-			query = "Drop table" + " " + entity.getTableProperties().getName();
-		}
-		return query;
-	}
-
-	/**
-	 * This method returns the query part for an individual abstract attribute. The abstract attribute can be a primitive
-	 * attribute or association. so according to the type of the attribute appropriate method is called to get the query part of that abstract 
-	 * attribute.
-	 * @param attribute Abstract attribute that can be primitive or association. 
-	 * @return String query part of that attribute.
-	 * @throws DynamicExtensionsSystemException 
-	 */
-	private String getQueryPartForAbstractAttribute(AbstractAttribute attribute, String type,
-			boolean processUniqueConstraint) throws DynamicExtensionsSystemException
-	{
-		String attributeQuery = null;
-		if (attribute != null)
-		{
-			if (attribute instanceof Attribute)
-			{
-				try
-				{
-					attributeQuery = getQueryPartForAttribute((Attribute) attribute, type,
-							processUniqueConstraint);
-				}
-				catch (DataTypeFactoryInitializationException e)
-				{
-					throw new DynamicExtensionsSystemException(
-							"Exception occured while retrieving the database type of the attribute");
-				}
-			}
-			else if (attribute instanceof Association)
-			{
-				//	attributeQuery = getQueryPartForAssociation((Association) attribute);
-			}
-		}
-		return attributeQuery;
-	}
-
-	/**
-	 * This method builds the query part for the association.
-	 * @param association Association object for which to build the query.
-	 * @param reverseQueryList 
-	 * @return String query part of the association.
-	 * @throws DynamicExtensionsSystemException 
-	 */
-	private String getQueryPartForAssociation(AssociationInterface association,
-			List reverseQueryList, boolean isAddAssociationQuery)
-			throws DynamicExtensionsSystemException
-	{
-		logDebug("getQueryPartForAssociation", "Entering method");
-
-		StringBuffer query = new StringBuffer();
-		EntityInterface sourceEntity = association.getEntity();
-		EntityInterface targetEntity = association.getTargetEntity();
-		RoleInterface sourceRole = association.getSourceRole();
-		RoleInterface targetRole = association.getTargetRole();
-		Cardinality sourceMaxCardinality = sourceRole.getMaximumCardinality();
-		Cardinality targetMaxCardinality = targetRole.getMaximumCardinality();
-		ConstraintPropertiesInterface constraintProperties = association.getConstraintProperties();
-		String tableName = "";
-
-		String dataType = getDataTypeForIdentifier();
-		if (sourceMaxCardinality == Cardinality.MANY && targetMaxCardinality == Cardinality.MANY)
-		{
-			tableName = constraintProperties.getName();
-
-			query.append(CREATE_TABLE + WHITESPACE + tableName + WHITESPACE + OPENING_BRACKET
-					+ WHITESPACE + IDENTIFIER + WHITESPACE + dataType + COMMA);
-			query.append(constraintProperties.getSourceEntityKey() + WHITESPACE + dataType + COMMA);
-			query.append(constraintProperties.getTargetEntityKey() + WHITESPACE + dataType + COMMA
-					+ WHITESPACE);
-			query.append(PRIMARY_KEY_CONSTRAINT_FOR_ENTITY_DATA_TABLE + CLOSING_BRACKET);
-			String rollbackQuery = DROP_KEYWORD + WHITESPACE + TABLE_KEYWORD + WHITESPACE
-					+ tableName;
-
-			if (isAddAssociationQuery)
-			{
-				reverseQueryList.add(rollbackQuery);
-			}
-			else
-			{
-				reverseQueryList.add(query.toString());
-				query = new StringBuffer(rollbackQuery);
-			}
-		}
-		else if (sourceMaxCardinality == Cardinality.MANY
-				&& targetMaxCardinality == Cardinality.ONE)
-		{
-			tableName = sourceEntity.getTableProperties().getName();
-			String columnName = constraintProperties.getSourceEntityKey();
-			query.append(getAddAttributeQuery(tableName, columnName, dataType, reverseQueryList,
-					isAddAssociationQuery));
-		}
-		else
-		{
-			tableName = targetEntity.getTableProperties().getName();
-			String columnName = constraintProperties.getTargetEntityKey();
-			query.append(getAddAttributeQuery(tableName, columnName, dataType, reverseQueryList,
-					isAddAssociationQuery));
-
-		}
-
-		logDebug("getQueryPartForAssociation", "exiting method");
-		return query.toString();
-	}
-
-	private String getAddAttributeQuery(String tableName, String columnName, String dataType,
-			List reverseQueryList, boolean isAddAssociationQuery)
-	{
-		StringBuffer query = new StringBuffer();
-		query.append(ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + ADD_KEYWORD + WHITESPACE
-				+ OPENING_BRACKET + WHITESPACE);
-		query.append(columnName + WHITESPACE + dataType + WHITESPACE + CLOSING_BRACKET);
-		String rollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + DROP_KEYWORD
-				+ WHITESPACE + COLUMN_KEYWORD + WHITESPACE + columnName;
-
-		//		query.append(REFERENCES_KEYWORD + WHITESPACE + sourceEntity.getTableProperties().getName() + OPENING_BRACKET + IDENTIFIER + CLOSING_BRACKET + COMMA);
-
-		if (isAddAssociationQuery)
-		{
-			reverseQueryList.add(rollbackQuery);
-			return query.toString();
-		}
-		else
-		{
-			reverseQueryList.add(query.toString());
-			return rollbackQuery;
-		}
-	}
-
-	/**
-	 * This method builds the query part for the primitive attribute 
-	 * @param attribute primitive attribute for which to build the query.
-	 * @return String query part of the primitive attribute.
-	 * @throws DataTypeFactoryInitializationException 
-	 */
-	private String getQueryPartForAttribute(Attribute attribute, String type,
-			boolean processConstraints) throws DynamicExtensionsSystemException
-	{
-
-		String attributeQuery = null;
-		if (attribute != null)
-		{
-			String columnName = attribute.getColumnProperties().getName();
-			String isUnique = "";
-			String nullConstraint = "";
-			String defaultConstraint = "";
-			if (processConstraints)
-			{
-				if (attribute.getIsPrimaryKey())
-				{
-					isUnique = CONSTRAINT_KEYWORD + WHITESPACE
-							+ attribute.getColumnProperties().getName() + UNDERSCORE
-							+ UNIQUE_CONSTRAINT_SUFFIX + WHITESPACE + UNIQUE_KEYWORD;
-				}
-				nullConstraint = "NULL";
-
-				if (!attribute.getIsNullable())
-				{
-					nullConstraint = "NOT NULL";
-				}
-
-				if (attribute.getAttributeTypeInformation().getDefaultValue() != null
-						&& attribute.getAttributeTypeInformation().getDefaultValue()
-								.getValueAsObject() != null)
-				{
-					defaultConstraint = DEFAULT_KEYWORD
-							+ WHITESPACE
-							+ getFormattedValue(attribute, attribute.getAttributeTypeInformation()
-									.getDefaultValue().getValueAsObject());
-				}
-
-			}
-
-			attributeQuery = columnName + WHITESPACE + type + WHITESPACE
-					+ getDatabaseTypeAndSize(attribute) + WHITESPACE + defaultConstraint
-					+ WHITESPACE + isUnique + WHITESPACE + nullConstraint;
-		}
-		return attributeQuery;
-	}
-
-	/**
-	 * This method returns the database type and size of the attribute passed to it which becomes the part of the query for that attribute.
-	 * @param attribute Attribute object for which to get the database type and size.
-	 * @return String that specifies the data base type and size.
-	 * @throws DynamicExtensionsSystemException 
-	 * @throws DataTypeFactoryInitializationException 
-	 */
-	private String getDatabaseTypeAndSize(Attribute attribute)
-			throws DynamicExtensionsSystemException
-
-	{
-		try
-		{
-			DataTypeFactory dataTypeFactory = DataTypeFactory.getInstance();
-			AttributeTypeInformationInterface attributeInformation = attribute
-					.getAttributeTypeInformation();
-			if (attributeInformation instanceof StringAttributeTypeInformation)
-			{
-				return dataTypeFactory.getDatabaseDataType("String");
-			}
-			else if (attributeInformation instanceof IntegerAttributeTypeInformation)
-			{
-				return dataTypeFactory.getDatabaseDataType("Integer");
-			}
-			else if (attributeInformation instanceof DateAttributeTypeInformation)
-			{
-				return dataTypeFactory.getDatabaseDataType("Date");
-			}
-			else if (attributeInformation instanceof FloatAttributeTypeInformation)
-			{
-				return dataTypeFactory.getDatabaseDataType("Float");
-			}
-			else if (attributeInformation instanceof BooleanAttributeTypeInformation)
-			{
-				return dataTypeFactory.getDatabaseDataType("Boolean");
-			}
-			else if (attributeInformation instanceof DoubleAttributeTypeInformation)
-			{
-				return dataTypeFactory.getDatabaseDataType("Double");
-			}
-			else if (attributeInformation instanceof LongAttributeTypeInformation)
-			{
-				return dataTypeFactory.getDatabaseDataType("Long");
-			}
-			else if (attributeInformation instanceof ShortAttributeTypeInformation)
-			{
-				return dataTypeFactory.getDatabaseDataType("Short");
-			}
-
-		}
-		catch (DataTypeFactoryInitializationException e)
-		{
-			throw new DynamicExtensionsSystemException("Could Not get data type attribute", e);
-		}
-
-		return null;
-	}
-
-	/**
-	 * This method returns the dabase type for idenitifier.
-	 * @return String database type for the identifier.
-	 * @throws DynamicExtensionsSystemException exception is thrown if factory is not instanciated properly.
-	 */
-	private String getDataTypeForIdentifier() throws DynamicExtensionsSystemException
-	{
-		DataTypeFactory dataTypeFactory = DataTypeFactory.getInstance();
-		return dataTypeFactory.getDatabaseDataType("Integer");
 	}
 
 	/**
@@ -1414,7 +957,6 @@ public class EntityManager
 		{
 			// TODO Auto-generated catch block
 			rollbackQueries(rollbackQueryStack, entity, e);
-			e.printStackTrace();
 		}
 		finally
 		{
@@ -1516,7 +1058,8 @@ public class EntityManager
 		}
 
 		StringBuffer columnNameString = new StringBuffer("IDENTIFIER ");
-		Long identifier = getNextIdentifier(entity.getTableProperties().getName());
+		Long identifier = entityManagerUtil
+				.getNextIdentifier(entity.getTableProperties().getName());
 		StringBuffer columnValuesString = new StringBuffer(identifier.toString());
 		String tableName = entity.getTableProperties().getName();
 
@@ -1555,15 +1098,15 @@ public class EntityManager
 					String dbColumnName = primitiveAttribute.getColumnProperties().getName();
 
 					columnNameString.append(dbColumnName);
-					value = getFormattedValue(attribute, value);
+					value = EntityManagerUtil.getFormattedValue(attribute, value);
 					columnValuesString.append(value);
 				}
 			}
 			else
 			{
 				List<Long> recordIdList = (List<Long>) value;
-				queryList.addAll(getAssociationInsertDataQuery((AssociationInterface) attribute,recordIdList,
-						 identifier));
+				queryList.addAll(queryBuilder.getAssociationInsertDataQuery(
+						(AssociationInterface) attribute, recordIdList, identifier));
 			}
 		}
 
@@ -1591,7 +1134,6 @@ public class EntityManager
 			}
 			for (AttributeRecord collectionAttributeRecord : attributeRecords)
 			{
-				//logDebug("insertData", "Inserting multi select: " +  collectionAttributeRecord.getValue());
 				hibernateDAO.insert(collectionAttributeRecord, null, false, false);
 			}
 
@@ -1625,109 +1167,6 @@ public class EntityManager
 		return identifier;
 	}
 
-	private List<String> getAssociationInsertDataQuery(AssociationInterface associationInterface,
-			List<Long> recordIdList, Long sourceRecordId)
-			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
-	{
-		List<String> queryList = new ArrayList<String>();
-		Association association = (Association) associationInterface;
-		verifyCardinalityConstraints(associationInterface, recordIdList);
-		String tableName = association.getConstraintProperties().getName();
-		String sourceKey = association.getConstraintProperties().getSourceEntityKey();
-		String targetKey = association.getConstraintProperties().getTargetEntityKey();
-		StringBuffer query = new StringBuffer();
-		Long id = getNextIdentifier(tableName);
-		if (sourceKey != null && targetKey != null && sourceKey.trim().length() != 0
-				&& targetKey.trim().length() != 0)
-		{
-
-
-			for (int i = 0; i < recordIdList.size(); i++)
-			{
-				query = new StringBuffer();
-				query.append("INSERT INTO " + tableName + " ( ");
-				query.append(IDENTIFIER + "," + sourceKey + "," + targetKey);
-				query.append(" ) VALUES ( ");
-				query.append(id.toString());
-				query.append(COMMA);
-				query.append(sourceRecordId.toString());
-				query.append(COMMA);
-				query.append(recordIdList.get(i));
-				query.append(CLOSING_BRACKET);
-				id++; //TODO this is not thread safe ,so needs to find a another solution.
-				
-				queryList.add(query.toString());
-				
-			}
-
-		}
-		else if (sourceKey != null && sourceKey.trim().length() != 0)
-		{
-			query.append(UPDATE_KEYWORD);
-			query.append(WHITESPACE + tableName);
-			query.append(WHITESPACE + SET_KEYWORD + WHITESPACE + sourceKey + EQUAL
-					+ recordIdList.get(0) + WHITESPACE);
-			query.append(WHERE_KEYWORD + WHITESPACE + IDENTIFIER + EQUAL + sourceRecordId);
-			queryList.add(query.toString());
-
-		}
-		else
-		{
-			String recordIdString = recordIdList.toString();
-			recordIdString = recordIdString.replace("[", OPENING_BRACKET);
-			recordIdString = recordIdString.replace("]", CLOSING_BRACKET);
-
-			query.append(UPDATE_KEYWORD);
-			query.append(WHITESPACE + tableName);
-			query.append(WHITESPACE + SET_KEYWORD + WHITESPACE + targetKey + EQUAL + sourceRecordId
-					+ WHITESPACE);
-			query.append(WHERE_KEYWORD + WHITESPACE + IDENTIFIER + WHITESPACE + IN_KEYWORD
-					+ WHITESPACE + recordIdString);
-			queryList.add(query.toString());
-		}
-
-		return queryList;
-	}
-	private void verifyCardinalityConstraints(AssociationInterface association,
-			List<Long> recordIdList) throws DynamicExtensionsApplicationException,
-			DynamicExtensionsSystemException
-	{
-		EntityInterface sourceEntity = association.getEntity();
-		EntityInterface targetEntity = association.getTargetEntity();
-		RoleInterface sourceRole = association.getSourceRole();
-		RoleInterface targetRole = association.getTargetRole();
-		Cardinality sourceMaxCardinality = sourceRole.getMaximumCardinality();
-		Cardinality targetMaxCardinality = targetRole.getMaximumCardinality();
-		Cardinality sourceMinCardinality = sourceRole.getMinimumCardinality();
-		Cardinality targetMinCardinality = targetRole.getMinimumCardinality();
-		String columnName = "";
-		String tableName = "";
-		if (targetMaxCardinality == Cardinality.ONE && sourceMaxCardinality == Cardinality.ONE)
-		{
-
-			tableName = targetEntity.getTableProperties().getName();
-			columnName = association.getConstraintProperties().getTargetEntityKey();
-
-			String query = SELECT_KEYWORD + WHITESPACE + COUNT_KEYWORD + OPENING_BRACKET + "*"
-					+ CLOSING_BRACKET + WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName
-					+ WHITESPACE + WHERE_KEYWORD + WHITESPACE + columnName + WHITESPACE + EQUAL
-					+ WHITESPACE + recordIdList.get(0);
-			ResultSet resultSet = executeQuery(query);
-			try
-			{
-				if (resultSet.getInt(1) != 0)
-				{
-					throw new DynamicExtensionsApplicationException(
-							"Cardinality constraint violated", null, DYEXTN_A_005);
-				}
-			}
-			catch (SQLException e)
-			{
-				throw new DynamicExtensionsSystemException(e.getMessage(), e);
-			}
-
-		}
-	}
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#editData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map, java.lang.Long)
 	 */
@@ -1796,20 +1235,20 @@ public class EntityManager
 
 					updateColumnString.append(dbColumnName);
 					updateColumnString.append(WHITESPACE + EQUAL + WHITESPACE);
-					value = getFormattedValue(attribute, value);
+					value = EntityManagerUtil.getFormattedValue(attribute, value);
 					updateColumnString.append(value);
 				}
 			}
 			else
 			{
-				String removeQuery = getAssociationRemoveDataQuery(((Association) attribute),
-						recordId);
+				String removeQuery = queryBuilder.getAssociationRemoveDataQuery(
+						((Association) attribute), recordId);
 				if (removeQuery != null && removeQuery.trim().length() != 0)
 				{
 					associationRemoveDataQueryList.add(removeQuery);
 				}
-				List insertQuery = getAssociationInsertDataQuery(((Association) attribute), (List<Long>)value,
-						recordId);
+				List insertQuery = queryBuilder.getAssociationInsertDataQuery(
+						((Association) attribute), (List<Long>) value, recordId);
 				if (insertQuery != null && insertQuery.size() != 0)
 				{
 					associationInsertDataQueryList.addAll(insertQuery);
@@ -1821,7 +1260,6 @@ public class EntityManager
 		editDataQueryList.addAll(associationRemoveDataQueryList);
 		editDataQueryList.addAll(associationInsertDataQueryList);
 
-		
 		if (updateColumnString.length() != 0)
 		{
 			StringBuffer query = new StringBuffer("UPDATE " + tableName + " SET ");
@@ -1832,7 +1270,7 @@ public class EntityManager
 			query.append(recordId);
 			editDataQueryList.add(query.toString());
 		}
-		
+
 		HibernateDAO hibernateDAO = null;
 		try
 		{
@@ -1905,32 +1343,6 @@ public class EntityManager
 		return true;
 	}
 
-	private String getAssociationRemoveDataQuery(Association association, Long recordId)
-	{
-		String tableName = association.getConstraintProperties().getName();
-		String sourceKey = association.getConstraintProperties().getSourceEntityKey();
-		String targetKey = association.getConstraintProperties().getTargetEntityKey();
-		StringBuffer query = new StringBuffer();
-		if (sourceKey != null && targetKey != null && sourceKey.trim().length() != 0
-				&& targetKey.trim().length() != 0)
-		{
-			query.append(DELETE_KEYWORD + WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName
-					+ WHITESPACE + WHERE_KEYWORD + WHITESPACE + sourceKey);
-			query.append(WHITESPACE + EQUAL);
-			query.append(recordId.toString());
-		}
-		else if (targetKey != null && targetKey.trim().length() != 0)
-		{
-			query.append(UPDATE_KEYWORD);
-			query.append(WHITESPACE + tableName);
-			query.append(WHITESPACE + SET_KEYWORD + WHITESPACE + targetKey + EQUAL + WHITESPACE
-					+ "null" + WHITESPACE);
-			query.append(WHERE_KEYWORD + WHITESPACE + targetKey + EQUAL + recordId);
-		}
-
-		return query.toString();
-	}
-
 	/**
 	 * This method returns a list of <AttributeRecord> that for a particular multiselect attribute of 
 	 * the entity.
@@ -1999,181 +1411,6 @@ public class EntityManager
 	}
 
 	/**
-	 * 
-	 * @param attribute
-	 * @param value
-	 * @return
-	 */
-	private String getFormattedValue(AbstractAttribute attribute, Object value)
-	{
-		String formattedvalue = null;
-		AttributeTypeInformationInterface attributeInformation = ((Attribute) attribute)
-				.getAttributeTypeInformation();
-		if (attribute == null)
-		{
-			formattedvalue = null;
-		}
-
-		else if (attributeInformation instanceof StringAttributeTypeInformation)
-		{
-			formattedvalue = "'" + value + "'";
-		}
-		else if (attributeInformation instanceof DateAttributeTypeInformation)
-		{
-			String format = ((DateAttributeTypeInformation) attributeInformation).getFormat();
-			if (format == null)
-			{
-				format = Constants.DATE_PATTERN_MM_DD_YYYY;
-			}
-			String str = null;
-			if (value instanceof Date)
-			{
-				str = Utility.parseDateToString(((Date) value), format);
-			}
-			else
-			{
-				str = (String) value;
-			}
-
-			formattedvalue = Variables.strTodateFunction + "('" + str + "','"
-					+ Variables.datePattern + "')";
-		}
-		else
-		{
-			formattedvalue = value.toString();
-		}
-		logDebug("getFormattedValue", "The formatted value for attribute " + attribute.getName()
-				+ "is " + formattedvalue);
-		return formattedvalue;
-
-	}
-
-	/**
-	 * This method returns mapping for all attributes of given entity to its actual database column name.
-	 *  
-	 * @param entity entity which is to  be processed.
-	 * @return map 
-	 * 
-	 * key      attribute name -- name displayed on the UI for the attribute
-	 * value    column name    -- actual database column name for the attriubute.
-	 */
-	//    private Map getDbColumnNameMap(EntityInterface entity)
-	//    {
-	//        Map colNameMap = new HashMap();
-	//        Iterator attribbuteIterator = entity.getAttributeCollection()
-	//                .iterator();
-	//        while (attribbuteIterator.hasNext())
-	//        {
-	//            Attribute attribute = (Attribute) attribbuteIterator.next();
-	//            colNameMap.put(attribute.getName(), attribute.getColumnProperties()
-	//                    .getName());
-	//        }
-	//
-	//        return colNameMap;
-	//    }
-	/**
-	 * Method generates the next identifier for the table that stores the value of the passes entity.
-	 * @param entity
-	 * @return
-	 * @throws DAOException
-	 * @throws ClassNotFoundException
-	 */
-	synchronized private Long getNextIdentifier(String entityTableName)
-			throws DynamicExtensionsSystemException
-	{
-
-		StringBuffer queryToGetNextIdentifier = new StringBuffer("SELECT MAX(IDENTIFIER) FROM "
-				+ entityTableName);
-		List resultList = null;
-		try
-		{
-			resultList = getResultInList(queryToGetNextIdentifier.toString(),
-					new SessionDataBean(), false, false, null);
-		}
-		catch (DAOException e)
-		{
-			throw new DynamicExtensionsSystemException(
-					"Could not fetch the next identifier for table " + entityTableName);
-		}
-		catch (ClassNotFoundException e)
-		{
-			throw new DynamicExtensionsSystemException(
-					"Could not fetch the next identifier for table " + entityTableName);
-		}
-
-		if (resultList == null)
-		{
-			throw new DynamicExtensionsSystemException(
-					"Could not fetch the next identifier for table " + entityTableName);
-		}
-		List internalList = (List) resultList.get(0);
-		if (internalList == null || internalList.isEmpty())
-		{
-			throw new DynamicExtensionsSystemException(
-					"Could not fetch the next identifier for table " + entityTableName);
-		}
-		String idString = (String) (internalList.get(0));
-
-		Long identifier = null;
-
-		if (idString == null || idString.trim().equals(""))
-		{
-			identifier = new Long(0);
-		}
-		else
-		{
-			identifier = new Long(idString);
-		}
-
-		long id = identifier.longValue();
-		id++;
-		identifier = new Long(id);
-		return identifier;
-	}
-
-	/**
-	 * Executes a query and return result set.
-	 * @param queryToGetNextIdentifier
-	 * @param sessionDataBean
-	 * @param isSecureExecute
-	 * @param hasConditionOnIdentifiedField
-	 * @param queryResultObjectDataMap
-	 * @return
-	 * @throws DAOException
-	 * @throws ClassNotFoundException
-	 */
-	private List getResultInList(String queryToGetNextIdentifier, SessionDataBean sessionDataBean,
-			boolean isSecureExecute, boolean hasConditionOnIdentifiedField,
-			Map queryResultObjectDataMap) throws DAOException, ClassNotFoundException
-	{
-		List resultList = null;
-		JDBCDAO jdbcDAO = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
-		try
-		{
-			jdbcDAO.openSession(null);
-			resultList = jdbcDAO.executeQuery(queryToGetNextIdentifier, sessionDataBean,
-					isSecureExecute, hasConditionOnIdentifiedField, queryResultObjectDataMap);
-		}
-		catch (DAOException daoException)
-		{
-			daoException.printStackTrace();
-			throw new DAOException("Exception while retrieving the query result", daoException);
-		}
-		finally
-		{
-			try
-			{
-				jdbcDAO.closeSession();
-			}
-			catch (DAOException daoException)
-			{
-				throw new DAOException("Exception while closing the jdbc session", daoException);
-			}
-		}
-		return resultList;
-	}
-
-	/**
 	 * This method is used by create as well as edit entity methods. This method holds all the common part 
 	 * related to saving the entity into the database and also handling the exceptions .
 	 * @param entityInterface Entity to be stored in the database.
@@ -2214,16 +1451,16 @@ public class EntityManager
 
 			if (!isEntitySaved)
 			{
-				queryList = getCreateEntityQueryList(entity, reverseQueryList, hibernateDAO,
-						rollbackQueryStack);
+				queryList = queryBuilder.getCreateEntityQueryList(entity, reverseQueryList,
+						hibernateDAO, rollbackQueryStack);
 			}
 			else
 			{
-				queryList = getUpdateEntityQueryList(entity, (Entity) databaseCopy,
+				queryList = queryBuilder.getUpdateEntityQueryList(entity, (Entity) databaseCopy,
 						reverseQueryList);
 			}
 
-			executeQueries(queryList, reverseQueryList, rollbackQueryStack);
+			queryBuilder.executeQueries(queryList, reverseQueryList, rollbackQueryStack);
 
 		}
 		catch (UserNotAuthorizedException e)
@@ -2245,472 +1482,6 @@ public class EntityManager
 
 		logDebug("saveOrUpdateEntity", "Exiting Method");
 		return entity;//(Entity) getEntityByIdentifier(entity.getId().toString());
-	}
-
-	/**
-	 * This method is used to execute the data table queries for entity in case of editing the entity.
-	 * This method takes each attribute of the entity and then scans for any changes and builds the alter query
-	 * for each attribute for the entity.
-	 * @param entity Entity for which to generate and execute the alter queries.
-	 * @param databaseCopy Old database copy of the entity.
-	 * @return Stack Stack holding the rollback queries in case of any exception
-	 * @throws DynamicExtensionsSystemException System exception in case of any fatal error
-	 * @throws DynamicExtensionsApplicationException Thrown in case of authentication failure or duplicate name.
-	 */
-	private List getUpdateEntityQueryList(Entity entity, Entity databaseCopy,
-			List attributeRollbackQueryList) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
-	{
-		logDebug("getUpdateEntityQueryList", "Entering method");
-
-		List updateAttributeQueryList = getUpdateAttributeQueryList(entity, databaseCopy,
-				attributeRollbackQueryList);
-		List updateassociationsQueryList = getUpdateAssociationsQueryList(entity, databaseCopy,
-				attributeRollbackQueryList);
-
-		List updateQueryList = new ArrayList();
-
-		updateQueryList.addAll(updateAttributeQueryList);
-		updateQueryList.addAll(updateassociationsQueryList);
-
-		logDebug("getUpdateEntityQueryList", "Exiting method");
-		return updateQueryList;
-	}
-
-	/**
-	 * @param entity
-	 * @param databaseCopy
-	 * @param attributeRollbackQueryList
-	 * @return
-	 */
-	private List getUpdateAssociationsQueryList(Entity entity, Entity databaseCopy,
-			List attributeRollbackQueryList) throws DynamicExtensionsSystemException
-	{
-		logDebug("getUpdateAssociationsQueryList", "Entering method");
-		List associationsQueryList = new ArrayList();
-		boolean isAddAssociationQuery = true;
-
-		Collection associationCollection = entity.getAssociationCollection();
-
-		if (associationCollection != null && !associationCollection.isEmpty())
-		{
-			Iterator associationIterator = associationCollection.iterator();
-
-			while (associationIterator.hasNext())
-			{
-				Association association = (Association) associationIterator.next();
-				Association associationDatabaseCopy = (Association) databaseCopy
-						.getAttributeByIdentifier(association.getId());
-
-				if (association.getIsSystemGenerated())
-				{
-					continue;
-				}
-				if (associationDatabaseCopy == null)
-				{
-					isAddAssociationQuery = true;
-					String newAssociationQuery = getQueryPartForAssociation(association,
-							attributeRollbackQueryList, isAddAssociationQuery);
-					associationsQueryList.add(newAssociationQuery);
-				}
-				else
-				{
-					if (isCardinalityChanged(association, associationDatabaseCopy))
-					{
-						isAddAssociationQuery = false;
-						String savedAssociationRemoveQuery = getQueryPartForAssociation(
-								associationDatabaseCopy, attributeRollbackQueryList,
-								isAddAssociationQuery);
-						associationsQueryList.add(savedAssociationRemoveQuery);
-
-						isAddAssociationQuery = true;
-						String newAssociationAddQuery = getQueryPartForAssociation(association,
-								attributeRollbackQueryList, isAddAssociationQuery);
-						associationsQueryList.add(newAssociationAddQuery);
-					}
-				}
-			}
-		}
-		processRemovedAssociation(entity, databaseCopy, associationsQueryList,
-				attributeRollbackQueryList);
-
-		logDebug("getUpdateAssociationsQueryList", "Exiting method");
-		return associationsQueryList;
-	}
-
-	/**
-	 * @param association
-	 * @param associationDatabaseCopy
-	 * @return
-	 */
-	private boolean isCardinalityChanged(Association association,
-			Association associationDatabaseCopy)
-	{
-		Cardinality sourceMaxCardinality = association.getSourceRole().getMaximumCardinality();
-		Cardinality targetMaxCardinality = association.getTargetRole().getMaximumCardinality();
-
-		Cardinality sourceMaxCardinalityDatabaseCopy = associationDatabaseCopy.getSourceRole()
-				.getMaximumCardinality();
-		Cardinality targetMaxCardinalityDatabaseCopy = associationDatabaseCopy.getTargetRole()
-				.getMaximumCardinality();
-
-		if (!sourceMaxCardinality.equals(sourceMaxCardinalityDatabaseCopy)
-				|| !targetMaxCardinality.equals(targetMaxCardinalityDatabaseCopy))
-		{
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * This method processes any associations that are deleted from the entity.
-	 * @param entity
-	 * @param databaseCopy
-	 * @param associationsQueryList
-	 * @param attributeRollbackQueryList
-	 * @throws DynamicExtensionsSystemException 
-	 */
-	private void processRemovedAssociation(Entity entity, Entity databaseCopy,
-			List associationsQueryList, List attributeRollbackQueryList)
-			throws DynamicExtensionsSystemException
-	{
-		logDebug("processRemovedAssociation", "Entering method");
-
-		Collection savedAssociationCollection = databaseCopy.getAssociationCollection();
-		String tableName = entity.getTableProperties().getName();
-
-		if (savedAssociationCollection != null && !savedAssociationCollection.isEmpty())
-		{
-			Iterator savedAssociationIterator = savedAssociationCollection.iterator();
-			while (savedAssociationIterator.hasNext())
-			{
-				Association savedAssociation = (Association) savedAssociationIterator.next();
-				Association association = (Association) entity
-						.getAttributeByIdentifier(savedAssociation.getId());
-				;
-
-				// removed ??
-				if (association == null)
-				{
-					boolean isAddAssociationQuery = false;
-					String removeAssociationQuery = getQueryPartForAssociation(savedAssociation,
-							attributeRollbackQueryList, isAddAssociationQuery);
-					associationsQueryList.add(removeAssociationQuery);
-				}
-			}
-		}
-		logDebug("processRemovedAssociation", "Exiting method");
-	}
-
-	private List getUpdateAttributeQueryList(Entity entity, Entity databaseCopy,
-			List attributeRollbackQueryList) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
-	{
-		logDebug("getUpdateAttributeQueryList", "Entering method");
-		Collection attributeCollection = entity.getAttributeCollection();
-		List attributeQueryList = new ArrayList();
-
-		if (attributeCollection != null && !attributeCollection.isEmpty())
-		{
-			Iterator attributeIterator = attributeCollection.iterator();
-
-			while (attributeIterator.hasNext())
-			{
-				Attribute attribute = (Attribute) attributeIterator.next();
-				Attribute savedAttribute = (Attribute) databaseCopy
-						.getAttributeByIdentifier(attribute.getId());
-
-				if (savedAttribute == null || isAttributeColumnToBeAdded(attribute, savedAttribute))
-				{
-					String attributeQuery = processAddAttribute(attribute,
-							attributeRollbackQueryList);
-					attributeQueryList.add(attributeQuery);
-				}
-				else
-				{
-					List modifiedAttributeQueryList = processModifyAttribute(attribute,
-							savedAttribute, attributeRollbackQueryList);
-					attributeQueryList.addAll(modifiedAttributeQueryList);
-				}
-
-			}
-
-		}
-		processRemovedAttributes(entity, databaseCopy, attributeQueryList,
-				attributeRollbackQueryList);
-		logDebug("getUpdateAttributeQueryList", "Exiting method");
-		return attributeQueryList;
-	}
-
-	/**
-	 * This method returns true if a column in not to be created for the attribute.
-	 * @return
-	 */
-	private boolean isAttributeColumnToBeExcluded(AttributeInterface attribute)
-	{
-		boolean isExclude = false;
-
-		if (attribute.getIsCollection() != null && attribute.getIsCollection())
-		{
-			isExclude = true;
-		}
-		else if (attribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
-		{
-			isExclude = true;
-		}
-
-		return isExclude;
-	}
-
-	/**
-	 * This method returns true if a attribute is changed such that its column needs to be added.
-	 * @return
-	 */
-	private boolean isAttributeColumnToBeAdded(AttributeInterface attribute,
-			AttributeInterface dataBaseCopy)
-	{
-		boolean columnAdd = false;
-
-		if (!attribute.getIsCollection() && dataBaseCopy.getIsCollection())
-		{
-			columnAdd = true;
-		}
-		else
-		{
-
-			AttributeTypeInformationInterface attributeTypeInfo = attribute
-					.getAttributeTypeInformation();
-			AttributeTypeInformationInterface attributeTypeInfoDatabaseCopy = attribute
-					.getAttributeTypeInformation();
-
-			if (!(attributeTypeInfo instanceof FileAttributeTypeInformation)
-					&& (attributeTypeInfoDatabaseCopy instanceof FileAttributeTypeInformation))
-			{
-				columnAdd = true;
-			}
-		}
-
-		return columnAdd;
-	}
-
-	/**
-	 * This method returns true if a attribute is changed such that its column needs to be removed.
-	 * @return
-	 */
-	private boolean isAttributeColumnToBeRemoved(AttributeInterface attribute,
-			AttributeInterface dataBaseCopy)
-	{
-		boolean columnRemoved = false;
-
-		if (attribute.getIsCollection() && !dataBaseCopy.getIsCollection())
-		{
-			columnRemoved = true;
-		}
-		else
-		{
-
-			AttributeTypeInformationInterface attributeTypeInfo = attribute
-					.getAttributeTypeInformation();
-			AttributeTypeInformationInterface attributeTypeInfoDatabaseCopy = dataBaseCopy
-					.getAttributeTypeInformation();
-
-			if ((attributeTypeInfo instanceof FileAttributeTypeInformation)
-					&& !(attributeTypeInfoDatabaseCopy instanceof FileAttributeTypeInformation))
-			{
-				columnRemoved = true;
-			}
-		}
-
-		return columnRemoved;
-	}
-
-	/**
-	 * This method takes the edited attribtue and its database copy and then looks for any change
-	 * Changes that are tracked in terms of data table query are 
-	 * Change in the constraint NOT NULL AND UNIQUE
-	 * <BR> Change in the database type of the column.
-	 * @param attribute edited Attribute 
-	 * @param savedAttribute original database copy of the edited attribute.
-	 * @param attributeRollbackQueryList This list is updated with the roll back queries for the actual queries.
-	 * @return List list of strings which hold the queries for the changed attribute.
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
-	 */
-	private List processModifyAttribute(Attribute attribute, Attribute savedAttribute,
-			List attributeRollbackQueryList) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
-	{
-		List modifyAttributeQueryList = new ArrayList();
-
-		if (isAttributeColumnToBeExcluded(attribute))
-		{
-			return modifyAttributeQueryList;
-		}
-
-		String tableName = attribute.getEntity().getTableProperties().getName();
-		String columnName = attribute.getColumnProperties().getName();
-		boolean attributemodifiedFlag = false;
-
-		String newTypeClass = attribute.getAttributeTypeInformation().getClass().getName();
-		String oldTypeClass = savedAttribute.getAttributeTypeInformation().getClass().getName();
-
-		String type = "";
-		String modify = MODIFY_KEYWORD;
-		String str = Variables.databaseName;
-		if (!newTypeClass.equals(oldTypeClass))
-		{
-			attributemodifiedFlag = true;
-
-		}
-		if (str.equalsIgnoreCase(Constants.POSTGRESQL_DATABASE))
-		{
-			type = "TYPE";
-			modify = ALTER_KEYWORD;
-		}
-
-		String modifyAttributeQuery = getQueryPartForAbstractAttribute(attribute, type, false);
-		modifyAttributeQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + modify
-				+ WHITESPACE + modifyAttributeQuery;
-
-		String modifyAttributeRollbackQuery = getQueryPartForAbstractAttribute(savedAttribute,
-				type, false);
-		modifyAttributeRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + modify
-				+ WHITESPACE + modifyAttributeRollbackQuery;
-		//process nullable
-		String nullQueryKeyword = "";
-		String nullQueryRollbackKeyword = "";
-		String constraintCondition = "";
-		String constraintRollbackcondition = "";
-		if (attribute.getIsNullable() && !savedAttribute.getIsNullable())
-		{
-			constraintCondition = DROP_KEYWORD;
-			constraintRollbackcondition = SET_KEYWORD;
-			nullQueryKeyword = WHITESPACE + NULL_KEYWORD + WHITESPACE;
-			nullQueryRollbackKeyword = WHITESPACE + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD
-					+ WHITESPACE;
-		}
-		else if (!attribute.getIsNullable() && savedAttribute.getIsNullable())
-		{
-			constraintCondition = SET_KEYWORD;
-			constraintRollbackcondition = DROP_KEYWORD;
-			nullQueryKeyword = WHITESPACE + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD + WHITESPACE;
-			nullQueryRollbackKeyword = WHITESPACE + NULL_KEYWORD + WHITESPACE;
-
-		}
-		if (!str.equalsIgnoreCase(Constants.POSTGRESQL_DATABASE))
-		{
-
-			if (!constraintCondition.equalsIgnoreCase("")
-					&& !constraintRollbackcondition.equalsIgnoreCase(""))
-			{
-				attributemodifiedFlag = true;
-				modifyAttributeQuery = modifyAttributeQuery + nullQueryKeyword;
-				modifyAttributeRollbackQuery = modifyAttributeRollbackQuery
-						+ nullQueryRollbackKeyword;
-
-			}
-
-		}
-		else
-		{
-			if (!constraintCondition.equalsIgnoreCase("")
-					&& !constraintRollbackcondition.equalsIgnoreCase(""))
-			{
-				String nullPartQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + modify
-						+ WHITESPACE + columnName + WHITESPACE + constraintCondition + WHITESPACE
-						+ NOT_KEYWORD + WHITESPACE + NULL_KEYWORD;
-				String nullPartRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE
-						+ modify + WHITESPACE + columnName + WHITESPACE
-						+ constraintRollbackcondition + WHITESPACE + NOT_KEYWORD + WHITESPACE
-						+ NULL_KEYWORD;
-				modifyAttributeQueryList.add(nullPartQuery);
-				attributeRollbackQueryList.add(nullPartRollbackQuery);
-			}
-
-		}
-
-		if (attributemodifiedFlag)
-		{
-			modifyAttributeQueryList.add(modifyAttributeQuery);
-			attributeRollbackQueryList.add(modifyAttributeRollbackQuery);
-		}
-
-		/*        }
-		 */
-		if (attribute.getIsPrimaryKey() && !savedAttribute.getIsPrimaryKey())
-		{
-
-			String uniqueConstraintQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE
-					+ ADD_KEYWORD + WHITESPACE + CONSTRAINT_KEYWORD + WHITESPACE + columnName
-					+ UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX + WHITESPACE + UNIQUE_KEYWORD
-					+ WHITESPACE + OPENING_BRACKET + columnName + CLOSING_BRACKET;
-			String uniqueConstraintRollbackQuery = ALTER_TABLE + WHITESPACE + tableName
-					+ WHITESPACE + DROP_KEYWORD + WHITESPACE + CONSTRAINT_KEYWORD + WHITESPACE
-					+ columnName + UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX;
-
-			modifyAttributeQueryList.add(uniqueConstraintQuery);
-			attributeRollbackQueryList.add(uniqueConstraintRollbackQuery);
-
-		}
-		else if (!attribute.getIsPrimaryKey() && savedAttribute.getIsPrimaryKey())
-		{
-			String uniqueConstraintQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE
-					+ DROP_KEYWORD + WHITESPACE + CONSTRAINT_KEYWORD + WHITESPACE + columnName
-					+ UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX;
-			String uniqueConstraintRollbackQuery = ALTER_TABLE + WHITESPACE + tableName
-					+ WHITESPACE + ADD_KEYWORD + WHITESPACE + CONSTRAINT_KEYWORD + WHITESPACE
-					+ columnName + UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX + WHITESPACE
-					+ UNIQUE_KEYWORD + WHITESPACE + OPENING_BRACKET + columnName + CLOSING_BRACKET;
-
-			modifyAttributeQueryList.add(uniqueConstraintQuery);
-			attributeRollbackQueryList.add(uniqueConstraintRollbackQuery);
-		}
-		return modifyAttributeQueryList;
-	}
-
-	/**This method returns true if the new attribute is actually changed with regards to its database copy.
-	 * Otherwise it returns false.
-	 * @param abstractAttribute
-	 * @param abstractSavedAttribute
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 */
-	private boolean isAttributeChanged(Attribute attribute, Attribute savedAttribute)
-			throws DynamicExtensionsSystemException
-	{
-
-		if (!getDatabaseTypeAndSize(attribute).equals(getDatabaseTypeAndSize(savedAttribute)))
-		{
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * This method builds the query part for the newly added attribute.
-	 * @param attribute Newly added attribute in the entity.
-	 * @param attributeRollbackQueryList This list is updated with the rollback queries for the actual queries.
-	 * @return Srting The actual query part for the new attribute.
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
-	 */
-	private String processAddAttribute(Attribute attribute, List attributeRollbackQueryList)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
-	{
-
-		String columnName = attribute.getColumnProperties().getName();
-		String tableName = attribute.getEntity().getTableProperties().getName();
-		String type = "";
-		String newAttributeQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + ADD_KEYWORD
-				+ WHITESPACE + getQueryPartForAbstractAttribute(attribute, type, true);
-
-		String newAttributeRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE
-				+ DROP_KEYWORD + WHITESPACE + COLUMN_KEYWORD + WHITESPACE + columnName;
-
-		attributeRollbackQueryList.add(newAttributeRollbackQuery);
-
-		return newAttributeQuery;
 	}
 
 	/**
@@ -2773,7 +1544,7 @@ public class EntityManager
 			}
 		}
 
-		recordValues.putAll(getAssociationGetRecordQueryList(entity, recordId));
+		recordValues.putAll(queryBuilder.getAssociationGetRecordQueryList(entity, recordId));
 
 		String[] selectColumnName = new String[selectColumnNameList.size()];
 		for (int i = 0; i < selectColumnNameList.size(); i++)
@@ -2843,175 +1614,6 @@ public class EntityManager
 			}
 		}
 		return recordValues;
-	}
-	
-	/**
-	 * @param entity
-	 * @param recordId
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 */
-	private Map<Association, List<Long>> getAssociationGetRecordQueryList(EntityInterface entity,
-			Long recordId) throws DynamicExtensionsSystemException
-	{
-
-		Collection associationCollection = entity.getAssociationCollection();
-		Iterator associationIterator = associationCollection.iterator();
-		StringBuffer manyToOneAssociationsGetReocrdQuery = new StringBuffer();
-		manyToOneAssociationsGetReocrdQuery.append(SELECT_KEYWORD + WHITESPACE);
-		List<Association> manyToOneAssociationList = new ArrayList<Association>();
-		String comma = "";
-
-		Map<Association, List<Long>> associationValuesMap = new HashMap<Association, List<Long>>();
-
-		while (associationIterator.hasNext())
-		{
-			Association association = (Association) associationIterator.next();
-
-			String tableName = association.getConstraintProperties().getName();
-			String sourceKey = association.getConstraintProperties().getSourceEntityKey();
-			String targetKey = association.getConstraintProperties().getTargetEntityKey();
-			StringBuffer query = new StringBuffer();
-
-			if (sourceKey != null && targetKey != null && sourceKey.trim().length() != 0
-					&& targetKey.trim().length() != 0)
-			{ /* Many to many*/
-				query.append(SELECT_KEYWORD + WHITESPACE + targetKey);
-				query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName + WHITESPACE);
-				query
-						.append(WHITESPACE + WHERE_KEYWORD + WHITESPACE + sourceKey + EQUAL
-								+ recordId);
-				associationValuesMap.put(association, getAssociationRecordValues(query.toString()));
-			}
-			else if (sourceKey != null && sourceKey.trim().length() != 0)
-			{
-				/* Many to one*/
-				if (manyToOneAssociationList.size() != 0)
-				{
-					manyToOneAssociationsGetReocrdQuery.append(COMMA);
-				}
-				manyToOneAssociationsGetReocrdQuery.append(WHITESPACE + sourceKey + WHITESPACE);
-				manyToOneAssociationList.add(association);
-			}
-			else
-			{
-				/* one to many or one to one*/
-				query.append(SELECT_KEYWORD + WHITESPACE + IDENTIFIER);
-				query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName + WHITESPACE);
-				query
-						.append(WHITESPACE + WHERE_KEYWORD + WHITESPACE + targetKey + EQUAL
-								+ recordId);
-				associationValuesMap.put(association, getAssociationRecordValues(query.toString()));
-			}
-		}
-
-		manyToOneAssociationsGetReocrdQuery.append(WHITESPACE + FROM_KEYWORD + WHITESPACE
-				+ entity.getTableProperties().getName() + WHITESPACE);
-		manyToOneAssociationsGetReocrdQuery.append(WHITESPACE + WHERE_KEYWORD + WHITESPACE
-				+ IDENTIFIER + EQUAL + recordId);
-
-		int noOfMany2OneAsso = manyToOneAssociationList.size();
-		if (noOfMany2OneAsso != 0)
-		{
-			try
-			{
-				ResultSet resultSet = executeQuery(manyToOneAssociationsGetReocrdQuery.toString());
-				for (int i = 0; i < noOfMany2OneAsso; i++)
-				{
-					Long targetRecordId = resultSet.getLong(i + 1);
-					List<Long> valueList = new ArrayList<Long>();
-					valueList.add(targetRecordId);
-					associationValuesMap.put(manyToOneAssociationList.get(i), valueList);
-				}
-			}
-			catch (SQLException e)
-			{
-				throw new DynamicExtensionsSystemException("Exception in query execution", e);
-			}
-		}
-		return associationValuesMap;
-	}
-
-
-	/**
-	 * @param query
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 */
-	private List<Long> getAssociationRecordValues(String query)
-			throws DynamicExtensionsSystemException
-	{
-		List<Long> associationRecordValues = new ArrayList();
-		try
-		{
-			ResultSet resultSet = executeQuery(query);
-			do
-			{
-				Long recordId = resultSet.getLong(1);
-				associationRecordValues.add(recordId);
-			}
-			while (resultSet.next());
-		}
-		catch (Exception e)
-		{
-			throw new DynamicExtensionsSystemException("Exception in query execution", e);
-		}
-		return associationRecordValues;
-	}
-	
-	/**
-	 * This method processes all the attributes that previoulsy saved but removed by editing.
-	 * @param entity
-	 * @param databaseCopy
-	 * @param attributeQueryList
-	 * @param attributeRollbackQueryList
-	 * @throws DynamicExtensionsSystemException 
-	 */
-	private void processRemovedAttributes(Entity entity, Entity databaseCopy,
-			List attributeQueryList, List attributeRollbackQueryList)
-			throws DynamicExtensionsSystemException
-	{
-		Collection savedAttributeCollection = databaseCopy.getAbstractAttributeCollection();
-		String tableName = entity.getTableProperties().getName();
-
-		if (savedAttributeCollection != null && !savedAttributeCollection.isEmpty())
-		{
-			Iterator savedAttributeIterator = savedAttributeCollection.iterator();
-			while (savedAttributeIterator.hasNext())
-			{
-				AbstractAttribute savedAbstractAttribute = (AbstractAttribute) savedAttributeIterator
-						.next();
-
-				if (savedAbstractAttribute instanceof Attribute)
-				{
-					Attribute savedAttribute = (Attribute) savedAbstractAttribute;
-					Attribute attribute = (Attribute) entity
-							.getAttributeByIdentifier(savedAbstractAttribute.getId());
-					;
-					// removed ??
-					if (attribute == null
-							|| isAttributeColumnToBeRemoved(attribute, savedAttribute))
-					{
-						String columnName = savedAttribute.getColumnProperties().getName();
-
-						String removeAttributeQuery = ALTER_TABLE + WHITESPACE + tableName
-								+ WHITESPACE + DROP_KEYWORD + WHITESPACE + COLUMN_KEYWORD
-								+ WHITESPACE + columnName;
-						String type = "";
-
-						String removeAttributeQueryRollBackQuery = ALTER_TABLE + WHITESPACE
-								+ tableName + WHITESPACE + ADD_KEYWORD + WHITESPACE
-								+ getQueryPartForAbstractAttribute(savedAttribute, type, true);
-
-						attributeQueryList.add(removeAttributeQuery);
-						attributeRollbackQueryList.add(removeAttributeQueryRollBackQuery);
-					}
-
-				}
-
-			}
-
-		}
 	}
 
 	/**
@@ -3367,39 +1969,5 @@ public class EntityManager
 			throw new DynamicExtensionsApplicationException("Entity name invalid", null,
 					DYEXTN_A_003);
 		}
-	}
-
-	/**
-	 * @param query query to be executed
-	 * @return 
-	 * @throws DynamicExtensionsSystemException 
-	 */
-	protected ResultSet executeQuery(String query) throws DynamicExtensionsSystemException
-	{
-
-		Connection conn = null;
-		try
-		{
-			conn = DBUtil.getConnection();
-			Statement statement = null;
-			statement = conn.createStatement();
-			ResultSet resultSet = statement.executeQuery(query);
-			resultSet.next();
-			return resultSet;
-		}
-
-		catch (Exception e)
-		{
-			try
-			{
-				conn.rollback();
-			}
-			catch (SQLException e1)
-			{
-				throw new DynamicExtensionsSystemException(e.getMessage(), e);
-			}
-			throw new DynamicExtensionsSystemException(e.getMessage(), e);
-		}
-
 	}
 }

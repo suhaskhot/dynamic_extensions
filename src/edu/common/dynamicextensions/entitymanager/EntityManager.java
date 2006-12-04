@@ -75,6 +75,10 @@ import edu.wustl.common.util.logger.Logger;
  * @author Vishvesh Mulay
  * @author Rahul Ner
  */
+/**
+ * @author vishvesh_mulay
+ *
+ */
 public class EntityManager
 		implements
 			EntityManagerInterface,
@@ -158,7 +162,7 @@ public class EntityManager
 		{
 			isEntitySaved = false;
 		}
-		
+
 		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
 				Constants.HIBERNATE_DAO);
 		Stack stack = new Stack();
@@ -206,7 +210,7 @@ public class EntityManager
 			}
 			catch (DAOException e)
 			{
-//				Queries for data table creation and modification are fired in the method saveOrUpdateEntity. So if there
+				//Queries for data table creation and modification are fired in the method saveOrUpdateEntity. So if there
 				//is any exception while storing the metadata , we need to roll back the queries that were fired. So
 				//calling the following method to do that.
 				rollbackQueries(stack, entity, e);
@@ -273,7 +277,6 @@ public class EntityManager
 		return entityGroupInterface;
 
 	}
-
 
 	/** The actual values of the multi select attribute are not stored in the entity's data table because there can
 	 * be more than one values associated with the particular multiselect attribute. so for this reason, these values
@@ -528,17 +531,17 @@ public class EntityManager
 	public EntityInterface getEntityByIdentifier(String identifier)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-//		CAlling generic method to return all stored instances of the object, the identifier of which is passed as 
+		//		CAlling generic method to return all stored instances of the object, the identifier of which is passed as 
 		//the parameter.
 		return (EntityInterface) getObjectByIdentifier(EntityInterface.class.getName(), identifier);
 	}
 
 	/**
-	 * This method populates the TableProperties object in entity which holds the unique tablename for the entity. This 
-	 * table name is generated using the unique identifier that is generated after saving the object. The format for generating 
-	 * this table/column name is "DYEXTN_<ENTITY/ATTRIBUTE/ASSOCIATION>_<UNIQUE IDENTIFIER>"
-	 * So we need this method to generate the table name for the entity then create the corresponding tableProperties 
-	 * object and then update the entity object with this newly added tableProperties object. 
+	 * This method populates the TableProperties object in entity which holds the unique tablename for the entity.
+	 * This table name is generated using the unique identifier that is generated after saving the object.
+	 * The format for generating this table/column name is "DE_<E/AT/AS>_<UNIQUE IDENTIFIER>"
+	 * So we need this method to generate the table name for the entity then create the corresponding 
+	 * tableProperties object and then update the entity object with this newly added tableProperties object. 
 	 * Similarly we add ColumnProperties object for each of the attribute and also the ConstraintProperties object 
 	 * for each of the associations.
 	 * @param entity Entity object on which to process the post save operations.
@@ -600,13 +603,14 @@ public class EntityManager
 	}
 
 	/**This method is used for following purposes.
-	 * 1. The method creates a system generated association in case when the association is bidirectional. Bi directional
-	 * association is supposed to be a part of the target entity's attributes. So we create a replica of the original
-	 * association (which we call as system generated association) and this association is added to the target entity's 
-	 * attribute collection.
-	 * 2. The method also removes the system generated association from the target entity when the association direction
-	 * of the assciation is changed from "bi-directional" to "SRC-Destination". In this case we no longer need the system 
-	 * generated association. So if the sys. generated association is present , it is removed.
+	 * 1. The method creates a system generated association in case when the association is bidirectional. 
+	 * Bi directional association is supposed to be a part of the target entity's attributes. 
+	 * So we create a replica of the original association (which we call as system generated association) 
+	 * and this association is added to the target entity's attribute collection.
+	 * 2. The method also removes the system generated association from the target entity 
+	 * when the association direction of the assciation is changed from "bi-directional" to "SRC-Destination". 
+	 * In this case we no longer need the system generated association. 
+	 * So if the sys. generated association is present , it is removed.
 	 * @param association
 	 * @param hibernateDAO 
 	 * @throws UserNotAuthorizedException 
@@ -615,6 +619,7 @@ public class EntityManager
 	private void populateSystemGeneratedAssociation(Association association,
 			HibernateDAO hibernateDAO) throws DAOException, UserNotAuthorizedException
 	{
+		//Getting the sys.generated association for the given original association.
 		Association systemGeneratedAssociation = getSystemGeneratedAssociation(association);
 		if (association.getAssociationDirection() == AssociationDirection.BI_DIRECTIONAL)
 		{
@@ -628,34 +633,38 @@ public class EntityManager
 				constraintPropertiesSysGen = systemGeneratedAssociation.getConstraintProperties();
 			}
 			constraintPropertiesSysGen.setName(association.getConstraintProperties().getName());
+			//Swapping the source and target keys.
 			constraintPropertiesSysGen.setSourceEntityKey(association.getConstraintProperties()
 					.getTargetEntityKey());
 			constraintPropertiesSysGen.setTargetEntityKey(association.getConstraintProperties()
 					.getSourceEntityKey());
-
+			//Populating the sys. generated association.
 			systemGeneratedAssociation.setName(association.getName());
 			systemGeneratedAssociation.setDescription(association.getDescription());
 			systemGeneratedAssociation.setTargetEntity(association.getEntity());
 			systemGeneratedAssociation.setEntity(association.getTargetEntity());
+			//Swapping the source and target roles.
 			systemGeneratedAssociation.setSourceRole(association.getTargetRole());
 			systemGeneratedAssociation.setTargetRole(association.getSourceRole());
 			systemGeneratedAssociation.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
 			systemGeneratedAssociation.setIsSystemGenerated(true);
 			systemGeneratedAssociation.setConstraintProperties(constraintPropertiesSysGen);
-
+			//Adding the sys.generated association to the target entity.
 			association.getTargetEntity().addAbstractAttribute(systemGeneratedAssociation);
 		}
 		else
 		{
+			//Removing the not required sys. generated association because the direction has been changed 
+			//from "bi directional" to "src-destination".
 			if (systemGeneratedAssociation != null)
 			{
 				association.getTargetEntity().removeAbstractAttribute(systemGeneratedAssociation);
 			}
 		}
+		//Saving the modified target entity.
 		hibernateDAO.update(association.getTargetEntity(), null, false, false, false);
 	}
 
-	
 	/**This method is used to get the system generated association given the original association.
 	 * System generated association is searched based on the following criteria
 	 * 1. The flag "isSystemGenerated" should be set.
@@ -686,6 +695,19 @@ public class EntityManager
 	}
 
 	
+	/**This method populates the constraint properties for the given association. Creation/population of 
+	 * constraint properties depend on Cardinalities of the source and target roles.
+	 * Folliowing are the possible cases.
+	 * 1. Many to many. --> source key , target key and middle table name are created and populated.
+	 * 2.Many to one --> Only source key is created and populated as the extra column gets added to the source entity.
+	 * 3. One to one or one to many --> In either case, only target key is populated because one extra column gets 
+	 * added to the target entity.
+	 * Naming conventions for the source, target keys and the middle table are 
+	 * Source key --> DE_E_S_<<Source entity identifier>>_<<Association_identifier>>_IDENTIFIER
+	 * Target key --> DE_E_T_<<target entity identifier>>_<<Association_identifier>>_IDENTIFIER
+	 * Middle table name --> DE_E_<<Source entity identifier>>_<<target entity identifier>>_<<Association_identifier>>
+	 * @param association
+	 */
 	private void populateConstraintProperties(Association association)
 	{
 
@@ -836,6 +858,8 @@ public class EntityManager
 	public Collection<ContainerInterface> getAllContainers()
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
+		//CAlling generic method to return all stored instances of the object, the class name of which is passed as 
+		//the parameter.
 		return getAllObjects(ContainerInterface.class.getName());
 	}
 

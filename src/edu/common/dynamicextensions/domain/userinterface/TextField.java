@@ -3,7 +3,9 @@ package edu.common.dynamicextensions.domain.userinterface;
 
 import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.LongAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
@@ -78,21 +80,25 @@ public class TextField extends Control implements TextFieldInterface
 	 * This method generates the HTML code for TextField control on the HTML form
 	 * @return HTML code for TextField
 	 */
+	/**
+	 * This method generates the HTML code for TextField control on the HTML form
+	 * @return HTML code for TextField
+	 */
 	public String generateHTML()
 	{
 		String defaultValue = (String) this.value;
 		if (this.value == null)
 		{
 			defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
-			if(defaultValue == null || (defaultValue.length() == 0))
+			if (defaultValue == null || (defaultValue.length() == 0))
 			{
 				defaultValue = "";
 			}
 		}
 
-		String htmlString = "<input " + "class = '" + cssClass + "' " + "name = '" + getHTMLComponentName() + "' " + "id = '"
-		+ getHTMLComponentName() + "' " + "title = '" + tooltip + "'  " + "value = '" + defaultValue + "' " + "size = '" + columns.intValue()
-		+ "' ";
+		String htmlComponentName = getHTMLComponentName();
+		String htmlString = "<input " + "class = '" + cssClass + "' " + "name = '" + htmlComponentName + "' " + "id = '" + htmlComponentName + "' "
+				+ "title = '" + tooltip + "'  " + "value = '" + defaultValue + "' " + "size = '" + columns.intValue() + "' ";
 
 		String measurementUnit = getMeasurementUnit(this.getAbstractAttribute());
 		if (measurementUnit != null)
@@ -108,11 +114,45 @@ public class TextField extends Control implements TextFieldInterface
 		{
 			htmlString = htmlString + " type='text' ";
 		}
-		htmlString += ">";
 
+		int maxChars = 0;
+		AttributeInterface attribute = (AttributeInterface) this.getAbstractAttribute();
+		if (attribute != null)
+		{
+			AttributeTypeInformationInterface attributeTypeInformationInterface = attribute.getAttributeTypeInformation();
+			if (attributeTypeInformationInterface != null)
+			{
+				if (attributeTypeInformationInterface instanceof StringAttributeTypeInformation)
+				{
+					StringAttributeTypeInformation stringAttributeTypeInformation = (StringAttributeTypeInformation) attributeTypeInformationInterface;
+					if (stringAttributeTypeInformation != null)
+					{
+						maxChars = stringAttributeTypeInformation.getSize().intValue();
+					}
+				}
+				/*else if (attributeTypeInformationInterface instanceof LongAttributeTypeInformation)
+				{
+					LongAttributeTypeInformation longAttributeTypeInformation = (LongAttributeTypeInformation)attributeTypeInformationInterface;
+					
+
+				}
+				else if (attributeTypeInformationInterface instanceof DoubleAttributeTypeInformation)
+				{
+					DoubleAttributeTypeInformation doubleAttributeTypeInformation = (DoubleAttributeTypeInformation)attributeTypeInformationInterface;
+
+				}*/
+			}
+		}
+		if (maxChars != 0)
+		{
+			htmlString += "maxlength='" + maxChars + "'>";
+		}
+		else
+		{
+			htmlString += "/>";
+		}
 		return htmlString;
 	}
-
 	/**
 	 * This method sets the associated AbstractAttribute of this Control. 
 	 * @param abstractAttributeInterface AbstractAttribute to be associated.

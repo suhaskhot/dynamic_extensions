@@ -7,6 +7,7 @@ import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.interfaces.ContainerUIBeanInterface;
+import edu.common.dynamicextensions.ui.util.Constants;
 import edu.wustl.common.util.Utility;
 
 /**
@@ -60,8 +61,10 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 			containerInterface.setButtonCss(containerUIBeanInterface.getButtonCss());
 			containerInterface.setCaption(containerUIBeanInterface.getFormName());
 			containerInterface.setMainTableCss(containerUIBeanInterface.getMainTableCss());
-			containerInterface.setRequiredFieldIndicatior(containerUIBeanInterface.getRequiredFieldIndicatior());
-			containerInterface.setRequiredFieldWarningMessage(containerUIBeanInterface.getRequiredFieldWarningMessage());
+			//containerInterface.setRequiredFieldIndicatior(containerUIBeanInterface.getRequiredFieldIndicatior());
+			//containerInterface.setRequiredFieldWarningMessage(containerUIBeanInterface.getRequiredFieldWarningMessage());
+			containerInterface.setRequiredFieldIndicatior(Constants.REQUIRED_FIELD_INDICATOR);
+			containerInterface.setRequiredFieldWarningMessage(Constants.REQUIRED_FIELD_WARNING_MESSAGE);
 			containerInterface.setTitleCss(containerUIBeanInterface.getTitleCss());
 		}
 	}

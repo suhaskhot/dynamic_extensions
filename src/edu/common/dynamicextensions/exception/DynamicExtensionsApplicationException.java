@@ -62,8 +62,10 @@ public class DynamicExtensionsApplicationException extends BaseDynamicExtensions
 			String errorCode, List<String> placeHolders)
 	{
 		super(message, wrapException,errorCode);
-		
-
+		for(String placeHolder: placeHolders)
+		{
+			this.placeHolderList.add(placeHolder);
+		}
 	}
 
 	/**

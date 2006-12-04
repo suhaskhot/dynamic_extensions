@@ -2033,7 +2033,7 @@ public class EntityManager
 	{
 
 		validateName(entity.getName());
-		Collection collection = entity.getAbstractAttributeCollection();
+		Collection<AbstractAttributeInterface> collection = entity.getAbstractAttributeCollection();
 		if (collection != null && !collection.isEmpty())
 		{
 			Iterator iterator = collection.iterator();
@@ -2049,6 +2049,15 @@ public class EntityManager
 		{
 			throw new DynamicExtensionsApplicationException("Entity description size exceeded ",
 					null, DYEXTN_A_004);
+		}
+		Collection<String> nameCollection = new HashSet<String>();
+		for (AbstractAttributeInterface attribute : collection) {
+			if (!nameCollection.contains(attribute.getName())) {
+			nameCollection.add(attribute.getName());
+			} else {
+				throw new DynamicExtensionsApplicationException("Attribute names should be unique for the entity ",
+						null, DYEXTN_A_006, attribute.getName());	
+			}
 		}
 		return;
 	}

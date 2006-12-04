@@ -88,12 +88,12 @@ public class EntityManager
 	private static EntityManagerInterface entityManagerInterface = null;
 
 	/**
-	 * 
+	 * Instance of database specific query builder.
 	 */
 	private static DynamicExtensionBaseQueryBuilder queryBuilder = new DynamicExtensionBaseQueryBuilder();
 
 	/**
-	 * 
+	 * Instance of entity manager util class 
 	 */
 	EntityManagerUtil entityManagerUtil = new EntityManagerUtil();
 
@@ -134,9 +134,10 @@ public class EntityManager
 	}
 
 	/**
-	 * 
-	 * @param methodName
-	 * @param message
+	 * This method is used to log the messages in a uniform manner. The method takes the string method name and 
+	 * string message. Using these parameters the method formats the message and logs it.
+	 * @param methodName Name of the method for which the message needs to be logged.
+	 * @param message The message that needs to be logged.
 	 */
 	private void logDebug(String methodName, String message)
 	{
@@ -152,22 +153,25 @@ public class EntityManager
 		logDebug("persistEntity", "entering the method");
 		Entity entity = (Entity) entityInterface;
 		boolean isEntitySaved = true;
+		//Depending on the presence of Id field , the method that is to be invoked (insert/update), is decided.
 		if (entity.getId() == null)
 		{
 			isEntitySaved = false;
 		}
-
+		
 		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
 				Constants.HIBERNATE_DAO);
 		Stack stack = new Stack();
 
 		try
 		{
-			hibernateDAO.openSession(null);
 
+			hibernateDAO.openSession(null);
+			//Calling the method which actually calls the insert/update method on dao. Hibernatedao is passed to this
+			//method and transaction is handled in the calling method.
 			entityInterface = saveOrUpdateEntity(entityInterface, hibernateDAO, stack,
 					isEntitySaved);
-
+			//Committing the changes done in the hibernate session to the database.
 			hibernateDAO.commit();
 		}
 		catch (DAOException e)
@@ -177,6 +181,9 @@ public class EntityManager
 		}
 		catch (BaseDynamicExtensionsException e)
 		{
+			//Queries for data table creation and modification are fired in the method saveOrUpdateEntity. So if there
+			//is any exception while storing the metadata , we need to roll back the queries that were fired. So
+			//calling the following method to do that.
 			rollbackQueries(stack, entity, e);
 
 			if (e instanceof DynamicExtensionsApplicationException)
@@ -193,10 +200,15 @@ public class EntityManager
 		{
 			try
 			{
+				//In any case , after all the operations , hibernate session needs to be closed. So this call has 
+				// been added in the finally clause.
 				hibernateDAO.closeSession();
 			}
 			catch (DAOException e)
 			{
+//				Queries for data table creation and modification are fired in the method saveOrUpdateEntity. So if there
+				//is any exception while storing the metadata , we need to roll back the queries that were fired. So
+				//calling the following method to do that.
 				rollbackQueries(stack, entity, e);
 			}
 		}
@@ -216,7 +228,10 @@ public class EntityManager
 	{
 		logDebug("createEntityGroup", "Entering method");
 		EntityGroup entityGroup = (EntityGroup) entityGroupInterface;
+		//Calling the following method to process the entity group before saving. 
+		//This includes setting the created date and updated date etc.
 		preSaveProcessEntityGroup(entityGroup);
+		//Following method actually calls the dao's insert or update method.
 		entityGroup = saveOrUpdateEntityGroup(entityGroupInterface, true);
 		logDebug("createEntity", "Exiting method");
 		return entityGroupInterface;
@@ -234,10 +249,15 @@ public class EntityManager
 		{
 			return entityGroupInterface;
 		}
+		//Getting the instance of the default biz logic class which has the method that returns the particular object
+		//depending on the value of a particular column of the associated table.
 		DefaultBizLogic defaultBizLogic = BizLogicFactory.getDefaultBizLogic();
 
 		try
 		{
+			//Calling retrieve method to  get the entity group object based on the given value of short name.
+			//Passed parameters are the class name of the entity group class, the name of the hibernate object member variable
+			// and the value of that member variable.
 			entityGroupCollection = defaultBizLogic.retrieve(EntityGroup.class.getName(),
 					"shortName", entityGroupShortName);
 			if (entityGroupCollection != null && entityGroupCollection.size() > 0)
@@ -254,8 +274,19 @@ public class EntityManager
 
 	}
 
-	/**
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAssociations(java.lang.Long, java.lang.Long)
+
+	/** The actual values of the multi select attribute are not stored in the entity's data table because there can
+	 * be more than one values associated with the particular multiselect attribute. so for this reason, these values
+	 * are stored in a different table. CollectionAttributeRecordValues is the hibernate object that maps to that table.
+	 * This method is used to get the list of all the CollectionAttributeRecordValues object for the given combination
+	 * of the entity, attribute and the particular record of the entity. CollectionAttributeRecordValues object 
+	 * holds the values of any "multiselect" attributes or file attributes.
+	 * @param entityId
+	 * @param attributeId
+	 * @param recordId
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
 	 */
 	private List<String> getCollectionAttributeRecordValues(Long entityId, Long attributeId,
 			Long recordId) throws DynamicExtensionsSystemException,
@@ -274,7 +305,10 @@ public class EntityManager
 		return valueList;
 	}
 
-	/**
+	/** This method is used to get the actual file contents for the file attribute for given record of the 
+	 * given entity. Actual file contents are not stored in the entity's data table but are stored in a different 
+	 * table. FileAttributeRecordValue is the hibernate object that maps to that table. So the file contents are 
+	 * returned in the form of FileAttributeRecordValue object.
 	 * returns file record value
 	 * @param entityId
 	 * @param attributeId
@@ -291,7 +325,11 @@ public class EntityManager
 		return record.getFileRecord();
 	}
 
-	/**
+	/** The actual values of the multi select attribute are not stored in the entity's data table because there can
+	 * be more than one values associated with the particular multiselect attribute. so for this reason, these values
+	 * are stored in a different table. AttributeRecord is the hibernate object that maps to that table.
+	 * So this method is used to get the AttributeRecord for the given combination of entity attribute and the particular 
+	 * record of the entity.
 	 * @param entityId
 	 * @param attributeId
 	 * @param recordId
@@ -309,10 +347,14 @@ public class EntityManager
 		Collection recordCollection = null;
 		if (hibernateDao == null)
 		{
+			//Required HQL is stored in the hbm file. The following method takes the name of the query and 
+			// the actual values for the placeholders as the parameters.
 			recordCollection = executeHQL("getCollectionAttributeRecord", substitutionParameterMap);
 		}
 		else
 		{
+			//Required HQL is stored in the hbm file. The following method takes the name of the query and 
+			// the actual values for the placeholders as the parameters.
 			recordCollection = executeHQL(hibernateDao, "getCollectionAttributeRecord",
 					substitutionParameterMap);
 		}
@@ -330,7 +372,8 @@ public class EntityManager
 		Map substitutionParameterMap = new HashMap();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", sourceEntityId));
 		substitutionParameterMap.put("1", new HQLPlaceHolderObject("long", targetEntityId));
-
+		//Following method is called to execute the stored HQL , the name of which is given as the first parameter.
+		//The second parameter is the map which contains the actual values that are replaced for the placeholders.
 		Collection associationCollection = executeHQL("getAssociations", substitutionParameterMap);
 		return associationCollection;
 	}
@@ -348,10 +391,14 @@ public class EntityManager
 		{
 			return entityInterface;
 		}
+		//Getting the instance of the default biz logic on which retrieve method is later called.
 		DefaultBizLogic defaultBizLogic = BizLogicFactory.getDefaultBizLogic();
 		List entityInterfaceList = new ArrayList();
 		try
 		{
+			//the following method gives the object , the class name of which is passed as the first parameter.
+			// The criteria for the object is given in the second and third parameter. The second parameter is the 
+			// field of the object that needs to be compared with the values that is given as the third parameter.
 			entityInterfaceList = defaultBizLogic.retrieve(Entity.class.getName(), "name",
 					entityName);
 		}
@@ -387,6 +434,8 @@ public class EntityManager
 		{
 			return attributeInterface;
 		}
+		//First the entity object is fetched for the name that is passed.Then the entity's attribute collection is 
+		//scanned to select the required attribute.
 		EntityInterface entityInterface = getEntityByName(entityName);
 		if (entityInterface != null)
 		{
@@ -432,6 +481,8 @@ public class EntityManager
 		Map substitutionParameterMap = new HashMap();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("string", entityName));
 		substitutionParameterMap.put("1", new HQLPlaceHolderObject("string", sourceRoleName));
+		//Following method is called to execute the stored HQL , the name of which is given as the first parameter.
+		//The second parameter is the map which contains the actual values that are replaced for the placeholders.
 
 		Collection associationCollection = executeHQL("getAssociation", substitutionParameterMap);
 
@@ -450,6 +501,8 @@ public class EntityManager
 	{
 		Map substitutionParameterMap = new HashMap();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("string", entityConceptCode));
+		//Following method is called to execute the stored HQL , the name of which is given as the first parameter.
+		//The second parameter is the map which contains the actual values that are replaced for the placeholders.
 		Collection entityCollection = executeHQL("getEntitiesByConceptCode",
 				substitutionParameterMap);
 		return entityCollection;
@@ -464,6 +517,8 @@ public class EntityManager
 	public Collection<EntityInterface> getAllEntities() throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
+		//CAlling generic method to return all stored instances of the object, the class name of which is passed as 
+		//the parameter.
 		return getAllObjects(EntityInterface.class.getName());
 	}
 
@@ -473,6 +528,8 @@ public class EntityManager
 	public EntityInterface getEntityByIdentifier(String identifier)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
+//		CAlling generic method to return all stored instances of the object, the identifier of which is passed as 
+		//the parameter.
 		return (EntityInterface) getObjectByIdentifier(EntityInterface.class.getName(), identifier);
 	}
 
@@ -532,15 +589,24 @@ public class EntityManager
 						targetEntity = saveOrUpdateEntity(targetEntity, hibernateDAO,
 								rollbackQueryStack, isEntitySaved);
 					}
+					//Calling the particular method that populates the constraint properties for the association.
 					populateConstraintProperties(association);
-
+					//Calling the method which creates or removes the system generated association depending on
+					//the passed association.
 					populateSystemGeneratedAssociation(association, hibernateDAO);
 				}
 			}
 		}
 	}
 
-	/**
+	/**This method is used for following purposes.
+	 * 1. The method creates a system generated association in case when the association is bidirectional. Bi directional
+	 * association is supposed to be a part of the target entity's attributes. So we create a replica of the original
+	 * association (which we call as system generated association) and this association is added to the target entity's 
+	 * attribute collection.
+	 * 2. The method also removes the system generated association from the target entity when the association direction
+	 * of the assciation is changed from "bi-directional" to "SRC-Destination". In this case we no longer need the system 
+	 * generated association. So if the sys. generated association is present , it is removed.
 	 * @param association
 	 * @param hibernateDAO 
 	 * @throws UserNotAuthorizedException 
@@ -589,6 +655,15 @@ public class EntityManager
 		hibernateDAO.update(association.getTargetEntity(), null, false, false, false);
 	}
 
+	
+	/**This method is used to get the system generated association given the original association.
+	 * System generated association is searched based on the following criteria
+	 * 1. The flag "isSystemGenerated" should be set.
+	 * 2. The source and target roles are swapped. So original association's source role should be the target role 
+	 * of the sys.generated association and vice versa.
+	 * @param association
+	 * @return
+	 */
 	private Association getSystemGeneratedAssociation(Association association)
 	{
 		EntityInterface targetEnetity = association.getTargetEntity();
@@ -610,6 +685,7 @@ public class EntityManager
 		return null;
 	}
 
+	
 	private void populateConstraintProperties(Association association)
 	{
 

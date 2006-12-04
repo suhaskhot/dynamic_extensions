@@ -1032,10 +1032,14 @@ public class EntityManager
 			hibernateDAO.openSession(null);
 			if (entity != null)
 			{
+				// saves the entity into database. It populates rollbackQueryStack with the 
+				// queries that restores the database state to the state before calling this method
+				// in case of exception. 
 				saveOrUpdateEntity(entity, hibernateDAO, rollbackQueryStack, isentitySaved);
 
 			}
-			preSaveProcessContainer(container);
+			
+			preSaveProcessContainer(container); //preprocess
 			if (isContainerSaved)
 			{
 				hibernateDAO.update(container, null, false, false, false);
@@ -1049,13 +1053,13 @@ public class EntityManager
 		}
 		catch (DAOException e)
 		{
+			//In case of exception execute roll back queries to restore the database state.
 			rollbackQueries(rollbackQueryStack, entity, e);
 			throw new DynamicExtensionsSystemException(
 					"Exception occured while opening a session to save the container.");
 		}
 		catch (UserNotAuthorizedException e)
 		{
-			// TODO Auto-generated catch block
 			rollbackQueries(rollbackQueryStack, entity, e);
 		}
 		finally
@@ -1069,12 +1073,11 @@ public class EntityManager
 				rollbackQueries(rollbackQueryStack, entity, e);
 			}
 		}
-
-		//hibernateDAO.
 		return container;
 	}
 
 	/**
+	 * This method preprocesses container to validate it.
 	 * @param container container
 	 */
 	private void preSaveProcessContainer(Container container)
@@ -1087,13 +1090,19 @@ public class EntityManager
 	}
 
 	/**
+	 * This method processes entity beofre saving it to databse.
+	 * <li> It validates entity for duplicate name of entity,attributes and association
+	 * <li> It sets created and updated date-time.
+	 * 
 	 * @param entity entity
 	 */
 	private void preSaveProcessEntity(EntityInterface entity)
 			throws DynamicExtensionsApplicationException
 	{
-		validateEntityForSaving(entity);
-		correctCardinalities(entity);
+		validateEntityForSaving(entity);// chk if entity is vlaid or not.
+		
+		correctCardinalities(entity); // correct the cardinality if max cardinality  < min cardinality
+		
 		if (entity.getId() != null)
 		{
 			entity.setLastUpdated(new Date());
@@ -1106,6 +1115,7 @@ public class EntityManager
 	}
 
 	/**
+	 * This method corrects cardinalities such that max cardinality  < minimum cardinality ,otherwise it throws exception
 	 * @param entity
 	 */
 	private void correctCardinalities(EntityInterface entity)
@@ -1123,15 +1133,15 @@ public class EntityManager
 
 			}
 		}
-
 	}
-
+	
 	/**
 	 * @param role
 	 * @throws DynamicExtensionsApplicationException 
 	 */
 	private void swapCardinality(RoleInterface role) throws DynamicExtensionsApplicationException
 	{
+		// make Min cardinality < Max cardinality
 		if (role.getMinimumCardinality().equals(Cardinality.MANY)
 				|| role.getMaximumCardinality().equals(Cardinality.ZERO))
 		{
@@ -1139,6 +1149,7 @@ public class EntityManager
 			role.setMinimumCardinality(role.getMaximumCardinality());
 			role.setMaximumCardinality(e);
 		}
+	 
 		if (role.getMaximumCardinality().equals(Cardinality.ZERO))
 		{
 			throw new DynamicExtensionsApplicationException("Cardinality constraint violated",
@@ -1177,6 +1188,7 @@ public class EntityManager
 			{
 				AttributeInterface primitiveAttribute = (AttributeInterface) attribute;
 
+				// populate FileAttributeRecordValue HO
 				if (primitiveAttribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
 				{
 					AttributeRecord fileRecord = populateFileAttributeRecord(null, entity,
@@ -1184,14 +1196,14 @@ public class EntityManager
 					attributeRecords.add(fileRecord);
 					continue;
 				}
-
+                //	 For collection type attribute, populate CollectionAttributeRecordValue HO
 				if (primitiveAttribute.getIsCollection())
 				{
 					AttributeRecord collectionRecord = populateCollectionAttributeRecord(null,
 							entity, primitiveAttribute, identifier, (List<String>) value);
 					attributeRecords.add(collectionRecord);
 				}
-				else
+				else // for other attribute, append to query
 				{
 					columnNameString.append(" , ");
 					columnValuesString.append(" , ");
@@ -1204,12 +1216,14 @@ public class EntityManager
 			}
 			else
 			{
+				//In case of association separate queries need to fire depending ont he cardinalities
 				List<Long> recordIdList = (List<Long>) value;
 				queryList.addAll(queryBuilder.getAssociationInsertDataQuery(
 						(AssociationInterface) attribute, recordIdList, identifier));
 			}
 		}
 
+		//query for other attributes.
 		StringBuffer query = new StringBuffer("INSERT INTO " + tableName + " ( ");
 		query.append(columnNameString);
 		query.append(" ) VALUES (");
@@ -1299,12 +1313,13 @@ public class EntityManager
 
 				if (primitiveAttribute.getIsCollection())
 				{
+					// get previous values for multi select attributes
 					AttributeRecord collectionRecord = getAttributeRecord(entity.getId(),
 							primitiveAttribute.getId(), recordId, null);
 					List<String> listOfValues = (List<String>) value;
 
 					if (!listOfValues.isEmpty())
-					{
+					{   //if some values are provided,set these values clearing previous ones.
 						collectionRecord = populateCollectionAttributeRecord(collectionRecord,
 								entity, primitiveAttribute, recordId, (List<String>) value);
 						collectionRecords.add(collectionRecord);
@@ -1312,12 +1327,15 @@ public class EntityManager
 
 					if (collectionRecord != null && listOfValues.isEmpty())
 					{
+						//if updated value is empty list, then delete previously saved value if any. 
 						deleteCollectionRecords.add(collectionRecord);
 					}
 
 				}
 				else if (primitiveAttribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
 				{
+                    //For file type attribute,FileAttributeRecordValue needs to be updated for that record.
+
 					FileAttributeRecordValue fileRecordValue = (FileAttributeRecordValue) value;
 					AttributeRecord fileRecord = getAttributeRecord(entity.getId(),
 							primitiveAttribute.getId(), recordId, null);
@@ -1326,6 +1344,7 @@ public class EntityManager
 				}
 				else
 				{
+					//for other attributes, create the udpate query.
 					String dbColumnName = primitiveAttribute.getColumnProperties().getName();
 
 					if (updateColumnString.length() != 0)
@@ -1341,12 +1360,14 @@ public class EntityManager
 			}
 			else
 			{
+				// for association need to remove previously associated target reocrd first.
 				String removeQuery = queryBuilder.getAssociationRemoveDataQuery(
 						((Association) attribute), recordId);
 				if (removeQuery != null && removeQuery.trim().length() != 0)
 				{
 					associationRemoveDataQueryList.add(removeQuery);
 				}
+				//then add new associated target records.
 				List insertQuery = queryBuilder.getAssociationInsertDataQuery(
 						((Association) attribute), (List<Long>) value, recordId);
 				if (insertQuery != null && insertQuery.size() != 0)
@@ -1484,12 +1505,13 @@ public class EntityManager
 	}
 
 	/**
-	 * returns a file attribute record for the file type of the object
-	 * @param fileRecord
-	 * @param entity
-	 * @param primitiveAttribute
-	 * @param identifier
-	 * @param value
+	 * Populates AttributeRecord object for given entity and record id
+	 * 
+	 * @param fileRecord if null creates a new AttributeRecord objec t, otheerwise updates the existing one
+	 * @param entity for which this AttributeRecord object belongs
+	 * @param primitiveAttribute  for which this AttributeRecord object belongs
+	 * @param identifier for which this AttributeRecord object belongs
+	 * @param value the new values for the file type attribute
 	 * @return
 	 */
 	private AttributeRecord populateFileAttributeRecord(AttributeRecord fileRecord,
@@ -1626,15 +1648,17 @@ public class EntityManager
 			AttributeInterface attribute = (AttributeInterface) attriIterator.next();
 
 			if (attribute.getIsCollection())
-			{
+			{   // need to fetch AttributeRecord object for the multi select type attribute. 
 				collectionAttributes.add(attribute);
 			}
 			else if (attribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
 			{
+				 // need to fetch AttributeRecord object for the File type attribute.
 				fileAttributes.add(attribute);
 			}
 			else
 			{
+				//for the other attributes, create select query.
 				String dbColumnName = attribute.getColumnProperties().getName();
 				String uiColumnName = attribute.getName();
 				selectColumnNameList.add(dbColumnName);
@@ -1644,6 +1668,7 @@ public class EntityManager
 			}
 		}
 
+		//get association values. 
 		recordValues.putAll(queryBuilder.getAssociationGetRecordQueryList(entity, recordId));
 
 		String[] selectColumnName = new String[selectColumnNameList.size()];
@@ -1673,6 +1698,7 @@ public class EntityManager
 					String value = (String) innerList.get(i);
 					String dbColumnName = selectColumnName[i];
 					String uiColumnName = (String) columnNameMap.get(dbColumnName);
+					//put the value for other attributes
 					recordValues.put(uiColumnName, value);
 				}
 			}
@@ -1684,6 +1710,7 @@ public class EntityManager
 			{
 				List<String> valueList = getCollectionAttributeRecordValues(entity.getId(),
 						attribute.getId(), recordId);
+                //put the value multi select attributes
 				recordValues.put(attribute.getName(), valueList);
 			}
 			/*
@@ -1693,6 +1720,7 @@ public class EntityManager
 			{
 				FileAttributeRecordValue fileRecordValue = getFileAttributeRecordValue(entity
 						.getId(), attribute.getId(), recordId);
+                //put the value file attributes
 				recordValues.put(attribute.getName(), fileRecordValue);
 			}
 
@@ -1717,6 +1745,7 @@ public class EntityManager
 	}
 
 	/**
+	 * processes entity group before saving.
 	 * @param entity entity
 	 */
 	private void preSaveProcessEntityGroup(EntityGroupInterface entityGroup)
@@ -1847,25 +1876,16 @@ public class EntityManager
 		try
 		{
 			hibernateDAO.openSession(null);
-		}
-		catch (DAOException e)
-		{
-			throw new DynamicExtensionsSystemException(
-					"Exception occured while opening a session to save the container.");
-		}
-		try
-		{
-			Query query = substitutionParameterForQuery(queryName, substitutionParameterMap);
+		    Query query = substitutionParameterForQuery(queryName, substitutionParameterMap);
 			entityCollection = query.list();
 			hibernateDAO.commit();
 		}
 		catch (DAOException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 			try
 			{
 				hibernateDAO.rollback();
+				throw new DynamicExtensionsSystemException("Exception occured while executing hqk", e);
 
 			}
 			catch (DAOException e1)
@@ -1880,7 +1900,6 @@ public class EntityManager
 		{
 			throw new DynamicExtensionsSystemException("Error while rolling back the session", e);
 		}
-
 		finally
 		{
 			try
@@ -1950,6 +1969,7 @@ public class EntityManager
 				while (iterator.hasNext())
 				{
 					AttributeInterface attribute = (AttributeInterface) iterator.next();
+					// remove AttributeRecord objects for multi select and file type attributes
 					if (attribute.getIsCollection()
 							|| attribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
 					{
@@ -2025,6 +2045,10 @@ public class EntityManager
 	}
 
 	/**
+	 * validate the entity for
+	 * 1. Name - shoulf not contain any special characters, should not be empty,null
+	 * 2. Description - should be less than 1000 characters.
+	 * 
 	 * @param entity
 	 * @throws DynamicExtensionsApplicationException
 	 */

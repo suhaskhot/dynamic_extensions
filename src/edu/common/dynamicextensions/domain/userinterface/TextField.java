@@ -36,6 +36,11 @@ public class TextField extends Control implements TextFieldInterface
 	 * Boolean value indicating whether this text field is password field.
 	 */
 	protected Boolean isPassword;
+	
+	/**
+	 * Boolean value indicating whether this text field is password field.
+	 */
+	protected Boolean isUrl;
 
 	/**
 	 * Empty Constructor 
@@ -175,5 +180,23 @@ public class TextField extends Control implements TextFieldInterface
 			}
 		}
 		return measurementUnit;
+	}
+
+	/**
+	 * @hibernate.property name="isUrl" type="boolean" column="IS_URL" 
+	 * @return Returns the isPassword.
+	 */
+	public Boolean getIsUrl()
+	{
+		return isUrl;
+	}
+
+	
+	/**
+	 * @param isUrl is url 
+	 */
+	public void setIsUrl(Boolean isUrl)
+	{
+		this.isUrl = isUrl;
 	}
 }

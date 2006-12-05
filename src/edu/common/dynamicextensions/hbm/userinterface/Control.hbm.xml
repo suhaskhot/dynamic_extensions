@@ -173,6 +173,14 @@
             column="IS_PASSWORD"
         />
 
+        <property
+            name="isUrl"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="IS_URL"
+        />
+
         </joined-subclass>
         <joined-subclass
             name="edu.common.dynamicextensions.domain.userinterface.FileUploadControl"

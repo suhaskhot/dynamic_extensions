@@ -24,6 +24,14 @@ public interface TextFieldInterface extends ControlInterface
 	 * @param isPassword The isPassword to set.
 	 */
 	void setIsPassword(Boolean isPassword);
+	
+	/**
+	 * @return IsUrl
+	 */
+	Boolean getIsUrl();
 
-   
+	/**
+	 * @param isUrl is url 
+	 */
+	void setIsUrl(Boolean isUrl);
 }

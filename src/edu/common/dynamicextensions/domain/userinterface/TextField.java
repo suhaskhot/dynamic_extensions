@@ -1,12 +1,14 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
+import edu.common.dynamicextensions.domain.DataElement;
 import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.LongAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
@@ -130,18 +132,7 @@ public class TextField extends Control implements TextFieldInterface
 						maxChars = stringAttributeTypeInformation.getSize().intValue();
 					}
 				}
-				/*else if (attributeTypeInformationInterface instanceof LongAttributeTypeInformation)
-				{
-					LongAttributeTypeInformation longAttributeTypeInformation = (LongAttributeTypeInformation)attributeTypeInformationInterface;
-					
-
-				}
-				else if (attributeTypeInformationInterface instanceof DoubleAttributeTypeInformation)
-				{
-					DoubleAttributeTypeInformation doubleAttributeTypeInformation = (DoubleAttributeTypeInformation)attributeTypeInformationInterface;
-
-				}*/
-			}
+			}	
 		}
 		if (maxChars != 0)
 		{

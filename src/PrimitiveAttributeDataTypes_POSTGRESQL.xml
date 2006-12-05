@@ -8,32 +8,32 @@
     
     <Primitive-Attribute>
 		  <name>Boolean</name>
-	  	  <database-datatype>bool</database-datatype>
+	  	  <database-datatype>boolean</database-datatype>
     </Primitive-Attribute>
     
      <Primitive-Attribute>
 		  <name>Integer</name>
-	  	  <database-datatype>int(38)</database-datatype>
+	  	  <database-datatype>int8</database-datatype>
     </Primitive-Attribute>
     
      <Primitive-Attribute>
 		  <name>Long</name>
-	  	  <database-datatype>bigint(38)</database-datatype>
+	  	  <database-datatype>int8</database-datatype>
     </Primitive-Attribute>
     
     <Primitive-Attribute>
 		  <name>Double</name>
-	  	  <database-datatype>double</database-datatype>
+	  	  <database-datatype>int8</database-datatype>
     </Primitive-Attribute>
     
     <Primitive-Attribute>
 		  <name>Float</name>
-	  	  <database-datatype>float</database-datatype>
+	  	  <database-datatype>float8</database-datatype>
     </Primitive-Attribute>
     
     <Primitive-Attribute>
 		  <name>Short</name>
-	  	  <database-datatype>smallint</database-datatype>
+	  	  <database-datatype>int8</database-datatype>
     </Primitive-Attribute>
     
      <Primitive-Attribute>

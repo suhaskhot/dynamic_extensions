@@ -246,7 +246,7 @@ class DynamicExtensionBaseQueryBuilder
 		if (sourceKey != null && targetKey != null && sourceKey.trim().length() != 0
 				&& targetKey.trim().length() != 0)
 		{
-            //for many to many insert into middle table
+			//for many to many insert into middle table
 			for (int i = 0; i < recordIdList.size(); i++)
 			{
 				query = new StringBuffer();
@@ -277,7 +277,7 @@ class DynamicExtensionBaseQueryBuilder
 
 		}
 		else
-		{	//one to one && onr to many : update target entity table
+		{ //one to one && onr to many : update target entity table
 			String recordIdString = recordIdList.toString();
 			recordIdString = recordIdString.replace("[", OPENING_BRACKET);
 			recordIdString = recordIdString.replace("]", CLOSING_BRACKET);
@@ -310,15 +310,15 @@ class DynamicExtensionBaseQueryBuilder
 				&& targetKey.trim().length() != 0)
 		{
 			//for many to many delete all the records having reffered by this recordId  
-			query.append(DELETE_KEYWORD + WHITESPACE + tableName
-					+ WHITESPACE + WHERE_KEYWORD + WHITESPACE + sourceKey);
+			query.append(DELETE_KEYWORD + WHITESPACE + tableName + WHITESPACE + WHERE_KEYWORD
+					+ WHITESPACE + sourceKey);
 			query.append(WHITESPACE + EQUAL);
 			query.append(recordId.toString());
 		}
 		else if (targetKey != null && targetKey.trim().length() != 0)
 		{
 			//for one to many and one to one: update  target entities records(set value in target column key = null) 
-			 //that are reffering to  this redord by setting it to null.
+			//that are reffering to  this redord by setting it to null.
 			query.append(UPDATE_KEYWORD);
 			query.append(WHITESPACE + tableName);
 			query.append(WHITESPACE + SET_KEYWORD + WHITESPACE + targetKey + EQUAL + WHITESPACE
@@ -424,7 +424,7 @@ class DynamicExtensionBaseQueryBuilder
 			String nullConstraint = "";
 			String defaultConstraint = "";
 			if (processConstraints)
-			{   
+			{
 				if (attribute.getIsPrimaryKey())
 				{
 					isUnique = CONSTRAINT_KEYWORD + WHITESPACE
@@ -803,10 +803,10 @@ class DynamicExtensionBaseQueryBuilder
 			{
 
 				Attribute savedAttribute = (Attribute) savedAttributeIterator.next();
-				Attribute attribute = (Attribute) entity
-						.getAttributeByIdentifier(savedAttribute.getId());;
-				
-     			//attribute is removed or modified such that its column need to be removed
+				Attribute attribute = (Attribute) entity.getAttributeByIdentifier(savedAttribute
+						.getId());;
+
+				//attribute is removed or modified such that its column need to be removed
 				if (attribute == null || isAttributeColumnToBeRemoved(attribute, savedAttribute))
 				{
 					String columnName = savedAttribute.getColumnProperties().getName();
@@ -825,7 +825,6 @@ class DynamicExtensionBaseQueryBuilder
 			}
 		}
 	}
-
 
 	/**
 	 * This method returns true if a attribute is changed such that its column needs to be removed.
@@ -983,89 +982,15 @@ class DynamicExtensionBaseQueryBuilder
 
 		String tableName = attribute.getEntity().getTableProperties().getName();
 		String columnName = attribute.getColumnProperties().getName();
-		boolean attributemodifiedFlag = false;
 
 		String newTypeClass = attribute.getAttributeTypeInformation().getClass().getName();
 		String oldTypeClass = savedAttribute.getAttributeTypeInformation().getClass().getName();
 
-		String type = "";
-		String modify = MODIFY_KEYWORD;
-		String str = Variables.databaseName;
 		if (!newTypeClass.equals(oldTypeClass))
 		{
-			attributemodifiedFlag = true;
-
-		}
-		if (str.equalsIgnoreCase(Constants.POSTGRESQL_DATABASE))
-		{
-			type = "TYPE";
-			modify = ALTER_KEYWORD;
-		}
-
-		String modifyAttributeQuery = getQueryPartForAttribute(attribute, type, false);
-		modifyAttributeQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + modify
-				+ WHITESPACE + modifyAttributeQuery;
-
-		String modifyAttributeRollbackQuery = getQueryPartForAttribute(savedAttribute, type, false);
-		modifyAttributeRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + modify
-				+ WHITESPACE + modifyAttributeRollbackQuery;
-		//process nullable
-		String nullQueryKeyword = "";
-		String nullQueryRollbackKeyword = "";
-		String constraintCondition = "";
-		String constraintRollbackcondition = "";
-		if (attribute.getIsNullable() && !savedAttribute.getIsNullable())
-		{
-			constraintCondition = DROP_KEYWORD;
-			constraintRollbackcondition = SET_KEYWORD;
-			nullQueryKeyword = WHITESPACE + NULL_KEYWORD + WHITESPACE;
-			nullQueryRollbackKeyword = WHITESPACE + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD
-					+ WHITESPACE;
-		}
-		else if (!attribute.getIsNullable() && savedAttribute.getIsNullable())
-		{
-			constraintCondition = SET_KEYWORD;
-			constraintRollbackcondition = DROP_KEYWORD;
-			nullQueryKeyword = WHITESPACE + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD + WHITESPACE;
-			nullQueryRollbackKeyword = WHITESPACE + NULL_KEYWORD + WHITESPACE;
-
-		}
-		if (!str.equalsIgnoreCase(Constants.POSTGRESQL_DATABASE))
-		{
-
-			if (!constraintCondition.equalsIgnoreCase("")
-					&& !constraintRollbackcondition.equalsIgnoreCase(""))
-			{
-				attributemodifiedFlag = true;
-				modifyAttributeQuery = modifyAttributeQuery + nullQueryKeyword;
-				modifyAttributeRollbackQuery = modifyAttributeRollbackQuery
-						+ nullQueryRollbackKeyword;
-
-			}
-
-		}
-		else
-		{
-			if (!constraintCondition.equalsIgnoreCase("")
-					&& !constraintRollbackcondition.equalsIgnoreCase(""))
-			{
-				String nullPartQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + modify
-						+ WHITESPACE + columnName + WHITESPACE + constraintCondition + WHITESPACE
-						+ NOT_KEYWORD + WHITESPACE + NULL_KEYWORD;
-				String nullPartRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE
-						+ modify + WHITESPACE + columnName + WHITESPACE
-						+ constraintRollbackcondition + WHITESPACE + NOT_KEYWORD + WHITESPACE
-						+ NULL_KEYWORD;
-				modifyAttributeQueryList.add(nullPartQuery);
-				attributeRollbackQueryList.add(nullPartRollbackQuery);
-			}
-
-		}
-
-		if (attributemodifiedFlag)
-		{
-			modifyAttributeQueryList.add(modifyAttributeQuery);
-			attributeRollbackQueryList.add(modifyAttributeRollbackQuery);
+			modifyAttributeQueryList = getAttributeDataTypeChangedQuery(attribute, savedAttribute,
+					attributeRollbackQueryList);
+			modifyAttributeQueryList.addAll(modifyAttributeQueryList);
 		}
 
 		if (attribute.getIsPrimaryKey() && !savedAttribute.getIsPrimaryKey())
@@ -1096,6 +1021,58 @@ class DynamicExtensionBaseQueryBuilder
 			modifyAttributeQueryList.add(uniqueConstraintQuery);
 			attributeRollbackQueryList.add(uniqueConstraintRollbackQuery);
 		}
+
+		return modifyAttributeQueryList;
+	}
+
+	/**
+	 * This method returns the query for the attribute to modify its data type.
+	 * @param attribute
+	 * @param savedAttribute
+	 * @param modifyAttributeRollbackQuery
+	 * @param tableName
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	protected List getAttributeDataTypeChangedQuery(Attribute attribute, Attribute savedAttribute,
+			List modifyAttributeRollbackQueryList)
+			throws DynamicExtensionsSystemException
+	{
+		String tableName = attribute.getEntity().getTableProperties().getName();
+		String type = "";
+		String modifyAttributeRollbackQuery = "";
+		
+		String modifyAttributeQuery = getQueryPartForAttribute(attribute, type, false);
+		modifyAttributeQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + MODIFY_KEYWORD
+				+ WHITESPACE + modifyAttributeQuery;
+
+		modifyAttributeRollbackQuery = getQueryPartForAttribute(savedAttribute, type, false);
+		modifyAttributeRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE
+				+ MODIFY_KEYWORD + WHITESPACE + modifyAttributeRollbackQuery;
+
+		String nullQueryKeyword = "";
+		String nullQueryRollbackKeyword = "";
+
+		if (attribute.getIsNullable() && !savedAttribute.getIsNullable())
+		{
+			nullQueryKeyword = WHITESPACE + NULL_KEYWORD + WHITESPACE;
+			nullQueryRollbackKeyword = WHITESPACE + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD
+					+ WHITESPACE;
+		}
+		else if (!attribute.getIsNullable() && savedAttribute.getIsNullable())
+		{
+			nullQueryKeyword = WHITESPACE + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD + WHITESPACE;
+			nullQueryRollbackKeyword = WHITESPACE + NULL_KEYWORD + WHITESPACE;
+
+		}
+
+		modifyAttributeQuery = modifyAttributeQuery + nullQueryKeyword;
+		modifyAttributeRollbackQuery = modifyAttributeRollbackQuery + nullQueryRollbackKeyword;
+		modifyAttributeRollbackQueryList.add(modifyAttributeRollbackQuery);
+
+		List modifyAttributeQueryList = new ArrayList();
+		modifyAttributeQueryList.add(modifyAttributeQuery);
+
 		return modifyAttributeQueryList;
 	}
 
@@ -1249,10 +1226,10 @@ class DynamicExtensionBaseQueryBuilder
 		EntityInterface targetEntity = association.getTargetEntity();
 		Cardinality sourceMaxCardinality = association.getSourceRole().getMaximumCardinality();
 		Cardinality targetMaxCardinality = association.getTargetRole().getMaximumCardinality();
-		
+
 		String columnName = "";
 		String tableName = "";
-		
+
 		if (targetMaxCardinality == Cardinality.ONE && sourceMaxCardinality == Cardinality.ONE)
 		{
 

@@ -343,6 +343,1013 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	}
 
 	/**
+	 * Purpose is to test the self referencing of the entity. 
+	 * Scenario - user(*)------>(1)User
+	 *                   creator   
+	 */
+	public void testEditEntityWithSelfReferencingBiDirectionalManyToManyAssociation()
+	{
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		// create user 
+		EntityInterface user = factory.createEntity();
+		AttributeInterface userNameAttribute = factory.createStringAttribute();
+		userNameAttribute.setName("user name");
+		user.setName("user");
+		user.addAbstractAttribute(userNameAttribute);
+
+		try
+		{
+			user = entityManager.persistEntity(user);
+
+			// Associate user (*)------ >(1)user       
+			AssociationInterface association = factory.createAssociation();
+
+			association.setTargetEntity(user);
+			association.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
+			association.setName("primaryInvestigator");
+			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "subpi",
+					Cardinality.ONE, Cardinality.ONE));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "pi", Cardinality.ONE,
+					Cardinality.MANY));
+
+			user.addAbstractAttribute(association);
+
+			EntityInterface savedUser = entityManager.persistEntity(user);
+
+			String tableName = user.getTableProperties().getName();
+
+			assertNotNull(tableName);
+
+			ResultSetMetaData metaData = executeQueryForMetadata("select * from " + tableName);
+			assertEquals(3, metaData.getColumnCount());
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+
+		catch (DynamicExtensionsApplicationException e)
+		{
+			e.printStackTrace();
+			fail();
+
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			fail();
+
+		}
+
+	}
+
+	/**
+	 * This method test for inserting data for a multi select attribute
+	 */
+	public void testInsertDataForAssociationMany2Many()
+	{
+
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		try
+		{
+
+			//          create user 
+			EntityInterface user = factory.createEntity();
+			AttributeInterface userNameAttribute = factory.createStringAttribute();
+			userNameAttribute.setName("user name");
+			user.setName("user");
+			user.addAbstractAttribute(userNameAttribute);
+
+			//          create study 
+			EntityInterface study = factory.createEntity();
+			AttributeInterface studyNameAttribute = factory.createStringAttribute();
+			studyNameAttribute.setName("study name");
+			study.setName("study");
+			study.addAbstractAttribute(studyNameAttribute);
+
+			//          Associate user (1)------ >(*)study       
+			AssociationInterface association = factory.createAssociation();
+			association.setTargetEntity(study);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("primaryInvestigator");
+			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
+					Cardinality.ZERO, Cardinality.MANY));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
+					Cardinality.ZERO, Cardinality.MANY));
+
+			user.addAbstractAttribute(association);
+
+			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
+
+			Map dataValue = new HashMap();
+
+			dataValue.put(studyNameAttribute, "study");
+			entityManagerInterface.insertData(study, dataValue);
+			dataValue.clear();
+			dataValue.put(studyNameAttribute, "study1");
+			entityManagerInterface.insertData(study, dataValue);
+
+			dataValue.clear();
+			List<Long> targetIdList = new ArrayList<Long>();
+			targetIdList.add(1L);
+			targetIdList.add(2L);
+
+			dataValue.put(userNameAttribute, "rahul");
+			dataValue.put(association, targetIdList);
+
+			entityManagerInterface.insertData(savedEntity, dataValue);
+
+			dataValue.clear();
+			dataValue.put(userNameAttribute, "vishvesh");
+			dataValue.put(association, targetIdList);
+			entityManagerInterface.insertData(savedEntity, dataValue);
+
+			ResultSet resultSet = executeQuery("select count(*) from "
+					+ association.getConstraintProperties().getName());
+			resultSet.next();
+			assertEquals(4, resultSet.getInt(1));
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			fail();
+			Logger.out.debug(e.getStackTrace());
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			fail();
+			Logger.out.debug(e.getStackTrace());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+
+			Logger.out.debug(e.getStackTrace());
+		}
+
+	}
+
+	/**
+	 * This method test for inserting data for a multi select attribute
+	 */
+	public void testInsertDataForAssociationOne2Many()
+	{
+
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		try
+		{
+
+			//          create user 
+			EntityInterface user = factory.createEntity();
+			AttributeInterface userNameAttribute = factory.createStringAttribute();
+			userNameAttribute.setName("user name");
+			user.setName("user");
+			user.addAbstractAttribute(userNameAttribute);
+
+			//          create study 
+			EntityInterface study = factory.createEntity();
+			AttributeInterface studyNameAttribute = factory.createStringAttribute();
+			studyNameAttribute.setName("study name");
+			study.setName("study");
+			study.addAbstractAttribute(studyNameAttribute);
+
+			//          Associate user (1)------ >(*)study       
+			AssociationInterface association = factory.createAssociation();
+			association.setTargetEntity(study);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("primaryInvestigator");
+			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
+					Cardinality.ZERO, Cardinality.ONE));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
+					Cardinality.ZERO, Cardinality.MANY));
+
+			user.addAbstractAttribute(association);
+
+			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
+
+			Map dataValue = new HashMap();
+
+			dataValue.put(studyNameAttribute, "study");
+			entityManagerInterface.insertData(study, dataValue);
+
+			dataValue.clear();
+			dataValue.put(studyNameAttribute, "study1");
+			entityManagerInterface.insertData(study, dataValue);
+
+			dataValue.clear();
+			List<Long> targetIdList = new ArrayList<Long>();
+			targetIdList.add(1L);
+			targetIdList.add(2L);
+
+			dataValue.put(userNameAttribute, "rahul");
+			dataValue.put(association, targetIdList);
+
+			entityManagerInterface.insertData(savedEntity, dataValue);
+
+			ResultSet resultSet = executeQuery("select count(*) from "
+					+ study.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(2, resultSet.getInt(1));
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			fail();
+			Logger.out.debug(e.getStackTrace());
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			fail();
+			Logger.out.debug(e.getStackTrace());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+
+			Logger.out.debug(e.getStackTrace());
+		}
+
+	}
+
+	//
+	/**
+	 * This method test for inserting data for a multi select attribute
+	 */
+	public void testInsertDataForAssociationMany2One()
+	{
+
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		try
+		{
+
+			//          create user 
+			EntityInterface user = factory.createEntity();
+			AttributeInterface userNameAttribute = factory.createStringAttribute();
+			userNameAttribute.setName("user name");
+			user.setName("user");
+			user.addAbstractAttribute(userNameAttribute);
+
+			//          create study 
+			EntityInterface study = factory.createEntity();
+			AttributeInterface studyNameAttribute = factory.createStringAttribute();
+			studyNameAttribute.setName("study name");
+			study.setName("study");
+			study.addAbstractAttribute(studyNameAttribute);
+
+			//          Associate user (1)------ >(*)study       
+			AssociationInterface association = factory.createAssociation();
+			association.setTargetEntity(study);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("primaryInvestigator");
+			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
+					Cardinality.ZERO, Cardinality.MANY));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
+					Cardinality.ZERO, Cardinality.ONE));
+
+			user.addAbstractAttribute(association);
+
+			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
+
+			Map dataValue = new HashMap();
+			List<Long> targetIdList = new ArrayList<Long>();
+			targetIdList.add(1L);
+			dataValue.put(userNameAttribute, "rahul");
+
+			dataValue.put(association, targetIdList);
+
+			entityManagerInterface.insertData(savedEntity, dataValue);
+
+			ResultSet resultSet = executeQuery("select * from "
+					+ savedEntity.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(1, resultSet.getInt(1));
+
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			fail();
+			Logger.out.debug(e.getStackTrace());
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			fail();
+			Logger.out.debug(e.getStackTrace());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+
+			Logger.out.debug(e.getStackTrace());
+		}
+
+	}
+
+	/**
+	 * This method test for inserting data for a multi select attribute
+	 */
+	public void testEditDataForAssociationMany2One()
+	{
+
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		try
+		{
+
+			//          create user 
+			EntityInterface user = factory.createEntity();
+			AttributeInterface userNameAttribute = factory.createStringAttribute();
+			userNameAttribute.setName("user name");
+			user.setName("user");
+			user.addAbstractAttribute(userNameAttribute);
+
+			//          create study 
+			EntityInterface study = factory.createEntity();
+			AttributeInterface studyNameAttribute = factory.createStringAttribute();
+			studyNameAttribute.setName("study name");
+			study.setName("study");
+			study.addAbstractAttribute(studyNameAttribute);
+
+			//          Associate user (1)------ >(*)study       
+			AssociationInterface association = factory.createAssociation();
+			association.setTargetEntity(study);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("primaryInvestigator");
+			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
+					Cardinality.ZERO, Cardinality.MANY));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
+					Cardinality.ZERO, Cardinality.ONE));
+
+			user.addAbstractAttribute(association);
+
+			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
+
+			Map dataValue = new HashMap();
+			List<Long> targetIdList = new ArrayList<Long>();
+			targetIdList.add(1L);
+			dataValue.put(userNameAttribute, "rahul");
+
+			dataValue.put(association, targetIdList);
+
+			Long recordId = entityManagerInterface.insertData(savedEntity, dataValue);
+
+			dataValue.clear();
+			dataValue.put(userNameAttribute, "vishvesh");
+			dataValue.put(association, targetIdList);
+			Long recordId1 = entityManagerInterface.insertData(savedEntity, dataValue);
+
+			dataValue.clear();
+			dataValue = entityManagerInterface.getRecordById(savedEntity, recordId);
+			List targetRecordIdList = (List) dataValue.get(association);
+			System.out.println(dataValue);
+			assertEquals(1, targetRecordIdList.size());
+			assertEquals(1L, targetRecordIdList.get(0));
+
+			dataValue.clear();
+			dataValue = entityManagerInterface.getRecordById(savedEntity, recordId1);
+			targetRecordIdList = (List) dataValue.get(association);
+			System.out.println(dataValue);
+			assertEquals(1, targetRecordIdList.size());
+			assertEquals(1L, targetRecordIdList.get(0));
+
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+			fail();
+			Logger.out.debug(e.getStackTrace());
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			e.printStackTrace();
+			fail();
+			Logger.out.debug(e.getStackTrace());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+
+			Logger.out.debug(e.getStackTrace());
+		}
+
+	}
+
+	/**
+	 * This method test for inserting data for a multi select attribute
+	 */
+	public void testGetRecordByIdAssociationMany2Many()
+	{
+
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		try
+		{
+
+			//          create user 
+			EntityInterface user = factory.createEntity();
+			AttributeInterface userNameAttribute = factory.createStringAttribute();
+			userNameAttribute.setName("user name");
+			user.setName("user");
+			user.addAbstractAttribute(userNameAttribute);
+
+			//          create study 
+			EntityInterface study = factory.createEntity();
+			AttributeInterface studyNameAttribute = factory.createStringAttribute();
+			studyNameAttribute.setName("study name");
+			study.setName("study");
+			study.addAbstractAttribute(studyNameAttribute);
+
+			//          Associate user (1)------ >(*)study       
+			AssociationInterface association = factory.createAssociation();
+			association.setTargetEntity(study);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("primaryInvestigator");
+			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
+					Cardinality.ZERO, Cardinality.MANY));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
+					Cardinality.ZERO, Cardinality.MANY));
+
+			user.addAbstractAttribute(association);
+
+			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
+
+			Map dataValue = new HashMap();
+
+			dataValue.put(studyNameAttribute, "study");
+			entityManagerInterface.insertData(study, dataValue);
+			dataValue.clear();
+			dataValue.put(studyNameAttribute, "study1");
+			entityManagerInterface.insertData(study, dataValue);
+
+			dataValue.clear();
+			List<Long> targetIdList = new ArrayList<Long>();
+			targetIdList.add(1L);
+			targetIdList.add(2L);
+
+			dataValue.put(userNameAttribute, "rahul");
+			dataValue.put(association, targetIdList);
+
+			Long recordId = entityManagerInterface.insertData(savedEntity, dataValue);
+
+			dataValue.clear();
+			dataValue.put(userNameAttribute, "vishvesh");
+			dataValue.put(association, targetIdList);
+			entityManagerInterface.insertData(savedEntity, dataValue);
+
+			dataValue.clear();
+			dataValue = entityManagerInterface.getRecordById(savedEntity, recordId);
+
+			List targetRecordIdList = (List) dataValue.get(association);
+
+			System.out.println(dataValue);
+
+			assertEquals(2, targetRecordIdList.size());
+			assertEquals(1L, targetRecordIdList.get(0));
+			assertEquals(2L, targetRecordIdList.get(1));
+
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			fail();
+			Logger.out.debug(e.getStackTrace());
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			fail();
+			Logger.out.debug(e.getStackTrace());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+
+			Logger.out.debug(e.getStackTrace());
+		}
+
+	}
+
+	/**
+	 * This method test for inserting data for a multi select attribute
+	 */
+	public void testGetRecordByIdForOne2ManyAssociation()
+	{
+
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		try
+		{
+
+			//          create user 
+			EntityInterface user = factory.createEntity();
+			AttributeInterface userNameAttribute = factory.createStringAttribute();
+			userNameAttribute.setName("user name");
+			user.setName("user");
+			user.addAbstractAttribute(userNameAttribute);
+
+			//          create study 
+			EntityInterface study = factory.createEntity();
+			AttributeInterface studyNameAttribute = factory.createStringAttribute();
+			studyNameAttribute.setName("study name");
+			study.setName("study");
+			study.addAbstractAttribute(studyNameAttribute);
+
+			//          Associate user (1)------ >(*)study       
+			AssociationInterface association = factory.createAssociation();
+			association.setTargetEntity(study);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("primaryInvestigator");
+			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
+					Cardinality.ZERO, Cardinality.ONE));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
+					Cardinality.ZERO, Cardinality.MANY));
+
+			user.addAbstractAttribute(association);
+
+			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
+
+			Map dataValue = new HashMap();
+
+			dataValue.put(studyNameAttribute, "study");
+			entityManagerInterface.insertData(study, dataValue);
+
+			dataValue.clear();
+			dataValue.put(studyNameAttribute, "study1");
+			entityManagerInterface.insertData(study, dataValue);
+
+			dataValue.clear();
+			dataValue.put(userNameAttribute, "rahul");
+			List<Long> targetIdList = new ArrayList<Long>();
+			targetIdList.add(1L);
+			dataValue.put(association, targetIdList);
+
+			Long recordId = entityManagerInterface.insertData(savedEntity, dataValue);
+			dataValue.clear();
+
+			dataValue = entityManagerInterface.getRecordById(savedEntity, recordId);
+			List targetRecordIdList = (List) dataValue.get(association);
+
+			System.out.println(dataValue);
+
+			assertEquals(1, targetRecordIdList.size());
+			assertEquals(1L, targetRecordIdList.get(0));
+
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			fail();
+			Logger.out.debug(e.getStackTrace());
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			fail();
+			Logger.out.debug(e.getStackTrace());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+
+			Logger.out.debug(e.getStackTrace());
+		}
+
+	}
+
+	/**
+	 * This test case is to check the constraint violation in case when the  source cardinality for target is one && maximum cardinality for target is one. 
+	 * So in this test case we try to insert data such that the same target entity record is associated with the 
+	 * source entity record twice. After the first insertion is successful, when the second insertion takes place
+	 * at that time constraint violation should  fail
+	 */
+	public void testInsertDataForConstraintViolationForOneToOne()
+	{
+
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityInterface savedEntity = null;
+		try
+		{
+
+			//          create user 
+			EntityInterface user = factory.createEntity();
+			AttributeInterface userNameAttribute = factory.createStringAttribute();
+			userNameAttribute.setName("user name");
+			user.setName("user");
+			user.addAbstractAttribute(userNameAttribute);
+
+			//          create study 
+			EntityInterface study = factory.createEntity();
+			AttributeInterface studyNameAttribute = factory.createStringAttribute();
+			studyNameAttribute.setName("study name");
+			study.setName("study");
+			study.addAbstractAttribute(studyNameAttribute);
+
+			//          Associate user (1)------ >(*)study       
+			AssociationInterface association = factory.createAssociation();
+			association.setTargetEntity(study);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("primaryInvestigator");
+			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
+					Cardinality.ZERO, Cardinality.ONE));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
+					Cardinality.ZERO, Cardinality.ONE));
+
+			user.addAbstractAttribute(association);
+
+			savedEntity = entityManagerInterface.persistEntity(user);
+
+			Map dataValue = new HashMap();
+			dataValue.clear();
+			dataValue.put(studyNameAttribute, "study1");
+			entityManagerInterface.insertData(study, dataValue);
+
+			dataValue.clear();
+			dataValue.put(userNameAttribute, "rahul");
+			List<Long> targetIdList = new ArrayList<Long>();
+			targetIdList.add(1L);
+			dataValue.put(association, targetIdList);
+
+			entityManagerInterface.insertData(savedEntity, dataValue);
+
+			ResultSet resultSet = executeQuery("select * from "
+					+ savedEntity.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(1, resultSet.getInt(1));
+
+			entityManagerInterface.insertData(savedEntity, dataValue);
+
+			fail();
+
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			fail();
+			Logger.out.debug(e.getStackTrace());
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+
+			ResultSet resultSet = executeQuery("select * from "
+					+ savedEntity.getTableProperties().getName());
+			try
+			{
+				resultSet.next();
+				assertEquals(1, resultSet.getInt(1));
+			}
+			catch (SQLException e1)
+			{
+				fail();
+				e1.printStackTrace();
+			}
+
+			Logger.out
+					.debug("constraint validation should fail...because max target cardinality is one");
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+
+			Logger.out.debug(e.getStackTrace());
+		}
+
+	}
+
+	/**
+	 * This test case is to check the scenario when user adds maximum cardinality less than the minimum cardinality
+	 * In such case DE internally corrects these cardinalities by swapping the minimum and maximum cardinalities.
+	 */
+	public void testInsertDataForInvalidCardinalities()
+	{
+
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityInterface savedEntity = null;
+		try
+		{
+
+			//          create user 
+			EntityInterface user = factory.createEntity();
+			AttributeInterface userNameAttribute = factory.createStringAttribute();
+			userNameAttribute.setName("user name");
+			user.setName("user");
+			user.addAbstractAttribute(userNameAttribute);
+
+			//          create study 
+			EntityInterface study = factory.createEntity();
+			AttributeInterface studyNameAttribute = factory.createStringAttribute();
+			studyNameAttribute.setName("study name");
+			study.setName("study");
+			study.addAbstractAttribute(studyNameAttribute);
+
+			//          Associate user (1)------ >(*)study       
+			AssociationInterface association = factory.createAssociation();
+			association.setTargetEntity(study);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("primaryInvestigator");
+			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
+					Cardinality.MANY, Cardinality.ZERO));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
+					Cardinality.ONE, Cardinality.ZERO));
+
+			user.addAbstractAttribute(association);
+			savedEntity = entityManagerInterface.persistEntity(user);
+
+			Map dataValue = new HashMap();
+			dataValue.put(userNameAttribute, "rahul");
+			List<Long> targetIdList = new ArrayList<Long>();
+			targetIdList.add(1L);
+
+			dataValue.put(association, targetIdList);
+
+			entityManagerInterface.insertData(savedEntity, dataValue);
+			ResultSet resultSet = executeQuery("select * from "
+					+ savedEntity.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(1, resultSet.getInt(1));
+		}
+		catch (Exception e)
+		{
+			fail();
+			Logger.out.debug(e.getStackTrace());
+		}
+
+	}
+
+	/**
+	 *  Purpose: To test the deletion of record for an entity which has a one to many association with other entity.
+	 *  Expected behavior: the entry for this record in the target entity's data table should also be removed.
+	 *  Test case flow : 1. create user and study entity. 2. create association User 1--->* Study. 3.Persist entities.
+	 *  4.Insert one record 5. Check the record has been inserted or not. 6. Delete the inserted record.  
+	 */
+
+	public void testDeleteRecordWithAssociationOneToMany()
+	{
+
+		try
+		{
+			MockEntityManager mock = new MockEntityManager();
+			Entity study = (Entity) DomainObjectFactory.getInstance().createEntity();
+			study.setName("study");
+
+			Attribute studyName = (Attribute) mock.initializeStringAttribute("studyName",
+					"new Study");
+			study.addAbstractAttribute(studyName);
+
+			Entity user = (Entity) DomainObjectFactory.getInstance().createEntity();
+			user.setName("user");
+			Attribute userName = (Attribute) mock.initializeStringAttribute("userName", "new User");
+			user.addAbstractAttribute(userName);
+
+			//Associate  User(1) <---->(*)Study 
+			AssociationInterface association = DomainObjectFactory.getInstance()
+					.createAssociation();
+
+			association.setTargetEntity(study);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("primaryInvestigator");
+			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
+					Cardinality.ONE, Cardinality.ONE));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
+					Cardinality.ZERO, Cardinality.MANY));
+
+			user.addAbstractAttribute(association);
+
+			EntityManager.getInstance().persistEntity(user);
+
+			Map dataValue = new HashMap();
+			List list = new ArrayList();
+			list.add(1L);
+			dataValue.put(userName, "User1");
+			dataValue.put(association, list);
+
+			EntityManager.getInstance().insertData(user, dataValue);
+			ResultSet resultSet = executeQuery("select * from "
+					+ user.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(1, resultSet.getInt(1));
+			assertEquals("User1", resultSet.getString(2));
+			ResultSetMetaData metadata = resultSet.getMetaData();
+			assertEquals(2, metadata.getColumnCount());
+
+			resultSet = executeQuery("select count(*) from " + user.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(1, resultSet.getInt(1));
+
+			EntityManager.getInstance().deleteRecord(user, 1L);
+			resultSet = executeQuery("select count(*) from " + user.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(0, resultSet.getInt(1));
+		}
+		catch (Exception e)
+		{
+			//TODO Auto-generated catch block
+			Logger.out.debug(e.getMessage());
+			e.printStackTrace();
+			fail("Exception occured");
+
+		}
+	}
+
+	/**
+	 *  Purpose: To test the deletion of record for an entity which has a many to many association with other entity.
+	 *  Expected behavior: the entry for this record in the target entity's data table should also be removed.
+	 *  Test case flow : 1. create user and study entity. 2. create association User *--->* Study. 3.Persist entities.
+	 *  4.Insert one record 5. Check the record has been inserted or not. 6. Delete the inserted record. 
+	 *  7.Check if the record is deleted. 8. Check if there are no entries for the deleted record in the 
+	 *  middle table of the many to many association.
+	 */
+
+	public void testDeleteRecordWithAssociationManyToMany()
+	{
+
+		try
+		{
+			MockEntityManager mock = new MockEntityManager();
+			Entity study = (Entity) DomainObjectFactory.getInstance().createEntity();
+			study.setName("study");
+
+			Attribute studyName = (Attribute) mock.initializeStringAttribute("studyName",
+					"new Study");
+			study.addAbstractAttribute(studyName);
+
+			Entity user = (Entity) DomainObjectFactory.getInstance().createEntity();
+			user.setName("user");
+			Attribute userName = (Attribute) mock.initializeStringAttribute("userName", "new User");
+			user.addAbstractAttribute(userName);
+
+			//Associate  User(*) <---->(*)Study 
+			AssociationInterface association = DomainObjectFactory.getInstance()
+					.createAssociation();
+
+			association.setTargetEntity(study);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("primaryInvestigator");
+			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
+					Cardinality.ONE, Cardinality.MANY));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
+					Cardinality.ZERO, Cardinality.MANY));
+
+			user.addAbstractAttribute(association);
+
+			EntityManager.getInstance().persistEntity(user);
+
+			Map dataValue = new HashMap();
+			List list = new ArrayList();
+			list.add(1L);
+			list.add(2L);
+			dataValue.put(userName, "User1");
+			dataValue.put(association, list);
+
+			Long recordId = EntityManager.getInstance().insertData(user, dataValue);
+
+			//Checking whether there is an entry added in the data table for user.
+			ResultSet resultSet = executeQuery("select * from "
+					+ user.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(1, resultSet.getInt(1));
+			//Checking whether the the value of the second column (i.e. the column for the user name.. first column is identifier).
+			//is having the expected value or not.
+			assertEquals("User1", resultSet.getString(2));
+			ResultSetMetaData metadata = resultSet.getMetaData();
+			assertEquals(2, metadata.getColumnCount());
+
+			//Checking whether there are 2 entries added in the middle table for the many to many association.
+			resultSet = executeQuery("select count(*) from "
+					+ association.getConstraintProperties().getName());
+			resultSet.next();
+			assertEquals(2, resultSet.getInt(1));
+			//Deleting the record
+			EntityManager.getInstance().deleteRecord(user, 1L);
+			//Checking there is no entry for the deleted record in the middle table.
+			resultSet = executeQuery("select count(*) from "
+					+ association.getConstraintProperties().getName() + " where "
+					+ association.getConstraintProperties().getSourceEntityKey() + " = " + recordId);
+			resultSet.next();
+			assertEquals(0, resultSet.getInt(1));
+		}
+		catch (Exception e)
+		{
+			//TODO Auto-generated catch block
+			Logger.out.debug(e.getMessage());
+			e.printStackTrace();
+			fail("Exception occured");
+
+		}
+	}
+
+	/**
+     *  Purpose: To test the deletion of record for an entity which has a many to one association with other entity.
+     *  Expected behavior: the entry for this record in the target entity's data table should also be removed.
+     *  Test case flow : 1. create user and study entity. 2. create association User *--->1 Study. 3.Persist entities.
+     *  4.Insert one record 5. Check the record has been inserted or not. 6. Delete the inserted record.
+     *  7.Check if the record is properly deleted or not.  
+     */
+
+    public void testDeleteRecordWithAssociationManyToOne()
+    {
+
+        try
+        {
+        	Variables.databaseName = Constants.ORACLE_DATABASE;
+        	
+        	MockEntityManager mock = new MockEntityManager();
+            Entity study = (Entity) DomainObjectFactory.getInstance().createEntity();
+            study.setName("study");
+            
+            Attribute studyName = (Attribute) mock.initializeStringAttribute("studyName","new Study");
+            study.addAbstractAttribute(studyName);
+            
+            Entity user = (Entity) DomainObjectFactory.getInstance().createEntity();
+            user.setName("user");
+            Attribute userName = (Attribute) mock.initializeStringAttribute("userName","new User");
+            user.addAbstractAttribute(userName);
+            
+            //Associate  User(*) <---->(1)Study 
+    		AssociationInterface association = DomainObjectFactory.getInstance().createAssociation();
+
+    		association.setTargetEntity(study);
+    		association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+    		association.setName("primaryInvestigator");
+    		association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator", Cardinality.ONE, Cardinality.MANY));
+    		association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study", Cardinality.ZERO, Cardinality.ONE));
+
+    		user.addAbstractAttribute(association);
+    		
+    		EntityManager.getInstance().persistEntity(user);
+    		
+    		Map dataValue = new HashMap();
+    		List list = new ArrayList();
+    		list.add(1L);
+            dataValue.put(userName, "User1");
+            dataValue.put(association, list);
+            
+            Long recordId = EntityManager.getInstance().insertData(user,dataValue);
+            
+            //Checking whether there is an entry added in the data table for user.
+            ResultSet resultSet = executeQuery("select * from "
+                    + user.getTableProperties().getName());
+            resultSet.next();
+            assertEquals(1, resultSet.getInt(1));
+            //Checking whether the the value of the second column (i.e. the column for the user name.. first column is identifier).
+            //is having the expected value or not.
+            assertEquals("User1", resultSet.getString(2));
+            //Checking if the extra column for many to one assiciation is added or not
+            ResultSetMetaData metadata = resultSet.getMetaData();
+            assertEquals(3, metadata.getColumnCount());
+
+            //Deleting the record
+            EntityManager.getInstance().deleteRecord(user,1L);
+            
+            resultSet = executeQuery("select count(*) from "
+                    + user.getTableProperties().getName());
+            resultSet.next();
+            assertEquals(0, resultSet.getInt(1));
+        }
+        catch (Exception e)
+        {
+            //TODO Auto-generated catch block
+            Logger.out.debug(e.getMessage());
+            e.printStackTrace();
+            fail("Exception occured");
+           
+        }
+}
+
+	/**
+	 * @param targetEntity
+	 * @param associationDirection
+	 * @param assoName
+	 * @param sourceRole
+	 * @param targetRole
+	 * @return
+	 */
+	private AssociationInterface getAssociation(EntityInterface targetEntity,
+			AssociationDirection associationDirection, String assoName, RoleInterface sourceRole,
+			RoleInterface targetRole)
+	{
+		AssociationInterface association = DomainObjectFactory.getInstance().createAssociation();
+		association.setTargetEntity(targetEntity);
+		association.setAssociationDirection(associationDirection);
+		association.setName(assoName);
+		association.setSourceRole(sourceRole);
+		association.setTargetRole(targetRole);
+		return association;
+	}
+	
+	/**
 	 * This test case test for associating three entities with  many to one to one 
 	 * 
 	 * User(*) ---- >(1)Study(1) ------>(1)institute
@@ -1410,1011 +2417,6 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 	}
 
-	/**
-	 * Purpose is to test the self referencing of the entity. 
-	 * Scenario - user(*)------>(1)User
-	 *                   creator   
-	 */
-	public void testEditEntityWithSelfReferencingBiDirectionalManyToManyAssociation()
-	{
-		EntityManagerInterface entityManager = EntityManager.getInstance();
-		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
-		// create user 
-		EntityInterface user = factory.createEntity();
-		AttributeInterface userNameAttribute = factory.createStringAttribute();
-		userNameAttribute.setName("user name");
-		user.setName("user");
-		user.addAbstractAttribute(userNameAttribute);
-
-		try
-		{
-			user = entityManager.persistEntity(user);
-
-			// Associate user (*)------ >(1)user       
-			AssociationInterface association = factory.createAssociation();
-
-			association.setTargetEntity(user);
-			association.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
-			association.setName("primaryInvestigator");
-			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "subpi",
-					Cardinality.ONE, Cardinality.ONE));
-			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "pi", Cardinality.ONE,
-					Cardinality.MANY));
-
-			user.addAbstractAttribute(association);
-
-			EntityInterface savedUser = entityManager.persistEntity(user);
-
-			String tableName = user.getTableProperties().getName();
-
-			assertNotNull(tableName);
-
-			ResultSetMetaData metaData = executeQueryForMetadata("select * from " + tableName);
-			assertEquals(3, metaData.getColumnCount());
-		}
-		catch (DynamicExtensionsSystemException e)
-		{
-			e.printStackTrace();
-			fail();
-		}
-
-		catch (DynamicExtensionsApplicationException e)
-		{
-			e.printStackTrace();
-			fail();
-
-		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-			fail();
-
-		}
-
-	}
-
-	/**
-	 * This method test for inserting data for a multi select attribute
-	 */
-	public void testInsertDataForAssociationMany2Many()
-	{
-
-		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
-		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
-		try
-		{
-
-			//          create user 
-			EntityInterface user = factory.createEntity();
-			AttributeInterface userNameAttribute = factory.createStringAttribute();
-			userNameAttribute.setName("user name");
-			user.setName("user");
-			user.addAbstractAttribute(userNameAttribute);
-
-			//          create study 
-			EntityInterface study = factory.createEntity();
-			AttributeInterface studyNameAttribute = factory.createStringAttribute();
-			studyNameAttribute.setName("study name");
-			study.setName("study");
-			study.addAbstractAttribute(studyNameAttribute);
-
-			//          Associate user (1)------ >(*)study       
-			AssociationInterface association = factory.createAssociation();
-			association.setTargetEntity(study);
-			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-			association.setName("primaryInvestigator");
-			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
-					Cardinality.ZERO, Cardinality.MANY));
-			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
-					Cardinality.ZERO, Cardinality.MANY));
-
-			user.addAbstractAttribute(association);
-
-			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
-
-			Map dataValue = new HashMap();
-
-			dataValue.put(studyNameAttribute, "study");
-			entityManagerInterface.insertData(study, dataValue);
-			dataValue.clear();
-			dataValue.put(studyNameAttribute, "study1");
-			entityManagerInterface.insertData(study, dataValue);
-
-			dataValue.clear();
-			List<Long> targetIdList = new ArrayList<Long>();
-			targetIdList.add(1L);
-			targetIdList.add(2L);
-
-			dataValue.put(userNameAttribute, "rahul");
-			dataValue.put(association, targetIdList);
-
-			entityManagerInterface.insertData(savedEntity, dataValue);
-
-			dataValue.clear();
-			dataValue.put(userNameAttribute, "vishvesh");
-			dataValue.put(association, targetIdList);
-			entityManagerInterface.insertData(savedEntity, dataValue);
-
-			ResultSet resultSet = executeQuery("select count(*) from "
-					+ association.getConstraintProperties().getName());
-			resultSet.next();
-			assertEquals(4, resultSet.getInt(1));
-		}
-		catch (DynamicExtensionsSystemException e)
-		{
-			fail();
-			Logger.out.debug(e.getStackTrace());
-		}
-		catch (DynamicExtensionsApplicationException e)
-		{
-			fail();
-			Logger.out.debug(e.getStackTrace());
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			fail();
-
-			Logger.out.debug(e.getStackTrace());
-		}
-
-	}
-
-	/**
-	 * This method test for inserting data for a multi select attribute
-	 */
-	public void testInsertDataForAssociationOne2Many()
-	{
-
-		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
-		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
-		try
-		{
-
-			//          create user 
-			EntityInterface user = factory.createEntity();
-			AttributeInterface userNameAttribute = factory.createStringAttribute();
-			userNameAttribute.setName("user name");
-			user.setName("user");
-			user.addAbstractAttribute(userNameAttribute);
-
-			//          create study 
-			EntityInterface study = factory.createEntity();
-			AttributeInterface studyNameAttribute = factory.createStringAttribute();
-			studyNameAttribute.setName("study name");
-			study.setName("study");
-			study.addAbstractAttribute(studyNameAttribute);
-
-			//          Associate user (1)------ >(*)study       
-			AssociationInterface association = factory.createAssociation();
-			association.setTargetEntity(study);
-			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-			association.setName("primaryInvestigator");
-			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
-					Cardinality.ZERO, Cardinality.ONE));
-			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
-					Cardinality.ZERO, Cardinality.MANY));
-
-			user.addAbstractAttribute(association);
-
-			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
-
-			Map dataValue = new HashMap();
-
-			dataValue.put(studyNameAttribute, "study");
-			entityManagerInterface.insertData(study, dataValue);
-
-			dataValue.clear();
-			dataValue.put(studyNameAttribute, "study1");
-			entityManagerInterface.insertData(study, dataValue);
-
-			dataValue.clear();
-			List<Long> targetIdList = new ArrayList<Long>();
-			targetIdList.add(1L);
-			targetIdList.add(2L);
-
-			dataValue.put(userNameAttribute, "rahul");
-			dataValue.put(association, targetIdList);
-
-			entityManagerInterface.insertData(savedEntity, dataValue);
-
-			ResultSet resultSet = executeQuery("select count(*) from "
-					+ study.getTableProperties().getName());
-			resultSet.next();
-			assertEquals(2, resultSet.getInt(1));
-		}
-		catch (DynamicExtensionsSystemException e)
-		{
-			fail();
-			Logger.out.debug(e.getStackTrace());
-		}
-		catch (DynamicExtensionsApplicationException e)
-		{
-			fail();
-			Logger.out.debug(e.getStackTrace());
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			fail();
-
-			Logger.out.debug(e.getStackTrace());
-		}
-
-	}
-
-	//
-	/**
-	 * This method test for inserting data for a multi select attribute
-	 */
-	public void testInsertDataForAssociationMany2One()
-	{
-
-		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
-		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
-		try
-		{
-
-			//          create user 
-			EntityInterface user = factory.createEntity();
-			AttributeInterface userNameAttribute = factory.createStringAttribute();
-			userNameAttribute.setName("user name");
-			user.setName("user");
-			user.addAbstractAttribute(userNameAttribute);
-
-			//          create study 
-			EntityInterface study = factory.createEntity();
-			AttributeInterface studyNameAttribute = factory.createStringAttribute();
-			studyNameAttribute.setName("study name");
-			study.setName("study");
-			study.addAbstractAttribute(studyNameAttribute);
-
-			//          Associate user (1)------ >(*)study       
-			AssociationInterface association = factory.createAssociation();
-			association.setTargetEntity(study);
-			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-			association.setName("primaryInvestigator");
-			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
-					Cardinality.ZERO, Cardinality.MANY));
-			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
-					Cardinality.ZERO, Cardinality.ONE));
-
-			user.addAbstractAttribute(association);
-
-			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
-
-			Map dataValue = new HashMap();
-			List<Long> targetIdList = new ArrayList<Long>();
-			targetIdList.add(1L);
-			dataValue.put(userNameAttribute, "rahul");
-
-			dataValue.put(association, targetIdList);
-
-			entityManagerInterface.insertData(savedEntity, dataValue);
-
-			ResultSet resultSet = executeQuery("select * from "
-					+ savedEntity.getTableProperties().getName());
-			resultSet.next();
-			assertEquals(1, resultSet.getInt(1));
-
-		}
-		catch (DynamicExtensionsSystemException e)
-		{
-			fail();
-			Logger.out.debug(e.getStackTrace());
-		}
-		catch (DynamicExtensionsApplicationException e)
-		{
-			fail();
-			Logger.out.debug(e.getStackTrace());
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			fail();
-
-			Logger.out.debug(e.getStackTrace());
-		}
-
-	}
-
-	/**
-	 * This method test for inserting data for a multi select attribute
-	 */
-	public void testEditDataForAssociationMany2One()
-	{
-
-		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
-		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
-		try
-		{
-
-			//          create user 
-			EntityInterface user = factory.createEntity();
-			AttributeInterface userNameAttribute = factory.createStringAttribute();
-			userNameAttribute.setName("user name");
-			user.setName("user");
-			user.addAbstractAttribute(userNameAttribute);
-
-			//          create study 
-			EntityInterface study = factory.createEntity();
-			AttributeInterface studyNameAttribute = factory.createStringAttribute();
-			studyNameAttribute.setName("study name");
-			study.setName("study");
-			study.addAbstractAttribute(studyNameAttribute);
-
-			//          Associate user (1)------ >(*)study       
-			AssociationInterface association = factory.createAssociation();
-			association.setTargetEntity(study);
-			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-			association.setName("primaryInvestigator");
-			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
-					Cardinality.ZERO, Cardinality.MANY));
-			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
-					Cardinality.ZERO, Cardinality.ONE));
-
-			user.addAbstractAttribute(association);
-
-			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
-
-			Map dataValue = new HashMap();
-			List<Long> targetIdList = new ArrayList<Long>();
-			targetIdList.add(1L);
-			dataValue.put(userNameAttribute, "rahul");
-
-			dataValue.put(association, targetIdList);
-
-			Long recordId = entityManagerInterface.insertData(savedEntity, dataValue);
-
-			dataValue.clear();
-			dataValue.put(userNameAttribute, "vishvesh");
-			dataValue.put(association, targetIdList);
-			Long recordId1 = entityManagerInterface.insertData(savedEntity, dataValue);
-
-			dataValue.clear();
-			dataValue = entityManagerInterface.getRecordById(savedEntity, recordId);
-			List targetRecordIdList = (List) dataValue.get(association);
-			System.out.println(dataValue);
-			assertEquals(1, targetRecordIdList.size());
-			assertEquals(1L, targetRecordIdList.get(0));
-
-			dataValue.clear();
-			dataValue = entityManagerInterface.getRecordById(savedEntity, recordId1);
-			targetRecordIdList = (List) dataValue.get(association);
-			System.out.println(dataValue);
-			assertEquals(1, targetRecordIdList.size());
-			assertEquals(1L, targetRecordIdList.get(0));
-
-		}
-		catch (DynamicExtensionsSystemException e)
-		{
-			e.printStackTrace();
-			fail();
-			Logger.out.debug(e.getStackTrace());
-		}
-		catch (DynamicExtensionsApplicationException e)
-		{
-			e.printStackTrace();
-			fail();
-			Logger.out.debug(e.getStackTrace());
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			fail();
-
-			Logger.out.debug(e.getStackTrace());
-		}
-
-	}
-
-	/**
-	 * This method test for inserting data for a multi select attribute
-	 */
-	public void testGetRecordByIdAssociationMany2Many()
-	{
-
-		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
-		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
-		try
-		{
-
-			//          create user 
-			EntityInterface user = factory.createEntity();
-			AttributeInterface userNameAttribute = factory.createStringAttribute();
-			userNameAttribute.setName("user name");
-			user.setName("user");
-			user.addAbstractAttribute(userNameAttribute);
-
-			//          create study 
-			EntityInterface study = factory.createEntity();
-			AttributeInterface studyNameAttribute = factory.createStringAttribute();
-			studyNameAttribute.setName("study name");
-			study.setName("study");
-			study.addAbstractAttribute(studyNameAttribute);
-
-			//          Associate user (1)------ >(*)study       
-			AssociationInterface association = factory.createAssociation();
-			association.setTargetEntity(study);
-			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-			association.setName("primaryInvestigator");
-			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
-					Cardinality.ZERO, Cardinality.MANY));
-			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
-					Cardinality.ZERO, Cardinality.MANY));
-
-			user.addAbstractAttribute(association);
-
-			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
-
-			Map dataValue = new HashMap();
-
-			dataValue.put(studyNameAttribute, "study");
-			entityManagerInterface.insertData(study, dataValue);
-			dataValue.clear();
-			dataValue.put(studyNameAttribute, "study1");
-			entityManagerInterface.insertData(study, dataValue);
-
-			dataValue.clear();
-			List<Long> targetIdList = new ArrayList<Long>();
-			targetIdList.add(1L);
-			targetIdList.add(2L);
-
-			dataValue.put(userNameAttribute, "rahul");
-			dataValue.put(association, targetIdList);
-
-			Long recordId = entityManagerInterface.insertData(savedEntity, dataValue);
-
-			dataValue.clear();
-			dataValue.put(userNameAttribute, "vishvesh");
-			dataValue.put(association, targetIdList);
-			entityManagerInterface.insertData(savedEntity, dataValue);
-
-			dataValue.clear();
-			dataValue = entityManagerInterface.getRecordById(savedEntity, recordId);
-
-			List targetRecordIdList = (List) dataValue.get(association);
-
-			System.out.println(dataValue);
-
-			assertEquals(2, targetRecordIdList.size());
-			assertEquals(1L, targetRecordIdList.get(0));
-			assertEquals(2L, targetRecordIdList.get(1));
-
-		}
-		catch (DynamicExtensionsSystemException e)
-		{
-			fail();
-			Logger.out.debug(e.getStackTrace());
-		}
-		catch (DynamicExtensionsApplicationException e)
-		{
-			fail();
-			Logger.out.debug(e.getStackTrace());
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			fail();
-
-			Logger.out.debug(e.getStackTrace());
-		}
-
-	}
-
-	/**
-	 * This method test for inserting data for a multi select attribute
-	 */
-	public void testGetRecordByIdForOne2ManyAssociation()
-	{
-
-		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
-		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
-		try
-		{
-
-			//          create user 
-			EntityInterface user = factory.createEntity();
-			AttributeInterface userNameAttribute = factory.createStringAttribute();
-			userNameAttribute.setName("user name");
-			user.setName("user");
-			user.addAbstractAttribute(userNameAttribute);
-
-			//          create study 
-			EntityInterface study = factory.createEntity();
-			AttributeInterface studyNameAttribute = factory.createStringAttribute();
-			studyNameAttribute.setName("study name");
-			study.setName("study");
-			study.addAbstractAttribute(studyNameAttribute);
-
-			//          Associate user (1)------ >(*)study       
-			AssociationInterface association = factory.createAssociation();
-			association.setTargetEntity(study);
-			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-			association.setName("primaryInvestigator");
-			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
-					Cardinality.ZERO, Cardinality.ONE));
-			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
-					Cardinality.ZERO, Cardinality.MANY));
-
-			user.addAbstractAttribute(association);
-
-			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
-
-			Map dataValue = new HashMap();
-
-			dataValue.put(studyNameAttribute, "study");
-			entityManagerInterface.insertData(study, dataValue);
-
-			dataValue.clear();
-			dataValue.put(studyNameAttribute, "study1");
-			entityManagerInterface.insertData(study, dataValue);
-
-			dataValue.clear();
-			dataValue.put(userNameAttribute, "rahul");
-			List<Long> targetIdList = new ArrayList<Long>();
-			targetIdList.add(1L);
-			dataValue.put(association, targetIdList);
-
-			Long recordId = entityManagerInterface.insertData(savedEntity, dataValue);
-			dataValue.clear();
-
-			dataValue = entityManagerInterface.getRecordById(savedEntity, recordId);
-			List targetRecordIdList = (List) dataValue.get(association);
-
-			System.out.println(dataValue);
-
-			assertEquals(1, targetRecordIdList.size());
-			assertEquals(1L, targetRecordIdList.get(0));
-
-		}
-		catch (DynamicExtensionsSystemException e)
-		{
-			fail();
-			Logger.out.debug(e.getStackTrace());
-		}
-		catch (DynamicExtensionsApplicationException e)
-		{
-			fail();
-			Logger.out.debug(e.getStackTrace());
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			fail();
-
-			Logger.out.debug(e.getStackTrace());
-		}
-
-	}
-
-	/**
-	 * This test case is to check the constraint violation in case when the  source cardinality for target is one && maximum cardinality for target is one. 
-	 * So in this test case we try to insert data such that the same target entity record is associated with the 
-	 * source entity record twice. After the first insertion is successful, when the second insertion takes place
-	 * at that time constraint violation should  fail
-	 */
-	public void testInsertDataForConstraintViolationForOneToOne()
-	{
-
-		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
-		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-		EntityInterface savedEntity = null;
-		try
-		{
-
-			//          create user 
-			EntityInterface user = factory.createEntity();
-			AttributeInterface userNameAttribute = factory.createStringAttribute();
-			userNameAttribute.setName("user name");
-			user.setName("user");
-			user.addAbstractAttribute(userNameAttribute);
-
-			//          create study 
-			EntityInterface study = factory.createEntity();
-			AttributeInterface studyNameAttribute = factory.createStringAttribute();
-			studyNameAttribute.setName("study name");
-			study.setName("study");
-			study.addAbstractAttribute(studyNameAttribute);
-
-			//          Associate user (1)------ >(*)study       
-			AssociationInterface association = factory.createAssociation();
-			association.setTargetEntity(study);
-			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-			association.setName("primaryInvestigator");
-			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
-					Cardinality.ZERO, Cardinality.ONE));
-			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
-					Cardinality.ZERO, Cardinality.ONE));
-
-			user.addAbstractAttribute(association);
-
-			savedEntity = entityManagerInterface.persistEntity(user);
-
-			Map dataValue = new HashMap();
-			dataValue.clear();
-			dataValue.put(studyNameAttribute, "study1");
-			entityManagerInterface.insertData(study, dataValue);
-
-			dataValue.clear();
-			dataValue.put(userNameAttribute, "rahul");
-			List<Long> targetIdList = new ArrayList<Long>();
-			targetIdList.add(1L);
-			dataValue.put(association, targetIdList);
-
-			entityManagerInterface.insertData(savedEntity, dataValue);
-
-			ResultSet resultSet = executeQuery("select * from "
-					+ savedEntity.getTableProperties().getName());
-			resultSet.next();
-			assertEquals(1, resultSet.getInt(1));
-
-			entityManagerInterface.insertData(savedEntity, dataValue);
-
-			fail();
-
-		}
-		catch (DynamicExtensionsSystemException e)
-		{
-			fail();
-			Logger.out.debug(e.getStackTrace());
-		}
-		catch (DynamicExtensionsApplicationException e)
-		{
-
-			ResultSet resultSet = executeQuery("select * from "
-					+ savedEntity.getTableProperties().getName());
-			try
-			{
-				resultSet.next();
-				assertEquals(1, resultSet.getInt(1));
-			}
-			catch (SQLException e1)
-			{
-				fail();
-				e1.printStackTrace();
-			}
-
-			Logger.out
-					.debug("constraint validation should fail...because max target cardinality is one");
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			fail();
-
-			Logger.out.debug(e.getStackTrace());
-		}
-
-	}
-
-	/**
-	 * This test case is to check the scenario when user adds maximum cardinality less than the minimum cardinality
-	 * In such case DE internally corrects these cardinalities by swapping the minimum and maximum cardinalities.
-	 */
-	public void testInsertDataForInvalidCardinalities()
-	{
-
-		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
-		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-		EntityInterface savedEntity = null;
-		try
-		{
-
-			//          create user 
-			EntityInterface user = factory.createEntity();
-			AttributeInterface userNameAttribute = factory.createStringAttribute();
-			userNameAttribute.setName("user name");
-			user.setName("user");
-			user.addAbstractAttribute(userNameAttribute);
-
-			//          create study 
-			EntityInterface study = factory.createEntity();
-			AttributeInterface studyNameAttribute = factory.createStringAttribute();
-			studyNameAttribute.setName("study name");
-			study.setName("study");
-			study.addAbstractAttribute(studyNameAttribute);
-
-			//          Associate user (1)------ >(*)study       
-			AssociationInterface association = factory.createAssociation();
-			association.setTargetEntity(study);
-			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-			association.setName("primaryInvestigator");
-			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
-					Cardinality.MANY, Cardinality.ZERO));
-			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
-					Cardinality.ONE, Cardinality.ZERO));
-
-			user.addAbstractAttribute(association);
-			savedEntity = entityManagerInterface.persistEntity(user);
-
-			Map dataValue = new HashMap();
-			dataValue.put(userNameAttribute, "rahul");
-			List<Long> targetIdList = new ArrayList<Long>();
-			targetIdList.add(1L);
-
-			dataValue.put(association, targetIdList);
-
-			entityManagerInterface.insertData(savedEntity, dataValue);
-			ResultSet resultSet = executeQuery("select * from "
-					+ savedEntity.getTableProperties().getName());
-			resultSet.next();
-			assertEquals(1, resultSet.getInt(1));
-		}
-		catch (Exception e)
-		{
-			fail();
-			Logger.out.debug(e.getStackTrace());
-		}
-
-	}
-
-	/**
-	 *  Purpose: To test the deletion of record for an entity which has a one to many association with other entity.
-	 *  Expected behavior: the entry for this record in the target entity's data table should also be removed.
-	 *  Test case flow : 1. create user and study entity. 2. create association User 1--->* Study. 3.Persist entities.
-	 *  4.Insert one record 5. Check the record has been inserted or not. 6. Delete the inserted record.  
-	 */
-
-	public void testDeleteRecordWithAssociationOneToMany()
-	{
-
-		try
-		{
-			MockEntityManager mock = new MockEntityManager();
-			Entity study = (Entity) DomainObjectFactory.getInstance().createEntity();
-			study.setName("study");
-
-			Attribute studyName = (Attribute) mock.initializeStringAttribute("studyName",
-					"new Study");
-			study.addAbstractAttribute(studyName);
-
-			Entity user = (Entity) DomainObjectFactory.getInstance().createEntity();
-			user.setName("user");
-			Attribute userName = (Attribute) mock.initializeStringAttribute("userName", "new User");
-			user.addAbstractAttribute(userName);
-
-			//Associate  User(1) <---->(*)Study 
-			AssociationInterface association = DomainObjectFactory.getInstance()
-					.createAssociation();
-
-			association.setTargetEntity(study);
-			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-			association.setName("primaryInvestigator");
-			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
-					Cardinality.ONE, Cardinality.ONE));
-			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
-					Cardinality.ZERO, Cardinality.MANY));
-
-			user.addAbstractAttribute(association);
-
-			EntityManager.getInstance().persistEntity(user);
-
-			Map dataValue = new HashMap();
-			List list = new ArrayList();
-			list.add(1L);
-			dataValue.put(userName, "User1");
-			dataValue.put(association, list);
-
-			EntityManager.getInstance().insertData(user, dataValue);
-			ResultSet resultSet = executeQuery("select * from "
-					+ user.getTableProperties().getName());
-			resultSet.next();
-			assertEquals(1, resultSet.getInt(1));
-			assertEquals("User1", resultSet.getString(2));
-			ResultSetMetaData metadata = resultSet.getMetaData();
-			assertEquals(2, metadata.getColumnCount());
-
-			resultSet = executeQuery("select count(*) from " + user.getTableProperties().getName());
-			resultSet.next();
-			assertEquals(1, resultSet.getInt(1));
-
-			EntityManager.getInstance().deleteRecord(user, 1L);
-			resultSet = executeQuery("select count(*) from " + user.getTableProperties().getName());
-			resultSet.next();
-			assertEquals(0, resultSet.getInt(1));
-		}
-		catch (Exception e)
-		{
-			//TODO Auto-generated catch block
-			Logger.out.debug(e.getMessage());
-			e.printStackTrace();
-			fail("Exception occured");
-
-		}
-	}
-
-	/**
-	 *  Purpose: To test the deletion of record for an entity which has a many to many association with other entity.
-	 *  Expected behavior: the entry for this record in the target entity's data table should also be removed.
-	 *  Test case flow : 1. create user and study entity. 2. create association User *--->* Study. 3.Persist entities.
-	 *  4.Insert one record 5. Check the record has been inserted or not. 6. Delete the inserted record. 
-	 *  7.Check if the record is deleted. 8. Check if there are no entries for the deleted record in the 
-	 *  middle table of the many to many association.
-	 */
-
-	public void testDeleteRecordWithAssociationManyToMany()
-	{
-
-		try
-		{
-			MockEntityManager mock = new MockEntityManager();
-			Entity study = (Entity) DomainObjectFactory.getInstance().createEntity();
-			study.setName("study");
-
-			Attribute studyName = (Attribute) mock.initializeStringAttribute("studyName",
-					"new Study");
-			study.addAbstractAttribute(studyName);
-
-			Entity user = (Entity) DomainObjectFactory.getInstance().createEntity();
-			user.setName("user");
-			Attribute userName = (Attribute) mock.initializeStringAttribute("userName", "new User");
-			user.addAbstractAttribute(userName);
-
-			//Associate  User(*) <---->(*)Study 
-			AssociationInterface association = DomainObjectFactory.getInstance()
-					.createAssociation();
-
-			association.setTargetEntity(study);
-			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-			association.setName("primaryInvestigator");
-			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
-					Cardinality.ONE, Cardinality.MANY));
-			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
-					Cardinality.ZERO, Cardinality.MANY));
-
-			user.addAbstractAttribute(association);
-
-			EntityManager.getInstance().persistEntity(user);
-
-			Map dataValue = new HashMap();
-			List list = new ArrayList();
-			list.add(1L);
-			list.add(2L);
-			dataValue.put(userName, "User1");
-			dataValue.put(association, list);
-
-			Long recordId = EntityManager.getInstance().insertData(user, dataValue);
-
-			//Checking whether there is an entry added in the data table for user.
-			ResultSet resultSet = executeQuery("select * from "
-					+ user.getTableProperties().getName());
-			resultSet.next();
-			assertEquals(1, resultSet.getInt(1));
-			//Checking whether the the value of the second column (i.e. the column for the user name.. first column is identifier).
-			//is having the expected value or not.
-			assertEquals("User1", resultSet.getString(2));
-			ResultSetMetaData metadata = resultSet.getMetaData();
-			assertEquals(2, metadata.getColumnCount());
-
-			//Checking whether there are 2 entries added in the middle table for the many to many association.
-			resultSet = executeQuery("select count(*) from "
-					+ association.getConstraintProperties().getName());
-			resultSet.next();
-			assertEquals(2, resultSet.getInt(1));
-			//Deleting the record
-			EntityManager.getInstance().deleteRecord(user, 1L);
-			//Checking there is no entry for the deleted record in the middle table.
-			resultSet = executeQuery("select count(*) from "
-					+ association.getConstraintProperties().getName() + " where "
-					+ association.getConstraintProperties().getSourceEntityKey() + " = " + recordId);
-			resultSet.next();
-			assertEquals(0, resultSet.getInt(1));
-		}
-		catch (Exception e)
-		{
-			//TODO Auto-generated catch block
-			Logger.out.debug(e.getMessage());
-			e.printStackTrace();
-			fail("Exception occured");
-
-		}
-	}
-
-	/**
-     *  Purpose: To test the deletion of record for an entity which has a many to one association with other entity.
-     *  Expected behavior: the entry for this record in the target entity's data table should also be removed.
-     *  Test case flow : 1. create user and study entity. 2. create association User *--->1 Study. 3.Persist entities.
-     *  4.Insert one record 5. Check the record has been inserted or not. 6. Delete the inserted record.
-     *  7.Check if the record is properly deleted or not.  
-     */
-
-    public void testDeleteRecordWithAssociationManyToOne()
-    {
-
-        try
-        {
-        	Variables.databaseName = Constants.ORACLE_DATABASE;
-        	
-        	MockEntityManager mock = new MockEntityManager();
-            Entity study = (Entity) DomainObjectFactory.getInstance().createEntity();
-            study.setName("study");
-            
-            Attribute studyName = (Attribute) mock.initializeStringAttribute("studyName","new Study");
-            study.addAbstractAttribute(studyName);
-            
-            Entity user = (Entity) DomainObjectFactory.getInstance().createEntity();
-            user.setName("user");
-            Attribute userName = (Attribute) mock.initializeStringAttribute("userName","new User");
-            user.addAbstractAttribute(userName);
-            
-            //Associate  User(*) <---->(1)Study 
-    		AssociationInterface association = DomainObjectFactory.getInstance().createAssociation();
-
-    		association.setTargetEntity(study);
-    		association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-    		association.setName("primaryInvestigator");
-    		association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator", Cardinality.ONE, Cardinality.MANY));
-    		association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study", Cardinality.ZERO, Cardinality.ONE));
-
-    		user.addAbstractAttribute(association);
-    		
-    		EntityManager.getInstance().persistEntity(user);
-    		
-    		Map dataValue = new HashMap();
-    		List list = new ArrayList();
-    		list.add(1L);
-            dataValue.put(userName, "User1");
-            dataValue.put(association, list);
-            
-            Long recordId = EntityManager.getInstance().insertData(user,dataValue);
-            
-            //Checking whether there is an entry added in the data table for user.
-            ResultSet resultSet = executeQuery("select * from "
-                    + user.getTableProperties().getName());
-            resultSet.next();
-            assertEquals(1, resultSet.getInt(1));
-            //Checking whether the the value of the second column (i.e. the column for the user name.. first column is identifier).
-            //is having the expected value or not.
-            assertEquals("User1", resultSet.getString(2));
-            //Checking if the extra column for many to one assiciation is added or not
-            ResultSetMetaData metadata = resultSet.getMetaData();
-            assertEquals(3, metadata.getColumnCount());
-
-            //Deleting the record
-            EntityManager.getInstance().deleteRecord(user,1L);
-            
-            resultSet = executeQuery("select count (*) from "
-                    + user.getTableProperties().getName());
-            resultSet.next();
-            assertEquals(0, resultSet.getInt(1));
-        }
-        catch (Exception e)
-        {
-            //TODO Auto-generated catch block
-            Logger.out.debug(e.getMessage());
-            e.printStackTrace();
-            fail("Exception occured");
-           
-        }
-}
-
-	/**
-	 * @param targetEntity
-	 * @param associationDirection
-	 * @param assoName
-	 * @param sourceRole
-	 * @param targetRole
-	 * @return
-	 */
-	private AssociationInterface getAssociation(EntityInterface targetEntity,
-			AssociationDirection associationDirection, String assoName, RoleInterface sourceRole,
-			RoleInterface targetRole)
-	{
-		AssociationInterface association = DomainObjectFactory.getInstance().createAssociation();
-		association.setTargetEntity(targetEntity);
-		association.setAssociationDirection(associationDirection);
-		association.setName(assoName);
-		association.setSourceRole(sourceRole);
-		association.setTargetRole(targetRole);
-		return association;
-	}
+	
 
 }

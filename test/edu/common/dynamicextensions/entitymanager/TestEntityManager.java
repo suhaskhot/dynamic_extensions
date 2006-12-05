@@ -80,448 +80,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     {
         super.tearDown();
     }
-
-    /**
-     * 
-     */
-    public void testCreateEntity()
-    {
-        try
-        {
-            Entity entity = (Entity) new MockEntityManager().initializeEntity();
-            TaggedValueInterface taggedValue = DomainObjectFactory
-                    .getInstance().createTaggedValue();
-            taggedValue.setKey("a");
-            taggedValue.setValue("b");
-            entity.addTaggedValue(taggedValue);
-            entity = (Entity) EntityManager.getInstance().persistEntity(entity);
-
-            Entity newEntity = (Entity) EntityManager.getInstance()
-                    .getEntityByIdentifier(entity.getId().toString());
-            assertEquals(entity.getName(), newEntity.getName());
-
-            String tableName = entity.getTableProperties().getName();
-            String query = "Select * from " + tableName;
-            executeQueryForMetadata(query);
-        }
-        catch (Exception e)
-        {
-            //TODO Auto-generated catch block
-            Logger.out.debug(e.getMessage());
-            e.printStackTrace();
-            fail("Exception occured");
-        }
-
-    }
-
-    /**
-     * 
-     */
-
-    public void testCreateEntityWithEntityGroup()
-    {
-        try
-        {
-            Entity entity = (Entity) new MockEntityManager().initializeEntity();
-            EntityGroup entityGroup = new EntityGroup();
-            entityGroup.setName("testEntityGroup");
-            entity.addEntityGroupInterface(entityGroup);
-            entityGroup.addEntity(entity);
-            entity = (Entity) EntityManager.getInstance().persistEntity(entity);
-            Entity newEntity = (Entity) EntityManager.getInstance()
-                    .getEntityByIdentifier(entity.getId().toString());
-            //  Checking whether metadata information is saved properly or not.
-            assertEquals(entity.getName(), newEntity.getName());
-            Collection collection = newEntity.getEntityGroupCollection();
-            Iterator iter = collection.iterator();
-            EntityGroup eg = (EntityGroup) iter.next();
-            assertEquals(eg.getId(), entityGroup.getId());
-
-        }
-        catch (Exception e)
-        {
-            //TODO Auto-generated catch block
-            Logger.out.debug(e.getMessage());
-            fail("Exception occured");
-        }
-
-    }
-
-    /**
-     * 
-     *
-     */
-
-    public void testCreateEntityForQueryException()
-    {
-        try
-        {
-            Entity entity = (Entity) new MockEntityManager().initializeEntity();
-            TableProperties tableProperties = new TableProperties();
-            tableProperties.setName("!##$$%");
-            entity.setTableProperties(tableProperties);
-            entity = (Entity) EntityManager.getInstance().persistEntity(entity);
-            fail("Exception should have occured but did not");
-        }
-        catch (DynamicExtensionsSystemException e)
-        {
-            Logger.out.info("Exception because of wrong table name.");
-            Logger.out.info(e.getMessage());
-        }
-        catch (Exception e)
-        {
-            //TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-    }
-
-    /**
-     * 
-     *
-     */
-
-    public void testCreateEntityForRollbackQuery()
-    {
-        Entity entity = null;
-        try
-        {
-            entity = (Entity) new MockEntityManager().initializeEntity();
-            TableProperties tableProperties = new TableProperties();
-            tableProperties.setName("Created_table");
-            entity.setTableProperties(tableProperties);
-            String query = "create table Created_table (id integer)";
-            executeQueryDDL(query);
-            EntityManager.getInstance().persistEntity(entity);
-            fail("Exception should have occured but did not");
-        }
-        catch (DynamicExtensionsSystemException e)
-        {
-            Logger.out.info("Exception because of wrong table name.");
-            Logger.out.info(e.getMessage());
-        }
-        catch (Exception e)
-        {
-            //TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        finally
-        {
-            executeQueryDDL("drop table Created_table");
-            try
-            {
-                Entity newEntity = (Entity) EntityManager.getInstance()
-                        .getEntityByIdentifier(entity.getId().toString());
-                fail();
-
-            }
-            catch (DynamicExtensionsApplicationException e)
-            {
-                Logger.out.info("Entity object not found in the database ....");
-            }
-            catch (Exception e1)
-            {
-                e1.printStackTrace();
-            }
-
-        }
-
-    }
-
-    /**
-     * This method tests GetRecordById method for the condition where record and entity does exists
-     */
-
-    public void testGetRecordById()
-    {
-
-        try
-        {
-            EntityManagerInterface entityManagerInterface = EntityManager
-                    .getInstance();
-
-            Entity entity = (Entity) new MockEntityManager().initializeEntity();
-            entity = (Entity) entityManagerInterface.persistEntity(entity);
-
-            Entity newEntity = (Entity) entityManagerInterface
-                    .getEntityByIdentifier(entity.getId().toString());
-            Map dataValue = new HashMap();
-
-            Iterator attrIterator = newEntity.getAttributeCollection()
-                    .iterator();
-            int i = 0;
-            while (attrIterator.hasNext())
-            {
-                AttributeInterface attribute = (AttributeInterface) attrIterator
-                        .next();
-                AttributeTypeInformationInterface typeInfo = attribute
-                        .getAttributeTypeInformation();
-
-                if (typeInfo instanceof StringAttributeTypeInformation)
-                {
-                    dataValue.put(attribute, "temp" + i);
-                }
-                else if (attribute instanceof DateAttributeTypeInformation)
-                {
-                    dataValue.put(attribute, "11-01-2006");
-                }
-
-                i++;
-            }
-
-            entityManagerInterface.insertData(newEntity, dataValue);
-
-            assertEquals("Employee", entity.getName());
-            Map map = EntityManager.getInstance().getRecordById(entity,
-                    new Long(1));
-
-            System.out.println(map);
-        }
-        catch (DynamicExtensionsSystemException e)
-        {
-            //TODO Auto-generated catch block
-            Logger.out.debug(e.getMessage());
-            fail("Exception occured");
-        }
-        catch (DynamicExtensionsApplicationException e)
-        {
-            //TODO Auto-generated catch block
-            Logger.out.debug(e.getMessage());
-            fail("Exception occured");
-        }
-
-    }
-
-    /**
-     * This method tests GetRecordById method for the condition wheer record does not exists for given id.
-     */
-
-    public void testGetRecordByIdNoRecord()
-    {
-
-        try
-        {
-            EntityManagerInterface entityManagerInterface = EntityManager
-                    .getInstance();
-
-            Entity entity = (Entity) new MockEntityManager().initializeEntity();
-            entity = (Entity) entityManagerInterface.persistEntity(entity);
-
-            Map map = EntityManager.getInstance().getRecordById(entity,
-                    new Long(1));
-            assertEquals(0, map.size());
-        }
-        catch (DynamicExtensionsSystemException e)
-        {
-            //TODO Auto-generated catch block
-            Logger.out.debug(e.getMessage());
-            fail("Exception occured");
-        }
-        catch (DynamicExtensionsApplicationException e)
-        {
-            //TODO Auto-generated catch block
-            Logger.out.debug(e.getMessage());
-            fail("Exception occured");
-        }
-
-    }
-
-    /**
-     * This method tests GetRecordById method for the condition where entity is not saved , entity  is null or record id id null
-     */
-
-    public void testGetRecordByIdEntityNotSaved()
-    {
-
-        EntityManagerInterface entityManagerInterface = EntityManager
-                .getInstance();
-        Entity entity = null;
-
-        try
-        {
-            entity = (Entity) new MockEntityManager().initializeEntity();
-
-            Map map = EntityManager.getInstance().getRecordById(entity,
-                    new Long(1));
-            fail("Exception should have be thrown since entity is not saved");
-
-        }
-        catch (DynamicExtensionsSystemException e)
-        {
-            assertTrue(true);
-        }
-        catch (DynamicExtensionsApplicationException e)
-        {
-            //TODO Auto-generated catch block
-            Logger.out.debug(e.getMessage());
-            fail("Unexpected Exception occured");
-        }
-
-        try
-        {
-            Map map = EntityManager.getInstance().getRecordById(null,
-                    new Long(1));
-            fail("Exception should have be thrown since entity is not saved");
-        }
-        catch (DynamicExtensionsSystemException e)
-        {
-            assertTrue(true);
-        }
-        catch (DynamicExtensionsApplicationException e)
-        {
-            //TODO Auto-generated catch block
-            Logger.out.debug(e.getMessage());
-        }
-
-        try
-        {
-            entity = (Entity) entityManagerInterface.persistEntity(entity);
-
-            Map map = EntityManager.getInstance().getRecordById(entity, null);
-            fail("Exception should have be thrown since entity is not saved");
-        }
-        catch (DynamicExtensionsSystemException e)
-        {
-            assertTrue(true);
-        }
-        catch (DynamicExtensionsApplicationException e)
-        {
-            //TODO Auto-generated catch block
-            Logger.out.debug(e.getMessage());
-        }
-
-    }
-
-    /**
-     * 
-     */
-
-    public void testCreateContainer()
-    {
-        try
-        {
-            Container container = (Container) new MockEntityManager()
-                    .getContainer("abc");
-            EntityManager.getInstance().persistContainer(container);
-            Collection list = EntityManager.getInstance().getAllContainers();
-            assertNotNull(list);
-            Iterator iter = list.iterator();
-            boolean flag = false;
-            while (iter.hasNext())
-            {
-                Container cont = (Container) iter.next();
-                if (cont.getId().equals(container.getId()))
-                {
-                    flag = true;
-                    break;
-                }
-            }
-            assertTrue(flag);
-        }
-        catch (Exception e)
-        {
-            //TODO Auto-generated catch block
-            Logger.out.debug(e.getMessage());
-            fail("Exception occured");
-        }
-
-    }
-
-    /**
-     * 
-     */
-
-    public void testCreateContainerForContainerWithoutEntity()
-    {
-        try
-        {
-            Container container = new Container();
-            EntityManager.getInstance().persistContainer(container);
-            Collection list = EntityManager.getInstance().getAllContainers();
-            assertNotNull(list);
-            Iterator iter = list.iterator();
-            boolean flag = false;
-            while (iter.hasNext())
-            {
-                Container cont = (Container) iter.next();
-                if (cont.getId().equals(container.getId()))
-                {
-                    flag = true;
-                    break;
-                }
-            }
-            assertTrue(flag);
-        }
-        catch (Exception e)
-        {
-            // //TODO Auto-generated catch block
-            Logger.out.debug(e.getMessage());
-            fail("Exception occured");
-        }
-    }
-
-    /**
-     * 
-     */
-
-    public void testEditEntityForNewAddedAttribute()
-    {
-        try
-        {
-            Entity entity = (Entity) new MockEntityManager().initializeEntity();
-            entity = (Entity) EntityManager.getInstance().persistEntity(entity);
-            AttributeInterface attr = new MockEntityManager()
-                    .initializeStringAttribute("na", "ab");
-            attr.setEntity(entity);
-            entity.addAbstractAttribute(attr);
-            entity = (Entity) EntityManager.getInstance().persistEntity(entity);
-            //   Checking whether metadata information is saved properly or not.
-            String tableName = entity.getTableProperties().getName();
-
-        }
-        catch (Exception e)
-        {
-            //     //TODO Auto-generated catch block
-            Logger.out.debug(e.getMessage());
-            fail("Exception occured");
-        }
-
-    }
-
-    /**
-     * 
-     */
-
-    public void testEditEntityForModifiedIsNullableAttribute()
-    {
-        try
-        {
-            Entity entity = (Entity) new MockEntityManager().initializeEntity();
-            AttributeInterface attr = new MockEntityManager()
-                    .initializeStringAttribute("na", "ab");
-            attr.setEntity(entity);
-            entity.addAbstractAttribute(attr);
-            entity = (Entity) EntityManager.getInstance().persistEntity(entity);
-            attr = (AttributeInterface) entity.getAttributeByIdentifier(attr
-                    .getId());
-            attr.setIsNullable(new Boolean(false));
-            entity = (Entity) EntityManager.getInstance().persistEntity(entity);
-            Attribute savedAttribute = (Attribute) entity
-                    .getAttributeByIdentifier(attr.getId());
-            assertFalse(savedAttribute.getIsNullable());
-            //   Checking whether metadata information is saved properly or not.
-            String tableName = entity.getTableProperties().getName();
-            //   //TODO Check table query
-        }
-        catch (Exception e)
-        {
-            // //TODO Auto-generated catch block
-            Logger.out.debug(e.getMessage());
-            fail("Exception occured");
-        }
-
-    }
-
+    
     /**
      * 
      */
@@ -1487,6 +1046,372 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		}
     }
 
+    /**
+     * 
+     */
+    public void testCreateEntity()
+    {
+        try
+        {
+            Entity entity = (Entity) new MockEntityManager().initializeEntity();
+            TaggedValueInterface taggedValue = DomainObjectFactory
+                    .getInstance().createTaggedValue();
+            taggedValue.setKey("a");
+            taggedValue.setValue("b");
+            entity.addTaggedValue(taggedValue);
+            entity = (Entity) EntityManager.getInstance().persistEntity(entity);
+
+            Entity newEntity = (Entity) EntityManager.getInstance()
+                    .getEntityByIdentifier(entity.getId().toString());
+            assertEquals(entity.getName(), newEntity.getName());
+
+            String tableName = entity.getTableProperties().getName();
+            String query = "Select * from " + tableName;
+            executeQueryForMetadata(query);
+        }
+        catch (Exception e)
+        {
+            //TODO Auto-generated catch block
+            Logger.out.debug(e.getMessage());
+            e.printStackTrace();
+            fail("Exception occured");
+        }
+
+    }
+
+    /**
+     * 
+     */
+
+    public void testCreateEntityWithEntityGroup()
+    {
+        try
+        {
+            Entity entity = (Entity) new MockEntityManager().initializeEntity();
+            EntityGroup entityGroup = new EntityGroup();
+            entityGroup.setName("testEntityGroup");
+            entity.addEntityGroupInterface(entityGroup);
+            entityGroup.addEntity(entity);
+            entity = (Entity) EntityManager.getInstance().persistEntity(entity);
+            Entity newEntity = (Entity) EntityManager.getInstance()
+                    .getEntityByIdentifier(entity.getId().toString());
+            //  Checking whether metadata information is saved properly or not.
+            assertEquals(entity.getName(), newEntity.getName());
+            Collection collection = newEntity.getEntityGroupCollection();
+            Iterator iter = collection.iterator();
+            EntityGroup eg = (EntityGroup) iter.next();
+            assertEquals(eg.getId(), entityGroup.getId());
+
+        }
+        catch (Exception e)
+        {
+            //TODO Auto-generated catch block
+            Logger.out.debug(e.getMessage());
+            fail("Exception occured");
+        }
+
+    }
+
+   
+
+   
+
+    /**
+     * This method tests GetRecordById method for the condition where record and entity does exists
+     */
+
+    public void testGetRecordById()
+    {
+
+        try
+        {
+            EntityManagerInterface entityManagerInterface = EntityManager
+                    .getInstance();
+
+            Entity entity = (Entity) new MockEntityManager().initializeEntity();
+            entity = (Entity) entityManagerInterface.persistEntity(entity);
+
+            Entity newEntity = (Entity) entityManagerInterface
+                    .getEntityByIdentifier(entity.getId().toString());
+            Map dataValue = new HashMap();
+
+            Iterator attrIterator = newEntity.getAttributeCollection()
+                    .iterator();
+            int i = 0;
+            while (attrIterator.hasNext())
+            {
+                AttributeInterface attribute = (AttributeInterface) attrIterator
+                        .next();
+                AttributeTypeInformationInterface typeInfo = attribute
+                        .getAttributeTypeInformation();
+
+                if (typeInfo instanceof StringAttributeTypeInformation)
+                {
+                    dataValue.put(attribute, "temp" + i);
+                }
+                else if (attribute instanceof DateAttributeTypeInformation)
+                {
+                    dataValue.put(attribute, "11-01-2006");
+                }
+
+                i++;
+            }
+
+            entityManagerInterface.insertData(newEntity, dataValue);
+
+            assertEquals("Employee", entity.getName());
+            Map map = EntityManager.getInstance().getRecordById(entity,
+                    new Long(1));
+
+            System.out.println(map);
+        }
+        catch (DynamicExtensionsSystemException e)
+        {
+            //TODO Auto-generated catch block
+            Logger.out.debug(e.getMessage());
+            fail("Exception occured");
+        }
+        catch (DynamicExtensionsApplicationException e)
+        {
+            //TODO Auto-generated catch block
+            Logger.out.debug(e.getMessage());
+            fail("Exception occured");
+        }
+
+    }
+
+    /**
+     * This method tests GetRecordById method for the condition wheer record does not exists for given id.
+     */
+
+    public void testGetRecordByIdNoRecord()
+    {
+
+        try
+        {
+            EntityManagerInterface entityManagerInterface = EntityManager
+                    .getInstance();
+
+            Entity entity = (Entity) new MockEntityManager().initializeEntity();
+            entity = (Entity) entityManagerInterface.persistEntity(entity);
+
+            Map map = EntityManager.getInstance().getRecordById(entity,
+                    new Long(1));
+            assertEquals(0, map.size());
+        }
+        catch (DynamicExtensionsSystemException e)
+        {
+            //TODO Auto-generated catch block
+            Logger.out.debug(e.getMessage());
+            fail("Exception occured");
+        }
+        catch (DynamicExtensionsApplicationException e)
+        {
+            //TODO Auto-generated catch block
+            Logger.out.debug(e.getMessage());
+            fail("Exception occured");
+        }
+
+    }
+
+    /**
+     * This method tests GetRecordById method for the condition where entity is not saved , entity  is null or record id id null
+     */
+
+    public void testGetRecordByIdEntityNotSaved()
+    {
+
+        EntityManagerInterface entityManagerInterface = EntityManager
+                .getInstance();
+        Entity entity = null;
+
+        try
+        {
+            entity = (Entity) new MockEntityManager().initializeEntity();
+
+            Map map = EntityManager.getInstance().getRecordById(entity,
+                    new Long(1));
+            fail("Exception should have be thrown since entity is not saved");
+
+        }
+        catch (DynamicExtensionsSystemException e)
+        {
+            assertTrue(true);
+        }
+        catch (DynamicExtensionsApplicationException e)
+        {
+            //TODO Auto-generated catch block
+            Logger.out.debug(e.getMessage());
+            fail("Unexpected Exception occured");
+        }
+
+        try
+        {
+            Map map = EntityManager.getInstance().getRecordById(null,
+                    new Long(1));
+            fail("Exception should have be thrown since entity is not saved");
+        }
+        catch (DynamicExtensionsSystemException e)
+        {
+            assertTrue(true);
+        }
+        catch (DynamicExtensionsApplicationException e)
+        {
+            //TODO Auto-generated catch block
+            Logger.out.debug(e.getMessage());
+        }
+
+        try
+        {
+            entity = (Entity) entityManagerInterface.persistEntity(entity);
+
+            Map map = EntityManager.getInstance().getRecordById(entity, null);
+            fail("Exception should have be thrown since entity is not saved");
+        }
+        catch (DynamicExtensionsSystemException e)
+        {
+            assertTrue(true);
+        }
+        catch (DynamicExtensionsApplicationException e)
+        {
+            //TODO Auto-generated catch block
+            Logger.out.debug(e.getMessage());
+        }
+
+    }
+
+    /**
+     * 
+     */
+
+    public void testCreateContainer()
+    {
+        try
+        {
+            Container container = (Container) new MockEntityManager()
+                    .getContainer("abc");
+            EntityManager.getInstance().persistContainer(container);
+            Collection list = EntityManager.getInstance().getAllContainers();
+            assertNotNull(list);
+            Iterator iter = list.iterator();
+            boolean flag = false;
+            while (iter.hasNext())
+            {
+                Container cont = (Container) iter.next();
+                if (cont.getId().equals(container.getId()))
+                {
+                    flag = true;
+                    break;
+                }
+            }
+            assertTrue(flag);
+        }
+        catch (Exception e)
+        {
+            //TODO Auto-generated catch block
+            Logger.out.debug(e.getMessage());
+            fail("Exception occured");
+        }
+
+    }
+
+    /**
+     * 
+     */
+
+    public void testCreateContainerForContainerWithoutEntity()
+    {
+        try
+        {
+            Container container = new Container();
+            EntityManager.getInstance().persistContainer(container);
+            Collection list = EntityManager.getInstance().getAllContainers();
+            assertNotNull(list);
+            Iterator iter = list.iterator();
+            boolean flag = false;
+            while (iter.hasNext())
+            {
+                Container cont = (Container) iter.next();
+                if (cont.getId().equals(container.getId()))
+                {
+                    flag = true;
+                    break;
+                }
+            }
+            assertTrue(flag);
+        }
+        catch (Exception e)
+        {
+            // //TODO Auto-generated catch block
+            Logger.out.debug(e.getMessage());
+            fail("Exception occured");
+        }
+    }
+
+    /**
+     * 
+     */
+
+    public void testEditEntityForNewAddedAttribute()
+    {
+        try
+        {
+            Entity entity = (Entity) new MockEntityManager().initializeEntity();
+            entity = (Entity) EntityManager.getInstance().persistEntity(entity);
+            AttributeInterface attr = new MockEntityManager()
+                    .initializeStringAttribute("na", "ab");
+            attr.setEntity(entity);
+            entity.addAbstractAttribute(attr);
+            entity = (Entity) EntityManager.getInstance().persistEntity(entity);
+            //   Checking whether metadata information is saved properly or not.
+            String tableName = entity.getTableProperties().getName();
+
+        }
+        catch (Exception e)
+        {
+            //     //TODO Auto-generated catch block
+            Logger.out.debug(e.getMessage());
+            fail("Exception occured");
+        }
+
+    }
+
+    /**
+     * 
+     */
+
+    public void testEditEntityForModifiedIsNullableAttribute()
+    {
+        try
+        {
+            Entity entity = (Entity) new MockEntityManager().initializeEntity();
+            AttributeInterface attr = new MockEntityManager()
+                    .initializeStringAttribute("na", "ab");
+            attr.setEntity(entity);
+            entity.addAbstractAttribute(attr);
+            entity = (Entity) EntityManager.getInstance().persistEntity(entity);
+            attr = (AttributeInterface) entity.getAttributeByIdentifier(attr
+                    .getId());
+            attr.setIsNullable(new Boolean(false));
+            entity = (Entity) EntityManager.getInstance().persistEntity(entity);
+            Attribute savedAttribute = (Attribute) entity
+                    .getAttributeByIdentifier(attr.getId());
+            assertFalse(savedAttribute.getIsNullable());
+            //   Checking whether metadata information is saved properly or not.
+            String tableName = entity.getTableProperties().getName();
+            //   //TODO Check table query
+        }
+        catch (Exception e)
+        {
+            // //TODO Auto-generated catch block
+            Logger.out.debug(e.getMessage());
+            fail("Exception occured");
+        }
+
+    }
+
+   
+
 	/**
 	 * This method tests for creating a entity with file attribute.
 	 */
@@ -1912,4 +1837,84 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		}
 	}
 
+	 /**
+     * 
+     *
+     */
+
+    public void testCreateEntityForRollbackQuery()
+    {
+        Entity entity = null;
+        try
+        {
+            entity = (Entity) new MockEntityManager().initializeEntity();
+            TableProperties tableProperties = new TableProperties();
+            tableProperties.setName("Created_table");
+            entity.setTableProperties(tableProperties);
+            String query = "create table Created_table (id integer)";
+            executeQueryDDL(query);
+            EntityManager.getInstance().persistEntity(entity);
+            fail("Exception should have occured but did not");
+        }
+        catch (DynamicExtensionsSystemException e)
+        {
+            Logger.out.info("Exception because of wrong table name.");
+            Logger.out.info(e.getMessage());
+        }
+        catch (Exception e)
+        {
+            //TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        finally
+        {
+            executeQueryDDL("drop table Created_table");
+            try
+            {
+                Entity newEntity = (Entity) EntityManager.getInstance()
+                        .getEntityByIdentifier(entity.getId().toString());
+                fail();
+
+            }
+            catch (DynamicExtensionsApplicationException e)
+            {
+                Logger.out.info("Entity object not found in the database ....");
+            }
+            catch (Exception e1)
+            {
+                e1.printStackTrace();
+            }
+
+        }
+
+    }
+    
+    /**
+     * 
+     *
+     */
+
+    public void testCreateEntityForQueryException()
+    {
+        try
+        {
+            Entity entity = (Entity) new MockEntityManager().initializeEntity();
+            TableProperties tableProperties = new TableProperties();
+            tableProperties.setName("!##$$%");
+            entity.setTableProperties(tableProperties);
+            entity = (Entity) EntityManager.getInstance().persistEntity(entity);
+            fail("Exception should have occured but did not");
+        }
+        catch (DynamicExtensionsSystemException e)
+        {
+            Logger.out.info("Exception because of wrong table name.");
+            Logger.out.info(e.getMessage());
+        }
+        catch (Exception e)
+        {
+            //TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
 }

@@ -646,8 +646,8 @@ class DynamicExtensionBaseQueryBuilder
 	{
 		StringBuffer query = new StringBuffer();
 		query.append(ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + ADD_KEYWORD + WHITESPACE
-				+ OPENING_BRACKET + WHITESPACE);
-		query.append(columnName + WHITESPACE + dataType + WHITESPACE + CLOSING_BRACKET);
+				);
+		query.append(columnName + WHITESPACE + dataType + WHITESPACE );
 		String rollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + DROP_KEYWORD
 				+ WHITESPACE + COLUMN_KEYWORD + WHITESPACE + columnName;
 

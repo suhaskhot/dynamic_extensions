@@ -88,10 +88,7 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	/**
 	 * 
 	 */
-	List displayChoiceList;
-	/**
-	 * 
-	 */
+	
 	String displayChoice;
 	/**
 	 *  number of decimal places
@@ -288,6 +285,26 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	 * display as url
 	 */
 	protected String attributeDisplayAsURL;
+	/**
+	 * type of form selected for lookup
+	 */
+	protected String formTypeForLookup;
+	/**
+	 * Public domain ID for CDE
+	 */
+	protected String publicDomainId;
+	
+	/**
+	 * List of group names for lookup
+	 */
+	protected List groupNames;
+	//Form names
+	protected List formNames;
+	/**
+	 * Selected group name
+	 */
+	protected String groupName;
+	protected String formName;
 	/**
 	 * 
 	 */
@@ -548,22 +565,6 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	public void setAttributeIdentifier(String attributeIdentifier)
 	{
 		this.attributeIdentifier = attributeIdentifier;
-	}
-
-	/**
-	 * @return Returns the displayChoiceList.
-	 */
-	public List getDisplayChoiceList()
-	{
-		return displayChoiceList;
-	}
-
-	/**
-	 * @param displayChoiceList The displayChoiceList to set.
-	 */
-	public void setDisplayChoiceList(List displayChoiceList)
-	{
-		this.displayChoiceList = displayChoiceList;
 	}
 
 	/**
@@ -1586,5 +1587,65 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	public void setFileFormats(String[] fileFormats)
 	{
 		this.fileFormats = fileFormats;
+	}
+
+	public String getFormTypeForLookup()
+	{
+		return this.formTypeForLookup;
+	}
+
+	public void setFormTypeForLookup(String formTypeForLookup)
+	{
+		this.formTypeForLookup = formTypeForLookup;
+	}
+
+	public String getPublicDomainId()
+	{
+		return this.publicDomainId;
+	}
+
+	public void setPublicDomainId(String publicDomainId)
+	{
+		this.publicDomainId = publicDomainId;
+	}
+
+	public List getGroupNames()
+	{
+		return this.groupNames;
+	}
+
+	public void setGroupNames(List groupNames)
+	{
+		this.groupNames = groupNames;
+	}
+
+	public String getGroupName()
+	{
+		return this.groupName;
+	}
+
+	public void setGroupName(String groupName)
+	{
+		this.groupName = groupName;
+	}
+
+	public List getFormNames()
+	{
+		return this.formNames;
+	}
+
+	public void setFormNames(List formNames)
+	{
+		this.formNames = formNames;
+	}
+
+	public String getFormName()
+	{
+		return this.formName;
+	}
+
+	public void setFormName(String formName)
+	{
+		this.formName = formName;
 	}
 }

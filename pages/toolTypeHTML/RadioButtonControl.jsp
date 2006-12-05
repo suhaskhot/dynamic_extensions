@@ -4,10 +4,6 @@
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
 
 <%@page import="edu.common.dynamicextensions.processor.ProcessorConstants"%>
-<%@page import="edu.wustl.common.beans.NameValueBean"%>
-
-<c:set var="displayChoiceList" value="${controlsForm.displayChoiceList}"/>
-<jsp:useBean id="displayChoiceList" type="java.util.List"/>
 
 <table summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
 	<tr>

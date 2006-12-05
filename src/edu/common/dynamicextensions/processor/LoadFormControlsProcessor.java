@@ -2,10 +2,8 @@
 package edu.common.dynamicextensions.processor;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -14,7 +12,6 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
-import edu.common.dynamicextensions.ui.webui.util.ControlInformationObject;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.beans.NameValueBean;
 
@@ -240,10 +237,10 @@ public class LoadFormControlsProcessor
 	private void initializeOptionButtonControlDefaultValues(ControlsForm controlsForm)
 	{
 		//List of display choices
-		if (controlsForm.getDisplayChoiceList() == null)
+		/*if (controlsForm.getOptionSpecificationMethods() == null)
 		{
-			controlsForm.setDisplayChoiceList(getDisplayChoiceList());
-		}
+			controlsForm.setOptionSpecificationMethods(getOptionSpecificationMethods());
+		}*/
 		//Set default display choice 
 		if (controlsForm.getDisplayChoice() == null)
 		{
@@ -284,11 +281,12 @@ public class LoadFormControlsProcessor
 	 */
 	private void initializeComboboxControlDefaultValues(ControlsForm controlsForm)
 	{
-		//List of display choices
-		if (controlsForm.getDisplayChoiceList() == null)
+		/*//List of display choices
+		if (controlsForm.getOptionSpecificationMethods() == null)
 		{
-			controlsForm.setDisplayChoiceList(getDisplayChoiceList());
-		}
+			controlsForm.setOptionSpecificationMethods(getOptionSpecificationMethods());
+		}*/
+		
 		//Set default display choice
 		if (controlsForm.getDisplayChoice() == null)
 		{
@@ -299,6 +297,26 @@ public class LoadFormControlsProcessor
 		{
 			controlsForm.setAttributeMultiSelect(ProcessorConstants.DEFAULT_LIST_TYPE);
 		}
+		if (controlsForm.getFormTypeForLookup() == null)
+		{
+			controlsForm.setFormTypeForLookup(ProcessorConstants.DEFAULT_LOOKUP_TYPE);
+		}
+		controlsForm.setGroupNames(getGroupNamesList());
+		controlsForm.setFormNames(new ArrayList<String>());
+	}
+
+	/**
+	 * @return
+	 */
+	private List getGroupNamesList()
+	{
+		ArrayList<String> groupNamesList = new ArrayList<String>();
+		groupNamesList.add("Group1");
+		groupNamesList.add("Group2");
+		groupNamesList.add("Group3");
+		groupNamesList.add("Group4");
+		groupNamesList.add("Group5");
+		return groupNamesList;
 	}
 
 	/**
@@ -346,16 +364,19 @@ public class LoadFormControlsProcessor
 	 * 
 	 * @return List DisplayChoiceList
 	 */
-	private List getDisplayChoiceList()
+	private List getOptionSpecificationMethods()
 	{
-		List<NameValueBean> dataTypeList = new ArrayList<NameValueBean>();
-		NameValueBean nameValueBean1 = new NameValueBean("UserDefined", "UserDefined");
-		dataTypeList.add(nameValueBean1);
-		/*
-		 NameValueBean nameValueBean2 = new NameValueBean("CADSR","CADSR");
-		 dataTypeList.add(nameValueBean2);*/
+		List<NameValueBean> optionSpecificationMethods = new ArrayList<NameValueBean>();
+		NameValueBean nameValueBean1 = new NameValueBean("UserDefined", "User Defined");
+		optionSpecificationMethods.add(nameValueBean1);
+		
+		 NameValueBean nameValueBean2 = new NameValueBean("CADSR","CDE");
+		 optionSpecificationMethods.add(nameValueBean2);
+		 
+		 NameValueBean nameValueBean3 = new NameValueBean("Lookup","Look Up");
+		 optionSpecificationMethods.add(nameValueBean3);
 
-		return dataTypeList;
+		return optionSpecificationMethods;
 	}
 
 	

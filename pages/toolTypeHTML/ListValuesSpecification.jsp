@@ -3,7 +3,18 @@
 <%@ taglib uri="/WEB-INF/dynamicExtensions.tld" prefix="dynamicExtensions" %>
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
 <%@page import="edu.common.dynamicextensions.ui.webui.util.OptionValueObject"%>
+<%@page import="java.util.List"%>
 
+<c:set var="groupNamesList" value="${controlsForm.groupNames}"/>
+<jsp:useBean id="groupNamesList" type="java.util.List"/>
+
+<c:set var="formNamesList" value="${controlsForm.formNames}"/>
+<jsp:useBean id="formNamesList" type="java.util.List"/>
+
+<script language="JavaScript" type="text/javascript" src="jss/ajax.js"></script>
+
+<!--User defined values specification-->
+<%@page import="edu.common.dynamicextensions.processor.ProcessorConstants"%>
 <div id="UserDefinedValues" style="display:none">
 	<input type="hidden" value="1" id ="choiceListCounter"  name="choiceListCounter" >
 	<table summary="" valign="top" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
@@ -104,12 +115,82 @@
 	</tr>
 	</table>
 </div>
-
-	<!--<div id="CADSRValues" style="display:none">
-			<table summary="" cellpadding="1" cellspacing="0" border="1" align = 'center' width='100%'>
+<!--CDE Spcfn-->
+	<div id="CDEValues" style="display:none">
+			<table summary="" valign="top" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
 				<tr>
-					<td class="formRequiredLabel"> Public Domain Id</td>
-					<td class="formField"><input type="text" name="publicDomainId"></td>
+					<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
+					<td class="formRequiredLabelWithoutBorder" width="25%">
+						<bean:message  key="eav.att.CDEPublicDomainId" /> :
+					</td>
+					<td class="formFieldWithoutBorder">
+						<html:text styleId="publicDomainId"  property="publicDomainId" styleClass="formDateSized" > </html:text>
+					</td>
 				</tr>
 		</table>
-	</div>-->
+	</div>
+<!--Lookup specification-->
+	<div id="LookupValues" style="display:none">
+		<table summary="" valign="top" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
+			 <tr valign="top">
+				<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
+				<td class="formRequiredLabelWithoutBorder" width="25%">
+					<bean:message  key="eav.att.LookupFormTypeSelection" /> :
+				</td>
+				<td  class="formFieldWithoutBorder">
+					<html:radio styleId="formTypeForLookup"  property="formTypeForLookup" value="<%=ProcessorConstants.LOOKUP_USER_FORMS %>" >
+						<bean:message  key="eav.att.LookupUserForms" />
+					</html:radio>
+					<html:radio styleId="formTypeForLookup" property="formTypeForLookup" value="<%=ProcessorConstants.LOOKUP_SYSTEM_FORMS %>" >
+						<bean:message  key="eav.att.LookupSytsemForms" />
+					</html:radio>
+				</td>
+			</tr>
+
+			<tr valign="top">
+				<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
+				<td class="formRequiredLabelWithoutBorder" width="25%">
+					<bean:message  key="eav.att.Group" /> :
+				</td>
+				<td >
+					<html:select styleClass="formFieldVerySmallSized" property="groupName" styleId="groupName" onchange="groupChanged()">
+						<c:forEach items="${groupNamesList}" var="grpName">
+						<jsp:useBean id="grpName" type="java.lang.String" />
+							<html:option value='<%=grpName%>'></html:option>
+						</c:forEach>
+					</html:select>
+				</td>
+			</tr>
+			<tr valign="top">
+				<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
+				<td class="formRequiredLabelWithoutBorder" width="25%">
+					<bean:message  key="eav.att.Form" /> :
+				</td>
+				<td  >
+					<html:select styleClass="formFieldVerySmallSized" property="formName" styleId="formName" onchange="formChanged()">
+
+					</html:select>
+				</td>
+			</tr>
+			<tr valign="top">
+				<td colspan="3">
+					<table valign="top" align = 'center' width='100%'>
+						<tr>
+							<td  width="45%" >
+								<select class="formFieldVerySmallSized" multiple size="3" name="formAttributeList">
+								</select>
+							</td>
+							<td  width="10%" valign="middle" ALIGN="center"  >
+								<input type="button" name="addFormAttribute" value=">>" onclick="selectFormAttribute()" />
+								<input type="button" name="removeFormAttribute" value="<<" onclick="unSelectFormAttribute()" />
+							</td>
+							<td  width="45%" >
+								<select multiple size="3" name="selectedFormAttributeList" class="formFieldVerySmallSized">
+								</select>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>

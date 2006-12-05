@@ -1,6 +1,9 @@
 
 package edu.common.dynamicextensions.ui.webui.action;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -36,15 +39,29 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 	 * @param  request HttpServletRequest request
 	 * @param response HttpServletResponse response
 	 * @return ActionForward forward to next action
+	 * @throws IOException 
 	 * @throws DynamicExtensionsSystemException DynamicExtensionsSystemException
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws IOException
 	{
 		try
 		{
 			ControlsForm actionForm = (ControlsForm) form;
 			ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 
+			//Code for AJAX
+			String operation = request.getParameter("operation");
+			if((operation!=null)&&(operation.trim().equals("changeGroup")))
+			{
+				changeGroup(request,response,actionForm);
+				return null;
+			}
+			if((operation!=null)&&(operation.trim().equals("changeForm")))
+			{
+				changeForm(request,response,actionForm);
+				return null;
+			}
+				
 			LoadFormControlsProcessor loadFormControlsProcessor = LoadFormControlsProcessor.getInstance();
 			loadFormControlsProcessor.loadFormControls(actionForm, containerInterface);
 
@@ -61,6 +78,106 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 		return mapping.findForward(Constants.SHOW_BUILD_FORM_JSP);
 
 	}
+
+
+	/**
+	 * @param request
+	 * @param response
+	 * @param actionForm
+	 * @throws IOException 
+	 */
+	private void changeForm(HttpServletRequest request, HttpServletResponse response, ControlsForm actionForm) throws IOException
+	{
+		List formAttributes = getAttributesForForm(request.getParameter("frmName"));
+		String xmlParentNode = "formAttributes";
+		String xmlSubNode = "form-attribute";
+		String responseXML = getResponseXMLString(xmlParentNode,xmlSubNode,formAttributes);
+		sendResponse(responseXML,response);
+	}
+
+
+	/**
+	 * @param parameter
+	 * @return
+	 */
+	private List getAttributesForForm(String formName)
+	{
+		ArrayList<String> formAttributesList = new ArrayList<String>();
+		for(int i=0;i<5;i++)
+		{
+			formAttributesList.add(formName + "-Attr" + i);
+		}
+		return formAttributesList;
+	}
+
+
+	/**
+	 * @param request
+	 * @param actionForm
+	 * @throws IOException 
+	 */
+	private void changeGroup(HttpServletRequest request, HttpServletResponse response, ControlsForm actionForm) throws IOException
+	{
+		List<String> formNames = getFormNamesForGroup(request.getParameter("grpName"));
+		String xmlParentNode = "forms";
+		String xmlSubNode = "form-name";
+		String responseXML = getResponseXMLString(xmlParentNode,xmlSubNode,formNames);
+		sendResponse(responseXML,response);
+		actionForm.setFormNames(formNames);
+	}
+
+
+	/**
+	 * @throws IOException 
+	 * 
+	 */
+	private void sendResponse(String responseXML,HttpServletResponse response) throws IOException
+	{
+		PrintWriter out = response.getWriter();
+		response.setContentType("text/xml");
+		out.write(responseXML);
+	}
+
+
+	/**
+	 * @param xmlParentNode
+	 * @param xmlSubNode
+	 * @param listValues
+	 * @return
+	 */
+	private String getResponseXMLString(String xmlParentNode, String xmlSubNode, List<String> listValues)
+	{
+		StringBuffer responseXML = new StringBuffer();
+		if((xmlParentNode!=null)&&(xmlSubNode!=null)&&(listValues!=null))
+		{
+			responseXML.append("<" + xmlParentNode + ">");
+			int noOfValues = listValues.size();
+			for(int i=0;i<noOfValues;i++)
+			{
+				responseXML.append("<" + xmlSubNode + ">");
+				responseXML.append(listValues.get(i));
+				responseXML.append("</" + xmlSubNode + ">");
+			}
+			responseXML.append("</" + xmlParentNode + ">");
+		}
+		return responseXML.toString();
+	}
+
+
+	/**
+	 * @param groupName
+	 * @return
+	 */
+	private List<String> getFormNamesForGroup(String groupName)
+	{
+		ArrayList<String> groupnames = new ArrayList<String>();
+		for(int i=0;i<5;i++)
+		{
+			groupnames.add(groupName + "-frm" + i);
+		}
+		return groupnames;
+	}
+
 
 	/**
 	 * Initialises MeasurementUnits
@@ -114,4 +231,5 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 		}
 		return false;
 	}
+	
 }

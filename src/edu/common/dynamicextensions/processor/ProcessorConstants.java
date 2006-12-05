@@ -73,6 +73,11 @@ public class ProcessorConstants
     public static final String 	DATE_VALUE_TODAY = "Today";
     public static final String DATE_VALUE_SELECT = "Select";
     
+    //Lookup form types
+    public static final String LOOKUP_SYSTEM_FORMS = "SystemForms";
+    public static final String LOOKUP_USER_FORMS = "UserForms";
+    
+    
     //Group Constants
     public static final String GROUP_CREATEAS_NEW ="NewGroup";
     public static final String GROUP_CREATEFROM_EXISTING ="ExistingGroup";
@@ -112,4 +117,6 @@ public class ProcessorConstants
     public static final String DEFAULT_CHECKBOX_VALUE = "checked";
     //Default value for group create as
     public static final String DEFAULT_GROUP_CREATEAS=  GROUP_CREATEAS_NEW ;
+    //Default lookup type 
+    public static final String DEFAULT_LOOKUP_TYPE = LOOKUP_USER_FORMS;
 }

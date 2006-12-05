@@ -9,8 +9,6 @@
 <c:set var="dataTypeList" value="${controlsForm.dataTypeList}"/>
 <jsp:useBean id="dataTypeList" type="java.util.List"/>
 
-<c:set var="displayChoiceList" value="${controlsForm.displayChoiceList}"/>
-<jsp:useBean id="displayChoiceList" type="java.util.List"/>
 
 <c:set var="listType" value="${controlsForm.attributeMultiSelect}"/>
 <jsp:useBean id="listType" type="java.lang.String"/>
@@ -23,7 +21,7 @@
 				<tr>
 		 			<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
 					<td class="formRequiredLabelWithoutBorder" width="25%">
-						<bean:message key="eav.att.ListBoxType"/> : 
+						<bean:message key="eav.att.ListBoxType"/> :
 					</td>
 					<td class="formFieldWithoutBorder">
 						<html:radio  property="attributeMultiSelect" value="<%=ProcessorConstants.LIST_TYPE_SINGLE_SELECT%>" onclick="listTypeChanged(this)" >
@@ -37,7 +35,7 @@
 				<tr id="rowForDisplayHeight">
 					<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
 					<td class="formRequiredLabelWithoutBorder">
-						<bean:message key="eav.att.ListBoxDisplayLines"/> : 
+						<bean:message key="eav.att.ListBoxDisplayLines"/> :
 					</td>
 					<td class="formFieldWithoutBorder">
 						<html:text styleClass="formFieldSized5" maxlength="100" size="60" styleId = 'attributeNoOfRows'  property="attributeNoOfRows" />
@@ -46,16 +44,16 @@
 				<tr>
 					<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
 					<td class="formRequiredLabelWithoutBorder" width="25%">
-						<bean:message key="eav.att.ListBoxOptionTypes"></bean:message> : 
+						<bean:message key="eav.att.ListBoxOptionTypes"></bean:message> :
 					</td>
 					<td class="formFieldWithoutBorder">
-						<html:radio styleId="displayChoice" property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED%>" >
+						<html:radio styleId="displayChoice" property="displayChoice" onclick="changeSourceForValues(this)"  value="<%=ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED%>" >
 							<bean:message key="eav.att.OptionsUserDefined"/>
 						</html:radio>
-						<html:radio styleId="displayChoice"  property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_CDE%>" disabled="true">
+						<html:radio styleId="displayChoice"  property="displayChoice" onclick="changeSourceForValues(this)"  value="<%=ProcessorConstants.DISPLAY_CHOICE_CDE%>" >
 							<bean:message key="eav.att.OptionsCDE"/>
 						</html:radio>
-						<html:radio styleId="displayChoice" property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_LOOKUP%>" disabled="true">
+						<html:radio styleId="displayChoice" property="displayChoice" onclick="changeSourceForValues(this)"  value="<%=ProcessorConstants.DISPLAY_CHOICE_LOOKUP%>" >
 							<bean:message key="eav.att.OptionsLookup"/>
 						</html:radio>
 					</td>

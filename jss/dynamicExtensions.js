@@ -224,6 +224,10 @@ function initBuildForm()
 	{
 		changeDateType(dateValueType);
 	}
+	//List of form names for selected group
+	groupChanged();
+	//List of attributes for selected form
+	formChanged();
 }
 function changeChoiceListTableDisplay()
 {
@@ -257,6 +261,7 @@ function initializeChoiceListCounter()
 }
 function changeSourceForValues(sourceControl)
 {
+
 	if(sourceControl!=null)
 	{
 		var sourceForValues = sourceControl.value;
@@ -1000,4 +1005,131 @@ function changeSelection(str1,seqno)
 		document.getElementById(selId).style.fontWeight='normal';
 	}
 	var controlsForm=document.getElementById('controlsForm');
+}
+
+/***  code using ajax :gets the list of form names for selected group without refreshing the whole page  ***/
+function groupChanged()
+{
+	var request = newXMLHTTPReq();
+	var handlerFunction = getReadyStateHandler(request,groupChangedResponse,false);
+
+	//no brackets after the function name and no parameters are passed because we are assigning a reference to the function and not actually calling it
+	request.onreadystatechange = handlerFunction;
+	var action = "/dynamicExtensions/SelectControlAction.do";
+
+	//Open connection to servlet
+	request.open("POST","LoadFormControlsAction.do",true);
+	request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+	//send data to ActionServlet
+	var grpName  = document.getElementById('groupName').value;
+	request.send("&operation=changeGroup&grpName="+grpName);
+}
+
+function groupChangedResponse(formNameListXML)
+{
+	if(formNameListXML!=null)
+	{
+		var htmlFormNameList = document.getElementById("formName");
+		if(htmlFormNameList!=null)
+		{
+			htmlFormNameList.options.length = 0;
+
+			var formnames  =  formNameListXML.getElementsByTagName('form-name');
+			if(formnames !=null)
+			{
+				for (i=0;i<formnames.length;i++)
+				{
+					if(formnames[i].firstChild!=null)
+					{
+						optionName = formnames[i].firstChild.nodeValue;
+						if((optionName!=null)&&(optionName!=""))
+						{
+							var oOption = document.createElement("OPTION");
+							htmlFormNameList.options.add(oOption);
+
+							oOption.innerText = optionName;
+							oOption.value = optionName;
+						}
+					}
+				}
+			}
+		}
+	formChanged();	
+	}
+}
+
+//When form changed load attributes for form
+function formChanged()
+{
+	var request = newXMLHTTPReq();
+	var handlerFunction = getReadyStateHandler(request,formChangedResponse,false);
+
+	//no brackets after the function name and no parameters are passed because we are assigning a reference to the function and not actually calling it
+	request.onreadystatechange = handlerFunction;
+	var action = "/dynamicExtensions/SelectControlAction.do";
+
+	//Open connection to servlet
+	request.open("POST","LoadFormControlsAction.do",true);
+	request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+	//send data to ActionServlet
+	var frmName  = document.getElementById('formName').value;
+	request.send("&operation=changeForm&frmName="+frmName);
+}
+function formChangedResponse(formAttributesListXML)
+{
+	if(formAttributesListXML!=null)
+	{
+		var htmlFormAttributeList = document.getElementById("formAttributeList");
+		if(htmlFormAttributeList!=null)
+		{
+			htmlFormAttributeList.options.length = 0;
+
+			var formAttributes  =  formAttributesListXML.getElementsByTagName('form-attribute');
+			if(formAttributes !=null)
+			{
+				for (i=0;i<formAttributes.length;i++)
+				{
+					if(formAttributes[i].firstChild!=null)
+					{
+						optionName = formAttributes[i].firstChild.nodeValue;
+						if((optionName!=null)&&(optionName!=""))
+						{
+							var oOption = document.createElement("OPTION");
+							htmlFormAttributeList.options.add(oOption);
+
+							oOption.innerText = optionName;
+							oOption.value = optionName;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+	/*** code using ajax  ***/
+function selectFormAttribute()
+{
+	var fromListBox = document.getElementById('formAttributeList');
+	var toListBox = document.getElementById('selectedFormAttributeList');
+	transferElementsFromList(fromListBox,toListBox);
+}	
+
+function unSelectFormAttribute()
+{
+	var toListBox = document.getElementById('formAttributeList');
+	var fromListBox = document.getElementById('selectedFormAttributeList');
+	transferElementsFromList(fromListBox,toListBox);
+}
+function transferElementsFromList(fromListBox,toListBox)
+{
+	if((fromListBox!=null)&&(toListBox!=null))
+	{
+		var selectedItemIndex = fromListBox.selectedIndex;
+		if(-1 == selectedItemIndex)
+		{
+			return;
+		}
+		toListBox.options[toListBox.length] = new Option(fromListBox.options[selectedItemIndex].value);
+		toListBox.options[toListBox.length - 1].value = fromListBox.options[selectedItemIndex].value;
+	}
 }

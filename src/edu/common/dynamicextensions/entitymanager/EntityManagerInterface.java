@@ -54,7 +54,7 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	EntityGroupInterface createEntityGroup(EntityGroupInterface entityGroupInterface) throws DynamicExtensionsSystemException,
+	EntityGroupInterface persistEntityGroup(EntityGroupInterface entityGroupInterface) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException;
 	/**
 	 * This method returns the EntityGroupInterface given the short name for the 

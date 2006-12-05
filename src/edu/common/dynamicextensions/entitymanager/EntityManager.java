@@ -178,27 +178,17 @@ public class EntityManager
 			//Committing the changes done in the hibernate session to the database.
 			hibernateDAO.commit();
 		}
-		catch (DAOException e)
-		{
-			logDebug("persistEntity", DynamicExtensionsUtility.getStackTrace(e));
-			throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
-		}
-		catch (BaseDynamicExtensionsException e)
-		{
-			//Queries for data table creation and modification are fired in the method saveOrUpdateEntity. So if there
+		catch (Exception e) {
+//			Queries for data table creation and modification are fired in the method saveOrUpdateEntity. So if there
 			//is any exception while storing the metadata , we need to roll back the queries that were fired. So
 			//calling the following method to do that.
 			rollbackQueries(stack, entity, e);
-
-			if (e instanceof DynamicExtensionsApplicationException)
-			{
+			if (e instanceof DynamicExtensionsApplicationException) {
 				throw (DynamicExtensionsApplicationException) e;
+			} else {
+			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 			}
-
-			if (e instanceof DynamicExtensionsSystemException)
-			{
-				throw (DynamicExtensionsSystemException) e;
-			}
+			
 		}
 		finally
 		{
@@ -227,7 +217,7 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public EntityGroupInterface createEntityGroup(EntityGroupInterface entityGroupInterface)
+	public EntityGroupInterface persistEntityGroup(EntityGroupInterface entityGroupInterface)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		logDebug("createEntityGroup", "Entering method");
@@ -236,7 +226,11 @@ public class EntityManager
 		//This includes setting the created date and updated date etc.
 		preSaveProcessEntityGroup(entityGroup);
 		//Following method actually calls the dao's insert or update method.
-		entityGroup = saveOrUpdateEntityGroup(entityGroupInterface, true);
+		boolean isEntityGroupNew = true;
+		if (entityGroupInterface.getId() != null) {
+			isEntityGroupNew = false;
+		}
+		entityGroup = saveOrUpdateEntityGroup(entityGroupInterface, isEntityGroupNew);
 		logDebug("createEntity", "Exiting method");
 		return entityGroupInterface;
 	}
@@ -829,10 +823,16 @@ public class EntityManager
 	 */
 	private void LogFatalError(Exception e, Entity entity)
 	{
+		String table = "";
+		String name = "";
+		if (entity != null) {
+			entity.getTableProperties().getName();
+			name = entity.getName();
+		}
 		Logger.out
 				.error("***Fatal Error.. Incosistent data table and metadata information for the entity -"
-						+ entity.getName());
-		Logger.out.error("Please check the table -" + entity.getTableProperties().getName());
+						+ name);
+		Logger.out.error("Please check the table -" + table);
 		Logger.out.error("The cause of the exception is - " + e.getMessage());
 		Logger.out.error("The detailed log is : ");
 		e.printStackTrace();
@@ -1055,12 +1055,30 @@ public class EntityManager
 		{
 			//In case of exception execute roll back queries to restore the database state.
 			rollbackQueries(rollbackQueryStack, entity, e);
+			try
+			{
+				hibernateDAO.rollback();
+			}
+			catch (DAOException e1)
+			{
+				throw new DynamicExtensionsSystemException(
+				"Exception occured while rolling back a session to save the container.");
+			}			
 			throw new DynamicExtensionsSystemException(
 					"Exception occured while opening a session to save the container.");
 		}
 		catch (UserNotAuthorizedException e)
 		{
 			rollbackQueries(rollbackQueryStack, entity, e);
+			try
+			{
+				hibernateDAO.rollback();
+			}
+			catch (DAOException e1)
+			{
+				throw new DynamicExtensionsSystemException(
+				"Exception occured while rolling back a session to save the container.");
+			}			
 		}
 		finally
 		{
@@ -1778,7 +1796,8 @@ public class EntityManager
 		EntityGroup entityGroup = (EntityGroup) entityGroupInterface;
 		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
 				Constants.HIBERNATE_DAO);
-		Stack stack = null;
+		Stack stack = new Stack();
+		EntityInterface entityInterface = null;
 		try
 		{
 			checkForDuplicateEntityGroupName(entityGroup);
@@ -1792,40 +1811,32 @@ public class EntityManager
 			{
 				Long id = entityGroup.getId();
 				hibernateDAO.openSession(null);
-				List entityGroupList = hibernateDAO.retrieve(EntityGroup.class.getName(),
-						Constants.ID, id);
-				EntityGroup databaseCopy = null;
-				if (entityGroupList != null && !entityGroupList.isEmpty())
-				{
-					databaseCopy = (EntityGroup) entityGroupList.get(0);
+				hibernateDAO.update(entityGroup, null, false, false, false);
+			}
+			Collection<EntityInterface> entityCollection = entityGroup.getEntityCollection();
+			if (entityCollection != null && !entityCollection.isEmpty()) {
+				for (EntityInterface entity: entityCollection) {
+					entityInterface = entity;
+					boolean isEntitySaved = false;
+					if(entityInterface.getId() != null) {
+						isEntitySaved = true;
+					}
+					saveOrUpdateEntity(entityInterface,hibernateDAO, stack,isEntitySaved);
 				}
-				hibernateDAO.closeSession();
-				hibernateDAO.openSession(null);
-				hibernateDAO.update(entityGroup, null, false, false, false);
-				hibernateDAO.update(entityGroup, null, false, false, false);
-
 			}
 			hibernateDAO.commit();
 		}
-		catch (UserNotAuthorizedException e)
-		{
-
-			throw new DynamicExtensionsApplicationException(
-					"User is not authorised to perform this action", e, DYEXTN_A_002);
-		}
-		catch (DAOException e)
-		{
-			try
-			{
-				hibernateDAO.rollback();
-
+		catch (Exception e) {
+//			Queries for data table creation and modification are fired in the method saveOrUpdateEntity. So if there
+			//is any exception while storing the metadata , we need to roll back the queries that were fired. So
+			//calling the following method to do that.
+			rollbackQueries(stack, (Entity) entityInterface, e);
+			if (e instanceof DynamicExtensionsApplicationException) {
+				throw (DynamicExtensionsApplicationException) e;
+			} else {
+			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 			}
-			catch (Exception e1)
-			{
-				throw new DynamicExtensionsSystemException(
-						"Exception occured while rolling back the session", e1, DYEXTN_S_001);
-			}
-			throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
+			
 		}
 		finally
 		{

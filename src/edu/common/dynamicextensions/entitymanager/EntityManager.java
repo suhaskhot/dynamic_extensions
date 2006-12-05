@@ -43,7 +43,6 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
-import edu.common.dynamicextensions.exception.BaseDynamicExtensionsException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
@@ -175,17 +174,21 @@ public class EntityManager
 			//Committing the changes done in the hibernate session to the database.
 			hibernateDAO.commit();
 		}
-		catch (Exception e) {
-//			Queries for data table creation and modification are fired in the method saveOrUpdateEntity. So if there
+		catch (Exception e)
+		{
+			//			Queries for data table creation and modification are fired in the method saveOrUpdateEntity. So if there
 			//is any exception while storing the metadata , we need to roll back the queries that were fired. So
 			//calling the following method to do that.
 			rollbackQueries(stack, entity, e);
-			if (e instanceof DynamicExtensionsApplicationException) {
+			if (e instanceof DynamicExtensionsApplicationException)
+			{
 				throw (DynamicExtensionsApplicationException) e;
-			} else {
-			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 			}
-			
+			else
+			{
+				throw new DynamicExtensionsSystemException(e.getMessage(), e);
+			}
+
 		}
 		finally
 		{
@@ -224,7 +227,8 @@ public class EntityManager
 		preSaveProcessEntityGroup(entityGroup);
 		//Following method actually calls the dao's insert or update method.
 		boolean isEntityGroupNew = true;
-		if (entityGroupInterface.getId() != null) {
+		if (entityGroupInterface.getId() != null)
+		{
 			isEntityGroupNew = false;
 		}
 		entityGroup = saveOrUpdateEntityGroup(entityGroupInterface, isEntityGroupNew);
@@ -685,7 +689,6 @@ public class EntityManager
 		return null;
 	}
 
-	
 	/**This method populates the constraint properties for the given association. Creation/population of 
 	 * constraint properties depend on Cardinalities of the source and target roles.
 	 * Folliowing are the possible cases.
@@ -822,7 +825,8 @@ public class EntityManager
 	{
 		String table = "";
 		String name = "";
-		if (entity != null) {
+		if (entity != null)
+		{
 			entity.getTableProperties().getName();
 			name = entity.getName();
 		}
@@ -1035,7 +1039,7 @@ public class EntityManager
 				saveOrUpdateEntity(entity, hibernateDAO, rollbackQueryStack, isentitySaved);
 
 			}
-			
+
 			preSaveProcessContainer(container); //preprocess
 			if (isContainerSaved)
 			{
@@ -1059,8 +1063,8 @@ public class EntityManager
 			catch (DAOException e1)
 			{
 				throw new DynamicExtensionsSystemException(
-				"Exception occured while rolling back a session to save the container.");
-			}			
+						"Exception occured while rolling back a session to save the container.");
+			}
 			throw new DynamicExtensionsSystemException(
 					"Exception occured while opening a session to save the container.");
 		}
@@ -1074,8 +1078,8 @@ public class EntityManager
 			catch (DAOException e1)
 			{
 				throw new DynamicExtensionsSystemException(
-				"Exception occured while rolling back a session to save the container.");
-			}			
+						"Exception occured while rolling back a session to save the container.");
+			}
 		}
 		finally
 		{
@@ -1115,9 +1119,9 @@ public class EntityManager
 			throws DynamicExtensionsApplicationException
 	{
 		validateEntityForSaving(entity);// chk if entity is vlaid or not.
-		
+
 		correctCardinalities(entity); // correct the cardinality if max cardinality  < min cardinality
-		
+
 		if (entity.getId() != null)
 		{
 			entity.setLastUpdated(new Date());
@@ -1149,7 +1153,7 @@ public class EntityManager
 			}
 		}
 	}
-	
+
 	/**
 	 * @param role
 	 * @throws DynamicExtensionsApplicationException 
@@ -1164,7 +1168,7 @@ public class EntityManager
 			role.setMinimumCardinality(role.getMaximumCardinality());
 			role.setMaximumCardinality(e);
 		}
-	 
+
 		if (role.getMaximumCardinality().equals(Cardinality.ZERO))
 		{
 			throw new DynamicExtensionsApplicationException("Cardinality constraint violated",
@@ -1211,14 +1215,15 @@ public class EntityManager
 					attributeRecords.add(fileRecord);
 					continue;
 				}
-                //	 For collection type attribute, populate CollectionAttributeRecordValue HO
+				//	 For collection type attribute, populate CollectionAttributeRecordValue HO
 				if (primitiveAttribute.getIsCollection())
 				{
 					AttributeRecord collectionRecord = populateCollectionAttributeRecord(null,
 							entity, primitiveAttribute, identifier, (List<String>) value);
 					attributeRecords.add(collectionRecord);
 				}
-				else // for other attribute, append to query
+				else
+				// for other attribute, append to query
 				{
 					columnNameString.append(" , ");
 					columnValuesString.append(" , ");
@@ -1334,7 +1339,7 @@ public class EntityManager
 					List<String> listOfValues = (List<String>) value;
 
 					if (!listOfValues.isEmpty())
-					{   //if some values are provided,set these values clearing previous ones.
+					{ //if some values are provided,set these values clearing previous ones.
 						collectionRecord = populateCollectionAttributeRecord(collectionRecord,
 								entity, primitiveAttribute, recordId, (List<String>) value);
 						collectionRecords.add(collectionRecord);
@@ -1349,7 +1354,7 @@ public class EntityManager
 				}
 				else if (primitiveAttribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
 				{
-                    //For file type attribute,FileAttributeRecordValue needs to be updated for that record.
+					//For file type attribute,FileAttributeRecordValue needs to be updated for that record.
 
 					FileAttributeRecordValue fileRecordValue = (FileAttributeRecordValue) value;
 					AttributeRecord fileRecord = getAttributeRecord(entity.getId(),
@@ -1567,8 +1572,6 @@ public class EntityManager
 		Entity entity = (Entity) entityInterface;//(Entity) DynamicExtensionsUtility.cloneObject(entityInterface);
 		List reverseQueryList = new LinkedList();
 		List queryList = null;
-		
- 	    
 
 		checkForDuplicateEntityName(entity);
 		Entity databaseCopy = null;
@@ -1665,12 +1668,12 @@ public class EntityManager
 			AttributeInterface attribute = (AttributeInterface) attriIterator.next();
 
 			if (attribute.getIsCollection())
-			{   // need to fetch AttributeRecord object for the multi select type attribute. 
+			{ // need to fetch AttributeRecord object for the multi select type attribute. 
 				collectionAttributes.add(attribute);
 			}
 			else if (attribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
 			{
-				 // need to fetch AttributeRecord object for the File type attribute.
+				// need to fetch AttributeRecord object for the File type attribute.
 				fileAttributes.add(attribute);
 			}
 			else
@@ -1727,7 +1730,7 @@ public class EntityManager
 			{
 				List<String> valueList = getCollectionAttributeRecordValues(entity.getId(),
 						attribute.getId(), recordId);
-                //put the value multi select attributes
+				//put the value multi select attributes
 				recordValues.put(attribute.getName(), valueList);
 			}
 			/*
@@ -1737,7 +1740,7 @@ public class EntityManager
 			{
 				FileAttributeRecordValue fileRecordValue = getFileAttributeRecordValue(entity
 						.getId(), attribute.getId(), recordId);
-                //put the value file attributes
+				//put the value file attributes
 				recordValues.put(attribute.getName(), fileRecordValue);
 			}
 
@@ -1813,29 +1816,36 @@ public class EntityManager
 				hibernateDAO.update(entityGroup, null, false, false, false);
 			}
 			Collection<EntityInterface> entityCollection = entityGroup.getEntityCollection();
-			if (entityCollection != null && !entityCollection.isEmpty()) {
-				for (EntityInterface entity: entityCollection) {
+			if (entityCollection != null && !entityCollection.isEmpty())
+			{
+				for (EntityInterface entity : entityCollection)
+				{
 					entityInterface = entity;
 					boolean isEntitySaved = false;
-					if(entityInterface.getId() != null) {
+					if (entityInterface.getId() != null)
+					{
 						isEntitySaved = true;
 					}
-					saveOrUpdateEntity(entityInterface,hibernateDAO, stack,isEntitySaved);
+					saveOrUpdateEntity(entityInterface, hibernateDAO, stack, isEntitySaved);
 				}
 			}
 			hibernateDAO.commit();
 		}
-		catch (Exception e) {
-//			Queries for data table creation and modification are fired in the method saveOrUpdateEntity. So if there
+		catch (Exception e)
+		{
+			//			Queries for data table creation and modification are fired in the method saveOrUpdateEntity. So if there
 			//is any exception while storing the metadata , we need to roll back the queries that were fired. So
 			//calling the following method to do that.
 			rollbackQueries(stack, (Entity) entityInterface, e);
-			if (e instanceof DynamicExtensionsApplicationException) {
+			if (e instanceof DynamicExtensionsApplicationException)
+			{
 				throw (DynamicExtensionsApplicationException) e;
-			} else {
-			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 			}
-			
+			else
+			{
+				throw new DynamicExtensionsSystemException(e.getMessage(), e);
+			}
+
 		}
 		finally
 		{
@@ -1886,7 +1896,7 @@ public class EntityManager
 		try
 		{
 			hibernateDAO.openSession(null);
-		    Query query = substitutionParameterForQuery(queryName, substitutionParameterMap);
+			Query query = substitutionParameterForQuery(queryName, substitutionParameterMap);
 			entityCollection = query.list();
 			hibernateDAO.commit();
 		}
@@ -1895,7 +1905,8 @@ public class EntityManager
 			try
 			{
 				hibernateDAO.rollback();
-				throw new DynamicExtensionsSystemException("Exception occured while executing hqk", e);
+				throw new DynamicExtensionsSystemException("Exception occured while executing hqk",
+						e);
 
 			}
 			catch (DAOException e1)
@@ -1964,11 +1975,11 @@ public class EntityManager
 	{
 		boolean isRecordDeleted = false;
 		Collection attributeCollection = entity.getAttributeCollection();
-
+		Collection associationCollection = entity.getAssociationCollection();
 		HibernateDAO hibernateDAO = null;
 		DAOFactory factory = DAOFactory.getInstance();
 		hibernateDAO = (HibernateDAO) factory.getDAO(Constants.HIBERNATE_DAO);
-
+		List associationRemoveQueryList = new ArrayList();
 		try
 		{
 
@@ -1989,14 +2000,33 @@ public class EntityManager
 					}
 				}
 			}
+			if (associationCollection != null && !associationCollection.isEmpty())
+			{
+				Iterator iterator = associationCollection.iterator();
+				while (iterator.hasNext())
+				{
+					Association association = (Association) iterator.next();
+					String associationRemoveQuery = QueryBuilderFactory.getQueryBuilder()
+							.getAssociationRemoveDataQuery(association, recordId);
+					associationRemoveQueryList.add(associationRemoveQuery);
+				}
+			}
 			Connection conn = DBUtil.getConnection();
 			StringBuffer query = new StringBuffer();
 			query.append(DELETE_KEYWORD + WHITESPACE + entity.getTableProperties().getName()
 					+ WHITESPACE + WHERE_KEYWORD + WHITESPACE + IDENTIFIER + WHITESPACE + EQUAL
 					+ WHITESPACE + recordId.toString());
-			logDebug("deleteRecord", "QUERY for delete record is : " + query.toString());
-			PreparedStatement statement = conn.prepareStatement(query.toString());
-			statement.executeUpdate();
+			List<String> deleteRecordQueryList = new ArrayList<String>(associationRemoveQueryList);
+			deleteRecordQueryList.add(0, query.toString());
+			for (String queryString : deleteRecordQueryList)
+			{
+				logDebug("deleteRecord", "QUERY for delete record is : " + queryString.toString());
+				if (queryString != null && queryString.trim().length() != 0)
+				{
+					PreparedStatement statement = conn.prepareStatement(queryString.toString());
+					statement.executeUpdate();
+				}
+			}
 			hibernateDAO.commit();
 			isRecordDeleted = true;
 		}
@@ -2085,12 +2115,17 @@ public class EntityManager
 					null, DYEXTN_A_004);
 		}
 		Collection<String> nameCollection = new HashSet<String>();
-		for (AbstractAttributeInterface attribute : collection) {
-			if (!nameCollection.contains(attribute.getName())) {
-			nameCollection.add(attribute.getName());
-			} else {
-				throw new DynamicExtensionsApplicationException("Attribute names should be unique for the entity ",
-						null, DYEXTN_A_006, attribute.getName());	
+		for (AbstractAttributeInterface attribute : collection)
+		{
+			if (!nameCollection.contains(attribute.getName()))
+			{
+				nameCollection.add(attribute.getName());
+			}
+			else
+			{
+				throw new DynamicExtensionsApplicationException(
+						"Attribute names should be unique for the entity ", null, DYEXTN_A_006,
+						attribute.getName());
 			}
 		}
 		return;

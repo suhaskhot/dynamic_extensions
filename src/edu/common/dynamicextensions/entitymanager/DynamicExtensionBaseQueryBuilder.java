@@ -274,7 +274,7 @@ class DynamicExtensionBaseQueryBuilder
 		if (sourceKey != null && targetKey != null && sourceKey.trim().length() != 0
 				&& targetKey.trim().length() != 0)
 		{
-			query.append(DELETE_KEYWORD + WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName
+			query.append(DELETE_KEYWORD + WHITESPACE + tableName
 					+ WHITESPACE + WHERE_KEYWORD + WHITESPACE + sourceKey);
 			query.append(WHITESPACE + EQUAL);
 			query.append(recordId.toString());

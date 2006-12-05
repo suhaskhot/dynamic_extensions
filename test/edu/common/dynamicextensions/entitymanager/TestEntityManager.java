@@ -850,8 +850,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         {
             EntityGroup entityGroup = (EntityGroup) new MockEntityManager()
                     .initializeEntityGroup();
+            
             entityGroup = (EntityGroup) EntityManager.getInstance()
-                    .createEntityGroup(entityGroup);
+                    .persistEntityGroup(entityGroup);
         }
         catch (Exception e)
         {
@@ -874,7 +875,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
                     .getInstance();
             EntityGroup entityGroup = (EntityGroup) new MockEntityManager()
                     .initializeEntityGroup();
-            entityManagerInterface.createEntityGroup(entityGroup);
+            entityManagerInterface.persistEntityGroup(entityGroup);
 
             EntityGroupInterface entityGroupInterface = entityManagerInterface
                     .getEntityGroupByShortName(entityGroup.getShortName());
@@ -1846,6 +1847,69 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 		
+	}
+	
+	/**
+	 * This method tests the creation of entity group
+	 */
+	public void testCreateEntityGroupForRollback()
+	{
+		EntityGroup entityGroup = null;
+		try
+		{
+			MockEntityManager mock = new MockEntityManager();
+			entityGroup = (EntityGroup) mock.initializeEntityGroup();
+			for (int i = 0; i <= 11; i++)
+			{
+				Entity entity = (Entity) mock.initializeEntity();
+				entityGroup.addEntity(entity);
+				if (i == 10) {
+					entity = (Entity) mock.initializeEntity();
+					TableProperties tableProperties = new TableProperties();
+					tableProperties.setName("@#$%@$%$^");
+					entity.setTableProperties(tableProperties);
+					entityGroup.addEntity(entity);
+				}
+			}
+			entityGroup = (EntityGroup) EntityManager.getInstance().persistEntityGroup(entityGroup);
+			fail();
+		}
+		catch (Exception e)
+		{
+			
+			boolean isTablePresent = isTablePresent(entityGroup.getEntityCollection().iterator().next().getTableProperties().getName());
+			assertFalse(isTablePresent);
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * This method tests the creation of entity group
+	 */
+	public void testCreateEntityGroupForMultipleEntities()
+	{
+		EntityGroup entityGroup = null;
+		try
+		{
+			MockEntityManager mock = new MockEntityManager();
+			entityGroup = (EntityGroup) mock.initializeEntityGroup();
+			for (int i = 0; i <= 11; i++)
+			{
+				Entity entity = (Entity) mock.initializeEntity();
+				entityGroup.addEntity(entity);
+			}
+			entityGroup = (EntityGroup) EntityManager.getInstance().persistEntityGroup(entityGroup);
+			Iterator iterator = entityGroup.getEntityCollection().iterator();
+			while(iterator.hasNext()) { 
+			Entity entity = (Entity) iterator.next();
+			boolean isTablePresent = isTablePresent(entity.getTableProperties().getName());
+			assertTrue(isTablePresent);
+			}
+		}
+		catch (Exception e)
+		{
+			fail();
+			e.printStackTrace();
+		}
 	}
 
 }

@@ -5,8 +5,18 @@
  */
 package edu.common.dynamicextensions.processor;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManager;
+import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.interfaces.GroupUIBeanInterface;
+import edu.wustl.common.beans.NameValueBean;
 
 /**
  * @author preeti_munot
@@ -35,20 +45,53 @@ public class LoadGroupDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * 
 	 * @param entityGroup Object that contains information of  group
 	 * @param groupForm : Form object
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	public void loadGroupDetails(EntityGroupInterface entityGroup,GroupUIBeanInterface  groupUIBean)
+	public void loadGroupDetails(EntityGroupInterface entityGroup,GroupUIBeanInterface  groupUIBean) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		if(groupUIBean!=null)
+		if (groupUIBean!=null)
 		{
-			if(entityGroup!=null)
+			if (entityGroup!=null && entityGroup.getId() == null )
 			{
-				groupUIBean.setGroupName(entityGroup.getName());
+				groupUIBean.setGroupNameText(entityGroup.getName());
 				groupUIBean.setGroupDescription(entityGroup.getDescription());
 			}
-			else
+			else if (entityGroup!=null && entityGroup.getId() != null )
+			{
+				groupUIBean.setCreateGroupAs(ProcessorConstants.GROUP_CREATEFROM_EXISTING);
+				groupUIBean.setGroupName(entityGroup.getId().toString());
+			}
+			
+			else 
 			{
 				groupUIBean.setCreateGroupAs(ProcessorConstants.DEFAULT_GROUP_CREATEAS);
 			}
 		}
+		groupUIBean.setGroupList(populateGroupList());
+	}
+	
+	/**
+	 * 
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public List populateGroupList() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		List groupList = new ArrayList();
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		Collection entityGroupCollection =  (Collection) entityManagerInterface.getAllEntitiyGroups();
+		Iterator entityGroupIterator = entityGroupCollection.iterator();
+		EntityGroupInterface entityGroupInterface;
+		NameValueBean nameValueBean;
+		while (entityGroupIterator.hasNext())
+		{
+			entityGroupInterface = (EntityGroupInterface)entityGroupIterator.next();
+			nameValueBean = new NameValueBean(entityGroupInterface.getName(),entityGroupInterface.getId());
+			groupList.add(nameValueBean);
+		}
+		return groupList;
+	
 	}
 }

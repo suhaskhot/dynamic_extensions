@@ -50,4 +50,9 @@ public interface EntityGroupInterface extends AbstractMetadataInterface
 	 * @param version The version to set.
 	 */
 	 void setVersion(String version);
+	 /**
+	  * 
+	  * @param entityInterface
+	  */
+	 void removeEntity(EntityInterface entityInterface);
 }

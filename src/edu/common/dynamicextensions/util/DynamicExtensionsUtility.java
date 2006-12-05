@@ -18,11 +18,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.sf.hibernate.HibernateException;
-
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -51,6 +51,20 @@ import edu.wustl.common.util.logger.Logger;
  */
 public class DynamicExtensionsUtility
 {
+	/**
+	 * This method fetches the Container instance from the Database given the corresponding Container Identifier.
+	 * @param containerIdentifier The Idetifier of the Container.
+	 * @return the ContainerInterface
+	 * @throws DynamicExtensionsSystemException on System exception
+	 * @throws DynamicExtensionsApplicationException on Application exception
+	 */
+	public static EntityGroupInterface getEntityGroupByIdentifier(String entityGroupIdentifier) throws DynamicExtensionsSystemException,
+	DynamicExtensionsApplicationException
+	{
+		EntityGroupInterface entityGroupInterface = null;
+		entityGroupInterface  = (EntityGroupInterface) getObjectByIdentifier(EntityGroupInterface.class.getName(),entityGroupIdentifier);
+		return entityGroupInterface;
+	}
 
 	/**
 	 * This method fetches the Container instance from the Database given the corresponding Container Identifier.

@@ -42,7 +42,8 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException :Exception thrown by Entity Manager 
 	 * @throws DynamicExtensionsSystemException :Exception thrown by Entity Manager
 	 */
-	public ContainerInterface addEntityToContainer(ContainerInterface containerInterface, FormDefinitionForm actionForm, boolean isActionSave)
+	public ContainerInterface addEntityToContainer(ContainerInterface containerInterface, FormDefinitionForm actionForm,
+			boolean isActionSave,EntityGroupInterface entityGroupInterface)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
@@ -50,6 +51,8 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		{
 			containerInterface = containerProcessor.createContainer();
 		}
+		
+		
 		containerProcessor.populateContainerInterface(containerInterface, actionForm);
 		EntityProcessor entityProcessor = EntityProcessor.getInstance();
 		EntityInterface entityInterface = containerInterface.getEntity();
@@ -62,6 +65,11 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 			entityProcessor.populateEntity(actionForm, entityInterface);
 		}
 		containerInterface.setEntity(entityInterface);
+		
+		if(entityGroupInterface!=null)
+		{
+			associateEntityToGroup(entityGroupInterface,containerInterface.getEntity());
+		}
 		if (isActionSave)
 		{
 			containerProcessor.saveContainer(containerInterface);
@@ -81,6 +89,8 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	{
 		if((entityGroup!=null)&&(entity!=null))
 		{
+			entity.removeAllEntityGroups();
+			
 			entityGroup.addEntity(entity);
 			entity.addEntityGroupInterface(entityGroup);
 		}

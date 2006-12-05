@@ -22,64 +22,121 @@ import edu.wustl.common.util.global.Validator;
 
 /**
  * @author preeti_munot
- *
- * To change the template for this generated type comment go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class GroupForm extends AbstractActionForm implements GroupUIBeanInterface
 {
+	/**
+	 * 
+	 */
 	protected String createGroupAs;
+	/**
+	 * 
+	 */
 	protected String groupName;
-	protected String groupDescription; 
+	/**
+	 * 
+	 */
+	protected String groupNameText;
+	/**
+	 * 
+	 */
+	protected String groupDescription;
+	/**
+	 * 
+	 */
 	protected List groupList;
+	/**
+	 * 
+	 */
 	protected String groupOperation;
+	/**
+	 * 
+	 */
 	protected String operationMode;
+	/**
+	 * 
+	 */
 	protected String containerIdentifier;
+	/**
+	 * 
+	 */
 	public String getGroupOperation()
 	{
 		return this.groupOperation;
 	}
+	/**
+	 * 
+	 */
 	public void setGroupOperation(String groupOperation)
 	{
 		this.groupOperation = groupOperation;
 	}
+	/**
+	 * 
+	 * @return
+	 */
 	public List getGroupList()
 	{
 		return this.groupList;
 	}
+	/**
+	 * 
+	 * @param groupList
+	 */
 	public void setGroupList(List groupList)
 	{
 		this.groupList = groupList;
 	}
+	/**
+	 * 
+	 *
+	 */
 	public GroupForm()
 	{
 		this.createGroupAs=ProcessorConstants.DEFAULT_GROUP_CREATEAS;
 	}
+	/**
+	 * 
+	 */
 	public String getCreateGroupAs()
 	{
 		return this.createGroupAs;
 	}
-
+	/**
+	 * 
+	 */
 	public void setCreateGroupAs(String createGroupAs)
 	{
 		this.createGroupAs = createGroupAs;
 	}
 
+	/**
+	 * 
+	 */
 	public String getGroupDescription()
 	{
 		return this.groupDescription;
 	}
 
+	/**
+	 * 
+	 */
 	public void setGroupDescription(String groupDescription)
 	{
 		this.groupDescription = groupDescription;
 	}
 
+	/**
+	 * 
+	 */
 	public String getGroupName()
 	{
 		return this.groupName;
 	}
 
+	/**
+	 * 
+	 */
 	public void setGroupName(String groupName)
 	{
 		this.groupName = groupName;
@@ -125,7 +182,7 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 		ActionErrors errors = new ActionErrors();
 		Validator validator = new Validator();
 
-		if (groupName == null || validator.isEmpty(String.valueOf(groupName)))
+		if (groupNameText == null || validator.isEmpty(String.valueOf(groupNameText)))
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.GroupTitle")));
 		}
@@ -135,21 +192,54 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 		}
 		return errors;
 	}
+	/**
+	 * 
+	 * @return
+	 */
 	public String getContainerIdentifier()
 	{
 		return this.containerIdentifier;
 	}
+	/**
+	 * 
+	 * @param containerIdentifier
+	 */
 	public void setContainerIdentifier(String containerIdentifier)
 	{
 		this.containerIdentifier = containerIdentifier;
 	}
+	/**
+	 * 
+	 * @return
+	 */
+	
 	public String getOperationMode()
 	{
 		return this.operationMode;
 	}
+	/**
+	 * 
+	 * @param operationMode
+	 */
 	public void setOperationMode(String operationMode)
 	{
 		this.operationMode = operationMode;
 	}
-
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getGroupNameText()
+	{
+		return groupNameText;
+	}
+	/**
+	 * 
+	 * @param groupNameText
+	 */
+	public void setGroupNameText(String groupNameText)
+	{
+		this.groupNameText = groupNameText;
+	}
 }

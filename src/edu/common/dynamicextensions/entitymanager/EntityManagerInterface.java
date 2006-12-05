@@ -255,5 +255,14 @@ public interface EntityManagerInterface
      */
     boolean editData(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, Long recordId)
             throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
+    
+    /**
+	 * Returns all entityGroups in the system.
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	Collection<EntityGroupInterface> getAllEntitiyGroups() throws DynamicExtensionsSystemException,	DynamicExtensionsApplicationException;
+
 
 }

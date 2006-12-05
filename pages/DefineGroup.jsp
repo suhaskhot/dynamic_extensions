@@ -20,8 +20,12 @@
 	
 	<body onload="initDefineGroupForm();">
 		<!-- Menu tabs -->
-		<c:set var="groupsList" value="${groupForm.groupList}"/>
-		<jsp:useBean id="groupsList" type="java.util.List"/>
+		<c:set var="groupList" value="${groupForm.groupList}"/>
+		<jsp:useBean id="groupList" type="java.util.List"/>
+		
+		<c:set var="createGroupAs" value="${groupForm.createGroupAs}"/>
+		<jsp:useBean id="createGroupAs" type="java.lang.String"/>
+		
 		
 		<html:form styleId = "groupForm"  action="/LoadGroupDefinitionAction">
 			<input type="hidden" name="groupOperation" value=""/>
@@ -83,7 +87,7 @@
 												<html:radio styleId="createGroupAs" property="createGroupAs" value="NewGroup" onclick="changeGroupSource(this)">
 													<bean:message key="eav.att.NewGroup"/>
 												</html:radio>
-												<html:radio styleId="createGroupAs" disabled="true" property="createGroupAs" value="ExistingGroup" onclick="changeGroupSource(this)">
+												<html:radio styleId="createGroupAs"  property="createGroupAs" value="ExistingGroup" onclick="changeGroupSource(this)">
 													<bean:message key="eav.att.ExistingGroup"/>
 												</html:radio>
 											</td>
@@ -129,7 +133,7 @@
 						</label>
 						</td>
 						<td class="formFieldWithoutBorder">
-							<html:text styleClass="formDateSized" styleId="groupName"  property="groupName" />
+							<html:text styleClass="formDateSized" styleId="groupNameText"  property="groupNameText" />
 						</td>
 					</tr>
 			
@@ -153,15 +157,14 @@
 						<td class="formRequiredLabelWithoutBorder" width="12%">&nbsp;</td>
 						<td class="formFieldWithoutBorder"  class="rowWithBottomPadding">
 							<html:select styleId="groupName" styleClass="formDateSized" property="groupName">
-								<c:forEach items="${groupsList}" var="groupname">
-								<jsp:useBean id="groupname" type="java.lang.String" />
-									<html:option  value='<%=groupname%>' ></html:option>
-								</c:forEach>
+									<html:options collection="groupList" labelProperty="name" property="value" />
 							</html:select>
 						</td>
 					</tr>
 				</table>
 			</div>
+			
+			<input type="hidden" id = "createGroupAsHidden" name="createGroupAsHidden" value = "<%=createGroupAs%>" />
 		</html:form>
 	</body>
 </html>

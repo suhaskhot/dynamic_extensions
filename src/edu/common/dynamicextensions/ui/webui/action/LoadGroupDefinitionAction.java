@@ -5,10 +5,8 @@
  */
 package edu.common.dynamicextensions.ui.webui.action;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,8 +29,6 @@ import edu.common.dynamicextensions.util.global.Constants;
 /**
  * @author preeti_munot
  *
- * To change the template for this generated type comment go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class LoadGroupDefinitionAction extends BaseDynamicExtensionsAction
 {
@@ -44,23 +40,16 @@ public class LoadGroupDefinitionAction extends BaseDynamicExtensionsAction
 	{
 		GroupForm groupForm = (GroupForm)form;
 		loadGroup(request, groupForm);
-		
-		groupForm.setGroupList(getListOfGroups());
 		return mapping.findForward(Constants.SUCCESS); 
 	}
-
+	
 	/**
-	 * @return List of group names
+	 * 
+	 * @param request
+	 * @param groupForm
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
 	 */
-	private List getListOfGroups()
-	{
-		ArrayList<String> groupList = new ArrayList<String>();
-		groupList.add("group1");
-		groupList.add("group2");
-		groupList.add("group2");
-		groupList.add("group2");
-		return groupList;
-	}
 	private void loadGroup(HttpServletRequest request ,GroupForm groupForm) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		String operationMode = groupForm.getOperationMode();

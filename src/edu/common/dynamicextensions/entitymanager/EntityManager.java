@@ -2148,4 +2148,16 @@ public class EntityManager
 					DYEXTN_A_003);
 		}
 	}
+	
+	/**
+	 * Returns all entitiy groups in the whole system
+	 * @return Collection Entity group Collection
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public Collection<EntityGroupInterface> getAllEntitiyGroups() throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+		return getAllObjects(EntityGroupInterface.class.getName());
+	}
 }

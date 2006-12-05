@@ -71,22 +71,16 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 			{
 				saveMessages(request, getSuccessMessage(formDefinitionForm));
 			}
+			EntityGroupInterface entityGroup =(EntityGroupInterface) CacheManager.getObjectFromCache(request, Constants.ENTITYGROUP_INTERFACE);
+			
 			
 			//If not in Edit mode, then save the Container in Database and Add the same to the Cache manager.
 			if (operation != null && !operation.equalsIgnoreCase(Constants.EDIT_FORM))
 			{
-				containerInterface = applyFormDefinitionProcessor.addEntityToContainer(containerInterface, formDefinitionForm, saveEntity);
+				containerInterface = applyFormDefinitionProcessor.addEntityToContainer(containerInterface, formDefinitionForm, saveEntity,entityGroup);
 				CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
 			}
-			if(containerInterface!=null)
-			{
-				//Associate entity to group from cache
-				EntityGroupInterface entityGroup =(EntityGroupInterface) CacheManager.getObjectFromCache(request, Constants.ENTITYGROUP_INTERFACE);
-				if(entityGroup!=null)
-				{
-					applyFormDefinitionProcessor.associateEntityToGroup(entityGroup,containerInterface.getEntity());
-				}
-			}			
+						
 		}
 		catch (Exception e)
 		{

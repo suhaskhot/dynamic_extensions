@@ -6,13 +6,13 @@
 package edu.common.dynamicextensions.processor;
 
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.interfaces.GroupUIBeanInterface;
 
 /**
  * @author preeti_munot
  *
- * To change the template for this generated type comment go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsProcessor
 {
@@ -31,7 +31,14 @@ public class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsProcesso
 		return new ApplyGroupDefinitionProcessor();
 	}
 
-	public EntityGroupInterface saveGroupDetails(GroupUIBeanInterface groupUIBean)
+	/**
+	 * 
+	 * @param groupUIBean
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public EntityGroupInterface saveGroupDetails(GroupUIBeanInterface groupUIBean) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		GroupProcessor groupProcessor = GroupProcessor.getInstance(); 
 		String groupOperation = groupUIBean.getGroupOperation();
@@ -40,7 +47,7 @@ public class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsProcesso
 		//Use existing group
 		if((groupUIBean.getCreateGroupAs()!=null)&&((groupUIBean.getCreateGroupAs().equals(ProcessorConstants.GROUP_CREATEFROM_EXISTING))))
 		{
-			entityGroup = groupProcessor.getEntityGroupByName(groupUIBean.getGroupName());
+			entityGroup = groupProcessor.getEntityGroupByIdentifier(groupUIBean.getGroupName());
 		}
 		else
 		{

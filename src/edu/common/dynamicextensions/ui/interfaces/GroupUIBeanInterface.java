@@ -5,6 +5,8 @@
  */
 package edu.common.dynamicextensions.ui.interfaces;
 
+import java.util.List;
+
 /**
  * @author preeti_munot
  *
@@ -59,5 +61,28 @@ public interface GroupUIBeanInterface
 	 */
 	public void setCreateGroupAs(String createGroupAs);
 	
+	/**
+	 * @return
+	 */
+	public List getGroupList();
+
+	/**
+	 * 
+	 * @param groupList
+	 */
+	public void setGroupList(List groupList);
 	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getGroupNameText();
+	
+	/**
+	 * 
+	 * @param groupNameText
+	 */
+	public void setGroupNameText(String groupNameText);
+	
+
 }

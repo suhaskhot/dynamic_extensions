@@ -40,7 +40,6 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	 * Table property for this entity.
 	 */
 	protected Collection<TablePropertiesInterface> tablePropertiesCollection = new HashSet<TablePropertiesInterface>();
-	
 
 	/**
 	 * Collection of EntityGroup.
@@ -57,7 +56,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	/**
 	 * This method returns the Collection of the EntityGroups.
 	 * @hibernate.set name="entityGroupCollection" table="DYEXTN_ENTITY_GROUP_REL" 
-	 * cascade="save-update" inverse="true" lazy="false"
+	 * cascade="save-update" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ENTITY_ID"
 	 * @hibernate.collection-many-to-many class="edu.common.dynamicextensions.domain.EntityGroup" column="ENTITY_GROUP_ID"
 	 * @return the Collection of the Entities.
@@ -93,7 +92,8 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	 * This method sets the tablePropertiesColletion to the given Collection of TableProperties. 
 	 * @param tablePropertiesColletion Collection of TableProperties to be set.
 	 */
-	private void setTablePropertiesCollection(Collection<TablePropertiesInterface> tablePropertiesColletion)
+	private void setTablePropertiesCollection(
+			Collection<TablePropertiesInterface> tablePropertiesColletion)
 	{
 		this.tablePropertiesCollection = tablePropertiesColletion;
 	}
@@ -136,28 +136,66 @@ public class Entity extends AbstractMetadata implements EntityInterface
 		{
 			return;
 		}
-		
+
 		if (abstractAttributeCollection == null)
 		{
 			abstractAttributeCollection = new HashSet<AbstractAttributeInterface>();
 		}
 		abstractAttributeCollection.add(abstractAttribute);
 		abstractAttribute.setEntity(this);
-		
+
 	}
 
-    /**
-     * 
-     */
-    public void addEntityGroupInterface(
-            EntityGroupInterface entityGroupInterface)
-    {
-        if (this.entityGroupCollection == null) {
-            entityGroupCollection = new HashSet<EntityGroupInterface>();
-        }
-        entityGroupCollection.add(entityGroupInterface);
+	/**
+	 * 
+	 */
+	public void addEntityGroupInterface(EntityGroupInterface entityGroupInterface)
+	{
+		if (this.entityGroupCollection == null)
+		{
+			entityGroupCollection = new HashSet<EntityGroupInterface>();
+		}
+		entityGroupCollection.add(entityGroupInterface);
 
-    }
+	}
+
+	/**
+	 * 
+	 */
+	public void removeEntityGroupInterface(EntityGroupInterface entityGroupInterface)
+	{
+		if (entityGroupCollection != null)
+		{
+			if (entityGroupCollection.contains(entityGroupInterface))
+			{
+				entityGroupCollection.remove(entityGroupInterface);
+				entityGroupInterface.removeEntity(this);
+
+			}
+		}
+
+	}
+
+	/**
+	 * This method removes all entity groupa of the entity.
+	 *
+	 */
+	public void removeAllEntityGroups()
+	{
+		if (entityGroupCollection != null)
+		{
+			Iterator<EntityGroupInterface> entityGroupIterator = entityGroupCollection.iterator();
+			EntityGroupInterface entityGroupInterface;
+			while(entityGroupIterator.hasNext())
+			{
+				entityGroupInterface = (EntityGroupInterface) entityGroupIterator.next();
+				entityGroupInterface.removeEntity(this);
+				entityGroupIterator.remove();
+				
+			}
+			
+		}
+	}
 
 	/**
 	 * This method returns the Collection of AbstractAttribute.
@@ -176,7 +214,8 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	 * This method sets the abstractAttributeCollection to the given Collection of AbstractAttribute.
 	 * @param abstractAttributeCollection The abstractAttributeCollection to set.
 	 */
-	public void setAbstractAttributeCollection(Collection<AbstractAttributeInterface> abstractAttributeCollection)
+	public void setAbstractAttributeCollection(
+			Collection<AbstractAttributeInterface> abstractAttributeCollection)
 	{
 		this.abstractAttributeCollection = abstractAttributeCollection;
 	}
@@ -187,17 +226,20 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	 */
 	public Collection<AttributeInterface> getAttributeCollection()
 	{
-        Collection<AttributeInterface> attributeCollection = new HashSet();
-        if (abstractAttributeCollection != null && !abstractAttributeCollection.isEmpty()) {
-            Iterator attributeIterator = abstractAttributeCollection.iterator();
-            while (attributeIterator.hasNext()) {
-                Object object = attributeIterator.next();
-                if (object instanceof AttributeInterface) {
-                    attributeCollection.add((AttributeInterface) object);
-                }
-            }
-        }
-        return attributeCollection;
+		Collection<AttributeInterface> attributeCollection = new HashSet();
+		if (abstractAttributeCollection != null && !abstractAttributeCollection.isEmpty())
+		{
+			Iterator attributeIterator = abstractAttributeCollection.iterator();
+			while (attributeIterator.hasNext())
+			{
+				Object object = attributeIterator.next();
+				if (object instanceof AttributeInterface)
+				{
+					attributeCollection.add((AttributeInterface) object);
+				}
+			}
+		}
+		return attributeCollection;
 	}
 
 	/**
@@ -207,16 +249,19 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	public Collection<AssociationInterface> getAssociationCollection()
 	{
 		Collection<AssociationInterface> associationCollection = new HashSet();
-        if (abstractAttributeCollection != null && !abstractAttributeCollection.isEmpty()) {
-            Iterator associationIterator = abstractAttributeCollection.iterator();
-            while (associationIterator.hasNext()) {
-                Object object = associationIterator.next();
-                if (object instanceof AssociationInterface) {
-                    associationCollection.add((AssociationInterface) object);
-                }
-            }
-        }
-        return associationCollection;
+		if (abstractAttributeCollection != null && !abstractAttributeCollection.isEmpty())
+		{
+			Iterator associationIterator = abstractAttributeCollection.iterator();
+			while (associationIterator.hasNext())
+			{
+				Object object = associationIterator.next();
+				if (object instanceof AssociationInterface)
+				{
+					associationCollection.add((AssociationInterface) object);
+				}
+			}
+		}
+		return associationCollection;
 	}
 
 	/**
@@ -231,7 +276,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 			{
 				abstractAttributeCollection.remove(abstractAttribute);
 				abstractAttribute.setEntity(null);
- 			}
+			}
 		}
 	}
 
@@ -257,8 +302,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 		}
 		return abstractAttribute;
 	}
-	
-	
+
 	/**
 	 * This method adds attribute interface to the abstract attribute collection.
 	 * @param attributeInterface
@@ -266,18 +310,18 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	public void addAttribute(AttributeInterface attributeInterface)
 	{
 		addAbstractAttribute(attributeInterface);
-		
+
 	}
-	
+
 	/** 
 	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#removeAttribute(edu.common.dynamicextensions.domaininterface.AttributeInterface)
 	 */
 	public void removeAttribute(AttributeInterface attributeInterface)
 	{
 		removeAbstractAttribute(attributeInterface);
-		
+
 	}
-	
+
 	/**
 	 * This method adds association interface to the abstract attribute collection.
 	 * @param associationInterface
@@ -287,17 +331,13 @@ public class Entity extends AbstractMetadata implements EntityInterface
 		addAbstractAttribute(associationInterface);
 	}
 
-
 	/** 
 	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#removeAssociation(edu.common.dynamicextensions.domaininterface.AssociationInterface)
 	 */
 	public void removeAssociation(AssociationInterface associationInterface)
 	{
 		removeAbstractAttribute(associationInterface);
-		
-	}
 
-	
-	
+	}
 
 }

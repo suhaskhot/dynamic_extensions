@@ -86,5 +86,17 @@ public interface EntityInterface extends AbstractMetadataInterface
 	 * @param associationInterface
 	 */
 	public void removeAssociation(AssociationInterface associationInterface);
+	
+	/**
+	 * This method removes all entity groupa of the entity.
+	 *
+	 */
+	 public void removeEntityGroupInterface(EntityGroupInterface entityGroupInterface);
+	 
+	 /**
+	  * This method removes all entity groupa of the entity.
+	  *
+	  */
+	 public void removeAllEntityGroups();
 
 }

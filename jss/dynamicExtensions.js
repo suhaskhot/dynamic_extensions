@@ -813,20 +813,37 @@ function ruleSelected(ruleObject)
 
 function deleteControl()
 {
-
 	checkAttribute = document.controlsForm.checkAttribute;
-	//alert(checkAttribute.length);
-	for(i = 0; i < checkAttribute.length-1; i++)
+	var length = parseInt(checkAttribute.length)-1;
+	var startPointArray = new Array();
+	var stratPointIndex = 0;
+	for( counter = 0; counter < length ; counter++)
 	{
-		if(checkAttribute[i].checked)
+		if(checkAttribute[counter].checked)
 		{
-			var startPoint = (document.getElementById(checkAttribute[i].value + "rowNum")).value;
-			deleteRow('controlList', startPoint)
+			var startPoint = (document.getElementById(checkAttribute[counter].value + "rowNum")).value;
+			startPointArray[stratPointIndex] = startPoint;
+			stratPointIndex = parseInt(stratPointIndex) + 1;
 		}
 	}
+
+	for(startPointCounter = 0 ; startPointCounter < startPointArray.length;startPointCounter++)
+	{
+		deleteRow('controlList', startPointArray[startPointCounter]);
+		resetStartPointArray(startPointArray,startPointArray[startPointCounter])
+	}
 	resetRowNum(checkAttribute);
+}
 
-
+function resetStartPointArray(startPointArray,value)
+{
+	for(counter = 0 ; counter  < startPointArray.length;counter++)
+	{
+		if(startPointArray[counter] > value )
+		{
+			startPointArray[counter] = startPointArray[counter] -1 ;
+		}
+	}
 }
 
 
@@ -932,8 +949,7 @@ function changeGroupSource(groupSrc)
 
 function initDefineGroupForm()
 {
-	
-	changeGroupSource(document.getElementById('createGroupAs'));
+	changeGroupSource(document.getElementById('createGroupAsHidden'));
 }
 
 function showDefineFormJSP()

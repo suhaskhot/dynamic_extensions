@@ -814,8 +814,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			shortAttributeInterface.setDefaultValue(shortValue);
 		}
 		shortAttributeInterface.setMeasurementUnits(attributeUIBeanInformationIntf.getAttributeMeasurementUnits());
-		shortAttributeInterface.setDecimalPlaces(attributeUIBeanInformationIntf.getAttributeDecimalPlaces());
-		shortAttributeInterface.setDigits(attributeUIBeanInformationIntf.getAttributeDigits());
+		shortAttributeInterface.setDecimalPlaces(Integer.parseInt(attributeUIBeanInformationIntf.getAttributeDecimalPlaces()));
+		shortAttributeInterface.setDigits(Integer.parseInt(attributeUIBeanInformationIntf.getAttributeDigits()));
 
 	}
 
@@ -852,8 +852,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			integerAttributeInterface.setDefaultValue(integerValue);
 		}
 		integerAttributeInterface.setMeasurementUnits(attributeUIBeanInformationIntf.getAttributeMeasurementUnits());
-		integerAttributeInterface.setDecimalPlaces(attributeUIBeanInformationIntf.getAttributeDecimalPlaces());
-		integerAttributeInterface.setDigits(attributeUIBeanInformationIntf.getAttributeDigits());
+		integerAttributeInterface.setDecimalPlaces(Integer.parseInt(attributeUIBeanInformationIntf.getAttributeDecimalPlaces()));
+		integerAttributeInterface.setDigits(Integer.parseInt(attributeUIBeanInformationIntf.getAttributeDigits()));
 
 	}
 
@@ -874,8 +874,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			longAttributeInterface.setDefaultValue(longValue);
 		}
 		longAttributeInterface.setMeasurementUnits(attributeUIBeanInformationIntf.getAttributeMeasurementUnits());
-		longAttributeInterface.setDecimalPlaces(attributeUIBeanInformationIntf.getAttributeDecimalPlaces());
-		longAttributeInterface.setDigits(attributeUIBeanInformationIntf.getAttributeDigits());
+		longAttributeInterface.setDecimalPlaces(Integer.parseInt(attributeUIBeanInformationIntf.getAttributeDecimalPlaces()));
+		longAttributeInterface.setDigits(Integer.parseInt(attributeUIBeanInformationIntf.getAttributeDigits()));
 
 	}
 
@@ -895,8 +895,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			floatAttributeInterface.setDefaultValue(floatValue);
 		}
 		floatAttributeInterface.setMeasurementUnits(attributeUIBeanInformationIntf.getAttributeMeasurementUnits());
-		floatAttributeInterface.setDecimalPlaces(attributeUIBeanInformationIntf.getAttributeDecimalPlaces());
-		floatAttributeInterface.setDigits(attributeUIBeanInformationIntf.getAttributeDigits());
+		floatAttributeInterface.setDecimalPlaces(Integer.parseInt(attributeUIBeanInformationIntf.getAttributeDecimalPlaces()));
+		floatAttributeInterface.setDigits(Integer.parseInt(attributeUIBeanInformationIntf.getAttributeDigits()));
 
 	}
 
@@ -916,8 +916,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			doubleAttributeInterface.setDefaultValue(doubleValue);
 		}
 		doubleAttributeInterface.setMeasurementUnits(attributeUIBeanInformationIntf.getAttributeMeasurementUnits());
-		doubleAttributeInterface.setDecimalPlaces(attributeUIBeanInformationIntf.getAttributeDecimalPlaces());
-		doubleAttributeInterface.setDigits(attributeUIBeanInformationIntf.getAttributeDigits());
+		doubleAttributeInterface.setDecimalPlaces(Integer.parseInt(attributeUIBeanInformationIntf.getAttributeDecimalPlaces()));
+		doubleAttributeInterface.setDigits(Integer.parseInt(attributeUIBeanInformationIntf.getAttributeDigits()));
 		//doubleAttributeInterface.setValidationRules(attributeInformationIntf.getValidationRules());
 	}
 
@@ -1147,8 +1147,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			attributeUIBeanInformationIntf.setAttributeDefaultValue(defaultDoubleValue.getValue() + "");
 		}
 		attributeUIBeanInformationIntf.setAttributeMeasurementUnits(doubleAttributeInformation.getMeasurementUnits());
-		attributeUIBeanInformationIntf.setAttributeDecimalPlaces(doubleAttributeInformation.getDecimalPlaces());
-		attributeUIBeanInformationIntf.setAttributeDigits(doubleAttributeInformation.getDigits());
+		attributeUIBeanInformationIntf.setAttributeDecimalPlaces(doubleAttributeInformation.getDecimalPlaces().toString());
+		attributeUIBeanInformationIntf.setAttributeDigits(doubleAttributeInformation.getDigits().toString());
 	}
 
 	/**
@@ -1165,8 +1165,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			attributeUIBeanInformationIntf.setAttributeDefaultValue(floatValue.getValue() + "");
 		}
 		attributeUIBeanInformationIntf.setAttributeMeasurementUnits(floatAttributeInformation.getMeasurementUnits());
-		attributeUIBeanInformationIntf.setAttributeDecimalPlaces(floatAttributeInformation.getDecimalPlaces());
-		attributeUIBeanInformationIntf.setAttributeDigits(floatAttributeInformation.getDigits());
+		attributeUIBeanInformationIntf.setAttributeDecimalPlaces(floatAttributeInformation.getDecimalPlaces().toString());
+		attributeUIBeanInformationIntf.setAttributeDigits(floatAttributeInformation.getDigits().toString());
 	}
 
 	/**
@@ -1183,8 +1183,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			attributeUIBeanInformationIntf.setAttributeDefaultValue(longDefaultValue.getValue() + "");
 		}
 		attributeUIBeanInformationIntf.setAttributeMeasurementUnits(longAttributeInformation.getMeasurementUnits());
-		attributeUIBeanInformationIntf.setAttributeDecimalPlaces(longAttributeInformation.getDecimalPlaces());
-		attributeUIBeanInformationIntf.setAttributeDigits(longAttributeInformation.getDigits());
+		attributeUIBeanInformationIntf.setAttributeDecimalPlaces(longAttributeInformation.getDecimalPlaces().toString());
+		attributeUIBeanInformationIntf.setAttributeDigits((longAttributeInformation.getDigits().toString()));
 	}
 
 	/**
@@ -1201,8 +1201,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			attributeUIBeanInformationIntf.setAttributeDefaultValue(shortDefaultValue.getValue() + "");
 		}
 		attributeUIBeanInformationIntf.setAttributeMeasurementUnits(shortAttributeInformation.getMeasurementUnits());
-		attributeUIBeanInformationIntf.setAttributeDecimalPlaces(shortAttributeInformation.getDecimalPlaces());
-		attributeUIBeanInformationIntf.setAttributeDigits(shortAttributeInformation.getDigits());
+		attributeUIBeanInformationIntf.setAttributeDecimalPlaces(shortAttributeInformation.getDecimalPlaces().toString());
+		attributeUIBeanInformationIntf.setAttributeDigits(shortAttributeInformation.getDigits().toString());
 	}
 
 	/**
@@ -1219,8 +1219,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			attributeUIBeanInformationIntf.setAttributeDefaultValue(integerDefaultValue.getValue() + "");
 		}
 		attributeUIBeanInformationIntf.setAttributeMeasurementUnits(integerAttributeInformation.getMeasurementUnits());
-		attributeUIBeanInformationIntf.setAttributeDecimalPlaces(integerAttributeInformation.getDecimalPlaces());
-		attributeUIBeanInformationIntf.setAttributeDigits(integerAttributeInformation.getDigits());
+		attributeUIBeanInformationIntf.setAttributeDecimalPlaces(integerAttributeInformation.getDecimalPlaces().toString());
+		attributeUIBeanInformationIntf.setAttributeDigits(integerAttributeInformation.getDigits().toString());
 	}
 
 	/**

@@ -21,15 +21,4 @@ public class ShortAttributeTypeInformation extends NumericAttributeTypeInformati
 	{
 
 	}
-	
-	/**
-	 * This method returns the measurement units of this Attribute.
-	 * @hibernate.property name="measurementUnits" type="string" column="MEASUREMENT_UNITS"  
-	 * @return the measurement units of this Attribute.
-	 */
-	public String getMeasurementUnits()
-
-	{
-		return this.measurementUnits;
-	}
 }

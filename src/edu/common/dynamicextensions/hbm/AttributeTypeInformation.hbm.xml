@@ -169,10 +169,9 @@
         />
 
         </joined-subclass>
-        
         <joined-subclass
-            name="edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation"
-            table="DYEXTN_DOUBLE_TYPE_INFO"
+            name="edu.common.dynamicextensions.domain.NumericAttributeTypeInformation"
+            table="DYEXTN_NUMERIC_TYPE_INFO"
             dynamic-update="false"
             dynamic-insert="false"
         >
@@ -185,6 +184,32 @@
             update="true"
             insert="true"
             column="MEASUREMENT_UNITS"
+        />
+
+        <property
+            name="decimalPlaces"
+            type="int"
+            update="true"
+            insert="true"
+            column="DECIMAL_PLACES"
+        />
+
+        <property
+            name="digits"
+            type="int"
+            update="true"
+            insert="true"
+            column="NO_DIGITS"
+        />
+
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation"
+            table="DYEXTN_DOUBLE_TYPE_INFO"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
         />
 
         </joined-subclass>
@@ -197,13 +222,6 @@
         <key
             column="IDENTIFIER"
         />
-        <property
-            name="measurementUnits"
-            type="string"
-            update="true"
-            insert="true"
-            column="MEASUREMENT_UNITS"
-        />
 
         </joined-subclass>
         <joined-subclass
@@ -214,13 +232,6 @@
         >
         <key
             column="IDENTIFIER"
-        />
-        <property
-            name="measurementUnits"
-            type="string"
-            update="true"
-            insert="true"
-            column="MEASUREMENT_UNITS"
         />
 
         </joined-subclass>
@@ -233,13 +244,6 @@
         <key
             column="IDENTIFIER"
         />
-        <property
-            name="measurementUnits"
-            type="string"
-            update="true"
-            insert="true"
-            column="MEASUREMENT_UNITS"
-        />
 
         </joined-subclass>
         <joined-subclass
@@ -251,13 +255,8 @@
         <key
             column="IDENTIFIER"
         />
-        <property
-            name="measurementUnits"
-            type="string"
-            update="true"
-            insert="true"
-            column="MEASUREMENT_UNITS"
-        />
+
+        </joined-subclass>
 
         </joined-subclass>
 

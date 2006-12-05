@@ -13,23 +13,12 @@ public class DoubleAttributeTypeInformation extends NumericAttributeTypeInformat
 		implements
 			DoubleTypeInformationInterface
 {
-	
+
 	/**
 	 * Empty Constructor.
 	 */
 	public DoubleAttributeTypeInformation()
 	{
 
-	}
-	
-	/**
-	 * This method returns the measurement units of this Attribute.
-	 * @hibernate.property name="measurementUnits" type="string" column="MEASUREMENT_UNITS"  
-	 * @return the measurement units of this Attribute.
-	 */
-	public String getMeasurementUnits()
-
-	{
-		return this.measurementUnits;
 	}
 }

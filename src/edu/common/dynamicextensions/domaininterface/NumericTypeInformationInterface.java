@@ -26,23 +26,23 @@ public interface NumericTypeInformationInterface extends AttributeTypeInformatio
 	 * This method returns the places after the decimal point.
 	 * @return the places after the decimal point.
 	 */
-	String getDecimalPlaces();
+	Integer getDecimalPlaces();
 
 	/**
 	 * This method sets the places after the decimal point of the DoubleAttribue.
 	 * @param decimalPlaces the places after the decimal point to be set.
 	 */
-	 void setDecimalPlaces(String decimalPlaces);
+	 void setDecimalPlaces(Integer decimalPlaces);
 
 	/**
 	 * This method returns the length of the number in digits.
 	 * @return the length of the number in digits. 
 	 */
-	String getDigits();
+	 Integer getDigits();
 
 	/**
 	 * This method sets the length of the number in digits.
 	 * @param digits the length of the number in digits.
 	 */
-	 void setDigits(String digits);
+	 void setDigits(Integer digits);
 }

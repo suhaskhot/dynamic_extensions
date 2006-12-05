@@ -5,7 +5,7 @@ import edu.common.dynamicextensions.domaininterface.NumericTypeInformationInterf
 
 /**
  * @author Rahul Ner
- * @hibernate.joined-subclass 
+ * @hibernate.joined-subclass table="DYEXTN_NUMERIC_TYPE_INFO" 
  * @hibernate.joined-subclass-key column="IDENTIFIER"  
  */
 public abstract class NumericAttributeTypeInformation extends AttributeTypeInformation implements NumericTypeInformationInterface
@@ -24,12 +24,12 @@ public abstract class NumericAttributeTypeInformation extends AttributeTypeInfor
 	/**
 	 * Number of digits
 	 */
-	protected String digits;
+	protected Integer digits;
 
 	/**
 	 * Number of decimal places
 	 */
-	protected String decimalPlaces = "0";
+	protected Integer decimalPlaces = 0;
 
 	/**
 	 * Empty Constructor.
@@ -41,9 +41,15 @@ public abstract class NumericAttributeTypeInformation extends AttributeTypeInfor
 
 
 	/**
-	 * @see edu.common.dynamicextensions.domaininterface.NumericTypeInformationInterface#getMeasurementUnits()
+	 * This method returns the measurement units of this Attribute.
+	 * @hibernate.property name="measurementUnits" type="string" column="MEASUREMENT_UNITS"  
+	 * @return the measurement units of this Attribute.
 	 */
-	public abstract String getMeasurementUnits();
+	public String getMeasurementUnits()
+
+	{
+		return this.measurementUnits;
+	}
 	
 
 	/**
@@ -56,9 +62,9 @@ public abstract class NumericAttributeTypeInformation extends AttributeTypeInfor
 	}
 
 	/**
-	 * 
+	 * @hibernate.property name="decimalPlaces" type="int" column="DECIMAL_PLACES"  
 	 */
-	public String getDecimalPlaces()
+	public Integer getDecimalPlaces()
 	{
 		return this.decimalPlaces;
 	}
@@ -67,16 +73,17 @@ public abstract class NumericAttributeTypeInformation extends AttributeTypeInfor
 	 * This method sets the places after the decimal point of the DoubleAttribue.
 	 * @param decimalPlaces the places after the decimal point to be set.
 	 */
-	public void setDecimalPlaces(String decimalPlaces)
+	public void setDecimalPlaces(Integer decimalPlaces)
 	{
 		this.decimalPlaces = decimalPlaces;
 	}
 
 	/**
 	 * This method returns the length of the number in digits.
+	 * @hibernate.property name="digits" type="int" column="NO_DIGITS" 
 	 * @return the length of the number in digits. 
 	 */
-	public String getDigits()
+	public Integer getDigits()
 	{
 		return this.digits;
 	}
@@ -85,7 +92,7 @@ public abstract class NumericAttributeTypeInformation extends AttributeTypeInfor
 	 * This method sets the length of the number in digits.
 	 * @param digits the length of the number in digits.
 	 */
-	public void setDigits(String digits)
+	public void setDigits(Integer digits)
 	{
 		this.digits = digits;
 	}

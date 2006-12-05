@@ -62,12 +62,15 @@ class DynamicExtensionBaseQueryBuilder
 
 	/**
 	 * This method builds the list of all the queries that need to be executed in order to create the data table for the entity and its associations.
+	 * 
 	 * @param entity Entity for which to get the queries.
 	 * @param reverseQueryList For every data table query the method builds one more query which negats the effect of that data table query. All such
 	 * reverse queries are added in this list.
 	 * @param rollbackQueryStack 
 	 * @param hibernateDAO 
+	 * 
 	 * @return List of all the data table queries
+	 * 
 	 * @throws DynamicExtensionsSystemException 
 	 * @throws DynamicExtensionsApplicationException 
 	 */
@@ -76,9 +79,14 @@ class DynamicExtensionBaseQueryBuilder
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		List queryList = new ArrayList();
-		String mainTableQuery = getEntityMainDataTableQuery(entity, reverseQueryList);
-		List associationTableQueryList = getDataTableQueriesForAssociationsInEntity(entity,
-				reverseQueryList, hibernateDAO, rollbackQueryStack);
+		//get query to create main table with primitive attributes.
+		String mainTableQuery = getCreateMainTableQuery(entity, reverseQueryList);
+
+		// get query to create associations ,it invloves altering source/taget table or creating 
+		//middle table depending upon the cardinalities.
+		List associationTableQueryList = getCreateAssociationsQueryList(entity, reverseQueryList,
+				hibernateDAO, rollbackQueryStack);
+
 		queryList.add(mainTableQuery);
 		queryList.addAll(associationTableQueryList);
 		return queryList;
@@ -88,9 +96,12 @@ class DynamicExtensionBaseQueryBuilder
 	 * This method is used to execute the data table queries for entity in case of editing the entity.
 	 * This method takes each attribute of the entity and then scans for any changes and builds the alter query
 	 * for each attribute for the entity.
+	 * 
 	 * @param entity Entity for which to generate and execute the alter queries.
 	 * @param databaseCopy Old database copy of the entity.
+	 * @param attributeRollbackQueryList rollback query list.
 	 * @return Stack Stack holding the rollback queries in case of any exception
+	 * 
 	 * @throws DynamicExtensionsSystemException System exception in case of any fatal error
 	 * @throws DynamicExtensionsApplicationException Thrown in case of authentication failure or duplicate name.
 	 */
@@ -100,13 +111,15 @@ class DynamicExtensionBaseQueryBuilder
 	{
 		Logger.out.debug("getUpdateEntityQueryList : Entering method");
 
+		//get the query for any attribute that is modified.
 		List updateAttributeQueryList = getUpdateAttributeQueryList(entity, databaseCopy,
 				attributeRollbackQueryList);
+
+		//get the query for any association that is modified.
 		List updateassociationsQueryList = getUpdateAssociationsQueryList(entity, databaseCopy,
 				attributeRollbackQueryList);
 
 		List updateQueryList = new ArrayList();
-
 		updateQueryList.addAll(updateAttributeQueryList);
 		updateQueryList.addAll(updateassociationsQueryList);
 
@@ -115,8 +128,12 @@ class DynamicExtensionBaseQueryBuilder
 	}
 
 	/**
-	 * @param entity
-	 * @param recordId
+	 * This method returns association value for the entity's given record.
+	 * e.g if user1 is associated with study1 and study2 it returns a value for the  
+	 * "study done" assocaition as a list of record ids of study1 and study2.
+	 * 
+	 * @param entity entity
+	 * @param recordId recordId
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
@@ -144,7 +161,7 @@ class DynamicExtensionBaseQueryBuilder
 
 			if (sourceKey != null && targetKey != null && sourceKey.trim().length() != 0
 					&& targetKey.trim().length() != 0)
-			{ /* Many to many*/
+			{ /* for Many to many get values from the middle table*/
 				query.append(SELECT_KEYWORD + WHITESPACE + targetKey);
 				query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName + WHITESPACE);
 				query
@@ -154,7 +171,9 @@ class DynamicExtensionBaseQueryBuilder
 			}
 			else if (sourceKey != null && sourceKey.trim().length() != 0)
 			{
-				/* Many to one*/
+				/* for all Many to one associations of a single entity create a single query to get values for the target 
+				 * records. 
+				 *  */
 				if (manyToOneAssociationList.size() != 0)
 				{
 					manyToOneAssociationsGetReocrdQuery.append(COMMA);
@@ -164,7 +183,7 @@ class DynamicExtensionBaseQueryBuilder
 			}
 			else
 			{
-				/* one to many or one to one*/
+				/* for one to many or one to one association, get taget reocrd values from the target entity table.*/
 				query.append(SELECT_KEYWORD + WHITESPACE + IDENTIFIER);
 				query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName + WHITESPACE);
 				query
@@ -202,6 +221,16 @@ class DynamicExtensionBaseQueryBuilder
 		return associationValuesMap;
 	}
 
+	/**
+	 * returns the queries to insert data for the association.
+	 * 
+	 * @param associationInterface
+	 * @param recordIdList
+	 * @param sourceRecordId
+	 * @return
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
+	 */
 	public List<String> getAssociationInsertDataQuery(AssociationInterface associationInterface,
 			List<Long> recordIdList, Long sourceRecordId)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
@@ -217,7 +246,7 @@ class DynamicExtensionBaseQueryBuilder
 		if (sourceKey != null && targetKey != null && sourceKey.trim().length() != 0
 				&& targetKey.trim().length() != 0)
 		{
-
+            //for many to many insert into middle table
 			for (int i = 0; i < recordIdList.size(); i++)
 			{
 				query = new StringBuffer();
@@ -233,12 +262,12 @@ class DynamicExtensionBaseQueryBuilder
 				id++; //TODO this is not thread safe ,so needs to find a another solution.
 
 				queryList.add(query.toString());
-
 			}
 
 		}
 		else if (sourceKey != null && sourceKey.trim().length() != 0)
 		{
+			//many to one : update source entity table
 			query.append(UPDATE_KEYWORD);
 			query.append(WHITESPACE + tableName);
 			query.append(WHITESPACE + SET_KEYWORD + WHITESPACE + sourceKey + EQUAL
@@ -248,7 +277,7 @@ class DynamicExtensionBaseQueryBuilder
 
 		}
 		else
-		{
+		{	//one to one && onr to many : update target entity table
 			String recordIdString = recordIdList.toString();
 			recordIdString = recordIdString.replace("[", OPENING_BRACKET);
 			recordIdString = recordIdString.replace("]", CLOSING_BRACKET);
@@ -265,6 +294,12 @@ class DynamicExtensionBaseQueryBuilder
 		return queryList;
 	}
 
+	/**
+	 *  returns the queries to remove the the association 
+	 * @param association
+	 * @param recordId
+	 * @return
+	 */
 	public String getAssociationRemoveDataQuery(Association association, Long recordId)
 	{
 		String tableName = association.getConstraintProperties().getName();
@@ -274,6 +309,7 @@ class DynamicExtensionBaseQueryBuilder
 		if (sourceKey != null && targetKey != null && sourceKey.trim().length() != 0
 				&& targetKey.trim().length() != 0)
 		{
+			//for many to many delete all the records having reffered by this recordId  
 			query.append(DELETE_KEYWORD + WHITESPACE + tableName
 					+ WHITESPACE + WHERE_KEYWORD + WHITESPACE + sourceKey);
 			query.append(WHITESPACE + EQUAL);
@@ -281,6 +317,8 @@ class DynamicExtensionBaseQueryBuilder
 		}
 		else if (targetKey != null && targetKey.trim().length() != 0)
 		{
+			//for one to many and one to one: update  target entities records(set value in target column key = null) 
+			 //that are reffering to  this redord by setting it to null.
 			query.append(UPDATE_KEYWORD);
 			query.append(WHITESPACE + tableName);
 			query.append(WHITESPACE + SET_KEYWORD + WHITESPACE + targetKey + EQUAL + WHITESPACE
@@ -293,12 +331,15 @@ class DynamicExtensionBaseQueryBuilder
 
 	/**
 	 * This method returns the main data table CREATE query that is associated with the entity.
+	 *
 	 * @param entity Entity for which to create the data table query.
 	 * @param reverseQueryList Reverse query list which holds the query to negate the data table query.
+	 * 
 	 * @return String The method returns the "CREATE TABLE" query for the data table query for the entity passed.
+	 * 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	protected String getEntityMainDataTableQuery(Entity entity, List reverseQueryList)
+	protected String getCreateMainTableQuery(Entity entity, List reverseQueryList)
 			throws DynamicExtensionsSystemException
 	{
 		String dataType = getDataTypeForIdentifier();
@@ -315,18 +356,22 @@ class DynamicExtensionBaseQueryBuilder
 
 				if (isAttributeColumnToBeExcluded(attribute))
 				{
+					//column is not created if it is multi select,file type etc.
 					continue;
 				}
 
 				String type = "";
+				//get column info for attribute
 				String attributeQueryPart = getQueryPartForAttribute(attribute, type, true);
 				query = query.append(attributeQueryPart);
 				query = query.append(COMMA);
 			}
 		}
-		query = query.append(PRIMARY_KEY_CONSTRAINT_FOR_ENTITY_DATA_TABLE + ")");
+		query = query.append(PRIMARY_KEY_CONSTRAINT_FOR_ENTITY_DATA_TABLE + ")"); //identifier set as primary key
+
 		String reverseQuery = getReverseQueryForEntityDataTable(entity);
 		reverseQueryList.add(reverseQuery);
+
 		return query.toString();
 	}
 
@@ -362,41 +407,6 @@ class DynamicExtensionBaseQueryBuilder
 	}
 
 	/**
-	 * This method returns the query part for an individual abstract attribute. The abstract attribute can be a primitive
-	 * attribute or association. so according to the type of the attribute appropriate method is called to get the query part of that abstract 
-	 * attribute.
-	 * @param attribute Abstract attribute that can be primitive or association. 
-	 * @return String query part of that attribute.
-	 * @throws DynamicExtensionsSystemException 
-	 */
-	/*protected String getQueryPartForAbstractAttribute(AbstractAttribute attribute, String type,
-	 boolean processUniqueConstraint) throws DynamicExtensionsSystemException
-	 {
-	 String attributeQuery = null;
-	 if (attribute != null)
-	 {
-	 if (attribute instanceof Attribute)
-	 {
-	 try
-	 {
-	 attributeQuery = getQueryPartForAttribute((Attribute) attribute, type,
-	 processUniqueConstraint);
-	 }
-	 catch (DataTypeFactoryInitializationException e)
-	 {
-	 throw new DynamicExtensionsSystemException(
-	 "Exception occured while retrieving the database type of the attribute");
-	 }
-	 }
-	 else if (attribute instanceof Association)
-	 {
-	 //	attributeQuery = getQueryPartForAssociation((Association) attribute);
-	 }
-	 }
-	 return attributeQuery;
-	 }*/
-
-	/**
 	 * This method builds the query part for the primitive attribute 
 	 * @param attribute primitive attribute for which to build the query.
 	 * @return String query part of the primitive attribute.
@@ -414,7 +424,7 @@ class DynamicExtensionBaseQueryBuilder
 			String nullConstraint = "";
 			String defaultConstraint = "";
 			if (processConstraints)
-			{
+			{   
 				if (attribute.getIsPrimaryKey())
 				{
 					isUnique = CONSTRAINT_KEYWORD + WHITESPACE
@@ -527,11 +537,11 @@ class DynamicExtensionBaseQueryBuilder
 	 * @param reverseQueryList Reverse query list that holds the reverse queries.
 	 * @param rollbackQueryStack 
 	 * @param hibernateDAO 
-	 * @return
+	 * @return List of queries
 	 * @throws DynamicExtensionsSystemException 
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	protected List getDataTableQueriesForAssociationsInEntity(Entity entity, List reverseQueryList,
+	protected List getCreateAssociationsQueryList(Entity entity, List reverseQueryList,
 			HibernateDAO hibernateDAO, Stack rollbackQueryStack)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
@@ -545,7 +555,7 @@ class DynamicExtensionBaseQueryBuilder
 				AssociationInterface association = (AssociationInterface) associationIterator
 						.next();
 				if (((Association) association).getIsSystemGenerated())
-				{
+				{ //no need to process system generated association 
 					continue;
 				}
 				boolean isAddAssociationQuery = true;
@@ -559,10 +569,13 @@ class DynamicExtensionBaseQueryBuilder
 
 	/**
 	 * This method builds the query part for the association.
+	 * 
 	 * @param association Association object for which to build the query.
-	 * @param reverseQueryList 
-	 * @return String query part of the association.
-	 * @throws DynamicExtensionsSystemException 
+	 * @param reverseQueryList rollback query list
+	 * @param isAddAssociationQuery boolean indicating whether to create query for 
+	 *        add association or remove association.
+	 * @return
+	 * @throws DynamicExtensionsSystemException
 	 */
 	protected String getQueryPartForAssociation(AssociationInterface association,
 			List reverseQueryList, boolean isAddAssociationQuery)
@@ -583,6 +596,7 @@ class DynamicExtensionBaseQueryBuilder
 		String dataType = getDataTypeForIdentifier();
 		if (sourceMaxCardinality == Cardinality.MANY && targetMaxCardinality == Cardinality.MANY)
 		{
+			//for many-many a middle table is created.
 			tableName = constraintProperties.getName();
 
 			query.append(CREATE_TABLE + WHITESPACE + tableName + WHITESPACE + OPENING_BRACKET
@@ -607,6 +621,7 @@ class DynamicExtensionBaseQueryBuilder
 		else if (sourceMaxCardinality == Cardinality.MANY
 				&& targetMaxCardinality == Cardinality.ONE)
 		{
+			//for many to one, a column is added into source entity table.
 			tableName = sourceEntity.getTableProperties().getName();
 			String columnName = constraintProperties.getSourceEntityKey();
 			query.append(getAddAttributeQuery(tableName, columnName, dataType, reverseQueryList,
@@ -614,6 +629,7 @@ class DynamicExtensionBaseQueryBuilder
 		}
 		else
 		{
+			//for one to one and one to many, a column is added into target entity table.
 			tableName = targetEntity.getTableProperties().getName();
 			String columnName = constraintProperties.getTargetEntityKey();
 			query.append(getAddAttributeQuery(tableName, columnName, dataType, reverseQueryList,
@@ -649,6 +665,16 @@ class DynamicExtensionBaseQueryBuilder
 		}
 	}
 
+	/**
+	 * returns queries for any attribute that is modified.
+	 * @param entity entity
+	 * @param databaseCopy its database copy to compare with
+	 * @param attributeRollbackQueryList rollback query list
+	 * @return query list
+	 * 
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
 	protected List getUpdateAttributeQueryList(Entity entity, Entity databaseCopy,
 			List attributeRollbackQueryList) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
@@ -669,12 +695,15 @@ class DynamicExtensionBaseQueryBuilder
 
 				if (savedAttribute == null || isAttributeColumnToBeAdded(attribute, savedAttribute))
 				{
+					//either attribute is newly added or previously excluded(file type/multiselect) attribute
+					//modified such that now its column needs to add.
 					String attributeQuery = processAddAttribute(attribute,
 							attributeRollbackQueryList);
 					attributeQueryList.add(attributeQuery);
 				}
 				else
 				{
+					//check for other modification in the attributes such a unique constriant change.
 					List modifiedAttributeQueryList = processModifyAttribute(attribute,
 							savedAttribute, attributeRollbackQueryList);
 					attributeQueryList.addAll(modifiedAttributeQueryList);
@@ -683,8 +712,10 @@ class DynamicExtensionBaseQueryBuilder
 			}
 
 		}
+
 		processRemovedAttributes(entity, databaseCopy, attributeQueryList,
 				attributeRollbackQueryList);
+
 		Logger.out.debug("getUpdateAttributeQueryList Exiting method");
 		return attributeQueryList;
 	}
@@ -752,10 +783,10 @@ class DynamicExtensionBaseQueryBuilder
 
 	/**
 	 * This method processes all the attributes that previoulsy saved but removed by editing.
-	 * @param entity
-	 * @param databaseCopy
-	 * @param attributeQueryList
-	 * @param attributeRollbackQueryList
+	 * @param entity entity
+	 * @param databaseCopy databaseCopy
+	 * @param attributeQueryList attributeQueryList
+	 * @param attributeRollbackQueryList attributeRollbackQueryList
 	 * @throws DynamicExtensionsSystemException 
 	 */
 	protected void processRemovedAttributes(Entity entity, Entity databaseCopy,
@@ -770,13 +801,12 @@ class DynamicExtensionBaseQueryBuilder
 			Iterator savedAttributeIterator = savedAttributeCollection.iterator();
 			while (savedAttributeIterator.hasNext())
 			{
-				AbstractAttribute savedAbstractAttribute = (AbstractAttribute) savedAttributeIterator
-						.next();
 
-				Attribute savedAttribute = (Attribute) savedAbstractAttribute;
+				Attribute savedAttribute = (Attribute) savedAttributeIterator.next();
 				Attribute attribute = (Attribute) entity
-						.getAttributeByIdentifier(savedAbstractAttribute.getId());;
-				// removed ??
+						.getAttributeByIdentifier(savedAttribute.getId());;
+				
+     			//attribute is removed or modified such that its column need to be removed
 				if (attribute == null || isAttributeColumnToBeRemoved(attribute, savedAttribute))
 				{
 					String columnName = savedAttribute.getColumnProperties().getName();
@@ -796,9 +826,12 @@ class DynamicExtensionBaseQueryBuilder
 		}
 	}
 
+
 	/**
 	 * This method returns true if a attribute is changed such that its column needs to be removed.
-	 * @return
+	 * @param attribute attribute
+	 * @param dataBaseCopy dataBaseCopy of the  attribute
+	 * @return true if its column to be removed
 	 */
 	protected boolean isAttributeColumnToBeRemoved(AttributeInterface attribute,
 			AttributeInterface dataBaseCopy)
@@ -892,7 +925,10 @@ class DynamicExtensionBaseQueryBuilder
 
 	/**
 	 * This method returns true if a attribute is changed such that its column needs to be added.
-	 * @return
+	 * 
+	 * @param attribute attribute
+	 * @param dataBaseCopy dataBaseCopy
+	 * @return true is column needs to be added.
 	 */
 	protected boolean isAttributeColumnToBeAdded(AttributeInterface attribute,
 			AttributeInterface dataBaseCopy)
@@ -901,11 +937,12 @@ class DynamicExtensionBaseQueryBuilder
 
 		if (!attribute.getIsCollection() && dataBaseCopy.getIsCollection())
 		{
+			//previously multi select, now other.
 			columnAdd = true;
 		}
 		else
 		{
-
+			// //previously file attribute select, now other.
 			AttributeTypeInformationInterface attributeTypeInfo = attribute
 					.getAttributeTypeInformation();
 			AttributeTypeInformationInterface attributeTypeInfoDatabaseCopy = attribute
@@ -1031,8 +1068,6 @@ class DynamicExtensionBaseQueryBuilder
 			attributeRollbackQueryList.add(modifyAttributeRollbackQuery);
 		}
 
-		/*        }
-		 */
 		if (attribute.getIsPrimaryKey() && !savedAttribute.getIsPrimaryKey())
 		{
 
@@ -1111,8 +1146,6 @@ class DynamicExtensionBaseQueryBuilder
 		}
 		catch (HibernateException e1)
 		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
 			throw new DynamicExtensionsSystemException(
 					"Unable to exectute the data table queries .....Cannot access sesssion", e1,
 					DYEXTN_S_002);
@@ -1169,8 +1202,10 @@ class DynamicExtensionBaseQueryBuilder
 	}
 
 	/**
+	 * This method excute the query that selects record ids of the target entity that are associated
+	 * to the source entity for a given association.
 	 * @param query
-	 * @return
+	 * @return List of reocrd ids of the target entity .
 	 * @throws DynamicExtensionsSystemException
 	 */
 	protected List<Long> getAssociationRecordValues(String query)
@@ -1194,20 +1229,30 @@ class DynamicExtensionBaseQueryBuilder
 		return associationRecordValues;
 	}
 
+	/**
+	 * This method make sure the cardinality constaints are properly 
+	 * followed.
+	 * e.g 
+	 * 1. For One to One association,it checks if target entity's record id is not associated to any other
+	 * source entity.
+	 *  
+	 * @param association for which cardinality to be tested.
+	 * @param recordIdList recordIdList (for one to one, it will contain only one entry).
+	 * 
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
+	 */
 	protected void verifyCardinalityConstraints(AssociationInterface association,
 			List<Long> recordIdList) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException
 	{
-		EntityInterface sourceEntity = association.getEntity();
 		EntityInterface targetEntity = association.getTargetEntity();
-		RoleInterface sourceRole = association.getSourceRole();
-		RoleInterface targetRole = association.getTargetRole();
-		Cardinality sourceMaxCardinality = sourceRole.getMaximumCardinality();
-		Cardinality targetMaxCardinality = targetRole.getMaximumCardinality();
-		Cardinality sourceMinCardinality = sourceRole.getMinimumCardinality();
-		Cardinality targetMinCardinality = targetRole.getMinimumCardinality();
+		Cardinality sourceMaxCardinality = association.getSourceRole().getMaximumCardinality();
+		Cardinality targetMaxCardinality = association.getTargetRole().getMaximumCardinality();
+		
 		String columnName = "";
 		String tableName = "";
+		
 		if (targetMaxCardinality == Cardinality.ONE && sourceMaxCardinality == Cardinality.ONE)
 		{
 
@@ -1221,6 +1266,7 @@ class DynamicExtensionBaseQueryBuilder
 			ResultSet resultSet = entityManagerUtil.executeQuery(query);
 			try
 			{
+				// if another source record is already using target record , throw exception.
 				if (resultSet.getInt(1) != 0)
 				{
 					throw new DynamicExtensionsApplicationException(

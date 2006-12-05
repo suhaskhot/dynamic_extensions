@@ -94,7 +94,7 @@ public class EntityManager
 	/**
 	 * Instance of database specific query builder.
 	 */
-	private static DynamicExtensionBaseQueryBuilder queryBuilder = new DynamicExtensionBaseQueryBuilder();
+	private static DynamicExtensionBaseQueryBuilder queryBuilder = null;
 
 	/**
 	 * Instance of entity manager util class 
@@ -117,12 +117,9 @@ public class EntityManager
 		if (entityManagerInterface == null)
 		{
 			entityManagerInterface = new EntityManager();
-			/*This is added for api purpose*/
-			//TODO needs to chk for host application's log4j
-			Logger.configure("");
+			DynamicExtensionsUtility.initialiseApplicationVariables();
+			queryBuilder = QueryBuilderFactory.getQueryBuilder();
 		}
-
-		DynamicExtensionsUtility.initialiseApplicationVariables();
 
 		return entityManagerInterface;
 	}
@@ -1570,6 +1567,8 @@ public class EntityManager
 		Entity entity = (Entity) entityInterface;//(Entity) DynamicExtensionsUtility.cloneObject(entityInterface);
 		List reverseQueryList = new LinkedList();
 		List queryList = null;
+		
+ 	    
 
 		checkForDuplicateEntityName(entity);
 		Entity databaseCopy = null;

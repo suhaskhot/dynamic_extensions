@@ -17,6 +17,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import net.sf.hibernate.HibernateException;
+
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -39,6 +41,7 @@ import edu.common.dynamicextensions.util.global.Variables;
 import edu.wustl.common.bizlogic.AbstractBizLogic;
 import edu.wustl.common.util.CVSTagReader;
 import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
 
@@ -184,6 +187,19 @@ public class DynamicExtensionsUtility
 	 */
 	public static void initialiseApplicationVariables()
 	{
+	    try
+		{
+			DBUtil.currentSession();
+		}
+		catch (HibernateException e)
+		{
+			throw new RuntimeException(e);
+		}
+		
+		if (Logger.out == null) {
+			Logger.configure("");
+		}
+		
 		String fileName = Variables.dynamicExtensionsHome + System.getProperty("file.separator")+ ApplicationProperties.getValue("application.version.file");
         CVSTagReader cvsTagReader = new CVSTagReader();
         String cvsTag = cvsTagReader.readTag(fileName);

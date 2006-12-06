@@ -64,7 +64,6 @@
         <key
             column="IDENTIFIER"
         />
-
         <property
             name="value"
             type="double"
@@ -94,7 +93,6 @@
         <key
             column="IDENTIFIER"
         />
-
         <property
             name="value"
             type="boolean"
@@ -113,7 +111,6 @@
         <key
             column="IDENTIFIER"
         />
-
         <property
             name="value"
             type="date"
@@ -132,7 +129,6 @@
         <key
             column="IDENTIFIER"
         />
-
         <property
             name="value"
             type="float"
@@ -151,7 +147,6 @@
         <key
             column="IDENTIFIER"
         />
-
         <property
             name="value"
             type="long"
@@ -170,7 +165,6 @@
         <key
             column="IDENTIFIER"
         />
-
         <property
             name="value"
             type="string"
@@ -189,7 +183,6 @@
         <key
             column="IDENTIFIER"
         />
-
         <property
             name="value"
             type="short"
@@ -208,7 +201,6 @@
         <key
             column="IDENTIFIER"
         />
-
         <property
             name="value"
             type="integer"

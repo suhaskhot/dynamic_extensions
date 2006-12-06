@@ -303,7 +303,7 @@
             name="entityCollection"
             table="DYEXTN_ENTITY_GROUP_REL"
             lazy="false"
-            inverse="false"
+            inverse="true"
             cascade="none"
             sort="unsorted"
         >
@@ -354,12 +354,19 @@
         <key
             column="IDENTIFIER"
         />
+        <property
+            name="isDataTableCreated"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="IS_DATA_TABLE_CREATED"
+        />
 
         <set
             name="entityGroupCollection"
             table="DYEXTN_ENTITY_GROUP_REL"
             lazy="false"
-            inverse="true"
+            inverse="false"
             cascade="save-update"
             sort="unsorted"
         >

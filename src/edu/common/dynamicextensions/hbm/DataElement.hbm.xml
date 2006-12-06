@@ -68,7 +68,6 @@
         <key
             column="IDENTIFIER"
         />
-
         <property
             name="publicId"
             type="string"

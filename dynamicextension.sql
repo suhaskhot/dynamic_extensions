@@ -126,12 +126,12 @@ drop table DYEXTN_SHORT_TYPE_INFO cascade constraints;
 drop table DYEXTN_CONTAINER cascade constraints;
 drop table DYEXTN_RADIOBUTTON cascade constraints;
 drop table DYEXTN_DATEPICKER cascade constraints;
-drop sequence DYEXTN_PERMISSIBLEVAL_SEQ;
 drop sequence DYEXTN_SEMANTIC_PROPERTY_SEQ;
+drop sequence DYEXTN_PERMISSIBLEVAL_SEQ;
 drop sequence DYEXTN_ATTRIBUTE_TYPE_INFO_SEQ;
 drop sequence DYEXTN_RULE_PARAMETER_SEQ;
-drop sequence DE_FILE_ATTR_REC_VALUES_SEQ;
 drop sequence DYEXTN_ABSTRACT_METADATA_SEQ;
+drop sequence DE_FILE_ATTR_REC_VALUES_SEQ;
 drop sequence DYEXTN_VIEW_SEQ;
 drop sequence DYEXTN_CONTROL_SEQ;
 drop sequence DYEXTN_RULE_SEQ;
@@ -282,7 +282,7 @@ create table DYEXTN_DOUBLE_TYPE_INFO (
 );
 create table DYEXTN_SELECT_CONTROL (
    IDENTIFIER number(19,0) not null,
-   SEPARATOR varchar2(255),
+   SEPARATOR_STRING varchar2(255),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_ENTITY_GROUP_REL (
@@ -551,12 +551,12 @@ alter table DYEXTN_CONTAINER add constraint FK1EAB84E479F466F7 foreign key (ENTI
 alter table DYEXTN_CONTAINER add constraint FK1EAB84E445DEFCF5 foreign key (VIEW_ID) references DYEXTN_VIEW;
 alter table DYEXTN_RADIOBUTTON add constraint FK16F5BA90BC7298A9 foreign key (IDENTIFIER) references DYEXTN_CONTROL;
 alter table DYEXTN_DATEPICKER add constraint FKFEADD199BC7298A9 foreign key (IDENTIFIER) references DYEXTN_CONTROL;
-create sequence DYEXTN_PERMISSIBLEVAL_SEQ;
 create sequence DYEXTN_SEMANTIC_PROPERTY_SEQ;
+create sequence DYEXTN_PERMISSIBLEVAL_SEQ;
 create sequence DYEXTN_ATTRIBUTE_TYPE_INFO_SEQ;
 create sequence DYEXTN_RULE_PARAMETER_SEQ;
-create sequence DE_FILE_ATTR_REC_VALUES_SEQ;
 create sequence DYEXTN_ABSTRACT_METADATA_SEQ;
+create sequence DE_FILE_ATTR_REC_VALUES_SEQ;
 create sequence DYEXTN_VIEW_SEQ;
 create sequence DYEXTN_CONTROL_SEQ;
 create sequence DYEXTN_RULE_SEQ;
@@ -568,4 +568,4 @@ create sequence DYEXTN_ASSO_DISPLAY_ATTR_SEQ;
 create sequence DYEXTN_DATABASE_PROPERTIES_SEQ;
 create sequence DYEXTN_ROLE_SEQ;
 create sequence DYEXTN_TAGGED_VALUE_SEQ;
-create sequence DE_COLL_ATTR_REC_VALUES_SEQ;
+create sequence DE_COLL_ATTR_REC_VALUES_SEQ

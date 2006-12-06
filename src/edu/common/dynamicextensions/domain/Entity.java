@@ -45,6 +45,29 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	 * Collection of EntityGroup.
 	 */
 	protected Collection<EntityGroupInterface> entityGroupCollection = new HashSet<EntityGroupInterface>();
+	
+	/**
+	 * Flag for data table creation
+	 */
+	protected Boolean isDataTableCreated = true;
+	
+	
+	/**@hibernate.property name="isDataTableCreated" type="boolean" column="IS_DATA_TABLE_CREATED" 
+	 * @return
+	 */
+	public Boolean getIsDataTableCreated()
+	{
+		return isDataTableCreated;
+	}
+
+	
+	/**
+	 * @param isDataTableCreated
+	 */
+	public void setIsDataTableCreated(Boolean isDataTableCreated)
+	{
+		this.isDataTableCreated = isDataTableCreated;
+	}
 
 	/**
 	 * Empty Constructor.

@@ -265,4 +265,13 @@ public interface EntityManagerInterface
 	Collection<EntityGroupInterface> getAllEntitiyGroups() throws DynamicExtensionsSystemException,	DynamicExtensionsApplicationException;
 
 
+	/**
+	 * This method returns collection of all the containers of the entity contained within a 
+	 * entity group.
+	 * 
+	 * @param entityGroupIdentifier id of entity group 
+	 * @return collection of the containers
+	 */
+	Collection<ContainerInterface> getAllContainersByEntityGroupId(Long entityGroupIdentifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 }

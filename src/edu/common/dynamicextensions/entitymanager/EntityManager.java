@@ -2148,16 +2148,26 @@ public class EntityManager
 					DYEXTN_A_003);
 		}
 	}
-	
+
 	/**
 	 * Returns all entitiy groups in the whole system
 	 * @return Collection Entity group Collection
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Collection<EntityGroupInterface> getAllEntitiyGroups() throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public Collection<EntityGroupInterface> getAllEntitiyGroups()
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		return getAllObjects(EntityGroupInterface.class.getName());
+	}
+
+	/**
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllContainersByEntityGroupId(java.lang.Long)
+	 */
+	public Collection<ContainerInterface> getAllContainersByEntityGroupId(Long entityGroupIdentifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+
+	{
+		return getAllContainers();
 	}
 }

@@ -248,6 +248,42 @@ public class EntityManager
 	}
 
 	/**
+	 * This method persists an entity group and the associated entities without creating the data table 
+	 * for the entities. 
+	 * @param entityGroupInterface entity group to be saved.
+	 * @return entityGroupInterface Saved  entity group. 
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public EntityGroupInterface persistEntityGroupMetadata(EntityGroupInterface entityGroupInterface)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		logDebug("createEntityGroup", "Entering method");
+		EntityGroup entityGroup = (EntityGroup) entityGroupInterface;
+		//Calling the following method to process the entity group before saving. 
+		//This includes setting the created date and updated date etc.
+		preSaveProcessEntityGroup(entityGroup);
+		//Following method actually calls the dao's insert or update method.
+		boolean isEntityGroupNew = true;
+		if (entityGroupInterface.getId() != null)
+		{
+			isEntityGroupNew = false;
+		}
+		Collection<EntityInterface> entityCollection = entityGroup.getEntityCollection();
+		if (entityCollection != null && !entityCollection.isEmpty()) {
+			for (EntityInterface entityInterface : entityCollection) {
+				if (entityInterface.getId() == null) {
+					((Entity) entityInterface).setIsDataTableCreated(false);
+				}
+			}
+		}
+		entityGroup = saveOrUpdateEntityGroup(entityGroupInterface, isEntityGroupNew);
+		logDebug("createEntity", "Exiting method");
+		return entityGroupInterface;
+	}
+	
+	
+	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getEntityGroupByShortName(java.lang.String)
 	 */
 	public EntityGroupInterface getEntityGroupByShortName(String entityGroupShortName)

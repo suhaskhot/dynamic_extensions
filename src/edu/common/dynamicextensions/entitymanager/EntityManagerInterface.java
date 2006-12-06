@@ -284,4 +284,15 @@ public interface EntityManagerInterface
 	EntityInterface persistEntityMetadata(EntityInterface entityInterface)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 	
+	/**
+	 * This method persists an entity group and the associated entities without creating the data table 
+	 * for the entities. 
+	 * @param entityGroupInterface entity group to be saved.
+	 * @return entityGroupInterface Saved  entity group. 
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	EntityGroupInterface persistEntityGroupMetadata(EntityGroupInterface entityGroupInterface)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	
 }

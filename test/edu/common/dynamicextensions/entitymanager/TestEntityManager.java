@@ -1774,6 +1774,47 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		
 	}
 	
+	
+	 /**
+     * PURPOSE : to test the method persistEntityMetadata. 
+     * EXPECTED BEHAVIOR : It should only save the metadata information of the entity and not create the data table for the entity.
+     * TEST CASE FLOW : 
+     * 1.Create an entity 
+     * 2.Populate the entity. 
+     * 3.Test that the metadata information is properly saved or not. 
+     * 4.Check that the data table is not created.
+     */
+    public void testPersistEntityMetadata()
+    {
+        try
+        {
+            //Step 1 
+        	Entity entity = (Entity) new MockEntityManager().initializeEntity();
+            TaggedValueInterface taggedValue = DomainObjectFactory
+                    .getInstance().createTaggedValue();
+            //Step 2 
+            taggedValue.setKey("a");
+            taggedValue.setValue("b");
+            entity.addTaggedValue(taggedValue);
+            entity = (Entity) EntityManager.getInstance().persistEntityMetadata(entity);
+            
+            //Step 3 
+            Entity newEntity = (Entity) EntityManager.getInstance()
+                    .getEntityByIdentifier(entity.getId().toString());
+            assertEquals(entity.getName(), newEntity.getName());
+            //Step 4
+            String tableName = entity.getTableProperties().getName();
+            assertFalse(isTablePresent(tableName));
+        }
+        catch (Exception e)
+        {
+            //TODO Auto-generated catch block
+            Logger.out.debug(e.getMessage());
+            e.printStackTrace();
+            fail("Exception occured");
+        }
+
+    }
 	/**
 	 * This method tests the creation of entity group
 	 */
@@ -1828,6 +1869,54 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			Entity entity = (Entity) iterator.next();
 			boolean isTablePresent = isTablePresent(entity.getTableProperties().getName());
 			assertTrue(isTablePresent);
+			}
+		}
+		catch (Exception e)
+		{
+			fail();
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * PURPOSE : To test the method persistEntityGroupMetadata
+	 * EXPECTED BEHAVIOR : Entity group metadata should be stored properly without creating the data tables 
+	 * for the associated entities.
+	 * TEST CASE FLOW : 
+	 * 1. Create entity group
+	 * 2. Create entities and add them to the entity group.
+	 * 3. Call the method persistEntityGroupMetadata to store the metdata information.
+	 * 4. Check whether the metadata is stored correctly.
+	 * 5. Check that the data tables are not created for the associated entities.
+	 */
+	public void testPersistEntityGroupMetadataForMultipleEntities()
+	{
+		EntityGroup entityGroup = null;
+		try
+		{
+			//Step 1 
+			MockEntityManager mock = new MockEntityManager();
+			entityGroup = (EntityGroup) mock.initializeEntityGroup();
+			entityGroup.setEntityCollection(new  HashSet());
+			//Step 2 
+			for (int i = 0; i <= 9; i++)
+			{
+				Entity entity = (Entity) mock.initializeEntity();
+				entityGroup.addEntity(entity);
+			}
+			//Step 3
+			entityGroup = (EntityGroup) EntityManager.getInstance().persistEntityGroupMetadata(
+					entityGroup);
+			//Step 4
+			Collection entityCollection = entityGroup.getEntityCollection();
+			assertEquals(10, entityCollection.size());
+			Iterator iterator = entityCollection.iterator();
+			while (iterator.hasNext())
+			{
+				Entity entity = (Entity) iterator.next();
+				//Step 5
+				boolean isTablePresent = isTablePresent(entity.getTableProperties().getName());
+				assertFalse(isTablePresent);
 			}
 		}
 		catch (Exception e)
@@ -1917,4 +2006,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         }
 
     }
+    
+   
+
 }

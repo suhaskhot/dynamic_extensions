@@ -2,12 +2,18 @@
 package edu.common.dynamicextensions.processor;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManager;
+import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
@@ -45,8 +51,9 @@ public class LoadFormControlsProcessor
 	 * @param controlsForm ControlsForm
 	 * @param containerInterface ContainerInterface
 	 * @throws DynamicExtensionsSystemException dynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException 
 	 */
-	public void loadFormControls(ControlsForm controlsForm, ContainerInterface containerInterface) throws DynamicExtensionsSystemException
+	public void loadFormControls(ControlsForm controlsForm, ContainerInterface containerInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		if ((containerInterface != null) && (controlsForm != null))
 		{
@@ -141,8 +148,10 @@ public class LoadFormControlsProcessor
 	/**
 	 * @param userSelectedTool 
 	 * @param controlsForm
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	private void initializeControlDefaultValues(String userSelectedTool, ControlsForm controlsForm)
+	private void initializeControlDefaultValues(String userSelectedTool, ControlsForm controlsForm) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		if ((userSelectedTool != null) && (controlsForm != null))
 		{
@@ -220,7 +229,7 @@ public class LoadFormControlsProcessor
 	/**
 	 * @return list of file formats available for file control
 	 */
-	private List getFileFormatsList()
+	private List<String> getFileFormatsList()
 	{
 		ArrayList<String> fileFormatsList = new ArrayList<String>();
 		fileFormatsList.add("bmp");
@@ -232,15 +241,19 @@ public class LoadFormControlsProcessor
 		return fileFormatsList;
 	}
 	/**
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 * 
 	 */
-	private void initializeOptionButtonControlDefaultValues(ControlsForm controlsForm)
+	private void initializeOptionButtonControlDefaultValues(ControlsForm controlsForm) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		//Set default display choice 
 		if (controlsForm.getDisplayChoice() == null)
 		{
 			controlsForm.setDisplayChoice(ProcessorConstants.DEFAULT_DISPLAY_CHOICE_TYPE);
 		}
+		controlsForm.setGroupNames(getGroupNamesList());
+		controlsForm.setSeparatorList(getSeparatorsList());
 	}
 
 	/**
@@ -272,9 +285,11 @@ public class LoadFormControlsProcessor
 	}
 
 	/**
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 * 
 	 */
-	private void initializeComboboxControlDefaultValues(ControlsForm controlsForm)
+	private void initializeComboboxControlDefaultValues(ControlsForm controlsForm) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		//Set default display choice
 		if (controlsForm.getDisplayChoice() == null)
@@ -290,19 +305,48 @@ public class LoadFormControlsProcessor
 		{
 			controlsForm.setFormTypeForLookup(ProcessorConstants.DEFAULT_LOOKUP_TYPE);
 		}
+		controlsForm.setGroupNames(getGroupNamesList());
+		controlsForm.setSeparatorList(getSeparatorsList());
 	}
 
 	/**
 	 * @return
 	 */
-	private List getGroupNamesList()
+	private List getSeparatorsList()
 	{
-		ArrayList<String> groupNamesList = new ArrayList<String>();
-		groupNamesList.add("Group1");
-		groupNamesList.add("Group2");
-		groupNamesList.add("Group3");
-		groupNamesList.add("Group4");
-		groupNamesList.add("Group5");
+		ArrayList<String> separatorList = new ArrayList<String>();
+		separatorList.add("Comma");
+		separatorList.add("Colon");
+		separatorList.add("Space");
+		separatorList.add("Dot");
+		return separatorList;
+	}
+
+	/**
+	 * @return
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	private List getGroupNamesList() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		ArrayList<NameValueBean> groupNamesList = new ArrayList<NameValueBean>();
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+		Collection<EntityGroupInterface> listOfGroups = entityManager.getAllEntitiyGroups();
+		if(listOfGroups!=null)
+		{
+			EntityGroupInterface entityGroup = null;
+			NameValueBean groupName = null;
+			Iterator<EntityGroupInterface> groupIterator = listOfGroups.iterator();
+			while(groupIterator.hasNext())
+			{
+				entityGroup = groupIterator.next();
+				if(entityGroup!=null)
+				{
+					groupName = new NameValueBean(entityGroup.getName(),entityGroup.getId());
+					groupNamesList.add(groupName);
+				}
+			}
+		}
 		return groupNamesList;
 	}
 
@@ -345,29 +389,7 @@ public class LoadFormControlsProcessor
 		return measurementUnits;
 	}
 
-	
-
-	/**
-	 * 
-	 * @return List DisplayChoiceList
-	 */
-	private List getOptionSpecificationMethods()
-	{
-		List<NameValueBean> optionSpecificationMethods = new ArrayList<NameValueBean>();
-		NameValueBean nameValueBean1 = new NameValueBean("UserDefined", "User Defined");
-		optionSpecificationMethods.add(nameValueBean1);
 		
-		 NameValueBean nameValueBean2 = new NameValueBean("CADSR","CDE");
-		 optionSpecificationMethods.add(nameValueBean2);
-		 
-		 NameValueBean nameValueBean3 = new NameValueBean("Lookup","Look Up");
-		 optionSpecificationMethods.add(nameValueBean3);
-
-		return optionSpecificationMethods;
-	}
-
-	
-
 	/**
 	 * 
 	 * @param controlName name of the control

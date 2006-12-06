@@ -4,6 +4,7 @@ package edu.common.dynamicextensions.ui.webui.action;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -14,13 +15,19 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManager;
+import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.LoadFormControlsProcessor;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.util.global.Constants;
+import edu.wustl.common.beans.NameValueBean;
+import edu.wustl.common.util.logger.Logger;
 
 /**
  * This Action class Loads the Primary Information needed for BuildForm.jsp.
@@ -40,9 +47,10 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 	 * @param response HttpServletResponse response
 	 * @return ActionForward forward to next action
 	 * @throws IOException 
+	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException DynamicExtensionsSystemException
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws IOException
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws IOException, DynamicExtensionsApplicationException
 	{
 		try
 		{
@@ -88,10 +96,11 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 	 */
 	private void changeForm(HttpServletRequest request, HttpServletResponse response, ControlsForm actionForm) throws IOException
 	{
-		List<String> formAttributes = getAttributesForForm(request.getParameter("frmName"));
+		List<NameValueBean> formAttributes = getAttributesForForm(request.getParameter("frmName"));
 		String xmlParentNode = "formAttributes";
-		String xmlSubNode = "form-attribute";
-		String responseXML = getResponseXMLString(xmlParentNode,xmlSubNode,formAttributes);
+		String xmlNodeId = "form-attribute-id";
+		String xmlNodeName = "form-attribute-name";
+		String responseXML = getResponseXMLString(xmlParentNode,xmlNodeId,xmlNodeName,formAttributes);
 		sendResponse(responseXML,response);
 	}
 
@@ -100,12 +109,14 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 	 * @param parameter
 	 * @return
 	 */
-	private List<String> getAttributesForForm(String formName)
+	private List<NameValueBean> getAttributesForForm(String formName)
 	{
-		ArrayList<String> formAttributesList = new ArrayList<String>();
+		ArrayList<NameValueBean> formAttributesList = new ArrayList<NameValueBean>();
+		NameValueBean entityName = null;
 		for(int i=0;i<5;i++)
 		{
-			formAttributesList.add(formName + "-Attr" + i);
+			entityName  = new NameValueBean(formName + "-Attr" + i,i);
+			formAttributesList.add(entityName);
 		}
 		return formAttributesList;
 	}
@@ -115,13 +126,16 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 	 * @param request
 	 * @param actionForm
 	 * @throws IOException 
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	private void changeGroup(HttpServletRequest request, HttpServletResponse response, ControlsForm actionForm) throws IOException
+	private void changeGroup(HttpServletRequest request, HttpServletResponse response, ControlsForm actionForm) throws IOException, DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		List<String> formNames = getFormNamesForGroup(request.getParameter("grpName"));
+		List<NameValueBean> formNames = getFormNamesForGroup(request.getParameter("grpName"));
 		String xmlParentNode = "forms";
-		String xmlSubNode = "form-name";
-		String responseXML = getResponseXMLString(xmlParentNode,xmlSubNode,formNames);
+		String xmlIdNode = "form-id";
+		String xmlNameNode = "form-name";
+		String responseXML = getResponseXMLString(xmlParentNode,xmlIdNode,xmlNameNode,formNames);
 		sendResponse(responseXML,response);
 	}
 
@@ -140,24 +154,36 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 
 	/**
 	 * @param xmlParentNode
-	 * @param xmlSubNode
+	 * @param xmlNameNode
 	 * @param listValues
 	 * @return
 	 */
-	private String getResponseXMLString(String xmlParentNode, String xmlSubNode, List<String> listValues)
+	private String getResponseXMLString(String xmlParentNode, String xmlIdNode,String xmlNameNode, List<NameValueBean> listValues)
 	{
 		StringBuffer responseXML = new StringBuffer();
-		if((xmlParentNode!=null)&&(xmlSubNode!=null)&&(listValues!=null))
+		NameValueBean bean = null;
+		if((xmlParentNode!=null)&&(xmlNameNode!=null)&&(listValues!=null))
 		{
-			responseXML.append("<" + xmlParentNode + ">");
+			responseXML.append("<node>");
 			int noOfValues = listValues.size();
 			for(int i=0;i<noOfValues;i++)
 			{
-				responseXML.append("<" + xmlSubNode + ">");
-				responseXML.append(listValues.get(i));
-				responseXML.append("</" + xmlSubNode + ">");
+				bean = listValues.get(i);
+				if(bean!=null)
+				{
+					responseXML.append("<" + xmlParentNode + ">");
+					responseXML.append("<" + xmlIdNode + ">");
+					responseXML.append(bean.getValue());
+					responseXML.append("</" + xmlIdNode + ">");
+					
+					responseXML.append("<" + xmlNameNode + ">");
+					responseXML.append(bean.getName());
+					responseXML.append("</" + xmlNameNode + ">");
+					responseXML.append("</" + xmlParentNode + ">");
+				}
 			}
-			responseXML.append("</" + xmlParentNode + ">");
+			responseXML.append("</node>");
+			
 		}
 		return responseXML.toString();
 	}
@@ -166,15 +192,53 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 	/**
 	 * @param groupName
 	 * @return
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	private List<String> getFormNamesForGroup(String groupName)
+	private List<NameValueBean> getFormNamesForGroup(String groupId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		ArrayList<String> groupnames = new ArrayList<String>();
+		ArrayList<NameValueBean> formNames = new ArrayList<NameValueBean>();
+		/*if(groupId!=null)
+		{
+			EntityManagerInterface entityManager = EntityManager.getInstance();
+			Long iGroupId = null;
+			try
+			{
+				iGroupId = Long.parseLong(groupId);
+				Collection<ContainerInterface> containerInterfaceList = entityManager.getAllContainersByEntityGroupId(iGroupId);
+				if(containerInterfaceList!=null)
+				{
+					ContainerInterface entityContainer = null;
+					EntityInterface entity = null;
+					NameValueBean entityName = null;
+					Iterator<ContainerInterface> containerIterator = containerInterfaceList.iterator();
+					while(containerIterator.hasNext())
+					{
+						entityContainer = containerIterator.next();
+						if(entityContainer!=null)
+						{
+							entity = entityContainer.getEntity();
+
+							if(entity!=null)
+							{
+								entityName  = new NameValueBean(entity.getName(),entity.getId());
+								formNames.add(entityName);
+							}
+						}
+					}
+				}
+			}catch (NumberFormatException e)
+			{
+				Logger.out.error("Group Id is null..Please check" );
+			}
+		}*/
+		NameValueBean entityName = null;
 		for(int i=0;i<5;i++)
 		{
-			groupnames.add(groupName + "-frm" + i);
+			entityName  = new NameValueBean(groupId + "-Form" + i,i);
+			formNames.add(entityName);
 		}
-		return groupnames;
+		return formNames;
 	}
 
 

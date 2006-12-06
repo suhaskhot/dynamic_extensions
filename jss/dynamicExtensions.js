@@ -44,9 +44,13 @@ function showHomePageFromCreateGroup()
 
 function addControlToFormTree() {
 	
-       document.getElementById('operation').value='controlAdded';
-   	var controlsForm=document.getElementById("controlsForm");
-     controlsForm.action="/dynamicExtensions/AddControlsAction.do";
+	document.getElementById('operation').value='controlAdded';
+	var controlsForm=document.getElementById("controlsForm");
+	if(document.getElementById("selectedFormAttributeList")!=null)
+	{
+		selectAllListAttributes(document.getElementById("selectedFormAttributeList"));
+	}	
+	controlsForm.action="/dynamicExtensions/AddControlsAction.do";
 	controlsForm.submit();
 }
 function addControlToForm() {
@@ -1051,22 +1055,34 @@ function groupChangedResponse(formNameListXML)
 		{
 			htmlFormNameList.options.length = 0;
 
-			var formnames  =  formNameListXML.getElementsByTagName('form-name');
+			var formnames  =  formNameListXML.getElementsByTagName('forms');
 			if(formnames !=null)
 			{
+				var optionName =null;
+				var optionValue = null;
 				for (i=0;i<formnames.length;i++)
 				{
-					if(formnames[i].firstChild!=null)
+					var formnamenode = formnames[i];
+					optionValue = "";
+					optionName = "";
+					for (var j=0; j<formnamenode.childNodes.length; j++) 
 					{
-						optionName = formnames[i].firstChild.nodeValue;
-						if((optionName!=null)&&(optionName!=""))
+						if(formnamenode.childNodes[j].nodeName=="form-id")
 						{
+							optionValue = formnamenode.childNodes[j].firstChild.nodeValue;
+						}
+						if(formnamenode.childNodes[j].nodeName=="form-name")
+						{
+							optionName = formnamenode.childNodes[j].firstChild.nodeValue;
+						}
+					}
+					if((optionName!=null)&&(optionValue!=null))
+					{
 							var oOption = document.createElement("OPTION");
 							htmlFormNameList.options.add(oOption);
 
 							oOption.innerText = optionName;
-							oOption.value = optionName;
-						}
+							oOption.value = optionValue;
 					}
 				}
 			}
@@ -1074,6 +1090,8 @@ function groupChangedResponse(formNameListXML)
 	formChanged();	
 	}
 }
+
+
 
 //When form changed load attributes for form
 function formChanged()
@@ -1101,10 +1119,37 @@ function formChangedResponse(formAttributesListXML)
 		{
 			htmlFormAttributeList.options.length = 0;
 
-			var formAttributes  =  formAttributesListXML.getElementsByTagName('form-attribute');
+			var formAttributes  =  formAttributesListXML.getElementsByTagName('formAttributes');
 			if(formAttributes !=null)
 			{
+				var optionName =null;
+				var optionValue = null;
 				for (i=0;i<formAttributes.length;i++)
+				{
+					var formAttribute = formAttributes[i];
+					optionValue = "";
+					optionName = "";
+					for (var j=0; j<formAttribute.childNodes.length; j++) 
+					{
+						if(formAttribute.childNodes[j].nodeName=="form-attribute-id")
+						{
+							optionValue = formAttribute.childNodes[j].firstChild.nodeValue;
+						}
+						if(formAttribute.childNodes[j].nodeName=="form-attribute-name")
+						{
+							optionName = formAttribute.childNodes[j].firstChild.nodeValue;
+						}
+					}
+					if((optionName!=null)&&(optionValue!=null))
+					{
+							var oOption = document.createElement("OPTION");
+							htmlFormAttributeList.options.add(oOption);
+
+							oOption.innerText = optionName;
+							oOption.value = optionValue;
+					}
+				}
+				/*for (i=0;i<formAttributes.length;i++)
 				{
 					if(formAttributes[i].firstChild!=null)
 					{
@@ -1118,7 +1163,7 @@ function formChangedResponse(formAttributesListXML)
 							oOption.value = optionName;
 						}
 					}
-				}
+				}*/
 			}
 		}
 	}
@@ -1161,6 +1206,7 @@ function transferElementsFromList(fromListBox,toListBox)
 				var newOption = new Option(current.value);
 				toListBox.options[toListBox.length] = newOption;
 				toListBox.options[toListBox.length - 1].value = current.value;
+				toListBox.options[toListBox.length - 1].innerHTML = current.innerHTML;
 			}
 		    }
 		}
@@ -1180,4 +1226,15 @@ function isDuplicateOption(optionValue,optionsList)
 		}
 	}
 	return false;
+}
+
+function selectAllListAttributes(list)
+{
+	if(list!=null)
+	{
+		for(var i=0;i<list.length;i++)
+		{
+			list.options[i].selected=true;
+		}
+	}
 }

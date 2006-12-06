@@ -5,6 +5,12 @@
 <%@page import="edu.common.dynamicextensions.ui.webui.util.OptionValueObject"%>
 <%@page import="java.util.List"%>
 
+<c:set var="groupNamesList" value="${controlsForm.groupNames}"/>
+<jsp:useBean id="groupNamesList" type="java.util.List"/>
+
+<c:set var="separatorList" value="${controlsForm.separatorList}"/>
+<jsp:useBean id="separatorList" type="java.util.List"/>
+
 
 <script language="JavaScript" type="text/javascript" src="jss/ajax.js"></script>
 
@@ -149,6 +155,11 @@
 				</td>
 				<td >
 					<html:select styleClass="formFieldVerySmallSized" property="groupName" styleId="groupName" onchange="groupChanged()">
+						<html:options collection="groupNamesList" labelProperty="name" property="value" />
+						<!--<c:forEach items="${groupNamesList}" var="grpName">
+						<jsp:useBean id="grpName" type="java.lang.String" />
+							<html:option value=''></html:option>
+						</c:forEach>-->
 					</html:select>
 				</td>
 			</tr>
@@ -166,21 +177,49 @@
 			<tr valign="top">
 				<td colspan="3">
 					<table valign="top" align = 'center' width='100%'>
+						<thead>
+						<tr>
+							<th  width="45%" class="formMessage">
+								Available Attributes
+							</th>
+							<th  width="10%" valign="middle" ALIGN="center" class="formMessage" >
+								&nbsp;
+							</th>
+							<th  width="45%" class="formMessage">
+								Selected Attributes
+							</th>
+						</tr>
+						</thead>
 						<tr>
 							<td  width="45%" >
 								<select class="formFieldVerySmallSized" multiple size="3" name="formAttributeList">
 								</select>
 							</td>
 							<td  width="10%" valign="middle" ALIGN="center"  >
-								<input type="button" name="addFormAttribute" value=">>" onclick="selectFormAttribute()" />
-								<input type="button" name="removeFormAttribute" value="<<" onclick="unSelectFormAttribute()" />
+								<input type="button" name="addFormAttribute" value="Add" onclick="selectFormAttribute()" />
+								<input type="button" name="removeFormAttribute" value="Remove" onclick="unSelectFormAttribute()" />
 							</td>
 							<td  width="45%" >
-								<select multiple size="3" name="selectedFormAttributeList" class="formFieldVerySmallSized">
-								</select>
+								<html:select multiple="true" size="3" property="selectedFormAttributeList" styleId="selectedFormAttributeList" styleClass="formFieldVerySmallSized">
+								</html:select>
 							</td>
 						</tr>
 					</table>
+				</td>
+			</tr>
+			<tr valign="top">
+				<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
+				<td class="formRequiredLabelWithoutBorder" width="25%">
+					Separate with :
+				</td>
+				<td  >
+					<html:select styleClass="formFieldVerySmallSized" property="separator" styleId="separator" >
+					<c:forEach items="${separatorList}" var="separator">
+						<jsp:useBean id="separator" type="java.lang.String" />
+							<html:option value='<%=separator%>'></html:option>
+						</c:forEach>
+
+					</html:select>
 				</td>
 			</tr>
 		</table>

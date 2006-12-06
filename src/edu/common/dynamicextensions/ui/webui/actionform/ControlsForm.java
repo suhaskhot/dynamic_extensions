@@ -18,6 +18,7 @@ import edu.common.dynamicextensions.ui.interfaces.ControlUIBeanInterface;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.actionForm.AbstractActionForm;
+import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.global.Validator;
@@ -293,15 +294,26 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	 * Public domain ID for CDE
 	 */
 	protected String publicDomainId;
-	
+	protected List groupNames;
+	protected List separatorList;
 	protected String groupName;
 	protected String formName;
+	protected String separator;
 	protected String[] selectedFormAttributeList;
 	/**
 	 * 
 	 */
 	protected String[]sequenceNumbers;
 	
+	public List getGroupNames()
+	{
+		return this.groupNames;
+	}
+
+	public void setGroupNames(List groupNames)
+	{
+		this.groupNames = groupNames;
+	}
 	
 	/**
 	 * 
@@ -1630,5 +1642,25 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	public void setSelectedFormAttributeList(String[] selectedFormAttributeList)
 	{
 		this.selectedFormAttributeList = selectedFormAttributeList;
+	}
+
+	public List getSeparatorList()
+	{
+		return this.separatorList;
+	}
+
+	public void setSeparatorList(List separatorList)
+	{
+		this.separatorList = separatorList;
+	}
+
+	public String getSeparator()
+	{
+		return this.separator;
+	}
+
+	public void setSeparator(String separator)
+	{
+		this.separator = separator;
 	}
 }

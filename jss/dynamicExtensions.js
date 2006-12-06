@@ -1132,20 +1132,37 @@ function selectFormAttribute()
 
 function unSelectFormAttribute()
 {
-	var toListBox = document.getElementById('formAttributeList');
 	var fromListBox = document.getElementById('selectedFormAttributeList');
-	transferElementsFromList(fromListBox,toListBox);
+	if(fromListBox!=null)
+	{
+		for (i=0;i<fromListBox.options.length;i++)
+		{
+		    var current = fromListBox.options[i];
+		    if (current.selected)
+		    {
+			fromListBox.options[i] = null;
+		    }
+		}
+	}
 }
 function transferElementsFromList(fromListBox,toListBox)
 {
 	if((fromListBox!=null)&&(toListBox!=null))
 	{
-		var selectedItemIndex = fromListBox.selectedIndex;
-		if(-1 == selectedItemIndex)
+		for (i=0;i<fromListBox.options.length;i++)
 		{
-			return;
+		    var current = fromListBox.options[i];
+		    if (current.selected)
+		    {
+		    	var newOption = new Option(current.value);
+		    	if(toListBox.contains(newOption))
+		    	{
+		    		alert("True1");
+		    	}
+		    	
+			toListBox.options[toListBox.length] = newOption;
+			toListBox.options[toListBox.length - 1].value = current.value;
+		    }
 		}
-		toListBox.options[toListBox.length] = new Option(fromListBox.options[selectedItemIndex].value);
-		toListBox.options[toListBox.length - 1].value = fromListBox.options[selectedItemIndex].value;
 	}
 }

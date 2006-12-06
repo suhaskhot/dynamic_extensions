@@ -270,9 +270,12 @@ public class EntityManager
 			isEntityGroupNew = false;
 		}
 		Collection<EntityInterface> entityCollection = entityGroup.getEntityCollection();
-		if (entityCollection != null && !entityCollection.isEmpty()) {
-			for (EntityInterface entityInterface : entityCollection) {
-				if (entityInterface.getId() == null) {
+		if (entityCollection != null && !entityCollection.isEmpty())
+		{
+			for (EntityInterface entityInterface : entityCollection)
+			{
+				if (entityInterface.getId() == null)
+				{
 					((Entity) entityInterface).setIsDataTableCreated(false);
 				}
 			}
@@ -281,8 +284,7 @@ public class EntityManager
 		logDebug("createEntity", "Exiting method");
 		return entityGroupInterface;
 	}
-	
-	
+
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getEntityGroupByShortName(java.lang.String)
 	 */
@@ -631,7 +633,8 @@ public class EntityManager
 					if (targetEntity.getId() == null)
 					{
 						boolean isEntitySaved = false;
-						((Entity) targetEntity).setIsDataTableCreated(entity.getIsDataTableCreated());
+						((Entity) targetEntity).setIsDataTableCreated(entity
+								.getIsDataTableCreated());
 						targetEntity = saveOrUpdateEntity(targetEntity, hibernateDAO,
 								rollbackQueryStack, isEntitySaved);
 					}
@@ -2227,5 +2230,19 @@ public class EntityManager
 		Map<Long, List<String>> displayAttributeMap = new HashMap<Long, List<String>>();
 
 		return displayAttributeMap;
+	}
+
+	/**
+	 * This method returns container interface given the container identifier
+	 * @param identifier
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public ContainerInterface getContainerByIdentifier(String identifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		return (ContainerInterface) getObjectByIdentifier(ContainerInterface.class.getName(),
+				identifier);
 	}
 }

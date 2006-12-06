@@ -38,6 +38,7 @@ import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
@@ -2007,6 +2008,72 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
     }
     
-   
+    /**
+     * 
+     */
+    public void testgetAllContainersByEntityGroupId() {
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		
+		ContainerInterface userContainer = factory.createContainer();
+		userContainer.setCaption("userContainer");
+		EntityInterface user = factory.createEntity();
+		user.setName("User");
+		userContainer.setEntity(user);
+		
+		ContainerInterface managerContainer = factory.createContainer();
+		managerContainer.setCaption("managerContainer");
+		EntityInterface manager = factory.createEntity();
+		manager.setName("Manager");
+		managerContainer.setEntity(manager);
+		
+		
+		EntityGroupInterface userGroup = factory.createEntityGroup();
+		userGroup.addEntity(user);
+		userGroup.addEntity(manager);
+		
+		
+		
+		ContainerInterface studyContainer = factory.createContainer();
+		studyContainer.setCaption("newstudyContainer");
+		EntityInterface study = factory.createEntity();
+		study.setName("study");
+		studyContainer.setEntity(study);
+		
+		ContainerInterface javaStudyContainer = factory.createContainer();
+		javaStudyContainer.setCaption("javaStudyContainer");
+		EntityInterface javaStudy = factory.createEntity();
+		javaStudy.setName("javaStudy");
+		javaStudyContainer.setEntity(javaStudy);
+		
+		EntityGroupInterface studyGroup = factory.createEntityGroup();
+		studyGroup.addEntity(study);
+		studyGroup.addEntity(javaStudy);
+		
+		study.addEntityGroupInterface(studyGroup);
+		javaStudy.addEntityGroupInterface(studyGroup);
+		
+		
+		
+		
+		try {
+			
+			userContainer = entityManager.persistContainer(userContainer);
+			managerContainer = entityManager.persistContainer(managerContainer);
+			studyContainer = entityManager.persistContainer(studyContainer);
+			javaStudyContainer = entityManager.persistContainer(javaStudyContainer);
+			
+			Long studyGroupId = studyGroup.getId();
+			
+			Collection studyGroupContainerCollection = entityManager.getAllContainersByEntityGroupId(studyGroupId);
+			
+			assertEquals(2, studyGroupContainerCollection.size());
+			
+			
+		}  catch(Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+    }
 
 }

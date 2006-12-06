@@ -31,7 +31,13 @@
        			   	     collectionAttributeRecord.recordId = ?
 	</query>
 	
-	
-	
+	<query name="getAllContainersByEntityGroupId">
+	   from Container container
+	         	where container.entity.id in
+             			(select entity.id
+                      		from Entity entity
+	                             join entity.entityGroupCollection entityGroup
+	                                     where entityGroup.id = ?)
+	</query>
 	</hibernate-mapping>
     

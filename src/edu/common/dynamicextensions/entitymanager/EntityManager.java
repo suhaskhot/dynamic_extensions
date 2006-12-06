@@ -2221,7 +2221,9 @@ public class EntityManager
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 
 	{
-		return getAllContainers();
+		Map substitutionParameterMap = new HashMap();
+        substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entityGroupIdentifier));
+		return executeHQL("getAllContainersByEntityGroupId", substitutionParameterMap);
 	}
 
 	public Map<Long, List<String>> getTargetEntityDisplayAttribute(SelectControl selectControl)

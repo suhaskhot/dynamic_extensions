@@ -43,7 +43,7 @@ public abstract class SelectControl extends Control implements AssociationContro
 
 	/**
 	 * @return Returns the separator
-	 * @hibernate.property name="separator" type="string" column="SEPARATOR"
+	 * @hibernate.property name="separator" type="string" column="SEPARATOR_STRING"
 	 */
 	public String getSeparator()
 	{

@@ -17,6 +17,7 @@ import edu.common.dynamicextensions.domain.userinterface.TextField;
 import edu.common.dynamicextensions.domain.userinterface.View;
 import edu.common.dynamicextensions.domain.validationrules.Rule;
 import edu.common.dynamicextensions.domain.validationrules.RuleParameter;
+import edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.BooleanValueInterface;
@@ -633,5 +634,12 @@ public class DomainObjectFactory
     public FileAttributeRecordValue createFileAttributeRecordValue()
     {
     	return new FileAttributeRecordValue(); 
+    }
+    
+    /**
+     * @return
+     */
+    public AssociationDisplayAttributeInterface createAssociationDisplayAttribute() {
+    	return new AssociationDisplayAttribute();
     }
 }

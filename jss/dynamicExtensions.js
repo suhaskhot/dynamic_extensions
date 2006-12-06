@@ -1135,10 +1135,11 @@ function unSelectFormAttribute()
 	var fromListBox = document.getElementById('selectedFormAttributeList');
 	if(fromListBox!=null)
 	{
-		for (i=0;i<fromListBox.options.length;i++)
+		var noOfElements = fromListBox.options.length;
+		for (i=noOfElements-1;i>=0;i--)
 		{
 		    var current = fromListBox.options[i];
-		    if (current.selected)
+		    if((current!=null)&&(current.selected))
 		    {
 			fromListBox.options[i] = null;
 		    }
@@ -1154,15 +1155,28 @@ function transferElementsFromList(fromListBox,toListBox)
 		    var current = fromListBox.options[i];
 		    if (current.selected)
 		    {
-		    	var newOption = new Option(current.value);
-		    	if(toListBox.contains(newOption))
+		    	if(!isDuplicateOption(current.value,toListBox))
 		    	{
-		    		alert("True1");
-		    	}
-		    	
-			toListBox.options[toListBox.length] = newOption;
-			toListBox.options[toListBox.length - 1].value = current.value;
+				var newOption = new Option(current.value);
+				toListBox.options[toListBox.length] = newOption;
+				toListBox.options[toListBox.length - 1].value = current.value;
+			}
 		    }
 		}
 	}
+}
+
+function isDuplicateOption(optionValue,optionsList)
+{
+	if((optionsList!=null)&&(optionValue!=null))
+	{
+		for(var i=0;i<optionsList.length;i++)
+		{
+			if(optionsList.options[i].value == optionValue)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
 }

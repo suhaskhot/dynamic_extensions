@@ -294,17 +294,9 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	 */
 	protected String publicDomainId;
 	
-	/**
-	 * List of group names for lookup
-	 */
-	protected List groupNames;
-	//Form names
-	protected List formNames;
-	/**
-	 * Selected group name
-	 */
 	protected String groupName;
 	protected String formName;
+	protected String[] selectedFormAttributeList;
 	/**
 	 * 
 	 */
@@ -1609,16 +1601,7 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		this.publicDomainId = publicDomainId;
 	}
 
-	public List getGroupNames()
-	{
-		return this.groupNames;
-	}
-
-	public void setGroupNames(List groupNames)
-	{
-		this.groupNames = groupNames;
-	}
-
+	
 	public String getGroupName()
 	{
 		return this.groupName;
@@ -1629,16 +1612,6 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		this.groupName = groupName;
 	}
 
-	public List getFormNames()
-	{
-		return this.formNames;
-	}
-
-	public void setFormNames(List formNames)
-	{
-		this.formNames = formNames;
-	}
-
 	public String getFormName()
 	{
 		return this.formName;
@@ -1647,5 +1620,15 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	public void setFormName(String formName)
 	{
 		this.formName = formName;
+	}
+
+	public String[] getSelectedFormAttributeList()
+	{
+		return this.selectedFormAttributeList;
+	}
+
+	public void setSelectedFormAttributeList(String[] selectedFormAttributeList)
+	{
+		this.selectedFormAttributeList = selectedFormAttributeList;
 	}
 }

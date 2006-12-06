@@ -236,11 +236,6 @@ public class LoadFormControlsProcessor
 	 */
 	private void initializeOptionButtonControlDefaultValues(ControlsForm controlsForm)
 	{
-		//List of display choices
-		/*if (controlsForm.getOptionSpecificationMethods() == null)
-		{
-			controlsForm.setOptionSpecificationMethods(getOptionSpecificationMethods());
-		}*/
 		//Set default display choice 
 		if (controlsForm.getDisplayChoice() == null)
 		{
@@ -281,12 +276,6 @@ public class LoadFormControlsProcessor
 	 */
 	private void initializeComboboxControlDefaultValues(ControlsForm controlsForm)
 	{
-		/*//List of display choices
-		if (controlsForm.getOptionSpecificationMethods() == null)
-		{
-			controlsForm.setOptionSpecificationMethods(getOptionSpecificationMethods());
-		}*/
-		
 		//Set default display choice
 		if (controlsForm.getDisplayChoice() == null)
 		{
@@ -301,8 +290,6 @@ public class LoadFormControlsProcessor
 		{
 			controlsForm.setFormTypeForLookup(ProcessorConstants.DEFAULT_LOOKUP_TYPE);
 		}
-		controlsForm.setGroupNames(getGroupNamesList());
-		controlsForm.setFormNames(new ArrayList<String>());
 	}
 
 	/**

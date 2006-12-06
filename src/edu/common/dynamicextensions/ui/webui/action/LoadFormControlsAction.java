@@ -88,7 +88,7 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 	 */
 	private void changeForm(HttpServletRequest request, HttpServletResponse response, ControlsForm actionForm) throws IOException
 	{
-		List formAttributes = getAttributesForForm(request.getParameter("frmName"));
+		List<String> formAttributes = getAttributesForForm(request.getParameter("frmName"));
 		String xmlParentNode = "formAttributes";
 		String xmlSubNode = "form-attribute";
 		String responseXML = getResponseXMLString(xmlParentNode,xmlSubNode,formAttributes);
@@ -100,7 +100,7 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 	 * @param parameter
 	 * @return
 	 */
-	private List getAttributesForForm(String formName)
+	private List<String> getAttributesForForm(String formName)
 	{
 		ArrayList<String> formAttributesList = new ArrayList<String>();
 		for(int i=0;i<5;i++)
@@ -123,7 +123,6 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 		String xmlSubNode = "form-name";
 		String responseXML = getResponseXMLString(xmlParentNode,xmlSubNode,formNames);
 		sendResponse(responseXML,response);
-		actionForm.setFormNames(formNames);
 	}
 
 

@@ -1031,14 +1031,15 @@ function groupChanged()
 
 	//no brackets after the function name and no parameters are passed because we are assigning a reference to the function and not actually calling it
 	request.onreadystatechange = handlerFunction;
-	var action = "/dynamicExtensions/SelectControlAction.do";
-
-	//Open connection to servlet
-	request.open("POST","LoadFormControlsAction.do",true);
-	request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 	//send data to ActionServlet
-	var grpName  = document.getElementById('groupName').value;
-	request.send("&operation=changeGroup&grpName="+grpName);
+	if(document.getElementById('groupName')!=null)
+	{
+		//Open connection to servlet
+		request.open("POST","LoadFormControlsAction.do",true);
+		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+		var grpName  = document.getElementById('groupName').value;
+		request.send("&operation=changeGroup&grpName="+grpName);
+	}	
 }
 
 function groupChangedResponse(formNameListXML)
@@ -1079,17 +1080,17 @@ function formChanged()
 {
 	var request = newXMLHTTPReq();
 	var handlerFunction = getReadyStateHandler(request,formChangedResponse,false);
-
 	//no brackets after the function name and no parameters are passed because we are assigning a reference to the function and not actually calling it
 	request.onreadystatechange = handlerFunction;
-	var action = "/dynamicExtensions/SelectControlAction.do";
-
-	//Open connection to servlet
-	request.open("POST","LoadFormControlsAction.do",true);
-	request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-	//send data to ActionServlet
-	var frmName  = document.getElementById('formName').value;
-	request.send("&operation=changeForm&frmName="+frmName);
+	if(document.getElementById('formName')!=null)
+	{
+		//send data to ActionServlet
+		var frmName  = document.getElementById('formName').value;
+		//Open connection to servlet
+		request.open("POST","LoadFormControlsAction.do",true);
+		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+		request.send("&operation=changeForm&frmName="+frmName);
+	}	
 }
 function formChangedResponse(formAttributesListXML)
 {

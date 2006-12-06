@@ -814,9 +814,18 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			shortAttributeInterface.setDefaultValue(shortValue);
 		}
 		shortAttributeInterface.setMeasurementUnits(attributeUIBeanInformationIntf.getAttributeMeasurementUnits());
-		shortAttributeInterface.setDecimalPlaces(Integer.parseInt(attributeUIBeanInformationIntf.getAttributeDecimalPlaces()));
-		shortAttributeInterface.setDigits(Integer.parseInt(attributeUIBeanInformationIntf.getAttributeDigits()));
-
+		//Decimal places
+		String strDecimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces(); 
+		if ((strDecimalPlaces!= null)&& (!strDecimalPlaces.trim().equals("")))
+		{
+			shortAttributeInterface.setDecimalPlaces(Integer.parseInt(strDecimalPlaces));
+		}
+		//digits
+		String strDigits = attributeUIBeanInformationIntf.getAttributeDigits(); 
+		if ((strDigits!= null)&& (!strDigits.trim().equals("")))
+		{
+			shortAttributeInterface.setDigits(Integer.parseInt(strDigits));
+		}
 	}
 
 	/**
@@ -852,8 +861,18 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			integerAttributeInterface.setDefaultValue(integerValue);
 		}
 		integerAttributeInterface.setMeasurementUnits(attributeUIBeanInformationIntf.getAttributeMeasurementUnits());
-		integerAttributeInterface.setDecimalPlaces(Integer.parseInt(attributeUIBeanInformationIntf.getAttributeDecimalPlaces()));
-		integerAttributeInterface.setDigits(Integer.parseInt(attributeUIBeanInformationIntf.getAttributeDigits()));
+		//Decimal places
+		String strDecimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces(); 
+		if ((strDecimalPlaces!= null)&& (!strDecimalPlaces.trim().equals("")))
+		{
+			integerAttributeInterface.setDecimalPlaces(Integer.parseInt(strDecimalPlaces));
+		}
+		//digits
+		String strDigits = attributeUIBeanInformationIntf.getAttributeDigits(); 
+		if ((strDigits!= null)&& (!strDigits.trim().equals("")))
+		{
+			integerAttributeInterface.setDigits(Integer.parseInt(strDigits));
+		}
 
 	}
 
@@ -874,8 +893,18 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			longAttributeInterface.setDefaultValue(longValue);
 		}
 		longAttributeInterface.setMeasurementUnits(attributeUIBeanInformationIntf.getAttributeMeasurementUnits());
-		longAttributeInterface.setDecimalPlaces(Integer.parseInt(attributeUIBeanInformationIntf.getAttributeDecimalPlaces()));
-		longAttributeInterface.setDigits(Integer.parseInt(attributeUIBeanInformationIntf.getAttributeDigits()));
+//		Decimal places
+		String strDecimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces(); 
+		if ((strDecimalPlaces!= null)&& (!strDecimalPlaces.trim().equals("")))
+		{
+			longAttributeInterface.setDecimalPlaces(Integer.parseInt(strDecimalPlaces));
+		}
+		//digits
+		String strDigits = attributeUIBeanInformationIntf.getAttributeDigits(); 
+		if ((strDigits!= null)&& (!strDigits.trim().equals("")))
+		{
+			longAttributeInterface.setDigits(Integer.parseInt(strDigits));
+		}
 
 	}
 
@@ -895,8 +924,18 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			floatAttributeInterface.setDefaultValue(floatValue);
 		}
 		floatAttributeInterface.setMeasurementUnits(attributeUIBeanInformationIntf.getAttributeMeasurementUnits());
-		floatAttributeInterface.setDecimalPlaces(Integer.parseInt(attributeUIBeanInformationIntf.getAttributeDecimalPlaces()));
-		floatAttributeInterface.setDigits(Integer.parseInt(attributeUIBeanInformationIntf.getAttributeDigits()));
+		//Decimal places
+		String strDecimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces(); 
+		if ((strDecimalPlaces!= null)&& (!strDecimalPlaces.trim().equals("")))
+		{
+			floatAttributeInterface.setDecimalPlaces(Integer.parseInt(strDecimalPlaces));
+		}
+		//digits
+		String strDigits = attributeUIBeanInformationIntf.getAttributeDigits(); 
+		if ((strDigits!= null)&& (!strDigits.trim().equals("")))
+		{
+			floatAttributeInterface.setDigits(Integer.parseInt(strDigits));
+		}
 
 	}
 
@@ -916,8 +955,19 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			doubleAttributeInterface.setDefaultValue(doubleValue);
 		}
 		doubleAttributeInterface.setMeasurementUnits(attributeUIBeanInformationIntf.getAttributeMeasurementUnits());
-		doubleAttributeInterface.setDecimalPlaces(Integer.parseInt(attributeUIBeanInformationIntf.getAttributeDecimalPlaces()));
-		doubleAttributeInterface.setDigits(Integer.parseInt(attributeUIBeanInformationIntf.getAttributeDigits()));
+		
+		//Decimal places
+		String strDecimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces(); 
+		if ((strDecimalPlaces!= null)&& (!strDecimalPlaces.trim().equals("")))
+		{
+			doubleAttributeInterface.setDecimalPlaces(Integer.parseInt(strDecimalPlaces));
+		}
+		//digits
+		String strDigits = attributeUIBeanInformationIntf.getAttributeDigits(); 
+		if ((strDigits!= null)&& (!strDigits.trim().equals("")))
+		{
+			doubleAttributeInterface.setDigits(Integer.parseInt(strDigits));
+		}
 		//doubleAttributeInterface.setValidationRules(attributeInformationIntf.getValidationRules());
 	}
 

@@ -5,11 +5,6 @@
 <%@page import="edu.common.dynamicextensions.ui.webui.util.OptionValueObject"%>
 <%@page import="java.util.List"%>
 
-<c:set var="groupNamesList" value="${controlsForm.groupNames}"/>
-<jsp:useBean id="groupNamesList" type="java.util.List"/>
-
-<c:set var="formNamesList" value="${controlsForm.formNames}"/>
-<jsp:useBean id="formNamesList" type="java.util.List"/>
 
 <script language="JavaScript" type="text/javascript" src="jss/ajax.js"></script>
 
@@ -154,10 +149,6 @@
 				</td>
 				<td >
 					<html:select styleClass="formFieldVerySmallSized" property="groupName" styleId="groupName" onchange="groupChanged()">
-						<c:forEach items="${groupNamesList}" var="grpName">
-						<jsp:useBean id="grpName" type="java.lang.String" />
-							<html:option value='<%=grpName%>'></html:option>
-						</c:forEach>
 					</html:select>
 				</td>
 			</tr>

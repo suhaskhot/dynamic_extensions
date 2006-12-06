@@ -98,8 +98,8 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException : Exception thrown by Entity Manager
 	 * @throws DynamicExtensionsSystemException :  Exception thrown by Entity Manager
 	 */
-	public void saveContainer(ContainerInterface containerInterface) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	public ContainerInterface saveContainer(ContainerInterface containerInterface) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
-		EntityManager.getInstance().persistContainer(containerInterface);
+		return EntityManager.getInstance().persistContainer(containerInterface);
 	}
 }

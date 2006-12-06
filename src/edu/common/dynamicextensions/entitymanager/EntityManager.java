@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,12 +38,14 @@ import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domain.userinterface.SelectControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -2222,7 +2225,7 @@ public class EntityManager
 
 	{
 		Map substitutionParameterMap = new HashMap();
-        substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entityGroupIdentifier));
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entityGroupIdentifier));
 		return executeHQL("getAllContainersByEntityGroupId", substitutionParameterMap);
 	}
 
@@ -2246,5 +2249,72 @@ public class EntityManager
 	{
 		return (ContainerInterface) getObjectByIdentifier(ContainerInterface.class.getName(),
 				identifier);
+	}
+
+	/**
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getRecordsForAssociationControl(edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface)
+	 */
+	public Map<Long,List<String>> getRecordsForAssociationControl(
+			AssociationControlInterface associationControl) throws DynamicExtensionsSystemException
+	{
+		Map<Long, List<String>> outputMap = new HashMap<Long, List<String>>();
+
+		Collection associationAttributesCollection = associationControl
+				.getAssociationDisplayAttributeCollection();
+
+		List associationAttributesList = new ArrayList(associationAttributesCollection);
+		Collections.sort(associationAttributesList);
+		String[] selectColumnName = new String[associationAttributesList.size() + 1];
+
+		Iterator attributeIterator = associationAttributesCollection.iterator();
+		AssociationDisplayAttributeInterface displayAttribute = null;
+		selectColumnName[0] = IDENTIFIER;
+		int index = 1;
+		while (attributeIterator.hasNext())
+		{
+			displayAttribute = (AssociationDisplayAttributeInterface) attributeIterator.next();
+			selectColumnName[index++] = displayAttribute.getAttribute().getColumnProperties()
+					.getName();
+		}
+
+		String tableName = displayAttribute.getAttribute().getEntity().getTableProperties()
+				.getName();
+
+		JDBCDAO jdbcDao = null;
+		try
+		{
+			jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
+			jdbcDao.openSession(null);
+
+			List result = jdbcDao.retrieve(tableName, selectColumnName);
+			if (result != null)
+			{
+				for (int i = 0; i < result.size(); i++)
+				{
+					List innerList = (List) result.get(i);
+					Long recordId = Long.parseLong((String) innerList.get(i));
+					innerList.remove(0);
+					outputMap.put(recordId, innerList);
+				}
+			}
+		}
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
+		}
+		finally
+		{
+
+			try
+			{
+				jdbcDao.closeSession();
+			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
+			}
+		}
+
+		return outputMap;
 	}
 }

@@ -18,14 +18,15 @@ import edu.common.dynamicextensions.domaininterface.RoleInterface;
  */
 public class AssociationDisplayAttribute extends DynamicExtensionBaseDomainObject
 		implements
-			AssociationDisplayAttributeInterface
+			AssociationDisplayAttributeInterface,
+			Comparable
 {
 
 	/**
 	 * 
 	 */
 	private int sequenceNumber = 0;
-	
+
 	/**
 	 * 
 	 */
@@ -84,5 +85,16 @@ public class AssociationDisplayAttribute extends DynamicExtensionBaseDomainObjec
 	public void setAttribute(AttributeInterface attribute)
 	{
 		this.attribute = attribute;
+	}
+
+	/** 
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	public int compareTo(Object object)
+	{
+		AssociationDisplayAttribute associationDisplayAttribute = (AssociationDisplayAttribute) object;
+		Integer thisSequenceNumber = this.sequenceNumber;
+		Integer otherSequenceNumber = associationDisplayAttribute.getSequenceNumber();
+		return thisSequenceNumber.compareTo(otherSequenceNumber);
 	}
 }

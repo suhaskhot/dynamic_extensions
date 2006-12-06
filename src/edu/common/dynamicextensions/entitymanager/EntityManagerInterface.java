@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.entitymanager;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
@@ -9,6 +10,7 @@ import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -314,5 +316,16 @@ public interface EntityManagerInterface
 	 */
 	ContainerInterface getContainerByIdentifier(String identifier)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	
+	
+	/**
+	 * This method returns the all the record for the given control of the 
+	 * association.
+	 * 
+	 * @return map 
+	 *    key   recordId
+	 *    value List<String> list of column values 
+	 */
+	Map<Long,List<String>> getRecordsForAssociationControl(AssociationControlInterface associationControl)  throws DynamicExtensionsSystemException;
 
 }

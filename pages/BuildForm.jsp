@@ -15,7 +15,7 @@
 		<script src="<%=request.getContextPath()%>/jss/overlib_mini.js" type="text/javascript"></script>
 		<script src="<%=request.getContextPath()%>/jss/calender.js" type="text/javascript"></script>
 		<script src="<%=request.getContextPath()%>/jss/calendarComponent.js"></script>
-
+		<script language="JavaScript" type="text/javascript" src="jss/ajax.js"></script>
 		<title>Dynamic Extensions</title>
 		
 		<script language="JavaScript" type="text/javascript">

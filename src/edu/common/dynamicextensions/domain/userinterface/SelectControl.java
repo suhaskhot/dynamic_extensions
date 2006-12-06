@@ -6,18 +6,18 @@ import java.util.HashSet;
 
 import edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.SelectInterface;
 
 /**
  * @author rahul_ner
  * @hibernate.joined-subclass table="DYEXTN_SELECT_CONTROL"
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
-public abstract class SelectControl extends Control implements AssociationControlInterface
+public abstract class SelectControl extends Control implements AssociationControlInterface, SelectInterface
 {
-
 	String separator = "";
 
-	Collection<AssociationDisplayAttributeInterface> associationDisplayAttributeCollection = new HashSet();
+	Collection<AssociationDisplayAttributeInterface> associationDisplayAttributeCollection = new HashSet<AssociationDisplayAttributeInterface>();
 
 	/**
 	 * This method Returns the associationDisplayAttributeCollection.
@@ -35,8 +35,7 @@ public abstract class SelectControl extends Control implements AssociationContro
 	/**
 	 * @param associationDisplayAttributeCollection The associationDisplayAttributeCollection to set.
 	 */
-	public void setAssociationDisplayAttributeCollection(
-			Collection<AssociationDisplayAttributeInterface> associationDisplayAttributeCollection)
+	public void setAssociationDisplayAttributeCollection(Collection<AssociationDisplayAttributeInterface> associationDisplayAttributeCollection)
 	{
 		this.associationDisplayAttributeCollection = associationDisplayAttributeCollection;
 	}
@@ -61,8 +60,7 @@ public abstract class SelectControl extends Control implements AssociationContro
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface#addAssociationDisplayAttribute(edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeInterface)
 	 */
-	public void addAssociationDisplayAttribute(
-			AssociationDisplayAttributeInterface associationDisplayAttribute)
+	public void addAssociationDisplayAttribute(AssociationDisplayAttributeInterface associationDisplayAttribute)
 	{
 		associationDisplayAttributeCollection.add(associationDisplayAttribute);
 	}
@@ -70,8 +68,7 @@ public abstract class SelectControl extends Control implements AssociationContro
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface#removeAssociationDisplayAttribute(edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeInterface)
 	 */
-	public void removeAssociationDisplayAttribute(
-			AssociationDisplayAttributeInterface associationDisplayAttribute)
+	public void removeAssociationDisplayAttribute(AssociationDisplayAttributeInterface associationDisplayAttribute)
 	{
 		associationDisplayAttributeCollection.remove(associationDisplayAttribute);
 	}

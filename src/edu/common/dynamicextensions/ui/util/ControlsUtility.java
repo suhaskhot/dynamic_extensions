@@ -16,10 +16,13 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.Vector;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.BooleanTypeInformationInterface;
@@ -44,6 +47,10 @@ import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.SelectInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManager;
+import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.util.ControlInformationObject;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
@@ -80,7 +87,7 @@ public class ControlsUtility
 				BooleanTypeInformationInterface booleanAttribute = (BooleanTypeInformationInterface) abstractAttributeType;
 				if (booleanAttribute != null)
 				{
-					defaultValue=getDefaultBoolean(booleanAttribute);
+					defaultValue = getDefaultBoolean(booleanAttribute);
 				}
 			}
 			else if (abstractAttributeType instanceof IntegerTypeInformationInterface)
@@ -134,7 +141,7 @@ public class ControlsUtility
 		}
 		return defaultValue;
 	}
-	
+
 	private static String getDefaultString(StringTypeInformationInterface stringAttribute)
 	{
 		String defaultValue = null;
@@ -145,7 +152,7 @@ public class ControlsUtility
 		}
 		return defaultValue;
 	}
-	
+
 	private static String getDefaultBoolean(BooleanTypeInformationInterface booleanAttribute)
 	{
 		String defaultValue = null;
@@ -269,63 +276,118 @@ public class ControlsUtility
 	/**
 	 * This method populates the List of Values of the ListBox in the NameValueBean Collection.
 	 * @return List of pair of Name and its corresponding Value.
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	public static List<NameValueBean> populateListOfValues(AttributeInterface attribute)
+	public static List<NameValueBean> populateListOfValues(ControlInterface control) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		List<NameValueBean> nameValueBeanList = null;
-		NameValueBean nameValueBean = null;
-		DataElementInterface dataElement = attribute.getAttributeTypeInformation().getDataElement();
 
-		if (dataElement != null)
+		AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
+		if (abstractAttribute != null)
 		{
-			if (dataElement instanceof UserDefinedDEInterface)
+			if (abstractAttribute instanceof AttributeInterface)
 			{
-				Collection<PermissibleValueInterface> permissibleValueCollection = ((UserDefinedDEInterface) dataElement)
-						.getPermissibleValueCollection();
-				if (permissibleValueCollection != null)
+				nameValueBeanList = getListOfPermissibleValues((AttributeInterface) abstractAttribute);
+			}
+			else if (abstractAttribute instanceof AssociationInterface)
+			{
+				SelectInterface selectControl = (SelectInterface)control;
+				EntityManagerInterface entityManager = EntityManager.getInstance();
+				
+				Map<Long, List<String>> displayAttributeMap = entityManager.getTargetEntityDisplayAttribute(selectControl);
+
+				nameValueBeanList = getTargetEntityDisplayAttributeList(displayAttributeMap);
+			}
+		}
+		return nameValueBeanList;
+	}
+
+	private static List<NameValueBean> getListOfPermissibleValues(AttributeInterface attribute) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+		List<NameValueBean> nameValueBeanList = null;
+
+		AttributeTypeInformationInterface attributeTypeInformation = attribute.getAttributeTypeInformation();
+		if (attributeTypeInformation != null)
+		{
+			DataElementInterface dataElement = attributeTypeInformation.getDataElement();
+			if (dataElement != null)
+			{
+				if (dataElement instanceof UserDefinedDEInterface)
 				{
-					nameValueBeanList = new Vector<NameValueBean>();
-					for (PermissibleValueInterface permissibleValue : permissibleValueCollection)
+					Collection<PermissibleValueInterface> permissibleValueCollection = ((UserDefinedDEInterface) dataElement)
+							.getPermissibleValueCollection();
+					if (permissibleValueCollection != null)
 					{
-						if (permissibleValue instanceof StringValueInterface)
+						nameValueBeanList = new Vector<NameValueBean>();
+						NameValueBean nameValueBean = null;
+						for (PermissibleValueInterface permissibleValue : permissibleValueCollection)
 						{
-							nameValueBean = getPermissibleStringValue(permissibleValue);
+							if (permissibleValue instanceof StringValueInterface)
+							{
+								nameValueBean = getPermissibleStringValue(permissibleValue);
+							}
+							else if (permissibleValue instanceof DateValueInterface)
+							{
+								DateTypeInformationInterface dateAttribute = (DateTypeInformationInterface) attribute;
+								nameValueBean = getPermissibleDateValue(permissibleValue, dateAttribute);
+							}
+							else if (permissibleValue instanceof DoubleValueInterface)
+							{
+								nameValueBean = getPermissibleDoubleValue(permissibleValue);
+							}
+							else if (permissibleValue instanceof FloatValueInterface)
+							{
+								nameValueBean = getPermissibleFloatValue(permissibleValue);
+							}
+							else if (permissibleValue instanceof LongValueInterface)
+							{
+								nameValueBean = getPermissibleLongValue(permissibleValue);
+							}
+							else if (permissibleValue instanceof IntegerValueInterface)
+							{
+								nameValueBean = getPermissibleIntegerValue(permissibleValue);
+							}
+							else if (permissibleValue instanceof ShortValueInterface)
+							{
+								nameValueBean = getPermissibleShortValue(permissibleValue);
+							}
+							else if (permissibleValue instanceof BooleanValueInterface)
+							{
+								nameValueBean = getPermissibleBooleanValue(permissibleValue);
+							}
+							nameValueBeanList.add(nameValueBean);
 						}
-						else if (permissibleValue instanceof DateValueInterface)
-						{
-							DateTypeInformationInterface dateAttribute = (DateTypeInformationInterface) attribute;
-							nameValueBean = getPermissibleDateValue(permissibleValue, dateAttribute);
-						}
-						else if (permissibleValue instanceof DoubleValueInterface)
-						{
-							nameValueBean = getPermissibleDoubleValue(permissibleValue);
-						}
-						else if (permissibleValue instanceof FloatValueInterface)
-						{
-							nameValueBean = getPermissibleFloatValue(permissibleValue);
-						}
-						else if (permissibleValue instanceof LongValueInterface)
-						{
-							nameValueBean = getPermissibleLongValue(permissibleValue);
-						}
-						else if (permissibleValue instanceof IntegerValueInterface)
-						{
-							nameValueBean = getPermissibleIntegerValue(permissibleValue);
-						}
-						else if (permissibleValue instanceof ShortValueInterface)
-						{
-							nameValueBean = getPermissibleShortValue(permissibleValue);
-						}
-						else if (permissibleValue instanceof BooleanValueInterface)
-						{
-							nameValueBean = getPermissibleBooleanValue(permissibleValue);
-						}
-						nameValueBeanList.add(nameValueBean);
 					}
 				}
 			}
 		}
 		return nameValueBeanList;
+	}
+
+	private static List<NameValueBean> getTargetEntityDisplayAttributeList(Map<Long, List<String>> displayAttributeMap)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		List<NameValueBean> displayAttributeList = new Vector<NameValueBean>();
+		NameValueBean nameValueBean = null;
+		Set<Map.Entry<Long, List<String>>> displayAttributeSet = displayAttributeMap.entrySet();
+		for (Map.Entry<Long, List<String>> displayAttributeEntry : displayAttributeSet)
+		{
+			Long recordIdentifier = displayAttributeEntry.getKey();
+			List<String> attributeList = displayAttributeEntry.getValue();
+
+			for (String attribute : attributeList)
+			{
+				nameValueBean = new NameValueBean();
+				nameValueBean.setName(attribute);
+				nameValueBean.setValue(recordIdentifier.toString());
+
+				displayAttributeList.add(nameValueBean);
+			}
+		}
+
+		return displayAttributeList;
 	}
 
 	private static NameValueBean getPermissibleDateValue(PermissibleValueInterface permissibleValue, DateTypeInformationInterface dateAttribute)
@@ -491,7 +553,7 @@ public class ControlsUtility
 			}
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param file
@@ -535,7 +597,7 @@ public class ControlsUtility
 		inputStream.close();
 		return fileInBytes;
 	}
-	
+
 	/**
 	 *  
 	 * @param containerInterface containerInterface
@@ -571,7 +633,7 @@ public class ControlsUtility
 		}
 		return childList;
 	}
-	
+
 	/**
 	 * 
 	 * @param captionKey String captionKey

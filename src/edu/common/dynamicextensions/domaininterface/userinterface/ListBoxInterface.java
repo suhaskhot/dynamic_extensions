@@ -22,17 +22,6 @@ public interface ListBoxInterface extends ControlInterface
 	 */
 	void setIsMultiSelect(Boolean isMultiSelect);
 
-	//    /**
-	//     * 
-	//     * @return List of choices 
-	//     */
-	//	public List getChoiceList();
-	//	/**
-	//	 * 
-	//	 * @param list : List of choices
-	//	 */
-	//	public void setChoiceList(List list);
-	
 	/**
 	 * This method returns the Number of rows to be displayed on the UI for ListBox.
 	 * @return the Number of rows to be displayed on the UI for ListBox.

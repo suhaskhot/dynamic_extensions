@@ -45,7 +45,7 @@ public class RadioButton extends Control implements RadioButtonInterface
 			defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
 		}
 
-		nameValueBeanList = ControlsUtility.populateListOfValues((AttributeInterface) this.getAbstractAttribute());
+		nameValueBeanList = ControlsUtility.populateListOfValues(this);
 
 		String htmlComponentName = getHTMLComponentName();
 		if (defaultValue != null)

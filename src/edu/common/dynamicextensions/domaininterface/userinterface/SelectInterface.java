@@ -1,5 +1,5 @@
-package edu.common.dynamicextensions.domaininterface.userinterface;
 
+package edu.common.dynamicextensions.domaininterface.userinterface;
 
 public interface SelectInterface
 {

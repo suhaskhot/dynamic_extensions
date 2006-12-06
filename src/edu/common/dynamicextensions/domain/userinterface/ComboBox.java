@@ -57,7 +57,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 
 		if (listOfValues == null)
 		{
-			nameValueBeanList = ControlsUtility.populateListOfValues((AttributeInterface) this.getAbstractAttribute());
+			nameValueBeanList = ControlsUtility.populateListOfValues(this);
 		}
 
 		if (nameValueBeanList != null && nameValueBeanList.size() > 0)

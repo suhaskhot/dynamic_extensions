@@ -21,9 +21,15 @@ public class AssociationDisplayAttribute extends DynamicExtensionBaseDomainObjec
 			AssociationDisplayAttributeInterface
 {
 
+	/**
+	 * 
+	 */
 	private int sequenceNumber = 0;
-	private AttributeInterface attribute ;
-
+	
+	/**
+	 * 
+	 */
+	private AttributeInterface attribute;
 
 	/**
 	 * default constructor.
@@ -55,6 +61,7 @@ public class AssociationDisplayAttribute extends DynamicExtensionBaseDomainObjec
 
 	/**
 	 * @return sequence number 
+	 * @hibernate.property name="sequenceNumber" type="int" column="SEQUENCE_NUMBER"
 	 */
 	public int getSequenceNumber()
 	{
@@ -68,9 +75,9 @@ public class AssociationDisplayAttribute extends DynamicExtensionBaseDomainObjec
 	 */
 	public AttributeInterface getAttribute()
 	{
-		return this.attribute ;
+		return this.attribute;
 	}
-	
+
 	/**
 	 * @param attribute attribute
 	 */

@@ -24,6 +24,14 @@
             </generator>
         </id>
 
+        <property
+            name="sequenceNumber"
+            type="int"
+            update="true"
+            insert="true"
+            column="SEQUENCE_NUMBER"
+        />
+
         <many-to-one
             name="attribute"
             class="edu.common.dynamicextensions.domain.Attribute"

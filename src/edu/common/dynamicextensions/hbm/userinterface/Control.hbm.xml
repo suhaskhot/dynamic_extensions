@@ -97,36 +97,6 @@
         -->
 
         <joined-subclass
-            name="edu.common.dynamicextensions.domain.userinterface.ListBox"
-            table="DYEXTN_LIST_BOX"
-            dynamic-update="false"
-            dynamic-insert="false"
-        >
-        <key
-            column="IDENTIFIER"
-        />
-
-        <property
-            name="isMultiSelect"
-            type="boolean"
-            update="true"
-            insert="true"
-            column="MULTISELECT"
-        />
-
-        </joined-subclass>
-        <joined-subclass
-            name="edu.common.dynamicextensions.domain.userinterface.ComboBox"
-            table="DYEXTN_COMBOBOX"
-            dynamic-update="false"
-            dynamic-insert="false"
-        >
-        <key
-            column="IDENTIFIER"
-        />
-
-        </joined-subclass>
-        <joined-subclass
             name="edu.common.dynamicextensions.domain.userinterface.DataGrid"
             table="DYEXTN_DATA_GRID"
             dynamic-update="false"
@@ -199,6 +169,74 @@
             insert="true"
             column="NO_OF_COLUMNS"
         />
+
+        </joined-subclass>
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.userinterface.SelectControl"
+            table="DYEXTN_SELECT_CONTROL"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+
+        <set
+            name="associationDisplayAttributeCollection"
+            table="DYEXTN_ASSO_DISPLAY_ATTR"
+            lazy="false"
+            inverse="false"
+            cascade="all-delete-orphan"
+            sort="unsorted"
+        >
+
+              <key
+                  column="SELECT_CONTROL_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.AssociationDisplayAttribute"
+              />
+        </set>
+
+        <property
+            name="separator"
+            type="string"
+            update="true"
+            insert="true"
+            column="SEPARATOR"
+        />
+
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.userinterface.ListBox"
+            table="DYEXTN_LIST_BOX"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+
+        <property
+            name="isMultiSelect"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="MULTISELECT"
+        />
+
+        </joined-subclass>
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.userinterface.ComboBox"
+            table="DYEXTN_COMBOBOX"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+
+        </joined-subclass>
 
         </joined-subclass>
         <joined-subclass

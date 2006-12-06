@@ -29,6 +29,7 @@ alter table DYEXTN_ASSOCIATION drop constraint FK104684246315C5C9;
 alter table DYEXTN_ASSOCIATION drop constraint FK10468424BC7298A9;
 alter table DYEXTN_CADSRDE drop constraint FK588A2509BC7298A9;
 alter table DYEXTN_DOUBLE_TYPE_INFO drop constraint FKC83869C2BC7298A9;
+alter table DYEXTN_SELECT_CONTROL drop constraint FKDFEBB657BC7298A9;
 alter table DYEXTN_ENTITY_GROUP_REL drop constraint FK5A0D835A992A67D7;
 alter table DYEXTN_ENTITY_GROUP_REL drop constraint FK5A0D835A79F466F7;
 alter table DYEXTN_FILE_TYPE_INFO drop constraint FKA00F0EDBC7298A9;
@@ -40,6 +41,7 @@ alter table DYEXTN_RULE drop constraint FKC27E0994D87D1BE;
 alter table DYEXTN_DATE_TYPE_INFO drop constraint FKFBA549FBC7298A9;
 alter table DYEXTN_ATTRIBUTE_TYPE_INFO drop constraint FK62596D53B4C15A36;
 alter table DYEXTN_ASSO_DISPLAY_ATTR drop constraint FKD12FD3823B3AAE3B;
+alter table DYEXTN_ASSO_DISPLAY_ATTR drop constraint FKD12FD382F7AA8E80;
 alter table DYEXTN_TEXTAREA drop constraint FK946EE257BC7298A9;
 alter table DYEXTN_ENTITY_GROUP drop constraint FK105DE7A0BC7298A9;
 alter table DYEXTN_DATA_ELEMENT drop constraint FKB1153E48C8D972A;
@@ -90,14 +92,15 @@ drop table DYEXTN_PRIMITIVE_ATTRIBUTE cascade constraints;
 drop table DYEXTN_ASSOCIATION cascade constraints;
 drop table DYEXTN_CADSRDE cascade constraints;
 drop table DYEXTN_DOUBLE_TYPE_INFO cascade constraints;
+drop table DYEXTN_SELECT_CONTROL cascade constraints;
 drop table DYEXTN_ENTITY_GROUP_REL cascade constraints;
 drop table DYEXTN_DATABASE_PROPERTIES cascade constraints;
 drop table DYEXTN_FILE_TYPE_INFO cascade constraints;
 drop table DYEXTN_FILE_EXTENSIONS cascade constraints;
 drop table DYEXTN_LONG_TYPE_INFO cascade constraints;
 drop table DYEXTN_FLOAT_CONCEPT_VALUE cascade constraints;
-drop table DYEXTN_TEXTFIELD cascade constraints;
 drop table DYEXTN_ROLE cascade constraints;
+drop table DYEXTN_TEXTFIELD cascade constraints;
 drop table DYEXTN_RULE cascade constraints;
 drop table DYEXTN_DATE_TYPE_INFO cascade constraints;
 drop table DYEXTN_ATTRIBUTE_TYPE_INFO cascade constraints;
@@ -123,8 +126,8 @@ drop table DYEXTN_SHORT_TYPE_INFO cascade constraints;
 drop table DYEXTN_CONTAINER cascade constraints;
 drop table DYEXTN_RADIOBUTTON cascade constraints;
 drop table DYEXTN_DATEPICKER cascade constraints;
-drop sequence DYEXTN_PERMISSIBLEVAL_SEQ;
 drop sequence DYEXTN_SEMANTIC_PROPERTY_SEQ;
+drop sequence DYEXTN_PERMISSIBLEVAL_SEQ;
 drop sequence DYEXTN_ATTRIBUTE_TYPE_INFO_SEQ;
 drop sequence DYEXTN_RULE_PARAMETER_SEQ;
 drop sequence DYEXTN_ABSTRACT_METADATA_SEQ;
@@ -276,10 +279,15 @@ create table DYEXTN_DOUBLE_TYPE_INFO (
    IDENTIFIER number(19,0) not null,
    primary key (IDENTIFIER)
 );
+create table DYEXTN_SELECT_CONTROL (
+   IDENTIFIER number(19,0) not null,
+   SEPARATOR varchar2(255),
+   primary key (IDENTIFIER)
+);
 create table DYEXTN_ENTITY_GROUP_REL (
    ENTITY_GROUP_ID number(19,0) not null,
    ENTITY_ID number(19,0) not null,
-   primary key (ENTITY_ID, ENTITY_GROUP_ID)
+   primary key (ENTITY_GROUP_ID, ENTITY_ID)
 );
 create table DYEXTN_DATABASE_PROPERTIES (
    IDENTIFIER number(19,0) not null,
@@ -306,19 +314,19 @@ create table DYEXTN_FLOAT_CONCEPT_VALUE (
    VALUE float,
    primary key (IDENTIFIER)
 );
-create table DYEXTN_TEXTFIELD (
-   IDENTIFIER number(19,0) not null,
-   NO_OF_COLUMNS number(10,0),
-   IS_PASSWORD number(1,0),
-   IS_URL number(1,0),
-   primary key (IDENTIFIER)
-);
 create table DYEXTN_ROLE (
    IDENTIFIER number(19,0) not null,
    ASSOCIATION_TYPE varchar2(255),
    MAX_CARDINALITY number(10,0),
    MIN_CARDINALITY number(10,0),
    NAME varchar2(255),
+   primary key (IDENTIFIER)
+);
+create table DYEXTN_TEXTFIELD (
+   IDENTIFIER number(19,0) not null,
+   NO_OF_COLUMNS number(10,0),
+   IS_PASSWORD number(1,0),
+   IS_URL number(1,0),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_RULE (
@@ -339,7 +347,9 @@ create table DYEXTN_ATTRIBUTE_TYPE_INFO (
 );
 create table DYEXTN_ASSO_DISPLAY_ATTR (
    IDENTIFIER number(19,0) not null,
+   SEQUENCE_NUMBER number(10,0),
    DISPLAY_ATTRIBUTE_ID number(19,0),
+   SELECT_CONTROL_ID number(19,0),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_TEXTAREA (
@@ -494,7 +504,7 @@ alter table DYEXTN_BARR_CONCEPT_VALUE add constraint FK89D27DF7BC7298A9 foreign 
 alter table DYEXTN_ENTITY add constraint FK8B243640BC7298A9 foreign key (IDENTIFIER) references DYEXTN_ABSTRACT_METADATA;
 alter table DYEXTN_INTEGER_TYPE_INFO add constraint FK5F9CB235BC7298A9 foreign key (IDENTIFIER) references DYEXTN_NUMERIC_TYPE_INFO;
 alter table DYEXTN_TAGGED_VALUE add constraint FKF79D055B7D7A9B8E foreign key (ABSTRACT_METADATA_ID) references DYEXTN_ABSTRACT_METADATA;
-alter table DYEXTN_COMBOBOX add constraint FKABBC649ABC7298A9 foreign key (IDENTIFIER) references DYEXTN_CONTROL;
+alter table DYEXTN_COMBOBOX add constraint FKABBC649ABC7298A9 foreign key (IDENTIFIER) references DYEXTN_SELECT_CONTROL;
 alter table DYEXTN_PRIMITIVE_ATTRIBUTE add constraint FKA9F765C7BC7298A9 foreign key (IDENTIFIER) references DYEXTN_ATTRIBUTE;
 alter table DYEXTN_ASSOCIATION add constraint FK104684243AC5160 foreign key (SOURCE_ROLE_ID) references DYEXTN_ROLE;
 alter table DYEXTN_ASSOCIATION add constraint FK10468424F60C84D6 foreign key (TARGET_ROLE_ID) references DYEXTN_ROLE;
@@ -502,6 +512,7 @@ alter table DYEXTN_ASSOCIATION add constraint FK104684246315C5C9 foreign key (TA
 alter table DYEXTN_ASSOCIATION add constraint FK10468424BC7298A9 foreign key (IDENTIFIER) references DYEXTN_ATTRIBUTE;
 alter table DYEXTN_CADSRDE add constraint FK588A2509BC7298A9 foreign key (IDENTIFIER) references DYEXTN_DATA_ELEMENT;
 alter table DYEXTN_DOUBLE_TYPE_INFO add constraint FKC83869C2BC7298A9 foreign key (IDENTIFIER) references DYEXTN_NUMERIC_TYPE_INFO;
+alter table DYEXTN_SELECT_CONTROL add constraint FKDFEBB657BC7298A9 foreign key (IDENTIFIER) references DYEXTN_CONTROL;
 alter table DYEXTN_ENTITY_GROUP_REL add constraint FK5A0D835A992A67D7 foreign key (ENTITY_GROUP_ID) references DYEXTN_ENTITY_GROUP;
 alter table DYEXTN_ENTITY_GROUP_REL add constraint FK5A0D835A79F466F7 foreign key (ENTITY_ID) references DYEXTN_ENTITY;
 alter table DYEXTN_FILE_TYPE_INFO add constraint FKA00F0EDBC7298A9 foreign key (IDENTIFIER) references DYEXTN_ATTRIBUTE_TYPE_INFO;
@@ -513,11 +524,12 @@ alter table DYEXTN_RULE add constraint FKC27E0994D87D1BE foreign key (ATTRIBUTE_
 alter table DYEXTN_DATE_TYPE_INFO add constraint FKFBA549FBC7298A9 foreign key (IDENTIFIER) references DYEXTN_ATTRIBUTE_TYPE_INFO;
 alter table DYEXTN_ATTRIBUTE_TYPE_INFO add constraint FK62596D53B4C15A36 foreign key (PRIMITIVE_ATTRIBUTE_ID) references DYEXTN_PRIMITIVE_ATTRIBUTE;
 alter table DYEXTN_ASSO_DISPLAY_ATTR add constraint FKD12FD3823B3AAE3B foreign key (DISPLAY_ATTRIBUTE_ID) references DYEXTN_PRIMITIVE_ATTRIBUTE;
+alter table DYEXTN_ASSO_DISPLAY_ATTR add constraint FKD12FD382F7AA8E80 foreign key (SELECT_CONTROL_ID) references DYEXTN_SELECT_CONTROL;
 alter table DYEXTN_TEXTAREA add constraint FK946EE257BC7298A9 foreign key (IDENTIFIER) references DYEXTN_CONTROL;
 alter table DYEXTN_ENTITY_GROUP add constraint FK105DE7A0BC7298A9 foreign key (IDENTIFIER) references DYEXTN_ABSTRACT_METADATA;
 alter table DYEXTN_DATA_ELEMENT add constraint FKB1153E48C8D972A foreign key (ATTRIBUTE_TYPE_INFO_ID) references DYEXTN_ATTRIBUTE_TYPE_INFO;
 alter table DYEXTN_DOUBLE_CONCEPT_VALUE add constraint FKB94E6449BC7298A9 foreign key (IDENTIFIER) references DYEXTN_PERMISSIBLE_VALUE;
-alter table DYEXTN_LIST_BOX add constraint FK208395A7BC7298A9 foreign key (IDENTIFIER) references DYEXTN_CONTROL;
+alter table DYEXTN_LIST_BOX add constraint FK208395A7BC7298A9 foreign key (IDENTIFIER) references DYEXTN_SELECT_CONTROL;
 alter table DYEXTN_LONG_CONCEPT_VALUE add constraint FK3E1A6EF4BC7298A9 foreign key (IDENTIFIER) references DYEXTN_PERMISSIBLE_VALUE;
 alter table DYEXTN_CONTROL add constraint FK70FB5E809C6A9B9 foreign key (CONTAINER_ID) references DYEXTN_CONTAINER;
 alter table DYEXTN_ATTRIBUTE add constraint FK37F1E2FF42E8975D foreign key (CONTROL_ID) references DYEXTN_CONTROL;
@@ -538,8 +550,8 @@ alter table DYEXTN_CONTAINER add constraint FK1EAB84E479F466F7 foreign key (ENTI
 alter table DYEXTN_CONTAINER add constraint FK1EAB84E445DEFCF5 foreign key (VIEW_ID) references DYEXTN_VIEW;
 alter table DYEXTN_RADIOBUTTON add constraint FK16F5BA90BC7298A9 foreign key (IDENTIFIER) references DYEXTN_CONTROL;
 alter table DYEXTN_DATEPICKER add constraint FKFEADD199BC7298A9 foreign key (IDENTIFIER) references DYEXTN_CONTROL;
-create sequence DYEXTN_PERMISSIBLEVAL_SEQ;
 create sequence DYEXTN_SEMANTIC_PROPERTY_SEQ;
+create sequence DYEXTN_PERMISSIBLEVAL_SEQ;
 create sequence DYEXTN_ATTRIBUTE_TYPE_INFO_SEQ;
 create sequence DYEXTN_RULE_PARAMETER_SEQ;
 create sequence DYEXTN_ABSTRACT_METADATA_SEQ;

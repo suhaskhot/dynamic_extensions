@@ -14,7 +14,7 @@ import edu.wustl.common.beans.NameValueBean;
  * @hibernate.joined-subclass table="DYEXTN_LIST_BOX" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class ListBox extends Control implements ListBoxInterface
+public class ListBox extends SelectControl implements ListBoxInterface
 {
 
 	/**

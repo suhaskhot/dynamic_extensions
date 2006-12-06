@@ -14,7 +14,7 @@ import edu.wustl.common.beans.NameValueBean;
  * @hibernate.joined-subclass table="DYEXTN_COMBOBOX" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class ComboBox extends Control implements ComboBoxInterface
+public class ComboBox extends SelectControl implements ComboBoxInterface
 {
 
 	/**

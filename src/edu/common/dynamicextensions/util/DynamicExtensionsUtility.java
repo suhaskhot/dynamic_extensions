@@ -51,6 +51,21 @@ import edu.wustl.common.util.logger.Logger;
  */
 public class DynamicExtensionsUtility
 {
+	
+	/**
+	 * This method fetches the Control instance from the Database given the corresponding Control Identifier.
+	 * @param controlIdentifier The Idetifier of the Control.
+	 * @return the ControlInterface
+	 * @throws DynamicExtensionsSystemException on System exception
+	 * @throws DynamicExtensionsApplicationException on Application exception
+	 */
+	public static ControlInterface getControlByIdentifier(String controlIdentifier) throws DynamicExtensionsSystemException,
+	DynamicExtensionsApplicationException
+	{
+		ControlInterface  controlInterface = null;
+		controlInterface  = (ControlInterface) getObjectByIdentifier(ControlInterface.class.getName(),controlIdentifier);
+		return controlInterface;
+	}
 	/**
 	 * This method fetches the Container instance from the Database given the corresponding Container Identifier.
 	 * @param containerIdentifier The Idetifier of the Container.

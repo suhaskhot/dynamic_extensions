@@ -832,7 +832,7 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	{
 		if((attributenoOfCols!=null)&&(attributenoOfCols.trim().equals("")))
 		{
-			columns = new Integer(0);	//blank values will be considered as 0
+			columns = new Integer(Constants.DEFAULT_NUMBER_OF_COLUMNS);	//blank values will be considered as 0
 		}
 		else
 		{
@@ -867,7 +867,7 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	{
 		if((attributeNoOfRows!=null)&&(attributeNoOfRows.trim().equals("")))
 		{
-			rows = new Integer(0);	//blank values will be considered as 0
+			rows = new Integer(Constants.DEFAULT_NUMBER_OF_ROWS);	//blank values will be considered as 0
 		}
 		else
 		{

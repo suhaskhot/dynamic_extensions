@@ -229,6 +229,17 @@ public interface ControlUIBeanInterface
 	 * @return String[] ValidationRules
 	 */
 	String[] getValidationRules();
+	
+	/**
+	 * @return the attributeNoOfRows
+	 */
+	String getAttributeNoOfRows();
+
+	/**
+	 * @param attributeNoOfRows the attributeNoOfRows to set
+	 */
+	void setAttributeNoOfRows(String attributeNoOfRows);
+	
 
 	/**
 	 * 

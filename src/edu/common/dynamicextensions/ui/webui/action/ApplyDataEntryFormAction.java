@@ -83,8 +83,8 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 							{
 								collectAssociationValues(request, dataEntryForm, sequence, control, attributeValueMap);
 							}
+							break;
 						}
-						break;
 					}
 				}
 			}
@@ -138,9 +138,9 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	{
 		AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
 
+		List<Long> valueList = new Vector<Long>();
 		if (control instanceof ListBoxInterface)
 		{
-			List<Long> valueList = new Vector<Long>();
 			String[] selectedValues = (String[]) request.getParameterValues("Control_" + sequence);
 			if (selectedValues != null)
 			{
@@ -150,16 +150,13 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 					valueList.add(identifier);
 				}
 			}
-			attributeValueMap.put(abstractAttribute, valueList);
 		}
 		else if (control instanceof ComboBoxInterface)
 		{
 			String value = request.getParameter("Control_" + sequence);
-			Long identifier = new Long(value.trim());
-			List identifierList = new ArrayList();
-			identifierList.add(identifier);
-			attributeValueMap.put(abstractAttribute, identifierList);
+			valueList.add(new Long(value.trim()));
 		}
+		attributeValueMap.put(abstractAttribute, valueList);
 	}
 
 	private void collectAttributeValues(HttpServletRequest request, DataEntryForm dataEntryForm, int sequence, ControlInterface control,

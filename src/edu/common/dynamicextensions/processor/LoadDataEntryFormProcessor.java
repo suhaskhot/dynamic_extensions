@@ -11,8 +11,6 @@ import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
-import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface;
-import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
@@ -55,7 +53,6 @@ public class LoadDataEntryFormProcessor
 	public ContainerInterface loadDataEntryForm(AbstractActionForm actionForm, ContainerInterface containerInterface, String containerIdentifier,
 			String recordIdentifier) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-
 		DataEntryForm dataEntryForm = (DataEntryForm) actionForm;
 		Map<String, Object> recordMap = null;
 
@@ -75,17 +72,14 @@ public class LoadDataEntryFormProcessor
 			EntityManagerInterface entityManager = EntityManager.getInstance();
 			recordMap = entityManager.getRecordById(entity, Long.valueOf(recordIdentifier));
 
-			Set<Map.Entry<String,Object>> recordSet = recordMap.entrySet();
-			for (Map.Entry<String,Object> recordNode : recordSet)
+			Set<Map.Entry<String, Object>> recordSet = recordMap.entrySet();
+			for (Map.Entry<String, Object> recordNode : recordSet)
 			{
 				String recordAttributeName = recordNode.getKey();
-				
-
 				for (ControlInterface controlInterface : controlCollection)
 				{
-					
 					AbstractAttributeInterface controlAbstractAttribute = controlInterface.getAbstractAttribute();
-					
+
 					Object recordAttributeValue = recordNode.getValue();
 					if (controlAbstractAttribute.getName().equals(recordAttributeName))
 					{
@@ -98,7 +92,7 @@ public class LoadDataEntryFormProcessor
 			}
 		}
 		dataEntryForm.setContainerInterface(containerInterface);
-		if(dataEntryForm.getErrorList() == null)
+		if (dataEntryForm.getErrorList() == null)
 		{
 			List<String> errorList = new ArrayList<String>();
 			dataEntryForm.setErrorList(errorList);
@@ -107,7 +101,7 @@ public class LoadDataEntryFormProcessor
 		{
 			dataEntryForm.setShowFormPreview("");
 		}
-		if(recordIdentifier != null)
+		if (recordIdentifier != null)
 		{
 			dataEntryForm.setRecordIdentifier(recordIdentifier);
 		}

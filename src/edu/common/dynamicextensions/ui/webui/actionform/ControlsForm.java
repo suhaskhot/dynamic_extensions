@@ -18,7 +18,6 @@ import edu.common.dynamicextensions.ui.interfaces.ControlUIBeanInterface;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.actionForm.AbstractActionForm;
-import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.global.Validator;
@@ -299,7 +298,8 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	protected String groupName;
 	protected String formName;
 	protected String separator;
-	protected String[] selectedFormAttributeList;
+	protected List selectedAttributes;
+	protected String[] selectedAttributeIds;
 	/**
 	 * 
 	 */
@@ -1633,17 +1633,7 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	{
 		this.formName = formName;
 	}
-
-	public String[] getSelectedFormAttributeList()
-	{
-		return this.selectedFormAttributeList;
-	}
-
-	public void setSelectedFormAttributeList(String[] selectedFormAttributeList)
-	{
-		this.selectedFormAttributeList = selectedFormAttributeList;
-	}
-
+	
 	public List getSeparatorList()
 	{
 		return this.separatorList;
@@ -1662,5 +1652,25 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	public void setSeparator(String separator)
 	{
 		this.separator = separator;
+	}
+
+	public String[] getSelectedAttributeIds()
+	{
+		return this.selectedAttributeIds;
+	}
+
+	public void setSelectedAttributeIds(String[] selectedAttributeIds)
+	{
+		this.selectedAttributeIds = selectedAttributeIds;
+	}
+
+	public List getSelectedAttributes()
+	{
+		return this.selectedAttributes;
+	}
+
+	public void setSelectedAttributes(List selectedAttributes)
+	{
+		this.selectedAttributes = selectedAttributes;
 	}
 }

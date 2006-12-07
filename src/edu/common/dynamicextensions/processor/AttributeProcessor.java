@@ -1518,7 +1518,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		if(entity!=null)
 		{
 			EntityManagerInterface entityManager = EntityManager.getInstance();
-			ContainerInterface containerInterface = entityManager.getContainerInterfaceByEntityIdentifier(entity.getId());
+			ContainerInterface containerInterface = entityManager.getContainerByEntityIdentifier(entity.getId());
 			if((containerInterface!=null)&&(containerInterface.getId()!=null))
 			{
 				return containerInterface.getId().toString();

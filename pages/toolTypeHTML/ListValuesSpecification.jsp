@@ -8,6 +8,9 @@
 <c:set var="groupNamesList" value="${controlsForm.groupNames}"/>
 <jsp:useBean id="groupNamesList" type="java.util.List"/>
 
+<c:set var="selectedAttributes" value="${controlsForm.selectedAttributes}"/>
+<jsp:useBean id="selectedAttributes" type="java.util.List"/>
+
 <c:set var="separatorList" value="${controlsForm.separatorList}"/>
 <jsp:useBean id="separatorList" type="java.util.List"/>
 
@@ -197,7 +200,8 @@
 								<input type="button" name="removeFormAttribute" value="Remove" onclick="unSelectFormAttribute()" />
 							</td>
 							<td  width="45%" >
-								<html:select multiple="true" size="3" property="selectedFormAttributeList" styleId="selectedFormAttributeList" styleClass="formFieldVerySmallSized">
+								<html:select multiple="true" size="3" property="selectedAttributeIds" styleId="selectedAttributeIds" styleClass="formFieldVerySmallSized">
+									<html:options collection="selectedAttributes" labelProperty="name" property="value" />
 								</html:select>
 							</td>
 						</tr>

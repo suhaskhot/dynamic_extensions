@@ -275,7 +275,8 @@ public interface AbstractAttributeUIBeanInterface
 	 * @param fileFormats List of file formats supported for a file control/attribute.
 	 */
 	public void setFileFormats(String[] fileFormats);
-	
+	public String getGroupName();
+	public void setGroupName(String groupName);
 	public String getFormName();
 	public void setFormName(String formName);
 }

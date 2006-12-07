@@ -247,10 +247,12 @@ public interface ControlUIBeanInterface
 	 */
 	void setValidationRules(String[] validationRules);
 	
-	//Selected form Attributes
-	public String[] getSelectedFormAttributeList();
-	public void setSelectedFormAttributeList(String[] selectedFormAttributeList);
+	//Selected form Attributes ids
+	public String[] getSelectedAttributeIds();
+	public void setSelectedAttributeIds(String[] selectedFormAttributeList);
 	
+	public List getSelectedAttributes();
+	public void setSelectedAttributes(List selectedAttributes);
 	//Separator
 	public String getSeparator();
 	public void setSeparator(String separator);

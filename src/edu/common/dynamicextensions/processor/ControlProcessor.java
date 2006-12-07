@@ -10,6 +10,10 @@
 
 package edu.common.dynamicextensions.processor;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.userinterface.SelectControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
@@ -28,6 +32,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.interfaces.ControlUIBeanInterface;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
+import edu.wustl.common.beans.NameValueBean;
 
 /**
  * This class processes all the information needed for Control.
@@ -79,7 +84,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	public ControlInterface populateControlInterface(String userSelectedControlName, ControlInterface controlIntf,
 			ControlUIBeanInterface controlUIBeanInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
-	{
+			{
 		ControlInterface controlInterface = null;
 		if ((userSelectedControlName != null) && (controlUIBeanInterface != null))
 		{
@@ -154,17 +159,17 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 						{
 							abstractAttribute.addRule(ruleInterface);
 						}
-						
+
 					}
-					
-					
+
+
 				}
 			}
 		}*/
 
 		return controlInterface;
 
-	}
+			}
 
 	/** 
 	 * @param controlIntf : Control Interface (Domain Object Interface)
@@ -183,7 +188,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			fileUploadInterface = (FileUploadInterface) controlInterface;
 		}
 		fileUploadInterface.setColumns(controlUIBeanInterface.getColumns());
-		
+
 		return fileUploadInterface;
 	}
 
@@ -332,7 +337,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		if(selectControl!=null)
 		{
 			selectControl.setSeparator(controlUIBeanInterface.getSeparator());
-			String[] associationControlIds = controlUIBeanInterface.getSelectedFormAttributeList();
+			String[] associationControlIds = controlUIBeanInterface.getSelectedAttributeIds();
 			selectControl.removeAllAssociationDisplayAttributes();
 			if(associationControlIds!=null)
 			{
@@ -342,9 +347,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 					selectControl.addAssociationDisplayAttribute(getAssociationDisplayAttribute(associationControlIds[i],i+1));			
 				}
 			}
-			//selectControl.setAssociationDisplayAttributeCollection(getAssociationDisplayAttributeCollection(controlUIBeanInterface));
 		}
-		
 	}
 
 	/**
@@ -359,7 +362,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		if(controlId!=null)
 		{
 			DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
-			
+
 			associationDisplayAttribute = domainObjectFactory.createAssociationDisplayAttribute();
 			associationDisplayAttribute.setSequenceNumber(sequenceNo);
 			associationDisplayAttribute.setAttribute(getAttributeForId(controlId));
@@ -382,7 +385,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			if(control!=null)
 			{
 				if((control.getAbstractAttribute()!=null)&&(control.getAbstractAttribute() instanceof AttributeInterface))
-				attribute = (AttributeInterface)control.getAbstractAttribute();
+					attribute = (AttributeInterface)control.getAbstractAttribute();
 			}
 		}
 		return attribute;
@@ -458,48 +461,135 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	{
 		if (controlInterface != null && controlUIBeanInterface != null)
 		{
-			controlUIBeanInterface.setAbstractAttribute(controlInterface.getAbstractAttribute());
-			controlUIBeanInterface.setCaption(controlInterface.getCaption());
-			controlUIBeanInterface.setIsHidden(controlInterface.getIsHidden());
-			controlUIBeanInterface.setSequenceNumber(controlInterface.getSequenceNumber());
+			populateControlCommonAttributes(controlInterface,controlUIBeanInterface);
+			populateControlSpecificAttributes(controlInterface,controlUIBeanInterface);
 		}
+	}
+
+	/**
+	 * @param controlInterface
+	 * @param controlUIBeanInterface
+	 */
+	private void populateControlSpecificAttributes(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
+	{
 		if (controlInterface instanceof TextFieldInterface)
 		{
-			controlUIBeanInterface.setColumns(((TextFieldInterface) controlInterface).getColumns());
-			controlUIBeanInterface.setIsPassword(((TextFieldInterface) controlInterface).getIsPassword());
-			controlUIBeanInterface.setLinesType(ProcessorConstants.LINE_TYPE_SINGLELINE);
+			populateTextControlAttributesInUIBean((TextFieldInterface)controlInterface,controlUIBeanInterface);
 		}
 		else if (controlInterface instanceof DatePickerInterface)
 		{
-			controlUIBeanInterface.setDateValueType(((DatePickerInterface) controlInterface).getDateValueType());
+			populateDateControlAttributesInUIBean((DatePickerInterface)controlInterface,controlUIBeanInterface);
 		}
 		else if (controlInterface instanceof TextAreaInterface)
 		{
-			controlUIBeanInterface.setColumns(((TextAreaInterface) controlInterface).getColumns());
-			controlUIBeanInterface.setRows(((TextAreaInterface) controlInterface).getRows());
-			controlUIBeanInterface.setLinesType(ProcessorConstants.LINE_TYPE_MULTILINE);
-			controlUIBeanInterface.setIsPassword(((TextAreaInterface) controlInterface).getIsPassword());
+			populateTextAreaAttributesInUIBean((TextAreaInterface)controlInterface,controlUIBeanInterface);
 		}
 		else if (controlInterface instanceof ListBoxInterface)
 		{
-			controlUIBeanInterface.setIsMultiSelect(((ListBoxInterface) controlInterface).getIsMultiSelect());
-			controlUIBeanInterface.setRows(((ListBoxInterface) controlInterface).getNoOfRows());
+			populateListBoxAttributesInUIBean((ListBoxInterface)controlInterface,controlUIBeanInterface);
 		}
-		/*else if (controlInterface instanceof ComboBoxInterface)
-		 {
-		 //Do things specific for combobox control
-		 }
-		 else if (controlInterface instanceof CheckBoxInterface)
-		 {
-
-		 }
-		 else if (controlInterface instanceof RadioButtonInterface)
-		 {
-
-		 }*/
 		else if (controlInterface instanceof FileUploadInterface)
 		{
-			controlUIBeanInterface.setColumns(((FileUploadInterface) controlInterface).getColumns());
+			populateFileUploadAttributesInUIBean((FileUploadInterface)controlInterface,controlUIBeanInterface);
 		}
+		if(controlInterface instanceof SelectControl)
+		{
+			populateSelectControlAttributesInUIBean((SelectControl)controlInterface,controlUIBeanInterface);
+		}
+	}
+
+	/**
+	 * @param selectControl
+	 * @param controlUIBeanInterface
+	 */
+	private void populateSelectControlAttributesInUIBean(SelectControl selectControl, ControlUIBeanInterface controlUIBeanInterface)
+	{
+		controlUIBeanInterface.setSeparator(selectControl.getSeparator());
+		
+		ArrayList<NameValueBean> selectedAttributesList = new ArrayList<NameValueBean>();
+		NameValueBean selectedAttribute = null;
+		
+		Collection<AssociationDisplayAttributeInterface> associationAttributes = selectControl.getAssociationDisplayAttributeCollection();
+		if(associationAttributes!=null)
+		{
+			Iterator<AssociationDisplayAttributeInterface> associationAttributesIterator = associationAttributes.iterator();
+			while(associationAttributesIterator.hasNext())
+			{
+				AssociationDisplayAttributeInterface assocnDisplayAttribute = associationAttributesIterator.next();
+				if(assocnDisplayAttribute!=null)
+				{
+					AttributeInterface attribute = assocnDisplayAttribute.getAttribute();
+					if(attribute!=null)
+					{
+						selectedAttribute = new NameValueBean(attribute.getName(),attribute.getId());
+						selectedAttributesList.add(selectedAttribute);
+					}
+				}
+			}
+		}
+		controlUIBeanInterface.setSelectedAttributes(selectedAttributesList);
+	}
+
+	/**
+	 * @param fileUploadInterface
+	 * @param controlUIBeanInterface
+	 */
+	private void populateFileUploadAttributesInUIBean(FileUploadInterface fileUploadInterface, ControlUIBeanInterface controlUIBeanInterface)
+	{
+		controlUIBeanInterface.setColumns(fileUploadInterface.getColumns());		
+	}
+
+	/**
+	 * @param listBoxInterface
+	 * @param controlUIBeanInterface
+	 */
+	private void populateListBoxAttributesInUIBean(ListBoxInterface listBoxInterface, ControlUIBeanInterface controlUIBeanInterface)
+	{
+		controlUIBeanInterface.setIsMultiSelect(listBoxInterface.getIsMultiSelect());
+		controlUIBeanInterface.setRows(listBoxInterface.getNoOfRows());		
+	}
+
+	/**
+	 * @param textAreaInterface
+	 * @param controlUIBeanInterface
+	 */
+	private void populateTextAreaAttributesInUIBean(TextAreaInterface textAreaInterface, ControlUIBeanInterface controlUIBeanInterface)
+	{
+		controlUIBeanInterface.setColumns(textAreaInterface.getColumns());
+		controlUIBeanInterface.setRows(textAreaInterface.getRows());
+		controlUIBeanInterface.setLinesType(ProcessorConstants.LINE_TYPE_MULTILINE);
+		controlUIBeanInterface.setIsPassword(textAreaInterface.getIsPassword());
+	}
+
+	/**
+	 * @param dateControlInterface
+	 * @param controlUIBeanInterface
+	 */
+	private void populateDateControlAttributesInUIBean(DatePickerInterface dateControlInterface, ControlUIBeanInterface controlUIBeanInterface)
+	{
+		controlUIBeanInterface.setDateValueType(dateControlInterface.getDateValueType());
+	}
+
+	/**
+	 * @param textInterface
+	 * @param controlUIBeanInterface
+	 */
+	private void populateTextControlAttributesInUIBean(TextFieldInterface textInterface, ControlUIBeanInterface controlUIBeanInterface)
+	{
+		controlUIBeanInterface.setColumns(textInterface.getColumns());
+		controlUIBeanInterface.setIsPassword(textInterface.getIsPassword());
+		controlUIBeanInterface.setLinesType(ProcessorConstants.LINE_TYPE_SINGLELINE);		
+	}
+
+	/**
+	 * @param controlInterface
+	 * @param controlUIBeanInterface
+	 */
+	private void populateControlCommonAttributes(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
+	{
+		controlUIBeanInterface.setAbstractAttribute(controlInterface.getAbstractAttribute());
+		controlUIBeanInterface.setCaption(controlInterface.getCaption());
+		controlUIBeanInterface.setIsHidden(controlInterface.getIsHidden());
+		controlUIBeanInterface.setSequenceNumber(controlInterface.getSequenceNumber());
 	}
 }

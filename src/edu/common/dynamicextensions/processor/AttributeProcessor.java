@@ -40,6 +40,7 @@ import edu.common.dynamicextensions.domaininterface.BooleanValueInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.common.dynamicextensions.domaininterface.DateValueInterface;
 import edu.common.dynamicextensions.domaininterface.DoubleValueInterface;
+import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.FloatValueInterface;
 import edu.common.dynamicextensions.domaininterface.IntegerValueInterface;
@@ -249,7 +250,6 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private void populateAssociation(String userSelectedControlName, AssociationInterface associationIntf, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		EntityManagerInterface entityManager = EntityManager.getInstance();
 		ContainerInterface containerInterface = DynamicExtensionsUtility.getContainerByIdentifier(attributeUIBeanInformationIntf.getFormName());
 		EntityInterface targetEntity = containerInterface.getEntity();
 		if((targetEntity!=null)&&(associationIntf!=null))
@@ -1144,9 +1144,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * 
 	 * @param attributeInterface :Attribute object
 	 * @param attributeUIBeanInformationIntf  : UI Bean containing attribute information to be displayed on UI
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	public void populateAttributeUIBeanInterface(AbstractAttributeInterface attributeInterface,
-			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
+			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		if ((attributeUIBeanInformationIntf != null) && (attributeInterface != null))
 		{
@@ -1306,7 +1308,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		}
 		attributeUIBeanInformationIntf.setAttributeMeasurementUnits(doubleAttributeInformation.getMeasurementUnits());
 		attributeUIBeanInformationIntf.setAttributeDecimalPlaces(doubleAttributeInformation.getDecimalPlaces().toString());
-		attributeUIBeanInformationIntf.setAttributeDigits(doubleAttributeInformation.getDigits().toString());
+		//attributeUIBeanInformationIntf.setAttributeDigits(doubleAttributeInformation.getDigits().toString());
 	}
 
 	/**
@@ -1324,7 +1326,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		}
 		attributeUIBeanInformationIntf.setAttributeMeasurementUnits(floatAttributeInformation.getMeasurementUnits());
 		attributeUIBeanInformationIntf.setAttributeDecimalPlaces(floatAttributeInformation.getDecimalPlaces().toString());
-		attributeUIBeanInformationIntf.setAttributeDigits(floatAttributeInformation.getDigits().toString());
+		//attributeUIBeanInformationIntf.setAttributeDigits(floatAttributeInformation.getDigits().toString());
 	}
 
 	/**
@@ -1342,7 +1344,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		}
 		attributeUIBeanInformationIntf.setAttributeMeasurementUnits(longAttributeInformation.getMeasurementUnits());
 		attributeUIBeanInformationIntf.setAttributeDecimalPlaces(longAttributeInformation.getDecimalPlaces().toString());
-		attributeUIBeanInformationIntf.setAttributeDigits((longAttributeInformation.getDigits().toString()));
+		//attributeUIBeanInformationIntf.setAttributeDigits((longAttributeInformation.getDigits().toString()));
 	}
 
 	/**
@@ -1360,7 +1362,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		}
 		attributeUIBeanInformationIntf.setAttributeMeasurementUnits(shortAttributeInformation.getMeasurementUnits());
 		attributeUIBeanInformationIntf.setAttributeDecimalPlaces(shortAttributeInformation.getDecimalPlaces().toString());
-		attributeUIBeanInformationIntf.setAttributeDigits(shortAttributeInformation.getDigits().toString());
+	//	attributeUIBeanInformationIntf.setAttributeDigits(shortAttributeInformation.getDigits().toString());
 	}
 
 	/**
@@ -1378,7 +1380,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		}
 		attributeUIBeanInformationIntf.setAttributeMeasurementUnits(integerAttributeInformation.getMeasurementUnits());
 		attributeUIBeanInformationIntf.setAttributeDecimalPlaces(integerAttributeInformation.getDecimalPlaces().toString());
-		attributeUIBeanInformationIntf.setAttributeDigits(integerAttributeInformation.getDigits().toString());
+	//	attributeUIBeanInformationIntf.setAttributeDigits(integerAttributeInformation.getDigits().toString());
 	}
 
 	/**
@@ -1457,40 +1459,123 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param attributeInterface : Attribute interface
 	 * @param attributeUIBeanInformationIntf    : UI Bean containing attribute information to be displayed on UI 
 	 * @return Comma separated list of permissible values
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	private void setOptionsInformation(AbstractAttributeInterface attributeInterface, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
+	private void setOptionsInformation(AbstractAttributeInterface attributeInterface, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		ArrayList<OptionValueObject> optionDetails = new ArrayList<OptionValueObject>();
-
+		
 		if ((attributeUIBeanInformationIntf != null) && (attributeInterface != null))
 		{
-			AttributeTypeInformationInterface attributeTypeInformationInterface = DynamicExtensionsUtility
-					.getAttributeTypeInformation(attributeInterface);
-			if (attributeTypeInformationInterface != null)
+			if(attributeInterface instanceof AssociationInterface)
 			{
-				DataElementInterface dataEltInterface = attributeTypeInformationInterface.getDataElement();
-				if (dataEltInterface != null)
+				//Lookup options selected
+				populateUIBeanAssociationInformation((AssociationInterface)attributeInterface,attributeUIBeanInformationIntf);
+			}
+			else
+			{
+				AttributeTypeInformationInterface attributeTypeInformationInterface = DynamicExtensionsUtility
+						.getAttributeTypeInformation(attributeInterface);
+				if (attributeTypeInformationInterface != null)
 				{
-					if (dataEltInterface instanceof UserDefinedDEInterface)
-					{
-						attributeUIBeanInformationIntf.setDisplayChoice(ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED);
-						UserDefinedDEInterface userDefinedDE = (UserDefinedDEInterface) dataEltInterface;
-						Collection userDefinedValues = userDefinedDE.getPermissibleValueCollection();
-						if (userDefinedValues != null)
+					DataElementInterface dataEltInterface = attributeTypeInformationInterface.getDataElement();
+					if ((dataEltInterface != null)&&(dataEltInterface instanceof UserDefinedDEInterface))
 						{
-							PermissibleValueInterface permissibleValueIntf = null;
-							Iterator userDefinedValuesIterator = userDefinedValues.iterator();
-							while (userDefinedValuesIterator.hasNext())
-							{
-								permissibleValueIntf = (PermissibleValueInterface) userDefinedValuesIterator.next();
-								optionDetails.add(getOptionDetails(permissibleValueIntf));
-							}
+							populateUserDefinedOptionValues(attributeTypeInformationInterface,attributeUIBeanInformationIntf);
 						}
-						attributeUIBeanInformationIntf.setOptionDetails(optionDetails);
-					}
 				}
 			}
 		}
+	}
+
+	/**
+	 * @param interface1
+	 * @param attributeUIBeanInformationIntf
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	private void populateUIBeanAssociationInformation(AssociationInterface associationInterface, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		if((associationInterface!=null)&&(attributeUIBeanInformationIntf!=null))
+		{
+			EntityInterface targetEntity = associationInterface.getTargetEntity();
+			if(targetEntity!=null)
+			{
+				attributeUIBeanInformationIntf.setGroupName(getGroupName(targetEntity));
+				attributeUIBeanInformationIntf.setFormName(getFormName(targetEntity));
+			}
+		}
+	}
+
+	/**
+	 * @param targetEntity
+	 * @return
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	private String getFormName(EntityInterface entity) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		if(entity!=null)
+		{
+			EntityManagerInterface entityManager = EntityManager.getInstance();
+			ContainerInterface containerInterface = entityManager.getContainerInterfaceByEntityIdentifier(entity.getId());
+			if((containerInterface!=null)&&(containerInterface.getId()!=null))
+			{
+				return containerInterface.getId().toString();
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * @param targetEntity
+	 * @return
+	 */
+	private String getGroupName(EntityInterface targetEntity)
+	{
+//		Initialize group name
+		Collection<EntityGroupInterface> entityGroups = targetEntity.getEntityGroupCollection();
+		//Assumed that the collection will contain just one entity. So fetching first elt of collection
+		if((entityGroups!=null)&&(entityGroups.size()>0))
+		{
+			EntityGroupInterface entityGroup = entityGroups.iterator().next();
+			if(entityGroup!=null)
+			{
+				if(entityGroup.getId()!=null)
+				{
+					return entityGroup.getId().toString();
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * @param attributeTypeInformationInterface
+	 * @param attributeUIBeanInformationIntf
+	 */
+	private void populateUserDefinedOptionValues(AttributeTypeInformationInterface attributeTypeInformationInterface, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
+	{
+		ArrayList<OptionValueObject> optionDetails = new ArrayList<OptionValueObject>();
+		DataElementInterface dataEltInterface = attributeTypeInformationInterface.getDataElement();
+		if((attributeTypeInformationInterface!=null)&&(attributeUIBeanInformationIntf!=null))
+		{
+			attributeUIBeanInformationIntf.setDisplayChoice(ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED);
+			UserDefinedDEInterface userDefinedDE = (UserDefinedDEInterface) dataEltInterface;
+			Collection userDefinedValues = userDefinedDE.getPermissibleValueCollection();
+			if (userDefinedValues != null)
+			{
+				PermissibleValueInterface permissibleValueIntf = null;
+				Iterator userDefinedValuesIterator = userDefinedValues.iterator();
+				while (userDefinedValuesIterator.hasNext())
+				{
+					permissibleValueIntf = (PermissibleValueInterface) userDefinedValuesIterator.next();
+					optionDetails.add(getOptionDetails(permissibleValueIntf));
+				}
+			}
+			attributeUIBeanInformationIntf.setOptionDetails(optionDetails);
+		}
+			
 	}
 
 	/**

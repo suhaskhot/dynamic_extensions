@@ -123,9 +123,11 @@ public class LoadFormControlsProcessor
 	}
 
 	/**
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 * 
 	 */
-	private void editControl(ControlInterface controlInterface, ControlsForm controlsForm)
+	private void editControl(ControlInterface controlInterface, ControlsForm controlsForm) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ControlProcessor controlProcessor = ControlProcessor.getInstance();
 		controlProcessor.populateControlUIBeanInterface(controlInterface, controlsForm);
@@ -307,6 +309,10 @@ public class LoadFormControlsProcessor
 		}
 		controlsForm.setGroupNames(getGroupNamesList());
 		controlsForm.setSeparatorList(getSeparatorsList());
+		if(controlsForm.getSelectedAttributes()==null)
+		{
+			controlsForm.setSelectedAttributes(new ArrayList<NameValueBean>());
+		}
 	}
 
 	/**

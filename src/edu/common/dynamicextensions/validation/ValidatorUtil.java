@@ -36,40 +36,44 @@ public class ValidatorUtil
 	{
 		List<String> errorList = new ArrayList<String>();
 		HashSet<String> errorSet = new HashSet<String>();
-		
+
 		Set<Map.Entry<AbstractAttributeInterface, Object>> attributeSet = attributeValueMap.entrySet();
 		if (attributeSet == null || attributeSet.isEmpty())
 		{
 			return errorList;
 		}
-		
+
 		for (Map.Entry<AbstractAttributeInterface, Object> attributeValueNode : attributeSet)
 		{
-			AttributeInterface attribute = (AttributeInterface) attributeValueNode.getKey();
-			Collection<RuleInterface> attributeRuleCollection = attribute.getRuleCollection();
-			if (attributeRuleCollection == null || attributeRuleCollection.isEmpty())
+			AbstractAttributeInterface abstractAttribute = attributeValueNode.getKey();
+			if (abstractAttribute instanceof AttributeInterface)
 			{
-				return errorList;
-			}
-
-			for (RuleInterface rule : attributeRuleCollection)
-			{
-				ValidatorRuleInterface validatorRule = ControlConfigurationsFactory.getInstance().getValidatorRule(rule.getName());
-				Object valueObject = attributeValueMap.get(attribute);
-				Map<String, String> parameterMap = getParamMap(rule);
-				try
+				AttributeInterface attribute = (AttributeInterface) abstractAttribute;
+				Collection<RuleInterface> attributeRuleCollection = attribute.getRuleCollection();
+				if (attributeRuleCollection == null || attributeRuleCollection.isEmpty())
 				{
-					validatorRule.validate(attribute, valueObject, parameterMap);
+					return errorList;
 				}
-				catch (DynamicExtensionsValidationException e)
+
+				for (RuleInterface rule : attributeRuleCollection)
 				{
-					String errorMessage = ApplicationProperties.getValue(e.getErrorCode(), e.getPlaceHolderList());
-					errorSet.add(errorMessage);
+					ValidatorRuleInterface validatorRule = ControlConfigurationsFactory.getInstance().getValidatorRule(rule.getName());
+					Object valueObject = attributeValueMap.get(attribute);
+					Map<String, String> parameterMap = getParamMap(rule);
+					try
+					{
+						validatorRule.validate(attribute, valueObject, parameterMap);
+					}
+					catch (DynamicExtensionsValidationException e)
+					{
+						String errorMessage = ApplicationProperties.getValue(e.getErrorCode(), e.getPlaceHolderList());
+						errorSet.add(errorMessage);
+					}
 				}
 			}
 		}
-		
-		for(String error: errorSet)
+
+		for (String error : errorSet)
 		{
 			errorList.add(error);
 		}

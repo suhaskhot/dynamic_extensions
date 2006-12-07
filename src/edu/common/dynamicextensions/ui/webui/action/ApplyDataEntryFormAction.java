@@ -2,12 +2,14 @@
 package edu.common.dynamicextensions.ui.webui.action;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +24,9 @@ import org.apache.struts.upload.FormFile;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface;
@@ -54,52 +59,31 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		DataEntryForm dataEntryForm = (DataEntryForm) form;
 		ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 		Collection<ControlInterface> controlCollection = containerInterface.getControlCollection();
-		AbstractAttributeInterface abstractAttributeInterface = null;
 
+		AbstractAttributeInterface abstractAttribute = null;
 		Map<AbstractAttributeInterface, Object> attributeValueMap = new LinkedHashMap<AbstractAttributeInterface, Object>();
-		String value = null;
-		List<String> valueList = null;
+
 		try
 		{
-
 			for (int sequence = 1; sequence <= controlCollection.size(); sequence++)
 			{
-				for (ControlInterface controlInterface : controlCollection)
+				for (ControlInterface control : controlCollection)
 				{
-					if (sequence == controlInterface.getSequenceNumber().intValue())
+					if (control != null)
 					{
-						abstractAttributeInterface = controlInterface.getAbstractAttribute();
-
-						if (controlInterface != null && controlInterface instanceof ListBoxInterface)
+						Integer controlSequenceNumber = control.getSequenceNumber();
+						if (controlSequenceNumber != null && (sequence == controlSequenceNumber.intValue()))
 						{
-							String[] selectedListValues = (String[]) request.getParameterValues("Control_" + sequence);
-							valueList = new ArrayList<String>();
-							if (selectedListValues != null)
+							abstractAttribute = control.getAbstractAttribute();
+							if (abstractAttribute instanceof AttributeInterface)
 							{
-								for (int counter = 0; counter < selectedListValues.length; counter++)
-								{
-									valueList.add(selectedListValues[counter]);
-								}
+								collectAttributeValues(request, dataEntryForm, sequence, control, attributeValueMap);
 							}
-							attributeValueMap.put(abstractAttributeInterface, valueList);
+							else if (abstractAttribute instanceof AssociationInterface)
+							{
+								collectAssociationValues(request, dataEntryForm, sequence, control, attributeValueMap);
+							}
 						}
-						else if (controlInterface != null && controlInterface instanceof FileUploadInterface)
-						{
-							FormFile formFile = null;
-							formFile = (FormFile) dataEntryForm.getValue("Control_" + sequence);
-							FileAttributeRecordValue fileAttributeRecordValue = new FileAttributeRecordValue();
-							fileAttributeRecordValue.setFileContent(formFile.getFileData());
-							fileAttributeRecordValue.setFileName(formFile.getFileName());
-							fileAttributeRecordValue.setContentType(formFile.getContentType());
-							attributeValueMap.put(abstractAttributeInterface, fileAttributeRecordValue);
-
-						}
-						else
-						{
-							value = request.getParameter("Control_" + sequence);
-							attributeValueMap.put(abstractAttributeInterface, value);
-						}
-
 						break;
 					}
 				}
@@ -108,8 +92,6 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			ApplyDataEntryFormProcessor applyDataEntryFormProcessor = ApplyDataEntryFormProcessor.getInstance();
 
 			List<String> errorList = null;
-
-			
 			errorList = ValidatorUtil.validateEntity(attributeValueMap);
 			String recordIdentifier = dataEntryForm.getRecordIdentifier();
 
@@ -118,7 +100,6 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				//saveErrors(request, getErrorMessages(errorList));
 				dataEntryForm.setErrorList(errorList);
 				return (mapping.findForward(Constants.SUCCESS));
-
 			}
 			else if (recordIdentifier != null && !recordIdentifier.equals(""))
 			{
@@ -126,7 +107,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				if (edited.booleanValue())
 				{
 					saveMessages(request, getSuccessMessage());
-				}				
+				}
 			}
 			else
 			{
@@ -150,6 +131,71 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			return (mapping.findForward(actionForwardString));
 		}
 		return (mapping.findForward(Constants.SUCCESS));
+	}
+
+	private void collectAssociationValues(HttpServletRequest request, DataEntryForm dataEntryForm, int sequence, ControlInterface control,
+			Map<AbstractAttributeInterface, Object> attributeValueMap)
+	{
+		AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
+
+		if (control instanceof ListBoxInterface)
+		{
+			List<Long> valueList = new Vector<Long>();
+			String[] selectedValues = (String[]) request.getParameterValues("Control_" + sequence);
+			if (selectedValues != null)
+			{
+				for (int counter = 0; counter < selectedValues.length; counter++)
+				{
+					Long identifier = new Long(selectedValues[counter].trim());
+					valueList.add(identifier);
+				}
+			}
+			attributeValueMap.put(abstractAttribute, valueList);
+		}
+		else if (control instanceof ComboBoxInterface)
+		{
+			String value = request.getParameter("Control_" + sequence);
+			Long identifier = new Long(value.trim());
+			attributeValueMap.put(abstractAttribute, identifier);
+		}
+	}
+
+	private void collectAttributeValues(HttpServletRequest request, DataEntryForm dataEntryForm, int sequence, ControlInterface control,
+			Map<AbstractAttributeInterface, Object> attributeValueMap) throws FileNotFoundException, IOException
+	{
+		AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
+
+		List<String> valueList = null;
+
+		String value = null;
+		if (control instanceof ListBoxInterface)
+		{
+			String[] selectedListValues = (String[]) request.getParameterValues("Control_" + sequence);
+			valueList = new ArrayList<String>();
+			if (selectedListValues != null)
+			{
+				for (int counter = 0; counter < selectedListValues.length; counter++)
+				{
+					valueList.add(selectedListValues[counter]);
+				}
+			}
+			attributeValueMap.put(abstractAttribute, valueList);
+		}
+		else if (control instanceof FileUploadInterface)
+		{
+			FormFile formFile = null;
+			formFile = (FormFile) dataEntryForm.getValue("Control_" + sequence);
+			FileAttributeRecordValue fileAttributeRecordValue = new FileAttributeRecordValue();
+			fileAttributeRecordValue.setFileContent(formFile.getFileData());
+			fileAttributeRecordValue.setFileName(formFile.getFileName());
+			fileAttributeRecordValue.setContentType(formFile.getContentType());
+			attributeValueMap.put(abstractAttribute, fileAttributeRecordValue);
+		}
+		else
+		{
+			value = request.getParameter("Control_" + sequence);
+			attributeValueMap.put(abstractAttribute, value);
+		}
 	}
 
 	/**

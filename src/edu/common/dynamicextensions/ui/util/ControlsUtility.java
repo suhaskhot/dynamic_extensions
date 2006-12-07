@@ -45,9 +45,9 @@ import edu.common.dynamicextensions.domaininterface.ShortValueInterface;
 import edu.common.dynamicextensions.domaininterface.StringTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
-import edu.common.dynamicextensions.domaininterface.userinterface.SelectInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
@@ -276,29 +276,38 @@ public class ControlsUtility
 	/**
 	 * This method populates the List of Values of the ListBox in the NameValueBean Collection.
 	 * @return List of pair of Name and its corresponding Value.
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
 	 */
-	public static List<NameValueBean> populateListOfValues(ControlInterface control) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public static List<NameValueBean> populateListOfValues(ControlInterface control)
 	{
 		List<NameValueBean> nameValueBeanList = null;
 
-		AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
-		if (abstractAttribute != null)
+		try
 		{
-			if (abstractAttribute instanceof AttributeInterface)
+			AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
+			if (abstractAttribute != null)
 			{
-				nameValueBeanList = getListOfPermissibleValues((AttributeInterface) abstractAttribute);
-			}
-			else if (abstractAttribute instanceof AssociationInterface)
-			{
-				SelectInterface selectControl = (SelectInterface)control;
-				EntityManagerInterface entityManager = EntityManager.getInstance();
-				
-				Map<Long, List<String>> displayAttributeMap = entityManager.getTargetEntityDisplayAttribute(selectControl);
+				if (abstractAttribute instanceof AttributeInterface)
+				{
+					nameValueBeanList = getListOfPermissibleValues((AttributeInterface) abstractAttribute);
+				}
+				else if (abstractAttribute instanceof AssociationInterface)
+				{
+					EntityManagerInterface entityManager = EntityManager.getInstance();
 
-				nameValueBeanList = getTargetEntityDisplayAttributeList(displayAttributeMap);
+					AssociationControlInterface associationControl = (AssociationControlInterface) control;
+					Map<Long, List<String>> displayAttributeMap = null;
+
+					String sepatator = associationControl.getSeparator();
+
+					displayAttributeMap = entityManager.getRecordsForAssociationControl(associationControl);
+
+					nameValueBeanList = getTargetEntityDisplayAttributeList(displayAttributeMap, sepatator);
+				}
 			}
+		}
+		catch (Exception exception)
+		{
+			throw new RuntimeException(exception);
 		}
 		return nameValueBeanList;
 	}
@@ -366,25 +375,27 @@ public class ControlsUtility
 		return nameValueBeanList;
 	}
 
-	private static List<NameValueBean> getTargetEntityDisplayAttributeList(Map<Long, List<String>> displayAttributeMap)
+	private static List<NameValueBean> getTargetEntityDisplayAttributeList(Map<Long, List<String>> displayAttributeMap, String separator)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		List<NameValueBean> displayAttributeList = new Vector<NameValueBean>();
-		NameValueBean nameValueBean = null;
+
 		Set<Map.Entry<Long, List<String>>> displayAttributeSet = displayAttributeMap.entrySet();
 		for (Map.Entry<Long, List<String>> displayAttributeEntry : displayAttributeSet)
 		{
 			Long recordIdentifier = displayAttributeEntry.getKey();
 			List<String> attributeList = displayAttributeEntry.getValue();
 
+			NameValueBean nameValueBean = new NameValueBean();
+			nameValueBean.setValue(recordIdentifier.toString());
+			StringBuffer value = new StringBuffer();
 			for (String attribute : attributeList)
 			{
-				nameValueBean = new NameValueBean();
-				nameValueBean.setName(attribute);
-				nameValueBean.setValue(recordIdentifier.toString());
-
-				displayAttributeList.add(nameValueBean);
+				value.append(attribute + separator);
 			}
+			value.deleteCharAt(value.lastIndexOf(separator));
+			nameValueBean.setName(value.toString());
+			displayAttributeList.add(nameValueBean);
 		}
 
 		return displayAttributeList;

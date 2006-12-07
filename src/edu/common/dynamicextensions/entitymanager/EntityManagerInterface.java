@@ -326,6 +326,6 @@ public interface EntityManagerInterface
 	 *    key   recordId
 	 *    value List<String> list of column values 
 	 */
-	Map<Long,List<String>> getRecordsForAssociationControl(AssociationControlInterface associationControl)  throws DynamicExtensionsSystemException;
+	Map<Long, List<String>> getRecordsForAssociationControl(AssociationControlInterface associationControl) throws DynamicExtensionsSystemException;
 
 }

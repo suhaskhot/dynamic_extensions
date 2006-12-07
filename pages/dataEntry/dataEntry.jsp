@@ -238,14 +238,12 @@
 															</html:submit>
 														</c:when>
 							 							<c:otherwise>
-							 								
-							 								
 							 								<html:hidden styleId='isEdit' property="isEdit" value=""/>
 							 								<% 
 							 									String target = "addDynamicData(" + recordIdentifier + ")";
 							 								%>
-													 		<html:submit styleClass="actionButton"  >
-															 		<bean:message  key="buttons.submit" />
+													 		<html:submit styleClass="actionButton">
+															 	<bean:message  key="buttons.submit" />
 															</html:submit>
 						 								</c:otherwise>
 				     								</c:choose>	

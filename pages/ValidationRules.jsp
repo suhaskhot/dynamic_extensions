@@ -79,21 +79,14 @@
 									<% 
 										if(controlName.equalsIgnoreCase("DateControl"))
 										{ 
-											String divId = "slcalcod"+ paramName ;
+											String divId = "slcalcod"+ paramName;
 									%>
-										<!--	<A onclick="showCalendar('<%= paramName%>',<%=DynamicExtensionsUtility.getCurrentYear()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentDay()%>,'MM-dd-yyyy','controlsForm','<%= paramName%>',event,1900,2020);" href="javascript://">
-												<IMG alt="This is a Calendar" src="images/calendar.gif" border=0>
-											</A>
-											<DIV id=<%=divId%> style="Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px">
-												<SCRIPT>printCalendar('<%= paramName%>',<%=DynamicExtensionsUtility.getCurrentDay()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentYear()%>);</SCRIPT>
-											</DIV>
-										-->	
-										<A onclick="showCalendar('<%= paramName%>',2006,12,1,'MM-dd-yyyy','controlsForm','<%= paramName%>',event,1900,2020);" href="javascript://">
+										<A onclick="showCalendar('<%=paramName%>',<%=DynamicExtensionsUtility.getCurrentYear()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentDay()%>,'MM-dd-yyyy','controlsForm','<%= paramName%>',event,1900,2020);" href="javascript://">
 											<IMG alt="This is a Calendar" src="images/calendar.gif" border=0>
 										</A>
-										<DIV id=slcalcod<%= paramName%> style="Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px">
-										<SCRIPT>printCalendar('<%= paramName%>',1,12,2006);</SCRIPT>
-										</DIV>[MM-DD-YYYY]
+										<DIV id=<%=divId%> style="Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px">
+											<SCRIPT>printCalendar('<%= paramName%>',<%=DynamicExtensionsUtility.getCurrentDay()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentYear()%>);</SCRIPT>
+										</DIV>[MM-DD-YYYY]&nbsp;
 									<%
 										} //end if(controlName.equalsIgnoreCase("DateControl"))
 									%>

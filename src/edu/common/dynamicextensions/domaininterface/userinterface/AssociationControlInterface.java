@@ -17,8 +17,7 @@ public interface AssociationControlInterface
 	/**
 	 * @param associationDisplayAttributeCollection
 	 */
-	void setAssociationDisplayAttributeCollection(
-			Collection<AssociationDisplayAttributeInterface> associationDisplayAttributeCollection);
+	void setAssociationDisplayAttributeCollection(Collection<AssociationDisplayAttributeInterface> associationDisplayAttributeCollection);
 
 	/**
 	 * @return
@@ -28,13 +27,21 @@ public interface AssociationControlInterface
 	/**
 	 * @param associationDisplayAttribute
 	 */
-	void addAssociationDisplayAttribute(
-			AssociationDisplayAttributeInterface associationDisplayAttribute);
+	void addAssociationDisplayAttribute(AssociationDisplayAttributeInterface associationDisplayAttribute);
 
 	/**
 	 * @param associationDisplayAttribute
 	 */
-	void removeAssociationDisplayAttribute(
-			AssociationDisplayAttributeInterface associationDisplayAttribute);
+	void removeAssociationDisplayAttribute(AssociationDisplayAttributeInterface associationDisplayAttribute);
+
+	/**
+	 * @return
+	 */
+	String getSeparator();
+
+	/**
+	 * @param separator
+	 */
+	void setSeparator(String separator);
 
 }

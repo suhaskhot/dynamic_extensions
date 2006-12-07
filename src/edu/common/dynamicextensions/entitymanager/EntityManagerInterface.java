@@ -327,5 +327,15 @@ public interface EntityManagerInterface
 	 *    value List<String> list of column values 
 	 */
 	Map<Long, List<String>> getRecordsForAssociationControl(AssociationControlInterface associationControl) throws DynamicExtensionsSystemException;
+	
+	/**
+	 * This method returns the container interface given the entity identifier.
+	 * @param EntityInterface
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	ContainerInterface getContainerInterfaceByEntityIdentifier(Long entityIdentifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 }

@@ -39,5 +39,10 @@
 	                             join entity.entityGroupCollection entityGroup
 	                                     where entityGroup.id = ?)
 	</query>
-	</hibernate-mapping>
+	
+	<query name="getContainerOfEntity">
+		from Container container
+           		where  container.entity.id = ?
+	</query>
+</hibernate-mapping>
     

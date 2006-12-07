@@ -46,9 +46,9 @@ function addControlToFormTree() {
 	
 	document.getElementById('operation').value='controlAdded';
 	var controlsForm=document.getElementById("controlsForm");
-	if(document.getElementById("selectedFormAttributeList")!=null)
+	if(document.getElementById("selectedAttributeIds")!=null)
 	{
-		selectAllListAttributes(document.getElementById("selectedFormAttributeList"));
+		selectAllListAttributes(document.getElementById("selectedAttributeIds"));
 	}	
 	controlsForm.action="/dynamicExtensions/AddControlsAction.do";
 	controlsForm.submit();
@@ -1172,13 +1172,13 @@ function formChangedResponse(formAttributesListXML)
 function selectFormAttribute()
 {
 	var fromListBox = document.getElementById('formAttributeList');
-	var toListBox = document.getElementById('selectedFormAttributeList');
+	var toListBox = document.getElementById('selectedAttributeIds');
 	transferElementsFromList(fromListBox,toListBox);
 }	
 
 function unSelectFormAttribute()
 {
-	var fromListBox = document.getElementById('selectedFormAttributeList');
+	var fromListBox = document.getElementById('selectedAttributeIds');
 	if(fromListBox!=null)
 	{
 		var noOfElements = fromListBox.options.length;

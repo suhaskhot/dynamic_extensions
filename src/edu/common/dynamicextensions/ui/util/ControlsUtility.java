@@ -389,11 +389,23 @@ public class ControlsUtility
 			NameValueBean nameValueBean = new NameValueBean();
 			nameValueBean.setValue(recordIdentifier.toString());
 			StringBuffer value = new StringBuffer();
-			for (String attribute : attributeList)
+
+			for (String attributeValue : attributeList)
 			{
-				value.append(attribute + separator);
+				value.append(attributeValue + separator);
 			}
-			value.deleteCharAt(value.lastIndexOf(separator));
+			/*Iterator attributeListIterator = attributeList.iterator();
+			 while (attributeListIterator.hasNext())
+			 {
+			 String attributeValue = (String) attributeListIterator.next();
+			 value.append(attributeValue);
+			 if (attributeListIterator.hasNext())
+			 {
+			 value.append(separator);
+			 }
+			 }*/
+
+			value.delete(value.lastIndexOf(separator), value.length() - 1);
 			nameValueBean.setName(value.toString());
 			displayAttributeList.add(nameValueBean);
 		}

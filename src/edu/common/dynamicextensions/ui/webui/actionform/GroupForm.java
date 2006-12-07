@@ -182,7 +182,7 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 		ActionErrors errors = new ActionErrors();
 		Validator validator = new Validator();
 
-		if (groupNameText == null || validator.isEmpty(String.valueOf(groupNameText)))
+		if (createGroupAs != null && !createGroupAs.equals(ProcessorConstants.GROUP_CREATEFROM_EXISTING) && (groupNameText == null || validator.isEmpty(String.valueOf(groupNameText))))
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.GroupTitle")));
 		}

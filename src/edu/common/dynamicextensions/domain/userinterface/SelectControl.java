@@ -72,4 +72,11 @@ public abstract class SelectControl extends Control implements AssociationContro
 	{
 		associationDisplayAttributeCollection.remove(associationDisplayAttribute);
 	}
+	/**
+	 * 
+	 */
+	public void removeAllAssociationDisplayAttributes()
+	{
+		associationDisplayAttributeCollection.clear();
+	}
 }

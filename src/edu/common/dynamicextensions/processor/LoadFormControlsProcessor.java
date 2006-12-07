@@ -312,13 +312,13 @@ public class LoadFormControlsProcessor
 	/**
 	 * @return
 	 */
-	private List getSeparatorsList()
+	private List<NameValueBean> getSeparatorsList()
 	{
-		ArrayList<String> separatorList = new ArrayList<String>();
-		separatorList.add("Comma");
-		separatorList.add("Colon");
-		separatorList.add("Space");
-		separatorList.add("Dot");
+		ArrayList<NameValueBean> separatorList = new ArrayList<NameValueBean>();
+		separatorList.add(new NameValueBean("Comma",","));
+		separatorList.add(new NameValueBean("Colon",":"));
+		separatorList.add(new NameValueBean("Space"," "));
+		separatorList.add(new NameValueBean("Dot","."));
 		return separatorList;
 	}
 

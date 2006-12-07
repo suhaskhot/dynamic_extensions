@@ -2190,7 +2190,7 @@ public class EntityManager implements EntityManagerInterface, EntityManagerConst
 				for (int i = 0; i < result.size(); i++)
 				{
 					List innerList = (List) result.get(i);
-					Long recordId = Long.parseLong((String) innerList.get(i));
+					Long recordId = Long.parseLong((String) innerList.get(0));
 					innerList.remove(0);
 					outputMap.put(recordId, innerList);
 				}

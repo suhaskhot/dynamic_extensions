@@ -156,7 +156,9 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		{
 			String value = request.getParameter("Control_" + sequence);
 			Long identifier = new Long(value.trim());
-			attributeValueMap.put(abstractAttribute, identifier);
+			List identifierList = new ArrayList();
+			identifierList.add(identifier);
+			attributeValueMap.put(abstractAttribute, identifierList);
 		}
 	}
 

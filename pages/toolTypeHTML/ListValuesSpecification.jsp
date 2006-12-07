@@ -156,10 +156,7 @@
 				<td >
 					<html:select styleClass="formFieldVerySmallSized" property="groupName" styleId="groupName" onchange="groupChanged()">
 						<html:options collection="groupNamesList" labelProperty="name" property="value" />
-						<!--<c:forEach items="${groupNamesList}" var="grpName">
-						<jsp:useBean id="grpName" type="java.lang.String" />
-							<html:option value=''></html:option>
-						</c:forEach>-->
+
 					</html:select>
 				</td>
 			</tr>
@@ -214,11 +211,7 @@
 				</td>
 				<td  >
 					<html:select styleClass="formFieldVerySmallSized" property="separator" styleId="separator" >
-					<c:forEach items="${separatorList}" var="separator">
-						<jsp:useBean id="separator" type="java.lang.String" />
-							<html:option value='<%=separator%>'></html:option>
-						</c:forEach>
-
+						<html:options collection="separatorList" labelProperty="name" property="value" />
 					</html:select>
 				</td>
 			</tr>

@@ -70,7 +70,10 @@ public class ControlsUtility
 
 		if (abstractAttribute != null)
 		{
-			abstractAttributeType = ((AttributeInterface) abstractAttribute).getAttributeTypeInformation();
+			if(abstractAttribute instanceof AttributeInterface)
+			{
+				abstractAttributeType = ((AttributeInterface) abstractAttribute).getAttributeTypeInformation();
+			}
 		}
 		if (abstractAttributeType != null)
 		{

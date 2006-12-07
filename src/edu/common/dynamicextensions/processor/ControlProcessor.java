@@ -10,13 +10,9 @@
 
 package edu.common.dynamicextensions.processor;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
-import com.sun.java_cup.internal.assoc;
-
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.userinterface.SelectControl;
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
@@ -255,8 +251,10 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @param controlInterface : Control Interface (Domain Object Interface)
 	 * @param controlUIBeanInterface : Control UI Information interface containing information added by user on UI
 	 * @return : Control interface populated with required information for list box
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	private ControlInterface getListBoxControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
+	private ControlInterface getListBoxControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ListBoxInterface listBoxIntf = null;
 		if (controlInterface == null) //If does not exist create it 
@@ -277,10 +275,14 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		listBoxIntf.setIsMultiSelect(controlUIBeanInterface.getIsMultiSelect());
 		listBoxIntf.setNoOfRows(controlUIBeanInterface.getRows());
 		//Set isCollection=true in the attribute
-		AttributeInterface controlAttribute = (AttributeInterface) controlUIBeanInterface.getAbstractAttribute();
-		if (controlAttribute != null)
+		AbstractAttributeInterface controlAttribute = controlUIBeanInterface.getAbstractAttribute();
+		if ((controlAttribute != null)&&(controlAttribute instanceof AttributeInterface))
 		{
-			controlAttribute.setIsCollection(new Boolean(true));
+			((AttributeInterface)controlAttribute).setIsCollection(new Boolean(true));
+		}
+		if(listBoxIntf instanceof SelectControl)
+		{
+			initializeSelectControl((SelectControl)listBoxIntf,controlUIBeanInterface);
 		}
 		return listBoxIntf;
 	}
@@ -330,7 +332,17 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		if(selectControl!=null)
 		{
 			selectControl.setSeparator(controlUIBeanInterface.getSeparator());
-			selectControl.setAssociationDisplayAttributeCollection(getAssociationDisplayAttributeCollection(controlUIBeanInterface));
+			String[] associationControlIds = controlUIBeanInterface.getSelectedFormAttributeList();
+			selectControl.removeAllAssociationDisplayAttributes();
+			if(associationControlIds!=null)
+			{
+				int noOfIds = associationControlIds.length;
+				for(int i=0;i<noOfIds;i++)
+				{
+					selectControl.addAssociationDisplayAttribute(getAssociationDisplayAttribute(associationControlIds[i],i+1));			
+				}
+			}
+			//selectControl.setAssociationDisplayAttributeCollection(getAssociationDisplayAttributeCollection(controlUIBeanInterface));
 		}
 		
 	}
@@ -341,27 +353,18 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private Collection<AssociationDisplayAttributeInterface> getAssociationDisplayAttributeCollection(ControlUIBeanInterface controlUIBeanInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private AssociationDisplayAttributeInterface getAssociationDisplayAttribute(String controlId,int sequenceNo) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		ArrayList<AssociationDisplayAttributeInterface> associationDisplayAttributes = new ArrayList<AssociationDisplayAttributeInterface>(); 
-		if(controlUIBeanInterface!=null)
+		AssociationDisplayAttributeInterface associationDisplayAttribute = null;
+		if(controlId!=null)
 		{
 			DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
-			String[] associationControlIds = controlUIBeanInterface.getSelectedFormAttributeList();
-			if(associationControlIds!=null)
-			{
-				int noOfIds = associationControlIds.length;
-				AssociationDisplayAttributeInterface associationDisplayAttribute = null;
-				for(int i=0;i<noOfIds;i++)
-				{
-					associationDisplayAttribute = domainObjectFactory.createAssociationDisplayAttribute();
-					associationDisplayAttribute.setSequenceNumber(i+1);
-					associationDisplayAttribute.setAttribute(getAttributeForId(associationControlIds[i]));
-					associationDisplayAttributes.add(associationDisplayAttribute);
-				}
-			}
+			
+			associationDisplayAttribute = domainObjectFactory.createAssociationDisplayAttribute();
+			associationDisplayAttribute.setSequenceNumber(sequenceNo);
+			associationDisplayAttribute.setAttribute(getAttributeForId(controlId));
 		}
-		return associationDisplayAttributes;
+		return associationDisplayAttribute;
 	}
 
 	/**

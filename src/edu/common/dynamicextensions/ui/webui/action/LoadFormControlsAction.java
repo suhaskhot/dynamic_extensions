@@ -25,6 +25,7 @@ import edu.common.dynamicextensions.processor.LoadFormControlsProcessor;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.util.logger.Logger;
@@ -118,7 +119,8 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 		ArrayList<NameValueBean> formAttributesList = new ArrayList<NameValueBean>();
 		if (formId != null)
 		{
-			ContainerInterface container = EntityManager.getInstance().getContainerByIdentifier(formId);
+			//ContainerInterface container = EntityManager.getInstance().getContainerByIdentifier(formId);
+			ContainerInterface container = DynamicExtensionsUtility.getContainerByIdentifier(formId);
 			if (container != null)
 			{
 				Collection<ControlInterface> controlCollection = container.getControlCollection();

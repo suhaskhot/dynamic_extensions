@@ -33,7 +33,7 @@ public interface AssociationControlInterface
 	 * @param associationDisplayAttribute
 	 */
 	void removeAssociationDisplayAttribute(AssociationDisplayAttributeInterface associationDisplayAttribute);
-
+	
 	/**
 	 * @return
 	 */
@@ -43,5 +43,9 @@ public interface AssociationControlInterface
 	 * @param separator
 	 */
 	void setSeparator(String separator);
-
+	
+	/**
+	 * Remove all association display attributes from collection
+	 */
+	void removeAllAssociationDisplayAttributes();
 }

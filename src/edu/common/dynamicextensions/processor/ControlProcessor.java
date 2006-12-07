@@ -10,7 +10,14 @@
 
 package edu.common.dynamicextensions.processor;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
+import com.sun.java_cup.internal.assoc;
+
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
+import edu.common.dynamicextensions.domain.userinterface.SelectControl;
+import edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
@@ -21,8 +28,10 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterfa
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.interfaces.ControlUIBeanInterface;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 
 /**
  * This class processes all the information needed for Control.
@@ -55,8 +64,9 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @param controlUIBeanInterface : Control UI Information interface containing information added by user on UI
 	 * @return : Control interface populated with required information
 	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException 
 	 */
-	public ControlInterface createAndPopulateControl(String userSelectedControlName, ControlUIBeanInterface controlUIBeanInterface) throws DynamicExtensionsSystemException
+	public ControlInterface createAndPopulateControl(String userSelectedControlName, ControlUIBeanInterface controlUIBeanInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ControlInterface controlInterface = populateControlInterface(userSelectedControlName, null, controlUIBeanInterface);
 		return controlInterface;
@@ -69,9 +79,10 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @param controlUIBeanInterface : Control UI Information interface containing information added by user on UI
 	 * @return : Control interface populated with required information
 	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException 
 	 */
 	public ControlInterface populateControlInterface(String userSelectedControlName, ControlInterface controlIntf,
-			ControlUIBeanInterface controlUIBeanInterface) throws DynamicExtensionsSystemException
+			ControlUIBeanInterface controlUIBeanInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ControlInterface controlInterface = null;
 		if ((userSelectedControlName != null) && (controlUIBeanInterface != null))
@@ -278,20 +289,11 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @param controlInterface : Control Interface (Domain Object Interface)
 	 * @param controlUIBeanInterface : Control UI Information interface containing information added by user on UI
 	 * @return : Control interface populated with required information for Combobox
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	private ControlInterface getComboBoxControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
+	private ControlInterface getComboBoxControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		/*ComboBoxInterface comboBoxIntf = null;
-		 if (controlInterface == null)
-		 {
-		 comboBoxIntf = DomainObjectFactory.getInstance().createComboBox();
-		 }
-		 else
-		 {
-		 comboBoxIntf = (ComboBoxInterface) controlInterface;
-		 }
-		 return comboBoxIntf;*/
-
 		ComboBoxInterface comboBoxIntf = null;
 		if (controlInterface == null) //If does not exist create it 
 		{
@@ -308,8 +310,79 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 				comboBoxIntf = DomainObjectFactory.getInstance().createComboBox();
 			}
 		}
+		if(comboBoxIntf instanceof SelectControl)
+		{
+			initializeSelectControl((SelectControl)comboBoxIntf,controlUIBeanInterface);
+		}
 		return comboBoxIntf;
 
+	}
+
+	/**
+	 * @param controlUIBeanInterface 
+	 * @param control
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	private void initializeSelectControl(SelectControl selectControl, ControlUIBeanInterface controlUIBeanInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		//initialize the select control object with the separator etc properties
+		if(selectControl!=null)
+		{
+			selectControl.setSeparator(controlUIBeanInterface.getSeparator());
+			selectControl.setAssociationDisplayAttributeCollection(getAssociationDisplayAttributeCollection(controlUIBeanInterface));
+		}
+		
+	}
+
+	/**
+	 * @param controlUIBeanInterface
+	 * @return
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	private Collection<AssociationDisplayAttributeInterface> getAssociationDisplayAttributeCollection(ControlUIBeanInterface controlUIBeanInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		ArrayList<AssociationDisplayAttributeInterface> associationDisplayAttributes = new ArrayList<AssociationDisplayAttributeInterface>(); 
+		if(controlUIBeanInterface!=null)
+		{
+			DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+			String[] associationControlIds = controlUIBeanInterface.getSelectedFormAttributeList();
+			if(associationControlIds!=null)
+			{
+				int noOfIds = associationControlIds.length;
+				AssociationDisplayAttributeInterface associationDisplayAttribute = null;
+				for(int i=0;i<noOfIds;i++)
+				{
+					associationDisplayAttribute = domainObjectFactory.createAssociationDisplayAttribute();
+					associationDisplayAttribute.setSequenceNumber(i+1);
+					associationDisplayAttribute.setAttribute(getAttributeForId(associationControlIds[i]));
+					associationDisplayAttributes.add(associationDisplayAttribute);
+				}
+			}
+		}
+		return associationDisplayAttributes;
+	}
+
+	/**
+	 * @param string
+	 * @return
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	private AttributeInterface getAttributeForId(String controlId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		AttributeInterface attribute = null;
+		if(controlId!=null)
+		{
+			ControlInterface control = DynamicExtensionsUtility.getControlByIdentifier(controlId);
+			if(control!=null)
+			{
+				if((control.getAbstractAttribute()!=null)&&(control.getAbstractAttribute() instanceof AttributeInterface))
+				attribute = (AttributeInterface)control.getAbstractAttribute();
+			}
+		}
+		return attribute;
 	}
 
 	/**

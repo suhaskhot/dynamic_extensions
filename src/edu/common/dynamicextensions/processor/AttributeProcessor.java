@@ -33,22 +33,27 @@ import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.StringValue;
 import edu.common.dynamicextensions.domain.UserDefinedDE;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.BooleanValueInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.common.dynamicextensions.domaininterface.DateValueInterface;
 import edu.common.dynamicextensions.domaininterface.DoubleValueInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.FloatValueInterface;
 import edu.common.dynamicextensions.domaininterface.IntegerValueInterface;
 import edu.common.dynamicextensions.domaininterface.LongValueInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
+import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.ShortValueInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManager;
+import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.interfaces.AbstractAttributeUIBeanInterface;
@@ -57,6 +62,9 @@ import edu.common.dynamicextensions.ui.util.RuleConfigurationObject;
 import edu.common.dynamicextensions.ui.util.SemanticPropertyBuilderUtil;
 import edu.common.dynamicextensions.ui.webui.util.OptionValueObject;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
+import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
+import edu.common.dynamicextensions.util.global.Constants.AssociationType;
+import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.logger.Logger;
@@ -95,46 +103,95 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * datatype selected by the user on the UI.
 	 * @return New (Domain Object) Attribute object based on datatype
 	 * @throws DynamicExtensionsApplicationException  : Exception
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	public AttributeInterface createAttribute(AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
-			throws DynamicExtensionsApplicationException
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		AttributeInterface attributeInterface = null;
 		if (attributeUIBeanInformationIntf != null)
 		{
-			String attributeType = attributeUIBeanInformationIntf.getDataType();
-			if (attributeType != null)
+			String displayChoice = attributeUIBeanInformationIntf.getDisplayChoice();
+			if((displayChoice!=null)&&(displayChoice.equals(ProcessorConstants.DISPLAY_CHOICE_LOOKUP)))
 			{
-				DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
-				if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_STRING))
+				attributeInterface = getAttributeInterfaceForLookup(attributeUIBeanInformationIntf);
+			}
+			else
+			{
+				String attributeType = attributeUIBeanInformationIntf.getDataType();
+				if (attributeType != null)
 				{
-					attributeInterface = domainObjectFactory.createStringAttribute();
-				}
-				else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_DATE))
-				{
-					attributeInterface = domainObjectFactory.createDateAttribute();
-				}
-				else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_BOOLEAN))
-				{
-					attributeInterface = domainObjectFactory.createBooleanAttribute();
-				}
-				else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_BYTEARRAY))
-				{
-					attributeInterface = domainObjectFactory.createByteArrayAttribute();
-				}
-				else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_FILE))
-				{
-					attributeInterface = domainObjectFactory.createFileAttribute();
-				}
-				else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_NUMBER))
-				{
-					int noOfDecimals = DynamicExtensionsUtility.convertStringToInt(attributeUIBeanInformationIntf.getAttributeDecimalPlaces());
-					attributeInterface = getInterfaceForNumericDataType(noOfDecimals);
+					DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+					if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_STRING))
+					{
+						attributeInterface = domainObjectFactory.createStringAttribute();
+					}
+					else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_DATE))
+					{
+						attributeInterface = domainObjectFactory.createDateAttribute();
+					}
+					else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_BOOLEAN))
+					{
+						attributeInterface = domainObjectFactory.createBooleanAttribute();
+					}
+					else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_BYTEARRAY))
+					{
+						attributeInterface = domainObjectFactory.createByteArrayAttribute();
+					}
+					else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_FILE))
+					{
+						attributeInterface = domainObjectFactory.createFileAttribute();
+					}
+					else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_NUMBER))
+					{
+						int noOfDecimals = DynamicExtensionsUtility.convertStringToInt(attributeUIBeanInformationIntf.getAttributeDecimalPlaces());
+						attributeInterface = getInterfaceForNumericDataType(noOfDecimals);
+					}
 				}
 			}
 		}
 		return attributeInterface;
 
+	}
+
+	/**
+	 * @param attributeUIBeanInformationIntf
+	 * @return
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	private AttributeInterface getAttributeInterfaceForLookup(AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		AssociationInterface association = null;
+		if(attributeUIBeanInformationIntf!=null)
+		{
+			DomainObjectFactory factory = DomainObjectFactory.getInstance();
+			EntityManagerInterface entityManager = EntityManager.getInstance();
+			EntityInterface targetEntity = entityManager.getEntityByIdentifier(attributeUIBeanInformationIntf.getFormName());
+			if(targetEntity!=null)
+			{
+				association = factory.createAssociation();
+				association.setTargetEntity(targetEntity);
+				association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+				association.setName(attributeUIBeanInformationIntf.getName());
+				association.setSourceRole(getRole(AssociationType.ASSOCIATION,null,
+						Cardinality.ONE, Cardinality.ONE));
+				association.setTargetRole(getRole(AssociationType.ASSOCIATION,targetEntity.getName() , Cardinality.ONE,
+						Cardinality.ONE));
+				
+			}
+		}
+		return (AttributeInterface)association;
+	}
+	private RoleInterface getRole(AssociationType associationType, String name,
+			Cardinality minCard, Cardinality maxCard)
+	{
+		RoleInterface role = DomainObjectFactory.getInstance().createRole();
+		role.setAssociationsType(associationType);
+		role.setName(name);
+		role.setMinimumCardinality(minCard);
+		role.setMaximumCardinality(maxCard);
+		return role;
 	}
 
 	/**
@@ -515,8 +572,6 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			throws DynamicExtensionsApplicationException
 	{
 		DataElementInterface dataEltInterface = null;
-		PermissibleValueInterface permissibleValue = null;
-
 		if (attributeUIBeanInformationIntf != null)
 		{
 			String displayChoice = attributeUIBeanInformationIntf.getDisplayChoice();
@@ -524,35 +579,58 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			{
 				if (displayChoice.equalsIgnoreCase(ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED))
 				{
-					dataEltInterface = DomainObjectFactory.getInstance().createUserDefinedDE();
-
-					String[] optionNames = attributeUIBeanInformationIntf.getOptionNames();
-					String[] optionDescriptions = attributeUIBeanInformationIntf.getOptionDescriptions();
-					String[] optionConceptCodes = attributeUIBeanInformationIntf.getOptionConceptCodes();
-					String optionName = null, optionDesc = null, optionConceptCode = null;
-					Collection<SemanticPropertyInterface> semanticPropertiesForOptions = null;
-
-					if (optionNames != null)
-					{
-						for (int i = 0; i < optionNames.length; i++)
-						{
-							optionName = optionNames[i];
-							optionDesc = optionDescriptions[i];
-							optionConceptCode = optionConceptCodes[i];
-							semanticPropertiesForOptions = SemanticPropertyBuilderUtil.getSymanticPropertyCollection(optionConceptCode);
-							if ((optionName != null) && (optionName.trim() != null))
-							{
-								permissibleValue = getPermissibleValue(attributeUIBeanInformationIntf, optionName, optionDesc,
-										semanticPropertiesForOptions);
-								((UserDefinedDE) dataEltInterface).addPermissibleValue(permissibleValue);
-							}
-						}
-					}
-
+					dataEltInterface = getDataElementForUserDefinedValues(attributeUIBeanInformationIntf);
 				}
 			}
 		}
 		return dataEltInterface;
+	}
+
+	/**
+	 * Returns the data element interface for lookup values
+	 * @param attributeUIBeanInformationIntf
+	 * @return
+	 */
+	private DataElementInterface getDataElementForLookupValues(AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param attributeUIBeanInformationIntf 
+	 * @throws DynamicExtensionsApplicationException 
+	 * 
+	 */
+	private DataElementInterface getDataElementForUserDefinedValues(AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsApplicationException
+	{
+		DataElementInterface userDefinedDataEltInterface = null;
+		PermissibleValueInterface permissibleValue = null;
+		userDefinedDataEltInterface = DomainObjectFactory.getInstance().createUserDefinedDE();
+
+		String[] optionNames = attributeUIBeanInformationIntf.getOptionNames();
+		String[] optionDescriptions = attributeUIBeanInformationIntf.getOptionDescriptions();
+		String[] optionConceptCodes = attributeUIBeanInformationIntf.getOptionConceptCodes();
+		String optionName = null, optionDesc = null, optionConceptCode = null;
+		Collection<SemanticPropertyInterface> semanticPropertiesForOptions = null;
+
+		if (optionNames != null)
+		{
+			for (int i = 0; i < optionNames.length; i++)
+			{
+				optionName = optionNames[i];
+				optionDesc = optionDescriptions[i];
+				optionConceptCode = optionConceptCodes[i];
+				semanticPropertiesForOptions = SemanticPropertyBuilderUtil.getSymanticPropertyCollection(optionConceptCode);
+				if ((optionName != null) && (optionName.trim() != null))
+				{
+					permissibleValue = getPermissibleValue(attributeUIBeanInformationIntf, optionName, optionDesc,
+							semanticPropertiesForOptions);
+					((UserDefinedDE) userDefinedDataEltInterface).addPermissibleValue(permissibleValue);
+				}
+			}
+		}
+		return userDefinedDataEltInterface;
 	}
 
 	/**

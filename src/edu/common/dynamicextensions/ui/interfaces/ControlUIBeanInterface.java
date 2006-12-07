@@ -235,4 +235,12 @@ public interface ControlUIBeanInterface
 	 * @param validationRules value of checkbox fields
 	 */
 	void setValidationRules(String[] validationRules);
+	
+	//Selected form Attributes
+	public String[] getSelectedFormAttributeList();
+	public void setSelectedFormAttributeList(String[] selectedFormAttributeList);
+	
+	//Separator
+	public String getSeparator();
+	public void setSeparator(String separator);
 }

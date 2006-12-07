@@ -15,8 +15,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
@@ -50,7 +50,8 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException DynamicExtensionsSystemException
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws IOException, DynamicExtensionsApplicationException
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
+			throws IOException, DynamicExtensionsApplicationException
 	{
 		try
 		{
@@ -59,17 +60,17 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 
 			//Code for AJAX
 			String operation = request.getParameter("operation");
-			if((operation!=null)&&(operation.trim().equals("changeGroup")))
+			if ((operation != null) && (operation.trim().equals("changeGroup")))
 			{
-				changeGroup(request,response,actionForm);
+				changeGroup(request, response, actionForm);
 				return null;
 			}
-			if((operation!=null)&&(operation.trim().equals("changeForm")))
+			if ((operation != null) && (operation.trim().equals("changeForm")))
 			{
-				changeForm(request,response,actionForm);
+				changeForm(request, response, actionForm);
 				return null;
 			}
-				
+
 			LoadFormControlsProcessor loadFormControlsProcessor = LoadFormControlsProcessor.getInstance();
 			loadFormControlsProcessor.loadFormControls(actionForm, containerInterface);
 
@@ -80,47 +81,73 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
-			String actionForwardString = catchException(e,request);
-			return(mapping.findForward(actionForwardString));
+			String actionForwardString = catchException(e, request);
+			return (mapping.findForward(actionForwardString));
 		}
 		return mapping.findForward(Constants.SHOW_BUILD_FORM_JSP);
 
 	}
-
 
 	/**
 	 * @param request
 	 * @param response
 	 * @param actionForm
 	 * @throws IOException 
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	private void changeForm(HttpServletRequest request, HttpServletResponse response, ControlsForm actionForm) throws IOException
+	private void changeForm(HttpServletRequest request, HttpServletResponse response, ControlsForm actionForm) throws IOException,
+			DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		List<NameValueBean> formAttributes = getAttributesForForm(request.getParameter("frmName"));
 		String xmlParentNode = "formAttributes";
 		String xmlNodeId = "form-attribute-id";
 		String xmlNodeName = "form-attribute-name";
-		String responseXML = getResponseXMLString(xmlParentNode,xmlNodeId,xmlNodeName,formAttributes);
-		sendResponse(responseXML,response);
+		String responseXML = getResponseXMLString(xmlParentNode, xmlNodeId, xmlNodeName, formAttributes);
+		sendResponse(responseXML, response);
 	}
-
 
 	/**
 	 * @param parameter
 	 * @return
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	private List<NameValueBean> getAttributesForForm(String formName)
+	private List<NameValueBean> getAttributesForForm(String formId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ArrayList<NameValueBean> formAttributesList = new ArrayList<NameValueBean>();
-		NameValueBean entityName = null;
-		for(int i=0;i<5;i++)
+		if (formId != null)
 		{
-			entityName  = new NameValueBean(formName + "-Attr" + i,i);
-			formAttributesList.add(entityName);
+			ContainerInterface container = EntityManager.getInstance().getContainerByIdentifier(formId);
+			if (container != null)
+			{
+				Collection<ControlInterface> controlCollection = container.getControlCollection();
+				if (controlCollection != null)
+				{
+					Iterator<ControlInterface> controlIterator = controlCollection.iterator();
+					ControlInterface control = null;
+					NameValueBean controlName = null;
+					while (controlIterator.hasNext())
+					{
+						control = controlIterator.next();
+						if (control != null)
+						{
+							controlName = new NameValueBean(control.getCaption(), control.getId());
+							formAttributesList.add(controlName);
+						}
+					}
+				}
+			}
+
 		}
+		/*NameValueBean entityName = null;
+		 for(int i=0;i<5;i++)
+		 {
+		 entityName  = new NameValueBean(formName + "-Attr" + i,i);
+		 formAttributesList.add(entityName);
+		 }*/
 		return formAttributesList;
 	}
-
 
 	/**
 	 * @param request
@@ -129,28 +156,27 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private void changeGroup(HttpServletRequest request, HttpServletResponse response, ControlsForm actionForm) throws IOException, DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private void changeGroup(HttpServletRequest request, HttpServletResponse response, ControlsForm actionForm) throws IOException,
+			DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		List<NameValueBean> formNames = getFormNamesForGroup(request.getParameter("grpName"));
 		String xmlParentNode = "forms";
 		String xmlIdNode = "form-id";
 		String xmlNameNode = "form-name";
-		String responseXML = getResponseXMLString(xmlParentNode,xmlIdNode,xmlNameNode,formNames);
-		sendResponse(responseXML,response);
+		String responseXML = getResponseXMLString(xmlParentNode, xmlIdNode, xmlNameNode, formNames);
+		sendResponse(responseXML, response);
 	}
-
 
 	/**
 	 * @throws IOException 
 	 * 
 	 */
-	private void sendResponse(String responseXML,HttpServletResponse response) throws IOException
+	private void sendResponse(String responseXML, HttpServletResponse response) throws IOException
 	{
 		PrintWriter out = response.getWriter();
 		response.setContentType("text/xml");
 		out.write(responseXML);
 	}
-
 
 	/**
 	 * @param xmlParentNode
@@ -158,24 +184,24 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 	 * @param listValues
 	 * @return
 	 */
-	private String getResponseXMLString(String xmlParentNode, String xmlIdNode,String xmlNameNode, List<NameValueBean> listValues)
+	private String getResponseXMLString(String xmlParentNode, String xmlIdNode, String xmlNameNode, List<NameValueBean> listValues)
 	{
 		StringBuffer responseXML = new StringBuffer();
 		NameValueBean bean = null;
-		if((xmlParentNode!=null)&&(xmlNameNode!=null)&&(listValues!=null))
+		if ((xmlParentNode != null) && (xmlNameNode != null) && (listValues != null))
 		{
 			responseXML.append("<node>");
 			int noOfValues = listValues.size();
-			for(int i=0;i<noOfValues;i++)
+			for (int i = 0; i < noOfValues; i++)
 			{
 				bean = listValues.get(i);
-				if(bean!=null)
+				if (bean != null)
 				{
 					responseXML.append("<" + xmlParentNode + ">");
 					responseXML.append("<" + xmlIdNode + ">");
 					responseXML.append(bean.getValue());
 					responseXML.append("</" + xmlIdNode + ">");
-					
+
 					responseXML.append("<" + xmlNameNode + ">");
 					responseXML.append(bean.getName());
 					responseXML.append("</" + xmlNameNode + ">");
@@ -183,11 +209,10 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 				}
 			}
 			responseXML.append("</node>");
-			
+
 		}
 		return responseXML.toString();
 	}
-
 
 	/**
 	 * @param groupName
@@ -198,7 +223,7 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 	private List<NameValueBean> getFormNamesForGroup(String groupId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ArrayList<NameValueBean> formNames = new ArrayList<NameValueBean>();
-		/*if(groupId!=null)
+		if (groupId != null)
 		{
 			EntityManagerInterface entityManager = EntityManager.getInstance();
 			Long iGroupId = null;
@@ -206,41 +231,40 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 			{
 				iGroupId = Long.parseLong(groupId);
 				Collection<ContainerInterface> containerInterfaceList = entityManager.getAllContainersByEntityGroupId(iGroupId);
-				if(containerInterfaceList!=null)
+				if (containerInterfaceList != null)
 				{
 					ContainerInterface entityContainer = null;
-					EntityInterface entity = null;
-					NameValueBean entityName = null;
+					//EntityInterface entity = null;
+					NameValueBean formName = null;
 					Iterator<ContainerInterface> containerIterator = containerInterfaceList.iterator();
-					while(containerIterator.hasNext())
+					while (containerIterator.hasNext())
 					{
 						entityContainer = containerIterator.next();
-						if(entityContainer!=null)
+						if (entityContainer != null)
 						{
-							entity = entityContainer.getEntity();
-
-							if(entity!=null)
-							{
-								entityName  = new NameValueBean(entity.getName(),entity.getId());
-								formNames.add(entityName);
-							}
+							/*							entity = entityContainer.getEntity();
+							 if(entity!=null)
+							 {*/
+							formName = new NameValueBean(entityContainer.getCaption(), entityContainer.getId());
+							formNames.add(formName);
+							//}
 						}
 					}
 				}
-			}catch (NumberFormatException e)
-			{
-				Logger.out.error("Group Id is null..Please check" );
 			}
-		}*/
-		NameValueBean entityName = null;
-		for(int i=0;i<5;i++)
-		{
-			entityName  = new NameValueBean(groupId + "-Form" + i,i);
-			formNames.add(entityName);
+			catch (NumberFormatException e)
+			{
+				Logger.out.error("Group Id is null..Please check");
+			}
 		}
+		/*NameValueBean entityName = null;
+		 for(int i=0;i<5;i++)
+		 {
+		 entityName  = new NameValueBean(groupId + "-Form" + i,i);
+		 formNames.add(entityName);
+		 }*/
 		return formNames;
 	}
-
 
 	/**
 	 * Initialises MeasurementUnits
@@ -294,5 +318,5 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 		}
 		return false;
 	}
-	
+
 }

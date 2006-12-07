@@ -2075,5 +2075,31 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
     }
+    
+    public void testGetContainerByEntityIdentifier() 
+    {
+    	
+    	 try
+		{
+			ContainerInterface containerInterface = (Container) new MockEntityManager().getContainer("abc");
+			EntityInterface entityInterface = containerInterface.getEntity();
+			EntityManagerInterface entityManager = EntityManager.getInstance();
+			entityManager.persistContainer(containerInterface);
+			assertNotNull(entityManager.getContainerByEntityIdentifier(entityInterface.getId()));
+		
+			
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    }
 
 }

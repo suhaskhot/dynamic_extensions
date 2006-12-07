@@ -335,7 +335,7 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	ContainerInterface getContainerInterfaceByEntityIdentifier(Long entityIdentifier)
+	ContainerInterface getContainerByEntityIdentifier(Long entityIdentifier)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 }

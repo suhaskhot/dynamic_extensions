@@ -26,6 +26,7 @@ import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
@@ -193,7 +194,14 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		else
 		{
 			value = request.getParameter("Control_" + sequence);
-			attributeValueMap.put(abstractAttribute, value);
+			if (control instanceof CheckBoxInterface)
+			{
+				if (value == null || !value.trim().equals("true"))
+				{
+					value = "false";
+				}
+				attributeValueMap.put(abstractAttribute, value);
+			}
 		}
 	}
 

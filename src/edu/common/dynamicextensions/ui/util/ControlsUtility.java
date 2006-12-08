@@ -283,7 +283,6 @@ public class ControlsUtility
 	public static List<NameValueBean> populateListOfValues(ControlInterface control)
 	{
 		List<NameValueBean> nameValueBeanList = null;
-
 		try
 		{
 			AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
@@ -391,24 +390,14 @@ public class ControlsUtility
 
 			NameValueBean nameValueBean = new NameValueBean();
 			nameValueBean.setValue(recordIdentifier.toString());
+			
 			StringBuffer value = new StringBuffer();
-
 			for (String attributeValue : attributeList)
 			{
 				value.append(attributeValue + separator);
 			}
-			/*Iterator attributeListIterator = attributeList.iterator();
-			 while (attributeListIterator.hasNext())
-			 {
-			 String attributeValue = (String) attributeListIterator.next();
-			 value.append(attributeValue);
-			 if (attributeListIterator.hasNext())
-			 {
-			 value.append(separator);
-			 }
-			 }*/
-
-			value.delete(value.lastIndexOf(separator), value.length() - 1);
+			value.delete(value.lastIndexOf(separator), value.length());
+			
 			nameValueBean.setName(value.toString());
 			displayAttributeList.add(nameValueBean);
 		}

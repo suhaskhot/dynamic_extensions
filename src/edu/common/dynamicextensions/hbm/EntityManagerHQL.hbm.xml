@@ -47,7 +47,7 @@
 	
 	<query name="getControlOfAbstractAttribute">
 		from Control control
-           		where  control.abstractAttributeInterface.id = ?
+           		where  control.abstractAttribute.id = ?
 	</query>
 	
 	

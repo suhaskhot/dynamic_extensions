@@ -5,6 +5,7 @@ import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
+import edu.common.dynamicextensions.ui.util.Constants;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 
 /**
@@ -89,8 +90,32 @@ public class TextArea extends Control implements TextAreaInterface
 		}
 
 		String htmlComponentName = getHTMLComponentName();
+
+		String htmlString = "<textarea " + "class = '" + this.cssClass + "' " + "name = '" + htmlComponentName + "' " + "id = '" + htmlComponentName
+				+ "' ";
+
 		int noCols = columns.intValue();
 		int noRows = rows.intValue();
+
+		if (noCols > 0)
+		{
+			htmlString += "cols = '" + noCols + "' ";
+		}
+		else
+		{
+			htmlString += "cols = '" + Constants.DEFAULT_COLUMN_SIZE + "' ";
+		}
+
+		if (noRows > 0)
+		{
+			htmlString += "rows = '" + noRows + "' ";
+		}
+		else
+		{
+			htmlString += "rows = '" + Constants.DEFAULT_ROW_SIZE + "' ";
+		}
+		htmlString += "title = '" + this.tooltip + "' wrap='virtual' ";
+
 		int maxChars = 0;
 		AttributeInterface attribute = (AttributeInterface) this.getAbstractAttribute();
 		if (attribute != null)
@@ -102,20 +127,16 @@ public class TextArea extends Control implements TextAreaInterface
 			}
 		}
 
-		String htmlString = "";
 		if (maxChars != 0)
 		{
-			htmlString = "<textarea " + "class = '" + this.cssClass + "' " + "name = '" + htmlComponentName + "' " + "id = '" + htmlComponentName
-					+ "' " + "cols = '" + noCols + "' " + "rows = '" + noRows + "' " + "title = '" + this.tooltip + "' wrap='virtual' onblur=\"checkTextLength('"
-					+ htmlComponentName + "', " + maxChars + ")\">";
+			htmlString += "onblur=\"checkTextLength('" + htmlComponentName + "', " + maxChars + ")\">";
 		}
 		else
 		{
-			htmlString = "<textarea " + "class = '" + this.cssClass + "' " + "name = '" + htmlComponentName + "' " + "id = '" + htmlComponentName
-					+ "' " + "cols = '" + noCols + "' " + "rows = '" + noRows + "' " + "title = '" + this.tooltip + "' wrap='virtual'>";
+			htmlString += ">";
 		}
 		htmlString += defaultValue + "</textarea>";
-		
+
 		return htmlString;
 	}
 

@@ -1,15 +1,14 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
-import edu.common.dynamicextensions.domain.DataElement;
 import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.LongAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
-import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
+import edu.common.dynamicextensions.ui.util.Constants;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 
@@ -36,7 +35,7 @@ public class TextField extends Control implements TextFieldInterface
 	 * Boolean value indicating whether this text field is password field.
 	 */
 	protected Boolean isPassword;
-	
+
 	/**
 	 * Boolean value indicating whether this text field is password field.
 	 */
@@ -103,9 +102,19 @@ public class TextField extends Control implements TextFieldInterface
 			}
 		}
 
+		String htmlString = "";
 		String htmlComponentName = getHTMLComponentName();
-		String htmlString = "<input " + "class = '" + cssClass + "' " + "name = '" + htmlComponentName + "' " + "id = '" + htmlComponentName + "' "
-				+ "title = '" + tooltip + "'  " + "value = '" + defaultValue + "' " + "size = '" + columns.intValue() + "' ";
+		int columnSize = columns.intValue();
+		if (columnSize > 0)
+		{
+			htmlString = "<input " + "class = '" + cssClass + "' " + "name = '" + htmlComponentName + "' " + "id = '" + htmlComponentName + "' "
+					+ "title = '" + tooltip + "'  " + "value = '" + defaultValue + "' " + "size = '" + columnSize + "' ";
+		}
+		else
+		{
+			htmlString = "<input " + "class = '" + cssClass + "' " + "name = '" + htmlComponentName + "' " + "id = '" + htmlComponentName + "' "
+					+ "title = '" + tooltip + "'  " + "value = '" + defaultValue + "' " + "size = '" + Constants.DEFAULT_COLUMN_SIZE + "' ";
+		}
 
 		String measurementUnit = getMeasurementUnit(this.getAbstractAttribute());
 		if (measurementUnit != null)
@@ -137,7 +146,7 @@ public class TextField extends Control implements TextFieldInterface
 						maxChars = stringAttributeTypeInformation.getSize().intValue();
 					}
 				}
-			}	
+			}
 		}
 		if (maxChars != 0)
 		{
@@ -149,6 +158,7 @@ public class TextField extends Control implements TextFieldInterface
 		}
 		return htmlString;
 	}
+
 	/**
 	 * This method sets the associated AbstractAttribute of this Control. 
 	 * @param abstractAttributeInterface AbstractAttribute to be associated.
@@ -166,7 +176,7 @@ public class TextField extends Control implements TextFieldInterface
 	{
 		String measurementUnit = null;
 		AttributeTypeInformationInterface attributeTypeInformationInterface = DynamicExtensionsUtility.getAttributeTypeInformation(abstractAttribute);
-		if(attributeTypeInformationInterface!=null)
+		if (attributeTypeInformationInterface != null)
 		{
 			if (attributeTypeInformationInterface instanceof LongAttributeTypeInformation)
 			{
@@ -191,7 +201,6 @@ public class TextField extends Control implements TextFieldInterface
 		return isUrl;
 	}
 
-	
 	/**
 	 * @param isUrl is url 
 	 */

@@ -52,9 +52,6 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String INSERT_DATA = "insertData";
 	public static final String CALLBACK_URL = "callbackURL";
 	
-	public static final int DEFAULT_NUMBER_OF_ROWS = 2;
-	public static final int DEFAULT_NUMBER_OF_COLUMNS = 20;
-	
 	public static final String ID = "id";
 
 	public enum Cardinality {

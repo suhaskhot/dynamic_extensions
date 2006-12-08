@@ -36,5 +36,8 @@ public class Constants
 	
 	public static final String REQUIRED_FIELD_INDICATOR = "*";
 	public static final String REQUIRED_FIELD_WARNING_MESSAGE = "indicates required fields.";
+	
+	public static final int DEFAULT_COLUMN_SIZE = 20;
+	public static final int DEFAULT_ROW_SIZE = 2;
 
 }

@@ -146,7 +146,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				
 				//***********New Code starts here*********
 				abstractAttributeInterface = controlInterface.getAbstractAttribute();
-				attributeProcessor.updateAttributeInformation(controlsForm.getUserSelectedTool(),abstractAttributeInterface,controlsForm);
+				abstractAttributeInterface = attributeProcessor.updateAttributeInformation(controlsForm.getUserSelectedTool(),abstractAttributeInterface,controlsForm);
 				setPermissibleValues(attributeProcessor, abstractAttributeInterface, controlsForm);
 				
 				//update in control interface

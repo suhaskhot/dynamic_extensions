@@ -15,6 +15,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
@@ -134,8 +135,13 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 						control = controlIterator.next();
 						if (control != null)
 						{
-							controlName = new NameValueBean(control.getCaption(), control.getId());
-							formAttributesList.add(controlName);
+							//if control contains Attribute interface object then only show on UI. 
+							//If control contains association objects do not show in attribute list
+							if((control.getAbstractAttribute()!=null)&&(control.getAbstractAttribute() instanceof AttributeInterface))
+							{
+								controlName = new NameValueBean(control.getCaption(), control.getId());
+								formAttributesList.add(controlName);
+							}
 						}
 					}
 				}

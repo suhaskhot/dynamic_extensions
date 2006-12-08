@@ -55,6 +55,10 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 		catch (Exception e)
 		{
 			String actionForwardString = catchException(e,request);
+			if((actionForwardString==null)||(actionForwardString.equals("")))
+			{
+				actionForwardString = Constants.SYSTEM_EXCEPTION; 
+			}
 			return(mapping.findForward(actionForwardString));
 		}
 

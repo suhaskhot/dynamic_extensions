@@ -10,6 +10,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import com.sun.corba.se.impl.presentation.rmi.DynamicAccessPermission;
+
 import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.BooleanValue;
 import edu.common.dynamicextensions.domain.ByteArrayAttributeTypeInformation;
@@ -1496,6 +1498,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private void populateUIBeanAssociationInformation(AssociationInterface associationInterface, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
+		attributeUIBeanInformationIntf.setDisplayChoice(ProcessorConstants.DISPLAY_CHOICE_LOOKUP);
 		if((associationInterface!=null)&&(attributeUIBeanInformationIntf!=null))
 		{
 			EntityInterface targetEntity = associationInterface.getTargetEntity();
@@ -1633,23 +1636,68 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	/**
 	 * @param abstractAttributeInterface
 	 * @param controlsForm
+	 * @return TODO
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public void updateAttributeInformation(String userSelectedControlName, AbstractAttributeInterface abstractAttributeInformation,
+	public AbstractAttributeInterface updateAttributeInformation(String userSelectedControlName, AbstractAttributeInterface abstractAttributeInformation,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformation) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException
 	{
+		AbstractAttributeInterface attributeInterface = null;
 		if ((abstractAttributeInformation != null) && (attributeUIBeanInformation != null))
 		{
-			if (abstractAttributeInformation instanceof AttributeInterface)
+			if(canUpdateExistingAttribute(abstractAttributeInformation,attributeUIBeanInformation))
 			{
-				AttributeInterface attributeInformation = (AttributeInterface) abstractAttributeInformation;
-				AttributeTypeInformationInterface attributeTypeInformation = createAttributeTypeInformation(attributeUIBeanInformation);
-				attributeInformation.setAttributeTypeInformation(attributeTypeInformation);
-				populateAttribute(userSelectedControlName, attributeInformation, attributeUIBeanInformation);
+				attributeInterface = abstractAttributeInformation;
+				if (attributeInterface instanceof AttributeInterface)
+				{
+					AttributeInterface attributeInformation = (AttributeInterface) attributeInterface;
+					AttributeTypeInformationInterface attributeTypeInformation = createAttributeTypeInformation(attributeUIBeanInformation);
+					attributeInformation.setAttributeTypeInformation(attributeTypeInformation);
+					populateAttribute(userSelectedControlName, attributeInformation, attributeUIBeanInformation);
+				}
+				else if (attributeInterface instanceof AssociationInterface)
+				{
+					populateAssociation(userSelectedControlName, (AssociationInterface)attributeInterface, attributeUIBeanInformation);
+				}
+			}
+			else	//Cannot update same instance
+			{
+				/*//Create a new instance and set that in the control
+				attributeInterface = createAndPopulateAttribute(userSelectedControlName, attributeUIBeanInformation);*/
+				
+				//Throw Exception cannot convert attribute type
+				DynamicExtensionsApplicationException applnException = new DynamicExtensionsApplicationException("Cannot convert from Lookup to User defined or vice-versa");
+				throw applnException;
 			}
 		}
+		return attributeInterface;
+	}
+
+	/**
+	 * @param attributeUIBeanInformation 
+	 * @param abstractAttributeInformation
+	 * @return
+	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException 
+	 */
+	private boolean canUpdateExistingAttribute(AbstractAttributeInterface existingAbstractAttributeIntf, AbstractAttributeUIBeanInterface attributeUIBeanInformation) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	{
+		boolean areInstancesOfSameType = false; 
+		if(existingAbstractAttributeIntf != null)
+		{
+			AbstractAttributeInterface newAbstractAttribute = createAttribute(attributeUIBeanInformation);
+			if((newAbstractAttribute instanceof AttributeInterface)&&(existingAbstractAttributeIntf instanceof AttributeInterface))
+			{
+				areInstancesOfSameType = true;
+			}
+			if((newAbstractAttribute instanceof AssociationInterface)&&(existingAbstractAttributeIntf instanceof AssociationInterface))
+			{
+				areInstancesOfSameType = true;
+			}
+		}
+		return areInstancesOfSameType;
 	}
 
 	/**

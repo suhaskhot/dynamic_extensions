@@ -18,6 +18,7 @@ import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.userinterface.SelectControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
@@ -28,6 +29,8 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterfa
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManager;
+import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.interfaces.ControlUIBeanInterface;
@@ -138,35 +141,6 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			controlInterface.setCaption(controlUIBeanInterface.getCaption());
 			controlInterface.setIsHidden(controlUIBeanInterface.getIsHidden());
 		}
-
-		/*AbstractAttributeInterface abstractAttribute = controlInterface.getAbstractAttribute();
-		if (abstractAttribute != null && controlUIBeanInterface.getValidationRules() != null && controlUIBeanInterface.getValidationRules().length == 0)
-		{
-			Collection<RuleInterface> ruleCollection = abstractAttribute.getRuleCollection();
-			Collection tempRuleCollection; 
-			if (ruleCollection == null ||  ruleCollection.size() == 0)
-			{
-				ControlConfigurationsFactory controlConfigurationsFactory = ControlConfigurationsFactory.getInstance();
-				if (userSelectedControlName != null)
-				{
-					tempRuleCollection = controlConfigurationsFactory.getAllImplicitRules(userSelectedControlName.trim());
-					Iterator tempRuleIterator = tempRuleCollection.iterator();
-					RuleInterface ruleInterface;
-					while(tempRuleIterator.hasNext())
-					{
-						ruleInterface = (RuleInterface) tempRuleIterator.next();
-						if(ruleInterface.getName() != null && !ruleInterface.getName().equals(""))
-						{
-							abstractAttribute.addRule(ruleInterface);
-						}
-
-					}
-
-
-				}
-			}
-		}*/
-
 		return controlInterface;
 
 			}
@@ -336,16 +310,25 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		//initialize the select control object with the separator etc properties
 		if(selectControl!=null)
 		{
-			selectControl.setSeparator(controlUIBeanInterface.getSeparator());
-			String[] associationControlIds = controlUIBeanInterface.getSelectedAttributeIds();
-			selectControl.removeAllAssociationDisplayAttributes();
-			if(associationControlIds!=null)
+			AbstractAttributeInterface attribute = controlUIBeanInterface.getAbstractAttribute();
+			if((attribute!=null)&&(attribute instanceof AssociationInterface))
 			{
-				int noOfIds = associationControlIds.length;
-				for(int i=0;i<noOfIds;i++)
+				selectControl.setSeparator(controlUIBeanInterface.getSeparator());
+				String[] associationControlIds = controlUIBeanInterface.getSelectedAttributeIds();
+				selectControl.removeAllAssociationDisplayAttributes();
+				if(associationControlIds!=null)
 				{
-					selectControl.addAssociationDisplayAttribute(getAssociationDisplayAttribute(associationControlIds[i],i+1));			
+					int noOfIds = associationControlIds.length;
+					for(int i=0;i<noOfIds;i++)
+					{
+						selectControl.addAssociationDisplayAttribute(getAssociationDisplayAttribute(associationControlIds[i],i+1));			
+					}
 				}
+			}
+			else
+			{
+				selectControl.setSeparator(null);
+				selectControl.removeAllAssociationDisplayAttributes();
 			}
 		}
 	}
@@ -456,8 +439,10 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @param controlInterface Instance of controlInterface from which to populate the informationInterface.
 	 * @param controlUIBeanInterface Instance of ControlUIBeanInterface which will be populated using 
 	 * the first parameter that is controlInterface.
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	public void populateControlUIBeanInterface(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
+	public void populateControlUIBeanInterface(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		if (controlInterface != null && controlUIBeanInterface != null)
 		{
@@ -469,8 +454,10 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	/**
 	 * @param controlInterface
 	 * @param controlUIBeanInterface
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	private void populateControlSpecificAttributes(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
+	private void populateControlSpecificAttributes(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		if (controlInterface instanceof TextFieldInterface)
 		{
@@ -501,8 +488,10 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	/**
 	 * @param selectControl
 	 * @param controlUIBeanInterface
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	private void populateSelectControlAttributesInUIBean(SelectControl selectControl, ControlUIBeanInterface controlUIBeanInterface)
+	private void populateSelectControlAttributesInUIBean(SelectControl selectControl, ControlUIBeanInterface controlUIBeanInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		controlUIBeanInterface.setSeparator(selectControl.getSeparator());
 		
@@ -510,6 +499,8 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		NameValueBean selectedAttribute = null;
 		
 		Collection<AssociationDisplayAttributeInterface> associationAttributes = selectControl.getAssociationDisplayAttributeCollection();
+		ControlInterface control = null;
+		AttributeInterface attribute = null;
 		if(associationAttributes!=null)
 		{
 			Iterator<AssociationDisplayAttributeInterface> associationAttributesIterator = associationAttributes.iterator();
@@ -518,11 +509,16 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 				AssociationDisplayAttributeInterface assocnDisplayAttribute = associationAttributesIterator.next();
 				if(assocnDisplayAttribute!=null)
 				{
-					AttributeInterface attribute = assocnDisplayAttribute.getAttribute();
+					attribute = assocnDisplayAttribute.getAttribute();
 					if(attribute!=null)
 					{
-						selectedAttribute = new NameValueBean(attribute.getName(),attribute.getId());
-						selectedAttributesList.add(selectedAttribute);
+						EntityManagerInterface entityManager = EntityManager.getInstance();
+						control = entityManager.getControlByAbstractAttributeIdentifier(attribute.getId());
+						if(control!=null)
+						{
+							selectedAttribute = new NameValueBean(control.getCaption(),control.getId());
+							selectedAttributesList.add(selectedAttribute);
+						}
 					}
 				}
 			}

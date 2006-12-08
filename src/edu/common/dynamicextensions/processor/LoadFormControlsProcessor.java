@@ -256,6 +256,10 @@ public class LoadFormControlsProcessor
 		}
 		controlsForm.setGroupNames(getGroupNamesList());
 		controlsForm.setSeparatorList(getSeparatorsList());
+		if(controlsForm.getSelectedAttributes()==null)
+		{
+			controlsForm.setSelectedAttributes(new ArrayList<NameValueBean>());
+		}
 	}
 
 	/**

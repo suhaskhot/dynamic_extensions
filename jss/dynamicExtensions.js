@@ -1059,6 +1059,24 @@ function changeSelection(str1,seqno)
 	var controlsForm=document.getElementById('controlsForm');
 }
 
+function getDocumentElementForXML(xmlString)
+{
+	// code for IE
+	if (window.ActiveXObject)
+	{
+	  var doc=new ActiveXObject("Microsoft.XMLDOM");
+	  doc.async="false";
+	  doc.loadXML(xmlString);
+	}
+	// code for Mozilla, Firefox, Opera, etc.
+	else
+	{
+	  var parser=new DOMParser();
+	  var doc=parser.parseFromString(xmlString,"text/xml");
+	}
+	return doc;
+}
+
 /***  code using ajax :gets the list of form names for selected group without refreshing the whole page  ***/
 function groupChanged(flagClearAttributeList)
 {
@@ -1090,8 +1108,8 @@ function groupChangedResponse(formNameListXML)
 		if(htmlFormNameList!=null)
 		{
 			htmlFormNameList.options.length = 0;
-
-			var formnames  =  formNameListXML.getElementsByTagName('forms');
+			var documentElt  = getDocumentElementForXML(formNameListXML);
+			var formnames  =  documentElt.getElementsByTagName('forms');
 			if(formnames !=null)
 			{
 				var optionName =null;
@@ -1115,14 +1133,14 @@ function groupChangedResponse(formNameListXML)
 					if((optionName!=null)&&(optionValue!=null))
 					{
 							var oOption = document.createElement("OPTION");
-							htmlFormNameList.options.add(oOption);
-
-							oOption.innerText = optionName;
+							htmlFormNameList.options.add(oOption,htmlFormNameList.options.length+1);
+							oOption.text= optionName;
 							oOption.value = optionValue;
 					}
 				}
 			}
 		}
+		
 	formChanged();	
 	}
 }
@@ -1158,8 +1176,9 @@ function formChangedResponse(formAttributesListXML)
 		if(htmlFormAttributeList!=null)
 		{
 			htmlFormAttributeList.options.length = 0;
-
-			var formAttributes  =  formAttributesListXML.getElementsByTagName('formAttributes');
+			//var formAttributes  =  formAttributesListXML.getElementsByTagName('formAttributes');
+			var documentElt  = getDocumentElementForXML(formAttributesListXML);
+			var formAttributes  =  documentElt.getElementsByTagName('formAttributes'); 
 			if(formAttributes !=null)
 			{
 				var optionName =null;
@@ -1183,9 +1202,8 @@ function formChangedResponse(formAttributesListXML)
 					if((optionName!=null)&&(optionValue!=null))
 					{
 							var oOption = document.createElement("OPTION");
-							htmlFormAttributeList.options.add(oOption);
-
-							oOption.innerText = optionName;
+							htmlFormAttributeList.options.add(oOption,htmlFormAttributeList.options.length+1);
+							oOption.text = optionName;
 							oOption.value = optionValue;
 					}
 				}

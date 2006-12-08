@@ -54,11 +54,14 @@ function getReadyStateHandler(request,responseXmlHandler,isText)
 		{
 			if(request.status == 200)
 			{
-			
-		        if(isText==true)
-		        	responseXmlHandler(request.responseText);
-			else
-		        	responseXmlHandler(request.responseXml);
+				if((request.responseText!=null)&&((request.responseText!=undefined)))
+				{
+					responseXmlHandler(request.responseText);
+				}
+				else	//responsetext null for firefox
+				{
+					responseXmlHandler(request.responseXml);
+				}
 			}
 		}
     }

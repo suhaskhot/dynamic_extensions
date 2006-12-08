@@ -12,6 +12,7 @@ import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
@@ -337,5 +338,15 @@ public interface EntityManagerInterface
 	 */
 	ContainerInterface getContainerByEntityIdentifier(Long entityIdentifier)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	/**
+	 * This method returns the control given the attribute identifier
+	 * @param controlIdentifier
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	ControlInterface getControlByAbstractAttributeIdentifier(Long abstractAttributeIdentifier)
+	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	
 
 }

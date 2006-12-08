@@ -72,7 +72,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	/**
 	 * Attribute to which this control is associated.
 	 */
-	public Collection<AbstractAttributeInterface> abstractAttributeCollection = new HashSet<AbstractAttributeInterface>();
+	public AbstractAttributeInterface abstractAttribute;
 	/**
 	 * 
 	 */
@@ -213,16 +213,11 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	}
 
 	/**
-	 * 
+	 * @hibernate.many-to-one  cascade="save-update" column="ABSTRACT_ATTRIBUTE_ID" class="edu.common.dynamicextensions.domain.AbstractAttribute" constrained="true"
 	 */
 	public AbstractAttributeInterface getAbstractAttribute()
 	{
-		if (this.abstractAttributeCollection != null && !this.abstractAttributeCollection.isEmpty())
-		{
-			Iterator iterator = abstractAttributeCollection.iterator();
-			return (AbstractAttribute) iterator.next();
-		}
-		return null;
+		return this.abstractAttribute;
 	}
 
 	/**
@@ -230,30 +225,10 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	 */
 	public void setAbstractAttribute(AbstractAttributeInterface abstractAttributeInterface)
 	{
-		this.abstractAttributeCollection.clear();
-		this.abstractAttributeCollection.add((AbstractAttribute) abstractAttributeInterface);
+		this.abstractAttribute = abstractAttributeInterface;
 	}
 
-	/**
-	 * @hibernate.set name="abstractAttributeCollection" table="DYEXTN_ATTRIBUTE"
-	 * cascade="save-update" inverse="false" lazy="false"
-	 * @hibernate.collection-key column="CONTROL_ID"
-	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.AbstractAttribute" 
-	 * @return Returns the sourceEntityCollection.
-	 */
-	private Collection<AbstractAttributeInterface> getAbstractAttributeCollection()
-	{
-		return abstractAttributeCollection;
-	}
-
-	/**
-	 * 
-	 * @param abstractAttributeCollection
-	 */
-	private void setAbstractAttributeCollection(Collection<AbstractAttributeInterface> abstractAttributeCollection)
-	{
-		this.abstractAttributeCollection = abstractAttributeCollection;		
-	}
+	
 
 	/**
 	 * @return String
@@ -284,5 +259,9 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	{
 		this.sequenceNumberChanged = sequenceNumberChanged;
 	}
+
+
+
+
 	
 }

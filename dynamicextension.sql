@@ -48,8 +48,8 @@ alter table DYEXTN_DATA_ELEMENT drop constraint FKB1153E48C8D972A;
 alter table DYEXTN_DOUBLE_CONCEPT_VALUE drop constraint FKB94E6449BC7298A9;
 alter table DYEXTN_LIST_BOX drop constraint FK208395A7BC7298A9;
 alter table DYEXTN_LONG_CONCEPT_VALUE drop constraint FK3E1A6EF4BC7298A9;
+alter table DYEXTN_CONTROL drop constraint FK70FB5E80A67822BB;
 alter table DYEXTN_CONTROL drop constraint FK70FB5E809C6A9B9;
-alter table DYEXTN_ATTRIBUTE drop constraint FK37F1E2FF42E8975D;
 alter table DYEXTN_ATTRIBUTE drop constraint FK37F1E2FFB15CD09F;
 alter table DYEXTN_ATTRIBUTE drop constraint FK37F1E2FFBC7298A9;
 alter table DYEXTN_RULE_PARAMETER drop constraint FK22567363871AAD3E;
@@ -394,13 +394,13 @@ create table DYEXTN_CONTROL (
    NAME varchar2(255),
    SEQUENCE_NUMBER number(10,0),
    TOOLTIP varchar2(255),
+   ABSTRACT_ATTRIBUTE_ID number(19,0),
    CONTAINER_ID number(19,0),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_ATTRIBUTE (
    IDENTIFIER number(19,0) not null,
    ENTIY_ID number(19,0),
-   CONTROL_ID number(19,0),
    primary key (IDENTIFIER)
 );
 create table DYEXTN_RULE_PARAMETER (
@@ -532,8 +532,8 @@ alter table DYEXTN_DATA_ELEMENT add constraint FKB1153E48C8D972A foreign key (AT
 alter table DYEXTN_DOUBLE_CONCEPT_VALUE add constraint FKB94E6449BC7298A9 foreign key (IDENTIFIER) references DYEXTN_PERMISSIBLE_VALUE;
 alter table DYEXTN_LIST_BOX add constraint FK208395A7BC7298A9 foreign key (IDENTIFIER) references DYEXTN_SELECT_CONTROL;
 alter table DYEXTN_LONG_CONCEPT_VALUE add constraint FK3E1A6EF4BC7298A9 foreign key (IDENTIFIER) references DYEXTN_PERMISSIBLE_VALUE;
+alter table DYEXTN_CONTROL add constraint FK70FB5E80A67822BB foreign key (ABSTRACT_ATTRIBUTE_ID) references DYEXTN_ATTRIBUTE;
 alter table DYEXTN_CONTROL add constraint FK70FB5E809C6A9B9 foreign key (CONTAINER_ID) references DYEXTN_CONTAINER;
-alter table DYEXTN_ATTRIBUTE add constraint FK37F1E2FF42E8975D foreign key (CONTROL_ID) references DYEXTN_CONTROL;
 alter table DYEXTN_ATTRIBUTE add constraint FK37F1E2FFB15CD09F foreign key (ENTIY_ID) references DYEXTN_ENTITY;
 alter table DYEXTN_ATTRIBUTE add constraint FK37F1E2FFBC7298A9 foreign key (IDENTIFIER) references DYEXTN_ABSTRACT_METADATA;
 alter table DYEXTN_RULE_PARAMETER add constraint FK22567363871AAD3E foreign key (RULE_ID) references DYEXTN_RULE;
@@ -568,4 +568,4 @@ create sequence DYEXTN_ASSO_DISPLAY_ATTR_SEQ;
 create sequence DYEXTN_DATABASE_PROPERTIES_SEQ;
 create sequence DYEXTN_ROLE_SEQ;
 create sequence DYEXTN_TAGGED_VALUE_SEQ;
-create sequence DE_COLL_ATTR_REC_VALUES_SEQ
+create sequence DE_COLL_ATTR_REC_VALUES_SEQ;

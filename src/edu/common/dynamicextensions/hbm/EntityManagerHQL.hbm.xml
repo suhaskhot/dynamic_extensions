@@ -44,5 +44,13 @@
 		from Container container
            		where  container.entity.id = ?
 	</query>
+	
+	<query name="getControlOfAbstractAttribute">
+		from Control control
+           		where  control.abstractAttributeInterface.id = ?
+	</query>
+	
+	
+	
 </hibernate-mapping>
     

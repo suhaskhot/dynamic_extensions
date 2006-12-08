@@ -47,6 +47,7 @@ import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
@@ -451,6 +452,30 @@ public class EntityManager
 		return containerInterface;
 
 	}
+	
+	/**
+	 * This method returns the control given the attribute identifier
+	 * @param controlIdentifier
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public ControlInterface getControlByAbstractAttributeIdentifier(Long abstractAttributeIdentifier)
+	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		ControlInterface controlInterface = null;
+		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", abstractAttributeIdentifier));
+		Collection controlCollection = executeHQL("getControlOfAbstractAttribute",
+				substitutionParameterMap);
+		if (controlCollection  != null && controlCollection .size() > 0)
+		{
+			controlInterface = (ControlInterface) controlCollection .iterator().next();
+		}
+
+		return controlInterface ;
+	}
+	
 
 	/**
 	 * This method returns the EntityInterface given the entity name.

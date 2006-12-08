@@ -192,7 +192,7 @@
 						</thead>
 						<tr>
 							<td  width="45%" >
-								<select class="formFieldVerySmallSized" multiple size="3" name="formAttributeList">
+								<select class="formFieldVerySmallSized" multiple size="3" id="formAttributeList" name="formAttributeList">
 								</select>
 							</td>
 							<td  width="10%" valign="middle" ALIGN="center"  >

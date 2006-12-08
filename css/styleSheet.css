@@ -1409,19 +1409,16 @@ input.formParamSized
 }
 .tableItemSelected
 {
-font-family:arial;
-  font-size:0.6em;
+  font-family:arial,helvetica,verdana,sans-serif;
   background-color:#FFFFFF; /*#797C9C;  darker */
   color:#000000;  /* constant: white */
-  text-decoration:none;
+  
 }
 .tableItemUnselected
 {
-  font-family:arial;
-  font-size:0.6em;
+  font-family:arial,helvetica,verdana,sans-serif;
   background-color:#C9C9CD; 
   color:#000000;  /* constant: white */
-  text-decoration:none;
 }
 .cellWithNoLeftBottomPadding
 {

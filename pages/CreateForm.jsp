@@ -14,7 +14,7 @@
 	<link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
 	<script src="jss/dynamicExtensions.js" type="text/javascript"></script>
 	<script src="jss/script.js" type="text/javascript"></script>
-	
+
 	<script>
 		function showBuildFormJSP() {
 		 	document.getElementById('operation').value='buildForm';
@@ -22,7 +22,7 @@
 			formDefinitionForm.submit();
 		}
 	</script>
-	
+
 </head>
 
 <html:form styleId = "formDefinitionForm" action="/ApplyFormDefinitionAction" >
@@ -130,7 +130,7 @@
 											<td class="formRequiredLabelWithoutBorder" width="20%">
 													<bean:message key="eav.form.description"/> :
 											</td>
-											<td class="formFieldWithoutBorder">
+											<td >
 													<html:textarea styleClass="formFieldSmallSized"  rows = "3" cols="28"  styleId = 'formDescription' property="formDescription" />
 											</td>
 										 </tr>

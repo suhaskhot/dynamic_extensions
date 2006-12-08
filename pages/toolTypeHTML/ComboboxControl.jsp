@@ -13,7 +13,11 @@
 <c:set var="listType" value="${controlsForm.attributeMultiSelect}"/>
 <jsp:useBean id="listType" type="java.lang.String"/>
 
+<c:set var="displayChoice" value="${controlsForm.displayChoice}"/>
+<jsp:useBean id="displayChoice" type="java.lang.String"/>
+
 <input id = 'hiddenIsMultiSelect' type="hidden" name="hiddenIsMultiSelect" value="<%=listType%>">
+<input id = 'hiddenDisplayChoice' type="hidden" name="hiddenDisplayChoice" value="<%=displayChoice%>">
 <table summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
 	<tr>
     	<td>
@@ -47,13 +51,13 @@
 						<bean:message key="eav.att.ListBoxOptionTypes"></bean:message> :
 					</td>
 					<td class="formFieldWithoutBorder">
-						<html:radio styleId="displayChoice" property="displayChoice" onclick="changeSourceForValues(this)"  value="<%=ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED%>" >
+						<html:radio styleId="<%=ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED%>" property="displayChoice" onclick="changeSourceForValues(this)"  value="<%=ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED%>" >
 							<bean:message key="eav.att.OptionsUserDefined"/>
 						</html:radio>
-						<html:radio styleId="displayChoice"  property="displayChoice" onclick="changeSourceForValues(this)"  value="<%=ProcessorConstants.DISPLAY_CHOICE_CDE%>" >
+						<html:radio styleId="<%=ProcessorConstants.DISPLAY_CHOICE_CDE%>"  property="displayChoice" onclick="changeSourceForValues(this)"  value="<%=ProcessorConstants.DISPLAY_CHOICE_CDE%>" disabled="true">
 							<bean:message key="eav.att.OptionsCDE"/>
 						</html:radio>
-						<html:radio styleId="displayChoice" property="displayChoice" onclick="changeSourceForValues(this)"  value="<%=ProcessorConstants.DISPLAY_CHOICE_LOOKUP%>" >
+						<html:radio styleId="<%=ProcessorConstants.DISPLAY_CHOICE_LOOKUP%>" property="displayChoice" onclick="changeSourceForValues(this)"  value="<%=ProcessorConstants.DISPLAY_CHOICE_LOOKUP%>" >
 							<bean:message key="eav.att.OptionsLookup"/>
 						</html:radio>
 					</td>

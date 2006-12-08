@@ -47,7 +47,7 @@
 						<bean:message key="eav.att.Description"/> :
 				</td>
 
-				<td class="formFieldWithoutBorder">
+				<td >
 						<html:textarea styleClass="formFieldSmallSized" rows = "3" cols="28"  styleId ='description' property="description"  />
 				</td>
 			</tr>

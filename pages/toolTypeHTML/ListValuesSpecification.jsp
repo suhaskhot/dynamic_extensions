@@ -48,7 +48,7 @@
 										&nbsp;
 					</td>
 					<td class="formRequiredLabelWithoutBorder"><bean:message key="eav.att.OptionDescription"/> : </td>
-					<td  class="formFieldWithoutBorder">
+					<td  >
 						<textarea rows = "3" cols="28" id = 'optionDescription' name="optionDescription" class="formFieldSmallSized" ></textarea>
 					</td>
 	</tr>
@@ -157,7 +157,7 @@
 					<bean:message  key="eav.att.Group" /> :
 				</td>
 				<td >
-					<html:select styleClass="formFieldVerySmallSized" property="groupName" styleId="groupName" onchange="groupChanged()">
+					<html:select styleClass="formFieldVerySmallSized" property="groupName" styleId="groupName" onchange="groupChanged(true)">
 						<html:options collection="groupNamesList" labelProperty="name" property="value" />
 
 					</html:select>
@@ -169,7 +169,7 @@
 					<bean:message  key="eav.att.Form" /> :
 				</td>
 				<td  >
-					<html:select styleClass="formFieldVerySmallSized" property="formName" styleId="formName" onchange="formChanged()">
+					<html:select styleClass="formFieldVerySmallSized" property="formName" styleId="formName" onchange="formChanged(true)">
 
 					</html:select>
 				</td>

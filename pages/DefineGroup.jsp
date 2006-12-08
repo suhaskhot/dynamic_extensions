@@ -15,21 +15,21 @@
 	<head>
 		<title>Dynamic Extensions</title>
 
-		
+
 	</head>
-	
+
 	<body onload="initDefineGroupForm();">
 		<!-- Menu tabs -->
 		<c:set var="groupList" value="${groupForm.groupList}"/>
 		<jsp:useBean id="groupList" type="java.util.List"/>
-		
+
 		<c:set var="createGroupAs" value="${groupForm.createGroupAs}"/>
 		<jsp:useBean id="createGroupAs" type="java.lang.String"/>
-		
-		
+
+
 		<html:form styleId = "groupForm"  action="/LoadGroupDefinitionAction">
 			<input type="hidden" name="groupOperation" value=""/>
-		
+
 	        <table valign="top"  align='right' width='90%' height="100%" border='0' cellspacing="0" cellpadding="0" >
 		    	<!-- Main Page heading -->
 		        <tr valign="top" style = "border-bottom:0px">
@@ -46,15 +46,15 @@
 								<td height="20" class="tabMenuItemSelected" >
 									<bean:message key="app.title.DefineGroupTabTitle" />
 							   	</td>
-	
+
 							   	<td height="20" class="tabMenuItem"  onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onclick="showDefineFormJSP()">
 									<bean:message key="app.title.DefineFormTabTitle" />
 							   	</td>
-	
+
 							   	<td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" >
 									<bean:message key="app.title.BuildFormTabTitle" />
 							   	</td>
-	
+
 							   	<td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()"  >
 									<bean:message key="app.title.PreviewTabTitle" />
 							   	</td>
@@ -124,7 +124,7 @@
 			</table>
 			<div id="NewGroupDiv" style="display:none">
 				<table  valign = "top" cellspacing="0" cellpadding="3" width="100%" height = '100%'>
-			
+
 					<tr valign = "top"  class="rowWithBottomPadding">
 						<td  class="formRequiredNoticeWithoutBorder" width="2%">*</td>
 						<td class="formRequiredLabelWithoutBorder" width="12%">
@@ -136,7 +136,7 @@
 							<html:text styleClass="formDateSized" styleId="groupNameText"  property="groupNameText" />
 						</td>
 					</tr>
-			
+
 					<tr valign = "top"  class="rowWithBottomPadding">
 						<td class="formRequiredNoticeWithoutBorder" width="2%" >&nbsp;</td>
 						<td class="formRequiredLabelWithoutBorder" width="12%">
@@ -144,7 +144,7 @@
 							<bean:message key="eav.form.description"/> :
 						</label>
 						</td>
-						<td class="formFieldWithoutBorder">
+						<td >
 							<html:textarea styleClass="formFieldSmallSized"  rows = "3" cols="28" styleId="groupDescription"  property="groupDescription" />
 						</td>
 					 </tr>
@@ -163,7 +163,7 @@
 					</tr>
 				</table>
 			</div>
-			
+
 			<input type="hidden" id = "createGroupAsHidden" name="createGroupAsHidden" value = "<%=createGroupAs%>" />
 		</html:form>
 	</body>

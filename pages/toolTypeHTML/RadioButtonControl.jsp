@@ -4,6 +4,10 @@
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
 
 <%@page import="edu.common.dynamicextensions.processor.ProcessorConstants"%>
+<c:set var="displayChoice" value="${controlsForm.displayChoice}"/>
+<jsp:useBean id="displayChoice" type="java.lang.String"/>
+
+<input id = 'hiddenDisplayChoice' type="hidden" name="hiddenDisplayChoice" value="<%=displayChoice%>">
 
 <table summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
 	<tr>
@@ -15,10 +19,10 @@
 						<bean:message key="eav.att.RadioButtonOptionTypes"></bean:message> :
 					</td>
 					<td class="formFieldWithoutBorder">
-						<html:radio styleId = 'displayChoice' property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED%>" >
+						<html:radio styleId = '<%=ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED%>' property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED%>" >
 							<bean:message key="eav.att.OptionsUserDefined"/>
 						</html:radio>
-						<html:radio styleId='displayChoice' property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_CDE%>" disabled="true" >
+						<html:radio styleId='<%=ProcessorConstants.DISPLAY_CHOICE_CDE%>' property="displayChoice" value="<%=ProcessorConstants.DISPLAY_CHOICE_CDE%>" disabled="true" >
 							<bean:message key="eav.att.OptionsCDE"/>
 						</html:radio>
 					</td>

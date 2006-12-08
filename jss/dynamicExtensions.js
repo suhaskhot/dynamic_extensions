@@ -191,7 +191,7 @@ function initBuildForm()
 		insertRules("");
 	}
 		
-	var sourceElt =document.getElementById("displayChoice");
+	var sourceElt =document.getElementById("hiddenDisplayChoice");
 	
 	if(sourceElt!=null)
 	{
@@ -229,9 +229,9 @@ function initBuildForm()
 		changeDateType(dateValueType);
 	}
 	//List of form names for selected group
-	groupChanged();
+	groupChanged(false);
 	//List of attributes for selected form
-	formChanged();
+	formChanged(false);
 }
 function changeChoiceListTableDisplay()
 {
@@ -265,42 +265,74 @@ function initializeChoiceListCounter()
 }
 function changeSourceForValues(sourceControl)
 {
-
 	if(sourceControl!=null)
 	{
-		var sourceForValues = sourceControl.value;
-		
-		if(sourceForValues!=null)
+		if(canChangeSource(sourceControl)) //If the source of values can be changed
 		{
-			var divForSourceId = sourceForValues + "Values";
-
-			var divForSource = document.getElementById(divForSourceId);
-			if(divForSource!=null)
+			var sourceForValues = sourceControl.value;
+			if(sourceForValues!=null)
 			{
-				var valueSpecnDiv = document.getElementById('optionValuesSpecificationDiv');
-				if(valueSpecnDiv!=null)
+				var divForSourceId = sourceForValues + "Values";
+
+				var divForSource = document.getElementById(divForSourceId);
+				if(divForSource!=null)
 				{
-					var divForSourceHTML = divForSource.innerHTML;
-					
-					while (divForSourceHTML.indexOf("tempOptionNames") != -1)
+					var valueSpecnDiv = document.getElementById('optionValuesSpecificationDiv');
+					if(valueSpecnDiv!=null)
 					{
-						divForSourceHTML = divForSourceHTML.replace("tempOptionNames","optionNames");
+						var divForSourceHTML = divForSource.innerHTML;
+
+						while (divForSourceHTML.indexOf("tempOptionNames") != -1)
+						{
+							divForSourceHTML = divForSourceHTML.replace("tempOptionNames","optionNames");
+						}
+						while (divForSourceHTML.indexOf("tempOptionDescriptions") != -1)
+						{
+							divForSourceHTML = divForSourceHTML.replace("tempOptionDescriptions","optionDescriptions");
+						}
+						while (divForSourceHTML.indexOf("tempOptionConceptCodes") != -1)
+						{
+							divForSourceHTML = divForSourceHTML.replace("tempOptionConceptCodes","optionConceptCodes");
+						}
+						valueSpecnDiv.innerHTML = divForSourceHTML ;
 					}
-					while (divForSourceHTML.indexOf("tempOptionDescriptions") != -1)
-					{
-						divForSourceHTML = divForSourceHTML.replace("tempOptionDescriptions","optionDescriptions");
-					}
-					while (divForSourceHTML.indexOf("tempOptionConceptCodes") != -1)
-					{
-						divForSourceHTML = divForSourceHTML.replace("tempOptionConceptCodes","optionConceptCodes");
-					}
-					valueSpecnDiv.innerHTML = divForSourceHTML ;
 				}
+
 			}
-		
-		}
+		}//if(canChangeSource)
 	}
 }
+
+//Check if source of values can be changed
+function canChangeSource(sourceControl)
+{
+	var operation = null;
+	if(document.getElementById("controlOperation")!=null)
+	{
+		operation = document.getElementById("controlOperation").value;
+		if(operation=="Edit")
+		{
+			if(document.getElementById("hiddenDisplayChoice")!=null)
+			{
+				var originalDisplayChoice = document.getElementById("hiddenDisplayChoice").value;	
+				var selectedDisplayChoice = sourceControl.value;
+				if(originalDisplayChoice!=selectedDisplayChoice)
+				{
+					alert("Cannot change source for values");
+					var originalSelectedDisplayChoice = document.getElementById(originalDisplayChoice);
+					if(originalSelectedDisplayChoice!=null)
+					{
+						originalSelectedDisplayChoice.checked=true;
+					}
+					
+					return false;
+				}
+			}
+		}
+	}	
+	return true;
+}
+
 
 //addToChoiceList : indicates whether the choice shld be added to choice list
 //This will be true when called while adding choice at runtime, and false when adding at load time
@@ -536,7 +568,7 @@ function clearCommonAttributes()
 
 function clearControlAttributes()
 {
-var controlsForm = document.getElementById('controlsForm');
+	var controlsForm = document.getElementById('controlsForm');
 
 	if(document.getElementById('attributeSize') != null)
 	{
@@ -589,8 +621,8 @@ var controlsForm = document.getElementById('controlsForm');
 			
 		//Reinitialize counter for number of options
 		initializeChoiceListCounter();
-	
 	}
+	clearSelectedAttributesList();
 	
 }
 function deleteAllRows(table)
@@ -1028,8 +1060,12 @@ function changeSelection(str1,seqno)
 }
 
 /***  code using ajax :gets the list of form names for selected group without refreshing the whole page  ***/
-function groupChanged()
+function groupChanged(flagClearAttributeList)
 {
+	if(flagClearAttributeList)
+	{
+		clearSelectedAttributesList();
+	}
 	var request = newXMLHTTPReq();
 	var handlerFunction = getReadyStateHandler(request,groupChangedResponse,false);
 
@@ -1094,8 +1130,12 @@ function groupChangedResponse(formNameListXML)
 
 
 //When form changed load attributes for form
-function formChanged()
+function formChanged(flagClearAttributeList)
 {
+	if(flagClearAttributeList)
+	{
+		clearSelectedAttributesList();
+	}
 	var request = newXMLHTTPReq();
 	var handlerFunction = getReadyStateHandler(request,formChangedResponse,false);
 	//no brackets after the function name and no parameters are passed because we are assigning a reference to the function and not actually calling it
@@ -1149,26 +1189,25 @@ function formChangedResponse(formAttributesListXML)
 							oOption.value = optionValue;
 					}
 				}
-				/*for (i=0;i<formAttributes.length;i++)
-				{
-					if(formAttributes[i].firstChild!=null)
-					{
-						optionName = formAttributes[i].firstChild.nodeValue;
-						if((optionName!=null)&&(optionName!=""))
-						{
-							var oOption = document.createElement("OPTION");
-							htmlFormAttributeList.options.add(oOption);
-
-							oOption.innerText = optionName;
-							oOption.value = optionName;
-						}
-					}
-				}*/
 			}
 		}
 	}
 }
 	/*** code using ajax  ***/
+	
+function clearSelectedAttributesList()
+{
+	var selectedAttributeList = document.getElementById('selectedAttributeIds');
+	if(selectedAttributeList !=null)
+	{
+		var noOfElements = selectedAttributeList.options.length;
+		for (i=noOfElements-1;i>=0;i--)
+		{
+			selectedAttributeList.options[i] = null;	
+		}
+		
+	}
+}
 function selectFormAttribute()
 {
 	var fromListBox = document.getElementById('formAttributeList');

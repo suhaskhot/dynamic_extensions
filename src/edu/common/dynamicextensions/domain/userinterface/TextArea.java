@@ -1,7 +1,9 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
+import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 
@@ -28,7 +30,7 @@ public class TextArea extends Control implements TextAreaInterface
 	protected Integer rows;
 	//password
 	protected Boolean isPassword;
-	
+
 	/**
 	 * Empty Constructor 
 	 */
@@ -80,14 +82,38 @@ public class TextArea extends Control implements TextAreaInterface
 		if (this.value == null)
 		{
 			defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
-			if(defaultValue == null || (defaultValue.length() == 0))
+			if (defaultValue == null || (defaultValue.length() == 0))
 			{
 				defaultValue = "";
 			}
 		}
-		
-		String htmlString = "<textarea " + "class = '" + this.cssClass + "' " + "name = '" + getHTMLComponentName() + "' " + "id = '" + getHTMLComponentName() + "' " + "cols = '"
-				+ columns.intValue() + "' " + "rows = '" + rows.intValue() + "' " + "title = '" + this.tooltip + "'>";
+
+		String htmlComponentName = getHTMLComponentName();
+		int noCols = columns.intValue();
+		int noRows = rows.intValue();
+		int maxChars = 0;
+		AttributeInterface attribute = (AttributeInterface) this.getAbstractAttribute();
+		if (attribute != null)
+		{
+			StringAttributeTypeInformation stringAttributeTypeInformation = (StringAttributeTypeInformation) attribute.getAttributeTypeInformation();
+			if (stringAttributeTypeInformation != null)
+			{
+				maxChars = stringAttributeTypeInformation.getSize().intValue();
+			}
+		}
+
+		String htmlString = "";
+		if (maxChars != 0)
+		{
+			htmlString = "<textarea " + "class = '" + this.cssClass + "' " + "name = '" + htmlComponentName + "' " + "id = '" + htmlComponentName
+					+ "' " + "cols = '" + noCols + "' " + "rows = '" + noRows + "' " + "title = '" + this.tooltip + "' wrap='virtual' onblur=\"checkTextLength('"
+					+ htmlComponentName + "', " + maxChars + ")\">";
+		}
+		else
+		{
+			htmlString = "<textarea " + "class = '" + this.cssClass + "' " + "name = '" + htmlComponentName + "' " + "id = '" + htmlComponentName
+					+ "' " + "cols = '" + noCols + "' " + "rows = '" + noRows + "' " + "title = '" + this.tooltip + "' wrap='virtual'>";
+		}
 		htmlString += defaultValue + "</textarea>";
 		
 		return htmlString;
@@ -118,8 +144,7 @@ public class TextArea extends Control implements TextAreaInterface
 	 */
 	public void setIsPassword(Boolean isPassword)
 	{
-		this.isPassword = isPassword;		
+		this.isPassword = isPassword;
 	}
 
-	
 }

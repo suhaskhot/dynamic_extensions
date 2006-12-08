@@ -171,7 +171,7 @@
 																						if(attributeRule.getName().equals("required"))
 																						{
 																			%>
-																							<td class="formRequiredLabelLeft" width="2%">
+																							<td class="formRequiredNotice" width="2%">
 																								<c:out value="${containerInterface.requiredFieldIndicatior}" />
 																							</td>
 																							<td class="formRequiredLabel" width="20%">
@@ -189,7 +189,7 @@
 																				{
 																			%>
 																					<td class="formRequiredNotice" width="2%">&nbsp;</td>
-																					<td class="formRequiredNotice" width="20%">
+																					<td class="formLabel" width="20%">
 																						<label for="<c:out value="control_${control.sequenceNumber}"/>">
 																							<c:out value="${control.caption}"/>
 																						</label>

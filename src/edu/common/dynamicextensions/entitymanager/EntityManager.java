@@ -54,9 +54,11 @@ import edu.common.dynamicextensions.util.AssociationTreeObject;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
+import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.wustl.common.bizlogic.AbstractBizLogic;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
+import edu.wustl.common.dao.AbstractDAO;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.HibernateDAO;
 import edu.wustl.common.dao.JDBCDAO;
@@ -453,7 +455,7 @@ public class EntityManager
 		return containerInterface;
 
 	}
-	
+
 	/**
 	 * This method returns the control given the attribute identifier
 	 * @param controlIdentifier
@@ -462,21 +464,21 @@ public class EntityManager
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	public ControlInterface getControlByAbstractAttributeIdentifier(Long abstractAttributeIdentifier)
-	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ControlInterface controlInterface = null;
 		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
-		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", abstractAttributeIdentifier));
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long",
+				abstractAttributeIdentifier));
 		Collection controlCollection = executeHQL("getControlOfAbstractAttribute",
 				substitutionParameterMap);
-		if (controlCollection  != null && controlCollection .size() > 0)
+		if (controlCollection != null && controlCollection.size() > 0)
 		{
-			controlInterface = (ControlInterface) controlCollection .iterator().next();
+			controlInterface = (ControlInterface) controlCollection.iterator().next();
 		}
 
-		return controlInterface ;
+		return controlInterface;
 	}
-	
 
 	/**
 	 * This method returns the EntityInterface given the entity name.
@@ -1281,10 +1283,21 @@ public class EntityManager
 	}
 
 	/**
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#insertData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map)
+	 * @param entity
+	 * @param dataValue
+	 * @param hibernateDAO
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws HibernateException
+	 * @throws SQLException
+	 * @throws DAOException
+	 * @throws UserNotAuthorizedException
 	 */
-	public Long insertData(EntityInterface entity, Map dataValue)
-			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	private Long insertDataForSingleEntity(EntityInterface entity, Map dataValue,
+			HibernateDAO hibernateDAO) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
+			UserNotAuthorizedException
 	{
 		if (entity == null || dataValue == null || dataValue.isEmpty())
 		{
@@ -1340,10 +1353,27 @@ public class EntityManager
 			}
 			else
 			{
-				//In case of association separate queries need to fire depending ont he cardinalities
-				List<Long> recordIdList = (List<Long>) value;
-				queryList.addAll(queryBuilder.getAssociationInsertDataQuery(
-						(AssociationInterface) attribute, recordIdList, identifier));
+				//In case of association separate queries need to fire depending on the cardinalities
+				AssociationInterface association = (AssociationInterface) attribute;
+				List<Long> recordIdList = null;
+				
+				if (association.getSourceRole().getAssociationsType().equals(
+						AssociationType.CONTAINTMENT))
+				{
+					Map valueMapForContainedEntity = (Map) value;
+					Long recordIdForContainedEntity = insertDataForSingleEntity(association
+							.getTargetEntity(), valueMapForContainedEntity, hibernateDAO);
+					recordIdList = new ArrayList<Long>();
+					recordIdList.add(recordIdForContainedEntity);
+				}
+				else
+				{
+					recordIdList = (List<Long>) value;
+				}
+
+				queryList.addAll(queryBuilder.getAssociationInsertDataQuery(association,
+						recordIdList, identifier));
+
 			}
 		}
 
@@ -1354,40 +1384,55 @@ public class EntityManager
 		query.append(columnValuesString);
 		query.append(" ) ");
 		queryList.add(0, query.toString());
+
+		logDebug("insertData", "Query is: " + query.toString());
+
+		Connection conn = DBUtil.getConnection();
+
+		for (String queryString : queryList)
+		{
+			logDebug("insertData", "Query for insert data is : " + queryString);
+			PreparedStatement statement = conn.prepareStatement(queryString);
+			statement.executeUpdate();
+		}
+
+		for (AttributeRecord collectionAttributeRecord : attributeRecords)
+		{
+			hibernateDAO.insert(collectionAttributeRecord, null, false, false);
+		}
+
+		return identifier;
+
+	}
+
+	/**
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#insertData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map)
+	 */
+	public Long insertData(EntityInterface entity, Map dataValue)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	{
+
+		Long recordId = null;
 		HibernateDAO hibernateDAO = null;
 		try
 		{
-			logDebug("insertData", "Query is: " + query.toString());
-
 			DAOFactory factory = DAOFactory.getInstance();
-			hibernateDAO = (HibernateDAO) factory.getDAO(Constants.HIBERNATE_DAO);
-
+			hibernateDAO = (HibernateDAO) factory.getDAO(Constants.HIBERNATE_DAO);;
 			hibernateDAO.openSession(null);
-			Connection conn = DBUtil.getConnection();
-			for (String queryString : queryList)
-			{
-				logDebug("insertData", "Query for insert data is : " + queryString);
-				PreparedStatement statement = conn.prepareStatement(queryString);
-				statement.executeUpdate();
-			}
-			for (AttributeRecord collectionAttributeRecord : attributeRecords)
-			{
-				hibernateDAO.insert(collectionAttributeRecord, null, false, false);
-			}
+
+			recordId = insertDataForSingleEntity(entity, dataValue, hibernateDAO);
 
 			hibernateDAO.commit();
 		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			throw (DynamicExtensionsApplicationException) handleRollback(e,
+					"Error while inserting data", hibernateDAO, false);
+		}
 		catch (Exception e)
 		{
-			try
-			{
-				hibernateDAO.rollback();
-			}
-			catch (DAOException e1)
-			{
-				throw new DynamicExtensionsSystemException("Error while inserting data", e1);
-			}
-			throw new DynamicExtensionsSystemException("Error while inserting data", e);
+			throw (DynamicExtensionsSystemException) handleRollback(e,
+					"Error while inserting data", hibernateDAO, true);
 		}
 		finally
 		{
@@ -1397,12 +1442,40 @@ public class EntityManager
 			}
 			catch (DAOException e)
 			{
-				throw new DynamicExtensionsSystemException("Error while inserting data", e);
+				throw (DynamicExtensionsSystemException) handleRollback(e, "Error while closing",
+						hibernateDAO, true);
 			}
-
 		}
 
-		return identifier;
+		return recordId;
+	}
+
+	/**
+	 * @param e
+	 * @param string
+	 * @param hibernateDAO
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	private Exception handleRollback(Exception e, String exceptionMessage, AbstractDAO dao,
+			boolean isExceptionToBeWrapped)
+	{
+		try
+		{
+			dao.rollback();
+		}
+		catch (DAOException e1)
+		{
+			return new DynamicExtensionsSystemException("error while rollback", e);
+		}
+
+		if (isExceptionToBeWrapped)
+		{
+			return new DynamicExtensionsSystemException(exceptionMessage, e);
+		}
+		else
+		{
+			return e;
+		}
 	}
 
 	/**

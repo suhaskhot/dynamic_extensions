@@ -2417,6 +2417,105 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 	}
 
-	
+
+	/**
+	 *  Purpose: This method test for inserting data for a containtment relationship between two entities
+	 *  Expected Behaviour: Data should be persisted for the target entity in its own table and that record should 
+	 *                      get associated with the source entity's record.
+	 *  Test case flow: 1. create User
+	 *                  2. Create Address                       
+	 *                  3. Add Association with      User(1) ------->(1) Address containtment association
+	 *                  4. persist entities.
+	 *                  5. Insert Data
+	 *                  6. Check for it.
+	 */
+	public void testInsertDataForContaintment()
+	{
+
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		try
+		{
+
+			// Step 1  
+			EntityInterface user = factory.createEntity();
+			AttributeInterface userNameAttribute = factory.createStringAttribute();
+			userNameAttribute.setName("user name");
+			user.setName("user");
+			user.addAbstractAttribute(userNameAttribute);
+
+			
+			
+			// Step 2  
+			EntityInterface address = factory.createEntity();
+			address.setName("address");
+
+			AttributeInterface streetAttribute = factory.createStringAttribute();
+			streetAttribute.setName("street name");
+			address.addAbstractAttribute(streetAttribute);
+
+			AttributeInterface cityAttribute = factory.createStringAttribute();
+			cityAttribute.setName("city name");
+			address.addAbstractAttribute(cityAttribute);
+			
+			
+			// Step 3
+			AssociationInterface association = factory.createAssociation();
+			association.setTargetEntity(address);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("UserAddress");
+			association.setSourceRole(getRole(AssociationType.CONTAINTMENT, "User",
+					Cardinality.ZERO, Cardinality.ONE));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "address",
+					Cardinality.ZERO, Cardinality.ONE));
+
+			user.addAbstractAttribute(association);
+
+			// Step 4
+			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
+
+			Map dataValue = new HashMap();
+			Map addressDataValue = new HashMap();
+			addressDataValue.put(streetAttribute,"Laxmi Road");
+			addressDataValue.put(cityAttribute,"Pune");
+			
+
+			dataValue.put(userNameAttribute, "rahul");
+			dataValue.put(association, addressDataValue);
+
+			// Step 5
+			entityManagerInterface.insertData(savedEntity, dataValue);
+
+			// Step 6
+			ResultSet resultSet = executeQuery("select count(*) from "
+					+ address.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(1, resultSet.getInt(1));
+			
+			resultSet = executeQuery("select count(*) from "
+					+ user.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(1, resultSet.getInt(1));
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			fail();
+			Logger.out.debug(e.getStackTrace());
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			fail();
+			Logger.out.debug(e.getStackTrace());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+
+			Logger.out.debug(e.getStackTrace());
+		}
+
+	}
 
 }

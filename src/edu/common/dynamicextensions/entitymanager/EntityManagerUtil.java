@@ -200,17 +200,17 @@ public class EntityManagerUtil
 			daoException.printStackTrace();
 			throw new DAOException("Exception while retrieving the query result", daoException);
 		}
-		finally
-		{
-			try
-			{
-				jdbcDAO.closeSession();
-			}
-			catch (DAOException daoException)
-			{
-				throw new DAOException("Exception while closing the jdbc session", daoException);
-			}
-		}
+//		finally
+//		{
+//			try
+//			{
+//				jdbcDAO.closeSession();
+//			}
+//			catch (DAOException daoException)
+//			{
+//				throw new DAOException("Exception while closing the jdbc session", daoException);
+//			}
+//		}
 		return resultList;
 	}
 

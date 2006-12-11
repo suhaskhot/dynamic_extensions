@@ -15,6 +15,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInter
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.util.AssociationTreeObject;
 
 /**
  * The methods only work on domain object interfaces and also return domain object interfaces or
@@ -347,6 +348,13 @@ public interface EntityManagerInterface
 	 */
 	ControlInterface getControlByAbstractAttributeIdentifier(Long abstractAttributeIdentifier)
 	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	
+	/**
+	 * 
+	 * @param entityGroupInterface
+	 * @return
+	 */
+	public Collection<AssociationTreeObject> getAssociationTree(EntityGroupInterface entityGroupInterface);
 	
 
 }

@@ -50,6 +50,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInter
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.util.AssociationTreeObject;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
@@ -2364,5 +2365,39 @@ public class EntityManager
 		}
 
 		return outputMap;
+	}
+	
+	/**
+	 * 
+	 * @param entityGroupInterface
+	 * @return
+	 */
+	public Collection<AssociationTreeObject> getAssociationTree(EntityGroupInterface entityGroupInterface)
+	{
+		Set associationTreeObjectCollection = new HashSet();
+		
+		AssociationTreeObject group1 = new AssociationTreeObject();
+		Collection group1Collection = new HashSet();
+		
+		AssociationTreeObject form1 = new AssociationTreeObject();
+		form1.setLabel("form1");
+		form1.setId(new Long("1"));
+		
+		Collection form1Collection = new HashSet();
+		
+		AssociationTreeObject specimentDetails = new AssociationTreeObject();
+		specimentDetails.setLabel("Specimen details");
+		specimentDetails.setId(new Long("2"));
+		
+		form1Collection.add(specimentDetails);
+		form1.setAssociationTreeObjectCollection(form1Collection);
+		group1Collection.add(form1);
+		
+		group1.setAssociationTreeObjectCollection(group1Collection);
+		group1.setLabel("Group 1");
+		group1.setId(new Long("3"));
+		associationTreeObjectCollection.add(group1);
+			
+		return associationTreeObjectCollection ;
 	}
 }

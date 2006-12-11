@@ -337,7 +337,7 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	ContainerInterface getContainerByEntityIdentifier(Long entityIdentifier)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+			throws DynamicExtensionsSystemException;
 	/**
 	 * This method returns the control given the attribute identifier
 	 * @param controlIdentifier

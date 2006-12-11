@@ -437,7 +437,7 @@ public class EntityManager
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	public ContainerInterface getContainerByEntityIdentifier(Long entityIdentifier)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+			throws DynamicExtensionsSystemException
 	{
 		ContainerInterface containerInterface = null;
 		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
@@ -1993,7 +1993,7 @@ public class EntityManager
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	private Collection executeHQL(String queryName, Map substitutionParameterMap)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+			throws DynamicExtensionsSystemException
 	{
 		Collection entityCollection = new HashSet();
 		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(

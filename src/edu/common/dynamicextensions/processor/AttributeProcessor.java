@@ -159,35 +159,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 
 	}
 
-/*	*//**
-	 * @param attributeUIBeanInformationIntf
-	 * @return
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
-	 *//*
-	private AbstractAttributeInterface getAttributeInterfaceForLookup(AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
-	{
-		AssociationInterface association = null;
-		if(attributeUIBeanInformationIntf!=null)
-		{
-			DomainObjectFactory factory = DomainObjectFactory.getInstance();
-			EntityManagerInterface entityManager = EntityManager.getInstance();
-			EntityInterface targetEntity = entityManager.getEntityByIdentifier(attributeUIBeanInformationIntf.getFormName());
-			if(targetEntity!=null)
-			{
-				association = factory.createAssociation();
-				association.setTargetEntity(targetEntity);
-				association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-				association.setName(attributeUIBeanInformationIntf.getName());
-				association.setSourceRole(getRole(AssociationType.ASSOCIATION,null,
-						Cardinality.ONE, Cardinality.ONE));
-				association.setTargetRole(getRole(AssociationType.ASSOCIATION,targetEntity.getName() , Cardinality.ONE,
-						Cardinality.ONE));
-				
-			}
-		}
-		return association;
-	}*/
+
 	private RoleInterface getRole(AssociationType associationType, String name,
 			Cardinality minCard, Cardinality maxCard)
 	{
@@ -260,7 +232,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			associationIntf.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
 			associationIntf.setName(attributeUIBeanInformationIntf.getName());
 			associationIntf.setSourceRole(getRole(AssociationType.ASSOCIATION,null,
-					Cardinality.ONE, Cardinality.ONE));
+					Cardinality.ONE, Cardinality.MANY));
 			if((userSelectedControlName!=null)&&(userSelectedControlName.equals(ProcessorConstants.LISTBOX_CONTROL)))
 			{
 				associationIntf.setTargetRole(getRole(AssociationType.ASSOCIATION,targetEntity.getName() , Cardinality.ONE,

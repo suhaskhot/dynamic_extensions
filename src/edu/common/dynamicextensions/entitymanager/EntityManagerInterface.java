@@ -294,6 +294,9 @@ public interface EntityManagerInterface
 	/**
 	 * This method is used to save the metadata information of the given entity without creating it's data 
 	 * table.
+	 * 
+	 * @param entityInterface entity to be persisted
+	 * @param isDataTablePresent boolean indicating if data table is already existing or not
 	 */
 	EntityInterface persistEntityMetadata(EntityInterface entityInterface,
 			boolean isDataTablePresent) throws DynamicExtensionsSystemException,

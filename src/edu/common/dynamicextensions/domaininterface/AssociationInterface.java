@@ -16,6 +16,7 @@ import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
  */
 public interface AssociationInterface extends AbstractAttributeInterface
 {
+
 	/**
 	 * This method returns the direction of the Association. 
 	 * It can be Source to Destination or vice versa or bidirectional.
@@ -75,5 +76,10 @@ public interface AssociationInterface extends AbstractAttributeInterface
 	 * @return the ConstraintProperties of the Association.
 	 */
 	ConstraintPropertiesInterface getConstraintProperties();
+
+	/**
+	 * @param constraintProperties
+	 */
+	void setConstraintProperties(ConstraintPropertiesInterface constraintProperties);
 
 }

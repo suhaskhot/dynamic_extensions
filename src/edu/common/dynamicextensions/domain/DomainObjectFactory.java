@@ -85,8 +85,7 @@ public class DomainObjectFactory
 		}
 		return domainObjectFactory;
 	}
-	
-	
+
 	/**
 	 * Mock entity manager can be placed in the entity manager using this method.
 	 * @param entityManager
@@ -177,195 +176,196 @@ public class DomainObjectFactory
 		return constraintProperties;
 	}
 
-    /**
-     * 
-     * @return instance of BooleanAttributeTypeInformation.
-     */
-    public AttributeInterface createBooleanAttribute()
-    {
-        Attribute booleanAttribute = new Attribute();
-        booleanAttribute.setAttributeTypeInformation(new BooleanAttributeTypeInformation());
-        return booleanAttribute;
-    }
-    /**
-     * 
-     * @return instance of ByteArrayAttributeTypeInformation.
-     */
-    public AttributeInterface createByteArrayAttribute()
-    {
-        Attribute byteArrayAttribute = new Attribute();
-        byteArrayAttribute.setAttributeTypeInformation(new ByteArrayAttributeTypeInformation());
-        return byteArrayAttribute;
-    }  
-    
-    
-    /**
-     * 
-     * @return instance of ByteArrayAttributeTypeInformation.
-     */
-    public ByteArrayValueInterface createByteArrayValue()
-    {
-        ByteArrayValue  byteArrayValue  = new ByteArrayValue ();
-        return byteArrayValue;
-    } 
-    
-    
-    /**
-     * 
-     * @return instance of DateAttributeTypeInformation.
-     */
-    public AttributeInterface createDateAttribute()
-    {
-        Attribute dateAttribute = new Attribute();
-        dateAttribute.setAttributeTypeInformation(new DateAttributeTypeInformation());
-        return dateAttribute;
-    }
-    /**
-     * 
-     * @return instance of DoubleAttributeTypeInformation.
-     */
-    public AttributeInterface createDoubleAttribute()
-    {
-        Attribute doubleAttribute = new Attribute();
-        doubleAttribute.setAttributeTypeInformation(new DoubleAttributeTypeInformation());
-        return doubleAttribute;
-    }
-    
-    /**
-     * 
-     * @return instance of FloatAttributeTypeInformation.
-     */
-    public AttributeInterface createFloatAttribute()
-    {
-        Attribute floatAttribute = new Attribute();
-        floatAttribute.setAttributeTypeInformation(new FloatAttributeTypeInformation());
-        return floatAttribute;
-    }
-    
-    /**
-     * 
-     * @return instance of IntegerAttributeTypeInformation.
-     */
-    public AttributeInterface createIntegerAttribute()
-    {
-        Attribute integerAttribute = new Attribute();
-        integerAttribute.setAttributeTypeInformation(new IntegerAttributeTypeInformation());
-        return integerAttribute;
-    }
-    
-    /**
-     * 
-     * @return instance of LongAttributeTypeInformation.
-     */
-    public AttributeInterface createLongAttribute()
-    {
-        Attribute longAttribute = new Attribute();
-        longAttribute.setAttributeTypeInformation(new LongAttributeTypeInformation());
-        return longAttribute;
-    }
-    
-    /**
-     * 
-     * @return instance of ShortAttributeTypeInformation.
-     */
-    public AttributeInterface createShortAttribute()
-    {
-        Attribute shortAttribute = new Attribute();
-        shortAttribute.setAttributeTypeInformation(new ShortAttributeTypeInformation());
-        return shortAttribute;
-    }
-    
-    /**
-     * 
-     * @return instance of StringAttributeTypeInformation.
-     */
-    public AttributeInterface createStringAttribute()
-    {
-        Attribute stringAttribute = new Attribute();
-        stringAttribute.setAttributeTypeInformation(new StringAttributeTypeInformation());
-        return stringAttribute;
-    }
-    
-    /**
-     * 
-     * @return instance of BooleanAttributeTypeInformation.
-     */
-    public AttributeTypeInformation createBooleanAttributeTypeInformation()
-    {
-        return new BooleanAttributeTypeInformation();
-    }
-    /**
-     * 
-     * @return instance of ByteArrayAttributeTypeInformation.
-     */
-    public AttributeTypeInformation createByteArrayAttributeTypeInformation()
-    {
-        return new ByteArrayAttributeTypeInformation();
-    }  
-    
-    /**
-     * 
-     * @return instance of DateAttributeTypeInformation.
-     */
-    public AttributeTypeInformation createDateAttributeTypeInformation()
-    {
-        return new DateAttributeTypeInformation();
-    }
-    /**
-     * 
-     * @return instance of DoubleAttributeTypeInformation.
-     */
-    public AttributeTypeInformation createDoubleAttributeTypeInformation()
-    {
-       return new DoubleAttributeTypeInformation();
-    }
-    
-    /**
-     * 
-     * @return instance of FloatAttributeTypeInformation.
-     */
-    public AttributeTypeInformation createFloatAttributeTypeInformation()
-    {
-        return new FloatAttributeTypeInformation();
-    }
-    
-    /**
-     * 
-     * @return instance of IntegerAttributeTypeInformation.
-     */
-    public AttributeTypeInformation createIntegerAttributeTypeInformation()
-    {
-        return new IntegerAttributeTypeInformation();
-    }
-    
-    /**
-     * 
-     * @return instance of LongAttributeTypeInformation.
-     */
-    public AttributeTypeInformation createLongAttributeTypeInformation()
-    {
-        return new LongAttributeTypeInformation();
-    }
-    
-    /**
-     * 
-     * @return instance of ShortAttributeTypeInformation.
-     */
-    public AttributeTypeInformation createShortAttributeTypeInformation()
-    {
-        return new ShortAttributeTypeInformation();
-    }
-    
-    /**
-     * 
-     * @return instance of StringAttributeTypeInformation.
-     */
-    public AttributeTypeInformation createStringAttributeTypeInformation()
-    {
-       return new StringAttributeTypeInformation();
-    }
-    
-    
+	/**
+	 * 
+	 * @return instance of BooleanAttributeTypeInformation.
+	 */
+	public AttributeInterface createBooleanAttribute()
+	{
+		Attribute booleanAttribute = new Attribute();
+		booleanAttribute.setAttributeTypeInformation(new BooleanAttributeTypeInformation());
+		return booleanAttribute;
+	}
+
+	/**
+	 * 
+	 * @return instance of ByteArrayAttributeTypeInformation.
+	 */
+	public AttributeInterface createByteArrayAttribute()
+	{
+		Attribute byteArrayAttribute = new Attribute();
+		byteArrayAttribute.setAttributeTypeInformation(new ByteArrayAttributeTypeInformation());
+		return byteArrayAttribute;
+	}
+
+	/**
+	 * 
+	 * @return instance of ByteArrayAttributeTypeInformation.
+	 */
+	public ByteArrayValueInterface createByteArrayValue()
+	{
+		ByteArrayValue byteArrayValue = new ByteArrayValue();
+		return byteArrayValue;
+	}
+
+	/**
+	 * 
+	 * @return instance of DateAttributeTypeInformation.
+	 */
+	public AttributeInterface createDateAttribute()
+	{
+		Attribute dateAttribute = new Attribute();
+		dateAttribute.setAttributeTypeInformation(new DateAttributeTypeInformation());
+		return dateAttribute;
+	}
+
+	/**
+	 * 
+	 * @return instance of DoubleAttributeTypeInformation.
+	 */
+	public AttributeInterface createDoubleAttribute()
+	{
+		Attribute doubleAttribute = new Attribute();
+		doubleAttribute.setAttributeTypeInformation(new DoubleAttributeTypeInformation());
+		return doubleAttribute;
+	}
+
+	/**
+	 * 
+	 * @return instance of FloatAttributeTypeInformation.
+	 */
+	public AttributeInterface createFloatAttribute()
+	{
+		Attribute floatAttribute = new Attribute();
+		floatAttribute.setAttributeTypeInformation(new FloatAttributeTypeInformation());
+		return floatAttribute;
+	}
+
+	/**
+	 * 
+	 * @return instance of IntegerAttributeTypeInformation.
+	 */
+	public AttributeInterface createIntegerAttribute()
+	{
+		Attribute integerAttribute = new Attribute();
+		integerAttribute.setAttributeTypeInformation(new IntegerAttributeTypeInformation());
+		return integerAttribute;
+	}
+
+	/**
+	 * 
+	 * @return instance of LongAttributeTypeInformation.
+	 */
+	public AttributeInterface createLongAttribute()
+	{
+		Attribute longAttribute = new Attribute();
+		longAttribute.setAttributeTypeInformation(new LongAttributeTypeInformation());
+		return longAttribute;
+	}
+
+	/**
+	 * 
+	 * @return instance of ShortAttributeTypeInformation.
+	 */
+	public AttributeInterface createShortAttribute()
+	{
+		Attribute shortAttribute = new Attribute();
+		shortAttribute.setAttributeTypeInformation(new ShortAttributeTypeInformation());
+		return shortAttribute;
+	}
+
+	/**
+	 * 
+	 * @return instance of StringAttributeTypeInformation.
+	 */
+	public AttributeInterface createStringAttribute()
+	{
+		Attribute stringAttribute = new Attribute();
+		stringAttribute.setAttributeTypeInformation(new StringAttributeTypeInformation());
+		return stringAttribute;
+	}
+
+	/**
+	 * 
+	 * @return instance of BooleanAttributeTypeInformation.
+	 */
+	public AttributeTypeInformation createBooleanAttributeTypeInformation()
+	{
+		return new BooleanAttributeTypeInformation();
+	}
+
+	/**
+	 * 
+	 * @return instance of ByteArrayAttributeTypeInformation.
+	 */
+	public AttributeTypeInformation createByteArrayAttributeTypeInformation()
+	{
+		return new ByteArrayAttributeTypeInformation();
+	}
+
+	/**
+	 * 
+	 * @return instance of DateAttributeTypeInformation.
+	 */
+	public AttributeTypeInformation createDateAttributeTypeInformation()
+	{
+		return new DateAttributeTypeInformation();
+	}
+
+	/**
+	 * 
+	 * @return instance of DoubleAttributeTypeInformation.
+	 */
+	public AttributeTypeInformation createDoubleAttributeTypeInformation()
+	{
+		return new DoubleAttributeTypeInformation();
+	}
+
+	/**
+	 * 
+	 * @return instance of FloatAttributeTypeInformation.
+	 */
+	public AttributeTypeInformation createFloatAttributeTypeInformation()
+	{
+		return new FloatAttributeTypeInformation();
+	}
+
+	/**
+	 * 
+	 * @return instance of IntegerAttributeTypeInformation.
+	 */
+	public AttributeTypeInformation createIntegerAttributeTypeInformation()
+	{
+		return new IntegerAttributeTypeInformation();
+	}
+
+	/**
+	 * 
+	 * @return instance of LongAttributeTypeInformation.
+	 */
+	public AttributeTypeInformation createLongAttributeTypeInformation()
+	{
+		return new LongAttributeTypeInformation();
+	}
+
+	/**
+	 * 
+	 * @return instance of ShortAttributeTypeInformation.
+	 */
+	public AttributeTypeInformation createShortAttributeTypeInformation()
+	{
+		return new ShortAttributeTypeInformation();
+	}
+
+	/**
+	 * 
+	 * @return instance of StringAttributeTypeInformation.
+	 */
+	public AttributeTypeInformation createStringAttributeTypeInformation()
+	{
+		return new StringAttributeTypeInformation();
+	}
+
 	/**
 	 * This method creates an object of BooleanValue.
 	 * @return an instance of BooleanValue.
@@ -535,7 +535,7 @@ public class DomainObjectFactory
 		TextField textField = new TextField();
 		return textField;
 	}
-	
+
 	/**
 	 * This method creates an object of File Upload Control.
 	 * @return an instance of TextField.
@@ -545,7 +545,6 @@ public class DomainObjectFactory
 		FileUploadControl fileUpload = new FileUploadControl();
 		return fileUpload;
 	}
-
 
 	/**
 	 * This method creates an object of View.
@@ -597,49 +596,83 @@ public class DomainObjectFactory
 		return userDefinedDE;
 	}
 
-    /**
-     * This method creates an object of UserDefinedDE.
-     * @return an instance of UserDefinedDE.
-     */
-    public TaggedValueInterface createTaggedValue()
-    {
-        TaggedValueInterface taggedValueInterface = new TaggedValue();
-        return taggedValueInterface;
-    }
-    
-    /**
-     * 
-     * @return  fileAttribute.
-     */
-    public AttributeInterface createFileAttribute()
-    {
-        Attribute fileAttribute = new Attribute();
-        fileAttribute.setAttributeTypeInformation(new FileAttributeTypeInformation());
-        return fileAttribute;
-    }
+	/**
+	 * This method creates an object of UserDefinedDE.
+	 * @return an instance of UserDefinedDE.
+	 */
+	public TaggedValueInterface createTaggedValue()
+	{
+		TaggedValueInterface taggedValueInterface = new TaggedValue();
+		return taggedValueInterface;
+	}
 
-    /**
-     * 
-     * @return instance of StringAttributeTypeInformation.
-     */
-    public AttributeTypeInformation createFileAttributeTypeInformation()
-    {
-       return new FileAttributeTypeInformation();
-    }
-    
-    /**
-     * 
-     * @return
-     */
-    public FileAttributeRecordValue createFileAttributeRecordValue()
-    {
-    	return new FileAttributeRecordValue(); 
-    }
-    
-    /**
-     * @return
-     */
-    public AssociationDisplayAttributeInterface createAssociationDisplayAttribute() {
-    	return new AssociationDisplayAttribute();
-    }
+	/**
+	 * 
+	 * @return  fileAttribute.
+	 */
+	public AttributeInterface createFileAttribute()
+	{
+		Attribute fileAttribute = new Attribute();
+		fileAttribute.setAttributeTypeInformation(new FileAttributeTypeInformation());
+		return fileAttribute;
+	}
+
+	/**
+	 * 
+	 * @return instance of StringAttributeTypeInformation.
+	 */
+	public AttributeTypeInformation createFileAttributeTypeInformation()
+	{
+		return new FileAttributeTypeInformation();
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public FileAttributeRecordValue createFileAttributeRecordValue()
+	{
+		return new FileAttributeRecordValue();
+	}
+
+	/**
+	 * @return
+	 */
+	public AssociationDisplayAttributeInterface createAssociationDisplayAttribute()
+	{
+		return new AssociationDisplayAttribute();
+	}
+
+	/**
+	 * This method creates an object of ColunmProperties.
+	 * @return an instance of ColumnProperties.
+	 */
+	public ColumnPropertiesInterface createColumnProperties(String columnName)
+	{
+		ColumnPropertiesInterface columnProperties = createColumnProperties();
+		columnProperties.setName(columnName);
+		return columnProperties;
+	}
+
+	/**
+	 * This method creates an object of TableProperties.
+	 * @return an instance of TableProperties.
+	 */
+	public TablePropertiesInterface createTableProperties(String tableName)
+	{
+		TablePropertiesInterface tableProperties = createTableProperties();
+		tableProperties.setName(tableName);
+		return tableProperties;
+	}
+
+	/**
+	 * This method creates an object of ConstraintProperties
+	 * @return an instance of ConstraintProperties.
+	 */
+	public ConstraintPropertiesInterface createConstraintProperties(String middleTableName)
+	{
+		ConstraintPropertiesInterface constraintProperties = createConstraintProperties();
+		constraintProperties.setName(middleTableName);
+		return constraintProperties;
+	}
 }

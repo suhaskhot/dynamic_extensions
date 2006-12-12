@@ -221,10 +221,18 @@ public class EntityManager
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#persistEntityMetadata(edu.common.dynamicextensions.domaininterface.EntityInterface)
 	 */
-	public EntityInterface persistEntityMetadata(EntityInterface entityInterface)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public EntityInterface persistEntityMetadata(EntityInterface entityInterface,
+			boolean isDataTablePresent) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
-		((Entity) entityInterface).setIsDataTableCreated(false);
+		if (isDataTablePresent)
+		{
+			((Entity) entityInterface).setDataTableState(DATA_TABLE_STATE_ALREADY_PRESENT);
+		}
+		else
+		{
+			((Entity) entityInterface).setDataTableState(DATA_TABLE_STATE_NOT_CREATED);
+		}
 		return persistEntity(entityInterface);
 	}
 
@@ -283,7 +291,7 @@ public class EntityManager
 			{
 				if (entityInterface.getId() == null)
 				{
-					((Entity) entityInterface).setIsDataTableCreated(false);
+					((Entity) entityInterface).setDataTableState(DATA_TABLE_STATE_NOT_CREATED);
 				}
 			}
 		}
@@ -688,8 +696,7 @@ public class EntityManager
 					if (targetEntity.getId() == null)
 					{
 						boolean isEntitySaved = false;
-						((Entity) targetEntity).setIsDataTableCreated(entity
-								.getIsDataTableCreated());
+						((Entity) targetEntity).setDataTableState(entity.getDataTableState());
 						targetEntity = saveOrUpdateEntity(targetEntity, hibernateDAO,
 								rollbackQueryStack, isEntitySaved);
 					}
@@ -1356,7 +1363,7 @@ public class EntityManager
 				//In case of association separate queries need to fire depending on the cardinalities
 				AssociationInterface association = (AssociationInterface) attribute;
 				List<Long> recordIdList = null;
-				
+
 				if (association.getSourceRole().getAssociationsType().equals(
 						AssociationType.CONTAINTMENT))
 				{
@@ -1768,7 +1775,7 @@ public class EntityManager
 			postSaveProcessEntity(entity, hibernateDAO, rollbackQueryStack);
 			hibernateDAO.update(entity, null, false, false, false);
 
-			if (entity.getIsDataTableCreated())
+			if (entity.getDataTableState() == DATA_TABLE_STATE_CREATED)
 			{
 				if (!isEntitySaved)
 				{
@@ -2439,38 +2446,39 @@ public class EntityManager
 
 		return outputMap;
 	}
-	
+
 	/**
 	 * 
 	 * @param entityGroupInterface
 	 * @return
 	 */
-	public Collection<AssociationTreeObject> getAssociationTree(EntityGroupInterface entityGroupInterface)
+	public Collection<AssociationTreeObject> getAssociationTree(
+			EntityGroupInterface entityGroupInterface)
 	{
 		Set associationTreeObjectCollection = new HashSet();
-		
+
 		AssociationTreeObject group1 = new AssociationTreeObject();
 		Collection group1Collection = new HashSet();
-		
+
 		AssociationTreeObject form1 = new AssociationTreeObject();
 		form1.setLabel("form1");
 		form1.setId(new Long("1"));
-		
+
 		Collection form1Collection = new HashSet();
-		
+
 		AssociationTreeObject specimentDetails = new AssociationTreeObject();
 		specimentDetails.setLabel("Specimen details");
 		specimentDetails.setId(new Long("2"));
-		
+
 		form1Collection.add(specimentDetails);
 		form1.setAssociationTreeObjectCollection(form1Collection);
 		group1Collection.add(form1);
-		
+
 		group1.setAssociationTreeObjectCollection(group1Collection);
 		group1.setLabel("Group 1");
 		group1.setId(new Long("3"));
 		associationTreeObjectCollection.add(group1);
-			
-		return associationTreeObjectCollection ;
+
+		return associationTreeObjectCollection;
 	}
 }

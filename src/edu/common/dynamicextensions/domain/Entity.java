@@ -11,8 +11,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
-import edu.wustl.common.actionForm.AbstractActionForm;
-import edu.wustl.common.exception.AssignDataException;
+import edu.common.dynamicextensions.util.global.Constants;
 
 /**
  * An entity is something that has a distinct, separate existence, though it need not be a material 
@@ -45,28 +44,31 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	 * Collection of EntityGroup.
 	 */
 	protected Collection<EntityGroupInterface> entityGroupCollection = new HashSet<EntityGroupInterface>();
-	
+
 	/**
-	 * Flag for data table creation
+	 * state for data table creation
+	 * 1 - data table created by DE
+	 * 2 - data table is not created by DE and it does not exists
+	 * 3 - data table is not created by DE but it is already present. calling application take the
+	 *     responsibility of setting Table name and column name to the entity and attributes.
 	 */
-	protected Boolean isDataTableCreated = true;
-	
-	
-	/**@hibernate.property name="isDataTableCreated" type="boolean" column="IS_DATA_TABLE_CREATED" 
-	 * @return
+	protected int dataTableState = Constants.DATA_TABLE_STATE_CREATED;
+
+	/**
+	 * @hibernate.property name="dataTableState" type="int" column="DATA_TABLE_STATE"
+	 * @return Returns the dataTableState.
 	 */
-	public Boolean getIsDataTableCreated()
+	public int getDataTableState()
 	{
-		return isDataTableCreated;
+		return dataTableState;
 	}
 
-	
 	/**
-	 * @param isDataTableCreated
+	 * @param dataTableState The dataTableState to set.
 	 */
-	public void setIsDataTableCreated(Boolean isDataTableCreated)
+	public void setDataTableState(int dataTableState)
 	{
-		this.isDataTableCreated = isDataTableCreated;
+		this.dataTableState = dataTableState;
 	}
 
 	/**
@@ -209,14 +211,14 @@ public class Entity extends AbstractMetadata implements EntityInterface
 		{
 			Iterator<EntityGroupInterface> entityGroupIterator = entityGroupCollection.iterator();
 			EntityGroupInterface entityGroupInterface;
-			while(entityGroupIterator.hasNext())
+			while (entityGroupIterator.hasNext())
 			{
 				entityGroupInterface = (EntityGroupInterface) entityGroupIterator.next();
 				entityGroupInterface.removeEntity(this);
 				entityGroupIterator.remove();
-				
+
 			}
-			
+
 		}
 	}
 

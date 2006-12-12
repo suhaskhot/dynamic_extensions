@@ -1805,7 +1805,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			taggedValue.setKey("a");
 			taggedValue.setValue("b");
 			entity.addTaggedValue(taggedValue);
-			entity = (Entity) EntityManager.getInstance().persistEntityMetadata(entity);
+			entity = (Entity) EntityManager.getInstance().persistEntityMetadata(entity,false);
 
 			//Step 3 
 			Entity newEntity = (Entity) EntityManager.getInstance().getEntityByIdentifier(

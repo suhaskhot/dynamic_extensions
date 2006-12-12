@@ -65,12 +65,16 @@ public interface AttributeInterface extends AbstractAttributeInterface
 	ColumnPropertiesInterface getColumnProperties();
 
 	/**
+	 * @param columnProperties
+	 */
+	void setColumnProperties(ColumnPropertiesInterface columnProperties);
+
+	/**
 	 * 
 	 * @return AttributeTypeInformationInterface
 	 */
 	AttributeTypeInformationInterface getAttributeTypeInformation();
 
-	
 	/**
 	 * @param attributeTypeInformationInterface attributeTypeInformationInterface
 	 */

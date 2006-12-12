@@ -295,8 +295,9 @@ public interface EntityManagerInterface
 	 * This method is used to save the metadata information of the given entity without creating it's data 
 	 * table.
 	 */
-	EntityInterface persistEntityMetadata(EntityInterface entityInterface)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	EntityInterface persistEntityMetadata(EntityInterface entityInterface,
+			boolean isDataTablePresent) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException;
 
 	/**
 	 * This method persists an entity group and the associated entities without creating the data table 
@@ -318,8 +319,7 @@ public interface EntityManagerInterface
 	 */
 	ContainerInterface getContainerByIdentifier(String identifier)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
-	
-	
+
 	/**
 	 * This method returns the all the record for the given control of the 
 	 * association.
@@ -328,8 +328,9 @@ public interface EntityManagerInterface
 	 *    key   recordId
 	 *    value List<String> list of column values 
 	 */
-	Map<Long, List<String>> getRecordsForAssociationControl(AssociationControlInterface associationControl) throws DynamicExtensionsSystemException;
-	
+	Map<Long, List<String>> getRecordsForAssociationControl(
+			AssociationControlInterface associationControl) throws DynamicExtensionsSystemException;
+
 	/**
 	 * This method returns the container interface given the entity identifier.
 	 * @param EntityInterface
@@ -339,6 +340,7 @@ public interface EntityManagerInterface
 	 */
 	ContainerInterface getContainerByEntityIdentifier(Long entityIdentifier)
 			throws DynamicExtensionsSystemException;
+
 	/**
 	 * This method returns the control given the attribute identifier
 	 * @param controlIdentifier
@@ -347,14 +349,14 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	ControlInterface getControlByAbstractAttributeIdentifier(Long abstractAttributeIdentifier)
-	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
-	
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+
 	/**
 	 * 
 	 * @param entityGroupInterface
 	 * @return
 	 */
-	public Collection<AssociationTreeObject> getAssociationTree(EntityGroupInterface entityGroupInterface);
-	
+	public Collection<AssociationTreeObject> getAssociationTree(
+			EntityGroupInterface entityGroupInterface);
 
 }

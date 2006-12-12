@@ -355,11 +355,11 @@
             column="IDENTIFIER"
         />
         <property
-            name="isDataTableCreated"
-            type="boolean"
+            name="dataTableState"
+            type="int"
             update="true"
             insert="true"
-            column="IS_DATA_TABLE_CREATED"
+            column="DATA_TABLE_STATE"
         />
 
         <set

@@ -52,6 +52,11 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String INSERT_DATA = "insertData";
 	public static final String CALLBACK_URL = "callbackURL";
 	
+	public static final int DATA_TABLE_STATE_CREATED  = 1;
+	public static final int DATA_TABLE_STATE_NOT_CREATED  = 2;
+	public static final int DATA_TABLE_STATE_ALREADY_PRESENT  = 3;
+
+	
 	public static final String ID = "id";
 
 	public enum Cardinality {

@@ -358,8 +358,8 @@ public interface EntityManagerInterface
 	 * 
 	 * @param entityGroupInterface
 	 * @return
+	 * @throws DynamicExtensionsApplicationException 
 	 */
-	public Collection<AssociationTreeObject> getAssociationTree(
-			EntityGroupInterface entityGroupInterface);
+	public Collection<AssociationTreeObject> getAssociationTree() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException ;
 
 }

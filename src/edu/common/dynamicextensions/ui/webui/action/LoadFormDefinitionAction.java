@@ -125,16 +125,20 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 	/**
 	 * @param container
 	 * @param formDefinitionForm
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	private void initializeSubFormAttributes(FormDefinitionForm formDefinitionForm)
+	private void initializeSubFormAttributes(FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		formDefinitionForm.setAssociationTree(getAssociationTree());	
 	}
 
 	/**
 	 * @param container
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	private TreeData getAssociationTree()
+	private TreeData getAssociationTree() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		TreeData associationTreeData = new TreeData();
 		EntityManagerInterface entityManager  = EntityManager.getInstance();

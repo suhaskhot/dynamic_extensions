@@ -2532,4 +2532,121 @@ public class EntityManager
 
 		return associationTreeObjectCollection;
 	}
+	/**
+	 * 
+	 * @param entityGroupInterface
+	 * @return
+	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException 
+	 */
+	public Collection<AssociationTreeObject> getAssociationTree()
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		Collection associationTreeObjectCollection = new HashSet();
+
+		Collection groupBeansCollection = executeHQL("getAllGroupBeans", new HashMap());
+		Iterator groupBeansIterator = groupBeansCollection.iterator();
+		Object[] objectArray;
+		AssociationTreeObject associationTreeObject;
+
+		while (groupBeansIterator.hasNext())
+		{
+			objectArray = (Object[]) groupBeansIterator.next();
+			associationTreeObject = processGroupBean(objectArray);
+			associationTreeObjectCollection.add(associationTreeObject);
+		}
+
+		return associationTreeObjectCollection;
+	}
+
+	/**
+	 * 
+	 * @param objectArray
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException 
+	 */
+	private AssociationTreeObject processGroupBean(Object[] objectArray)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		AssociationTreeObject associationTreeObjectForGroup = new AssociationTreeObject(
+				(Long) objectArray[0], (String) objectArray[1]);
+
+		Map substitutionParameterMap = new HashMap();
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long",
+				associationTreeObjectForGroup.getId()));
+
+		Collection containersBeansCollection = executeHQL("getAllContainersBeansByEntityGroupId",
+				new HashMap());
+
+		Iterator containerBeansIterator = containersBeansCollection.iterator();
+		Object[] objectArrayForContainerBeans;
+		AssociationTreeObject associationTreeObjectForContainer;
+
+		while (containerBeansIterator.hasNext())
+		{
+			objectArrayForContainerBeans = (Object[]) containerBeansIterator.next();
+			associationTreeObjectForContainer = new AssociationTreeObject(
+					(Long) objectArrayForContainerBeans[0],
+					(String) objectArrayForContainerBeans[1]);
+			processForChildContainer(associationTreeObjectForContainer);
+			associationTreeObjectForGroup
+					.addAssociationTreeObject(associationTreeObjectForContainer);
+
+		}
+
+		return associationTreeObjectForGroup;
+	}
+
+	/**
+	 * 
+	 * @param objectArrayForContainerBeans
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	private AssociationTreeObject processForChildContainer(
+			AssociationTreeObject associationTreeObjectForContainer)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+
+		ContainerInterface containerInterface = getContainerByIdentifier(associationTreeObjectForContainer
+				.getId().toString());
+		EntityInterface entityInterface = containerInterface.getEntity();
+		Collection abstractAttributeCollection = entityInterface.getAbstractAttributeCollection();
+		if (abstractAttributeCollection != null && abstractAttributeCollection.isEmpty())
+		{
+			Iterator abstractAttributeIterator = abstractAttributeCollection.iterator();
+			AbstractAttributeInterface abstractAttributeInterface = (AbstractAttributeInterface) abstractAttributeIterator
+					.next();
+			while (abstractAttributeIterator.hasNext())
+			{
+				abstractAttributeInterface = (AbstractAttributeInterface) abstractAttributeIterator
+						.next();
+				if (abstractAttributeInterface instanceof AssociationInterface)
+				{
+					AssociationInterface associationInterface = (AssociationInterface) abstractAttributeInterface;
+					RoleInterface roleInterface = associationInterface.getTargetRole();
+					if (roleInterface != null)
+					{
+						if (roleInterface.getAssociationsType() == AssociationType.CONTAINTMENT)
+						{
+							ContainerInterface childContainerInterface = getContainerByEntityIdentifier(associationInterface
+									.getTargetEntity().getId());
+							AssociationTreeObject associationTreeObjectForChildContainer = new AssociationTreeObject(
+									childContainerInterface.getId(), childContainerInterface
+											.getCaption());
+							associationTreeObjectForContainer.addAssociationTreeObject(associationTreeObjectForChildContainer);
+							processForChildContainer(associationTreeObjectForContainer);
+						}
+					}
+				}
+			}
+
+		}
+		return associationTreeObjectForContainer;
+
+	}
+
 }

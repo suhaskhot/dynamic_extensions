@@ -27,6 +27,7 @@ import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.AttributeRecord;
 import edu.common.dynamicextensions.domain.CollectionAttributeRecordValue;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
+import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
@@ -729,6 +730,7 @@ public class EntityManager
 	{
 		//Getting the sys.generated association for the given original association.
 		Association systemGeneratedAssociation = getSystemGeneratedAssociation(association);
+		boolean isTargetEntityChanged = false;
 		if (association.getAssociationDirection() == AssociationDirection.BI_DIRECTIONAL)
 		{
 			ConstraintPropertiesInterface constraintPropertiesSysGen = new ConstraintProperties();
@@ -759,6 +761,7 @@ public class EntityManager
 			systemGeneratedAssociation.setConstraintProperties(constraintPropertiesSysGen);
 			//Adding the sys.generated association to the target entity.
 			association.getTargetEntity().addAbstractAttribute(systemGeneratedAssociation);
+			isTargetEntityChanged = true;
 		}
 		else
 		{
@@ -767,10 +770,14 @@ public class EntityManager
 			if (systemGeneratedAssociation != null)
 			{
 				association.getTargetEntity().removeAbstractAttribute(systemGeneratedAssociation);
+				isTargetEntityChanged = true;
 			}
 		}
-		//Saving the modified target entity.
-		hibernateDAO.update(association.getTargetEntity(), null, false, false, false);
+
+		if (isTargetEntityChanged ) {
+			//Saving the modified target entity.
+			hibernateDAO.update(association.getTargetEntity(), null, false, false, false);
+		}
 	}
 
 	/**This method is used to get the system generated association given the original association.
@@ -985,11 +992,11 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private AbstractMetadataInterface getObjectByIdentifier(String objectName, String identifier)
+	private DynamicExtensionBaseDomainObject getObjectByIdentifier(String objectName, String identifier)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
-		AbstractMetadataInterface object;
+		DynamicExtensionBaseDomainObject object;
 		try
 		{
 			List objectList = bizLogic.retrieve(objectName, Constants.ID, identifier);
@@ -999,7 +1006,7 @@ public class EntityManager
 				throw new DynamicExtensionsApplicationException("OBJECT_NOT_FOUND");
 			}
 
-			object = (EntityInterface) objectList.get(0);
+			object = (DynamicExtensionBaseDomainObject) objectList.get(0);
 		}
 		catch (DAOException e)
 		{
@@ -2578,7 +2585,7 @@ public class EntityManager
 				associationTreeObjectForGroup.getId()));
 
 		Collection containersBeansCollection = executeHQL("getAllContainersBeansByEntityGroupId",
-				new HashMap());
+				substitutionParameterMap);
 
 		Iterator containerBeansIterator = containersBeansCollection.iterator();
 		Object[] objectArrayForContainerBeans;

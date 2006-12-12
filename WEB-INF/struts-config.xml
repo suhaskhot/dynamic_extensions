@@ -91,6 +91,7 @@ PUBLIC
 			input="/SelectControlAction.do"
 			scope="request">
 			<forward name="success" path="/pages/BuildForm.jsp" />
+			<forward name="addSubForm" path="/LoadFormDefinitionAction.do" />
 		</action>
 		
 		<action path="/AddControlsAction" 

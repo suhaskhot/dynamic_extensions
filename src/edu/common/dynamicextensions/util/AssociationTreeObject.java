@@ -1,6 +1,7 @@
 package edu.common.dynamicextensions.util;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 
 public class AssociationTreeObject
@@ -15,6 +16,16 @@ public class AssociationTreeObject
 	 */
 	
 	String label;
+	/**
+	 * 
+	 * @param id
+	 * @param label
+	 */
+	public AssociationTreeObject(Long id,String label)
+	{
+		this.id = id;
+		this.label = label;
+	}
 	/**
 	 * 
 	 */
@@ -35,6 +46,19 @@ public class AssociationTreeObject
 	public void setAssociationTreeObjectCollection(Collection associationTreeObjectCollection)
 	{
 		this.associationTreeObjectCollection = associationTreeObjectCollection;
+	}
+	
+	/**
+	 * 
+	 * @param associationTreeObject
+	 */
+	public void addAssociationTreeObject(AssociationTreeObject associationTreeObject)
+	{
+		if(this.associationTreeObjectCollection == null)
+		{
+			associationTreeObjectCollection = new HashSet();
+		}
+		associationTreeObjectCollection.add(associationTreeObject);
 	}
 	
 	/**

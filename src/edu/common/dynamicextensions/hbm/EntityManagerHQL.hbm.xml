@@ -50,6 +50,24 @@
            		where  control.abstractAttribute.id = ?
 	</query>
 	
+	<query name="getAllContainersBeansByEntityGroupId">
+			select container.id,container.caption
+			   from Container container
+			         	where container.entity.id in
+		             			(select entity.id
+		                      		from Entity entity
+			                             join entity.entityGroupCollection entityGroup
+			                                     where entityGroup.id = ?)
+	</query>
+	
+		
+	
+	<query name="getAllGroupBeans">
+	
+	select entityGroup.id,entityGroup.name
+	   from EntityGroup entityGroup
+	         
+	</query>
 	
 	
 </hibernate-mapping>

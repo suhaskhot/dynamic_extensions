@@ -12,20 +12,20 @@
 <%@ page language="java" contentType="text/html" %>
 <%@ page import="org.apache.struts.action.ActionErrors" %>
 <%@ page import="org.apache.struts.action.ActionMessages" %>
-<%@ page import="javax.servlet.jsp.JspWriter"; %>
+<%@ page import="javax.servlet.jsp.JspWriter" %>
 
 <%@ page import="edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface" %>
 <%@ page import="edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface" %>
-<%@ page import="edu.common.dynamicextensions.domaininterface.AssociationInterface;" %>
-<%@ page import="edu.common.dynamicextensions.domaininterface.AttributeInterface;" %>
-<%@ page import="edu.common.dynamicextensions.domaininterface.EntityInterface;" %>
-<%@ page import="edu.common.dynamicextensions.domaininterface.RoleInterface;" %>
+<%@ page import="edu.common.dynamicextensions.domaininterface.AssociationInterface" %>
+<%@ page import="edu.common.dynamicextensions.domaininterface.AttributeInterface" %>
+<%@ page import="edu.common.dynamicextensions.domaininterface.EntityInterface" %>
+<%@ page import="edu.common.dynamicextensions.domaininterface.RoleInterface" %>
 
-<%@ page import="edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;" %>
-<%@ page import="edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;" %>
+<%@ page import="edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface" %>
+<%@ page import="edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface" %>
 
-<%@ page import="java.lang.String"; %>
-<%@ page import="java.util.Collection"; %>
+<%@ page import="java.lang.String" %>
+<%@ page import="java.util.Collection" %>
 
 <%-- Stylesheet --%>
 <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/styleSheet.css" />

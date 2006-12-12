@@ -39,6 +39,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Variables;
+import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.wustl.common.dao.HibernateDAO;
 import edu.wustl.common.util.dbManager.DBUtil;
@@ -306,26 +307,35 @@ class DynamicExtensionBaseQueryBuilder
 		String sourceKey = association.getConstraintProperties().getSourceEntityKey();
 		String targetKey = association.getConstraintProperties().getTargetEntityKey();
 		StringBuffer query = new StringBuffer();
-		if (sourceKey != null && targetKey != null && sourceKey.trim().length() != 0
-				&& targetKey.trim().length() != 0)
+
+		if (association.getSourceRole().getAssociationsType().equals(AssociationType.CONTAINTMENT))
 		{
-			//for many to many delete all the records having reffered by this recordId  
-			query.append(DELETE_KEYWORD + WHITESPACE + tableName + WHITESPACE + WHERE_KEYWORD
-					+ WHITESPACE + sourceKey);
-			query.append(WHITESPACE + EQUAL);
-			query.append(recordId.toString());
-		}
-		else if (targetKey != null && targetKey.trim().length() != 0)
-		{
-			//for one to many and one to one: update  target entities records(set value in target column key = null) 
-			//that are reffering to  this redord by setting it to null.
-			query.append(UPDATE_KEYWORD);
-			query.append(WHITESPACE + tableName);
-			query.append(WHITESPACE + SET_KEYWORD + WHITESPACE + targetKey + EQUAL + WHITESPACE
-					+ "null" + WHITESPACE);
+			query.append(DELETE_KEYWORD);
+			query.append(WHITESPACE + tableName + WHITESPACE);
 			query.append(WHERE_KEYWORD + WHITESPACE + targetKey + EQUAL + recordId);
 		}
-
+		else
+		{
+			if (sourceKey != null && targetKey != null && sourceKey.trim().length() != 0
+					&& targetKey.trim().length() != 0)
+			{
+				//for many to many delete all the records having reffered by this recordId  
+				query.append(DELETE_KEYWORD + WHITESPACE + tableName + WHITESPACE + WHERE_KEYWORD
+						+ WHITESPACE + sourceKey);
+				query.append(WHITESPACE + EQUAL);
+				query.append(recordId.toString());
+			}
+			else if (targetKey != null && targetKey.trim().length() != 0)
+			{
+				//for one to many and one to one: update  target entities records(set value in target column key = null) 
+				//that are reffering to  this redord by setting it to null.
+				query.append(UPDATE_KEYWORD);
+				query.append(WHITESPACE + tableName);
+				query.append(WHITESPACE + SET_KEYWORD + WHITESPACE + targetKey + EQUAL + WHITESPACE
+						+ "null" + WHITESPACE);
+				query.append(WHERE_KEYWORD + WHITESPACE + targetKey + EQUAL + recordId);
+			}
+		}
 		return query.toString();
 	}
 
@@ -645,9 +655,8 @@ class DynamicExtensionBaseQueryBuilder
 			List reverseQueryList, boolean isAddAssociationQuery)
 	{
 		StringBuffer query = new StringBuffer();
-		query.append(ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + ADD_KEYWORD + WHITESPACE
-				);
-		query.append(columnName + WHITESPACE + dataType + WHITESPACE );
+		query.append(ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + ADD_KEYWORD + WHITESPACE);
+		query.append(columnName + WHITESPACE + dataType + WHITESPACE);
 		String rollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + DROP_KEYWORD
 				+ WHITESPACE + COLUMN_KEYWORD + WHITESPACE + columnName;
 
@@ -1035,13 +1044,12 @@ class DynamicExtensionBaseQueryBuilder
 	 * @throws DynamicExtensionsSystemException
 	 */
 	protected List getAttributeDataTypeChangedQuery(Attribute attribute, Attribute savedAttribute,
-			List modifyAttributeRollbackQueryList)
-			throws DynamicExtensionsSystemException
+			List modifyAttributeRollbackQueryList) throws DynamicExtensionsSystemException
 	{
 		String tableName = attribute.getEntity().getTableProperties().getName();
 		String type = "";
 		String modifyAttributeRollbackQuery = "";
-		
+
 		String modifyAttributeQuery = getQueryPartForAttribute(attribute, type, false);
 		modifyAttributeQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + MODIFY_KEYWORD
 				+ WHITESPACE + modifyAttributeQuery;

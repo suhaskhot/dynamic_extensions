@@ -1371,12 +1371,13 @@ public class EntityManager
 					recordIdList = new ArrayList<Long>();
 
 					//Map valueMapForContainedEntity = (Map) value;
-					for(Map valueMapForContainedEntity:listOfMapsForContainedEntity) {
+					for (Map valueMapForContainedEntity : listOfMapsForContainedEntity)
+					{
 						Long recordIdForContainedEntity = insertDataForSingleEntity(association
 								.getTargetEntity(), valueMapForContainedEntity, hibernateDAO);
 						recordIdList.add(recordIdForContainedEntity);
 					}
-					
+
 				}
 				else
 				{
@@ -1491,11 +1492,19 @@ public class EntityManager
 	}
 
 	/**
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#editData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map, java.lang.Long)
+	 * @param entity
+	 * @param dataValue
+	 * @param recordId
+	 * @return
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
-	public boolean editData(EntityInterface entity, Map dataValue, Long recordId)
-			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	private boolean editDataForSingleEntity(EntityInterface entity, Map dataValue, Long recordId,
+			HibernateDAO hibernateDAO) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
+			UserNotAuthorizedException
 	{
+
 		if (entity == null || dataValue == null || dataValue.isEmpty())
 		{
 			throw new DynamicExtensionsSystemException("Input to edit data is null");
@@ -1569,20 +1578,45 @@ public class EntityManager
 			}
 			else
 			{
+				AssociationInterface association = (AssociationInterface) attribute;
+				List<Long> recordIdList = new ArrayList<Long>();
+
 				// for association need to remove previously associated target reocrd first.
 				String removeQuery = queryBuilder.getAssociationRemoveDataQuery(
 						((Association) attribute), recordId);
+
+				if (association.getSourceRole().getAssociationsType().equals(
+						AssociationType.CONTAINTMENT))
+				{
+					
+					entityManagerUtil.executeDML(removeQuery);
+					
+					List<Map> listOfMapsForContainedEntity = (List<Map>) value;
+					for (Map valueMapForContainedEntity : listOfMapsForContainedEntity)
+					{
+						Long reocordId = insertDataForSingleEntity(association.getTargetEntity(),
+								valueMapForContainedEntity, hibernateDAO);
+						recordIdList.add(recordId);
+					}
+
+				}
+				else
+				{
+					recordIdList = (List<Long>) value;
+				}
+
 				if (removeQuery != null && removeQuery.trim().length() != 0)
 				{
 					associationRemoveDataQueryList.add(removeQuery);
 				}
 				//then add new associated target records.
 				List insertQuery = queryBuilder.getAssociationInsertDataQuery(
-						((Association) attribute), (List<Long>) value, recordId);
+						((Association) attribute), recordIdList, recordId);
 				if (insertQuery != null && insertQuery.size() != 0)
 				{
 					associationInsertDataQueryList.addAll(insertQuery);
 				}
+
 			}
 		}
 
@@ -1601,6 +1635,50 @@ public class EntityManager
 			editDataQueryList.add(query.toString());
 		}
 
+		if (updateColumnString.length() != 0)
+		{
+
+			Connection conn = DBUtil.getConnection();
+			for (String queryString : editDataQueryList)
+			{
+				logDebug("editData", "Query is: " + queryString.toString());
+				PreparedStatement statement = conn.prepareStatement(queryString);
+				statement.executeUpdate();
+			}
+		}
+
+		for (AttributeRecord collectionAttributeRecord : collectionRecords)
+		{
+			logDebug("editData", "updating multi select: "
+					+ collectionAttributeRecord.getValueCollection());
+			hibernateDAO.update(collectionAttributeRecord, null, false, false, false);
+		}
+
+		for (AttributeRecord collectionAttributeRecord : deleteCollectionRecords)
+		{
+			logDebug("editData", "deleting multi select: "
+					+ collectionAttributeRecord.getValueCollection());
+			hibernateDAO.update(collectionAttributeRecord, null, false, false, false);
+		}
+
+		for (AttributeRecord fileRecord : fileRecords)
+		{
+			logDebug("editData", "updating filereocrd for multi select: "
+					+ fileRecord.getFileRecord().getFileName());
+			hibernateDAO.update(fileRecord, null, false, false, false);
+		}
+
+		return true;
+	}
+
+	/**
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#editData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map, java.lang.Long)
+	 */
+	public boolean editData(EntityInterface entity, Map dataValue, Long recordId)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	{
+
+		boolean isSuccess;
 		HibernateDAO hibernateDAO = null;
 		try
 		{
@@ -1610,52 +1688,19 @@ public class EntityManager
 
 			hibernateDAO.openSession(null);
 
-			if (updateColumnString.length() != 0)
-			{
-
-				Connection conn = DBUtil.getConnection();
-				for (String queryString : editDataQueryList)
-				{
-					logDebug("editData", "Query is: " + queryString.toString());
-					PreparedStatement statement = conn.prepareStatement(queryString);
-					statement.executeUpdate();
-				}
-			}
-
-			for (AttributeRecord collectionAttributeRecord : collectionRecords)
-			{
-				logDebug("editData", "updating multi select: "
-						+ collectionAttributeRecord.getValueCollection());
-				hibernateDAO.update(collectionAttributeRecord, null, false, false, false);
-			}
-
-			for (AttributeRecord collectionAttributeRecord : deleteCollectionRecords)
-			{
-				logDebug("editData", "deleting multi select: "
-						+ collectionAttributeRecord.getValueCollection());
-				hibernateDAO.update(collectionAttributeRecord, null, false, false, false);
-			}
-
-			for (AttributeRecord fileRecord : fileRecords)
-			{
-				logDebug("editData", "updating filereocrd for multi select: "
-						+ fileRecord.getFileRecord().getFileName());
-				hibernateDAO.update(fileRecord, null, false, false, false);
-			}
+			isSuccess = editDataForSingleEntity(entity, dataValue, recordId, hibernateDAO);
 
 			hibernateDAO.commit();
 		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			throw (DynamicExtensionsApplicationException) handleRollback(e,
+					"Error while inserting data", hibernateDAO, false);
+		}
 		catch (Exception e)
 		{
-			try
-			{
-				hibernateDAO.rollback();
-			}
-			catch (DAOException e1)
-			{
-				throw new DynamicExtensionsSystemException("Error while editing data", e1);
-			}
-			throw new DynamicExtensionsSystemException("Error while editing data", e);
+			throw (DynamicExtensionsSystemException) handleRollback(e, "Error while updating",
+					hibernateDAO, true);
 		}
 		finally
 		{
@@ -1665,7 +1710,8 @@ public class EntityManager
 			}
 			catch (DAOException e)
 			{
-				throw new DynamicExtensionsSystemException("Error while editing data", e);
+				throw (DynamicExtensionsSystemException) handleRollback(e, "Error while closing",
+						hibernateDAO, true);
 			}
 
 		}

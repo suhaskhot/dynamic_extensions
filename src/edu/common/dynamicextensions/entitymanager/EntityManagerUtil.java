@@ -111,6 +111,38 @@ public class EntityManagerUtil
 		}
 
 	}
+	
+	
+	/**
+	 * @param query query to be executed
+	 * @return 
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	public int executeDML(String query) throws DynamicExtensionsSystemException
+	{
+
+		Connection conn = null;
+		try
+		{
+			conn = DBUtil.getConnection();
+			Statement statement = null;
+			statement = conn.createStatement();
+			return statement.executeUpdate(query);
+		}
+		catch (Exception e)
+		{
+			try
+			{
+				conn.rollback();
+			}
+			catch (SQLException e1)
+			{
+				throw new DynamicExtensionsSystemException(e.getMessage(), e);
+			}
+			throw new DynamicExtensionsSystemException(e.getMessage(), e);
+		}
+
+	}
 
 	/**
 	 * Method generates the next identifier for the table that stores the value of the passes entity.

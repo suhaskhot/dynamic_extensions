@@ -28,6 +28,15 @@ public class AssociationTreeObject
 	}
 	/**
 	 * 
+	 *
+	 */
+	public AssociationTreeObject()
+	{
+	
+	}
+	
+	/**
+	 * 
 	 */
 	Collection associationTreeObjectCollection;
 	/**

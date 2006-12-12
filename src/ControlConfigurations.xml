@@ -88,5 +88,8 @@
 			<common-validation-rule name="required" isImplicit="false" />
 		</validations>
 	</control>
-	<!-- rules for File Upload control end-->	
+		<!-- rules for File Upload control end-->	
+	<control name="AddSubFormControl"
+		display-label="eav.caption.AddSubFormControl">
+	</control>
 </controls>

@@ -14,25 +14,16 @@
 	<link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
 	<script src="jss/dynamicExtensions.js" type="text/javascript"></script>
 	<script src="jss/script.js" type="text/javascript"></script>
-
-	<script>
-		function showBuildFormJSP() {
-		 	document.getElementById('operation').value='buildForm';
-			var formDefinitionForm = document.getElementById('formDefinitionForm');
-			formDefinitionForm.submit();
-		}
-	</script>
-
 </head>
 
 <html:form styleId = "formDefinitionForm" action="/ApplyFormDefinitionAction" >
   <body>
 
-<!--<c:set var="groupName" value="${formDefinitionForm.groupName}"/>
-<jsp:useBean id="groupName" type="java.lang.String"/>-->
-
 <c:set var="treeData" value="${formDefinitionForm.treeData}"/>
 <jsp:useBean id="treeData" type="edu.common.dynamicextensions.ui.webui.util.TreeData"/>
+
+<c:set var="associationTree" value="${formDefinitionForm.associationTree}"/>
+<jsp:useBean id="associationTree" type="edu.common.dynamicextensions.ui.webui.util.TreeData"/>
 
      <table style = "border-right:0px" border = 1 valign="top"  align='right' width='90%' height="100%" border='0' cellspacing="0" cellpadding="0" class="tbBorders1" >
          <!-- Main Page heading -->
@@ -79,7 +70,8 @@
 										</tr>
 										<tr>
 										<td >
-										<dynamicExtensions:tree treeDataObject="<%=treeData%>" />
+										&nbsp;
+										<dynamicExtensions:tree name="formsTree" treeDataObject="<%=treeData%>" fieldForSelectedObject="selectedAttrib"/>
 										</td>
 										</tr>
 										<tr height = 100%> <td> &nbsp;</td>
@@ -88,9 +80,20 @@
 								<td width="80%">
 									<table cellspacing="0" cellpadding="3"  align="left" width="100%" height = '100%' class = "tbBordersAllbordersBlack"  >
 										<tr valign = "top">
-											 <td class="formFieldWithNoTopBorder" colspan="3">
-												 <bean:message key="app.CreateFormTitle"/>
-											 </td>
+											<c:choose>
+												<c:when test='${formDefinitionForm.operationMode == "AddSubForm"}'>
+													 <td class="formFieldWithNoTopBorder" colspan="3">
+														 <bean:message key="app.CreateSubFormTitle"/>
+													 </td>
+												</c:when>
+
+												<c:otherwise>
+													 <td class="formFieldWithNoTopBorder" colspan="3">
+														 <bean:message key="app.CreateFormTitle"/>
+													 </td>
+												</c:otherwise>
+											</c:choose>
+
 										</tr>
 										<tr valign = "top">
 											 <td class="formMessage" colspan="3">
@@ -143,17 +146,55 @@
 												<table border='0'>
 													<tr class="formMessage">
 														 <td >
-															<html:radio styleId= 'createAs' property="createAs" value="NewForm">
+															<html:radio styleId= 'createAsNew' property="createAs" value="NewForm" onclick="createFormAsChanged()">
 																<bean:message key="eav.createnewentity.title"/>
 															</html:radio>
-															<html:radio styleId = 'createAs' property="createAs" value="ExistingForm" disabled="true">
-																<bean:message key="eav.existingentity.title"/>
-															</html:radio>
+
+															<c:choose>
+															<c:when test='${formDefinitionForm.operationMode == "AddSubForm"}'>
+																<html:radio styleId = 'createAsExisting' property="createAs" value="ExistingForm" onclick="createFormAsChanged()" >
+																	<bean:message key="eav.existingentity.title"/>
+																</html:radio>
+
+															</c:when>
+															<c:otherwise>
+																<html:radio styleId = 'createAsExisting' property="createAs" value="ExistingForm" disabled="true" onclick="createFormAsChanged()">
+																	<bean:message key="eav.existingentity.title"/>
+																</html:radio>
+															</c:otherwise>
+															</c:choose>
 														</td>
 													</tr>
 												</table>
 											</td>
 										 </tr>
+										 <tr valign = "top" id="rowForExistingFormDetails" style="display:none;">
+											<td class="formRequiredNoticeWithoutBorder" width="2%" >&nbsp;</td>
+											<td class="formRequiredLabelWithoutBorder" width="20%">
+													&nbsp;
+											</td>
+											<td >
+												<dynamicExtensions:tree name="associationTree" treeDataObject="<%=associationTree%>" fieldForSelectedObject="existingFormName" />
+											</td>
+										 </tr>
+										<c:choose>
+											<c:when test='${formDefinitionForm.operationMode == "AddSubForm"}'>
+												 <tr valign = "top" >
+													<td class="formRequiredNoticeWithoutBorder" width="2%" >&nbsp;</td>
+													<td class="formRequiredLabelWithoutBorder"  width="20%">
+															<bean:message key="eav.form.viewAs"/> :
+													</td>
+													<td class="formFieldWithoutBorder">
+														<html:radio styleId = 'viewAs' property="viewAs" value="Form" >
+															<bean:message key="eav.viewAs.formTitle"/>
+														</html:radio>
+														<html:radio styleId = 'viewAs' property="viewAs" value="SpreadSheet" >
+															<bean:message key="eav.viewAs.spreadsheetTitle"/>
+														</html:radio>
+													</td>
+												 </tr>
+											</c:when>
+										</c:choose>
 										 <tr height = '100%' valign = "top">
 											<td colspan="3">&nbsp;</td>
 										 </tr>
@@ -183,9 +224,10 @@
 	</td>
 </tr>
 </table>
-
-  </body>
+</body>
 <html:hidden styleId = 'operation' property="operation" value=""/>
+<html:hidden styleId = 'operationMode' property="operationMode" />
 <html:hidden styleId = 'entityIdentifier'  property="entityIdentifier" value=""/>
+
 </html:form>
 </html>

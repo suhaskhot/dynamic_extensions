@@ -11,6 +11,8 @@ package edu.common.dynamicextensions.ui.webui.action;
  * @author deepti_shelar
  */
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,14 +24,18 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManager;
+import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.LoadFormDefinitionProcessor;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
+import edu.common.dynamicextensions.ui.webui.util.TreeNode;
 import edu.common.dynamicextensions.ui.webui.util.TreeData;
 import edu.common.dynamicextensions.ui.webui.util.TreeGenerator;
+import edu.common.dynamicextensions.util.AssociationTreeObject;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.beans.NameValueBean;
 
@@ -64,8 +70,15 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 		}
 		String groupName = getGroupName(request);
 		formDefinitionForm.setGroupName(groupName);
-		formDefinitionForm.setTreeData(getEntityTree(groupName));
+		
+		ContainerInterface container = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+		formDefinitionForm.setTreeData(getEntityTree(container,groupName));
 		formDefinitionForm.setCreateAs(ProcessorConstants.DEFAULT_FORM_CREATEAS);
+		formDefinitionForm.setViewAs(ProcessorConstants.DEFAULT_FORM_VIEWAS);
+		if(formDefinitionForm.getAssociationTree()==null)
+		{
+			formDefinitionForm.setAssociationTree(new TreeData());
+		}
 		return (mapping.findForward(Constants.SUCCESS));
 	}
 
@@ -94,12 +107,93 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 			loadFormDefinitionProcessor.populateContainerInformation(container, formDefinitionForm);
 			CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, container);
 		}
+		else if (operationMode != null && operationMode.equalsIgnoreCase(Constants.ADD_SUB_FORM_OPR))
+		{
+			initializeSubFormAttributes(formDefinitionForm);
+		}
 		else
 		{
+			formDefinitionForm.setOperationMode("");
 			container = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 			if (container != null)
 			{
 				loadFormDefinitionProcessor.populateContainerInformation(container, formDefinitionForm);
+			}
+		}
+	}
+
+	/**
+	 * @param container
+	 * @param formDefinitionForm
+	 */
+	private void initializeSubFormAttributes(FormDefinitionForm formDefinitionForm)
+	{
+		formDefinitionForm.setAssociationTree(getAssociationTree());	
+	}
+
+	/**
+	 * @param container
+	 */
+	private TreeData getAssociationTree()
+	{
+		TreeData associationTreeData = new TreeData();
+		EntityManagerInterface entityManager  = EntityManager.getInstance();
+		Collection<AssociationTreeObject> associationTree =  entityManager.getAssociationTree();
+		if(associationTree!=null)
+		{
+			AssociationTreeObject associationObj = null;
+			Long id = null;
+			String label = null;
+			Iterator<AssociationTreeObject>  iterator = associationTree.iterator();
+			TreeNode tnode = null;
+			while(iterator.hasNext())
+			{
+				associationObj = iterator.next();
+				if(associationObj!=null)
+				{
+					id = associationObj.getId() ;
+					label = associationObj.getLabel();
+					if((id!=null)&&(label!=null))
+					{
+						tnode = new TreeNode(label,id.intValue());
+						tnode.setShowRadioBtn(false);//No radio btns for first level nodes
+						addSubTree(tnode,associationObj.getAssociationTreeObjectCollection());
+						associationTreeData.add(tnode);
+					}
+				}
+			}
+		}
+		return associationTreeData;
+	}
+
+	/**
+	 * @param tnode
+	 * @param associationTreeObjectCollection
+	 */
+	private void addSubTree(TreeNode tnode, Collection<AssociationTreeObject> associationTreeObjectCollection)
+	{
+		if(associationTreeObjectCollection!=null)	
+		{
+			AssociationTreeObject associationObj = null;
+			Iterator<AssociationTreeObject>  iterator = associationTreeObjectCollection.iterator();
+			TreeNode subnode = null;
+			String label = null;
+			Long id = null;
+			while(iterator.hasNext())
+			{
+				associationObj = iterator.next();
+				if(associationObj!=null)
+				{
+					id = associationObj.getId() ;
+					label = associationObj.getLabel();
+					if((id!=null)&&(label!=null))
+					{
+						subnode = new TreeNode(label,id.intValue());
+						subnode.setShowRadioBtn(true);//show radio btn for sub-nodes
+						addSubTree(subnode,associationObj.getAssociationTreeObjectCollection());
+						tnode.add(subnode);
+					}
+				}
 			}
 		}
 	}
@@ -124,15 +218,17 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 		return groupName;
 	}
 	/**
+	 * @param container 
 	 * @param request
 	 */
-	private TreeData getEntityTree(String groupName)
+	private TreeData getEntityTree(ContainerInterface container, String groupName)
 	{
 		if(groupName!=null)
 		{
 			TreeGenerator treeGenerator = new TreeGenerator();
-			List childList = getChildList();
-			return treeGenerator.getTreeData(groupName, childList);
+			//List childList = getChildList(container);
+			
+			return treeGenerator.getTreeData(groupName, container);
 		}
 		return null;
 	}

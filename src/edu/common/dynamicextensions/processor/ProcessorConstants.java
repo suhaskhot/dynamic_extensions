@@ -23,6 +23,7 @@ public class ProcessorConstants
 	public static final String RADIOBUTTON_CONTROL  = "RadioButtonControl";
 	public static final String DATEPICKER_CONTROL  = "DateControl";
 	public static final String FILEUPLOAD_CONTROL = "FileUploadControl";
+	public static final String ADD_SUBFORM_CONTROL = "AddSubFormControl";
 
 	//Datattype constants 
 	public static final String DATATYPE_STRING = "Text";
@@ -63,7 +64,16 @@ public class ProcessorConstants
     //Single and multi list box
     public static final String LIST_TYPE_MULTI_SELECT = "MultiSelect";
     public static final String LIST_TYPE_SINGLE_SELECT = "SingleSelect";
+    
+    //Form creation
     public static final String CREATE_AS_NEW = "NewForm";
+    public static final String CREATE_FROM_EXISTING = "ExistingForm";
+    
+    //Form view
+    public static final String VIEW_AS_FORM = "Form";
+    public static final String VIEW_AS_SPREADSHEET = "SpreadSheet";
+    
+    
     //Date formats
     public static final String DATE_FORMAT_OPTION_DATEONLY = "DateOnly";
     public static final String DATE_FORMAT_OPTION_DATEANDTIME = "DateAndTime";
@@ -91,6 +101,8 @@ public class ProcessorConstants
     /*DEFAULT VALUE CONSTANTS*/
     //Default value for create entity as new/from existing
     public static final String DEFAULT_FORM_CREATEAS = CREATE_AS_NEW;
+    
+    public static final String DEFAULT_FORM_VIEWAS = VIEW_AS_FORM;
     
     //default type of list : single line : combobox
     public static final String DEFAULT_LIST_TYPE = LIST_TYPE_SINGLE_SELECT;

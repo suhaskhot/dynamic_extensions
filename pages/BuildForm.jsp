@@ -283,6 +283,7 @@
 			<html:hidden styleId = 'sequenceNumbers' property="sequenceNumbers"  value=""/>
 			<input type="hidden" id = "checkAttribute" name="checkAttribute" value = "" />
 			<html:hidden styleId = 'validationRules' property="validationRules"  value=""/>
+			<input type="hidden" name='operationMode' id="operationMode"  value="AddSubForm"/>			
 	  	</html:form>
   	</body>
 </html>

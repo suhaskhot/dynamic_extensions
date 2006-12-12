@@ -254,16 +254,18 @@ public final class ControlConfigurationsFactory
 							displayLabelNode = controlAttributes.getNamedItem(Constants.DISPLAY_LABEL);
 							jspNameNode = controlAttributes.getNamedItem(Constants.JSP_NAME);
 							imageFilePathNode = controlAttributes.getNamedItem(Constants.IMAGE_PATH);
-							if (controlNameNode != null && displayLabelNode != null && jspNameNode != null)
+							if (controlNameNode != null && displayLabelNode != null)
 							{
 								controlName = controlNameNode.getNodeValue();
 								displayLabel = displayLabelNode.getNodeValue();
 								nameValueBean = new NameValueBean(controlName, displayLabel);
 
 								listOfControls.add(nameValueBean);
-
 								controlsConfigurationObject.setControlName(controlName);
 								controlsConfigurationObject.setDisplayLabel(displayLabel);
+							}
+							if(jspNameNode!=null)
+							{
 								controlsConfigurationObject.setJspName(jspNameNode.getNodeValue());
 							}
 							if (imageFilePathNode != null)
@@ -792,7 +794,16 @@ public final class ControlConfigurationsFactory
 	public static void main(String[] args) throws DynamicExtensionsSystemException
 	{
 		ControlConfigurationsFactory ccf = ControlConfigurationsFactory.getInstance();
-		ccf.getRulesMap("TextControl");
+		List<NameValueBean> list =ccf.getListOfControls();
+		
+		Iterator<NameValueBean> iter =list.iterator();
+		while(iter.hasNext())
+		{
+			NameValueBean nvb = iter.next();
+			System.out.println(nvb.getName() + " " + nvb.getValue());
+			System.out.println(ccf.getControlJspName(nvb.getName()));
+		}
+		//ccf.getRulesMap("TextControl");
 	}
 
 }

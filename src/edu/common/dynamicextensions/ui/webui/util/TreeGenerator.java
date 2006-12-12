@@ -6,9 +6,7 @@
 
 package edu.common.dynamicextensions.ui.webui.util;
 
-import java.util.List;
-
-import edu.wustl.common.beans.NameValueBean;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 
 /**
  * @author preeti_munot
@@ -42,32 +40,28 @@ public class TreeGenerator
 	 * @param childList : List of child nodes
 	 * @return TreeData object for the given root  and list of child nodes
 	 */
-	public TreeData getTreeData(String rootName, List childList)
+	public TreeData getTreeData(String rootName, ContainerInterface container)
 	{
 		TreeData treedata = new TreeData();
-		/*treedata.setImagesUrl(this.getContextPath() + "/images");*/
 		treedata.setImagesUrl("images/");
+		int i=0;
+		TreeNode node = new TreeNode(rootName,i++);
 		
-		TNode node = new TNode(rootName, 0);
-		String name = null;
-		String sequenceNumber = null;
-		int seqno = 0;
-		if (childList != null)
+		TreeNode subNode = null; 
+		if(container!=null)
 		{
-			int noOfChildren = childList.size();
-			for (int i = 0; i < noOfChildren; i++)
-			{
-				NameValueBean childElt = (NameValueBean) childList.get(i);
-				if (childElt != null)
-				{
-					name = childElt.getName();
-					sequenceNumber = childElt.getValue();
-					seqno = Integer.parseInt(sequenceNumber);
-					node.add(name, seqno);
-				}
-			}
+			String containerName = container.getCaption();
+			subNode = new TreeNode(containerName,i++);
+			node.add(subNode);
 		}
-
+		if(subNode==null)
+		{
+			node.add(new TreeNode("New Form",i));
+		}
+		else
+		{
+			subNode.add(new TreeNode("New Form",i));
+		}
 		treedata.add(node);
 		return treedata;
 	}

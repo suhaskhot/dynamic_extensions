@@ -73,7 +73,6 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 			}
 			EntityGroupInterface entityGroup =(EntityGroupInterface) CacheManager.getObjectFromCache(request, Constants.ENTITYGROUP_INTERFACE);
 			
-			
 			//If not in Edit mode, then save the Container in Database and Add the same to the Cache manager.
 			if (operation != null && !operation.equalsIgnoreCase(Constants.EDIT_FORM))
 			{

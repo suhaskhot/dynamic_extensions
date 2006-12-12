@@ -29,6 +29,18 @@ public class TreeGeneratorTag extends TagSupport
 	 */
 	private static final long serialVersionUID = 1L;
 	private TreeData treeDataObject = null;
+	private String fieldForSelectedObject=null;
+	private String name=null;
+	
+	public String getFieldForSelectedObject()
+	{
+		return this.fieldForSelectedObject;
+	}
+
+	public void setFieldForSelectedObject(String fieldForSelectedObject)
+	{
+		this.fieldForSelectedObject = fieldForSelectedObject;
+	}
 
 	/**
 	 */
@@ -49,28 +61,15 @@ public class TreeGeneratorTag extends TagSupport
 			if (treeDataObject != null)
 			{
 				//Add hidden variable
-				jspWriter.print("<input type='hidden' id='selectedAttrib' name='selectedAttrib' value=''>");
+				jspWriter.print("<input type='hidden' id='"+fieldForSelectedObject  +"' name='" + fieldForSelectedObject +"' value=''>");
 				//Add the actual code for tree generation
 				jspWriter.print("<div  valign='top' scroll='auto' style='overflow:auto;' >");
-				jspWriter.print(treeDataObject.getTree());
+				jspWriter.print(treeDataObject.getTree(name,fieldForSelectedObject));
 				jspWriter.print("</div>");
-
-				//Add Javascript code
-			/*	String toggleFunctionJSCode = "function toggle(id,p) \n" + "{ " + "selId =document.getElementById('selectedAttrib').value; \n"
-						+ "if(selId!='')\n" + "document.getElementById(selId).style.fontWeight='normal';\n"
-						+ "document.getElementById('selectedAttrib').value='';\n" + "var myChild = document.getElementById(id);\n"
-						+ "if((myChild!=null)&&(myChild!=undefined))\n" + "{\n" + "if(myChild.style.display!='block')\n" + "{\n"
-						+ "myChild.style.display='block';\n" + "document.getElementById(p).className='folderOpen';\n" + "}\n" + "else\n" + "{\n"
-						+ "myChild.style.display='none';\n" + "document.getElementById(p).className='folder';\n" + "}\n" + "}\n" + "}";
-
-				String changeSelectionJSCode = "function changeSelection(str1,seqno)\n" + "{	\n" 
-						+ "selId =document.getElementById('selectedAttrib').value;\n" + "document.getElementById('selectedAttrib').value=str1;\n"
-						+ "document.getElementById(str1).style.fontWeight='bold';\n" + "if(selId!='')\n" + "{\n"
-						+ "document.getElementById(selId).style.fontWeight='normal';\n" + "}\n"
-						+ "var controlsForm=document.getElementById('controlsForm');\n"
-						+"}\n";*/
+				
+				//Expand first row
 				jspWriter.print("<script language='JavaScript'> \n" + "<!-- \n" //+ toggleFunctionJSCode + changeSelectionJSCode
-						+ "toggle('N0_0','P00'); \n" + "// --> \n" + "</script>");
+						+ "toggle('"+fieldForSelectedObject +"','"+name+"N0_0','"+name+"P00'); \n" + "// --> \n" + "</script>");
 
 			}
 			else
@@ -106,6 +105,16 @@ public class TreeGeneratorTag extends TagSupport
 	public void setTreeDataObject(TreeData treeDataObject)
 	{
 		this.treeDataObject = treeDataObject;
+	}
+
+	public String getName()
+	{
+		return this.name;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
 	}
 
 }

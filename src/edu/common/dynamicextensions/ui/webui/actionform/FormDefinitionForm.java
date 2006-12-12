@@ -48,7 +48,7 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	 * CreateAs
 	 */
 	protected String createAs;
-
+	protected String viewAs;
 	/**
 	 * existingFormsList
 	 */
@@ -85,20 +85,32 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	 * 
 	 */
 	protected String conceptCode;
-	
+
 	/**
 	 * mode
 	 */
 	protected String mode;
-	
+
 	protected String operationMode;
-	
+
 	protected String containerIdentifier;
-	
+
 	protected String groupName;
-	
+
 	protected TreeData treeData;
-	
+	protected TreeData associationTree;
+	protected String selectedObjectId;
+
+	public String getSelectedObjectId()
+	{
+		return this.selectedObjectId;
+	}
+
+	public void setSelectedObjectId(String selectedObjectId)
+	{
+		this.selectedObjectId = selectedObjectId;
+	}
+
 	public String getGroupName()
 	{
 		return this.groupName;
@@ -364,17 +376,19 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	{
 		ActionErrors errors = new ActionErrors();
 		Validator validator = new Validator();
-
-		if (formName == null || validator.isEmpty(String.valueOf(formName)))
+		if(!Constants.ADD_SUB_FORM_OPR.equals(operationMode))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.form.name")));
+			if (formName == null || validator.isEmpty(String.valueOf(formName)))
+			{
+				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.form.name")));
+			}
 		}
 
 		/*if (conceptCode == null || validator.isEmpty(String.valueOf(conceptCode)))
-		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.form.conceptCode")));
-		}
-*/
+		 {
+		 errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.form.conceptCode")));
+		 }
+		 */
 		if (createAs == null || validator.isEmpty(String.valueOf(createAs)))
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.form.createAs")));
@@ -440,4 +454,24 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 		this.treeData = treeData;
 	}
 
+	public String getViewAs()
+	{
+		return this.viewAs;
+	}
+
+	public void setViewAs(String viewAs)
+	{
+		this.viewAs = viewAs;
+	}
+	
+
+	public TreeData getAssociationTree()
+	{
+		return this.associationTree;
+	}
+
+	public void setAssociationTree(TreeData associationTree)
+	{
+		this.associationTree = associationTree;
+	}
 }

@@ -3,6 +3,7 @@
  * @author
  *
  */
+
 package edu.common.dynamicextensions.ui.webui.action;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,32 +40,76 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 	 * @return ActionForward forward to next action
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws DynamicExtensionsApplicationException 
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
+			throws DynamicExtensionsApplicationException
 	{
 		try
 		{
-			ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 			//Get controls form
 			ControlsForm controlsForm = (ControlsForm) form;
-			String oldControlOperation = controlsForm.getControlOperation(); 
-			controlsForm.setControlOperation(ProcessorConstants.OPERATION_ADD);
-			LoadFormControlsProcessor loadFormControlsProcessor = LoadFormControlsProcessor.getInstance();
-			loadFormControlsProcessor.loadFormControls(controlsForm,containerInterface);
-			if(containerInterface!=null)
+			//Action can be either add sub-form or add control to form  
+			if (isAddSubFormAction(controlsForm.getUserSelectedTool()))
 			{
-				if (controlsForm.getSequenceNumbers() != null && controlsForm.getSequenceNumbers().length > 0)
-				{
-					ControlsUtility.applySequenceNumbers(containerInterface, controlsForm.getSequenceNumbers());
-				}
+				//add sub form
+				addSubForm();
+				return mapping.findForward(Constants.ADD_SUB_FORM);
 			}
-			controlsForm.setControlOperation(oldControlOperation);
-			controlsForm.setChildList(ControlsUtility.getChildList(containerInterface));
-			return mapping.findForward(Constants.SUCCESS);
+			else
+			{
+				ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+				//Add form control
+				addControlToForm(containerInterface, controlsForm);
+				return mapping.findForward(Constants.SUCCESS);
+			}
+
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
-			String actionForwardString = catchException(e,request);
-			return(mapping.findForward(actionForwardString));
+			String actionForwardString = catchException(e, request);
+			return (mapping.findForward(actionForwardString));
 		}
+	}
+
+	/**
+	 * @param controlsForm
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	private void addControlToForm(ContainerInterface containerInterface, ControlsForm controlsForm) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+		String oldControlOperation = controlsForm.getControlOperation();
+		controlsForm.setControlOperation(ProcessorConstants.OPERATION_ADD);
+		LoadFormControlsProcessor loadFormControlsProcessor = LoadFormControlsProcessor.getInstance();
+		loadFormControlsProcessor.loadFormControls(controlsForm, containerInterface);
+		if (containerInterface != null)
+		{
+			if (controlsForm.getSequenceNumbers() != null && controlsForm.getSequenceNumbers().length > 0)
+			{
+				ControlsUtility.applySequenceNumbers(containerInterface, controlsForm.getSequenceNumbers());
+			}
+		}
+		controlsForm.setControlOperation(oldControlOperation);
+		controlsForm.setChildList(ControlsUtility.getChildList(containerInterface));
+	}
+
+	/**
+	 * 
+	 */
+	private void addSubForm()
+	{
+	}
+
+	/**
+	 * @param userSelectedTool
+	 * @return
+	 */
+	private boolean isAddSubFormAction(String userSelectedTool)
+	{
+		if ((userSelectedTool != null) && (userSelectedTool.equals(ProcessorConstants.ADD_SUBFORM_CONTROL)))
+		{
+			return true;
+		}
+		return false;
 	}
 }

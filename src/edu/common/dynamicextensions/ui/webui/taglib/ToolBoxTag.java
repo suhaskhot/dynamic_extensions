@@ -441,10 +441,10 @@ public class ToolBoxTag extends TagSupport
 								+ "\" id='" + toolName + "' border=\"1\" onclick=\"tagHandlerFunction('" + toolName + "');" + onClick
 								+ "('" + toolName + "','" + id + "')\"/>");
 					}
-					/*sb.append("\n<label class='" + classname + "' value=\"" + toolCaption
-							+ "\" id='" + toolName + "' border=\"1\" onclick=\"tagHandlerFunction('" + toolName + "');" + onClick
-							+ "('" + toolName + "','" + id + "')\"/>");*/
-					sb.append("<img align=\"left\" src='" + imagePath + "' />&nbsp;");
+					if(imagePath!=null)
+					{
+						sb.append("<img align=\"left\" src='" + imagePath + "' />&nbsp;");
+					}
 					sb.append(toolCaption);
 					sb.append("</label>");
 					sb.append("\n</td></tr>");

@@ -7,8 +7,8 @@ function tagHandlerFunction(selectedTool) {
 }
 
 function showBuildFormJSP() {
- 	document.getElementById('operation').value='buildForm';
-	var formDefinitionForm = document.getElementById('formDefinitionForm');
+	document.getElementById('operation').value='buildForm';
+ 	var formDefinitionForm = document.getElementById('formDefinitionForm');
 	formDefinitionForm.submit();
 }
 
@@ -232,6 +232,9 @@ function initBuildForm()
 	groupChanged(false);
 	//List of attributes for selected form
 	formChanged(false);
+	
+	//Create as option for CreateForm
+	createFormAsChanged();
 }
 function changeChoiceListTableDisplay()
 {
@@ -1026,12 +1029,12 @@ function saveGroup()
 		groupForm.submit();
 	}
 }
-function toggle(id,p) 
+function toggle(fldForSelectedObject,id,p) 
 {
-	selId =document.getElementById('selectedAttrib').value; 
+	selId =document.getElementById(fldForSelectedObject).value; 
 	if(selId!='')
 		document.getElementById(selId).style.fontWeight='normal';
-	document.getElementById('selectedAttrib').value='';
+	document.getElementById(fldForSelectedObject).value='';
 	var myChild = document.getElementById(id);
 	if((myChild!=null)&&(myChild!=undefined))
 	{
@@ -1047,10 +1050,10 @@ function toggle(id,p)
 		}
 	}
 }
-function changeSelection(str1,seqno)
+function changeSelection(fldForSelectedObject,str1,seqno)
 {	
-	selId =document.getElementById('selectedAttrib').value;
-	document.getElementById('selectedAttrib').value=str1;
+	selId =document.getElementById(fldForSelectedObject).value;
+	document.getElementById(fldForSelectedObject).value=str1;
 	document.getElementById(str1).style.fontWeight='bold';
 	if(selId!='')
 	{
@@ -1265,7 +1268,7 @@ function transferElementsFromList(fromListBox,toListBox)
 				toListBox.options[toListBox.length - 1].value = current.value;
 				toListBox.options[toListBox.length - 1].innerHTML = current.innerHTML;
 			}
-		    }
+		    }	
 		}
 	}
 }
@@ -1292,6 +1295,24 @@ function selectAllListAttributes(list)
 		for(var i=0;i<list.length;i++)
 		{
 			list.options[i].selected=true;
+		}
+	}
+}
+
+//Create form as New/Existing option changed
+function createFormAsChanged()
+{
+	var existingFormDiv = document.getElementById('rowForExistingFormDetails');
+	if(existingFormDiv!=null)
+	{
+		var createAsExistingElement = document.getElementById('createAsExisting');
+		if((createAsExistingElement!=null)&&(createAsExistingElement.checked==true))
+		{
+			existingFormDiv.style.display="";
+		}
+		else
+		{
+			existingFormDiv.style.display="none";			
 		}
 	}
 }

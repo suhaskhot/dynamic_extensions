@@ -29,6 +29,7 @@ import edu.common.dynamicextensions.exception.BaseDynamicExtensionsException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Variables;
 import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
@@ -2419,17 +2420,17 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 
 	/**
-	 *  Purpose: This method test for inserting data for a containtment relationship between two entities
-	 *  Expected Behaviour: Data should be persisted for the target entity in its own table and that record should 
+	 *  PURPOSE: This method test for inserting data for a containtment relationship between two entities
+	 *  EXPECTED BEHAVIOUR: Data should be persisted for the target entity in its own table and that record should 
 	 *                      get associated with the source entity's record.
-	 *  Test case flow: 1. create User
+	 *  TEST CASE FLOW: 1. create User
 	 *                  2. Create Address                       
 	 *                  3. Add Association with      User(1) ------->(1) Address containtment association
 	 *                  4. persist entities.
 	 *                  5. Insert Data
 	 *                  6. Check for it.
 	 */
-	public void testInsertDataForContaintment()
+	public void testInsertDataForContaintmentOneToOne()
 	{
 
 		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
@@ -2480,9 +2481,11 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			addressDataValue.put(streetAttribute,"Laxmi Road");
 			addressDataValue.put(cityAttribute,"Pune");
 			
+			List<Map> addressDataValueMapList =  new ArrayList<Map>();
+			addressDataValueMapList.add(addressDataValue);
 
 			dataValue.put(userNameAttribute, "rahul");
-			dataValue.put(association, addressDataValue);
+			dataValue.put(association, addressDataValueMapList);
 
 			// Step 5
 			entityManagerInterface.insertData(savedEntity, dataValue);
@@ -2498,22 +2501,107 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			resultSet.next();
 			assertEquals(1, resultSet.getInt(1));
 		}
-		catch (DynamicExtensionsSystemException e)
+		catch (Exception e)
 		{
+			Logger.out.debug(DynamicExtensionsUtility.getStackTrace(e));
 			fail();
-			Logger.out.debug(e.getStackTrace());
 		}
-		catch (DynamicExtensionsApplicationException e)
+
+
+	}
+	
+	/**
+	 *  PURPOSE: This method test for inserting data for a containtment relationship between two entities having one to many asso
+	 *  EXPECTED BEHAVIOUR: Data should be persisted for the target entity in its own table and that record should 
+	 *                      get associated with the source entity's record.
+	 *  TEST CASE FLOW: 1. create User
+	 *                  2. Create Address                       
+	 *                  3. Add Association with      User(1) ------->(*) Address containment association
+	 *                  4. persist entities.
+	 *                  5. Insert Data
+	 *                  6. Data table for Address should have two records for the user.
+	 */
+	public void testInsertDataForContainmentOneToMany()
+	{
+
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		try
 		{
-			fail();
-			Logger.out.debug(e.getStackTrace());
+
+			// Step 1  
+			EntityInterface user = factory.createEntity();
+			AttributeInterface userNameAttribute = factory.createStringAttribute();
+			userNameAttribute.setName("user name");
+			user.setName("user");
+			user.addAbstractAttribute(userNameAttribute);
+
+			
+			
+			// Step 2  
+			EntityInterface address = factory.createEntity();
+			address.setName("address");
+
+			AttributeInterface streetAttribute = factory.createStringAttribute();
+			streetAttribute.setName("street name");
+			address.addAbstractAttribute(streetAttribute);
+
+			AttributeInterface cityAttribute = factory.createStringAttribute();
+			cityAttribute.setName("city name");
+			address.addAbstractAttribute(cityAttribute);
+			
+			
+			// Step 3
+			AssociationInterface association = factory.createAssociation();
+			association.setTargetEntity(address);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("UserAddress");
+			association.setSourceRole(getRole(AssociationType.CONTAINTMENT, "User",
+					Cardinality.ZERO, Cardinality.ONE));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "address",
+					Cardinality.ZERO, Cardinality.MANY));
+
+			user.addAbstractAttribute(association);
+
+			// Step 4
+			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
+
+			Map dataValue = new HashMap();
+			Map addressDataValue1 = new HashMap();
+			addressDataValue1.put(streetAttribute,"Laxmi Road");
+			addressDataValue1.put(cityAttribute,"Pune");
+
+			Map addressDataValue2 = new HashMap();
+			addressDataValue2.put(streetAttribute,"MG Road");
+			addressDataValue2.put(cityAttribute,"Pune21");
+
+			List<Map> addressDataValueMapList =  new ArrayList<Map>();
+			addressDataValueMapList.add(addressDataValue1);
+			addressDataValueMapList.add(addressDataValue2);
+			
+
+			dataValue.put(userNameAttribute, "rahul");
+			dataValue.put(association, addressDataValueMapList);
+
+			// Step 5
+			entityManagerInterface.insertData(savedEntity, dataValue);
+
+			// Step 6
+			ResultSet resultSet = executeQuery("select count(*) from "
+					+ address.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(1, resultSet.getInt(1));
+			
+			resultSet = executeQuery("select count(*) from "
+					+ user.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(2, resultSet.getInt(1));
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Logger.out.debug(DynamicExtensionsUtility.getStackTrace(e));
 			fail();
-
-			Logger.out.debug(e.getStackTrace());
 		}
 
 	}

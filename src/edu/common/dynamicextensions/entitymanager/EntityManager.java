@@ -1367,11 +1367,16 @@ public class EntityManager
 				if (association.getSourceRole().getAssociationsType().equals(
 						AssociationType.CONTAINTMENT))
 				{
-					Map valueMapForContainedEntity = (Map) value;
-					Long recordIdForContainedEntity = insertDataForSingleEntity(association
-							.getTargetEntity(), valueMapForContainedEntity, hibernateDAO);
+					List<Map> listOfMapsForContainedEntity = (List) value;
 					recordIdList = new ArrayList<Long>();
-					recordIdList.add(recordIdForContainedEntity);
+
+					//Map valueMapForContainedEntity = (Map) value;
+					for(Map valueMapForContainedEntity:listOfMapsForContainedEntity) {
+						Long recordIdForContainedEntity = insertDataForSingleEntity(association
+								.getTargetEntity(), valueMapForContainedEntity, hibernateDAO);
+						recordIdList.add(recordIdForContainedEntity);
+					}
+					
 				}
 				else
 				{

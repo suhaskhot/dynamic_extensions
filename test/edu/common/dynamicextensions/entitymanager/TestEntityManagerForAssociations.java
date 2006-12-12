@@ -2850,5 +2850,117 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		}
 
 	}
+	/**
+	 *  PURPOSE: This method test for deleting data for a containtment relationship between two entities 
+	 *  having one to many association
+	 *  EXPECTED BEHAVIOUR: Data should be removed from the data tables of the source and target entity
+	 *  TEST CASE FLOW: 1. create User
+	 *                  2. Create Address                       
+	 *                  3. Add Association with      User(1) ------->(*) Address containment association
+	 *                  4. persist entities.
+	 *                  5. Insert Data with multiple addresses for the user
+	 *                  6. Data table for Address should have the appropriate entries for the inserted data for user.
+	 *                  7. Call deleteData method on entity manager for the inserted data.
+	 *                  8. Check if the data is removed from both the tables
+	 *                  */
+	public void testDeleteDataForContainmentOneToMany()
+	{
 
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		try
+		{
+
+			// Step 1  
+			EntityInterface user = factory.createEntity();
+			AttributeInterface userNameAttribute = factory.createStringAttribute();
+			userNameAttribute.setName("user name");
+			user.setName("user");
+			user.addAbstractAttribute(userNameAttribute);
+
+			
+			
+			// Step 2  
+			EntityInterface address = factory.createEntity();
+			address.setName("address");
+
+			AttributeInterface streetAttribute = factory.createStringAttribute();
+			streetAttribute.setName("street name");
+			address.addAbstractAttribute(streetAttribute);
+
+			AttributeInterface cityAttribute = factory.createStringAttribute();
+			cityAttribute.setName("city name");
+			address.addAbstractAttribute(cityAttribute);
+			
+			
+			// Step 3
+			AssociationInterface association = factory.createAssociation();
+			association.setTargetEntity(address);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("UserAddress");
+			association.setSourceRole(getRole(AssociationType.CONTAINTMENT, "User",
+					Cardinality.ZERO, Cardinality.ONE));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "address",
+					Cardinality.ZERO, Cardinality.MANY));
+
+			user.addAbstractAttribute(association);
+
+			// Step 4
+			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
+
+			Map dataValue = new HashMap();
+			Map addressDataValue1 = new HashMap();
+			addressDataValue1.put(streetAttribute,"Laxmi Road");
+			addressDataValue1.put(cityAttribute,"Pune");
+			
+			Map addressDataValue2 = new HashMap();
+			addressDataValue2.put(streetAttribute,"Saraswati Road");
+			addressDataValue2.put(cityAttribute,"Pune");
+			
+			List<Map> addressDataValueMapList =  new ArrayList<Map>();
+			addressDataValueMapList.add(addressDataValue1);
+			addressDataValueMapList.add(addressDataValue2);
+			dataValue.put(userNameAttribute, "rahul");
+			dataValue.put(association, addressDataValueMapList);
+
+			// Step 5
+			Long recordId = entityManagerInterface.insertData(savedEntity, dataValue);
+
+			// Step 6
+			ResultSet resultSet = executeQuery("select count(*) from "
+					+ address.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(2, resultSet.getInt(1));
+			
+			resultSet = executeQuery("select count(*) from "
+					+ user.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(1, resultSet.getInt(1));
+			
+			// Step 7			
+			entityManagerInterface.deleteRecord(savedEntity, recordId);
+
+			// Step 8				
+			resultSet = executeQuery("select count(*) from "
+					+ user.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(0, resultSet.getInt(1));
+
+			
+			resultSet = executeQuery("select count(*) from "
+					+ address.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(0, resultSet.getInt(1));
+
+
+			
+		}
+		catch (Exception e)
+		{
+			Logger.out.debug(DynamicExtensionsUtility.getStackTrace(e));
+			fail();
+		}
+
+	}	
 }

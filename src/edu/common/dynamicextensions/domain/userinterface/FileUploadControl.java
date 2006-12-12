@@ -7,6 +7,7 @@ package edu.common.dynamicextensions.domain.userinterface;
 
 import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.wustl.common.util.global.ApplicationProperties;
 
 /**
@@ -16,13 +17,17 @@ import edu.wustl.common.util.global.ApplicationProperties;
  */
 public class FileUploadControl extends Control implements FileUploadInterface
 {
-	
-
-	Integer columns = null;
-	/** 
-	 * @see edu.common.dynamicextensions.domain.userinterface.Control#generateHTML()
+	/**
+	 * 
 	 */
-	public String generateHTML()
+	private static final long serialVersionUID = 3211268406984504475L;
+	Integer columns = null;
+	
+	/**
+	 * @return 
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public String generateHTML() throws DynamicExtensionsSystemException
 	{
 		FileAttributeRecordValue fileAttributeRecordValue = (FileAttributeRecordValue) this.value;
 		String htmlString = "";

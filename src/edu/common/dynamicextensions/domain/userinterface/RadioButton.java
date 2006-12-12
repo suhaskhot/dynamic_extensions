@@ -6,6 +6,7 @@ import java.util.List;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.wustl.common.beans.NameValueBean;
 
@@ -33,8 +34,9 @@ public class RadioButton extends Control implements RadioButtonInterface
 	/**
 	 * This method generates the HTML code for RadioButton control on the HTML form
 	 * @return HTML code for RadioButton
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	public String generateHTML()
+	public String generateHTML() throws DynamicExtensionsSystemException
 	{
 		List<NameValueBean> nameValueBeanList = null;
 		String htmlString = "";

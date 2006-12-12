@@ -24,13 +24,13 @@ public interface EntityInterface extends AbstractMetadataInterface
 	 * This method return the Collection of Attributes.
 	 * @return the Collection of Attributes.
 	 */
-	Collection getAttributeCollection();
+	Collection<AttributeInterface> getAttributeCollection();
 
 	/**
 	 * This method return the Collection of Association.
 	 * @return the Collection of Association.
 	 */
-	Collection getAssociationCollection();
+	Collection<AssociationInterface> getAssociationCollection();
 
 	/**
 	 * The abstractAttributeInterface to be added 

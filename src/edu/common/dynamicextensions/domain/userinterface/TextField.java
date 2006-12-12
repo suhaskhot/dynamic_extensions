@@ -8,6 +8,7 @@ import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.Constants;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
@@ -89,8 +90,9 @@ public class TextField extends Control implements TextFieldInterface
 	/**
 	 * This method generates the HTML code for TextField control on the HTML form
 	 * @return HTML code for TextField
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	public String generateHTML()
+	public String generateHTML() throws DynamicExtensionsSystemException
 	{
 		String defaultValue = (String) this.value;
 		if (this.value == null)

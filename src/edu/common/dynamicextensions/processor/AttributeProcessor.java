@@ -10,8 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import com.sun.corba.se.impl.presentation.rmi.DynamicAccessPermission;
-
 import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.BooleanValue;
 import edu.common.dynamicextensions.domain.ByteArrayAttributeTypeInformation;

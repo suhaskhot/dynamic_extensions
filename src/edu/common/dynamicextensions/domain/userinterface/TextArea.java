@@ -5,6 +5,7 @@ import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.Constants;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 
@@ -76,8 +77,9 @@ public class TextArea extends Control implements TextAreaInterface
 	/**
 	 * This method generates the HTML code for TextArea control on the HTML form
 	 * @return HTML code for TextArea
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	public String generateHTML()
+	public String generateHTML() throws DynamicExtensionsSystemException
 	{
 		String defaultValue = (String) this.value;
 		if (this.value == null)

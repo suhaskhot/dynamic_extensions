@@ -12,10 +12,20 @@
 <%@ page language="java" contentType="text/html" %>
 <%@ page import="org.apache.struts.action.ActionErrors" %>
 <%@ page import="org.apache.struts.action.ActionMessages" %>
+<%@ page import="javax.servlet.jsp.JspWriter"; %>
+
 <%@ page import="edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface" %>
 <%@ page import="edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface" %>
-<%@ page import="java.util.Iterator" %>
-<%@ page import="java.util.Collection" %>
+<%@ page import="edu.common.dynamicextensions.domaininterface.AssociationInterface;" %>
+<%@ page import="edu.common.dynamicextensions.domaininterface.AttributeInterface;" %>
+<%@ page import="edu.common.dynamicextensions.domaininterface.EntityInterface;" %>
+<%@ page import="edu.common.dynamicextensions.domaininterface.RoleInterface;" %>
+
+<%@ page import="edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;" %>
+<%@ page import="edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;" %>
+
+<%@ page import="java.lang.String"; %>
+<%@ page import="java.util.Collection"; %>
 
 <%-- Stylesheet --%>
 <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/styleSheet.css" />
@@ -29,29 +39,90 @@
 <script src="<%=request.getContextPath()%>/jss/calender.js" type="text/javascript"></script>
 <script src="<%=request.getContextPath()%>/jss/calendarComponent.js"></script>
 
-<c:set var="containerInterface" value="${dataEntryForm.containerInterface}"/>
-<jsp:useBean id="containerInterface" type="edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface"/>
-
-<c:set var="showFormPreview" value="${dataEntryForm.showFormPreview}"/>
-<jsp:useBean id="showFormPreview" type="java.lang.String"/>
-
-<c:set var="errorList" value="${dataEntryForm.errorList}"/>
-<jsp:useBean id="errorList" type="java.util.List"/>
-
 <html>
 	<head>
 		<title><bean:message key="table.heading" /></title>
 	</head>
 
 	<body onload="loadPreviewForm()">
+
+	<%! 
+		private void displayControls(ContainerInterface container, JspWriter out)
+		{
+			for(int sequenceNumber = 1; sequenceNumber <= dummyControlCollection.size(); sequenceNumber++)
+			{
+				Collection<ControlInterface> controlCollection = container.getControlCollection();
+				for(ControlInterface control : controlCollection)
+				{
+					String controlSequence = "control_" + container.getId() + "_" + control.getSequenceNumber();
+					if(sequenceNumber == control.getSequenceNumber().intValue())
+					{
+						String controlsHtml = "<tr>";
+						AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
+						if(abstractAttribute instanceOf AttributeInterface)
+						{
+							boolean required = false;
+							Collection<RuleInterface> ruleCollection = abstractAttribute.getRuleCollection();
+							if(ruleCollection != null && !ruleCollection.isEmpty())
+							{
+								for(RuleInterface attributeRule : ruleCollection)
+								{
+									if(attributeRule.getName().equals("required"))
+									{
+										controlsHtml += "<td class=\"formRequiredNotice\" width=\"2%\">" +  container.getRequiredFieldIndicatior() + "</td>";
+										controlsHtml += "<td class=\"formRequiredLabel\" width=\"20%\"> + "<label for=\"" + controlSequence + "\">" + control.getCaption() + "</label></td>";
+	
+										required = true;
+										break;
+									}
+								}
+							}
+							
+							if(required == false)
+							{
+								controlsHtml += "<td class=\"formRequiredNotice\" width=\"2%\">&nbsp;</td>";
+								controlsHtml += "<td class=\"formLabel\" width=\"20%\"> +"<label for=\"" + controlSequence + "\">" + control.getCaption() + "</label></td>";									
+							}
+							controlsHtml += "<td class=\"formField\">" + control.getHtmlString() + "</td></tr>";
+							out.println(controlsHtml);
+						}
+						else if(abstractAttribute instanceOf AssociationInterface)
+						{
+							AssociationInterface association = (AssociationInterface) abstractAttribute;
+							RoleInterface role = association.getTargetRole();
+							if (role != null)
+							{
+								AssociationType associationType = role.getAssociationsType();
+								if (associationType != null)
+								{
+									String associationTypeName = associationType.getValue();
+									if (associationTypeName.equals(AssociationType.CONTAINTMENT))
+									{
+										EntityInterface targetEntity = association.getTargetEntity();
+										ContainerInterface targetContainer = entityManager.getContainerByEntityIdentifier(targetEntity.getId());
+										if (targetContainer != null)
+										{
+											displayControls(targetContainer, out);
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	%>
+
 		<html:form styleId="dataEntryForm" action="/ApplyDataEntryFormAction" enctype="multipart/form-data" method="post">
-		
 			<c:set var="recordIdentifier" value="${dataEntryForm.recordIdentifier}" />
 			<jsp:useBean id="recordIdentifier" type="java.lang.String"/>
 			
 			<html:hidden styleId='entitySaved' property="entitySaved" />
 			<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
-		
+			
+			<c:set var="showFormPreview" value="${dataEntryForm.showFormPreview}"/>
+			<jsp:useBean id="showFormPreview" type="java.lang.String"/>		
 			<c:choose>
 				<c:when test='${showFormPreview == "true"}'>
 			    	<table valign="top" style="border-right:1px" border=1 align='center' width='90%' height="90%" border='0' cellspacing="0" cellpadding="0" class="tbBorders1" >
@@ -99,6 +170,9 @@
 										<table align='center' width='80%'>
 											<tr>
 												<td align="center" class="formTitle">
+													<c:set var="errorList" value="${dataEntryForm.errorList}"/>
+													<jsp:useBean id="errorList" type="java.util.List"/>
+													
 													<!--<logic:messagesPresent message="false">
 														<ul>
 													 		<html:messages id="error" message="false">
@@ -130,6 +204,9 @@
 											<tr><td>&nbsp;</td></tr>
 											<tr>
 												<td >
+													<c:set var="containerInterface" value="${dataEntryForm.containerInterface}"/>
+													<jsp:useBean id="containerInterface" type="edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface"/>
+													
 													<table summary="" cellpadding="3" cellspacing="0"  align='center' width = '100%'>
 														<tr>
 															<td class="formMessage" colspan="3">
@@ -145,72 +222,11 @@
 																ADD &nbsp;<c:out value="${entityInterface.name}" escapeXml="false" />
 															</td>
 														</tr>
-	
-														<c:set var="dummyControlCollection" value="${containerInterface.controlCollection}" />
-														<jsp:useBean id="dummyControlCollection" type="java.util.Collection" />
 														
-														<% 
-															for(int sequenceNumber = 1; sequenceNumber <= dummyControlCollection.size(); sequenceNumber++)
-															{
-														%>
-																<c:forEach items="${containerInterface.controlCollection}" var="control">
-																<jsp:useBean id="control" type="edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface" />
-																<% 
-																	if(sequenceNumber == control.getSequenceNumber().intValue())
-																	{
-																%>
-																		<tr>
-																			<%																			
-																				AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
-																				Collection<RuleInterface> ruleCollection = abstractAttribute.getRuleCollection();
-																				boolean required = false;
-																				if(ruleCollection != null && !ruleCollection.isEmpty())
-																				{
-																					for(RuleInterface attributeRule : ruleCollection)
-																					{
-																						if(attributeRule.getName().equals("required"))
-																						{
-																			%>
-																							<td class="formRequiredNotice" width="2%">
-																								<c:out value="${containerInterface.requiredFieldIndicatior}" />
-																							</td>
-																							<td class="formRequiredLabel" width="20%">
-																								<label for="<c:out value="control_${control.sequenceNumber}"/>">
-																									<c:out value="${control.caption}"/>
-																								</label>
-																							</td>
-																			<%
-																							required = true;
-																							break;
-																						}
-																					}
-																				}
-																				if(required == false)
-																				{
-																			%>
-																					<td class="formRequiredNotice" width="2%">&nbsp;</td>
-																					<td class="formLabel" width="20%">
-																						<label for="<c:out value="control_${control.sequenceNumber}"/>">
-																							<c:out value="${control.caption}"/>
-																						</label>
-																					</td>
-																			<%
-																				}
-																			%>
-																																					
-																			<td class="formField">
-																				<% String generateHTMLStr = control.generateHTML(); %>
-																				<% pageContext.setAttribute("generateHTMLStr", generateHTMLStr); %>
-																				<c:out value="${generateHTMLStr}" escapeXml="false" />
-																			</td>
-																		</tr>
-																<%
-																	}
-																%>
-																</c:forEach>
 														<%
-															}
+															displayControls(containerInterface, out);
 														%>
+	
 													</table>
 												</td>
 											</tr>

@@ -4,6 +4,7 @@ package edu.common.dynamicextensions.domain.userinterface;
 import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.wustl.common.beans.NameValueBean;
 
@@ -83,8 +84,9 @@ public class ListBox extends SelectControl implements ListBoxInterface
 	/**
 	 * This method generates the HTML code to display the ListBox Control on the form.
 	 * @return HTML code for ListBox Control.
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	public String generateHTML()
+	public String generateHTML() throws DynamicExtensionsSystemException
 	{
 		List<NameValueBean> nameValueBeanList = null;
 		String defaultValue = (String) this.value;

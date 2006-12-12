@@ -251,7 +251,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	 */
 	public Collection<AttributeInterface> getAttributeCollection()
 	{
-		Collection<AttributeInterface> attributeCollection = new HashSet();
+		Collection<AttributeInterface> attributeCollection = new HashSet<AttributeInterface>();
 		if (abstractAttributeCollection != null && !abstractAttributeCollection.isEmpty())
 		{
 			Iterator attributeIterator = abstractAttributeCollection.iterator();
@@ -273,7 +273,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	 */
 	public Collection<AssociationInterface> getAssociationCollection()
 	{
-		Collection<AssociationInterface> associationCollection = new HashSet();
+		Collection<AssociationInterface> associationCollection = new HashSet<AssociationInterface>();
 		if (abstractAttributeCollection != null && !abstractAttributeCollection.isEmpty())
 		{
 			Iterator associationIterator = abstractAttributeCollection.iterator();

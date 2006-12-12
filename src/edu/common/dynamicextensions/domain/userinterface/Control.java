@@ -2,19 +2,15 @@
 package edu.common.dynamicextensions.domain.userinterface;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
 
-import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
-import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.entitymanager.EntityManager;
+import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.wustl.common.actionForm.AbstractActionForm;
-import edu.wustl.common.domain.AbstractDomainObject;
-import edu.wustl.common.exception.AssignDataException;
 
 /**
  * @version 1.0
@@ -38,45 +34,50 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	 * The caption of the control.
 	 */
 	protected String caption = null;
-	
+
 	/**
 	 * The css class that is to be used for this control.
 	 */
 	protected String cssClass = null;
-	
+
 	/**
 	 * whether this attribute should be displayed on screen.
 	 */
 	protected Boolean isHidden = null;
-	
+
 	/**
 	 * Name of the control.
 	 */
 	protected String name = null;
-	
+
 	/**
 	 * Sequence number of the control.This governs in which order it will be shown on the UI.
 	 */
 	protected Integer sequenceNumber = null;
-	
+
 	/**
 	 * Tool tip message for the control.
 	 */
 	protected String tooltip = null;
-	
+
 	/**
 	 * Value to be shown in the control
 	 */
 	protected Object value = null;
-	
+
 	/**
 	 * Attribute to which this control is associated.
 	 */
-	public AbstractAttributeInterface abstractAttribute;
+	protected AbstractAttributeInterface abstractAttribute;
 	/**
 	 * 
 	 */
-	public Boolean sequenceNumberChanged = false;
+	protected Boolean sequenceNumberChanged = false;
+	
+	/**
+	 * 
+	 */
+	protected String htmlString = null;
 
 	/**
 	 * Empty Constructor
@@ -84,8 +85,6 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	public Control()
 	{
 	}
-
-	
 
 	/**
 	 * @hibernate.property name="caption" type="string" column="CAPTION" 
@@ -191,10 +190,9 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 
 	/**
 	 * @return return the HTML string for this type of a object
-	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public abstract String generateHTML();
+	public abstract String generateHTML() throws DynamicExtensionsSystemException;
 
 	/**
 	 * @return
@@ -228,23 +226,26 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		this.abstractAttribute = abstractAttributeInterface;
 	}
 
-	
-
 	/**
 	 * @return String
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	public String getHTMLComponentName()
+	public String getHTMLComponentName() throws DynamicExtensionsSystemException
 	{
+		AbstractAttributeInterface abstractAttributeInterface = this.getAbstractAttribute();
+		EntityInterface entity = abstractAttributeInterface.getEntity();
+		Long entityIdentifier = entity.getId();
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+		ContainerInterface container = entityManager.getContainerByEntityIdentifier(entityIdentifier);
 		if (this.getSequenceNumber() != null)
 		{
-			return "Control_" + this.getSequenceNumber();
+			return "Control_" + container.getId() + "_" + this.getSequenceNumber();
 		}
 		return null;
 	}
 
 	/**
 	 * 
-	 * @return
 	 */
 	public Boolean getSequenceNumberChanged()
 	{
@@ -260,8 +261,20 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		this.sequenceNumberChanged = sequenceNumberChanged;
 	}
 
+	/**
+	 * @return the htmlString
+	 */
+	public String getHtmlString()
+	{
+		return htmlString;
+	}
 
+	/**
+	 * @param htmlString the htmlString to set
+	 */
+	public void setHtmlString(String htmlString)
+	{
+		this.htmlString = htmlString;
+	}
 
-
-	
 }

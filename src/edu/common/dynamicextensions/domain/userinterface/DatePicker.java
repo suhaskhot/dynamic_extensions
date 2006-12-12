@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.domain.userinterface;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 
@@ -26,8 +27,9 @@ public class DatePicker extends Control implements DatePickerInterface
 	/**
 	 * This method generates the HTML code for DatePicker control on the HTML form
 	 * @return HTML code for DatePicker
+	 * @throws DynamicExtensionsSystemException if couldn't genreate the HTML name for the Control.
 	 */
-	public String generateHTML()
+	public String generateHTML() throws DynamicExtensionsSystemException
 	{
 		String defaultValue = (String)this.value;
 		if (value == null)

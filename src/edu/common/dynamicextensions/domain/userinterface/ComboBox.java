@@ -5,6 +5,7 @@ import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.wustl.common.beans.NameValueBean;
 
@@ -37,8 +38,9 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 	/**
 	 * This method generates the HTML code for ComboxBox control on the HTML form
 	 * @return HTML code for ComboBox
+	 * @throws DynamicExtensionsSystemException if HTMLComponentName() fails.
 	 */
-	public String generateHTML()
+	public String generateHTML() throws DynamicExtensionsSystemException
 	{
 		List<NameValueBean> nameValueBeanList = null;
 		String defaultValue = (String)this.value;

@@ -91,16 +91,19 @@
 	      <type>java.util.List</type>
 	</attribute>
 </tag>
+
 <tag>
-	<name>generatehtml</name>
-	<tag-class>edu.common.dynamicextensions.ui.webui.taglib.HTMLGeneratorTag</tag-class>
-	<attribute>
-		<name>uiControlsList</name>
-		<required>true</required>
-		<rtexprvalue>true</rtexprvalue>
-		<type>java.util.List</type>
-	</attribute>
+     <name>dynamicUIGenerator</name>
+     <tag-class>edu.common.dynamicextensions.ui.webui.taglib.DynamicUIGeneratorTag</tag-class>
+   
+     <attribute>
+			<name>containerInterface</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+    		<type>edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface</type>
+     </attribute>
 </tag>
+
 
 <tag>
 	<name>tree</name>

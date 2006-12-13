@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,7 +99,7 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 						collectAssociationValues(request, dataEntryForm, controlSequence, control,
 								attributeValueMap);
 					}
-					break;
+					
 				}
 			}
 		}
@@ -227,21 +228,24 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	public Map<AbstractAttributeInterface, Object> removeNullValueEntriesFormMap(
 			Map<AbstractAttributeInterface, Object> attributeValueMap)
 	{
-		Map<AbstractAttributeInterface, Object> newAttributeValueMap = new LinkedHashMap<AbstractAttributeInterface, Object>();
+		/*Map<AbstractAttributeInterface, Object> newAttributeValueMap = new LinkedHashMap<AbstractAttributeInterface, Object>();
 		Set<Map.Entry<AbstractAttributeInterface, Object>> newAttributeValueSet = newAttributeValueMap
-				.entrySet();
+				.entrySet();*/
 
 		Set<Map.Entry<AbstractAttributeInterface, Object>> attributeValueSet = attributeValueMap
 				.entrySet();
-		for (Map.Entry<AbstractAttributeInterface, Object> attributeValueEntry : attributeValueSet)
+		Iterator attributeValueSetIterator = attributeValueSet.iterator();
+		while(attributeValueSetIterator.hasNext())
 		{
+			Map.Entry<AbstractAttributeInterface, Object> attributeValueEntry = (Map.Entry<AbstractAttributeInterface, Object>)attributeValueSetIterator.next();
 			Object value = attributeValueEntry.getValue();
-			if (value != null)
+			if (value == null)
 			{
-				newAttributeValueSet.add(attributeValueEntry);
+				attributeValueSetIterator.remove();
 			}
 		}
-		return newAttributeValueMap;
+		//return newAttributeValueMap;
+		return attributeValueMap;
 	}
 
 	/**

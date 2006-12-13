@@ -23,8 +23,8 @@ public class ContainmentAssociationControl extends Control implements Containmen
 
 	/**
 	 * 
-	 */
-	private static final long serialVersionUID = -7680442136446012194L;
+	 *//*
+	private static final long serialVersionUID = -7680442136446012194L;*/
 	/**
 	 * 
 	 */

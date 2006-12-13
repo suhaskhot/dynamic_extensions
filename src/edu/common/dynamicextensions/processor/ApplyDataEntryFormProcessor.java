@@ -23,19 +23,19 @@ import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.SelectInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.actionform.DataEntryForm;
-import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 
 /**
  * This Class populates the DataEntryForm and saves the same into the Database.
@@ -43,6 +43,7 @@ import edu.common.dynamicextensions.util.global.Constants.AssociationType;
  */
 public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 {
+
 	/**
 	 * Default Constructor
 	 */
@@ -58,7 +59,7 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	{
 		return new ApplyDataEntryFormProcessor();
 	}
-	
+
 	/**
 	 * 
 	 * @param container
@@ -69,40 +70,42 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws IOException
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public Map<AbstractAttributeInterface, Object> generateAttributeValueMap(ContainerInterface container, HttpServletRequest request,
-			DataEntryForm dataEntryForm) throws FileNotFoundException, IOException, DynamicExtensionsSystemException
+	public Map<AbstractAttributeInterface, Object> generateAttributeValueMap(
+			ContainerInterface containerInterface, HttpServletRequest request,
+			DataEntryForm dataEntryForm) throws FileNotFoundException, IOException,
+			DynamicExtensionsSystemException
 	{
-		Collection<ControlInterface> controlCollection = container.getControlCollection();
-
 		Map<AbstractAttributeInterface, Object> attributeValueMap = new LinkedHashMap<AbstractAttributeInterface, Object>();
+		Collection<ControlInterface> controlCollection = containerInterface.getControlCollection();
 
-		for (int sequence = 1; sequence <= controlCollection.size(); sequence++)
+		for (ControlInterface control : controlCollection)
 		{
-			for (ControlInterface control : controlCollection)
+			if (control != null)
 			{
-				if (control != null)
+				Integer controlSequenceNumber = control.getSequenceNumber();
+				if (controlSequenceNumber != null)
 				{
-					Integer controlSequenceNumber = control.getSequenceNumber();
-					if (controlSequenceNumber != null && (sequence == controlSequenceNumber.intValue()))
+					String controlSequence = containerInterface.getId() + "_"
+							+ controlSequenceNumber;
+					AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
+					if (abstractAttribute instanceof AttributeInterface)
 					{
-						String controlSequence = container.getId() + "_" + sequence;
-						AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
-						if (abstractAttribute instanceof AttributeInterface)
-						{
-							collectAttributeValues(request, dataEntryForm, controlSequence, control, attributeValueMap);
-						}
-						else if (abstractAttribute instanceof AssociationInterface)
-						{
-							collectAssociationValues(request, dataEntryForm, controlSequence, control, attributeValueMap);
-						}
-						break;
+						collectAttributeValues(request, dataEntryForm, controlSequence, control,
+								attributeValueMap);
 					}
+					else if (abstractAttribute instanceof AssociationInterface)
+					{
+						collectAssociationValues(request, dataEntryForm, controlSequence, control,
+								attributeValueMap);
+					}
+					break;
 				}
 			}
 		}
+
 		return attributeValueMap;
 	}
-	
+
 	/**
 	 * 
 	 * @param request
@@ -114,56 +117,48 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws IOException 
 	 * @throws FileNotFoundException 
 	 */
-	private void collectAssociationValues(HttpServletRequest request, DataEntryForm dataEntryForm, String sequence, ControlInterface control,
-			Map<AbstractAttributeInterface, Object> attributeValueMap) throws DynamicExtensionsSystemException, FileNotFoundException, IOException
+	private void collectAssociationValues(HttpServletRequest request, DataEntryForm dataEntryForm,
+			String sequence, ControlInterface control,
+			Map<AbstractAttributeInterface, Object> attributeValueMap)
+			throws DynamicExtensionsSystemException, FileNotFoundException, IOException
 	{
-		EntityManagerInterface entityManager = EntityManager.getInstance();
 		AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
-		AssociationInterface association = (AssociationInterface)abstractAttribute;
-		RoleInterface role = association.getTargetRole();
-		if (role != null)
+
+		if (control instanceof ContainmentAssociationControlInterface)
 		{
-			AssociationType associationType = role.getAssociationsType();
-			if (associationType != null)
+			ContainerInterface targetContainer = ((ContainmentAssociationControlInterface) control)
+					.getContainer();
+			Map<AbstractAttributeInterface, Object> tempAttributeValueMap = generateAttributeValueMap(
+					targetContainer, request, dataEntryForm);
+			List<Map<AbstractAttributeInterface, Object>> tempList = new ArrayList<Map<AbstractAttributeInterface, Object>>();
+			tempList.add(tempAttributeValueMap);
+			attributeValueMap.put(abstractAttribute, tempList);
+
+		}
+		else if (control instanceof SelectInterface)
+		{
+			List<Long> valueList = new Vector<Long>();
+			if (control instanceof ListBoxInterface)
 			{
-				String associationTypeName = associationType.getValue();
-				if (associationTypeName.equals(AssociationType.CONTAINTMENT))
+				String[] selectedValues = (String[]) request.getParameterValues("Control_"
+						+ sequence);
+				if (selectedValues != null)
 				{
-					EntityInterface targetEntity = association.getTargetEntity();
-					ContainerInterface targetContainer = entityManager.getContainerByEntityIdentifier(targetEntity.getId());
-					Collection<ControlInterface> targetControlCollection = targetContainer.getControlCollection();
-					if (targetControlCollection != null && !targetControlCollection.isEmpty())
+					for (String id : selectedValues)
 					{
-						Map<AbstractAttributeInterface, Object> tempAttributeValueMap = generateAttributeValueMap(targetContainer, request, dataEntryForm);
-						List<Map<AbstractAttributeInterface, Object>> tempList = new ArrayList<Map<AbstractAttributeInterface, Object>>();
-						tempList.add(tempAttributeValueMap);
-						attributeValueMap.put(abstractAttribute, tempList);
+						Long identifier = new Long(id.trim());
+						valueList.add(identifier);
 					}
-				}
-				else if(associationTypeName.equals(AssociationType.ASSOCIATION))
-				{
-					List<Long> valueList = new Vector<Long>();
-					if (control instanceof ListBoxInterface)
-					{
-						String[] selectedValues = (String[]) request.getParameterValues("Control_" + sequence);
-						if (selectedValues != null)
-						{
-							for (String id: selectedValues)
-							{
-								Long identifier = new Long(id.trim());
-								valueList.add(identifier);
-							}
-						}
-					}
-					else if (control instanceof ComboBoxInterface)
-					{
-						String value = request.getParameter("Control_" + sequence);
-						valueList.add(new Long(value.trim()));
-					}
-					attributeValueMap.put(abstractAttribute, valueList);
 				}
 			}
+			else if (control instanceof ComboBoxInterface)
+			{
+				String value = request.getParameter("Control_" + sequence);
+				valueList.add(new Long(value.trim()));
+			}
+			attributeValueMap.put(abstractAttribute, valueList);
 		}
+
 	}
 
 	/**
@@ -176,8 +171,10 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	private void collectAttributeValues(HttpServletRequest request, DataEntryForm dataEntryForm, String sequence, ControlInterface control,
-			Map<AbstractAttributeInterface, Object> attributeValueMap) throws FileNotFoundException, IOException
+	private void collectAttributeValues(HttpServletRequest request, DataEntryForm dataEntryForm,
+			String sequence, ControlInterface control,
+			Map<AbstractAttributeInterface, Object> attributeValueMap)
+			throws FileNotFoundException, IOException
 	{
 		AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
 		Object attributeValue = null;
@@ -185,7 +182,8 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 		if (control instanceof ListBoxInterface)
 		{
 			List<String> valueList = new ArrayList<String>();
-			String[] selectedListValues = (String[]) request.getParameterValues("Control_" + sequence);
+			String[] selectedListValues = (String[]) request.getParameterValues("Control_"
+					+ sequence);
 
 			if (selectedListValues != null)
 			{
@@ -220,18 +218,21 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 		}
 		attributeValueMap.put(abstractAttribute, attributeValue);
 	}
-	
+
 	/**
 	 * 
 	 * @param attributeValueMap
 	 * @return
 	 */
-	public Map<AbstractAttributeInterface, Object> removeNullValueEntriesFormMap(Map<AbstractAttributeInterface, Object> attributeValueMap)
+	public Map<AbstractAttributeInterface, Object> removeNullValueEntriesFormMap(
+			Map<AbstractAttributeInterface, Object> attributeValueMap)
 	{
 		Map<AbstractAttributeInterface, Object> newAttributeValueMap = new LinkedHashMap<AbstractAttributeInterface, Object>();
-		Set<Map.Entry<AbstractAttributeInterface, Object>> newAttributeValueSet = newAttributeValueMap.entrySet();
+		Set<Map.Entry<AbstractAttributeInterface, Object>> newAttributeValueSet = newAttributeValueMap
+				.entrySet();
 
-		Set<Map.Entry<AbstractAttributeInterface, Object>> attributeValueSet = attributeValueMap.entrySet();
+		Set<Map.Entry<AbstractAttributeInterface, Object>> attributeValueSet = attributeValueMap
+				.entrySet();
 		for (Map.Entry<AbstractAttributeInterface, Object> attributeValueEntry : attributeValueSet)
 		{
 			Object value = attributeValueEntry.getValue();
@@ -251,7 +252,8 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsSystemException on System exception
 	 * @return recordIdentifier Record identifier of the last saved record. 
 	 */
-	public String insertDataEntryForm(ContainerInterface container, Map<AbstractAttributeInterface, Object> attributeValueMap)
+	public String insertDataEntryForm(ContainerInterface container,
+			Map<AbstractAttributeInterface, Object> attributeValueMap)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		EntityManagerInterface entityManager = EntityManager.getInstance();
@@ -269,7 +271,8 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Boolean editDataEntryForm(ContainerInterface container, Map<AbstractAttributeInterface, Object> attributeValueMap, Long recordIdentifier)
+	public Boolean editDataEntryForm(ContainerInterface container,
+			Map<AbstractAttributeInterface, Object> attributeValueMap, Long recordIdentifier)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		EntityManagerInterface entityManager = EntityManager.getInstance();

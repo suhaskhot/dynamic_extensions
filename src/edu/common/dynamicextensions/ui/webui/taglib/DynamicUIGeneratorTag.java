@@ -146,9 +146,7 @@ public class DynamicUIGeneratorTag extends TagSupport
 	private void generateHTMLforControl(StringBuffer stringBuffer,ControlInterface controlInterface) throws DynamicExtensionsSystemException
 	{
 		AbstractAttributeInterface abstractAttribute = controlInterface.getAbstractAttribute();
-		if (abstractAttribute instanceof AttributeInterface
-				|| abstractAttribute instanceof SelectControl)
-		{
+		
 			boolean isControlRequired = isControlRequired(controlInterface);
 			stringBuffer.append("<tr>");
 			if (isControlRequired)
@@ -177,7 +175,7 @@ public class DynamicUIGeneratorTag extends TagSupport
 			stringBuffer.append(controlInterface.generateHTML());
 			stringBuffer.append("</td>");
 			stringBuffer.append("</tr>");
-		}
+		
 		
 	}
 

@@ -586,7 +586,7 @@ public class EntityManager
 	 * @throws DynamicExtensionsApplicationException
 	 */
 
-	public AssociationInterface getAssociation(String entityName, String sourceRoleName)
+	public Collection<AssociationInterface> getAssociation(String entityName, String sourceRoleName)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Map substitutionParameterMap = new HashMap();
@@ -595,9 +595,9 @@ public class EntityManager
 		//Following method is called to execute the stored HQL , the name of which is given as the first parameter.
 		//The second parameter is the map which contains the actual values that are replaced for the placeholders.
 
-		Collection associationCollection = executeHQL("getAssociation", substitutionParameterMap);
+		Collection<AssociationInterface> associationCollection = executeHQL("getAssociation", substitutionParameterMap);
 
-		return (AssociationInterface) associationCollection.iterator().next();
+		return  associationCollection;
 	}
 
 	/**

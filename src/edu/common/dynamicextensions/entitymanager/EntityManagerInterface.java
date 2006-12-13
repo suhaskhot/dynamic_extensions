@@ -113,7 +113,7 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	AssociationInterface getAssociation(String entityName, String sourceRoleName)
+	Collection<AssociationInterface> getAssociation(String entityName, String sourceRoleName)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**

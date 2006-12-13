@@ -22,6 +22,13 @@ import edu.wustl.common.util.logger.Logger;
 
 public class DynamicUIGeneratorTag extends TagSupport
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	/**
+	 * 
+	 */
 
 	protected ContainerInterface containerInterface = null;
 

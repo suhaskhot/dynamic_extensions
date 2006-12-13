@@ -121,7 +121,7 @@
 											<tr><td>&nbsp;</td></tr>
 											<tr>
 												<td>
-													<dynamicExtensions:dynamicUIGenerator containerInterface=<%=containerInterface%> />
+													<dynamicExtensions:dynamicUIGenerator containerInterface="<%=containerInterface%>" />
 												</td>
 											</tr>
 										</table>

@@ -100,6 +100,27 @@
 
         </joined-subclass>
         <joined-subclass
+            name="edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl"
+            table="DYEXTN_CONTAINMENT_CONTROL"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+
+        <many-to-one
+            name="container"
+            class="edu.common.dynamicextensions.domain.userinterface.Container"
+            cascade="save-update"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="DISPLAY_CONTAINER_ID"
+        />
+
+        </joined-subclass>
+        <joined-subclass
             name="edu.common.dynamicextensions.domain.userinterface.RadioButton"
             table="DYEXTN_RADIOBUTTON"
             dynamic-update="false"

@@ -7,6 +7,7 @@ import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
 import edu.common.dynamicextensions.domain.userinterface.CheckBox;
 import edu.common.dynamicextensions.domain.userinterface.ComboBox;
 import edu.common.dynamicextensions.domain.userinterface.Container;
+import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domain.userinterface.DataGrid;
 import edu.common.dynamicextensions.domain.userinterface.DatePicker;
 import edu.common.dynamicextensions.domain.userinterface.FileUploadControl;
@@ -41,6 +42,7 @@ import edu.common.dynamicextensions.domaininterface.databaseproperties.TableProp
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.DataGridInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface;
@@ -674,5 +676,14 @@ public class DomainObjectFactory
 		ConstraintPropertiesInterface constraintProperties = createConstraintProperties();
 		constraintProperties.setName(middleTableName);
 		return constraintProperties;
+	}
+	
+	/**
+	 * @return
+	 */
+	public ContainmentAssociationControlInterface createContainmentAssociationControl()
+	{
+		ContainmentAssociationControlInterface containmentAssociationControlInterface = new ContainmentAssociationControl();
+		return containmentAssociationControlInterface;
 	}
 }

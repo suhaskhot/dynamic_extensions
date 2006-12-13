@@ -20,7 +20,7 @@ import edu.common.dynamicextensions.processor.LoadFormControlsProcessor;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
-import edu.common.dynamicextensions.ui.webui.util.CacheManager;
+import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.util.global.Constants;
 
 /**
@@ -56,7 +56,7 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 			}
 			else
 			{
-				ContainerInterface containerInterface = getCurrentContainer(controlsForm.getCurrentContainerName(),request);
+				ContainerInterface containerInterface = WebUIManager.getCurrentContainer(controlsForm.getCurrentContainerName(),request);
 				//Add form control
 				addControlToForm(containerInterface, controlsForm);
 				return mapping.findForward(Constants.SUCCESS);
@@ -111,29 +111,5 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 			return true;
 		}
 		return false;
-	}
-	/** 
-	 * returns the current container whose data/controls are to be displayed
-	 *  
-	 * @param controlsForm
-	 * @return
-	 */
-	private ContainerInterface getCurrentContainer(String currentContainerName,HttpServletRequest request)
-	{
-		//If the current container name is not null, get the container for corresponding name from cache
-		//if null, return default container from cache.
-
-		ContainerInterface currentContainer = null;
-		if((currentContainerName!=null)&&(!currentContainerName.trim().equals("")))
-		{
-			//container for current container name
-			currentContainer = (ContainerInterface)CacheManager.getObjectFromCache(request, currentContainerName);
-		}
-		else
-		{
-			//return default container
-			currentContainer = (ContainerInterface)CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-		}
-		return currentContainer;
 	}
 }

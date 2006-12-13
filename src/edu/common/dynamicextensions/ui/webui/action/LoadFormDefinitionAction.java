@@ -33,6 +33,7 @@ import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.TreeData;
 import edu.common.dynamicextensions.ui.webui.util.TreeGenerator;
 import edu.common.dynamicextensions.ui.webui.util.TreeNode;
+import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.util.AssociationTreeObject;
 import edu.common.dynamicextensions.util.global.Constants;
 
@@ -69,7 +70,7 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 		formDefinitionForm.setGroupName(groupName);
 		
 		//ContainerInterface container = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-		ContainerInterface container = getCurrentContainer(formDefinitionForm.getCurrentContainerName(),request);
+		ContainerInterface container = WebUIManager.getCurrentContainer(formDefinitionForm.getCurrentContainerName(),request);
 		formDefinitionForm.setTreeData(getEntityTree(container,groupName));
 		formDefinitionForm.setCreateAs(ProcessorConstants.DEFAULT_FORM_CREATEAS);
 		formDefinitionForm.setViewAs(ProcessorConstants.DEFAULT_FORM_VIEWAS);
@@ -113,7 +114,7 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 		{
 			formDefinitionForm.setOperationMode("");
 			//container = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-			container = getCurrentContainer(formDefinitionForm.getCurrentContainerName(),request);
+			container = WebUIManager.getCurrentContainer(formDefinitionForm.getCurrentContainerName(),request);
 			if (container != null)
 			{
 				loadFormDefinitionProcessor.populateContainerInformation(container, formDefinitionForm);
@@ -234,24 +235,5 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 			return treeGenerator.getTreeData(groupName, container);
 		}
 		return null;
-	}
-
-	private ContainerInterface getCurrentContainer(String currentContainerName,HttpServletRequest request)
-	{
-		//If the current container name is not null, get the container for corresponding name from cache
-		//if null, return default container from cache.
-
-		ContainerInterface currentContainer = null;
-		if((currentContainerName!=null)&&(!currentContainerName.trim().equals("")))
-		{
-			//container for current container name
-			currentContainer = (ContainerInterface)CacheManager.getObjectFromCache(request, currentContainerName);
-		}
-		else
-		{
-			//return default container
-			currentContainer = (ContainerInterface)CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-		}
-		return currentContainer;
 	}
 }

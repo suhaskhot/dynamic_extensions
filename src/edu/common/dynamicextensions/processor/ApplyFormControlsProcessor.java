@@ -17,6 +17,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
+import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 
 /**
@@ -101,13 +102,8 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 
 				//Control Interface : Add control
 				controlInterface = controlProcessor.createAndPopulateControl(controlsForm.getUserSelectedTool(), controlsForm);
-				Collection controlCollection = containerInterface.getControlCollection();
-				if (controlCollection != null)
-				{
-					int noOfElts = controlCollection.size();
-					controlInterface.setSequenceNumber(new Integer(noOfElts + 1));
-				}
-
+				controlInterface.setSequenceNumber(WebUIManager.getSequenceNumberForNextControl(containerInterface));
+				
 				//Entity Interface  : Add attribute
 				if ((entityInterface != null) && (abstractAttributeInterface != null))
 				{

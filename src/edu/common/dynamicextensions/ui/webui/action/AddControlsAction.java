@@ -12,6 +12,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInter
 import edu.common.dynamicextensions.processor.ApplyFormControlsProcessor;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
+import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.util.global.Constants;
 
 /**
@@ -39,7 +40,7 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 		{
 			//Get container interface from cache
 			//ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-			ContainerInterface containerInterface = getCurrentContainer(controlsForm.getCurrentContainerName(),request);
+			ContainerInterface containerInterface = WebUIManager.getCurrentContainer(controlsForm.getCurrentContainerName(),request);
 			//Add control to form
 			ApplyFormControlsProcessor formControlsProcessor = ApplyFormControlsProcessor.getInstance();
 			formControlsProcessor.addControlToForm(containerInterface, controlsForm);
@@ -63,29 +64,5 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 			return(mapping.findForward(actionForwardString));
 		}
 
-	}
-	/** 
-	 * returns the current container whose data/controls are to be displayed
-	 *  
-	 * @param controlsForm
-	 * @return
-	 */
-	private ContainerInterface getCurrentContainer(String currentContainerName,HttpServletRequest request)
-	{
-		//If the current container name is not null, get the container for corresponding name from cache
-		//if null, return default container from cache.
-
-		ContainerInterface currentContainer = null;
-		if((currentContainerName!=null)&&(!currentContainerName.trim().equals("")))
-		{
-			//container for current container name
-			currentContainer = (ContainerInterface)CacheManager.getObjectFromCache(request, currentContainerName);
-		}
-		else
-		{
-			//return default container
-			currentContainer = (ContainerInterface)CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-		}
-		return currentContainer;
 	}
 }

@@ -12,7 +12,6 @@ import org.apache.struts.action.ActionMessages;
 
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
-import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -20,6 +19,7 @@ import edu.common.dynamicextensions.processor.ApplyFormDefinitionProcessor;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
+import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.util.global.Constants;
 
 /**
@@ -73,39 +73,26 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	 */
 	private String addSubForm(HttpServletRequest request, FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+		ContainerInterface mainFormContainer = WebUIManager.getCurrentContainer(formDefinitionForm.getCurrentContainerName(), request);
+		
 		ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor.getInstance();
-		AssociationInterface association = applyFormDefinitionProcessor.addSubFormToEntity(containerInterface,formDefinitionForm);
+		ContainerInterface subFormContainer = applyFormDefinitionProcessor.getSubFormContainer(formDefinitionForm);
+		
+		AssociationInterface association = applyFormDefinitionProcessor.associateEntity(mainFormContainer,subFormContainer,formDefinitionForm);
+		applyFormDefinitionProcessor.addSubFormControlToContainer(mainFormContainer,subFormContainer,association);
 		
 		if(isNewEnityCreated(formDefinitionForm))
 		{
 			//if new entity is created, set its container id in form and container interface in cache.
-			ContainerInterface newEntityContainer = getContainerForNewEnity(association);
-			if(newEntityContainer!=null)
+			if(subFormContainer!=null)
 			{
-				formDefinitionForm.setCurrentContainerName(newEntityContainer.getCaption());
-				CacheManager.addObjectToCache(request, newEntityContainer.getCaption(), containerInterface);
+				formDefinitionForm.setCurrentContainerName(subFormContainer.getCaption());
+				CacheManager.addObjectToCache(request, subFormContainer.getCaption(), subFormContainer);
 			}
 		}
+		
 		String target = Constants.BUILD_FORM;
 		return target;
-	}
-
-	/**
-	 * @param association
-	 * @return
-	 */
-	private ContainerInterface getContainerForNewEnity(AssociationInterface association)
-	{
-		if(association!=null)
-		{
-			EntityInterface targetEntity = association.getTargetEntity();
-			if(targetEntity!=null)
-			{
-				//ContainerInterface targetContainer = targetEntity.getC
-			}
-		}
-		return null;
 	}
 
 	/**

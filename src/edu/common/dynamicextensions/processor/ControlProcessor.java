@@ -22,6 +22,8 @@ import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface;
@@ -587,5 +589,18 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		controlUIBeanInterface.setCaption(controlInterface.getCaption());
 		controlUIBeanInterface.setIsHidden(controlInterface.getIsHidden());
 		controlUIBeanInterface.setSequenceNumber(controlInterface.getSequenceNumber());
+	}
+
+	/**
+	 * @param subFormContainer
+	 */
+	public ControlInterface createContainmentAssociationControl(ContainerInterface container,AbstractAttributeInterface attributeIntf)
+	{
+		ContainmentAssociationControlInterface containmentAssociationControl = DomainObjectFactory.getInstance().createContainmentAssociationControl();
+		containmentAssociationControl.setCaption(container.getCaption());
+		containmentAssociationControl.setContainer(container);
+		containmentAssociationControl.setAbstractAttribute(attributeIntf);
+		return containmentAssociationControl;
+		
 	}
 }

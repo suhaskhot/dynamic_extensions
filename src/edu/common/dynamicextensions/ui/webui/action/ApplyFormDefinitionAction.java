@@ -10,9 +10,14 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ApplyFormDefinitionProcessor;
+import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.util.global.Constants;
@@ -39,14 +44,95 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	 * @param  request HttpServletRequest request
 	 * @param response HttpServletResponse response
 	 * @return ActionForward forward to next action
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
+		String target  = null;
 		FormDefinitionForm formDefinitionForm = (FormDefinitionForm) form;
+		
+		String operationMode = formDefinitionForm.getOperationMode();
+		if((operationMode!=null)&&(operationMode.equals(Constants.ADD_SUB_FORM_OPR)))
+		{
+			target = addSubForm(request,formDefinitionForm);
+		}
+		else
+		{
+			target = applyFormDefinition(request,formDefinitionForm);
+		}
+		
+		return mapping.findForward(target);
+	}
+
+	/**
+	 * @param request
+	 * @param formDefinitionForm
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	private String addSubForm(HttpServletRequest request, FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+		ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor.getInstance();
+		AssociationInterface association = applyFormDefinitionProcessor.addSubFormToEntity(containerInterface,formDefinitionForm);
+		
+		if(isNewEnityCreated(formDefinitionForm))
+		{
+			//if new entity is created, set its container id in form and container interface in cache.
+			ContainerInterface newEntityContainer = getContainerForNewEnity(association);
+			if(newEntityContainer!=null)
+			{
+				formDefinitionForm.setCurrentContainerName(newEntityContainer.getCaption());
+				CacheManager.addObjectToCache(request, newEntityContainer.getCaption(), containerInterface);
+			}
+		}
+		String target = Constants.BUILD_FORM;
+		return target;
+	}
+
+	/**
+	 * @param association
+	 * @return
+	 */
+	private ContainerInterface getContainerForNewEnity(AssociationInterface association)
+	{
+		if(association!=null)
+		{
+			EntityInterface targetEntity = association.getTargetEntity();
+			if(targetEntity!=null)
+			{
+				//ContainerInterface targetContainer = targetEntity.getC
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * @param formDefinitionForm 
+	 * @return
+	 */
+	private boolean isNewEnityCreated(FormDefinitionForm formDefinitionForm)
+	{
+		if(formDefinitionForm!=null)
+		{
+			if(ProcessorConstants.CREATE_AS_NEW.equals(formDefinitionForm.getCreateAs()))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * @param request
+	 * @param formDefinitionForm
+	 */
+	private String applyFormDefinition(HttpServletRequest request, FormDefinitionForm formDefinitionForm)
+	{
 		String target = "";
 		String operation = "";
 		ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-		ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor.getInstance();
 		boolean saveEntity = true;
 		try
 		{
@@ -76,16 +162,16 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 			//If not in Edit mode, then save the Container in Database and Add the same to the Cache manager.
 			if (operation != null && !operation.equalsIgnoreCase(Constants.EDIT_FORM))
 			{
+				ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor.getInstance();
 				containerInterface = applyFormDefinitionProcessor.addEntityToContainer(containerInterface, formDefinitionForm, saveEntity,entityGroup);
 				CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
 			}
-						
 		}
 		catch (Exception e)
 		{
 			target = catchException(e, request);
 		}
-		return mapping.findForward(target);
+		return target;
 	}
 
 	/**

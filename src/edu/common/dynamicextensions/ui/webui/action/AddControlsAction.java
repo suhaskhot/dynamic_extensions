@@ -38,13 +38,14 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 		try
 		{
 			//Get container interface from cache
-			ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+			//ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+			ContainerInterface containerInterface = getCurrentContainer(controlsForm.getCurrentContainerName(),request);
 			//Add control to form
 			ApplyFormControlsProcessor formControlsProcessor = ApplyFormControlsProcessor.getInstance();
 			formControlsProcessor.addControlToForm(containerInterface, controlsForm);
 			
-			//Store back container object to cache
-			CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
+			/*//Store back container object to cache
+			CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);*/
 			
 			//Go to next page
 			ActionForward actionForward = mapping.findForward(Constants.SUCCESS);
@@ -63,7 +64,28 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 		}
 
 	}
+	/** 
+	 * returns the current container whose data/controls are to be displayed
+	 *  
+	 * @param controlsForm
+	 * @return
+	 */
+	private ContainerInterface getCurrentContainer(String currentContainerName,HttpServletRequest request)
+	{
+		//If the current container name is not null, get the container for corresponding name from cache
+		//if null, return default container from cache.
 
-
-
+		ContainerInterface currentContainer = null;
+		if((currentContainerName!=null)&&(!currentContainerName.trim().equals("")))
+		{
+			//container for current container name
+			currentContainer = (ContainerInterface)CacheManager.getObjectFromCache(request, currentContainerName);
+		}
+		else
+		{
+			//return default container
+			currentContainer = (ContainerInterface)CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+		}
+		return currentContainer;
+	}
 }

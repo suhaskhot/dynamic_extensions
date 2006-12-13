@@ -10,10 +10,8 @@ package edu.common.dynamicextensions.ui.webui.action;
  * And The exception thrown can be of 'System' type, in this case user will be directed to Error Page.
  * @author deepti_shelar
  */
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,12 +30,11 @@ import edu.common.dynamicextensions.processor.LoadFormDefinitionProcessor;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
-import edu.common.dynamicextensions.ui.webui.util.TreeNode;
 import edu.common.dynamicextensions.ui.webui.util.TreeData;
 import edu.common.dynamicextensions.ui.webui.util.TreeGenerator;
+import edu.common.dynamicextensions.ui.webui.util.TreeNode;
 import edu.common.dynamicextensions.util.AssociationTreeObject;
 import edu.common.dynamicextensions.util.global.Constants;
-import edu.wustl.common.beans.NameValueBean;
 
 public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 {
@@ -71,7 +68,8 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 		String groupName = getGroupName(request);
 		formDefinitionForm.setGroupName(groupName);
 		
-		ContainerInterface container = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+		//ContainerInterface container = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+		ContainerInterface container = getCurrentContainer(formDefinitionForm.getCurrentContainerName(),request);
 		formDefinitionForm.setTreeData(getEntityTree(container,groupName));
 		formDefinitionForm.setCreateAs(ProcessorConstants.DEFAULT_FORM_CREATEAS);
 		formDefinitionForm.setViewAs(ProcessorConstants.DEFAULT_FORM_VIEWAS);
@@ -105,7 +103,7 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 		{
 			container = loadFormDefinitionProcessor.getContainerForEditing(containerIdentifier);
 			loadFormDefinitionProcessor.populateContainerInformation(container, formDefinitionForm);
-			CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, container);
+			//CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, container);
 		}
 		else if (operationMode != null && operationMode.equalsIgnoreCase(Constants.ADD_SUB_FORM_OPR))
 		{
@@ -114,7 +112,8 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 		else
 		{
 			formDefinitionForm.setOperationMode("");
-			container = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+			//container = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+			container = getCurrentContainer(formDefinitionForm.getCurrentContainerName(),request);
 			if (container != null)
 			{
 				loadFormDefinitionProcessor.populateContainerInformation(container, formDefinitionForm);
@@ -237,16 +236,22 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 		return null;
 	}
 
-	/**
-	 * @return List of children for the tree
-	 */
-	private List getChildList()
+	private ContainerInterface getCurrentContainer(String currentContainerName,HttpServletRequest request)
 	{
-		ArrayList<NameValueBean> treeChildList = new ArrayList<NameValueBean>(); 
-		NameValueBean treeChildNode = new NameValueBean("New Form","1");
-		treeChildList.add(treeChildNode);
-		return treeChildList;
-	}
+		//If the current container name is not null, get the container for corresponding name from cache
+		//if null, return default container from cache.
 
-	
+		ContainerInterface currentContainer = null;
+		if((currentContainerName!=null)&&(!currentContainerName.trim().equals("")))
+		{
+			//container for current container name
+			currentContainer = (ContainerInterface)CacheManager.getObjectFromCache(request, currentContainerName);
+		}
+		else
+		{
+			//return default container
+			currentContainer = (ContainerInterface)CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+		}
+		return currentContainer;
+	}
 }

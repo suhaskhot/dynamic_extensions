@@ -89,7 +89,7 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	/**
 	 * mode
 	 */
-	protected String mode;
+	//protected String mode;
 
 	protected String operationMode;
 
@@ -100,6 +100,7 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	protected TreeData treeData;
 	protected TreeData associationTree;
 	protected String selectedObjectId;
+	protected String currentContainerName;
 
 	public String getSelectedObjectId()
 	{
@@ -132,19 +133,19 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 
 	/**
 	 * @return the mode
-	 */
+	 *//*
 	public String getMode()
 	{
 		return mode;
 	}
 
-	/**
+	*//**
 	 * @param mode the mode to set
-	 */
+	 *//*
 	public void setMode(String mode)
 	{
 		this.mode = mode;
-	}
+	}*/
 
 	/**
 	 * Returns the id assigned to form bean.
@@ -376,10 +377,10 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	{
 		ActionErrors errors = new ActionErrors();
 		Validator validator = new Validator();
-		if(!Constants.ADD_SUB_FORM_OPR.equals(operationMode))
+		if(!ProcessorConstants.CREATE_FROM_EXISTING.equals(createAs))
 		{
 			if (formName == null || validator.isEmpty(String.valueOf(formName)))
-			{
+			{ 
 				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.form.name")));
 			}
 		}
@@ -473,5 +474,15 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	public void setAssociationTree(TreeData associationTree)
 	{
 		this.associationTree = associationTree;
+	}
+
+	public String getCurrentContainerName()
+	{
+		return this.currentContainerName;
+	}
+
+	public void setCurrentContainerName(String currentContainerName)
+	{
+		this.currentContainerName = currentContainerName;
 	}
 }

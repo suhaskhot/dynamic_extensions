@@ -53,32 +53,32 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 	 * @throws DynamicExtensionsSystemException DynamicExtensionsSystemException
 	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
-			throws IOException, DynamicExtensionsApplicationException
+	throws IOException, DynamicExtensionsApplicationException
 	{
 		try
 		{
-			ControlsForm actionForm = (ControlsForm) form;
-			ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-
+			ControlsForm controlsForm = (ControlsForm) form;
+			ContainerInterface containerInterface = getCurrentContainer(controlsForm.getCurrentContainerName(),request);
+			Logger.out.debug("Loading form controls for [" + containerInterface.getCaption() + "]");
 			//Code for AJAX
 			String operation = request.getParameter("operation");
 			if ((operation != null) && (operation.trim().equals("changeGroup")))
 			{
-				changeGroup(request, response, actionForm);
+				changeGroup(request, response, controlsForm);
 				return null;
 			}
 			if ((operation != null) && (operation.trim().equals("changeForm")))
 			{
-				changeForm(request, response, actionForm);
+				changeForm(request, response, controlsForm);
 				return null;
 			}
 
 			LoadFormControlsProcessor loadFormControlsProcessor = LoadFormControlsProcessor.getInstance();
-			loadFormControlsProcessor.loadFormControls(actionForm, containerInterface);
+			loadFormControlsProcessor.loadFormControls(controlsForm, containerInterface);
 
-			if ((actionForm.getDataType() != null) && (actionForm.getDataType().equals(ProcessorConstants.DATATYPE_NUMBER)))
+			if ((controlsForm.getDataType() != null) && (controlsForm.getDataType().equals(ProcessorConstants.DATATYPE_NUMBER)))
 			{
-				initializeMeasurementUnits(actionForm);
+				initializeMeasurementUnits(controlsForm);
 			}
 		}
 		catch (DynamicExtensionsSystemException e)
@@ -90,6 +90,31 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 
 	}
 
+	/** 
+	 * returns the current container whose data/controls are to be displayed
+	 *  
+	 * @param controlsForm
+	 * @return
+	 */
+	private ContainerInterface getCurrentContainer(String currentContainerName,HttpServletRequest request)
+	{
+		//If the current container name is not null, get the container for corresponding name from cache
+		//if null, return default container from cache.
+
+		ContainerInterface currentContainer = null;
+		if((currentContainerName!=null)&&(!currentContainerName.trim().equals("")))
+		{
+			//container for current container name
+			currentContainer = (ContainerInterface)CacheManager.getObjectFromCache(request, currentContainerName);
+		}
+		else
+		{
+			//return default container
+			currentContainer = (ContainerInterface)CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+		}
+		return currentContainer;
+	}
+
 	/**
 	 * @param request
 	 * @param response
@@ -99,7 +124,7 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 	 * @throws DynamicExtensionsSystemException 
 	 */
 	private void changeForm(HttpServletRequest request, HttpServletResponse response, ControlsForm actionForm) throws IOException,
-			DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		List<NameValueBean> formAttributes = getAttributesForForm(request.getParameter("frmName"));
 		String xmlParentNode = "formAttributes";
@@ -165,7 +190,7 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 	 * @throws DynamicExtensionsSystemException 
 	 */
 	private void changeGroup(HttpServletRequest request, HttpServletResponse response, ControlsForm actionForm) throws IOException,
-			DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		List<NameValueBean> formNames = getFormNamesForGroup(request.getParameter("grpName"));
 		String xmlParentNode = "forms";

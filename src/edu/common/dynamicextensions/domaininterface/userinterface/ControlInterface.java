@@ -127,14 +127,4 @@ public interface ControlInterface extends Comparable
 	 */
 	void setSequenceNumberChanged(Boolean sequenceNumberChanged);
 
-	/**
-	 * @return the htmlString
-	 */
-	String getHtmlString();
-
-	/**
-	 * @param htmlString the htmlString to set
-	 */
-	void setHtmlString(String htmlString);
-	
 }

@@ -76,10 +76,6 @@ public class LoadDataEntryFormProcessor
 			Map<String, Object> recordMap = entityManager.getRecordById(entity, Long.valueOf(recordIdentifier));
 			setControlsRecordValue(entity, controlCollection, recordMap);
 		}
-		else
-		{
-			generateControlsHTML(entity, controlCollection);
-		}
 
 		dataEntryForm.setContainerInterface(containerInterface);
 		if (dataEntryForm.getErrorList() == null)
@@ -121,7 +117,7 @@ public class LoadDataEntryFormProcessor
 		for (Map.Entry<String, Object> recordNode : recordSet)
 		{
 			String recordAttributeName = recordNode.getKey();
-			for (ControlInterface control: controlCollection)
+			for (ControlInterface control : controlCollection)
 			{
 				AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
 				Object recordAttributeValue = recordNode.getValue();
@@ -151,63 +147,15 @@ public class LoadDataEntryFormProcessor
 										Collection<ControlInterface> targetControlCollection = targetContainer.getControlCollection();
 										if (targetControlCollection != null && !targetControlCollection.isEmpty())
 										{
-											setControlsRecordValue(targetEntity, targetControlCollection, (Map<String, Object>)recordAttributeValue);
+											setControlsRecordValue(targetEntity, targetControlCollection, (Map<String, Object>) recordAttributeValue);
 										}
 									}
 								}
 							}
 						}
 					}
-				}
-				String htmlString = control.generateHTML();
-				control.setHtmlString(htmlString);
+				}				
 			}
 		}
 	}
-
-	/**
-	 * This method generates the html code for all the Controls and stores the it in the htmlString variable member of the Control.
-	 * The generated html code is used to display control on User Interface.
-	 * @param controlCollection the Collection of Controls whose html code is to be generated.
-	 * @throws DynamicExtensionsSystemException if couldn't generate the html code.
-	 */
-	private void generateControlsHTML(EntityInterface entity, Collection<ControlInterface> controlCollection) throws DynamicExtensionsSystemException
-	{
-		setControlsHTMLString(controlCollection);
-
-		EntityManagerInterface entityManager = EntityManager.getInstance();
-		Collection<AssociationInterface> associationCollection = entity.getAssociationCollection();
-		for (AssociationInterface association : associationCollection)
-		{
-			RoleInterface role = association.getTargetRole();
-			if (role != null)
-			{
-				AssociationType associationType = role.getAssociationsType();
-				if (associationType != null)
-				{
-					String associationTypeName = associationType.getValue();
-					if (associationTypeName.equals(AssociationType.CONTAINTMENT))
-					{
-						EntityInterface targetEntity = association.getTargetEntity();
-						ContainerInterface targetContainer = entityManager.getContainerByEntityIdentifier(targetEntity.getId());
-						Collection<ControlInterface> targetControlCollection = targetContainer.getControlCollection();
-						if (targetControlCollection != null && !targetControlCollection.isEmpty())
-						{
-							generateControlsHTML(targetEntity, targetControlCollection);
-						}
-					}
-				}
-			}
-		}
-	}
-
-	private void setControlsHTMLString(Collection<ControlInterface> controlCollection) throws DynamicExtensionsSystemException
-	{
-		for (ControlInterface control : controlCollection)
-		{
-			String htmlString = control.generateHTML();
-			control.setHtmlString(htmlString);
-		}
-	}
-
 }

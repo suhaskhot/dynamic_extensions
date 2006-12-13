@@ -75,11 +75,6 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	protected Boolean sequenceNumberChanged = false;
 	
 	/**
-	 * 
-	 */
-	protected String htmlString = null;
-
-	/**
 	 * Empty Constructor
 	 */
 	public Control()
@@ -261,23 +256,6 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		this.sequenceNumberChanged = sequenceNumberChanged;
 	}
 
-	/**
-	 * @return the htmlString
-	 */
-	public String getHtmlString()
-	{
-		return htmlString;
-	}
-
-	/**
-	 * @param htmlString the htmlString to set
-	 */
-	public void setHtmlString(String htmlString)
-	{
-		this.htmlString = htmlString;
-	}
-
-	
 	/** 
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */

@@ -68,7 +68,7 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 	/**
 	 * Entity to which this container is associated.
 	 */
-	public Entity entity;
+	protected Entity entity;
 
 	/**
 	 * Empty constructor

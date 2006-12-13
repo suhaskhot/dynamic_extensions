@@ -48,6 +48,7 @@ import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -2620,38 +2621,17 @@ public class EntityManager
 
 		ContainerInterface containerInterface = getContainerByIdentifier(associationTreeObjectForContainer
 				.getId().toString());
-		EntityInterface entityInterface = containerInterface.getEntity();
-		Collection abstractAttributeCollection = entityInterface.getAbstractAttributeCollection();
-		if (abstractAttributeCollection != null && abstractAttributeCollection.isEmpty())
-		{
-			Iterator abstractAttributeIterator = abstractAttributeCollection.iterator();
-			AbstractAttributeInterface abstractAttributeInterface = (AbstractAttributeInterface) abstractAttributeIterator
-					.next();
-			while (abstractAttributeIterator.hasNext())
-			{
-				abstractAttributeInterface = (AbstractAttributeInterface) abstractAttributeIterator
-						.next();
-				if (abstractAttributeInterface instanceof AssociationInterface)
-				{
-					AssociationInterface associationInterface = (AssociationInterface) abstractAttributeInterface;
-					RoleInterface roleInterface = associationInterface.getTargetRole();
-					if (roleInterface != null)
-					{
-						if (roleInterface.getAssociationsType() == AssociationType.CONTAINTMENT)
-						{
-							ContainerInterface childContainerInterface = getContainerByEntityIdentifier(associationInterface
-									.getTargetEntity().getId());
-							AssociationTreeObject associationTreeObjectForChildContainer = new AssociationTreeObject(
-									childContainerInterface.getId(), childContainerInterface
-											.getCaption());
-							associationTreeObjectForContainer.addAssociationTreeObject(associationTreeObjectForChildContainer);
-							processForChildContainer(associationTreeObjectForContainer);
-						}
-					}
-				}
+		Collection<ControlInterface> controlsCollection = containerInterface.getControlCollection();
+		
+		for(ControlInterface control : controlsCollection) {
+			if (control instanceof ContainmentAssociationControlInterface) {
+				ContainerInterface container = ((ContainmentAssociationControlInterface) control).getContainer();
+				AssociationTreeObject associationTreeObject = new AssociationTreeObject(container.getId(),container.getCaption());
+				processForChildContainer(associationTreeObject);
+				associationTreeObjectForContainer.addAssociationTreeObject(associationTreeObject);
 			}
-
 		}
+
 		return associationTreeObjectForContainer;
 
 	}

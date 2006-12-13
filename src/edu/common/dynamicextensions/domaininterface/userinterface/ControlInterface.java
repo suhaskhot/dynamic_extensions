@@ -9,7 +9,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
  * to the Container on dynamically generated User Interface.
  * @author geetika_bangard
  */
-public interface ControlInterface
+public interface ControlInterface extends Comparable
 {
 
 	/**

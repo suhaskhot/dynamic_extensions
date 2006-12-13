@@ -8,7 +8,12 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
 /**
@@ -61,7 +66,17 @@ public class ContainmentAssociationControl extends Control
 	 */
 	public String generateHTML() throws DynamicExtensionsSystemException
 	{
-		// TODO Auto-generated method stub
-		return null;
+		List<ControlInterface> controlCollection = new ArrayList<ControlInterface>(container.controlCollection);
+		Collections.sort(controlCollection);
+		
+		StringBuffer containerHTML = new StringBuffer();
+
+		for (ControlInterface control : controlCollection)
+		{
+			String controlHTML = control.generateHTML();
+			containerHTML.append(controlHTML);
+		}
+
+		return containerHTML.toString();
 	}
 }

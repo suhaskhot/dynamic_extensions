@@ -277,4 +277,15 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		this.htmlString = htmlString;
 	}
 
+	
+	/** 
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	public int compareTo(Object object)
+	{
+		Control control = (Control) object;
+		Integer thisSequenceNumber = this.sequenceNumber;
+		Integer otherSequenceNumber = control.getSequenceNumber();
+		return thisSequenceNumber.compareTo(otherSequenceNumber);
+	}
 }

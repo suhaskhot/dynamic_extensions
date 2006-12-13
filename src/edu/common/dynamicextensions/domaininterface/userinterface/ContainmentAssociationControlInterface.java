@@ -7,7 +7,6 @@
  */ 
 package edu.common.dynamicextensions.domaininterface.userinterface;
 
-import edu.common.dynamicextensions.domain.userinterface.Container;
 
 
 
@@ -16,12 +15,12 @@ public interface ContainmentAssociationControlInterface extends ControlInterface
 	/**
 	 * @return container
 	 */
-	Container getContainer();
+	ContainerInterface getContainer();
 	
 
 	/**
 	 * @param container The container to set.
 	 */
-	void setContainer(Container container);
+	void setContainer(ContainerInterface container);
 
 }

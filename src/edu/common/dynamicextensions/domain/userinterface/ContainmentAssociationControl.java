@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -33,7 +34,7 @@ public class ContainmentAssociationControl extends Control
 	/**
 	 * 
 	 */
-	protected Container container;
+	protected ContainerInterface container;
 
 	/**
 	 * 
@@ -48,7 +49,7 @@ public class ContainmentAssociationControl extends Control
 	 * @return container
 	 * @hibernate.many-to-one  cascade="save-update" column="DISPLAY_CONTAINER_ID" class="edu.common.dynamicextensions.domain.userinterface.Container" constrained="true"
 	 */
-	public Container getContainer()
+	public ContainerInterface getContainer()
 	{
 		return container;
 	}
@@ -56,7 +57,7 @@ public class ContainmentAssociationControl extends Control
 	/**
 	 * @param container The container to set.
 	 */
-	public void setContainer(Container container)
+	public void setContainer(ContainerInterface container)
 	{
 		this.container = container;
 	}
@@ -66,7 +67,7 @@ public class ContainmentAssociationControl extends Control
 	 */
 	public String generateHTML() throws DynamicExtensionsSystemException
 	{
-		List<ControlInterface> controlCollection = new ArrayList<ControlInterface>(container.controlCollection);
+		List<ControlInterface> controlCollection = new ArrayList<ControlInterface>(container.getControlCollection());
 		Collections.sort(controlCollection);
 		
 		StringBuffer containerHTML = new StringBuffer();

@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -21,10 +22,13 @@ import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.Entity;
+import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.BaseDynamicExtensionsException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -2963,4 +2967,95 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		}
 
 	}	
+	
+	/**
+	 *  PURPOSE: This method tests for creation of all the hierarchy for containment control 
+	 *  having one to many association
+	 *  EXPECTED BEHAVIOUR: All the hierarchy should get saved 
+	 *  TEST CASE FLOW: 1. create User
+	 *                  2. Create Address                       
+	 *                  3. Add Association with      User(1) ------->(1) Address containment association
+	 *                  4. Add containment control to user container with address container inside this control.
+	 *                  5. persist entities.
+	 *                  6. Check if the address container is saved or not.
+	 */
+	public void testCreateContainerFromContainmentAssociation()
+	{
+		try
+		{
+			//Step 1
+			Container userContainer = (Container) DomainObjectFactory.getInstance()
+					.createContainer();
+
+			EntityInterface user = DomainObjectFactory.getInstance().createEntity();
+			user.setName("USER");
+			AttributeInterface nameAttribute = new MockEntityManager().initializeStringAttribute(
+					"name", "new name");
+
+			ControlInterface textbox = DomainObjectFactory.getInstance().createTextField();
+			textbox.setAbstractAttribute(nameAttribute);
+			userContainer.addControl(textbox);
+			user.addAbstractAttribute(nameAttribute);
+
+			userContainer.setEntity(user);
+
+			//Step 2
+			EntityInterface address = DomainObjectFactory.getInstance().createEntity();
+			address.setName("ADDRESS");
+			AttributeInterface cityAttribute = new MockEntityManager().initializeStringAttribute(
+					"City", "Ahmednagar");
+
+			Container addressContainer = (Container) DomainObjectFactory.getInstance()
+					.createContainer();
+
+			ControlInterface cityTextbox = DomainObjectFactory.getInstance().createTextField();
+			cityTextbox.setAbstractAttribute(cityAttribute);
+			addressContainer.addControl(cityTextbox);
+			address.addAbstractAttribute(cityAttribute);
+
+			addressContainer.setEntity(address);
+
+			// Step 3 Associate user (1)------ >(1)address 
+			RoleInterface sourceRole = getRole(AssociationType.CONTAINTMENT, "adress",
+					Cardinality.ZERO, Cardinality.ONE);
+			RoleInterface targetRole = getRole(AssociationType.ASSOCIATION, "user",
+					Cardinality.ZERO, Cardinality.ONE);
+			AssociationInterface association = getAssociation(address,
+					AssociationDirection.SRC_DESTINATION, "userAddress", sourceRole, targetRole);
+
+			user.addAbstractAttribute(association);
+
+			//Step 4
+			ContainmentAssociationControlInterface containmentAssociationControlInterface = DomainObjectFactory
+					.getInstance().createContainmentAssociationControl();
+
+			containmentAssociationControlInterface.setContainer(addressContainer);
+
+			userContainer.addControl(containmentAssociationControlInterface);
+			//Step 5
+			EntityManager.getInstance().persistContainer(userContainer);
+			Collection list = EntityManager.getInstance().getAllContainers();
+			assertNotNull(list);
+			Iterator iter = list.iterator();
+			boolean flag = false;
+			//Step 6
+			while (iter.hasNext())
+			{
+				Container cont = (Container) iter.next();
+				if (cont.getId().equals(addressContainer.getId()))
+				{
+					flag = true;
+					break;
+				}
+			}
+			assertTrue(flag);
+		}
+		catch (Exception e)
+		{
+			//TODO Auto-generated catch block
+			Logger.out.debug(e.getMessage());
+			fail("Exception occured");
+		}
+
+	}
 }

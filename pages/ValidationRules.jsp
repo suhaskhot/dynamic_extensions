@@ -84,9 +84,9 @@
 										<A onclick="showCalendar('<%=paramName%>',<%=DynamicExtensionsUtility.getCurrentYear()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentDay()%>,'MM-dd-yyyy','controlsForm','<%= paramName%>',event,1900,2020);" href="javascript://">
 											<IMG alt="This is a Calendar" src="images/calendar.gif" border=0>
 										</A>
-										<table id=<%=divId%> style="Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px">
+										<div id=<%=divId%> style="Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px">
 											<SCRIPT>printCalendar('<%= paramName%>',<%=DynamicExtensionsUtility.getCurrentDay()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentYear()%>);</SCRIPT>
-										</table>[MM-DD-YYYY]&nbsp;
+										</div>[MM-DD-YYYY]&nbsp;
 									<%
 										} //end if(controlName.equalsIgnoreCase("DateControl"))
 									%>

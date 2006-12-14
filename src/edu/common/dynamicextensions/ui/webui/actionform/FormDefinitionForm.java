@@ -100,7 +100,6 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	protected TreeData treeData;
 	protected TreeData associationTree;
 	protected String selectedObjectId;
-	protected String currentContainerName;
 
 	public String getSelectedObjectId()
 	{
@@ -476,13 +475,4 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 		this.associationTree = associationTree;
 	}
 
-	public String getCurrentContainerName()
-	{
-		return this.currentContainerName;
-	}
-
-	public void setCurrentContainerName(String currentContainerName)
-	{
-		this.currentContainerName = currentContainerName;
-	}
 }

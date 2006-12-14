@@ -56,7 +56,7 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 			}
 			else
 			{
-				ContainerInterface containerInterface = WebUIManager.getCurrentContainer(controlsForm.getCurrentContainerName(),request);
+				ContainerInterface containerInterface = WebUIManager.getCurrentContainer(request);
 				//Add form control
 				addControlToForm(containerInterface, controlsForm);
 				return mapping.findForward(Constants.SUCCESS);

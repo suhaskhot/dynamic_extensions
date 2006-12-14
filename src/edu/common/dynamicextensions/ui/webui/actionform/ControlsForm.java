@@ -300,10 +300,7 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	protected String separator;
 	protected List selectedAttributes;
 	protected String[] selectedAttributeIds;
-	/**
-	 * Caption of the current container
-	 */
-	protected String currentContainerName;
+	
 	/**
 	 * 
 	 */
@@ -1676,15 +1673,5 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	public void setSelectedAttributes(List selectedAttributes)
 	{
 		this.selectedAttributes = selectedAttributes;
-	}
-
-	public String getCurrentContainerName()
-	{
-		return this.currentContainerName;
-	}
-
-	public void setCurrentContainerName(String currentContainerName)
-	{
-		this.currentContainerName = currentContainerName;
 	}
 }

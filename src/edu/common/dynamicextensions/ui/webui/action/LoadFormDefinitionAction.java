@@ -70,7 +70,7 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 		formDefinitionForm.setGroupName(groupName);
 		
 		//ContainerInterface container = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-		ContainerInterface container = WebUIManager.getCurrentContainer(formDefinitionForm.getCurrentContainerName(),request);
+		ContainerInterface container = WebUIManager.getCurrentContainer(request);
 		formDefinitionForm.setTreeData(getEntityTree(container,groupName));
 		formDefinitionForm.setCreateAs(ProcessorConstants.DEFAULT_FORM_CREATEAS);
 		formDefinitionForm.setViewAs(ProcessorConstants.DEFAULT_FORM_VIEWAS);
@@ -114,7 +114,7 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 		{
 			formDefinitionForm.setOperationMode("");
 			//container = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-			container = WebUIManager.getCurrentContainer(formDefinitionForm.getCurrentContainerName(),request);
+			container = WebUIManager.getCurrentContainer(request);
 			if (container != null)
 			{
 				loadFormDefinitionProcessor.populateContainerInformation(container, formDefinitionForm);

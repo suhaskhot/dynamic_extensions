@@ -73,11 +73,10 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	 */
 	private String addSubForm(HttpServletRequest request, FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		ContainerInterface mainFormContainer = WebUIManager.getCurrentContainer(formDefinitionForm.getCurrentContainerName(), request);
+		ContainerInterface mainFormContainer = WebUIManager.getCurrentContainer(request);
 		
 		ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor.getInstance();
 		ContainerInterface subFormContainer = applyFormDefinitionProcessor.getSubFormContainer(formDefinitionForm);
-		
 		AssociationInterface association = applyFormDefinitionProcessor.associateEntity(mainFormContainer,subFormContainer,formDefinitionForm);
 		applyFormDefinitionProcessor.addSubFormControlToContainer(mainFormContainer,subFormContainer,association);
 		
@@ -86,13 +85,26 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 			//if new entity is created, set its container id in form and container interface in cache.
 			if(subFormContainer!=null)
 			{
-				formDefinitionForm.setCurrentContainerName(subFormContainer.getCaption());
-				CacheManager.addObjectToCache(request, subFormContainer.getCaption(), subFormContainer);
+				applyFormDefinitionProcessor.associateParentGroupToNewEntity(subFormContainer,mainFormContainer);
+				updateCacheReferences(request,subFormContainer);
 			}
 		}
 		
 		String target = Constants.BUILD_FORM;
 		return target;
+	}
+
+	/**
+	 * @param request
+	 * @param subFormContainer
+	 */
+	private void updateCacheReferences(HttpServletRequest request, ContainerInterface subFormContainer)
+	{
+		if(subFormContainer!=null)
+		{
+			CacheManager.addObjectToCache(request,Constants.CURRENT_CONTAINER_NAME,subFormContainer.getCaption());
+			CacheManager.addObjectToCache(request, subFormContainer.getCaption(), subFormContainer);
+		}
 	}
 
 	/**

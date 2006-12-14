@@ -6,6 +6,9 @@ package edu.common.dynamicextensions.processor;
  * to update the Actionforms by retriving data form Cache.
  * @author deepti_shelar
  */
+import java.util.Collection;
+import java.util.Iterator;
+
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
@@ -245,6 +248,30 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 			}
 		}
 		return targetEntityContainer;
+	}
+
+	/**
+	 * @param subFormContainer
+	 * @param mainFormContainer
+	 */
+	public void associateParentGroupToNewEntity(ContainerInterface subFormContainer, ContainerInterface mainFormContainer)
+	{
+		if((subFormContainer!=null)&&(mainFormContainer!=null))
+		{
+			EntityInterface targetEntity = subFormContainer.getEntity();
+			EntityInterface sourceEntity = mainFormContainer.getEntity();
+			Collection<EntityGroupInterface> sourceEntityGroups = sourceEntity.getEntityGroupCollection();
+			if(sourceEntityGroups!=null)
+			{
+				Iterator<EntityGroupInterface> entityGroupIter = sourceEntityGroups.iterator();
+				if(entityGroupIter.hasNext())
+				{
+					EntityGroupInterface sourceEntityGroup = entityGroupIter.next();
+					targetEntity.addEntityGroupInterface(sourceEntityGroup);
+				}
+			}
+			
+		}
 	}
 
 }

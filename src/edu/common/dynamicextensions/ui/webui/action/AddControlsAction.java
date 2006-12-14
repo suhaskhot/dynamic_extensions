@@ -11,7 +11,6 @@ import org.apache.struts.action.ActionMapping;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.processor.ApplyFormControlsProcessor;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
-import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.util.global.Constants;
 
@@ -40,19 +39,16 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 		{
 			//Get container interface from cache
 			//ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-			ContainerInterface containerInterface = WebUIManager.getCurrentContainer(controlsForm.getCurrentContainerName(),request);
+			ContainerInterface containerInterface = WebUIManager.getCurrentContainer(request);
 			//Add control to form
-			ApplyFormControlsProcessor formControlsProcessor = ApplyFormControlsProcessor.getInstance();
-			formControlsProcessor.addControlToForm(containerInterface, controlsForm);
+			ApplyFormControlsProcessor applyFormControlsProcessor = ApplyFormControlsProcessor.getInstance();
+			applyFormControlsProcessor.addControlToForm(containerInterface, controlsForm);
 			
-			/*//Store back container object to cache
-			CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);*/
-			
-			//Go to next page
 			ActionForward actionForward = mapping.findForward(Constants.SUCCESS);
 			response.sendRedirect("http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath()
 					+ actionForward.getPath());
 			return null;
+			//return null;
 		}
 		catch (Exception e)
 		{
@@ -65,4 +61,6 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 		}
 
 	}
+
+
 }

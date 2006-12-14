@@ -6,8 +6,6 @@
 
 package edu.common.dynamicextensions.processor;
 
-import java.util.Collection;
-
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -254,8 +252,4 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 			controlsForm.setAttributeMeasurementUnits(controlsForm.getMeasurementUnitOther());
 		}
 	}
-	
-	
-
-
 }

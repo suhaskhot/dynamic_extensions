@@ -58,7 +58,7 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 		try
 		{
 			ControlsForm controlsForm = (ControlsForm) form;
-			ContainerInterface containerInterface = WebUIManager.getCurrentContainer(controlsForm.getCurrentContainerName(),request);
+			ContainerInterface containerInterface = WebUIManager.getCurrentContainer(request);
 			Logger.out.debug("Loading form controls for [" + containerInterface.getCaption() + "]");
 			//Code for AJAX
 			String operation = request.getParameter("operation");
@@ -90,6 +90,7 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 
 	}
 
+	
 	/**
 	 * @param request
 	 * @param response

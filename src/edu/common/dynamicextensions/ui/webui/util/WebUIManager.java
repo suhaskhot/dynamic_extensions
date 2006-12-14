@@ -96,11 +96,12 @@ public class WebUIManager implements WebUIManagerConstants
 	 * @param controlsForm
 	 * @return
 	 */
-	public static ContainerInterface getCurrentContainer(String currentContainerName,HttpServletRequest request)
+	public static ContainerInterface getCurrentContainer(HttpServletRequest request)
 	{
 		//If the current container name is not null, get the container for corresponding name from cache
 		//if null, return default container from cache.
 		ContainerInterface currentContainer = null;
+		String currentContainerName = (String)CacheManager.getObjectFromCache(request, Constants.CURRENT_CONTAINER_NAME);
 		if((currentContainerName!=null)&&(!currentContainerName.trim().equals("")))
 		{
 			//container for current container name

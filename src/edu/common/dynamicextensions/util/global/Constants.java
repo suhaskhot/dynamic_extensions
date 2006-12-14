@@ -40,6 +40,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String APPLICATION_EXCEPTION = "applicationException";
 	public static final String CONTAINER_INTERFACE = "containerInterface";
 	public static final String ENTITYGROUP_INTERFACE = "entityGroupInterface";
+	public static final String CURRENT_CONTAINER_NAME = "currentContainerName";
 	public static final String ERRORS_LIST = "errorsList";
 	public static final String SHOW_DYNAMIC_EXTENSIONS_HOMEPAGE = "showDynamicExtensionsHomePage";
 	public static final String SUCCESS = "success";

@@ -19,7 +19,12 @@ public class TreeNode
 	{
 		childNodes = new TreeNodesList();
 	}
-
+	
+	public TreeNode(String text)
+	{
+		this(text,0);
+	}
+	
 	/**
 	 * Create a new tree node with specified text and sequence number
 	 * @param text : Text for tree node 

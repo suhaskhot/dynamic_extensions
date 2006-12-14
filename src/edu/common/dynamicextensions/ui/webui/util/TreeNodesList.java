@@ -1,7 +1,7 @@
 package edu.common.dynamicextensions.ui.webui.util;
 import java.util.Vector;
 
-class TreeNodesList
+public class TreeNodesList
 {
 	Vector childNodeList = null;
 	private int length = 0;

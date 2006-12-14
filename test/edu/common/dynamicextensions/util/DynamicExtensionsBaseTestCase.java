@@ -17,6 +17,7 @@ import junit.framework.TestCase;
 import net.sf.hibernate.HibernateException;
 import edu.common.dynamicextensions.util.global.Variables;
 import edu.wustl.common.util.dbManager.DBUtil;
+import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
 
 public class DynamicExtensionsBaseTestCase extends TestCase
@@ -46,6 +47,7 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 	{
 		
 		Logger.out = org.apache.log4j.Logger.getLogger("dynamicExtensions.logger");
+        ApplicationProperties.initBundle("ApplicationResources");
 		Variables.containerFlag = false;
 		Variables.datePattern = "mm-dd-yyyy";
 		Variables.timePattern = "hh-mi-ss";

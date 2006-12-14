@@ -10,10 +10,14 @@ import java.util.Collections;
 import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.wustl.common.util.global.ApplicationProperties;
 
 /**
@@ -28,30 +32,46 @@ public class UserInterfaceiUtility
 	 * @throws DynamicExtensionsSystemException
 	 */
 	@SuppressWarnings("unchecked")
-	public static String generateHTML(ContainerInterface containerInterface) throws DynamicExtensionsSystemException
+	public static String generateHTML(ContainerInterface container) throws DynamicExtensionsSystemException
 	{
 		StringBuffer stringBuffer = new StringBuffer();
-		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(containerInterface.getControlCollection());
+		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(container.getControlCollection());
 		Collections.sort(controlsList);
 
 		stringBuffer.append("<table summary='' cellpadding='3' cellspacing='0'  align='center' width = '100%'>");
 		stringBuffer.append("<tr>");
 		stringBuffer.append("<td class='formMessage' colspan='3'>");
-		stringBuffer.append(containerInterface.getRequiredFieldIndicatior() + "&nbsp;");
-		stringBuffer.append(containerInterface.getRequiredFieldWarningMessage());
+		stringBuffer.append(container.getRequiredFieldIndicatior() + "&nbsp;");
+		stringBuffer.append(container.getRequiredFieldWarningMessage());
 		stringBuffer.append("</td>");
 		stringBuffer.append("</tr>");
 
 		stringBuffer.append("<tr>");
 		stringBuffer.append("<td class='formTitle' colspan='3' align='left'>");
 		stringBuffer.append(ApplicationProperties.getValue("app.add") + "&nbsp;");
-		stringBuffer.append(containerInterface.getCaption());
+		stringBuffer.append(container.getCaption());
 		stringBuffer.append("</td>");
 		stringBuffer.append("</tr>");
 
-		for (ControlInterface controlInterface : controlsList)
+		for (ControlInterface control : controlsList)
 		{
-			generateHTMLforControl(stringBuffer, controlInterface, containerInterface);
+			if (control instanceof ContainmentAssociationControlInterface)
+			{
+				ContainmentAssociationControlInterface containmentAssociationControl = (ContainmentAssociationControlInterface) control;
+				if (containmentAssociationControl.isCardinalityOneToMany())
+				{
+					ContainerInterface subContainer = containmentAssociationControl.getContainer();
+					generateHTMLforGrid(stringBuffer, containmentAssociationControl, subContainer);
+				}
+				else
+				{
+					generateHTMLforControl(stringBuffer, control, container);
+				}
+			}
+			else
+			{
+				generateHTMLforControl(stringBuffer, control, container);
+			}
 		}
 		stringBuffer.append("</table>");
 		return stringBuffer.toString();
@@ -90,6 +110,53 @@ public class UserInterfaceiUtility
 		stringBuffer.append("<td class='formField'>");
 		stringBuffer.append(controlInterface.generateHTML());
 		stringBuffer.append("</td>");
+		stringBuffer.append("</tr>");
+	}
+
+	/**
+	 * 
+	 * @param stringBuffer
+	 * @param controlInterface
+	 * @param containerInterface
+	 * @throws DynamicExtensionsSystemException
+	 */
+	@SuppressWarnings("unchecked")
+	private static void generateHTMLforGrid(StringBuffer stringBuffer, ContainmentAssociationControlInterface containmentAssociationControl,
+			ContainerInterface subContainer) throws DynamicExtensionsSystemException
+	{
+		stringBuffer.append("<tr class='formRequiredNotice'>");
+		stringBuffer.append("<table summary='' border='1' cellpadding='3' cellspacing='0'  align='center' width = '100%'>");
+		stringBuffer.append("<caption class='formLabel'>" + subContainer.getCaption() + "</caption>");
+
+		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(subContainer.getControlCollection());
+		Collections.sort(controlsList);
+
+		stringBuffer.append("<tr width='100%'>");
+		for (ControlInterface control : controlsList)
+		{
+			boolean isControlRequired = isControlRequired(control);
+			if (isControlRequired)
+			{
+				stringBuffer.append("<th class='formRequiredLabel'>");
+				stringBuffer.append(subContainer.getRequiredFieldIndicatior() + "&nbsp;" + control.getCaption());
+			}
+			else
+			{
+				stringBuffer.append("<th class='formLabel'>");
+				stringBuffer.append("&nbsp;" + control.getCaption());
+			}
+
+			stringBuffer.append("</th>");
+		}
+
+		stringBuffer.append("<th class='formLabel' align='left'>");
+		stringBuffer.append("<button type='button' class='actionButton' id='addMore' onclick=\"addRowToGrid(true)\" >");
+		stringBuffer.append(ApplicationProperties.getValue("eav.button.AddRow"));
+		stringBuffer.append("</button>");
+		stringBuffer.append("</th>");
+
+		stringBuffer.append("</tr>");
+		stringBuffer.append("</table>");
 		stringBuffer.append("</tr>");
 	}
 

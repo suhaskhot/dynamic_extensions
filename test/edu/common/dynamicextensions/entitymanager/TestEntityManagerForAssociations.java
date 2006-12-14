@@ -1938,9 +1938,9 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			study.addAbstractAttribute(studInstAssociation);
 
 			user = (Entity) entityManager.persistEntity(user);
-			AssociationInterface associationInterface = (AssociationInterface) entityManager
+			Collection<AssociationInterface> associationInterface = entityManager
 					.getAssociation("user", "primaryInvestigator");
-			assertTrue(associationInterface != null);
+			assertNotNull(associationInterface);
 
 		}
 

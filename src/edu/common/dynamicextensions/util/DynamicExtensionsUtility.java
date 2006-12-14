@@ -232,20 +232,6 @@ public class DynamicExtensionsUtility
 		if (Logger.out == null) {
 			Logger.configure("");
 		}
-		
-		String fileName = Variables.dynamicExtensionsHome + System.getProperty("file.separator")+ ApplicationProperties.getValue("application.version.file");
-        CVSTagReader cvsTagReader = new CVSTagReader();
-        String cvsTag = cvsTagReader.readTag(fileName);
-        Variables.applicationCvsTag = cvsTag;
-        Logger.out.info("========================================================");
-        Logger.out.info("Application Information");
-        Logger.out.info("Name: "+Variables.applicationName);
-        Logger.out.info("Version: "+Variables.applicationVersion);
-        Logger.out.info("CVS TAG: "+Variables.applicationCvsTag);
-        Logger.out.info("Path: "+ Variables.applicationHome);
-        Logger.out.info("Database Name: "+Variables.databaseName);
-        Logger.out.info("========================================================");  
-      
 
 		if (!Variables.databaseName.equals(Constants.MYSQL_DATABASE))
 		{
@@ -269,6 +255,24 @@ public class DynamicExtensionsUtility
 		}
 		
 		     
+	}
+	
+	/**
+	 * 
+	 */
+	public static void initialiseApplicationInfo() {
+		String fileName = Variables.dynamicExtensionsHome + System.getProperty("file.separator")+ ApplicationProperties.getValue("application.version.file");
+        CVSTagReader cvsTagReader = new CVSTagReader();
+        String cvsTag = cvsTagReader.readTag(fileName);
+        Variables.applicationCvsTag = cvsTag;
+        Logger.out.info("========================================================");
+        Logger.out.info("Application Information");
+        Logger.out.info("Name: "+Variables.applicationName);
+        Logger.out.info("Version: "+Variables.applicationVersion);
+        Logger.out.info("CVS TAG: "+Variables.applicationCvsTag);
+        Logger.out.info("Path: "+ Variables.applicationHome);
+        Logger.out.info("Database Name: "+Variables.databaseName);
+        Logger.out.info("========================================================");  
 	}
 	public static AttributeTypeInformationInterface getAttributeTypeInformation(AbstractAttributeInterface abstractAttributeInterface)
 	{

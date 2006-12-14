@@ -68,7 +68,8 @@ public class DynamicExtensionsServletContextListener implements ServletContextLi
 		//QueryBizLogic.initializeQueryData();
 
 		DynamicExtensionsUtility.initialiseApplicationVariables();
-
+		
+		DynamicExtensionsUtility.initialiseApplicationInfo();
 	}
 
 	/**

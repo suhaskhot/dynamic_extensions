@@ -175,7 +175,9 @@
 													&nbsp;
 											</td>
 											<td >
+												<div style="border:solid 1px; padding:1px; width:250px; height:100px; overflow:auto;">
 												<dynamicExtensions:tree name="associationTree" treeDataObject="<%=associationTree%>" fieldForSelectedObject="existingFormName" />
+												</div>
 											</td>
 										 </tr>
 										<c:choose>

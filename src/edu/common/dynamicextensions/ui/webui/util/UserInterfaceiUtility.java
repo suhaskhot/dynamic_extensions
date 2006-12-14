@@ -17,6 +17,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAss
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.wustl.common.util.global.ApplicationProperties;
 
@@ -125,13 +126,21 @@ public class UserInterfaceiUtility
 			ContainerInterface subContainer) throws DynamicExtensionsSystemException
 	{
 		stringBuffer.append("<tr class='formRequiredNotice'>");
-		stringBuffer.append("<table summary='' border='1' cellpadding='3' cellspacing='0'  align='center' width = '100%'>");
-		stringBuffer.append("<caption class='formLabel'>" + subContainer.getCaption() + "</caption>");
-
+		
+		stringBuffer.append("<td class='formRequiredNotice' width='2%'>");
+		stringBuffer.append("&nbsp;");
+		stringBuffer.append("</td>");
+		stringBuffer.append("<td class='formLabel' width='20%'>");
+		stringBuffer.append(subContainer.getCaption());
+		stringBuffer.append("</td>");
+		
+		stringBuffer.append("<td class='formField'>");
+		stringBuffer.append("<table id='"+ subContainer.getId()+"_table' summary='' cellpadding='3' cellspacing='0'  align='center' width = '100%'>");
+		
 		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(subContainer.getControlCollection());
 		Collections.sort(controlsList);
 
-		stringBuffer.append("<tr width='100%'>");
+		stringBuffer.append("<tr>");
 		for (ControlInterface control : controlsList)
 		{
 			boolean isControlRequired = isControlRequired(control);
@@ -145,18 +154,33 @@ public class UserInterfaceiUtility
 				stringBuffer.append("<th class='formLabel'>");
 				stringBuffer.append("&nbsp;" + control.getCaption());
 			}
-
 			stringBuffer.append("</th>");
 		}
 
 		stringBuffer.append("<th class='formLabel' align='left'>");
-		stringBuffer.append("<button type='button' class='actionButton' id='addMore' onclick=\"addRowToGrid(true)\" >");
+		stringBuffer.append("<button type='button' class='actionButton' id='addMore' onclick=\"addRow('" + subContainer.getId() + "')\">");
 		stringBuffer.append(ApplicationProperties.getValue("eav.button.AddRow"));
 		stringBuffer.append("</button>");
 		stringBuffer.append("</th>");
 
 		stringBuffer.append("</tr>");
 		stringBuffer.append("</table>");
+		stringBuffer.append("</td>");
+		
+		stringBuffer.append("<div style='display:none' id='" + subContainer.getId()+"_substitutionDiv'>");
+		stringBuffer.append("<table>");
+		stringBuffer.append("<tr>");
+		for (ControlInterface control : controlsList)
+		{
+			stringBuffer.append("<td class='formField'>");
+			stringBuffer.append(control.generateHTML());
+			stringBuffer.append("</td>");
+		}
+		stringBuffer.append("</tr>");
+		stringBuffer.append("</table>");
+		stringBuffer.append("</div>");
+		
+		stringBuffer.append("<input type='hidden' name='"+ subContainer.getId()+"_rowCount' value='0'/> ");
 		stringBuffer.append("</tr>");
 	}
 

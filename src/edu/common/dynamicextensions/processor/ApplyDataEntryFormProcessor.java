@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.upload.FormFile;
 
 import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
+import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -73,7 +74,7 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	public Map<AbstractAttributeInterface, Object> generateAttributeValueMap(
 			ContainerInterface containerInterface, HttpServletRequest request,
-			DataEntryForm dataEntryForm) throws FileNotFoundException, IOException,
+			DataEntryForm dataEntryForm, String rowId) throws FileNotFoundException, IOException,
 			DynamicExtensionsSystemException
 	{
 		Map<AbstractAttributeInterface, Object> attributeValueMap = new LinkedHashMap<AbstractAttributeInterface, Object>();
@@ -87,7 +88,7 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 				if (controlSequenceNumber != null)
 				{
 					String controlSequence = containerInterface.getId() + "_"
-							+ controlSequenceNumber;
+							+ controlSequenceNumber+"_"+rowId;
 					AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
 					if (abstractAttribute instanceof AttributeInterface)
 					{
@@ -99,7 +100,7 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 						collectAssociationValues(request, dataEntryForm, controlSequence, control,
 								attributeValueMap);
 					}
-					
+
 				}
 			}
 		}
@@ -125,15 +126,25 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	{
 		AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
 
+		ContainmentAssociationControlInterface containmentAssociationControlInterface = (ContainmentAssociationControlInterface) control;
 		if (control instanceof ContainmentAssociationControlInterface)
 		{
 			ContainerInterface targetContainer = ((ContainmentAssociationControlInterface) control)
 					.getContainer();
-			Map<AbstractAttributeInterface, Object> tempAttributeValueMap = generateAttributeValueMap(
-					targetContainer, request, dataEntryForm);
-			List<Map<AbstractAttributeInterface, Object>> tempList = new ArrayList<Map<AbstractAttributeInterface, Object>>();
-			tempList.add(tempAttributeValueMap);
-			attributeValueMap.put(abstractAttribute, tempList);
+			if (containmentAssociationControlInterface.isCardinalityOneToMany())
+			{
+
+				attributeValueMap.put(abstractAttribute, collectOneToManyContainmentValues(request,
+						dataEntryForm, sequence, control));
+			}
+			else
+			{
+				Map<AbstractAttributeInterface, Object> tempAttributeValueMap = generateAttributeValueMap(
+						targetContainer, request, dataEntryForm, "");
+				List<Map<AbstractAttributeInterface, Object>> tempList = new ArrayList<Map<AbstractAttributeInterface, Object>>();
+				tempList.add(tempAttributeValueMap);
+				attributeValueMap.put(abstractAttribute, tempList);
+			}
 
 		}
 		else if (control instanceof SelectInterface)
@@ -160,6 +171,43 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 			attributeValueMap.put(abstractAttribute, valueList);
 		}
 
+	}
+
+	/**
+	 * 
+	 * @param request
+	 * @param dataEntryForm
+	 * @param sequence
+	 * @param control
+	 * @param attributeValueMap
+	 * @throws IOException 
+	 * @throws DynamicExtensionsSystemException 
+	 * @throws FileNotFoundException 
+	 */
+	private List<Map<AbstractAttributeInterface, Object>> collectOneToManyContainmentValues(
+			HttpServletRequest request, DataEntryForm dataEntryForm, String sequence,
+			ControlInterface control) throws FileNotFoundException,
+			DynamicExtensionsSystemException, IOException
+	{
+
+		List<Map<AbstractAttributeInterface, Object>> oneToManyContainmentValueList = new ArrayList<Map<AbstractAttributeInterface, Object>>();
+
+		ContainmentAssociationControl containmentAssociationControl = (ContainmentAssociationControl) control;
+
+		String[] strArr = sequence.split("_");
+		String containerId = strArr[0];
+		int rowCount = Integer.parseInt(request.getParameter(containerId + "_ rowCount"));
+		Map<AbstractAttributeInterface, Object> attributeValueMap = null;
+		for (int counter = 1; counter <= rowCount; counter++)
+		{
+
+			attributeValueMap = generateAttributeValueMap(containmentAssociationControl
+					.getContainer(), request, dataEntryForm, counter + "");
+			oneToManyContainmentValueList.add(attributeValueMap);
+
+		}
+
+		return oneToManyContainmentValueList;
 	}
 
 	/**
@@ -229,15 +277,16 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 			Map<AbstractAttributeInterface, Object> attributeValueMap)
 	{
 		/*Map<AbstractAttributeInterface, Object> newAttributeValueMap = new LinkedHashMap<AbstractAttributeInterface, Object>();
-		Set<Map.Entry<AbstractAttributeInterface, Object>> newAttributeValueSet = newAttributeValueMap
-				.entrySet();*/
+		 Set<Map.Entry<AbstractAttributeInterface, Object>> newAttributeValueSet = newAttributeValueMap
+		 .entrySet();*/
 
 		Set<Map.Entry<AbstractAttributeInterface, Object>> attributeValueSet = attributeValueMap
 				.entrySet();
 		Iterator attributeValueSetIterator = attributeValueSet.iterator();
-		while(attributeValueSetIterator.hasNext())
+		while (attributeValueSetIterator.hasNext())
 		{
-			Map.Entry<AbstractAttributeInterface, Object> attributeValueEntry = (Map.Entry<AbstractAttributeInterface, Object>)attributeValueSetIterator.next();
+			Map.Entry<AbstractAttributeInterface, Object> attributeValueEntry = (Map.Entry<AbstractAttributeInterface, Object>) attributeValueSetIterator
+					.next();
 			Object value = attributeValueEntry.getValue();
 			if (value == null)
 			{

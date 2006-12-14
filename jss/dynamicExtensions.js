@@ -1316,3 +1316,125 @@ function createFormAsChanged()
 		}
 	}
 }
+
+/////////////added by vishvesh
+
+
+function addRow(containerId) 
+	{
+		var divName = "";
+		divName = divName + containerId + "_substitutionDiv";
+		var div = document.getElementById(divName);
+
+		var tab = div.childNodes[0];
+		tableId = containerId + "_table";
+		var table = document.getElementById (tableId);
+		var rows = table.rows;
+		var rowTobeCopied = tab.rows[0];
+		var counter = table.rows.length;
+	
+		var newRow = table.insertRow(-1);
+		var cells = rowTobeCopied.cells;
+		for(i = 0 ; i < cells.length ; i++) 
+			{  
+				var newCell = newRow.insertCell(i);
+				newCell.className = cells[i].className;
+			
+			
+					newCell.innerHTML = cells[i].innerHTML;	
+					newCell = setDefaultValues(tableId, newCell);
+					
+			
+			}
+
+		var hiddenVar = "";
+		hiddenVar = hiddenVar  + containerId + "_rowCount";
+		
+		var currentRowCounter = document.getElementById(hiddenVar); 
+		
+		currentRowCounter1 = currentRowCounter.value;
+		document.getElementById(hiddenVar).value = parseInt(currentRowCounter1) + 1;
+		
+
+	}
+
+	function removeCheckedRow(containerId)
+{   
+    var table = document.getElementById(containerId+"_table");
+	var children = table.rows;
+	//alert(children.length);
+	//var inputArray = table.getElementsByTagName('input');	
+	if(children.length>0)
+	{
+		for (k = 0; k < children.length; k++) 
+		{
+			
+		   var inputArray = table.rows[k].getElementsByTagName('input');	
+		   var len=inputArray.length;
+		   for(var i=0;i<len;i++)
+			{
+				
+			   if (inputArray[i] != null && inputArray[i].name == "deleteRow" && inputArray[i].checked ) 
+			   {		  
+					   table.deleteRow((k));			  				
+						k=0;					
+			   }
+
+			}
+		}
+	}
+	
+		var hiddenVar = "";
+		hiddenVar = hiddenVar  + containerId + "_rowCount";
+		
+		var currentRowCounter = document.getElementById(hiddenVar); 
+		
+		currentRowCounter1 = currentRowCounter.value;
+		document.getElementById(hiddenVar).value = parseInt(currentRowCounter1) + 1;
+		
+
+}
+
+function setDefaultValues(tableId, obj) 
+{
+	var children = obj.childNodes;
+	var rowIndex = document.getElementById(tableId).rows.length;
+	rowIndex = parseInt(rowIndex);
+	
+	for (j = 0 ; j < children.length; j++) 
+	{
+		var childObject = children[j];
+		childObjectName = childObject.name;
+		if (childObjectName != null && childObjectName.indexOf('_')!= -1) 
+		{
+			var arr = childObjectName.split('_');
+			var str = childObjectName;
+			arr[arr.length-1] = rowIndex;
+			str = "";
+			for (k = 0 ; k <arr.length ; k++)
+				{
+					str = str + arr[k];
+					if (k != arr.length -1)
+					str = str + '_';
+				}
+			childObject.name = str;
+
+			
+		}
+
+	}
+	return obj;
+}
+
+function formName(arr,del,str)
+{
+
+for (i = 0 ; i <arr.length ; i++)
+{
+	str = str + arr[i];
+	if (i != arr.length -1)
+	str = str + del;
+	alert(str);
+}
+
+}

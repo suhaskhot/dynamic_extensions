@@ -48,7 +48,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		try
 		{
 			Map<AbstractAttributeInterface, Object> attributeValueMap = applyDataEntryFormProcessor.generateAttributeValueMap(container, request,
-					dataEntryForm);
+					dataEntryForm,"");
 
 			List<String> errorList = ValidatorUtil.validateEntity(attributeValueMap);
 			

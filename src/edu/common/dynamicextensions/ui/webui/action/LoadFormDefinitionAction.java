@@ -20,8 +20,10 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
@@ -31,7 +33,6 @@ import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.TreeData;
-import edu.common.dynamicextensions.ui.webui.util.TreeGenerator;
 import edu.common.dynamicextensions.ui.webui.util.TreeNode;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.util.AssociationTreeObject;
@@ -66,19 +67,24 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 			String actionForwardString = catchException(dynamicExtensionsApplicationException, request);
 			return(mapping.findForward(actionForwardString));
 		}
+		initializeFormAttributes(request,formDefinitionForm);
+		return (mapping.findForward(Constants.SUCCESS));
+	}
+
+	/**
+	 * @param formDefinitionForm
+	 */
+	private void initializeFormAttributes(HttpServletRequest request ,FormDefinitionForm formDefinitionForm)
+	{
 		String groupName = getGroupName(request);
 		formDefinitionForm.setGroupName(groupName);
-		
-		//ContainerInterface container = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-		ContainerInterface container = WebUIManager.getCurrentContainer(request);
-		formDefinitionForm.setTreeData(getEntityTree(container,groupName));
+		formDefinitionForm.setTreeData(getEntityTree(request));
 		formDefinitionForm.setCreateAs(ProcessorConstants.DEFAULT_FORM_CREATEAS);
 		formDefinitionForm.setViewAs(ProcessorConstants.DEFAULT_FORM_VIEWAS);
 		if(formDefinitionForm.getAssociationTree()==null)
 		{
 			formDefinitionForm.setAssociationTree(new TreeData());
 		}
-		return (mapping.findForward(Constants.SUCCESS));
 	}
 
 	/**
@@ -225,15 +231,72 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 	 * @param container 
 	 * @param request
 	 */
-	private TreeData getEntityTree(ContainerInterface container, String groupName)
+	private TreeData getEntityTree(HttpServletRequest request)
 	{
-		if(groupName!=null)
+		EntityGroupInterface entityGroup = (EntityGroupInterface) CacheManager.getObjectFromCache(request, Constants.ENTITYGROUP_INTERFACE);
+		String groupName = entityGroup.getName();
+		TreeData treedata = new TreeData();
+		TreeNode groupNode = new TreeNode(groupName);
+		treedata.add(groupNode);
+		
+		ContainerInterface mainContainer = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+		
+		String currentContainerName = (String) CacheManager.getObjectFromCache(request, Constants.CURRENT_CONTAINER_NAME);
+		if(mainContainer!=null)
 		{
-			TreeGenerator treeGenerator = new TreeGenerator();
-			//List childList = getChildList(container);
-			
-			return treeGenerator.getTreeData(groupName, container);
+			TreeNode mainContainerTreeNode = getTreeNode(mainContainer,currentContainerName);
+			if(currentContainerName==null)
+			{
+				//Add new form node to main container node
+				mainContainerTreeNode.add(getNewFormNode());
+			}
+			groupNode.add(mainContainerTreeNode);
 		}
-		return null;
+		else
+		{
+			//Add new node to group
+			groupNode.add(getNewFormNode());
+		}
+		return treedata;
+	}
+
+	/**
+	 * @param container
+	 * @return
+	 */
+	private TreeNode getTreeNode(ContainerInterface container,String currentContainerName)
+	{
+		TreeNode containerNode = null; 
+		if(container!=null)
+		{
+			containerNode = new TreeNode(container.getCaption());
+			
+			if(container.getCaption().equals(currentContainerName))
+			{
+				containerNode.add(getNewFormNode());
+			}
+			Collection<ControlInterface> controlsCollection = container.getControlCollection();
+			if(controlsCollection!=null)
+			{
+				Iterator<ControlInterface> controlsIterator = controlsCollection.iterator();
+				while(controlsIterator.hasNext())
+				{
+					ControlInterface control = controlsIterator.next();
+					if((control!=null)&&(control instanceof ContainmentAssociationControl))
+					{
+						containerNode.add(getTreeNode(((ContainmentAssociationControl)control).getContainer(),currentContainerName));
+					}
+				}
+			}
+		}
+		return containerNode;
+	}
+
+	/**
+	 * @return
+	 */
+	private TreeNode getNewFormNode()
+	{
+		return new TreeNode("New Form");
 	}
 }

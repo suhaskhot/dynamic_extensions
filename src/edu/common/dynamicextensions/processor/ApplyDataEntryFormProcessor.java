@@ -87,8 +87,13 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 				Integer controlSequenceNumber = control.getSequenceNumber();
 				if (controlSequenceNumber != null)
 				{
+					
 					String controlSequence = containerInterface.getId() + "_"
-							+ controlSequenceNumber+"_"+rowId;
+							+ controlSequenceNumber;
+					if (rowId != null && !rowId.equals(""))
+					{
+						controlSequence = controlSequence + "_"+rowId;
+					}
 					AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
 					if (abstractAttribute instanceof AttributeInterface)
 					{
@@ -135,7 +140,7 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 			{
 
 				attributeValueMap.put(abstractAttribute, collectOneToManyContainmentValues(request,
-						dataEntryForm, sequence, control));
+						dataEntryForm, targetContainer.getId().toString(), control));
 			}
 			else
 			{
@@ -185,7 +190,7 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws FileNotFoundException 
 	 */
 	private List<Map<AbstractAttributeInterface, Object>> collectOneToManyContainmentValues(
-			HttpServletRequest request, DataEntryForm dataEntryForm, String sequence,
+			HttpServletRequest request, DataEntryForm dataEntryForm, String containerId,
 			ControlInterface control) throws FileNotFoundException,
 			DynamicExtensionsSystemException, IOException
 	{
@@ -194,9 +199,9 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 
 		ContainmentAssociationControl containmentAssociationControl = (ContainmentAssociationControl) control;
 
-		String[] strArr = sequence.split("_");
-		String containerId = strArr[0];
-		int rowCount = Integer.parseInt(request.getParameter(containerId + "_ rowCount"));
+		String parameterString = containerId + "_rowCount";
+		String rowCountString = request.getParameter(parameterString);
+		int rowCount = Integer.parseInt(rowCountString);
 		Map<AbstractAttributeInterface, Object> attributeValueMap = null;
 		for (int counter = 1; counter <= rowCount; counter++)
 		{

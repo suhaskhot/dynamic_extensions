@@ -1399,7 +1399,7 @@ function setDefaultValues(tableId, obj)
 {
 	var children = obj.childNodes;
 	var rowIndex = document.getElementById(tableId).rows.length;
-	rowIndex = parseInt(rowIndex);
+	rowIndex = parseInt(rowIndex) - 1 ;
 	
 	for (j = 0 ; j < children.length; j++) 
 	{
@@ -1407,17 +1407,10 @@ function setDefaultValues(tableId, obj)
 		childObjectName = childObject.name;
 		if (childObjectName != null && childObjectName.indexOf('_')!= -1) 
 		{
-			var arr = childObjectName.split('_');
-			var str = childObjectName;
-			arr[arr.length-1] = rowIndex;
-			str = "";
-			for (k = 0 ; k <arr.length ; k++)
-				{
-					str = str + arr[k];
-					if (k != arr.length -1)
-					str = str + '_';
-				}
+	
+			str = childObjectName + "_" + rowIndex;
 			childObject.name = str;
+			
 
 			
 		}

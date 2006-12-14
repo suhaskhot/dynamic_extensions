@@ -125,6 +125,26 @@ public class UserInterfaceiUtility
 	private static void generateHTMLforGrid(StringBuffer stringBuffer, ContainmentAssociationControlInterface containmentAssociationControl,
 			ContainerInterface subContainer) throws DynamicExtensionsSystemException
 	{
+		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(subContainer.getControlCollection());
+		Collections.sort(controlsList);
+		
+		stringBuffer.append("<tr><td>");
+		stringBuffer.append("<div style='display:none' id='" + subContainer.getId()+"_substitutionDiv'>");
+		stringBuffer.append("<table>");
+		stringBuffer.append("<tr>");
+		for (ControlInterface control : controlsList)
+		{
+			stringBuffer.append("<td class='formField'>");
+			stringBuffer.append(control.generateHTML());
+			stringBuffer.append("</td>");
+		}
+		stringBuffer.append("</tr>");
+		stringBuffer.append("</table>");
+		stringBuffer.append("</div>");
+		
+		stringBuffer.append("<input type='hidden' name='"+ subContainer.getId()+"_rowCount' id= '"+ subContainer.getId()+"_rowCount' value='0'/> ");
+		
+		stringBuffer.append("</td></tr>");
 		stringBuffer.append("<tr class='formRequiredNotice'>");
 		
 		stringBuffer.append("<td class='formRequiredNotice' width='2%'>");
@@ -137,8 +157,6 @@ public class UserInterfaceiUtility
 		stringBuffer.append("<td class='formField'>");
 		stringBuffer.append("<table id='"+ subContainer.getId()+"_table' summary='' cellpadding='3' cellspacing='0'  align='center' width = '100%'>");
 		
-		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(subContainer.getControlCollection());
-		Collections.sort(controlsList);
 
 		stringBuffer.append("<tr>");
 		for (ControlInterface control : controlsList)
@@ -167,20 +185,7 @@ public class UserInterfaceiUtility
 		stringBuffer.append("</table>");
 		stringBuffer.append("</td>");
 		
-		stringBuffer.append("<div style='display:none' id='" + subContainer.getId()+"_substitutionDiv'>");
-		stringBuffer.append("<table>");
-		stringBuffer.append("<tr>");
-		for (ControlInterface control : controlsList)
-		{
-			stringBuffer.append("<td class='formField'>");
-			stringBuffer.append(control.generateHTML());
-			stringBuffer.append("</td>");
-		}
-		stringBuffer.append("</tr>");
-		stringBuffer.append("</table>");
-		stringBuffer.append("</div>");
-		
-		stringBuffer.append("<input type='hidden' name='"+ subContainer.getId()+"_rowCount' value='0'/> ");
+	
 		stringBuffer.append("</tr>");
 	}
 

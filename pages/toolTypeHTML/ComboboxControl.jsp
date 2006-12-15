@@ -57,9 +57,9 @@
 						<html:radio styleId="<%=ProcessorConstants.DISPLAY_CHOICE_CDE%>"  property="displayChoice" onclick="changeSourceForValues(this)"  value="<%=ProcessorConstants.DISPLAY_CHOICE_CDE%>" disabled="true">
 							<bean:message key="eav.att.OptionsCDE"/>
 						</html:radio>
-						<html:radio styleId="<%=ProcessorConstants.DISPLAY_CHOICE_LOOKUP%>" property="displayChoice" onclick="changeSourceForValues(this)"  value="<%=ProcessorConstants.DISPLAY_CHOICE_LOOKUP%>" >
+						<!--<html:radio styleId="" property="displayChoice" onclick="changeSourceForValues(this)"  value="" >
 							<bean:message key="eav.att.OptionsLookup"/>
-						</html:radio>
+						</html:radio>-->
 					</td>
 				</tr>
 			 </table>

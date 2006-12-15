@@ -1438,13 +1438,13 @@ function setDefaultValues(tableId, obj)
 	{
 		var childObject = children[j];
 		childObjectName = childObject.name;
-		alert('oldName' + childObjectName);
+		
 		if (childObjectName != null && childObjectName.indexOf('_')!= -1) 
 		{
 			if (childObjectName.indexOf(')')!= -1)
 			{
 				childObjectName = childObjectName.substring(0,childObjectName.indexOf(')'));
-				alert(childObjectName );
+				
 				str = childObjectName + "_" + rowIndex;
 				str = str  +  ")";
 				childObject.name = str;
@@ -1452,7 +1452,7 @@ function setDefaultValues(tableId, obj)
 			str = childObjectName + "_" + rowIndex;
 			childObject.name = str;
 			}
-			alert('New Name ' + childObject.name );
+			
 		}
 
 	}
@@ -1466,7 +1466,7 @@ for (i = 0 ; i <arr.length ; i++)
 	str = str + arr[i];
 	if (i != arr.length -1)
 	str = str + del;
-	alert(str);
+
 }
 
 }

@@ -95,7 +95,7 @@
 	
 	<!-- Compile all files, generated and hand-written -->
     <target name="compile" depends="init">
-        <javac destdir="${target.dir}" includes="**/*.*" includeAntRuntime="false">
+        <javac destdir="${target.dir}" includes="**/*.*" includeAntRuntime="false" debug="true">
             <src path="${src.dir}"/>
             <classpath refid="app.classpath"/>
         </javac>
@@ -110,11 +110,11 @@
     </target>
 	
     <target name="compileTestCases" depends="compile">
-        <javac destdir="${target.dir}" includes="**/*.*" includeAntRuntime="false">
+        <javac destdir="${target.dir}" includes="**/*.*" includeAntRuntime="false" debug="true">
             <src path="${test.dir}"/>
             <classpath refid="app.classpath"/>
         </javac>
-    	<copy file="${target.dir}/TestHibernate.cfg.xml" tofile="${target.dir}/Hibernate.cfg.xml" overwrite="true"/>
+       	<copy file="${target.dir}/TestHibernate.cfg.xml" tofile="${target.dir}/DynamicExtensionsHibernate.cfg.xml"
     </target>
   	
 	<!-- Create the Applet JAR Begins-->

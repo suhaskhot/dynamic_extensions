@@ -1405,20 +1405,26 @@ function setDefaultValues(tableId, obj)
 	{
 		var childObject = children[j];
 		childObjectName = childObject.name;
+		alert('oldName' + childObjectName);
 		if (childObjectName != null && childObjectName.indexOf('_')!= -1) 
 		{
-	
+			if (childObjectName.indexOf(')')!= -1)
+			{
+				childObjectName = childObjectName.substring(0,childObjectName.indexOf(')'));
+				alert(childObjectName );
+				str = childObjectName + "_" + rowIndex;
+				str = str  +  ")";
+				childObject.name = str;
+			} else {	
 			str = childObjectName + "_" + rowIndex;
 			childObject.name = str;
-			
-
-			
+			}
+			alert('New Name ' + childObject.name );
 		}
 
 	}
 	return obj;
 }
-
 function formName(arr,del,str)
 {
 

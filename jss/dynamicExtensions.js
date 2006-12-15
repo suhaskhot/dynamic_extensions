@@ -1049,7 +1049,10 @@ function toggle(fldForSelectedObject,id,p)
 			document.getElementById(p).className='folder';
 		}
 	}
+//	formName = getFormNameFromParent(p);
+//	setFormName(formName);
 }
+
 function changeSelection(fldForSelectedObject,str1,seqno)
 {	
 	selId =document.getElementById(fldForSelectedObject).value;
@@ -1060,7 +1063,37 @@ function changeSelection(fldForSelectedObject,str1,seqno)
 		document.getElementById(selId).style.fontWeight='normal';
 	}
 	var controlsForm=document.getElementById('controlsForm');
+	
+//	var formName = document.getElementById(str1).innerText;
+//	setFormName(formName);
 }
+
+/*function  getFormNameFromParent(p)
+{
+	var parent = document.getElementById(p);
+	if(parent!=null)
+	{
+		var elts = parent.getElementsByTagName("a");
+		if(elts!=null)
+		{
+			var noOfElts = elts.length;
+			if((noOfElts!=null)&&(noOfElts!=undefined)&&(noOfElts>0))
+			{
+				var parentName = elts[0].innerText;
+				return parentName;
+			}
+		}
+	}
+}
+function setFormName(formName)
+{
+	var formNameElement = document.getElementById('formName');
+	if(formNameElement!=null)
+	{
+		if((formName!=null)&&(formName!=undefined))
+		formNameElement.value = formName;
+	}
+}*/
 
 function getDocumentElementForXML(xmlString)
 {

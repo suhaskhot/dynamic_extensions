@@ -131,9 +131,10 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	{
 		AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
 
-		ContainmentAssociationControlInterface containmentAssociationControlInterface = (ContainmentAssociationControlInterface) control;
+	
 		if (control instanceof ContainmentAssociationControlInterface)
 		{
+			ContainmentAssociationControlInterface containmentAssociationControlInterface = (ContainmentAssociationControlInterface) control;
 			ContainerInterface targetContainer = ((ContainmentAssociationControlInterface) control)
 					.getContainer();
 			if (containmentAssociationControlInterface.isCardinalityOneToMany())

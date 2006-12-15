@@ -27,14 +27,13 @@
 		<html:hidden styleId = "operationMode" property="operationMode"/>
 
 			<table width='70%' align='center' cellspacing="5" cellspacing="0" border='0'>
-				<tr class="formMessage">
+				<!--<tr class="formMessage">
 					<td>
 						<h3>
-						
 							<bean:message key="table.heading" />(<bean:message key="application.version"/>: <%=Variables.applicationCvsTag%>)
 						</h3>
 					</td>
-				</tr>
+				</tr>-->
 				<tr>
 					<td class="formMessage" align="left">
 						<bean:message key="app.formpage.heading" />

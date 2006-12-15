@@ -72,7 +72,7 @@
 										<tr>
 										<td >
 										&nbsp;
-										<dynamicExtensions:tree name="formsTree" treeDataObject="<%=treeData%>" fieldForSelectedObject="selectedAttrib"/>
+										<dynamicExtensions:tree name="formsTree" showExpanded="true" treeDataObject="<%=treeData%>" fieldForSelectedObject="selectedAttrib"/>
 										</td>
 										</tr>
 										<tr height = 100%> <td> &nbsp;</td>

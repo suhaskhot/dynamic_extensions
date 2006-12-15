@@ -176,6 +176,7 @@
 	
 	<!-- Create dynamic extensions jar Begins-->
 	    <target name="createDynamicExtensionsInterfaceJAR" depends="compile" >
+		   <delete file="${interface.dir}/DynamicExtensions.jar"/>
     	   <jar taskname="buildJar" jarfile="${interface.dir}/DynamicExtensions.jar">
 	    		<fileset dir="${target.dir}" >
 		    			<include name="**/domain/**/*.class"/>
@@ -204,6 +205,7 @@
 	<!-- Create dynamic extensions jar Begins-->
 	
 	<target name="createDynamicExtensionsInterfaceSourceZip" depends="compile" >
+		<delete  file="${interface.src.dir}/DynamicExtensions-src.zip"/> 
 		<zip destfile="${interface.src.dir}/DynamicExtensions-src.zip" >
 		      	<fileset dir="${src.dir}" >
 		      		<include name="**/domain/**/*.java"/>
@@ -409,6 +411,7 @@
  **  =================================================================================-->
 	<!--  Generates javadocs on all source  -->
 	<target name="javadoc" description="Generate the documentation">
+        <delete dir="${javadoc.dir}" /> 
 		<mkdir dir="${javadoc.dir}" />
 		<javadoc access="private" packagenames="edu.common.*" destdir="${javadoc.dir}" author="true" version="true" windowtitle="Dynamic Extensions API" maxmemory="512m" classpathref="app.classpath" breakiterator="yes">
 			 <fileset dir="${src.dir}" defaultexcludes="yes">
@@ -484,6 +487,7 @@
 	
 	<!-- Create dynamic extensions jar Begins-->
 		    <target name="createDynamicExtensionsCommunicationJAR" depends="compile" >
+		    	<delete file="DynamicExtensionsCommunication.jar"/>
 	    	   <jar taskname="buildJar" jarfile="DynamicExtensionsCommunication.jar">
 		    		<fileset dir="${target.dir}" >
 		    				<include name="**/WebUIManager.class"/>
@@ -547,4 +551,14 @@
 			</classpath>
 		</junit>
 		</target>
+	
+	<target name="de_release" >
+		<property name="de_release_dir" value="${base.dir}/de_release"/>
+		<mkdir dir="${de_release_dir}"/>
+       	<copy file="dynamicExtensions.war" todir="${de_release_dir}" />
+       	<copy file="${interface.dir}/DynamicExtensions.jar" todir="${de_release_dir}" />
+       	<copy file="${interface.src.dir}/DynamicExtensions-src.zip" todir="${de_release_dir}" />
+       	<copy file="${javadoc.dir}/${javadoc.zip}" todir="${de_release_dir}" />
+       	<copy file="${base.dir}/dynamicextension.sql" todir="${de_release_dir}" />
+	</target>
 </project>

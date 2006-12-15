@@ -15,6 +15,9 @@ import edu.wustl.common.util.logger.Logger;
  */
 public class TreeData
 {
+	private final String EXPANDED_CLASS_NAME = "folderOpen";
+	private final String COLLAPSED_CLASS_NAME = "folder";
+	
 	private String folder = "/images";
 	private String color = "navy";
 	private TreeNodesList nodes;
@@ -106,11 +109,11 @@ public class TreeData
 	 * 
 	 * @return : String having the HTML code for the tree like representation of the data
 	 */
-	public String getTree(String treeName,String fieldForSelectedObject)
+	public String getTree(String treeName,String fieldForSelectedObject,String strIsTreeExpanded)
 	{
 		buf = new StringBuffer();
-
-		print("<style>ul.tree{display:none;margin-left:17px;}li.folder{list-style-image: url("
+		
+		print("<style>ul.collapsedTree{display:none;margin-left:17px;}ul.expandedTree{margin-left:17px;}li.folder{list-style-image: url("
 				+ folder
 				+ "/plus.gif);}li.folderOpen{list-style-image: url("
 				+ folder
@@ -119,9 +122,14 @@ public class TreeData
 				+ "/dot.gif);}a.treeview{color:"
 				+ color
 				+ ";font-family:verdana;font-size:9pt;}a.treeview:link {text-decoration:none;}a.treeview:visited{text-decoration:none;}a.treeview:hover {text-decoration:underline;}</style>");
+		boolean isTreeExpanded = false;
+		if((strIsTreeExpanded!=null)&&(strIsTreeExpanded.equals("true")))
+		{
+			isTreeExpanded = true;
+		}
 		if (nodes != null)
 		{
-			loopThru(nodes, "0",treeName,fieldForSelectedObject);
+			loopThru(nodes, "0",treeName,fieldForSelectedObject,isTreeExpanded);
 		}
 		else
 		{
@@ -136,18 +144,30 @@ public class TreeData
 	 * @param nodeList :  List of tree nodes
 	 * @param parent : Name of parent node
 	 */
-	private void loopThru(TreeNodesList nodeList, String parent,String treeName,String fieldForSelectedObject)
+	private void loopThru(TreeNodesList nodeList, String parent,String treeName,String fieldForSelectedObject,boolean isTreeExpanded)
 	{
 		if (nodeList != null)
 		{
 			boolean hasChild;
 			boolean displayRadioButton = false;
-			String style;
+			String defaultClassName = COLLAPSED_CLASS_NAME;
+			if(isTreeExpanded)
+			{
+				defaultClassName = EXPANDED_CLASS_NAME;
+			}
+			String style=null;
 			String id = "";
 			if (parent != "0")
 			{
 				id = treeName + "N" + parent;
-				print("<ul class=tree id='" + id + "' >");
+				if(isTreeExpanded)
+				{
+					print("<ul class=expandedTree id='" + id + "' >");
+				}
+				else
+				{
+					print("<ul class=collapsedTree id='" + id + "' >");
+				}
 			}
 			else
 			{
@@ -180,7 +200,7 @@ public class TreeData
 					if (hasChild)
 					{
 						id = treeName + "P" + parent + i;
-						print("<li " + style + " class=folder id='" + id + "'>");
+						print("<li " + style + " class='"+defaultClassName+"' id='" + id + "'>");
 						if(displayRadioButton)
 						{
 							print("<input type='radio' name='selectedObjectId' id='selectedObjectId' value='" + node.getSequenceNumber() +"' />");
@@ -208,7 +228,7 @@ public class TreeData
 
 					if (hasChild)
 					{
-						loopThru(node.getChildNodes(), parent + "_" + i,treeName,fieldForSelectedObject);
+						loopThru(node.getChildNodes(), parent + "_" + i,treeName,fieldForSelectedObject,isTreeExpanded);
 					}
 
 					print("</li>");

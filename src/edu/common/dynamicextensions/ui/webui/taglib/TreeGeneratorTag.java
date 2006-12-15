@@ -31,10 +31,21 @@ public class TreeGeneratorTag extends TagSupport
 	private TreeData treeDataObject = null;
 	private String fieldForSelectedObject=null;
 	private String name=null;
+	private String showExpanded =null;
 	
 	public String getFieldForSelectedObject()
 	{
 		return this.fieldForSelectedObject;
+	}
+
+	public String getShowExpanded()
+	{
+		return this.showExpanded;
+	}
+
+	public void setShowExpanded(String showExpanded)
+	{
+		this.showExpanded = showExpanded;
 	}
 
 	public void setFieldForSelectedObject(String fieldForSelectedObject)
@@ -64,12 +75,12 @@ public class TreeGeneratorTag extends TagSupport
 				jspWriter.print("<input type='hidden' id='"+fieldForSelectedObject  +"' name='" + fieldForSelectedObject +"' value=''>");
 				//Add the actual code for tree generation
 				jspWriter.print("<div  valign='top' scroll='auto' style='overflow:auto;' >");
-				jspWriter.print(treeDataObject.getTree(name,fieldForSelectedObject));
+				jspWriter.print(treeDataObject.getTree(name,fieldForSelectedObject,showExpanded));
 				jspWriter.print("</div>");
 				
 				//Expand first row
-				jspWriter.print("<script language='JavaScript'> \n" + "<!-- \n" //+ toggleFunctionJSCode + changeSelectionJSCode
-						+ "toggle('"+fieldForSelectedObject +"','"+name+"N0_0','"+name+"P00'); \n" + "// --> \n" + "</script>");
+				/*jspWriter.print("<script language='JavaScript'> \n" + "<!-- \n" //+ toggleFunctionJSCode + changeSelectionJSCode
+						+ "toggle('"+fieldForSelectedObject +"','"+name+"N0_0','"+name+"P00'); \n" + "// --> \n" + "</script>");*/
 
 			}
 			else

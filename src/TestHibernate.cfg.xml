@@ -26,8 +26,8 @@
        	<property name="dialect">net.sf.hibernate.dialect.MySQLDialect</property>	
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
        	<property name="hibernate.jdbc.batch_size">0</property>
-       	<property name="hibernate.connection.username">catissue_core</property>
-        <property name="hibernate.connection.password">catissue_core</property>
+       	<property name="hibernate.connection.username">dyext_user</property>
+        <property name="hibernate.connection.password">dyext123</property>
         <property name="hibernate.connection.url">jdbc:mysql://localhost/dynext</property>
 
 <!-- My sql settings end -->   

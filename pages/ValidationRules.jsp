@@ -86,7 +86,7 @@
 										</A>
 										<div id=<%=divId%> style="Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px">
 											<SCRIPT>printCalendar('<%= paramName%>',<%=DynamicExtensionsUtility.getCurrentDay()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentYear()%>);</SCRIPT>
-										</div>[MM-DD-YYYY]&nbsp;
+										</div><label class="formFieldWithoutBorder">[MM-DD-YYYY]&nbsp;</label>
 									<%
 										} //end if(controlName.equalsIgnoreCase("DateControl"))
 									%>

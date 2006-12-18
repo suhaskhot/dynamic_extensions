@@ -50,7 +50,7 @@
 	<!-- Main HTML Code -->
   	<body onload="initBuildForm()">
 		<html:form styleId = "controlsForm"  action="/LoadFormControlsAction">
-			<html:errors />
+			<font color="red" ><html:errors/></font>
 	
 	  	    <%
 	  	    	int generator = 0;

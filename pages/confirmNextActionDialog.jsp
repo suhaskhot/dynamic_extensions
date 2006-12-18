@@ -14,7 +14,7 @@
 </head>
 <body>
 <html:form styleId = "controlsForm" action="/LoadFormControlsAction" >
-	  	<html:errors />
+	  	<font color="red" ><html:errors/></font>
 		<table  border="0" width="100%" height="100%" >
 			<tr>
 				<td  align='center'>

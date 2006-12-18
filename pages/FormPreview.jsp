@@ -31,7 +31,7 @@
 
 	<body onload="loadPreviewForm()">
 		<html:form styleId = "previewForm" action="/LoadFormPreviewAction" enctype="multipart/form-data" >
-		<html:errors />
+		<font color="red" ><html:errors/></font>
 				<html:hidden property="entitySaved" />
 			<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 <table valign="top"  align='left' width='90%' height="90%" border='0' cellspacing="0" cellpadding="0" class="tbBorders1" >

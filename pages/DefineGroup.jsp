@@ -70,7 +70,7 @@
 										</tr>
 										<tr valign = "top">
 											<td class="formMessage" colspan="3">
-												<html:errors/>
+												<font color="red" ><html:errors/></font>
 											</td>
 										</tr>
 										<tr valign = "top">

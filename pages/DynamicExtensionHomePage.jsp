@@ -23,7 +23,7 @@
 	</head>
 	<body>
 		<html:form styleId='formsIndexForm' action='/ApplyFormsIndexAction'>
-		<html:errors/>
+		<font color="red" ><html:errors/></font>
 		<html:hidden styleId = "operationMode" property="operationMode"/>
 
 			<table width='70%' align='center' cellspacing="5" cellspacing="0" border='0'>

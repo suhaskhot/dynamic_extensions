@@ -23,7 +23,7 @@
 		   		<tr>
 					<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
 					<td class="formRequiredLabelWithoutBorder" width="25%">
-						<bean:message key="eav.att.Format"/> : 
+						<bean:message key="eav.att.Format"/> :
 					</td>
 					<td class="formFieldWithoutBorder">
 						<html:radio styleId = 'format' property="format" value="<%=ProcessorConstants.DATE_FORMAT_OPTION_DATEONLY%>" >
@@ -38,7 +38,7 @@
 				<tr>
 					<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
 					<td class="formRequiredLabelWithoutBorder" width="25%">
-						<bean:message key="eav.att.DefaultValue"/> : 
+						<bean:message key="eav.att.DefaultValue"/> :
 					</td>
 					<td class="formFieldWithoutBorder">
 						<input type="hidden" id = 'initialDateValueType' name="initialDateValueType" value="<%=dateValueType%>">
@@ -63,7 +63,7 @@
 						</A>
 						<DIV id=slcalcodattributeDefaultValue style="Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px">
 							<SCRIPT>printCalendar('attributeDefaultValue',<%=DynamicExtensionsUtility.getCurrentDay()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentYear()%>);</SCRIPT>
-						</DIV>[MM-DD-YYYY]&nbsp;
+						</DIV><label class="formFieldWithoutBorder">[MM-DD-YYYY]&nbsp;</label>
 					</td>
 				</tr>
 			</table>

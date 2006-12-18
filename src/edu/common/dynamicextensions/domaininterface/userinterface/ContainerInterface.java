@@ -4,6 +4,7 @@ package edu.common.dynamicextensions.domaininterface.userinterface;
 import java.util.Collection;
 
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
 /**
  * This interface stores the necessary information about the container on dynamically generated user interface.
@@ -125,5 +126,17 @@ public interface ContainerInterface
 	 * @param mode
 	 */
 	void setMode(String mode);
+	
+	/**
+	 * @return return the HTML string for this type of a object
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	String generateContainerHTML() throws DynamicExtensionsSystemException;
+	
+	/**
+	 * @return return the HTML string for this type of a object
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	String generateControlsHTML() throws DynamicExtensionsSystemException;
 
 }

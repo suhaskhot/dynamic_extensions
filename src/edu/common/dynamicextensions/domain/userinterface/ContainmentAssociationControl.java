@@ -13,7 +13,6 @@ import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 
 /**
@@ -60,11 +59,19 @@ public class ContainmentAssociationControl extends Control implements Containmen
 	}
 
 	/**
+	 * @see edu.common.dynamicextensions.domain.userinterface.Control#getControlLabelHTML()
+	 */
+	protected String getControlLabelHTML()
+	{
+		return "";
+	}
+
+	/**
 	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface#generateHTML()
 	 */
 	public String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
-		return UserInterfaceiUtility.generateHTML(container);
+		return this.getContainer().generateControlsHTML();
 	}
 	
 	/**
@@ -82,7 +89,6 @@ public class ContainmentAssociationControl extends Control implements Containmen
 		}
 		return isOneToMany;
 	}
-
 
 	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
 	{

@@ -23,92 +23,6 @@ import edu.wustl.common.util.global.ApplicationProperties;
  */
 public class UserInterfaceiUtility
 {
-	/**
-	 * 
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 */
-
-	public static String generateHTML(ContainerInterface container) throws DynamicExtensionsSystemException
-	{
-		StringBuffer stringBuffer = new StringBuffer();
-		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(container.getControlCollection());
-		Collections.sort(controlsList);
-
-		stringBuffer.append("<table summary='' cellpadding='3' cellspacing='0'  align='center' width = '100%'>");
-		stringBuffer.append("<tr>");
-		stringBuffer.append("<td class='formMessage' colspan='3'>");
-		stringBuffer.append(container.getRequiredFieldIndicatior() + "&nbsp;");
-		stringBuffer.append(container.getRequiredFieldWarningMessage());
-		stringBuffer.append("</td>");
-		stringBuffer.append("</tr>");
-
-		stringBuffer.append("<tr>");
-		stringBuffer.append("<td class='formTitle' colspan='3' align='left'>");
-		stringBuffer.append(ApplicationProperties.getValue("app.add") + "&nbsp;");
-		stringBuffer.append(container.getCaption());
-		stringBuffer.append("</td>");
-		stringBuffer.append("</tr>");
-
-		for (ControlInterface control : controlsList)
-		{
-			if (control instanceof ContainmentAssociationControlInterface)
-			{
-				ContainmentAssociationControlInterface containmentAssociationControl = (ContainmentAssociationControlInterface) control;
-				if (containmentAssociationControl.isCardinalityOneToMany())
-				{
-					ContainerInterface subContainer = containmentAssociationControl.getContainer();
-					generateHTMLforGrid(stringBuffer, containmentAssociationControl, subContainer);
-				}
-				else
-				{
-					generateHTMLforControl(stringBuffer, control, container);
-				}
-			}
-			else
-			{
-				generateHTMLforControl(stringBuffer, control, container);
-			}
-		}
-		stringBuffer.append("</table>");
-		return stringBuffer.toString();
-	}
-
-	/**
-	 * 
-	 * @param stringBuffer
-	 * @throws DynamicExtensionsSystemException 
-	 */
-	private static void generateHTMLforControl(StringBuffer stringBuffer, ControlInterface controlInterface, ContainerInterface containerInterface)
-			throws DynamicExtensionsSystemException
-	{
-		boolean isControlRequired = isControlRequired(controlInterface);
-		stringBuffer.append("<tr>");
-		if (isControlRequired)
-		{
-			stringBuffer.append("<td class='formRequiredNotice' width='2%'>");
-			stringBuffer.append(containerInterface.getRequiredFieldIndicatior() + "&nbsp;");
-			stringBuffer.append("</td>");
-
-			stringBuffer.append("<td class='formRequiredLabel' width='20%'>");
-			stringBuffer.append(controlInterface.getCaption());
-			stringBuffer.append("</td>");
-		}
-		else
-		{
-			stringBuffer.append("<td class='formRequiredNotice' width='2%'>");
-			stringBuffer.append("&nbsp;");
-			stringBuffer.append("</td>");
-
-			stringBuffer.append("<td class='formLabel' width='20%'>");
-			stringBuffer.append(controlInterface.getCaption());
-		}
-
-		stringBuffer.append("<td class='formField'>");
-		stringBuffer.append(controlInterface.generateHTML());
-		stringBuffer.append("</td>");
-		stringBuffer.append("</tr>");
-	}
 
 	/**
 	 * 
@@ -118,7 +32,7 @@ public class UserInterfaceiUtility
 	 * @throws DynamicExtensionsSystemException
 	 */
 	@SuppressWarnings("unchecked")
-	private static void generateHTMLforGrid(StringBuffer stringBuffer, ContainmentAssociationControlInterface containmentAssociationControl,
+	public static void generateHTMLforGrid(StringBuffer stringBuffer, ContainmentAssociationControlInterface containmentAssociationControl,
 			ContainerInterface subContainer) throws DynamicExtensionsSystemException
 	{
 		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(subContainer.getControlCollection());

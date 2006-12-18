@@ -11,6 +11,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterfa
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 
 /**
@@ -18,10 +19,7 @@ import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
  * @created 28-Sep-2006 12:20:07 PM
  * @hibernate.class table="DYEXTN_CONTROL"
  */
-public abstract class Control extends DynamicExtensionBaseDomainObject
-		implements
-			Serializable,
-			ControlInterface
+public abstract class Control extends DynamicExtensionBaseDomainObject implements Serializable, ControlInterface
 {
 
 	/**
@@ -199,8 +197,9 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	public final String generateHTML() throws DynamicExtensionsSystemException
 	{
 		String htmlString = "";
-		if (getParentContainer().getMode() != null
-				&& getParentContainer().getMode().equalsIgnoreCase(WebUIManagerConstants.VIEW_MODE))
+		String controlLabelHTML = getControlLabelHTML();
+
+		if (getParentContainer().getMode() != null && getParentContainer().getMode().equalsIgnoreCase(WebUIManagerConstants.VIEW_MODE))
 		{
 			htmlString = generateViewModeHTML();
 		}
@@ -208,7 +207,42 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 		{
 			htmlString = generateEditModeHTML();
 		}
-		return htmlString;
+
+		StringBuffer stringBuffer = new StringBuffer();
+		stringBuffer.append("<tr>");
+		stringBuffer.append(controlLabelHTML);
+		stringBuffer.append("<td class='formField'>");
+		stringBuffer.append(htmlString);
+		stringBuffer.append("</td>");
+		stringBuffer.append("</tr>");
+
+		return stringBuffer.toString();
+	}
+
+	protected String getControlLabelHTML()
+	{
+		boolean isControlRequired = UserInterfaceiUtility.isControlRequired(this);
+		StringBuffer stringBuffer = new StringBuffer();
+
+		stringBuffer.append("<td class='formRequiredNotice' width='2%'>");
+		if (isControlRequired)
+		{
+			stringBuffer.append(this.getParentContainer().getRequiredFieldIndicatior() + "&nbsp;");
+			stringBuffer.append("</td>");
+
+			stringBuffer.append("<td class='formRequiredLabel' width='20%'>");
+		}
+		else
+		{
+			stringBuffer.append("&nbsp;");
+			stringBuffer.append("</td>");
+
+			stringBuffer.append("<td class='formLabel' width='20%'>");
+
+		}
+		stringBuffer.append(this.getCaption());
+		stringBuffer.append("</td>");
+		return stringBuffer.toString();
 	}
 
 	/**
@@ -265,8 +299,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 		EntityInterface entity = abstractAttributeInterface.getEntity();
 		Long entityIdentifier = entity.getId();
 		EntityManagerInterface entityManager = EntityManager.getInstance();
-		ContainerInterface container = entityManager
-				.getContainerByEntityIdentifier(entityIdentifier);
+		ContainerInterface container = entityManager.getContainerByEntityIdentifier(entityIdentifier);
 		if (this.getSequenceNumber() != null)
 		{
 			return "Control_" + container.getId() + "_" + this.getSequenceNumber();

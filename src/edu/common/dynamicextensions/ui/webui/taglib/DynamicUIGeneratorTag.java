@@ -8,7 +8,6 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.wustl.common.util.logger.Logger;
 
 public class DynamicUIGeneratorTag extends TagSupport
@@ -78,7 +77,7 @@ public class DynamicUIGeneratorTag extends TagSupport
 		}
 		try
 		{
-			String generatedHTML = UserInterfaceiUtility.generateHTML(this.containerInterface);
+			String generatedHTML = this.containerInterface.generateContainerHTML();
 			JspWriter out = pageContext.getOut();
 			out.println(generatedHTML);
 		}

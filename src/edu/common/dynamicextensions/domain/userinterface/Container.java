@@ -2,20 +2,20 @@
 package edu.common.dynamicextensions.domain.userinterface;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 
 import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
-import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
-import edu.wustl.common.actionForm.AbstractActionForm;
-import edu.wustl.common.domain.AbstractDomainObject;
-import edu.wustl.common.exception.AssignDataException;
 
 /**
  * @version 1.0
@@ -28,6 +28,7 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 	 * 
 	 */
 	private static final long serialVersionUID = 8092366994778601914L;
+
 	/**
 	 * @return
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
@@ -71,13 +72,12 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 	 * Entity to which this container is associated.
 	 */
 	protected Entity entity;
-	
+
 	/**
 	 * 
 	 */
 	protected String mode = WebUIManagerConstants.EDIT_MODE;
 
-	
 	/**
 	 * @return
 	 */
@@ -86,7 +86,6 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 		return mode;
 	}
 
-	
 	/**
 	 * @param mode
 	 */
@@ -293,6 +292,51 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 				controlCollection.remove(controlInterface);
 			}
 		}
+	}
+
+	/**
+	 * @return return the HTML string for this type of a object
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	public String generateContainerHTML() throws DynamicExtensionsSystemException
+	{
+		StringBuffer stringBuffer = new StringBuffer();
+
+		stringBuffer.append("<table summary='' cellpadding='3' cellspacing='0'  align='center' width = '100%'>");
+		stringBuffer.append("<tr>");
+		stringBuffer.append("<td class='formMessage' colspan='3'>");
+		stringBuffer.append(this.getRequiredFieldIndicatior() + "&nbsp;");
+		stringBuffer.append(this.getRequiredFieldWarningMessage());
+		stringBuffer.append("</td>");
+		stringBuffer.append("</tr>");
+
+		stringBuffer.append(generateControlsHTML());
+		stringBuffer.append("</table>");
+		return stringBuffer.toString();
+	}
+
+	/**
+	 * @return return the HTML string for this type of a object
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	@SuppressWarnings("unchecked")
+	public String generateControlsHTML() throws DynamicExtensionsSystemException
+	{
+		StringBuffer stringBuffer = new StringBuffer();
+
+		stringBuffer.append("<tr>");
+		stringBuffer.append("<td class='formTitle' colspan='3' align='left'>");
+		stringBuffer.append(this.getCaption());
+		stringBuffer.append("</td>");
+		stringBuffer.append("</tr>");
+
+		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(this.getControlCollection());
+		Collections.sort(controlsList);
+		for (ControlInterface control : controlsList)
+		{
+			stringBuffer.append(control.generateHTML());
+		}
+		return stringBuffer.toString();
 	}
 
 }

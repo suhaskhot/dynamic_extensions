@@ -10,15 +10,11 @@ import java.util.Collections;
 import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AssociationInterface;
-import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
-import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.wustl.common.util.global.ApplicationProperties;
 
 /**
@@ -127,11 +123,14 @@ public class UserInterfaceiUtility
 	{
 		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(subContainer.getControlCollection());
 		Collections.sort(controlsList);
-		
+
 		stringBuffer.append("<tr><td>");
-		stringBuffer.append("<div style='display:none' id='" + subContainer.getId()+"_substitutionDiv'>");
+		stringBuffer.append("<div style='display:none' id='" + subContainer.getId() + "_substitutionDiv'>");
 		stringBuffer.append("<table>");
 		stringBuffer.append("<tr>");
+		stringBuffer.append("<td class='formField' width='1%'>");
+		stringBuffer.append("<input type='checkbox' name='deleteRow' value=''/>");
+		stringBuffer.append("</td>");
 		for (ControlInterface control : controlsList)
 		{
 			stringBuffer.append("<td class='formField'>");
@@ -141,24 +140,29 @@ public class UserInterfaceiUtility
 		stringBuffer.append("</tr>");
 		stringBuffer.append("</table>");
 		stringBuffer.append("</div>");
-		
-		stringBuffer.append("<input type='hidden' name='"+ subContainer.getId()+"_rowCount' id= '"+ subContainer.getId()+"_rowCount' value='0'/> ");
-		
+
+		stringBuffer.append("<input type='hidden' name='" + subContainer.getId() + "_rowCount' id= '" + subContainer.getId()
+				+ "_rowCount' value='0'/> ");
 		stringBuffer.append("</td></tr>");
-		stringBuffer.append("<tr class='formRequiredNotice'>");
 		
+		
+		stringBuffer.append("<tr class='formRequiredNotice'>");
+
 		stringBuffer.append("<td class='formRequiredNotice' width='2%'>");
 		stringBuffer.append("&nbsp;");
 		stringBuffer.append("</td>");
 		stringBuffer.append("<td class='formLabel' width='20%'>");
 		stringBuffer.append(subContainer.getCaption());
 		stringBuffer.append("</td>");
-		
+
 		stringBuffer.append("<td class='formField'>");
-		stringBuffer.append("<table id='"+ subContainer.getId()+"_table' summary='' cellpadding='3' cellspacing='0'  align='center' width = '100%'>");
-		
+		stringBuffer.append("<table id='" + subContainer.getId()
+				+ "_table' summary='' cellpadding='3' cellspacing='0' align='center' width = '100%'>");
 
 		stringBuffer.append("<tr>");
+		stringBuffer.append("<td class='formField' width='1%'>");
+		stringBuffer.append("<input type='checkbox' name='dummy' disabled/>");
+		stringBuffer.append("</td>");
 		for (ControlInterface control : controlsList)
 		{
 			boolean isControlRequired = isControlRequired(control);
@@ -183,10 +187,16 @@ public class UserInterfaceiUtility
 
 		stringBuffer.append("</tr>");
 		stringBuffer.append("</table>");
-		stringBuffer.append("</td>");
 		
-	
+		stringBuffer.append("<table><tr><td>");
+		stringBuffer.append("<button type='button' class='actionButton' id='removeRow' onclick=\"removeCheckedRow('" + subContainer.getId() + "')\">");
+		stringBuffer.append(ApplicationProperties.getValue("buttons.delete"));
+		stringBuffer.append("</button>");
+		stringBuffer.append("</td></tr></table>");
+		stringBuffer.append("</td>");
 		stringBuffer.append("</tr>");
+		
+		
 	}
 
 	/**
@@ -194,7 +204,7 @@ public class UserInterfaceiUtility
 	 * @param controlInterface
 	 * @return
 	 */
-	private static boolean isControlRequired(ControlInterface controlInterface)
+	public static boolean isControlRequired(ControlInterface controlInterface)
 	{
 		AbstractAttributeInterface abstractAttribute = controlInterface.getAbstractAttribute();
 		Collection<RuleInterface> ruleCollection = abstractAttribute.getRuleCollection();

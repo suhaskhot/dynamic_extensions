@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
@@ -86,10 +87,11 @@ public class ListBox extends SelectControl implements ListBoxInterface
 	 * @return HTML code for ListBox Control.
 	 * @throws DynamicExtensionsSystemException 
 	 */
+	@SuppressWarnings("unchecked")
 	public String generateHTML() throws DynamicExtensionsSystemException
 	{
 		List<NameValueBean> nameValueBeanList = null;
-		String defaultValue = (String) this.value;
+		List<String> valueList = (List<String>) this.value;
 
 		String strMultiSelect = "";
 		if ((isMultiSelect != null) && (isMultiSelect.booleanValue() == true))
@@ -99,12 +101,13 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		String htmlString = "<SELECT " + strMultiSelect + " size = " + this.noOfRows + " class = '" + cssClass + "' " + "' name = '"
 				+ getHTMLComponentName() + "' " + "id = '" + name + "' " + "title = '" + tooltip + "' " + ">";
 
-		if (this.value == null)
+		if (valueList == null || valueList.isEmpty())
 		{
-			defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
-			if (defaultValue == null || defaultValue.length() == 0)
+			valueList = new ArrayList<String>();
+			String defaltValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
+			if (defaltValue == null || defaltValue.length() == 0)
 			{
-				defaultValue = "";
+				valueList.add(defaltValue);
 			}
 		}
 
@@ -117,7 +120,7 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		{
 			for (NameValueBean nameValueBean : nameValueBeanList)
 			{
-				if (nameValueBean.getValue().equals(defaultValue))
+				if (valueList!= null && !valueList.isEmpty() && valueList.contains(nameValueBean.getValue()))
 				{
 					htmlString += "<OPTION VALUE='" + nameValueBean.getValue() + "' SELECTED>" + nameValueBean.getName();
 				}

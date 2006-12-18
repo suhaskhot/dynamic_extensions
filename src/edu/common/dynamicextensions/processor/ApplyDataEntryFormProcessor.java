@@ -176,7 +176,6 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 			}
 			attributeValueMap.put(abstractAttribute, valueList);
 		}
-
 	}
 
 	/**

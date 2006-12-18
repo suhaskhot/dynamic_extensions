@@ -1360,90 +1360,116 @@ function createFormAsChanged()
 }
 
 /////////////added by vishvesh
-
-
 function addRow(containerId) 
-	{
-		var divName = "";
-		divName = divName + containerId + "_substitutionDiv";
-		var div = document.getElementById(divName);
+{
+	var divName = "";
+	divName = divName + containerId + "_substitutionDiv";
+	var div = document.getElementById(divName);
 
-		var tab = div.childNodes[0];
-		tableId = containerId + "_table";
-		var table = document.getElementById (tableId);
-		var rows = table.rows;
-		var rowTobeCopied = tab.rows[0];
-		var counter = table.rows.length;
-	
-		var newRow = table.insertRow(-1);
-		var cells = rowTobeCopied.cells;
-		for(i = 0 ; i < cells.length ; i++) 
-			{  
-				var newCell = newRow.insertCell(i);
-				newCell.className = cells[i].className;
-			
-			
-					newCell.innerHTML = cells[i].innerHTML;	
-					newCell = setDefaultValues(tableId, newCell);
-					
-			
-			}
+	var tab = div.childNodes[0];
+	tableId = containerId + "_table";
+	var table = document.getElementById (tableId);
+	var rows = table.rows;
+	var rowTobeCopied = tab.rows[0];
+	var counter = table.rows.length;
 
-		var hiddenVar = "";
-		hiddenVar = hiddenVar  + containerId + "_rowCount";
+	var newRow = table.insertRow(-1);
+	var cells = rowTobeCopied.cells;
+	for(i = 0 ; i < cells.length ; i++) 
+	{  
+		var newCell = newRow.insertCell(i);
+		newCell.className = cells[i].className;
 		
-		var currentRowCounter = document.getElementById(hiddenVar); 
-		
-		currentRowCounter1 = currentRowCounter.value;
-		document.getElementById(hiddenVar).value = parseInt(currentRowCounter1) + 1;
-		
-
+		newCell.innerHTML = cells[i].innerHTML;	
+		newCell = setDefaultValues(tableId, newCell);
 	}
 
-	function removeCheckedRow(containerId)
-{   
-    var table = document.getElementById(containerId+"_table");
-	var children = table.rows;
-	//alert(children.length);
-	//var inputArray = table.getElementsByTagName('input');	
-	if(children.length>0)
-	{
-		for (k = 0; k < children.length; k++) 
-		{
-			
-		   var inputArray = table.rows[k].getElementsByTagName('input');	
-		   var len=inputArray.length;
-		   for(var i=0;i<len;i++)
-			{
-				
-			   if (inputArray[i] != null && inputArray[i].name == "deleteRow" && inputArray[i].checked ) 
-			   {		  
-					   table.deleteRow((k));			  				
-						k=0;					
-			   }
+	var hiddenVar = "";
+	hiddenVar += containerId + "_rowCount";
+	
+	var currentRowCounter = document.getElementById(hiddenVar); 
+	
+	currentRowCounter1 = currentRowCounter.value;
+	document.getElementById(hiddenVar).value = parseInt(currentRowCounter1) + 1;
+}
 
+function removeCheckedRow(containerId)
+{   
+	var table = document.getElementById(containerId + "_table");
+	var children = table.rows;
+
+	if(children.length > 0)
+	{
+		var rowsDeleted = 0;
+		
+		var hiddenVar = "";
+		hiddenVar += containerId + "_rowCount";
+		
+		for (var rowIndex = 0; rowIndex < children.length; rowIndex++)
+		{
+			var inputArray = table.rows[rowIndex].getElementsByTagName('input');
+		   	var len = inputArray.length;
+		   	for(var inputIndex = 0; inputIndex < len; inputIndex++)
+			{
+				if ((inputArray[inputIndex] != null) && (inputArray[inputIndex].name == "deleteRow") && (inputArray[inputIndex].checked)) 
+			   	{
+			   		table.deleteRow(rowIndex);
+			   					   		
+			   		rowsDeleted += 1;
+			   		children = table.rows;
+					rowIndex = 0;
+					break;
+				}
 			}
 		}
-	}
+		
+		for (var rowIndex = 0; rowIndex < children.length; rowIndex++)
+		{
+			var childObject = children[rowIndex];
+			var cells = childObject.cells;
+			for (cellIndex = 0; cellIndex < cells.length; cellIndex++)
+			{
+				var cell = cells[cellIndex ];
+				var childNodes = cell.childNodes;
+				for (childNodeIndex = 0; childNodeIndex < childNodes.length; childNodeIndex++)
+				{
+					var childNode= childNodes[childNodeIndex];
+					var childObjectName = childNode.name;
+					if (childObjectName != null && childObjectName.indexOf('_') != -1) 
+					{
+						var arr = childObjectName.split('_');
+						arr[arr.length - 1] = rowIndex;
+						var str = "";
+						for (arrIndex = 0; arrIndex < arr.length; arrIndex++)
+						{
+							str += arr[arrIndex];
+							if (arrIndex != arr.length - 2)
+							{
+								str += "_";
+							}
+						}
+						childNode.name = str;
+						break;
+					}
+				}
+			}
+		}
+		
+		var currentRowCounter = document.getElementById(hiddenVar);
+		var numberOfRows = currentRowCounter.value;
+		document.getElementById(hiddenVar).value = parseInt(numberOfRows) - rowsDeleted;
 	
-		var hiddenVar = "";
-		hiddenVar = hiddenVar  + containerId + "_rowCount";
-		
-		var currentRowCounter = document.getElementById(hiddenVar); 
-		
-		currentRowCounter1 = currentRowCounter.value;
-		document.getElementById(hiddenVar).value = parseInt(currentRowCounter1) + 1;
-		
-
+		document.getElementById(containerId + "_table").value = table;
+	}
 }
 
 function setDefaultValues(tableId, obj) 
 {
 	var children = obj.childNodes;
 	var rowIndex = document.getElementById(tableId).rows.length;
-	rowIndex = parseInt(rowIndex) - 1 ;
+	rowIndex = parseInt(rowIndex) - 1;
 	
-	for (j = 0 ; j < children.length; j++) 
+	for (var j = 0; j < children.length; j++) 
 	{
 		var childObject = children[j];
 		childObjectName = childObject.name;
@@ -1452,30 +1478,31 @@ function setDefaultValues(tableId, obj)
 		{
 			if (childObjectName.indexOf(')')!= -1)
 			{
-				childObjectName = childObjectName.substring(0,childObjectName.indexOf(')'));
+				childObjectName = childObjectName.substring(0, childObjectName.indexOf(')'));
 				
 				str = childObjectName + "_" + rowIndex;
-				str = str  +  ")";
+				str += ")";
 				childObject.name = str;
-			} else {	
-			str = childObjectName + "_" + rowIndex;
-			childObject.name = str;
 			}
-			
+			else
+			{	
+				str = childObjectName + "_" + rowIndex;
+				childObject.name = str;
+			}
 		}
-
 	}
 	return obj;
 }
+
 function formName(arr,del,str)
 {
-
-for (i = 0 ; i <arr.length ; i++)
-{
-	str = str + arr[i];
-	if (i != arr.length -1)
-	str = str + del;
-
-}
-
+	var str = "";
+	for (var i = 0 ; i <arr.length ; i++)
+	{
+		str += arr[i];
+		if(i != arr.length - 1)
+		{
+			str += del;
+		}
+	}
 }

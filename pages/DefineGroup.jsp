@@ -165,6 +165,7 @@
 			</div>
 
 			<input type="hidden" id = "createGroupAsHidden" name="createGroupAsHidden" value = "<%=createGroupAs%>" />
+			<html:hidden property='operationMode' />;
 		</html:form>
 	</body>
 </html>

@@ -89,7 +89,7 @@
 		</validations>
 	</control>
 		<!-- rules for File Upload control end-->	
-	<!-- <control name="AddSubFormControl"
+	<control name="AddSubFormControl"
 		display-label="eav.caption.AddSubFormControl">
-	</control>-->
+	</control>
 </controls>

@@ -31,6 +31,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String CACHE_MAP = "cacheMap";
 	public static final String ADD_CONTROLS_TO_FORM = "addControlsToForm";
 	public static final String SHOW_BUILD_FORM_JSP = "showBuildFormJSP";
+	public static final String EDIT_SUB_FORM_PAGE = "editSubForm";
 	public static final String LOAD_FORM_PREVIEW_ACTION = "loadFormPreviewAction";
 	public static final String SHOW_FORM_PREVIEW_JSP = "showFormPreviewJSP";
 	public static final String BUILD_FORM = "buildForm";

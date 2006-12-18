@@ -1434,21 +1434,30 @@ function removeCheckedRow(containerId)
 				for (childNodeIndex = 0; childNodeIndex < childNodes.length; childNodeIndex++)
 				{
 					var childNode= childNodes[childNodeIndex];
+					
 					var childObjectName = childNode.name;
 					if (childObjectName != null && childObjectName.indexOf('_') != -1) 
 					{
+
 						var arr = childObjectName.split('_');
+
 						arr[arr.length - 1] = rowIndex;
 						var str = "";
 						for (arrIndex = 0; arrIndex < arr.length; arrIndex++)
 						{
 							str += arr[arrIndex];
-							if (arrIndex != arr.length - 2)
+							if (arrIndex != arr.length - 1)
 							{
 								str += "_";
 							}
 						}
-						childNode.name = str;
+						if (childObjectName.indexOf(')') != -1) {
+							str = str + ")";
+						}
+						
+
+						innerHTML = replaceAll(cell.innerHTML,childObjectName,str);
+						cell.innerHTML = innerHTML;
 						break;
 					}
 				}
@@ -1467,9 +1476,9 @@ function setDefaultValues(tableId, obj)
 {
 	var children = obj.childNodes;
 	var rowIndex = document.getElementById(tableId).rows.length;
-	rowIndex = parseInt(rowIndex) - 1;
+	rowIndex = parseInt(rowIndex) - 1 ;
 	
-	for (var j = 0; j < children.length; j++) 
+	for (j = 0 ; j < children.length; j++) 
 	{
 		var childObject = children[j];
 		childObjectName = childObject.name;
@@ -1478,31 +1487,37 @@ function setDefaultValues(tableId, obj)
 		{
 			if (childObjectName.indexOf(')')!= -1)
 			{
-				childObjectName = childObjectName.substring(0, childObjectName.indexOf(')'));
+				childObjectName = childObjectName.substring(0,childObjectName.indexOf(')'));
 				
 				str = childObjectName + "_" + rowIndex;
-				str += ")";
-				childObject.name = str;
+				str = str  +  ")";
+				
+			} else {	
+			str = childObjectName + "_" + rowIndex;
+			
 			}
-			else
-			{	
-				str = childObjectName + "_" + rowIndex;
-				childObject.name = str;
-			}
+			
+			obj.innerHTML = replaceAll(obj.innerHTML,childObjectName,str);
+			
+
 		}
+
 	}
 	return obj;
 }
 
-function formName(arr,del,str)
+function replaceAll(inputString, regExpr, newString) 
 {
-	var str = "";
-	for (var i = 0 ; i <arr.length ; i++)
-	{
-		str += arr[i];
-		if(i != arr.length - 1)
-		{
-			str += del;
-		}
-	}
+  var outputStr = "";
+  var pivot ;
+  while (inputString.indexOf(regExpr) != - 1 )
+
+   {
+      inputString = inputString.replace(regExpr,newString);
+	  pivot  =   inputString.indexOf(newString) + newString.length;
+	  outputStr  =   outputStr  + inputString.substring(0, pivot) ;
+	  inputString =   inputString.substring(pivot,inputString.length);
+   }
+  outputStr = outputStr + inputString;
+  return outputStr;
 }

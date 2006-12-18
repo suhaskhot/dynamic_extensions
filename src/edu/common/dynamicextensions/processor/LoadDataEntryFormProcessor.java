@@ -19,6 +19,7 @@ import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.actionform.DataEntryForm;
+import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.wustl.common.actionForm.AbstractActionForm;
@@ -55,7 +56,7 @@ public class LoadDataEntryFormProcessor
 	 * @throws DynamicExtensionsApplicationException DynamicExtensionsApplicationException
 	 */
 	public ContainerInterface loadDataEntryForm(AbstractActionForm actionForm, ContainerInterface containerInterface, String containerIdentifier,
-			String recordIdentifier) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+			String recordIdentifier,String mode) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		DataEntryForm dataEntryForm = (DataEntryForm) actionForm;
 
@@ -64,6 +65,10 @@ public class LoadDataEntryFormProcessor
 			containerInterface = DynamicExtensionsUtility.getContainerByIdentifier(containerIdentifier);
 		}
 
+		if (mode != null && mode.equalsIgnoreCase(WebUIManagerConstants.VIEW_MODE)) {
+			
+			containerInterface.setMode(mode);
+		}
 		EntityInterface entity = containerInterface.getEntity();
 
 		// Get corresponding Control Collection of the Container

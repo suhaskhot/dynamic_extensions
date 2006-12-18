@@ -36,7 +36,10 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
+		String mode = request.getParameter(WebUIManagerConstants.MODE_PARAM_NAME);
+
 		String callBackURL = request.getParameter(WebUIManagerConstants.CALLBACK_URL_PARAM_NAME);
+		
 		if (callBackURL != null && !callBackURL.equals(""))
 		{
 			CacheManager.clearCache(request);
@@ -50,7 +53,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 
 		LoadDataEntryFormProcessor loadDataEntryFormProcessor = LoadDataEntryFormProcessor.getInstance();
 		containerInterface = loadDataEntryFormProcessor.loadDataEntryForm((AbstractActionForm) form, containerInterface, containerIdentifier,
-				recordId);
+				recordId,mode);
 		CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
 		return mapping.findForward("Success");
 	}

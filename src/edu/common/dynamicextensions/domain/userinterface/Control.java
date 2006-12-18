@@ -11,14 +11,19 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterfa
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 
 /**
  * @version 1.0
  * @created 28-Sep-2006 12:20:07 PM
  * @hibernate.class table="DYEXTN_CONTROL"
  */
-public abstract class Control extends DynamicExtensionBaseDomainObject implements Serializable, ControlInterface
+public abstract class Control extends DynamicExtensionBaseDomainObject
+		implements
+			Serializable,
+			ControlInterface
 {
+
 	/**
 	 * @return
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
@@ -73,7 +78,11 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	 * 
 	 */
 	protected Boolean sequenceNumberChanged = false;
-	
+	/**
+	 * 
+	 */
+	protected Container parentContainer;
+
 	/**
 	 * Empty Constructor
 	 */
@@ -185,9 +194,34 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 
 	/**
 	 * @return return the HTML string for this type of a object
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException  exception
 	 */
-	public abstract String generateHTML() throws DynamicExtensionsSystemException;
+	public final String generateHTML() throws DynamicExtensionsSystemException
+	{
+		String htmlString = "";
+		if (getParentContainer().getMode() != null
+				&& getParentContainer().getMode().equalsIgnoreCase(WebUIManagerConstants.VIEW_MODE))
+		{
+			htmlString = generateViewModeHTML();
+		}
+		else
+		{
+			htmlString = generateEditModeHTML();
+		}
+		return htmlString;
+	}
+
+	/**
+	 * @return String html
+	 * @throws DynamicExtensionsSystemException exception
+	 */
+	protected abstract String generateViewModeHTML() throws DynamicExtensionsSystemException;
+
+	/**
+	 * @return String html
+	 * @throws DynamicExtensionsSystemException exception
+	 */
+	protected abstract String generateEditModeHTML() throws DynamicExtensionsSystemException;
 
 	/**
 	 * @return
@@ -231,7 +265,8 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		EntityInterface entity = abstractAttributeInterface.getEntity();
 		Long entityIdentifier = entity.getId();
 		EntityManagerInterface entityManager = EntityManager.getInstance();
-		ContainerInterface container = entityManager.getContainerByEntityIdentifier(entityIdentifier);
+		ContainerInterface container = entityManager
+				.getContainerByEntityIdentifier(entityIdentifier);
 		if (this.getSequenceNumber() != null)
 		{
 			return "Control_" + container.getId() + "_" + this.getSequenceNumber();
@@ -265,5 +300,22 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		Integer thisSequenceNumber = this.sequenceNumber;
 		Integer otherSequenceNumber = control.getSequenceNumber();
 		return thisSequenceNumber.compareTo(otherSequenceNumber);
+	}
+
+	/**
+	 *@hibernate.many-to-one column="CONTAINER_ID" class="edu.common.dynamicextensions.domain.userinterface.Container" constrained="true"
+	 * @return parentContainer
+	 */
+	public Container getParentContainer()
+	{
+		return parentContainer;
+	}
+
+	/**
+	 * @param parentContainer parentContainer
+	 */
+	public void setParentContainer(Container parentContainer)
+	{
+		this.parentContainer = parentContainer;
 	}
 }

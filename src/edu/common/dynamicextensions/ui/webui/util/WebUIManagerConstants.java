@@ -7,6 +7,11 @@ public interface WebUIManagerConstants
 	 * 
 	 */
 	String CREATE_CONTAINER_URL=  "/dynamicExtensions";
+	
+	/**
+	 * 
+	 */
+	String MODE_PARAM_NAME =  "mode";
 	/**
 	 * 
 	 */
@@ -57,6 +62,13 @@ public interface WebUIManagerConstants
 	 * 
 	 */
 	String GET_ALL_CONTAINERS = "getAllContainers";
-	
+	/**
+	 * 
+	 */
+	String EDIT_MODE = "edit";
+	/**
+	 * 
+	 */
+	String VIEW_MODE = "view";
 	
 }

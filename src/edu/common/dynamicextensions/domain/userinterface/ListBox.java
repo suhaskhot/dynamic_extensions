@@ -88,7 +88,7 @@ public class ListBox extends SelectControl implements ListBoxInterface
 	 * @throws DynamicExtensionsSystemException 
 	 */
 	@SuppressWarnings("unchecked")
-	public String generateHTML() throws DynamicExtensionsSystemException
+	public String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
 		List<NameValueBean> nameValueBeanList = null;
 		List<String> valueList = (List<String>) this.value;
@@ -98,16 +98,18 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		{
 			strMultiSelect = "MULTIPLE ";
 		}
-		String htmlString = "<SELECT " + strMultiSelect + " size = " + this.noOfRows + " class = '" + cssClass + "' " + "' name = '"
-				+ getHTMLComponentName() + "' " + "id = '" + name + "' " + "title = '" + tooltip + "' " + ">";
+		String htmlString = "<SELECT " + strMultiSelect + " size = " + this.noOfRows + " class = '"
+				+ cssClass + "' " + "' name = '" + getHTMLComponentName() + "' " + "id = '" + name
+				+ "' " + "title = '" + tooltip + "' " + ">";
 
 		if (valueList == null || valueList.isEmpty())
 		{
 			valueList = new ArrayList<String>();
-			String defaltValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
-			if (defaltValue == null || defaltValue.length() == 0)
+
+			String defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
+			if (defaultValue != null && defaultValue.trim().length() != 0)
 			{
-				valueList.add(defaltValue);
+				valueList.add(defaultValue);
 			}
 		}
 
@@ -122,17 +124,44 @@ public class ListBox extends SelectControl implements ListBoxInterface
 			{
 				if (valueList!= null && !valueList.isEmpty() && valueList.contains(nameValueBean.getValue()))
 				{
-					htmlString += "<OPTION VALUE='" + nameValueBean.getValue() + "' SELECTED>" + nameValueBean.getName();
+					htmlString += "<OPTION VALUE='" + nameValueBean.getValue() + "' SELECTED>"
+							+ nameValueBean.getName();
 				}
 				else
 				{
-					htmlString += "<OPTION VALUE='" + nameValueBean.getValue() + "'>" + nameValueBean.getName();
+					htmlString += "<OPTION VALUE='" + nameValueBean.getValue() + "'>"
+							+ nameValueBean.getName();
 				}
 			}
 		}
 		htmlString = htmlString + "</SELECT>";
 
 		return htmlString;
+	}
+
+	@SuppressWarnings("unchecked")
+	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
+	{
+
+		List<String> selectedOptions = (List<String>) this.value;
+		StringBuffer htmlString = new StringBuffer("&nbsp;");
+		if (value != null)
+		{
+			htmlString = new StringBuffer();
+			htmlString.append("<span class = '");
+			htmlString.append(cssClass);
+			htmlString.append("'>");
+			for (String string : selectedOptions)
+			{
+				htmlString.append(string);
+				htmlString.append("<br>");
+
+			}
+
+			htmlString.append("</span>");
+
+		}
+		return htmlString.toString();
 	}
 
 }

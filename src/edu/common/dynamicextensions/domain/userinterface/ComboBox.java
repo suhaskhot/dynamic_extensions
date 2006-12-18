@@ -40,7 +40,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 	 * @return HTML code for ComboBox
 	 * @throws DynamicExtensionsSystemException if HTMLComponentName() fails.
 	 */
-	public String generateHTML() throws DynamicExtensionsSystemException
+	public String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
 		List<NameValueBean> nameValueBeanList = null;
 		String defaultValue = (String)this.value;
@@ -98,5 +98,19 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 	{
 		listOfValues = choiceList;
 	}
+
+	
+	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
+	{
+
+		String htmlString = "&nbsp;";
+		if (value != null) {
+		htmlString = "<span class = '"+ cssClass+ "'> " + this.value.toString() + "</span>";
+		}
+		return htmlString;
+		
+	}
+
+	
 
 }

@@ -28,7 +28,7 @@ public class UserInterfaceiUtility
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	@SuppressWarnings("unchecked")
+
 	public static String generateHTML(ContainerInterface container) throws DynamicExtensionsSystemException
 	{
 		StringBuffer stringBuffer = new StringBuffer();

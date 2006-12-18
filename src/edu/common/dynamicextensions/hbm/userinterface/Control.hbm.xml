@@ -82,6 +82,16 @@
             column="ABSTRACT_ATTRIBUTE_ID"
         />
 
+        <many-to-one
+            name="parentContainer"
+            class="edu.common.dynamicextensions.domain.userinterface.Container"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="CONTAINER_ID"
+        />
+
         <!--
             To add non XDoclet property mappings, create a file named
                 hibernate-properties-Control.xml

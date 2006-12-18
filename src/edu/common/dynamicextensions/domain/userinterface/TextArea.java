@@ -79,7 +79,7 @@ public class TextArea extends Control implements TextAreaInterface
 	 * @return HTML code for TextArea
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public String generateHTML() throws DynamicExtensionsSystemException
+	public String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
 		String defaultValue = (String) this.value;
 		if (this.value == null)
@@ -93,8 +93,8 @@ public class TextArea extends Control implements TextAreaInterface
 
 		String htmlComponentName = getHTMLComponentName();
 
-		String htmlString = "<textarea " + "class = '" + this.cssClass + "' " + "name = '" + htmlComponentName + "' " + "id = '" + htmlComponentName
-				+ "' ";
+		String htmlString = "<textarea " + "class = '" + this.cssClass + "' " + "name = '"
+				+ htmlComponentName + "' " + "id = '" + htmlComponentName + "' ";
 
 		int noCols = columns.intValue();
 		int noRows = rows.intValue();
@@ -122,7 +122,8 @@ public class TextArea extends Control implements TextAreaInterface
 		AttributeInterface attribute = (AttributeInterface) this.getAbstractAttribute();
 		if (attribute != null)
 		{
-			StringAttributeTypeInformation stringAttributeTypeInformation = (StringAttributeTypeInformation) attribute.getAttributeTypeInformation();
+			StringAttributeTypeInformation stringAttributeTypeInformation = (StringAttributeTypeInformation) attribute
+					.getAttributeTypeInformation();
 			if (stringAttributeTypeInformation != null)
 			{
 				maxChars = stringAttributeTypeInformation.getSize().intValue();
@@ -131,7 +132,8 @@ public class TextArea extends Control implements TextAreaInterface
 
 		if (maxChars != 0)
 		{
-			htmlString += "onblur=\"checkTextLength('" + htmlComponentName + "', " + maxChars + ")\">";
+			htmlString += "onblur=\"checkTextLength('" + htmlComponentName + "', " + maxChars
+					+ ")\">";
 		}
 		else
 		{
@@ -168,6 +170,21 @@ public class TextArea extends Control implements TextAreaInterface
 	public void setIsPassword(Boolean isPassword)
 	{
 		this.isPassword = isPassword;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domain.userinterface.Control#generateViewModeHTML()
+	 */
+	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
+	{
+
+		String htmlString = "&nbsp;";
+		if (value != null)
+		{
+			htmlString = "<span class = '" + cssClass + "'> " + this.value.toString() + "</span>";
+		}
+		return htmlString;
+
 	}
 
 }

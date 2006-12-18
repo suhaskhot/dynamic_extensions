@@ -11,6 +11,8 @@ import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
+import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.exception.AssignDataException;
@@ -69,6 +71,29 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 	 * Entity to which this container is associated.
 	 */
 	protected Entity entity;
+	
+	/**
+	 * 
+	 */
+	protected String mode = WebUIManagerConstants.EDIT_MODE;
+
+	
+	/**
+	 * @return
+	 */
+	public String getMode()
+	{
+		return mode;
+	}
+
+	
+	/**
+	 * @param mode
+	 */
+	public void setMode(String mode)
+	{
+		this.mode = mode;
+	}
 
 	/**
 	 * Empty constructor
@@ -219,6 +244,7 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 			controlCollection = new HashSet<ControlInterface>();
 		}
 		controlCollection.add(controlInterface);
+		controlInterface.setParentContainer(this);
 	}
 
 	/**

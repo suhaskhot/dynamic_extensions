@@ -36,7 +36,7 @@ public class RadioButton extends Control implements RadioButtonInterface
 	 * @return HTML code for RadioButton
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public String generateHTML() throws DynamicExtensionsSystemException
+	protected String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
 		List<NameValueBean> nameValueBeanList = null;
 		String htmlString = "";
@@ -59,15 +59,19 @@ public class RadioButton extends Control implements RadioButtonInterface
 					String optionName = nameValueBean.getName();
 					if (nameValueBean.getValue().equals(defaultValue))
 					{
-						htmlString += "<input type='radio' " + "class = '" + cssClass + "' " + "name = '" + htmlComponentName + "' " + "value = '"
-								+ nameValueBean.getValue() + "' " + "id = '" + optionName + "' " + "title = '" + tooltip + "' checked> "
-								+ "<label for=\"" + optionName + "\">" + optionName + "</label> ";
+						htmlString += "<input type='radio' " + "class = '" + cssClass + "' "
+								+ "name = '" + htmlComponentName + "' " + "value = '"
+								+ nameValueBean.getValue() + "' " + "id = '" + optionName + "' "
+								+ "title = '" + tooltip + "' checked> " + "<label for=\""
+								+ optionName + "\">" + optionName + "</label> ";
 					}
 					else
 					{
-						htmlString += "<input type='radio' " + "class = '" + cssClass + "' " + "name = '" + htmlComponentName + "' " + "value = '"
-								+ nameValueBean.getValue() + "' " + "id = '" + optionName + "' " + "title = '" + tooltip + "'> " + "<label for=\""
-								+ optionName + "\">" + optionName + "</label> ";
+						htmlString += "<input type='radio' " + "class = '" + cssClass + "' "
+								+ "name = '" + htmlComponentName + "' " + "value = '"
+								+ nameValueBean.getValue() + "' " + "id = '" + optionName + "' "
+								+ "title = '" + tooltip + "'> " + "<label for=\"" + optionName
+								+ "\">" + optionName + "</label> ";
 					}
 				}
 			}
@@ -82,6 +86,16 @@ public class RadioButton extends Control implements RadioButtonInterface
 	 */
 	public void setAttribute(AbstractAttributeInterface abstractAttribute)
 	{
+	}
+
+
+	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
+	{
+		String htmlString = "&nbsp;";
+		if (value != null) {
+		htmlString = "<span class = '"+ cssClass+ "'> " + this.value.toString() + "</span>";
+		}
+		return htmlString;
 	}
 
 }

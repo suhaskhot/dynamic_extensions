@@ -4,6 +4,7 @@ package edu.common.dynamicextensions.domain.userinterface;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.ui.util.Constants;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 
 /**
@@ -27,12 +28,8 @@ public class CheckBox extends Control implements CheckBoxInterface
 	{
 	}
 
-	/**
-	 * This method generates the HTML code for CheckBox control on the HTML form
-	 * @return HTML code for CheckBox
-	 * @throws DynamicExtensionsSystemException if couldn't create HTML component 
-	 */
-	public String generateHTML() throws DynamicExtensionsSystemException
+
+	protected String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
 		String isChecked = (String) this.value;
 		String htmlString = "";
@@ -54,6 +51,17 @@ public class CheckBox extends Control implements CheckBoxInterface
 		}
 
 		return htmlString;
+		
+	}
+	
+	protected String generateViewModeHTML () throws DynamicExtensionsSystemException
+	{
+		String htmlString = "&nbsp;";
+		if (value != null) {
+		htmlString = "<span class = '"+ cssClass+ "'> " + this.value.toString() + "</span>";
+		}
+		return htmlString;
+		
 	}
 
 	/**

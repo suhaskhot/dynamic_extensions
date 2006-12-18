@@ -62,7 +62,7 @@ public class ContainmentAssociationControl extends Control implements Containmen
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface#generateHTML()
 	 */
-	public String generateHTML() throws DynamicExtensionsSystemException
+	public String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
 		return UserInterfaceiUtility.generateHTML(container);
 	}
@@ -82,4 +82,12 @@ public class ContainmentAssociationControl extends Control implements Containmen
 		}
 		return isOneToMany;
 	}
+
+
+	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
+	{
+		// TODO Auto-generated method stub
+		return "&nbsp;";
+	}
+
 }

@@ -3,6 +3,7 @@
  * @author
  *
  */
+
 package edu.common.dynamicextensions.domain.userinterface;
 
 import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
@@ -17,26 +18,28 @@ import edu.wustl.common.util.global.ApplicationProperties;
  */
 public class FileUploadControl extends Control implements FileUploadInterface
 {
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 3211268406984504475L;
 	Integer columns = null;
-	
+
 	/**
 	 * @return 
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public String generateHTML() throws DynamicExtensionsSystemException
+	protected String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
 		FileAttributeRecordValue fileAttributeRecordValue = (FileAttributeRecordValue) this.value;
 		String htmlString = "";
-		if(fileAttributeRecordValue!= null && fileAttributeRecordValue.getFileName() != null)
+		if (fileAttributeRecordValue != null && fileAttributeRecordValue.getFileName() != null)
 		{
-			htmlString = ApplicationProperties.getValue("eav.file.fileName") + "&nbsp;" + fileAttributeRecordValue.getFileName();
+			htmlString = ApplicationProperties.getValue("eav.file.fileName") + "&nbsp;"
+					+ fileAttributeRecordValue.getFileName();
 		}
-		htmlString = htmlString + "&nbsp;<input type= \"file\" " +  "name = \"value(" + getHTMLComponentName() + ")\" " + "id = \""
-		+ getHTMLComponentName() + "\"/>";
+		htmlString = htmlString + "&nbsp;<input type= \"file\" " + "name = \"value("
+				+ getHTMLComponentName() + ")\" " + "id = \"" + getHTMLComponentName() + "\"/>";
 		return htmlString;
 	}
 
@@ -55,6 +58,19 @@ public class FileUploadControl extends Control implements FileUploadInterface
 	public void setColumns(Integer columns)
 	{
 		this.columns = columns;
+	}
+
+	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
+	{
+		FileAttributeRecordValue fileAttributeRecordValue = (FileAttributeRecordValue) this.value;
+
+		String htmlString = "&nbsp;";
+		if (fileAttributeRecordValue != null)
+		{
+			String fileName = fileAttributeRecordValue.getFileName();
+			htmlString = "<span class = '" + cssClass + "'> " + fileName + "</span>";
+		}
+		return htmlString;
 	}
 
 }

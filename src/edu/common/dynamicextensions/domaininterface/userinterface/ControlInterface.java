@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.domaininterface.userinterface;
 
+import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
@@ -126,5 +127,16 @@ public interface ControlInterface extends Comparable
 	 * @param sequenceNumberChanged
 	 */
 	void setSequenceNumberChanged(Boolean sequenceNumberChanged);
+	
+	/**
+	 * @return parentContainer
+	 */
+	Container getParentContainer();
+
+
+	/**
+	 * @param parentContainer parentContainer
+	 */
+	void setParentContainer(Container parentContainer);
 
 }

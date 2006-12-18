@@ -116,4 +116,14 @@ public interface ContainerInterface
 	 * @param controlInterface : control interface object to be removed
 	 */
 	void removeControl(ControlInterface controlInterface);
+	/**
+	 * @return
+	 */
+	String getMode();
+
+	/**
+	 * @param mode
+	 */
+	void setMode(String mode);
+
 }

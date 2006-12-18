@@ -63,6 +63,7 @@ public class BaseDynamicExtensionsAction extends DispatchAction
 	protected ActionErrors getErrorMessages(List<String> errorList)
 	{
 		ActionErrors actionErrors = new ActionErrors();
+		
 		if (errorList != null && !errorList.isEmpty())
 		{
 			for (String errorMessage : errorList)
@@ -83,7 +84,7 @@ public class BaseDynamicExtensionsAction extends DispatchAction
 		List<String> list = new ArrayList<String>();
 		boolean isSystemException = handleException(e, list);
 		saveErrors(request, getErrorMessages(list));
-		String actionForwardString = "";
+		String actionForwardString = null;
 		if (isSystemException)
 		{
 			actionForwardString = Constants.SYSTEM_EXCEPTION;

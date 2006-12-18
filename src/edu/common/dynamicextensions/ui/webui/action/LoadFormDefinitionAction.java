@@ -57,16 +57,16 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 		{
 			populateContainerInformation(request,formDefinitionForm);
 		}
-		catch (DynamicExtensionsSystemException dynamicExtensionsSystemException)
+		catch (Exception e)
 		{
-			String actionForwardString = catchException(dynamicExtensionsSystemException, request);
+			String actionForwardString = catchException(e, request);
+			if((actionForwardString==null)||(actionForwardString.equals("")))
+			{
+				return mapping.getInputForward(); 
+			}
 			return(mapping.findForward(actionForwardString));
 		}
-		catch (DynamicExtensionsApplicationException dynamicExtensionsApplicationException)
-		{
-			String actionForwardString = catchException(dynamicExtensionsApplicationException, request);
-			return(mapping.findForward(actionForwardString));
-		}
+		
 		initializeFormAttributes(request,formDefinitionForm);
 		return (mapping.findForward(Constants.SUCCESS));
 	}

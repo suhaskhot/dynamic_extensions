@@ -94,10 +94,13 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 				initializeMeasurementUnits(controlsForm);
 			}
 		}
-		catch (DynamicExtensionsSystemException e)
+		catch (Exception e)
 		{
 			actionForwardString = catchException(e, request);
-			
+			if((actionForwardString==null)||(actionForwardString.equals("")))
+			{
+				return mapping.getInputForward(); 
+			}
 		}
 		return (mapping.findForward(actionForwardString));
 	}

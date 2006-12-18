@@ -32,7 +32,7 @@ PUBLIC
 			type="edu.common.dynamicextensions.ui.webui.action.LoadGroupDefinitionAction"
 			name="groupForm"
 			validate="false"
-			input="/LoadGroupDefinitionAction.do"
+			input="/DynamicExtensionHomePage.do"
 			scope="request">
 			<forward name="success" path="/pages/DefineGroup.jsp" />
 		</action>
@@ -89,7 +89,7 @@ PUBLIC
 		    type="edu.common.dynamicextensions.ui.webui.action.SelectControlAction" 
 		    name="controlsForm"
 			validate="false"
-			input="/SelectControlAction.do"
+			input="/LoadFormControlsAction.do"
 			scope="request">
 			<forward name="success" path="/pages/BuildForm.jsp" />
 			<forward name="addSubForm" path="/LoadFormDefinitionAction.do" />
@@ -110,7 +110,7 @@ PUBLIC
 		    type="edu.common.dynamicextensions.ui.webui.action.SaveEntityAction" 
 		    name="controlsForm"
 			validate="false"
-			input="/SaveEntityAction.do"
+			input="/LoadFormControlsAction.do"
 			scope="request">
 			<forward name="success" path="/LoadDataEntryFormAction.do?showFormPreview=flase" />
 			<forward name="failure" path="/pages/ErrorPage.jsp" />

@@ -72,6 +72,10 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 		catch (Exception e)
 		{
 			String actionForwardString = catchException(e, request);
+			if((actionForwardString==null)||(actionForwardString.equals("")))
+			{
+				return mapping.getInputForward(); 
+			}
 			actionForward = mapping.findForward(actionForwardString);
 		}
 		return actionForward;

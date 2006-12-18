@@ -47,21 +47,31 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 	{
 		String target  = null;
 		FormDefinitionForm formDefinitionForm = (FormDefinitionForm) form;
-		
+
 		String operationMode = formDefinitionForm.getOperationMode();
-		if((operationMode!=null)&&(operationMode.equals(Constants.ADD_SUB_FORM_OPR)))
+		try
 		{
-			target = addSubForm(request,formDefinitionForm);
+			if((operationMode!=null)&&(operationMode.equals(Constants.ADD_SUB_FORM_OPR)))
+			{
+				target = addSubForm(request,formDefinitionForm);
+			}
+			else
+			{
+				target = applyFormDefinition(request,formDefinitionForm);
+			}
 		}
-		else
+		catch (Exception e)
 		{
-			target = applyFormDefinition(request,formDefinitionForm);
+			target = catchException(e, request);
+			if((target==null)||(target.equals("")))
+			{
+				return mapping.getInputForward(); 
+			}
 		}
-		
 		return mapping.findForward(target);
 	}
 
@@ -74,12 +84,12 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	private String addSubForm(HttpServletRequest request, FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ContainerInterface mainFormContainer = WebUIManager.getCurrentContainer(request);
-		
+
 		ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor.getInstance();
 		ContainerInterface subFormContainer = applyFormDefinitionProcessor.getSubFormContainer(formDefinitionForm);
 		AssociationInterface association = applyFormDefinitionProcessor.associateEntity(mainFormContainer,subFormContainer,formDefinitionForm);
 		applyFormDefinitionProcessor.addSubFormControlToContainer(mainFormContainer,subFormContainer,association);
-		
+
 		if(isNewEnityCreated(formDefinitionForm))
 		{
 			//if new entity is created, set its container id in form and container interface in cache.
@@ -89,7 +99,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 				updateCacheReferences(request,subFormContainer);
 			}
 		}
-		
+
 		String target = Constants.BUILD_FORM;
 		return target;
 	}
@@ -126,51 +136,47 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	/**
 	 * @param request
 	 * @param formDefinitionForm
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	private String applyFormDefinition(HttpServletRequest request, FormDefinitionForm formDefinitionForm)
+	private String applyFormDefinition(HttpServletRequest request, FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		String target = "";
 		String operation = "";
 		//ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 		ContainerInterface containerInterface = WebUIManager.getCurrentContainer(request);
 		boolean saveEntity = true;
-		try
+		operation = formDefinitionForm.getOperation();
+		if ((operation != null) && (operation.equalsIgnoreCase(Constants.BUILD_FORM)))
 		{
-			operation = formDefinitionForm.getOperation();
-			if ((operation != null) && (operation.equalsIgnoreCase(Constants.BUILD_FORM)))
-			{
-				saveEntity = false;
-				target = Constants.BUILD_FORM;
-			}
-			else if ((operation != null) && (operation.equalsIgnoreCase(Constants.EDIT_FORM)))
-			{// When we click on Next or Save in Edit Mode 
-				saveEntity = true;
-				target = Constants.BUILD_FORM;
-			}
-			else
-			{// When we click on save in Add Mode
-				saveEntity = true;
-				target = Constants.SHOW_DYNAMIC_EXTENSIONS_HOMEPAGE;
-			}
+			saveEntity = false;
+			target = Constants.BUILD_FORM;
+		}
+		else if ((operation != null) && (operation.equalsIgnoreCase(Constants.EDIT_FORM)))
+		{// When we click on Next or Save in Edit Mode 
+			saveEntity = true;
+			target = Constants.BUILD_FORM;
+		}
+		else
+		{// When we click on save in Add Mode
+			saveEntity = true;
+			target = Constants.SHOW_DYNAMIC_EXTENSIONS_HOMEPAGE;
+		}
 
-			if(saveEntity == true)
-			{
-				saveMessages(request, getSuccessMessage(formDefinitionForm));
-			}
-			EntityGroupInterface entityGroup =(EntityGroupInterface) CacheManager.getObjectFromCache(request, Constants.ENTITYGROUP_INTERFACE);
-			
-			//If not in Edit mode, then save the Container in Database and Add the same to the Cache manager.
-			if (operation != null && !operation.equalsIgnoreCase(Constants.EDIT_FORM))
-			{
-				ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor.getInstance();
-				containerInterface = applyFormDefinitionProcessor.addEntityToContainer(containerInterface, formDefinitionForm, saveEntity,entityGroup);
-				CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
-			}
-		}
-		catch (Exception e)
+		if(saveEntity == true)
 		{
-			target = catchException(e, request);
+			saveMessages(request, getSuccessMessage(formDefinitionForm));
 		}
+		EntityGroupInterface entityGroup =(EntityGroupInterface) CacheManager.getObjectFromCache(request, Constants.ENTITYGROUP_INTERFACE);
+
+		//If not in Edit mode, then save the Container in Database and Add the same to the Cache manager.
+		if (operation != null && !operation.equalsIgnoreCase(Constants.EDIT_FORM))
+		{
+			ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor.getInstance();
+			containerInterface = applyFormDefinitionProcessor.addEntityToContainer(containerInterface, formDefinitionForm, saveEntity,entityGroup);
+			CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
+		}
+
 		return target;
 	}
 

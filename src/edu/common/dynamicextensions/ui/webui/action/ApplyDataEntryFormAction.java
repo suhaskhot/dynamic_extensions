@@ -91,6 +91,10 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		catch (Exception e)
 		{
 			String actionForwardString = catchException(e, request);
+			if((actionForwardString==null)||(actionForwardString.equals("")))
+			{
+				return mapping.getInputForward(); 
+			}
 			return (mapping.findForward(actionForwardString));
 		}
 		return (mapping.findForward(Constants.SUCCESS));

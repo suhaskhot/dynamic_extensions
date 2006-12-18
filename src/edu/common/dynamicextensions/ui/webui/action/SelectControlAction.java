@@ -66,6 +66,10 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 		catch (DynamicExtensionsSystemException e)
 		{
 			String actionForwardString = catchException(e, request);
+			if((actionForwardString==null)||(actionForwardString.equals("")))
+			{
+				return mapping.getInputForward(); 
+			}
 			return (mapping.findForward(actionForwardString));
 		}
 	}

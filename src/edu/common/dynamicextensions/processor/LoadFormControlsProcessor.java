@@ -397,6 +397,7 @@ public class LoadFormControlsProcessor
 	private List<String> getListOfMeasurementUnits()
 	{
 		List<String> measurementUnits = new ArrayList<String>();
+		measurementUnits.add("none");
 		measurementUnits.add("inches");
 		measurementUnits.add("cm");
 		measurementUnits.add("gms");

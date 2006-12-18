@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
+import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domain.userinterface.SelectControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeInterface;
@@ -485,6 +486,19 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		{
 			populateSelectControlAttributesInUIBean((SelectControl)controlInterface,controlUIBeanInterface);
 		}
+		if(controlInterface instanceof ContainmentAssociationControl)
+		{
+			populateContainmentAssociationAttributesInUIBean((ContainmentAssociationControl)controlInterface,controlUIBeanInterface);
+		}
+	}
+
+	/**
+	 * @param control
+	 * @param controlUIBeanInterface
+	 */
+	private void populateContainmentAssociationAttributesInUIBean(ContainmentAssociationControl control, ControlUIBeanInterface controlUIBeanInterface)
+	{
+		
 	}
 
 	/**

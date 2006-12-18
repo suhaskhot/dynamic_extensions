@@ -82,6 +82,7 @@ PUBLIC
 			input="/LoadFormControlsAction.do"
 			scope="request">
 			<forward name="showBuildFormJSP" path="/pages/BuildForm.jsp" />
+			<forward name="editSubForm" path="/LoadFormDefinitionAction.do" />
 		</action>
 		
 		<action path="/SelectControlAction" 

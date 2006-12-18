@@ -78,7 +78,12 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 	{
 		String groupName = getGroupName(request);
 		formDefinitionForm.setGroupName(groupName);
-		formDefinitionForm.setTreeData(getEntityTree(request));
+		boolean addNewNode = true;
+		if((formDefinitionForm.getOperationMode()!=null)&&(formDefinitionForm.getOperationMode().equals(Constants.EDIT_FORM)))
+		{
+			addNewNode = false;
+		}
+		formDefinitionForm.setTreeData(getEntityTree(request,addNewNode));
 		formDefinitionForm.setCreateAs(ProcessorConstants.DEFAULT_FORM_CREATEAS);
 		formDefinitionForm.setViewAs(ProcessorConstants.DEFAULT_FORM_VIEWAS);
 		if(formDefinitionForm.getAssociationTree()==null)
@@ -101,16 +106,27 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 		String operationMode = formDefinitionForm.getOperationMode();
 		
 		String containerIdentifier = request.getParameter("containerIdentifier");
-		
 		if (operationMode != null && operationMode.equalsIgnoreCase(Constants.ADD_NEW_FORM))
 		{
 			loadFormDefinitionProcessor.populateContainerInformation(container, formDefinitionForm);
 		}
 		else if (operationMode != null && operationMode.equalsIgnoreCase(Constants.EDIT_FORM))
 		{
-			container = loadFormDefinitionProcessor.getContainerForEditing(containerIdentifier);
+			if(containerIdentifier!=null)
+			{
+				container = loadFormDefinitionProcessor.getContainerForEditing(containerIdentifier);
+			}
+			else
+			{
+				/*//case when editing selected sub-form
+				String currentContainerName = (String)CacheManager.getObjectFromCache(request, Constants.CURRENT_CONTAINER_NAME);
+				if(currentContainerName!=null)
+				{
+					container =	(ContainerInterface)CacheManager.getObjectFromCache(request, currentContainerName);
+				}*/
+				container = WebUIManager.getCurrentContainer(request);  
+			}
 			loadFormDefinitionProcessor.populateContainerInformation(container, formDefinitionForm);
-			//CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, container);
 		}
 		else if (operationMode != null && operationMode.equalsIgnoreCase(Constants.ADD_SUB_FORM_OPR))
 		{
@@ -126,6 +142,16 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 				loadFormDefinitionProcessor.populateContainerInformation(container, formDefinitionForm);
 			}
 		}
+	}
+
+	/**
+	 * @param selectedControlId
+	 * @return
+	 */
+	private ContainerInterface getContainerForSelectedControl(String selectedControlId)
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/**
@@ -231,7 +257,7 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 	 * @param container 
 	 * @param request
 	 */
-	private TreeData getEntityTree(HttpServletRequest request)
+	private TreeData getEntityTree(HttpServletRequest request,boolean addNewNode)
 	{
 		EntityGroupInterface entityGroup = (EntityGroupInterface) CacheManager.getObjectFromCache(request, Constants.ENTITYGROUP_INTERFACE);
 		String groupName = entityGroup.getName();
@@ -244,8 +270,8 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 		String currentContainerName = (String) CacheManager.getObjectFromCache(request, Constants.CURRENT_CONTAINER_NAME);
 		if(mainContainer!=null)
 		{
-			TreeNode mainContainerTreeNode = getTreeNode(mainContainer,currentContainerName);
-			if(currentContainerName==null)
+			TreeNode mainContainerTreeNode = getTreeNode(mainContainer,currentContainerName,addNewNode);
+			if((currentContainerName==null)&&(addNewNode==true))
 			{
 				//Add new form node to main container node
 				mainContainerTreeNode.add(getNewFormNode());
@@ -255,7 +281,10 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 		else
 		{
 			//Add new node to group
-			groupNode.add(getNewFormNode());
+			if(addNewNode==true)
+			{
+				groupNode.add(getNewFormNode());
+			}
 		}
 		return treedata;
 	}
@@ -264,7 +293,7 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 	 * @param container
 	 * @return
 	 */
-	private TreeNode getTreeNode(ContainerInterface container,String currentContainerName)
+	private TreeNode getTreeNode(ContainerInterface container,String currentContainerName,boolean addNewNode)
 	{
 		TreeNode containerNode = null; 
 		if(container!=null)
@@ -273,7 +302,10 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 			
 			if(container.getCaption().equals(currentContainerName))
 			{
-				containerNode.add(getNewFormNode());
+				if(addNewNode)
+				{
+					containerNode.add(getNewFormNode());
+				}
 			}
 			Collection<ControlInterface> controlsCollection = container.getControlCollection();
 			if(controlsCollection!=null)
@@ -284,7 +316,7 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 					ControlInterface control = controlsIterator.next();
 					if((control!=null)&&(control instanceof ContainmentAssociationControl))
 					{
-						containerNode.add(getTreeNode(((ContainmentAssociationControl)control).getContainer(),currentContainerName));
+						containerNode.add(getTreeNode(((ContainmentAssociationControl)control).getContainer(),currentContainerName,addNewNode));
 					}
 				}
 			}

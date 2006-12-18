@@ -50,6 +50,7 @@ public class LoadFormControlsProcessor
 	 * 
 	 * @param controlsForm ControlsForm
 	 * @param containerInterface ContainerInterface
+	 * @return redirection page path
 	 * @throws DynamicExtensionsSystemException dynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException 
 	 */
@@ -59,7 +60,6 @@ public class LoadFormControlsProcessor
 		{
 			String controlOperation = controlsForm.getControlOperation();
 
-			ControlConfigurationsFactory controlConfigurationsFactory = ControlConfigurationsFactory.getInstance();
 			if (controlOperation == null || controlOperation.equals(""))
 			{
 				controlOperation = ProcessorConstants.OPERATION_ADD;
@@ -72,41 +72,48 @@ public class LoadFormControlsProcessor
 
 			else if (controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_EDIT))
 			{
-				String selectedControlId = controlsForm.getSelectedControlId();
-				ControlInterface selectedControl = containerInterface.getControlInterfaceBySequenceNumber(selectedControlId);
+				ControlInterface selectedControl = getSelectedControl(controlsForm,containerInterface);
 				editControl(selectedControl, controlsForm);
 			}
-
-			String userSelectedTool = controlsForm.getUserSelectedTool();
-
 			//Initialize default values for controls
-			initializeControlDefaultValues(userSelectedTool, controlsForm);
-
-			//List of tools/controls
-			controlsForm.setToolsList(controlConfigurationsFactory.getListOfControls());
-			controlsForm.setSelectedControlCaption(ControlsUtility.getControlCaption(controlConfigurationsFactory.getControlDisplayLabel(userSelectedTool)));
-			String jspName = controlConfigurationsFactory.getControlJspName(userSelectedTool);
-			if (jspName == null)
-			{
-				jspName = "";
-			}
-			controlsForm.setHtmlFile(jspName);
-			//Data types for selected control
-			controlsForm.setDataTypeList(controlConfigurationsFactory.getControlsDataTypes(userSelectedTool));
-
-			//Set Entity Name as root
-			EntityInterface entity = containerInterface.getEntity();
-			if (entity != null)
-			{
-				controlsForm.setRootName(entity.getName());
-			}
-			else
-			{
-				controlsForm.setRootName("");
-			}
-			controlsForm.setChildList(ControlsUtility.getChildList(containerInterface));
-			controlsForm.setControlRuleMap(getControlRulesMap(userSelectedTool));
+			initializeControlDefaultValues(controlsForm);
+			//initialize form attribute values
+			initializeFormAttributeValues(controlsForm,containerInterface);
 		}
+	}
+
+	/**
+	 * @param controlsForm
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	private void initializeFormAttributeValues(ControlsForm controlsForm,ContainerInterface containerInterface) throws DynamicExtensionsSystemException
+	{
+		ControlConfigurationsFactory controlConfigurationsFactory = ControlConfigurationsFactory.getInstance();
+		String userSelectedTool = controlsForm.getUserSelectedTool();
+		//	List of tools/controls
+		controlsForm.setToolsList(controlConfigurationsFactory.getListOfControls());
+		controlsForm.setSelectedControlCaption(ControlsUtility.getControlCaption(controlConfigurationsFactory.getControlDisplayLabel(userSelectedTool)));
+		String jspName = controlConfigurationsFactory.getControlJspName(userSelectedTool);
+		if (jspName == null)
+		{
+			jspName = "";
+		}
+		controlsForm.setHtmlFile(jspName);
+		//Data types for selected control
+		controlsForm.setDataTypeList(controlConfigurationsFactory.getControlsDataTypes(userSelectedTool));
+
+		//Set Entity Name as root
+		EntityInterface entity = containerInterface.getEntity();
+		if (entity != null)
+		{
+			controlsForm.setRootName(entity.getName());
+		}
+		else
+		{
+			controlsForm.setRootName("");
+		}
+		controlsForm.setChildList(ControlsUtility.getChildList(containerInterface));
+		controlsForm.setControlRuleMap(getControlRulesMap(userSelectedTool));
 	}
 
 	/**
@@ -131,7 +138,7 @@ public class LoadFormControlsProcessor
 	{
 		ControlProcessor controlProcessor = ControlProcessor.getInstance();
 		controlProcessor.populateControlUIBeanInterface(controlInterface, controlsForm);
-
+		
 		AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
 		if (controlInterface != null)
 		{
@@ -144,7 +151,6 @@ public class LoadFormControlsProcessor
 			userSelectedTool = ProcessorConstants.DEFAULT_SELECTED_CONTROL;
 		}
 		controlsForm.setUserSelectedTool(userSelectedTool);
-
 	}
 
 	/**
@@ -153,8 +159,9 @@ public class LoadFormControlsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private void initializeControlDefaultValues(String userSelectedTool, ControlsForm controlsForm) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private void initializeControlDefaultValues(ControlsForm controlsForm) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
+		String userSelectedTool = controlsForm.getUserSelectedTool();
 		if ((userSelectedTool != null) && (controlsForm != null))
 		{
 			if (userSelectedTool.equals(ProcessorConstants.TEXT_CONTROL))
@@ -411,5 +418,19 @@ public class LoadFormControlsProcessor
 	{
 		ControlConfigurationsFactory ccf = ControlConfigurationsFactory.getInstance();
 		return ccf.getRulesMap(controlName);
+	}
+	
+	public ControlInterface getSelectedControl(ControlsForm controlsForm,ContainerInterface containerInterface)
+	{
+		ControlInterface selectedControl = null;
+		if((containerInterface!=null)&&(controlsForm!=null))
+		{
+			String selectedControlId = controlsForm.getSelectedControlId();
+			if((selectedControlId!=null)&&(!selectedControlId.trim().equals("")))
+			{
+				selectedControl = containerInterface.getControlInterfaceBySequenceNumber(selectedControlId);
+			}
+		}
+		return selectedControl;
 	}
 }

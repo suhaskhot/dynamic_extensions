@@ -15,6 +15,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
@@ -25,6 +26,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.LoadFormControlsProcessor;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
+import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
@@ -55,6 +57,7 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 	throws IOException, DynamicExtensionsApplicationException
 	{
+		String actionForwardString = null;
 		try
 		{
 			ControlsForm controlsForm = (ControlsForm) form;
@@ -74,8 +77,18 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 			}
 
 			LoadFormControlsProcessor loadFormControlsProcessor = LoadFormControlsProcessor.getInstance();
-			loadFormControlsProcessor.loadFormControls(controlsForm, containerInterface);
-
+			
+			ControlInterface selectedControl = loadFormControlsProcessor.getSelectedControl(controlsForm, containerInterface);
+			if((selectedControl!=null)&&(selectedControl instanceof ContainmentAssociationControl))
+			{
+				loadContainmentAssociationControl(request,(ContainmentAssociationControl)selectedControl,controlsForm);
+				actionForwardString = Constants.EDIT_SUB_FORM_PAGE;
+			}
+			else
+			{
+				loadFormControlsProcessor.loadFormControls(controlsForm, containerInterface);
+				actionForwardString = Constants.SHOW_BUILD_FORM_JSP;
+			}
 			if ((controlsForm.getDataType() != null) && (controlsForm.getDataType().equals(ProcessorConstants.DATATYPE_NUMBER)))
 			{
 				initializeMeasurementUnits(controlsForm);
@@ -83,14 +96,25 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
-			String actionForwardString = catchException(e, request);
-			return (mapping.findForward(actionForwardString));
+			actionForwardString = catchException(e, request);
+			
 		}
-		return mapping.findForward(Constants.SHOW_BUILD_FORM_JSP);
-
+		return (mapping.findForward(actionForwardString));
 	}
 
 	
+	/**
+	 * @param request
+	 * @param selectedControl
+	 */
+	private void loadContainmentAssociationControl(HttpServletRequest request, ContainmentAssociationControl selectedControl,ControlsForm controlsForm)
+	{
+		//controlsForm.set
+		CacheManager.addObjectToCache(request, selectedControl.getCaption(), selectedControl.getContainer());
+		CacheManager.addObjectToCache(request, Constants.CURRENT_CONTAINER_NAME,selectedControl.getCaption());
+	}
+
+
 	/**
 	 * @param request
 	 * @param response
@@ -251,12 +275,8 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 						entityContainer = containerIterator.next();
 						if (entityContainer != null)
 						{
-							/*							entity = entityContainer.getEntity();
-							 if(entity!=null)
-							 {*/
 							formName = new NameValueBean(entityContainer.getCaption(), entityContainer.getId());
 							formNames.add(formName);
-							//}
 						}
 					}
 				}
@@ -266,12 +286,6 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 				Logger.out.error("Group Id is null..Please check");
 			}
 		}
-		/*NameValueBean entityName = null;
-		 for(int i=0;i<5;i++)
-		 {
-		 entityName  = new NameValueBean(groupId + "-Form" + i,i);
-		 formNames.add(entityName);
-		 }*/
 		return formNames;
 	}
 

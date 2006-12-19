@@ -38,7 +38,7 @@ public class UserInterfaceiUtility
 		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(subContainer.getControlCollection());
 		Collections.sort(controlsList);
 
-		stringBuffer.append("<tr width='100%'><td colspan='3' class='formField'>");
+		stringBuffer.append("<tr width='100%'><td colspan='3' class='formFieldContainer'>");
 		stringBuffer.append("<div style='display:none' id='" + subContainer.getId() + "_substitutionDiv'>");
 		stringBuffer.append("<table>");
 		stringBuffer.append("<tr width='100%'>");
@@ -50,9 +50,12 @@ public class UserInterfaceiUtility
 			String controlHTML = "";
 			control.setIsSubControl(true);
 
-			if(control instanceof ContainmentAssociationControlInterface) {
+			if (control instanceof ContainmentAssociationControlInterface)
+			{
 				controlHTML = ((ContainmentAssociationControlInterface) control).generateLinkHTML();
-			} else {
+			}
+			else
+			{
 				controlHTML = control.generateHTML();
 			}
 
@@ -100,19 +103,25 @@ public class UserInterfaceiUtility
 			stringBuffer.append("</th>");
 		}
 
-		stringBuffer.append("<th class='formLabel' align='center'>");
-		stringBuffer.append("<button type='button' class='actionButton' id='addMore' onclick=\"addRow('" + subContainer.getId() + "')\">");
-		stringBuffer.append(ApplicationProperties.getValue("eav.button.AddRow"));
-		stringBuffer.append("</button>");
-		stringBuffer.append("</th>");
 		stringBuffer.append("</tr>");
 		stringBuffer.append("</table>");
-		stringBuffer.append("<table><tr><td>");
+
+		stringBuffer.append("<table cellpadding='3' cellspacing='0' align='center' width='100%'><tr>");
+
+		stringBuffer.append("<td align='left'>");
 		stringBuffer
 				.append("<button type='button' class='actionButton' id='removeRow' onclick=\"removeCheckedRow('" + subContainer.getId() + "')\">");
 		stringBuffer.append(ApplicationProperties.getValue("buttons.delete"));
 		stringBuffer.append("</button>");
-		stringBuffer.append("</td></tr></table>");
+		stringBuffer.append("</td>");
+
+		stringBuffer.append("<td align='right'>");
+		stringBuffer.append("<button type='button' class='actionButton' id='addMore' onclick=\"addRow('" + subContainer.getId() + "')\">");
+		stringBuffer.append(ApplicationProperties.getValue("eav.button.AddRow"));
+		stringBuffer.append("</button>");
+		stringBuffer.append("</td>");
+
+		stringBuffer.append("</tr></table>");
 
 		stringBuffer.append("</td>");
 		stringBuffer.append("</tr>");

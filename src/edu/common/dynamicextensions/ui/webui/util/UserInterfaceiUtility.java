@@ -37,12 +37,13 @@ public class UserInterfaceiUtility
 		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(subContainer.getControlCollection());
 		Collections.sort(controlsList);
 
-		stringBuffer.append("<tr width='100%'><td class='formRequiredNotice'>&nbsp;</td>");
-		stringBuffer.append("<td colspan='2' class='formField'>");
+		stringBuffer.append("<tr width='100%'><td colspan='3' class='formField'>");
 		stringBuffer.append("<div style='display:none' id='" + subContainer.getId() + "_substitutionDiv'>");
 		stringBuffer.append("<table>");
 		stringBuffer.append("<tr width='100%'>");
-		stringBuffer.append("<td class='formRequiredNotice' width='1%'>&nbsp;</td>");
+		stringBuffer.append("<td class='formRequiredNotice' width='1%'>");
+		stringBuffer.append("<input type='checkbox' name='deleteRow' value=''/>");
+		stringBuffer.append("</td>");
 		for (ControlInterface control : controlsList)
 		{
 			control.setIsSubControl(true);
@@ -59,8 +60,7 @@ public class UserInterfaceiUtility
 		stringBuffer.append("</td></tr>");
 
 		stringBuffer.append("<tr width='100%'>");
-		stringBuffer.append("<td class='formRequiredNotice' align='left'>&nbsp;</td>");
-		stringBuffer.append("<td class='formField' colspan='2' align='center'>");
+		stringBuffer.append("<td class='formFieldContainer' colspan='3' align='center'>");
 		stringBuffer.append("<table cellpadding='3' cellspacing='0' align='center' width='100%'>");
 
 		stringBuffer.append("<tr width='100%'>");
@@ -70,13 +70,11 @@ public class UserInterfaceiUtility
 		stringBuffer.append("</tr>");
 
 		stringBuffer.append("<tr width='100%'>");
-		stringBuffer.append("<td class='formField' colspan='3'>");
+		stringBuffer.append("<td class='formFieldContainer' colspan='3'>");
 		stringBuffer.append("<table id='" + subContainer.getId() + "_table' cellpadding='3' cellspacing='0' align='center' width='100%'>");
 
 		stringBuffer.append("<tr width='100%'>");
-		stringBuffer.append("<th class='formRequiredNotice' width='1%'>");
-		stringBuffer.append("<input type='checkbox' name='dummy' disabled/>");
-		stringBuffer.append("</th>");
+		stringBuffer.append("<th class='formRequiredNotice' width='1%'>&nbsp;</th>");
 		for (ControlInterface control : controlsList)
 		{
 			boolean isControlRequired = isControlRequired(control);
@@ -100,8 +98,7 @@ public class UserInterfaceiUtility
 		stringBuffer.append("</th>");
 		stringBuffer.append("</tr>");
 		stringBuffer.append("</table>");
-		stringBuffer.append("<table><tr><td class='formRequiredLabel'>&nbsp;</td>");
-		stringBuffer.append("<td>");
+		stringBuffer.append("<table><tr><td>");
 		stringBuffer
 				.append("<button type='button' class='actionButton' id='removeRow' onclick=\"removeCheckedRow('" + subContainer.getId() + "')\">");
 		stringBuffer.append(ApplicationProperties.getValue("buttons.delete"));

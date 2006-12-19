@@ -7,6 +7,8 @@
  */ 
 package edu.common.dynamicextensions.domaininterface.userinterface;
 
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+
 
 
 
@@ -27,5 +29,13 @@ public interface ContainmentAssociationControlInterface extends ControlInterface
 	 * @return true if Caridnality is One to Many, false otherwise.
 	 */
 	boolean isCardinalityOneToMany();
+	
+	
+	/**
+	 * This method generates the HMTL for this containement as a Link.
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	String generateLinkHTML() throws DynamicExtensionsSystemException;
 
 }

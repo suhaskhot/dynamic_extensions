@@ -11,6 +11,7 @@ import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -46,9 +47,17 @@ public class UserInterfaceiUtility
 		stringBuffer.append("</td>");
 		for (ControlInterface control : controlsList)
 		{
+			String controlHTML = "";
 			control.setIsSubControl(true);
+
+			if(control instanceof ContainmentAssociationControlInterface) {
+				controlHTML = ((ContainmentAssociationControlInterface) control).generateLinkHTML();
+			} else {
+				controlHTML = control.generateHTML();
+			}
+
 			stringBuffer.append("<td class='formField'>");
-			stringBuffer.append(control.generateHTML());
+			stringBuffer.append(controlHTML);
 			stringBuffer.append("</td>");
 		}
 		stringBuffer.append("</tr>");

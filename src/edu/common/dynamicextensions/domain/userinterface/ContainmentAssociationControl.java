@@ -74,8 +74,7 @@ public class ContainmentAssociationControl extends Control implements Containmen
 		String subContainerHTML = "";
 		if(isCardinalityOneToMany())
 		{
-			//this.setIsSubControl(true);
-			subContainerHTML = this.getContainer().generateControlsHTMLAsGrid();
+				subContainerHTML = this.getContainer().generateControlsHTMLAsGrid();
 		}
 		else
 		{
@@ -102,8 +101,25 @@ public class ContainmentAssociationControl extends Control implements Containmen
 
 	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
 	{
-		// TODO Auto-generated method stub
 		return "&nbsp;";
+	}
+
+	/**
+	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface#generateLinkHTML()
+	 */
+	public String generateLinkHTML() throws DynamicExtensionsSystemException
+	{
+		String detailsString = "Details";
+		
+		StringBuffer stringBuffer = new StringBuffer();
+		stringBuffer.append("<span style='cursor:hand' class='" + cssClass + "' ");
+		stringBuffer.append("onclick='insertDataForContainer(");
+		stringBuffer.append(this.getContainer().getId());
+		stringBuffer.append(")'>");
+		stringBuffer.append(detailsString);
+		stringBuffer.append("</span>");
+
+		return stringBuffer.toString();
 	}
 
 }

@@ -223,6 +223,7 @@ public class DynamicExtensionsUtility
 	    try
 		{
 			DBUtil.currentSession();
+			DBUtil.closeSession();
 		}
 		catch (HibernateException e)
 		{

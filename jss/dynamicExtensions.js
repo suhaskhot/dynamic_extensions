@@ -1596,3 +1596,10 @@ function treeNodeSelectedResponse(formNameListXML)
 		
 	}
 }
+
+function insertDataForContainer(containerId) {
+   
+    alert('hi');
+    alert("page to insert date for contianerId"  + containerId);
+  
+}

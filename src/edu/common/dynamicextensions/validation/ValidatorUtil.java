@@ -52,7 +52,7 @@ public class ValidatorUtil
 				Collection<RuleInterface> attributeRuleCollection = attribute.getRuleCollection();
 				if (attributeRuleCollection == null || attributeRuleCollection.isEmpty())
 				{
-					return errorList;
+					continue;
 				}
 
 				for (RuleInterface rule : attributeRuleCollection)

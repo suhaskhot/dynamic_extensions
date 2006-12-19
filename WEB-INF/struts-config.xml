@@ -142,8 +142,15 @@ PUBLIC
 			scope="request">
 			<forward name="success" path="/LoadDataEntryFormAction.do?showFormPreview=flase" />
 		</action>
-		
-		
+
+		<action path="/SelectFormAction" 
+		    type="edu.common.dynamicextensions.ui.webui.action.SelectFormAction" 
+		    name="formDefinitionForm"
+			validate="false"
+			input="/LoadFormDefinitionAction.do"
+			scope="request">
+			<forward name="success" path="/LoadFormDefinitionAction.do" />
+		</action>		
 		
 	
 	</action-mappings>

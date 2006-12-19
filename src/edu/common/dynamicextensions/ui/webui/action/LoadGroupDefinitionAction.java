@@ -59,6 +59,11 @@ public class LoadGroupDefinitionAction extends BaseDynamicExtensionsAction
 		{
 			container = DynamicExtensionsUtility.getContainerByIdentifier(containerIdentifier);
 			CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, container);
+			if(container!=null)
+			{
+				CacheManager.addObjectToCache(request, Constants.CURRENT_CONTAINER_NAME, container.getCaption());
+				CacheManager.addObjectToCache(request,  container.getCaption(),container);
+			}
 		}
 		else
 		{

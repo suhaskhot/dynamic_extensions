@@ -119,6 +119,11 @@ function showCreateFormJSP() {
 	{
 		window.opener = window.dialogArguments;
 	}
+	var operationMode = window.opener.document.getElementById('operationMode');
+	if(operationMode!=null)
+	{
+		operationMode.value = "EditForm";
+	}
     	var controlsForm=window.opener.document.getElementById("controlsForm");
     	if(controlsForm!=null)
     	{
@@ -1040,9 +1045,11 @@ function saveGroup()
 }
 function toggle(fldForSelectedObject,id,p) 
 {
-	selId =document.getElementById(fldForSelectedObject).value; 
-	if(selId!='')
-		document.getElementById(selId).style.fontWeight='normal';
+	prevSelectedId =document.getElementById(fldForSelectedObject).value; 
+	if(prevSelectedId!='')
+	{
+		document.getElementById(prevSelectedId).style.fontWeight='normal';
+	}
 	document.getElementById(fldForSelectedObject).value='';
 	var myChild = document.getElementById(id);
 	if((myChild!=null)&&(myChild!=undefined))
@@ -1058,26 +1065,46 @@ function toggle(fldForSelectedObject,id,p)
 			document.getElementById(p).className='folder';
 		}
 	}
-//	formName = getFormNameFromParent(p);
-//	setFormName(formName);
+	
+	formName = getFormNameFromParent(p);
+	setSelectedObjectName(fldForSelectedObject,formName);
+}
+
+function setSelectedObjectName(fldForSelectedObject,name)
+{
+	var selectedObjectName = document.getElementById(fldForSelectedObject+'Name');
+	if(selectedObjectName!=null)
+	{
+		selectedObjectName.value = name;
+	}
 }
 
 function changeSelection(fldForSelectedObject,str1,seqno)
 {	
-	selId =document.getElementById(fldForSelectedObject).value;
+	prevSelectedId =document.getElementById(fldForSelectedObject).value;
 	document.getElementById(fldForSelectedObject).value=str1;
 	document.getElementById(str1).style.fontWeight='bold';
-	if(selId!='')
+	if(prevSelectedId!='')
 	{
-		document.getElementById(selId).style.fontWeight='normal';
+		document.getElementById(prevSelectedId).style.fontWeight='normal';
 	}
-	var controlsForm=document.getElementById('controlsForm');
 	
-//	var formName = document.getElementById(str1).innerText;
-//	setFormName(formName);
+	
+	var formName = document.getElementById(str1);
+	
+	if(formName!=null)
+	{
+		setSelectedObjectName(fldForSelectedObject,formName.innerText);
+	}
+	else
+	{
+		setSelectedObjectName(fldForSelectedObject,"");
+	}
+
 }
 
-/*function  getFormNameFromParent(p)
+
+function  getFormNameFromParent(p)
 {
 	var parent = document.getElementById(p);
 	if(parent!=null)
@@ -1094,15 +1121,6 @@ function changeSelection(fldForSelectedObject,str1,seqno)
 		}
 	}
 }
-function setFormName(formName)
-{
-	var formNameElement = document.getElementById('formName');
-	if(formNameElement!=null)
-	{
-		if((formName!=null)&&(formName!=undefined))
-		formNameElement.value = formName;
-	}
-}*/
 
 function getDocumentElementForXML(xmlString)
 {
@@ -1520,4 +1538,61 @@ function replaceAll(inputString, regExpr, newString)
    }
   outputStr = outputStr + inputString;
   return outputStr;
+}
+
+//Ajax code for form name selection from tree
+function treeNodeSelected(fldName)
+{
+	var request = newXMLHTTPReq();
+	var handlerFunction = getReadyStateHandler(request,treeNodeSelectedResponse,false);
+
+	//no brackets after the function name and no parameters are passed because we are assigning a reference to the function and not actually calling it
+	request.onreadystatechange = handlerFunction;
+	//send data to ActionServlet
+	if(document.getElementById(fldName)!=null)
+	{
+		//Open connection to servlet
+		request.open("POST","SelectFormAction.do",true);
+		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+		var selectedFormName  = document.getElementById(fldName).value;
+		request.send("&selectedFormName="+selectedFormName);
+	}	
+}
+
+function treeNodeSelectedResponse(formNameListXML)
+{
+	if(formNameListXML!=null)
+	{
+		var htmlFormName = document.getElementById("formName");
+		var htmlFormCC = document.getElementById("conceptCode");
+		var htmlFormDesc = document.getElementById("formDescription");
+		var htmlOperationMode = document.getElementById('operationMode');
+		
+		var documentElt  = getDocumentElementForXML(formNameListXML);
+		var formname  =  documentElt.getElementsByTagName('form-name');
+		var formDesc  =  documentElt.getElementsByTagName('form-description');
+		var formConceptCode  =  documentElt.getElementsByTagName('form-conceptcode');
+		var operationmode  =  documentElt.getElementsByTagName('operationMode');
+		
+		
+		if((htmlFormName!=null)&&(formname!=null))
+		{
+			htmlFormName.value = formname[0].text;
+		}
+		
+		if((htmlFormCC!=null)&&(formConceptCode!=null))
+		{
+			htmlFormCC.value = formConceptCode[0].text;
+		}
+		
+		if((htmlFormDesc!=null)&&(formDesc!=null))
+		{
+			htmlFormDesc.value = formDesc[0].text;
+		}
+		if((htmlOperationMode!=null)&&(operationmode!=null))
+		{
+			htmlOperationMode.value = operationmode[0].text;
+		}
+		
+	}
 }

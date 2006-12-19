@@ -262,8 +262,8 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 		EntityGroupInterface entityGroup = (EntityGroupInterface) CacheManager.getObjectFromCache(request, Constants.ENTITYGROUP_INTERFACE);
 		String groupName = entityGroup.getName();
 		TreeData treedata = new TreeData();
-		TreeNode groupNode = new TreeNode(groupName);
-		treedata.add(groupNode);
+		//TreeNode groupNode = new TreeNode(groupName);
+		//treedata.add(groupNode);
 		
 		ContainerInterface mainContainer = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 		
@@ -276,14 +276,14 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 				//Add new form node to main container node
 				mainContainerTreeNode.add(getNewFormNode());
 			}
-			groupNode.add(mainContainerTreeNode);
+			treedata.add(mainContainerTreeNode);
 		}
 		else
 		{
 			//Add new node to group
 			if(addNewNode==true)
 			{
-				groupNode.add(getNewFormNode());
+				treedata.add(getNewFormNode());
 			}
 		}
 		return treedata;

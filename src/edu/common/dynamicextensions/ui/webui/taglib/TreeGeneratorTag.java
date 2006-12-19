@@ -32,7 +32,7 @@ public class TreeGeneratorTag extends TagSupport
 	private String fieldForSelectedObject=null;
 	private String name=null;
 	private String showExpanded =null;
-	
+	private String nodeClickedFunction = null;
 	public String getFieldForSelectedObject()
 	{
 		return this.fieldForSelectedObject;
@@ -73,9 +73,10 @@ public class TreeGeneratorTag extends TagSupport
 			{
 				//Add hidden variable
 				jspWriter.print("<input type='hidden' id='"+fieldForSelectedObject  +"' name='" + fieldForSelectedObject +"' value=''>");
+				jspWriter.print("<input type='hidden' id='"+fieldForSelectedObject  +"Name' name='" + fieldForSelectedObject +"Name' value=''>");
 				//Add the actual code for tree generation
 				jspWriter.print("<div  valign='top' scroll='auto' style='overflow:auto;' >");
-				jspWriter.print(treeDataObject.getTree(name,fieldForSelectedObject,showExpanded));
+				jspWriter.print(treeDataObject.getTree(name,fieldForSelectedObject,showExpanded,nodeClickedFunction));
 				jspWriter.print("</div>");
 				
 				//Expand first row
@@ -126,6 +127,16 @@ public class TreeGeneratorTag extends TagSupport
 	public void setName(String name)
 	{
 		this.name = name;
+	}
+
+	public String getNodeClickedFunction()
+	{
+		return this.nodeClickedFunction;
+	}
+
+	public void setNodeClickedFunction(String nodeClickedFunction)
+	{
+		this.nodeClickedFunction = nodeClickedFunction;
 	}
 
 }

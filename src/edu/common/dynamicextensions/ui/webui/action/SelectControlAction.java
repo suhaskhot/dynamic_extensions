@@ -63,7 +63,7 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 			}
 
 		}
-		catch (DynamicExtensionsSystemException e)
+		catch (Exception e)
 		{
 			String actionForwardString = catchException(e, request);
 			if((actionForwardString==null)||(actionForwardString.equals("")))

@@ -24,6 +24,17 @@ public class TreeData
 	private String target = "";
 	private int length = 0;
 	private StringBuffer buf = null;
+	private String nodeClickedFunction = null;
+
+	public String getNodeClickedFunction()
+	{
+		return this.nodeClickedFunction;
+	}
+
+	public void setNodeClickedFunction(String nodeClickedFunction)
+	{
+		this.nodeClickedFunction = nodeClickedFunction;
+	}
 
 	/**
 	 * Create a new Tree Data object
@@ -109,7 +120,7 @@ public class TreeData
 	 * 
 	 * @return : String having the HTML code for the tree like representation of the data
 	 */
-	public String getTree(String treeName,String fieldForSelectedObject,String strIsTreeExpanded)
+	public String getTree(String treeName,String fieldForSelectedObject,String strIsTreeExpanded,String nodeClickedFunction)
 	{
 		buf = new StringBuffer();
 		
@@ -122,6 +133,8 @@ public class TreeData
 				+ "/dot.gif);}a.treeview{color:"
 				+ color
 				+ ";font-family:verdana;font-size:9pt;}a.treeview:link {text-decoration:none;}a.treeview:visited{text-decoration:none;}a.treeview:hover {text-decoration:underline;}</style>");
+		
+		this.setNodeClickedFunction(nodeClickedFunction);
 		boolean isTreeExpanded = false;
 		if((strIsTreeExpanded!=null)&&(strIsTreeExpanded.equals("true")))
 		{
@@ -206,13 +219,13 @@ public class TreeData
 							print("<input type='radio' name='selectedObjectId' id='selectedObjectId' value='" + node.getSequenceNumber() +"' />");
 						}
 						print("<a class=treeview href=\"javascript:toggle('"+fieldForSelectedObject + "','"+treeName+"N" + parent + "_" + i
-								+ "','"+treeName+"P" + parent + i + "')\">" + node.getText() + "</a>");
+								+ "','"+treeName+"P" + parent + i + "');"+ getNodeClickedFunction()+"('"+ fieldForSelectedObject+"Name') \">" + node.getText() + "</a>");
 					}
 					else
 						//Means it is a leaf node
 					{
 						id =treeName +  "L" + parent + i;
-						node.setHref("javascript:changeSelection('"+fieldForSelectedObject+"','" + id + "','" + node.getSequenceNumber() + "')");
+						node.setHref("javascript:changeSelection('"+fieldForSelectedObject+"','" + id + "','" + node.getSequenceNumber() + "');"+ getNodeClickedFunction()+"('"+ fieldForSelectedObject+"Name')");
 						if (node.getTarget() == "")
 						{
 							node.setTarget(target);

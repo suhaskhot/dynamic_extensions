@@ -147,6 +147,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 		ContainerInterface containerInterface = WebUIManager.getCurrentContainer(request);
 		boolean saveEntity = true;
 		operation = formDefinitionForm.getOperation();
+		
 		if ((operation != null) && (operation.equalsIgnoreCase(Constants.BUILD_FORM)))
 		{
 			saveEntity = false;
@@ -170,13 +171,23 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 		EntityGroupInterface entityGroup =(EntityGroupInterface) CacheManager.getObjectFromCache(request, Constants.ENTITYGROUP_INTERFACE);
 
 		//If not in Edit mode, then save the Container in Database and Add the same to the Cache manager.
-		if (operation != null && !operation.equalsIgnoreCase(Constants.EDIT_FORM))
+			
+		if ((operation != null) && (!operation.equalsIgnoreCase(Constants.EDIT_FORM)))
 		{
 			ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor.getInstance();
 			containerInterface = applyFormDefinitionProcessor.addEntityToContainer(containerInterface, formDefinitionForm, saveEntity,entityGroup);
-			CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
+			
+			//CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
+			CacheManager.addObjectToCache(request, Constants.CURRENT_CONTAINER_NAME, containerInterface.getCaption());
+			CacheManager.addObjectToCache(request, containerInterface.getCaption(),containerInterface);
 		}
-
+		if ((operation != null) && (!operation.equalsIgnoreCase(Constants.ADD_NEW_FORM)))
+		{
+			if(CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE)==null)
+			{
+				CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
+			}
+		}
 		return target;
 	}
 

@@ -24,7 +24,7 @@
 			<table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%' >
 				<tr>
 		 			<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
-					<td class="formRequiredLabelWithoutBorder" width="25%">
+					<td class="formRequiredLabelWithoutBorder" width="30%">
 						<bean:message key="eav.att.ListBoxType"/> :
 					</td>
 					<td class="formFieldWithoutBorder">
@@ -38,7 +38,7 @@
 				</tr>
 				<tr id="rowForDisplayHeight">
 					<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-					<td class="formRequiredLabelWithoutBorder">
+					<td class="formRequiredLabelWithoutBorder" width="30%">
 						<bean:message key="eav.att.ListBoxDisplayLines"/> :
 					</td>
 					<td class="formFieldWithoutBorder">
@@ -47,7 +47,7 @@
 				</tr>
 				<tr>
 					<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-					<td class="formRequiredLabelWithoutBorder" width="25%">
+					<td class="formRequiredLabelWithoutBorder" width="30%">
 						<bean:message key="eav.att.ListBoxOptionTypes"></bean:message> :
 					</td>
 					<td class="formFieldWithoutBorder">

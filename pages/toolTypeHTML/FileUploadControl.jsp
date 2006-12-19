@@ -16,7 +16,7 @@
   			<table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%'>
 			   	<tr>
 					<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-					<td class="formRequiredLabelWithoutBorder" width="28%">
+					<td class="formRequiredLabelWithoutBorder" width="30%">
 						<bean:message key="eav.att.TextFieldWidth"/> :
 					</td>
 					<td class="formFieldWithoutBorder">
@@ -25,7 +25,7 @@
 				</tr>
 				<tr>
 					<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-					<td class="formRequiredLabelWithoutBorder" width="28%">
+					<td class="formRequiredLabelWithoutBorder" width="30%">
 						<bean:message key="eav.att.FileFormatsList"/> :
 					</td>
 					<td class="formFieldWithoutBorder">
@@ -39,7 +39,7 @@
 				</tr>
 				<tr>
 					<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-					<td class="formRequiredLabelWithoutBorder" width="28%">
+					<td class="formRequiredLabelWithoutBorder" width="30%">
 						<bean:message key="eav.att.FileFormat"/> :
 					</td>
 					<td class="formFieldWithoutBorder">
@@ -48,7 +48,7 @@
 				</tr>
 				<tr>
 					<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-					<td class="formRequiredLabelWithoutBorder" width="28%">
+					<td class="formRequiredLabelWithoutBorder" width="30%">
 						<bean:message key="eav.att.MaximumFileSize"/> :
 					</td>
 					<td class="formFieldWithoutBorder">

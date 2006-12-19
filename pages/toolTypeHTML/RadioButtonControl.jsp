@@ -15,7 +15,7 @@
 			<table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%' >
 				<tr valign="top">
 					<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-					<td class="formRequiredLabelWithoutBorder" width="25%" >
+					<td class="formRequiredLabelWithoutBorder" width="30%" >
 						<bean:message key="eav.att.RadioButtonOptionTypes"></bean:message> :
 					</td>
 					<td class="formFieldWithoutBorder">

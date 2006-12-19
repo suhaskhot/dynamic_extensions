@@ -27,7 +27,7 @@
 				<td class="formRequiredNoticeWithoutBorder" width="2%">
 									&nbsp;
 				</td>
-				<td class="formRequiredLabelWithoutBorder" width="25%"><bean:message key="eav.att.OptionLabel"/> : </td>
+				<td class="formRequiredLabelWithoutBorder" width="30%"><bean:message key="eav.att.OptionLabel"/> : </td>
 				<td  class="formFieldWithoutBorder">
 					<input type="text"  id = 'optionName' name="optionName" class="formDateSized" value='' maxlength="100" size="60" >
 				</td>
@@ -37,7 +37,7 @@
 					<td class="formRequiredNoticeWithoutBorder" width="2%">
 										&nbsp;
 					</td>
-					<td class="formRequiredLabelWithoutBorder" width="25%"><bean:message key="eav.att.OptionConceptCode"/> : </td>
+					<td class="formRequiredLabelWithoutBorder" width="30%"><bean:message key="eav.att.OptionConceptCode"/> : </td>
 					<td  class="formFieldWithoutBorder">
 						<input type="text" id = 'optionConceptCode' name="optionConceptCode" class="formDateSized" value='' maxlength="100" size="60" >
 					</td>
@@ -47,7 +47,9 @@
 					<td class="formRequiredNoticeWithoutBorder" width="2%">
 										&nbsp;
 					</td>
-					<td class="formRequiredLabelWithoutBorder"><bean:message key="eav.att.OptionDescription"/> : </td>
+					<td class="formRequiredLabelWithoutBorder" width="30%">
+						<bean:message key="eav.att.OptionDescription"/> :
+					</td>
 					<td  >
 						<textarea rows = "3" cols="28" id = 'optionDescription' name="optionDescription" class="formFieldSmallSized" ></textarea>
 					</td>
@@ -56,7 +58,7 @@
 					<td class="formRequiredNoticeWithoutBorder" width="2%">
 										&nbsp;
 					</td>
-					<td class="formRequiredLabelWithoutBorder" width="25%">&nbsp;</td>
+					<td class="formRequiredLabelWithoutBorder" width="30%">&nbsp;</td>
 					<td  class="formFieldWithoutBorder" align="left" >
 							<html:button styleClass="actionButton" styleId = 'addChoiceValue'  property="addChoiceValue" onclick="addChoiceToList(true)" >
 									<bean:message  key="eav.button.AddOption" />
@@ -65,7 +67,7 @@
 	</tr>
 	<tr valign="top" id="optionsListRow" >
 		<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-		<td class="formRequiredLabelWithoutBorder" width="25%"><bean:message key="eav.att.OptionList"/> : </td>
+		<td class="formRequiredLabelWithoutBorder" width="30%"><bean:message key="eav.att.OptionList"/> : </td>
 		<td  class="formFieldWithoutBorder">
 			<table summary="" cellpadding="0" cellspacing="0" border="0" align = 'center' valign="top" width='100%'>
 					<tr  class="formRequiredLabelWithoutBorder">
@@ -124,7 +126,7 @@
 			<table summary="" valign="top" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
 				<tr>
 					<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
-					<td class="formRequiredLabelWithoutBorder" width="25%">
+					<td class="formRequiredLabelWithoutBorder" width="30%">
 						<bean:message  key="eav.att.CDEPublicDomainId" /> :
 					</td>
 					<td class="formFieldWithoutBorder">
@@ -138,7 +140,7 @@
 		<table summary="" valign="top" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
 			 <tr valign="top">
 				<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
-				<td class="formRequiredLabelWithoutBorder" width="25%">
+				<td class="formRequiredLabelWithoutBorder" width="30%">
 					<bean:message  key="eav.att.LookupFormTypeSelection" /> :
 				</td>
 				<td  class="formFieldWithoutBorder">
@@ -153,7 +155,7 @@
 
 			<tr valign="top">
 				<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-				<td class="formRequiredLabelWithoutBorder" width="25%">
+				<td class="formRequiredLabelWithoutBorder" width="30%">
 					<bean:message  key="eav.att.Group" /> :
 				</td>
 				<td >
@@ -165,7 +167,7 @@
 			</tr>
 			<tr valign="top">
 				<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-				<td class="formRequiredLabelWithoutBorder" width="25%">
+				<td class="formRequiredLabelWithoutBorder" width="30%">
 					<bean:message  key="eav.att.Form" /> :
 				</td>
 				<td  >
@@ -179,13 +181,13 @@
 					<table valign="top" align = 'center' width='100%'>
 						<thead>
 						<tr>
-							<th  width="45%" class="formMessage">
+							<th  width="45%" class="formRequiredLabelWithoutBorder">
 								Available Attributes
 							</th>
-							<th  width="10%" valign="middle" ALIGN="center" class="formMessage" >
+							<th  width="10%" valign="middle" ALIGN="left" class="formMessage" >
 								&nbsp;
 							</th>
-							<th  width="45%" class="formMessage">
+							<th  width="45%" class="formRequiredLabelWithoutBorder">
 								Selected Attributes
 							</th>
 						</tr>
@@ -210,7 +212,7 @@
 			</tr>
 			<tr valign="top">
 				<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-				<td class="formRequiredLabelWithoutBorder" width="25%">
+				<td class="formRequiredLabelWithoutBorder" width="30%">
 					Separate with :
 				</td>
 				<td  >

@@ -14,7 +14,7 @@
   			<table summary=""  align = 'center' width='100%'>
 			   	<tr>
 					<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
-					<td class="formRequiredLabelWithoutBorder" width="25%">
+					<td class="formRequiredLabelWithoutBorder" width="30%">
 						<bean:message key="eav.att.DefaultValue"/> :
 					</td>
 					<td class="formFieldWithoutBorder">

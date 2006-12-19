@@ -22,7 +22,7 @@
   			<table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%'>
 		   		<tr>
 					<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
-					<td class="formRequiredLabelWithoutBorder" width="25%">
+					<td class="formRequiredLabelWithoutBorder" width="30%">
 						<bean:message key="eav.att.Format"/> :
 					</td>
 					<td class="formFieldWithoutBorder">
@@ -37,7 +37,7 @@
 				</tr>
 				<tr>
 					<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-					<td class="formRequiredLabelWithoutBorder" width="25%">
+					<td class="formRequiredLabelWithoutBorder" width="30%">
 						<bean:message key="eav.att.DefaultValue"/> :
 					</td>
 					<td class="formFieldWithoutBorder">
@@ -55,7 +55,7 @@
 				</tr>
 				<tr id="rowForDateDefaultValue">
 					<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-					<td class="formRequiredLabelWithoutBorder" width="25%">&nbsp;</td>
+					<td class="formRequiredLabelWithoutBorder" width="30%">&nbsp;</td>
 					<td >
 						<html:text styleId = 'attributeDefaultValue' property='attributeDefaultValue' styleClass="formFieldVerySmallSized" maxlength="100" size="60" />
 						<A onclick="showCalendar('attributeDefaultValue',<%=DynamicExtensionsUtility.getCurrentYear()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentDay()%>,'MM-dd-yyyy','controlsForm','attributeDefaultValue',event,1900,2020);" href="javascript://">

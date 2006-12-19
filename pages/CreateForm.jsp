@@ -15,6 +15,7 @@
 	<link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
 	<script src="jss/dynamicExtensions.js" type="text/javascript"></script>
 	<script src="jss/script.js" type="text/javascript"></script>
+	<script src="jss/ajax.js" type="text/javascript"></script>
 </head>
 
 <html:form styleId = "formDefinitionForm" action="/ApplyFormDefinitionAction" >
@@ -25,6 +26,10 @@
 
 <c:set var="associationTree" value="${formDefinitionForm.associationTree}"/>
 <jsp:useBean id="associationTree" type="edu.common.dynamicextensions.ui.webui.util.TreeData"/>
+
+<c:set var="groupName" value="${formDefinitionForm.groupName}"/>
+<jsp:useBean id="groupName" type="java.lang.String"/>
+
 
      <table style = "border-right:0px" border = 1 valign="top"  align='right' width='90%' height="100%" border='0' cellspacing="0" cellpadding="0" class="tbBorders1" >
          <!-- Main Page heading -->
@@ -71,8 +76,9 @@
 										</tr>
 										<tr>
 										<td >
-										&nbsp;
-										<dynamicExtensions:tree name="formsTree" showExpanded="true" treeDataObject="<%=treeData%>" fieldForSelectedObject="selectedAttrib"/>
+											<label class="formMessage"> <%=groupName%>		</label>
+											<dynamicExtensions:tree name="formsTree" showExpanded="true" treeDataObject="<%=treeData%>" fieldForSelectedObject="selectedAttrib"
+											nodeClickedFunction="treeNodeSelected"/>
 										</td>
 										</tr>
 										<tr height = 100%> <td> &nbsp;</td>

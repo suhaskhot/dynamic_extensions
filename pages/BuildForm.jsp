@@ -266,7 +266,7 @@
 									</html:button>
 									&nbsp;
 									<html:button styleClass="actionButton" property="showPreviewButton" onclick="showFormPreview()" >
-										<bean:message  key="buttons.showPreview" />
+										<bean:message  key="buttons.next" />
 									</html:button>
 								</td>
 							</tr>

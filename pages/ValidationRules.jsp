@@ -27,11 +27,11 @@
 	{
 		String dataType = (String)iter.next();
 		List listofRules = (List)controlRuleMap.get(dataType);
-		String divName = dataType+"Div";			
+		String divName = dataType+"Div";
 %>
 		<div id="<%= divName%>" style="display:none">
 			<table summary="" cellpadding="3" cellspacing="0" align = 'left' width='100%'>
-			<% 	
+			<%
 				Iterator rulesIter = listofRules.iterator();
 				while(rulesIter.hasNext())
 				{
@@ -42,13 +42,13 @@
 			%>
 					<tr align="top">
 				        <td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp</td>
-			 		 	<td class="formRequiredLabelWithoutBorder" width="25%">
-			 		 	<% 
+			 		 	<td class="formRequiredLabelWithoutBorder" width="30%">
+			 		 	<%
 							if (isFirst)
-							{ 
+							{
 						%>
-		 						<bean:message key="eav.control.validation"/>
-						<% 
+		 						<bean:message key="eav.control.validation"/> :
+						<%
 							}
 						%>&nbsp;
 						</td>
@@ -60,10 +60,10 @@
 						</td>
 					</tr>
 
-					<% 
-						if(params != null) 
+					<%
+						if(params != null)
 						{
-							Iterator paramsIter = params.iterator(); 
+							Iterator paramsIter = params.iterator();
 							while(paramsIter.hasNext())
 							{
 								NameValueBean paramObject = (NameValueBean)paramsIter.next();
@@ -71,14 +71,14 @@
 								String paramName = paramObject.getName();
 					%>
 							 	<tr>
-							        <td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>									
-									<td class="formRequiredNoticeWithoutBorder" width="25%">&nbsp;</td>
-									<td class="formRequiredLabelWithoutBorder" align="center">
-										&nbsp;&nbsp;&nbsp;&nbsp;<%= paramLabel%>&nbsp;
+							        <td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
+									<td class="formRequiredNoticeWithoutBorder" width="30%">&nbsp;</td>
+									<td >
+										&nbsp;&nbsp;&nbsp;&nbsp;<label class="formRequiredLabelWithoutBorder"><%= paramLabel%>&nbsp;</label>
 										<html:text styleId ="<%= paramName%>" styleClass="formParamSized"  maxlength="100" size="60"  property="<%= paramName%>" />
-									<% 
+									<%
 										if(controlName.equalsIgnoreCase("DateControl"))
-										{ 
+										{
 											String divId = "slcalcod"+ paramName;
 									%>
 										<A onclick="showCalendar('<%=paramName%>',<%=DynamicExtensionsUtility.getCurrentYear()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentDay()%>,'MM-dd-yyyy','controlsForm','<%= paramName%>',event,1900,2020);" href="javascript://">

@@ -138,5 +138,15 @@ public interface ControlInterface extends Comparable
 	 * @param parentContainer parentContainer
 	 */
 	void setParentContainer(Container parentContainer);
+	
+	/**
+	 * @return the isSubControl
+	 */
+	boolean getIsSubControl();
+
+	/**
+	 * @param isSubControl the isSubControl to set
+	 */
+	void setIsSubControl(boolean isSubControl);
 
 }

@@ -138,5 +138,11 @@ public interface ContainerInterface
 	 * @throws DynamicExtensionsSystemException 
 	 */
 	String generateControlsHTML() throws DynamicExtensionsSystemException;
+	
+	/**
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	String generateControlsHTMLAsGrid() throws DynamicExtensionsSystemException;
 
 }

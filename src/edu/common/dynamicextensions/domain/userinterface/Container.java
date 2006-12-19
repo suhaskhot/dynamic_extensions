@@ -15,6 +15,7 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 
 /**
@@ -319,7 +320,6 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 	 * @return return the HTML string for this type of a object
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	@SuppressWarnings("unchecked")
 	public String generateControlsHTML() throws DynamicExtensionsSystemException
 	{
 		StringBuffer stringBuffer = new StringBuffer();
@@ -337,6 +337,16 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 			stringBuffer.append(control.generateHTML());
 		}
 		return stringBuffer.toString();
+	}
+
+	/**
+	 * 
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public String generateControlsHTMLAsGrid() throws DynamicExtensionsSystemException
+	{
+		return UserInterfaceiUtility.generateHTMLforGrid(this);
 	}
 
 }

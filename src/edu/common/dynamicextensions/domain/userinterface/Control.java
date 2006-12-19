@@ -7,6 +7,7 @@ import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
@@ -80,6 +81,11 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	 * 
 	 */
 	protected Container parentContainer;
+	
+	/**
+	 * 
+	 */
+	protected boolean isSubControl = false;
 
 	/**
 	 * Empty Constructor
@@ -197,32 +203,34 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	public final String generateHTML() throws DynamicExtensionsSystemException
 	{
 		String htmlString = "";
-		String controlLabelHTML = getControlLabelHTML();
 
+		String innerHTML = "";
 		if (getParentContainer().getMode() != null && getParentContainer().getMode().equalsIgnoreCase(WebUIManagerConstants.VIEW_MODE))
 		{
-			htmlString = generateViewModeHTML();
+			innerHTML = generateViewModeHTML();
 		}
 		else
 		{
-			htmlString = generateEditModeHTML();
+			innerHTML = generateEditModeHTML();
 		}
 
-		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer.append("<tr>");
-		stringBuffer.append(controlLabelHTML);
-		stringBuffer.append("<td class='formField'>");
-		stringBuffer.append(htmlString);
-		stringBuffer.append("</td>");
-		stringBuffer.append("</tr>");
+		if (this.isSubControl)
+		{
+			htmlString = innerHTML;
+		}
+		else
+		{
+			htmlString = getControlHTML(innerHTML);
+		}
 
-		return stringBuffer.toString();
+		return htmlString;
 	}
 
-	protected String getControlLabelHTML()
+	protected String getControlHTML(String htmlString)
 	{
 		boolean isControlRequired = UserInterfaceiUtility.isControlRequired(this);
 		StringBuffer stringBuffer = new StringBuffer();
+		stringBuffer.append("<tr>");
 
 		stringBuffer.append("<td class='formRequiredNotice' width='2%'>");
 		if (isControlRequired)
@@ -242,6 +250,12 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		}
 		stringBuffer.append(this.getCaption());
 		stringBuffer.append("</td>");
+
+		stringBuffer.append("<td class='formField'>");
+		stringBuffer.append(htmlString);
+		stringBuffer.append("</td>");
+		stringBuffer.append("</tr>");
+
 		return stringBuffer.toString();
 	}
 
@@ -350,5 +364,21 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	public void setParentContainer(Container parentContainer)
 	{
 		this.parentContainer = parentContainer;
+	}
+
+	/**
+	 * @return the isSubControl
+	 */
+	public boolean getIsSubControl()
+	{
+		return isSubControl;
+	}
+
+	/**
+	 * @param isSubControl the isSubControl to set
+	 */
+	public void setIsSubControl(boolean isSubControl)
+	{
+		this.isSubControl = isSubControl;
 	}
 }

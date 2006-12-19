@@ -3,7 +3,6 @@ package edu.common.dynamicextensions.domain.userinterface;
 
 import java.util.List;
 
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
@@ -43,7 +42,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 	public String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
 		List<NameValueBean> nameValueBeanList = null;
-		String defaultValue = (String)this.value;
+		String defaultValue = (String) this.value;
 
 		String htmlString = "<SELECT class = '" + cssClass + "' name = '" + getHTMLComponentName() + "' " + "id = '" + getHTMLComponentName()
 				+ "' title = '" + tooltip + "'>";
@@ -99,18 +98,16 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 		listOfValues = choiceList;
 	}
 
-	
 	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
 	{
 
 		String htmlString = "&nbsp;";
-		if (value != null) {
-		htmlString = "<span class = '"+ cssClass+ "'> " + this.value.toString() + "</span>";
+		if (value != null)
+		{
+			htmlString = "<span class = '" + cssClass + "'> " + this.value.toString() + "</span>";
 		}
 		return htmlString;
-		
-	}
 
-	
+	}
 
 }

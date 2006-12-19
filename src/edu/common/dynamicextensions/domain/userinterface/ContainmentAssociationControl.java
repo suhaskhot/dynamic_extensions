@@ -61,9 +61,9 @@ public class ContainmentAssociationControl extends Control implements Containmen
 	/**
 	 * @see edu.common.dynamicextensions.domain.userinterface.Control#getControlLabelHTML()
 	 */
-	protected String getControlLabelHTML()
+	protected String getControlHTML(String htmlString)
 	{
-		return "";
+		return htmlString;
 	}
 
 	/**
@@ -71,7 +71,17 @@ public class ContainmentAssociationControl extends Control implements Containmen
 	 */
 	public String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
-		return this.getContainer().generateControlsHTML();
+		String subContainerHTML = "";
+		if(isCardinalityOneToMany())
+		{
+			//this.setIsSubControl(true);
+			subContainerHTML = this.getContainer().generateControlsHTMLAsGrid();
+		}
+		else
+		{
+			subContainerHTML = this.getContainer().generateControlsHTML();
+		}
+		return subContainerHTML;
 	}
 	
 	/**

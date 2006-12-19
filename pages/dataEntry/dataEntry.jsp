@@ -39,6 +39,9 @@
 <c:set var="recordIdentifier" value="${dataEntryForm.recordIdentifier}" />
 <jsp:useBean id="recordIdentifier" type="java.lang.String"/>
 
+<c:set var="mode" value="${dataEntryForm.mode}" />
+<jsp:useBean id="mode" type="java.lang.String"/>
+
 <html>
 	<head>
 		<title><bean:message key="table.heading" /></title>
@@ -142,7 +145,7 @@
 							
 												<td align='right'>						
 													<c:choose>
-							  	    					<c:when test='${showFormPreview  == "true"}'>
+							  	    					<c:when test='${showFormPreview  == "true" || mode  == "view"}'>
 															<html:submit styleClass="actionButton"  onclick="addDynamicData()" disabled="true">
 																<bean:message  key="buttons.submit" />
 															</html:submit>

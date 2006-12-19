@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
 
@@ -41,6 +42,11 @@ public class DataEntryForm extends AbstractActionForm
 	 * 
 	 */
 	protected List<String> errorList;
+	
+	/**
+	 * 
+	 */
+	protected String mode = WebUIManagerConstants.EDIT_MODE;
 
 	/**
 	 * 
@@ -181,6 +187,24 @@ public class DataEntryForm extends AbstractActionForm
 	public void setErrorList(List<String> errorList)
 	{
 		this.errorList = errorList;
+	}
+
+	
+	/**
+	 * @return Returns the mode.
+	 */
+	public String getMode()
+	{
+		return mode;
+	}
+
+	
+	/**
+	 * @param mode The mode to set.
+	 */
+	public void setMode(String mode)
+	{
+		this.mode = mode;
 	}
 
 }

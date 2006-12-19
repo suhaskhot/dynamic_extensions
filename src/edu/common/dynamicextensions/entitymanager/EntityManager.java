@@ -1925,10 +1925,10 @@ public class EntityManager
 			{
 				//for the other attributes, create select query.
 				String dbColumnName = attribute.getColumnProperties().getName();
-				String uiColumnName = attribute.getName();
+				//String uiColumnName = attribute.getName();
 				selectColumnNameList.add(dbColumnName);
 				//selectColumnName[index] = dbColumnName;
-				columnNameMap.put(dbColumnName, uiColumnName);
+				columnNameMap.put(dbColumnName, attribute);
 				index++;
 			}
 		}
@@ -1962,9 +1962,9 @@ public class EntityManager
 				{
 					String value = (String) innerList.get(i);
 					String dbColumnName = selectColumnName[i];
-					String uiColumnName = (String) columnNameMap.get(dbColumnName);
+					Attribute attribute = (Attribute) columnNameMap.get(dbColumnName);
 					//put the value for other attributes
-					recordValues.put(uiColumnName, value);
+					recordValues.put(attribute, value);
 				}
 			}
 
@@ -1976,7 +1976,7 @@ public class EntityManager
 				List<String> valueList = getCollectionAttributeRecordValues(entity.getId(),
 						attribute.getId(), recordId);
 				//put the value multi select attributes
-				recordValues.put(attribute.getName(), valueList);
+				recordValues.put(attribute, valueList);
 			}
 			/*
 			 * process any file type attributes
@@ -1986,7 +1986,7 @@ public class EntityManager
 				FileAttributeRecordValue fileRecordValue = getFileAttributeRecordValue(entity
 						.getId(), attribute.getId(), recordId);
 				//put the value file attributes
-				recordValues.put(attribute.getName(), fileRecordValue);
+				recordValues.put(attribute, fileRecordValue);
 			}
 
 		}

@@ -12,7 +12,6 @@ package edu.common.dynamicextensions.processor;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
@@ -73,7 +72,8 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsSystemException 
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	public ControlInterface createAndPopulateControl(String userSelectedControlName, ControlUIBeanInterface controlUIBeanInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public ControlInterface createAndPopulateControl(String userSelectedControlName, ControlUIBeanInterface controlUIBeanInterface)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ControlInterface controlInterface = populateControlInterface(userSelectedControlName, null, controlUIBeanInterface);
 		return controlInterface;
@@ -90,7 +90,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	public ControlInterface populateControlInterface(String userSelectedControlName, ControlInterface controlIntf,
 			ControlUIBeanInterface controlUIBeanInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
-			{
+	{
 		ControlInterface controlInterface = null;
 		if ((userSelectedControlName != null) && (controlUIBeanInterface != null))
 		{
@@ -146,7 +146,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		}
 		return controlInterface;
 
-			}
+	}
 
 	/** 
 	 * @param controlIntf : Control Interface (Domain Object Interface)
@@ -236,7 +236,8 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private ControlInterface getListBoxControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private ControlInterface getListBoxControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ListBoxInterface listBoxIntf = null;
 		if (controlInterface == null) //If does not exist create it 
@@ -258,13 +259,13 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		listBoxIntf.setNoOfRows(controlUIBeanInterface.getRows());
 		//Set isCollection=true in the attribute
 		AbstractAttributeInterface controlAttribute = controlUIBeanInterface.getAbstractAttribute();
-		if ((controlAttribute != null)&&(controlAttribute instanceof AttributeInterface))
+		if ((controlAttribute != null) && (controlAttribute instanceof AttributeInterface))
 		{
-			((AttributeInterface)controlAttribute).setIsCollection(new Boolean(true));
+			((AttributeInterface) controlAttribute).setIsCollection(new Boolean(true));
 		}
-		if(listBoxIntf instanceof SelectControl)
+		if (listBoxIntf instanceof SelectControl)
 		{
-			initializeSelectControl((SelectControl)listBoxIntf,controlUIBeanInterface);
+			initializeSelectControl((SelectControl) listBoxIntf, controlUIBeanInterface);
 		}
 		return listBoxIntf;
 	}
@@ -276,7 +277,8 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private ControlInterface getComboBoxControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private ControlInterface getComboBoxControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ComboBoxInterface comboBoxIntf = null;
 		if (controlInterface == null) //If does not exist create it 
@@ -294,9 +296,9 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 				comboBoxIntf = DomainObjectFactory.getInstance().createComboBox();
 			}
 		}
-		if(comboBoxIntf instanceof SelectControl)
+		if (comboBoxIntf instanceof SelectControl)
 		{
-			initializeSelectControl((SelectControl)comboBoxIntf,controlUIBeanInterface);
+			initializeSelectControl((SelectControl) comboBoxIntf, controlUIBeanInterface);
 		}
 		return comboBoxIntf;
 
@@ -308,23 +310,24 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private void initializeSelectControl(SelectControl selectControl, ControlUIBeanInterface controlUIBeanInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private void initializeSelectControl(SelectControl selectControl, ControlUIBeanInterface controlUIBeanInterface)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		//initialize the select control object with the separator etc properties
-		if(selectControl!=null)
+		if (selectControl != null)
 		{
 			AbstractAttributeInterface attribute = controlUIBeanInterface.getAbstractAttribute();
-			if((attribute!=null)&&(attribute instanceof AssociationInterface))
+			if ((attribute != null) && (attribute instanceof AssociationInterface))
 			{
 				selectControl.setSeparator(controlUIBeanInterface.getSeparator());
 				String[] associationControlIds = controlUIBeanInterface.getSelectedAttributeIds();
 				selectControl.removeAllAssociationDisplayAttributes();
-				if(associationControlIds!=null)
+				if (associationControlIds != null)
 				{
 					int noOfIds = associationControlIds.length;
-					for(int i=0;i<noOfIds;i++)
+					for (int i = 0; i < noOfIds; i++)
 					{
-						selectControl.addAssociationDisplayAttribute(getAssociationDisplayAttribute(associationControlIds[i],i+1));			
+						selectControl.addAssociationDisplayAttribute(getAssociationDisplayAttribute(associationControlIds[i], i + 1));
 					}
 				}
 			}
@@ -342,10 +345,11 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private AssociationDisplayAttributeInterface getAssociationDisplayAttribute(String controlId,int sequenceNo) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private AssociationDisplayAttributeInterface getAssociationDisplayAttribute(String controlId, int sequenceNo)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		AssociationDisplayAttributeInterface associationDisplayAttribute = null;
-		if(controlId!=null)
+		if (controlId != null)
 		{
 			DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 
@@ -365,13 +369,13 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	private AttributeInterface getAttributeForId(String controlId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		AttributeInterface attribute = null;
-		if(controlId!=null)
+		if (controlId != null)
 		{
 			ControlInterface control = DynamicExtensionsUtility.getControlByIdentifier(controlId);
-			if(control!=null)
+			if (control != null)
 			{
-				if((control.getAbstractAttribute()!=null)&&(control.getAbstractAttribute() instanceof AttributeInterface))
-					attribute = (AttributeInterface)control.getAbstractAttribute();
+				if ((control.getAbstractAttribute() != null) && (control.getAbstractAttribute() instanceof AttributeInterface))
+					attribute = (AttributeInterface) control.getAbstractAttribute();
 			}
 		}
 		return attribute;
@@ -445,12 +449,13 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public void populateControlUIBeanInterface(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public void populateControlUIBeanInterface(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		if (controlInterface != null && controlUIBeanInterface != null)
 		{
-			populateControlCommonAttributes(controlInterface,controlUIBeanInterface);
-			populateControlSpecificAttributes(controlInterface,controlUIBeanInterface);
+			populateControlCommonAttributes(controlInterface, controlUIBeanInterface);
+			populateControlSpecificAttributes(controlInterface, controlUIBeanInterface);
 		}
 	}
 
@@ -460,35 +465,36 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private void populateControlSpecificAttributes(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private void populateControlSpecificAttributes(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		if (controlInterface instanceof TextFieldInterface)
 		{
-			populateTextControlAttributesInUIBean((TextFieldInterface)controlInterface,controlUIBeanInterface);
+			populateTextControlAttributesInUIBean((TextFieldInterface) controlInterface, controlUIBeanInterface);
 		}
 		else if (controlInterface instanceof DatePickerInterface)
 		{
-			populateDateControlAttributesInUIBean((DatePickerInterface)controlInterface,controlUIBeanInterface);
+			populateDateControlAttributesInUIBean((DatePickerInterface) controlInterface, controlUIBeanInterface);
 		}
 		else if (controlInterface instanceof TextAreaInterface)
 		{
-			populateTextAreaAttributesInUIBean((TextAreaInterface)controlInterface,controlUIBeanInterface);
+			populateTextAreaAttributesInUIBean((TextAreaInterface) controlInterface, controlUIBeanInterface);
 		}
 		else if (controlInterface instanceof ListBoxInterface)
 		{
-			populateListBoxAttributesInUIBean((ListBoxInterface)controlInterface,controlUIBeanInterface);
+			populateListBoxAttributesInUIBean((ListBoxInterface) controlInterface, controlUIBeanInterface);
 		}
 		else if (controlInterface instanceof FileUploadInterface)
 		{
-			populateFileUploadAttributesInUIBean((FileUploadInterface)controlInterface,controlUIBeanInterface);
+			populateFileUploadAttributesInUIBean((FileUploadInterface) controlInterface, controlUIBeanInterface);
 		}
-		if(controlInterface instanceof SelectControl)
+		if (controlInterface instanceof SelectControl)
 		{
-			populateSelectControlAttributesInUIBean((SelectControl)controlInterface,controlUIBeanInterface);
+			populateSelectControlAttributesInUIBean((SelectControl) controlInterface, controlUIBeanInterface);
 		}
-		if(controlInterface instanceof ContainmentAssociationControl)
+		if (controlInterface instanceof ContainmentAssociationControl)
 		{
-			populateContainmentAssociationAttributesInUIBean((ContainmentAssociationControl)controlInterface,controlUIBeanInterface);
+			populateContainmentAssociationAttributesInUIBean((ContainmentAssociationControl) controlInterface, controlUIBeanInterface);
 		}
 	}
 
@@ -498,7 +504,6 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private void populateContainmentAssociationAttributesInUIBean(ContainmentAssociationControl control, ControlUIBeanInterface controlUIBeanInterface)
 	{
-		
 	}
 
 	/**
@@ -507,32 +512,31 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private void populateSelectControlAttributesInUIBean(SelectControl selectControl, ControlUIBeanInterface controlUIBeanInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private void populateSelectControlAttributesInUIBean(SelectControl selectControl, ControlUIBeanInterface controlUIBeanInterface)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		controlUIBeanInterface.setSeparator(selectControl.getSeparator());
-		
+
 		ArrayList<NameValueBean> selectedAttributesList = new ArrayList<NameValueBean>();
 		NameValueBean selectedAttribute = null;
-		
-		Collection<AssociationDisplayAttributeInterface> associationAttributes = selectControl.getAssociationDisplayAttributeCollection();
+
+		Collection<AssociationDisplayAttributeInterface> associationAttributeCollection = selectControl.getAssociationDisplayAttributeCollection();
 		ControlInterface control = null;
 		AttributeInterface attribute = null;
-		if(associationAttributes!=null)
+		if (associationAttributeCollection != null)
 		{
-			Iterator<AssociationDisplayAttributeInterface> associationAttributesIterator = associationAttributes.iterator();
-			while(associationAttributesIterator.hasNext())
+			for(AssociationDisplayAttributeInterface assocnDisplayAttribute:associationAttributeCollection)
 			{
-				AssociationDisplayAttributeInterface assocnDisplayAttribute = associationAttributesIterator.next();
-				if(assocnDisplayAttribute!=null)
+				if (assocnDisplayAttribute != null)
 				{
 					attribute = assocnDisplayAttribute.getAttribute();
-					if(attribute!=null)
+					if (attribute != null)
 					{
 						EntityManagerInterface entityManager = EntityManager.getInstance();
 						control = entityManager.getControlByAbstractAttributeIdentifier(attribute.getId());
-						if(control!=null)
+						if (control != null)
 						{
-							selectedAttribute = new NameValueBean(control.getCaption(),control.getId());
+							selectedAttribute = new NameValueBean(control.getCaption(), control.getId());
 							selectedAttributesList.add(selectedAttribute);
 						}
 					}
@@ -548,7 +552,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private void populateFileUploadAttributesInUIBean(FileUploadInterface fileUploadInterface, ControlUIBeanInterface controlUIBeanInterface)
 	{
-		controlUIBeanInterface.setColumns(fileUploadInterface.getColumns());		
+		controlUIBeanInterface.setColumns(fileUploadInterface.getColumns());
 	}
 
 	/**
@@ -558,7 +562,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	private void populateListBoxAttributesInUIBean(ListBoxInterface listBoxInterface, ControlUIBeanInterface controlUIBeanInterface)
 	{
 		controlUIBeanInterface.setIsMultiSelect(listBoxInterface.getIsMultiSelect());
-		controlUIBeanInterface.setRows(listBoxInterface.getNoOfRows());		
+		controlUIBeanInterface.setRows(listBoxInterface.getNoOfRows());
 	}
 
 	/**
@@ -608,20 +612,21 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	/**
 	 * @param subFormContainer
 	 */
-	public ControlInterface createContainmentAssociationControl(ContainerInterface container,AbstractAttributeInterface attributeIntf)
+	public ControlInterface createContainmentAssociationControl(ContainerInterface container, AbstractAttributeInterface attributeIntf)
 	{
-		ContainmentAssociationControlInterface containmentAssociationControl = DomainObjectFactory.getInstance().createContainmentAssociationControl();
+		ContainmentAssociationControlInterface containmentAssociationControl = DomainObjectFactory.getInstance()
+				.createContainmentAssociationControl();
 		containmentAssociationControl.setCaption(container.getCaption());
 		containmentAssociationControl.setContainer(container);
 		containmentAssociationControl.setAbstractAttribute(attributeIntf);
 		Integer containerSequenceNumber = new Integer(1);
-		if(container.getControlCollection() != null)
+		if (container.getControlCollection() != null)
 		{
-		containerSequenceNumber = new Integer(container.getControlCollection().size()+1);
+			containerSequenceNumber = new Integer(container.getControlCollection().size() + 1);
 		}
 		containmentAssociationControl.setSequenceNumber(containerSequenceNumber);
-		
+
 		return containmentAssociationControl;
-		
+
 	}
 }

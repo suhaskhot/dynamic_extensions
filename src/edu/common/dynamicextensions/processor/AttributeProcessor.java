@@ -115,7 +115,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		if (attributeUIBeanInformationIntf != null)
 		{
 			String displayChoice = attributeUIBeanInformationIntf.getDisplayChoice();
-			if((displayChoice!=null)&&(displayChoice.equals(ProcessorConstants.DISPLAY_CHOICE_LOOKUP)))
+			if ((displayChoice != null) && (displayChoice.equals(ProcessorConstants.DISPLAY_CHOICE_LOOKUP)))
 			{
 				attributeInterface = domainObjectFactory.createAssociation();
 			}
@@ -124,7 +124,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				String attributeType = attributeUIBeanInformationIntf.getDataType();
 				if (attributeType != null)
 				{
-					
+
 					if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_STRING))
 					{
 						attributeInterface = domainObjectFactory.createStringAttribute();
@@ -157,9 +157,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 
 	}
 
-
-	private RoleInterface getRole(AssociationType associationType, String name,
-			Cardinality minCard, Cardinality maxCard)
+	private RoleInterface getRole(AssociationType associationType, String name, Cardinality minCard, Cardinality maxCard)
 	{
 		RoleInterface role = DomainObjectFactory.getInstance().createRole();
 		role.setAssociationsType(associationType);
@@ -186,9 +184,9 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	{
 		if ((attributeUIBeanInformationIntf != null) && (attributeInterface != null))
 		{
-			if(attributeInterface instanceof AssociationInterface)
+			if (attributeInterface instanceof AssociationInterface)
 			{
-				populateAssociation(userSelectedControlName,(AssociationInterface)attributeInterface,attributeUIBeanInformationIntf);
+				populateAssociation(userSelectedControlName, (AssociationInterface) attributeInterface, attributeUIBeanInformationIntf);
 			}
 			//populate information specific to attribute type
 			populateAttributeSpecificInfo(attributeInterface, attributeUIBeanInformationIntf);
@@ -220,30 +218,29 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private void populateAssociation(String userSelectedControlName, AssociationInterface associationIntf, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private void populateAssociation(String userSelectedControlName, AssociationInterface associationIntf,
+			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		ContainerInterface containerInterface = DynamicExtensionsUtility.getContainerByIdentifier(attributeUIBeanInformationIntf.getFormName());
 		EntityInterface targetEntity = containerInterface.getEntity();
-		if((targetEntity!=null)&&(associationIntf!=null))
+		if ((targetEntity != null) && (associationIntf != null))
 		{
 			associationIntf.setTargetEntity(targetEntity);
 			associationIntf.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
 			associationIntf.setName(attributeUIBeanInformationIntf.getName());
-			associationIntf.setSourceRole(getRole(AssociationType.ASSOCIATION,null,
-					Cardinality.ONE, Cardinality.MANY));
-			if((userSelectedControlName!=null)&&(userSelectedControlName.equals(ProcessorConstants.LISTBOX_CONTROL)))
+			associationIntf.setSourceRole(getRole(AssociationType.ASSOCIATION, null, Cardinality.ONE, Cardinality.MANY));
+			if ((userSelectedControlName != null) && (userSelectedControlName.equals(ProcessorConstants.LISTBOX_CONTROL)))
 			{
-				associationIntf.setTargetRole(getRole(AssociationType.ASSOCIATION,targetEntity.getName() , Cardinality.ONE,
-						Cardinality.MANY));
+				associationIntf.setTargetRole(getRole(AssociationType.ASSOCIATION, targetEntity.getName(), Cardinality.ONE, Cardinality.MANY));
 			}
 			else
 			{
-				associationIntf.setTargetRole(getRole(AssociationType.ASSOCIATION,targetEntity.getName() , Cardinality.ONE,
-						Cardinality.ONE));
+				associationIntf.setTargetRole(getRole(AssociationType.ASSOCIATION, targetEntity.getName(), Cardinality.ONE, Cardinality.ONE));
 			}
-			
+
 		}
-			
+
 	}
 
 	/**
@@ -598,13 +595,13 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		return dataEltInterface;
 	}
 
-	
 	/**
 	 * @param attributeUIBeanInformationIntf 
 	 * @throws DynamicExtensionsApplicationException 
 	 * 
 	 */
-	private DataElementInterface getDataElementForUserDefinedValues(AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsApplicationException
+	private DataElementInterface getDataElementForUserDefinedValues(AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
+			throws DynamicExtensionsApplicationException
 	{
 		DataElementInterface userDefinedDataEltInterface = null;
 		PermissibleValueInterface permissibleValue = null;
@@ -626,8 +623,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				semanticPropertiesForOptions = SemanticPropertyBuilderUtil.getSymanticPropertyCollection(optionConceptCode);
 				if ((optionName != null) && (optionName.trim() != null))
 				{
-					permissibleValue = getPermissibleValue(attributeUIBeanInformationIntf, optionName, optionDesc,
-							semanticPropertiesForOptions);
+					permissibleValue = getPermissibleValue(attributeUIBeanInformationIntf, optionName, optionDesc, semanticPropertiesForOptions);
 					((UserDefinedDE) userDefinedDataEltInterface).addPermissibleValue(permissibleValue);
 				}
 			}
@@ -895,14 +891,14 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		}
 		shortAttributeInterface.setMeasurementUnits(attributeUIBeanInformationIntf.getAttributeMeasurementUnits());
 		//Decimal places
-		String strDecimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces(); 
-		if ((strDecimalPlaces!= null)&& (!strDecimalPlaces.trim().equals("")))
+		String strDecimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces();
+		if ((strDecimalPlaces != null) && (!strDecimalPlaces.trim().equals("")))
 		{
 			shortAttributeInterface.setDecimalPlaces(Integer.parseInt(strDecimalPlaces));
 		}
 		//digits
-		String strDigits = attributeUIBeanInformationIntf.getAttributeDigits(); 
-		if ((strDigits!= null)&& (!strDigits.trim().equals("")))
+		String strDigits = attributeUIBeanInformationIntf.getAttributeDigits();
+		if ((strDigits != null) && (!strDigits.trim().equals("")))
 		{
 			shortAttributeInterface.setDigits(Integer.parseInt(strDigits));
 		}
@@ -942,14 +938,14 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		}
 		integerAttributeInterface.setMeasurementUnits(attributeUIBeanInformationIntf.getAttributeMeasurementUnits());
 		//Decimal places
-		String strDecimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces(); 
-		if ((strDecimalPlaces!= null)&& (!strDecimalPlaces.trim().equals("")))
+		String strDecimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces();
+		if ((strDecimalPlaces != null) && (!strDecimalPlaces.trim().equals("")))
 		{
 			integerAttributeInterface.setDecimalPlaces(Integer.parseInt(strDecimalPlaces));
 		}
 		//digits
-		String strDigits = attributeUIBeanInformationIntf.getAttributeDigits(); 
-		if ((strDigits!= null)&& (!strDigits.trim().equals("")))
+		String strDigits = attributeUIBeanInformationIntf.getAttributeDigits();
+		if ((strDigits != null) && (!strDigits.trim().equals("")))
 		{
 			integerAttributeInterface.setDigits(Integer.parseInt(strDigits));
 		}
@@ -973,15 +969,15 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			longAttributeInterface.setDefaultValue(longValue);
 		}
 		longAttributeInterface.setMeasurementUnits(attributeUIBeanInformationIntf.getAttributeMeasurementUnits());
-//		Decimal places
-		String strDecimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces(); 
-		if ((strDecimalPlaces!= null)&& (!strDecimalPlaces.trim().equals("")))
+		//		Decimal places
+		String strDecimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces();
+		if ((strDecimalPlaces != null) && (!strDecimalPlaces.trim().equals("")))
 		{
 			longAttributeInterface.setDecimalPlaces(Integer.parseInt(strDecimalPlaces));
 		}
 		//digits
-		String strDigits = attributeUIBeanInformationIntf.getAttributeDigits(); 
-		if ((strDigits!= null)&& (!strDigits.trim().equals("")))
+		String strDigits = attributeUIBeanInformationIntf.getAttributeDigits();
+		if ((strDigits != null) && (!strDigits.trim().equals("")))
 		{
 			longAttributeInterface.setDigits(Integer.parseInt(strDigits));
 		}
@@ -1005,14 +1001,14 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		}
 		floatAttributeInterface.setMeasurementUnits(attributeUIBeanInformationIntf.getAttributeMeasurementUnits());
 		//Decimal places
-		String strDecimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces(); 
-		if ((strDecimalPlaces!= null)&& (!strDecimalPlaces.trim().equals("")))
+		String strDecimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces();
+		if ((strDecimalPlaces != null) && (!strDecimalPlaces.trim().equals("")))
 		{
 			floatAttributeInterface.setDecimalPlaces(Integer.parseInt(strDecimalPlaces));
 		}
 		//digits
-		String strDigits = attributeUIBeanInformationIntf.getAttributeDigits(); 
-		if ((strDigits!= null)&& (!strDigits.trim().equals("")))
+		String strDigits = attributeUIBeanInformationIntf.getAttributeDigits();
+		if ((strDigits != null) && (!strDigits.trim().equals("")))
 		{
 			floatAttributeInterface.setDigits(Integer.parseInt(strDigits));
 		}
@@ -1035,16 +1031,16 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			doubleAttributeInterface.setDefaultValue(doubleValue);
 		}
 		doubleAttributeInterface.setMeasurementUnits(attributeUIBeanInformationIntf.getAttributeMeasurementUnits());
-		
+
 		//Decimal places
-		String strDecimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces(); 
-		if ((strDecimalPlaces!= null)&& (!strDecimalPlaces.trim().equals("")))
+		String strDecimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces();
+		if ((strDecimalPlaces != null) && (!strDecimalPlaces.trim().equals("")))
 		{
 			doubleAttributeInterface.setDecimalPlaces(Integer.parseInt(strDecimalPlaces));
 		}
 		//digits
-		String strDigits = attributeUIBeanInformationIntf.getAttributeDigits(); 
-		if ((strDigits!= null)&& (!strDigits.trim().equals("")))
+		String strDigits = attributeUIBeanInformationIntf.getAttributeDigits();
+		if ((strDigits != null) && (!strDigits.trim().equals("")))
 		{
 			doubleAttributeInterface.setDigits(Integer.parseInt(strDigits));
 		}
@@ -1120,7 +1116,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsSystemException 
 	 */
 	public void populateAttributeUIBeanInterface(AbstractAttributeInterface attributeInterface,
-			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		if ((attributeUIBeanInformationIntf != null) && (attributeInterface != null))
 		{
@@ -1334,7 +1331,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		}
 		attributeUIBeanInformationIntf.setAttributeMeasurementUnits(shortAttributeInformation.getMeasurementUnits());
 		attributeUIBeanInformationIntf.setAttributeDecimalPlaces(shortAttributeInformation.getDecimalPlaces().toString());
-	//	attributeUIBeanInformationIntf.setAttributeDigits(shortAttributeInformation.getDigits().toString());
+		//	attributeUIBeanInformationIntf.setAttributeDigits(shortAttributeInformation.getDigits().toString());
 	}
 
 	/**
@@ -1352,7 +1349,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		}
 		attributeUIBeanInformationIntf.setAttributeMeasurementUnits(integerAttributeInformation.getMeasurementUnits());
 		attributeUIBeanInformationIntf.setAttributeDecimalPlaces(integerAttributeInformation.getDecimalPlaces().toString());
-	//	attributeUIBeanInformationIntf.setAttributeDigits(integerAttributeInformation.getDigits().toString());
+		//	attributeUIBeanInformationIntf.setAttributeDigits(integerAttributeInformation.getDigits().toString());
 	}
 
 	/**
@@ -1434,15 +1431,16 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private void setOptionsInformation(AbstractAttributeInterface attributeInterface, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private void setOptionsInformation(AbstractAttributeInterface attributeInterface, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		
+
 		if ((attributeUIBeanInformationIntf != null) && (attributeInterface != null))
 		{
-			if(attributeInterface instanceof AssociationInterface)
+			if (attributeInterface instanceof AssociationInterface)
 			{
 				//Lookup options selected
-				populateUIBeanAssociationInformation((AssociationInterface)attributeInterface,attributeUIBeanInformationIntf);
+				populateUIBeanAssociationInformation((AssociationInterface) attributeInterface, attributeUIBeanInformationIntf);
 			}
 			else
 			{
@@ -1451,10 +1449,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				if (attributeTypeInformationInterface != null)
 				{
 					DataElementInterface dataEltInterface = attributeTypeInformationInterface.getDataElement();
-					if ((dataEltInterface != null)&&(dataEltInterface instanceof UserDefinedDEInterface))
-						{
-							populateUserDefinedOptionValues(attributeTypeInformationInterface,attributeUIBeanInformationIntf);
-						}
+					if ((dataEltInterface != null) && (dataEltInterface instanceof UserDefinedDEInterface))
+					{
+						populateUserDefinedOptionValues(attributeTypeInformationInterface, attributeUIBeanInformationIntf);
+					}
 				}
 			}
 		}
@@ -1466,13 +1464,15 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private void populateUIBeanAssociationInformation(AssociationInterface associationInterface, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private void populateUIBeanAssociationInformation(AssociationInterface associationInterface,
+			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		attributeUIBeanInformationIntf.setDisplayChoice(ProcessorConstants.DISPLAY_CHOICE_LOOKUP);
-		if((associationInterface!=null)&&(attributeUIBeanInformationIntf!=null))
+		if ((associationInterface != null) && (attributeUIBeanInformationIntf != null))
 		{
 			EntityInterface targetEntity = associationInterface.getTargetEntity();
-			if(targetEntity!=null)
+			if (targetEntity != null)
 			{
 				attributeUIBeanInformationIntf.setGroupName(getGroupName(targetEntity));
 				attributeUIBeanInformationIntf.setFormName(getFormName(targetEntity));
@@ -1488,11 +1488,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private String getFormName(EntityInterface entity) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		if(entity!=null)
+		if (entity != null)
 		{
 			EntityManagerInterface entityManager = EntityManager.getInstance();
 			ContainerInterface containerInterface = entityManager.getContainerByEntityIdentifier(entity.getId());
-			if((containerInterface!=null)&&(containerInterface.getId()!=null))
+			if ((containerInterface != null) && (containerInterface.getId() != null))
 			{
 				return containerInterface.getId().toString();
 			}
@@ -1506,15 +1506,15 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private String getGroupName(EntityInterface targetEntity)
 	{
-//		Initialize group name
+		//Initialize group name
 		Collection<EntityGroupInterface> entityGroups = targetEntity.getEntityGroupCollection();
 		//Assumed that the collection will contain just one entity. So fetching first elt of collection
-		if((entityGroups!=null)&&(entityGroups.size()>0))
+		if ((entityGroups != null) && (entityGroups.size() > 0))
 		{
 			EntityGroupInterface entityGroup = entityGroups.iterator().next();
-			if(entityGroup!=null)
+			if (entityGroup != null)
 			{
-				if(entityGroup.getId()!=null)
+				if (entityGroup.getId() != null)
 				{
 					return entityGroup.getId().toString();
 				}
@@ -1527,11 +1527,12 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param attributeTypeInformationInterface
 	 * @param attributeUIBeanInformationIntf
 	 */
-	private void populateUserDefinedOptionValues(AttributeTypeInformationInterface attributeTypeInformationInterface, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
+	private void populateUserDefinedOptionValues(AttributeTypeInformationInterface attributeTypeInformationInterface,
+			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
 	{
 		ArrayList<OptionValueObject> optionDetails = new ArrayList<OptionValueObject>();
 		DataElementInterface dataEltInterface = attributeTypeInformationInterface.getDataElement();
-		if((attributeTypeInformationInterface!=null)&&(attributeUIBeanInformationIntf!=null))
+		if ((attributeTypeInformationInterface != null) && (attributeUIBeanInformationIntf != null))
 		{
 			attributeUIBeanInformationIntf.setDisplayChoice(ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED);
 			UserDefinedDEInterface userDefinedDE = (UserDefinedDEInterface) dataEltInterface;
@@ -1548,7 +1549,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 			attributeUIBeanInformationIntf.setOptionDetails(optionDetails);
 		}
-			
+
 	}
 
 	/**
@@ -1610,14 +1611,14 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public AbstractAttributeInterface updateAttributeInformation(String userSelectedControlName, AbstractAttributeInterface abstractAttributeInformation,
-			AbstractAttributeUIBeanInterface attributeUIBeanInformation) throws DynamicExtensionsApplicationException,
-			DynamicExtensionsSystemException
+	public AbstractAttributeInterface updateAttributeInformation(String userSelectedControlName,
+			AbstractAttributeInterface abstractAttributeInformation, AbstractAttributeUIBeanInterface attributeUIBeanInformation)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		AbstractAttributeInterface attributeInterface = null;
 		if ((abstractAttributeInformation != null) && (attributeUIBeanInformation != null))
 		{
-			if(canUpdateExistingAttribute(abstractAttributeInformation,attributeUIBeanInformation))
+			if (canUpdateExistingAttribute(abstractAttributeInformation, attributeUIBeanInformation))
 			{
 				attributeInterface = abstractAttributeInformation;
 				if (attributeInterface instanceof AttributeInterface)
@@ -1629,16 +1630,18 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				}
 				else if (attributeInterface instanceof AssociationInterface)
 				{
-					populateAssociation(userSelectedControlName, (AssociationInterface)attributeInterface, attributeUIBeanInformation);
+					populateAssociation(userSelectedControlName, (AssociationInterface) attributeInterface, attributeUIBeanInformation);
 				}
 			}
-			else	//Cannot update same instance
+			else
+			//Cannot update same instance
 			{
 				/*//Create a new instance and set that in the control
-				attributeInterface = createAndPopulateAttribute(userSelectedControlName, attributeUIBeanInformation);*/
-				
+				 attributeInterface = createAndPopulateAttribute(userSelectedControlName, attributeUIBeanInformation);*/
+
 				//Throw Exception cannot convert attribute type
-				DynamicExtensionsApplicationException applnException = new DynamicExtensionsApplicationException("Cannot convert from Lookup to User defined or vice-versa");
+				DynamicExtensionsApplicationException applnException = new DynamicExtensionsApplicationException(
+						"Cannot convert from Lookup to User defined or vice-versa");
 				throw applnException;
 			}
 		}
@@ -1652,17 +1655,19 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsSystemException 
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	private boolean canUpdateExistingAttribute(AbstractAttributeInterface existingAbstractAttributeIntf, AbstractAttributeUIBeanInterface attributeUIBeanInformation) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	private boolean canUpdateExistingAttribute(AbstractAttributeInterface existingAbstractAttributeIntf,
+			AbstractAttributeUIBeanInterface attributeUIBeanInformation) throws DynamicExtensionsApplicationException,
+			DynamicExtensionsSystemException
 	{
-		boolean areInstancesOfSameType = false; 
-		if(existingAbstractAttributeIntf != null)
+		boolean areInstancesOfSameType = false;
+		if (existingAbstractAttributeIntf != null)
 		{
 			AbstractAttributeInterface newAbstractAttribute = createAttribute(attributeUIBeanInformation);
-			if((newAbstractAttribute instanceof AttributeInterface)&&(existingAbstractAttributeIntf instanceof AttributeInterface))
+			if ((newAbstractAttribute instanceof AttributeInterface) && (existingAbstractAttributeIntf instanceof AttributeInterface))
 			{
 				areInstancesOfSameType = true;
 			}
-			if((newAbstractAttribute instanceof AssociationInterface)&&(existingAbstractAttributeIntf instanceof AssociationInterface))
+			if ((newAbstractAttribute instanceof AssociationInterface) && (existingAbstractAttributeIntf instanceof AssociationInterface))
 			{
 				areInstancesOfSameType = true;
 			}

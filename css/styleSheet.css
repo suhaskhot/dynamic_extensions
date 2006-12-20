@@ -1445,3 +1445,8 @@ label.formFieldWithoutBorder{ /* for the cell that contains the form elements */
   font-size:0.7em;
   color:#000000; /* constant: black */
 }
+
+td.rowWithoutPadding { 
+margin: 0; 
+padding: 0; 
+} 

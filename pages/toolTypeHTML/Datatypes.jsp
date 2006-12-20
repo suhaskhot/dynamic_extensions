@@ -12,8 +12,8 @@
 
 <input type="hidden" id='linesTypeHidden' name="linesTypeHidden" value='<%=linesType%>' />
 <div id="TextDataType" style="display:none">
-	<table summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
-		<tr valign="top">
+	<table valign="top" summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
+		<tr valign="top" >
  			<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
  			<td class="formRequiredLabelWithoutBorder" width="30%">
  				<bean:message key="eav.control.type"/> :
@@ -56,6 +56,16 @@
 				<html:text styleClass="formDateSized" maxlength="100" size="60" styleId='attributeDefaultValue' property="attributeDefaultValue" />
 			</td>
 		</tr>
+		<tr valign="top">
+			<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
+			<td class="formRequiredLabelWithoutBorder" width="30%">&nbsp;</td>
+			<td class="formFieldWithoutBorder" align="left">
+				<html:checkbox  styleId = 'attributeDisplayAsURL' property="attributeDisplayAsURL" value="true">
+					<bean:message key="app.att.displayAsURL" />
+				</html:checkbox>
+			</td>
+		</tr>
+
 	</table>
 </div>
 
@@ -65,7 +75,7 @@
 			<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
 			<td class="formRequiredLabelWithoutBorder" width="30%">
 				<bean:message key="eav.att.AttributeDecimalPlaces"/> :
-			</td>	
+			</td>
 			<td class="formFieldWithoutBorder">
 				<html:text styleClass="formFieldSized5" maxlength="100" size="60" styleId='attributeDecimalPlaces' property="attributeDecimalPlaces" />
 			</td>

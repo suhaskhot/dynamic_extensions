@@ -22,7 +22,7 @@
 <div id="UserDefinedValues" style="display:none">
 	<input type="hidden" value="1" id ="choiceListCounter"  name="choiceListCounter" >
 	<table summary="" valign="top" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
-
+	<hr/>
 	 <tr valign="top">
 				<td class="formRequiredNoticeWithoutBorder" width="2%">
 									&nbsp;
@@ -51,7 +51,7 @@
 						<bean:message key="eav.att.OptionDescription"/> :
 					</td>
 					<td  >
-						<textarea rows = "3" cols="28" id = 'optionDescription' name="optionDescription" class="formFieldSmallSized" ></textarea>
+						<textarea rows = "2" cols="28" id = 'optionDescription' name="optionDescription" class="formFieldSmallSized" ></textarea>
 					</td>
 	</tr>
 	<tr valign="top">
@@ -124,6 +124,7 @@
 <!--CDE Spcfn-->
 	<div id="CDEValues" style="display:none">
 			<table summary="" valign="top" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
+				<hr/>
 				<tr>
 					<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
 					<td class="formRequiredLabelWithoutBorder" width="30%">
@@ -138,6 +139,7 @@
 <!--Lookup specification-->
 	<div id="LookupValues" style="display:none">
 		<table summary="" valign="top" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
+			<hr/>
 			 <tr valign="top">
 				<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
 				<td class="formRequiredLabelWithoutBorder" width="30%">
@@ -147,7 +149,7 @@
 					<html:radio styleId="formTypeForLookup"  property="formTypeForLookup" value="<%=ProcessorConstants.LOOKUP_USER_FORMS %>" >
 						<bean:message  key="eav.att.LookupUserForms" />
 					</html:radio>
-					<html:radio styleId="formTypeForLookup" property="formTypeForLookup" value="<%=ProcessorConstants.LOOKUP_SYSTEM_FORMS %>" >
+					<html:radio styleId="formTypeForLookup" property="formTypeForLookup" value="<%=ProcessorConstants.LOOKUP_SYSTEM_FORMS %>"  disabled="true">
 						<bean:message  key="eav.att.LookupSytsemForms" />
 					</html:radio>
 				</td>

@@ -8,7 +8,7 @@
 
 <c:set var="selectedDataType" value="${controlsForm.dataType}"/>
 <jsp:useBean id="selectedDataType" type="java.lang.String"/>
-
+<input type="hidden" id = 'initialDataType' name="initialDataType" value="<%=selectedDataType%>"/>
 <table summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
 	<tr>
     	<td>
@@ -22,7 +22,7 @@
 						<html:text styleClass="formFieldSized5" maxlength="100" size="60" styleId='attributenoOfCols' property="attributenoOfCols" />
 					</td>
 				</tr>
-				<tr valign="top">
+				<tr valign="top" >
 					<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
 					<td class="formRequiredLabelWithoutBorder" width="30%">
 						<bean:message key="eav.att.DataInput"/> :
@@ -42,9 +42,8 @@
 		</td>
  	</tr>
  	<tr valign="top">
-		<td>
-			<input type="hidden" id = 'initialDataType' name="initialDataType" value="<%=selectedDataType%>"/>
-			<div id="substitutionDiv"></div>
+		<td valign="top">
+			<div valign="top" id="substitutionDiv"></div>
 		</td>
 	</tr>
 	<tr valign="top">
@@ -59,21 +58,12 @@
 						</html:checkbox>
 					</td>
 				</tr>
-				<tr valign="top">
-					<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-					<td class="formRequiredLabelWithoutBorder" width="30%">&nbsp;</td>
-					<td class="formFieldWithoutBorder" align="left">
-						<html:checkbox  styleId = 'attributeDisplayAsURL' property="attributeDisplayAsURL" value="true">
-							<bean:message key="app.att.displayAsURL" />
-						</html:checkbox>
-					</td>
-				</tr>
 			</table>
 		</td>
 	</tr>
 	<tr width="100%">
 		<td width="100%">
-			<hr/>
+		<hr/>
 			<div id="substitutionDivRules"></div>
 		</td>
 	</tr>

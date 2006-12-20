@@ -28,8 +28,8 @@
 					<td class="formRequiredLabelWithoutBorder" width="30%">
 						<bean:message key="eav.att.FileFormatsList"/> :
 					</td>
-					<td class="formFieldWithoutBorder">
-						<html:select multiple="true" size="4" styleId = 'fileFormats'  property="fileFormats" >
+					<td >
+						<html:select multiple="true" size="3" styleId = 'fileFormats' styleClass="formFieldVerySmallSized"  property="fileFormats" >
 							<c:forEach items="${supportedFileFormatsList}" var="fileformat">
 							<jsp:useBean id="fileformat" type="java.lang.String" />
 									<html:option  value='<%=fileformat%>' />

@@ -10,6 +10,7 @@
 <%@page import="java.util.List" %>
 <script src="<%=request.getContextPath()%>/jss/calender.js" type="text/javascript"></script>
 <script src="<%=request.getContextPath()%>/jss/calendarComponent.js"></script>
+<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/styleSheet.css" />
 <%@page import="edu.common.dynamicextensions.ui.util.RuleConfigurationObject" %>
 <%@page import="edu.wustl.common.beans.NameValueBean" %>
 <%@page import="edu.common.dynamicextensions.util.DynamicExtensionsUtility" %>
@@ -63,6 +64,12 @@
 					<%
 						if(params != null)
 						{
+					%>
+						<tr>
+						<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
+						<td class="formRequiredNoticeWithoutBorder" width="30%">&nbsp;</td>
+						<td class="formFieldWithoutBorder">
+					<%
 							Iterator paramsIter = params.iterator();
 							while(paramsIter.hasNext())
 							{
@@ -70,12 +77,8 @@
 								String paramLabel = paramObject.getValue();
 								String paramName = paramObject.getName();
 					%>
-							 	<tr>
-							        <td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-									<td class="formRequiredNoticeWithoutBorder" width="30%">&nbsp;</td>
-									<td >
-										&nbsp;&nbsp;&nbsp;&nbsp;<label class="formRequiredLabelWithoutBorder"><%= paramLabel%>&nbsp;</label>
-										<html:text styleId ="<%= paramName%>" styleClass="formParamSized"  maxlength="100" size="60"  property="<%= paramName%>" />
+										&nbsp;<b><label ><%= paramLabel%>&nbsp;</label></b>
+										<html:text styleId ="<%= paramName%>" styleClass="formFieldSized5"  maxlength="100" size="60"  property="<%= paramName%>" />
 									<%
 										if(controlName.equalsIgnoreCase("DateControl"))
 										{
@@ -86,15 +89,15 @@
 										</A>
 										<div id=<%=divId%> style="Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px">
 											<SCRIPT>printCalendar('<%= paramName%>',<%=DynamicExtensionsUtility.getCurrentDay()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentYear()%>);</SCRIPT>
-										</div><label class="formFieldWithoutBorder">[MM-DD-YYYY]&nbsp;</label>
+										</div>
 									<%
 										} //end if(controlName.equalsIgnoreCase("DateControl"))
 									%>
-		 							</td>
-								</tr>
+
 						<%
 							} // end while(paramsIter.hasNext())
 						%>
+						</td></tr>
 					<%
 						} // end if(params != null)
 					%>

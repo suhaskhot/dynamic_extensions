@@ -44,7 +44,7 @@
     		<td style = "border-left:0px;border-top:0px;border-bottom:0px" valign="top" >
 	     		 <table valign="top" summary="" align='left' width='90%' height = '90%' cellspacing="0" cellpadding="3" class = "tbBordersAllbordersBlack" >
 					<tr >
-					   <td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onclick="showDefineGroupPage('formDefinitionForm')">
+					   <td height="20" class="tabMenuItem">
 						 <bean:message key="app.title.DefineGroupTabTitle" />
 					   </td>
 
@@ -52,11 +52,11 @@
 						 <bean:message key="app.title.DefineFormTabTitle" />
 					   </td>
 
-					   <td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onClick="showBuildFormJSP()">
+					   <td height="20" class="tabMenuItem" >
 						 <bean:message key="app.title.BuildFormTabTitle" />
 					   </td>
 
-					   <td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()"  >
+					   <td height="20" class="tabMenuItem"  >
 						 <bean:message key="app.title.PreviewTabTitle" />
 					   </td>
 					   <td width="50%" class="tabMenuSeparator" colspan="3">&nbsp;</td>

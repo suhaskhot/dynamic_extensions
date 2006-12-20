@@ -8,6 +8,7 @@
 <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/styleSheet.css" />
 
 <script src="<%=request.getContextPath()%>/jss/script.js" type="text/javascript"></script>
+<script src="<%=request.getContextPath()%>/jss/ajax.js" type="text/javascript"></script>
 <script src="<%=request.getContextPath()%>/jss/dynamicExtensions.js" type="text/javascript">
 </script>
 
@@ -47,15 +48,15 @@
 									<bean:message key="app.title.DefineGroupTabTitle" />
 							   	</td>
 
-							   	<td height="20" class="tabMenuItem"  onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onclick="showDefineFormJSP()">
+							   	<td height="20" class="tabMenuItem" >
 									<bean:message key="app.title.DefineFormTabTitle" />
 							   	</td>
 
-							   	<td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" >
+							   	<td height="20" class="tabMenuItem"  >
 									<bean:message key="app.title.BuildFormTabTitle" />
 							   	</td>
 
-							   	<td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()"  >
+							   	<td height="20" class="tabMenuItem" >
 									<bean:message key="app.title.PreviewTabTitle" />
 							   	</td>
 							   	<td width="50%" class="tabMenuSeparator" colspan="3">&nbsp;</td>
@@ -123,7 +124,7 @@
 				</tr>
 			</table>
 			<div id="NewGroupDiv" style="display:none">
-				<table  valign = "top" cellspacing="0" cellpadding="3" width="100%" height = '100%'>
+				<table  valign = "top" cellspacing="0" cellpadding="4" width="100%" height = '100%'>
 
 					<tr valign = "top"  class="rowWithBottomPadding">
 						<td  class="formRequiredNoticeWithoutBorder" width="2%">*</td>
@@ -154,13 +155,28 @@
 				<table valign = "top" cellspacing="0" cellpadding="4"  align="left" width="100%" height = '100%' >
 					<tr valign = "top"  class="rowWithBottomPadding">
 						<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-						<td class="formRequiredLabelWithoutBorder" width="12%">&nbsp;</td>
-						<td class="formFieldWithoutBorder"  class="rowWithBottomPadding">
-							<html:select styleId="groupName" styleClass="formDateSized" property="groupName">
+						<td class="formRequiredLabelWithoutBorder" width="12%">
+							<label for="groupName">
+								<bean:message key="eav.att.GroupTitle"/> :
+							</label>
+						</td>
+						<td >
+							<html:select styleId="groupName" styleClass="formFieldVerySmallSized" property="groupName" onchange="groupSelected(this)">
 									<html:options collection="groupList" labelProperty="name" property="value" />
 							</html:select>
 						</td>
 					</tr>
+					<tr valign = "top"  class="rowWithBottomPadding">
+						<td class="formRequiredNoticeWithoutBorder" width="2%" >&nbsp;</td>
+						<td class="formRequiredLabelWithoutBorder" width="12%">
+						<label for="groupDescription">
+							<bean:message key="eav.form.description"/> :
+						</label>
+						</td>
+						<td >
+							<html:textarea styleClass="formFieldSmallSized"  rows = "3" cols="28" styleId="groupDescription"  property="groupDescription" readonly="true"/>
+						</td>
+					 </tr>
 				</table>
 			</div>
 

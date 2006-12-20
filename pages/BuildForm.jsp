@@ -17,7 +17,7 @@
 		<script src="<%=request.getContextPath()%>/jss/calendarComponent.js"></script>
 		<script language="JavaScript" type="text/javascript" src="jss/ajax.js"></script>
 		<title>Dynamic Extensions</title>
-		
+
 		<script language="JavaScript" type="text/javascript">
 			function initCancelOperation()
 		 	{
@@ -51,7 +51,7 @@
   	<body onload="initBuildForm()">
 		<html:form styleId = "controlsForm"  action="/LoadFormControlsAction">
 			<font color="red" ><html:errors/></font>
-	
+
 	  	    <%
 	  	    	int generator = 0;
 	  	    %>
@@ -63,40 +63,40 @@
 		         		<bean:message key="app.title.MainPageTitle" />
 		         	</td>
 		        </tr>
-	
+
 		        <tr valign = "top">
 					<td class = "tbBordersAllbordersNone" >&nbsp;</td>
 		     		<td class="tbBordersAllbordersNone" valign="top" >
-			     		
+
 					  	<table valign="top" summary="" align='left' width='95%' height = "95%" cellspacing="0" cellpadding="3" class = "tbBordersAllbordersBlack" >
 							<!-- tabs start -->
 							<tr valign = "top" >
-								<td class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onclick="showDefineGroupPage('controlsForm')">
+								<td class="tabMenuItem" >
 									<bean:message key="app.title.DefineGroupTabTitle" />
 								</td>
-	
-							   	<td class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onClick="showNextActionConfirmDialog()">
+
+							   	<td class="tabMenuItem" >
 									<bean:message key="app.title.DefineFormTabTitle" />
 							   	</td>
-	
+
 							   	<td class="tabMenuItemSelected" >
 									<bean:message key="app.title.BuildFormTabTitle" />
 							   	</td>
-	
-							   	<td class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onClick="showFormPreview()" >
+
+							   	<td class="tabMenuItem" >
 									<bean:message key="app.title.PreviewTabTitle" />
 							   	</td>
-							   	
+
 							   	<td width="50%" class="tabMenuSeparator" colspan="3">&nbsp;</td>
 							</tr>
 							<!-- tab end -->
-							
+
 							<tr valign = "top" >
 								<td valign="top" colspan="7" class="formFieldNoBorders" >
 									<bean:message key="app.title.formName" /><%=rootName%>
 								</td>
 							</tr>
-							
+
 							<tr valign = "top">
 								<td style = "padding-left:5px" colspan="7"  height = '100%' width="100%">
 									<table width="100%" height = '100%'   cellspacing="0" cellpadding="0"  valign = "top">
@@ -104,14 +104,14 @@
 											<td valign = "top" valign="top" width = "75%">
 												<table class="tbBordersAllbordersBlack" height = "100%" width ="100%" >
 													<thead>
-														<tr>	
+														<tr>
 															<c:choose>
 																<c:when test='${controlsForm.controlOperation == "Edit"}'>
 																	<th id="formTitle" align="left" class="formTitleGray">
 																		<bean:message key="app.title.editAttributes" />
 																	</th>
 																</c:when>
-	
+
 																<c:otherwise>
 																	<th id="formTitle"  align="left" class="formTitleGray">
 																		<bean:message key="app.title.addAttributes" />
@@ -140,6 +140,14 @@
 																					 </dynamicExtensions:ToolsMenu>
 																				</td>
 																			</tr>
+																			<tr width = '100%' valign = "bottom" style="background-color:#F4F4F5;">
+																				<td align="center" width="100%">
+																					<html:button styleClass="actionButton" property = "addSubFormBtn" onclick="addSubForm()" >
+																						<bean:message key="eav.caption.AddSubFormControl" />
+																					</html:button>
+
+																				</td>
+																			</tr>
 																		</table>
 																	</td>
 																	<td height = '100%'>
@@ -164,9 +172,9 @@
 													</tr>
 												</table>
 											</td>
-											
+
 											<td width="2%">&nbsp;</td>
-											
+
 											<td  valign="top" height="100%" >
 												<table valign="top" height = '100%' width = "100%"  cellspacing="0" cellpadding="0">
 													<tr valign = "top" height = '100%' >
@@ -183,13 +191,13 @@
 																	<c:forEach var="controlInfoObj" items = "${controlInformationObjectList}" varStatus="counter" >
 																		<c:set var="controlName" value="${controlInfoObj.controlName}"/>
 																		<jsp:useBean id="controlName" type="java.lang.String"/>
-		
+
 																		<c:set var="controlType" value="${controlInfoObj.controlType}"/>
 																		<jsp:useBean id="controlType" type="java.lang.String"/>
-		
+
 																		<c:set var="identifier" value="${controlInfoObj.identifier}"/>
 																		<jsp:useBean id="identifier" type="java.lang.String"/>
-																				
+
 																		<tr height = "5%"   style = "cursor:hand">
 																			<td class="formMessage">
 																				<input type = "checkbox" name = "checkAttribute"  id = "<%=identifier%>" value = "<%=identifier%>"  />
@@ -211,7 +219,7 @@
 																			</td>
 																		</tr>
 																	</c:forEach>
-	
+
 																	<tr height = "100%">
 																		<td>&nbsp;</td>
 																	</tr>
@@ -225,31 +233,32 @@
 									</table>
 								</td>
 							</tr>
-	
+
 							<!--Add attributes btn + Controls (UP + Down + Delete) btn) -->
 							<tr>
 								<td colspan="7">
 									<table width="100%" height = '100%'  valign = "top">
 										<tr valign = "top" height = '100%' >
 											<td align="right" valign="top" width = "75%" >
+													<html:button styleClass="actionButton" property="cancelControlOperation" onclick="initCancelOperation()">
+															<bean:message  key="buttons.cancel" />
+													</html:button>
 												<html:button styleClass="actionButton" property="addControlToFormButton" onclick="addControlToFormTree()" >
 													<bean:message  key="buttons.addControlToForm" />
 												</html:button>
-												<html:button styleClass="actionButton" property="cancelControlOperation" onclick="initCancelOperation()">
-													<bean:message  key="buttons.cancel" />
-												</html:button>
+
 											</td>
 											<td width="2%">&nbsp;</td>
 											<td  valign="top" height="100%" >
 												<input type = "button" name = "upButton" value = "Up"  onclick = "decreaseSequencenumber()"/>
-												<input type = "button" name = "downButton" value = "down"  onclick = "increaseSequencenumber()"/>
-												<input type = "button" name = "deleteButton" value = "Delete"  onclick = "deleteControl()"/>
+												<input type = "button" name = "downButton" value = "Down"  onclick = "increaseSequencenumber()"/>
+												<input type = "button" name = "deleteButton" value = "Remove"  onclick = "deleteControl()"/>
 											</td>
 										</tr>
 									</table>
 								</td>
 							</tr>
-							
+
 							<tr class="formLabelBorderless">
 								<td colspan="2" align="left">
 									<html:submit styleClass="actionButton" onclick="saveEntity()">
@@ -283,7 +292,7 @@
 			<html:hidden styleId = 'sequenceNumbers' property="sequenceNumbers"  value=""/>
 			<input type="hidden" id = "checkAttribute" name="checkAttribute" value = "" />
 			<html:hidden styleId = 'validationRules' property="validationRules"  value=""/>
-			<input type="hidden" name='operationMode' id="operationMode"  value="AddSubForm"/>			
+			<input type="hidden" name='operationMode' id="operationMode"  value="AddSubForm"/>
 	  	</html:form>
   	</body>
 </html>

@@ -20,7 +20,6 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.actionform.DataEntryForm;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
-import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.wustl.common.actionForm.AbstractActionForm;
 
@@ -55,14 +54,13 @@ public class LoadDataEntryFormProcessor
 	 * @throws DynamicExtensionsSystemException DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException DynamicExtensionsApplicationException
 	 */
-	public ContainerInterface loadDataEntryForm(AbstractActionForm actionForm, ContainerInterface containerInterface,Map valueMap, 
-			String recordIdentifier,String mode) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public ContainerInterface loadDataEntryForm(AbstractActionForm actionForm, ContainerInterface containerInterface, Map<AbstractAttributeInterface, Object> valueMap,
+			String recordIdentifier, String mode) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		DataEntryForm dataEntryForm = (DataEntryForm) actionForm;
 
-
-		if (mode != null && mode.equalsIgnoreCase(WebUIManagerConstants.VIEW_MODE)) {
-			
+		if (mode != null && mode.equalsIgnoreCase(WebUIManagerConstants.VIEW_MODE))
+		{
 			containerInterface.setMode(mode);
 		}
 		EntityInterface entity = containerInterface.getEntity();
@@ -74,7 +72,7 @@ public class LoadDataEntryFormProcessor
 		{
 			//Get corresponding Entity of the Container
 			EntityManagerInterface entityManager = EntityManager.getInstance();
-			Map<String, Object> recordMap = entityManager.getRecordById(entity, Long.valueOf(recordIdentifier));
+			Map<AbstractAttributeInterface, Object> recordMap = entityManager.getRecordById(entity, Long.valueOf(recordIdentifier));
 			valueMap = recordMap;
 			setControlsRecordValue(entity, controlCollection, valueMap);
 		}
@@ -110,20 +108,20 @@ public class LoadDataEntryFormProcessor
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	@SuppressWarnings("unchecked")
-	private void setControlsRecordValue(EntityInterface entity, Collection<ControlInterface> controlCollection, Map<String, Object> recordMap)
+	private void setControlsRecordValue(EntityInterface entity, Collection<ControlInterface> controlCollection, Map<AbstractAttributeInterface, Object> recordMap)
 			throws NumberFormatException, DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		EntityManagerInterface entityManager = EntityManager.getInstance();
 
-		Set<Map.Entry<String, Object>> recordSet = recordMap.entrySet();
-		for (Map.Entry<String, Object> recordNode : recordSet)
+		Set<Map.Entry<AbstractAttributeInterface, Object>> recordSet = recordMap.entrySet();
+		for (Map.Entry<AbstractAttributeInterface, Object> recordNode : recordSet)
 		{
-			String recordAttributeName = recordNode.getKey();
+			AbstractAttributeInterface recordAttribute = recordNode.getKey();
 			for (ControlInterface control : controlCollection)
 			{
 				AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
 				Object recordAttributeValue = recordNode.getValue();
-				if (abstractAttribute.getName().equals(recordAttributeName))
+				if (abstractAttribute.getName().equals(recordAttribute.getName()))
 				{
 					if (recordAttributeValue != null)
 					{
@@ -149,14 +147,14 @@ public class LoadDataEntryFormProcessor
 										Collection<ControlInterface> targetControlCollection = targetContainer.getControlCollection();
 										if (targetControlCollection != null && !targetControlCollection.isEmpty())
 										{
-											setControlsRecordValue(targetEntity, targetControlCollection, (Map<String, Object>) recordAttributeValue);
+											setControlsRecordValue(targetEntity, targetControlCollection, (Map<AbstractAttributeInterface, Object>) recordAttributeValue);
 										}
 									}
 								}
 							}
 						}
 					}
-				}				
+				}
 			}
 		}
 	}

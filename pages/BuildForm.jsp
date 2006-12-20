@@ -142,11 +142,13 @@
 																			</tr>
 																			<tr width = '100%' valign = "bottom" style="background-color:#F4F4F5;">
 																				<td align="center" width="100%">
-																					<html:button styleClass="actionButton" property = "addSubFormBtn" onclick="addSubForm()" >
+																					<html:button styleClass="formButton" property = "addSubFormBtn" onclick="addSubForm()" >
 																						<bean:message key="eav.caption.AddSubFormControl" />
 																					</html:button>
-
 																				</td>
+																			</tr>
+																			<tr width = '100%' valign = "bottom" style="background-color:#F4F4F5;">
+																				<td>&nbsp;</td>
 																			</tr>
 																		</table>
 																	</td>
@@ -240,19 +242,19 @@
 									<table width="100%" height = '100%'  valign = "top">
 										<tr valign = "top" height = '100%' >
 											<td align="right" valign="top" width = "75%" >
-													<html:button styleClass="actionButton" property="cancelControlOperation" onclick="initCancelOperation()">
+													<html:button styleClass="formButton" property="cancelControlOperation" onclick="initCancelOperation()">
 															<bean:message  key="buttons.cancel" />
 													</html:button>
-												<html:button styleClass="actionButton" property="addControlToFormButton" onclick="addControlToFormTree()" >
+												<html:button styleClass="formButton" property="addControlToFormButton" onclick="addControlToFormTree()" >
 													<bean:message  key="buttons.addControlToForm" />
 												</html:button>
 
 											</td>
 											<td width="2%">&nbsp;</td>
 											<td  valign="top" height="100%" >
-												<input type = "button" name = "upButton" value = "Up"  onclick = "decreaseSequencenumber()"/>
-												<input type = "button" name = "downButton" value = "Down"  onclick = "increaseSequencenumber()"/>
-												<input type = "button" name = "deleteButton" value = "Remove"  onclick = "deleteControl()"/>
+												<input type = "button" class="groupButton" name = "upButton" value = "Up"  onclick = "decreaseSequencenumber()"/>
+												<input type = "button" class="formButton" name = "downButton" value = "Down"  onclick = "increaseSequencenumber()"/>
+												<input type = "button" class="formButton" name = "deleteButton" value = "Remove"  onclick = "deleteControl()"/>
 											</td>
 										</tr>
 									</table>
@@ -261,20 +263,20 @@
 
 							<tr class="formLabelBorderless">
 								<td colspan="2" align="left">
-									<html:submit styleClass="actionButton" onclick="saveEntity()">
+									<html:submit styleClass="groupButtonMainForm" onclick="saveEntity()">
 										<bean:message  key="buttons.save" />
 									</html:submit>
 									&nbsp;
-									<html:reset styleClass="actionButton" property="cancelButton" onclick='showHomePageFromBuildForm()'>
+									<html:reset styleClass="groupButtonMainForm" property="cancelButton" onclick='showHomePageFromBuildForm()'>
 										<bean:message  key="buttons.cancel" />
 									</html:reset>
 								</td>
 								<td colspan="5" align="right">
-									<html:button styleClass="actionButton" property="prevButton" onclick="showNextActionConfirmDialog()" >
+									<html:button styleClass="groupButtonMainForm" property="prevButton" onclick="showNextActionConfirmDialog()" >
 										<bean:message  key="buttons.prev" />
 									</html:button>
 									&nbsp;
-									<html:button styleClass="actionButton" property="showPreviewButton" onclick="showFormPreview()" >
+									<html:button styleClass="groupButtonMainForm" property="showPreviewButton" onclick="showFormPreview()" >
 										<bean:message  key="buttons.next" />
 									</html:button>
 								</td>

@@ -278,6 +278,7 @@ FORM BEGINS
   font-size:1em;
   color:red; /* constant: red */
   padding-left:0.3em;
+  padding-right:0;
   vertical-align:middle;
 }
 
@@ -330,6 +331,7 @@ FORM BEGINS
   color:#000000; /* constant: black	*/
   text-align:left;
   vertical-align:middle;
+   padding-left:0.0;
 }
 
 .formRequiredLabelLeft{ /* for the required form labels */
@@ -394,7 +396,7 @@ FORM BEGINS
   font-family:arial,helvetica,verdana,sans-serif;
   font-size:0.7em;
   font-weight:bold;
-  background-color:#F4F4F5; /* constant: dark gray */
+  background-color:#Ebf4fc; /* constant: dark gray */
   color:#000000; /* constant: white */
   border-bottom:1px solid #5C5C5C; /* constant: dark gray */
   padding-left:0.7em;
@@ -507,12 +509,10 @@ td.formSerialNumberField{ /* for the cell that contains the Serial Number */
   text-align:left;
 }
 
-.formLabelBorderless{ /* for the non-required form labels */
-  font-family:arial,helvetica,verdana,sans-serif;
-  font-size:0.7em;
+.formLabelBorderless
+{ 
+ border-top:1px solid #000000; /* constant: dark gray */
   background-color:#F4F4F5; /* constant: light gray */
-  color:#000000; /* constant: black */
-  text-align:right;
 }
 
 .formLabelLeft{ /* for the non-required form labels */
@@ -647,16 +647,116 @@ select.formDropDownSized{ /* for the form elements themselves and with a constan
 	width:6em;
 }
 input.actionButton{ /* optional style for form and action buttons */
-  border-right:2px solid #5C5C5C; /* constant: dark gray */
-  border-bottom:2px solid #5C5C5C; /* constant: dark gray */
-  border-top:1px solid #CCCCCC; /* constant: medium gray */
-  border-left:1px solid #CCCCCC; /* constant: medium gray */
+   font-family:arial,helvetica,verdana,sans-serif;
+   font-size:0.8em;
+   text-align:center;
+  vertical-align:middle;
+  color:#00000;
+  padding:0.1em;
+   background-color:#E1E1E1;
+   border:1px solid;
+   border-top-color:#646464;
+   border-left-color:#646464;
+   border-right-color:#1E1E1E;
+   border-bottom-color:#1E1E1E;
+   filter:progid:DXImageTransform.Microsoft.Gradient
+    (GradientType=0,StartColorStr='#f0f0f0',EndColorStr='#bebebe');
 }
+input.formButton{ /* optional style for form and action buttons */
+   font-family:arial,helvetica,verdana,sans-serif;
+   font-size:0.8em;
+   text-align:center;
+   
+  color:#00000;
+  padding:0;
+   
+   border:1px solid;
+   border-top-color:#646464;
+   border-left-color:#646464;
+   border-right-color:#1E1E1E;
+   border-bottom-color:#1E1E1E;
+   filter:progid:DXImageTransform.Microsoft.Gradient
+    (GradientType=0,StartColorStr='#ffffff',EndColorStr='#e1e1e1');
+}
+
+input.subFormButton{ /* optional style for form and action buttons */
+   font-family:arial,helvetica,verdana,sans-serif;
+   font-size:0.75em;
+   text-align:center;
+   
+  color:#00000;
+  padding:0;
+   
+   border:1px solid;
+   border-top-color:#646464;
+   border-left-color:#646464;
+   border-right-color:#1E1E1E;
+   border-bottom-color:#1E1E1E;
+   filter:progid:DXImageTransform.Microsoft.Gradient
+    (GradientType=0,StartColorStr='#ffffff',EndColorStr='#e1e1e1');
+}
+
+input.subFormGroupButton{ /* optional style for form and action buttons */
+   font-family:arial,helvetica,verdana,sans-serif;
+   font-size:0.75em;
+   text-align:center;
+   width:50px;
+  color:#00000;
+  padding:0;
+   align:center;
+   border:1px solid;
+   border-top-color:#646464;
+   border-left-color:#646464;
+   border-right-color:#1E1E1E;
+   border-bottom-color:#1E1E1E;
+   filter:progid:DXImageTransform.Microsoft.Gradient
+    (GradientType=0,StartColorStr='#ffffff',EndColorStr='#e1e1e1');
+}
+
+
+input.groupButton{ /* optional style for form and action buttons */
+   font-family:arial,helvetica,verdana,sans-serif;
+   font-size:0.8em;
+   text-align:center;
+   width:42px;
+  color:#00000;
+  padding:0.01em;
+   
+   border:1px solid;
+   border-top-color:#646464;
+   border-left-color:#646464;
+   border-right-color:#1E1E1E;
+   border-bottom-color:#1E1E1E;
+   filter:progid:DXImageTransform.Microsoft.Gradient
+    (GradientType=0,StartColorStr='#ffffff',EndColorStr='#e1e1e1');
+   
+}
+
+input.groupButtonMainForm{ /* optional style for form and action buttons */
+   font-family:arial,helvetica,verdana,sans-serif;
+   font-size:0.8em;
+   text-align:center;
+   width:60px;
+  color:#00000;
+  padding:0.01em;
+   
+   border:1px solid;
+   border-top-color:#646464;
+   border-left-color:#646464;
+   border-right-color:#1E1E1E;
+   border-bottom-color:#1E1E1E;
+   filter:progid:DXImageTransform.Microsoft.Gradient
+    (GradientType=0,StartColorStr='#f0f0f0',EndColorStr='#bebebe');
+}
+
+
+
+
 .formMessage{ /* for messages above the form */
-  font-family:arial,helvetica,verdana,sans-serif;
+    font-family:arial,helvetica,verdana,sans-serif;
   font-size:0.7em;
   color:#000000; /* constant: black */
-  padding-left:0.3em;
+  padding-left:0.5em;
 }
 .normalForm{ /* for a general form in a content page */
   border:1px solid #5C5C5C; /* constant: dark gray */
@@ -1210,38 +1310,34 @@ tdDesc{
 
 /* classes for Tab pages */
 td.tabMenuItemSelected{ /* for the selected tab menu (top) cells */
-  font-family:arial;
-  font-size:0.6em;
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.7em;
+  font-weight: bold;
   background-color:#FFFFFF; /*#797C9C;  darker */
   padding-left:1em;
   padding-right:1em;
   border-right:1px solid #5C5C5C; /* constant: dark gray */
   border-left:1px solid #5C5C5C; /* constant: dark gray */
   border-top:1px solid #5C5C5C; /* constant: dark gray */
+  color:#14559C;  /* constant: white */
   
-  color:#000000;  /* constant: white */
-  text-decoration:none;
-  white-space: nowrap;
 }
 
 td.tabMenuItem{ /* for the off state of the tab menu (top) cells */
-  font-family:arial;
-  font-size:0.6em;
-  background-color:#C9C9CD; /*#9FA2BA;  constant: light purple */
+ font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.7em;
+  
+  background-color:#BDDBF3; /*#9FA2BA;  constant: light purple */
   padding-left:1em;
   padding-right:1em;
-  border-right:1px solid #5C5C5C; /* constant: dark gray */
-  border-left:1px solid #5C5C5C; /* constant: dark gray */
-  border-top:1px solid #5C5C5C; /* constant: dark gray */
-  border-bottom:1px solid #5C5C5C; /* constant: dark gray */
-
   color:#000000;  /* constant: white */
   text-decoration:none;
   white-space: nowrap;
+  border-bottom:1px solid #5C5C5C; /* constant: dark gray */
 }
 
 td.tabMenuItemOver{ /* for the over state of the tab menu (top) cells */
-  font-family:arial;
+ font-family:arial,helvetica,verdana,sans-serif;
   font-size:0.6em;
   background-color:#FFFFFF; /*#797C9C;  darker */
   padding-left:1em;
@@ -1275,6 +1371,9 @@ table.tabPage{ /* for overall top style for a content page */
 
 td.tabMenuSeparator{ /* for the over state of the tab menu (top) cells */
   border-bottom:1px solid #5C5C5C; /* constant: dark gray */
+  background-color:#BDDBF3; /*#9FA2BA;  constant: light purple */
+    color:#000000;  /* constant: white */
+  
 }
 
 input.tabFieldSized,textarea.tabFieldSized,select.tabFieldSized{ /* for the form elements themselves and with a constant width (on elements) */
@@ -1371,18 +1470,17 @@ textarea.formFieldSized20{ /* Used by Mandar for the comments used in autoevents
   font-family:arial,helvetica,verdana,sans-serif;
   font-size:1.1em;
   color:#000005; /* constant: black */
-  border-top:1px solid #5C5C5C; /* constant: dark gray */
-  border-left:1px solid #5C5C5C; /* constant: dark gray */
   text-align:left;
+  border-spacing: 10px;
+  padding:4px;
 }
 
 .toolLabelText
 {
   font-family:arial,helvetica,verdana,sans-serif;
   font-size:0.7em;
-  font-weight:bold;
-  padding-left:0.8em;
-  background-color:#F4F4F5; /* constant: dark gray */
+  padding-left:0.5em;
+  background-color:#d7d7d7; /* constant: dark gray */
   color:#000000; /* constant: white */
   border-top:1px solid #5C5C5C; /* constant: dark gray */
   border-left:1px solid #5C5C5C; /* constant: dark gray */
@@ -1392,6 +1490,8 @@ textarea.formFieldSized20{ /* Used by Mandar for the comments used in autoevents
   overflow:auto;
   text-align:left;
   cursor:pointer;
+  filter:progid:DXImageTransform.Microsoft.Gradient
+    (GradientType=0,StartColorStr='#f0f0f0',EndColorStr='#bebebe');
   cursor:hand
 }
 .toolLabelTextSelected
@@ -1399,15 +1499,17 @@ textarea.formFieldSized20{ /* Used by Mandar for the comments used in autoevents
   font-family:arial,helvetica,verdana,sans-serif;
   font-size:0.7em;
   font-weight:bold;
-  padding-left:0.8em;
-  background-color:#A1A1A1; 
-  color:#FFFFFF; /* constant: white */
+  padding-left:0.5em;
+  background-color:#BDDBF3; 
+  color:#000000; /* constant: white */
   border-top:1px solid #5C5C5C; /* constant: dark gray */
   border-left:1px solid #5C5C5C; /* constant: dark gray */
   border-right:1px solid #5C5C5C; /* constant: dark gray */
   border-bottom:1px solid #5C5C5C; /* constant: dark gray */
   width:12em;
   overflow:auto;
+  filter:progid:DXImageTransform.Microsoft.Gradient
+    (GradientType=0,StartColorStr='#f0f0f0',EndColorStr='#BDDBF3');
   text-align:left;
 }
 input.formParamSized

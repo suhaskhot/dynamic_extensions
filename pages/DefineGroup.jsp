@@ -104,7 +104,7 @@
 									</table>
 								</td>
 							</tr>
-							<tr height='100%' valign = "top" class="formLabelBorderless">
+							<tr height='100%' valign = "top" >
 								<td height = '100%' colspan="2" align="left">
 									<html:button styleClass="actionButton" property="saveButton" onclick="saveGroup()">
 										<bean:message key="buttons.save" />

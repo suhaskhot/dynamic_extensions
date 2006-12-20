@@ -59,8 +59,8 @@
 										&nbsp;
 					</td>
 					<td class="formRequiredLabelWithoutBorder" width="30%">&nbsp;</td>
-					<td  class="formFieldWithoutBorder" align="left" >
-							<html:button styleClass="actionButton" styleId = 'addChoiceValue'  property="addChoiceValue" onclick="addChoiceToList(true)" >
+					<td   align="left" >
+							<html:button styleClass="subFormButton" styleId = 'addChoiceValue'  property="addChoiceValue" onclick="addChoiceToList(true)" >
 									<bean:message  key="eav.button.AddOption" />
 							</html:button>
 					</td>
@@ -200,8 +200,8 @@
 								</select>
 							</td>
 							<td  width="10%" valign="middle" ALIGN="center"  >
-								<input type="button" name="addFormAttribute" value="Add" onclick="selectFormAttribute()" />
-								<input type="button" name="removeFormAttribute" value="Remove" onclick="unSelectFormAttribute()" />
+								<input type="button" class="subFormGroupButton" name="addFormAttribute" value="Add" onclick="selectFormAttribute()" />
+								<input type="button" class="subFormGroupButton" name="removeFormAttribute" value="Remove" onclick="unSelectFormAttribute()" />
 							</td>
 							<td  width="45%" >
 								<html:select multiple="true" size="3" property="selectedAttributeIds" styleId="selectedAttributeIds" styleClass="formFieldVerySmallSized">

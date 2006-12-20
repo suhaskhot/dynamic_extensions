@@ -67,7 +67,7 @@
 						<table align = "top" width="100%" height = '100%' cellspacing="0">
 							<tr valign="top"  >
 								<!--  Tree display -->
-								<td width="30%" valign="top" >
+								<td width="23%" valign="top" >
 									<table width="100%" height = '100%' class = "tbBordersAllbordersBlack" >
 										<tr valign="top"  width="100%">
 											<td  align="left" class= "formLabelLeftBorderless" >
@@ -210,7 +210,7 @@
 									</table>
 								</td>
 							</tr>
-							<tr height="5%" valign = "top"   class= "formLabelBorderless"  >
+							<tr height="5%" valign = "top"  >
 								<td align="left" >
 									<html:submit styleClass="actionButton">
 										<bean:message  key="buttons.save" />

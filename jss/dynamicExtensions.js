@@ -1630,7 +1630,6 @@ function groupSelected(groupList)
 			request.onreadystatechange = handlerFunction;	
 			request.open("POST","AjaxcodeHandlerAction.do",true);
 			request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-			
 			request.send("&ajaxOperation=selectGroup&selectedGroupName="+groupName);
 		}
 	}

@@ -406,7 +406,7 @@ public class ToolBoxTag extends TagSupport
 		StringBuffer sb = new StringBuffer();
 		sb.append("\n<div id=\"" + id + "\"  class=\"formField\"  style=\"height: " + height + "; width:" + width
 				+ ";  overflow-y: auto; \">");
-		sb.append("\n<table class=\"toolBoxTable\" border=\"0\">");
+		sb.append("\n<table class=\"toolBoxTable\" cellspacing=\"7\" cellpadding=\"2\" border=\"0\">");
 		
 		Iterator toolsListIterator = toolsList.iterator();
 		String toolName = null, toolCaption = null;

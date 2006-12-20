@@ -5,9 +5,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,16 +59,25 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @param response HttpServletResponse
 	 * @return ActionForward ActionForward
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
+	public ActionForward execute(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)
 	{
 		DataEntryForm dataEntryForm = (DataEntryForm) form;
-		ContainerInterface container = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 
-		ApplyDataEntryFormProcessor applyDataEntryFormProcessor = ApplyDataEntryFormProcessor.getInstance();
+		Stack containerStack = (Stack) CacheManager.getObjectFromCache(request,
+				Constants.CONTAINER_STACK);
+		Stack valueMapStack = (Stack) CacheManager.getObjectFromCache(request,
+				Constants.VALUE_MAP_STACK);
+		ContainerInterface containerInterface = (ContainerInterface) containerStack.peek();
+		Map valueMap = (Map) valueMapStack.peek();
+
+		ApplyDataEntryFormProcessor applyDataEntryFormProcessor = ApplyDataEntryFormProcessor
+				.getInstance();
 
 		try
 		{
-			Map<AbstractAttributeInterface, Object> attributeValueMap = generateAttributeValueMap(container, request, dataEntryForm, "");
+			Map<AbstractAttributeInterface, Object> attributeValueMap = generateAttributeValueMap(
+					containerInterface, request, dataEntryForm, "", valueMap, true);
 
 			List<String> errorList = ValidatorUtil.validateEntity(attributeValueMap);
 
@@ -78,13 +89,15 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			}
 			else
 			{
-				attributeValueMap = applyDataEntryFormProcessor.removeNullValueEntriesFormMap(attributeValueMap);
+				attributeValueMap = applyDataEntryFormProcessor
+						.removeNullValueEntriesFormMap(attributeValueMap);
 			}
 
 			String recordIdentifier = dataEntryForm.getRecordIdentifier();
 			if (recordIdentifier != null && !recordIdentifier.equals(""))
 			{
-				Boolean edited = applyDataEntryFormProcessor.editDataEntryForm(container, attributeValueMap, Long.valueOf(recordIdentifier));
+				Boolean edited = applyDataEntryFormProcessor.editDataEntryForm(containerInterface,
+						attributeValueMap, Long.valueOf(recordIdentifier));
 				if (edited.booleanValue())
 				{
 					saveMessages(request, getSuccessMessage());
@@ -92,15 +105,19 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			}
 			else
 			{
-				recordIdentifier = applyDataEntryFormProcessor.insertDataEntryForm(container, attributeValueMap);
+				recordIdentifier = applyDataEntryFormProcessor.insertDataEntryForm(
+						containerInterface, attributeValueMap);
 				saveMessages(request, getSuccessMessage());
 			}
 
-			String calllbackURL = (String) CacheManager.getObjectFromCache(request, Constants.CALLBACK_URL);
+			String calllbackURL = (String) CacheManager.getObjectFromCache(request,
+					Constants.CALLBACK_URL);
 			if (calllbackURL != null && !calllbackURL.equals(""))
 			{
-				calllbackURL = calllbackURL + "?" + WebUIManager.getRecordIdentifierParameterName() + "=" + recordIdentifier + "&"
-						+ WebUIManager.getOperationStatusParameterName() + "=" + WebUIManagerConstants.SUCCESS;
+				calllbackURL = calllbackURL + "?" + WebUIManager.getRecordIdentifierParameterName()
+						+ "=" + recordIdentifier + "&"
+						+ WebUIManager.getOperationStatusParameterName() + "="
+						+ WebUIManagerConstants.SUCCESS;
 				CacheManager.clearCache(request);
 				response.sendRedirect(calllbackURL);
 				return null;
@@ -125,7 +142,8 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	private ActionMessages getSuccessMessage()
 	{
 		ActionMessages actionMessages = new ActionMessages();
-		actionMessages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("app.successfulDataInsertionMessage"));
+		actionMessages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(
+				"app.successfulDataInsertionMessage"));
 		return actionMessages;
 	}
 
@@ -139,12 +157,14 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @throws IOException
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public Map<AbstractAttributeInterface, Object> generateAttributeValueMap(ContainerInterface containerInterface, HttpServletRequest request,
-			DataEntryForm dataEntryForm, String rowId) throws FileNotFoundException, IOException, DynamicExtensionsSystemException
+	public Map<AbstractAttributeInterface, Object> generateAttributeValueMap(
+			ContainerInterface containerInterface, HttpServletRequest request,
+			DataEntryForm dataEntryForm, String rowId,
+			Map<AbstractAttributeInterface, Object> attributeValueMap, Boolean processOneToMany)
+			throws FileNotFoundException, IOException, DynamicExtensionsSystemException
 	{
-		Map<AbstractAttributeInterface, Object> attributeValueMap = new LinkedHashMap<AbstractAttributeInterface, Object>();
-		Collection<ControlInterface> controlCollection = containerInterface.getControlCollection();
 
+		Collection<ControlInterface> controlCollection = containerInterface.getControlCollection();
 		for (ControlInterface control : controlCollection)
 		{
 			if (control != null)
@@ -152,8 +172,8 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				Integer controlSequenceNumber = control.getSequenceNumber();
 				if (controlSequenceNumber != null)
 				{
-
-					String controlSequence = containerInterface.getId() + "_" + controlSequenceNumber;
+					String controlSequence = containerInterface.getId() + "_"
+							+ controlSequenceNumber;
 					if (rowId != null && !rowId.equals(""))
 					{
 						controlSequence = controlSequence + "_" + rowId;
@@ -161,11 +181,13 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 					AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
 					if (abstractAttribute instanceof AttributeInterface)
 					{
-						collectAttributeValues(request, dataEntryForm, controlSequence, control, attributeValueMap);
+						collectAttributeValues(request, dataEntryForm, controlSequence, control,
+								attributeValueMap);
 					}
 					else if (abstractAttribute instanceof AssociationInterface)
 					{
-						collectAssociationValues(request, dataEntryForm, controlSequence, control, attributeValueMap);
+						collectAssociationValues(request, dataEntryForm, controlSequence, control,
+								attributeValueMap, processOneToMany);
 					}
 				}
 			}
@@ -185,23 +207,27 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @throws IOException 
 	 * @throws FileNotFoundException 
 	 */
-	private void collectAssociationValues(HttpServletRequest request, DataEntryForm dataEntryForm, String sequence, ControlInterface control,
-			Map<AbstractAttributeInterface, Object> attributeValueMap) throws DynamicExtensionsSystemException, FileNotFoundException, IOException
+	private void collectAssociationValues(HttpServletRequest request, DataEntryForm dataEntryForm,
+			String sequence, ControlInterface control,
+			Map<AbstractAttributeInterface, Object> attributeValueMap, Boolean processOneToMany)
+			throws DynamicExtensionsSystemException, FileNotFoundException, IOException
 	{
 		AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
 
-		if (control instanceof ContainmentAssociationControlInterface)
+		if (control instanceof ContainmentAssociationControlInterface && processOneToMany)
 		{
 			ContainmentAssociationControlInterface containmentAssociationControlInterface = (ContainmentAssociationControlInterface) control;
-			ContainerInterface targetContainer = ((ContainmentAssociationControlInterface) control).getContainer();
+			ContainerInterface targetContainer = ((ContainmentAssociationControlInterface) control)
+					.getContainer();
 			if (containmentAssociationControlInterface.isCardinalityOneToMany())
 			{
-				attributeValueMap.put(abstractAttribute, collectOneToManyContainmentValues(request, dataEntryForm,
-						targetContainer.getId().toString(), control));
+				attributeValueMap.put(abstractAttribute, collectOneToManyContainmentValues(request,
+						dataEntryForm, targetContainer.getId().toString(), control));
 			}
 			else
 			{
-				Map<AbstractAttributeInterface, Object> tempAttributeValueMap = generateAttributeValueMap(targetContainer, request, dataEntryForm, "");
+				Map<AbstractAttributeInterface, Object> tempAttributeValueMap = new HashMap<AbstractAttributeInterface, Object>();
+				generateAttributeValueMap(targetContainer, request, dataEntryForm, "",tempAttributeValueMap,true);
 				List<Map<AbstractAttributeInterface, Object>> tempList = new ArrayList<Map<AbstractAttributeInterface, Object>>();
 				tempList.add(tempAttributeValueMap);
 				attributeValueMap.put(abstractAttribute, tempList);
@@ -212,7 +238,8 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			List<Long> valueList = new Vector<Long>();
 			if (control instanceof ListBoxInterface)
 			{
-				String[] selectedValues = (String[]) request.getParameterValues("Control_" + sequence);
+				String[] selectedValues = (String[]) request.getParameterValues("Control_"
+						+ sequence);
 				if (selectedValues != null)
 				{
 					for (String id : selectedValues)
@@ -242,8 +269,10 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @throws DynamicExtensionsSystemException 
 	 * @throws FileNotFoundException 
 	 */
-	private List<Map<AbstractAttributeInterface, Object>> collectOneToManyContainmentValues(HttpServletRequest request, DataEntryForm dataEntryForm,
-			String containerId, ControlInterface control) throws FileNotFoundException, DynamicExtensionsSystemException, IOException
+	private List<Map<AbstractAttributeInterface, Object>> collectOneToManyContainmentValues(
+			HttpServletRequest request, DataEntryForm dataEntryForm, String containerId,
+			ControlInterface control) throws FileNotFoundException,
+			DynamicExtensionsSystemException, IOException
 	{
 		List<Map<AbstractAttributeInterface, Object>> oneToManyContainmentValueList = new ArrayList<Map<AbstractAttributeInterface, Object>>();
 		ContainmentAssociationControl containmentAssociationControl = (ContainmentAssociationControl) control;
@@ -254,7 +283,8 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		Map<AbstractAttributeInterface, Object> attributeValueMap = null;
 		for (int counter = 1; counter <= rowCount; counter++)
 		{
-			attributeValueMap = generateAttributeValueMap(containmentAssociationControl.getContainer(), request, dataEntryForm, counter + "");
+			attributeValueMap = generateAttributeValueMap(containmentAssociationControl
+					.getContainer(), request, dataEntryForm, counter + "",new HashMap<AbstractAttributeInterface, Object>(), false);
 			oneToManyContainmentValueList.add(attributeValueMap);
 		}
 
@@ -271,8 +301,10 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	private void collectAttributeValues(HttpServletRequest request, DataEntryForm dataEntryForm, String sequence, ControlInterface control,
-			Map<AbstractAttributeInterface, Object> attributeValueMap) throws FileNotFoundException, IOException
+	private void collectAttributeValues(HttpServletRequest request, DataEntryForm dataEntryForm,
+			String sequence, ControlInterface control,
+			Map<AbstractAttributeInterface, Object> attributeValueMap)
+			throws FileNotFoundException, IOException
 	{
 		AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
 		Object attributeValue = null;
@@ -280,7 +312,8 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		if (control instanceof ListBoxInterface)
 		{
 			List<String> valueList = new ArrayList<String>();
-			String[] selectedListValues = (String[]) request.getParameterValues("Control_" + sequence);
+			String[] selectedListValues = (String[]) request.getParameterValues("Control_"
+					+ sequence);
 
 			if (selectedListValues != null)
 			{

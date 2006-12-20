@@ -55,15 +55,11 @@ public class LoadDataEntryFormProcessor
 	 * @throws DynamicExtensionsSystemException DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException DynamicExtensionsApplicationException
 	 */
-	public ContainerInterface loadDataEntryForm(AbstractActionForm actionForm, ContainerInterface containerInterface, String containerIdentifier,
+	public ContainerInterface loadDataEntryForm(AbstractActionForm actionForm, ContainerInterface containerInterface,Map valueMap, 
 			String recordIdentifier,String mode) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		DataEntryForm dataEntryForm = (DataEntryForm) actionForm;
 
-		if (containerInterface == null || containerIdentifier != null)
-		{
-			containerInterface = DynamicExtensionsUtility.getContainerByIdentifier(containerIdentifier);
-		}
 
 		if (mode != null && mode.equalsIgnoreCase(WebUIManagerConstants.VIEW_MODE)) {
 			
@@ -79,7 +75,8 @@ public class LoadDataEntryFormProcessor
 			//Get corresponding Entity of the Container
 			EntityManagerInterface entityManager = EntityManager.getInstance();
 			Map<String, Object> recordMap = entityManager.getRecordById(entity, Long.valueOf(recordIdentifier));
-			setControlsRecordValue(entity, controlCollection, recordMap);
+			valueMap = recordMap;
+			setControlsRecordValue(entity, controlCollection, valueMap);
 		}
 
 		dataEntryForm.setContainerInterface(containerInterface);

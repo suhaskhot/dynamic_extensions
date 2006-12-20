@@ -3,8 +3,13 @@ function formSelectedAction() {
 }
 function tagHandlerFunction(selectedTool) {
 	document.getElementById('userSelectedTool').value=selectedTool;
-	
 }
+function addSubForm()
+{
+	document.getElementById('userSelectedTool').value = "AddSubFormControl";
+	controlSelectedAction();
+}
+
 
 function showBuildFormJSP() {
 	document.getElementById('operation').value='buildForm';
@@ -204,8 +209,7 @@ function initBuildForm()
 		changeSourceForValues(sourceElt);
 	}
 	
-	//Change visibilty of row displaying options list based on the number of rows.
-	changeChoiceListTableDisplay();
+	
 	
 	
 	//Reinitialize counter for number of options
@@ -308,6 +312,8 @@ function changeSourceForValues(sourceControl)
 
 			}
 		}//if(canChangeSource)
+		//Change visibilty of row displaying options list based on the number of rows.
+		changeChoiceListTableDisplay();
 	}
 }
 
@@ -615,6 +621,12 @@ function clearControlAttributes()
 	{
 	controlsForm.attributenoOfCols.value = "";
 	}
+	if(document.getElementById('dataType') != null)
+	{
+		document.getElementById('dataType').value = "";
+	}
+	
+	
 	
 	if(document.getElementById('attributeIsPassword') != null)
 	{
@@ -1552,10 +1564,11 @@ function treeNodeSelected(fldName)
 	if(document.getElementById(fldName)!=null)
 	{
 		//Open connection to servlet
-		request.open("POST","SelectFormAction.do",true);
+		request.open("POST","AjaxcodeHandlerAction.do",true);
 		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 		var selectedFormName  = document.getElementById(fldName).value;
-		request.send("&selectedFormName="+selectedFormName);
+		request.send("&ajaxOperation=selectFormNameFromTree&selectedFormName="+selectedFormName);
+
 	}	
 }
 
@@ -1602,4 +1615,43 @@ function insertDataForContainer(containerId) {
     alert('hi');
     alert("page to insert date for contianerId"  + containerId);
   
+}
+function groupSelected(groupList)
+{
+	if(groupList!=null)
+	{
+		var groupName = groupList.value;
+		if((groupName!=null)&&(groupName!=undefined))
+		{
+			var request = newXMLHTTPReq();
+			var handlerFunction = getReadyStateHandler(request,groupSelectedResponse,false);
+
+			//no brackets after the function name and no parameters are passed because we are assigning a reference to the function and not actually calling it
+			request.onreadystatechange = handlerFunction;	
+			request.open("POST","AjaxcodeHandlerAction.do",true);
+			request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+			
+			request.send("&ajaxOperation=selectGroup&selectedGroupName="+groupName);
+		}
+	}
+}
+function groupSelectedResponse(groupXML)
+{
+	if(groupXML!=null)
+	{
+		var htmlGroupDescription = document.getElementById("groupDescription");
+		var documentElt  = getDocumentElementForXML(groupXML);
+		var grpDesc  =  documentElt.getElementsByTagName('group-description');
+	
+		if((htmlGroupDescription!=null)&&(grpDesc!=null))
+		{
+			htmlGroupDescription.value = grpDesc[0].text;
+		}
+		else
+		{
+			htmlGroupDescription.value = "";
+		}
+		
+	}
+	
 }

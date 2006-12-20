@@ -143,8 +143,8 @@ PUBLIC
 			<forward name="success" path="/LoadDataEntryFormAction.do?showFormPreview=flase" />
 		</action>
 
-		<action path="/SelectFormAction" 
-		    type="edu.common.dynamicextensions.ui.webui.action.SelectFormAction" 
+		<action path="AjaxcodeHandlerAction" 
+		    type="edu.common.dynamicextensions.ui.webui.action.AjaxcodeHandlerAction" 
 		    name="formDefinitionForm"
 			validate="false"
 			input="/LoadFormDefinitionAction.do"

@@ -61,6 +61,7 @@ public class LoadGroupDefinitionProcessor extends BaseDynamicExtensionsProcessor
 			{
 				groupUIBean.setCreateGroupAs(ProcessorConstants.GROUP_CREATEFROM_EXISTING);
 				groupUIBean.setGroupName(entityGroup.getId().toString());
+				groupUIBean.setGroupDescription(entityGroup.getDescription());
 			}
 			
 			else 

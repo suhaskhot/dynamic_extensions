@@ -256,8 +256,8 @@ public class LoadFormControlsProcessor
 	 */
 	private void initializeOptionButtonControlDefaultValues(ControlsForm controlsForm) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		//Set default display choice 
-		if (controlsForm.getDisplayChoice() == null)
+		//Set default display choice	 
+		if ((controlsForm.getDisplayChoice() == null)||(controlsForm.getDisplayChoice().equals(ProcessorConstants.DISPLAY_CHOICE_LOOKUP)))
 		{
 			controlsForm.setDisplayChoice(ProcessorConstants.DEFAULT_DISPLAY_CHOICE_TYPE);
 		}
@@ -373,7 +373,7 @@ public class LoadFormControlsProcessor
 	private void initializeTextControlDefaultValues(ControlsForm controlsForm)
 	{
 		//Default Data type
-		if (controlsForm.getDataType() == null)
+		if ((controlsForm.getDataType() == null)||(controlsForm.getDataType().equals("")))
 		{
 			controlsForm.setDataType(ProcessorConstants.DEFAULT_DATA_TYPE);
 		}

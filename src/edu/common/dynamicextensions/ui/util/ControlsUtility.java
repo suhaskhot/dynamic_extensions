@@ -48,6 +48,7 @@ import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.webui.util.ControlInformationObject;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.beans.NameValueBean;
@@ -634,7 +635,14 @@ public class ControlsUtility
 					controlCaption = controlInterface.getCaption();
 					controlSequenceNumber = controlInterface.getSequenceNumber() + "";
 					controlName = DynamicExtensionsUtility.getControlName(controlInterface);
-					controlDatatype = getControlCaption(controlConfigurationsFactory.getControlDisplayLabel(controlName));
+					if(controlName.equals(ProcessorConstants.ADD_SUBFORM_CONTROL))
+					{
+						controlDatatype = ProcessorConstants.ADD_SUBFORM_TYPE;
+					}
+					else
+					{
+						controlDatatype = getControlCaption(controlConfigurationsFactory.getControlDisplayLabel(controlName));
+					}
 					controlInformationObject = new ControlInformationObject(controlCaption, controlDatatype, controlSequenceNumber);
 					childList.add(controlInformationObject);
 				}

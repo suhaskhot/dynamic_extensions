@@ -6,8 +6,8 @@
   
   <validation-rule display-label="eav.rule.range" rule-name="range" rule-class="edu.common.dynamicextensions.validation.RangeValidator">
     <error-key name="eav.validation.range" />
-    <param param-name="min" param-label="Minimum Value" />
-    <param param-name="max" param-label="Maximum Value" />
+    <param param-name="min" param-label="Min Value" />
+    <param param-name="max" param-label="Max Value" />
   </validation-rule>
   
   <validation-rule display-label="eav.rule.number" rule-name="number" rule-class="edu.common.dynamicextensions.validation.NumberValidator">
@@ -24,7 +24,7 @@
   
   <validation-rule display-label="eav.rule.daterange" rule-name="dateRange" rule-class="edu.common.dynamicextensions.validation.DateRangeValidator">
     <error-key name="eav.validation.dateRange" />
-    <param param-name="min" param-label="Minimum Date" />
-    <param param-name="max" param-label="Maximum Date" />
+    <param param-name="min" param-label="Min Date" />
+    <param param-name="max" param-label="Max Date" />
   </validation-rule>
 </validator-rules>

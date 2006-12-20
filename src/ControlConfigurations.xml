@@ -70,8 +70,9 @@
 		image-path="images/controlimages/DateControlImage.jpeg">
 		<validations>
 			<common-validation-rule name="date" isImplicit="true" />
-			<common-validation-rule name="dateRange" isImplicit="false" />
 			<common-validation-rule name="required" isImplicit="false" />
+			<common-validation-rule name="dateRange" isImplicit="false" />
+
 		</validations>
 		<datatypes>
 			
@@ -89,7 +90,8 @@
 		</validations>
 	</control>
 		<!-- rules for File Upload control end-->	
-	<control name="AddSubFormControl"
+	<!-- <control name="AddSubFormControl"
 		display-label="eav.caption.AddSubFormControl">
 	</control>
+	-->
 </controls>

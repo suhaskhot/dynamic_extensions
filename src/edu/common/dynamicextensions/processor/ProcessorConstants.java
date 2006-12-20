@@ -24,6 +24,7 @@ public class ProcessorConstants
 	public static final String DATEPICKER_CONTROL  = "DateControl";
 	public static final String FILEUPLOAD_CONTROL = "FileUploadControl";
 	public static final String ADD_SUBFORM_CONTROL = "AddSubFormControl";
+	public static final String ADD_SUBFORM_TYPE = "Sub Form";
 
 	//Datattype constants 
 	public static final String DATATYPE_STRING = "Text";
@@ -123,7 +124,7 @@ public class ProcessorConstants
     public static final String DEFAULT_DATE_FORMAT = DATE_FORMAT_OPTION_DATEONLY;
     
     //Default date value  : Select date
-    public static final String DEFAULT_DATE_VALUE = DATE_VALUE_SELECT;
+    public static final String DEFAULT_DATE_VALUE = DATE_VALUE_NONE;
     
     //Checkbox default value
     public static final String DEFAULT_CHECKBOX_VALUE = "checked";

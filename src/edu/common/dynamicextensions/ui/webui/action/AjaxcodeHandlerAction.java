@@ -15,9 +15,12 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.processor.GroupProcessor;
 import edu.common.dynamicextensions.ui.util.SemanticPropertyBuilderUtil;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.util.global.Constants;
@@ -28,7 +31,7 @@ import edu.common.dynamicextensions.util.global.Constants;
  * To change the template for this generated type comment go to
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
-public class SelectFormAction extends BaseDynamicExtensionsAction
+public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 {
 	/**
 	 * @param mapping ActionMapping mapping
@@ -41,15 +44,30 @@ public class SelectFormAction extends BaseDynamicExtensionsAction
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 	throws DynamicExtensionsApplicationException
 	{
+		String returnXML = null;
 		try
 		{
-			//Code for AJAX
-			String selectedFormName = request.getParameter("selectedFormName");
-			if (selectedFormName != null) 
+			String operation = request.getParameter("ajaxOperation");
+			if(operation!=null)
 			{
-				String returnXML = getSelectedFormDetails(request,selectedFormName);
-				sendResponse(returnXML, response);
+				if(operation.trim().equals("selectFormNameFromTree"))
+				{
+					String selectedFormName = request.getParameter("selectedFormName");
+					if (selectedFormName != null) 
+					{
+						returnXML = getSelectedFormDetails(request,selectedFormName);
+					}
+				}
+				if(operation.trim().equals("selectGroup"))
+				{
+					String selectedGroupName = request.getParameter("selectedGroupName");
+					if (selectedGroupName != null) 
+					{
+						returnXML = getSelectedGroupDetails(request,selectedGroupName);
+					}
+				}
 			}
+			sendResponse(returnXML, response);
 			return null;
 		}
 		catch (Exception e)
@@ -61,6 +79,63 @@ public class SelectFormAction extends BaseDynamicExtensionsAction
 			}
 			return (mapping.findForward(actionForwardString));
 		}
+	}
+
+	/**
+	 * @param request
+	 * @param selectedGroupName
+	 * @return
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	private String getSelectedGroupDetails(HttpServletRequest request, String selectedGroupName) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		EntityGroupInterface entityGroup = null;
+		if((selectedGroupName!=null)&&(!selectedGroupName.trim().equals("")))
+		{
+			GroupProcessor groupProcessor = GroupProcessor.getInstance();
+			entityGroup = groupProcessor.getEntityGroupByIdentifier(selectedGroupName);
+		}
+		String groupDetailsXML = getGroupDetailsXML(request,entityGroup);
+		return groupDetailsXML;
+	}
+
+	/**
+	 * @param request
+	 * @param entityGroup
+	 * @return
+	 */
+	private String getGroupDetailsXML(HttpServletRequest request, EntityGroupInterface entityGroup)
+	{
+		String groupDescription = null;
+		if(entityGroup!=null)
+		{
+			groupDescription = entityGroup.getDescription();
+		}
+		if(groupDescription==null)
+		{
+			groupDescription="";
+		}
+		String groupDetailsXML = createGroupDetailsXML(groupDescription);
+		if(groupDetailsXML==null)
+		{
+			groupDetailsXML = "";
+		}
+		return groupDetailsXML;
+	}
+
+	/**
+	 * @param groupDescription
+	 * @return
+	 */
+	private String createGroupDetailsXML(String groupDescription)
+	{
+		StringBuffer responseXML = new StringBuffer();
+		responseXML.append("<group>");
+		responseXML.append("<group-description>" + groupDescription +"</group-description>");
+		responseXML.append("</group>");
+		return responseXML.toString();
+	
 	}
 
 	/**

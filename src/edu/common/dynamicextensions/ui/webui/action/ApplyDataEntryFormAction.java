@@ -69,17 +69,17 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		Stack valueMapStack = (Stack) CacheManager.getObjectFromCache(request,
 				Constants.VALUE_MAP_STACK);
 		ContainerInterface containerInterface = (ContainerInterface) containerStack.peek();
-		Map valueMap = (Map) valueMapStack.peek();
+		Map<AbstractAttributeInterface, Object> valueMap = (Map) valueMapStack.peek();
 
 		ApplyDataEntryFormProcessor applyDataEntryFormProcessor = ApplyDataEntryFormProcessor
 				.getInstance();
 
 		try
 		{
-			Map<AbstractAttributeInterface, Object> attributeValueMap = generateAttributeValueMap(
+			valueMap = generateAttributeValueMap(
 					containerInterface, request, dataEntryForm, "", valueMap, true);
 
-			List<String> errorList = ValidatorUtil.validateEntity(attributeValueMap);
+			List<String> errorList = ValidatorUtil.validateEntity(valueMap );
 
 			if (errorList.size() != 0)
 			{
@@ -89,15 +89,20 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			}
 			else
 			{
-				attributeValueMap = applyDataEntryFormProcessor
-						.removeNullValueEntriesFormMap(attributeValueMap);
+				valueMap  = applyDataEntryFormProcessor
+						.removeNullValueEntriesFormMap(valueMap );
 			}
-
+			
+			String childContainerId = dataEntryForm.getChildContainerId();
+			if(childContainerId != null && !childContainerId.equals(""))
+			{
+				return mapping.findForward("loadChildContainer");
+			}
 			String recordIdentifier = dataEntryForm.getRecordIdentifier();
 			if (recordIdentifier != null && !recordIdentifier.equals(""))
 			{
 				Boolean edited = applyDataEntryFormProcessor.editDataEntryForm(containerInterface,
-						attributeValueMap, Long.valueOf(recordIdentifier));
+						valueMap , Long.valueOf(recordIdentifier));
 				if (edited.booleanValue())
 				{
 					saveMessages(request, getSuccessMessage());
@@ -106,7 +111,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			else
 			{
 				recordIdentifier = applyDataEntryFormProcessor.insertDataEntryForm(
-						containerInterface, attributeValueMap);
+						containerInterface, valueMap );
 				saveMessages(request, getSuccessMessage());
 			}
 

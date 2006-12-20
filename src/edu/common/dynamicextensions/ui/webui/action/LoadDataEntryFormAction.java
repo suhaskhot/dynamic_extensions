@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.ui.webui.action;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
@@ -12,11 +13,15 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.LoadDataEntryFormProcessor;
+import edu.common.dynamicextensions.ui.webui.actionform.DataEntryForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
@@ -44,6 +49,8 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 			HttpServletRequest request, HttpServletResponse response)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
+		DataEntryForm dataEntryForm = (DataEntryForm)form;
+		
 		String mode = request.getParameter(WebUIManagerConstants.MODE_PARAM_NAME);
 
 		String callBackURL = request.getParameter(WebUIManagerConstants.CALLBACK_URL_PARAM_NAME);
@@ -79,6 +86,16 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 			UserInterfaceiUtility.addContainerInfo(containerStack, containerInterface,
 					valueMapStack, new HashMap<AbstractAttributeInterface, Object>());
 		}
+		else
+		{
+			Map containerValueMap = (Map) valueMapStack.peek();
+			AssociationInterface childKey  = null; 
+			ContainerInterface childContainer = getChildContainer(containerInterface,dataEntryForm.getChildContainerId(),childKey);
+			Map childContainerValueMap = (Map) containerValueMap.get(childKey);
+
+			UserInterfaceiUtility.addContainerInfo(containerStack, childContainer,
+					valueMapStack, childContainerValueMap);
+		}
 
 		LoadDataEntryFormProcessor loadDataEntryFormProcessor = LoadDataEntryFormProcessor
 				.getInstance();
@@ -88,4 +105,31 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 		return mapping.findForward("Success");
 	}
 
+	/**
+	 * 
+	 * @param containerInterface
+	 * @param childContainerId
+	 * @return
+	 */
+	private ContainerInterface getChildContainer(ContainerInterface containerInterface,String childContainerId,AssociationInterface association)
+	{
+		Collection<ControlInterface> controlCollection = containerInterface.getControlCollection();
+		for (ControlInterface control : controlCollection)
+		{
+			if(control instanceof ContainmentAssociationControl )
+			{
+				ContainmentAssociationControl containmentAssociationControl = (ContainmentAssociationControl)control;
+				String containmentAssociationControlId = containmentAssociationControl.getContainer().getId().toString(); 
+				if(containmentAssociationControlId.equals(childContainerId))
+				{
+					association = (AssociationInterface) containmentAssociationControl.getAbstractAttribute();
+					return containmentAssociationControl.getContainer();
+				}
+			}
+		}
+	
+		return null;
+	}
 }
+
+

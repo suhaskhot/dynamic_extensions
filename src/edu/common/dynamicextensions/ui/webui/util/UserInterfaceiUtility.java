@@ -57,7 +57,7 @@ public class UserInterfaceiUtility
 
 			if (control instanceof ContainmentAssociationControlInterface)
 			{
-				controlHTML = ((ContainmentAssociationControlInterface) control).generateLinkHTML();
+				controlHTML = ((ContainmentAssociationControlInterface)control).generateLinkHTML();
 			}
 			else
 			{

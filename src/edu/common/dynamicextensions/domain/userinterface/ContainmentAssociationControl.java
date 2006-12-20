@@ -114,7 +114,7 @@ public class ContainmentAssociationControl extends Control implements Containmen
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("<span style='cursor:hand' class='" + cssClass + "' ");
 		stringBuffer.append("onclick='insertDataForContainer(");
-		stringBuffer.append(this.getContainer().getId());
+		stringBuffer.append(this.getParentContainer().getId()+ ",this");
 		stringBuffer.append(")'>");
 		stringBuffer.append(detailsString);
 		stringBuffer.append("</span>");

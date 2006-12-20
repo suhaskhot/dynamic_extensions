@@ -1655,3 +1655,17 @@ function groupSelectedResponse(groupXML)
 	}
 	
 }
+
+
+function insertDataForContainer(containerId,ths)
+ {
+	
+//	 alert(ths.parentNode.parentNode.rowIndex);
+//	 alert('container id' + containerId);
+	 document.getElementById('childContainerId').value = containerId;
+//	alert(ths.parentNode)
+
+	var dataEntryForm = document.getElementById('dataEntryForm');
+	dataEntryForm.action="/dynamicExtensions/ApplyDataEntryFormAction.do";
+	dataEntryForm.submit();
+}

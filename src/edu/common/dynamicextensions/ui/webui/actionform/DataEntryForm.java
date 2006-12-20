@@ -52,6 +52,15 @@ public class DataEntryForm extends AbstractActionForm
 	 * 
 	 */
 	protected Map valueMap = new HashMap();
+	
+	/**
+	 * 
+	 */
+	protected String childContainerId;
+	/**
+	 * 
+	 */
+	protected String childRowId;
 
 	/**
 	 * 
@@ -205,6 +214,30 @@ public class DataEntryForm extends AbstractActionForm
 	public void setMode(String mode)
 	{
 		this.mode = mode;
+	}
+
+	
+	public String getChildContainerId()
+	{
+		return childContainerId;
+	}
+
+	
+	public void setChildContainerId(String childContainerId)
+	{
+		this.childContainerId = childContainerId;
+	}
+
+	
+	public String getChildRowId()
+	{
+		return childRowId;
+	}
+
+	
+	public void setChildRowId(String childRowId)
+	{
+		this.childRowId = childRowId;
 	}
 
 }

@@ -132,6 +132,8 @@ PUBLIC
 			input="/LoadDataEntryFormAction.do"
 			scope="request">
 			<forward name="success" path="/LoadDataEntryFormAction.do?showFormPreview=flase" />
+			<forward name="loadChildContainer" path="/LoadDataEntryFormAction.do?showFormPreview=flase" />
+			
 		</action>
 		
 		<action path="/DynamicExtensionsInterfaceAction" 

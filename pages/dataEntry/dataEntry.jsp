@@ -171,6 +171,10 @@
 				</table>			
 			<input type="hidden" name="recordIdentifier" value="<%=recordIdentifier%>"/> 
 			<html:hidden styleId='entitySaved' property="entitySaved" />
+			<html:hidden styleId='childContainerId' property="childContainerId" />
+			<html:hidden styleId='childContainerId' property="childRowId" />
+			
+			
 		</html:form>		
 	</body>
 </html>

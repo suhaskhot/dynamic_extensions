@@ -47,7 +47,6 @@
 		jspName="/pages/toolTypeHTML/ComboboxControl.jsp"
 		image-path="images/controlimages/ComboboxImage.jpeg">
 		<validations>
-			<common-validation-rule name="required" isImplicit="false" />
 		</validations>
 		<datatypes>
 			<dataType name="Text">

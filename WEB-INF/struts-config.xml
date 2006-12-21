@@ -134,6 +134,7 @@ PUBLIC
 			scope="request">
 			<forward name="success" path="/LoadDataEntryFormAction.do?showFormPreview=flase" />
 			<forward name="loadChildContainer" path="/LoadDataEntryFormAction.do?showFormPreview=flase" />
+			<forward name="loadParentContainer" path="/LoadDataEntryFormAction.do?showFormPreview=flase" />
 			
 		</action>
 		

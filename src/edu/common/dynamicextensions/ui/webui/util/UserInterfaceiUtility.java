@@ -14,6 +14,7 @@ import java.util.Stack;
 import javax.servlet.http.HttpServletRequest;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
@@ -36,11 +37,14 @@ public class UserInterfaceiUtility
 	 * @param containerInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
-	@SuppressWarnings("unchecked")
-	public static String generateHTMLforGrid(ContainerInterface subContainer)
+	public static String generateHTMLforGrid(ContainerInterface subContainer, List<Map> valueMap)
 			throws DynamicExtensionsSystemException
 	{
 		StringBuffer stringBuffer = new StringBuffer();
+		int rowCount = 0;
+		if (valueMap != null) {
+			rowCount = valueMap.size();
+		}
 		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(subContainer
 				.getControlCollection());
 		Collections.sort(controlsList);
@@ -49,34 +53,12 @@ public class UserInterfaceiUtility
 		stringBuffer.append("<div style='display:none' id='" + subContainer.getId()
 				+ "_substitutionDiv'>");
 		stringBuffer.append("<table>");
-		stringBuffer.append("<tr width='100%'>");
-		stringBuffer.append("<td class='formRequiredNotice' width='1%'>");
-		stringBuffer.append("<input type='checkbox' name='deleteRow' value=''/>");
-		stringBuffer.append("</td>");
-		for (ControlInterface control : controlsList)
-		{
-			String controlHTML = "";
-			control.setIsSubControl(true);
-
-			if (control instanceof ContainmentAssociationControlInterface)
-			{
-				controlHTML = ((ContainmentAssociationControlInterface)control).generateLinkHTML();
-			}
-			else
-			{
-				controlHTML = control.generateHTML();
-			}
-
-			stringBuffer.append("<td class='formField'>");
-			stringBuffer.append(controlHTML);
-			stringBuffer.append("</td>");
-		}
-		stringBuffer.append("</tr>");
+		stringBuffer.append(getContainerHTMLAsARow(subContainer,-1));
 		stringBuffer.append("</table>");
 		stringBuffer.append("</div>");
 
 		stringBuffer.append("<input type='hidden' name='" + subContainer.getId()
-				+ "_rowCount' id= '" + subContainer.getId() + "_rowCount' value='0'/> ");
+				+ "_rowCount' id= '" + subContainer.getId() + "_rowCount' value='"+ rowCount + "'/> ");
 		stringBuffer.append("</td></tr>");
 
 		stringBuffer.append("<tr width='100%'>");
@@ -114,6 +96,17 @@ public class UserInterfaceiUtility
 		}
 
 		stringBuffer.append("</tr>");
+		if (valueMap != null)
+		{
+			int index = 1;
+			for (Map rowValueMap : valueMap)
+			{
+				subContainer.setContainerValueMap(rowValueMap);				
+				stringBuffer.append(getContainerHTMLAsARow(subContainer,index));
+				index ++;
+			}
+		}
+
 		stringBuffer.append("</table>");
 
 		stringBuffer
@@ -182,29 +175,83 @@ public class UserInterfaceiUtility
 		containerStack.push(containerInterface);
 		valueMapStack.push(valueMap);
 	}
-	
+
 	/**
 	 * 
 	 * @param containerStack
-	 * @param containerInterface
 	 * @param valueMapStack
-	 * @param valueMap
 	 */
 	public static void removeContainerInfo(Stack<ContainerInterface> containerStack,
-			ContainerInterface containerInterface, Stack<Map> valueMapStack, Map valueMap)
+			Stack<Map> valueMapStack)
 	{
 		containerStack.pop();
 		valueMapStack.pop();
 	}
-	
+
 	/**
 	 * @param request
 	 */
 	public static void clearContainerStack(HttpServletRequest request)
 	{
-		CacheManager.addObjectToCache(request,
-				Constants.CONTAINER_STACK,null);
-		CacheManager.addObjectToCache(request,
-				Constants.VALUE_MAP_STACK,null);
+		ContainerInterface containerInterface = (ContainerInterface) CacheManager
+				.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+		if (containerInterface != null && containerInterface.getId() != null)
+		{
+			request.setAttribute("containerIdentifier", containerInterface.getId().toString());
+		}
+
+		CacheManager.addObjectToCache(request, Constants.CONTAINER_STACK, null);
+		CacheManager.addObjectToCache(request, Constants.VALUE_MAP_STACK, null);
+		CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, null);
 	}
+
+	/**
+	 * @param container
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private static String getContainerHTMLAsARow(ContainerInterface container,int rowId)
+			throws DynamicExtensionsSystemException
+	{
+
+		StringBuffer stringBuffer = new StringBuffer();
+		Map<AttributeInterface,Object> containerValueMap = container.getContainerValueMap();
+		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(container
+				.getControlCollection());
+		Collections.sort(controlsList);
+
+		stringBuffer.append("<tr width='100%'>");
+		stringBuffer.append("<td class='formRequiredNotice' width='1%'>");
+		stringBuffer.append("<input type='checkbox' name='deleteRow' value=''/>");
+		stringBuffer.append("</td>");
+		for (ControlInterface control : controlsList)
+		{
+			String controlHTML = "";
+			control.setIsSubControl(true);
+
+			if (control instanceof ContainmentAssociationControlInterface)
+			{
+				controlHTML = ((ContainmentAssociationControlInterface) control).generateLinkHTML();
+			}
+			else
+			{
+				Object value = containerValueMap.get( control.getAbstractAttribute());
+				control.setValue(value);
+				controlHTML = control.generateHTML();
+				if (rowId != -1) {
+					String oldName = control.getHTMLComponentName();
+					String newName = oldName + "_" + rowId;
+					controlHTML = controlHTML.replaceAll(oldName,newName);
+				}
+			}
+
+			stringBuffer.append("<td class='formField'>");
+			stringBuffer.append(controlHTML);
+			stringBuffer.append("</td>");
+		}
+		stringBuffer.append("</tr>");
+
+		return stringBuffer.toString();
+	}
+
 }

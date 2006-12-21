@@ -8,6 +8,9 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
+import java.util.List;
+import java.util.Map;
+
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -74,10 +77,15 @@ public class ContainmentAssociationControl extends Control implements Containmen
 		String subContainerHTML = "";
 		if(isCardinalityOneToMany())
 		{
-				subContainerHTML = this.getContainer().generateControlsHTMLAsGrid();
+			    List<Map> valueMap  = (List<Map>) value;
+				subContainerHTML = this.getContainer().generateControlsHTMLAsGrid(valueMap);
 		}
 		else
 		{
+			if(value != null && ((List)value).size() > 0 ) {
+				Map displayContainerValueMap = (Map) ((List) value).get(0);
+				this.getContainer().setContainerValueMap(displayContainerValueMap);
+			}
 			subContainerHTML = this.getContainer().generateControlsHTML();
 		}
 		return subContainerHTML;
@@ -113,7 +121,7 @@ public class ContainmentAssociationControl extends Control implements Containmen
 		
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("<span style='cursor:hand' class='" + cssClass + "' ");
-		stringBuffer.append("onclick='insertDataForContainer(");
+		stringBuffer.append("onclick='showChildContainerInsertDataPage(");
 		stringBuffer.append(this.getParentContainer().getId()+ ",this");
 		stringBuffer.append(")'>");
 		stringBuffer.append(detailsString);

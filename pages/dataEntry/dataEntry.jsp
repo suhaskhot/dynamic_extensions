@@ -155,6 +155,11 @@
 							 								<% 
 							 									String target = "addDynamicData(" + recordIdentifier + ")";
 							 								%>
+							 								<html:submit styleClass="actionButton" onclick="showParentContainerInsertDataPage()">
+															 	<bean:message  key="buttons.back" />
+															</html:submit>
+															
+															
 													 		<html:submit styleClass="actionButton">
 															 	<bean:message  key="buttons.submit" />
 															</html:submit>
@@ -171,10 +176,11 @@
 				</table>			
 			<input type="hidden" name="recordIdentifier" value="<%=recordIdentifier%>"/> 
 			<html:hidden styleId='entitySaved' property="entitySaved" />
-			<html:hidden styleId='childContainerId' property="childContainerId" />
-			<html:hidden styleId='childContainerId' property="childRowId" />
+					
 			
-			
+			<input type="hidden" id = "childContainerId" name="childContainerId" value=""/> 
+			<input type="hidden" id = "childRowId" name="childRowId" value=""/> 
+			<input type="hidden" id = "dataEntryOperation" name="dataEntryOperation" value=""/> 
 		</html:form>		
 	</body>
 </html>

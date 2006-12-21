@@ -5,12 +5,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.domain.Entity;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
@@ -69,6 +72,12 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 	 * Collection of controls that are in this container.
 	 */
 	protected Collection<ControlInterface> controlCollection = new HashSet<ControlInterface>();
+	
+	/**
+	 * 
+	 */
+	protected Map<AttributeInterface,Object> containerValueMap = new HashMap<AttributeInterface,Object>();
+	
 	/**
 	 * Entity to which this container is associated.
 	 */
@@ -334,6 +343,8 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 		Collections.sort(controlsList);
 		for (ControlInterface control : controlsList)
 		{
+			Object value = containerValueMap.get( control.getAbstractAttribute());
+			control.setValue(value);
 			stringBuffer.append(control.generateHTML());
 		}
 		return stringBuffer.toString();
@@ -344,9 +355,27 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public String generateControlsHTMLAsGrid() throws DynamicExtensionsSystemException
+	public String generateControlsHTMLAsGrid(List<Map> valueMap) throws DynamicExtensionsSystemException
 	{
-		return UserInterfaceiUtility.generateHTMLforGrid(this);
+		return UserInterfaceiUtility.generateHTMLforGrid(this,valueMap);
+	}
+
+	
+	/**
+	 * @return
+	 */
+	public Map<AttributeInterface, Object> getContainerValueMap()
+	{
+		return containerValueMap;
+	}
+
+	
+	/**
+	 * @param containerValueMap
+	 */
+	public void setContainerValueMap(Map<AttributeInterface, Object> containerValueMap)
+	{
+		this.containerValueMap = containerValueMap;
 	}
 
 }

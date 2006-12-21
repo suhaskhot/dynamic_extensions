@@ -14,7 +14,6 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
@@ -51,8 +50,8 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 			HttpServletRequest request, HttpServletResponse response)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		DataEntryForm dataEntryForm = (DataEntryForm)form;
-		
+		DataEntryForm dataEntryForm = (DataEntryForm) form;
+
 		String mode = request.getParameter(WebUIManagerConstants.MODE_PARAM_NAME);
 
 		String callBackURL = request.getParameter(WebUIManagerConstants.CALLBACK_URL_PARAM_NAME);
@@ -65,12 +64,14 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 
 		ContainerInterface containerInterface = (ContainerInterface) CacheManager
 				.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-		String containerIdentifier = request.getParameter("containerIdentifier");
+
+		String containerIdentifier = getContainerId(request);
 		if (containerInterface == null || containerIdentifier != null)
 		{
 			containerInterface = DynamicExtensionsUtility
 					.getContainerByIdentifier(containerIdentifier);
-			CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
+			CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE,
+					containerInterface);
 		}
 
 		String recordId = request.getParameter("recordId");
@@ -79,6 +80,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 				Constants.CONTAINER_STACK);
 		Stack valueMapStack = (Stack) CacheManager.getObjectFromCache(request,
 				Constants.VALUE_MAP_STACK);
+		String dataEntryOperation = dataEntryForm.getDataEntryOperation();
 		if (containerStack == null)
 		{
 			containerStack = new Stack<ContainerInterface>();
@@ -88,29 +90,53 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 			UserInterfaceiUtility.addContainerInfo(containerStack, containerInterface,
 					valueMapStack, new HashMap<AbstractAttributeInterface, Object>());
 		}
-		else
+		else if (dataEntryOperation != null
+				&& dataEntryOperation.equalsIgnoreCase("insertChildData"))
 		{
 			Map containerValueMap = (Map) valueMapStack.peek();
-			String  childContainerId = dataEntryForm.getChildContainerId();
-			ContainmentAssociationControl associationControl = getAssociationControl((ContainerInterface) containerStack.peek(), childContainerId);
+			String childContainerId = dataEntryForm.getChildContainerId();
+			ContainmentAssociationControl associationControl = getAssociationControl(
+					(ContainerInterface) containerStack.peek(), childContainerId);
 			ContainerInterface childContainer = associationControl.getContainer();
-			AssociationInterface association =  (AssociationInterface) associationControl.getAbstractAttribute();
+			AssociationInterface association = (AssociationInterface) associationControl
+					.getAbstractAttribute();
 			List childContainerValueMapList = (List) containerValueMap.get(association);
-			Map childContainerValueMap =  (Map) childContainerValueMapList.get(Integer.parseInt(dataEntryForm.getChildRowId()) - 1);
-			UserInterfaceiUtility.addContainerInfo(containerStack, childContainer,
-					valueMapStack, childContainerValueMap);
+			Map childContainerValueMap = (Map) childContainerValueMapList.get(Integer
+					.parseInt(dataEntryForm.getChildRowId()) - 1);
+			UserInterfaceiUtility.addContainerInfo(containerStack, childContainer, valueMapStack,
+					childContainerValueMap);
+		}
+		else if (dataEntryOperation != null
+				&& dataEntryOperation.equalsIgnoreCase("insertParentData"))
+		{
+			UserInterfaceiUtility.removeContainerInfo(containerStack,valueMapStack);
 		}
 
 		LoadDataEntryFormProcessor loadDataEntryFormProcessor = LoadDataEntryFormProcessor
 				.getInstance();
-		
-		loadDataEntryFormProcessor.loadDataEntryForm(
-				(AbstractActionForm) form, (ContainerInterface)containerStack.peek(),(Map)valueMapStack.peek() ,recordId, mode);
-		
-		
+
+		loadDataEntryFormProcessor.loadDataEntryForm((AbstractActionForm) form,
+				(ContainerInterface) containerStack.peek(), (Map) valueMapStack.peek(), recordId,
+				mode);
+
 		clearFormValues(dataEntryForm);
-		
+
 		return mapping.findForward("Success");
+	}
+
+	/**
+	 * @param request
+	 * @return
+	 */
+	private String getContainerId(HttpServletRequest request)
+	{
+		String id = "";
+		id = request.getParameter("containerIdentifier");
+		if (id == null || id.equals(""))
+		{
+			id = (String) request.getAttribute("containerIdentifier");
+		}
+		return id;
 	}
 
 	/**
@@ -129,24 +155,24 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @param childContainerId
 	 * @return
 	 */
-	private ContainmentAssociationControl getAssociationControl(ContainerInterface containerInterface,String childContainerId)
+	private ContainmentAssociationControl getAssociationControl(
+			ContainerInterface containerInterface, String childContainerId)
 	{
 		Collection<ControlInterface> controlCollection = containerInterface.getControlCollection();
 		for (ControlInterface control : controlCollection)
 		{
-			if(control instanceof ContainmentAssociationControl )
+			if (control instanceof ContainmentAssociationControl)
 			{
-				ContainmentAssociationControl containmentAssociationControl = (ContainmentAssociationControl)control;
-				String containmentAssociationControlId = containmentAssociationControl.getContainer().getId().toString(); 
-				if(containmentAssociationControlId.equals(childContainerId))
+				ContainmentAssociationControl containmentAssociationControl = (ContainmentAssociationControl) control;
+				String containmentAssociationControlId = containmentAssociationControl
+						.getContainer().getId().toString();
+				if (containmentAssociationControlId.equals(childContainerId))
 				{
 					return containmentAssociationControl;
 				}
 			}
 		}
-	
+
 		return null;
 	}
 }
-
-

@@ -5,6 +5,7 @@
 package edu.common.dynamicextensions.processor;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,18 +45,26 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	 * @param attributeValueMap
 	 * @return
 	 */
-	public Map<AbstractAttributeInterface, Object> removeNullValueEntriesFormMap(Map<AbstractAttributeInterface, Object> attributeValueMap)
+	public Map<AbstractAttributeInterface, Object> removeNullValueEntriesFormMap(
+			Map<AbstractAttributeInterface, Object> attributeValueMap)
 	{
-		Set<Map.Entry<AbstractAttributeInterface, Object>> attributeValueSet = attributeValueMap.entrySet();
+		Set<Map.Entry<AbstractAttributeInterface, Object>> attributeValueSet = attributeValueMap
+				.entrySet();
 		Iterator attributeValueSetIterator = attributeValueSet.iterator();
 		while (attributeValueSetIterator.hasNext())
 		{
 			Map.Entry<AbstractAttributeInterface, Object> attributeValueEntry = (Map.Entry<AbstractAttributeInterface, Object>) attributeValueSetIterator
 					.next();
+
 			Object value = attributeValueEntry.getValue();
 			if (value == null)
 			{
 				attributeValueSetIterator.remove();
+			}
+			else if (value instanceof List && ((List) value).isEmpty())
+			{
+				attributeValueSetIterator.remove();
+
 			}
 		}
 		return attributeValueMap;
@@ -69,7 +78,8 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsSystemException on System exception
 	 * @return recordIdentifier Record identifier of the last saved record. 
 	 */
-	public String insertDataEntryForm(ContainerInterface container, Map<AbstractAttributeInterface, Object> attributeValueMap)
+	public String insertDataEntryForm(ContainerInterface container,
+			Map<AbstractAttributeInterface, Object> attributeValueMap)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		EntityManagerInterface entityManager = EntityManager.getInstance();
@@ -87,7 +97,8 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Boolean editDataEntryForm(ContainerInterface container, Map<AbstractAttributeInterface, Object> attributeValueMap, Long recordIdentifier)
+	public Boolean editDataEntryForm(ContainerInterface container,
+			Map<AbstractAttributeInterface, Object> attributeValueMap, Long recordIdentifier)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		EntityManagerInterface entityManager = EntityManager.getInstance();

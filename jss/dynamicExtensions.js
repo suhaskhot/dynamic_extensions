@@ -1656,11 +1656,19 @@ function groupSelectedResponse(groupXML)
 }
 
 
-function insertDataForContainer(containerId,ths)
+function showChildContainerInsertDataPage(containerId,ths)
  {
-	
     document.getElementById('childContainerId').value = containerId;
+    document.getElementById('dataEntryOperation').value  = "insertChildData";
 	document.getElementById('childRowId').value = ths.parentNode.parentNode.rowIndex;
+	var dataEntryForm = document.getElementById('dataEntryForm');
+	dataEntryForm.action="/dynamicExtensions/ApplyDataEntryFormAction.do";
+	dataEntryForm.submit();
+}
+
+function showParentContainerInsertDataPage()
+ {
+    document.getElementById('dataEntryOperation').value  = "insertParentData";
 	var dataEntryForm = document.getElementById('dataEntryForm');
 	dataEntryForm.action="/dynamicExtensions/ApplyDataEntryFormAction.do";
 	dataEntryForm.submit();

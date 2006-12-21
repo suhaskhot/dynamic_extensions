@@ -2,7 +2,10 @@
 package edu.common.dynamicextensions.domaininterface.userinterface;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
@@ -143,6 +146,16 @@ public interface ContainerInterface
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	String generateControlsHTMLAsGrid() throws DynamicExtensionsSystemException;
+	String generateControlsHTMLAsGrid(List<Map> valueMap) throws DynamicExtensionsSystemException;
+	
+	/**
+	 * @return
+	 */
+	Map<AttributeInterface, Object> getContainerValueMap();
 
+	
+	/**
+	 * @param containerValueMap
+	 */
+	void setContainerValueMap(Map<AttributeInterface, Object> containerValueMap);
 }

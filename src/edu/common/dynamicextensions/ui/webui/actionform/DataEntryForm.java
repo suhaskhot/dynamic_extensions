@@ -61,6 +61,10 @@ public class DataEntryForm extends AbstractActionForm
 	 * 
 	 */
 	protected String childRowId;
+	/**
+	 * 
+	 */
+	protected String dataEntryOperation = "";
 
 	/**
 	 * 
@@ -238,6 +242,18 @@ public class DataEntryForm extends AbstractActionForm
 	public void setChildRowId(String childRowId)
 	{
 		this.childRowId = childRowId;
+	}
+
+	
+	public String getDataEntryOperation()
+	{
+		return dataEntryOperation;
+	}
+
+	
+	public void setDataEntryOperation(String dataEntryOperation)
+	{
+		this.dataEntryOperation = dataEntryOperation;
 	}
 
 }

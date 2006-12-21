@@ -11,7 +11,6 @@ import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
@@ -20,8 +19,6 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.actionform.DataEntryForm;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
-import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.wustl.common.actionForm.AbstractActionForm;
 
 /**
@@ -79,7 +76,13 @@ public class LoadDataEntryFormProcessor
 			
 		}
 		
-		setControlsRecordValue(controlCollection, valueMap);
+		//setControlsRecordValue(controlCollection, valueMap);
+		if(valueMap != null && !valueMap.isEmpty()  )
+			
+		{
+			containerInterface.setContainerValueMap(valueMap);
+		}
+		
 
 		dataEntryForm.setContainerInterface(containerInterface);
 		if (dataEntryForm.getErrorList() == null)

@@ -74,6 +74,8 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 
 		ApplyDataEntryFormProcessor applyDataEntryFormProcessor = ApplyDataEntryFormProcessor
 				.getInstance();
+		
+		ActionForward forward = null;
 
 		try
 		{
@@ -97,11 +99,16 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			valueMap = (Map<AbstractAttributeInterface, Object>) valueMapStack.firstElement();
 			containerInterface = (ContainerInterface) containerStack.firstElement();
 			
-			String childContainerId = dataEntryForm.getChildContainerId();
-			if(childContainerId != null && !childContainerId.equals(""))
+			String dataEntryOperation = dataEntryForm.getDataEntryOperation();
+			if(dataEntryOperation != null && dataEntryOperation.equals("insertChildData"))
 			{
-				return mapping.findForward("loadChildContainer");
+				return  mapping.findForward("loadChildContainer");
+			} 
+			else if(dataEntryOperation != null && dataEntryOperation.equals("insertParentData")) {
+				return  mapping.findForward("loadParentContainer");
 			}
+				
+			
 			String recordIdentifier = dataEntryForm.getRecordIdentifier();
 			
 			if (recordIdentifier != null && !recordIdentifier.equals(""))
@@ -144,6 +151,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		}
 		
 		UserInterfaceiUtility.clearContainerStack(request);
+		
 		
 		return (mapping.findForward(Constants.SUCCESS));
 	}

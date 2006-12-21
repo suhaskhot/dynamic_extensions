@@ -14,6 +14,8 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -39,6 +41,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Variables;
+import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.bizlogic.AbstractBizLogic;
 import edu.wustl.common.util.CVSTagReader;
 import edu.wustl.common.util.dbManager.DAOException;
@@ -417,6 +420,19 @@ public class DynamicExtensionsUtility
 		return isContainedInList;
 	}
 	
-	
-	
+	/**
+    *
+    * @param list list of NameValueBeanObjects
+    */
+   @SuppressWarnings("unchecked")
+public static void sortNameValueBeanListByName(List<NameValueBean> list) {
+       Collections.sort(list,new Comparator() {
+           public int compare(Object o1, Object o2) {
+               String s1 = ((NameValueBean) o1).getName();
+               String s2 = ((NameValueBean) o2).getName();
+               return s1.compareTo(s2);
+             }
+       });
+   }
+
 }

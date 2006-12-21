@@ -142,7 +142,7 @@
 						<td class="formRequiredNoticeWithoutBorder" width="2%" >&nbsp;</td>
 						<td class="formRequiredLabelWithoutBorder" width="12%">
 						<label for="groupDescription">
-							<bean:message key="eav.form.description"/> :
+							<bean:message key="eav.att.Description"/> :
 						</label>
 						</td>
 						<td >
@@ -170,7 +170,7 @@
 						<td class="formRequiredNoticeWithoutBorder" width="2%" >&nbsp;</td>
 						<td class="formRequiredLabelWithoutBorder" width="12%">
 						<label for="groupDescription">
-							<bean:message key="eav.form.description"/> :
+							<bean:message key="eav.att.Description"/> :
 						</label>
 						</td>
 						<td >

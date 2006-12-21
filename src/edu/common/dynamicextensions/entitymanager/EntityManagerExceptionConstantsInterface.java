@@ -35,6 +35,8 @@ public interface EntityManagerExceptionConstantsInterface
      String DYEXTN_A_005 = "DYEXTN_A_005";
      //Exception constant in case of attributes share the same name 
      String DYEXTN_A_006 = "DYEXTN_A_006";
+//   Exception constant in case of name exceeds maximum limit. 
+     String DYEXTN_A_007 = "DYEXTN_A_007";
      
 
     

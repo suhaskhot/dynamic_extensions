@@ -87,7 +87,6 @@ public class ListBox extends SelectControl implements ListBoxInterface
 	 * @return HTML code for ListBox Control.
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	@SuppressWarnings("unchecked")
 	public String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
 		List<NameValueBean> nameValueBeanList = null;
@@ -139,7 +138,7 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		return htmlString;
 	}
 
-	@SuppressWarnings("unchecked")
+
 	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
 	{
 

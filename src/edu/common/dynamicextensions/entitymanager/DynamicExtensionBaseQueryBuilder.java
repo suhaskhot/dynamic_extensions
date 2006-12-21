@@ -62,11 +62,12 @@ class DynamicExtensionBaseQueryBuilder
 	EntityManagerUtil entityManagerUtil = new EntityManagerUtil();
 
 	/**
-	 * This method builds the list of all the queries that need to be executed in order to create the data table for the entity and its associations.
+	 * This method builds the list of all the queries that need to be executed in order to 
+	 * create the data table for the entity and its associations.
 	 * 
 	 * @param entity Entity for which to get the queries.
-	 * @param reverseQueryList For every data table query the method builds one more query which negats the effect of that data table query. All such
-	 * reverse queries are added in this list.
+	 * @param reverseQueryList For every data table query the method builds one more query 
+	 * which negates the effect of that data table query. All such reverse queries are added in this list.
 	 * @param rollbackQueryStack 
 	 * @param hibernateDAO 
 	 * 
@@ -130,8 +131,8 @@ class DynamicExtensionBaseQueryBuilder
 
 	/**
 	 * This method returns association value for the entity's given record.
-	 * e.g if user1 is associated with study1 and study2 it returns a value for the  
-	 * "study done" assocaition as a list of record ids of study1 and study2.
+	 * e.g if user1 is associated with study1 and study2. The method returns the 
+	 * list of record ids of study1 and study2 as the return value for the association bet'n user and study
 	 * 
 	 * @param entity entity
 	 * @param recordId recordId

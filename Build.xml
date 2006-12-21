@@ -80,7 +80,7 @@
 	
 	
 	<target name="checkstyle" depends="init" description="Generates a report of code convention violations.">
-		<taskdef resource="checkstyletask.properties" classpath="${extra_lib.dir}/checkstyle-all-3.4.jar"/>  
+		<taskdef resource="checkstyletask.properties" classpath="${extra_lib.dir}/checkstyle-all-4.2.jar"/>  
 
 	    <checkstyle config="${checkstyle.rules.file}" failureProperty="checkstyle.failed" failOnViolation="false">
 	    	<formatter type="xml" tofile="${checkstyle.unformatted.report}"/>
@@ -109,7 +109,7 @@
     	</copy>
     </target>
 	
-    <target name="compileTestCases" depends="compile">
+    <target name="compile_test_cases" depends="compile">
         <javac destdir="${target.dir}" includes="**/*.*" includeAntRuntime="false" debug="true">
             <src path="${test.dir}"/>
             <classpath refid="app.classpath"/>
@@ -118,7 +118,7 @@
     </target>
   	
 	<!-- Create the Applet JAR Begins-->
-    <target name="AppletJAR" depends="compile" >
+    <target name="applet_jar" depends="compile" >
     	<delete>
             <fileset dir="${applet.dir}">
 	            <exclude name="**/CVS*"/>
@@ -175,7 +175,7 @@
 	
 	
 	<!-- Create dynamic extensions jar Begins-->
-	    <target name="createDynamicExtensionsInterfaceJAR" depends="compile" >
+	    <target name="create_dyn_ext_interface_jar" depends="compile" >
 		   <delete file="${interface.dir}/DynamicExtensions.jar"/>
     	   <jar taskname="buildJar" jarfile="${interface.dir}/DynamicExtensions.jar">
 	    		<fileset dir="${target.dir}" >
@@ -204,7 +204,7 @@
 	    </target>
 	<!-- Create dynamic extensions jar Begins-->
 	
-	<target name="createDynamicExtensionsInterfaceSourceZip" depends="compile" >
+	<target name="create_dyn_ext_interface_sourcezip" depends="compile" >
 		<delete  file="${interface.src.dir}/DynamicExtensions-src.zip"/> 
 		<zip destfile="${interface.src.dir}/DynamicExtensions-src.zip" >
 		      	<fileset dir="${src.dir}" >
@@ -228,7 +228,7 @@
 	
 	
 	<!-- Creates the WAR (Web Application Archive) file of the application -->
-	<target name="BuildAppWAR" depends="compile">
+	<target name="build_app_war" depends="compile">
 		<delete file="dynamicExtensions.war"/>
 		<war destfile="dynamicExtensions.war" webxml="WEB-INF/web.xml">
 			<fileset dir="${base.dir}">
@@ -260,13 +260,13 @@
 	</target>
 
 	<!--Deploys the application war file at JBOSS server by coping it to deploy directory of application server-->
-	<target name="Deploy" depends="BuildAppWAR">
+	<target name="deploy" depends="build_app_war">
 		<delete file="${jboss.home.dir}/server/default/deploy/dynamicExtensions.war"/>
 		<copy file="dynamicExtensions.war" todir="${jboss.home.dir}/server/default/deploy"/>
 		<sleep seconds="2"/>
 	</target>
 	
-	<target name="buildjar" depends="compile" >
+	<target name="build_jar" depends="compile" >
 	        <delete>
 	            <fileset dir="${build.dir}" includes="**/*"/>
 	        </delete>
@@ -277,7 +277,7 @@
 	    </target>
 	
 	
-	<target name="Genrate-Schema" depends="buildjar">
+	<target name="genrate_schema" depends="build_jar">
 	    	<java classname="edu.wustl.common.util.dbManager.GenerateSchema">
 	    		<arg value="true"/>	
 	            <classpath>
@@ -292,7 +292,7 @@
 		<!-- Generates the Hibernate mapping (HBM) files which are used in mapping 
 		 the domain objects to database schema of the application. 
 		 This generates the HBM files from the XDoclet tags written in the domain object classes. -->
-    <target name="generateHBM" description="Generates Hibernate class descriptor files." depends="remove-generics">
+    <target name="generate_hbm" description="Generates Hibernate class descriptor files." depends="remove_generics">
     	<!-- Define the hibernatedoclet task -->    	
     	<taskdef name="hibernatedoclet" classname="xdoclet.modules.hibernate.HibernateDocletTask">
     		<classpath refid="xdoclet.classpath"/>
@@ -331,7 +331,7 @@
     	
     </target>
 
-	<target name="DBInitialized_MySQL">
+	<target name="db_initialized_mysql">
 	    <sql
 	    	driver="org.gjt.mm.mysql.Driver"
 			url="jdbc:mysql://${database.host}:${database.port}/${database.name}"
@@ -352,7 +352,7 @@
 		</sql>
 	</target>
 
-	<target name="DBInitialized_Oracle">
+	<target name="db_initialized_oracle">
 		<sql 
 			driver="oracle.jdbc.driver.OracleDriver"
 			url="jdbc:oracle:thin:@${database.host}:${database.port}:${database.name}"
@@ -434,7 +434,7 @@
 			<jar basedir="${javadoc.dir}" destfile="${javadoc.dir}/${javadoc.zip}" />
 	</target>
 		
-	<target name="Create_Installable_Zip" depends="BuildAppWAR">
+	<target name="create_installable_zip" depends="build_app_war">
 		<property name="zip.dir" value="${base.dir}/caTISSUE_Core_Installable"/>
 		<delete file="${base.dir}/caTissue_Core_Installable.zip"/>
 		<delete dir="${base.dir}/caTissue_Core_Installable"/>
@@ -486,7 +486,7 @@
 	</target>
 	
 	<!-- Create dynamic extensions jar Begins-->
-		    <target name="createDynamicExtensionsCommunicationJAR" depends="compile" >
+		    <target name="create_dyn_ext_communication_jar" depends="compile" >
 		    	<delete file="DynamicExtensionsCommunication.jar"/>
 	    	   <jar taskname="buildJar" jarfile="DynamicExtensionsCommunication.jar">
 		    		<fileset dir="${target.dir}" >
@@ -510,7 +510,7 @@
 	we remove all references to generics and for each loops. 
 	this is temporary task and needs to be removed,once we uses hibernate annotations.
 	-->
-	<target name="remove-generics" >
+	<target name="remove_generics" >
 	  <mkdir dir="${temp.hdoclet.dir}" />	
 	  <property name="generics.match.pattern" value="&lt;[\w\[\]]+(&lt;\w+&gt;)?,?[\w\[\]]*(&lt;\w+&gt;)?&gt;|(for\s?\(.+:.+\))"/>
 	  <echo message="Pattern used to remove generics : ${generics.match.pattern}"/>
@@ -528,7 +528,7 @@
 	  </replaceregexp>
 	</target>
 	
-	 <target name="runJunit" depends="compileTestCases">
+	 <target name="run_junit" depends="compile_test_cases">
 	 	<delete dir="${junit.report.dir}"/>
 	 	<mkdir dir="${junit.report.dir}"/> 
 	 	
@@ -552,7 +552,7 @@
 		</junit>
 		</target>
 	
-	<target name="de_release" depends="BuildAppWAR,createDynamicExtensionsInterfaceJAR,createDynamicExtensionsInterfaceSourceZip,javadoc,Genrate-Schema">
+	<target name="de_release" depends="build_app_war,create_dyn_ext_interface_jar,create_dyn_ext_interface_sourcezip,javadoc,genrate_schema">
 		<property name="de_release_dir" value="${base.dir}/de_release"/>
 		<delete dir="${de_release_dir}"/>
 		<mkdir dir="${de_release_dir}"/>

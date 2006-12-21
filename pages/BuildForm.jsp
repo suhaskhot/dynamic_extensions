@@ -102,7 +102,7 @@
 									<table width="100%" height = '100%'   cellspacing="0" cellpadding="0"  valign = "top">
 										<tr valign = "top" height = '100%' >
 											<td valign = "top" valign="top" width = "75%">
-												<table class="tbBordersAllbordersBlack" height = "100%" width ="100%" >
+												<table class="tbBordersAllbordersBlack" height = "100%" width ="100%"   cellspacing="0" cellpadding="0">
 													<thead>
 														<tr>
 															<c:choose>
@@ -181,7 +181,7 @@
 												<table valign="top" height = '100%' width = "100%"  cellspacing="0" cellpadding="0">
 													<tr valign = "top" height = '100%' >
 														<td  height = '100%' width = 100%>
-															<table id='controlList' border="1" cellspacing="0"  class="tbBordersAllbordersBlack" height = "100%" width ="100%" >
+															<table id='controlList' cellspacing="0"  class="tbBordersAllbordersBlack" height = "100%" width ="100%" >
 																<thead>
 																	<tr>
 																		<th colspan="3" align="left" class="formTitleGray">
@@ -201,7 +201,7 @@
 																		<jsp:useBean id="identifier" type="java.lang.String"/>
 
 																		<tr height = "5%"   style = "cursor:hand">
-																			<td class="formMessage">
+																			<td class="formFieldWithNoTopBorder">
 																				<input type = "checkbox" name = "checkAttribute"  id = "<%=identifier%>" value = "<%=identifier%>"  />
 																				<input type = "hidden"  id = "sequenceNumbers" name = "sequenceNumbers" value = "<%=generator+1%>"  />
 																				<%
@@ -209,12 +209,12 @@
 																				%>
 																				<input type = "hidden"  id = "<%=hiddenRowId%>" name = "<%=hiddenRowId%>" value = "<%=generator++ + 1%>"  />
 																			</td>
-																			<td class="formMessage" style="padding-left:2px">
+																			<td class="formFieldWithNoTopBorder" >
 																				<div id = "<%=identifier%>" noWrap='true' style='overflow-x:hidden; text-overflow:ellipsis; width:60px;' onmouseout = "hideTooltip();" onmouseover = "showTooltip(this.innerHTML,this,this.innerHTML);" onclick = "controlSelected(this);">
 																					<%=controlName%>
 																				</div>
 																			</td>
-																			<td class="formMessage" style="padding-left:2px">
+																			<td class="formFieldWithNoTopBorder" >
 																				<div noWrap='true' style='overflow-x:hidden; text-overflow:ellipsis; width:60px;' onmouseover = "showTooltip(this.innerHTML,this,this.innerHTML);" onmouseout = "hideTooltip();">
 																					<%=controlType%>
 																				</div>

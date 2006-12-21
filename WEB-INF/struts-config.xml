@@ -19,7 +19,6 @@ PUBLIC
 	 </global-forwards>
 	
 	<action-mappings>
-		
 		<action path="/DynamicExtensionHomePage" 
 			type="edu.common.dynamicextensions.ui.webui.action.LoadFormsIndexAction"
 			name="formsIndexForm"
@@ -112,7 +111,9 @@ PUBLIC
 			validate="false"
 			input="/LoadFormControlsAction.do"
 			scope="request">
-			<forward name="success" path="/LoadDataEntryFormAction.do?showFormPreview=flase" />
+			<!-- changed by preeti munot to solve bugzilla bug number 3130
+			<forward name="success" path="/LoadDataEntryFormAction.do?showFormPreview=flase" />-->
+			<forward name="success" path="/DynamicExtensionHomePage.do" />
 			<forward name="failure" path="/pages/ErrorPage.jsp" />
 		</action>
 		

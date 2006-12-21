@@ -711,6 +711,7 @@ input.subFormGroupButton{ /* optional style for form and action buttons */
    border-bottom-color:#1E1E1E;
    filter:progid:DXImageTransform.Microsoft.Gradient
     (GradientType=0,StartColorStr='#ffffff',EndColorStr='#e1e1e1');
+   margin-bottom: 4px;
 }
 
 

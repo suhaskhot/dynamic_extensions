@@ -180,13 +180,13 @@
 			</tr>
 			<tr valign="top">
 				<td colspan="3">
-					<table valign="top" align = 'center' width='100%'>
+					<table valign="top" align = 'center' width='100%' >
 						<thead>
 						<tr>
 							<th  width="45%" class="formRequiredLabelWithoutBorder">
 								Available Attributes
 							</th>
-							<th  width="10%" valign="middle" ALIGN="left" class="formMessage" >
+							<th  width="10%" valign="middle" align="center" class="formMessage" >
 								&nbsp;
 							</th>
 							<th  width="45%" class="formRequiredLabelWithoutBorder">
@@ -195,15 +195,15 @@
 						</tr>
 						</thead>
 						<tr>
-							<td  width="45%" >
+							<td  width="45%" align="center">
 								<select class="formFieldVerySmallSized" multiple size="3" id="formAttributeList" name="formAttributeList">
 								</select>
 							</td>
-							<td  width="10%" valign="middle" ALIGN="center"  >
+							<td  width="10%" align="center">
 								<input type="button" class="subFormGroupButton" name="addFormAttribute" value="Add" onclick="selectFormAttribute()" />
 								<input type="button" class="subFormGroupButton" name="removeFormAttribute" value="Remove" onclick="unSelectFormAttribute()" />
 							</td>
-							<td  width="45%" >
+							<td  width="45%" align="center">
 								<html:select multiple="true" size="3" property="selectedAttributeIds" styleId="selectedAttributeIds" styleClass="formFieldVerySmallSized">
 									<html:options collection="selectedAttributes" labelProperty="name" property="value" />
 								</html:select>

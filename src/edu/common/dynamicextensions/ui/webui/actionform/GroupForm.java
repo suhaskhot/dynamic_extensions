@@ -28,6 +28,10 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 	/**
 	 * 
 	 */
+	private static final long serialVersionUID = 1L;
+	/**
+	 * 
+	 */
 	protected String createGroupAs;
 	/**
 	 * 
@@ -189,6 +193,14 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 		if (createGroupAs == null)
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.NewGroup")));
+		}
+		if ((groupDescription != null)&&(groupDescription.length()>ProcessorConstants.MAX_LENGTH_DESCRIPTION))
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.maxlength.exceeded", ApplicationProperties.getValue("eav.att.Description"),ProcessorConstants.MAX_LENGTH_DESCRIPTION));
+		}
+		if ((groupNameText != null)&&(groupNameText.length()>ProcessorConstants.MAX_LENGTH_NAME))
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.maxlength.exceeded", ApplicationProperties.getValue("eav.att.GroupTitle"),ProcessorConstants.MAX_LENGTH_NAME));
 		}
 		return errors;
 	}

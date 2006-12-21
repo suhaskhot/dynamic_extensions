@@ -1964,8 +1964,9 @@ public class EntityManager
 			{
 				innerList = (List) result.get(0);
 			}
-			if (innerList != null)
+			if (innerList != null && !selectColumnNameList.isEmpty() && selectColumnName.length > 0 )
 			{
+				
 				for (int i = 0; i < innerList.size(); i++)
 				{
 					String value = (String) innerList.get(i);

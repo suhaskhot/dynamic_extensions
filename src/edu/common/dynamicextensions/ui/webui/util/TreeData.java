@@ -17,7 +17,7 @@ public class TreeData
 {
 	private final String EXPANDED_CLASS_NAME = "folderOpen";
 	private final String COLLAPSED_CLASS_NAME = "folder";
-	
+
 	private String folder = "/images";
 	private String color = "navy";
 	private TreeNodesList nodes;
@@ -123,7 +123,7 @@ public class TreeData
 	public String getTree(String treeName,String fieldForSelectedObject,String strIsTreeExpanded,String nodeClickedFunction)
 	{
 		buf = new StringBuffer();
-		
+
 		print("<style>ul.collapsedTree{display:none;margin-left:17px;}ul.expandedTree{margin-left:17px;}li.folder{list-style-image: url("
 				+ folder
 				+ "/plus.gif);}li.folderOpen{list-style-image: url("
@@ -133,7 +133,7 @@ public class TreeData
 				+ "/dot.gif);}a.treeview{color:"
 				+ color
 				+ ";font-family:verdana;font-size:9pt;}a.treeview:link {text-decoration:none;}a.treeview:visited{text-decoration:none;}a.treeview:hover {text-decoration:underline;}</style>");
-		
+
 		this.setNodeClickedFunction(nodeClickedFunction);
 		boolean isTreeExpanded = false;
 		if((strIsTreeExpanded!=null)&&(strIsTreeExpanded.equals("true")))
@@ -218,14 +218,30 @@ public class TreeData
 						{
 							print("<input type='radio' name='selectedObjectId' id='selectedObjectId' value='" + node.getSequenceNumber() +"' />");
 						}
-						print("<a class=treeview href=\"javascript:toggle('"+fieldForSelectedObject + "','"+treeName+"N" + parent + "_" + i
+						if(getNodeClickedFunction()!=null)
+						{
+							print("<a class=treeview href=\"javascript:toggle('"+fieldForSelectedObject + "','"+treeName+"N" + parent + "_" + i
 								+ "','"+treeName+"P" + parent + i + "');"+ getNodeClickedFunction()+"('"+ fieldForSelectedObject+"Name') \">" + node.getText() + "</a>");
+						}
+						else
+						{
+							print("<a class=treeview href=\"javascript:toggle('"+fieldForSelectedObject + "','"+treeName+"N" + parent + "_" + i
+									+ "','"+treeName+"P" + parent + i + "'); \">" + node.getText() + "</a>");
+						}
 					}
 					else
 						//Means it is a leaf node
 					{
 						id =treeName +  "L" + parent + i;
-						node.setHref("javascript:changeSelection('"+fieldForSelectedObject+"','" + id + "','" + node.getSequenceNumber() + "');"+ getNodeClickedFunction()+"('"+ fieldForSelectedObject+"Name')");
+						if(getNodeClickedFunction()!=null)
+						{
+							node.setHref("javascript:changeSelection('"+fieldForSelectedObject+"','" + id + "','" + node.getSequenceNumber() + "');"
+									+ getNodeClickedFunction()+"('"+ fieldForSelectedObject+"Name')");
+						}
+						else
+						{
+							node.setHref("javascript:changeSelection('"+fieldForSelectedObject+"','" + id + "','" + node.getSequenceNumber() + "');");
+						}
 						if (node.getTarget() == "")
 						{
 							node.setTarget(target);

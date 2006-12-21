@@ -4,7 +4,6 @@ package edu.common.dynamicextensions.domain.userinterface;
 import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
@@ -36,7 +35,7 @@ public class RadioButton extends Control implements RadioButtonInterface
 	 * @return HTML code for RadioButton
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	protected String generateEditModeHTML() throws DynamicExtensionsSystemException
+	public String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
 		List<NameValueBean> nameValueBeanList = null;
 		String htmlString = "";
@@ -45,34 +44,31 @@ public class RadioButton extends Control implements RadioButtonInterface
 		if (defaultValue == null)
 		{
 			defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
+			if (defaultValue == null || defaultValue.length() == 0)
+			{
+				defaultValue = "";
+			}
 		}
 
 		nameValueBeanList = ControlsUtility.populateListOfValues(this);
 
 		String htmlComponentName = getHTMLComponentName();
-		if (defaultValue != null)
+		if (nameValueBeanList != null || nameValueBeanList.size() > 0)
 		{
-			if (nameValueBeanList != null && nameValueBeanList.size() > 0)
+			for (NameValueBean nameValueBean : nameValueBeanList)
 			{
-				for (NameValueBean nameValueBean : nameValueBeanList)
+				String optionName = nameValueBean.getName();
+				if (nameValueBean.getValue().equals(defaultValue))
 				{
-					String optionName = nameValueBean.getName();
-					if (nameValueBean.getValue().equals(defaultValue))
-					{
-						htmlString += "<input type='radio' " + "class = '" + cssClass + "' "
-								+ "name = '" + htmlComponentName + "' " + "value = '"
-								+ nameValueBean.getValue() + "' " + "id = '" + optionName + "' "
-								+ "title = '" + tooltip + "' checked> " + "<label for=\""
-								+ optionName + "\">" + optionName + "</label> ";
-					}
-					else
-					{
-						htmlString += "<input type='radio' " + "class = '" + cssClass + "' "
-								+ "name = '" + htmlComponentName + "' " + "value = '"
-								+ nameValueBean.getValue() + "' " + "id = '" + optionName + "' "
-								+ "title = '" + tooltip + "'> " + "<label for=\"" + optionName
-								+ "\">" + optionName + "</label> ";
-					}
+					htmlString += "<input type='radio' " + "class = '" + cssClass + "' " + "name = '" + htmlComponentName + "' " + "value = '"
+							+ nameValueBean.getValue() + "' " + "id = '" + optionName + "' " + "title = '" + tooltip + "' checked> "
+							+ "<label for=\"" + optionName + "\">" + optionName + "</label> ";
+				}
+				else
+				{
+					htmlString += "<input type='radio' " + "class = '" + cssClass + "' " + "name = '" + htmlComponentName + "' " + "value = '"
+							+ nameValueBean.getValue() + "' " + "id = '" + optionName + "' " + "title = '" + tooltip + "'> " + "<label for=\""
+							+ optionName + "\">" + optionName + "</label> ";
 				}
 			}
 		}
@@ -88,12 +84,12 @@ public class RadioButton extends Control implements RadioButtonInterface
 	{
 	}
 
-
-	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
+	public String generateViewModeHTML() throws DynamicExtensionsSystemException
 	{
 		String htmlString = "&nbsp;";
-		if (value != null) {
-		htmlString = "<span class = '"+ cssClass+ "'> " + this.value.toString() + "</span>";
+		if (value != null)
+		{
+			htmlString = "<span class = '" + cssClass + "'> " + this.value.toString() + "</span>";
 		}
 		return htmlString;
 	}

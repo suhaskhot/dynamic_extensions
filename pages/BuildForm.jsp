@@ -242,13 +242,12 @@
 									<table width="100%" height = '100%'  valign = "top">
 										<tr valign = "top" height = '100%' >
 											<td align="right" valign="top" width = "75%" >
-													<html:button styleClass="formButton" property="cancelControlOperation" onclick="initCancelOperation()">
-															<bean:message  key="buttons.cancel" />
-													</html:button>
+												<html:button styleClass="formButton" property="cancelControlOperation" onclick="initCancelOperation()">
+														<bean:message  key="buttons.cancel" />
+												</html:button>
 												<html:button styleClass="formButton" property="addControlToFormButton" onclick="addControlToFormTree()" >
 													<bean:message  key="buttons.addControlToForm" />
 												</html:button>
-
 											</td>
 											<td width="2%">&nbsp;</td>
 											<td  valign="top" height="100%" >

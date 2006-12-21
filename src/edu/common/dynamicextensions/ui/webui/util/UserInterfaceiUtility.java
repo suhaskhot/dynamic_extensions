@@ -11,12 +11,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import javax.servlet.http.HttpServletRequest;
+
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.util.global.ApplicationProperties;
 
 /**
@@ -193,5 +196,15 @@ public class UserInterfaceiUtility
 		containerStack.pop();
 		valueMapStack.pop();
 	}
-
+	
+	/**
+	 * @param request
+	 */
+	public static void clearContainerStack(HttpServletRequest request)
+	{
+		CacheManager.addObjectToCache(request,
+				Constants.CONTAINER_STACK,null);
+		CacheManager.addObjectToCache(request,
+				Constants.VALUE_MAP_STACK,null);
+	}
 }

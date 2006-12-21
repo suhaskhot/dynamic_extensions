@@ -1659,11 +1659,8 @@ function groupSelectedResponse(groupXML)
 function insertDataForContainer(containerId,ths)
  {
 	
-//	 alert(ths.parentNode.parentNode.rowIndex);
-//	 alert('container id' + containerId);
-	 document.getElementById('childContainerId').value = containerId;
-//	alert(ths.parentNode)
-
+    document.getElementById('childContainerId').value = containerId;
+	document.getElementById('childRowId').value = ths.parentNode.parentNode.rowIndex;
 	var dataEntryForm = document.getElementById('dataEntryForm');
 	dataEntryForm.action="/dynamicExtensions/ApplyDataEntryFormAction.do";
 	dataEntryForm.submit();

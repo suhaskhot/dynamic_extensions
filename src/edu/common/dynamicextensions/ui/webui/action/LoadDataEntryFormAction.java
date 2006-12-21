@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.ui.webui.action;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -13,6 +14,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
@@ -68,7 +70,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 		{
 			containerInterface = DynamicExtensionsUtility
 					.getContainerByIdentifier(containerIdentifier);
-
+			CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
 		}
 
 		String recordId = request.getParameter("recordId");
@@ -89,20 +91,36 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 		else
 		{
 			Map containerValueMap = (Map) valueMapStack.peek();
-			AssociationInterface childKey  = null; 
-			ContainerInterface childContainer = getChildContainer(containerInterface,dataEntryForm.getChildContainerId(),childKey);
-			Map childContainerValueMap = (Map) containerValueMap.get(childKey);
-
+			String  childContainerId = dataEntryForm.getChildContainerId();
+			ContainmentAssociationControl associationControl = getAssociationControl((ContainerInterface) containerStack.peek(), childContainerId);
+			ContainerInterface childContainer = associationControl.getContainer();
+			AssociationInterface association =  (AssociationInterface) associationControl.getAbstractAttribute();
+			List childContainerValueMapList = (List) containerValueMap.get(association);
+			Map childContainerValueMap =  (Map) childContainerValueMapList.get(Integer.parseInt(dataEntryForm.getChildRowId()) - 1);
 			UserInterfaceiUtility.addContainerInfo(containerStack, childContainer,
 					valueMapStack, childContainerValueMap);
 		}
 
 		LoadDataEntryFormProcessor loadDataEntryFormProcessor = LoadDataEntryFormProcessor
 				.getInstance();
-		containerInterface = loadDataEntryFormProcessor.loadDataEntryForm(
+		
+		loadDataEntryFormProcessor.loadDataEntryForm(
 				(AbstractActionForm) form, (ContainerInterface)containerStack.peek(),(Map)valueMapStack.peek() ,recordId, mode);
-		CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
+		
+		
+		clearFormValues(dataEntryForm);
+		
 		return mapping.findForward("Success");
+	}
+
+	/**
+	 * @param form
+	 */
+	private void clearFormValues(ActionForm form)
+	{
+		DataEntryForm dataEntryForm = (DataEntryForm) form;
+		dataEntryForm.setChildRowId("");
+		dataEntryForm.setChildContainerId("");
 	}
 
 	/**
@@ -111,7 +129,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @param childContainerId
 	 * @return
 	 */
-	private ContainerInterface getChildContainer(ContainerInterface containerInterface,String childContainerId,AssociationInterface association)
+	private ContainmentAssociationControl getAssociationControl(ContainerInterface containerInterface,String childContainerId)
 	{
 		Collection<ControlInterface> controlCollection = containerInterface.getControlCollection();
 		for (ControlInterface control : controlCollection)
@@ -122,8 +140,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 				String containmentAssociationControlId = containmentAssociationControl.getContainer().getId().toString(); 
 				if(containmentAssociationControlId.equals(childContainerId))
 				{
-					association = (AssociationInterface) containmentAssociationControl.getAbstractAttribute();
-					return containmentAssociationControl.getContainer();
+					return containmentAssociationControl;
 				}
 			}
 		}

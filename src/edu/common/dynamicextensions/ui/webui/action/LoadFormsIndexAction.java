@@ -14,6 +14,7 @@ import org.apache.struts.action.ActionMapping;
 import edu.common.dynamicextensions.processor.LoadFormsIndexProcessor;
 import edu.common.dynamicextensions.ui.webui.actionform.FormsIndexForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
+import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.global.Constants;
 
@@ -45,7 +46,11 @@ public class LoadFormsIndexAction extends BaseDynamicExtensionsAction
 		{
 			CacheManager.clearCache(request);
 			CacheManager.addObjectToCache(request, Constants.CALLBACK_URL, callBackURL);
+		} else {
+			UserInterfaceiUtility.clearContainerStack(request);
 		}
+		
+		
 		
 		FormsIndexForm loadFormIndexForm = (FormsIndexForm)form;
 		LoadFormsIndexProcessor loadFormsIndexProcessor = LoadFormsIndexProcessor.getInstance();

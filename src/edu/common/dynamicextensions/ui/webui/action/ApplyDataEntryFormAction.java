@@ -39,6 +39,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ApplyDataEntryFormProcessor;
 import edu.common.dynamicextensions.ui.webui.actionform.DataEntryForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
+import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.global.Constants;
@@ -89,9 +90,12 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			}
 			else
 			{
-				valueMap  = applyDataEntryFormProcessor
+			applyDataEntryFormProcessor
 						.removeNullValueEntriesFormMap(valueMap );
 			}
+			
+			valueMap = (Map<AbstractAttributeInterface, Object>) valueMapStack.firstElement();
+			containerInterface = (ContainerInterface) containerStack.firstElement();
 			
 			String childContainerId = dataEntryForm.getChildContainerId();
 			if(childContainerId != null && !childContainerId.equals(""))
@@ -99,6 +103,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				return mapping.findForward("loadChildContainer");
 			}
 			String recordIdentifier = dataEntryForm.getRecordIdentifier();
+			
 			if (recordIdentifier != null && !recordIdentifier.equals(""))
 			{
 				Boolean edited = applyDataEntryFormProcessor.editDataEntryForm(containerInterface,
@@ -137,6 +142,9 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			}
 			return (mapping.findForward(actionForwardString));
 		}
+		
+		UserInterfaceiUtility.clearContainerStack(request);
+		
 		return (mapping.findForward(Constants.SUCCESS));
 	}
 

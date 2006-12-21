@@ -223,6 +223,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 			htmlString = getControlHTML(innerHTML);
 		}
 
+		this.isSubControl = false;
 		return htmlString;
 	}
 

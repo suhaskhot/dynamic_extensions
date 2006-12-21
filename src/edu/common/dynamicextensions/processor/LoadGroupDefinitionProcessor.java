@@ -16,6 +16,7 @@ import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.interfaces.GroupUIBeanInterface;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.beans.NameValueBean;
 
 /**
@@ -80,7 +81,7 @@ public class LoadGroupDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	public List populateGroupList() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		List groupList = new ArrayList();
+		List<NameValueBean> groupList = new ArrayList<NameValueBean>();
 		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
 		Collection entityGroupCollection =  (Collection) entityManagerInterface.getAllEntitiyGroups();
 		Iterator entityGroupIterator = entityGroupCollection.iterator();
@@ -92,7 +93,7 @@ public class LoadGroupDefinitionProcessor extends BaseDynamicExtensionsProcessor
 			nameValueBean = new NameValueBean(entityGroupInterface.getName(),entityGroupInterface.getId());
 			groupList.add(nameValueBean);
 		}
+		DynamicExtensionsUtility.sortNameValueBeanListByName(groupList);
 		return groupList;
-	
 	}
 }

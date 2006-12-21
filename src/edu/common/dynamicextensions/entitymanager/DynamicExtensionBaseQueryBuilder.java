@@ -954,7 +954,7 @@ class DynamicExtensionBaseQueryBuilder
 			// //previously file attribute select, now other.
 			AttributeTypeInformationInterface attributeTypeInfo = attribute
 					.getAttributeTypeInformation();
-			AttributeTypeInformationInterface attributeTypeInfoDatabaseCopy = attribute
+			AttributeTypeInformationInterface attributeTypeInfoDatabaseCopy = dataBaseCopy
 					.getAttributeTypeInformation();
 
 			if (!(attributeTypeInfo instanceof FileAttributeTypeInformation)

@@ -31,9 +31,21 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 	{
 		GroupForm groupForm = (GroupForm)form;
 		
-		ApplyGroupDefinitionProcessor applyGroupDefinitionProcessor = ApplyGroupDefinitionProcessor.getInstance();
-		EntityGroupInterface entityGroup = applyGroupDefinitionProcessor.saveGroupDetails(groupForm);
 		
+		ApplyGroupDefinitionProcessor applyGroupDefinitionProcessor = ApplyGroupDefinitionProcessor.getInstance();
+		EntityGroupInterface entityGroup = null;
+		try
+		{
+		entityGroup = applyGroupDefinitionProcessor.saveGroupDetails(groupForm);
+		}
+		catch (Exception e)
+		{
+			String target = catchException(e, request);
+			if((target==null)||(target.equals("")))
+			{
+				return mapping.getInputForward(); 
+			}
+		}
 		if(entityGroup!=null)
 		{
 			//Add entity group to cache.This will be attached with the entity when the entity is created

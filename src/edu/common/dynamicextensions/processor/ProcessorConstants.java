@@ -134,7 +134,7 @@ public class ProcessorConstants
     public static final String DEFAULT_LOOKUP_TYPE = LOOKUP_USER_FORMS;
     
     //Max length for fields
-    public static final int MAX_LENGTH_NAME = 255;
+    public static final int MAX_LENGTH_NAME = 40;
     public static final int MAX_LENGTH_DESCRIPTION = 1000;
     
 }

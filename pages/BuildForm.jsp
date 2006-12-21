@@ -261,8 +261,8 @@
 								</td>
 							</tr>
 
-							<tr class="formLabelBorderless">
-								<td colspan="2" align="left">
+							<tr >
+								<td colspan="2" align="left" class="formLabelBorderless">
 									<html:submit styleClass="groupButtonMainForm" onclick="saveEntity()">
 										<bean:message  key="buttons.save" />
 									</html:submit>
@@ -271,7 +271,7 @@
 										<bean:message  key="buttons.cancel" />
 									</html:reset>
 								</td>
-								<td colspan="5" align="right">
+								<td colspan="5" align="right" class="formLabelBorderless">
 									<html:button styleClass="groupButtonMainForm" property="prevButton" onclick="showNextActionConfirmDialog()" >
 										<bean:message  key="buttons.prev" />
 									</html:button>

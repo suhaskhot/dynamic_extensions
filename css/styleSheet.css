@@ -511,7 +511,7 @@ td.formSerialNumberField{ /* for the cell that contains the Serial Number */
 
 .formLabelBorderless
 { 
- border-top:1px solid #000000; /* constant: dark gray */
+	border-top:1px solid #00000; /* constant: dark gray */
   background-color:#F4F4F5; /* constant: light gray */
 }
 

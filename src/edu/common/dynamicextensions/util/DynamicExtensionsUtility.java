@@ -334,27 +334,41 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * Checks that the input String contains only numeric digits.
-	 * @param numString The string whose characters are to be checked.
-	 * @return Returns false if the String contains any alphabet else returns true. 
-	 * */
-	public static boolean isNumeric(String numString)
-	{
-		try
-		{
-			long longValue = Long.parseLong(numString);
-			if (longValue < 0)
-			{
-				return false;
-			}
-
-			return true;
-		}
-		catch(NumberFormatException exp)
-		{
-			return false;
-		}
-	}
+     * Checks that the input String contains only numeric digits.
+     * @param numString The string whose characters are to be checked.
+     * @return Returns false if the String contains any alphabet else returns true. 
+     * */
+    public static boolean isNaturalNumber(String numString)
+    {
+        boolean isNaturalNumber = true;
+    	try
+        {
+            double doubleValue = Double.parseDouble(numString);
+            if (doubleValue < 0)
+            {
+            	isNaturalNumber = false;
+            }
+        }
+        catch(NumberFormatException exp)
+        {
+        	isNaturalNumber = false;
+        }
+        return isNaturalNumber;
+    }
+    
+    public static boolean isNumeric(String numString)
+    {
+        boolean isNumeric = true;
+    	try
+        {
+            double doubleValue = Double.parseDouble(numString);
+        }
+        catch(NumberFormatException exp)
+        {
+        	isNumeric = false;
+        }
+        return isNumeric;
+    }
 
 	public static int getCurrentDay()
 	{

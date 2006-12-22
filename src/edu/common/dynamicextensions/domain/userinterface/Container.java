@@ -72,12 +72,12 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 	 * Collection of controls that are in this container.
 	 */
 	protected Collection<ControlInterface> controlCollection = new HashSet<ControlInterface>();
-	
+
 	/**
 	 * 
 	 */
-	protected Map<AttributeInterface,Object> containerValueMap = new HashMap<AttributeInterface,Object>();
-	
+	protected Map<AttributeInterface, Object> containerValueMap = new HashMap<AttributeInterface, Object>();
+
 	/**
 	 * Entity to which this container is associated.
 	 */
@@ -313,13 +313,16 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 		StringBuffer stringBuffer = new StringBuffer();
 
 		stringBuffer.append("<table summary='' cellpadding='3' cellspacing='0'  align='center' width = '100%'>");
-		stringBuffer.append("<tr>");
-		stringBuffer.append("<td class='formMessage' colspan='3'>");
-		stringBuffer.append(this.getRequiredFieldIndicatior() + "&nbsp;");
-		stringBuffer.append(this.getRequiredFieldWarningMessage());
-		stringBuffer.append("</td>");
-		stringBuffer.append("</tr>");
 
+		if (this.getMode() != null && this.getMode().equalsIgnoreCase(WebUIManagerConstants.EDIT_MODE))
+		{
+			stringBuffer.append("<tr>");
+			stringBuffer.append("<td class='formMessage' colspan='3'>");
+			stringBuffer.append(this.getRequiredFieldIndicatior() + "&nbsp;");
+			stringBuffer.append(this.getRequiredFieldWarningMessage());
+			stringBuffer.append("</td>");
+			stringBuffer.append("</tr>");
+		}
 		stringBuffer.append(generateControlsHTML());
 		stringBuffer.append("</table>");
 		return stringBuffer.toString();
@@ -343,7 +346,7 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 		Collections.sort(controlsList);
 		for (ControlInterface control : controlsList)
 		{
-			Object value = containerValueMap.get( control.getAbstractAttribute());
+			Object value = containerValueMap.get(control.getAbstractAttribute());
 			control.setValue(value);
 			stringBuffer.append(control.generateHTML());
 		}
@@ -357,10 +360,9 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 	 */
 	public String generateControlsHTMLAsGrid(List<Map> valueMap) throws DynamicExtensionsSystemException
 	{
-		return UserInterfaceiUtility.generateHTMLforGrid(this,valueMap);
+		return UserInterfaceiUtility.generateHTMLforGrid(this, valueMap);
 	}
 
-	
 	/**
 	 * @return
 	 */
@@ -369,7 +371,6 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 		return containerValueMap;
 	}
 
-	
 	/**
 	 * @param containerValueMap
 	 */

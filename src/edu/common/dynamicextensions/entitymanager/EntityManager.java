@@ -1571,7 +1571,7 @@ public class EntityManager
 
 					FileAttributeRecordValue fileRecordValue = (FileAttributeRecordValue) value;
 					AttributeRecord fileRecord = getAttributeRecord(entity.getId(),
-							primitiveAttribute.getId(), recordId, null);
+							primitiveAttribute.getId(), recordId, hibernateDAO);
 					fileRecord.setFileRecord(fileRecordValue);
 					fileRecords.add(fileRecord);
 				}

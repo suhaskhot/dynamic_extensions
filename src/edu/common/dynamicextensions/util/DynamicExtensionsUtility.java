@@ -56,7 +56,7 @@ import edu.wustl.common.util.logger.Logger;
  */
 public class DynamicExtensionsUtility
 {
-	
+
 	/**
 	 * This method fetches the Control instance from the Database given the corresponding Control Identifier.
 	 * @param controlIdentifier The Idetifier of the Control.
@@ -224,7 +224,7 @@ public class DynamicExtensionsUtility
 	 */
 	public static void initialiseApplicationVariables()
 	{
-	    try
+		try
 		{
 			DBUtil.currentSession();
 			DBUtil.closeSession();
@@ -233,7 +233,7 @@ public class DynamicExtensionsUtility
 		{
 			throw new RuntimeException(e);
 		}
-		
+
 		if (Logger.out == null) {
 			Logger.configure("");
 		}
@@ -258,26 +258,26 @@ public class DynamicExtensionsUtility
 			Variables.dateTostrFunction = "TO_CHAR";
 			Variables.strTodateFunction = "STR_TO_DATE";
 		}
-		
-		     
+
+
 	}
-	
+
 	/**
 	 * 
 	 */
 	public static void initialiseApplicationInfo() {
 		String fileName = Variables.dynamicExtensionsHome + System.getProperty("file.separator")+ ApplicationProperties.getValue("application.version.file");
-        CVSTagReader cvsTagReader = new CVSTagReader();
-        String cvsTag = cvsTagReader.readTag(fileName);
-        Variables.applicationCvsTag = cvsTag;
-        Logger.out.info("========================================================");
-        Logger.out.info("Application Information");
-        Logger.out.info("Name: "+Variables.applicationName);
-        Logger.out.info("Version: "+Variables.applicationVersion);
-        Logger.out.info("CVS TAG: "+Variables.applicationCvsTag);
-        Logger.out.info("Path: "+ Variables.applicationHome);
-        Logger.out.info("Database Name: "+Variables.databaseName);
-        Logger.out.info("========================================================");  
+		CVSTagReader cvsTagReader = new CVSTagReader();
+		String cvsTag = cvsTagReader.readTag(fileName);
+		Variables.applicationCvsTag = cvsTag;
+		Logger.out.info("========================================================");
+		Logger.out.info("Application Information");
+		Logger.out.info("Name: "+Variables.applicationName);
+		Logger.out.info("Version: "+Variables.applicationVersion);
+		Logger.out.info("CVS TAG: "+Variables.applicationCvsTag);
+		Logger.out.info("Path: "+ Variables.applicationHome);
+		Logger.out.info("Database Name: "+Variables.databaseName);
+		Logger.out.info("========================================================");  
 	}
 	public static AttributeTypeInformationInterface getAttributeTypeInformation(AbstractAttributeInterface abstractAttributeInterface)
 	{
@@ -332,70 +332,70 @@ public class DynamicExtensionsUtility
 		}
 		return intValue;
 	}
-	
-	 /**
-     * Checks that the input String contains only numeric digits.
-     * @param numString The string whose characters are to be checked.
-     * @return Returns false if the String contains any alphabet else returns true. 
-     * */
-    public static boolean isNumeric(String numString)
-    {
-        try
-        {
-            long longValue = Long.parseLong(numString);
-            if (longValue < 0)
-            {
-                return false;
-            }
-            
-            return true;
-        }
-        catch(NumberFormatException exp)
-        {
-            return false;
-        }
-    }
-    
-    public static int getCurrentDay()
-    {
-    	return Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-    }
-    
-    public static int getCurrentMonth()
-    {
-    	return (Calendar.getInstance().get(Calendar.MONTH)+1);
-    }
-    public static int getCurrentYear()
-    {
-    	return Calendar.getInstance().get(Calendar.YEAR);
-    }
-    
-    /**
-    *
-    * @param originalObject Object
-    * @return Object
-    */
-   public static Object cloneObject(Object originalObject) {
-           Object clonedObject = null;
-           try {
-               ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-               ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-               objectOutputStream.writeObject(originalObject);
-               //retrieve back
-               ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-               ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-               clonedObject = objectInputStream.readObject();
-           } catch (IOException ioe) {
 
-               ioe.printStackTrace();
-           } catch (ClassNotFoundException cnfe) {
-               cnfe.printStackTrace();
-           }
+	/**
+	 * Checks that the input String contains only numeric digits.
+	 * @param numString The string whose characters are to be checked.
+	 * @return Returns false if the String contains any alphabet else returns true. 
+	 * */
+	public static boolean isNumeric(String numString)
+	{
+		try
+		{
+			long longValue = Long.parseLong(numString);
+			if (longValue < 0)
+			{
+				return false;
+			}
 
-           return clonedObject;
-       }
+			return true;
+		}
+		catch(NumberFormatException exp)
+		{
+			return false;
+		}
+	}
 
-	
+	public static int getCurrentDay()
+	{
+		return Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+	}
+
+	public static int getCurrentMonth()
+	{
+		return (Calendar.getInstance().get(Calendar.MONTH)+1);
+	}
+	public static int getCurrentYear()
+	{
+		return Calendar.getInstance().get(Calendar.YEAR);
+	}
+
+	/**
+	 *
+	 * @param originalObject Object
+	 * @return Object
+	 */
+	public static Object cloneObject(Object originalObject) {
+		Object clonedObject = null;
+		try {
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+			objectOutputStream.writeObject(originalObject);
+			//retrieve back
+			ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+			ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+			clonedObject = objectInputStream.readObject();
+		} catch (IOException ioe) {
+
+			ioe.printStackTrace();
+		} catch (ClassNotFoundException cnfe) {
+			cnfe.printStackTrace();
+		}
+
+		return clonedObject;
+	}
+
+
 	/**
 	 * @param string : string to be checked
 	 * @param list: List that is to be checked if string is contained
@@ -420,26 +420,26 @@ public class DynamicExtensionsUtility
 		}
 		return isContainedInList;
 	}
-	
-	/**
-    *
-    * @param list list of NameValueBeanObjects
-    */
-   @SuppressWarnings("unchecked")
-public static void sortNameValueBeanListByName(List<NameValueBean> list) {
-       Collections.sort(list,new Comparator() {
-           public int compare(Object o1, Object o2) {
-               String s1 = ((NameValueBean) o1).getName();
-               String s2 = ((NameValueBean) o2).getName();
-               return s1.compareTo(s2);
-             }
-       });
-   }
 
-   public static EntityGroupInterface getEntityGroup(EntityInterface  entity)
-   {
-	   EntityGroupInterface entityGroup  = null;
-	   if(entity!=null)
+	/**
+	 *
+	 * @param list list of NameValueBeanObjects
+	 */
+	@SuppressWarnings("unchecked")
+	public static void sortNameValueBeanListByName(List<NameValueBean> list) {
+		Collections.sort(list,new Comparator() {
+			public int compare(Object o1, Object o2) {
+				String s1 = ((NameValueBean) o1).getName();
+				String s2 = ((NameValueBean) o2).getName();
+				return s1.compareTo(s2);
+			}
+		});
+	}
+
+	public static EntityGroupInterface getEntityGroup(EntityInterface  entity)
+	{
+		EntityGroupInterface entityGroup  = null;
+		if(entity!=null)
 		{
 			Collection<EntityGroupInterface> entityGroupCollection = entity.getEntityGroupCollection();
 			if(entityGroupCollection!=null)
@@ -451,6 +451,6 @@ public static void sortNameValueBeanListByName(List<NameValueBean> list) {
 				}
 			}
 		}
-	   return entityGroup;
-   }
+		return entityGroup;
+	}
 }

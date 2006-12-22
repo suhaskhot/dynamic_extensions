@@ -136,5 +136,8 @@ public class ProcessorConstants
     //Max length for fields
     public static final int MAX_LENGTH_NAME = 40;
     public static final int MAX_LENGTH_DESCRIPTION = 1000;
+    public static final int MAX_LENGTH_DISPLAY_WIDTH = 3;//i.e max value 999
+    public static final int MAX_LENGTH_MAX_CHARACTERS = 3; //i.e max value 999
+    
     
 }

@@ -1376,7 +1376,17 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.numericField", ApplicationProperties.getValue("eav.att.TextFieldWidth")));
 		}
-
+		//Text field width cannot be more than 3 characters i.e 999
+		if((attributenoOfCols!=null)&&(attributenoOfCols.length()>ProcessorConstants.MAX_LENGTH_DISPLAY_WIDTH))
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.maxlength.exceeded", ApplicationProperties.getValue("eav.att.Description"),ProcessorConstants.MAX_LENGTH_DISPLAY_WIDTH));
+		}
+		
+		//max number of characters cannot be more than 3 digits long : max value 999 
+		if((attributeSize!=null)&&(attributeSize.length()>ProcessorConstants.MAX_LENGTH_MAX_CHARACTERS))
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.maxlength.exceeded", ApplicationProperties.getValue("eav.att.Description"),ProcessorConstants.MAX_LENGTH_MAX_CHARACTERS));
+		}
 		//check errors if datatype is String
 		if((dataType!=null)&&(dataType.equals(ProcessorConstants.DATATYPE_STRING)))
 		{

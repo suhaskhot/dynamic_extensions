@@ -336,6 +336,7 @@ public class LoadFormControlsProcessor
 		separatorList.add(new NameValueBean("Colon",":"));
 		separatorList.add(new NameValueBean("Space"," "));
 		separatorList.add(new NameValueBean("Dot","."));
+		DynamicExtensionsUtility.sortNameValueBeanListByName(separatorList);
 		return separatorList;
 	}
 
@@ -364,6 +365,7 @@ public class LoadFormControlsProcessor
 				}
 			}
 		}
+		DynamicExtensionsUtility.sortNameValueBeanListByName(groupNamesList);
 		return groupNamesList;
 	}
 

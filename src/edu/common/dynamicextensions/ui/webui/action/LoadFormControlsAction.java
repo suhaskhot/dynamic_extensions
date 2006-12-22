@@ -130,6 +130,7 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 	DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		List<NameValueBean> formAttributes = getAttributesForForm(request.getParameter("frmName"));
+		DynamicExtensionsUtility.sortNameValueBeanListByName(formAttributes);
 		String xmlParentNode = "formAttributes";
 		String xmlNodeId = "form-attribute-id";
 		String xmlNodeName = "form-attribute-name";
@@ -176,12 +177,6 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 			}
 
 		}
-		/*NameValueBean entityName = null;
-		 for(int i=0;i<5;i++)
-		 {
-		 entityName  = new NameValueBean(formName + "-Attr" + i,i);
-		 formAttributesList.add(entityName);
-		 }*/
 		return formAttributesList;
 	}
 
@@ -196,6 +191,7 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 	DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		List<NameValueBean> formNames = getFormNamesForGroup(request.getParameter("grpName"));
+		DynamicExtensionsUtility.sortNameValueBeanListByName(formNames);
 		String xmlParentNode = "forms";
 		String xmlIdNode = "form-id";
 		String xmlNameNode = "form-name";

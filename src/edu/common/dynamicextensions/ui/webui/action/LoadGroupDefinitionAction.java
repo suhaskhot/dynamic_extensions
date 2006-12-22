@@ -5,9 +5,6 @@
  */
 package edu.common.dynamicextensions.ui.webui.action;
 
-import java.util.Collection;
-import java.util.Iterator;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -73,18 +70,7 @@ public class LoadGroupDefinitionAction extends BaseDynamicExtensionsAction
 		if(container!=null)
 		{
 			EntityInterface entity = container.getEntity();
-			if(entity!=null)
-			{
-				Collection<EntityGroupInterface> entityGroupCollection = entity.getEntityGroupCollection();
-				if(entityGroupCollection!=null)
-				{
-					Iterator<EntityGroupInterface> entityGroupIter = entityGroupCollection.iterator();
-					if(entityGroupIter.hasNext())
-					{
-						entityGroup = entityGroupIter.next();
-					}
-				}
-			}
+			entityGroup = DynamicExtensionsUtility.getEntityGroup(entity);
 		}
 		else
 		{

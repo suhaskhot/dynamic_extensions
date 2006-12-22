@@ -6,6 +6,9 @@
 package edu.common.dynamicextensions.processor;
 
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.interfaces.GroupUIBeanInterface;
@@ -55,7 +58,6 @@ public class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsProcesso
 			entityGroup = groupProcessor.createEntityGroup();
 			groupProcessor.populateEntityGroupDetails(entityGroup, groupUIBean);
 		}
-
 		//if group to be saved
 		if((groupOperation!=null)&&(groupOperation.equals(ProcessorConstants.SAVE_GROUP)))
 		{
@@ -63,5 +65,32 @@ public class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsProcesso
 			entityGroup = groupProcessor.saveEntityGroup(entityGroup);
 		}
 		return entityGroup;
+	}
+	/**
+	 * @param groupForm
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	public void updateEntityGroup(ContainerInterface container ,EntityGroupInterface entityGroup,GroupUIBeanInterface groupUIBean) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		EntityInterface entity = null;
+
+		if((entityGroup!=null)&&(container!=null))
+		{
+			entity = container.getEntity();
+			if(entity!=null)
+			{
+				entity.removeAllEntityGroups();
+				entity.addEntityGroupInterface(entityGroup);
+			}
+
+			//Save to DB
+			String groupOperation = groupUIBean.getGroupOperation();
+			if((groupOperation!=null)&&(groupOperation.equals(ProcessorConstants.SAVE_GROUP)))
+			{
+				//Save to DB
+				EntityManager.getInstance().persistEntity(entity);
+			}
+		}
 	}
 }

@@ -13,6 +13,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.processor.ApplyGroupDefinitionProcessor;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.webui.actionform.GroupForm;
@@ -31,12 +32,18 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 	{
 		GroupForm groupForm = (GroupForm)form;
 		
-		
 		ApplyGroupDefinitionProcessor applyGroupDefinitionProcessor = ApplyGroupDefinitionProcessor.getInstance();
+		
 		EntityGroupInterface entityGroup = null;
 		try
 		{
-		entityGroup = applyGroupDefinitionProcessor.saveGroupDetails(groupForm);
+			entityGroup = applyGroupDefinitionProcessor.saveGroupDetails(groupForm);
+			String operationMode = groupForm.getOperationMode();
+			if((operationMode!=null)&&(operationMode.equals(Constants.EDIT_FORM)))
+			{
+				ContainerInterface containerInterface = (ContainerInterface)CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+				applyGroupDefinitionProcessor.updateEntityGroup(containerInterface,entityGroup,groupForm);
+			}
 		}
 		catch (Exception e)
 		{

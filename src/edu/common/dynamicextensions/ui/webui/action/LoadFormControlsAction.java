@@ -64,10 +64,10 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 			ControlsForm controlsForm = (ControlsForm) form;
 			ContainerInterface containerInterface = WebUIManager.getCurrentContainer(request);
 			
-			if (controlsForm.getSequenceNumbers() != null && controlsForm.getSequenceNumbers().length > 0)
-			{
-				ControlsUtility.applySequenceNumbers(containerInterface, controlsForm.getSequenceNumbers());
-			}
+//			if (controlsForm.getSequenceNumbers() != null && controlsForm.getSequenceNumbers().length > 0)
+//			{
+//				ControlsUtility.applySequenceNumbers(containerInterface, controlsForm.getSequenceNumbers());
+//			}
 			
 			
 			Logger.out.debug("Loading form controls for [" + containerInterface.getCaption() + "]");

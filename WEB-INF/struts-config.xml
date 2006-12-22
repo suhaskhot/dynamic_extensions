@@ -104,6 +104,19 @@ PUBLIC
 			<forward name="loadFormPreviewAction" path="/LoadDataEntryFormAction.do?showFormPreview=true" />
 
 		</action>
+
+
+		<action path="/ShowPreviewAction" 
+		    type="edu.common.dynamicextensions.ui.webui.action.ShowPreviewAction" 
+		    name="controlsForm"
+			validate="false"
+			input="/LoadFormControlsAction.do"
+			scope="request">
+			<forward name="loadFormPreviewAction" path="/LoadDataEntryFormAction.do?showFormPreview=true" />
+
+		</action>
+				
+		
 		
 		<action path="/SaveEntityAction" 
 		    type="edu.common.dynamicextensions.ui.webui.action.SaveEntityAction" 

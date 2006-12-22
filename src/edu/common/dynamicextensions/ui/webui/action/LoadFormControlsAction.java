@@ -25,6 +25,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.LoadFormControlsProcessor;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
+import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
@@ -62,6 +63,13 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 		{
 			ControlsForm controlsForm = (ControlsForm) form;
 			ContainerInterface containerInterface = WebUIManager.getCurrentContainer(request);
+			
+			if (controlsForm.getSequenceNumbers() != null && controlsForm.getSequenceNumbers().length > 0)
+			{
+				ControlsUtility.applySequenceNumbers(containerInterface, controlsForm.getSequenceNumbers());
+			}
+			
+			
 			Logger.out.debug("Loading form controls for [" + containerInterface.getCaption() + "]");
 			//Code for AJAX
 			String operation = request.getParameter("operation");

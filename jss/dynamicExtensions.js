@@ -524,13 +524,12 @@ function setDefaultValue()
 function showFormPreview() 
 {
 	var entitySaved = document.getElementById('entitySaved');
-
 	if(entitySaved!=null)
 	{
 		entitySaved.value="";
 	}	
 	var controlsForm = document.getElementById('controlsForm');
-	controlsForm.action="/dynamicExtensions/LoadDataEntryFormAction.do?showFormPreview=true";
+	controlsForm.action="/dynamicExtensions/ShowPreviewAction.do";
 	controlsForm.submit();
 }
 

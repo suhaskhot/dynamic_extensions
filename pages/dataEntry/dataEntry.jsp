@@ -146,9 +146,9 @@
 												<td align='right'>						
 													<c:choose>
 							  	    					<c:when test='${showFormPreview  == "true" || mode  == "view"}'>
-															<html:submit styleClass="actionButton"  onclick="addDynamicData()" disabled="true">
+															<!-- <html:submit styleClass="actionButton"  onclick="addDynamicData()" disabled="true">
 																<bean:message  key="buttons.submit" />
-															</html:submit>
+															</html:submit> -->
 														</c:when>
 							 							<c:otherwise>
 							 								<html:hidden styleId='isEdit' property="isEdit" value=""/>

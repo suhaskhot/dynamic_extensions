@@ -42,6 +42,10 @@
 <c:set var="mode" value="${dataEntryForm.mode}" />
 <jsp:useBean id="mode" type="java.lang.String"/>
 
+<c:set var="isTopLevelEntity" value="${dataEntryForm.isTopLevelEntity}" />
+<jsp:useBean id="isTopLevelEntity" type="java.lang.Boolean"/>
+
+
 <html>
 	<head>
 		<title><bean:message key="table.heading" /></title>
@@ -155,7 +159,7 @@
 							 								<% 
 							 									String target = "addDynamicData(" + recordIdentifier + ")";
 							 								%>
-							 								<html:submit styleClass="actionButton" onclick="showParentContainerInsertDataPage()">
+							 								<html:submit styleClass="actionButton" onclick="showParentContainerInsertDataPage()" disabled="<%=isTopLevelEntity %>">
 															 	<bean:message  key="buttons.back" />
 															</html:submit>
 															

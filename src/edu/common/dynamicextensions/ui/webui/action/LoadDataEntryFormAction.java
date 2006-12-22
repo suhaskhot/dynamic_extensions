@@ -121,6 +121,11 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 				(ContainerInterface) containerStack.peek(), (Map) valueMapStack.peek(), recordId,
 				mode);
 
+		if (containerStack.size() > 1 ) {
+			dataEntryForm.setIsTopLevelEntity(false);
+		} else {
+			dataEntryForm.setIsTopLevelEntity(true);
+		}
 		clearFormValues(dataEntryForm);
 
 		return mapping.findForward("Success");

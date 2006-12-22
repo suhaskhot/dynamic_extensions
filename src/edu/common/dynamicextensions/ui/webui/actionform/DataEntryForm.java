@@ -65,6 +65,12 @@ public class DataEntryForm extends AbstractActionForm
 	 * 
 	 */
 	protected String dataEntryOperation = "";
+	
+	/*
+	 * 
+	 */
+	protected boolean isTopLevelEntity = true;
+	
 
 	/**
 	 * 
@@ -254,6 +260,24 @@ public class DataEntryForm extends AbstractActionForm
 	public void setDataEntryOperation(String dataEntryOperation)
 	{
 		this.dataEntryOperation = dataEntryOperation;
+	}
+
+	
+	/**
+	 * @return Returns the isTopLevelEntity.
+	 */
+	public boolean getIsTopLevelEntity()
+	{
+		return isTopLevelEntity;
+	}
+
+	
+	/**
+	 * @param isTopLevelEntity The isTopLevelEntity to set.
+	 */
+	public void setIsTopLevelEntity(boolean isTopLevelEntity)
+	{
+		this.isTopLevelEntity = isTopLevelEntity;
 	}
 
 }

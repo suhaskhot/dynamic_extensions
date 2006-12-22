@@ -37,6 +37,14 @@ public class CheckBox extends Control implements CheckBoxInterface
 		{
 			isChecked = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
 		}
+		else if(new Boolean(this.value+"")) 
+		{
+			isChecked = "checked";
+		}
+		else
+		{
+			isChecked = "";
+		}
 
 		String htmlComponentName = getHTMLComponentName();
 		if (isChecked != null && isChecked.equalsIgnoreCase("checked"))

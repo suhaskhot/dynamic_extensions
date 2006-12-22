@@ -1672,7 +1672,7 @@ function showChildContainerInsertDataPage(containerId,ths)
 function showParentContainerInsertDataPage()
  {
     document.getElementById('dataEntryOperation').value  = "insertParentData";
-	var dataEntryForm = document.getElementById('dataEntryForm');
-	dataEntryForm.action="/dynamicExtensions/ApplyDataEntryFormAction.do";
-	dataEntryForm.submit();
+//	var dataEntryForm = document.getElementById('dataEntryForm');
+//	dataEntryForm.action="/dynamicExtensions/ApplyDataEntryFormAction.do";
+//	dataEntryForm.submit();
 }

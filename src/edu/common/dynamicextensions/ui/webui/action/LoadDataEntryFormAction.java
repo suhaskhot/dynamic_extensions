@@ -66,8 +66,10 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 				.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 
 		String containerIdentifier = getContainerId(request);
-		if (containerInterface == null || containerIdentifier != null)
+		if (containerIdentifier != null || containerInterface == null)
 		{
+			UserInterfaceiUtility.clearContainerStack(request);
+
 			containerInterface = DynamicExtensionsUtility
 					.getContainerByIdentifier(containerIdentifier);
 			CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE,

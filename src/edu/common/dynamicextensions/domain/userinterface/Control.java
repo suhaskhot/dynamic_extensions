@@ -313,8 +313,13 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		EntityInterface entity = abstractAttributeInterface.getEntity();
 		Long entityIdentifier = entity.getId();
 		EntityManagerInterface entityManager = EntityManager.getInstance();
-		ContainerInterface container = entityManager.getContainerByEntityIdentifier(entityIdentifier);
-		if (this.getSequenceNumber() != null)
+		ContainerInterface container = null;
+		if(entityIdentifier != null)
+		{
+			container = entityManager.getContainerByEntityIdentifier(entityIdentifier);
+		}
+		
+		if (container != null && this.getSequenceNumber() != null)
 		{
 			return "Control_" + container.getId() + "_" + this.getSequenceNumber();
 		}

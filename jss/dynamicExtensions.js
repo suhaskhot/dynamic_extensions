@@ -1001,12 +1001,16 @@ function changeGroupSource(groupSrc)
 	
 	if(groupSrc!=null)
 	{
-		
 		var divForGrpDetails = document.getElementById('groupDetailsDiv');
 		var divForGrpSrc = document.getElementById(groupSrc.value+"Div");
 		if((divForGrpSrc!=null)&&(divForGrpDetails!=null))
 		{
 			divForGrpDetails.innerHTML = divForGrpSrc.innerHTML;
+		}
+		var groupNameTextFld = document.getElementById('groupNameText');
+		if(groupNameTextFld!=null)
+		{
+			groupNameTextFld.value="";
 		}
 	}
 }

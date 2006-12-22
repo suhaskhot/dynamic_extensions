@@ -17,6 +17,8 @@ import org.apache.struts.action.ActionMessages;
 
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.processor.ContainerProcessor;
+import edu.common.dynamicextensions.ui.util.ControlsUtility;
+import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
@@ -38,31 +40,34 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 	 * @param response HttpServletResponse response
 	 * @return ActionForward forward to next action
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response)
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 	{
 		ActionForward actionForward = null;
 		try
 		{
 			//Get container interface from cache
-			ContainerInterface containerInterface = (ContainerInterface) CacheManager
-					.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+			ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 			//Call container processor save method
 			ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
 			String formName = "";
+
+			ControlsForm controlsForm = (ControlsForm) form;
+			if (controlsForm.getSequenceNumbers() != null && controlsForm.getSequenceNumbers().length > 0)
+			{
+				ControlsUtility.applySequenceNumbers(containerInterface, controlsForm.getSequenceNumbers());
+			}
+
 			containerInterface = containerProcessor.saveContainer(containerInterface);
 			if ((containerInterface != null) && (containerInterface.getEntity() != null))
 			{
 				formName = containerInterface.getEntity().getName();
 			}
 			saveMessages(request, getSuccessMessage(formName));
-			String callbackURL = (String) CacheManager.getObjectFromCache(request,
-					Constants.CALLBACK_URL);
+			String callbackURL = (String) CacheManager.getObjectFromCache(request, Constants.CALLBACK_URL);
 			if (callbackURL != null && !callbackURL.equals(""))
 			{
-				callbackURL = callbackURL + "?" + WebUIManager.getOperationStatusParameterName()
-						+ "=" + WebUIManagerConstants.SUCCESS + "&"
-						+ WebUIManager.getContainerIdentifierParameterName()+"="+containerInterface.getId().toString();
+				callbackURL = callbackURL + "?" + WebUIManager.getOperationStatusParameterName() + "=" + WebUIManagerConstants.SUCCESS + "&"
+						+ WebUIManager.getContainerIdentifierParameterName() + "=" + containerInterface.getId().toString();
 				CacheManager.clearCache(request);
 				response.sendRedirect(callbackURL);
 				return null;
@@ -72,9 +77,9 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 		catch (Exception e)
 		{
 			String actionForwardString = catchException(e, request);
-			if((actionForwardString==null)||(actionForwardString.equals("")))
+			if ((actionForwardString == null) || (actionForwardString.equals("")))
 			{
-				return mapping.getInputForward(); 
+				return mapping.getInputForward();
 			}
 			actionForward = mapping.findForward(actionForwardString);
 		}
@@ -89,8 +94,7 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 	private ActionMessages getSuccessMessage(String formName)
 	{
 		ActionMessages actionMessages = new ActionMessages();
-		actionMessages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(
-				"app.entitySaveSuccessMessage", formName));
+		actionMessages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("app.entitySaveSuccessMessage", formName));
 		return actionMessages;
 	}
 }

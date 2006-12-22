@@ -367,6 +367,8 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	}
 
 	/**
+	 * This method returns boolean indicating whether the control is a part of Sub-Form or not.
+	 * true value indicates the control is a part of Sub-Form, false value indicates its not.
 	 * @return the isSubControl
 	 */
 	public boolean getIsSubControl()
@@ -375,10 +377,13 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	}
 
 	/**
+	 * This method sets whether the control is a part of Sub-Form or not.
+	 * true value indicates the control is a part of Sub-Form, false value indicates its not.
 	 * @param isSubControl the isSubControl to set
 	 */
 	public void setIsSubControl(boolean isSubControl)
 	{
 		this.isSubControl = isSubControl;
 	}
+	
 }

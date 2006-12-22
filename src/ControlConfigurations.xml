@@ -28,7 +28,7 @@
 		display-label="eav.caption.CheckboxControlCaption"
 		jspName="/pages/toolTypeHTML/CheckboxControl.jsp"
 		image-path="images/controlimages/CheckBoxImage.jpeg">
-		<validations>			
+		<validations>
 		</validations>
 	</control>
 	<!-- rules for CheckboxControl control end-->
@@ -47,6 +47,7 @@
 		jspName="/pages/toolTypeHTML/ComboboxControl.jsp"
 		image-path="images/controlimages/ComboboxImage.jpeg">
 		<validations>
+			<common-validation-rule name="required" isImplicit="false" />
 		</validations>
 		<datatypes>
 			<dataType name="Text">

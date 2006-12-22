@@ -26,6 +26,7 @@ import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -435,4 +436,21 @@ public static void sortNameValueBeanListByName(List<NameValueBean> list) {
        });
    }
 
+   public static EntityGroupInterface getEntityGroup(EntityInterface  entity)
+   {
+	   EntityGroupInterface entityGroup  = null;
+	   if(entity!=null)
+		{
+			Collection<EntityGroupInterface> entityGroupCollection = entity.getEntityGroupCollection();
+			if(entityGroupCollection!=null)
+			{
+				Iterator<EntityGroupInterface> entityGroupIter = entityGroupCollection.iterator();
+				if(entityGroupIter.hasNext())
+				{
+					entityGroup = entityGroupIter.next();
+				}
+			}
+		}
+	   return entityGroup;
+   }
 }

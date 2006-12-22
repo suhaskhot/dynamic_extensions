@@ -106,11 +106,11 @@
 						</td>
 					</tr>
 					<tr valign="top">
-						<td align="right" class="formRequiredLabelWithoutBorder" width="100%"  >
-							<html:button styleClass="actionButton" property="btnSetDefaultValue"  onclick="setDefaultValue()">
+						<td align="left"  width="100%"  >
+							<html:button styleClass="subFormButton" property="btnSetDefaultValue"  onclick="setDefaultValue()">
 									<bean:message  key="eav.button.SetDefaultOption" />
 							 </html:button>
-							 <html:button styleClass="actionButton" property="btnDeleteChoiceValue"  onclick="deleteElementsFromChoiceList()">
+							 <html:button styleClass="subFormButton" property="btnDeleteChoiceValue"  onclick="deleteElementsFromChoiceList()">
 									<bean:message  key="eav.button.DeleteOption" />
 							 </html:button>
 						</td>

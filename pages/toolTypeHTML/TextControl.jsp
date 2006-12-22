@@ -19,7 +19,7 @@
 						<bean:message key="eav.att.TextFieldWidth"/> :
 					</td>
 					<td class="formFieldWithoutBorder">
-						<html:text styleClass="formFieldSized5" maxlength="100" size="60" styleId='attributenoOfCols' property="attributenoOfCols" />
+						<html:text styleClass="formFieldSized5" maxlength="3" size="60" styleId='attributenoOfCols' property="attributenoOfCols" />
 					</td>
 				</tr>
 				<tr valign="top" >

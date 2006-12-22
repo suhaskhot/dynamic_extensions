@@ -35,7 +35,7 @@
 				<bean:message key="eav.text.noOfLines"/> :
 			</td>
 			<td class="formFieldWithoutBorder">
-				<html:text styleClass="formFieldSized5" maxlength="100" size="60"  styleId ='attributeNoOfRows' property="attributeNoOfRows" />
+				<html:text styleClass="formFieldSized5" maxlength="3" size="60"  styleId ='attributeNoOfRows' property="attributeNoOfRows" />
 			</td>
 		</tr>
        	<tr valign="top">
@@ -44,7 +44,7 @@
 				<bean:message key="eav.att.MaxCharacters"/> :
 			</td>
 			<td class="formFieldWithoutBorder">
-				<html:text styleClass="formFieldSized5" maxlength="100" size="60" styleId = 'attributeSize' property="attributeSize" />
+				<html:text styleClass="formFieldSized5" maxlength="3" size="60" styleId = 'attributeSize' property="attributeSize" />
 			</td>
 		</tr>
 		<tr valign="top">

@@ -948,7 +948,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			Map map = entityManagerInterface.getRecordById(savedStudy, recordId);
 
-			int noOfUsers = ((List) map.get("users")).size();
+			int noOfUsers = ((List) map.get(userNames)).size();
 			assertEquals(3, noOfUsers);
 			System.out.println(map);
 
@@ -962,9 +962,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			entityManagerInterface.editData(savedStudy, dataValue, recordId);
 
 			map = entityManagerInterface.getRecordById(savedStudy, recordId);
-			noOfUsers = ((List) map.get("users")).size();
+			noOfUsers = ((List) map.get(userNames)).size();
 			assertEquals(1, noOfUsers);
-			assertEquals("12-20-2006", (String) map.get("Date"));
+			assertEquals("12-20-2006", (String) map.get(studyDate));
 
 			System.out.println(map);
 

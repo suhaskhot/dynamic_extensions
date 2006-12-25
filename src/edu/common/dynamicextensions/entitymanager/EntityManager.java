@@ -1548,7 +1548,7 @@ public class EntityManager
 				{
 					// get previous values for multi select attributes
 					AttributeRecord collectionRecord = getAttributeRecord(entity.getId(),
-							primitiveAttribute.getId(), recordId, null);
+							primitiveAttribute.getId(), recordId, hibernateDAO);
 					List<String> listOfValues = (List<String>) value;
 
 					if (!listOfValues.isEmpty())
@@ -1572,7 +1572,7 @@ public class EntityManager
 					FileAttributeRecordValue fileRecordValue = (FileAttributeRecordValue) value;
 					AttributeRecord fileRecord = getAttributeRecord(entity.getId(),
 							primitiveAttribute.getId(), recordId, hibernateDAO);
-					fileRecord.setFileRecord(fileRecordValue);
+					fileRecord.getFileRecord().copyValues(fileRecordValue);
 					fileRecords.add(fileRecord);
 				}
 				else

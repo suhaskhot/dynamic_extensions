@@ -42,6 +42,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInter
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
+import edu.common.dynamicextensions.util.global.Variables;
 import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.logger.Logger;
 
@@ -116,8 +117,15 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			EntityInterface editedEntity = entityManagerInterface.persistEntity(savedEntity);
 
 			Map dataValue = new HashMap();
-			dataValue.put(floatAtribute, "15.90");
-			entityManagerInterface.insertData(editedEntity, dataValue);
+
+//			dataValue.put(floatAtribute, "15.90");
+//			entityManagerInterface.insertData(editedEntity, dataValue);
+//			
+//			dataValue.put(floatAtribute, "16.90");
+//			entityManagerInterface.insertData(editedEntity, dataValue);
+//			
+//			Long id = new EntityManagerUtil().getNextIdentifier(editedEntity.getTableProperties().getName());
+//			System.out.println(id);
 
 			//Edit entity
 			AttributeInterface floatAtribute1 = DomainObjectFactory.getInstance()
@@ -128,14 +136,32 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			java.sql.ResultSetMetaData metadata = executeQueryForMetadata("select * from "
 					+ editedEntity.getTableProperties().getName());
 			assertEquals(metadata.getColumnCount(), 2);
+			
+			ResultSet resultSet = executeQuery("select count(*) from "
+					+ editedEntity.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(0, resultSet.getInt(1));
+						
 			//Step 5
 			EntityInterface newEditedEntity = entityManagerInterface.persistEntity(editedEntity);
-			dataValue.put(floatAtribute1, "16.90");
-			entityManagerInterface.insertData(newEditedEntity, dataValue);
+			dataValue.put(floatAtribute1, "21");
+			EntityManager.getInstance().insertData(newEditedEntity, dataValue);
 			//Step 6
 			metadata = executeQueryForMetadata("select * from "
 					+ editedEntity.getTableProperties().getName());
 			assertEquals(metadata.getColumnCount(), 3);
+			
+			resultSet = executeQuery("select count(*) from "
+					+ editedEntity.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(1, resultSet.getInt(1));
+			
+			EntityManager.getInstance().insertData(newEditedEntity, dataValue);
+			resultSet = executeQuery("select count(*) from "
+					+ editedEntity.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(2, resultSet.getInt(1));
+			
 
 		}
 		catch (DynamicExtensionsSystemException e)
@@ -344,7 +370,11 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from "
 					+ entity.getTableProperties().getName());
 			//Step 3
-			assertEquals(metaData.getColumnType(2), Types.NUMERIC);
+			if (Variables.databaseName.equals(edu.common.dynamicextensions.util.global.Constants.MYSQL_DATABASE)) {
+				assertEquals(metaData.getColumnType(2), Types.INTEGER);
+			} else {
+				assertEquals(metaData.getColumnType(2), Types.NUMERIC);
+			}
 
 			//Step 4
 			AttributeTypeInformationInterface dateAttributeType = new StringAttributeTypeInformation();
@@ -842,7 +872,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			Map map = entityManagerInterface.getRecordById(savedStudy, recordId);
 
-			String userName = (String) map.get("users");
+			String userName = (String) map.get(userNames);
 			assertEquals("a", userName);
 
 			dataValue.put(userNames, "b");
@@ -851,9 +881,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			entityManagerInterface.editData(savedStudy, dataValue, recordId);
 
 			map = entityManagerInterface.getRecordById(savedStudy, recordId);
-			userName = (String) map.get("users");
+			userName = (String) map.get(userNames);
 			assertEquals("b", userName);
-			assertEquals("12-20-2006", (String) map.get("Date"));
+			assertEquals("12-20-2006", (String) map.get(studyDate));
 
 		}
 		catch (DynamicExtensionsSystemException e)
@@ -1618,8 +1648,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			dataValue = entityManager.getRecordById(user, recordId);
 
-			assertEquals("45", dataValue.get("Age"));
-			assertEquals("tp.java", ((FileAttributeRecordValue) dataValue.get("Resume"))
+			assertEquals("45", dataValue.get(age));
+			assertEquals("tp.java", ((FileAttributeRecordValue) dataValue.get(resume))
 					.getFileName());
 
 			System.out.println(dataValue);
@@ -1684,10 +1714,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			dataValue.put(resume, fileRecord);
 
 			Long recordId = entityManager.insertData(user, dataValue);
-			recordId = entityManager.insertData(user, dataValue);
+			//recordId = entityManager.insertData(user, dataValue);
 
-			//dataValue = entityManager.getRecordById(user, recordId);
-
+			dataValue = entityManager.getRecordById(user, recordId);
 			dataValue.clear();
 			fileRecord.setFileName("new file name");
 			fileRecord.setFileContent("modified file contents".getBytes());
@@ -1696,7 +1725,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			dataValue = entityManager.getRecordById(user, recordId);
 
-			assertEquals("new file name", ((FileAttributeRecordValue) dataValue.get("Resume"))
+			assertEquals("new file name", ((FileAttributeRecordValue) dataValue.get(resume))
 					.getFileName());
 
 			System.out.println(dataValue);

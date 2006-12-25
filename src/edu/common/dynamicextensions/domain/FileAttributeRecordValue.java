@@ -104,4 +104,14 @@ public class FileAttributeRecordValue extends DynamicExtensionBaseDomainObject i
 	{
 		this.fileName = fileName;
 	}
+	
+	/**
+	 * This method copies the values from one file record to another
+	 * @param fileRecordValue
+	 */
+	public void copyValues(FileAttributeRecordValue  fileRecordValue) {
+		this.contentType = fileRecordValue.getContentType();
+		this.fileName =   fileRecordValue.getFileName();
+		this.fileContent = fileRecordValue.getFileContent();
+	}
 }

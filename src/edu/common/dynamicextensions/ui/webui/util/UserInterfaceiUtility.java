@@ -7,12 +7,14 @@ package edu.common.dynamicextensions.ui.webui.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
 import javax.servlet.http.HttpServletRequest;
 
+import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -42,9 +44,11 @@ public class UserInterfaceiUtility
 	{
 		StringBuffer stringBuffer = new StringBuffer();
 		int rowCount = 0;
-		if (valueMap != null) {
+		if (valueMap != null)
+		{
 			rowCount = valueMap.size();
 		}
+
 		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(subContainer
 				.getControlCollection());
 		Collections.sort(controlsList);
@@ -53,12 +57,14 @@ public class UserInterfaceiUtility
 		stringBuffer.append("<div style='display:none' id='" + subContainer.getId()
 				+ "_substitutionDiv'>");
 		stringBuffer.append("<table>");
-		stringBuffer.append(getContainerHTMLAsARow(subContainer,-1));
+		subContainer.setContainerValueMap(new HashMap()); //empty hashmap to generate hidden row
+		stringBuffer.append(getContainerHTMLAsARow(subContainer, -1));
 		stringBuffer.append("</table>");
 		stringBuffer.append("</div>");
 
 		stringBuffer.append("<input type='hidden' name='" + subContainer.getId()
-				+ "_rowCount' id= '" + subContainer.getId() + "_rowCount' value='"+ rowCount + "'/> ");
+				+ "_rowCount' id= '" + subContainer.getId() + "_rowCount' value='" + rowCount
+				+ "'/> ");
 		stringBuffer.append("</td></tr>");
 
 		stringBuffer.append("<tr width='100%'>");
@@ -101,9 +107,9 @@ public class UserInterfaceiUtility
 			int index = 1;
 			for (Map rowValueMap : valueMap)
 			{
-				subContainer.setContainerValueMap(rowValueMap);				
-				stringBuffer.append(getContainerHTMLAsARow(subContainer,index));
-				index ++;
+				subContainer.setContainerValueMap(rowValueMap);
+				stringBuffer.append(getContainerHTMLAsARow(subContainer, index));
+				index++;
 			}
 		}
 
@@ -210,19 +216,19 @@ public class UserInterfaceiUtility
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private static String getContainerHTMLAsARow(ContainerInterface container,int rowId)
+	private static String getContainerHTMLAsARow(ContainerInterface container, int rowId)
 			throws DynamicExtensionsSystemException
 	{
 
 		StringBuffer stringBuffer = new StringBuffer();
-		Map<AttributeInterface,Object> containerValueMap = container.getContainerValueMap();
+		Map<AttributeInterface, Object> containerValueMap = container.getContainerValueMap();
 		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(container
 				.getControlCollection());
 		Collections.sort(controlsList);
 
 		stringBuffer.append("<tr width='100%'>");
 		stringBuffer.append("<td class='formRequiredNotice' width='1%'>");
-		stringBuffer.append("<input type='checkbox' name='deleteRow' value=''/>");
+		stringBuffer.append("<input type='checkbox' name='deleteRow' value='' id='1'/>");
 		stringBuffer.append("</td>");
 		for (ControlInterface control : controlsList)
 		{
@@ -235,13 +241,14 @@ public class UserInterfaceiUtility
 			}
 			else
 			{
-				Object value = containerValueMap.get( control.getAbstractAttribute());
+				Object value = containerValueMap.get(control.getAbstractAttribute());
 				control.setValue(value);
 				controlHTML = control.generateHTML();
-				if (rowId != -1) {
+				if (rowId != -1)
+				{
 					String oldName = control.getHTMLComponentName();
 					String newName = oldName + "_" + rowId;
-					controlHTML = controlHTML.replaceAll(oldName,newName);
+					controlHTML = controlHTML.replaceAll(oldName, newName);
 				}
 			}
 
@@ -252,6 +259,33 @@ public class UserInterfaceiUtility
 		stringBuffer.append("</tr>");
 
 		return stringBuffer.toString();
+	}
+
+	/**
+	 * This method returns the associationControl for a given Container and its child caintener id
+	 * @param containerInterface
+	 * @param childContainerId
+	 * @return
+	 */
+	public static ContainmentAssociationControl getAssociationControl(
+			ContainerInterface containerInterface, String childContainerId)
+	{
+		Collection<ControlInterface> controlCollection = containerInterface.getControlCollection();
+		for (ControlInterface control : controlCollection)
+		{
+			if (control instanceof ContainmentAssociationControl)
+			{
+				ContainmentAssociationControl containmentAssociationControl = (ContainmentAssociationControl) control;
+				String containmentAssociationControlId = containmentAssociationControl
+						.getContainer().getId().toString();
+				if (containmentAssociationControlId.equals(childContainerId))
+				{
+					return containmentAssociationControl;
+				}
+			}
+		}
+
+		return null;
 	}
 
 }

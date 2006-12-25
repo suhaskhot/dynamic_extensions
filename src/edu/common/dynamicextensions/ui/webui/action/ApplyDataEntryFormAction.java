@@ -234,6 +234,11 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			throws DynamicExtensionsSystemException, FileNotFoundException, IOException
 	{
 		AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
+		List<Map<AbstractAttributeInterface, Object>> associationValueMapList = (List<Map<AbstractAttributeInterface, Object>>) attributeValueMap.get(abstractAttribute);
+		
+		if(associationValueMapList == null) {
+			associationValueMapList = 	new ArrayList<Map<AbstractAttributeInterface, Object>>();
+		}
 
 		if (control instanceof ContainmentAssociationControlInterface && processOneToMany)
 		{
@@ -242,17 +247,25 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 					.getContainer();
 			if (containmentAssociationControlInterface.isCardinalityOneToMany())
 			{
-				attributeValueMap.put(abstractAttribute, collectOneToManyContainmentValues(request,
-						dataEntryForm, targetContainer.getId().toString(), control));
+				associationValueMapList = collectOneToManyContainmentValues(request,
+						dataEntryForm, targetContainer.getId().toString(), control,associationValueMapList);
 			}
 			else
 			{
-				Map<AbstractAttributeInterface, Object> tempAttributeValueMap = new HashMap<AbstractAttributeInterface, Object>();
-				generateAttributeValueMap(targetContainer, request, dataEntryForm, "",tempAttributeValueMap,true);
-				List<Map<AbstractAttributeInterface, Object>> tempList = new ArrayList<Map<AbstractAttributeInterface, Object>>();
-				tempList.add(tempAttributeValueMap);
-				attributeValueMap.put(abstractAttribute, tempList);
+				Map<AbstractAttributeInterface, Object> oneToOneValueMap = null;
+
+				if(associationValueMapList.size() > 0 && associationValueMapList.get(0) != null ) {
+					oneToOneValueMap = associationValueMapList.get(0);
+				} else {
+					oneToOneValueMap = new HashMap<AbstractAttributeInterface, Object>();
+					associationValueMapList.add(oneToOneValueMap);
+					
+				}
+				 
+				generateAttributeValueMap(targetContainer, request, dataEntryForm, "",oneToOneValueMap,true);
 			}
+			
+			attributeValueMap.put(abstractAttribute, associationValueMapList);
 		}
 		else if (control instanceof SelectInterface)
 		{
@@ -292,21 +305,29 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 */
 	private List<Map<AbstractAttributeInterface, Object>> collectOneToManyContainmentValues(
 			HttpServletRequest request, DataEntryForm dataEntryForm, String containerId,
-			ControlInterface control) throws FileNotFoundException,
+			ControlInterface control,List<Map<AbstractAttributeInterface, Object>> oneToManyContainmentValueList) throws FileNotFoundException,
 			DynamicExtensionsSystemException, IOException
 	{
-		List<Map<AbstractAttributeInterface, Object>> oneToManyContainmentValueList = new ArrayList<Map<AbstractAttributeInterface, Object>>();
 		ContainmentAssociationControl containmentAssociationControl = (ContainmentAssociationControl) control;
+		int currentSize = oneToManyContainmentValueList.size();
 
 		String parameterString = containerId + "_rowCount";
 		String rowCountString = request.getParameter(parameterString);
 		int rowCount = Integer.parseInt(rowCountString);
 		Map<AbstractAttributeInterface, Object> attributeValueMap = null;
-		for (int counter = 1; counter <= rowCount; counter++)
+		for (int counter = 0; counter < rowCount; counter++)
 		{
-			attributeValueMap = generateAttributeValueMap(containmentAssociationControl
-					.getContainer(), request, dataEntryForm, counter + "",new HashMap<AbstractAttributeInterface, Object>(), false);
-			oneToManyContainmentValueList.add(attributeValueMap);
+			Map<AbstractAttributeInterface, Object>attributeValueMapForSingleRow  = null;
+			
+			String counterStr = String.valueOf(counter + 1);
+			if(counter < currentSize) {
+				attributeValueMapForSingleRow = oneToManyContainmentValueList.get(counter);
+			} else {
+				attributeValueMapForSingleRow =  new HashMap<AbstractAttributeInterface, Object>();
+				oneToManyContainmentValueList.add(attributeValueMapForSingleRow);
+			}
+			generateAttributeValueMap(containmentAssociationControl
+					.getContainer(), request, dataEntryForm, counterStr,attributeValueMapForSingleRow, false);
 		}
 
 		return oneToManyContainmentValueList;

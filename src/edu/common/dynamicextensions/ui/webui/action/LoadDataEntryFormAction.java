@@ -97,7 +97,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 		{
 			Map containerValueMap = (Map) valueMapStack.peek();
 			String childContainerId = dataEntryForm.getChildContainerId();
-			ContainmentAssociationControl associationControl = getAssociationControl(
+			ContainmentAssociationControl associationControl = UserInterfaceiUtility.getAssociationControl(
 					(ContainerInterface) containerStack.peek(), childContainerId);
 			ContainerInterface childContainer = associationControl.getContainer();
 			AssociationInterface association = (AssociationInterface) associationControl
@@ -156,30 +156,5 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 		dataEntryForm.setChildContainerId("");
 	}
 
-	/**
-	 * 
-	 * @param containerInterface
-	 * @param childContainerId
-	 * @return
-	 */
-	private ContainmentAssociationControl getAssociationControl(
-			ContainerInterface containerInterface, String childContainerId)
-	{
-		Collection<ControlInterface> controlCollection = containerInterface.getControlCollection();
-		for (ControlInterface control : controlCollection)
-		{
-			if (control instanceof ContainmentAssociationControl)
-			{
-				ContainmentAssociationControl containmentAssociationControl = (ContainmentAssociationControl) control;
-				String containmentAssociationControlId = containmentAssociationControl
-						.getContainer().getId().toString();
-				if (containmentAssociationControlId.equals(childContainerId))
-				{
-					return containmentAssociationControl;
-				}
-			}
-		}
-
-		return null;
-	}
+	
 }

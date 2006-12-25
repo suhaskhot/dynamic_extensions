@@ -26,6 +26,7 @@
 <script src="<%=request.getContextPath()%>/jss/overlib_mini.js" type="text/javascript"></script>
 <script src="<%=request.getContextPath()%>/jss/calender.js" type="text/javascript"></script>
 <script src="<%=request.getContextPath()%>/jss/calendarComponent.js"></script>
+<script src="<%=request.getContextPath()%>/jss/ajax.js"></script>
 
 <c:set var="containerInterface" value="${dataEntryForm.containerInterface}"/>
 <jsp:useBean id="containerInterface" type="edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface"/>

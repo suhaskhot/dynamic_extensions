@@ -1430,6 +1430,7 @@ function removeCheckedRow(containerId)
 {   
 	var table = document.getElementById(containerId + "_table");
 	var children = table.rows;
+	var deletedRowIds = "";
 
 	if(children.length > 0)
 	{
@@ -1446,6 +1447,7 @@ function removeCheckedRow(containerId)
 			{
 				if ((inputArray[inputIndex] != null) && (inputArray[inputIndex].name == "deleteRow") && (inputArray[inputIndex].checked)) 
 			   	{
+			   	 	deletedRowIds = deletedRowIds + rowIndex + ",";
 			   		table.deleteRow(rowIndex);
 			   					   		
 			   		rowsDeleted += 1;
@@ -1503,6 +1505,22 @@ function removeCheckedRow(containerId)
 	
 		document.getElementById(containerId + "_table").value = table;
 	}
+	
+	
+	var request = newXMLHTTPReq();
+	var handlerFunction = getReadyStateHandler(request,ignoreResponseHandler,false);
+
+	//no brackets after the function name and no parameters are passed because we are assigning a reference to the function and not actually calling it
+	request.onreadystatechange = handlerFunction;
+	//send data to ActionServlet
+	//Open connection to servlet
+	request.open("POST","AjaxcodeHandlerAction.do",true);
+	request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+	request.send("&ajaxOperation=deleteRowsForContainment&containerId=" + containerId+"&deletedRowIds="+deletedRowIds);
+}
+
+function ignoreResponseHandler(str) {
+
 }
 
 function setDefaultValues(tableId, obj) 

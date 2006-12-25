@@ -7,6 +7,9 @@ package edu.common.dynamicextensions.ui.webui.action;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,6 +18,9 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -23,6 +29,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.GroupProcessor;
 import edu.common.dynamicextensions.ui.util.SemanticPropertyBuilderUtil;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
+import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 
 /**
@@ -58,14 +65,20 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 						returnXML = getSelectedFormDetails(request,selectedFormName);
 					}
 				}
-				if(operation.trim().equals("selectGroup"))
+				else if(operation.trim().equals("selectGroup"))
 				{
 					String selectedGroupName = request.getParameter("selectedGroupName");
 					if (selectedGroupName != null) 
 					{
 						returnXML = getSelectedGroupDetails(request,selectedGroupName);
 					}
+				} 
+				else if (operation.trim().equals("deleteRowsForContainment")) {
+					String deletedRowIds  = request.getParameter("deletedRowIds");
+					String containerId  = request.getParameter("containerId");
+					returnXML = deleteRowsForContainment(request,deletedRowIds,containerId);
 				}
+				
 			}
 			sendResponse(returnXML, response);
 			return null;
@@ -80,6 +93,45 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 			return (mapping.findForward(actionForwardString));
 		}
 	}
+
+	/**
+	 * @param request
+	 * @param deletedRowIds
+	 * @param childContainerId
+	 * @return
+	 */
+	private String deleteRowsForContainment(HttpServletRequest request, String deletedRowIds, String childContainerId)
+	{
+		Stack containerStack = (Stack) CacheManager.getObjectFromCache(request,
+				Constants.CONTAINER_STACK);
+		Stack valueMapStack = (Stack) CacheManager.getObjectFromCache(request,
+				Constants.VALUE_MAP_STACK);
+		
+		Map<AbstractAttributeInterface, Object> valueMap = (Map<AbstractAttributeInterface, Object>) valueMapStack.peek();
+		ContainerInterface containerInterface = (ContainerInterface) containerStack.peek();
+
+		ContainmentAssociationControl associationControl = UserInterfaceiUtility.getAssociationControl(
+				containerInterface, childContainerId);
+		
+		AssociationInterface association = (AssociationInterface) associationControl.getAbstractAttribute();
+		
+		List<Map<AbstractAttributeInterface, Object>> associationValueMapList = (List<Map<AbstractAttributeInterface, Object>>) valueMap.get(association);
+
+		String[] deletedRows = deletedRowIds.split(",");
+		
+		for(int i=0;i<deletedRows.length; i++) {
+			int removeIndex = Integer.valueOf(deletedRows[i]) - 1;
+
+			if (associationValueMapList.size() > removeIndex) {
+				associationValueMapList.remove(removeIndex);
+			}
+			
+		}
+		
+		return "";
+	}
+	
+	 
 
 	/**
 	 * @param request

@@ -51,11 +51,11 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 			ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
 			String formName = "";
 
-			ControlsForm controlsForm = (ControlsForm) form;
-			if (controlsForm.getSequenceNumbers() != null && controlsForm.getSequenceNumbers().length > 0)
-			{
-				ControlsUtility.applySequenceNumbers(containerInterface, controlsForm.getSequenceNumbers());
-			}
+//			ControlsForm controlsForm = (ControlsForm) form;
+//			if (controlsForm.getSequenceNumbers() != null && controlsForm.getSequenceNumbers().length > 0)
+//			{
+//				ControlsUtility.applySequenceNumbers(containerInterface, controlsForm.getSequenceNumbers());
+//			}
 
 			containerInterface = containerProcessor.saveContainer(containerInterface);
 			if ((containerInterface != null) && (containerInterface.getEntity() != null))

@@ -124,7 +124,10 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			{
 				recordIdentifier = applyDataEntryFormProcessor.insertDataEntryForm(
 						containerInterface, valueMap );
-				saveMessages(request, getSuccessMessage());
+				if(recordIdentifier  != null && !recordIdentifier .equals(""))
+				{
+					saveMessages(request, getSuccessMessage());
+				}
 			}
 
 			String calllbackURL = (String) CacheManager.getObjectFromCache(request,

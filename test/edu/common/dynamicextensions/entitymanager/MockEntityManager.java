@@ -251,7 +251,7 @@ public class MockEntityManager
 		dateAttribute.setIsPrimaryKey(new Boolean(false));
 		dateAttribute.setLastUpdated(dateAttribute.getCreatedDate());
 		dateAttribute.setName("dateOfJoining");
-		SimpleDateFormat dateFormat = new SimpleDateFormat(Variables.datePattern);
+		//SimpleDateFormat dateFormat = new SimpleDateFormat(Variables.datePattern);
        
         try
         {

@@ -36,7 +36,6 @@ import edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
 import edu.common.dynamicextensions.domain.userinterface.Container;
-import edu.common.dynamicextensions.domain.userinterface.SelectControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeInterface;
@@ -189,7 +188,8 @@ public class EntityManager
 			//			Queries for data table creation and modification are fired in the method saveOrUpdateEntity. So if there
 			//is any exception while storing the metadata , we need to roll back the queries that were fired. So
 			//calling the following method to do that.
-			rollbackQueries(stack, entity, e);
+			rollbackQueries(stack, entity, e,hibernateDAO);
+			
 			if (e instanceof DynamicExtensionsApplicationException)
 			{
 				throw (DynamicExtensionsApplicationException) e;
@@ -213,7 +213,7 @@ public class EntityManager
 				//Queries for data table creation and modification are fired in the method saveOrUpdateEntity. So if there
 				//is any exception while storing the metadata , we need to roll back the queries that were fired. So
 				//calling the following method to do that.
-				rollbackQueries(stack, entity, e);
+				rollbackQueries(stack, entity, e,hibernateDAO);
 			}
 		}
 		logDebug("persistEntity", "exiting the method");
@@ -898,10 +898,24 @@ public class EntityManager
 	 * @param conn
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private void rollbackQueries(Stack reverseQueryList, Entity entity, Exception e)
+	private void rollbackQueries(Stack reverseQueryList, Entity entity, Exception e,AbstractDAO dao)
 			throws DynamicExtensionsSystemException
 	{
 		String message = "";
+		try
+		{
+			dao.rollback();
+		}
+		catch (DAOException e2)
+		{
+			logDebug("rollbackQueries", DynamicExtensionsUtility.getStackTrace(e));
+			DynamicExtensionsSystemException ex = new DynamicExtensionsSystemException(message,
+					e);
+			ex.setErrorCode(DYEXTN_S_000);
+			throw ex;
+		
+		}
+
 		if (reverseQueryList != null && !reverseQueryList.isEmpty())
 		{
 
@@ -916,6 +930,8 @@ public class EntityManager
 					statement = conn.prepareStatement(query);
 					statement.executeUpdate();
 				}
+				
+
 			}
 			catch (HibernateException e1)
 			{
@@ -1182,31 +1198,13 @@ public class EntityManager
 		catch (DAOException e)
 		{
 			//In case of exception execute roll back queries to restore the database state.
-			rollbackQueries(rollbackQueryStack, entity, e);
-			try
-			{
-				hibernateDAO.rollback();
-			}
-			catch (DAOException e1)
-			{
-				throw new DynamicExtensionsSystemException(
-						"Exception occured while rolling back a session to save the container.");
-			}
+			rollbackQueries(rollbackQueryStack, entity, e,hibernateDAO);
 			throw new DynamicExtensionsSystemException(
 					"Exception occured while opening a session to save the container.");
 		}
 		catch (UserNotAuthorizedException e)
 		{
-			rollbackQueries(rollbackQueryStack, entity, e);
-			try
-			{
-				hibernateDAO.rollback();
-			}
-			catch (DAOException e1)
-			{
-				throw new DynamicExtensionsSystemException(
-						"Exception occured while rolling back a session to save the container.");
-			}
+			rollbackQueries(rollbackQueryStack, entity, e,hibernateDAO);
 		}
 		finally
 		{
@@ -1216,7 +1214,7 @@ public class EntityManager
 			}
 			catch (DAOException e)
 			{
-				rollbackQueries(rollbackQueryStack, entity, e);
+				rollbackQueries(rollbackQueryStack, entity, e,hibernateDAO);
 			}
 		}
 		return container;
@@ -2093,7 +2091,7 @@ public class EntityManager
 			//			Queries for data table creation and modification are fired in the method saveOrUpdateEntity. So if there
 			//is any exception while storing the metadata , we need to roll back the queries that were fired. So
 			//calling the following method to do that.
-			rollbackQueries(stack, (Entity) entityInterface, e);
+			rollbackQueries(stack, (Entity) entityInterface, e,hibernateDAO);
 			if (e instanceof DynamicExtensionsApplicationException)
 			{
 				throw (DynamicExtensionsApplicationException) e;
@@ -2113,7 +2111,6 @@ public class EntityManager
 			}
 			catch (DAOException e)
 			{
-				e.printStackTrace();
 				throw new DynamicExtensionsSystemException(
 						"Exception occured while closing the session", e, DYEXTN_S_001);
 			}

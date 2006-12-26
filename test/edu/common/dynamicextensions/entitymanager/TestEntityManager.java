@@ -378,15 +378,20 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			}
 
 			//Step 4
-			AttributeTypeInformationInterface dateAttributeType = new StringAttributeTypeInformation();
-			ssn.setAttributeTypeInformation(dateAttributeType);
+			AttributeTypeInformationInterface stringAttributeType = new StringAttributeTypeInformation();
+			ssn.setAttributeTypeInformation(stringAttributeType);
 			//Step 5
 			entity = (Entity) EntityManager.getInstance().persistEntity(entity);
 
 			metaData = executeQueryForMetadata("select * from "
 					+ entity.getTableProperties().getName());
 			//Step 6
-			assertEquals(metaData.getColumnType(2), Types.VARCHAR);
+			if(Variables.databaseName.equals(edu.common.dynamicextensions.util.global.Constants.MYSQL_DATABASE)) {
+				assertEquals(metaData.getColumnTypeName(2), "TEXT");
+			} else {
+				assertEquals(metaData.getColumnType(2), Types.VARCHAR);
+				
+			}
 
 		}
 		catch (DynamicExtensionsApplicationException e)
@@ -476,10 +481,11 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 	{
 		try
 		{
+			EntityManagerInterface entityManager = EntityManager.getInstance();
 			//Step 1
 			EntityGroup entityGroup = (EntityGroup) new MockEntityManager().initializeEntityGroup();
 			//Step 2 
-			entityGroup = (EntityGroup) EntityManager.getInstance().persistEntityGroup(entityGroup);
+			entityGroup = (EntityGroup) entityManager.persistEntityGroup(entityGroup);
 			//Step 3			
 			Collection collection = EntityManager.getInstance().getAllEntitiyGroups();
 			assertTrue(collection.contains(entityGroup));

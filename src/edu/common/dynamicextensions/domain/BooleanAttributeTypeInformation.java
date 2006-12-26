@@ -1,7 +1,7 @@
+
 package edu.common.dynamicextensions.domain;
 
-import edu.wustl.common.actionForm.AbstractActionForm;
-import edu.wustl.common.exception.AssignDataException;
+import edu.common.dynamicextensions.domaininterface.BooleanTypeInformationInterface;
 
 /**
  * @version 1.0
@@ -10,8 +10,10 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
 public class BooleanAttributeTypeInformation extends AttributeTypeInformation
+		implements
+			BooleanTypeInformationInterface
 {
-    
+
 	/**
 	 * Empty Constructor.
 	 */
@@ -19,6 +21,5 @@ public class BooleanAttributeTypeInformation extends AttributeTypeInformation
 	{
 
 	}
-	
 
 }

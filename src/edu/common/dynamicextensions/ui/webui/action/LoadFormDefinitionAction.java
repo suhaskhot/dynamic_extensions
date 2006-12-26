@@ -144,16 +144,7 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 		}
 	}
 
-	/**
-	 * @param selectedControlId
-	 * @return
-	 */
-	private ContainerInterface getContainerForSelectedControl(String selectedControlId)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 	/**
 	 * @param container
 	 * @param formDefinitionForm
@@ -260,30 +251,29 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 	private TreeData getEntityTree(HttpServletRequest request,boolean addNewNode)
 	{
 		EntityGroupInterface entityGroup = (EntityGroupInterface) CacheManager.getObjectFromCache(request, Constants.ENTITYGROUP_INTERFACE);
-		String groupName = entityGroup.getName();
 		TreeData treedata = new TreeData();
-		//TreeNode groupNode = new TreeNode(groupName);
-		//treedata.add(groupNode);
-		
-		ContainerInterface mainContainer = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-		
-		String currentContainerName = (String) CacheManager.getObjectFromCache(request, Constants.CURRENT_CONTAINER_NAME);
-		if(mainContainer!=null)
+		if(entityGroup!=null)
 		{
-			TreeNode mainContainerTreeNode = getTreeNode(mainContainer,currentContainerName,addNewNode);
-			if((currentContainerName==null)&&(addNewNode==true))
+			ContainerInterface mainContainer = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+			
+			String currentContainerName = (String) CacheManager.getObjectFromCache(request, Constants.CURRENT_CONTAINER_NAME);
+			if(mainContainer!=null)
 			{
-				//Add new form node to main container node
-				mainContainerTreeNode.add(getNewFormNode());
+				TreeNode mainContainerTreeNode = getTreeNode(mainContainer,currentContainerName,addNewNode);
+				if((currentContainerName==null)&&(addNewNode==true))
+				{
+					//Add new form node to main container node
+					mainContainerTreeNode.add(getNewFormNode());
+				}
+				treedata.add(mainContainerTreeNode);
 			}
-			treedata.add(mainContainerTreeNode);
-		}
-		else
-		{
-			//Add new node to group
-			if(addNewNode==true)
+			else
 			{
-				treedata.add(getNewFormNode());
+				//Add new node to group
+				if(addNewNode==true)
+				{
+					treedata.add(getNewFormNode());
+				}
 			}
 		}
 		return treedata;

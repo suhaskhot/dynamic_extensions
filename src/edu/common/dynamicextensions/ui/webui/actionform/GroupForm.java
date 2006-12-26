@@ -190,6 +190,10 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.GroupTitle")));
 		}
+		if (createGroupAs != null && createGroupAs.equals(ProcessorConstants.GROUP_CREATEFROM_EXISTING) && (groupName == null || validator.isEmpty(String.valueOf(groupName))))
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.GroupTitle")));
+		}
 		if (createGroupAs == null)
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.NewGroup")));

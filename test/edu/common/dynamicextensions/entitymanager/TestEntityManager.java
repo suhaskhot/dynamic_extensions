@@ -37,6 +37,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInte
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
+import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
@@ -2138,6 +2139,76 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+
+	}
+	
+	/**
+	 * PURPOSE : to test the method insertData for attribute having default value specified. 
+	 * EXPECTED BEHAVIOR : since default value is only for display purpose, it should not be persisted
+	 *                     if user has explicitly removed this value /not mentioned for the attribute. 
+	 * 
+	 * TEST CASE FLOW : 
+	 * 1.Create an entity 
+	 * 2.Persist the entity. 
+	 * 3.Insert data without specifying value for the attribute that has some default value.
+	 * 4.Check that the value for that attribute is null.
+	 */
+	public void testInsertDataWithdefaultValue()
+	{
+		Entity entity = new Entity();
+		entity.setName("Stock Quote");
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		try
+		{
+            //Step 1.
+			AttributeInterface commentsAttributes = factory.createStringAttribute();
+			commentsAttributes.setName("comments");
+		    StringValueInterface defalutValue = factory.createStringValue();
+		    defalutValue.setValue("this is default value");
+			commentsAttributes.getAttributeTypeInformation().setDefaultValue(defalutValue);
+
+			entity.addAbstractAttribute(commentsAttributes);
+			
+			AttributeInterface tempAttributes = factory.createStringAttribute();
+			tempAttributes.setName("temp");
+			entity.addAbstractAttribute(tempAttributes);
+
+            //Step 2.
+			EntityInterface savedEntity = entityManagerInterface.persistEntity(entity);
+
+            //Step 3.
+			Map dataValue = new HashMap();
+			//dataValue.put(commentsAttributes, "this is not default comment");
+			dataValue.put(tempAttributes, "temp");
+
+			entityManagerInterface.insertData(savedEntity, dataValue);
+
+            //Step 4.
+			ResultSet resultSet = executeQuery("select * from "
+					+ savedEntity.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(null, resultSet.getString(2));
+
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			fail();
+			Logger.out.debug(e.getStackTrace());
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			fail();
+			Logger.out.debug(e.getStackTrace());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+
+			Logger.out.debug(e.getStackTrace());
 		}
 
 	}

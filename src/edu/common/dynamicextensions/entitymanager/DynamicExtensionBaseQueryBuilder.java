@@ -15,7 +15,6 @@ import java.util.Stack;
 
 import net.sf.hibernate.HibernateException;
 import net.sf.hibernate.Session;
-import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
@@ -37,8 +36,6 @@ import edu.common.dynamicextensions.domaininterface.databaseproperties.Constrain
 import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.util.global.Constants;
-import edu.common.dynamicextensions.util.global.Variables;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.wustl.common.dao.HibernateDAO;
@@ -433,7 +430,7 @@ class DynamicExtensionBaseQueryBuilder
 			String columnName = attribute.getColumnProperties().getName();
 			String isUnique = "";
 			String nullConstraint = "";
-			String defaultConstraint = "";
+			//			String defaultConstraint = "";
 			if (processConstraints)
 			{
 				if (attribute.getIsPrimaryKey())
@@ -448,22 +445,22 @@ class DynamicExtensionBaseQueryBuilder
 				{
 					nullConstraint = "NOT NULL";
 				}
-
-				if (attribute.getAttributeTypeInformation().getDefaultValue() != null
-						&& attribute.getAttributeTypeInformation().getDefaultValue()
-								.getValueAsObject() != null)
-				{
-					defaultConstraint = DEFAULT_KEYWORD
-							+ WHITESPACE
-							+ EntityManagerUtil.getFormattedValue(attribute, attribute
-									.getAttributeTypeInformation().getDefaultValue()
-									.getValueAsObject());
-				}
+				// dont need to specify this deflaut value  
+				//				if (attribute.getAttributeTypeInformation().getDefaultValue() != null
+				//						&& attribute.getAttributeTypeInformation().getDefaultValue()
+				//								.getValueAsObject() != null)
+				//				{
+				//					defaultConstraint = DEFAULT_KEYWORD
+				//							+ WHITESPACE
+				//							+ EntityManagerUtil.getFormattedValue(attribute, attribute
+				//									.getAttributeTypeInformation().getDefaultValue()
+				//									.getValueAsObject());
+				//				}
 
 			}
 
 			attributeQuery = columnName + WHITESPACE + type + WHITESPACE
-					+ getDatabaseTypeAndSize(attribute) + WHITESPACE + defaultConstraint
+					+ getDatabaseTypeAndSize(attribute) //+ WHITESPACE + defaultConstraint
 					+ WHITESPACE + isUnique + WHITESPACE + nullConstraint;
 		}
 		return attributeQuery;

@@ -276,9 +276,9 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		}
 		else if (control instanceof SelectInterface)
 		{
-			List<Long> valueList = new Vector<Long>();
 			if (control instanceof ListBoxInterface)
 			{
+				List<Long> valueList = new ArrayList<Long>();
 				String[] selectedValues = (String[]) request.getParameterValues("Control_"
 						+ sequence);
 				if (selectedValues != null)
@@ -289,13 +289,13 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 						valueList.add(identifier);
 					}
 				}
+				attributeValueMap.put(abstractAttribute, valueList);
 			}
 			else if (control instanceof ComboBoxInterface)
 			{
-				String value = request.getParameter("Control_" + sequence);
-				valueList.add(new Long(value.trim()));
+				String selectedValue = request.getParameter("Control_" + sequence);
+				attributeValueMap.put(abstractAttribute, selectedValue);
 			}
-			attributeValueMap.put(abstractAttribute, valueList);
 		}
 	}
 

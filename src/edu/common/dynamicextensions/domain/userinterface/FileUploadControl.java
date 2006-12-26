@@ -35,11 +35,10 @@ public class FileUploadControl extends Control implements FileUploadInterface
 		String htmlString = "";
 		if (fileAttributeRecordValue != null && fileAttributeRecordValue.getFileName() != null)
 		{
-			htmlString = ApplicationProperties.getValue("eav.file.fileName") + "&nbsp;"
-					+ fileAttributeRecordValue.getFileName();
+			htmlString = ApplicationProperties.getValue("eav.file.fileName") + "&nbsp;" + fileAttributeRecordValue.getFileName();
 		}
-		htmlString = htmlString + "&nbsp;<input type= \"file\" " + "name = \"value("
-				+ getHTMLComponentName() + ")\" " + "id = \"" + getHTMLComponentName() + "\"/>";
+		htmlString = htmlString + "&nbsp;<input type= \"file\" " + "name = \"value(" + getHTMLComponentName() + ")\" " + "id = \""
+				+ getHTMLComponentName() + "\"/>";
 		return htmlString;
 	}
 

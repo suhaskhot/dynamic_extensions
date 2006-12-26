@@ -12,26 +12,34 @@ public interface TextFieldInterface extends ControlInterface
 	 * @return Returns the columns.
 	 */
 	Integer getColumns();
+	
 	/**
 	 * @param columns The columns to set.
 	 */
 	void setColumns(Integer columns);
+	
 	/**
 	 * @return Returns the isPassword.
 	 */
 	Boolean getIsPassword();
+	
 	/**
 	 * @param isPassword The isPassword to set.
 	 */
 	void setIsPassword(Boolean isPassword);
 	
 	/**
-	 * @return IsUrl
+	 * This method returns the Boolean value that decides whether the value of this control should be treated as normal text or URL.
+	 * @hibernate.property name="isUrl" type="boolean" column="IS_URL" 
+	 * @return the Boolean value	true - value is URL
+	 * 								false - value is normal text.
 	 */
 	Boolean getIsUrl();
 
 	/**
-	 * @param isUrl is url 
+	 * This method sets the value that decides whether the value of this control should be treated as normal text or URL.
+	 * @param isUrl the Boolean value	true - value is URL
+	 * 									false - value is normal text.
 	 */
 	void setIsUrl(Boolean isUrl);
 }

@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -65,97 +64,93 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	{
 		DataEntryForm dataEntryForm = (DataEntryForm) form;
 
-		Stack containerStack = (Stack) CacheManager.getObjectFromCache(request,
-				Constants.CONTAINER_STACK);
-		Stack valueMapStack = (Stack) CacheManager.getObjectFromCache(request,
-				Constants.VALUE_MAP_STACK);
-		ContainerInterface containerInterface = (ContainerInterface) containerStack.peek();
-		Map<AbstractAttributeInterface, Object> valueMap = (Map) valueMapStack.peek();
-
-		ApplyDataEntryFormProcessor applyDataEntryFormProcessor = ApplyDataEntryFormProcessor
-				.getInstance();
-		
-		ActionForward forward = null;
-
-		try
+		Stack<ContainerInterface> containerStack = (Stack<ContainerInterface>) CacheManager
+				.getObjectFromCache(request, Constants.CONTAINER_STACK);
+		Stack<Map<AbstractAttributeInterface, Object>> valueMapStack = (Stack<Map<AbstractAttributeInterface, Object>>) CacheManager
+				.getObjectFromCache(request, Constants.VALUE_MAP_STACK);
+		if ((containerStack != null && !containerStack.isEmpty())
+				&& (valueMapStack != null || !valueMapStack.isEmpty()))
 		{
-			valueMap = generateAttributeValueMap(
-					containerInterface, request, dataEntryForm, "", valueMap, true);
+			ContainerInterface containerInterface = (ContainerInterface) containerStack.peek();
+			Map<AbstractAttributeInterface, Object> valueMap = (Map<AbstractAttributeInterface, Object>) valueMapStack
+					.peek();
 
-			List<String> errorList = ValidatorUtil.validateEntity(valueMap );
+			ApplyDataEntryFormProcessor applyDataEntryFormProcessor = ApplyDataEntryFormProcessor
+					.getInstance();
 
-			if (errorList.size() != 0)
+			try
 			{
-				//saveErrors(request, getErrorMessages(errorList));
-				dataEntryForm.setErrorList(errorList);
-				return (mapping.findForward(Constants.SUCCESS));
-			}
-			else
-			{
-			applyDataEntryFormProcessor
-						.removeNullValueEntriesFormMap(valueMap );
-			}
-			
-			valueMap = (Map<AbstractAttributeInterface, Object>) valueMapStack.firstElement();
-			containerInterface = (ContainerInterface) containerStack.firstElement();
-			
-			String dataEntryOperation = dataEntryForm.getDataEntryOperation();
-			if(dataEntryOperation != null && dataEntryOperation.equals("insertChildData"))
-			{
-				return  mapping.findForward("loadChildContainer");
-			} 
-			else if(dataEntryOperation != null && dataEntryOperation.equals("insertParentData")) {
-				return  mapping.findForward("loadParentContainer");
-			}
-				
-			
-			String recordIdentifier = dataEntryForm.getRecordIdentifier();
-			
-			if (recordIdentifier != null && !recordIdentifier.equals(""))
-			{
-				Boolean edited = applyDataEntryFormProcessor.editDataEntryForm(containerInterface,
-						valueMap , Long.valueOf(recordIdentifier));
-				if (edited.booleanValue())
+				valueMap = generateAttributeValueMap(containerInterface, request, dataEntryForm,
+						"", valueMap, true);
+				List<String> errorList = ValidatorUtil.validateEntity(valueMap);
+				if (errorList.size() != 0)
 				{
+					//saveErrors(request, getErrorMessages(errorList));
+					dataEntryForm.setErrorList(errorList);
+					return (mapping.findForward(Constants.SUCCESS));
+				}
+				else
+				{
+					applyDataEntryFormProcessor.removeNullValueEntriesFormMap(valueMap);
+				}
+
+				valueMap = (Map<AbstractAttributeInterface, Object>) valueMapStack.firstElement();
+				containerInterface = (ContainerInterface) containerStack.firstElement();
+
+				String dataEntryOperation = dataEntryForm.getDataEntryOperation();
+				if (dataEntryOperation != null && dataEntryOperation.equals("insertChildData"))
+				{
+					return mapping.findForward("loadChildContainer");
+				}
+				else if (dataEntryOperation != null
+						&& dataEntryOperation.equals("insertParentData"))
+				{
+					return mapping.findForward("loadParentContainer");
+				}
+
+				String recordIdentifier = dataEntryForm.getRecordIdentifier();
+				if (recordIdentifier != null && !recordIdentifier.equals(""))
+				{
+					Boolean edited = applyDataEntryFormProcessor.editDataEntryForm(
+							containerInterface, valueMap, Long.valueOf(recordIdentifier));
+					if (edited.booleanValue())
+					{
+						saveMessages(request, getSuccessMessage());
+					}
+				}
+				else
+				{
+					recordIdentifier = applyDataEntryFormProcessor.insertDataEntryForm(
+							containerInterface, valueMap);
 					saveMessages(request, getSuccessMessage());
 				}
-			}
-			else
-			{
-				recordIdentifier = applyDataEntryFormProcessor.insertDataEntryForm(
-						containerInterface, valueMap );
-				if(recordIdentifier  != null && !recordIdentifier .equals(""))
+
+				String calllbackURL = (String) CacheManager.getObjectFromCache(request,
+						Constants.CALLBACK_URL);
+				if (calllbackURL != null && !calllbackURL.equals(""))
 				{
-					saveMessages(request, getSuccessMessage());
+					calllbackURL = calllbackURL + "?"
+							+ WebUIManager.getRecordIdentifierParameterName() + "="
+							+ recordIdentifier + "&"
+							+ WebUIManager.getOperationStatusParameterName() + "="
+							+ WebUIManagerConstants.SUCCESS;
+					CacheManager.clearCache(request);
+					response.sendRedirect(calllbackURL);
+					return null;
 				}
 			}
+			catch (Exception e)
+			{
+				String actionForwardString = catchException(e, request);
+				if ((actionForwardString == null) || (actionForwardString.equals("")))
+				{
+					return mapping.getInputForward();
+				}
+				return (mapping.findForward(actionForwardString));
+			}
+		}
 
-			String calllbackURL = (String) CacheManager.getObjectFromCache(request,
-					Constants.CALLBACK_URL);
-			if (calllbackURL != null && !calllbackURL.equals(""))
-			{
-				calllbackURL = calllbackURL + "?" + WebUIManager.getRecordIdentifierParameterName()
-						+ "=" + recordIdentifier + "&"
-						+ WebUIManager.getOperationStatusParameterName() + "="
-						+ WebUIManagerConstants.SUCCESS;
-				CacheManager.clearCache(request);
-				response.sendRedirect(calllbackURL);
-				return null;
-			}
-		}
-		catch (Exception e)
-		{
-			String actionForwardString = catchException(e, request);
-			if ((actionForwardString == null) || (actionForwardString.equals("")))
-			{
-				return mapping.getInputForward();
-			}
-			return (mapping.findForward(actionForwardString));
-		}
-		
 		UserInterfaceiUtility.clearContainerStack(request);
-		
-		
 		return (mapping.findForward(Constants.SUCCESS));
 	}
 
@@ -202,6 +197,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 					{
 						controlSequence = controlSequence + "_" + rowId;
 					}
+
 					AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
 					if (abstractAttribute instanceof AttributeInterface)
 					{
@@ -237,10 +233,12 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			throws DynamicExtensionsSystemException, FileNotFoundException, IOException
 	{
 		AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
-		List<Map<AbstractAttributeInterface, Object>> associationValueMapList = (List<Map<AbstractAttributeInterface, Object>>) attributeValueMap.get(abstractAttribute);
-		
-		if(associationValueMapList == null) {
-			associationValueMapList = 	new ArrayList<Map<AbstractAttributeInterface, Object>>();
+		List<Map<AbstractAttributeInterface, Object>> associationValueMapList = (List<Map<AbstractAttributeInterface, Object>>) attributeValueMap
+				.get(abstractAttribute);
+
+		if (associationValueMapList == null)
+		{
+			associationValueMapList = new ArrayList<Map<AbstractAttributeInterface, Object>>();
 		}
 
 		if (control instanceof ContainmentAssociationControlInterface && processOneToMany)
@@ -250,24 +248,28 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 					.getContainer();
 			if (containmentAssociationControlInterface.isCardinalityOneToMany())
 			{
-				associationValueMapList = collectOneToManyContainmentValues(request,
-						dataEntryForm, targetContainer.getId().toString(), control,associationValueMapList);
+				associationValueMapList = collectOneToManyContainmentValues(request, dataEntryForm,
+						targetContainer.getId().toString(), control, associationValueMapList);
 			}
 			else
 			{
 				Map<AbstractAttributeInterface, Object> oneToOneValueMap = null;
 
-				if(associationValueMapList.size() > 0 && associationValueMapList.get(0) != null ) {
+				if (associationValueMapList.size() > 0 && associationValueMapList.get(0) != null)
+				{
 					oneToOneValueMap = associationValueMapList.get(0);
-				} else {
+				}
+				else
+				{
 					oneToOneValueMap = new HashMap<AbstractAttributeInterface, Object>();
 					associationValueMapList.add(oneToOneValueMap);
-					
+
 				}
-				 
-				generateAttributeValueMap(targetContainer, request, dataEntryForm, "",oneToOneValueMap,true);
+
+				generateAttributeValueMap(targetContainer, request, dataEntryForm, "",
+						oneToOneValueMap, true);
 			}
-			
+
 			attributeValueMap.put(abstractAttribute, associationValueMapList);
 		}
 		else if (control instanceof SelectInterface)
@@ -308,8 +310,9 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 */
 	private List<Map<AbstractAttributeInterface, Object>> collectOneToManyContainmentValues(
 			HttpServletRequest request, DataEntryForm dataEntryForm, String containerId,
-			ControlInterface control,List<Map<AbstractAttributeInterface, Object>> oneToManyContainmentValueList) throws FileNotFoundException,
-			DynamicExtensionsSystemException, IOException
+			ControlInterface control,
+			List<Map<AbstractAttributeInterface, Object>> oneToManyContainmentValueList)
+			throws FileNotFoundException, DynamicExtensionsSystemException, IOException
 	{
 		ContainmentAssociationControl containmentAssociationControl = (ContainmentAssociationControl) control;
 		int currentSize = oneToManyContainmentValueList.size();
@@ -317,20 +320,23 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		String parameterString = containerId + "_rowCount";
 		String rowCountString = request.getParameter(parameterString);
 		int rowCount = Integer.parseInt(rowCountString);
-		Map<AbstractAttributeInterface, Object> attributeValueMap = null;
+
 		for (int counter = 0; counter < rowCount; counter++)
 		{
-			Map<AbstractAttributeInterface, Object>attributeValueMapForSingleRow  = null;
-			
+			Map<AbstractAttributeInterface, Object> attributeValueMapForSingleRow = null;
+
 			String counterStr = String.valueOf(counter + 1);
-			if(counter < currentSize) {
+			if (counter < currentSize)
+			{
 				attributeValueMapForSingleRow = oneToManyContainmentValueList.get(counter);
-			} else {
-				attributeValueMapForSingleRow =  new HashMap<AbstractAttributeInterface, Object>();
+			}
+			else
+			{
+				attributeValueMapForSingleRow = new HashMap<AbstractAttributeInterface, Object>();
 				oneToManyContainmentValueList.add(attributeValueMapForSingleRow);
 			}
-			generateAttributeValueMap(containmentAssociationControl
-					.getContainer(), request, dataEntryForm, counterStr,attributeValueMapForSingleRow, false);
+			generateAttributeValueMap(containmentAssociationControl.getContainer(), request,
+					dataEntryForm, counterStr, attributeValueMapForSingleRow, false);
 		}
 
 		return oneToManyContainmentValueList;

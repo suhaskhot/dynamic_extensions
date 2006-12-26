@@ -110,16 +110,13 @@ public class TextField extends Control implements TextFieldInterface
 		int columnSize = columns.intValue();
 		if (columnSize > 0)
 		{
-			htmlString = "<input " + "class = '" + cssClass + "' " + "name = '" + htmlComponentName
-					+ "' " + "id = '" + htmlComponentName + "' " + "title = '" + tooltip + "'  "
-					+ "value = '" + defaultValue + "' " + "size = '" + columnSize + "' ";
+			htmlString = "<input " + "class = '" + cssClass + "' " + "name = '" + htmlComponentName + "' " + "id = '" + htmlComponentName + "' "
+					+ "title = '" + defaultValue + "' " + "size = '" + columnSize + "' ";
 		}
 		else
 		{
-			htmlString = "<input " + "class = '" + cssClass + "' " + "name = '" + htmlComponentName
-					+ "' " + "id = '" + htmlComponentName + "' " + "title = '" + tooltip + "'  "
-					+ "value = '" + defaultValue + "' " + "size = '"
-					+ Constants.DEFAULT_COLUMN_SIZE + "' ";
+			htmlString = "<input " + "class = '" + cssClass + "' " + "name = '" + htmlComponentName + "' " + "id = '" + htmlComponentName + "' "
+					+ "title = '" + defaultValue + "' " + "size = '" + Constants.DEFAULT_COLUMN_SIZE + "' ";
 		}
 
 		String measurementUnit = getMeasurementUnit(this.getAbstractAttribute());
@@ -141,8 +138,7 @@ public class TextField extends Control implements TextFieldInterface
 		AttributeInterface attribute = (AttributeInterface) this.getAbstractAttribute();
 		if (attribute != null)
 		{
-			AttributeTypeInformationInterface attributeTypeInformationInterface = attribute
-					.getAttributeTypeInformation();
+			AttributeTypeInformationInterface attributeTypeInformationInterface = attribute.getAttributeTypeInformation();
 			if (attributeTypeInformationInterface != null)
 			{
 				if (attributeTypeInformationInterface instanceof StringAttributeTypeInformation)
@@ -182,8 +178,7 @@ public class TextField extends Control implements TextFieldInterface
 	private String getMeasurementUnit(AbstractAttributeInterface abstractAttribute)
 	{
 		String measurementUnit = null;
-		AttributeTypeInformationInterface attributeTypeInformationInterface = DynamicExtensionsUtility
-				.getAttributeTypeInformation(abstractAttribute);
+		AttributeTypeInformationInterface attributeTypeInformationInterface = DynamicExtensionsUtility.getAttributeTypeInformation(abstractAttribute);
 		if (attributeTypeInformationInterface != null)
 		{
 			if (attributeTypeInformationInterface instanceof LongAttributeTypeInformation)
@@ -200,37 +195,33 @@ public class TextField extends Control implements TextFieldInterface
 		return measurementUnit;
 	}
 
-	/**
-	 * @hibernate.property name="isUrl" type="boolean" column="IS_URL" 
-	 * @return Returns the isPassword.
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface#getIsUrl()
 	 */
 	public Boolean getIsUrl()
 	{
 		return isUrl;
 	}
 
-	/**
-	 * @param isUrl is url 
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface#setIsUrl(java.lang.Boolean)
 	 */
 	public void setIsUrl(Boolean isUrl)
 	{
 		this.isUrl = isUrl;
 	}
 
-
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domain.userinterface.Control#generateViewModeHTML()
 	 */
 	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
 	{
-
 		String htmlString = "&nbsp;";
 		if (value != null)
 		{
 			htmlString = "<span class = '" + cssClass + "'> " + this.value.toString() + "</span>";
 		}
 		return htmlString;
-
 	}
 
 }

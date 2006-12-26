@@ -4,7 +4,6 @@ package edu.common.dynamicextensions.domain.userinterface;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.ui.util.Constants;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 
 /**
@@ -12,6 +11,10 @@ import edu.common.dynamicextensions.ui.util.ControlsUtility;
  * @created 28-Sep-2006 12:20:07 PM
  * @hibernate.joined-subclass table="DYEXTN_CHECK_BOX" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
+ */
+/**
+ * @author chetan_patil
+ *
  */
 public class CheckBox extends Control implements CheckBoxInterface
 {
@@ -28,7 +31,9 @@ public class CheckBox extends Control implements CheckBoxInterface
 	{
 	}
 
-
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domain.userinterface.Control#generateEditModeHTML()
+	 */
 	protected String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
 		String isChecked = (String) this.value;
@@ -37,39 +42,33 @@ public class CheckBox extends Control implements CheckBoxInterface
 		{
 			isChecked = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
 		}
-		else if(new Boolean(this.value+"")) 
-		{
-			isChecked = "checked";
-		}
-		else
-		{
-			isChecked = "";
-		}
-
+		
 		String htmlComponentName = getHTMLComponentName();
 		if (isChecked != null && isChecked.equalsIgnoreCase("checked"))
 		{
-			htmlString = "<input type='checkbox' class = '" + this.cssClass + "' name = '" + htmlComponentName + "' " + "value = \"true\" "
-					+ "id = '" + htmlComponentName + "' title = '" + this.tooltip + "' " + isChecked + " >";
+			htmlString = "<input type='checkbox' class='" + this.cssClass + "' name='" + htmlComponentName + "' " + "value='checked' " + "id='"
+					+ htmlComponentName + "'" + isChecked + ">";
 		}
 		else
 		{
-			htmlString = "<input type='checkbox' class = '" + this.cssClass + "' name = '" + htmlComponentName + "' " + "value = \"true\" "
-					+ "id = '" + htmlComponentName + "' title = '" + this.tooltip + "'>";
+			htmlString = "<input type='checkbox' class='" + this.cssClass + "' name='" + htmlComponentName + "' " + "value='checked' " + "id='"
+					+ htmlComponentName + "'>";
 		}
 
 		return htmlString;
-		
 	}
-	
-	protected String generateViewModeHTML () throws DynamicExtensionsSystemException
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domain.userinterface.Control#generateViewModeHTML()
+	 */
+	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
 	{
 		String htmlString = "&nbsp;";
-		if (value != null) {
-		htmlString = "<span class = '"+ cssClass+ "'> " + this.value.toString() + "</span>";
+		if (value != null)
+		{
+			htmlString = "<span class = '" + cssClass + "'> " + this.value.toString() + "</span>";
 		}
 		return htmlString;
-		
 	}
 
 	/**

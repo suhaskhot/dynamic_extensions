@@ -44,8 +44,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 		List<NameValueBean> nameValueBeanList = null;
 		String defaultValue = (String) this.value;
 
-		String htmlString = "<SELECT class = '" + cssClass + "' name = '" + getHTMLComponentName() + "' " + "id = '" + getHTMLComponentName()
-				+ "' title = '" + tooltip + "'>";
+		String htmlString = "<SELECT class = '" + cssClass + "' name = '" + getHTMLComponentName() + "' " + "id = '" + getHTMLComponentName() + ">";
 
 		if (this.value == null)
 		{

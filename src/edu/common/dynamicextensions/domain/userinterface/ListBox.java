@@ -97,9 +97,8 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		{
 			strMultiSelect = "MULTIPLE ";
 		}
-		String htmlString = "<SELECT " + strMultiSelect + " size = " + this.noOfRows + " class = '"
-				+ cssClass + "' " + "' name = '" + getHTMLComponentName() + "' " + "id = '" + name
-				+ "' " + "title = '" + tooltip + "' " + ">";
+		String htmlString = "<SELECT " + strMultiSelect + " size0=" + this.noOfRows + " class='" + cssClass + "' " + "name='"
+				+ getHTMLComponentName() + "' " + "id='" + name + "'>";
 
 		if (valueList == null || valueList.isEmpty())
 		{
@@ -121,15 +120,13 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		{
 			for (NameValueBean nameValueBean : nameValueBeanList)
 			{
-				if (valueList!= null && !valueList.isEmpty() && valueList.contains(nameValueBean.getValue()))
+				if (valueList != null && !valueList.isEmpty() && valueList.contains(nameValueBean.getValue()))
 				{
-					htmlString += "<OPTION VALUE='" + nameValueBean.getValue() + "' SELECTED>"
-							+ nameValueBean.getName();
+					htmlString += "<OPTION VALUE='" + nameValueBean.getValue() + "' SELECTED>" + nameValueBean.getName();
 				}
 				else
 				{
-					htmlString += "<OPTION VALUE='" + nameValueBean.getValue() + "'>"
-							+ nameValueBean.getName();
+					htmlString += "<OPTION VALUE='" + nameValueBean.getValue() + "'>" + nameValueBean.getName();
 				}
 			}
 		}
@@ -137,7 +134,6 @@ public class ListBox extends SelectControl implements ListBoxInterface
 
 		return htmlString;
 	}
-
 
 	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
 	{
@@ -154,11 +150,9 @@ public class ListBox extends SelectControl implements ListBoxInterface
 			{
 				htmlString.append(string);
 				htmlString.append("<br>");
-
 			}
 
 			htmlString.append("</span>");
-
 		}
 		return htmlString.toString();
 	}

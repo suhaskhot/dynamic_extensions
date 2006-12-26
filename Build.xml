@@ -591,17 +591,18 @@
 			</fileset>
 			<report todir="${junit.report.dir}" />
 		</junitreport>
-	 	
-	 	<delete >
-			<fileset dir="${junit.report.dir}">
-				<include name="*.xml" />
-			</fileset>
-	 	</delete>
 
 	 	<replace dir="${junit.report.dir}">
       	   <include name="**/**/*TestAll.htm*"/>
 	        <replacefilter token="../../../stylesheet.css" value="stylesheet.css"/>
 	    </replace>
+
+	 	<delete >
+			<fileset dir="${junit.report.dir}">
+				<include name="**/**/*.xml" />
+			</fileset>
+	 	</delete>
+
 	</target>
 	
 	<target name="de_release" depends="build_app_war,create_dyn_ext_interface_jar,create_dyn_ext_interface_sourcezip,javadoc,genrate_schema">

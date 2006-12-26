@@ -97,8 +97,8 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		{
 			strMultiSelect = "MULTIPLE ";
 		}
-		String htmlString = "<SELECT " + strMultiSelect + " size0=" + this.noOfRows + " class='" + cssClass + "' " + "name='"
-				+ getHTMLComponentName() + "' " + "id='" + name + "'>";
+		String htmlString = "<SELECT " + strMultiSelect + " size=" + this.noOfRows + " class='" + cssClass + "' name='"
+				+ getHTMLComponentName() + "' id='" + name + "'>";
 
 		if (valueList == null || valueList.isEmpty())
 		{

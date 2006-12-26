@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
@@ -146,16 +146,16 @@ public interface ContainerInterface
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	String generateControlsHTMLAsGrid(List<Map> valueMap) throws DynamicExtensionsSystemException;
+	String generateControlsHTMLAsGrid(List<Map<AbstractAttributeInterface, Object>> valueMap) throws DynamicExtensionsSystemException;
 	
 	/**
 	 * @return
 	 */
-	Map<AttributeInterface, Object> getContainerValueMap();
+	Map<AbstractAttributeInterface, Object> getContainerValueMap();
 
 	
 	/**
 	 * @param containerValueMap
 	 */
-	void setContainerValueMap(Map<AttributeInterface, Object> containerValueMap);
+	void setContainerValueMap(Map<AbstractAttributeInterface, Object> containerValueMap);
 }

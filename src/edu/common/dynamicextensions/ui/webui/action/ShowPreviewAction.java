@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.ui.webui.action;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +14,6 @@ import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.util.global.Constants;
 
-
 public class ShowPreviewAction extends BaseDynamicExtensionsAction
 {
 
@@ -24,18 +24,20 @@ public class ShowPreviewAction extends BaseDynamicExtensionsAction
 	 * @param response HttpServletResponse response
 	 * @return ActionForward forward to next action
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) 
+	public ActionForward execute(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)
 	{
-		
-		ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+
+		ContainerInterface containerInterface = (ContainerInterface) CacheManager
+				.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 		ControlsForm controlsForm = (ControlsForm) form;
-		if (controlsForm.getSequenceNumbers() != null && controlsForm.getSequenceNumbers().length > 0)
+		if (controlsForm.getSequenceNumbers() != null
+				&& controlsForm.getSequenceNumbers().length > 0)
 		{
-			ControlsUtility.applySequenceNumbers(containerInterface, controlsForm.getSequenceNumbers());
+			ControlsUtility.applySequenceNumbers(containerInterface, controlsForm
+					.getSequenceNumbers());
 		}
 		return mapping.findForward("loadFormPreviewAction");
-
 	}
 
 }
-;

@@ -11,6 +11,7 @@ package edu.common.dynamicextensions.domain.userinterface;
 import java.util.List;
 import java.util.Map;
 
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -23,7 +24,9 @@ import edu.common.dynamicextensions.util.global.Constants.Cardinality;
  * @hibernate.joined-subclass table="DYEXTN_CONTAINMENT_CONTROL"
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
-public class ContainmentAssociationControl extends Control implements ContainmentAssociationControlInterface
+public class ContainmentAssociationControl extends Control
+		implements
+			ContainmentAssociationControlInterface
 {
 
 	/**
@@ -75,22 +78,24 @@ public class ContainmentAssociationControl extends Control implements Containmen
 	public String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
 		String subContainerHTML = "";
-		if(isCardinalityOneToMany())
+		if (isCardinalityOneToMany())
 		{
-			    List<Map> valueMap  = (List<Map>) value;
-				subContainerHTML = this.getContainer().generateControlsHTMLAsGrid(valueMap);
+			List<Map<AbstractAttributeInterface, Object>> valueMapList = (List<Map<AbstractAttributeInterface, Object>>) value;
+			subContainerHTML = this.getContainer().generateControlsHTMLAsGrid(valueMapList);
 		}
 		else
 		{
-			if(value != null && ((List)value).size() > 0 ) {
-				Map displayContainerValueMap = (Map) ((List) value).get(0);
+			if (value != null && ((List) value).size() > 0)
+			{
+				Map<AbstractAttributeInterface, Object> displayContainerValueMap = ((List<Map<AbstractAttributeInterface, Object>>) value)
+						.get(0);
 				this.getContainer().setContainerValueMap(displayContainerValueMap);
 			}
 			subContainerHTML = this.getContainer().generateControlsHTML();
 		}
 		return subContainerHTML;
 	}
-	
+
 	/**
 	 * This method returns true if the cardinality of the Containment Association is One to Many.
 	 * @return true if Caridnality is One to Many, false otherwise.
@@ -98,7 +103,8 @@ public class ContainmentAssociationControl extends Control implements Containmen
 	public boolean isCardinalityOneToMany()
 	{
 		boolean isOneToMany = false;
-		AssociationInterface associationInterface = (AssociationInterface)this.getAbstractAttribute();
+		AssociationInterface associationInterface = (AssociationInterface) this
+				.getAbstractAttribute();
 		RoleInterface targetRole = associationInterface.getTargetRole();
 		if (targetRole.getMaximumCardinality() == Cardinality.MANY)
 		{
@@ -118,11 +124,10 @@ public class ContainmentAssociationControl extends Control implements Containmen
 	public String generateLinkHTML() throws DynamicExtensionsSystemException
 	{
 		String detailsString = "Details";
-		
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("<span style='cursor:hand' class='" + cssClass + "' ");
 		stringBuffer.append("onclick='showChildContainerInsertDataPage(");
-		stringBuffer.append(this.getParentContainer().getId()+ ",this");
+		stringBuffer.append(this.getParentContainer().getId() + ",this");
 		stringBuffer.append(")'>");
 		stringBuffer.append(detailsString);
 		stringBuffer.append("</span>");

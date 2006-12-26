@@ -780,6 +780,7 @@ function showFormDefinitionPage()
 	previewForm.action="/dynamicExtensions/LoadFormDefinitionAction.do";
 	previewForm.submit();
 }
+
 function showTooltip(text,obj,message) {
 	var tooltip = "";
 	var w1 = obj.scrollWidth;
@@ -925,7 +926,6 @@ function deleteRow(tableId, startPoint)
 	tab.deleteRow(startPoint);
 }
 
-
 function decreaseSequencenumber()
 {
 	checkAttribute = document.controlsForm.checkAttribute;
@@ -939,8 +939,6 @@ function decreaseSequencenumber()
 	}
 	resetRowNum(checkAttribute);
 }
-
-
 
 function moveRowsUp (tableId, startPoint, counter)
 {
@@ -998,7 +996,6 @@ function showDefineGroupPage(formName)
 
 function changeGroupSource(groupSrc)
 {
-	
 	if(groupSrc!=null)
 	{
 		var divForGrpDetails = document.getElementById('groupDetailsDiv');
@@ -1022,7 +1019,6 @@ function initDefineGroupForm()
 
 function showDefineFormJSP()
 {
-	
 	var groupForm = document.getElementById('groupForm');
 	var groupOperation = document.getElementById('groupOperation');
 	if(groupOperation!=null)
@@ -1103,8 +1099,7 @@ function changeSelection(fldForSelectedObject,str1,seqno)
 	{
 		document.getElementById(prevSelectedId).style.fontWeight='normal';
 	}
-	
-	
+		
 	var formName = document.getElementById(str1);
 	
 	if(formName!=null)
@@ -1115,7 +1110,6 @@ function changeSelection(fldForSelectedObject,str1,seqno)
 	{
 		setSelectedObjectName(fldForSelectedObject,"");
 	}
-
 }
 
 
@@ -1210,16 +1204,15 @@ function groupChangedResponse(formNameListXML)
 					}
 					if((optionName!=null)&&(optionValue!=null))
 					{
-							var oOption = document.createElement("OPTION");
-							htmlFormNameList.options.add(oOption,htmlFormNameList.options.length+1);
-							oOption.text= optionName;
-							oOption.value = optionValue;
+						var oOption = document.createElement("OPTION");
+						htmlFormNameList.options.add(oOption,htmlFormNameList.options.length+1);
+						oOption.text= optionName;
+						oOption.value = optionValue;
 					}
 				}
 			}
 		}
-		
-	formChanged();	
+		formChanged();	
 	}
 }
 
@@ -1671,17 +1664,20 @@ function groupSelectedResponse(groupXML)
 		{
 			htmlGroupDescription.value = "";
 		}
-		
 	}
-	
 }
-
 
 function showChildContainerInsertDataPage(containerId,ths)
  {
     document.getElementById('childContainerId').value = containerId;
     document.getElementById('dataEntryOperation').value  = "insertChildData";
 	document.getElementById('childRowId').value = ths.parentNode.parentNode.rowIndex;
+	
+	if(document.getElementById('showFormPreview').value == "true")
+	{
+		document.getElementById('showFormPreview').value = "true";
+	}
+
 	var dataEntryForm = document.getElementById('dataEntryForm');
 	dataEntryForm.action="/dynamicExtensions/ApplyDataEntryFormAction.do";
 	dataEntryForm.submit();
@@ -1690,6 +1686,7 @@ function showChildContainerInsertDataPage(containerId,ths)
 function showParentContainerInsertDataPage()
  {
     document.getElementById('dataEntryOperation').value  = "insertParentData";
+    
 //	var dataEntryForm = document.getElementById('dataEntryForm');
 //	dataEntryForm.action="/dynamicExtensions/ApplyDataEntryFormAction.do";
 //	dataEntryForm.submit();

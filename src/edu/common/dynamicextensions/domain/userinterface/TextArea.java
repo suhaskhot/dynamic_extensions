@@ -93,7 +93,8 @@ public class TextArea extends Control implements TextAreaInterface
 
 		String htmlComponentName = getHTMLComponentName();
 
-		String htmlString = "<textarea " + "class='" + this.cssClass + "' " + "name='" + htmlComponentName + "' " + "id='" + htmlComponentName + "' ";
+		String htmlString = "<textarea " + "class='" + this.cssClass + "' " + "name='"
+				+ htmlComponentName + "' " + "id='" + htmlComponentName + "' ";
 
 		int noCols = columns.intValue();
 		int noRows = rows.intValue();
@@ -121,7 +122,8 @@ public class TextArea extends Control implements TextAreaInterface
 		AttributeInterface attribute = (AttributeInterface) this.getAbstractAttribute();
 		if (attribute != null)
 		{
-			StringAttributeTypeInformation stringAttributeTypeInformation = (StringAttributeTypeInformation) attribute.getAttributeTypeInformation();
+			StringAttributeTypeInformation stringAttributeTypeInformation = (StringAttributeTypeInformation) attribute
+					.getAttributeTypeInformation();
 			if (stringAttributeTypeInformation != null)
 			{
 				maxChars = stringAttributeTypeInformation.getSize().intValue();
@@ -130,7 +132,8 @@ public class TextArea extends Control implements TextAreaInterface
 
 		if (maxChars != 0)
 		{
-			htmlString += "onblur=\"checkTextLength('" + htmlComponentName + "', " + maxChars + ")\">";
+			htmlString += "onblur=\"checkTextLength('" + htmlComponentName + "', " + maxChars
+					+ ")\">";
 		}
 		else
 		{

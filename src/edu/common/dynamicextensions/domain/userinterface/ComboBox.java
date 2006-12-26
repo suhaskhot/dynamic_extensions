@@ -44,7 +44,8 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 		List<NameValueBean> nameValueBeanList = null;
 		String defaultValue = (String) this.value;
 
-		String htmlString = "<SELECT class = '" + cssClass + "' name = '" + getHTMLComponentName() + "' " + "id = '" + getHTMLComponentName() + ">";
+		String htmlString = "<SELECT class='" + cssClass + "' name='" + getHTMLComponentName()
+				+ "' " + "id='" + getHTMLComponentName() + "'>";
 
 		if (this.value == null)
 		{
@@ -66,11 +67,13 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 			{
 				if (nameValueBean.getValue().equals(defaultValue))
 				{
-					htmlString += "<OPTION VALUE='" + nameValueBean.getValue() + "' SELECTED>" + nameValueBean.getName();
+					htmlString += "<OPTION VALUE='" + nameValueBean.getValue() + "' SELECTED>"
+							+ nameValueBean.getName();
 				}
 				else
 				{
-					htmlString += "<OPTION VALUE='" + nameValueBean.getValue() + "'>" + nameValueBean.getName();
+					htmlString += "<OPTION VALUE='" + nameValueBean.getValue() + "'>"
+							+ nameValueBean.getName();
 				}
 			}
 		}
@@ -103,7 +106,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 		String htmlString = "&nbsp;";
 		if (value != null)
 		{
-			htmlString = "<span class = '" + cssClass + "'> " + this.value.toString() + "</span>";
+			htmlString = "<span class='" + cssClass + "'> " + this.value.toString() + "</span>";
 		}
 		return htmlString;
 

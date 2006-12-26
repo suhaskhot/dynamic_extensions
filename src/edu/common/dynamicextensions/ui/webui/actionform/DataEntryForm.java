@@ -51,7 +51,7 @@ public class DataEntryForm extends AbstractActionForm
 	/**
 	 * 
 	 */
-	protected Map valueMap = new HashMap();
+	protected Map<String, Object> valueMap = new HashMap<String, Object>();
 	
 	/**
 	 * 
@@ -95,7 +95,7 @@ public class DataEntryForm extends AbstractActionForm
 	/**
 	 * @return Returns the valueMap.
 	 */
-	public Map getValueMap()
+	public Map<String, Object> getValueMap()
 	{
 		return valueMap;
 	}
@@ -103,7 +103,7 @@ public class DataEntryForm extends AbstractActionForm
 	/**
 	 * @param valueMap The valueMap to set.
 	 */
-	public void setValueMap(Map valueMap)
+	public void setValueMap(Map<String, Object> valueMap)
 	{
 		this.valueMap = valueMap;
 	}

@@ -21,6 +21,7 @@ import edu.common.dynamicextensions.util.global.Constants;
  */
 public class LoadFormPreviewAction extends BaseDynamicExtensionsAction
 {
+
 	/**
 	 * This method overrides the execute method of the Action class.
 	 * It forwards the action to the FormPreview JSP.
@@ -31,16 +32,19 @@ public class LoadFormPreviewAction extends BaseDynamicExtensionsAction
 	 * @throws Exception on exception
 	 * @return ActionForward
 	 */
-    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception
-    {
-        PreviewForm previewForm = (PreviewForm)form;
-        ContainerInterface containerInterface = (ContainerInterface)CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-        if(containerInterface != null)
-        {
-	    	LoadFormPreviewProcessor loadFormPreviewProcessor = LoadFormPreviewProcessor.getInstance();
-	        loadFormPreviewProcessor.populatePreviewForm(containerInterface, previewForm);
-        }
-        return mapping.findForward(Constants.SHOW_FORM_PREVIEW_JSP);
-    }
+	public ActionForward execute(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		PreviewForm previewForm = (PreviewForm) form;
+		ContainerInterface containerInterface = (ContainerInterface) CacheManager
+				.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+		if (containerInterface != null)
+		{
+			LoadFormPreviewProcessor loadFormPreviewProcessor = LoadFormPreviewProcessor
+					.getInstance();
+			loadFormPreviewProcessor.populatePreviewForm(containerInterface, previewForm);
+		}
+		return mapping.findForward(Constants.SHOW_FORM_PREVIEW_JSP);
+	}
 
 }

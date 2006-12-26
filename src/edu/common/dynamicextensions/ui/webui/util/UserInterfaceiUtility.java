@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
@@ -39,14 +38,14 @@ public class UserInterfaceiUtility
 	 * @param containerInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public static String generateHTMLforGrid(ContainerInterface subContainer, List<Map> valueMap)
+	public static String generateHTMLforGrid(ContainerInterface subContainer, List<Map<AbstractAttributeInterface, Object>> valueMapList)
 			throws DynamicExtensionsSystemException
 	{
 		StringBuffer stringBuffer = new StringBuffer();
 		int rowCount = 0;
-		if (valueMap != null)
+		if (valueMapList != null)
 		{
-			rowCount = valueMap.size();
+			rowCount = valueMapList.size();
 		}
 
 		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(subContainer
@@ -57,7 +56,7 @@ public class UserInterfaceiUtility
 		stringBuffer.append("<div style='display:none' id='" + subContainer.getId()
 				+ "_substitutionDiv'>");
 		stringBuffer.append("<table>");
-		subContainer.setContainerValueMap(new HashMap()); //empty hashmap to generate hidden row
+		subContainer.setContainerValueMap(new HashMap<AbstractAttributeInterface, Object>()); //empty hashmap to generate hidden row
 		stringBuffer.append(getContainerHTMLAsARow(subContainer, -1));
 		stringBuffer.append("</table>");
 		stringBuffer.append("</div>");
@@ -102,10 +101,10 @@ public class UserInterfaceiUtility
 		}
 
 		stringBuffer.append("</tr>");
-		if (valueMap != null)
+		if (valueMapList != null)
 		{
 			int index = 1;
-			for (Map rowValueMap : valueMap)
+			for (Map<AbstractAttributeInterface, Object> rowValueMap : valueMapList)
 			{
 				subContainer.setContainerValueMap(rowValueMap);
 				stringBuffer.append(getContainerHTMLAsARow(subContainer, index));
@@ -176,7 +175,9 @@ public class UserInterfaceiUtility
 	 * @param valueMap
 	 */
 	public static void addContainerInfo(Stack<ContainerInterface> containerStack,
-			ContainerInterface containerInterface, Stack<Map> valueMapStack, Map valueMap)
+			ContainerInterface containerInterface,
+			Stack<Map<AbstractAttributeInterface, Object>> valueMapStack,
+			Map<AbstractAttributeInterface, Object> valueMap)
 	{
 		containerStack.push(containerInterface);
 		valueMapStack.push(valueMap);
@@ -188,7 +189,7 @@ public class UserInterfaceiUtility
 	 * @param valueMapStack
 	 */
 	public static void removeContainerInfo(Stack<ContainerInterface> containerStack,
-			Stack<Map> valueMapStack)
+			Stack<Map<AbstractAttributeInterface, Object>> valueMapStack)
 	{
 		containerStack.pop();
 		valueMapStack.pop();
@@ -221,7 +222,7 @@ public class UserInterfaceiUtility
 	{
 
 		StringBuffer stringBuffer = new StringBuffer();
-		Map<AttributeInterface, Object> containerValueMap = container.getContainerValueMap();
+		Map<AbstractAttributeInterface, Object> containerValueMap = container.getContainerValueMap();
 		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(container
 				.getControlCollection());
 		Collections.sort(controlsList);

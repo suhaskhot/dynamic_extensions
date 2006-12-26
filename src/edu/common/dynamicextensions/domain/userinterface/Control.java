@@ -19,7 +19,10 @@ import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
  * @created 28-Sep-2006 12:20:07 PM
  * @hibernate.class table="DYEXTN_CONTROL"
  */
-public abstract class Control extends DynamicExtensionBaseDomainObject implements Serializable, ControlInterface
+public abstract class Control extends DynamicExtensionBaseDomainObject
+		implements
+			Serializable,
+			ControlInterface
 {
 
 	/**
@@ -80,7 +83,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	 * 
 	 */
 	protected Container parentContainer;
-	
+
 	/**
 	 * 
 	 */
@@ -204,7 +207,8 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		String htmlString = "";
 
 		String innerHTML = "";
-		if (getParentContainer().getMode() != null && getParentContainer().getMode().equalsIgnoreCase(WebUIManagerConstants.VIEW_MODE))
+		if (getParentContainer().getMode() != null
+				&& getParentContainer().getMode().equalsIgnoreCase(WebUIManagerConstants.VIEW_MODE))
 		{
 			innerHTML = generateViewModeHTML();
 		}
@@ -314,11 +318,11 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		Long entityIdentifier = entity.getId();
 		EntityManagerInterface entityManager = EntityManager.getInstance();
 		ContainerInterface container = null;
-		if(entityIdentifier != null)
+		if (entityIdentifier != null)
 		{
 			container = entityManager.getContainerByEntityIdentifier(entityIdentifier);
 		}
-		
+
 		if (container != null && this.getSequenceNumber() != null)
 		{
 			return "Control_" + container.getId() + "_" + this.getSequenceNumber();
@@ -390,5 +394,5 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	{
 		this.isSubControl = isSubControl;
 	}
-	
+
 }

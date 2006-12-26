@@ -328,7 +328,7 @@ public class ControlsUtility
 							.getPermissibleValueCollection();
 					if (permissibleValueCollection != null)
 					{
-						nameValueBeanList = new Vector<NameValueBean>();
+						nameValueBeanList = new ArrayList<NameValueBean>();
 						NameValueBean nameValueBean = null;
 						for (PermissibleValueInterface permissibleValue : permissibleValueCollection)
 						{
@@ -377,7 +377,7 @@ public class ControlsUtility
 	private static List<NameValueBean> getTargetEntityDisplayAttributeList(Map<Long, List<String>> displayAttributeMap, String separator)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		List<NameValueBean> displayAttributeList = new Vector<NameValueBean>();
+		List<NameValueBean> displayAttributeList = new ArrayList<NameValueBean>();
 
 		Set<Map.Entry<Long, List<String>>> displayAttributeSet = displayAttributeMap.entrySet();
 		for (Map.Entry<Long, List<String>> displayAttributeEntry : displayAttributeSet)

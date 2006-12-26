@@ -87,10 +87,6 @@ public class TextField extends Control implements TextFieldInterface
 	/**
 	 * This method generates the HTML code for TextField control on the HTML form
 	 * @return HTML code for TextField
-	 */
-	/**
-	 * This method generates the HTML code for TextField control on the HTML form
-	 * @return HTML code for TextField
 	 * @throws DynamicExtensionsSystemException 
 	 */
 	public String generateEditModeHTML() throws DynamicExtensionsSystemException
@@ -105,20 +101,18 @@ public class TextField extends Control implements TextFieldInterface
 			}
 		}
 
-		String htmlString = "";
 		String htmlComponentName = getHTMLComponentName();
+		String htmlString = "<INPUT " + "class='" + cssClass + "' " + "name='" + htmlComponentName
+				+ "' " + "id='" + htmlComponentName + "' value='" + defaultValue + "' ";
+
 		int columnSize = columns.intValue();
 		if (columnSize > 0)
 		{
-			htmlString = "<input " + "class = '" + cssClass + "' " + "name = '" + htmlComponentName
-					+ "' " + "id = '" + htmlComponentName + "' " + "title = '" + defaultValue
-					+ "' " + "size = '" + columnSize + "' ";
+			htmlString += "size='" + columnSize + "' ";
 		}
 		else
 		{
-			htmlString = "<input " + "class = '" + cssClass + "' " + "name = '" + htmlComponentName
-					+ "' " + "id = '" + htmlComponentName + "' size = '"
-					+ Constants.DEFAULT_COLUMN_SIZE + "' ";
+			htmlString += "size='" + Constants.DEFAULT_COLUMN_SIZE + "' ";
 		}
 
 		String measurementUnit = getMeasurementUnit(this.getAbstractAttribute());
@@ -129,11 +123,11 @@ public class TextField extends Control implements TextFieldInterface
 
 		if (isPassword != null && isPassword.booleanValue())
 		{
-			htmlString = htmlString + " type='password' ";
+			htmlString += " type='password' ";
 		}
 		else
 		{
-			htmlString = htmlString + " type='text' ";
+			htmlString += " type='text' ";
 		}
 
 		int maxChars = 0;

@@ -52,37 +52,36 @@ public class LoadDataEntryFormProcessor
 	 * @throws DynamicExtensionsSystemException DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException DynamicExtensionsApplicationException
 	 */
-	public ContainerInterface loadDataEntryForm(AbstractActionForm actionForm, ContainerInterface containerInterface,Map valueMap, 
-			String recordIdentifier,String mode) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public ContainerInterface loadDataEntryForm(AbstractActionForm actionForm,
+			ContainerInterface containerInterface,
+			Map<AbstractAttributeInterface, Object> valueMap, String recordIdentifier, String mode)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		DataEntryForm dataEntryForm = (DataEntryForm) actionForm;
 
-
-		if (mode != null && mode.equalsIgnoreCase(WebUIManagerConstants.VIEW_MODE)) {
-			
+		if (mode != null && mode.equalsIgnoreCase(WebUIManagerConstants.VIEW_MODE))
+		{
 			containerInterface.setMode(mode);
 		}
 		EntityInterface entity = containerInterface.getEntity();
 
 		// Get corresponding Control Collection of the Container
-		Collection<ControlInterface> controlCollection = containerInterface.getControlCollection();
+		//Collection<ControlInterface> controlCollection = containerInterface.getControlCollection();
 
 		if (recordIdentifier != null)
 		{
 			//Get corresponding Entity of the Container
 			EntityManagerInterface entityManager = EntityManager.getInstance();
-			Map<AbstractAttributeInterface, Object> recordMap = entityManager.getRecordById(entity, Long.valueOf(recordIdentifier));
+			Map<AbstractAttributeInterface, Object> recordMap = entityManager.getRecordById(entity,
+					Long.valueOf(recordIdentifier));
 			valueMap = recordMap;
-			
 		}
-		
+
 		//setControlsRecordValue(controlCollection, valueMap);
-		if(valueMap != null && !valueMap.isEmpty()  )
-			
+		if (valueMap != null && !valueMap.isEmpty())
 		{
 			containerInterface.setContainerValueMap(valueMap);
 		}
-		
 
 		dataEntryForm.setContainerInterface(containerInterface);
 		if (dataEntryForm.getErrorList() == null)
@@ -114,11 +113,10 @@ public class LoadDataEntryFormProcessor
 	 * @throws DynamicExtensionsSystemException 
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	@SuppressWarnings("unchecked")
-	private void setControlsRecordValue(Collection<ControlInterface> controlCollection, Map<AbstractAttributeInterface, Object> recordMap)
-			throws NumberFormatException, DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private void setControlsRecordValue(Collection<ControlInterface> controlCollection,
+			Map<AbstractAttributeInterface, Object> recordMap) throws NumberFormatException,
+			DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		
 
 		Set<Map.Entry<AbstractAttributeInterface, Object>> recordSet = recordMap.entrySet();
 		for (Map.Entry<AbstractAttributeInterface, Object> recordNode : recordSet)
@@ -134,62 +132,64 @@ public class LoadDataEntryFormProcessor
 			{
 				//TODO
 			}
-			
-		/*	for (ControlInterface control : controlCollection)
-			{
-				AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
-				Object recordAttributeValue = recordNode.getValue();
-				if (abstractAttribute.getName().equals(recordAttributeName))
-				{
-					if (recordAttributeValue != null)
-					{
-						if (abstractAttribute instanceof AttributeInterface)
-						{
-							control.setValue(recordAttributeValue);
-						}
-						else if (abstractAttribute instanceof AssociationInterface)
-						{
-							AssociationInterface association = (AssociationInterface) abstractAttribute;
 
-							RoleInterface role = association.getTargetRole();
-							if (role != null)
-							{
-								AssociationType associationType = role.getAssociationsType();
-								if (associationType != null)
-								{
-									String associationTypeName = associationType.getValue();
-									if (associationTypeName.equals(AssociationType.CONTAINTMENT))
-									{
-										EntityInterface targetEntity = association.getTargetEntity();
-										ContainerInterface targetContainer = entityManager.getContainerByEntityIdentifier(targetEntity.getId());
-										Collection<ControlInterface> targetControlCollection = targetContainer.getControlCollection();
-										if (targetControlCollection != null && !targetControlCollection.isEmpty())
-										{
-											setControlsRecordValue(targetEntity, targetControlCollection, (Map<String, Object>) recordAttributeValue);
-										}
-									}
-								}
-							}
-						}
-					}
-				}				
-			}*/
+			/*	for (ControlInterface control : controlCollection)
+			 {
+			 AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
+			 Object recordAttributeValue = recordNode.getValue();
+			 if (abstractAttribute.getName().equals(recordAttributeName))
+			 {
+			 if (recordAttributeValue != null)
+			 {
+			 if (abstractAttribute instanceof AttributeInterface)
+			 {
+			 control.setValue(recordAttributeValue);
+			 }
+			 else if (abstractAttribute instanceof AssociationInterface)
+			 {
+			 AssociationInterface association = (AssociationInterface) abstractAttribute;
+
+			 RoleInterface role = association.getTargetRole();
+			 if (role != null)
+			 {
+			 AssociationType associationType = role.getAssociationsType();
+			 if (associationType != null)
+			 {
+			 String associationTypeName = associationType.getValue();
+			 if (associationTypeName.equals(AssociationType.CONTAINTMENT))
+			 {
+			 EntityInterface targetEntity = association.getTargetEntity();
+			 ContainerInterface targetContainer = entityManager.getContainerByEntityIdentifier(targetEntity.getId());
+			 Collection<ControlInterface> targetControlCollection = targetContainer.getControlCollection();
+			 if (targetControlCollection != null && !targetControlCollection.isEmpty())
+			 {
+			 setControlsRecordValue(targetEntity, targetControlCollection, (Map<String, Object>) recordAttributeValue);
+			 }
+			 }
+			 }
+			 }
+			 }
+			 }
+			 }				
+			 }*/
 		}
 	}
-	
+
 	/**
 	 * @param controlCollection
 	 * @param attribute
 	 * @return
 	 */
-	private ControlInterface getControlInterface(Collection<ControlInterface> controlCollection, AbstractAttributeInterface attribute) {
-		for(ControlInterface control: controlCollection) {
-			if(control.getAbstractAttribute().equals(attribute)) {
+	private ControlInterface getControlInterface(Collection<ControlInterface> controlCollection,
+			AbstractAttributeInterface attribute)
+	{
+		for (ControlInterface control : controlCollection)
+		{
+			if (control.getAbstractAttribute().equals(attribute))
+			{
 				return control;
 			}
 		}
 		return null;
 	}
 }
-
-

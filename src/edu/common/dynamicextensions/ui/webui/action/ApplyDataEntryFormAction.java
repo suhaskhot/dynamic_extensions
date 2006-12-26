@@ -63,6 +63,8 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			HttpServletRequest request, HttpServletResponse response)
 	{
 		DataEntryForm dataEntryForm = (DataEntryForm) form;
+		
+		String showFormPreview = dataEntryForm.getShowFormPreview();
 
 		Stack<ContainerInterface> containerStack = (Stack<ContainerInterface>) CacheManager
 				.getObjectFromCache(request, Constants.CONTAINER_STACK);

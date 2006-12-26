@@ -42,32 +42,31 @@ public class DatePicker extends Control implements DatePickerInterface
 			}
 		}
 
+		String htmlComponentName = getHTMLComponentName();
 		String output = "<input class='"
 				+ cssClass
-				+ "' "
-				+ " name='"
-				+ getHTMLComponentName()
-				+ "'  id='"
-				+ getHTMLComponentName()
-				+ "' "
-				+ " value='"
+				+ "' name='"
+				+ htmlComponentName
+				+ "' id='"
+				+ htmlComponentName
+				+ "' value='"
 				+ defaultValue
-				+ "'/> "
+				+ "'/>"
 				+ "<A onclick=\"showCalendar('"
-				+ getHTMLComponentName()
-				+ "',"
+				+ htmlComponentName
+				+ "', "
 				+ DynamicExtensionsUtility.getCurrentYear()
-				+ ","
+				+ ", "
 				+ DynamicExtensionsUtility.getCurrentMonth()
-				+ ","
+				+ ", "
 				+ DynamicExtensionsUtility.getCurrentDay()
-				+ ",'MM-dd-yyyy','dataEntryForm','"
-				+ getHTMLComponentName()
-				+ "',event,1900,2020);\" href=\"javascript://\"><IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0></A>"
+				+ ", 'MM-dd-yyyy', 'dataEntryForm', '"
+				+ htmlComponentName
+				+ "', event, 1900, 2020);\" href=\"javascript://\"><IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 /></A>"
 				+ "<DIV id=slcalcod"
-				+ getHTMLComponentName()
+				+ htmlComponentName
 				+ " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">"
-				+ "<SCRIPT>printCalendar('" + getHTMLComponentName() + "',"
+				+ "<SCRIPT>printCalendar('" + htmlComponentName + "',"
 				+ DynamicExtensionsUtility.getCurrentDay() + ","
 				+ DynamicExtensionsUtility.getCurrentMonth() + ","
 				+ DynamicExtensionsUtility.getCurrentYear() + ");</SCRIPT>" + "</DIV>"
@@ -102,9 +101,9 @@ public class DatePicker extends Control implements DatePickerInterface
 	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
 	{
 		String htmlString = "&nbsp;";
-		if (value != null) {
-		htmlString = "<span class = '" + cssClass + "'> " + this.value.toString()
-				+ "</span>";
+		if (value != null)
+		{
+			htmlString = "<span class = '" + cssClass + "'> " + this.value.toString() + "</span>";
 		}
 
 		return htmlString;

@@ -13,7 +13,7 @@ import java.util.Map;
 
 import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.domain.Entity;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
@@ -26,8 +26,12 @@ import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
  * @created 28-Sep-2006 12:20:07 PM
  * @hibernate.class table="DYEXTN_CONTAINER"
  */
-public class Container extends DynamicExtensionBaseDomainObject implements Serializable, ContainerInterface
+public class Container extends DynamicExtensionBaseDomainObject
+		implements
+			Serializable,
+			ContainerInterface
 {
+
 	/**
 	 * 
 	 */
@@ -76,7 +80,7 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 	/**
 	 * 
 	 */
-	protected Map<AttributeInterface, Object> containerValueMap = new HashMap<AttributeInterface, Object>();
+	protected Map<AbstractAttributeInterface, Object> containerValueMap = new HashMap<AbstractAttributeInterface, Object>();
 
 	/**
 	 * Entity to which this container is associated.
@@ -312,9 +316,11 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 	{
 		StringBuffer stringBuffer = new StringBuffer();
 
-		stringBuffer.append("<table summary='' cellpadding='3' cellspacing='0'  align='center' width = '100%'>");
+		stringBuffer
+				.append("<table summary='' cellpadding='3' cellspacing='0'  align='center' width = '100%'>");
 
-		if (this.getMode() != null && this.getMode().equalsIgnoreCase(WebUIManagerConstants.EDIT_MODE))
+		if (this.getMode() != null
+				&& this.getMode().equalsIgnoreCase(WebUIManagerConstants.EDIT_MODE))
 		{
 			stringBuffer.append("<tr>");
 			stringBuffer.append("<td class='formMessage' colspan='3'>");
@@ -342,7 +348,8 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 		stringBuffer.append("</td>");
 		stringBuffer.append("</tr>");
 
-		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(this.getControlCollection());
+		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(this
+				.getControlCollection());
 		Collections.sort(controlsList);
 		for (ControlInterface control : controlsList)
 		{
@@ -358,15 +365,17 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public String generateControlsHTMLAsGrid(List<Map> valueMap) throws DynamicExtensionsSystemException
+	public String generateControlsHTMLAsGrid(
+			List<Map<AbstractAttributeInterface, Object>> valueMapList)
+			throws DynamicExtensionsSystemException
 	{
-		return UserInterfaceiUtility.generateHTMLforGrid(this, valueMap);
+		return UserInterfaceiUtility.generateHTMLforGrid(this, valueMapList);
 	}
 
 	/**
 	 * @return
 	 */
-	public Map<AttributeInterface, Object> getContainerValueMap()
+	public Map<AbstractAttributeInterface, Object> getContainerValueMap()
 	{
 		return containerValueMap;
 	}
@@ -374,7 +383,7 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 	/**
 	 * @param containerValueMap
 	 */
-	public void setContainerValueMap(Map<AttributeInterface, Object> containerValueMap)
+	public void setContainerValueMap(Map<AbstractAttributeInterface, Object> containerValueMap)
 	{
 		this.containerValueMap = containerValueMap;
 	}

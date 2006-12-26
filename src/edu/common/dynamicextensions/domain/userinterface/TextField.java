@@ -110,13 +110,15 @@ public class TextField extends Control implements TextFieldInterface
 		int columnSize = columns.intValue();
 		if (columnSize > 0)
 		{
-			htmlString = "<input " + "class = '" + cssClass + "' " + "name = '" + htmlComponentName + "' " + "id = '" + htmlComponentName + "' "
-					+ "title = '" + defaultValue + "' " + "size = '" + columnSize + "' ";
+			htmlString = "<input " + "class = '" + cssClass + "' " + "name = '" + htmlComponentName
+					+ "' " + "id = '" + htmlComponentName + "' " + "title = '" + defaultValue
+					+ "' " + "size = '" + columnSize + "' ";
 		}
 		else
 		{
-			htmlString = "<input " + "class = '" + cssClass + "' " + "name = '" + htmlComponentName + "' " + "id = '" + htmlComponentName + "' "
-					+ "title = '" + defaultValue + "' " + "size = '" + Constants.DEFAULT_COLUMN_SIZE + "' ";
+			htmlString = "<input " + "class = '" + cssClass + "' " + "name = '" + htmlComponentName
+					+ "' " + "id = '" + htmlComponentName + "' size = '"
+					+ Constants.DEFAULT_COLUMN_SIZE + "' ";
 		}
 
 		String measurementUnit = getMeasurementUnit(this.getAbstractAttribute());
@@ -138,7 +140,8 @@ public class TextField extends Control implements TextFieldInterface
 		AttributeInterface attribute = (AttributeInterface) this.getAbstractAttribute();
 		if (attribute != null)
 		{
-			AttributeTypeInformationInterface attributeTypeInformationInterface = attribute.getAttributeTypeInformation();
+			AttributeTypeInformationInterface attributeTypeInformationInterface = attribute
+					.getAttributeTypeInformation();
 			if (attributeTypeInformationInterface != null)
 			{
 				if (attributeTypeInformationInterface instanceof StringAttributeTypeInformation)
@@ -178,7 +181,8 @@ public class TextField extends Control implements TextFieldInterface
 	private String getMeasurementUnit(AbstractAttributeInterface abstractAttribute)
 	{
 		String measurementUnit = null;
-		AttributeTypeInformationInterface attributeTypeInformationInterface = DynamicExtensionsUtility.getAttributeTypeInformation(abstractAttribute);
+		AttributeTypeInformationInterface attributeTypeInformationInterface = DynamicExtensionsUtility
+				.getAttributeTypeInformation(abstractAttribute);
 		if (attributeTypeInformationInterface != null)
 		{
 			if (attributeTypeInformationInterface instanceof LongAttributeTypeInformation)

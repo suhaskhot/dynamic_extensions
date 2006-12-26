@@ -3,7 +3,7 @@
 <Primitive-Attributes>
     <Primitive-Attribute>
 		  <name>String</name>
-	  	  <database-datatype>varchar(4000)</database-datatype>
+	  	  <database-datatype>text</database-datatype>
     </Primitive-Attribute>
     
     <Primitive-Attribute>

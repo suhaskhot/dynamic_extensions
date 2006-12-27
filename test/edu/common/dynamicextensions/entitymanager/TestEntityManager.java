@@ -2218,5 +2218,76 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		}
 
 	}
+	
+	/**
+	 * PURPOSE : to test the fix for bug 3209. 
+	 *            
+	 *  
+	 * EXPECTED BEHAVIOR : If file attribute is added during edit,its column should not be getting added 
+	 * 
+	 * TEST CASE FLOW : 
+	 * 1.Create an entity 
+	 * 2.Persist the entity.
+	 * 3.edit entity adding a file attribute
+	 * 4. persist again 
+	 * 5. chk for no of column for that entity
+	 */
+	public void testEditEntityToAddFileAttribute()
+	{
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		try
+		{
+            //Step 1.
+			EntityInterface user =  factory.createEntity();
+			user.setName("user");
+
+			AttributeInterface commentsAttributes = factory.createStringAttribute();
+			commentsAttributes.setName("comments");
+			user.addAbstractAttribute(commentsAttributes);
+			
+
+            //Step 2.
+			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
+			java.sql.ResultSetMetaData metadata = executeQueryForMetadata("select * from "
+					+ savedEntity.getTableProperties().getName());
+			assertEquals(2,metadata.getColumnCount());
+
+            //Step 3.
+			AttributeInterface resume = factory.createFileAttribute();
+			resume.setName("resume");
+			user.addAbstractAttribute(resume);
+
+			//Step 4.
+			savedEntity = entityManagerInterface.persistEntity(user);
+
+
+            //Step 5.
+		     metadata = executeQueryForMetadata("select * from "
+					+ savedEntity.getTableProperties().getName());
+			assertEquals(2,metadata.getColumnCount());
+			
+
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			fail();
+			Logger.out.debug(e.getStackTrace());
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			fail();
+			Logger.out.debug(e.getStackTrace());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+
+			Logger.out.debug(e.getStackTrace());
+		}
+
+	}	
 
 }

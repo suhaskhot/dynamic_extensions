@@ -360,6 +360,10 @@ public interface EntityManagerInterface
 	 * @return
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	public Collection<AssociationTreeObject> getAssociationTree() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException ;
-
+	Collection<AssociationTreeObject> getAssociationTree() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException ;
+	
+	/**
+	 * returns all the records for a given entity
+	 */
+    List<EntityRecord> getAllRecords(EntityInterface entity) throws DynamicExtensionsSystemException;
 }

@@ -2612,4 +2612,17 @@ public class EntityManager
 
 	}
 
+
+
+	/**
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllRecords(edu.common.dynamicextensions.domaininterface.EntityInterface)
+	 */
+	public List<EntityRecord> getAllRecords(EntityInterface entity) throws DynamicExtensionsSystemException
+	{
+		List<EntityRecord> recordList = new ArrayList<EntityRecord>();
+		EntityRecord record = new EntityRecord(1L);  
+		recordList.add(record);
+		return recordList;
+	}
+
 }

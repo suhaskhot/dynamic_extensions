@@ -700,7 +700,7 @@ class DynamicExtensionBaseQueryBuilder
 				Attribute savedAttribute = (Attribute) databaseCopy
 						.getAttributeByIdentifier(attribute.getId());
 
-				if (savedAttribute == null || isAttributeColumnToBeAdded(attribute, savedAttribute))
+				if (isAttributeColumnToBeAdded(attribute, savedAttribute))
 				{
 					//either attribute is newly added or previously excluded(file type/multiselect) attribute
 					//modified such that now its column needs to add.
@@ -814,7 +814,7 @@ class DynamicExtensionBaseQueryBuilder
 						.getId());;
 
 				//attribute is removed or modified such that its column need to be removed
-				if (attribute == null || isAttributeColumnToBeRemoved(attribute, savedAttribute))
+				if (isAttributeColumnToBeRemoved(attribute, savedAttribute))
 				{
 					String columnName = savedAttribute.getColumnProperties().getName();
 
@@ -844,20 +844,19 @@ class DynamicExtensionBaseQueryBuilder
 	{
 		boolean columnRemoved = false;
 
-		if (attribute.getIsCollection() && !dataBaseCopy.getIsCollection())
-		{
+		if (attribute == null)
+		{ /* removed now*/
 			columnRemoved = true;
+
+			if (isAttributeColumnToBeExcluded(dataBaseCopy))
+			{
+				columnRemoved = false;
+			}
 		}
 		else
-		{
-
-			AttributeTypeInformationInterface attributeTypeInfo = attribute
-					.getAttributeTypeInformation();
-			AttributeTypeInformationInterface attributeTypeInfoDatabaseCopy = dataBaseCopy
-					.getAttributeTypeInformation();
-
-			if ((attributeTypeInfo instanceof FileAttributeTypeInformation)
-					&& !(attributeTypeInfoDatabaseCopy instanceof FileAttributeTypeInformation))
+		{ /* previously not bexcluded now needs to excluded*/
+			if (!isAttributeColumnToBeExcluded(dataBaseCopy)
+					&& isAttributeColumnToBeExcluded(attribute))
 			{
 				columnRemoved = true;
 			}
@@ -941,26 +940,21 @@ class DynamicExtensionBaseQueryBuilder
 	{
 		boolean columnAdd = false;
 
-		if (!attribute.getIsCollection() && dataBaseCopy.getIsCollection())
-		{
-			//previously multi select, now other.
-			columnAdd = true;
-		}
-		else
-		{
-			// //previously file attribute select, now other.
-			AttributeTypeInformationInterface attributeTypeInfo = attribute
-					.getAttributeTypeInformation();
-			AttributeTypeInformationInterface attributeTypeInfoDatabaseCopy = dataBaseCopy
-					.getAttributeTypeInformation();
-
-			if (!(attributeTypeInfo instanceof FileAttributeTypeInformation)
-					&& (attributeTypeInfoDatabaseCopy instanceof FileAttributeTypeInformation))
+		if (dataBaseCopy == null)
+		{ /*newly added*/
+			if (!isAttributeColumnToBeExcluded(attribute))
 			{
 				columnAdd = true;
 			}
 		}
-
+		else
+		{ /* previously excluded now need to add*/
+			if (isAttributeColumnToBeExcluded(dataBaseCopy)
+					&& !isAttributeColumnToBeExcluded(attribute))
+			{
+				columnAdd = true;
+			}
+		}
 		return columnAdd;
 	}
 

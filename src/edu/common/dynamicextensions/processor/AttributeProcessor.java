@@ -836,6 +836,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				dateAttributeIntf.setFormat(ProcessorConstants.DATE_TIME_FORMAT);
 			}
 		}
+		else
+		{
+			dateAttributeIntf.setFormat(ProcessorConstants.DATE_ONLY_FORMAT);
+		}
 	}
 
 	/**

@@ -45,6 +45,7 @@ import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface;
@@ -188,8 +189,8 @@ public class EntityManager
 			//			Queries for data table creation and modification are fired in the method saveOrUpdateEntity. So if there
 			//is any exception while storing the metadata , we need to roll back the queries that were fired. So
 			//calling the following method to do that.
-			rollbackQueries(stack, entity, e,hibernateDAO);
-			
+			rollbackQueries(stack, entity, e, hibernateDAO);
+
 			if (e instanceof DynamicExtensionsApplicationException)
 			{
 				throw (DynamicExtensionsApplicationException) e;
@@ -213,7 +214,7 @@ public class EntityManager
 				//Queries for data table creation and modification are fired in the method saveOrUpdateEntity. So if there
 				//is any exception while storing the metadata , we need to roll back the queries that were fired. So
 				//calling the following method to do that.
-				rollbackQueries(stack, entity, e,hibernateDAO);
+				rollbackQueries(stack, entity, e, hibernateDAO);
 			}
 		}
 		logDebug("persistEntity", "exiting the method");
@@ -835,7 +836,8 @@ public class EntityManager
 		}
 		EntityInterface sourceEntity = association.getEntity();
 		EntityInterface targetEntity = association.getTargetEntity();
-		if (((Entity) sourceEntity).getDataTableState() == DATA_TABLE_STATE_ALREADY_PRESENT) {
+		if (((Entity) sourceEntity).getDataTableState() == DATA_TABLE_STATE_ALREADY_PRESENT)
+		{
 			return;
 		}
 		RoleInterface sourceRole = association.getSourceRole();
@@ -898,7 +900,7 @@ public class EntityManager
 	 * @param conn
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private void rollbackQueries(Stack reverseQueryList, Entity entity, Exception e,AbstractDAO dao)
+	private void rollbackQueries(Stack reverseQueryList, Entity entity, Exception e, AbstractDAO dao)
 			throws DynamicExtensionsSystemException
 	{
 		String message = "";
@@ -909,11 +911,10 @@ public class EntityManager
 		catch (DAOException e2)
 		{
 			logDebug("rollbackQueries", DynamicExtensionsUtility.getStackTrace(e));
-			DynamicExtensionsSystemException ex = new DynamicExtensionsSystemException(message,
-					e);
+			DynamicExtensionsSystemException ex = new DynamicExtensionsSystemException(message, e);
 			ex.setErrorCode(DYEXTN_S_000);
 			throw ex;
-		
+
 		}
 
 		if (reverseQueryList != null && !reverseQueryList.isEmpty())
@@ -930,7 +931,6 @@ public class EntityManager
 					statement = conn.prepareStatement(query);
 					statement.executeUpdate();
 				}
-				
 
 			}
 			catch (HibernateException e1)
@@ -1198,13 +1198,13 @@ public class EntityManager
 		catch (DAOException e)
 		{
 			//In case of exception execute roll back queries to restore the database state.
-			rollbackQueries(rollbackQueryStack, entity, e,hibernateDAO);
+			rollbackQueries(rollbackQueryStack, entity, e, hibernateDAO);
 			throw new DynamicExtensionsSystemException(
 					"Exception occured while opening a session to save the container.");
 		}
 		catch (UserNotAuthorizedException e)
 		{
-			rollbackQueries(rollbackQueryStack, entity, e,hibernateDAO);
+			rollbackQueries(rollbackQueryStack, entity, e, hibernateDAO);
 		}
 		finally
 		{
@@ -1214,7 +1214,7 @@ public class EntityManager
 			}
 			catch (DAOException e)
 			{
-				rollbackQueries(rollbackQueryStack, entity, e,hibernateDAO);
+				rollbackQueries(rollbackQueryStack, entity, e, hibernateDAO);
 			}
 		}
 		return container;
@@ -1442,8 +1442,7 @@ public class EntityManager
 		try
 		{
 			DAOFactory factory = DAOFactory.getInstance();
-			hibernateDAO = (HibernateDAO) factory.getDAO(Constants.HIBERNATE_DAO);
-			;
+			hibernateDAO = (HibernateDAO) factory.getDAO(Constants.HIBERNATE_DAO);;
 			hibernateDAO.openSession(null);
 
 			recordId = insertDataForSingleEntity(entity, dataValue, hibernateDAO);
@@ -1962,9 +1961,9 @@ public class EntityManager
 			{
 				innerList = (List) result.get(0);
 			}
-			if (innerList != null && !selectColumnNameList.isEmpty() && selectColumnName.length > 0 )
+			if (innerList != null && !selectColumnNameList.isEmpty() && selectColumnName.length > 0)
 			{
-				
+
 				for (int i = 0; i < innerList.size(); i++)
 				{
 					String value = (String) innerList.get(i);
@@ -2091,7 +2090,7 @@ public class EntityManager
 			//			Queries for data table creation and modification are fired in the method saveOrUpdateEntity. So if there
 			//is any exception while storing the metadata , we need to roll back the queries that were fired. So
 			//calling the following method to do that.
-			rollbackQueries(stack, (Entity) entityInterface, e,hibernateDAO);
+			rollbackQueries(stack, (Entity) entityInterface, e, hibernateDAO);
 			if (e instanceof DynamicExtensionsApplicationException)
 			{
 				throw (DynamicExtensionsApplicationException) e;
@@ -2612,16 +2611,66 @@ public class EntityManager
 
 	}
 
-
-
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllRecords(edu.common.dynamicextensions.domaininterface.EntityInterface)
 	 */
-	public List<EntityRecord> getAllRecords(EntityInterface entity) throws DynamicExtensionsSystemException
+	public List<EntityRecord> getAllRecords(EntityInterface entity)
+			throws DynamicExtensionsSystemException
 	{
 		List<EntityRecord> recordList = new ArrayList<EntityRecord>();
-		EntityRecord record = new EntityRecord(1L);  
-		recordList.add(record);
+		JDBCDAO jdbcDao = null;
+		List<List> result;
+		try
+		{
+			jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
+			jdbcDao.openSession(null);
+			TablePropertiesInterface tablePropertiesInterface = entity.getTableProperties();
+			String tableName = tablePropertiesInterface.getName();
+			String[] selectColumnName = {IDENTIFIER};
+			result = jdbcDao.retrieve(tableName, selectColumnName);
+			recordList = getRecordList(result);
+
+		}
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
+		}
+		finally
+		{
+			try
+			{
+				jdbcDao.closeSession();
+			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
+			}
+		}
+		return recordList;
+	}
+
+	/**
+	 * 
+	 * @param result
+	 * @return
+	 */
+	private List<EntityRecord> getRecordList(List<List> result)
+	{
+		List<EntityRecord> recordList = new ArrayList<EntityRecord>();
+		EntityRecord entityRecord;
+		String id;
+		for (List innnerList : result)
+		{
+			if (innnerList != null && !innnerList.isEmpty())
+			{
+				id = (String) innnerList.get(0);
+				if (id != null)
+				{
+					entityRecord = new EntityRecord(new Long(id));
+					recordList.add(entityRecord);
+				}
+			}
+		}
 		return recordList;
 	}
 

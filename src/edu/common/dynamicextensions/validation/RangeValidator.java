@@ -30,29 +30,33 @@ public class RangeValidator implements ValidatorRuleInterface
 	 * @param parameterMap the parameters of the Rule.
 	 * @throws DynamicExtensionsValidationException if the value is not following the range Rule. 
 	 */
-	public boolean validate(AttributeInterface attribute, Object valueObject, Map<String, String> parameterMap)
-			throws DynamicExtensionsValidationException
+	public boolean validate(AttributeInterface attribute, Object valueObject,
+			Map<String, String> parameterMap) throws DynamicExtensionsValidationException
 	{
 		boolean valid = true;
 		String attributeName = attribute.getName();
 
-		if (valueObject != null && !((String) valueObject).trim().equals(""))
+		if (valueObject != null)
 		{
-			AttributeTypeInformationInterface attributeTypeInformation = attribute.getAttributeTypeInformation();
-			if (attributeTypeInformation != null)
+			if (!((String) valueObject).trim().equals(""))
 			{
-				String value = (String) valueObject;
-
-				Set<Map.Entry<String, String>> parameterSet = parameterMap.entrySet();
-				for (Map.Entry<String, String> parameter : parameterSet)
+				AttributeTypeInformationInterface attributeTypeInformation = attribute
+						.getAttributeTypeInformation();
+				if (attributeTypeInformation != null)
 				{
-					if (attributeTypeInformation instanceof LongAttributeTypeInformation)
+					String value = (String) valueObject;
+
+					Set<Map.Entry<String, String>> parameterSet = parameterMap.entrySet();
+					for (Map.Entry<String, String> parameter : parameterSet)
 					{
-						checkLongValidation(parameter, attributeName, value);
-					}
-					else if (attributeTypeInformation instanceof DoubleAttributeTypeInformation)
-					{
-						checkDoubleValidation(parameter, attributeName, value);
+						if (attributeTypeInformation instanceof LongAttributeTypeInformation)
+						{
+							checkLongValidation(parameter, attributeName, value);
+						}
+						else if (attributeTypeInformation instanceof DoubleAttributeTypeInformation)
+						{
+							checkDoubleValidation(parameter, attributeName, value);
+						}
 					}
 				}
 			}
@@ -67,8 +71,8 @@ public class RangeValidator implements ValidatorRuleInterface
 	 * @param value the value to be verified.
 	 * @throws DynamicExtensionsValidationException
 	 */
-	private void checkLongValidation(Map.Entry<String, String> parameter, String attributeName, String value)
-			throws DynamicExtensionsValidationException
+	private void checkLongValidation(Map.Entry<String, String> parameter, String attributeName,
+			String value) throws DynamicExtensionsValidationException
 	{
 		String parameterName = parameter.getKey();
 		String parameterValue = parameter.getValue();
@@ -80,7 +84,8 @@ public class RangeValidator implements ValidatorRuleInterface
 		}
 		catch (NumberFormatException numberFormatException)
 		{
-			throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Number", attributeName);
+			throw new DynamicExtensionsValidationException("Validation failed", null,
+					"dynExtn.validation.Number", attributeName);
 		}
 
 		List<String> placeHolders = null;
@@ -92,7 +97,8 @@ public class RangeValidator implements ValidatorRuleInterface
 				placeHolders.add(attributeName);
 				placeHolders.add(parameterValue);
 
-				throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Range.Minimum", placeHolders);
+				throw new DynamicExtensionsValidationException("Validation failed", null,
+						"dynExtn.validation.Range.Minimum", placeHolders);
 			}
 		}
 		else if (parameterName.equals("max"))
@@ -103,7 +109,8 @@ public class RangeValidator implements ValidatorRuleInterface
 				placeHolders.add(attributeName);
 				placeHolders.add(parameterValue);
 
-				throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Range.Maximum", placeHolders);
+				throw new DynamicExtensionsValidationException("Validation failed", null,
+						"dynExtn.validation.Range.Maximum", placeHolders);
 			}
 		}
 	}
@@ -115,8 +122,8 @@ public class RangeValidator implements ValidatorRuleInterface
 	 * @param value the value to be verified.
 	 * @throws DynamicExtensionsValidationException
 	 */
-	private void checkDoubleValidation(Map.Entry<String, String> parameter, String attributeName, String value)
-			throws DynamicExtensionsValidationException
+	private void checkDoubleValidation(Map.Entry<String, String> parameter, String attributeName,
+			String value) throws DynamicExtensionsValidationException
 	{
 		String parameterName = parameter.getKey();
 		String parameterValue = parameter.getValue();
@@ -128,7 +135,8 @@ public class RangeValidator implements ValidatorRuleInterface
 		}
 		catch (NumberFormatException numberFormatException)
 		{
-			throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Number", attributeName);
+			throw new DynamicExtensionsValidationException("Validation failed", null,
+					"dynExtn.validation.Number", attributeName);
 		}
 
 		List<String> placeHolders = null;
@@ -140,7 +148,8 @@ public class RangeValidator implements ValidatorRuleInterface
 				placeHolders.add(attributeName);
 				placeHolders.add(parameterValue);
 
-				throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Range.Minimum", placeHolders);
+				throw new DynamicExtensionsValidationException("Validation failed", null,
+						"dynExtn.validation.Range.Minimum", placeHolders);
 			}
 		}
 		else if (parameterName.equals("max"))
@@ -151,7 +160,8 @@ public class RangeValidator implements ValidatorRuleInterface
 				placeHolders.add(attributeName);
 				placeHolders.add(parameterValue);
 
-				throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Range.Maximum", placeHolders);
+				throw new DynamicExtensionsValidationException("Validation failed", null,
+						"dynExtn.validation.Range.Maximum", placeHolders);
 			}
 		}
 	}

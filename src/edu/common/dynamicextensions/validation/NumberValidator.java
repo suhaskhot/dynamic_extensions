@@ -30,11 +30,11 @@ public class NumberValidator implements ValidatorRuleInterface
 		boolean isValid = false;
 		AttributeTypeInformationInterface attributeTypeInformation = attribute.getAttributeTypeInformation();
 		String attributeName = attribute.getName();
-		if (valueObject != null && !((String) valueObject).equals(""))
+		if (valueObject != null)
 		{			
 			String value = (String) valueObject;
 
-			if (attributeTypeInformation != null)
+			if (!value.trim().equals("") && attributeTypeInformation != null)
 			{
 				if (attributeTypeInformation instanceof LongAttributeTypeInformation)
 				{

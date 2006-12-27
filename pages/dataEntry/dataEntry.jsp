@@ -66,7 +66,7 @@
 	 				<!-- Main Page heading -->
 					<tr>
 						<td class="formFieldNoBorders">
-							<c:if test='${showFormPreview  == "true"}'> 
+							<c:if test='${showFormPreview == "true"}'> 
 								<bean:message key="app.title.MainPageTitle" />
 							</c:if>
 						</td>
@@ -75,7 +75,7 @@
 		  			<tr valign="top">
 						<td>
 							<table valign="top" summary="" align='center' width='100%' cellspacing="0" cellpadding="3">
-								<c:if test='${showFormPreview  == "true"}'> 
+								<c:if test='${showFormPreview == "true"}'> 
 									<tr valign="top">
 									   	<td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onclick="alert('This page is still under construction and will be available in the next release');">
 											<bean:message key="app.title.DefineGroupTabTitle" />
@@ -118,13 +118,7 @@
 													</logic:messagesPresent>
 												</td>
 											</tr>
-											<tr>
-												<td>&nbsp;
-													<c:if test='${showFormPreview  == "true"}'>
-														
-													</c:if>
-												</td>
-											</tr>
+											<tr><td>&nbsp;</td></tr>
 											<tr>
 												<td>
 													<dynamicExtensions:dynamicUIGenerator containerInterface="<%=containerInterface%>" />
@@ -138,32 +132,16 @@
 										<table cellpadding="4" cellspacing="5" border="0"  align='center'>
 											<tr height="5"></tr>
 											<tr>
-												<td align='left'>
-													<c:choose>
-							  	    					<c:when test='${showFormPreview == "true"}'>
-															<input type="hidden" id = "showFormPreview" name="showFormPreview" value="true"/>
-														</c:when>
-							 							<c:otherwise>
-							 								<input type="hidden" id = "showFormPreview" name="showFormPreview" value="false"/>
-							 							</c:otherwise>
-				     								</c:choose>	
-													&nbsp;
-												</td>
-
 												<td align='right'>						
 													<c:choose>
-							  	    					<c:when test='${showFormPreview == "true" || mode  == "view"}'>
-															<!--
-															<html:submit styleClass="actionButton"  onclick="addDynamicData()" disabled="true">
-																<bean:message  key="buttons.submit" />
+							  	    					<c:when test='${showFormPreview == "true" || mode == "view"}'>
+															<html:submit styleClass="actionButton" onclick="showParentContainerInsertDataPage()" disabled="<%=isTopLevelEntity %>">
+															 	<bean:message key="buttons.back" />
 															</html:submit>
-															-->
 														</c:when>
 							 							<c:otherwise>
 							 								<html:hidden styleId='isEdit' property="isEdit" value=""/>
-							 								<% 
-							 									String target = "addDynamicData(" + recordIdentifier + ")";
-							 								%>
+							 								
 							 								<html:submit styleClass="actionButton" onclick="showParentContainerInsertDataPage()" disabled="<%=isTopLevelEntity %>">
 															 	<bean:message key="buttons.back" />
 															</html:submit>
@@ -181,11 +159,12 @@
 						</td>
 					</tr>
 				</table>
-			<input type="hidden" name="recordIdentifier" value="<%=recordIdentifier%>"/> 
+			<input type="hidden" name="recordIdentifier" value="<%=recordIdentifier%>"/>
 			<html:hidden styleId='entitySaved' property="entitySaved" />
-			<input type="hidden" id = "childContainerId" name="childContainerId" value=""/> 
-			<input type="hidden" id = "childRowId" name="childRowId" value=""/> 
-			<input type="hidden" id = "dataEntryOperation" name="dataEntryOperation" value=""/>
-		</html:form>		
+			<input type="hidden" id="childContainerId" name="childContainerId" value=""/>
+			<input type="hidden" id="childRowId" name="childRowId" value=""/>
+			<input type="hidden" id="dataEntryOperation" name="dataEntryOperation" value=""/>
+			<input type="hidden" id="showFormPreview" name="showFormPreview" value="<%=showFormPreview%>"/>
+		</html:form>
 	</body>
 </html>

@@ -135,9 +135,10 @@ class DynamicExtensionBaseQueryBuilder
 	 * @param recordId recordId
 	 * @return
 	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException 
 	 */
-	public Map<Association, List<Long>> getAssociationGetRecordQueryList(EntityInterface entity,
-			Long recordId) throws DynamicExtensionsSystemException
+	public Map<Association, List> getAssociationGetRecordQueryList(EntityInterface entity,
+			Long recordId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 
 		Collection associationCollection = entity.getAssociationCollection();
@@ -147,7 +148,7 @@ class DynamicExtensionBaseQueryBuilder
 		List<Association> manyToOneAssociationList = new ArrayList<Association>();
 		String comma = "";
 
-		Map<Association, List<Long>> associationValuesMap = new HashMap<Association, List<Long>>();
+		Map<Association, List> associationValuesMap = new HashMap<Association, List>();
 
 		while (associationIterator.hasNext())
 		{
@@ -188,7 +189,21 @@ class DynamicExtensionBaseQueryBuilder
 				query
 						.append(WHITESPACE + WHERE_KEYWORD + WHITESPACE + targetKey + EQUAL
 								+ recordId);
-				associationValuesMap.put(association, getAssociationRecordValues(query.toString()));
+				
+				 List<Long> reocordIdList = getAssociationRecordValues(query.toString());
+				 
+				 if (association.getSourceRole().getAssociationsType().equals(AssociationType.CONTAINTMENT)) {
+					 List<Map> containmentRecordMapList = new ArrayList<Map>();
+
+					 for(Long containmentRecordId : reocordIdList) {
+						 Map recordMap = EntityManager.getInstance().getRecordById(association.getTargetEntity(), containmentRecordId);
+						 containmentRecordMapList.add(recordMap);
+					 }
+					 associationValuesMap.put(association,containmentRecordMapList);	 
+				 } 
+				 else {
+					 associationValuesMap.put(association,reocordIdList);	 
+				 }
 			}
 		}
 

@@ -1,7 +1,6 @@
 
 package edu.common.dynamicextensions.ui.webui.action;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -74,7 +73,12 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 					containerInterface);
 		}
 
+		LoadDataEntryFormProcessor loadDataEntryFormProcessor = LoadDataEntryFormProcessor
+				.getInstance();
+
 		String recordId = request.getParameter("recordId");
+		Map<AbstractAttributeInterface, Object> recordMap = loadDataEntryFormProcessor
+				.getValueMapFromRecordId(containerInterface.getEntity(), recordId);
 
 		Stack<ContainerInterface> containerStack = (Stack<ContainerInterface>) CacheManager
 				.getObjectFromCache(request, Constants.CONTAINER_STACK);
@@ -88,7 +92,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 			valueMapStack = new Stack<Map<AbstractAttributeInterface, Object>>();
 			CacheManager.addObjectToCache(request, Constants.VALUE_MAP_STACK, valueMapStack);
 			UserInterfaceiUtility.addContainerInfo(containerStack, containerInterface,
-					valueMapStack, new HashMap<AbstractAttributeInterface, Object>());
+					valueMapStack, recordMap);
 		}
 		else if (dataEntryOperation != null
 				&& dataEntryOperation.equalsIgnoreCase("insertChildData"))
@@ -124,11 +128,8 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 			UserInterfaceiUtility.removeContainerInfo(containerStack, valueMapStack);
 		}
 
-		LoadDataEntryFormProcessor loadDataEntryFormProcessor = LoadDataEntryFormProcessor
-				.getInstance();
-
 		loadDataEntryFormProcessor.loadDataEntryForm((AbstractActionForm) form, containerStack
-				.peek(), valueMapStack.peek(), recordId, mode);
+				.peek(), valueMapStack.peek(), mode, recordId);
 
 		if (containerStack.size() > 1)
 		{

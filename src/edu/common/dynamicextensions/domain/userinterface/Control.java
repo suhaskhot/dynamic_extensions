@@ -250,7 +250,6 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 			stringBuffer.append("</td>");
 
 			stringBuffer.append("<td class='formLabel' width='20%'>");
-
 		}
 		stringBuffer.append(this.getCaption());
 		stringBuffer.append("</td>");

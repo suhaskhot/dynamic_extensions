@@ -53,4 +53,21 @@ public class EntityRecord
 	{
 		return valueMap;
 	}
+
+	/**
+	 * @return the recordId
+	 */
+	public Long getRecordId()
+	{
+		return recordId;
+	}
+	
+	/**
+	 * @param recordId the recordId to set
+	 */
+	public void setRecordId(Long recordId)
+	{
+		this.recordId = recordId;
+	}
+	
 }

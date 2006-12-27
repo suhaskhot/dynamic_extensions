@@ -23,7 +23,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final int ATTRIBUTE_FORM_ID = 302;
 	public static final int ENTITY_INFORMATION_FORM_ID = 303;
 	public static final int ENTITY_DATA_FORM_ID = 304;
-	public static final int ENTITY_DATA_INFORMATION_FORM_ID = 305;
+	public static final int eNTITY_DATA_INFORMATION_FORM_IDI = 305;
 	public static final int ENTITY_SELECTION_FORM_ID = 306;
 
 	public static final String FORM_DEFINITION_FORM = "formDefinitionForm";
@@ -47,6 +47,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String CURRENT_CONTAINER_NAME = "currentContainerName";
 	public static final String ERRORS_LIST = "errorsList";
 	public static final String SHOW_DYNAMIC_EXTENSIONS_HOMEPAGE = "showDynamicExtensionsHomePage";
+	public static final String SHOW_EDIT_RECORDS_PAGE = "showEditRecordsPage";
 	public static final String SUCCESS = "success";
 	public static final String ADD_SUB_FORM = "addSubForm";
 

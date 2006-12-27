@@ -74,7 +74,10 @@
 										<th width="5%" align='left'>
 											<bean:message key="app.edit" />
 										</th>
-										<th width="20%" align='left'>
+										<th width="5%" align='left'>
+											<bean:message key="app.editRecords" />
+										</th>
+										<th width="15%" align='left'>
 											<bean:message key="table.date" />
 										</th>
 										<th width="15%" align='left'>
@@ -98,7 +101,7 @@
 										<td>
 											<%
 	 											String cont_Id = containerInterface.getId().toString();
-	 											String target = "/dynamicExtensions/LoadDataEntryFormAction.do?containerIdentifier=" + cont_Id;
+	 											String target = "/dynamicExtensions/LoadDataEntryFormAction.do?containerIdentifier=" + cont_Id + "&showFormPreview=false";
 	 										%>
 											<html:link href='<%=target%>'>
 												&nbsp;<c:out value='${containerInterface.caption}' />
@@ -110,6 +113,14 @@
 	 										%>
 											<html:link href='#' onclick="<%=target%>" >
 												<bean:message key="app.edit" />&nbsp;
+											</html:link>
+										</td>
+										<td>
+											<%
+	 											target = "loadEditRecords('/dynamicExtensions/LoadEditRecordsAction.do?containerIdentifier=" + cont_Id + "');";
+	 										%>
+											<html:link href='#' onclick="<%=target%>" >
+												<bean:message key="app.editRecords" />&nbsp;
 											</html:link>
 										</td>
 										<td>

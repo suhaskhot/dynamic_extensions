@@ -1,6 +1,3 @@
-/**
- * @title LoadFormsIndexAction. 
- */
 
 package edu.common.dynamicextensions.ui.webui.action;
 
@@ -26,6 +23,7 @@ import edu.common.dynamicextensions.util.global.Constants;
  */
 public class LoadFormsIndexAction extends BaseDynamicExtensionsAction
 {
+
 	/**
 	 * This method overrides the execute method of the Action class.
 	 * It forwards the action to the DynamicExtension Home page.
@@ -38,24 +36,24 @@ public class LoadFormsIndexAction extends BaseDynamicExtensionsAction
 	 * @throws Exception on exception
 	 * @return ActionForward
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form, 
-				HttpServletRequest request, HttpServletResponse response) throws Exception 
+	public ActionForward execute(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		String callBackURL = request.getParameter(WebUIManagerConstants.CALLBACK_URL_PARAM_NAME);
 		if (callBackURL != null && !callBackURL.equals(""))
 		{
 			CacheManager.clearCache(request);
 			CacheManager.addObjectToCache(request, Constants.CALLBACK_URL, callBackURL);
-		} else {
+		}
+		else
+		{
 			UserInterfaceiUtility.clearContainerStack(request);
 		}
-		
-		
-		
-		FormsIndexForm loadFormIndexForm = (FormsIndexForm)form;
+
+		FormsIndexForm loadFormIndexForm = (FormsIndexForm) form;
 		LoadFormsIndexProcessor loadFormsIndexProcessor = LoadFormsIndexProcessor.getInstance();
 		loadFormsIndexProcessor.populateFormsIndex(loadFormIndexForm);
 		return mapping.findForward(Constants.SHOW_DYNAMIC_EXTENSIONS_HOMEPAGE);
 	}
-	
+
 }

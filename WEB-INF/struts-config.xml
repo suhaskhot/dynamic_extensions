@@ -12,6 +12,7 @@ PUBLIC
 	<form-bean name="formsIndexForm" type="edu.common.dynamicextensions.ui.webui.actionform.FormsIndexForm" />
 	<form-bean name="dataEntryForm" type="edu.common.dynamicextensions.ui.webui.actionform.DataEntryForm" />
 	<form-bean name="groupForm" type="edu.common.dynamicextensions.ui.webui.actionform.GroupForm" />
+	<form-bean name="editRecordsForm" type="edu.common.dynamicextensions.ui.webui.actionform.EditRecordsForm" />
 	</form-beans>
 	
 	 <global-forwards>
@@ -26,6 +27,22 @@ PUBLIC
 			input="/LoadFormsIndexAction.do"
 			scope="request">
 			<forward name="showDynamicExtensionsHomePage" path="/pages/DynamicExtensionHomePage.jsp" />
+		</action>
+		<action path="/LoadEditRecordsAction" 
+			type="edu.common.dynamicextensions.ui.webui.action.LoadEditRecordsAction"
+			name="editRecordsForm"
+			validate="false"
+			input="/DynamicExtensionHomePage.do"
+			scope="request">
+			<forward name="showEditRecordsPage" path="/pages/EditRecords.jsp" />
+		</action>
+		<action path="/ApplyEditRecordsAction" 
+			type="edu.common.dynamicextensions.ui.webui.action.ApplyEditRecordsAction"
+			name="editRecordsForm"
+			validate="false"
+			input="/LoadEditRecordsAction.do"
+			scope="request">
+			<forward name="success" path="/pages/EditRecords.jsp" />
 		</action>
 		<action path="/LoadGroupDefinitionAction" 
 			type="edu.common.dynamicextensions.ui.webui.action.LoadGroupDefinitionAction"
@@ -145,9 +162,9 @@ PUBLIC
 			validate="false"
 			input="/LoadDataEntryFormAction.do"
 			scope="request">
-			<forward name="success" path="/LoadDataEntryFormAction.do?showFormPreview=flase" />
-			<forward name="loadChildContainer" path="/LoadDataEntryFormAction.do?showFormPreview=flase" />
-			<forward name="loadParentContainer" path="/LoadDataEntryFormAction.do?showFormPreview=flase" />
+			<forward name="success" path="/LoadDataEntryFormAction.do" />
+			<forward name="loadChildContainer" path="/LoadDataEntryFormAction.do" />
+			<forward name="loadParentContainer" path="/LoadDataEntryFormAction.do" />
 			
 		</action>
 		

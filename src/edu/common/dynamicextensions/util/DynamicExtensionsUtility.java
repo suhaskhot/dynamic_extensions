@@ -64,13 +64,15 @@ public class DynamicExtensionsUtility
 	 * @throws DynamicExtensionsSystemException on System exception
 	 * @throws DynamicExtensionsApplicationException on Application exception
 	 */
-	public static ControlInterface getControlByIdentifier(String controlIdentifier) throws DynamicExtensionsSystemException,
-	DynamicExtensionsApplicationException
+	public static ControlInterface getControlByIdentifier(String controlIdentifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		ControlInterface  controlInterface = null;
-		controlInterface  = (ControlInterface) getObjectByIdentifier(ControlInterface.class.getName(),controlIdentifier);
+		ControlInterface controlInterface = null;
+		controlInterface = (ControlInterface) getObjectByIdentifier(ControlInterface.class
+				.getName(), controlIdentifier);
 		return controlInterface;
 	}
+
 	/**
 	 * This method fetches the Container instance from the Database given the corresponding Container Identifier.
 	 * @param containerIdentifier The Idetifier of the Container.
@@ -78,11 +80,12 @@ public class DynamicExtensionsUtility
 	 * @throws DynamicExtensionsSystemException on System exception
 	 * @throws DynamicExtensionsApplicationException on Application exception
 	 */
-	public static EntityGroupInterface getEntityGroupByIdentifier(String entityGroupIdentifier) throws DynamicExtensionsSystemException,
-	DynamicExtensionsApplicationException
+	public static EntityGroupInterface getEntityGroupByIdentifier(String entityGroupIdentifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		EntityGroupInterface entityGroupInterface = null;
-		entityGroupInterface  = (EntityGroupInterface) getObjectByIdentifier(EntityGroupInterface.class.getName(),entityGroupIdentifier);
+		entityGroupInterface = (EntityGroupInterface) getObjectByIdentifier(
+				EntityGroupInterface.class.getName(), entityGroupIdentifier);
 		return entityGroupInterface;
 	}
 
@@ -93,11 +96,12 @@ public class DynamicExtensionsUtility
 	 * @throws DynamicExtensionsSystemException on System exception
 	 * @throws DynamicExtensionsApplicationException on Application exception
 	 */
-	public static ContainerInterface getContainerByIdentifier(String containerIdentifier) throws DynamicExtensionsSystemException,
-	DynamicExtensionsApplicationException
+	public static ContainerInterface getContainerByIdentifier(String containerIdentifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ContainerInterface containerInterface = null;
-		containerInterface = (ContainerInterface) getObjectByIdentifier(ContainerInterface.class.getName(), containerIdentifier);
+		containerInterface = (ContainerInterface) getObjectByIdentifier(ContainerInterface.class
+				.getName(), containerIdentifier);
 		return containerInterface;
 	}
 
@@ -109,8 +113,8 @@ public class DynamicExtensionsUtility
 	 * @throws DynamicExtensionsSystemException on System exception
 	 * @throws DynamicExtensionsApplicationException on Application exception
 	 */
-	private static Object getObjectByIdentifier(String objectName, String identifier) throws DynamicExtensionsSystemException,
-	DynamicExtensionsApplicationException
+	private static Object getObjectByIdentifier(String objectName, String identifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
 		Object object = null;
@@ -131,6 +135,7 @@ public class DynamicExtensionsUtility
 		}
 		return object;
 	}
+
 	/**
 	 * @param controlInterface ControlInterface
 	 * @return String ControlName
@@ -178,20 +183,23 @@ public class DynamicExtensionsUtility
 		}
 		return null;
 	}
+
 	/**
 	 * 
 	 * @param controlCollectio
 	 * @param sequenceNumber
 	 * @return
 	 */
-	public static ControlInterface getControlBySequenceNumber(Collection controlCollection, int sequenceNumber)
+	public static ControlInterface getControlBySequenceNumber(Collection controlCollection,
+			int sequenceNumber)
 	{
 		Iterator controlIterator = controlCollection.iterator();
 		ControlInterface controlInterface = null;
 		while (controlIterator.hasNext())
 		{
 			controlInterface = (ControlInterface) controlIterator.next();
-			if (controlInterface.getSequenceNumber() != null && controlInterface.getSequenceNumber() == sequenceNumber
+			if (controlInterface.getSequenceNumber() != null
+					&& controlInterface.getSequenceNumber() == sequenceNumber
 					&& !controlInterface.getSequenceNumberChanged())
 			{
 				controlInterface.setSequenceNumberChanged(true);
@@ -234,7 +242,8 @@ public class DynamicExtensionsUtility
 			throw new RuntimeException(e);
 		}
 
-		if (Logger.out == null) {
+		if (Logger.out == null)
+		{
 			Logger.configure("");
 		}
 
@@ -259,59 +268,66 @@ public class DynamicExtensionsUtility
 			Variables.strTodateFunction = "STR_TO_DATE";
 		}
 
-
 	}
 
 	/**
 	 * 
 	 */
-	public static void initialiseApplicationInfo() {
-		String fileName = Variables.dynamicExtensionsHome + System.getProperty("file.separator")+ ApplicationProperties.getValue("application.version.file");
+	public static void initialiseApplicationInfo()
+	{
+		String fileName = Variables.dynamicExtensionsHome + System.getProperty("file.separator")
+				+ ApplicationProperties.getValue("application.version.file");
 		CVSTagReader cvsTagReader = new CVSTagReader();
 		String cvsTag = cvsTagReader.readTag(fileName);
 		Variables.applicationCvsTag = cvsTag;
 		Logger.out.info("========================================================");
 		Logger.out.info("Application Information");
-		Logger.out.info("Name: "+Variables.applicationName);
-		Logger.out.info("Version: "+Variables.applicationVersion);
-		Logger.out.info("CVS TAG: "+Variables.applicationCvsTag);
-		Logger.out.info("Path: "+ Variables.applicationHome);
-		Logger.out.info("Database Name: "+Variables.databaseName);
-		Logger.out.info("========================================================");  
+		Logger.out.info("Name: " + Variables.applicationName);
+		Logger.out.info("Version: " + Variables.applicationVersion);
+		Logger.out.info("CVS TAG: " + Variables.applicationCvsTag);
+		Logger.out.info("Path: " + Variables.applicationHome);
+		Logger.out.info("Database Name: " + Variables.databaseName);
+		Logger.out.info("========================================================");
 	}
-	public static AttributeTypeInformationInterface getAttributeTypeInformation(AbstractAttributeInterface abstractAttributeInterface)
+
+	public static AttributeTypeInformationInterface getAttributeTypeInformation(
+			AbstractAttributeInterface abstractAttributeInterface)
 	{
 		AttributeTypeInformationInterface attributeTypeInformation = null;
-		if(abstractAttributeInterface!=null)
+		if (abstractAttributeInterface != null)
 		{
-			if(abstractAttributeInterface instanceof AttributeInterface)
+			if (abstractAttributeInterface instanceof AttributeInterface)
 			{
-				attributeTypeInformation = ((AttributeInterface)abstractAttributeInterface).getAttributeTypeInformation();
+				attributeTypeInformation = ((AttributeInterface) abstractAttributeInterface)
+						.getAttributeTypeInformation();
 			}
 		}
 		return attributeTypeInformation;
-	}	
+	}
 
 	/**
 	 * This method converts stack trace to the string representation
 	 * @param aThrowable   throwable object
 	 * @return String representation  of the stack trace
 	 */
-	public static String getStackTrace(Throwable throwable) {
+	public static String getStackTrace(Throwable throwable)
+	{
 		final Writer result = new StringWriter();
 		final PrintWriter printWriter = new PrintWriter(result);
 		throwable.printStackTrace(printWriter);
 		return result.toString();
 	}
+
 	/**
 	 * Converts string to integer
 	 * @param string
 	 * @return
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public static int convertStringToInt(String string) throws DynamicExtensionsApplicationException
+	public static int convertStringToInt(String string)
+			throws DynamicExtensionsApplicationException
 	{
-		int intValue = 0; 
+		int intValue = 0;
 		if (string != null)
 		{
 			try
@@ -334,41 +350,45 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-     * Checks that the input String contains only numeric digits.
-     * @param numString The string whose characters are to be checked.
-     * @return Returns false if the String contains any alphabet else returns true. 
-     * */
-    public static boolean isNaturalNumber(String numString)
-    {
-        boolean isNaturalNumber = true;
-    	try
-        {
-            double doubleValue = Double.parseDouble(numString);
-            if (doubleValue < 0)
-            {
-            	isNaturalNumber = false;
-            }
-        }
-        catch(NumberFormatException exp)
-        {
-        	isNaturalNumber = false;
-        }
-        return isNaturalNumber;
-    }
-    
-    public static boolean isNumeric(String numString)
-    {
-        boolean isNumeric = true;
-    	try
-        {
-            double doubleValue = Double.parseDouble(numString);
-        }
-        catch(NumberFormatException exp)
-        {
-        	isNumeric = false;
-        }
-        return isNumeric;
-    }
+	 * Checks that the input String contains only numeric digits.
+	 * @param numString The string whose characters are to be checked.
+	 * @return Returns false if the String contains any alphabet else returns true. 
+	 * */
+	public static boolean isNaturalNumber(String numString)
+	{
+		boolean isNaturalNumber = true;
+		try
+		{
+			double doubleValue = Double.parseDouble(numString);
+			if (doubleValue < 0)
+			{
+				isNaturalNumber = false;
+			}
+		}
+		catch (NumberFormatException exp)
+		{
+			isNaturalNumber = false;
+		}
+		return isNaturalNumber;
+	}
+
+	public static boolean isNumeric(String numString)
+	{
+		boolean isNumeric = true;
+		try
+		{
+			double doubleValue = Double.parseDouble(numString);
+			if (Double.isNaN(doubleValue))
+			{
+				isNumeric = false;
+			}
+		}
+		catch (NumberFormatException exp)
+		{
+			isNumeric = false;
+		}
+		return isNumeric;
+	}
 
 	public static int getCurrentDay()
 	{
@@ -377,8 +397,9 @@ public class DynamicExtensionsUtility
 
 	public static int getCurrentMonth()
 	{
-		return (Calendar.getInstance().get(Calendar.MONTH)+1);
+		return (Calendar.getInstance().get(Calendar.MONTH) + 1);
 	}
+
 	public static int getCurrentYear()
 	{
 		return Calendar.getInstance().get(Calendar.YEAR);
@@ -389,9 +410,11 @@ public class DynamicExtensionsUtility
 	 * @param originalObject Object
 	 * @return Object
 	 */
-	public static Object cloneObject(Object originalObject) {
+	public static Object cloneObject(Object originalObject)
+	{
 		Object clonedObject = null;
-		try {
+		try
+		{
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
 			objectOutputStream.writeObject(originalObject);
@@ -399,33 +422,36 @@ public class DynamicExtensionsUtility
 			ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
 			ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
 			clonedObject = objectInputStream.readObject();
-		} catch (IOException ioe) {
+		}
+		catch (IOException ioe)
+		{
 
 			ioe.printStackTrace();
-		} catch (ClassNotFoundException cnfe) {
+		}
+		catch (ClassNotFoundException cnfe)
+		{
 			cnfe.printStackTrace();
 		}
 
 		return clonedObject;
 	}
 
-
 	/**
 	 * @param string : string to be checked
 	 * @param list: List that is to be checked if string is contained
 	 * @return check if a string is contained in the passed list and return true if yes
 	 */
-	public static boolean isStringInList(String string,List<String> list)
+	public static boolean isStringInList(String string, List<String> list)
 	{
 		boolean isContainedInList = false;
-		if((string!=null)&&(list!=null))
+		if ((string != null) && (list != null))
 		{
-			String listString  = null;
+			String listString = null;
 			Iterator<String> iterator = list.iterator();
-			while(iterator.hasNext())
+			while (iterator.hasNext())
 			{
 				listString = iterator.next();
-				if(string.equals(listString))
+				if (string.equals(listString))
 				{
 					isContainedInList = true;
 					break;
@@ -440,9 +466,13 @@ public class DynamicExtensionsUtility
 	 * @param list list of NameValueBeanObjects
 	 */
 	@SuppressWarnings("unchecked")
-	public static void sortNameValueBeanListByName(List<NameValueBean> list) {
-		Collections.sort(list,new Comparator() {
-			public int compare(Object o1, Object o2) {
+	public static void sortNameValueBeanListByName(List<NameValueBean> list)
+	{
+		Collections.sort(list, new Comparator()
+		{
+
+			public int compare(Object o1, Object o2)
+			{
 				String s1 = ((NameValueBean) o1).getName();
 				String s2 = ((NameValueBean) o2).getName();
 				return s1.compareTo(s2);
@@ -450,16 +480,17 @@ public class DynamicExtensionsUtility
 		});
 	}
 
-	public static EntityGroupInterface getEntityGroup(EntityInterface  entity)
+	public static EntityGroupInterface getEntityGroup(EntityInterface entity)
 	{
-		EntityGroupInterface entityGroup  = null;
-		if(entity!=null)
+		EntityGroupInterface entityGroup = null;
+		if (entity != null)
 		{
-			Collection<EntityGroupInterface> entityGroupCollection = entity.getEntityGroupCollection();
-			if(entityGroupCollection!=null)
+			Collection<EntityGroupInterface> entityGroupCollection = entity
+					.getEntityGroupCollection();
+			if (entityGroupCollection != null)
 			{
 				Iterator<EntityGroupInterface> entityGroupIter = entityGroupCollection.iterator();
-				if(entityGroupIter.hasNext())
+				if (entityGroupIter.hasNext())
 				{
 					entityGroup = entityGroupIter.next();
 				}

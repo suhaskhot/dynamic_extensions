@@ -25,7 +25,8 @@ function controlSelectedAction()
 	controlsForm.submit();
 }
 
-function formCreateAsChanged() {
+function formCreateAsChanged()
+{
 }
 
 function showHomePageFromCreateForm()
@@ -433,7 +434,6 @@ function deleteElementsFromChoiceList()
 		
 		for(var i=1;i<=noOfElements;i++)
 		{
-			
 			chkBoxId = "chkBox" + i;
 			chkBox = document.getElementById(chkBoxId);
 			if(chkBox!=null)
@@ -1040,6 +1040,14 @@ function setEditOperationMode(target)
 	formsIndexForm.submit();
 }
 
+function loadEditRecords(target)
+{
+	document.getElementById('operationMode').value = 'EditForm';
+	var formsIndexForm = document.getElementById('formsIndexForm');
+	formsIndexForm.action = target;
+	formsIndexForm.submit();
+}
+
 function saveGroup()
 {
 	var groupForm = document.getElementById('groupForm');
@@ -1315,11 +1323,12 @@ function unSelectFormAttribute()
 		    var current = fromListBox.options[i];
 		    if((current!=null)&&(current.selected))
 		    {
-			fromListBox.options[i] = null;
+				fromListBox.options[i] = null;
 		    }
 		}
 	}
 }
+
 function transferElementsFromList(fromListBox,toListBox)
 {
 	if((fromListBox!=null)&&(toListBox!=null))
@@ -1466,7 +1475,6 @@ function removeCheckedRow(containerId)
 					var childObjectName = childNode.name;
 					if (childObjectName != null && childObjectName.indexOf('_') != -1) 
 					{
-
 						var arr = childObjectName.split('_');
 
 						arr[arr.length - 1] = rowIndex;
@@ -1479,11 +1487,10 @@ function removeCheckedRow(containerId)
 								str += "_";
 							}
 						}
-						if (childObjectName.indexOf(')') != -1) {
+						if (childObjectName.indexOf(')') != -1)
+						{
 							str = str + ")";
 						}
-						
-
 						innerHTML = replaceAll(cell.innerHTML,childObjectName,str);
 						cell.innerHTML = innerHTML;
 						break;
@@ -1498,8 +1505,7 @@ function removeCheckedRow(containerId)
 	
 		document.getElementById(containerId + "_table").value = table;
 	}
-	
-	
+
 	var request = newXMLHTTPReq();
 	var handlerFunction = getReadyStateHandler(request,ignoreResponseHandler,false);
 
@@ -1512,8 +1518,8 @@ function removeCheckedRow(containerId)
 	request.send("&ajaxOperation=deleteRowsForContainment&containerId=" + containerId+"&deletedRowIds="+deletedRowIds);
 }
 
-function ignoreResponseHandler(str) {
-
+function ignoreResponseHandler(str)
+{
 }
 
 function setDefaultValues(tableId, obj) 
@@ -1535,17 +1541,13 @@ function setDefaultValues(tableId, obj)
 				
 				str = childObjectName + "_" + rowIndex;
 				str = str  +  ")";
-				
-			} else {	
-			str = childObjectName + "_" + rowIndex;
-			
 			}
-			
+			else
+			{	
+				str = childObjectName + "_" + rowIndex;
+			}
 			obj.innerHTML = replaceAll(obj.innerHTML,childObjectName,str);
-			
-
 		}
-
 	}
 	return obj;
 }
@@ -1668,23 +1670,24 @@ function groupSelectedResponse(groupXML)
 }
 
 function showChildContainerInsertDataPage(containerId,ths)
- {
+{
     document.getElementById('childContainerId').value = containerId;
     document.getElementById('dataEntryOperation').value  = "insertChildData";
 	document.getElementById('childRowId').value = ths.parentNode.parentNode.rowIndex;
-	
-	if(document.getElementById('showFormPreview').value == "true")
-	{
-		document.getElementById('showFormPreview').value = "true";
-	}
-
 	var dataEntryForm = document.getElementById('dataEntryForm');
 	dataEntryForm.action="/dynamicExtensions/ApplyDataEntryFormAction.do";
 	dataEntryForm.submit();
 }
 
+function showEditRecordPage(target)
+{
+	var editRecordsForm = document.getElementById('editRecordsForm');
+	editRecordsForm.action=target;
+	editRecordsForm.submit();
+}
+
 function showParentContainerInsertDataPage()
- {
+{
     document.getElementById('dataEntryOperation').value  = "insertParentData";
     
 //	var dataEntryForm = document.getElementById('dataEntryForm');

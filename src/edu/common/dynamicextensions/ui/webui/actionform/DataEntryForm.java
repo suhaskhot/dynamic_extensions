@@ -28,7 +28,7 @@ public class DataEntryForm extends AbstractActionForm
 	/**
 	 * 
 	 */
-	protected String showFormPreview;
+	protected String showFormPreview = "false";
 
 	/**
 	 * 

@@ -17,6 +17,7 @@ import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 
 /**
@@ -91,6 +92,7 @@ public class ContainmentAssociationControl extends Control
 						.get(0);
 				this.getContainer().setContainerValueMap(displayContainerValueMap);
 			}
+			this.getContainer().setShowAssociationControlsAsLink(true);
 			subContainerHTML = this.getContainer().generateControlsHTML();
 		}
 		return subContainerHTML;
@@ -102,15 +104,7 @@ public class ContainmentAssociationControl extends Control
 	 */
 	public boolean isCardinalityOneToMany()
 	{
-		boolean isOneToMany = false;
-		AssociationInterface associationInterface = (AssociationInterface) this
-				.getAbstractAttribute();
-		RoleInterface targetRole = associationInterface.getTargetRole();
-		if (targetRole.getMaximumCardinality() == Cardinality.MANY)
-		{
-			isOneToMany = true;
-		}
-		return isOneToMany;
+		return UserInterfaceiUtility.isCardinalityOneToMany(this);
 	}
 
 	protected String generateViewModeHTML() throws DynamicExtensionsSystemException

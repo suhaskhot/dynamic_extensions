@@ -103,8 +103,18 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 					.getAbstractAttribute();
 			List<Map<AbstractAttributeInterface, Object>> childContainerValueMapList = (List<Map<AbstractAttributeInterface, Object>>) containerValueMap
 					.get(association);
-			Map<AbstractAttributeInterface, Object> childContainerValueMap = childContainerValueMapList
-					.get(Integer.parseInt(dataEntryForm.getChildRowId()) - 1);
+
+			Map<AbstractAttributeInterface, Object> childContainerValueMap = null;
+			if (UserInterfaceiUtility.isCardinalityOneToMany(associationControl))
+			{
+				childContainerValueMap = childContainerValueMapList.get(Integer
+						.parseInt(dataEntryForm.getChildRowId()) - 1);
+			}
+			else
+			{
+				childContainerValueMap = childContainerValueMapList.get(0);
+			}
+
 			UserInterfaceiUtility.addContainerInfo(containerStack, childContainer, valueMapStack,
 					childContainerValueMap);
 		}

@@ -16,12 +16,15 @@ import javax.servlet.http.HttpServletRequest;
 
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.wustl.common.util.global.ApplicationProperties;
 
 /**
@@ -287,6 +290,56 @@ public class UserInterfaceiUtility
 		}
 
 		return null;
+	}
+	
+	public static String getControlHTMLAsARow(ControlInterface controlInterface,String htmlString)
+	{
+		boolean isControlRequired = UserInterfaceiUtility.isControlRequired(controlInterface);
+		StringBuffer stringBuffer = new StringBuffer();
+		stringBuffer.append("<tr>");
+
+		stringBuffer.append("<td class='formRequiredNotice' width='2%'>");
+		if (isControlRequired)
+		{
+			stringBuffer.append(controlInterface.getParentContainer().getRequiredFieldIndicatior() + "&nbsp;");
+			stringBuffer.append("</td>");
+
+			stringBuffer.append("<td class='formRequiredLabel' width='20%'>");
+		}
+		else
+		{
+			stringBuffer.append("&nbsp;");
+			stringBuffer.append("</td>");
+
+			stringBuffer.append("<td class='formLabel' width='20%'>");
+
+		}
+		stringBuffer.append(controlInterface.getCaption());
+		stringBuffer.append("</td>");
+
+		stringBuffer.append("<td class='formField'>");
+		stringBuffer.append(htmlString);
+		stringBuffer.append("</td>");
+		stringBuffer.append("</tr>");
+
+		return stringBuffer.toString();
+	}
+	
+	/**
+	 * This method returns true if the cardinality of the Containment Association is One to Many.
+	 * @return true if Caridnality is One to Many, false otherwise.
+	 */
+	public static boolean isCardinalityOneToMany(ContainmentAssociationControlInterface control)
+	{
+		boolean isOneToMany = false;
+		AssociationInterface associationInterface = (AssociationInterface) control
+				.getAbstractAttribute();
+		RoleInterface targetRole = associationInterface.getTargetRole();
+		if (targetRole.getMaximumCardinality() == Cardinality.MANY)
+		{
+			isOneToMany = true;
+		}
+		return isOneToMany;
 	}
 
 }

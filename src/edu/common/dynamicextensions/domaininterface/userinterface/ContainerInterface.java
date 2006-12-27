@@ -158,4 +158,17 @@ public interface ContainerInterface
 	 * @param containerValueMap
 	 */
 	void setContainerValueMap(Map<AbstractAttributeInterface, Object> containerValueMap);
+	
+	/**
+	 * 
+	 * @return
+	 */
+	Boolean getShowAssociationControlsAsLink();
+	
+	/**
+	 * 
+	 * @param showAssociationControlsAsLink
+	 */
+	void setShowAssociationControlsAsLink(Boolean showAssociationControlsAsLink);
+	
 }

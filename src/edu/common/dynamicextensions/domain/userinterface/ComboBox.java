@@ -41,20 +41,28 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 	 */
 	public String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
-		List<NameValueBean> nameValueBeanList = null;
-		String defaultValue = (String) this.value;
-
 		String htmlString = "<SELECT class='" + cssClass + "' name='" + getHTMLComponentName()
-				+ "' " + "id='" + getHTMLComponentName() + "'>";
+		+ "' " + "id='" + getHTMLComponentName() + "'>";
+		
+		List valueList = (List) this.value;
+		String defaultValue = "";
 
-		if (this.value == null)
+		if (valueList == null)
 		{
 			defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
 			if (defaultValue == null || defaultValue.length() == 0)
 			{
 				defaultValue = "";
 			}
+		} 
+		else
+		{
+			if(!valueList.isEmpty())
+			{
+				defaultValue = valueList.get(0).toString();
+			}
 		}
+		List<NameValueBean> nameValueBeanList = null;
 
 		if (listOfValues == null)
 		{

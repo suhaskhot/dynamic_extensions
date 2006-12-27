@@ -18,6 +18,7 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 
@@ -91,6 +92,10 @@ public class Container extends DynamicExtensionBaseDomainObject
 	 * 
 	 */
 	protected String mode = WebUIManagerConstants.EDIT_MODE;
+	/**
+	 * 
+	 */
+	protected Boolean showAssociationControlsAsLink = false; 
 
 	/**
 	 * @return
@@ -347,6 +352,7 @@ public class Container extends DynamicExtensionBaseDomainObject
 		stringBuffer.append(this.getCaption());
 		stringBuffer.append("</td>");
 		stringBuffer.append("</tr>");
+	
 
 		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(this
 				.getControlCollection());
@@ -355,8 +361,19 @@ public class Container extends DynamicExtensionBaseDomainObject
 		{
 			Object value = containerValueMap.get(control.getAbstractAttribute());
 			control.setValue(value);
-			stringBuffer.append(control.generateHTML());
+			if (this.showAssociationControlsAsLink  && control instanceof ContainmentAssociationControl)
+			{
+				ContainmentAssociationControl containmentAssociationControl = (ContainmentAssociationControl)control;
+				String link = generateLink(containmentAssociationControl.getParentContainer());
+				link = UserInterfaceiUtility.getControlHTMLAsARow(control,link);
+				stringBuffer.append(link);
+			}
+			else
+			{
+				stringBuffer.append(control.generateHTML());
+			}
 		}
+		this.showAssociationControlsAsLink = false;
 		return stringBuffer.toString();
 	}
 
@@ -387,5 +404,42 @@ public class Container extends DynamicExtensionBaseDomainObject
 	{
 		this.containerValueMap = containerValueMap;
 	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public Boolean getShowAssociationControlsAsLink()
+	{
+		return showAssociationControlsAsLink;
+	}
+
+	/**
+	 * 
+	 * @param showAssociationControlsAsLink
+	 */
+	public void setShowAssociationControlsAsLink(Boolean showAssociationControlsAsLink)
+	{
+		this.showAssociationControlsAsLink = showAssociationControlsAsLink;
+	}
+	
+	/**
+	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface#generateLinkHTML()
+	 */
+	public String generateLink(ContainerInterface containerInterface) throws DynamicExtensionsSystemException
+	{
+		String detailsString = "Details";
+		StringBuffer stringBuffer = new StringBuffer();
+		stringBuffer.append("<span style='cursor:hand' ");
+		stringBuffer.append("onclick='showChildContainerInsertDataPage(");
+		stringBuffer.append(containerInterface.getId() + ",this");
+		stringBuffer.append(")'>");
+		stringBuffer.append(detailsString);
+		stringBuffer.append("</span>");
+
+		return stringBuffer.toString();
+	}
+
+	
 
 }

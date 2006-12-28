@@ -79,14 +79,11 @@ import edu.wustl.common.util.logger.Logger;
  * as setInstance.The application which is using this mock will place the instance of mock class in
  * EntityManager class using setInstancxe method on startup.  
  * 
- *    
+ */
+/**
  * @author Geetika Bangard
  * @author Vishvesh Mulay
  * @author Rahul Ner
- */
-/**
- * @author vishvesh_mulay
- *
  */
 public class EntityManager
 		implements
@@ -821,9 +818,9 @@ public class EntityManager
 	 * 3. One to one or one to many --> In either case, only target key is populated because one extra column gets 
 	 * added to the target entity.
 	 * Naming conventions for the source, target keys and the middle table are 
-	 * Source key --> DE_E_S_<<Source entity identifier>>_<<Association_identifier>>_IDENTIFIER
-	 * Target key --> DE_E_T_<<target entity identifier>>_<<Association_identifier>>_IDENTIFIER
-	 * Middle table name --> DE_E_<<Source entity identifier>>_<<target entity identifier>>_<<Association_identifier>>
+	 * Source key --> DE_E_S_[Source entity identifier]_[Association_identifier]_IDENTIFIER
+	 * Target key --> DE_E_T_[target entity identifier]_[Association_identifier_IDENTIFIER
+	 * Middle table name --> DE_E_[Source entity identifier]_[target entity identifier]_[Association_identifier]
 	 * @param association
 	 */
 	private void populateConstraintProperties(Association association)
@@ -1732,7 +1729,7 @@ public class EntityManager
 	}
 
 	/**
-	 * This method returns a list of <AttributeRecord> that for a particular multiselect attribute of 
+	 * This method returns a list of AttributeRecord that for a particular multiselect attribute of 
 	 * the entity.
 	 * @param collectionRecord 
 	 * 
@@ -1740,7 +1737,7 @@ public class EntityManager
 	 * @param primitiveAttribute attribute for which data has been entered.
 	 * @param identifier id of the record
 	 * @param values List of values for this multiselect attribute
-	 * @return  list of <AttributeRecord>
+	 * @return  list of AttributeRecord
 	 */
 	private AttributeRecord populateCollectionAttributeRecord(AttributeRecord collectionRecord,
 			EntityInterface entity, AttributeInterface primitiveAttribute, Long identifier,

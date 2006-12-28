@@ -120,6 +120,13 @@ public interface ContainerInterface
 	 * @param controlInterface : control interface object to be removed
 	 */
 	void removeControl(ControlInterface controlInterface);
+	
+	/**
+	 * Remove all controls 
+	 *
+	 */
+	void removeAllControls();
+	
 	/**
 	 * @return
 	 */

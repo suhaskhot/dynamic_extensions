@@ -312,6 +312,16 @@ public class Container extends DynamicExtensionBaseDomainObject
 			}
 		}
 	}
+	/**
+	 * remove all controls from the controls collection
+	 */
+	public void removeAllControls()
+	{
+		if (controlCollection != null)
+		{
+			controlCollection.clear();
+		}
+	}
 
 	/**
 	 * @return return the HTML string for this type of a object

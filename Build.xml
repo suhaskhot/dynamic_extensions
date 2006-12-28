@@ -5,6 +5,8 @@
 	
 	<!--define require dir and Properties -->	
 	<property file="DynamicExtensions.properties"/>
+	<property file="db.properties"/>
+		
 	
 	<property name="base.dir" value="."/>
     <property name="src.dir" value="src"/>
@@ -370,70 +372,34 @@
 	    	driver="org.gjt.mm.mysql.Driver"
 			url="jdbc:mysql://${database.host}:${database.port}/${database.name}"
 			userid="${database.username}" password="${database.password}"  onerror="continue">
-	    	
-			<transaction src="${mysql.dir}/catissuecore.sql"/>
-			<transaction src="${mysql.dir}/csm_catissuecore.sql"/>	
-			<transaction src="${mysql.dir}/InitDB_CreateTable.sql"/>
-			<transaction src="${common.dir}/AlterTable.sql"/>
-			<transaction src="${common.dir}/initDB_Insert_Common.sql"/>
-			<transaction  src="${common.dir}/CDE_DummyData_Common.sql"/>
-			  
 			<classpath>
 	        	<fileset dir="${lib.dir}">
 	            	<include name="*.jar"/>
 				</fileset>
 			</classpath> 
+	    	DROP DATABASE ${hibernate.connection.username}
+	    	CREATE DATABASE 
 		</sql>
 	</target>
 
-	<target name="db_initialized_oracle">
+	<target name="db_initialized_oracle" >
 		<sql 
-			driver="oracle.jdbc.driver.OracleDriver"
-			url="jdbc:oracle:thin:@${database.host}:${database.port}:${database.name}"
-			userid="${database.username}" password="${database.password}" onerror="continue"
+			driver="${hibernate.connection.driver_class}"
+			url="${hibernate.connection.url}"
+			userid="${database.tempusername}" password="${database.temppassword}" onerror="continue"
 	    	rdbms="oracle">
-			<transaction  src="${oracle.dir}/catissuecore.sql"/>
-			<transaction  src="${oracle.dir}/InitDB_CreateTable.sql"/>
-			<transaction  src="${common.dir}/initDB_Insert_Common.sql"/>
-			<transaction  src="${common.dir}/AlterTable.sql"/>
-			<transaction  src="${common.dir}/CDE_DummyData_Common.sql"/>
-			<transaction  src="${oracle.dir}/CSM_Create_Oracle.sql"/>
-	    	
 			<classpath>
 	        	<fileset dir="${lib.dir}">
 	            	<include name="*.jar"/>
 	             </fileset>
 			</classpath> 
+			DROP USER ${hibernate.connection.username} CASCADE;
+			CREATE USER ${hibernate.connection.username} PROFILE "DEFAULT" IDENTIFIED BY ${hibernate.connection.password} DEFAULT TABLESPACE "${database.tablespace}" TEMPORARY TABLESPACE "${database.temptablespace}" QUOTA UNLIMITED ON "${database.tablespace}";
+			GRANT CONNECT, RESOURCE TO ${hibernate.connection.username};
+			GRANT DBA TO ${hibernate.connection.username};
+			ALTER USER ${hibernate.connection.username} DEFAULT ROLE ALL;
 		</sql>
-		
-		<sql
-			driver="oracle.jdbc.driver.OracleDriver"
-			url="jdbc:oracle:thin:@${database.host}:${database.port}:${database.name}"
-			userid="${database.username}" password="${database.password}" onerror="continue"
-			delimiter="/" delimitertype="row" keepformat="yes">
-			
-			<transaction  src="${oracle.dir}/CSM_Trigger_Oracle.sql"/>
-				<classpath>
-		            <fileset dir="${lib.dir}">
-		            	<include name="*.jar"/>
-		            </fileset>
-	            </classpath> 
-			</sql>
-			
-		<sql
-			driver="oracle.jdbc.driver.OracleDriver"
-			url="jdbc:oracle:thin:@${database.host}:${database.port}:${database.name}"
-			userid="${database.username}" password="${database.password}" onerror="continue"
-    		rdbms="oracle">
-		  	
-		  	<transaction  src="${oracle.dir}/CSM_InsertData_Oracle.sql"/>	
-   		 	<transaction  src="${oracle.dir}/CSM_AddConstraints_Oracle.sql"/>
-		  	<classpath>
-            	<fileset dir="${lib.dir}">
-                	<include name="*.jar"/>
-              	</fileset>
-            </classpath> 
-		</sql>
+		<antcall target="genrate_schema"></antcall>
 	</target>
 
 	

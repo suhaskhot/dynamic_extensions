@@ -135,7 +135,7 @@
 												<td align='right'>						
 													<c:choose>
 							  	    					<c:when test='${showFormPreview == "true" || mode == "view"}'>
-															<html:submit styleClass="actionButton" onclick="showParentContainerInsertDataPage()" disabled="<%=isTopLevelEntity %>">
+															<html:submit styleClass="actionButton" onclick="showParentContainerInsertDataPage()">
 															 	<bean:message key="buttons.back" />
 															</html:submit>
 														</c:when>

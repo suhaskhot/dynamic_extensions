@@ -115,12 +115,6 @@ public class TextField extends Control implements TextFieldInterface
 			htmlString += "size='" + Constants.DEFAULT_COLUMN_SIZE + "' ";
 		}
 
-		String measurementUnit = getMeasurementUnit(this.getAbstractAttribute());
-		if (measurementUnit != null)
-		{
-			htmlString += "&nbps;" + measurementUnit;
-		}
-
 		if (isPassword != null && isPassword.booleanValue())
 		{
 			htmlString += " type='password' ";
@@ -155,6 +149,16 @@ public class TextField extends Control implements TextFieldInterface
 		else
 		{
 			htmlString += "/>";
+		}
+
+		String measurementUnit = getMeasurementUnit(this.getAbstractAttribute());
+		if (measurementUnit != null)
+		{
+			if (measurementUnit.equalsIgnoreCase("none"))
+			{
+				measurementUnit = "";
+			}
+			htmlString += " " + measurementUnit;
 		}
 		return htmlString;
 	}

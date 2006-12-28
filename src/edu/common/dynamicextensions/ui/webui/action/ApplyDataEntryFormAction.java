@@ -61,10 +61,6 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
 	{
-		DataEntryForm dataEntryForm = (DataEntryForm) form;
-		
-		String showFormPreview = dataEntryForm.getShowFormPreview();
-
 		Stack<ContainerInterface> containerStack = (Stack<ContainerInterface>) CacheManager
 				.getObjectFromCache(request, Constants.CONTAINER_STACK);
 		Stack<Map<AbstractAttributeInterface, Object>> valueMapStack = (Stack<Map<AbstractAttributeInterface, Object>>) CacheManager
@@ -81,18 +77,23 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 
 			try
 			{
-				valueMap = generateAttributeValueMap(containerInterface, request, dataEntryForm,
-						"", valueMap, true);
-				List<String> errorList = ValidatorUtil.validateEntity(valueMap);
-				if (errorList.size() != 0)
+				DataEntryForm dataEntryForm = (DataEntryForm) form;
+				String showFormPreview = dataEntryForm.getShowFormPreview();
+				if (!showFormPreview.equals("true"))
 				{
-					//saveErrors(request, getErrorMessages(errorList));
-					dataEntryForm.setErrorList(errorList);
-					return (mapping.findForward(Constants.SUCCESS));
-				}
-				else
-				{
-					applyDataEntryFormProcessor.removeNullValueEntriesFormMap(valueMap);
+					valueMap = generateAttributeValueMap(containerInterface, request,
+							dataEntryForm, "", valueMap, true);
+					List<String> errorList = ValidatorUtil.validateEntity(valueMap);
+					if (errorList.size() != 0)
+					{
+						//saveErrors(request, getErrorMessages(errorList));
+						dataEntryForm.setErrorList(errorList);
+						return (mapping.findForward(Constants.SUCCESS));
+					}
+					else
+					{
+						applyDataEntryFormProcessor.removeNullValueEntriesFormMap(valueMap);
+					}
 				}
 
 				valueMap = (Map<AbstractAttributeInterface, Object>) valueMapStack.firstElement();
@@ -142,7 +143,6 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			}
 			catch (Exception e)
 			{
-				
 				e.printStackTrace();
 				String actionForwardString = catchException(e, request);
 				if ((actionForwardString == null) || (actionForwardString.equals("")))
@@ -185,7 +185,6 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			Map<AbstractAttributeInterface, Object> attributeValueMap, Boolean processOneToMany)
 			throws FileNotFoundException, IOException, DynamicExtensionsSystemException
 	{
-
 		Collection<ControlInterface> controlCollection = containerInterface.getControlCollection();
 		for (ControlInterface control : controlCollection)
 		{
@@ -266,7 +265,6 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				{
 					oneToOneValueMap = new HashMap<AbstractAttributeInterface, Object>();
 					associationValueMapList.add(oneToOneValueMap);
-
 				}
 
 				generateAttributeValueMap(targetContainer, request, dataEntryForm, "",
@@ -280,7 +278,6 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			List<Long> valueList = new ArrayList<Long>();
 			if (control instanceof ListBoxInterface)
 			{
-				
 				String[] selectedValues = (String[]) request.getParameterValues("Control_"
 						+ sequence);
 				if (selectedValues != null)
@@ -291,13 +288,11 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 						valueList.add(identifier);
 					}
 				}
-				
 			}
 			else if (control instanceof ComboBoxInterface)
 			{
 				String selectedValue = request.getParameter("Control_" + sequence);
 				valueList.add(new Long(selectedValue.trim()));
-				
 			}
 			attributeValueMap.put(abstractAttribute, valueList);
 		}
@@ -396,9 +391,9 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			String value = request.getParameter("Control_" + sequence);
 			if (control instanceof CheckBoxInterface)
 			{
-				if (value == null || !value.trim().equals("true"))
+				if (value == null || !value.trim().equals("checked"))
 				{
-					value = "false";
+					value = "unchecked";
 				}
 			}
 			attributeValue = value;

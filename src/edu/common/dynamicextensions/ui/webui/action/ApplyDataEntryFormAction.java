@@ -3,6 +3,8 @@ package edu.common.dynamicextensions.ui.webui.action;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,11 +22,13 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.upload.FormFile;
 
+import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -33,6 +37,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterfa
 import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.SelectInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ApplyDataEntryFormProcessor;
 import edu.common.dynamicextensions.ui.webui.actionform.DataEntryForm;
@@ -40,6 +45,7 @@ import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.validation.ValidatorUtil;
 
@@ -396,9 +402,48 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 					value = "unchecked";
 				}
 			}
+			else if (control instanceof TextFieldInterface)
+			{
+				AttributeTypeInformationInterface attributeTypeInformationInterface = ((AttributeInterface) abstractAttribute)
+						.getAttributeTypeInformation();
+				if (attributeTypeInformationInterface instanceof DoubleAttributeTypeInformation)
+				{
+					value = rectifyNumberPrecision(
+							(DoubleAttributeTypeInformation) attributeTypeInformationInterface,
+							value);
+				}
+			}
 			attributeValue = value;
 		}
 		attributeValueMap.put(abstractAttribute, attributeValue);
 	}
 
+	/**
+	 * 
+	 * @param doubleAttributeTypeInformation
+	 * @param value
+	 * @return
+	 */
+	private String rectifyNumberPrecision(
+			DoubleAttributeTypeInformation doubleAttributeTypeInformation, String value)
+	{
+		if (DynamicExtensionsUtility.isNumeric(value) && (value.indexOf(".") != -1))
+		{
+			Integer decimalPlaces = doubleAttributeTypeInformation.getDecimalPlaces();
+			StringBuffer decimalFormat = new StringBuffer("#");
+			if (decimalPlaces > 0)
+			{
+				decimalFormat.append(".");
+				while (decimalPlaces > 0)
+				{
+					decimalFormat.append("#");
+					decimalPlaces--;
+				}
+			}
+
+			NumberFormat numberFormat = new DecimalFormat(decimalFormat.toString());
+			value = numberFormat.format(Double.parseDouble(value));
+		}
+		return value;
+	}
 }

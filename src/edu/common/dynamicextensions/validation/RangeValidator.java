@@ -34,8 +34,12 @@ public class RangeValidator implements ValidatorRuleInterface
 			Map<String, String> parameterMap) throws DynamicExtensionsValidationException
 	{
 		boolean valid = true;
-		String attributeName = attribute.getName();
-
+		
+		/* Check for the validity of the number */
+		NumberValidator numberValidator = new NumberValidator();
+		numberValidator.validate(attribute, valueObject, parameterMap);
+		
+		/* Check for the validity of the range of the number against the pre-defined range*/
 		if (valueObject != null)
 		{
 			if (!((String) valueObject).trim().equals(""))
@@ -44,6 +48,7 @@ public class RangeValidator implements ValidatorRuleInterface
 						.getAttributeTypeInformation();
 				if (attributeTypeInformation != null)
 				{
+					String attributeName = attribute.getName();
 					String value = (String) valueObject;
 
 					Set<Map.Entry<String, String>> parameterSet = parameterMap.entrySet();
@@ -77,16 +82,6 @@ public class RangeValidator implements ValidatorRuleInterface
 		String parameterName = parameter.getKey();
 		String parameterValue = parameter.getValue();
 		Long longValue = null;
-
-		try
-		{
-			longValue = Long.parseLong(value);
-		}
-		catch (NumberFormatException numberFormatException)
-		{
-			throw new DynamicExtensionsValidationException("Validation failed", null,
-					"dynExtn.validation.Number", attributeName);
-		}
 
 		List<String> placeHolders = null;
 		if (parameterName.equals("min"))
@@ -128,16 +123,6 @@ public class RangeValidator implements ValidatorRuleInterface
 		String parameterName = parameter.getKey();
 		String parameterValue = parameter.getValue();
 		Double doubleValue = null;
-
-		try
-		{
-			doubleValue = Double.parseDouble(value);
-		}
-		catch (NumberFormatException numberFormatException)
-		{
-			throw new DynamicExtensionsValidationException("Validation failed", null,
-					"dynExtn.validation.Number", attributeName);
-		}
 
 		List<String> placeHolders = null;
 		if (parameterName.equals("min"))

@@ -12,6 +12,7 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -392,13 +393,19 @@ public class DynamicExtensionsUtility
 		return isNaturalNumber;
 	}
 
+	/**
+	 * 
+	 * @param numString
+	 * @return
+	 */
 	public static boolean isNumeric(String numString)
 	{
 		boolean isNumeric = true;
+		BigDecimal bigDecimal = null;
 		try
 		{
-			double doubleValue = Double.parseDouble(numString);
-			if (Double.isNaN(doubleValue))
+			bigDecimal = new BigDecimal(numString);
+			if (bigDecimal == null)
 			{
 				isNumeric = false;
 			}
@@ -485,7 +492,6 @@ public class DynamicExtensionsUtility
 	 *
 	 * @param list list of NameValueBeanObjects
 	 */
-	@SuppressWarnings("unchecked")
 	public static void sortNameValueBeanListByName(List<NameValueBean> list)
 	{
 		Collections.sort(list, new Comparator()

@@ -67,11 +67,12 @@ public class DynamicExtensionsUtility
 	 * @throws DynamicExtensionsSystemException on System exception
 	 * @throws DynamicExtensionsApplicationException on Application exception
 	 */
-	public static ControlInterface getControlByIdentifier(String controlIdentifier) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public static ControlInterface getControlByIdentifier(String controlIdentifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ControlInterface controlInterface = null;
-		controlInterface = (ControlInterface) getObjectByIdentifier(ControlInterface.class.getName(), controlIdentifier);
+		controlInterface = (ControlInterface) getObjectByIdentifier(ControlInterface.class
+				.getName(), controlIdentifier);
 		return controlInterface;
 	}
 
@@ -82,11 +83,12 @@ public class DynamicExtensionsUtility
 	 * @throws DynamicExtensionsSystemException on System exception
 	 * @throws DynamicExtensionsApplicationException on Application exception
 	 */
-	public static EntityGroupInterface getEntityGroupByIdentifier(String entityGroupIdentifier) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public static EntityGroupInterface getEntityGroupByIdentifier(String entityGroupIdentifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		EntityGroupInterface entityGroupInterface = null;
-		entityGroupInterface = (EntityGroupInterface) getObjectByIdentifier(EntityGroupInterface.class.getName(), entityGroupIdentifier);
+		entityGroupInterface = (EntityGroupInterface) getObjectByIdentifier(
+				EntityGroupInterface.class.getName(), entityGroupIdentifier);
 		return entityGroupInterface;
 	}
 
@@ -97,11 +99,12 @@ public class DynamicExtensionsUtility
 	 * @throws DynamicExtensionsSystemException on System exception
 	 * @throws DynamicExtensionsApplicationException on Application exception
 	 */
-	public static ContainerInterface getContainerByIdentifier(String containerIdentifier) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public static ContainerInterface getContainerByIdentifier(String containerIdentifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ContainerInterface containerInterface = null;
-		containerInterface = (ContainerInterface) getObjectByIdentifier(ContainerInterface.class.getName(), containerIdentifier);
+		containerInterface = (ContainerInterface) getObjectByIdentifier(ContainerInterface.class
+				.getName(), containerIdentifier);
 		return containerInterface;
 	}
 
@@ -113,8 +116,8 @@ public class DynamicExtensionsUtility
 	 * @throws DynamicExtensionsSystemException on System exception
 	 * @throws DynamicExtensionsApplicationException on Application exception
 	 */
-	private static Object getObjectByIdentifier(String objectName, String identifier) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	private static Object getObjectByIdentifier(String objectName, String identifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
 		Object object = null;
@@ -190,7 +193,8 @@ public class DynamicExtensionsUtility
 	 * @param sequenceNumber
 	 * @return
 	 */
-	public static ControlInterface getControlBySequenceNumber(Collection controlCollection, int sequenceNumber)
+	public static ControlInterface getControlBySequenceNumber(Collection controlCollection,
+			int sequenceNumber)
 	{
 		ControlInterface controlInterface = null;
 		if (controlCollection != null)
@@ -199,7 +203,8 @@ public class DynamicExtensionsUtility
 			while (controlIterator.hasNext())
 			{
 				controlInterface = (ControlInterface) controlIterator.next();
-				if (controlInterface.getSequenceNumber() != null && controlInterface.getSequenceNumber() == sequenceNumber
+				if (controlInterface.getSequenceNumber() != null
+						&& controlInterface.getSequenceNumber() == sequenceNumber
 				/*&& !controlInterface.getSequenceNumberChanged()*/)
 				{
 					controlInterface.setSequenceNumberChanged(true);
@@ -210,7 +215,8 @@ public class DynamicExtensionsUtility
 		return null;
 	}
 
-	public static ControlInterface getControlBySequenceNumber(ControlInterface[] controlCollection, int sequenceNumber)
+	public static ControlInterface getControlBySequenceNumber(ControlInterface[] controlCollection,
+			int sequenceNumber)
 	{
 		ControlInterface controlInterface = null;
 		if (controlCollection != null)
@@ -219,7 +225,8 @@ public class DynamicExtensionsUtility
 			for (int i = 0; i < noOfControls; i++)
 			{
 				controlInterface = controlCollection[i];
-				if (controlInterface.getSequenceNumber() != null && controlInterface.getSequenceNumber() == sequenceNumber)
+				if (controlInterface.getSequenceNumber() != null
+						&& controlInterface.getSequenceNumber() == sequenceNumber)
 				{
 					controlInterface.setSequenceNumberChanged(true);
 					return controlInterface;
@@ -314,14 +321,16 @@ public class DynamicExtensionsUtility
 		Logger.out.info("========================================================");
 	}
 
-	public static AttributeTypeInformationInterface getAttributeTypeInformation(AbstractAttributeInterface abstractAttributeInterface)
+	public static AttributeTypeInformationInterface getAttributeTypeInformation(
+			AbstractAttributeInterface abstractAttributeInterface)
 	{
 		AttributeTypeInformationInterface attributeTypeInformation = null;
 		if (abstractAttributeInterface != null)
 		{
 			if (abstractAttributeInterface instanceof AttributeInterface)
 			{
-				attributeTypeInformation = ((AttributeInterface) abstractAttributeInterface).getAttributeTypeInformation();
+				attributeTypeInformation = ((AttributeInterface) abstractAttributeInterface)
+						.getAttributeTypeInformation();
 			}
 		}
 		return attributeTypeInformation;
@@ -346,7 +355,8 @@ public class DynamicExtensionsUtility
 	 * @return
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public static int convertStringToInt(String string) throws DynamicExtensionsApplicationException
+	public static int convertStringToInt(String string)
+			throws DynamicExtensionsApplicationException
 	{
 		int intValue = 0;
 		if (string != null)
@@ -496,6 +506,7 @@ public class DynamicExtensionsUtility
 	{
 		Collections.sort(list, new Comparator()
 		{
+
 			public int compare(Object o1, Object o2)
 			{
 				String s1 = ((NameValueBean) o1).getName();
@@ -510,7 +521,8 @@ public class DynamicExtensionsUtility
 		EntityGroupInterface entityGroup = null;
 		if (entity != null)
 		{
-			Collection<EntityGroupInterface> entityGroupCollection = entity.getEntityGroupCollection();
+			Collection<EntityGroupInterface> entityGroupCollection = entity
+					.getEntityGroupCollection();
 			if (entityGroupCollection != null)
 			{
 				Iterator<EntityGroupInterface> entityGroupIter = entityGroupCollection.iterator();

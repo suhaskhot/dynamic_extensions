@@ -1358,13 +1358,15 @@ public class EntityManager
 				else
 				// for other attribute, append to query
 				{
-					columnNameString.append(" , ");
-					columnValuesString.append(" , ");
-					String dbColumnName = primitiveAttribute.getColumnProperties().getName();
+					String strValue = EntityManagerUtil.getFormattedValue(attribute, value);
 
-					columnNameString.append(dbColumnName);
-					value = EntityManagerUtil.getFormattedValue(attribute, value);
-					columnValuesString.append(value);
+					if(strValue != null &&  !strValue.equalsIgnoreCase("")) {
+						columnNameString.append(" , ");
+						columnValuesString.append(" , ");
+						String dbColumnName = primitiveAttribute.getColumnProperties().getName();
+						columnNameString.append(dbColumnName);
+						columnValuesString.append(strValue);
+					}
 				}
 			}
 			else

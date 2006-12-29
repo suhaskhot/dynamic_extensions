@@ -37,10 +37,15 @@ public class NumberValidator implements ValidatorRuleInterface
 		AttributeTypeInformationInterface attributeTypeInformation = attribute
 				.getAttributeTypeInformation();
 		String attributeName = attribute.getName();
+
+		String value = (String) valueObject;
+		if (value == null || value.equals(""))
+		{
+			return true;
+		}
+		
 		if (valueObject != null && DynamicExtensionsUtility.isNumeric((String) valueObject))
 		{
-			String value = (String) valueObject;
-
 			if (attributeTypeInformation != null)
 			{
 				List<String> placeHolders = null;

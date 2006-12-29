@@ -137,6 +137,10 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	 */
 	Integer sequenceNumber;
 	/**
+	 * order of controls on the form
+	 */
+	String controlsSequenceNumbers;
+	/**
 	 * 
 	 */
 	protected String cssClass;
@@ -1758,5 +1762,15 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	public void setSelectedAttributes(List selectedAttributes)
 	{
 		this.selectedAttributes = selectedAttributes;
+	}
+
+	public String getControlsSequenceNumbers()
+	{
+		return this.controlsSequenceNumbers;
+	}
+
+	public void setControlsSequenceNumbers(String controlsSequenceNumbers)
+	{
+		this.controlsSequenceNumbers = controlsSequenceNumbers;
 	}
 }

@@ -1,6 +1,9 @@
 
 package edu.common.dynamicextensions.ui.webui.action;
 
+import java.util.Collection;
+import java.util.Iterator;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -9,6 +12,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.processor.ApplyFormControlsProcessor;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
@@ -44,6 +48,16 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 			ApplyFormControlsProcessor applyFormControlsProcessor = ApplyFormControlsProcessor.getInstance();
 			applyFormControlsProcessor.addControlToForm(containerInterface, controlsForm);
 			
+			/********************************************/
+			System.out.println("************************\nAdd form controls");
+			Collection controlCollection = containerInterface.getControlCollection();
+			Iterator iter = controlCollection.iterator();
+			while(iter.hasNext())
+			{
+				ControlInterface control = (ControlInterface)iter.next();
+				System.out.println("["+control.getSequenceNumber() + "] = [" + control.getCaption() + "]");
+			}
+			/********************************************/
 			ActionForward actionForward = mapping.findForward(Constants.SUCCESS);
 			response.sendRedirect("http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath()
 					+ actionForward.getPath());

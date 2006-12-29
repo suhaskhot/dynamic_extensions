@@ -7,6 +7,9 @@ package edu.common.dynamicextensions.ui.webui.action;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -21,16 +24,25 @@ import org.apache.struts.action.ActionMapping;
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManager;
+import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.GroupProcessor;
+import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.util.SemanticPropertyBuilderUtil;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
+import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
+import edu.wustl.common.beans.NameValueBean;
+import edu.wustl.common.util.logger.Logger;
 
 /**
  * @author preeti_munot
@@ -78,6 +90,18 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 					String containerId  = request.getParameter("containerId");
 					returnXML = deleteRowsForContainment(request,deletedRowIds,containerId);
 				}
+				else if (operation.trim().equals("updateControlsSequence")) {
+					String gridControlsIds  = request.getParameter("gridControlIds");
+					returnXML = updateControlsSequence(request,gridControlsIds);
+				}
+				else if (operation.trim().equals("changeGroup"))
+				{
+					returnXML = changeGroup(request, response);
+				}
+				else if (operation.trim().equals("changeForm"))
+				{
+					returnXML = changeForm(request, response);
+				}
 				
 			}
 			sendResponse(returnXML, response);
@@ -93,6 +117,51 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 			return (mapping.findForward(actionForwardString));
 		}
 	}
+
+	/**
+	 * @param request
+	 * @param gridControlsIds
+	 * @return
+	 */
+	private String updateControlsSequence(HttpServletRequest request, String controlsSeqNumbers)
+	{
+		System.out.println("ControlsId " + controlsSeqNumbers);
+		ContainerInterface containerInterface = WebUIManager.getCurrentContainer(request);
+		if(containerInterface!=null)
+		{
+			Collection<ControlInterface> oldControlsCollection = containerInterface.getControlCollection();
+			if(oldControlsCollection!=null)
+			{
+				Integer[] sequenceNumbers = DynamicExtensionsUtility.convertToIntegerArray(controlsSeqNumbers, ProcessorConstants.CONTROLS_SEQUENCE_NUMBER_SEPARATOR);
+				ControlInterface[] oldControlsArray = oldControlsCollection.toArray(new ControlInterface[oldControlsCollection.size()]);
+				//remove old controls from collection
+				containerInterface.removeAllControls();
+				ControlInterface control = null;
+				if(sequenceNumbers!=null)
+				{
+					for(int i=0; i<sequenceNumbers.length;i++)
+					{
+						control = DynamicExtensionsUtility.getControlBySequenceNumber(oldControlsArray, sequenceNumbers[i].intValue());
+						System.out.println(control);
+						if(control!=null)
+						{
+							containerInterface.addControl(control);
+						}
+					}
+				}
+			}
+		}
+		System.out.println("Coontrols Colln : ");
+		Collection controlCollection = containerInterface.getControlCollection();
+		Iterator iter = controlCollection.iterator();
+		while(iter.hasNext())
+		{
+			ControlInterface control = (ControlInterface)iter.next();
+			System.out.println("["+control.getSequenceNumber() + "] = [" + control.getCaption() + "]");
+		}
+		return "";
+	}
+
 
 	/**
 	 * @param request
@@ -284,5 +353,163 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 		PrintWriter out = response.getWriter();
 		response.setContentType("text/xml");
 		out.write(responseXML);
+	}
+	
+	/**
+	 * @param request
+	 * @param actionForm
+	 * @throws IOException 
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	private String changeGroup(HttpServletRequest request, HttpServletResponse response) throws IOException,
+	DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		List<NameValueBean> formNames = getFormNamesForGroup(request.getParameter("grpName"));
+		DynamicExtensionsUtility.sortNameValueBeanListByName(formNames);
+		String xmlParentNode = "forms";
+		String xmlIdNode = "form-id";
+		String xmlNameNode = "form-name";
+		String responseXML = getResponseXMLString(xmlParentNode, xmlIdNode, xmlNameNode, formNames);
+		return responseXML;
+	}
+	
+	/**
+	 * @param groupName
+	 * @return
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	private List<NameValueBean> getFormNamesForGroup(String groupId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		ArrayList<NameValueBean> formNames = new ArrayList<NameValueBean>();
+		if (groupId != null)
+		{
+			EntityManagerInterface entityManager = EntityManager.getInstance();
+			Long iGroupId = null;
+			try
+			{
+				iGroupId = Long.parseLong(groupId);
+				Collection<ContainerInterface> containerInterfaceList = entityManager.getAllContainersByEntityGroupId(iGroupId);
+				if (containerInterfaceList != null)
+				{
+					ContainerInterface entityContainer = null;
+					//EntityInterface entity = null;
+					NameValueBean formName = null;
+					Iterator<ContainerInterface> containerIterator = containerInterfaceList.iterator();
+					while (containerIterator.hasNext())
+					{
+						entityContainer = containerIterator.next();
+						if (entityContainer != null)
+						{
+							formName = new NameValueBean(entityContainer.getCaption(), entityContainer.getId());
+							formNames.add(formName);
+						}
+					}
+				}
+			}
+			catch (NumberFormatException e)
+			{
+				Logger.out.error("Group Id is null..Please check");
+			}
+		}
+		return formNames;
+	}
+	
+	/**
+	 * @param xmlParentNode
+	 * @param xmlNameNode
+	 * @param listValues
+	 * @return
+	 */
+	private String getResponseXMLString(String xmlParentNode, String xmlIdNode, String xmlNameNode, List<NameValueBean> listValues)
+	{
+		StringBuffer responseXML = new StringBuffer();
+		NameValueBean bean = null;
+		if ((xmlParentNode != null) && (xmlNameNode != null) && (listValues != null))
+		{
+			responseXML.append("<node>");
+			int noOfValues = listValues.size();
+			for (int i = 0; i < noOfValues; i++)
+			{
+				bean = listValues.get(i);
+				if (bean != null)
+				{
+					responseXML.append("<" + xmlParentNode + ">");
+					responseXML.append("<" + xmlIdNode + ">");
+					responseXML.append(bean.getValue());
+					responseXML.append("</" + xmlIdNode + ">");
+
+					responseXML.append("<" + xmlNameNode + ">");
+					responseXML.append(bean.getName());
+					responseXML.append("</" + xmlNameNode + ">");
+					responseXML.append("</" + xmlParentNode + ">");
+				}
+			}
+			responseXML.append("</node>");
+
+		}
+		return responseXML.toString();
+	}
+
+	/**
+	 * @param request
+	 * @param response
+	 * @param actionForm
+	 * @throws IOException 
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	private String changeForm(HttpServletRequest request, HttpServletResponse response) throws IOException,
+	DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		List<NameValueBean> formAttributes = getAttributesForForm(request.getParameter("frmName"));
+		DynamicExtensionsUtility.sortNameValueBeanListByName(formAttributes);
+		String xmlParentNode = "formAttributes";
+		String xmlNodeId = "form-attribute-id";
+		String xmlNodeName = "form-attribute-name";
+		String responseXML = getResponseXMLString(xmlParentNode, xmlNodeId, xmlNodeName, formAttributes);
+		return responseXML;
+	}
+	/**
+	 * @param parameter
+	 * @return
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	private List<NameValueBean> getAttributesForForm(String formId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		ArrayList<NameValueBean> formAttributesList = new ArrayList<NameValueBean>();
+		if (formId != null)
+		{
+			Logger.out.debug("Fetching attributes for [" + formId + "]" );
+			ContainerInterface container = DynamicExtensionsUtility.getContainerByIdentifier(formId);
+			if (container != null)
+			{
+				Collection<ControlInterface> controlCollection = container.getControlCollection();
+				if (controlCollection != null)
+				{
+					Iterator<ControlInterface> controlIterator = controlCollection.iterator();
+					ControlInterface control = null;
+					NameValueBean controlName = null;
+					while (controlIterator.hasNext())
+					{
+						control = controlIterator.next();
+						if (control != null)
+						{
+							//if control contains Attribute interface object then only show on UI. 
+							//If control contains association objects do not show in attribute list
+							if((control.getAbstractAttribute()!=null)&&(control.getAbstractAttribute() instanceof AttributeInterface))
+							{
+								controlName = new NameValueBean(control.getCaption(), control.getId());
+								formAttributesList.add(controlName);
+							}
+						}
+					}
+				}
+			}
+
+		}
+		return formAttributesList;
 	}
 }

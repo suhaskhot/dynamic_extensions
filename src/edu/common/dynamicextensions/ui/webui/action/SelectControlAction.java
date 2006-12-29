@@ -47,6 +47,11 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 		{
 			//Get controls form
 			ControlsForm controlsForm = (ControlsForm) form;
+			ContainerInterface containerInterface = WebUIManager.getCurrentContainer(request);
+			if((controlsForm!=null)&&(containerInterface!=null))
+			{
+				ControlsUtility.reinitializeSequenceNumbers(containerInterface.getControlCollection(),controlsForm.getControlsSequenceNumbers());
+			}
 			//Action can be either add sub-form or add control to form  
 			if (isAddSubFormAction(controlsForm.getUserSelectedTool()))
 			{
@@ -56,9 +61,10 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 			}
 			else
 			{
-				ContainerInterface containerInterface = WebUIManager.getCurrentContainer(request);
+				
 				//Add form control
 				addControlToForm(containerInterface, controlsForm);
+				request.setAttribute("controlsList",controlsForm.getChildList());
 				return mapping.findForward(Constants.SUCCESS);
 			}
 
@@ -86,15 +92,14 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 		controlsForm.setControlOperation(ProcessorConstants.OPERATION_ADD);
 		LoadFormControlsProcessor loadFormControlsProcessor = LoadFormControlsProcessor.getInstance();
 		loadFormControlsProcessor.loadFormControls(controlsForm, containerInterface);
-		if (containerInterface != null)
+		/*if (containerInterface != null)
 		{
 			if (controlsForm.getSequenceNumbers() != null && controlsForm.getSequenceNumbers().length > 0)
 			{
 				ControlsUtility.applySequenceNumbers(containerInterface, controlsForm.getSequenceNumbers());
 			}
-		}
+		}*/
 		controlsForm.setControlOperation(oldControlOperation);
-		controlsForm.setChildList(ControlsUtility.getChildList(containerInterface));
 	}
 
 	/**

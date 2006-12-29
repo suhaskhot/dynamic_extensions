@@ -78,7 +78,8 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 
 			if (controlsForm.getSequenceNumbers() != null && controlsForm.getSequenceNumbers().length > 0)
 			{
-				ControlsUtility.applySequenceNumbers(containerInterface, controlsForm.getSequenceNumbers());
+				//ControlsUtility.applySequenceNumbers(containerInterface, controlsForm.getSequenceNumbers());
+				ControlsUtility.reinitializeSequenceNumbers(containerInterface.getControlCollection(), controlsForm.getControlsSequenceNumbers());
 			}
 
 			//Add new control

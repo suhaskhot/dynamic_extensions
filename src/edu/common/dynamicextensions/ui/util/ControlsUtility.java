@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.Vector;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
@@ -312,7 +311,7 @@ public class ControlsUtility
 	}
 
 	private static List<NameValueBean> getListOfPermissibleValues(AttributeInterface attribute) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	DynamicExtensionsApplicationException
 	{
 		List<NameValueBean> nameValueBeanList = null;
 
@@ -325,7 +324,7 @@ public class ControlsUtility
 				if (dataElement instanceof UserDefinedDEInterface)
 				{
 					Collection<PermissibleValueInterface> permissibleValueCollection = ((UserDefinedDEInterface) dataElement)
-							.getPermissibleValueCollection();
+					.getPermissibleValueCollection();
 					if (permissibleValueCollection != null)
 					{
 						nameValueBeanList = new ArrayList<NameValueBean>();
@@ -375,7 +374,7 @@ public class ControlsUtility
 	}
 
 	private static List<NameValueBean> getTargetEntityDisplayAttributeList(Map<Long, List<String>> displayAttributeMap, String separator)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		List<NameValueBean> displayAttributeList = new ArrayList<NameValueBean>();
 
@@ -387,14 +386,14 @@ public class ControlsUtility
 
 			NameValueBean nameValueBean = new NameValueBean();
 			nameValueBean.setValue(recordIdentifier.toString());
-			
+
 			StringBuffer value = new StringBuffer();
 			for (String attributeValue : attributeList)
 			{
 				value.append(attributeValue + separator);
 			}
 			value.delete(value.lastIndexOf(separator), value.length());
-			
+
 			nameValueBean.setName(value.toString());
 			displayAttributeList.add(nameValueBean);
 		}
@@ -533,8 +532,33 @@ public class ControlsUtility
 				controlInterface = DynamicExtensionsUtility.getControlBySequenceNumber(controlCollection, sequenceNumber);
 				controlInterface.setSequenceNumber(new Integer(counter + 1));
 			}
-			deleteControls(containerInterface, sequenceNumbers.length);
+			//deleteControls(containerInterface, sequenceNumbers.length);
 			DynamicExtensionsUtility.resetSequenceNumberChanged(controlCollection);
+		}
+	}
+
+	/**
+	 *	Added by Preeti  
+	 * @param entityInterface
+	 * @param sequenceNumbers
+	 */
+	public static void reinitializeSequenceNumbers(Collection<ControlInterface> controlsCollection, String controlsSequenceNumbers)
+	{
+		if((controlsCollection!=null)&&(controlsSequenceNumbers!=null))
+		{
+			ControlInterface control;
+			Integer[] sequenceNumbers = DynamicExtensionsUtility.convertToIntegerArray(controlsSequenceNumbers, ProcessorConstants.CONTROLS_SEQUENCE_NUMBER_SEPARATOR);
+			if(sequenceNumbers!=null)
+			{
+				for(int i=0; i<sequenceNumbers.length;i++)
+				{
+					control = DynamicExtensionsUtility.getControlBySequenceNumber(controlsCollection, sequenceNumbers[i].intValue());
+					if(control!=null)
+					{
+						control.setSequenceNumber(new Integer(i+1));
+					}
+				}
+			}
 		}
 	}
 
@@ -575,36 +599,40 @@ public class ControlsUtility
 	public static List getChildList(ContainerInterface containerInterface) throws DynamicExtensionsSystemException
 	{
 		List<ControlInformationObject> childList = new ArrayList<ControlInformationObject>();
-		Collection controlCollection = containerInterface.getControlCollection();
-
-		ControlInterface controlInterface = null;
-		ControlInformationObject controlInformationObject = null;
-		String controlCaption = null, controlDatatype = null, controlSequenceNumber = null, controlName = null;
-		ControlConfigurationsFactory controlConfigurationsFactory = ControlConfigurationsFactory.getInstance();
-		if (controlCollection != null)
+		if(containerInterface!=null)
 		{
-			for (int counter = 1; counter <= controlCollection.size(); counter++)
+			Collection controlCollection = containerInterface.getControlCollection();
+			ControlInterface controlInterface = null;
+			ControlInformationObject controlInformationObject = null;
+			String controlCaption = null, controlDatatype = null, controlSequenceNumber = null, controlName = null;
+			ControlConfigurationsFactory controlConfigurationsFactory = ControlConfigurationsFactory.getInstance();
+			if (controlCollection != null)
 			{
-				controlInterface = DynamicExtensionsUtility.getControlBySequenceNumber(controlCollection, counter);
-				if (controlInterface.getCaption() != null && !controlInterface.getCaption().equals(""))
+				for (int counter = 1; counter <= controlCollection.size(); counter++)
 				{
-					controlCaption = controlInterface.getCaption();
-					controlSequenceNumber = controlInterface.getSequenceNumber() + "";
-					controlName = DynamicExtensionsUtility.getControlName(controlInterface);
-					if(controlName.equals(ProcessorConstants.ADD_SUBFORM_CONTROL))
+					controlInterface = DynamicExtensionsUtility.getControlBySequenceNumber(controlCollection, counter);
+					if(controlInterface!=null)
 					{
-						controlDatatype = ProcessorConstants.ADD_SUBFORM_TYPE;
+						if (controlInterface.getCaption() != null && !controlInterface.getCaption().equals(""))
+						{
+							controlCaption = controlInterface.getCaption();
+							controlSequenceNumber = controlInterface.getSequenceNumber() + "";
+							controlName = DynamicExtensionsUtility.getControlName(controlInterface);
+							if(controlName.equals(ProcessorConstants.ADD_SUBFORM_CONTROL))
+							{
+								controlDatatype = ProcessorConstants.ADD_SUBFORM_TYPE;
+							}
+							else
+							{
+								controlDatatype = getControlCaption(controlConfigurationsFactory.getControlDisplayLabel(controlName));
+							}
+							controlInformationObject = new ControlInformationObject(controlCaption, controlDatatype, controlSequenceNumber);
+							childList.add(controlInformationObject);
+						}
 					}
-					else
-					{
-						controlDatatype = getControlCaption(controlConfigurationsFactory.getControlDisplayLabel(controlName));
-					}
-					controlInformationObject = new ControlInformationObject(controlCaption, controlDatatype, controlSequenceNumber);
-					childList.add(controlInformationObject);
 				}
-
+				//DynamicExtensionsUtility.resetSequenceNumberChanged(controlCollection);
 			}
-			DynamicExtensionsUtility.resetSequenceNumberChanged(controlCollection);
 		}
 		return childList;
 	}

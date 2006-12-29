@@ -25,7 +25,6 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.LoadFormControlsProcessor;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
-import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
@@ -64,14 +63,9 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 			ControlsForm controlsForm = (ControlsForm) form;
 			ContainerInterface containerInterface = WebUIManager.getCurrentContainer(request);
 			
-			if (controlsForm.getSequenceNumbers() != null && controlsForm.getSequenceNumbers().length > 0)
-			{
-				ControlsUtility.applySequenceNumbers(containerInterface, controlsForm.getSequenceNumbers());
-			}
-			
 			
 			Logger.out.debug("Loading form controls for [" + containerInterface.getCaption() + "]");
-			//Code for AJAX
+			/*//Code for AJAX
 			String operation = request.getParameter("operation");
 			if ((operation != null) && (operation.trim().equals("changeGroup")))
 			{
@@ -83,7 +77,7 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 				changeForm(request, response, controlsForm);
 				return null;
 			}
-
+*/
 			LoadFormControlsProcessor loadFormControlsProcessor = LoadFormControlsProcessor.getInstance();
 			
 			ControlInterface selectedControl = loadFormControlsProcessor.getSelectedControl(controlsForm, containerInterface);
@@ -95,11 +89,17 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 			else
 			{
 				loadFormControlsProcessor.loadFormControls(controlsForm, containerInterface);
+				request.setAttribute("controlsList",controlsForm.getChildList());
 				actionForwardString = Constants.SHOW_BUILD_FORM_JSP;
 			}
 			if ((controlsForm.getDataType() != null) && (controlsForm.getDataType().equals(ProcessorConstants.DATATYPE_NUMBER)))
 			{
 				initializeMeasurementUnits(controlsForm);
+			}
+			else
+			{
+				controlsForm.setMeasurementUnitOther("");
+				controlsForm.setAttributeMeasurementUnits("");
 			}
 		}
 		catch (Exception e)
@@ -157,7 +157,7 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 		ArrayList<NameValueBean> formAttributesList = new ArrayList<NameValueBean>();
 		if (formId != null)
 		{
-			//ContainerInterface container = EntityManager.getInstance().getContainerByIdentifier(formId);
+			Logger.out.debug("Fetching attributes for [" + formId + "]" );
 			ContainerInterface container = DynamicExtensionsUtility.getContainerByIdentifier(formId);
 			if (container != null)
 			{

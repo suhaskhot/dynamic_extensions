@@ -47,15 +47,16 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 		{
 			//Get container interface from cache
 			ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+			ControlsForm controlsForm = (ControlsForm) form;
+			ContainerInterface currentContainerInterface = WebUIManager.getCurrentContainer(request);
+			if((controlsForm!=null)&&(currentContainerInterface!=null))
+			{
+				ControlsUtility.reinitializeSequenceNumbers(currentContainerInterface.getControlCollection(),controlsForm.getControlsSequenceNumbers());
+			}
+			
 			//Call container processor save method
 			ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
 			String formName = "";
-
-//			ControlsForm controlsForm = (ControlsForm) form;
-//			if (controlsForm.getSequenceNumbers() != null && controlsForm.getSequenceNumbers().length > 0)
-//			{
-//				ControlsUtility.applySequenceNumbers(containerInterface, controlsForm.getSequenceNumbers());
-//			}
 
 			containerInterface = containerProcessor.saveContainer(containerInterface);
 			if ((containerInterface != null) && (containerInterface.getEntity() != null))

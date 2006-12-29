@@ -23,12 +23,12 @@
     
     <Primitive-Attribute>
 		  <name>Double</name>
-	  	  <database-datatype>int8</database-datatype>
+	  	  <database-datatype>float8</database-datatype>
     </Primitive-Attribute>
     
     <Primitive-Attribute>
 		  <name>Float</name>
-	  	  <database-datatype>float8</database-datatype>
+	  	  <database-datatype>float4</database-datatype>
     </Primitive-Attribute>
     
     <Primitive-Attribute>

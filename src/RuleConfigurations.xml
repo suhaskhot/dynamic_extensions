@@ -4,6 +4,10 @@
     <error-key name="eav.validation.required" />    
   </validation-rule>
   
+  <validation-rule display-label="eav.rule.textlength" rule-name="textLength" rule-class="edu.common.dynamicextensions.validation.TextLengthValidator">
+  	<error-key name="eav.validation.textLength" />    
+  </validation-rule>
+  
   <validation-rule display-label="eav.rule.range" rule-name="range" rule-class="edu.common.dynamicextensions.validation.RangeValidator">
     <error-key name="eav.validation.range" />
     <param param-name="min" param-label="Min. Value" />

@@ -28,6 +28,7 @@
 <script src="<%=request.getContextPath()%>/jss/calendarComponent.js"></script>
 <script src="<%=request.getContextPath()%>/jss/ajax.js"></script>
 
+
 <c:set var="containerInterface" value="${dataEntryForm.containerInterface}"/>
 <jsp:useBean id="containerInterface" type="edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface"/>
 
@@ -49,6 +50,13 @@
 <html>
 	<head>
 		<title><bean:message key="table.heading" /></title>
+		<script language="JavaScript" type="text/javascript">
+			function getErrorMessage(controlName, attributeName, maxChars)
+		 	{
+		    	var errorMsg = '<bean:message key="errors.textAreaLength.exceeded" />';
+		    	checkTextLength(controlName, attributeName, errorMsg, maxChars)
+		    }
+		</script>
 	</head>
 
 	<body onload="loadPreviewForm()">

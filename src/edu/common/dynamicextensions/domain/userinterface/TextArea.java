@@ -132,8 +132,8 @@ public class TextArea extends Control implements TextAreaInterface
 
 		if (maxChars != 0)
 		{
-			htmlString += "onblur=\"checkTextLength('" + htmlComponentName + "', " + maxChars
-					+ ")\">";
+			htmlString += "onblur=\"checkTextLength('" + htmlComponentName + "', '"
+					+ attribute.getName() + "', " + maxChars + ")\">";
 		}
 		else
 		{

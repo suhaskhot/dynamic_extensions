@@ -764,12 +764,12 @@ function addDynamicData(recordIdentifier)
 	}
 }
 
-function checkTextLength(controlName, maxChars)
+function checkTextLength(controlName, attributeName, errorMsg, maxChars)
 {
 	var textControl = document.getElementById(controlName);
 	if(textControl.value.length > maxChars)
 	{
- 		alert("Maximum number of characters (including spaces) you can enter is " + maxChars +".");
+		alert(attributeName + " " + errorMsg + " " + maxChars + ".");
  		element.focus();
 	}
 }

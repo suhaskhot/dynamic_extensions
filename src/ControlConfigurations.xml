@@ -11,7 +11,9 @@
 		</validations>
 		<datatypes>
 			<dataType name="Text">
-				<validations></validations>
+				<validations>
+					<validation-rule name="textLength" isImplicit="true" />
+				</validations>
 			</dataType>
 			<dataType name="Number">
 				<validations>

@@ -154,6 +154,7 @@ PUBLIC
 			input="/LoadDataEntryFormAction.do"
 			scope="request">
 			<forward name="Success" path="/pages/dataEntry/dataEntry.jsp" />
+			<forward name="LoadFormControls" path="/LoadFormControlsAction.do" />
 		</action>
 		
 		<action path="/ApplyDataEntryFormAction" 

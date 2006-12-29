@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.ui.webui.action;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -85,6 +86,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 		Stack<Map<AbstractAttributeInterface, Object>> valueMapStack = (Stack<Map<AbstractAttributeInterface, Object>>) CacheManager
 				.getObjectFromCache(request, Constants.VALUE_MAP_STACK);
 		String dataEntryOperation = dataEntryForm.getDataEntryOperation();
+		String showFormPreview = dataEntryForm.getShowFormPreview();
 		if (containerStack == null)
 		{
 			containerStack = new Stack<ContainerInterface>();
@@ -97,26 +99,37 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 		else if (dataEntryOperation != null
 				&& dataEntryOperation.equalsIgnoreCase("insertChildData"))
 		{
+
 			Map<AbstractAttributeInterface, Object> containerValueMap = valueMapStack.peek();
 			String childContainerId = dataEntryForm.getChildContainerId();
 			ContainmentAssociationControl associationControl = UserInterfaceiUtility
 					.getAssociationControl((ContainerInterface) containerStack.peek(),
 							childContainerId);
 			ContainerInterface childContainer = associationControl.getContainer();
-			AssociationInterface association = (AssociationInterface) associationControl
-					.getAbstractAttribute();
-			List<Map<AbstractAttributeInterface, Object>> childContainerValueMapList = (List<Map<AbstractAttributeInterface, Object>>) containerValueMap
-					.get(association);
 
 			Map<AbstractAttributeInterface, Object> childContainerValueMap = null;
-			if (UserInterfaceiUtility.isCardinalityOneToMany(associationControl))
+			
+			if (showFormPreview.equals("true"))
 			{
-				childContainerValueMap = childContainerValueMapList.get(Integer
-						.parseInt(dataEntryForm.getChildRowId()) - 1);
+				childContainerValueMap = new HashMap<AbstractAttributeInterface, Object>();
 			}
 			else
 			{
-				childContainerValueMap = childContainerValueMapList.get(0);
+				AssociationInterface association = (AssociationInterface) associationControl
+						.getAbstractAttribute();
+				List<Map<AbstractAttributeInterface, Object>> childContainerValueMapList = (List<Map<AbstractAttributeInterface, Object>>) containerValueMap
+						.get(association);
+
+				if (UserInterfaceiUtility.isCardinalityOneToMany(associationControl))
+				{
+					childContainerValueMap = childContainerValueMapList.get(Integer
+							.parseInt(dataEntryForm.getChildRowId()) - 1);
+				}
+				else
+				{
+					childContainerValueMap = childContainerValueMapList.get(0);
+				}
+
 			}
 
 			UserInterfaceiUtility.addContainerInfo(containerStack, childContainer, valueMapStack,
@@ -128,8 +141,18 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 			UserInterfaceiUtility.removeContainerInfo(containerStack, valueMapStack);
 		}
 
-		loadDataEntryFormProcessor.loadDataEntryForm((AbstractActionForm) form, containerStack
+		if (containerStack.size() > 0)
+		{
+			loadDataEntryFormProcessor.loadDataEntryForm((AbstractActionForm) form, containerStack
 				.peek(), valueMapStack.peek(), mode, recordId);
+		}
+		else
+		{
+			CacheManager.addObjectToCache(request, Constants.CONTAINER_STACK, null);
+			CacheManager.addObjectToCache(request, Constants.VALUE_MAP_STACK, null);
+			return mapping.findForward("LoadFormControls");
+		}
+		
 
 		if (containerStack.size() > 1)
 		{

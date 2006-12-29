@@ -811,8 +811,32 @@ function hideTooltip()
   }
 }
 
-function controlSelected(ths,controlType)
+function controlSelected(rowId,colId)
 {
+	//Added by Preeti
+	document.getElementById('controlOperation').value='Edit';
+	document.getElementById('selectedControlId').value=rowId;
+	
+	//Control type is displayed in 2nd column
+	controlType = mygrid.cells(mygrid.getSelectedId(),2).getValue();
+	if(controlType=="Sub Form")	//"Sub form"  tightly coupled with ProcessorConstants.ADD_SUBFORM_TYPE
+	{
+		var opernMode = document.getElementById('operationMode');	
+		if(opernMode!=null)
+		{
+			opernMode.value = "EditForm";
+			alert(opernMode.value);
+		}
+	}
+
+	var controlsForm=document.getElementById('controlsForm');
+	controlsForm.action='/dynamicExtensions/LoadFormControlsAction.do';
+	controlsForm.submit();
+}
+
+/*function controlSelected(ths,controlType)
+{
+	alert("controlSelected");
 	var prevRow = document.getElementById('previousControl').value;
 	if (prevRow != null && prevRow != '' && prevRow != undefined) 
 	{
@@ -838,7 +862,7 @@ function controlSelected(ths,controlType)
 	var controlsForm=document.getElementById('controlsForm');
 	controlsForm.action='/dynamicExtensions/LoadFormControlsAction.do';
 	controlsForm.submit();
-}
+}*/
 
 function measurementUnitsChanged(cboMeasuremtUnits)
 {
@@ -876,7 +900,8 @@ function ruleSelected(ruleObject)
 	}
 }
 
-function deleteControl()
+//Function written by Sujay..Commented by Preeti after replacing with new grid
+/*function deleteControl()
 {
 	checkAttribute = document.controlsForm.checkAttribute;
 	var length = parseInt(checkAttribute.length)-1;
@@ -898,6 +923,47 @@ function deleteControl()
 		resetStartPointArray(startPointArray,startPointArray[startPointCounter])
 	}
 	resetRowNum(checkAttribute);
+}*/
+
+function deleteControl()
+{
+	deleteControlFromUI();
+	updateControlsSequence();	//ajax code to delete control from form 
+}
+
+function deleteControlFromUI()
+{
+	var selectedRows = mygrid.getCheckedRows(0);
+	var selectedRowIndices = selectedRows.split(',');
+	for(i=0;i<selectedRowIndices.length;i++)
+	{
+		mygrid.deleteRow(selectedRowIndices[i]);
+	}
+}
+
+//ajax function to delete controls from the form
+function updateControlsSequence()
+{
+	var request = newXMLHTTPReq();
+	var handlerFunction = getReadyStateHandler(request,ignoreResponseHandler,false);
+
+	//no brackets after the function name and no parameters are passed because we are assigning a reference to the function and not actually calling it
+	request.onreadystatechange = handlerFunction;
+	//send data to ActionServlet
+	var gridItemIds = mygrid.getAllItemIds(",");
+	
+	if(gridItemIds!=null)
+	{
+		var controlSeqNos = document.getElementById('controlsSequenceNumbers');
+		if(controlSeqNos!=null)
+		{
+			controlSeqNos.value = gridItemIds;
+		}
+		//Open connection to servlet
+		request.open("POST","AjaxcodeHandlerAction.do",true);
+		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+		request.send("&ajaxOperation=updateControlsSequence&gridControlIds="+gridItemIds);
+	}	
 }
 
 function resetStartPointArray(startPointArray,value)
@@ -1172,11 +1238,17 @@ function groupChanged(flagClearAttributeList)
 	//send data to ActionServlet
 	if(document.getElementById('groupName')!=null)
 	{
-		//Open connection to servlet
-		request.open("POST","LoadFormControlsAction.do",true);
-		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 		var grpName  = document.getElementById('groupName').value;
+		
+		//Open connection to servlet
+		/*request.open("POST","LoadFormControlsAction.do",true);
+		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 		request.send("&operation=changeGroup&grpName="+grpName);
+		*/
+		
+		request.open("POST","AjaxcodeHandlerAction.do",true);
+		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+		request.send("&ajaxOperation=changeGroup&grpName="+grpName);
 	}	
 }
 
@@ -1242,9 +1314,15 @@ function formChanged(flagClearAttributeList)
 		//send data to ActionServlet
 		var frmName  = document.getElementById('formName').value;
 		//Open connection to servlet
+		/*
 		request.open("POST","LoadFormControlsAction.do",true);
 		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 		request.send("&operation=changeForm&frmName="+frmName);
+		*/
+		
+		request.open("POST","AjaxcodeHandlerAction.do",true);
+		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+		request.send("&ajaxOperation=changeForm&frmName="+frmName);
 	}	
 }
 function formChangedResponse(formAttributesListXML)
@@ -1693,4 +1771,40 @@ function showParentContainerInsertDataPage()
 //	var dataEntryForm = document.getElementById('dataEntryForm');
 //	dataEntryForm.action="/dynamicExtensions/ApplyDataEntryFormAction.do";
 //	dataEntryForm.submit();
+}
+
+function dropFn(srcId,targetId,sourceGridObj,targetGridObj)
+{
+	
+	updateControlsSequence();
+	
+}
+//Move controls up in sequence
+function moveControlsUp()
+{
+	var selectedRows = mygrid.getCheckedRows(0);
+	if(selectedRows!=null)
+	{
+		var selectedRowIndices = selectedRows.split(',');
+		for(i=0;i<selectedRowIndices.length;i++)
+		{
+			mygrid.moveRowUp(selectedRowIndices[i]);
+		}
+	}
+	updateControlsSequence();
+}
+
+//move controls down in sequence
+function moveControlsDown()
+{
+	var selectedRows = mygrid.getCheckedRows(0);
+	if(selectedRows!=null)
+	{
+		var selectedRowIndices = selectedRows.split(',');
+		for(i=selectedRowIndices.length-1;i>=0;i--)
+		{
+			mygrid.moveRowDown(selectedRowIndices[i]);
+		}
+	}
+	updateControlsSequence();
 }

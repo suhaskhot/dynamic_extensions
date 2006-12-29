@@ -4,28 +4,82 @@
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
 <%@page import="edu.common.dynamicextensions.processor.ProcessorConstants"%>
 <%@ page import="java.util.List"%>
-
+<%@page import="edu.common.dynamicextensions.ui.webui.util.ControlInformationObject"%>
+<%
+	List controlInformationObjectList1 = (List)request.getAttribute("controlsList");
+%>
 <html>
+
 	<!-- HTML Head section -->
 	<head>
 		<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/styleSheet.css" />
 		<link href="<%=request.getContextPath()%>/css/calanderComponent.css" type="text/css" rel=stylesheet />
+		<link rel="STYLESHEET" type="text/css" href="dhtml_comp/css/dhtmlXGrid.css"/>
+
 		<script src="<%=request.getContextPath()%>/jss/dynamicExtensions.js" type="text/javascript"></script>
 		<script src="<%=request.getContextPath()%>/jss/script.js" type="text/javascript"></script>
 		<script src="<%=request.getContextPath()%>/jss/overlib_mini.js" type="text/javascript"></script>
 		<script src="<%=request.getContextPath()%>/jss/calender.js" type="text/javascript"></script>
 		<script src="<%=request.getContextPath()%>/jss/calendarComponent.js"></script>
 		<script language="JavaScript" type="text/javascript" src="jss/ajax.js"></script>
-		<title>Dynamic Extensions</title>
+		<script  src="dhtml_comp/jss/dhtmlXCommon.js"></script>
+		<script  src="dhtml_comp/jss/dhtmlXGrid.js"></script>
+		<script  src="dhtml_comp/jss/dhtmlXGridCell.js"></script>
+		<script  src="dhtml_comp/jss/dhtmlXGrid_drag.js"></script>
 
-		<script language="JavaScript" type="text/javascript">
-			function initCancelOperation()
-		 	{
-		    	var addControlBtnCaption = '<bean:message  key="buttons.addControlToForm" />';
-		    	var addControlFormTitle = '<bean:message key="app.title.addAttributes" />';
-		    	cancelControlOpern(addControlBtnCaption,addControlFormTitle);
-		    }
-	 	</script>
+
+		<title>Dynamic Extensions</title>
+<script language="JavaScript" type="text/javascript">
+				function initCancelOperation()
+			 	{
+			    	var addControlBtnCaption = '<bean:message  key="buttons.addControlToForm" />';
+			    	var addControlFormTitle = '<bean:message key="app.title.addAttributes" />';
+			    	cancelControlOpern(addControlBtnCaption,addControlFormTitle);
+			    }
+			    function initGridView()
+				{
+					mygrid = new dhtmlXGridObject('gridbox');
+					mygrid.setImagePath("dhtml_comp/imgs/");
+					mygrid.setHeader("#,Name,Type");
+					mygrid.enableAutoHeigth(true);
+					mygrid.setInitWidths("20,70,100")
+					mygrid.setColAlign("left,left,left")
+					mygrid.setColTypes("ch,ed,ed");
+
+					mygrid.enableMultiselect(true)
+					mygrid.enableDragAndDrop(true);
+					mygrid.setDropHandler(dropFn);
+					mygrid.setOnRowSelectHandler(controlSelected);
+					mygrid.init();
+					loadGridData();
+				}
+
+				function loadGridData()
+				{
+					<%
+
+					if(controlInformationObjectList1!=null)
+					{
+						int noOfControls = controlInformationObjectList1.size();
+						for(int i=0;i<noOfControls;i++)
+						{
+							ControlInformationObject controlInformationObj = (ControlInformationObject)controlInformationObjectList1.get(i);
+							if(controlInformationObj!=null)
+							{
+								String identifier = controlInformationObj.getIdentifier();
+								String gridContentStr = " ,"  + controlInformationObj.getControlName() + "," + controlInformationObj.getControlType();
+
+							%>
+							mygrid.addRow(<%=identifier%>,'<%=gridContentStr%>');
+							<%
+							}
+						}
+					}//if
+					%>
+
+				}
+		</script>
+
 	</head>
 
 	<!-- Initializations -->
@@ -41,14 +95,14 @@
 	<c:set var="userSelectedTool" value="${controlsForm.userSelectedTool}"/>
  	<jsp:useBean id="userSelectedTool" type="java.lang.String"/>
 
-	<c:set var="controlInformationObjectList" value="${controlsForm.childList}"/>
+<c:set var="controlInformationObjectList" value="${controlsForm.childList}"/>
 	<jsp:useBean id="controlInformationObjectList" type="java.util.List"/>
 
 	<c:set var="selectedControlCaption" value="${controlsForm.selectedControlCaption}"/>
  	<jsp:useBean id="selectedControlCaption" type="java.lang.String"/>
 
 	<!-- Main HTML Code -->
-  	<body onload="initBuildForm()">
+  	<body onload="initBuildForm();initGridView()">
 		<html:form styleId = "controlsForm"  action="/LoadFormControlsAction">
 			<font color="red" ><html:errors/></font>
 
@@ -190,41 +244,12 @@
 																	</tr>
 																</thead>
 																<tbody>
-																	<c:forEach var="controlInfoObj" items = "${controlInformationObjectList}" varStatus="counter" >
-																		<c:set var="controlName" value="${controlInfoObj.controlName}"/>
-																		<jsp:useBean id="controlName" type="java.lang.String"/>
-
-																		<c:set var="controlType" value="${controlInfoObj.controlType}"/>
-																		<jsp:useBean id="controlType" type="java.lang.String"/>
-
-																		<c:set var="identifier" value="${controlInfoObj.identifier}"/>
-																		<jsp:useBean id="identifier" type="java.lang.String"/>
-
-																		<tr height = "5%"   style = "cursor:hand">
-																			<td class="formFieldWithNoTopBorder">
-																				<input type = "checkbox" name = "checkAttribute"  id = "<%=identifier%>" value = "<%=identifier%>"  />
-																				<input type = "hidden"  id = "sequenceNumbers" name = "sequenceNumbers" value = "<%=generator+1%>"  />
-																				<%
-																					String hiddenRowId = identifier + "rowNum";
-																				%>
-																				<input type = "hidden"  id = "<%=hiddenRowId%>" name = "<%=hiddenRowId%>" value = "<%=generator++ + 1%>"  />
-																			</td>
-																			<td class="formFieldWithNoTopBorder" >
-																				<div id = "<%=identifier%>" noWrap='true' style='overflow-x:hidden; text-overflow:ellipsis; width:60px;' onmouseout = "hideTooltip();" onmouseover = "showTooltip(this.innerHTML,this,this.innerHTML);" onclick = "controlSelected(this);">
-																					<%=controlName%>
-																				</div>
-																			</td>
-																			<td class="formFieldWithNoTopBorder" >
-																				<div noWrap='true' style='overflow-x:hidden; text-overflow:ellipsis; width:60px;' onmouseover = "showTooltip(this.innerHTML,this,this.innerHTML);" onmouseout = "hideTooltip();">
-																					<%=controlType%>
-																				</div>
-																			</td>
-																		</tr>
-																	</c:forEach>
-
-																	<tr height = "100%">
-																		<td>&nbsp;</td>
+																	<tr height = "100%" valign="top">
+																		<td>
+																		<div id="gridbox" width="100%" height="100%" style="background-color:white;overflow:hidden"  />
+																		</td>
 																	</tr>
+
 																</tbody>
 															</table>
 														</td>
@@ -251,8 +276,8 @@
 											</td>
 											<td width="2%">&nbsp;</td>
 											<td  valign="top" height="100%" >
-												<input type = "button" class="groupButton" name = "upButton" value = "Up"  onclick = "decreaseSequencenumber()"/>
-												<input type = "button" class="formButton" name = "downButton" value = "Down"  onclick = "increaseSequencenumber()"/>
+												<input type = "button" class="groupButton" name = "upButton" value = "Up"  onclick = "moveControlsUp()"/>
+												<input type = "button" class="formButton" name = "downButton" value = "Down"  onclick = "moveControlsDown()"/>
 												<input type = "button" class="formButton" name = "deleteButton" value = "Remove"  onclick = "deleteControl()"/>
 											</td>
 										</tr>
@@ -294,6 +319,7 @@
 			<input type="hidden" id = "checkAttribute" name="checkAttribute" value = "" />
 			<html:hidden styleId = 'validationRules' property="validationRules"  value=""/>
 			<input type="hidden" name='operationMode' id="operationMode"  value="AddSubForm"/>
+			<input type="hidden" name = "controlsSequenceNumbers" id= "controlsSequenceNumbers" >
 	  	</html:form>
   	</body>
 </html>

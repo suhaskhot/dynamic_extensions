@@ -38,6 +38,7 @@
             update="true"
             insert="true"
             column="DESCRIPTION"
+            length="1000"
         />
 
         <property
@@ -54,6 +55,7 @@
             update="true"
             insert="true"
             column="NAME"
+            length="40"
         />
 
         <set
@@ -418,6 +420,42 @@
                   class="edu.common.dynamicextensions.domain.AbstractAttribute"
               />
         </set>
+
+        <set
+            name="childEntityCollection"
+            table="DYEXTN_ENTITY"
+            lazy="false"
+            inverse="true"
+            cascade="none"
+            sort="unsorted"
+        >
+
+              <key
+                  column="PARENT_ENTITY_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.Entity"
+              />
+        </set>
+
+        <property
+            name="abstract"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="IS_ABSTRACT"
+        />
+
+        <many-to-one
+            name="parentEntity"
+            class="edu.common.dynamicextensions.domain.Entity"
+            cascade="save-update"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="PARENT_ENTITY_ID"
+        />
 
         </joined-subclass>
 

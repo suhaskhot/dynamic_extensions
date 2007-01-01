@@ -444,12 +444,12 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	{
 		this.parentEntity = parentEntity;
 //
-		if (this.parentEntity != null) {
-			Collection<EntityInterface> childCollection = this.parentEntity.getChildEntityCollection();
-			if (!childCollection.contains(this)) {
-				//childCollection.add(this);
-			}
-		}
+//		if (this.parentEntity != null) {
+//			Collection<EntityInterface> childCollection = this.parentEntity.getChildEntityCollection();
+//			if (!childCollection.contains(this)) {
+//				//childCollection.add(this);
+//			}
+//		}
 	}
 
 	/**

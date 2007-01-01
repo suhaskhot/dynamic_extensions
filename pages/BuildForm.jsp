@@ -315,7 +315,6 @@
 			<input type="hidden" id = "previousControl" name="previousControl" value = "" />
 			<html:hidden styleId = 'controlOperation' property="controlOperation" />
 			<html:hidden styleId = 'selectedControlId' property="selectedControlId" />
-			<html:hidden styleId = 'sequenceNumbers' property="sequenceNumbers"  value=""/>
 			<input type="hidden" id = "checkAttribute" name="checkAttribute" value = "" />
 			<html:hidden styleId = 'validationRules' property="validationRules"  value=""/>
 			<input type="hidden" name='operationMode' id="operationMode"  value="AddSubForm"/>

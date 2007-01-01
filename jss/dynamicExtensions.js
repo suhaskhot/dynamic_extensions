@@ -825,7 +825,6 @@ function controlSelected(rowId,colId)
 		if(opernMode!=null)
 		{
 			opernMode.value = "EditForm";
-			alert(opernMode.value);
 		}
 	}
 
@@ -836,7 +835,7 @@ function controlSelected(rowId,colId)
 
 /*function controlSelected(ths,controlType)
 {
-	alert("controlSelected");
+	
 	var prevRow = document.getElementById('previousControl').value;
 	if (prevRow != null && prevRow != '' && prevRow != undefined) 
 	{
@@ -1654,16 +1653,52 @@ function treeNodeSelected(fldName)
 
 	//no brackets after the function name and no parameters are passed because we are assigning a reference to the function and not actually calling it
 	request.onreadystatechange = handlerFunction;
-	//send data to ActionServlet
-	if(document.getElementById(fldName)!=null)
+
+	//Open connection to servlet
+	request.open("POST","AjaxcodeHandlerAction.do",true);
+	request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+	//var selectedFormName  = document.getElementById(fldName).value;
+	request.send("&ajaxOperation=selectFormNameFromTree&selectedFormName="+fldName);
+}
+
+//Previously defined entity selected
+function definedEntitySelected(fldname)
+{
+	if(fldname.indexOf("Group_")==-1)	//Selection does not contain string "Group_" implies its not a group but a form
 	{
+		if(document.getElementById('selectedObjectId')!=null)
+		{
+			document.getElementById('selectedObjectId').value = fldname;
+		}
+		var request = newXMLHTTPReq();
+		var handlerFunction = getReadyStateHandler(request,treeNodeSelectedResponse,false);
+	
+		//no brackets after the function name and no parameters are passed because we are assigning a reference to the function and not actually calling it
+		request.onreadystatechange = handlerFunction;
+	
 		//Open connection to servlet
 		request.open("POST","AjaxcodeHandlerAction.do",true);
 		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-		var selectedFormName  = document.getElementById(fldName).value;
-		request.send("&ajaxOperation=selectFormNameFromTree&selectedFormName="+selectedFormName);
-
-	}	
+		request.send("&ajaxOperation=selectFormNameFromAssociationTree&selectedFormId="+fldname);
+	}
+	else
+	{
+		//clear all other form elts
+		if(document.getElementById("formName")!=null)
+		{
+			document.getElementById("formName").value = "";
+		}
+		
+		if(document.getElementById("conceptCode")!=null)
+		{
+			document.getElementById("conceptCode").value = "";
+		}
+		
+		if(document.getElementById("formDescription")!=null)
+		{
+			document.getElementById("formDescription").value = "";
+		}
+	}
 }
 
 function treeNodeSelectedResponse(formNameListXML)
@@ -1680,7 +1715,6 @@ function treeNodeSelectedResponse(formNameListXML)
 		var formDesc  =  documentElt.getElementsByTagName('form-description');
 		var formConceptCode  =  documentElt.getElementsByTagName('form-conceptcode');
 		var operationmode  =  documentElt.getElementsByTagName('operationMode');
-		
 		
 		if((htmlFormName!=null)&&(formname!=null))
 		{
@@ -1807,4 +1841,32 @@ function moveControlsDown()
 		}
 	}
 	updateControlsSequence();
+}
+
+//Added by Preeti : move elements in list
+function listEltMoveUp(element) {
+  for(i = 0; i < element.options.length; i++) {
+    if(element.options[i].selected == true) {
+      if(i != 0) {
+        var temp = new Option(element.options[i-1].text,element.options[i-1].value);
+        var temp2 = new Option(element.options[i].text,element.options[i].value);
+        element.options[i-1] = temp2;
+        element.options[i-1].selected = true;
+        element.options[i] = temp;
+      }
+    }
+  }
+}
+function listEltMoveDown(element) {
+  for(i = (element.options.length - 1); i >= 0; i--) {
+    if(element.options[i].selected == true) {
+      if(i != (element.options.length - 1)) {
+        var temp = new Option(element.options[i+1].text,element.options[i+1].value);
+        var temp2 = new Option(element.options[i].text,element.options[i].value);
+        element.options[i+1] = temp2;
+        element.options[i+1].selected = true;
+        element.options[i] = temp;
+      }
+    }
+  }
 }

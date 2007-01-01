@@ -8,24 +8,69 @@
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
 <%@ taglib uri="/WEB-INF/dynamicExtensions.tld" prefix="dynamicExtensions" %>
-<%@ page import="edu.common.dynamicextensions.ui.webui.util.TreeData"%>
+
+
 <html>
+<c:set var="currentEntityXML" value="${formDefinitionForm.currentEntityTreeXML}"/>
+<jsp:useBean id="currentEntityXML" type="java.lang.String"/>
+
+<c:set var="definedEntitiesTreeXML" value="${formDefinitionForm.definedEntitiesTreeXML}"/>
+<jsp:useBean id="definedEntitiesTreeXML" type="java.lang.String"/>
+
 <head>
 	<title>Dynamic Extensions</title>
 	<link rel="stylesheet" type="text/css" href="css/styleSheet.css" />
+	<link rel="STYLESHEET" type="text/css" href="dhtml_comp/css/dhtmlXTree.css"/>
+
 	<script src="jss/dynamicExtensions.js" type="text/javascript"></script>
 	<script src="jss/script.js" type="text/javascript"></script>
 	<script src="jss/ajax.js" type="text/javascript"></script>
+
+	<script  src="dhtml_comp/jss/dhtmlXCommon.js"></script>
+	<script  src="dhtml_comp/jss/dhtmlXTree.js"></script>
+
+	<script>
+		var currentEntityTree = null,definedEntitiesTree = null;
+		function loadDefineFormPage()
+		{
+			loadCurrentEntityTree();
+			loadDefinedEntitiesTree();
+		}
+
+		function loadCurrentEntityTree()
+		{
+			currentEntityTree=new dhtmlXTreeObject(document.getElementById('currentEntityTreeDiv'),"100%","100%",0);
+			currentEntityTree.setImagePath("dhtml_comp/imgs/");
+			currentEntityTree.enableTreeImages(0);
+			currentEntityTree.enableTreeLines(false);
+			currentEntityTree.setOnClickHandler(treeNodeSelected);
+			<%
+							System.out.println(currentEntityXML);
+			%>
+
+			currentEntityTree.loadXMLString("<%=currentEntityXML%>");
+		}
+
+		function loadDefinedEntitiesTree()
+		{
+			definedEntitiesTree=new dhtmlXTreeObject(document.getElementById('definedEntitiesTreeDiv'),"100%","100%",0);
+			definedEntitiesTree.setImagePath("dhtml_comp/imgs/");
+			definedEntitiesTree.enableTreeImages(0);
+			definedEntitiesTree.enableTreeLines(false);
+			definedEntitiesTree.setOnClickHandler(definedEntitySelected);
+			<%
+							System.out.println(definedEntitiesTreeXML);
+			%>
+
+			definedEntitiesTree.loadXMLString("<%=definedEntitiesTreeXML%>");
+			definedEntitiesTree.enableRadioButtons("0",true);
+		}
+	</script>
 </head>
 
 <html:form styleId = "formDefinitionForm" action="/ApplyFormDefinitionAction" >
-  <body>
+<body onload="loadDefineFormPage()">
 
-<c:set var="treeData" value="${formDefinitionForm.treeData}"/>
-<jsp:useBean id="treeData" type="edu.common.dynamicextensions.ui.webui.util.TreeData"/>
-
-<c:set var="associationTree" value="${formDefinitionForm.associationTree}"/>
-<jsp:useBean id="associationTree" type="edu.common.dynamicextensions.ui.webui.util.TreeData"/>
 
 <c:set var="groupName" value="${formDefinitionForm.groupName}"/>
 <jsp:useBean id="groupName" type="java.lang.String"/>
@@ -77,8 +122,10 @@
 										<tr>
 										<td >
 											<label class="formMessage"> <%=groupName%>		</label>
-											<dynamicExtensions:tree name="formsTree" showExpanded="true" treeDataObject="<%=treeData%>" fieldForSelectedObject="selectedAttrib"
-											nodeClickedFunction="treeNodeSelected"/>
+
+											<div
+												id="currentEntityTreeDiv" style="overflow:auto;">
+											</div>
 										</td>
 										</tr>
 										<tr height = 100%> <td> &nbsp;</td>
@@ -181,9 +228,9 @@
 													&nbsp;
 											</td>
 											<td >
-												<div style="border:solid 1px; padding:1px; width:250px; height:100px; overflow:auto;">
-												<dynamicExtensions:tree name="associationTree" treeDataObject="<%=associationTree%>" fieldForSelectedObject="existingFormName" />
-												</div>
+												<div style="border:solid 1px; padding:1px; width:250px; height:100px; overflow:auto;" id="definedEntitiesTreeDiv">
+
+
 											</td>
 										 </tr>
 										<c:choose>
@@ -237,6 +284,7 @@
 <html:hidden styleId = 'operation' property="operation" value=""/>
 <html:hidden styleId = 'operationMode' property="operationMode" />
 <html:hidden styleId = 'entityIdentifier'  property="entityIdentifier" value=""/>
+<html:hidden styleId = 'selectedObjectId'  property="selectedObjectId" value=""/>
 
 </html:form>
 </html>

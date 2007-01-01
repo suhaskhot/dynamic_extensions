@@ -173,4 +173,103 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 			fail();
 		}
 	}
+	
+	/**
+	 *  PURPOSE: This method tests for getAllAttributes method of the entity
+	 *
+	 *  EXPECTED BEHAVIOUR: All the attributes from the hierarchy should be returned 
+	 *  
+	 *  TEST CASE FLOW: 1. Create following hierarchy
+	 *                  3. persist leaf nodes 
+	 *                  2. check no of AllAttributes for each node.
+	 *                  
+	 *                    A
+	 *                    |
+	 *                    |
+	 *           	------------------
+	 * 	           |             		| 
+	 *             |             		| 
+	 *             B		            C 
+	 				|        		    |  
+	  		  ------------- 	 -------------   
+	 *       |            |      |      |      |
+	 *       D             E     F      g      h
+	 */
+
+	public void testGetAllChildrenEntities()
+	{
+
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		try
+		{
+			// Step 1
+			EntityInterface entityA = factory.createEntity();
+			entityA.setName("entityA");
+
+			EntityInterface entityB = factory.createEntity();
+			entityB.setName("entityB");
+			entityB.setParentEntity(entityA);
+
+			EntityInterface entityC = factory.createEntity();
+			entityC.setName("entityC");
+			entityC.setParentEntity(entityA);
+
+			EntityInterface entityD = factory.createEntity();
+			entityD.setName("entityD");
+			entityD.setParentEntity(entityB);
+
+			EntityInterface entityE = factory.createEntity();
+			entityE.setName("entityE");
+			entityE.setParentEntity(entityB);
+
+			EntityInterface entityF = factory.createEntity();
+			entityF.setName("entityF");
+			entityF.setParentEntity(entityC);
+
+			EntityInterface entityG = factory.createEntity();
+			entityG.setName("entityG");
+			entityG.setParentEntity(entityC);
+
+			EntityInterface entityH = factory.createEntity();
+			entityH.setName("entityH");
+			entityH.setParentEntity(entityC);
+
+			entityC = entityManagerInterface.persistEntity(entityC);
+
+			entityManagerInterface.persistEntity(entityD);
+			entityManagerInterface.persistEntity(entityE);
+			entityManagerInterface.persistEntity(entityF);
+			entityManagerInterface.persistEntity(entityG);
+			entityManagerInterface.persistEntity(entityH);
+
+
+			Collection<EntityInterface> cChildren = entityC.getAllChildrenEntities();
+			assertEquals(3, cChildren.size());
+
+			Collection<EntityInterface> hChildren = entityH.getAllChildrenEntities();
+			assertEquals(0, hChildren.size());
+
+			entityA = entityManagerInterface.getEntityByIdentifier(entityA.getId().toString());
+			entityB = entityManagerInterface.getEntityByIdentifier(entityB.getId().toString());
+			entityC = entityManagerInterface.getEntityByIdentifier(entityC.getId().toString());
+			entityD = entityManagerInterface.getEntityByIdentifier(entityD.getId().toString());
+			entityE = entityManagerInterface.getEntityByIdentifier(entityE.getId().toString());
+			
+			assertEquals(7, entityA.getAllChildrenEntities().size());
+			assertEquals(2, entityB.getAllChildrenEntities().size());
+			assertEquals(3, entityC.getAllChildrenEntities().size());
+			assertEquals(0, entityD.getAllChildrenEntities().size());
+			assertEquals(0, entityE.getAllChildrenEntities().size());
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			Logger.out.debug(DynamicExtensionsUtility.getStackTrace(e));
+			fail();
+		}
+	}
+
 }

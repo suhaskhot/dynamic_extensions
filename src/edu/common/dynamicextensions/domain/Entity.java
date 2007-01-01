@@ -58,7 +58,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	/**
 	 * parent of this entity, null is no parent present. 
 	 */
-	protected EntityInterface parentEntity = null;
+	protected EntityInterface parent = null;
 
 	/**
 	 * collection of child entities of this entity. 
@@ -381,7 +381,6 @@ public class Entity extends AbstractMetadata implements EntityInterface
 
 	}
 
-	
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getChildEntityCollection()
 	 * 
@@ -395,7 +394,6 @@ public class Entity extends AbstractMetadata implements EntityInterface
 		return childEntityCollection;
 	}
 
-	
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#setChildEntityCollection(java.util.Collection)
 	 */
@@ -403,8 +401,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	{
 		this.childEntityCollection = childEntityCollection;
 	}
-	
-	
+
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#isAbstract()
 	 * 
@@ -415,8 +412,8 @@ public class Entity extends AbstractMetadata implements EntityInterface
 		return isAbstract;
 	}
 
-	
 	/**
+	 * This private method is for hibernate to set parent
 	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#setAbstract(boolean)
 	 */
 	public void setAbstract(boolean isAbstract)
@@ -424,32 +421,44 @@ public class Entity extends AbstractMetadata implements EntityInterface
 		this.isAbstract = isAbstract;
 	}
 
-	
 	/**
-	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getParentEntity()
-	 * 
 	 * @hibernate.many-to-one column="PARENT_ENTITY_ID" class="edu.common.dynamicextensions.domain.Entity" constrained="true" 
 	 *                        cascade="save-update"    
 	 */
-	public EntityInterface getParentEntity()
+	private EntityInterface getParent()
 	{
-		return parentEntity;
+		return parent;
 	}
 
+	/**
+	 * This private method is for hibernate to load parent
+	 * 
+	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#setParentEntity(edu.common.dynamicextensions.domaininterface.EntityInterface)
+	 */
+	private void setParent(EntityInterface parentEntity)
+	{
+		this.parent = parentEntity;
+	}
 	
+	/**
+	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getParentEntity()
+	 */
+	public EntityInterface getParentEntity()
+	{
+		return getParent();
+	}
+
+
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#setParentEntity(edu.common.dynamicextensions.domaininterface.EntityInterface)
 	 */
 	public void setParentEntity(EntityInterface parentEntity)
 	{
-		this.parentEntity = parentEntity;
-//
-//		if (this.parentEntity != null) {
-//			Collection<EntityInterface> childCollection = this.parentEntity.getChildEntityCollection();
-//			if (!childCollection.contains(this)) {
-//				//childCollection.add(this);
-//			}
-//		}
+		setParent(parentEntity);
+		if (parentEntity != null)
+		{
+			this.parent.getChildEntityCollection().add(this);
+		}
 	}
 
 	/**
@@ -459,12 +468,13 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	{
 		Collection<AssociationInterface> associationCollection = new ArrayList<AssociationInterface>();
 		associationCollection.addAll(getAssociationCollection());
-		EntityInterface parentEntity = this.parentEntity;
-		while(parentEntity != null) {
+		EntityInterface parentEntity = this.parent;
+		while (parentEntity != null)
+		{
 			associationCollection.addAll(parentEntity.getAssociationCollection());
 			parentEntity = parentEntity.getParentEntity();
 		}
-		
+
 		return associationCollection;
 	}
 
@@ -473,15 +483,16 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	 */
 	public Collection<AttributeInterface> getAllAttributes()
 	{
-		
+
 		Collection<AttributeInterface> AttributeCollection = new ArrayList<AttributeInterface>();
 		AttributeCollection.addAll(getAttributeCollection());
-		EntityInterface parentEntity = this.parentEntity;
-		while(parentEntity != null) {
+		EntityInterface parentEntity = this.parent;
+		while (parentEntity != null)
+		{
 			AttributeCollection.addAll(parentEntity.getAttributeCollection());
 			parentEntity = parentEntity.getParentEntity();
 		}
-		
+
 		return AttributeCollection;
 	}
 
@@ -503,13 +514,14 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	{
 		Collection<EntityInterface> entityCollection = new ArrayList<EntityInterface>();
 		Collection<EntityInterface> childCollection = this.childEntityCollection;
-		for (EntityInterface childEntity : childCollection) {
+		for (EntityInterface childEntity : childCollection)
+		{
 			entityCollection.add(childEntity);
 			entityCollection.addAll(childEntity.getAllChildrenEntities());
 		}
-		
-		
+
 		return entityCollection;
 	}
+
 
 }

@@ -448,7 +448,7 @@
         />
 
         <many-to-one
-            name="parentEntity"
+            name="parent"
             class="edu.common.dynamicextensions.domain.Entity"
             cascade="save-update"
             outer-join="auto"

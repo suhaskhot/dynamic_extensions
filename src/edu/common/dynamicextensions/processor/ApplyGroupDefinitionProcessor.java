@@ -12,6 +12,7 @@ import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.interfaces.GroupUIBeanInterface;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 
 /**
  * @author preeti_munot
@@ -54,7 +55,9 @@ public class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsProcesso
 		}
 		else
 		{
-			//Create new entity group 
+			//Create new entity group
+			//Validate entity group name
+			DynamicExtensionsUtility.validateName(groupUIBean.getGroupNameText());
 			entityGroup = groupProcessor.createEntityGroup();
 			groupProcessor.populateEntityGroupDetails(entityGroup, groupUIBean);
 		}

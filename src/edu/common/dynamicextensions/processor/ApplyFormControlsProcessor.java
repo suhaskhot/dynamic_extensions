@@ -75,34 +75,31 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 			{
 				initializeMeasurementUnits(controlsForm);
 			}
-
-			if (controlsForm.getSequenceNumbers() != null && controlsForm.getSequenceNumbers().length > 0)
-			{
-				//ControlsUtility.applySequenceNumbers(containerInterface, controlsForm.getSequenceNumbers());
-				ControlsUtility.reinitializeSequenceNumbers(containerInterface.getControlCollection(), controlsForm.getControlsSequenceNumbers());
-			}
-
+			ControlsUtility.reinitializeSequenceNumbers(containerInterface.getControlCollection(), controlsForm.getControlsSequenceNumbers());
 			//Add new control
 			if (controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_ADD))
 			{
 				//Set Name of the attribute in controlsForm.
 				//It is not accepted from UI. It has to be derived from caption
 				String attributeName = deriveAttributeNameFromCaption(controlsForm.getCaption());
+				
+				//Validate attribute name
+				DynamicExtensionsUtility.validateName(attributeName);
 				controlsForm.setName(attributeName);
 
 				//Create Attribute  
-				abstractAttributeInterface = attributeProcessor.createAndPopulateAttribute(controlsForm.getUserSelectedTool(),controlsForm);
-				
+				abstractAttributeInterface = attributeProcessor.createAndPopulateAttribute(controlsForm.getUserSelectedTool(), controlsForm);
+
 				//Set permisible values
 				setPermissibleValues(attributeProcessor, abstractAttributeInterface, controlsForm);
-				
+
 				//Set attribute in controlInformationInterface object(controlsForm)
 				controlsForm.setAbstractAttribute(abstractAttributeInterface);
 
 				//Control Interface : Add control
 				controlInterface = controlProcessor.createAndPopulateControl(controlsForm.getUserSelectedTool(), controlsForm);
 				controlInterface.setSequenceNumber(WebUIManager.getSequenceNumberForNextControl(containerInterface));
-				
+
 				//Entity Interface  : Add attribute
 				if ((entityInterface != null) && (abstractAttributeInterface != null))
 				{
@@ -130,20 +127,21 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				 * new design 
 				 * 
 				 * //Remove old refernces : From Entity
-				entityInterface.removeAbstractAttribute(controlInterface.getAbstractAttribute());
+				 entityInterface.removeAbstractAttribute(controlInterface.getAbstractAttribute());
 
-				//Create new abstract attribute interface with new datatype
-				abstractAttributeInterface = attributeProcessor.createAndPopulateAttribute(controlsForm);
-				
-				//update in entity
-				entityInterface.addAbstractAttribute(abstractAttributeInterface);
-				*/
-				
+				 //Create new abstract attribute interface with new datatype
+				 abstractAttributeInterface = attributeProcessor.createAndPopulateAttribute(controlsForm);
+
+				 //update in entity
+				 entityInterface.addAbstractAttribute(abstractAttributeInterface);
+				 */
+
 				//***********New Code starts here*********
 				abstractAttributeInterface = controlInterface.getAbstractAttribute();
-				abstractAttributeInterface = attributeProcessor.updateAttributeInformation(controlsForm.getUserSelectedTool(),abstractAttributeInterface,controlsForm);
+				abstractAttributeInterface = attributeProcessor.updateAttributeInformation(controlsForm.getUserSelectedTool(),
+						abstractAttributeInterface, controlsForm);
 				setPermissibleValues(attributeProcessor, abstractAttributeInterface, controlsForm);
-				
+
 				//update in control interface
 				controlInterface.setAbstractAttribute(abstractAttributeInterface);
 
@@ -197,8 +195,9 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 			if ((userSelectedControl.equalsIgnoreCase(ProcessorConstants.COMBOBOX_CONTROL))
 					|| (userSelectedControl.equalsIgnoreCase(ProcessorConstants.RADIOBUTTON_CONTROL)))
 			{
-				AttributeTypeInformationInterface attributeTypeInformationIntf = DynamicExtensionsUtility.getAttributeTypeInformation(abstractAttributeInterface);
-				if (attributeTypeInformationIntf!=null)
+				AttributeTypeInformationInterface attributeTypeInformationIntf = DynamicExtensionsUtility
+						.getAttributeTypeInformation(abstractAttributeInterface);
+				if (attributeTypeInformationIntf != null)
 				{
 					attributeTypeInformationIntf.setDataElement(attributeProcessor.getDataElementInterface(controlsForm));
 				}

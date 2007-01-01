@@ -62,7 +62,8 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		{
 			containerInterface = containerProcessor.createContainer();
 		}
-
+		//validate container name
+		DynamicExtensionsUtility.validateName(actionForm.getFormName());
 		containerProcessor.populateContainerInterface(containerInterface, actionForm);
 
 		//Add entity
@@ -70,6 +71,8 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		EntityInterface entityInterface = containerInterface.getEntity();
 		if (entityInterface == null)
 		{
+			//validate entity name
+			DynamicExtensionsUtility.validateName(actionForm.getFormName());
 			entityInterface = entityProcessor.createAndPopulateEntity(actionForm);
 		}
 		else
@@ -129,10 +132,13 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @param formDefinitionForm
 	 * @return
 	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException 
 	 */
-	private ContainerInterface createTargetEntityContainer(FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException
+	private ContainerInterface createTargetEntityContainer(FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
+		//validate container name b4 creating it
 		ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
+		DynamicExtensionsUtility.validateName(formDefinitionForm.getFormName());
 		ContainerInterface containerInterface = containerProcessor.createContainer();
 		containerProcessor.populateContainerInterface(containerInterface, formDefinitionForm);
 

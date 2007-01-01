@@ -512,7 +512,7 @@
 	-->
 	<target name="remove_generics" >
 	  <mkdir dir="${temp.hdoclet.dir}" />	
-	  <property name="generics.match.pattern" value="&lt;[\w\[\]]+(&lt;\w+&gt;)?,?[\w\[\]]*(&lt;\w+&gt;)?&gt;|(for\s?\(.+:.+\))"/>
+	  <property name="generics.match.pattern" value="&lt;[^=(]*&gt;|(for\s?\(.+:.+\))"/>
 	  <echo message="Pattern used to remove generics : ${generics.match.pattern}"/>
 	  <copy toDir="${temp.hdoclet.dir}" overwrite="true">
 	    <fileset dir="${src.dir}">

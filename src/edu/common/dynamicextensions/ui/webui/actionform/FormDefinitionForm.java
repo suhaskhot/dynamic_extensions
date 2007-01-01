@@ -1,8 +1,6 @@
 
 package edu.common.dynamicextensions.ui.webui.actionform;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionError;
@@ -12,7 +10,6 @@ import org.apache.struts.action.ActionMapping;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.interfaces.ContainerUIBeanInterface;
 import edu.common.dynamicextensions.ui.interfaces.EntityUIBeanInterface;
-import edu.common.dynamicextensions.ui.webui.util.TreeData;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
@@ -48,57 +45,50 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	 * CreateAs
 	 */
 	protected String createAs;
+	/**
+	 * view as 
+	 */
 	protected String viewAs;
-	/**
-	 * existingFormsList
-	 */
-	protected List existingFormsList;
-	/**
-	 * selectForm;
-	 */
-	protected String selectForm;
-	/**
-	 * 
-	 */
-	protected String buttonCss;
+	
 	/**
 	 * 
 	 */
 	protected String formCaption;
-	/**
-	 * 
-	 */
-	protected String mainTableCss;
-	/**
-	 * 
-	 */
-	protected String requiredFieldIndicatior;
-	/**
-	 * 
-	 */
-	protected String requiredFieldWarningMessage;
-	/**
-	 * 
-	 */
-	protected String titleCss;
+	
 	/**
 	 * 
 	 */
 	protected String conceptCode;
 
 	/**
-	 * mode
+	 * operation mode
 	 */
-	//protected String mode;
-
 	protected String operationMode;
 
+	/**
+	 * Current container identifier
+	 */
 	protected String containerIdentifier;
 
+	/**
+	 * current group name
+	 */
 	protected String groupName;
 
-	protected TreeData treeData;
-	protected TreeData associationTree;
+	//protected TreeData treeData;
+	//protected TreeData associationTree;
+	/**
+	 * XML String for current entity tree representation
+	 */
+	protected String currentEntityTreeXML;
+	/**
+	 * XML String for already defined entities
+	 */
+	protected String definedEntitiesTreeXML;
+	/**
+	 * Selected object id
+	 * 
+	 */
 	protected String selectedObjectId;
 
 	public String getSelectedObjectId()
@@ -229,46 +219,6 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	}
 
 	/**
-	 * @return existingFormsList
-	 */
-	public List getExistingFormsList()
-	{
-		return existingFormsList;
-	}
-
-	/**
-	 * @param existingFormsList existingFormsList
-	 */
-	public void setExistingFormsList(List existingFormsList)
-	{
-		this.existingFormsList = existingFormsList;
-	}
-
-	/**
-	 * @return String selectForm
-	 */
-	public String getSelectForm()
-	{
-		return selectForm;
-	}
-
-	/**
-	 * @param selectForm selectForm
-	 */
-	public void setSelectForm(String selectForm)
-	{
-		this.selectForm = selectForm;
-	}
-
-	/**
-	 * @return buttonCss
-	 */
-	public String getButtonCss()
-	{
-		return buttonCss;
-	}
-
-	/**
 	 * @return formCaption
 	 */
 	public String getFormCaption()
@@ -277,83 +227,11 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	}
 
 	/**
-	 * @return mainTableCss
-	 */
-	public String getMainTableCss()
-	{
-		return mainTableCss;
-	}
-
-	/**
-	 * @return  requiredFieldIndicatior
-	 */
-	public String getRequiredFieldIndicatior()
-	{
-		return requiredFieldIndicatior;
-	}
-
-	/**
-	 * @return requiredFieldWarningMessage
-	 */
-	public String getRequiredFieldWarningMessage()
-	{
-		return requiredFieldWarningMessage;
-	}
-
-	/**
-	 * @return titleCss
-	 */
-	public String getTitleCss()
-	{
-		return titleCss;
-	}
-
-	/**
-	 * @param buttonCss buttonCss
-	 */
-	public void setButtonCss(String buttonCss)
-	{
-		this.buttonCss = buttonCss;
-	}
-
-	/**
 	 * @param caption FormCaption
 	 */
 	public void setFormCaption(String caption)
 	{
 		this.formCaption = caption;
-	}
-
-	/**
-	 * @param mainTableCss MainTableCss
-	 */
-	public void setMainTableCss(String mainTableCss)
-	{
-		this.mainTableCss = mainTableCss;
-	}
-
-	/**
-	 * @param requiredFieldIndicatior requiredFieldIndicatior
-	 */
-	public void setRequiredFieldIndicatior(String requiredFieldIndicatior)
-	{
-		this.requiredFieldIndicatior = requiredFieldIndicatior;
-	}
-
-	/**
-	 * @param requiredFieldWarningMessage requiredFieldWarningMessage
-	 */
-	public void setRequiredFieldWarningMessage(String requiredFieldWarningMessage)
-	{
-		this.requiredFieldWarningMessage = requiredFieldWarningMessage;
-	}
-
-	/** 
-	 * @param titleCss titleCss
-	 */
-	public void setTitleCss(String titleCss)
-	{
-		this.titleCss = titleCss;
 	}
 
 	/**
@@ -439,16 +317,6 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 		this.operationMode = operationMode;
 	}
 
-	public TreeData getTreeData()
-	{
-		return this.treeData;
-	}
-
-	public void setTreeData(TreeData treeData)
-	{
-		this.treeData = treeData;
-	}
-
 	public String getViewAs()
 	{
 		return this.viewAs;
@@ -458,16 +326,114 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	{
 		this.viewAs = viewAs;
 	}
-	
 
-	public TreeData getAssociationTree()
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.ui.interfaces.ContainerUIBeanInterface#getButtonCss()
+	 */
+	public String getButtonCss()
 	{
-		return this.associationTree;
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	public void setAssociationTree(TreeData associationTree)
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.ui.interfaces.ContainerUIBeanInterface#getMainTableCss()
+	 */
+	public String getMainTableCss()
 	{
-		this.associationTree = associationTree;
+		// TODO Auto-generated method stub
+		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.ui.interfaces.ContainerUIBeanInterface#getRequiredFieldIndicatior()
+	 */
+	public String getRequiredFieldIndicatior()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.ui.interfaces.ContainerUIBeanInterface#getRequiredFieldWarningMessage()
+	 */
+	public String getRequiredFieldWarningMessage()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.ui.interfaces.ContainerUIBeanInterface#getTitleCss()
+	 */
+	public String getTitleCss()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.ui.interfaces.ContainerUIBeanInterface#setButtonCss(java.lang.String)
+	 */
+	public void setButtonCss(String buttonCss)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.ui.interfaces.ContainerUIBeanInterface#setMainTableCss(java.lang.String)
+	 */
+	public void setMainTableCss(String mainTableCss)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.ui.interfaces.ContainerUIBeanInterface#setRequiredFieldIndicatior(java.lang.String)
+	 */
+	public void setRequiredFieldIndicatior(String requiredFieldIndicatior)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.ui.interfaces.ContainerUIBeanInterface#setRequiredFieldWarningMessage(java.lang.String)
+	 */
+	public void setRequiredFieldWarningMessage(String requiredFieldWarningMessage)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.ui.interfaces.ContainerUIBeanInterface#setTitleCss(java.lang.String)
+	 */
+	public void setTitleCss(String titleCss)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	public String getCurrentEntityTreeXML()
+	{
+		return this.currentEntityTreeXML;
+	}
+
+	public void setCurrentEntityTreeXML(String currentEntityTreeXML)
+	{
+		this.currentEntityTreeXML = currentEntityTreeXML;
+	}
+
+	public String getDefinedEntitiesTreeXML()
+	{
+		return this.definedEntitiesTreeXML;
+	}
+
+	public void setDefinedEntitiesTreeXML(String definedEntitiesTreeXML)
+	{
+		this.definedEntitiesTreeXML = definedEntitiesTreeXML;
+	}
 }

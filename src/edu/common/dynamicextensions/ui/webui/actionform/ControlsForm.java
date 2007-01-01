@@ -305,11 +305,6 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	protected List selectedAttributes;
 	protected String[] selectedAttributeIds;
 
-	/**
-	 * 
-	 */
-	protected String[] sequenceNumbers;
-
 	public List getGroupNames()
 	{
 		return this.groupNames;
@@ -1622,16 +1617,6 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	public void setAttributeDisplayAsURL(String attributeDisplayAsURL)
 	{
 		this.attributeDisplayAsURL = attributeDisplayAsURL;
-	}
-
-	public String[] getSequenceNumbers()
-	{
-		return sequenceNumbers;
-	}
-
-	public void setSequenceNumbers(String[] sequenceNumbers)
-	{
-		this.sequenceNumbers = sequenceNumbers;
 	}
 
 	public String[] getOptionConceptCodes()

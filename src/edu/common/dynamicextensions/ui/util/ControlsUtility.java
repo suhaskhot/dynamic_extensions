@@ -9,8 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -27,7 +25,6 @@ import edu.common.dynamicextensions.domaininterface.DateTypeInformationInterface
 import edu.common.dynamicextensions.domaininterface.DateValueInterface;
 import edu.common.dynamicextensions.domaininterface.DoubleTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.DoubleValueInterface;
-import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.FloatTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.FloatValueInterface;
 import edu.common.dynamicextensions.domaininterface.IntegerTypeInformationInterface;
@@ -514,28 +511,6 @@ public class ControlsUtility
 		return nameValueBean;
 	}
 
-	/**
-	 * 
-	 * @param entityInterface
-	 * @param sequenceNumbers
-	 */
-	public static void applySequenceNumbers(ContainerInterface containerInterface, String[] sequenceNumbers)
-	{
-		Collection controlCollection = containerInterface.getControlCollection();
-		ControlInterface controlInterface;
-		int sequenceNumber;
-		if (controlCollection != null && controlCollection.size() > 0 && sequenceNumbers != null && sequenceNumbers.length > 0)
-		{
-			for (int counter = 0; counter < sequenceNumbers.length - 1; counter++)
-			{
-				sequenceNumber = new Integer(sequenceNumbers[counter]).intValue();
-				controlInterface = DynamicExtensionsUtility.getControlBySequenceNumber(controlCollection, sequenceNumber);
-				controlInterface.setSequenceNumber(new Integer(counter + 1));
-			}
-			//deleteControls(containerInterface, sequenceNumbers.length);
-			DynamicExtensionsUtility.resetSequenceNumberChanged(controlCollection);
-		}
-	}
 
 	/**
 	 *	Added by Preeti  
@@ -557,34 +532,6 @@ public class ControlsUtility
 					{
 						control.setSequenceNumber(new Integer(i+1));
 					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * 
-	 * @param controlCollection
-	 */
-	public static void deleteControls(ContainerInterface containerInterface, int sequenceNumbersCount)
-	{
-		Collection controlCollection = containerInterface.getControlCollection();
-		if (sequenceNumbersCount == 1)
-		{
-			containerInterface.getControlCollection().retainAll(new HashSet());
-		}
-		else
-		{
-			Iterator controlIterator = controlCollection.iterator();
-			ControlInterface controlInterface;
-			while (controlIterator.hasNext())
-			{
-				controlInterface = (ControlInterface) controlIterator.next();
-				if (!controlInterface.getSequenceNumberChanged())
-				{
-					EntityInterface entityInterface = containerInterface.getEntity();
-					entityInterface.removeAbstractAttribute(controlInterface.getAbstractAttribute());
-					controlIterator.remove();
 				}
 			}
 		}
@@ -631,7 +578,6 @@ public class ControlsUtility
 						}
 					}
 				}
-				//DynamicExtensionsUtility.resetSequenceNumberChanged(controlCollection);
 			}
 		}
 		return childList;

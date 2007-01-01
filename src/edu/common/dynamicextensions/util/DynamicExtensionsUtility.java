@@ -18,6 +18,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -26,6 +27,7 @@ import net.sf.hibernate.HibernateException;
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
@@ -40,6 +42,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterfa
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManagerExceptionConstantsInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
@@ -239,25 +242,7 @@ public class DynamicExtensionsUtility
 		}
 		return controlInterface;
 	}
-
-	/**
-	 * 
-	 * @param controlCollection
-	 */
-	public static void resetSequenceNumberChanged(Collection controlCollection)
-	{
-		if (controlCollection != null)
-		{
-			Iterator controlIterator = controlCollection.iterator();
-			ControlInterface controlInterface = null;
-			while (controlIterator.hasNext())
-			{
-				controlInterface = (ControlInterface) controlIterator.next();
-				controlInterface.setSequenceNumberChanged(false);
-			}
-		}
-	}
-
+	
 	/**
 	 * 
 	 */
@@ -502,11 +487,11 @@ public class DynamicExtensionsUtility
 	 *
 	 * @param list list of NameValueBeanObjects
 	 */
+	@SuppressWarnings("unchecked")
 	public static void sortNameValueBeanListByName(List<NameValueBean> list)
 	{
 		Collections.sort(list, new Comparator()
 		{
-
 			public int compare(Object o1, Object o2)
 			{
 				String s1 = ((NameValueBean) o1).getName();
@@ -570,4 +555,74 @@ public class DynamicExtensionsUtility
 		}
 		return integerList.toArray(new Integer[integerList.size()]);
 	}
+	/**
+	 * validate the entity for
+	 * 1. Name - should not contain any special characters, should not be empty,null
+	 * 2. Description - should be less than 1000 characters.
+	 * 
+	 * @param entity
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public static void validateEntityForSaving(EntityInterface entity)
+			throws DynamicExtensionsApplicationException
+	{
+
+		validateName(entity.getName());
+		Collection<AbstractAttributeInterface> collection = entity.getAbstractAttributeCollection();
+		if (collection != null && !collection.isEmpty())
+		{
+			Iterator iterator = collection.iterator();
+			while (iterator.hasNext())
+			{
+				AbstractMetadataInterface abstractMetadataInterface = (AbstractMetadataInterface) iterator
+						.next();
+				validateName(abstractMetadataInterface.getName());
+			}
+		}
+
+		if (entity.getDescription() != null && entity.getDescription().length() > 1000)
+		{
+			throw new DynamicExtensionsApplicationException("Entity description size exceeded ",
+					null, EntityManagerExceptionConstantsInterface.DYEXTN_A_004);
+		}
+		Collection<String> nameCollection = new HashSet<String>();
+		for (AbstractAttributeInterface attribute : collection)
+		{
+			if (!nameCollection.contains(attribute.getName()))
+			{
+				nameCollection.add(attribute.getName());
+			}
+			else
+			{
+				throw new DynamicExtensionsApplicationException(
+						"Attribute names should be unique for the entity ", null, EntityManagerExceptionConstantsInterface.DYEXTN_A_006,
+						attribute.getName());
+			}
+		}
+		return;
+	}
+
+	/**
+	 * @param name
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public static void validateName(String name) throws DynamicExtensionsApplicationException
+	{
+		/**
+		 * Constant representing valid names 
+		 */
+		final String VALIDCHARSREGEX = "[^\\\\/:*?\"<>&;|']*";
+
+		if (name == null || name.trim().length() == 0 || !name.matches(VALIDCHARSREGEX))
+		{
+			throw new DynamicExtensionsApplicationException("Object name invalid", null,
+					EntityManagerExceptionConstantsInterface.DYEXTN_A_003);
+		}
+		if (name.trim().length() > 40)
+		{
+			throw new DynamicExtensionsApplicationException("Object name exceeds maximum limit",
+					null, EntityManagerExceptionConstantsInterface.DYEXTN_A_007);
+		}
+	}
+
 }

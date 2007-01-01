@@ -7,14 +7,11 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 
 /**
+ * @author chetan patil
  * @version 1.0
  * @created 28-Sep-2006 12:20:07 PM
  * @hibernate.joined-subclass table="DYEXTN_CHECK_BOX" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
- */
-/**
- * @author chetan_patil
- *
  */
 public class CheckBox extends Control implements CheckBoxInterface
 {

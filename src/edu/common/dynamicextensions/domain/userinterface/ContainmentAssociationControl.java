@@ -12,13 +12,10 @@ import java.util.List;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AssociationInterface;
-import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
-import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 
 /**
  * @author vishvesh_mulay

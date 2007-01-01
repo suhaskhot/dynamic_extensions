@@ -143,7 +143,6 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	{
 		String target = "";
 		String operation = "";
-		//ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 		ContainerInterface containerInterface = WebUIManager.getCurrentContainer(request);
 		boolean saveEntity = true;
 		operation = formDefinitionForm.getOperation();

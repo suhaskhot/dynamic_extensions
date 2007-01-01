@@ -92,13 +92,6 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 		controlsForm.setControlOperation(ProcessorConstants.OPERATION_ADD);
 		LoadFormControlsProcessor loadFormControlsProcessor = LoadFormControlsProcessor.getInstance();
 		loadFormControlsProcessor.loadFormControls(controlsForm, containerInterface);
-		/*if (containerInterface != null)
-		{
-			if (controlsForm.getSequenceNumbers() != null && controlsForm.getSequenceNumbers().length > 0)
-			{
-				ControlsUtility.applySequenceNumbers(containerInterface, controlsForm.getSequenceNumbers());
-			}
-		}*/
 		controlsForm.setControlOperation(oldControlOperation);
 	}
 

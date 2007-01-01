@@ -37,7 +37,6 @@ import edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperti
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
 import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -1240,7 +1239,7 @@ public class EntityManager
 	private void preSaveProcessEntity(EntityInterface entity)
 			throws DynamicExtensionsApplicationException
 	{
-		validateEntityForSaving(entity);// chk if entity is vlaid or not.
+		DynamicExtensionsUtility.validateEntityForSaving(entity);// chk if entity is vlaid or not.
 
 		correctCardinalities(entity); // correct the cardinality if max cardinality  < min cardinality
 
@@ -1892,7 +1891,7 @@ public class EntityManager
 			Long recordId) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
-		Map recordValues = new HashMap();
+		Map<AbstractAttributeInterface, Object> recordValues = new HashMap();
 
 		if (entity == null || entity.getId() == null || recordId == null)
 		{
@@ -2022,7 +2021,7 @@ public class EntityManager
 	private void preSaveProcessEntityGroup(EntityGroupInterface entityGroup)
 			throws DynamicExtensionsApplicationException
 	{
-		validateName(entityGroup.getName());
+		DynamicExtensionsUtility.validateName(entityGroup.getName());
 		if (entityGroup.getId() != null)
 		{
 			entityGroup.setLastUpdated(new Date());
@@ -2343,7 +2342,10 @@ public class EntityManager
 	 * 
 	 * @param entity
 	 * @throws DynamicExtensionsApplicationException
-	 */
+	 *//*
+	 *
+	 *Methods copied to DynamicExtensionsUtility.java - Preeti Munot
+	 *
 	private void validateEntityForSaving(EntityInterface entity)
 			throws DynamicExtensionsApplicationException
 	{
@@ -2383,15 +2385,15 @@ public class EntityManager
 		return;
 	}
 
-	/**
+	*//**
 	 * @param name
 	 * @throws DynamicExtensionsApplicationException
-	 */
+	 *//*
 	private void validateName(String name) throws DynamicExtensionsApplicationException
 	{
-		/**
+		*//**
 		 * Constant representing valid names 
-		 */
+		 *//*
 		final String VALIDCHARSREGEX = "[^\\\\/:*?\"<>&;|']*";
 
 		if (name == null || name.trim().length() == 0 || !name.matches(VALIDCHARSREGEX))
@@ -2405,7 +2407,7 @@ public class EntityManager
 					null, DYEXTN_A_007);
 		}
 	}
-
+*/
 	/**
 	 * Returns all entitiy groups in the whole system
 	 * @return Collection Entity group Collection

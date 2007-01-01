@@ -84,24 +84,80 @@ public interface EntityInterface extends AbstractMetadataInterface
 	 * This method removes association interface from the abstract attribute collection.
 	 * @param associationInterface
 	 */
-	public void addAssociation(AssociationInterface associationInterface);
+	void addAssociation(AssociationInterface associationInterface);
 
 	/**
 	 * This method removes association interface from the abstract attribute collection.
 	 * @param associationInterface
 	 */
-	public void removeAssociation(AssociationInterface associationInterface);
+	void removeAssociation(AssociationInterface associationInterface);
 
 	/**
 	 * This method removes all entity groupa of the entity.
 	 *
 	 */
-	public void removeEntityGroupInterface(EntityGroupInterface entityGroupInterface);
+	void removeEntityGroupInterface(EntityGroupInterface entityGroupInterface);
 
 	/**
 	 * This method removes all entity groupa of the entity.
 	 *
 	 */
-	public void removeAllEntityGroups();
+	void removeAllEntityGroups();
 
+	/**
+	 * @return Returns the childEntityCollection.
+	 */
+	Collection<EntityInterface> getChildEntityCollection();
+
+
+
+	/**
+	 * @param childEntityCollection The childEntityCollection to set.
+	 */
+	void setChildEntityCollection(Collection<EntityInterface> childEntityCollection);
+
+	/**
+	 * @return Returns the isAbstract.
+	 */
+	boolean isAbstract();
+
+	/**
+	 * @param isAbstract The isAbstract to set.
+	 */
+	void setAbstract(boolean isAbstract);
+
+	/**
+	 * @return Returns the parentEntity.
+	 */
+	EntityInterface getParentEntity();
+
+	/**
+	 * @param parentEntity The parentEntity to set.
+	 */
+	void setParentEntity(EntityInterface parentEntity);
+	
+	
+	/**
+	 * This method returns association for all the hierarchy
+	 * @return
+	 */
+	Collection<AssociationInterface> getAllAssociations();
+	
+	/**
+	 * This method returns attributs for all the hierarchy.
+	 * @return  Collection of AttributeInterface
+	 */
+	Collection<AttributeInterface> getAllAttributes();
+	
+	/**
+	 * This method returns all the attributes and associations for all the hierarchy.
+	 * @return Collection of AbstractAttributeInterface
+	 */
+	Collection<AbstractAttributeInterface> getAllAbstractAttributes();
+	
+	/**
+	 * This method returns all the children entities of this entity.
+	 * @return Collection of EntityInterface
+	 */
+	Collection<EntityInterface> getAllChildrenEntities();
 }

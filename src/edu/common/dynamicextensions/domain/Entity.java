@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.domain;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -53,6 +54,21 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	 *     responsibility of setting Table name and column name to the entity and attributes.
 	 */
 	protected int dataTableState = Constants.DATA_TABLE_STATE_CREATED;
+
+	/**
+	 * parent of this entity, null is no parent present. 
+	 */
+	protected EntityInterface parentEntity = null;
+
+	/**
+	 * collection of child entities of this entity. 
+	 */
+	protected Collection<EntityInterface> childEntityCollection = new HashSet<EntityInterface>();
+
+	/**
+	 * indicates if this enitity is abstract or not. 
+	 */
+	protected boolean isAbstract = false;
 
 	/**
 	 * @hibernate.property name="dataTableState" type="int" column="DATA_TABLE_STATE"
@@ -363,6 +379,137 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	{
 		removeAbstractAttribute(associationInterface);
 
+	}
+
+	
+	/**
+	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getChildEntityCollection()
+	 * 
+	 * @hibernate.set name="childEntityCollection" table="DYEXTN_ENTITY"
+	 * cascade="none" inverse="true" lazy="false"
+	 * @hibernate.collection-key column="PARENT_ENTITY_ID"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Entity" 
+	 */
+	public Collection<EntityInterface> getChildEntityCollection()
+	{
+		return childEntityCollection;
+	}
+
+	
+	/**
+	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#setChildEntityCollection(java.util.Collection)
+	 */
+	public void setChildEntityCollection(Collection<EntityInterface> childEntityCollection)
+	{
+		this.childEntityCollection = childEntityCollection;
+	}
+	
+	
+	/**
+	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#isAbstract()
+	 * 
+	 * @hibernate.property name="isAbstract" type="boolean" column="IS_ABSTRACT"
+	 */
+	public boolean isAbstract()
+	{
+		return isAbstract;
+	}
+
+	
+	/**
+	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#setAbstract(boolean)
+	 */
+	public void setAbstract(boolean isAbstract)
+	{
+		this.isAbstract = isAbstract;
+	}
+
+	
+	/**
+	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getParentEntity()
+	 * 
+	 * @hibernate.many-to-one column="PARENT_ENTITY_ID" class="edu.common.dynamicextensions.domain.Entity" constrained="true" 
+	 *                        cascade="save-update"    
+	 */
+	public EntityInterface getParentEntity()
+	{
+		return parentEntity;
+	}
+
+	
+	/**
+	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#setParentEntity(edu.common.dynamicextensions.domaininterface.EntityInterface)
+	 */
+	public void setParentEntity(EntityInterface parentEntity)
+	{
+		this.parentEntity = parentEntity;
+//
+		if (this.parentEntity != null) {
+			Collection<EntityInterface> childCollection = this.parentEntity.getChildEntityCollection();
+			if (!childCollection.contains(this)) {
+				//childCollection.add(this);
+			}
+		}
+	}
+
+	/**
+	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getAllAssociations()
+	 */
+	public Collection<AssociationInterface> getAllAssociations()
+	{
+		Collection<AssociationInterface> associationCollection = new ArrayList<AssociationInterface>();
+		associationCollection.addAll(getAssociationCollection());
+		EntityInterface parentEntity = this.parentEntity;
+		while(parentEntity != null) {
+			associationCollection.addAll(parentEntity.getAssociationCollection());
+			parentEntity = parentEntity.getParentEntity();
+		}
+		
+		return associationCollection;
+	}
+
+	/** 
+	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getAllAttributes()
+	 */
+	public Collection<AttributeInterface> getAllAttributes()
+	{
+		
+		Collection<AttributeInterface> AttributeCollection = new ArrayList<AttributeInterface>();
+		AttributeCollection.addAll(getAttributeCollection());
+		EntityInterface parentEntity = this.parentEntity;
+		while(parentEntity != null) {
+			AttributeCollection.addAll(parentEntity.getAttributeCollection());
+			parentEntity = parentEntity.getParentEntity();
+		}
+		
+		return AttributeCollection;
+	}
+
+	/**
+	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getAllAbstractAttributes()
+	 */
+	public Collection<AbstractAttributeInterface> getAllAbstractAttributes()
+	{
+		Collection<AbstractAttributeInterface> abstractAttributeCollection = new ArrayList<AbstractAttributeInterface>();
+		abstractAttributeCollection.addAll(getAllAssociations());
+		abstractAttributeCollection.addAll(getAllAttributes());
+		return abstractAttributeCollection;
+	}
+
+	/**
+	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getAllChildrenEntities()
+	 */
+	public Collection<EntityInterface> getAllChildrenEntities()
+	{
+		Collection<EntityInterface> entityCollection = new ArrayList<EntityInterface>();
+		Collection<EntityInterface> childCollection = this.childEntityCollection;
+		for (EntityInterface childEntity : childCollection) {
+			entityCollection.add(childEntity);
+			entityCollection.addAll(childEntity.getAllChildrenEntities());
+		}
+		
+		
+		return entityCollection;
 	}
 
 }

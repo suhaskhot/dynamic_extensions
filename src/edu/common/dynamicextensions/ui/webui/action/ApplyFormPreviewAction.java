@@ -10,6 +10,11 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.util.global.Constants;
 
+/**
+ * 
+ * @author sujay_narkar
+ *
+ */
 public class ApplyFormPreviewAction extends BaseDynamicExtensionsAction
 {
 
@@ -19,9 +24,6 @@ public class ApplyFormPreviewAction extends BaseDynamicExtensionsAction
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		//DataEntryForm dataEntryForm = (DataEntryForm) form;
-		//String dataEntryOperation = dataEntryForm.getDataEntryOperation();
-				
 		return (mapping.findForward(Constants.SUCCESS));
 	}
 }

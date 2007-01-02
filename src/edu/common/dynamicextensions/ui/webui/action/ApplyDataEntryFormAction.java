@@ -74,44 +74,39 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		if ((containerStack != null && !containerStack.isEmpty())
 				&& (valueMapStack != null || !valueMapStack.isEmpty()))
 		{
-			ContainerInterface containerInterface = (ContainerInterface) containerStack.peek();
-			Map<AbstractAttributeInterface, Object> valueMap = (Map<AbstractAttributeInterface, Object>) valueMapStack
-					.peek();
-
 			ApplyDataEntryFormProcessor applyDataEntryFormProcessor = ApplyDataEntryFormProcessor
 					.getInstance();
-
 			try
 			{
 				DataEntryForm dataEntryForm = (DataEntryForm) form;
-				String showFormPreview = dataEntryForm.getShowFormPreview();
-				if (!showFormPreview.equals("true"))
+				ContainerInterface containerInterface = (ContainerInterface) containerStack.peek();
+				Map<AbstractAttributeInterface, Object> valueMap = (Map<AbstractAttributeInterface, Object>) valueMapStack
+						.peek();
+				valueMap = generateAttributeValueMap(containerInterface, request, dataEntryForm,
+						"", valueMap, true);
+
+				List<String> errorList = ValidatorUtil.validateEntity(valueMap);
+				if (errorList.size() != 0)
 				{
-					valueMap = generateAttributeValueMap(containerInterface, request,
-							dataEntryForm, "", valueMap, true);
-					List<String> errorList = ValidatorUtil.validateEntity(valueMap);
-					if (errorList.size() != 0)
-					{
-						//saveErrors(request, getErrorMessages(errorList));
-						dataEntryForm.setErrorList(errorList);
-						return (mapping.findForward(Constants.SUCCESS));
-					}
-					else
-					{
-						applyDataEntryFormProcessor.removeNullValueEntriesFormMap(valueMap);
-					}
+					//saveErrors(request, getErrorMessages(errorList));
+					dataEntryForm.setErrorList(errorList);
+					return (mapping.findForward(Constants.SUCCESS));
+				}
+				else
+				{
+					applyDataEntryFormProcessor.removeNullValueEntriesFormMap(valueMap);
 				}
 
 				valueMap = (Map<AbstractAttributeInterface, Object>) valueMapStack.firstElement();
 				containerInterface = (ContainerInterface) containerStack.firstElement();
 
 				String dataEntryOperation = dataEntryForm.getDataEntryOperation();
-				if (dataEntryOperation != null && dataEntryOperation.equals("insertChildData"))
+				if ((dataEntryOperation != null) && (dataEntryOperation.equals("insertChildData")))
 				{
 					return mapping.findForward("loadChildContainer");
 				}
-				else if (dataEntryOperation != null
-						&& dataEntryOperation.equals("insertParentData"))
+				else if ((dataEntryOperation != null)
+						&& (dataEntryOperation.equals("insertParentData")))
 				{
 					return mapping.findForward("loadParentContainer");
 				}

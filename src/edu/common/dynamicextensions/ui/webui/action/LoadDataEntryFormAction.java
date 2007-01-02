@@ -1,7 +1,6 @@
 
 package edu.common.dynamicextensions.ui.webui.action;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -35,14 +34,8 @@ import edu.wustl.common.actionForm.AbstractActionForm;
 public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 {
 
-	/**
-	 * @param mapping ActionMapping mapping
-	 * @param form ActionForm form
-	 * @param  request HttpServletRequest request
-	 * @param response HttpServletResponse response
-	 * @return ActionForward forward to next action
-	 * @throws DynamicExtensionsSystemException dynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException dynamicExtensionsApplicationException
+	/* (non-Javadoc)
+	 * @see org.apache.struts.actions.DispatchAction#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
@@ -78,10 +71,9 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 				.getObjectFromCache(request, Constants.CONTAINER_STACK);
 		Stack<Map<AbstractAttributeInterface, Object>> valueMapStack = (Stack<Map<AbstractAttributeInterface, Object>>) CacheManager
 				.getObjectFromCache(request, Constants.VALUE_MAP_STACK);
-		
+
 		DataEntryForm dataEntryForm = (DataEntryForm) form;
 		String dataEntryOperation = dataEntryForm.getDataEntryOperation();
-		String showFormPreview = dataEntryForm.getShowFormPreview();
 		if (containerStack == null)
 		{
 			containerStack = new Stack<ContainerInterface>();
@@ -94,38 +86,29 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 		else if (dataEntryOperation != null
 				&& dataEntryOperation.equalsIgnoreCase("insertChildData"))
 		{
-
-			Map<AbstractAttributeInterface, Object> containerValueMap = valueMapStack.peek();
 			String childContainerId = dataEntryForm.getChildContainerId();
 			ContainmentAssociationControl associationControl = UserInterfaceiUtility
 					.getAssociationControl((ContainerInterface) containerStack.peek(),
 							childContainerId);
-			ContainerInterface childContainer = associationControl.getContainer();
+
+			Map<AbstractAttributeInterface, Object> containerValueMap = valueMapStack.peek();
+			AssociationInterface association = (AssociationInterface) associationControl
+					.getAbstractAttribute();
+			List<Map<AbstractAttributeInterface, Object>> childContainerValueMapList = (List<Map<AbstractAttributeInterface, Object>>) containerValueMap
+					.get(association);
 
 			Map<AbstractAttributeInterface, Object> childContainerValueMap = null;
-			
-			if (showFormPreview.equals("true"))
+			if (UserInterfaceiUtility.isCardinalityOneToMany(associationControl))
 			{
-				childContainerValueMap = new HashMap<AbstractAttributeInterface, Object>();
+				childContainerValueMap = childContainerValueMapList.get(Integer
+						.parseInt(dataEntryForm.getChildRowId()) - 1);
 			}
 			else
 			{
-				AssociationInterface association = (AssociationInterface) associationControl
-						.getAbstractAttribute();
-				List<Map<AbstractAttributeInterface, Object>> childContainerValueMapList = (List<Map<AbstractAttributeInterface, Object>>) containerValueMap
-						.get(association);
-
-				if (UserInterfaceiUtility.isCardinalityOneToMany(associationControl))
-				{
-					childContainerValueMap = childContainerValueMapList.get(Integer
-							.parseInt(dataEntryForm.getChildRowId()) - 1);
-				}
-				else
-				{
-					childContainerValueMap = childContainerValueMapList.get(0);
-				}
+				childContainerValueMap = childContainerValueMapList.get(0);
 			}
 
+			ContainerInterface childContainer = associationControl.getContainer();
 			UserInterfaceiUtility.addContainerInfo(containerStack, childContainer, valueMapStack,
 					childContainerValueMap);
 		}
@@ -135,11 +118,11 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 			UserInterfaceiUtility.removeContainerInfo(containerStack, valueMapStack);
 		}
 
-		String mode = request.getParameter(WebUIManagerConstants.MODE_PARAM_NAME);
 		if (containerStack.size() > 0)
 		{
+			String mode = request.getParameter(WebUIManagerConstants.MODE_PARAM_NAME);
 			loadDataEntryFormProcessor.loadDataEntryForm((AbstractActionForm) form, containerStack
-				.peek(), valueMapStack.peek(), mode, recordId);
+					.peek(), valueMapStack.peek(), mode, recordId);
 		}
 		else
 		{
@@ -147,7 +130,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 			CacheManager.addObjectToCache(request, Constants.VALUE_MAP_STACK, null);
 			return mapping.findForward("LoadFormControls");
 		}
-		
+
 		if (containerStack.size() > 1)
 		{
 			dataEntryForm.setIsTopLevelEntity(false);
@@ -156,8 +139,8 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 		{
 			dataEntryForm.setIsTopLevelEntity(true);
 		}
-		clearFormValues(dataEntryForm);
 
+		clearFormValues(dataEntryForm);
 		return mapping.findForward("Success");
 	}
 

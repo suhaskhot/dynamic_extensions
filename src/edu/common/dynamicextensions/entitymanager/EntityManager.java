@@ -1359,7 +1359,8 @@ public class EntityManager
 				{
 					String strValue = EntityManagerUtil.getFormattedValue(attribute, value);
 
-					if(strValue != null &&  !strValue.equalsIgnoreCase("")) {
+					if (strValue != null && !strValue.equalsIgnoreCase(""))
+					{
 						columnNameString.append(" , ");
 						columnValuesString.append(" , ");
 						String dbColumnName = primitiveAttribute.getColumnProperties().getName();
@@ -2149,39 +2150,11 @@ public class EntityManager
 			hibernateDAO.openSession(null);
 			Query query = substitutionParameterForQuery(queryName, substitutionParameterMap);
 			entityCollection = query.list();
-			hibernateDAO.commit();
+			//	hibernateDAO.commit();
 		}
-		catch (DAOException e)
-		{
-			try
-			{
-				hibernateDAO.rollback();
-				throw new DynamicExtensionsSystemException("Exception occured while executing hqk",
-						e);
-
-			}
-			catch (DAOException e1)
-			{
-				throw new DynamicExtensionsSystemException("Error while rolling back the session",
-						e1);
-			}
-
-		}
-
-		catch (HibernateException e)
+		catch (Exception e)
 		{
 			throw new DynamicExtensionsSystemException("Error while rolling back the session", e);
-		}
-		finally
-		{
-			try
-			{
-				hibernateDAO.closeSession();
-			}
-			catch (DAOException e)
-			{
-				throw new DynamicExtensionsSystemException("Error while closing the session", e);
-			}
 		}
 		return entityCollection;
 	}
@@ -2335,79 +2308,6 @@ public class EntityManager
 
 	}
 
-	/**
-	 * validate the entity for
-	 * 1. Name - should not contain any special characters, should not be empty,null
-	 * 2. Description - should be less than 1000 characters.
-	 * 
-	 * @param entity
-	 * @throws DynamicExtensionsApplicationException
-	 *//*
-	 *
-	 *Methods copied to DynamicExtensionsUtility.java - Preeti Munot
-	 *
-	private void validateEntityForSaving(EntityInterface entity)
-			throws DynamicExtensionsApplicationException
-	{
-
-		validateName(entity.getName());
-		Collection<AbstractAttributeInterface> collection = entity.getAbstractAttributeCollection();
-		if (collection != null && !collection.isEmpty())
-		{
-			Iterator iterator = collection.iterator();
-			while (iterator.hasNext())
-			{
-				AbstractMetadataInterface abstractMetadataInterface = (AbstractMetadataInterface) iterator
-						.next();
-				validateName(abstractMetadataInterface.getName());
-			}
-		}
-
-		if (entity.getDescription() != null && entity.getDescription().length() > 1000)
-		{
-			throw new DynamicExtensionsApplicationException("Entity description size exceeded ",
-					null, DYEXTN_A_004);
-		}
-		Collection<String> nameCollection = new HashSet<String>();
-		for (AbstractAttributeInterface attribute : collection)
-		{
-			if (!nameCollection.contains(attribute.getName()))
-			{
-				nameCollection.add(attribute.getName());
-			}
-			else
-			{
-				throw new DynamicExtensionsApplicationException(
-						"Attribute names should be unique for the entity ", null, DYEXTN_A_006,
-						attribute.getName());
-			}
-		}
-		return;
-	}
-
-	*//**
-	 * @param name
-	 * @throws DynamicExtensionsApplicationException
-	 *//*
-	private void validateName(String name) throws DynamicExtensionsApplicationException
-	{
-		*//**
-		 * Constant representing valid names 
-		 *//*
-		final String VALIDCHARSREGEX = "[^\\\\/:*?\"<>&;|']*";
-
-		if (name == null || name.trim().length() == 0 || !name.matches(VALIDCHARSREGEX))
-		{
-			throw new DynamicExtensionsApplicationException("Object name invalid", null,
-					DYEXTN_A_003);
-		}
-		if (name.trim().length() > 40)
-		{
-			throw new DynamicExtensionsApplicationException("Object name exceeds maximum limit",
-					null, DYEXTN_A_007);
-		}
-	}
-*/
 	/**
 	 * Returns all entitiy groups in the whole system
 	 * @return Collection Entity group Collection

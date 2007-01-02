@@ -1722,21 +1722,33 @@ function treeNodeSelectedResponse(formNameListXML)
 		
 		if((htmlFormName!=null)&&(formname!=null))
 		{
-			htmlFormName.value = formname[0].text;
+			if(formname[0]!=null)
+			{
+				htmlFormName.value = formname[0].text;
+			}
 		}
 		
 		if((htmlFormCC!=null)&&(formConceptCode!=null))
 		{
-			htmlFormCC.value = formConceptCode[0].text;
+			if(formConceptCode[0]!=null)
+			{
+				htmlFormCC.value = formConceptCode[0].text;
+			}
 		}
 		
 		if((htmlFormDesc!=null)&&(formDesc!=null))
 		{
-			htmlFormDesc.value = formDesc[0].text;
+			if(formDesc[0]!=null)
+			{
+				htmlFormDesc.value = formDesc[0].text;
+			}
 		}
 		if((htmlOperationMode!=null)&&(operationmode!=null))
 		{
-			htmlOperationMode.value = operationmode[0].text;
+			if(operationmode[0]!=null)
+			{
+				htmlOperationMode.value = operationmode[0].text;
+			}
 		}
 		
 	}

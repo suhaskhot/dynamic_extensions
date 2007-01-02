@@ -1683,6 +1683,10 @@ function definedEntitySelected(fldname)
 	}
 	else
 	{
+		if(document.getElementById('selectedObjectId')!=null)
+		{
+			document.getElementById('selectedObjectId').value = "";
+		}
 		//clear all other form elts
 		if(document.getElementById("formName")!=null)
 		{

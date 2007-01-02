@@ -258,7 +258,14 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 		{
 			if (formName == null || validator.isEmpty(String.valueOf(formName)))
 			{ 
-				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.form.name")));
+				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.form.title")));
+			}
+		}
+		if (createAs.equals(ProcessorConstants.CREATE_FROM_EXISTING))
+		{
+			if((getSelectedObjectId()==null)||(getSelectedObjectId().trim().equals("")))
+			{
+				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.form.title")));				
 			}
 		}
 		

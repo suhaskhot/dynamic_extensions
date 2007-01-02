@@ -618,7 +618,7 @@ public class DynamicExtensionsUtility
 			throw new DynamicExtensionsApplicationException("Object name invalid", null,
 					EntityManagerExceptionConstantsInterface.DYEXTN_A_003);
 		}
-		if (name.trim().length() > 40)
+		if (name.trim().length() > 1000)
 		{
 			throw new DynamicExtensionsApplicationException("Object name exceeds maximum limit",
 					null, EntityManagerExceptionConstantsInterface.DYEXTN_A_007);

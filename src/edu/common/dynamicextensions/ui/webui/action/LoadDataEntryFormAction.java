@@ -48,12 +48,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 			HttpServletRequest request, HttpServletResponse response)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		DataEntryForm dataEntryForm = (DataEntryForm) form;
-
-		String mode = request.getParameter(WebUIManagerConstants.MODE_PARAM_NAME);
-
 		String callBackURL = request.getParameter(WebUIManagerConstants.CALLBACK_URL_PARAM_NAME);
-
 		if (callBackURL != null && !callBackURL.equals(""))
 		{
 			CacheManager.clearCache(request);
@@ -62,7 +57,6 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 
 		ContainerInterface containerInterface = (ContainerInterface) CacheManager
 				.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-
 		String containerIdentifier = getContainerId(request);
 		if (containerIdentifier != null || containerInterface == null)
 		{
@@ -76,7 +70,6 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 
 		LoadDataEntryFormProcessor loadDataEntryFormProcessor = LoadDataEntryFormProcessor
 				.getInstance();
-
 		String recordId = request.getParameter("recordId");
 		Map<AbstractAttributeInterface, Object> recordMap = loadDataEntryFormProcessor
 				.getValueMapFromRecordId(containerInterface.getEntity(), recordId);
@@ -85,6 +78,8 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 				.getObjectFromCache(request, Constants.CONTAINER_STACK);
 		Stack<Map<AbstractAttributeInterface, Object>> valueMapStack = (Stack<Map<AbstractAttributeInterface, Object>>) CacheManager
 				.getObjectFromCache(request, Constants.VALUE_MAP_STACK);
+		
+		DataEntryForm dataEntryForm = (DataEntryForm) form;
 		String dataEntryOperation = dataEntryForm.getDataEntryOperation();
 		String showFormPreview = dataEntryForm.getShowFormPreview();
 		if (containerStack == null)
@@ -129,7 +124,6 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 				{
 					childContainerValueMap = childContainerValueMapList.get(0);
 				}
-
 			}
 
 			UserInterfaceiUtility.addContainerInfo(containerStack, childContainer, valueMapStack,
@@ -141,6 +135,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 			UserInterfaceiUtility.removeContainerInfo(containerStack, valueMapStack);
 		}
 
+		String mode = request.getParameter(WebUIManagerConstants.MODE_PARAM_NAME);
 		if (containerStack.size() > 0)
 		{
 			loadDataEntryFormProcessor.loadDataEntryForm((AbstractActionForm) form, containerStack
@@ -153,7 +148,6 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 			return mapping.findForward("LoadFormControls");
 		}
 		
-
 		if (containerStack.size() > 1)
 		{
 			dataEntryForm.setIsTopLevelEntity(false);
@@ -168,8 +162,9 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * @param request
-	 * @return
+	 * This method returns the Container Identifier form the givaen request.
+	 * @param request HttpServletRequest
+	 * @return the Container Identifier
 	 */
 	private String getContainerId(HttpServletRequest request)
 	{
@@ -183,7 +178,8 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * @param form
+	 * This method flushes the values of the DataEntryForm ActionForm. 
+	 * @param form DataEntryForm ActionForm
 	 */
 	private void clearFormValues(ActionForm form)
 	{

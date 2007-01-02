@@ -185,7 +185,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @throws IOException
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public Map<AbstractAttributeInterface, Object> generateAttributeValueMap(
+	private Map<AbstractAttributeInterface, Object> generateAttributeValueMap(
 			ContainerInterface containerInterface, HttpServletRequest request,
 			DataEntryForm dataEntryForm, String rowId,
 			Map<AbstractAttributeInterface, Object> attributeValueMap, Boolean processOneToMany)

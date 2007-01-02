@@ -27,7 +27,6 @@ public class ShowPreviewAction extends BaseDynamicExtensionsAction
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
 	{
-
 		ContainerInterface containerInterface = (ContainerInterface) CacheManager
 				.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 		ControlsForm controlsForm = (ControlsForm) form;

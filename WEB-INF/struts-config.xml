@@ -122,19 +122,35 @@ PUBLIC
 
 		</action>
 
-
 		<action path="/ShowPreviewAction" 
 		    type="edu.common.dynamicextensions.ui.webui.action.ShowPreviewAction" 
 		    name="controlsForm"
 			validate="false"
 			input="/LoadFormControlsAction.do"
 			scope="request">
-			<forward name="loadFormPreviewAction" path="/LoadDataEntryFormAction.do?showFormPreview=true" />
+			<forward name="loadFormPreviewAction" path="/LoadFormPreviewAction.do" />
+		</action>
+		
+		<action path="/LoadFormPreviewAction" 
+		    type="edu.common.dynamicextensions.ui.webui.action.LoadFormPreviewAction" 
+		    name="dataEntryForm"
+			validate="false"
+			input="/LoadFormPreviewAction.do"
+			scope="request">
+			<forward name="success" path="/pages/dataEntry/DataEntryPreview.jsp" />
+			<forward name="LoadFormControls" path="/LoadFormControlsAction.do" />
+		</action>
+		
+		<action path="/ApplyFormPreviewAction" 
+		    type="edu.common.dynamicextensions.ui.webui.action.ApplyFormPreviewAction" 
+		    name="dataEntryForm"
+			validate="false"
+			input="/LoadFormPreviewAction.do"
+			scope="request">
+			<forward name="success" path="/LoadFormPreviewAction.do" />
 
 		</action>
-				
-		
-		
+	
 		<action path="/SaveEntityAction" 
 		    type="edu.common.dynamicextensions.ui.webui.action.SaveEntityAction" 
 		    name="controlsForm"

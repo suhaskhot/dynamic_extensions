@@ -105,6 +105,7 @@
 			<input type="hidden" id="childContainerId" name="childContainerId" value=""/>
 			<input type="hidden" id="childRowId" name="childRowId" value=""/>
 			<input type="hidden" id="dataEntryOperation" name="dataEntryOperation" value=""/>
+			<input type="hidden" id="showFormPreview" name="showFormPreview" value="true"/>
 
 		</html:form>
 	</body>

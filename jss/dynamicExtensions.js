@@ -1803,7 +1803,16 @@ function showChildContainerInsertDataPage(containerId,ths)
     document.getElementById('dataEntryOperation').value  = "insertChildData";
 	document.getElementById('childRowId').value = ths.parentNode.parentNode.rowIndex;
 	var dataEntryForm = document.getElementById('dataEntryForm');
-	dataEntryForm.action="/dynamicExtensions/ApplyDataEntryFormAction.do";
+	
+	var showFormPreview = document.getElementById('showFormPreview').value;
+	if(showFormPreview == "true")
+	{
+		dataEntryForm.action="/dynamicExtensions/ApplyFormPreviewAction.do";
+	}
+	else
+	{
+		dataEntryForm.action="/dynamicExtensions/ApplyDataEntryFormAction.do";
+	}
 	dataEntryForm.submit();
 }
 

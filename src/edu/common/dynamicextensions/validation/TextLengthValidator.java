@@ -39,12 +39,16 @@ public class TextLengthValidator implements ValidatorRuleInterface
 				
 				StringAttributeTypeInformation stringAttributeTypeInformation = (StringAttributeTypeInformation) attributeTypeInformation;
 				Integer size = stringAttributeTypeInformation.getSize();
-				if (value.length() > size)
+				if ((size > 0) && (value.length() > size))
 				{
 					placeHolders.add(attributeName);
 					placeHolders.add((new Long(size)).toString());
 					throw new DynamicExtensionsValidationException("Validation failed", null,
 							"dynExtn.validation.TextLength", placeHolders);
+				}
+				else
+				{
+					isValid = true;
 				}
 			}
 		}

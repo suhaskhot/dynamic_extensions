@@ -36,34 +36,35 @@
 			loadCurrentEntityTree();
 			loadDefinedEntitiesTree();
 		}
+		function preLoadImages()
+		{
+			var imSrcAr = new Array("line1.gif","line2.gif","line3.gif","line4.gif","minus2.gif","minus3.gif","minus4.gif","plus2.gif","plus3.gif","plus4.gif");
+			var imAr = new Array(0);
+			for(var i=0;i<imSrcAr.length;i++)
+			{
+				imAr[imAr.length] = new Image();
+				imAr[imAr.length-1].src = "dhtml_comp/imgs/"+imSrcAr[i]
+			}
+		}
 
 		function loadCurrentEntityTree()
 		{
+			preLoadImages();
 			currentEntityTree=new dhtmlXTreeObject(document.getElementById('currentEntityTreeDiv'),"100%","100%",0);
 			currentEntityTree.setImagePath("dhtml_comp/imgs/");
 			currentEntityTree.enableTreeImages(0);
-			currentEntityTree.enableTreeLines(false);
 			currentEntityTree.setOnClickHandler(treeNodeSelected);
-			<%
-							System.out.println(currentEntityXML);
-			%>
-
 			currentEntityTree.loadXMLString("<%=currentEntityXML%>");
 		}
 
 		function loadDefinedEntitiesTree()
 		{
+			preLoadImages();
 			definedEntitiesTree=new dhtmlXTreeObject(document.getElementById('definedEntitiesTreeDiv'),"100%","100%",0);
 			definedEntitiesTree.setImagePath("dhtml_comp/imgs/");
 			definedEntitiesTree.enableTreeImages(0);
-			definedEntitiesTree.enableTreeLines(false);
 			definedEntitiesTree.setOnClickHandler(definedEntitySelected);
-			<%
-							System.out.println(definedEntitiesTreeXML);
-			%>
-
 			definedEntitiesTree.loadXMLString("<%=definedEntitiesTreeXML%>");
-			definedEntitiesTree.enableRadioButtons("0",true);
 		}
 	</script>
 </head>

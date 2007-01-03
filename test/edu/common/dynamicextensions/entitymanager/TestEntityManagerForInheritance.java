@@ -62,9 +62,9 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 			System.out.println("Id is" + id);
 			
 			EntityInterface savedSpecimen =  entityManagerInterface.getEntityByIdentifier(id);
-			
-			assertEquals(savedSpecimen.getChildEntityCollection().size(),1);
-			savedSpecimen.getChildEntityCollection().contains(savedTissueSpecimen);
+			Collection childColelction =  entityManagerInterface.getChildrenEntities(savedSpecimen);
+			assertEquals(childColelction.size(),1);
+			childColelction.contains(savedTissueSpecimen);
 
 		}
 		catch (Exception e)
@@ -245,10 +245,10 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 			entityManagerInterface.persistEntity(entityH);
 
 
-			Collection<EntityInterface> cChildren = entityC.getAllChildrenEntities();
+			Collection<EntityInterface> cChildren =  entityManagerInterface.getChildrenEntities(entityC);
 			assertEquals(3, cChildren.size());
 
-			Collection<EntityInterface> hChildren = entityH.getAllChildrenEntities();
+			Collection<EntityInterface> hChildren = entityManagerInterface.getChildrenEntities(entityH);
 			assertEquals(0, hChildren.size());
 
 			entityA = entityManagerInterface.getEntityByIdentifier(entityA.getId().toString());
@@ -257,11 +257,11 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 			entityD = entityManagerInterface.getEntityByIdentifier(entityD.getId().toString());
 			entityE = entityManagerInterface.getEntityByIdentifier(entityE.getId().toString());
 			
-			assertEquals(7, entityA.getAllChildrenEntities().size());
-			assertEquals(2, entityB.getAllChildrenEntities().size());
-			assertEquals(3, entityC.getAllChildrenEntities().size());
-			assertEquals(0, entityD.getAllChildrenEntities().size());
-			assertEquals(0, entityE.getAllChildrenEntities().size());
+			assertEquals(2, entityManagerInterface.getChildrenEntities(entityA).size());
+			assertEquals(2, entityManagerInterface.getChildrenEntities(entityB).size());
+			assertEquals(3, entityManagerInterface.getChildrenEntities(entityC).size());
+			assertEquals(0, entityManagerInterface.getChildrenEntities(entityD).size());
+			assertEquals(0, entityManagerInterface.getChildrenEntities(entityE).size());
 
 		}
 		catch (Exception e)

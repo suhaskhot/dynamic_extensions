@@ -58,12 +58,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	/**
 	 * parent of this entity, null is no parent present. 
 	 */
-	protected EntityInterface parent = null;
-
-	/**
-	 * collection of child entities of this entity. 
-	 */
-	protected Collection<EntityInterface> childEntityCollection = new HashSet<EntityInterface>();
+	protected EntityInterface parentEntity = null;
 
 	/**
 	 * indicates if this enitity is abstract or not. 
@@ -382,27 +377,6 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	}
 
 	/**
-	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getChildEntityCollection()
-	 * 
-	 * @hibernate.set name="childEntityCollection" table="DYEXTN_ENTITY"
-	 * cascade="none" inverse="true" lazy="false"
-	 * @hibernate.collection-key column="PARENT_ENTITY_ID"
-	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Entity" 
-	 */
-	public Collection<EntityInterface> getChildEntityCollection()
-	{
-		return childEntityCollection;
-	}
-
-	/**
-	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#setChildEntityCollection(java.util.Collection)
-	 */
-	public void setChildEntityCollection(Collection<EntityInterface> childEntityCollection)
-	{
-		this.childEntityCollection = childEntityCollection;
-	}
-
-	/**
 	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#isAbstract()
 	 * 
 	 * @hibernate.property name="isAbstract" type="boolean" column="IS_ABSTRACT"
@@ -422,43 +396,21 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	}
 
 	/**
+	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getParentEntity()
 	 * @hibernate.many-to-one column="PARENT_ENTITY_ID" class="edu.common.dynamicextensions.domain.Entity" constrained="true" 
 	 *                        cascade="save-update"    
-	 */
-	private EntityInterface getParent()
-	{
-		return parent;
-	}
-
-	/**
-	 * This private method is for hibernate to load parent
-	 * 
-	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#setParentEntity(edu.common.dynamicextensions.domaininterface.EntityInterface)
-	 */
-	private void setParent(EntityInterface parentEntity)
-	{
-		this.parent = parentEntity;
-	}
-	
-	/**
-	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getParentEntity()
-	 */
+	 */	
 	public EntityInterface getParentEntity()
 	{
-		return getParent();
+		return parentEntity;
 	}
-
 
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#setParentEntity(edu.common.dynamicextensions.domaininterface.EntityInterface)
 	 */
 	public void setParentEntity(EntityInterface parentEntity)
 	{
-		setParent(parentEntity);
-		if (parentEntity != null)
-		{
-			this.parent.getChildEntityCollection().add(this);
-		}
+		this.parentEntity = parentEntity;
 	}
 
 	/**
@@ -468,7 +420,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	{
 		Collection<AssociationInterface> associationCollection = new ArrayList<AssociationInterface>();
 		associationCollection.addAll(getAssociationCollection());
-		EntityInterface parentEntity = this.parent;
+		EntityInterface parentEntity = this.parentEntity;
 		while (parentEntity != null)
 		{
 			associationCollection.addAll(parentEntity.getAssociationCollection());
@@ -486,7 +438,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 
 		Collection<AttributeInterface> AttributeCollection = new ArrayList<AttributeInterface>();
 		AttributeCollection.addAll(getAttributeCollection());
-		EntityInterface parentEntity = this.parent;
+		EntityInterface parentEntity = this.parentEntity;
 		while (parentEntity != null)
 		{
 			AttributeCollection.addAll(parentEntity.getAttributeCollection());
@@ -506,22 +458,4 @@ public class Entity extends AbstractMetadata implements EntityInterface
 		abstractAttributeCollection.addAll(getAllAttributes());
 		return abstractAttributeCollection;
 	}
-
-	/**
-	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getAllChildrenEntities()
-	 */
-	public Collection<EntityInterface> getAllChildrenEntities()
-	{
-		Collection<EntityInterface> entityCollection = new ArrayList<EntityInterface>();
-		Collection<EntityInterface> childCollection = this.childEntityCollection;
-		for (EntityInterface childEntity : childCollection)
-		{
-			entityCollection.add(childEntity);
-			entityCollection.addAll(childEntity.getAllChildrenEntities());
-		}
-
-		return entityCollection;
-	}
-
-
 }

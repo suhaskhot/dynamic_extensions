@@ -252,7 +252,7 @@ public interface EntityManagerInterface
 	/**
 	 * This method inserts one record for the entity.
 	 */
-	Long insertData(EntityInterface entity, Map<AbstractAttributeInterface, Object> dataValue)
+	Long insertData(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
@@ -384,4 +384,11 @@ public interface EntityManagerInterface
 	 * returns all the records for a given entity
 	 */
     List<EntityRecord> getAllRecords(EntityInterface entity) throws DynamicExtensionsSystemException;
+    
+    /**
+	 * This method returns all the children entities of givens entity.
+	 * @return Collection of EntityInterface
+     * @throws DynamicExtensionsSystemException 
+	 */
+	Collection<EntityInterface> getChildrenEntities(EntityInterface entity) throws DynamicExtensionsSystemException;
 }

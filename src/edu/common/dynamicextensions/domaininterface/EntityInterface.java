@@ -105,18 +105,6 @@ public interface EntityInterface extends AbstractMetadataInterface
 	void removeAllEntityGroups();
 
 	/**
-	 * @return Returns the childEntityCollection.
-	 */
-	Collection<EntityInterface> getChildEntityCollection();
-
-
-
-	/**
-	 * @param childEntityCollection The childEntityCollection to set.
-	 */
-	void setChildEntityCollection(Collection<EntityInterface> childEntityCollection);
-
-	/**
 	 * @return Returns the isAbstract.
 	 */
 	boolean isAbstract();
@@ -156,15 +144,10 @@ public interface EntityInterface extends AbstractMetadataInterface
 	Collection<AbstractAttributeInterface> getAllAbstractAttributes();
 	
 	/**
-	 * This method returns all the children entities of this entity.
-	 * @return Collection of EntityInterface
-	 */
-	Collection<EntityInterface> getAllChildrenEntities();
-	
-	/**
 	 * Method returns abstract attribute(attribute / association) based on the id passed.
 	 * @param id Long identifier of the abstract attribute
 	 * @return 
 	 */
 	AbstractAttributeInterface getAttributeByIdentifier(Long id);
+	
 }

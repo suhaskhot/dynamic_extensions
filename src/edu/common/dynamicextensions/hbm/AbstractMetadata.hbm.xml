@@ -421,24 +421,6 @@
               />
         </set>
 
-        <set
-            name="childEntityCollection"
-            table="DYEXTN_ENTITY"
-            lazy="false"
-            inverse="true"
-            cascade="none"
-            sort="unsorted"
-        >
-
-              <key
-                  column="PARENT_ENTITY_ID"
-              />
-
-              <one-to-many
-                  class="edu.common.dynamicextensions.domain.Entity"
-              />
-        </set>
-
         <property
             name="abstract"
             type="boolean"
@@ -448,7 +430,7 @@
         />
 
         <many-to-one
-            name="parent"
+            name="parentEntity"
             class="edu.common.dynamicextensions.domain.Entity"
             cascade="save-update"
             outer-join="auto"

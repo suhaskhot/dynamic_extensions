@@ -69,6 +69,10 @@
 	         
 	</query>
 	
-	
+
+	<query name="getChildrenEntities">
+	   from Entity entity
+	      where entity.parentEntity.id = ?
+	</query>
 </hibernate-mapping>
     

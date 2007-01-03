@@ -13,8 +13,9 @@ import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInte
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
 
 /**
+ * TextLengthValidator Class validates the text as per the text length defined for that Control during its creation.
+ * If the no text length is provided or the text lenght is zero, no validation checks are made.   
  * @author chetan_patil
- *
  */
 public class TextLengthValidator implements ValidatorRuleInterface
 {
@@ -36,7 +37,7 @@ public class TextLengthValidator implements ValidatorRuleInterface
 					&& attributeTypeInformation instanceof StringAttributeTypeInformation)
 			{
 				ArrayList<String> placeHolders = new ArrayList<String>();
-				
+
 				StringAttributeTypeInformation stringAttributeTypeInformation = (StringAttributeTypeInformation) attributeTypeInformation;
 				Integer size = stringAttributeTypeInformation.getSize();
 				if ((size > 0) && (value.length() > size))
@@ -52,7 +53,7 @@ public class TextLengthValidator implements ValidatorRuleInterface
 				}
 			}
 		}
-		
+
 		return isValid;
 	}
 }

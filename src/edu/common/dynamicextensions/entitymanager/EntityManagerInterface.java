@@ -95,6 +95,14 @@ public interface EntityManagerInterface
 			DynamicExtensionsApplicationException;
 
 	/**
+	 * @param entityGroupName
+	 * @return EntityGroupInterface EntityGroupInterface
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	EntityGroupInterface getEntityGroupByName(String entityGroupName) throws DynamicExtensionsSystemException,
+	DynamicExtensionsApplicationException;
+	/**
 	 * Returns an attribute given the entity name and attribute name.
 	 * @param entityName
 	 * @param attributeName
@@ -144,6 +152,16 @@ public interface EntityManagerInterface
 	public EntityInterface getEntityByIdentifier(String identifier)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
+	
+
+	/**
+	 * Returns the entity based on the id passed.
+	 * @param id
+	 * @return
+	 * @throws DynamicExtensionsSystemException thrown in case of fatal system exceptions
+	 * @throws DynamicExtensionsApplicationException thrown in case application specific errors.
+	 */
+	EntityInterface getEntityByIdentifier(Long id) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 	/**
 	 * Returns a collection of entities having attribute with the given name  
 	 * @param attributeName

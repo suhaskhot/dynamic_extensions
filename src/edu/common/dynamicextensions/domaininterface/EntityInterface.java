@@ -160,4 +160,11 @@ public interface EntityInterface extends AbstractMetadataInterface
 	 * @return Collection of EntityInterface
 	 */
 	Collection<EntityInterface> getAllChildrenEntities();
+	
+	/**
+	 * Method returns abstract attribute(attribute / association) based on the id passed.
+	 * @param id Long identifier of the abstract attribute
+	 * @return 
+	 */
+	AbstractAttributeInterface getAttributeByIdentifier(Long id);
 }

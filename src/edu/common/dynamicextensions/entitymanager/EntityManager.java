@@ -40,6 +40,7 @@ import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
@@ -495,33 +496,57 @@ public class EntityManager
 	public EntityInterface getEntityByName(String entityName)
 			throws DynamicExtensionsSystemException
 	{
-		EntityInterface entityInterface = null;
-		if (entityName == null || entityName.equals(""))
+		EntityInterface entityInterface = (EntityInterface) getObjectByName(Entity.class.getName(),entityName);
+		return entityInterface;
+	}
+
+	/**
+	 * This method returns the EntityInterface given the entity name.
+	 * @param entityGroupShortName
+	 * @return
+	 */
+	public EntityGroupInterface getEntityGroupByName(String entityGroupName)
+			throws DynamicExtensionsSystemException
+	{
+		EntityGroupInterface entityGroupInterface = (EntityGroupInterface) getObjectByName(EntityGroup.class.getName(),entityGroupName);
+		return entityGroupInterface;
+	}
+	/**
+	 * This method returns the object given the class name and object name.
+	 * @param className class name 
+	 * @param objectName objectName
+	 * @return DynamicExtensionBaseDomainObjectInterface Base DE interface
+	 */
+	private DynamicExtensionBaseDomainObjectInterface getObjectByName(String className, String objectName)
+			throws DynamicExtensionsSystemException
+	{
+		DynamicExtensionBaseDomainObjectInterface object = null;
+		if (objectName == null || objectName.equals(""))
 		{
-			return entityInterface;
+			return object;
 		}
 		//Getting the instance of the default biz logic on which retrieve method is later called.
 		DefaultBizLogic defaultBizLogic = BizLogicFactory.getDefaultBizLogic();
-		List entityInterfaceList = new ArrayList();
+		List objectList = new ArrayList();
 		try
 		{
 			//the following method gives the object , the class name of which is passed as the first parameter.
 			// The criteria for the object is given in the second and third parameter. The second parameter is the 
 			// field of the object that needs to be compared with the values that is given as the third parameter.
-			entityInterfaceList = defaultBizLogic.retrieve(Entity.class.getName(), "name",
-					entityName);
+			objectList = defaultBizLogic.retrieve(className, "name",
+					objectName);
 		}
 		catch (DAOException e)
 		{
 			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
 
-		if (entityInterfaceList != null && entityInterfaceList.size() > 0)
+		if (objectList != null && objectList.size() > 0)
 		{
-			entityInterface = (EntityInterface) entityInterfaceList.get(0);
+			object = (DynamicExtensionBaseDomainObjectInterface) objectList.get(0);
 		}
 
-		return entityInterface;
+		return object;
 	}
 
 	/**
@@ -643,6 +668,16 @@ public class EntityManager
 		return (EntityInterface) getObjectByIdentifier(EntityInterface.class.getName(), identifier);
 	}
 
+	/**
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getEntityByIdentifier(java.lang.Long)
+	 */
+	public EntityInterface getEntityByIdentifier(Long id)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		//		CAlling generic method to return all stored instances of the object, the identifier of which is passed as 
+		//the parameter.
+		return (EntityInterface) getObjectByIdentifier(EntityInterface.class.getName(), id.toString());
+	}
 	/**
 	 * This method populates the TableProperties object in entity which holds the unique tablename for the entity.
 	 * This table name is generated using the unique identifier that is generated after saving the object.

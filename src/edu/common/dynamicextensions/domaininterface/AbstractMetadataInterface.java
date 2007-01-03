@@ -10,7 +10,7 @@ import java.util.Date;
  * @author sujay_narkar
  *
  */
-public interface AbstractMetadataInterface
+public interface AbstractMetadataInterface 
 {
 
 	/**
@@ -113,5 +113,10 @@ public interface AbstractMetadataInterface
      */
     void addTaggedValue(TaggedValueInterface taggedValueInterface);
     
+    /**
+     * Method returns sorted semantic properties based on the sequence number.
+     * @return
+     */
+    Collection getOrderedSemanticPropertyCollection();
 
 }

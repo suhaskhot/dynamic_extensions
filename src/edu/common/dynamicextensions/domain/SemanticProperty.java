@@ -1,12 +1,7 @@
 
 package edu.common.dynamicextensions.domain;
 
-import java.io.Serializable;
-
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
-import edu.wustl.common.actionForm.AbstractActionForm;
-import edu.wustl.common.domain.AbstractDomainObject;
-import edu.wustl.common.exception.AssignDataException;
 
 /**
  * For every abstract metadata object semantic properties are associated.
@@ -15,7 +10,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @created 28-Sep-2006 12:20:08 PM
  * @hibernate.class table="DYEXTN_SEMANTIC_PROPERTY"
  */
-public class SemanticProperty extends DynamicExtensionBaseDomainObject implements SemanticPropertyInterface, Serializable
+public class SemanticProperty extends DynamicExtensionBaseDomainObject implements SemanticPropertyInterface, Comparable
 {
 
 	/**
@@ -37,6 +32,12 @@ public class SemanticProperty extends DynamicExtensionBaseDomainObject implement
 	 * Thesauras Name
 	 */
 	protected String thesaurasName;
+	
+	/**
+	 * 
+	 */
+	protected int sequenceNumber = 0;
+	
 
 	/**
 	 * Empty Constructor.
@@ -114,6 +115,34 @@ public class SemanticProperty extends DynamicExtensionBaseDomainObject implement
 		this.thesaurasName = thesaurasName;
 	}
 
+	
+	/**
+	 * @hibernate.property name="sequenceNumber" type="int" column="SEQUENCE_NUMBER" 
+	 * @return sequence number
+	 */
+	public int getSequenceNumber()
+	{
+		return sequenceNumber;
+	}
 
+	
+	/**
+	 * @param sequenceNumber sequence number
+	 */
+	public void setSequenceNumber(int sequenceNumber)
+	{
+		this.sequenceNumber = sequenceNumber;
+	}
+
+	/** 
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	public int compareTo(Object object)
+	{
+		SemanticProperty semanticProperty = (SemanticProperty) object;
+		Integer thisSequenceNumber = this.sequenceNumber;
+		Integer otherSequenceNumber = semanticProperty.getSequenceNumber();
+		return thisSequenceNumber.compareTo(otherSequenceNumber);
+	}
 
 }

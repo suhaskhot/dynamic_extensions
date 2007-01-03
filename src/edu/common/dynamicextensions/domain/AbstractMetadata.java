@@ -1,14 +1,16 @@
 
 package edu.common.dynamicextensions.domain;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
-import edu.wustl.common.domain.AbstractDomainObject;
 
 /**
  * This is an abstract class extended by Entity, Entity group, Attribute.
@@ -209,6 +211,19 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject 
 		}
 	}
 
+	/**
+	 * @see edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface#getOrderedSemanticPropertyCollection()
+	 */
+	public Collection getOrderedSemanticPropertyCollection() {
+		if (this.semanticPropertyCollection != null && !this.semanticPropertyCollection.isEmpty()) {
+			List<SemanticProperty> semanticPropertyList = new ArrayList(this.semanticPropertyCollection);
+			Collections.sort(semanticPropertyList);
+			return semanticPropertyList;
+		} else {
+			return new HashSet();
+		}
+		
+	}
     /**
      * This method returns the Collection of TaggedValue of the AbstractMetadata.
      * @hibernate.set name="taggedValueCollection" cascade="all-delete-orphan"

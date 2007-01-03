@@ -38,8 +38,8 @@
 <c:set var="errorList" value="${dataEntryForm.errorList}"/>
 <jsp:useBean id="errorList" type="java.util.List"/>
 
-<c:set var="recordIdentifier" value="${dataEntryForm.recordIdentifier}" />
-<jsp:useBean id="recordIdentifier" type="java.lang.String"/>
+<c:set var="recordIdentifier123" value="${dataEntryForm.recordIdentifier}" />
+<jsp:useBean id="recordIdentifier123" type="java.lang.String"/>
 
 <c:set var="mode" value="${dataEntryForm.mode}" />
 <jsp:useBean id="mode" type="java.lang.String"/>
@@ -167,7 +167,14 @@
 						</td>
 					</tr>
 				</table>
-			<input type="hidden" name="recordIdentifier" value="<%=recordIdentifier%>"/>
+	
+				<html:hidden styleId='recordIdentifier' property="recordIdentifier" />
+			
+			<%
+				System.out.println("**************** record identifier is" + recordIdentifier123);
+			%>
+			
+			
 			<html:hidden styleId='entitySaved' property="entitySaved" />
 			<input type="hidden" id="childContainerId" name="childContainerId" value=""/>
 			<input type="hidden" id="childRowId" name="childRowId" value=""/>

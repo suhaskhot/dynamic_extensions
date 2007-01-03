@@ -35,7 +35,7 @@ public interface WebUIManagerConstants
 	/**
 	 * 
 	 */
-	String RECORD_IDENTIFIER_PARAMETER_NAME =  "recordId";
+	String RECORD_IDENTIFIER_PARAMETER_NAME =  "recordIdentifier";
 	/**
 	 * 
 	 */

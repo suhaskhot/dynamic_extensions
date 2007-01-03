@@ -41,29 +41,29 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 			HttpServletRequest request, HttpServletResponse response)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		String callBackURL = request.getParameter(WebUIManagerConstants.CALLBACK_URL_PARAM_NAME);
-		if (callBackURL != null && !callBackURL.equals(""))
-		{
-			CacheManager.clearCache(request);
-			CacheManager.addObjectToCache(request, Constants.CALLBACK_URL, callBackURL);
-		}
+		DataEntryForm dataEntryForm = (DataEntryForm) form;
+		
+		cacheCallBackURL(request);
 
-		ContainerInterface containerInterface = (ContainerInterface) CacheManager
-				.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-		String containerIdentifier = getContainerId(request);
-		if (containerIdentifier != null || containerInterface == null)
-		{
-			UserInterfaceiUtility.clearContainerStack(request);
-
-			containerInterface = DynamicExtensionsUtility
-					.getContainerByIdentifier(containerIdentifier);
-			CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE,
-					containerInterface);
-		}
+		ContainerInterface containerInterface = getConatinerInterface(request);
 
 		LoadDataEntryFormProcessor loadDataEntryFormProcessor = LoadDataEntryFormProcessor
 				.getInstance();
-		String recordId = request.getParameter("recordId");
+		String recordId = request.getParameter("recordIdentifier");
+		if(recordId != null && !recordId.equals(""))
+		{
+			CacheManager.addObjectToCache(request, "rootRecordIdentifier", recordId);
+		}
+		else
+		{
+			recordId = (String) CacheManager.getObjectFromCache(request,"rootRecordIdentifier");
+			if(recordId == null)
+			{
+				recordId = "";
+			}
+		}
+	
+			
 		Map<AbstractAttributeInterface, Object> recordMap = loadDataEntryFormProcessor
 				.getValueMapFromRecordId(containerInterface.getEntity(), recordId);
 
@@ -71,9 +71,6 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 				.getObjectFromCache(request, Constants.CONTAINER_STACK);
 		Stack<Map<AbstractAttributeInterface, Object>> valueMapStack = (Stack<Map<AbstractAttributeInterface, Object>>) CacheManager
 				.getObjectFromCache(request, Constants.VALUE_MAP_STACK);
-
-		DataEntryForm dataEntryForm = (DataEntryForm) form;
-		String dataEntryOperation = dataEntryForm.getDataEntryOperation();
 		if (containerStack == null)
 		{
 			containerStack = new Stack<ContainerInterface>();
@@ -83,62 +80,18 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 			UserInterfaceiUtility.addContainerInfo(containerStack, containerInterface,
 					valueMapStack, recordMap);
 		}
-		else if (dataEntryOperation != null
-				&& dataEntryOperation.equalsIgnoreCase("insertChildData"))
+
+		updateStacks(request, dataEntryForm, containerInterface, recordMap, containerStack,
+				valueMapStack);
+
+		String mode = request.getParameter(WebUIManagerConstants.MODE_PARAM_NAME);
+		if ((!containerStack.isEmpty()) && (!valueMapStack.isEmpty()))
 		{
-			String childContainerId = dataEntryForm.getChildContainerId();
-			ContainmentAssociationControl associationControl = UserInterfaceiUtility
-					.getAssociationControl((ContainerInterface) containerStack.peek(),
-							childContainerId);
-
-			Map<AbstractAttributeInterface, Object> containerValueMap = valueMapStack.peek();
-			AssociationInterface association = (AssociationInterface) associationControl
-					.getAbstractAttribute();
-			List<Map<AbstractAttributeInterface, Object>> childContainerValueMapList = (List<Map<AbstractAttributeInterface, Object>>) containerValueMap
-					.get(association);
-
-			Map<AbstractAttributeInterface, Object> childContainerValueMap = null;
-			if (UserInterfaceiUtility.isCardinalityOneToMany(associationControl))
-			{
-				childContainerValueMap = childContainerValueMapList.get(Integer
-						.parseInt(dataEntryForm.getChildRowId()) - 1);
-			}
-			else
-			{
-				childContainerValueMap = childContainerValueMapList.get(0);
-			}
-
-			ContainerInterface childContainer = associationControl.getContainer();
-			UserInterfaceiUtility.addContainerInfo(containerStack, childContainer, valueMapStack,
-					childContainerValueMap);
-		}
-		else if (dataEntryOperation != null
-				&& dataEntryOperation.equalsIgnoreCase("insertParentData"))
-		{
-			UserInterfaceiUtility.removeContainerInfo(containerStack, valueMapStack);
-		}
-
-		if (containerStack.size() > 0)
-		{
-			String mode = request.getParameter(WebUIManagerConstants.MODE_PARAM_NAME);
 			loadDataEntryFormProcessor.loadDataEntryForm((AbstractActionForm) form, containerStack
 					.peek(), valueMapStack.peek(), mode, recordId);
 		}
-		else
-		{
-			CacheManager.addObjectToCache(request, Constants.CONTAINER_STACK, null);
-			CacheManager.addObjectToCache(request, Constants.VALUE_MAP_STACK, null);
-			return mapping.findForward("LoadFormControls");
-		}
-
-		if (containerStack.size() > 1)
-		{
-			dataEntryForm.setIsTopLevelEntity(false);
-		}
-		else
-		{
-			dataEntryForm.setIsTopLevelEntity(true);
-		}
+		
+		updateTopLevelEntitiyInfo(containerStack, dataEntryForm);
 
 		clearFormValues(dataEntryForm);
 		return mapping.findForward("Success");
@@ -171,4 +124,113 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 		dataEntryForm.setChildContainerId("");
 	}
 
+	/**
+	 * 
+	 * @param request
+	 */
+	private void cacheCallBackURL(HttpServletRequest request)
+	{
+		String callBackURL = request.getParameter(WebUIManagerConstants.CALLBACK_URL_PARAM_NAME);
+		if (callBackURL != null && !callBackURL.equals(""))
+		{
+			CacheManager.clearCache(request);
+			CacheManager.addObjectToCache(request, Constants.CALLBACK_URL, callBackURL);
+		}
+	}
+
+	/**
+	 * 
+	 * @param request
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	private ContainerInterface getConatinerInterface(HttpServletRequest request)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		ContainerInterface containerInterface = (ContainerInterface) CacheManager
+				.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+		String containerIdentifier = getContainerId(request);
+		if (containerIdentifier != null || containerInterface == null)
+		{
+			UserInterfaceiUtility.clearContainerStack(request);
+
+			containerInterface = DynamicExtensionsUtility
+					.getContainerByIdentifier(containerIdentifier);
+			CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE,
+					containerInterface);
+		}
+
+		return containerInterface;
+	}
+
+	/**
+	 * 
+	 * @param containerStack
+	 * @param dataEntryForm
+	 */
+	private void updateTopLevelEntitiyInfo(Stack<ContainerInterface> containerStack,
+			DataEntryForm dataEntryForm)
+	{
+		if (containerStack.size() > 1)
+		{
+			dataEntryForm.setIsTopLevelEntity(false);
+		}
+		else
+		{
+			dataEntryForm.setIsTopLevelEntity(true);
+		}
+	}
+
+	/**
+	 * 
+	 * @param request
+	 * @param form
+	 * @param containerInterface
+	 * @param recordMap
+	 * @param containerStack
+	 * @param valueMapStack
+	 */
+	private void updateStacks(HttpServletRequest request, DataEntryForm form,
+			ContainerInterface containerInterface,
+			Map<AbstractAttributeInterface, Object> recordMap,
+			Stack<ContainerInterface> containerStack,
+			Stack<Map<AbstractAttributeInterface, Object>> valueMapStack)
+	{
+		DataEntryForm dataEntryForm = (DataEntryForm) form;
+		String dataEntryOperation = dataEntryForm.getDataEntryOperation();
+		if (dataEntryOperation != null && dataEntryOperation.equalsIgnoreCase("insertChildData"))
+		{
+			String childContainerId = dataEntryForm.getChildContainerId();
+			ContainmentAssociationControl associationControl = UserInterfaceiUtility
+					.getAssociationControl((ContainerInterface) containerStack.peek(),
+							childContainerId);
+
+			Map<AbstractAttributeInterface, Object> containerValueMap = valueMapStack.peek();
+			AssociationInterface association = (AssociationInterface) associationControl
+					.getAbstractAttribute();
+			List<Map<AbstractAttributeInterface, Object>> childContainerValueMapList = (List<Map<AbstractAttributeInterface, Object>>) containerValueMap
+					.get(association);
+
+			Map<AbstractAttributeInterface, Object> childContainerValueMap = null;
+			if (UserInterfaceiUtility.isCardinalityOneToMany(associationControl))
+			{
+				childContainerValueMap = childContainerValueMapList.get(Integer
+						.parseInt(dataEntryForm.getChildRowId()) - 1);
+			}
+			else
+			{
+				childContainerValueMap = childContainerValueMapList.get(0);
+			}
+
+			ContainerInterface childContainer = associationControl.getContainer();
+			UserInterfaceiUtility.addContainerInfo(containerStack, childContainer, valueMapStack,
+					childContainerValueMap);
+		}
+		else if (dataEntryOperation != null
+				&& dataEntryOperation.equalsIgnoreCase("insertParentData"))
+		{
+			UserInterfaceiUtility.removeContainerInfo(containerStack, valueMapStack);
+		}
+	}
 }

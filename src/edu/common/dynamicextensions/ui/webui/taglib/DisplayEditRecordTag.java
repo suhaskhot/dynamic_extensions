@@ -107,7 +107,7 @@ public class DisplayEditRecordTag extends TagSupport
 
 					String target = "'/dynamicExtensions/LoadDataEntryFormAction.do?containerIdentifier="
 							+ this.containerIdentifier
-							+ "&recordId="
+							+ "&recordIdentifier="
 							+ recordId.toString()
 							+ "&showFormPreview=false'";
 					

@@ -38,6 +38,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInte
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.SelectInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ApplyDataEntryFormProcessor;
 import edu.common.dynamicextensions.ui.webui.actionform.DataEntryForm;
@@ -50,19 +51,15 @@ import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.validation.ValidatorUtil;
 
 /**
- * This class is invoked on Apply click action.
  * It populates the Attribute values entered in the dynamically generated controls. * 
  * @author chetan_patil
  */
 public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 {
 
-	/**
-	 * @param mapping ActionMapping
-	 * @param form ActionForm
-	 * @param request HttpServletRequest
-	 * @param response HttpServletResponse
-	 * @return ActionForward ActionForward
+	/*
+	 * (non-Javadoc)
+	 * @see org.apache.struts.actions.DispatchAction#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
@@ -74,8 +71,6 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		if ((containerStack != null && !containerStack.isEmpty())
 				&& (valueMapStack != null || !valueMapStack.isEmpty()))
 		{
-			ApplyDataEntryFormProcessor applyDataEntryFormProcessor = ApplyDataEntryFormProcessor
-					.getInstance();
 			try
 			{
 				DataEntryForm dataEntryForm = (DataEntryForm) form;
@@ -92,13 +87,6 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 					dataEntryForm.setErrorList(errorList);
 					return (mapping.findForward(Constants.SUCCESS));
 				}
-				else
-				{
-					applyDataEntryFormProcessor.removeNullValueEntriesFormMap(valueMap);
-				}
-
-				valueMap = (Map<AbstractAttributeInterface, Object>) valueMapStack.firstElement();
-				containerInterface = (ContainerInterface) containerStack.firstElement();
 
 				String dataEntryOperation = dataEntryForm.getDataEntryOperation();
 				if ((dataEntryOperation != null) && (dataEntryOperation.equals("insertChildData")))
@@ -111,11 +99,18 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 					return mapping.findForward("loadParentContainer");
 				}
 
+				/*Map<AbstractAttributeInterface, Object> rootValueMap = (Map<AbstractAttributeInterface, Object>) valueMapStack
+						.firstElement();
+				ContainerInterface rootContainerInterface = (ContainerInterface) containerStack
+						.firstElement();
+				ApplyDataEntryFormProcessor applyDataEntryFormProcessor = ApplyDataEntryFormProcessor
+						.getInstance();
+
 				String recordIdentifier = dataEntryForm.getRecordIdentifier();
 				if (recordIdentifier != null && !recordIdentifier.equals(""))
 				{
 					Boolean edited = applyDataEntryFormProcessor.editDataEntryForm(
-							containerInterface, valueMap, Long.valueOf(recordIdentifier));
+							rootContainerInterface, rootValueMap, Long.valueOf(recordIdentifier));
 					if (edited.booleanValue())
 					{
 						saveMessages(request, getSuccessMessage());
@@ -124,10 +119,12 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				else
 				{
 					recordIdentifier = applyDataEntryFormProcessor.insertDataEntryForm(
-							containerInterface, valueMap);
+							rootContainerInterface, rootValueMap);
 					saveMessages(request, getSuccessMessage());
-				}
-
+				}*/
+				String recordIdentifier = dataEntryForm.getRecordIdentifier();
+				recordIdentifier  = storeParentContainer(valueMapStack, containerStack, request, recordIdentifier);
+				
 				String calllbackURL = (String) CacheManager.getObjectFromCache(request,
 						Constants.CALLBACK_URL);
 				if (calllbackURL != null && !calllbackURL.equals(""))
@@ -159,7 +156,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * Get messages for successful save of entity
+	 * This method returns messages on successful saving of an Entity
 	 * @return ActionMessages ActionMessages
 	 */
 	private ActionMessages getSuccessMessage()
@@ -414,7 +411,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * 
+	 * This method returns the String representaion of a number as per the given format of the corresponding Number Control.
 	 * @param doubleAttributeTypeInformation
 	 * @param value
 	 * @return
@@ -440,5 +437,34 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			value = numberFormat.format(Double.parseDouble(value));
 		}
 		return value;
+	}
+
+	private String storeParentContainer(Stack<Map<AbstractAttributeInterface, Object>> valueMapStack,
+			Stack<ContainerInterface> containerStack, HttpServletRequest request,
+			String recordIdentifier) throws NumberFormatException, DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	{
+		Map<AbstractAttributeInterface, Object> rootValueMap = (Map<AbstractAttributeInterface, Object>) valueMapStack
+				.firstElement();
+		ContainerInterface rootContainerInterface = (ContainerInterface) containerStack
+				.firstElement();
+		ApplyDataEntryFormProcessor applyDataEntryFormProcessor = ApplyDataEntryFormProcessor
+				.getInstance();
+
+		if (recordIdentifier != null && !recordIdentifier.equals(""))
+		{
+			Boolean edited = applyDataEntryFormProcessor.editDataEntryForm(rootContainerInterface,
+					rootValueMap, Long.valueOf(recordIdentifier));
+			if (edited.booleanValue())
+			{
+				saveMessages(request, getSuccessMessage());
+			}
+		}
+		else
+		{
+			recordIdentifier = applyDataEntryFormProcessor.insertDataEntryForm(
+					rootContainerInterface, rootValueMap);
+			saveMessages(request, getSuccessMessage());
+		}
+		return recordIdentifier;
 	}
 }

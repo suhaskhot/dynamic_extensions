@@ -1826,18 +1826,13 @@ function showEditRecordPage(target)
 function showParentContainerInsertDataPage()
 {
     document.getElementById('dataEntryOperation').value  = "insertParentData";
-    
-//	var dataEntryForm = document.getElementById('dataEntryForm');
-//	dataEntryForm.action="/dynamicExtensions/ApplyDataEntryFormAction.do";
-//	dataEntryForm.submit();
 }
 
 function dropFn(srcId,targetId,sourceGridObj,targetGridObj)
 {
-	
 	updateControlsSequence();
-	
 }
+
 //Move controls up in sequence
 function moveControlsUp()
 {

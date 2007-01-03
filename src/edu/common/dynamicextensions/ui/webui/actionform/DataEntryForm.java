@@ -37,7 +37,7 @@ public class DataEntryForm extends AbstractActionForm
 	/**
 	 * 
 	 */
-	protected String recordIdentifier = "abc";
+	protected String recordIdentifier;
 	/**
 	 * 
 	 */

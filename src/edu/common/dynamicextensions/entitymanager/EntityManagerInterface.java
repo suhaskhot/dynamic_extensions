@@ -391,4 +391,12 @@ public interface EntityManagerInterface
      * @throws DynamicExtensionsSystemException 
 	 */
 	Collection<EntityInterface> getChildrenEntities(EntityInterface entity) throws DynamicExtensionsSystemException;
+	
+
+	/**
+	 * @param associationId
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	AssociationInterface getAssociationByIdentifier(Long associationId) throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException;
 }

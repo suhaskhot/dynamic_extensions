@@ -38,7 +38,6 @@ public interface EntityManagerExceptionConstantsInterface
 //   Exception constant in case of name exceeds maximum limit. 
      String DYEXTN_A_007 = "DYEXTN_A_007";
      
-
-    
-    
+     //Object not found error
+     String DYEXTN_A_008 = "DYEXTN_A_008"; 
 }

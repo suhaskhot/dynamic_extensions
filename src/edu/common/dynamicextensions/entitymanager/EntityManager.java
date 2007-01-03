@@ -2623,4 +2623,18 @@ public class EntityManager
 		
 		return  executeHQL("getChildrenEntities", substitutionParameterMap);
 	}
+
+	/**
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAssociationByIdentifier(java.lang.Long)
+	 */
+	public AssociationInterface getAssociationByIdentifier(Long associationId) throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException
+	{
+		Map<String,HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String,HQLPlaceHolderObject>();
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long",associationId));
+		Collection assocationCollection =  executeHQL("getAssociationByIdentifier", substitutionParameterMap);
+		if(assocationCollection.isEmpty()) {
+			throw new DynamicExtensionsApplicationException("Object Not Found : id" + associationId,null,DYEXTN_A_008);
+		}
+		return (AssociationInterface) assocationCollection.iterator().next();
+	}
 }

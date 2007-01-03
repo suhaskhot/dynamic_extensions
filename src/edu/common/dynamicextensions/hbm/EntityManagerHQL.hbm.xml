@@ -74,5 +74,10 @@
 	   from Entity entity
 	      where entity.parentEntity.id = ?
 	</query>
+	
+	<query name="getAssociationByIdentifier">
+	   from Association association
+	      where association.id = ?
+	</query>	
 </hibernate-mapping>
     

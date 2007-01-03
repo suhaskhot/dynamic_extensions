@@ -3058,4 +3058,92 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		}
 
 	}
+	
+	/**
+	 * 
+	 */
+	public void testGetAssociationById()
+	{
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		// create user 
+		EntityInterface user = factory.createEntity();
+		AttributeInterface userNameAttribute = factory.createStringAttribute();
+		userNameAttribute.setName("user name");
+		user.setName("user");
+		user.addAbstractAttribute(userNameAttribute);
+
+		// create study 
+		EntityInterface study = factory.createEntity();
+		AttributeInterface studyNameAttribute = factory.createStringAttribute();
+		studyNameAttribute.setName("study name");
+		study.setName("study");
+		study.addAbstractAttribute(studyNameAttribute);
+
+		// Associate user (1)------ >(*)study       
+		AssociationInterface association = factory.createAssociation();
+
+		association.setTargetEntity(study);
+		association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+		association.setName("primaryInvestigator");
+		association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
+				Cardinality.ZERO, Cardinality.MANY));
+		association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study", Cardinality.ZERO,
+				Cardinality.ONE));
+
+		user.addAbstractAttribute(association);
+
+		try
+		{
+			//entityManager.createEntity(study);
+
+			EntityInterface savedUser = entityManager.persistEntity(user);
+			
+			System.out.println();
+			
+			AssociationInterface saveAssociation = entityManager.getAssociationByIdentifier(association.getId());
+			
+			assertEquals(association.getName(),saveAssociation.getName());
+
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+
+		catch (DynamicExtensionsApplicationException e)
+		{
+			e.printStackTrace();
+			fail();
+
+		}
+		
+
+	}
+
+	/**
+	 * 
+	 */
+	public void testGetAssociationByIdNotPresent()
+	{
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		try
+		{
+			AssociationInterface saveAssociation = entityManager.getAssociationByIdentifier(123456L);
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			e.printStackTrace();
+			assertTrue(true);
+		}
+	}
 }

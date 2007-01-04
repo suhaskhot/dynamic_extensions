@@ -150,4 +150,10 @@ public interface EntityInterface extends AbstractMetadataInterface
 	 */
 	AttributeInterface getAttributeByIdentifier(Long id);
 	
+	/**
+	 * @param id
+	 * @return
+	 */
+	AssociationInterface getAssociationByIdentifier(Long id);
+	
 }

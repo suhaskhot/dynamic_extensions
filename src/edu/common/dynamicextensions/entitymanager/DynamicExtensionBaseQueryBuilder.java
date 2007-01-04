@@ -765,7 +765,7 @@ class DynamicExtensionBaseQueryBuilder
 			{
 				Association association = (Association) associationIterator.next();
 				Association associationDatabaseCopy = (Association) databaseCopy
-						.getAttributeByIdentifier(association.getId());
+						.getAssociationByIdentifier(association.getId());
 
 				if (association.getIsSystemGenerated())
 				{
@@ -928,7 +928,7 @@ class DynamicExtensionBaseQueryBuilder
 			{
 				Association savedAssociation = (Association) savedAssociationIterator.next();
 				Association association = (Association) entity
-						.getAttributeByIdentifier(savedAssociation.getId());;
+						.getAssociationByIdentifier(savedAssociation.getId());;
 
 				// removed ??
 				if (association == null)

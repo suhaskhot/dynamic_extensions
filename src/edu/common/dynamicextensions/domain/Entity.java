@@ -321,7 +321,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	 * @param id identifier of the desired AbstractAttribute.
 	 * @return the matched instance of AbstractAttribute.
 	 */
-	public AbstractAttributeInterface getAttributeByIdentifier(Long id)
+	public AttributeInterface getAttributeByIdentifier(Long id)
 	{
 		AbstractAttributeInterface abstractAttribute = null;
 
@@ -336,7 +336,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 				}
 			}
 		}
-		return abstractAttribute;
+		return (AttributeInterface) abstractAttribute;
 	}
 
 	/**

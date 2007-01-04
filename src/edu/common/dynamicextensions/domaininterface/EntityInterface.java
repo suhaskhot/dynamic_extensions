@@ -148,6 +148,6 @@ public interface EntityInterface extends AbstractMetadataInterface
 	 * @param id Long identifier of the abstract attribute
 	 * @return 
 	 */
-	AbstractAttributeInterface getAttributeByIdentifier(Long id);
+	AttributeInterface getAttributeByIdentifier(Long id);
 	
 }

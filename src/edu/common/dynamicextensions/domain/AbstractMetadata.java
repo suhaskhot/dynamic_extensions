@@ -99,7 +99,7 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 
 	/**
 	 * This method returns the description of the AbstractMetadata.
-	 * @hibernate.property name="description" type="string" column="DESCRIPTION" length="1000"
+	 * @hibernate.property name="description" type="string" column="DESCRIPTION" 
 	 * @return the description of the AbstractMetadata.
 	 */
 	public String getDescription()
@@ -137,7 +137,7 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 
 	/**
 	 * This method returns the name of the AbstractMetadata.
-	 * @hibernate.property name="name" type="string" column="NAME" length = "40"
+	 * @hibernate.property name="name" type="string" column="NAME" 
 	 * @return the name of the AbstractMetadata.
 	 */
 	public String getName()

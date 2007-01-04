@@ -49,5 +49,12 @@ public interface SemanticPropertyInterface
 	 * @param thesaurasName the thesauras name to be set.
 	 */
 	void setThesaurasName(String thesaurasName);
+	
+	
+	public int getSequenceNumber();
+
+
+	void setSequenceNumber(int sequenceNumber);
+	
 
 }

@@ -10,7 +10,7 @@ import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
  * @created 28-Sep-2006 12:20:08 PM
  * @hibernate.class table="DYEXTN_SEMANTIC_PROPERTY"
  */
-public class SemanticProperty extends DynamicExtensionBaseDomainObject implements SemanticPropertyInterface, Comparable
+public class SemanticProperty extends DynamicExtensionBaseDomainObject implements SemanticPropertyInterface
 {
 
 	/**

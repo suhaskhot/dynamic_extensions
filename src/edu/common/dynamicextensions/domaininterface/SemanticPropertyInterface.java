@@ -5,7 +5,7 @@ package edu.common.dynamicextensions.domaininterface;
  * For every abstract metadata object semantic properties are associated.
  * @author sujay_narkar
  */
-public interface SemanticPropertyInterface
+public interface SemanticPropertyInterface extends Comparable
 {
 
 	/**
@@ -51,9 +51,15 @@ public interface SemanticPropertyInterface
 	void setThesaurasName(String thesaurasName);
 	
 	
-	public int getSequenceNumber();
+	/**
+	 * @return int
+	 */
+	int getSequenceNumber();
 
 
+	/**
+	 * @param sequenceNumber int
+	 */
 	void setSequenceNumber(int sequenceNumber);
 	
 

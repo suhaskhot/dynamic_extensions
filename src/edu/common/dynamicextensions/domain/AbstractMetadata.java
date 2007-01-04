@@ -19,7 +19,9 @@ import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
  * @created 28-Sep-2006 12:20:06 PM
  * @hibernate.class table="DYEXTN_ABSTRACT_METADATA" 
  */
-public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject implements AbstractMetadataInterface
+public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
+		implements
+			AbstractMetadataInterface
 {
 
 	/**
@@ -27,7 +29,6 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject 
 	 */
 	protected static final long serialVersionUID = 1234567890L;
 
-	
 	/**
 	 * This method returns the unique identifier of the AbstractMetadata.
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
@@ -65,10 +66,11 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject 
 	 */
 	protected Collection<SemanticPropertyInterface> semanticPropertyCollection = new HashSet<SemanticPropertyInterface>();
 
-    /**
-     * Semantic property collection.
-     */
-    protected Collection<TaggedValueInterface> taggedValueCollection = new HashSet<TaggedValueInterface>();
+	/**
+	 * Semantic property collection.
+	 */
+	protected Collection<TaggedValueInterface> taggedValueCollection = new HashSet<TaggedValueInterface>();
+
 	/**
 	 * Empty Constructor
 	 */
@@ -113,8 +115,6 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject 
 	{
 		this.description = description;
 	}
-
-
 
 	/**
 	 * This method returns the date of last updation of the meta data.
@@ -171,10 +171,12 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject 
 	 * This method sets the semanticPropertyCollection to the given Collection of SemanticProperties.
 	 * @param semanticPropertyCollection the Collection of SemanticProperties to be set.
 	 */
-	public void setSemanticPropertyCollection(Collection<SemanticPropertyInterface> semanticPropertyCollection)
+	public void setSemanticPropertyCollection(
+			Collection<SemanticPropertyInterface> semanticPropertyCollection)
 	{
 		this.semanticPropertyCollection = semanticPropertyCollection;
 	}
+
 	/**
 	 * This method adds a SemanticProperty to the AbstractMetadata.
 	 * @param semanticPropertyInterface A SemanticProperty to be added.
@@ -187,19 +189,20 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject 
 		}
 		semanticPropertyCollection.add(semanticPropertyInterface);
 	}
-	
+
 	/**
 	 * This method removes a SemanticProperty from the AbstractMetadata.
 	 * @param semanticPropertyInterface A SemanticProperty to be removed.
 	 */
 	public void removeSemanticProperty(SemanticPropertyInterface semanticPropertyInterface)
 	{
-		if ((semanticPropertyCollection != null)&&(semanticPropertyCollection.contains(semanticPropertyInterface)))
+		if ((semanticPropertyCollection != null)
+				&& (semanticPropertyCollection.contains(semanticPropertyInterface)))
 		{
 			semanticPropertyCollection.remove(semanticPropertyInterface);
 		}
 	}
-	
+
 	/**
 	 * This method removes all SemanticProperties from AbstractMetadata.
 	 */
@@ -214,56 +217,59 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject 
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface#getOrderedSemanticPropertyCollection()
 	 */
-	public Collection getOrderedSemanticPropertyCollection() {
-		if (this.semanticPropertyCollection != null && !this.semanticPropertyCollection.isEmpty()) {
-			List<SemanticProperty> semanticPropertyList = new ArrayList(this.semanticPropertyCollection);
-			Collections.sort(semanticPropertyList);
-			return semanticPropertyList;
-		} else {
-			return new HashSet();
-		}
-		
-	}
-    /**
-     * This method returns the Collection of TaggedValue of the AbstractMetadata.
-     * @hibernate.set name="taggedValueCollection" cascade="all-delete-orphan"
-     * inverse="false" lazy="false"
-     * @hibernate.collection-key column="ABSTRACT_METADATA_ID"
-     * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.TaggedValue"
-     * @return the Collection of TaggedValue of the AbstractMetadata.
-     */
-    public Collection<TaggedValueInterface> getTaggedValueCollection()
-    {
-        return taggedValueCollection;
-    }
+	public List getOrderedSemanticPropertyCollection()
+	{
 
-    /**
-     * Setter method for taggedValueCollection
-     * @param taggedValueCollection Collection of tagged values.
-     */
-    public void setTaggedValueCollection(
-            Collection<TaggedValueInterface> taggedValueCollection)
-    {
-        this.taggedValueCollection = taggedValueCollection;
-    }
-    /**
-     * 
-     * @param taggedValueInterface
-     */
-    public void addTaggedValue(TaggedValueInterface taggedValueInterface)
-    {
-        if (taggedValueInterface == null)
-        {
-            return;
-        }
-        
-        if (taggedValueCollection == null)
-        {
-        	taggedValueCollection = new HashSet<TaggedValueInterface>();
-        }
-        taggedValueCollection.add(taggedValueInterface);
-        
-        
-    }
+		List<SemanticPropertyInterface> semanticPropertyList = new ArrayList<SemanticPropertyInterface>();
+
+		if (this.semanticPropertyCollection != null && !this.semanticPropertyCollection.isEmpty())
+		{
+			semanticPropertyList.addAll(this.semanticPropertyCollection);
+			Collections.sort(semanticPropertyList);
+		}
+		return semanticPropertyList;
+
+	}
+
+	/**
+	 * This method returns the Collection of TaggedValue of the AbstractMetadata.
+	 * @hibernate.set name="taggedValueCollection" cascade="all-delete-orphan"
+	 * inverse="false" lazy="false"
+	 * @hibernate.collection-key column="ABSTRACT_METADATA_ID"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.TaggedValue"
+	 * @return the Collection of TaggedValue of the AbstractMetadata.
+	 */
+	public Collection<TaggedValueInterface> getTaggedValueCollection()
+	{
+		return taggedValueCollection;
+	}
+
+	/**
+	 * Setter method for taggedValueCollection
+	 * @param taggedValueCollection Collection of tagged values.
+	 */
+	public void setTaggedValueCollection(Collection<TaggedValueInterface> taggedValueCollection)
+	{
+		this.taggedValueCollection = taggedValueCollection;
+	}
+
+	/**
+	 * 
+	 * @param taggedValueInterface
+	 */
+	public void addTaggedValue(TaggedValueInterface taggedValueInterface)
+	{
+		if (taggedValueInterface == null)
+		{
+			return;
+		}
+
+		if (taggedValueCollection == null)
+		{
+			taggedValueCollection = new HashSet<TaggedValueInterface>();
+		}
+		taggedValueCollection.add(taggedValueInterface);
+
+	}
 
 }

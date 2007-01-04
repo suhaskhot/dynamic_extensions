@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.domaininterface;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 /**
  * This is an interface extended by EntityInterface,EntityGroupInterface,AttributeInterface.This interface contains
@@ -117,6 +118,6 @@ public interface AbstractMetadataInterface
      * Method returns sorted semantic properties based on the sequence number.
      * @return
      */
-    Collection getOrderedSemanticPropertyCollection();
+    List getOrderedSemanticPropertyCollection();
 
 }

@@ -317,26 +317,45 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	}
 
 	/**
-	 * This method returns the AbstractAttribute for the given corresponding identifier.
+	 * This method returns the attribute for the given corresponding identifier.
 	 * @param id identifier of the desired AbstractAttribute.
 	 * @return the matched instance of AbstractAttribute.
 	 */
 	public AttributeInterface getAttributeByIdentifier(Long id)
 	{
-		AbstractAttributeInterface abstractAttribute = null;
+		AttributeInterface attribute = null;
+		Collection<AttributeInterface> attributeCollection = getAttributeCollection();
 
-		if (this.abstractAttributeCollection != null && id != null)
+		for (AttributeInterface attributeIterator : attributeCollection)
 		{
-			for (AbstractAttributeInterface attributeIterator : abstractAttributeCollection)
+			if (attributeIterator.getId() != null && attributeIterator.getId().equals(id))
 			{
-				if (attributeIterator.getId() != null && attributeIterator.getId().equals(id))
-				{
-					abstractAttribute = attributeIterator;
-					break;
-				}
+				attribute = attributeIterator;
+				break;
 			}
 		}
-		return (AttributeInterface) abstractAttribute;
+		return attribute;
+	}
+
+	/**
+	 * This method returns the attribute for the given corresponding identifier.
+	 * @param id identifier of the desired AbstractAttribute.
+	 * @return the matched instance of AbstractAttribute.
+	 */
+	public AssociationInterface getAssociationByIdentifier(Long id)
+	{
+		AssociationInterface association = null;
+		Collection<AssociationInterface> associationCollection = getAssociationCollection();
+
+		for (AssociationInterface associationIterator : associationCollection)
+		{
+			if (associationIterator.getId() != null && associationIterator.getId().equals(id))
+			{
+				association = associationIterator;
+				break;
+			}
+		}
+		return association;
 	}
 
 	/**
@@ -399,7 +418,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getParentEntity()
 	 * @hibernate.many-to-one column="PARENT_ENTITY_ID" class="edu.common.dynamicextensions.domain.Entity" constrained="true" 
 	 *                        cascade="save-update"    
-	 */	
+	 */
 	public EntityInterface getParentEntity()
 	{
 		return parentEntity;

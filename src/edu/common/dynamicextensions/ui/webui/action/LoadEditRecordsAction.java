@@ -19,33 +19,29 @@ import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 
 /**
+ * LoadEditRecordsAction class loads the Edit Records page displaying list of existing records that can be edited.
  * @author chetan_patil
  *
  */
 public class LoadEditRecordsAction extends BaseDynamicExtensionsAction
 {
 
-	/**
-	 * This method overrides the execute method of the Action class.
-	 * It forwards the action to the Edit Records page.
-	 * @param mapping ActionMapping
-	 * @param form ActionForm
-	 * @param request HttpServletRequest
-	 * @param response HttpServletResponse
-	 * @throws Exception on exception
-	 * @return ActionForward
+	/*
+	 * (non-Javadoc)
+	 * @see org.apache.struts.actions.DispatchAction#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		String containerIdentifier = request.getParameter("containerIdentifier");
+		String mode = request.getParameter("mode");
 		
 		ContainerInterface container = DynamicExtensionsUtility.getContainerByIdentifier(containerIdentifier);
 		CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, container);
 		
 		EditRecordsForm editRecordsForm = (EditRecordsForm) form;
 		LoadEditRecordsProcessor loadEditRecordsProcessor = LoadEditRecordsProcessor.getInstance();
-		loadEditRecordsProcessor.populateRecordIndex(editRecordsForm, container);
+		loadEditRecordsProcessor.populateRecordIndex(editRecordsForm, container, mode);
 		
 		return mapping.findForward(Constants.SHOW_EDIT_RECORDS_PAGE);
 	}

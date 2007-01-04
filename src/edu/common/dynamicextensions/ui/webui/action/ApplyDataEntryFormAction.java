@@ -74,18 +74,23 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			try
 			{
 				DataEntryForm dataEntryForm = (DataEntryForm) form;
-				ContainerInterface containerInterface = (ContainerInterface) containerStack.peek();
-				Map<AbstractAttributeInterface, Object> valueMap = (Map<AbstractAttributeInterface, Object>) valueMapStack
-						.peek();
-				valueMap = generateAttributeValueMap(containerInterface, request, dataEntryForm,
-						"", valueMap, true);
 
-				List<String> errorList = ValidatorUtil.validateEntity(valueMap);
-				if (errorList.size() != 0)
+				if (dataEntryForm.getMode().equals("edit"))
 				{
-					//saveErrors(request, getErrorMessages(errorList));
-					dataEntryForm.setErrorList(errorList);
-					return (mapping.findForward(Constants.SUCCESS));
+					ContainerInterface containerInterface = (ContainerInterface) containerStack
+							.peek();
+					Map<AbstractAttributeInterface, Object> valueMap = (Map<AbstractAttributeInterface, Object>) valueMapStack
+							.peek();
+					valueMap = generateAttributeValueMap(containerInterface, request,
+							dataEntryForm, "", valueMap, true);
+
+					List<String> errorList = ValidatorUtil.validateEntity(valueMap);
+					if (errorList.size() != 0)
+					{
+						//saveErrors(request, getErrorMessages(errorList));
+						dataEntryForm.setErrorList(errorList);
+						return (mapping.findForward(Constants.SUCCESS));
+					}
 				}
 
 				String dataEntryOperation = dataEntryForm.getDataEntryOperation();
@@ -99,32 +104,10 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 					return mapping.findForward("loadParentContainer");
 				}
 
-				/*Map<AbstractAttributeInterface, Object> rootValueMap = (Map<AbstractAttributeInterface, Object>) valueMapStack
-						.firstElement();
-				ContainerInterface rootContainerInterface = (ContainerInterface) containerStack
-						.firstElement();
-				ApplyDataEntryFormProcessor applyDataEntryFormProcessor = ApplyDataEntryFormProcessor
-						.getInstance();
+				String recordIdentifier = dataEntryForm.getRecordIdentifier();
+				recordIdentifier = storeParentContainer(valueMapStack, containerStack, request,
+						recordIdentifier);
 
-				String recordIdentifier = dataEntryForm.getRecordIdentifier();
-				if (recordIdentifier != null && !recordIdentifier.equals(""))
-				{
-					Boolean edited = applyDataEntryFormProcessor.editDataEntryForm(
-							rootContainerInterface, rootValueMap, Long.valueOf(recordIdentifier));
-					if (edited.booleanValue())
-					{
-						saveMessages(request, getSuccessMessage());
-					}
-				}
-				else
-				{
-					recordIdentifier = applyDataEntryFormProcessor.insertDataEntryForm(
-							rootContainerInterface, rootValueMap);
-					saveMessages(request, getSuccessMessage());
-				}*/
-				String recordIdentifier = dataEntryForm.getRecordIdentifier();
-				recordIdentifier  = storeParentContainer(valueMapStack, containerStack, request, recordIdentifier);
-				
 				String calllbackURL = (String) CacheManager.getObjectFromCache(request,
 						Constants.CALLBACK_URL);
 				if (calllbackURL != null && !calllbackURL.equals(""))
@@ -439,9 +422,11 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		return value;
 	}
 
-	private String storeParentContainer(Stack<Map<AbstractAttributeInterface, Object>> valueMapStack,
+	private String storeParentContainer(
+			Stack<Map<AbstractAttributeInterface, Object>> valueMapStack,
 			Stack<ContainerInterface> containerStack, HttpServletRequest request,
-			String recordIdentifier) throws NumberFormatException, DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+			String recordIdentifier) throws NumberFormatException,
+			DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		Map<AbstractAttributeInterface, Object> rootValueMap = (Map<AbstractAttributeInterface, Object>) valueMapStack
 				.firstElement();

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN" "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
 
-
 <taglib>
     <tlib-version>1.0</tlib-version>
     <jsp-version>1.1</jsp-version>
@@ -116,6 +115,12 @@
 				<required>true</required>
 				<rtexprvalue>true</rtexprvalue>
 	    		<type>java.util.List</type>
+	     </attribute>
+	     <attribute>
+				<name>mode</name>
+				<required>true</required>
+				<rtexprvalue>true</rtexprvalue>
+	    		<type>java.lang.String</type>
 	     </attribute>
 	</tag>
 	

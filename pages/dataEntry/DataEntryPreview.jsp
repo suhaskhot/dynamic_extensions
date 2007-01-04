@@ -14,7 +14,6 @@
 <%@ page import="org.apache.struts.action.ActionErrors" %>
 <%@ page import="org.apache.struts.action.ActionMessages" %>
 
-
 <%-- Stylesheet --%>
 <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/styleSheet.css" />
 <link href="<%=request.getContextPath()%>/css/calanderComponent.css" type=text/css rel=stylesheet />
@@ -28,9 +27,11 @@
 <script src="<%=request.getContextPath()%>/jss/calendarComponent.js"></script>
 <script src="<%=request.getContextPath()%>/jss/ajax.js"></script>
 
-
 <c:set var="containerInterface" value="${dataEntryForm.containerInterface}"/>
 <jsp:useBean id="containerInterface" type="edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface"/>
+
+<c:set var="mode" value="${dataEntryForm.mode}" />
+<jsp:useBean id="mode" type="java.lang.String"/>
 
 <html>
 	<head>
@@ -40,7 +41,7 @@
 	<body>
 		<html:form styleId="dataEntryForm" action="/ApplyFormPreviewAction" enctype="multipart/form-data" method="post">
 			<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
-	
+
 	    	<table valign="top" style="border-right:1px" border=1 align='center' width='90%' height="90%" border='0' cellspacing="0" cellpadding="0" class="tbBorders1" >
  				<!-- Main Page heading -->
 					<tr>
@@ -71,7 +72,6 @@
 								<tr valign="top">
 									<td colspan="7">
 										<table align='center' width='80%'>
-											
 											<tr>
 												<td>
 													<dynamicExtensions:dynamicUIGenerator containerInterface="<%=containerInterface%>" />
@@ -88,15 +88,13 @@
 											<tr>
 												<td align='right'>						
 													<html:submit styleClass="actionButton" onclick="showParentContainerInsertDataPage()">
-														 	<bean:message key="buttons.back" />
+														 <bean:message key="buttons.back" />
 													</html:submit>
-										     							
 												</td>
 											</tr>
 										</table>
 									</td>
 								</tr>
-								
 							</table>
 						</td>
 					</tr>
@@ -106,7 +104,7 @@
 			<input type="hidden" id="childRowId" name="childRowId" value=""/>
 			<input type="hidden" id="dataEntryOperation" name="dataEntryOperation" value=""/>
 			<input type="hidden" id="showFormPreview" name="showFormPreview" value="true"/>
-
+			<input type="hidden" id="mode" name="mode" value="<%=mode%>"/>
 		</html:form>
 	</body>
 </html>

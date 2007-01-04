@@ -41,7 +41,8 @@ public class UserInterfaceiUtility
 	 * @param containerInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public static String generateHTMLforGrid(ContainerInterface subContainer, List<Map<AbstractAttributeInterface, Object>> valueMapList)
+	public static String generateHTMLforGrid(ContainerInterface subContainer,
+			List<Map<AbstractAttributeInterface, Object>> valueMapList)
 			throws DynamicExtensionsSystemException
 	{
 		StringBuffer stringBuffer = new StringBuffer();
@@ -117,26 +118,29 @@ public class UserInterfaceiUtility
 
 		stringBuffer.append("</table>");
 
-		stringBuffer
-				.append("<table cellpadding='3' cellspacing='0' align='center' width='100%'><tr>");
+		if (subContainer.getMode().equals("edit"))
+		{
+			stringBuffer
+					.append("<table cellpadding='3' cellspacing='0' align='center' width='100%'><tr>");
 
-		stringBuffer.append("<td align='left'>");
-		stringBuffer
-				.append("<button type='button' class='actionButton' id='removeRow' onclick=\"removeCheckedRow('"
-						+ subContainer.getId() + "')\">");
-		stringBuffer.append(ApplicationProperties.getValue("buttons.delete"));
-		stringBuffer.append("</button>");
-		stringBuffer.append("</td>");
+			stringBuffer.append("<td align='left'>");
+			stringBuffer
+					.append("<button type='button' class='actionButton' id='removeRow' onclick=\"removeCheckedRow('"
+							+ subContainer.getId() + "')\">");
+			stringBuffer.append(ApplicationProperties.getValue("buttons.delete"));
+			stringBuffer.append("</button>");
+			stringBuffer.append("</td>");
 
-		stringBuffer.append("<td align='right'>");
-		stringBuffer
-				.append("<button type='button' class='actionButton' id='addMore' onclick=\"addRow('"
-						+ subContainer.getId() + "')\">");
-		stringBuffer.append(ApplicationProperties.getValue("eav.button.AddRow"));
-		stringBuffer.append("</button>");
-		stringBuffer.append("</td>");
+			stringBuffer.append("<td align='right'>");
+			stringBuffer
+					.append("<button type='button' class='actionButton' id='addMore' onclick=\"addRow('"
+							+ subContainer.getId() + "')\">");
+			stringBuffer.append(ApplicationProperties.getValue("eav.button.AddRow"));
+			stringBuffer.append("</button>");
+			stringBuffer.append("</td>");
 
-		stringBuffer.append("</tr></table>");
+			stringBuffer.append("</tr></table>");
+		}
 
 		stringBuffer.append("</td>");
 		stringBuffer.append("</tr>");
@@ -213,6 +217,7 @@ public class UserInterfaceiUtility
 		CacheManager.addObjectToCache(request, Constants.CONTAINER_STACK, null);
 		CacheManager.addObjectToCache(request, Constants.VALUE_MAP_STACK, null);
 		CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, null);
+		CacheManager.addObjectToCache(request, "rootRecordIdentifier", null);
 	}
 
 	/**
@@ -225,14 +230,23 @@ public class UserInterfaceiUtility
 	{
 
 		StringBuffer stringBuffer = new StringBuffer();
-		Map<AbstractAttributeInterface, Object> containerValueMap = container.getContainerValueMap();
+		Map<AbstractAttributeInterface, Object> containerValueMap = container
+				.getContainerValueMap();
 		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(container
 				.getControlCollection());
 		Collections.sort(controlsList);
 
 		stringBuffer.append("<tr width='100%'>");
+
 		stringBuffer.append("<td class='formRequiredNotice' width='1%'>");
-		stringBuffer.append("<input type='checkbox' name='deleteRow' value='' id='1'/>");
+		if (container.getMode().equals("edit"))
+		{
+			stringBuffer.append("<input type='checkbox' name='deleteRow' value='' id='1'/>");
+		}
+		else
+		{
+			stringBuffer.append("&nbsp;");
+		}
 		stringBuffer.append("</td>");
 		for (ControlInterface control : controlsList)
 		{
@@ -291,8 +305,8 @@ public class UserInterfaceiUtility
 
 		return null;
 	}
-	
-	public static String getControlHTMLAsARow(ControlInterface controlInterface,String htmlString)
+
+	public static String getControlHTMLAsARow(ControlInterface controlInterface, String htmlString)
 	{
 		boolean isControlRequired = UserInterfaceiUtility.isControlRequired(controlInterface);
 		StringBuffer stringBuffer = new StringBuffer();
@@ -301,7 +315,8 @@ public class UserInterfaceiUtility
 		stringBuffer.append("<td class='formRequiredNotice' width='2%'>");
 		if (isControlRequired)
 		{
-			stringBuffer.append(controlInterface.getParentContainer().getRequiredFieldIndicatior() + "&nbsp;");
+			stringBuffer.append(controlInterface.getParentContainer().getRequiredFieldIndicatior()
+					+ "&nbsp;");
 			stringBuffer.append("</td>");
 
 			stringBuffer.append("<td class='formRequiredLabel' width='20%'>");
@@ -324,7 +339,7 @@ public class UserInterfaceiUtility
 
 		return stringBuffer.toString();
 	}
-	
+
 	/**
 	 * This method returns true if the cardinality of the Containment Association is One to Many.
 	 * @return true if Caridnality is One to Many, false otherwise.

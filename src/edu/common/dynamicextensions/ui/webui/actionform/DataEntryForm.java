@@ -42,17 +42,14 @@ public class DataEntryForm extends AbstractActionForm
 	 * 
 	 */
 	protected List<String> errorList;
-	
 	/**
 	 * 
 	 */
 	protected String mode = WebUIManagerConstants.EDIT_MODE;
-
 	/**
 	 * 
 	 */
 	protected Map<String, Object> valueMap = new HashMap<String, Object>();
-	
 	/**
 	 * 
 	 */
@@ -65,13 +62,11 @@ public class DataEntryForm extends AbstractActionForm
 	 * 
 	 */
 	protected String dataEntryOperation = "";
-	
 	/*
 	 * 
 	 */
 	protected boolean isTopLevelEntity = true;
 	
-
 	/**
 	 * 
 	 * @param key
@@ -207,7 +202,6 @@ public class DataEntryForm extends AbstractActionForm
 	{
 		this.errorList = errorList;
 	}
-
 	
 	/**
 	 * @return Returns the mode.
@@ -216,7 +210,6 @@ public class DataEntryForm extends AbstractActionForm
 	{
 		return mode;
 	}
-
 	
 	/**
 	 * @param mode The mode to set.
@@ -226,43 +219,60 @@ public class DataEntryForm extends AbstractActionForm
 		this.mode = mode;
 	}
 
-	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getChildContainerId()
 	{
 		return childContainerId;
 	}
 
-	
+	/**
+	 * 
+	 * @param childContainerId
+	 */
 	public void setChildContainerId(String childContainerId)
 	{
 		this.childContainerId = childContainerId;
 	}
-
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getChildRowId()
 	{
 		return childRowId;
 	}
 
-	
+	/**
+	 * 
+	 * @param childRowId
+	 */
 	public void setChildRowId(String childRowId)
 	{
 		this.childRowId = childRowId;
 	}
 
-	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getDataEntryOperation()
 	{
 		return dataEntryOperation;
 	}
 
-	
+	/**
+	 * 
+	 * @param dataEntryOperation
+	 */
 	public void setDataEntryOperation(String dataEntryOperation)
 	{
 		this.dataEntryOperation = dataEntryOperation;
 	}
 
-	
 	/**
 	 * @return Returns the isTopLevelEntity.
 	 */
@@ -270,7 +280,6 @@ public class DataEntryForm extends AbstractActionForm
 	{
 		return isTopLevelEntity;
 	}
-
 	
 	/**
 	 * @param isTopLevelEntity The isTopLevelEntity to set.

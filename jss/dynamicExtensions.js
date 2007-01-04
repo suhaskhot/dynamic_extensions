@@ -1,17 +1,20 @@
-function formSelectedAction() {
-	
+function formSelectedAction()
+{
 }
-function tagHandlerFunction(selectedTool) {
+
+function tagHandlerFunction(selectedTool)
+{
 	document.getElementById('userSelectedTool').value=selectedTool;
 }
+
 function addSubForm()
 {
 	document.getElementById('userSelectedTool').value = "AddSubFormControl";
 	controlSelectedAction();
 }
 
-
-function showBuildFormJSP() {
+function showBuildFormJSP()
+{
 	document.getElementById('operation').value='buildForm';
  	var formDefinitionForm = document.getElementById('formDefinitionForm');
 	formDefinitionForm.submit();
@@ -35,7 +38,9 @@ function showHomePageFromCreateForm()
 	formDefinitionForm.action="/dynamicExtensions/DynamicExtensionHomePage.do";
 	formDefinitionForm.submit();
 }
-function showHomePageFromBuildForm() {
+
+function showHomePageFromBuildForm()
+{
 	var controlsForm = document.getElementById('controlsForm');
 	controlsForm.action="/dynamicExtensions/DynamicExtensionHomePage.do";
 	controlsForm.submit();
@@ -48,7 +53,8 @@ function showHomePageFromCreateGroup()
 	groupForm.submit();
 }
 
-function addControlToFormTree() {
+function addControlToFormTree()
+{
 	
 	document.getElementById('operation').value='controlAdded';
 	var controlsForm=document.getElementById("controlsForm");
@@ -59,6 +65,7 @@ function addControlToFormTree() {
 	controlsForm.action="/dynamicExtensions/AddControlsAction.do";
 	controlsForm.submit();
 }
+
 function addControlToForm() {
 	
 	if (window.dialogArguments) 
@@ -101,26 +108,29 @@ function changeOperationMode(addBtnCaption,formTitle)
 	}
 }
 
-function closeWindow() {
-		window.close();
+function closeWindow()
+{
+	window.close();
 }
+
 function showNextActionConfirmDialog()
 {
 	var  url="/dynamicExtensions/pages/confirmNextActionDialog.jsp";
 	
-	 if (window.showModalDialog) 
-	 {
-	 	var modalDialogProperties = "dialogHeight: 200px; dialogWidth: 350px; dialogTop: 300px; dialogLeft: 350px; edge: Sunken; center: Yes; resizable: Yes; status: No; help:no";
+	if (window.showModalDialog) 
+	{
+		var modalDialogProperties = "dialogHeight: 200px; dialogWidth: 350px; dialogTop: 300px; dialogLeft: 350px; edge: Sunken; center: Yes; resizable: Yes; status: No; help:no";
 	 	window.showModalDialog(url,window,modalDialogProperties);
-	 }
-	 else
-	 {
-	 	var windowProperties = "height=200,width=350,top=300,left=350,toolbar=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=yes ,modal=yes";
-	 	window.open(url, window, windowProperties);
-	
-	 }
+	}
+	else
+	{
+		var windowProperties = "height=200,width=350,top=300,left=350,toolbar=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=yes ,modal=yes";
+		window.open(url, window, windowProperties);
+	}
 }
-function showCreateFormJSP() {
+
+function showCreateFormJSP()
+{
 	if (window.dialogArguments) 
 	{
 		window.opener = window.dialogArguments;
@@ -130,9 +140,9 @@ function showCreateFormJSP() {
 	{
 		operationMode.value = "EditForm";
 	}
-    	var controlsForm=window.opener.document.getElementById("controlsForm");
-    	if(controlsForm!=null)
-    	{
+	var controlsForm=window.opener.document.getElementById("controlsForm");
+	if(controlsForm!=null)
+	{
 		controlsForm.action="/dynamicExtensions/LoadFormDefinitionAction.do";
 		controlsForm.submit();
 	}
@@ -210,17 +220,12 @@ function initBuildForm()
 		changeSourceForValues(sourceElt);
 	}
 	
-	
-	
-	
 	//Reinitialize counter for number of options
 	initializeChoiceListCounter();
 	
-	
 	//Initilialize default value for list of options
 	initializeOptionsDefaultValue();
-	
-	
+
 	//If other option is selected in measurement units, enable the text box next to it
 	var cboMeasurementUnits = document.getElementById('attributeMeasurementUnits');
 	measurementUnitsChanged(cboMeasurementUnits);
@@ -238,14 +243,15 @@ function initBuildForm()
 	{
 		changeDateType(dateValueType);
 	}
+	
 	//List of form names for selected group
 	groupChanged(false);
 	//List of attributes for selected form
 	formChanged(false);
-	
 	//Create as option for CreateForm
 	createFormAsChanged();
 }
+
 function changeChoiceListTableDisplay()
 {
 	var choiceListTable = document.getElementById('choiceListTable');
@@ -262,6 +268,7 @@ function changeChoiceListTableDisplay()
 		}
 	}
 }
+
 function initializeChoiceListCounter()
 {
 	var choiceListElementCnter = document.getElementById('choiceListCounter');
@@ -276,6 +283,7 @@ function initializeChoiceListCounter()
 		choiceListElementCnter.value=noOfChoices+"";
 	}
 }
+
 function changeSourceForValues(sourceControl)
 {
 	if(sourceControl!=null)
@@ -310,7 +318,6 @@ function changeSourceForValues(sourceControl)
 						valueSpecnDiv.innerHTML = divForSourceHTML ;
 					}
 				}
-
 			}
 		}//if(canChangeSource)
 		//Change visibilty of row displaying options list based on the number of rows.
@@ -347,7 +354,6 @@ function canChangeSource(sourceControl)
 	}	
 	return true;
 }
-
 
 //addToChoiceList : indicates whether the choice shld be added to choice list
 //This will be true when called while adding choice at runtime, and false when adding at load time
@@ -411,10 +417,8 @@ function addChoiceToList(addToChoiceList)
 			{
 				document.getElementById('optionsListRow').style.display = "";
 			}
-			
 		}
 	}
-	
 }
 
 function deleteElementsFromChoiceList()
@@ -422,7 +426,6 @@ function deleteElementsFromChoiceList()
 	var valuestable = document.getElementById('choiceListTable');
 	if(valuestable!=null)
 	{
-		
 		var choiceListElementCnter = document.getElementById('choiceListCounter');
 		var noOfElements = 0;
 		if(choiceListElementCnter!=null)
@@ -494,9 +497,7 @@ function setDefaultValue()
 
 		for(var i=1;i<=noOfElements;i++)
 		{
-
 			chkBoxId = "chkBox" + i;
-
 			chkBox = document.getElementById(chkBoxId);
 
 			if(chkBox!=null)
@@ -520,7 +521,6 @@ function setDefaultValue()
 }
 
 //Added by sujay
-
 function showFormPreview() 
 {
 	var entitySaved = document.getElementById('entitySaved');
@@ -578,54 +578,51 @@ function clearCommonAttributes()
 	}
 }
 
-
 function clearControlAttributes()
 {
 	var controlsForm = document.getElementById('controlsForm');
 
 	if(document.getElementById('attributeSize') != null)
 	{
-	document.getElementById('attributeSize').value = "";
+		document.getElementById('attributeSize').value = "";
 	}
 	if(document.getElementById('attributeDefaultValue') != null)
 	{
-	document.getElementById('attributeDefaultValue').value = "";
+		document.getElementById('attributeDefaultValue').value = "";
 	}
 	if(document.getElementById('attributeDigits') != null)
 	{
-	document.getElementById('attributeDigits').value = "";
+		document.getElementById('attributeDigits').value = "";
 	}
 	if(document.getElementById('attributeDecimalPlaces') != null)
 	{
-	document.getElementById('attributeDecimalPlaces').value = "";
+		document.getElementById('attributeDecimalPlaces').value = "";
 	}
 	
 	if(document.getElementById('attributeMeasurementUnits') != null)
 	{
-	document.getElementById('attributeMeasurementUnits').value = "";
+		document.getElementById('attributeMeasurementUnits').value = "";
 	}
 	if(document.getElementById('measurementUnitOther') != null)
 	{
-	document.getElementById('measurementUnitOther').value = "";
+		document.getElementById('measurementUnitOther').value = "";
 	}
 	if(document.getElementById('format') != null)
 	{
-	document.getElementById('format').value = "";
+		document.getElementById('format').value = "";
 	}
 	if(controlsForm.attributeNoOfRows != null)
 	{
-	controlsForm.attributeNoOfRows.value = "";
+		controlsForm.attributeNoOfRows.value = "";
 	}
 	if(controlsForm.attributenoOfCols != null)
 	{
-	controlsForm.attributenoOfCols.value = "";
+		controlsForm.attributenoOfCols.value = "";
 	}
 	if(document.getElementById('dataType') != null)
 	{
 		document.getElementById('dataType').value = "";
 	}
-	
-	
 	
 	if(document.getElementById('attributeIsPassword') != null)
 	{
@@ -642,8 +639,8 @@ function clearControlAttributes()
 		initializeChoiceListCounter();
 	}
 	clearSelectedAttributesList();
-	
 }
+
 function deleteAllRows(table)
 {
 	var noOfRows = table.rows.length;
@@ -737,7 +734,7 @@ function changeDateType(dateType)
 	{
 		dateTypeValue =dateType.value;
 	}
-//	var defValueTxtBox = document.getElementById('attributeDefaultValue');
+	//	var defValueTxtBox = document.getElementById('attributeDefaultValue');
 	var rowForDefaultValue = document.getElementById('rowForDateDefaultValue');
 	if((dateTypeValue == "None")||(dateTypeValue == "Today"))
 	{
@@ -781,22 +778,29 @@ function showFormDefinitionPage()
 	previewForm.submit();
 }
 
-function showTooltip(text,obj,message) {
+function showTooltip(text,obj,message)
+{
 	var tooltip = "";
 	var w1 = obj.scrollWidth;
 	var w2 = obj.offsetWidth;
 	var difference = w1-w2;
-	if(difference > 0) {
+	if(difference > 0)
+	{
 		tooltip = text;
 		obj.title = tooltip;
-	} else {
+	}
+	else
+	{
 		if(message != null)
 		{ 
-		  tooltip = message;
-		  obj.title = tooltip;
-		} else {
-			if(obj.tagName != "IMG") {
-			  obj.title = "";
+			tooltip = message;
+			obj.title = tooltip;
+		}
+		else
+		{
+			if(obj.tagName != "IMG")
+			{
+				obj.title = "";
 			}  
 		}
 	}
@@ -1049,6 +1053,7 @@ function moveRowsDown(tableId, startPoint, counter)
 		startPoint -=1;
 	}
 }
+
 function showDefineGroupPage(formName)
 {
 	var form = document.getElementById(formName+'');
@@ -1105,7 +1110,7 @@ function setEditOperationMode(target)
 	formsIndexForm.submit();
 }
 
-function loadEditRecords(target)
+function loadRecordList(target)
 {
 	document.getElementById('operationMode').value = 'EditForm';
 	var formsIndexForm = document.getElementById('formsIndexForm');
@@ -1127,6 +1132,7 @@ function saveGroup()
 		groupForm.submit();
 	}
 }
+
 function toggle(fldForSelectedObject,id,p) 
 {
 	prevSelectedId =document.getElementById(fldForSelectedObject).value; 
@@ -1209,15 +1215,15 @@ function getDocumentElementForXML(xmlString)
 	// code for IE
 	if (window.ActiveXObject)
 	{
-	  var doc=new ActiveXObject("Microsoft.XMLDOM");
-	  doc.async="false";
-	  doc.loadXML(xmlString);
+		var doc=new ActiveXObject("Microsoft.XMLDOM");
+		doc.async="false";
+		doc.loadXML(xmlString);
 	}
 	// code for Mozilla, Firefox, Opera, etc.
 	else
 	{
-	  var parser=new DOMParser();
-	  var doc=parser.parseFromString(xmlString,"text/xml");
+		var parser=new DOMParser();
+		var doc=parser.parseFromString(xmlString,"text/xml");
 	}
 	return doc;
 }
@@ -1232,18 +1238,13 @@ function groupChanged(flagClearAttributeList)
 	var request = newXMLHTTPReq();
 	var handlerFunction = getReadyStateHandler(request,groupChangedResponse,false);
 
-	//no brackets after the function name and no parameters are passed because we are assigning a reference to the function and not actually calling it
+	/* no brackets after the function name and no parameters are passed because we are 
+	   assigning a reference to the function and not actually calling it */
 	request.onreadystatechange = handlerFunction;
 	//send data to ActionServlet
 	if(document.getElementById('groupName')!=null)
 	{
 		var grpName  = document.getElementById('groupName').value;
-		
-		//Open connection to servlet
-		/*request.open("POST","LoadFormControlsAction.do",true);
-		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-		request.send("&operation=changeGroup&grpName="+grpName);
-		*/
 		
 		request.open("POST","AjaxcodeHandlerAction.do",true);
 		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
@@ -1295,8 +1296,6 @@ function groupChangedResponse(formNameListXML)
 	}
 }
 
-
-
 //When form changed load attributes for form
 function formChanged(flagClearAttributeList)
 {
@@ -1324,6 +1323,7 @@ function formChanged(flagClearAttributeList)
 		request.send("&ajaxOperation=changeForm&frmName="+frmName);
 	}	
 }
+
 function formChangedResponse(formAttributesListXML)
 {
 	if(formAttributesListXML!=null)
@@ -1357,18 +1357,18 @@ function formChangedResponse(formAttributesListXML)
 					}
 					if((optionName!=null)&&(optionValue!=null))
 					{
-							var oOption = document.createElement("OPTION");
-							htmlFormAttributeList.options.add(oOption,htmlFormAttributeList.options.length+1);
-							oOption.text = optionName;
-							oOption.value = optionValue;
+						var oOption = document.createElement("OPTION");
+						htmlFormAttributeList.options.add(oOption,htmlFormAttributeList.options.length+1);
+						oOption.text = optionName;
+						oOption.value = optionValue;
 					}
 				}
 			}
 		}
 	}
 }
-	/*** code using ajax  ***/
-	
+
+/*** code using ajax  ***/
 function clearSelectedAttributesList()
 {
 	var selectedAttributeList = document.getElementById('selectedAttributeIds');
@@ -1417,11 +1417,11 @@ function transferElementsFromList(fromListBox,toListBox)
 		    {
 		    	if(!isDuplicateOption(current.value,toListBox))
 		    	{
-				var newOption = new Option(current.value);
-				toListBox.options[toListBox.length] = newOption;
-				toListBox.options[toListBox.length - 1].value = current.value;
-				toListBox.options[toListBox.length - 1].innerHTML = current.innerHTML;
-			}
+					var newOption = new Option(current.value);
+					toListBox.options[toListBox.length] = newOption;
+					toListBox.options[toListBox.length - 1].value = current.value;
+					toListBox.options[toListBox.length - 1].innerHTML = current.innerHTML;
+				}
 		    }	
 		}
 	}
@@ -1471,7 +1471,7 @@ function createFormAsChanged()
 	}
 }
 
-/////////////added by vishvesh
+//added by vishvesh
 function addRow(containerId) 
 {
 	var divName = "";
@@ -1617,7 +1617,7 @@ function setDefaultValues(tableId, obj)
 				childObjectName = childObjectName.substring(0,childObjectName.indexOf(')'));
 				
 				str = childObjectName + "_" + rowIndex;
-				str = str  +  ")";
+				str = str + ")";
 			}
 			else
 			{	
@@ -1631,18 +1631,17 @@ function setDefaultValues(tableId, obj)
 
 function replaceAll(inputString, regExpr, newString) 
 {
-  var outputStr = "";
-  var pivot ;
-  while (inputString.indexOf(regExpr) != - 1 )
-
-   {
-      inputString = inputString.replace(regExpr,newString);
-	  pivot  =   inputString.indexOf(newString) + newString.length;
-	  outputStr  =   outputStr  + inputString.substring(0, pivot) ;
-	  inputString =   inputString.substring(pivot,inputString.length);
-   }
-  outputStr = outputStr + inputString;
-  return outputStr;
+	var outputStr = "";
+	var pivot;
+	while(inputString.indexOf(regExpr) != - 1)
+	{
+		inputString = inputString.replace(regExpr,newString);
+		pivot = inputString.indexOf(newString) + newString.length;
+		outputStr = outputStr + inputString.substring(0, pivot) ;
+		inputString = inputString.substring(pivot,inputString.length);
+	}
+	outputStr = outputStr + inputString;
+	return outputStr;
 }
 
 //Ajax code for form name selection from tree
@@ -1714,11 +1713,11 @@ function treeNodeSelectedResponse(formNameListXML)
 		var htmlFormDesc = document.getElementById("formDescription");
 		var htmlOperationMode = document.getElementById('operationMode');
 		
-		var documentElt  = getDocumentElementForXML(formNameListXML);
-		var formname  =  documentElt.getElementsByTagName('form-name');
-		var formDesc  =  documentElt.getElementsByTagName('form-description');
-		var formConceptCode  =  documentElt.getElementsByTagName('form-conceptcode');
-		var operationmode  =  documentElt.getElementsByTagName('operationMode');
+		var documentElt = getDocumentElementForXML(formNameListXML);
+		var formname = documentElt.getElementsByTagName('form-name');
+		var formDesc = documentElt.getElementsByTagName('form-description');
+		var formConceptCode = documentElt.getElementsByTagName('form-conceptcode');
+		var operationmode = documentElt.getElementsByTagName('operationMode');
 		
 		if((htmlFormName!=null)&&(formname!=null))
 		{
@@ -1750,16 +1749,15 @@ function treeNodeSelectedResponse(formNameListXML)
 				htmlOperationMode.value = operationmode[0].text;
 			}
 		}
-		
 	}
 }
 
-function insertDataForContainer(containerId) {
-   
+function insertDataForContainer(containerId)
+{
     alert('hi');
-    alert("page to insert date for contianerId"  + containerId);
-  
+    alert("page to insert date for contianerId" + containerId);
 }
+
 function groupSelected(groupList)
 {
 	if(groupList!=null)
@@ -1770,7 +1768,8 @@ function groupSelected(groupList)
 			var request = newXMLHTTPReq();
 			var handlerFunction = getReadyStateHandler(request,groupSelectedResponse,false);
 
-			//no brackets after the function name and no parameters are passed because we are assigning a reference to the function and not actually calling it
+			//no brackets after the function name and no parameters are passed because we are 
+			//assigning a reference to the function and not actually calling it
 			request.onreadystatechange = handlerFunction;	
 			request.open("POST","AjaxcodeHandlerAction.do",true);
 			request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
@@ -1778,13 +1777,14 @@ function groupSelected(groupList)
 		}
 	}
 }
+
 function groupSelectedResponse(groupXML)
 {
 	if(groupXML!=null)
 	{
 		var htmlGroupDescription = document.getElementById("groupDescription");
-		var documentElt  = getDocumentElementForXML(groupXML);
-		var grpDesc  =  documentElt.getElementsByTagName('group-description');
+		var documentElt = getDocumentElementForXML(groupXML);
+		var grpDesc = documentElt.getElementsByTagName('group-description');
 	
 		if((htmlGroupDescription!=null)&&(grpDesc!=null))
 		{
@@ -1805,11 +1805,12 @@ function showChildContainerInsertDataPage(containerId,ths)
 	var dataEntryForm = document.getElementById('dataEntryForm');
 	
 	var showFormPreview = document.getElementById('showFormPreview').value;
+	var mode = document.getElementById('mode').value;
 	if(showFormPreview == "true")
 	{
 		dataEntryForm.action="/dynamicExtensions/ApplyFormPreviewAction.do";
 	}
-	else
+	else if(mode == "view" || mode == "edit")
 	{
 		dataEntryForm.action="/dynamicExtensions/ApplyDataEntryFormAction.do";
 	}
@@ -1825,7 +1826,7 @@ function showEditRecordPage(target)
 
 function showParentContainerInsertDataPage()
 {
-    document.getElementById('dataEntryOperation').value  = "insertParentData";
+    document.getElementById('dataEntryOperation').value = "insertParentData";
 }
 
 function dropFn(srcId,targetId,sourceGridObj,targetGridObj)
@@ -1864,29 +1865,38 @@ function moveControlsDown()
 }
 
 //Added by Preeti : move elements in list
-function listEltMoveUp(element) {
-  for(i = 0; i < element.options.length; i++) {
-    if(element.options[i].selected == true) {
-      if(i != 0) {
-        var temp = new Option(element.options[i-1].text,element.options[i-1].value);
-        var temp2 = new Option(element.options[i].text,element.options[i].value);
-        element.options[i-1] = temp2;
-        element.options[i-1].selected = true;
-        element.options[i] = temp;
-      }
-    }
-  }
+function listEltMoveUp(element)
+{
+	for(i = 0; i < element.options.length; i++)
+	{
+	  	if(element.options[i].selected == true)
+	  	{
+	    	if(i != 0)
+	    	{
+		        var temp = new Option(element.options[i-1].text,element.options[i-1].value);
+		        var temp2 = new Option(element.options[i].text,element.options[i].value);
+		        element.options[i-1] = temp2;
+		        element.options[i-1].selected = true;
+		        element.options[i] = temp;
+	      	}
+		}
+	}
 }
-function listEltMoveDown(element) {
-  for(i = (element.options.length - 1); i >= 0; i--) {
-    if(element.options[i].selected == true) {
-      if(i != (element.options.length - 1)) {
-        var temp = new Option(element.options[i+1].text,element.options[i+1].value);
-        var temp2 = new Option(element.options[i].text,element.options[i].value);
-        element.options[i+1] = temp2;
-        element.options[i+1].selected = true;
-        element.options[i] = temp;
-      }
-    }
-  }
+
+function listEltMoveDown(element)
+{
+	for(i = (element.options.length - 1); i >= 0; i--)
+	{
+    	if(element.options[i].selected == true)
+    	{
+			if(i != (element.options.length - 1))
+			{
+		        var temp = new Option(element.options[i+1].text,element.options[i+1].value);
+		        var temp2 = new Option(element.options[i].text,element.options[i].value);
+		        element.options[i+1] = temp2;
+		        element.options[i+1].selected = true;
+		        element.options[i] = temp;
+			}
+		}
+	}
 }

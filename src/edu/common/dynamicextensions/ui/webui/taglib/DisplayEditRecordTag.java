@@ -6,13 +6,10 @@ package edu.common.dynamicextensions.ui.webui.taglib;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.entitymanager.EntityRecord;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
@@ -28,7 +25,6 @@ public class DisplayEditRecordTag extends TagSupport
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
 	/**
 	 * 
 	 */
@@ -37,11 +33,14 @@ public class DisplayEditRecordTag extends TagSupport
 	 * 
 	 */
 	protected List<EntityRecord> entityRecordList = null;
+	/**
+	 * 
+	 */
+	protected String mode = null;
 
 	/**
 	 * Validates all the attributes passed to the tag
 	 * @return boolean - true if all the attributes passed to the tag are valid
-	 * @since TODO
 	 */
 	private boolean isDataValid()
 	{
@@ -91,14 +90,7 @@ public class DisplayEditRecordTag extends TagSupport
 			for (EntityRecord entityRecord : this.entityRecordList)
 			{
 				stringBuffer.append("<tr><td>");
-				/*Map<AbstractAttributeInterface, Object> valueMap = entityRecord.getValueMap();
-				 Set<Map.Entry<AbstractAttributeInterface, Object>> valueSet = valueMap.entrySet();
-				 for(Map.Entry<AbstractAttributeInterface, Object> valueSetEntry:valueSet)
-				 {
-				 AbstractAttributeInterface abstractAttribute = valueSetEntry.getKey();
-				 Object value = valueSetEntry.getValue();
-				 }*/
-
+				
 				Long recordId = entityRecord.getRecordId();
 				if (recordId != null)
 				{
@@ -109,7 +101,8 @@ public class DisplayEditRecordTag extends TagSupport
 							+ this.containerIdentifier
 							+ "&recordIdentifier="
 							+ recordId.toString()
-							+ "&showFormPreview=false'";
+							+ "&showFormPreview=false"
+							+ "&mode=" + mode + "'";
 					
 					stringBuffer.append(target);
 					stringBuffer.append(")\">");
@@ -163,6 +156,22 @@ public class DisplayEditRecordTag extends TagSupport
 	public void setContainerIdentifier(String containerIdentifier)
 	{
 		this.containerIdentifier = containerIdentifier;
+	}
+
+	/**
+	 * @return the mode
+	 */
+	public String getMode()
+	{
+		return mode;
+	}
+	
+	/**
+	 * @param mode the mode to set
+	 */
+	public void setMode(String mode)
+	{
+		this.mode = mode;
 	}
 
 }

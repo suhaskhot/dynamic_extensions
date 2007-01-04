@@ -62,8 +62,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 				recordId = "";
 			}
 		}
-	
-			
+				
 		Map<AbstractAttributeInterface, Object> recordMap = loadDataEntryFormProcessor
 				.getValueMapFromRecordId(containerInterface.getEntity(), recordId);
 
@@ -85,6 +84,9 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 				valueMapStack);
 
 		String mode = request.getParameter(WebUIManagerConstants.MODE_PARAM_NAME);
+		if(mode == null || !mode.equals("")){
+			mode = dataEntryForm.getMode();
+		}
 		if ((!containerStack.isEmpty()) && (!valueMapStack.isEmpty()))
 		{
 			loadDataEntryFormProcessor.loadDataEntryForm((AbstractActionForm) form, containerStack

@@ -45,7 +45,7 @@ public class LoadEditRecordsProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException  DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException DynamicExtensionsSystemException
 	 */
-	public void populateRecordIndex(EditRecordsForm editRecordsForm, ContainerInterface container)
+	public void populateRecordIndex(EditRecordsForm editRecordsForm, ContainerInterface container, String mode)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		List<EntityRecord> entityRecordList = null;
@@ -55,6 +55,7 @@ public class LoadEditRecordsProcessor extends BaseDynamicExtensionsProcessor
 		{
 			EntityInterface entity = container.getEntity();
 			entityRecordList = entityManager.getAllRecords(entity);
+			container.setMode(mode);
 		}
 
 		if (entityRecordList == null)
@@ -63,5 +64,6 @@ public class LoadEditRecordsProcessor extends BaseDynamicExtensionsProcessor
 		}
 		editRecordsForm.setContainerIdentifier(container.getId().toString());
 		editRecordsForm.setEntityRecordList(entityRecordList);
+		editRecordsForm.setMode(mode);
 	}
 }

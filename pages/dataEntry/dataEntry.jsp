@@ -14,7 +14,6 @@
 <%@ page import="org.apache.struts.action.ActionErrors" %>
 <%@ page import="org.apache.struts.action.ActionMessages" %>
 
-
 <%-- Stylesheet --%>
 <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/styleSheet.css" />
 <link href="<%=request.getContextPath()%>/css/calanderComponent.css" type=text/css rel=stylesheet />
@@ -27,7 +26,6 @@
 <script src="<%=request.getContextPath()%>/jss/calender.js" type="text/javascript"></script>
 <script src="<%=request.getContextPath()%>/jss/calendarComponent.js"></script>
 <script src="<%=request.getContextPath()%>/jss/ajax.js"></script>
-
 
 <c:set var="containerInterface" value="${dataEntryForm.containerInterface}"/>
 <jsp:useBean id="containerInterface" type="edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface"/>
@@ -142,7 +140,7 @@
 											<tr>
 												<td align='right'>						
 													<c:choose>
-							  	    					<c:when test='${showFormPreview == "true" || mode == "view"}'>
+							  	    					<c:when test='${showFormPreview == "true"}'>
 															<html:submit styleClass="actionButton" onclick="showParentContainerInsertDataPage()">
 															 	<bean:message key="buttons.back" />
 															</html:submit>
@@ -153,9 +151,11 @@
 							 								<html:submit styleClass="actionButton" onclick="showParentContainerInsertDataPage()" disabled="<%=isTopLevelEntity %>">
 															 	<bean:message key="buttons.back" />
 															</html:submit>
-													 		<html:submit styleClass="actionButton">
-															 	<bean:message key="buttons.submit" />
-															</html:submit>
+													 		<c:if test='${mode == "edit"}'>
+														 		<html:submit styleClass="actionButton">
+																 	<bean:message key="buttons.submit" />
+																</html:submit>
+															</c:if>
 						 								</c:otherwise>
 				     								</c:choose>	
 												</td>
@@ -170,16 +170,12 @@
 	
 				<html:hidden styleId='recordIdentifier' property="recordIdentifier" />
 			
-			<%
-				System.out.println("**************** record identifier is" + recordIdentifier123);
-			%>
-			
-			
 			<html:hidden styleId='entitySaved' property="entitySaved" />
 			<input type="hidden" id="childContainerId" name="childContainerId" value=""/>
 			<input type="hidden" id="childRowId" name="childRowId" value=""/>
 			<input type="hidden" id="dataEntryOperation" name="dataEntryOperation" value=""/>
 			<input type="hidden" id="showFormPreview" name="showFormPreview" value="<%=showFormPreview%>"/>
+			<input type="hidden" id="mode" name="mode" value="<%=mode%>"/>
 		</html:form>
 	</body>
 </html>

@@ -77,10 +77,13 @@
 										<th width="5%" align='left'>
 											<bean:message key="app.editRecords" />
 										</th>
+										<th width="5%" align='left'>
+											<bean:message key="app.viewRecords" />
+										</th>
 										<th width="15%" align='left'>
 											<bean:message key="table.date" />
 										</th>
-										<th width="15%" align='left'>
+										<th width="10%" align='left'>
 											<bean:message key="table.createdBy" />
 										</th>
 										<th width="10%" align='left'>
@@ -117,10 +120,18 @@
 										</td>
 										<td>
 											<%
-	 											target = "loadEditRecords('/dynamicExtensions/LoadEditRecordsAction.do?containerIdentifier=" + cont_Id + "');";
+	 											target = "loadRecordList('/dynamicExtensions/LoadEditRecordsAction.do?mode=edit&containerIdentifier=" + cont_Id + "');";
 	 										%>
 											<html:link href='#' onclick="<%=target%>" >
 												<bean:message key="app.editRecords" />&nbsp;
+											</html:link>
+										</td>
+										<td>
+											<%
+	 											target = "loadRecordList('/dynamicExtensions/LoadEditRecordsAction.do?mode=view&containerIdentifier=" + cont_Id + "');";
+	 										%>
+											<html:link href='#' onclick="<%=target%>" >
+												<bean:message key="app.viewRecords" />&nbsp;
 											</html:link>
 										</td>
 										<td>

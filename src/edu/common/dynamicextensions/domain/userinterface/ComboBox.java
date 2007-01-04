@@ -69,7 +69,6 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 			}
 		}
 
-	
 		List<NameValueBean> nameValueBeanList = null;
 
 		if (listOfValues == null)
@@ -118,14 +117,44 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 
 	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
 	{
-
 		String htmlString = "&nbsp;";
-		if (value != null)
+		
+		String defaultValue = "";
+		if (this.value != null)
 		{
-			htmlString = "<span class='" + cssClass + "'> " + this.value.toString() + "</span>";
+			if (this.value instanceof String)
+			{
+				defaultValue = (String) this.value;
+			}
+			else if (this.value instanceof List)
+			{
+				List valueList = (List) this.value;
+				if (!valueList.isEmpty())
+				{
+					defaultValue = valueList.get(0).toString();
+				}
+			}
 		}
+		
+		List<NameValueBean> nameValueBeanList = null;
+		if (listOfValues == null)
+		{
+			nameValueBeanList = ControlsUtility.populateListOfValues(this);
+		}
+		
+		if (nameValueBeanList != null && nameValueBeanList.size() > 0)
+		{
+			for (NameValueBean nameValueBean : nameValueBeanList)
+			{
+				if (nameValueBean.getValue().equals(defaultValue))
+				{
+					htmlString = "<span class='" + cssClass + "'> " + nameValueBean.getName() + "</span>";
+					break;
+				}
+			}
+		}
+		
 		return htmlString;
-
 	}
 
 }

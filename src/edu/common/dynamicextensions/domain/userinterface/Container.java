@@ -18,7 +18,6 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 
@@ -77,17 +76,14 @@ public class Container extends DynamicExtensionBaseDomainObject
 	 * Collection of controls that are in this container.
 	 */
 	protected Collection<ControlInterface> controlCollection = new HashSet<ControlInterface>();
-
 	/**
 	 * 
 	 */
 	protected Map<AbstractAttributeInterface, Object> containerValueMap = new HashMap<AbstractAttributeInterface, Object>();
-
 	/**
 	 * Entity to which this container is associated.
 	 */
 	protected Entity entity;
-
 	/**
 	 * 
 	 */
@@ -95,7 +91,7 @@ public class Container extends DynamicExtensionBaseDomainObject
 	/**
 	 * 
 	 */
-	protected Boolean showAssociationControlsAsLink = false; 
+	protected Boolean showAssociationControlsAsLink = false;
 
 	/**
 	 * @return
@@ -118,6 +114,7 @@ public class Container extends DynamicExtensionBaseDomainObject
 	 */
 	public Container()
 	{
+		super();
 	}
 
 	/**
@@ -268,11 +265,9 @@ public class Container extends DynamicExtensionBaseDomainObject
 	/**
 	 * 
 	 */
-
 	public void setEntity(EntityInterface entityInterface)
 	{
 		entity = (Entity) entityInterface;
-
 	}
 
 	/**
@@ -312,6 +307,7 @@ public class Container extends DynamicExtensionBaseDomainObject
 			}
 		}
 	}
+
 	/**
 	 * remove all controls from the controls collection
 	 */
@@ -362,7 +358,6 @@ public class Container extends DynamicExtensionBaseDomainObject
 		stringBuffer.append(this.getCaption());
 		stringBuffer.append("</td>");
 		stringBuffer.append("</tr>");
-	
 
 		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(this
 				.getControlCollection());
@@ -371,11 +366,12 @@ public class Container extends DynamicExtensionBaseDomainObject
 		{
 			Object value = containerValueMap.get(control.getAbstractAttribute());
 			control.setValue(value);
-			if (this.showAssociationControlsAsLink  && control instanceof ContainmentAssociationControl)
+			if (this.showAssociationControlsAsLink
+					&& control instanceof ContainmentAssociationControl)
 			{
-				ContainmentAssociationControl containmentAssociationControl = (ContainmentAssociationControl)control;
+				ContainmentAssociationControl containmentAssociationControl = (ContainmentAssociationControl) control;
 				String link = generateLink(containmentAssociationControl.getParentContainer());
-				link = UserInterfaceiUtility.getControlHTMLAsARow(control,link);
+				link = UserInterfaceiUtility.getControlHTMLAsARow(control, link);
 				stringBuffer.append(link);
 			}
 			else
@@ -432,11 +428,12 @@ public class Container extends DynamicExtensionBaseDomainObject
 	{
 		this.showAssociationControlsAsLink = showAssociationControlsAsLink;
 	}
-	
+
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface#generateLinkHTML()
 	 */
-	public String generateLink(ContainerInterface containerInterface) throws DynamicExtensionsSystemException
+	public String generateLink(ContainerInterface containerInterface)
+			throws DynamicExtensionsSystemException
 	{
 		String detailsString = "Details";
 		StringBuffer stringBuffer = new StringBuffer();
@@ -449,7 +446,5 @@ public class Container extends DynamicExtensionBaseDomainObject
 
 		return stringBuffer.toString();
 	}
-
-	
 
 }

@@ -31,6 +31,11 @@ public class EditRecordsForm extends AbstractActionForm
 	 * 
 	 */
 	List<EntityRecord> entityRecordList = null;
+	
+	/**
+	 * 
+	 */
+	String mode = null;
 
 	/**
 	 * @return the recordSnippetList
@@ -71,7 +76,6 @@ public class EditRecordsForm extends AbstractActionForm
 	public void setAllValues(AbstractDomainObject abstractDomainObject)
 	{
 	}
-
 	
 	/**
 	 * @return the containerIdentifier
@@ -81,13 +85,28 @@ public class EditRecordsForm extends AbstractActionForm
 		return containerIdentifier;
 	}
 
-	
 	/**
 	 * @param containerIdentifier the containerIdentifier to set
 	 */
 	public void setContainerIdentifier(String containerIdentifier)
 	{
 		this.containerIdentifier = containerIdentifier;
+	}
+
+	/**
+	 * @return the mode
+	 */
+	public String getMode()
+	{
+		return mode;
+	}
+
+	/**
+	 * @param mode the mode to set
+	 */
+	public void setMode(String mode)
+	{
+		this.mode = mode;
 	}
 
 }

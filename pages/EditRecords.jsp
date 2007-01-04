@@ -17,6 +17,9 @@
 <c:set var="entityRecordList" value="${editRecordsForm.entityRecordList}"/>
 <jsp:useBean id="entityRecordList" type="java.util.List"/>
 
+<c:set var="mode" value="${editRecordsForm.mode}"/>
+<jsp:useBean id="mode" type="java.lang.String"/>
+
 <html>
 	<head>
 		<title><bean:message key="table.heading" /></title>
@@ -36,7 +39,7 @@
 
 				<tr>
 					<td>
-						<dynamicExtensions:displayEditRecords containerIdentifier="<%=containerIdentifier%>" entityRecordList="<%=entityRecordList%>" />
+						<dynamicExtensions:displayEditRecords containerIdentifier="<%=containerIdentifier%>" entityRecordList="<%=entityRecordList%>" mode="<%=mode%>" />
 					</td>
 				</tr>
 			</table>

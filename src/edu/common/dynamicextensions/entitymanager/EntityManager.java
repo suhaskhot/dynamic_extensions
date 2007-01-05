@@ -2175,7 +2175,7 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private Collection executeHQL(String queryName, Map<String,HQLPlaceHolderObject> substitutionParameterMap)
+	private Collection executeHQL(String queryName, Map substitutionParameterMap)
 			throws DynamicExtensionsSystemException
 	{
 		Collection entityCollection = new HashSet();
@@ -2186,11 +2186,39 @@ public class EntityManager
 			hibernateDAO.openSession(null);
 			Query query = substitutionParameterForQuery(queryName, substitutionParameterMap);
 			entityCollection = query.list();
-			//	hibernateDAO.commit();
+			hibernateDAO.commit();
 		}
-		catch (Exception e)
+		catch (DAOException e)
+		{
+			try
+			{
+				hibernateDAO.rollback();
+				throw new DynamicExtensionsSystemException("Exception occured while executing hqk",
+						e);
+
+			}
+			catch (DAOException e1)
+			{
+				throw new DynamicExtensionsSystemException("Error while rolling back the session",
+						e1);
+			}
+
+		}
+
+		catch (HibernateException e)
 		{
 			throw new DynamicExtensionsSystemException("Error while rolling back the session", e);
+		}
+		finally
+		{
+			try
+			{
+				hibernateDAO.closeSession();
+			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException("Error while closing the session", e);
+			}
 		}
 		return entityCollection;
 	}

@@ -1210,6 +1210,7 @@ public class EntityManager
 				// saves the entity into database. It populates rollbackQueryStack with the 
 				// queries that restores the database state to the state before calling this method
 				// in case of exception. 
+				
 				saveOrUpdateEntity(entity, hibernateDAO, rollbackQueryStack, isentitySaved);
 
 			}
@@ -1832,7 +1833,6 @@ public class EntityManager
 
 		return fileRecord;
 	}
-
 	/**
 	 * This method is used by create as well as edit entity methods. This method holds all the common part 
 	 * related to saving the entity into the database and also handling the exceptions .
@@ -2505,7 +2505,7 @@ public class EntityManager
 			associationTreeObjectForContainer = new AssociationTreeObject(
 					(Long) objectArrayForContainerBeans[0],
 					(String) objectArrayForContainerBeans[1]);
-			processForChildContainer(associationTreeObjectForContainer);
+			//processForChildContainer(associationTreeObjectForContainer);
 			associationTreeObjectForGroup
 					.addAssociationTreeObject(associationTreeObjectForContainer);
 

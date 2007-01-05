@@ -172,7 +172,7 @@ public class EntityManager
 
 		try
 		{
-
+			
 			hibernateDAO.openSession(null);
 			//Calling the method which actually calls the insert/update method on dao. Hibernatedao is passed to this
 			//method and transaction is handled in the calling method.
@@ -1204,6 +1204,7 @@ public class EntityManager
 		}
 		try
 		{
+			hibernateDAO.closeSession();
 			hibernateDAO.openSession(null);
 			if (entity != null)
 			{

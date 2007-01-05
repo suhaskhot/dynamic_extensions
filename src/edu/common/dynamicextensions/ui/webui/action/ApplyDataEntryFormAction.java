@@ -273,9 +273,15 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			else if (control instanceof ComboBoxInterface)
 			{
 				String selectedValue = request.getParameter("Control_" + sequence);
-				valueList.add(new Long(selectedValue.trim()));
+				if(selectedValue != null)
+				{
+					valueList.add(new Long(selectedValue.trim()));
+				}
 			}
-			attributeValueMap.put(abstractAttribute, valueList);
+			if(!valueList.isEmpty())
+			{
+				attributeValueMap.put(abstractAttribute, valueList);
+			}
 		}
 	}
 

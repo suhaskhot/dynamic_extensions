@@ -149,9 +149,9 @@
 							 								<html:hidden styleId='isEdit' property="isEdit" value=""/>
 							 								
 							 								<html:submit styleClass="actionButton" onclick="showParentContainerInsertDataPage()" disabled="<%=isTopLevelEntity %>">
-															 	<bean:message key="buttons.back" />
+															 	<bean:message key="buttons.ok" />
 															</html:submit>
-													 		<c:if test='${mode == "edit"}'>
+													 		<c:if test='${(mode == "edit") && (isTopLevelEntity)}'>
 														 		<html:submit styleClass="actionButton">
 																 	<bean:message key="buttons.submit" />
 																</html:submit>

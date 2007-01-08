@@ -41,68 +41,26 @@ public class NumberValidator implements ValidatorRuleInterface
 		String value = (String) valueObject;
 		if (value == null || value.equals(""))
 		{
-			return true;
+			isValid = true;
 		}
-		
-		if (valueObject != null && DynamicExtensionsUtility.isNumeric((String) valueObject))
+		else if ((DynamicExtensionsUtility.isNumeric((String) valueObject))
+				&& (attributeTypeInformation != null))
 		{
-			if (attributeTypeInformation != null)
+			try
 			{
-				List<String> placeHolders = null;
 				if (attributeTypeInformation instanceof LongAttributeTypeInformation)
 				{
-					try
-					{
-						BigInteger numberValue = new BigInteger(value);
-						String strLongMin = (new Long(Long.MIN_VALUE)).toString();
-						String strLongMax = (new Long(Long.MAX_VALUE)).toString();
-						BigInteger longMin = new BigInteger(strLongMin);
-						BigInteger longMax = new BigInteger(strLongMax);
-
-						if (numberValue.compareTo(longMin) < 0
-								|| numberValue.compareTo(longMax) > 0)
-						{
-							placeHolders = new ArrayList<String>();
-							placeHolders.add(attributeName);
-							placeHolders.add(strLongMin);
-							placeHolders.add(strLongMax);
-							throw new DynamicExtensionsValidationException("Validation failed",
-									null, "dynExtn.validation.Number.Range", placeHolders);
-						}
-					}
-					catch (NumberFormatException numberFormatException)
-					{
-						throw new DynamicExtensionsValidationException("Validation failed", null,
-								"dynExtn.validation.Number", attributeName);
-					}
+					checkIntegerNumberValidity(attributeName, value);
 				}
 				else if (attributeTypeInformation instanceof DoubleAttributeTypeInformation)
 				{
-					try
-					{
-						BigDecimal numberValue = new BigDecimal(value);
-						String strDoubleMin = (new Double(Double.MIN_VALUE)).toString();
-						String strDoubleMax = (new Double(Double.MAX_VALUE)).toString();
-						BigDecimal doubleMin = new BigDecimal(strDoubleMin);
-						BigDecimal doubleMax = new BigDecimal(strDoubleMax);
-
-						if (numberValue.compareTo(doubleMin) < 0
-								|| numberValue.compareTo(doubleMax) > 0)
-						{
-							placeHolders = new ArrayList<String>();
-							placeHolders.add(attributeName);
-							placeHolders.add(strDoubleMin);
-							placeHolders.add(strDoubleMax);
-							throw new DynamicExtensionsValidationException("Validation failed",
-									null, "dynExtn.validation.Number.Range", placeHolders);
-						}
-					}
-					catch (NumberFormatException numberFormatException)
-					{
-						throw new DynamicExtensionsValidationException("Validation failed", null,
-								"dynExtn.validation.Number", attributeName);
-					}
+					checkRealNumberValidity(attributeName, value);
 				}
+			}
+			catch (NumberFormatException numberFormatException)
+			{
+				throw new DynamicExtensionsValidationException("Validation failed", null,
+						"dynExtn.validation.Number", attributeName);
 			}
 		}
 		else
@@ -110,6 +68,62 @@ public class NumberValidator implements ValidatorRuleInterface
 			throw new DynamicExtensionsValidationException("Validation failed", null,
 					"dynExtn.validation.Number", attributeName);
 		}
+
 		return isValid;
 	}
+
+	/**
+	 * This method checks the validty of the Integer values.
+	 * @param attributeName Name of the Attribute.
+	 * @param value The value to be verified
+	 * @throws DynamicExtensionsValidationException if the value is not in the numeric range of Long.
+	 * @throws NumberFormatException if the value is not of numeric nature.
+	 */
+	private void checkIntegerNumberValidity(String attributeName, String value)
+			throws DynamicExtensionsValidationException, NumberFormatException
+	{
+		BigInteger numberValue = new BigInteger(value);
+		String strLongMin = (new Long(Long.MIN_VALUE)).toString();
+		String strLongMax = (new Long(Long.MAX_VALUE)).toString();
+		BigInteger longMin = new BigInteger(strLongMin);
+		BigInteger longMax = new BigInteger(strLongMax);
+
+		if (numberValue.compareTo(longMin) < 0 || numberValue.compareTo(longMax) > 0)
+		{
+			List<String> placeHolders = new ArrayList<String>();
+			placeHolders.add(attributeName);
+			placeHolders.add(strLongMin);
+			placeHolders.add(strLongMax);
+			throw new DynamicExtensionsValidationException("Validation failed", null,
+					"dynExtn.validation.Number.Range", placeHolders);
+		}
+	}
+
+	/**
+	 * This method checks the validty of the Real values.
+	 * @param attributeName Name of the Attribute.
+	 * @param value The value to be verified
+	 * @throws DynamicExtensionsValidationException if the value is not in the numeric range of Double.
+	 * @throws NumberFormatException if the value is not of numeric nature. 
+	 */
+	private void checkRealNumberValidity(String attributeName, String value)
+			throws DynamicExtensionsValidationException, NumberFormatException
+	{
+		BigDecimal numberValue = new BigDecimal(value);
+		String strDoubleMin = (new Double(-Double.MAX_VALUE)).toString();
+		String strDoubleMax = (new Double(Double.MAX_VALUE)).toString();
+		BigDecimal doubleMin = new BigDecimal(strDoubleMin);
+		BigDecimal doubleMax = new BigDecimal(strDoubleMax);
+
+		if (numberValue.compareTo(doubleMin) < 0 || numberValue.compareTo(doubleMax) > 0)
+		{
+			List<String> placeHolders = new ArrayList<String>();
+			placeHolders.add(attributeName);
+			placeHolders.add(strDoubleMin);
+			placeHolders.add(strDoubleMax);
+			throw new DynamicExtensionsValidationException("Validation failed", null,
+					"dynExtn.validation.Number.Range", placeHolders);
+		}
+	}
+
 }

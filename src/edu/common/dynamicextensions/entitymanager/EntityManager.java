@@ -172,7 +172,7 @@ public class EntityManager
 
 		try
 		{
-			
+
 			hibernateDAO.openSession(null);
 			//Calling the method which actually calls the insert/update method on dao. Hibernatedao is passed to this
 			//method and transaction is handled in the calling method.
@@ -496,8 +496,9 @@ public class EntityManager
 	public EntityInterface getEntityByName(String entityName)
 			throws DynamicExtensionsSystemException
 	{
-		EntityInterface entityInterface = (EntityInterface) getObjectByName(Entity.class.getName(),entityName);
-			return entityInterface;
+		EntityInterface entityInterface = (EntityInterface) getObjectByName(Entity.class.getName(),
+				entityName);
+		return entityInterface;
 	}
 
 	/**
@@ -508,17 +509,19 @@ public class EntityManager
 	public EntityGroupInterface getEntityGroupByName(String entityGroupName)
 			throws DynamicExtensionsSystemException
 	{
-		EntityGroupInterface entityGroupInterface = (EntityGroupInterface) getObjectByName(EntityGroup.class.getName(),entityGroupName);
+		EntityGroupInterface entityGroupInterface = (EntityGroupInterface) getObjectByName(
+				EntityGroup.class.getName(), entityGroupName);
 		return entityGroupInterface;
 	}
+
 	/**
 	 * This method returns the object given the class name and object name.
 	 * @param className class name 
 	 * @param objectName objectName
 	 * @return DynamicExtensionBaseDomainObjectInterface Base DE interface
 	 */
-	private DynamicExtensionBaseDomainObjectInterface getObjectByName(String className, String objectName)
-			throws DynamicExtensionsSystemException
+	private DynamicExtensionBaseDomainObjectInterface getObjectByName(String className,
+			String objectName) throws DynamicExtensionsSystemException
 	{
 		DynamicExtensionBaseDomainObjectInterface object = null;
 		if (objectName == null || objectName.equals(""))
@@ -533,8 +536,7 @@ public class EntityManager
 			//the following method gives the object , the class name of which is passed as the first parameter.
 			// The criteria for the object is given in the second and third parameter. The second parameter is the 
 			// field of the object that needs to be compared with the values that is given as the third parameter.
-			objectList = defaultBizLogic.retrieve(className, "name",
-					objectName);
+			objectList = defaultBizLogic.retrieve(className, "name", objectName);
 		}
 		catch (DAOException e)
 		{
@@ -671,13 +673,15 @@ public class EntityManager
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getEntityByIdentifier(java.lang.Long)
 	 */
-	public EntityInterface getEntityByIdentifier(Long id)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public EntityInterface getEntityByIdentifier(Long id) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		//		CAlling generic method to return all stored instances of the object, the identifier of which is passed as 
 		//the parameter.
-		return (EntityInterface) getObjectByIdentifier(EntityInterface.class.getName(), id.toString());
+		return (EntityInterface) getObjectByIdentifier(EntityInterface.class.getName(), id
+				.toString());
 	}
+
 	/**
 	 * This method populates the TableProperties object in entity which holds the unique tablename for the entity.
 	 * This table name is generated using the unique identifier that is generated after saving the object.
@@ -763,55 +767,65 @@ public class EntityManager
 			HibernateDAO hibernateDAO) throws DAOException, UserNotAuthorizedException
 	{
 		//Getting the sys.generated association for the given original association.
-		Association systemGeneratedAssociation = getSystemGeneratedAssociation(association);
-		boolean isTargetEntityChanged = false;
-		if (association.getAssociationDirection() == AssociationDirection.BI_DIRECTIONAL)
+		if (association.getIsSystemGenerated())
 		{
-			ConstraintPropertiesInterface constraintPropertiesSysGen = new ConstraintProperties();
-			if (systemGeneratedAssociation == null)
-			{
-				systemGeneratedAssociation = new Association();
-			}
-			else
-			{
-				constraintPropertiesSysGen = systemGeneratedAssociation.getConstraintProperties();
-			}
-			constraintPropertiesSysGen.setName(association.getConstraintProperties().getName());
-			//Swapping the source and target keys.
-			constraintPropertiesSysGen.setSourceEntityKey(association.getConstraintProperties()
-					.getTargetEntityKey());
-			constraintPropertiesSysGen.setTargetEntityKey(association.getConstraintProperties()
-					.getSourceEntityKey());
-			//Populating the sys. generated association.
-			systemGeneratedAssociation.setName(association.getName());
-			systemGeneratedAssociation.setDescription(association.getDescription());
-			systemGeneratedAssociation.setTargetEntity(association.getEntity());
-			systemGeneratedAssociation.setEntity(association.getTargetEntity());
-			//Swapping the source and target roles.
-			systemGeneratedAssociation.setSourceRole(association.getTargetRole());
-			systemGeneratedAssociation.setTargetRole(association.getSourceRole());
-			systemGeneratedAssociation.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
-			systemGeneratedAssociation.setIsSystemGenerated(true);
-			systemGeneratedAssociation.setConstraintProperties(constraintPropertiesSysGen);
-			//Adding the sys.generated association to the target entity.
-			association.getTargetEntity().addAbstractAttribute(systemGeneratedAssociation);
-			isTargetEntityChanged = true;
+			return;
 		}
 		else
 		{
-			//Removing the not required sys. generated association because the direction has been changed 
-			//from "bi directional" to "src-destination".
-			if (systemGeneratedAssociation != null)
+			Association systemGeneratedAssociation = getSystemGeneratedAssociation(association);
+			boolean isTargetEntityChanged = false;
+			if (association.getAssociationDirection() == AssociationDirection.BI_DIRECTIONAL)
 			{
-				association.getTargetEntity().removeAbstractAttribute(systemGeneratedAssociation);
+				ConstraintPropertiesInterface constraintPropertiesSysGen = new ConstraintProperties();
+				if (systemGeneratedAssociation == null)
+				{
+					systemGeneratedAssociation = new Association();
+				}
+				else
+				{
+					constraintPropertiesSysGen = systemGeneratedAssociation
+							.getConstraintProperties();
+				}
+				constraintPropertiesSysGen.setName(association.getConstraintProperties().getName());
+				//Swapping the source and target keys.
+				constraintPropertiesSysGen.setSourceEntityKey(association.getConstraintProperties()
+						.getTargetEntityKey());
+				constraintPropertiesSysGen.setTargetEntityKey(association.getConstraintProperties()
+						.getSourceEntityKey());
+				//Populating the sys. generated association.
+				systemGeneratedAssociation.setName(association.getName());
+				systemGeneratedAssociation.setDescription(association.getDescription());
+				systemGeneratedAssociation.setTargetEntity(association.getEntity());
+				systemGeneratedAssociation.setEntity(association.getTargetEntity());
+				//Swapping the source and target roles.
+				systemGeneratedAssociation.setSourceRole(association.getTargetRole());
+				systemGeneratedAssociation.setTargetRole(association.getSourceRole());
+				systemGeneratedAssociation
+						.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
+				systemGeneratedAssociation.setIsSystemGenerated(true);
+				systemGeneratedAssociation.setConstraintProperties(constraintPropertiesSysGen);
+				//Adding the sys.generated association to the target entity.
+				association.getTargetEntity().addAbstractAttribute(systemGeneratedAssociation);
 				isTargetEntityChanged = true;
 			}
-		}
+			else
+			{
+				//Removing the not required sys. generated association because the direction has been changed 
+				//from "bi directional" to "src-destination".
+				if (systemGeneratedAssociation != null)
+				{
+					association.getTargetEntity().removeAbstractAttribute(
+							systemGeneratedAssociation);
+					isTargetEntityChanged = true;
+				}
+			}
 
-		if (isTargetEntityChanged)
-		{
-			//Saving the modified target entity.
-			hibernateDAO.update(association.getTargetEntity(), null, false, false, false);
+			if (isTargetEntityChanged)
+			{
+				//Saving the modified target entity.
+				hibernateDAO.update(association.getTargetEntity(), null, false, false, false);
+			}
 		}
 	}
 
@@ -1211,7 +1225,7 @@ public class EntityManager
 				// saves the entity into database. It populates rollbackQueryStack with the 
 				// queries that restores the database state to the state before calling this method
 				// in case of exception. 
-				
+
 				saveOrUpdateEntity(entity, hibernateDAO, rollbackQueryStack, isentitySaved);
 
 			}
@@ -1478,7 +1492,8 @@ public class EntityManager
 		try
 		{
 			DAOFactory factory = DAOFactory.getInstance();
-			hibernateDAO = (HibernateDAO) factory.getDAO(Constants.HIBERNATE_DAO);;
+			hibernateDAO = (HibernateDAO) factory.getDAO(Constants.HIBERNATE_DAO);
+			;
 			hibernateDAO.openSession(null);
 
 			recordId = insertDataForSingleEntity(entity, dataValue, hibernateDAO);
@@ -1722,8 +1737,9 @@ public class EntityManager
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#editData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map, java.lang.Long)
 	 */
-	public boolean editData(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, Long recordId)
-			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	public boolean editData(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue,
+			Long recordId) throws DynamicExtensionsApplicationException,
+			DynamicExtensionsSystemException
 	{
 
 		boolean isSuccess;
@@ -1834,6 +1850,7 @@ public class EntityManager
 
 		return fileRecord;
 	}
+
 	/**
 	 * This method is used by create as well as edit entity methods. This method holds all the common part 
 	 * related to saving the entity into the database and also handling the exceptions .
@@ -2175,7 +2192,7 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private Collection executeHQL(String queryName, Map substitutionParameterMap)
+	private Collection executeHQL(String queryName, Map<String,HQLPlaceHolderObject> substitutionParameterMap)
 			throws DynamicExtensionsSystemException
 	{
 		Collection entityCollection = new HashSet();
@@ -2186,39 +2203,11 @@ public class EntityManager
 			hibernateDAO.openSession(null);
 			Query query = substitutionParameterForQuery(queryName, substitutionParameterMap);
 			entityCollection = query.list();
-			hibernateDAO.commit();
+			//	hibernateDAO.commit();
 		}
-		catch (DAOException e)
-		{
-			try
-			{
-				hibernateDAO.rollback();
-				throw new DynamicExtensionsSystemException("Exception occured while executing hqk",
-						e);
-
-			}
-			catch (DAOException e1)
-			{
-				throw new DynamicExtensionsSystemException("Error while rolling back the session",
-						e1);
-			}
-
-		}
-
-		catch (HibernateException e)
+		catch (Exception e)
 		{
 			throw new DynamicExtensionsSystemException("Error while rolling back the session", e);
-		}
-		finally
-		{
-			try
-			{
-				hibernateDAO.closeSession();
-			}
-			catch (DAOException e)
-			{
-				throw new DynamicExtensionsSystemException("Error while closing the session", e);
-			}
 		}
 		return entityCollection;
 	}
@@ -2639,30 +2628,33 @@ public class EntityManager
 		return recordList;
 	}
 
-
-
 	/**
 	 * @throws DynamicExtensionsSystemException 
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getChildrenEntities(edu.common.dynamicextensions.domaininterface.EntityInterface)
 	 */
-	public Collection<EntityInterface> getChildrenEntities(EntityInterface entity) throws DynamicExtensionsSystemException
+	public Collection<EntityInterface> getChildrenEntities(EntityInterface entity)
+			throws DynamicExtensionsSystemException
 	{
-		Map<String,HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String,HQLPlaceHolderObject>();
+		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entity.getId()));
-		
-		return  executeHQL("getChildrenEntities", substitutionParameterMap);
+
+		return executeHQL("getChildrenEntities", substitutionParameterMap);
 	}
 
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAssociationByIdentifier(java.lang.Long)
 	 */
-	public AssociationInterface getAssociationByIdentifier(Long associationId) throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException
+	public AssociationInterface getAssociationByIdentifier(Long associationId)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		Map<String,HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String,HQLPlaceHolderObject>();
-		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long",associationId));
-		Collection assocationCollection =  executeHQL("getAssociationByIdentifier", substitutionParameterMap);
-		if(assocationCollection.isEmpty()) {
-			throw new DynamicExtensionsApplicationException("Object Not Found : id" + associationId,null,DYEXTN_A_008);
+		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", associationId));
+		Collection assocationCollection = executeHQL("getAssociationByIdentifier",
+				substitutionParameterMap);
+		if (assocationCollection.isEmpty())
+		{
+			throw new DynamicExtensionsApplicationException(
+					"Object Not Found : id" + associationId, null, DYEXTN_A_008);
 		}
 		return (AssociationInterface) assocationCollection.iterator().next();
 	}

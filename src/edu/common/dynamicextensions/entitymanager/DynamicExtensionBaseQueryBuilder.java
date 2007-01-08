@@ -80,7 +80,7 @@ class DynamicExtensionBaseQueryBuilder
 		List queryList = new ArrayList();
 		//get query to create main table with primitive attributes.
 		String mainTableQuery = getCreateMainTableQuery(entity, reverseQueryList);
-
+		
 		// get query to create associations ,it invloves altering source/taget table or creating 
 		//middle table depending upon the cardinalities.
 		List associationTableQueryList = getCreateAssociationsQueryList(entity, reverseQueryList,
@@ -138,7 +138,8 @@ class DynamicExtensionBaseQueryBuilder
 	 * @throws DynamicExtensionsApplicationException 
 	 */
 	public Map<Association, List> getAssociationGetRecordQueryList(EntityInterface entity,
-			Long recordId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+			Long recordId) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 
 		Collection associationCollection = entity.getAssociationCollection();
@@ -189,21 +190,25 @@ class DynamicExtensionBaseQueryBuilder
 				query
 						.append(WHITESPACE + WHERE_KEYWORD + WHITESPACE + targetKey + EQUAL
 								+ recordId);
-				
-				 List<Long> reocordIdList = getAssociationRecordValues(query.toString());
-				 
-				 if (association.getSourceRole().getAssociationsType().equals(AssociationType.CONTAINTMENT)) {
-					 List<Map> containmentRecordMapList = new ArrayList<Map>();
+				List<Long> reocordIdList = getAssociationRecordValues(query.toString());
 
-					 for(Long containmentRecordId : reocordIdList) {
-						 Map recordMap = EntityManager.getInstance().getRecordById(association.getTargetEntity(), containmentRecordId);
-						 containmentRecordMapList.add(recordMap);
-					 }
-					 associationValuesMap.put(association,containmentRecordMapList);	 
-				 } 
-				 else {
-					 associationValuesMap.put(association,reocordIdList);	 
-				 }
+				if (association.getSourceRole().getAssociationsType().equals(
+						AssociationType.CONTAINTMENT))
+				{
+					List<Map> containmentRecordMapList = new ArrayList<Map>();
+
+					for (Long containmentRecordId : reocordIdList)
+					{
+						Map recordMap = EntityManager.getInstance().getRecordById(
+								association.getTargetEntity(), containmentRecordId);
+						containmentRecordMapList.add(recordMap);
+					}
+					associationValuesMap.put(association, containmentRecordMapList);
+				}
+				else
+				{
+					associationValuesMap.put(association, reocordIdList);
+				}
 			}
 		}
 
@@ -367,8 +372,30 @@ class DynamicExtensionBaseQueryBuilder
 	{
 		String dataType = getDataTypeForIdentifier();
 		String tableName = entity.getTableProperties().getName();
+		EntityInterface parentEntity = entity.getParentEntity();
+		String foreignKeyConstraintForInheritance = "";
+
+		if (parentEntity != null)
+		{
+			String foreignConstraintName =	"FK" + "E" + entity.getId() + "E" + parentEntity.getId();
+			StringBuffer foreignKeyConstraint = new StringBuffer();
+			foreignKeyConstraint.append(WHITESPACE);
+			foreignKeyConstraint.append(CONSTRAINT_KEYWORD);
+			foreignKeyConstraint.append(WHITESPACE);			
+			foreignKeyConstraint.append(foreignConstraintName);
+			foreignKeyConstraint.append(WHITESPACE);
+			foreignKeyConstraint.append(REFERENCES_KEYWORD);
+			foreignKeyConstraint.append(WHITESPACE);
+			foreignKeyConstraint.append(parentEntity.getTableProperties().getName());
+
+			foreignKeyConstraint.append(OPENING_BRACKET);
+			foreignKeyConstraint.append(IDENTIFIER);
+			foreignKeyConstraint.append(CLOSING_BRACKET);
+			foreignKeyConstraintForInheritance = foreignKeyConstraint.toString();
+		}
 		StringBuffer query = new StringBuffer(CREATE_TABLE + " " + tableName + " "
-				+ OPENING_BRACKET + " " + IDENTIFIER + " " + dataType + COMMA);
+				+ OPENING_BRACKET + " " + IDENTIFIER + " " + dataType
+				+ foreignKeyConstraintForInheritance + COMMA);
 		Collection attributeCollection = entity.getAttributeCollection();
 		if (attributeCollection != null && !attributeCollection.isEmpty())
 		{
@@ -826,7 +853,8 @@ class DynamicExtensionBaseQueryBuilder
 
 				Attribute savedAttribute = (Attribute) savedAttributeIterator.next();
 				Attribute attribute = (Attribute) entity.getAttributeByIdentifier(savedAttribute
-						.getId());;
+						.getId());
+				;
 
 				//attribute is removed or modified such that its column need to be removed
 				if (isAttributeColumnToBeRemoved(attribute, savedAttribute))
@@ -928,7 +956,8 @@ class DynamicExtensionBaseQueryBuilder
 			{
 				Association savedAssociation = (Association) savedAssociationIterator.next();
 				Association association = (Association) entity
-						.getAssociationByIdentifier(savedAssociation.getId());;
+						.getAssociationByIdentifier(savedAssociation.getId());
+				;
 
 				// removed ??
 				if (association == null)

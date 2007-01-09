@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
+import java.util.List;
 
 import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Attribute;
@@ -15,6 +16,8 @@ import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInte
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Variables;
+import edu.wustl.common.dao.DAOFactory;
+import edu.wustl.common.dao.JDBCDAO;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.dbManager.DBUtil;
@@ -115,6 +118,7 @@ public class EntityManagerUtil
 	public int executeDML(String query) throws DynamicExtensionsSystemException
 	{
 
+		System.out.println(query);
 		Connection conn = null;
 		try
 		{
@@ -136,6 +140,21 @@ public class EntityManagerUtil
 			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
 
+	}
+
+	/**
+	 * @param queryList
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public int executeDML(List<String> queryList) throws DynamicExtensionsSystemException
+	{
+		int result = -1;
+		for (String query : queryList)
+		{
+			result = executeDML(query);
+		}
+		return result;
 	}
 
 	/**
@@ -162,5 +181,33 @@ public class EntityManagerUtil
 			throw new DynamicExtensionsSystemException(
 					"Could not fetch the next identifier for table " + entityTableName);
 		}
+	}
+
+	/**
+	 * This method is used in case result of the query is miltiple records.
+	 * 
+	 * @param query query to be executed.
+	 * @return List of records.
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public List getResultInList(String query) throws DynamicExtensionsSystemException
+	{
+		List resultList = null;
+		JDBCDAO jdbcDAO = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
+
+		try
+		{
+			jdbcDAO.openSession(null);
+			resultList = jdbcDAO.executeQuery(query, null, false, false, null);
+		}
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsSystemException("Could notexecuting the query ", e);
+		}
+		catch (ClassNotFoundException e)
+		{
+			throw new DynamicExtensionsSystemException("Could notexecuting the query ", e);
+		}
+		return resultList;
 	}
 }

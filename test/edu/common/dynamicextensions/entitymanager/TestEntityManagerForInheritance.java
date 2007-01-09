@@ -23,9 +23,9 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 	 *  EXPECTED BEHAVIOUR: All the hierarchy should get saved 
 	 *  
 	 *  TEST CASE FLOW: 1. Create Specimen
-	 *                  2. Create TissueSpecimen and set aprent as Specimen
+	 *                  2. Create TissueSpecimen and set parent as Specimen
 	 *                  3. persist TissueSpecimen                       
-	 *                  6. Check if the parent of TissueSpecimen and childs of Specimen
+	 *                  6. Check if the parent of TissueSpecimen and children of Specimen
 	 */
 
 	public void testInheritanceMetadataSave()
@@ -116,16 +116,17 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 			label.setName("label");
 			specimen.addAbstractAttribute(label);
 			
-			
-
 			EntityInterface tissueSpecimen = factory.createEntity();			
 			tissueSpecimen.setParentEntity(specimen);
+			
+			specimen = entityManagerInterface.persistEntity(specimen);
+			
 			tissueSpecimen.setName("tissueSpecimen");
 			AttributeInterface quantityInCellCount = factory.createIntegerAttribute();
 			quantityInCellCount.setName("quantityInCellCount");			
 			tissueSpecimen.addAbstractAttribute(quantityInCellCount);
 			
-			
+			tissueSpecimen = entityManagerInterface.persistEntity(tissueSpecimen);
 			EntityInterface advanceTissueSpecimenA = factory.createEntity();
 			advanceTissueSpecimenA.setParentEntity(tissueSpecimen);
 			advanceTissueSpecimenA.setName("advanceTissueSpecimenA");
@@ -175,23 +176,23 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 	}
 	
 	/**
-	 *  PURPOSE: This method tests for getAllAttributes method of the entity
+	 *  PURPOSE: This method tests for getAllChildrenEntities method of the entity
 	 *
 	 *  EXPECTED BEHAVIOUR: All the attributes from the hierarchy should be returned 
 	 *  
 	 *  TEST CASE FLOW: 1. Create following hierarchy
 	 *                  3. persist leaf nodes 
-	 *                  2. check no of AllAttributes for each node.
+	 *                  2. check no of getAllChildrenEntities for base node.
 	 *                  
 	 *                    A
 	 *                    |
 	 *                    |
-	 *           	------------------
+	 *             ---------------------
 	 * 	           |             		| 
 	 *             |             		| 
 	 *             B		            C 
-	 				|        		    |  
-	  		  ------------- 	 -------------   
+	 *			   |        		    |  
+	 * 		  ------------- 	 -------------   
 	 *       |            |      |      |      |
 	 *       D             E     F      g      h
 	 */
@@ -212,6 +213,8 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 			entityB.setName("entityB");
 			entityB.setParentEntity(entityA);
 
+			
+			
 			EntityInterface entityC = factory.createEntity();
 			entityC.setName("entityC");
 			entityC.setParentEntity(entityA);
@@ -236,6 +239,8 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 			entityH.setName("entityH");
 			entityH.setParentEntity(entityC);
 
+			entityManagerInterface.persistEntity(entityA);
+			entityManagerInterface.persistEntity(entityB);
 			entityC = entityManagerInterface.persistEntity(entityC);
 
 			entityManagerInterface.persistEntity(entityD);

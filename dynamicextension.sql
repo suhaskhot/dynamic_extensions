@@ -134,8 +134,8 @@ drop sequence DYEXTN_PERMISSIBLEVAL_SEQ
 drop sequence DYEXTN_SEMANTIC_PROPERTY_SEQ
 drop sequence DYEXTN_ATTRIBUTE_TYPE_INFO_SEQ
 drop sequence DYEXTN_RULE_PARAMETER_SEQ
-drop sequence DE_FILE_ATTR_REC_VALUES_SEQ
 drop sequence DYEXTN_ABSTRACT_METADATA_SEQ
+drop sequence DE_FILE_ATTR_REC_VALUES_SEQ
 drop sequence DYEXTN_VIEW_SEQ
 drop sequence DYEXTN_CONTROL_SEQ
 drop sequence DYEXTN_RULE_SEQ
@@ -212,7 +212,7 @@ create table DYEXTN_ABSTRACT_METADATA (
    CREATED_DATE date,
    DESCRIPTION varchar2(1000),
    LAST_UPDATED date,
-   NAME varchar2(40),
+   NAME varchar2(1000),
    primary key (IDENTIFIER)
 )
 create table DYEXTN_STRING_TYPE_INFO (
@@ -441,6 +441,7 @@ create table DYEXTN_SEMANTIC_PROPERTY (
    CONCEPT_CODE varchar2(255),
    TERM varchar2(255),
    THESAURAS_NAME varchar2(255),
+   SEQUENCE_NUMBER number(10,0),
    ABSTRACT_METADATA_ID number(19,0),
    ABSTRACT_VALUE_ID number(19,0),
    primary key (IDENTIFIER)
@@ -569,8 +570,8 @@ create sequence DYEXTN_PERMISSIBLEVAL_SEQ
 create sequence DYEXTN_SEMANTIC_PROPERTY_SEQ
 create sequence DYEXTN_ATTRIBUTE_TYPE_INFO_SEQ
 create sequence DYEXTN_RULE_PARAMETER_SEQ
-create sequence DE_FILE_ATTR_REC_VALUES_SEQ
 create sequence DYEXTN_ABSTRACT_METADATA_SEQ
+create sequence DE_FILE_ATTR_REC_VALUES_SEQ
 create sequence DYEXTN_VIEW_SEQ
 create sequence DYEXTN_CONTROL_SEQ
 create sequence DYEXTN_RULE_SEQ

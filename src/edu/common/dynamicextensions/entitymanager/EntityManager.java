@@ -1493,7 +1493,6 @@ public class EntityManager
 		{
 			DAOFactory factory = DAOFactory.getInstance();
 			hibernateDAO = (HibernateDAO) factory.getDAO(Constants.HIBERNATE_DAO);
-			;
 			hibernateDAO.openSession(null);
 
 			recordId = insertDataForSingleEntity(entity, dataValue, hibernateDAO);
@@ -1644,34 +1643,40 @@ public class EntityManager
 				AssociationInterface association = (AssociationInterface) attribute;
 				List<Long> recordIdList = new ArrayList<Long>();
 
-				// for association need to remove previously associated target reocrd first.
-				String removeQuery = queryBuilder.getAssociationRemoveDataQuery(
-						((Association) attribute), recordId);
-
 				if (association.getSourceRole().getAssociationsType().equals(
 						AssociationType.CONTAINTMENT))
 				{
+					List<String> removeContainmentRecordQuery = new ArrayList<String>();
+					recordIdList.add(recordId);
 
-					entityManagerUtil.executeDML(removeQuery);
+					queryBuilder.getContenmentAssociationRemoveDataQueryList(
+							((Association) attribute), recordIdList, removeContainmentRecordQuery);
+
+					entityManagerUtil.executeDML(removeContainmentRecordQuery);
 
 					List<Map> listOfMapsForContainedEntity = (List<Map>) value;
 					for (Map valueMapForContainedEntity : listOfMapsForContainedEntity)
 					{
-						Long reocordId = insertDataForSingleEntity(association.getTargetEntity(),
-								valueMapForContainedEntity, hibernateDAO);
-						recordIdList.add(recordId);
+						Long childRecordId = insertDataForSingleEntity(association
+								.getTargetEntity(), valueMapForContainedEntity, hibernateDAO);
+						recordIdList.add(childRecordId);
 					}
 
 				}
 				else
 				{
+					// for association need to remove previously associated target reocrd first.
+					String removeQuery = queryBuilder.getAssociationRemoveDataQuery(
+							((Association) attribute), recordId);
+
+					if (removeQuery != null && removeQuery.trim().length() != 0)
+					{
+						associationRemoveDataQueryList.add(removeQuery);
+					}
+
 					recordIdList = (List<Long>) value;
 				}
 
-				if (removeQuery != null && removeQuery.trim().length() != 0)
-				{
-					associationRemoveDataQueryList.add(removeQuery);
-				}
 				//then add new associated target records.
 				List insertQuery = queryBuilder.getAssociationInsertDataQuery(
 						((Association) attribute), recordIdList, recordId);
@@ -2192,7 +2197,8 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private Collection executeHQL(String queryName, Map<String,HQLPlaceHolderObject> substitutionParameterMap)
+	private Collection executeHQL(String queryName,
+			Map<String, HQLPlaceHolderObject> substitutionParameterMap)
 			throws DynamicExtensionsSystemException
 	{
 		Collection entityCollection = new HashSet();
@@ -2283,9 +2289,26 @@ public class EntityManager
 				while (iterator.hasNext())
 				{
 					Association association = (Association) iterator.next();
-					String associationRemoveQuery = QueryBuilderFactory.getQueryBuilder()
-							.getAssociationRemoveDataQuery(association, recordId);
-					associationRemoveQueryList.add(associationRemoveQuery);
+
+					if (association.getSourceRole().getAssociationsType().equals(
+							AssociationType.CONTAINTMENT))
+					{
+						List<Long> recordIdList = new ArrayList<Long>();
+						recordIdList.add(recordId);
+						QueryBuilderFactory.getQueryBuilder()
+								.getContenmentAssociationRemoveDataQueryList(association,
+										recordIdList, associationRemoveQueryList);
+
+					}
+					else
+					{
+						String associationRemoveQuery = QueryBuilderFactory.getQueryBuilder()
+								.getAssociationRemoveDataQuery(association, recordId);
+
+						associationRemoveQueryList.add(associationRemoveQuery);
+
+					}
+
 				}
 			}
 			Connection conn = DBUtil.getConnection();

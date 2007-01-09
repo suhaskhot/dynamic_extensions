@@ -80,7 +80,7 @@ class DynamicExtensionBaseQueryBuilder
 		List queryList = new ArrayList();
 		//get query to create main table with primitive attributes.
 		String mainTableQuery = getCreateMainTableQuery(entity, reverseQueryList);
-		
+
 		// get query to create associations ,it invloves altering source/taget table or creating 
 		//middle table depending upon the cardinalities.
 		List associationTableQueryList = getCreateAssociationsQueryList(entity, reverseQueryList,
@@ -190,6 +190,7 @@ class DynamicExtensionBaseQueryBuilder
 				query
 						.append(WHITESPACE + WHERE_KEYWORD + WHITESPACE + targetKey + EQUAL
 								+ recordId);
+
 				List<Long> reocordIdList = getAssociationRecordValues(query.toString());
 
 				if (association.getSourceRole().getAssociationsType().equals(
@@ -314,6 +315,82 @@ class DynamicExtensionBaseQueryBuilder
 	}
 
 	/**
+	 * This method creats the queries to remove records for the containtment association.
+	 * 
+	 * @param association association for which records to be deleted
+	 * @param recordIdList list of record ids
+	 * @param queryList list of queries added by this method.
+	 * @return
+	 */
+	public void getContenmentAssociationRemoveDataQueryList(AssociationInterface association,
+			List<Long> recordIdList, List<String> queryList)
+			throws DynamicExtensionsSystemException
+	{
+		List<Long> childrenRecordIdList = getRecordIdListForContainment(association, recordIdList);
+
+		EntityInterface targetEntity = association.getTargetEntity();
+
+		Collection<AssociationInterface> associationCollection = targetEntity
+				.getAssociationCollection();
+		for (AssociationInterface targetEntityAssociation : associationCollection)
+		{
+			if (targetEntityAssociation.getSourceRole().getAssociationsType().equals(
+					AssociationType.CONTAINTMENT))
+			{
+				getContenmentAssociationRemoveDataQueryList(targetEntityAssociation,
+						childrenRecordIdList, queryList);
+			}
+		}
+
+		String tableName = association.getConstraintProperties().getName();
+
+		StringBuffer query = new StringBuffer();
+		query.append(DELETE_KEYWORD);
+		query.append(WHITESPACE + tableName + WHITESPACE);
+		query.append(WHERE_KEYWORD + WHITESPACE + IDENTIFIER + WHITESPACE + IN_KEYWORD);
+		query.append(WHITESPACE + getListToString(childrenRecordIdList) + WHITESPACE);
+
+		queryList.add(query.toString());
+	}
+
+	/**
+	 * This method retuns contenment record id list for a given parent record id list 
+	 * @param association association
+	 * @param recordIdList list of record ids for the parent
+	 * @return recordIdList list of record ids for the content child
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private List<Long> getRecordIdListForContainment(AssociationInterface association,
+			List<Long> recordIdList) throws DynamicExtensionsSystemException
+	{
+		String tableName = association.getConstraintProperties().getName();
+		String targetKey = association.getConstraintProperties().getTargetEntityKey();
+
+		StringBuffer containmentRecordIdQuery = new StringBuffer();
+		containmentRecordIdQuery.append(SELECT_KEYWORD + WHITESPACE + IDENTIFIER);
+		containmentRecordIdQuery.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName
+				+ WHITESPACE);
+		containmentRecordIdQuery.append(WHERE_KEYWORD + WHITESPACE + targetKey + WHITESPACE
+				+ IN_KEYWORD);
+		containmentRecordIdQuery.append(WHITESPACE + getListToString(recordIdList) + WHITESPACE);
+
+		List tempList = entityManagerUtil.getResultInList(containmentRecordIdQuery.toString());
+		List<Long> childrenRecordIdList = new ArrayList<Long>();
+
+		if (tempList != null && tempList.size() > 0)
+		{
+
+			for (int i = 0; i < tempList.size(); i++)
+			{
+				String recordValue = (String) ((List) tempList.get(i)).get(0);
+				childrenRecordIdList.add(Long.parseLong(recordValue));
+			}
+		}
+
+		return childrenRecordIdList;
+	}
+
+	/**
 	 *  returns the queries to remove the the association 
 	 * @param association
 	 * @param recordId
@@ -326,34 +403,26 @@ class DynamicExtensionBaseQueryBuilder
 		String targetKey = association.getConstraintProperties().getTargetEntityKey();
 		StringBuffer query = new StringBuffer();
 
-		if (association.getSourceRole().getAssociationsType().equals(AssociationType.CONTAINTMENT))
+		if (sourceKey != null && targetKey != null && sourceKey.trim().length() != 0
+				&& targetKey.trim().length() != 0)
 		{
-			query.append(DELETE_KEYWORD);
-			query.append(WHITESPACE + tableName + WHITESPACE);
+			//for many to many delete all the records having reffered by this recordId  
+			query.append(DELETE_KEYWORD + WHITESPACE + tableName + WHITESPACE + WHERE_KEYWORD
+					+ WHITESPACE + sourceKey);
+			query.append(WHITESPACE + EQUAL);
+			query.append(recordId.toString());
+		}
+		else if (targetKey != null && targetKey.trim().length() != 0)
+		{
+			//for one to many and one to one: update  target entities records(set value in target column key = null) 
+			//that are reffering to  this redord by setting it to null.
+			query.append(UPDATE_KEYWORD);
+			query.append(WHITESPACE + tableName);
+			query.append(WHITESPACE + SET_KEYWORD + WHITESPACE + targetKey + EQUAL + WHITESPACE
+					+ "null" + WHITESPACE);
 			query.append(WHERE_KEYWORD + WHITESPACE + targetKey + EQUAL + recordId);
 		}
-		else
-		{
-			if (sourceKey != null && targetKey != null && sourceKey.trim().length() != 0
-					&& targetKey.trim().length() != 0)
-			{
-				//for many to many delete all the records having reffered by this recordId  
-				query.append(DELETE_KEYWORD + WHITESPACE + tableName + WHITESPACE + WHERE_KEYWORD
-						+ WHITESPACE + sourceKey);
-				query.append(WHITESPACE + EQUAL);
-				query.append(recordId.toString());
-			}
-			else if (targetKey != null && targetKey.trim().length() != 0)
-			{
-				//for one to many and one to one: update  target entities records(set value in target column key = null) 
-				//that are reffering to  this redord by setting it to null.
-				query.append(UPDATE_KEYWORD);
-				query.append(WHITESPACE + tableName);
-				query.append(WHITESPACE + SET_KEYWORD + WHITESPACE + targetKey + EQUAL + WHITESPACE
-						+ "null" + WHITESPACE);
-				query.append(WHERE_KEYWORD + WHITESPACE + targetKey + EQUAL + recordId);
-			}
-		}
+
 		return query.toString();
 	}
 
@@ -377,11 +446,11 @@ class DynamicExtensionBaseQueryBuilder
 
 		if (parentEntity != null)
 		{
-			String foreignConstraintName =	"FK" + "E" + entity.getId() + "E" + parentEntity.getId();
+			String foreignConstraintName = "FK" + "E" + entity.getId() + "E" + parentEntity.getId();
 			StringBuffer foreignKeyConstraint = new StringBuffer();
 			foreignKeyConstraint.append(WHITESPACE);
 			foreignKeyConstraint.append(CONSTRAINT_KEYWORD);
-			foreignKeyConstraint.append(WHITESPACE);			
+			foreignKeyConstraint.append(WHITESPACE);
 			foreignKeyConstraint.append(foreignConstraintName);
 			foreignKeyConstraint.append(WHITESPACE);
 			foreignKeyConstraint.append(REFERENCES_KEYWORD);
@@ -853,8 +922,7 @@ class DynamicExtensionBaseQueryBuilder
 
 				Attribute savedAttribute = (Attribute) savedAttributeIterator.next();
 				Attribute attribute = (Attribute) entity.getAttributeByIdentifier(savedAttribute
-						.getId());
-				;
+						.getId());;
 
 				//attribute is removed or modified such that its column need to be removed
 				if (isAttributeColumnToBeRemoved(attribute, savedAttribute))
@@ -956,8 +1024,7 @@ class DynamicExtensionBaseQueryBuilder
 			{
 				Association savedAssociation = (Association) savedAssociationIterator.next();
 				Association association = (Association) entity
-						.getAssociationByIdentifier(savedAssociation.getId());
-				;
+						.getAssociationByIdentifier(savedAssociation.getId());;
 
 				// removed ??
 				if (association == null)
@@ -1300,6 +1367,20 @@ class DynamicExtensionBaseQueryBuilder
 			}
 
 		}
+	}
+
+	/**
+	 * @param inputList
+	 * @return
+	 */
+	private String getListToString(List inputList)
+	{
+
+		String queryString = inputList.toString();
+		queryString = queryString.replace("[", OPENING_BRACKET);
+		queryString = queryString.replace("]", CLOSING_BRACKET);
+
+		return queryString;
 	}
 
 }

@@ -1033,8 +1033,6 @@ function increaseSequencenumber()
 		if(checkAttribute[i].checked)
 		{
 			var startPoint = (document.getElementById(checkAttribute[i].value + "rowNum")).value;
-			//alert(startPoint);
-			//alert(checkAttribute.length-1);
 			if(startPoint != checkAttribute.length-1)
 			{
 				moveRowsDown('controlList',startPoint,1);
@@ -1706,18 +1704,22 @@ function definedEntitySelected(fldname)
 
 function treeNodeSelectedResponse(formNameListXML)
 {
+	//alert("In tree node selected responmse");
 	if(formNameListXML!=null)
 	{
 		var htmlFormName = document.getElementById("formName");
 		var htmlFormCC = document.getElementById("conceptCode");
 		var htmlFormDesc = document.getElementById("formDescription");
 		var htmlOperationMode = document.getElementById('operationMode');
+		var htmlOperation = document.getElementById('operation');
+		//alert(htmlOperation);
 		
 		var documentElt = getDocumentElementForXML(formNameListXML);
 		var formname = documentElt.getElementsByTagName('form-name');
 		var formDesc = documentElt.getElementsByTagName('form-description');
 		var formConceptCode = documentElt.getElementsByTagName('form-conceptcode');
 		var operationmode = documentElt.getElementsByTagName('operationMode');
+//		var operation = documentElt.getElementsByTagName('operation');
 		
 		if((htmlFormName!=null)&&(formname!=null))
 		{
@@ -1726,7 +1728,6 @@ function treeNodeSelectedResponse(formNameListXML)
 				htmlFormName.value = formname[0].text;
 			}
 		}
-		
 		if((htmlFormCC!=null)&&(formConceptCode!=null))
 		{
 			if(formConceptCode[0]!=null)
@@ -1734,7 +1735,6 @@ function treeNodeSelectedResponse(formNameListXML)
 				htmlFormCC.value = formConceptCode[0].text;
 			}
 		}
-		
 		if((htmlFormDesc!=null)&&(formDesc!=null))
 		{
 			if(formDesc[0]!=null)
@@ -1748,6 +1748,14 @@ function treeNodeSelectedResponse(formNameListXML)
 			{
 				htmlOperationMode.value = operationmode[0].text;
 			}
+		}
+		if((htmlOperation!=null)&&(operationmode!=null))
+		{
+			if(operationmode[0]!=null)
+			{
+				htmlOperation.value =  operationmode[0].text;
+			}
+			//alert(htmlOperation.value);
 		}
 	}
 }

@@ -15,8 +15,6 @@
 <html>
 	<head>
 		<title>Dynamic Extensions</title>
-
-
 	</head>
 
 	<body onload="initDefineGroupForm();">
@@ -26,6 +24,9 @@
 
 		<c:set var="createGroupAs" value="${groupForm.createGroupAs}"/>
 		<jsp:useBean id="createGroupAs" type="java.lang.String"/>
+		
+		<c:set var="operationMode" value="${groupForm.operationMode}"/>
+		<jsp:useBean id="operationMode" type="java.lang.String"/>
 
 
 		<html:form styleId = "groupForm"  action="/LoadGroupDefinitionAction">
@@ -146,7 +147,7 @@
 						</label>
 						</td>
 						<td >
-							<html:textarea styleClass="formFieldSmallSized"  rows = "3" cols="28" styleId="groupDescription"  property="groupDescription" />
+							<html:textarea styleClass="formFieldSmallSized" rows = "3" cols="28" styleId="groupDescription"  property="groupDescription" />
 						</td>
 					 </tr>
 					 </table>
@@ -181,7 +182,7 @@
 			</div>
 
 			<input type="hidden" id = "createGroupAsHidden" name="createGroupAsHidden" value = "<%=createGroupAs%>" />
-			<html:hidden property='operationMode' />;
+			<html:hidden property='operationMode' value="<%=operationMode%>"/>;
 		</html:form>
 	</body>
 </html>

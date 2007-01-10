@@ -3,6 +3,7 @@
  * @author
  *
  */
+
 package edu.common.dynamicextensions.ui.webui.action;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,16 +30,18 @@ import edu.common.dynamicextensions.util.global.Constants;
  */
 public class LoadGroupDefinitionAction extends BaseDynamicExtensionsAction
 {
+
 	/* (non-Javadoc)
 	 * @see org.apache.struts.actions.DispatchAction#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public ActionForward execute(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		GroupForm groupForm = (GroupForm)form;
+		GroupForm groupForm = (GroupForm) form;
 		loadGroup(request, groupForm);
-		return mapping.findForward(Constants.SUCCESS); 
+		return mapping.findForward(Constants.SUCCESS);
 	}
-	
+
 	/**
 	 * 
 	 * @param request
@@ -46,7 +49,8 @@ public class LoadGroupDefinitionAction extends BaseDynamicExtensionsAction
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private void loadGroup(HttpServletRequest request ,GroupForm groupForm) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private void loadGroup(HttpServletRequest request, GroupForm groupForm)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		String operationMode = groupForm.getOperationMode();
 		String containerIdentifier = request.getParameter("containerIdentifier");
@@ -55,27 +59,32 @@ public class LoadGroupDefinitionAction extends BaseDynamicExtensionsAction
 		{
 			container = DynamicExtensionsUtility.getContainerByIdentifier(containerIdentifier);
 			CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, container);
-			if(container!=null)
+			if (container != null)
 			{
-				CacheManager.addObjectToCache(request, Constants.CURRENT_CONTAINER_NAME, container.getCaption());
-				CacheManager.addObjectToCache(request,  container.getCaption(),container);
+				CacheManager.addObjectToCache(request, Constants.CURRENT_CONTAINER_NAME, container
+						.getCaption());
+				CacheManager.addObjectToCache(request, container.getCaption(), container);
 			}
 		}
 		else
 		{
-			container = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+			container = (ContainerInterface) CacheManager.getObjectFromCache(request,
+					Constants.CONTAINER_INTERFACE);
 		}
 		EntityGroupInterface entityGroup = null;
-		if(container!=null)
+		if (container != null)
 		{
 			EntityInterface entity = container.getEntity();
 			entityGroup = DynamicExtensionsUtility.getEntityGroup(entity);
 		}
 		else
 		{
-			entityGroup= (EntityGroupInterface) CacheManager.getObjectFromCache(request, Constants.ENTITYGROUP_INTERFACE);
+			entityGroup = (EntityGroupInterface) CacheManager.getObjectFromCache(request,
+					Constants.ENTITYGROUP_INTERFACE);
 		}
-		LoadGroupDefinitionProcessor loadGroupDefinitionProcessor = LoadGroupDefinitionProcessor.getInstance();
-		loadGroupDefinitionProcessor.loadGroupDetails(entityGroup,groupForm);
+		LoadGroupDefinitionProcessor loadGroupDefinitionProcessor = LoadGroupDefinitionProcessor
+				.getInstance();
+		loadGroupDefinitionProcessor.loadGroupDetails(entityGroup, groupForm);
 	}
+
 }

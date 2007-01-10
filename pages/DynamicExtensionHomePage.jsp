@@ -112,7 +112,7 @@
 										</td>
 										<td>
 											<%
-	 											target = "setEditOperationMode('/dynamicExtensions//LoadGroupDefinitionAction.do?containerIdentifier=" + cont_Id + "');";
+	 											target = "setEditOperationMode('/dynamicExtensions/LoadGroupDefinitionAction.do?containerIdentifier=" + cont_Id + "');";
 	 										%>
 											<html:link href='#' onclick="<%=target%>" >
 												<bean:message key="app.edit" />&nbsp;
@@ -120,7 +120,7 @@
 										</td>
 										<td>
 											<%
-	 											target = "loadRecordList('/dynamicExtensions/LoadEditRecordsAction.do?mode=edit&containerIdentifier=" + cont_Id + "');";
+	 											target = "setLinkTarget('/dynamicExtensions/LoadEditRecordsAction.do?mode=edit&containerIdentifier=" + cont_Id + "');";
 	 										%>
 											<html:link href='#' onclick="<%=target%>" >
 												<bean:message key="app.editRecords" />&nbsp;
@@ -128,7 +128,7 @@
 										</td>
 										<td>
 											<%
-	 											target = "loadRecordList('/dynamicExtensions/LoadEditRecordsAction.do?mode=view&containerIdentifier=" + cont_Id + "');";
+	 											target = "setLinkTarget('/dynamicExtensions/LoadEditRecordsAction.do?mode=view&containerIdentifier=" + cont_Id + "');";
 	 										%>
 											<html:link href='#' onclick="<%=target%>" >
 												<bean:message key="app.viewRecords" />&nbsp;

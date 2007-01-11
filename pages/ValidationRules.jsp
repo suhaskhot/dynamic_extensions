@@ -65,39 +65,46 @@
 						if(params != null)
 						{
 					%>
-						<tr>
-						<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-						<td class="formRequiredNoticeWithoutBorder" width="30%">&nbsp;</td>
-						<td class="formFieldWithoutBorder">
-					<%
-							Iterator paramsIter = params.iterator();
-							while(paramsIter.hasNext())
-							{
-								NameValueBean paramObject = (NameValueBean)paramsIter.next();
-								String paramLabel = paramObject.getValue();
-								String paramName = paramObject.getName();
-					%>
-										&nbsp;<b><label ><%= paramLabel%>&nbsp;</label></b>
-										<html:text styleId ="<%= paramName%>" styleClass="formFieldSized5"  maxlength="100" size="60"  property="<%= paramName%>" />
-									<%
-										if(controlName.equalsIgnoreCase("DateControl"))
-										{
-											String divId = "slcalcod"+ paramName;
-									%>
-										<A onclick="showCalendar('<%=paramName%>',<%=DynamicExtensionsUtility.getCurrentYear()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentDay()%>,'MM-dd-yyyy','controlsForm','<%= paramName%>',event,1900,2020);" href="javascript://">
-											<IMG alt="This is a Calendar" src="images/calendar.gif" border=0>
-										</A>
-										<div id=<%=divId%> style="Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px">
-											<SCRIPT>printCalendar('<%= paramName%>',<%=DynamicExtensionsUtility.getCurrentDay()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentYear()%>);</SCRIPT>
-										</div>
-									<%
-										} //end if(controlName.equalsIgnoreCase("DateControl"))
-									%>
-
-						<%
-							} // end while(paramsIter.hasNext())
-						%>
-						</td></tr>
+							<tr>
+								<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
+								<td class="formRequiredNoticeWithoutBorder" width="30%">&nbsp;</td>
+								<td class="formFieldWithoutBorder">
+								<%
+									Iterator paramsIter = params.iterator();
+									while(paramsIter.hasNext())
+									{
+										NameValueBean paramObject = (NameValueBean)paramsIter.next();
+										String paramLabel = paramObject.getValue();
+										String paramName = paramObject.getName();
+										String tempParamName = paramName + "Temp";
+								%>
+										&nbsp;<b><label ><%=paramLabel%>&nbsp;</label></b>
+										<%
+											if(controlName.equalsIgnoreCase("DateControl"))
+											{
+												String divId = "slcalcod"+ paramName;
+										%>
+											<html:text styleId ="<%=tempParamName%>" styleClass="formFieldSized5" maxlength="100" size="60" property="<%=tempParamName%>" />
+											<A onclick="showCalendar('<%=tempParamName%>',<%=DynamicExtensionsUtility.getCurrentYear()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentDay()%>,'MM-dd-yyyy','controlsForm','<%=tempParamName%>',event,1900,2020);" href="javascript://">
+												<IMG alt="This is a Calendar" src="images/calendar.gif" border=0>
+											</A>
+											<div id=<%=divId%> style="Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px">
+												<SCRIPT>printCalendar('<%=tempParamName%>',<%=DynamicExtensionsUtility.getCurrentDay()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentYear()%>);</SCRIPT>
+											</div>
+										<%
+											} //end if(controlName.equalsIgnoreCase("DateControl"))
+											else
+											{
+										%>
+												<html:text styleId ="<%=paramName%>" styleClass="formFieldSized5" maxlength="100" size="60" property="<%=paramName%>" />
+										<%
+											}
+										%>
+								<%
+									} // end while(paramsIter.hasNext())
+								%>
+								</td>
+							</tr>
 					<%
 						} // end if(params != null)
 					%>

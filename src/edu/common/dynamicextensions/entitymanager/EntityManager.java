@@ -180,6 +180,8 @@ public class EntityManager
 			
 			entityInterface = saveOrUpdateEntity(entityInterface, hibernateDAO, stack,
 					isEntitySaved);
+			
+			
 			//Committing the changes done in the hibernate session to the database.
 			hibernateDAO.commit();
 		}
@@ -204,6 +206,7 @@ public class EntityManager
 		{
 			try
 			{
+				postSaveOrUpdateEntity(entityInterface);
 				//In any case , after all the operations , hibernate session needs to be closed. So this call has 
 				// been added in the finally clause.
 				hibernateDAO.closeSession();
@@ -218,6 +221,39 @@ public class EntityManager
 		}
 		logDebug("persistEntity", "exiting the method");
 		return entityInterface;
+	}
+
+	private void postSaveOrUpdateEntity(EntityInterface entityInterface)
+	{
+		if (entityInterface == null) {
+			return;
+		}
+		Set<EntityInterface> entitySet = new HashSet<EntityInterface>();
+		entitySet.add(entityInterface);		
+		getAssociatedEntities(entityInterface,entitySet);
+		for (EntityInterface entity : entitySet)
+		{
+			((Entity)entity).setProcessed(false);
+		}
+	}
+	
+	/**
+	 * @param entity
+	 * @param entitySet
+	 */
+	private void getAssociatedEntities(EntityInterface entity, Set<EntityInterface> entitySet)
+	{
+		
+		
+		Collection<AssociationInterface> associationCollection = entity.getAssociationCollection();
+		for (AssociationInterface associationInterface : associationCollection)
+		{
+			EntityInterface targetEntity = associationInterface.getTargetEntity();
+			if(!entitySet.contains(targetEntity)) {
+				entitySet.add(targetEntity);
+				getAssociatedEntities(targetEntity,entitySet);
+			}
+		}
 	}
 
 	private void saveEntityGroup(EntityInterface entityInterface, HibernateDAO hibernateDAO) throws DAOException, UserNotAuthorizedException
@@ -1248,7 +1284,7 @@ public class EntityManager
 				saveEntityGroup(entity, hibernateDAO);
 				
 				saveOrUpdateEntity(entity, hibernateDAO, rollbackQueryStack, isentitySaved);
-
+				
 			}
 
 			preSaveProcessContainer(container); //preprocess
@@ -1278,6 +1314,7 @@ public class EntityManager
 		{
 			try
 			{
+				postSaveOrUpdateEntity(entity);
 				hibernateDAO.closeSession();
 			}
 			catch (DAOException e)
@@ -1893,11 +1930,16 @@ public class EntityManager
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		logDebug("saveOrUpdateEntity", "Entering method");
-
+		
 		Entity entity = (Entity) entityInterface;//(Entity) DynamicExtensionsUtility.cloneObject(entityInterface);
+		if (entity.isProcessed()) {
+			return entity;
+		} else {
+			entity.setProcessed(true);
+		}
 		List reverseQueryList = new LinkedList();
 		List queryList = null;
-
+		
 		checkForDuplicateEntityName(entity);
 		Entity databaseCopy = null;
 		try
@@ -1950,6 +1992,7 @@ public class EntityManager
 		}
 
 		logDebug("saveOrUpdateEntity", "Exiting Method");
+		
 		return entity;//(Entity) getEntityByIdentifier(entity.getId().toString());
 	}
 
@@ -2159,6 +2202,7 @@ public class EntityManager
 						isEntitySaved = true;
 					}
 					saveOrUpdateEntity(entityInterface, hibernateDAO, stack, isEntitySaved);
+					
 				}
 			}
 			hibernateDAO.commit();
@@ -2183,6 +2227,7 @@ public class EntityManager
 		{
 			try
 			{
+				postSaveOrUpdateEntity(entityInterface);
 				hibernateDAO.closeSession();
 
 			}

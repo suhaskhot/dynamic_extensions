@@ -24,43 +24,39 @@ public class DateValidator implements ValidatorRuleInterface
 	 * @see edu.common.dynamicextensions.validation.ValidatorRuleInterface#validate(edu.common.dynamicextensions.domaininterface.AttributeInterface, java.lang.Object, java.util.Map)
 	 * @throws DynamicExtensionsValidationException
 	 */
-	public boolean validate(AttributeInterface attribute, Object valueObject, Map<String, String> parameterMap) throws DynamicExtensionsValidationException
+	public boolean validate(AttributeInterface attribute, Object valueObject,
+			Map<String, String> parameterMap) throws DynamicExtensionsValidationException
 	{
 		boolean valid = false;
 		String attributeName = attribute.getName();
+		AttributeTypeInformationInterface attributeTypeInformation = attribute
+				.getAttributeTypeInformation();
 
-		if (valueObject != null && !((String) valueObject).trim().equals(""))
+		if (((valueObject != null) && (!((String) valueObject).trim().equals("")))
+				&& ((attributeTypeInformation != null) && (attributeTypeInformation instanceof DateAttributeTypeInformation)))
 		{
-			AttributeTypeInformationInterface attributeTypeInformation = attribute.getAttributeTypeInformation();
-			if (attributeTypeInformation != null)
+			DateAttributeTypeInformation dateAttributeTypeInformation = (DateAttributeTypeInformation) attributeTypeInformation;
+			String dateFormat = dateAttributeTypeInformation.getFormat();
+			String value = (String) valueObject;
+
+			try
 			{
-				String value = (String) valueObject;
-
-				if (attributeTypeInformation instanceof DateAttributeTypeInformation)
+				Date date = null;
+				date = Utility.parseDate(value, dateFormat);
+				if (date != null)
 				{
-					DateAttributeTypeInformation dateAttributeTypeInformation = (DateAttributeTypeInformation) attributeTypeInformation;
-					String dateFormat = dateAttributeTypeInformation.getFormat();
-
-					try
-					{
-						Date date = null;
-						date = Utility.parseDate(value, dateFormat);
-						if(date != null)
-						{
-							valid = true;
-						}
-					}
-					catch (ParseException parseException)
-					{
-						List<String> placeHolders = new ArrayList<String>();
-						placeHolders.add(attributeName);
-						placeHolders.add(dateFormat);
-						throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Date", placeHolders);
-					}
+					valid = true;
 				}
+			}
+			catch (ParseException parseException)
+			{
+				List<String> placeHolders = new ArrayList<String>();
+				placeHolders.add(attributeName);
+				placeHolders.add(dateFormat);
+				throw new DynamicExtensionsValidationException("Validation failed", null,
+						"dynExtn.validation.Date", placeHolders);
 			}
 		}
 		return valid;
 	}
-
 }

@@ -64,6 +64,11 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	 * indicates if this enitity is abstract or not. 
 	 */
 	protected boolean isAbstract = false;
+	
+	/**
+	 * 
+	 */
+	protected boolean isProcessed = false;
 
 	/**
 	 * @hibernate.property name="dataTableState" type="int" column="DATA_TABLE_STATE"
@@ -476,5 +481,17 @@ public class Entity extends AbstractMetadata implements EntityInterface
 		abstractAttributeCollection.addAll(getAllAssociations());
 		abstractAttributeCollection.addAll(getAllAttributes());
 		return abstractAttributeCollection;
+	}
+
+	
+	public boolean isProcessed()
+	{
+		return isProcessed;
+	}
+
+	
+	public void setProcessed(boolean isProcessed)
+	{
+		this.isProcessed = isProcessed;
 	}
 }

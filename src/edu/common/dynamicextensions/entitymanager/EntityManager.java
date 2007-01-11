@@ -176,6 +176,8 @@ public class EntityManager
 			hibernateDAO.openSession(null);
 			//Calling the method which actually calls the insert/update method on dao. Hibernatedao is passed to this
 			//method and transaction is handled in the calling method.
+			saveEntityGroup(entityInterface, hibernateDAO);
+			
 			entityInterface = saveOrUpdateEntity(entityInterface, hibernateDAO, stack,
 					isEntitySaved);
 			//Committing the changes done in the hibernate session to the database.
@@ -216,6 +218,20 @@ public class EntityManager
 		}
 		logDebug("persistEntity", "exiting the method");
 		return entityInterface;
+	}
+
+	private void saveEntityGroup(EntityInterface entityInterface, HibernateDAO hibernateDAO) throws DAOException, UserNotAuthorizedException
+	{
+		Set<EntityInterface> processedEntities = new HashSet<EntityInterface>();
+		Set<EntityGroupInterface> processedEntityGroups= new HashSet<EntityGroupInterface>();
+		EntityManagerUtil.getAllEntityGroups(entityInterface, processedEntities , processedEntityGroups);
+		
+		for (EntityGroupInterface entityGroup : processedEntityGroups)
+		{
+			if (entityGroup.getId() == null) {
+				hibernateDAO.insert(entityGroup, null, false, false);
+			}
+		}
 	}
 
 	/**
@@ -732,13 +748,17 @@ public class EntityManager
 					ConstraintPropertiesInterface constraintProperties = association
 							.getConstraintProperties();
 					EntityInterface targetEntity = association.getTargetEntity();
-					if (targetEntity.getId() == null)
+					boolean isEntitySaved = false;
+
+					if (targetEntity.getId() != null)
 					{
-						boolean isEntitySaved = false;
+						isEntitySaved = true;
+					}
+						
 						((Entity) targetEntity).setDataTableState(entity.getDataTableState());
 						targetEntity = saveOrUpdateEntity(targetEntity, hibernateDAO,
 								rollbackQueryStack, isEntitySaved);
-					}
+					
 					//Calling the particular method that populates the constraint properties for the association.
 					populateConstraintProperties(association);
 					//Calling the method which creates or removes the system generated association depending on
@@ -1225,7 +1245,8 @@ public class EntityManager
 				// saves the entity into database. It populates rollbackQueryStack with the 
 				// queries that restores the database state to the state before calling this method
 				// in case of exception. 
-
+				saveEntityGroup(entity, hibernateDAO);
+				
 				saveOrUpdateEntity(entity, hibernateDAO, rollbackQueryStack, isentitySaved);
 
 			}

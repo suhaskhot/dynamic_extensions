@@ -7,12 +7,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Variables;
@@ -209,5 +212,39 @@ public class EntityManagerUtil
 			throw new DynamicExtensionsSystemException("Could notexecuting the query ", e);
 		}
 		return resultList;
+	}
+
+	/**
+	 * This method returns all the entity groups reachable from given entity.
+	 *  
+	 * @param entity
+	 * @param processedEntities
+	 * @param processedEntityGroups
+	 */
+	public static void getAllEntityGroups(EntityInterface entity, Set<EntityInterface> processedEntities,
+			Set<EntityGroupInterface> processedEntityGroups)
+	{
+
+		if (processedEntities.contains(entity))
+		{
+			return;
+		}
+
+		processedEntities.add(entity);
+
+		// get all entity Groups of given entity
+		for (EntityGroupInterface entityGroup : entity.getEntityGroupCollection())
+		{
+
+			if (!processedEntityGroups.contains(entityGroup))
+			{
+				processedEntityGroups.add(entityGroup);
+				// process  all entities of each entity Groups 
+				for (EntityInterface anotherEntity : entityGroup.getEntityCollection())
+				{
+					getAllEntityGroups(anotherEntity, processedEntities, processedEntityGroups);
+				}
+			}
+		}
 	}
 }

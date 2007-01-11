@@ -14,7 +14,7 @@ public interface EntityGroupInterface extends AbstractMetadataInterface
      * Returns a collection of entity objects present in the entity group 
      * @return Returns the entityCollection.
      */
-     Collection getEntityCollection();
+     Collection<EntityInterface> getEntityCollection();
     
     /**
      * Adds an entity to the entity group.

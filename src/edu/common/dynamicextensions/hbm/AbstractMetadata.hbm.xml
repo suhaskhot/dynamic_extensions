@@ -55,7 +55,7 @@
             update="true"
             insert="true"
             column="NAME"
-            length="40"
+            length="1000"
         />
 
         <set
@@ -369,7 +369,7 @@
             table="DYEXTN_ENTITY_GROUP_REL"
             lazy="false"
             inverse="false"
-            cascade="save-update"
+            cascade="none"
             sort="unsorted"
         >
 

@@ -92,7 +92,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	/**
 	 * This method returns the Collection of the EntityGroups.
 	 * @hibernate.set name="entityGroupCollection" table="DYEXTN_ENTITY_GROUP_REL" 
-	 * cascade="save-update" inverse="false" lazy="false"
+	 * cascade="none" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ENTITY_ID"
 	 * @hibernate.collection-many-to-many class="edu.common.dynamicextensions.domain.EntityGroup" column="ENTITY_GROUP_ID"
 	 * @return the Collection of the Entities.

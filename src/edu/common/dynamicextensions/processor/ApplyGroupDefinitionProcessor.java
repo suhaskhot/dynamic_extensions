@@ -5,6 +5,11 @@
  */
 package edu.common.dynamicextensions.processor;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -42,7 +47,7 @@ public class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsProcesso
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public EntityGroupInterface saveGroupDetails(GroupUIBeanInterface groupUIBean) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public EntityGroupInterface saveGroupDetails(GroupUIBeanInterface groupUIBean,ContainerInterface containerInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		GroupProcessor groupProcessor = GroupProcessor.getInstance(); 
 		String groupOperation = groupUIBean.getGroupOperation();
@@ -51,7 +56,11 @@ public class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsProcesso
 		//Use existing group
 		if((groupUIBean.getCreateGroupAs()!=null)&&((groupUIBean.getCreateGroupAs().equals(ProcessorConstants.GROUP_CREATEFROM_EXISTING))))
 		{
+			Long entityGroupId = new Long(groupUIBean.getGroupName());
+			//entityGroup = getEntityGroup(containerInterface,entityGroupId);
+			//if (entityGroup == null) {
 			entityGroup = groupProcessor.getEntityGroupByIdentifier(groupUIBean.getGroupName());
+			//}
 		}
 		else
 		{
@@ -69,6 +78,22 @@ public class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsProcesso
 		}
 		return entityGroup;
 	}
+	
+	private EntityGroupInterface getEntityGroup(ContainerInterface containerInterface, Long entityGroupId)
+	{
+//		Collection<EntityGroupInterface> entityGroupCollection = getAllEntityGroups(containerInterface);
+//		
+//		for(EntityGroupInterface entityGroupInterface : entityGroupCollection)
+//		{
+//			if (entityGroupInterface.getId().equals(entityGroupId))
+//			{
+//				return entityGroupInterface;
+//			}
+//		}
+		return null;
+	}
+	
+	
 	/**
 	 * @param groupForm
 	 * @throws DynamicExtensionsApplicationException 

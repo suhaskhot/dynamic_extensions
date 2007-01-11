@@ -91,7 +91,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 		ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor
 				.getInstance();
 		ContainerInterface subFormContainer = applyFormDefinitionProcessor
-				.getSubFormContainer(formDefinitionForm);
+				.getSubFormContainer(formDefinitionForm,mainFormContainer);
 		AssociationInterface association = applyFormDefinitionProcessor.associateEntity(
 				mainFormContainer, subFormContainer, formDefinitionForm);
 		applyFormDefinitionProcessor.addSubFormControlToContainer(mainFormContainer,

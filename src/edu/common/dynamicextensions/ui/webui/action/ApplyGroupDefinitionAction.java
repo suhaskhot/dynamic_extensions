@@ -37,11 +37,11 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 		EntityGroupInterface entityGroup = null;
 		try
 		{
-			entityGroup = applyGroupDefinitionProcessor.saveGroupDetails(groupForm);
+			ContainerInterface containerInterface = (ContainerInterface)CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+			entityGroup = applyGroupDefinitionProcessor.saveGroupDetails(groupForm,containerInterface);
 			String operationMode = groupForm.getOperationMode();
 			if((operationMode!=null)&&(operationMode.equals(Constants.EDIT_FORM)))
 			{
-				ContainerInterface containerInterface = (ContainerInterface)CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 				applyGroupDefinitionProcessor.updateEntityGroup(containerInterface,entityGroup,groupForm);
 			}
 		}

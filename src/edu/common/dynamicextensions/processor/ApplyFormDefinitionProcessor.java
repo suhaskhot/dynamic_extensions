@@ -265,7 +265,11 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		if (formDefinitionForm != null)
 		{
 			//Get target entity container
-			Long selectedContainerId = new Long(formDefinitionForm.getSelectedObjectId());
+			Long selectedContainerId = null;
+			if (formDefinitionForm.getSelectedObjectId() != null && formDefinitionForm.getSelectedObjectId().trim().length() != 0)
+			{
+				selectedContainerId = new Long(formDefinitionForm.getSelectedObjectId());
+			}
 
 			String createAs = formDefinitionForm.getCreateAs();
 			if ((createAs != null) && (createAs.equals(ProcessorConstants.CREATE_FROM_EXISTING)))
@@ -290,7 +294,6 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		return targetEntityContainer;
 	}
 
-	
 	/**
 	 * @param targetContainer
 	 * @param childContainerList
@@ -313,7 +316,8 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 							.get(childContainerList.indexOf(containmentAssociationControlInterface
 									.getContainer()));
 					tempContainer.setEntity(actualContainer.getEntity());
-					((AssociationInterface)containmentAssociationControlInterface.getAbstractAttribute()).setTargetEntity(actualContainer.getEntity());
+					((AssociationInterface) containmentAssociationControlInterface
+							.getAbstractAttribute()).setTargetEntity(actualContainer.getEntity());
 					containmentAssociationControlInterface.setContainer(actualContainer);
 				}
 				else

@@ -157,14 +157,22 @@ function dataFldDataTypeChanged(datatypeControl)
 		var selectedDatatype = datatypeControl.value;
 		var divForDataTypeId = selectedDatatype + "DataType";
 		var divForDataType = document.getElementById(divForDataTypeId);
-		
+		if(datatypeControl.value!="Text")
+		{
+			var linesTypeElt = document.getElementById('linesTypeSingleLine');
+			if(linesTypeElt!=null)
+			{
+				linesTypeElt.checked= 'true';
+			}
+		}
+
 		if(divForDataType!=null)
 		{
 			var substitutionDiv = document.getElementById('substitutionDiv');
 			substitutionDiv.innerHTML = divForDataType.innerHTML;
 		}
 		insertRules(datatypeControl);
-	}	
+	}
 }
 
 function insertRules(datatypeControl)

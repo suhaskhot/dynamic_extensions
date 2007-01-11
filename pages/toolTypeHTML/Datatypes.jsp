@@ -19,10 +19,10 @@
  				<bean:message key="eav.control.type"/> :
  			</td>
  			<td class="formFieldWithoutBorder">
-	 			<html:radio styleId = 'linesType' property='linesType' value='<%=ProcessorConstants.LINE_TYPE_SINGLELINE%>' onclick='textBoxTypeChange(this)'>
+	 			<html:radio styleId = 'linesTypeSingleLine'  property='linesType' value='<%=ProcessorConstants.LINE_TYPE_SINGLELINE%>' onclick='textBoxTypeChange(this)'>
 		 			<bean:message key="eav.att.TextBoxSingleLineTitle"/>
 	 			</html:radio>
-	 			<html:radio styleId = 'linesType' property='linesType' value='<%=ProcessorConstants.LINE_TYPE_MULTILINE%>' onclick='textBoxTypeChange(this)'>
+	 			<html:radio styleId = 'linesTypeMultiline' property='linesType' value='<%=ProcessorConstants.LINE_TYPE_MULTILINE%>' onclick='textBoxTypeChange(this)'>
 		 			<bean:message key="eav.att.TextBoxMultiLineTitle"/>
 	 			</html:radio>
  			</td>

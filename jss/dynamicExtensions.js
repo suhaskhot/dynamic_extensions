@@ -188,6 +188,15 @@ function insertRules(datatypeControl)
 		{
 			tempInnerHTML = tempInnerHTML.replace("tempValidationRules","validationRules");
 		}
+		while (tempInnerHTML.indexOf("minTemp") != -1)
+		{
+			tempInnerHTML = tempInnerHTML.replace("minTemp","min");
+		}
+		while (tempInnerHTML.indexOf("maxTemp") != -1)
+		{
+			tempInnerHTML = tempInnerHTML.replace("maxTemp","max");
+		}
+		
 		var substitutionDivRules = document.getElementById('substitutionDivRules');
 		substitutionDivRules.innerHTML = tempInnerHTML;
 	}

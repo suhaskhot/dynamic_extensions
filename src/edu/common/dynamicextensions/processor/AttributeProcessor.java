@@ -489,15 +489,15 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		// Collect all the applicable Rule names 
 		List<String> implicitRuleList = null;
 		Long attributeIdentifier = abstractAttributeInterface.getId();
-		if (attributeIdentifier == null)
-		{
+		//if (attributeIdentifier == null)
+		//{
 			implicitRuleList = configurationsFactory.getAllImplicitRules(userSelectedControlName,
 					attributeUIBeanInformationIntf.getDataType());
 			for (String implicitRule : implicitRuleList)
 			{
 				allValidationRules.add(implicitRule);
 			}
-		}
+		//}
 
 		String[] validationRules = attributeUIBeanInformationIntf.getValidationRules();
 		for (int i = 0; i < validationRules.length - 1; i++)

@@ -949,7 +949,8 @@ class DynamicExtensionBaseQueryBuilder
 
 				Attribute savedAttribute = (Attribute) savedAttributeIterator.next();
 				Attribute attribute = (Attribute) entity.getAttributeByIdentifier(savedAttribute
-						.getId());;
+						.getId());
+				;
 
 				//attribute is removed or modified such that its column need to be removed
 				if (isAttributeColumnToBeRemoved(attribute, savedAttribute))
@@ -1051,7 +1052,8 @@ class DynamicExtensionBaseQueryBuilder
 			{
 				Association savedAssociation = (Association) savedAssociationIterator.next();
 				Association association = (Association) entity
-						.getAssociationByIdentifier(savedAssociation.getId());;
+						.getAssociationByIdentifier(savedAssociation.getId());
+				;
 
 				// removed ??
 				if (association == null)
@@ -1127,6 +1129,7 @@ class DynamicExtensionBaseQueryBuilder
 
 		if (!newTypeClass.equals(oldTypeClass))
 		{
+			checkIfDataTypeChangeAllowable(attribute);
 			modifyAttributeQueryList = getAttributeDataTypeChangedQuery(attribute, savedAttribute,
 					attributeRollbackQueryList);
 			modifyAttributeQueryList.addAll(modifyAttributeQueryList);
@@ -1162,6 +1165,33 @@ class DynamicExtensionBaseQueryBuilder
 		}
 
 		return modifyAttributeQueryList;
+	}
+
+	private void checkIfDataTypeChangeAllowable(Attribute attribute)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	{
+		EntityInterface entityInterface = attribute.getEntity();
+		String tableName = entityInterface.getTableProperties().getName();
+		StringBuffer queryBuffer = new StringBuffer();
+		queryBuffer.append(SELECT_KEYWORD).append(WHITESPACE).append("COUNT").append(
+				OPENING_BRACKET).append("*").append(CLOSING_BRACKET).append(WHITESPACE).append(
+				FROM_KEYWORD).append(WHITESPACE).append(tableName);
+
+		ResultSet resultSet = entityManagerUtil.executeQuery(queryBuffer.toString());
+
+		try
+		{
+			Long count = resultSet.getLong(1);
+			if (count > 0)
+				{
+				throw new DynamicExtensionsApplicationException("Can not change the data type of the attribute",null,DYEXTN_A_009);
+				}
+
+		}
+		catch (SQLException e)
+		{
+			throw new DynamicExtensionsSystemException("Can not check the availability of data", e);
+		}
 	}
 
 	/**

@@ -445,12 +445,12 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		catch (DynamicExtensionsApplicationException e)
 		{
 			// TODO Auto-generated catch block
-			fail();
+			
 			e.printStackTrace();
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
-
+			fail();
 			e.printStackTrace();
 			/*   assertTrue("Data exists so can't modify its data type",true); 
 			 ResultSetMetaData metaData = executeQueryForMetadata("select * from "

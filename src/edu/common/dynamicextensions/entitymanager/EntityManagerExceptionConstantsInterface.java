@@ -40,4 +40,7 @@ public interface EntityManagerExceptionConstantsInterface
      
      //Object not found error
      String DYEXTN_A_008 = "DYEXTN_A_008"; 
+     //Exception constant in case when user can not change the data type of an attribute.
+     String DYEXTN_A_009 = "DYEXTN_A_009";
+     
 }

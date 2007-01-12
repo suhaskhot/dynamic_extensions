@@ -14,26 +14,21 @@ import org.apache.struts.action.ActionMapping;
 import edu.common.dynamicextensions.util.global.Constants;
 
 /**
+ * This action simply forwards the action to the RecordList.jsp file.
  * @author chetan_patil
  *
  */
 public class ApplyEditRecordsAction extends BaseDynamicExtensionsAction
 {
 
-	/**
-	 * This mathod will forward the request to LoadFormDefinitionAction.java.
-	 * 
-	 * @param mapping ActionMapping mapping
-	 * @param form ActionForm form
-	 * @param  request HttpServletRequest request
-	 * @param response HttpServletResponse response
-	 * @return ActionForward forward to next action
+	/*
+	 * (non-Javadoc)
+	 * @see org.apache.struts.actions.DispatchAction#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
 	{
-		//EditRecordsForm editRecordsForm = (EditRecordsForm) form;
 		return mapping.findForward(Constants.SUCCESS);
-
 	}
+	
 }

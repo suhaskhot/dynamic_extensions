@@ -12,18 +12,19 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
-import edu.common.dynamicextensions.processor.LoadEditRecordsProcessor;
-import edu.common.dynamicextensions.ui.webui.actionform.EditRecordsForm;
+import edu.common.dynamicextensions.processor.LoadRecordListProcessor;
+import edu.common.dynamicextensions.ui.webui.actionform.RecordListForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 
 /**
- * LoadEditRecordsAction class loads the Edit Records page displaying list of existing records that can be edited.
+ * LoadRecordListAction class loads the RecordList page displaying list of existing records that can be edited or viewed 
+ * depending on the "mode" selected.
  * @author chetan_patil
  *
  */
-public class LoadEditRecordsAction extends BaseDynamicExtensionsAction
+public class LoadRecordListAction extends BaseDynamicExtensionsAction
 {
 
 	/*
@@ -39,9 +40,9 @@ public class LoadEditRecordsAction extends BaseDynamicExtensionsAction
 		ContainerInterface container = DynamicExtensionsUtility.getContainerByIdentifier(containerIdentifier);
 		CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, container);
 		
-		EditRecordsForm editRecordsForm = (EditRecordsForm) form;
-		LoadEditRecordsProcessor loadEditRecordsProcessor = LoadEditRecordsProcessor.getInstance();
-		loadEditRecordsProcessor.populateRecordIndex(editRecordsForm, container, mode);
+		RecordListForm recordListForm = (RecordListForm) form;
+		LoadRecordListProcessor loadRecordListProcessor = LoadRecordListProcessor.getInstance();
+		loadRecordListProcessor.populateRecordIndex(recordListForm, container, mode);
 		
 		return mapping.findForward(Constants.SHOW_EDIT_RECORDS_PAGE);
 	}

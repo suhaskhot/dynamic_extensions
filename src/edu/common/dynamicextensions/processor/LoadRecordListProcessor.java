@@ -14,19 +14,19 @@ import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityRecord;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.ui.webui.actionform.EditRecordsForm;
+import edu.common.dynamicextensions.ui.webui.actionform.RecordListForm;
 
 /**
  * @author chetan_patil
  *
  */
-public class LoadEditRecordsProcessor extends BaseDynamicExtensionsProcessor
+public class LoadRecordListProcessor extends BaseDynamicExtensionsProcessor
 {
 
 	/**
 	 * Default Constructor.
 	 */
-	protected LoadEditRecordsProcessor()
+	protected LoadRecordListProcessor()
 	{
 	}
 
@@ -34,9 +34,9 @@ public class LoadEditRecordsProcessor extends BaseDynamicExtensionsProcessor
 	 * returns the instance of LoadFormsIndexProcessor.
 	 * @return LoadFormsIndexProcessor instance of LoadFormsIndexProcessor
 	 */
-	public static LoadEditRecordsProcessor getInstance()
+	public static LoadRecordListProcessor getInstance()
 	{
-		return new LoadEditRecordsProcessor();
+		return new LoadRecordListProcessor();
 	}
 
 	/**
@@ -45,7 +45,7 @@ public class LoadEditRecordsProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException  DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException DynamicExtensionsSystemException
 	 */
-	public void populateRecordIndex(EditRecordsForm editRecordsForm, ContainerInterface container, String mode)
+	public void populateRecordIndex(RecordListForm recordListForm, ContainerInterface container, String mode)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		List<EntityRecord> entityRecordList = null;
@@ -62,8 +62,9 @@ public class LoadEditRecordsProcessor extends BaseDynamicExtensionsProcessor
 		{
 			entityRecordList = new ArrayList<EntityRecord>();
 		}
-		editRecordsForm.setContainerIdentifier(container.getId().toString());
-		editRecordsForm.setEntityRecordList(entityRecordList);
-		editRecordsForm.setMode(mode);
+		recordListForm.setContainerIdentifier(container.getId().toString());
+		recordListForm.setEntityRecordList(entityRecordList);
+		recordListForm.setMode(mode);
 	}
+	
 }

@@ -13,6 +13,7 @@ import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
 import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.Constants.InheritanceStrategy;
 
 /**
  * An entity is something that has a distinct, separate existence, though it need not be a material 
@@ -69,6 +70,11 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	 * 
 	 */
 	protected boolean isProcessed = false;
+	
+	/*
+	 * 
+	 */
+	protected int inheritStrategy = InheritanceStrategy.TABLE_PER_SUB_CLASS.getValue(); 
 
 	/**
 	 * @hibernate.property name="dataTableState" type="int" column="DATA_TABLE_STATE"
@@ -493,5 +499,39 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	public void setProcessed(boolean isProcessed)
 	{
 		this.isProcessed = isProcessed;
+	}
+
+	
+	/**
+	 * @hibernate.property name="inheritStrategy" type="int" column="INHERITANCE_STRATEGY"
+	 * @return Returns the inheritanceStrategy.
+	 */
+	private int getInheritStrategy()
+	{
+		return inheritStrategy;
+	}
+	
+	/**
+	 * @param inheritanceStrategy The inheritanceStrategy to set.
+	 */
+	private void setInheritStrategy(int inheritStrategy)
+	{
+		this.inheritStrategy = inheritStrategy;
+	}
+
+	/**
+	 * @return Returns the inheritanceStrategy.
+	 */
+	public InheritanceStrategy getInheritanceStrategy()
+	{
+		return InheritanceStrategy.get(this.inheritStrategy);
+	}
+	
+	/**
+	 * @param inheritanceStrategy The inheritanceStrategy to set.
+	 */
+	public void setInheritanceStrategy(InheritanceStrategy inheritanceStrategy)
+	{
+		setInheritStrategy(inheritanceStrategy.getValue());
 	}
 }

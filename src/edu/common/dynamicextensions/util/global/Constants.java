@@ -42,7 +42,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String CONTAINER_INTERFACE = "containerInterface";
 	public static final String CONTAINER_STACK = "containerStack";
 	public static final String VALUE_MAP_STACK = "valueMapStack";
-	
+
 	public static final String ENTITYGROUP_INTERFACE = "entityGroupInterface";
 	public static final String CURRENT_CONTAINER_NAME = "currentContainerName";
 	public static final String ERRORS_LIST = "errorsList";
@@ -59,16 +59,15 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String ADD_SUB_FORM_OPR = "AddSubForm";
 	public static final String INSERT_DATA = "insertData";
 	public static final String CALLBACK_URL = "callbackURL";
-	
+
 	//Constant for groupName prefix
-	
+
 	public static final String GROUP_PREFIX = "Group_";
-	
-	public static final int DATA_TABLE_STATE_CREATED  = 1;
-	public static final int DATA_TABLE_STATE_NOT_CREATED  = 2;
-	public static final int DATA_TABLE_STATE_ALREADY_PRESENT  = 3;
-	
-	
+
+	public static final int DATA_TABLE_STATE_CREATED = 1;
+	public static final int DATA_TABLE_STATE_NOT_CREATED = 2;
+	public static final int DATA_TABLE_STATE_ALREADY_PRESENT = 3;
+
 	public static final String ID = "id";
 
 	public enum Cardinality {
@@ -155,6 +154,39 @@ public class Constants extends edu.wustl.common.util.global.Constants
 				if (associationType.getValue().equalsIgnoreCase(value))
 				{
 					return associationType;
+				}
+			}
+			return null;
+		}
+	}
+
+	/**
+	 * enum to define strategies of the inheritance 
+	 */
+	public enum InheritanceStrategy {
+		TABLE_PER_CONCRETE_CLASS(1), TABLE_PER_HEIRARCHY(2), TABLE_PER_SUB_CLASS(3);
+
+		int value;
+
+		InheritanceStrategy(int value)
+		{
+			this.value = value;
+		}
+
+		public int getValue()
+		{
+			return value;
+		}
+
+		public static InheritanceStrategy get(int value)
+		{
+			InheritanceStrategy[] inheritanceStrategies = InheritanceStrategy.values();
+
+			for (InheritanceStrategy inheritanceStrategy : inheritanceStrategies)
+			{
+				if (inheritanceStrategy.getValue() == value)
+				{
+					return inheritanceStrategy;
 				}
 			}
 			return null;

@@ -4,6 +4,7 @@ package edu.common.dynamicextensions.domaininterface;
 import java.util.Collection;
 
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
+import edu.common.dynamicextensions.util.global.Constants.InheritanceStrategy;
 
 /**
  * Entity object stores information of the entity.For each entity a dynamic table is generated using the metadata
@@ -157,4 +158,13 @@ public interface EntityInterface extends AbstractMetadataInterface
 	 */
 	AssociationInterface getAssociationByIdentifier(Long id);
 	
+	/**
+	 * @return Returns the inheritanceStrategy.
+	 */
+	InheritanceStrategy getInheritanceStrategy();
+	
+	/**
+	 *@param inheritanceStrategy The inheritanceStrategy to set.
+	 */
+	void setInheritanceStrategy(InheritanceStrategy inheritanceStrategy);
 }

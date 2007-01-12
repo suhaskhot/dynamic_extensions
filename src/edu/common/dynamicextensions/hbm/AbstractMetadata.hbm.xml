@@ -439,6 +439,14 @@
             column="PARENT_ENTITY_ID"
         />
 
+        <property
+            name="inheritStrategy"
+            type="int"
+            update="true"
+            insert="true"
+            column="INHERITANCE_STRATEGY"
+        />
+
         </joined-subclass>
 
     </class>

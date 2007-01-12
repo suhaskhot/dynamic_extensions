@@ -1423,9 +1423,14 @@ public class EntityManager
 			DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
 			UserNotAuthorizedException
 	{
-		if (entity == null || dataValue == null || dataValue.isEmpty())
+		if (entity == null )
 		{
 			throw new DynamicExtensionsSystemException("Input to insert data is null");
+		}
+		
+		// if empty, insert row with only identifer column value.
+		if (dataValue == null) {
+			dataValue = new HashMap();
 		}
 
 		StringBuffer columnNameString = new StringBuffer("IDENTIFIER ");

@@ -24,8 +24,6 @@
 	<body>
 		<html:form styleId='formsIndexForm' action='/ApplyFormsIndexAction'>
 		<font color="red" ><html:errors/></font>
-		<html:hidden styleId = "operationMode" property="operationMode"/>
-
 			<table width='70%' align='center' cellspacing="5" cellspacing="0" border='0'>
 				<!--<tr class="formMessage">
 					<td>
@@ -120,7 +118,7 @@
 										</td>
 										<td>
 											<%
-	 											target = "setLinkTarget('/dynamicExtensions/LoadEditRecordsAction.do?mode=edit&containerIdentifier=" + cont_Id + "');";
+	 											target = "loadRecordList('/dynamicExtensions/LoadRecordListAction.do?mode=edit&containerIdentifier=" + cont_Id + "');";
 	 										%>
 											<html:link href='#' onclick="<%=target%>" >
 												<bean:message key="app.editRecords" />&nbsp;
@@ -128,7 +126,7 @@
 										</td>
 										<td>
 											<%
-	 											target = "setLinkTarget('/dynamicExtensions/LoadEditRecordsAction.do?mode=view&containerIdentifier=" + cont_Id + "');";
+	 											target = "loadRecordList('/dynamicExtensions/LoadRecordListAction.do?mode=view&containerIdentifier=" + cont_Id + "');";
 	 										%>
 											<html:link href='#' onclick="<%=target%>" >
 												<bean:message key="app.viewRecords" />&nbsp;
@@ -150,6 +148,7 @@
 				<tr><td></td></tr>
 				<tr><td></td></tr>
 			</table>
+			<html:hidden styleId = "operationMode" property="operationMode"/>
 		</html:form>
 	</body>
 </html>

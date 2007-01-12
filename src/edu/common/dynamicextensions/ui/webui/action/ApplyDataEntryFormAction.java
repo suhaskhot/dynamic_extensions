@@ -142,11 +142,10 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * This method returns messages on successful saving of an Entity
 	 * @return ActionMessages ActionMessages
 	 */
-	private ActionMessages getSuccessMessage()
+	private ActionMessages getMessageString(String messageKey)
 	{
 		ActionMessages actionMessages = new ActionMessages();
-		actionMessages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(
-				"app.successfulDataInsertionMessage"));
+		actionMessages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(messageKey));
 		return actionMessages;
 	}
 
@@ -273,12 +272,12 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			else if (control instanceof ComboBoxInterface)
 			{
 				String selectedValue = request.getParameter("Control_" + sequence);
-				if(selectedValue != null)
+				if (selectedValue != null)
 				{
 					valueList.add(new Long(selectedValue.trim()));
 				}
 			}
-			if(!valueList.isEmpty())
+			if (!valueList.isEmpty())
 			{
 				attributeValueMap.put(abstractAttribute, valueList);
 			}
@@ -441,20 +440,28 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		ApplyDataEntryFormProcessor applyDataEntryFormProcessor = ApplyDataEntryFormProcessor
 				.getInstance();
 
-		if (recordIdentifier != null && !recordIdentifier.equals(""))
+		if ((rootValueMap == null) || rootValueMap.isEmpty())
 		{
-			Boolean edited = applyDataEntryFormProcessor.editDataEntryForm(rootContainerInterface,
-					rootValueMap, Long.valueOf(recordIdentifier));
-			if (edited.booleanValue())
-			{
-				saveMessages(request, getSuccessMessage());
-			}
+			saveMessages(request, getMessageString("app.noDataMessage"));
 		}
 		else
 		{
-			recordIdentifier = applyDataEntryFormProcessor.insertDataEntryForm(
-					rootContainerInterface, rootValueMap);
-			saveMessages(request, getSuccessMessage());
+			String messageKey = "app.successfulDataInsertionMessage";
+			if (recordIdentifier != null && !recordIdentifier.equals(""))
+			{
+				Boolean edited = applyDataEntryFormProcessor.editDataEntryForm(
+						rootContainerInterface, rootValueMap, Long.valueOf(recordIdentifier));
+				if (edited.booleanValue())
+				{
+					saveMessages(request, getMessageString(messageKey));
+				}
+			}
+			else
+			{
+				recordIdentifier = applyDataEntryFormProcessor.insertDataEntryForm(
+						rootContainerInterface, rootValueMap);
+				saveMessages(request, getMessageString(messageKey));
+			}
 		}
 		return recordIdentifier;
 	}

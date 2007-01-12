@@ -272,22 +272,14 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		{
 			//Entity tree will always be accessed with the container name
 			String containerName = container.getCaption();
-			/*Long containerId = container.getId();
-			 if(containerId!=null)
-			 {
-			 xmlNodeForContainer.append(getXMLNode(containerId.toString(),containerName,false,showExpanded));
-			 }
-			 else
-			 {*/
+
 			xmlNodeForContainer.append(getXMLNode(null, containerName, false, showExpanded));
-			//}
+
 			Collection<ControlInterface> controlsCollection = container.getControlCollection();
 			if (controlsCollection != null)
 			{
-				Iterator<ControlInterface> controlsIterator = controlsCollection.iterator();
-				while (controlsIterator.hasNext())
+				for (ControlInterface control : controlsCollection)
 				{
-					ControlInterface control = controlsIterator.next();
 					if ((control != null) && (control instanceof ContainmentAssociationControl))
 					{
 						xmlNodeForContainer.append(getNodeForContainer(

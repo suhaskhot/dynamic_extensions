@@ -79,14 +79,14 @@ class DynamicExtensionBaseQueryBuilder
 	{
 		List queryList = new ArrayList();
 		//get query to create main table with primitive attributes.
-		String mainTableQuery = getCreateMainTableQuery(entity, reverseQueryList);
+		List mainTableQueryList = getCreateMainTableQuery(entity, reverseQueryList);
 
 		// get query to create associations ,it invloves altering source/taget table or creating 
 		//middle table depending upon the cardinalities.
 		List associationTableQueryList = getCreateAssociationsQueryList(entity, reverseQueryList,
 				hibernateDAO, rollbackQueryStack);
 
-		queryList.add(mainTableQuery);
+		queryList.addAll(mainTableQueryList);
 		queryList.addAll(associationTableQueryList);
 		return queryList;
 	}
@@ -436,35 +436,17 @@ class DynamicExtensionBaseQueryBuilder
 	 * 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	protected String getCreateMainTableQuery(Entity entity, List reverseQueryList)
+	protected List<String> getCreateMainTableQuery(Entity entity, List reverseQueryList)
 			throws DynamicExtensionsSystemException
 	{
+		List<String> queryList = new ArrayList<String>();
 		String dataType = getDataTypeForIdentifier();
 		String tableName = entity.getTableProperties().getName();
 		EntityInterface parentEntity = entity.getParentEntity();
-		String foreignKeyConstraintForInheritance = "";
-
-		if (parentEntity != null)
-		{
-			String foreignConstraintName = "FK" + "E" + entity.getId() + "E" + parentEntity.getId();
-			StringBuffer foreignKeyConstraint = new StringBuffer();
-			foreignKeyConstraint.append(WHITESPACE);
-			foreignKeyConstraint.append(CONSTRAINT_KEYWORD);
-			foreignKeyConstraint.append(WHITESPACE);
-			foreignKeyConstraint.append(foreignConstraintName);
-			foreignKeyConstraint.append(WHITESPACE);
-			foreignKeyConstraint.append(REFERENCES_KEYWORD);
-			foreignKeyConstraint.append(WHITESPACE);
-			foreignKeyConstraint.append(parentEntity.getTableProperties().getName());
-
-			foreignKeyConstraint.append(OPENING_BRACKET);
-			foreignKeyConstraint.append(IDENTIFIER);
-			foreignKeyConstraint.append(CLOSING_BRACKET);
-			foreignKeyConstraintForInheritance = foreignKeyConstraint.toString();
-		}
+		
 		StringBuffer query = new StringBuffer(CREATE_TABLE + " " + tableName + " "
 				+ OPENING_BRACKET + " " + IDENTIFIER + " " + dataType
-				+ foreignKeyConstraintForInheritance + COMMA);
+				+ COMMA);
 		Collection attributeCollection = entity.getAttributeCollection();
 		if (attributeCollection != null && !attributeCollection.isEmpty())
 		{
@@ -487,11 +469,56 @@ class DynamicExtensionBaseQueryBuilder
 			}
 		}
 		query = query.append(PRIMARY_KEY_CONSTRAINT_FOR_ENTITY_DATA_TABLE + ")"); //identifier set as primary key
-
+		
+		// add create query
+		queryList.add(query.toString());
+		//add foerfign key query for inheritance
+		if (parentEntity != null)
+		{
+			String foreignKeyConstraintQueryForInheritance = getForeignKeyConstraintQueryForInheritance(entity);
+			queryList.add(foreignKeyConstraintQueryForInheritance);
+		}
+		
 		String reverseQuery = getReverseQueryForEntityDataTable(entity);
 		reverseQueryList.add(reverseQuery);
-
-		return query.toString();
+		return queryList;
+	}
+	
+	/**
+	 * This method returns the query to add foreign key constraint in the given child entity
+	 * that refers to identifier column of the parent.
+	 * @param entity
+	 * @return
+	 */
+	protected String getForeignKeyConstraintQueryForInheritance(EntityInterface entity) {
+		
+		StringBuffer foreignKeyConstraint = new StringBuffer();
+		EntityInterface parentEntity = entity.getParentEntity();
+		String foreignConstraintName = "FK" + "E" + entity.getId() + "E" + parentEntity.getId();
+		
+		
+		foreignKeyConstraint.append(ALTER_TABLE)
+		                    .append(WHITESPACE)
+					        .append(entity.getTableProperties().getName())
+		                    .append(WHITESPACE)
+					        .append(ADD_KEYWORD)
+		                    .append(WHITESPACE)
+					        .append(CONSTRAINT_KEYWORD)
+		                    .append(WHITESPACE)
+					        .append(foreignConstraintName)
+		                    .append(FOREIGN_KEY_KEYWORD)
+					        .append(OPENING_BRACKET)
+		                    .append(IDENTIFIER)
+					        .append(CLOSING_BRACKET)
+		                    .append(WHITESPACE)
+		                    .append(REFERENCES_KEYWORD)
+		                    .append(WHITESPACE)
+		                    .append(parentEntity.getTableProperties().getName())
+		                    .append(OPENING_BRACKET)
+		                    .append(IDENTIFIER)
+		                    .append(CLOSING_BRACKET);
+		
+		return foreignKeyConstraint.toString();
 	}
 
 	/**

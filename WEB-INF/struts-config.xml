@@ -11,7 +11,7 @@ PUBLIC
 		<form-bean name="formsIndexForm" type="edu.common.dynamicextensions.ui.webui.actionform.FormsIndexForm" />
 		<form-bean name="dataEntryForm" type="edu.common.dynamicextensions.ui.webui.actionform.DataEntryForm" />
 		<form-bean name="groupForm" type="edu.common.dynamicextensions.ui.webui.actionform.GroupForm" />
-		<form-bean name="editRecordsForm" type="edu.common.dynamicextensions.ui.webui.actionform.EditRecordsForm" />
+		<form-bean name="recordListForm" type="edu.common.dynamicextensions.ui.webui.actionform.RecordListForm" />
 	</form-beans>
 	
 	<global-forwards>
@@ -27,21 +27,21 @@ PUBLIC
 			scope="request">
 			<forward name="showDynamicExtensionsHomePage" path="/pages/DynamicExtensionHomePage.jsp" />
 		</action>
-		<action path="/LoadEditRecordsAction" 
-			type="edu.common.dynamicextensions.ui.webui.action.LoadEditRecordsAction"
-			name="editRecordsForm"
+		<action path="/LoadRecordListAction" 
+			type="edu.common.dynamicextensions.ui.webui.action.LoadRecordListAction"
+			name="recordListForm"
 			validate="false"
 			input="/DynamicExtensionHomePage.do"
 			scope="request">
-			<forward name="showEditRecordsPage" path="/pages/EditRecords.jsp" />
+			<forward name="showRecordListPage" path="/pages/RecordList.jsp" />
 		</action>
 		<action path="/ApplyEditRecordsAction" 
 			type="edu.common.dynamicextensions.ui.webui.action.ApplyEditRecordsAction"
-			name="editRecordsForm"
+			name="recordListForm"
 			validate="false"
-			input="/LoadEditRecordsAction.do"
+			input="/LoadRecordListAction.do"
 			scope="request">
-			<forward name="success" path="/pages/EditRecords.jsp" />
+			<forward name="success" path="/pages/RecordList.jsp" />
 		</action>
 		<action path="/LoadGroupDefinitionAction" 
 			type="edu.common.dynamicextensions.ui.webui.action.LoadGroupDefinitionAction"

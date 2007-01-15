@@ -428,7 +428,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getParentEntity()
 	 * @hibernate.many-to-one column="PARENT_ENTITY_ID" class="edu.common.dynamicextensions.domain.Entity" constrained="true" 
-	 *                        cascade="save-update"    
+	 *                        cascade="none"    
 	 */
 	public EntityInterface getParentEntity()
 	{

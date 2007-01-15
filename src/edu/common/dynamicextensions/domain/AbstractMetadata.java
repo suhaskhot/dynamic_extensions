@@ -272,4 +272,11 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 
 	}
 
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString()
+	{
+		return "Name: " + name + "  Id :  " + id;
+	}
 }

@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.domain;
 
 import edu.common.dynamicextensions.domaininterface.ShortTypeInformationInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
 
 /**
  * @hibernate.joined-subclass table="DYEXTN_SHORT_TYPE_INFO" 
@@ -20,5 +21,13 @@ public class ShortAttributeTypeInformation extends NumericAttributeTypeInformati
 	public ShortAttributeTypeInformation()
 	{
 
+	}
+	/** 
+	 * @see edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface#getDataType()
+	 */
+	public String getDataType()
+	{
+		
+		return EntityManagerConstantsInterface.SHORT_ATTRIBUTE_TYPE;
 	}
 }

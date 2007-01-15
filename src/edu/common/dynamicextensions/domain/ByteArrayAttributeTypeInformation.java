@@ -49,4 +49,10 @@ public class ByteArrayAttributeTypeInformation extends AttributeTypeInformation 
 		this.contentType = contentType;
 	}
 
+	public String getDataType()
+	{
+		
+		return null;
+	}
+
 }

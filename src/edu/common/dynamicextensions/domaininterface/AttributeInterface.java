@@ -80,4 +80,11 @@ public interface AttributeInterface extends AbstractAttributeInterface
 	 */
 	void setAttributeTypeInformation(
 			AttributeTypeInformationInterface attributeTypeInformationInterface);
+	
+	
+	/**
+	 * The method returns the attribute type of the attribute based on it's attributeTypeInformation object.
+	 * @return Strin attribute type
+	 */
+	String getDataType();
 }

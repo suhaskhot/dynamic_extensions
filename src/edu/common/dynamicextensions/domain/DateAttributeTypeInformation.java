@@ -4,6 +4,7 @@ package edu.common.dynamicextensions.domain;
 import java.util.Date;
 
 import edu.common.dynamicextensions.domaininterface.DateTypeInformationInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
 
@@ -57,5 +58,14 @@ public class DateAttributeTypeInformation extends AttributeTypeInformation
     {
         this.format = format;
     }
+
+	/** 
+	 * @see edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface#getDataType()
+	 */
+	public String getDataType()
+	{
+		
+		return EntityManagerConstantsInterface.DATE_ATTRIBUTE_TYPE;
+	}
 
 }

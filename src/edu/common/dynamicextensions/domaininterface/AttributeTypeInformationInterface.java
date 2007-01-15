@@ -34,4 +34,10 @@ public interface AttributeTypeInformationInterface
      * @param permissibleValueInterface  default value
      */
     void setDefaultValue(PermissibleValueInterface permissibleValueInterface);
+    
+	/**
+	 * The method returns the attribute type of the attribute based on it's attributeTypeInformation object.
+	 * @return Strin attribute type
+	 */
+	String getDataType();
 }

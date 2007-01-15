@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import edu.common.dynamicextensions.domaininterface.FileTypeInformationInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
 
 /**
  * @version 1.0
@@ -107,5 +108,14 @@ public class FileAttributeTypeInformation extends AttributeTypeInformation
 		{
 			this.fileExtensionCollection.clear();
 		}
+	}
+	
+	/** 
+	 * @see edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface#getDataType()
+	 */
+	public String getDataType()
+	{
+		
+		return EntityManagerConstantsInterface.FILE_ATTRIBUTE_TYPE;
 	}
 }

@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.domain;
 
 import edu.common.dynamicextensions.domaininterface.StringTypeInformationInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
 
@@ -58,4 +59,12 @@ public class StringAttributeTypeInformation extends AttributeTypeInformation imp
 		this.size = size;
 	}
 
+	/** 
+	 * @see edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface#getDataType()
+	 */
+	public String getDataType()
+	{
+		
+		return EntityManagerConstantsInterface.STRING_ATTRIBUTE_TYPE;
+	}
 }

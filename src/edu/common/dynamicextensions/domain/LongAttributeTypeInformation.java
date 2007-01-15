@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.domain;
 
 import edu.common.dynamicextensions.domaininterface.LongTypeInformationInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
 
 /**
  * @hibernate.joined-subclass table="DYEXTN_LONG_TYPE_INFO" 
@@ -22,4 +23,12 @@ public class LongAttributeTypeInformation extends NumericAttributeTypeInformatio
 
 	}
 
+	/** 
+	 * @see edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface#getDataType()
+	 */
+	public String getDataType()
+	{
+		
+		return EntityManagerConstantsInterface.LONG_ATTRIBUTE_TYPE;
+	}
 }

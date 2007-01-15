@@ -235,6 +235,21 @@ public class Attribute extends AbstractAttribute implements AttributeInterface
 	{
 		this.isNullable = isNullable;
 	}
+	
+	/**
+	 * @see edu.common.dynamicextensions.domaininterface.AttributeInterface#getDataType()
+	 */
+	public String getDataType()
+	{
+		if (getAttributeTypeInformation() != null)
+		{
+		return getAttributeTypeInformation().getDataType();
+		} else 
+		{
+			return null;
+		}
+		
+	}
     
  
 }

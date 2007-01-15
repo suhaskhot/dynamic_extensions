@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.domain;
 
 import edu.common.dynamicextensions.domaininterface.BooleanTypeInformationInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
 
 /**
  * @version 1.0
@@ -20,6 +21,11 @@ public class BooleanAttributeTypeInformation extends AttributeTypeInformation
 	public BooleanAttributeTypeInformation()
 	{
 
+	}
+
+	public String getDataType()
+	{
+		return EntityManagerConstantsInterface.BOOLEAN_ATTRIBUTE_TYPE;
 	}
 
 }

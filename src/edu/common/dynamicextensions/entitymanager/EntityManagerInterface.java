@@ -35,12 +35,6 @@ public interface EntityManagerInterface
 {
 
 	/**
-	 * Sets an instance of entity manager.A mock entity manager can be set using this method.
-	 * @param entityManager
-	 */
-	void setInstance(EntityManagerInterface entityManagerInterface);
-
-	/**
 	 * Saves the entity into the database.Also prepares the dynamic tables and associations 
 	 * between those tables using the metadata information in the entity object.
 	 * EntityInterface can be obtained from DomainObjectFactory.

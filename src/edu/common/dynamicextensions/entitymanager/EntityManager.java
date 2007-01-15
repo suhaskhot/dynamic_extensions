@@ -135,7 +135,7 @@ public class EntityManager
 	 * Mock entity manager can be placed in the entity manager using this method.
 	 * @param entityManager
 	 */
-	public void setInstance(EntityManagerInterface entityManagerInterface)
+	public static void setInstance(EntityManagerInterface entityManagerInterface)
 	{
 		EntityManager.entityManagerInterface = entityManagerInterface;
 

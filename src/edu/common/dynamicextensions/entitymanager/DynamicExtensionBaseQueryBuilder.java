@@ -53,7 +53,7 @@ import edu.wustl.common.util.logger.Logger;
 class DynamicExtensionBaseQueryBuilder
 		implements
 			EntityManagerConstantsInterface,
-			EntityManagerExceptionConstantsInterface
+			EntityManagerExceptionConstantsInterface,DynamicExtensionsQueryBuilderConstantsInterface
 {
 
 	EntityManagerUtil entityManagerUtil = new EntityManagerUtil();

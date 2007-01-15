@@ -89,7 +89,8 @@ public class EntityManager
 		implements
 			EntityManagerInterface,
 			EntityManagerConstantsInterface,
-			EntityManagerExceptionConstantsInterface
+			EntityManagerExceptionConstantsInterface,
+			DynamicExtensionsQueryBuilderConstantsInterface
 {
 
 	/**

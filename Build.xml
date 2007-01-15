@@ -353,6 +353,17 @@
 	        <replacefilter token="hibernate-mapping.dtd" value="hibernate-mapping-2.0.dtd"/>
 	    </replace>
 	    
+  	  <replaceregexp byline="true" flags="g">
+  	    <fileset dir="${src.dir}">
+  	      <include name="edu/common/dynamicextensions/domain/userinterface/Container.hbm.xml"/>
+  	    </fileset>
+  	    <regexp pattern="&lt;hibernate-mapping.*&gt;"/>
+  	    <substitution expression="&lt;hibernate-mapping auto-import=&quot;false&quot;&gt;"/>
+  	  </replaceregexp>
+    	
+     <move file="${src.dir}/edu/common/dynamicextensions/domain/userinterface/Container.hbm.xml" tofile="${src.dir}/edu/common/dynamicextensions/domain/userinterface/DEContainer.hbm.xml" overwrite="true"/>	
+
+    	
 	    <copy todir="${hbm.dir}">
 	    	<fileset dir="${src.dir}/edu/common/dynamicextensions/domain">
 	    		<include name="**/*.hbm.xml"/>

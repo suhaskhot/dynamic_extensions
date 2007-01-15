@@ -32,7 +32,7 @@
 	</query>
 	
 	<query name="getAllContainersByEntityGroupId">
-	   from Container container
+	   from edu.common.dynamicextensions.domain.userinterface.Container container
 	         	where container.entity.id in
              			(select entity.id
                       		from Entity entity
@@ -41,7 +41,7 @@
 	</query>
 	
 	<query name="getContainerOfEntity">
-		from Container container
+		from edu.common.dynamicextensions.domain.userinterface.Container container
            		where  container.entity.id = ?
 	</query>
 	
@@ -52,7 +52,7 @@
 	
 	<query name="getAllContainersBeansByEntityGroupId">
 			select container.id,container.caption
-			   from Container container
+			   from edu.common.dynamicextensions.domain.userinterface.Container container
 			         	where container.entity.id in
 		             			(select entity.id
 		                      		from Entity entity

@@ -669,5 +669,123 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 		}
 	}
 
+	/**
+	 *  PURPOSE: This method tests for metadata save of the inheriatance. 
+	 *
+	 *  EXPECTED BEHAVIOUR: All the hierarchy should get saved 
+	 *  
+	 *  TEST CASE FLOW: 1. Create Specimen
+	 *                  2. Create TissueSpecimen and set parent as Specimen
+	 *                  3. persist TissueSpecimen                       
+	 *                  6. Check if the parent of TissueSpecimen and children of Specimen
+	 */
+
+	public void testInheritanceEditMetadataCreateChildWithParent()
+	{
+
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		try
+		{
+			EntityInterface specimen = factory.createEntity();
+			specimen.setName("specimen");
+			specimen.setAbstract(true);
+			AttributeInterface barcode = factory.createStringAttribute();
+			barcode.setName("barcode");
+			specimen.addAbstractAttribute(barcode);
+			
+			
+
+			EntityInterface tissueSpecimen = factory.createEntity();
+			tissueSpecimen.setName("tissueSpecimen");
+			AttributeInterface quantityInCellCount = factory.createIntegerAttribute();
+			quantityInCellCount.setName("quantityInCellCount");			
+			tissueSpecimen.addAbstractAttribute(quantityInCellCount);
+			
+			tissueSpecimen.setParentEntity(specimen);
+			
+			EntityInterface savedTissueSpecimen = entityManagerInterface.persistEntityMetadata(tissueSpecimen,false);
+			
+			
+			
+			savedTissueSpecimen =  entityManagerInterface.getEntityByIdentifier(savedTissueSpecimen.getId().toString());
+			String id = savedTissueSpecimen.getParentEntity().getId().toString();
+			System.out.println("Id is" + id);
+			
+			EntityInterface savedSpecimen =  entityManagerInterface.getEntityByIdentifier(id);
+			Collection childColelction =  entityManagerInterface.getChildrenEntities(savedSpecimen);
+			assertEquals(childColelction.size(),1);
+			childColelction.contains(savedTissueSpecimen);
+
+		}
+		catch (Exception e)
+		{
+			Logger.out.debug(DynamicExtensionsUtility.getStackTrace(e));
+			fail();
+		}
+	}
+	
+	/**
+	 *  PURPOSE: This method tests for metadata save of the inheriatance when child is created with edited parent. 
+	 *
+	 *  EXPECTED BEHAVIOUR: All the hierarchy should get saved. Changes in the parent should get properly reflected
+	 *  in the database. Appropriate changes in the data tables should occur without any exception.
+	 *  
+	 *  TEST CASE FLOW: 1. Create Specimen
+	 *  				2. Persist Specimen
+	 *  				3. Add an attribute to the Specimen.
+	 *                  2. Create TissueSpecimen and set parent as Specimen
+	 *                  3. persist TissueSpecimen                   
+	 *                  6. Check if the changes done in the specimen are reflected or not.
+	 *                  7. Verify TissueSpecimen.
+	 */
+
+	public void testInheritanceEditMetadataCreateChildWithEditedParent()
+	{
+
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		try
+		{
+			EntityInterface specimen = factory.createEntity();
+			specimen.setName("specimen");
+			specimen.setAbstract(true);
+			AttributeInterface barcode = factory.createStringAttribute();
+			barcode.setName("barcode");
+			specimen.addAbstractAttribute(barcode);
+			
+			
+
+			EntityInterface tissueSpecimen = factory.createEntity();
+			tissueSpecimen.setName("tissueSpecimen");
+			AttributeInterface quantityInCellCount = factory.createIntegerAttribute();
+			quantityInCellCount.setName("quantityInCellCount");			
+			tissueSpecimen.addAbstractAttribute(quantityInCellCount);
+			
+			tissueSpecimen.setParentEntity(specimen);
+			
+			EntityInterface savedTissueSpecimen = entityManagerInterface.persistEntityMetadata(tissueSpecimen,false);
+			
+			
+			
+			savedTissueSpecimen =  entityManagerInterface.getEntityByIdentifier(savedTissueSpecimen.getId().toString());
+			String id = savedTissueSpecimen.getParentEntity().getId().toString();
+			System.out.println("Id is" + id);
+			
+			EntityInterface savedSpecimen =  entityManagerInterface.getEntityByIdentifier(id);
+			Collection childColelction =  entityManagerInterface.getChildrenEntities(savedSpecimen);
+			assertEquals(childColelction.size(),1);
+			childColelction.contains(savedTissueSpecimen);
+
+		}
+		catch (Exception e)
+		{
+			Logger.out.debug(DynamicExtensionsUtility.getStackTrace(e));
+			fail();
+		}
+	}
+
 	
 }

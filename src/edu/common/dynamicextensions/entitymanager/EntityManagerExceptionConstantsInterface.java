@@ -42,5 +42,9 @@ public interface EntityManagerExceptionConstantsInterface
      String DYEXTN_A_008 = "DYEXTN_A_008"; 
      //Exception constant in case when user can not change the data type of an attribute.
      String DYEXTN_A_009 = "DYEXTN_A_009";
+     //In case when parent can not be changed for the entity.
+     String DYEXTN_A_010 = "DYEXTN_A_010";
+//   In case when parent is not saved for the entity.
+     String DYEXTN_A_011 = "DYEXTN_A_011";
      
 }

@@ -53,7 +53,8 @@ import edu.wustl.common.util.logger.Logger;
 class DynamicExtensionBaseQueryBuilder
 		implements
 			EntityManagerConstantsInterface,
-			EntityManagerExceptionConstantsInterface,DynamicExtensionsQueryBuilderConstantsInterface
+			EntityManagerExceptionConstantsInterface,
+			DynamicExtensionsQueryBuilderConstantsInterface
 {
 
 	EntityManagerUtil entityManagerUtil = new EntityManagerUtil();
@@ -110,6 +111,8 @@ class DynamicExtensionBaseQueryBuilder
 	{
 		Logger.out.debug("getUpdateEntityQueryList : Entering method");
 
+		List entityInheritanceQueryList = getInheritanceQueryList(entity, databaseCopy,
+				attributeRollbackQueryList);
 		//get the query for any attribute that is modified.
 		List updateAttributeQueryList = getUpdateAttributeQueryList(entity, databaseCopy,
 				attributeRollbackQueryList);
@@ -119,11 +122,40 @@ class DynamicExtensionBaseQueryBuilder
 				attributeRollbackQueryList);
 
 		List updateQueryList = new ArrayList();
+		updateQueryList.addAll(entityInheritanceQueryList);
 		updateQueryList.addAll(updateAttributeQueryList);
 		updateQueryList.addAll(updateassociationsQueryList);
 
 		Logger.out.debug("getUpdateEntityQueryList Exiting method");
 		return updateQueryList;
+	}
+
+	private List getInheritanceQueryList(Entity entity, Entity databaseCopy,
+			List attributeRollbackQueryList)
+	{
+		List queryList = new ArrayList();
+		String tableName = entity.getTableProperties().getName();
+		 
+		if (isParentChanged(entity, databaseCopy))
+		{
+			String foreignConstraintRemoveQuery = getForeignKeyRemoveConstraintQueryForInheritance(databaseCopy);
+			
+			String foreignConstraintRollbackQuery = getForeignKeyConstraintQueryForInheritance(databaseCopy);
+			
+			queryList.add(foreignConstraintRemoveQuery);
+			attributeRollbackQueryList.add(foreignConstraintRollbackQuery);
+			
+			if (entity.getParentEntity() != null)
+			{
+				String foreignConstraintAddQuery = getForeignKeyConstraintQueryForInheritance(entity);
+			
+				foreignConstraintRollbackQuery = getForeignKeyRemoveConstraintQueryForInheritance(entity);
+				queryList.add(foreignConstraintAddQuery);
+				attributeRollbackQueryList.add(foreignConstraintRollbackQuery);
+			}
+		}
+
+		return queryList;
 	}
 
 	/**
@@ -443,10 +475,9 @@ class DynamicExtensionBaseQueryBuilder
 		String dataType = getDataTypeForIdentifier();
 		String tableName = entity.getTableProperties().getName();
 		EntityInterface parentEntity = entity.getParentEntity();
-		
+
 		StringBuffer query = new StringBuffer(CREATE_TABLE + " " + tableName + " "
-				+ OPENING_BRACKET + " " + IDENTIFIER + " " + dataType
-				+ COMMA);
+				+ OPENING_BRACKET + " " + IDENTIFIER + " " + dataType + COMMA);
 		Collection attributeCollection = entity.getAttributeCollection();
 		if (attributeCollection != null && !attributeCollection.isEmpty())
 		{
@@ -469,7 +500,7 @@ class DynamicExtensionBaseQueryBuilder
 			}
 		}
 		query = query.append(PRIMARY_KEY_CONSTRAINT_FOR_ENTITY_DATA_TABLE + ")"); //identifier set as primary key
-		
+
 		// add create query
 		queryList.add(query.toString());
 		//add foerfign key query for inheritance
@@ -478,46 +509,55 @@ class DynamicExtensionBaseQueryBuilder
 			String foreignKeyConstraintQueryForInheritance = getForeignKeyConstraintQueryForInheritance(entity);
 			queryList.add(foreignKeyConstraintQueryForInheritance);
 		}
-		
+
 		String reverseQuery = getReverseQueryForEntityDataTable(entity);
 		reverseQueryList.add(reverseQuery);
 		return queryList;
 	}
-	
+
 	/**
 	 * This method returns the query to add foreign key constraint in the given child entity
 	 * that refers to identifier column of the parent.
 	 * @param entity
 	 * @return
 	 */
-	protected String getForeignKeyConstraintQueryForInheritance(EntityInterface entity) {
-		
+	protected String getForeignKeyConstraintQueryForInheritance(EntityInterface entity)
+	{
+
 		StringBuffer foreignKeyConstraint = new StringBuffer();
 		EntityInterface parentEntity = entity.getParentEntity();
 		String foreignConstraintName = "FK" + "E" + entity.getId() + "E" + parentEntity.getId();
-		
-		
-		foreignKeyConstraint.append(ALTER_TABLE)
-		                    .append(WHITESPACE)
-					        .append(entity.getTableProperties().getName())
-		                    .append(WHITESPACE)
-					        .append(ADD_KEYWORD)
-		                    .append(WHITESPACE)
-					        .append(CONSTRAINT_KEYWORD)
-		                    .append(WHITESPACE)
-					        .append(foreignConstraintName)
-		                    .append(FOREIGN_KEY_KEYWORD)
-					        .append(OPENING_BRACKET)
-		                    .append(IDENTIFIER)
-					        .append(CLOSING_BRACKET)
-		                    .append(WHITESPACE)
-		                    .append(REFERENCES_KEYWORD)
-		                    .append(WHITESPACE)
-		                    .append(parentEntity.getTableProperties().getName())
-		                    .append(OPENING_BRACKET)
-		                    .append(IDENTIFIER)
-		                    .append(CLOSING_BRACKET);
-		
+
+		foreignKeyConstraint.append(ALTER_TABLE).append(WHITESPACE).append(
+				entity.getTableProperties().getName()).append(WHITESPACE).append(ADD_KEYWORD)
+				.append(WHITESPACE).append(CONSTRAINT_KEYWORD).append(WHITESPACE).append(
+						foreignConstraintName).append(FOREIGN_KEY_KEYWORD).append(OPENING_BRACKET)
+				.append(IDENTIFIER).append(CLOSING_BRACKET).append(WHITESPACE).append(
+						REFERENCES_KEYWORD).append(WHITESPACE).append(
+						parentEntity.getTableProperties().getName()).append(OPENING_BRACKET)
+				.append(IDENTIFIER).append(CLOSING_BRACKET);
+
+		return foreignKeyConstraint.toString();
+	}
+
+	/**
+	 * This method returns the query to add foreign key constraint in the given child entity
+	 * that refers to identifier column of the parent.
+	 * @param entity
+	 * @return
+	 */
+	protected String getForeignKeyRemoveConstraintQueryForInheritance(EntityInterface entity)
+	{
+
+		StringBuffer foreignKeyConstraint = new StringBuffer();
+		EntityInterface parentEntity = entity.getParentEntity();
+		String foreignConstraintName = "FK" + "E" + entity.getId() + "E" + parentEntity.getId();
+
+		foreignKeyConstraint.append(ALTER_TABLE).append(WHITESPACE).append(
+				entity.getTableProperties().getName()).append(WHITESPACE).append(DROP_KEYWORD)
+				.append(WHITESPACE).append(CONSTRAINT_KEYWORD).append(WHITESPACE).append(
+						foreignConstraintName);
+
 		return foreignKeyConstraint.toString();
 	}
 
@@ -1172,6 +1212,15 @@ class DynamicExtensionBaseQueryBuilder
 	{
 		EntityInterface entityInterface = attribute.getEntity();
 		String tableName = entityInterface.getTableProperties().getName();
+		if (isDataPresent(tableName))
+		{
+			throw new DynamicExtensionsApplicationException(
+					"Can not change the data type of the attribute", null, DYEXTN_A_009);
+		}
+	}
+
+	public boolean isDataPresent(String tableName) throws DynamicExtensionsSystemException
+	{
 		StringBuffer queryBuffer = new StringBuffer();
 		queryBuffer.append(SELECT_KEYWORD).append(WHITESPACE).append("COUNT").append(
 				OPENING_BRACKET).append("*").append(CLOSING_BRACKET).append(WHITESPACE).append(
@@ -1183,9 +1232,13 @@ class DynamicExtensionBaseQueryBuilder
 		{
 			Long count = resultSet.getLong(1);
 			if (count > 0)
-				{
-				throw new DynamicExtensionsApplicationException("Can not change the data type of the attribute",null,DYEXTN_A_009);
-				}
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 
 		}
 		catch (SQLException e)
@@ -1438,6 +1491,27 @@ class DynamicExtensionBaseQueryBuilder
 		queryString = queryString.replace("]", CLOSING_BRACKET);
 
 		return queryString;
+	}
+
+	/**
+	 * @param entity
+	 * @param databaseCopy
+	 * @return
+	 */
+	public boolean isParentChanged(Entity entity, Entity databaseCopy)
+	{
+		boolean isParentChanged = false;
+		if (entity.getParentEntity() != null
+				&& !entity.getParentEntity().equals(databaseCopy.getParentEntity()))
+		{
+			isParentChanged = true;
+		}
+		else if (entity.getParentEntity() == null && databaseCopy.getParentEntity() != null)
+		{
+			isParentChanged = true;
+		}
+		return isParentChanged;
+
 	}
 
 }

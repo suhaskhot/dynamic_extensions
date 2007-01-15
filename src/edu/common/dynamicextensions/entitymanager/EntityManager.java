@@ -230,12 +230,21 @@ public class EntityManager
 			return;
 		}
 		Set<EntityInterface> entitySet = new HashSet<EntityInterface>();
+		
 		entitySet.add(entityInterface);
+		
 		getAssociatedEntities(entityInterface, entitySet);
+		EntityInterface tempEntity = entityInterface.getParentEntity();
+		while (tempEntity != null) 
+		{
+			entitySet.add(tempEntity);
+			tempEntity = tempEntity.getParentEntity(); 
+		}
 		for (EntityInterface entity : entitySet)
 		{
 			((Entity) entity).setProcessed(false);
 		}
+		
 	}
 
 	/**
@@ -1994,8 +2003,9 @@ public class EntityManager
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		logDebug("saveOrUpdateEntity", "Entering method");
-
+		
 		Entity entity = (Entity) entityInterface;//(Entity) DynamicExtensionsUtility.cloneObject(entityInterface);
+
 		if (entity.isProcessed())
 		{
 			return entity;
@@ -2004,21 +2014,40 @@ public class EntityManager
 		{
 			entity.setProcessed(true);
 		}
+		
+		if(entity.getParentEntity() != null && entity.getParentEntity().getId() == null)
+		{
+			throw new DynamicExtensionsApplicationException("Unsaved Parent not allowed",null,DYEXTN_A_011);
+		}
 		List reverseQueryList = new LinkedList();
 		List queryList = null;
 
 		checkForDuplicateEntityName(entity);
 		Entity databaseCopy = null;
+		
 		try
 		{
 			if (!isEntitySaved)
 			{
 				preSaveProcessEntity(entity);
+				if (entity.getParentEntity() != null)
+				{
+				saveOrUpdateEntity(entity.getParentEntity(),hibernateDAO,rollbackQueryStack,true);
+				}
 				hibernateDAO.insert(entity, null, false, false);
+				
 			}
 			else
 			{
 				databaseCopy = (Entity) DBUtil.loadCleanObj(Entity.class, entity.getId());
+					if (queryBuilder.isParentChanged(entity, databaseCopy))
+					{
+						checkParentChangeAllowed(entity);
+					}
+					if (entity.getParentEntity() != null)
+					{
+					saveOrUpdateEntity(entity.getParentEntity(),hibernateDAO,rollbackQueryStack,true);
+					}
 				hibernateDAO.update(entity, null, false, false, false);
 
 			}
@@ -2062,6 +2091,19 @@ public class EntityManager
 
 		return entity;//(Entity) getEntityByIdentifier(entity.getId().toString());
 	}
+
+	private void checkParentChangeAllowed(Entity entity) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+
+		String tableName = entity.getTableProperties().getName();
+		if (queryBuilder.isDataPresent(tableName))
+		{
+			throw new DynamicExtensionsApplicationException(
+					"Can not change the data type of the attribute", null, DYEXTN_A_010);
+		}
+	}
+
 
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getRecordById(edu.common.dynamicextensions.domaininterface.EntityInterface, java.lang.Long)

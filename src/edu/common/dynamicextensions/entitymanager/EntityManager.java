@@ -177,11 +177,10 @@ public class EntityManager
 			//Calling the method which actually calls the insert/update method on dao. Hibernatedao is passed to this
 			//method and transaction is handled in the calling method.
 			saveEntityGroup(entityInterface, hibernateDAO);
-			
+
 			entityInterface = saveOrUpdateEntity(entityInterface, hibernateDAO, stack,
 					isEntitySaved);
-			
-			
+
 			//Committing the changes done in the hibernate session to the database.
 			hibernateDAO.commit();
 		}
@@ -225,46 +224,50 @@ public class EntityManager
 
 	private void postSaveOrUpdateEntity(EntityInterface entityInterface)
 	{
-		if (entityInterface == null) {
+		if (entityInterface == null)
+		{
 			return;
 		}
 		Set<EntityInterface> entitySet = new HashSet<EntityInterface>();
-		entitySet.add(entityInterface);		
-		getAssociatedEntities(entityInterface,entitySet);
+		entitySet.add(entityInterface);
+		getAssociatedEntities(entityInterface, entitySet);
 		for (EntityInterface entity : entitySet)
 		{
-			((Entity)entity).setProcessed(false);
+			((Entity) entity).setProcessed(false);
 		}
 	}
-	
+
 	/**
 	 * @param entity
 	 * @param entitySet
 	 */
 	private void getAssociatedEntities(EntityInterface entity, Set<EntityInterface> entitySet)
 	{
-		
-		
+
 		Collection<AssociationInterface> associationCollection = entity.getAssociationCollection();
 		for (AssociationInterface associationInterface : associationCollection)
 		{
 			EntityInterface targetEntity = associationInterface.getTargetEntity();
-			if(!entitySet.contains(targetEntity)) {
+			if (!entitySet.contains(targetEntity))
+			{
 				entitySet.add(targetEntity);
-				getAssociatedEntities(targetEntity,entitySet);
+				getAssociatedEntities(targetEntity, entitySet);
 			}
 		}
 	}
 
-	private void saveEntityGroup(EntityInterface entityInterface, HibernateDAO hibernateDAO) throws DAOException, UserNotAuthorizedException
+	private void saveEntityGroup(EntityInterface entityInterface, HibernateDAO hibernateDAO)
+			throws DAOException, UserNotAuthorizedException
 	{
 		Set<EntityInterface> processedEntities = new HashSet<EntityInterface>();
-		Set<EntityGroupInterface> processedEntityGroups= new HashSet<EntityGroupInterface>();
-		EntityManagerUtil.getAllEntityGroups(entityInterface, processedEntities , processedEntityGroups);
-		
+		Set<EntityGroupInterface> processedEntityGroups = new HashSet<EntityGroupInterface>();
+		EntityManagerUtil.getAllEntityGroups(entityInterface, processedEntities,
+				processedEntityGroups);
+
 		for (EntityGroupInterface entityGroup : processedEntityGroups)
 		{
-			if (entityGroup.getId() == null) {
+			if (entityGroup.getId() == null)
+			{
 				hibernateDAO.insert(entityGroup, null, false, false);
 			}
 		}
@@ -790,11 +793,11 @@ public class EntityManager
 					{
 						isEntitySaved = true;
 					}
-						
-						((Entity) targetEntity).setDataTableState(entity.getDataTableState());
-						targetEntity = saveOrUpdateEntity(targetEntity, hibernateDAO,
-								rollbackQueryStack, isEntitySaved);
-					
+
+					((Entity) targetEntity).setDataTableState(entity.getDataTableState());
+					targetEntity = saveOrUpdateEntity(targetEntity, hibernateDAO,
+							rollbackQueryStack, isEntitySaved);
+
 					//Calling the particular method that populates the constraint properties for the association.
 					populateConstraintProperties(association);
 					//Calling the method which creates or removes the system generated association depending on
@@ -1282,9 +1285,9 @@ public class EntityManager
 				// queries that restores the database state to the state before calling this method
 				// in case of exception. 
 				saveEntityGroup(entity, hibernateDAO);
-				
+
 				saveOrUpdateEntity(entity, hibernateDAO, rollbackQueryStack, isentitySaved);
-				
+
 			}
 
 			preSaveProcessContainer(container); //preprocess
@@ -1419,27 +1422,30 @@ public class EntityManager
 	 * @throws UserNotAuthorizedException
 	 */
 	private Long insertDataForSingleEntity(EntityInterface entity, Map dataValue,
-			HibernateDAO hibernateDAO, Long parentRecordId) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
-			UserNotAuthorizedException
+			HibernateDAO hibernateDAO, Long parentRecordId)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException,
+			HibernateException, SQLException, DAOException, UserNotAuthorizedException
 	{
-		if (entity == null )
+		if (entity == null)
 		{
 			throw new DynamicExtensionsSystemException("Input to insert data is null");
 		}
-		
+
 		// if empty, insert row with only identifer column value.
-		if (dataValue == null) {
+		if (dataValue == null)
+		{
 			dataValue = new HashMap();
 		}
 
 		StringBuffer columnNameString = new StringBuffer("IDENTIFIER ");
 		Long identifier = null;
-		if (parentRecordId != null) {
+		if (parentRecordId != null)
+		{
 			identifier = parentRecordId;
-		} else {
-		 identifier = entityManagerUtil
-				.getNextIdentifier(entity.getTableProperties().getName());
+		}
+		else
+		{
+			identifier = entityManagerUtil.getNextIdentifier(entity.getTableProperties().getName());
 		}
 		StringBuffer columnValuesString = new StringBuffer(identifier.toString());
 		String tableName = entity.getTableProperties().getName();
@@ -1504,7 +1510,7 @@ public class EntityManager
 					for (Map valueMapForContainedEntity : listOfMapsForContainedEntity)
 					{
 						Long recordIdForContainedEntity = insertDataForSingleEntity(association
-								.getTargetEntity(), valueMapForContainedEntity, hibernateDAO,null);
+								.getTargetEntity(), valueMapForContainedEntity, hibernateDAO, null);
 						recordIdList.add(recordIdForContainedEntity);
 					}
 
@@ -1564,16 +1570,16 @@ public class EntityManager
 			hibernateDAO.openSession(null);
 
 			List<EntityInterface> entityList = getParentEntityList(entity);
-			Map<EntityInterface,Map> entityValueMap = initialiseEntityValueMap(entity,dataValue);
+			Map<EntityInterface, Map> entityValueMap = initialiseEntityValueMap(entity, dataValue);
 			Long parentRecordId = null;
-			for(EntityInterface entityInterface : entityList){
+			for (EntityInterface entityInterface : entityList)
+			{
 				Map valueMap = entityValueMap.get(entityInterface);
-				recordId = insertDataForSingleEntity(entityInterface, valueMap, hibernateDAO, parentRecordId);
+				recordId = insertDataForSingleEntity(entityInterface, valueMap, hibernateDAO,
+						parentRecordId);
 				parentRecordId = recordId;
-				
+
 			}
-			
-			
 
 			hibernateDAO.commit();
 		}
@@ -1603,18 +1609,20 @@ public class EntityManager
 		return recordId;
 	}
 
-	private Map<EntityInterface, Map> initialiseEntityValueMap(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue)
+	private Map<EntityInterface, Map> initialiseEntityValueMap(EntityInterface entity,
+			Map<AbstractAttributeInterface, ?> dataValue)
 	{
 		Map<EntityInterface, Map> entityMap = new HashMap<EntityInterface, Map>();
-		
+
 		for (AbstractAttributeInterface abstractAttributeInterface : dataValue.keySet())
 		{
-			EntityInterface attributeEntity  = abstractAttributeInterface.getEntity();
+			EntityInterface attributeEntity = abstractAttributeInterface.getEntity();
 			Object value = dataValue.get(abstractAttributeInterface);
-			Map<AbstractAttributeInterface,Object> entityDataValueMap = (Map) entityMap.get(attributeEntity);
-			if (entityDataValueMap == null) 
+			Map<AbstractAttributeInterface, Object> entityDataValueMap = (Map) entityMap
+					.get(attributeEntity);
+			if (entityDataValueMap == null)
 			{
-				entityDataValueMap = new HashMap<AbstractAttributeInterface,Object>();
+				entityDataValueMap = new HashMap<AbstractAttributeInterface, Object>();
 				entityMap.put(attributeEntity, entityDataValueMap);
 			}
 			entityDataValueMap.put(abstractAttributeInterface, value);
@@ -1630,8 +1638,9 @@ public class EntityManager
 	{
 		List<EntityInterface> entityList = new ArrayList<EntityInterface>();
 		entityList.add(entity);
-		while(entity.getParentEntity() != null) {
-			entityList.add(0,entity.getParentEntity());
+		while (entity.getParentEntity() != null)
+		{
+			entityList.add(0, entity.getParentEntity());
 			entity = entity.getParentEntity();
 		}
 		return entityList;
@@ -1770,7 +1779,7 @@ public class EntityManager
 					for (Map valueMapForContainedEntity : listOfMapsForContainedEntity)
 					{
 						Long childRecordId = insertDataForSingleEntity(association
-								.getTargetEntity(), valueMapForContainedEntity, hibernateDAO,null);
+								.getTargetEntity(), valueMapForContainedEntity, hibernateDAO, null);
 						recordIdList.add(childRecordId);
 					}
 
@@ -1984,16 +1993,19 @@ public class EntityManager
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		logDebug("saveOrUpdateEntity", "Entering method");
-		
+
 		Entity entity = (Entity) entityInterface;//(Entity) DynamicExtensionsUtility.cloneObject(entityInterface);
-		if (entity.isProcessed()) {
+		if (entity.isProcessed())
+		{
 			return entity;
-		} else {
+		}
+		else
+		{
 			entity.setProcessed(true);
 		}
 		List reverseQueryList = new LinkedList();
 		List queryList = null;
-		
+
 		checkForDuplicateEntityName(entity);
 		Entity databaseCopy = null;
 		try
@@ -2046,7 +2058,7 @@ public class EntityManager
 		}
 
 		logDebug("saveOrUpdateEntity", "Exiting Method");
-		
+
 		return entity;//(Entity) getEntityByIdentifier(entity.getId().toString());
 	}
 
@@ -2064,16 +2076,11 @@ public class EntityManager
 	 *                                                      
 	 *             String                    Other attribute type.
 	 */
-	public Map<AbstractAttributeInterface, Object> getRecordById(EntityInterface entity,
+	private Map<AbstractAttributeInterface, Object> getEntityRecordById(EntityInterface entity,
 			Long recordId) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
 		Map<AbstractAttributeInterface, Object> recordValues = new HashMap();
-
-		if (entity == null || entity.getId() == null || recordId == null)
-		{
-			throw new DynamicExtensionsSystemException("Invalid Input");
-		}
 
 		Collection attributesCollection = entity.getAttributeCollection();
 		List<AttributeInterface> collectionAttributes = new ArrayList<AttributeInterface>();
@@ -2191,6 +2198,36 @@ public class EntityManager
 	}
 
 	/**
+	 * This method retrives the data for given entity for given record. It also returns the values of
+	 * any inherited attributes. 
+	 * 
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getRecordById(edu.common.dynamicextensions.domaininterface.EntityInterface, java.lang.Long)
+	 */
+	public Map<AbstractAttributeInterface, Object> getRecordById(EntityInterface entity,
+			Long recordId) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+
+		if (entity == null || entity.getId() == null || recordId == null)
+		{
+			throw new DynamicExtensionsSystemException("Invalid Input");
+		}
+
+		Map<AbstractAttributeInterface, Object> recordValues = new HashMap<AbstractAttributeInterface, Object>();
+
+		do
+		{
+			Map<AbstractAttributeInterface, Object> recordValuesForSingleEntity = getEntityRecordById(
+					entity, recordId);
+			recordValues.putAll(recordValuesForSingleEntity);
+			entity = entity.getParentEntity();
+		}
+		while (entity != null);
+
+		return recordValues;
+	}
+
+	/**
 	 * processes entity group before saving.
 	 * @param entity entity
 	 * @throws DynamicExtensionsApplicationException 
@@ -2256,7 +2293,7 @@ public class EntityManager
 						isEntitySaved = true;
 					}
 					saveOrUpdateEntity(entityInterface, hibernateDAO, stack, isEntitySaved);
-					
+
 				}
 			}
 			hibernateDAO.commit();

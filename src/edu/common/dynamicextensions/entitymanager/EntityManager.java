@@ -233,7 +233,7 @@ public class EntityManager
 		
 		entitySet.add(entityInterface);
 		
-		getAssociatedEntities(entityInterface, entitySet);
+		DynamicExtensionsUtility.getAssociatedEntities(entityInterface, entitySet);
 		EntityInterface tempEntity = entityInterface.getParentEntity();
 		while (tempEntity != null) 
 		{
@@ -247,25 +247,7 @@ public class EntityManager
 		
 	}
 
-	/**
-	 * @param entity
-	 * @param entitySet
-	 */
-	private void getAssociatedEntities(EntityInterface entity, Set<EntityInterface> entitySet)
-	{
-
-		Collection<AssociationInterface> associationCollection = entity.getAssociationCollection();
-		for (AssociationInterface associationInterface : associationCollection)
-		{
-			EntityInterface targetEntity = associationInterface.getTargetEntity();
-			if (!entitySet.contains(targetEntity))
-			{
-				entitySet.add(targetEntity);
-				getAssociatedEntities(targetEntity, entitySet);
-			}
-		}
-	}
-
+	
 	private void saveEntityGroup(EntityInterface entityInterface, HibernateDAO hibernateDAO)
 			throws DAOException, UserNotAuthorizedException
 	{

@@ -99,6 +99,8 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				//Control Interface : Add control
 				controlInterface = controlProcessor.createAndPopulateControl(controlsForm.getUserSelectedTool(), controlsForm);
 				controlInterface.setSequenceNumber(WebUIManager.getSequenceNumberForNextControl(containerInterface));
+				
+				
 
 				//Entity Interface  : Add attribute
 				if ((entityInterface != null) && (abstractAttributeInterface != null))
@@ -106,7 +108,8 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 					entityInterface.addAbstractAttribute(abstractAttributeInterface);
 					abstractAttributeInterface.setEntity(entityInterface);
 				}
-
+				DynamicExtensionsUtility.updateEntityReferences(abstractAttributeInterface);
+				
 				//Container : Add control and entity
 				containerInterface.addControl(controlInterface);
 				containerInterface.setEntity(entityInterface);

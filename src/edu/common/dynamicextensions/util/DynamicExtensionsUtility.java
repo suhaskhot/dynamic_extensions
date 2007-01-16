@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import net.sf.hibernate.HibernateException;
@@ -28,13 +29,17 @@ import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface;
@@ -242,7 +247,7 @@ public class DynamicExtensionsUtility
 		}
 		return controlInterface;
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -492,6 +497,7 @@ public class DynamicExtensionsUtility
 	{
 		Collections.sort(list, new Comparator()
 		{
+
 			public int compare(Object o1, Object o2)
 			{
 				String s1 = ((NameValueBean) o1).getName();
@@ -555,6 +561,7 @@ public class DynamicExtensionsUtility
 		}
 		return integerList.toArray(new Integer[integerList.size()]);
 	}
+
 	/**
 	 * validate the entity for
 	 * 1. Name - should not contain any special characters, should not be empty,null
@@ -595,8 +602,8 @@ public class DynamicExtensionsUtility
 			else
 			{
 				throw new DynamicExtensionsApplicationException(
-						"Attribute names should be unique for the entity ", null, EntityManagerExceptionConstantsInterface.DYEXTN_A_006,
-						attribute.getName());
+						"Attribute names should be unique for the entity ", null,
+						EntityManagerExceptionConstantsInterface.DYEXTN_A_006, attribute.getName());
 			}
 		}
 		return;
@@ -622,6 +629,51 @@ public class DynamicExtensionsUtility
 		{
 			throw new DynamicExtensionsApplicationException("Object name exceeds maximum limit",
 					null, EntityManagerExceptionConstantsInterface.DYEXTN_A_007);
+		}
+	}
+	
+	/**
+	 * @param association
+	 * @param entitySet
+	 */
+	public static void updateEntityReferences(AbstractAttributeInterface abstractAttribute) {
+		
+		if (abstractAttribute instanceof AttributeInterface) {
+			return ;
+		}
+		Set entitySet = new HashSet();
+		entitySet.add(abstractAttribute.getEntity());
+		getAssociatedEntities(abstractAttribute.getEntity(),entitySet);
+		List entityList = new ArrayList(entitySet);
+		
+		AssociationInterface association = (AssociationInterface)abstractAttribute;
+		EntityInterface targetEntity = association.getTargetEntity();
+		for(AssociationInterface tagretEntityAssociation : targetEntity.getAssociationCollection()) {
+			EntityInterface entity = tagretEntityAssociation.getTargetEntity();
+			if (entityList.contains(entity))
+			{
+				tagretEntityAssociation.setTargetEntity((EntityInterface) entityList.get(entityList
+						.indexOf(entity)));
+			}
+		}
+	}
+
+	/**
+	 * @param entity
+	 * @param entitySet
+	 */
+	public static void getAssociatedEntities(EntityInterface entity, Set<EntityInterface> entitySet)
+	{
+
+		Collection<AssociationInterface> associationCollection = entity.getAssociationCollection();
+		for (AssociationInterface associationInterface : associationCollection)
+		{
+			EntityInterface targetEntity = associationInterface.getTargetEntity();
+			if (!entitySet.contains(targetEntity))
+			{
+				entitySet.add(targetEntity);
+				getAssociatedEntities(targetEntity, entitySet);
+			}
 		}
 	}
 

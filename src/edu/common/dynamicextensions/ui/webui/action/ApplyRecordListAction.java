@@ -18,7 +18,7 @@ import edu.common.dynamicextensions.util.global.Constants;
  * @author chetan_patil
  *
  */
-public class ApplyEditRecordsAction extends BaseDynamicExtensionsAction
+public class ApplyRecordListAction extends BaseDynamicExtensionsAction
 {
 
 	/*

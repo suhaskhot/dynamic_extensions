@@ -34,11 +34,11 @@ public class RangeValidator implements ValidatorRuleInterface
 			Map<String, String> parameterMap) throws DynamicExtensionsValidationException
 	{
 		boolean valid = true;
-		
+
 		/* Check for the validity of the number */
 		NumberValidator numberValidator = new NumberValidator();
 		numberValidator.validate(attribute, valueObject, parameterMap);
-		
+
 		/* Check for the validity of the range of the number against the pre-defined range*/
 		if (valueObject != null)
 		{
@@ -81,12 +81,11 @@ public class RangeValidator implements ValidatorRuleInterface
 	{
 		String parameterName = parameter.getKey();
 		String parameterValue = parameter.getValue();
-		Long longValue = null;
 
 		List<String> placeHolders = null;
 		if (parameterName.equals("min"))
 		{
-			if (longValue < Long.parseLong(parameterValue))
+			if (Long.parseLong(value) < Long.parseLong(parameterValue))
 			{
 				placeHolders = new ArrayList<String>();
 				placeHolders.add(attributeName);
@@ -98,7 +97,7 @@ public class RangeValidator implements ValidatorRuleInterface
 		}
 		else if (parameterName.equals("max"))
 		{
-			if (longValue > Long.parseLong(parameterValue))
+			if (Long.parseLong(value) > Long.parseLong(parameterValue))
 			{
 				placeHolders = new ArrayList<String>();
 				placeHolders.add(attributeName);
@@ -122,12 +121,11 @@ public class RangeValidator implements ValidatorRuleInterface
 	{
 		String parameterName = parameter.getKey();
 		String parameterValue = parameter.getValue();
-		Double doubleValue = null;
 
 		List<String> placeHolders = null;
 		if (parameterName.equals("min"))
 		{
-			if (doubleValue < Double.parseDouble(parameterValue))
+			if (Double.parseDouble(value) < Double.parseDouble(parameterValue))
 			{
 				placeHolders = new ArrayList<String>();
 				placeHolders.add(attributeName);
@@ -139,7 +137,7 @@ public class RangeValidator implements ValidatorRuleInterface
 		}
 		else if (parameterName.equals("max"))
 		{
-			if (doubleValue > Double.parseDouble(parameterValue))
+			if (Double.parseDouble(value) > Double.parseDouble(parameterValue))
 			{
 				placeHolders = new ArrayList<String>();
 				placeHolders.add(attributeName);

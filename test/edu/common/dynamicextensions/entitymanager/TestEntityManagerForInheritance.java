@@ -1149,4 +1149,209 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 		}
 	}
 
+	/**
+	 *  PURPOSE: This method tests for inserting data for inheritance
+	 *
+	 *  EXPECTED BEHAVIOUR: parent data should be inserted before the child. 
+	 *  
+	 *  TEST CASE FLOW: 1. Create following hierarchy
+	 *                  
+	 *                  Specimen (barcode and label)
+	 *                    |
+	 *                    |
+	 *               tissueSpecimen (quantityInCellCount)
+	 *                    |
+	 *                    |
+	 *            ----------------------
+	 *            |                     |
+	 *            |                     |
+	 *    advanceTissueSpecimenA      advanceTissueSpecimenB
+	 *     (newAttributeA)             (newAttributeB1 and newAttributeB2)
+	 *     
+	 *                   2. insert data for tissueSpecimen
+	 *                   3. Edit Data for tissueSpecimen
+	 *                   4. verify that same record is edited with proper values.
+	 *                   5. insert data for advanceTissueSpecimenA
+	 *                   6. Edit Data for advanceTissueSpecimenA
+	 *                   7. verify that same record is edited with proper values.
+	 */ 
+
+	public void testEditDataForInheritance()
+	{
+
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		try
+		{
+			// Step 1
+			EntityInterface specimen = factory.createEntity();
+			specimen.setName("specimen");
+			specimen.setAbstract(true);
+			AttributeInterface barcode = factory.createStringAttribute();
+			barcode.setName("barcode");
+			specimen.addAbstractAttribute(barcode);
+			
+			AttributeInterface label = factory.createStringAttribute();
+			label.setName("label");
+			specimen.addAbstractAttribute(label);
+			
+			EntityInterface tissueSpecimen = factory.createEntity();			
+			tissueSpecimen.setParentEntity(specimen);
+			
+			specimen = entityManagerInterface.persistEntity(specimen);
+			
+			tissueSpecimen.setName("tissueSpecimen");
+			
+			AttributeInterface quantityInCellCount = factory.createIntegerAttribute();
+			quantityInCellCount.setName("quantityInCellCount");			
+			tissueSpecimen.addAbstractAttribute(quantityInCellCount);
+			
+			AttributeInterface arivalDate = factory.createDateAttribute();
+			arivalDate.setName("arivalDate");			
+			tissueSpecimen.addAbstractAttribute(arivalDate);
+			
+			
+			tissueSpecimen = entityManagerInterface.persistEntity(tissueSpecimen);
+			
+			EntityInterface advanceTissueSpecimenA = factory.createEntity();
+			advanceTissueSpecimenA.setParentEntity(tissueSpecimen);
+			advanceTissueSpecimenA.setName("advanceTissueSpecimenA");
+			
+			AttributeInterface newAttribute = factory.createIntegerAttribute();
+			newAttribute.setName("newAttributeA");			
+			advanceTissueSpecimenA.addAbstractAttribute(newAttribute);
+			
+			
+			EntityInterface advanceTissueSpecimenB = factory.createEntity();
+			advanceTissueSpecimenB.setParentEntity(tissueSpecimen);
+			advanceTissueSpecimenB.setName("advanceTissueSpecimenB");
+			
+			AttributeInterface newAttributeB = factory.createIntegerAttribute();
+			newAttributeB.setName("newAttributeB");			
+			advanceTissueSpecimenB.addAbstractAttribute(newAttributeB);
+			AttributeInterface newAttributeB2 = factory.createIntegerAttribute();
+			newAttributeB2.setName("newAttributeB2");			
+			advanceTissueSpecimenB.addAbstractAttribute(newAttributeB2);
+			
+			advanceTissueSpecimenA = entityManagerInterface.persistEntity(advanceTissueSpecimenA);
+
+			//Step 2
+			Map dataValue = new HashMap();
+			dataValue.put(barcode, "123456");
+			dataValue.put(label, "specimen parent label");
+			dataValue.put(quantityInCellCount, "45");
+			dataValue.put(arivalDate, Utility.parseDate("11-12-1982",Constants.DATE_PATTERN_MM_DD_YYYY));
+					
+			Long recordId = entityManagerInterface.insertData(tissueSpecimen, dataValue);
+			
+			ResultSet resultSet = executeQuery("select count(*)  from "
+					+ specimen.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(1, resultSet.getInt(1));
+			
+			 resultSet = executeQuery("select count(*)  from "
+					+ tissueSpecimen.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(1, resultSet.getInt(1));
+			
+			// Step 3
+			dataValue.put(barcode, "870");
+			dataValue.put(label, "specimen parent label123");
+			dataValue.put(quantityInCellCount, "4546");
+			dataValue.put(arivalDate, Utility.parseDate("11-11-1982",Constants.DATE_PATTERN_MM_DD_YYYY));
+			
+			entityManagerInterface.editData(tissueSpecimen,dataValue,recordId);
+			
+			// step 4
+			resultSet = executeQuery("select count(*) from "
+					+ specimen.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(1, resultSet.getInt(1));
+			
+			 resultSet = executeQuery("select count(*)  from "
+					+ tissueSpecimen.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(1, resultSet.getInt(1));
+
+			dataValue.clear();
+			dataValue = entityManagerInterface.getRecordById(tissueSpecimen,recordId);
+			
+			assertEquals("870",dataValue.get(barcode));
+			assertEquals("specimen parent label123",dataValue.get(label));
+			assertEquals("4546",dataValue.get(quantityInCellCount));
+
+			
+			//Step 5
+			dataValue.clear();
+			dataValue.put(barcode, "869");
+			dataValue.put(label, "specimen parent label");
+			dataValue.put(quantityInCellCount, "45");
+			dataValue.put(arivalDate, Utility.parseDate("11-12-1982",Constants.DATE_PATTERN_MM_DD_YYYY));
+			dataValue.put(newAttribute, "12");				
+			
+			recordId = entityManagerInterface.insertData(advanceTissueSpecimenA, dataValue);
+			
+			
+			resultSet = executeQuery("select count(*) from "
+					+ specimen.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(2, resultSet.getInt(1));
+			
+			resultSet = executeQuery("select count(*) from "
+					+ tissueSpecimen.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(2, resultSet.getInt(1));
+			
+
+			resultSet = executeQuery("select count(*) from "
+					+ advanceTissueSpecimenA.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(1, resultSet.getInt(1));
+			
+			//Step 6
+			dataValue.clear();
+			dataValue.put(barcode, "875");
+			dataValue.put(label, "New Label");
+			dataValue.put(quantityInCellCount, "454647");
+			dataValue.put(arivalDate, Utility.parseDate("11-11-1982",Constants.DATE_PATTERN_MM_DD_YYYY));
+			dataValue.put(newAttribute, "1223");	
+			
+			
+			
+			entityManagerInterface.editData(advanceTissueSpecimenA,dataValue,recordId);
+			
+			
+			//Step 7
+			dataValue.clear();
+			dataValue = entityManagerInterface.getRecordById(advanceTissueSpecimenA,recordId);
+			
+			assertEquals("875",dataValue.get(barcode));
+			assertEquals("New Label",dataValue.get(label));
+			assertEquals("454647",dataValue.get(quantityInCellCount));
+	
+		
+			resultSet = executeQuery("select count(*) from "
+					+ specimen.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(2, resultSet.getInt(1));
+			
+			resultSet = executeQuery("select count(*) from "
+					+ tissueSpecimen.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(2, resultSet.getInt(1));
+
+			resultSet = executeQuery("select count(*) from "
+					+ advanceTissueSpecimenA.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(1, resultSet.getInt(1));
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			Logger.out.debug(DynamicExtensionsUtility.getStackTrace(e));
+			fail();
+		}
+	}
+
 }

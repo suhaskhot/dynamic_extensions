@@ -57,6 +57,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String ADD_NEW_FORM = "AddNewForm";
 	public static final String EDIT_FORM = "EditForm";
 	public static final String ADD_SUB_FORM_OPR = "AddSubForm";
+	public static final String EDIT_SUB_FORM_OPR = "EditSubForm";
 	public static final String INSERT_DATA = "insertData";
 	public static final String CALLBACK_URL = "callbackURL";
 

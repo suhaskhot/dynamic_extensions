@@ -126,4 +126,5 @@ public class WebUIManager implements WebUIManagerConstants
 		}
 		return nextSequenceNumber;
 	}
+	
 }

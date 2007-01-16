@@ -51,8 +51,7 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @param entityInterface : Entity Interface Domain Object 
 	 * @param entityUIBeanInterface : UI Bean object containing entity information added by user on UI
 	 */
-	private void populateEntityInformation(EntityInterface entityInterface,
-			EntityUIBeanInterface entityUIBeanInterface)
+	private void populateEntityInformation(EntityInterface entityInterface, EntityUIBeanInterface entityUIBeanInterface)
 	{
 		if (entityInterface != null)
 		{
@@ -66,18 +65,15 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @param containerInterface : Container interface
 	 * @param containerUIBeanInterface : container UI Bean Interface object containing information added by user
 	 */
-	public void populateContainerInformation(ContainerInterface containerInterface,
-			ContainerUIBeanInterface containerUIBeanInterface)
+	public void populateContainerInformation(ContainerInterface containerInterface, ContainerUIBeanInterface containerUIBeanInterface)
 	{
 		ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
 		if (containerInterface == null)
 		{
 			containerInterface = containerProcessor.createContainer();
 		}
-		populateEntityInformation(containerInterface.getEntity(),
-				((EntityUIBeanInterface) containerUIBeanInterface));
-		containerProcessor.populateContainerUIBeanInterface(containerInterface,
-				containerUIBeanInterface);
+		populateEntityInformation(containerInterface.getEntity(), ((EntityUIBeanInterface) containerUIBeanInterface));
+		containerProcessor.populateContainerUIBeanInterface(containerInterface, containerUIBeanInterface);
 	}
 
 	/**
@@ -87,8 +83,8 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsSystemException if System level or run-time exception occurs.
 	 * @return the populated Container instance.
 	 */
-	public ContainerInterface getContainerForEditing(String containerIdentifier)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public ContainerInterface getContainerForEditing(String containerIdentifier) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		return DynamicExtensionsUtility.getContainerByIdentifier(containerIdentifier);
 	}
@@ -99,8 +95,8 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public void initializeSubFormAttributes(FormDefinitionForm formDefinitionForm)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public void initializeSubFormAttributes(FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		formDefinitionForm.setDefinedEntitiesTreeXML(getXMLForDefinedEntities());
 	}
@@ -110,13 +106,11 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private String getXMLForDefinedEntities() throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	private String getXMLForDefinedEntities() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		StringBuffer definedEntitiesXML = new StringBuffer();
 		EntityManagerInterface entityManager = EntityManager.getInstance();
-		Collection<AssociationTreeObject> associationsCollection = entityManager
-				.getAssociationTree();
+		Collection<AssociationTreeObject> associationsCollection = entityManager.getAssociationTree();
 		definedEntitiesXML.append("<?xml version='1.0' encoding='iso-8859-1'?> ");
 		definedEntitiesXML.append("<tree id='0'>");
 		//Special handling for grp : assign id as "Group_ number
@@ -132,8 +126,7 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 					String label = associationObj.getLabel();
 					String id = Constants.GROUP_PREFIX + associationObj.getId();
 					definedEntitiesXML.append(getXMLNode(id, label, false, false));
-					definedEntitiesXML.append(getAssociationTreeXML(associationObj
-							.getAssociationTreeObjectCollection()));
+					definedEntitiesXML.append(getAssociationTreeXML(associationObj.getAssociationTreeObjectCollection()));
 					definedEntitiesXML.append("</item>");
 				}
 			}
@@ -179,8 +172,8 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private String getAssociationTreeXML(Collection<AssociationTreeObject> associationsCollection)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private String getAssociationTreeXML(Collection<AssociationTreeObject> associationsCollection) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		StringBuffer associationTreeXML = new StringBuffer();
 		if (associationsCollection != null)
@@ -199,8 +192,7 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 					if ((id != null) && (label != null))
 					{
 						associationTreeXML.append(getXMLNode(id + "", label, false, false));
-						associationTreeXML.append(getAssociationTreeXML(associationObj
-								.getAssociationTreeObjectCollection()));
+						associationTreeXML.append(getAssociationTreeXML(associationObj.getAssociationTreeObjectCollection()));
 						associationTreeXML.append("</item>");
 					}
 				}
@@ -214,24 +206,24 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public void initializeFormAttributes(EntityGroupInterface entityGroup,
-			ContainerInterface container, String currentContainerName,
-			FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public void initializeFormAttributes(EntityGroupInterface entityGroup, ContainerInterface container, String currentContainerName,
+			FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		String groupName = getGroupName(entityGroup);
 		formDefinitionForm.setGroupName(groupName);
 		boolean addNewNode = true;
-		if ((formDefinitionForm.getOperationMode() != null)
-				&& (formDefinitionForm.getOperationMode().equals(Constants.EDIT_FORM)))
+		if ((formDefinitionForm.getOperationMode() != null) && (formDefinitionForm.getOperationMode().equals(Constants.EDIT_FORM)))
 		{
 			addNewNode = false;
 		}
-		formDefinitionForm.setCurrentEntityTreeXML(getXMLForCurrentEntity(container,
-				currentContainerName, addNewNode));
+		formDefinitionForm.setCurrentEntityTreeXML(getXMLForCurrentEntity(container, currentContainerName, addNewNode));
 		//formDefinitionForm.setTreeData(getEntityTree(request, addNewNode));
 		formDefinitionForm.setCreateAs(ProcessorConstants.DEFAULT_FORM_CREATEAS);
-		formDefinitionForm.setViewAs(ProcessorConstants.DEFAULT_FORM_VIEWAS);
+		
+		if ((formDefinitionForm.getViewAs() == null) || (formDefinitionForm.getViewAs().equals("")))
+		{
+			formDefinitionForm.setViewAs(ProcessorConstants.DEFAULT_FORM_VIEWAS);
+		}
 		if (formDefinitionForm.getDefinedEntitiesTreeXML() == null)
 		{
 			formDefinitionForm.setDefinedEntitiesTreeXML(getXMLForDefinedEntities());
@@ -243,16 +235,14 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @param addNewNode
 	 * @return
 	 */
-	private String getXMLForCurrentEntity(ContainerInterface container,
-			String currentContainerName, boolean addNewNode)
+	private String getXMLForCurrentEntity(ContainerInterface container, String currentContainerName, boolean addNewNode)
 	{
 		StringBuffer currentEntityXML = new StringBuffer();
 		//ContainerInterface container = (ContainerInterface)CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 		//String currentContainerName = (String) CacheManager.getObjectFromCache(request, Constants.CURRENT_CONTAINER_NAME);
 		currentEntityXML.append("<?xml version='1.0' encoding='iso-8859-1'?> ");
 		currentEntityXML.append("<tree id='0'>");
-		currentEntityXML.append(getNodeForContainer(container, currentContainerName, addNewNode,
-				true));
+		currentEntityXML.append(getNodeForContainer(container, currentContainerName, addNewNode, true));
 		currentEntityXML.append("</tree>");
 
 		return currentEntityXML.toString();
@@ -264,8 +254,7 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @param addNewNode 
 	 * @return
 	 */
-	private String getNodeForContainer(ContainerInterface container, String currentContainerName,
-			boolean addNewNode, boolean showExpanded)
+	private String getNodeForContainer(ContainerInterface container, String currentContainerName, boolean addNewNode, boolean showExpanded)
 	{
 		StringBuffer xmlNodeForContainer = new StringBuffer();
 		if (container != null)
@@ -282,8 +271,7 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 				{
 					if ((control != null) && (control instanceof ContainmentAssociationControl))
 					{
-						xmlNodeForContainer.append(getNodeForContainer(
-								((ContainmentAssociationControl) control).getContainer(),
+						xmlNodeForContainer.append(getNodeForContainer(((ContainmentAssociationControl) control).getContainer(),
 								currentContainerName, addNewNode, showExpanded));
 					}
 				}

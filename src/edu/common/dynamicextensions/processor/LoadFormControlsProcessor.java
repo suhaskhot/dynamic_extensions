@@ -113,6 +113,7 @@ public class LoadFormControlsProcessor
 		{
 			controlsForm.setRootName("");
 		}
+		controlsForm.setCurrentContainerName(containerInterface.getCaption());
 		controlsForm.setChildList(ControlsUtility.getChildList(containerInterface));
 		controlsForm.setControlRuleMap(getControlRulesMap(userSelectedTool));
 	}

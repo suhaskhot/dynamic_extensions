@@ -40,7 +40,7 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	/**
 	 * Entity Identifier
 	 */
-	protected String entityIdentifier;
+	//protected String entityIdentifier;
 	/**
 	 * CreateAs
 	 */
@@ -49,12 +49,12 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	 * view as 
 	 */
 	protected String viewAs;
-	
+
 	/**
 	 * 
 	 */
 	protected String formCaption;
-	
+
 	/**
 	 * 
 	 */
@@ -68,8 +68,7 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	/**
 	 * Current container identifier
 	 */
-	protected String containerIdentifier;
-
+	//protected String containerIdentifier;
 	/**
 	 * current group name
 	 */
@@ -91,6 +90,25 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	 */
 	protected String selectedObjectId;
 
+	/*
+	 * This stores the parent container id for edit sub-form operation
+	 */
+	protected String currentContainerName;
+
+	public String getCurrentContainerName()
+	{
+		return this.currentContainerName;
+	}
+
+	public void setCurrentContainerName(String currentContainerName)
+	{
+		this.currentContainerName = currentContainerName;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
 	public String getSelectedObjectId()
 	{
 		return this.selectedObjectId;
@@ -122,19 +140,21 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 
 	/**
 	 * @return the mode
-	 *//*
-	public String getMode()
-	{
-		return mode;
-	}
+	 */
+	/*
+	 public String getMode()
+	 {
+	 return mode;
+	 }
 
-	*//**
+	 *//**
 	 * @param mode the mode to set
-	 *//*
-	public void setMode(String mode)
-	{
-		this.mode = mode;
-	}*/
+	 */
+	/*
+	 public void setMode(String mode)
+	 {
+	 this.mode = mode;
+	 }*/
 
 	/**
 	 * Returns the id assigned to form bean.
@@ -185,21 +205,24 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 		this.formName = formName;
 	}
 
-	/**
+	/*
+	 *//**
 	 * @return Returns the entityIdentifier.
 	 */
-	public String getEntityIdentifier()
-	{
-		return entityIdentifier;
-	}
+	/*
+	 public String getEntityIdentifier()
+	 {
+	 return entityIdentifier;
+	 }
 
-	/**
+	 *//**
 	 * @param entityIdentifier The entityIdentifier to set.
 	 */
-	public void setEntityIdentifier(String entityIdentifier)
-	{
-		this.entityIdentifier = entityIdentifier;
-	}
+	/*
+	 public void setEntityIdentifier(String entityIdentifier)
+	 {
+	 this.entityIdentifier = entityIdentifier;
+	 }*/
 
 	/**
 	 * gets CreateAs
@@ -254,24 +277,23 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	{
 		ActionErrors errors = new ActionErrors();
 		Validator validator = new Validator();
-		if(!ProcessorConstants.CREATE_FROM_EXISTING.equals(createAs))
+		if ((operationMode != null) && (operationMode.equals(Constants.ADD_SUB_FORM_OPR)))
 		{
-			if (formName == null || validator.isEmpty(String.valueOf(formName)))
-			{ 
+			if ((!ProcessorConstants.CREATE_FROM_EXISTING.equals(createAs)) && ((formName == null) || (validator.isEmpty(String.valueOf(formName)))))
+			{
 				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.form.title")));
 			}
-		}
-		if (createAs.equals(ProcessorConstants.CREATE_FROM_EXISTING))
-		{
-			if((getSelectedObjectId()==null)||(getSelectedObjectId().trim().equals("")))
+
+			if ((createAs.equals(ProcessorConstants.CREATE_FROM_EXISTING))
+					&& ((getSelectedObjectId() == null) || (getSelectedObjectId().trim().equals(""))))
 			{
-				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.form.title")));				
+				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.form.title")));
 			}
-		}
-		
-		if (createAs == null || validator.isEmpty(String.valueOf(createAs)))
-		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.form.createAs")));
+
+			if ((createAs == null) || (validator.isEmpty(String.valueOf(createAs))))
+			{
+				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.form.createAs")));
+			}
 		}
 		return errors;
 	}
@@ -295,19 +317,21 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	/**
 	 * @return the containerIdentifier
 	 */
-	public String getContainerIdentifier()
-	{
-		return containerIdentifier;
-	}
+	/*
+	 public String getContainerIdentifier()
+	 {
+	 return containerIdentifier;
+	 }
 
-	/**
+	 *//**
 	 * @param containerIdentifier the containerIdentifier to set
 	 */
-	public void setContainerIdentifier(String containerIdentifier)
-	{
-		this.containerIdentifier = containerIdentifier;
-	}
-
+	/*
+	 public void setContainerIdentifier(String containerIdentifier)
+	 {
+	 this.containerIdentifier = containerIdentifier;
+	 }
+	 */
 	/**
 	 * @return the operationMode
 	 */
@@ -385,7 +409,7 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	public void setButtonCss(String buttonCss)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/* (non-Javadoc)
@@ -394,7 +418,7 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	public void setMainTableCss(String mainTableCss)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/* (non-Javadoc)
@@ -403,7 +427,7 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	public void setRequiredFieldIndicatior(String requiredFieldIndicatior)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/* (non-Javadoc)
@@ -412,7 +436,7 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	public void setRequiredFieldWarningMessage(String requiredFieldWarningMessage)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/* (non-Javadoc)
@@ -421,7 +445,7 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	public void setTitleCss(String titleCss)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public String getCurrentEntityTreeXML()

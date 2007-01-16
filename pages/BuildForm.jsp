@@ -319,6 +319,7 @@
 			<html:hidden styleId = 'validationRules' property="validationRules"  value=""/>
 			<input type="hidden" name='operationMode' id="operationMode"  value="AddSubForm"/>
 			<input type="hidden" name = "controlsSequenceNumbers" id= "controlsSequenceNumbers" >
+			<html:hidden styleId = 'currentContainerName' property="currentContainerName" />
 	  	</html:form>
   	</body>
 </html>

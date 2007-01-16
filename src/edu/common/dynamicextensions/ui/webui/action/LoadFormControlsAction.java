@@ -21,6 +21,7 @@ import edu.common.dynamicextensions.processor.LoadFormControlsProcessor;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
+import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.util.global.Constants;
@@ -37,15 +38,9 @@ import edu.wustl.common.util.logger.Logger;
  */
 public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 {
-	/**
-	 * @param mapping ActionMapping mapping
-	 * @param form ActionForm form
-	 * @param  request HttpServletRequest request
-	 * @param response HttpServletResponse response
-	 * @return ActionForward forward to next action
-	 * @throws IOException 
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException DynamicExtensionsSystemException
+	/*
+	 * (non-Javadoc)
+	 * @see org.apache.struts.actions.DispatchAction#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 	throws IOException, DynamicExtensionsApplicationException
@@ -108,7 +103,8 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 	 */
 	private void loadContainmentAssociationControl(HttpServletRequest request, ContainmentAssociationControl selectedControl,ControlsForm controlsForm)
 	{
-		//controlsForm.set
+		//controlsForm.setCurrentContainerName(currentContainerName)
+		//update cache refernces
 		CacheManager.addObjectToCache(request, selectedControl.getCaption(), selectedControl.getContainer());
 		CacheManager.addObjectToCache(request, Constants.CURRENT_CONTAINER_NAME,selectedControl.getCaption());
 	}

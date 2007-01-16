@@ -8,10 +8,8 @@ package edu.common.dynamicextensions.processor;
  */
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
@@ -111,11 +109,10 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsSystemException 
 	 * 
 	 */
-	public AssociationInterface associateEntity(ContainerInterface sourceContainer,
+	public AssociationInterface associateEntity(AssociationInterface association,ContainerInterface sourceContainer,
 			ContainerInterface targetContainer, FormDefinitionForm formDefinitionForm)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		AssociationInterface association = null;
 		if ((formDefinitionForm != null) && (targetContainer != null) && (sourceContainer != null))
 		{
 			EntityInterface targetEntity = targetContainer.getEntity();
@@ -123,21 +120,28 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 			if ((sourceEntity != null) && (targetEntity != null))
 			{
 				String viewAs = formDefinitionForm.getViewAs();
-
 				if ((viewAs != null) && (viewAs.equals(ProcessorConstants.VIEW_AS_FORM)))
 				{
-					association = associateEntity(AssociationType.CONTAINTMENT, sourceEntity,
+					association = associateEntity(association,AssociationType.CONTAINTMENT, sourceEntity,
 							targetEntity, Cardinality.ONE, Cardinality.ONE);
 				}
 				else if ((viewAs != null)
 						&& (viewAs.equals(ProcessorConstants.VIEW_AS_SPREADSHEET)))
 				{
-					association = associateEntity(AssociationType.CONTAINTMENT, sourceEntity,
+					association = associateEntity(association,AssociationType.CONTAINTMENT, sourceEntity,
 							targetEntity, Cardinality.ONE, Cardinality.MANY);
 				}
 			}
 		}
 		return association;
+	}
+
+	/**
+	 * @return
+	 */
+	public AssociationInterface createAssociation()
+	{
+		return DomainObjectFactory.getInstance().createAssociation();
 	}
 
 	/**
@@ -172,11 +176,14 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @param sourceCardinality
 	 * @param targetCardinality
 	 */
-	private AssociationInterface associateEntity(AssociationType associationType,
+	private AssociationInterface associateEntity(AssociationInterface association ,AssociationType associationType,
 			EntityInterface sourceEntity, EntityInterface targetEntity,
 			Cardinality sourceCardinality, Cardinality targetCardinality)
 	{
-		AssociationInterface association = DomainObjectFactory.getInstance().createAssociation();
+		if(association==null)
+		{
+			association = DomainObjectFactory.getInstance().createAssociation();
+		}
 		association.setTargetEntity(targetEntity);
 		association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
 		association.setName(targetEntity.getName());

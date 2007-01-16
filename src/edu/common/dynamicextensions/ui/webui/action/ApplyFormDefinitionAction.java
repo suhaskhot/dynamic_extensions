@@ -1,6 +1,8 @@
 
 package edu.common.dynamicextensions.ui.webui.action;
 
+import java.util.Collection;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -10,15 +12,21 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
+import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ApplyFormDefinitionProcessor;
+import edu.common.dynamicextensions.processor.ContainerProcessor;
+import edu.common.dynamicextensions.processor.EntityProcessor;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
+import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.util.global.Constants;
 
@@ -57,13 +65,20 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 		String operationMode = formDefinitionForm.getOperationMode();
 		try
 		{
-			if ((operationMode != null) && (operationMode.equals(Constants.ADD_SUB_FORM_OPR)))
+			if (operationMode != null)
 			{
-				target = addSubForm(request, formDefinitionForm);
-			}
-			else
-			{
-				target = applyFormDefinition(request, formDefinitionForm);
+				if(operationMode.equals(Constants.ADD_SUB_FORM_OPR))
+				{
+					target = addSubForm(request, formDefinitionForm);
+				}
+				else if(operationMode.equals(Constants.EDIT_SUB_FORM_OPR))
+				{
+					target = editSubForm(request, formDefinitionForm);
+				} 
+				else 
+				{
+					target = applyFormDefinition(request, formDefinitionForm);
+				}
 			}
 		}
 		catch (Exception e)
@@ -80,6 +95,68 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	/**
 	 * @param request
 	 * @param formDefinitionForm
+	 * @return
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	private String editSubForm(HttpServletRequest request, FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		if((request!=null)&&(formDefinitionForm!=null))
+		{
+			ContainerInterface currentContainer = WebUIManager.getCurrentContainer(request);
+			//update container
+			ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
+			containerProcessor.populateContainerInterface(currentContainer, formDefinitionForm);
+			
+			//update entity
+			EntityProcessor entityProcessor = EntityProcessor.getInstance();
+			entityProcessor.populateEntity(formDefinitionForm, currentContainer.getEntity());
+			
+			//Update Associations
+			//Get parent container
+			ContainerInterface parentContainer = null;
+			String parentContainerName = formDefinitionForm.getCurrentContainerName();
+			if(parentContainerName!=null)
+			{
+				parentContainer = (ContainerInterface)CacheManager.getObjectFromCache(request, parentContainerName);
+				updateAssociation(parentContainer,currentContainer,formDefinitionForm);
+			}
+			
+		}
+		String target = Constants.BUILD_FORM;
+		return target;
+	}
+
+	/**
+	 * @param parentContainer
+	 * @param childContainer
+	 * @param formDefinitionForm 
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	private void updateAssociation(ContainerInterface parentContainer, ContainerInterface childContainer, FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		System.out.println("In update assocn");
+		if((parentContainer!=null)&&(childContainer!=null))
+		{
+			ContainmentAssociationControl containmentAssociationControl = UserInterfaceiUtility.getAssociationControl(parentContainer,childContainer.getId()+"");
+			if(containmentAssociationControl!=null)
+			{
+				AssociationInterface association= null;
+				AbstractAttributeInterface abstractAttributeInterface = containmentAssociationControl.getAbstractAttribute();
+				if((abstractAttributeInterface !=null)&&(abstractAttributeInterface instanceof AssociationInterface))
+				{
+					association = (AssociationInterface)abstractAttributeInterface;
+					ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor.getInstance();
+					association = applyFormDefinitionProcessor.associateEntity(association,
+							parentContainer, childContainer, formDefinitionForm);
+				}
+			}
+		}
+	}
+	/**
+	 * @param request
+	 * @param formDefinitionForm
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
@@ -92,7 +169,8 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 				.getInstance();
 		ContainerInterface subFormContainer = applyFormDefinitionProcessor
 				.getSubFormContainer(formDefinitionForm,mainFormContainer);
-		AssociationInterface association = applyFormDefinitionProcessor.associateEntity(
+		AssociationInterface association =applyFormDefinitionProcessor.createAssociation();
+		association = applyFormDefinitionProcessor.associateEntity(association,
 				mainFormContainer, subFormContainer, formDefinitionForm);
 		applyFormDefinitionProcessor.addSubFormControlToContainer(mainFormContainer,
 				subFormContainer, association);

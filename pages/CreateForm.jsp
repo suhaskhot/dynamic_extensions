@@ -184,37 +184,38 @@
 															<html:textarea styleClass="formFieldSmallSized"  rows = "3" cols="28"  styleId = 'formDescription' property="formDescription" />
 													</td>
 												 </tr>
-												 <tr valign = "top">
-													<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
-													 <td class="formRequiredLabelWithoutBorder" width="20%">
-														<bean:message key="eav.form.createAs"/> :
-													 </td>
-													 <td class="formFieldWithoutBorder">
-														<table border='0'>
-															<tr class="formMessage">
-																 <td >
-																	<html:radio styleId= 'createAsNew' property="createAs" value="NewForm" onclick="createFormAsChanged()">
-																		<bean:message key="eav.createnewentity.title"/>
-																	</html:radio>
-		
-																	<c:choose>
-																	<c:when test='${formDefinitionForm.operationMode == "AddSubForm"}'>
-																		<html:radio styleId = 'createAsExisting' property="createAs" value="ExistingForm" onclick="createFormAsChanged()" >
-																			<bean:message key="eav.existingentity.title"/>
+												<c:if test='${formDefinitionForm.operationMode != "EditSubForm"}'>
+													<tr valign = "top">
+														<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
+														<td class="formRequiredLabelWithoutBorder" width="20%">
+															<bean:message key="eav.form.createAs"/> :
+														</td>
+														<td class="formFieldWithoutBorder">
+															<table border='0'>
+																<tr class="formMessage">
+																	<td>
+																		<html:radio styleId= 'createAsNew' property="createAs" value="NewForm" onclick="createFormAsChanged()">
+																			<bean:message key="eav.createnewentity.title"/>
 																		</html:radio>
-		
-																	</c:when>
-																	<c:otherwise>
-																		<html:radio styleId = 'createAsExisting' property="createAs" value="ExistingForm" disabled="true" onclick="createFormAsChanged()">
-																			<bean:message key="eav.existingentity.title"/>
-																		</html:radio>
-																	</c:otherwise>
-																	</c:choose>
-																</td>
-															</tr>
-														</table>
-													</td>
-												 </tr>
+				
+																		<c:choose>
+																			<c:when test='${formDefinitionForm.operationMode=="AddSubForm"}'>
+																				<html:radio styleId = 'createAsExisting' property="createAs" value="ExistingForm" onclick="createFormAsChanged()" >
+																					<bean:message key="eav.existingentity.title"/>
+																				</html:radio>
+																			</c:when>
+																			<c:otherwise>
+																				<html:radio styleId = 'createAsExisting' property="createAs" value="ExistingForm" disabled="true" onclick="createFormAsChanged()">
+																					<bean:message key="eav.existingentity.title"/>
+																				</html:radio>
+																			</c:otherwise>
+																		</c:choose>
+																	</td>
+																</tr>
+															</table>
+														</td>
+													 </tr>
+												 </c:if>
 												 <tr valign = "top" id="rowForExistingFormDetails" style="display:none;">
 													<td class="formRequiredNoticeWithoutBorder" width="2%" >&nbsp;</td>
 													<td class="formRequiredLabelWithoutBorder" width="20%">
@@ -225,17 +226,17 @@
 													</td>
 												 </tr>
 												<c:choose>
-													<c:when test='${formDefinitionForm.operationMode == "AddSubForm"}'>
+													<c:when test='${formDefinitionForm.operationMode == "EditSubForm" || formDefinitionForm.operationMode == "AddSubForm"}'>
 														 <tr valign = "top" >
 															<td class="formRequiredNoticeWithoutBorder" width="2%" >&nbsp;</td>
 															<td class="formRequiredLabelWithoutBorder"  width="20%">
 																	<bean:message key="eav.form.viewAs"/> :
 															</td>
 															<td class="formFieldWithoutBorder">
-																<html:radio styleId = 'viewAs' property="viewAs" value="Form" >
+																<html:radio styleId='viewAs'property="viewAs" value="Form" >
 																	<bean:message key="eav.viewAs.formTitle"/>
 																</html:radio>
-																<html:radio styleId = 'viewAs' property="viewAs" value="SpreadSheet" >
+																<html:radio styleId='viewAs' property="viewAs" value="SpreadSheet" >
 																	<bean:message key="eav.viewAs.spreadsheetTitle"/>
 																</html:radio>
 															</td>
@@ -258,9 +259,9 @@
 											</html:button>
 										</td>
 		
-										<td  align="right"   >
+										<td align="right">
 											<html:button styleClass="actionButton" property="nextButton" onclick="showBuildFormJSP()" >
-																<bean:message  key="buttons.next" />
+												<bean:message  key="buttons.next" />
 											</html:button>
 										</td>
 									</tr>
@@ -272,9 +273,11 @@
 		</tr>
 		</table>
 		</body>
-		<html:hidden styleId = 'operation' property="operation" value=""/>
-		<html:hidden styleId = 'operationMode' property="operationMode" />
-		<html:hidden styleId = 'entityIdentifier' property="entityIdentifier" value=""/>
-		<html:hidden styleId = 'selectedObjectId' property="selectedObjectId" value=""/>
+		<html:hidden styleId='operation' property="operation" value=""/>
+		<html:hidden styleId='operationMode' property="operationMode"/>
+		<html:hidden styleId='entityIdentifier' property="entityIdentifier" value=""/>
+		<html:hidden styleId='selectedObjectId' property="selectedObjectId" value=""/>
+		<html:hidden styleId='currentContainerName' property="currentContainerName"/>
+		<html:hidden styleId='viewAs' property="viewAs"/>	
 	</html:form>
 </html>

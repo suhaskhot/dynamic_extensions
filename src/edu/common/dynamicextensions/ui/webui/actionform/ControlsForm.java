@@ -315,6 +315,18 @@ public class ControlsForm extends AbstractActionForm
 	protected String separator;
 	protected List selectedAttributes;
 	protected String[] selectedAttributeIds;
+	//Current container name
+	protected String currentContainerName;
+	
+	public String getCurrentContainerName()
+	{
+		return this.currentContainerName;
+	}
+
+	public void setCurrentContainerName(String currentContainerName)
+	{
+		this.currentContainerName = currentContainerName;
+	}
 
 	public List getGroupNames()
 	{

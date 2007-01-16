@@ -95,7 +95,7 @@ public class DisplayEditRecordTag extends TagSupport
 				if (recordId != null)
 				{
 					stringBuffer.append("<span style='cursor:hand' ");
-					stringBuffer.append("onclick=\"showEditRecordPage(");
+					stringBuffer.append("onclick=\"loadRecordList(");
 
 					String target = "'/dynamicExtensions/LoadDataEntryFormAction.do?containerIdentifier="
 							+ this.containerIdentifier

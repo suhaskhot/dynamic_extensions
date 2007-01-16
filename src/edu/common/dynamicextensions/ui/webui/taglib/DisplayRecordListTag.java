@@ -18,7 +18,7 @@ import edu.wustl.common.util.logger.Logger;
  * @author chetan_patil
  *
  */
-public class DisplayEditRecordTag extends TagSupport
+public class DisplayRecordListTag extends TagSupport
 {
 
 	/**
@@ -95,7 +95,7 @@ public class DisplayEditRecordTag extends TagSupport
 				if (recordId != null)
 				{
 					stringBuffer.append("<span style='cursor:hand' ");
-					stringBuffer.append("onclick=\"loadRecordList(");
+					stringBuffer.append("onclick=\"setRecordListTarget(");
 
 					String target = "'/dynamicExtensions/LoadDataEntryFormAction.do?containerIdentifier="
 							+ this.containerIdentifier

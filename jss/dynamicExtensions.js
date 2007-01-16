@@ -845,7 +845,7 @@ function controlSelected(rowId,colId)
 		var opernMode = document.getElementById('operationMode');	
 		if(opernMode!=null)
 		{
-			opernMode.value = "EditForm";
+			opernMode.value = "EditSubForm";
 		}
 	}
 
@@ -1121,6 +1121,13 @@ function setEditOperationMode(target)
 {
 	document.getElementById('operationMode').value = 'EditForm';
 	var formsIndexForm = document.getElementById('formsIndexForm');
+	formsIndexForm.action = target;
+	formsIndexForm.submit();
+}
+
+function setRecordListTarget(target)
+{
+	var formsIndexForm = document.getElementById('recordListForm');
 	formsIndexForm.action = target;
 	formsIndexForm.submit();
 }
@@ -1721,7 +1728,6 @@ function definedEntitySelected(fldname)
 
 function treeNodeSelectedResponse(formNameListXML)
 {
-	//alert("In tree node selected responmse");
 	if(formNameListXML!=null)
 	{
 		var htmlFormName = document.getElementById("formName");
@@ -1729,14 +1735,12 @@ function treeNodeSelectedResponse(formNameListXML)
 		var htmlFormDesc = document.getElementById("formDescription");
 		var htmlOperationMode = document.getElementById('operationMode');
 		var htmlOperation = document.getElementById('operation');
-		//alert(htmlOperation);
 		
 		var documentElt = getDocumentElementForXML(formNameListXML);
 		var formname = documentElt.getElementsByTagName('form-name');
 		var formDesc = documentElt.getElementsByTagName('form-description');
 		var formConceptCode = documentElt.getElementsByTagName('form-conceptcode');
 		var operationmode = documentElt.getElementsByTagName('operationMode');
-//		var operation = documentElt.getElementsByTagName('operation');
 		
 		if((htmlFormName!=null)&&(formname!=null))
 		{

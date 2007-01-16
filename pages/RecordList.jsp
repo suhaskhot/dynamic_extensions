@@ -25,7 +25,7 @@
 		<title><bean:message key="table.heading" /></title>
 	</head>
 	<body>
-		<html:form styleId='recordListForm' action='/ApplyEditRecordsAction'>
+		<html:form styleId='recordListForm' action='/ApplyRecordListAction'>
 		<font color="red" ><html:errors/></font>
 			<table width='70%' align='center' cellspacing="5" cellspacing="0" border='0'>
 				<!-- Messages to be displayed -->
@@ -39,7 +39,7 @@
 
 				<tr>
 					<td>
-						<dynamicExtensions:displayEditRecords containerIdentifier="<%=containerIdentifier%>" entityRecordList="<%=entityRecordList%>" mode="<%=mode%>" />
+						<dynamicExtensions:displayRecordList containerIdentifier="<%=containerIdentifier%>" entityRecordList="<%=entityRecordList%>" mode="<%=mode%>" />
 					</td>
 				</tr>
 			</table>

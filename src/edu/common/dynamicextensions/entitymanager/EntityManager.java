@@ -1689,10 +1689,8 @@ public class EntityManager
 		{
 			throw new DynamicExtensionsSystemException("Input to edit data is null");
 		}
-
 		StringBuffer updateColumnString = new StringBuffer();
 		String tableName = entity.getTableProperties().getName();
-
 		List<AttributeRecord> collectionRecords = new ArrayList<AttributeRecord>();
 		List<AttributeRecord> deleteCollectionRecords = new ArrayList<AttributeRecord>();
 		List<AttributeRecord> fileRecords = new ArrayList<AttributeRecord>();
@@ -1869,7 +1867,8 @@ public class EntityManager
 			DynamicExtensionsSystemException
 	{
 
-		boolean isSuccess;
+		boolean isSuccess = false;
+		
 		HibernateDAO hibernateDAO = null;
 		try
 		{
@@ -1878,9 +1877,13 @@ public class EntityManager
 			hibernateDAO = (HibernateDAO) factory.getDAO(Constants.HIBERNATE_DAO);
 
 			hibernateDAO.openSession(null);
-
-			isSuccess = editDataForSingleEntity(entity, dataValue, recordId, hibernateDAO);
-
+			List<EntityInterface> entityList = getParentEntityList(entity);
+			Map<EntityInterface, Map> entityValueMap = initialiseEntityValueMap(entity, dataValue);
+			for (EntityInterface entityInterface : entityList)
+			{
+				Map valueMap = entityValueMap.get(entityInterface);
+				isSuccess = editDataForSingleEntity(entityInterface, valueMap, recordId, hibernateDAO);
+			}
 			hibernateDAO.commit();
 		}
 		catch (DynamicExtensionsApplicationException e)
@@ -1907,7 +1910,7 @@ public class EntityManager
 
 		}
 
-		return true;
+		return isSuccess;
 	}
 
 	/**

@@ -35,7 +35,7 @@ PUBLIC
 			scope="request">
 			<forward name="showRecordListPage" path="/pages/RecordList.jsp" />
 		</action>
-		<action path="/ApplyEditRecordsAction" 
+		<action path="/ApplyRecordListAction" 
 			type="edu.common.dynamicextensions.ui.webui.action.ApplyEditRecordsAction"
 			name="recordListForm"
 			validate="false"

@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.ui.webui.util;
 
 import java.util.Collection;
@@ -34,7 +35,7 @@ public class WebUIManager implements WebUIManagerConstants
 	 */
 	public static String getCallbackURLParamName()
 	{
-		return CALLBACK_URL_PARAM_NAME;		
+		return CALLBACK_URL_PARAM_NAME;
 	}
 
 	/**
@@ -55,6 +56,7 @@ public class WebUIManager implements WebUIManagerConstants
 	{
 		return DYNAMIC_EXTENSIONS_INTERFACE_ACTION_PARAM_NAME;
 	}
+
 	/**
 	 * 
 	 *The URL for action class which displays the UI for record insertion.
@@ -72,6 +74,7 @@ public class WebUIManager implements WebUIManagerConstants
 	{
 		return CONATINER_IDENTIFIER_PARAMETER_NAME;
 	}
+
 	/**
 	 * The parameter to be set in the request which specifies the record id for LoadDataEntryFormAction.
 	 *
@@ -101,16 +104,16 @@ public class WebUIManager implements WebUIManagerConstants
 		//If the current container name is not null, get the container for corresponding name from cache
 		//if null, return default container from cache.
 		ContainerInterface currentContainer = null;
-		String currentContainerName = (String)CacheManager.getObjectFromCache(request, Constants.CURRENT_CONTAINER_NAME);
-		if((currentContainerName!=null)&&(!currentContainerName.trim().equals("")))
+		String currentContainerName = (String) CacheManager.getObjectFromCache(request, Constants.CURRENT_CONTAINER_NAME);
+		if ((currentContainerName != null) && (!currentContainerName.trim().equals("")))
 		{
 			//container for current container name
-			currentContainer = (ContainerInterface)CacheManager.getObjectFromCache(request, currentContainerName);
+			currentContainer = (ContainerInterface) CacheManager.getObjectFromCache(request, currentContainerName);
 		}
 		else
 		{
 			//return default container
-			currentContainer = (ContainerInterface)CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+			currentContainer = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 		}
 		return currentContainer;
 	}
@@ -126,5 +129,5 @@ public class WebUIManager implements WebUIManagerConstants
 		}
 		return nextSequenceNumber;
 	}
-	
+
 }

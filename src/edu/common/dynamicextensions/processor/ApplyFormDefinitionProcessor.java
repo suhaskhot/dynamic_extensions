@@ -58,10 +58,8 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException :Exception thrown by Entity Manager 
 	 * @throws DynamicExtensionsSystemException :Exception thrown by Entity Manager
 	 */
-	public ContainerInterface addEntityToContainer(ContainerInterface containerInterface,
-			FormDefinitionForm actionForm, boolean isActionSave,
-			EntityGroupInterface entityGroupInterface) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public ContainerInterface addEntityToContainer(ContainerInterface containerInterface, FormDefinitionForm actionForm, boolean isActionSave,
+			EntityGroupInterface entityGroupInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
 		if (containerInterface == null)
@@ -109,9 +107,9 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsSystemException 
 	 * 
 	 */
-	public AssociationInterface associateEntity(AssociationInterface association,ContainerInterface sourceContainer,
-			ContainerInterface targetContainer, FormDefinitionForm formDefinitionForm)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public AssociationInterface associateEntity(AssociationInterface association, ContainerInterface sourceContainer,
+			ContainerInterface targetContainer, FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		if ((formDefinitionForm != null) && (targetContainer != null) && (sourceContainer != null))
 		{
@@ -122,14 +120,13 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 				String viewAs = formDefinitionForm.getViewAs();
 				if ((viewAs != null) && (viewAs.equals(ProcessorConstants.VIEW_AS_FORM)))
 				{
-					association = associateEntity(association,AssociationType.CONTAINTMENT, sourceEntity,
-							targetEntity, Cardinality.ONE, Cardinality.ONE);
+					association = associateEntity(association, AssociationType.CONTAINTMENT, sourceEntity, targetEntity, Cardinality.ONE,
+							Cardinality.ONE);
 				}
-				else if ((viewAs != null)
-						&& (viewAs.equals(ProcessorConstants.VIEW_AS_SPREADSHEET)))
+				else if ((viewAs != null) && (viewAs.equals(ProcessorConstants.VIEW_AS_SPREADSHEET)))
 				{
-					association = associateEntity(association,AssociationType.CONTAINTMENT, sourceEntity,
-							targetEntity, Cardinality.ONE, Cardinality.MANY);
+					association = associateEntity(association, AssociationType.CONTAINTMENT, sourceEntity, targetEntity, Cardinality.ONE,
+							Cardinality.MANY);
 				}
 			}
 		}
@@ -150,8 +147,8 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsSystemException 
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	private ContainerInterface createTargetEntityContainer(FormDefinitionForm formDefinitionForm)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private ContainerInterface createTargetEntityContainer(FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		//validate container name b4 creating it
 		ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
@@ -161,8 +158,7 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 
 		//Add entity
 		EntityProcessor entityProcessor = EntityProcessor.getInstance();
-		EntityInterface entityInterface = entityProcessor
-				.createAndPopulateEntity(formDefinitionForm);
+		EntityInterface entityInterface = entityProcessor.createAndPopulateEntity(formDefinitionForm);
 
 		//Add entity to container
 		containerInterface.setEntity(entityInterface);
@@ -176,21 +172,18 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @param sourceCardinality
 	 * @param targetCardinality
 	 */
-	private AssociationInterface associateEntity(AssociationInterface association ,AssociationType associationType,
-			EntityInterface sourceEntity, EntityInterface targetEntity,
-			Cardinality sourceCardinality, Cardinality targetCardinality)
+	private AssociationInterface associateEntity(AssociationInterface association, AssociationType associationType, EntityInterface sourceEntity,
+			EntityInterface targetEntity, Cardinality sourceCardinality, Cardinality targetCardinality)
 	{
-		if(association==null)
+		if (association == null)
 		{
 			association = DomainObjectFactory.getInstance().createAssociation();
 		}
 		association.setTargetEntity(targetEntity);
 		association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
 		association.setName(targetEntity.getName());
-		association
-				.setSourceRole(getRole(associationType, null, Cardinality.ONE, sourceCardinality));
-		association.setTargetRole(getRole(associationType, targetEntity.getName(), Cardinality.ONE,
-				targetCardinality));
+		association.setSourceRole(getRole(associationType, null, Cardinality.ONE, sourceCardinality));
+		association.setTargetRole(getRole(associationType, targetEntity.getName(), Cardinality.ONE, targetCardinality));
 		sourceEntity.addAssociation(association);
 		return association;
 	}
@@ -201,8 +194,8 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private ContainerInterface getTargetEntityContainer(String targetContainerId)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private ContainerInterface getTargetEntityContainer(String targetContainerId) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		ContainerInterface targetContainer = null;
 		if ((targetContainerId != null) && (!targetContainerId.trim().equals("")))
@@ -212,8 +205,7 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		return targetContainer;
 	}
 
-	private RoleInterface getRole(AssociationType associationType, String name,
-			Cardinality minCard, Cardinality maxCard)
+	private RoleInterface getRole(AssociationType associationType, String name, Cardinality minCard, Cardinality maxCard)
 	{
 		RoleInterface role = DomainObjectFactory.getInstance().createRole();
 		role.setAssociationsType(associationType);
@@ -242,16 +234,14 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @param mainFormContainer
 	 * @param subFormContainer
 	 */
-	public void addSubFormControlToContainer(ContainerInterface mainFormContainer,
-			ContainerInterface subFormContainer, AssociationInterface association)
+	public void addSubFormControlToContainer(ContainerInterface mainFormContainer, ContainerInterface subFormContainer,
+			AssociationInterface association)
 	{
 		if ((mainFormContainer != null) && (subFormContainer != null))
 		{
 			ControlProcessor controlProcessor = ControlProcessor.getInstance();
-			ControlInterface subFormControl = controlProcessor.createContainmentAssociationControl(
-					subFormContainer, association);
-			subFormControl.setSequenceNumber(WebUIManager
-					.getSequenceNumberForNextControl(mainFormContainer));
+			ControlInterface subFormControl = controlProcessor.createContainmentAssociationControl(subFormContainer, association);
+			subFormControl.setSequenceNumber(WebUIManager.getSequenceNumberForNextControl(mainFormContainer));
 			if (subFormControl != null)
 			{
 				mainFormContainer.addControl(subFormControl);
@@ -264,9 +254,8 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public ContainerInterface getSubFormContainer(FormDefinitionForm formDefinitionForm,
-			ContainerInterface mainFormContainer) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public ContainerInterface getSubFormContainer(FormDefinitionForm formDefinitionForm, ContainerInterface mainFormContainer)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ContainerInterface targetEntityContainer = null;
 		if (formDefinitionForm != null)
@@ -284,8 +273,7 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 				targetEntityContainer = getSelectedContainer(mainFormContainer, selectedContainerId);
 				if (targetEntityContainer == null)
 				{
-					targetEntityContainer = getTargetEntityContainer(formDefinitionForm
-							.getSelectedObjectId());
+					targetEntityContainer = getTargetEntityContainer(formDefinitionForm.getSelectedObjectId());
 					List<ContainerInterface> childContainerList = getAllChildContainers(mainFormContainer);
 					updateReferences(targetEntityContainer, childContainerList);
 
@@ -305,26 +293,22 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @param targetContainer
 	 * @param childContainerList
 	 */
-	private void updateReferences(ContainerInterface targetContainer,
-			List<ContainerInterface> childContainerList)
+	private void updateReferences(ContainerInterface targetContainer, List<ContainerInterface> childContainerList)
 	{
-		Collection<ControlInterface> targetControlCollection = targetContainer
-				.getControlCollection();
+		Collection<ControlInterface> targetControlCollection = targetContainer.getControlCollection();
 		for (ControlInterface controlInterface : targetControlCollection)
 		{
 			if (controlInterface instanceof ContainmentAssociationControlInterface)
 			{
 				ContainmentAssociationControlInterface containmentAssociationControlInterface = (ContainmentAssociationControlInterface) controlInterface;
-				ContainerInterface tempContainer = containmentAssociationControlInterface
-						.getContainer();
+				ContainerInterface tempContainer = containmentAssociationControlInterface.getContainer();
 				if (childContainerList.contains(tempContainer))
 				{
-					ContainerInterface actualContainer = (ContainerInterface) childContainerList
-							.get(childContainerList.indexOf(containmentAssociationControlInterface
-									.getContainer()));
+					ContainerInterface actualContainer = (ContainerInterface) childContainerList.get(childContainerList
+							.indexOf(containmentAssociationControlInterface.getContainer()));
 					tempContainer.setEntity(actualContainer.getEntity());
-					((AssociationInterface) containmentAssociationControlInterface
-							.getAbstractAttribute()).setTargetEntity(actualContainer.getEntity());
+					((AssociationInterface) containmentAssociationControlInterface.getAbstractAttribute()).setTargetEntity(actualContainer
+							.getEntity());
 					containmentAssociationControlInterface.setContainer(actualContainer);
 				}
 				else
@@ -345,8 +329,7 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 			if (controlInterface instanceof ContainmentAssociationControlInterface)
 			{
 				ContainmentAssociationControlInterface containmentAssociationControlInterface = (ContainmentAssociationControlInterface) controlInterface;
-				ContainerInterface tempContainer = containmentAssociationControlInterface
-						.getContainer();
+				ContainerInterface tempContainer = containmentAssociationControlInterface.getContainer();
 				childContainerList.add(tempContainer);
 			}
 		}
@@ -364,8 +347,7 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 			{
 
 				ContainmentAssociationControlInterface containmentAssociationControlInterface = (ContainmentAssociationControlInterface) controlInterface;
-				ContainerInterface tempContainer = containmentAssociationControlInterface
-						.getContainer();
+				ContainerInterface tempContainer = containmentAssociationControlInterface.getContainer();
 				if (tempContainer.getId().equals(containerId))
 				{
 					return tempContainer;
@@ -385,15 +367,13 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @param subFormContainer
 	 * @param mainFormContainer
 	 */
-	public void associateParentGroupToNewEntity(ContainerInterface subFormContainer,
-			ContainerInterface mainFormContainer)
+	public void associateParentGroupToNewEntity(ContainerInterface subFormContainer, ContainerInterface mainFormContainer)
 	{
 		if ((subFormContainer != null) && (mainFormContainer != null))
 		{
 			EntityInterface targetEntity = subFormContainer.getEntity();
 			EntityInterface sourceEntity = mainFormContainer.getEntity();
-			Collection<EntityGroupInterface> sourceEntityGroups = sourceEntity
-					.getEntityGroupCollection();
+			Collection<EntityGroupInterface> sourceEntityGroups = sourceEntity.getEntityGroupCollection();
 			if (sourceEntityGroups != null)
 			{
 				Iterator<EntityGroupInterface> entityGroupIter = sourceEntityGroups.iterator();

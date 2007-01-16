@@ -16,12 +16,10 @@ import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationC
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
-import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.LoadFormControlsProcessor;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
-import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.util.global.Constants;
@@ -43,36 +41,36 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 	 * @see org.apache.struts.actions.DispatchAction#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
-	throws IOException, DynamicExtensionsApplicationException
+			throws IOException, DynamicExtensionsApplicationException
 	{
 		String actionForwardString = null;
 		try
 		{
 			ControlsForm controlsForm = (ControlsForm) form;
 			ContainerInterface containerInterface = WebUIManager.getCurrentContainer(request);
-			
+
 			//For edit operation reinitialize sequence numbers
 			String controlOperation = controlsForm.getControlOperation();
-			if((controlOperation!=null)&&(controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_EDIT)))
+			if ((controlOperation != null) && (controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_EDIT)))
 			{
-				if (containerInterface != null && controlsForm!=null)
+				if (containerInterface != null && controlsForm != null)
 				{
 					ControlsUtility.reinitializeSequenceNumbers(containerInterface.getControlCollection(), controlsForm.getControlsSequenceNumbers());
 				}
 			}
 			Logger.out.debug("Loading form controls for [" + containerInterface.getCaption() + "]");
 			LoadFormControlsProcessor loadFormControlsProcessor = LoadFormControlsProcessor.getInstance();
-			
+
 			ControlInterface selectedControl = loadFormControlsProcessor.getSelectedControl(controlsForm, containerInterface);
-			if((selectedControl!=null)&&(selectedControl instanceof ContainmentAssociationControl))
+			if ((selectedControl != null) && (selectedControl instanceof ContainmentAssociationControl))
 			{
-				loadContainmentAssociationControl(request,(ContainmentAssociationControl)selectedControl,controlsForm);
+				loadContainmentAssociationControl(request, (ContainmentAssociationControl) selectedControl, controlsForm);
 				actionForwardString = Constants.EDIT_SUB_FORM_PAGE;
 			}
 			else
 			{
 				loadFormControlsProcessor.loadFormControls(controlsForm, containerInterface);
-				request.setAttribute("controlsList",controlsForm.getChildList());
+				request.setAttribute("controlsList", controlsForm.getChildList());
 				actionForwardString = Constants.SHOW_BUILD_FORM_JSP;
 			}
 			if ((controlsForm.getDataType() != null) && (controlsForm.getDataType().equals(ProcessorConstants.DATATYPE_NUMBER)))
@@ -88,29 +86,27 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 		catch (Exception e)
 		{
 			actionForwardString = catchException(e, request);
-			if((actionForwardString==null)||(actionForwardString.equals("")))
+			if ((actionForwardString == null) || (actionForwardString.equals("")))
 			{
-				return mapping.getInputForward(); 
+				return mapping.getInputForward();
 			}
 		}
 		return (mapping.findForward(actionForwardString));
 	}
 
-	
 	/**
 	 * @param request
 	 * @param selectedControl
 	 */
-	private void loadContainmentAssociationControl(HttpServletRequest request, ContainmentAssociationControl selectedControl,ControlsForm controlsForm)
+	private void loadContainmentAssociationControl(HttpServletRequest request, ContainmentAssociationControl selectedControl,
+			ControlsForm controlsForm)
 	{
 		//controlsForm.setCurrentContainerName(currentContainerName)
 		//update cache refernces
 		CacheManager.addObjectToCache(request, selectedControl.getCaption(), selectedControl.getContainer());
-		CacheManager.addObjectToCache(request, Constants.CURRENT_CONTAINER_NAME,selectedControl.getCaption());
+		CacheManager.addObjectToCache(request, Constants.CURRENT_CONTAINER_NAME, selectedControl.getCaption());
 	}
 
-
-	
 	/**
 	 * Initialises MeasurementUnits
 	 * @param controlsForm actionform

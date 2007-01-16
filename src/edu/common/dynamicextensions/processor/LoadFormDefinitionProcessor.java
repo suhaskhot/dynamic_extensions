@@ -219,7 +219,7 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		formDefinitionForm.setCurrentEntityTreeXML(getXMLForCurrentEntity(container, currentContainerName, addNewNode));
 		//formDefinitionForm.setTreeData(getEntityTree(request, addNewNode));
 		formDefinitionForm.setCreateAs(ProcessorConstants.DEFAULT_FORM_CREATEAS);
-		
+
 		if ((formDefinitionForm.getViewAs() == null) || (formDefinitionForm.getViewAs().equals("")))
 		{
 			formDefinitionForm.setViewAs(ProcessorConstants.DEFAULT_FORM_VIEWAS);

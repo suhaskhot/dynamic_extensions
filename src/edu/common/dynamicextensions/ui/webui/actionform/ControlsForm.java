@@ -1354,18 +1354,44 @@ public class ControlsForm extends AbstractActionForm
 					ApplicationProperties.getValue("eav.att.DefaultValue")));
 		}
 
-		if ((this.min == null) || (validator.checkDate(this.min) == false))
+		if (isDateRangeValid(validator, errors) == false)
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.date.format",
-					ApplicationProperties.getValue("eav.att.Minimum")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
+					ApplicationProperties.getValue("eav.att.DateRange")));
 		}
 
-		if ((this.max == null) || (validator.checkDate(this.max) == false))
+	}
+
+	private boolean isDateRangeValid(Validator validator, ActionErrors errors)
+	{
+		boolean isValid = true;
+		for (String validationName : validationRules)
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.date.format",
-					ApplicationProperties.getValue("eav.att.Maximum")));
+			if (validationName.equals("dateRange"))
+			{
+				if ((min != null) && !(min.equals("")) && (max != null) && !(max.equals("")))
+				{
+					if ((validator.checkDate(this.min) == false))
+					{
+						errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.date.format",
+								ApplicationProperties.getValue("eav.att.Minimum")));
+					}
+
+					if ((validator.checkDate(this.max) == false))
+					{
+						errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.date.format",
+								ApplicationProperties.getValue("eav.att.Maximum")));
+					}
+					isValid = true;
+				}
+				else
+				{
+					isValid = false;
+				}
+				break;
+			}
 		}
-				
+		return isValid;
 	}
 
 	/**

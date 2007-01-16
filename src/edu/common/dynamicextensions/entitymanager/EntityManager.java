@@ -230,24 +230,23 @@ public class EntityManager
 			return;
 		}
 		Set<EntityInterface> entitySet = new HashSet<EntityInterface>();
-		
+
 		entitySet.add(entityInterface);
-		
+
 		DynamicExtensionsUtility.getAssociatedEntities(entityInterface, entitySet);
 		EntityInterface tempEntity = entityInterface.getParentEntity();
-		while (tempEntity != null) 
+		while (tempEntity != null)
 		{
 			entitySet.add(tempEntity);
-			tempEntity = tempEntity.getParentEntity(); 
+			tempEntity = tempEntity.getParentEntity();
 		}
 		for (EntityInterface entity : entitySet)
 		{
 			((Entity) entity).setProcessed(false);
 		}
-		
+
 	}
 
-	
 	private void saveEntityGroup(EntityInterface entityInterface, HibernateDAO hibernateDAO)
 			throws DAOException, UserNotAuthorizedException
 	{
@@ -1452,6 +1451,12 @@ public class EntityManager
 		{
 			AbstractAttribute attribute = (AbstractAttribute) uiColumnSetIter.next();
 			value = dataValue.get(attribute);
+
+			if (value == null)
+			{
+				continue;
+			}
+
 			if (attribute instanceof AttributeInterface)
 			{
 				AttributeInterface primitiveAttribute = (AttributeInterface) attribute;
@@ -1700,6 +1705,10 @@ public class EntityManager
 		{
 			AbstractAttribute attribute = (AbstractAttribute) uiColumnSetIter.next();
 			Object value = dataValue.get(attribute);
+			if (value == null)
+			{
+				continue;
+			}
 			if (attribute instanceof AttributeInterface)
 			{
 				AttributeInterface primitiveAttribute = (AttributeInterface) attribute;
@@ -1985,7 +1994,7 @@ public class EntityManager
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		logDebug("saveOrUpdateEntity", "Entering method");
-		
+
 		Entity entity = (Entity) entityInterface;//(Entity) DynamicExtensionsUtility.cloneObject(entityInterface);
 
 		if (entity.isProcessed())
@@ -1996,17 +2005,18 @@ public class EntityManager
 		{
 			entity.setProcessed(true);
 		}
-		
-		if(entity.getParentEntity() != null && entity.getParentEntity().getId() == null)
+
+		if (entity.getParentEntity() != null && entity.getParentEntity().getId() == null)
 		{
-			throw new DynamicExtensionsApplicationException("Unsaved Parent not allowed",null,DYEXTN_A_011);
+			throw new DynamicExtensionsApplicationException("Unsaved Parent not allowed", null,
+					DYEXTN_A_011);
 		}
 		List reverseQueryList = new LinkedList();
 		List queryList = null;
 
 		checkForDuplicateEntityName(entity);
 		Entity databaseCopy = null;
-		
+
 		try
 		{
 			if (!isEntitySaved)
@@ -2014,22 +2024,24 @@ public class EntityManager
 				preSaveProcessEntity(entity);
 				if (entity.getParentEntity() != null)
 				{
-				saveOrUpdateEntity(entity.getParentEntity(),hibernateDAO,rollbackQueryStack,true);
+					saveOrUpdateEntity(entity.getParentEntity(), hibernateDAO, rollbackQueryStack,
+							true);
 				}
 				hibernateDAO.insert(entity, null, false, false);
-				
+
 			}
 			else
 			{
 				databaseCopy = (Entity) DBUtil.loadCleanObj(Entity.class, entity.getId());
-					if (queryBuilder.isParentChanged(entity, databaseCopy))
-					{
-						checkParentChangeAllowed(entity);
-					}
-					if (entity.getParentEntity() != null)
-					{
-					saveOrUpdateEntity(entity.getParentEntity(),hibernateDAO,rollbackQueryStack,true);
-					}
+				if (queryBuilder.isParentChanged(entity, databaseCopy))
+				{
+					checkParentChangeAllowed(entity);
+				}
+				if (entity.getParentEntity() != null)
+				{
+					saveOrUpdateEntity(entity.getParentEntity(), hibernateDAO, rollbackQueryStack,
+							true);
+				}
 				hibernateDAO.update(entity, null, false, false, false);
 
 			}
@@ -2085,7 +2097,6 @@ public class EntityManager
 					"Can not change the data type of the attribute", null, DYEXTN_A_010);
 		}
 	}
-
 
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getRecordById(edu.common.dynamicextensions.domaininterface.EntityInterface, java.lang.Long)

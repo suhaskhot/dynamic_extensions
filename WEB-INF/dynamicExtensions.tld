@@ -102,8 +102,8 @@
 	</tag>
 	
 	<tag>
-	     <name>displayEditRecords</name>
-	     <tag-class>edu.common.dynamicextensions.ui.webui.taglib.DisplayEditRecordTag</tag-class>
+	     <name>displayRecordList</name>
+	     <tag-class>edu.common.dynamicextensions.ui.webui.taglib.DisplayRecordListTag</tag-class>
 	     <attribute>
 				<name>containerIdentifier</name>
 				<required>true</required>

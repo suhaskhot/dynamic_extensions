@@ -366,7 +366,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		{
 			FormFile formFile = null;
 			formFile = (FormFile) dataEntryForm.getValue("Control_" + sequence);
-			if (formFile.getFileName() != null && !formFile.equals(""))
+			if (formFile.getFileName() != null && !formFile.getFileName().equals(""))
 			{
 				FileAttributeRecordValue fileAttributeRecordValue = new FileAttributeRecordValue();
 				fileAttributeRecordValue.setFileContent(formFile.getFileData());

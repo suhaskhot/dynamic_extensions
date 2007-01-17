@@ -364,6 +364,9 @@ class DynamicExtensionBaseQueryBuilder
 			List<Long> recordIdList, List<String> queryList)
 			throws DynamicExtensionsSystemException
 	{
+		if (recordIdList == null || recordIdList.isEmpty()) {
+			return;
+		}
 		List<Long> childrenRecordIdList = getRecordIdListForContainment(association, recordIdList);
 
 		EntityInterface targetEntity = association.getTargetEntity();

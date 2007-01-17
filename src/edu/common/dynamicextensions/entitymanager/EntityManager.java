@@ -1775,10 +1775,12 @@ public class EntityManager
 					entityManagerUtil.executeDML(removeContainmentRecordQuery);
 
 					List<Map> listOfMapsForContainedEntity = (List<Map>) value;
+					recordIdList.clear();
 					for (Map valueMapForContainedEntity : listOfMapsForContainedEntity)
 					{
 						Long childRecordId = insertDataForSingleEntity(association
 								.getTargetEntity(), valueMapForContainedEntity, hibernateDAO, null);
+						
 						recordIdList.add(childRecordId);
 					}
 

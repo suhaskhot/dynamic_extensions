@@ -9,7 +9,7 @@ package edu.common.dynamicextensions.domaininterface;
 
 
 
-public interface TaggedValueInterface
+public interface TaggedValueInterface extends DynamicExtensionBaseDomainObjectInterface
 {
 
     /**

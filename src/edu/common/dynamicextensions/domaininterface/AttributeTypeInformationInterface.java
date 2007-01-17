@@ -8,7 +8,7 @@
 
 package edu.common.dynamicextensions.domaininterface;
 
-public interface AttributeTypeInformationInterface
+public interface AttributeTypeInformationInterface extends DynamicExtensionBaseDomainObjectInterface
 {
 
     /**

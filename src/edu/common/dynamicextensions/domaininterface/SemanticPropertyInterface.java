@@ -5,7 +5,7 @@ package edu.common.dynamicextensions.domaininterface;
  * For every abstract metadata object semantic properties are associated.
  * @author sujay_narkar
  */
-public interface SemanticPropertyInterface extends Comparable
+public interface SemanticPropertyInterface extends DynamicExtensionBaseDomainObjectInterface, Comparable
 {
 
 	/**

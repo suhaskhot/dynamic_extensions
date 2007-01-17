@@ -6,7 +6,7 @@ package edu.common.dynamicextensions.domaininterface;
  * Data element is an abstract class.The data element may be of type caDSRDE or of type user defined.
  * @author sujay_narkar
  */
-public interface DataElementInterface 
+public interface DataElementInterface extends DynamicExtensionBaseDomainObjectInterface
 {
     
 	/**

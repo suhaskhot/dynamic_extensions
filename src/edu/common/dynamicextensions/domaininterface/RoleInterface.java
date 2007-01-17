@@ -9,7 +9,7 @@ import edu.common.dynamicextensions.util.global.Constants.Cardinality;
  * @author sujay_narkar
  *
  */
-public interface RoleInterface
+public interface RoleInterface extends DynamicExtensionBaseDomainObjectInterface
 {
 
 	/**

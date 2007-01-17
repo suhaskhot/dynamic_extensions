@@ -1,6 +1,6 @@
 package edu.common.dynamicextensions.domaininterface;
 
-public interface FileAttributeRecordValueInterface
+public interface FileAttributeRecordValueInterface extends DynamicExtensionBaseDomainObjectInterface
 {
 	/**
 	 * 

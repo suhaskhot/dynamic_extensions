@@ -1,12 +1,14 @@
 
 package edu.common.dynamicextensions.domaininterface.databaseproperties;
 
+import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
+
 /**
  * The database properties are the properties of the dynamically created tables or
  * columns from those tables.
  * @author geetika_bangard
  */
-public interface DatabasePropertiesInterface
+public interface DatabasePropertiesInterface extends DynamicExtensionBaseDomainObjectInterface
 {
 	
 	/**

@@ -11,7 +11,7 @@ import java.util.List;
  * @author sujay_narkar
  *
  */
-public interface AbstractMetadataInterface 
+public interface AbstractMetadataInterface extends DynamicExtensionBaseDomainObjectInterface
 {
 
 	/**

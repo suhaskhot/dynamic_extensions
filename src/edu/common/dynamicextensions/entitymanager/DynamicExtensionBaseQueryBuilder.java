@@ -135,20 +135,20 @@ class DynamicExtensionBaseQueryBuilder
 	{
 		List queryList = new ArrayList();
 		String tableName = entity.getTableProperties().getName();
-		 
+
 		if (isParentChanged(entity, databaseCopy))
 		{
 			String foreignConstraintRemoveQuery = getForeignKeyRemoveConstraintQueryForInheritance(databaseCopy);
-			
+
 			String foreignConstraintRollbackQuery = getForeignKeyConstraintQueryForInheritance(databaseCopy);
-			
+
 			queryList.add(foreignConstraintRemoveQuery);
 			attributeRollbackQueryList.add(foreignConstraintRollbackQuery);
-			
+
 			if (entity.getParentEntity() != null)
 			{
 				String foreignConstraintAddQuery = getForeignKeyConstraintQueryForInheritance(entity);
-			
+
 				foreignConstraintRollbackQuery = getForeignKeyRemoveConstraintQueryForInheritance(entity);
 				queryList.add(foreignConstraintAddQuery);
 				attributeRollbackQueryList.add(foreignConstraintRollbackQuery);
@@ -289,6 +289,11 @@ class DynamicExtensionBaseQueryBuilder
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		List<String> queryList = new ArrayList<String>();
+
+		if (recordIdList.isEmpty())
+		{
+			return queryList;
+		}
 		Association association = (Association) associationInterface;
 		verifyCardinalityConstraints(associationInterface, recordIdList);
 		String tableName = association.getConstraintProperties().getName();
@@ -990,8 +995,7 @@ class DynamicExtensionBaseQueryBuilder
 
 				Attribute savedAttribute = (Attribute) savedAttributeIterator.next();
 				Attribute attribute = (Attribute) entity.getAttributeByIdentifier(savedAttribute
-						.getId());
-				;
+						.getId());;
 
 				//attribute is removed or modified such that its column need to be removed
 				if (isAttributeColumnToBeRemoved(attribute, savedAttribute))
@@ -1093,8 +1097,7 @@ class DynamicExtensionBaseQueryBuilder
 			{
 				Association savedAssociation = (Association) savedAssociationIterator.next();
 				Association association = (Association) entity
-						.getAssociationByIdentifier(savedAssociation.getId());
-				;
+						.getAssociationByIdentifier(savedAssociation.getId());;
 
 				// removed ??
 				if (association == null)
@@ -1228,7 +1231,7 @@ class DynamicExtensionBaseQueryBuilder
 				FROM_KEYWORD).append(WHITESPACE).append(tableName);
 
 		ResultSet resultSet = entityManagerUtil.executeQuery(queryBuffer.toString());
-		
+
 		try
 		{
 			resultSet.next();
@@ -1415,15 +1418,15 @@ class DynamicExtensionBaseQueryBuilder
 		try
 		{
 			ResultSet resultSet = entityManagerUtil.executeQuery(query);
-			
+
 			while (resultSet.next())
 			{
-				
+
 				Long recordId = resultSet.getLong(1);
 				associationRecordValues.add(recordId);
-				
+
 			}
-			
+
 		}
 		catch (Exception e)
 		{
@@ -1467,7 +1470,7 @@ class DynamicExtensionBaseQueryBuilder
 					+ WHITESPACE + WHERE_KEYWORD + WHITESPACE + columnName + WHITESPACE + EQUAL
 					+ WHITESPACE + recordIdList.get(0);
 			ResultSet resultSet = entityManagerUtil.executeQuery(query);
-			
+
 			try
 			{
 				resultSet.next();

@@ -1539,7 +1539,7 @@ public class EntityManager
 		{
 			logDebug("insertData", "Query for insert data is : " + queryString);
 			PreparedStatement statement = conn.prepareStatement(queryString);
-			statement.executeUpdate();
+			statement.executeUpdate();			
 		}
 
 		for (AttributeRecord collectionAttributeRecord : attributeRecords)

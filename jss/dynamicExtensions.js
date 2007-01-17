@@ -20,6 +20,13 @@ function showBuildFormJSP()
 	formDefinitionForm.submit();
 }
 
+function saveFormDetails()
+{
+	document.getElementById('operation').value='saveForm';
+ 	var formDefinitionForm = document.getElementById('formDefinitionForm');
+	formDefinitionForm.submit();
+}
+
 function controlSelectedAction()
 {	
 	clearControlAttributes();
@@ -854,35 +861,6 @@ function controlSelected(rowId,colId)
 	controlsForm.submit();
 }
 
-/*function controlSelected(ths,controlType)
-{
-	
-	var prevRow = document.getElementById('previousControl').value;
-	if (prevRow != null && prevRow != '' && prevRow != undefined) 
-	{
-		document.getElementById(prevRow).className = "tableItemUnselected";
-	}
-
-	document.getElementById('previousControl').value = ths.id;
-	ths.className = "tableItemSelected";
-
-	//Added by Preeti
-	document.getElementById('controlOperation').value='Edit';
-	document.getElementById('selectedControlId').value=ths.id;
-	
-	if(controlType=="Add Sub Form")
-	{
-		var opernMode = document.getElementById('operationMode');	
-		if(opernMode!=null)
-		{
-			opernMode.value = "EditForm";
-		}
-	}
-
-	var controlsForm=document.getElementById('controlsForm');
-	controlsForm.action='/dynamicExtensions/LoadFormControlsAction.do';
-	controlsForm.submit();
-}*/
 
 function measurementUnitsChanged(cboMeasuremtUnits)
 {

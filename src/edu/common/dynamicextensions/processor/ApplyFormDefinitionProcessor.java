@@ -58,7 +58,7 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException :Exception thrown by Entity Manager 
 	 * @throws DynamicExtensionsSystemException :Exception thrown by Entity Manager
 	 */
-	public ContainerInterface addEntityToContainer(ContainerInterface containerInterface, FormDefinitionForm actionForm, boolean isActionSave,
+	public ContainerInterface addEntityToContainer(ContainerInterface containerInterface, FormDefinitionForm actionForm, 
 			EntityGroupInterface entityGroupInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
@@ -89,14 +89,7 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		{
 			associateEntityToGroup(entityGroupInterface, containerInterface.getEntity());
 		}
-		if (isActionSave)
-		{
-			containerProcessor.saveContainer(containerInterface);
-		}
-		else
-		{
-			containerProcessor.populateContainerInterface(containerInterface, actionForm);
-		}
+		containerProcessor.populateContainerInterface(containerInterface, actionForm);
 		return containerInterface;
 	}
 

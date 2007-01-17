@@ -35,6 +35,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String LOAD_FORM_PREVIEW_ACTION = "loadFormPreviewAction";
 	public static final String SHOW_FORM_PREVIEW_JSP = "showFormPreviewJSP";
 	public static final String BUILD_FORM = "buildForm";
+	public static final String SAVE_FORM = "saveForm";
 	public static final String SHOW_CREATE_FORM_JSP = "showCreateFormView";
 	public static final String CONTROL_SELECTED_ACTION = "controlSelectedAction";
 	public static final String SYSTEM_EXCEPTION = "systemException";

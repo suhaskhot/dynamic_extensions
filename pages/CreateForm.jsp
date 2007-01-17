@@ -172,7 +172,7 @@
 														<bean:message key="eav.form.conceptCode"/> :
 													</td>
 													<td class="formFieldWithoutBorder">
-														<html:text styleClass="formDateSized"  maxlength="20" size="40"  styleId = 'conceptCode' property="conceptCode" />
+														<html:text styleClass="formDateSized" size="40" styleId='conceptCode' property="conceptCode" />
 													</td>
 												</tr>
 												<tr valign = "top">

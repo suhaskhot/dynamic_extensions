@@ -251,9 +251,9 @@
 									</tr>
 									<tr height="5%" valign = "top"  >
 										<td align="left" >
-											<html:submit styleClass="actionButton">
+											<html:button styleClass="actionButton" property="saveButton" onclick="saveFormDetails()">
 												<bean:message key="buttons.save" />
-											</html:submit>
+											</html:button>
 											<html:button styleClass="actionButton" property="cancelButton" onclick="showHomePageFromCreateForm()">
 																<bean:message  key="buttons.cancel" />
 											</html:button>

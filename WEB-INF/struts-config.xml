@@ -84,7 +84,7 @@ PUBLIC
 			input="/LoadFormDefinitionAction.do"
 			scope="request">
 			<forward name="success" path="/LoadFormDefinitionAction.do" />
-			<forward name="buildForm" path="/LoadFormControlsAction.do" />
+			<forward name="showBuildFormJSP" path="/LoadFormControlsAction.do" />
 			<forward name="showDynamicExtensionsHomePage" path="/DynamicExtensionHomePage.do" />
 		</action>	
 		<action path="/LoadFormControlsAction" 

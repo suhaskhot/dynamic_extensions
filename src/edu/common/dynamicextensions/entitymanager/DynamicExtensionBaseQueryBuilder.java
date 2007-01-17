@@ -257,6 +257,7 @@ class DynamicExtensionBaseQueryBuilder
 			{
 				ResultSet resultSet = entityManagerUtil
 						.executeQuery(manyToOneAssociationsGetReocrdQuery.toString());
+				resultSet.next();
 				for (int i = 0; i < noOfMany2OneAsso; i++)
 				{
 					Long targetRecordId = resultSet.getLong(i + 1);
@@ -1227,9 +1228,10 @@ class DynamicExtensionBaseQueryBuilder
 				FROM_KEYWORD).append(WHITESPACE).append(tableName);
 
 		ResultSet resultSet = entityManagerUtil.executeQuery(queryBuffer.toString());
-
+		
 		try
 		{
+			resultSet.next();
 			Long count = resultSet.getLong(1);
 			if (count > 0)
 			{
@@ -1413,12 +1415,15 @@ class DynamicExtensionBaseQueryBuilder
 		try
 		{
 			ResultSet resultSet = entityManagerUtil.executeQuery(query);
-			do
+			
+			while (resultSet.next())
 			{
+				
 				Long recordId = resultSet.getLong(1);
 				associationRecordValues.add(recordId);
+				
 			}
-			while (resultSet.next());
+			
 		}
 		catch (Exception e)
 		{
@@ -1462,8 +1467,10 @@ class DynamicExtensionBaseQueryBuilder
 					+ WHITESPACE + WHERE_KEYWORD + WHITESPACE + columnName + WHITESPACE + EQUAL
 					+ WHITESPACE + recordIdList.get(0);
 			ResultSet resultSet = entityManagerUtil.executeQuery(query);
+			
 			try
 			{
+				resultSet.next();
 				// if another source record is already using target record , throw exception.
 				if (resultSet.getInt(1) != 0)
 				{

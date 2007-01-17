@@ -94,7 +94,6 @@ public class EntityManagerUtil
 			Statement statement = null;
 			statement = conn.createStatement();
 			ResultSet resultSet = statement.executeQuery(query);
-			resultSet.next();
 			return resultSet;
 		}
 
@@ -176,6 +175,7 @@ public class EntityManagerUtil
 		try
 		{
 			ResultSet resultSet = executeQuery(queryToGetNextIdentifier.toString());
+			resultSet.next();
 			Long identifier = resultSet.getLong(1);
 			return identifier + 1;
 		}

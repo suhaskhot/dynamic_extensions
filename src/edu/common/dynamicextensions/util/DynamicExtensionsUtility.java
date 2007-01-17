@@ -648,6 +648,11 @@ public class DynamicExtensionsUtility
 		
 		AssociationInterface association = (AssociationInterface)abstractAttribute;
 		EntityInterface targetEntity = association.getTargetEntity();
+		if (entityList.contains(targetEntity))
+		{
+			association.setTargetEntity((EntityInterface) entityList.get(entityList
+					.indexOf(targetEntity)));
+		}
 		for(AssociationInterface tagretEntityAssociation : targetEntity.getAssociationCollection()) {
 			EntityInterface entity = tagretEntityAssociation.getTargetEntity();
 			if (entityList.contains(entity))

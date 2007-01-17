@@ -410,7 +410,7 @@
 			GRANT DBA TO ${hibernate.connection.username};
 			ALTER USER ${hibernate.connection.username} DEFAULT ROLE ALL;
 		</sql>
-		<antcall target="genrate_schema"></antcall>
+		<antcall target="generate_schema"></antcall>
 	</target>
 
 	

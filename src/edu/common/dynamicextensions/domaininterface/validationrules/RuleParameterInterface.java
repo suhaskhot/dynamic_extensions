@@ -1,12 +1,14 @@
 
 package edu.common.dynamicextensions.domaininterface.validationrules;
 
+import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
+
 /**
  * Rules are the validations put by the end user on the Attributes of the Enitites they create.
  * @author sujay_narkar
  * @version 1.0
  */
-public interface RuleParameterInterface
+public interface RuleParameterInterface extends DynamicExtensionBaseDomainObjectInterface
 {
 	/**
 	 * This method returns the Unique Identifier of the Object.

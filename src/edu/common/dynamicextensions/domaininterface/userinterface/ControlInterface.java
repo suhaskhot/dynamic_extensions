@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.domaininterface.userinterface;
 
 import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
 /**
@@ -10,7 +11,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
  * to the Container on dynamically generated User Interface.
  * @author geetika_bangard
  */
-public interface ControlInterface extends Comparable
+public interface ControlInterface extends DynamicExtensionBaseDomainObjectInterface,  Comparable
 {
 
 	/**

@@ -3,12 +3,14 @@ package edu.common.dynamicextensions.domaininterface.userinterface;
 
 import java.util.Collection;
 
+import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
+
 /**
  * ViewInterface stores necessary information for generating view on
  * dynamically generated user interface.  
  * @author geetika_bangard
  */
-public interface ViewInterface
+public interface ViewInterface extends DynamicExtensionBaseDomainObjectInterface
 {
 
 	/**

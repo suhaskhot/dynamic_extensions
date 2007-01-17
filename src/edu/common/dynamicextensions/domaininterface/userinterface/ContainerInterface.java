@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
@@ -14,7 +15,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
  * 
  * @author geetika_bangard
  */
-public interface ContainerInterface
+public interface ContainerInterface extends DynamicExtensionBaseDomainObjectInterface
 {
 
 	/**

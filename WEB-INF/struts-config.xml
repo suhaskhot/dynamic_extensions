@@ -166,6 +166,7 @@ PUBLIC
 			<forward name="success" path="/LoadDataEntryFormAction.do" />
 			<forward name="loadChildContainer" path="/LoadDataEntryFormAction.do" />
 			<forward name="loadParentContainer" path="/LoadDataEntryFormAction.do" />
+			<forward name="showDynamicExtensionsHomePage" path="/DynamicExtensionHomePage.do" />
 		</action>
 		<action path="/DynamicExtensionsInterfaceAction" 
 		    type="edu.common.dynamicextensions.interfaceactions.DynamicExtensionsInterfaceAction" 

@@ -18,6 +18,7 @@ import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
  * @version 1.0
  * @created 28-Sep-2006 12:20:06 PM
  * @hibernate.class table="DYEXTN_ABSTRACT_METADATA" 
+ * @hibernate.cache  usage="read-write"
  */
 public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 		implements
@@ -160,6 +161,7 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 	 * inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ABSTRACT_METADATA_ID"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.SemanticProperty"
+	 * @hibernate.cache  usage="read-write"
 	 * @return the Collection of SemanticProperties of the AbstractMetadata.
 	 */
 	public Collection<SemanticPropertyInterface> getSemanticPropertyCollection()
@@ -236,6 +238,7 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 	 * @hibernate.set name="taggedValueCollection" cascade="all-delete-orphan"
 	 * inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ABSTRACT_METADATA_ID"
+	 * @hibernate.cache  usage="read-write"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.TaggedValue"
 	 * @return the Collection of TaggedValue of the AbstractMetadata.
 	 */

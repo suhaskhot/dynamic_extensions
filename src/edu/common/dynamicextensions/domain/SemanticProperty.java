@@ -9,6 +9,7 @@ import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
  * @version 1.0
  * @created 28-Sep-2006 12:20:08 PM
  * @hibernate.class table="DYEXTN_SEMANTIC_PROPERTY"
+ * @hibernate.cache  usage="read-write"
  */
 public class SemanticProperty extends DynamicExtensionBaseDomainObject implements SemanticPropertyInterface
 {

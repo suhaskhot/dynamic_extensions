@@ -14,6 +14,7 @@ import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterfac
  * @created 28-Sep-2006 12:20:06 PM
  * @hibernate.joined-subclass table="DYEXTN_ATTRIBUTE"
  * @hibernate.joined-subclass-key column="IDENTIFIER"
+ * @hibernate.cache  usage="read-write"
  */
 public abstract class AbstractAttribute extends AbstractMetadata implements AbstractAttributeInterface
 {
@@ -44,6 +45,7 @@ public abstract class AbstractAttribute extends AbstractMetadata implements Abst
 	 * @hibernate.set name="ruleCollection" table="DYEXTN_RULE"
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ATTRIBUTE_ID"
+	 * @hibernate.cache  usage="read-write"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.validationrules.Rule"
 	 * @return Collection the ruleCollection associated with the Attribute.
 	 */

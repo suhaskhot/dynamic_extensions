@@ -20,6 +20,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @created 28-Sep-2006 12:20:06 PM
  * @hibernate.joined-subclass table="DYEXTN_ASSOCIATION" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
+ * @hibernate.cache  usage="read-write"
  */
 public class Association extends AbstractAttribute
 		implements AssociationInterface
@@ -153,6 +154,7 @@ public class Association extends AbstractAttribute
 	 * @hibernate.set name="constraintPropertiesCollection" table="DYEXTN_CONSTRAINT_PROPERTIES"
 	 * cascade="save-update" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ASSOCIATION_ID"
+	 * @hibernate.cache  usage="read-write"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties" 
 	 * 
 	 * @return the Collection of the ConstraintProperties of the Association.

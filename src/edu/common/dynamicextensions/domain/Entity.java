@@ -23,6 +23,7 @@ import edu.common.dynamicextensions.util.global.Constants.InheritanceStrategy;
  * @created 28-Sep-2006 12:20:08 PM
  * @hibernate.joined-subclass table="DYEXTN_ENTITY"
  * @hibernate.joined-subclass-key column="IDENTIFIER"
+ * @hibernate.cache  usage="read-write"
  */
 public class Entity extends AbstractMetadata implements EntityInterface
 {
@@ -105,6 +106,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	 * @hibernate.set name="entityGroupCollection" table="DYEXTN_ENTITY_GROUP_REL" 
 	 * cascade="none" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ENTITY_ID"
+	 * @hibernate.cache  usage="read-write"
 	 * @hibernate.collection-many-to-many class="edu.common.dynamicextensions.domain.EntityGroup" column="ENTITY_GROUP_ID"
 	 * @return the Collection of the Entities.
 	 */
@@ -127,6 +129,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	 * @hibernate.set name="tablePropertiesColletion" table="DYEXTN_TABLE_PROPERTIES" cascade="save-update"
 	 * inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ENTITY_ID"
+	 * @hibernate.cache  usage="read-write"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.databaseproperties.TableProperties"
 	 * @return the Collection of TableProperties of this Entity.
 	 */
@@ -249,6 +252,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	 * @hibernate.set name="abstractAttributeCollection" table="DYEXTN_ATTRIBUTE"
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ENTIY_ID"
+	 * @hibernate.cache  usage="read-write"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.AbstractAttribute" 
 	 * @return the Collection of AbstractAttribute.
 	 */

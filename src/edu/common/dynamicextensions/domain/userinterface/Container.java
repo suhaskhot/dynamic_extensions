@@ -25,6 +25,7 @@ import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
  * @version 1.0
  * @created 28-Sep-2006 12:20:07 PM
  * @hibernate.class table="DYEXTN_CONTAINER"
+ * @hibernate.cache  usage="read-write"
  */
 public class Container extends DynamicExtensionBaseDomainObject
 		implements
@@ -155,6 +156,7 @@ public class Container extends DynamicExtensionBaseDomainObject
 	 * @hibernate.set name="controlCollection" table="DYEXTN_CONTROL"
 	 * cascade="save-update" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="CONTAINER_ID"
+	 * @hibernate.cache  usage="read-write"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.userinterface.Control"
 	 * @return Returns the controlCollection.
 	 */

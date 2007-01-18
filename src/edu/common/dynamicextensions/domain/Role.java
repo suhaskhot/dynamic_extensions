@@ -13,6 +13,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @version 1.0
  * @created 28-Sep-2006 12:20:08 PM
  * @hibernate.class table="DYEXTN_ROLE"
+ * @hibernate.cache  usage="read-write"
  */
 public class Role extends DynamicExtensionBaseDomainObject implements RoleInterface
 {

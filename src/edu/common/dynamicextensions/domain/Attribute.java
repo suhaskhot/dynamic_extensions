@@ -18,6 +18,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @created 28-Sep-2006 12:20:08 PM
  * @hibernate.joined-subclass table="DYEXTN_PRIMITIVE_ATTRIBUTE" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
+ * @hibernate.cache  usage="read-write"
  */
 public class Attribute extends AbstractAttribute implements AttributeInterface
 {
@@ -56,6 +57,7 @@ public class Attribute extends AbstractAttribute implements AttributeInterface
      * @hibernate.set name="attributeTypeInformationCollection" table="DYEXTN_ATTRIBUTE_TYPE_INFO"
      * cascade="all-delete-orphan" inverse="false" lazy="false"
      * @hibernate.collection-key column="PRIMITIVE_ATTRIBUTE_ID"
+     * @hibernate.cache  usage="read-write"
      * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.AttributeTypeInformation"   
      * @return Returns the attributeTypeInformationCollection.
      */
@@ -172,6 +174,7 @@ public class Attribute extends AbstractAttribute implements AttributeInterface
 	 * @hibernate.set name="columnPropertiesCollection" table="DYEXTN_COLUMN_PROPERTIES"
 	 * cascade="save-update" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="PRIMITIVE_ATTRIBUTE_ID"
+	 * @hibernate.cache  usage="read-write"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties"
 	 * @return the Collection of Column Properties of the Attribute.
 	 */

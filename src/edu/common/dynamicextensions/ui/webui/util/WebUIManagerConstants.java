@@ -19,7 +19,7 @@ public interface WebUIManagerConstants
 	/**
 	 * 
 	 */
-	String  DYNAMIC_EXTENSIONS_INTERFACE_ACTION_URL = "/dynamicExtensions/DynamicExtensionsInterfaceAction";
+	String  DYNAMIC_EXTENSIONS_INTERFACE_ACTION_URL = "/dynamicExtensions/DynamicExtensionsInterfaceAction.do";
 	/**
 	 * 
 	 */
@@ -27,7 +27,7 @@ public interface WebUIManagerConstants
 	/**
 	 * 
 	 */
-	String LOAD_DATA_ENTRY_FORM_ACTION_URL  =  "/dynamicExtensions/LoadDataEntryFormAction";
+	String LOAD_DATA_ENTRY_FORM_ACTION_URL  =  "/dynamicExtensions/LoadDataEntryFormAction.do";
 	/**
 	 * 
 	 */

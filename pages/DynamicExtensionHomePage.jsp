@@ -102,9 +102,9 @@
 										<td>
 											<%
 	 											String cont_Id = containerInterface.getId().toString();
-	 											String target = "/dynamicExtensions/LoadDataEntryFormAction.do?containerIdentifier=" + cont_Id + "&showFormPreview=false";
+	 											String target = "setDataEntryOperation('/dynamicExtensions/LoadDataEntryFormAction.do?containerIdentifier=" + cont_Id + "&showFormPreview=false');";
 	 										%>
-											<html:link href='<%=target%>'>
+											<html:link href='#' onclick="<%=target%>" >
 												&nbsp;<c:out value='${containerInterface.caption}' />
 											</html:link>
 										</td>
@@ -149,6 +149,7 @@
 				<tr><td></td></tr>
 			</table>
 			<html:hidden styleId = "operationMode" property="operationMode"/>
+			<input type="hidden" id="dataEntryOperation" name="dataEntryOperation" value="insertParentData"/>
 		</html:form>
 	</body>
 </html>

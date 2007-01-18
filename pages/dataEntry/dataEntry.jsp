@@ -36,6 +36,9 @@
 <c:set var="errorList" value="${dataEntryForm.errorList}"/>
 <jsp:useBean id="errorList" type="java.util.List"/>
 
+<c:set var="dataEntryOperation" value="${dataEntryForm.dataEntryOperation}"/>
+<jsp:useBean id="dataEntryOperation" type="java.lang.String"/>
+
 <c:set var="recordIdentifier123" value="${dataEntryForm.recordIdentifier}" />
 <jsp:useBean id="recordIdentifier123" type="java.lang.String"/>
 
@@ -140,7 +143,7 @@
 											<tr>
 												<td align='right'>						
 													<c:choose>
-							  	    					<c:when test='${showFormPreview == "true"}'>
+							  	    					<c:when test='${showFormPreview=="true"}'>
 															<html:submit styleClass="actionButton" onclick="showParentContainerInsertDataPage()">
 															 	<bean:message key="buttons.back" />
 															</html:submit>
@@ -148,11 +151,17 @@
 							 							<c:otherwise>
 							 								<html:hidden styleId='isEdit' property="isEdit" value=""/>
 							 								
-							 								<html:submit styleClass="actionButton" onclick="showParentContainerInsertDataPage()" disabled="<%=isTopLevelEntity %>">
+							 								<html:button styleClass="actionButton" property="ok" onclick="showParentContainerInsertDataPage()" disabled="<%=isTopLevelEntity %>">
 															 	<bean:message key="buttons.ok" />
-															</html:submit>
-													 		<c:if test='${(mode == "edit") && (isTopLevelEntity)}'>
-														 		<html:submit styleClass="actionButton">
+															</html:button>
+															
+															<c:if test='${!((mode=="view") && (isTopLevelEntity=="false"))}'>
+																<html:button styleClass="actionButton" property="cancel" onclick="cancelInsertData()">
+																 	<bean:message key="buttons.cancel" />
+																</html:button>
+															</c:if>
+															<c:if test='${(mode=="edit") && (isTopLevelEntity=="true")}'>
+													 			<html:submit styleClass="actionButton" onclick="setInsertDataOperation()">
 																 	<bean:message key="buttons.submit" />
 																</html:submit>
 															</c:if>
@@ -173,7 +182,7 @@
 			<html:hidden styleId='entitySaved' property="entitySaved" />
 			<input type="hidden" id="childContainerId" name="childContainerId" value=""/>
 			<input type="hidden" id="childRowId" name="childRowId" value=""/>
-			<input type="hidden" id="dataEntryOperation" name="dataEntryOperation" value=""/>
+			<input type="hidden" id="dataEntryOperation" name="dataEntryOperation" value="<%=dataEntryOperation%>"/>
 			<input type="hidden" id="showFormPreview" name="showFormPreview" value="<%=showFormPreview%>"/>
 			<input type="hidden" id="mode" name="mode" value="<%=mode%>"/>
 		</html:form>

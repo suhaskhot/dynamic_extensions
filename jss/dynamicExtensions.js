@@ -1095,6 +1095,13 @@ function showDefineFormJSP()
 	}
 }
 
+function setDataEntryOperation(target)
+{
+	var formsIndexForm = document.getElementById('formsIndexForm');
+	formsIndexForm.action = target;
+	formsIndexForm.submit();
+}
+
 function setEditOperationMode(target)
 {
 	document.getElementById('operationMode').value = 'EditForm';
@@ -1833,7 +1840,22 @@ function showEditRecordPage(target)
 
 function showParentContainerInsertDataPage()
 {
+    //document.getElementById('mode').value = "edit";
     document.getElementById('dataEntryOperation').value = "insertParentData";
+    var dataEntryForm = document.getElementById('dataEntryForm');
+    dataEntryForm.submit();
+}
+
+function setInsertDataOperation()
+{
+	document.getElementById('dataEntryOperation').value = "";
+}
+
+function cancelInsertData()
+{
+	document.getElementById('mode').value = "cancel";
+	var dataEntryForm = document.getElementById('dataEntryForm');
+    dataEntryForm.submit();
 }
 
 function dropFn(srcId,targetId,sourceGridObj,targetGridObj)

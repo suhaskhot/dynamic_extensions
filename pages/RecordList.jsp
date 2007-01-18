@@ -43,6 +43,7 @@
 					</td>
 				</tr>
 			</table>
+			<input type="hidden" id="dataEntryOperation" name="dataEntryOperation" value="insertParentData"/>
 		</html:form>
 	</body>
 </html>

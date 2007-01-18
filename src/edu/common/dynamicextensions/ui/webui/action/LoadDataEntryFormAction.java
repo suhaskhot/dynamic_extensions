@@ -41,28 +41,25 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 			HttpServletRequest request, HttpServletResponse response)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		DataEntryForm dataEntryForm = (DataEntryForm) form;
-		
 		cacheCallBackURL(request);
-
 		ContainerInterface containerInterface = getConatinerInterface(request);
 
-		LoadDataEntryFormProcessor loadDataEntryFormProcessor = LoadDataEntryFormProcessor
-				.getInstance();
 		String recordId = request.getParameter("recordIdentifier");
-		if(recordId != null && !recordId.equals(""))
+		if (recordId != null && !recordId.equals(""))
 		{
 			CacheManager.addObjectToCache(request, "rootRecordIdentifier", recordId);
 		}
 		else
 		{
-			recordId = (String) CacheManager.getObjectFromCache(request,"rootRecordIdentifier");
-			if(recordId == null)
+			recordId = (String) CacheManager.getObjectFromCache(request, "rootRecordIdentifier");
+			if (recordId == null)
 			{
 				recordId = "";
 			}
 		}
-				
+
+		LoadDataEntryFormProcessor loadDataEntryFormProcessor = LoadDataEntryFormProcessor
+				.getInstance();
 		Map<AbstractAttributeInterface, Object> recordMap = loadDataEntryFormProcessor
 				.getValueMapFromRecordId(containerInterface.getEntity(), recordId);
 
@@ -80,22 +77,28 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 					valueMapStack, recordMap);
 		}
 
+		DataEntryForm dataEntryForm = (DataEntryForm) form;
 		updateStacks(request, dataEntryForm, containerInterface, recordMap, containerStack,
 				valueMapStack);
 
-		String mode = request.getParameter(WebUIManagerConstants.MODE_PARAM_NAME);
-		if(mode == null || !mode.equals("")){
-			mode = dataEntryForm.getMode();
-		}
 		if ((!containerStack.isEmpty()) && (!valueMapStack.isEmpty()))
 		{
+			String mode = request.getParameter(WebUIManagerConstants.MODE_PARAM_NAME);
+			if (mode == null || !mode.equals(""))
+			{
+				mode = dataEntryForm.getMode();
+			}
+
 			loadDataEntryFormProcessor.loadDataEntryForm((AbstractActionForm) form, containerStack
 					.peek(), valueMapStack.peek(), mode, recordId);
 		}
-		
+
 		updateTopLevelEntitiyInfo(containerStack, dataEntryForm);
 
-		clearFormValues(dataEntryForm);
+		if (dataEntryForm.getErrorList().isEmpty())
+		{
+			clearFormValues(dataEntryForm);
+		}
 		return mapping.findForward("Success");
 	}
 
@@ -193,13 +196,12 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @param containerStack
 	 * @param valueMapStack
 	 */
-	private void updateStacks(HttpServletRequest request, DataEntryForm form,
+	private void updateStacks(HttpServletRequest request, DataEntryForm dataEntryForm,
 			ContainerInterface containerInterface,
 			Map<AbstractAttributeInterface, Object> recordMap,
 			Stack<ContainerInterface> containerStack,
 			Stack<Map<AbstractAttributeInterface, Object>> valueMapStack)
 	{
-		DataEntryForm dataEntryForm = (DataEntryForm) form;
 		String dataEntryOperation = dataEntryForm.getDataEntryOperation();
 		if (dataEntryOperation != null && dataEntryOperation.equalsIgnoreCase("insertChildData"))
 		{
@@ -232,7 +234,13 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 		else if (dataEntryOperation != null
 				&& dataEntryOperation.equalsIgnoreCase("insertParentData"))
 		{
-			UserInterfaceiUtility.removeContainerInfo(containerStack, valueMapStack);
+			List<String> errorList = dataEntryForm.getErrorList();
+			if (((errorList != null) && (errorList.isEmpty()))
+					&& (((containerStack != null) && !(containerStack.isEmpty())) && ((valueMapStack != null) && !(valueMapStack
+							.isEmpty()))))
+			{
+				UserInterfaceiUtility.removeContainerInfo(containerStack, valueMapStack);
+			}
 		}
 	}
 }

@@ -73,9 +73,11 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		{
 			try
 			{
-				DataEntryForm dataEntryForm = (DataEntryForm) form;
+				List<String> errorList = null;
 
-				if (dataEntryForm.getMode().equals("edit"))
+				DataEntryForm dataEntryForm = (DataEntryForm) form;
+				String mode = dataEntryForm.getMode();
+				if ((mode != null) && (mode.equals("edit")))
 				{
 					ContainerInterface containerInterface = (ContainerInterface) containerStack
 							.peek();
@@ -84,24 +86,57 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 					valueMap = generateAttributeValueMap(containerInterface, request,
 							dataEntryForm, "", valueMap, true);
 
-					List<String> errorList = ValidatorUtil.validateEntity(valueMap);
+					errorList = ValidatorUtil.validateEntity(valueMap);
 					if (errorList.size() != 0)
 					{
 						//saveErrors(request, getErrorMessages(errorList));
 						dataEntryForm.setErrorList(errorList);
-						return (mapping.findForward(Constants.SUCCESS));
+
+						//						dataEntryForm.setDataEntryOperation("insertParentData");
+						//						return mapping.findForward("loadParentContainer");
 					}
 				}
 
 				String dataEntryOperation = dataEntryForm.getDataEntryOperation();
-				if ((dataEntryOperation != null) && (dataEntryOperation.equals("insertChildData")))
+				if (dataEntryOperation != null)
 				{
-					return mapping.findForward("loadChildContainer");
-				}
-				else if ((dataEntryOperation != null)
-						&& (dataEntryOperation.equals("insertParentData")))
-				{
-					return mapping.findForward("loadParentContainer");
+					dataEntryForm.setErrorList(new ArrayList<String>());
+					if (dataEntryOperation.equals("insertChildData"))
+					{
+						if ((errorList != null) && !(errorList.isEmpty()))
+						{
+							dataEntryForm.setDataEntryOperation("insertParentData");
+							return mapping.findForward("loadParentContainer");
+						}
+						
+						if ((mode != null) && (mode.equals("cancel")))
+						{
+							dataEntryForm.setMode("edit");
+							dataEntryForm.setDataEntryOperation("insertParentData");
+							return mapping.findForward("loadParentContainer");
+						}
+						else
+						{
+							return mapping.findForward("loadChildContainer");
+						}
+					}
+					else if (dataEntryOperation.equals("insertParentData"))
+					{
+						if ((errorList != null) && !(errorList.isEmpty()))
+						{
+							dataEntryForm.setDataEntryOperation("insertChildData");
+							return mapping.findForward("loadChildContainer");
+						}
+
+						if ((mode != null) && (mode.equals("cancel")))
+						{
+							return mapping.findForward("showDynamicExtensionsHomePage");
+						}
+						else
+						{
+							return mapping.findForward("loadParentContainer");
+						}
+					}
 				}
 
 				String recordIdentifier = dataEntryForm.getRecordIdentifier();

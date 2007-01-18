@@ -47,6 +47,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterfa
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerExceptionConstantsInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -255,10 +256,10 @@ public class DynamicExtensionsUtility
 	{
 		try
 		{
-			DBUtil.currentSession();
-			DBUtil.closeSession();
+			EntityManager.getInstance().getAllEntities();
+			EntityManager.getInstance().getAllContainers();
 		}
-		catch (HibernateException e)
+		catch (Exception e)
 		{
 			throw new RuntimeException(e);
 		}
@@ -652,6 +653,7 @@ public class DynamicExtensionsUtility
 		{
 			association.setTargetEntity((EntityInterface) entityList.get(entityList
 					.indexOf(targetEntity)));
+			return;
 		}
 		for(AssociationInterface tagretEntityAssociation : targetEntity.getAssociationCollection()) {
 			EntityInterface entity = tagretEntityAssociation.getTargetEntity();

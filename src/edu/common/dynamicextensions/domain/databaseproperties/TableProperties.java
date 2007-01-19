@@ -1,8 +1,6 @@
 package edu.common.dynamicextensions.domain.databaseproperties;
 
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
-import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
-import edu.wustl.common.actionForm.AbstractActionForm;
 
 /**
  * @version 1.0

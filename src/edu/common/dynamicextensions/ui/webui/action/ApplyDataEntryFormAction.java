@@ -64,6 +64,9 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
 	{
+		ActionForward actionForward = null;
+		boolean isCallbackURL = false;
+
 		Stack<ContainerInterface> containerStack = (Stack<ContainerInterface>) CacheManager
 				.getObjectFromCache(request, Constants.CONTAINER_STACK);
 		Stack<Map<AbstractAttributeInterface, Object>> valueMapStack = (Stack<Map<AbstractAttributeInterface, Object>>) CacheManager
@@ -74,103 +77,146 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			try
 			{
 				List<String> errorList = null;
-
 				DataEntryForm dataEntryForm = (DataEntryForm) form;
 				String mode = dataEntryForm.getMode();
 				if ((mode != null) && (mode.equals("edit")))
 				{
-					ContainerInterface containerInterface = (ContainerInterface) containerStack
-							.peek();
-					Map<AbstractAttributeInterface, Object> valueMap = (Map<AbstractAttributeInterface, Object>) valueMapStack
-							.peek();
-					valueMap = generateAttributeValueMap(containerInterface, request,
-							dataEntryForm, "", valueMap, true);
-
-					errorList = ValidatorUtil.validateEntity(valueMap);
-					if (errorList.size() != 0)
-					{
-						//saveErrors(request, getErrorMessages(errorList));
-						dataEntryForm.setErrorList(errorList);
-
-						//						dataEntryForm.setDataEntryOperation("insertParentData");
-						//						return mapping.findForward("loadParentContainer");
-					}
+					populateAndValidateValues(containerStack, valueMapStack, request,
+							dataEntryForm, errorList);
 				}
 
-				String dataEntryOperation = dataEntryForm.getDataEntryOperation();
-				if (dataEntryOperation != null)
+				actionForward = getMappingForwardAction(mapping, dataEntryForm, errorList, mode);
+				if (actionForward == null)
 				{
-					dataEntryForm.setErrorList(new ArrayList<String>());
-					if (dataEntryOperation.equals("insertChildData"))
-					{
-						if ((errorList != null) && !(errorList.isEmpty()))
-						{
-							dataEntryForm.setDataEntryOperation("insertParentData");
-							return mapping.findForward("loadParentContainer");
-						}
-						
-						if ((mode != null) && (mode.equals("cancel")))
-						{
-							dataEntryForm.setMode("edit");
-							dataEntryForm.setDataEntryOperation("insertParentData");
-							return mapping.findForward("loadParentContainer");
-						}
-						else
-						{
-							return mapping.findForward("loadChildContainer");
-						}
-					}
-					else if (dataEntryOperation.equals("insertParentData"))
-					{
-						if ((errorList != null) && !(errorList.isEmpty()))
-						{
-							dataEntryForm.setDataEntryOperation("insertChildData");
-							return mapping.findForward("loadChildContainer");
-						}
-
-						if ((mode != null) && (mode.equals("cancel")))
-						{
-							return mapping.findForward("showDynamicExtensionsHomePage");
-						}
-						else
-						{
-							return mapping.findForward("loadParentContainer");
-						}
-					}
-				}
-
-				String recordIdentifier = dataEntryForm.getRecordIdentifier();
-				recordIdentifier = storeParentContainer(valueMapStack, containerStack, request,
-						recordIdentifier);
-
-				String calllbackURL = (String) CacheManager.getObjectFromCache(request,
-						Constants.CALLBACK_URL);
-				if (calllbackURL != null && !calllbackURL.equals(""))
-				{
-					calllbackURL = calllbackURL + "?"
-							+ WebUIManager.getRecordIdentifierParameterName() + "="
-							+ recordIdentifier + "&"
-							+ WebUIManager.getOperationStatusParameterName() + "="
-							+ WebUIManagerConstants.SUCCESS;
-					CacheManager.clearCache(request);
-					response.sendRedirect(calllbackURL);
-					return null;
+					String recordIdentifier = dataEntryForm.getRecordIdentifier();
+					recordIdentifier = storeParentContainer(valueMapStack, containerStack, request,
+							recordIdentifier);
+					isCallbackURL = redirectCallbackURL(request, response, recordIdentifier);
 				}
 			}
-			catch (Exception e)
+			catch (Exception exception)
 			{
-				e.printStackTrace();
-				String actionForwardString = catchException(e, request);
-				if ((actionForwardString == null) || (actionForwardString.equals("")))
-				{
-					return mapping.getInputForward();
-				}
-				return (mapping.findForward(actionForwardString));
+				return getExceptionActionForward(exception, mapping, request);
 			}
 		}
 
-		UserInterfaceiUtility.clearContainerStack(request);
-		return (mapping.findForward(Constants.SUCCESS));
+		if (isCallbackURL)
+		{
+			actionForward = null;
+		}
+		else if (actionForward == null)
+		{
+			UserInterfaceiUtility.clearContainerStack(request);
+			actionForward = mapping.findForward(Constants.SUCCESS);
+		}
+		return actionForward;
+	}
+
+	/**
+	 * This method gets the Callback URL from cahce, reforms it and redirect the response to it. 
+	 * @param request HttpServletRequest to obtain session
+	 * @param response HttpServletResponse to redirect the CallbackURL
+	 * @param recordIdentifier Identifier of the record to reconstruct the CallbackURL
+	 * @return true if CallbackURL is redirected, false otherwise
+	 * @throws IOException
+	 */
+	private boolean redirectCallbackURL(HttpServletRequest request, HttpServletResponse response,
+			String recordIdentifier) throws IOException
+	{
+		boolean isCallbackURL = false;
+		String calllbackURL = (String) CacheManager.getObjectFromCache(request,
+				Constants.CALLBACK_URL);
+		if (calllbackURL != null && !calllbackURL.equals(""))
+		{
+			calllbackURL = calllbackURL + "?" + WebUIManager.getRecordIdentifierParameterName()
+					+ "=" + recordIdentifier + "&" + WebUIManager.getOperationStatusParameterName()
+					+ "=" + WebUIManagerConstants.SUCCESS;
+			CacheManager.clearCache(request);
+			response.sendRedirect(calllbackURL);
+			isCallbackURL = true;
+		}
+		return isCallbackURL;
+	}
+
+	/**
+	 * This method gets the ActionForwad on the Exception.
+	 * @param exception Exception instance
+	 * @param mapping ActionMapping to get ActionForward
+	 * @param request HttpServletRequest to save error messages in.
+	 * @return Appropriate ActionForward.
+	 */
+	private ActionForward getExceptionActionForward(Exception exception, ActionMapping mapping,
+			HttpServletRequest request)
+	{
+		ActionForward exceptionActionForward = null;
+		String actionForwardString = catchException(exception, request);
+		if ((actionForwardString == null) || (actionForwardString.equals("")))
+		{
+			exceptionActionForward = mapping.getInputForward();
+		}
+		else
+		{
+			exceptionActionForward = mapping.findForward(actionForwardString);
+		}
+		return exceptionActionForward;
+	}
+
+	/**
+	 * This method sets dataentry operations parameters and returns the appropriate 
+	 * ActionForward depending on the "mode" of the operation and validation errors.
+	 * @param mapping ActionMapping to get the ActionForward
+	 * @param dataEntryForm ActionForm
+	 * @param errorList List of validation error messages generated.
+	 * @param mode Mode of the operation viz., edit, view, cancel
+	 * @return ActionForward
+	 */
+	private ActionForward getMappingForwardAction(ActionMapping mapping,
+			DataEntryForm dataEntryForm, List<String> errorList, String mode)
+	{
+		ActionForward actionForward = null;
+		String dataEntryOperation = dataEntryForm.getDataEntryOperation();
+		if (dataEntryOperation != null)
+		{
+			if (errorList == null)
+			{
+				dataEntryForm.setErrorList(new ArrayList<String>());
+			}
+			if (dataEntryOperation.equals("insertChildData"))
+			{
+				if ((errorList != null) && !(errorList.isEmpty()))
+				{
+					dataEntryForm.setDataEntryOperation("insertParentData");
+					actionForward = mapping.findForward("loadParentContainer");
+				}
+				else if ((mode != null) && (mode.equals("cancel")))
+				{
+					dataEntryForm.setMode("edit");
+					dataEntryForm.setDataEntryOperation("insertParentData");
+					actionForward = mapping.findForward("loadParentContainer");
+				}
+				else
+				{
+					actionForward = mapping.findForward("loadChildContainer");
+				}
+			}
+			else if (dataEntryOperation.equals("insertParentData"))
+			{
+				if ((errorList != null) && !(errorList.isEmpty()))
+				{
+					dataEntryForm.setDataEntryOperation("insertChildData");
+					actionForward = mapping.findForward("loadChildContainer");
+				}
+				else if ((mode != null) && (mode.equals("cancel")))
+				{
+					actionForward = mapping.findForward("showDynamicExtensionsHomePage");
+				}
+				else
+				{
+					actionForward = mapping.findForward("loadParentContainer");
+				}
+			}
+		}
+		return actionForward;
 	}
 
 	/**
@@ -182,6 +228,36 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		ActionMessages actionMessages = new ActionMessages();
 		actionMessages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(messageKey));
 		return actionMessages;
+	}
+
+	/**
+	 * This method gathers the values form the Dynamic UI and validate them using Validation framework 
+	 * @param containerStack Stack of Container which has the current Container at its top.
+	 * @param valueMapStack Stack of Map of Attribute-Value pair which has Map for current Container at its top.  
+	 * @param request HttpServletRequest which is required to collect the values from UI form.
+	 * @param dataEntryForm 
+	 * @param errorList List to store the validation error/warning messages which will be displayed on the UI.
+	 * @throws FileNotFoundException if improper value is entered for FileUpload control.
+	 * @throws DynamicExtensionsSystemException 
+	 * @throws IOException
+	 */
+	private void populateAndValidateValues(Stack<ContainerInterface> containerStack,
+			Stack<Map<AbstractAttributeInterface, Object>> valueMapStack,
+			HttpServletRequest request, DataEntryForm dataEntryForm, List<String> errorList)
+			throws FileNotFoundException, DynamicExtensionsSystemException, IOException
+	{
+		ContainerInterface containerInterface = (ContainerInterface) containerStack.peek();
+		Map<AbstractAttributeInterface, Object> valueMap = (Map<AbstractAttributeInterface, Object>) valueMapStack
+				.peek();
+		valueMap = generateAttributeValueMap(containerInterface, request, dataEntryForm, "",
+				valueMap, true);
+
+		errorList = ValidatorUtil.validateEntity(valueMap);
+		if (errorList.size() != 0)
+		{
+			//saveErrors(request, getErrorMessages(errorList));
+			dataEntryForm.setErrorList(errorList);
+		}
 	}
 
 	/**
@@ -465,6 +541,18 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		return value;
 	}
 
+	/**
+	 * This method stores the container in the database. It updates the existing record or inserts a new record 
+	 * depending upon the availability of the record identifier variable.
+	 * @param valueMapStack Stack storing the Map of Attributes and their corresponding values. 
+	 * @param containerStack Stack having Container at its top that is to be stored in database.
+	 * @param request HttpServletRequest to store the operation message.
+	 * @param recordIdentifier Identifier of the record in database that is to be updated.
+	 * @return New identifier for a record if record is inserted otherwise the passed record identifier is returned. 
+	 * @throws NumberFormatException If record identifier is not a numeric value.
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException
+	 */
 	private String storeParentContainer(
 			Stack<Map<AbstractAttributeInterface, Object>> valueMapStack,
 			Stack<ContainerInterface> containerStack, HttpServletRequest request,
@@ -503,4 +591,5 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		}
 		return recordIdentifier;
 	}
+
 }

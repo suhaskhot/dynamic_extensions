@@ -20,6 +20,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterfa
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
+import edu.wustl.common.util.global.ApplicationProperties;
 
 /**
  * @version 1.0
@@ -437,7 +438,31 @@ public class Container extends DynamicExtensionBaseDomainObject
 	public String generateLink(ContainerInterface containerInterface)
 			throws DynamicExtensionsSystemException
 	{
-		String detailsString = "Details";
+		String detailsString = "";
+		boolean isDataPresent = UserInterfaceiUtility.isDataPresent(containerInterface
+				.getContainerValueMap());
+		if (isDataPresent)
+		{
+			if (mode.equals(WebUIManagerConstants.EDIT_MODE))
+			{
+				detailsString = ApplicationProperties.getValue("eav.att.EditDetails");
+			}
+			else if (mode.equals(WebUIManagerConstants.VIEW_MODE))
+			{
+				detailsString = ApplicationProperties.getValue("eav.att.ViewDetails");
+			}
+		}
+		else
+		{
+			if (mode.equals(WebUIManagerConstants.EDIT_MODE))
+			{
+				detailsString = ApplicationProperties.getValue("eav.att.EnterDetails");
+			}
+			else if (mode.equals(WebUIManagerConstants.VIEW_MODE))
+			{
+				detailsString = ApplicationProperties.getValue("eav.att.NoDataToView");
+			}
+		}
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("<span style='cursor:hand' ");
 		stringBuffer.append("onclick='showChildContainerInsertDataPage(");

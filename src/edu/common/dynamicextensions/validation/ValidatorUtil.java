@@ -24,6 +24,7 @@ import edu.wustl.common.util.global.ApplicationProperties;
 /**
  * @author Sujay Narkar
  * @author Rahul Ner
+ * @author chetan_patil
  */
 public class ValidatorUtil
 {
@@ -38,42 +39,39 @@ public class ValidatorUtil
 			Map<AbstractAttributeInterface, Object> attributeValueMap)
 			throws DynamicExtensionsSystemException
 	{
-		List<String> errorList = new ArrayList<String>();
 		HashSet<String> errorSet = new HashSet<String>();
-
 		Set<Map.Entry<AbstractAttributeInterface, Object>> attributeSet = attributeValueMap
 				.entrySet();
-		if (attributeSet == null || attributeSet.isEmpty())
+		if (attributeSet != null || !attributeSet.isEmpty())
 		{
-			return errorList;
-		}
-
-		for (Map.Entry<AbstractAttributeInterface, Object> attributeValueNode : attributeSet)
-		{
-			AbstractAttributeInterface abstractAttribute = attributeValueNode.getKey();
-			if (abstractAttribute instanceof AttributeInterface)
+			for (Map.Entry<AbstractAttributeInterface, Object> attributeValueNode : attributeSet)
 			{
-				errorSet.addAll(validateAttributes(attributeValueNode));
-			}
-			else if (abstractAttribute instanceof AssociationInterface)
-			{
-				AssociationInterface associationInterface = (AssociationInterface) abstractAttribute;
-				RoleInterface roleInterface = associationInterface.getTargetRole();
-				if (roleInterface.getAssociationsType().equals(AssociationType.CONTAINTMENT))
+				AbstractAttributeInterface abstractAttribute = attributeValueNode.getKey();
+				if (abstractAttribute instanceof AttributeInterface)
 				{
-					List<Map<AbstractAttributeInterface, Object>> valueObject = (List<Map<AbstractAttributeInterface, Object>>) attributeValueMap
-							.get(abstractAttribute);
-					for (Map<AbstractAttributeInterface, Object> subAttributeValueMap : valueObject)
+					errorSet.addAll(validateAttributes(attributeValueNode));
+				}
+				else if (abstractAttribute instanceof AssociationInterface)
+				{
+					AssociationInterface associationInterface = (AssociationInterface) abstractAttribute;
+					RoleInterface roleInterface = associationInterface.getTargetRole();
+					if (roleInterface.getAssociationsType().equals(AssociationType.CONTAINTMENT))
 					{
-						errorSet.addAll(validateEntityAttributes(subAttributeValueMap));
+						List<Map<AbstractAttributeInterface, Object>> valueObject = (List<Map<AbstractAttributeInterface, Object>>) attributeValueMap
+								.get(abstractAttribute);
+						for (Map<AbstractAttributeInterface, Object> subAttributeValueMap : valueObject)
+						{
+							errorSet.addAll(validateEntityAttributes(subAttributeValueMap));
+						}
 					}
 				}
 			}
 		}
 
-		for (String error : errorSet)
+		List<String> errorList = new ArrayList<String>();
+		if (!errorSet.isEmpty())
 		{
-			errorList.add(error);
+			errorList = new ArrayList<String>(errorSet);
 		}
 		return errorList;
 	}
@@ -149,7 +147,7 @@ public class ValidatorUtil
 	 * 					key - name of parameter
 	 * 					value - value of parameter
 	 */
-	public static Map<String, String> getParamMap(RuleInterface rule)
+	private static Map<String, String> getParamMap(RuleInterface rule)
 	{
 		Map<String, String> parameterMap = new HashMap<String, String>();
 		Collection<RuleParameterInterface> ruleParamCollection = rule.getRuleParameterCollection();

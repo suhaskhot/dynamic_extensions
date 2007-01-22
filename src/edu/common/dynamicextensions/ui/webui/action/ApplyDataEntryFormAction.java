@@ -81,8 +81,8 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				String mode = dataEntryForm.getMode();
 				if ((mode != null) && (mode.equals("edit")))
 				{
-					populateAndValidateValues(containerStack, valueMapStack, request,
-							dataEntryForm, errorList);
+					populateAndValidateValues(containerStack, valueMapStack, request, dataEntryForm);
+					errorList = dataEntryForm.getErrorList();
 				}
 
 				actionForward = getMappingForwardAction(mapping, dataEntryForm, errorList, mode);
@@ -243,8 +243,8 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 */
 	private void populateAndValidateValues(Stack<ContainerInterface> containerStack,
 			Stack<Map<AbstractAttributeInterface, Object>> valueMapStack,
-			HttpServletRequest request, DataEntryForm dataEntryForm, List<String> errorList)
-			throws FileNotFoundException, DynamicExtensionsSystemException, IOException
+			HttpServletRequest request, DataEntryForm dataEntryForm) throws FileNotFoundException,
+			DynamicExtensionsSystemException, IOException
 	{
 		ContainerInterface containerInterface = (ContainerInterface) containerStack.peek();
 		Map<AbstractAttributeInterface, Object> valueMap = (Map<AbstractAttributeInterface, Object>) valueMapStack
@@ -252,12 +252,10 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		valueMap = generateAttributeValueMap(containerInterface, request, dataEntryForm, "",
 				valueMap, true);
 
-		errorList = ValidatorUtil.validateEntity(valueMap);
-		if (errorList.size() != 0)
-		{
-			//saveErrors(request, getErrorMessages(errorList));
-			dataEntryForm.setErrorList(errorList);
-		}
+		List<String> errorList = ValidatorUtil.validateEntity(valueMap);
+
+		//saveErrors(request, getErrorMessages(errorList));
+		dataEntryForm.setErrorList(errorList);
 	}
 
 	/**

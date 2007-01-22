@@ -10,10 +10,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import javax.servlet.http.HttpServletRequest;
 
+import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
@@ -302,10 +304,15 @@ public class UserInterfaceiUtility
 				}
 			}
 		}
-
 		return null;
 	}
 
+	/**
+	 * 
+	 * @param controlInterface
+	 * @param htmlString
+	 * @return
+	 */
 	public static String getControlHTMLAsARow(ControlInterface controlInterface, String htmlString)
 	{
 		boolean isControlRequired = UserInterfaceiUtility.isControlRequired(controlInterface);
@@ -327,7 +334,6 @@ public class UserInterfaceiUtility
 			stringBuffer.append("</td>");
 
 			stringBuffer.append("<td class='formLabel' width='20%'>");
-
 		}
 		stringBuffer.append(controlInterface.getCaption());
 		stringBuffer.append("</td>");
@@ -357,4 +363,50 @@ public class UserInterfaceiUtility
 		return isOneToMany;
 	}
 
+	/**
+	 * 
+	 * @param container
+	 * @return
+	 */
+	public static boolean isDataPresent(Map<AbstractAttributeInterface, Object> valueMap)
+	{
+		boolean isDataPresent = false;
+		Set<Map.Entry<AbstractAttributeInterface, Object>> mapEntrySet = valueMap.entrySet();
+		for (Map.Entry<AbstractAttributeInterface, Object> mapEntry : mapEntrySet)
+		{
+			Object value = mapEntry.getValue();
+			if (value != null)
+			{
+				if ((value instanceof String) && (((String) value).length() > 0))
+				{
+					isDataPresent = true;
+					break;
+				}
+				else if ((value instanceof FileAttributeRecordValue)
+						&& (((FileAttributeRecordValue) value).getFileName().length() != 0))
+				{
+					isDataPresent = true;
+					break;
+				}
+				else if ((value instanceof List) && (!((List) value).isEmpty()))
+				{
+					List valueList = (List) value;
+					Object valueObject = valueList.get(0);
+
+					if ((valueObject != null) && (valueObject instanceof Long))
+					{
+						isDataPresent = true;
+						break;
+					}
+					else if ((valueObject != null) && (valueObject instanceof Map))
+					{
+						isDataPresent = isDataPresent((Map<AbstractAttributeInterface, Object>) valueObject);
+						break;
+					}
+				}
+			}
+		}
+
+		return isDataPresent;
+	}
 }

@@ -15,6 +15,7 @@ import java.util.Stack;
 
 import net.sf.hibernate.HibernateException;
 import net.sf.hibernate.Session;
+import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
@@ -364,7 +365,8 @@ class DynamicExtensionBaseQueryBuilder
 			List<Long> recordIdList, List<String> queryList)
 			throws DynamicExtensionsSystemException
 	{
-		if (recordIdList == null || recordIdList.isEmpty()) {
+		if (recordIdList == null || recordIdList.isEmpty())
+		{
 			return;
 		}
 		List<Long> childrenRecordIdList = getRecordIdListForContainment(association, recordIdList);
@@ -1525,6 +1527,45 @@ class DynamicExtensionBaseQueryBuilder
 		}
 		return isParentChanged;
 
+	}
+
+	/**
+	 * @return
+	 */
+	public static boolean isValuePresent(AttributeInterface attribute, Object value)
+			throws DynamicExtensionsSystemException
+	{
+		boolean present = false;
+
+		String tableName = attribute.getEntity().getTableProperties().getName();
+		String columnName = attribute.getColumnProperties().getName();
+		Object formattedValue = EntityManagerUtil.getFormattedValue((AbstractAttribute) attribute,
+				value);
+
+		StringBuffer queryBuffer = new StringBuffer();
+		queryBuffer.append(SELECT_KEYWORD).append(WHITESPACE).append(COUNT_KEYWORD).append(
+				OPENING_BRACKET).append("*").append(CLOSING_BRACKET).append(WHITESPACE).append(
+				FROM_KEYWORD).append(WHITESPACE).append(tableName).append(WHITESPACE).append(
+				WHERE_KEYWORD).append(WHITESPACE).append(columnName).append(EQUAL).append(
+				formattedValue);
+
+		ResultSet resultSet = EntityManagerUtil.executeQuery(queryBuffer.toString());
+
+		try
+		{
+			resultSet.next();
+			Long count = resultSet.getLong(1);
+			if (count > 0)
+			{
+				present = true;
+			}
+			resultSet.close();
+		}
+		catch (SQLException e)
+		{
+			throw new DynamicExtensionsSystemException("Can not check the availability of value", e);
+		}
+		return present;
 	}
 
 }

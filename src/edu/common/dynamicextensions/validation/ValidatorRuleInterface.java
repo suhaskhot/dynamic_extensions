@@ -4,6 +4,7 @@ package edu.common.dynamicextensions.validation;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
 
 /**
@@ -28,5 +29,5 @@ public interface ValidatorRuleInterface
 	 * @throws DynamicExtensionsValidationException : Validation Exception
 	 */
 	boolean validate(AttributeInterface attribute, Object valueObject, Map<String, String> parameterMap)
-			throws DynamicExtensionsValidationException;
+			throws DynamicExtensionsValidationException,DynamicExtensionsSystemException;
 }

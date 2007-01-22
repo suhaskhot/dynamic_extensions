@@ -13,6 +13,7 @@ import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -84,7 +85,7 @@ public class EntityManagerUtil
 	 * @return 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public ResultSet executeQuery(String query) throws DynamicExtensionsSystemException
+	public static ResultSet executeQuery(String query) throws DynamicExtensionsSystemException
 	{
 
 		Connection conn = null;
@@ -246,5 +247,13 @@ public class EntityManagerUtil
 				}
 			}
 		}
+	}
+	
+	/**
+	 * @return
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	public static boolean isValuePresent(AttributeInterface attribute,Object value) throws DynamicExtensionsSystemException {
+		return DynamicExtensionBaseQueryBuilder.isValuePresent(attribute, value);
 	}
 }

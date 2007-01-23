@@ -86,7 +86,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				}
 
 				actionForward = getMappingForwardAction(mapping, dataEntryForm, errorList, mode);
-				if (actionForward == null)
+				if (actionForward == null && errorList.isEmpty())
 				{
 					String recordIdentifier = dataEntryForm.getRecordIdentifier();
 					recordIdentifier = storeParentContainer(valueMapStack, containerStack, request,
@@ -181,6 +181,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			{
 				dataEntryForm.setErrorList(new ArrayList<String>());
 			}
+			
 			if (dataEntryOperation.equals("insertChildData"))
 			{
 				if ((errorList != null) && !(errorList.isEmpty()))

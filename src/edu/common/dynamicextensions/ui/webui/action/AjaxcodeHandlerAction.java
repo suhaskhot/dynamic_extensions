@@ -218,6 +218,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 						.toArray(new ControlInterface[oldControlsCollection.size()]);
 				//remove old controls from collection
 				containerInterface.removeAllControls();
+				containerInterface.getEntity().removeAllAbstractAttributes();
 				ControlInterface control = null;
 				if (sequenceNumbers != null)
 				{
@@ -229,6 +230,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 						if (control != null)
 						{
 							containerInterface.addControl(control);
+							containerInterface.getEntity().addAbstractAttribute(control.getAbstractAttribute());
 						}
 					}
 				}

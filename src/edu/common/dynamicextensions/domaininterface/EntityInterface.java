@@ -167,4 +167,9 @@ public interface EntityInterface extends AbstractMetadataInterface
 	 *@param inheritanceStrategy The inheritanceStrategy to set.
 	 */
 	void setInheritanceStrategy(InheritanceStrategy inheritanceStrategy);
+	/**
+	 * 
+	 *
+	 */
+	public void removeAllAbstractAttributes();
 }

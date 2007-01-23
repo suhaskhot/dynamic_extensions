@@ -330,6 +330,18 @@ public class Entity extends AbstractMetadata implements EntityInterface
 			}
 		}
 	}
+	
+	
+	/**
+	 * This method removes all abstract attributes from the entity.
+	 */
+	public void removeAllAbstractAttributes()
+	{
+		if (abstractAttributeCollection != null)
+		{
+			abstractAttributeCollection.clear();
+		}
+	}
 
 	/**
 	 * This method returns the attribute for the given corresponding identifier.

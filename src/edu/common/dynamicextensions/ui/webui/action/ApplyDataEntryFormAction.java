@@ -181,7 +181,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			{
 				dataEntryForm.setErrorList(new ArrayList<String>());
 			}
-			
+
 			if (dataEntryOperation.equals("insertChildData"))
 			{
 				if ((errorList != null) && !(errorList.isEmpty()))

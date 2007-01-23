@@ -66,6 +66,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	{
 		ActionForward actionForward = null;
 		boolean isCallbackURL = false;
+		List<String> errorList = null;
 
 		Stack<ContainerInterface> containerStack = (Stack<ContainerInterface>) CacheManager
 				.getObjectFromCache(request, Constants.CONTAINER_STACK);
@@ -76,7 +77,6 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		{
 			try
 			{
-				List<String> errorList = null;
 				DataEntryForm dataEntryForm = (DataEntryForm) form;
 				String mode = dataEntryForm.getMode();
 				if ((mode != null) && (mode.equals("edit")))
@@ -106,7 +106,10 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		}
 		else if (actionForward == null)
 		{
-			UserInterfaceiUtility.clearContainerStack(request);
+			if (errorList.isEmpty())
+			{
+				UserInterfaceiUtility.clearContainerStack(request);
+			}
 			actionForward = mapping.findForward(Constants.SUCCESS);
 		}
 		return actionForward;

@@ -24,22 +24,18 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import net.sf.hibernate.HibernateException;
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
-import edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
-import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface;
@@ -58,7 +54,6 @@ import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.bizlogic.AbstractBizLogic;
 import edu.wustl.common.util.CVSTagReader;
 import edu.wustl.common.util.dbManager.DAOException;
-import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
 
@@ -632,22 +627,24 @@ public class DynamicExtensionsUtility
 					null, EntityManagerExceptionConstantsInterface.DYEXTN_A_007);
 		}
 	}
-	
+
 	/**
 	 * @param association
 	 * @param entitySet
 	 */
-	public static void updateEntityReferences(AbstractAttributeInterface abstractAttribute) {
-		
-		if (abstractAttribute instanceof AttributeInterface) {
-			return ;
+	public static void updateEntityReferences(AbstractAttributeInterface abstractAttribute)
+	{
+
+		if (abstractAttribute instanceof AttributeInterface)
+		{
+			return;
 		}
-		Set entitySet = new HashSet();
+		Set<EntityInterface> entitySet = new HashSet<EntityInterface>();
 		entitySet.add(abstractAttribute.getEntity());
-		getAssociatedEntities(abstractAttribute.getEntity(),entitySet);
-		List entityList = new ArrayList(entitySet);
-		
-		AssociationInterface association = (AssociationInterface)abstractAttribute;
+		getAssociatedEntities(abstractAttribute.getEntity(), entitySet);
+		List<EntityInterface> entityList = new ArrayList<EntityInterface>(entitySet);
+
+		AssociationInterface association = (AssociationInterface) abstractAttribute;
 		EntityInterface targetEntity = association.getTargetEntity();
 		if (entityList.contains(targetEntity))
 		{
@@ -655,7 +652,8 @@ public class DynamicExtensionsUtility
 					.indexOf(targetEntity)));
 			return;
 		}
-		for(AssociationInterface tagretEntityAssociation : targetEntity.getAssociationCollection()) {
+		for (AssociationInterface tagretEntityAssociation : targetEntity.getAssociationCollection())
+		{
 			EntityInterface entity = tagretEntityAssociation.getTargetEntity();
 			if (entityList.contains(entity))
 			{
@@ -671,7 +669,6 @@ public class DynamicExtensionsUtility
 	 */
 	public static void getAssociatedEntities(EntityInterface entity, Set<EntityInterface> entitySet)
 	{
-
 		Collection<AssociationInterface> associationCollection = entity.getAssociationCollection();
 		for (AssociationInterface associationInterface : associationCollection)
 		{

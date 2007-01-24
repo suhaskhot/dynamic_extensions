@@ -49,6 +49,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Variables;
+import edu.common.dynamicextensions.util.global.Constants.InheritanceStrategy;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.bizlogic.AbstractBizLogic;
 import edu.wustl.common.util.CVSTagReader;
@@ -614,6 +615,21 @@ public class DynamicExtensionsUtility
 				throw new DynamicExtensionsApplicationException(
 						"Attribute names should be unique for the entity ", null,
 						EntityManagerExceptionConstantsInterface.DYEXTN_A_006, attribute.getName());
+			}
+		}
+		
+		if (entity.getInheritanceStrategy().equals(InheritanceStrategy.TABLE_PER_HEIRARCHY) && entity.getParentEntity() != null ) {
+			if (entity.getDiscriminatorColumn() == null ||entity.getDiscriminatorColumn().equals("") ) {
+				throw new DynamicExtensionsApplicationException(
+						"Discriminator Column and value is required for TABLE_PER_HEIRARCHY strategy", null,
+						EntityManagerExceptionConstantsInterface.DYEXTN_A_012);
+				
+			}
+
+			if (entity.getDiscriminatorValue() == null ||entity.getDiscriminatorValue().equals("") ) {
+				throw new DynamicExtensionsApplicationException(
+						"Discriminator Column and value is required for TABLE_PER_HEIRARCHY strategy", null,
+						EntityManagerExceptionConstantsInterface.DYEXTN_A_012);
 			}
 		}
 		return;

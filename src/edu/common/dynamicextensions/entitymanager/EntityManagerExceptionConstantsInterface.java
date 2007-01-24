@@ -38,6 +38,7 @@ public interface EntityManagerExceptionConstantsInterface
 //   Exception constant in case of name exceeds maximum limit. 
      String DYEXTN_A_007 = "DYEXTN_A_007";
      
+     
      //Object not found error
      String DYEXTN_A_008 = "DYEXTN_A_008"; 
      //Exception constant in case when user can not change the data type of an attribute.
@@ -46,5 +47,6 @@ public interface EntityManagerExceptionConstantsInterface
      String DYEXTN_A_010 = "DYEXTN_A_010";
 //   In case when parent is not saved for the entity.
      String DYEXTN_A_011 = "DYEXTN_A_011";
-     
+//   Exception constant in case of discriminatorValue or discriminatorColumn not specified for TABLE_PER_HEIRARCHY 
+     String DYEXTN_A_012 = "DYEXTN_A_012";
 }

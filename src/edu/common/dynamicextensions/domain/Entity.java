@@ -76,6 +76,17 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	 * 
 	 */
 	protected int inheritStrategy = InheritanceStrategy.TABLE_PER_SUB_CLASS.getValue(); 
+	
+	
+	/**
+	 * 
+	 */
+	protected String discriminatorColumn;
+	
+	/**
+	 * 
+	 */
+	protected String  discriminatorValue;
 
 	/**
 	 * @hibernate.property name="dataTableState" type="int" column="DATA_TABLE_STATE"
@@ -549,5 +560,43 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	public void setInheritanceStrategy(InheritanceStrategy inheritanceStrategy)
 	{
 		setInheritStrategy(inheritanceStrategy.getValue());
+	}
+
+	
+	/**
+	 * @hibernate.property name="discriminatorColumn" type="string" column="DISCRIMINATOR_COLUMN_NAME"
+	 * @return Returns the discriminatorColumn.
+	 */
+	public String getDiscriminatorColumn()
+	{
+		return discriminatorColumn;
+	}
+
+	
+	/**
+	 * @param discriminatorColumn The discriminatorColumn to set.
+	 */
+	public void setDiscriminatorColumn(String discriminatorColumn)
+	{
+		this.discriminatorColumn = discriminatorColumn;
+	}
+
+	
+	/**
+	 * @hibernate.property name="discriminatorValue" type="string" column="DISCRIMINATOR_VALUE"
+	 * @return Returns the discriminatorValue.
+	 */
+	public String getDiscriminatorValue()
+	{
+		return discriminatorValue;
+	}
+
+	
+	/**
+	 * @param discriminatorValue The discriminatorValue to set.
+	 */
+	public void setDiscriminatorValue(String discriminatorValue)
+	{
+		this.discriminatorValue = discriminatorValue;
 	}
 }

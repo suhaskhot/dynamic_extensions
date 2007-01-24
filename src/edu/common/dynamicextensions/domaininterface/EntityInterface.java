@@ -124,52 +124,72 @@ public interface EntityInterface extends AbstractMetadataInterface
 	 * @param parentEntity The parentEntity to set.
 	 */
 	void setParentEntity(EntityInterface parentEntity);
-	
-	
+
 	/**
 	 * This method returns association for all the hierarchy
 	 * @return
 	 */
 	Collection<AssociationInterface> getAllAssociations();
-	
+
 	/**
 	 * This method returns attributs for all the hierarchy.
 	 * @return  Collection of AttributeInterface
 	 */
 	Collection<AttributeInterface> getAllAttributes();
-	
+
 	/**
 	 * This method returns all the attributes and associations for all the hierarchy.
 	 * @return Collection of AbstractAttributeInterface
 	 */
 	Collection<AbstractAttributeInterface> getAllAbstractAttributes();
-	
+
 	/**
 	 * Method returns  attribute based on the id passed.
 	 * @param id Long identifier of the abstract attribute
 	 * @return 
 	 */
 	AttributeInterface getAttributeByIdentifier(Long id);
-	
+
 	/**
 	 * Method returns  association based on the id passed.
 	 * @param id Long identifier of the abstract attribute
 	 * @return 
 	 */
 	AssociationInterface getAssociationByIdentifier(Long id);
-	
+
 	/**
 	 * @return Returns the inheritanceStrategy.
 	 */
 	InheritanceStrategy getInheritanceStrategy();
-	
+
 	/**
 	 *@param inheritanceStrategy The inheritanceStrategy to set.
 	 */
 	void setInheritanceStrategy(InheritanceStrategy inheritanceStrategy);
+
 	/**
 	 * 
 	 *
 	 */
-	public void removeAllAbstractAttributes();
+	void removeAllAbstractAttributes();
+
+	/**
+	 * @return
+	 */
+	String getDiscriminatorColumn();
+
+	/**
+	 * @param discriminatorColumn
+	 */
+	void setDiscriminatorColumn(String discriminatorColumn);
+
+	/**
+	 * @return
+	 */
+	String getDiscriminatorValue();
+
+	/**
+	 * @param discriminatorValue
+	 */
+	void setDiscriminatorValue(String discriminatorValue);
 }

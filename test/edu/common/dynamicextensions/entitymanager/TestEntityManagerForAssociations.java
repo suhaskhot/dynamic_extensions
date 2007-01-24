@@ -3238,4 +3238,96 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		}
 
 	}
+	
+	/**
+	 * This test case test for associating two entities with one to many association 
+	 * 
+	 * for oracle it should throw exception.
+	 * for mysql  it works.  
+	 */
+	public void testGetIncomingAssociationsForEntity()
+	{
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		// create user 
+		EntityInterface user = factory.createEntity();
+		AttributeInterface userNameAttribute = factory.createStringAttribute();
+		userNameAttribute.setName("user name");
+		user.setName("user");
+		user.addAbstractAttribute(userNameAttribute);
+
+		// create study 
+		EntityInterface study = factory.createEntity();
+		AttributeInterface studyNameAttribute = factory.createStringAttribute();
+		studyNameAttribute.setName("study name");
+		study.setName("study");
+		study.addAbstractAttribute(studyNameAttribute);
+
+		// Associate user (1)------ >(*)study       
+		AssociationInterface association = factory.createAssociation();
+
+		association.setTargetEntity(study);
+		association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+		association.setName("primaryInvestigator");
+		association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
+				Cardinality.ONE, Cardinality.ONE));
+		association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study", Cardinality.ZERO,
+				Cardinality.MANY));
+
+		user.addAbstractAttribute(association);
+		
+		
+		// create site 
+		EntityInterface site = factory.createEntity();
+		AttributeInterface siteNameAttribute = factory.createStringAttribute();
+		siteNameAttribute.setName("site name");
+		site.setName("site");
+		site.addAbstractAttribute(siteNameAttribute);
+
+		// Associate site (1)------ >(*)study       
+		AssociationInterface associationSite = factory.createAssociation();
+
+		associationSite.setTargetEntity(study);
+		associationSite.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+		associationSite.setName("site_study");
+		associationSite.setSourceRole(getRole(AssociationType.ASSOCIATION, "site",
+				Cardinality.ONE, Cardinality.ONE));
+		associationSite.setTargetRole(getRole(AssociationType.ASSOCIATION, "study", Cardinality.ZERO,
+				Cardinality.MANY));
+
+		site.addAbstractAttribute(associationSite);
+
+		try
+		{
+			//entityManager.createEntity(study);
+
+			entityManager.persistEntity(user);
+			site = entityManager.persistEntity(site);
+			
+			Collection<AssociationInterface> coll = entityManager.getIncomingAssociations(study);
+			assertEquals(2,coll.size());
+			
+			coll = entityManager.getIncomingAssociations(user);
+			assertEquals(0,coll.size());
+			
+			coll = entityManager.getIncomingAssociations(site);
+			assertEquals(0,coll.size());
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+
+		catch (DynamicExtensionsApplicationException e)
+		{
+			e.printStackTrace();
+			fail();
+
+		}
+		
+
+	}
+	
 }

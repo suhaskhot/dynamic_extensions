@@ -1353,5 +1353,63 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 			fail();
 		}
 	}
+	
+	/**
+	 *  PURPOSE: This method tests for discriminator values of entity
+	 *
+	 *  EXPECTED BEHAVIOUR: specified values of discriminator column and value should be saved.
+	 */ 
+
+	public void testDiscriminator()
+	{
+
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		try
+		{
+			// Step 1
+			EntityInterface specimen = factory.createEntity();
+			specimen.setName("specimen");
+			specimen.setAbstract(true);
+			
+			
+			EntityInterface tissueSpecimen = factory.createEntity();	
+			tissueSpecimen.setName("tissueSpecimen");
+			tissueSpecimen.setParentEntity(specimen);
+			tissueSpecimen.setDiscriminatorColumn("SPECIMEN_CLASS");
+			tissueSpecimen.setDiscriminatorValue("Tissue");
+			
+			
+			EntityInterface cellSpecimen = factory.createEntity();	
+			cellSpecimen.setName("cellSpecimen");
+			cellSpecimen.setParentEntity(specimen);
+			cellSpecimen.setDiscriminatorColumn("SPECIMEN_CLASS");
+			cellSpecimen.setDiscriminatorValue("Cell");
+			
+		    
+			specimen = entityManagerInterface.persistEntity(specimen);		
+			tissueSpecimen = entityManagerInterface.persistEntity(tissueSpecimen);
+			cellSpecimen = entityManagerInterface.persistEntity(cellSpecimen);
+			cellSpecimen = entityManagerInterface.persistEntity(cellSpecimen);
+			
+			
+			cellSpecimen = entityManagerInterface.getEntityByIdentifier(cellSpecimen.getId());
+			tissueSpecimen = entityManagerInterface.getEntityByIdentifier(tissueSpecimen.getId());
+			
+			assertEquals("SPECIMEN_CLASS",cellSpecimen.getDiscriminatorColumn());
+			assertEquals("Cell",cellSpecimen.getDiscriminatorValue());
+			
+			assertEquals("SPECIMEN_CLASS",tissueSpecimen.getDiscriminatorColumn());
+			assertEquals("Tissue",tissueSpecimen.getDiscriminatorValue());
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			Logger.out.debug(DynamicExtensionsUtility.getStackTrace(e));
+			fail();
+		}
+	}
 
 }

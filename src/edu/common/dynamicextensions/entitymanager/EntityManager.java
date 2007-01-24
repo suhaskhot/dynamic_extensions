@@ -1,4 +1,3 @@
-
 package edu.common.dynamicextensions.entitymanager;
 
 import java.sql.Connection;
@@ -20,6 +19,7 @@ import java.util.Stack;
 import net.sf.hibernate.HibernateException;
 import net.sf.hibernate.Query;
 import net.sf.hibernate.Session;
+import net.sf.hibernate.Transaction;
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Association;
@@ -178,9 +178,10 @@ public class EntityManager
 			//Calling the method which actually calls the insert/update method on dao. Hibernatedao is passed to this
 			//method and transaction is handled in the calling method.
 			saveEntityGroup(entityInterface, hibernateDAO);
+			List<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
 
 			entityInterface = saveOrUpdateEntity(entityInterface, hibernateDAO, stack,
-					isEntitySaved);
+					isEntitySaved,processedEntityList);
 
 			//Committing the changes done in the hibernate session to the database.
 			hibernateDAO.commit();
@@ -739,14 +740,16 @@ public class EntityManager
 	 * @param entity Entity object on which to process the post save operations.
 	 * @param rollbackQueryStack 
 	 * @param hibernateDAO 
+	 * @param processedEntityList 
 	 * @throws DynamicExtensionsSystemException 
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws UserNotAuthorizedException 
 	 * @throws DAOException 
+	 * @throws HibernateException 
 	 */
 	private void postSaveProcessEntity(Entity entity, HibernateDAO hibernateDAO,
-			Stack rollbackQueryStack) throws DynamicExtensionsApplicationException,
-			DynamicExtensionsSystemException, DAOException, UserNotAuthorizedException
+			Stack rollbackQueryStack, List<EntityInterface> processedEntityList) throws DynamicExtensionsApplicationException,
+			DynamicExtensionsSystemException, DAOException, UserNotAuthorizedException, HibernateException
 	{
 		if (entity.getTableProperties() == null)
 		{
@@ -779,16 +782,17 @@ public class EntityManager
 							.getConstraintProperties();
 					EntityInterface targetEntity = association.getTargetEntity();
 					boolean isEntitySaved = false;
+//					if (!association.getIsSystemGenerated())
+//					{
+						if (targetEntity.getId() != null)
+						{
+							isEntitySaved = true;
+						}
 
-					if (targetEntity.getId() != null)
-					{
-						isEntitySaved = true;
-					}
-
-					((Entity) targetEntity).setDataTableState(entity.getDataTableState());
-					targetEntity = saveOrUpdateEntity(targetEntity, hibernateDAO,
-							rollbackQueryStack, isEntitySaved);
-
+						((Entity) targetEntity).setDataTableState(entity.getDataTableState());
+						targetEntity = saveOrUpdateEntity(targetEntity, hibernateDAO,
+								rollbackQueryStack, isEntitySaved,processedEntityList);
+//					}
 					//Calling the particular method that populates the constraint properties for the association.
 					populateConstraintProperties(association);
 					//Calling the method which creates or removes the system generated association depending on
@@ -874,7 +878,16 @@ public class EntityManager
 			if (isTargetEntityChanged)
 			{
 				//Saving the modified target entity.
-				hibernateDAO.update(association.getTargetEntity(), null, false, false, false);
+				try
+				{
+					DBUtil.currentSession().saveOrUpdateCopy(association.getTargetEntity());
+				}
+				catch (Exception e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				//hibernateDAO.update(association.getTargetEntity(), null, false, false, false);
 			}
 		}
 	}
@@ -1256,67 +1269,102 @@ public class EntityManager
 		Entity entity = (Entity) container.getEntity();
 		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
 				Constants.HIBERNATE_DAO);
+		Session session = null;
 		boolean isentitySaved = true;
 		if (entity != null && entity.getId() == null)
 		{
 			isentitySaved = false;
 		}
-		boolean isContainerSaved = true;
-		if (container.getId() == null)
-		{
-			isContainerSaved = false;
-		}
+
 		try
 		{
+		
 			hibernateDAO.closeSession();
 			hibernateDAO.openSession(null);
+			session = DBUtil.currentSession();
+
 			if (entity != null)
 			{
 				// saves the entity into database. It populates rollbackQueryStack with the 
 				// queries that restores the database state to the state before calling this method
-				// in case of exception. 
-				saveEntityGroup(entity, hibernateDAO);
+				// in case of exception.
+				
+				//saveEntityGroup first
+				Set<EntityInterface> processedEntities = new HashSet<EntityInterface>();
+				Set<EntityGroupInterface> processedEntityGroups = new HashSet<EntityGroupInterface>();
+				EntityManagerUtil.getAllEntityGroups(entity, processedEntities,
+						processedEntityGroups);
 
-				saveOrUpdateEntity(entity, hibernateDAO, rollbackQueryStack, isentitySaved);
+				
+				for (EntityGroupInterface entityGroup : processedEntityGroups)
+				{
+					if (entityGroup.getId() == null)
+					{
+						entityGroup = (EntityGroup) session.saveOrUpdateCopy(entityGroup);
+					}
+				}
 
+				List<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
+
+				saveOrUpdateEntity(entity, hibernateDAO, rollbackQueryStack, isentitySaved,processedEntityList);
+
+				saveChildContainers(container,session);
 			}
 
 			preSaveProcessContainer(container); //preprocess
-			if (isContainerSaved)
-			{
-				hibernateDAO.update(container, null, false, false, false);
-			}
-			else
-			{
-				hibernateDAO.insert(container, null, false, false);
-			}
+			
+			session.saveOrUpdateCopy(container);
+
 			hibernateDAO.commit();
 
 		}
-		catch (DAOException e)
+		catch (HibernateException e)
 		{
+
 			//In case of exception execute roll back queries to restore the database state.
 			rollbackQueries(rollbackQueryStack, entity, e, hibernateDAO);
 			throw new DynamicExtensionsSystemException(
-					"Exception occured while opening a session to save the container.");
+					"Exception occured while opening a session to save the container.",e);
 		}
-		catch (UserNotAuthorizedException e)
+		catch (DAOException e)
 		{
 			rollbackQueries(rollbackQueryStack, entity, e, hibernateDAO);
+			throw new DynamicExtensionsSystemException(
+					"DAOException occured while opening a session to save the container.",e);
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			rollbackQueries(rollbackQueryStack, entity, e, hibernateDAO);
+			throw e;
 		}
 		finally
 		{
 			try
 			{
 				postSaveOrUpdateEntity(entity);
+				//session.close();
+				//DBUtil.closeSession();
 				hibernateDAO.closeSession();
 			}
-			catch (DAOException e)
+			catch (Exception e)
 			{
 				rollbackQueries(rollbackQueryStack, entity, e, hibernateDAO);
 			}
 		}
 		return container;
+	}
+
+	private void saveChildContainers(ContainerInterface container, Session session) throws HibernateException
+	{
+		for (ControlInterface control : container.getControlCollection())
+		{
+			if (control instanceof ContainmentAssociationControlInterface)
+			{
+				session.saveOrUpdateCopy(((ContainmentAssociationControlInterface)control).getContainer());
+				saveChildContainers(((ContainmentAssociationControlInterface)control).getContainer(),session);
+			}
+		}
+		
 	}
 
 	/**
@@ -1539,7 +1587,7 @@ public class EntityManager
 		{
 			logDebug("insertData", "Query for insert data is : " + queryString);
 			PreparedStatement statement = conn.prepareStatement(queryString);
-			statement.executeUpdate();			
+			statement.executeUpdate();
 		}
 
 		for (AttributeRecord collectionAttributeRecord : attributeRecords)
@@ -1870,7 +1918,7 @@ public class EntityManager
 	{
 
 		boolean isSuccess = false;
-		
+
 		HibernateDAO hibernateDAO = null;
 		try
 		{
@@ -1884,7 +1932,8 @@ public class EntityManager
 			for (EntityInterface entityInterface : entityList)
 			{
 				Map valueMap = entityValueMap.get(entityInterface);
-				isSuccess = editDataForSingleEntity(entityInterface, valueMap, recordId, hibernateDAO);
+				isSuccess = editDataForSingleEntity(entityInterface, valueMap, recordId,
+						hibernateDAO);
 			}
 			hibernateDAO.commit();
 		}
@@ -1989,27 +2038,28 @@ public class EntityManager
 	 * @param entityInterface Entity to be stored in the database.
 	 * @param isNew flag for whether it is a save or update.
 	 * @param hibernateDAO 
+	 * @param processedEntityList 
 	 * @param isNewFlag 
 	 * @return Entity . Stored instance of the entity.
 	 * @throws DynamicExtensionsApplicationException System exception in case of any fatal errors.
 	 * @throws DynamicExtensionsSystemException Thrown in case of duplicate name or authentication failure.
+	 * @throws DAOException 
+	 * @throws HibernateException 
 	 */
 	private EntityInterface saveOrUpdateEntity(EntityInterface entityInterface,
-			HibernateDAO hibernateDAO, Stack rollbackQueryStack, boolean isEntitySaved)
-			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+			HibernateDAO hibernateDAO, Stack rollbackQueryStack, boolean isEntitySaved, List<EntityInterface> processedEntityList)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException, DAOException, HibernateException
 	{
 		logDebug("saveOrUpdateEntity", "Entering method");
 
-		Entity entity = (Entity) entityInterface;//(Entity) DynamicExtensionsUtility.cloneObject(entityInterface);
+		Entity entity = (Entity) entityInterface;
 
-		if (entity.isProcessed())
-		{
+		if(processedEntityList.contains(entity)) {
 			return entity;
+		} else {
+			processedEntityList.add(entity);
 		}
-		else
-		{
-			entity.setProcessed(true);
-		}
+	
 
 		if (entity.getParentEntity() != null && entity.getParentEntity().getId() == null)
 		{
@@ -2024,16 +2074,10 @@ public class EntityManager
 
 		try
 		{
+			Session session = DBUtil.currentSession();
 			if (!isEntitySaved)
 			{
 				preSaveProcessEntity(entity);
-				if (entity.getParentEntity() != null)
-				{
-					saveOrUpdateEntity(entity.getParentEntity(), hibernateDAO, rollbackQueryStack,
-							true);
-				}
-				hibernateDAO.insert(entity, null, false, false);
-
 			}
 			else
 			{
@@ -2042,16 +2086,20 @@ public class EntityManager
 				{
 					checkParentChangeAllowed(entity);
 				}
-				if (entity.getParentEntity() != null)
-				{
-					saveOrUpdateEntity(entity.getParentEntity(), hibernateDAO, rollbackQueryStack,
-							true);
-				}
-				hibernateDAO.update(entity, null, false, false, false);
-
 			}
-			postSaveProcessEntity(entity, hibernateDAO, rollbackQueryStack);
-			hibernateDAO.update(entity, null, false, false, false);
+			
+			if (entity.getParentEntity() != null)
+			{
+				saveOrUpdateEntity(entity.getParentEntity(), hibernateDAO, rollbackQueryStack,
+						true,processedEntityList);
+			}
+			
+			entity = (Entity) session.saveOrUpdateCopy(entity);
+
+			postSaveProcessEntity(entity, hibernateDAO, rollbackQueryStack,processedEntityList);
+			
+			entity = (Entity) session.saveOrUpdateCopy(entity);
+			
 
 			if (entity.getDataTableState() == DATA_TABLE_STATE_CREATED)
 			{
@@ -2071,26 +2119,18 @@ public class EntityManager
 		}
 		catch (UserNotAuthorizedException e)
 		{
-			logDebug("saveOrUpdateEntity", DynamicExtensionsUtility.getStackTrace(e));
 			throw new DynamicExtensionsApplicationException(
 					"User is not authorised to perform this action", e, DYEXTN_A_002);
 		}
-		catch (DynamicExtensionsApplicationException e)
-		{
-			logDebug("saveOrUpdateEntity", DynamicExtensionsUtility.getStackTrace(e));
-			throw e;
-		}
-		catch (Exception e)
-		{
-			logDebug("saveOrUpdateEntity", DynamicExtensionsUtility.getStackTrace(e));
-			throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
-		}
-
-		logDebug("saveOrUpdateEntity", "Exiting Method");
-
-		return entity;//(Entity) getEntityByIdentifier(entity.getId().toString());
+	
+		return entity;
 	}
 
+	/**
+	 * @param entity
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
 	private void checkParentChangeAllowed(Entity entity) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
@@ -2325,6 +2365,7 @@ public class EntityManager
 			Collection<EntityInterface> entityCollection = entityGroup.getEntityCollection();
 			if (entityCollection != null && !entityCollection.isEmpty())
 			{
+				List<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
 				for (EntityInterface entity : entityCollection)
 				{
 					entityInterface = entity;
@@ -2333,7 +2374,7 @@ public class EntityManager
 					{
 						isEntitySaved = true;
 					}
-					saveOrUpdateEntity(entityInterface, hibernateDAO, stack, isEntitySaved);
+					saveOrUpdateEntity(entityInterface, hibernateDAO, stack, isEntitySaved,processedEntityList);
 
 				}
 			}

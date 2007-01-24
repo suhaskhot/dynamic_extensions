@@ -122,7 +122,7 @@
         <many-to-one
             name="container"
             class="edu.common.dynamicextensions.domain.userinterface.Container"
-            cascade="save-update"
+            cascade="none"
             outer-join="auto"
             update="true"
             insert="true"

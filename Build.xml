@@ -510,7 +510,7 @@
 		        	 	 
 		        	      <section name="${DynamicExtensions.jar.details}">
 		        	        <attribute name="Version" value="${DynamicExtensions.jar.version}"/>
-		        	      	<attribute name="Creation date" value="${DynamicExtensions.jar.creationDate}"/>
+		        	      	<attribute name="Creation date" value="${DynamicExtensions.jar.date}"/>
 		        	      </section>
 		        	 </manifest>
 		        </jar>

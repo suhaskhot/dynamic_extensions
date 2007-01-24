@@ -43,7 +43,6 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterfa
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
-import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerExceptionConstantsInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -54,6 +53,7 @@ import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.bizlogic.AbstractBizLogic;
 import edu.wustl.common.util.CVSTagReader;
 import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
 
@@ -125,6 +125,10 @@ public class DynamicExtensionsUtility
 	{
 		AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
 		Object object = null;
+		if (objectName == null || identifier == null || identifier.trim().length() == 0)
+		{
+			return null;
+		}
 		try
 		{
 			List objectList = bizLogic.retrieve(objectName, Constants.ID, identifier);
@@ -251,8 +255,10 @@ public class DynamicExtensionsUtility
 	{
 		try
 		{
-			EntityManager.getInstance().getAllEntities();
-			EntityManager.getInstance().getAllContainers();
+			//			EntityManager.getInstance().getAllEntities();
+			//			EntityManager.getInstance().getAllContainers();
+			DBUtil.currentSession();
+			DBUtil.closeSession();
 		}
 		catch (Exception e)
 		{
@@ -496,8 +502,16 @@ public class DynamicExtensionsUtility
 
 			public int compare(Object o1, Object o2)
 			{
-				String s1 = ((NameValueBean) o1).getName();
-				String s2 = ((NameValueBean) o2).getName();
+				String s1 = "";
+				String s2 = "";
+				if (o1 != null)
+				{
+					s1 = ((NameValueBean) o1).getName();
+				}
+				if (o2 != null)
+				{
+					s2 = ((NameValueBean) o2).getName();
+				}
 				return s1.compareTo(s2);
 			}
 		});

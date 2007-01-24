@@ -393,4 +393,11 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
 	AssociationInterface getAssociationByIdentifier(Long associationId) throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException;
+	
+	/**
+	 * This method returns collection of the association for a given target entity.
+	 * @param entity
+	 * @return
+	 */
+	Collection<AssociationInterface> getIncomingAssociations(EntityInterface entity) throws DynamicExtensionsSystemException;
 }

@@ -2920,4 +2920,16 @@ public class EntityManager
 		}
 		return (AssociationInterface) assocationCollection.iterator().next();
 	}
+	
+	/**
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAssociationsForTargetEntity(edu.common.dynamicextensions.domaininterface.EntityInterface)
+	 */
+	public Collection<AssociationInterface> getIncomingAssociations(EntityInterface entity) throws DynamicExtensionsSystemException
+	{
+		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entity.getId()));
+		Collection<AssociationInterface> assocationCollection = executeHQL("getAssociationsForTargetEntity",
+				substitutionParameterMap);
+		return assocationCollection;
+	}
 }

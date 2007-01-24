@@ -79,5 +79,11 @@
 	   from Association association
 	      where association.id = ?
 	</query>	
+	
+	<query name="getAssociationsForTargetEntity">
+	   from Association association
+	      where association.targetEntity.id = ?
+	</query>	
+	
 </hibernate-mapping>
     

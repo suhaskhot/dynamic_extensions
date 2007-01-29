@@ -3,13 +3,12 @@
 <%@ taglib uri="/WEB-INF/dynamicExtensions.tld" prefix="dynamicExtensions" %>
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
 <%@page import="edu.common.dynamicextensions.processor.ProcessorConstants"%>
-<%@ page import="java.util.List"%>
+<%@page import="java.util.List"%>
 <%@page import="edu.common.dynamicextensions.ui.webui.util.ControlInformationObject"%>
 <%
 	List controlInformationObjectList1 = (List)request.getAttribute("controlsList");
 %>
 <html>
-
 	<!-- HTML Head section -->
 	<head>
 		<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/styleSheet.css" />
@@ -22,42 +21,41 @@
 		<script src="<%=request.getContextPath()%>/jss/calender.js" type="text/javascript"></script>
 		<script src="<%=request.getContextPath()%>/jss/calendarComponent.js"></script>
 		<script language="JavaScript" type="text/javascript" src="jss/ajax.js"></script>
-		<script  src="dhtml_comp/jss/dhtmlXCommon.js"></script>
-		<script  src="dhtml_comp/jss/dhtmlXGrid.js"></script>
-		<script  src="dhtml_comp/jss/dhtmlXGridCell.js"></script>
-		<script  src="dhtml_comp/jss/dhtmlXGrid_drag.js"></script>
-
+		<script src="dhtml_comp/jss/dhtmlXCommon.js"></script>
+		<script src="dhtml_comp/jss/dhtmlXGrid.js"></script>
+		<script src="dhtml_comp/jss/dhtmlXGridCell.js"></script>
+		<script src="dhtml_comp/jss/dhtmlXGrid_drag.js"></script>
 
 		<title>Dynamic Extensions</title>
-<script language="JavaScript" type="text/javascript">
-				function initCancelOperation()
-			 	{
-			    	var addControlBtnCaption = '<bean:message  key="buttons.addControlToForm" />';
-			    	var addControlFormTitle = '<bean:message key="app.title.addAttributes" />';
-			    	cancelControlOpern(addControlBtnCaption,addControlFormTitle);
-			    }
-			    function initGridView()
-				{
-					mygrid = new dhtmlXGridObject('gridbox');
-					mygrid.setImagePath("dhtml_comp/imgs/");
-					mygrid.setHeader("#,Name,Type");
-					mygrid.enableAutoHeigth(true);
-					mygrid.setInitWidths("20,70,100")
-					mygrid.setColAlign("left,left,left")
-					mygrid.setColTypes("ch,ed,ed");
+		<script language="JavaScript" type="text/javascript">
+			function initCancelOperation()
+			{
+				var addControlBtnCaption = '<bean:message  key="buttons.addControlToForm" />';
+				var addControlFormTitle = '<bean:message key="app.title.addAttributes" />';
+				cancelControlOpern(addControlBtnCaption,addControlFormTitle);
+			}
 
-					mygrid.enableMultiselect(true)
-					mygrid.enableDragAndDrop(true);
-					mygrid.setDropHandler(dropFn);
-					mygrid.setOnRowSelectHandler(controlSelected);
-					mygrid.init();
-					loadGridData();
-				}
+			function initGridView()
+			{
+				mygrid = new dhtmlXGridObject('gridbox');
+				mygrid.setImagePath("dhtml_comp/imgs/");
+				mygrid.setHeader("#,Name,Type");
+				mygrid.enableAutoHeigth(true);
+				mygrid.setInitWidths("20,70,100")
+				mygrid.setColAlign("left,left,left")
+				mygrid.setColTypes("ch,ed,ed");
 
-				function loadGridData()
-				{
-					<%
+				mygrid.enableMultiselect(true)
+				mygrid.enableDragAndDrop(true);
+				mygrid.setDropHandler(dropFn);
+				mygrid.setOnRowSelectHandler(controlSelected);
+				mygrid.init();
+				loadGridData();
+			}
 
+			function loadGridData()
+			{
+				<%
 					if(controlInformationObjectList1!=null)
 					{
 						int noOfControls = controlInformationObjectList1.size();
@@ -68,18 +66,15 @@
 							{
 								String identifier = controlInformationObj.getIdentifier();
 								String gridContentStr = " ,"  + controlInformationObj.getControlName() + "," + controlInformationObj.getControlType();
-
-							%>
-							mygrid.addRow(<%=identifier%>,'<%=gridContentStr%>');
-							<%
+								%>
+									mygrid.addRow(<%=identifier%>,'<%=gridContentStr%>');
+								<%
 							}
 						}
-					}//if
-					%>
-
-				}
+					}
+				%>
+			}
 		</script>
-
 	</head>
 
 	<!-- Initializations -->
@@ -95,7 +90,7 @@
 	<c:set var="userSelectedTool" value="${controlsForm.userSelectedTool}"/>
  	<jsp:useBean id="userSelectedTool" type="java.lang.String"/>
 
-<c:set var="controlInformationObjectList" value="${controlsForm.childList}"/>
+	<c:set var="controlInformationObjectList" value="${controlsForm.childList}"/>
 	<jsp:useBean id="controlInformationObjectList" type="java.util.List"/>
 
 	<c:set var="selectedControlCaption" value="${controlsForm.selectedControlCaption}"/>
@@ -103,13 +98,13 @@
 
 	<!-- Main HTML Code -->
   	<body onload="initBuildForm();initGridView()">
-		<html:form styleId = "controlsForm"  action="/LoadFormControlsAction">
+		<html:form styleId="controlsForm" action="/LoadFormControlsAction">
 			<font color="red" ><html:errors/></font>
 
-	  	    <%
+			<%
 	  	    	int generator = 0;
 	  	    %>
-			<table valign="top" style = "border-right:0px"  border = 1 align='right' width='90%' height="100%" border='0' cellspacing="0" cellpadding="0" class="tbBorders1" >
+			<table valign='top' style='border-right:0px' border='0' align='right' width='90%' height="100%" cellspacing="0" cellpadding="0">
 				<!-- Main Page heading -->
 		        <tr style = "border-bottom:0px">
 		        	<td class = "tbBordersAllbordersNone" >&nbsp;</td>
@@ -121,26 +116,21 @@
 		        <tr valign = "top">
 					<td class = "tbBordersAllbordersNone" >&nbsp;</td>
 		     		<td class="tbBordersAllbordersNone" valign="top" >
-
-					  	<table valign="top" summary="" align='left' width='95%' height = "95%" cellspacing="0" cellpadding="3" class = "tbBordersAllbordersBlack" >
+					  	<table valign="top" summary="" align='left' width='95%' height = "95%" cellspacing="0" cellpadding="3" class="tbBordersAllbordersBlack" >
 							<!-- tabs start -->
 							<tr valign = "top" >
 								<td class="tabMenuItem" >
 									<bean:message key="app.title.DefineGroupTabTitle" />
 								</td>
-
 							   	<td class="tabMenuItem" >
 									<bean:message key="app.title.DefineFormTabTitle" />
 							   	</td>
-
 							   	<td class="tabMenuItemSelected" >
 									<bean:message key="app.title.BuildFormTabTitle" />
 							   	</td>
-
 							   	<td class="tabMenuItem" >
 									<bean:message key="app.title.PreviewTabTitle" />
 							   	</td>
-
 							   	<td width="50%" class="tabMenuSeparator" colspan="3">&nbsp;</td>
 							</tr>
 							<!-- tab end -->
@@ -151,12 +141,12 @@
 								</td>
 							</tr>
 
-							<tr valign = "top">
-								<td style = "padding-left:5px" colspan="7"  height = '100%' width="100%">
-									<table width="100%" height = '100%'   cellspacing="0" cellpadding="0"  valign = "top">
-										<tr valign = "top" height = '100%' >
+							<tr valign="top">
+								<td style="padding-left:5px" colspan="7" height='100%' width="100%">
+									<table width="100%" height='100%' cellspacing="0" cellpadding="0"  valign = "top">
+										<tr valign="top" height='100%'>
 											<td valign = "top" valign="top" width = "75%">
-												<table class="tbBordersAllbordersBlack" height = "100%" width ="100%"   cellspacing="0" cellpadding="0">
+												<table class="tbBordersAllbordersBlack" height="100%" width="100%" cellspacing="0" cellpadding="0">
 													<thead>
 														<tr>
 															<c:choose>

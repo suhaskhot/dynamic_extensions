@@ -212,7 +212,7 @@ public class EntityManager
 				// been added in the finally clause.
 				hibernateDAO.closeSession();
 			}
-			catch (DAOException e)
+			catch (Exception e)
 			{
 				//Queries for data table creation and modification are fired in the method saveOrUpdateEntity. So if there
 				//is any exception while storing the metadata , we need to roll back the queries that were fired. So
@@ -280,7 +280,69 @@ public class EntityManager
 		{
 			((Entity) entityInterface).setDataTableState(DATA_TABLE_STATE_NOT_CREATED);
 		}
-		return persistEntity(entityInterface);
+		Entity entity = (Entity) entityInterface;
+		boolean isEntitySaved = true;
+		//Depending on the presence of Id field , the method that is to be invoked (insert/update), is decided.
+		if (entity.getId() == null)
+		{
+			isEntitySaved = false;
+		}
+
+		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
+				Constants.HIBERNATE_DAO);
+		Stack stack = new Stack();
+
+		try
+		{
+
+			hibernateDAO.openSession(null);
+			//Calling the method which actually calls the insert/update method on dao. Hibernatedao is passed to this
+			//method and transaction is handled in the calling method.
+			saveEntityGroup(entityInterface, hibernateDAO);
+			List<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
+
+			entityInterface = saveOrUpdateEntityMetadata(entityInterface, hibernateDAO, stack,
+					isEntitySaved,processedEntityList);
+
+			//Committing the changes done in the hibernate session to the database.
+			hibernateDAO.commit();
+		}
+		catch (Exception e)
+		{
+			//			Queries for data table creation and modification are fired in the method saveOrUpdateEntity. So if there
+			//is any exception while storing the metadata , we need to roll back the queries that were fired. So
+			//calling the following method to do that.
+			rollbackQueries(stack, entity, e, hibernateDAO);
+
+			if (e instanceof DynamicExtensionsApplicationException)
+			{
+				throw (DynamicExtensionsApplicationException) e;
+			}
+			else
+			{
+				throw new DynamicExtensionsSystemException(e.getMessage(), e);
+			}
+
+		}
+		finally
+		{
+			try
+			{
+				postSaveOrUpdateEntity(entityInterface);
+				//In any case , after all the operations , hibernate session needs to be closed. So this call has 
+				// been added in the finally clause.
+				hibernateDAO.closeSession();
+			}
+			catch (DAOException e)
+			{
+				//Queries for data table creation and modification are fired in the method saveOrUpdateEntity. So if there
+				//is any exception while storing the metadata , we need to roll back the queries that were fired. So
+				//calling the following method to do that.
+				rollbackQueries(stack, entity, e, hibernateDAO);
+			}
+		}
+		logDebug("persistEntity", "exiting the method");
+		return entityInterface;
 	}
 
 	/**
@@ -782,17 +844,26 @@ public class EntityManager
 							.getConstraintProperties();
 					EntityInterface targetEntity = association.getTargetEntity();
 					boolean isEntitySaved = false;
-//					if (!association.getIsSystemGenerated())
-//					{
+					if (!association.getIsSystemGenerated())
+					{
 						if (targetEntity.getId() != null)
 						{
 							isEntitySaved = true;
 						}
 
 						((Entity) targetEntity).setDataTableState(entity.getDataTableState());
-						targetEntity = saveOrUpdateEntity(targetEntity, hibernateDAO,
-								rollbackQueryStack, isEntitySaved,processedEntityList);
-//					}
+						if (entity.getDataTableState() == DATA_TABLE_STATE_CREATED)
+						{
+							targetEntity = saveOrUpdateEntity(targetEntity, hibernateDAO,
+									rollbackQueryStack, isEntitySaved,processedEntityList);
+						}
+						else
+						{
+							targetEntity = saveOrUpdateEntityMetadata(targetEntity, hibernateDAO,
+									rollbackQueryStack, isEntitySaved,processedEntityList);
+						}
+						
+					}
 					//Calling the particular method that populates the constraint properties for the association.
 					populateConstraintProperties(association);
 					//Calling the method which creates or removes the system generated association depending on
@@ -2124,6 +2195,112 @@ public class EntityManager
 		}
 	
 		return entity;
+	}
+
+	/**
+	 * This method is used by create as well as edit entity methods. This method holds all the common part 
+	 * related to saving the entity into the database and also handling the exceptions .
+	 * @param entityInterface Entity to be stored in the database.
+	 * @param isNew flag for whether it is a save or update.
+	 * @param hibernateDAO 
+	 * @param processedEntityList 
+	 * @param isNewFlag 
+	 * @return Entity . Stored instance of the entity.
+	 * @throws DynamicExtensionsApplicationException System exception in case of any fatal errors.
+	 * @throws DynamicExtensionsSystemException Thrown in case of duplicate name or authentication failure.
+	 * @throws DAOException 
+	 * @throws HibernateException 
+	 */
+	private EntityInterface saveOrUpdateEntityMetadata(EntityInterface entityInterface,
+			HibernateDAO hibernateDAO, Stack rollbackQueryStack, boolean isEntitySaved,List<EntityInterface> processedEntityList)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException, DAOException, HibernateException
+			{
+		logDebug("saveOrUpdateEntity", "Entering method");
+
+		Entity entity = (Entity) entityInterface;//(Entity) DynamicExtensionsUtility.cloneObject(entityInterface);
+		if(processedEntityList.contains(entity)) {
+			return entity;
+		} else {
+			processedEntityList.add(entity);
+		}
+		if (entity.getParentEntity() != null && entity.getParentEntity().getId() == null)
+		{
+			throw new DynamicExtensionsApplicationException("Unsaved Parent not allowed", null,
+					DYEXTN_A_011);
+		}
+		List reverseQueryList = new LinkedList();
+		List queryList = null;
+
+		checkForDuplicateEntityName(entity);
+		Entity databaseCopy = null;
+
+		try
+		{
+			if (!isEntitySaved)
+			{
+				preSaveProcessEntity(entity);
+				if (entity.getParentEntity() != null)
+				{
+					saveOrUpdateEntityMetadata(entity.getParentEntity(), hibernateDAO, rollbackQueryStack,
+							true,processedEntityList);
+				}
+				hibernateDAO.insert(entity, null, false, false);
+
+			}
+			else
+			{
+				databaseCopy = (Entity) DBUtil.loadCleanObj(Entity.class, entity.getId());
+				if (queryBuilder.isParentChanged(entity, databaseCopy))
+				{
+					checkParentChangeAllowed(entity);
+				}
+				if (entity.getParentEntity() != null)
+				{
+					saveOrUpdateEntityMetadata(entity.getParentEntity(), hibernateDAO, rollbackQueryStack,
+							true,processedEntityList);
+				}
+				hibernateDAO.update(entity, null, false, false, false);
+
+			}
+			postSaveProcessEntity(entity, hibernateDAO, rollbackQueryStack,processedEntityList);
+			hibernateDAO.update(entity, null, false, false, false);
+
+			if (entity.getDataTableState() == DATA_TABLE_STATE_CREATED)
+			{
+				if (!isEntitySaved)
+				{
+					queryList = queryBuilder.getCreateEntityQueryList(entity, reverseQueryList,
+							hibernateDAO, rollbackQueryStack);
+				}
+				else
+				{
+					queryList = queryBuilder.getUpdateEntityQueryList(entity,
+							(Entity) databaseCopy, reverseQueryList);
+				}
+
+				queryBuilder.executeQueries(queryList, reverseQueryList, rollbackQueryStack);
+			}
+		}
+		catch (UserNotAuthorizedException e)
+		{
+			logDebug("saveOrUpdateEntity", DynamicExtensionsUtility.getStackTrace(e));
+			throw new DynamicExtensionsApplicationException(
+					"User is not authorised to perform this action", e, DYEXTN_A_002);
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			logDebug("saveOrUpdateEntity", DynamicExtensionsUtility.getStackTrace(e));
+			throw e;
+		}
+		catch (Exception e)
+		{
+			logDebug("saveOrUpdateEntity", DynamicExtensionsUtility.getStackTrace(e));
+			throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
+		}
+
+		logDebug("saveOrUpdateEntity", "Exiting Method");
+
+		return entity;//(Entity) getEntityByIdentifier(entity.getId().toString());
 	}
 
 	/**

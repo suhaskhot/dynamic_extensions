@@ -211,6 +211,10 @@ function insertRules(datatypeControl)
 		{
 			tempInnerHTML = tempInnerHTML.replace("maxTemp","max");
 		}
+		while (tempInnerHTML.indexOf("temp_") != -1)
+		{
+			tempInnerHTML = tempInnerHTML.replace("temp_","");
+		}
 		
 		var substitutionDivRules = document.getElementById('substitutionDivRules');
 		substitutionDivRules.innerHTML = tempInnerHTML;
@@ -1232,6 +1236,7 @@ function getDocumentElementForXML(xmlString)
 		var parser=new DOMParser();
 		var doc=parser.parseFromString(xmlString,"text/xml");
 	}
+
 	return doc;
 }
 
@@ -1293,7 +1298,14 @@ function groupChangedResponse(formNameListXML)
 					{
 						var oOption = document.createElement("OPTION");
 						htmlFormNameList.options.add(oOption,htmlFormNameList.options.length+1);
-						oOption.text= optionName;
+						if(window.ActiveXObject)
+						{
+							oOption.text=optionName;
+						}
+						else
+						{
+							oOption.textContent=optionName;
+						}
 						oOption.value = optionValue;
 					}
 				}
@@ -1366,7 +1378,14 @@ function formChangedResponse(formAttributesListXML)
 					{
 						var oOption = document.createElement("OPTION");
 						htmlFormAttributeList.options.add(oOption,htmlFormAttributeList.options.length+1);
-						oOption.text = optionName;
+						if(window.ActiveXObject)
+						{
+							oOption.text = optionName;
+						}
+						else
+						{
+							oOption.textContent = optionName;
+						}
 						oOption.value = optionValue;
 					}
 				}
@@ -1726,44 +1745,56 @@ function treeNodeSelectedResponse(formNameListXML)
 		var formDesc = documentElt.getElementsByTagName('form-description');
 		var formConceptCode = documentElt.getElementsByTagName('form-conceptcode');
 		var operationmode = documentElt.getElementsByTagName('operationMode');
-		
+
 		if((htmlFormName!=null)&&(formname!=null))
 		{
 			if(formname[0]!=null)
 			{
-				htmlFormName.value = formname[0].text;
+				htmlFormName.value = getElementText(formname[0]);
 			}
 		}
 		if((htmlFormCC!=null)&&(formConceptCode!=null))
 		{
 			if(formConceptCode[0]!=null)
 			{
-				htmlFormCC.value = formConceptCode[0].text;
+				htmlFormCC.value = getElementText(formConceptCode[0]);
 			}
 		}
 		if((htmlFormDesc!=null)&&(formDesc!=null))
 		{
 			if(formDesc[0]!=null)
 			{
-				htmlFormDesc.value = formDesc[0].text;
+				htmlFormDesc.value = getElementText(formDesc[0]);
 			}
 		}
 		if((htmlOperationMode!=null)&&(operationmode!=null))
 		{
 			if(operationmode[0]!=null)
 			{
-				htmlOperationMode.value = operationmode[0].text;
+				htmlOperationMode.value = getElementText(operationmode[0]);
 			}
 		}
 		if((htmlOperation!=null)&&(operationmode!=null))
 		{
 			if(operationmode[0]!=null)
 			{
-				htmlOperation.value =  operationmode[0].text;
+				htmlOperation.value =  getElementText(operationmode[0]);
 			}
-			//alert(htmlOperation.value);
 		}
 	}
+}
+
+function getElementText(element)
+{
+	var elementText = "";
+	if(window.ActiveXObject)
+	{
+		elementText = element.text;
+	}
+	{
+		elementText = element.textContent;
+	}
+	return elementText;
 }
 
 function insertDataForContainer(containerId)
@@ -1802,7 +1833,8 @@ function groupSelectedResponse(groupXML)
 	
 		if((htmlGroupDescription!=null)&&(grpDesc!=null))
 		{
-			htmlGroupDescription.value = grpDesc[0].text;
+			htmlGroupDescription.value = getElementText(grpDesc[0]);
+			
 		}
 		else
 		{
@@ -1902,9 +1934,10 @@ function listEltMoveUp(element)
 	  	{
 	    	if(i != 0)
 	    	{
-		        var temp = new Option(element.options[i-1].text,element.options[i-1].value);
-		        var temp2 = new Option(element.options[i].text,element.options[i].value);
-		        element.options[i-1] = temp2;
+				var temp, temp2;
+				temp = new Option(getElementText(element.options[i-1]),element.options[i-1].value);
+				temp2 = new Option(getElementText(element.options[i]),element.options[i].value);
+				element.options[i-1] = temp2;
 		        element.options[i-1].selected = true;
 		        element.options[i] = temp;
 	      	}
@@ -1920,12 +1953,31 @@ function listEltMoveDown(element)
     	{
 			if(i != (element.options.length - 1))
 			{
-		        var temp = new Option(element.options[i+1].text,element.options[i+1].value);
-		        var temp2 = new Option(element.options[i].text,element.options[i].value);
-		        element.options[i+1] = temp2;
+		        var temp, temp2;
+				temp = new Option(getElementText(element.options[i+1]),element.options[i+1].value);
+				element.options[i+1] = temp2;
 		        element.options[i+1].selected = true;
 		        element.options[i] = temp;
 			}
 		}
+	}
+}
+
+function setDateTimeControl(showTime)
+{
+	showDateTimeControl(showTime, '', 'attributeDefaultValue');
+	showDateTimeControl(showTime, 'Min', 'min');
+	showDateTimeControl(showTime, 'Max', 'max');
+}
+
+function showDateTimeControl(showTime, divType, id)
+{
+	if(showTime=='false')
+	{
+		document.getElementById('slcalcod'+id).innerHTML = document.getElementById('dateOnly'+divType+'Div').innerHTML;
+	}
+	else
+	{
+		document.getElementById('slcalcod'+id).innerHTML = document.getElementById('dateTime'+divType+'Div').innerHTML;
 	}
 }

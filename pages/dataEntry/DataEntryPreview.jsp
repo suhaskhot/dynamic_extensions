@@ -42,63 +42,63 @@
 		<html:form styleId="dataEntryForm" action="/ApplyFormPreviewAction" enctype="multipart/form-data" method="post">
 			<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 
-	    	<table valign="top" style="border-right:1px" border=1 align='center' width='90%' height="90%" border='0' cellspacing="0" cellpadding="0" class="tbBorders1" >
+	    	<table valign="top" align='center' width='100%' height="100%" cellspacing="0" cellpadding="0" class="tbBorders1" >
  				<!-- Main Page heading -->
-					<tr>
-						<td class="formFieldNoBorders">
-							<bean:message key="app.title.MainPageTitle" />
-						</td>
-					</tr>
-			 
-		  			<tr valign="top">
-						<td>
-							<table valign="top" summary="" align='center' width='100%' cellspacing="0" cellpadding="3">
-								<tr valign="top">
-								   	<td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onclick="alert('This page is still under construction and will be available in the next release');">
-										<bean:message key="app.title.DefineGroupTabTitle" />
-								   	</td>
-								  	<td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onclick="showFormDefinitionPage()">
-										<bean:message key="app.title.DefineFormTabTitle" />
-								   	</td>
-								   	<td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onclick="backToControlForm()">
-										<bean:message key="app.title.BuildFormTabTitle" />
-								   	</td>
-								  	<td height="20" class="tabMenuItemSelected"  >
-										<bean:message key="app.title.PreviewTabTitle" />
-								   	</td>
-								   	<td width="50%" class="tabMenuSeparator" colspan="3">&nbsp;</td>
-								</tr>
-													
-								<tr valign="top">
-									<td colspan="7">
-										<table align='center' width='80%'>
-											<tr>
-												<td>
-													<dynamicExtensions:dynamicUIGenerator containerInterface="<%=containerInterface%>" />
-												</td>
-											</tr>
-										</table>
-	           						</td>
-	           					</tr>
-	           					
-								<tr>
-									<td valign="top" colspan="7">
-										<table cellpadding="4" cellspacing="5" border="0"  align='center'>
-											<tr height="5"></tr>
-											<tr>
-												<td align='right'>						
-													<html:submit styleClass="actionButton" onclick="showParentContainerInsertDataPage()">
-														 <bean:message key="buttons.back" />
-													</html:submit>
-												</td>
-											</tr>
-										</table>
-									</td>
-								</tr>
-							</table>
-						</td>
-					</tr>
-				</table>
+				<tr>
+					<td class="formFieldNoBorders">
+						<bean:message key="app.title.MainPageTitle" />
+					</td>
+				</tr>
+		 
+				<tr valign="top">
+					<td>
+						<table valign="top" align='left' width='100%' height='100%' cellspacing="0" cellpadding="0" class="tbBordersAllbordersBlack" >
+							<tr valign="top">
+								<td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onclick="alert('This page is still under construction and will be available in the next release');">
+									<bean:message key="app.title.DefineGroupTabTitle" />
+								</td>
+								<td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onclick="showFormDefinitionPage()">
+									<bean:message key="app.title.DefineFormTabTitle" />
+								</td>
+								<td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onclick="backToControlForm()">
+									<bean:message key="app.title.BuildFormTabTitle" />
+								</td>
+								<td height="20" class="tabMenuItemSelected"  >
+									<bean:message key="app.title.PreviewTabTitle" />
+								</td>
+								<td width="50%" class="tabMenuSeparator" colspan="3">&nbsp;</td>
+							</tr>
+												
+							<tr valign="top">
+								<td colspan="7">
+									<table align='center' width='100%'>
+										<tr>
+											<td>
+												<dynamicExtensions:dynamicUIGenerator containerInterface="<%=containerInterface%>" />
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							
+							<tr>
+								<td valign="top" colspan="7">
+									<table cellpadding="4" cellspacing="5" border="0" align='center'>
+										<tr height="5"></tr>
+										<tr>
+											<td align='right'>						
+												<html:submit styleClass="actionButton" onclick="showParentContainerInsertDataPage()">
+													 <bean:message key="buttons.back" />
+												</html:submit>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
 
 			<input type="hidden" id="childContainerId" name="childContainerId" value=""/>
 			<input type="hidden" id="childRowId" name="childRowId" value=""/>

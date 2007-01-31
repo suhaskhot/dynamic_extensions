@@ -51,13 +51,6 @@
 <html>
 	<head>
 		<title><bean:message key="table.heading" /></title>
-		<script language="JavaScript" type="text/javascript">
-			function getErrorMessage(controlName, attributeName, maxChars)
-		 	{
-		    	var errorMsg = '<bean:message key="errors.textAreaLength.exceeded" />';
-		    	checkTextLength(controlName, attributeName, errorMsg, maxChars)
-		    }
-		</script>
 	</head>
 
 	<body onload="loadPreviewForm()">
@@ -66,120 +59,119 @@
 		
 			<c:choose>
 				<c:when test='${showFormPreview == "true"}'>
-			    	<table valign="top" style="border-right:1px" border=1 align='center' width='90%' height="90%" border='0' cellspacing="0" cellpadding="0" class="tbBorders1" >
-				</c:when>				
+					<table valign="top" style="border-right:1px" align='center' width='100%' height="100%" border='0' cellspacing="0" cellpadding="0" class="tbBorders1" >
+				</c:when>
 				<c:otherwise>
-					<table valign="top" align='center' width='90%' height="90%" border='0' cellspacing="0" cellpadding="0"  >
+					<table valign="top" align='center' width='100%' height="100%" border='0' cellspacing="0" cellpadding="0">
 				</c:otherwise>
 			</c:choose>
-	 				<!-- Main Page heading -->
-					<tr>
-						<td class="formFieldNoBorders">
+				<!-- Main Page heading -->
+				<tr>
+					<td class="formFieldNoBorders">
+						<c:if test='${showFormPreview == "true"}'> 
+							<bean:message key="app.title.MainPageTitle" />
+						</c:if>
+					</td>
+				</tr>
+	 
+				<tr valign="top">
+					<td>
+						<table valign="top" summary="" align='center' width='100%' cellspacing="0" cellpadding="3">
 							<c:if test='${showFormPreview == "true"}'> 
-								<bean:message key="app.title.MainPageTitle" />
-							</c:if>
-						</td>
-					</tr>
-		 
-		  			<tr valign="top">
-						<td>
-							<table valign="top" summary="" align='center' width='100%' cellspacing="0" cellpadding="3">
-								<c:if test='${showFormPreview == "true"}'> 
-									<tr valign="top">
-									   	<td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onclick="alert('This page is still under construction and will be available in the next release');">
-											<bean:message key="app.title.DefineGroupTabTitle" />
-									   	</td>
-									  	<td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onclick="showFormDefinitionPage()">
-											<bean:message key="app.title.DefineFormTabTitle" />
-									   	</td>
-									   	<td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onclick="backToControlForm()">
-											<bean:message key="app.title.BuildFormTabTitle" />
-									   	</td>
-									  	<td height="20" class="tabMenuItemSelected"  >
-											<bean:message key="app.title.PreviewTabTitle" />
-									   	</td>
-									   	<td width="50%" class="tabMenuSeparator" colspan="3">&nbsp;</td>
-									</tr>
-								</c:if>
-								
 								<tr valign="top">
-									<td colspan="7">
-										<table align='center' width='80%'>
-											<tr>
-												<td align="center" class="formTitle">
-													<%
-														if(errorList.size() != 0)
-														{
-													%>
-															<c:forEach items="${errorList}" var="error">
-															<jsp:useBean id="error" type="java.lang.String" />
-																<c:out value="${error}"/><br />
-															</c:forEach>
-													<%
-														}
-													%>
-													<logic:messagesPresent message="true">
-														<ul>
-															<html:messages id="msg" message="true"> 
-																<li><bean:write name="msg"/></li>
-														 	</html:messages>
-														</ul>
-													</logic:messagesPresent>
-												</td>
-											</tr>
-											<tr><td>&nbsp;</td></tr>
-											<tr>
-												<td>
-													<dynamicExtensions:dynamicUIGenerator containerInterface="<%=containerInterface%>" />
-												</td>
-											</tr>
-										</table>
-	           						</td>
-	           					</tr>
-								<tr>
-									<td valign="top" colspan="7">
-										<table cellpadding="4" cellspacing="5" border="0"  align='center'>
-											<tr height="5"></tr>
-											<tr>
-												<td align='right'>						
-													<c:choose>
-							  	    					<c:when test='${showFormPreview=="true"}'>
-															<html:submit styleClass="actionButton" onclick="showParentContainerInsertDataPage()">
-															 	<bean:message key="buttons.back" />
-															</html:submit>
-														</c:when>
-							 							<c:otherwise>
-							 								<html:hidden styleId='isEdit' property="isEdit" value=""/>
-							 								
-							 								<html:button styleClass="actionButton" property="ok" onclick="showParentContainerInsertDataPage()" disabled="<%=isTopLevelEntity %>">
-															 	<bean:message key="buttons.ok" />
-															</html:button>
-															
-															<c:if test='${!((mode=="view") && (isTopLevelEntity=="false"))}'>
-																<html:button styleClass="actionButton" property="cancel" onclick="cancelInsertData()">
-																 	<bean:message key="buttons.cancel" />
-																</html:button>
-															</c:if>
-															<c:if test='${(mode=="edit") && (isTopLevelEntity=="true")}'>
-													 			<html:submit styleClass="actionButton" onclick="setInsertDataOperation()">
-																 	<bean:message key="buttons.submit" />
-																</html:submit>
-															</c:if>
-						 								</c:otherwise>
-				     								</c:choose>	
-												</td>
-											</tr>
-										</table>
+									<td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onclick="alert('This page is still under construction and will be available in the next release');">
+										<bean:message key="app.title.DefineGroupTabTitle" />
 									</td>
+									<td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onclick="showFormDefinitionPage()">
+										<bean:message key="app.title.DefineFormTabTitle" />
+									</td>
+									<td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onclick="backToControlForm()">
+										<bean:message key="app.title.BuildFormTabTitle" />
+									</td>
+									<td height="20" class="tabMenuItemSelected"  >
+										<bean:message key="app.title.PreviewTabTitle" />
+									</td>
+									<td width="50%" class="tabMenuSeparator" colspan="3">&nbsp;</td>
 								</tr>
-							</table>
-						</td>
-					</tr>
-				</table>
+							</c:if>
+							
+							<tr valign="top">
+								<td colspan="7">
+									<table align='center' width='100%'>
+										<tr>
+											<td align="center" class="formTitle">
+												<%
+													if(errorList.size() != 0)
+													{
+												%>
+														<c:forEach items="${errorList}" var="error">
+														<jsp:useBean id="error" type="java.lang.String" />
+															<c:out value="${error}"/><br />
+														</c:forEach>
+												<%
+													}
+												%>
+												<logic:messagesPresent message="true">
+													<ul>
+														<html:messages id="msg" message="true"> 
+															<li><bean:write name="msg"/></li>
+														</html:messages>
+													</ul>
+												</logic:messagesPresent>
+											</td>
+										</tr>
+										<tr><td>&nbsp;</td></tr>
+										<tr>
+											<td>
+												<dynamicExtensions:dynamicUIGenerator containerInterface="<%=containerInterface%>" />
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td valign="top" colspan="7">
+									<table cellpadding="4" cellspacing="5" border="0" align='center'>
+										<tr height="5"></tr>
+										<tr>
+											<td align='right'>						
+												<c:choose>
+													<c:when test='${showFormPreview=="true"}'>
+														<html:submit styleClass="actionButton" onclick="showParentContainerInsertDataPage()">
+															<bean:message key="buttons.back" />
+														</html:submit>
+													</c:when>
+													<c:otherwise>
+														<html:hidden styleId='isEdit' property="isEdit" value=""/>
+														
+														<html:button styleClass="actionButton" property="ok" onclick="showParentContainerInsertDataPage()" disabled="<%=isTopLevelEntity %>">
+															<bean:message key="buttons.ok" />
+														</html:button>
+														
+														<c:if test='${!((mode=="view") && (isTopLevelEntity=="false"))}'>
+															<html:button styleClass="actionButton" property="cancel" onclick="cancelInsertData()">
+																<bean:message key="buttons.cancel" />
+															</html:button>
+														</c:if>
+														<c:if test='${(mode=="edit") && (isTopLevelEntity=="true")}'>
+															<html:submit styleClass="actionButton" onclick="setInsertDataOperation()">
+																<bean:message key="buttons.submit" />
+															</html:submit>
+														</c:if>
+													</c:otherwise>
+												</c:choose>	
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
 	
-				<html:hidden styleId='recordIdentifier' property="recordIdentifier" />
-			
-			<html:hidden styleId='entitySaved' property="entitySaved" />
+			<html:hidden styleId='recordIdentifier' property="recordIdentifier"/>
+			<html:hidden styleId='entitySaved' property="entitySaved"/>
 			<input type="hidden" id="childContainerId" name="childContainerId" value=""/>
 			<input type="hidden" id="childRowId" name="childRowId" value=""/>
 			<input type="hidden" id="dataEntryOperation" name="dataEntryOperation" value="<%=dataEntryOperation%>"/>

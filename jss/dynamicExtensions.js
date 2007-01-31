@@ -62,7 +62,6 @@ function showHomePageFromCreateGroup()
 
 function addControlToFormTree()
 {
-	
 	document.getElementById('operation').value='controlAdded';
 	var controlsForm=document.getElementById("controlsForm");
 	if(document.getElementById("selectedAttributeIds")!=null)
@@ -1791,6 +1790,7 @@ function getElementText(element)
 	{
 		elementText = element.text;
 	}
+	else
 	{
 		elementText = element.textContent;
 	}

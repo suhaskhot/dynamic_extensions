@@ -4,7 +4,7 @@ var calformname;
 var calformelement;
 var calpattern;
 var calweekstart;
-var shouldUseTime = false;
+var shouldUseTime;
 
 /**
 Changes done by Jitendra on 18/09/2006 to fix the bug when more than one DateTimeComponent tag included in the Jsp.<b> 
@@ -82,7 +82,7 @@ function printCal(id,day1, day2, day3, day4, day5, day6, day7, first, month1, mo
 	}	
 
 	document.write('</select>');
-	
+
 	// year
 	document.write('<select id="calyear'+id+'" name="calyear'+id+'" onchange="cal_chg('+ '\''+id +'\''+ ',' + day + ');">');	
 	document.write("</select>");
@@ -95,27 +95,26 @@ function printCal(id,day1, day2, day3, day4, day5, day6, day7, first, month1, mo
 	document.write('	<td class="CALENDARTITLE" align="right"><img src="' + imgsrc + 'close.gif" onclick="hideCalendar('+"'"+id+"'"+')"></td>');
 	document.write('	<td class="CALENDARBORDER" width=1><img src="' + imgsrc + 'shim.gif" width="1" height="1"></td>');
 	document.write('</tr>');
-// to display time
-shouldUseTime = displayTime;
+	
+	// to display time
+	shouldUseTime = displayTime;
 	if(displayTime=='true')
 	{
 		document.write('<tr>');
-		document.write('    <td colspan=5 class="CALENDARBORDER" align="right">Time &nbsp; </td>');
-
-		document.write('<td colspan=5 class="CALENDARBORDER" align="left"><select id="timeHrs" name="time_hh" size="1">');
-		
+		document.write('    <td colspan="5" class="CALENDARBORDER" align="right">Time &nbsp; </td>');
+		document.write('<td colspan="5" class="CALENDARBORDER" align="left"><select id="timeHrs'+id+'" name="time_hh'+id+'" size="1">');
 		var str="";
 		for (i = 0; i <= 23; i++)
 		{
-			str= str + '<option>'+i+'</option>';
+			str += '<option value=' + i + '>' + i + '</option>';
 		}	
 		document.write(str);
 		document.write('    </select>');
-		document.write('    &nbsp;:&nbsp; <select id="timeMin" name="time_mm" size="1">');
+		document.write('    &nbsp;:&nbsp; <select id="timeMin'+id+'" name="time_mm'+id+'" size="1">');
 		str="";
 		for (i = 0; i <= 59; i++)
 		{
-			str= str + '<option>'+i+'</option>';
+			str += '<option value=' + i + '>' + i + '</option>';
 		}	
 		document.write(str);
 		document.write('    </select></td>');
@@ -142,8 +141,7 @@ shouldUseTime = displayTime;
 	document.write('	<td class="CALENDRIER" width="38">' + computedcaldays[6] + '</td>');
 	document.write('	<td class="CALENDARBORDER" width="1"><img src="' + imgsrc + 'shim.gif" width=1 height=1></td>');
 	document.write('</tr>');
-	
-	
+		
 	document.write('<tr><td colspan=15 class="CALENDARBORDER"><img src="' + imgsrc + 'shim.gif" width=1 height=1></td></tr>');
 //	document.write('</form>');
 	document.write('</table>');
@@ -173,12 +171,12 @@ function showCalendar(id,year, month, day, pattern, formName, formProperty, even
 	if(document.all) {
 		// IE.
 		var ofy=document.body.scrollTop;
-		var ofx=document.body.scrollLeft;			
+		var ofx=document.body.scrollLeft;
 		document.getElementById(divId).style.left = event.clientX+ofx+10;		
 		document.getElementById(divId).style.top = event.clientY+ofy+10;
 		document.getElementById(divId).style.visibility="visible";		
 		document.getElementById(calmoisId).selectedIndex= month;		
-		hideElement("SELECT",id);		
+		//hideElement("SELECT",id);		
 	} else if(document.layers) {
 		// Netspace 4
 		document.elements[divId].left = e.pageX+10;
@@ -221,7 +219,6 @@ function cal_chg(id,day, month, year){
 	} else {
 		champMonth.selectedIndex = month;
 	}
-		
 	
 	champYear = document.getElementById(calyearId);
 	if (year==null) {		
@@ -236,9 +233,7 @@ function cal_chg(id,day, month, year){
 		}
 	}
 	
-	
 	if(month>0) {
-	
 		j=1;
 		weekEnd1Pos = (1 - calweekstart + 7) % 7;
 		weekEnd2Pos = (7 - calweekstart + 7) % 7;
@@ -251,7 +246,7 @@ function cal_chg(id,day, month, year){
 				str+='		<td class="CALENDARBORDER" width=1><img src="' + imgsrc + 'shim.gif" width=1 height=20></td>\n';
 				
 				str+='		<td class="CALENDAR'; 
-				if(/*ldt.getDay()==i && */ldt.getDate()==j && j==day /*&& newMonth==month && lc_annee==year*/) {
+				if(ldt.getDate()==j && j==day) {
 					str+='SELECTED'; 
 				} else if(i==weekEnd1Pos || i==weekEnd2Pos) {
 					str+='WEEKEND'; 
@@ -272,7 +267,6 @@ function cal_chg(id,day, month, year){
 			str+='	<tr><td colspan=15 class="CALENDARBORDER"><img src="' + imgsrc + 'shim.gif" width=1 height=1></td></tr>\n';
 		}
 		str+='</table>\n';
-	
 	}
 	
 	var caljourId = "caljour"+id;
@@ -288,7 +282,7 @@ function cal_chg(id,day, month, year){
 	}
 	if (!document.all && document.getElementById) {
 		document.getElementById(caljourId).innerHTML = str;
-	}	
+	}
 }
 
 /**
@@ -300,7 +294,7 @@ function cal_before(id,day, month, year) {
 	var calyearId ="calyear"+id;
 	champMonth = document.getElementById(calmoisId);
 	champYear = document.getElementById(calyearId);
-			
+	
 	if (champMonth.selectedIndex>1) { 
 		champMonth.selectedIndex--;
 	} else if (champYear.selectedIndex>0) {
@@ -379,8 +373,8 @@ function cal_after_year(id,day, month, year)
  * Update the date in the input field and hide the calendar.
  * PENDING: find a way to make the format customable.
  */
-function dtemaj(id,jour, mois, annee){		
-	document.forms[calformname].elements[calformelement].value = formatDate(jour, mois, annee);
+function dtemaj(id,jour, mois, annee){
+	document.forms[calformname].elements[calformelement].value = formatDate(jour, mois, annee, id);
 	document.forms[calformname].elements[calformelement].stlayout = new Object();
 	document.forms[calformname].elements[calformelement].stlayout.day = jour;
 	document.forms[calformname].elements[calformelement].stlayout.month = mois;
@@ -389,7 +383,7 @@ function dtemaj(id,jour, mois, annee){
 }
 
 
-function formatDate(day, month, year) {
+function formatDate(day, month, year, id) {
 	var date = "";
 	var pos = 0;
 	var pattern;
@@ -427,11 +421,12 @@ function formatDate(day, month, year) {
 			pos++;
 		}
 	}
-	if(shouldUseTime == "true")
+	
+	var selectedHrs = document.getElementById('timeHrs'+id);
+	var selectedMin = document.getElementById('timeMin'+id);
+	if(selectedHrs.style.visibility!="hidden" && selectedMin.style.visibility!="hidden")
 	{
-		var strHours = document.getElementById('timeHrs').value;
-		var strMins = document.getElementById('timeMin').value;
-		date =date + " " + strHours + ":"+strMins;
+		date += " " + selectedHrs.value + ":" + selectedMin.value;
 	}
 	return date;
 }

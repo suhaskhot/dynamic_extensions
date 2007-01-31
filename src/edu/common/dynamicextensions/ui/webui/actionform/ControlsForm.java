@@ -317,7 +317,7 @@ public class ControlsForm extends AbstractActionForm
 	protected String[] selectedAttributeIds;
 	//Current container name
 	protected String currentContainerName;
-	
+
 	public String getCurrentContainerName()
 	{
 		return this.currentContainerName;
@@ -1346,6 +1346,8 @@ public class ControlsForm extends AbstractActionForm
 	 */
 	private void getErrorsForDatePickerControl(Validator validator, ActionErrors errors)
 	{
+		String dateFormat = DynamicExtensionsUtility.getDateFormat(this.format);
+
 		//check for date format of default value field
 		//if dateValueType is "Select" then default value cannot be blank and should be valid date
 		if (dateValueType != null)
@@ -1353,7 +1355,7 @@ public class ControlsForm extends AbstractActionForm
 			if (dateValueType.trim().equalsIgnoreCase(ProcessorConstants.DATE_VALUE_SELECT))
 			{
 				if ((attributeDefaultValue == null)
-						|| (validator.checkDate(attributeDefaultValue) == false))
+						|| (DynamicExtensionsUtility.isDateValid(dateFormat, attributeDefaultValue) == false))
 				{
 					errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.date.format",
 							ApplicationProperties.getValue("eav.att.DefaultValue")));
@@ -1366,15 +1368,14 @@ public class ControlsForm extends AbstractActionForm
 					ApplicationProperties.getValue("eav.att.DefaultValue")));
 		}
 
-		if (isDateRangeValid(validator, errors) == false)
+		if (isDateRangeValid(dateFormat, errors) == false)
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
 					ApplicationProperties.getValue("eav.att.DateRange")));
 		}
-
 	}
 
-	private boolean isDateRangeValid(Validator validator, ActionErrors errors)
+	private boolean isDateRangeValid(String dateFormat, ActionErrors errors)
 	{
 		boolean isValid = true;
 		for (String validationName : validationRules)
@@ -1383,13 +1384,13 @@ public class ControlsForm extends AbstractActionForm
 			{
 				if ((min != null) && !(min.equals("")) && (max != null) && !(max.equals("")))
 				{
-					if ((validator.checkDate(this.min) == false))
+					if ((DynamicExtensionsUtility.isDateValid(dateFormat, this.min) == false))
 					{
 						errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.date.format",
 								ApplicationProperties.getValue("eav.att.Minimum")));
 					}
 
-					if ((validator.checkDate(this.max) == false))
+					if ((DynamicExtensionsUtility.isDateValid(dateFormat, this.max) == false))
 					{
 						errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.date.format",
 								ApplicationProperties.getValue("eav.att.Maximum")));

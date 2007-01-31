@@ -264,7 +264,7 @@ public class ControlsUtility
 		String dateFormat = ((DateTypeInformationInterface) dateAttribute).getFormat();
 		if (dateFormat == null)
 		{
-			dateFormat = "";
+			dateFormat = ProcessorConstants.DATE_ONLY_FORMAT;
 		}
 		return dateFormat;
 	}

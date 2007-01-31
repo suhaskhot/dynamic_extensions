@@ -13,11 +13,13 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -53,6 +55,7 @@ import edu.common.dynamicextensions.util.global.Constants.InheritanceStrategy;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.bizlogic.AbstractBizLogic;
 import edu.wustl.common.util.CVSTagReader;
+import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.global.ApplicationProperties;
@@ -434,6 +437,16 @@ public class DynamicExtensionsUtility
 	{
 		return Calendar.getInstance().get(Calendar.YEAR);
 	}
+	
+	public static int getCurrentHours()
+	{
+		return Calendar.getInstance().get(Calendar.HOUR);
+	}
+	
+	public static int getCurrentMinutes()
+	{
+		return Calendar.getInstance().get(Calendar.MINUTE);
+	}
 
 	/**
 	 *
@@ -719,6 +732,87 @@ public class DynamicExtensionsUtility
 				getAssociatedEntities(targetEntity, entitySet);
 			}
 		}
+	}
+	
+	/**
+	 * This method checks if the date string is as per the given format or not. 
+	 * @param dateFormat Format of the date (e.g. dd/mm/yyyy)
+	 * @param strDate Date value in String.
+	 * @return true if date is valid, false otherwise
+	 */
+	public static boolean isDateValid(String dateFormat, String strDate)
+	{
+		boolean isDateValid = false;
+		Date date = null;
+
+		try
+		{
+			date = Utility.parseDate(strDate, dateFormat);
+			if (date != null)
+			{
+				isDateValid = true;
+			}
+		}
+		catch (ParseException parseException)
+		{
+			isDateValid = false;
+		}
+
+		return isDateValid;
+	}
+
+	/**
+	 * This method returns the format of the date depending upon the the type of the format selected on UI.
+	 * @param format Selected format
+	 * @return date format
+	 */
+	public static String getDateFormat(String format)
+	{
+		String dateFormat = null;
+		if (format != null)
+		{
+			if (format.equals(ProcessorConstants.DATE_FORMAT_OPTION_DATEONLY))
+			{
+				dateFormat = ProcessorConstants.DATE_ONLY_FORMAT;
+			}
+			else
+			{
+				dateFormat = ProcessorConstants.DATE_TIME_FORMAT;
+			}
+		}
+		else
+		{
+			dateFormat = ProcessorConstants.DATE_ONLY_FORMAT;
+		}
+
+		return dateFormat;
+	}
+	
+	/**
+	 * This method returns the sql format of the date depending upon the the type of the format of the Date Attribute.
+	 * @param dateFormat format of the Date Attribute
+	 * @return SQL date format
+	 */
+	public static String getSQLDateFormat(String dateFormat)
+	{
+		String sqlDateFormat = null;
+		if (dateFormat != null)
+		{
+			if (dateFormat.equals(ProcessorConstants.DATE_ONLY_FORMAT))
+			{
+				sqlDateFormat = ProcessorConstants.SQL_DATE_ONLY_FORMAT;
+			}
+			else if (dateFormat.equals(ProcessorConstants.DATE_TIME_FORMAT))
+			{
+				sqlDateFormat = ProcessorConstants.SQL_DATE_TIME_FORMAT;
+			}
+		}
+		else
+		{
+			sqlDateFormat = ProcessorConstants.SQL_DATE_ONLY_FORMAT;
+		}
+
+		return sqlDateFormat;
 	}
 
 }

@@ -41,8 +41,8 @@
 				mygrid.setImagePath("dhtml_comp/imgs/");
 				mygrid.setHeader("#,Name,Type");
 				mygrid.enableAutoHeigth(true);
-				mygrid.setInitWidths("20,70,100")
-				mygrid.setColAlign("left,left,left")
+				mygrid.setInitWidths("20,110,150")
+				mygrid.setColAlign("center,left,left")
 				mygrid.setColTypes("ch,ed,ed");
 
 				mygrid.enableMultiselect(true)
@@ -155,7 +155,6 @@
 																		<bean:message key="app.title.editAttributes" />
 																	</th>
 																</c:when>
-
 																<c:otherwise>
 																	<th id="formTitle" align="left" class="formTitleGray">
 																		<bean:message key="app.title.addAttributes" />
@@ -220,19 +219,19 @@
 											<td valign="top" height="100%" >
 												<table valign="top" height='100%' width="100%" cellspacing="0" cellpadding="0">
 													<tr valign="top" height='100%'>
-														<td  height='100%' width='100%'>
+														<td height='100%' width='100%'>
 															<table id='controlList' cellspacing="0" class="tbBordersAllbordersBlack" height="100%" width="100%">
 																<thead>
 																	<tr>
 																		<th colspan="3" align="left" class="formTitleGray">
-																			<bean:message  key="app.formControlsTree.heading"/>
+																			<bean:message key="app.formControlsTree.heading"/>
 																		</th>
 																	</tr>
 																</thead>
 																<tbody>
 																	<tr height="100%" valign="top">
-																		<td>
-																			<div id="gridbox" width="100%" height="100%" style="background-color:white;overflow:hidden"/>
+																		<td align="center">
+																			<div id="gridbox" width="100%" height="100%" align="center" style="background-color:white;overflow:hidden"/>
 																		</td>
 																	</tr>
 																</tbody>
@@ -273,20 +272,20 @@
 							<tr>
 								<td colspan="2" align="left" class="formLabelBorderless">
 									<html:submit styleClass="groupButtonMainForm" onclick="saveEntity()">
-										<bean:message  key="buttons.save"/>
+										<bean:message key="buttons.save"/>
 									</html:submit>
 									&nbsp;
 									<html:reset styleClass="groupButtonMainForm" property="cancelButton" onclick='showHomePageFromBuildForm()'>
-										<bean:message  key="buttons.cancel"/>
+										<bean:message key="buttons.cancel"/>
 									</html:reset>
 								</td>
 								<td colspan="5" align="right" class="formLabelBorderless">
 									<html:button styleClass="groupButtonMainForm" property="prevButton" onclick="showNextActionConfirmDialog()">
-										<bean:message  key="buttons.prev"/>
+										<bean:message key="buttons.prev"/>
 									</html:button>
 									&nbsp;
 									<html:button styleClass="groupButtonMainForm" property="showPreviewButton" onclick="showFormPreview()">
-										<bean:message  key="buttons.next"/>
+										<bean:message key="buttons.next"/>
 									</html:button>
 								</td>
 							</tr>

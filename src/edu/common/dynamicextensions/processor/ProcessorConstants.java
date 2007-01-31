@@ -7,7 +7,6 @@ package edu.common.dynamicextensions.processor;
 
 import edu.wustl.common.util.global.Constants;
 
-
 /**
  * @author preeti_munot
  *
@@ -47,7 +46,10 @@ public class ProcessorConstants
     
     //Date Formats
     public static final String DATE_ONLY_FORMAT = Constants.DATE_PATTERN_MM_DD_YYYY;
-    public static final String DATE_TIME_FORMAT = Constants.TIMESTAMP_PATTERN;
+    //public static final String DATE_TIME_FORMAT = Constants.TIMESTAMP_PATTERN;
+    public static final String DATE_TIME_FORMAT = "MM-dd-yyyy HH:mm";
+    public static final String SQL_DATE_ONLY_FORMAT = "MM-dd-yyyy";
+    public static final String SQL_DATE_TIME_FORMAT = "MM-dd-yyyy HH24:MI";
     public static final String DATE_SEPARATOR = Constants.DATE_SEPARATOR;
     
     //Types of permisible value sources for Combobox

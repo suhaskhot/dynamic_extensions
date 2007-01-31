@@ -196,6 +196,12 @@ public interface AbstractAttributeUIBeanInterface
 	 * @param max the max to set
 	 */
 	void setMax(String max);
+	
+	/**
+	 * @param max the max to set
+	 */
+	void setMaxTemp(String maxTemp);
+
 
 	/**
 	 * @return the min
@@ -206,6 +212,12 @@ public interface AbstractAttributeUIBeanInterface
 	 * @param min the min to set
 	 */
 	void setMin(String min);
+	
+	/**
+	 * @param min the min to set
+	 */
+	void setMinTemp(String minTemp);
+	
 	/**
 	 * @return the tempValidationRules
 	 */

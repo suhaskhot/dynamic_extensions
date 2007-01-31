@@ -26,11 +26,11 @@
 						<bean:message key="eav.att.Format"/> :
 					</td>
 					<td class="formFieldWithoutBorder">
-						<html:radio styleId = 'format' property="format" value="<%=ProcessorConstants.DATE_FORMAT_OPTION_DATEONLY%>" >
+						<html:radio styleId = 'format' property="format" value="<%=ProcessorConstants.DATE_FORMAT_OPTION_DATEONLY%>" onclick="setDateTimeControl('false')">
 							<bean:message key="eav.att.DateFormatDateOnlyTitle"/>
 						</html:radio>
 
-						<html:radio styleId = 'format' property="format" value="<%=ProcessorConstants.DATE_FORMAT_OPTION_DATEANDTIME%>" disabled="true">
+						<html:radio styleId = 'format' property="format" value="<%=ProcessorConstants.DATE_FORMAT_OPTION_DATEANDTIME%>" onclick="setDateTimeControl('true')">
 							<bean:message key="eav.att.DateFormatDateAndTimeTitle"/>
 						</html:radio>
 					</td>
@@ -56,8 +56,8 @@
 				<tr id="rowForDateDefaultValue">
 					<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
 					<td class="formRequiredLabelWithoutBorder" width="30%">&nbsp;</td>
-					<td >
-						<html:text styleId = 'attributeDefaultValue' property='attributeDefaultValue' styleClass="formFieldVerySmallSized" maxlength="100" size="60" />
+					<td>
+						<html:text styleId='attributeDefaultValue' property='attributeDefaultValue' styleClass="formFieldVerySmallSized" maxlength="100" size="60" />
 						<A onclick="showCalendar('attributeDefaultValue',<%=DynamicExtensionsUtility.getCurrentYear()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentDay()%>,'MM-dd-yyyy','controlsForm','attributeDefaultValue',event,1900,2020);" href="javascript://">
 							<IMG alt="This is a Calendar" src="images/calendar.gif" border=0>
 						</A>
@@ -76,4 +76,23 @@
 		</td>
 	</tr>
 </table>
+<style>changeVisibility();</style>
+<div id='dateOnlyDiv' style="display:none">
+	<SCRIPT>printCalendar('attributeDefaultValue',<%=DynamicExtensionsUtility.getCurrentDay()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentYear()%>);</SCRIPT>
+</div>
+<div id='dateTimeDiv' style="display:none">
+	<SCRIPT>printTimeCalendar('attributeDefaultValue',<%=DynamicExtensionsUtility.getCurrentDay()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentYear()%>,<%=DynamicExtensionsUtility.getCurrentHours()%>,<%=DynamicExtensionsUtility.getCurrentMinutes()%>);</SCRIPT>
+</div>
+<div id='dateOnlyMinDiv' style="display:none">
+	<SCRIPT>printCalendar('min',<%=DynamicExtensionsUtility.getCurrentDay()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentYear()%>);</SCRIPT>
+</div>
+<div id='dateTimeMinDiv' style="display:none">
+	<SCRIPT>printTimeCalendar('min',<%=DynamicExtensionsUtility.getCurrentDay()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentYear()%>,<%=DynamicExtensionsUtility.getCurrentHours()%>,<%=DynamicExtensionsUtility.getCurrentMinutes()%>);</SCRIPT>
+</div>
+<div id='dateOnlyMaxDiv' style="display:none">
+	<SCRIPT>printCalendar('max',<%=DynamicExtensionsUtility.getCurrentDay()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentYear()%>);</SCRIPT>
+</div>
+<div id='dateTimeMaxDiv' style="display:none">
+	<SCRIPT>printTimeCalendar('max',<%=DynamicExtensionsUtility.getCurrentDay()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentYear()%>,<%=DynamicExtensionsUtility.getCurrentHours()%>,<%=DynamicExtensionsUtility.getCurrentMinutes()%>);</SCRIPT>
+</div>
 <jsp:include page="/pages/ValidationRules.jsp" />

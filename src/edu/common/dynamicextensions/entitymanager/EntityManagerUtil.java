@@ -18,6 +18,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInte
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Variables;
 import edu.wustl.common.dao.DAOFactory;
@@ -52,23 +53,26 @@ public class EntityManagerUtil
 		}
 		else if (attributeInformation instanceof DateAttributeTypeInformation)
 		{
-			String format = ((DateAttributeTypeInformation) attributeInformation).getFormat();
-			if (format == null)
+			String dateFormat = ((DateAttributeTypeInformation) attributeInformation).getFormat();
+			if (dateFormat == null)
 			{
-				format = Constants.DATE_PATTERN_MM_DD_YYYY;
+				dateFormat = Constants.DATE_PATTERN_MM_DD_YYYY;
 			}
+			
 			String str = null;
 			if (value instanceof Date)
 			{
-				str = Utility.parseDateToString(((Date) value), format);
+				str = Utility.parseDateToString(((Date) value), dateFormat);
 			}
 			else
 			{
 				str = (String) value;
 			}
 
+			/*formattedvalue = Variables.strTodateFunction + "('" + str + "','"
+			 + variables.datepattern + "')";*/
 			formattedvalue = Variables.strTodateFunction + "('" + str + "','"
-					+ Variables.datePattern + "')";
+					+ DynamicExtensionsUtility.getSQLDateFormat(dateFormat) + "')";
 		}
 		else
 		{
@@ -77,7 +81,6 @@ public class EntityManagerUtil
 		Logger.out.debug("getFormattedValue The formatted value for attribute "
 				+ attribute.getName() + "is " + formattedvalue);
 		return formattedvalue;
-
 	}
 
 	/**
@@ -87,7 +90,6 @@ public class EntityManagerUtil
 	 */
 	public static ResultSet executeQuery(String query) throws DynamicExtensionsSystemException
 	{
-
 		Connection conn = null;
 		try
 		{
@@ -120,7 +122,6 @@ public class EntityManagerUtil
 	 */
 	public int executeDML(String query) throws DynamicExtensionsSystemException
 	{
-
 		System.out.println(query);
 		Connection conn = null;
 		try
@@ -142,7 +143,6 @@ public class EntityManagerUtil
 			}
 			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
-
 	}
 
 	/**
@@ -222,8 +222,8 @@ public class EntityManagerUtil
 	 * @param processedEntities
 	 * @param processedEntityGroups
 	 */
-	public static void getAllEntityGroups(EntityInterface entity, Set<EntityInterface> processedEntities,
-			Set<EntityGroupInterface> processedEntityGroups)
+	public static void getAllEntityGroups(EntityInterface entity,
+			Set<EntityInterface> processedEntities, Set<EntityGroupInterface> processedEntityGroups)
 	{
 
 		if (processedEntities.contains(entity))
@@ -248,12 +248,14 @@ public class EntityManagerUtil
 			}
 		}
 	}
-	
+
 	/**
 	 * @return
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public static boolean isValuePresent(AttributeInterface attribute,Object value) throws DynamicExtensionsSystemException {
+	public static boolean isValuePresent(AttributeInterface attribute, Object value)
+			throws DynamicExtensionsSystemException
+	{
 		return DynamicExtensionBaseQueryBuilder.isValuePresent(attribute, value);
 	}
 }

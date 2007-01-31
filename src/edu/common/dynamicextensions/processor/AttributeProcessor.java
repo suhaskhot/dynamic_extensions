@@ -488,16 +488,13 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 
 		// Collect all the applicable Rule names 
 		List<String> implicitRuleList = null;
-		Long attributeIdentifier = abstractAttributeInterface.getId();
-		//if (attributeIdentifier == null)
-		//{
-			implicitRuleList = configurationsFactory.getAllImplicitRules(userSelectedControlName,
-					attributeUIBeanInformationIntf.getDataType());
-			for (String implicitRule : implicitRuleList)
-			{
-				allValidationRules.add(implicitRule);
-			}
-		//}
+
+		implicitRuleList = configurationsFactory.getAllImplicitRules(userSelectedControlName,
+				attributeUIBeanInformationIntf.getDataType());
+		for (String implicitRule : implicitRuleList)
+		{
+			allValidationRules.add(implicitRule);
+		}
 
 		String[] validationRules = attributeUIBeanInformationIntf.getValidationRules();
 		for (int i = 0; i < validationRules.length - 1; i++)
@@ -525,7 +522,6 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 					newRules.add(rule);
 					allValidationRules.remove(attributeRuleName);
 				}
-
 			}
 			attributeRuleCollection.removeAll(obsoleteRules);
 			attributeRuleCollection.addAll(newRules);
@@ -873,28 +869,30 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
 			throws DynamicExtensionsApplicationException
 	{
-		String dateValueType = attributeUIBeanInformationIntf.getDateValueType();
+		// Set Date format based on the UI selection : DATE ONLY or DATE And TIME
+		String format = attributeUIBeanInformationIntf.getFormat();
+		String dateFormat = DynamicExtensionsUtility.getDateFormat(format);
+		dateAttributeIntf.setFormat(dateFormat);
+
 		Date defaultValue = null;
+		String dateValueType = attributeUIBeanInformationIntf.getDateValueType();
 		if (dateValueType != null)
 		{
 			try
 			{
 				if (dateValueType.equalsIgnoreCase(ProcessorConstants.DATE_VALUE_TODAY))
 				{
-					String todaysDate = Utility.parseDateToString(new Date(),
-							ProcessorConstants.DATE_ONLY_FORMAT);
-					defaultValue = Utility.parseDate(todaysDate,
-							ProcessorConstants.DATE_ONLY_FORMAT);
+					String todaysDate = Utility.parseDateToString(new Date(), dateFormat);
+					defaultValue = Utility.parseDate(todaysDate, dateFormat);
 				}
 				else if (dateValueType.equalsIgnoreCase(ProcessorConstants.DATE_VALUE_SELECT))
 				{
 					if (attributeUIBeanInformationIntf.getAttributeDefaultValue() != null)
 					{
 						defaultValue = Utility.parseDate(attributeUIBeanInformationIntf
-								.getAttributeDefaultValue(), ProcessorConstants.DATE_ONLY_FORMAT);
+								.getAttributeDefaultValue(), dateFormat);
 					}
 				}
-
 			}
 			catch (Exception e)
 			{
@@ -905,25 +903,6 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		DateValueInterface dateValue = DomainObjectFactory.getInstance().createDateValue();
 		dateValue.setValue(defaultValue);
 		dateAttributeIntf.setDefaultValue(dateValue);
-
-		//		Set Date format based on the UI selection : DATE ONLY or DATE And TIME
-		if (attributeUIBeanInformationIntf.getFormat() != null)
-		{
-			if (attributeUIBeanInformationIntf.getFormat().equalsIgnoreCase(
-					ProcessorConstants.DATE_FORMAT_OPTION_DATEONLY))
-			{
-				dateAttributeIntf.setFormat(ProcessorConstants.DATE_ONLY_FORMAT);
-			}
-			else if (attributeUIBeanInformationIntf.getFormat().equalsIgnoreCase(
-					ProcessorConstants.DATE_FORMAT_OPTION_DATEANDTIME))
-			{
-				dateAttributeIntf.setFormat(ProcessorConstants.DATE_TIME_FORMAT);
-			}
-		}
-		else
-		{
-			dateAttributeIntf.setFormat(ProcessorConstants.DATE_ONLY_FORMAT);
-		}
 	}
 
 	/**
@@ -1205,10 +1184,12 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 						if (param.getName().equalsIgnoreCase("min"))
 						{
 							attributeUIBeanInformationIntf.setMin(param.getValue());
+							attributeUIBeanInformationIntf.setMinTemp(param.getValue());
 						}
 						else if (param.getName().equalsIgnoreCase("max"))
 						{
 							attributeUIBeanInformationIntf.setMax(param.getValue());
+							attributeUIBeanInformationIntf.setMaxTemp(param.getValue());
 						}
 					}
 				}
@@ -1408,6 +1389,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			attributeUIBeanInformationIntf.setAttributeDefaultValue(defaultDoubleValue.getValue()
 					+ "");
 		}
+		else
+		{
+			attributeUIBeanInformationIntf.setAttributeDefaultValue("");
+		}
 		attributeUIBeanInformationIntf.setAttributeMeasurementUnits(doubleAttributeInformation
 				.getMeasurementUnits());
 		attributeUIBeanInformationIntf.setAttributeDecimalPlaces(doubleAttributeInformation
@@ -1428,6 +1413,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		{
 			FloatValue floatValue = (FloatValue) floatAttributeInformation.getDefaultValue();
 			attributeUIBeanInformationIntf.setAttributeDefaultValue(floatValue.getValue() + "");
+		}
+		else
+		{
+			attributeUIBeanInformationIntf.setAttributeDefaultValue("");
 		}
 		attributeUIBeanInformationIntf.setAttributeMeasurementUnits(floatAttributeInformation
 				.getMeasurementUnits());
@@ -1451,6 +1440,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			attributeUIBeanInformationIntf.setAttributeDefaultValue(longDefaultValue.getValue()
 					+ "");
 		}
+		else
+		{
+			attributeUIBeanInformationIntf.setAttributeDefaultValue("");
+		}
 		attributeUIBeanInformationIntf.setAttributeMeasurementUnits(longAttributeInformation
 				.getMeasurementUnits());
 		attributeUIBeanInformationIntf.setAttributeDecimalPlaces(longAttributeInformation
@@ -1472,6 +1465,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			ShortValue shortDefaultValue = (ShortValue) shortAttributeInformation.getDefaultValue();
 			attributeUIBeanInformationIntf.setAttributeDefaultValue(shortDefaultValue.getValue()
 					+ "");
+		}
+		else
+		{
+			attributeUIBeanInformationIntf.setAttributeDefaultValue("");
 		}
 		attributeUIBeanInformationIntf.setAttributeMeasurementUnits(shortAttributeInformation
 				.getMeasurementUnits());
@@ -1496,6 +1493,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			attributeUIBeanInformationIntf.setAttributeDefaultValue(integerDefaultValue.getValue()
 					+ "");
 		}
+		else
+		{
+			attributeUIBeanInformationIntf.setAttributeDefaultValue("");
+		}
 		attributeUIBeanInformationIntf.setAttributeMeasurementUnits(integerAttributeInformation
 				.getMeasurementUnits());
 		attributeUIBeanInformationIntf.setAttributeDecimalPlaces(integerAttributeInformation
@@ -1519,6 +1520,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			attributeUIBeanInformationIntf.setAttributeDefaultValue(booleanDefaultValue.getValue()
 					+ "");
 		}
+		else
+		{
+			attributeUIBeanInformationIntf.setAttributeDefaultValue("");
+		}
 	}
 
 	/**
@@ -1530,36 +1535,43 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
 	{
 		attributeUIBeanInformationIntf.setDataType(ProcessorConstants.DATATYPE_DATE);
+
+		String format = getDateFormat(datAttributeInformation.getFormat());
+		attributeUIBeanInformationIntf.setFormat(format);
+
 		if (datAttributeInformation.getDefaultValue() != null)
 		{
+			String dateFormat = DynamicExtensionsUtility.getDateFormat(format);
 			String defaultValue = Utility.parseDateToString((Date) datAttributeInformation
-					.getDefaultValue().getValueAsObject(), ProcessorConstants.DATE_ONLY_FORMAT);
+					.getDefaultValue().getValueAsObject(), dateFormat);
 			attributeUIBeanInformationIntf.setAttributeDefaultValue(defaultValue);
 		}
 		else
 		{
 			attributeUIBeanInformationIntf.setAttributeDefaultValue("");
 		}
-		String dateFormat = ((DateAttributeTypeInformation) datAttributeInformation).getFormat();
+	}
+
+	private String getDateFormat(String dateFormat)
+	{
+		String format = null;
 		if (dateFormat != null)
 		{
 			if (dateFormat.equalsIgnoreCase(ProcessorConstants.DATE_ONLY_FORMAT))
 			{
-				attributeUIBeanInformationIntf
-						.setFormat(ProcessorConstants.DATE_FORMAT_OPTION_DATEONLY);
+				format = ProcessorConstants.DATE_FORMAT_OPTION_DATEONLY;
 			}
 			else if (dateFormat.equalsIgnoreCase(ProcessorConstants.DATE_TIME_FORMAT))
 			{
-				attributeUIBeanInformationIntf
-						.setFormat(ProcessorConstants.DATE_FORMAT_OPTION_DATEANDTIME);
+				format = ProcessorConstants.DATE_FORMAT_OPTION_DATEANDTIME;
 			}
 		}
 		else
-		//Default will be date only
 		{
-			attributeUIBeanInformationIntf
-					.setFormat(ProcessorConstants.DATE_FORMAT_OPTION_DATEONLY);
+			format = ProcessorConstants.DATE_FORMAT_OPTION_DATEONLY;
 		}
+
+		return format;
 	}
 
 	/**
@@ -1576,6 +1588,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			attributeUIBeanInformationIntf
 					.setAttributeDefaultValue((String) stringAttributeInformation.getDefaultValue()
 							.getValueAsObject());
+		}
+		else
+		{
+			attributeUIBeanInformationIntf.setAttributeDefaultValue("");
 		}
 		Integer size = stringAttributeInformation.getSize();
 		if (size != null)

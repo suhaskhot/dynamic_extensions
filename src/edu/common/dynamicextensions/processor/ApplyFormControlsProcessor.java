@@ -85,6 +85,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				
 				//Validate attribute name
 				DynamicExtensionsUtility.validateName(attributeName);
+				DynamicExtensionsUtility.validateDuplicateNamesWithinEntity(entityInterface);
 				controlsForm.setName(attributeName);
 
 				//Create Attribute  
@@ -111,6 +112,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				//DynamicExtensionsUtility.updateEntityReferences(abstractAttributeInterface);
 				
 				//Container : Add control and entity
+				
 				containerInterface.addControl(controlInterface);
 				containerInterface.setEntity(entityInterface);
 			}

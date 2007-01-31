@@ -76,9 +76,9 @@ public class DisplayRecordListTag extends TagSupport
 		{
 			StringBuffer stringBuffer = new StringBuffer();
 			stringBuffer
-					.append("<div style='border:solid 1px; padding:1px; width:800px; height:400px; overflow:auto;'>");
+					.append("<div style='border:solid 1px; padding:1px; height:500px; overflow:auto;'>");
 			stringBuffer
-					.append("<table class='dataTable' width='100%' cellpadding='4' cellspacing='0' border='1' >");
+					.append("<table class='dataTable' width='100%' cellpadding='4' cellspacing='0' border='1'>");
 
 			stringBuffer.append("<thead><tr class='formTitle'>");
 			stringBuffer.append("<th width='5%' align='center'>");

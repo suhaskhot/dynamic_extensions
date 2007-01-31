@@ -331,7 +331,7 @@ public class Container extends DynamicExtensionBaseDomainObject
 		StringBuffer stringBuffer = new StringBuffer();
 
 		stringBuffer
-				.append("<table summary='' cellpadding='3' cellspacing='0'  align='center' width = '100%'>");
+				.append("<table summary='' cellpadding='3' cellspacing='0'  align='center' width='100%'>");
 
 		if (this.getMode() != null
 				&& this.getMode().equalsIgnoreCase(WebUIManagerConstants.EDIT_MODE))

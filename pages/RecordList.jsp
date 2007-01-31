@@ -27,7 +27,7 @@
 	<body>
 		<html:form styleId='recordListForm' action='/ApplyRecordListAction'>
 		<font color="red" ><html:errors/></font>
-			<table width='70%' align='center' cellspacing="5" cellspacing="0" border='0'>
+			<table width='100%' align='center' cellspacing="5" cellspacing="0" border='0'>
 				<!-- Messages to be displayed -->
 				<tr>
 					<td class="formTitle" align="center">

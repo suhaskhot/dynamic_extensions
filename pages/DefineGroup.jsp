@@ -32,55 +32,48 @@
 		<html:form styleId = "groupForm"  action="/LoadGroupDefinitionAction">
 			<input type="hidden" name="groupOperation" value=""/>
 
-	        <table valign="top"  align='right' width='90%' height="100%" border='0' cellspacing="0" cellpadding="0" >
+	        <table valign="top" align='right' width='100%' height="100%" border='0' cellspacing="0" cellpadding="0" >
 		    	<!-- Main Page heading -->
 		        <tr valign="top" style = "border-bottom:0px">
-		        	<td style="border-right:0px;border-bottom:0px" width = '30px'>&nbsp;</td>
 		         	<td style="border-left:0px;border-bottom:0px" class="formFieldNoBorders" >
 		         		<bean:message key="app.title.MainPageTitle" />
 		         	</td>
 		        </tr>
 				<tr>
-					<td style = "border-top:0px;border-right:0px" width = '10px'>&nbsp;</td>
-					<td style = "border-left:0px;border-top:0px;border-bottom:0px" valign="top" >
-						<table valign="top" align='left' width='90%' height = '90%' cellspacing="0" cellpadding="3" class = "tbBordersAllbordersBlack" >
-							<tr valign="top" >
+					<td style = "border-left:0px;border-top:0px;border-bottom:0px" valign="top">
+						<table valign="top" align='left' width='100%' height='100%' cellspacing="0" cellpadding="3" class="tbBordersAllbordersBlack" >
+							<tr valign="top">
 								<td height="20" class="tabMenuItemSelected" >
 									<bean:message key="app.title.DefineGroupTabTitle" />
 							   	</td>
-
 							   	<td height="20" class="tabMenuItem" >
 									<bean:message key="app.title.DefineFormTabTitle" />
 							   	</td>
-
 							   	<td height="20" class="tabMenuItem"  >
 									<bean:message key="app.title.BuildFormTabTitle" />
 							   	</td>
-
 							   	<td height="20" class="tabMenuItem" >
 									<bean:message key="app.title.PreviewTabTitle" />
 							   	</td>
 							   	<td width="50%" class="tabMenuSeparator" colspan="3">&nbsp;</td>
 							</tr>
 							<tr height="100%" valign="top" >
-								<td height = '100%' colspan="7">
-									<table valign = "top" cellspacing="0" cellpadding="4" align="left" width="100%" height = '100%' class = "tbBordersAllbordersBlack">
-										<tr valign = "top">
+								<td height='100%' colspan="7">
+									<table valign="top" cellspacing="0" cellpadding="4" align="left" width="100%" height='100%' class="tbBordersAllbordersBlack">
+										<tr valign="top">
 											<td class="formMessage" colspan="3">
 												<bean:message key="app.requiredMessage"/>
 											</td>
 										</tr>
-										<tr valign = "top">
+										<tr valign="top">
 											<td class="formMessage" colspan="3">
 												<font color="red" ><html:errors/></font>
 											</td>
 										</tr>
-										<tr valign = "top">
-											<td class="formMessage" colspan="3">
-												&nbsp;
-											</td>
+										<tr valign="top">
+											<td class="formMessage" colspan="3">&nbsp;</td>
 										</tr>
-										<tr valign = "top" class="rowWithBottomPadding">
+										<tr valign="top" class="rowWithBottomPadding">
 											<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
 											<td class="formRequiredLabelWithoutBorder" width="12%">
 												<bean:message key="eav.att.GroupType"/> :
@@ -94,19 +87,19 @@
 												</html:radio>
 											</td>
 										</tr>
-										<tr  valign = "top" >
-											<td colspan="3" valign = "top" class="cellWithNoLeftBottomPadding">
-												<div id="groupDetailsDiv" ></div>
+										<tr valign="top" >
+											<td colspan="3" valign="top" class="cellWithNoLeftBottomPadding">
+												<div id="groupDetailsDiv"></div>
 											</td>
 										</tr>
 										<tr>
-											<td height = '100%' class="formFieldSized3" colspan="3">&nbsp;</td>
+											<td height='100%' class="formFieldSized3" colspan="3">&nbsp;</td>
 										</tr>
 									</table>
 								</td>
 							</tr>
-							<tr height='100%' valign = "top" >
-								<td height = '100%' colspan="2" align="left">
+							<tr height='100%' valign="top">
+								<td height='100%' colspan="2" align="left">
 									<html:button styleClass="actionButton" property="saveButton" onclick="saveGroup()">
 										<bean:message key="buttons.save" />
 	 								</html:button>
@@ -114,7 +107,7 @@
 										<bean:message key="buttons.cancel" />
 	 								</html:button>
 								</td>
-								<td height = '100%' colspan="5" align="right">
+								<td height='100%' colspan="5" align="right">
 									<html:button styleClass="actionButton" property="nextButton" onclick="showDefineFormJSP()" >
 										<bean:message  key="buttons.next" />
 	 								</html:button>
@@ -125,35 +118,34 @@
 				</tr>
 			</table>
 			<div id="NewGroupDiv" style="display:none">
-				<table  valign = "top" cellspacing="0" cellpadding="4" width="100%" height = '100%'>
-
-					<tr valign = "top"  class="rowWithBottomPadding">
-						<td  class="formRequiredNoticeWithoutBorder" width="2%">*</td>
+				<table valign="top" cellspacing="0" cellpadding="4" width="100%" height='100%'>
+					<tr valign="top" class="rowWithBottomPadding">
+						<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
 						<td class="formRequiredLabelWithoutBorder" width="12%">
-						<label for="groupName">
-							<bean:message key="eav.att.GroupTitle"/> :
-						</label>
+							<label for="groupName">
+								<bean:message key="eav.att.GroupTitle"/> :
+							</label>
 						</td>
 						<td class="formFieldWithoutBorder">
-							<html:text styleClass="formDateSized" styleId="groupNameText"  property="groupNameText" />
+							<html:text styleClass="formDateSized" styleId="groupNameText" property="groupNameText" />
 						</td>
 					</tr>
 
-					<tr valign = "top"  class="rowWithBottomPadding">
+					<tr valign="top" class="rowWithBottomPadding">
 						<td class="formRequiredNoticeWithoutBorder" width="2%" >&nbsp;</td>
 						<td class="formRequiredLabelWithoutBorder" width="12%">
-						<label for="groupDescription">
-							<bean:message key="eav.att.Description"/> :
-						</label>
+							<label for="groupDescription">
+								<bean:message key="eav.att.Description"/> :
+							</label>
 						</td>
-						<td >
-							<html:textarea styleClass="formFieldSmallSized" rows = "3" cols="28" styleId="groupDescription"  property="groupDescription" />
+						<td>
+							<html:textarea styleClass="formFieldSmallSized" rows="3" cols="28" styleId="groupDescription" property="groupDescription"/>
 						</td>
 					 </tr>
-					 </table>
+				</table>
 			</div>
 			<div id="ExistingGroupDiv" style="display:none">
-				<table valign = "top" cellspacing="0" cellpadding="4"  align="left" width="100%" height = '100%' >
+				<table valign="top" cellspacing="0" cellpadding="4" align="left" width="100%" height='100%'>
 					<tr valign = "top"  class="rowWithBottomPadding">
 						<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
 						<td class="formRequiredLabelWithoutBorder" width="12%">
@@ -163,25 +155,25 @@
 						</td>
 						<td >
 							<html:select styleId="groupName" styleClass="formFieldVerySmallSized" property="groupName" onchange="groupSelected(this)">
-									<html:options collection="groupList" labelProperty="name" property="value" />
+								<html:options collection="groupList" labelProperty="name" property="value" />
 							</html:select>
 						</td>
 					</tr>
-					<tr valign = "top"  class="rowWithBottomPadding">
+					<tr valign="top" class="rowWithBottomPadding">
 						<td class="formRequiredNoticeWithoutBorder" width="2%" >&nbsp;</td>
 						<td class="formRequiredLabelWithoutBorder" width="12%">
-						<label for="groupDescription">
-							<bean:message key="eav.att.Description"/> :
-						</label>
+							<label for="groupDescription">
+								<bean:message key="eav.att.Description"/> :
+							</label>
 						</td>
-						<td >
+						<td>
 							<html:textarea styleClass="formFieldSmallSized"  rows = "3" cols="28" styleId="groupDescription"  property="groupDescription" readonly="true"/>
 						</td>
 					 </tr>
 				</table>
 			</div>
 
-			<input type="hidden" id = "createGroupAsHidden" name="createGroupAsHidden" value = "<%=createGroupAs%>" />
+			<input type="hidden" id="createGroupAsHidden" name="createGroupAsHidden" value="<%=createGroupAs%>" />
 			<html:hidden property='operationMode' value="<%=operationMode%>"/>;
 		</html:form>
 	</body>

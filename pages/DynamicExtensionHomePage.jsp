@@ -24,7 +24,7 @@
 	<body>
 		<html:form styleId='formsIndexForm' action='/ApplyFormsIndexAction'>
 		<font color="red" ><html:errors/></font>
-			<table width='70%' align='center' cellspacing="5" cellspacing="0" border='0'>
+			<table width='100%' align='center' cellspacing="5" cellspacing="0" border='0'>
 				<!--<tr class="formMessage">
 					<td>
 						<h3>
@@ -58,7 +58,7 @@
 
 				<tr>
 					<td>
-						<div style="border:solid 1px; padding:1px; width:800px; height:400px; overflow:auto;">
+						<div style="border:solid 1px; padding:1px; height:400px; overflow:auto;">
 							<!-- table displaying entities already present in the database -->
 							<table class="dataTable" width='100%' cellpadding="4" cellspacing="0" border='1' >
 								<thead>

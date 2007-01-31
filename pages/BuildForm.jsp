@@ -30,8 +30,8 @@
 		<script language="JavaScript" type="text/javascript">
 			function initCancelOperation()
 			{
-				var addControlBtnCaption = '<bean:message  key="buttons.addControlToForm" />';
-				var addControlFormTitle = '<bean:message key="app.title.addAttributes" />';
+				var addControlBtnCaption = '<bean:message  key="buttons.addControlToForm"/>';
+				var addControlFormTitle = '<bean:message key="app.title.addAttributes"/>';
 				cancelControlOpern(addControlBtnCaption,addControlFormTitle);
 			}
 
@@ -65,7 +65,7 @@
 							if(controlInformationObj!=null)
 							{
 								String identifier = controlInformationObj.getIdentifier();
-								String gridContentStr = " ,"  + controlInformationObj.getControlName() + "," + controlInformationObj.getControlType();
+								String gridContentStr = " ,"  + controlInformationObj.getControlName() + " ," + controlInformationObj.getControlType();
 								%>
 									mygrid.addRow(<%=identifier%>,'<%=gridContentStr%>');
 								<%
@@ -99,26 +99,26 @@
 	<!-- Main HTML Code -->
   	<body onload="initBuildForm();initGridView()">
 		<html:form styleId="controlsForm" action="/LoadFormControlsAction">
-			<font color="red" ><html:errors/></font>
+			<font color="red"><html:errors/></font>
 
 			<%
 	  	    	int generator = 0;
 	  	    %>
-			<table valign='top' style='border-right:0px' border='0' align='right' width='90%' height="100%" cellspacing="0" cellpadding="0">
+			<table valign='top' style='border-right:0px' border='0' align='right' width='100%' height="100%" cellspacing="0" cellpadding="0">
 				<!-- Main Page heading -->
-		        <tr style = "border-bottom:0px">
-		        	<td class = "tbBordersAllbordersNone" >&nbsp;</td>
-		         	<td class="formFieldNoBorders" >
-		         		<bean:message key="app.title.MainPageTitle" />
+		        <tr style="border-bottom:0px">
+		        	<td class="tbBordersAllbordersNone">&nbsp;</td>
+		         	<td class="formFieldNoBorders">
+		         		<bean:message key="app.title.MainPageTitle"/>
 		         	</td>
 		        </tr>
 
-		        <tr valign = "top">
-					<td class = "tbBordersAllbordersNone" >&nbsp;</td>
-		     		<td class="tbBordersAllbordersNone" valign="top" >
-					  	<table valign="top" summary="" align='left' width='95%' height = "95%" cellspacing="0" cellpadding="3" class="tbBordersAllbordersBlack" >
+		        <tr valign="top">
+					<td class="tbBordersAllbordersNone">&nbsp;</td>
+		     		<td class="tbBordersAllbordersNone" valign="top">
+					  	<table valign="top" summary="" align='left' width='100%' height="100%" cellspacing="0" cellpadding="3" class="tbBordersAllbordersBlack" >
 							<!-- tabs start -->
-							<tr valign = "top" >
+							<tr valign="top" >
 								<td class="tabMenuItem" >
 									<bean:message key="app.title.DefineGroupTabTitle" />
 								</td>
@@ -135,17 +135,17 @@
 							</tr>
 							<!-- tab end -->
 
-							<tr valign = "top" >
-								<td valign="top" colspan="7" class="formFieldNoBorders" >
-									<bean:message key="app.title.formName" /><%=rootName%>
+							<tr valign="top" >
+								<td valign="top" colspan="7" class="formFieldNoBorders">
+									<bean:message key="app.title.formName"/><%=rootName%>
 								</td>
 							</tr>
 
 							<tr valign="top">
 								<td style="padding-left:5px" colspan="7" height='100%' width="100%">
-									<table width="100%" height='100%' cellspacing="0" cellpadding="0"  valign = "top">
+									<table width="100%" height='100%' cellspacing="0" cellpadding="0" valign="top">
 										<tr valign="top" height='100%'>
-											<td valign = "top" valign="top" width = "75%">
+											<td valign = "top" valign="top" width="75%">
 												<table class="tbBordersAllbordersBlack" height="100%" width="100%" cellspacing="0" cellpadding="0">
 													<thead>
 														<tr>
@@ -157,7 +157,7 @@
 																</c:when>
 
 																<c:otherwise>
-																	<th id="formTitle"  align="left" class="formTitleGray">
+																	<th id="formTitle" align="left" class="formTitleGray">
 																		<bean:message key="app.title.addAttributes" />
 																	</th>
 																</c:otherwise>
@@ -166,48 +166,44 @@
 													</thead>
 													<tr>
 														<td>
-															<jsp:include page="/pages/toolTypeHTML/CommonControlAttributes.jsp" />
+															<jsp:include page="/pages/toolTypeHTML/CommonControlAttributes.jsp"/>
 														</td>
 													</tr>
 													<tr>
 														<td>
-															<table width="100%" height = '100%'  >
+															<table width="100%" height='100%'>
 																<tr>
-																	<td width="15%" height = '100%'  class="toolBoxTable"  align="center">
-																		<table valign = "top" align ="center" height = '100%' width = '100%' class="tbBordersAllbordersBlack" cellspacing="0" cellpadding="0">
-																			<tr height = '100%' width = '100%' valign = "top" style="background-color:#F4F4F5;">
-																				<td height = '100%' width = '100%' align="center">
-																					<dynamicExtensions:ToolsMenu id="BuildForm"
-																							toolsList = "<%=toolsList%>"
-																							onClick="controlSelectedAction"
-																							selectedUserOption="<%= userSelectedTool%>">
-																					 </dynamicExtensions:ToolsMenu>
+																	<td width="15%" height='100%' class="toolBoxTable" align="center">
+																		<table valign="top" align="center" height='100%' width='100%' class="tbBordersAllbordersBlack" cellspacing="0" cellpadding="0">
+																			<tr height='100%' width='100%' valign="top" style="background-color:#F4F4F5;">
+																				<td height='100%' width='100%' align="center">
+																					<dynamicExtensions:ToolsMenu id="BuildForm"	toolsList="<%=toolsList%>" onClick="controlSelectedAction" selectedUserOption="<%= userSelectedTool%>"/>
 																				</td>
 																			</tr>
-																			<tr width = '100%' valign = "bottom" style="background-color:#F4F4F5;">
+																			<tr width='100%' valign="bottom" style="background-color:#F4F4F5;">
 																				<td align="center" width="100%">
-																					<html:button styleClass="formButton" property = "addSubFormBtn" onclick="addSubForm()" >
-																						<bean:message key="eav.caption.AddSubFormControl" />
+																					<html:button styleClass="formButton" property="addSubFormBtn" onclick="addSubForm()">
+																						<bean:message key="eav.caption.AddSubFormControl"/>
 																					</html:button>
 																				</td>
 																			</tr>
-																			<tr width = '100%' valign = "bottom" style="background-color:#F4F4F5;">
+																			<tr width='100%' valign="bottom" style="background-color:#F4F4F5;">
 																				<td>&nbsp;</td>
 																			</tr>
 																		</table>
 																	</td>
-																	<td height = '100%'>
-																		<table valign = "top" align ="left" height = '100%' width = '100%' class="tbBordersAllbordersBlack" cellspacing="0" cellpadding="0">
+																	<td height='100%'>
+																		<table valign="top" align="left" height='100%' width='100%' class="tbBordersAllbordersBlack" cellspacing="0" cellpadding="0">
 																			<thead>
 																				<tr>
 																					<th align="left" class="formTitleGray">
-																						<%=selectedControlCaption%> <bean:message key="app.formControl.properties" />
+																						<%=selectedControlCaption%><bean:message key="app.formControl.properties"/>
 																					</th>
 																				</tr>
 																			</thead>
-																			<tr height = '100%' width = '100%' valign = "top">
-																				<td height = '100%' width = '100%'>
-																					<jsp:include page="<%=htmlFile%>" />
+																			<tr height='100%' width='100%' valign="top">
+																				<td height='100%' width='100%'>
+																					<jsp:include page="<%=htmlFile%>"/>
 																				</td>
 																			<tr>
 																		</table>
@@ -221,25 +217,24 @@
 
 											<td width="2%">&nbsp;</td>
 
-											<td  valign="top" height="100%" >
-												<table valign="top" height = '100%' width = "100%"  cellspacing="0" cellpadding="0">
-													<tr valign = "top" height = '100%' >
-														<td  height = '100%' width = 100%>
-															<table id='controlList' cellspacing="0"  class="tbBordersAllbordersBlack" height = "100%" width ="100%" >
+											<td valign="top" height="100%" >
+												<table valign="top" height='100%' width="100%" cellspacing="0" cellpadding="0">
+													<tr valign="top" height='100%'>
+														<td  height='100%' width='100%'>
+															<table id='controlList' cellspacing="0" class="tbBordersAllbordersBlack" height="100%" width="100%">
 																<thead>
 																	<tr>
 																		<th colspan="3" align="left" class="formTitleGray">
-																			<bean:message  key="app.formControlsTree.heading" />
+																			<bean:message  key="app.formControlsTree.heading"/>
 																		</th>
 																	</tr>
 																</thead>
 																<tbody>
-																	<tr height = "100%" valign="top">
+																	<tr height="100%" valign="top">
 																		<td>
-																		<div id="gridbox" width="100%" height="100%" style="background-color:white;overflow:hidden"  />
+																			<div id="gridbox" width="100%" height="100%" style="background-color:white;overflow:hidden"/>
 																		</td>
 																	</tr>
-
 																</tbody>
 															</table>
 														</td>
@@ -254,44 +249,44 @@
 							<!--Add attributes btn + Controls (UP + Down + Delete) btn) -->
 							<tr>
 								<td colspan="7">
-									<table width="100%" height = '100%'  valign = "top">
-										<tr valign = "top" height = '100%' >
-											<td align="right" valign="top" width = "75%" >
+									<table width="100%" height='100%' valign="top">
+										<tr valign="top" height='100%'>
+											<td align="right" valign="top" width="75%">
 												<html:button styleClass="formButton" property="cancelControlOperation" onclick="initCancelOperation()">
-														<bean:message  key="buttons.cancel" />
+													<bean:message  key="buttons.cancel"/>
 												</html:button>
-												<html:button styleClass="formButton" property="addControlToFormButton" onclick="addControlToFormTree()" >
-													<bean:message  key="buttons.addControlToForm" />
+												<html:button styleClass="formButton" property="addControlToFormButton" onclick="addControlToFormTree()">
+													<bean:message  key="buttons.addControlToForm"/>
 												</html:button>
 											</td>
 											<td width="2%">&nbsp;</td>
-											<td  valign="top" height="100%" >
-												<input type = "button" class="groupButton" name = "upButton" value = "Up"  onclick = "moveControlsUp()"/>
-												<input type = "button" class="formButton" name = "downButton" value = "Down"  onclick = "moveControlsDown()"/>
-												<input type = "button" class="formButton" name = "deleteButton" value = "Remove"  onclick = "deleteControl()"/>
+											<td valign="top" height="100%">
+												<input type="button" class="groupButton" name="upButton" value="Up" onclick="moveControlsUp()"/>
+												<input type="button" class="formButton" name="downButton" value="Down" onclick="moveControlsDown()"/>
+												<input type="button" class="formButton" name="deleteButton" value="Remove" onclick="deleteControl()"/>
 											</td>
 										</tr>
 									</table>
 								</td>
 							</tr>
 
-							<tr >
+							<tr>
 								<td colspan="2" align="left" class="formLabelBorderless">
 									<html:submit styleClass="groupButtonMainForm" onclick="saveEntity()">
-										<bean:message  key="buttons.save" />
+										<bean:message  key="buttons.save"/>
 									</html:submit>
 									&nbsp;
 									<html:reset styleClass="groupButtonMainForm" property="cancelButton" onclick='showHomePageFromBuildForm()'>
-										<bean:message  key="buttons.cancel" />
+										<bean:message  key="buttons.cancel"/>
 									</html:reset>
 								</td>
 								<td colspan="5" align="right" class="formLabelBorderless">
-									<html:button styleClass="groupButtonMainForm" property="prevButton" onclick="showNextActionConfirmDialog()" >
-										<bean:message  key="buttons.prev" />
+									<html:button styleClass="groupButtonMainForm" property="prevButton" onclick="showNextActionConfirmDialog()">
+										<bean:message  key="buttons.prev"/>
 									</html:button>
 									&nbsp;
-									<html:button styleClass="groupButtonMainForm" property="showPreviewButton" onclick="showFormPreview()" >
-										<bean:message  key="buttons.next" />
+									<html:button styleClass="groupButtonMainForm" property="showPreviewButton" onclick="showFormPreview()">
+										<bean:message  key="buttons.next"/>
 									</html:button>
 								</td>
 							</tr>
@@ -299,17 +294,17 @@
 					</td>
 				</tr>
 			</table>
-		  	<html:hidden styleId ='operation'  property="operation" value=""/>
-		  	<html:hidden styleId = 'selectedAttrib' property="selectedAttrib" value=""/>
-			<input type="hidden" name="entitySaved" id = 'entitySaved'  />
-			<input type="hidden" id = "previousControl" name="previousControl" value = "" />
-			<html:hidden styleId = 'controlOperation' property="controlOperation" />
-			<html:hidden styleId = 'selectedControlId' property="selectedControlId" />
-			<input type="hidden" id = "checkAttribute" name="checkAttribute" value = "" />
-			<html:hidden styleId = 'validationRules' property="validationRules"  value=""/>
-			<input type="hidden" name='operationMode' id="operationMode"  value="AddSubForm"/>
-			<input type="hidden" name = "controlsSequenceNumbers" id= "controlsSequenceNumbers" >
-			<html:hidden styleId = 'currentContainerName' property="currentContainerName" />
+		  	<html:hidden styleId='operation' property="operation" value=""/>
+		  	<html:hidden styleId='selectedAttrib' property="selectedAttrib" value=""/>
+			<html:hidden styleId='controlOperation' property="controlOperation"/>
+			<html:hidden styleId='selectedControlId' property="selectedControlId"/>
+			<html:hidden styleId='validationRules' property="validationRules" value=""/>
+			<html:hidden styleId='currentContainerName' property="currentContainerName"/>
+			<input type="hidden" name="entitySaved" id='entitySaved'/>
+			<input type="hidden" id="previousControl" name="previousControl" value=""/>
+			<input type="hidden" name='operationMode' id="operationMode" value="AddSubForm"/>
+			<input type="hidden" name="controlsSequenceNumbers" id="controlsSequenceNumbers"/>
+			<input type="hidden" id="checkAttribute" name="checkAttribute" value=""/>
 	  	</html:form>
   	</body>
 </html>

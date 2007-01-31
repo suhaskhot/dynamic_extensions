@@ -8,35 +8,30 @@
 <html>
 	<head>
 		<title>Dynamic Extensions</title>
-			<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/styleSheet.css" />
+		<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/styleSheet.css"/>
 	</head>
-
 	<body  class='bodyStyle'>
-		<table width="80%" align="center">
+		<table width="100%" align="center">
 			<tr>
 				<td class="formTitle">
 					Dynamic Extensions - System Exception
 				</td>
 			</tr>
 			<tr>
-					<td class="formMessage" align="left">
-						<font color="red">	<html:errors/></font>
-					</td>
+				<td class="formMessage" align="left">
+					<font color="red"><html:errors/></font>
+				</td>
 			</tr>
-
-
 			<tr>
 				<td class="formMessage">
-
-				<c:set var="exception" value="${requestScope.exceptionString}"/>
-				<jsp:useBean id="exception" type="java.lang.String"/>
-				<div style="border:solid 1px; padding:1px; width:800px; height:400px; overflow:auto;">
-					<%=exception%>
-				</div>
+					<c:set var="exception" value="${requestScope.exceptionString}"/>
+					<jsp:useBean id="exception" type="java.lang.String"/>
+					
+					<div style="border:solid 1px; padding:1px; width:800px; height:400px; overflow:auto;">
+						<%=exception%>
+					</div>
 				</td>
 			</tr>
 		</table>
-
 	</body>
 </html>
-

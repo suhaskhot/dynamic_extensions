@@ -474,6 +474,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				}
 			}
 			attributeValue = valueList;
+			attributeValueMap.put(abstractAttribute, attributeValue);
 		}
 		else if (control instanceof FileUploadInterface)
 		{
@@ -486,7 +487,9 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				fileAttributeRecordValue.setFileName(formFile.getFileName());
 				fileAttributeRecordValue.setContentType(formFile.getContentType());
 				attributeValue = fileAttributeRecordValue;
+				attributeValueMap.put(abstractAttribute, attributeValue);
 			}
+			
 		}
 		else
 		{
@@ -510,8 +513,9 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				}
 			}
 			attributeValue = value;
+			attributeValueMap.put(abstractAttribute, attributeValue);
 		}
-		attributeValueMap.put(abstractAttribute, attributeValue);
+		
 	}
 
 	/**

@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -94,8 +95,9 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	EntityGroupInterface getEntityGroupByName(String entityGroupName) throws DynamicExtensionsSystemException,
-	DynamicExtensionsApplicationException;
+	EntityGroupInterface getEntityGroupByName(String entityGroupName)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+
 	/**
 	 * Returns an attribute given the entity name and attribute name.
 	 * @param entityName
@@ -146,8 +148,6 @@ public interface EntityManagerInterface
 	public EntityInterface getEntityByIdentifier(String identifier)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
-	
-
 	/**
 	 * Returns the entity based on the id passed.
 	 * @param id
@@ -155,7 +155,9 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException thrown in case of fatal system exceptions
 	 * @throws DynamicExtensionsApplicationException thrown in case application specific errors.
 	 */
-	EntityInterface getEntityByIdentifier(Long id) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	EntityInterface getEntityByIdentifier(Long id) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException;
+
 	/**
 	 * Returns a collection of entities having attribute with the given name  
 	 * @param attributeName
@@ -258,6 +260,18 @@ public interface EntityManagerInterface
 	 */
 	Map<AbstractAttributeInterface, Object> getRecordById(EntityInterface entity, Long recordId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+
+	/**
+	 * 
+	 * @param attribute
+	 * @param recordId
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public FileAttributeRecordValue getFileAttributeRecordValueByRecordId(AttributeInterface attribute,
+			Long recordId) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException;
 
 	/**
 	 * This method deletes a particular record for an entity.
@@ -372,32 +386,36 @@ public interface EntityManagerInterface
 	 * @return
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	Collection<AssociationTreeObject> getAssociationTree() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException ;
-	
+	Collection<AssociationTreeObject> getAssociationTree() throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException;
+
 	/**
 	 * returns all the records for a given entity
 	 */
-    List<EntityRecord> getAllRecords(EntityInterface entity) throws DynamicExtensionsSystemException;
-    
-    /**
+	List<EntityRecord> getAllRecords(EntityInterface entity)
+			throws DynamicExtensionsSystemException;
+
+	/**
 	 * This method returns all the children entities of givens entity.
 	 * @return Collection of EntityInterface
-     * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	Collection<EntityInterface> getChildrenEntities(EntityInterface entity) throws DynamicExtensionsSystemException;
-	
+	Collection<EntityInterface> getChildrenEntities(EntityInterface entity)
+			throws DynamicExtensionsSystemException;
 
 	/**
 	 * @param associationId
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	AssociationInterface getAssociationByIdentifier(Long associationId) throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException;
-	
+	AssociationInterface getAssociationByIdentifier(Long associationId)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+
 	/**
 	 * This method returns collection of the association for a given target entity.
 	 * @param entity
 	 * @return
 	 */
-	Collection<AssociationInterface> getIncomingAssociations(EntityInterface entity) throws DynamicExtensionsSystemException;
+	Collection<AssociationInterface> getIncomingAssociations(EntityInterface entity)
+			throws DynamicExtensionsSystemException;
 }

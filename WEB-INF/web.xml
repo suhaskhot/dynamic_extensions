@@ -34,6 +34,11 @@ PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
 			<servlet-name>DynamicExtensionsInterfaceAction</servlet-name>
 			<servlet-class>edu.common.dynamicextensions.interfaceactions.DynamicExtensionsInterfaceAction</servlet-class>
      </servlet>
+     
+     <servlet>
+			<servlet-name>DownloadFileAction</servlet-name>
+			<servlet-class>edu.common.dynamicextensions.ui.webui.action.DownloadFileAction</servlet-class>
+     </servlet>
 
    <servlet>
      <servlet-name>action</servlet-name>
@@ -64,6 +69,11 @@ PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
    <servlet-mapping>
        <servlet-name>DynamicExtensionsInterfaceAction</servlet-name>
 	   <url-pattern>/DynamicExtensionsInterfaceAction</url-pattern>
+   </servlet-mapping>
+   
+    <servlet-mapping>
+       <servlet-name>DownloadFileAction</servlet-name>
+	   <url-pattern>/DownloadFileAction</url-pattern>
    </servlet-mapping>
          
   <servlet-mapping>

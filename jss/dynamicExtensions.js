@@ -1981,3 +1981,11 @@ function showDateTimeControl(showTime, divType, id)
 		document.getElementById('slcalcod'+id).innerHTML = document.getElementById('dateTime'+divType+'Div').innerHTML;
 	}
 }
+
+function appendRecordId(ths)
+{
+var str = ths.href;
+var recordIdentifier = document.getElementById('recordIdentifier');
+str = str+"&recordIdentifier="+recordIdentifier.value;
+ths.href = str;
+}

@@ -8,6 +8,8 @@ package edu.common.dynamicextensions.ui.util;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +53,7 @@ import edu.wustl.common.beans.NameValueBean;
 
 public class ControlsUtility
 {
+
 	/**
 	 * This method returns the default value of the PrimitiveAttribute for displaying in corresponding controls on UI. 
 	 * @param abstractAttribute the PrimitiveAttribute
@@ -63,9 +66,10 @@ public class ControlsUtility
 
 		if (abstractAttribute != null)
 		{
-			if(abstractAttribute instanceof AttributeInterface)
+			if (abstractAttribute instanceof AttributeInterface)
 			{
-				abstractAttributeType = ((AttributeInterface) abstractAttribute).getAttributeTypeInformation();
+				abstractAttributeType = ((AttributeInterface) abstractAttribute)
+						.getAttributeTypeInformation();
 			}
 		}
 		if (abstractAttributeType != null)
@@ -152,7 +156,8 @@ public class ControlsUtility
 	private static String getDefaultBoolean(BooleanTypeInformationInterface booleanAttribute)
 	{
 		String defaultValue = null;
-		BooleanValueInterface booleanValue = (BooleanValueInterface) booleanAttribute.getDefaultValue();
+		BooleanValueInterface booleanValue = (BooleanValueInterface) booleanAttribute
+				.getDefaultValue();
 		if (booleanValue != null)
 		{
 			Boolean defaultBoolean = booleanValue.getValue();
@@ -167,7 +172,8 @@ public class ControlsUtility
 	private static String getDefaultInteger(IntegerTypeInformationInterface integerAttribute)
 	{
 		String defaultValue = null;
-		IntegerValueInterface integerValue = (IntegerValueInterface) integerAttribute.getDefaultValue();
+		IntegerValueInterface integerValue = (IntegerValueInterface) integerAttribute
+				.getDefaultValue();
 		if (integerValue != null)
 		{
 			Integer defaultInteger = integerValue.getValue();
@@ -248,7 +254,8 @@ public class ControlsUtility
 			Date defaultDate = dateValue.getValue();
 			if (defaultDate != null)
 			{
-				defaultValue = new SimpleDateFormat(getDateFormat(dateAttribute)).format(defaultDate);
+				defaultValue = new SimpleDateFormat(getDateFormat(dateAttribute))
+						.format(defaultDate);
 			}
 		}
 		return defaultValue;
@@ -267,6 +274,24 @@ public class ControlsUtility
 			dateFormat = ProcessorConstants.DATE_ONLY_FORMAT;
 		}
 		return dateFormat;
+	}
+
+	/**
+	 * 
+	 * @param nameValueList
+	 */
+	public static void sortNameValueList(List nameValueList)
+	{
+		if (nameValueList != null && !nameValueList.isEmpty())
+		{
+			Collections.sort(nameValueList, new Comparator<NameValueBean>()
+			{
+				public int compare(NameValueBean nameValueBean1, NameValueBean nameValueBean2)
+				{
+					return (nameValueBean1.getName()).compareTo(nameValueBean2.getName());
+				}
+			});
+		}
 	}
 
 	/**
@@ -294,9 +319,11 @@ public class ControlsUtility
 
 					String sepatator = associationControl.getSeparator();
 
-					displayAttributeMap = entityManager.getRecordsForAssociationControl(associationControl);
+					displayAttributeMap = entityManager
+							.getRecordsForAssociationControl(associationControl);
 
-					nameValueBeanList = getTargetEntityDisplayAttributeList(displayAttributeMap, sepatator);
+					nameValueBeanList = getTargetEntityDisplayAttributeList(displayAttributeMap,
+							sepatator);
 				}
 			}
 		}
@@ -304,15 +331,17 @@ public class ControlsUtility
 		{
 			throw new RuntimeException(exception);
 		}
+		sortNameValueList(nameValueBeanList);
 		return nameValueBeanList;
 	}
 
-	private static List<NameValueBean> getListOfPermissibleValues(AttributeInterface attribute) throws DynamicExtensionsSystemException,
-	DynamicExtensionsApplicationException
+	private static List<NameValueBean> getListOfPermissibleValues(AttributeInterface attribute)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		List<NameValueBean> nameValueBeanList = null;
 
-		AttributeTypeInformationInterface attributeTypeInformation = attribute.getAttributeTypeInformation();
+		AttributeTypeInformationInterface attributeTypeInformation = attribute
+				.getAttributeTypeInformation();
 		if (attributeTypeInformation != null)
 		{
 			DataElementInterface dataElement = attributeTypeInformation.getDataElement();
@@ -321,7 +350,7 @@ public class ControlsUtility
 				if (dataElement instanceof UserDefinedDEInterface)
 				{
 					Collection<PermissibleValueInterface> permissibleValueCollection = ((UserDefinedDEInterface) dataElement)
-					.getPermissibleValueCollection();
+							.getPermissibleValueCollection();
 					if (permissibleValueCollection != null)
 					{
 						nameValueBeanList = new ArrayList<NameValueBean>();
@@ -335,7 +364,8 @@ public class ControlsUtility
 							else if (permissibleValue instanceof DateValueInterface)
 							{
 								DateTypeInformationInterface dateAttribute = (DateTypeInformationInterface) attribute;
-								nameValueBean = getPermissibleDateValue(permissibleValue, dateAttribute);
+								nameValueBean = getPermissibleDateValue(permissibleValue,
+										dateAttribute);
 							}
 							else if (permissibleValue instanceof DoubleValueInterface)
 							{
@@ -370,8 +400,9 @@ public class ControlsUtility
 		return nameValueBeanList;
 	}
 
-	private static List<NameValueBean> getTargetEntityDisplayAttributeList(Map<Long, List<String>> displayAttributeMap, String separator)
-	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private static List<NameValueBean> getTargetEntityDisplayAttributeList(
+			Map<Long, List<String>> displayAttributeMap, String separator)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		List<NameValueBean> displayAttributeList = new ArrayList<NameValueBean>();
 
@@ -398,7 +429,8 @@ public class ControlsUtility
 		return displayAttributeList;
 	}
 
-	private static NameValueBean getPermissibleDateValue(PermissibleValueInterface permissibleValue, DateTypeInformationInterface dateAttribute)
+	private static NameValueBean getPermissibleDateValue(
+			PermissibleValueInterface permissibleValue, DateTypeInformationInterface dateAttribute)
 	{
 		DateValueInterface dateValue = (DateValueInterface) permissibleValue;
 		NameValueBean nameValueBean = null;
@@ -406,14 +438,16 @@ public class ControlsUtility
 		if (dateValue != null && dateValue.getValue() != null)
 		{
 			nameValueBean = new NameValueBean();
-			String date = new SimpleDateFormat(getDateFormat(dateAttribute)).format(dateValue.getValue());
+			String date = new SimpleDateFormat(getDateFormat(dateAttribute)).format(dateValue
+					.getValue());
 			nameValueBean.setName(date);
 			nameValueBean.setValue(date);
 		}
 		return nameValueBean;
 	}
 
-	private static NameValueBean getPermissibleDoubleValue(PermissibleValueInterface permissibleValue)
+	private static NameValueBean getPermissibleDoubleValue(
+			PermissibleValueInterface permissibleValue)
 	{
 		DoubleValueInterface doubleValue = (DoubleValueInterface) permissibleValue;
 		NameValueBean nameValueBean = null;
@@ -455,7 +489,8 @@ public class ControlsUtility
 		return nameValueBean;
 	}
 
-	private static NameValueBean getPermissibleIntegerValue(PermissibleValueInterface permissibleValue)
+	private static NameValueBean getPermissibleIntegerValue(
+			PermissibleValueInterface permissibleValue)
 	{
 		IntegerValueInterface integerValue = (IntegerValueInterface) permissibleValue;
 		NameValueBean nameValueBean = null;
@@ -483,7 +518,8 @@ public class ControlsUtility
 		return nameValueBean;
 	}
 
-	private static NameValueBean getPermissibleBooleanValue(PermissibleValueInterface permissibleValue)
+	private static NameValueBean getPermissibleBooleanValue(
+			PermissibleValueInterface permissibleValue)
 	{
 		BooleanValueInterface booleanValue = (BooleanValueInterface) permissibleValue;
 		NameValueBean nameValueBean = null;
@@ -497,7 +533,8 @@ public class ControlsUtility
 		return nameValueBean;
 	}
 
-	private static NameValueBean getPermissibleStringValue(PermissibleValueInterface permissibleValue)
+	private static NameValueBean getPermissibleStringValue(
+			PermissibleValueInterface permissibleValue)
 	{
 		StringValueInterface stringValue = (StringValueInterface) permissibleValue;
 		NameValueBean nameValueBean = null;
@@ -511,26 +548,28 @@ public class ControlsUtility
 		return nameValueBean;
 	}
 
-
 	/**
 	 *	Added by Preeti  
 	 * @param entityInterface
 	 * @param sequenceNumbers
 	 */
-	public static void reinitializeSequenceNumbers(Collection<ControlInterface> controlsCollection, String controlsSequenceNumbers)
+	public static void reinitializeSequenceNumbers(Collection<ControlInterface> controlsCollection,
+			String controlsSequenceNumbers)
 	{
-		if((controlsCollection!=null)&&(controlsSequenceNumbers!=null))
+		if ((controlsCollection != null) && (controlsSequenceNumbers != null))
 		{
 			ControlInterface control;
-			Integer[] sequenceNumbers = DynamicExtensionsUtility.convertToIntegerArray(controlsSequenceNumbers, ProcessorConstants.CONTROLS_SEQUENCE_NUMBER_SEPARATOR);
-			if(sequenceNumbers!=null)
+			Integer[] sequenceNumbers = DynamicExtensionsUtility.convertToIntegerArray(
+					controlsSequenceNumbers, ProcessorConstants.CONTROLS_SEQUENCE_NUMBER_SEPARATOR);
+			if (sequenceNumbers != null)
 			{
-				for(int i=0; i<sequenceNumbers.length;i++)
+				for (int i = 0; i < sequenceNumbers.length; i++)
 				{
-					control = DynamicExtensionsUtility.getControlBySequenceNumber(controlsCollection, sequenceNumbers[i].intValue());
-					if(control!=null)
+					control = DynamicExtensionsUtility.getControlBySequenceNumber(
+							controlsCollection, sequenceNumbers[i].intValue());
+					if (control != null)
 					{
-						control.setSequenceNumber(new Integer(i+1));
+						control.setSequenceNumber(new Integer(i + 1));
 					}
 				}
 			}
@@ -543,37 +582,43 @@ public class ControlsUtility
 	 * @return List ChildList
 	 * @throws DynamicExtensionsSystemException DynamicExtensionsSystemException
 	 */
-	public static List getChildList(ContainerInterface containerInterface) throws DynamicExtensionsSystemException
+	public static List getChildList(ContainerInterface containerInterface)
+			throws DynamicExtensionsSystemException
 	{
 		List<ControlInformationObject> childList = new ArrayList<ControlInformationObject>();
-		if(containerInterface!=null)
+		if (containerInterface != null)
 		{
 			Collection controlCollection = containerInterface.getControlCollection();
 			ControlInterface controlInterface = null;
 			ControlInformationObject controlInformationObject = null;
 			String controlCaption = null, controlDatatype = null, controlSequenceNumber = null, controlName = null;
-			ControlConfigurationsFactory controlConfigurationsFactory = ControlConfigurationsFactory.getInstance();
+			ControlConfigurationsFactory controlConfigurationsFactory = ControlConfigurationsFactory
+					.getInstance();
 			if (controlCollection != null)
 			{
 				for (int counter = 1; counter <= controlCollection.size(); counter++)
 				{
-					controlInterface = DynamicExtensionsUtility.getControlBySequenceNumber(controlCollection, counter);
-					if(controlInterface!=null)
+					controlInterface = DynamicExtensionsUtility.getControlBySequenceNumber(
+							controlCollection, counter);
+					if (controlInterface != null)
 					{
-						if (controlInterface.getCaption() != null && !controlInterface.getCaption().equals(""))
+						if (controlInterface.getCaption() != null
+								&& !controlInterface.getCaption().equals(""))
 						{
 							controlCaption = controlInterface.getCaption();
 							controlSequenceNumber = controlInterface.getSequenceNumber() + "";
 							controlName = DynamicExtensionsUtility.getControlName(controlInterface);
-							if(controlName.equals(ProcessorConstants.ADD_SUBFORM_CONTROL))
+							if (controlName.equals(ProcessorConstants.ADD_SUBFORM_CONTROL))
 							{
 								controlDatatype = ProcessorConstants.ADD_SUBFORM_TYPE;
 							}
 							else
 							{
-								controlDatatype = getControlCaption(controlConfigurationsFactory.getControlDisplayLabel(controlName));
+								controlDatatype = getControlCaption(controlConfigurationsFactory
+										.getControlDisplayLabel(controlName));
 							}
-							controlInformationObject = new ControlInformationObject(controlCaption, controlDatatype, controlSequenceNumber);
+							controlInformationObject = new ControlInformationObject(controlCaption,
+									controlDatatype, controlSequenceNumber);
 							childList.add(controlInformationObject);
 						}
 					}

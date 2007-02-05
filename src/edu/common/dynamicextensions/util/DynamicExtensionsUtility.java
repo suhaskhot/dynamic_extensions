@@ -115,6 +115,26 @@ public class DynamicExtensionsUtility
 				.getName(), containerIdentifier);
 		return containerInterface;
 	}
+	
+	
+	/**
+	 * This method fetches the Container instance from the Database given the corresponding Container Identifier.
+	 * @param containerIdentifier The Idetifier of the Container.
+	 * @return the ContainerInterface
+	 * @throws DynamicExtensionsSystemException on System exception
+	 * @throws DynamicExtensionsApplicationException on Application exception
+	 */
+	public static AttributeInterface getAttributeByIdentifier(String attributeIdentifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		AttributeInterface attributeInterface = null;
+		attributeInterface  = (AttributeInterface) getObjectByIdentifier(AttributeInterface.class
+				.getName(), attributeIdentifier);
+		return attributeInterface;
+	}
+	
+	
+	
 
 	/**
 	 * This method returns object for a given class name and identifer 

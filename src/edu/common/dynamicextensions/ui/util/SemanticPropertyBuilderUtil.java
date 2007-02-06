@@ -57,6 +57,7 @@ public class SemanticPropertyBuilderUtil
 					//TODO Check how to fetch the thesauras name and term for the semantic property.
 					semanticPropertyInterface.setTerm(Constants.DEFAULT_TERM);
 					semanticPropertyInterface.setThesaurasName(Constants.DEFAULT_THESAURAS_NAME);
+					semanticPropertyInterface.setSequenceNumber(index + 1);
 					semanticPropertyCollection.add(semanticPropertyInterface);
 				}
 			}
@@ -79,7 +80,7 @@ public class SemanticPropertyBuilderUtil
 		}
 		else
 		{
-			return getConceptCodeString(abstractMetadataInterface.getSemanticPropertyCollection());
+			return getConceptCodeString(abstractMetadataInterface.getOrderedSemanticPropertyCollection());
 		}
 	}
 	

@@ -424,7 +424,7 @@ function formatDate(day, month, year, id) {
 	
 	var selectedHrs = document.getElementById('timeHrs'+id);
 	var selectedMin = document.getElementById('timeMin'+id);
-	if(selectedHrs.style.visibility!="hidden" && selectedMin.style.visibility!="hidden")
+	if(selectedHrs!= null && selectedMin !=null && selectedHrs.style.visibility!="hidden" && selectedMin.style.visibility!="hidden")
 	{
 		date += " " + selectedHrs.value + ":" + selectedMin.value;
 	}

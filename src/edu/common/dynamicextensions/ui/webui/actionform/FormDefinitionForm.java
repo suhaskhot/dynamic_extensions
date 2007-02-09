@@ -1,6 +1,8 @@
 
 package edu.common.dynamicextensions.ui.webui.actionform;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionError;
@@ -94,12 +96,31 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	 * This stores the parent container id for edit sub-form operation
 	 */
 	protected String currentContainerName;
-
+	/**
+	 * 
+	 */
+	protected List formList;
+	/**
+	 * 
+	 */
+	protected String parentForm;
+	/**
+	 * 
+	 */
+	protected String isAbstract;
+	/**
+	 * 
+	 * @return
+	 */
 	public String getCurrentContainerName()
 	{
 		return this.currentContainerName;
 	}
-
+	
+	/**
+	 * 
+	 * @param currentContainerName
+	 */
 	public void setCurrentContainerName(String currentContainerName)
 	{
 		this.currentContainerName = currentContainerName;
@@ -466,5 +487,41 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	public void setDefinedEntitiesTreeXML(String definedEntitiesTreeXML)
 	{
 		this.definedEntitiesTreeXML = definedEntitiesTreeXML;
+	}
+
+	
+	public List getFormList()
+	{
+		return formList;
+	}
+
+	
+	public void setFormList(List formList)
+	{
+		this.formList = formList;
+	}
+
+	
+	public String getIsAbstract()
+	{
+		return isAbstract;
+	}
+
+	
+	public void setIsAbstract(String isAbstract)
+	{
+		this.isAbstract = isAbstract;
+	}
+
+	
+	public String getParentForm()
+	{
+		return parentForm;
+	}
+
+	
+	public void setParentForm(String parentForm)
+	{
+		this.parentForm = parentForm;
 	}
 }

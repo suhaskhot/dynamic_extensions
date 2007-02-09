@@ -312,19 +312,20 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	 */
 	public String getHTMLComponentName() throws DynamicExtensionsSystemException
 	{
-		AbstractAttributeInterface abstractAttributeInterface = this.getAbstractAttribute();
-		EntityInterface entity = abstractAttributeInterface.getEntity();
-		Long entityIdentifier = entity.getId();
-		EntityManagerInterface entityManager = EntityManager.getInstance();
-		ContainerInterface container = null;
-		if (entityIdentifier != null)
-		{
-			container = entityManager.getContainerByEntityIdentifier(entityIdentifier);
-		}
+//		AbstractAttributeInterface abstractAttributeInterface = this.getAbstractAttribute();
+//		EntityInterface entity = abstractAttributeInterface.getEntity();
+//		Long entityIdentifier = entity.getId();
+//		EntityManagerInterface entityManager = EntityManager.getInstance();
+//		ContainerInterface container = null;
+//		if (entityIdentifier != null)
+//		{
+//			container = entityManager.getContainerByEntityIdentifier(entityIdentifier);
+//		}
 
-		if (container != null && this.getSequenceNumber() != null)
+		ContainerInterface parentContainer = this.getParentContainer();
+		if (this.getSequenceNumber() != null)
 		{
-			return "Control_" + container.getId() + "_" + this.getSequenceNumber();
+			return "Control_" + parentContainer.getIncontextContainer().getId() + "_" +  parentContainer.getId() + "_" + this.getSequenceNumber();
 		}
 		return null;
 	}

@@ -1,13 +1,21 @@
 
 package edu.common.dynamicextensions.processor;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
+import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.interfaces.ContainerUIBeanInterface;
 import edu.common.dynamicextensions.ui.util.Constants;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
+import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.util.Utility;
 
 /**
@@ -23,6 +31,7 @@ import edu.wustl.common.util.Utility;
  */
 public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 {
+
 	/**
 	 * This is a singleton class so we have a protected constructor , We are providing getInstance method 
 	 * to return the ContainerProcessor's instance.
@@ -53,8 +62,12 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 	 * This method populates the given ContainerInterface using the given ContainerUIBeanInterface.
 	 * @param containerInterface : Instance of containerInterface which is populated using the informationInterface.
 	 * @param containerUIBeanInterface : Instance of ContainerUIBeanInterface which is used to populate the containerInterface.
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	public void populateContainerInterface(ContainerInterface containerInterface, ContainerUIBeanInterface containerUIBeanInterface)
+	public void populateContainerInterface(ContainerInterface containerInterface,
+			ContainerUIBeanInterface containerUIBeanInterface)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		if (containerInterface != null && containerUIBeanInterface != null)
 		{
@@ -64,8 +77,17 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 			//containerInterface.setRequiredFieldIndicatior(containerUIBeanInterface.getRequiredFieldIndicatior());
 			//containerInterface.setRequiredFieldWarningMessage(containerUIBeanInterface.getRequiredFieldWarningMessage());
 			containerInterface.setRequiredFieldIndicatior(Constants.REQUIRED_FIELD_INDICATOR);
-			containerInterface.setRequiredFieldWarningMessage(Constants.REQUIRED_FIELD_WARNING_MESSAGE);
+			containerInterface
+					.setRequiredFieldWarningMessage(Constants.REQUIRED_FIELD_WARNING_MESSAGE);
 			containerInterface.setTitleCss(containerUIBeanInterface.getTitleCss());
+			if (containerUIBeanInterface.getParentForm() != null
+					&& !containerUIBeanInterface.getParentForm().equals("")
+					&& !containerUIBeanInterface.getParentForm().equals("0"))
+			{
+				ContainerInterface parentContainer = DynamicExtensionsUtility
+						.getContainerByIdentifier(containerUIBeanInterface.getParentForm());
+				containerInterface.setBaseContainer(parentContainer);
+			}
 		}
 	}
 
@@ -76,20 +98,70 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 	 * @param containerInterface Instance of containerInterface from which to populate the informationInterface.
 	 * @param containerUIBeanInterface Instance of containerInformationInterface which will be populated using 
 	 * the first parameter that is ContainerInterface.
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
 
-	public void populateContainerUIBeanInterface(ContainerInterface containerInterface, ContainerUIBeanInterface containerUIBeanInterface)
+	public void populateContainerUIBeanInterface(ContainerInterface containerInterface,
+			ContainerUIBeanInterface containerUIBeanInterface)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		if (containerInterface != null && containerUIBeanInterface != null)
 		{
-			containerUIBeanInterface.setButtonCss(Utility.toString(containerInterface.getButtonCss()));
+			containerUIBeanInterface.setButtonCss(Utility.toString(containerInterface
+					.getButtonCss()));
 			//containerUIBeanInterface.setFormCaption(Utility.toString(containerInterface.getCaption()));
 			containerUIBeanInterface.setFormName(containerInterface.getCaption());
-			containerUIBeanInterface.setMainTableCss(Utility.toString(containerInterface.getMainTableCss()));
-			containerUIBeanInterface.setRequiredFieldIndicatior(Utility.toString(containerInterface.getRequiredFieldIndicatior()));
-			containerUIBeanInterface.setRequiredFieldWarningMessage(Utility.toString(containerInterface.getRequiredFieldWarningMessage()));
-			containerUIBeanInterface.setTitleCss(Utility.toString(containerInterface.getTitleCss()));
+			containerUIBeanInterface.setMainTableCss(Utility.toString(containerInterface
+					.getMainTableCss()));
+			containerUIBeanInterface.setRequiredFieldIndicatior(Utility.toString(containerInterface
+					.getRequiredFieldIndicatior()));
+			containerUIBeanInterface.setRequiredFieldWarningMessage(Utility
+					.toString(containerInterface.getRequiredFieldWarningMessage()));
+			containerUIBeanInterface
+					.setTitleCss(Utility.toString(containerInterface.getTitleCss()));
+			containerUIBeanInterface.setFormList(getFormsList());
+			if (containerInterface.getBaseContainer() != null)
+			{
+				containerUIBeanInterface.setParentForm(containerInterface.getBaseContainer()
+						.getId().toString());
+			}
+			else
+			{
+				containerUIBeanInterface.setParentForm("0");
+			}
+
 		}
+	}
+
+	/**
+	 * 
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public List getFormsList() throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		Collection<ContainerInterface> containerCollection = entityManagerInterface
+				.getAllContainers();
+
+		List formsList = new ArrayList<NameValueBean>();
+		formsList.add(new NameValueBean("--select--", "0"));
+
+		NameValueBean nameValueBean;
+		EntityInterface entityInterface;
+		for (ContainerInterface containerInterface : containerCollection)
+		{
+			entityInterface = containerInterface.getEntity();
+			nameValueBean = new NameValueBean(containerInterface.getCaption(), containerInterface
+					.getId());
+			formsList.add(nameValueBean);
+		}
+
+		return formsList;
+
 	}
 
 	/**
@@ -98,8 +170,9 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException : Exception thrown by Entity Manager
 	 * @throws DynamicExtensionsSystemException :  Exception thrown by Entity Manager
 	 */
-	public ContainerInterface saveContainer(ContainerInterface containerInterface) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	public ContainerInterface saveContainer(ContainerInterface containerInterface)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		return EntityManager.getInstance().persistContainer(containerInterface);
 	}
-}
+};

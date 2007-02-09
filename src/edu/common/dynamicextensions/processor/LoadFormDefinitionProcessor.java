@@ -64,8 +64,10 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * A call to ContainerProcessor will update the actionform with the data from cacheObject. 
 	 * @param containerInterface : Container interface
 	 * @param containerUIBeanInterface : container UI Bean Interface object containing information added by user
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	public void populateContainerInformation(ContainerInterface containerInterface, ContainerUIBeanInterface containerUIBeanInterface)
+	public void populateContainerInformation(ContainerInterface containerInterface, ContainerUIBeanInterface containerUIBeanInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
 		if (containerInterface == null)
@@ -99,6 +101,11 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 			DynamicExtensionsApplicationException
 	{
 		formDefinitionForm.setDefinedEntitiesTreeXML(getXMLForDefinedEntities());
+		
+		ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
+		formDefinitionForm.setFormList(containerProcessor.getFormsList());
+		
+		formDefinitionForm.setParentForm("0");
 	}
 
 	/**

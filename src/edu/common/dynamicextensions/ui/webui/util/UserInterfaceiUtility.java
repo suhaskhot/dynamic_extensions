@@ -55,7 +55,7 @@ public class UserInterfaceiUtility
 		}
 
 		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(subContainer
-				.getControlCollection());
+				.getAllControls());
 		Collections.sort(controlsList);
 
 		stringBuffer.append("<tr width='100%'><td colspan='3' class='formFieldContainer'>");
@@ -235,7 +235,7 @@ public class UserInterfaceiUtility
 		Map<AbstractAttributeInterface, Object> containerValueMap = container
 				.getContainerValueMap();
 		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(container
-				.getControlCollection());
+				.getAllControls());
 		Collections.sort(controlsList);
 
 		stringBuffer.append("<tr width='100%'>");
@@ -290,7 +290,7 @@ public class UserInterfaceiUtility
 	public static ContainmentAssociationControl getAssociationControl(
 			ContainerInterface containerInterface, String childContainerId)
 	{
-		Collection<ControlInterface> controlCollection = containerInterface.getControlCollection();
+		Collection<ControlInterface> controlCollection = containerInterface.getAllControls();
 		for (ControlInterface control : controlCollection)
 		{
 			if (control instanceof ContainmentAssociationControl)

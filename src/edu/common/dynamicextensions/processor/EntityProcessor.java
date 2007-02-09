@@ -67,17 +67,14 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsSystemException in case of system error
 	 * @throws DynamicExtensionsApplicationException in case of application error.
 	 */
-	public EntityInterface createAndSaveEntity(
-			EntityUIBeanInterface entityUIBeanInterface)
-	throws DynamicExtensionsSystemException,
-	DynamicExtensionsApplicationException
+	public EntityInterface createAndSaveEntity(EntityUIBeanInterface entityUIBeanInterface)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		EntityInterface entityInterface = null;
 		if (entityUIBeanInterface != null)
 		{
 			entityInterface = createAndPopulateEntity(entityUIBeanInterface);
-			entityInterface = EntityManager.getInstance().persistEntity(
-					entityInterface);
+			entityInterface = EntityManager.getInstance().persistEntity(entityInterface);
 		}
 		return entityInterface;
 	}
@@ -95,18 +92,28 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
 			entityInterface.setName(entityUIBeanInterface.getFormName());
 			entityInterface.setDescription(entityUIBeanInterface.getFormDescription());
 			entityInterface.removeAllSemanticProperties();
-			Collection collection = SemanticPropertyBuilderUtil.getSymanticPropertyCollection(entityUIBeanInterface
-					.getConceptCode());
+			Collection collection = SemanticPropertyBuilderUtil
+					.getSymanticPropertyCollection(entityUIBeanInterface.getConceptCode());
 			if (collection != null && !collection.isEmpty())
 			{
 				Iterator iterator = collection.iterator();
 				while (iterator.hasNext())
 				{
-					entityInterface.addSemanticProperty((SemanticPropertyInterface) iterator
-							.next());
+					entityInterface
+							.addSemanticProperty((SemanticPropertyInterface) iterator.next());
 				}
 			}
+			if (entityUIBeanInterface.getIsAbstract() != null
+					&& entityUIBeanInterface.getIsAbstract().equals("true"))
+			{
+				entityInterface.setAbstract(true);
+			}
+			else
+			{
+				entityInterface.setAbstract(false);
+			}
 		}
+
 	}
 
 	/**
@@ -121,19 +128,28 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
 	{
 		if (entityInterface != null && entityUIBeanInterface != null)
 		{
-			entityUIBeanInterface.setFormName(Utility.toString(entityInterface
-					.getName()));
-			if(entityInterface.getDescription()!=null)
+			entityUIBeanInterface.setFormName(Utility.toString(entityInterface.getName()));
+			if (entityInterface.getDescription() != null)
 			{
-				entityUIBeanInterface.setFormDescription(Utility
-						.toString(entityInterface.getDescription()));
+				entityUIBeanInterface.setFormDescription(Utility.toString(entityInterface
+						.getDescription()));
 			}
-			if ((entityInterface.getSemanticPropertyCollection()!=null)&&(!entityInterface.getSemanticPropertyCollection().isEmpty()))
+			if ((entityInterface.getSemanticPropertyCollection() != null)
+					&& (!entityInterface.getSemanticPropertyCollection().isEmpty()))
 			{
-				entityUIBeanInterface
-				.setConceptCode(SemanticPropertyBuilderUtil
+				entityUIBeanInterface.setConceptCode(SemanticPropertyBuilderUtil
 						.getConceptCodeString(entityInterface));
 			}
+
+			if (entityInterface.isAbstract())
+			{
+				entityUIBeanInterface.setIsAbstract("true");
+			}
+			else
+			{
+				entityUIBeanInterface.setIsAbstract("");
+			}
+
 		}
 	}
 
@@ -147,12 +163,10 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
 	 * from the entityInformationInterface.
 	 * @throws DynamicExtensionsSystemException Exception
 	 */
-	public EntityInterface createAndPopulateEntity(
-			EntityUIBeanInterface entityUIBeanInterface)
-	throws DynamicExtensionsSystemException
+	public EntityInterface createAndPopulateEntity(EntityUIBeanInterface entityUIBeanInterface)
+			throws DynamicExtensionsSystemException
 	{
-		EntityInterface entityInterface = DomainObjectFactory.getInstance()
-		.createEntity();
+		EntityInterface entityInterface = DomainObjectFactory.getInstance().createEntity();
 		populateEntity(entityUIBeanInterface, entityInterface);
 		return entityInterface;
 	}

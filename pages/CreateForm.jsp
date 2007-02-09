@@ -65,9 +65,14 @@
 		</script>
 	</head>
 	<body onload="loadDefineFormPage()">
+	
+	
 		<html:form styleId="formDefinitionForm" action="/ApplyFormDefinitionAction">
 			<c:set var="groupName" value="${formDefinitionForm.groupName}"/>
 			<jsp:useBean id="groupName" type="java.lang.String"/>
+			
+			<c:set var="formList" value="${formDefinitionForm.formList}"/>
+			<jsp:useBean id="formList" type="java.util.List"/>
 			
 			<table border='1' valign="top" align='right' width='100%' height="100%" cellspacing="0" cellpadding="0">
 			<!-- Main Page heading -->
@@ -172,6 +177,36 @@
 															<html:textarea styleClass="formFieldSmallSized"  rows = "3" cols="28"  styleId = 'formDescription' property="formDescription" />
 														</td>
 													</tr>
+													
+												
+													
+													<tr valign="top">
+														<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
+														<td width="20%">
+
+														</td>
+														<td  class="formMessage">
+																<html:checkbox property="isAbstract" value="true"/>	
+																<bean:message key="eav.form.abstract"/>
+																
+														</td>
+													</tr>
+													
+													
+													<tr valign="top">
+														<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
+														<td class="formRequiredLabelWithoutBorder" width="20%">
+															<bean:message key="eav.form.inheritform"/> 
+														</td>
+														<td class="formMessage">
+															<html:select styleId="parentForm" styleClass="formFieldVerySmallSized" property="parentForm" >
+																<html:options collection="formList" labelProperty="name" property="value" />
+															</html:select>
+														</td>
+													</tr>
+												
+													
+													
 													
 													<c:if test='${formDefinitionForm.operationMode != "EditSubForm"}'>
 														<tr valign = "top">

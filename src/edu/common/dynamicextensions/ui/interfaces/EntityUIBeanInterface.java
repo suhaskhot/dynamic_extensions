@@ -48,5 +48,16 @@ package edu.common.dynamicextensions.ui.interfaces;
 	 * @param conceptCode The ConceptCode to set.
 	 */
 	 void setConceptCode(String conceptCode);
-
+	 
+	 /**
+	  * 
+	  * @return
+	  */
+	 String getIsAbstract();
+	
+	 /**
+	  * 
+	  * @param isAbstract
+	  */
+	 void setIsAbstract(String isAbstract);
 }

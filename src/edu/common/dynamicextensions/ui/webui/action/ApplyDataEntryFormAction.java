@@ -96,6 +96,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			}
 			catch (Exception exception)
 			{
+				exception.printStackTrace();
 				return getExceptionActionForward(exception, mapping, request);
 			}
 		}
@@ -256,8 +257,9 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		valueMap = generateAttributeValueMap(containerInterface, request, dataEntryForm, "",
 				valueMap, true);
 
-		List<String> errorList = ValidatorUtil.validateEntity(valueMap);
+		//List<String> errorList = ValidatorUtil.validateEntity(valueMap);
 
+		List<String> errorList = new ArrayList<String>();
 		//saveErrors(request, getErrorMessages(errorList));
 		dataEntryForm.setErrorList(errorList);
 	}
@@ -278,7 +280,9 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			Map<AbstractAttributeInterface, Object> attributeValueMap, Boolean processOneToMany)
 			throws FileNotFoundException, IOException, DynamicExtensionsSystemException
 	{
-		Collection<ControlInterface> controlCollection = containerInterface.getControlCollection();
+		//Collection<ControlInterface> controlCollection = containerInterface.getControlCollection();
+
+		Collection<ControlInterface> controlCollection = containerInterface.getAllControls();
 		for (ControlInterface control : controlCollection)
 		{
 			if (control != null)
@@ -286,8 +290,9 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				Integer controlSequenceNumber = control.getSequenceNumber();
 				if (controlSequenceNumber != null)
 				{
-					String controlSequence = containerInterface.getId() + "_"
-							+ controlSequenceNumber;
+					String controlSequence =  control.getParentContainer().getIncontextContainer().getId()
+							+ "_" +  control.getParentContainer().getId() + "_" + controlSequenceNumber;
+
 					if (rowId != null && !rowId.equals(""))
 					{
 						controlSequence = controlSequence + "_" + rowId;
@@ -489,7 +494,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				attributeValue = fileAttributeRecordValue;
 				attributeValueMap.put(abstractAttribute, attributeValue);
 			}
-			
+
 		}
 		else
 		{
@@ -515,7 +520,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			attributeValue = value;
 			attributeValueMap.put(abstractAttribute, attributeValue);
 		}
-		
+
 	}
 
 	/**

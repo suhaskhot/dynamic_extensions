@@ -14,6 +14,7 @@ import java.util.Map;
 import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
@@ -94,6 +95,17 @@ public class Container extends DynamicExtensionBaseDomainObject
 	 * 
 	 */
 	protected Boolean showAssociationControlsAsLink = false;
+	
+	/**
+	 * parent of this entity, null is no parent present. 
+	 */
+	protected ContainerInterface baseContainer = null;
+	
+	
+	/**
+	 * 
+	 */
+	protected ContainerInterface incontextContainer = this; 
 
 	/**
 	 * @return
@@ -321,6 +333,35 @@ public class Container extends DynamicExtensionBaseDomainObject
 			controlCollection.clear();
 		}
 	}
+	
+	/** 
+	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getAllAttributes()
+	 */
+	public List <ControlInterface> getAllControls()
+	{
+		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(this
+				.getControlCollection());
+		Collections.sort(controlsList);
+		Collections.reverse(controlsList);	
+		
+		List<ControlInterface> baseControlsList = new  ArrayList<ControlInterface> (); 
+		
+		ContainerInterface baseContainer = this.baseContainer;
+		while (baseContainer  != null)
+		{
+			baseControlsList = new ArrayList(baseContainer.getControlCollection());
+			Collections.sort(baseControlsList);
+			Collections.reverse(baseControlsList);
+			
+			controlsList.addAll(baseControlsList);
+			
+			baseContainer.setIncontextContainer(this);
+			baseContainer  = baseContainer.getBaseContainer();
+			
+		}
+		Collections.reverse(controlsList);	
+		return controlsList;
+	}
 
 	/**
 	 * @return return the HTML string for this type of a object
@@ -362,9 +403,11 @@ public class Container extends DynamicExtensionBaseDomainObject
 		stringBuffer.append("</td>");
 		stringBuffer.append("</tr>");
 
-		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(this
+	/*	List<ControlInterface> controlsList = new ArrayList<ControlInterface>(this
 				.getControlCollection());
-		Collections.sort(controlsList);
+				*/
+		List<ControlInterface> controlsList = getAllControls();
+		/*Collections.sort(controlsList);*/
 		for (ControlInterface control : controlsList)
 		{
 			Object value = containerValueMap.get(control.getAbstractAttribute());
@@ -472,6 +515,42 @@ public class Container extends DynamicExtensionBaseDomainObject
 		stringBuffer.append("</span>");
 
 		return stringBuffer.toString();
+	}
+	/**
+	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getParentEntity()
+	 * @hibernate.many-to-one column="BASE_CONTAINER_ID" class="edu.common.dynamicextensions.domain.userinterface.Container" constrained="true" 
+	 *                        cascade="none"    
+	 */
+	public ContainerInterface getBaseContainer()
+	{
+		return baseContainer;
+	}
+
+	/**
+	 * 
+	 * @param baseContainer
+	 */
+	public void setBaseContainer(ContainerInterface baseContainer)
+	{
+		this.baseContainer = baseContainer;
+	}
+
+	
+	/**
+	 * @return the incontextContainer
+	 */
+	public ContainerInterface getIncontextContainer()
+	{
+		return incontextContainer;
+	}
+
+	
+	/**
+	 * @param incontextContainer the incontextContainer to set
+	 */
+	public void setIncontextContainer(ContainerInterface incontextContainer)
+	{
+		this.incontextContainer = incontextContainer;
 	}
 
 }

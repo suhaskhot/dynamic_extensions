@@ -90,6 +90,12 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 			associateEntityToGroup(entityGroupInterface, containerInterface.getEntity());
 		}
 		containerProcessor.populateContainerInterface(containerInterface, actionForm);
+		if(containerInterface.getBaseContainer() != null)
+		{
+			EntityInterface parentEntity = containerInterface.getBaseContainer().getEntity();
+			entityInterface.setParentEntity(parentEntity);
+		}
+		
 		return containerInterface;
 	}
 

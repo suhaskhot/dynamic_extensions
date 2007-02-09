@@ -179,4 +179,29 @@ public interface ContainerInterface extends DynamicExtensionBaseDomainObjectInte
 	 */
 	void setShowAssociationControlsAsLink(Boolean showAssociationControlsAsLink);
 	
+	/**
+	 * 
+	 * @return
+	 */
+	List <ControlInterface> getAllControls();
+	/**
+	 * 
+	 * @return
+	 */
+	ContainerInterface getBaseContainer();
+	/**
+	 * 
+	 * @param baseContainer
+	 */
+	void setBaseContainer(ContainerInterface baseContainer);
+	
+	/**
+	 * @return the incontextContainer
+	 */
+	ContainerInterface getIncontextContainer();
+	
+	/**
+	 * @param incontextContainer the incontextContainer to set
+	 */
+	void setIncontextContainer(ContainerInterface incontextContainer);	
 }

@@ -1631,8 +1631,10 @@ public class EntityManager
 					//Map valueMapForContainedEntity = (Map) value;
 					for (Map valueMapForContainedEntity : listOfMapsForContainedEntity)
 					{
-						Long recordIdForContainedEntity = insertDataForSingleEntity(association
-								.getTargetEntity(), valueMapForContainedEntity, hibernateDAO, null);
+//						Long recordIdForContainedEntity = insertDataForSingleEntity(association
+//								.getTargetEntity(), valueMapForContainedEntity, hibernateDAO, null);
+						
+						Long recordIdForContainedEntity = insertDataForHeirarchy(association.getTargetEntity(), valueMapForContainedEntity, hibernateDAO);
 						recordIdList.add(recordIdForContainedEntity);
 					}
 
@@ -1691,17 +1693,7 @@ public class EntityManager
 			hibernateDAO = (HibernateDAO) factory.getDAO(Constants.HIBERNATE_DAO);
 			hibernateDAO.openSession(null);
 
-			List<EntityInterface> entityList = getParentEntityList(entity);
-			Map<EntityInterface, Map> entityValueMap = initialiseEntityValueMap(entity, dataValue);
-			Long parentRecordId = null;
-			for (EntityInterface entityInterface : entityList)
-			{
-				Map valueMap = entityValueMap.get(entityInterface);
-				recordId = insertDataForSingleEntity(entityInterface, valueMap, hibernateDAO,
-						parentRecordId);
-				parentRecordId = recordId;
-
-			}
+			recordId = insertDataForHeirarchy(entity,dataValue,hibernateDAO);
 
 			hibernateDAO.commit();
 		}
@@ -1729,6 +1721,32 @@ public class EntityManager
 		}
 
 		return recordId;
+	}
+	
+	/**
+	 * @param entity
+	 * @param dataValue
+	 * @param hibernateDAO
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws HibernateException
+	 * @throws SQLException
+	 * @throws DAOException
+	 * @throws UserNotAuthorizedException
+	 */
+	private Long insertDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, HibernateDAO hibernateDAO) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException, UserNotAuthorizedException  {
+		List<EntityInterface> entityList = getParentEntityList(entity);
+		Map<EntityInterface, Map> entityValueMap = initialiseEntityValueMap(entity, dataValue);
+		Long parentRecordId = null;
+		for (EntityInterface entityInterface : entityList)
+		{
+			Map valueMap = entityValueMap.get(entityInterface);
+			parentRecordId = insertDataForSingleEntity(entityInterface, valueMap, hibernateDAO,
+					parentRecordId);
+		}
+		
+		return parentRecordId;
 	}
 
 	private Map<EntityInterface, Map> initialiseEntityValueMap(EntityInterface entity,
@@ -1903,9 +1921,10 @@ public class EntityManager
 					recordIdList.clear();
 					for (Map valueMapForContainedEntity : listOfMapsForContainedEntity)
 					{
-						Long childRecordId = insertDataForSingleEntity(association
-								.getTargetEntity(), valueMapForContainedEntity, hibernateDAO, null);
-
+//						Long childRecordId = insertDataForSingleEntity(association
+//								.getTargetEntity(), valueMapForContainedEntity, hibernateDAO, null);
+						Long childRecordId = insertDataForHeirarchy(association
+								.getTargetEntity(), valueMapForContainedEntity, hibernateDAO);
 						recordIdList.add(childRecordId);
 					}
 

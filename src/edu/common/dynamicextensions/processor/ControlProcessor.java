@@ -435,6 +435,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			}
 		}
 		textFldIntf.setIsPassword(controlUIBeanInterface.getIsPassword());
+		textFldIntf.setIsUrl(controlUIBeanInterface.getIsUrl());
 		textFldIntf.setColumns(controlUIBeanInterface.getColumns());
 
 		return textFldIntf;

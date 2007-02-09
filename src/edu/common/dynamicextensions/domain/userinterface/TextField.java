@@ -221,9 +221,19 @@ public class TextField extends Control implements TextFieldInterface
 		String htmlString = "&nbsp;";
 		if (value != null)
 		{
-			htmlString = "<span class = '" + cssClass + "'> " + this.value.toString() + "</span>";
+			if (isUrl.booleanValue() == true)
+			{
+				htmlString = "<a href='javascript:void(0)' onclick=\"window.open('http://"
+						+ this.value.toString()
+						+ "','','width=800,height=600,toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,copyhistory=yes,resizable=yes')\">"
+						+ this.value.toString() + "</a>";
+			}
+			else
+			{
+				htmlString = "<span class = '" + cssClass + "'> " + this.value.toString()
+						+ "</span>";
+			}
 		}
 		return htmlString;
 	}
-
 }

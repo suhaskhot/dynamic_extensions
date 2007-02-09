@@ -127,6 +127,18 @@ public interface ControlUIBeanInterface
 	 * @param isPassword If it is a password field set as true
 	 */
 	void setIsPassword(Boolean isPassword);
+	
+	/**
+	 * 
+	 * @return If the control is a password field
+	 */
+	Boolean getIsUrl();
+
+	/**
+	 * 
+	 * @param isPassword If it is a password field set as true
+	 */
+	void setIsUrl(Boolean isUrl);
 
 	/**
 	 * @return the toolsList

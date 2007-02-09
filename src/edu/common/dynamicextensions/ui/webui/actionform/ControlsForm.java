@@ -11,6 +11,8 @@ import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
 
+import org.apache.struts.upload.FormFile;
+
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.interfaces.AbstractAttributeUIBeanInterface;
@@ -127,6 +129,10 @@ public class ControlsForm extends AbstractActionForm
 	 * 
 	 */
 	Boolean isPassword;
+	/**
+	 * 
+	 */
+	Boolean isUrl;
 	/**
 	 * 
 	 */
@@ -317,6 +323,10 @@ public class ControlsForm extends AbstractActionForm
 	protected String[] selectedAttributeIds;
 	//Current container name
 	protected String currentContainerName;
+	
+	protected FormFile csvFile;
+	
+	//protected String csvString;
 
 	public String getCurrentContainerName()
 	{
@@ -1705,6 +1715,7 @@ public class ControlsForm extends AbstractActionForm
 	public void setAttributeDisplayAsURL(String attributeDisplayAsURL)
 	{
 		this.attributeDisplayAsURL = attributeDisplayAsURL;
+		this.isUrl = new Boolean(attributeDisplayAsURL);
 	}
 
 	public String[] getOptionConceptCodes()
@@ -1878,5 +1889,59 @@ public class ControlsForm extends AbstractActionForm
 	{
 		this.minTemp = minTemp;
 	}
+
+	
+	/**
+	 * @return the csvFile
+	 */
+	public FormFile getCsvFile()
+	{
+		return csvFile;
+	}
+
+	
+	/**
+	 * @param csvFile the csvFile to set
+	 */
+	public void setCsvFile(FormFile csvFile)
+	{
+		this.csvFile = csvFile;
+	}
+
+	
+	/**
+	 * @return the isUrl
+	 */
+	public Boolean getIsUrl()
+	{
+		return isUrl;
+	}
+
+	
+	/**
+	 * @param isUrl the isUrl to set
+	 */
+	public void setIsUrl(Boolean isUrl)
+	{
+		this.isUrl = isUrl;
+	}
+	
+	
+//	/**
+//	 * @return the csvString
+//	 */
+//	public String getCsvString()
+//	{
+//		return csvString;
+//	}
+//
+//	
+//	/**
+//	 * @param csvString the csvString to set
+//	 */
+//	public void setCsvString(String csvString)
+//	{
+//		this.csvString = csvString;
+//	}
 
 }

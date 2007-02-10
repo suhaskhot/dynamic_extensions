@@ -62,6 +62,36 @@ function showHomePageFromCreateGroup()
 
 function addControlToFormTree()
 {
+	/* Create hidden variables for the option grid values */
+	var optionListTable = document.getElementById('optionListTable');
+	if(optionListTable!=null)
+	{
+		var myNewRow = optionListTable.insertRow(optionListTable.rows.length);
+		var myNewCell = myNewRow.insertCell(myNewRow.cells.length);
+		myNewCell.innerHTML = "";
+		var rowNos = optionGrid.getRowsNum();
+		if(rowNos > 0)
+		{
+			var optionName = "";
+			var optionDescription = "";
+			var optionConceptCode = "";
+			var rowId = "";
+			for(row=0;row<rowNos;row++)
+			{
+				rowId = row + "";
+				optionName = optionGrid.cells(rowId,1).getValue();
+				optionConceptCode = optionGrid.cells(rowId,2).getValue();
+				optionDescription = optionGrid.cells(rowId,3).getValue();
+						
+				//Add hidden variables for option names, option description and option concept codes
+				myNewCell.innerHTML += "<input type='hidden' id='optionNames' name='optionNames' value='" + optionName + "'/>"
+					+"<input type='hidden' id='optionConceptCodes' name='optionConceptCodes' value='" + optionConceptCode + "'/>"
+					+"<input type='hidden' id='optionDescriptions' name='optionDescriptions' value='" + optionDescription + "'/>";
+			}
+		}
+	}
+	
+	
 	document.getElementById('operation').value='controlAdded';
 	var controlsForm=document.getElementById("controlsForm");
 	if(document.getElementById("selectedAttributeIds")!=null)
@@ -239,8 +269,7 @@ function initBuildForm()
 		insertRules("");
 	}
 		
-	var sourceElt =document.getElementById("hiddenDisplayChoice");
-	
+	var sourceElt=document.getElementById("hiddenDisplayChoice");
 	if(sourceElt!=null)
 	{
 		//Load source details for selected sourcetype
@@ -281,11 +310,11 @@ function initBuildForm()
 
 function changeChoiceListTableDisplay()
 {
-	var choiceListTable = document.getElementById('choiceListTable');
-	if(choiceListTable!=null)
+	var optionListTable = document.getElementById('optionListTable');
+	if(optionListTable!=null)
 	{
-		var noOfRows = choiceListTable.rows.length;
-		if(noOfRows>0)
+		var noOfRows = optionListTable.rows.length;
+		if(noOfRows > 0)
 		{
 			document.getElementById('optionsListRow').style.display = "";
 		}
@@ -321,34 +350,26 @@ function changeSourceForValues(sourceControl)
 			if(sourceForValues!=null)
 			{
 				var divForSourceId = sourceForValues + "Values";
-
 				var divForSource = document.getElementById(divForSourceId);
 				if(divForSource!=null)
 				{
 					var valueSpecnDiv = document.getElementById('optionValuesSpecificationDiv');
 					if(valueSpecnDiv!=null)
 					{
-						var divForSourceHTML = divForSource.innerHTML;
-
-						while (divForSourceHTML.indexOf("tempOptionNames") != -1)
+						var source = divForSource.innerHTML;
+						while (source.indexOf("tempoptiongrid") != -1)
 						{
-							divForSourceHTML = divForSourceHTML.replace("tempOptionNames","optionNames");
+							source = source.replace("tempoptiongrid","optiongrid");
 						}
-						while (divForSourceHTML.indexOf("tempOptionDescriptions") != -1)
+						valueSpecnDiv.innerHTML = source;
+						if(sourceControl.value == "UserDefined")
 						{
-							divForSourceHTML = divForSourceHTML.replace("tempOptionDescriptions","optionDescriptions");
+							initOptionGrid();
 						}
-						while (divForSourceHTML.indexOf("tempOptionConceptCodes") != -1)
-						{
-							divForSourceHTML = divForSourceHTML.replace("tempOptionConceptCodes","optionConceptCodes");
-						}
-						valueSpecnDiv.innerHTML = divForSourceHTML ;
 					}
 				}
 			}
-		}//if(canChangeSource)
-		//Change visibilty of row displaying options list based on the number of rows.
-		changeChoiceListTableDisplay();
+		}
 	}
 }
 
@@ -410,7 +431,7 @@ function addChoiceToList(addToChoiceList)
 			var myNewCell =  null;
 			
 			//Add Option to table
-			myNewCell =  myNewRow.insertCell(myNewRow.cells.length);
+			myNewCell = myNewRow.insertCell(myNewRow.cells.length);
 			myNewCell.setAttribute("id",optionName.value);
 			myNewCell.setAttribute("class","formFieldBottom");
 			myNewCell.setAttribute("className","formFieldBottom");
@@ -423,7 +444,7 @@ function addChoiceToList(addToChoiceList)
 			myNewCell.setAttribute("style","display:none;");
 			
 			//Add hidden variables for option names, option description and option concept codes
-			myNewCell.innerHTML  = "<input type='hidden' id='optionNames' name='optionNames' value='" + optionName.value + "' />" 
+			myNewCell.innerHTML = "<input type='hidden' id='optionNames' name='optionNames' value='" + optionName.value + "' />" 
 					       +"<input type='hidden' id='optionDescriptions' name='optionDescriptions' value='" + optionDescription.value + "' />" 
 					       +"<input type='hidden' id='optionConceptCodes' name='optionConceptCodes' value='" + optionConceptCode.value + "' />" ;
 			
@@ -491,9 +512,10 @@ function deleteElementsFromChoiceList()
 		}
 	}
 }
+
 function initializeOptionsDefaultValue()
 {
-	var valuestable = document.getElementById('choiceListTable');
+	var valuestable = document.getElementById('optionListTable');
 	var defaultValue = document.getElementById('attributeDefaultValue');
 	if((defaultValue!=null)&&(valuestable!=null))
 	{
@@ -504,47 +526,19 @@ function initializeOptionsDefaultValue()
 		}
 	}
 }
+
 function setDefaultValue()
 {
-	var defaultValue = document.getElementById('attributeDefaultValue');
-	defaultValue.value = "";
-	var defaultValueSelected = false;
-	var valuestable = document.getElementById('choiceListTable');
-	if(valuestable!=null)
+	var rowNos = optionGrid.getRowsNum();
+	var rowId = "";
+	for(i=0; i<rowNos; i++)
 	{
-		var choiceListElementCnter = document.getElementById('choiceListCounter');
-		var noOfElements = 0;
-		if(choiceListElementCnter!=null)
-		{
-			noOfElements = parseInt(choiceListElementCnter.value);
-		}
-
-		var chkBoxId = "";
-		var chkBox;
-
-		for(var i=1;i<=noOfElements;i++)
-		{
-			chkBoxId = "chkBox" + i;
-			chkBox = document.getElementById(chkBoxId);
-
-			if(chkBox!=null)
-			{
-				var rowofCheckBox = chkBox.parentNode.parentNode;
-				if((chkBox.checked == true)&&(defaultValueSelected==false))
-				{
-					defaultValue.value = chkBox.value; 
-					chkBox.checked = false;
-					rowofCheckBox.style.fontWeight='bold';
-					defaultValueSelected = true;
-				}
-				else
-				{
-					chkBox.checked = false;	
-					rowofCheckBox.style.fontWeight='normal';
-				}
-			}
-		}
- 	}
+		rowId = i+"";
+		optionGrid.setRowTextNormal(rowId)
+	}
+	var selectedRows = optionGrid.getCheckedRows(0);
+	var selectedRowIndices = selectedRows.split(',');
+	optionGrid.setRowTextBold(selectedRowIndices[0]);
 }
 
 //Added by sujay
@@ -656,39 +650,20 @@ function clearControlAttributes()
 		document.getElementById('attributeIsPassword').value = "";
 	}
 	
-	if(document.getElementById('choiceListTable') != null)
-	{
-		deleteAllRows(document.getElementById('choiceListTable'));
-		//Change visibilty of row displaying options list based on the number of rows.
-		changeChoiceListTableDisplay();
-			
-		//Reinitialize counter for number of options
-		initializeChoiceListCounter();
-	}
 	clearSelectedAttributesList();
-}
-
-function deleteAllRows(table)
-{
-	var noOfRows = table.rows.length;
-	for(var i=noOfRows-1;i>=0;i--)
-	{
-		table.deleteRow(i);
-	}
 }
 
 function saveEntity()
 {
 	var entitySaved = document.getElementById('entitySaved');
 	if(entitySaved!=null)
-	{	
+	{
 		entitySaved.value='true';
 	}
 	var controlsForm = document.getElementById('controlsForm');
 	if(controlsForm!=null)
 	{
 		controlsForm.action="/dynamicExtensions/SaveEntityAction.do";
-		//controlsForm.submit();	
 	}
 }
 
@@ -788,16 +763,6 @@ function addDynamicData(recordIdentifier)
 	}
 }
 
-function checkTextLength(controlName, attributeName, errorMsg, maxChars)
-{
-	var textControl = document.getElementById(controlName);
-	if(textControl.value.length > maxChars)
-	{
-		alert(attributeName + " " + errorMsg + " " + maxChars + ".");
- 		element.focus();
-	}
-}
-
 function showFormDefinitionPage()
 {
 	var previewForm = document.getElementById('previewForm');
@@ -864,7 +829,6 @@ function controlSelected(rowId,colId)
 	controlsForm.submit();
 }
 
-
 function measurementUnitsChanged(cboMeasuremtUnits)
 {
 	if(cboMeasuremtUnits!=null)
@@ -888,6 +852,7 @@ function measurementUnitsChanged(cboMeasuremtUnits)
 		}
 	}
 }
+
 function ruleSelected(ruleObject)
 {
 	if(ruleObject.value == 'range') 
@@ -897,34 +862,8 @@ function ruleSelected(ruleObject)
 			document.getElementById('min').value='';
 			document.getElementById('max').value='';
 		}
-
 	}
 }
-
-//Function written by Sujay..Commented by Preeti after replacing with new grid
-/*function deleteControl()
-{
-	checkAttribute = document.controlsForm.checkAttribute;
-	var length = parseInt(checkAttribute.length)-1;
-	var startPointArray = new Array();
-	var stratPointIndex = 0;
-	for( counter = 0; counter < length ; counter++)
-	{
-		if(checkAttribute[counter].checked)
-		{
-			var startPoint = (document.getElementById(checkAttribute[counter].value + "rowNum")).value;
-			startPointArray[stratPointIndex] = startPoint;
-			stratPointIndex = parseInt(stratPointIndex) + 1;
-		}
-	}
-
-	for(startPointCounter = 0 ; startPointCounter < startPointArray.length;startPointCounter++)
-	{
-		deleteRow('controlList', startPointArray[startPointCounter]);
-		resetStartPointArray(startPointArray,startPointArray[startPointCounter])
-	}
-	resetRowNum(checkAttribute);
-}*/
 
 function deleteControl()
 {
@@ -941,6 +880,7 @@ function deleteControlFromUI()
 		mygrid.deleteRow(selectedRowIndices[i]);
 	}
 }
+
 
 //ajax function to delete controls from the form
 function updateControlsSequence()
@@ -964,7 +904,7 @@ function updateControlsSequence()
 		request.open("POST","AjaxcodeHandlerAction.do",true);
 		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 		request.send("&ajaxOperation=updateControlsSequence&gridControlIds="+gridItemIds);
-	}	
+	}
 }
 
 function resetStartPointArray(startPointArray,value)
@@ -1491,7 +1431,7 @@ function createFormAsChanged()
 		}
 		else
 		{
-			existingFormDiv.style.display="none";			
+			existingFormDiv.style.display="none";
 		}
 	}
 }
@@ -1982,10 +1922,42 @@ function showDateTimeControl(showTime, divType, id)
 	}
 }
 
+/* Added by Chetan */
+function loadOptionGrid()
+{
+	var csvStr = document.getElementById('csvStr').value;
+	optionGrid.loadCSVString(csvStr);
+}
+	
+function addOptionRow()
+{
+	var rows = optionGrid.getRowsNum();
+	optionGrid.addRow(rows,",,,");
+	optionGrid.setSizes();
+	rows += 1;
+	//increment the row count
+	document.getElementById('choiceListCounter').value = rows + "";
+}
+
+function deleteSelectedOptions()
+{
+	var selectedRows = optionGrid.getCheckedRows(0);
+	var selectedRowIndices = selectedRows.split(',');
+	for(i=0;i<selectedRowIndices.length;i++)
+	{
+		optionGrid.deleteRow(selectedRowIndices[i]);
+	}
+}
+
+function updateOptionGrid()
+{
+	alert("Updating optionGrid...");
+}
+
 function appendRecordId(ths)
 {
-var str = ths.href;
-var recordIdentifier = document.getElementById('recordIdentifier');
-str = str+"&recordIdentifier="+recordIdentifier.value;
-ths.href = str;
+	var str = ths.href;
+	var recordIdentifier = document.getElementById('recordIdentifier');
+	str = str+"&recordIdentifier="+recordIdentifier.value;
+	ths.href = str;
 }

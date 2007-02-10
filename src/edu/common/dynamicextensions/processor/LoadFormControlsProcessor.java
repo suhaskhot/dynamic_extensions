@@ -79,7 +79,6 @@ public class LoadFormControlsProcessor
 			initializeControlDefaultValues(controlsForm);
 			//initialize form attribute values
 			initializeFormAttributeValues(controlsForm,containerInterface);
-			
 		}
 	}
 
@@ -269,6 +268,10 @@ public class LoadFormControlsProcessor
 		{
 			controlsForm.setSelectedAttributes(new ArrayList<NameValueBean>());
 		}
+		if(controlsForm.getOptionDetails() == null)
+		{
+			controlsForm.setOptionDetails(new ArrayList());
+		}
 	}
 
 	/**
@@ -325,6 +328,10 @@ public class LoadFormControlsProcessor
 		if(controlsForm.getSelectedAttributes()==null)
 		{
 			controlsForm.setSelectedAttributes(new ArrayList<NameValueBean>());
+		}
+		if(controlsForm.getOptionDetails() == null)
+		{
+			controlsForm.setOptionDetails(new ArrayList());
 		}
 	}
 

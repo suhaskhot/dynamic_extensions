@@ -2,7 +2,7 @@
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
 <%@ taglib uri="/WEB-INF/dynamicExtensions.tld" prefix="dynamicExtensions" %>
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
-<%@page import="edu.common.dynamicextensions.processor.ProcessorConstants"%>
+
 <%@page import="java.util.List"%>
 <%@page import="edu.common.dynamicextensions.ui.webui.util.ControlInformationObject"%>
 <%
@@ -11,8 +11,8 @@
 <html>
 	<!-- HTML Head section -->
 	<head>
-		<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/styleSheet.css" />
-		<link href="<%=request.getContextPath()%>/css/calanderComponent.css" type="text/css" rel=stylesheet />
+		<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/styleSheet.css"/>
+		<link href="<%=request.getContextPath()%>/css/calanderComponent.css" type="text/css" rel=stylesheet/>
 		<link rel="STYLESHEET" type="text/css" href="dhtml_comp/css/dhtmlXGrid.css"/>
 
 		<script src="<%=request.getContextPath()%>/jss/dynamicExtensions.js" type="text/javascript"></script>
@@ -20,11 +20,13 @@
 		<script src="<%=request.getContextPath()%>/jss/overlib_mini.js" type="text/javascript"></script>
 		<script src="<%=request.getContextPath()%>/jss/calender.js" type="text/javascript"></script>
 		<script src="<%=request.getContextPath()%>/jss/calendarComponent.js"></script>
-		<script language="JavaScript" type="text/javascript" src="jss/ajax.js"></script>
-		<script src="dhtml_comp/jss/dhtmlXCommon.js"></script>
-		<script src="dhtml_comp/jss/dhtmlXGrid.js"></script>
-		<script src="dhtml_comp/jss/dhtmlXGridCell.js"></script>
-		<script src="dhtml_comp/jss/dhtmlXGrid_drag.js"></script>
+		<script language="JavaScript" type="text/javascript" src="<%=request.getContextPath()%>/jss/ajax.js"></script>
+		<script language="JavaScript" type="text/javascript" src="<%=request.getContextPath()%>/jss/webtoolkit.aim.js"></script> 
+
+		<script src="<%=request.getContextPath()%>/dhtml_comp/jss/dhtmlXCommon.js"></script>
+		<script src="<%=request.getContextPath()%>/dhtml_comp/jss/dhtmlXGrid.js"></script>
+		<script src="<%=request.getContextPath()%>/dhtml_comp/jss/dhtmlXGridCell.js"></script>
+		<script src="<%=request.getContextPath()%>/dhtml_comp/jss/dhtmlXGrid_drag.js"></script>
 
 		<title>Dynamic Extensions</title>
 		<script language="JavaScript" type="text/javascript">
@@ -98,7 +100,7 @@
 
 	<!-- Main HTML Code -->
   	<body onload="initBuildForm();initGridView()">
-		<html:form styleId="controlsForm" action="/LoadFormControlsAction">
+		<html:form styleId="controlsForm" action="/LoadFormControlsAction" method="post" enctype="multipart/form-data">
 			<font color="red"><html:errors/></font>
 
 			<%
@@ -176,7 +178,7 @@
 																		<table valign="top" align="center" height='100%' width='100%' class="tbBordersAllbordersBlack" cellspacing="0" cellpadding="0">
 																			<tr height='100%' width='100%' valign="top" style="background-color:#F4F4F5;">
 																				<td height='100%' width='100%' align="center">
-																					<dynamicExtensions:ToolsMenu id="BuildForm"	toolsList="<%=toolsList%>" onClick="controlSelectedAction" selectedUserOption="<%= userSelectedTool%>"/>
+																					<dynamicExtensions:ToolsMenu id="BuildForm"	toolsList="<%=toolsList%>" onClick="controlSelectedAction" selectedUserOption="<%=userSelectedTool%>"/>
 																				</td>
 																			</tr>
 																			<tr width='100%' valign="bottom" style="background-color:#F4F4F5;">

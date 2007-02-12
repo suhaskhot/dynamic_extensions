@@ -49,7 +49,7 @@ function showHomePageFromCreateForm()
 function showHomePageFromBuildForm()
 {
 	var controlsForm = document.getElementById('controlsForm');
-	controlsForm.action="/dynamicExtensions/DynamicExtensionHomePage.do";
+	controlsForm.action="/dynamicExtensions/RedirectAction.do";
 	controlsForm.submit();
 }
 

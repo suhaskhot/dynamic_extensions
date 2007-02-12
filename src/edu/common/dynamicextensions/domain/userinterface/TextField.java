@@ -91,74 +91,78 @@ public class TextField extends Control implements TextFieldInterface
 	 */
 	public String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
-		String defaultValue = (String) this.value;
-		if (this.value == null)
-		{
-			defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
-			if (defaultValue == null || (defaultValue.length() == 0))
-			{
-				defaultValue = "";
-			}
-		}
+		String defaultValue = getDefaultValue();
 
 		String htmlComponentName = getHTMLComponentName();
-		String htmlString = "<INPUT " + "class='" + cssClass + "' " + "name='" + htmlComponentName
-				+ "' " + "id='" + htmlComponentName + "' value='" + defaultValue + "' ";
-
-		int columnSize = columns.intValue();
-		if (columnSize > 0)
+		String htmlString = "";
+		if (isUrl.booleanValue() == true)
 		{
-			htmlString += "size='" + columnSize + "' ";
+			htmlString = "<a href='javascript:void(0)' onclick=\"window.open('http://"
+					+ defaultValue
+					+ "','','width=800,height=600,toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,copyhistory=yes,resizable=yes')\">"
+					+ defaultValue + "</a>";
 		}
 		else
 		{
-			htmlString += "size='" + Constants.DEFAULT_COLUMN_SIZE + "' ";
-		}
 
-		if (isPassword != null && isPassword.booleanValue())
-		{
-			htmlString += " type='password' ";
-		}
-		else
-		{
-			htmlString += " type='text' ";
-		}
+			htmlString = "<INPUT " + "class='" + cssClass + "' " + "name='" + htmlComponentName
+					+ "' " + "id='" + htmlComponentName + "' value='" + defaultValue + "' ";
 
-		int maxChars = 0;
-		AttributeInterface attribute = (AttributeInterface) this.getAbstractAttribute();
-		if (attribute != null)
-		{
-			AttributeTypeInformationInterface attributeTypeInformationInterface = attribute
-					.getAttributeTypeInformation();
-			if (attributeTypeInformationInterface != null)
+			int columnSize = columns.intValue();
+			if (columnSize > 0)
 			{
-				if (attributeTypeInformationInterface instanceof StringAttributeTypeInformation)
+				htmlString += "size='" + columnSize + "' ";
+			}
+			else
+			{
+				htmlString += "size='" + Constants.DEFAULT_COLUMN_SIZE + "' ";
+			}
+
+			if (isPassword != null && isPassword.booleanValue())
+			{
+				htmlString += " type='password' ";
+			}
+			else
+			{
+				htmlString += " type='text' ";
+			}
+
+			int maxChars = 0;
+			AttributeInterface attribute = (AttributeInterface) this.getAbstractAttribute();
+			if (attribute != null)
+			{
+				AttributeTypeInformationInterface attributeTypeInformationInterface = attribute
+						.getAttributeTypeInformation();
+				if (attributeTypeInformationInterface != null)
 				{
-					StringAttributeTypeInformation stringAttributeTypeInformation = (StringAttributeTypeInformation) attributeTypeInformationInterface;
-					if (stringAttributeTypeInformation != null)
+					if (attributeTypeInformationInterface instanceof StringAttributeTypeInformation)
 					{
-						maxChars = stringAttributeTypeInformation.getSize().intValue();
+						StringAttributeTypeInformation stringAttributeTypeInformation = (StringAttributeTypeInformation) attributeTypeInformationInterface;
+						if (stringAttributeTypeInformation != null)
+						{
+							maxChars = stringAttributeTypeInformation.getSize().intValue();
+						}
 					}
 				}
 			}
-		}
-		if (maxChars != 0)
-		{
-			htmlString += "maxlength='" + maxChars + "'>";
-		}
-		else
-		{
-			htmlString += "/>";
-		}
-
-		String measurementUnit = getMeasurementUnit(this.getAbstractAttribute());
-		if (measurementUnit != null)
-		{
-			if (measurementUnit.equalsIgnoreCase("none"))
+			if (maxChars != 0)
 			{
-				measurementUnit = "";
+				htmlString += "maxlength='" + maxChars + "'>";
 			}
-			htmlString += " " + measurementUnit;
+			else
+			{
+				htmlString += "/>";
+			}
+
+			String measurementUnit = getMeasurementUnit(this.getAbstractAttribute());
+			if (measurementUnit != null)
+			{
+				if (measurementUnit.equalsIgnoreCase("none"))
+				{
+					measurementUnit = "";
+				}
+				htmlString += " " + measurementUnit;
+			}
 		}
 		return htmlString;
 	}
@@ -218,22 +222,36 @@ public class TextField extends Control implements TextFieldInterface
 	 */
 	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
 	{
+		String defaultValue = getDefaultValue();
 		String htmlString = "&nbsp;";
-		if (value != null)
+		if (defaultValue != null)
 		{
 			if (isUrl.booleanValue() == true)
 			{
 				htmlString = "<a href='javascript:void(0)' onclick=\"window.open('http://"
-						+ this.value.toString()
+						+ defaultValue
 						+ "','','width=800,height=600,toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,copyhistory=yes,resizable=yes')\">"
-						+ this.value.toString() + "</a>";
+						+ defaultValue + "</a>";
 			}
 			else
 			{
-				htmlString = "<span class = '" + cssClass + "'> " + this.value.toString()
-						+ "</span>";
+				htmlString = "<span class = '" + cssClass + "'> " + defaultValue + "</span>";
 			}
 		}
 		return htmlString;
+	}
+
+	private String getDefaultValue()
+	{
+		String defaultValue = (String) this.value;
+		if (this.value == null)
+		{
+			defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
+			if (defaultValue == null || (defaultValue.length() == 0))
+			{
+				defaultValue = "";
+			}
+		}
+		return defaultValue;
 	}
 }

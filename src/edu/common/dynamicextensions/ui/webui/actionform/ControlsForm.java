@@ -320,8 +320,27 @@ public class ControlsForm extends AbstractActionForm
 	protected String currentContainerName;
 
 	protected FormFile csvFile;
+	
+	protected FormFile tempcsvFile;
 
 	//protected String csvString;
+	
+	/**
+	 * @return the tempcsvFile
+	 */
+	public FormFile getTempcsvFile()
+	{
+		return tempcsvFile;
+	}
+
+	
+	/**
+	 * @param tempcsvFile the tempcsvFile to set
+	 */
+	public void setTempcsvFile(FormFile tempcsvFile)
+	{
+		this.tempcsvFile = tempcsvFile;
+	}
 
 	public String getCurrentContainerName()
 	{
@@ -1915,6 +1934,10 @@ public class ControlsForm extends AbstractActionForm
 	public void setIsUrl(Boolean isUrl)
 	{
 		this.isUrl = isUrl;
+		if (isUrl != null)
+		{
+			this.attributeDisplayAsURL = isUrl.toString();
+		}
 	}
 
 	//	/**

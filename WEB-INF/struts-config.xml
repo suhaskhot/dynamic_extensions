@@ -27,6 +27,24 @@ PUBLIC
 			scope="request">
 			<forward name="showDynamicExtensionsHomePage" path="/pages/DynamicExtensionHomePage.jsp" />
 		</action>
+		
+		<action path="/DisplayContainer" 
+			type="edu.common.dynamicextensions.ui.webui.action.DisplayContainerAction"
+			name="groupForm"
+			validate="false"
+			input="/DynamicExtensionHomePage.do"
+			scope="request">
+			<forward name="showRecordListPage" path="/LoadGroupDefinitionAction.do" />
+		</action>
+		<action path="/RedirectAction" 
+			type="edu.common.dynamicextensions.ui.webui.action.RedirectAction"
+			name="groupForm"
+			validate="false"
+			input="/DynamicExtensionHomePage.do"
+			scope="request">
+			<forward name="success" path="/DynamicExtensionHomePage.do" />
+		</action>
+		
 		<action path="/LoadRecordListAction" 
 			type="edu.common.dynamicextensions.ui.webui.action.LoadRecordListAction"
 			name="recordListForm"

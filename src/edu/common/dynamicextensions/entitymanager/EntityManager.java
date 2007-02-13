@@ -2294,7 +2294,7 @@ public class EntityManager
 			else
 			{
 				databaseCopy = (Entity) DBUtil.loadCleanObj(Entity.class, entity.getId());
-				if (queryBuilder.isParentChanged(entity, databaseCopy))
+				if (entity.getDataTableState() == DATA_TABLE_STATE_CREATED && queryBuilder.isParentChanged(entity, databaseCopy))
 				{
 					checkParentChangeAllowed(entity);
 				}

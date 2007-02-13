@@ -71,6 +71,7 @@ public class LoadGroupDefinitionAction extends BaseDynamicExtensionsAction
 			container = (ContainerInterface) CacheManager.getObjectFromCache(request,
 					Constants.CONTAINER_INTERFACE);
 		}
+		
 		EntityGroupInterface entityGroup = null;
 		if (container != null)
 		{
@@ -82,6 +83,7 @@ public class LoadGroupDefinitionAction extends BaseDynamicExtensionsAction
 			entityGroup = (EntityGroupInterface) CacheManager.getObjectFromCache(request,
 					Constants.ENTITYGROUP_INTERFACE);
 		}
+		
 		LoadGroupDefinitionProcessor loadGroupDefinitionProcessor = LoadGroupDefinitionProcessor
 				.getInstance();
 		loadGroupDefinitionProcessor.loadGroupDetails(entityGroup, groupForm);

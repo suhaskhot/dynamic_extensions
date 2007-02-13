@@ -90,7 +90,7 @@
 										-->
 										<tr>
 											<td>
-												<html:hidden styleId="createGroupAs" property="createGroupAs" value="NewGroup"/>
+												<html:hidden styleId="createGroupAs" property="createGroupAs" value="<%=createGroupAs%>"/>
 											</td>
 										<tr>
 										<tr valign="top" >

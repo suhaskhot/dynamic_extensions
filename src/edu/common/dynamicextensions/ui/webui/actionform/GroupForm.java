@@ -3,6 +3,7 @@
  * @author
  *
  */
+
 package edu.common.dynamicextensions.ui.webui.actionform;
 
 import java.util.List;
@@ -25,6 +26,7 @@ import edu.wustl.common.util.global.Validator;
  */
 public class GroupForm extends AbstractActionForm implements GroupUIBeanInterface
 {
+
 	/**
 	 * 
 	 */
@@ -61,6 +63,7 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 	 * 
 	 */
 	protected String containerIdentifier;
+
 	/**
 	 * 
 	 */
@@ -68,6 +71,7 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 	{
 		return this.groupOperation;
 	}
+
 	/**
 	 * 
 	 */
@@ -75,6 +79,7 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 	{
 		this.groupOperation = groupOperation;
 	}
+
 	/**
 	 * 
 	 * @return
@@ -83,6 +88,7 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 	{
 		return this.groupList;
 	}
+
 	/**
 	 * 
 	 * @param groupList
@@ -91,14 +97,16 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 	{
 		this.groupList = groupList;
 	}
+
 	/**
 	 * 
 	 *
 	 */
 	public GroupForm()
 	{
-		this.createGroupAs=ProcessorConstants.DEFAULT_GROUP_CREATEAS;
+		this.createGroupAs = ProcessorConstants.DEFAULT_GROUP_CREATEAS;
 	}
+
 	/**
 	 * 
 	 */
@@ -106,6 +114,7 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 	{
 		return this.createGroupAs;
 	}
+
 	/**
 	 * 
 	 */
@@ -175,6 +184,7 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 		// TODO Auto-generated method stub
 
 	}
+
 	/**
 	 * Overrides the validate method of ActionForm.
 	 * @param mapping ActionMapping mapping
@@ -186,28 +196,43 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 		ActionErrors errors = new ActionErrors();
 		Validator validator = new Validator();
 
-		if (createGroupAs != null && !createGroupAs.equals(ProcessorConstants.GROUP_CREATEFROM_EXISTING) && (groupNameText == null || validator.isEmpty(String.valueOf(groupNameText))))
+		if (createGroupAs != null && createGroupAs.equals(ProcessorConstants.GROUP_CREATEAS_NEW)
+				&& (groupNameText == null || validator.isEmpty(String.valueOf(groupNameText))))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.GroupTitle")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
+					ApplicationProperties.getValue("eav.att.GroupTitle")));
 		}
-		if (createGroupAs != null && createGroupAs.equals(ProcessorConstants.GROUP_CREATEFROM_EXISTING) && (groupName == null || validator.isEmpty(String.valueOf(groupName))))
+		else if (createGroupAs != null
+				&& createGroupAs.equals(ProcessorConstants.GROUP_CREATEFROM_EXISTING)
+				&& (groupName == null || validator.isEmpty(String.valueOf(groupName))))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.GroupTitle")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
+					ApplicationProperties.getValue("eav.att.GroupTitle")));
 		}
-		if (createGroupAs == null)
+		else if (createGroupAs == null)
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.NewGroup")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
+					ApplicationProperties.getValue("eav.att.NewGroup")));
 		}
-		if ((groupDescription != null)&&(groupDescription.length()>ProcessorConstants.MAX_LENGTH_DESCRIPTION))
+		
+		if ((groupDescription != null)
+				&& (groupDescription.length() > ProcessorConstants.MAX_LENGTH_DESCRIPTION))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.maxlength.exceeded", ApplicationProperties.getValue("eav.att.Description"),ProcessorConstants.MAX_LENGTH_DESCRIPTION));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.maxlength.exceeded",
+					ApplicationProperties.getValue("eav.att.Description"),
+					ProcessorConstants.MAX_LENGTH_DESCRIPTION));
 		}
-		if ((groupNameText != null)&&(groupNameText.length()>ProcessorConstants.MAX_LENGTH_NAME))
+		
+		if ((groupNameText != null)
+				&& (groupNameText.length() > ProcessorConstants.MAX_LENGTH_NAME))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.maxlength.exceeded", ApplicationProperties.getValue("eav.att.GroupTitle"),ProcessorConstants.MAX_LENGTH_NAME));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.maxlength.exceeded",
+					ApplicationProperties.getValue("eav.att.GroupTitle"),
+					ProcessorConstants.MAX_LENGTH_NAME));
 		}
 		return errors;
 	}
+
 	/**
 	 * 
 	 * @return
@@ -216,6 +241,7 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 	{
 		return this.containerIdentifier;
 	}
+
 	/**
 	 * 
 	 * @param containerIdentifier
@@ -224,15 +250,17 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 	{
 		this.containerIdentifier = containerIdentifier;
 	}
+
 	/**
 	 * 
 	 * @return
 	 */
-	
+
 	public String getOperationMode()
 	{
 		return this.operationMode;
 	}
+
 	/**
 	 * 
 	 * @param operationMode
@@ -241,7 +269,7 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 	{
 		this.operationMode = operationMode;
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -250,6 +278,7 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 	{
 		return groupNameText;
 	}
+
 	/**
 	 * 
 	 * @param groupNameText

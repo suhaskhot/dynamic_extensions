@@ -949,7 +949,7 @@ function setDataEntryOperation(target)
 
 function setEditOperationMode(target)
 {
-	document.getElementById('operationMode').value = 'EditForm';
+	document.getElementById('operationMode').value='EditForm';
 	var formsIndexForm = document.getElementById('formsIndexForm');
 	formsIndexForm.action = target;
 	formsIndexForm.submit();
@@ -1676,7 +1676,6 @@ function groupSelectedResponse(groupXML)
 		if((htmlGroupDescription!=null)&&(grpDesc!=null))
 		{
 			htmlGroupDescription.value = getElementText(grpDesc[0]);
-			
 		}
 		else
 		{

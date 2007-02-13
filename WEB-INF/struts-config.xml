@@ -202,7 +202,15 @@ PUBLIC
 			scope="request">
 			<forward name="success" path="/LoadFormDefinitionAction.do" />
 		</action>
+		<action path="/UploadFileAction" 
+		    type="edu.common.dynamicextensions.ui.webui.action.UploadFileAction" 
+		    name="controlsForm"
+			validate="false"
+			input="/LoadFormDefinitionAction.do"
+			scope="request">
+			<forward name="success" path="/pages/FetchXMLString.jsp"/>
+		</action>
 	</action-mappings>	
-			
+	
 	<message-resources parameter="ApplicationResources" />
 </struts-config>

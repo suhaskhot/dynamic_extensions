@@ -65,36 +65,58 @@
 			}
 		%>
 	}
-	
-	function startCallback()
-	{
-		// make something useful before submit (onStart)
-		return true;
-    }
 
-    function completeCallback(response)
-    {
-		// make something useful after (onComplete)
-		alert(response);
-    }
-    
     function uploadValues()
 	{
-		var rowNos = optionGrid.getRowsNum();
 		var controlsForm = document.getElementById('controlsForm');
+
+		var div = document.createElement('DIV');
+		div.id = 'tempDiv';
+        div.innerHTML = '<iframe style="display:none" src="about:blank" id="tempIframe" name="tempIframe" onload="updateOptionGrid()"></iframe>';
+        document.body.appendChild(div);
+
+		controlsForm.action = "UploadFileAction.do";
+		controlsForm.target = "tempIframe";
+		controlsForm.submit();
+	}
 	
-		/*
-		var request = newXMLHTTPReq();
-		var handlerFunction = getReadyStateHandler(request,updateOptionGrid,false);
-		request.onreadystatechange = handlerFunction;
-		
-		request.open("POST","UploadFileAction.do",true);
-		request.setRequestHeader("Content-Type","multipart/form-data");
-		request.send("&totalRows="+rowNos);
-		*/
-		
-		controlsForm.action = "UploadFileAction.do?totalRows="+rowNos;
-		AIM.submit(this, {'onStart' : startCallback, 'onComplete' : completeCallback});
+	function updateOptionGrid()
+	{
+		var iframe = document.getElementById('tempIframe');
+		var returnedString = getContent(iframe);
+		if(returnedString != null && returnedString != "")
+		{
+			var rowNos = optionGrid.getRowsNum();
+			var rowId = "";
+			var temp = new Array();
+			temp = returnedString.split('|');
+			for(i=0; i<temp.length-1;i++)
+			{
+				rowId = rowNos + "";
+				rowNos++;
+				optionGrid.addRow(rowId,','+temp[i]);
+			}
+		}
+		var div = document.getElementById('tempDiv');
+		document.body.removeChild(div);
+	}
+
+	function getContent(iframe)
+	{
+		var content = '';
+		if (iframe.contentDocument)
+		{
+			content = iframe.contentDocument.body.innerHTML; 
+		}
+		else if (iframe.contentWindow)
+		{
+			content = iframe.contentWindow.document.body.innerHTML;
+		}
+		else if (iframe.document)
+		{
+		  content = iframe.document.body.innerHTML;
+		}
+		return content;
 	}
 </script>
 
@@ -106,10 +128,8 @@
 	<table id="optionListTable" width="100%">
 		<tr>
 			<td width="100%">
-				<!--
-				<html:file styleId="csvFile" property="csvFile" size="85"/>&nbsp;
-				<button type="submit" onclick="uploadValues()">Upload</button>
-				-->
+				<html:file property="tempcsvFile" size="85"/>&nbsp;
+				<button type="button" onclick="uploadValues()">Upload</button>
 			</td>
 		</tr>
 		<tr id="optionsListRow">

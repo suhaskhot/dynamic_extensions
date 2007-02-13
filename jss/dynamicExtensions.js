@@ -75,18 +75,23 @@ function addControlToFormTree()
 			var optionName = "";
 			var optionDescription = "";
 			var optionConceptCode = "";
-			var rowId = "";
-			for(row=0;row<rowNos;row++)
+			var itemIds = optionGrid.getAllItemIds(",");
+			if(itemIds != null)
 			{
-				rowId = row + "";
-				optionName = optionGrid.cells(rowId,1).getValue();
-				optionConceptCode = optionGrid.cells(rowId,2).getValue();
-				optionDescription = optionGrid.cells(rowId,3).getValue();
-						
-				//Add hidden variables for option names, option description and option concept codes
-				myNewCell.innerHTML += "<input type='hidden' id='optionNames' name='optionNames' value='" + optionName + "'/>"
-					+"<input type='hidden' id='optionConceptCodes' name='optionConceptCodes' value='" + optionConceptCode + "'/>"
-					+"<input type='hidden' id='optionDescriptions' name='optionDescriptions' value='" + optionDescription + "'/>";
+				var rowIds = new Array();
+				rowIds = itemIds.split(',');
+				var item=0;
+				for(item=0; item<rowIds.length; item++)
+				{
+					optionName = optionGrid.cells(rowIds[item],1).getValue();
+					optionConceptCode = optionGrid.cells(rowIds[item],2).getValue();
+					optionDescription = optionGrid.cells(rowIds[item],3).getValue();
+							
+					//Add hidden variables for option names, option description and option concept codes
+					myNewCell.innerHTML += "<input type='hidden' id='optionNames' name='optionNames' value='" + optionName + "'/>"
+						+"<input type='hidden' id='optionConceptCodes' name='optionConceptCodes' value='" + optionConceptCode + "'/>"
+						+"<input type='hidden' id='optionDescriptions' name='optionDescriptions' value='" + optionDescription + "'/>";
+				}
 			}
 		}
 	}
@@ -99,6 +104,7 @@ function addControlToFormTree()
 		selectAllListAttributes(document.getElementById("selectedAttributeIds"));
 	}	
 	controlsForm.action="/dynamicExtensions/AddControlsAction.do";
+	controlsForm.target="_self";
 	controlsForm.submit();
 }
 
@@ -302,8 +308,10 @@ function initBuildForm()
 	
 	//List of form names for selected group
 	groupChanged(false);
+	
 	//List of attributes for selected form
 	formChanged(false);
+	
 	//Create as option for CreateForm
 	createFormAsChanged();
 }
@@ -361,6 +369,10 @@ function changeSourceForValues(sourceControl)
 						{
 							source = source.replace("tempoptiongrid","optiongrid");
 						}
+						while (source.indexOf("tempcsvFile") != -1)
+						{
+							source = source.replace("tempcsvFile","csvFile");
+						}
 						valueSpecnDiv.innerHTML = source;
 						if(sourceControl.value == "UserDefined")
 						{
@@ -403,116 +415,6 @@ function canChangeSource(sourceControl)
 	return true;
 }
 
-//addToChoiceList : indicates whether the choice shld be added to choice list
-//This will be true when called while adding choice at runtime, and false when adding at load time
-function addChoiceToList(addToChoiceList)
-{
-	var optionName = document.getElementById('optionName');
-	var optionConceptCode = document.getElementById('optionConceptCode');
-	var optionDescription = document.getElementById('optionDescription');
-	var choiceListElementCnter = document.getElementById('choiceListCounter');
-	
-	var elementNo = 1;
-	if(choiceListElementCnter!=null)
-	{
-		elementNo = parseInt(choiceListElementCnter.value) + 1 ;
-	}
-	//increment number of elements count
-	document.getElementById('choiceListCounter').value = elementNo + "";
-	
-	if((optionName!=null)&&(optionName.value!=""))
-	{
-		newValue = optionName.value;
-		var choiceListTable  = document.getElementById('choiceListTable');
-	
-		if(choiceListTable!=null)
-		{
-			var myNewRow = choiceListTable.insertRow(choiceListTable.rows.length);
-			var myNewCell =  null;
-			
-			//Add Option to table
-			myNewCell = myNewRow.insertCell(myNewRow.cells.length);
-			myNewCell.setAttribute("id",optionName.value);
-			myNewCell.setAttribute("class","formFieldBottom");
-			myNewCell.setAttribute("className","formFieldBottom");
-			myNewCell.setAttribute("width","10%");
-			
-			var chkBoxId = "chkBox" + elementNo;
-			myNewCell.innerHTML = "<input type='checkbox' id='" + chkBoxId +"' value='"+optionName.value + "' />" + optionName.value;
-			
-			myNewCell =  myNewRow.insertCell(myNewRow.cells.length);
-			myNewCell.setAttribute("style","display:none;");
-			
-			//Add hidden variables for option names, option description and option concept codes
-			myNewCell.innerHTML = "<input type='hidden' id='optionNames' name='optionNames' value='" + optionName.value + "' />" 
-					       +"<input type='hidden' id='optionDescriptions' name='optionDescriptions' value='" + optionDescription.value + "' />" 
-					       +"<input type='hidden' id='optionConceptCodes' name='optionConceptCodes' value='" + optionConceptCode.value + "' />" ;
-			
-			
-			optionName.value = "";
-			if(optionConceptCode!=null)
-			{
-				optionConceptCode.value="";
-			}
-			if(optionDescription!=null)
-			{
-				optionDescription.value="";
-			}
-			
-			//Display row for option list if no of rows > 0
-			var noOfRows = choiceListTable.rows.length;
-			if(noOfRows>0)
-			{
-				document.getElementById('optionsListRow').style.display = "";
-			}
-		}
-	}
-}
-
-function deleteElementsFromChoiceList()
-{
-	var valuestable = document.getElementById('choiceListTable');
-	if(valuestable!=null)
-	{
-		var choiceListElementCnter = document.getElementById('choiceListCounter');
-		var noOfElements = 0;
-		if(choiceListElementCnter!=null)
-		{
-			noOfElements = parseInt(choiceListElementCnter.value);
-		}
-		var chkBoxId = "";
-		var chkBox;
-		
-		for(var i=1;i<=noOfElements;i++)
-		{
-			chkBoxId = "chkBox" + i;
-			chkBox = document.getElementById(chkBoxId);
-			if(chkBox!=null)
-			{
-				var rowofCheckBox = chkBox.parentNode.parentNode ;
-				
-				if(chkBox.checked == true)
-				{
-					if(rowofCheckBox!=null)
-					{
-						var rowIndexOfChkBox = rowofCheckBox.rowIndex;
-						if(rowIndexOfChkBox!=null)
-						{
-							valuestable.deleteRow(rowIndexOfChkBox);
-						}
-					}
-				}
-			}
-		}
-		//Hide row for option list if no of rows < 0
-		var noOfRows = valuestable.rows.length;
-		if(noOfRows<=0)
-		{
-			document.getElementById('optionsListRow').style.display = "none";
-		}
-	}
-}
-
 function initializeOptionsDefaultValue()
 {
 	var valuestable = document.getElementById('optionListTable');
@@ -539,6 +441,7 @@ function setDefaultValue()
 	var selectedRows = optionGrid.getCheckedRows(0);
 	var selectedRowIndices = selectedRows.split(',');
 	optionGrid.setRowTextBold(selectedRowIndices[0]);
+	document.getElementById('attributeDefaultValue').value = optionGrid.cells(selectedRowIndices[0],1).getValue();
 }
 
 //Added by sujay
@@ -557,7 +460,6 @@ function showFormPreview()
 function addFormAction()
 {
 	document.getElementById('operationMode').value = 'AddNewForm';
-	//document.getElementById('formsIndexForm').submit;
 }
 
 function textBoxTypeChange(obj)
@@ -1932,7 +1834,10 @@ function loadOptionGrid()
 function addOptionRow()
 {
 	var rows = optionGrid.getRowsNum();
-	optionGrid.addRow(rows,",,,");
+	var lastRowId = optionGrid.getRowId(rows-1);
+	var newRowId = parseInt(lastRowId) + 1;
+	var newRowIdStr = newRowId + "";
+	optionGrid.addRow(newRowIdStr,",,,");
 	optionGrid.setSizes();
 	rows += 1;
 	//increment the row count
@@ -1947,11 +1852,6 @@ function deleteSelectedOptions()
 	{
 		optionGrid.deleteRow(selectedRowIndices[i]);
 	}
-}
-
-function updateOptionGrid()
-{
-	alert("Updating optionGrid...");
 }
 
 function appendRecordId(ths)

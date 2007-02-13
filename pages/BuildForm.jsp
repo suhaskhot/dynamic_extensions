@@ -21,7 +21,6 @@
 		<script src="<%=request.getContextPath()%>/jss/calender.js" type="text/javascript"></script>
 		<script src="<%=request.getContextPath()%>/jss/calendarComponent.js"></script>
 		<script language="JavaScript" type="text/javascript" src="<%=request.getContextPath()%>/jss/ajax.js"></script>
-		<script language="JavaScript" type="text/javascript" src="<%=request.getContextPath()%>/jss/webtoolkit.aim.js"></script> 
 
 		<script src="<%=request.getContextPath()%>/dhtml_comp/jss/dhtmlXCommon.js"></script>
 		<script src="<%=request.getContextPath()%>/dhtml_comp/jss/dhtmlXGrid.js"></script>

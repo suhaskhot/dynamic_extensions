@@ -185,7 +185,7 @@
 														<td width="20%">
 
 														</td>
-														<td  class="formMessage">
+														<td  class="formMessage"  valign="top">
 																<html:checkbox property="isAbstract" value="true"/>	
 																<bean:message key="eav.form.abstract"/>
 																
@@ -198,8 +198,8 @@
 														<td class="formRequiredLabelWithoutBorder" width="20%">
 															<bean:message key="eav.form.inheritform"/> 
 														</td>
-														<td class="formMessage">
-															<html:select styleId="parentForm" styleClass="formFieldVerySmallSized" property="parentForm" >
+														<td>
+															<html:select styleId="parentForm" styleClass="formFieldSmallSized" property="parentForm" >
 																<html:options collection="formList" labelProperty="name" property="value" />
 															</html:select>
 														</td>

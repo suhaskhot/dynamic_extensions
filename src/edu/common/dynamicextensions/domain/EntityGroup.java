@@ -6,8 +6,7 @@ import java.util.HashSet;
 
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.wustl.common.actionForm.AbstractActionForm;
-import edu.wustl.common.exception.AssignDataException;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 
 /**
  * This Class represents a Group of Entities.
@@ -43,6 +42,12 @@ public class EntityGroup extends AbstractMetadata implements java.io.Serializabl
 	 * Collection of Entity in this Entity group.
 	 */
 	protected Collection<EntityInterface> entityCollection = new HashSet<EntityInterface>();
+	
+	
+	/**
+	 * 
+	 */
+	protected ContainerInterface mainContainer; 
 
 	/**
 	 * Empty Constructor
@@ -151,4 +156,26 @@ public class EntityGroup extends AbstractMetadata implements java.io.Serializabl
 			entityCollection.remove(entityInterface);
         }
     }
+
+	
+	/**
+	 * @hibernate.many-to-one column="MAIN_CONTAINER_ID" class="edu.common.dynamicextensions.domain.userinterface.Container" constrained="true"
+	 * @return Returns the mainContainer.
+	 */
+	public ContainerInterface getMainContainer()
+	{
+		return this.mainContainer;
+	}
+	
+
+	
+	/**
+	 * 
+	 * @param mainContainer The mainContainer to set.
+	 */
+	public void setMainContainer(ContainerInterface mainContainer)
+	{
+		this.mainContainer = mainContainer;
+	}
+
 }

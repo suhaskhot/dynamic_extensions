@@ -20,7 +20,6 @@ import java.util.Stack;
 import net.sf.hibernate.HibernateException;
 import net.sf.hibernate.Query;
 import net.sf.hibernate.Session;
-import net.sf.hibernate.Transaction;
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Association;
@@ -37,7 +36,6 @@ import edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
 import edu.common.dynamicextensions.domain.userinterface.Container;
-import edu.common.dynamicextensions.domain.userinterface.FileUploadControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
@@ -1356,6 +1354,7 @@ public class EntityManager
 			hibernateDAO.closeSession();
 			hibernateDAO.openSession(null);
 			session = DBUtil.currentSession();
+			EntityGroupInterface currentEntityGroup = null;
 
 			if (entity != null)
 			{
@@ -1374,6 +1373,7 @@ public class EntityManager
 					if (entityGroup.getId() == null)
 					{
 						entityGroup = (EntityGroup) session.saveOrUpdateCopy(entityGroup);
+						currentEntityGroup = entityGroup;
 					}
 				}
 
@@ -1388,6 +1388,12 @@ public class EntityManager
 			preSaveProcessContainer(container); //preprocess
 
 			session.saveOrUpdateCopy(container);
+
+			if (currentEntityGroup != null)
+			{
+				currentEntityGroup.setMainContainer(container);
+				session.saveOrUpdateCopy(container);
+			}
 
 			hibernateDAO.commit();
 
@@ -1631,10 +1637,11 @@ public class EntityManager
 					//Map valueMapForContainedEntity = (Map) value;
 					for (Map valueMapForContainedEntity : listOfMapsForContainedEntity)
 					{
-//						Long recordIdForContainedEntity = insertDataForSingleEntity(association
-//								.getTargetEntity(), valueMapForContainedEntity, hibernateDAO, null);
-						
-						Long recordIdForContainedEntity = insertDataForHeirarchy(association.getTargetEntity(), valueMapForContainedEntity, hibernateDAO);
+						//						Long recordIdForContainedEntity = insertDataForSingleEntity(association
+						//								.getTargetEntity(), valueMapForContainedEntity, hibernateDAO, null);
+
+						Long recordIdForContainedEntity = insertDataForHeirarchy(association
+								.getTargetEntity(), valueMapForContainedEntity, hibernateDAO);
 						recordIdList.add(recordIdForContainedEntity);
 					}
 
@@ -1693,7 +1700,7 @@ public class EntityManager
 			hibernateDAO = (HibernateDAO) factory.getDAO(Constants.HIBERNATE_DAO);
 			hibernateDAO.openSession(null);
 
-			recordId = insertDataForHeirarchy(entity,dataValue,hibernateDAO);
+			recordId = insertDataForHeirarchy(entity, dataValue, hibernateDAO);
 
 			hibernateDAO.commit();
 		}
@@ -1722,7 +1729,7 @@ public class EntityManager
 
 		return recordId;
 	}
-	
+
 	/**
 	 * @param entity
 	 * @param dataValue
@@ -1735,7 +1742,11 @@ public class EntityManager
 	 * @throws DAOException
 	 * @throws UserNotAuthorizedException
 	 */
-	private Long insertDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, HibernateDAO hibernateDAO) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException, UserNotAuthorizedException  {
+	private Long insertDataForHeirarchy(EntityInterface entity,
+			Map<AbstractAttributeInterface, ?> dataValue, HibernateDAO hibernateDAO)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException,
+			HibernateException, SQLException, DAOException, UserNotAuthorizedException
+	{
 		List<EntityInterface> entityList = getParentEntityList(entity);
 		Map<EntityInterface, Map> entityValueMap = initialiseEntityValueMap(entity, dataValue);
 		Long parentRecordId = null;
@@ -1745,7 +1756,7 @@ public class EntityManager
 			parentRecordId = insertDataForSingleEntity(entityInterface, valueMap, hibernateDAO,
 					parentRecordId);
 		}
-		
+
 		return parentRecordId;
 	}
 
@@ -1921,10 +1932,10 @@ public class EntityManager
 					recordIdList.clear();
 					for (Map valueMapForContainedEntity : listOfMapsForContainedEntity)
 					{
-//						Long childRecordId = insertDataForSingleEntity(association
-//								.getTargetEntity(), valueMapForContainedEntity, hibernateDAO, null);
-						Long childRecordId = insertDataForHeirarchy(association
-								.getTargetEntity(), valueMapForContainedEntity, hibernateDAO);
+						//						Long childRecordId = insertDataForSingleEntity(association
+						//								.getTargetEntity(), valueMapForContainedEntity, hibernateDAO, null);
+						Long childRecordId = insertDataForHeirarchy(association.getTargetEntity(),
+								valueMapForContainedEntity, hibernateDAO);
 						recordIdList.add(childRecordId);
 					}
 
@@ -2526,8 +2537,8 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public FileAttributeRecordValue getFileAttributeRecordValueByRecordId(AttributeInterface attribute,
-			Long recordId) throws DynamicExtensionsSystemException,
+	public FileAttributeRecordValue getFileAttributeRecordValueByRecordId(
+			AttributeInterface attribute, Long recordId) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
 		EntityInterface entity = attribute.getEntity();
@@ -2871,9 +2882,27 @@ public class EntityManager
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 
 	{
-		Map substitutionParameterMap = new HashMap();
+		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entityGroupIdentifier));
 		return executeHQL("getAllContainersByEntityGroupId", substitutionParameterMap);
+	}
+
+	/** 
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getMainContainer(java.lang.Long)
+	 */
+	public ContainerInterface getMainContainer(Long entityGroupIdentifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entityGroupIdentifier));
+		Collection containerCollection = executeHQL("getMainContainer", substitutionParameterMap);
+
+		if (!containerCollection.isEmpty())
+		{
+			return (ContainerInterface) containerCollection.iterator().next();
+		}
+
+		return null;
 	}
 
 	/**

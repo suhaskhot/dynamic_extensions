@@ -85,5 +85,13 @@
 	      where association.targetEntity.id = ?
 	</query>	
 	
+	<query name="getMainContainer">
+		from edu.common.dynamicextensions.domain.userinterface.Container container
+			 where container.id = 
+			       (select entityGroup.mainContainer.id
+						   from EntityGroup entityGroup
+							      where entityGroup.id =  ?)
+	</query>	
+	
 </hibernate-mapping>
     

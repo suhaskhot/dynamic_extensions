@@ -418,4 +418,10 @@ public interface EntityManagerInterface
 	 */
 	Collection<AssociationInterface> getIncomingAssociations(EntityInterface entity)
 			throws DynamicExtensionsSystemException;
+	
+	/**
+	 * @param entityGroupIdentifier
+	 * @return
+	 */
+	ContainerInterface getMainContainer(Long entityGroupIdentifier)  throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 }

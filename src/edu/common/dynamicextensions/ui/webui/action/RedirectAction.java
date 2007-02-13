@@ -13,17 +13,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
-import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
-import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
-import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.processor.LoadGroupDefinitionProcessor;
-import edu.common.dynamicextensions.ui.webui.actionform.GroupForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
-import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
-import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 
 /**
@@ -54,6 +45,5 @@ public class RedirectAction extends BaseDynamicExtensionsAction
 		{
 			return mapping.findForward(Constants.SUCCESS);
 		}
-
 	}
 }

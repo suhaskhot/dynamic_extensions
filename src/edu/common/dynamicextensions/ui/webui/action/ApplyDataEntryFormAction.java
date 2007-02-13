@@ -48,7 +48,6 @@ import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
-import edu.common.dynamicextensions.validation.ValidatorUtil;
 
 /**
  * It populates the Attribute values entered in the dynamically generated controls. * 
@@ -86,7 +85,14 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				}
 
 				actionForward = getMappingForwardAction(mapping, dataEntryForm, errorList, mode);
-				if (actionForward == null && errorList.isEmpty())
+				if ((actionForward != null && actionForward.getName().equals(
+						"showDynamicExtensionsHomePage"))
+						&& (mode != null && mode.equals("cancel")))
+				{
+					String recordIdentifier = dataEntryForm.getRecordIdentifier();
+					isCallbackURL = redirectCallbackURL(request, response, recordIdentifier);
+				}
+				else if (actionForward == null && errorList.isEmpty())
 				{
 					String recordIdentifier = dataEntryForm.getRecordIdentifier();
 					recordIdentifier = storeParentContainer(valueMapStack, containerStack, request,
@@ -290,8 +296,12 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				Integer controlSequenceNumber = control.getSequenceNumber();
 				if (controlSequenceNumber != null)
 				{
-					String controlSequence =  control.getParentContainer().getIncontextContainer().getId()
-							+ "_" +  control.getParentContainer().getId() + "_" + controlSequenceNumber;
+					String controlSequence = control.getParentContainer().getIncontextContainer()
+							.getId()
+							+ "_"
+							+ control.getParentContainer().getId()
+							+ "_"
+							+ controlSequenceNumber;
 
 					if (rowId != null && !rowId.equals(""))
 					{

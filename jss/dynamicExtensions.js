@@ -42,7 +42,7 @@ function formCreateAsChanged()
 function showHomePageFromCreateForm()
 {
 	var formDefinitionForm = document.getElementById('formDefinitionForm');
-	formDefinitionForm.action="/dynamicExtensions/DynamicExtensionHomePage.do";
+	formDefinitionForm.action="/dynamicExtensions/RedirectAction.do";
 	formDefinitionForm.submit();
 }
 
@@ -56,7 +56,7 @@ function showHomePageFromBuildForm()
 function showHomePageFromCreateGroup()
 {
 	var groupForm = document.getElementById('groupForm');
-	groupForm.action="/dynamicExtensions/DynamicExtensionHomePage.do";
+	groupForm.action="/dynamicExtensions/RedirectAction.do";
 	groupForm.submit();
 }
 

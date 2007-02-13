@@ -95,7 +95,7 @@ public class TextField extends Control implements TextFieldInterface
 
 		String htmlComponentName = getHTMLComponentName();
 		String htmlString = "";
-		if (isUrl.booleanValue() == true)
+		if (isUrl != null && isUrl.booleanValue() == true)
 		{
 			htmlString = "<a href='javascript:void(0)' onclick=\"window.open('http://"
 					+ defaultValue
@@ -104,7 +104,6 @@ public class TextField extends Control implements TextFieldInterface
 		}
 		else
 		{
-
 			htmlString = "<INPUT " + "class='" + cssClass + "' " + "name='" + htmlComponentName
 					+ "' " + "id='" + htmlComponentName + "' value='" + defaultValue + "' ";
 
@@ -226,7 +225,7 @@ public class TextField extends Control implements TextFieldInterface
 		String htmlString = "&nbsp;";
 		if (defaultValue != null)
 		{
-			if (isUrl.booleanValue() == true)
+			if (isUrl != null && isUrl.booleanValue() == true)
 			{
 				htmlString = "<a href='javascript:void(0)' onclick=\"window.open('http://"
 						+ defaultValue

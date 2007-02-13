@@ -61,5 +61,4 @@
 					<html:checkbox styleId = 'attributeIdentified' property="attributeIdentified" value="true"><bean:message key="app.att.isIdentified" /></html:checkbox>
 				</td>
 			</tr>
-	</tr>
 	</table>

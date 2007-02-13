@@ -28,7 +28,6 @@
 		<c:set var="operationMode" value="${groupForm.operationMode}"/>
 		<jsp:useBean id="operationMode" type="java.lang.String"/>
 
-
 		<html:form styleId = "groupForm"  action="/LoadGroupDefinitionAction">
 			<input type="hidden" name="groupOperation" value=""/>
 
@@ -73,6 +72,7 @@
 										<tr valign="top">
 											<td class="formMessage" colspan="3">&nbsp;</td>
 										</tr>
+										<!--
 										<tr valign="top" class="rowWithBottomPadding">
 											<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
 											<td class="formRequiredLabelWithoutBorder" width="12%">
@@ -82,11 +82,17 @@
 												<html:radio styleId="createGroupAs" property="createGroupAs" value="NewGroup" onclick="changeGroupSource(this)">
 													<bean:message key="eav.att.NewGroup"/>
 												</html:radio>
-												<html:radio styleId="createGroupAs"  property="createGroupAs" value="ExistingGroup" onclick="changeGroupSource(this)">
+												<html:radio styleId="createGroupAs" property="createGroupAs" value="ExistingGroup" onclick="changeGroupSource(this)">
 													<bean:message key="eav.att.ExistingGroup"/>
 												</html:radio>
 											</td>
 										</tr>
+										-->
+										<tr>
+											<td>
+												<html:hidden styleId="createGroupAs" property="createGroupAs" value="NewGroup"/>
+											</td>
+										<tr>
 										<tr valign="top" >
 											<td colspan="3" valign="top" class="cellWithNoLeftBottomPadding">
 												<div id="groupDetailsDiv"></div>
@@ -153,7 +159,7 @@
 								<bean:message key="eav.att.GroupTitle"/> :
 							</label>
 						</td>
-						<td >
+						<td>
 							<html:select styleId="groupName" styleClass="formFieldVerySmallSized" property="groupName" onchange="groupSelected(this)">
 								<html:options collection="groupList" labelProperty="name" property="value" />
 							</html:select>
@@ -169,7 +175,7 @@
 						<td>
 							<html:textarea styleClass="formFieldSmallSized"  rows = "3" cols="28" styleId="groupDescription"  property="groupDescription" readonly="true"/>
 						</td>
-					 </tr>
+					</tr>
 				</table>
 			</div>
 

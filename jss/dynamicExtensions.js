@@ -431,12 +431,16 @@ function initializeOptionsDefaultValue()
 
 function setDefaultValue()
 {
-	var rowNos = optionGrid.getRowsNum();
-	var rowId = "";
-	for(i=0; i<rowNos; i++)
+	var itemIds = optionGrid.getAllItemIds(",");
+	if(itemIds != null)
 	{
-		rowId = i+"";
-		optionGrid.setRowTextNormal(rowId)
+		var rowIds = new Array();
+		rowIds = itemIds.split(',');
+		var item=0;
+		for(item=0; item<rowIds.length; item++)
+		{
+			optionGrid.setRowTextNormal(rowIds[item]);
+		}
 	}
 	var selectedRows = optionGrid.getCheckedRows(0);
 	var selectedRowIndices = selectedRows.split(',');
@@ -1833,11 +1837,20 @@ function loadOptionGrid()
 function addOptionRow()
 {
 	var rows = optionGrid.getRowsNum();
-	var lastRowId = optionGrid.getRowId(rows-1);
+	var lastRowId = "";
+	if(rows==0)
+	{
+		lastRowId = "-1";
+	}
+	else
+	{
+		lastRowId = optionGrid.getRowId(rows-1);		
+	}
 	var newRowId = parseInt(lastRowId) + 1;
 	var newRowIdStr = newRowId + "";
 	optionGrid.addRow(newRowIdStr,",,,");
 	optionGrid.setSizes();
+	
 	rows += 1;
 	//increment the row count
 	document.getElementById('choiceListCounter').value = rows + "";

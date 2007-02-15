@@ -93,7 +93,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 					String recordIdentifier = dataEntryForm.getRecordIdentifier();
 					isCallbackURL = redirectCallbackURL(request, response, recordIdentifier);
 				}
-				else if (actionForward == null && errorList!=null && errorList.isEmpty())
+				else if (actionForward == null && errorList != null && errorList.isEmpty())
 				{
 					String recordIdentifier = dataEntryForm.getRecordIdentifier();
 					recordIdentifier = storeParentContainer(valueMapStack, containerStack, request,
@@ -114,7 +114,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		}
 		else if (actionForward == null)
 		{
-			if (errorList.isEmpty())
+			if (errorList != null && errorList.isEmpty())
 			{
 				UserInterfaceiUtility.clearContainerStack(request);
 			}

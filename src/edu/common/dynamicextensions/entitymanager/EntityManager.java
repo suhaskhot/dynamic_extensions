@@ -3,7 +3,9 @@ package edu.common.dynamicextensions.entitymanager;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,6 +28,7 @@ import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.AttributeRecord;
 import edu.common.dynamicextensions.domain.CollectionAttributeRecordValue;
+import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.domain.Entity;
@@ -52,6 +55,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAss
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.util.AssociationTreeObject;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
@@ -2295,7 +2299,8 @@ public class EntityManager
 			else
 			{
 				databaseCopy = (Entity) DBUtil.loadCleanObj(Entity.class, entity.getId());
-				if (entity.getDataTableState() == DATA_TABLE_STATE_CREATED && queryBuilder.isParentChanged(entity, databaseCopy))
+				if (entity.getDataTableState() == DATA_TABLE_STATE_CREATED
+						&& queryBuilder.isParentChanged(entity, databaseCopy))
 				{
 					checkParentChangeAllowed(entity);
 				}
@@ -2383,7 +2388,7 @@ public class EntityManager
 			Long recordId) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
-		Map<AbstractAttributeInterface, Object> recordValues = new HashMap();
+		Map<AbstractAttributeInterface, Object> recordValues = new HashMap<AbstractAttributeInterface, Object>();
 
 		Collection attributesCollection = entity.getAttributeCollection();
 		List<AttributeInterface> collectionAttributes = new ArrayList<AttributeInterface>();
@@ -2391,13 +2396,9 @@ public class EntityManager
 
 		String tableName = entity.getTableProperties().getName();
 		List<String> selectColumnNameList = new ArrayList<String>();
-		String[] whereColumnName = new String[]{IDENTIFIER};
-		String[] whereColumnCondition = new String[]{"="};
-		Object[] whereColumnValue = new Object[]{recordId};
 
 		Iterator attriIterator = attributesCollection.iterator();
 		Map columnNameMap = new HashMap();
-		int index = 0;
 		while (attriIterator.hasNext())
 		{
 			AttributeInterface attribute = (AttributeInterface) attriIterator.next();
@@ -2414,50 +2415,38 @@ public class EntityManager
 			else
 			{
 				//for the other attributes, create select query.
+
 				String dbColumnName = attribute.getColumnProperties().getName();
-				//String uiColumnName = attribute.getName();
 				selectColumnNameList.add(dbColumnName);
-				//selectColumnName[index] = dbColumnName;
 				columnNameMap.put(dbColumnName, attribute);
-				index++;
 			}
 		}
 
 		//get association values. 
 		recordValues.putAll(queryBuilder.getAssociationGetRecordQueryList(entity, recordId));
 
-		String[] selectColumnName = new String[selectColumnNameList.size()];
+		StringBuffer query = new StringBuffer();
+
+		query.append(SELECT_KEYWORD).append(WHITESPACE);
+
 		for (int i = 0; i < selectColumnNameList.size(); i++)
 		{
-			selectColumnName[i] = selectColumnNameList.get(i);
+			if (i != 0)
+			{
+				query.append(" , ");
+			}
+			query.append(selectColumnNameList.get(i));
 		}
 
-		JDBCDAO jdbcDao = null;
+		query.append(WHITESPACE).append(FROM_KEYWORD).append(WHITESPACE).append(tableName).append(
+				WHITESPACE).append(WHERE_KEYWORD).append(WHITESPACE).append(IDENTIFIER).append(
+				EQUAL).append(recordId);
+
 		try
 		{
-			jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
-			jdbcDao.openSession(null);
-
-			List result = jdbcDao.retrieve(tableName, selectColumnName, whereColumnName,
-					whereColumnCondition, whereColumnValue, null);
-			List innerList = null;
-
-			if (result != null && result.size() != 0)
-			{
-				innerList = (List) result.get(0);
-			}
-			if (innerList != null && !selectColumnNameList.isEmpty() && selectColumnName.length > 0)
-			{
-
-				for (int i = 0; i < innerList.size(); i++)
-				{
-					String value = (String) innerList.get(i);
-					String dbColumnName = selectColumnName[i];
-					Attribute attribute = (Attribute) columnNameMap.get(dbColumnName);
-					//put the value for other attributes
-					recordValues.put(attribute, value);
-				}
-			}
+			/*get values for simple attributes*/
+			recordValues.putAll(getAttributeValues(selectColumnNameList, query.toString(),
+					columnNameMap));
 
 			/*
 			 * process any multi select attributes
@@ -2481,22 +2470,69 @@ public class EntityManager
 			}
 
 		}
-		catch (DAOException e)
+		catch (SQLException e)
 		{
 			throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
 		}
-		finally
-		{
 
-			try
+		return recordValues;
+	}
+
+	/**
+	 * @param selectColumnNameList
+	 * @param query
+	 * @param columnNameMap
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws SQLException
+	 */
+	private Map<AbstractAttributeInterface, Object> getAttributeValues(
+			List<String> selectColumnNameList, String query, Map columnNameMap)
+			throws DynamicExtensionsSystemException, SQLException
+	{
+		Map<AbstractAttributeInterface, Object> recordValues = new HashMap<AbstractAttributeInterface, Object>();
+		ResultSet resultSet = entityManagerUtil.executeQuery(query);
+
+		if (resultSet.next())
+		{
+			for (int i = 0; i < selectColumnNameList.size(); i++)
 			{
-				jdbcDao.closeSession();
+				String dbColumnName = selectColumnNameList.get(i);
+				Attribute attribute = (Attribute) columnNameMap.get(dbColumnName);
+
+				Object valueObj = resultSet.getObject(i + 1);
+				String value = "";
+
+				if (valueObj != null)
+				{
+					if (valueObj instanceof java.util.Date)
+					{
+
+						DateAttributeTypeInformation dateAttributeTypeInf = (DateAttributeTypeInformation) attribute
+								.getAttributeTypeInformation();
+
+						String format = dateAttributeTypeInf.getFormat();
+						if (format == null)
+						{
+							format = ProcessorConstants.DATE_ONLY_FORMAT;
+						}
+
+						valueObj = resultSet.getTimestamp(i + 1);
+
+						SimpleDateFormat formatter = new SimpleDateFormat(format);
+						value = formatter.format((java.util.Date) valueObj);
+					}
+					else
+					{
+						value = valueObj.toString();
+					}
+				}
+
+				recordValues.put(attribute, value);
 			}
-			catch (DAOException e)
-			{
-				throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
-			}
+
 		}
+		resultSet.close();
 		return recordValues;
 	}
 
@@ -2900,14 +2936,14 @@ public class EntityManager
 		NameValueBean containerNameValue = null;
 		if (!nameIdCollection.isEmpty())
 		{
-			Object[] nameIdArray =  (Object[]) nameIdCollection.iterator().next();
+			Object[] nameIdArray = (Object[]) nameIdCollection.iterator().next();
 			containerNameValue = new NameValueBean();
 			containerNameValue.setName(nameIdArray[0]);
 			containerNameValue.setValue(nameIdArray[1]);
 		}
 		return containerNameValue;
 	}
-	
+
 	/**
 	 * Returns all entitiy groups in the whole system
 	 * @return Collection Entity group Beans Collection

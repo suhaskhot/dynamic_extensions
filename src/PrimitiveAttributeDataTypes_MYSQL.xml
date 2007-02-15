@@ -41,5 +41,10 @@
 	  	  <database-datatype>date</database-datatype>
     </Primitive-Attribute>
     
+    <Primitive-Attribute>
+		  <name>DateTime</name>
+	  	  <database-datatype>datetime</database-datatype>
+    </Primitive-Attribute>
+    
     
 </Primitive-Attributes>

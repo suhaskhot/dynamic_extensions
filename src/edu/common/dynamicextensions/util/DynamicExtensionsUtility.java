@@ -115,8 +115,7 @@ public class DynamicExtensionsUtility
 				.getName(), containerIdentifier);
 		return containerInterface;
 	}
-	
-	
+
 	/**
 	 * This method fetches the Container instance from the Database given the corresponding Container Identifier.
 	 * @param containerIdentifier The Idetifier of the Container.
@@ -128,13 +127,10 @@ public class DynamicExtensionsUtility
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		AttributeInterface attributeInterface = null;
-		attributeInterface  = (AttributeInterface) getObjectByIdentifier(AttributeInterface.class
+		attributeInterface = (AttributeInterface) getObjectByIdentifier(AttributeInterface.class
 				.getName(), attributeIdentifier);
 		return attributeInterface;
 	}
-	
-	
-	
 
 	/**
 	 * This method returns object for a given class name and identifer 
@@ -299,7 +295,7 @@ public class DynamicExtensionsUtility
 			//set string/function for oracle
 
 			Variables.datePattern = "mm-dd-yyyy";
-			Variables.timePattern = "hh-mi-ss";
+			Variables.timePattern = "hh24-mi-ss";
 			Variables.dateFormatFunction = "TO_CHAR";
 			Variables.timeFormatFunction = "TO_CHAR";
 			Variables.dateTostrFunction = "TO_CHAR";
@@ -457,12 +453,12 @@ public class DynamicExtensionsUtility
 	{
 		return Calendar.getInstance().get(Calendar.YEAR);
 	}
-	
+
 	public static int getCurrentHours()
 	{
 		return Calendar.getInstance().get(Calendar.HOUR);
 	}
-	
+
 	public static int getCurrentMinutes()
 	{
 		return Calendar.getInstance().get(Calendar.MINUTE);
@@ -637,45 +633,52 @@ public class DynamicExtensionsUtility
 					null, EntityManagerExceptionConstantsInterface.DYEXTN_A_004);
 		}
 		validateDuplicateNamesWithinEntity(entity);
-		
-		if (entity.getInheritanceStrategy().equals(InheritanceStrategy.TABLE_PER_HEIRARCHY) && entity.getParentEntity() != null ) {
-			if (entity.getDiscriminatorColumn() == null ||entity.getDiscriminatorColumn().equals("") ) {
+
+		if (entity.getInheritanceStrategy().equals(InheritanceStrategy.TABLE_PER_HEIRARCHY)
+				&& entity.getParentEntity() != null)
+		{
+			if (entity.getDiscriminatorColumn() == null
+					|| entity.getDiscriminatorColumn().equals(""))
+			{
 				throw new DynamicExtensionsApplicationException(
-						"Discriminator Column and value is required for TABLE_PER_HEIRARCHY strategy", null,
-						EntityManagerExceptionConstantsInterface.DYEXTN_A_012);
-				
+						"Discriminator Column and value is required for TABLE_PER_HEIRARCHY strategy",
+						null, EntityManagerExceptionConstantsInterface.DYEXTN_A_012);
+
 			}
 
-			if (entity.getDiscriminatorValue() == null ||entity.getDiscriminatorValue().equals("") ) {
+			if (entity.getDiscriminatorValue() == null || entity.getDiscriminatorValue().equals(""))
+			{
 				throw new DynamicExtensionsApplicationException(
-						"Discriminator Column and value is required for TABLE_PER_HEIRARCHY strategy", null,
-						EntityManagerExceptionConstantsInterface.DYEXTN_A_012);
+						"Discriminator Column and value is required for TABLE_PER_HEIRARCHY strategy",
+						null, EntityManagerExceptionConstantsInterface.DYEXTN_A_012);
 			}
 		}
 		return;
 	}
 
-	public static void validateDuplicateNamesWithinEntity(EntityInterface entity) throws DynamicExtensionsApplicationException
+	public static void validateDuplicateNamesWithinEntity(EntityInterface entity)
+			throws DynamicExtensionsApplicationException
 	{
 		Collection<AbstractAttributeInterface> collection = entity.getAbstractAttributeCollection();
-		if (collection != null || !collection.isEmpty()) 
+		if (collection != null || !collection.isEmpty())
 		{
-		Collection<String> nameCollection = new HashSet<String>();
-		for (AbstractAttributeInterface attribute : collection)
-		{
-			if (!nameCollection.contains(attribute.getName()))
+			Collection<String> nameCollection = new HashSet<String>();
+			for (AbstractAttributeInterface attribute : collection)
 			{
-				nameCollection.add(attribute.getName());
-			}
-			else
-			{
-				throw new DynamicExtensionsApplicationException(
-						"Attribute names should be unique for the entity ", null,
-						EntityManagerExceptionConstantsInterface.DYEXTN_A_006, attribute.getName());
+				if (!nameCollection.contains(attribute.getName()))
+				{
+					nameCollection.add(attribute.getName());
+				}
+				else
+				{
+					throw new DynamicExtensionsApplicationException(
+							"Attribute names should be unique for the entity ", null,
+							EntityManagerExceptionConstantsInterface.DYEXTN_A_006, attribute
+									.getName());
+				}
 			}
 		}
-		}
-		
+
 	}
 
 	/**
@@ -753,7 +756,7 @@ public class DynamicExtensionsUtility
 			}
 		}
 	}
-	
+
 	/**
 	 * This method checks if the date string is as per the given format or not. 
 	 * @param dateFormat Format of the date (e.g. dd/mm/yyyy)
@@ -788,26 +791,15 @@ public class DynamicExtensionsUtility
 	 */
 	public static String getDateFormat(String format)
 	{
-		String dateFormat = null;
-		if (format != null)
+		String dateFormat = ProcessorConstants.DATE_ONLY_FORMAT;
+		if (format != null && format.equals(ProcessorConstants.DATE_FORMAT_OPTION_DATEANDTIME))
 		{
-			if (format.equals(ProcessorConstants.DATE_FORMAT_OPTION_DATEONLY))
-			{
-				dateFormat = ProcessorConstants.DATE_ONLY_FORMAT;
-			}
-			else
-			{
-				dateFormat = ProcessorConstants.DATE_TIME_FORMAT;
-			}
-		}
-		else
-		{
-			dateFormat = ProcessorConstants.DATE_ONLY_FORMAT;
+			dateFormat = ProcessorConstants.DATE_TIME_FORMAT;
 		}
 
 		return dateFormat;
 	}
-	
+
 	/**
 	 * This method returns the sql format of the date depending upon the the type of the format of the Date Attribute.
 	 * @param dateFormat format of the Date Attribute
@@ -815,23 +807,11 @@ public class DynamicExtensionsUtility
 	 */
 	public static String getSQLDateFormat(String dateFormat)
 	{
-		String sqlDateFormat = null;
-		if (dateFormat != null)
+		String sqlDateFormat = Variables.datePattern;
+		if (dateFormat != null && dateFormat.equals(ProcessorConstants.DATE_TIME_FORMAT))
 		{
-			if (dateFormat.equals(ProcessorConstants.DATE_ONLY_FORMAT))
-			{
-				sqlDateFormat = ProcessorConstants.SQL_DATE_ONLY_FORMAT;
-			}
-			else if (dateFormat.equals(ProcessorConstants.DATE_TIME_FORMAT))
-			{
-				sqlDateFormat = ProcessorConstants.SQL_DATE_TIME_FORMAT;
-			}
+			sqlDateFormat = sqlDateFormat + " " + Variables.timePattern;
 		}
-		else
-		{
-			sqlDateFormat = ProcessorConstants.SQL_DATE_ONLY_FORMAT;
-		}
-
 		return sqlDateFormat;
 	}
 

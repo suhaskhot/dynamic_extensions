@@ -37,6 +37,7 @@ import edu.common.dynamicextensions.domaininterface.databaseproperties.Constrain
 import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.wustl.common.dao.HibernateDAO;
@@ -681,7 +682,16 @@ class DynamicExtensionBaseQueryBuilder
 			}
 			else if (attributeInformation instanceof DateAttributeTypeInformation)
 			{
-				return dataTypeFactory.getDatabaseDataType("Date");
+				DateAttributeTypeInformation dateAttributeInformation = (DateAttributeTypeInformation) attributeInformation;
+				String format = dateAttributeInformation.getFormat();
+				if (format != null && format.equalsIgnoreCase(ProcessorConstants.DATE_TIME_FORMAT))
+				{
+					return dataTypeFactory.getDatabaseDataType("DateTime");
+				}
+				else
+				{
+					return dataTypeFactory.getDatabaseDataType("Date");
+				}
 			}
 			else if (attributeInformation instanceof FloatAttributeTypeInformation)
 			{

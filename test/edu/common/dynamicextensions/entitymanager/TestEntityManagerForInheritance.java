@@ -1411,5 +1411,39 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 			fail();
 		}
 	}
+	
+	/**
+	 * Test case for issue no 3693
+	 */
+	public void testSetParentInEditMode()
+	{
+
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		try
+		{
+			// Step 1
+			EntityInterface specimen = factory.createEntity();
+			specimen.setName("specimen");
+			specimen = entityManagerInterface.persistEntity(specimen);
+
+			
+			EntityInterface tissueSpecimen = factory.createEntity();			
+			tissueSpecimen.setName("tissueSpecimen");
+			tissueSpecimen = entityManagerInterface.persistEntity(tissueSpecimen);
+
+			tissueSpecimen.setParentEntity(specimen);
+			tissueSpecimen = entityManagerInterface.persistEntity(tissueSpecimen);
+			
+			assertTrue(true);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+
+	}
 
 }

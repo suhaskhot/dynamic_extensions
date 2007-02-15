@@ -140,12 +140,13 @@ class DynamicExtensionBaseQueryBuilder
 
 		if (isParentChanged(entity, databaseCopy))
 		{
-			String foreignConstraintRemoveQuery = getForeignKeyRemoveConstraintQueryForInheritance(databaseCopy);
-
-			String foreignConstraintRollbackQuery = getForeignKeyConstraintQueryForInheritance(databaseCopy);
-
-			queryList.add(foreignConstraintRemoveQuery);
-			attributeRollbackQueryList.add(foreignConstraintRollbackQuery);
+			String foreignConstraintRollbackQuery = "";
+			if (databaseCopy.getParentEntity() != null) {
+				String foreignConstraintRemoveQuery = getForeignKeyRemoveConstraintQueryForInheritance(databaseCopy);
+				foreignConstraintRollbackQuery = getForeignKeyConstraintQueryForInheritance(databaseCopy);
+				queryList.add(foreignConstraintRemoveQuery);
+				attributeRollbackQueryList.add(foreignConstraintRollbackQuery);
+			}
 
 			if (entity.getParentEntity() != null)
 			{

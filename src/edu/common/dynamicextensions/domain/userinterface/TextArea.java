@@ -116,29 +116,8 @@ public class TextArea extends Control implements TextAreaInterface
 		{
 			htmlString += "rows='" + Constants.DEFAULT_ROW_SIZE + "' ";
 		}
-		htmlString += "wrap='virtual' ";
+		htmlString += "wrap='virtual'> ";
 
-		int maxChars = 0;
-		AttributeInterface attribute = (AttributeInterface) this.getAbstractAttribute();
-		if (attribute != null)
-		{
-			StringAttributeTypeInformation stringAttributeTypeInformation = (StringAttributeTypeInformation) attribute
-					.getAttributeTypeInformation();
-			if (stringAttributeTypeInformation != null)
-			{
-				maxChars = stringAttributeTypeInformation.getSize().intValue();
-			}
-		}
-
-		if (maxChars != 0)
-		{
-			htmlString += "onblur=\"checkTextLength('" + htmlComponentName + "', '"
-					+ attribute.getName() + "', " + maxChars + ")\">";
-		}
-		else
-		{
-			htmlString += ">";
-		}
 		htmlString += defaultValue + "</textarea>";
 
 		return htmlString;

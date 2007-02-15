@@ -43,6 +43,7 @@ import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
 import edu.common.dynamicextensions.util.global.Variables;
 import edu.wustl.common.beans.NameValueBean;
@@ -2411,6 +2412,69 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		catch (Exception e)
 		{
 			e.printStackTrace();
+		}
+
+	}
+	
+	/**
+	 * 
+	 */
+	public void testInsertDataForDate()
+	{
+		//Step 1 
+		Entity entity = new Entity();
+		entity.setName("Stock Quote");
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+
+		try
+		{
+
+			AttributeInterface floatAtribute = DomainObjectFactory.getInstance()
+					.createFloatAttribute();
+			floatAtribute.setName("Price");
+			
+			AttributeInterface commentsAttributes = DomainObjectFactory.getInstance()
+					.createStringAttribute();
+			commentsAttributes.setName("coomments");
+			
+			AttributeInterface startDate = DomainObjectFactory.getInstance()
+			.createDateAttribute();
+			startDate.setName("startDate");
+			((DateAttributeTypeInformation) startDate.getAttributeTypeInformation()).setFormat(ProcessorConstants.DATE_TIME_FORMAT);
+			
+			AttributeInterface endDate = DomainObjectFactory.getInstance()
+			.createDateAttribute();
+			endDate.setName("endDate");
+			
+
+			
+			entity.addAbstractAttribute(floatAtribute);
+			entity.addAbstractAttribute(commentsAttributes);
+			entity.addAbstractAttribute(startDate);
+			entity.addAbstractAttribute(endDate);
+			
+			
+			
+			//Step 2 
+			EntityInterface savedEntity = entityManagerInterface.persistEntity(entity);
+
+			Map dataValue = new HashMap();
+			dataValue.put(floatAtribute, "15.90");
+			dataValue.put(startDate, "11-12-1982 10:11");
+			dataValue.put(endDate, "01-12-1982");
+			
+			Long recordId = entityManagerInterface.insertData(savedEntity, dataValue);
+
+			
+			dataValue = entityManagerInterface.getRecordById(entity, recordId);
+			
+			assertEquals("11-12-1982 10:11",dataValue.get(startDate));
+			assertEquals("01-12-1982",dataValue.get(endDate));
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
 		}
 
 	}

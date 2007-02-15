@@ -2354,5 +2354,65 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		}
 
 	}
+	/**
+	 * PURPOSE : to test the method GetMainContainer
+	 *            
+	 *  
+	 * EXPECTED BEHAVIOR : GetMainContainer method should return null when 
+	 *                     main entity within given is abstract 
+	 * 
+	 * TEST CASE FLOW : 
+	 * 1.Create an abstract entity
+	 * 2.Create an entity Group
+	 * 3.Add entity in entity group
+	 * 4.Create an container
+	 * 5.set its entity to the created entity 
+	 * 6.Persist the container. 
+	 * 7. invoke getMainContainer
+	 * 8. test if retruned container null or not
+	 */
+	public void testGetMainContainerForAbstractEntity()
+	{
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		try
+		{
+			//Step 1.
+			EntityInterface user = factory.createEntity();
+			user.setAbstract(true);
+			user.setName("user");
+
+			//Step 2.
+			EntityGroupInterface userGroup = factory.createEntityGroup();
+
+			//Step 3.
+			userGroup.addEntity(user);
+			user.addEntityGroupInterface(userGroup);
+
+			//Step 4.
+			ContainerInterface userContainer = factory.createContainer();
+			userContainer.setCaption("User Container");
+
+			//Step 5.
+			userContainer.setEntity(user);
+
+			//Step 6.
+			entityManagerInterface.persistContainer(userContainer);
+
+			//Step 7.
+			NameValueBean containerNameValue = entityManagerInterface.getMainContainer(userGroup
+					.getId());
+
+			//Step 8.
+			assertNull(containerNameValue);
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+	}
 
 }

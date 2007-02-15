@@ -89,7 +89,8 @@
 			 where container.id = 
 			       (select entityGroup.mainContainer.id
 						   from EntityGroup entityGroup
-							      where entityGroup.id =  ?)
+							      where entityGroup.id =  ?) 
+							        and container.entity.abstract = false
 	</query>	
 	
 </hibernate-mapping>

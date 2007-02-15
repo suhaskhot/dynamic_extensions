@@ -95,8 +95,7 @@ function addControlToFormTree()
 			}
 		}
 	}
-	
-	
+
 	document.getElementById('operation').value='controlAdded';
 	var controlsForm=document.getElementById("controlsForm");
 	if(document.getElementById("selectedAttributeIds")!=null)
@@ -721,15 +720,15 @@ function controlSelected(rowId,colId)
 	
 	//Control type is displayed in 2nd column
 	controlType = mygrid.cells(mygrid.getSelectedId(),2).getValue();
+	
 	if(controlType=="Sub Form")	//"Sub form"  tightly coupled with ProcessorConstants.ADD_SUBFORM_TYPE
 	{
-		var opernMode = document.getElementById('operationMode');	
+		var opernMode = document.getElementById('operationMode');
 		if(opernMode!=null)
 		{
-			opernMode.value = "EditSubForm";
+			document.getElementById('operationMode').value = "EditSubForm";
 		}
 	}
-
 	var controlsForm=document.getElementById('controlsForm');
 	controlsForm.action='/dynamicExtensions/LoadFormControlsAction.do';
 	controlsForm.submit();

@@ -65,8 +65,6 @@
 		</script>
 	</head>
 	<body onload="loadDefineFormPage()">
-	
-	
 		<html:form styleId="formDefinitionForm" action="/ApplyFormDefinitionAction">
 			<c:set var="groupName" value="${formDefinitionForm.groupName}"/>
 			<jsp:useBean id="groupName" type="java.lang.String"/>
@@ -177,22 +175,14 @@
 															<html:textarea styleClass="formFieldSmallSized"  rows = "3" cols="28"  styleId = 'formDescription' property="formDescription" />
 														</td>
 													</tr>
-													
-												
-													
 													<tr valign="top">
 														<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-														<td width="20%">
-
-														</td>
-														<td  class="formMessage"  valign="top">
-																<html:checkbox property="isAbstract" value="true"/>	
-																<bean:message key="eav.form.abstract"/>
-																
+														<td width="20%"></td>
+														<td class="formMessage"  valign="top">
+															<html:checkbox property="isAbstract" value="true"/>	
+															<bean:message key="eav.form.abstract"/>
 														</td>
 													</tr>
-													
-													
 													<tr valign="top">
 														<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
 														<td class="formRequiredLabelWithoutBorder" width="20%">
@@ -204,10 +194,6 @@
 															</html:select>
 														</td>
 													</tr>
-												
-													
-													
-													
 													<c:if test='${formDefinitionForm.operationMode != "EditSubForm"}'>
 														<tr valign = "top">
 															<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
@@ -221,7 +207,6 @@
 																			<html:radio styleId= 'createAsNew' property="createAs" value="NewForm" onclick="createFormAsChanged()">
 																				<bean:message key="eav.createnewentity.title"/>
 																			</html:radio>
-					
 																			<c:choose>
 																				<c:when test='${formDefinitionForm.operationMode=="AddSubForm"}'>
 																					<html:radio styleId = 'createAsExisting' property="createAs" value="ExistingForm" onclick="createFormAsChanged()" >

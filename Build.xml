@@ -268,31 +268,17 @@
 		<delete file="dynamicExtensions.war"/>
 		<war destfile="dynamicExtensions.war" webxml="WEB-INF/web.xml">
 			<fileset dir="${base.dir}">
-				<exclude name="**/*build*"/>
-				<exclude name="**/*WEB-INF*"/>
-				<exclude name="**/WEB-INF/src*/**"/>
-				<exclude name="**/*servlet.jar*"/>
-				<exclude name="**/*log4j-1.2.9.jar*"/>
-				<exclude name="**/*hibernate2.jar*"/>
-				<exclude name="**/*jta.jar*"/>
-				<exclude name="**/.*"/>
-				<exclude name="**/*.sql"/>
-				<exclude name="**/CVS*"/>
-				<exclude name="**/catissuecorecsm.war"/>
-				<exclude name="**/cawebeav.war"/>
-				<exclude name="**/caTissue_Core_Installable.zip"/>
-				<exclude name="**/caTissue_Core_Installable/**"/>
-				<exclude name="**/caTISSUECore caCORE Client/**"/>
-				<exclude name="**/src/**"/>
-				<exclude name="**/test/**"/>
-				<exclude name="**/*Build.xml*"/>
-				
+				<include name="css/**/*"/>
+				<include name="images/**/*"/>
+				<include name="jss/**/*"/>
+				<include name="pages/**/*"/>
+				<include name="dhtml_comp/**/*"/>
+				<include name="runtime/**/*"/>
+				<include name="WEB-INF/**/*"/>
+				<include name="error.jsp"/>	
+				<include name="ApplicationVersionInfo.txt"/>	
 			</fileset>
-			
-			<fileset dir="${src.dir}/">
-				<include name="*.*"/>
-			</fileset>
-		</war>
+ 		</war>
 	</target>
 
 	<!--Deploys the application war file at JBOSS server by coping it to deploy directory of application server-->
@@ -510,7 +496,7 @@
 		        	 	 
 		        	      <section name="${DynamicExtensions.jar.details}">
 		        	        <attribute name="Version" value="${DynamicExtensions.jar.version}"/>
-		        	      	<attribute name="Creation date" value="${DynamicExtensions.jar.date}"/>
+		        	      	<attribute name="Date" value="${DynamicExtensions.jar.date}"/>
 		        	      </section>
 		        	 </manifest>
 		        </jar>

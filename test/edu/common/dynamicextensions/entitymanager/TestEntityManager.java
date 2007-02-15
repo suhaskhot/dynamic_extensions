@@ -45,6 +45,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
 import edu.common.dynamicextensions.util.global.Variables;
+import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.logger.Logger;
 
@@ -2339,11 +2340,12 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			entityManagerInterface.persistContainer(userContainer);
 
 			//Step 7.
-			ContainerInterface newContainer = entityManagerInterface.getMainContainer(userGroup
+			NameValueBean containerNameValue = entityManagerInterface.getMainContainer(userGroup
 					.getId());
 
 			//Step 8.
-			assertEquals(newContainer.getCaption(), userContainer.getCaption());
+			assertEquals(containerNameValue.getName(), userContainer.getCaption());
+			assertEquals(containerNameValue.getValue(), userContainer.getId().toString());
 
 		}
 		catch (Exception e)

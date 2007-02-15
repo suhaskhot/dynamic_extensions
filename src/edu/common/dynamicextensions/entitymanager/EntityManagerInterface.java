@@ -17,6 +17,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterfa
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.AssociationTreeObject;
+import edu.wustl.common.beans.NameValueBean;
 
 /**
  * The methods only work on domain object interfaces and also return domain object interfaces or
@@ -423,5 +424,7 @@ public interface EntityManagerInterface
 	 * @param entityGroupIdentifier
 	 * @return
 	 */
-	ContainerInterface getMainContainer(Long entityGroupIdentifier)  throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	NameValueBean getMainContainer(Long entityGroupIdentifier)  throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	
+	Collection<NameValueBean> getAllEntityGroupBeans() throws DynamicExtensionsSystemException;
 }

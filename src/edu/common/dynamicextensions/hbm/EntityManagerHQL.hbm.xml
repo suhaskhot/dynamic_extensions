@@ -63,10 +63,8 @@
 		
 	
 	<query name="getAllGroupBeans">
-	
-	select entityGroup.id,entityGroup.name
-	   from EntityGroup entityGroup
-	         
+		select entityGroup.id,entityGroup.name
+			   from EntityGroup entityGroup
 	</query>
 	
 
@@ -86,6 +84,7 @@
 	</query>	
 	
 	<query name="getMainContainer">
+	  Select container.caption,container.id	
 		from edu.common.dynamicextensions.domain.userinterface.Container container
 			 where container.id = 
 			       (select entityGroup.mainContainer.id

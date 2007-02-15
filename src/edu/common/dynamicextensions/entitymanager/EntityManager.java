@@ -58,6 +58,7 @@ import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
+import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.bizlogic.AbstractBizLogic;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.dao.AbstractDAO;
@@ -2890,19 +2891,46 @@ public class EntityManager
 	/** 
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getMainContainer(java.lang.Long)
 	 */
-	public ContainerInterface getMainContainer(Long entityGroupIdentifier)
+	public NameValueBean getMainContainer(Long entityGroupIdentifier)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entityGroupIdentifier));
-		Collection containerCollection = executeHQL("getMainContainer", substitutionParameterMap);
-
-		if (!containerCollection.isEmpty())
+		Collection nameIdCollection = executeHQL("getMainContainer", substitutionParameterMap);
+		NameValueBean containerNameValue = null;
+		if (!nameIdCollection.isEmpty())
 		{
-			return (ContainerInterface) containerCollection.iterator().next();
+			Object[] nameIdArray =  (Object[]) nameIdCollection.iterator().next();
+			containerNameValue = new NameValueBean();
+			containerNameValue.setName(nameIdArray[0]);
+			containerNameValue.setValue(nameIdArray[1]);
+		}
+		return containerNameValue;
+	}
+	
+	/**
+	 * Returns all entitiy groups in the whole system
+	 * @return Collection Entity group Beans Collection
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public Collection<NameValueBean> getAllEntityGroupBeans()
+			throws DynamicExtensionsSystemException
+	{
+		Collection<NameValueBean> entityGroupBeansCollection = new ArrayList<NameValueBean>();
+		Collection groupBeansCollection = executeHQL("getAllGroupBeans", new HashMap());
+		Iterator groupBeansIterator = groupBeansCollection.iterator();
+		Object[] objectArray;
+
+		while (groupBeansIterator.hasNext())
+		{
+			objectArray = (Object[]) groupBeansIterator.next();
+			NameValueBean entityGroupNameValue = new NameValueBean();
+			entityGroupNameValue.setName(objectArray[1]);
+			entityGroupNameValue.setValue(objectArray[0]);
+			entityGroupBeansCollection.add(entityGroupNameValue);
 		}
 
-		return null;
+		return entityGroupBeansCollection;
 	}
 
 	/**

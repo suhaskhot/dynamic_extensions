@@ -52,22 +52,20 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 			{
 				ControlsUtility.reinitializeSequenceNumbers(containerInterface.getControlCollection(),controlsForm.getControlsSequenceNumbers());
 			}
-			//Action can be either add sub-form or add control to form  
+			//Action can be either add sub-form or add control to form
 			if (isAddSubFormAction(controlsForm.getUserSelectedTool()))
 			{
-				//add sub form
-				addSubForm();
+				String operationMode = request.getParameter("operationMode");
+				request.setAttribute("operationMode", operationMode);
 				return mapping.findForward(Constants.ADD_SUB_FORM);
 			}
 			else
 			{
-				
 				//Add form control
 				addControlToForm(containerInterface, controlsForm);
 				request.setAttribute("controlsList",controlsForm.getChildList());
 				return mapping.findForward(Constants.SUCCESS);
 			}
-
 		}
 		catch (Exception e)
 		{
@@ -93,13 +91,6 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 		LoadFormControlsProcessor loadFormControlsProcessor = LoadFormControlsProcessor.getInstance();
 		loadFormControlsProcessor.loadFormControls(controlsForm, containerInterface);
 		controlsForm.setControlOperation(oldControlOperation);
-	}
-
-	/**
-	 * 
-	 */
-	private void addSubForm()
-	{
 	}
 
 	/**

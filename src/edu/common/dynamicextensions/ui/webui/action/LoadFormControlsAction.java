@@ -65,6 +65,9 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 			if ((selectedControl != null) && (selectedControl instanceof ContainmentAssociationControl))
 			{
 				loadContainmentAssociationControl(request, (ContainmentAssociationControl) selectedControl, controlsForm);
+				String operationMode = request.getParameter("operationMode");
+				request.setAttribute("operationMode",operationMode);
+				request.setAttribute("currentContainerName", containerInterface.getCaption());
 				actionForwardString = Constants.EDIT_SUB_FORM_PAGE;
 			}
 			else

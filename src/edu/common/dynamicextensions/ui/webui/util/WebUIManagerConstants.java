@@ -27,7 +27,7 @@ public interface WebUIManagerConstants
 	/**
 	 * 
 	 */
-	String LOAD_DATA_ENTRY_FORM_ACTION_URL  =  "/dynamicExtensions/LoadDataEntryFormAction.do";
+	String LOAD_DATA_ENTRY_FORM_ACTION_URL  =  "/dynamicExtensions/LoadDataEntryFormAction.do?dataEntryOperation=insertParentData";
 	/**
 	 * 
 	 */

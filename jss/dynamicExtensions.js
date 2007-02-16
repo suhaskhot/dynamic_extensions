@@ -64,7 +64,8 @@ function addControlToFormTree()
 {
 	/* Create hidden variables for the option grid values */
 	var optionListTable = document.getElementById('optionListTable');
-	if(optionListTable!=null)
+	var optiongridDiv = document.getElementById('optiongrid');
+	if(optionListTable!=null && optiongridDiv!=null)
 	{
 		var myNewRow = optionListTable.insertRow(optionListTable.rows.length);
 		var myNewCell = myNewRow.insertCell(myNewRow.cells.length);
@@ -371,7 +372,7 @@ function changeSourceForValues(sourceControl)
 						while (source.indexOf("tempcsvFile") != -1)
 						{
 							source = source.replace("tempcsvFile","csvFile");
-						}
+						}						
 						valueSpecnDiv.innerHTML = source;
 						if(sourceControl.value == "UserDefined")
 						{

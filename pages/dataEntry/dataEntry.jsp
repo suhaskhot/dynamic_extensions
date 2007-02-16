@@ -134,7 +134,7 @@
 									<table cellpadding="4" cellspacing="5" border="0" align='center'>
 										<tr height="5"></tr>
 										<tr>
-											<td align='right'>						
+											<td align='center'>						
 												<c:choose>
 													<c:when test='${showFormPreview=="true"}'>
 														<html:submit styleClass="actionButton" onclick="showParentContainerInsertDataPage()">
@@ -162,13 +162,23 @@
 												</c:choose>	
 											</td>
 										</tr>
+
+										<tr align="center" valign="top">
+											<td valign="top">
+												<a href="/dynamicExtensions">[ DynamicExtensions Home Page ]</a>
+											</td>
+										</tr>
 									</table>
 								</td>
 							</tr>
 						</table>
 					</td>
 				</tr>
+				
 			</table>
+			
+			
+			
 	
 			<html:hidden styleId='recordIdentifier' property="recordIdentifier"/>
 			<html:hidden styleId='entitySaved' property="entitySaved"/>

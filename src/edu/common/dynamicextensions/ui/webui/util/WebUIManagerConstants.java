@@ -44,6 +44,10 @@ public interface WebUIManagerConstants
 	 * 
 	 */
 	String SUCCESS = "success";
+	/**
+	 * 
+	 */
+	String CANCELLED = "cancelled";
 	
 	/**
 	 * 

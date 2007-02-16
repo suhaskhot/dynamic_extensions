@@ -91,14 +91,16 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 						&& (mode != null && mode.equals("cancel")))
 				{
 					String recordIdentifier = dataEntryForm.getRecordIdentifier();
-					isCallbackURL = redirectCallbackURL(request, response, recordIdentifier);
+					isCallbackURL = redirectCallbackURL(request, response, recordIdentifier,
+							WebUIManagerConstants.CANCELLED);
 				}
 				else if (actionForward == null && errorList != null && errorList.isEmpty())
 				{
 					String recordIdentifier = dataEntryForm.getRecordIdentifier();
 					recordIdentifier = storeParentContainer(valueMapStack, containerStack, request,
 							recordIdentifier);
-					isCallbackURL = redirectCallbackURL(request, response, recordIdentifier);
+					isCallbackURL = redirectCallbackURL(request, response, recordIdentifier,
+							WebUIManagerConstants.SUCCESS);
 				}
 			}
 			catch (Exception exception)
@@ -132,7 +134,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @throws IOException
 	 */
 	private boolean redirectCallbackURL(HttpServletRequest request, HttpServletResponse response,
-			String recordIdentifier) throws IOException
+			String recordIdentifier, String webUIManagerConstant) throws IOException
 	{
 		boolean isCallbackURL = false;
 		String calllbackURL = (String) CacheManager.getObjectFromCache(request,
@@ -141,7 +143,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		{
 			calllbackURL = calllbackURL + "?" + WebUIManager.getRecordIdentifierParameterName()
 					+ "=" + recordIdentifier + "&" + WebUIManager.getOperationStatusParameterName()
-					+ "=" + WebUIManagerConstants.SUCCESS;
+					+ "=" + webUIManagerConstant;
 			CacheManager.clearCache(request);
 			response.sendRedirect(calllbackURL);
 			isCallbackURL = true;

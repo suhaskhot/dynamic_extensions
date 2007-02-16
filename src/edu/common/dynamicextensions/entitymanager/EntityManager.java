@@ -2263,7 +2263,7 @@ public class EntityManager
 	{
 		logDebug("saveOrUpdateEntity", "Entering method");
 
-		Entity entity = (Entity) entityInterface;//(Entity) DynamicExtensionsUtility.cloneObject(entityInterface);
+		Entity entity = (Entity) entityInterface;
 		if (processedEntityList.contains(entity))
 		{
 			return entity;
@@ -2272,29 +2272,25 @@ public class EntityManager
 		{
 			processedEntityList.add(entity);
 		}
-		if (entity.getParentEntity() != null && entity.getParentEntity().getId() == null)
-		{
-			throw new DynamicExtensionsApplicationException("Unsaved Parent not allowed", null,
-					DYEXTN_A_011);
-		}
-		List reverseQueryList = new LinkedList();
-		List queryList = null;
-
 		checkForDuplicateEntityName(entity);
 		Entity databaseCopy = null;
-
 		try
 		{
 			if (!isEntitySaved)
 			{
 				preSaveProcessEntity(entity);
-				if (entity.getParentEntity() != null)
+				EntityInterface parentEntity = entity.getParentEntity();
+				if (parentEntity != null)
 				{
-					saveOrUpdateEntityMetadata(entity.getParentEntity(), hibernateDAO,
-							rollbackQueryStack, true, processedEntityList);
+					boolean isParentEntitySaved = false;
+					if (parentEntity.getId() != null)
+					{
+						isParentEntitySaved = true;
+					}
+					saveOrUpdateEntityMetadata(parentEntity, hibernateDAO, rollbackQueryStack,
+							isParentEntitySaved, processedEntityList);
 				}
 				hibernateDAO.insert(entity, null, false, false);
-
 			}
 			else
 			{
@@ -2310,26 +2306,9 @@ public class EntityManager
 							rollbackQueryStack, true, processedEntityList);
 				}
 				hibernateDAO.update(entity, null, false, false, false);
-
 			}
 			postSaveProcessEntity(entity, hibernateDAO, rollbackQueryStack, processedEntityList);
 			hibernateDAO.update(entity, null, false, false, false);
-
-			if (entity.getDataTableState() == DATA_TABLE_STATE_CREATED)
-			{
-				if (!isEntitySaved)
-				{
-					queryList = queryBuilder.getCreateEntityQueryList(entity, reverseQueryList,
-							hibernateDAO, rollbackQueryStack);
-				}
-				else
-				{
-					queryList = queryBuilder.getUpdateEntityQueryList(entity,
-							(Entity) databaseCopy, reverseQueryList);
-				}
-
-				queryBuilder.executeQueries(queryList, reverseQueryList, rollbackQueryStack);
-			}
 		}
 		catch (UserNotAuthorizedException e)
 		{

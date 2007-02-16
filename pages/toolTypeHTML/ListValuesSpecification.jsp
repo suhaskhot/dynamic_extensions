@@ -128,7 +128,7 @@
 	<table id="optionListTable" width="100%">
 		<tr>
 			<td width="100%">
-				<html:file property="tempcsvFile" size="85"/>&nbsp;
+				<html:file property="tempcsvFile" size="60"/>&nbsp;
 				<button type="button" onclick="uploadValues()">Upload</button>
 			</td>
 		</tr>

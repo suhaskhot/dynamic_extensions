@@ -180,7 +180,7 @@
 			</div>
 
 			<input type="hidden" id="createGroupAsHidden" name="createGroupAsHidden" value="<%=createGroupAs%>" />
-			<html:hidden property='operationMode' value="<%=operationMode%>"/>;
+			<html:hidden property='operationMode' value="<%=operationMode%>"/>
 		</html:form>
 	</body>
 </html>

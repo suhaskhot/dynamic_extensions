@@ -14,7 +14,6 @@ import java.util.Map;
 import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
@@ -95,17 +94,16 @@ public class Container extends DynamicExtensionBaseDomainObject
 	 * 
 	 */
 	protected Boolean showAssociationControlsAsLink = false;
-	
+
 	/**
 	 * parent of this entity, null is no parent present. 
 	 */
 	protected ContainerInterface baseContainer = null;
-	
-	
+
 	/**
 	 * 
 	 */
-	protected ContainerInterface incontextContainer = this; 
+	protected ContainerInterface incontextContainer = this;
 
 	/**
 	 * @return
@@ -333,33 +331,33 @@ public class Container extends DynamicExtensionBaseDomainObject
 			controlCollection.clear();
 		}
 	}
-	
+
 	/** 
 	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getAllAttributes()
 	 */
-	public List <ControlInterface> getAllControls()
+	public List<ControlInterface> getAllControls()
 	{
 		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(this
 				.getControlCollection());
 		Collections.sort(controlsList);
-		Collections.reverse(controlsList);	
-		
-		List<ControlInterface> baseControlsList = new  ArrayList<ControlInterface> (); 
-		
+		Collections.reverse(controlsList);
+
+		List<ControlInterface> baseControlsList = new ArrayList<ControlInterface>();
+
 		ContainerInterface baseContainer = this.baseContainer;
-		while (baseContainer  != null)
+		while (baseContainer != null)
 		{
 			baseControlsList = new ArrayList(baseContainer.getControlCollection());
 			Collections.sort(baseControlsList);
 			Collections.reverse(baseControlsList);
-			
+
 			controlsList.addAll(baseControlsList);
-			
+
 			baseContainer.setIncontextContainer(this);
-			baseContainer  = baseContainer.getBaseContainer();
-			
+			baseContainer = baseContainer.getBaseContainer();
+
 		}
-		Collections.reverse(controlsList);	
+		Collections.reverse(controlsList);
 		return controlsList;
 	}
 
@@ -384,6 +382,13 @@ public class Container extends DynamicExtensionBaseDomainObject
 			stringBuffer.append("</td>");
 			stringBuffer.append("</tr>");
 		}
+		else
+		{
+			if (this.baseContainer != null)
+			{
+				this.baseContainer.setMode(this.mode);
+			}
+		}
 		stringBuffer.append(generateControlsHTML());
 		stringBuffer.append("</table>");
 		return stringBuffer.toString();
@@ -403,9 +408,9 @@ public class Container extends DynamicExtensionBaseDomainObject
 		stringBuffer.append("</td>");
 		stringBuffer.append("</tr>");
 
-	/*	List<ControlInterface> controlsList = new ArrayList<ControlInterface>(this
-				.getControlCollection());
-				*/
+		/*	List<ControlInterface> controlsList = new ArrayList<ControlInterface>(this
+		 .getControlCollection());
+		 */
 		List<ControlInterface> controlsList = getAllControls();
 		/*Collections.sort(controlsList);*/
 		for (ControlInterface control : controlsList)
@@ -516,6 +521,7 @@ public class Container extends DynamicExtensionBaseDomainObject
 
 		return stringBuffer.toString();
 	}
+
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getParentEntity()
 	 * @hibernate.many-to-one column="BASE_CONTAINER_ID" class="edu.common.dynamicextensions.domain.userinterface.Container" constrained="true" 
@@ -535,7 +541,6 @@ public class Container extends DynamicExtensionBaseDomainObject
 		this.baseContainer = baseContainer;
 	}
 
-	
 	/**
 	 * @return the incontextContainer
 	 */
@@ -544,7 +549,6 @@ public class Container extends DynamicExtensionBaseDomainObject
 		return incontextContainer;
 	}
 
-	
 	/**
 	 * @param incontextContainer the incontextContainer to set
 	 */

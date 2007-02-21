@@ -36,7 +36,7 @@ public class UploadFileAction extends BaseDynamicExtensionsAction
 		ControlsForm controlsForm = (ControlsForm) form;
 		FormFile file = controlsForm.getCsvFile();
 
-		String returnXML = "";
+		StringBuffer returnXML = new StringBuffer();
 		try
 		{
 			if (file != null && file.getFileSize() > 0)
@@ -44,13 +44,53 @@ public class UploadFileAction extends BaseDynamicExtensionsAction
 				byte[] fileContents = file.getFileData();
 				String fileContentString = new String(fileContents);
 				String[] rowsStrings = fileContentString.split("\n");
+
 				for (int i = 0; i < rowsStrings.length; i++)
 				{
-					returnXML += rowsStrings[i] + "|";
+					rowsStrings[i] = rowsStrings[i].trim();
+
+					StringBuffer tempRowString = new StringBuffer();
+					int firstfoundAt = 0;
+					int lastFoundAt = 0;
+					while (rowsStrings[i].indexOf("\"") != -1)
+					{
+						firstfoundAt = rowsStrings[i].indexOf("\"");
+						lastFoundAt = rowsStrings[i].indexOf("\"", firstfoundAt + 1);
+
+						if (firstfoundAt > 0)
+						{
+							tempRowString.append(rowsStrings[i].substring(0, firstfoundAt));
+						}
+
+						if (firstfoundAt != -1 && lastFoundAt != -1)
+						{
+
+							String columnValue = rowsStrings[i]
+									.substring(firstfoundAt, lastFoundAt);
+
+							columnValue = columnValue.replaceFirst("\"", "");
+							columnValue = columnValue.replace(",", " ");
+
+							tempRowString.append(columnValue);
+						}
+						rowsStrings[i] = rowsStrings[i].substring(lastFoundAt + 1);
+					}
+					
+					if(rowsStrings[i].length()>0)
+					{
+						tempRowString.append(rowsStrings[i]);
+					}
+					
+					if (tempRowString.length() > 0)
+					{
+						rowsStrings[i] = tempRowString.toString();
+					}
+					rowsStrings[i] = rowsStrings[i].replace("\r", "");
+					returnXML.append(rowsStrings[i] + "|");
 				}
 			}
-			request.setAttribute("xmlString", returnXML);
-			sendResponse(returnXML, response);
+
+			request.setAttribute("xmlString", returnXML.toString());
 		}
 		catch (Exception e)
 		{
@@ -62,19 +102,6 @@ public class UploadFileAction extends BaseDynamicExtensionsAction
 			return (mapping.findForward(actionForwardString));
 		}
 		return mapping.findForward("success");
-	}
-
-	/**
-	 * 
-	 * @param responseXML
-	 * @param response
-	 * @throws IOException
-	 */
-	private void sendResponse(String responseXML, HttpServletResponse response) throws IOException
-	{
-		PrintWriter out = response.getWriter();
-		response.setContentType("text/xml");
-		out.write(responseXML);
 	}
 
 }

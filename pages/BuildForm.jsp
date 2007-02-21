@@ -42,7 +42,7 @@
 				mygrid.setImagePath("dhtml_comp/imgs/");
 				mygrid.setHeader("#,Name,Type");
 				mygrid.enableAutoHeigth(true);
-				mygrid.setInitWidths("20,110,150")
+				mygrid.setInitWidthsP("6,47,47")
 				mygrid.setColAlign("center,left,left")
 				mygrid.setColTypes("ch,ed,ed");
 

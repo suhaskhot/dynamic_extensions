@@ -24,8 +24,7 @@
 		optionGrid = new dhtmlXGridObject('optiongrid');
 		optionGrid.setImagePath("dhtml_comp/imgs/");
 		optionGrid.setHeader("#,Option Name,Concept Code(s),Definiton");
-		optionGrid.enableAutoHeigth(true);
-		optionGrid.setInitWidths("20,100,150,330");
+		optionGrid.setInitWidthsP("3,35,22,40");
 		optionGrid.setColAlign("center,left,left,left");
 		optionGrid.setColTypes("ch,ed,ed,ed");
 		optionGrid.enableMultiselect(true);
@@ -103,20 +102,20 @@
 
 	function getContent(iframe)
 	{
-		var content = '';
+		var xmlContent = '';
 		if (iframe.contentDocument)
 		{
-			content = iframe.contentDocument.body.innerHTML; 
+			xmlContent = iframe.contentDocument.body.innerHTML; 
 		}
 		else if (iframe.contentWindow)
 		{
-			content = iframe.contentWindow.document.body.innerHTML;
+			xmlContent = iframe.contentWindow.document.body.innerHTML;
 		}
 		else if (iframe.document)
 		{
-		  content = iframe.document.body.innerHTML;
+		  xmlContent = iframe.document.body.innerHTML;
 		}
-		return content;
+		return xmlContent;
 	}
 </script>
 
@@ -134,12 +133,12 @@
 		</tr>
 		<tr id="optionsListRow">
 			<td width="100%">
-				<div id="tempoptiongrid" width="100%" height="200px" style="overflow:hidden"></div>
+				<div id="tempoptiongrid" width="100%" height="250px" style="overflow:hidden"></div>
 			</td>
 		</tr>
 		<tr>
 			<td width="100%">
-				<button align="left" type="button" onclick="addOptionRow()">Add Option</button>&nbsp;
+				<button align="left" type="button" onclick="addOptionRow()">Add Permissible Value</button>&nbsp;
 				<button align="left" type="button" onclick="deleteSelectedOptions()">Delete</button>&nbsp;
 				<button align="left" type="button" onclick="setDefaultValue()">Make Default</button>
 			</td>

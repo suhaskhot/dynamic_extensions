@@ -60,26 +60,6 @@
         />
 
         <set
-            name="semanticPropertyCollection"
-            lazy="false"
-            inverse="false"
-            cascade="save-update"
-            sort="unsorted"
-        >
-            <cache 
-                usage="read-write" 
-             />
-
-              <key
-                  column="ABSTRACT_METADATA_ID"
-              />
-
-              <one-to-many
-                  class="edu.common.dynamicextensions.domain.SemanticProperty"
-              />
-        </set>
-
-        <set
             name="taggedValueCollection"
             lazy="false"
             inverse="false"
@@ -96,6 +76,26 @@
 
               <one-to-many
                   class="edu.common.dynamicextensions.domain.TaggedValue"
+              />
+        </set>
+
+        <set
+            name="semanticPropertyCollection"
+            lazy="false"
+            inverse="false"
+            cascade="save-update"
+            sort="unsorted"
+        >
+            <cache 
+                usage="read-write" 
+             />
+
+              <key
+                  column="ABSTRACT_METADATA_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.SemanticProperty"
               />
         </set>
 

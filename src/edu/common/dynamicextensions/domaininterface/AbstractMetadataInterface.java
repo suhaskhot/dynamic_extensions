@@ -3,7 +3,8 @@ package edu.common.dynamicextensions.domaininterface;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
+
+import edu.common.dynamicextensions.domain.SemanticAnnotatableInterface;
 
 /**
  * This is an interface extended by EntityInterface,EntityGroupInterface,AttributeInterface.This interface contains
@@ -11,7 +12,7 @@ import java.util.List;
  * @author sujay_narkar
  *
  */
-public interface AbstractMetadataInterface extends DynamicExtensionBaseDomainObjectInterface
+public interface AbstractMetadataInterface extends SemanticAnnotatableInterface
 {
 
 	/**
@@ -75,49 +76,21 @@ public interface AbstractMetadataInterface extends DynamicExtensionBaseDomainObj
 	void setName(String name);
 
 	/**
-	 * This method returns the Collection of SemanticProperties of the AbstractMetadata.
-	 * @return the Collection of SemanticProperties of the AbstractMetadata.
+	 * 
+	 * @return
 	 */
-	Collection<SemanticPropertyInterface> getSemanticPropertyCollection();
+	Collection<TaggedValueInterface> getTaggedValueCollection();
 
 	/**
-	 * This method adds a SemanticProperty to the AbstractMetadata.
-	 * @param semanticPropertyInterface A SemanticProperty to be added.
+	 * Setter method for taggedValueCollection
+	 * @param taggedValueCollection Collection of tagged values.
 	 */
-	void addSemanticProperty(SemanticPropertyInterface semanticProperty);
-	
+	void setTaggedValueCollection(Collection<TaggedValueInterface> taggedValueCollection);
+
 	/**
-	 * This method removes a SemanticProperty from the AbstractMetadata.
-	 * @param semanticPropertyInterface A SemanticProperty to be removed.
+	 * 
+	 * @param taggedValueInterface
 	 */
-	public void removeSemanticProperty(SemanticPropertyInterface semanticPropertyInterface);
-	
-	/**
-	 * This method removes all SemanticProperties from AbstractMetadata.
-	 */
-	public void removeAllSemanticProperties();
-    /**
-     * 
-     * @return
-     */
-    Collection<TaggedValueInterface> getTaggedValueCollection();
-    /**
-     * Setter method for taggedValueCollection
-     * @param taggedValueCollection Collection of tagged values.
-     */
-    void setTaggedValueCollection(
-            Collection<TaggedValueInterface> taggedValueCollection);
-   
-    /**
-     * 
-     * @param taggedValueInterface
-     */
-    void addTaggedValue(TaggedValueInterface taggedValueInterface);
-    
-    /**
-     * Method returns sorted semantic properties based on the sequence number.
-     * @return
-     */
-    List getOrderedSemanticPropertyCollection();
+	void addTaggedValue(TaggedValueInterface taggedValueInterface);
 
 }

@@ -39,9 +39,12 @@
             cascade="save-update"
             sort="unsorted"
         >
+            <cache 
+                usage="read-write" 
+             />
 
               <key
-                  column="ABSTRACT_VALUE_ID"
+                  column="ABSTRACT_METADATA_ID"
               />
 
               <one-to-many

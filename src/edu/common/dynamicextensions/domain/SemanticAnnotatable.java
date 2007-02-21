@@ -86,7 +86,7 @@ abstract public class SemanticAnnotatable extends DynamicExtensionBaseDomainObje
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface#getOrderedSemanticPropertyCollection()
 	 */
-	public List getOrderedSemanticPropertyCollection()
+	public List<SemanticPropertyInterface> getOrderedSemanticPropertyCollection()
 	{
 		List<SemanticPropertyInterface> semanticPropertyList = new ArrayList<SemanticPropertyInterface>();
 

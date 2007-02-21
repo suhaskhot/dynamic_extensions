@@ -41,5 +41,5 @@ public interface SemanticAnnotatableInterface extends DynamicExtensionBaseDomain
 	 * Method returns sorted semantic properties based on the sequence number.
 	 * @return
 	 */
-	List getOrderedSemanticPropertyCollection();
+	List<SemanticPropertyInterface> getOrderedSemanticPropertyCollection();
 }

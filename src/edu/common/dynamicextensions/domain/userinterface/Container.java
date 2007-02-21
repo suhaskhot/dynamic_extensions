@@ -165,7 +165,7 @@ public class Container extends DynamicExtensionBaseDomainObject
 
 	/**
 	 * @hibernate.set name="controlCollection" table="DYEXTN_CONTROL"
-	 * cascade="save-update" inverse="false" lazy="false"
+	 * cascade="all-delete-orphan" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="CONTAINER_ID"
 	 * @hibernate.cache  usage="read-write"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.userinterface.Control"

@@ -11,6 +11,7 @@
         dynamic-update="false"
         dynamic-insert="false"
     >
+        <cache usage="read-write" />
 
         <id
             name="id"
@@ -45,9 +46,12 @@
             table="DYEXTN_CONTROL"
             lazy="false"
             inverse="false"
-            cascade="save-update"
+            cascade="all-delete-orphan"
             sort="unsorted"
         >
+            <cache 
+                usage="read-write" 
+             />
 
               <key
                   column="CONTAINER_ID"
@@ -98,6 +102,16 @@
             update="true"
             insert="true"
             column="TITLE_CSS"
+        />
+
+        <many-to-one
+            name="baseContainer"
+            class="edu.common.dynamicextensions.domain.userinterface.Container"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="BASE_CONTAINER_ID"
         />
 
         <!--

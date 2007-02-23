@@ -4,9 +4,6 @@
 
 package edu.common.dynamicextensions.ui.webui.action;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -64,7 +61,6 @@ public class UploadFileAction extends BaseDynamicExtensionsAction
 
 						if (firstfoundAt != -1 && lastFoundAt != -1)
 						{
-
 							String columnValue = rowsStrings[i]
 									.substring(firstfoundAt, lastFoundAt);
 
@@ -75,12 +71,12 @@ public class UploadFileAction extends BaseDynamicExtensionsAction
 						}
 						rowsStrings[i] = rowsStrings[i].substring(lastFoundAt + 1);
 					}
-					
-					if(rowsStrings[i].length()>0)
+
+					if (rowsStrings[i].length() > 0)
 					{
 						tempRowString.append(rowsStrings[i]);
 					}
-					
+
 					if (tempRowString.length() > 0)
 					{
 						rowsStrings[i] = tempRowString.toString();

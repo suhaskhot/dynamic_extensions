@@ -371,7 +371,8 @@ public class EntityManager
 		{
 			isEntityGroupNew = false;
 		}
-		entityGroup = saveOrUpdateEntityGroup(entityGroupInterface, isEntityGroupNew);
+		boolean isOnlyMetadata = false;
+		entityGroup = saveOrUpdateEntityGroup(entityGroupInterface, isEntityGroupNew,isOnlyMetadata);
 		logDebug("createEntity", "Exiting method");
 		return entityGroupInterface;
 	}
@@ -409,7 +410,8 @@ public class EntityManager
 				}
 			}
 		}
-		entityGroup = saveOrUpdateEntityGroup(entityGroupInterface, isEntityGroupNew);
+		boolean isOnlyMetadata = true;
+		entityGroup = saveOrUpdateEntityGroup(entityGroupInterface, isEntityGroupNew,isOnlyMetadata);
 		logDebug("createEntity", "Exiting method");
 		return entityGroupInterface;
 	}
@@ -2593,7 +2595,7 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException Thrown in case of duplicate name or authentication failure.
 	 */
 	private EntityGroup saveOrUpdateEntityGroup(EntityGroupInterface entityGroupInterface,
-			boolean isNew) throws DynamicExtensionsApplicationException,
+			boolean isNew,boolean isOnlyMetadata) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException
 	{
 		logDebug("saveOrUpdateEntityGroup", "Entering method");
@@ -2629,9 +2631,13 @@ public class EntityManager
 					{
 						isEntitySaved = true;
 					}
-					saveOrUpdateEntity(entityInterface, hibernateDAO, stack, isEntitySaved,
-							processedEntityList);
-
+					if (isOnlyMetadata) {
+						saveOrUpdateEntityMetadata(entityInterface, hibernateDAO, stack, isEntitySaved,
+								processedEntityList);
+					} else {
+						saveOrUpdateEntity(entityInterface, hibernateDAO, stack, isEntitySaved,
+								processedEntityList);
+					}
 				}
 			}
 			hibernateDAO.commit();

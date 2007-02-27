@@ -72,7 +72,7 @@
 										<tr valign="top">
 											<td class="formMessage" colspan="3">&nbsp;</td>
 										</tr>
-										<!--
+										
 										<tr valign="top" class="rowWithBottomPadding">
 											<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
 											<td class="formRequiredLabelWithoutBorder" width="12%">
@@ -87,12 +87,13 @@
 												</html:radio>
 											</td>
 										</tr>
-										-->
+										<!--
 										<tr>
 											<td>
 												<html:hidden styleId="createGroupAs" property="createGroupAs" value="<%=createGroupAs%>"/>
 											</td>
 										<tr>
+										-->
 										<tr valign="top" >
 											<td colspan="3" valign="top" class="cellWithNoLeftBottomPadding">
 												<div id="groupDetailsDiv"></div>

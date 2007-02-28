@@ -291,4 +291,6 @@ public interface AbstractAttributeUIBeanInterface
 	public void setGroupName(String groupName);
 	public String getFormName();
 	public void setFormName(String formName);
+	public String getCsvString();
+	public void setCsvString(String csvString);
 }

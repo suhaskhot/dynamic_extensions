@@ -33,6 +33,13 @@ public class UploadFileAction extends BaseDynamicExtensionsAction
 		ControlsForm controlsForm = (ControlsForm) form;
 		FormFile file = controlsForm.getCsvFile();
 
+		String totalRows = request.getParameter("totalRows");
+		int rowNos = 0;
+		if (totalRows != null || totalRows != "")
+		{
+			rowNos = Integer.parseInt(totalRows);
+		}
+
 		StringBuffer returnXML = new StringBuffer();
 		try
 		{
@@ -81,7 +88,7 @@ public class UploadFileAction extends BaseDynamicExtensionsAction
 					{
 						rowsStrings[i] = tempRowString.toString();
 					}
-					rowsStrings[i] = rowsStrings[i].replace("\r", "");
+					rowsStrings[i] = rowNos++ + ",," + rowsStrings[i];
 					returnXML.append(rowsStrings[i] + "|");
 				}
 			}

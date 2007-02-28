@@ -62,39 +62,13 @@ function showHomePageFromCreateGroup()
 
 function addControlToFormTree()
 {
-	/* Create hidden variables for the option grid values */
 	var optionListTable = document.getElementById('optionListTable');
 	var optiongridDiv = document.getElementById('optiongrid');
 	if(optionListTable!=null && optiongridDiv!=null)
 	{
-		var myNewRow = optionListTable.insertRow(optionListTable.rows.length);
-		var myNewCell = myNewRow.insertCell(myNewRow.cells.length);
-		myNewCell.innerHTML = "";
-		var rowNos = optionGrid.getRowsNum();
-		if(rowNos > 0)
-		{
-			var optionName = "";
-			var optionDescription = "";
-			var optionConceptCode = "";
-			var itemIds = optionGrid.getAllItemIds(",");
-			if(itemIds != null)
-			{
-				var rowIds = new Array();
-				rowIds = itemIds.split(',');
-				var item=0;
-				for(item=0; item<rowIds.length; item++)
-				{
-					optionName = optionGrid.cells(rowIds[item],1).getValue();
-					optionConceptCode = optionGrid.cells(rowIds[item],2).getValue();
-					optionDescription = optionGrid.cells(rowIds[item],3).getValue();
-							
-					//Add hidden variables for option names, option description and option concept codes
-					myNewCell.innerHTML += "<input type='hidden' id='optionNames' name='optionNames' value='" + optionName + "'/>"
-						+"<input type='hidden' id='optionConceptCodes' name='optionConceptCodes' value='" + optionConceptCode + "'/>"
-						+"<input type='hidden' id='optionDescriptions' name='optionDescriptions' value='" + optionDescription + "'/>";
-				}
-			}
-		}
+		optionGrid.setCSVDelimiter("\t");
+		var csvString = optionGrid.serializeToCSV();
+		document.getElementById('csvString').value = csvString;
 	}
 
 	document.getElementById('operation').value='controlAdded';
@@ -102,7 +76,7 @@ function addControlToFormTree()
 	if(document.getElementById("selectedAttributeIds")!=null)
 	{
 		selectAllListAttributes(document.getElementById("selectedAttributeIds"));
-	}	
+	}
 	controlsForm.action="/dynamicExtensions/AddControlsAction.do";
 	controlsForm.target="_self";
 	controlsForm.submit();

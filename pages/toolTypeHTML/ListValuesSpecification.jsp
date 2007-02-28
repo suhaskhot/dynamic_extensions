@@ -27,6 +27,7 @@
 		optionGrid.setInitWidthsP("3,35,22,40");
 		optionGrid.setColAlign("center,left,left,left");
 		optionGrid.setColTypes("ch,ed,ed,ed");
+		optionGrid.setSerializableColumns("false,true,true,true");
 		optionGrid.enableMultiselect(true);
 		optionGrid.init();
 		loadOptionGridData();
@@ -52,9 +53,8 @@
 						String gridContentStr = "," + optionName + "," + optionConceptCode + "," + optionDescription;
 						%>
 							rowId = <%=i%> + "";
-							optionGrid.addRow(rowId,'<%=gridContentStr%>');
-							
-							if(attributeDefaultValue == '<%=optionName%>')
+							optionGrid.addRow(rowId,"<%=gridContentStr%>");
+							if(attributeDefaultValue == "<%=optionName%>")
 							{
 								optionGrid.setRowTextBold(rowId);
 							}
@@ -68,13 +68,14 @@
     function uploadValues()
 	{
 		var controlsForm = document.getElementById('controlsForm');
+		var rowNos = optionGrid.getRowsNum();
 
 		var div = document.createElement('DIV');
 		div.id = 'tempDiv';
         div.innerHTML = '<iframe style="display:none" src="about:blank" id="tempIframe" name="tempIframe" onload="updateOptionGrid()"></iframe>';
         document.body.appendChild(div);
 
-		controlsForm.action = "UploadFileAction.do";
+		controlsForm.action = "UploadFileAction.do?totalRows=" + rowNos;
 		controlsForm.target = "tempIframe";
 		controlsForm.submit();
 	}
@@ -85,16 +86,14 @@
 		var returnedString = getContent(iframe);
 		if(returnedString != null && returnedString != "")
 		{
-			var rowNos = optionGrid.getRowsNum();
-			var rowId = "";
+			var loadCsvString = "";
 			var temp = new Array();
 			temp = returnedString.split('|');
 			for(i=0; i<temp.length-1;i++)
 			{
-				rowId = rowNos + "";
-				rowNos++;
-				optionGrid.addRow(rowId,','+temp[i]);
+				loadCsvString += temp[i] + "\r\n";
 			}
+			optionGrid.loadCSVString(loadCsvString);
 		}
 		var div = document.getElementById('tempDiv');
 		document.body.removeChild(div);
@@ -144,7 +143,8 @@
 			</td>
 		</tr>
 	</table>
-	<html:hidden styleId = 'attributeDefaultValue' property="attributeDefaultValue" />
+	<html:hidden styleId='attributeDefaultValue' property='attributeDefaultValue' />
+	<html:hidden styleId='csvString' property='csvString' />
 </div>
 
 <!--CDE Spcfn-->

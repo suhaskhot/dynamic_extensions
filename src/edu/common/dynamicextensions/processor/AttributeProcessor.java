@@ -665,9 +665,13 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		PermissibleValueInterface permissibleValue = null;
 		userDefinedDataEltInterface = DomainObjectFactory.getInstance().createUserDefinedDE();
 
-		String[] optionNames = attributeUIBeanInformationIntf.getOptionNames();
-		String[] optionDescriptions = attributeUIBeanInformationIntf.getOptionDescriptions();
-		String[] optionConceptCodes = attributeUIBeanInformationIntf.getOptionConceptCodes();
+		String csvString = attributeUIBeanInformationIntf.getCsvString();
+		String[][] csvValues = getValuesFromCsv(csvString);
+		
+		String[] optionNames = csvValues[0];
+		String[] optionDescriptions = csvValues[2];
+		String[] optionConceptCodes = csvValues[1];
+
 		String optionName = null, optionDesc = null, optionConceptCode = null;
 		Collection<SemanticPropertyInterface> semanticPropertiesForOptions = null;
 
@@ -690,6 +694,46 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 		}
 		return userDefinedDataEltInterface;
+	}
+
+	/**
+	 * 
+	 * @param csvString
+	 * @return
+	 */
+	private String[][] getValuesFromCsv(String csvString)
+	{
+		if(csvString==null)
+		{
+			csvString = "";
+		}
+		
+		String[] rowsStrings = csvString.split("\n");
+		String[][] csvValues = new String[3][];
+		for (int i = 0; i < csvValues.length; i++)
+		{
+			csvValues[i] = new String[rowsStrings.length];
+		}
+
+		for (int i = 0; i < rowsStrings.length; i++)
+		{
+			rowsStrings[i] = rowsStrings[i].trim();
+			String[] columnValues = rowsStrings[i].split("\t");
+
+			int j = 1;
+			while (j < columnValues.length)
+			{
+				if (columnValues[j] != null)
+				{
+					csvValues[j - 1][i] = columnValues[j++];
+				}
+				else
+				{
+					csvValues[j - 1][i] = "";
+				}
+			}
+		}
+		return csvValues;
 	}
 
 	/**
@@ -1370,7 +1414,6 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
 	{
 		// TODO Auto-generated method stub
-
 	}
 
 	/**

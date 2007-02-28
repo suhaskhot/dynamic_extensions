@@ -323,7 +323,7 @@ public class ControlsForm extends AbstractActionForm
 	
 	protected FormFile tempcsvFile;
 
-	//protected String csvString;
+	protected String csvString;
 	
 	/**
 	 * @return the tempcsvFile
@@ -1940,21 +1940,20 @@ public class ControlsForm extends AbstractActionForm
 		}
 	}
 
-	//	/**
-	//	 * @return the csvString
-	//	 */
-	//	public String getCsvString()
-	//	{
-	//		return csvString;
-	//	}
-	//
-	//	
-	//	/**
-	//	 * @param csvString the csvString to set
-	//	 */
-	//	public void setCsvString(String csvString)
-	//	{
-	//		this.csvString = csvString;
-	//	}
+	/**
+	 * @return the csvString
+	 */
+	public String getCsvString()
+	{
+		return csvString;
+	}
+
+	/**
+	 * @param csvString the csvString to set
+	 */
+	public void setCsvString(String csvString)
+	{
+		this.csvString = csvString;
+	}
 
 }

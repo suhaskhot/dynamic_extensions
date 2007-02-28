@@ -24,9 +24,10 @@
 
 		<script src="<%=request.getContextPath()%>/dhtml_comp/jss/dhtmlXCommon.js"></script>
 		<script src="<%=request.getContextPath()%>/dhtml_comp/jss/dhtmlXGrid.js"></script>
-		<script src="<%=request.getContextPath()%>/dhtml_comp/jss/dhtmlXGridCell.js"></script>
+		<script src="<%=request.getContextPath()%>/dhtml_comp/jss/dhtmlXGrid_nxml.js"></script>
 		<script src="<%=request.getContextPath()%>/dhtml_comp/jss/dhtmlXGrid_drag.js"></script>
-
+		<script src="<%=request.getContextPath()%>/dhtml_comp/jss/dhtmlXGridCell.js"></script>
+		
 		<title>Dynamic Extensions</title>
 		<script language="JavaScript" type="text/javascript">
 			function initCancelOperation()

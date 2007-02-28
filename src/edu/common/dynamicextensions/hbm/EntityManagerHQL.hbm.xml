@@ -88,6 +88,7 @@
 		    from EntityGroup entityGroup
 		          join entityGroup.mainContainerCollection as mainContainers
  			       		where entityGroup.id =  ? 
+ 			       		  	 and mainContainers.entity.abstract = false
 	</query>
 	
 </hibernate-mapping>

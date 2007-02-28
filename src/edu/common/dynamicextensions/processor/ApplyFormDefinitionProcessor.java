@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
+import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -222,9 +223,9 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	{
 		if ((entityGroup != null) && (entity != null))
 		{
-			entity.removeAllEntityGroups();
-
+			//entity.removeAllEntityGroups();
 			entityGroup.addEntity(entity);
+			((EntityGroup)entityGroup).setCurrent(true);
 			entity.addEntityGroupInterface(entityGroup);
 		}
 	}

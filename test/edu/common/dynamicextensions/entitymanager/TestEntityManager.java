@@ -2325,6 +2325,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			//Step 2.
 			EntityGroupInterface userGroup = factory.createEntityGroup();
+			((EntityGroup) userGroup).setCurrent(true);
 
 			//Step 3.
 			userGroup.addEntity(user);
@@ -2332,6 +2333,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			//Step 4.
 			ContainerInterface userContainer = factory.createContainer();
+			
 			userContainer.setCaption("User Container");
 
 			//Step 5.
@@ -2341,10 +2343,12 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			entityManagerInterface.persistContainer(userContainer);
 
 			//Step 7.
-			NameValueBean containerNameValue = entityManagerInterface.getMainContainer(userGroup
-					.getId());
+			Collection<NameValueBean> containerNameValueCollection = entityManagerInterface.getMainContainer(userGroup.getId());
 
 			//Step 8.
+			assertEquals(containerNameValueCollection.size(),1);
+			NameValueBean containerNameValue = containerNameValueCollection.iterator().next();
+			
 			assertEquals(containerNameValue.getName(), userContainer.getCaption());
 			assertEquals(containerNameValue.getValue(), userContainer.getId().toString());
 
@@ -2402,11 +2406,10 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			entityManagerInterface.persistContainer(userContainer);
 
 			//Step 7.
-			NameValueBean containerNameValue = entityManagerInterface.getMainContainer(userGroup
-					.getId());
+			Collection<NameValueBean> containerNameValueCollection = entityManagerInterface.getMainContainer(userGroup.getId());
 
 			//Step 8.
-			assertNull(containerNameValue);
+			assertEquals(0,containerNameValueCollection.size());
 
 		}
 		catch (Exception e)

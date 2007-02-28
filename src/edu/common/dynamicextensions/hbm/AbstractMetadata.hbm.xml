@@ -365,15 +365,26 @@
             column="VERSION"
         />
 
-        <many-to-one
-            name="mainContainer"
-            class="edu.common.dynamicextensions.domain.userinterface.Container"
+        <set
+            name="mainContainerCollection"
+            table="DYEXTN_CONTAINER"
+            lazy="false"
+            inverse="false"
             cascade="none"
-            outer-join="auto"
-            update="true"
-            insert="true"
-            column="MAIN_CONTAINER_ID"
-        />
+            sort="unsorted"
+        >
+            <cache 
+                usage="read-write" 
+             />
+
+              <key
+                  column="ENTITY_GROUP_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.userinterface.Container"
+              />
+        </set>
 
         </joined-subclass>
         <joined-subclass

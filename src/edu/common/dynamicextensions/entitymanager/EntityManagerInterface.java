@@ -424,7 +424,7 @@ public interface EntityManagerInterface
 	 * @param entityGroupIdentifier
 	 * @return
 	 */
-	NameValueBean getMainContainer(Long entityGroupIdentifier)  throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	Collection<NameValueBean> getMainContainer(Long entityGroupIdentifier)  throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 	
 	Collection<NameValueBean> getAllEntityGroupBeans() throws DynamicExtensionsSystemException;
 }

@@ -63,14 +63,28 @@ public interface EntityGroupInterface extends AbstractMetadataInterface
 	 */
 	void removeEntity(EntityInterface entityInterface);
 
+	
 	/**
 	 * @return
 	 */
-	ContainerInterface getMainContainer();
+	Collection<ContainerInterface> getMainContainerCollection();
 
+	
 	/**
-	 * @param mainContainer
+	 * @param mainContainerCollection The mainContainerCollection to set.
 	 */
-	void setMainContainer(ContainerInterface mainContainer);
-
+	void setMainContainerCollection(Collection<ContainerInterface> mainContainerCollection);
+	
+	
+	/**
+	 * @param containerInterface
+	 */
+	void addMainContainer(ContainerInterface containerInterface);
+	
+	
+	/**
+	 * @param containerInterface
+	 */
+	void removeMainContainer(ContainerInterface containerInterface);
+	
 }

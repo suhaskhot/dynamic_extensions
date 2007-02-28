@@ -83,15 +83,12 @@
 	      where association.targetEntity.id = ?
 	</query>	
 	
-	<query name="getMainContainer">
-	  Select container.caption,container.id	
-		from edu.common.dynamicextensions.domain.userinterface.Container container
-			 where container.id = 
-			       (select entityGroup.mainContainer.id
-						   from EntityGroup entityGroup
-							      where entityGroup.id =  ?) 
-							        and container.entity.abstract = false
-	</query>	
+	<query name="getMainContainers">
+	  select new edu.wustl.common.beans.NameValueBean(mainContainers.caption , mainContainers.id)
+		    from EntityGroup entityGroup
+		          join entityGroup.mainContainerCollection as mainContainers
+ 			       		where entityGroup.id =  ? 
+	</query>
 	
 </hibernate-mapping>
     

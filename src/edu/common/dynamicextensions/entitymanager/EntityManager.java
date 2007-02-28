@@ -372,7 +372,8 @@ public class EntityManager
 			isEntityGroupNew = false;
 		}
 		boolean isOnlyMetadata = false;
-		entityGroup = saveOrUpdateEntityGroup(entityGroupInterface, isEntityGroupNew,isOnlyMetadata);
+		entityGroup = saveOrUpdateEntityGroup(entityGroupInterface, isEntityGroupNew,
+				isOnlyMetadata);
 		logDebug("createEntity", "Exiting method");
 		return entityGroupInterface;
 	}
@@ -411,7 +412,8 @@ public class EntityManager
 			}
 		}
 		boolean isOnlyMetadata = true;
-		entityGroup = saveOrUpdateEntityGroup(entityGroupInterface, isEntityGroupNew,isOnlyMetadata);
+		entityGroup = saveOrUpdateEntityGroup(entityGroupInterface, isEntityGroupNew,
+				isOnlyMetadata);
 		logDebug("createEntity", "Exiting method");
 		return entityGroupInterface;
 	}
@@ -1369,6 +1371,11 @@ public class EntityManager
 				// queries that restores the database state to the state before calling this method
 				// in case of exception.
 
+				List<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
+
+				saveOrUpdateEntity(entity, hibernateDAO, rollbackQueryStack, isentitySaved,
+						processedEntityList);
+
 				//saveEntityGroup first
 				Set<EntityInterface> processedEntities = new HashSet<EntityInterface>();
 				Set<EntityGroupInterface> processedEntityGroups = new HashSet<EntityGroupInterface>();
@@ -1382,12 +1389,11 @@ public class EntityManager
 						entityGroup = (EntityGroup) session.saveOrUpdateCopy(entityGroup);
 						currentEntityGroup = entityGroup;
 					}
+					if (((EntityGroup) entityGroup).isCurrent())
+					{
+						currentEntityGroup = entityGroup;
+					}
 				}
-
-				List<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
-
-				saveOrUpdateEntity(entity, hibernateDAO, rollbackQueryStack, isentitySaved,
-						processedEntityList);
 
 				saveChildContainers(container, session);
 			}
@@ -1398,8 +1404,8 @@ public class EntityManager
 
 			if (currentEntityGroup != null)
 			{
-				currentEntityGroup.setMainContainer(container);
-				session.saveOrUpdateCopy(container);
+				currentEntityGroup.addMainContainer(container);
+				session.saveOrUpdateCopy(currentEntityGroup);
 			}
 
 			hibernateDAO.commit();
@@ -2595,7 +2601,7 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException Thrown in case of duplicate name or authentication failure.
 	 */
 	private EntityGroup saveOrUpdateEntityGroup(EntityGroupInterface entityGroupInterface,
-			boolean isNew,boolean isOnlyMetadata) throws DynamicExtensionsApplicationException,
+			boolean isNew, boolean isOnlyMetadata) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException
 	{
 		logDebug("saveOrUpdateEntityGroup", "Entering method");
@@ -2631,10 +2637,13 @@ public class EntityManager
 					{
 						isEntitySaved = true;
 					}
-					if (isOnlyMetadata) {
-						saveOrUpdateEntityMetadata(entityInterface, hibernateDAO, stack, isEntitySaved,
-								processedEntityList);
-					} else {
+					if (isOnlyMetadata)
+					{
+						saveOrUpdateEntityMetadata(entityInterface, hibernateDAO, stack,
+								isEntitySaved, processedEntityList);
+					}
+					else
+					{
 						saveOrUpdateEntity(entityInterface, hibernateDAO, stack, isEntitySaved,
 								processedEntityList);
 					}
@@ -2912,21 +2921,12 @@ public class EntityManager
 	/** 
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getMainContainer(java.lang.Long)
 	 */
-	public NameValueBean getMainContainer(Long entityGroupIdentifier)
+	public Collection<NameValueBean> getMainContainer(Long entityGroupIdentifier)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entityGroupIdentifier));
-		Collection nameIdCollection = executeHQL("getMainContainer", substitutionParameterMap);
-		NameValueBean containerNameValue = null;
-		if (!nameIdCollection.isEmpty())
-		{
-			Object[] nameIdArray = (Object[]) nameIdCollection.iterator().next();
-			containerNameValue = new NameValueBean();
-			containerNameValue.setName(nameIdArray[0]);
-			containerNameValue.setValue(nameIdArray[1]);
-		}
-		return containerNameValue;
+		return executeHQL("getMainContainers", substitutionParameterMap);
 	}
 
 	/**

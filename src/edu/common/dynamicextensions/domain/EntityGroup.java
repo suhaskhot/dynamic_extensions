@@ -43,11 +43,15 @@ public class EntityGroup extends AbstractMetadata implements java.io.Serializabl
 	 */
 	protected Collection<EntityInterface> entityCollection = new HashSet<EntityInterface>();
 	
+	/**
+	 * 
+	 */
+	boolean isCurrent = false;
 	
 	/**
 	 * 
 	 */
-	protected ContainerInterface mainContainer; 
+	protected Collection<ContainerInterface> mainContainerCollection = new HashSet<ContainerInterface>(); 
 
 	/**
 	 * Empty Constructor
@@ -134,6 +138,8 @@ public class EntityGroup extends AbstractMetadata implements java.io.Serializabl
 	{
 		this.version = version;
 	}
+	
+
 
      /**
      * 
@@ -158,24 +164,65 @@ public class EntityGroup extends AbstractMetadata implements java.io.Serializabl
     }
 
 	
-	/**
-	 * @hibernate.many-to-one column="MAIN_CONTAINER_ID" class="edu.common.dynamicextensions.domain.userinterface.Container" constrained="true"
-	 * @return Returns the mainContainer.
-	 */
-	public ContainerInterface getMainContainer()
-	{
-		return this.mainContainer;
-	}
+
+
 	
+	
+    /**
+	 * This method returns the Collection of AbstractAttribute.
+	 * @hibernate.set name="mainContainerCollection" table="DYEXTN_CONTAINER"
+	 * cascade="none" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="ENTITY_GROUP_ID"
+	 * @hibernate.cache  usage="read-write"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.userinterface.Container" 
+	 * @return the Collection of main containers of this entity group.
+	 */
+	public Collection<ContainerInterface> getMainContainerCollection()
+	{
+		return mainContainerCollection;
+	}
 
 	
 	/**
-	 * 
-	 * @param mainContainer The mainContainer to set.
+	 * @param mainContainerCollection The mainContainerCollection to set.
 	 */
-	public void setMainContainer(ContainerInterface mainContainer)
+	public void setMainContainerCollection(Collection<ContainerInterface> mainContainerCollection)
 	{
-		this.mainContainer = mainContainer;
+		this.mainContainerCollection = mainContainerCollection;
 	}
+
+	/**
+	 * @return Returns the isCurrent.
+	 */
+	public boolean isCurrent()
+	{
+		return isCurrent;
+	}
+
+	
+	/**
+	 * @param isCurrent The isCurrent to set.
+	 */
+	public void setCurrent(boolean isCurrent)
+	{
+		this.isCurrent = isCurrent;
+	}
+
+	/**
+	 * @see edu.common.dynamicextensions.domaininterface.EntityGroupInterface#addMainContainer(edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface)
+	 */
+	public void addMainContainer(ContainerInterface containerInterface)
+	{
+		this.mainContainerCollection.add(containerInterface);
+	}
+
+	/**
+	 * @see edu.common.dynamicextensions.domaininterface.EntityGroupInterface#removeMainContainer(edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface)
+	 */
+	public void removeMainContainer(ContainerInterface containerInterface)
+	{
+		this.mainContainerCollection.remove(containerInterface);
+	}
+	 
 
 }

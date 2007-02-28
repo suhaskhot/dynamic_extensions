@@ -2390,6 +2390,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			//Step 2.
 			EntityGroupInterface userGroup = factory.createEntityGroup();
+			((EntityGroup)userGroup).setCurrent(true);
 
 			//Step 3.
 			userGroup.addEntity(user);

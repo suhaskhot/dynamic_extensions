@@ -162,24 +162,14 @@
 												</c:choose>	
 											</td>
 										</tr>
-
-										<tr align="center" valign="top">
-											<td valign="top">
-												<a href="/dynamicExtensions">[ DynamicExtensions Home Page ]</a>
-											</td>
-										</tr>
 									</table>
 								</td>
 							</tr>
 						</table>
 					</td>
 				</tr>
-				
 			</table>
-			
-			
-			
-	
+
 			<html:hidden styleId='recordIdentifier' property="recordIdentifier"/>
 			<html:hidden styleId='entitySaved' property="entitySaved"/>
 			<input type="hidden" id="childContainerId" name="childContainerId" value=""/>

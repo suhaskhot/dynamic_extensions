@@ -70,6 +70,7 @@ public abstract class PermissibleValue extends DynamicExtensionBaseDomainObject
 	 * @hibernate.set name="semanticPropertyCollection" cascade="save-update"
 	 * inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ABSTRACT_VALUE_ID"
+	 * @hibernate.cache  usage="read-write"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.SemanticProperty"
 	 * @return Returns the semanticPropertyCollection.
 	 */

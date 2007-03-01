@@ -2412,28 +2412,32 @@ public class EntityManager
 		//get association values. 
 		recordValues.putAll(queryBuilder.getAssociationGetRecordQueryList(entity, recordId));
 
-		StringBuffer query = new StringBuffer();
-
-		query.append(SELECT_KEYWORD).append(WHITESPACE);
-
-		for (int i = 0; i < selectColumnNameList.size(); i++)
-		{
-			if (i != 0)
-			{
-				query.append(" , ");
-			}
-			query.append(selectColumnNameList.get(i));
-		}
-
-		query.append(WHITESPACE).append(FROM_KEYWORD).append(WHITESPACE).append(tableName).append(
-				WHITESPACE).append(WHERE_KEYWORD).append(WHITESPACE).append(IDENTIFIER).append(
-				EQUAL).append(recordId);
-
 		try
 		{
-			/*get values for simple attributes*/
-			recordValues.putAll(getAttributeValues(selectColumnNameList, query.toString(),
-					columnNameMap));
+
+			if (!selectColumnNameList.isEmpty())
+			{
+
+				StringBuffer query = new StringBuffer();
+				query.append(SELECT_KEYWORD).append(WHITESPACE);
+
+				for (int i = 0; i < selectColumnNameList.size(); i++)
+				{
+					if (i != 0)
+					{
+						query.append(" , ");
+					}
+					query.append(selectColumnNameList.get(i));
+				}
+
+				query.append(WHITESPACE).append(FROM_KEYWORD).append(WHITESPACE).append(tableName)
+						.append(WHITESPACE).append(WHERE_KEYWORD).append(WHITESPACE).append(
+								IDENTIFIER).append(EQUAL).append(recordId);
+				/*get values for simple attributes*/
+
+				recordValues.putAll(getAttributeValues(selectColumnNameList, query.toString(),
+						columnNameMap));
+			}
 
 			/*
 			 * process any multi select attributes
@@ -2937,21 +2941,22 @@ public class EntityManager
 	public Collection<NameValueBean> getAllEntityGroupBeans()
 			throws DynamicExtensionsSystemException
 	{
-		Collection<NameValueBean> entityGroupBeansCollection = new ArrayList<NameValueBean>();
-		Collection groupBeansCollection = executeHQL("getAllGroupBeans", new HashMap());
-		Iterator groupBeansIterator = groupBeansCollection.iterator();
-		Object[] objectArray;
-
-		while (groupBeansIterator.hasNext())
-		{
-			objectArray = (Object[]) groupBeansIterator.next();
-			NameValueBean entityGroupNameValue = new NameValueBean();
-			entityGroupNameValue.setName(objectArray[1]);
-			entityGroupNameValue.setValue(objectArray[0]);
-			entityGroupBeansCollection.add(entityGroupNameValue);
-		}
-
-		return entityGroupBeansCollection;
+		return executeHQL("getAllGroupBeans", new HashMap());
+		//		Collection<NameValueBean> entityGroupBeansCollection = new ArrayList<NameValueBean>();
+		//		Collection groupBeansCollection = executeHQL("getAllGroupBeans", new HashMap());
+		//		Iterator groupBeansIterator = groupBeansCollection.iterator();
+		//		Object[] objectArray;
+		//
+		//		while (groupBeansIterator.hasNext())
+		//		{
+		//			objectArray = (Object[]) groupBeansIterator.next();
+		//			NameValueBean entityGroupNameValue = new NameValueBean();
+		//			entityGroupNameValue.setName(objectArray[1]);
+		//			entityGroupNameValue.setValue(objectArray[0]);
+		//			entityGroupBeansCollection.add(entityGroupNameValue);
+		//		}
+		//
+		//		return entityGroupBeansCollection;
 	}
 
 	/**
@@ -3049,13 +3054,11 @@ public class EntityManager
 
 		Collection groupBeansCollection = executeHQL("getAllGroupBeans", new HashMap());
 		Iterator groupBeansIterator = groupBeansCollection.iterator();
-		Object[] objectArray;
 		AssociationTreeObject associationTreeObject;
 
 		while (groupBeansIterator.hasNext())
 		{
-			objectArray = (Object[]) groupBeansIterator.next();
-			associationTreeObject = processGroupBean(objectArray);
+			associationTreeObject = processGroupBean((NameValueBean) groupBeansIterator.next());
 			associationTreeObjectCollection.add(associationTreeObject);
 		}
 
@@ -3069,11 +3072,11 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	private AssociationTreeObject processGroupBean(Object[] objectArray)
+	private AssociationTreeObject processGroupBean(NameValueBean groupBean)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		AssociationTreeObject associationTreeObjectForGroup = new AssociationTreeObject(
-				(Long) objectArray[0], (String) objectArray[1]);
+		AssociationTreeObject associationTreeObjectForGroup = new AssociationTreeObject(new Long(
+				groupBean.getValue()), groupBean.getName());
 
 		Map substitutionParameterMap = new HashMap();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long",
@@ -3239,5 +3242,19 @@ public class EntityManager
 		Collection<AssociationInterface> assocationCollection = executeHQL(
 				"getAssociationsForTargetEntity", substitutionParameterMap);
 		return assocationCollection;
+	}
+
+	/**
+	 * @param containerId
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public String getContainerCaption(Long containerId) throws DynamicExtensionsSystemException
+	{
+		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", containerId));
+		Collection containerCaption = executeHQL("getContainerCaption", substitutionParameterMap);
+		return containerCaption.iterator().next().toString();
+
 	}
 }

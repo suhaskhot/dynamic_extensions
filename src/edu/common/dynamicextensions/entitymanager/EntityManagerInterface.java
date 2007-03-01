@@ -427,4 +427,11 @@ public interface EntityManagerInterface
 	Collection<NameValueBean> getMainContainer(Long entityGroupIdentifier)  throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 	
 	Collection<NameValueBean> getAllEntityGroupBeans() throws DynamicExtensionsSystemException;
+	
+	/**
+	 * @param containerId
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	String getContainerCaption(Long containerId) throws DynamicExtensionsSystemException;
 }

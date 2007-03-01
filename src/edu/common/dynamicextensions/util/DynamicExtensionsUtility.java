@@ -45,6 +45,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterfa
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerExceptionConstantsInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -275,8 +276,7 @@ public class DynamicExtensionsUtility
 	{
 		try
 		{
-			//			EntityManager.getInstance().getAllEntities();
-			//			EntityManager.getInstance().getAllContainers();
+			EntityManager.getInstance().getAllContainers();
 			DBUtil.currentSession();
 			DBUtil.closeSession();
 		}
@@ -318,6 +318,7 @@ public class DynamicExtensionsUtility
 	 */
 	public static void initialiseApplicationInfo()
 	{
+
 		String fileName = Variables.dynamicExtensionsHome + System.getProperty("file.separator")
 				+ ApplicationProperties.getValue("application.version.file");
 		CVSTagReader cvsTagReader = new CVSTagReader();
@@ -331,6 +332,17 @@ public class DynamicExtensionsUtility
 		Logger.out.info("Path: " + Variables.applicationHome);
 		Logger.out.info("Database Name: " + Variables.databaseName);
 		Logger.out.info("========================================================");
+
+		try
+		{
+			Logger.out.info("Preloading the DE metadata....This may take a few minutes");
+			EntityManager.getInstance().getAllContainers();
+
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 
 	public static AttributeTypeInformationInterface getAttributeTypeInformation(

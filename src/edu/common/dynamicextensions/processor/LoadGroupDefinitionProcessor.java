@@ -85,20 +85,21 @@ public class LoadGroupDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	public List populateGroupList() throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
-		List<NameValueBean> groupList = new ArrayList<NameValueBean>();
 		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
 		Collection entityGroupCollection = (Collection) entityManagerInterface
-				.getAllEntitiyGroups();
-		Iterator entityGroupIterator = entityGroupCollection.iterator();
-		EntityGroupInterface entityGroupInterface;
-		NameValueBean nameValueBean;
-		while (entityGroupIterator.hasNext())
-		{
-			entityGroupInterface = (EntityGroupInterface) entityGroupIterator.next();
-			nameValueBean = new NameValueBean(entityGroupInterface.getName(), entityGroupInterface
-					.getId());
-			groupList.add(nameValueBean);
-		}
+				.getAllEntityGroupBeans();
+		List<NameValueBean> groupList = new ArrayList<NameValueBean>(entityGroupCollection);
+
+//		Iterator entityGroupIterator = entityGroupCollection.iterator();
+//		EntityGroupInterface entityGroupInterface;
+//		NameValueBean nameValueBean;
+//		while (entityGroupIterator.hasNext())
+//		{
+//			entityGroupInterface = (EntityGroupInterface) entityGroupIterator.next();
+//			nameValueBean = new NameValueBean(entityGroupInterface.getName(), entityGroupInterface
+//					.getId());
+//			groupList.add(nameValueBean);
+//		}
 		DynamicExtensionsUtility.sortNameValueBeanListByName(groupList);
 		return groupList;
 	}

@@ -127,7 +127,9 @@
 		<tr>
 			<td width="100%">
 				<html:file property="tempcsvFile" size="60"/>&nbsp;
-				<button type="button" onclick="uploadValues()">Upload</button>
+				<html:button styleClass="formButton" property="uploadFile" onclick="uploadValues()">
+					<bean:message key="buttons.upload"/>
+				</html:button>
 			</td>
 		</tr>
 		<tr id="optionsListRow">
@@ -137,9 +139,15 @@
 		</tr>
 		<tr>
 			<td width="100%">
-				<button align="left" type="button" onclick="addOptionRow()">Add Permissible Value</button>&nbsp;
-				<button align="left" type="button" onclick="deleteSelectedOptions()">Delete</button>&nbsp;
-				<button align="left" type="button" onclick="setDefaultValue()">Make Default</button>
+				<html:button styleClass="formButton" property="addPermisibleValue" onclick="addOptionRow()">
+					<bean:message key="buttons.add.permissible.value"/>
+				</html:button>&nbsp;
+				<html:button styleClass="formButton" property="deletePermissibleValue" onclick="deleteSelectedOptions()">
+					<bean:message key="buttons.delete"/>
+				</html:button>&nbsp;
+				<html:button styleClass="formButton" property="makeDefault" onclick="setDefaultValue()">
+					<bean:message key="buttons.makeDefault"/>
+				</html:button>&nbsp;
 			</td>
 		</tr>
 	</table>

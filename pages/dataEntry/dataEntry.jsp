@@ -144,20 +144,25 @@
 													<c:otherwise>
 														<html:hidden styleId='isEdit' property="isEdit" value=""/>
 														
-														<html:button styleClass="actionButton" property="ok" onclick="showParentContainerInsertDataPage()" disabled="<%=isTopLevelEntity %>">
-															<bean:message key="buttons.ok" />
-														</html:button>
+														
+														<c:if test='${(isTopLevelEntity=="") || (isTopLevelEntity=="false")}'>
+															<html:button styleClass="actionButton" property="ok" onclick="showParentContainerInsertDataPage()" disabled="<%=isTopLevelEntity %>">
+																<bean:message key="buttons.submit" />
+															</html:button>
+														</c:if>
+														
+														<c:if test='${(mode=="edit") && (isTopLevelEntity=="true")}'>
+															<html:submit styleClass="actionButton" onclick="setInsertDataOperation()">
+																<bean:message key="buttons.submit" />
+															</html:submit>
+														</c:if>
 														
 														<c:if test='${!((mode=="view") && (isTopLevelEntity=="false"))}'>
 															<html:button styleClass="actionButton" property="cancel" onclick="cancelInsertData()">
 																<bean:message key="buttons.cancel" />
 															</html:button>
 														</c:if>
-														<c:if test='${(mode=="edit") && (isTopLevelEntity=="true")}'>
-															<html:submit styleClass="actionButton" onclick="setInsertDataOperation()">
-																<bean:message key="buttons.submit" />
-															</html:submit>
-														</c:if>
+														
 													</c:otherwise>
 												</c:choose>	
 											</td>

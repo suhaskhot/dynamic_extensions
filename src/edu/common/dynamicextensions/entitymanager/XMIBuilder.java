@@ -4,10 +4,11 @@ package edu.common.dynamicextensions.entitymanager;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -30,22 +31,6 @@ import edu.common.dynamicextensions.util.UniqueIDGenerator;
  */
 public class XMIBuilder implements XMIBuilderConstantsInterface
 {
-
-	public static void main(String[] args)
-	{
-		try
-		{
-			EntityGroupInterface entityGroup = new MockGroup().initializeEntityGroup();
-
-			XMIBuilder xmiBuilder = new XMIBuilder();
-			xmiBuilder.exportMetadataToXMI(entityGroup);
-		}
-		catch (DynamicExtensionsApplicationException dynamicExtensionsApplicationException)
-		{
-			System.out.print(dynamicExtensionsApplicationException.getMessage());
-			System.exit(1);
-		}
-	}
 
 	/**
 	 * This method generates the XMI file of the Entity object.
@@ -71,69 +56,15 @@ public class XMIBuilder implements XMIBuilderConstantsInterface
 		// Generate xmi for the EntityGroup 
 		Element groupElement = gernerateXMIFromEntityGroup(document, entityGroup, name_IdMap);
 
-		NodeList umlPackageList = document.getElementsByTagName("UML:Package");
-		for (int nodeIndex = 0; nodeIndex < umlPackageList.getLength(); nodeIndex++)
-		{
-			Element umlPackage = (Element) umlPackageList.item(nodeIndex);
-			String packageName = umlPackage.getAttribute("name");
-			if (packageName.equals("Logical Model"))
-			{
-				Element namespaceOwnedElement = (Element) umlPackage.getFirstChild();
-				namespaceOwnedElement.appendChild(groupElement);
-				break;
-			}
-		}
+		// Append Group package element at the appropriate position in the DOM 
+		Element logicalModelPackage = XMIBuilderUtil.getElementByTagAndName(document,
+				"UML:Package", "Logical Model");
+		Element namespaceOwnedElement = (Element) logicalModelPackage.getFirstChild();
+		namespaceOwnedElement.appendChild(groupElement);
 
 		String xmiFileName = entityGroup.getName() + ".xmi";
 		/* Write document to XMI file */
 		XMIBuilderUtil.writeDOMToXML(document, xmiFileName);
-	}
-
-	/**
-	 * This method appends children of UML:Paramenter to it.
-	 * @param document DOM Tree holder
-	 * @param umlParameter UML:Parameter element
-	 * @param eaXmiId the value of eaxmiid attribute of the UML:Classifier
-	 * @throws DynamicExtensionsApplicationException
-	 */
-	private void appendUMLParameterChildren(Document document, Element umlParameter, int eaXmiId)
-			throws DynamicExtensionsApplicationException
-	{
-		LinkedHashMap<String, String> tagAttributeMap = new LinkedHashMap<String, String>();
-
-		/* UML:Classifier */
-		Element element = (Element) umlParameter.getChildNodes().item(0);
-		tagAttributeMap.put("xmi.idref", "eaxmiid" + eaXmiId);
-		tagAttributeMap.put("xmi.id", element.getAttribute("xmi.id") + "_fix_0");
-
-		element.appendChild(UMLElementBuilder.getUMLClassifier(document, tagAttributeMap));
-
-		element = (Element) umlParameter.getChildNodes().item(1);
-		/* UML:Expression */
-		tagAttributeMap = new LinkedHashMap<String, String>();
-		tagAttributeMap.put("xmi.id", element.getAttribute("xmi.id") + "_fix_0");
-
-		element.appendChild(UMLElementBuilder.getUMLExpression(document, tagAttributeMap));
-	}
-
-	/**
-	 * This method is used by appendUMLDataType() method for creating attribute map for
-	 * different datatypes.
-	 * @param attributeName - Name of the datatype
-	 * @param eaXmiId - Identifier of the datatype element in the Document
-	 * @return
-	 */
-	private LinkedHashMap<String, String> createtagAttributeMap(String dataType, String eaXmiId)
-	{
-		LinkedHashMap<String, String> tagAttributeMap = new LinkedHashMap<String, String>();
-		tagAttributeMap.put("name", dataType);
-		tagAttributeMap.put("xmi.id", eaXmiId);
-		tagAttributeMap.put("visibility", "protected");
-		tagAttributeMap.put("isRoot", "false");
-		tagAttributeMap.put("isLeaf", "false");
-		tagAttributeMap.put("isAbstract", "false");
-
-		return tagAttributeMap;
 	}
 
 	private Element gernerateXMIFromEntityGroup(Document document,
@@ -148,10 +79,13 @@ public class XMIBuilder implements XMIBuilderConstantsInterface
 			// Create UML:Package element for the Group
 			groupPackageElement = generatePackageElement(document, groupName);
 			String groupPackageId = groupPackageElement.getAttribute("xmi.id");
+			LinkedHashMap<String, String> propertyMap = getPropertiesOfUMLPackageElement();
+			String modelElement = groupPackageId;
+			appendUMLTaggedValuesT0XMIContent(document, propertyMap, modelElement);
 			Element namespaceOwnedElement = (Element) groupPackageElement.getFirstChild();
 
 			String entityName = null, entityClassId = null;
-			Element entityClassElement, classifierFeatureElement;
+			Element entityClassElement = null, classifierFeatureElement = null;
 			Collection<EntityInterface> entityCollection = entityGroup.getEntityCollection();
 			for (EntityInterface entity : entityCollection)
 			{
@@ -160,6 +94,12 @@ public class XMIBuilder implements XMIBuilderConstantsInterface
 				// Create UML:Class element for the Entity
 				entityClassElement = generateClassElement(document, entityName, groupPackageId);
 				entityClassId = entityClassElement.getAttribute("xmi.id");
+				namespaceOwnedElement.appendChild(entityClassElement);
+
+				propertyMap = getPropertiesOfUMLClassElement(groupPackageId, groupName);
+				modelElement = entityClassElement.getAttribute("xmi.id");
+				appendUMLTaggedValuesT0XMIContent(document, propertyMap, modelElement);
+
 				// Create UML:ClassifierFeature element and append it to the UML:Class element
 				classifierFeatureElement = generateClassifierFeatureElement(document, entityClassId);
 				entityClassElement.appendChild(classifierFeatureElement);
@@ -189,11 +129,16 @@ public class XMIBuilder implements XMIBuilderConstantsInterface
 								isCollection, deXmiId);
 
 						classifierFeatureElement.appendChild(attributeElement);
+
+						// Append UML:TaggedValue for UML:Attribute
+						String description = abstractAttribute.getDescription();
+						String type = XMIBuilderUtil.getAttributeType(dataType);
+						propertyMap = getPropertiesOfUMLAttributeElement(type, isCollection,
+								description);
+						modelElement = attributeElement.getAttribute("xmi.id");
+						appendUMLTaggedValuesT0XMIContent(document, propertyMap, modelElement);
 					}
 				}
-
-				// Append the UML:Class element to the UML:Package 
-				namespaceOwnedElement.appendChild(entityClassElement);
 			}
 		}
 		return groupPackageElement;
@@ -209,57 +154,250 @@ public class XMIBuilder implements XMIBuilderConstantsInterface
 			throws DynamicExtensionsApplicationException
 	{
 		// Retreive the XMI.content element
-		Element xmiContent = (Element) document.getElementsByTagName("XMI.content").item(0);
-
-		LinkedHashMap<String, String> tagAttributeMap = null;
+		Element xmiContentElement = XMIBuilderUtil.getElementByTagAndName(document, "XMI.content",
+				null);
 
 		// Create and append UML:Model element to XMI:content
-		tagAttributeMap = new LinkedHashMap<String, String>();
-		tagAttributeMap.put("name", "EA Model");
-		tagAttributeMap.put("xmi.id", MODEL_ID_PREFIX + UniqueIDGenerator.getId());
-		Element eaModel = UMLElementBuilder.getUMLModel(document, tagAttributeMap);
-		xmiContent.appendChild(eaModel);
+		Element eaModelElement = generateEAModelElement(document);
+		xmiContentElement.appendChild(eaModelElement);
 
-		Element namespaceOwnedElement = (Element) eaModel.getFirstChild();
+		Element namespaceOwnedElement = (Element) eaModelElement.getFirstChild();
+		LinkedHashMap<String, String> propertyMap = null;
+		String modelElement = null;
 
 		// Create UML:Class
-		tagAttributeMap = new LinkedHashMap<String, String>();
+		Element eaRootClassElement = generateEAClassElement(document);
+		namespaceOwnedElement.appendChild(eaRootClassElement);
+
+		// Create UML:Package element for "Logical View"
+		Element logicalViewPackage = generatePackageElement(document, "Logical View");
+		namespaceOwnedElement.appendChild(logicalViewPackage);
+
+		// Append UML:TaggedValues for "Logical View" UML:Pcakage
+		propertyMap = generatePropertyMapForLogicalView(document);
+		modelElement = logicalViewPackage.getAttribute("xmi.id");
+		appendUMLTaggedValuesT0XMIContent(document, propertyMap, modelElement);
+
+		// Create UML:Package element for "Logical Model"
+		Element logicalModelPackage = generatePackageElement(document, "Logical Model");
+		namespaceOwnedElement = (Element) logicalViewPackage.getFirstChild();
+		namespaceOwnedElement.appendChild(logicalModelPackage);
+
+		// Append UML:TaggedValues for "Logical Model" UML:Pcakage
+		propertyMap = generatePropertyMapForLogicalModel(document);
+		modelElement = logicalModelPackage.getAttribute("xmi.id");
+		appendUMLTaggedValuesT0XMIContent(document, propertyMap, modelElement);
+
+		// Create UML:Package element for "java"
+		Element javaPackage = generateJavaPackage(document, name_IdMap);
+		namespaceOwnedElement = (Element) logicalModelPackage.getFirstChild();
+		namespaceOwnedElement.appendChild(javaPackage);
+
+		// Append UML:TaggedValue for 'java' UML:Package
+		propertyMap = getPropertiesOfUMLPackageElement();
+		modelElement = javaPackage.getAttribute("xmi.id");
+		appendUMLTaggedValuesT0XMIContent(document, propertyMap, modelElement);
+	}
+
+	private Element generateEAClassElement(Document document)
+			throws DynamicExtensionsApplicationException
+	{
+		LinkedHashMap<String, String> tagAttributeMap = new LinkedHashMap<String, String>();
 		tagAttributeMap.put("name", "EARootClass");
 		tagAttributeMap.put("xmi.id", CLASS_ID_PREFIX + UniqueIDGenerator.getId());
 		tagAttributeMap.put("isRoot", "true");
 		tagAttributeMap.put("isLeaf", "false");
 		tagAttributeMap.put("isAbstract", "false");
-		Element eaRootClass = UMLElementBuilder.getUMLClass(document, tagAttributeMap);
-		namespaceOwnedElement.appendChild(eaRootClass);
+		return UMLElementBuilder.getUMLClass(document, tagAttributeMap);
+	}
 
-		// Create and append UML:Package element
-		Element logicalView = generatePackageElement(document, "Logical View");
-		namespaceOwnedElement.appendChild(logicalView);
+	private Element generateEAModelElement(Document document)
+			throws DynamicExtensionsApplicationException
+	{
+		LinkedHashMap<String, String> tagAttributeMap = new LinkedHashMap<String, String>();
+		tagAttributeMap.put("name", "EA Model");
+		tagAttributeMap.put("xmi.id", MODEL_ID_PREFIX + UniqueIDGenerator.getId());
+		return UMLElementBuilder.getUMLModel(document, tagAttributeMap);
+	}
 
-		// Create and append UML:Package element
-		Element logicalModelPackage = generatePackageElement(document, "Logical Model");
-		namespaceOwnedElement = (Element) logicalView.getFirstChild();
-		namespaceOwnedElement.appendChild(logicalModelPackage);
+	private LinkedHashMap<String, String> generatePropertyMapForLogicalView(Document document)
+			throws DynamicExtensionsApplicationException
+	{
+		Element logicalViewPackage = XMIBuilderUtil.getElementByTagAndName(document, "UML:Package",
+				"Logical View");
+		LinkedHashMap<String, String> propertyMap = new LinkedHashMap<String, String>();
+		if (logicalViewPackage != null)
+		{
+			propertyMap.put("tpos", "5");
+			propertyMap.put("packageFlags", "CRC=0;isModel=1;VICON=3;");
 
-		namespaceOwnedElement = (Element) logicalModelPackage.getFirstChild();
-		Element javaPackage = generateJavaPackage(document, name_IdMap);
-		namespaceOwnedElement.appendChild(javaPackage);
+			propertyMap.putAll(getPropertiesOfUMLPackageElement());
+		}
+		return propertyMap;
+	}
+
+	private LinkedHashMap<String, String> generatePropertyMapForLogicalModel(Document document)
+			throws DynamicExtensionsApplicationException
+	{
+		Element logicalModelPackage = XMIBuilderUtil.getElementByTagAndName(document,
+				"UML:Package", "Logical Model");
+		LinkedHashMap<String, String> propertyMap = new LinkedHashMap<String, String>();
+		if (logicalModelPackage != null)
+		{
+			propertyMap.put("tpos", "0");
+			propertyMap.putAll(getPropertiesOfUMLPackageElement());
+		}
+		return propertyMap;
+	}
+
+	private void appendUMLTaggedValuesT0XMIContent(Document document,
+			LinkedHashMap<String, String> propertyMap, String modelElement)
+			throws DynamicExtensionsApplicationException
+	{
+		Element xmiContentElement = XMIBuilderUtil.getElementByTagAndName(document, "XMI.content",
+				null);
+		Set<Map.Entry<String, String>> entrySet = propertyMap.entrySet();
+		int propertyNumber = 0;
+		for (Map.Entry<String, String> entry : entrySet)
+		{
+			String tagName = entry.getKey();
+			String value = entry.getValue();
+			Element umlTaggedValueElement = generateUMLTagggedElement(document, modelElement,
+					propertyNumber++, tagName, value);
+			xmiContentElement.appendChild(umlTaggedValueElement);
+		}
+	}
+
+	private Element generateUMLTagggedElement(Document document, String modelElement,
+			int propertyNumber, String tagName, String value)
+			throws DynamicExtensionsApplicationException
+	{
+		LinkedHashMap<String, String> tagAttributeMap = new LinkedHashMap<String, String>();
+
+		tagAttributeMap.put("xmlns:UML", "href://org.omg/UML");
+		tagAttributeMap.put("xmi.id", modelElement + "_fix_" + propertyNumber);
+		tagAttributeMap.put("tag", tagName);
+		tagAttributeMap.put("modelElement", modelElement);
+		tagAttributeMap.put("value", value);
+
+		return UMLElementBuilder.getUMLTaggedValue(document, tagAttributeMap);
+	}
+
+	private LinkedHashMap<String, String> getPropertiesOfUMLPackageElement()
+	{
+		String timeStamp = XMIBuilderUtil.getCurrentTimestamp();
+		LinkedHashMap<String, String> propertyMap = new LinkedHashMap<String, String>();
+
+		propertyMap.put("created", timeStamp);
+		propertyMap.put("modified", timeStamp);
+		propertyMap.put("iscontrolled", "FALSE");
+		propertyMap.put("lastloaddate", timeStamp);
+		propertyMap.put("lastsavedate", timeStamp);
+		propertyMap.put("isprotected", "FALSE");
+		propertyMap.put("usedtd", "FALSE");
+		propertyMap.put("logxml", "FALSE");
+		propertyMap.put("batchsave", "0");
+		propertyMap.put("batchload", "0");
+		propertyMap.put("phase", "1.0");
+		propertyMap.put("status", "Proposed");
+		propertyMap.put("complexity", "1");
+		propertyMap.put("ea_stype", "Public");
+
+		return propertyMap;
+	}
+
+	private LinkedHashMap<String, String> getPropertiesOfUMLClassElement(String packageId,
+			String packageName)
+	{
+		String timeStamp = XMIBuilderUtil.getCurrentTimestamp();
+		LinkedHashMap<String, String> propertyMap = new LinkedHashMap<String, String>();
+
+		propertyMap.put("isSpecification", "false");
+		propertyMap.put("ea_stype", "Class");
+		propertyMap.put("ea_ntype", "0");
+		propertyMap.put("version", "1.0");
+		propertyMap.put("package", packageId);
+		propertyMap.put("date_created", timeStamp);
+		propertyMap.put("date_modified", timeStamp);
+		propertyMap.put("gentype", "Java");
+		propertyMap.put("tagged", "0");
+		propertyMap.put("package_name", packageName);
+		propertyMap.put("phase", "1.0");
+		propertyMap.put("complexity", "1");
+		propertyMap.put("status", "Proposed");
+		//propertyMap.put("ea_localid", ""); //787
+		propertyMap.put("ea_eleType", "element");
+		//propertyMap.put("eventflag", ""); //ATT=5b55;LNK=1d05;
+		propertyMap
+				.put("style",
+						"BackColor=-1;BorderColor=-1;BorderWidth=-1;FontColor=-1;VSwimLanes=0;HSwimLanes=0;BorderStyle=0;");
+
+		return propertyMap;
+	}
+
+	private LinkedHashMap<String, String> getPropertiesOfUMLAttributeElement(String type,
+			boolean isCollection, String description)
+	{
+		LinkedHashMap<String, String> propertyMap = new LinkedHashMap<String, String>();
+
+		propertyMap.put("type", type);
+		propertyMap.put("derived", "0");
+		propertyMap.put("containment", "Not Specified");
+		propertyMap.put("ordered", "0");
+		if (isCollection)
+		{
+			propertyMap.put("collection", "true");
+			propertyMap.put("upperBound", "*");
+		}
+		else
+		{
+			propertyMap.put("collection", "false");
+			propertyMap.put("upperBound", "1");
+		}
+		propertyMap.put("position", "0");
+		propertyMap.put("lowerBound", "1");
+		propertyMap.put("duplicates", "0");
+		//propertyMap.put("ea_guid", "");
+		//propertyMap.put("ea_localid", ""); //787
+		propertyMap.put("styleex", "volatile=0;");
+		propertyMap.put("description", description);
+
+		return propertyMap;
 	}
 
 	private Element generateJavaPackage(Document document, HashMap<String, String> name_IdMap)
 			throws DynamicExtensionsApplicationException
 	{
+		// Create UML:Package for 'java'
 		Element javaPackage = generatePackageElement(document, "java");
+
+		LinkedHashMap<String, String> propertyMap = getPropertiesOfUMLPackageElement();
+		String modelElement = null;
 		Element namespaceOwnedElement = (Element) javaPackage.getFirstChild();
 
+		// Create UML:Package for 'lang'
 		Element langPackage = generateLangPackage(document, name_IdMap);
 		namespaceOwnedElement.appendChild(langPackage);
 
+		// Append UML:TaggedValue for 'lang' UML:Package
+		modelElement = langPackage.getAttribute("xmi.id");
+		appendUMLTaggedValuesT0XMIContent(document, propertyMap, modelElement);
+
+		// Create UML:Pacakage for 'util'
 		Element utilPackage = generateUtilPackage(document, name_IdMap);
 		namespaceOwnedElement.appendChild(utilPackage);
 
+		// Append UML:TaggedValue for 'util' UML:Package
+		modelElement = utilPackage.getAttribute("xmi.id");
+		appendUMLTaggedValuesT0XMIContent(document, propertyMap, modelElement);
+
+		// Create UML:Pacakage for 'sql'
 		Element sqlPackage = generateSqlPackage(document, name_IdMap);
 		namespaceOwnedElement.appendChild(sqlPackage);
+
+		// Append UML:TaggedValue for 'sql' UML:Package
+		modelElement = sqlPackage.getAttribute("xmi.id");
+		appendUMLTaggedValuesT0XMIContent(document, propertyMap, modelElement);
 
 		return javaPackage;
 	}
@@ -270,35 +408,51 @@ public class XMIBuilder implements XMIBuilderConstantsInterface
 		Element langPackage = generatePackageElement(document, "lang");
 
 		Element namespaceOwnedElement = (Element) langPackage.getFirstChild();
-		String parenetId = langPackage.getAttribute("xmi.id");
+		String packageId = langPackage.getAttribute("xmi.id");
+		String packageName = langPackage.getAttribute("name");
+		String modelElement = null;
+		LinkedHashMap<String, String> propertyMap = getPropertiesOfUMLClassElement(packageId,
+				packageName);
 
-		Element longClass = generateClassElement(document, "Long", parenetId);
+		Element longClass = generateClassElement(document, "Long", packageId);
 		namespaceOwnedElement.appendChild(longClass);
+		modelElement = longClass.getAttribute("xmi.id");
+		appendUMLTaggedValuesT0XMIContent(document, propertyMap, modelElement);
 		name_IdMap.put(EntityManagerConstantsInterface.LONG_ATTRIBUTE_TYPE, longClass
 				.getAttribute("xmi.id"));
 
-		Element booleanClass = generateClassElement(document, "Boolean", parenetId);
+		Element booleanClass = generateClassElement(document, "Boolean", packageId);
 		namespaceOwnedElement.appendChild(booleanClass);
+		modelElement = booleanClass.getAttribute("xmi.id");
+		appendUMLTaggedValuesT0XMIContent(document, propertyMap, modelElement);
 		name_IdMap.put(EntityManagerConstantsInterface.BOOLEAN_ATTRIBUTE_TYPE, booleanClass
 				.getAttribute("xmi.id"));
 
-		Element stringClass = generateClassElement(document, "String", parenetId);
+		Element stringClass = generateClassElement(document, "String", packageId);
 		namespaceOwnedElement.appendChild(stringClass);
+		modelElement = stringClass.getAttribute("xmi.id");
+		appendUMLTaggedValuesT0XMIContent(document, propertyMap, modelElement);
 		name_IdMap.put(EntityManagerConstantsInterface.STRING_ATTRIBUTE_TYPE, stringClass
 				.getAttribute("xmi.id"));
 
-		Element integerClass = generateClassElement(document, "Integer", parenetId);
+		Element integerClass = generateClassElement(document, "Integer", packageId);
 		namespaceOwnedElement.appendChild(integerClass);
+		modelElement = integerClass.getAttribute("xmi.id");
+		appendUMLTaggedValuesT0XMIContent(document, propertyMap, modelElement);
 		name_IdMap.put(EntityManagerConstantsInterface.INTEGER_ATTRIBUTE_TYPE, integerClass
 				.getAttribute("xmi.id"));
 
-		Element doubleClass = generateClassElement(document, "Double", parenetId);
+		Element doubleClass = generateClassElement(document, "Double", packageId);
 		namespaceOwnedElement.appendChild(doubleClass);
+		modelElement = doubleClass.getAttribute("xmi.id");
+		appendUMLTaggedValuesT0XMIContent(document, propertyMap, modelElement);
 		name_IdMap.put(EntityManagerConstantsInterface.DOUBLE_ATTRIBUTE_TYPE, doubleClass
 				.getAttribute("xmi.id"));
 
-		Element floatClass = generateClassElement(document, "Float", parenetId);
+		Element floatClass = generateClassElement(document, "Float", packageId);
 		namespaceOwnedElement.appendChild(floatClass);
+		modelElement = floatClass.getAttribute("xmi.id");
+		appendUMLTaggedValuesT0XMIContent(document, propertyMap, modelElement);
 		name_IdMap.put(EntityManagerConstantsInterface.FLOAT_ATTRIBUTE_TYPE, floatClass
 				.getAttribute("xmi.id"));
 
@@ -311,12 +465,17 @@ public class XMIBuilder implements XMIBuilderConstantsInterface
 		Element sqlPackage = generatePackageElement(document, "sql");
 
 		Element namespaceOwnedElement = (Element) sqlPackage.getFirstChild();
-		String parenetId = sqlPackage.getAttribute("xmi.id");
+		String packageId = sqlPackage.getAttribute("xmi.id");
+		String packageName = sqlPackage.getAttribute("name");
+		LinkedHashMap<String, String> propertyMap = getPropertiesOfUMLClassElement(packageId,
+				packageName);
 
-		Element blobInterface = generateInterfaceElement(document, "Blob", parenetId);
+		Element blobInterface = generateInterfaceElement(document, "Blob", packageId);
+		namespaceOwnedElement.appendChild(blobInterface);
+		String modelElement = blobInterface.getAttribute("xmi.id");
+		appendUMLTaggedValuesT0XMIContent(document, propertyMap, modelElement);
 		name_IdMap.put(EntityManagerConstantsInterface.FILE_ATTRIBUTE_TYPE, blobInterface
 				.getAttribute("xmi.id"));
-		namespaceOwnedElement.appendChild(blobInterface);
 
 		return sqlPackage;
 	}
@@ -327,14 +486,19 @@ public class XMIBuilder implements XMIBuilderConstantsInterface
 		Element utilPackage = generatePackageElement(document, "util");
 
 		Element namespaceOwnedElement = (Element) utilPackage.getFirstChild();
-		String parenetId = utilPackage.getAttribute("xmi.id");
+		String packageId = utilPackage.getAttribute("xmi.id");
+		String packageName = utilPackage.getAttribute("name");
+		LinkedHashMap<String, String> propertyMap = getPropertiesOfUMLClassElement(packageId,
+				packageName);
 
-		Element dateClass = generateClassElement(document, "Date", parenetId);
+		Element dateClass = generateClassElement(document, "Date", packageId);
+		namespaceOwnedElement.appendChild(dateClass);
+		String modelElement = utilPackage.getAttribute("xmi.id");
+		appendUMLTaggedValuesT0XMIContent(document, propertyMap, modelElement);
 		name_IdMap.put(EntityManagerConstantsInterface.DATE_ATTRIBUTE_TYPE, dateClass
 				.getAttribute("xmi.id"));
 		name_IdMap.put(EntityManagerConstantsInterface.DATE_TIME_ATTRIBUTE_TYPE, dateClass
 				.getAttribute("xmi.id"));
-		namespaceOwnedElement.appendChild(dateClass);
 
 		return utilPackage;
 	}

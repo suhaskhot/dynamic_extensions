@@ -4,8 +4,6 @@
 
 package edu.common.dynamicextensions.entitymanager;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.LinkedHashMap;
 
 import org.w3c.dom.Document;
@@ -33,7 +31,7 @@ public class XMIElementsBuilder
 		LinkedHashMap<String, String> tagAttributeMap = new LinkedHashMap<String, String>();
 		tagAttributeMap.put("xmlns:UML", "omg.org/UML1.3");
 		tagAttributeMap.put("xmi.version", "1.3");
-		String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+		String timeStamp = XMIBuilderUtil.getCurrentTimestamp();
 		tagAttributeMap.put("timestamp", timeStamp);
 		Element xmiRoot = XMIBuilderUtil.createElementNode(document, "XMI", tagAttributeMap, null);
 

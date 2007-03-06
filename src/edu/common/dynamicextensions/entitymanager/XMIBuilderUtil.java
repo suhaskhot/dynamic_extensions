@@ -4,6 +4,8 @@
 
 package edu.common.dynamicextensions.entitymanager;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -18,6 +20,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 
@@ -108,4 +111,81 @@ public class XMIBuilderUtil
 		}
 	}
 
+	public static String getCurrentTimestamp()
+	{
+		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+	}
+
+	public static Element getElementByTagAndName(Document document, String tagName,
+			String elementName)
+	{
+		NodeList nodeList = document.getElementsByTagName(tagName);
+		Element element = null;
+		if (elementName != null)
+		{
+			Element _element = null;
+			for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++)
+			{
+				_element = (Element) nodeList.item(nodeIndex);
+				String name = _element.getAttribute("name");
+				if (name != null && name.equals(elementName))
+				{
+					element = _element;
+					break;
+				}
+			}
+		}
+		else
+		{
+			element = (Element) document.getElementsByTagName(tagName).item(0);
+		}
+		return element;
+	}
+
+	public static String getAttributeType(String dataType)
+	{
+		String attributeType = null;
+		if (dataType.equals(EntityManagerConstantsInterface.STRING_ATTRIBUTE_TYPE))
+		{
+			attributeType = "String";
+		}
+		else if (dataType.equals(EntityManagerConstantsInterface.FLOAT_ATTRIBUTE_TYPE))
+		{
+			attributeType = "Float";
+		}
+		else if (dataType.equals(EntityManagerConstantsInterface.SHORT_ATTRIBUTE_TYPE))
+		{
+			attributeType = "Short";
+		}
+		else if (dataType.equals(EntityManagerConstantsInterface.BOOLEAN_ATTRIBUTE_TYPE))
+		{
+			attributeType = "Boolean";
+		}
+		else if (dataType.equals(EntityManagerConstantsInterface.FILE_ATTRIBUTE_TYPE))
+		{
+			attributeType = "Blob";
+		}
+		else if (dataType.equals(EntityManagerConstantsInterface.DATE_ATTRIBUTE_TYPE))
+		{
+			attributeType = "Date";
+		}
+		else if (dataType.equals(EntityManagerConstantsInterface.DATE_TIME_ATTRIBUTE_TYPE))
+		{
+			attributeType = "Date";
+		}
+		else if (dataType.equals(EntityManagerConstantsInterface.DOUBLE_ATTRIBUTE_TYPE))
+		{
+			attributeType = "Double";
+		}
+		else if (dataType.equals(EntityManagerConstantsInterface.INTEGER_ATTRIBUTE_TYPE))
+		{
+			attributeType = "Integer";
+		}
+		else if (dataType.equals(EntityManagerConstantsInterface.LONG_ATTRIBUTE_TYPE))
+		{
+			attributeType = "Long";
+		}
+		return attributeType;
+	}
+	
 }

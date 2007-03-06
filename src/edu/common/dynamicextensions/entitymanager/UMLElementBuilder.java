@@ -28,14 +28,14 @@ public class UMLElementBuilder
 			LinkedHashMap<String, String> tagAttributeMap)
 			throws DynamicExtensionsApplicationException
 	{
-		Element umlModel = XMIBuilderUtil.createElementNode(document, "UML:Model", tagAttributeMap,
+		Element umlModelElement = XMIBuilderUtil.createElementNode(document, "UML:Model", tagAttributeMap,
 				null);
 
 		LinkedHashMap<String, String> xmiId = new LinkedHashMap<String, String>();
-		xmiId.put("xmi.id", (umlModel.getAttribute("xmi.id") + "_fix_0"));
-		umlModel.appendChild(getUMLNamespace_OwnedElement(document, xmiId));
+		xmiId.put("xmi.id", (umlModelElement.getAttribute("xmi.id") + "_fix_0"));
+		umlModelElement.appendChild(getUMLNamespace_OwnedElement(document, xmiId));
 
-		return umlModel;
+		return umlModelElement;
 	}
 
 	/**

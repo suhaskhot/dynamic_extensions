@@ -63,7 +63,7 @@
 		
 	
 	<query name="getAllGroupBeans">
-		select entityGroup.id,entityGroup.name
+		select new edu.wustl.common.beans.NameValueBean(entityGroup.name,entityGroup.id)
 			   from EntityGroup entityGroup
 	</query>
 	
@@ -90,6 +90,13 @@
  			       		where entityGroup.id =  ? 
  			       		  	 and mainContainers.entity.abstract = false
 	</query>
+	
+	<query name="getContainerCaption">
+	  select container.caption 
+		    from edu.common.dynamicextensions.domain.userinterface.Container container
+ 			       		where container.id =  ? 
+	</query>
+	
 	
 </hibernate-mapping>
     

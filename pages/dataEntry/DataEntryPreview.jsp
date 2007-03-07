@@ -87,9 +87,9 @@
 										<tr height="5"></tr>
 										<tr>
 											<td align='right'>						
-												<html:submit styleClass="actionButton" onclick="showParentContainerInsertDataPage()">
+												<html:button styleClass="actionButton" property = 'previewBack' onclick="showParentContainerInsertDataPage()">
 													 <bean:message key="buttons.back" />
-												</html:submit>
+												</html:button>
 											</td>
 										</tr>
 									</table>

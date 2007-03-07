@@ -114,9 +114,9 @@
 										<tr height="5"></tr>
 										<tr>
 											<td align='left'>
-												<html:button property="backToPrevious" styleClass="actionButton" onclick="backToControlForm()">
+												<input type=button property="backToPrevious" styleClass="actionButton" onclick="backToControlForm()">
 													<bean:message  key="buttons.backToPrevious"/>
-												</html:button>
+												</input>
 											</td>
 											<td align='right'>
 												<html:submit styleClass="actionButton" onclick="addDynamicData()">

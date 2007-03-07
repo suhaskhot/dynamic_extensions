@@ -63,7 +63,7 @@
 		
 	
 	<query name="getAllGroupBeans">
-		select new edu.wustl.common.beans.NameValueBean(entityGroup.name,entityGroup.id)
+		select entityGroup.name,entityGroup.id
 			   from EntityGroup entityGroup
 	</query>
 	

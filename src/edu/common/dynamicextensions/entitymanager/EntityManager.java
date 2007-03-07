@@ -2941,7 +2941,23 @@ public class EntityManager
 	public Collection<NameValueBean> getAllEntityGroupBeans()
 			throws DynamicExtensionsSystemException
 	{
-		return executeHQL("getAllGroupBeans", new HashMap());
+
+		Collection<NameValueBean> entityGroupBeansCollection = new ArrayList<NameValueBean>();
+		Collection groupBeansCollection = executeHQL("getAllGroupBeans", new HashMap());
+		Iterator groupBeansIterator = groupBeansCollection.iterator();
+		Object[] objectArray;
+
+		while (groupBeansIterator.hasNext())
+		{
+			objectArray = (Object[]) groupBeansIterator.next();
+			NameValueBean entityGroupNameValue = new NameValueBean();
+			entityGroupNameValue.setName(objectArray[0]);
+			entityGroupNameValue.setValue(objectArray[1]);
+			entityGroupBeansCollection.add(entityGroupNameValue);
+		}
+
+		return entityGroupBeansCollection;
+
 		//		Collection<NameValueBean> entityGroupBeansCollection = new ArrayList<NameValueBean>();
 		//		Collection groupBeansCollection = executeHQL("getAllGroupBeans", new HashMap());
 		//		Iterator groupBeansIterator = groupBeansCollection.iterator();
@@ -3052,7 +3068,7 @@ public class EntityManager
 	{
 		Collection associationTreeObjectCollection = new HashSet();
 
-		Collection groupBeansCollection = executeHQL("getAllGroupBeans", new HashMap());
+		Collection groupBeansCollection = getAllEntityGroupBeans();
 		Iterator groupBeansIterator = groupBeansCollection.iterator();
 		AssociationTreeObject associationTreeObject;
 

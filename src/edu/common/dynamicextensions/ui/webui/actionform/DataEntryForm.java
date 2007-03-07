@@ -67,6 +67,8 @@ public class DataEntryForm extends AbstractActionForm
 	 */
 	protected boolean isTopLevelEntity = true;
 	
+	protected String previewBack;
+	
 	/**
 	 * 
 	 * @param key
@@ -287,6 +289,24 @@ public class DataEntryForm extends AbstractActionForm
 	public void setIsTopLevelEntity(boolean isTopLevelEntity)
 	{
 		this.isTopLevelEntity = isTopLevelEntity;
+	}
+
+	
+	/**
+	 * @return the previewBack
+	 */
+	public String getPreviewBack()
+	{
+		return previewBack;
+	}
+
+	
+	/**
+	 * @param previewBack the previewBack to set
+	 */
+	public void setPreviewBack(String previewBack)
+	{
+		this.previewBack = previewBack;
 	}
 
 }

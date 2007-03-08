@@ -8,6 +8,8 @@ import java.util.Iterator;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.databaseproperties.DatabaseProperties;
+import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
@@ -17,6 +19,8 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.DatabasePropertiesInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
@@ -125,6 +129,11 @@ public class MockEntityManager
 				"William James Bill Murray is an Academy Award-nominated");
 		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
 		abstractAttributeInterface.setEntity(dummyEntity);
+		
+		TablePropertiesInterface  tablePropertiesInterface = new TableProperties();
+		tablePropertiesInterface.setName("DE_TABLE1");
+		
+		dummyEntity.setTableProperties(tablePropertiesInterface);
 
 		return dummyEntity;
 	}
@@ -152,6 +161,11 @@ public class MockEntityManager
 		abstractAttributeInterface = initializeStringAttribute("address", "");
 		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
 		abstractAttributeInterface.setEntity(dummyEntity);
+		
+		TablePropertiesInterface  tablePropertiesInterface = new TableProperties();
+		tablePropertiesInterface.setName("DE_TABLE2");
+		
+		dummyEntity.setTableProperties(tablePropertiesInterface);
 
 		return dummyEntity;
 	}
@@ -179,6 +193,11 @@ public class MockEntityManager
 				.setDataElement(initializeDataElement());
 		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
 		abstractAttributeInterface.setEntity(dummyEntity);
+		
+		TablePropertiesInterface  tablePropertiesInterface = new TableProperties();
+		tablePropertiesInterface.setName("DE_TABLE3");
+		
+		dummyEntity.setTableProperties(tablePropertiesInterface);
 
 		return dummyEntity;
 	}

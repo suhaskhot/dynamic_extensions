@@ -1847,3 +1847,9 @@ function appendRecordId(ths)
 	str = str+"&recordIdentifier="+recordIdentifier.value;
 	ths.href = str;
 }
+
+function deleteRecord(cotainerId,recordId,mode) {
+	var formsIndexForm = document.getElementById('recordListForm');
+	formsIndexForm.action = "/dynamicExtensions/DeleteRecordAction.do?containerIdentifier=" + cotainerId + "&recordIdentifier=" + recordId + "&mode=" + mode;
+	formsIndexForm.submit();
+}

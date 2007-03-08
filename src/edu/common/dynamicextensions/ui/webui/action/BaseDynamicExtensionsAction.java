@@ -22,6 +22,7 @@ import edu.wustl.common.util.logger.Logger;
 
 public class BaseDynamicExtensionsAction extends DispatchAction
 {
+
 	/**
 	 * This method is called from every action class when any of exception is caught,
 	 * Depending upon the type of exception the errorsList will be populated and returned to the action class,
@@ -31,26 +32,24 @@ public class BaseDynamicExtensionsAction extends DispatchAction
 	 * @param <String>errorMessagesList list of error messages
 	 * @return boolean flag to determine whether this is a systemexception or an applicationException 
 	 */
-	protected boolean handleException(Throwable throwable, List <String>errorMessagesList)
+	private boolean handleException(Throwable throwable, List<ActionError> errorMessagesList)
 	{
 		Logger.out.error(throwable.getStackTrace(), throwable);
 		Logger.out.debug(throwable.getStackTrace(), throwable);
 		boolean isSystemException = false;
-		if (errorMessagesList == null)
-		{
-			errorMessagesList = new ArrayList<String>();
-		}
+
 		if (throwable instanceof DynamicExtensionsApplicationException)
 		{
 			DynamicExtensionsApplicationException appException = (DynamicExtensionsApplicationException) throwable;
 			String errorCode = appException.getErrorCode();
-			errorMessagesList.add(errorCode);
+			errorMessagesList.add(new ActionError(errorCode, appException.getPlaceHolderList()));
+
 		}
 		else if (throwable instanceof DynamicExtensionsSystemException)
 		{
 			DynamicExtensionsSystemException systemException = (DynamicExtensionsSystemException) throwable;
 			String errorCode = systemException.getErrorCode();
-			errorMessagesList.add(errorCode);
+			errorMessagesList.add(new ActionError(errorCode, systemException.getPlaceHolderList()));
 			isSystemException = true;
 		}
 		return isSystemException;
@@ -61,20 +60,21 @@ public class BaseDynamicExtensionsAction extends DispatchAction
 	 * @param errorList List<String> list of error messages
 	 * @return ActionErrors list of error messages 
 	 */
-	protected ActionErrors getErrorMessages(List<String> errorList)
+	private ActionErrors getErrorMessages(List<ActionError> errorList)
 	{
 		ActionErrors actionErrors = new ActionErrors();
-		
+
 		if (errorList != null && !errorList.isEmpty())
 		{
-			for (String errorMessage : errorList)
+			for (ActionError actionError : errorList)
 			{
-				actionErrors.add(ActionErrors.GLOBAL_ERROR, new ActionError(errorMessage));
+				actionErrors.add(ActionErrors.GLOBAL_ERROR, actionError);
 			}
 		}
 
 		return actionErrors;
 	}
+
 	/**
 	 * 
 	 * @param e Exception e 
@@ -82,9 +82,10 @@ public class BaseDynamicExtensionsAction extends DispatchAction
 	 */
 	protected String catchException(Exception e, HttpServletRequest request)
 	{
-		List<String> list = new ArrayList<String>();
+		List<ActionError> list = new ArrayList<ActionError>();
 		boolean isSystemException = handleException(e, list);
-		saveErrors(request, getErrorMessages(list));
+		ActionErrors errors = getErrorMessages(list);
+		saveErrors(request, errors);
 		String actionForwardString = null;
 		if (isSystemException)
 		{
@@ -94,5 +95,5 @@ public class BaseDynamicExtensionsAction extends DispatchAction
 		}
 		return actionForwardString;
 	}
-	
+
 }

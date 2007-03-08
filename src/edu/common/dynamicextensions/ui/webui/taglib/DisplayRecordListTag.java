@@ -83,17 +83,20 @@ public class DisplayRecordListTag extends TagSupport
 			stringBuffer.append("<thead><tr class='formTitle'>");
 			stringBuffer.append("<th width='5%' align='center'>");
 			stringBuffer.append(ApplicationProperties.getValue("record.id"));
-			stringBuffer.append("</th>");
+			stringBuffer.append("</th><th>Delete</th>");
 			stringBuffer.append("</tr></thead>");
 
 			stringBuffer.append("<tbody>");
 			for (EntityRecord entityRecord : this.entityRecordList)
 			{
 				stringBuffer.append("<tr><td>");
-				
+
 				Long recordId = entityRecord.getRecordId();
 				if (recordId != null)
 				{
+					//					stringBuffer.append("<input type='checkbox' name='deleteCheckbox' id='deleteCheckbox' value=" + recordId.toString() + "/>");
+					//					stringBuffer.append("</td><td>");
+
 					stringBuffer.append("<span style='cursor:hand' ");
 					stringBuffer.append("onclick=\"setRecordListTarget(");
 
@@ -101,17 +104,25 @@ public class DisplayRecordListTag extends TagSupport
 							+ this.containerIdentifier
 							+ "&recordIdentifier="
 							+ recordId.toString()
-							+ "&showFormPreview=false"
-							+ "&mode=" + mode + "'";
-					
+							+ "&showFormPreview=false" + "&mode=" + mode + "'";
+
 					stringBuffer.append(target);
 					stringBuffer.append(")\">");
 
 					stringBuffer.append("Record No. " + recordId.toString());
 					stringBuffer.append("</span>");
+					stringBuffer.append("</td><td>");
+
+					stringBuffer.append("<span style='cursor:hand' ");
+					stringBuffer.append("onclick='deleteRecord(" + this.containerIdentifier + " , "
+							+ recordId.toString() + " ,\"" + mode + "\"" + ")'>");
+					stringBuffer.append("Delete </span>");
+
 				}
 				stringBuffer.append("</td></tr>");
+
 			}
+
 			stringBuffer.append("</tbody>");
 
 			stringBuffer.append("</table></div>");
@@ -165,7 +176,7 @@ public class DisplayRecordListTag extends TagSupport
 	{
 		return mode;
 	}
-	
+
 	/**
 	 * @param mode the mode to set
 	 */

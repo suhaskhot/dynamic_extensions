@@ -15,7 +15,14 @@ import java.sql.SQLException;
 
 import junit.framework.TestCase;
 import net.sf.hibernate.HibernateException;
+import edu.common.dynamicextensions.domain.DomainObjectFactory;
+import edu.common.dynamicextensions.domain.Entity;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.RoleInterface;
+import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Variables;
+import edu.common.dynamicextensions.util.global.Constants.AssociationType;
+import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
@@ -23,6 +30,7 @@ import edu.wustl.common.util.logger.Logger;
 public class DynamicExtensionsBaseTestCase extends TestCase
 {
 
+	protected int noOfDefaultColumns = 2;
 	/**
 	 * 
 	 */
@@ -177,6 +185,31 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 			return false;
 		}
 		return true;
+	}
+	
+	protected String getActivityStatus(EntityInterface entity , Long recordId) throws Exception {
+		ResultSet resultSet = executeQuery("select " + Constants.ACTIVITY_STATUS_COLUMN +  " from "
+				+ entity.getTableProperties().getName()  + " where identifier = " + recordId);
+		resultSet.next();
+		return resultSet.getString(1);
+	}
+	
+	/**
+	 * @param associationType associationType
+	 * @param name name
+	 * @param minCard  minCard
+	 * @param maxCard maxCard
+	 * @return  RoleInterface
+	 */
+	protected RoleInterface getRole(AssociationType associationType, String name,
+			Cardinality minCard, Cardinality maxCard)
+	{
+		RoleInterface role = DomainObjectFactory.getInstance().createRole();
+		role.setAssociationsType(associationType);
+		role.setName(name);
+		role.setMinimumCardinality(minCard);
+		role.setMaximumCardinality(maxCard);
+		return role;
 	}
 
 }

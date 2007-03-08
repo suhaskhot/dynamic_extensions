@@ -48,5 +48,13 @@ public interface EntityManagerExceptionConstantsInterface
 //   In case when parent is not saved for the entity.
      String DYEXTN_A_011 = "DYEXTN_A_011";
 //   Exception constant in case of discriminatorValue or discriminatorColumn not specified for TABLE_PER_HEIRARCHY 
+
      String DYEXTN_A_012 = "DYEXTN_A_012";
+//   In case when attribute is deleted having data present for it.
+     String DYEXTN_A_013 = "DYEXTN_A_013";
+     
+//   In case when of record deletion which is refered by some other record.
+     String DYEXTN_A_014 = "DYEXTN_A_014";
+     
+     
 }

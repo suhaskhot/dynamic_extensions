@@ -8,18 +8,18 @@ import java.util.Iterator;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
-import edu.common.dynamicextensions.domain.databaseproperties.DatabaseProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.common.dynamicextensions.domaininterface.DateValueInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
-import edu.common.dynamicextensions.domaininterface.databaseproperties.DatabasePropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -29,6 +29,9 @@ import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterf
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
+import edu.common.dynamicextensions.util.global.Constants.AssociationType;
+import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.wustl.common.util.Utility;
 
 /**
@@ -105,37 +108,35 @@ public class MockEntityManager
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		AbstractAttributeInterface abstractAttributeInterface = null;
 
-		EntityInterface dummyEntity = domainObjectFactory.createEntity();
+		EntityInterface person = domainObjectFactory.createEntity();
 
-		dummyEntity.setName("Entity1");
-		dummyEntity.setCreatedDate(new Date());
-		dummyEntity.setDescription("This is a dummy entity");
-		dummyEntity.setLastUpdated(dummyEntity.getCreatedDate());
+		person.setName("Person");
+		person.setCreatedDate(new Date());
+		person.setDescription("This is a dummy entity");
+		person.setLastUpdated(person.getCreatedDate());
 
 		// Attribute 1
 		abstractAttributeInterface = initializeDateAttribute();
-		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
-		abstractAttributeInterface.setEntity(dummyEntity);
+		person.addAbstractAttribute(abstractAttributeInterface);
+		abstractAttributeInterface.setEntity(person);
 
 		// Attribute 2
 		abstractAttributeInterface = initializeStringAttribute("gender", "Male");
 		((AttributeInterface) abstractAttributeInterface).getAttributeTypeInformation()
 				.setDataElement(initializeDataElement());
-		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
-		abstractAttributeInterface.setEntity(dummyEntity);
+		person.addAbstractAttribute(abstractAttributeInterface);
+		abstractAttributeInterface.setEntity(person);
 
 		// Attribute 3
-		abstractAttributeInterface = initializeStringAttribute("description",
-				"William James Bill Murray is an Academy Award-nominated");
-		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
-		abstractAttributeInterface.setEntity(dummyEntity);
-		
-		TablePropertiesInterface  tablePropertiesInterface = new TableProperties();
-		tablePropertiesInterface.setName("DE_TABLE1");
-		
-		dummyEntity.setTableProperties(tablePropertiesInterface);
+		abstractAttributeInterface = initializeStringAttribute("name", "");
+		person.addAbstractAttribute(abstractAttributeInterface);
+		abstractAttributeInterface.setEntity(person);
 
-		return dummyEntity;
+		TablePropertiesInterface tablePropertiesInterface = new TableProperties();
+		tablePropertiesInterface.setName("DE_TABLE1");
+		person.setTableProperties(tablePropertiesInterface);
+
+		return person;
 	}
 
 	public EntityInterface initializeEntity2() throws DynamicExtensionsApplicationException
@@ -143,31 +144,43 @@ public class MockEntityManager
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		AbstractAttributeInterface abstractAttributeInterface = null;
 
-		EntityInterface dummyEntity = domainObjectFactory.createEntity();
+		EntityInterface bioInformation = domainObjectFactory.createEntity();
 
-		dummyEntity.setName("Entity2");
-		dummyEntity.setCreatedDate(new Date());
-		dummyEntity.setDescription("This is a dummy entity");
-		dummyEntity.setLastUpdated(dummyEntity.getCreatedDate());
+		bioInformation.setName("BioInformation");
+		bioInformation.setCreatedDate(new Date());
+		bioInformation.setDescription("This is a dummy entity");
+		bioInformation.setLastUpdated(bioInformation.getCreatedDate());
 
 		// Attribute 1
-		abstractAttributeInterface = initializeStringAttribute("name", "");
-		((AttributeInterface) abstractAttributeInterface).getAttributeTypeInformation()
-				.setDataElement(initializeDataElement());
-		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
-		abstractAttributeInterface.setEntity(dummyEntity);
+		abstractAttributeInterface = initializeLongAttribute();
+		bioInformation.addAbstractAttribute(abstractAttributeInterface);
+		abstractAttributeInterface.setEntity(bioInformation);
 
 		// Attribute 2
-		abstractAttributeInterface = initializeStringAttribute("address", "");
-		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
-		abstractAttributeInterface.setEntity(dummyEntity);
-		
-		TablePropertiesInterface  tablePropertiesInterface = new TableProperties();
-		tablePropertiesInterface.setName("DE_TABLE2");
-		
-		dummyEntity.setTableProperties(tablePropertiesInterface);
+		abstractAttributeInterface = initializeDoubleAttribute();
+		((AttributeInterface) abstractAttributeInterface).getAttributeTypeInformation()
+				.setDataElement(initializeDataElement());
+		bioInformation.addAbstractAttribute(abstractAttributeInterface);
+		abstractAttributeInterface.setEntity(bioInformation);
 
-		return dummyEntity;
+		EntityInterface personal = initializeEntity3();
+
+		AssociationInterface association = domainObjectFactory.createAssociation();
+		association.setTargetEntity(personal);
+		association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+		association.setName("primaryInvestigator");
+		association.setSourceRole(getRole(AssociationType.ASSOCIATION, "person", Cardinality.ONE,
+				Cardinality.ONE));
+		association.setTargetRole(getRole(AssociationType.ASSOCIATION, "contact", Cardinality.ZERO,
+				Cardinality.MANY));
+
+		bioInformation.addAbstractAttribute(association);
+
+		TablePropertiesInterface tablePropertiesInterface = new TableProperties();
+		tablePropertiesInterface.setName("DE_TABLE2");
+		bioInformation.setTableProperties(tablePropertiesInterface);
+
+		return bioInformation;
 	}
 
 	public EntityInterface initializeEntity3() throws DynamicExtensionsApplicationException
@@ -175,31 +188,41 @@ public class MockEntityManager
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		AbstractAttributeInterface abstractAttributeInterface = null;
 
-		EntityInterface dummyEntity = domainObjectFactory.createEntity();
+		EntityInterface personal = domainObjectFactory.createEntity();
 
-		dummyEntity.setName("Entity3");
-		dummyEntity.setCreatedDate(new Date());
-		dummyEntity.setDescription("This is a dummy entity");
-		dummyEntity.setLastUpdated(dummyEntity.getCreatedDate());
+		personal.setName("Personal");
+		personal.setCreatedDate(new Date());
+		personal.setDescription("This is a dummy entity");
+		personal.setLastUpdated(personal.getCreatedDate());
 
 		// Attribute 1
-		abstractAttributeInterface = initializeLongAttribute();
-		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
-		abstractAttributeInterface.setEntity(dummyEntity);
-
-		// Attribute 2
-		abstractAttributeInterface = initializeDoubleAttribute();
+		abstractAttributeInterface = initializeStringAttribute("phone", "");
 		((AttributeInterface) abstractAttributeInterface).getAttributeTypeInformation()
 				.setDataElement(initializeDataElement());
-		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
-		abstractAttributeInterface.setEntity(dummyEntity);
-		
-		TablePropertiesInterface  tablePropertiesInterface = new TableProperties();
-		tablePropertiesInterface.setName("DE_TABLE3");
-		
-		dummyEntity.setTableProperties(tablePropertiesInterface);
+		personal.addAbstractAttribute(abstractAttributeInterface);
+		abstractAttributeInterface.setEntity(personal);
 
-		return dummyEntity;
+		// Attribute 2
+		abstractAttributeInterface = initializeStringAttribute("address", "");
+		personal.addAbstractAttribute(abstractAttributeInterface);
+		abstractAttributeInterface.setEntity(personal);
+
+		TablePropertiesInterface tablePropertiesInterface = new TableProperties();
+		tablePropertiesInterface.setName("DE_TABLE3");
+		personal.setTableProperties(tablePropertiesInterface);
+
+		return personal;
+	}
+
+	private RoleInterface getRole(AssociationType associationType, String name,
+			Cardinality minCard, Cardinality maxCard)
+	{
+		RoleInterface role = DomainObjectFactory.getInstance().createRole();
+		role.setAssociationsType(associationType);
+		role.setName(name);
+		role.setMinimumCardinality(minCard);
+		role.setMaximumCardinality(maxCard);
+		return role;
 	}
 
 	/**
@@ -489,17 +512,16 @@ public class MockEntityManager
 		entityGroupInterface.setDescription("Test description1");
 		entityGroupInterface.setVersion("1");
 
-		EntityInterface entity1 = initializeEntity();
+		EntityInterface person = initializeEntity();
 
-		EntityInterface entity2 = initializeEntity2();
-		entity2.setParentEntity(entity1);
+		EntityInterface bioInformation = initializeEntity2();
+		bioInformation.setParentEntity(person);
 
-		EntityInterface entity3 = initializeEntity3();
-		entity3.setParentEntity(entity2);
+		EntityInterface personal = initializeEntity3();
 
-		entityGroupInterface.addEntity(entity1);
-		entityGroupInterface.addEntity(entity2);
-		entityGroupInterface.addEntity(entity3);
+		entityGroupInterface.addEntity(person);
+		entityGroupInterface.addEntity(bioInformation);
+		entityGroupInterface.addEntity(personal);
 
 		return entityGroupInterface;
 	}

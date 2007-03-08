@@ -2505,7 +2505,7 @@ public class EntityManager
 						String format = dateAttributeTypeInf.getFormat();
 						if (format == null)
 						{
-							format = ProcessorConstants.DATE_ONLY_FORMAT;
+							format = Constants.DATE_ONLY_FORMAT;
 						}
 
 						valueObj = resultSet.getTimestamp(i + 1);

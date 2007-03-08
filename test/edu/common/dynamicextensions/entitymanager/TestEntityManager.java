@@ -623,15 +623,25 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
 		try
 		{
-			Entity entity = (Entity) new MockEntityManager().initializeEntity();
-			entity = (Entity) entityManagerInterface.persistEntity(entity);
+			EntityManagerInterface entityManager = EntityManager.getInstance();
+			DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+			// create user 
+			EntityInterface user = factory.createEntity();
+			AttributeInterface userNameAttribute = factory.createStringAttribute();
+			userNameAttribute.setName("user name");
+			user.setName("user");
+			user.addAbstractAttribute(userNameAttribute);
+
+			user = (Entity) entityManager.persistEntity(user);
 
 			AttributeInterface attributeInterface = (AttributeInterface) entityManagerInterface
-					.getAttribute("Employee", "gender");
+					.getAttribute("user", "user name");
 			assertNotNull(attributeInterface);
 		}
 		catch (Exception e)
 		{
+			e.printStackTrace();
 			//TODO Auto-generated catch block
 			Logger.out.debug(e.getMessage());
 			fail("Exception occured");
@@ -750,7 +760,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			assertEquals(1, resultSet.getInt(1));
 
-			assertEquals("Employee", entity.getName());
+			assertEquals("Person", entity.getName());
 			boolean isRecordDeleted = EntityManager.getInstance().deleteRecord(entity, new Long(1));
 			assertTrue(isRecordDeleted);
 
@@ -1234,7 +1244,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			entityManagerInterface.insertData(newEntity, dataValue);
 
-			assertEquals("Employee", entity.getName());
+			assertEquals("Person", entity.getName());
 			Map map = EntityManager.getInstance().getRecordById(entity, new Long(1));
 
 			System.out.println(map);

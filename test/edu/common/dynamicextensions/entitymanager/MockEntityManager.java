@@ -132,9 +132,9 @@ public class MockEntityManager
 		person.addAbstractAttribute(abstractAttributeInterface);
 		abstractAttributeInterface.setEntity(person);
 
-		TablePropertiesInterface tablePropertiesInterface = new TableProperties();
-		tablePropertiesInterface.setName("DE_TABLE1");
-		person.setTableProperties(tablePropertiesInterface);
+//		TablePropertiesInterface tablePropertiesInterface = new TableProperties();
+//		tablePropertiesInterface.setName("DE_TABLE1");
+//		person.setTableProperties(tablePropertiesInterface);
 
 		return person;
 	}

@@ -2,8 +2,6 @@
 package edu.common.dynamicextensions.entitymanager;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -38,73 +36,6 @@ public class MockEntityManager
 
 	int identifier = 1;
 	int sequence = 1;
-
-	/**
-	 * This method returns the manually created Entities.
-	 * 
-	 * @return The Collection of Entities
-	 * @throws DynamicExtensionsApplicationException If Entities can't be created
-	 */
-	@SuppressWarnings("unchecked")
-	public Collection getAllEntities() throws DynamicExtensionsApplicationException
-	{
-		/**
-		 * This is dummy Entity Class
-		 */
-		final class DummyEntity
-		{
-
-			private String entityName;
-			Date createdDate;
-
-			/**
-			 * Constructor with arguments
-			 * @param entityName Name of an Entity
-			 * @param createdDate Date of Entity creation
-			 */
-			DummyEntity(String entityName, Date createdDate)
-			{
-				this.entityName = entityName;
-				this.createdDate = createdDate;
-			}
-
-		}
-
-		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
-		Collection entityInterfaceCollection = new ArrayList();
-		EntityInterface entityInterface = null;
-
-		/* Create dummy entities */
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		DummyEntity[] dummyEntities = null;
-		try
-		{
-			dummyEntities = new DummyEntity[]{
-					new DummyEntity("Pathology Entity", dateFormat.parse("2006-10-15 14:15:20")),
-					new DummyEntity("Health Annotation", dateFormat.parse("2006-10-16 14:16:21")),
-					new DummyEntity("Pathology Entity", dateFormat.parse("2006-10-17 14:17:22")),
-					new DummyEntity("Pathology Entity", dateFormat.parse("2006-10-18 14:18:23")),
-					new DummyEntity("Pathology Entity", dateFormat.parse("2006-10-19 14:19:24")),};
-		}
-		catch (ParseException parseException)
-		{
-			throw new DynamicExtensionsApplicationException("Cannot create Dummy Entities.",
-					parseException);
-		}
-
-		/* Populate all dummy entities into a Collection */
-		for (int i = 0; i < dummyEntities.length; i++)
-		{
-			entityInterface = domainObjectFactory.createEntity();
-
-			entityInterface.setName(dummyEntities[i].entityName);
-			entityInterface.setCreatedDate(dummyEntities[i].createdDate);
-
-			entityInterfaceCollection.add(entityInterface);
-		}
-
-		return entityInterfaceCollection;
-	}
 
 	/**
 	 * This method returns a dummy Container instance populated with dummy
@@ -172,26 +103,83 @@ public class MockEntityManager
 
 		EntityInterface dummyEntity = domainObjectFactory.createEntity();
 
-		dummyEntity.setName("Employee");
+		dummyEntity.setName("Entity1");
 		dummyEntity.setCreatedDate(new Date());
 		dummyEntity.setDescription("This is a dummy entity");
 		dummyEntity.setLastUpdated(dummyEntity.getCreatedDate());
 
-		/* Date of Joining attribute */
+		// Attribute 1
 		abstractAttributeInterface = initializeDateAttribute();
 		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
 		abstractAttributeInterface.setEntity(dummyEntity);
-		/* Gender attribute with its Permissible values */
+
+		// Attribute 2
 		abstractAttributeInterface = initializeStringAttribute("gender", "Male");
 		((AttributeInterface) abstractAttributeInterface).getAttributeTypeInformation()
 				.setDataElement(initializeDataElement());
 		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
 		abstractAttributeInterface.setEntity(dummyEntity);
-		/* Description attribute */
+
+		// Attribute 3
 		abstractAttributeInterface = initializeStringAttribute("description",
 				"William James Bill Murray is an Academy Award-nominated");
 		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
 		abstractAttributeInterface.setEntity(dummyEntity);
+
+		return dummyEntity;
+	}
+
+	public EntityInterface initializeEntity2() throws DynamicExtensionsApplicationException
+	{
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+		AbstractAttributeInterface abstractAttributeInterface = null;
+
+		EntityInterface dummyEntity = domainObjectFactory.createEntity();
+
+		dummyEntity.setName("Entity2");
+		dummyEntity.setCreatedDate(new Date());
+		dummyEntity.setDescription("This is a dummy entity");
+		dummyEntity.setLastUpdated(dummyEntity.getCreatedDate());
+
+		// Attribute 1
+		abstractAttributeInterface = initializeStringAttribute("name", "");
+		((AttributeInterface) abstractAttributeInterface).getAttributeTypeInformation()
+				.setDataElement(initializeDataElement());
+		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
+		abstractAttributeInterface.setEntity(dummyEntity);
+
+		// Attribute 2
+		abstractAttributeInterface = initializeStringAttribute("address", "");
+		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
+		abstractAttributeInterface.setEntity(dummyEntity);
+
+		return dummyEntity;
+	}
+
+	public EntityInterface initializeEntity3() throws DynamicExtensionsApplicationException
+	{
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+		AbstractAttributeInterface abstractAttributeInterface = null;
+
+		EntityInterface dummyEntity = domainObjectFactory.createEntity();
+
+		dummyEntity.setName("Entity3");
+		dummyEntity.setCreatedDate(new Date());
+		dummyEntity.setDescription("This is a dummy entity");
+		dummyEntity.setLastUpdated(dummyEntity.getCreatedDate());
+
+		// Attribute 1
+		abstractAttributeInterface = initializeLongAttribute();
+		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
+		abstractAttributeInterface.setEntity(dummyEntity);
+
+		// Attribute 2
+		abstractAttributeInterface = initializeDoubleAttribute();
+		((AttributeInterface) abstractAttributeInterface).getAttributeTypeInformation()
+				.setDataElement(initializeDataElement());
+		dummyEntity.addAbstractAttribute(abstractAttributeInterface);
+		abstractAttributeInterface.setEntity(dummyEntity);
+
 		return dummyEntity;
 	}
 
@@ -239,16 +227,6 @@ public class MockEntityManager
 		AttributeInterface dateAttribute = domainObjectFactory.createDateAttribute();
 		DateValueInterface defaultValue = domainObjectFactory.createDateValue();
 
-		Date dateOfJoining = null;
-		/*	try
-		 {
-		 dateOfJoining = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("1983-10-21 14:15:20");
-		 }
-		 catch (ParseException parseException)
-		 {
-		 throw new DynamicExtensionsApplicationException("Cannot create DateAttributeTypeInformation", parseException);
-		 }*/
-
 		dateAttribute.setCreatedDate(new Date());
 		dateAttribute.setDescription("This is a dummy DateAttributeTypeInformation");
 		dateAttribute.setIsCollection(new Boolean(false));
@@ -256,7 +234,6 @@ public class MockEntityManager
 		dateAttribute.setIsPrimaryKey(new Boolean(false));
 		dateAttribute.setLastUpdated(dateAttribute.getCreatedDate());
 		dateAttribute.setName("dateOfJoining");
-		//SimpleDateFormat dateFormat = new SimpleDateFormat(Variables.datePattern);
 
 		try
 		{
@@ -265,13 +242,58 @@ public class MockEntityManager
 		}
 		catch (ParseException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		dateAttribute.getAttributeTypeInformation().setDefaultValue(defaultValue);
 
 		return dateAttribute;
+	}
+
+	/**
+	 * This method creates populated dummy DateAttributeTypeInformation
+	 * 
+	 * @return Manually created DateAttributeTypeInformation instance
+	 * @throws DynamicExtensionsApplicationException On failure to create Date
+	 */
+	public AttributeInterface initializeDoubleAttribute()
+			throws DynamicExtensionsApplicationException
+	{
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+		AttributeInterface doubleAttribute = domainObjectFactory.createDoubleAttribute();
+
+		doubleAttribute.setCreatedDate(new Date());
+		doubleAttribute.setDescription("This is a dummy DoubleAttributeTypeInformation");
+		doubleAttribute.setIsCollection(new Boolean(false));
+		doubleAttribute.setIsIdentified(new Boolean(true));
+		doubleAttribute.setIsPrimaryKey(new Boolean(false));
+		doubleAttribute.setLastUpdated(doubleAttribute.getCreatedDate());
+		doubleAttribute.setName("Height");
+
+		return doubleAttribute;
+	}
+
+	/**
+	 * This method creates populated dummy DateAttributeTypeInformation
+	 * 
+	 * @return Manually created DateAttributeTypeInformation instance
+	 * @throws DynamicExtensionsApplicationException On failure to create Date
+	 */
+	public AttributeInterface initializeLongAttribute()
+			throws DynamicExtensionsApplicationException
+	{
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+		AttributeInterface longAttribute = domainObjectFactory.createDoubleAttribute();
+
+		longAttribute.setCreatedDate(new Date());
+		longAttribute.setDescription("This is a dummy LongAttributeTypeInformation");
+		longAttribute.setIsCollection(new Boolean(false));
+		longAttribute.setIsIdentified(new Boolean(true));
+		longAttribute.setIsPrimaryKey(new Boolean(false));
+		longAttribute.setLastUpdated(longAttribute.getCreatedDate());
+		longAttribute.setName("Age");
+
+		return longAttribute;
 	}
 
 	/**
@@ -400,14 +422,15 @@ public class MockEntityManager
 	{
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		EntityGroupInterface entityGroupInterface = domainObjectFactory.createEntityGroup();
-		entityGroupInterface.setName("Test group1");
+		entityGroupInterface.setName("Test Group");
 		entityGroupInterface.setLongName("Test long name1");
 		entityGroupInterface.setShortName("Test short name1");
 		entityGroupInterface.setDescription("Test description1");
 		entityGroupInterface.setVersion("1");
 
-		EntityInterface entityInterface = initializeEntity();
-		entityGroupInterface.addEntity(entityInterface);
+		EntityInterface entity1 = initializeEntity();
+
+		entityGroupInterface.addEntity(entity1);
 
 		return entityGroupInterface;
 	}
@@ -428,6 +451,38 @@ public class MockEntityManager
 		semanticPropertyInterface.setThesaurasName("th1");
 
 		return semanticPropertyInterface;
+	}
+
+	/**
+	 * This method creates the populated dummy Entity instance
+	 * 
+	 * @return Manually created dummy Entity along with its attributes
+	 * @throws DynamicExtensionsApplicationException On failure to create Entity 
+	 */
+	public EntityGroupInterface initializeEntityGroupForInheritance()
+			throws DynamicExtensionsApplicationException
+	{
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroupInterface = domainObjectFactory.createEntityGroup();
+		entityGroupInterface.setName("Test Group");
+		entityGroupInterface.setLongName("Test long name1");
+		entityGroupInterface.setShortName("Test short name1");
+		entityGroupInterface.setDescription("Test description1");
+		entityGroupInterface.setVersion("1");
+
+		EntityInterface entity1 = initializeEntity();
+
+		EntityInterface entity2 = initializeEntity2();
+		entity2.setParentEntity(entity1);
+
+		EntityInterface entity3 = initializeEntity3();
+		entity3.setParentEntity(entity2);
+
+		entityGroupInterface.addEntity(entity1);
+		entityGroupInterface.addEntity(entity2);
+		entityGroupInterface.addEntity(entity3);
+
+		return entityGroupInterface;
 	}
 
 }

@@ -187,5 +187,31 @@ public class XMIBuilderUtil
 		}
 		return attributeType;
 	}
-	
+
+	public static int getNextIdForChild(Element element)
+	{
+		Element childElement = null;
+		String childId = null, idNumber = null;
+		NodeList childrenNodeList = element.getChildNodes();
+		int iElementIdNum = 0, maxId = 0;
+
+		childElement = (Element) childrenNodeList.item(0);
+		childId = childElement.getAttribute("xmi.id");
+		idNumber = childId.substring(childId.lastIndexOf("_")+1);
+		maxId = Integer.parseInt(idNumber);
+
+		for (int i = 1; i < childrenNodeList.getLength(); i++)
+		{
+			childElement = (Element) childrenNodeList.item(i);
+			childId = childElement.getAttribute("xmi.id");
+			idNumber = childId.substring(childId.lastIndexOf("_")+1);
+			iElementIdNum = Integer.parseInt(idNumber);
+
+			if (iElementIdNum > maxId)
+				maxId = iElementIdNum;
+		}
+		
+		return maxId+1;
+	}
+
 }

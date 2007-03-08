@@ -33,6 +33,7 @@ import edu.common.dynamicextensions.domain.FileExtension;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
 import edu.common.dynamicextensions.domain.userinterface.Container;
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
@@ -45,7 +46,12 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
+import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Variables;
+import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
+import edu.common.dynamicextensions.util.global.Constants.AssociationType;
+import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.logger.Logger;
@@ -139,7 +145,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			java.sql.ResultSetMetaData metadata = executeQueryForMetadata("select * from "
 					+ editedEntity.getTableProperties().getName());
-			assertEquals(metadata.getColumnCount(), 2);
+			assertEquals(noOfDefaultColumns + 1, metadata.getColumnCount());
 
 			ResultSet resultSet = executeQuery("select count(*) from "
 					+ editedEntity.getTableProperties().getName());
@@ -153,7 +159,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			//Step 6
 			metadata = executeQueryForMetadata("select * from "
 					+ editedEntity.getTableProperties().getName());
-			assertEquals(metadata.getColumnCount(), 3);
+			assertEquals(noOfDefaultColumns + 2, metadata.getColumnCount());
 
 			resultSet = executeQuery("select count(*) from "
 					+ editedEntity.getTableProperties().getName());
@@ -226,7 +232,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			java.sql.ResultSetMetaData metadata = executeQueryForMetadata("select * from "
 					+ savedEntity.getTableProperties().getName());
-			assertEquals(3, metadata.getColumnCount());
+			assertEquals(metadata.getColumnCount(), noOfDefaultColumns + 2);
 
 			AttributeInterface savedFloatAtribute = null;
 
@@ -246,7 +252,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			//Step 6
 			metadata = executeQueryForMetadata("select * from "
 					+ editedEntity.getTableProperties().getName());
-			assertEquals(2, metadata.getColumnCount());
+			assertEquals(noOfDefaultColumns + 1, metadata.getColumnCount());
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -376,11 +382,11 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			if (Variables.databaseName
 					.equals(edu.common.dynamicextensions.util.global.Constants.MYSQL_DATABASE))
 			{
-				assertEquals(metaData.getColumnType(2), Types.INTEGER);
+				assertEquals(metaData.getColumnType(3), Types.INTEGER);
 			}
 			else
 			{
-				assertEquals(metaData.getColumnType(2), Types.NUMERIC);
+				assertEquals(metaData.getColumnType(3), Types.NUMERIC);
 			}
 
 			//Step 4
@@ -395,11 +401,11 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			if (Variables.databaseName
 					.equals(edu.common.dynamicextensions.util.global.Constants.MYSQL_DATABASE))
 			{
-				assertEquals(metaData.getColumnTypeName(2), "TEXT");
+				assertEquals(metaData.getColumnTypeName(3), "TEXT");
 			}
 			else
 			{
-				assertEquals(metaData.getColumnType(2), Types.VARCHAR);
+				assertEquals(metaData.getColumnType(3), Types.VARCHAR);
 
 			}
 
@@ -663,7 +669,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			String tableName = newEntity.getTableProperties().getName();
 			assertTrue(isTablePresent(tableName));
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from " + tableName);
-			assertEquals(1, metaData.getColumnCount());
+			assertEquals(metaData.getColumnCount(), noOfDefaultColumns);
 
 			userNameAttribute = (AttributeInterface) newEntity
 					.getAttributeByIdentifier(userNameAttribute.getId());
@@ -674,7 +680,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			tableName = newEntity.getTableProperties().getName();
 			assertTrue(isTablePresent(tableName));
 			metaData = executeQueryForMetadata("select * from " + tableName);
-			assertEquals(2, metaData.getColumnCount());
+			assertEquals(metaData.getColumnCount(), noOfDefaultColumns + 1);
 
 			userNameAttribute = (AttributeInterface) newEntity
 					.getAttributeByIdentifier(userNameAttribute.getId());
@@ -685,7 +691,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			tableName = newEntity.getTableProperties().getName();
 			assertTrue(isTablePresent(tableName));
 			metaData = executeQueryForMetadata("select * from " + tableName);
-			assertEquals(1, metaData.getColumnCount());
+			assertEquals(metaData.getColumnCount(), noOfDefaultColumns);
 
 		}
 		catch (Exception e)
@@ -747,12 +753,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			assertEquals("Employee", entity.getName());
 			boolean isRecordDeleted = EntityManager.getInstance().deleteRecord(entity, new Long(1));
 			assertTrue(isRecordDeleted);
-			resultSet = executeQuery("select count(*) from "
-					+ newEntity.getTableProperties().getName());
 
-			resultSet.next();
-
-			assertEquals(0, resultSet.getInt(1));
+			assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(entity, 1L));
 
 		}
 		catch (DynamicExtensionsSystemException e)
@@ -767,7 +769,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			Logger.out.debug(e.getMessage());
 			fail("Exception occured");
 		}
-		catch (SQLException e)
+		catch (Exception e)
 		{
 			//          TODO Auto-generated catch block
 			Logger.out.debug(e.getMessage());
@@ -819,15 +821,12 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			resultSet.next();
 			assertEquals(1, resultSet.getInt(1));
 			ResultSetMetaData metadata = resultSet.getMetaData();
-			assertEquals(2, metadata.getColumnCount());
+			assertEquals(metadata.getColumnCount(), noOfDefaultColumns + 1);
 
 			boolean isRecordDeleted = entityManagerInterface.deleteRecord(savedEntity, new Long(1));
 			assertTrue(isRecordDeleted);
 
-			resultSet = executeQuery("select count(*) from "
-					+ savedEntity.getTableProperties().getName());
-			resultSet.next();
-			assertEquals(0, resultSet.getInt(1));
+			assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(entity, 1L));
 
 		}
 		catch (DynamicExtensionsSystemException e)
@@ -1033,7 +1032,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			user = entityManager.persistEntity(user);
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from "
 					+ user.getTableProperties().getName());
-			assertEquals(2, metaData.getColumnCount());
+			assertEquals(metaData.getColumnCount(), noOfDefaultColumns + 1);
 
 			//Edit attribute: change attribute type to file attrbiute type.
 			Collection<FileExtension> allowedExtn = new HashSet<FileExtension>();
@@ -1065,7 +1064,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			metaData = executeQueryForMetadata("select * from "
 					+ user.getTableProperties().getName());
-			assertEquals(1, metaData.getColumnCount());
+			assertEquals(metaData.getColumnCount(), noOfDefaultColumns);
 
 			//executeQuery("select * from dyextn_file_extensions");
 
@@ -1119,7 +1118,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			user = entityManager.persistEntity(user);
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from "
 					+ user.getTableProperties().getName());
-			assertEquals(1, metaData.getColumnCount());
+			assertEquals(metaData.getColumnCount(), noOfDefaultColumns);
 
 		}
 		catch (Exception e)
@@ -2205,7 +2204,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			ResultSet resultSet = executeQuery("select * from "
 					+ savedEntity.getTableProperties().getName());
 			resultSet.next();
-			assertEquals(null, resultSet.getString(2));
+			assertEquals(null, resultSet.getString(3));
 
 		}
 		catch (DynamicExtensionsSystemException e)
@@ -2260,7 +2259,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
 			java.sql.ResultSetMetaData metadata = executeQueryForMetadata("select * from "
 					+ savedEntity.getTableProperties().getName());
-			assertEquals(2, metadata.getColumnCount());
+			assertEquals(metadata.getColumnCount(), noOfDefaultColumns + 1);
 
 			//Step 3.
 			AttributeInterface resume = factory.createFileAttribute();
@@ -2273,7 +2272,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			//Step 5.
 			metadata = executeQueryForMetadata("select * from "
 					+ savedEntity.getTableProperties().getName());
-			assertEquals(2, metadata.getColumnCount());
+			assertEquals(metadata.getColumnCount(), noOfDefaultColumns + 1);
 
 		}
 		catch (DynamicExtensionsSystemException e)
@@ -2333,7 +2332,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			//Step 4.
 			ContainerInterface userContainer = factory.createContainer();
-			
+
 			userContainer.setCaption("User Container");
 
 			//Step 5.
@@ -2343,12 +2342,13 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			entityManagerInterface.persistContainer(userContainer);
 
 			//Step 7.
-			Collection<NameValueBean> containerNameValueCollection = entityManagerInterface.getMainContainer(userGroup.getId());
+			Collection<NameValueBean> containerNameValueCollection = entityManagerInterface
+					.getMainContainer(userGroup.getId());
 
 			//Step 8.
-			assertEquals(containerNameValueCollection.size(),1);
+			assertEquals(containerNameValueCollection.size(), 1);
 			NameValueBean containerNameValue = containerNameValueCollection.iterator().next();
-			
+
 			assertEquals(containerNameValue.getName(), userContainer.getCaption());
 			assertEquals(containerNameValue.getValue(), userContainer.getId().toString());
 
@@ -2359,6 +2359,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		}
 
 	}
+
 	/**
 	 * PURPOSE : to test the method GetMainContainer
 	 *            
@@ -2390,7 +2391,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			//Step 2.
 			EntityGroupInterface userGroup = factory.createEntityGroup();
-			((EntityGroup)userGroup).setCurrent(true);
+			((EntityGroup) userGroup).setCurrent(true);
 
 			//Step 3.
 			userGroup.addEntity(user);
@@ -2407,10 +2408,11 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			entityManagerInterface.persistContainer(userContainer);
 
 			//Step 7.
-			Collection<NameValueBean> containerNameValueCollection = entityManagerInterface.getMainContainer(userGroup.getId());
+			Collection<NameValueBean> containerNameValueCollection = entityManagerInterface
+					.getMainContainer(userGroup.getId());
 
 			//Step 8.
-			assertEquals(0,containerNameValueCollection.size());
+			assertEquals(0, containerNameValueCollection.size());
 
 		}
 		catch (Exception e)
@@ -2419,7 +2421,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		}
 
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -2436,29 +2438,24 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			AttributeInterface floatAtribute = DomainObjectFactory.getInstance()
 					.createFloatAttribute();
 			floatAtribute.setName("Price");
-			
+
 			AttributeInterface commentsAttributes = DomainObjectFactory.getInstance()
 					.createStringAttribute();
 			commentsAttributes.setName("coomments");
-			
-			AttributeInterface startDate = DomainObjectFactory.getInstance()
-			.createDateAttribute();
-			startDate.setName("startDate");
-			((DateAttributeTypeInformation) startDate.getAttributeTypeInformation()).setFormat(ProcessorConstants.DATE_TIME_FORMAT);
-			
-			AttributeInterface endDate = DomainObjectFactory.getInstance()
-			.createDateAttribute();
-			endDate.setName("endDate");
-			
 
-			
+			AttributeInterface startDate = DomainObjectFactory.getInstance().createDateAttribute();
+			startDate.setName("startDate");
+			((DateAttributeTypeInformation) startDate.getAttributeTypeInformation())
+					.setFormat(ProcessorConstants.DATE_TIME_FORMAT);
+
+			AttributeInterface endDate = DomainObjectFactory.getInstance().createDateAttribute();
+			endDate.setName("endDate");
+
 			entity.addAbstractAttribute(floatAtribute);
 			entity.addAbstractAttribute(commentsAttributes);
 			entity.addAbstractAttribute(startDate);
 			entity.addAbstractAttribute(endDate);
-			
-			
-			
+
 			//Step 2 
 			EntityInterface savedEntity = entityManagerInterface.persistEntity(entity);
 
@@ -2466,14 +2463,13 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			dataValue.put(floatAtribute, "15.90");
 			dataValue.put(startDate, "11-12-1982 10:11");
 			dataValue.put(endDate, "01-12-1982");
-			
+
 			Long recordId = entityManagerInterface.insertData(savedEntity, dataValue);
 
-			
 			dataValue = entityManagerInterface.getRecordById(entity, recordId);
-			
-			assertEquals("11-12-1982 10:11",dataValue.get(startDate));
-			assertEquals("01-12-1982",dataValue.get(endDate));
+
+			assertEquals("11-12-1982 10:11", dataValue.get(startDate));
+			assertEquals("01-12-1982", dataValue.get(endDate));
 		}
 		catch (Exception e)
 		{
@@ -2481,6 +2477,526 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 
+	}
+
+	/**
+	 * PURPOSE : to test the basic delete functionality 
+	 *            
+	 *  
+	 * EXPECTED BEHAVIOR : delete method should disbale the record and not actually delete it.
+	 * 
+	 * TEST CASE FLOW : 
+	 * 1.Create an entity
+	 * 2.add two attributes
+	 * 3.persist entity
+	 * 4.add record.
+	 * 5. check the activity status - should be active
+	 * 6.delete that record 
+	 * 7. check the activity status - should be disable
+	 */
+	public void testDeleteRecordById1()
+	{
+
+		try
+		{
+			//step 1
+			EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+			DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+			Entity entity = (Entity) factory.createEntity();
+			entity.setName("Stock Quote");
+
+			AttributeInterface floatAtribute = factory.createFloatAttribute();
+			floatAtribute.setName("Price");
+
+			AttributeInterface commentsAttributes = factory.createStringAttribute();
+			commentsAttributes.setName("comments");
+
+			//step 2
+			entity.addAbstractAttribute(floatAtribute);
+			entity.addAbstractAttribute(commentsAttributes);
+			//step 3			
+			entity = (Entity) entityManagerInterface.persistEntity(entity);
+
+			//step 4
+			Map dataValue = new HashMap();
+			dataValue.put(floatAtribute, "122.34");
+			dataValue.put(commentsAttributes, "test1123");
+
+			entityManagerInterface.insertData(entity, dataValue);
+
+			//step 5
+			ResultSet resultSet = executeQuery("select count(*) from "
+					+ entity.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(1, resultSet.getInt(1));
+
+			resultSet = executeQuery("select " + Constants.ACTIVITY_STATUS_COLUMN + " from "
+					+ entity.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(Constants.ACTIVITY_STATUS_ACTIVE, resultSet.getString(1));
+
+			//step 6
+			boolean isRecordDeleted = EntityManager.getInstance().deleteRecord(entity, new Long(1));
+
+			//step 7
+			assertTrue(isRecordDeleted);
+			resultSet = executeQuery("select " + Constants.ACTIVITY_STATUS_COLUMN + " from "
+					+ entity.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(Constants.ACTIVITY_STATUS_DISABLED, resultSet.getString(1));
+
+			resultSet = executeQuery("select count(*) from "
+					+ entity.getTableProperties().getName());
+			resultSet.next();
+			assertEquals(1, resultSet.getInt(1));
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			Logger.out.debug(e.getMessage());
+			fail("Exception occured");
+		}
+
+	}
+
+	/**
+	 * PURPOSE : to test the behaviour of  GetAllRecords method for deleted records
+	 * EXPECTED BEHAVIOR : GetAllRecords method should filter the deleted records.
+	 * 
+	 * TEST CASE FLOW : 
+	 * 1.Create an entity
+	 * 2.add two attributes
+	 * 3.persist entity
+	 * 4.add 2 records.
+	 * 5. call  getAllRecords - should return 2 records
+	 * 6.delete 2nd  record 
+	 * 7. call  getAllRecords - should return 1 records
+	 */
+	public void testGetAllRecordsForDeletedRecords()
+	{
+
+		try
+		{
+			//step 1
+			EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+			DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+			Entity entity = (Entity) factory.createEntity();
+			entity.setName("Stock Quote");
+
+			AttributeInterface floatAtribute = factory.createFloatAttribute();
+			floatAtribute.setName("Price");
+
+			AttributeInterface commentsAttributes = factory.createStringAttribute();
+			commentsAttributes.setName("comments");
+
+			//step 2
+			entity.addAbstractAttribute(floatAtribute);
+			entity.addAbstractAttribute(commentsAttributes);
+			//step 3			
+			entity = (Entity) entityManagerInterface.persistEntity(entity);
+
+			//step 4
+			Map dataValue = new HashMap();
+			dataValue.put(floatAtribute, "1.1");
+			dataValue.put(commentsAttributes, "test1");
+
+			entityManagerInterface.insertData(entity, dataValue);
+
+			dataValue.put(floatAtribute, "1.2");
+			dataValue.put(commentsAttributes, "test2");
+			entityManagerInterface.insertData(entity, dataValue);
+
+			//step 5
+			List<EntityRecord> recordList = entityManagerInterface.getAllRecords(entity);
+			assertEquals(2, recordList.size());
+
+			//step 6
+			boolean isRecordDeleted = EntityManager.getInstance().deleteRecord(entity, new Long(2));
+
+			//step 7
+			assertTrue(isRecordDeleted);
+			recordList = entityManagerInterface.getAllRecords(entity);
+			assertEquals(1, recordList.size());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			Logger.out.debug(e.getMessage());
+			fail("Exception occured");
+		}
+
+	}
+
+	/**
+	 *  PURPOSE: This method test for deleting data for a containtment relationship between two entities
+	 *  EXPECTED BEHAVIOUR: Data of containted entity should also be disabled
+	 *   
+	 *  TEST CASE FLOW: 1. create User
+	 *                  2. Create Address                       
+	 *                  3. Add Association with      User(1) ------->(1) Address containtment association
+	 *                  4. persist entities.
+	 *                  5. Insert Data
+	 *                  6. Delete User record, address should also be deleted.
+	 */
+	public void testDeleteDataForContaintmentOneToOne()
+	{
+
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		try
+		{
+
+			// Step 1  
+			EntityInterface user = factory.createEntity();
+			AttributeInterface userNameAttribute = factory.createStringAttribute();
+			userNameAttribute.setName("user name");
+			user.setName("user");
+			user.addAbstractAttribute(userNameAttribute);
+
+			// Step 2  
+			EntityInterface address = factory.createEntity();
+			address.setName("address");
+
+			AttributeInterface streetAttribute = factory.createStringAttribute();
+			streetAttribute.setName("street name");
+			address.addAbstractAttribute(streetAttribute);
+
+			AttributeInterface cityAttribute = factory.createStringAttribute();
+			cityAttribute.setName("city name");
+			address.addAbstractAttribute(cityAttribute);
+
+			// Step 3
+			AssociationInterface association = factory.createAssociation();
+			association.setTargetEntity(address);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("UserAddress");
+			association.setSourceRole(getRole(AssociationType.CONTAINTMENT, "User",
+					Cardinality.ZERO, Cardinality.ONE));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "address",
+					Cardinality.ZERO, Cardinality.ONE));
+
+			user.addAbstractAttribute(association);
+
+			// Step 4
+			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
+
+			Map dataValue = new HashMap();
+			Map addressDataValue = new HashMap();
+			addressDataValue.put(streetAttribute, "Laxmi Road");
+			addressDataValue.put(cityAttribute, "Pune");
+
+			List<Map> addressDataValueMapList = new ArrayList<Map>();
+			addressDataValueMapList.add(addressDataValue);
+
+			dataValue.put(userNameAttribute, "rahul");
+			dataValue.put(association, addressDataValueMapList);
+
+			// Step 5
+			entityManagerInterface.insertData(savedEntity, dataValue);
+
+			System.out.println("show sql: " + System.getProperty("show_sql"));
+
+			// Step 6
+
+			assertEquals(Constants.ACTIVITY_STATUS_ACTIVE, getActivityStatus(user, 1L));
+			assertEquals(Constants.ACTIVITY_STATUS_ACTIVE, getActivityStatus(address, 1L));
+
+			entityManagerInterface.deleteRecord(savedEntity, 1L);
+
+			assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(user, 1L));
+			assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(address, 1L));
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			Logger.out.debug(DynamicExtensionsUtility.getStackTrace(e));
+			fail();
+		}
+
+	}
+
+	/**
+	 *  PURPOSE: This method test for deleting data for a containtment relationship between two entities having one to many asso.
+	 *  EXPECTED BEHAVIOUR: Data of containted entity should also be disabled
+	 *   
+	 *  TEST CASE FLOW: 1. create User
+	 *                  2. Create Address                       
+	 *                  3. Add Association with      User(1) ------->(*) Address containtment association
+	 *                  4. persist entities.
+	 *                  5. Insert Data
+	 *                  6. Delete User record, all associated addresses should also be deleted.
+	 */
+	public void testDeleteDataForContaintmentOneToMany()
+	{
+
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		try
+		{
+
+			// Step 1  
+			EntityInterface user = factory.createEntity();
+			AttributeInterface userNameAttribute = factory.createStringAttribute();
+			userNameAttribute.setName("user name");
+			user.setName("user");
+			user.addAbstractAttribute(userNameAttribute);
+
+			// Step 2  
+			EntityInterface address = factory.createEntity();
+			address.setName("address");
+
+			AttributeInterface streetAttribute = factory.createStringAttribute();
+			streetAttribute.setName("street name");
+			address.addAbstractAttribute(streetAttribute);
+
+			AttributeInterface cityAttribute = factory.createStringAttribute();
+			cityAttribute.setName("city name");
+			address.addAbstractAttribute(cityAttribute);
+
+			// Step 3
+			AssociationInterface association = factory.createAssociation();
+			association.setTargetEntity(address);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("UserAddress");
+			association.setSourceRole(getRole(AssociationType.CONTAINTMENT, "User",
+					Cardinality.ZERO, Cardinality.ONE));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "address",
+					Cardinality.ZERO, Cardinality.MANY));
+
+			user.addAbstractAttribute(association);
+
+			// Step 4
+			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
+
+			Map dataValue = new HashMap();
+			Map officeAddress = new HashMap();
+			officeAddress.put(streetAttribute, "Laxmi Road");
+			officeAddress.put(cityAttribute, "Pune");
+
+			Map homeAddress = new HashMap();
+			homeAddress.put(streetAttribute, "Baner Road");
+			homeAddress.put(cityAttribute, "Pune");
+
+			List<Map> addressDataValueMapList = new ArrayList<Map>();
+			addressDataValueMapList.add(officeAddress);
+			addressDataValueMapList.add(homeAddress);
+
+			dataValue.put(userNameAttribute, "rahul");
+			dataValue.put(association, addressDataValueMapList);
+
+			// Step 5
+			entityManagerInterface.insertData(savedEntity, dataValue);
+
+			assertEquals(Constants.ACTIVITY_STATUS_ACTIVE, getActivityStatus(user, 1L));
+			assertEquals(Constants.ACTIVITY_STATUS_ACTIVE, getActivityStatus(address, 1L));
+			assertEquals(Constants.ACTIVITY_STATUS_ACTIVE, getActivityStatus(address, 2L));
+
+			// Step 6	
+			entityManagerInterface.deleteRecord(savedEntity, 1L);
+
+			assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(user, 1L));
+			assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(address, 1L));
+			assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(address, 2L));
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			Logger.out.debug(DynamicExtensionsUtility.getStackTrace(e));
+			fail();
+		}
+
+	}
+
+	/** PURPOSE: This method test for deleting data for a one to many lookup association relationship between two entities.
+	 *  EXPECTED BEHAVIOUR: Data of looked up entity should not be disabled
+	 *   
+	 *  TEST CASE FLOW: 1. create User
+	 *                  2. Create Study                       
+	 *                  3. Add Association with      User(1) ------->(*) Study lookup association
+	 *                  4. persist entities.
+	 *                  5. Insert Data
+	 *                  6. Delete User record,  associated study should NOT be deleted.
+	 */
+
+	public void testDeleteDataForAssociationOne2Many()
+	{
+
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		try
+		{
+
+			//create user 
+			EntityInterface user = factory.createEntity();
+			AttributeInterface userNameAttribute = factory.createStringAttribute();
+			userNameAttribute.setName("user name");
+			user.setName("user");
+			user.addAbstractAttribute(userNameAttribute);
+
+			//create study 
+			EntityInterface study = factory.createEntity();
+			AttributeInterface studyNameAttribute = factory.createStringAttribute();
+			studyNameAttribute.setName("study name");
+			study.setName("study");
+			study.addAbstractAttribute(studyNameAttribute);
+
+			//Associate user (1)------ >(*)study       
+			AssociationInterface association = factory.createAssociation();
+			association.setTargetEntity(study);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("primaryInvestigator");
+			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
+					Cardinality.ZERO, Cardinality.ONE));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
+					Cardinality.ZERO, Cardinality.MANY));
+
+			user.addAbstractAttribute(association);
+
+			//persist entity
+			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
+
+			//Insert Data
+			Map dataValue = new HashMap();
+			dataValue.put(studyNameAttribute, "study");
+			entityManagerInterface.insertData(study, dataValue);
+
+			dataValue.clear();
+			dataValue.put(studyNameAttribute, "study1");
+			entityManagerInterface.insertData(study, dataValue);
+
+			dataValue.clear();
+			List<Long> targetIdList = new ArrayList<Long>();
+			targetIdList.add(1L);
+			targetIdList.add(2L);
+
+			dataValue.put(userNameAttribute, "rahul");
+			dataValue.put(association, targetIdList);
+
+			entityManagerInterface.insertData(savedEntity, dataValue);
+
+			assertEquals(Constants.ACTIVITY_STATUS_ACTIVE, getActivityStatus(user, 1L));
+			assertEquals(Constants.ACTIVITY_STATUS_ACTIVE, getActivityStatus(study, 1L));
+			assertEquals(Constants.ACTIVITY_STATUS_ACTIVE, getActivityStatus(study, 2L));
+
+			//Step 6:
+			entityManagerInterface.deleteRecord(savedEntity, 1L);
+
+			assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(user, 1L));
+
+			assertEquals(Constants.ACTIVITY_STATUS_ACTIVE, getActivityStatus(study, 1L));
+			assertEquals(Constants.ACTIVITY_STATUS_ACTIVE, getActivityStatus(study, 2L));
+		}
+		catch (Exception e)
+		{
+			Logger.out.debug(DynamicExtensionsUtility.getStackTrace(e));
+			fail();
+		}
+	}
+
+	/** PURPOSE: This method test for deleting data of one entity which is refered by a record of some 
+	 *           other entity.
+	 *  EXPECTED BEHAVIOUR: In such a cases, record is not allowed to be deleted, approprate applicationException should be thrown.
+	 *   
+	 *  TEST CASE FLOW: 1. create User
+	 *                  2. Create Study                       
+	 *                  3. Add Association with      User(1) ------->(*) Study lookup association
+	 *                  4. persist entities.
+	 *                  5. Insert Data for study as "study"
+	 *                  6. Insert Data for study as  "study1"
+	 *                  7. Delete "study1" shoud be succesful. 
+	 *                  8. Insert Data for user  as "user" that refers to "study"
+	 *                  9. Delete "Study" : should throw exception as it is refered by "user"
+	 * @throws Exception 
+	 */
+
+	public void testDeleteReferedData() throws Exception
+	{
+
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityInterface study = null;
+		try
+		{
+
+			//Step 1
+			EntityInterface user = factory.createEntity();
+			AttributeInterface userNameAttribute = factory.createStringAttribute();
+			userNameAttribute.setName("user name");
+			user.setName("user");
+			user.addAbstractAttribute(userNameAttribute);
+
+			//Step 2
+			study = factory.createEntity();
+			AttributeInterface studyNameAttribute = factory.createStringAttribute();
+			studyNameAttribute.setName("study name");
+			study.setName("study");
+			study.addAbstractAttribute(studyNameAttribute);
+
+			//Step 3 
+			AssociationInterface association = factory.createAssociation();
+			association.setTargetEntity(study);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("primaryInvestigator");
+			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
+					Cardinality.ZERO, Cardinality.MANY));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
+					Cardinality.ZERO, Cardinality.ONE));
+
+			user.addAbstractAttribute(association);
+
+			//Step 4 
+			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
+
+			//Step 5 
+			Map dataValue = new HashMap();
+			dataValue.put(studyNameAttribute, "study");
+			entityManagerInterface.insertData(study, dataValue);
+
+			//Step 6			
+			dataValue.clear();
+			dataValue.put(studyNameAttribute, "study1");
+			entityManagerInterface.insertData(study, dataValue);
+
+			//Step 7
+			entityManagerInterface.deleteRecord(study, 1L);
+			assertTrue(true);
+
+			assertEquals(Constants.ACTIVITY_STATUS_ACTIVE, getActivityStatus(study, 2L));
+			assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(study, 1L));
+
+			//Step 8
+			dataValue.clear();
+			List<Long> targetIdList = new ArrayList<Long>();
+			targetIdList.add(2L);
+
+			dataValue.put(userNameAttribute, "rahul");
+			dataValue.put(association, targetIdList);
+
+			entityManagerInterface.insertData(savedEntity, dataValue);
+
+			//Step 9
+			entityManagerInterface.deleteRecord(study, 2L);
+
+			fail();
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			assertTrue(true);
+			assertEquals(Constants.ACTIVITY_STATUS_ACTIVE, getActivityStatus(study, 2L));
+			Logger.out.debug(DynamicExtensionsUtility.getStackTrace(e));
+		}
+		catch (Exception e)
+		{
+			Logger.out.debug(DynamicExtensionsUtility.getStackTrace(e));
+			fail();
+		}
 	}
 
 }

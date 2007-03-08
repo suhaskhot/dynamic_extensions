@@ -38,6 +38,7 @@ import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationExcep
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
+import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.wustl.common.dao.HibernateDAO;
@@ -141,7 +142,8 @@ class DynamicExtensionBaseQueryBuilder
 		if (isParentChanged(entity, databaseCopy))
 		{
 			String foreignConstraintRollbackQuery = "";
-			if (databaseCopy.getParentEntity() != null) {
+			if (databaseCopy.getParentEntity() != null)
+			{
 				String foreignConstraintRemoveQuery = getForeignKeyRemoveConstraintQueryForInheritance(databaseCopy);
 				foreignConstraintRollbackQuery = getForeignKeyConstraintQueryForInheritance(databaseCopy);
 				queryList.add(foreignConstraintRemoveQuery);
@@ -225,6 +227,7 @@ class DynamicExtensionBaseQueryBuilder
 				query
 						.append(WHITESPACE + WHERE_KEYWORD + WHITESPACE + targetKey + EQUAL
 								+ recordId);
+				query.append(" and " + getRemoveDisbledRecordsQuery(""));
 
 				List<Long> reocordIdList = getAssociationRecordValues(query.toString());
 
@@ -362,18 +365,25 @@ class DynamicExtensionBaseQueryBuilder
 	 * @param recordIdList list of record ids
 	 * @param queryList list of queries added by this method.
 	 * @return
+	 * @throws DynamicExtensionsApplicationException 
 	 */
 	public void getContenmentAssociationRemoveDataQueryList(AssociationInterface association,
-			List<Long> recordIdList, List<String> queryList)
-			throws DynamicExtensionsSystemException
+			List<Long> recordIdList, List<String> queryList, boolean isLogicalDeletion)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		if (recordIdList == null || recordIdList.isEmpty())
 		{
 			return;
 		}
-		List<Long> childrenRecordIdList = getRecordIdListForContainment(association, recordIdList);
 
+		List<Long> childrenRecordIdList = getRecordIdListForContainment(association, recordIdList);
 		EntityInterface targetEntity = association.getTargetEntity();
+
+		/*now chk if these records are referred by some other incoming association , if so this should not be disabled*/
+		Collection<AssociationInterface> incomingAssociations = EntityManager.getInstance()
+				.getIncomingAssociations(targetEntity);
+		incomingAssociations.remove(association);
+		validateForDeleteRecord(targetEntity, childrenRecordIdList, incomingAssociations);
 
 		Collection<AssociationInterface> associationCollection = targetEntity
 				.getAssociationCollection();
@@ -383,19 +393,122 @@ class DynamicExtensionBaseQueryBuilder
 					AssociationType.CONTAINTMENT))
 			{
 				getContenmentAssociationRemoveDataQueryList(targetEntityAssociation,
-						childrenRecordIdList, queryList);
+						childrenRecordIdList, queryList, isLogicalDeletion);
 			}
 		}
 
 		String tableName = association.getConstraintProperties().getName();
 
 		StringBuffer query = new StringBuffer();
-		query.append(DELETE_KEYWORD);
-		query.append(WHITESPACE + tableName + WHITESPACE);
-		query.append(WHERE_KEYWORD + WHITESPACE + IDENTIFIER + WHITESPACE + IN_KEYWORD);
-		query.append(WHITESPACE + getListToString(childrenRecordIdList) + WHITESPACE);
+		if (isLogicalDeletion)
+		{
+			query.append(UPDATE_KEYWORD);
+			query.append(WHITESPACE + tableName + WHITESPACE);
+			query.append(SET_KEYWORD + Constants.ACTIVITY_STATUS_COLUMN + EQUAL + "'"
+					+ Constants.ACTIVITY_STATUS_DISABLED + "'");
+			query.append(WHERE_KEYWORD + WHITESPACE + IDENTIFIER + WHITESPACE + IN_KEYWORD);
+			query.append(WHITESPACE + getListToString(childrenRecordIdList) + WHITESPACE);
+
+		}
+		else
+		{
+			query.append(DELETE_KEYWORD);
+			query.append(WHITESPACE + tableName + WHITESPACE);
+			query.append(WHERE_KEYWORD + WHITESPACE + IDENTIFIER + WHITESPACE + IN_KEYWORD);
+			query.append(WHITESPACE + getListToString(childrenRecordIdList) + WHITESPACE);
+		}
 
 		queryList.add(query.toString());
+	}
+
+	/**
+	 * @param entity
+	 * @param recordId
+	 * @param incomingAssociations
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public void validateForDeleteRecord(EntityInterface entity, Long recordId,
+			Collection<AssociationInterface> incomingAssociations)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		List<Long> recordIdList = new ArrayList<Long>();
+		recordIdList.add(recordId);
+		validateForDeleteRecord(entity, recordIdList, incomingAssociations);
+	}
+
+	/**
+	 * This method chkecks if the record id of given entity is referred by
+	 * some other entity in some association
+	 * @param entity
+	 * @param recordId
+	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException 
+	 */
+	public void validateForDeleteRecord(EntityInterface entity, List<Long> recordIdList,
+			Collection<AssociationInterface> incomingAssociations)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		if (incomingAssociations == null)
+		{
+			incomingAssociations = EntityManager.getInstance().getIncomingAssociations(entity);
+		}
+
+		String tableName = "";
+		String columnName = "";
+		String sourceKey = "";
+		String targetKey = "";
+		for (AssociationInterface association : incomingAssociations)
+		{
+
+			StringBuffer query = new StringBuffer();
+			tableName = association.getConstraintProperties().getName();
+			sourceKey = association.getConstraintProperties().getSourceEntityKey();
+			targetKey = association.getConstraintProperties().getTargetEntityKey();
+
+			query.append(SELECT_KEYWORD + COUNT_KEYWORD + "(*)");
+			query.append(FROM_KEYWORD + tableName);
+
+			if (sourceKey != null && targetKey != null && sourceKey.trim().length() != 0
+					&& targetKey.trim().length() != 0)
+			{
+				//for many to many check into middle table
+				String srcTable = association.getEntity().getTableProperties().getName();
+				query.append(" AS m_table join " + srcTable);
+				query.append(" AS s_table on m_table." + sourceKey + "= s_table." + IDENTIFIER);
+				query.append(WHERE_KEYWORD + targetKey + WHITESPACE + IN_KEYWORD + WHITESPACE
+						+ getListToString(recordIdList));
+				query.append(" and "
+						+ DynamicExtensionBaseQueryBuilder.getRemoveDisbledRecordsQuery("s_table"));
+			}
+			else if (sourceKey != null && sourceKey.trim().length() != 0)
+			{
+				query.append(WHERE_KEYWORD + sourceKey + WHITESPACE + IN_KEYWORD + WHITESPACE
+						+ getListToString(recordIdList));
+				query.append(" and "
+						+ DynamicExtensionBaseQueryBuilder.getRemoveDisbledRecordsQuery(""));
+			}
+			else
+			{ //one to one && onr to many : check target entity table
+				query.append(WHERE_KEYWORD + IDENTIFIER + WHITESPACE + IN_KEYWORD + WHITESPACE
+						+ getListToString(recordIdList));
+				query.append(" and " + targetKey);
+				query.append(" and "
+						+ DynamicExtensionBaseQueryBuilder.getRemoveDisbledRecordsQuery(""));
+			}
+
+			if (entityManagerUtil.getNoOfRecord(query.toString()) != 0)
+			{
+				List<String> placeHolders = new ArrayList<String>();
+				placeHolders.add(association.getEntity().getName());
+				throw new DynamicExtensionsApplicationException(
+						"This record is refered by some record of ["
+								+ association.getEntity().getName() + "] ", null, DYEXTN_A_014,
+						placeHolders);
+			}
+
+		}
+
 	}
 
 	/**
@@ -405,7 +518,7 @@ class DynamicExtensionBaseQueryBuilder
 	 * @return recordIdList list of record ids for the content child
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private List<Long> getRecordIdListForContainment(AssociationInterface association,
+	public List<Long> getRecordIdListForContainment(AssociationInterface association,
 			List<Long> recordIdList) throws DynamicExtensionsSystemException
 	{
 		String tableName = association.getConstraintProperties().getName();
@@ -488,9 +601,12 @@ class DynamicExtensionBaseQueryBuilder
 		String dataType = getDataTypeForIdentifier();
 		String tableName = entity.getTableProperties().getName();
 		EntityInterface parentEntity = entity.getParentEntity();
+		String activityStatusString = Constants.ACTIVITY_STATUS_COLUMN + WHITESPACE
+				+ getDataTypeForStatus();
 
 		StringBuffer query = new StringBuffer(CREATE_TABLE + " " + tableName + " "
-				+ OPENING_BRACKET + " " + IDENTIFIER + " " + dataType + COMMA);
+				+ OPENING_BRACKET + " " + IDENTIFIER + " " + dataType + COMMA
+				+ activityStatusString + COMMA);
 		Collection attributeCollection = entity.getAttributeCollection();
 		if (attributeCollection != null && !attributeCollection.isEmpty())
 		{
@@ -583,6 +699,17 @@ class DynamicExtensionBaseQueryBuilder
 	{
 		DataTypeFactory dataTypeFactory = DataTypeFactory.getInstance();
 		return dataTypeFactory.getDatabaseDataType("Integer");
+	}
+
+	/**
+	 * This method returns the dabase type for idenitifier.
+	 * @return String database type for the identifier.
+	 * @throws DynamicExtensionsSystemException exception is thrown if factory is not instanciated properly.
+	 */
+	protected String getDataTypeForStatus() throws DynamicExtensionsSystemException
+	{
+		DataTypeFactory dataTypeFactory = DataTypeFactory.getInstance();
+		return dataTypeFactory.getDatabaseDataType("String");
 	}
 
 	/**
@@ -995,10 +1122,11 @@ class DynamicExtensionBaseQueryBuilder
 	 * @param attributeQueryList attributeQueryList
 	 * @param attributeRollbackQueryList attributeRollbackQueryList
 	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException 
 	 */
 	protected void processRemovedAttributes(Entity entity, Entity databaseCopy,
 			List attributeQueryList, List attributeRollbackQueryList)
-			throws DynamicExtensionsSystemException
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Collection savedAttributeCollection = databaseCopy.getAttributeCollection();
 		String tableName = entity.getTableProperties().getName();
@@ -1012,6 +1140,13 @@ class DynamicExtensionBaseQueryBuilder
 				Attribute savedAttribute = (Attribute) savedAttributeIterator.next();
 				Attribute attribute = (Attribute) entity.getAttributeByIdentifier(savedAttribute
 						.getId());;
+
+				if (attribute == null
+						&& isDataPresent(tableName, savedAttribute.getColumnProperties().getName()))
+				{
+					throw new DynamicExtensionsApplicationException(
+							"data is present ,attribute can not be deleted", null, DYEXTN_A_013);
+				}
 
 				//attribute is removed or modified such that its column need to be removed
 				if (isAttributeColumnToBeRemoved(attribute, savedAttribute))
@@ -1239,6 +1374,46 @@ class DynamicExtensionBaseQueryBuilder
 		}
 	}
 
+	/**
+	 * @param tableName
+	 * @param columnName
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public boolean isDataPresent(String tableName, String columnName)
+			throws DynamicExtensionsSystemException
+	{
+		StringBuffer queryBuffer = new StringBuffer();
+		queryBuffer.append(SELECT_KEYWORD).append(WHITESPACE).append("COUNT").append(
+				OPENING_BRACKET).append("*").append(CLOSING_BRACKET).append(WHITESPACE).append(
+				FROM_KEYWORD).append(WHITESPACE).append(tableName).append(WHITESPACE).append(
+				WHERE_KEYWORD).append(WHITESPACE).append(columnName).append(WHITESPACE)
+				.append("IS").append(WHITESPACE).append(NOT_KEYWORD).append(WHITESPACE).append(
+						NULL_KEYWORD);
+
+		ResultSet resultSet = entityManagerUtil.executeQuery(queryBuffer.toString());
+
+		try
+		{
+			resultSet.next();
+			Long count = resultSet.getLong(1);
+			resultSet.close();
+			if (count > 0)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+
+		}
+		catch (SQLException e)
+		{
+			throw new DynamicExtensionsSystemException("Can not check the availability of data", e);
+		}
+	}
+
 	public boolean isDataPresent(String tableName) throws DynamicExtensionsSystemException
 	{
 		StringBuffer queryBuffer = new StringBuffer();
@@ -1252,6 +1427,7 @@ class DynamicExtensionBaseQueryBuilder
 		{
 			resultSet.next();
 			Long count = resultSet.getLong(1);
+			resultSet.close();
 			if (count > 0)
 			{
 				return true;
@@ -1577,6 +1753,20 @@ class DynamicExtensionBaseQueryBuilder
 			throw new DynamicExtensionsSystemException("Can not check the availability of value", e);
 		}
 		return present;
+	}
+
+	/**
+	 * @return
+	 */
+	public static String getRemoveDisbledRecordsQuery(String tableName)
+	{
+		String prefix = "";
+		if (tableName != null && !tableName.equals(""))
+		{
+			prefix = tableName + ".";
+		}
+		return " " + prefix + Constants.ACTIVITY_STATUS_COLUMN + " <> '"
+				+ Constants.ACTIVITY_STATUS_DISABLED + "' ";
 	}
 
 }

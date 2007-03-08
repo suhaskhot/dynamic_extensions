@@ -1372,7 +1372,6 @@ public class EntityManager
 				// in case of exception.
 
 				List<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
-
 				saveOrUpdateEntity(entity, hibernateDAO, rollbackQueryStack, isentitySaved,
 						processedEntityList);
 
@@ -1387,7 +1386,6 @@ public class EntityManager
 					if (entityGroup.getId() == null)
 					{
 						entityGroup = (EntityGroup) session.saveOrUpdateCopy(entityGroup);
-						currentEntityGroup = entityGroup;
 					}
 					if (((EntityGroup) entityGroup).isCurrent())
 					{
@@ -1583,6 +1581,9 @@ public class EntityManager
 			identifier = entityManagerUtil.getNextIdentifier(entity.getTableProperties().getName());
 		}
 		StringBuffer columnValuesString = new StringBuffer(identifier.toString());
+		columnNameString.append(" , " + Constants.ACTIVITY_STATUS_COLUMN);
+		columnValuesString.append(" , '" + Constants.ACTIVITY_STATUS_ACTIVE + "' ");
+
 		String tableName = entity.getTableProperties().getName();
 
 		List<AttributeRecord> attributeRecords = new ArrayList<AttributeRecord>();
@@ -1937,7 +1938,7 @@ public class EntityManager
 					recordIdList.add(recordId);
 
 					queryBuilder.getContenmentAssociationRemoveDataQueryList(
-							((Association) attribute), recordIdList, removeContainmentRecordQuery);
+							((Association) attribute), recordIdList, removeContainmentRecordQuery,false);
 
 					entityManagerUtil.executeDML(removeContainmentRecordQuery);
 
@@ -2771,12 +2772,16 @@ public class EntityManager
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		boolean isRecordDeleted = false;
+
+		queryBuilder.validateForDeleteRecord(entity, recordId, null);
+
 		Collection attributeCollection = entity.getAttributeCollection();
 		Collection associationCollection = entity.getAssociationCollection();
 		HibernateDAO hibernateDAO = null;
 		DAOFactory factory = DAOFactory.getInstance();
 		hibernateDAO = (HibernateDAO) factory.getDAO(Constants.HIBERNATE_DAO);
 		List associationRemoveQueryList = new ArrayList();
+
 		try
 		{
 
@@ -2811,25 +2816,32 @@ public class EntityManager
 						recordIdList.add(recordId);
 						QueryBuilderFactory.getQueryBuilder()
 								.getContenmentAssociationRemoveDataQueryList(association,
-										recordIdList, associationRemoveQueryList);
+										recordIdList, associationRemoveQueryList,true);
 
 					}
-					else
-					{
-						String associationRemoveQuery = QueryBuilderFactory.getQueryBuilder()
-								.getAssociationRemoveDataQuery(association, recordId);
-
-						associationRemoveQueryList.add(associationRemoveQuery);
-
-					}
+					//					else
+					//					{
+					//						String associationRemoveQuery = QueryBuilderFactory.getQueryBuilder()
+					//								.getAssociationRemoveDataQuery(association, recordId);
+					//
+					//						associationRemoveQueryList.add(associationRemoveQuery);
+					//
+					//					}
 
 				}
 			}
 			Connection conn = DBUtil.getConnection();
 			StringBuffer query = new StringBuffer();
-			query.append(DELETE_KEYWORD + WHITESPACE + entity.getTableProperties().getName()
-					+ WHITESPACE + WHERE_KEYWORD + WHITESPACE + IDENTIFIER + WHITESPACE + EQUAL
-					+ WHITESPACE + recordId.toString());
+			//			query.append(DELETE_KEYWORD + WHITESPACE + entity.getTableProperties().getName()
+			//					+ WHITESPACE + WHERE_KEYWORD + WHITESPACE + IDENTIFIER + WHITESPACE + EQUAL
+			//					+ WHITESPACE + recordId.toString());
+
+			query.append(UPDATE_KEYWORD + WHITESPACE + entity.getTableProperties().getName());
+			query.append(SET_KEYWORD + Constants.ACTIVITY_STATUS_COLUMN + EQUAL + " '"
+					+ Constants.ACTIVITY_STATUS_DISABLED + "' ");
+			query.append(WHERE_KEYWORD + WHITESPACE + IDENTIFIER + WHITESPACE + EQUAL + WHITESPACE
+					+ recordId.toString());
+
 			List<String> deleteRecordQueryList = new ArrayList<String>(associationRemoveQueryList);
 			deleteRecordQueryList.add(0, query.toString());
 			for (String queryString : deleteRecordQueryList)
@@ -2843,6 +2855,19 @@ public class EntityManager
 			}
 			hibernateDAO.commit();
 			isRecordDeleted = true;
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			try
+			{
+				hibernateDAO.rollback();
+			}
+			catch (DAOException e1)
+			{
+				throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
+			}
+			
+			throw e;
 		}
 		catch (Exception e)
 		{
@@ -2957,22 +2982,6 @@ public class EntityManager
 		}
 
 		return entityGroupBeansCollection;
-
-		//		Collection<NameValueBean> entityGroupBeansCollection = new ArrayList<NameValueBean>();
-		//		Collection groupBeansCollection = executeHQL("getAllGroupBeans", new HashMap());
-		//		Iterator groupBeansIterator = groupBeansCollection.iterator();
-		//		Object[] objectArray;
-		//
-		//		while (groupBeansIterator.hasNext())
-		//		{
-		//			objectArray = (Object[]) groupBeansIterator.next();
-		//			NameValueBean entityGroupNameValue = new NameValueBean();
-		//			entityGroupNameValue.setName(objectArray[1]);
-		//			entityGroupNameValue.setValue(objectArray[0]);
-		//			entityGroupBeansCollection.add(entityGroupNameValue);
-		//		}
-		//
-		//		return entityGroupBeansCollection;
 	}
 
 	/**
@@ -3007,6 +3016,10 @@ public class EntityManager
 		Iterator attributeIterator = associationAttributesCollection.iterator();
 		AssociationDisplayAttributeInterface displayAttribute = null;
 		selectColumnName[0] = IDENTIFIER;
+		String[] whereColumnName = {Constants.ACTIVITY_STATUS_COLUMN};
+		String[] whereColumnCondition = {EQUAL};
+		Object[] whereColumnValue = {"'" + Constants.ACTIVITY_STATUS_ACTIVE + "'"};
+
 		int index = 1;
 		while (attributeIterator.hasNext())
 		{
@@ -3024,7 +3037,8 @@ public class EntityManager
 			jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
 			jdbcDao.openSession(null);
 
-			List result = jdbcDao.retrieve(tableName, selectColumnName);
+			List result = jdbcDao.retrieve(tableName, selectColumnName, whereColumnName,
+					whereColumnCondition, whereColumnValue, null);
 			if (result != null)
 			{
 				for (int i = 0; i < result.size(); i++)
@@ -3169,7 +3183,11 @@ public class EntityManager
 			TablePropertiesInterface tablePropertiesInterface = entity.getTableProperties();
 			String tableName = tablePropertiesInterface.getName();
 			String[] selectColumnName = {IDENTIFIER};
-			result = jdbcDao.retrieve(tableName, selectColumnName);
+			String[] whereColumnName = {Constants.ACTIVITY_STATUS_COLUMN};
+			String[] whereColumnCondition = {EQUAL};
+			Object[] whereColumnValue = {"'" + Constants.ACTIVITY_STATUS_ACTIVE + "'"};
+			result = jdbcDao.retrieve(tableName, selectColumnName, whereColumnName,
+					whereColumnCondition, whereColumnValue, null);
 			recordList = getRecordList(result);
 
 		}

@@ -1,5 +1,4 @@
 /**
- *<p>Title: </p>
  *<p>Description:  </p>
  *<p>Copyright://TODO</p>
  *@author Vishvesh Mulay
@@ -22,7 +21,6 @@ import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.Entity;
-import edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties;
 import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -80,24 +78,6 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	}
 
 	/**
-	 * @param associationType associationType
-	 * @param name name
-	 * @param minCard  minCard
-	 * @param maxCard maxCard
-	 * @return  RoleInterface
-	 */
-	private RoleInterface getRole(AssociationType associationType, String name,
-			Cardinality minCard, Cardinality maxCard)
-	{
-		RoleInterface role = DomainObjectFactory.getInstance().createRole();
-		role.setAssociationsType(associationType);
-		role.setName(name);
-		role.setMinimumCardinality(minCard);
-		role.setMaximumCardinality(maxCard);
-		return role;
-	}
-
-	/**
 	 * This test case test for associating two entities with one to many association 
 	 * 
 	 * for oracle it should throw exception.
@@ -143,7 +123,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from "
 					+ study.getTableProperties().getName());
-			assertEquals(3, metaData.getColumnCount());
+			assertEquals(metaData.getColumnCount(), noOfDefaultColumns + 2);
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -212,7 +192,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from "
 					+ user.getTableProperties().getName());
-			assertEquals(3, metaData.getColumnCount());
+			assertEquals(metaData.getColumnCount(), noOfDefaultColumns + 2);
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -325,7 +305,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			assertNotNull(middleTableName);
 
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from " + middleTableName);
-			assertEquals(3, metaData.getColumnCount());
+			assertEquals(metaData.getColumnCount(), noOfDefaultColumns + 1);
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -389,7 +369,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			assertNotNull(tableName);
 
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from " + tableName);
-			assertEquals(3, metaData.getColumnCount());
+			assertEquals(metaData.getColumnCount(), noOfDefaultColumns + 2);
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -1146,18 +1126,18 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					+ user.getTableProperties().getName());
 			resultSet.next();
 			assertEquals(1, resultSet.getInt(1));
-			assertEquals("User1", resultSet.getString(2));
+			assertEquals("User1", resultSet.getString(3));
 			ResultSetMetaData metadata = resultSet.getMetaData();
-			assertEquals(2, metadata.getColumnCount());
+			assertEquals(metadata.getColumnCount(), noOfDefaultColumns + 1);
 
 			resultSet = executeQuery("select count(*) from " + user.getTableProperties().getName());
 			resultSet.next();
 			assertEquals(1, resultSet.getInt(1));
 
 			EntityManager.getInstance().deleteRecord(user, 1L);
-			resultSet = executeQuery("select count(*) from " + user.getTableProperties().getName());
-			resultSet.next();
-			assertEquals(0, resultSet.getInt(1));
+
+			assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(user, 1L));
+
 		}
 		catch (Exception e)
 		{
@@ -1228,9 +1208,9 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			assertEquals(1, resultSet.getInt(1));
 			//Checking whether the the value of the second column (i.e. the column for the user name.. first column is identifier).
 			//is having the expected value or not.
-			assertEquals("User1", resultSet.getString(2));
+			assertEquals("User1", resultSet.getString(3));
 			ResultSetMetaData metadata = resultSet.getMetaData();
-			assertEquals(2, metadata.getColumnCount());
+			assertEquals(metadata.getColumnCount(), noOfDefaultColumns + 1);
 
 			//Checking whether there are 2 entries added in the middle table for the many to many association.
 			resultSet = executeQuery("select count(*) from "
@@ -1240,11 +1220,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			//Deleting the record
 			EntityManager.getInstance().deleteRecord(user, 1L);
 			//Checking there is no entry for the deleted record in the middle table.
-			resultSet = executeQuery("select count(*) from "
-					+ association.getConstraintProperties().getName() + " where "
-					+ association.getConstraintProperties().getSourceEntityKey() + " = " + recordId);
-			resultSet.next();
-			assertEquals(0, resultSet.getInt(1));
+			assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(user, 1L));
 		}
 		catch (Exception e)
 		{
@@ -1315,17 +1291,15 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			assertEquals(1, resultSet.getInt(1));
 			//Checking whether the the value of the second column (i.e. the column for the user name.. first column is identifier).
 			//is having the expected value or not.
-			assertEquals("User1", resultSet.getString(2));
+			assertEquals("User1", resultSet.getString(3));
 			//Checking if the extra column for many to one assiciation is added or not
 			ResultSetMetaData metadata = resultSet.getMetaData();
-			assertEquals(3, metadata.getColumnCount());
+			assertEquals(metadata.getColumnCount(), noOfDefaultColumns + 2);
 
 			//Deleting the record
 			EntityManager.getInstance().deleteRecord(user, 1L);
 
-			resultSet = executeQuery("select count(*) from " + user.getTableProperties().getName());
-			resultSet.next();
-			assertEquals(0, resultSet.getInt(1));
+			assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(user, 1L));;
 		}
 		catch (Exception e)
 		{
@@ -1423,15 +1397,15 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from "
 					+ user.getTableProperties().getName());
-			assertEquals(3, metaData.getColumnCount());
+			assertEquals(metaData.getColumnCount(), noOfDefaultColumns + 2);
 
 			metaData = executeQueryForMetadata("select * from "
 					+ study.getTableProperties().getName());
-			assertEquals(2, metaData.getColumnCount());
+			assertEquals(metaData.getColumnCount(), noOfDefaultColumns + 1);
 
 			metaData = executeQueryForMetadata("select * from "
 					+ institution.getTableProperties().getName());
-			assertEquals(3, metaData.getColumnCount());
+			assertEquals(metaData.getColumnCount(), noOfDefaultColumns + 2);
 
 		}
 		catch (DynamicExtensionsSystemException e)
@@ -1533,21 +1507,21 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from "
 					+ user.getTableProperties().getName());
-			assertEquals(3, metaData.getColumnCount());
+			assertEquals(metaData.getColumnCount(), noOfDefaultColumns + 2);
 
 			metaData = executeQueryForMetadata("select * from "
 					+ study.getTableProperties().getName());
-			assertEquals(2, metaData.getColumnCount());
+			assertEquals(metaData.getColumnCount(), noOfDefaultColumns + 1);
 
 			metaData = executeQueryForMetadata("select * from "
 					+ institution.getTableProperties().getName());
-			assertEquals(3, metaData.getColumnCount());
+			assertEquals(metaData.getColumnCount(), noOfDefaultColumns + 2);
 
 			assertNotNull(instUserAssociation.getConstraintProperties().getName());
 
 			metaData = executeQueryForMetadata("select * from "
 					+ instUserAssociation.getConstraintProperties().getName());
-			assertEquals(3, metaData.getColumnCount());
+			assertEquals(metaData.getColumnCount(), noOfDefaultColumns + 1);
 
 		}
 		catch (DynamicExtensionsSystemException e)
@@ -1611,11 +1585,11 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			assertNotNull(tableName);
 
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from " + tableName);
-			assertEquals(2, metaData.getColumnCount());
+			assertEquals(metaData.getColumnCount(), noOfDefaultColumns + 1);
 
 			metaData = executeQueryForMetadata("select * from "
 					+ association.getConstraintProperties().getName());
-			assertEquals(3, metaData.getColumnCount());
+			assertEquals(noOfDefaultColumns + 1, metaData.getColumnCount());
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -1694,11 +1668,11 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			assertNotNull(tableName);
 
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from " + tableName);
-			assertEquals(3, metaData.getColumnCount());
+			assertEquals(noOfDefaultColumns + 2, metaData.getColumnCount());
 
 			metaData = executeQueryForMetadata("select * from "
 					+ association.getConstraintProperties().getName());
-			assertEquals(3, metaData.getColumnCount());
+			assertEquals(noOfDefaultColumns + 1, metaData.getColumnCount());
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -1777,15 +1751,15 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			assertNotNull(tableName);
 
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from " + tableName);
-			assertEquals(2, metaData.getColumnCount());
+			assertEquals(noOfDefaultColumns + 1, metaData.getColumnCount());
 
 			metaData = executeQueryForMetadata("select * from "
 					+ association.getConstraintProperties().getName());
-			assertEquals(3, metaData.getColumnCount());
+			assertEquals(noOfDefaultColumns + 1, metaData.getColumnCount());
 
 			metaData = executeQueryForMetadata("select * from "
 					+ creatorAssociation.getConstraintProperties().getName());
-			assertEquals(3, metaData.getColumnCount());
+			assertEquals(noOfDefaultColumns + 1, metaData.getColumnCount());
 
 		}
 		catch (DynamicExtensionsSystemException e)
@@ -1850,7 +1824,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from "
 					+ study.getTableProperties().getName());
-			assertEquals(2, metaData.getColumnCount());
+			assertEquals(noOfDefaultColumns + 1, metaData.getColumnCount());
 
 			assertEquals(1, study.getAbstractAttributeCollection().size());
 
@@ -2048,11 +2022,11 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			assertNotNull(tableName);
 
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from " + tableName);
-			assertEquals(2, metaData.getColumnCount());
+			assertEquals(noOfDefaultColumns + 1, metaData.getColumnCount());
 
 			metaData = executeQueryForMetadata("select * from "
 					+ association.getConstraintProperties().getName());
-			assertEquals(3, metaData.getColumnCount());
+			assertEquals(noOfDefaultColumns + 1, metaData.getColumnCount());
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -2121,7 +2095,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from "
 					+ user.getTableProperties().getName());
-			assertEquals(3, metaData.getColumnCount());
+			assertEquals(noOfDefaultColumns + 2, metaData.getColumnCount());
 
 			//			 Associate user (1) <------>(*)study       
 			AssociationInterface association1 = factory.createAssociation();
@@ -2140,7 +2114,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			metaData = executeQueryForMetadata("select * from "
 					+ study.getTableProperties().getName());
-			assertEquals(3, metaData.getColumnCount());
+			assertEquals(noOfDefaultColumns + 2, metaData.getColumnCount());
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -2201,14 +2175,14 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			user = entityManager.persistEntity(user);
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from "
 					+ user.getTableProperties().getName());
-			assertEquals(3, metaData.getColumnCount());
+			assertEquals(noOfDefaultColumns + 2, metaData.getColumnCount());
 
 			user.removeAssociation(association);
 			user = entityManager.persistEntity(user);
 
 			metaData = executeQueryForMetadata("select * from "
 					+ user.getTableProperties().getName());
-			assertEquals(2, metaData.getColumnCount());
+			assertEquals(noOfDefaultColumns + 1, metaData.getColumnCount());
 
 			sourceRole = getRole(AssociationType.ASSOCIATION, "association1", Cardinality.ZERO,
 					Cardinality.MANY);
@@ -2223,7 +2197,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			assertTrue(isTablePresent(association.getConstraintProperties().getName()));
 			metaData = executeQueryForMetadata("select * from "
 					+ association.getConstraintProperties().getName());
-			assertEquals(3, metaData.getColumnCount());
+			assertEquals(noOfDefaultColumns + 1, metaData.getColumnCount());
 
 			user.removeAssociation(association);
 			user = entityManager.persistEntity(user);
@@ -2291,10 +2265,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from "
 					+ user.getTableProperties().getName());
-			assertEquals(3, metaData.getColumnCount());
+			assertEquals(noOfDefaultColumns + 2, metaData.getColumnCount());
 			metaData = executeQueryForMetadata("select * from "
 					+ study.getTableProperties().getName());
-			assertEquals(2, metaData.getColumnCount());
+			assertEquals(noOfDefaultColumns + 1, metaData.getColumnCount());
 
 			association.getSourceRole().setMaximumCardinality(Cardinality.ONE);
 			association.getTargetRole().setMaximumCardinality(Cardinality.MANY);
@@ -2304,10 +2278,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			metaData = executeQueryForMetadata("select * from "
 					+ user.getTableProperties().getName());
-			assertEquals(2, metaData.getColumnCount());
+			assertEquals(noOfDefaultColumns + 1, metaData.getColumnCount());
 			metaData = executeQueryForMetadata("select * from "
 					+ study.getTableProperties().getName());
-			assertEquals(3, metaData.getColumnCount());
+			assertEquals(noOfDefaultColumns + 2, metaData.getColumnCount());
 
 			EntityInterface savedUser = entityManager
 					.getEntityByIdentifier(user.getId().toString());
@@ -2379,10 +2353,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from "
 					+ user.getTableProperties().getName());
-			assertEquals(3, metaData.getColumnCount());
+			assertEquals(noOfDefaultColumns + 2, metaData.getColumnCount());
 			metaData = executeQueryForMetadata("select * from "
 					+ study.getTableProperties().getName());
-			assertEquals(2, metaData.getColumnCount());
+			assertEquals(noOfDefaultColumns + 1, metaData.getColumnCount());
 
 			association.getSourceRole().setMaximumCardinality(Cardinality.ONE);
 			association.getTargetRole().setMaximumCardinality(Cardinality.MANY);
@@ -2392,10 +2366,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			metaData = executeQueryForMetadata("select * from "
 					+ user.getTableProperties().getName());
-			assertEquals(2, metaData.getColumnCount());
+			assertEquals(noOfDefaultColumns + 1, metaData.getColumnCount());
 			metaData = executeQueryForMetadata("select * from "
 					+ study.getTableProperties().getName());
-			assertEquals(3, metaData.getColumnCount());
+			assertEquals(noOfDefaultColumns + 2, metaData.getColumnCount());
 
 			EntityInterface savedUser = entityManager
 					.getEntityByIdentifier(user.getId().toString());
@@ -2816,8 +2790,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			resultSet = executeQuery("select * from " + address.getTableProperties().getName());
 			resultSet.next();
-			assertEquals("Swami Vivekand Road", resultSet.getString(2));
-			assertEquals("Pune 37", resultSet.getString(3));
+			assertEquals("Swami Vivekand Road", resultSet.getString(3));
+			assertEquals("Pune 37", resultSet.getString(4));
 
 			resultSet = executeQuery("select count(*) from " + user.getTableProperties().getName());
 			resultSet.next();
@@ -2922,12 +2896,12 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			// Step 8				
 			resultSet = executeQuery("select count(*) from " + user.getTableProperties().getName());
 			resultSet.next();
-			assertEquals(0, resultSet.getInt(1));
+			assertEquals(1, resultSet.getInt(1));
 
 			resultSet = executeQuery("select count(*) from "
 					+ address.getTableProperties().getName());
 			resultSet.next();
-			assertEquals(0, resultSet.getInt(1));
+			assertEquals(2, resultSet.getInt(1));
 
 		}
 		catch (Exception e)
@@ -3117,6 +3091,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			assertTrue(true);
 		}
 	}
+
 	/**
 	 *  PURPOSE: This method tests for editing the data for the case when multiple level containment is
 	 *           present.    (fix for the bug : 3289)
@@ -3218,13 +3193,11 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			Long recordId = entityManager.insertData(user, dataValue);
 
-			
 			//Step 7
 			institutionValueMap.put(institutionName, "PSPL");
 			entityManager.editData(user, dataValue, recordId);
-			
-			
-            //step 8
+
+			//step 8
 			ResultSet resultSet = executeQuery("select count(*) from "
 					+ address.getTableProperties().getName());
 			resultSet.next();
@@ -3238,7 +3211,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		}
 
 	}
-	
+
 	/**
 	 * This test case test for associating two entities with one to many association 
 	 * 
@@ -3276,8 +3249,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 				Cardinality.MANY));
 
 		user.addAbstractAttribute(association);
-		
-		
+
 		// create site 
 		EntityInterface site = factory.createEntity();
 		AttributeInterface siteNameAttribute = factory.createStringAttribute();
@@ -3291,10 +3263,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		associationSite.setTargetEntity(study);
 		associationSite.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
 		associationSite.setName("site_study");
-		associationSite.setSourceRole(getRole(AssociationType.ASSOCIATION, "site",
-				Cardinality.ONE, Cardinality.ONE));
-		associationSite.setTargetRole(getRole(AssociationType.ASSOCIATION, "study", Cardinality.ZERO,
-				Cardinality.MANY));
+		associationSite.setSourceRole(getRole(AssociationType.ASSOCIATION, "site", Cardinality.ONE,
+				Cardinality.ONE));
+		associationSite.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
+				Cardinality.ZERO, Cardinality.MANY));
 
 		site.addAbstractAttribute(associationSite);
 
@@ -3304,15 +3276,15 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			entityManager.persistEntity(user);
 			site = entityManager.persistEntity(site);
-			
+
 			Collection<AssociationInterface> coll = entityManager.getIncomingAssociations(study);
-			assertEquals(2,coll.size());
-			
+			assertEquals(2, coll.size());
+
 			coll = entityManager.getIncomingAssociations(user);
-			assertEquals(0,coll.size());
-			
+			assertEquals(0, coll.size());
+
 			coll = entityManager.getIncomingAssociations(site);
-			assertEquals(0,coll.size());
+			assertEquals(0, coll.size());
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -3326,8 +3298,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			fail();
 
 		}
-		
 
 	}
-	
+
 }

@@ -208,6 +208,14 @@ PUBLIC
 			scope="request">
 			<forward name="success" path="/pages/FetchXMLString.jsp"/>
 		</action>
+		<action path="/DeleteRecordAction" 
+			type="edu.common.dynamicextensions.ui.webui.action.DeleteRecordAction"
+			name="recordListForm"
+			validate="false"
+			input="/LoadRecordListAction.do"
+			scope="request">
+			<forward name="success" path="/LoadRecordListAction.do" />
+		</action>
 	</action-mappings>	
 	
 	<message-resources parameter="ApplicationResources" />

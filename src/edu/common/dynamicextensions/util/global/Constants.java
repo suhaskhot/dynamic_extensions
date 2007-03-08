@@ -10,6 +10,7 @@
 
 package edu.common.dynamicextensions.util.global;
 
+
 /**
  * This class stores the constants used in the operations in the application.
  * @author Sujay Narkar
@@ -69,6 +70,8 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final int DATA_TABLE_STATE_CREATED = 1;
 	public static final int DATA_TABLE_STATE_NOT_CREATED = 2;
 	public static final int DATA_TABLE_STATE_ALREADY_PRESENT = 3;
+	
+	public static final String DATE_ONLY_FORMAT = Constants.DATE_PATTERN_MM_DD_YYYY;
 
 	public static final String ID = "id";
 

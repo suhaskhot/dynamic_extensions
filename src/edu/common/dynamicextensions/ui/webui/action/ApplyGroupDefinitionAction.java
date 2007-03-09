@@ -75,9 +75,12 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 		}
 
 		//Redirection logic
-		boolean isCallbackURL = redirectCallbackURL(request, response,
-				WebUIManagerConstants.SUCCESS);
-
+		String operationPerformed = groupForm.getGroupOperation();
+		boolean isCallbackURL = false;
+		if (operationPerformed.equals(ProcessorConstants.SAVE_GROUP))
+		{
+			isCallbackURL = redirectCallbackURL(request, response, WebUIManagerConstants.SUCCESS);
+		}
 		actionForward = getNextPage(groupForm.getGroupOperation(), mapping, isCallbackURL);
 
 		return actionForward;

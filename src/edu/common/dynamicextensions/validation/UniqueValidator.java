@@ -21,10 +21,16 @@ public class UniqueValidator implements ValidatorRuleInterface
 	 * @see edu.common.dynamicextensions.validation.ValidatorRuleInterface#validate(edu.common.dynamicextensions.domaininterface.AttributeInterface, java.lang.Object, java.util.Map)
 	 * @throws DynamicExtensionsValidationException
 	 */
-	public boolean validate(AttributeInterface attribute, Object valueObject, Map paramMap)
-			throws DynamicExtensionsValidationException,DynamicExtensionsSystemException
+	public boolean validate(AttributeInterface attribute, Object valueObject,
+			Map<String, String> parameterMap) throws DynamicExtensionsValidationException,
+			DynamicExtensionsSystemException
 	{
-		if (EntityManagerUtil.isValuePresent(attribute, valueObject)) {
+		/* Check for the validity of the number */
+		NumberValidator numberValidator = new NumberValidator();
+		numberValidator.validate(attribute, valueObject, parameterMap);
+
+		if (EntityManagerUtil.isValuePresent(attribute, valueObject))
+		{
 			List<String> placeHolders = new ArrayList<String>();
 			placeHolders.add(attribute.getName());
 			placeHolders.add((String) valueObject);
@@ -32,9 +38,9 @@ public class UniqueValidator implements ValidatorRuleInterface
 			throw new DynamicExtensionsValidationException("Validation failed", null,
 					"dynExtn.validation.Unique", placeHolders);
 		}
-		
+
 		return true;
-		
+
 	}
 
 }

@@ -797,6 +797,40 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
+	 * This method compares the two date strings.
+	 * @param date1 the first date value.
+	 * @param date2 the second date value.
+	 * @param dateFormat the format of both date.
+	 * @return -1 if date1 is lesser than date2
+	 * 			0 if date1 is equals to date2
+	 * 			1 if date1 is greater than date2.
+	 */
+	public static int compareDates(String date1, String date2, String dateFormat)
+	{
+		int result = 0;
+
+		try
+		{
+			Date firstDate = Utility.parseDate(date1, dateFormat);
+			Date secondDate = Utility.parseDate(date2, dateFormat);
+			if (firstDate.after(secondDate))
+			{
+				result = 1;
+			}
+			else if (firstDate.before(secondDate))
+			{
+				result = -1;
+			}
+		}
+		catch (ParseException parseException)
+		{
+			result = -2;
+		}
+
+		return result;
+	}
+
+	/**
 	 * This method returns the format of the date depending upon the the type of the format selected on UI.
 	 * @param format Selected format
 	 * @return date format

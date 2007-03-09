@@ -25,10 +25,6 @@ public class UniqueValidator implements ValidatorRuleInterface
 			Map<String, String> parameterMap) throws DynamicExtensionsValidationException,
 			DynamicExtensionsSystemException
 	{
-		/* Check for the validity of the number */
-		NumberValidator numberValidator = new NumberValidator();
-		numberValidator.validate(attribute, valueObject, parameterMap);
-
 		if (EntityManagerUtil.isValuePresent(attribute, valueObject))
 		{
 			List<String> placeHolders = new ArrayList<String>();
@@ -40,7 +36,6 @@ public class UniqueValidator implements ValidatorRuleInterface
 		}
 
 		return true;
-
 	}
 
 }

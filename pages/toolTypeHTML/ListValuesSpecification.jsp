@@ -24,7 +24,7 @@
 		optionGrid = new dhtmlXGridObject('optiongrid');
 		optionGrid.setImagePath("dhtml_comp/imgs/");
 		optionGrid.setHeader("#,Option Name,Concept Code(s),Definiton");
-		optionGrid.setInitWidthsP("3,35,22,40");
+		optionGrid.setInitWidthsP("5,35,30,30");
 		optionGrid.setColAlign("center,left,left,left");
 		optionGrid.setColTypes("ch,ed,ed,ed");
 		optionGrid.setSerializableColumns("false,true,true,true");

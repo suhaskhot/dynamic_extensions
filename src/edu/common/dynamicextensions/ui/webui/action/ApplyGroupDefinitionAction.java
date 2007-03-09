@@ -37,8 +37,7 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		boolean isCallbackURL = redirectCallbackURL(request, response,
-				WebUIManagerConstants.SUCCESS);
+
 		ActionForward actionForward = null;
 
 		GroupForm groupForm = (GroupForm) form;
@@ -76,10 +75,12 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 		}
 
 		//Redirection logic
-		if (isCallbackURL == false && actionForward == null)
-		{
-			actionForward = getNextPage(groupForm.getGroupOperation(), mapping);
-		}
+
+		boolean isCallbackURL = redirectCallbackURL(request, response,
+				WebUIManagerConstants.SUCCESS);
+
+		actionForward = getNextPage(groupForm.getGroupOperation(), mapping, isCallbackURL);
+
 		return actionForward;
 	}
 
@@ -87,14 +88,16 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 	 * @param operationPerformed : Operation performed
 	 * @return Action forward for redirection
 	 */
-	private ActionForward getNextPage(String operationPerformed, ActionMapping mapping)
+	private ActionForward getNextPage(String operationPerformed, ActionMapping mapping,
+			boolean isCallbackURL)
 	{
 		ActionForward actionForward = null;
-		if (operationPerformed != null)
+		if (operationPerformed != null && !isCallbackURL)
 		{
 			if (operationPerformed.equals(ProcessorConstants.SAVE_GROUP))
 			{
 				actionForward = mapping.findForward(Constants.SHOW_DYNAMIC_EXTENSIONS_HOMEPAGE);
+				
 			}
 			else
 			{

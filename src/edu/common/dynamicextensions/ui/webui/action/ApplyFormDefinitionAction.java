@@ -60,10 +60,8 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		boolean isCallbackURL = redirectCallbackURL(request, response,
-				WebUIManagerConstants.SUCCESS);
 		ActionForward actionForward = null;
-		
+
 		String target = null;
 		FormDefinitionForm formDefinitionForm = (FormDefinitionForm) form;
 
@@ -93,7 +91,18 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 				saveContainer(request, formDefinitionForm);
 				saveMessages(request, getSuccessMessage(formDefinitionForm));
 			}
+
 			target = findForwardTarget(operation);
+			String callbackURL = null;
+			if (target.equals(Constants.SHOW_DYNAMIC_EXTENSIONS_HOMEPAGE))
+			{
+				callbackURL = redirectCallbackURL(request, WebUIManagerConstants.SUCCESS);
+				if (callbackURL != null || !callbackURL.equals(""))
+				{
+					response.sendRedirect(callbackURL);
+					target = null;
+				}
+			}
 		}
 		catch (Exception e)
 		{
@@ -103,8 +112,8 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 				actionForward = mapping.getInputForward();
 			}
 		}
-		
-		if (isCallbackURL == false && actionForward==null)
+
+		if (target != null && actionForward == null)
 		{
 			actionForward = mapping.findForward(target);
 		}
@@ -331,10 +340,9 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	 * @return true if CallbackURL is redirected, false otherwise
 	 * @throws IOException
 	 */
-	private boolean redirectCallbackURL(HttpServletRequest request, HttpServletResponse response,
-			String webUIManagerConstant) throws IOException
+	private String redirectCallbackURL(HttpServletRequest request, String webUIManagerConstant)
+			throws IOException
 	{
-		boolean isCallbackURL = false;
 		String calllbackURL = (String) CacheManager.getObjectFromCache(request,
 				Constants.CALLBACK_URL);
 		if (calllbackURL != null && !calllbackURL.equals(""))
@@ -342,9 +350,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 			calllbackURL = calllbackURL + "?" + WebUIManager.getOperationStatusParameterName()
 					+ "=" + webUIManagerConstant;
 			CacheManager.clearCache(request);
-			response.sendRedirect(calllbackURL);
-			isCallbackURL = true;
 		}
-		return isCallbackURL;
+		return calllbackURL;
 	}
 }

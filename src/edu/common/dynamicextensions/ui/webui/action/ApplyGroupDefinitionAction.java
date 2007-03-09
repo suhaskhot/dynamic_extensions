@@ -75,7 +75,6 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 		}
 
 		//Redirection logic
-
 		boolean isCallbackURL = redirectCallbackURL(request, response,
 				WebUIManagerConstants.SUCCESS);
 
@@ -92,12 +91,14 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 			boolean isCallbackURL)
 	{
 		ActionForward actionForward = null;
-		if (operationPerformed != null && !isCallbackURL)
+		if (operationPerformed != null)
 		{
 			if (operationPerformed.equals(ProcessorConstants.SAVE_GROUP))
 			{
-				actionForward = mapping.findForward(Constants.SHOW_DYNAMIC_EXTENSIONS_HOMEPAGE);
-				
+				if (!isCallbackURL)
+				{
+					actionForward = mapping.findForward(Constants.SHOW_DYNAMIC_EXTENSIONS_HOMEPAGE);
+				}
 			}
 			else
 			{

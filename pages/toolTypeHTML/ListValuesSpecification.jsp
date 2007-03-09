@@ -38,7 +38,7 @@
 		var attributeDefaultValue = document.getElementById('attributeDefaultValue').value;
 		var rowId = "";
 		<%
-			if(optionDetailList!=null)
+			if(optionDetailList!=null && optionDetailList.size() > 0)
 			{
 				int noOfOptions = optionDetailList.size();
 				for(int i = 0; i < noOfOptions; i++)
@@ -67,17 +67,21 @@
 
     function uploadValues()
 	{
-		var controlsForm = document.getElementById('controlsForm');
-		var rowNos = optionGrid.getRowsNum();
-
-		var div = document.createElement('DIV');
-		div.id = 'tempDiv';
-        div.innerHTML = '<iframe style="display:none" src="about:blank" id="tempIframe" name="tempIframe" onload="updateOptionGrid()"></iframe>';
-        document.body.appendChild(div);
-
-		controlsForm.action = "UploadFileAction.do?totalRows=" + rowNos;
-		controlsForm.target = "tempIframe";
-		controlsForm.submit();
+		var fileName = document.getElementById('csvFile').value;
+		if(fileName != null || fileName != "")
+		{
+			var controlsForm = document.getElementById('controlsForm');
+			var rowNos = optionGrid.getRowsNum();
+	
+			var div = document.createElement('DIV');
+			div.id = 'tempDiv';
+	        div.innerHTML = '<iframe style="display:none" src="about:blank" id="tempIframe" name="tempIframe" onload="updateOptionGrid()"></iframe>';
+	        document.body.appendChild(div);
+	
+			controlsForm.action = "UploadFileAction.do?totalRows=" + rowNos;
+			controlsForm.target = "tempIframe";
+			controlsForm.submit();
+		}
 	}
 	
 	function updateOptionGrid()

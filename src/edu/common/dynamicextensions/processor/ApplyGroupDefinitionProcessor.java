@@ -56,20 +56,16 @@ public class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsProcesso
 		//Use existing group
 		if((groupUIBean.getCreateGroupAs()!=null)&&((groupUIBean.getCreateGroupAs().equals(ProcessorConstants.GROUP_CREATEFROM_EXISTING))))
 		{
-			Long entityGroupId = new Long(groupUIBean.getGroupName());
-			//entityGroup = getEntityGroup(containerInterface,entityGroupId);
-			//if (entityGroup == null) {
 			entityGroup = groupProcessor.getEntityGroupByIdentifier(groupUIBean.getGroupName());
-			//}
 		}
 		else
 		{
-			//Create new entity group
-			//Validate entity group name
+			//Create new entity group and validate entity group name
 			DynamicExtensionsUtility.validateName(groupUIBean.getGroupNameText());
 			entityGroup = groupProcessor.createEntityGroup();
 			groupProcessor.populateEntityGroupDetails(entityGroup, groupUIBean);
 		}
+		
 		//if group to be saved
 		if((groupOperation!=null)&&(groupOperation.equals(ProcessorConstants.SAVE_GROUP)))
 		{

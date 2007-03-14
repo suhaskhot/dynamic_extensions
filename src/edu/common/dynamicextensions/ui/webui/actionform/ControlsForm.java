@@ -1396,11 +1396,6 @@ public class ControlsForm extends AbstractActionForm
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
 					ApplicationProperties.getValue("eav.att.DateRange")));
 		}
-		else if (DynamicExtensionsUtility.compareDates(this.min, this.max, dateFormat) > 0)
-		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.date.range",
-					ApplicationProperties.getValue("eav.att.Range")));
-		}
 	}
 
 	private boolean isDateRangeValid(String dateFormat, ActionErrors errors)
@@ -1416,12 +1411,22 @@ public class ControlsForm extends AbstractActionForm
 					{
 						errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.date.format",
 								ApplicationProperties.getValue("eav.att.Minimum")));
+						isValid = false;
 					}
 
 					if ((DynamicExtensionsUtility.isDateValid(dateFormat, this.max) == false))
 					{
 						errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.date.format",
 								ApplicationProperties.getValue("eav.att.Maximum")));
+						isValid = false;
+					}
+
+					if (DynamicExtensionsUtility.compareDates(this.min, this.max, dateFormat) > 0
+							&& isValid)
+					{
+						errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.date.range",
+								ApplicationProperties.getValue("eav.att.Range")));
+						isValid = false;
 					}
 				}
 				else

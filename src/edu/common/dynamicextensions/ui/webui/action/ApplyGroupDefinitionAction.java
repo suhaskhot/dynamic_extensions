@@ -44,14 +44,15 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 		ApplyGroupDefinitionProcessor applyGroupDefinitionProcessor = ApplyGroupDefinitionProcessor
 				.getInstance();
 
+		String operationMode = groupForm.getOperationMode();
 		EntityGroupInterface entityGroup = null;
 		try
 		{
 			ContainerInterface containerInterface = (ContainerInterface) CacheManager
 					.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 			entityGroup = applyGroupDefinitionProcessor.saveGroupDetails(groupForm,
-					containerInterface);
-			String operationMode = groupForm.getOperationMode();
+					containerInterface,operationMode);
+			
 			if ((operationMode != null) && (operationMode.equals(Constants.EDIT_FORM)))
 			{
 				applyGroupDefinitionProcessor.updateEntityGroup(containerInterface, entityGroup,

@@ -146,7 +146,7 @@
 							</label>
 						</td>
 						<td>
-							<html:textarea styleClass="formFieldSmallSized" rows="3" cols="28" styleId="groupDescription" property="groupDescription"/>
+							<html:textarea styleClass="formFieldSmallSized" rows="3" cols="28" styleId="groupDescription" property="groupDescription" value=""/>
 						</td>
 					 </tr>
 				</table>
@@ -173,9 +173,18 @@
 								<bean:message key="eav.att.Description"/> :
 							</label>
 						</td>
-						<td>
-							<html:textarea styleClass="formFieldSmallSized"  rows = "3" cols="28" styleId="groupDescription"  property="groupDescription" readonly="true"/>
-						</td>
+						<c:choose>
+							<c:when test='${(operationMode=="EditForm")}'>
+								<td>
+									<html:textarea styleClass="formFieldSmallSized"  rows = "3" cols="28" styleId="groupDescription"  property="groupDescription"/>
+								</td>
+							</c:when>
+							<c:otherwise>
+								<td>
+									<html:textarea styleClass="formFieldSmallSized"  rows = "3" cols="28" styleId="groupDescription"  property="groupDescription" readonly="true"/>
+								</td>
+							</c:otherwise>
+						</c:choose>
 					</tr>
 				</table>
 			</div>

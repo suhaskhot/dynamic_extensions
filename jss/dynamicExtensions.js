@@ -884,8 +884,9 @@ function changeGroupSource(groupSrc)
 {
 	if(groupSrc!=null)
 	{
+		var groupSourceName = groupSrc.value+"Div";
 		var divForGrpDetails = document.getElementById('groupDetailsDiv');
-		var divForGrpSrc = document.getElementById(groupSrc.value+"Div");
+		var divForGrpSrc = document.getElementById(groupSourceName);
 		if((divForGrpSrc!=null)&&(divForGrpDetails!=null))
 		{
 			divForGrpDetails.innerHTML = divForGrpSrc.innerHTML;
@@ -894,6 +895,12 @@ function changeGroupSource(groupSrc)
 		if(groupNameTextFld!=null)
 		{
 			groupNameTextFld.value="";
+		}
+		
+		if(groupSourceName=="ExistingGroupDiv")
+		{
+			var selectedGroupName = document.getElementById('groupName');
+			groupSelected(selectedGroupName);
 		}
 	}
 }

@@ -130,7 +130,7 @@
 	<table id="optionListTable" width="100%">
 		<tr>
 			<td width="100%">
-				<html:file property="tempcsvFile"/>&nbsp;
+				<html:file styleId="tempcsvFile" property="tempcsvFile"/>&nbsp;
 				<html:button styleClass="formButton" property="uploadFile" onclick="uploadValues()">
 					<bean:message key="buttons.upload"/>
 				</html:button>

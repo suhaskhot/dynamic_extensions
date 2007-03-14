@@ -8,6 +8,7 @@ import java.util.Iterator;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
@@ -20,6 +21,7 @@ import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -132,9 +134,53 @@ public class MockEntityManager
 		person.addAbstractAttribute(abstractAttributeInterface);
 		abstractAttributeInterface.setEntity(person);
 
-//		TablePropertiesInterface tablePropertiesInterface = new TableProperties();
-//		tablePropertiesInterface.setName("DE_TABLE1");
-//		person.setTableProperties(tablePropertiesInterface);
+		return person;
+	}
+
+	public EntityInterface initializeEntity1() throws DynamicExtensionsApplicationException
+	{
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+		AttributeInterface atributeInterface = null;
+		EntityInterface person = domainObjectFactory.createEntity();
+		ColumnPropertiesInterface columnProperties = null;
+		int index = 0;
+
+		person.setName("Person");
+		person.setCreatedDate(new Date());
+		person.setDescription("This is a dummy entity");
+		person.setLastUpdated(person.getCreatedDate());
+		TablePropertiesInterface tablePropertiesInterface = new TableProperties();
+		tablePropertiesInterface.setName("DE_TABLE1");
+		person.setTableProperties(tablePropertiesInterface);
+
+		// Attribute 1
+		atributeInterface = initializeDateAttribute();
+		person.addAbstractAttribute(atributeInterface);
+		atributeInterface.setEntity(person);
+		columnProperties = new ColumnProperties();
+		columnProperties.setName(DynamicExtensionsQueryBuilderConstantsInterface.COLUMN_NAME_PREFIX
+				+ "_" + index++);
+		atributeInterface.setColumnProperties(columnProperties);
+
+		// Attribute 2
+		atributeInterface = initializeStringAttribute("gender", "Male");
+		((AttributeInterface) atributeInterface).getAttributeTypeInformation().setDataElement(
+				initializeDataElement());
+		person.addAbstractAttribute(atributeInterface);
+		atributeInterface.setEntity(person);
+		columnProperties = new ColumnProperties();
+		columnProperties.setName(DynamicExtensionsQueryBuilderConstantsInterface.COLUMN_NAME_PREFIX
+				+ "_" + index++);
+		atributeInterface.setColumnProperties(columnProperties);
+
+		// Attribute 3
+		atributeInterface = initializeStringAttribute("name", "");
+		person.addAbstractAttribute(atributeInterface);
+		atributeInterface.setEntity(person);
+		columnProperties = new ColumnProperties();
+		columnProperties.setName(DynamicExtensionsQueryBuilderConstantsInterface.COLUMN_NAME_PREFIX
+				+ "_" + index++);
+		atributeInterface.setColumnProperties(columnProperties);
 
 		return person;
 	}
@@ -142,43 +188,38 @@ public class MockEntityManager
 	public EntityInterface initializeEntity2() throws DynamicExtensionsApplicationException
 	{
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
-		AbstractAttributeInterface abstractAttributeInterface = null;
-
+		AttributeInterface attributeInterface = null;
 		EntityInterface bioInformation = domainObjectFactory.createEntity();
+		ColumnPropertiesInterface columnProperties = null;
+		int index = 0;
 
 		bioInformation.setName("BioInformation");
 		bioInformation.setCreatedDate(new Date());
 		bioInformation.setDescription("This is a dummy entity");
 		bioInformation.setLastUpdated(bioInformation.getCreatedDate());
-
-		// Attribute 1
-		abstractAttributeInterface = initializeLongAttribute();
-		bioInformation.addAbstractAttribute(abstractAttributeInterface);
-		abstractAttributeInterface.setEntity(bioInformation);
-
-		// Attribute 2
-		abstractAttributeInterface = initializeDoubleAttribute();
-		((AttributeInterface) abstractAttributeInterface).getAttributeTypeInformation()
-				.setDataElement(initializeDataElement());
-		bioInformation.addAbstractAttribute(abstractAttributeInterface);
-		abstractAttributeInterface.setEntity(bioInformation);
-
-		EntityInterface personal = initializeEntity3();
-
-		AssociationInterface association = domainObjectFactory.createAssociation();
-		association.setTargetEntity(personal);
-		association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-		association.setName("primaryInvestigator");
-		association.setSourceRole(getRole(AssociationType.ASSOCIATION, "person", Cardinality.ONE,
-				Cardinality.ONE));
-		association.setTargetRole(getRole(AssociationType.ASSOCIATION, "contact", Cardinality.ZERO,
-				Cardinality.MANY));
-
-		bioInformation.addAbstractAttribute(association);
-
 		TablePropertiesInterface tablePropertiesInterface = new TableProperties();
 		tablePropertiesInterface.setName("DE_TABLE2");
 		bioInformation.setTableProperties(tablePropertiesInterface);
+
+		// Attribute 1
+		attributeInterface = initializeLongAttribute();
+		bioInformation.addAbstractAttribute(attributeInterface);
+		attributeInterface.setEntity(bioInformation);
+		columnProperties = new ColumnProperties();
+		columnProperties.setName(DynamicExtensionsQueryBuilderConstantsInterface.COLUMN_NAME_PREFIX
+				+ "_" + index++);
+		attributeInterface.setColumnProperties(columnProperties);
+
+		// Attribute 2
+		attributeInterface = initializeDoubleAttribute();
+		((AttributeInterface) attributeInterface).getAttributeTypeInformation().setDataElement(
+				initializeDataElement());
+		bioInformation.addAbstractAttribute(attributeInterface);
+		attributeInterface.setEntity(bioInformation);
+		columnProperties = new ColumnProperties();
+		columnProperties.setName(DynamicExtensionsQueryBuilderConstantsInterface.COLUMN_NAME_PREFIX
+				+ "_" + index++);
+		attributeInterface.setColumnProperties(columnProperties);
 
 		return bioInformation;
 	}
@@ -186,32 +227,56 @@ public class MockEntityManager
 	public EntityInterface initializeEntity3() throws DynamicExtensionsApplicationException
 	{
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
-		AbstractAttributeInterface abstractAttributeInterface = null;
-
+		AttributeInterface attributeInterface = null;
 		EntityInterface personal = domainObjectFactory.createEntity();
+		ColumnPropertiesInterface columnProperties = null;
+		int index = 0;
 
 		personal.setName("Personal");
 		personal.setCreatedDate(new Date());
 		personal.setDescription("This is a dummy entity");
 		personal.setLastUpdated(personal.getCreatedDate());
-
-		// Attribute 1
-		abstractAttributeInterface = initializeStringAttribute("phone", "");
-		((AttributeInterface) abstractAttributeInterface).getAttributeTypeInformation()
-				.setDataElement(initializeDataElement());
-		personal.addAbstractAttribute(abstractAttributeInterface);
-		abstractAttributeInterface.setEntity(personal);
-
-		// Attribute 2
-		abstractAttributeInterface = initializeStringAttribute("address", "");
-		personal.addAbstractAttribute(abstractAttributeInterface);
-		abstractAttributeInterface.setEntity(personal);
-
 		TablePropertiesInterface tablePropertiesInterface = new TableProperties();
 		tablePropertiesInterface.setName("DE_TABLE3");
 		personal.setTableProperties(tablePropertiesInterface);
 
+		// Attribute 1
+		attributeInterface = initializeStringAttribute("phone", "");
+		((AttributeInterface) attributeInterface).getAttributeTypeInformation().setDataElement(
+				initializeDataElement());
+		personal.addAbstractAttribute(attributeInterface);
+		attributeInterface.setEntity(personal);
+		columnProperties = new ColumnProperties();
+		columnProperties.setName(DynamicExtensionsQueryBuilderConstantsInterface.COLUMN_NAME_PREFIX
+				+ "_" + index++);
+		attributeInterface.setColumnProperties(columnProperties);
+
+		// Attribute 2
+		attributeInterface = initializeStringAttribute("address", "");
+		personal.addAbstractAttribute(attributeInterface);
+		attributeInterface.setEntity(personal);
+		columnProperties = new ColumnProperties();
+		columnProperties.setName(DynamicExtensionsQueryBuilderConstantsInterface.COLUMN_NAME_PREFIX
+				+ "_" + index++);
+		attributeInterface.setColumnProperties(columnProperties);
+
 		return personal;
+	}
+	
+	public EntityInterface initializeEntity4() throws DynamicExtensionsApplicationException
+	{
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+		EntityInterface person = domainObjectFactory.createEntity();
+
+		person.setName("Person");
+		person.setCreatedDate(new Date());
+		person.setDescription("This is a dummy entity");
+		person.setLastUpdated(person.getCreatedDate());
+		TablePropertiesInterface tablePropertiesInterface = new TableProperties();
+		tablePropertiesInterface.setName("DE_TABLE1");
+		person.setTableProperties(tablePropertiesInterface);
+
+		return person;
 	}
 
 	private RoleInterface getRole(AssociationType associationType, String name,
@@ -465,8 +530,6 @@ public class MockEntityManager
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		EntityGroupInterface entityGroupInterface = domainObjectFactory.createEntityGroup();
 		entityGroupInterface.setName("Test Group");
-		entityGroupInterface.setLongName("Test long name1");
-		entityGroupInterface.setShortName("Test short name1");
 		entityGroupInterface.setDescription("Test description1");
 		entityGroupInterface.setVersion("1");
 
@@ -496,10 +559,9 @@ public class MockEntityManager
 	}
 
 	/**
-	 * This method creates the populated dummy Entity instance
 	 * 
-	 * @return Manually created dummy Entity along with its attributes
-	 * @throws DynamicExtensionsApplicationException On failure to create Entity 
+	 * @return
+	 * @throws DynamicExtensionsApplicationException
 	 */
 	public EntityGroupInterface initializeEntityGroupForInheritance()
 			throws DynamicExtensionsApplicationException
@@ -507,22 +569,68 @@ public class MockEntityManager
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		EntityGroupInterface entityGroupInterface = domainObjectFactory.createEntityGroup();
 		entityGroupInterface.setName("Test Group");
-		entityGroupInterface.setLongName("Test long name1");
-		entityGroupInterface.setShortName("Test short name1");
-		entityGroupInterface.setDescription("Test description1");
-		entityGroupInterface.setVersion("1");
 
-		EntityInterface person = initializeEntity();
+		EntityInterface person = initializeEntity1();
+
+		EntityInterface bioInformation = initializeEntity2();
+		bioInformation.setParentEntity(person);
+
+		EntityInterface personal = initializeEntity3();
+		personal.setParentEntity(bioInformation);
+
+		entityGroupInterface.addEntity(person);
+		entityGroupInterface.addEntity(bioInformation);
+		entityGroupInterface.addEntity(personal);
+
+		return entityGroupInterface;
+	}
+
+	/**
+	 * 
+	 * @return
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public EntityGroupInterface initializeEntityGroupForInheritanceAndAssociation()
+			throws DynamicExtensionsApplicationException
+	{
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroupInterface = domainObjectFactory.createEntityGroup();
+		entityGroupInterface.setName("Test Group");
+
+		EntityInterface person = initializeEntity1();
 
 		EntityInterface bioInformation = initializeEntity2();
 		bioInformation.setParentEntity(person);
 
 		EntityInterface personal = initializeEntity3();
 
+		AssociationInterface association = domainObjectFactory.createAssociation();
+		association.setTargetEntity(personal);
+		association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+		association.setName("PersonalInformation");
+		association.setSourceRole(getRole(AssociationType.ASSOCIATION, "person", Cardinality.ONE,
+				Cardinality.ONE));
+		association.setTargetRole(getRole(AssociationType.ASSOCIATION, "personalInformation",
+				Cardinality.ONE, Cardinality.MANY));
+
+		bioInformation.addAssociation(association);
+
 		entityGroupInterface.addEntity(person);
 		entityGroupInterface.addEntity(bioInformation);
 		entityGroupInterface.addEntity(personal);
 
+		return entityGroupInterface;
+	}
+
+	public EntityGroupInterface initializeEntityGroupForDependency()
+			throws DynamicExtensionsApplicationException
+	{
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroupInterface = domainObjectFactory.createEntityGroup();
+		entityGroupInterface.setName("Test Group");
+		EntityInterface person = initializeEntity4();
+		entityGroupInterface.addEntity(person);
+		
 		return entityGroupInterface;
 	}
 

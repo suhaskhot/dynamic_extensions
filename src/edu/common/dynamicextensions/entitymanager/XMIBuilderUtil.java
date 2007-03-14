@@ -5,6 +5,7 @@
 package edu.common.dynamicextensions.entitymanager;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -61,7 +62,7 @@ public class XMIBuilderUtil
 	 * @return - Element
 	 */
 	public static Element createElementNode(Document document, String elementName,
-			LinkedHashMap<String, String> attributeMap, String value)
+			LinkedHashMap<String, String> elementAttributeMap, String value)
 			throws DynamicExtensionsApplicationException
 	{
 		Element element = null;
@@ -71,9 +72,9 @@ public class XMIBuilderUtil
 		}
 
 		// If attributes are presents, they are added to the El ement node 
-		if (attributeMap != null)
+		if (elementAttributeMap != null)
 		{
-			Set<Map.Entry<String, String>> entrySet = attributeMap.entrySet();
+			Set<Map.Entry<String, String>> entrySet = elementAttributeMap.entrySet();
 			for (Map.Entry<String, String> entryNode : entrySet)
 			{
 				element.setAttribute(entryNode.getKey(), entryNode.getValue());
@@ -188,6 +189,36 @@ public class XMIBuilderUtil
 		return attributeType;
 	}
 
+	// TODO Needs improvement
+	public static String getColumnType(String dataType)
+	{
+		String columnType = null;
+		if (dataType.equals(EntityManagerConstantsInterface.STRING_ATTRIBUTE_TYPE))
+		{
+			columnType = "VARCHAR2";
+		}
+		else if (dataType.equals(EntityManagerConstantsInterface.FLOAT_ATTRIBUTE_TYPE)
+				|| dataType.equals(EntityManagerConstantsInterface.SHORT_ATTRIBUTE_TYPE)
+				|| dataType.equals(EntityManagerConstantsInterface.DOUBLE_ATTRIBUTE_TYPE)
+				|| dataType.equals(EntityManagerConstantsInterface.INTEGER_ATTRIBUTE_TYPE)
+				|| dataType.equals(EntityManagerConstantsInterface.LONG_ATTRIBUTE_TYPE)
+				|| dataType.equals(EntityManagerConstantsInterface.BOOLEAN_ATTRIBUTE_TYPE))
+		{
+			columnType = "NUMBER";
+		}
+		else if (dataType.equals(EntityManagerConstantsInterface.FILE_ATTRIBUTE_TYPE))
+		{
+			columnType = "Blob";
+		}
+		else if (dataType.equals(EntityManagerConstantsInterface.DATE_ATTRIBUTE_TYPE)
+				|| dataType.equals(EntityManagerConstantsInterface.DATE_TIME_ATTRIBUTE_TYPE))
+		{
+			columnType = "DATE";
+		}
+
+		return columnType;
+	}
+
 	public static int getNextIdForChild(Element element)
 	{
 		Element childElement = null;
@@ -197,21 +228,90 @@ public class XMIBuilderUtil
 
 		childElement = (Element) childrenNodeList.item(0);
 		childId = childElement.getAttribute("xmi.id");
-		idNumber = childId.substring(childId.lastIndexOf("_")+1);
+		idNumber = childId.substring(childId.lastIndexOf("_") + 1);
 		maxId = Integer.parseInt(idNumber);
 
 		for (int i = 1; i < childrenNodeList.getLength(); i++)
 		{
 			childElement = (Element) childrenNodeList.item(i);
 			childId = childElement.getAttribute("xmi.id");
-			idNumber = childId.substring(childId.lastIndexOf("_")+1);
+			idNumber = childId.substring(childId.lastIndexOf("_") + 1);
 			iElementIdNum = Integer.parseInt(idNumber);
 
 			if (iElementIdNum > maxId)
 				maxId = iElementIdNum;
 		}
-		
-		return maxId+1;
+
+		return maxId + 1;
+	}
+
+	public static String rectifyElementName(String name, String type)
+	{
+		StringBuffer rectifiedName = new StringBuffer();
+		String[] stringArray = null;
+		if (type.equals(XMIBuilderConstantsInterface.ELEMENT_CLASS)
+				|| type.equals(XMIBuilderConstantsInterface.ELEMENT_PACKAGE))
+		{
+			stringArray = name.split(" ");
+			for (String subString : stringArray)
+			{
+				StringBuffer tempString = new StringBuffer(subString);
+				tempString.setCharAt(0, Character.toUpperCase(subString.charAt(0)));
+				rectifiedName.append(tempString.toString());
+			}
+		}
+		else if (type.equals(XMIBuilderConstantsInterface.ELEMENT_ATTRIBUTE))
+		{
+			stringArray = name.split(" ");
+			StringBuffer tempString = new StringBuffer(stringArray[0]);
+			tempString.setCharAt(0, Character.toLowerCase(stringArray[0].charAt(0)));
+			rectifiedName.append(tempString.toString());
+			for (int i = 1; i < stringArray.length; i++)
+			{
+				tempString = new StringBuffer(stringArray[i]);
+				tempString.setCharAt(0, Character.toUpperCase(stringArray[i].charAt(0)));
+				rectifiedName.append(tempString.toString());
+			}
+		}
+		return rectifiedName.toString();
+	}
+
+	public static void appendUMLTaggedValuesT0XMIContent(Document document,
+			LinkedHashMap<String, String> propertyMap, String modelElement)
+			throws DynamicExtensionsApplicationException
+	{
+		Element xmiContentElement = XMIBuilderUtil.getElementByTagAndName(document, "XMI.content",
+				null);
+		Set<Map.Entry<String, String>> entrySet = propertyMap.entrySet();
+		int propertyNumber = 0;
+		for (Map.Entry<String, String> entry : entrySet)
+		{
+			String tagName = entry.getKey();
+			String value = entry.getValue();
+			Element umlTaggedValueElement = UMLElementGenerator.generateUMLTagggedElement(document,
+					modelElement, propertyNumber++, tagName, value);
+			xmiContentElement.appendChild(umlTaggedValueElement);
+		}
+	}
+
+	public static ArrayList<String> getAllXmiIds(Element rootElement, String elementName)
+	{
+		ArrayList<String> xmiIdList = new ArrayList<String>();
+		Element element = null;
+		String xmiId = null;
+
+		NodeList nodeList = rootElement.getElementsByTagName(elementName);
+		if (nodeList != null)
+		{
+			for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++)
+			{
+				element = (Element) nodeList.item(nodeIndex);
+				xmiId = element.getAttribute("xmi.id");
+				xmiIdList.add(xmiId);
+			}
+		}
+
+		return xmiIdList;
 	}
 
 }

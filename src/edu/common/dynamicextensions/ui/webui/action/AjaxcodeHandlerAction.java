@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -22,6 +21,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
@@ -230,18 +230,17 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 						if (control != null)
 						{
 							containerInterface.addControl(control);
-							containerInterface.getEntity().addAbstractAttribute(control.getAbstractAttribute());
+							containerInterface.getEntity().addAbstractAttribute(
+									control.getAbstractAttribute());
 						}
 					}
 				}
 			}
 		}
 		System.out.println("Coontrols Colln : ");
-		Collection controlCollection = containerInterface.getControlCollection();
-		Iterator iter = controlCollection.iterator();
-		while (iter.hasNext())
+		Collection<ControlInterface> controlCollection = containerInterface.getControlCollection();
+		for (ControlInterface control : controlCollection)
 		{
-			ControlInterface control = (ControlInterface) iter.next();
 			System.out.println("[" + control.getSequenceNumber() + "] = [" + control.getCaption()
 					+ "]");
 		}
@@ -494,14 +493,10 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 						.getAllContainersByEntityGroupId(iGroupId);
 				if (containerInterfaceList != null)
 				{
-					ContainerInterface entityContainer = null;
 					//EntityInterface entity = null;
 					NameValueBean formName = null;
-					Iterator<ContainerInterface> containerIterator = containerInterfaceList
-							.iterator();
-					while (containerIterator.hasNext())
+					for (ContainerInterface entityContainer : containerInterfaceList)
 					{
-						entityContainer = containerIterator.next();
 						if (entityContainer != null)
 						{
 							formName = new NameValueBean(entityContainer.getCaption(),
@@ -598,22 +593,26 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 				Collection<ControlInterface> controlCollection = container.getControlCollection();
 				if (controlCollection != null)
 				{
-					Iterator<ControlInterface> controlIterator = controlCollection.iterator();
-					ControlInterface control = null;
 					NameValueBean controlName = null;
-					while (controlIterator.hasNext())
+					AbstractAttributeInterface abstractAttribute = null;
+					AttributeInterface attribute = null;
+					for (ControlInterface control : controlCollection)
 					{
-						control = controlIterator.next();
 						if (control != null)
 						{
 							//if control contains Attribute interface object then only show on UI. 
 							//If control contains association objects do not show in attribute list
-							if ((control.getAbstractAttribute() != null)
-									&& (control.getAbstractAttribute() instanceof AttributeInterface))
+							abstractAttribute = control.getAbstractAttribute();
+							if (abstractAttribute != null
+									&& (abstractAttribute instanceof AttributeInterface))
 							{
-								controlName = new NameValueBean(control.getCaption(), control
-										.getId());
-								formAttributesList.add(controlName);
+								attribute = (AttributeInterface) abstractAttribute;
+								if (!(attribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation))
+								{
+									controlName = new NameValueBean(control.getCaption(), control
+											.getId());
+									formAttributesList.add(controlName);
+								}
 							}
 						}
 					}

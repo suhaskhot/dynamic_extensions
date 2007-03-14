@@ -1391,14 +1391,12 @@ public class ControlsForm extends AbstractActionForm
 					ApplicationProperties.getValue("eav.att.DefaultValue")));
 		}
 
-		if (isDateRangeValid(dateFormat, errors) == false)
-		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
-					ApplicationProperties.getValue("eav.att.DateRange")));
-		}
+		// Perform validation checks on date range
+		dateRangeValidion(dateFormat, errors);
+
 	}
 
-	private boolean isDateRangeValid(String dateFormat, ActionErrors errors)
+	private void dateRangeValidion(String dateFormat, ActionErrors errors)
 	{
 		boolean isValid = true;
 		for (String validationName : validationRules)
@@ -1426,17 +1424,16 @@ public class ControlsForm extends AbstractActionForm
 					{
 						errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.date.range",
 								ApplicationProperties.getValue("eav.att.Range")));
-						isValid = false;
 					}
 				}
 				else
 				{
-					isValid = false;
+					errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
+							ApplicationProperties.getValue("eav.att.DateRange")));
 				}
 				break;
 			}
 		}
-		return isValid;
 	}
 
 	/**

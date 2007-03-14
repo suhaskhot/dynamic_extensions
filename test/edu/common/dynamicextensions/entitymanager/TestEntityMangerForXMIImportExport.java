@@ -12,7 +12,8 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 	{
 		try
 		{
-			EntityGroupInterface entityGroup = new MockEntityManager().initializeEntityGroupForInheritance();
+			EntityGroupInterface entityGroup = new MockEntityManager()
+					.initializeEntityGroupForInheritanceAndAssociation();
 
 			XMIBuilder xmiBuilder = new XMIBuilder();
 			xmiBuilder.exportMetadataToXMI(entityGroup);

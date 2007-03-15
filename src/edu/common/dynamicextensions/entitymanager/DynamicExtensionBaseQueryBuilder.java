@@ -1734,7 +1734,7 @@ class DynamicExtensionBaseQueryBuilder
 				OPENING_BRACKET).append("*").append(CLOSING_BRACKET).append(WHITESPACE).append(
 				FROM_KEYWORD).append(WHITESPACE).append(tableName).append(WHITESPACE).append(
 				WHERE_KEYWORD).append(WHITESPACE).append(columnName).append(EQUAL).append(
-				formattedValue);
+				formattedValue).append(" and " + getRemoveDisbledRecordsQuery(""));
 
 		ResultSet resultSet = EntityManagerUtil.executeQuery(queryBuffer.toString());
 

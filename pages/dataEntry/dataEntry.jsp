@@ -146,12 +146,10 @@
 														
 														<c:if test='${(isTopLevelEntity=="false")}'>
 															<html:button styleClass="actionButton" property="ok" onclick="showParentContainerInsertDataPage()" disabled="<%=isTopLevelEntity %>">
-																
 																<bean:message key="buttons.submit" />
 															</html:button>
 														</c:if>
-														
-														
+																												
 														<c:if test='${(mode=="edit") && (isTopLevelEntity=="true")}'>
 															<html:submit styleClass="actionButton" onclick="setInsertDataOperation()">
 																<bean:message key="buttons.submit" />

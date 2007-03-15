@@ -8,8 +8,6 @@ import java.util.Iterator;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
-import edu.wustl.common.actionForm.AbstractActionForm;
-import edu.wustl.common.exception.AssignDataException;
 
 /**
  * Entites have attributes that distinguishes them form other entities.
@@ -47,63 +45,72 @@ public class Attribute extends AbstractAttribute implements AttributeInterface
 	 * Column property associated to this primitive attribute.
 	 */
 	protected Collection<ColumnPropertiesInterface> columnPropertiesCollection = new HashSet<ColumnPropertiesInterface>();
-    
-    /**
-     * 
-     */
-    protected Collection<AttributeTypeInformationInterface> attributeTypeInformationCollection = new HashSet<AttributeTypeInformationInterface>();
-    
-    /**
-     * @hibernate.set name="attributeTypeInformationCollection" table="DYEXTN_ATTRIBUTE_TYPE_INFO"
-     * cascade="all-delete-orphan" inverse="false" lazy="false"
-     * @hibernate.collection-key column="PRIMITIVE_ATTRIBUTE_ID"
-     * @hibernate.cache  usage="read-write"
-     * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.AttributeTypeInformation"   
-     * @return Returns the attributeTypeInformationCollection.
-     */
-    private Collection<AttributeTypeInformationInterface> getAttributeTypeInformationCollection()
-    {
-        return attributeTypeInformationCollection;
-    }
-    /**
-     * @param dataElementCollection The dataElementCollection to set.
-     */
-    private void setAttributeTypeInformationCollection(Collection<AttributeTypeInformationInterface> attributeTypeInformationCollection) 
-    {
-        this.attributeTypeInformationCollection = attributeTypeInformationCollection;
-    }
-    /**
-     * 
-     * @return AttributeTypeInformationInterface
-     */
-    public AttributeTypeInformationInterface getAttributeTypeInformation()
-    {
-        if(attributeTypeInformationCollection != null){
-            Iterator attributeTypeInformationIterator = attributeTypeInformationCollection.iterator();
-            return (AttributeTypeInformationInterface) attributeTypeInformationIterator.next();
-        } else {
-            return null;   
-        }
-        
-    }
-    
-    /**
-     * 
-     * @return AttributeTypeInformationInterface
-     */
-    public void  setAttributeTypeInformation(AttributeTypeInformationInterface  attributeTypeInformationInterface)
-    {
-        if(attributeTypeInformationCollection  == null)
-        {
-            attributeTypeInformationCollection   = new HashSet();
-        } else {
-        	attributeTypeInformationCollection.clear();
-        }
-        
-        this.attributeTypeInformationCollection .add(attributeTypeInformationInterface);
-        
-    }
 
+	/**
+	 * 
+	 */
+	protected Collection<AttributeTypeInformationInterface> attributeTypeInformationCollection = new HashSet<AttributeTypeInformationInterface>();
+
+	/**
+	 * @hibernate.set name="attributeTypeInformationCollection" table="DYEXTN_ATTRIBUTE_TYPE_INFO"
+	 * cascade="all-delete-orphan" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="PRIMITIVE_ATTRIBUTE_ID"
+	 * @hibernate.cache  usage="read-write"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.AttributeTypeInformation"   
+	 * @return Returns the attributeTypeInformationCollection.
+	 */
+	private Collection<AttributeTypeInformationInterface> getAttributeTypeInformationCollection()
+	{
+		return attributeTypeInformationCollection;
+	}
+
+	/**
+	 * @param dataElementCollection The dataElementCollection to set.
+	 */
+	private void setAttributeTypeInformationCollection(
+			Collection<AttributeTypeInformationInterface> attributeTypeInformationCollection)
+	{
+		this.attributeTypeInformationCollection = attributeTypeInformationCollection;
+	}
+
+	/**
+	 * 
+	 * @return AttributeTypeInformationInterface
+	 */
+	public AttributeTypeInformationInterface getAttributeTypeInformation()
+	{
+		if (attributeTypeInformationCollection != null)
+		{
+			Iterator attributeTypeInformationIterator = attributeTypeInformationCollection
+					.iterator();
+			return (AttributeTypeInformationInterface) attributeTypeInformationIterator.next();
+		}
+		else
+		{
+			return null;
+		}
+
+	}
+
+	/**
+	 * 
+	 * @return AttributeTypeInformationInterface
+	 */
+	public void setAttributeTypeInformation(
+			AttributeTypeInformationInterface attributeTypeInformationInterface)
+	{
+		if (attributeTypeInformationCollection == null)
+		{
+			attributeTypeInformationCollection = new HashSet();
+		}
+		else
+		{
+			attributeTypeInformationCollection.clear();
+		}
+
+		this.attributeTypeInformationCollection.add(attributeTypeInformationInterface);
+
+	}
 
 	/**
 	 * Empty constructor.
@@ -172,7 +179,7 @@ public class Attribute extends AbstractAttribute implements AttributeInterface
 	/**
 	 * This method returns the Collection of Column Properties of the Attribute.
 	 * @hibernate.set name="columnPropertiesCollection" table="DYEXTN_COLUMN_PROPERTIES"
-	 * cascade="save-update" inverse="false" lazy="false"
+	 * cascade="all-delete-orphan" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="PRIMITIVE_ATTRIBUTE_ID"
 	 * @hibernate.cache  usage="read-write"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties"
@@ -187,7 +194,8 @@ public class Attribute extends AbstractAttribute implements AttributeInterface
 	 * This method sets the columnPropertiesCollection to given Collection of the ColumnProperties.
 	 * @param columnPropertiesCollection the Collection of the ColumnProperties to be set.
 	 */
-	private void setColumnPropertiesCollection(Collection<ColumnPropertiesInterface> columnPropertiesCollection)
+	private void setColumnPropertiesCollection(
+			Collection<ColumnPropertiesInterface> columnPropertiesCollection)
 	{
 		this.columnPropertiesCollection = columnPropertiesCollection;
 	}
@@ -217,6 +225,10 @@ public class Attribute extends AbstractAttribute implements AttributeInterface
 		{
 			columnPropertiesCollection = new HashSet<ColumnPropertiesInterface>();
 		}
+		else
+		{
+			columnPropertiesCollection.clear();
+		}
 		this.columnPropertiesCollection.add(columnProperties);
 	}
 
@@ -238,7 +250,7 @@ public class Attribute extends AbstractAttribute implements AttributeInterface
 	{
 		this.isNullable = isNullable;
 	}
-	
+
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.AttributeInterface#getDataType()
 	 */
@@ -246,13 +258,13 @@ public class Attribute extends AbstractAttribute implements AttributeInterface
 	{
 		if (getAttributeTypeInformation() != null)
 		{
-		return getAttributeTypeInformation().getDataType();
-		} else 
+			return getAttributeTypeInformation().getDataType();
+		}
+		else
 		{
 			return null;
 		}
-		
+
 	}
-    
- 
+
 }

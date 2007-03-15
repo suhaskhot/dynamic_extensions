@@ -66,27 +66,26 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	 * indicates if this enitity is abstract or not. 
 	 */
 	protected boolean isAbstract = false;
-	
+
 	/**
 	 * 
 	 */
 	protected boolean isProcessed = false;
-	
+
 	/*
 	 * 
 	 */
-	protected int inheritStrategy = InheritanceStrategy.TABLE_PER_SUB_CLASS.getValue(); 
-	
-	
+	protected int inheritStrategy = InheritanceStrategy.TABLE_PER_SUB_CLASS.getValue();
+
 	/**
 	 * 
 	 */
 	protected String discriminatorColumn;
-	
+
 	/**
 	 * 
 	 */
-	protected String  discriminatorValue;
+	protected String discriminatorValue;
 
 	/**
 	 * @hibernate.property name="dataTableState" type="int" column="DATA_TABLE_STATE"
@@ -137,7 +136,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 
 	/**
 	 * This method returns the Collection of TableProperties of this Entity.
-	 * @hibernate.set name="tablePropertiesColletion" table="DYEXTN_TABLE_PROPERTIES" cascade="save-update"
+	 * @hibernate.set name="tablePropertiesColletion" table="DYEXTN_TABLE_PROPERTIES" cascade="all-delete-orphan"
 	 * inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ENTITY_ID"
 	 * @hibernate.cache  usage="read-write"
@@ -183,6 +182,10 @@ public class Entity extends AbstractMetadata implements EntityInterface
 		if (tablePropertiesCollection == null)
 		{
 			tablePropertiesCollection = new HashSet<TablePropertiesInterface>();
+		}
+		else
+		{
+			this.tablePropertiesCollection.clear();
 		}
 		this.tablePropertiesCollection.add(tableProperties);
 	}
@@ -341,8 +344,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 			}
 		}
 	}
-	
-	
+
 	/**
 	 * This method removes all abstract attributes from the entity.
 	 */
@@ -516,19 +518,16 @@ public class Entity extends AbstractMetadata implements EntityInterface
 		return abstractAttributeCollection;
 	}
 
-	
 	public boolean isProcessed()
 	{
 		return isProcessed;
 	}
 
-	
 	public void setProcessed(boolean isProcessed)
 	{
 		this.isProcessed = isProcessed;
 	}
 
-	
 	/**
 	 * @hibernate.property name="inheritStrategy" type="int" column="INHERITANCE_STRATEGY"
 	 * @return Returns the inheritanceStrategy.
@@ -537,7 +536,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	{
 		return inheritStrategy;
 	}
-	
+
 	/**
 	 * @param inheritanceStrategy The inheritanceStrategy to set.
 	 */
@@ -553,7 +552,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	{
 		return InheritanceStrategy.get(this.inheritStrategy);
 	}
-	
+
 	/**
 	 * @param inheritanceStrategy The inheritanceStrategy to set.
 	 */
@@ -562,7 +561,6 @@ public class Entity extends AbstractMetadata implements EntityInterface
 		setInheritStrategy(inheritanceStrategy.getValue());
 	}
 
-	
 	/**
 	 * @hibernate.property name="discriminatorColumn" type="string" column="DISCRIMINATOR_COLUMN_NAME"
 	 * @return Returns the discriminatorColumn.
@@ -572,7 +570,6 @@ public class Entity extends AbstractMetadata implements EntityInterface
 		return discriminatorColumn;
 	}
 
-	
 	/**
 	 * @param discriminatorColumn The discriminatorColumn to set.
 	 */
@@ -581,7 +578,6 @@ public class Entity extends AbstractMetadata implements EntityInterface
 		this.discriminatorColumn = discriminatorColumn;
 	}
 
-	
 	/**
 	 * @hibernate.property name="discriminatorValue" type="string" column="DISCRIMINATOR_VALUE"
 	 * @return Returns the discriminatorValue.
@@ -591,7 +587,6 @@ public class Entity extends AbstractMetadata implements EntityInterface
 		return discriminatorValue;
 	}
 
-	
 	/**
 	 * @param discriminatorValue The discriminatorValue to set.
 	 */

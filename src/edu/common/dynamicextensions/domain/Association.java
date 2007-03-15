@@ -10,8 +10,6 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
-import edu.wustl.common.actionForm.AbstractActionForm;
-import edu.wustl.common.exception.AssignDataException;
 
 /**
  * An entity can have multiple associations, where each association is linked to another entity.
@@ -22,8 +20,7 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  * @hibernate.cache  usage="read-write"
  */
-public class Association extends AbstractAttribute
-		implements AssociationInterface
+public class Association extends AbstractAttribute implements AssociationInterface
 {
 
 	/**
@@ -152,7 +149,7 @@ public class Association extends AbstractAttribute
 	 * This method returns the Collection of the ConstraintProperties of the Association.
 	 * 
 	 * @hibernate.set name="constraintPropertiesCollection" table="DYEXTN_CONSTRAINT_PROPERTIES"
-	 * cascade="save-update" inverse="false" lazy="false"
+	 * cascade="all-delete-orphan" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ASSOCIATION_ID"
 	 * @hibernate.cache  usage="read-write"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties" 
@@ -200,9 +197,13 @@ public class Association extends AbstractAttribute
 		{
 			constraintPropertiesCollection = new HashSet<ConstraintPropertiesInterface>();
 		}
+		else
+		{
+			constraintPropertiesCollection.clear();
+		}
 		this.constraintPropertiesCollection.add(constraintProperties);
 	}
-	
+
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.AssociationInterface#getAssociationDirection()
 	 */

@@ -206,7 +206,7 @@
             table="DYEXTN_COLUMN_PROPERTIES"
             lazy="false"
             inverse="false"
-            cascade="save-update"
+            cascade="all-delete-orphan"
             sort="unsorted"
         >
             <cache 
@@ -283,7 +283,7 @@
             table="DYEXTN_CONSTRAINT_PROPERTIES"
             lazy="false"
             inverse="false"
-            cascade="save-update"
+            cascade="all-delete-orphan"
             sort="unsorted"
         >
             <cache 
@@ -328,6 +328,9 @@
             cascade="none"
             sort="unsorted"
         >
+            <cache 
+                usage="read-write" 
+             />
 
               <key
                   column="ENTITY_GROUP_ID"
@@ -433,7 +436,7 @@
             table="DYEXTN_TABLE_PROPERTIES"
             lazy="false"
             inverse="false"
-            cascade="save-update"
+            cascade="all-delete-orphan"
             sort="unsorted"
         >
             <cache 

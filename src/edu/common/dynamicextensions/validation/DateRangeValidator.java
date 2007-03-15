@@ -30,6 +30,7 @@ public class DateRangeValidator implements ValidatorRuleInterface
 	{
 		boolean valid = true;
 
+		/* Check for the validity of the date */
 		DateValidator dateValidator = new DateValidator();
 		dateValidator.validate(attribute, valueObject, parameterMap);
 

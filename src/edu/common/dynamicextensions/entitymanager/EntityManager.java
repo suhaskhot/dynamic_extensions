@@ -1783,6 +1783,7 @@ public class EntityManager
 		{
 			EntityInterface attributeEntity = abstractAttributeInterface.getEntity();
 			Object value = dataValue.get(abstractAttributeInterface);
+			
 			Map<AbstractAttributeInterface, Object> entityDataValueMap = (Map) entityMap
 					.get(attributeEntity);
 			if (entityDataValueMap == null)
@@ -2285,6 +2286,8 @@ public class EntityManager
 		Entity databaseCopy = null;
 		try
 		{
+			Session session = DBUtil.currentSession();
+
 			if (!isEntitySaved)
 			{
 				preSaveProcessEntity(entity);
@@ -2299,7 +2302,7 @@ public class EntityManager
 					saveOrUpdateEntityMetadata(parentEntity, hibernateDAO, rollbackQueryStack,
 							isParentEntitySaved, processedEntityList);
 				}
-				hibernateDAO.insert(entity, null, false, false);
+				//hibernateDAO.insert(entity, null, false, false);
 			}
 			else
 			{
@@ -2314,9 +2317,15 @@ public class EntityManager
 					saveOrUpdateEntityMetadata(entity.getParentEntity(), hibernateDAO,
 							rollbackQueryStack, true, processedEntityList);
 				}
-				hibernateDAO.update(entity, null, false, false, false);
+			//	hibernateDAO.update(entity, null, false, false, false);
 			}
+			
+			entity = (Entity) session.saveOrUpdateCopy(entity);
+
 			postSaveProcessEntity(entity, hibernateDAO, rollbackQueryStack, processedEntityList);
+			
+			entity = (Entity) session.saveOrUpdateCopy(entity);
+
 			hibernateDAO.update(entity, null, false, false, false);
 		}
 		catch (UserNotAuthorizedException e)

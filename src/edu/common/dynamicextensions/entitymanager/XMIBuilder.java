@@ -108,6 +108,12 @@ public class XMIBuilder implements XMIBuilderConstantsInterface
 		String deXmiId = null;
 
 		deXmiId = "dexmiid" + index++;
+		Element voidDataType = UMLElementGenerator.generateUMLDataTypeElement(document, deXmiId,
+				null);
+		name_IdMap.put("", deXmiId);
+		umlModelPackage.appendChild(voidDataType);
+
+		deXmiId = "dexmiid" + index++;
 		Element numberDataType = UMLElementGenerator.generateUMLDataTypeElement(document, deXmiId,
 				"NUMBER");
 		name_IdMap.put("NUMBER", deXmiId);
@@ -298,7 +304,7 @@ public class XMIBuilder implements XMIBuilderConstantsInterface
 
 		HashMap<String, Element> tableNameElementMap = new HashMap<String, Element>();
 		// Generate XMI of DataModel for the EntityGroup 
-		Element dataModelPackage = gernerateDataModelPackage(document, entityGroup, name_IdMap,
+		Element dataModelPackage = generateDataModelPackage(document, entityGroup, name_IdMap,
 				classNameElementMap, tableNameElementMap);
 		namespaceOwnedElement.appendChild(dataModelPackage);
 
@@ -342,7 +348,7 @@ public class XMIBuilder implements XMIBuilderConstantsInterface
 		return groupPackageElement;
 	}
 
-	private Element gernerateDataModelPackage(Document document, EntityGroupInterface entityGroup,
+	private Element generateDataModelPackage(Document document, EntityGroupInterface entityGroup,
 			HashMap<String, String> name_IdMap, HashMap<String, Element> classNameElementMap,
 			HashMap<String, Element> tableNameElementMap)
 			throws DynamicExtensionsApplicationException
@@ -358,7 +364,7 @@ public class XMIBuilder implements XMIBuilderConstantsInterface
 			Element entityClassElement = null;
 			Element dependencyElement = null;
 			String tableName = null;
-			String dataModelClassId = null;
+			String tableClassId = null;
 			String logicalModelClassId = null;
 			String logicalModelClassName = null;
 
@@ -377,58 +383,61 @@ public class XMIBuilder implements XMIBuilderConstantsInterface
 				{
 					// Append Class element
 					entityClassElement = generateClassElementForDataModel(document,
-							dataModelPackage, name_IdMap, tableNameElementMap, packageName, entity);
+							dataModelPackage, name_IdMap, tableNameElementMap, classNameElementMap,
+							packageName, entity);
 					namespaceOwnedElement.appendChild(entityClassElement);
 					tableNameElementMap.put(tableName, entityClassElement);
 
 					// Append Dependency element
-					dataModelClassId = entityClassElement.getAttribute("xmi.id");
+					tableClassId = entityClassElement.getAttribute("xmi.id");
 					Element logicalModelClassElement = classNameElementMap
 							.get(logicalModelClassName);
 					logicalModelClassId = logicalModelClassElement.getAttribute("xmi.id");
 
-					dependencyElement = generateDependencyTree(document, dataModelClassId,
+					dependencyElement = generateDependencyTree(document, tableClassId,
 							logicalModelClassId);
 					namespaceOwnedElement.appendChild(dependencyElement);
 
-					appendStereotypeForTable(document, dataModelClassId);
+					appendStereotype(document, tableClassId, ELEMENT_CLASS, false);
 				}
 			}
 		}
 		return dataModelPackage;
 	}
 
-	private void appendStereotypeForTable(Document document, String tableId)
-			throws DynamicExtensionsApplicationException
+	private void appendStereotype(Document document, String elementXmiId, String elementType,
+			boolean isUnique) throws DynamicExtensionsApplicationException
 	{
 		Element xmiContentElement = XMIBuilderUtil.getElementByTagAndName(document,
 				ELEMENT_TYPE_XMI_CONTENT, null);
 		ArrayList<String> xmiIdList = new ArrayList<String>();
-		xmiIdList.add(tableId);
+		xmiIdList.add(elementXmiId);
 
-		String xmiId = tableId + "_fix_ster_0";
+		String xmiId = elementXmiId + "_fix_ster_0";
+		String nameOfElement = null;
+		if (elementType.equals(ELEMENT_CLASS))
+		{
+			nameOfElement = "table";
+		}
+		else if (elementType.equals(ELEMENT_ATTRIBUTE))
+		{
+			nameOfElement = "column";
+		}
+		else if (elementType.equals(ELEMENT_OPERATION))
+		{
+			if (isUnique)
+			{
+				nameOfElement = "unique";
+			}
+			else
+			{
+				nameOfElement = "PK";
+			}
+		}
+
 		Element umlStereotypeDataSource = UMLElementGenerator.generateUMLStereotypeElement(
-				document, xmiId, "table", ELEMENT_CLASS, xmiIdList, true, true);
+				document, xmiId, nameOfElement, elementType, xmiIdList, true, true);
 		xmiContentElement.appendChild(umlStereotypeDataSource);
-	}
-
-	private void appendStereotypeForCloumn(Document document, String columnId)
-			throws DynamicExtensionsApplicationException
-	{
-		Element xmiContentElement = XMIBuilderUtil.getElementByTagAndName(document,
-				ELEMENT_TYPE_XMI_CONTENT, null);
-		ArrayList<String> xmiIdList = new ArrayList<String>();
-		xmiIdList.add(columnId);
-
-		String xmiId = columnId + "_fix_ster_0";
-		Element umlStereotypeDataSource = UMLElementGenerator.generateUMLStereotypeElement(
-				document, xmiId, "table", ELEMENT_ATTRIBUTE, xmiIdList, true, true);
-		xmiContentElement.appendChild(umlStereotypeDataSource);
-	}
-
-	private void appendStereotypeForPrimaryKey()
-	{
-
 	}
 
 	private Element generateDependencyTree(Document document, String dataModelClassId,
@@ -519,8 +528,8 @@ public class XMIBuilder implements XMIBuilderConstantsInterface
 		return entityClassElement;
 	}
 
-	private Element generateClassElementForDataModel(Document document,
-			Element groupPackageElement, HashMap<String, String> name_IdMap,
+	private Element generateClassElementForDataModel(Document document, Element dataModelPackage,
+			HashMap<String, String> name_IdMap, HashMap<String, Element> tableNameElementMap,
 			HashMap<String, Element> classNameElementMap, String packageName, EntityInterface entity)
 			throws DynamicExtensionsApplicationException
 	{
@@ -529,7 +538,7 @@ public class XMIBuilder implements XMIBuilderConstantsInterface
 
 		// Create UML:Class element for the Entity
 		Element entityClassElement = UMLElementGenerator.generateUMLClassElement(document,
-				tableName, groupPackageElement, true, true);
+				tableName, dataModelPackage, true, true);
 		String entityClassId = entityClassElement.getAttribute("xmi.id");
 
 		// Create UML:ClassifierFeature element and append it to the UML:Class element
@@ -538,33 +547,109 @@ public class XMIBuilder implements XMIBuilderConstantsInterface
 		entityClassElement.appendChild(classifierFeatureElement);
 		String classifierFeatureId = classifierFeatureElement.getAttribute("xmi.id");
 
-		// Iterate through all attributes of the Entity and create UML:Attribute element for each. Then append every 
-		// UML:Attribute element to UML:ClassifierFeature element.
+		String className = XMIBuilderUtil.rectifyElementName(entity.getName(), ELEMENT_CLASS);
+		String attributeName = "";
+		String logicalModelClassPath = packageName + "." + className + ".";
+		appendIdentifierAttribute(document, dataModelPackage, entityClassElement,
+				tableNameElementMap, classNameElementMap, name_IdMap, entity);
 		Collection<AbstractAttributeInterface> abstractAttributeCollection = entity
 				.getAbstractAttributeCollection();
 
-		String className = XMIBuilderUtil.rectifyElementName(entity.getName(), ELEMENT_CLASS);
-		String attributeName = "";
-		String logicalModelAttributePath = null;
-
-		int attributeCount = 0;
+		int childCount = 2;
 		for (AbstractAttributeInterface abstractAttribute : abstractAttributeCollection)
 		{
 			attributeName = XMIBuilderUtil.rectifyElementName(abstractAttribute.getName(),
 					ELEMENT_ATTRIBUTE);
-			logicalModelAttributePath = packageName + "." + className + "." + attributeName;
 			if (abstractAttribute instanceof AttributeInterface)
 			{
 				Element attributeElement = generateUMLAttributeForDataModelClass(document,
-						name_IdMap, classifierFeatureId, abstractAttribute,
-						logicalModelAttributePath, attributeCount++);
+						name_IdMap, classifierFeatureId, abstractAttribute, logicalModelClassPath
+								+ attributeName, childCount++);
 				classifierFeatureElement.appendChild(attributeElement);
 
-				appendStereotypeForCloumn(document, attributeElement.getAttribute("xmi.id"));
+				AttributeInterface attribute = (AttributeInterface) abstractAttribute;
+				if (XMIBuilderUtil.isConstraintApplied(attribute, "unique"))
+				{
+					String void_deXmiId = name_IdMap.get("");
+					AttributeTypeInformationInterface attributeTypeInformation = attribute
+							.getAttributeTypeInformation();
+					String dataType = attributeTypeInformation.getDataType();
+					String type = XMIBuilderUtil.getColumnType(dataType);
+					String type_deXmiId = name_IdMap.get(type);
+					String columnName = attributeElement.getAttribute("name");
+					String operationName = "UQ_" + tableName + "_" + columnName;
+
+					Element umlOperationElement = generateUMLOperationTree(document, operationName,
+							classifierFeatureId, void_deXmiId, type_deXmiId, columnName,
+							childCount++, "unique");
+					classifierFeatureElement.appendChild(umlOperationElement);
+					appendStereotype(document, umlOperationElement.getAttribute("xmi.id"),
+							ELEMENT_OPERATION, true);
+				}
+
+				if (XMIBuilderUtil.isConstraintApplied(attribute, "required"))
+				{
+
+				}
+
+				appendStereotype(document, attributeElement.getAttribute("xmi.id"),
+						ELEMENT_ATTRIBUTE, false);
 			}
 		}
 
 		return entityClassElement;
+	}
+
+	private void appendIdentifierAttribute(Document document, Element dataModelPackage,
+			Element tableClass, HashMap<String, Element> tableNameElementMap,
+			HashMap<String, Element> classNameElementMap, HashMap<String, String> name_IdMap,
+			EntityInterface entity) throws DynamicExtensionsApplicationException
+	{
+		Element classifierFeatureElement = (Element) tableClass.getFirstChild();
+		String classifierFeatureId = classifierFeatureElement.getAttribute("xmi.id");
+		String type = "NUMBER";
+		String number_deXmiId = name_IdMap.get(type);
+
+		Element attributeElement = generateUMLAttributeTree(document, "IDENTIFIER",
+				classifierFeatureId, 0, null, false, number_deXmiId, "", type, "", true);
+		classifierFeatureElement.appendChild(attributeElement);
+		appendStereotype(document, attributeElement.getAttribute("xmi.id"), ELEMENT_ATTRIBUTE,
+				false);
+
+		String sourceTableName = tableClass.getAttribute("name");
+		String sourceTableId = tableClass.getAttribute("xmi.id");
+		String operationName = null;
+		String stereoType = null;
+		String void_deXmiId = name_IdMap.get("");
+
+		String columnName = attributeElement.getAttribute("name");
+		EntityInterface parentEntity = entity.getParentEntity();
+		if (parentEntity != null)
+		{
+			// Append FK operation
+			operationName = "FK_" + sourceTableName + "_" + columnName;
+			stereoType = "FK";
+
+			// Create UML:Association element
+			Element associationElement = generateClassAssociationElementForDataModel(document,
+					dataModelPackage, tableNameElementMap, classNameElementMap, name_IdMap,
+					sourceTableId, entity);
+
+			// Append UML:Association element to the DataModel Package.
+			Element namespaceOwnedElement = (Element) dataModelPackage.getFirstChild();
+			namespaceOwnedElement.appendChild(associationElement);
+		}
+		else
+		{
+			// Append PK operation
+			operationName = "PK_" + sourceTableName;
+			stereoType = "PK";
+		}
+		Element umlOperationElement = generateUMLOperationTree(document, operationName,
+				classifierFeatureId, void_deXmiId, number_deXmiId, columnName, 1, stereoType);
+		classifierFeatureElement.appendChild(umlOperationElement);
+		appendStereotype(document, umlOperationElement.getAttribute("xmi.id"), ELEMENT_OPERATION,
+				false);
 	}
 
 	private void addInheritanceInformation(Document document, EntityInterface entity,
@@ -768,7 +853,7 @@ public class XMIBuilder implements XMIBuilderConstantsInterface
 			String defaultValue) throws DynamicExtensionsApplicationException
 	{
 		Element umlAttribute_InitialValueElement = UMLElementGenerator
-				.generateUMLAttribute_InitialValue(document, umlAttributeId);
+				.generateUMLAttribute_InitialValueElement(document, umlAttributeId);
 		String parentId = umlAttribute_InitialValueElement.getAttribute("xmi.id");
 
 		// Create UML:Expression element
@@ -783,7 +868,7 @@ public class XMIBuilder implements XMIBuilderConstantsInterface
 			String umlAttributeXMIId, String deXmiId) throws DynamicExtensionsApplicationException
 	{
 		Element umlStructuralFeature_TypeElement = UMLElementGenerator
-				.generateUMLStructuralFeature_Type(document, umlAttributeXMIId, deXmiId);
+				.generateUMLStructuralFeature_TypeElement(document, umlAttributeXMIId, deXmiId);
 		String parentId = umlStructuralFeature_TypeElement.getAttribute("xmi.id");
 
 		Element foundation_Core_Classifier = UMLElementGenerator
@@ -791,6 +876,66 @@ public class XMIBuilder implements XMIBuilderConstantsInterface
 		umlStructuralFeature_TypeElement.appendChild(foundation_Core_Classifier);
 
 		return umlStructuralFeature_TypeElement;
+	}
+
+	private Element generateUMLOperationTree(Document document, String operationName,
+			String parentId, String void_deXmiId, String type_deXmiId, String inParameterName,
+			int index, String stereoType) throws DynamicExtensionsApplicationException
+	{
+		Element umlOperationElement = UMLElementGenerator.generateUMLOperationElement(document,
+				operationName, parentId, index, stereoType);
+		String umlOperationId = umlOperationElement.getAttribute("xmi.id");
+
+		Element umlBehavioralFeature_ParameterElement = UMLElementGenerator
+				.generateUMLBehavioralFeature_ParameterElement(document, umlOperationId);
+		String umlBehavioralFeature_ParameterId = umlBehavioralFeature_ParameterElement
+				.getAttribute("xmi.id");
+		umlOperationElement.appendChild(umlBehavioralFeature_ParameterElement);
+
+		Element umlParameterElement = null;
+		// Append parameter 1
+		umlParameterElement = generateUMLParameterTree(document, umlBehavioralFeature_ParameterId,
+				null, "return", void_deXmiId, 0);
+		umlBehavioralFeature_ParameterElement.appendChild(umlParameterElement);
+
+		// Append parameter 2
+		umlParameterElement = generateUMLParameterTree(document, umlBehavioralFeature_ParameterId,
+				inParameterName, "in", type_deXmiId, 1);
+		umlBehavioralFeature_ParameterElement.appendChild(umlParameterElement);
+
+		return umlOperationElement;
+	}
+
+	private Element generateUMLParameterTree(Document document, String parentId,
+			String parameterName, String kind, String deXmiId, int parameterIndex)
+			throws DynamicExtensionsApplicationException
+	{
+		Element umlParameterElement = UMLElementGenerator.generateUMLParameterElement(document,
+				parentId, parameterName, kind, parameterIndex);
+		String umlParameterId = umlParameterElement.getAttribute("xmi.id");
+
+		// Append first child
+		Element umlParameter_TypeElement = UMLElementGenerator.generateUMLParameter_TypeElement(
+				document, umlParameterId);
+		String umlParameter_TypeId = umlParameter_TypeElement.getAttribute("xmi.id");
+		umlParameterElement.appendChild(umlParameter_TypeElement);
+
+		Element foundation_Core_ClassifierElement = UMLElementGenerator
+				.generateFoundation_Core_ClassifierElement(document, umlParameter_TypeId, deXmiId);
+		umlParameter_TypeElement.appendChild(foundation_Core_ClassifierElement);
+
+		// Append second child
+		Element umlParameter_DefaultValueElement = UMLElementGenerator
+				.generateUMLParameter_DefaultValueElement(document, umlParameterId);
+		String umlParameter_DefaultValueId = umlParameter_DefaultValueElement
+				.getAttribute("xmi.id");
+		umlParameterElement.appendChild(umlParameter_DefaultValueElement);
+
+		Element umlExpressionElement = UMLElementGenerator.generateUMLExpressionElement(document,
+				umlParameter_DefaultValueId, null);
+		umlParameter_TypeElement.appendChild(umlExpressionElement);
+
+		return umlParameterElement;
 	}
 
 	private Element generateClassAssociationElement(Document document, Element groupPackageElement,
@@ -840,17 +985,65 @@ public class XMIBuilder implements XMIBuilderConstantsInterface
 
 		return generateUMLAssociationTree(document, sourceRoleName, sourceClassId, targetRoleName,
 				targetClassId, sourceMinCardinality, sourceMaxCardinality, targetMinCardinality,
-				targetMaxCardinality, direction);
+				targetMaxCardinality, direction, false);
+	}
+
+	private Element generateClassAssociationElementForDataModel(Document document,
+			Element dataModelPackage, HashMap<String, Element> tableNameElementMap,
+			HashMap<String, Element> classNameElementMap, HashMap<String, String> name_IdMap,
+			String sourceClassId, EntityInterface entity)
+			throws DynamicExtensionsApplicationException
+	{
+		EntityInterface parentEntity = entity.getParentEntity();
+		String targetTableName = parentEntity.getTableProperties().getName();
+
+		Element namespaceOwnedElement = (Element) dataModelPackage.getFirstChild();
+		String packageName = dataModelPackage.getAttribute("name");
+		Element targetClassElement = tableNameElementMap.get(targetTableName);
+		if (targetClassElement == null)
+		{
+			targetClassElement = generateClassElementForDataModel(document, dataModelPackage,
+					name_IdMap, tableNameElementMap, classNameElementMap, packageName, parentEntity);
+
+			namespaceOwnedElement.appendChild(targetClassElement);
+			tableNameElementMap.put(targetTableName, targetClassElement);
+
+			String logicalModelClassName = XMIBuilderUtil.rectifyElementName(
+					parentEntity.getName(), ELEMENT_CLASS);
+			// Append Dependency element
+			String tableClassId = targetClassElement.getAttribute("xmi.id");
+			Element logicalModelClassElement = classNameElementMap.get(logicalModelClassName);
+			String logicalModelClassId = logicalModelClassElement.getAttribute("xmi.id");
+
+			Element dependencyElement = generateDependencyTree(document, tableClassId,
+					logicalModelClassId);
+			namespaceOwnedElement.appendChild(dependencyElement);
+
+			appendStereotype(document, tableClassId, ELEMENT_CLASS, false);
+		}
+
+		String targetClassId = targetClassElement.getAttribute("xmi.id");
+		String sourceRoleName = "FK_IDENTIFIER";
+		String targetRoleName = "PK_IDENTIFIER";
+		Cardinality sourceMinCardinality = Cardinality.ZERO;
+		Cardinality sourceMaxCardinality = Cardinality.MANY;
+		Cardinality targetMinCardinality = Cardinality.ONE;
+		Cardinality targetMaxCardinality = Cardinality.ONE;
+		String direction = DIRECTION_SRC_DEST;
+
+		return generateUMLAssociationTree(document, sourceRoleName, sourceClassId, targetRoleName,
+				targetClassId, sourceMinCardinality, sourceMaxCardinality, targetMinCardinality,
+				targetMaxCardinality, direction, true);
 	}
 
 	private Element generateUMLAssociationTree(Document document, String sourceRoleName,
 			String sourceClassId, String targetRoleName, String targetClassId,
 			Cardinality sourceMinCardinality, Cardinality sourceMaxCardinality,
-			Cardinality targetMinCardinality, Cardinality targetMaxCardinality, String direction)
-			throws DynamicExtensionsApplicationException
+			Cardinality targetMinCardinality, Cardinality targetMaxCardinality, String direction,
+			boolean isDataModel) throws DynamicExtensionsApplicationException
 	{
 		Element umlAssociationElement = UMLElementGenerator.generateUMLAssociationElement(document,
-				"", "", direction);
+				sourceRoleName, targetRoleName, direction, isDataModel);
 		String parentId = umlAssociationElement.getAttribute("xmi.id");
 
 		// Create UML:Association.connection element
@@ -943,9 +1136,9 @@ public class XMIBuilder implements XMIBuilderConstantsInterface
 			xmiContentElement.appendChild(umlStereotypeAssociation);
 		}
 
-		// Append UML:Stereotype for DataSource (Dependency)
 		Element dataModelPackage = XMIBuilderUtil.getElementByTagAndName(document,
 				ELEMENT_TYPE_UML_PACKAGE, "Data Model");
+		// Append UML:Stereotype for DataSource (Dependency)
 		xmiIdList = XMIBuilderUtil.getAllXmiIds(dataModelPackage, ELEMENT_TYPE_UML_DEPENDENCY);
 		if (!xmiIdList.isEmpty())
 		{
@@ -956,6 +1149,15 @@ public class XMIBuilder implements XMIBuilderConstantsInterface
 		}
 
 		// Append UML:Stereotype for FK (Association)
+		xmiIdList = XMIBuilderUtil.getAllXmiIdsOfUniqueOperations(dataModelPackage,
+				ELEMENT_TYPE_UML_OPERATION);
+		if (!xmiIdList.isEmpty())
+		{
+			deXmiId = "dexmiid" + deXmiIdIndex++;
+			Element umlStereotypeDataSource = UMLElementGenerator.generateUMLStereotypeElement(
+					document, deXmiId, "DataSource", ELEMENT_DEPENDENCY, xmiIdList, false, true);
+			xmiContentElement.appendChild(umlStereotypeDataSource);
+		}
 
 	}
 

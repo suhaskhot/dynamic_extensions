@@ -6,6 +6,7 @@ package edu.common.dynamicextensions.entitymanager;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -23,6 +24,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 
 /**
@@ -312,6 +315,50 @@ public class XMIBuilderUtil
 		}
 
 		return xmiIdList;
+	}
+
+	public static ArrayList<String> getAllXmiIdsOfUniqueOperations(Element rootElement,
+			String elementName)
+	{
+		ArrayList<String> xmiIdList = new ArrayList<String>();
+		Element element = null;
+		String stereoType = null;
+		String xmiId = null;
+
+		NodeList nodeList = rootElement.getElementsByTagName(elementName);
+		if (nodeList != null)
+		{
+			for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++)
+			{
+				element = (Element) nodeList.item(nodeIndex);
+				stereoType = element.getAttribute("stereotype");
+				if (stereoType.equals("unique"))
+				{
+					xmiId = element.getAttribute("xmi.id");
+					xmiIdList.add(xmiId);
+				}
+			}
+		}
+
+		return xmiIdList;
+	}
+
+	public static boolean isConstraintApplied(AttributeInterface attribute, String constraintName)
+	{
+		boolean isApplied = false;
+		String ruleName = null;
+		Collection<RuleInterface> ruleCollection = attribute.getRuleCollection();
+		for (RuleInterface rule : ruleCollection)
+		{
+			ruleName = rule.getName();
+			if (ruleName.equals(constraintName))
+			{
+				isApplied = true;
+				break;
+			}
+		}
+
+		return isApplied;
 	}
 
 }

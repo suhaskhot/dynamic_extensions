@@ -251,10 +251,8 @@ public class UMLElementGenerator implements XMIBuilderConstantsInterface
 			propertyMap.put("collection", "false");
 			propertyMap.put("upperBound", "1");
 		}
-
 		propertyMap.put("position", "0");
 		propertyMap.put("lowerBound", "1");
-
 		if (isDataModel)
 		{
 			propertyMap.put("ordered", "1");
@@ -262,7 +260,10 @@ public class UMLElementGenerator implements XMIBuilderConstantsInterface
 			propertyMap.put("scale", "0");
 			propertyMap.put("stereotype", "column");
 			propertyMap.put("duplicates", "1");
-			propertyMap.put("mapped_attribute", logicalModelAttributePath);
+			if (logicalModelAttributePath != null || logicalModelAttributePath.equals(""))
+			{
+				propertyMap.put("mapped_attribute", logicalModelAttributePath);
+			}
 		}
 		else
 		{
@@ -289,7 +290,14 @@ public class UMLElementGenerator implements XMIBuilderConstantsInterface
 		elementAttributeMap = new LinkedHashMap<String, String>();
 		elementAttributeMap.put("name", attributeName);
 		elementAttributeMap.put("changeable", "none");
-		elementAttributeMap.put("visibility", "protected");
+		if (isDataModel)
+		{
+			elementAttributeMap.put("visibility", VISIBILITY_PUBLIC);
+		}
+		else
+		{
+			elementAttributeMap.put("visibility", VISIBILITY_PROTECTED);
+		}
 		elementAttributeMap.put("ownerScope", "instance");
 		elementAttributeMap.put("targetScope", "instance");
 		elementAttributeMap.put("xmi.id", classifierFeatureId + "_fix_" + attributeCount);
@@ -352,7 +360,7 @@ public class UMLElementGenerator implements XMIBuilderConstantsInterface
 				elementAttributeMap, null);
 	}
 
-	public static Element generateUMLAttribute_InitialValue(Document document,
+	public static Element generateUMLAttribute_InitialValueElement(Document document,
 			String umlAttributeXmiId) throws DynamicExtensionsApplicationException
 	{
 		LinkedHashMap<String, String> elementAttributeMap = new LinkedHashMap<String, String>();
@@ -376,7 +384,7 @@ public class UMLElementGenerator implements XMIBuilderConstantsInterface
 				elementAttributeMap, null);
 	}
 
-	public static Element generateUMLStructuralFeature_Type(Document document,
+	public static Element generateUMLStructuralFeature_TypeElement(Document document,
 			String umlAttributeXMIId, String deXmiId) throws DynamicExtensionsApplicationException
 	{
 		LinkedHashMap<String, String> elementAttributeMap = new LinkedHashMap<String, String>();
@@ -398,7 +406,7 @@ public class UMLElementGenerator implements XMIBuilderConstantsInterface
 	}
 
 	public static LinkedHashMap<String, String> createUMLAssociationProperties(String direction,
-			String sourceClassName, String targetClassName)
+			String sourceName, String targetName, boolean isDataModel)
 	{
 		LinkedHashMap<String, String> propertyMap = new LinkedHashMap<String, String>();
 		propertyMap.put("style", "2");
@@ -410,10 +418,19 @@ public class UMLElementGenerator implements XMIBuilderConstantsInterface
 		propertyMap.put("seqno", "0");
 		propertyMap.put("headStyle", "0");
 		propertyMap.put("lineStyle", "0");
-		propertyMap.put("ea_sourceName", sourceClassName);
-		propertyMap.put("ea_targetName", targetClassName);
-		propertyMap.put("ea_sourceType", ELEMENT_CLASS);
-		propertyMap.put("ea_targetType", ELEMENT_CLASS);
+		if (isDataModel)
+		{
+			propertyMap.put("stereotype", "FK");
+			propertyMap.put("styleex", "FKINFO=SRC=" + sourceName + ":DST=" + targetName);
+			propertyMap.put("conditional", "FK");
+		}
+		/*else
+		 {
+		 propertyMap.put("ea_sourceName", sourceName);
+		 propertyMap.put("ea_targetName", targetName);
+		 propertyMap.put("ea_sourceType", ELEMENT_CLASS);
+		 propertyMap.put("ea_targetType", ELEMENT_CLASS);
+		 }*/
 		//propertyMap.put("privatedata5", "");
 		propertyMap.put("virtualInheritance", "0");
 
@@ -421,7 +438,8 @@ public class UMLElementGenerator implements XMIBuilderConstantsInterface
 	}
 
 	public static Element generateUMLAssociationElement(Document document, String sourceClassName,
-			String targetClassName, String direction) throws DynamicExtensionsApplicationException
+			String targetClassName, String direction, boolean isDataModel)
+			throws DynamicExtensionsApplicationException
 	{
 		LinkedHashMap<String, String> elementAttributeMap = new LinkedHashMap<String, String>();
 		elementAttributeMap.put("xmi.id", CLASS_ID_PREFIX + UniqueIDGenerator.getId());
@@ -434,7 +452,7 @@ public class UMLElementGenerator implements XMIBuilderConstantsInterface
 				ELEMENT_TYPE_UML_ASSOCIATION, elementAttributeMap, null);
 
 		LinkedHashMap<String, String> propertyMap = createUMLAssociationProperties(direction,
-				sourceClassName, targetClassName);
+				sourceClassName, targetClassName, isDataModel);
 		String modelElement = umlAssociationElement.getAttribute("xmi.id");
 		XMIBuilderUtil.appendUMLTaggedValuesT0XMIContent(document, propertyMap, modelElement);
 
@@ -482,7 +500,10 @@ public class UMLElementGenerator implements XMIBuilderConstantsInterface
 	{
 		LinkedHashMap<String, String> elementAttributeMap = new LinkedHashMap<String, String>();
 		elementAttributeMap.put("xmi.id", deXmiId);
-		elementAttributeMap.put("name", dataTypeName);
+		if (dataTypeName != null)
+		{
+			elementAttributeMap.put("name", dataTypeName);
+		}
 		elementAttributeMap.put("visibility", VISIBILITY_PRIVATE);
 		elementAttributeMap.put("isRoot", "false");
 		elementAttributeMap.put("isLeaf", "false");
@@ -490,35 +511,6 @@ public class UMLElementGenerator implements XMIBuilderConstantsInterface
 
 		return XMIBuilderUtil.createElementNode(document, ELEMENT_TYPE_UML_DATATYPE,
 				elementAttributeMap, null);
-	}
-
-	public static LinkedHashMap<String, String> createUMLDependencyProperties()
-	{
-		LinkedHashMap<String, String> propertyMap = new LinkedHashMap<String, String>();
-		propertyMap.put("style", "3");
-		propertyMap.put("ea_type", ELEMENT_DEPENDENCY);
-		propertyMap.put("direction", DIRECTION_SRC_DEST);
-		propertyMap.put("linemode", "3");
-		propertyMap.put("linecolor", "-1");
-		propertyMap.put("linewidth", "0");
-		propertyMap.put("seqno", "0");
-		propertyMap.put("stereotype", "DataSource");
-		propertyMap.put("headStyle", "0");
-		propertyMap.put("lineStyle", "0");
-		propertyMap.put("conditional", "DataSource");
-		propertyMap.put("src_visibility", VISIBILITY_PUBLIC);
-		propertyMap.put("src_aggregation", "0");
-		propertyMap.put("src_isOrdered", "false");
-		propertyMap.put("src_isNavigable", "false");
-		propertyMap.put("src_containment", "Unspecified");
-		propertyMap.put("dst_visibility", VISIBILITY_PUBLIC);
-		propertyMap.put("dst_aggregation", "0");
-		propertyMap.put("dst_isOrdered", "false");
-		propertyMap.put("dst_isNavigable", "true");
-		propertyMap.put("dst_containment", "Unspecified");
-		propertyMap.put("virtualInheritance", "0");
-
-		return propertyMap;
 	}
 
 	public static Element generateUMLStereotypeElement(Document document, String deXmiId,
@@ -556,6 +548,35 @@ public class UMLElementGenerator implements XMIBuilderConstantsInterface
 
 		return XMIBuilderUtil.createElementNode(document, ELEMENT_TYPE_UML_STEREOTYPE,
 				elementAttributeMap, null);
+	}
+
+	public static LinkedHashMap<String, String> createUMLDependencyProperties()
+	{
+		LinkedHashMap<String, String> propertyMap = new LinkedHashMap<String, String>();
+		propertyMap.put("style", "3");
+		propertyMap.put("ea_type", ELEMENT_DEPENDENCY);
+		propertyMap.put("direction", DIRECTION_SRC_DEST);
+		propertyMap.put("linemode", "3");
+		propertyMap.put("linecolor", "-1");
+		propertyMap.put("linewidth", "0");
+		propertyMap.put("seqno", "0");
+		propertyMap.put("stereotype", "DataSource");
+		propertyMap.put("headStyle", "0");
+		propertyMap.put("lineStyle", "0");
+		propertyMap.put("conditional", "DataSource");
+		propertyMap.put("src_visibility", VISIBILITY_PUBLIC);
+		propertyMap.put("src_aggregation", "0");
+		propertyMap.put("src_isOrdered", "false");
+		propertyMap.put("src_isNavigable", "false");
+		propertyMap.put("src_containment", "Unspecified");
+		propertyMap.put("dst_visibility", VISIBILITY_PUBLIC);
+		propertyMap.put("dst_aggregation", "0");
+		propertyMap.put("dst_isOrdered", "false");
+		propertyMap.put("dst_isNavigable", "true");
+		propertyMap.put("dst_containment", "Unspecified");
+		propertyMap.put("virtualInheritance", "0");
+
+		return propertyMap;
 	}
 
 	public static Element generateUMLDependencyElement(Document document)
@@ -605,5 +626,89 @@ public class UMLElementGenerator implements XMIBuilderConstantsInterface
 
 		return XMIBuilderUtil.createElementNode(document,
 				ELEMENT_TYPE_FOUNDATION_CORE_MODELELEMENT, elementAttributeMap, null);
+	}
+
+	public static LinkedHashMap<String, String> createUMLOperationProperties(String stereoType)
+	{
+		LinkedHashMap<String, String> propertyMap = new LinkedHashMap<String, String>();
+		propertyMap.put("const", "false");
+		propertyMap.put("stereotype", stereoType);
+		propertyMap.put("synchronised", "0");
+		propertyMap.put("position", "0");
+		propertyMap.put("returnarray", "0");
+		propertyMap.put("pure", "0");
+		//propertyMap.put("ea_guid", "");
+		propertyMap.put("ea_localid", "2");
+
+		return propertyMap;
+	}
+
+	public static Element generateUMLOperationElement(Document document, String operationName,
+			String parentId, int index, String stereoType)
+			throws DynamicExtensionsApplicationException
+	{
+		LinkedHashMap<String, String> elementAttributeMap = new LinkedHashMap<String, String>();
+		elementAttributeMap.put("name", operationName);
+		elementAttributeMap.put("visibility", VISIBILITY_PUBLIC);
+		elementAttributeMap.put("ownerScope", "instance");
+		elementAttributeMap.put("isQuery", "false");
+		elementAttributeMap.put("concurrency", "sequential");
+		elementAttributeMap.put("xmi.id", parentId + "_fix_" + index);
+
+		Element umlOperationElement = XMIBuilderUtil.createElementNode(document,
+				ELEMENT_TYPE_UML_OPERATION, elementAttributeMap, null);
+
+		LinkedHashMap<String, String> propertyMap = createUMLOperationProperties(stereoType);
+		String modelElement = umlOperationElement.getAttribute("xmi.id");
+		XMIBuilderUtil.appendUMLTaggedValuesT0XMIContent(document, propertyMap, modelElement);
+
+		return umlOperationElement;
+	}
+
+	public static Element generateUMLBehavioralFeature_ParameterElement(Document document,
+			String parentId) throws DynamicExtensionsApplicationException
+	{
+		LinkedHashMap<String, String> elementAttributeMap = new LinkedHashMap<String, String>();
+		elementAttributeMap.put("xmi.id", parentId + "_fix_0");
+
+		return XMIBuilderUtil.createElementNode(document,
+				ELEMENT_TYPE_UML_BEHAVIORALFEATURE_PARAMETER, elementAttributeMap, null);
+	}
+
+	public static Element generateUMLParameterElement(Document document, String parentId,
+			String name, String kind, int parameterIndex)
+			throws DynamicExtensionsApplicationException
+	{
+		LinkedHashMap<String, String> elementAttributeMap = new LinkedHashMap<String, String>();
+		if (kind.equals("in"))
+		{
+			elementAttributeMap.put("name", name);
+		}
+		elementAttributeMap.put("kind", kind);
+		elementAttributeMap.put("visibility", "public");
+		elementAttributeMap.put("xmi.id", parentId + "_fix_" + parameterIndex);
+
+		return XMIBuilderUtil.createElementNode(document, ELEMENT_TYPE_UML_PARAMETER,
+				elementAttributeMap, null);
+	}
+
+	public static Element generateUMLParameter_TypeElement(Document document, String parentId)
+			throws DynamicExtensionsApplicationException
+	{
+		LinkedHashMap<String, String> elementAttributeMap = new LinkedHashMap<String, String>();
+		elementAttributeMap.put("xmi.id", parentId + "_fix_0");
+
+		return XMIBuilderUtil.createElementNode(document, ELEMENT_TYPE_UML_PARAMETER_TYPE,
+				elementAttributeMap, null);
+	}
+
+	public static Element generateUMLParameter_DefaultValueElement(Document document,
+			String parentId) throws DynamicExtensionsApplicationException
+	{
+		LinkedHashMap<String, String> elementAttributeMap = new LinkedHashMap<String, String>();
+		elementAttributeMap.put("xmi.id", parentId + "_fix_2");
+
+		return XMIBuilderUtil.createElementNode(document, ELEMENT_TYPE_UML_PARAMETER_DEFAULTVALUE,
+				elementAttributeMap, null);
 	}
 }

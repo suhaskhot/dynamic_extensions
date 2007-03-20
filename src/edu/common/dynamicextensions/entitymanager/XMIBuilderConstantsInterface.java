@@ -58,7 +58,7 @@ public interface XMIBuilderConstantsInterface
 	final static String ELEMENT_TYPE_UML_EXPRESSION = "UML:Expression";
 	final static String ELEMENT_TYPE_UML_CLASSIFIER = "UML:Classifier";
 	final static String ELEMENT_TYPE_UML_OPERATION = "UML:Operation";
-	final static String ELEMENT_TYPE_UML_BEHAVIORALFEATURE = "UML:BehavioralFeature.parameter";
+	final static String ELEMENT_TYPE_UML_BEHAVIORALFEATURE_PARAMETER = "UML:BehavioralFeature.parameter";
 	final static String ELEMENT_TYPE_UML_PARAMETER = "UML:Parameter";
 	final static String ELEMENT_TYPE_UML_PARAMETER_TYPE = "UML:Parameter.type";
 	final static String ELEMENT_TYPE_UML_PARAMETER_DEFAULTVALUE = "UML:Parameter.defaultValue";

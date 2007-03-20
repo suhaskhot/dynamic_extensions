@@ -10,6 +10,7 @@ import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
+import edu.common.dynamicextensions.domain.validationrules.Rule;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -29,6 +30,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterfa
 import edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
+import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
@@ -251,6 +253,10 @@ public class MockEntityManager
 				+ "_" + index++);
 		attributeInterface.setColumnProperties(columnProperties);
 
+		RuleInterface ruleUnique = new Rule();
+		ruleUnique.setName("unique");
+		attributeInterface.addRule(ruleUnique);
+
 		// Attribute 2
 		attributeInterface = initializeStringAttribute("address", "");
 		personal.addAbstractAttribute(attributeInterface);
@@ -260,9 +266,13 @@ public class MockEntityManager
 				+ "_" + index++);
 		attributeInterface.setColumnProperties(columnProperties);
 
+		RuleInterface ruleRequired = new Rule();
+		ruleRequired.setName("required");
+		attributeInterface.addRule(ruleRequired);
+
 		return personal;
 	}
-	
+
 	public EntityInterface initializeEntity4() throws DynamicExtensionsApplicationException
 	{
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
@@ -630,7 +640,7 @@ public class MockEntityManager
 		entityGroupInterface.setName("Test Group");
 		EntityInterface person = initializeEntity4();
 		entityGroupInterface.addEntity(person);
-		
+
 		return entityGroupInterface;
 	}
 

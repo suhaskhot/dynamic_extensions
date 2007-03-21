@@ -547,15 +547,15 @@ public class XMIBuilder implements XMIBuilderConstantsInterface
 		entityClassElement.appendChild(classifierFeatureElement);
 		String classifierFeatureId = classifierFeatureElement.getAttribute("xmi.id");
 
+		int childCount = 0;
 		String className = XMIBuilderUtil.rectifyElementName(entity.getName(), ELEMENT_CLASS);
 		String attributeName = "";
 		String logicalModelClassPath = packageName + "." + className + ".";
-		appendIdentifierAttribute(document, dataModelPackage, entityClassElement,
-				tableNameElementMap, classNameElementMap, name_IdMap, entity);
+		childCount = appendIdentifierAttribute(document, dataModelPackage, entityClassElement,
+				tableNameElementMap, classNameElementMap, name_IdMap, entity, childCount);
 		Collection<AbstractAttributeInterface> abstractAttributeCollection = entity
 				.getAbstractAttributeCollection();
 
-		int childCount = 2;
 		for (AbstractAttributeInterface abstractAttribute : abstractAttributeCollection)
 		{
 			attributeName = XMIBuilderUtil.rectifyElementName(abstractAttribute.getName(),
@@ -589,7 +589,7 @@ public class XMIBuilder implements XMIBuilderConstantsInterface
 
 				if (XMIBuilderUtil.isConstraintApplied(attribute, "required"))
 				{
-
+					//TODO NOT NULL
 				}
 
 				appendStereotype(document, attributeElement.getAttribute("xmi.id"),
@@ -600,10 +600,10 @@ public class XMIBuilder implements XMIBuilderConstantsInterface
 		return entityClassElement;
 	}
 
-	private void appendIdentifierAttribute(Document document, Element dataModelPackage,
+	private int appendIdentifierAttribute(Document document, Element dataModelPackage,
 			Element tableClass, HashMap<String, Element> tableNameElementMap,
 			HashMap<String, Element> classNameElementMap, HashMap<String, String> name_IdMap,
-			EntityInterface entity) throws DynamicExtensionsApplicationException
+			EntityInterface entity, int childCount) throws DynamicExtensionsApplicationException
 	{
 		Element classifierFeatureElement = (Element) tableClass.getFirstChild();
 		String classifierFeatureId = classifierFeatureElement.getAttribute("xmi.id");
@@ -611,42 +611,78 @@ public class XMIBuilder implements XMIBuilderConstantsInterface
 		String number_deXmiId = name_IdMap.get(type);
 
 		Element attributeElement = generateUMLAttributeTree(document, "IDENTIFIER",
-				classifierFeatureId, 0, null, false, number_deXmiId, "", type, "", true);
+				classifierFeatureId, childCount++, null, false, number_deXmiId, null, type, "", true);
 		classifierFeatureElement.appendChild(attributeElement);
 		appendStereotype(document, attributeElement.getAttribute("xmi.id"), ELEMENT_ATTRIBUTE,
 				false);
 
 		String sourceTableName = tableClass.getAttribute("name");
 		String sourceTableId = tableClass.getAttribute("xmi.id");
-		String operationName = null;
-		String stereoType = null;
 		String void_deXmiId = name_IdMap.get("");
 
 		String columnName = attributeElement.getAttribute("name");
 		EntityInterface parentEntity = entity.getParentEntity();
 		if (parentEntity != null)
 		{
+			// Append PK operation
+			appendPrimaryKey(document, classifierFeatureElement, sourceTableName, void_deXmiId,
+					number_deXmiId, columnName, childCount++);
+			
 			// Append FK operation
-			operationName = "FK_" + sourceTableName + "_" + columnName;
-			stereoType = "FK";
-
-			// Create UML:Association element
-			Element associationElement = generateClassAssociationElementForDataModel(document,
-					dataModelPackage, tableNameElementMap, classNameElementMap, name_IdMap,
-					sourceTableId, entity);
-
-			// Append UML:Association element to the DataModel Package.
-			Element namespaceOwnedElement = (Element) dataModelPackage.getFirstChild();
-			namespaceOwnedElement.appendChild(associationElement);
+			appendForeignKey(document, dataModelPackage, classifierFeatureElement,
+					tableNameElementMap, classNameElementMap, name_IdMap, sourceTableName,
+					void_deXmiId, number_deXmiId, columnName, sourceTableId, entity, childCount++);
 		}
 		else
 		{
 			// Append PK operation
-			operationName = "PK_" + sourceTableName;
-			stereoType = "PK";
+			appendPrimaryKey(document, classifierFeatureElement, sourceTableName, void_deXmiId,
+					number_deXmiId, columnName, childCount++);
 		}
+		
+		return childCount;
+	}
+
+	private void appendPrimaryKey(Document document, Element classifierFeatureElement,
+			String sourceTableName, String void_deXmiId, String number_deXmiId, String columnName,
+			int childCount) throws DynamicExtensionsApplicationException
+	{
+		String classifierFeatureId = classifierFeatureElement.getAttribute("xmi.id");
+		String operationName = "PK_" + sourceTableName;
+		String stereoType = "PK";
+
 		Element umlOperationElement = generateUMLOperationTree(document, operationName,
-				classifierFeatureId, void_deXmiId, number_deXmiId, columnName, 1, stereoType);
+				classifierFeatureId, void_deXmiId, number_deXmiId, columnName, childCount,
+				stereoType);
+		classifierFeatureElement.appendChild(umlOperationElement);
+		appendStereotype(document, umlOperationElement.getAttribute("xmi.id"), ELEMENT_OPERATION,
+				false);
+	}
+
+	private void appendForeignKey(Document document, Element dataModelPackage,
+			Element classifierFeatureElement, HashMap<String, Element> tableNameElementMap,
+			HashMap<String, Element> classNameElementMap, HashMap<String, String> name_IdMap,
+			String sourceTableName, String void_deXmiId, String number_deXmiId, String columnName,
+			String sourceTableId, EntityInterface entity, int childCount)
+			throws DynamicExtensionsApplicationException
+	{
+		String operationName = "FK_" + sourceTableName + "_" + columnName;
+		String stereoType = "FK";
+
+		// Create UML:Association element
+		Element associationElement = generateClassAssociationElementForDataModel(document,
+				dataModelPackage, tableNameElementMap, classNameElementMap, name_IdMap,
+				sourceTableId, entity);
+
+		// Append UML:Association element to the DataModel Package.
+		Element namespaceOwnedElement = (Element) dataModelPackage.getFirstChild();
+		namespaceOwnedElement.appendChild(associationElement);
+
+		String classifierFeatureId = classifierFeatureElement.getAttribute("xmi.id");
+
+		Element umlOperationElement = generateUMLOperationTree(document, operationName,
+				classifierFeatureId, void_deXmiId, number_deXmiId, columnName, childCount,
+				stereoType);
 		classifierFeatureElement.appendChild(umlOperationElement);
 		appendStereotype(document, umlOperationElement.getAttribute("xmi.id"), ELEMENT_OPERATION,
 				false);

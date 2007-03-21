@@ -148,6 +148,7 @@ public class UMLElementGenerator implements XMIBuilderConstantsInterface
 		{
 			propertyMap.put("gentype", "Oracle"); // TODO Must be dynamic
 			propertyMap.put("stereotype", "table");
+			propertyMap.put("product_name", "Oracle");
 		}
 		else
 		{
@@ -260,7 +261,7 @@ public class UMLElementGenerator implements XMIBuilderConstantsInterface
 			propertyMap.put("scale", "0");
 			propertyMap.put("stereotype", "column");
 			propertyMap.put("duplicates", "1");
-			if (logicalModelAttributePath != null || logicalModelAttributePath.equals(""))
+			if (logicalModelAttributePath != null && !logicalModelAttributePath.equals(""))
 			{
 				propertyMap.put("mapped_attribute", logicalModelAttributePath);
 			}
@@ -521,11 +522,11 @@ public class UMLElementGenerator implements XMIBuilderConstantsInterface
 		if (isxmlnsUML)
 		{
 			elementAttributeMap.put("xmlns:UML", "href://org.omg/UML");
-			elementAttributeMap.put("visibility", VISIBILITY_PRIVATE);
+			elementAttributeMap.put("visibility", VISIBILITY_PUBLIC);
 		}
 		else
 		{
-			elementAttributeMap.put("visibility", VISIBILITY_PUBLIC);
+			elementAttributeMap.put("visibility", VISIBILITY_PRIVATE);
 		}
 		elementAttributeMap.put("xmi.id", deXmiId);
 

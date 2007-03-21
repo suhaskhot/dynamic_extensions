@@ -434,4 +434,25 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
 	String getContainerCaption(Long containerId) throws DynamicExtensionsSystemException;
+	
+	/**
+	 * Method deletes the passed records of the passed container.
+	 * @param containerId
+	 * @param recordIdList
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	void deleteRecords(Long containerId,List<Long>recordIdList) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	
+	/**
+	 * This method checks if the entity group can be created with the given name or not. 
+	 * This method will check for the duplicate name as per the following rule
+	 * @param entityGroup Entity Group whose name's uniqueness is to be checked.
+	 * @throws DynamicExtensionsApplicationException This will basically act as a duplicate name exception.
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	public void checkForDuplicateEntityGroupName(EntityGroupInterface entityGroup)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
+	
 }

@@ -1385,6 +1385,7 @@ public class EntityManager
 				{
 					if (entityGroup.getId() == null)
 					{
+						preSaveProcessEntityGroup(entityGroup);
 						entityGroup = (EntityGroup) session.saveOrUpdateCopy(entityGroup);
 					}
 					if (((EntityGroup) entityGroup).isCurrent())
@@ -2589,11 +2590,14 @@ public class EntityManager
 	 * processes entity group before saving.
 	 * @param entity entity
 	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	private void preSaveProcessEntityGroup(EntityGroupInterface entityGroup)
-			throws DynamicExtensionsApplicationException
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
+		
 		DynamicExtensionsUtility.validateName(entityGroup.getName());
+		checkForDuplicateEntityGroupName(entityGroup);
 		if (entityGroup.getId() != null)
 		{
 			entityGroup.setLastUpdated(new Date());
@@ -2626,7 +2630,7 @@ public class EntityManager
 		EntityInterface entityInterface = null;
 		try
 		{
-			checkForDuplicateEntityGroupName(entityGroup);
+			
 
 			if (isNew)
 			{
@@ -2705,11 +2709,21 @@ public class EntityManager
 	 * This method will check for the duplicate name as per the following rule
 	 * @param entityGroup Entity Group whose name's uniqueness is to be checked.
 	 * @throws DynamicExtensionsApplicationException This will basically act as a duplicate name exception.
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	private void checkForDuplicateEntityGroupName(EntityGroup entityGroup)
-			throws DynamicExtensionsApplicationException
+	public void checkForDuplicateEntityGroupName(EntityGroupInterface entityGroup)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
-		// TODO Auto-generated method stub
+		Map substitutionParameterMap = new HashMap();
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("string", entityGroup.getName()));
+		Collection collection = executeHQL("checkDuplicateGroupName", substitutionParameterMap);
+		if (collection != null && !collection.isEmpty()) {
+			Integer count = (Integer) collection.iterator().next();
+			if (count > 0)
+			{
+				throw new DynamicExtensionsApplicationException("Duplicate Entity Group name",null, DYEXTN_A_015);
+			}
+		}
 	}
 
 	/**
@@ -3299,5 +3313,18 @@ public class EntityManager
 		Collection containerCaption = executeHQL("getContainerCaption", substitutionParameterMap);
 		return containerCaption.iterator().next().toString();
 
+	}
+
+	public void deleteRecords(Long containerId, List<Long> recordIdList) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		ContainerInterface container = DynamicExtensionsUtility
+		.getContainerByIdentifier(containerId.toString());
+		
+		EntityInterface entityInterface = container.getEntity();
+		for (Long recordId : recordIdList)
+		{
+			deleteRecord(entityInterface, recordId);
+		}
+		
 	}
 }

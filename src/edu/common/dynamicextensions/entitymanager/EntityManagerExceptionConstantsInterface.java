@@ -56,5 +56,7 @@ public interface EntityManagerExceptionConstantsInterface
 //   In case when of record deletion which is refered by some other record.
      String DYEXTN_A_014 = "DYEXTN_A_014";
      
+     // In case when entity group name is duplicate
+     String DYEXTN_A_015 = "DYEXTN_A_015";
      
 }

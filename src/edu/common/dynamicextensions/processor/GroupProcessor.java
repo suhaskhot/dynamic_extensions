@@ -50,13 +50,16 @@ public class GroupProcessor extends BaseDynamicExtensionsProcessor
 	 * 
 	 * @param entityGroup : Entity Group object to be populated
 	 * @param groupUIBean : Group UI Bean containing information entered by the user
+	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException 
 	 */
-	public void populateEntityGroupDetails(EntityGroupInterface entityGroup,GroupUIBeanInterface groupUIBean)
+	public void populateEntityGroupDetails(EntityGroupInterface entityGroup,GroupUIBeanInterface groupUIBean) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		if((entityGroup!=null)&&(groupUIBean!=null))
 		{
 			entityGroup.setName(groupUIBean.getGroupNameText());
 			entityGroup.setDescription(groupUIBean.getGroupDescription());
+			EntityManager.getInstance().checkForDuplicateEntityGroupName(entityGroup);
 		}
 	}
 	/**

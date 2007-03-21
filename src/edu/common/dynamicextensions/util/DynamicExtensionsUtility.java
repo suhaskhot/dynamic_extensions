@@ -536,7 +536,6 @@ public class DynamicExtensionsUtility
 	 *
 	 * @param list list of NameValueBeanObjects
 	 */
-	@SuppressWarnings("unchecked")
 	public static void sortNameValueBeanListByName(List<NameValueBean> list)
 	{
 		Collections.sort(list, new Comparator()

@@ -67,7 +67,11 @@
 			   from EntityGroup entityGroup
 	</query>
 	
-
+	<query name="checkDuplicateGroupName">
+		select count(*)
+			   from EntityGroup entityGroup where entityGroup.name = ?
+	</query>
+	
 	<query name="getChildrenEntities">
 	   from Entity entity
 	      where entity.parentEntity.id = ?

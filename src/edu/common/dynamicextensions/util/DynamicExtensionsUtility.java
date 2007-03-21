@@ -276,7 +276,6 @@ public class DynamicExtensionsUtility
 	{
 		try
 		{
-			EntityManager.getInstance().getAllContainers();
 			DBUtil.currentSession();
 			DBUtil.closeSession();
 		}

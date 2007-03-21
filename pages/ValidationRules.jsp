@@ -37,7 +37,7 @@
 				while(rulesIter.hasNext())
 				{
 					RuleConfigurationObject ruleObject = (RuleConfigurationObject)rulesIter.next();
-					String ruleLabel =ruleObject.getDisplayLabel();
+					String ruleLabel = ruleObject.getDisplayLabel();
 					String ruleName = ruleObject.getRuleName();
 					List params = ruleObject.getRuleParametersList();
 			%>
@@ -54,10 +54,26 @@
 						%>&nbsp;
 						</td>
 			 			<td class="formFieldWithoutBorder">
-	 						<html:multibox  styleId = 'tempValidationRules' property='tempValidationRules' value="<%= ruleName%>" onclick="ruleSelected(this)">
+			 			<%
+							if (!ruleName.equals("unique"))
+							{
+						%>
+		 						<html:multibox  styleId = 'tempValidationRules' property='tempValidationRules' value="<%= ruleName%>" onclick="ruleSelected(this)">
+									<bean:message key="<%= ruleLabel%>"/>
+								</html:multibox>
+								<bean:message key="<%= ruleLabel%>"/>							
+						<%
+							}
+							else
+							{
+						%>
+								<html:multibox styleId='tempValidationRules' property='tempValidationRules' value="<%= ruleName%>" onclick="ruleSelected(this)" disabled="true">
+									<bean:message key="<%= ruleLabel%>"/>
+								</html:multibox>
 								<bean:message key="<%= ruleLabel%>"/>
-							</html:multibox>
-							<bean:message key="<%= ruleLabel%>"/>
+						<%
+							}
+						%>
 						</td>
 					</tr>
 

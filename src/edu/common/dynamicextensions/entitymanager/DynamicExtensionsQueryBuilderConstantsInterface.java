@@ -31,6 +31,9 @@ public interface DynamicExtensionsQueryBuilderConstantsInterface
 	String COUNT_KEYWORD = "COUNT";
 	String FROM_KEYWORD = " FROM ";
 	String UPDATE_KEYWORD = " UPDATE ";
+	String JOIN_KEYWORD = " JOIN ";
+	String ON_KEYWORD = " ON ";
+		
 	
 	String CONSTRAINT_KEYWORD = " CONSTRAINT ";
 	String UNIQUE_KEYWORD = " UNIQUE ";

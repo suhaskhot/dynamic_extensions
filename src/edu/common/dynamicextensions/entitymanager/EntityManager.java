@@ -55,7 +55,6 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAss
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.util.AssociationTreeObject;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
@@ -63,6 +62,7 @@ import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.wustl.common.beans.NameValueBean;
+import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.bizlogic.AbstractBizLogic;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.dao.AbstractDAO;
@@ -3022,37 +3022,68 @@ public class EntityManager
 	}
 
 	/**
+	 * This method retreives records by executing query of the form
+	 * 
+			 select childTable.identifier, childTable.attribute1, parentTable.attribute5 
+			 from childTable join parentTable 
+			 on childTable.identifier = parentTable.identifier
+			 where childTable.activity_status = "active"
+			 
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getRecordsForAssociationControl(edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface)
 	 */
 	public Map<Long, List<String>> getRecordsForAssociationControl(
 			AssociationControlInterface associationControl) throws DynamicExtensionsSystemException
 	{
 		Map<Long, List<String>> outputMap = new HashMap<Long, List<String>>();
+		List<String> tableNames = new ArrayList<String>();
+		String tableName;
+		String columnName;
+		String selectClause = SELECT_KEYWORD;
+		String fromClause = FROM_KEYWORD;
+		String onClause = ON_KEYWORD;
 
 		Collection associationAttributesCollection = associationControl
 				.getAssociationDisplayAttributeCollection();
 
 		List associationAttributesList = new ArrayList(associationAttributesCollection);
 		Collections.sort(associationAttributesList);
-		String[] selectColumnName = new String[associationAttributesList.size() + 1];
 
 		Iterator attributeIterator = associationAttributesCollection.iterator();
 		AssociationDisplayAttributeInterface displayAttribute = null;
-		selectColumnName[0] = IDENTIFIER;
-		String[] whereColumnName = {Constants.ACTIVITY_STATUS_COLUMN};
-		String[] whereColumnCondition = {EQUAL};
-		Object[] whereColumnValue = {"'" + Constants.ACTIVITY_STATUS_ACTIVE + "'"};
 
-		int index = 1;
 		while (attributeIterator.hasNext())
 		{
 			displayAttribute = (AssociationDisplayAttributeInterface) attributeIterator.next();
-			selectColumnName[index++] = displayAttribute.getAttribute().getColumnProperties()
-					.getName();
+			columnName = displayAttribute.getAttribute().getColumnProperties().getName();
+			tableName = displayAttribute.getAttribute().getEntity().getTableProperties().getName();
+
+			if (tableNames.size() == 0)
+			{
+				selectClause = selectClause + tableName + "." + IDENTIFIER;
+				fromClause = fromClause + tableName;
+				onClause = onClause + tableName + "." + IDENTIFIER;
+				tableNames.add(tableName);
+			}
+			else
+			{
+				if (tableNames.indexOf(tableName) == -1)
+				{
+					tableNames.add(tableName);
+					fromClause = fromClause + JOIN_KEYWORD + tableName;
+					onClause = onClause + EQUAL + tableName + "." + IDENTIFIER;
+				}
+			}
+			selectClause = selectClause + " , " + columnName;
 		}
 
-		String tableName = displayAttribute.getAttribute().getEntity().getTableProperties()
-				.getName();
+		StringBuffer query = new StringBuffer();
+		query.append(selectClause);
+		query.append(fromClause);
+		if (tableNames.size() > 1)
+		{
+			query.append(onClause);
+		}
+		query.append(WHERE_KEYWORD + queryBuilder.getRemoveDisbledRecordsQuery(tableNames.get(0)));
 
 		JDBCDAO jdbcDao = null;
 		try
@@ -3060,8 +3091,8 @@ public class EntityManager
 			jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
 			jdbcDao.openSession(null);
 
-			List result = jdbcDao.retrieve(tableName, selectColumnName, whereColumnName,
-					whereColumnCondition, whereColumnValue, null);
+			List result = jdbcDao
+					.executeQuery(query.toString(), new SessionDataBean(), false, null);
 			if (result != null)
 			{
 				for (int i = 0; i < result.size(); i++)
@@ -3073,7 +3104,7 @@ public class EntityManager
 				}
 			}
 		}
-		catch (DAOException e)
+		catch (Exception e)
 		{
 			throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
 		}

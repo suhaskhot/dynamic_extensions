@@ -256,9 +256,6 @@ function initBuildForm()
 		changeSourceForValues(sourceElt);
 	}
 	
-	//Reinitialize counter for number of options
-	initializeChoiceListCounter();
-	
 	//Initilialize default value for list of options
 	initializeOptionsDefaultValue();
 
@@ -304,21 +301,6 @@ function changeChoiceListTableDisplay()
 		{
 			document.getElementById('optionsListRow').style.display = "none";
 		}
-	}
-}
-
-function initializeChoiceListCounter()
-{
-	var choiceListElementCnter = document.getElementById('choiceListCounter');
-	var choiceListTable = document.getElementById('choiceListTable');
-	if(choiceListElementCnter !=null)
-	{
-		var noOfChoices = 1;
-		if(choiceListTable!=null)
-		{
-			noOfChoices = choiceListTable.rows.length;	
-		}
-		choiceListElementCnter.value=noOfChoices+"";
 	}
 }
 
@@ -579,33 +561,6 @@ function listTypeChanged(obj)
 				rowForDisplayHeight.style.display="";
 			}
 		}
-	}
-}
-
-
-function deleteAllElementsFromChoiceTable()
-{
-	var valuestable = document.getElementById('choiceListTable');
-	
-	if(valuestable!=null)
-	{
-		var choiceListElementCnter = document.getElementById('choiceListCounter');
-		var noOfElements = 0;
-		if(choiceListElementCnter!=null)
-		{
-			noOfElements = parseInt(choiceListElementCnter.value);
-		}
-		
-		for(i=0; i<noOfElements; i++)
-		{
-			var chkBoxId = "chkBox" + i;
-			chkBox = document.getElementById(chkBoxId);
-			if(chkBox!=null)
-			{
-				chkBox.checked = true;
-			}
-		}
-		deleteElementsFromChoiceList();
 	}
 }
 
@@ -1831,10 +1786,6 @@ function addOptionRow()
 	var newRowIdStr = newRowId + "";
 	optionGrid.addRow(newRowIdStr,",,,");
 	optionGrid.setSizes();
-	
-	rows += 1;
-	//increment the row count
-	document.getElementById('choiceListCounter').value = rows + "";
 }
 
 function deleteSelectedOptions()
@@ -1859,4 +1810,24 @@ function deleteRecord(cotainerId,recordId,mode) {
 	var formsIndexForm = document.getElementById('recordListForm');
 	formsIndexForm.action = "/dynamicExtensions/DeleteRecordAction.do?containerIdentifier=" + cotainerId + "&recordIdentifier=" + recordId + "&mode=" + mode;
 	formsIndexForm.submit();
+}
+
+// Removes leading whitespaces
+function LTrim( value )
+{
+	var re = /\s*((\S+\s*)*)/;
+	return value.replace(re, "$1");
+}
+
+// Removes ending whitespaces
+function RTrim( value )
+{
+	var re = /((\s*\S+)*)\s*/;
+	return value.replace(re, "$1");
+}
+
+// Removes leading and ending whitespaces
+function trim( value )
+{
+	return LTrim(RTrim(value));
 }

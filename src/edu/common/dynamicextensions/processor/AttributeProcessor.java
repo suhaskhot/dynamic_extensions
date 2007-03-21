@@ -667,7 +667,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 
 		String csvString = attributeUIBeanInformationIntf.getCsvString();
 		String[][] csvValues = getValuesFromCsv(csvString);
-		
+
 		String[] optionNames = csvValues[0];
 		String[] optionDescriptions = csvValues[2];
 		String[] optionConceptCodes = csvValues[1];
@@ -703,11 +703,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private String[][] getValuesFromCsv(String csvString)
 	{
-		if(csvString==null)
+		if (csvString == null)
 		{
 			csvString = "";
 		}
-		
+
 		String[] rowsStrings = csvString.split("\n");
 		String[][] csvValues = new String[3][];
 		for (int i = 0; i < csvValues.length; i++)
@@ -720,16 +720,16 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			rowsStrings[i] = rowsStrings[i].trim();
 			String[] columnValues = rowsStrings[i].split("\t");
 
-			int j = 1;
+			int j = 2;
 			while (j < columnValues.length)
 			{
 				if (columnValues[j] != null)
 				{
-					csvValues[j - 1][i] = columnValues[j++];
+					csvValues[j - 2][i] = columnValues[j++];
 				}
 				else
 				{
-					csvValues[j - 1][i] = "";
+					csvValues[j - 2][i] = "";
 				}
 			}
 		}

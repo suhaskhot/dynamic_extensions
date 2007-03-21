@@ -27,10 +27,30 @@
 		optionGrid.setInitWidthsP("5,35,30,30");
 		optionGrid.setColAlign("center,left,left,left");
 		optionGrid.setColTypes("ch,ed,ed,ed");
-		optionGrid.setSerializableColumns("false,true,true,true");
+		optionGrid.setSerializableColumns("true,true,true,true");
 		optionGrid.enableMultiselect(true);
 		optionGrid.init();
-		loadOptionGridData();
+		
+		var csvStringObj = document.getElementById('csvString');
+		if(csvStringObj!=null)
+		{
+			reloadOptionGrid(csvStringObj);
+		}
+		else
+		{
+			loadOptionGridData();
+		}
+	}
+	
+	function reloadOptionGrid(csvStringObj)
+	{
+		if(csvStringObj.value!="")
+		{
+			var csvString = csvStringObj.value;
+			optionGrid.setCSVDelimiter("\t");
+			optionGrid.loadCSVString(csvString);
+			optionGrid.setCSVDelimiter(",");
+		}
 	}
 	
 	function loadOptionGridData()
@@ -97,6 +117,7 @@
 			{
 				loadCsvString += temp[i] + "\r\n";
 			}
+			loadCsvString = trim(loadCsvString);
 			optionGrid.loadCSVString(loadCsvString);
 		}
 		var div = document.getElementById('tempDiv');
@@ -125,7 +146,6 @@
 <!--User defined values specification-->
 <%@page import="edu.common.dynamicextensions.processor.ProcessorConstants"%>
 <div id="UserDefinedValues" style="display:none" width="100%">
-	<input type="hidden" value="1" id="choiceListCounter" name="choiceListCounter">
 	<hr/>
 	<table id="optionListTable" width="100%">
 		<tr>

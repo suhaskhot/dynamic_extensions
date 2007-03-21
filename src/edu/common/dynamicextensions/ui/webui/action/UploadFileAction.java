@@ -93,7 +93,7 @@ public class UploadFileAction extends BaseDynamicExtensionsAction
 				}
 			}
 
-			request.setAttribute("xmlString", returnXML.toString());
+			request.setAttribute("xmlString", returnXML.toString().trim());
 		}
 		catch (Exception e)
 		{

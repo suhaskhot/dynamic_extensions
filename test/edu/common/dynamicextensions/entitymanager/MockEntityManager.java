@@ -546,7 +546,8 @@ public class MockEntityManager
 	{
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		EntityGroupInterface entityGroupInterface = domainObjectFactory.createEntityGroup();
-		entityGroupInterface.setName("Test Group");
+		//entityGroupInterface.setName("Test Group");
+		entityGroupInterface.setName("test_" + new Double(Math.random()).toString());
 		entityGroupInterface.setDescription("Test description1");
 		entityGroupInterface.setVersion("1");
 

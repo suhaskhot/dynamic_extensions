@@ -536,7 +536,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			entityManagerInterface.persistEntityGroup(entityGroup);
 			//Step 3
 			EntityGroupInterface entityGroupInterface = entityManagerInterface
-					.getEntityGroupByShortName(entityGroup.getShortName());
+					.getEntityGroupByName(entityGroup.getName());
 			assertNotNull(entityGroupInterface);
 		}
 		catch (Exception e)
@@ -2096,8 +2096,12 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		managerContainer.setEntity(manager);
 
 		EntityGroupInterface userGroup = factory.createEntityGroup();
+		userGroup.setName("test_" + new Double(Math.random()).toString());
 		userGroup.addEntity(user);
 		userGroup.addEntity(manager);
+		
+		user.addEntityGroupInterface(userGroup);
+		manager.addEntityGroupInterface(userGroup);
 
 		ContainerInterface studyContainer = factory.createContainer();
 		studyContainer.setCaption("newstudyContainer");
@@ -2112,6 +2116,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		javaStudyContainer.setEntity(javaStudy);
 
 		EntityGroupInterface studyGroup = factory.createEntityGroup();
+		studyGroup.setName("test_" + new Double(Math.random()).toString());
 		studyGroup.addEntity(study);
 		studyGroup.addEntity(javaStudy);
 

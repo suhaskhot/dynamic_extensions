@@ -2725,7 +2725,7 @@ public class EntityManager
 			JDBCDAO dao =(JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
 			dao.openSession(null);
 	
-			String query = "select count (*) from dyextn_abstract_metadata d , dyextn_entity_group e where d.identifier = e.identifier and d.name = '"+ entityGroup.getName()+"'";
+			String query = "select count(*) from dyextn_abstract_metadata d , dyextn_entity_group e where d.identifier = e.identifier and d.name = '"+ entityGroup.getName()+"'";
 			List result = dao
 			.executeQuery(query, new SessionDataBean(), false, null);
 			

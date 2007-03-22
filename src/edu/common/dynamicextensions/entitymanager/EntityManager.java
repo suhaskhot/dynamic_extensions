@@ -1427,6 +1427,7 @@ public class EntityManager
 		catch (DynamicExtensionsSystemException e)
 		{
 			rollbackQueries(rollbackQueryStack, entity, e, hibernateDAO);
+			e.printStackTrace();
 			throw e;
 		}
 		finally
@@ -2714,16 +2715,51 @@ public class EntityManager
 	public void checkForDuplicateEntityGroupName(EntityGroupInterface entityGroup)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
-		Map substitutionParameterMap = new HashMap();
-		substitutionParameterMap.put("0", new HQLPlaceHolderObject("string", entityGroup.getName()));
-		Collection collection = executeHQL("checkDuplicateGroupName", substitutionParameterMap);
-		if (collection != null && !collection.isEmpty()) {
+		//Map substitutionParameterMap = new HashMap();
+		//substitutionParameterMap.put("0", new HQLPlaceHolderObject("string", entityGroup.getName()));
+		//Collection collection = executeHQL("checkDuplicateGroupName", substitutionParameterMap);
+		
+		Connection conn;
+		try
+		{
+			JDBCDAO dao =(JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
+			dao.openSession(null);
+	
+			String query = "select count (*) from dyextn_abstract_metadata d , dyextn_entity_group e where d.identifier = e.identifier and d.name = '"+ entityGroup.getName()+"'";
+			List result = dao
+			.executeQuery(query, new SessionDataBean(), false, null);
+			
+			if (result != null && !result.isEmpty())
+			{
+			List count = (List) result.get(0);
+			if (count != null && !count.isEmpty())
+			{
+			int numberOfOccurence = new Integer((String) count.get(0)).intValue();
+			if (numberOfOccurence > 0)
+			{
+				throw new DynamicExtensionsApplicationException("Duplicate Entity Group name",null, DYEXTN_A_015);
+			}
+			}
+			}
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			// TODO Auto-generated catch block
+			throw e;
+		}
+		catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+			throw new DynamicExtensionsSystemException("Error while checking duplicate count", e);
+		}
+		
+		/*if (collection != null && !collection.isEmpty()) {
 			Integer count = (Integer) collection.iterator().next();
 			if (count > 0)
 			{
 				throw new DynamicExtensionsApplicationException("Duplicate Entity Group name",null, DYEXTN_A_015);
 			}
-		}
+		}*/
 	}
 
 	/**

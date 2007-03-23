@@ -1215,6 +1215,8 @@ public class EntityManager
 
 			if (objectList == null || objectList.size() == 0)
 			{
+				Logger.out.debug("Required Obejct not found: Object Name*" + objectName+ "*   identifier  *" + identifier + "*");
+				System.out.println("Required Obejct not found: Object Name*" + objectName+ "*   identifier  *" + identifier + "*");
 				throw new DynamicExtensionsApplicationException("OBJECT_NOT_FOUND");
 			}
 

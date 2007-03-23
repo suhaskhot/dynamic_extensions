@@ -39,6 +39,9 @@
             cascade="save-update"
             sort="unsorted"
         >
+            <cache 
+                usage="read-write" 
+             />
 
               <key
                   column="ABSTRACT_VALUE_ID"

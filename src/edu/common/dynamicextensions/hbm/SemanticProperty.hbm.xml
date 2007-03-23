@@ -11,6 +11,7 @@
         dynamic-update="false"
         dynamic-insert="false"
     >
+        <cache usage="read-write" />
 
         <id
             name="id"
@@ -46,6 +47,14 @@
             update="true"
             insert="true"
             column="THESAURAS_NAME"
+        />
+
+        <property
+            name="sequenceNumber"
+            type="int"
+            update="true"
+            insert="true"
+            column="SEQUENCE_NUMBER"
         />
 
         <!--

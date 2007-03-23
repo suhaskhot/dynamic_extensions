@@ -96,7 +96,9 @@
 										-->
 										<tr valign="top" >
 											<td colspan="3" valign="top" class="cellWithNoLeftBottomPadding">
-												<div id="groupDetailsDiv"></div>
+												<!-- <div id="groupDetailsDiv"></div>-->
+												<span id="groupDetailsDiv">
+												</span>
 											</td>
 										</tr>
 										<tr>
@@ -134,7 +136,7 @@
 							</label>
 						</td>
 						<td class="formFieldWithoutBorder">
-							<html:text styleClass="formDateSized" styleId="groupNameText" property="groupNameText" />
+							<html:text styleClass="formDateSized" styleId="tempgroupNameText" property="tempgroupNameText" />
 						</td>
 					</tr>
 
@@ -146,7 +148,7 @@
 							</label>
 						</td>
 						<td>
-							<html:textarea styleClass="formFieldSmallSized" rows="3" cols="28" styleId="groupDescription" property="groupDescription" value=""/>
+							<html:textarea styleClass="formFieldSmallSized" rows="3" cols="28" styleId="tempgroupDescription" property="tempgroupDescription" value=""/>
 						</td>
 					 </tr>
 				</table>
@@ -161,7 +163,7 @@
 							</label>
 						</td>
 						<td>
-							<html:select styleId="groupName" styleClass="formFieldVerySmallSized" property="groupName" onchange="groupSelected(this)">
+							<html:select styleId="tempgroupName" styleClass="formFieldVerySmallSized" property="tempgroupName" onchange="groupSelected(this)">
 								<html:options collection="groupList" labelProperty="name" property="value" />
 							</html:select>
 						</td>
@@ -176,12 +178,12 @@
 						<c:choose>
 							<c:when test='${(operationMode=="EditForm")}'>
 								<td>
-									<html:textarea styleClass="formFieldSmallSized"  rows = "3" cols="28" styleId="groupDescription"  property="groupDescription"/>
+									<html:textarea styleClass="formFieldSmallSized"  rows = "3" cols="28" styleId="tempgroupDescription"  property="tempgroupDescription"/>
 								</td>
 							</c:when>
 							<c:otherwise>
 								<td>
-									<html:textarea styleClass="formFieldSmallSized"  rows = "3" cols="28" styleId="groupDescription"  property="groupDescription" readonly="true"/>
+									<html:textarea styleClass="formFieldSmallSized"  rows = "3" cols="28" styleId="tempgroupDescription"  property="tempgroupDescription" readonly="true"/>
 								</td>
 							</c:otherwise>
 						</c:choose>

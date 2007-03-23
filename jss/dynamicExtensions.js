@@ -839,24 +839,50 @@ function changeGroupSource(groupSrc)
 {
 	if(groupSrc!=null)
 	{
-		var groupSourceName = groupSrc.value+"Div";
 		var divForGrpDetails = document.getElementById('groupDetailsDiv');
+		
+		var groupSourceName = groupSrc.value+"Div";
+	
+//		alert('divForGrpDetails' + divForGrpDetails);
 		var divForGrpSrc = document.getElementById(groupSourceName);
+		
+		//alert('divForGrpSrc' + divForGrpSrc );
+		//alert('divForGrpSrc innerhtml ' + divForGrpSrc.innerHTML);
+		
+		var divForGrpSrcInnerHTML = divForGrpSrc.innerHTML;
+		divForGrpSrc.innerHTML = '';
+		
+		var groupForm = document.getElementById('groupForm');
+		groupForm.removeChild(divForGrpSrc);
+
 		if((divForGrpSrc!=null)&&(divForGrpDetails!=null))
 		{
-			divForGrpDetails.innerHTML = divForGrpSrc.innerHTML;
+//			alert ('in if');
+			var source = divForGrpSrcInnerHTML;
+//			alert('source1' + source);
+			while (source.indexOf("temp") != -1)
+			{
+				source = source.replace("temp","");
+			}
+	//		alert('source2' + source);
+			divForGrpDetails.innerHTML = source;
+			
 		}
 		var groupNameTextFld = document.getElementById('groupNameText');
+		//alert('groupNameTextFld1' + groupNameTextFld);
 		if(groupNameTextFld!=null)
 		{
 			groupNameTextFld.value="";
 		}
+//		alert('groupNameTextFld2' + groupNameTextFld);
 		
 		if(groupSourceName=="ExistingGroupDiv")
 		{
 			var selectedGroupName = document.getElementById('groupName');
 			groupSelected(selectedGroupName);
 		}
+		groupForm.appendChild(divForGrpSrc);
+		divForGrpSrc.innerHTML = divForGrpSrcInnerHTML;
 	}
 }
 

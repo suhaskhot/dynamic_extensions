@@ -63,6 +63,18 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 	 * 
 	 */
 	protected String containerIdentifier;
+	/**
+	 * 
+	 */
+	protected String tempgroupNameText;
+	/**
+	 * 
+	 */
+	protected String tempgroupDescription;
+	/**
+	 * 
+	 */
+	protected String tempgroupName;
 
 	/**
 	 * 
@@ -286,5 +298,59 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 	public void setGroupNameText(String groupNameText)
 	{
 		this.groupNameText = groupNameText;
+	}
+
+	
+	/**
+	 * @return the tempgroupDescription
+	 */
+	public String getTempgroupDescription()
+	{
+		return tempgroupDescription;
+	}
+
+	
+	/**
+	 * @param tempgroupDescription the tempgroupDescription to set
+	 */
+	public void setTempgroupDescription(String tempgroupDescription)
+	{
+		this.tempgroupDescription = tempgroupDescription;
+	}
+
+	
+	/**
+	 * @return the tempgroupName
+	 */
+	public String getTempgroupName()
+	{
+		return tempgroupName;
+	}
+
+	
+	/**
+	 * @param tempgroupName the tempgroupName to set
+	 */
+	public void setTempgroupName(String tempgroupName)
+	{
+		this.tempgroupName = tempgroupName;
+	}
+
+	
+	/**
+	 * @return the tempgroupNameText
+	 */
+	public String getTempgroupNameText()
+	{
+		return tempgroupNameText;
+	}
+
+	
+	/**
+	 * @param tempgroupNameText the tempgroupNameText to set
+	 */
+	public void setTempgroupNameText(String tempgroupNameText)
+	{
+		this.tempgroupNameText = tempgroupNameText;
 	}
 }

@@ -59,6 +59,7 @@ public class GroupProcessor extends BaseDynamicExtensionsProcessor
 		{
 			entityGroup.setName(groupUIBean.getGroupNameText());
 			entityGroup.setDescription(groupUIBean.getGroupDescription());
+			entityGroup.setIsSystemGenerated(new Boolean(false));
 			EntityManager.getInstance().checkForDuplicateEntityGroupName(entityGroup);
 		}
 	}

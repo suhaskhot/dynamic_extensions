@@ -38,6 +38,8 @@ public class EntityGroup extends AbstractMetadata implements java.io.Serializabl
 	 */
 	protected String version;
 	
+	protected Boolean isSystemGenerated = new Boolean(true);
+	
 	/**
 	 * Collection of Entity in this Entity group.
 	 */
@@ -223,6 +225,26 @@ public class EntityGroup extends AbstractMetadata implements java.io.Serializabl
 	public void removeMainContainer(ContainerInterface containerInterface)
 	{
 		this.mainContainerCollection.remove(containerInterface);
+	}
+
+	
+	/**
+	 * This method returns whether the Attribute is a Collection or not.
+	 * @hibernate.property name="isSystemGenerated" type="boolean" column="IS_SYSTEM_GENERATED" 
+	 * @return Returns the isSystemGenerated.
+	 */
+	public Boolean getIsSystemGenerated()
+	{
+		return isSystemGenerated;
+	}
+
+	
+	/**
+	 * @param isSystemGenerated
+	 */
+	public void setIsSystemGenerated(Boolean isSystemGenerated)
+	{
+		this.isSystemGenerated = isSystemGenerated;
 	}
 	 
 

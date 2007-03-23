@@ -87,4 +87,15 @@ public interface EntityGroupInterface extends AbstractMetadataInterface
 	 */
 	void removeMainContainer(ContainerInterface containerInterface);
 	
+	/**
+	 * @return
+	 */
+	public Boolean getIsSystemGenerated();
+
+	
+	/**
+	 * @param isSystemGenerated
+	 */
+	public void setIsSystemGenerated(Boolean isSystemGenerated);
+	
 }

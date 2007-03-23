@@ -389,6 +389,14 @@
               />
         </set>
 
+        <property
+            name="isSystemGenerated"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="IS_SYSTEM_GENERATED"
+        />
+
         </joined-subclass>
         <joined-subclass
             name="edu.common.dynamicextensions.domain.Entity"

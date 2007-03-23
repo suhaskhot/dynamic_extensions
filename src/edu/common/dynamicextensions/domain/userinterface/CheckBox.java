@@ -65,7 +65,9 @@ public class CheckBox extends Control implements CheckBoxInterface
 		String htmlString = "&nbsp;";
 		if (value != null)
 		{
-			htmlString = "<span class = '" + cssClass + "'> " + this.value.toString() + "</span>";
+			String isChecked = (String) this.value;
+			htmlString = "<input type='checkbox' class='" + cssClass + "' " + isChecked
+					+ " disabled>";
 		}
 		return htmlString;
 	}

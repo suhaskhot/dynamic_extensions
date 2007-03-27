@@ -32,6 +32,9 @@
             cascade="all-delete-orphan"
             sort="unsorted"
         >
+            <cache 
+                usage="read-write" 
+             />
 
               <key
                   column="ATTRIBUTE_TYPE_INFO_ID"
@@ -50,6 +53,9 @@
             cascade="all-delete-orphan"
             sort="unsorted"
         >
+            <cache 
+                usage="read-write" 
+             />
 
               <key
                   column="ATTRIBUTE_TYPE_INFO_ID"
@@ -102,6 +108,9 @@
             cascade="all-delete-orphan"
             sort="unsorted"
         >
+            <cache 
+                usage="read-write" 
+             />
 
               <key
                   column="ATTRIBUTE_ID"

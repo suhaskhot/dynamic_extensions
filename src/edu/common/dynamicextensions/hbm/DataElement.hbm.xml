@@ -48,6 +48,9 @@
             cascade="save-update"
             sort="unsorted"
         >
+            <cache 
+                usage="read-write" 
+             />
 
               <key
                   column="USER_DEF_DE_ID"

@@ -40,6 +40,7 @@ public class FileAttributeTypeInformation extends AttributeTypeInformation
 	 * @hibernate.set name="fileExtensionCollection" table="DYEXTN_FILE_EXTENSIONS"
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ATTRIBUTE_ID"
+	 * @hibernate.cache  usage="read-write"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.FileExtension" 
 	 * @return Returns the fileExtensionCollection.
 	 */

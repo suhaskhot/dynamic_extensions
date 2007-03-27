@@ -57,6 +57,7 @@ AttributeTypeInformationInterface
 	 * @hibernate.set name="dataElementCollection" table="DYEXTN_DATA_ELEMENT"
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ATTRIBUTE_TYPE_INFO_ID"
+	 * @hibernate.cache  usage="read-write"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.DataElement"   
 	 * @return Returns the dataElementCollection.
 	 */
@@ -107,6 +108,7 @@ AttributeTypeInformationInterface
 	 * @hibernate.set name="defaultValueCollection" table="DYEXTN_PERMISSIBLE_VALUE"
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ATTRIBUTE_TYPE_INFO_ID"
+	 * @hibernate.cache  usage="read-write"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.PermissibleValue"   
 	 * @return Returns the dataElementCollection.
 	 */

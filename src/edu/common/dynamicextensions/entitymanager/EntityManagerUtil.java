@@ -130,6 +130,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 
 		return queryString;
 	}
+
 	/**
 	 * @param tableName
 	 * @param columnName
@@ -137,15 +138,14 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public static int getNoOfRecord(String query)
-			throws DynamicExtensionsSystemException
+	public static int getNoOfRecord(String query) throws DynamicExtensionsSystemException
 	{
-//		StringBuffer query = new StringBuffer();
-//		query.append(SELECT_KEYWORD + COUNT_KEYWORD + "(*)");
-//		query.append(FROM_KEYWORD + tableName);
-//		query.append(WHERE_KEYWORD + columnName + IN_KEYWORD + getListToString(recordIdList));
-//		query.append(" and " +  DynamicExtensionBaseQueryBuilder.getRemoveDisbledRecordsQuery());
-		
+		//		StringBuffer query = new StringBuffer();
+		//		query.append(SELECT_KEYWORD + COUNT_KEYWORD + "(*)");
+		//		query.append(FROM_KEYWORD + tableName);
+		//		query.append(WHERE_KEYWORD + columnName + IN_KEYWORD + getListToString(recordIdList));
+		//		query.append(" and " +  DynamicExtensionBaseQueryBuilder.getRemoveDisbledRecordsQuery());
+
 		ResultSet resultSet = null;
 		try
 		{
@@ -159,13 +159,18 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 		}
 		finally
 		{
-			try
+			if (resultSet != null)
 			{
-				resultSet.close();
-			}
-			catch (SQLException e)
-			{
-				throw new DynamicExtensionsSystemException(e.getMessage(), e);
+				try
+				{
+
+					resultSet.close();
+
+				}
+				catch (SQLException e)
+				{
+					throw new DynamicExtensionsSystemException(e.getMessage(), e);
+				}
 			}
 		}
 	}

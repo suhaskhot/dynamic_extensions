@@ -1787,7 +1787,7 @@ public class EntityManager
 		{
 			EntityInterface attributeEntity = abstractAttributeInterface.getEntity();
 			Object value = dataValue.get(abstractAttributeInterface);
-			
+
 			Map<AbstractAttributeInterface, Object> entityDataValueMap = (Map) entityMap
 					.get(attributeEntity);
 			if (entityDataValueMap == null)
@@ -1943,7 +1943,8 @@ public class EntityManager
 					recordIdList.add(recordId);
 
 					queryBuilder.getContenmentAssociationRemoveDataQueryList(
-							((Association) attribute), recordIdList, removeContainmentRecordQuery,false);
+							((Association) attribute), recordIdList, removeContainmentRecordQuery,
+							false);
 
 					entityManagerUtil.executeDML(removeContainmentRecordQuery);
 
@@ -1999,16 +2000,12 @@ public class EntityManager
 			editDataQueryList.add(query.toString());
 		}
 
-		if (updateColumnString.length() != 0)
+		Connection conn = DBUtil.getConnection();
+		for (String queryString : editDataQueryList)
 		{
-
-			Connection conn = DBUtil.getConnection();
-			for (String queryString : editDataQueryList)
-			{
-				logDebug("editData", "Query is: " + queryString.toString());
-				PreparedStatement statement = conn.prepareStatement(queryString);
-				statement.executeUpdate();
-			}
+			logDebug("editData", "Query is: " + queryString.toString());
+			PreparedStatement statement = conn.prepareStatement(queryString);
+			statement.executeUpdate();
 		}
 
 		for (AttributeRecord collectionAttributeRecord : collectionRecords)
@@ -2321,13 +2318,13 @@ public class EntityManager
 					saveOrUpdateEntityMetadata(entity.getParentEntity(), hibernateDAO,
 							rollbackQueryStack, true, processedEntityList);
 				}
-			//	hibernateDAO.update(entity, null, false, false, false);
+				//	hibernateDAO.update(entity, null, false, false, false);
 			}
-			
+
 			entity = (Entity) session.saveOrUpdateCopy(entity);
 
 			postSaveProcessEntity(entity, hibernateDAO, rollbackQueryStack, processedEntityList);
-			
+
 			entity = (Entity) session.saveOrUpdateCopy(entity);
 
 			hibernateDAO.update(entity, null, false, false, false);
@@ -2598,7 +2595,7 @@ public class EntityManager
 	private void preSaveProcessEntityGroup(EntityGroupInterface entityGroup)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
-		
+
 		DynamicExtensionsUtility.validateName(entityGroup.getName());
 		checkForDuplicateEntityGroupName(entityGroup);
 		if (entityGroup.getId() != null)
@@ -2633,7 +2630,6 @@ public class EntityManager
 		EntityInterface entityInterface = null;
 		try
 		{
-			
 
 			if (isNew)
 			{
@@ -2720,28 +2716,29 @@ public class EntityManager
 		//Map substitutionParameterMap = new HashMap();
 		//substitutionParameterMap.put("0", new HQLPlaceHolderObject("string", entityGroup.getName()));
 		//Collection collection = executeHQL("checkDuplicateGroupName", substitutionParameterMap);
-		
+
 		Connection conn;
 		try
 		{
-			JDBCDAO dao =(JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
+			JDBCDAO dao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
 			dao.openSession(null);
-	
-			String query = "select count(*) from dyextn_abstract_metadata d , dyextn_entity_group e where d.identifier = e.identifier and d.name = '"+ entityGroup.getName()+"'";
-			List result = dao
-			.executeQuery(query, new SessionDataBean(), false, null);
-			
+
+			String query = "select count(*) from dyextn_abstract_metadata d , dyextn_entity_group e where d.identifier = e.identifier and d.name = '"
+					+ entityGroup.getName() + "'";
+			List result = dao.executeQuery(query, new SessionDataBean(), false, null);
+
 			if (result != null && !result.isEmpty())
 			{
-			List count = (List) result.get(0);
-			if (count != null && !count.isEmpty())
-			{
-			int numberOfOccurence = new Integer((String) count.get(0)).intValue();
-			if (numberOfOccurence > 0)
-			{
-				throw new DynamicExtensionsApplicationException("Duplicate Entity Group name",null, DYEXTN_A_015);
-			}
-			}
+				List count = (List) result.get(0);
+				if (count != null && !count.isEmpty())
+				{
+					int numberOfOccurence = new Integer((String) count.get(0)).intValue();
+					if (numberOfOccurence > 0)
+					{
+						throw new DynamicExtensionsApplicationException(
+								"Duplicate Entity Group name", null, DYEXTN_A_015);
+					}
+				}
 			}
 		}
 		catch (DynamicExtensionsApplicationException e)
@@ -2754,14 +2751,14 @@ public class EntityManager
 			// TODO Auto-generated catch block
 			throw new DynamicExtensionsSystemException("Error while checking duplicate count", e);
 		}
-		
+
 		/*if (collection != null && !collection.isEmpty()) {
-			Integer count = (Integer) collection.iterator().next();
-			if (count > 0)
-			{
-				throw new DynamicExtensionsApplicationException("Duplicate Entity Group name",null, DYEXTN_A_015);
-			}
-		}*/
+		 Integer count = (Integer) collection.iterator().next();
+		 if (count > 0)
+		 {
+		 throw new DynamicExtensionsApplicationException("Duplicate Entity Group name",null, DYEXTN_A_015);
+		 }
+		 }*/
 	}
 
 	/**
@@ -2877,7 +2874,7 @@ public class EntityManager
 						recordIdList.add(recordId);
 						QueryBuilderFactory.getQueryBuilder()
 								.getContenmentAssociationRemoveDataQueryList(association,
-										recordIdList, associationRemoveQueryList,true);
+										recordIdList, associationRemoveQueryList, true);
 
 					}
 					//					else
@@ -2927,7 +2924,7 @@ public class EntityManager
 			{
 				throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
 			}
-			
+
 			throw e;
 		}
 		catch (Exception e)
@@ -3062,11 +3059,11 @@ public class EntityManager
 	/**
 	 * This method retreives records by executing query of the form
 	 * 
-			 select childTable.identifier, childTable.attribute1, parentTable.attribute5 
-			 from childTable join parentTable 
-			 on childTable.identifier = parentTable.identifier
-			 where childTable.activity_status = "active"
-			 
+	 select childTable.identifier, childTable.attribute1, parentTable.attribute5 
+	 from childTable join parentTable 
+	 on childTable.identifier = parentTable.identifier
+	 where childTable.activity_status = "active"
+	 
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getRecordsForAssociationControl(edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface)
 	 */
 	public Map<Long, List<String>> getRecordsForAssociationControl(
@@ -3384,16 +3381,17 @@ public class EntityManager
 
 	}
 
-	public void deleteRecords(Long containerId, List<Long> recordIdList) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public void deleteRecords(Long containerId, List<Long> recordIdList)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ContainerInterface container = DynamicExtensionsUtility
-		.getContainerByIdentifier(containerId.toString());
-		
+				.getContainerByIdentifier(containerId.toString());
+
 		EntityInterface entityInterface = container.getEntity();
 		for (Long recordId : recordIdList)
 		{
 			deleteRecord(entityInterface, recordId);
 		}
-		
+
 	}
 }

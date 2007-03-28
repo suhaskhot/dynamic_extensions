@@ -1860,7 +1860,7 @@ public class EntityManager
 
 		if (entity == null || dataValue == null || dataValue.isEmpty())
 		{
-			throw new DynamicExtensionsSystemException("Input to edit data is null");
+			return true;
 		}
 		StringBuffer updateColumnString = new StringBuffer();
 		String tableName = entity.getTableProperties().getName();

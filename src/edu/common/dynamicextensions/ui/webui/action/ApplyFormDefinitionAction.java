@@ -97,7 +97,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 			if (target.equals(Constants.SHOW_DYNAMIC_EXTENSIONS_HOMEPAGE))
 			{
 				callbackURL = redirectCallbackURL(request, WebUIManagerConstants.SUCCESS);
-				if (callbackURL != null || !callbackURL.equals(""))
+				if (callbackURL != null && !callbackURL.equals(""))
 				{
 					response.sendRedirect(callbackURL);
 					target = null;

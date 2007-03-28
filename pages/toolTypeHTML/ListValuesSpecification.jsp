@@ -32,7 +32,7 @@
 		optionGrid.init();
 		
 		var csvStringObj = document.getElementById('csvString');
-		if(csvStringObj!=null)
+		if(csvStringObj!=null && csvStringObj.value!="")
 		{
 			reloadOptionGrid(csvStringObj);
 		}
@@ -44,12 +44,30 @@
 	
 	function reloadOptionGrid(csvStringObj)
 	{
-		if(csvStringObj.value!="")
+		var csvString = csvStringObj.value;
+		optionGrid.setCSVDelimiter("\t");
+		optionGrid.loadCSVString(csvString);
+		optionGrid.setCSVDelimiter(",");
+		
+		var attributeDefaultValue = document.getElementById('attributeDefaultValue').value;
+		var itemIds = optionGrid.getAllItemIds(",");
+		if(itemIds != null)
 		{
-			var csvString = csvStringObj.value;
-			optionGrid.setCSVDelimiter("\t");
-			optionGrid.loadCSVString(csvString);
-			optionGrid.setCSVDelimiter(",");
+			var rowIds = new Array();
+			rowIds = itemIds.split(',');
+			var item=0;
+			for(item=0; item<rowIds.length; item++)
+			{
+				rowValue = optionGrid.cells(rowIds[item],1).getValue();
+				if(rowValue == attributeDefaultValue)
+				{
+					optionGrid.setRowTextBold(rowIds[item]);
+				}
+				else
+				{
+					optionGrid.setRowTextNormal(rowIds[item]);
+				}
+			}
 		}
 	}
 	

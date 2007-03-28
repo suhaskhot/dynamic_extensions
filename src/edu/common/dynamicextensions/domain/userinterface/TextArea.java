@@ -1,9 +1,7 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
-import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.Constants;
@@ -85,10 +83,6 @@ public class TextArea extends Control implements TextAreaInterface
 		if (this.value == null)
 		{
 			defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
-			if (defaultValue == null || (defaultValue.length() == 0))
-			{
-				defaultValue = "";
-			}
 		}
 
 		String htmlComponentName = getHTMLComponentName();
@@ -116,10 +110,16 @@ public class TextArea extends Control implements TextAreaInterface
 		{
 			htmlString += "rows='" + Constants.DEFAULT_ROW_SIZE + "' ";
 		}
-		htmlString += "wrap='virtual'> ";
+		htmlString += "wrap='virtual'>";
 
-		htmlString += defaultValue + "</textarea>";
-
+		if (defaultValue == null || (defaultValue.length() == 0))
+		{
+			htmlString += "</textarea>";
+		}
+		else
+		{
+			htmlString += defaultValue + "</textarea>";
+		}
 		return htmlString;
 	}
 

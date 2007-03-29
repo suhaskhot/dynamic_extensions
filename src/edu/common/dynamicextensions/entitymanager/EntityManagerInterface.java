@@ -452,7 +452,14 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsApplicationException This will basically act as a duplicate name exception.
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public void checkForDuplicateEntityGroupName(EntityGroupInterface entityGroup)
+	 void checkForDuplicateEntityGroupName(EntityGroupInterface entityGroup)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
+	
+	 /**
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	List<NameValueBean> getAllContainerBeans() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 	
 }

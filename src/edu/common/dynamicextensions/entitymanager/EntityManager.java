@@ -3223,6 +3223,24 @@ public class EntityManager
 		return associationTreeObjectForGroup;
 	}
 
+	public List<NameValueBean> getAllContainerBeans() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		Map<String,HQLPlaceHolderObject>  substitutionParameterMap = new HashMap<String,HQLPlaceHolderObject>();
+		Collection containersBeansCollection = executeHQL("getAllContainerBeans",
+				substitutionParameterMap);
+		Iterator containerBeansIterator = containersBeansCollection.iterator();
+		Object[] objectArrayForContainerBeans;
+		List<NameValueBean> list = new ArrayList<NameValueBean>();
+		while (containerBeansIterator.hasNext())
+		{
+			objectArrayForContainerBeans = (Object[]) containerBeansIterator.next();
+			list.add(new NameValueBean(
+					(String) objectArrayForContainerBeans[1],
+					(Long) objectArrayForContainerBeans[0]
+					));
+		}
+		return list;
+	}
 	/**
 	 * 
 	 * @param objectArrayForContainerBeans

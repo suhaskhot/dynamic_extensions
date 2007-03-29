@@ -61,10 +61,17 @@
 	</query>
 	
 		
+	<query name="getAllContainerBeans">
+			select container.id,container.caption
+			   from edu.common.dynamicextensions.domain.userinterface.Container container
+			         	
+	</query>
+	
 	
 	<query name="getAllGroupBeans">
 		select entityGroup.name,entityGroup.id
-			   from EntityGroup entityGroup
+			   from EntityGroup entityGroup 
+			   		where entityGroup.isSystemGenerated = false
 	</query>
 	
 	<query name="checkDuplicateGroupName">

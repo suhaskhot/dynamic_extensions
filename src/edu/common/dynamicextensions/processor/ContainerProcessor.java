@@ -2,11 +2,9 @@
 package edu.common.dynamicextensions.processor;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
-import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
@@ -140,28 +138,20 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public List getFormsList() throws DynamicExtensionsSystemException,
+	public List<NameValueBean> getFormsList() throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
 		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
-		Collection<ContainerInterface> containerCollection = entityManagerInterface
-				.getAllContainers();
+		List<NameValueBean> containerList = entityManagerInterface.getAllContainerBeans();
 
-		List formsList = new ArrayList<NameValueBean>();
+		List<NameValueBean> formsList = new ArrayList<NameValueBean>();
 		formsList.add(new NameValueBean("--select--", "0"));
-
-		NameValueBean nameValueBean;
-		EntityInterface entityInterface;
-		for (ContainerInterface containerInterface : containerCollection)
+		if (containerList != null && !containerList.isEmpty())
 		{
-			entityInterface = containerInterface.getEntity();
-			nameValueBean = new NameValueBean(containerInterface.getCaption(), containerInterface
-					.getId());
-			formsList.add(nameValueBean);
+			formsList.addAll(containerList);
 		}
 
 		return formsList;
-
 	}
 
 	/**

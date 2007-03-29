@@ -251,6 +251,14 @@ public interface EntityManagerInterface
 	 */
 	Long insertData(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
+	
+	/**
+	 * This method inserts multiple records for the entity. This is a single transaction, so either all records are inserted or nothing 
+	 * is persisted.
+	 * It returns the record id in the same sequence as that of input maps in dataValueMapList. 
+	 */
+	List<Long> insertData(EntityInterface entity, List<Map<AbstractAttributeInterface, ?>> dataValueMapList)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
 	 * Returns a particular record for the given recordId of the given entityId

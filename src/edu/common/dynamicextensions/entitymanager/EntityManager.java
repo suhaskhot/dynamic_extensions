@@ -1215,8 +1215,10 @@ public class EntityManager
 
 			if (objectList == null || objectList.size() == 0)
 			{
-				Logger.out.debug("Required Obejct not found: Object Name*" + objectName+ "*   identifier  *" + identifier + "*");
-				System.out.println("Required Obejct not found: Object Name*" + objectName+ "*   identifier  *" + identifier + "*");
+				Logger.out.debug("Required Obejct not found: Object Name*" + objectName
+						+ "*   identifier  *" + identifier + "*");
+				System.out.println("Required Obejct not found: Object Name*" + objectName
+						+ "*   identifier  *" + identifier + "*");
 				throw new DynamicExtensionsApplicationException("OBJECT_NOT_FOUND");
 			}
 
@@ -1709,8 +1711,21 @@ public class EntityManager
 	public Long insertData(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
+		List<Map<AbstractAttributeInterface, ?>> dataValueMapList = new ArrayList<Map<AbstractAttributeInterface, ?>>();
+		dataValueMapList.add(dataValue);
+		List<Long> recordIdList = insertData(entity, dataValueMapList);
+		return recordIdList.get(0);
+	}
 
-		Long recordId = null;
+	/**
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#insertData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map)
+	 */
+	public List<Long> insertData(EntityInterface entity,
+			List<Map<AbstractAttributeInterface, ?>> dataValueMapList)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	{
+
+		List<Long> recordIdList = new ArrayList<Long>();
 		HibernateDAO hibernateDAO = null;
 		try
 		{
@@ -1718,7 +1733,11 @@ public class EntityManager
 			hibernateDAO = (HibernateDAO) factory.getDAO(Constants.HIBERNATE_DAO);
 			hibernateDAO.openSession(null);
 
-			recordId = insertDataForHeirarchy(entity, dataValue, hibernateDAO);
+			for (Map<AbstractAttributeInterface, ?> dataValue : dataValueMapList)
+			{
+				Long recordId = insertDataForHeirarchy(entity, dataValue, hibernateDAO);
+				recordIdList.add(recordId);
+			}
 
 			hibernateDAO.commit();
 		}
@@ -1745,7 +1764,7 @@ public class EntityManager
 			}
 		}
 
-		return recordId;
+		return recordIdList;
 	}
 
 	/**
@@ -3223,9 +3242,10 @@ public class EntityManager
 		return associationTreeObjectForGroup;
 	}
 
-	public List<NameValueBean> getAllContainerBeans() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public List<NameValueBean> getAllContainerBeans() throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
-		Map<String,HQLPlaceHolderObject>  substitutionParameterMap = new HashMap<String,HQLPlaceHolderObject>();
+		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
 		Collection containersBeansCollection = executeHQL("getAllContainerBeans",
 				substitutionParameterMap);
 		Iterator containerBeansIterator = containersBeansCollection.iterator();
@@ -3234,13 +3254,12 @@ public class EntityManager
 		while (containerBeansIterator.hasNext())
 		{
 			objectArrayForContainerBeans = (Object[]) containerBeansIterator.next();
-			list.add(new NameValueBean(
-					(String) objectArrayForContainerBeans[1],
-					(Long) objectArrayForContainerBeans[0]
-					));
+			list.add(new NameValueBean((String) objectArrayForContainerBeans[1],
+					(Long) objectArrayForContainerBeans[0]));
 		}
 		return list;
 	}
+
 	/**
 	 * 
 	 * @param objectArrayForContainerBeans

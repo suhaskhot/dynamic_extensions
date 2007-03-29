@@ -118,26 +118,64 @@ public class ValidatorUtil
 		Collection<RuleInterface> attributeRuleCollection = attribute.getRuleCollection();
 		if (attributeRuleCollection != null || !attributeRuleCollection.isEmpty())
 		{
+			String errorMessage = null;
 			for (RuleInterface rule : attributeRuleCollection)
 			{
-				ValidatorRuleInterface validatorRule = ControlConfigurationsFactory.getInstance()
-						.getValidatorRule(rule.getName());
-				Object valueObject = attributeValueNode.getValue();
-				Map<String, String> parameterMap = getParamMap(rule);
-				try
+				String ruleName = rule.getName();
+				if (!ruleName.equals("unique"))
 				{
-					validatorRule.validate(attribute, valueObject, parameterMap);
-				}
-				catch (DynamicExtensionsValidationException e)
-				{
-					String errorMessage = ApplicationProperties.getValue(e.getErrorCode(), e
-							.getPlaceHolderList());
-					errorList.add(errorMessage);
+					Object valueObject = attributeValueNode.getValue();
+					Map<String, String> parameterMap = getParamMap(rule);
+					try
+					{
+						checkValidation(attribute, valueObject, rule, parameterMap);
+					}
+					catch (DynamicExtensionsValidationException e)
+					{
+						errorMessage = ApplicationProperties.getValue(e.getErrorCode(), e
+								.getPlaceHolderList());
+						errorList.add(errorMessage);
+					}
 				}
 			}
 		}
 
 		return errorList;
+	}
+
+	public static void checkUniqueValidationForAttribute(AttributeInterface attribute,
+			Object valueObject, Long recordId) throws DynamicExtensionsValidationException,
+			DynamicExtensionsSystemException
+	{
+		Collection<RuleInterface> attributeRuleCollection = attribute.getRuleCollection();
+
+		if (attributeRuleCollection != null || !attributeRuleCollection.isEmpty())
+		{
+			for (RuleInterface rule : attributeRuleCollection)
+			{
+				String ruleName = rule.getName();
+				if (ruleName.equals("unique"))
+				{
+					Map<String, String> parameterMap = new HashMap<String, String>();
+					if (recordId != null)
+					{
+						parameterMap.put("recordId", recordId.toString());
+					}
+					checkValidation(attribute, valueObject, rule, parameterMap);
+					break;
+				}
+			}
+		}
+	}
+
+	private static void checkValidation(AttributeInterface attribute, Object valueObject,
+			RuleInterface rule, Map<String, String> parameterMap)
+			throws DynamicExtensionsSystemException, DynamicExtensionsValidationException
+	{
+		String ruleName = rule.getName();
+		ValidatorRuleInterface validatorRule = ControlConfigurationsFactory.getInstance()
+				.getValidatorRule(ruleName);
+		validatorRule.validate(attribute, valueObject, parameterMap);
 	}
 
 	/**

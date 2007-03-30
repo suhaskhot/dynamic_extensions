@@ -35,6 +35,7 @@ import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.TaggedValue;
 import edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
@@ -47,6 +48,7 @@ import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainOb
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
+import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
@@ -940,6 +942,11 @@ public class EntityManager
 						.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
 				systemGeneratedAssociation.setIsSystemGenerated(true);
 				systemGeneratedAssociation.setConstraintProperties(constraintPropertiesSysGen);
+				
+				for(TaggedValueInterface taggedValue : association.getTaggedValueCollection()) {
+					systemGeneratedAssociation.addTaggedValue(((TaggedValue)taggedValue).clone());
+				}
+				
 				//Adding the sys.generated association to the target entity.
 				association.getTargetEntity().addAbstractAttribute(systemGeneratedAssociation);
 				isTargetEntityChanged = true;

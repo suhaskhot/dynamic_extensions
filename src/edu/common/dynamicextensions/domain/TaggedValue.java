@@ -8,12 +8,7 @@
 
 package edu.common.dynamicextensions.domain;
 
-import java.io.Serializable;
-
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
-import edu.wustl.common.actionForm.AbstractActionForm;
-import edu.wustl.common.domain.AbstractDomainObject;
-import edu.wustl.common.exception.AssignDataException;
 
 /**
  * For every abstract metadata object tagged values are associated.
@@ -24,68 +19,78 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.cache  usage="read-write"
  * 
  */
-public class TaggedValue extends DynamicExtensionBaseDomainObject
-        implements TaggedValueInterface {
+public class TaggedValue extends DynamicExtensionBaseDomainObject implements TaggedValueInterface
+{
 
-    public TaggedValue()
-    {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+	public TaggedValue()
+	{
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
-    /**
-     * Key part of the tagged value.
-     */
-    String key;
+	/**
+	 * Key part of the tagged value.
+	 */
+	String key;
 
-    /**
-     * Value part of the tagged value
-     */
-    String value;
+	/**
+	 * Value part of the tagged value
+	 */
+	String value;
 
-    /**
-     * This method returns the Unique identifier.
-     * @hibernate.id name="id" column="IDENTIFIER" type="long"
-     * length="30" unsaved-value="null" generator-class="native"
-     * @hibernate.generator-param name="sequence" value="DYEXTN_TAGGED_VALUE_SEQ"
-     * @return the Unique identifier.
-     */
-    public Long getId()
-    {
-        return id;
-    }
+	/**
+	 * This method returns the Unique identifier.
+	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
+	 * length="30" unsaved-value="null" generator-class="native"
+	 * @hibernate.generator-param name="sequence" value="DYEXTN_TAGGED_VALUE_SEQ"
+	 * @return the Unique identifier.
+	 */
+	public Long getId()
+	{
+		return id;
+	}
 
+	/**
+	 * This method returns the key.
+	 * @hibernate.property name="key" type="string" column="T_KEY" 
+	 * @return the concept code.
+	 */
+	public String getKey()
+	{
+		return key;
+	}
 
-    /**
-     * This method returns the key.
-     * @hibernate.property name="key" type="string" column="T_KEY" 
-     * @return the concept code.
-     */
-    public String getKey()
-    {
-        return key;
-    }
+	public void setKey(String key)
+	{
+		this.key = key;
+	}
 
-    public void setKey(String key)
-    {
-        this.key = key;
-    }
+	/**
+	 * This method returns the concept code.
+	 * @hibernate.property name="value" type="string" column="T_VALUE" 
+	 * @return the concept code.
+	 */
+	public String getValue()
+	{
+		return value;
+	}
 
-    /**
-     * This method returns the concept code.
-     * @hibernate.property name="value" type="string" column="T_VALUE" 
-     * @return the concept code.
-     */
-    public String getValue()
-    {
-        return value;
-    }
+	/**
+	 * @see edu.common.dynamicextensions.domaininterface.TaggedValueInterface#setValue(java.lang.String)
+	 */
+	public void setValue(String value)
+	{
+		this.value = value;
+	}
 
-    /**
-     * @see edu.common.dynamicextensions.domaininterface.TaggedValueInterface#setValue(java.lang.String)
-     */
-    public void setValue(String value)
-    {
-        this.value = value;
-    }
+	/** 
+	 * @see java.lang.Object#clone()
+	 */
+	public TaggedValue clone()
+	{
+		TaggedValue taggedValue = new TaggedValue();
+		taggedValue.setKey(new String(this.key));
+		taggedValue.setValue(new String(this.value));
+		return taggedValue;
+	}
 }

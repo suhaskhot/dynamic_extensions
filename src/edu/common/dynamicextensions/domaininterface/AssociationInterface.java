@@ -77,9 +77,21 @@ public interface AssociationInterface extends AbstractAttributeInterface
 	 */
 	ConstraintPropertiesInterface getConstraintProperties();
 
+
 	/**
-	 * @param constraintProperties
+	 * @param constraintProperties constraintProperties
 	 */
 	void setConstraintProperties(ConstraintPropertiesInterface constraintProperties);
+
+
+	/**
+	 * @return BOOLEAN
+	 */
+	Boolean getIsSystemGenerated();
+
+	/**
+	 * @param isSystemGenerated The isSystemGenerated to set.
+	 */
+	void setIsSystemGenerated(Boolean isSystemGenerated);
 
 }

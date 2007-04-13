@@ -226,23 +226,23 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			//Step 2 
 			EntityInterface savedEntity = entityManagerInterface.persistEntity(entity);
 
-			Map dataValue = new HashMap();
-			dataValue.put(floatAtribute, "15.90");
-			entityManagerInterface.insertData(savedEntity, dataValue);
+//			Map dataValue = new HashMap();
+//			dataValue.put(floatAtribute, "15.90");
+//			entityManagerInterface.insertData(savedEntity, dataValue);
 
 			java.sql.ResultSetMetaData metadata = executeQueryForMetadata("select * from "
 					+ savedEntity.getTableProperties().getName());
 			assertEquals(metadata.getColumnCount(), noOfDefaultColumns + 2);
 
 			AttributeInterface savedFloatAtribute = null;
-
-			Iterator itr = savedEntity.getAttributeCollection().iterator();
-			while (itr.hasNext())
-			{
-				savedFloatAtribute = (AttributeInterface) itr.next();
+			//Collection collection = savedEntity.getAttributeCollection();
+			//collection =  EntityManagerUtil.filterSystemAttributes(collection);
+			//Iterator itr = collection.iterator();
+			
+			
+				savedFloatAtribute = savedEntity.getAttributeByIdentifier(floatAtribute.getId());
 				System.out.println("id is: " + savedFloatAtribute.getId());
 
-			}
 
 			//remove attribute
 			//Step 3
@@ -261,8 +261,10 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{
-			fail();
+			e.printStackTrace();
 			Logger.out.debug(e.getStackTrace());
+			fail();
+			
 		}
 		catch (Exception e)
 		{
@@ -382,11 +384,11 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			if (Variables.databaseName
 					.equals(edu.common.dynamicextensions.util.global.Constants.MYSQL_DATABASE))
 			{
-				assertEquals(metaData.getColumnType(3), Types.INTEGER);
+				assertEquals(metaData.getColumnType(2), Types.INTEGER);
 			}
 			else
 			{
-				assertEquals(metaData.getColumnType(3), Types.NUMERIC);
+				assertEquals(metaData.getColumnType(2), Types.NUMERIC);
 			}
 
 			//Step 4
@@ -401,11 +403,11 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			if (Variables.databaseName
 					.equals(edu.common.dynamicextensions.util.global.Constants.MYSQL_DATABASE))
 			{
-				assertEquals(metaData.getColumnTypeName(3), "TEXT");
+				assertEquals(metaData.getColumnTypeName(2), "TEXT");
 			}
 			else
 			{
-				assertEquals(metaData.getColumnType(3), Types.VARCHAR);
+				assertEquals(metaData.getColumnType(2), Types.VARCHAR);
 
 			}
 
@@ -731,8 +733,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			Entity newEntity = (Entity) entityManagerInterface.getEntityByIdentifier(entity.getId()
 					.toString());
 			Map dataValue = new HashMap();
-
-			Iterator attrIterator = newEntity.getAttributeCollection().iterator();
+			Collection collection = newEntity.getAttributeCollection();
+			collection = EntityManagerUtil.filterSystemAttributes(collection);
+			Iterator attrIterator = collection.iterator();
 			int i = 0;
 			while (attrIterator.hasNext())
 			{
@@ -829,7 +832,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			ResultSet resultSet = executeQuery("select * from "
 					+ savedEntity.getTableProperties().getName());
 			resultSet.next();
-			assertEquals(1, resultSet.getInt(1));
+			assertEquals(1, resultSet.getInt(3));
 			ResultSetMetaData metadata = resultSet.getMetaData();
 			assertEquals(metadata.getColumnCount(), noOfDefaultColumns + 1);
 
@@ -1221,8 +1224,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			Entity newEntity = (Entity) entityManagerInterface.getEntityByIdentifier(entity.getId()
 					.toString());
 			Map dataValue = new HashMap();
-
-			Iterator attrIterator = newEntity.getAttributeCollection().iterator();
+			Collection collection = newEntity.getAttributeCollection();
+			collection = EntityManagerUtil.filterSystemAttributes(collection);
+			Iterator attrIterator = collection.iterator();
 			int i = 0;
 			while (attrIterator.hasNext())
 			{
@@ -2219,7 +2223,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			ResultSet resultSet = executeQuery("select * from "
 					+ savedEntity.getTableProperties().getName());
 			resultSet.next();
-			assertEquals(null, resultSet.getString(3));
+			assertEquals(null, resultSet.getString(2));
 
 		}
 		catch (DynamicExtensionsSystemException e)

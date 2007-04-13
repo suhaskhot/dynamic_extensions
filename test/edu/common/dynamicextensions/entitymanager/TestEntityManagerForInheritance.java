@@ -101,19 +101,23 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 			// Step 3	
 
 			Collection<AttributeInterface> specimenAttributes = specimen.getAllAttributes();
-			assertEquals(2, specimenAttributes.size());
+			//2 user attributes + 1 system attribute for id
+			assertEquals(3, specimenAttributes.size());
 
+			//2 child Attributes + 1 parent Attribute + 2 system generated attributes for id
 			Collection<AttributeInterface> tissueSpecimenAttributes = tissueSpecimen
 					.getAllAttributes();
-			assertEquals(3, tissueSpecimenAttributes.size());
+			assertEquals(5, tissueSpecimenAttributes.size());
 
 			Collection<AttributeInterface> advanceTissueSpecimenAAttributes = advanceTissueSpecimenA
 					.getAllAttributes();
-			assertEquals(4, advanceTissueSpecimenAAttributes.size());
+			//1 child attribute + 2 parent Attribute + 1 grand parent attribute + 3 system generated attributes
+			assertEquals(7, advanceTissueSpecimenAAttributes.size());
 
 			Collection<AttributeInterface> advanceTissueSpecimenBAttributes = advanceTissueSpecimenB
 					.getAllAttributes();
-			assertEquals(5, advanceTissueSpecimenBAttributes.size());
+			//2 child attribute + 2 parent Attribute + 1 grand parent attribute + 3 system generated attributes
+			assertEquals(8, advanceTissueSpecimenBAttributes.size());
 
 		}
 		catch (Exception e)
@@ -296,12 +300,12 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 			ResultSet resultSet = executeQuery("select * from "
 					+ specimen.getTableProperties().getName());
 			resultSet.next();
-			assertEquals(1, resultSet.getInt(1));
+			assertEquals(1, resultSet.getInt(4));
 
 			resultSet = executeQuery("select * from "
 					+ tissueSpecimen.getTableProperties().getName());
 			resultSet.next();
-			assertEquals(1, resultSet.getInt(1));
+			assertEquals(1, resultSet.getInt(4));
 
 			EntityInterface advanceTissueSpecimenA = factory.createEntity();
 			advanceTissueSpecimenA.setParentEntity(tissueSpecimen);
@@ -427,12 +431,12 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 			ResultSet resultSet = executeQuery("select * from "
 					+ specimen.getTableProperties().getName());
 			resultSet.next();
-			assertEquals(1, resultSet.getInt(1));
+			assertEquals(1, resultSet.getInt(4));
 
 			resultSet = executeQuery("select * from "
 					+ tissueSpecimen.getTableProperties().getName());
 			resultSet.next();
-			assertEquals(1, resultSet.getInt(1));
+			assertEquals(1, resultSet.getInt(4));
 		}
 		catch (Exception e)
 		{

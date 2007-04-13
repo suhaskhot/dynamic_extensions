@@ -614,7 +614,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			entityManagerInterface.insertData(savedEntity, dataValue);
 
-			ResultSet resultSet = executeQuery("select * from "
+			ResultSet resultSet = executeQuery("select IDENTIFIER from "
 					+ savedEntity.getTableProperties().getName());
 			resultSet.next();
 			assertEquals(1, resultSet.getInt(1));
@@ -969,7 +969,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			entityManagerInterface.insertData(savedEntity, dataValue);
 
-			ResultSet resultSet = executeQuery("select * from "
+			ResultSet resultSet = executeQuery("select IDENTIFIER from "
 					+ savedEntity.getTableProperties().getName());
 			resultSet.next();
 			assertEquals(1, resultSet.getInt(1));
@@ -987,7 +987,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		catch (DynamicExtensionsApplicationException e)
 		{
 
-			ResultSet resultSet = executeQuery("select * from "
+			ResultSet resultSet = executeQuery("select IDENTIFIER from "
 					+ savedEntity.getTableProperties().getName());
 			try
 			{
@@ -996,8 +996,9 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			}
 			catch (SQLException e1)
 			{
-				fail();
 				e1.printStackTrace();
+				fail();
+				
 			}
 
 			Logger.out
@@ -1061,15 +1062,16 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			dataValue.put(association, targetIdList);
 
 			entityManagerInterface.insertData(savedEntity, dataValue);
-			ResultSet resultSet = executeQuery("select * from "
+			ResultSet resultSet = executeQuery("select IDENTIFIER from "
 					+ savedEntity.getTableProperties().getName());
 			resultSet.next();
 			assertEquals(1, resultSet.getInt(1));
 		}
 		catch (Exception e)
 		{
-			fail();
 			Logger.out.debug(e.getStackTrace());
+			fail();
+			
 		}
 
 	}
@@ -1125,8 +1127,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			ResultSet resultSet = executeQuery("select * from "
 					+ user.getTableProperties().getName());
 			resultSet.next();
-			assertEquals(1, resultSet.getInt(1));
-			assertEquals("User1", resultSet.getString(3));
+			assertEquals(1, resultSet.getInt(3));
+			assertEquals("User1", resultSet.getString(2));
 			ResultSetMetaData metadata = resultSet.getMetaData();
 			assertEquals(metadata.getColumnCount(), noOfDefaultColumns + 1);
 
@@ -1205,10 +1207,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			ResultSet resultSet = executeQuery("select * from "
 					+ user.getTableProperties().getName());
 			resultSet.next();
-			assertEquals(1, resultSet.getInt(1));
+			assertEquals(1, resultSet.getInt(3));
 			//Checking whether the the value of the second column (i.e. the column for the user name.. first column is identifier).
 			//is having the expected value or not.
-			assertEquals("User1", resultSet.getString(3));
+			assertEquals("User1", resultSet.getString(2));
 			ResultSetMetaData metadata = resultSet.getMetaData();
 			assertEquals(metadata.getColumnCount(), noOfDefaultColumns + 1);
 
@@ -1285,15 +1287,22 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			Long recordId = EntityManager.getInstance().insertData(user, dataValue);
 
 			//Checking whether there is an entry added in the data table for user.
-			ResultSet resultSet = executeQuery("select * from "
+			ResultSet resultSet = executeQuery("select IDENTIFIER from "
 					+ user.getTableProperties().getName());
 			resultSet.next();
 			assertEquals(1, resultSet.getInt(1));
 			//Checking whether the the value of the second column (i.e. the column for the user name.. first column is identifier).
 			//is having the expected value or not.
-			assertEquals("User1", resultSet.getString(3));
+//			Checking whether there is an entry added in the data table for user.
+			ResultSet resultSet1 = executeQuery("select "+userName.getColumnProperties().getName()+" from "
+					+ user.getTableProperties().getName());
+			resultSet1.next();
+			assertEquals("User1", resultSet1.getString(1));
+			ResultSet resultSet2 = executeQuery("select * from "
+					+ user.getTableProperties().getName());
+			 resultSet2.next();
 			//Checking if the extra column for many to one assiciation is added or not
-			ResultSetMetaData metadata = resultSet.getMetaData();
+			ResultSetMetaData metadata = resultSet2.getMetaData();
 			assertEquals(metadata.getColumnCount(), noOfDefaultColumns + 2);
 
 			//Deleting the record
@@ -1825,8 +1834,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from "
 					+ study.getTableProperties().getName());
 			assertEquals(noOfDefaultColumns + 1, metaData.getColumnCount());
-
-			assertEquals(1, study.getAbstractAttributeCollection().size());
+			//1 user attribute + 1 system generated attribute
+			assertEquals(2, study.getAbstractAttributeCollection().size());
 
 			Association systemGeneratedAssociation = (Association) study
 					.getAbstractAttributeCollection().toArray()[0];
@@ -2790,8 +2799,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			resultSet = executeQuery("select * from " + address.getTableProperties().getName());
 			resultSet.next();
-			assertEquals("Swami Vivekand Road", resultSet.getString(3));
-			assertEquals("Pune 37", resultSet.getString(4));
+			assertEquals("Swami Vivekand Road", resultSet.getString(2));
+			assertEquals("Pune 37", resultSet.getString(3));
 
 			resultSet = executeQuery("select count(*) from " + user.getTableProperties().getName());
 			resultSet.next();

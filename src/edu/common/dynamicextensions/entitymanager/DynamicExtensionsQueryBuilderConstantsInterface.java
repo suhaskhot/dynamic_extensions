@@ -9,7 +9,7 @@ package edu.common.dynamicextensions.entitymanager;
 
 
 
-public interface DynamicExtensionsQueryBuilderConstantsInterface
+public interface DynamicExtensionsQueryBuilderConstantsInterface extends EntityManagerConstantsInterface
 {
 	String TABLE_NAME_PREFIX = "DE_E";
 	String UNDERSCORE = "_";

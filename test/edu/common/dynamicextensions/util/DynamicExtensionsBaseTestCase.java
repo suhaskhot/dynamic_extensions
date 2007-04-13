@@ -16,9 +16,9 @@ import java.sql.SQLException;
 import junit.framework.TestCase;
 import net.sf.hibernate.HibernateException;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
-import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManagerExceptionConstantsInterface;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Variables;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
@@ -27,7 +27,7 @@ import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
 
-public class DynamicExtensionsBaseTestCase extends TestCase
+public class DynamicExtensionsBaseTestCase extends TestCase implements EntityManagerExceptionConstantsInterface
 {
 
 	protected int noOfDefaultColumns = 2;

@@ -19,6 +19,7 @@ public interface EntityManagerConstantsInterface
 	static final int DATA_TABLE_STATE_NOT_CREATED = 2;
 	static final int DATA_TABLE_STATE_ALREADY_PRESENT = 3;
 	
+	String ID_ATTRIBUTE_NAME = "id";	
 	String STRING_ATTRIBUTE_TYPE = "string";
 	String FLOAT_ATTRIBUTE_TYPE = "float";
 	String SHORT_ATTRIBUTE_TYPE = "short";

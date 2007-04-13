@@ -5,7 +5,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -13,6 +15,7 @@ import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
@@ -317,5 +320,21 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 			throws DynamicExtensionsSystemException
 	{
 		return DynamicExtensionBaseQueryBuilder.isValuePresent(attribute, value);
+	}
+	
+	public static Collection filterSystemAttributes(Collection<AbstractAttributeInterface> abstractAttributeCollection)
+	{
+		Collection<AbstractAttributeInterface> collection = new HashSet(abstractAttributeCollection);
+		for (AbstractAttributeInterface abstractAttribute : abstractAttributeCollection)
+		{
+			if (abstractAttribute instanceof AttributeInterface)
+			{
+				if (abstractAttribute.getName().equalsIgnoreCase(ID_ATTRIBUTE_NAME))
+				{
+					collection.remove(abstractAttribute);
+				}
+			}
+		}
+		return collection;
 	}
 }

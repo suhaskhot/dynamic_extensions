@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -605,9 +606,9 @@ class DynamicExtensionBaseQueryBuilder
 				+ getDataTypeForStatus();
 
 		StringBuffer query = new StringBuffer(CREATE_TABLE + " " + tableName + " "
-				+ OPENING_BRACKET + " " + IDENTIFIER + " " + dataType + COMMA
-				+ activityStatusString + COMMA);
+				+ OPENING_BRACKET + " " + activityStatusString + COMMA);
 		Collection attributeCollection = entity.getAttributeCollection();
+		//attributeCollection = entityManagerUtil.filterSystemAttributes(attributeCollection);
 		if (attributeCollection != null && !attributeCollection.isEmpty())
 		{
 			Iterator attributeIterator = attributeCollection.iterator();
@@ -1129,6 +1130,7 @@ class DynamicExtensionBaseQueryBuilder
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Collection savedAttributeCollection = databaseCopy.getAttributeCollection();
+		//savedAttributeCollection = entityManagerUtil.filterSystemAttributes(savedAttributeCollection);
 		String tableName = entity.getTableProperties().getName();
 
 		if (savedAttributeCollection != null && !savedAttributeCollection.isEmpty())
@@ -1139,7 +1141,7 @@ class DynamicExtensionBaseQueryBuilder
 
 				Attribute savedAttribute = (Attribute) savedAttributeIterator.next();
 				Attribute attribute = (Attribute) entity.getAttributeByIdentifier(savedAttribute
-						.getId());;
+						.getId());			
 
 				if (attribute == null
 						&& isDataPresent(tableName, savedAttribute.getColumnProperties().getName()))
@@ -1248,7 +1250,7 @@ class DynamicExtensionBaseQueryBuilder
 			{
 				Association savedAssociation = (Association) savedAssociationIterator.next();
 				Association association = (Association) entity
-						.getAssociationByIdentifier(savedAssociation.getId());;
+						.getAssociationByIdentifier(savedAssociation.getId());
 
 				// removed ??
 				if (association == null)
@@ -1596,6 +1598,58 @@ class DynamicExtensionBaseQueryBuilder
 
 	}
 
+	public Object [] executeDMLQuery(String query)
+			throws DynamicExtensionsSystemException
+	{
+		Session session = null;
+		
+		try
+		{
+			session = DBUtil.currentSession();
+		}
+		catch (HibernateException e1)
+		{
+			throw new DynamicExtensionsSystemException(
+					"Unable to exectute the queries .....Cannot access connection from sesesion", e1,
+					DYEXTN_S_002);
+		}
+		
+		try
+		{
+			Connection conn = session.connection();
+			
+				
+					System.out.println("Query: " + query);
+					Statement statement = null;
+					try
+					{
+						statement = conn.createStatement();
+						ResultSet rs = statement.executeQuery(query);
+						System.out.println(rs.getMetaData());
+						//Object[]obj = new Object[rs.getMetaData().getColumnCount()];
+						List list = new ArrayList();
+						int i=1;
+						while(rs.next())
+						{
+							list.add(rs.getObject(i));
+							
+						}
+						System.out.println(list);
+						return list.toArray();
+					}
+					catch (SQLException e)
+					{
+						throw new DynamicExtensionsSystemException(
+								"Exception occured while forming the data tables for entity", e,
+								DYEXTN_S_002);
+					}
+		}
+		catch (HibernateException e)
+		{
+			throw new DynamicExtensionsSystemException(
+					"Cannot obtain connection to execute the data query", e, DYEXTN_S_001);
+		}
+	}
 	/**
 	 * This method excute the query that selects record ids of the target entity that are associated
 	 * to the source entity for a given association.
@@ -1716,6 +1770,21 @@ class DynamicExtensionBaseQueryBuilder
 
 	}
 
+	public boolean isParentChanged(Entity entity, Long databaseParentId)
+	{
+		boolean isParentChanged = false;
+		if (entity.getParentEntity() != null
+				&& !entity.getParentEntity().getId().equals(databaseParentId))
+		{
+			isParentChanged = true;
+		}
+		else if (entity.getParentEntity() == null && databaseParentId != null)
+		{
+			isParentChanged = true;
+		}
+		return isParentChanged;
+
+	}
 	/**
 	 * @return
 	 */

@@ -49,6 +49,7 @@ import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
@@ -1723,7 +1724,7 @@ public class EntityManager
 		List<Long> recordIdList = insertData(entity, dataValueMapList);
 		return recordIdList.get(0);
 	}
-
+	
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#insertData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map)
 	 */
@@ -2230,6 +2231,7 @@ public class EntityManager
 			Session session = DBUtil.currentSession();
 			if (!isEntitySaved)
 			{
+				addIdAttribute(entity);
 				preSaveProcessEntity(entity);
 			}
 			else
@@ -2278,6 +2280,18 @@ public class EntityManager
 		return entity;
 	}
 
+	private void addIdAttribute(EntityInterface entity)
+	{
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+		AttributeInterface idAttribute = domainObjectFactory.createLongAttribute();
+		idAttribute.setName(ID_ATTRIBUTE_NAME);
+		ColumnPropertiesInterface column = domainObjectFactory.createColumnProperties();
+		column.setName(IDENTIFIER);
+		idAttribute.setColumnProperties(column);
+		entity.addAttribute(idAttribute);
+		idAttribute.setEntity(entity);
+	}
+
 	/**
 	 * This method is used by create as well as edit entity methods. This method holds all the common part 
 	 * related to saving the entity into the database and also handling the exceptions .
@@ -2310,11 +2324,11 @@ public class EntityManager
 			processedEntityList.add(entity);
 		}
 		checkForDuplicateEntityName(entity);
-		Entity databaseCopy = null;
+		//Entity databaseCopy = null;
 		try
 		{
 			Session session = DBUtil.currentSession();
-
+			Long start = null,end = null;
 			if (!isEntitySaved)
 			{
 				preSaveProcessEntity(entity);
@@ -2333,9 +2347,10 @@ public class EntityManager
 			}
 			else
 			{
-				databaseCopy = (Entity) DBUtil.loadCleanObj(Entity.class, entity.getId());
+			    //databaseCopy = (Entity) DBUtil.loadCleanObj(Entity.class, entity.getId());
+				Long databaseParentId = getOriginalParentId(entity.getId());
 				if (entity.getDataTableState() == DATA_TABLE_STATE_CREATED
-						&& queryBuilder.isParentChanged(entity, databaseCopy))
+						&& queryBuilder.isParentChanged(entity, databaseParentId))
 				{
 					checkParentChangeAllowed(entity);
 				}
@@ -2346,14 +2361,11 @@ public class EntityManager
 				}
 				//	hibernateDAO.update(entity, null, false, false, false);
 			}
-
+			
 			entity = (Entity) session.saveOrUpdateCopy(entity);
-
 			postSaveProcessEntity(entity, hibernateDAO, rollbackQueryStack, processedEntityList);
-
 			entity = (Entity) session.saveOrUpdateCopy(entity);
-
-			hibernateDAO.update(entity, null, false, false, false);
+			//hibernateDAO.update(entity, null, false, false, false);
 		}
 		catch (UserNotAuthorizedException e)
 		{
@@ -2377,6 +2389,20 @@ public class EntityManager
 		return entity;//(Entity) getEntityByIdentifier(entity.getId().toString());
 	}
 
+	private Long getOriginalParentId(Long id) throws DynamicExtensionsSystemException
+	{
+		StringBuffer query = new StringBuffer();
+		Long parentId = null;
+		query.append(SELECT_KEYWORD).append(WHITESPACE).append("parent_entity_id").append( WHITESPACE).append(FROM_KEYWORD)
+		.append(WHITESPACE).append("DYEXTN_ENTITY").append(WHITESPACE).append(WHERE_KEYWORD).append(IDENTIFIER).append(EQUAL)
+		.append(id.toString());
+		Object [] obj = queryBuilder.executeDMLQuery(query.toString());
+		if (obj != null)
+		{
+			parentId = (Long) obj[0];
+		}
+		return parentId;
+	}
 	/**
 	 * @param entity
 	 * @throws DynamicExtensionsSystemException
@@ -2415,6 +2441,7 @@ public class EntityManager
 		Map<AbstractAttributeInterface, Object> recordValues = new HashMap<AbstractAttributeInterface, Object>();
 
 		Collection attributesCollection = entity.getAttributeCollection();
+		attributesCollection = entityManagerUtil.filterSystemAttributes(attributesCollection);
 		List<AttributeInterface> collectionAttributes = new ArrayList<AttributeInterface>();
 		List<AttributeInterface> fileAttributes = new ArrayList<AttributeInterface>();
 
@@ -2860,6 +2887,7 @@ public class EntityManager
 		queryBuilder.validateForDeleteRecord(entity, recordId, null);
 
 		Collection attributeCollection = entity.getAttributeCollection();
+		//attributeCollection = entityManagerUtil.filterSystemAttributes(attributeCollection);
 		Collection associationCollection = entity.getAssociationCollection();
 		HibernateDAO hibernateDAO = null;
 		DAOFactory factory = DAOFactory.getInstance();

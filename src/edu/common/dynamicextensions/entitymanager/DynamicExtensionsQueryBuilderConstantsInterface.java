@@ -16,7 +16,7 @@ public interface DynamicExtensionsQueryBuilderConstantsInterface extends EntityM
 	String COLUMN_NAME_PREFIX = "DE_AT";
 	String ASSOCIATION_NAME_PREFIX = "DE_AS";
 	String ASSOCIATION_COLUMN_PREFIX = "DE_E";
-
+	String INSERT_INTO_KEYWORD = " INSERT INTO ";
 	String CREATE_TABLE = "CREATE TABLE ";
 	String ALTER_KEYWORD = " ALTER ";
 	String ALTER_TABLE = ALTER_KEYWORD + " TABLE ";

@@ -470,4 +470,22 @@ public interface EntityManagerInterface
 	 */
 	List<NameValueBean> getAllContainerBeans() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 	
+	/**
+	 * @param association
+	 * @throws DynamicExtensionsSystemException
+	 */
+	void addAssociationColumn(AssociationInterface association) throws DynamicExtensionsSystemException;
+	
+	/**
+	 * @param associationInterface
+	 * @param sourceEntityRecordId
+	 * @param TargetEntityRecordId
+	 * @throws DynamicExtensionsSystemException
+	 */
+	void associateEntityRecords(AssociationInterface associationInterface,Long sourceEntityRecordId,Long TargetEntityRecordId) throws DynamicExtensionsSystemException;
+	/**
+	 * @param containerId
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	Long getEntityIdByContainerId(Long containerId) throws DynamicExtensionsSystemException;
 }

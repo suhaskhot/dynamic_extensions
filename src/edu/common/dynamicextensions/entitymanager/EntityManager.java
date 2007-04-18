@@ -3466,4 +3466,57 @@ public class EntityManager
 		}
 
 	}
+	/** (non-Javadoc)
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#addAssociationColumn(edu.common.dynamicextensions.domaininterface.AssociationInterface)
+	 */
+	public void addAssociationColumn(AssociationInterface association) throws DynamicExtensionsSystemException 
+	{
+		List list = new ArrayList();
+		String query;
+		Stack stack = new Stack();
+		try
+		{
+			query = queryBuilder.getQueryPartForAssociation(association,list,true);
+			
+			List queryList = new ArrayList();
+			queryList.add(query);
+			stack = queryBuilder.executeQueries(queryList,list,stack);
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			if (!stack.isEmpty())
+			{
+				rollbackQueries(stack,(Entity)association.getEntity(),e,DAOFactory.getInstance().getDAO(
+						Constants.HIBERNATE_DAO));
+			}
+		}
+	}
+	
+	/**
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#associateEntityRecords(edu.common.dynamicextensions.domaininterface.AssociationInterface, java.lang.Long, java.lang.Long)
+	 */
+	public void associateEntityRecords(AssociationInterface associationInterface,Long sourceEntityRecordId,Long TargetEntityRecordId) throws DynamicExtensionsSystemException
+	{
+		queryBuilder.associateRecords(associationInterface,sourceEntityRecordId,TargetEntityRecordId);
+	}
+		
+	/**
+	 * @param containerId
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	public Long getEntityIdByContainerId(Long containerId) throws DynamicExtensionsSystemException
+	{
+		Map substitutionParameterMap = new HashMap();
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", containerId));
+		Collection recordCollection = null;
+		//Required HQL is stored in the hbm file. The following method takes the name of the query and 
+		// the actual values for the placeholders as the parameters.
+		recordCollection = executeHQL("getEntityIdForContainerId", substitutionParameterMap);
+		if (recordCollection != null && !recordCollection.isEmpty())
+		{
+			return (Long) recordCollection.iterator().next();
+		}
+		return null;
+	}
+	
 }

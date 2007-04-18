@@ -913,7 +913,7 @@ class DynamicExtensionBaseQueryBuilder
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	protected String getQueryPartForAssociation(AssociationInterface association,
+	public String getQueryPartForAssociation(AssociationInterface association,
 			List reverseQueryList, boolean isAddAssociationQuery)
 			throws DynamicExtensionsSystemException
 	{
@@ -1837,5 +1837,81 @@ class DynamicExtensionBaseQueryBuilder
 		return " " + prefix + Constants.ACTIVITY_STATUS_COLUMN + " <> '"
 				+ Constants.ACTIVITY_STATUS_DISABLED + "' ";
 	}
+	
+	/**
+	 * @param association
+	 * @param sourceEntityRecordId
+	 * @param targetEntityRecordId
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public static void associateRecords (AssociationInterface association , Long sourceEntityRecordId, Long targetEntityRecordId) throws DynamicExtensionsSystemException
+	{
+		EntityInterface sourceEntity = association.getEntity();
+		EntityInterface targetEntity = association.getTargetEntity();
+		RoleInterface sourceRole = association.getSourceRole();
+		RoleInterface targetRole = association.getTargetRole();
+		Cardinality sourceMaxCardinality = sourceRole.getMaximumCardinality();
+		Cardinality targetMaxCardinality = targetRole.getMaximumCardinality();
+		ConstraintPropertiesInterface constraint = association.getConstraintProperties();
+		String tableName = constraint.getName();
+		StringBuffer query = new StringBuffer();
+		query.append(UPDATE_KEYWORD).append(tableName).append(SET_KEYWORD);
+		StringBuffer partialQuery = new StringBuffer();
+		if (sourceMaxCardinality == Cardinality.MANY && targetMaxCardinality == Cardinality.MANY)
+		{
+			query = new StringBuffer();
+			query.append(INSERT_INTO_KEYWORD)
+				 .append(tableName)
+				 .append(OPENING_BRACKET)
+				 .append(constraint.getSourceEntityKey())
+				 .append(COMMA)
+				 .append(constraint.getTargetEntityKey())
+				 .append(CLOSING_BRACKET)
+				 .append("values")
+				 .append(OPENING_BRACKET)
+				 .append(sourceEntityRecordId)
+				 .append(COMMA)
+				 .append(targetEntityRecordId)
+				 .append(CLOSING_BRACKET);
+		}
+		else if (sourceMaxCardinality == Cardinality.MANY
+				&& targetMaxCardinality == Cardinality.ONE)
+		{
+			query.append(constraint.getSourceEntityKey())
+						.append(EQUAL).append(targetEntityRecordId)
+						.append(WHERE_KEYWORD)
+						.append(IDENTIFIER)
+						.append(EQUAL)
+						.append(sourceEntityRecordId);
+		}
+		else
+		{
+			query.append(constraint.getTargetEntityKey())
+			.append(EQUAL).append(sourceEntityRecordId)
+			.append(WHERE_KEYWORD)
+			.append(IDENTIFIER)
+			.append(EQUAL)
+			.append(targetEntityRecordId);
+		}
+		
+		try
+		{
+			Connection conn = DBUtil.getConnection();
+			Statement stmt = conn.createStatement();
+			stmt.execute(query.toString());
+		}
+		catch (HibernateException e)
+		{
+			throw new DynamicExtensionsSystemException("Can not obtain connection",e);
+		}
+		catch (SQLException e)
+		{
+			throw new DynamicExtensionsSystemException("Can not execute query",e);
+		}
+		
+		
+	}
+	
+	
 
 }

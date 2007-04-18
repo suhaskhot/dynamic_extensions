@@ -64,6 +64,12 @@
 			select container.id,container.caption
 			   from edu.common.dynamicextensions.domain.userinterface.Container container
 	</query>
+	
+	<query name="getEntityIdForContainerId">
+			select container.entity.id
+			   from edu.common.dynamicextensions.domain.userinterface.Container container 
+			   where container.id = ?
+	</query>
 		
 	<query name="getAllGroupBeans">
 		select entityGroup.name,entityGroup.id

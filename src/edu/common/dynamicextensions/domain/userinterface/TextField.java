@@ -139,7 +139,10 @@ public class TextField extends Control implements TextFieldInterface
 						StringAttributeTypeInformation stringAttributeTypeInformation = (StringAttributeTypeInformation) attributeTypeInformationInterface;
 						if (stringAttributeTypeInformation != null)
 						{
+							if(stringAttributeTypeInformation.getSize() != null)
+							{
 							maxChars = stringAttributeTypeInformation.getSize().intValue();
+							}
 						}
 					}
 				}

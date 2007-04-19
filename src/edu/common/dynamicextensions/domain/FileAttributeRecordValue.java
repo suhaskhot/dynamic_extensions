@@ -114,4 +114,12 @@ public class FileAttributeRecordValue extends DynamicExtensionBaseDomainObject i
 		this.fileName =   fileRecordValue.getFileName();
 		this.fileContent = fileRecordValue.getFileContent();
 	}
+	
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString()
+	{
+		return this.fileName;
+	}
 }

@@ -1,0 +1,44 @@
+package edu.common.dynamicextensions.entitymanager;
+
+import java.util.List;
+
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+
+/**
+ * This class represents a meatadata of the entity records.
+ * The class contains the list of all the attributes and associations for which records are obtained.
+ * 
+ * @author Rahul Ner
+ * @author Vishvesh Mulay
+ */
+public class EntityRecordMetadata  
+{
+
+	/**
+	 * List of attributes and associations
+	 */
+	private List<AbstractAttributeInterface> attributeList;
+
+	
+	/**
+	 * @return List<AbstractAttributeInterface> List of attributes  and associations
+	 */
+	public List<AbstractAttributeInterface> getAttributeList()
+	{
+		return attributeList;
+	}
+
+	
+	/**
+	 * @param attributeList list to set.
+	 */
+	public void setAttributeList(List<AbstractAttributeInterface> attributeList)
+	{
+		this.attributeList = attributeList;
+	} 
+	
+	
+
+	
+
+}

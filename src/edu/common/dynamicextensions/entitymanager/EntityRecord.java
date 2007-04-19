@@ -1,61 +1,47 @@
 package edu.common.dynamicextensions.entitymanager;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class represents a single record for an entity
  * 
  * @author Rahul Ner
- *
+ * @author vishvesh Mulay
  */
-public class EntityRecord
+public class EntityRecord implements EntityRecordInterface 
 {
-
-	/**
-	 * map containing values of the attribute and association
-	 */
-	protected Map<AbstractAttributeInterface, Object> valueMap = new HashMap<AbstractAttributeInterface, Object>();
 
 	/**
 	 * 
 	 */
 	Long recordId;
 	
-
+	/**
+	 * 
+	 */
+	List recordValueList = new ArrayList();
+	
+	/**
+	 *
+	 */
+	public EntityRecord()
+	{
+		
+		super();
+		
+	}
+	/**
+	 * @param id id
+	 */
 	public EntityRecord(Long id)
 	{
 		recordId = id;
 	}
 
-	/**
-	 * returns the value for the given attribute
-	 */
-	public Object getValue(AbstractAttributeInterface attribute)
-	{
-		return valueMap.get(attribute);
-	}
 
 	/**
-	 * sets the value for the given attribbute
-	 */
-	public void setValue(AbstractAttributeInterface attribute, Object value)
-	{
-		valueMap.put(attribute, value);
-	}
-
-	/**
-	 * @return Map
-	 */
-	public Map<AbstractAttributeInterface, Object> getValueMap()
-	{
-		return valueMap;
-	}
-
-	/**
-	 * @return the recordId
+	 * @see edu.common.dynamicextensions.entitymanager.EntityRecordInterface#getRecordId()
 	 */
 	public Long getRecordId()
 	{
@@ -63,11 +49,50 @@ public class EntityRecord
 	}
 	
 	/**
-	 * @param recordId the recordId to set
+	 * @see edu.common.dynamicextensions.entitymanager.EntityRecordInterface#setRecordId(java.lang.Long)
 	 */
 	public void setRecordId(Long recordId)
 	{
 		this.recordId = recordId;
 	}
+
+
+	
+	/**
+	 * @see edu.common.dynamicextensions.entitymanager.EntityRecordInterface#getRecordValueList()
+	 */
+	public List getRecordValueList()
+	{
+		return recordValueList;
+	}
+
+
+	
+	/**
+	 * @see edu.common.dynamicextensions.entitymanager.EntityRecordInterface#setRecordValueList(java.util.List)
+	 */
+	public void setRecordValueList(List recordValueList)
+	{
+		this.recordValueList = recordValueList;
+	}
+	
+	
+	/**
+	 * @see edu.common.dynamicextensions.entitymanager.EntityRecordInterface#addRecordValue(java.lang.Object)
+	 */
+	public void addRecordValue(int index,Object value)
+	{
+		this.recordValueList.add(index,value);
+		
+	}
+	
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString()
+	{
+		return recordValueList.toString();
+	}
+	
 	
 }

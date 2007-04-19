@@ -5,9 +5,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -321,20 +321,27 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	{
 		return DynamicExtensionBaseQueryBuilder.isValuePresent(attribute, value);
 	}
-	
-	public static Collection filterSystemAttributes(Collection<AbstractAttributeInterface> abstractAttributeCollection)
+
+	public static List<AbstractAttributeInterface> filterSystemAttributes(
+			List<AbstractAttributeInterface> attributeCollection)
 	{
-		Collection<AbstractAttributeInterface> collection = new HashSet(abstractAttributeCollection);
-		for (AbstractAttributeInterface abstractAttribute : abstractAttributeCollection)
+		AbstractAttributeInterface idAttribute = null;
+		for (AbstractAttributeInterface attribute : attributeCollection)
 		{
-			if (abstractAttribute instanceof AttributeInterface)
+
+			if (attribute.getName().equalsIgnoreCase(ID_ATTRIBUTE_NAME))
 			{
-				if (abstractAttribute.getName().equalsIgnoreCase(ID_ATTRIBUTE_NAME))
-				{
-					collection.remove(abstractAttribute);
-				}
+				idAttribute = attribute;
+				break;
 			}
+
 		}
-		return collection;
+		attributeCollection.remove(idAttribute);
+		return attributeCollection;
+	}
+
+	public static Collection<AbstractAttributeInterface> filterSystemAttributes(Collection<AbstractAttributeInterface> attributesCollection)
+	{
+		return filterSystemAttributes(new ArrayList(attributesCollection));
 	}
 }

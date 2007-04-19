@@ -488,4 +488,14 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException 
 	 */
 	Long getEntityIdByContainerId(Long containerId) throws DynamicExtensionsSystemException;
+	
+	/**
+	 * @param abstractAttributeCollection
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	EntityRecordResultInterface getEntityRecords(
+			List<AbstractAttributeInterface> abstractAttributeCollection,List<Long> recordIdList)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 }

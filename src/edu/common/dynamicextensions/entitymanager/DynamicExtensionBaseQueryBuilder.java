@@ -29,6 +29,7 @@ import edu.common.dynamicextensions.domain.IntegerAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.LongAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.ShortAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
@@ -279,6 +280,121 @@ class DynamicExtensionBaseQueryBuilder
 			}
 		}
 		return associationValuesMap;
+	}
+
+	/**
+	 * This method returns association value for the entity's given record.
+	 * e.g if user1 is associated with study1 and study2. The method returns the 
+	 * list of record ids of study1 and study2 as the return value for the association bet'n user and study
+	 * @param entityRecord 
+	 * 
+	 * @param entity entity
+	 * @param recordId recordId
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException 
+	 */
+	public void putAssociationValues(List<AssociationInterface> associationCollection,
+			EntityRecordResultInterface entityRecordResult, EntityRecordInterface entityRecord,
+			Long recordId) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+		Iterator associationIterator = associationCollection.iterator();
+		StringBuffer manyToOneAssociationsGetReocrdQuery = new StringBuffer();
+		manyToOneAssociationsGetReocrdQuery.append(SELECT_KEYWORD + WHITESPACE);
+		List<Association> manyToOneAssociationList = new ArrayList<Association>();
+		String comma = "";
+
+		while (associationIterator.hasNext())
+		{
+			Association association = (Association) associationIterator.next();
+
+			int index = entityRecordResult.getEntityRecordMetadata().getAttributeList().indexOf(
+					association);
+
+			String tableName = association.getConstraintProperties().getName();
+			String sourceKey = association.getConstraintProperties().getSourceEntityKey();
+			String targetKey = association.getConstraintProperties().getTargetEntityKey();
+			StringBuffer query = new StringBuffer();
+
+			if (sourceKey != null && targetKey != null && sourceKey.trim().length() != 0
+					&& targetKey.trim().length() != 0)
+			{ /* for Many to many get values from the middle table*/
+				query.append(SELECT_KEYWORD + WHITESPACE + targetKey);
+				query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName + WHITESPACE);
+				query
+						.append(WHITESPACE + WHERE_KEYWORD + WHITESPACE + sourceKey + EQUAL
+								+ recordId);
+				List<Long> manyToManyRecordIdList = getAssociationRecordValues(query.toString());
+				entityRecord.getRecordValueList().set(index, manyToManyRecordIdList);
+			}
+			else if (sourceKey != null && sourceKey.trim().length() != 0)
+			{
+				/* for all Many to one associations of a single entity create a single query to get values for the target 
+				 * records. 
+				 *  */
+				if (manyToOneAssociationList.size() != 0)
+				{
+					manyToOneAssociationsGetReocrdQuery.append(COMMA);
+				}
+				manyToOneAssociationsGetReocrdQuery.append(WHITESPACE + sourceKey + WHITESPACE);
+				manyToOneAssociationList.add(association);
+			}
+			else
+			{
+				/* for one to many or one to one association, get taget reocrd values from the target entity table.*/
+				query.append(SELECT_KEYWORD + WHITESPACE + IDENTIFIER);
+				query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName + WHITESPACE);
+				query
+						.append(WHITESPACE + WHERE_KEYWORD + WHITESPACE + targetKey + EQUAL
+								+ recordId);
+				query.append(" and " + getRemoveDisbledRecordsQuery(""));
+
+				List<Long> recordIdList = getAssociationRecordValues(query.toString());
+
+				if (association.getSourceRole().getAssociationsType().equals(
+						AssociationType.CONTAINTMENT))
+				{
+					List<AbstractAttributeInterface> targetAttributes = new ArrayList(association
+							.getTargetEntity().getAttributeCollection());
+					EntityRecordResultInterface containmentEntityRecordResult = EntityManager.getInstance().getEntityRecords(targetAttributes, recordIdList);
+					entityRecord.getRecordValueList().set(index, containmentEntityRecordResult);
+				}
+				else
+				{
+					entityRecord.getRecordValueList().set(index, recordIdList);
+				}
+			}
+		}
+
+		if (manyToOneAssociationList.size() != 0)
+		{
+			String srcEntityName = manyToOneAssociationList.get(0).getEntity().getTableProperties().getName();
+			manyToOneAssociationsGetReocrdQuery.append(WHITESPACE + FROM_KEYWORD + WHITESPACE
+					+ srcEntityName + WHITESPACE);
+			manyToOneAssociationsGetReocrdQuery.append(WHITESPACE + WHERE_KEYWORD + WHITESPACE
+					+ IDENTIFIER + EQUAL + recordId);
+			try
+			{
+				ResultSet resultSet = EntityManagerUtil
+						.executeQuery(manyToOneAssociationsGetReocrdQuery.toString());
+				resultSet.next();
+				for (int i = 0; i < manyToOneAssociationList.size(); i++)
+				{
+					Long targetRecordId = resultSet.getLong(i + 1);
+					List<Long> valueList = new ArrayList<Long>();
+					valueList.add(targetRecordId);
+					AssociationInterface association = manyToOneAssociationList.get(i);					
+					int index = entityRecordResult.getEntityRecordMetadata().getAttributeList().indexOf(
+							association);
+					entityRecord.getRecordValueList().set(index,valueList);
+				}
+			}
+			catch (SQLException e)
+			{
+				throw new DynamicExtensionsSystemException("Exception in query execution", e);
+			}
+		}
 	}
 
 	/**
@@ -1141,7 +1257,7 @@ class DynamicExtensionBaseQueryBuilder
 
 				Attribute savedAttribute = (Attribute) savedAttributeIterator.next();
 				Attribute attribute = (Attribute) entity.getAttributeByIdentifier(savedAttribute
-						.getId());			
+						.getId());
 
 				if (attribute == null
 						&& isDataPresent(tableName, savedAttribute.getColumnProperties().getName()))
@@ -1598,11 +1714,10 @@ class DynamicExtensionBaseQueryBuilder
 
 	}
 
-	public Object [] executeDMLQuery(String query)
-			throws DynamicExtensionsSystemException
+	public Object[] executeDMLQuery(String query) throws DynamicExtensionsSystemException
 	{
 		Session session = null;
-		
+
 		try
 		{
 			session = DBUtil.currentSession();
@@ -1610,39 +1725,38 @@ class DynamicExtensionBaseQueryBuilder
 		catch (HibernateException e1)
 		{
 			throw new DynamicExtensionsSystemException(
-					"Unable to exectute the queries .....Cannot access connection from sesesion", e1,
-					DYEXTN_S_002);
+					"Unable to exectute the queries .....Cannot access connection from sesesion",
+					e1, DYEXTN_S_002);
 		}
-		
+
 		try
 		{
 			Connection conn = session.connection();
-			
-				
-					System.out.println("Query: " + query);
-					Statement statement = null;
-					try
-					{
-						statement = conn.createStatement();
-						ResultSet rs = statement.executeQuery(query);
-						System.out.println(rs.getMetaData());
-						//Object[]obj = new Object[rs.getMetaData().getColumnCount()];
-						List list = new ArrayList();
-						int i=1;
-						while(rs.next())
-						{
-							list.add(rs.getObject(i));
-							
-						}
-						System.out.println(list);
-						return list.toArray();
-					}
-					catch (SQLException e)
-					{
-						throw new DynamicExtensionsSystemException(
-								"Exception occured while forming the data tables for entity", e,
-								DYEXTN_S_002);
-					}
+
+			System.out.println("Query: " + query);
+			Statement statement = null;
+			try
+			{
+				statement = conn.createStatement();
+				ResultSet rs = statement.executeQuery(query);
+				System.out.println(rs.getMetaData());
+				//Object[]obj = new Object[rs.getMetaData().getColumnCount()];
+				List list = new ArrayList();
+				int i = 1;
+				while (rs.next())
+				{
+					list.add(rs.getObject(i));
+
+				}
+				System.out.println(list);
+				return list.toArray();
+			}
+			catch (SQLException e)
+			{
+				throw new DynamicExtensionsSystemException(
+						"Exception occured while forming the data tables for entity", e,
+						DYEXTN_S_002);
+			}
 		}
 		catch (HibernateException e)
 		{
@@ -1650,6 +1764,7 @@ class DynamicExtensionBaseQueryBuilder
 					"Cannot obtain connection to execute the data query", e, DYEXTN_S_001);
 		}
 	}
+
 	/**
 	 * This method excute the query that selects record ids of the target entity that are associated
 	 * to the source entity for a given association.
@@ -1661,9 +1776,10 @@ class DynamicExtensionBaseQueryBuilder
 			throws DynamicExtensionsSystemException
 	{
 		List<Long> associationRecordValues = new ArrayList();
+		ResultSet resultSet = null;
 		try
 		{
-			ResultSet resultSet = entityManagerUtil.executeQuery(query);
+			resultSet = entityManagerUtil.executeQuery(query);
 
 			while (resultSet.next())
 			{
@@ -1677,6 +1793,17 @@ class DynamicExtensionBaseQueryBuilder
 		catch (Exception e)
 		{
 			throw new DynamicExtensionsSystemException("Exception in query execution", e);
+		}
+		finally
+		{
+			try
+			{
+				resultSet.close();
+			}
+			catch (SQLException e)
+			{
+				throw new DynamicExtensionsSystemException("can not close result set", e);
+			}
 		}
 		return associationRecordValues;
 	}
@@ -1785,6 +1912,7 @@ class DynamicExtensionBaseQueryBuilder
 		return isParentChanged;
 
 	}
+
 	/**
 	 * @return
 	 */
@@ -1837,14 +1965,16 @@ class DynamicExtensionBaseQueryBuilder
 		return " " + prefix + Constants.ACTIVITY_STATUS_COLUMN + " <> '"
 				+ Constants.ACTIVITY_STATUS_DISABLED + "' ";
 	}
-	
+
 	/**
 	 * @param association
 	 * @param sourceEntityRecordId
 	 * @param targetEntityRecordId
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public static void associateRecords (AssociationInterface association , Long sourceEntityRecordId, Long targetEntityRecordId) throws DynamicExtensionsSystemException
+	public static void associateRecords(AssociationInterface association,
+			Long sourceEntityRecordId, Long targetEntityRecordId)
+			throws DynamicExtensionsSystemException
 	{
 		EntityInterface sourceEntity = association.getEntity();
 		EntityInterface targetEntity = association.getTargetEntity();
@@ -1860,40 +1990,26 @@ class DynamicExtensionBaseQueryBuilder
 		if (sourceMaxCardinality == Cardinality.MANY && targetMaxCardinality == Cardinality.MANY)
 		{
 			query = new StringBuffer();
-			query.append(INSERT_INTO_KEYWORD)
-				 .append(tableName)
-				 .append(OPENING_BRACKET)
-				 .append(constraint.getSourceEntityKey())
-				 .append(COMMA)
-				 .append(constraint.getTargetEntityKey())
-				 .append(CLOSING_BRACKET)
-				 .append("values")
-				 .append(OPENING_BRACKET)
-				 .append(sourceEntityRecordId)
-				 .append(COMMA)
-				 .append(targetEntityRecordId)
-				 .append(CLOSING_BRACKET);
+			query.append(INSERT_INTO_KEYWORD).append(tableName).append(OPENING_BRACKET).append(
+					constraint.getSourceEntityKey()).append(COMMA).append(
+					constraint.getTargetEntityKey()).append(CLOSING_BRACKET).append("values")
+					.append(OPENING_BRACKET).append(sourceEntityRecordId).append(COMMA).append(
+							targetEntityRecordId).append(CLOSING_BRACKET);
 		}
 		else if (sourceMaxCardinality == Cardinality.MANY
 				&& targetMaxCardinality == Cardinality.ONE)
 		{
-			query.append(constraint.getSourceEntityKey())
-						.append(EQUAL).append(targetEntityRecordId)
-						.append(WHERE_KEYWORD)
-						.append(IDENTIFIER)
-						.append(EQUAL)
-						.append(sourceEntityRecordId);
+			query.append(constraint.getSourceEntityKey()).append(EQUAL)
+					.append(targetEntityRecordId).append(WHERE_KEYWORD).append(IDENTIFIER).append(
+							EQUAL).append(sourceEntityRecordId);
 		}
 		else
 		{
-			query.append(constraint.getTargetEntityKey())
-			.append(EQUAL).append(sourceEntityRecordId)
-			.append(WHERE_KEYWORD)
-			.append(IDENTIFIER)
-			.append(EQUAL)
-			.append(targetEntityRecordId);
+			query.append(constraint.getTargetEntityKey()).append(EQUAL)
+					.append(sourceEntityRecordId).append(WHERE_KEYWORD).append(IDENTIFIER).append(
+							EQUAL).append(targetEntityRecordId);
 		}
-		
+
 		try
 		{
 			Connection conn = DBUtil.getConnection();
@@ -1902,16 +2018,13 @@ class DynamicExtensionBaseQueryBuilder
 		}
 		catch (HibernateException e)
 		{
-			throw new DynamicExtensionsSystemException("Can not obtain connection",e);
+			throw new DynamicExtensionsSystemException("Can not obtain connection", e);
 		}
 		catch (SQLException e)
 		{
-			throw new DynamicExtensionsSystemException("Can not execute query",e);
+			throw new DynamicExtensionsSystemException("Can not execute query", e);
 		}
-		
-		
+
 	}
-	
-	
 
 }

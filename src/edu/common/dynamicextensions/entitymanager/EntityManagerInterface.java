@@ -251,13 +251,14 @@ public interface EntityManagerInterface
 	 */
 	Long insertData(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
-	
+
 	/**
 	 * This method inserts multiple records for the entity. This is a single transaction, so either all records are inserted or nothing 
 	 * is persisted.
 	 * It returns the record id in the same sequence as that of input maps in dataValueMapList. 
 	 */
-	List<Long> insertData(EntityInterface entity, List<Map<AbstractAttributeInterface, ?>> dataValueMapList)
+	List<Long> insertData(EntityInterface entity,
+			List<Map<AbstractAttributeInterface, ?>> dataValueMapList)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
@@ -278,8 +279,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public FileAttributeRecordValue getFileAttributeRecordValueByRecordId(AttributeInterface attribute,
-			Long recordId) throws DynamicExtensionsSystemException,
+	public FileAttributeRecordValue getFileAttributeRecordValueByRecordId(
+			AttributeInterface attribute, Long recordId) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException;
 
 	/**
@@ -427,22 +428,23 @@ public interface EntityManagerInterface
 	 */
 	Collection<AssociationInterface> getIncomingAssociations(EntityInterface entity)
 			throws DynamicExtensionsSystemException;
-	
+
 	/**
 	 * @param entityGroupIdentifier
 	 * @return
 	 */
-	Collection<NameValueBean> getMainContainer(Long entityGroupIdentifier)  throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
-	
+	Collection<NameValueBean> getMainContainer(Long entityGroupIdentifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+
 	Collection<NameValueBean> getAllEntityGroupBeans() throws DynamicExtensionsSystemException;
-	
+
 	/**
 	 * @param containerId
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
 	String getContainerCaption(Long containerId) throws DynamicExtensionsSystemException;
-	
+
 	/**
 	 * Method deletes the passed records of the passed container.
 	 * @param containerId
@@ -451,8 +453,9 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	void deleteRecords(Long containerId,List<Long>recordIdList) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
-	
+	void deleteRecords(Long containerId, List<Long> recordIdList)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+
 	/**
 	 * This method checks if the entity group can be created with the given name or not. 
 	 * This method will check for the duplicate name as per the following rule
@@ -460,42 +463,49 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsApplicationException This will basically act as a duplicate name exception.
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	 void checkForDuplicateEntityGroupName(EntityGroupInterface entityGroup)
+	void checkForDuplicateEntityGroupName(EntityGroupInterface entityGroup)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
-	
-	 /**
+
+	/**
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	List<NameValueBean> getAllContainerBeans() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
-	
+	List<NameValueBean> getAllContainerBeans() throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException;
+
 	/**
 	 * @param association
 	 * @throws DynamicExtensionsSystemException
 	 */
-	void addAssociationColumn(AssociationInterface association) throws DynamicExtensionsSystemException;
-	
+	void addAssociationColumn(AssociationInterface association)
+			throws DynamicExtensionsSystemException;
+
 	/**
 	 * @param associationInterface
 	 * @param sourceEntityRecordId
 	 * @param TargetEntityRecordId
 	 * @throws DynamicExtensionsSystemException
 	 */
-	void associateEntityRecords(AssociationInterface associationInterface,Long sourceEntityRecordId,Long TargetEntityRecordId) throws DynamicExtensionsSystemException;
+	void associateEntityRecords(AssociationInterface associationInterface,
+			Long sourceEntityRecordId, Long TargetEntityRecordId)
+			throws DynamicExtensionsSystemException;
+
 	/**
 	 * @param containerId
 	 * @throws DynamicExtensionsSystemException 
 	 */
 	Long getEntityIdByContainerId(Long containerId) throws DynamicExtensionsSystemException;
-	
+
 	/**
+	 * @param entity
 	 * @param abstractAttributeCollection
+	 * @param recordIdList
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	EntityRecordResultInterface getEntityRecords(
-			List<AbstractAttributeInterface> abstractAttributeCollection,List<Long> recordIdList)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	EntityRecordResultInterface getEntityRecords(EntityInterface entity,
+			List<AbstractAttributeInterface> abstractAttributeCollection, List<Long> recordIdList)
+			throws DynamicExtensionsSystemException;
 }

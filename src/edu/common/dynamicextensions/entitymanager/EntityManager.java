@@ -473,8 +473,8 @@ public class EntityManager
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	private List<String> getCollectionAttributeRecordValues(Long entityId, Long attributeId,
-			Long recordId) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+			Long recordId) throws DynamicExtensionsSystemException
+
 	{
 		List<String> valueList = null;
 		AttributeRecord collectionAttributeRecord = getAttributeRecord(entityId, attributeId,
@@ -506,14 +506,14 @@ public class EntityManager
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	private FileAttributeRecordValue getFileAttributeRecordValue(Long entityId, Long attributeId,
-			Long recordId) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+			Long recordId) throws DynamicExtensionsSystemException
+
 	{
 		AttributeRecord record = getAttributeRecord(entityId, attributeId, recordId, null);
 		FileAttributeRecordValue fileAttributeRecordValue = null;
 		if (record != null)
 		{
-			fileAttributeRecordValue =record.getFileRecord(); 
+			fileAttributeRecordValue = record.getFileRecord();
 		}
 		return fileAttributeRecordValue;
 	}
@@ -529,8 +529,8 @@ public class EntityManager
 	 * @return
 	 */
 	private AttributeRecord getAttributeRecord(Long entityId, Long attributeId, Long recordId,
-			HibernateDAO hibernateDao) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+			HibernateDAO hibernateDao) throws DynamicExtensionsSystemException
+
 	{
 
 		Map substitutionParameterMap = new HashMap();
@@ -1738,7 +1738,7 @@ public class EntityManager
 		List<Long> recordIdList = insertData(entity, dataValueMapList);
 		return recordIdList.get(0);
 	}
-	
+
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#insertData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map)
 	 */
@@ -2549,7 +2549,6 @@ public class EntityManager
 		return recordValues;
 	}
 
-
 	/**
 	 * The method returns the entity records for the given entity, attribute and records.
 	 * @param entity Entity whose records are to be shown
@@ -2560,17 +2559,18 @@ public class EntityManager
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	public EntityRecordResultInterface getEntityRecords(EntityInterface entity,
-			List<AbstractAttributeInterface> abstractAttributeCollection,List<Long> recordIds)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+			List<AbstractAttributeInterface> abstractAttributeCollection, List<Long> recordIds)
+			throws DynamicExtensionsSystemException
 	{
 		if (abstractAttributeCollection == null || abstractAttributeCollection.isEmpty())
 		{
 			return null;
 		}
-		List<AbstractAttributeInterface> tempAbstractAttributeCollection = new ArrayList(abstractAttributeCollection);
-		tempAbstractAttributeCollection  = EntityManagerUtil.filterSystemAttributes(tempAbstractAttributeCollection);
+		List<AbstractAttributeInterface> tempAbstractAttributeCollection = new ArrayList(
+				abstractAttributeCollection);
+		tempAbstractAttributeCollection = EntityManagerUtil
+				.filterSystemAttributes(tempAbstractAttributeCollection);
 
-		
 		//Initialising entityRecord and entityRecordMetadata 
 		EntityRecordResultInterface entityRecordResult = new EntityRecordResult();
 		EntityRecordMetadata recordMetadata = new EntityRecordMetadata();
@@ -2580,8 +2580,9 @@ public class EntityManager
 		//Filtering abstract attributes into attribtute and association
 		List<AssociationInterface> associationCollection = new ArrayList<AssociationInterface>();
 		List<AttributeInterface> attributesCollection = new ArrayList<AttributeInterface>();
-		filterAttributes(tempAbstractAttributeCollection, attributesCollection, associationCollection);
-//		attributesCollection = EntityManagerUtil.filterSystemAttributes(attributesCollection);
+		filterAttributes(tempAbstractAttributeCollection, attributesCollection,
+				associationCollection);
+		//		attributesCollection = EntityManagerUtil.filterSystemAttributes(attributesCollection);
 
 		//Initialising collection for file attributes and collection attributes.
 		List<AttributeInterface> collectionAttributes = new ArrayList<AttributeInterface>();
@@ -2627,15 +2628,17 @@ public class EntityManager
 			}
 
 			query.append(WHITESPACE).append(FROM_KEYWORD).append(tableName);
-			
-			if(recordIds != null && !recordIds.isEmpty()) {
-				query.append(WHERE_KEYWORD).append(IDENTIFIER).append(IN_KEYWORD).append(EntityManagerUtil.getListToString(recordIds));
+
+			if (recordIds != null && !recordIds.isEmpty())
+			{
+				query.append(WHERE_KEYWORD).append(IDENTIFIER).append(IN_KEYWORD).append(
+						EntityManagerUtil.getListToString(recordIds));
 			}
 
 			/*get values for simple attributes*/
 
 			List<EntityRecordInterface> entityRecordList = getEntityRecordList(
-					selectColumnNameList, query.toString(), columnNameMap,recordMetadata);
+					selectColumnNameList, query.toString(), columnNameMap, recordMetadata);
 
 			entityRecordResult.setEntityRecordList(entityRecordList);
 			/*
@@ -2667,11 +2670,12 @@ public class EntityManager
 				}
 
 			}
-			
+
 			for (EntityRecordInterface entityRecord : entityRecordList)
 			{
 				Long recordId = entityRecord.getRecordId();
-				queryBuilder.putAssociationValues(associationCollection,entityRecordResult,entityRecord,recordId);
+				queryBuilder.putAssociationValues(associationCollection, entityRecordResult,
+						entityRecord, recordId);
 			}
 
 		}
@@ -2682,8 +2686,6 @@ public class EntityManager
 
 		return entityRecordResult;
 	}
-
-
 
 	/**
 	 * filers abstractAttributes into attributes and associations 
@@ -2751,11 +2753,12 @@ public class EntityManager
 	 * @throws SQLException
 	 */
 	private List<EntityRecordInterface> getEntityRecordList(List<String> selectColumnNameList,
-			String query, Map columnNameMap, EntityRecordMetadata recordMetadata) throws DynamicExtensionsSystemException, SQLException
+			String query, Map columnNameMap, EntityRecordMetadata recordMetadata)
+			throws DynamicExtensionsSystemException, SQLException
 	{
 		ResultSet resultSet = entityManagerUtil.executeQuery(query);
 		List<EntityRecordInterface> entityRecordList = new ArrayList<EntityRecordInterface>();
-		
+
 		while (resultSet.next())
 		{
 			EntityRecordInterface entityRecord = new EntityRecord();
@@ -2767,7 +2770,7 @@ public class EntityManager
 				String dbColumnName = selectColumnNameList.get(i - 1);
 				String value = getValueFromResultSet(resultSet, columnNameMap, dbColumnName, i);
 				AttributeInterface attribute = (AttributeInterface) columnNameMap.get(dbColumnName);
-				int indexOfAttribute =  recordMetadata.getAttributeList().indexOf(attribute);
+				int indexOfAttribute = recordMetadata.getAttributeList().indexOf(attribute);
 				values[indexOfAttribute] = value;
 			}
 			entityRecord.setRecordValueList(Arrays.asList(values));
@@ -3687,6 +3690,7 @@ public class EntityManager
 		}
 
 	}
+
 	/** (non-Javadoc)
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#addAssociationColumn(edu.common.dynamicextensions.domaininterface.AssociationInterface)
 	 */
@@ -3713,7 +3717,7 @@ public class EntityManager
 			}
 		}
 	}
-	
+
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#associateEntityRecords(edu.common.dynamicextensions.domaininterface.AssociationInterface, java.lang.Long, java.lang.Long)
 	 */

@@ -296,8 +296,8 @@ class DynamicExtensionBaseQueryBuilder
 	 */
 	public void putAssociationValues(List<AssociationInterface> associationCollection,
 			EntityRecordResultInterface entityRecordResult, EntityRecordInterface entityRecord,
-			Long recordId) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+			Long recordId) throws DynamicExtensionsSystemException
+
 	{
 		Iterator associationIterator = associationCollection.iterator();
 		StringBuffer manyToOneAssociationsGetReocrdQuery = new StringBuffer();
@@ -357,7 +357,9 @@ class DynamicExtensionBaseQueryBuilder
 				{
 					List<AbstractAttributeInterface> targetAttributes = new ArrayList(association
 							.getTargetEntity().getAttributeCollection());
-					EntityRecordResultInterface containmentEntityRecordResult = EntityManager.getInstance().getEntityRecords(targetAttributes, recordIdList);
+					EntityRecordResultInterface containmentEntityRecordResult = EntityManager
+							.getInstance().getEntityRecords(association.getTargetEntity(),
+									targetAttributes, recordIdList);
 					entityRecord.getRecordValueList().set(index, containmentEntityRecordResult);
 				}
 				else
@@ -369,7 +371,8 @@ class DynamicExtensionBaseQueryBuilder
 
 		if (manyToOneAssociationList.size() != 0)
 		{
-			String srcEntityName = manyToOneAssociationList.get(0).getEntity().getTableProperties().getName();
+			String srcEntityName = manyToOneAssociationList.get(0).getEntity().getTableProperties()
+					.getName();
 			manyToOneAssociationsGetReocrdQuery.append(WHITESPACE + FROM_KEYWORD + WHITESPACE
 					+ srcEntityName + WHITESPACE);
 			manyToOneAssociationsGetReocrdQuery.append(WHITESPACE + WHERE_KEYWORD + WHITESPACE
@@ -384,10 +387,10 @@ class DynamicExtensionBaseQueryBuilder
 					Long targetRecordId = resultSet.getLong(i + 1);
 					List<Long> valueList = new ArrayList<Long>();
 					valueList.add(targetRecordId);
-					AssociationInterface association = manyToOneAssociationList.get(i);					
-					int index = entityRecordResult.getEntityRecordMetadata().getAttributeList().indexOf(
-							association);
-					entityRecord.getRecordValueList().set(index,valueList);
+					AssociationInterface association = manyToOneAssociationList.get(i);
+					int index = entityRecordResult.getEntityRecordMetadata().getAttributeList()
+							.indexOf(association);
+					entityRecord.getRecordValueList().set(index, valueList);
 				}
 			}
 			catch (SQLException e)

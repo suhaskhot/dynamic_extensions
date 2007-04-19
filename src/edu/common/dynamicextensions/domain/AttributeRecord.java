@@ -173,7 +173,7 @@ public class AttributeRecord extends DynamicExtensionBaseDomainObject
 	 */
 	public FileAttributeRecordValue getFileRecord()
 	{
-		if (fileRecordCollection != null)
+		if (fileRecordCollection != null && !fileRecordCollection.isEmpty())
 		{
 			return fileRecordCollection.iterator().next();
 		}

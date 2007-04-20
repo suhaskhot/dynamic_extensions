@@ -497,6 +497,11 @@ class DynamicExtensionBaseQueryBuilder
 		}
 
 		List<Long> childrenRecordIdList = getRecordIdListForContainment(association, recordIdList);
+		if (childrenRecordIdList == null || childrenRecordIdList.isEmpty())
+		{
+			return;
+		}
+			
 		EntityInterface targetEntity = association.getTargetEntity();
 
 		/*now chk if these records are referred by some other incoming association , if so this should not be disabled*/

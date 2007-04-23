@@ -1,5 +1,6 @@
 package edu.common.dynamicextensions.entitymanager;
 
+import java.io.Serializable;
 import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
@@ -11,9 +12,14 @@ import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
  * @author Rahul Ner
  * @author Vishvesh Mulay
  */
-public class EntityRecordMetadata  
+public class EntityRecordMetadata  implements Serializable
 {
 
+    /**
+     * Serial Version Unique Identifier
+     */
+    private static final long serialVersionUID = -552600540977483821L;
+    
 	/**
 	 * List of attributes and associations
 	 */

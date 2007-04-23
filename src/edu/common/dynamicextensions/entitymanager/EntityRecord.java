@@ -1,5 +1,6 @@
 package edu.common.dynamicextensions.entitymanager;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,10 +10,15 @@ import java.util.List;
  * @author Rahul Ner
  * @author vishvesh Mulay
  */
-public class EntityRecord implements EntityRecordInterface 
+public class EntityRecord implements EntityRecordInterface,Serializable 
 {
 
-	/**
+    /**
+     * Serial Version Unique Identifier
+     */
+    private static final long serialVersionUID = -552600540977483821L;
+
+    /**
 	 * 
 	 */
 	Long recordId;

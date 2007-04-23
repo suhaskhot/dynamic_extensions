@@ -49,6 +49,17 @@ public interface EntityManagerInterface
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
+	 * @param entityInterface
+	 * @param addIdAttribute Is id attribute to be added ?
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	EntityInterface persistEntity(EntityInterface entityInterface,boolean addIdAttribute)
+	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	
+	
+	/**
 	 * This method creates an entity group.The entities in the group are also saved.
 	 * @param entityGroupInterface entity group to be saved.
 	 * @return entityGroupInterface Saved  entity group. 
@@ -508,4 +519,7 @@ public interface EntityManagerInterface
 	EntityRecordResultInterface getEntityRecords(EntityInterface entity,
 			List<AbstractAttributeInterface> abstractAttributeCollection, List<Long> recordIdList)
 			throws DynamicExtensionsSystemException;
+	
+
+
 }

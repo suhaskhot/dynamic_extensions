@@ -73,6 +73,7 @@ class DynamicExtensionBaseQueryBuilder
 	 * which negates the effect of that data table query. All such reverse queries are added in this list.
 	 * @param rollbackQueryStack 
 	 * @param hibernateDAO 
+	 * @param addIdAttribute 
 	 * 
 	 * @return List of all the data table queries
 	 * 
@@ -80,12 +81,12 @@ class DynamicExtensionBaseQueryBuilder
 	 * @throws DynamicExtensionsApplicationException 
 	 */
 	public List getCreateEntityQueryList(Entity entity, List reverseQueryList,
-			HibernateDAO hibernateDAO, Stack rollbackQueryStack)
+			HibernateDAO hibernateDAO, Stack rollbackQueryStack, boolean addIdAttribute)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		List queryList = new ArrayList();
 		//get query to create main table with primitive attributes.
-		List mainTableQueryList = getCreateMainTableQuery(entity, reverseQueryList);
+		List mainTableQueryList = getCreateMainTableQuery(entity, reverseQueryList,addIdAttribute);
 
 		// get query to create associations ,it invloves altering source/taget table or creating 
 		//middle table depending upon the cardinalities.
@@ -714,12 +715,13 @@ class DynamicExtensionBaseQueryBuilder
 	 *
 	 * @param entity Entity for which to create the data table query.
 	 * @param reverseQueryList Reverse query list which holds the query to negate the data table query.
+	 * @param addIdAttribute 
 	 * 
 	 * @return String The method returns the "CREATE TABLE" query for the data table query for the entity passed.
 	 * 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	protected List<String> getCreateMainTableQuery(Entity entity, List reverseQueryList)
+	protected List<String> getCreateMainTableQuery(Entity entity, List reverseQueryList, boolean addIdAttribute)
 			throws DynamicExtensionsSystemException
 	{
 		List<String> queryList = new ArrayList<String>();
@@ -731,6 +733,10 @@ class DynamicExtensionBaseQueryBuilder
 
 		StringBuffer query = new StringBuffer(CREATE_TABLE + " " + tableName + " "
 				+ OPENING_BRACKET + " " + activityStatusString + COMMA);
+		if (!addIdAttribute)
+		{
+			query.append(IDENTIFIER).append(WHITESPACE).append(getDataTypeForIdentifier()).append(COMMA);
+		}
 		Collection attributeCollection = entity.getAttributeCollection();
 		//attributeCollection = entityManagerUtil.filterSystemAttributes(attributeCollection);
 		if (attributeCollection != null && !attributeCollection.isEmpty())

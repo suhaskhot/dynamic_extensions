@@ -263,21 +263,26 @@ public class EntityManager
 
 	}
 
-	private void saveEntityGroup(EntityInterface entityInterface, HibernateDAO hibernateDAO)
+	private EntityGroupInterface saveEntityGroup(EntityInterface entityInterface, HibernateDAO hibernateDAO)
 			throws DAOException, UserNotAuthorizedException
 	{
 		Set<EntityInterface> processedEntities = new HashSet<EntityInterface>();
 		Set<EntityGroupInterface> processedEntityGroups = new HashSet<EntityGroupInterface>();
 		EntityManagerUtil.getAllEntityGroups(entityInterface, processedEntities,
 				processedEntityGroups);
-
-		for (EntityGroupInterface entityGroup : processedEntityGroups)
+		EntityGroupInterface entityGroup = null;
+		for (EntityGroupInterface tempEntityGroup : processedEntityGroups)
 		{
-			if (entityGroup.getId() == null)
+			if (tempEntityGroup.getId() == null)
 			{
-				hibernateDAO.insert(entityGroup, null, false, false);
+				if (((EntityGroup) tempEntityGroup).isCurrent())
+				{
+				entityGroup = tempEntityGroup;
+				}
+				hibernateDAO.insert(tempEntityGroup, null, false, false);
 			}
 		}
+		return entityGroup;
 	}
 
 	/**
@@ -1400,33 +1405,14 @@ public class EntityManager
 
 			if (entity != null)
 			{
+				//saveEntityGroup first
+				currentEntityGroup = saveEntityGroup(entity,hibernateDAO);
 				// saves the entity into database. It populates rollbackQueryStack with the 
 				// queries that restores the database state to the state before calling this method
 				// in case of exception.
-
 				List<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
 				saveOrUpdateEntity(entity, hibernateDAO, rollbackQueryStack, isentitySaved,
 						processedEntityList,true);
-
-				//saveEntityGroup first
-				Set<EntityInterface> processedEntities = new HashSet<EntityInterface>();
-				Set<EntityGroupInterface> processedEntityGroups = new HashSet<EntityGroupInterface>();
-				EntityManagerUtil.getAllEntityGroups(entity, processedEntities,
-						processedEntityGroups);
-
-				for (EntityGroupInterface entityGroup : processedEntityGroups)
-				{
-					if (entityGroup.getId() == null)
-					{
-						preSaveProcessEntityGroup(entityGroup);
-						entityGroup = (EntityGroup) session.saveOrUpdateCopy(entityGroup);
-					}
-					if (((EntityGroup) entityGroup).isCurrent())
-					{
-						currentEntityGroup = entityGroup;
-					}
-				}
-
 				saveChildContainers(container, session);
 			}
 
@@ -1462,6 +1448,13 @@ public class EntityManager
 			rollbackQueries(rollbackQueryStack, entity, e, hibernateDAO);
 			e.printStackTrace();
 			throw e;
+		}		
+		catch (UserNotAuthorizedException e)
+		{
+			rollbackQueries(rollbackQueryStack, entity, e, hibernateDAO);
+			e.printStackTrace();
+			throw new DynamicExtensionsSystemException(
+					"DAOException occured while opening a session to save the container.", e);
 		}
 		finally
 		{

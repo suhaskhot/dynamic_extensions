@@ -1697,6 +1697,13 @@ function cancelInsertData()
     dataEntryForm.submit();
 }
 
+function setDeleteDataOperation()
+{
+	document.getElementById('mode').value = "delete";
+	var dataEntryForm = document.getElementById('dataEntryForm');
+    dataEntryForm.submit();
+}
+
 function dropFn(srcId,targetId,sourceGridObj,targetGridObj)
 {
 	updateControlsSequence();

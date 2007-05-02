@@ -26,7 +26,7 @@ public class WebUIManager implements WebUIManagerConstants
 	 */
 	public static String getCreateContainerURL()
 	{
-		return "/dynamicExtensions/DisplayContainer.do";
+		return CREATE_CONTAINER_URL;
 	}
 
 	/**

@@ -165,6 +165,7 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 	public void setGroupName(String groupName)
 	{
 		this.groupName = groupName;
+		this.tempgroupName = groupName;
 	}
 
 	/* (non-Javadoc)

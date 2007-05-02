@@ -41,6 +41,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInter
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ApplyDataEntryFormProcessor;
+import edu.common.dynamicextensions.processor.DeleteRecordProcessor;
 import edu.common.dynamicextensions.ui.webui.actionform.DataEntryForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
@@ -94,6 +95,17 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 					isCallbackURL = redirectCallbackURL(request, response, recordIdentifier,
 							WebUIManagerConstants.CANCELLED);
 				}
+
+				if ((actionForward != null && actionForward.getName().equals(
+						"showDynamicExtensionsHomePage"))
+						&& (mode != null && mode.equals("delete")))
+				{
+					String recordIdentifier = dataEntryForm.getRecordIdentifier();
+					deleteRecord(recordIdentifier,containerStack.firstElement());
+					isCallbackURL = redirectCallbackURL(request, response, recordIdentifier,
+							WebUIManagerConstants.DELETED);
+				}
+
 				else if (actionForward == null && errorList != null && errorList.isEmpty())
 				{
 					String recordIdentifier = dataEntryForm.getRecordIdentifier();
@@ -125,6 +137,19 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		return actionForward;
 	}
 
+	/**
+	 * 
+	 * @param recordIdentfier
+	 * @param containerInterface
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	private void deleteRecord(String recordIdentfier,ContainerInterface containerInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		Long recordNumber = new Long(recordIdentfier);
+		DeleteRecordProcessor.getInstance().deleteRecord(containerInterface, recordNumber);
+		
+	}
 	/**
 	 * This method gets the Callback URL from cahce, reforms it and redirect the response to it. 
 	 * @param request HttpServletRequest to obtain session
@@ -220,10 +245,11 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 					dataEntryForm.setDataEntryOperation("insertChildData");
 					actionForward = mapping.findForward("loadChildContainer");
 				}
-				else if ((mode != null) && (mode.equals("cancel")))
+				else if ((mode != null) && (mode.equals("cancel") || (mode.equals("delete"))))
 				{
 					actionForward = mapping.findForward("showDynamicExtensionsHomePage");
 				}
+				
 				else
 				{
 					actionForward = mapping.findForward("loadParentContainer");

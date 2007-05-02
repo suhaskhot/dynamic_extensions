@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.entitymanager;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -519,7 +520,15 @@ public interface EntityManagerInterface
 	EntityRecordResultInterface getEntityRecords(EntityInterface entity,
 			List<AbstractAttributeInterface> abstractAttributeCollection, List<Long> recordIdList)
 			throws DynamicExtensionsSystemException;
+	/**
+	 * 
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public Map<String, String> getAllContainerBeansMap() throws DynamicExtensionsSystemException,
+	DynamicExtensionsApplicationException;
 	
-
+	Map<Long, Date> getEntityCreatedDateByContainerId() throws DynamicExtensionsSystemException;
 
 }

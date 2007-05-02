@@ -164,13 +164,13 @@ public class EntityManager
 	public EntityInterface persistEntity(EntityInterface entityInterface)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		return persistEntity(entityInterface,true);
+		return persistEntity(entityInterface, true);
 	}
 
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#persistEntity(edu.common.dynamicextensions.domaininterface.EntityInterface)
 	 */
-	public EntityInterface persistEntity(EntityInterface entityInterface,boolean addIdAttribute)
+	public EntityInterface persistEntity(EntityInterface entityInterface, boolean addIdAttribute)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		logDebug("persistEntity", "entering the method");
@@ -196,7 +196,7 @@ public class EntityManager
 			List<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
 
 			entityInterface = saveOrUpdateEntity(entityInterface, hibernateDAO, stack,
-					isEntitySaved, processedEntityList,addIdAttribute);
+					isEntitySaved, processedEntityList, addIdAttribute);
 
 			//Committing the changes done in the hibernate session to the database.
 			hibernateDAO.commit();
@@ -263,8 +263,8 @@ public class EntityManager
 
 	}
 
-	private EntityGroupInterface saveEntityGroup(EntityInterface entityInterface, HibernateDAO hibernateDAO)
-			throws DAOException, UserNotAuthorizedException
+	private EntityGroupInterface saveEntityGroup(EntityInterface entityInterface,
+			HibernateDAO hibernateDAO) throws DAOException, UserNotAuthorizedException
 	{
 		Set<EntityInterface> processedEntities = new HashSet<EntityInterface>();
 		Set<EntityGroupInterface> processedEntityGroups = new HashSet<EntityGroupInterface>();
@@ -277,7 +277,7 @@ public class EntityManager
 			{
 				if (((EntityGroup) tempEntityGroup).isCurrent())
 				{
-				entityGroup = tempEntityGroup;
+					entityGroup = tempEntityGroup;
 				}
 				hibernateDAO.insert(tempEntityGroup, null, false, false);
 			}
@@ -847,9 +847,10 @@ public class EntityManager
 	 * @throws HibernateException 
 	 */
 	private void postSaveProcessEntity(Entity entity, HibernateDAO hibernateDAO,
-			Stack rollbackQueryStack, List<EntityInterface> processedEntityList, boolean addIdAttribute)
-			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException,
-			DAOException, UserNotAuthorizedException, HibernateException
+			Stack rollbackQueryStack, List<EntityInterface> processedEntityList,
+			boolean addIdAttribute) throws DynamicExtensionsApplicationException,
+			DynamicExtensionsSystemException, DAOException, UserNotAuthorizedException,
+			HibernateException
 	{
 		if (entity.getTableProperties() == null)
 		{
@@ -893,7 +894,8 @@ public class EntityManager
 						if (entity.getDataTableState() == DATA_TABLE_STATE_CREATED)
 						{
 							targetEntity = saveOrUpdateEntity(targetEntity, hibernateDAO,
-									rollbackQueryStack, isEntitySaved, processedEntityList,addIdAttribute);
+									rollbackQueryStack, isEntitySaved, processedEntityList,
+									addIdAttribute);
 						}
 						else
 						{
@@ -1406,13 +1408,13 @@ public class EntityManager
 			if (entity != null)
 			{
 				//saveEntityGroup first
-				currentEntityGroup = saveEntityGroup(entity,hibernateDAO);
+				currentEntityGroup = saveEntityGroup(entity, hibernateDAO);
 				// saves the entity into database. It populates rollbackQueryStack with the 
 				// queries that restores the database state to the state before calling this method
 				// in case of exception.
 				List<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
 				saveOrUpdateEntity(entity, hibernateDAO, rollbackQueryStack, isentitySaved,
-						processedEntityList,true);
+						processedEntityList, true);
 				saveChildContainers(container, session);
 			}
 
@@ -1448,7 +1450,7 @@ public class EntityManager
 			rollbackQueries(rollbackQueryStack, entity, e, hibernateDAO);
 			e.printStackTrace();
 			throw e;
-		}		
+		}
 		catch (UserNotAuthorizedException e)
 		{
 			rollbackQueries(rollbackQueryStack, entity, e, hibernateDAO);
@@ -2264,12 +2266,13 @@ public class EntityManager
 			if (entity.getParentEntity() != null)
 			{
 				saveOrUpdateEntity(entity.getParentEntity(), hibernateDAO, rollbackQueryStack,
-						true, processedEntityList,addIdAttribute);
+						true, processedEntityList, addIdAttribute);
 			}
 
 			entity = (Entity) session.saveOrUpdateCopy(entity);
 
-			postSaveProcessEntity(entity, hibernateDAO, rollbackQueryStack, processedEntityList,addIdAttribute);
+			postSaveProcessEntity(entity, hibernateDAO, rollbackQueryStack, processedEntityList,
+					addIdAttribute);
 
 			entity = (Entity) session.saveOrUpdateCopy(entity);
 
@@ -2278,7 +2281,7 @@ public class EntityManager
 				if (!isEntitySaved)
 				{
 					queryList = queryBuilder.getCreateEntityQueryList(entity, reverseQueryList,
-							hibernateDAO, rollbackQueryStack,addIdAttribute);
+							hibernateDAO, rollbackQueryStack, addIdAttribute);
 				}
 				else
 				{
@@ -2382,7 +2385,8 @@ public class EntityManager
 
 			//entity = (Entity) session.saveOrUpdateCopy(entity);
 			//since only metadata is saved 
-			postSaveProcessEntity(entity, hibernateDAO, rollbackQueryStack, processedEntityList,false);
+			postSaveProcessEntity(entity, hibernateDAO, rollbackQueryStack, processedEntityList,
+					false);
 			//entity = (Entity) session.saveOrUpdateCopy(entity);
 			hibernateDAO.update(entity, null, false, false, false);
 		}
@@ -2944,7 +2948,7 @@ public class EntityManager
 					else
 					{
 						saveOrUpdateEntity(entityInterface, hibernateDAO, stack, isEntitySaved,
-								processedEntityList,false);
+								processedEntityList, false);
 					}
 				}
 			}
@@ -3506,6 +3510,9 @@ public class EntityManager
 		return associationTreeObjectForGroup;
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllContainerBeans()
+	 */
 	public List<NameValueBean> getAllContainerBeans() throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
@@ -3522,6 +3529,37 @@ public class EntityManager
 					(Long) objectArrayForContainerBeans[0]));
 		}
 		return list;
+	}
+
+	/**
+	 * 
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public Map<String, String> getAllContainerBeansMap() throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+		Collection containersBeansCollection = executeHQL("getAllContainerBeans",
+				substitutionParameterMap);
+		Iterator containerBeansIterator = containersBeansCollection.iterator();
+		Object[] objectArrayForContainerBeans;
+		//List<NameValueBean> list = new ArrayList<NameValueBean>();
+		Map<String, String> containerBeansMap = new HashMap<String, String>();
+		String containerId;
+		String containerCaption;
+
+		while (containerBeansIterator.hasNext())
+		{
+			objectArrayForContainerBeans = (Object[]) containerBeansIterator.next();
+			containerCaption = (String) objectArrayForContainerBeans[1];
+			containerId = ((Long) objectArrayForContainerBeans[0]).toString();
+			//			list.add(new NameValueBean((String) objectArrayForContainerBeans[1],
+			//					(Long) objectArrayForContainerBeans[0]));
+			containerBeansMap.put(containerId, containerCaption);
+		}
+		return containerBeansMap;
 	}
 
 	/**
@@ -3753,4 +3791,25 @@ public class EntityManager
 		return null;
 	}
 
+	public Map<Long, Date> getEntityCreatedDateByContainerId() throws DynamicExtensionsSystemException
+	{
+		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+		Map<Long, Date> map = new HashMap<Long, Date>();
+		Collection containersBeansCollection;
+		containersBeansCollection = executeHQL("getAllEntityCreatedDateByContainerId",
+					substitutionParameterMap);
+
+			if (containersBeansCollection != null && !containersBeansCollection.isEmpty())
+			{
+				Iterator iter = containersBeansCollection.iterator();
+
+				while (iter.hasNext())
+				{
+					Object[] objectArray = (Object[]) iter.next();
+					map.put((Long) objectArray[0], (Date) objectArray[1]);
+				}
+			}
+		return map;
+
+	}
 }

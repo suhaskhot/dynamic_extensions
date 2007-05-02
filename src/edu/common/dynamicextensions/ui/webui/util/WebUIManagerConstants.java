@@ -6,7 +6,7 @@ public interface WebUIManagerConstants
 	/**
 	 * 
 	 */
-	String CREATE_CONTAINER_URL=  "/dynamicExtensions";
+	String CREATE_CONTAINER_URL=  "/dynamicExtensions/DisplayContainer.do";
 	
 	/**
 	 * 
@@ -48,6 +48,10 @@ public interface WebUIManagerConstants
 	 * 
 	 */
 	String CANCELLED = "cancelled";
+	/**
+	 * 
+	 */
+	String DELETED = "deleted";
 	
 	/**
 	 * 

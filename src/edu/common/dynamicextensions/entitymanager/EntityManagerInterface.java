@@ -191,63 +191,6 @@ public interface EntityManagerInterface
 			DynamicExtensionsApplicationException;
 
 	/**
-	 * Returns a collection of entity objects given the entity description
-	 * @param entityDescription
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
-	 */
-	Collection<EntityInterface> getEntityByDescription(String entityDescription)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
-
-	/**
-	 * Returns a collection of Entity objects given the attribute description
-	 * @param attributeDescription
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
-	 */
-	Collection<EntityInterface> getEntitiesByAttributeDescription(String attributeDescription)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
-
-	/**
-	 * Returns a collection of entity objects given the entity concept name.
-	 * @param entityConceptName
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
-	 */
-	Collection<EntityInterface> getEntitiesByConceptName(String entityConceptName)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
-
-	/**
-	 * Returns a collection of entities given attribute concept code. 
-	 * @param attributeConceptCode
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
-	 */
-	Collection<EntityInterface> getEntitiesByAttributeConceptCode(String attributeConceptCode)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
-
-	/**
-	 * Returns a collection of entities given the attribute concept name
-	 * @param attributeConceptname
-	 * @return 
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
-	 */
-	Collection<EntityInterface> getEntitiesByAttributeConceptName(String attributeConceptName)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
-
-	/**
-	 * Returns a collection of entity objects given the entity object with specific criteria. 
-	 * @param entityInterface
-	 * @return
-	 */
-	Collection<EntityInterface> findEntity(EntityInterface entityInterface);
-
-	/**
 	 * This method is used to save the container into the database.
 	 * @param containerInterface container to save
 	 * @return ContainerInterface container Interface that is saved.

@@ -164,13 +164,13 @@ public class EntityManager
 	public EntityInterface persistEntity(EntityInterface entityInterface)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		return persistEntity(entityInterface, true);
+		return persistEntity(entityInterface,true);
 	}
 
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#persistEntity(edu.common.dynamicextensions.domaininterface.EntityInterface)
 	 */
-	public EntityInterface persistEntity(EntityInterface entityInterface, boolean addIdAttribute)
+	public EntityInterface persistEntity(EntityInterface entityInterface,boolean addIdAttribute)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		logDebug("persistEntity", "entering the method");
@@ -190,22 +190,22 @@ public class EntityManager
 		{
 
 			hibernateDAO.openSession(null);
-			//Calling the method which actually calls the insert/update method on dao. Hibernatedao is passed to this
-			//method and transaction is handled in the calling method.
+			//Calling the method which actually calls the insert/update method on dao. 
+			//Hibernatedao is passed to this method and transaction is handled in the calling method.
 			saveEntityGroup(entityInterface, hibernateDAO);
 			List<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
 
 			entityInterface = saveOrUpdateEntity(entityInterface, hibernateDAO, stack,
-					isEntitySaved, processedEntityList, addIdAttribute);
+					isEntitySaved, processedEntityList,addIdAttribute);
 
 			//Committing the changes done in the hibernate session to the database.
 			hibernateDAO.commit();
 		}
 		catch (Exception e)
 		{
-			//			Queries for data table creation and modification are fired in the method saveOrUpdateEntity. So if there
-			//is any exception while storing the metadata , we need to roll back the queries that were fired. So
-			//calling the following method to do that.
+			//Queries for data table creation and modification are fired in the method saveOrUpdateEntity. 
+			//So if there is any exception while storing the metadata , 
+			//we need to roll back the queries that were fired. So calling the following method to do that.
 			rollbackQueries(stack, entity, e, hibernateDAO);
 
 			if (e instanceof DynamicExtensionsApplicationException)
@@ -239,6 +239,10 @@ public class EntityManager
 		return entityInterface;
 	}
 
+	/**
+	 * This method removes the flag of processed from the entity once the entities have been saved.
+	 * @param entityInterface
+	 */
 	private void postSaveOrUpdateEntity(EntityInterface entityInterface)
 	{
 		if (entityInterface == null)
@@ -263,8 +267,15 @@ public class EntityManager
 
 	}
 
-	private EntityGroupInterface saveEntityGroup(EntityInterface entityInterface,
-			HibernateDAO hibernateDAO) throws DAOException, UserNotAuthorizedException
+	/**This method saves the correct unsaved entity group from the list of entity groups present in the entity.
+	 * @param entityInterface
+	 * @param hibernateDAO
+	 * @return
+	 * @throws DAOException
+	 * @throws UserNotAuthorizedException
+	 */
+	private EntityGroupInterface saveEntityGroup(EntityInterface entityInterface, HibernateDAO hibernateDAO)
+			throws DAOException, UserNotAuthorizedException
 	{
 		Set<EntityInterface> processedEntities = new HashSet<EntityInterface>();
 		Set<EntityGroupInterface> processedEntityGroups = new HashSet<EntityGroupInterface>();
@@ -275,11 +286,12 @@ public class EntityManager
 		{
 			if (tempEntityGroup.getId() == null)
 			{
-				if (((EntityGroup) tempEntityGroup).isCurrent())
-				{
-					entityGroup = tempEntityGroup;
-				}
+				
 				hibernateDAO.insert(tempEntityGroup, null, false, false);
+			}
+			if (((EntityGroup) tempEntityGroup).isCurrent())
+			{
+			entityGroup = tempEntityGroup;
 			}
 		}
 		return entityGroup;
@@ -316,8 +328,8 @@ public class EntityManager
 		{
 
 			hibernateDAO.openSession(null);
-			//Calling the method which actually calls the insert/update method on dao. Hibernatedao is passed to this
-			//method and transaction is handled in the calling method.
+			//Calling the method which actually calls the insert/update method on dao. 
+			//Hibernatedao is passed to this method and transaction is handled in the calling method.
 			saveEntityGroup(entityInterface, hibernateDAO);
 			List<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
 
@@ -329,9 +341,9 @@ public class EntityManager
 		}
 		catch (Exception e)
 		{
-			//			Queries for data table creation and modification are fired in the method saveOrUpdateEntity. So if there
-			//is any exception while storing the metadata , we need to roll back the queries that were fired. So
-			//calling the following method to do that.
+			//Queries for data table creation and modification are fired in the method saveOrUpdateEntity.
+			//So if there is any exception while storing the metadata , 
+			//we need to roll back the queries that were fired. So calling the following method to do that.
 			rollbackQueries(stack, entity, e, hibernateDAO);
 
 			if (e instanceof DynamicExtensionsApplicationException)
@@ -847,10 +859,9 @@ public class EntityManager
 	 * @throws HibernateException 
 	 */
 	private void postSaveProcessEntity(Entity entity, HibernateDAO hibernateDAO,
-			Stack rollbackQueryStack, List<EntityInterface> processedEntityList,
-			boolean addIdAttribute) throws DynamicExtensionsApplicationException,
-			DynamicExtensionsSystemException, DAOException, UserNotAuthorizedException,
-			HibernateException
+			Stack rollbackQueryStack, List<EntityInterface> processedEntityList, boolean addIdAttribute)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException,
+			DAOException, UserNotAuthorizedException, HibernateException
 	{
 		if (entity.getTableProperties() == null)
 		{
@@ -894,8 +905,7 @@ public class EntityManager
 						if (entity.getDataTableState() == DATA_TABLE_STATE_CREATED)
 						{
 							targetEntity = saveOrUpdateEntity(targetEntity, hibernateDAO,
-									rollbackQueryStack, isEntitySaved, processedEntityList,
-									addIdAttribute);
+									rollbackQueryStack, isEntitySaved, processedEntityList,addIdAttribute);
 						}
 						else
 						{
@@ -1199,7 +1209,7 @@ public class EntityManager
 		}
 		Logger.out
 				.error("***Fatal Error.. Incosistent data table and metadata information for the entity -"
-						+ name);
+						+ name + "***");
 		Logger.out.error("Please check the table -" + table);
 		Logger.out.error("The cause of the exception is - " + e.getMessage());
 		Logger.out.error("The detailed log is : ");
@@ -1268,8 +1278,8 @@ public class EntityManager
 	}
 
 	/**
-	 *  Returns all entities in the whole system for a given type of the object
-	 * @return
+	 *  Returns all instances in the whole system for a given type of the object
+	 * @return Collection of instances of given class
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
@@ -1292,81 +1302,6 @@ public class EntityManager
 			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
 		return objectList;
-	}
-
-	/**
-	 * Returns a collection of entity objects given the entity description
-	 * @param entityDescription
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
-	 */
-	public Collection getEntityByDescription(String entityDescription)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
-	{
-		return null;
-	}
-
-	/**
-	 * Returns a collection of Entity objects given the attribute description
-	 * @param attributeDescription
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
-	 */
-	public Collection getEntitiesByAttributeDescription(String attributeDescription)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
-	{
-		return null;
-	}
-
-	/**
-	 * Returns a collection of entity objects given the entity concept name.
-	 * @param entityConceptName
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
-	 */
-	public Collection getEntitiesByConceptName(String entityConceptName)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
-	{
-		return null;
-	}
-
-	/**
-	 * Returns a collection of entities given attribute concept code.
-	 * @param attributeConceptCode
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
-	 */
-	public Collection getEntitiesByAttributeConceptCode(String attributeConceptCode)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
-	{
-		return null;
-	}
-
-	/**
-	 * Returns a collection of entities given the attribute concept name
-	 * @param attributeConceptname
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
-	 */
-	public Collection getEntitiesByAttributeConceptName(String attributeConceptName)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
-	{
-		return null;
-	}
-
-	/**
-	 * Returns a collection of entity objects given the entity object with specific criteria. 
-	 * @param entityInterface
-	 * @return
-	 */
-	public Collection findEntity(EntityInterface entityInterface)
-	{
-		return null;
 	}
 
 	/**
@@ -1408,13 +1343,13 @@ public class EntityManager
 			if (entity != null)
 			{
 				//saveEntityGroup first
-				currentEntityGroup = saveEntityGroup(entity, hibernateDAO);
+				currentEntityGroup = saveEntityGroup(entity,hibernateDAO);
 				// saves the entity into database. It populates rollbackQueryStack with the 
 				// queries that restores the database state to the state before calling this method
 				// in case of exception.
 				List<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
 				saveOrUpdateEntity(entity, hibernateDAO, rollbackQueryStack, isentitySaved,
-						processedEntityList, true);
+						processedEntityList,true);
 				saveChildContainers(container, session);
 			}
 
@@ -1450,7 +1385,7 @@ public class EntityManager
 			rollbackQueries(rollbackQueryStack, entity, e, hibernateDAO);
 			e.printStackTrace();
 			throw e;
-		}
+		}		
 		catch (UserNotAuthorizedException e)
 		{
 			rollbackQueries(rollbackQueryStack, entity, e, hibernateDAO);
@@ -1475,6 +1410,11 @@ public class EntityManager
 		return container;
 	}
 
+	/**
+	 * @param container
+	 * @param session
+	 * @throws HibernateException
+	 */
 	private void saveChildContainers(ContainerInterface container, Session session)
 			throws HibernateException
 	{
@@ -1505,7 +1445,7 @@ public class EntityManager
 	}
 
 	/**
-	 * This method processes entity beofre saving it to databse.
+	 * This method processes entity before saving it to databse.
 	 * <li> It validates entity for duplicate name of entity,attributes and association
 	 * <li> It sets created and updated date-time.
 	 * 
@@ -1514,7 +1454,7 @@ public class EntityManager
 	private void preSaveProcessEntity(EntityInterface entity)
 			throws DynamicExtensionsApplicationException
 	{
-		DynamicExtensionsUtility.validateEntityForSaving(entity);// chk if entity is vlaid or not.
+		DynamicExtensionsUtility.validateEntityForSaving(entity);// chk if entity is valid or not.
 
 		correctCardinalities(entity); // correct the cardinality if max cardinality  < min cardinality
 
@@ -1821,6 +1761,11 @@ public class EntityManager
 		return parentRecordId;
 	}
 
+	/**
+	 * @param entity
+	 * @param dataValue
+	 * @return
+	 */
 	private Map<EntityInterface, Map> initialiseEntityValueMap(EntityInterface entity,
 			Map<AbstractAttributeInterface, ?> dataValue)
 	{
@@ -1995,8 +1940,8 @@ public class EntityManager
 					recordIdList.clear();
 					for (Map valueMapForContainedEntity : listOfMapsForContainedEntity)
 					{
-						//						Long childRecordId = insertDataForSingleEntity(association
-						//								.getTargetEntity(), valueMapForContainedEntity, hibernateDAO, null);
+						//Long childRecordId = insertDataForSingleEntity(association
+						//.getTargetEntity(), valueMapForContainedEntity, hibernateDAO, null);
 						Long childRecordId = insertDataForHeirarchy(association.getTargetEntity(),
 								valueMapForContainedEntity, hibernateDAO);
 						recordIdList.add(childRecordId);
@@ -2266,13 +2211,12 @@ public class EntityManager
 			if (entity.getParentEntity() != null)
 			{
 				saveOrUpdateEntity(entity.getParentEntity(), hibernateDAO, rollbackQueryStack,
-						true, processedEntityList, addIdAttribute);
+						true, processedEntityList,addIdAttribute);
 			}
 
 			entity = (Entity) session.saveOrUpdateCopy(entity);
 
-			postSaveProcessEntity(entity, hibernateDAO, rollbackQueryStack, processedEntityList,
-					addIdAttribute);
+			postSaveProcessEntity(entity, hibernateDAO, rollbackQueryStack, processedEntityList,addIdAttribute);
 
 			entity = (Entity) session.saveOrUpdateCopy(entity);
 
@@ -2281,7 +2225,7 @@ public class EntityManager
 				if (!isEntitySaved)
 				{
 					queryList = queryBuilder.getCreateEntityQueryList(entity, reverseQueryList,
-							hibernateDAO, rollbackQueryStack, addIdAttribute);
+							hibernateDAO, rollbackQueryStack,addIdAttribute);
 				}
 				else
 				{
@@ -2301,6 +2245,10 @@ public class EntityManager
 		return entity;
 	}
 
+	/**
+	 * This method adds a system generated attribute to the entity.
+	 * @param entity
+	 */
 	private void addIdAttribute(EntityInterface entity)
 	{
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
@@ -2385,8 +2333,7 @@ public class EntityManager
 
 			//entity = (Entity) session.saveOrUpdateCopy(entity);
 			//since only metadata is saved 
-			postSaveProcessEntity(entity, hibernateDAO, rollbackQueryStack, processedEntityList,
-					false);
+			postSaveProcessEntity(entity, hibernateDAO, rollbackQueryStack, processedEntityList,false);
 			//entity = (Entity) session.saveOrUpdateCopy(entity);
 			hibernateDAO.update(entity, null, false, false, false);
 		}
@@ -2412,6 +2359,11 @@ public class EntityManager
 		return entity;//(Entity) getEntityByIdentifier(entity.getId().toString());
 	}
 
+	/**
+	 * @param id
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
 	private Long getOriginalParentId(Long id) throws DynamicExtensionsSystemException
 	{
 		StringBuffer query = new StringBuffer();
@@ -2436,7 +2388,6 @@ public class EntityManager
 	private void checkParentChangeAllowed(Entity entity) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
-
 		String tableName = entity.getTableProperties().getName();
 		if (queryBuilder.isDataPresent(tableName))
 		{
@@ -2948,7 +2899,7 @@ public class EntityManager
 					else
 					{
 						saveOrUpdateEntity(entityInterface, hibernateDAO, stack, isEntitySaved,
-								processedEntityList, false);
+								processedEntityList,false);
 					}
 				}
 			}
@@ -3510,7 +3461,7 @@ public class EntityManager
 		return associationTreeObjectForGroup;
 	}
 
-	/* (non-Javadoc)
+	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllContainerBeans()
 	 */
 	public List<NameValueBean> getAllContainerBeans() throws DynamicExtensionsSystemException,
@@ -3530,7 +3481,7 @@ public class EntityManager
 		}
 		return list;
 	}
-
+	
 	/**
 	 * 
 	 * @return
@@ -3549,7 +3500,6 @@ public class EntityManager
 		Map<String, String> containerBeansMap = new HashMap<String, String>();
 		String containerId;
 		String containerCaption;
-
 		while (containerBeansIterator.hasNext())
 		{
 			objectArrayForContainerBeans = (Object[]) containerBeansIterator.next();
@@ -3561,7 +3511,6 @@ public class EntityManager
 		}
 		return containerBeansMap;
 	}
-
 	/**
 	 * 
 	 * @param objectArrayForContainerBeans
@@ -3790,7 +3739,12 @@ public class EntityManager
 		}
 		return null;
 	}
-
+	
+	
+	/**
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
 	public Map<Long, Date> getEntityCreatedDateByContainerId() throws DynamicExtensionsSystemException
 	{
 		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();

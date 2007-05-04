@@ -59,6 +59,11 @@
 			                             join entity.entityGroupCollection entityGroup
 			                                     where entityGroup.id = ?)
 	</query>
+	
+	<query name="getAllEntityCreatedDateByContainerId">
+			select container.id,container.entity.createdDate
+			   from edu.common.dynamicextensions.domain.userinterface.Container container
+	</query>
 			
 	<query name="getAllContainerBeans">
 			select container.id,container.caption

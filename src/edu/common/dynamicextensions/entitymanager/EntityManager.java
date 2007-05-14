@@ -2526,21 +2526,21 @@ public class EntityManager
 		{
 			return null;
 		}
-		List<AbstractAttributeInterface> tempAbstractAttributeCollection = new ArrayList(
-				abstractAttributeCollection);
-		tempAbstractAttributeCollection = EntityManagerUtil
-				.filterSystemAttributes(tempAbstractAttributeCollection);
+//		List<AbstractAttributeInterface> tempAbstractAttributeCollection = new ArrayList(
+//				abstractAttributeCollection);
+//		tempAbstractAttributeCollection = EntityManagerUtil
+//				.filterSystemAttributes(tempAbstractAttributeCollection);
 
 		//Initialising entityRecord and entityRecordMetadata 
 		EntityRecordResultInterface entityRecordResult = new EntityRecordResult();
 		EntityRecordMetadata recordMetadata = new EntityRecordMetadata();
-		recordMetadata.setAttributeList(tempAbstractAttributeCollection);
+		recordMetadata.setAttributeList(abstractAttributeCollection);
 		entityRecordResult.setEntityRecordMetadata(recordMetadata);
 
 		//Filtering abstract attributes into attribtute and association
 		List<AssociationInterface> associationCollection = new ArrayList<AssociationInterface>();
 		List<AttributeInterface> attributesCollection = new ArrayList<AttributeInterface>();
-		filterAttributes(tempAbstractAttributeCollection, attributesCollection,
+		filterAttributes(abstractAttributeCollection, attributesCollection,
 				associationCollection);
 		//		attributesCollection = EntityManagerUtil.filterSystemAttributes(attributesCollection);
 
@@ -2612,7 +2612,7 @@ public class EntityManager
 					Long recordId = entityRecord.getRecordId();
 					List<String> valueList = getCollectionAttributeRecordValues(entity.getId(),
 							attribute.getId(), recordId);
-					int index = tempAbstractAttributeCollection.indexOf(attribute);
+					int index = abstractAttributeCollection.indexOf(attribute);
 					entityRecord.getRecordValueList().set(index, valueList);
 				}
 
@@ -2625,7 +2625,7 @@ public class EntityManager
 					Long recordId = entityRecord.getRecordId();
 					FileAttributeRecordValue fileRecordValue = getFileAttributeRecordValue(entity
 							.getId(), attribute.getId(), recordId);
-					int index = tempAbstractAttributeCollection.indexOf(attribute);
+					int index = abstractAttributeCollection.indexOf(attribute);
 					entityRecord.getRecordValueList().set(index, fileRecordValue);
 				}
 

@@ -34,57 +34,7 @@ import edu.wustl.common.util.logger.Logger;
 public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstantsInterface
 {
 
-	/**
-	 * 
-	 * @param attribute
-	 * @param value
-	 * @return
-	 */
-	public static String getFormattedValue(AbstractAttribute attribute, Object value)
-	{
-		String formattedvalue = null;
-		AttributeTypeInformationInterface attributeInformation = ((Attribute) attribute)
-				.getAttributeTypeInformation();
-		if (attribute == null)
-		{
-			formattedvalue = null;
-		}
-
-		else if (attributeInformation instanceof StringAttributeTypeInformation)
-		{
-			formattedvalue = "'" + value + "'";
-		}
-		else if (attributeInformation instanceof DateAttributeTypeInformation)
-		{
-			String dateFormat = ((DateAttributeTypeInformation) attributeInformation).getFormat();
-			if (dateFormat == null)
-			{
-				dateFormat = Constants.DATE_PATTERN_MM_DD_YYYY;
-			}
-
-			String str = null;
-			if (value instanceof Date)
-			{
-				str = Utility.parseDateToString(((Date) value), dateFormat);
-			}
-			else
-			{
-				str = (String) value;
-			}
-
-			/*formattedvalue = Variables.strTodateFunction + "('" + str + "','"
-			 + variables.datepattern + "')";*/
-			formattedvalue = Variables.strTodateFunction + "('" + str + "','"
-					+ DynamicExtensionsUtility.getSQLDateFormat(dateFormat) + "')";
-		}
-		else
-		{
-			formattedvalue = value.toString();
-		}
-		Logger.out.debug("getFormattedValue The formatted value for attribute "
-				+ attribute.getName() + "is " + formattedvalue);
-		return formattedvalue;
-	}
+	
 
 	/**
 	 * @param query query to be executed
@@ -319,7 +269,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	public static boolean isValuePresent(AttributeInterface attribute, Object value)
 			throws DynamicExtensionsSystemException
 	{
-		return DynamicExtensionBaseQueryBuilder.isValuePresent(attribute, value);
+		return new DynamicExtensionBaseQueryBuilder().isValuePresent(attribute, value);
 	}
 
 	public static List<AbstractAttributeInterface> filterSystemAttributes(

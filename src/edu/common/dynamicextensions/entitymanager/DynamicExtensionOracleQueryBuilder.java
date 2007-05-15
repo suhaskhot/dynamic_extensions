@@ -1,4 +1,3 @@
-
 package edu.common.dynamicextensions.entitymanager;
 
 /**
@@ -6,7 +5,12 @@ package edu.common.dynamicextensions.entitymanager;
  * 
  * @author Rahul Ner
  */
-public class DynamicExtensionOracleQueryBuilder extends DynamicExtensionBaseQueryBuilder
-{
+public class DynamicExtensionOracleQueryBuilder extends DynamicExtensionBaseQueryBuilder {
 
+    /**
+     * @see edu.common.dynamicextensions.entitymanager.DynamicExtensionBaseQueryBuilder#getEscapedStringValue(java.lang.String)
+     */
+    protected String getEscapedStringValue(String value) {
+        return value.replaceAll("'", "''");
+    }
 }

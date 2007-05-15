@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -40,10 +41,13 @@ import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationExcep
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.Variables;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.wustl.common.dao.HibernateDAO;
+import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.logger.Logger;
 
@@ -1926,18 +1930,78 @@ class DynamicExtensionBaseQueryBuilder
 		return isParentChanged;
 
 	}
+    
+    /**
+     * 
+     * @param attribute
+     * @param value
+     * @return
+     */
+    public String getFormattedValue(AbstractAttribute attribute, Object value)
+    {
+        String formattedvalue = null;
+        AttributeTypeInformationInterface attributeInformation = ((Attribute) attribute)
+                .getAttributeTypeInformation();
+        if (attribute == null)
+        {
+            formattedvalue = null;
+        }
+
+        else if (attributeInformation instanceof StringAttributeTypeInformation)
+        {
+            formattedvalue = "'" +  getEscapedStringValue((String)value) + "'";
+        }
+        else if (attributeInformation instanceof DateAttributeTypeInformation)
+        {
+            String dateFormat = ((DateAttributeTypeInformation) attributeInformation).getFormat();
+            if (dateFormat == null)
+            {
+                dateFormat = Constants.DATE_PATTERN_MM_DD_YYYY;
+            }
+
+            String str = null;
+            if (value instanceof Date)
+            {
+                str = Utility.parseDateToString(((Date) value), dateFormat);
+            }
+            else
+            {
+                str = (String) value;
+            }
+
+            /*formattedvalue = Variables.strTodateFunction + "('" + str + "','"
+             + variables.datepattern + "')";*/
+            formattedvalue = Variables.strTodateFunction + "('" + str + "','"
+                    + DynamicExtensionsUtility.getSQLDateFormat(dateFormat) + "')";
+        }
+        else
+        {
+            formattedvalue = value.toString();
+        }
+        Logger.out.debug("getFormattedValue The formatted value for attribute "
+                + attribute.getName() + "is " + formattedvalue);
+        return formattedvalue;
+    }
+    
+    /**
+     * @param value
+     * @return
+     */
+    protected String getEscapedStringValue(String value) {
+        return value;    
+    }
 
 	/**
 	 * @return
 	 */
-	public static boolean isValuePresent(AttributeInterface attribute, Object value)
+	public  boolean isValuePresent(AttributeInterface attribute, Object value)
 			throws DynamicExtensionsSystemException
 	{
 		boolean present = false;
 
 		String tableName = attribute.getEntity().getTableProperties().getName();
 		String columnName = attribute.getColumnProperties().getName();
-		Object formattedValue = EntityManagerUtil.getFormattedValue((AbstractAttribute) attribute,
+		Object formattedValue = getFormattedValue((AbstractAttribute) attribute,
 				value);
 
 		StringBuffer queryBuffer = new StringBuffer();

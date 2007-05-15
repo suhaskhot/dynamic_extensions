@@ -31,5 +31,12 @@ public class DynamicExtensionMySQLQueryBuilder extends DynamicExtensionBaseQuery
 
 		return foreignKeyConstraint.toString();
 	}
+    
+    /**
+     * @see edu.common.dynamicextensions.entitymanager.DynamicExtensionBaseQueryBuilder#getEscapedStringValue(java.lang.String)
+     */
+    protected  String getEscapedStringValue(String value) {
+        return value.replaceAll("'", "\\\\'");
+    }
 
 }

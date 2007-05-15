@@ -1594,7 +1594,7 @@ public class EntityManager
 				else
 				// for other attribute, append to query
 				{
-					String strValue = EntityManagerUtil.getFormattedValue(attribute, value);
+					String strValue = queryBuilder.getFormattedValue(attribute, value);
 
 					if (strValue != null && !strValue.equalsIgnoreCase(""))
 					{
@@ -1915,7 +1915,7 @@ public class EntityManager
 
 					updateColumnString.append(dbColumnName);
 					updateColumnString.append(WHITESPACE + EQUAL + WHITESPACE);
-					value = EntityManagerUtil.getFormattedValue(attribute, value);
+					value = queryBuilder.getFormattedValue(attribute, value);
 					updateColumnString.append(value);
 				}
 			}

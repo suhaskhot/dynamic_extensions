@@ -3017,5 +3017,38 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 	}
+    
+     /**
+     * fix for bug 4075
+     */
+    public void testInsertValueWithQuote() {
+
+            EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+            DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+            try {
+                // Step 1
+                EntityInterface specimen = factory.createEntity();
+                specimen.setName("specimen");
+                specimen.setAbstract(true);
+                AttributeInterface barcode = factory.createStringAttribute();
+                barcode.setName("barcode");
+                specimen.addAbstractAttribute(barcode);
+
+                Map dataValue = new HashMap();
+
+                dataValue.put(barcode, "123'456");
+                
+                entityManagerInterface.persistEntity(specimen);
+                Long recordId = entityManagerInterface.insertData(specimen, dataValue);
+                
+                assertTrue(true);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail();
+            }
+
+        }
 
 }

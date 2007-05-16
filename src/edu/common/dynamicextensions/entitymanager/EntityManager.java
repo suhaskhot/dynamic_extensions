@@ -3482,6 +3482,30 @@ public class EntityManager
 		return list;
 	}
 	
+
+	/**
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllContainerBeans()
+	 */
+	public List<ContainerInformationObject> getAllContainerInformationObjects() throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+		Collection containerInformationObjectCollection = executeHQL("getAllContainerInformationObjects",
+				substitutionParameterMap);
+		Iterator containerInformationObjectIterator = containerInformationObjectCollection .iterator();
+		Object[] objectArrayForContainerInformationObject;
+		List<ContainerInformationObject> list = new ArrayList<ContainerInformationObject>();
+		while (containerInformationObjectIterator.hasNext())
+		{
+			objectArrayForContainerInformationObject = (Object[]) containerInformationObjectIterator.next();
+			list.add(new ContainerInformationObject((String) objectArrayForContainerInformationObject[1],
+					((Long) objectArrayForContainerInformationObject[0]).toString(),(String) objectArrayForContainerInformationObject[2]));
+		}
+		return list;
+	}
+	
+	
+	
 	/**
 	 * 
 	 * @return

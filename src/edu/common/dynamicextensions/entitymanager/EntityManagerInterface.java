@@ -428,6 +428,14 @@ public interface EntityManagerInterface
 	 */
 	List<NameValueBean> getAllContainerBeans() throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException;
+	/**
+	 * 
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public List<ContainerInformationObject> getAllContainerInformationObjects() throws DynamicExtensionsSystemException,
+	DynamicExtensionsApplicationException;
 
 	/**
 	 * @param association

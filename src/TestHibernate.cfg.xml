@@ -17,6 +17,7 @@
         <property name="hibernate.connection.username">vishvesh</property>
         <property name="hibernate.connection.password">vishvesh123</property>
         <property name="hibernate.connection.url">jdbc:oracle:thin:@caelmir:1521:caelmir</property>
+          <property name="hibernate.query.substitutions">true 1,false 0</property>
     --> 
 <!-- oracle settings end-->           
         
@@ -29,6 +30,7 @@
        	<property name="hibernate.connection.username">dyext_user</property>
         <property name="hibernate.connection.password">dyext123</property>
         <property name="hibernate.connection.url">jdbc:mysql://localhost/dyext</property>
+          <property name="hibernate.query.substitutions">true 1,false 0</property>
 
 <!-- My sql settings end -->   
 

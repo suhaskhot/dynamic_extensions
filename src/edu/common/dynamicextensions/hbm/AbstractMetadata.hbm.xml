@@ -99,6 +99,14 @@
               />
         </set>
 
+        <property
+            name="publicId"
+            type="string"
+            update="true"
+            insert="true"
+            column="PUBLIC_ID"
+        />
+
         <!--
             To add non XDoclet property mappings, create a file named
                 hibernate-properties-AbstractMetadata.xml
@@ -229,6 +237,27 @@
             insert="true"
             column="IS_NULLABLE"
         />
+
+        <set
+            name="caDSRValueDomainInfoCollection"
+            table="DYEXTN_CADSR_VALUE_DOMAIN_INFO"
+            lazy="false"
+            inverse="false"
+            cascade="all-delete-orphan"
+            sort="unsorted"
+        >
+            <cache 
+                usage="read-write" 
+             />
+
+              <key
+                  column="PRIMITIVE_ATTRIBUTE_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.CaDSRValueDomainInfo"
+              />
+        </set>
 
         </joined-subclass>
         <joined-subclass

@@ -92,5 +92,16 @@ public interface AbstractMetadataInterface extends SemanticAnnotatableInterface
 	 * @param taggedValueInterface
 	 */
 	void addTaggedValue(TaggedValueInterface taggedValueInterface);
-
+	
+	/**
+	 * @return the publicId
+	 */
+	public String getPublicId();
+		
+	/**
+	 * This method stores public id of metadata object 
+	 * @param publicId the publicId to set
+	 */
+	public void setPublicId(String publicId);
+	
 }

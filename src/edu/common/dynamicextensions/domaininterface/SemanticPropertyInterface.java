@@ -50,17 +50,25 @@ public interface SemanticPropertyInterface extends DynamicExtensionBaseDomainObj
 	 */
 	void setThesaurasName(String thesaurasName);
 	
-	
 	/**
 	 * @return int
 	 */
 	int getSequenceNumber();
-
 
 	/**
 	 * @param sequenceNumber int
 	 */
 	void setSequenceNumber(int sequenceNumber);
 	
+	/**
+	 * This method returns the tem i.e. concept name. 
+	 * @return the conceptDefinition
+	 */
+	public String getConceptDefinition();
+		
+	/**
+	 * @param conceptDefinition the conceptDefinition to set
+	 */
+	public void setConceptDefinition(String conceptDefinition);
 
 }

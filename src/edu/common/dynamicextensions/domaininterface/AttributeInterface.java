@@ -87,4 +87,16 @@ public interface AttributeInterface extends AbstractAttributeInterface
 	 * @return Strin attribute type
 	 */
 	String getDataType();
+	
+	/**
+	 * 
+	 * @return AttributeTypeInformationInterface
+	 */
+	public CaDSRValueDomainInfoInterface getCaDSRValueDomainInfo();
+	
+	/**
+	 * 
+	 * @return AttributeTypeInformationInterface
+	 */
+	public void setCaDSRValueDomainInfo(CaDSRValueDomainInfoInterface caDSRValueDomainInfoInterface);
 }

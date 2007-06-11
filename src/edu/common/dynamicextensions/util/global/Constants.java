@@ -197,5 +197,36 @@ public class Constants extends edu.wustl.common.util.global.Constants
 			return null;
 		}
 	}
+	
+	
+	public enum ValueDomainType {
+		ENUMERATED("ENUMERATED"), NON_ENUMERATED("NON_ENUMERATED");
+
+		String value;
+
+		ValueDomainType(String value)
+		{
+			this.value = value;
+		}
+
+		public String getValue()
+		{
+			return value;
+		}
+
+		public static ValueDomainType get(String value)
+		{
+			ValueDomainType[] valueDomainTypes = ValueDomainType.values();
+
+			for (ValueDomainType valueDomainType : valueDomainTypes )
+			{
+				if (valueDomainType.getValue().equalsIgnoreCase(value))
+				{
+					return valueDomainType;
+				}
+			}
+			return null;
+		}
+	}
 
 }

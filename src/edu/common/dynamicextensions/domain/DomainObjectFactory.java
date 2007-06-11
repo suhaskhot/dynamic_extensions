@@ -24,6 +24,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.BooleanValueInterface;
 import edu.common.dynamicextensions.domaininterface.ByteArrayValueInterface;
 import edu.common.dynamicextensions.domaininterface.CaDSRDEInterface;
+import edu.common.dynamicextensions.domaininterface.CaDSRValueDomainInfoInterface;
 import edu.common.dynamicextensions.domaininterface.DateValueInterface;
 import edu.common.dynamicextensions.domaininterface.DoubleValueInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
@@ -685,5 +686,15 @@ public class DomainObjectFactory
 	{
 		ContainmentAssociationControlInterface containmentAssociationControlInterface = new ContainmentAssociationControl();
 		return containmentAssociationControlInterface;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public CaDSRValueDomainInfoInterface createCaDSRValueDomainInfo()
+	{
+		CaDSRValueDomainInfoInterface caDSRValueDomainInfoInterface = new CaDSRValueDomainInfo();
+		return caDSRValueDomainInfoInterface ;
 	}
 }

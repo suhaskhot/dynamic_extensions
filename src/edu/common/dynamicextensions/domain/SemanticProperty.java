@@ -37,6 +37,11 @@ public class SemanticProperty extends DynamicExtensionBaseDomainObject implement
 	/**
 	 * 
 	 */
+	protected String conceptDefinition;
+	
+	/**
+	 * 
+	 */
 	protected int sequenceNumber = 0;
 	
 
@@ -144,6 +149,26 @@ public class SemanticProperty extends DynamicExtensionBaseDomainObject implement
 		Integer thisSequenceNumber = this.sequenceNumber;
 		Integer otherSequenceNumber = semanticProperty.getSequenceNumber();
 		return thisSequenceNumber.compareTo(otherSequenceNumber);
+	}
+
+	
+	/**
+	 * This method returns the tem i.e. concept name. 
+	 * @hibernate.property name="conceptDefinition" type="string" column="CONCEPT_DEFINITION" 
+	 * @return the conceptDefinition
+	 */
+	public String getConceptDefinition()
+	{
+		return conceptDefinition;
+	}
+
+	
+	/**
+	 * @param conceptDefinition the conceptDefinition to set
+	 */
+	public void setConceptDefinition(String conceptDefinition)
+	{
+		this.conceptDefinition = conceptDefinition;
 	}
 
 }

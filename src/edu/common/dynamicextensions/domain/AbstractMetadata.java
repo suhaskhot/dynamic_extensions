@@ -62,6 +62,11 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 	 * Created date for metadata object
 	 */
 	protected Date createdDate;
+	
+	/**
+	 * Public Identifier from CaDSR.
+	 */
+	protected String publicId;
 
 	/**
 	 * Semantic property collection.
@@ -282,5 +287,25 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 	public String toString()
 	{
 		return "Name: " + name + "  Id :  " + id;
+	}
+
+	
+	
+	/**
+	 * @hibernate.property name="publicId" type="string" column="PUBLIC_ID"  
+	 * @return the publicId
+	 */
+	public String getPublicId()
+	{
+		return publicId;
+	}
+
+	
+	/**
+	 * @param publicId the publicId to set
+	 */
+	public void setPublicId(String publicId)
+	{
+		this.publicId = publicId;
 	}
 }

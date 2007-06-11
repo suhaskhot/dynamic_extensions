@@ -7,6 +7,7 @@ import java.util.Iterator;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.CaDSRValueDomainInfoInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 
 /**
@@ -50,6 +51,10 @@ public class Attribute extends AbstractAttribute implements AttributeInterface
 	 * 
 	 */
 	protected Collection<AttributeTypeInformationInterface> attributeTypeInformationCollection = new HashSet<AttributeTypeInformationInterface>();
+	/**
+	 * 
+	 */
+	protected Collection<CaDSRValueDomainInfo> caDSRValueDomainInfoCollection = new HashSet<CaDSRValueDomainInfo>();
 
 	/**
 	 * @hibernate.set name="attributeTypeInformationCollection" table="DYEXTN_ATTRIBUTE_TYPE_INFO"
@@ -266,5 +271,70 @@ public class Attribute extends AbstractAttribute implements AttributeInterface
 		}
 
 	}
+	
+	
+	
+	/**
+	 * @hibernate.set name="caDSRValueDomainInfoCollection" table="DYEXTN_CADSR_VALUE_DOMAIN_INFO"
+	 * cascade="all-delete-orphan" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="PRIMITIVE_ATTRIBUTE_ID"
+	 * @hibernate.cache  usage="read-write"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.CaDSRValueDomainInfo"   
+	 * @return the caDSRValueDomainInfoCollection
+	 */
+	public Collection<CaDSRValueDomainInfo> getCaDSRValueDomainInfoCollection()
+	{
+		return caDSRValueDomainInfoCollection;
+	}
 
+	
+	/**
+	 * @param caDSRValueDomainInfoCollection the caDSRValueDomainInfoCollection to set
+	 */
+	public void setCaDSRValueDomainInfoCollection(
+			Collection<CaDSRValueDomainInfo> caDSRValueDomainInfoCollection)
+	{
+		this.caDSRValueDomainInfoCollection = caDSRValueDomainInfoCollection;
+	}
+
+
+	
+	
+	
+	
+	/**
+	 * 
+	 * @return CaDSRValueDomainInfoInterface
+	 */
+	public CaDSRValueDomainInfoInterface getCaDSRValueDomainInfo()
+	{
+		if (caDSRValueDomainInfoCollection != null)
+		{
+			Iterator caDSRValueDomainInfoIterator = caDSRValueDomainInfoCollection 
+					.iterator();
+			return (CaDSRValueDomainInfoInterface) caDSRValueDomainInfoIterator .next();
+		}
+		else
+		{
+			return null;
+		}
+
+	}
+
+	/**
+	 * 
+	 * 
+	 */
+	public void setCaDSRValueDomainInfo(CaDSRValueDomainInfoInterface caDSRValueDomainInfoInterface)
+	{
+		if (caDSRValueDomainInfoCollection == null)
+		{
+			caDSRValueDomainInfoCollection= new HashSet<CaDSRValueDomainInfo>();
+		}
+		else
+		{
+			caDSRValueDomainInfoCollection.clear();
+		}
+		this.caDSRValueDomainInfoCollection.add((CaDSRValueDomainInfo)caDSRValueDomainInfoInterface);
+	}
 }

@@ -36,6 +36,7 @@ import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.CaDSRValueDomainInfoInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
@@ -52,6 +53,7 @@ import edu.common.dynamicextensions.util.global.Variables;
 import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
+import edu.common.dynamicextensions.util.global.Constants.ValueDomainType;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.logger.Logger;
@@ -3050,5 +3052,62 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             }
 
         }
+    
+	/** PURPOSE: This method tests for creating value domain information object 
+	 *           
+	 *  EXPECTED BEHAVIOUR: Attribute should be created successfully along with value domain information objet.	    
+	 *  TEST CASE FLOW: 1.create test entity
+	 *                  2.create cadsr value domain information object 
+	 * @throws Exception 
+	 */
+    public void testCreateEntityAttributeWithValueDomain()
+	{
+		try
+		{
+			EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+			DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+			// Step 1
+			EntityInterface specimen = factory.createEntity();
+			specimen.setName("specimen");
+			specimen.setAbstract(true);
+			AttributeInterface barcode = factory.createStringAttribute();
+			barcode.setName("barcode");
+			
+			//Step 2
+			CaDSRValueDomainInfoInterface caDSRValueDomainInfoInterface = factory.createCaDSRValueDomainInfo();
+			caDSRValueDomainInfoInterface.setValueDomainType(ValueDomainType.ENUMERATED);
+			caDSRValueDomainInfoInterface.setDatatype("java.lang.String");
+			caDSRValueDomainInfoInterface.setName("java.lang.String");
+			barcode.setCaDSRValueDomainInfo(caDSRValueDomainInfoInterface );	
+			
+			SemanticPropertyInterface semanticPropertyInterface = factory.createSemanticProperty();
+			semanticPropertyInterface.setConceptDefinition("definition");
+			semanticPropertyInterface.setConceptCode("C1123");
+			semanticPropertyInterface.setSequenceNumber(1);
+			semanticPropertyInterface.setTerm("term");
+			semanticPropertyInterface.setThesaurasName("thesaurasName");
+			
+			barcode.addSemanticProperty(semanticPropertyInterface);
+						
+			specimen.addAbstractAttribute(barcode);
+
+			AttributeInterface label = factory.createStringAttribute();
+			label.setName("label");
+			label.setPublicId("public id 1");
+			specimen.addAbstractAttribute(label);
+
+			EntityInterface tissueSpecimen = factory.createEntity();
+			tissueSpecimen.setParentEntity(specimen);
+
+			specimen = entityManagerInterface.persistEntity(specimen);
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
 
 }

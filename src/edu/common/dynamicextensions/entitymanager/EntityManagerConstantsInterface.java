@@ -29,6 +29,6 @@ public interface EntityManagerConstantsInterface
 	String DATE_TIME_ATTRIBUTE_TYPE = "dateTime";	
 	String DOUBLE_ATTRIBUTE_TYPE = "double";
 	String LONG_ATTRIBUTE_TYPE = "long";
-	String INTEGER_ATTRIBUTE_TYPE = "integer";
-	
+    String INTEGER_ATTRIBUTE_TYPE = "integer";
+    String OBJECT_ATTRIBUTE_TYPE = "object";   
 }

@@ -32,6 +32,7 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.FloatValueInterface;
 import edu.common.dynamicextensions.domaininterface.IntegerValueInterface;
 import edu.common.dynamicextensions.domaininterface.LongValueInterface;
+import edu.common.dynamicextensions.domaininterface.ObjectAttributeRecordValueInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.ShortValueInterface;
@@ -697,4 +698,28 @@ public class DomainObjectFactory
 		CaDSRValueDomainInfoInterface caDSRValueDomainInfoInterface = new CaDSRValueDomainInfo();
 		return caDSRValueDomainInfoInterface ;
 	}
+
+    /**
+     * @return
+     */
+    public AttributeInterface createObjectAttribute() {
+        Attribute ObjectAttribute = new Attribute();
+        ObjectAttribute.setAttributeTypeInformation(new ObjectAttributeTypeInformation());
+        return ObjectAttribute;
+    }
+    
+    /**
+     * 
+     * @return instance of IntegerAttributeTypeInformation.
+     */
+    public AttributeTypeInformation createObjectAttributeTypeInformation()
+    {
+        return new ObjectAttributeTypeInformation();
+    }
+    
+    public ObjectAttributeRecordValueInterface createObjectAttributeRecordValue() {
+        return new ObjectAttributeRecordValue();
+    }
+    
+    
 }

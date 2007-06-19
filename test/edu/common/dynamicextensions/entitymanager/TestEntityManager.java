@@ -30,7 +30,9 @@ import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.FileExtension;
+import edu.common.dynamicextensions.domain.ObjectAttributeRecordValue;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.TaggedValue;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
 import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
@@ -39,6 +41,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInte
 import edu.common.dynamicextensions.domaininterface.CaDSRValueDomainInfoInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.ObjectAttributeRecordValueInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
@@ -3109,5 +3112,370 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 	}
+    
+    
+    public void testInsertObjectAttribute() {
+        EntityManagerInterface entityManager = EntityManager.getInstance();
+        DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+        // create user 
+        EntityInterface user = factory.createEntity();
+        user.setName("User");
+        
+        AttributeInterface age = factory.createIntegerAttribute();
+        age.setName("Age");
+        user.addAbstractAttribute(age);
+
+        
+        AttributeInterface info = factory.createObjectAttribute();
+        info.setName("Resume");
+        user.addAbstractAttribute(info);
+        user.addAttribute(info);
+
+        try
+        {
+           
+            user = entityManager.persistEntity(user);
+            
+            ObjectAttributeRecordValueInterface objectRecord = factory.createObjectAttributeRecordValue();
+            objectRecord.setObject(new TaggedValue());
+            objectRecord.setClassName(TaggedValue.class.getName());
+            
+            Map dataValue = new HashMap();
+            dataValue.put(age, "45");
+            dataValue.put(info, objectRecord);
+
+            Long recordId = entityManager.insertData(user, dataValue);
+
+            ResultSet resultSet = executeQuery("select count(*) from "
+                    + user.getTableProperties().getName());
+            resultSet.next();
+            assertEquals(1, resultSet.getInt(1));
+        }
+        catch (Throwable e)
+        {
+            e.printStackTrace();
+            fail();
+        }
+
+    }
+    
+    
+    public void testGerRecordForObjectAttribute() {
+        EntityManagerInterface entityManager = EntityManager.getInstance();
+        DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+        // create user 
+        EntityInterface user = factory.createEntity();
+        user.setName("User");
+        
+        AttributeInterface age = factory.createIntegerAttribute();
+        age.setName("Age");
+        user.addAbstractAttribute(age);
+
+        
+        AttributeInterface info = factory.createObjectAttribute();
+        info.setName("Resume");
+        user.addAbstractAttribute(info);
+        user.addAttribute(info);
+
+        try
+        {
+            TaggedValue taggedValue = new TaggedValue();
+            taggedValue.setKey("rahul");
+            taggedValue.setValue("ner");
+            
+           
+            user = entityManager.persistEntity(user);
+            
+            ObjectAttributeRecordValueInterface objectRecord = factory.createObjectAttributeRecordValue();
+            objectRecord.setObject(taggedValue);
+            objectRecord.setClassName(TaggedValue.class.getName());
+            
+            Map dataValue = new HashMap();
+            dataValue.put(age, "45");
+            dataValue.put(info, objectRecord);
+
+            Long recordId = entityManager.insertData(user, dataValue);
+
+            ResultSet resultSet = executeQuery("select count(*) from "
+                    + user.getTableProperties().getName());
+            resultSet.next();
+            assertEquals(1, resultSet.getInt(1));
+            
+            
+            dataValue = entityManager.getRecordById(user, recordId);
+
+            assertEquals("45", dataValue.get(age));
+            TaggedValue taggedValue1 = (TaggedValue)((ObjectAttributeRecordValueInterface) dataValue.get(info)).getObject();
+            assertTrue(taggedValue1.getKey().equals("rahul"));
+            assertTrue(taggedValue1.getValue().equals("ner"));
+
+        }
+        catch (Throwable e)
+        {
+            e.printStackTrace();
+            fail();
+        }
+
+    }
+    
+    
+    public void testGerEntityRecordResultForObjectAttribute() {
+        EntityManagerInterface entityManager = EntityManager.getInstance();
+        DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+        // create user 
+        EntityInterface user = factory.createEntity();
+        user.setName("User");
+        
+        AttributeInterface age = factory.createIntegerAttribute();
+        age.setName("Age");
+        user.addAbstractAttribute(age);
+
+        
+        AttributeInterface info = factory.createObjectAttribute();
+        info.setName("Resume");
+        user.addAbstractAttribute(info);
+        user.addAttribute(info);
+
+        try
+        {
+            TaggedValue taggedValue = new TaggedValue();
+            taggedValue.setKey("rahul");
+            taggedValue.setValue("ner");
+            
+           
+            user = entityManager.persistEntity(user);
+            
+            ObjectAttributeRecordValueInterface objectRecord = factory.createObjectAttributeRecordValue();
+            objectRecord.setObject(taggedValue);
+            objectRecord.setClassName(TaggedValue.class.getName());
+            
+            Map dataValue = new HashMap();
+            dataValue.put(age, "45");
+            dataValue.put(info, objectRecord);
+
+            Long recordId = entityManager.insertData(user, dataValue);
+
+            ResultSet resultSet = executeQuery("select count(*) from "
+                    + user.getTableProperties().getName());
+            resultSet.next();
+            assertEquals(1, resultSet.getInt(1));
+            
+            List userAttribute = new ArrayList();
+            userAttribute.add(age);
+            userAttribute.add(info);
+            
+            EntityRecordResultInterface recordResult = entityManager.getEntityRecords(user,userAttribute,null);
+            
+            EntityRecordInterface record =  recordResult.getEntityRecordList().iterator().next();
+            assertEquals("45", record.getRecordValueList().get(0));
+
+            TaggedValue taggedValue1 = (TaggedValue)(((ObjectAttributeRecordValue)record.getRecordValueList().get(1)).getObject());
+            assertTrue(taggedValue1.getKey().equals("rahul"));
+            assertTrue(taggedValue1.getValue().equals("ner"));
+
+        }
+        catch (Throwable e)
+        {
+            e.printStackTrace();
+            fail();
+        }
+
+    }
+    
+    public void testEditRecordForObjectAttribute() {
+        EntityManagerInterface entityManager = EntityManager.getInstance();
+        DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+        // create user 
+        EntityInterface user = factory.createEntity();
+        user.setName("User");
+        
+        AttributeInterface age = factory.createIntegerAttribute();
+        age.setName("Age");
+        user.addAbstractAttribute(age);
+
+        
+        AttributeInterface info = factory.createObjectAttribute();
+        info.setName("Resume");
+        user.addAbstractAttribute(info);
+        user.addAttribute(info);
+
+        try
+        {
+            TaggedValue taggedValue = new TaggedValue();
+            taggedValue.setKey("rahul");
+            taggedValue.setValue("ner");
+            
+           
+            user = entityManager.persistEntity(user);
+            
+            ObjectAttributeRecordValueInterface objectRecord = factory.createObjectAttributeRecordValue();
+            objectRecord.setObject(taggedValue);
+            objectRecord.setClassName(TaggedValue.class.getName());
+            
+            Map dataValue = new HashMap();
+            dataValue.put(age, "45");
+            dataValue.put(info, objectRecord);
+
+            Long recordId = entityManager.insertData(user, dataValue);
+
+            ResultSet resultSet = executeQuery("select count(*) from "
+                    + user.getTableProperties().getName());
+            resultSet.next();
+            assertEquals(1, resultSet.getInt(1));
+            
+            
+            dataValue = entityManager.getRecordById(user, recordId);
+
+            assertEquals("45", dataValue.get(age));
+            TaggedValue taggedValue1 = (TaggedValue)((ObjectAttributeRecordValueInterface) dataValue.get(info)).getObject();
+            assertTrue(taggedValue1.getKey().equals("rahul"));
+            assertTrue(taggedValue1.getValue().equals("ner"));
+            
+            taggedValue1.setValue("ner1");
+            
+            objectRecord.setClassName("new class name");
+            objectRecord.setObject(taggedValue1);
+            
+            dataValue.clear();
+            dataValue.put(age, "54");
+            dataValue.put(info, objectRecord);
+            
+            entityManager.editData(user, dataValue,recordId);
+            
+            dataValue = entityManager.getRecordById(user, recordId);
+
+            assertEquals("54", dataValue.get(age));
+            TaggedValue taggedValue2 = (TaggedValue)((ObjectAttributeRecordValueInterface) dataValue.get(info)).getObject();
+            assertTrue(taggedValue2.getKey().equals("rahul"));
+            assertTrue(taggedValue2.getValue().equals("ner1"));
+            
+            assertEquals("new class name",((ObjectAttributeRecordValueInterface) dataValue.get(info)).getClassName());
+            
+        }
+        catch (Throwable e)
+        {
+            e.printStackTrace();
+            fail();
+        }
+
+    }
+    
+    
+    public void testDeleteRecordForObjectAttribute() {
+        EntityManagerInterface entityManager = EntityManager.getInstance();
+        DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+        // create user 
+        EntityInterface user = factory.createEntity();
+        user.setName("User");
+        
+        AttributeInterface age = factory.createIntegerAttribute();
+        age.setName("Age");
+        user.addAbstractAttribute(age);
+
+        
+        AttributeInterface info = factory.createObjectAttribute();
+        info.setName("Resume");
+        user.addAbstractAttribute(info);
+        user.addAttribute(info);
+
+        try
+        {
+            TaggedValue taggedValue = new TaggedValue();
+            taggedValue.setKey("rahul");
+            taggedValue.setValue("ner");
+            
+           
+            user = entityManager.persistEntity(user);
+            
+            ObjectAttributeRecordValueInterface objectRecord = factory.createObjectAttributeRecordValue();
+            objectRecord.setObject(taggedValue);
+            objectRecord.setClassName(TaggedValue.class.getName());
+            
+            Map dataValue = new HashMap();
+            dataValue.put(age, "45");
+            dataValue.put(info, objectRecord);
+
+            Long recordId = entityManager.insertData(user, dataValue);
+
+            ResultSet resultSet = executeQuery("select count(*) from dyextn_attribute_record");
+            resultSet.next();
+            int beforeCnt = resultSet.getInt(1);
+            resultSet.close();
+
+            entityManager.deleteRecord(user, recordId);
+
+            resultSet = executeQuery("select count(*) from dyextn_attribute_record");
+            resultSet.next();
+            int afterCnt = resultSet.getInt(1);
+
+            assertEquals(1, beforeCnt - afterCnt);
+            
+        }
+        catch (Throwable e)
+        {
+            e.printStackTrace();
+            fail();
+        }
+
+    }
+    
+    
+    public void testEditEntityToAddObjectAttribute() {
+        EntityManagerInterface entityManager = EntityManager.getInstance();
+        DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+        // create user 
+        EntityInterface user = factory.createEntity();
+        user.setName("User");
+        
+        AttributeInterface age = factory.createIntegerAttribute();
+        age.setName("Age");
+        user.addAbstractAttribute(age);
+
+        
+
+
+        try
+        {
+           
+            user = entityManager.persistEntity(user);
+            
+            
+            AttributeInterface info = factory.createObjectAttribute();
+            info.setName("Resume");
+            user.addAbstractAttribute(info);
+            user.addAttribute(info);
+            
+            user = entityManager.persistEntity(user);
+            
+            
+            ObjectAttributeRecordValueInterface objectRecord = factory.createObjectAttributeRecordValue();
+            objectRecord.setObject(new TaggedValue());
+            objectRecord.setClassName(TaggedValue.class.getName());
+            
+            Map dataValue = new HashMap();
+            dataValue.put(age, "45");
+            dataValue.put(info, objectRecord);
+
+            Long recordId = entityManager.insertData(user, dataValue);
+
+            ResultSet resultSet = executeQuery("select count(*) from "
+                    + user.getTableProperties().getName());
+            resultSet.next();
+            assertEquals(1, resultSet.getInt(1));
+        }
+        catch (Throwable e)
+        {
+            e.printStackTrace();
+            fail();
+        }
+
+    }
+
 
 }

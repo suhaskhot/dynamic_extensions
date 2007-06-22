@@ -197,6 +197,17 @@ public interface EntityManagerInterface {
      */
     ContainerInterface persistContainer(ContainerInterface containerInterface)
             throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
+    
+    /**
+     * This method is used to save the container into the database.
+     * @param containerInterface container to save
+     * @return ContainerInterface container Interface that is saved.
+     * @throws DynamicExtensionsSystemException Thrown if for any reason operation can not be completed.
+     * @throws DynamicExtensionsApplicationException Thrown if the entity name already exists.
+     * @throws DynamicExtensionsSystemException 
+     */
+    public ContainerInterface persistContainer(ContainerInterface containerInterface,boolean addIdAttribute)
+            throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException ;
 
     /**
      * This method inserts one record for the entity.

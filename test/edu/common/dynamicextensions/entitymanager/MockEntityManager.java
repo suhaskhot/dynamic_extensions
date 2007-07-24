@@ -50,6 +50,51 @@ public class MockEntityManager
 	int tableIndex = 0;
 	int columnIndex = 0;
 
+	public ContainerInterface createContainerForGivenEntity(String containerName,
+			EntityInterface entityInterface) throws DynamicExtensionsApplicationException
+	{
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+		ContainerInterface containerInterface = null;
+		ControlInterface controlInterface = null;
+		
+
+		containerInterface = domainObjectFactory.createContainer();
+		containerInterface.setButtonCss("actionButton");
+		containerInterface.setCaption("DummyContainer");
+		containerInterface.setMainTableCss("formRequiredLabel");
+		containerInterface.setRequiredFieldIndicatior("*");
+		containerInterface.setRequiredFieldWarningMessage("indicates mandatory fields.");
+		containerInterface.setTitleCss("formTitle");
+
+		containerInterface.setEntity(entityInterface);
+
+		Collection abstractAttributeCollection = entityInterface.getAbstractAttributeCollection();
+		Iterator abstractAttributeCollectionIterator = abstractAttributeCollection.iterator();
+		while (abstractAttributeCollectionIterator.hasNext())
+		{
+			AttributeInterface attributeInterface = (AttributeInterface) abstractAttributeCollectionIterator
+					.next();
+			if (attributeInterface.getName().equals("name"))
+			{
+				controlInterface = initializeTextField(attributeInterface);
+			}
+			else if (attributeInterface.getName().equals("description"))
+			{
+				controlInterface = initializeTextArea(attributeInterface);
+			}
+			else if (attributeInterface.getName().equals("dateOfJoining"))
+			{
+				controlInterface = initializeDatePicker(attributeInterface);
+			}
+			else if (attributeInterface.getName().equals("gender"))
+			{
+				controlInterface = initializeComboBox(attributeInterface);
+			}
+			containerInterface.addControl(controlInterface);
+		}
+		return containerInterface;
+	}
+
 	/**
 	 * This method returns a dummy Container instance populated with dummy
 	 * Controls, Entity and its attributes.	 * 
@@ -139,7 +184,7 @@ public class MockEntityManager
 		abstractAttributeInterface.setEntity(person);
 
 		return person;
-	}
+	}		
 
 	public EntityInterface initializeEntity1() throws DynamicExtensionsApplicationException
 	{

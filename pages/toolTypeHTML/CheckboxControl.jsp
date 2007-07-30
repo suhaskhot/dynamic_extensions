@@ -6,7 +6,7 @@
 
 <script>var imgsrc="images/";</script>
 
-<html:hidden styleId = 'dataType'  property="dataType" value="<%=ProcessorConstants.DATATYPE_STRING%>"/>
+<html:hidden styleId = 'dataType'  property="dataType" value="<%=ProcessorConstants.DATATYPE_BOOLEAN%>"/>
 
 <table  summary="" align = 'center' width='100%'>
 	<tr>

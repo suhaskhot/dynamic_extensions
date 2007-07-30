@@ -28,7 +28,7 @@ function saveFormDetails()
 }
 
 function controlSelectedAction()
-{	
+{
 	clearControlAttributes();
 	var controlsForm = document.getElementById('controlsForm');
 	controlsForm.action="/dynamicExtensions/SelectControlAction.do";
@@ -83,8 +83,8 @@ function addControlToFormTree()
 }
 
 function addControlToForm() {
-	
-	if (window.dialogArguments) 
+
+	if (window.dialogArguments)
 	{
 	    window.opener = window.dialogArguments;
 	}
@@ -95,7 +95,7 @@ function addControlToForm() {
 		if(controlsForm!=null)
 		{
 			controlsForm.action="/dynamicExtensions/AddControlsAction.do";
-			controlsForm.submit();	
+			controlsForm.submit();
 		}
 	}
 	window.close();
@@ -132,8 +132,8 @@ function closeWindow()
 function showNextActionConfirmDialog()
 {
 	var  url="/dynamicExtensions/pages/confirmNextActionDialog.jsp";
-	
-	if (window.showModalDialog) 
+
+	if (window.showModalDialog)
 	{
 		var modalDialogProperties = "dialogHeight: 200px; dialogWidth: 350px; dialogTop: 300px; dialogLeft: 350px; edge: Sunken; center: Yes; resizable: Yes; status: No; help:no";
 	 	window.showModalDialog(url,window,modalDialogProperties);
@@ -147,7 +147,7 @@ function showNextActionConfirmDialog()
 
 function showCreateFormJSP()
 {
-	if (window.dialogArguments) 
+	if (window.dialogArguments)
 	{
 		window.opener = window.dialogArguments;
 	}
@@ -201,13 +201,13 @@ function insertRules(datatypeControl)
 	if(divForCommonRule != null)
 	{
 		tempInnerHTML = tempInnerHTML + "<tr><td width=\"100%\">" + divForCommonRule.innerHTML + "</tr></td>";
-	
+
 		var divForDataType = document.getElementById(divForDataTypeId);
 		if(divForDataType!=null)
 		{
 			tempInnerHTML = tempInnerHTML + "<tr><td width=\"100%\">" + divForDataType.innerHTML + "</tr></td>";
 		}
-		
+
 		while (tempInnerHTML.indexOf("tempValidationRules") != -1)
 		{
 			tempInnerHTML = tempInnerHTML.replace("tempValidationRules","validationRules");
@@ -224,7 +224,7 @@ function insertRules(datatypeControl)
 		{
 			tempInnerHTML = tempInnerHTML.replace("temp_","");
 		}
-		
+
 		var substitutionDivRules = document.getElementById('substitutionDivRules');
 		substitutionDivRules.innerHTML = tempInnerHTML;
 	}
@@ -236,7 +236,7 @@ function initBuildForm()
 	//If single line textbox, dont show row for noOfLines
 	if(document.getElementById("linesTypeHidden")!=null)
 	{
-		textBoxTypeChange(document.getElementById("linesTypeHidden")); 
+		textBoxTypeChange(document.getElementById("linesTypeHidden"));
 	}
 	var dataTypeElt = document.getElementById("initialDataType");
 	if(dataTypeElt!=null)
@@ -248,41 +248,41 @@ function initBuildForm()
 	{
 		insertRules("");
 	}
-		
+
 	var sourceElt=document.getElementById("hiddenDisplayChoice");
 	if(sourceElt!=null)
 	{
 		//Load source details for selected sourcetype
 		changeSourceForValues(sourceElt);
 	}
-	
+
 	//Initilialize default value for list of options
 	initializeOptionsDefaultValue();
 
 	//If other option is selected in measurement units, enable the text box next to it
 	var cboMeasurementUnits = document.getElementById('attributeMeasurementUnits');
 	measurementUnitsChanged(cboMeasurementUnits);
-	
+
 	//List box type : Combo-box or List box
 	var attributeMultiSelect = document.getElementById('hiddenIsMultiSelect');
 	if(attributeMultiSelect!=null)
 	{
 		listTypeChanged(attributeMultiSelect);
 	}
-	
+
 	//Date page initializations
 	var dateValueType = document.getElementById('initialDateValueType');
 	if(dateValueType!=null)
 	{
 		changeDateType(dateValueType);
 	}
-	
+
 	//List of form names for selected group
 	groupChanged(false);
-	
+
 	//List of attributes for selected form
 	formChanged(false);
-	
+
 	//Create as option for CreateForm
 	createFormAsChanged();
 }
@@ -328,7 +328,7 @@ function changeSourceForValues(sourceControl)
 						while (source.indexOf("tempcsvFile") != -1)
 						{
 							source = source.replace("tempcsvFile","csvFile");
-						}						
+						}
 						valueSpecnDiv.innerHTML = source;
 						if(sourceControl.value == "UserDefined")
 						{
@@ -352,7 +352,7 @@ function canChangeSource(sourceControl)
 		{
 			if(document.getElementById("hiddenDisplayChoice")!=null)
 			{
-				var originalDisplayChoice = document.getElementById("hiddenDisplayChoice").value;	
+				var originalDisplayChoice = document.getElementById("hiddenDisplayChoice").value;
 				var selectedDisplayChoice = sourceControl.value;
 				if(originalDisplayChoice!=selectedDisplayChoice)
 				{
@@ -362,12 +362,12 @@ function canChangeSource(sourceControl)
 					{
 						originalSelectedDisplayChoice.checked=true;
 					}
-					
+
 					return false;
 				}
 			}
 		}
-	}	
+	}
 	return true;
 }
 
@@ -405,13 +405,13 @@ function setDefaultValue()
 }
 
 //Added by sujay
-function showFormPreview() 
+function showFormPreview()
 {
 	var entitySaved = document.getElementById('entitySaved');
 	if(entitySaved!=null)
 	{
 		entitySaved.value="";
-	}	
+	}
 	var controlsForm = document.getElementById('controlsForm');
 	controlsForm.action="/dynamicExtensions/ShowPreviewAction.do";
 	controlsForm.submit();
@@ -435,7 +435,7 @@ function textBoxTypeChange(obj)
 }
 
 // Added by Chetan
-function backToControlForm() 
+function backToControlForm()
 {
 	var dataEntryForm = document.getElementById('dataEntryForm');
 	if(dataEntryForm != null)
@@ -481,7 +481,7 @@ function clearControlAttributes()
 	{
 		document.getElementById('attributeDecimalPlaces').value = "";
 	}
-	
+
 	if(document.getElementById('attributeMeasurementUnits') != null)
 	{
 		document.getElementById('attributeMeasurementUnits').value = "";
@@ -506,12 +506,12 @@ function clearControlAttributes()
 	{
 		document.getElementById('dataType').value = "";
 	}
-	
+
 	if(document.getElementById('attributeIsPassword') != null)
 	{
 		document.getElementById('attributeIsPassword').value = "";
 	}
-	
+
 	clearSelectedAttributesList();
 }
 
@@ -566,7 +566,7 @@ function listTypeChanged(obj)
 
 //When Date type is changed :  Disable default value txt box for None and Todays date option
 function changeDateType(dateType)
-{	
+{
 	if(dateType!=null)
 	{
 		dateTypeValue =dateType.value;
@@ -586,9 +586,9 @@ function changeDateType(dateType)
 function addDynamicData(recordIdentifier)
 {
 	var dataEntryForm = document.getElementById('dataEntryForm');
-	
+
 	if(dataEntryForm != null)
-	{		
+	{
 		if(recordIdentifier != null || recordIdentifier != "")
 		{
 			document.getElementById('recordIdentifier').value = recordIdentifier;
@@ -619,7 +619,7 @@ function showTooltip(text,obj,message)
 	else
 	{
 		if(message != null)
-		{ 
+		{
 			tooltip = message;
 			obj.title = tooltip;
 		}
@@ -628,12 +628,12 @@ function showTooltip(text,obj,message)
 			if(obj.tagName != "IMG")
 			{
 				obj.title = "";
-			}  
+			}
 		}
 	}
 }
 
-function hideTooltip() 
+function hideTooltip()
 {
   el = document.getElementById("akvtooltip");
   if( el != null)
@@ -647,10 +647,10 @@ function controlSelected(rowId,colId)
 	//Added by Preeti
 	document.getElementById('controlOperation').value='Edit';
 	document.getElementById('selectedControlId').value=rowId;
-	
+
 	//Control type is displayed in 2nd column
 	controlType = mygrid.cells(mygrid.getSelectedId(),2).getValue();
-	
+
 	if(controlType=="Sub Form")	//"Sub form"  tightly coupled with ProcessorConstants.ADD_SUBFORM_TYPE
 	{
 		var opernMode = document.getElementById('operationMode');
@@ -676,7 +676,7 @@ function measurementUnitsChanged(cboMeasuremtUnits)
 				txtMeasurementUnitOther.disabled=false;
 				txtMeasurementUnitOther.style.display="inline";
 				txtMeasurementUnitOther.focus();
-				
+
 			}
 			else
 			{
@@ -690,7 +690,7 @@ function measurementUnitsChanged(cboMeasuremtUnits)
 
 function ruleSelected(ruleObject)
 {
-	if(ruleObject.value == 'range') 
+	if(ruleObject.value == 'range')
 	{
 		if(ruleObject.checked ==false)
 		{
@@ -703,7 +703,7 @@ function ruleSelected(ruleObject)
 function deleteControl()
 {
 	deleteControlFromUI();
-	updateControlsSequence();	//ajax code to delete control from form 
+	updateControlsSequence();	//ajax code to delete control from form
 }
 
 function deleteControlFromUI()
@@ -727,7 +727,7 @@ function updateControlsSequence()
 	request.onreadystatechange = handlerFunction;
 	//send data to ActionServlet
 	var gridItemIds = mygrid.getAllItemIds(",");
-	
+
 	if(gridItemIds!=null)
 	{
 		var controlSeqNos = document.getElementById('controlsSequenceNumbers');
@@ -785,7 +785,7 @@ function decreaseSequencenumber()
 function moveRowsUp (tableId, startPoint, counter)
 {
 	var tab = document.getElementById(tableId);
-	for (var i = 0 ; i < counter; i++) 
+	for (var i = 0 ; i < counter; i++)
 	{
 		if (startPoint == 1)
 		{
@@ -800,7 +800,7 @@ function moveRowsUp (tableId, startPoint, counter)
 function increaseSequencenumber()
 {
   	checkAttribute = document.controlsForm.checkAttribute;
-	
+
 	for(i = 0; i < checkAttribute.length-1; i++)
 	{
 		if(checkAttribute[i].checked)
@@ -818,7 +818,7 @@ function increaseSequencenumber()
 function moveRowsDown(tableId, startPoint, counter)
 {
 	var tab = document.getElementById(tableId);
-	for (var i = 0 ; i < counter; i++) 
+	for (var i = 0 ; i < counter; i++)
 	{
 		tab.moveRow(startPoint,parseInt(startPoint)+1);
 		startPoint -=1;
@@ -831,7 +831,7 @@ function showDefineGroupPage(formName)
 	if(form!=null)
 	{
 		form.action="/dynamicExtensions/LoadGroupDefinitionAction.do";
-		form.submit();		
+		form.submit();
 	}
 }
 
@@ -840,18 +840,18 @@ function changeGroupSource(groupSrc)
 	if(groupSrc!=null)
 	{
 		var divForGrpDetails = document.getElementById('groupDetailsDiv');
-		
+
 		var groupSourceName = groupSrc.value+"Div";
-	
+
 //		alert('divForGrpDetails' + divForGrpDetails);
 		var divForGrpSrc = document.getElementById(groupSourceName);
-		
+
 		//alert('divForGrpSrc' + divForGrpSrc );
 		//alert('divForGrpSrc innerhtml ' + divForGrpSrc.innerHTML);
-		
+
 		var divForGrpSrcInnerHTML = divForGrpSrc.innerHTML;
 		divForGrpSrc.innerHTML = '';
-		
+
 		var groupForm = document.getElementById('groupForm');
 		groupForm.removeChild(divForGrpSrc);
 
@@ -866,7 +866,7 @@ function changeGroupSource(groupSrc)
 			}
 	//		alert('source2' + source);
 			divForGrpDetails.innerHTML = source;
-			
+
 		}
 		var groupNameTextFld = document.getElementById('groupNameText');
 		//alert('groupNameTextFld1' + groupNameTextFld);
@@ -875,7 +875,7 @@ function changeGroupSource(groupSrc)
 			groupNameTextFld.value="";
 		}
 //		alert('groupNameTextFld2' + groupNameTextFld);
-		
+
 		if(groupSourceName=="ExistingGroupDiv")
 		{
 			var selectedGroupName = document.getElementById('groupName');
@@ -951,9 +951,9 @@ function saveGroup()
 	}
 }
 
-function toggle(fldForSelectedObject,id,p) 
+function toggle(fldForSelectedObject,id,p)
 {
-	prevSelectedId =document.getElementById(fldForSelectedObject).value; 
+	prevSelectedId =document.getElementById(fldForSelectedObject).value;
 	if(prevSelectedId!='')
 	{
 		document.getElementById(prevSelectedId).style.fontWeight='normal';
@@ -973,7 +973,7 @@ function toggle(fldForSelectedObject,id,p)
 			document.getElementById(p).className='folder';
 		}
 	}
-	
+
 	formName = getFormNameFromParent(p);
 	setSelectedObjectName(fldForSelectedObject,formName);
 }
@@ -988,7 +988,7 @@ function setSelectedObjectName(fldForSelectedObject,name)
 }
 
 function changeSelection(fldForSelectedObject,str1,seqno)
-{	
+{
 	prevSelectedId =document.getElementById(fldForSelectedObject).value;
 	document.getElementById(fldForSelectedObject).value=str1;
 	document.getElementById(str1).style.fontWeight='bold';
@@ -996,9 +996,9 @@ function changeSelection(fldForSelectedObject,str1,seqno)
 	{
 		document.getElementById(prevSelectedId).style.fontWeight='normal';
 	}
-		
+
 	var formName = document.getElementById(str1);
-	
+
 	if(formName!=null)
 	{
 		setSelectedObjectName(fldForSelectedObject,formName.innerText);
@@ -1057,18 +1057,18 @@ function groupChanged(flagClearAttributeList)
 	var request = newXMLHTTPReq();
 	var handlerFunction = getReadyStateHandler(request,groupChangedResponse,false);
 
-	/* no brackets after the function name and no parameters are passed because we are 
+	/* no brackets after the function name and no parameters are passed because we are
 	   assigning a reference to the function and not actually calling it */
 	request.onreadystatechange = handlerFunction;
 	//send data to ActionServlet
 	if(document.getElementById('groupName')!=null)
 	{
 		var grpName  = document.getElementById('groupName').value;
-		
+
 		request.open("POST","AjaxcodeHandlerAction.do",true);
 		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 		request.send("&ajaxOperation=changeGroup&grpName="+grpName);
-	}	
+	}
 }
 
 function groupChangedResponse(formNameListXML)
@@ -1090,7 +1090,7 @@ function groupChangedResponse(formNameListXML)
 					var formnamenode = formnames[i];
 					optionValue = "";
 					optionName = "";
-					for (var j=0; j<formnamenode.childNodes.length; j++) 
+					for (var j=0; j<formnamenode.childNodes.length; j++)
 					{
 						if(formnamenode.childNodes[j].nodeName=="form-id")
 						{
@@ -1118,7 +1118,7 @@ function groupChangedResponse(formNameListXML)
 				}
 			}
 		}
-		formChanged();	
+		formChanged();
 	}
 }
 
@@ -1143,11 +1143,11 @@ function formChanged(flagClearAttributeList)
 		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 		request.send("&operation=changeForm&frmName="+frmName);
 		*/
-		
+
 		request.open("POST","AjaxcodeHandlerAction.do",true);
 		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 		request.send("&ajaxOperation=changeForm&frmName="+frmName);
-	}	
+	}
 }
 
 function formChangedResponse(formAttributesListXML)
@@ -1160,7 +1160,7 @@ function formChangedResponse(formAttributesListXML)
 			htmlFormAttributeList.options.length = 0;
 			//var formAttributes  =  formAttributesListXML.getElementsByTagName('formAttributes');
 			var documentElt  = getDocumentElementForXML(formAttributesListXML);
-			var formAttributes  =  documentElt.getElementsByTagName('formAttributes'); 
+			var formAttributes  =  documentElt.getElementsByTagName('formAttributes');
 			if(formAttributes !=null)
 			{
 				var optionName =null;
@@ -1170,7 +1170,7 @@ function formChangedResponse(formAttributesListXML)
 					var formAttribute = formAttributes[i];
 					optionValue = "";
 					optionName = "";
-					for (var j=0; j<formAttribute.childNodes.length; j++) 
+					for (var j=0; j<formAttribute.childNodes.length; j++)
 					{
 						if(formAttribute.childNodes[j].nodeName=="form-attribute-id")
 						{
@@ -1210,9 +1210,9 @@ function clearSelectedAttributesList()
 		var noOfElements = selectedAttributeList.options.length;
 		for (i=noOfElements-1;i>=0;i--)
 		{
-			selectedAttributeList.options[i] = null;	
+			selectedAttributeList.options[i] = null;
 		}
-		
+
 	}
 }
 function selectFormAttribute()
@@ -1220,7 +1220,7 @@ function selectFormAttribute()
 	var fromListBox = document.getElementById('formAttributeList');
 	var toListBox = document.getElementById('selectedAttributeIds');
 	transferElementsFromList(fromListBox,toListBox);
-}	
+}
 
 function unSelectFormAttribute()
 {
@@ -1255,7 +1255,7 @@ function transferElementsFromList(fromListBox,toListBox)
 					toListBox.options[toListBox.length - 1].value = current.value;
 					toListBox.options[toListBox.length - 1].innerHTML = current.innerHTML;
 				}
-		    }	
+		    }
 		}
 	}
 }
@@ -1305,7 +1305,7 @@ function createFormAsChanged()
 }
 
 //added by vishvesh
-function addRow(containerId) 
+function addRow(containerId)
 {
 	var divName = "";
 	divName = divName + containerId + "_substitutionDiv";
@@ -1320,26 +1320,26 @@ function addRow(containerId)
 
 	var newRow = table.insertRow(-1);
 	var cells = rowTobeCopied.cells;
-	for(i = 0 ; i < cells.length ; i++) 
-	{  
+	for(i = 0 ; i < cells.length ; i++)
+	{
 		var newCell = newRow.insertCell(i);
 		newCell.className = cells[i].className;
-		
-		newCell.innerHTML = cells[i].innerHTML;	
+
+		newCell.innerHTML = cells[i].innerHTML;
 		newCell = setDefaultValues(tableId, newCell);
 	}
 
 	var hiddenVar = "";
 	hiddenVar += containerId + "_rowCount";
-	
-	var currentRowCounter = document.getElementById(hiddenVar); 
-	
+
+	var currentRowCounter = document.getElementById(hiddenVar);
+
 	currentRowCounter1 = currentRowCounter.value;
 	document.getElementById(hiddenVar).value = parseInt(currentRowCounter1) + 1;
 }
 
 function removeCheckedRow(containerId)
-{   
+{
 	var table = document.getElementById(containerId + "_table");
 	var children = table.rows;
 	var deletedRowIds = "";
@@ -1347,21 +1347,21 @@ function removeCheckedRow(containerId)
 	if(children.length > 0)
 	{
 		var rowsDeleted = 0;
-		
+
 		var hiddenVar = "";
 		hiddenVar += containerId + "_rowCount";
-		
+
 		for (var rowIndex = 0; rowIndex < children.length; rowIndex++)
 		{
 			var inputArray = table.rows[rowIndex].getElementsByTagName('input');
 		   	var len = inputArray.length;
 		   	for(var inputIndex = 0; inputIndex < len; inputIndex++)
 			{
-				if ((inputArray[inputIndex] != null) && (inputArray[inputIndex].name == "deleteRow") && (inputArray[inputIndex].checked)) 
+				if ((inputArray[inputIndex] != null) && (inputArray[inputIndex].name == "deleteRow") && (inputArray[inputIndex].checked))
 			   	{
 			   	 	deletedRowIds = deletedRowIds + rowIndex + ",";
 			   		table.deleteRow(rowIndex);
-			   					   		
+
 			   		rowsDeleted += 1;
 			   		children = table.rows;
 					rowIndex = 0;
@@ -1369,7 +1369,7 @@ function removeCheckedRow(containerId)
 				}
 			}
 		}
-		
+
 		for (var rowIndex = 0; rowIndex < children.length; rowIndex++)
 		{
 			var childObject = children[rowIndex];
@@ -1381,9 +1381,9 @@ function removeCheckedRow(containerId)
 				for (childNodeIndex = 0; childNodeIndex < childNodes.length; childNodeIndex++)
 				{
 					var childNode= childNodes[childNodeIndex];
-					
+
 					var childObjectName = childNode.name;
-					if (childObjectName != null && childObjectName.indexOf('_') != -1) 
+					if (childObjectName != null && childObjectName.indexOf('_') != -1)
 					{
 						var arr = childObjectName.split('_');
 
@@ -1408,11 +1408,11 @@ function removeCheckedRow(containerId)
 				}
 			}
 		}
-		
+
 		var currentRowCounter = document.getElementById(hiddenVar);
 		var numberOfRows = currentRowCounter.value;
 		document.getElementById(hiddenVar).value = parseInt(numberOfRows) - rowsDeleted;
-	
+
 		document.getElementById(containerId + "_table").value = table;
 	}
 
@@ -1432,28 +1432,28 @@ function ignoreResponseHandler(str)
 {
 }
 
-function setDefaultValues(tableId, obj) 
+function setDefaultValues(tableId, obj)
 {
 	var children = obj.childNodes;
 	var rowIndex = document.getElementById(tableId).rows.length;
 	rowIndex = parseInt(rowIndex) - 1 ;
-	
-	for (j = 0 ; j < children.length; j++) 
+
+	for (j = 0 ; j < children.length; j++)
 	{
 		var childObject = children[j];
 		childObjectName = childObject.name;
-		
-		if (childObjectName != null && childObjectName.indexOf('_')!= -1) 
+
+		if (childObjectName != null && childObjectName.indexOf('_')!= -1)
 		{
 			if (childObjectName.indexOf(')')!= -1)
 			{
 				childObjectName = childObjectName.substring(0,childObjectName.indexOf(')'));
-				
+
 				str = childObjectName + "_" + rowIndex;
 				str = str + ")";
 			}
 			else
-			{	
+			{
 				str = childObjectName + "_" + rowIndex;
 			}
 			obj.innerHTML = replaceAll(obj.innerHTML,childObjectName,str);
@@ -1462,7 +1462,7 @@ function setDefaultValues(tableId, obj)
 	return obj;
 }
 
-function replaceAll(inputString, regExpr, newString) 
+function replaceAll(inputString, regExpr, newString)
 {
 	var outputStr = "";
 	var pivot;
@@ -1504,10 +1504,10 @@ function definedEntitySelected(fldname)
 		}
 		var request = newXMLHTTPReq();
 		var handlerFunction = getReadyStateHandler(request,treeNodeSelectedResponse,false);
-	
+
 		//no brackets after the function name and no parameters are passed because we are assigning a reference to the function and not actually calling it
 		request.onreadystatechange = handlerFunction;
-	
+
 		//Open connection to servlet
 		request.open("POST","AjaxcodeHandlerAction.do",true);
 		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
@@ -1524,12 +1524,12 @@ function definedEntitySelected(fldname)
 		{
 			document.getElementById("formName").value = "";
 		}
-		
+
 		if(document.getElementById("conceptCode")!=null)
 		{
 			document.getElementById("conceptCode").value = "";
 		}
-		
+
 		if(document.getElementById("formDescription")!=null)
 		{
 			document.getElementById("formDescription").value = "";
@@ -1546,7 +1546,7 @@ function treeNodeSelectedResponse(formNameListXML)
 		var htmlFormDesc = document.getElementById("formDescription");
 		var htmlOperationMode = document.getElementById('operationMode');
 		var htmlOperation = document.getElementById('operation');
-		
+
 		var documentElt = getDocumentElementForXML(formNameListXML);
 		var formname = documentElt.getElementsByTagName('form-name');
 		var formDesc = documentElt.getElementsByTagName('form-description');
@@ -1621,9 +1621,9 @@ function groupSelected(groupList)
 			var request = newXMLHTTPReq();
 			var handlerFunction = getReadyStateHandler(request,groupSelectedResponse,false);
 
-			//no brackets after the function name and no parameters are passed because we are 
+			//no brackets after the function name and no parameters are passed because we are
 			//assigning a reference to the function and not actually calling it
-			request.onreadystatechange = handlerFunction;	
+			request.onreadystatechange = handlerFunction;
 			request.open("POST","AjaxcodeHandlerAction.do",true);
 			request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 			request.send("&ajaxOperation=selectGroup&selectedGroupName="+groupName);
@@ -1638,7 +1638,7 @@ function groupSelectedResponse(groupXML)
 		var htmlGroupDescription = document.getElementById("groupDescription");
 		var documentElt = getDocumentElementForXML(groupXML);
 		var grpDesc = documentElt.getElementsByTagName('group-description');
-	
+
 		if((htmlGroupDescription!=null)&&(grpDesc!=null))
 		{
 			htmlGroupDescription.value = getElementText(grpDesc[0]);
@@ -1656,7 +1656,7 @@ function showChildContainerInsertDataPage(containerId,ths)
     document.getElementById('dataEntryOperation').value  = "insertChildData";
 	document.getElementById('childRowId').value = ths.parentNode.parentNode.rowIndex;
 	var dataEntryForm = document.getElementById('dataEntryForm');
-	
+
 	var showFormPreview = document.getElementById('showFormPreview').value;
 	var mode = document.getElementById('mode').value;
 	if(showFormPreview == "true")
@@ -1688,6 +1688,21 @@ function showParentContainerInsertDataPage()
 function setInsertDataOperation()
 {
 	document.getElementById('dataEntryOperation').value = "";
+}
+
+function changeValueForCheckBox(checkbox)
+{
+	if (checkbox != null)
+	{
+		if (checkbox.checked == true)
+		{
+			checkbox.value = checkbox.checkedValue;
+		}
+		else
+		{
+			checkbox.value = checkbox.uncheckedValue;
+		}
+	}
 }
 
 function cancelInsertData()
@@ -1802,7 +1817,7 @@ function loadOptionGrid()
 	var csvStr = document.getElementById('csvStr').value;
 	optionGrid.loadCSVString(csvStr);
 }
-	
+
 function addOptionRow()
 {
 	var rows = optionGrid.getRowsNum();
@@ -1813,7 +1828,7 @@ function addOptionRow()
 	}
 	else
 	{
-		lastRowId = optionGrid.getRowId(rows-1);		
+		lastRowId = optionGrid.getRowId(rows-1);
 	}
 	var newRowId = parseInt(lastRowId) + 1;
 	var newRowIdStr = newRowId + "";

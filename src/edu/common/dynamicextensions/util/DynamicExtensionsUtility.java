@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 
 package edu.common.dynamicextensions.util;
@@ -134,7 +134,7 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * This method returns object for a given class name and identifer 
+	 * This method returns object for a given class name and identifer
 	 * @param objectName  name of the class of the object
 	 * @param identifier identifier of the object
 	 * @return  obejct
@@ -217,7 +217,7 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * 
+	 *
 	 * @param controlCollectio
 	 * @param sequenceNumber
 	 * @return
@@ -270,7 +270,7 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public static void initialiseApplicationVariables()
 	{
@@ -313,7 +313,7 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public static void initialiseApplicationInfo()
 	{
@@ -406,7 +406,7 @@ public class DynamicExtensionsUtility
 	/**
 	 * Checks that the input String contains only numeric digits.
 	 * @param numString The string whose characters are to be checked.
-	 * @return Returns false if the String contains any alphabet else returns true. 
+	 * @return Returns false if the String contains any alphabet else returns true.
 	 * */
 	public static boolean isNaturalNumber(String numString)
 	{
@@ -427,7 +427,7 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * 
+	 *
 	 * @param numString
 	 * @return
 	 */
@@ -616,7 +616,7 @@ public class DynamicExtensionsUtility
 	 * validate the entity for
 	 * 1. Name - should not contain any special characters, should not be empty,null
 	 * 2. Description - should be less than 1000 characters.
-	 * 
+	 *
 	 * @param entity
 	 * @throws DynamicExtensionsApplicationException
 	 */
@@ -698,7 +698,7 @@ public class DynamicExtensionsUtility
 	public static void validateName(String name) throws DynamicExtensionsApplicationException
 	{
 		/**
-		 * Constant representing valid names 
+		 * Constant representing valid names
 		 */
 		final String VALIDCHARSREGEX = "[^\\\\/:*?\"<>&;|']*";
 
@@ -768,7 +768,7 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * This method checks if the date string is as per the given format or not. 
+	 * This method checks if the date string is as per the given format or not.
 	 * @param dateFormat Format of the date (e.g. dd/mm/yyyy)
 	 * @param strDate Date value in String.
 	 * @return true if date is valid, false otherwise
@@ -792,6 +792,80 @@ public class DynamicExtensionsUtility
 		}
 
 		return isDateValid;
+	}
+
+	/**
+	 * This method determines whether the checkbox is to be checked or not.
+	 * @param value the value particular to database
+	 * for e.g. oracle - "1" or "0"
+	 * mysql "true" or "false"
+	 * @return true if checked , false otherwise
+	 */
+	public static boolean isCheckBoxChecked(String value)
+	{
+		boolean isChecked = false;
+		if (value != null && value.trim().length() > 0)
+		{
+			if (value.equalsIgnoreCase(getValueForCheckBox(true)))
+			{
+				isChecked = true;
+			}
+		}
+		return isChecked;
+	}
+
+	/**
+	 * This method returns the value for checkbox depending on database.
+	 * for e.g. oracle - "1" or "0"
+	 * mysql "true" or "false"
+	 * @param ischecked
+	 * @return string value which is assigned to checkbox value
+	 */
+	public static String getValueForCheckBox(boolean ischecked)
+	{
+		String checkboxValue = "";
+		if (Variables.databaseName.equals(Constants.ORACLE_DATABASE))
+		{
+			if (ischecked)
+			{
+				checkboxValue = "1";
+			}
+			else
+			{
+				checkboxValue = "0";
+			}
+		}
+		else if (Variables.databaseName.equals(Constants.MYSQL_DATABASE)
+				|| Variables.databaseName.equals(Constants.POSTGRESQL_DATABASE))
+		{
+			if (ischecked)
+			{
+				checkboxValue = "true";
+			}
+			else
+			{
+				checkboxValue = "false";
+			}
+		}
+		return checkboxValue;
+	}
+
+	/**
+	 * This method returns the html keyword checked for checkbox selection
+	 * @param ischecked
+	 * @return 'checked' string or empty string
+	 */
+	public static String getCheckboxSelectionValue(String value)
+	{
+		String checkboxValue = "";
+		if (value != null && value.trim().length() > 0)
+		{
+			if (value.equalsIgnoreCase(getValueForCheckBox(true)))
+			{
+				checkboxValue = "checked";
+			}
+		}
+		return checkboxValue;
 	}
 
 	/**

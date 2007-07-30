@@ -52,7 +52,7 @@ import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.validation.ValidatorUtil;
 
 /**
- * It populates the Attribute values entered in the dynamically generated controls. * 
+ * It populates the Attribute values entered in the dynamically generated controls. *
  * @author chetan_patil
  */
 public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
@@ -138,7 +138,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * 
+	 *
 	 * @param recordIdentfier
 	 * @param containerInterface
 	 * @throws DynamicExtensionsSystemException
@@ -148,10 +148,10 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	{
 		Long recordNumber = new Long(recordIdentfier);
 		DeleteRecordProcessor.getInstance().deleteRecord(containerInterface, recordNumber);
-		
+
 	}
 	/**
-	 * This method gets the Callback URL from cahce, reforms it and redirect the response to it. 
+	 * This method gets the Callback URL from cahce, reforms it and redirect the response to it.
 	 * @param request HttpServletRequest to obtain session
 	 * @param response HttpServletResponse to redirect the CallbackURL
 	 * @param recordIdentifier Identifier of the record to reconstruct the CallbackURL
@@ -200,7 +200,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * This method sets dataentry operations parameters and returns the appropriate 
+	 * This method sets dataentry operations parameters and returns the appropriate
 	 * ActionForward depending on the "mode" of the operation and validation errors.
 	 * @param mapping ActionMapping to get the ActionForward
 	 * @param dataEntryForm ActionForm
@@ -249,7 +249,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				{
 					actionForward = mapping.findForward("showDynamicExtensionsHomePage");
 				}
-				
+
 				else
 				{
 					actionForward = mapping.findForward("loadParentContainer");
@@ -271,14 +271,14 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * This method gathers the values form the Dynamic UI and validate them using Validation framework 
+	 * This method gathers the values form the Dynamic UI and validate them using Validation framework
 	 * @param containerStack Stack of Container which has the current Container at its top.
-	 * @param valueMapStack Stack of Map of Attribute-Value pair which has Map for current Container at its top.  
+	 * @param valueMapStack Stack of Map of Attribute-Value pair which has Map for current Container at its top.
 	 * @param request HttpServletRequest which is required to collect the values from UI form.
-	 * @param dataEntryForm 
+	 * @param dataEntryForm
 	 * @param errorList List to store the validation error/warning messages which will be displayed on the UI.
 	 * @throws FileNotFoundException if improper value is entered for FileUpload control.
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException
 	 * @throws IOException
 	 */
 	private void populateAndValidateValues(Stack<ContainerInterface> containerStack,
@@ -300,14 +300,14 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * 
+	 *
 	 * @param container
 	 * @param request
 	 * @param dataEntryForm
 	 * @return
 	 * @throws FileNotFoundException
 	 * @throws IOException
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private Map<AbstractAttributeInterface, Object> generateAttributeValueMap(
 			ContainerInterface containerInterface, HttpServletRequest request,
@@ -356,15 +356,15 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * 
+	 *
 	 * @param request
 	 * @param dataEntryForm
 	 * @param sequence
 	 * @param control
 	 * @param attributeValueMap
-	 * @throws DynamicExtensionsSystemException 
-	 * @throws IOException 
-	 * @throws FileNotFoundException 
+	 * @throws DynamicExtensionsSystemException
+	 * @throws IOException
+	 * @throws FileNotFoundException
 	 */
 	private void collectAssociationValues(HttpServletRequest request, DataEntryForm dataEntryForm,
 			String sequence, ControlInterface control,
@@ -442,15 +442,15 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * 
+	 *
 	 * @param request
 	 * @param dataEntryForm
 	 * @param sequence
 	 * @param control
 	 * @param attributeValueMap
-	 * @throws IOException 
-	 * @throws DynamicExtensionsSystemException 
-	 * @throws FileNotFoundException 
+	 * @throws IOException
+	 * @throws DynamicExtensionsSystemException
+	 * @throws FileNotFoundException
 	 */
 	private List<Map<AbstractAttributeInterface, Object>> collectOneToManyContainmentValues(
 			HttpServletRequest request, DataEntryForm dataEntryForm, String containerId,
@@ -487,7 +487,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * 
+	 *
 	 * @param request
 	 * @param dataEntryForm
 	 * @param sequence
@@ -540,9 +540,14 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			String value = request.getParameter("Control_" + sequence);
 			if (control instanceof CheckBoxInterface)
 			{
-				if (value == null || !value.trim().equals("checked"))
+				if (DynamicExtensionsUtility.isCheckBoxChecked(value))
 				{
-					value = "unchecked";
+					//value = "unchecked";
+					attributeValue = DynamicExtensionsUtility.getValueForCheckBox(true);
+				}
+				else
+				{
+					attributeValue = DynamicExtensionsUtility.getValueForCheckBox(false);
 				}
 			}
 			else if (control instanceof TextFieldInterface)
@@ -555,8 +560,9 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 							(DoubleAttributeTypeInformation) attributeTypeInformationInterface,
 							value);
 				}
+				attributeValue = value;
 			}
-			attributeValue = value;
+
 			attributeValueMap.put(abstractAttribute, attributeValue);
 		}
 
@@ -592,15 +598,15 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * This method stores the container in the database. It updates the existing record or inserts a new record 
+	 * This method stores the container in the database. It updates the existing record or inserts a new record
 	 * depending upon the availability of the record identifier variable.
-	 * @param valueMapStack Stack storing the Map of Attributes and their corresponding values. 
+	 * @param valueMapStack Stack storing the Map of Attributes and their corresponding values.
 	 * @param containerStack Stack having Container at its top that is to be stored in database.
 	 * @param request HttpServletRequest to store the operation message.
 	 * @param recordIdentifier Identifier of the record in database that is to be updated.
-	 * @return New identifier for a record if record is inserted otherwise the passed record identifier is returned. 
+	 * @return New identifier for a record if record is inserted otherwise the passed record identifier is returned.
 	 * @throws NumberFormatException If record identifier is not a numeric value.
-	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
 	private String storeParentContainer(

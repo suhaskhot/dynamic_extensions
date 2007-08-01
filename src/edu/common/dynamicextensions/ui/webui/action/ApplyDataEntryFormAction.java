@@ -543,11 +543,11 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				if (DynamicExtensionsUtility.isCheckBoxChecked(value))
 				{
 					//value = "unchecked";
-					attributeValue = DynamicExtensionsUtility.getValueForCheckBox(true);
+					value = DynamicExtensionsUtility.getValueForCheckBox(true);
 				}
 				else
 				{
-					attributeValue = DynamicExtensionsUtility.getValueForCheckBox(false);
+					value = DynamicExtensionsUtility.getValueForCheckBox(false);
 				}
 			}
 			else if (control instanceof TextFieldInterface)
@@ -560,9 +560,8 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 							(DoubleAttributeTypeInformation) attributeTypeInformationInterface,
 							value);
 				}
-				attributeValue = value;
 			}
-
+			attributeValue = value;
 			attributeValueMap.put(abstractAttribute, attributeValue);
 		}
 

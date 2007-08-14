@@ -6,13 +6,16 @@
 package edu.common.dynamicextensions.xmi;
 
 import javax.jmi.reflect.RefPackage;
+import javax.jmi.xmi.XmiWriter;
 
 import org.netbeans.api.mdr.MDRepository;
 import org.omg.uml.foundation.core.Attribute;
 import org.omg.uml.foundation.core.UmlAssociation;
 import org.omg.uml.foundation.core.UmlClass;
 import org.omg.uml.modelmanagement.UmlPackage;
+import org.openide.util.Lookup;
 
+import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
@@ -141,4 +144,18 @@ public class XMIUtilities
 		return null;
 	}
 	
+	public static XmiWriter getXMIWriter()
+	{
+		XmiWriter writer = (XmiWriter) Lookup.getDefault().lookup(XmiWriter.class);
+		return writer;
+	}
+	
+	public static String getClassNameForEntity(EntityInterface entity)
+	{
+		if(entity!=null)
+		{
+			return entity.getName(); 
+		}
+		return null;
+	}
 }

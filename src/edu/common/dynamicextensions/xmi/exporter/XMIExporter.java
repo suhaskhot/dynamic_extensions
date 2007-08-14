@@ -21,15 +21,26 @@ import org.netbeans.api.mdr.CreationFailedException;
 import org.netbeans.api.mdr.MDRManager;
 import org.netbeans.api.mdr.MDRepository;
 import org.omg.uml.UmlPackage;
+import org.omg.uml.foundation.core.Attribute;
+import org.omg.uml.foundation.core.Classifier;
 import org.omg.uml.foundation.core.CorePackage;
+import org.omg.uml.foundation.core.DataType;
 import org.omg.uml.foundation.core.UmlClass;
+import org.omg.uml.foundation.datatypes.ChangeableKindEnum;
+import org.omg.uml.foundation.datatypes.DataTypesPackage;
+import org.omg.uml.foundation.datatypes.Multiplicity;
+import org.omg.uml.foundation.datatypes.MultiplicityRange;
+import org.omg.uml.foundation.datatypes.OrderingKindEnum;
+import org.omg.uml.foundation.datatypes.ScopeKindEnum;
 import org.omg.uml.foundation.datatypes.VisibilityKindEnum;
 import org.omg.uml.modelmanagement.Model;
 import org.omg.uml.modelmanagement.ModelManagementPackage;
 import org.openide.util.Lookup;
 
+import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.EntityGroup;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.xmi.XMIUtilities;
@@ -48,14 +59,14 @@ public class XMIExporter implements XMIExportInterface
 	private static final String UML_INSTANCE = "UMLInstance";
 	// name of a MOF extent that will contain definition of UML metamodel
 	private static final String UML_MM = "UML";
-	
+
 	// UML extent
 	private static UmlPackage umlPackage;
 	//Model
 	private static Model umlModel = null;
 	//Leaf package
-	org.omg.uml.modelmanagement.UmlPackage logicalModel = null; 
-	
+	private static org.omg.uml.modelmanagement.UmlPackage logicalModel = null; 
+
 	/*// MOF extent
 	private static ModelPackage mof;*/
 	/* (non-Javadoc)
@@ -96,16 +107,17 @@ public class XMIExporter implements XMIExportInterface
 	 * @param entityGroup
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	private void generateUMLModel(EntityGroupInterface entityGroup)
 	{
 		if(entityGroup!=null)
 		{
 			//Create package for entity group
-			org.omg.uml.modelmanagement.UmlPackage leafPackage = getLeafPackage(entityGroup.getName());
+			org.omg.uml.modelmanagement.UmlPackage umlGroupPackage = getLeafPackage(entityGroup.getName());
 			//create classes for entities 
-			Collection<UmlClass> entityClasses = createClassesForEntities(entityGroup.getEntityCollection());
+			Collection<UmlClass> umlEntityClasses = createUMLClasses(entityGroup.getEntityCollection());
 			//add entity classes to group package
-			leafPackage.getOwnedElement().addAll(entityClasses);
+			umlGroupPackage.getOwnedElement().addAll(umlEntityClasses);
 		}
 	}
 
@@ -113,58 +125,155 @@ public class XMIExporter implements XMIExportInterface
 	 * @param entityCollection
 	 * @return
 	 */
-	private Collection<UmlClass> createClassesForEntities(Collection<EntityInterface> entityCollection)
+	private Collection<UmlClass> createUMLClasses(Collection<EntityInterface> entityCollection)
 	{
-		ArrayList<UmlClass> entityClasses = new ArrayList<UmlClass>();
+		ArrayList<UmlClass> umlEntityClasses = new ArrayList<UmlClass>();
 		if(entityCollection!=null)
 		{
 			Iterator entityCollectionIter = entityCollection.iterator();
 			while(entityCollectionIter.hasNext())
 			{
 				EntityInterface entity = (EntityInterface)entityCollectionIter.next();
-				UmlClass entityClass = createClassForEntity(entity);
-				if(entityClass!=null)
+				UmlClass umlEntityClass = createUMLClass(entity);
+				if(umlEntityClass!=null)
 				{
-					entityClasses.add(entityClass);
+					umlEntityClasses.add(umlEntityClass);
 				}
 			}
 		}
-		return entityClasses;
+		return umlEntityClasses;
 	}
 
 	/**
 	 * @param entity
 	 * @return
 	 */
-	private UmlClass createClassForEntity(EntityInterface entity)
+	@SuppressWarnings("unchecked")
+	private UmlClass createUMLClass(EntityInterface entity)
 	{
-		UmlClass entityClass = null;
+		UmlClass umlEntityClass = null;
 		if(entity!=null)
 		{
+			//Get class name , create uml class 
 			String className = XMIUtilities.getClassNameForEntity(entity);  
 			CorePackage corePackage = umlPackage.getCore();
-			entityClass = corePackage.getUmlClass().createUmlClass(className, VisibilityKindEnum.VK_PUBLIC, false, false, false, false, false);
+			umlEntityClass = corePackage.getUmlClass().createUmlClass(className, VisibilityKindEnum.VK_PUBLIC, false, false, false, false, false);
+			//Create and add attributes to class
+			Collection<Attribute> umlEntityAttributes = createUMLAttributes(entity.getAllAttributes());
+			umlEntityClass.getFeature().addAll(umlEntityAttributes);
 		}
-		return entityClass;
+		return umlEntityClass;
 	}
 
 	/**
 	 * @param entity
 	 * @return
 	 */
-	private String getEntityName(EntityInterface entity)
+	private Collection<Attribute> createUMLAttributes(Collection<AttributeInterface> entityAttributes)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Attribute> umlAttributes =  new ArrayList<Attribute>();
+		if(entityAttributes!=null)
+		{
+			Iterator entityAttributesIter = entityAttributes.iterator();
+			while(entityAttributesIter.hasNext())
+			{
+				AttributeInterface attribute = (AttributeInterface)entityAttributesIter.next();
+				Attribute umlAttribute = createUMLAttribute(attribute);
+				umlAttributes.add(umlAttribute);
+			}
+		}
+		return umlAttributes;
+	}
+
+	/**
+	 * @param entityAttribute
+	 * @return
+	 */
+	private Attribute createUMLAttribute(AttributeInterface entityAttribute)
+	{
+		Attribute umlAttribute = null;
+		if(entityAttribute!=null)
+		{
+			String attributeName = XMIUtilities.getAttributeName(entityAttribute);
+			Classifier typeClass = null;
+			CorePackage corePackage = umlPackage.getCore();
+			umlAttribute =corePackage.getAttribute().createAttribute(attributeName,VisibilityKindEnum.VK_PUBLIC,
+					false,
+					ScopeKindEnum.SK_INSTANCE,
+					createAttributeMultiplicity(corePackage.getDataTypes(),true),
+					ChangeableKindEnum.CK_CHANGEABLE,
+					ScopeKindEnum.SK_CLASSIFIER,
+					OrderingKindEnum.OK_UNORDERED,
+					null);
+			typeClass = getOrCreateDataType("String");//search datatype
+			umlAttribute.setType(typeClass);
+		}
+		return umlAttribute;
+	}
+	/**
+	 * @param corePackage
+	 * @param string
+	 * @return
+	 */
+	@SuppressWarnings({"unchecked", "unchecked"})
+	private static Classifier getOrCreateDataType(String typeName)
+	{
+		Object datatype = null; 
+		org.omg.uml.modelmanagement.UmlPackage datatypesPackage = getOrCreatePackage("DataTypesPkg",logicalModel);
+		if (datatypesPackage != null)
+		{
+			datatype = umlPackage.getCore().getDataType().createDataType(
+						typeName, VisibilityKindEnum.VK_PUBLIC, false, false, false, false);
+			datatypesPackage.getOwnedElement().add(datatype);
+		}
+		return (DataType)datatype;
+	}
+	/**
+	 * @param dataTypes
+	 * @param b
+	 * @return
+	 */
+	private static Multiplicity createAttributeMultiplicity(DataTypesPackage dataTypes, boolean required)
+	{
+		{
+			Multiplicity mult = null;
+			if (required)
+			{
+				mult = createMultiplicity(dataTypes, 1, 1);
+			}
+			else
+			{
+				mult = createMultiplicity(dataTypes, 0, 1);
+			}
+			return mult;
+		}
+
+	}
+	/**
+	 * @param dataTypes
+	 * @param i
+	 * @param j
+	 * @return
+	 */
+	protected static Multiplicity createMultiplicity(
+			DataTypesPackage dataTypes,
+			int lower,
+			int upper)
+	{
+		Multiplicity mult = dataTypes.getMultiplicity().createMultiplicity();
+		MultiplicityRange range = dataTypes.getMultiplicityRange().createMultiplicityRange(lower, upper);
+		mult.getRange().add(range);
+		return mult;
 	}
 
 	/**
 	 * 
 	 */
+	@SuppressWarnings("unchecked")
 	private org.omg.uml.modelmanagement.UmlPackage getLeafPackage(String leafName)
 	{
-		org.omg.uml.modelmanagement.UmlPackage leafPackage = createPackage(leafName);
-		logicalModel.getOwnedElement().add(leafPackage);
+		org.omg.uml.modelmanagement.UmlPackage leafPackage = getOrCreatePackage(leafName,logicalModel);
+		//logicalModel.getOwnedElement().add(leafPackage);
 		return leafPackage;
 	}
 	/**
@@ -173,11 +282,22 @@ public class XMIExporter implements XMIExportInterface
 	 * @param string
 	 * @return
 	 */
-	private static org.omg.uml.modelmanagement.UmlPackage createPackage(String packageName)
-	{   
+	private static org.omg.uml.modelmanagement.UmlPackage getOrCreatePackage(String packageName,org.omg.uml.modelmanagement.UmlPackage parentPackage)
+	{
 		ModelManagementPackage modelManagement = umlPackage.getModelManagement();
-		org.omg.uml.modelmanagement.UmlPackage newPackage = modelManagement.getUmlPackage().createUmlPackage(packageName, VisibilityKindEnum.VK_PUBLIC, false, false, false, false);
-		return newPackage;
+		Object newPackage = XMIUtilities.find(parentPackage, packageName);
+		
+		if (newPackage == null)
+		{
+			newPackage =
+				modelManagement.getUmlPackage().createUmlPackage(
+						packageName, VisibilityKindEnum.VK_PUBLIC, false, false, false, false);
+			parentPackage.getOwnedElement().add(newPackage);
+			System.out.println("Created New Package");
+		}
+/*		org.omg.uml.modelmanagement.UmlPackage newPackage = modelManagement.getUmlPackage().createUmlPackage(packageName, VisibilityKindEnum.VK_PUBLIC, false, false, false, false);
+		parentPackage.getOwnedElement().add(newPackage);*/
+		return (org.omg.uml.modelmanagement.UmlPackage)newPackage;
 	}
 
 	public void init() throws CreationFailedException, Exception
@@ -189,13 +309,11 @@ public class XMIExporter implements XMIExportInterface
 	/**
 	 * 
 	 */
+	@SuppressWarnings("unchecked")
 	private void initializePackageHierarchy()
 	{
-		org.omg.uml.modelmanagement.UmlPackage logicalView = createPackage("Logical View");
-		umlModel.getOwnedElement().add(logicalView);
-		
-		logicalModel = createPackage("Logical Model");
-		logicalView.getOwnedElement().add(logicalModel);
+		org.omg.uml.modelmanagement.UmlPackage logicalView = getOrCreatePackage("Logical View",umlModel);
+		logicalModel = getOrCreatePackage("Logical Model",logicalView);
 	}
 
 	/**
@@ -205,12 +323,9 @@ public class XMIExporter implements XMIExportInterface
 	{
 		//Initialize model
 		ModelManagementPackage modelManagementPackage = umlPackage.getModelManagement();
-		
+
 		//Create Logical Model
 		umlModel = modelManagementPackage.getModel().createModel("EA Model", VisibilityKindEnum.VK_PUBLIC, false, false,false,false); 
-		System.out.println("Model Created " + umlModel);
-		
-		
 	}
 
 	/**
@@ -256,7 +371,6 @@ public class XMIExporter implements XMIExportInterface
 	 */
 	private static MofPackage getUmlPackage(ModelPackage umlMM) {
 		// iterate through all instances of package
-		System.out.println("Here");
 		for (Iterator it = umlMM.getMofPackage().refAllOfClass().iterator(); it.hasNext();) {
 			MofPackage pkg = (MofPackage) it.next();
 			// is the package topmost and is it named "UML"?
@@ -281,12 +395,22 @@ public class XMIExporter implements XMIExportInterface
 		entity3.setName("Entity Three");
 		EntityInterface entity4  = new Entity();
 		entity4.setName("Entity Four");
-		
+		AttributeInterface attribute = DomainObjectFactory.getInstance().createBooleanAttribute();
+		entity1.addAttribute(attribute);
+		AttributeInterface attribute2 = DomainObjectFactory.getInstance().createDateAttribute();
+		entity2.addAttribute(attribute2);
+		AttributeInterface attribute3 = DomainObjectFactory.getInstance().createIntegerAttribute();
+		entity3.addAttribute(attribute3);
+		AttributeInterface attribute4 = DomainObjectFactory.getInstance().createStringAttribute();
+		entity4.addAttribute(attribute4);
+
+
 		entityGroup.addEntity(entity1);
 		entityGroup.addEntity(entity2);
 		entityGroup.addEntity(entity3);
 		entityGroup.addEntity(entity4);
-		
+
+
 		try
 		{
 			e.exportXMI("abc.xmi", entityGroup, null);

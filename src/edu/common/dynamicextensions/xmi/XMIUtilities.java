@@ -8,14 +8,17 @@ package edu.common.dynamicextensions.xmi;
 import javax.jmi.reflect.RefPackage;
 import javax.jmi.xmi.XmiWriter;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
+import org.apache.commons.lang.StringUtils;
 import org.netbeans.api.mdr.MDRepository;
 import org.omg.uml.foundation.core.Attribute;
+import org.omg.uml.foundation.core.ModelElement;
 import org.omg.uml.foundation.core.UmlAssociation;
 import org.omg.uml.foundation.core.UmlClass;
 import org.omg.uml.modelmanagement.UmlPackage;
 import org.openide.util.Lookup;
 
-import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
@@ -36,7 +39,7 @@ public class XMIUtilities
 	{
 		return null;
 	}
-	
+
 	/**
 	 * Get UML Package
 	 * @param repository
@@ -47,7 +50,7 @@ public class XMIUtilities
 	{
 		return null;
 	}
-	
+
 	/**
 	 * Get MOF Package 
 	 * @param repository
@@ -68,8 +71,8 @@ public class XMIUtilities
 	{
 		return null;
 	}
-	
-	
+
+
 	/**
 	 *Given an umlClass object will return  object of Entity Inerface. 
 	 *All details for the Entity interface will be populated in 
@@ -80,7 +83,7 @@ public class XMIUtilities
 	{
 		return null;
 	}
-	
+
 	/**
 	 * Given a uml Attribute will return a populated Attribute(Domain Object)  
 	 * @param umlAttribute : UML Attribute 
@@ -90,7 +93,7 @@ public class XMIUtilities
 	{
 		return null;
 	}
-	
+
 	/**
 	 * Given a uml Association object will return an AssociationInterface(Domain) object 
 	 * @param umlAssociation :  UML Association
@@ -100,8 +103,8 @@ public class XMIUtilities
 	{
 		return null;
 	}
-	
-	
+
+
 	//XMI Export Related
 	/**
 	 * 
@@ -112,8 +115,8 @@ public class XMIUtilities
 	{
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * Return a UML Class object for given Entity Domain Object
 	 * @param EntityInterface : entity
@@ -123,7 +126,7 @@ public class XMIUtilities
 	{
 		return null;
 	}
-	
+
 	/**
 	 * 
 	 * @param attribute
@@ -133,7 +136,7 @@ public class XMIUtilities
 	{
 		return null;
 	}
-	
+
 	/**
 	 * Return a UML Class object for given Entity Domain Object
 	 * @param association
@@ -143,13 +146,13 @@ public class XMIUtilities
 	{
 		return null;
 	}
-	
+
 	public static XmiWriter getXMIWriter()
 	{
 		XmiWriter writer = (XmiWriter) Lookup.getDefault().lookup(XmiWriter.class);
 		return writer;
 	}
-	
+
 	public static String getClassNameForEntity(EntityInterface entity)
 	{
 		if(entity!=null)
@@ -158,4 +161,41 @@ public class XMIUtilities
 		}
 		return null;
 	}
+
+	/**
+	 * @return
+	 */
+	public static String getAttributeName(AttributeInterface attribute)
+	{
+		if(attribute!=null)
+		{
+			return attribute.getName();
+		}
+		return null;
+	}
+	/***
+	 * Finds and returns the first model element having the given
+	 * <code>name</code> in the <code>umlPackage</code>, returns
+	 * <code>null</code> if not found.
+	 *
+	 * @param umlPackage The modelPackage to search
+	 * @param name the name to find.
+	 * @return the found model element.
+	 */
+	public static Object find(
+			org.omg.uml.modelmanagement.UmlPackage umlPackage,
+			final String name)
+	{
+		return CollectionUtils.find(
+				umlPackage.getOwnedElement(),
+				new Predicate()
+				{
+					public boolean evaluate(Object object)
+					{
+						return StringUtils.trimToEmpty(((ModelElement)object).getName()).equals(name);
+					}
+				});
+	}
+
+
 }

@@ -60,6 +60,9 @@
             cascade="all-delete-orphan"
             sort="unsorted"
         >
+            <cache 
+                usage="read-write" 
+             />
 
               <key
                   column="COLLECTION_ATTR_RECORD_ID"
@@ -78,6 +81,9 @@
             cascade="all-delete-orphan"
             sort="unsorted"
         >
+            <cache 
+                usage="read-write" 
+             />
 
               <key
                   column="RECORD_ID"
@@ -85,6 +91,27 @@
 
               <one-to-many
                   class="edu.common.dynamicextensions.domain.FileAttributeRecordValue"
+              />
+        </set>
+
+        <set
+            name="objectRecordCollection"
+            table="DE_OBJECT_ATTR_RECORD_VALUES"
+            lazy="false"
+            inverse="false"
+            cascade="all-delete-orphan"
+            sort="unsorted"
+        >
+            <cache 
+                usage="read-write" 
+             />
+
+              <key
+                  column="RECORD_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.ObjectAttributeRecordValue"
               />
         </set>
 

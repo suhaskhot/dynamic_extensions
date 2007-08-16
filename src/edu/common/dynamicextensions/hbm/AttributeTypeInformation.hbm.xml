@@ -150,6 +150,17 @@
 
         </joined-subclass>
         <joined-subclass
+            name="edu.common.dynamicextensions.domain.ObjectAttributeTypeInformation"
+            table="DYEXTN_OBJECT_TYPE_INFO"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+
+        </joined-subclass>
+        <joined-subclass
             name="edu.common.dynamicextensions.domain.DateAttributeTypeInformation"
             table="DYEXTN_DATE_TYPE_INFO"
             dynamic-update="false"

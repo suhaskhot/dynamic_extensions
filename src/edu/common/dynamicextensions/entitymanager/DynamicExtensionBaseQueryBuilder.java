@@ -367,7 +367,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
             return queryList;
         }
         Association association = (Association) associationInterface;
-        verifyCardinalityConstraints(associationInterface, recordIdList);
+        verifyCardinalityConstraints(associationInterface, sourceRecordId);
         String tableName = association.getConstraintProperties().getName();
         String sourceKey = association.getConstraintProperties().getSourceEntityKey();
         String targetKey = association.getConstraintProperties().getTargetEntityKey();
@@ -1584,7 +1584,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
      * @throws DynamicExtensionsApplicationException
      * @throws DynamicExtensionsSystemException
      */
-    protected void verifyCardinalityConstraints(AssociationInterface association, List<Long> recordIdList)
+    protected void verifyCardinalityConstraints(AssociationInterface association, Long sourceRecordId)
             throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException {
         EntityInterface targetEntity = association.getTargetEntity();
         Cardinality sourceMaxCardinality = association.getSourceRole().getMaximumCardinality();
@@ -1600,7 +1600,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
 
             String query = SELECT_KEYWORD + WHITESPACE + COUNT_KEYWORD + OPENING_BRACKET + "*" + CLOSING_BRACKET
                     + WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName + WHITESPACE + WHERE_KEYWORD + WHITESPACE
-                    + columnName + WHITESPACE + EQUAL + WHITESPACE + recordIdList.get(0);
+                    + columnName + WHITESPACE + EQUAL + WHITESPACE + sourceRecordId;
             ResultSet resultSet = entityManagerUtil.executeQuery(query);
 
             try {

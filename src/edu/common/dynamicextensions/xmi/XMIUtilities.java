@@ -192,7 +192,8 @@ public class XMIUtilities
 				{
 					public boolean evaluate(Object object)
 					{
-						return StringUtils.trimToEmpty(((ModelElement)object).getName()).equals(name);
+						//return StringUtils.trimToEmpty(((ModelElement)object).getName()).equals(name);
+						return true;
 					}
 				});
 	}

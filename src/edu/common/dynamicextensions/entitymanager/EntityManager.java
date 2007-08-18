@@ -200,7 +200,7 @@ public class EntityManager
 			List<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
 
 			entityInterface = saveOrUpdateEntity(entityInterface, hibernateDAO, stack,
-					isEntitySaved, processedEntityList, addIdAttribute);
+					isEntitySaved, processedEntityList, addIdAttribute, false);
 
 			//Committing the changes done in the hibernate session to the database.
 			hibernateDAO.commit();
@@ -405,6 +405,33 @@ public class EntityManager
 		boolean isOnlyMetadata = false;
 		entityGroup = saveOrUpdateEntityGroup(entityGroupInterface, isEntityGroupNew,
 				isOnlyMetadata);
+		logDebug("createEntity", "Exiting method");
+		return entityGroupInterface;
+	}
+	/**
+	 * This method creates an entity group.The entities in the group are also saved.
+	 * @param entityGroupInterface entity group to be saved.
+	 * @return entityGroupInterface Saved  entity group. 
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public EntityGroupInterface persistEntityGroupWithAllContainers(EntityGroupInterface entityGroupInterface,Collection<ContainerInterface> containerColl)
+	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		logDebug("createEntityGroup", "Entering method");
+		EntityGroup entityGroup = (EntityGroup) entityGroupInterface;
+		//Calling the following method to process the entity group before saving. 
+		//This includes setting the created date and updated date etc.
+		preSaveProcessEntityGroup(entityGroup);
+		//Following method actually calls the dao's insert or update method.
+		boolean isEntityGroupNew = true;
+		if (entityGroupInterface.getId() != null)
+		{
+			isEntityGroupNew = false;
+		}
+		boolean isOnlyMetadata = false;
+		entityGroup = saveOrUpdateEntityGroupAndContainers(entityGroupInterface, isEntityGroupNew,
+				isOnlyMetadata,containerColl);
 		logDebug("createEntity", "Exiting method");
 		return entityGroupInterface;
 	}
@@ -877,9 +904,9 @@ public class EntityManager
 	 */
 	private void postSaveProcessEntity(Entity entity, HibernateDAO hibernateDAO,
 			Stack rollbackQueryStack, List<EntityInterface> processedEntityList,
-			boolean addIdAttribute) throws DynamicExtensionsApplicationException,
-			DynamicExtensionsSystemException, DAOException, UserNotAuthorizedException,
-			HibernateException
+			boolean addIdAttribute, boolean isEntityFromXMI)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException,
+			DAOException, UserNotAuthorizedException, HibernateException
 	{
 		if (entity.getTableProperties() == null)
 		{
@@ -924,7 +951,7 @@ public class EntityManager
 						{
 							targetEntity = saveOrUpdateEntity(targetEntity, hibernateDAO,
 									rollbackQueryStack, isEntitySaved, processedEntityList,
-									addIdAttribute);
+									addIdAttribute, isEntityFromXMI);
 						}
 						else
 						{
@@ -988,7 +1015,12 @@ public class EntityManager
 				constraintPropertiesSysGen.setTargetEntityKey(association.getConstraintProperties()
 						.getSourceEntityKey());
 				//Populating the sys. generated association.
-				systemGeneratedAssociation.setName(association.getName());
+				//systemGeneratedAssociation.setName(association.getName());
+
+				//For XMI import, we can get self referencing bi directional associations. Hence creating unique name for the sys generated association.
+				systemGeneratedAssociation.setName(association.getName()
+						+ association.getEntity().getId());
+
 				systemGeneratedAssociation.setDescription(association.getDescription());
 				systemGeneratedAssociation.setTargetEntity(association.getEntity());
 				systemGeneratedAssociation.setEntity(association.getTargetEntity());
@@ -1323,18 +1355,184 @@ public class EntityManager
 		return objectList;
 	}
 
-	/**
-	 * This method is used to save the container into the database.
-	 * @param containerInterface container to save
-	 * @return ContainerInterface container Interface that is saved.
-	 * @throws DynamicExtensionsSystemException Thrown if for any reason operation can not be completed.
-	 * @throws DynamicExtensionsApplicationException Thrown if the entity name already exists.
-	 * @throws DynamicExtensionsSystemException 
-	 */
 	public ContainerInterface persistContainer(ContainerInterface containerInterface)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
-		return persistContainer(containerInterface, true);
+		
+		return persistContainer(containerInterface,true);
+	}
+	
+   
+
+//	/**
+//	 * This method is used to save the container into the database.
+//	 * @param containerInterface container to save
+//	 * @return ContainerInterface container Interface that is saved.
+//	 * @throws DynamicExtensionsSystemException Thrown if for any reason operation can not be completed.
+//	 * @throws DynamicExtensionsApplicationException Thrown if the entity name already exists.
+//	 * @throws DynamicExtensionsSystemException 
+//	 */
+//	public ContainerInterface persistContainer(ContainerInterface containerInterface,
+//			List<ArrayList> processedContainerListEntityList,boolean addIdAttribute)
+//			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+//	{
+//		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
+//				Constants.HIBERNATE_DAO);
+//		ContainerInterface container = null;
+//		try
+//		{
+//
+//			hibernateDAO.closeSession();
+//			hibernateDAO.openSession(null);
+//
+//			List<ContainerInterface> processedContainerList = processedContainerListEntityList
+//					.get(0);
+//			List<EntityInterface> processedEntityList = processedContainerListEntityList.get(1);
+//
+////			container = persistContainer(containerInterface, addIdAttribute, hibernateDAO,
+////					processedEntityList, processedContainerList);
+//			hibernateDAO.commit();
+//
+//		}
+//		catch (DAOException e)
+//		{
+//			//rollbackQueries(rollbackQueryStack, entity, e, hibernateDAO);
+//			throw new DynamicExtensionsSystemException(
+//					"DAOException occured while opening a session to save the container.", e);
+//		}
+//		finally
+//		{
+//			try
+//			{
+//				hibernateDAO.closeSession();
+//			}
+//			catch (Exception e)
+//			{
+//				//	rollbackQueries(rollbackQueryStack, entity, e, hibernateDAO);
+//				throw new DynamicExtensionsSystemException(
+//						"DAOException occured while closing a session to save the container.", e);
+//			}
+//		}
+//		return container;
+//
+//	}
+
+	/**
+	 * @param containerInterface
+	 * @param addIdAttribute
+	 * @param hibernateDAO
+	 * @param processedEntityList
+	 * @param processedContainerList
+	 * @param dataBaseCopy
+	 * @return
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private ContainerInterface persistContainer(ContainerInterface containerInterface,
+			boolean addIdAttribute, HibernateDAO hibernateDAO,
+			/*List<EntityInterface> processedEntityList,*/
+			List<ContainerInterface> processedContainerList, EntityGroupInterface currentEntityGroup)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	{
+		Container container = (Container) containerInterface;
+
+		boolean isContainerProcessed = isContainerProcessed(processedContainerList,
+				containerInterface);
+		if (isContainerProcessed)
+		{
+			return container;
+		}
+		else
+		{
+			processedContainerList.add(container);
+		}
+
+		Stack rollbackQueryStack = new Stack();
+		if (container == null)
+		{
+			throw new DynamicExtensionsSystemException("Container passed is null");
+		}
+
+		Entity entity = (Entity) container.getEntity();
+		Session session = null;
+		try
+		{
+			session = DBUtil.currentSession();
+			if (container.getBaseContainer() != null)
+			{
+				if (container.getBaseContainer().getId() == null)
+				{
+					persistContainer(container.getBaseContainer(), addIdAttribute,
+							hibernateDAO,/* processedEntityList, */processedContainerList,currentEntityGroup);
+				}
+			}
+
+			if (entity != null)
+			{				
+				saveContainerForContainmentAssociation(container, addIdAttribute, hibernateDAO,
+						 processedContainerList, currentEntityGroup);
+			}
+
+			preSaveProcessContainer(container); //preprocess
+
+			session.saveOrUpdateCopy(container);
+
+			if (currentEntityGroup != null)
+			{
+				currentEntityGroup.addMainContainer(container);
+				session.saveOrUpdateCopy(currentEntityGroup);
+			}
+		}
+		catch (HibernateException e)
+		{
+			//In case of exception execute roll back queries to restore the database state.
+			rollbackQueries(rollbackQueryStack, entity, e, hibernateDAO);
+			throw new DynamicExtensionsSystemException(
+					"Exception occured while opening a session to save the container.", e);
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			rollbackQueries(rollbackQueryStack, entity, e, hibernateDAO);
+			e.printStackTrace();
+			throw e;
+		}
+		return container;
+	}
+
+	/**
+	 * @param processedContainerList
+	 * @param container
+	 * @return
+	 */
+	private boolean isContainerProcessed(List<ContainerInterface> processedContainerList,
+			ContainerInterface container)
+	{
+		for (ContainerInterface containerFormList : processedContainerList)
+		{
+			if (containerFormList.getCaption().equalsIgnoreCase(container.getCaption()))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * @param processedEntityList
+	 * @param entity
+	 * @return
+	 */
+	private boolean isEntityProcessed(List<EntityInterface> processedEntityList,
+			EntityInterface entity)
+	{
+		for (EntityInterface entityFromList : processedEntityList)
+		{
+			if (entityFromList.getName().equalsIgnoreCase(entity.getName()))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -1383,7 +1581,7 @@ public class EntityManager
 				// in case of exception.
 				List<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
 				saveOrUpdateEntity(entity, hibernateDAO, rollbackQueryStack, isentitySaved,
-						processedEntityList, addIdAttribute);
+						processedEntityList, addIdAttribute, false);
 				saveChildContainers(container, session);
 			}
 
@@ -1432,8 +1630,8 @@ public class EntityManager
 			try
 			{
 				postSaveOrUpdateEntity(entity);
-				//session.close();
-				//DBUtil.closeSession();
+				//				session.close();
+				//				DBUtil.closeSession();
 				hibernateDAO.closeSession();
 			}
 			catch (Exception e)
@@ -1443,29 +1641,56 @@ public class EntityManager
 		}
 		return container;
 	}
-
+	/**
+	 * @param container
+	 * @param session
+	 * @param addIdAttribute
+	 * @param hibernateDAO
+	 * @param processedEntityList
+	 * @param processedContainerList
+	 * @throws HibernateException
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private void saveContainerForContainmentAssociation(ContainerInterface container, 
+			boolean addIdAttribute, HibernateDAO hibernateDAO,			
+			List<ContainerInterface> processedContainerList, EntityGroupInterface currentEntityGroup) throws HibernateException,
+			DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	{
+		for (ControlInterface control : container.getControlCollection())
+		{
+			if (control instanceof ContainmentAssociationControlInterface)
+			{
+				ContainmentAssociationControlInterface associationControl = (ContainmentAssociationControlInterface) control;
+				persistContainer(associationControl.getContainer(), addIdAttribute,
+						hibernateDAO,  processedContainerList,currentEntityGroup);
+			}
+		}
+	}
 	/**
 	 * @param container
 	 * @param session
 	 * @throws HibernateException
 	 */
-	private void saveChildContainers(ContainerInterface container, Session session)
-			throws HibernateException
+	private void saveChildContainers(ContainerInterface container, Session session) throws HibernateException,
+			DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		if (container != null)
 		{
-			for (ControlInterface control : container.getControlCollection())
+		for (ControlInterface control : container.getControlCollection())
+		{
+			if (control instanceof ContainmentAssociationControlInterface)
 			{
-				if (control instanceof ContainmentAssociationControlInterface)
-				{
-					session.saveOrUpdateCopy(((ContainmentAssociationControlInterface) control)
-							.getContainer());
-					saveChildContainers(((ContainmentAssociationControlInterface) control)
-							.getContainer(), session);
-				}
+				ContainmentAssociationControlInterface associationControl = (ContainmentAssociationControlInterface) control;
+				
+
+				session.saveOrUpdateCopy(associationControl.getContainer());
+			
+				saveChildContainers(associationControl.getContainer(), session);
+				
 			}
 		}
-
+		}
 	}
 
 	/**
@@ -2242,28 +2467,43 @@ public class EntityManager
 	 */
 	private EntityInterface saveOrUpdateEntity(EntityInterface entityInterface,
 			HibernateDAO hibernateDAO, Stack rollbackQueryStack, boolean isEntitySaved,
-			List<EntityInterface> processedEntityList, boolean addIdAttribute)
-			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException,
-			DAOException, HibernateException
+			List<EntityInterface> processedEntityList, boolean addIdAttribute,
+			boolean isEntityFromXMI) throws DynamicExtensionsApplicationException,
+			DynamicExtensionsSystemException, DAOException, HibernateException
 	{
 		logDebug("saveOrUpdateEntity", "Entering method");
 
 		Entity entity = (Entity) entityInterface;
 
-		if (processedEntityList.contains(entity))
+		if (isEntityFromXMI)
 		{
-			return entity;
+			boolean isEntityProcessed = isEntityProcessed(processedEntityList, entity);
+			if (isEntityProcessed)
+			{
+				return entity;
+			}
+			else
+			{
+				processedEntityList.add(entity);
+			}
 		}
 		else
 		{
-			processedEntityList.add(entity);
+			if (processedEntityList.contains(entity))
+			{
+				return entity;
+			}
+			else
+			{
+				processedEntityList.add(entity);
+			}
 		}
 
-		if (entity.getParentEntity() != null && entity.getParentEntity().getId() == null)
-		{
-			throw new DynamicExtensionsApplicationException("Unsaved Parent not allowed", null,
-					DYEXTN_A_011);
-		}
+		//		if (entity.getParentEntity() != null && entity.getParentEntity().getId() == null)
+		//		{
+		//			throw new DynamicExtensionsApplicationException("Unsaved Parent not allowed", null,
+		//					DYEXTN_A_011);
+		//		}
 		List reverseQueryList = new LinkedList();
 		List queryList = null;
 
@@ -2290,16 +2530,29 @@ public class EntityManager
 				}
 			}
 
+			//			if (entity.getParentEntity() != null)
+			//			{
+			//				saveOrUpdateEntity(entity.getParentEntity(), hibernateDAO, rollbackQueryStack,
+			//						true, processedEntityList, addIdAttribute);
+			//			}
+
 			if (entity.getParentEntity() != null)
 			{
+				boolean isParentEntitySaved = false;
+				if (entity.getParentEntity().getId() != null)
+				{
+					isParentEntitySaved = true;
+				}
+
 				saveOrUpdateEntity(entity.getParentEntity(), hibernateDAO, rollbackQueryStack,
-						true, processedEntityList, addIdAttribute);
+						isParentEntitySaved, processedEntityList, addIdAttribute, isEntityFromXMI);
+
 			}
 
 			entity = (Entity) session.saveOrUpdateCopy(entity);
 
 			postSaveProcessEntity(entity, hibernateDAO, rollbackQueryStack, processedEntityList,
-					addIdAttribute);
+					addIdAttribute, isEntityFromXMI);
 
 			entity = (Entity) session.saveOrUpdateCopy(entity);
 
@@ -2417,7 +2670,7 @@ public class EntityManager
 			//entity = (Entity) session.saveOrUpdateCopy(entity);
 			//since only metadata is saved 
 			postSaveProcessEntity(entity, hibernateDAO, rollbackQueryStack, processedEntityList,
-					false);
+					false, false);
 			//entity = (Entity) session.saveOrUpdateCopy(entity);
 			hibernateDAO.update(entity, null, false, false, false);
 		}
@@ -3023,7 +3276,7 @@ public class EntityManager
 					else
 					{
 						saveOrUpdateEntity(entityInterface, hibernateDAO, stack, isEntitySaved,
-								processedEntityList, false);
+								processedEntityList, false, false);
 					}
 				}
 			}
@@ -3059,6 +3312,104 @@ public class EntityManager
 						"Exception occured while closing the session", e, DYEXTN_S_001);
 			}
 
+		}
+		logDebug("saveOrUpdateEntity", "Exiting Method");
+		return entityGroup;
+	}
+	/**
+	 * This method is used by create as well as edit entity group. This method holds all the common part 
+	 * related to saving the entity group into the database and also handling the exceptions .
+	 * @param entityGroupInterface EntityGroupInterface  to be stored in the database.
+	 * @param isNew flag for whether it is a save or update.
+	 * @return EntityGroup . Stored instance of the entity group.
+	 * @throws DynamicExtensionsApplicationException System exception in case of any fatal errors.
+	 * @throws DynamicExtensionsSystemException Thrown in case of duplicate name or authentication failure.
+	 */
+	private EntityGroup saveOrUpdateEntityGroupAndContainers(EntityGroupInterface entityGroupInterface,
+			boolean isNew, boolean isOnlyMetadata, Collection<ContainerInterface> containerColl) throws DynamicExtensionsApplicationException,
+			DynamicExtensionsSystemException
+	{
+		logDebug("saveOrUpdateEntityGroup", "Entering method");
+		EntityGroup entityGroup = (EntityGroup) entityGroupInterface;
+		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
+				Constants.HIBERNATE_DAO);
+		Stack stack = new Stack();
+		EntityInterface entityInterface = null;
+		try
+		{
+			if (isNew)
+			{
+				hibernateDAO.openSession(null);
+				hibernateDAO.insert(entityGroup, null, false, false);
+			}
+			else
+			{				
+				hibernateDAO.openSession(null);
+				hibernateDAO.update(entityGroup, null, false, false, false);
+			}
+			Collection<EntityInterface> entityCollection = entityGroup.getEntityCollection();
+			if (entityCollection != null && !entityCollection.isEmpty())
+			{
+				List<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
+				for (EntityInterface entity : entityCollection)
+				{
+					entityInterface = entity;
+					boolean isEntitySaved = false;
+					if (entityInterface.getId() != null)
+					{
+						isEntitySaved = true;
+					}
+					if (isOnlyMetadata)
+					{
+						saveOrUpdateEntityMetadata(entityInterface, hibernateDAO, stack,
+								isEntitySaved, processedEntityList);
+					}
+					else
+					{
+						saveOrUpdateEntity(entityInterface, hibernateDAO, stack, isEntitySaved,
+								processedEntityList, false, false);
+					}
+				}
+			}			
+			//For containers
+			if(containerColl != null && !containerColl.isEmpty())
+			{				
+				List<ContainerInterface> processedContainerList = new ArrayList<ContainerInterface>();
+				for (ContainerInterface container : containerColl)
+				{
+					persistContainer(container,	false, hibernateDAO, processedContainerList,entityGroupInterface);
+				}				
+			}
+			
+			hibernateDAO.commit();
+		}
+		catch (Exception e)
+		{
+			//			Queries for data table creation and modification are fired in the method saveOrUpdateEntity. So if there
+			//is any exception while storing the metadata , we need to roll back the queries that were fired. So
+			//calling the following method to do that.
+			rollbackQueries(stack, (Entity) entityInterface, e, hibernateDAO);
+			if (e instanceof DynamicExtensionsApplicationException)
+			{
+				throw (DynamicExtensionsApplicationException) e;
+			}
+			else
+			{
+				throw new DynamicExtensionsSystemException(e.getMessage(), e);
+			}
+		}
+		finally
+		{
+			try
+			{
+				postSaveOrUpdateEntity(entityInterface);
+				hibernateDAO.closeSession();
+			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException(
+						"Exception occured while closing the session", e, DYEXTN_S_001);
+			}
 		}
 		logDebug("saveOrUpdateEntity", "Exiting Method");
 		return entityGroup;

@@ -486,5 +486,10 @@ public interface EntityManagerInterface {
             DynamicExtensionsApplicationException;
 
     Map<Long, Date> getEntityCreatedDateByContainerId() throws DynamicExtensionsSystemException;
+    
+//    public ContainerInterface persistContainer(ContainerInterface containerInterface,List<ArrayList> processedContainerListEntityList,boolean addIdAttribute)
+//	throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
+    public EntityGroupInterface persistEntityGroupWithAllContainers(EntityGroupInterface entityGroupInterface,Collection<ContainerInterface> containerColl)
+	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 }

@@ -247,5 +247,16 @@ public class EntityGroup extends AbstractMetadata implements java.io.Serializabl
 		this.isSystemGenerated = isSystemGenerated;
 	}
 	 
+	public EntityInterface getEntityByName(String entityName)
+	{
+		for(EntityInterface entity : entityCollection)
+		{
+			if(entity.getName().equalsIgnoreCase(entityName))
+			{
+				return entity;
+			}
+		}
+		return null;
+	}
 
 }

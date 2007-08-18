@@ -98,4 +98,10 @@ public interface EntityGroupInterface extends AbstractMetadataInterface
 	 */
 	public void setIsSystemGenerated(Boolean isSystemGenerated);
 	
+	/**
+	 * @param entityName
+	 * @return
+	 */
+	public EntityInterface getEntityByName(String entityName);
+	
 }

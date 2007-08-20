@@ -3500,6 +3500,22 @@ public class EntityManager
 		{
 			throw new DynamicExtensionsSystemException("Error while rolling back the session", e);
 		}
+		
+
+		finally
+		{
+			try
+			{
+				hibernateDAO.closeSession();
+
+			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException(
+						"Exception occured while closing the session", e, DYEXTN_S_001);
+			}
+
+		}
 		return entityCollection;
 	}
 

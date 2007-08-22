@@ -19,6 +19,7 @@ import javax.jmi.reflect.RefPackage;
 import javax.jmi.xmi.XmiReader;
 import javax.jmi.xmi.XmiWriter;
 
+import org.apache.commons.lang.StringUtils;
 import org.netbeans.api.mdr.CreationFailedException;
 import org.netbeans.api.mdr.MDRManager;
 import org.netbeans.api.mdr.MDRepository;
@@ -28,7 +29,10 @@ import org.omg.uml.foundation.core.Attribute;
 import org.omg.uml.foundation.core.Classifier;
 import org.omg.uml.foundation.core.CorePackage;
 import org.omg.uml.foundation.core.DataType;
-import org.omg.uml.foundation.core.TagDefinition;
+import org.omg.uml.foundation.core.Dependency;
+import org.omg.uml.foundation.core.Generalization;
+import org.omg.uml.foundation.core.Relationship;
+import org.omg.uml.foundation.core.Stereotype;
 import org.omg.uml.foundation.core.TaggedValue;
 import org.omg.uml.foundation.core.UmlAssociation;
 import org.omg.uml.foundation.core.UmlClass;
@@ -48,19 +52,22 @@ import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.EntityGroup;
+import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
-import edu.common.dynamicextensions.processor.ProcessorConstants;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
+import edu.common.dynamicextensions.ui.util.SemanticPropertyBuilderUtil;
+import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.common.dynamicextensions.xmi.XMIConstants;
 import edu.common.dynamicextensions.xmi.XMIUtilities;
-import gov.nih.nci.cagrid.metadata.common.UMLClass;
+import edu.wustl.common.util.Utility;
 
 /**
  * @author preeti_lodha
@@ -98,6 +105,7 @@ public class XMIExporter implements XMIExportInterface
 
 		repository.beginTrans(true);
 		try {
+			System.out.println("XMI Version " + xmiVersion);
 			writer.write(outputStream, extent, xmiVersion);
 			System.out.println( "XMI written successfully");
 		} finally {
@@ -135,16 +143,20 @@ public class XMIExporter implements XMIExportInterface
 			Collection<UmlClass> umlEntityClasses = createUMLClasses(entityGroup.getEntityCollection());
 			//CLASSES : ADD : add entity classes to group package
 			umlGroupPackage.getOwnedElement().addAll(umlEntityClasses);
-			//ASSOCIATIONS :CREATE
-			Collection<UmlAssociation> umlAssociations =  getUMLAssociations(entityGroup.getEntityCollection());
-			//ASSOCIATIONS :ADD : Add associations to package
-			umlGroupPackage.getOwnedElement().addAll(umlAssociations);
+			//Relationships  : ASSOCIATIONS/GENERALIZATION/DEPENDENCIES :CREATE
+			Collection<Relationship> umlRelationships =  getUMLRelationships(entityGroup.getEntityCollection());
+			//Relationships :ADD : Add relationships to package
+			umlGroupPackage.getOwnedElement().addAll(umlRelationships);
 			
+			/*//GENERALIZATION :CREATE
+			Collection<GE> umlAssociations =  getUMLAssociations(entityGroup.getEntityCollection());
+			//ASSOCIATIONS :ADD : Add associations to package
+			umlGroupPackage.getOwnedElement().addAll(umlAssociations);*/
+				
 			//TAGGED VALUES : Create
-			Collection<TaggedValue> groupTaggedValues = getTaggedValues(entityGroup.getTaggedValueCollection());
+			Collection<TaggedValue> groupTaggedValues = getTaggedValues(entityGroup);
 			//TAGGED VALUES : Add
 			umlGroupPackage.getTaggedValue().addAll(groupTaggedValues);
-			
 		}
 	}
 
@@ -152,9 +164,20 @@ public class XMIExporter implements XMIExportInterface
 	 * @param taggedValueCollection
 	 * @return
 	 */
-	private Collection<TaggedValue> getTaggedValues(Collection<TaggedValueInterface> taggedValueCollection)
+	private Collection<TaggedValue> getTaggedValues(AbstractMetadataInterface abstractMetadataObj)
 	{
 		ArrayList<TaggedValue> taggedValues = new ArrayList<TaggedValue>();
+		taggedValues.add(createTaggedValue("description",abstractMetadataObj.getDescription()));
+		if(abstractMetadataObj.getId()!=null)
+		{
+			taggedValues.add(createTaggedValue("id",abstractMetadataObj.getId().toString()));
+		}
+		taggedValues.add(createTaggedValue("publicId",abstractMetadataObj.getPublicId()));
+		taggedValues.add(createTaggedValue("createdDate",Utility.parseDateToString(abstractMetadataObj.getCreatedDate(), Constants.DATE_PATTERN_MM_DD_YYYY)));
+		taggedValues.add(createTaggedValue("lastUpdated",Utility.parseDateToString(abstractMetadataObj.getLastUpdated(), Constants.DATE_PATTERN_MM_DD_YYYY)));
+		taggedValues.add(createTaggedValue("conceptCodes",SemanticPropertyBuilderUtil.getConceptCodeString(abstractMetadataObj.getOrderedSemanticPropertyCollection())));
+		
+		Collection<TaggedValueInterface> taggedValueCollection = abstractMetadataObj.getTaggedValueCollection();
 		if(taggedValueCollection!=null)
 		{
 			Iterator<TaggedValueInterface> taggedValueCollnIter = taggedValueCollection.iterator();
@@ -162,7 +185,6 @@ public class XMIExporter implements XMIExportInterface
 			{
 				taggedValues.add(createTaggedValue(taggedValueCollnIter.next()));
 			}
-			
 		}
 		return taggedValues;
 	}
@@ -184,31 +206,32 @@ public class XMIExporter implements XMIExportInterface
 	 * @param entityCollection
 	 * @return
 	 */
-	private Collection<UmlAssociation> getUMLAssociations(Collection<EntityInterface> entityCollection)
+	private Collection<Relationship> getUMLRelationships(Collection<EntityInterface> entityCollection)
 	{
-		ArrayList<UmlAssociation>  umlAssociations = new ArrayList<UmlAssociation>();
+		ArrayList<Relationship>  umlRelationships = new ArrayList<Relationship>();
 		if(entityCollection!=null)
 		{
 			Iterator<EntityInterface> entityCollnIter = entityCollection.iterator();
 			while(entityCollnIter.hasNext())
 			{
 				EntityInterface entity = entityCollnIter.next();
-				Collection<UmlAssociation> entityAssociations = createUMLAssociations(entity);
-				umlAssociations.addAll(entityAssociations);
+				Collection<Relationship> entityAssociations = createUMLRelationships(entity);
+				umlRelationships.addAll(entityAssociations);
 			}
 		}
-		return umlAssociations;
+		return umlRelationships;
 	}
 
 	/**
 	 * @param entity
 	 * @return
 	 */
-	private Collection<UmlAssociation> createUMLAssociations(EntityInterface entity)
+	private Collection<Relationship> createUMLRelationships(EntityInterface entity)
 	{
-		ArrayList<UmlAssociation>  entityUMLAssociations = new ArrayList<UmlAssociation>();
+		ArrayList<Relationship>  entityUMLRelationships = new ArrayList<Relationship>();
 		if(entity!=null)
 		{
+			//Association relationships
 			Collection<AssociationInterface> entityAssociations = entity.getAllAssociations();
 			if(entityAssociations!=null)
 			{
@@ -219,12 +242,41 @@ public class XMIExporter implements XMIExportInterface
 					UmlAssociation umlAssociation = createUMLAssociation(association);
 					if(umlAssociation!=null)
 					{
-						entityUMLAssociations.add(umlAssociation);
+						entityUMLRelationships.add(umlAssociation);
 					}
 				}
 			}
+			//generalizations
+			EntityInterface parentEntity = entity.getParentEntity();
+			if(parentEntity!=null)
+			{
+				System.out.println(entity.getName() + " -> Parent Entity -> " + parentEntity.getName());
+				Generalization generalization = createGeneralization(parentEntity,entity);
+				entityUMLRelationships.add(generalization);
+			}
+			//dependencies
+			TablePropertiesInterface entityTable = entity.getTableProperties();
+			if(entityTable!=null)
+			{
+				//Table exists. 
+				
+			}
 		}
-		return entityUMLAssociations;
+		return entityUMLRelationships;
+	}
+
+	/**
+	 * @param parentEntity
+	 * @param entity
+	 */
+	private Generalization createGeneralization(EntityInterface parentEntity, EntityInterface childEntity)
+	{
+		Generalization generalization  = umlPackage.getCore().getGeneralization().createGeneralization("extends",VisibilityKindEnum.VK_PUBLIC,false,null);
+		org.omg.uml.foundation.core.GeneralizableElement parent = (org.omg.uml.foundation.core.GeneralizableElement)entityUMLClassMappings.get(parentEntity.getName());
+		org.omg.uml.foundation.core.GeneralizableElement child = (org.omg.uml.foundation.core.GeneralizableElement)entityUMLClassMappings.get(childEntity.getName());
+		generalization.setParent(parent);
+		generalization.setChild(child);
+		return generalization;
 	}
 
 	/**
@@ -267,7 +319,10 @@ public class XMIExporter implements XMIExportInterface
 				{
 					directionTaggedValue =  createTaggedValue(XMIConstants.TAGGED_NAME_ASSOC_DIRECTION, XMIConstants.TAGGED_VALUE_ASSOC_SRC_DEST);
 				}
-				umlAssociation.getTaggedValue().add(directionTaggedValue);
+				if(directionTaggedValue !=null)
+				{
+					umlAssociation.getTaggedValue().add(directionTaggedValue);
+				}
 			}
 		}
 		return umlAssociation;
@@ -282,11 +337,20 @@ public class XMIExporter implements XMIExportInterface
 	 */
 	protected static TaggedValue createTaggedValue(String name,String value)
 	{
-		Collection values = new HashSet();
-		values.add(value);
-		TaggedValue taggedValue =
-			umlPackage.getCore().getTaggedValue().createTaggedValue(name, VisibilityKindEnum.VK_PUBLIC, false, values);
-		return taggedValue;
+		if(name!=null)
+		{
+			Collection values = new HashSet();
+			if(value!=null)
+			{
+				values.add(value);
+			}
+			
+			TaggedValue taggedValue =
+				umlPackage.getCore().getTaggedValue().createTaggedValue(name, VisibilityKindEnum.VK_PUBLIC, false, values);
+			taggedValue.setType(null);
+			return taggedValue;
+		}
+		return null;
 	}
 
 	/**
@@ -362,10 +426,13 @@ public class XMIExporter implements XMIExportInterface
 			//Get class name , create uml class 
 			String className = XMIUtilities.getClassNameForEntity(entity);  
 			CorePackage corePackage = umlPackage.getCore();
-			umlEntityClass = corePackage.getUmlClass().createUmlClass(className, VisibilityKindEnum.VK_PUBLIC, false, false, false, false, false);
+			umlEntityClass = corePackage.getUmlClass().createUmlClass(className, VisibilityKindEnum.VK_PUBLIC, false, false, false, entity.isAbstract(),false );
 			//Create and add attributes to class
 			Collection<Attribute> umlEntityAttributes = createUMLAttributes(entity.getAllAttributes());
 			umlEntityClass.getFeature().addAll(umlEntityAttributes);
+			//Create and add tagged values to entity
+			Collection<TaggedValue> entityTaggedValues = getTaggedValues(entity);
+			umlEntityClass.getTaggedValue().addAll(entityTaggedValues);
 		}
 		return umlEntityClass;
 	}
@@ -405,13 +472,21 @@ public class XMIExporter implements XMIExportInterface
 			umlAttribute =corePackage.getAttribute().createAttribute(attributeName,VisibilityKindEnum.VK_PUBLIC,
 					false,
 					ScopeKindEnum.SK_INSTANCE,
-					createAttributeMultiplicity(corePackage.getDataTypes(),true),
+					createAttributeMultiplicity(corePackage.getDataTypes(),entityAttribute.getIsNullable()),
 					ChangeableKindEnum.CK_CHANGEABLE,
 					ScopeKindEnum.SK_CLASSIFIER,
 					OrderingKindEnum.OK_UNORDERED,
 					null);
-			typeClass = getOrCreateDataType("String");//search datatype
+			typeClass = getOrCreateDataType(entityAttribute.getDataType());
 			umlAttribute.setType(typeClass);
+			//Tagged Values
+			Collection<TaggedValue> attributeTaggedValues = getTaggedValues(entityAttribute);
+			umlAttribute.getTaggedValue().addAll(attributeTaggedValues);
+			/*if(entityAttribute.getIsPrimaryKey())
+			{
+				umlAttribute.getTaggedValue().add(createTaggedValue("stereotype", "PK"));
+				umlAttribute.getStereotype().addAll(getOrCreateStereotypes("PK", "Attribute"));
+			}*/
 		}
 		return umlAttribute;
 	}
@@ -471,6 +546,39 @@ public class XMIExporter implements XMIExportInterface
 		return mult;
 	}
 
+	protected static Collection getOrCreateStereotypes(String names,String baseClass)
+	{/*
+		Collection stereotypes = new HashSet();
+		String[] stereotypeNames = null;
+		if (names != null)
+		{
+			stereotypeNames = names.split(",");
+		}
+		if (stereotypeNames != null && stereotypeNames.length > 0)
+		{
+			for (int ctr = 0; ctr < stereotypeNames.length; ctr++)
+			{
+				String name = "name";//StringUtils.trimToEmpty(stereotypeNames[ctr]);
+
+				// see if we can find the stereotype first
+				Object stereotype = null;//ModelElementFinder.find(this.umlPackage, name);
+				if (stereotype == null || !Stereotype.class.isAssignableFrom(stereotype.getClass()))
+				{
+					Collection baseClasses = new ArrayList();
+					baseClasses.add(baseClass);
+					stereotype =
+						umlPackage.getCore().getStereotype().createStereotype(
+								name, VisibilityKindEnum.VK_PUBLIC, false, false, false, false, null, baseClasses);
+
+					//this.model.getOwnedElement().add(stereotype);
+				}
+				stereotypes.add(stereotype);
+			}
+		}
+		return stereotypes;
+	*/
+		return null;}
+	
 	/**
 	 * 
 	 */
@@ -490,14 +598,12 @@ public class XMIExporter implements XMIExportInterface
 	{
 		ModelManagementPackage modelManagement = umlPackage.getModelManagement();
 		Object newPackage = XMIUtilities.find(parentPackage, packageName);
-		System.out.println("New Package " + newPackage);
 		if (newPackage == null)
 		{
 			newPackage =
 				modelManagement.getUmlPackage().createUmlPackage(
 						packageName, VisibilityKindEnum.VK_PUBLIC, false, false, false, false);
 			parentPackage.getOwnedElement().add(newPackage);
-			System.out.println("Created New Package");
 		}
 		/*		org.omg.uml.modelmanagement.UmlPackage newPackage = modelManagement.getUmlPackage().createUmlPackage(packageName, VisibilityKindEnum.VK_PUBLIC, false, false, false, false);
 		parentPackage.getOwnedElement().add(newPackage);*/
@@ -587,6 +693,63 @@ public class XMIExporter implements XMIExportInterface
 		// a topmost package named "UML" could not be found
 		return null;
 	}
+	/**
+	 * @param core
+	 * @param umlPrimaryClass
+	 * @param umlDependentClass
+	 * @return
+	 */
+	private static Dependency createDependency(UmlClass umlPrimaryClass, UmlClass umlDependentClass)
+	{
+		CorePackage corePackage = umlPackage.getCore();
+		Dependency dependency = corePackage.getDependency().createDependency(null, VisibilityKindEnum.VK_PUBLIC, false);
+		corePackage.getAClientClientDependency().add(umlPrimaryClass,dependency);
+		corePackage.getASupplierSupplierDependency().add(umlDependentClass, dependency);
+		return dependency;
+	}
+	
+	/**
+     * Gets or creates a stereotypes given the specfied comma seperated list of
+     * <code>names</code>. If any of the stereotypes can't be found, they
+     * will be created.
+     *
+     * @param names comma seperated list of stereotype names
+     * @param baseClass the base class for which the stereotype applies.
+     * @return Collection of Stereotypes
+     */
+    protected Collection getOrCreateStereotypes(
+        CorePackage corePackage,
+        String names,
+        String baseClass)
+    {
+        Collection stereotypes = new HashSet();
+        String[] stereotypeNames = null;
+        if (names != null)
+        {
+            stereotypeNames = names.split(",");
+        }
+        if (stereotypeNames != null && stereotypeNames.length > 0)
+        {
+            for (int ctr = 0; ctr < stereotypeNames.length; ctr++)
+            {
+                String name = StringUtils.trimToEmpty(stereotypeNames[ctr]);
+
+                // see if we can find the stereotype first
+                Object stereotype = XMIUtilities.find(this.umlPackage, name);
+                if (stereotype == null || !Stereotype.class.isAssignableFrom(stereotype.getClass()))
+                {
+                    Collection baseClasses = new ArrayList();
+                    baseClasses.add(baseClass);
+                    stereotype =
+                        corePackage.getStereotype().createStereotype(
+                            name, VisibilityKindEnum.VK_PUBLIC, false, false, false, false, null, baseClasses);
+                }
+                stereotypes.add(stereotype);
+            }
+        }
+        return stereotypes;
+    }
+	
 	public static void main(String args[])
 	{
 
@@ -602,12 +765,19 @@ public class XMIExporter implements XMIExportInterface
 		EntityInterface entity4  = new Entity();
 		entity4.setName("Entity Four");
 		AttributeInterface attribute = DomainObjectFactory.getInstance().createBooleanAttribute();
+		attribute.setName("Attrib1");
+		attribute.setIsPrimaryKey(true);
 		entity1.addAttribute(attribute);
+		
 		AttributeInterface attribute2 = DomainObjectFactory.getInstance().createDateAttribute();
+		attribute2.setName("Attrib2");
 		entity2.addAttribute(attribute2);
+		
 		AttributeInterface attribute3 = DomainObjectFactory.getInstance().createIntegerAttribute();
+		attribute3.setName("Attrib3");
 		entity3.addAttribute(attribute3);
 		AttributeInterface attribute4 = DomainObjectFactory.getInstance().createStringAttribute();
+		attribute4.setName("Attrib4");
 		entity4.addAttribute(attribute4);
 
 		Association assoc = new Association();
@@ -621,6 +791,8 @@ public class XMIExporter implements XMIExportInterface
 		assoc.setTargetRole(getRole(AssociationType.ASSOCIATION, entity2
 				.getName(), Cardinality.ONE, Cardinality.MANY));
 		entity1.addAssociation(assoc);
+		
+		entity4.setParentEntity(entity3); //Genrln
 		entityGroup.addEntity(entity1);
 		entityGroup.addEntity(entity2);
 		entityGroup.addEntity(entity3);
@@ -629,7 +801,7 @@ public class XMIExporter implements XMIExportInterface
 
 		try
 		{
-			e.exportXMI("abc.xmi", entityGroup, null);
+			e.exportXMI("abc.xmi", entityGroup, "1.1");
 		}
 		catch (Exception e1)
 		{

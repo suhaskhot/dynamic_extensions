@@ -30,9 +30,9 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
  * Utility functions for XMI import/XMI 
  */
 public class XMIUtilities
-{
+{/*
 	//Common Utility functions
-	/**
+	*//**
 	 * @return MDRepository object
 	 */
 	public static MDRepository getRepository()
@@ -151,6 +151,7 @@ public class XMIUtilities
 	{
 		XmiWriter writer = (XmiWriter) Lookup.getDefault().lookup(XmiWriter.class);
 		return writer;
+		
 	}
 
 	public static String getClassNameForEntity(EntityInterface entity)
@@ -197,6 +198,29 @@ public class XMIUtilities
 					}
 				});
 	}
+	 /**
+     * Finds and returns the first model element having the given
+     * <code>name</code> in the <code>modelPackage</code>, returns
+     * <code>null</code> if not found.
+     *
+     * @param modelPackage The modelPackage to search
+     * @param name the name to find.
+     * @return the found model element.
+     */
+    public static Object find(
+        org.omg.uml.UmlPackage modelPackage,
+        final String name)
+    {
+        return CollectionUtils.find(
+            modelPackage.getCore().getModelElement().refAllOfType(),
+            new Predicate()
+            {
+                public boolean evaluate(Object object)
+                {
+                    return StringUtils.trimToEmpty(((ModelElement)object).getName()).equals(name);
+                }
+            });
+    }
 
 
 }

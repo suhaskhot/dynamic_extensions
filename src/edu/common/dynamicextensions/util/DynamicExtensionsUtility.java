@@ -45,6 +45,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterfa
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
+import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerExceptionConstantsInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
@@ -55,6 +56,7 @@ import edu.common.dynamicextensions.util.global.Variables;
 import edu.common.dynamicextensions.util.global.Constants.InheritanceStrategy;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.bizlogic.AbstractBizLogic;
+import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.util.CVSTagReader;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.dbManager.DAOException;
@@ -792,7 +794,7 @@ public class DynamicExtensionsUtility
 		}
 
 		return isDateValid;
-	}
+	}	
 
 	/**
 	 * This method determines whether the checkbox is to be checked or not.
@@ -931,6 +933,37 @@ public class DynamicExtensionsUtility
 			sqlDateFormat = sqlDateFormat + " " + Variables.timePattern;
 		}
 		return sqlDateFormat;
+	}
+	
+	/**
+	 * @param caption
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public static ContainerInterface getContainerByCaption(String caption) throws DynamicExtensionsSystemException
+	{
+		DefaultBizLogic defaultBizLogic = BizLogicFactory.getDefaultBizLogic();
+		List objectList = new ArrayList();
+		ContainerInterface containerInterface = null;
+		if (caption == null || caption.trim().length() == 0)
+		{
+			return null;
+		}
+		try
+		{
+			objectList = defaultBizLogic.retrieve(Container.class.getName(), "caption", caption);
+		}
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsSystemException(e.getMessage(), e);
+		}
+		
+		if(objectList.size() > 0)
+		{
+			containerInterface = (ContainerInterface)objectList.get(0);
+		}
+				
+		return containerInterface;
 	}
 
 }

@@ -18,7 +18,7 @@ import java.util.List;
  *
  */
 
-fasdfdafafa
+
 public abstract class BaseDynamicExtensionsException extends Exception
 		implements
 			DynamicExtensionExceptionInterface

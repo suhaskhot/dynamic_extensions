@@ -1,0 +1,83 @@
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/repos/hidvalidation/!svn/ver/2102/ferrari/trunk/tools/cobertura/cobertura-1.8
+END
+cobertura.jar
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/repos/hidvalidation/!svn/ver/2102/ferrari/trunk/tools/cobertura/cobertura-1.8/cobertura.jar
+END
+cobertura-instrument.bat
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/repos/hidvalidation/!svn/ver/2102/ferrari/trunk/tools/cobertura/cobertura-1.8/cobertura-instrument.bat
+END
+cobertura-report.bat
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/repos/hidvalidation/!svn/ver/2102/ferrari/trunk/tools/cobertura/cobertura-1.8/cobertura-report.bat
+END
+cobertura-instrument.sh
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/repos/hidvalidation/!svn/ver/2102/ferrari/trunk/tools/cobertura/cobertura-1.8/cobertura-instrument.sh
+END
+cobertura-check.bat
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/repos/hidvalidation/!svn/ver/2102/ferrari/trunk/tools/cobertura/cobertura-1.8/cobertura-check.bat
+END
+ChangeLog
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/repos/hidvalidation/!svn/ver/2102/ferrari/trunk/tools/cobertura/cobertura-1.8/ChangeLog
+END
+cobertura-merge.bat
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/repos/hidvalidation/!svn/ver/2102/ferrari/trunk/tools/cobertura/cobertura-1.8/cobertura-merge.bat
+END
+cobertura-report.sh
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/repos/hidvalidation/!svn/ver/2102/ferrari/trunk/tools/cobertura/cobertura-1.8/cobertura-report.sh
+END
+COPYRIGHT
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/repos/hidvalidation/!svn/ver/2102/ferrari/trunk/tools/cobertura/cobertura-1.8/COPYRIGHT
+END
+COPYING
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/repos/hidvalidation/!svn/ver/2102/ferrari/trunk/tools/cobertura/cobertura-1.8/COPYING
+END
+cobertura-check.sh
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/repos/hidvalidation/!svn/ver/2102/ferrari/trunk/tools/cobertura/cobertura-1.8/cobertura-check.sh
+END
+cobertura-merge.sh
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/repos/hidvalidation/!svn/ver/2102/ferrari/trunk/tools/cobertura/cobertura-1.8/cobertura-merge.sh
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/repos/hidvalidation/!svn/ver/2102/ferrari/trunk/tools/cobertura/cobertura-1.8/README
+END

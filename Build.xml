@@ -591,7 +591,7 @@
 		
 	</target>
 	
-	<target name="checkin_preocess">
+	<target name="checkin_process">
 		<ant target="generate_codecoverage_report"/>
 	</target>
 		

@@ -591,6 +591,11 @@
 		
 	</target>
 	
+	<target name="checkin_preocess">
+		<ant target="generate_codecoverage_report"/>
+	</target>
+		
+	
 	<target name="de_release" depends="build_app_war,create_dyn_ext_interface_jar,create_dyn_ext_interface_sourcezip,javadoc,generate_schema">
 		<property name="de_release_dir" value="${base.dir}/de_release"/>
 		<delete dir="${de_release_dir}"/>

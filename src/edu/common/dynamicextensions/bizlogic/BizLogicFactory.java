@@ -23,6 +23,8 @@ import edu.wustl.common.bizlogic.QueryBizLogic;
 public class BizLogicFactory
 {
 	xcvxcvxcvxcv
+	asdasd
+	asdas
 	/**
 	 * Returns DAO instance according to the form bean type.
 	 * @param FORM_TYPE The form bean type.

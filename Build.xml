@@ -525,7 +525,7 @@
 	  </replaceregexp>
 	</target>
 	
-	 <target name="run_junit" depends="compile_test_cases">
+	 <target name="run_junit" >
 	 	<delete dir="${junit.report.dir}"/>
 	 	<mkdir dir="${junit.report.dir}"/> 
 	 	
@@ -584,6 +584,7 @@
 	
 	
 	<target name="generate_codecoverage_report" >
+		<ant target="compile_test_cases"/>
 		<ant antfile="cobertura.xml" target="instrument"/>
 		<ant target="run_junit"/>
 		<ant antfile="cobertura.xml" target="coverage.report"/>

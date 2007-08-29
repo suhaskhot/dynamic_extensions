@@ -277,7 +277,7 @@ enum DataType {
      */
     public AttributeInterface createAttribute(Attribute umlAttribute) {
         // TODO bypassing attributes, need to decide how to handle it.
-        Logger.out.error("found attribute with type" + value + ". Not storing it");
+//        Logger.out.error("found attribute with type" + value + ". Not storing it");
         return null;
     }
 
@@ -302,7 +302,8 @@ enum DataType {
                 return dataType;
             }
         }
-        throw new RuntimeException("unknown datatype found : " + value);
+        return null;
+       // throw new RuntimeException("unknown datatype found : " + value);
     }
 
 }

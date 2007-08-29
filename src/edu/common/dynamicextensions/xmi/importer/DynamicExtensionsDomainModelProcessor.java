@@ -26,10 +26,10 @@ import org.omg.uml.modelmanagement.Model;
 import org.omg.uml.modelmanagement.ModelClass;
 import org.omg.uml.modelmanagement.ModelManagementPackage;
 
-import edu.common.dynamicextensions.domain.AssociationDisplayAttribute;
 import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
+import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domain.userinterface.SelectControl;
@@ -52,7 +52,6 @@ import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
 import edu.common.dynamicextensions.ui.util.RuleConfigurationObject;
@@ -68,7 +67,7 @@ import edu.common.dynamicextensions.xmi.XMIConstants;
  * @author ashish_gupta
  *
  */
-public class DynamicExtensionsDomainModelProcessor //extends BaseDomainModelProecessor
+public class DynamicExtensionsDomainModelProcessor 
 {
 	/**
 	 * Instance of Domain object factory, which will be used to create  dynamic extension's objects.
@@ -112,8 +111,7 @@ public class DynamicExtensionsDomainModelProcessor //extends BaseDomainModelProe
 		List<UmlClass> umlClassColl = new ArrayList<UmlClass>(); 
 	    List<UmlAssociation> umlAssociationColl = new ArrayList<UmlAssociation>(); 
 	    List<Generalization> umlGeneralisationColl = new ArrayList<Generalization>(); 
-	    
-		//		super(parser, applicationName);
+	    		
 		entityGroup = DomainObjectFactory.getInstance().createEntityGroup();
 		entityGroup.setShortName(entityGroupName);
 		entityGroup.setName(entityGroupName);
@@ -221,10 +219,10 @@ public class DynamicExtensionsDomainModelProcessor //extends BaseDomainModelProe
 			{
 				associations.add((UmlAssociation)o);
 			}
-//			else if(o instanceof Generalization)
-//			{
-//				generalizations.add((Generalization)o);
-//			}
+			else if(o instanceof Generalization)
+			{
+				generalizations.add((Generalization)o);
+			}
 			else if(o instanceof UmlClass)
 			{
 				UmlClass umlClass = (UmlClass)o;
@@ -249,9 +247,8 @@ public class DynamicExtensionsDomainModelProcessor //extends BaseDomainModelProe
 	 * @return the unsaved entity for given UML class
 	 */
 	private EntityInterface createEntity(UmlClass umlClass)
-	{
-		//TODO
-		String name =(/*(org.omg.uml.modelmanagement.UmlPackage)(umlClass.refImmediatePackage())).getName() + "." + */umlClass.getName());
+	{		
+		String name =(umlClass.getName());
 		EntityInterface entity = deFactory.createEntity();
 		entity.setName(name);
 		entity.setDescription(umlClass.getName());
@@ -260,15 +257,25 @@ public class DynamicExtensionsDomainModelProcessor //extends BaseDomainModelProe
 		if (attrColl != null)
 		{
 			for (Attribute umlAttribute : attrColl)
-			{
-				DataType dataType = DataType.get(umlAttribute.getType().getName());
-				AttributeInterface attribute = dataType.createAttribute(umlAttribute);
-				if (attribute != null)
-				{ // to bypass attributes of invalid datatypes
-					attribute.setName(umlAttribute.getName());
-//					attribute.setDescription(umlAttribute.getTaggedValue().getDescription());
-//					setSemanticMetadata(attribute, umlAttribute.getSemanticMetadata());
-					entity.addAttribute(attribute);
+			{//TODO Not showing id attribute on UI
+				if(!(umlAttribute.getName().equalsIgnoreCase("id") || umlAttribute.getName().equalsIgnoreCase("identifier")))
+				{
+					DataType dataType = DataType.get(umlAttribute.getType().getName());
+					if(dataType != null)
+					{//TODO Temporary solution for unsupported datatypes. Not adding attributes having unsupported datatypes.
+						AttributeInterface attribute = dataType.createAttribute(umlAttribute);
+						if (attribute != null)
+						{ // to bypass attributes of invalid datatypes
+							attribute.setName(umlAttribute.getName());
+		//					attribute.setDescription(umlAttribute.getTaggedValue().getDescription());
+		//					setSemanticMetadata(attribute, umlAttribute.getSemanticMetadata());
+							entity.addAttribute(attribute);
+						}
+					}
+	//				else
+	//				{//Temporary solution for unsupported datatypes. Not adding attributes having unsupported datatypes.
+	//					throw new DynamicExtensionsApplicationException("File contains Unsupported DataType");
+	//				}
 				}
 			}
 		}
@@ -376,26 +383,15 @@ public class DynamicExtensionsDomainModelProcessor //extends BaseDomainModelProe
 			Map<String, List<String>> parentIdVsChildrenIds)
 	{			
 		List<AssociationEnd> associationEnds = umlAssociation.getConnection();				
-		String direction = "";		
-		
+				
 		AssociationEnd sourceAssociationEnd = associationEnds.get(0);
 		AssociationEnd targetAssociationEnd = associationEnds.get(1);
 		
 		Collection<TaggedValue> taggedValueColl = umlAssociation.getTaggedValue();
-		for(TaggedValue taggedValue:  taggedValueColl)
-		{
-			if(taggedValue.getName() != null)
-			{
-				if(taggedValue.getName().equalsIgnoreCase(XMIConstants.TAGGED_NAME_ASSOC_DIRECTION))
-				{
-					Collection<String> dataValueColl = taggedValue.getDataValue();
-					for(String value : dataValueColl)
-					{
-						direction = value;
-					}
-				}
-			}
-		}		
+		String direction = getTaggedValue(taggedValueColl, XMIConstants.TAGGED_NAME_ASSOC_DIRECTION);
+		String sourceAssoTypeTV = getTaggedValue(taggedValueColl,XMIConstants.TAGGED_VALUE_CONTAINMENT);
+		String destinationAssoTypeTV = getTaggedValue(taggedValueColl,XMIConstants.TAGGED_VALUE_CONTAINMENT);
+			
 		String srcId = sourceAssociationEnd.getParticipant().refMofId();
 		Multiplicity srcMultiplicity = sourceAssociationEnd.getMultiplicity();
 		String sourceRoleName = sourceAssociationEnd.getName();
@@ -407,10 +403,10 @@ public class DynamicExtensionsDomainModelProcessor //extends BaseDomainModelProe
 		EntityInterface tgtEntity = umlClassIdVsEntity.get(tgtId);
 
 		//Adding association to entity
-		AssociationInterface association = getAssociation(srcEntity);
-		association.setSourceRole(getRole(srcMultiplicity,sourceRoleName));
+		AssociationInterface association = getAssociation(srcEntity,umlAssociation.getName());
+		association.setSourceRole(getRole(srcMultiplicity,sourceRoleName,sourceAssoTypeTV));
 		association.setTargetEntity(tgtEntity);
-		association.setTargetRole(getRole(tgtMultiplicity,tgtRoleName));
+		association.setTargetRole(getRole(tgtMultiplicity,tgtRoleName,destinationAssoTypeTV));
 	
 		if (direction.equalsIgnoreCase(XMIConstants.TAGGED_VALUE_ASSOC_BIDIRECTIONAL))
 		{
@@ -420,6 +416,29 @@ public class DynamicExtensionsDomainModelProcessor //extends BaseDomainModelProe
 		{
 			association.setAssociationDirection(Constants.AssociationDirection.SRC_DESTINATION);
 		}		
+	}
+	/**
+	 * @param taggedValueColl
+	 * @param tagName
+	 * @return
+	 */
+	private String getTaggedValue(Collection<TaggedValue> taggedValueColl,String tagName)
+	{
+		for(TaggedValue taggedValue:  taggedValueColl)
+		{
+			if(taggedValue.getName() != null)
+			{
+				if(taggedValue.getType().getName().equalsIgnoreCase(tagName))
+				{
+					Collection<String> dataValueColl = taggedValue.getDataValue();
+					for(String value : dataValueColl)
+					{
+						return value;
+					}
+				}
+			}
+		}
+		return "";
 	}
 	/**
 	 * Processes inheritance relation ship present in domain model 
@@ -477,12 +496,11 @@ public class DynamicExtensionsDomainModelProcessor //extends BaseDomainModelProe
 	 * @param sourceEntity Entity to which a association is to be attached
 	 * @return A assocition attached to given entity.
 	 */
-	private AssociationInterface getAssociation(EntityInterface sourceEntity)
+	private AssociationInterface getAssociation(EntityInterface sourceEntity,String associationName)
 	{
 		AssociationInterface association = deFactory.createAssociation();
 		// TODO remove it after getting DE fix,association name should not be compulsory
-		association.setName("AssociationName_"
-				+ (sourceEntity.getAssociationCollection().size() + 1));
+		association.setName(associationName);
 		association.setEntity(sourceEntity);
 		sourceEntity.addAssociation(association);
 		return association;
@@ -492,7 +510,7 @@ public class DynamicExtensionsDomainModelProcessor //extends BaseDomainModelProe
 	 * @param edge UML Association Edge to process
 	 * @return the Role for given UML Association Edge
 	 */
-	private RoleInterface getRole(Multiplicity srcMultiplicity,String sourceRoleName)
+	private RoleInterface getRole(Multiplicity srcMultiplicity,String sourceRoleName,String associationType)
 	{
 		Collection<MultiplicityRange> rangeColl = srcMultiplicity.getRange();
 		int minCardinality = 0;
@@ -504,7 +522,14 @@ public class DynamicExtensionsDomainModelProcessor //extends BaseDomainModelProe
 		}
 		
 		RoleInterface role = deFactory.createRole();
-		role.setAssociationsType(Constants.AssociationType.ASSOCIATION);
+		if(associationType != null && (associationType.equalsIgnoreCase(XMIConstants.TAGGED_VALUE_CONTAINMENT_UNSPECIFIED) || associationType.equalsIgnoreCase(XMIConstants.TAGGED_VALUE_CONTAINMENT_NOTSPECIFIED)))
+		{
+			role.setAssociationsType(Constants.AssociationType.ASSOCIATION);
+		}
+		else
+		{
+			role.setAssociationsType(Constants.AssociationType.CONTAINTMENT);
+		}
 		role.setName(sourceRoleName);
 		role.setMaximumCardinality(getCardinality(maxCardinality));
 		role.setMinimumCardinality(getCardinality(minCardinality));
@@ -582,7 +607,6 @@ public class DynamicExtensionsDomainModelProcessor //extends BaseDomainModelProe
 				ContainerInterface childContainer = (ContainerInterface) childContainerList.get(0);
 
 				childContainer.setBaseContainer(parentContainer);
-
 			}
 		}
 	}
@@ -636,36 +660,35 @@ public class DynamicExtensionsDomainModelProcessor //extends BaseDomainModelProe
 				
 		// Collect all the applicable Rule names 
 		List<String> implicitRuleList = null;
-		
-	
-
 		if (abstractAttributeInterface instanceof AssociationInterface)
 		{
 			AssociationInterface associationInterface = (AssociationInterface) abstractAttributeInterface;
-			//TODO This line is for containment association.
-			controlInterface = deFactory.createContainmentAssociationControl();
-			associationInterface.getSourceRole().setAssociationsType(AssociationType.CONTAINTMENT);
-			associationInterface.getTargetRole().setAssociationsType(AssociationType.CONTAINTMENT);
-
-			//			TODO this is for Linking Association
-			//if source maxcardinality or target  maxcardinality or both == -1, then control is listbox.
-			//int  sourceMaxCardinality = associationInterface.getSourceRole().getMaximumCardinality().getValue().intValue();
-
-			//			int targetMaxCardinality = associationInterface.getTargetRole().getMaximumCardinality()
-			//					.getValue().intValue();
-			//			if (targetMaxCardinality == -1)
-			//			{//List box for 1 to many or many to many relationship
-			//				controlInterface = deFactory.createListBox();
-			//				((ListBoxInterface) controlInterface).setIsMultiSelect(true);
-			//			}
-			//			else
-			//			{//Combo box for the rest
-			//				controlInterface = deFactory.createComboBox();
-			//			}
-			//
-			//			((SelectControl) controlInterface).setSeparator(",");
-			//			addAssociationDisplayAttributes(associationInterface, controlInterface);
-
+			if(associationInterface.getSourceRole().getAssociationsType().compareTo(AssociationType.CONTAINTMENT) == 0)
+			{//TODO This line is for containment association.
+				controlInterface = deFactory.createContainmentAssociationControl();
+				associationInterface.getSourceRole().setAssociationsType(AssociationType.CONTAINTMENT);
+				associationInterface.getTargetRole().setAssociationsType(AssociationType.CONTAINTMENT);
+			}
+			else
+			{//			TODO this is for Linking Association
+				//if source maxcardinality or target  maxcardinality or both == -1, then control is listbox.
+				//int  sourceMaxCardinality = associationInterface.getSourceRole().getMaximumCardinality().getValue().intValue();
+	
+				int targetMaxCardinality = associationInterface.getTargetRole().getMaximumCardinality()
+						.getValue().intValue();
+				if (targetMaxCardinality == -1)
+				{//List box for 1 to many or many to many relationship
+					controlInterface = deFactory.createListBox();
+					((ListBoxInterface) controlInterface).setIsMultiSelect(true);
+				}
+				else
+				{//Combo box for the rest
+					controlInterface = deFactory.createComboBox();
+				}
+	
+				((SelectControl) controlInterface).setSeparator(",");
+				addAssociationDisplayAttributes(associationInterface, controlInterface);
+			}
 		}
 		else
 		{
@@ -690,6 +713,7 @@ public class DynamicExtensionsDomainModelProcessor //extends BaseDomainModelProe
 			}
 			else if (attributeTypeInformation instanceof DateAttributeTypeInformation)
 			{
+				((DateAttributeTypeInformation)attributeTypeInformation).setFormat(Constants.DATE_PATTERN_MM_DD_YYYY);
 				controlInterface = deFactory.createDatePicker();
 				implicitRuleList = configurationsFactory.getAllImplicitRules(ProcessorConstants.DATEPICKER_CONTROL,
 						attributeInterface.getDataType());
@@ -704,9 +728,18 @@ public class DynamicExtensionsDomainModelProcessor //extends BaseDomainModelProe
 			else
 			{
 				controlInterface = deFactory.createTextField();
-				((TextFieldInterface) controlInterface).setColumns(0);
+				((TextFieldInterface) controlInterface).setColumns(10);
+				if (attributeTypeInformation instanceof StringAttributeTypeInformation)
+				{
+					((StringAttributeTypeInformation)attributeTypeInformation).setSize(new Integer(10));
+					implicitRuleList = configurationsFactory.getAllImplicitRules(ProcessorConstants.TEXT_CONTROL,
+							ProcessorConstants.DATATYPE_STRING);
+				}
+				else
+				{
 				implicitRuleList = configurationsFactory.getAllImplicitRules(ProcessorConstants.TEXT_CONTROL,
-						attributeInterface.getDataType());
+						ProcessorConstants.DATATYPE_NUMBER);
+				}
 			}
 		}
 		controlInterface.setName(abstractAttributeInterface.getName());

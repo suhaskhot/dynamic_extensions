@@ -17,7 +17,9 @@ import org.openide.util.Lookup;
 
 public class ImportTest
 {
-
+//	Fully qualified Name of the xmi file to be imported
+	private static  String fileName = "C://Documents and Settings//ashish_gupta//Desktop//XMLs//catissue_1.4.xmi";	
+	
 	// name of a UML extent (instance of UML metamodel) that the UML models will be loaded into
 	private static final String UML_INSTANCE = "UMLInstance";
 	// name of a MOF extent that will contain definition of UML metamodel
@@ -42,9 +44,8 @@ public class ImportTest
 		reader = (XmiReader) Lookup.getDefault().lookup(XmiReader.class);
 		
 		init();
-		
-		FileInputStream in = new FileInputStream(
-				"C://Documents and Settings//ashish_gupta//Desktop//XMLs//abc.xmi");
+
+		FileInputStream in = new FileInputStream(fileName);
 
 		// start a read-only transaction
 		rep.beginTrans(true);
@@ -68,18 +69,6 @@ public class ImportTest
 			MDRManager.getDefault().shutdownAll();
 			in.close();
 		}
-
-		//		try
-		//		{
-		//			DomainModelParser parser = new DomainModelParser("C://Documents and Settings//ashish_gupta//Desktop//XMLs//GeneConnect-domainModel.xml");
-		//			new DynamicExtensionsDomainModelProcessor(parser,"EntityGroupName");
-		//			System.out.println("--------------- Done ------------");
-		//		}
-		//		catch(Exception e)
-		//		{
-		//			//TODO exception handling 
-		//			e.printStackTrace();
-		//		}
 	}
 
 	private static void init() throws Exception

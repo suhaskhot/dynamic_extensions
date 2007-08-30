@@ -4170,7 +4170,7 @@ public class EntityManager
 	{
 		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entity.getId()));
-		Collection<AssociationInterface> assocationCollection = executeHQL(
+		Collection<AssociationInterface> assocationCollection = executeHQL(null,
 				"getAssociationsForTargetEntity", substitutionParameterMap);
 		return assocationCollection;
 	}

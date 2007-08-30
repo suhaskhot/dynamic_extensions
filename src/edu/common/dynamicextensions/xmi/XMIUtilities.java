@@ -5,8 +5,19 @@
  */
 package edu.common.dynamicextensions.xmi;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+
 import javax.jmi.reflect.RefPackage;
 import javax.jmi.xmi.XmiWriter;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
@@ -187,14 +198,15 @@ public class XMIUtilities
 			org.omg.uml.modelmanagement.UmlPackage umlPackage,
 			final String name)
 	{
+		System.out.println("here");
 		return CollectionUtils.find(
 				umlPackage.getOwnedElement(),
 				new Predicate()
 				{
 					public boolean evaluate(Object object)
 					{
-						//return StringUtils.trimToEmpty(((ModelElement)object).getName()).equals(name);
-						return true;
+						return StringUtils.trimToEmpty(((ModelElement)object).getName()).equals(name);
+						//return true;
 					}
 				});
 	}
@@ -208,19 +220,36 @@ public class XMIUtilities
      * @return the found model element.
      */
     public static Object find(
-        org.omg.uml.UmlPackage modelPackage,
+    		org.omg.uml.UmlPackage modelPackage,
         final String name)
     {
         return CollectionUtils.find(
-            modelPackage.getCore().getModelElement().refAllOfType(),
+        		
+            modelPackage.getModelManagement().getModel().refAllOfType(),
             new Predicate()
             {
                 public boolean evaluate(Object object)
                 {
-                    return StringUtils.trimToEmpty(((ModelElement)object).getName()).equals(name);
+                    return (((ModelElement)object).getName()).equals(name);
                 }
             });
     }
+    public static void transform(File xmlFile) throws TransformerException, FileNotFoundException {
+		final String XSLT_FILENAME = "D:\\DynamicExtensions\\abc.xsl";
+		final String RSLT_FILENAME = "D:/DynamicExtensions/transformed-abc.xmi";
+		File xsltFile = new File(XSLT_FILENAME); 
+		Source xmlSource = new StreamSource(xmlFile); 
+		Source xsltSource = new StreamSource(xsltFile); 
+		FileOutputStream f = new FileOutputStream(RSLT_FILENAME);
+		Result result = new StreamResult(f); 
 
+
+//		 create an instance of TransformerFactory 
+		TransformerFactory transFact = TransformerFactory.newInstance(); 
+
+		Transformer trans = transFact.newTransformer(xsltSource); 
+
+		trans.transform(xmlSource, result); 
+		} 
 
 }

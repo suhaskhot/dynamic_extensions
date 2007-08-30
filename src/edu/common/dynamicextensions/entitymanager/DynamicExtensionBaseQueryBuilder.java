@@ -55,9 +55,9 @@ import edu.wustl.common.util.logger.Logger;
 /**
  * This class provides the methods that builds the queries that are required for
  * creation and updation of the tables of the entities.These queries are as per SQL-99 standard.
- * Theses methods can be over-ridden  in the database specific query builder class to 
+ * Theses methods can be over-ridden  in the database specific query builder class to
  * provide any database-specific implemention.
- * 
+ *
  * @author Rahul Ner
  */
 class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterface,
@@ -66,20 +66,20 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
     EntityManagerUtil entityManagerUtil = new EntityManagerUtil();
 
     /**
-     * This method builds the list of all the queries that need to be executed in order to 
+     * This method builds the list of all the queries that need to be executed in order to
      * create the data table for the entity and its associations.
-     * 
+     *
      * @param entity Entity for which to get the queries.
-     * @param reverseQueryList For every data table query the method builds one more query 
+     * @param reverseQueryList For every data table query the method builds one more query
      * which negates the effect of that data table query. All such reverse queries are added in this list.
-     * @param rollbackQueryStack 
-     * @param hibernateDAO 
-     * @param addIdAttribute 
-     * 
+     * @param rollbackQueryStack
+     * @param hibernateDAO
+     * @param addIdAttribute
+     *
      * @return List of all the data table queries
-     * 
-     * @throws DynamicExtensionsSystemException 
-     * @throws DynamicExtensionsApplicationException 
+     *
+     * @throws DynamicExtensionsSystemException
+     * @throws DynamicExtensionsApplicationException
      */
     public List getCreateEntityQueryList(Entity entity, List reverseQueryList, HibernateDAO hibernateDAO,
                                          Stack rollbackQueryStack, boolean addIdAttribute)
@@ -88,7 +88,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
         //get query to create main table with primitive attributes.
         List mainTableQueryList = getCreateMainTableQuery(entity, reverseQueryList, addIdAttribute);
 
-        // get query to create associations ,it invloves altering source/taget table or creating 
+        // get query to create associations ,it invloves altering source/taget table or creating
         //middle table depending upon the cardinalities.
         List associationTableQueryList = getCreateAssociationsQueryList(entity, reverseQueryList, hibernateDAO,
                                                                         rollbackQueryStack);
@@ -102,12 +102,12 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
      * This method is used to execute the data table queries for entity in case of editing the entity.
      * This method takes each attribute of the entity and then scans for any changes and builds the alter query
      * for each attribute for the entity.
-     * 
+     *
      * @param entity Entity for which to generate and execute the alter queries.
      * @param databaseCopy Old database copy of the entity.
      * @param attributeRollbackQueryList rollback query list.
      * @return Stack Stack holding the rollback queries in case of any exception
-     * 
+     *
      * @throws DynamicExtensionsSystemException System exception in case of any fatal error
      * @throws DynamicExtensionsApplicationException Thrown in case of authentication failure or duplicate name.
      */
@@ -160,14 +160,14 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
 
     /**
      * This method returns association value for the entity's given record.
-     * e.g if user1 is associated with study1 and study2. The method returns the 
+     * e.g if user1 is associated with study1 and study2. The method returns the
      * list of record ids of study1 and study2 as the return value for the association bet'n user and study
-     * 
+     *
      * @param entity entity
      * @param recordId recordId
      * @return
      * @throws DynamicExtensionsSystemException
-     * @throws DynamicExtensionsApplicationException 
+     * @throws DynamicExtensionsApplicationException
      */
     public Map<Association, List> getAssociationGetRecordQueryList(EntityInterface entity, Long recordId)
             throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException {
@@ -196,8 +196,8 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
                 query.append(WHITESPACE + WHERE_KEYWORD + WHITESPACE + sourceKey + EQUAL + recordId);
                 associationValuesMap.put(association, getAssociationRecordValues(query.toString()));
             } else if (sourceKey != null && sourceKey.trim().length() != 0) {
-                /* for all Many to one associations of a single entity create a single query to get values for the target 
-                 * records. 
+                /* for all Many to one associations of a single entity create a single query to get values for the target
+                 * records.
                  *  */
                 if (manyToOneAssociationList.size() != 0) {
                     manyToOneAssociationsGetReocrdQuery.append(COMMA);
@@ -253,15 +253,15 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
 
     /**
      * This method returns association value for the entity's given record.
-     * e.g if user1 is associated with study1 and study2. The method returns the 
+     * e.g if user1 is associated with study1 and study2. The method returns the
      * list of record ids of study1 and study2 as the return value for the association bet'n user and study
-     * @param entityRecord 
-     * 
+     * @param entityRecord
+     *
      * @param entity entity
      * @param recordId recordId
      * @return
      * @throws DynamicExtensionsSystemException
-     * @throws DynamicExtensionsApplicationException 
+     * @throws DynamicExtensionsApplicationException
      */
     public void putAssociationValues(List<AssociationInterface> associationCollection,
                                      EntityRecordResultInterface entityRecordResult,
@@ -293,8 +293,8 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
                 List<Long> manyToManyRecordIdList = getAssociationRecordValues(query.toString());
                 entityRecord.getRecordValueList().set(index, manyToManyRecordIdList);
             } else if (sourceKey != null && sourceKey.trim().length() != 0) {
-                /* for all Many to one associations of a single entity create a single query to get values for the target 
-                 * records. 
+                /* for all Many to one associations of a single entity create a single query to get values for the target
+                 * records.
                  *  */
                 if (manyToOneAssociationList.size() != 0) {
                     manyToOneAssociationsGetReocrdQuery.append(COMMA);
@@ -312,7 +312,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
 
                 if (association.getSourceRole().getAssociationsType().equals(AssociationType.CONTAINTMENT)) {
                     List<AbstractAttributeInterface> targetAttributes = new ArrayList(
-                            association.getTargetEntity().getAttributeCollection());
+                            association.getTargetEntity().getAbstractAttributeCollection());
                     EntityRecordResultInterface containmentEntityRecordResult = EntityManager.getInstance().getEntityRecords(
                                                                                                                              association.getTargetEntity(),
                                                                                                                              targetAttributes,
@@ -350,7 +350,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
 
     /**
      * returns the queries to insert data for the association.
-     * 
+     *
      * @param associationInterface
      * @param recordIdList
      * @param sourceRecordId
@@ -419,12 +419,12 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
 
     /**
      * This method creats the queries to remove records for the containtment association.
-     * 
+     *
      * @param association association for which records to be deleted
      * @param recordIdList list of record ids
      * @param queryList list of queries added by this method.
      * @return
-     * @throws DynamicExtensionsApplicationException 
+     * @throws DynamicExtensionsApplicationException
      */
     public void getContenmentAssociationRemoveDataQueryList(AssociationInterface association,
                                                             List<Long> recordIdList, List<String> queryList,
@@ -496,8 +496,8 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
      * some other entity in some association
      * @param entity
      * @param recordId
-     * @throws DynamicExtensionsSystemException 
-     * @throws DynamicExtensionsApplicationException 
+     * @throws DynamicExtensionsSystemException
+     * @throws DynamicExtensionsApplicationException
      */
     public void validateForDeleteRecord(EntityInterface entity, List<Long> recordIdList,
                                         Collection<AssociationInterface> incomingAssociations)
@@ -552,7 +552,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
     }
 
     /**
-     * This method retuns contenment record id list for a given parent record id list 
+     * This method retuns contenment record id list for a given parent record id list
      * @param association association
      * @param recordIdList list of record ids for the parent
      * @return recordIdList list of record ids for the content child
@@ -584,7 +584,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
     }
 
     /**
-     *  returns the queries to remove the the association 
+     *  returns the queries to remove the the association
      * @param association
      * @param recordId
      * @return
@@ -597,13 +597,13 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
 
         if (sourceKey != null && targetKey != null && sourceKey.trim().length() != 0
                 && targetKey.trim().length() != 0) {
-            //for many to many delete all the records having reffered by this recordId  
+            //for many to many delete all the records having reffered by this recordId
             query.append(DELETE_KEYWORD + WHITESPACE + tableName + WHITESPACE + WHERE_KEYWORD + WHITESPACE
                     + sourceKey);
             query.append(WHITESPACE + EQUAL);
             query.append(recordId.toString());
         } else if (targetKey != null && targetKey.trim().length() != 0) {
-            //for one to many and one to one: update  target entities records(set value in target column key = null) 
+            //for one to many and one to one: update  target entities records(set value in target column key = null)
             //that are reffering to  this redord by setting it to null.
             query.append(UPDATE_KEYWORD);
             query.append(WHITESPACE + tableName);
@@ -620,11 +620,11 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
      *
      * @param entity Entity for which to create the data table query.
      * @param reverseQueryList Reverse query list which holds the query to negate the data table query.
-     * @param addIdAttribute 
-     * 
+     * @param addIdAttribute
+     *
      * @return String The method returns the "CREATE TABLE" query for the data table query for the entity passed.
-     * 
-     * @throws DynamicExtensionsSystemException 
+     *
+     * @throws DynamicExtensionsSystemException
      */
     protected List<String> getCreateMainTableQuery(Entity entity, List reverseQueryList, boolean addIdAttribute)
             throws DynamicExtensionsSystemException {
@@ -772,10 +772,10 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
     }
 
     /**
-     * This method builds the query part for the primitive attribute 
+     * This method builds the query part for the primitive attribute
      * @param attribute primitive attribute for which to build the query.
      * @return String query part of the primitive attribute.
-     * @throws DataTypeFactoryInitializationException 
+     * @throws DataTypeFactoryInitializationException
      */
     protected String getQueryPartForAttribute(Attribute attribute, String type, boolean processConstraints)
             throws DynamicExtensionsSystemException {
@@ -796,7 +796,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
                 if (!attribute.getIsNullable()) {
                     nullConstraint = "NOT NULL";
                 }
-                // dont need to specify this deflaut value  
+                // dont need to specify this deflaut value
                 //				if (attribute.getAttributeTypeInformation().getDefaultValue() != null
                 //						&& attribute.getAttributeTypeInformation().getDefaultValue()
                 //								.getValueAsObject() != null)
@@ -820,8 +820,8 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
      * This method returns the database type and size of the attribute passed to it which becomes the part of the query for that attribute.
      * @param attribute Attribute object for which to get the database type and size.
      * @return String that specifies the data base type and size.
-     * @throws DynamicExtensionsSystemException 
-     * @throws DataTypeFactoryInitializationException 
+     * @throws DynamicExtensionsSystemException
+     * @throws DataTypeFactoryInitializationException
      */
     protected String getDatabaseTypeAndSize(Attribute attribute) throws DynamicExtensionsSystemException
 
@@ -861,7 +861,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
     }
 
     /**
-     * This method gives the opposite query to negate the effect of "CREATE TABLE" query for the data table for the entity. 
+     * This method gives the opposite query to negate the effect of "CREATE TABLE" query for the data table for the entity.
      * @param entity Entity for which query generation is done.
      * @return String query that basically holds the "DROP TABLE" query.
      */
@@ -877,11 +877,11 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
      * This method returns all the CREATE table entries for associations present in the entity.
      * @param entity Entity object from which to get the associations.
      * @param reverseQueryList Reverse query list that holds the reverse queries.
-     * @param rollbackQueryStack 
-     * @param hibernateDAO 
+     * @param rollbackQueryStack
+     * @param hibernateDAO
      * @return List of queries
-     * @throws DynamicExtensionsSystemException 
-     * @throws DynamicExtensionsApplicationException 
+     * @throws DynamicExtensionsSystemException
+     * @throws DynamicExtensionsApplicationException
      */
     protected List getCreateAssociationsQueryList(Entity entity, List reverseQueryList, HibernateDAO hibernateDAO,
                                                   Stack rollbackQueryStack)
@@ -892,7 +892,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
             Iterator associationIterator = associationCollection.iterator();
             while (associationIterator.hasNext()) {
                 AssociationInterface association = (AssociationInterface) associationIterator.next();
-                if (((Association) association).getIsSystemGenerated()) { //no need to process system generated association 
+                if (((Association) association).getIsSystemGenerated()) { //no need to process system generated association
                     continue;
                 }
                 boolean isAddAssociationQuery = true;
@@ -906,10 +906,10 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
 
     /**
      * This method builds the query part for the association.
-     * 
+     *
      * @param association Association object for which to build the query.
      * @param reverseQueryList rollback query list
-     * @param isAddAssociationQuery boolean indicating whether to create query for 
+     * @param isAddAssociationQuery boolean indicating whether to create query for
      *        add association or remove association.
      * @return
      * @throws DynamicExtensionsSystemException
@@ -991,7 +991,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
      * @param databaseCopy its database copy to compare with
      * @param attributeRollbackQueryList rollback query list
      * @return query list
-     * 
+     *
      * @throws DynamicExtensionsSystemException
      * @throws DynamicExtensionsApplicationException
      */
@@ -1091,8 +1091,8 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
      * @param databaseCopy databaseCopy
      * @param attributeQueryList attributeQueryList
      * @param attributeRollbackQueryList attributeRollbackQueryList
-     * @throws DynamicExtensionsSystemException 
-     * @throws DynamicExtensionsApplicationException 
+     * @throws DynamicExtensionsSystemException
+     * @throws DynamicExtensionsApplicationException
      */
     protected void processRemovedAttributes(Entity entity, Entity databaseCopy, List attributeQueryList,
                                             List attributeRollbackQueryList)
@@ -1180,7 +1180,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
      * @param databaseCopy
      * @param associationsQueryList
      * @param attributeRollbackQueryList
-     * @throws DynamicExtensionsSystemException 
+     * @throws DynamicExtensionsSystemException
      */
     protected void processRemovedAssociation(Entity entity, Entity databaseCopy, List associationsQueryList,
                                              List attributeRollbackQueryList)
@@ -1211,7 +1211,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
 
     /**
      * This method returns true if a attribute is changed such that its column needs to be added.
-     * 
+     *
      * @param attribute attribute
      * @param dataBaseCopy dataBaseCopy
      * @return true is column needs to be added.
@@ -1233,10 +1233,10 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
 
     /**
      * This method takes the edited attribtue and its database copy and then looks for any change
-     * Changes that are tracked in terms of data table query are 
+     * Changes that are tracked in terms of data table query are
      * Change in the constraint NOT NULL AND UNIQUE
      * <BR> Change in the database type of the column.
-     * @param attribute edited Attribute 
+     * @param attribute edited Attribute
      * @param savedAttribute original database copy of the edited attribute.
      * @param attributeRollbackQueryList This list is updated with the roll back queries for the actual queries.
      * @return List list of strings which hold the queries for the changed attribute.
@@ -1446,12 +1446,12 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
     /**
      * This method executes the queries which generate and or manipulate the data table associated with the entity.
      * @param entity Entity for which the data table queries are to be executed.
-     * @param rollbackQueryStack 
-     * @param reverseQueryList2 
-     * @param queryList2 
-     * @param hibernateDAO 
+     * @param rollbackQueryStack
+     * @param reverseQueryList2
+     * @param queryList2
+     * @param hibernateDAO
      * @param session Hibernate Session through which connection is obtained to fire the queries.
-     * @throws DynamicExtensionsSystemException Whenever there is any exception , this exception is thrown with proper message and the exception is 
+     * @throws DynamicExtensionsSystemException Whenever there is any exception , this exception is thrown with proper message and the exception is
      * wrapped inside this exception.
      */
     public Stack executeQueries(List queryList, List reverseQueryList, Stack rollbackQueryStack)
@@ -1572,15 +1572,15 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
     }
 
     /**
-     * This method make sure the cardinality constaints are properly 
+     * This method make sure the cardinality constaints are properly
      * followed.
-     * e.g 
+     * e.g
      * 1. For One to One association,it checks if target entity's record id is not associated to any other
      * source entity.
-     *  
+     *
      * @param association for which cardinality to be tested.
      * @param recordIdList recordIdList (for one to one, it will contain only one entry).
-     * 
+     *
      * @throws DynamicExtensionsApplicationException
      * @throws DynamicExtensionsSystemException
      */
@@ -1658,7 +1658,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
     }
 
     /**
-     * 
+     *
      * @param attribute
      * @param value
      * @return

@@ -20,4 +20,9 @@ public class XMIConstants
 	public static final String TAGGED_VALUE_CONTAINMENT = "containment";
 	public static final String TAGGED_VALUE_CONTAINMENT_UNSPECIFIED = "Unspecified";
 	public static final String TAGGED_VALUE_CONTAINMENT_NOTSPECIFIED = "Not Specified";
+	public static final String STEREOTYPE = "stereotype";
+	public static final String TABLE = "table";
+	public static final String PRIMARY_KEY = "PK";
+	public static final String FOREIGN_KEY = "FK";
+	public static final String COLUMN = "column";
 }

@@ -68,6 +68,12 @@
 		<pathelement location="${extra_lib.dir}/xsdlib.jar"/>
 	</path>
 
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+    	<classpath>
+    		<pathelement location="${extra_lib.dir}/ant-contrib.jar"/>
+      	</classpath>
+    </taskdef>
+
 	<!-- sub tasks -->
 	<target name="init">
     	<!-- Create the time stamp -->
@@ -298,7 +304,7 @@
 	        </jar>
 	    </target>
 
-
+	<!-- Generates schema for DE release.The longblob changes are done for MYSQL using Alter table SQL -->
 	<target name="generate_schema" depends="generate_hbm,build_jar">
 	    	<java classname="edu.wustl.common.util.dbManager.GenerateSchema">
 	    		<arg value="true"/>
@@ -309,7 +315,50 @@
 	              </fileset>
 	            </classpath>
 	      	</java>
+			<if>
+				<equals arg1="${hibernate.connection.driver_class}" arg2="com.mysql.jdbc.Driver" />
+				<then>
+					<sql driver="${hibernate.connection.driver_class}"
+						password="${hibernate.connection.password}"
+						url="${hibernate.connection.url}"
+						userid="${hibernate.connection.username}"
+						onerror="continue">
+						<classpath>
+							<pathelement location="${build.dir}/cawebeav.jar"/>
+								<fileset dir="${lib.dir}">
+									<include name="*.jar"/>
+								</fileset>
+						</classpath>
+						<transaction  src="${base.dir}/SQL/DynamicExtensions_MYSQL.SQL"/>
+					</sql>
+				</then>
+			</if>
 	    </target>
+	<!-- Generates schema for DE API release.The longblob changes are done for MYSQL using regular expressions -->
+		<target name="generate_schema_de_api_release" depends="generate_hbm,build_jar">
+
+			<java classname="edu.wustl.common.util.dbManager.GenerateSchema">
+				<arg value="false"/>
+				<classpath>
+					<pathelement location="${build.dir}/cawebeav.jar"/>
+					<fileset dir="${lib.dir}">
+						<include name="*.jar"/>
+					</fileset>
+				</classpath>
+			</java>
+			<if>
+				 <equals arg1="${hibernate.connection.driver_class}" arg2="com.mysql.jdbc.Driver" />
+				 <then>
+				 	<replaceregexp byline="true" flags="g">
+				 		<fileset dir="${base.dir}">
+				 			<include name="dynamicextension.sql"/>
+				 		</fileset>
+				 		<regexp pattern="blob"/>
+				 		<substitution expression="longblob"/>
+				 	</replaceregexp>
+				 </then>
+			</if>
+		</target>
 
 		<!-- Generates the Hibernate mapping (HBM) files which are used in mapping
 		 the domain objects to database schema of the application.

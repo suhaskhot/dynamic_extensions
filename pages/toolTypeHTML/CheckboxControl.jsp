@@ -3,6 +3,7 @@
 <%@ taglib uri="/WEB-INF/dynamicExtensions.tld" prefix="dynamicExtensions" %>
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
 <%@page import="edu.common.dynamicextensions.processor.ProcessorConstants" %>
+<%@page import="edu.common.dynamicextensions.util.DynamicExtensionsUtility"%>
 
 <script>var imgsrc="images/";</script>
 
@@ -18,10 +19,10 @@
 						<bean:message key="eav.att.DefaultValue"/> :
 					</td>
 					<td class="formFieldWithoutBorder">
-						<html:radio styleId = 'attributeDefaultValue' property="attributeDefaultValue" value="checked" >
+						<html:radio styleId = 'attributeDefaultValue' property="attributeDefaultValue" value="<%=DynamicExtensionsUtility.getValueForCheckBox(true)%>">
 							<bean:message key="eav.att.CheckedAttributeTitle"/>
 						</html:radio>
-						<html:radio styleId= 'attributeDefaultValue' property="attributeDefaultValue" value="unchecked">
+						<html:radio styleId= 'attributeDefaultValue' property="attributeDefaultValue" value="<%=DynamicExtensionsUtility.getValueForCheckBox(false)%>">
 							<bean:message key="eav.att.UnCheckedAttributeTitle"/>
 						</html:radio>
 					</td>

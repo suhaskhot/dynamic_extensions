@@ -14,17 +14,17 @@ import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 
 /**
- * This Class represents the TextField (TextBox) of the HTML page. 
+ * This Class represents the TextField (TextBox) of the HTML page.
  * @version 1.0
  * @created 28-Sep-2006 12:20:09 PM
- * @hibernate.joined-subclass table="DYEXTN_TEXTFIELD" 
- * @hibernate.joined-subclass-key column="IDENTIFIER" 
+ * @hibernate.joined-subclass table="DYEXTN_TEXTFIELD"
+ * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
 public class TextField extends Control implements TextFieldInterface
 {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -44,14 +44,14 @@ public class TextField extends Control implements TextFieldInterface
 	protected Boolean isUrl;
 
 	/**
-	 * Empty Constructor 
+	 * Empty Constructor
 	 */
 	public TextField()
 	{
 	}
 
 	/**
-	 * @hibernate.property name="columns" type="integer" column="NO_OF_COLUMNS" 
+	 * @hibernate.property name="columns" type="integer" column="NO_OF_COLUMNS"
 	 * @return Returns the columns.
 	 */
 	public Integer getColumns()
@@ -68,7 +68,7 @@ public class TextField extends Control implements TextFieldInterface
 	}
 
 	/**
-	 * @hibernate.property name="isPassword" type="boolean" column="IS_PASSWORD" 
+	 * @hibernate.property name="isPassword" type="boolean" column="IS_PASSWORD"
 	 * @return Returns the isPassword.
 	 */
 	public Boolean getIsPassword()
@@ -87,7 +87,7 @@ public class TextField extends Control implements TextFieldInterface
 	/**
 	 * This method generates the HTML code for TextField control on the HTML form
 	 * @return HTML code for TextField
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
@@ -97,7 +97,7 @@ public class TextField extends Control implements TextFieldInterface
 		String htmlString = "";
 		if (isUrl != null && isUrl.booleanValue() == true)
 		{
-			htmlString = "<a href='javascript:void(0)' onclick=\"window.open('http://"
+			htmlString = "<a href='javascript:void(0)' onclick=\"window.open('"
 					+ defaultValue
 					+ "','','width=800,height=600,toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,copyhistory=yes,resizable=yes')\">"
 					+ defaultValue + "</a>";
@@ -170,7 +170,7 @@ public class TextField extends Control implements TextFieldInterface
 	}
 
 	/**
-	 * This method sets the associated AbstractAttribute of this Control. 
+	 * This method sets the associated AbstractAttribute of this Control.
 	 * @param abstractAttributeInterface AbstractAttribute to be associated.
 	 */
 	public void setAttribute(AbstractAttributeInterface abstractAttributeInterface)
@@ -230,7 +230,7 @@ public class TextField extends Control implements TextFieldInterface
 		{
 			if (isUrl != null && isUrl.booleanValue() == true)
 			{
-				htmlString = "<a href='javascript:void(0)' onclick=\"window.open('http://"
+				htmlString = "<a href='javascript:void(0)' onclick=\"window.open('"
 						+ defaultValue
 						+ "','','width=800,height=600,toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,copyhistory=yes,resizable=yes')\">"
 						+ defaultValue + "</a>";

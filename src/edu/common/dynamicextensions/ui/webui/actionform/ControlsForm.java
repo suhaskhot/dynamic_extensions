@@ -35,7 +35,7 @@ public class ControlsForm extends AbstractActionForm
 {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	/**
@@ -43,7 +43,7 @@ public class ControlsForm extends AbstractActionForm
 	 */
 	AbstractAttributeInterface abstractAttribute;
 	/**
-	 * 
+	 *
 	 */
 	String description;
 	/**
@@ -53,45 +53,45 @@ public class ControlsForm extends AbstractActionForm
 	String attributeConceptCode;
 
 	/**
-	 * 
+	 *
 	 */
 	String dataType;
 
 	/**
-	 * 
+	 *
 	 */
 	List dataTypeList;
 
 	/**
-	 * 
+	 *
 	 */
 	String attributeSize;
 
 	/**
-	 * 
+	 *
 	 */
 	String attributeDefaultValue;
 
 	/**
-	 * 
+	 *
 	 */
 	String format;
 	/**
-	 * 
+	 *
 	 */
 	String attributeValidationRules;
 
 	/**
-	 * 
+	 *
 	 */
 	String attributeDisplayUnits;
 
 	/**
-	 * 
+	 *
 	 */
 	String referenceValues;
 	/**
-	 * 
+	 *
 	 */
 
 	String displayChoice;
@@ -105,7 +105,7 @@ public class ControlsForm extends AbstractActionForm
 	String attributeDigits;
 
 	/**
-	 * 
+	 *
 	 */
 	String htmlFile;
 	/**
@@ -117,31 +117,31 @@ public class ControlsForm extends AbstractActionForm
 	 */
 	String attributeIdentifier;
 	/**
-	 * 
+	 *
 	 */
 	String caption;
 	/**
-	 * 
+	 *
 	 */
 	String attributeIsPassword;
 	/**
-	 * 
+	 *
 	 */
 	Boolean isPassword;
 	/**
-	 * 
+	 *
 	 */
 	Boolean isUrl;
 	/**
-	 * 
+	 *
 	 */
 	List toolsList = new ArrayList();
 	/**
-	 * 
+	 *
 	 */
 	Boolean isHidden;
 	/**
-	 * 
+	 *
 	 */
 	Integer sequenceNumber;
 	/**
@@ -149,91 +149,91 @@ public class ControlsForm extends AbstractActionForm
 	 */
 	String controlsSequenceNumbers;
 	/**
-	 * 
+	 *
 	 */
 	protected String cssClass;
 	/**
-	 * 
+	 *
 	 */
 	protected String name;
 	/**
-	 * 
+	 *
 	 */
 	protected String tooltip;
 	/**
-	 * 
+	 *
 	 */
 	protected String attributeNoOfRows;
 	/**
-	 * 
+	 *
 	 */
 	protected String attributenoOfCols;
 	/**
-	 * 
+	 *
 	 */
 	protected String attributeMultiSelect;
 	/**
-	 * 
+	 *
 	 */
 	protected String attributeSequenceNumber;
 	/**
-	 * 
+	 *
 	 */
 	protected String attributeMeasurementUnits;
 	/**
-	 * 
+	 *
 	 */
 	protected String attributeScale;
 	/**
-	 * 
+	 *
 	 */
 	protected String userSelectedTool;
 	/**
-	 * 
+	 *
 	 */
 	protected Integer columns;
 	/**
-	 * 
+	 *
 	 */
 	protected Integer rows;
 	/**
-	 * 
+	 *
 	 */
 	protected Boolean isMultiSelect;
 
 	/**
-	 * 
+	 *
 	 */
 	protected String controlOperation;
 	/**
-	 * 
+	 *
 	 */
 	protected String selectedControlId;
 	/**
-	 * 
+	 *
 	 */
 
 	protected String rootName;
 
 	/**
-	 * 
+	 *
 	 */
 	protected List childList;
 
 	/**
-	 * 
+	 *
 	 */
 	protected String linesType;
 	/**
-	 * 
+	 *
 	 */
 	protected String dateValueType;
 	/**
-	 * 
+	 *
 	 */
 	protected String[] validationRules = new String[0];
 	/**
-	 * 
+	 *
 	 */
 	protected String[] tempValidationRules = new String[]{""};
 
@@ -251,27 +251,27 @@ public class ControlsForm extends AbstractActionForm
 
 	protected List optionDetails;
 	/**
-	 * 
+	 *
 	 */
 	protected String min;
 	/**
-	 * 
+	 *
 	 */
 	protected String max;
 	/**
-	 * 
+	 *
 	 */
 	protected String minTemp;
 	/**
-	 * 
+	 *
 	 */
 	protected String maxTemp;
 	/**
-	 * 
+	 *
 	 */
 	protected Map controlRuleMap;
 	/**
-	 * 
+	 *
 	 */
 	protected String selectedControlCaption;
 	/**
@@ -362,7 +362,7 @@ public class ControlsForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 * @return List MeasurementUnitsList
 	 */
 	public List getMeasurementUnitsList()
@@ -371,7 +371,7 @@ public class ControlsForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 * @param measurementUnitsList list of measurementUnits
 	 */
 	public void setMeasurementUnitsList(List measurementUnitsList)
@@ -380,7 +380,7 @@ public class ControlsForm extends AbstractActionForm
 	}
 
 	/**
-	 *  
+	 *
 	 * @return String AttributeIdentified
 	 */
 	public String getAttributeIdentified()
@@ -389,7 +389,7 @@ public class ControlsForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 * @param attributeIdentified attributeIdentified
 	 */
 	public void setAttributeIdentified(String attributeIdentified)
@@ -398,7 +398,7 @@ public class ControlsForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 * @return String selectedControlCaption
 	 */
 	public String getSelectedControlCaption()
@@ -407,7 +407,7 @@ public class ControlsForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 * @param selectedControlCaption selectedControlCaption
 	 */
 	public void setSelectedControlCaption(String selectedControlCaption)
@@ -416,7 +416,7 @@ public class ControlsForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public void reset()
 	{
@@ -814,7 +814,7 @@ public class ControlsForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 * @return Boolean isPassword
 	 */
 	public Boolean getIsPassword()
@@ -823,7 +823,7 @@ public class ControlsForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 * @param isPassword isPassword
 	 */
 	public void setIsPassword(Boolean isPassword)
@@ -852,7 +852,7 @@ public class ControlsForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 * @return AbstractAttributeInterface abstractAttributeInterface
 	 */
 	public AbstractAttributeInterface getAbstractAttribute()
@@ -861,7 +861,7 @@ public class ControlsForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 * @param abstractAttributeInterface abstractAttributeInterface
 	 */
 	public void setAbstractAttribute(AbstractAttributeInterface abstractAttributeInterface)
@@ -870,7 +870,7 @@ public class ControlsForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 * @return Integer columns
 	 */
 
@@ -888,7 +888,7 @@ public class ControlsForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 * @return Boolean isHidden
 	 */
 	public Boolean getIsHidden()
@@ -897,8 +897,8 @@ public class ControlsForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
-	 * @return name name 
+	 *
+	 * @return name name
 	 */
 	public String getName()
 	{
@@ -906,7 +906,7 @@ public class ControlsForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 * @return Integer  rows
 	 */
 	public Integer getRows()
@@ -924,7 +924,7 @@ public class ControlsForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 * @return Integer sequenceNumber
 	 */
 	public Integer getSequenceNumber()
@@ -941,7 +941,7 @@ public class ControlsForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 * @param columns Integer columns
 	 */
 	public void setColumns(Integer columns)
@@ -955,7 +955,7 @@ public class ControlsForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 * @param isHidden isHidden
 	 */
 	public void setIsHidden(Boolean isHidden)
@@ -964,7 +964,7 @@ public class ControlsForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 * @param name name to be set
 	 */
 	public void setName(String name)
@@ -973,7 +973,7 @@ public class ControlsForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 * @param rows Integer rows
 	 */
 	public void setRows(Integer rows)
@@ -986,7 +986,7 @@ public class ControlsForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 * @param sequenceNumber Integer sequenceNumber
 	 */
 	public void setSequenceNumber(Integer sequenceNumber)
@@ -1014,7 +1014,7 @@ public class ControlsForm extends AbstractActionForm
 		}
 	}
 
-	/** 
+	/**
 	 * (non-Javadoc)
 	 * @see edu.common.dynamicextensions.ui.interfaces.AbstractAttributeUIBeanInterface#getAttributeDigits()
 	 */
@@ -1033,7 +1033,7 @@ public class ControlsForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 * @return attributeSequenceNumber attributeSequenceNumber
 	 */
 	public String getAttributeSequenceNumber()
@@ -1042,7 +1042,7 @@ public class ControlsForm extends AbstractActionForm
 	}
 
 	/**
-	 *  
+	 *
 	 * @param attributeSequenceNumber attributeSequenceNumber
 	 */
 	public void setAttributeSequenceNumber(String attributeSequenceNumber)
@@ -1051,7 +1051,7 @@ public class ControlsForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 * @return String attributeIsPassword
 	 */
 	public String getAttributeIsPassword()
@@ -1060,7 +1060,7 @@ public class ControlsForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 * @param attributeIsPassword attributeIsPassword
 	 */
 	public void setAttributeIsPassword(String attributeIsPassword)
@@ -1273,7 +1273,7 @@ public class ControlsForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 * @return String measurementUnitOther
 	 */
 	public String getMeasurementUnitOther()
@@ -1282,7 +1282,7 @@ public class ControlsForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 * @param measurementUnitOther measurementUnitOther
 	 */
 	public void setMeasurementUnitOther(String measurementUnitOther)
@@ -1312,8 +1312,8 @@ public class ControlsForm extends AbstractActionForm
 
 	/**
 	 * @param validator :validator
-	 * @param errors : action errors 
-	 * 
+	 * @param errors : action errors
+	 *
 	 */
 	private void validateControlFields(Validator validator, ActionErrors errors)
 	{
@@ -1490,7 +1490,7 @@ public class ControlsForm extends AbstractActionForm
 					ProcessorConstants.MAX_LENGTH_DISPLAY_WIDTH));
 		}
 
-		//max number of characters cannot be more than 3 digits long : max value 999 
+		//max number of characters cannot be more than 3 digits long : max value 999
 		if ((attributeSize != null)
 				&& (attributeSize.length() > ProcessorConstants.MAX_LENGTH_MAX_CHARACTERS))
 		{
@@ -1569,12 +1569,12 @@ public class ControlsForm extends AbstractActionForm
 	{
 		/*
 		 *	For string datatype validate:
-		 *  1) Lines type : Singleline/Multiline specified  : REQUIRED 
+		 *  1) Lines type : Singleline/Multiline specified  : REQUIRED
 		 *	2) Max number of chars(size)  : Numeric
 		 *	3) If linesType is multiline the Number of rows()  : Numeric
 		 */
 
-		//Atleast one of singleline/ multiline should be selected		
+		//Atleast one of singleline/ multiline should be selected
 		if (linesType == null || validator.isEmpty(String.valueOf(linesType)))
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
@@ -1602,7 +1602,7 @@ public class ControlsForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private void checkRequiredFieldsForTextControl(Validator validator, ActionErrors errors)
 	{
@@ -1611,6 +1611,15 @@ public class ControlsForm extends AbstractActionForm
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
 					ApplicationProperties.getValue("eav.att.DataInput")));
+		}
+		//If displayasURL is checked then default value is mandatory
+		if (attributeDisplayAsURL != null && attributeDisplayAsURL.equals("true"))
+		{
+			if (attributeDefaultValue == null || validator.isEmpty(attributeDefaultValue))
+			{
+				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
+						ApplicationProperties.getValue("eav.att.defaultValue")));
+			}
 		}
 	}
 
@@ -1653,7 +1662,7 @@ public class ControlsForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	private boolean isRangeValid(String min, String max)

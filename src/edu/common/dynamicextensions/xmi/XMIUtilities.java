@@ -198,7 +198,6 @@ public class XMIUtilities
 			org.omg.uml.modelmanagement.UmlPackage umlPackage,
 			final String name)
 	{
-		System.out.println("here");
 		return CollectionUtils.find(
 				umlPackage.getOwnedElement(),
 				new Predicate()
@@ -234,22 +233,23 @@ public class XMIUtilities
                 }
             });
     }
-    public static void transform(File xmlFile) throws TransformerException, FileNotFoundException {
-		final String XSLT_FILENAME = "D:\\DynamicExtensions\\abc.xsl";
-		final String RSLT_FILENAME = "D:/DynamicExtensions/transformed-abc.xmi";
-		File xsltFile = new File(XSLT_FILENAME); 
-		Source xmlSource = new StreamSource(xmlFile); 
-		Source xsltSource = new StreamSource(xsltFile); 
-		FileOutputStream f = new FileOutputStream(RSLT_FILENAME);
-		Result result = new StreamResult(f); 
+    public static void transform(File sourceXmiFile,String targetXmiFileName) throws TransformerException, FileNotFoundException {
+		final String XSLT_FILENAME = "XMI_1.4-1.3Transformer.xsl";
+		if(sourceXmiFile!=null)
+		{
+			File xsltFile = new File(XSLT_FILENAME); 
+			Source xmlSource = new StreamSource(sourceXmiFile); 
+			Source xsltSource = new StreamSource(xsltFile); 
+			FileOutputStream targetFile = new FileOutputStream(targetXmiFileName);
+			Result result = new StreamResult(targetFile); 
+//			 create an instance of TransformerFactory 
+			TransformerFactory transFact = TransformerFactory.newInstance(); 
 
+			Transformer trans = transFact.newTransformer(xsltSource); 
 
-//		 create an instance of TransformerFactory 
-		TransformerFactory transFact = TransformerFactory.newInstance(); 
-
-		Transformer trans = transFact.newTransformer(xsltSource); 
-
-		trans.transform(xmlSource, result); 
+			trans.transform(xmlSource, result); 
+		}
+		
 		} 
 
 }

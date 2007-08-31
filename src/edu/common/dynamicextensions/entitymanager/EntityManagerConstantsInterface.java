@@ -20,15 +20,15 @@ public interface EntityManagerConstantsInterface
 	static final int DATA_TABLE_STATE_ALREADY_PRESENT = 3;
 	
 	String ID_ATTRIBUTE_NAME = "id";	
-	String STRING_ATTRIBUTE_TYPE = "string";
-	String FLOAT_ATTRIBUTE_TYPE = "float";
-	String SHORT_ATTRIBUTE_TYPE = "short";
-	String BOOLEAN_ATTRIBUTE_TYPE = "boolean";
-	String FILE_ATTRIBUTE_TYPE = "file";
-	String DATE_ATTRIBUTE_TYPE = "date";
-	String DATE_TIME_ATTRIBUTE_TYPE = "dateTime";	
-	String DOUBLE_ATTRIBUTE_TYPE = "double";
-	String LONG_ATTRIBUTE_TYPE = "long";
-    String INTEGER_ATTRIBUTE_TYPE = "integer";
-    String OBJECT_ATTRIBUTE_TYPE = "object";   
+	String STRING_ATTRIBUTE_TYPE = "String";
+	String FLOAT_ATTRIBUTE_TYPE = "Float";
+	String SHORT_ATTRIBUTE_TYPE = "Short";
+	String BOOLEAN_ATTRIBUTE_TYPE = "Boolean";
+	String FILE_ATTRIBUTE_TYPE = "File";
+	String DATE_ATTRIBUTE_TYPE = "Date";
+	String DATE_TIME_ATTRIBUTE_TYPE = "DateTime";	
+	String DOUBLE_ATTRIBUTE_TYPE = "Double";
+	String LONG_ATTRIBUTE_TYPE = "Long";
+    String INTEGER_ATTRIBUTE_TYPE = "Integer";
+    String OBJECT_ATTRIBUTE_TYPE = "Object";   
 }

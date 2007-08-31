@@ -246,12 +246,19 @@ public class TextField extends Control implements TextFieldInterface
 	private String getDefaultValue()
 	{
 		String defaultValue = (String) this.value;
-		if (this.value == null)
+		if (isUrl != null && isUrl.booleanValue() == true)
 		{
 			defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
-			if (defaultValue == null || (defaultValue.length() == 0))
+		}
+		else
+		{
+			if (this.value == null)
 			{
-				defaultValue = "";
+				defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
+				if (defaultValue == null || (defaultValue.length() == 0))
+				{
+					defaultValue = "";
+				}
 			}
 		}
 		return defaultValue;

@@ -55,7 +55,7 @@ public enum DatatypeMappings {
 	DATE(EntityManagerConstantsInterface.DATE_ATTRIBUTE_TYPE){
 		public String getJavaClassMapping()
 		{
-			return "java.lang.Date";
+			return "java.util.Date";
 		}
 	},
 	FLOAT(EntityManagerConstantsInterface.FLOAT_ATTRIBUTE_TYPE){

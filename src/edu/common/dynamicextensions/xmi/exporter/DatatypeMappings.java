@@ -89,7 +89,7 @@ public enum DatatypeMappings {
 
 		for (DatatypeMappings datatypeMapping : datatypeMappings)
 		{
-			if (datatypeMapping.getValue().equals(value))
+			if (datatypeMapping.getValue().equalsIgnoreCase(value))
 			{
 				return datatypeMapping;
 			}

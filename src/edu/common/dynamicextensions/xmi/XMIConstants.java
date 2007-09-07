@@ -13,7 +13,7 @@ package edu.common.dynamicextensions.xmi;
  */
 public class XMIConstants
 {
-	public static final String TAGGED_NAME_ASSOC_DIRECTION = "Direction";
+	public static final String TAGGED_NAME_ASSOC_DIRECTION = "direction";
 	public static final String TAGGED_VALUE_ASSOC_BIDIRECTIONAL = "Bi-Directional";
 	public static final String TAGGED_VALUE_ASSOC_SRC_DEST= "Source -> Destination";
 	
@@ -25,4 +25,13 @@ public class XMIConstants
 	public static final String PRIMARY_KEY = "PK";
 	public static final String FOREIGN_KEY = "FK";
 	public static final String COLUMN = "column";
+	public static final String STEREOTYPE_BASECLASS_CLASS = "Class";
+	public static final String STEREOTYPE_BASECLASS_ATTRIBUTE = "Attribute";
+	public static final String STEREOTYPE_BASECLASS_ASSOCIATION = "Association";
+	public static final String TYPE = "type";
+	
+	public static final String ASSOC_ONE_ONE = "One_To_One_Association";
+	public static final String ASSOC_ONE_MANY = "One_To_Many_Association";
+	public static final String ASSOC_MANY_ONE = "Many_To_One_Association";
+	public static final String ASSOC_MANY_MANY = "Many_To_Many_Association";
 }

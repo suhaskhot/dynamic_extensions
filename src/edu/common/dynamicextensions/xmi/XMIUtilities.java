@@ -234,7 +234,7 @@ public class XMIUtilities
             });
     }
     public static void transform(File sourceXmiFile,String targetXmiFileName) throws TransformerException, FileNotFoundException {
-		final String XSLT_FILENAME = "XMI_1.4-1.3Transformer.xsl";
+		final String XSLT_FILENAME = "XMI_1.4-1.3Transformaer.xsl";
 		if(sourceXmiFile!=null)
 		{
 			File xsltFile = new File(XSLT_FILENAME); 

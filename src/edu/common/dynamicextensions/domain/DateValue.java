@@ -10,8 +10,8 @@ import edu.wustl.common.exception.AssignDataException;
 /**
  * This Class represents the per-defined Date value of the Attribute.
  * @author sujay_narkar
- * @hibernate.joined-subclass table="DYEXTN_DATE_CONCEPT_VALUE" 
- * @hibernate.joined-subclass-key column="IDENTIFIER" 
+ * @hibernate.joined-subclass table="DYEXTN_DATE_CONCEPT_VALUE"
+ * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
 public class DateValue extends PermissibleValue implements DateValueInterface
 {
@@ -27,7 +27,7 @@ public class DateValue extends PermissibleValue implements DateValueInterface
 
 	/**
 	 * This method returns the predefined value of DateValue.
-	 * @hibernate.property name="value" type="date" column="VALUE"   
+	 * @hibernate.property name="value" type="timestamp" column="VALUE"
 	 * @return the predefined value of DateValue.
 	 */
 	public Date getValue()

@@ -656,4 +656,19 @@
        	<copy file="${javadoc.dir}/${javadoc.zip}" todir="${de_release_dir}" />
        	<copy file="${base.dir}/dynamicextension.sql" todir="${de_release_dir}" />
 	</target>
+	
+	<property name="filename" value="" />
+	<property name="package" value="" />
+	<target name="import_xmi" depends="compile" >			
+			<java classname="edu.common.dynamicextensions.xmi.importer.XMIImporter" fork="true">
+				<arg value="${filename}"/>
+				<arg value="${package}"/>
+				<classpath>
+		            <pathelement location="${target.dir}"/>
+	            	<fileset dir="${lib.dir}">
+	                  <include name="*.jar"/>
+	              </fileset>
+	            </classpath> 			
+			</java>
+	</target>
 </project>

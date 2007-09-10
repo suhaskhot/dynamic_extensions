@@ -490,6 +490,14 @@ public interface EntityManagerInterface {
 //    public ContainerInterface persistContainer(ContainerInterface containerInterface,List<ArrayList> processedContainerListEntityList,boolean addIdAttribute)
 //	throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
+    /**
+     * This method adds the entity group with all associated containers while importing XMI.
+     * @param entityGroupInterface
+     * @param containerColl
+     * @return
+     * @throws DynamicExtensionsSystemException
+     * @throws DynamicExtensionsApplicationException
+     */
     public EntityGroupInterface persistEntityGroupWithAllContainers(EntityGroupInterface entityGroupInterface,Collection<ContainerInterface> containerColl)
 	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 }

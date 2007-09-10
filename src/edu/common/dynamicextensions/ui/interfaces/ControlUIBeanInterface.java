@@ -268,4 +268,11 @@ public interface ControlUIBeanInterface
 	//Separator
 	public String getSeparator();
 	public void setSeparator(String separator);
+	
+	
+	//Added by Ashish
+	public String getControlOperation();
+	public String getSelectedControlId();
+	public String getUserSelectedTool();
+	public String getControlsSequenceNumbers();
 }

@@ -15,6 +15,8 @@ import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.ui.interfaces.AbstractAttributeUIBeanInterface;
+import edu.common.dynamicextensions.ui.interfaces.ControlUIBeanInterface;
 import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
@@ -73,7 +75,7 @@ public class LoadFormControlsProcessor
 			else if (controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_EDIT))
 			{
 				ControlInterface selectedControl = getSelectedControl(controlsForm,containerInterface);
-				editControl(selectedControl, controlsForm);
+				editControl(selectedControl, controlsForm, controlsForm);
 			}
 			//Initialize default values for controls
 			initializeControlDefaultValues(controlsForm);
@@ -135,15 +137,15 @@ public class LoadFormControlsProcessor
 	 * @throws DynamicExtensionsSystemException 
 	 * 
 	 */
-	private void editControl(ControlInterface controlInterface, ControlsForm controlsForm) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public void editControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface,AbstractAttributeUIBeanInterface attributeUIBeanInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ControlProcessor controlProcessor = ControlProcessor.getInstance();
-		controlProcessor.populateControlUIBeanInterface(controlInterface, controlsForm);
+		controlProcessor.populateControlUIBeanInterface(controlInterface, controlUIBeanInterface);
 		
 		AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
 		if (controlInterface != null)
 		{
-			attributeProcessor.populateAttributeUIBeanInterface(controlInterface.getAbstractAttribute(), controlsForm);
+			attributeProcessor.populateAttributeUIBeanInterface(controlInterface.getAbstractAttribute(), attributeUIBeanInterface);
 		}
 
 		String userSelectedTool = DynamicExtensionsUtility.getControlName(controlInterface);
@@ -151,7 +153,7 @@ public class LoadFormControlsProcessor
 		{
 			userSelectedTool = ProcessorConstants.DEFAULT_SELECTED_CONTROL;
 		}
-		controlsForm.setUserSelectedTool(userSelectedTool);
+		controlUIBeanInterface.setUserSelectedTool(userSelectedTool);
 	}
 
 	/**

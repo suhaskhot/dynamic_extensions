@@ -293,4 +293,7 @@ public interface AbstractAttributeUIBeanInterface
 	public void setFormName(String formName);
 	public String getCsvString();
 	public void setCsvString(String csvString);
+	
+	//Added by Ashish
+	public String getMeasurementUnitOther();
 }

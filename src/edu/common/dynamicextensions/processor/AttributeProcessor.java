@@ -196,7 +196,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 						(AssociationInterface) attributeInterface, attributeUIBeanInformationIntf);
 			}
 			//populate information specific to attribute type
-			populateAttributeSpecificInfo(attributeInterface, attributeUIBeanInformationIntf);
+			 populateAttributeSpecificInfo(attributeInterface, attributeUIBeanInformationIntf);
 
 			//populate information common to attributes
 			populateAttributeCommomInfo(attributeInterface, attributeUIBeanInformationIntf);
@@ -1206,7 +1206,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	private void populateAttributeValidationRules(AbstractAttributeInterface attributeInterface,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
 	{
-		String[] ruleNames = null;
+		String[] ruleNames = new String[0];
 
 		int i = 0;
 		if (attributeInterface.getRuleCollection() != null
@@ -1287,7 +1287,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param attributeInterface
 	 * @param attributeUIBeanInformationIntf
 	 */
-	private void populateAttributeInformationInUIBean(
+	public void populateAttributeInformationInUIBean(
 			AbstractAttributeInterface attributeInterface,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
 	{

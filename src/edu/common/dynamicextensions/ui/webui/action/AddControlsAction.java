@@ -41,7 +41,8 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 			ContainerInterface containerInterface = WebUIManager.getCurrentContainer(request);
 			//Add control to form
 			ApplyFormControlsProcessor applyFormControlsProcessor = ApplyFormControlsProcessor.getInstance();
-			applyFormControlsProcessor.addControlToForm(containerInterface, controlsForm);
+			//Ashish - Changes done for XMI Edited XMI Import
+			applyFormControlsProcessor.addControlToForm(containerInterface, controlsForm, controlsForm);
 
 			ActionForward actionForward = mapping.findForward(Constants.SUCCESS);
 			response.sendRedirect("http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath()

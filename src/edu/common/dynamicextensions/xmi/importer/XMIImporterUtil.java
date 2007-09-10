@@ -11,7 +11,7 @@ import gov.nih.nci.cagrid.metadata.common.SemanticMetadata;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 
 
-public class DomainModelProcessorUtil
+public class XMIImporterUtil
 {
 
 	 /**

@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.xmi.importer;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.util.Iterator;
 
@@ -13,13 +14,12 @@ import org.netbeans.api.mdr.MDRepository;
 import org.omg.uml.UmlPackage;
 import org.openide.util.Lookup;
 
+import edu.common.dynamicextensions.xmi.XMIUtilities;
 
 
-public class ImportTest
+
+public class XMIImporter
 {
-//	Fully qualified Name of the xmi file to be imported
-	private static  String fileName = "C://Documents and Settings//ashish_gupta//Desktop//XMLs//catissue_1.4.xmi";	
-	
 	// name of a UML extent (instance of UML metamodel) that the UML models will be loaded into
 	private static final String UML_INSTANCE = "UMLInstance";
 	// name of a MOF extent that will contain definition of UML metamodel
@@ -38,6 +38,29 @@ public class ImportTest
 	 */
 	public static void main(String[] args) throws Exception
 	{
+		if(args.length == 0)
+		{
+			throw new Exception("Please Specify the file name to be imported");
+		}	
+		
+		//Ist parameter is fileName
+//		Fully qualified Name of the xmi file to be imported
+		String fileName = args[0]; 
+			//"C://Documents and Settings//ashish_gupta//Desktop//XMLs//caTissueCore_1.4_Edited.xmi";	
+		fileName = fileName.replaceAll("\\\\", "//");		
+		System.out.println("Filename = " +fileName);
+		
+		String packageName = "";
+		if(args.length > 1)
+		{
+			packageName = args[1];
+		}
+		int beginIndex = fileName.lastIndexOf("//");
+		int endIndex = fileName.lastIndexOf(".");
+		String domainModelName = fileName.substring(beginIndex+2, endIndex);
+		System.out.println("Package name = " +packageName);
+		System.out.println("Name of the file = " +domainModelName);
+		
 		// get the default repository
 		rep = MDRManager.getDefault().getDefaultRepository();
 		// create an XMIReader
@@ -53,7 +76,7 @@ public class ImportTest
 		{
 			// read the document
 			reader.read(in, null, uml);
-			new DynamicExtensionsDomainModelProcessor(uml, "EntityGroupName");
+			new XMIImportProcessor(uml, domainModelName,packageName);
 			System.out.println("--------------- Done ------------");
 		
 		}
@@ -68,6 +91,8 @@ public class ImportTest
 			rep.endTrans();
 			MDRManager.getDefault().shutdownAll();
 			in.close();
+			XMIUtilities.cleanUpRepository();
+		
 		}
 	}
 

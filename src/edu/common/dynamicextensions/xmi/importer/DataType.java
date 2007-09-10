@@ -38,7 +38,7 @@ enum DataType {
 //                for (Enumeration e : arr) {
 //                    StringValueInterface value = domainObjectFactory.createStringValue();
 //                    value.setValue(e.getPermissibleValue());
-//                    DomainModelProcessorUtil.setSemanticMetadata(value, e.getSemanticMetadata());
+//                    XMIImporterUtil.setSemanticMetadata(value, e.getSemanticMetadata());
 //                    userDefinedDE.addPermissibleValue(value);
 //                }
 //                attribute.getAttributeTypeInformation().setDataElement(userDefinedDE);
@@ -61,7 +61,7 @@ enum DataType {
 //                for (Enumeration e : arr) {
 //                    StringValueInterface value = domainObjectFactory.createStringValue();
 //                    value.setValue(e.getPermissibleValue());
-//                    DomainModelProcessorUtil.setSemanticMetadata(value, e.getSemanticMetadata());
+//                    XMIImporterUtil.setSemanticMetadata(value, e.getSemanticMetadata());
 //                    userDefinedDE.addPermissibleValue(value);
 //                }
 //                attribute.getAttributeTypeInformation().setDataElement(userDefinedDE);
@@ -84,7 +84,7 @@ enum DataType {
 //                for (Enumeration e : arr) {
 //                    StringValueInterface value = domainObjectFactory.createStringValue();
 //                    value.setValue(e.getPermissibleValue());
-//                    DomainModelProcessorUtil.setSemanticMetadata(value, e.getSemanticMetadata());
+//                    XMIImporterUtil.setSemanticMetadata(value, e.getSemanticMetadata());
 //                    userDefinedDE.addPermissibleValue(value);
 //                }
 //                attribute.getAttributeTypeInformation().setDataElement(userDefinedDE);
@@ -108,7 +108,7 @@ enum DataType {
 //                for (Enumeration e : arr) {
 //                    IntegerValueInterface value = domainObjectFactory.createIntegerValue();
 //                    value.setValue(new Integer(e.getPermissibleValue()));
-//                    DomainModelProcessorUtil.setSemanticMetadata(value, e.getSemanticMetadata());
+//                    XMIImporterUtil.setSemanticMetadata(value, e.getSemanticMetadata());
 //                    userDefinedDE.addPermissibleValue(value);
 //                }
 //                attribute.getAttributeTypeInformation().setDataElement(userDefinedDE);
@@ -135,7 +135,7 @@ enum DataType {
 //                    //Not clear about date format string
 //                    Logger.out.info("Date Attribute has permissible value : " + e.getPermissibleValue());
 //                    value.setValue(new Date(e.getPermissibleValue()));
-//                    DomainModelProcessorUtil.setSemanticMetadata(value, e.getSemanticMetadata());
+//                    XMIImporterUtil.setSemanticMetadata(value, e.getSemanticMetadata());
 //                    userDefinedDE.addPermissibleValue(value);
 //                }
 //                attribute.getAttributeTypeInformation().setDataElement(userDefinedDE);
@@ -158,7 +158,7 @@ enum DataType {
 //                for (Enumeration e : arr) {
 //                    FloatValueInterface value = domainObjectFactory.createFloatValue();
 //                    value.setValue(new Float(e.getPermissibleValue()));
-//                    DomainModelProcessorUtil.setSemanticMetadata(value, e.getSemanticMetadata());
+//                    XMIImporterUtil.setSemanticMetadata(value, e.getSemanticMetadata());
 //                    userDefinedDE.addPermissibleValue(value);
 //                }
 //                attribute.getAttributeTypeInformation().setDataElement(userDefinedDE);
@@ -184,7 +184,7 @@ enum DataType {
 //                    //TODO what is meaning of permissible values for boolean???
 //                    //is any string processing needed??
 //                    value.setValue(new Boolean(e.getPermissibleValue()));
-//                    DomainModelProcessorUtil.setSemanticMetadata(value, e.getSemanticMetadata());
+//                    XMIImporterUtil.setSemanticMetadata(value, e.getSemanticMetadata());
 //                    userDefinedDE.addPermissibleValue(value);
 //                }
 //                attribute.getAttributeTypeInformation().setDataElement(userDefinedDE);
@@ -207,7 +207,7 @@ enum DataType {
 //                for (Enumeration e : arr) {
 //                    LongValueInterface value = domainObjectFactory.createLongValue();
 //                    value.setValue(new Long(e.getPermissibleValue()));
-//                    DomainModelProcessorUtil.setSemanticMetadata(value, e.getSemanticMetadata());
+//                    XMIImporterUtil.setSemanticMetadata(value, e.getSemanticMetadata());
 //                    userDefinedDE.addPermissibleValue(value);
 //                }
 //                attribute.getAttributeTypeInformation().setDataElement(userDefinedDE);
@@ -230,7 +230,7 @@ enum DataType {
 //                for (Enumeration e : arr) {
 //                    DoubleValueInterface value = domainObjectFactory.createDoubleValue();
 //                    value.setValue(new Double(e.getPermissibleValue()));
-//                    DomainModelProcessorUtil.setSemanticMetadata(value, e.getSemanticMetadata());
+//                    XMIImporterUtil.setSemanticMetadata(value, e.getSemanticMetadata());
 //                    userDefinedDE.addPermissibleValue(value);
 //                }
 //                attribute.getAttributeTypeInformation().setDataElement(userDefinedDE);
@@ -254,7 +254,7 @@ enum DataType {
 //                for (Enumeration e : arr) {
 //                    DoubleValueInterface value = domainObjectFactory.createDoubleValue();
 //                    value.setValue(new Double(e.getPermissibleValue()));
-//                    DomainModelProcessorUtil.setSemanticMetadata(value, e.getSemanticMetadata());
+//                    XMIImporterUtil.setSemanticMetadata(value, e.getSemanticMetadata());
 //                    userDefinedDE.addPermissibleValue(value);
 //                }
 //                attribute.getAttributeTypeInformation().setDataElement(userDefinedDE);

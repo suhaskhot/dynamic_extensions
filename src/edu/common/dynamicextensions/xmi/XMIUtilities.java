@@ -298,5 +298,19 @@ public class XMIUtilities
 		}
 		return superClasses;
 	}
+	/**
+	 * This method deletes unwanted repository files 
+	 */
+	public static void cleanUpRepository()
+	{
+		if((new File("mdr.btd")).exists())
+		{
+			(new File("mdr.btd")).delete();
+		}
+		if((new File("mdr.btx")).exists())
+		{
+			(new File("mdr.btx")).delete();
+		}		
+	}
 
 }

@@ -3,11 +3,18 @@
  * @author
  *
  */
+
 package edu.common.dynamicextensions.xmi;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import javax.jmi.reflect.RefPackage;
 import javax.jmi.xmi.XmiWriter;
@@ -24,6 +31,7 @@ import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.netbeans.api.mdr.MDRepository;
 import org.omg.uml.foundation.core.Attribute;
+import org.omg.uml.foundation.core.Generalization;
 import org.omg.uml.foundation.core.ModelElement;
 import org.omg.uml.foundation.core.UmlAssociation;
 import org.omg.uml.foundation.core.UmlClass;
@@ -37,13 +45,16 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 
 /**
  * @author preeti_lodha
+ * @author ashish_gupta
  *
  * Utility functions for XMI import/XMI 
  */
 public class XMIUtilities
 {/*
-	//Common Utility functions
-	*//**
+ //Common Utility functions
+ */
+
+	/**
 	 * @return MDRepository object
 	 */
 	public static MDRepository getRepository()
@@ -72,49 +83,6 @@ public class XMIUtilities
 	{
 		return null;
 	}
-	//XMI Import related
-	/**
-	 * Given a umlPackage will return a populated EntityGroup object
-	 * @param umlPackage : umlPackage containing group information 
-	 * @return EntityGroupInterface : Entity Group Domain object
-	 */
-	public static EntityGroupInterface getEntityGroup(UmlPackage umlPackage)
-	{
-		return null;
-	}
-
-
-	/**
-	 *Given an umlClass object will return  object of Entity Inerface. 
-	 *All details for the Entity interface will be populated in 
-	 * @param umlClass : UML Class object 
-	 * @return EntityInteface : Entity Domain object
-	 */ 
-	public static EntityInterface getEntity(UmlClass umlClass)
-	{
-		return null;
-	}
-
-	/**
-	 * Given a uml Attribute will return a populated Attribute(Domain Object)  
-	 * @param umlAttribute : UML Attribute 
-	 * @return AttributeInteface : Entity Attribute Domain Object
-	 */
-	public static AttributeInterface getAttribute(Attribute umlAttribute)
-	{
-		return null;
-	}
-
-	/**
-	 * Given a uml Association object will return an AssociationInterface(Domain) object 
-	 * @param umlAssociation :  UML Association
-	 * @return AssociationInterface : Association Domain Object
-	 */
-	public static AssociationInterface getAssociation(UmlAssociation umlAssociation)
-	{
-		return null;
-	}
-
 
 	//XMI Export Related
 	/**
@@ -126,7 +94,6 @@ public class XMIUtilities
 	{
 		return null;
 	}
-
 
 	/**
 	 * Return a UML Class object for given Entity Domain Object
@@ -162,14 +129,14 @@ public class XMIUtilities
 	{
 		XmiWriter writer = (XmiWriter) Lookup.getDefault().lookup(XmiWriter.class);
 		return writer;
-		
+
 	}
 
 	public static String getClassNameForEntity(EntityInterface entity)
 	{
-		if(entity!=null)
+		if (entity != null)
 		{
-			return entity.getName(); 
+			return entity.getName();
 		}
 		return null;
 	}
@@ -179,12 +146,13 @@ public class XMIUtilities
 	 */
 	public static String getAttributeName(AttributeInterface attribute)
 	{
-		if(attribute!=null)
+		if (attribute != null)
 		{
 			return attribute.getName();
 		}
 		return null;
 	}
+
 	/***
 	 * Finds and returns the first model element having the given
 	 * <code>name</code> in the <code>umlPackage</code>, returns
@@ -194,62 +162,141 @@ public class XMIUtilities
 	 * @param name the name to find.
 	 * @return the found model element.
 	 */
-	public static Object find(
-			org.omg.uml.modelmanagement.UmlPackage umlPackage,
-			final String name)
+	public static Object find(org.omg.uml.modelmanagement.UmlPackage umlPackage, final String name)
+	{
+		return CollectionUtils.find(umlPackage.getOwnedElement(), new Predicate()
+		{
+
+			public boolean evaluate(Object object)
+			{
+				return StringUtils.trimToEmpty(((ModelElement) object).getName()).equals(name);
+				//return true;
+			}
+		});
+	}
+
+	/**
+	 * Finds and returns the first model element having the given
+	 * <code>name</code> in the <code>modelPackage</code>, returns
+	 * <code>null</code> if not found.
+	 *
+	 * @param modelPackage The modelPackage to search
+	 * @param name the name to find.
+	 * @return the found model element.
+	 */
+	public static Object find(org.omg.uml.UmlPackage modelPackage, final String name)
 	{
 		return CollectionUtils.find(
-				umlPackage.getOwnedElement(),
-				new Predicate()
-				{
-					public boolean evaluate(Object object)
-					{
-						return StringUtils.trimToEmpty(((ModelElement)object).getName()).equals(name);
-						//return true;
-					}
-				});
-	}
-	 /**
-     * Finds and returns the first model element having the given
-     * <code>name</code> in the <code>modelPackage</code>, returns
-     * <code>null</code> if not found.
-     *
-     * @param modelPackage The modelPackage to search
-     * @param name the name to find.
-     * @return the found model element.
-     */
-    public static Object find(
-    		org.omg.uml.UmlPackage modelPackage,
-        final String name)
-    {
-        return CollectionUtils.find(
-        		
-            modelPackage.getModelManagement().getModel().refAllOfType(),
-            new Predicate()
-            {
-                public boolean evaluate(Object object)
-                {
-                    return (((ModelElement)object).getName()).equals(name);
-                }
-            });
-    }
-    public static void transform(File sourceXmiFile,String targetXmiFileName) throws TransformerException, FileNotFoundException {
-		final String XSLT_FILENAME = "XMI_1.4-1.3Transformaer.xsl";
-		if(sourceXmiFile!=null)
+
+		modelPackage.getModelManagement().getModel().refAllOfType(), new Predicate()
 		{
-			File xsltFile = new File(XSLT_FILENAME); 
-			Source xmlSource = new StreamSource(sourceXmiFile); 
-			Source xsltSource = new StreamSource(xsltFile); 
+
+			public boolean evaluate(Object object)
+			{
+				return (((ModelElement) object).getName()).equals(name);
+			}
+		});
+	}
+
+	public static void transform(File sourceXmiFile, String targetXmiFileName)
+			throws TransformerException, FileNotFoundException
+	{
+		final String XSLT_FILENAME = "XMI_1.4-1.3Transformaer.xsl";
+		if (sourceXmiFile != null)
+		{
+			File xsltFile = new File(XSLT_FILENAME);
+			Source xmlSource = new StreamSource(sourceXmiFile);
+			Source xsltSource = new StreamSource(xsltFile);
 			FileOutputStream targetFile = new FileOutputStream(targetXmiFileName);
-			Result result = new StreamResult(targetFile); 
-//			 create an instance of TransformerFactory 
-			TransformerFactory transFact = TransformerFactory.newInstance(); 
+			Result result = new StreamResult(targetFile);
+			//			 create an instance of TransformerFactory 
+			TransformerFactory transFact = TransformerFactory.newInstance();
 
-			Transformer trans = transFact.newTransformer(xsltSource); 
+			Transformer trans = transFact.newTransformer(xsltSource);
 
-			trans.transform(xmlSource, result); 
+			trans.transform(xmlSource, result);
 		}
-		
-		} 
+
+	}
+
+	//XMI Import related
+	/**
+	 * This method returns the UmlAttributes for the given Umlclass from XMI.
+	 * boolean includeInherited - Specifies whether inherited attributes should be included or not.
+	 * @param klass
+	 * @param includeInherited
+	 * @return
+	 */
+	public static Collection getAttributes(UmlClass klass, boolean includeInherited)
+	{
+		Collection atts = new ArrayList();
+		if (includeInherited)
+		{
+			Map attsMap = new HashMap();
+			UmlClass superClass = klass;
+			do
+			{
+				for (Iterator i = superClass.getFeature().iterator(); i.hasNext();)
+				{
+					Object o = i.next();
+					if (o instanceof Attribute)
+					{
+						Attribute att = (Attribute) o;
+						if (attsMap.get(att.getName()) == null)
+						{
+							attsMap.put(att.getName(), att);
+						}
+					}
+				}
+				superClass = getSuperClass(superClass);
+			}
+			while (superClass != null);
+
+			atts = attsMap.values();
+		}
+		else
+		{
+			for (Iterator i = klass.getFeature().iterator(); i.hasNext();)
+			{
+				Object o = i.next();
+				if (o instanceof Attribute)
+				{
+					atts.add(o);
+				}
+			}
+		}
+		return atts;
+	}
+
+	/**
+	 * This method gets the super class for the given UmlClass
+	 * @param klass
+	 * @return
+	 */
+	public static UmlClass getSuperClass(UmlClass klass)
+	{
+		UmlClass superClass = null;
+		List superClasses = getSuperClasses(klass);
+		if (superClasses.size() > 0)
+		{
+			superClass = (UmlClass) superClasses.iterator().next();
+		}
+		return superClass;
+	}
+
+	/**
+	 * This method gets all super classes for the given UmlClass
+	 * @param klass
+	 * @return
+	 */
+	public static List getSuperClasses(UmlClass klass)
+	{
+		List superClasses = new ArrayList();
+		for (Iterator i = klass.getGeneralization().iterator(); i.hasNext();)
+		{
+			superClasses.add(((Generalization) i.next()).getParent());
+		}
+		return superClasses;
+	}
 
 }

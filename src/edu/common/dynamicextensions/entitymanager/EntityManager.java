@@ -85,13 +85,13 @@ import edu.wustl.common.util.logger.Logger;
 /**
  * This is a singleton class that manages operations related to dynamic entity creation,attributes creation,
  * adding data into those entities and retrieving data out of them.
- * 
+ *
  *  In order to mock  EntityManager class we need to create a a mock class which extends EntityManager class.
- * i.e.We create a class named as EntityManagerMock which will extend from EntityManager.EntityManagerMock 
- * class will override the unimplemented methods from EntityManager.Entity manager is having a method 
+ * i.e.We create a class named as EntityManagerMock which will extend from EntityManager.EntityManagerMock
+ * class will override the unimplemented methods from EntityManager.Entity manager is having a method
  * as setInstance.The application which is using this mock will place the instance of mock class in
- * EntityManager class using setInstancxe method on startup.  
- * 
+ * EntityManager class using setInstancxe method on startup.
+ *
  */
 /**
  * @author Geetika Bangard
@@ -117,7 +117,7 @@ public class EntityManager
 	private static DynamicExtensionBaseQueryBuilder queryBuilder = null;
 
 	/**
-	 * Instance of entity manager util class 
+	 * Instance of entity manager util class
 	 */
 	EntityManagerUtil entityManagerUtil = new EntityManagerUtil();
 
@@ -155,7 +155,7 @@ public class EntityManager
 	}
 
 	/**
-	 * This method is used to log the messages in a uniform manner. The method takes the string method name and 
+	 * This method is used to log the messages in a uniform manner. The method takes the string method name and
 	 * string message. Using these parameters the method formats the message and logs it.
 	 * @param methodName Name of the method for which the message needs to be logged.
 	 * @param message The message that needs to be logged.
@@ -194,7 +194,7 @@ public class EntityManager
 		{
 
 			hibernateDAO.openSession(null);
-			//Calling the method which actually calls the insert/update method on dao. 
+			//Calling the method which actually calls the insert/update method on dao.
 			//Hibernatedao is passed to this method and transaction is handled in the calling method.
 			saveEntityGroup(entityInterface, hibernateDAO);
 			List<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
@@ -207,8 +207,8 @@ public class EntityManager
 		}
 		catch (Exception e)
 		{
-			//Queries for data table creation and modification are fired in the method saveOrUpdateEntity. 
-			//So if there is any exception while storing the metadata , 
+			//Queries for data table creation and modification are fired in the method saveOrUpdateEntity.
+			//So if there is any exception while storing the metadata ,
 			//we need to roll back the queries that were fired. So calling the following method to do that.
 			rollbackQueries(stack, entity, e, hibernateDAO);
 
@@ -227,7 +227,7 @@ public class EntityManager
 			try
 			{
 				postSaveOrUpdateEntity(entityInterface);
-				//In any case , after all the operations , hibernate session needs to be closed. So this call has 
+				//In any case , after all the operations , hibernate session needs to be closed. So this call has
 				// been added in the finally clause.
 				hibernateDAO.closeSession();
 			}
@@ -332,7 +332,7 @@ public class EntityManager
 		{
 
 			hibernateDAO.openSession(null);
-			//Calling the method which actually calls the insert/update method on dao. 
+			//Calling the method which actually calls the insert/update method on dao.
 			//Hibernatedao is passed to this method and transaction is handled in the calling method.
 			saveEntityGroup(entityInterface, hibernateDAO);
 			List<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
@@ -346,7 +346,7 @@ public class EntityManager
 		catch (Exception e)
 		{
 			//Queries for data table creation and modification are fired in the method saveOrUpdateEntity.
-			//So if there is any exception while storing the metadata , 
+			//So if there is any exception while storing the metadata ,
 			//we need to roll back the queries that were fired. So calling the following method to do that.
 			rollbackQueries(stack, entity, e, hibernateDAO);
 
@@ -365,7 +365,7 @@ public class EntityManager
 			try
 			{
 				postSaveOrUpdateEntity(entityInterface);
-				//In any case , after all the operations , hibernate session needs to be closed. So this call has 
+				//In any case , after all the operations , hibernate session needs to be closed. So this call has
 				// been added in the finally clause.
 				hibernateDAO.closeSession();
 			}
@@ -384,7 +384,7 @@ public class EntityManager
 	/**
 	 * This method creates an entity group.The entities in the group are also saved.
 	 * @param entityGroupInterface entity group to be saved.
-	 * @return entityGroupInterface Saved  entity group. 
+	 * @return entityGroupInterface Saved  entity group.
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
@@ -393,7 +393,7 @@ public class EntityManager
 	{
 		logDebug("createEntityGroup", "Entering method");
 		EntityGroup entityGroup = (EntityGroup) entityGroupInterface;
-		//Calling the following method to process the entity group before saving. 
+		//Calling the following method to process the entity group before saving.
 		//This includes setting the created date and updated date etc.
 		preSaveProcessEntityGroup(entityGroup);
 		//Following method actually calls the dao's insert or update method.
@@ -411,7 +411,7 @@ public class EntityManager
 	/**
 	 * This method creates an entity group.The entities in the group are also saved.
 	 * @param entityGroupInterface entity group to be saved.
-	 * @return entityGroupInterface Saved  entity group. 
+	 * @return entityGroupInterface Saved  entity group.
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
@@ -420,10 +420,10 @@ public class EntityManager
 	{
 		logDebug("createEntityGroup", "Entering method");
 		EntityGroup entityGroup = (EntityGroup) entityGroupInterface;
-		//Calling the following method to process the entity group before saving. 
+		//Calling the following method to process the entity group before saving.
 		//This includes setting the created date and updated date etc.
 		//preSaveProcessEntityGroup(entityGroup);
-		DynamicExtensionsUtility.validateName(entityGroup.getName());		
+		DynamicExtensionsUtility.validateName(entityGroup.getName());
 		if (entityGroup.getId() != null)
 		{
 			entityGroup.setLastUpdated(new Date());
@@ -447,10 +447,10 @@ public class EntityManager
 	}
 
 	/**
-	 * This method persists an entity group and the associated entities without creating the data table 
-	 * for the entities. 
+	 * This method persists an entity group and the associated entities without creating the data table
+	 * for the entities.
 	 * @param entityGroupInterface entity group to be saved.
-	 * @return entityGroupInterface Saved  entity group. 
+	 * @return entityGroupInterface Saved  entity group.
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
@@ -459,7 +459,7 @@ public class EntityManager
 	{
 		logDebug("createEntityGroup", "Entering method");
 		EntityGroup entityGroup = (EntityGroup) entityGroupInterface;
-		//Calling the following method to process the entity group before saving. 
+		//Calling the following method to process the entity group before saving.
 		//This includes setting the created date and updated date etc.
 		preSaveProcessEntityGroup(entityGroup);
 		//Following method actually calls the dao's insert or update method.
@@ -527,7 +527,7 @@ public class EntityManager
 	 * be more than one values associated with the particular multiselect attribute. so for this reason, these values
 	 * are stored in a different table. CollectionAttributeRecordValues is the hibernate object that maps to that table.
 	 * This method is used to get the list of all the CollectionAttributeRecordValues object for the given combination
-	 * of the entity, attribute and the particular record of the entity. CollectionAttributeRecordValues object 
+	 * of the entity, attribute and the particular record of the entity. CollectionAttributeRecordValues object
 	 * holds the values of any "multiselect" attributes or file attributes.
 	 * @param entityId
 	 * @param attributeId
@@ -557,9 +557,9 @@ public class EntityManager
 		return valueList;
 	}
 
-	/** This method is used to get the actual file contents for the file attribute for given record of the 
-	 * given entity. Actual file contents are not stored in the entity's data table but are stored in a different 
-	 * table. FileAttributeRecordValue is the hibernate object that maps to that table. So the file contents are 
+	/** This method is used to get the actual file contents for the file attribute for given record of the
+	 * given entity. Actual file contents are not stored in the entity's data table but are stored in a different
+	 * table. FileAttributeRecordValue is the hibernate object that maps to that table. So the file contents are
 	 * returned in the form of FileAttributeRecordValue object.
 	 * returns file record value
 	 * @param entityId
@@ -598,7 +598,7 @@ public class EntityManager
 	/** The actual values of the multi select attribute are not stored in the entity's data table because there can
 	 * be more than one values associated with the particular multiselect attribute. so for this reason, these values
 	 * are stored in a different table. AttributeRecord is the hibernate object that maps to that table.
-	 * So this method is used to get the AttributeRecord for the given combination of entity attribute and the particular 
+	 * So this method is used to get the AttributeRecord for the given combination of entity attribute and the particular
 	 * record of the entity.
 	 * @param entityId
 	 * @param attributeId
@@ -618,13 +618,13 @@ public class EntityManager
 		Collection recordCollection = null;
 		if (hibernateDao == null)
 		{
-			//Required HQL is stored in the hbm file. The following method takes the name of the query and 
+			//Required HQL is stored in the hbm file. The following method takes the name of the query and
 			// the actual values for the placeholders as the parameters.
 			recordCollection = executeHQL("getCollectionAttributeRecord", substitutionParameterMap);
 		}
 		else
 		{
-			//Required HQL is stored in the hbm file. The following method takes the name of the query and 
+			//Required HQL is stored in the hbm file. The following method takes the name of the query and
 			// the actual values for the placeholders as the parameters.
 			recordCollection = executeHQL(hibernateDao, "getCollectionAttributeRecord",
 					substitutionParameterMap);
@@ -727,7 +727,7 @@ public class EntityManager
 
 	/**
 	 * This method returns the object given the class name and object name.
-	 * @param className class name 
+	 * @param className class name
 	 * @param objectName objectName
 	 * @return DynamicExtensionBaseDomainObjectInterface Base DE interface
 	 */
@@ -745,7 +745,7 @@ public class EntityManager
 		try
 		{
 			//the following method gives the object , the class name of which is passed as the first parameter.
-			// The criteria for the object is given in the second and third parameter. The second parameter is the 
+			// The criteria for the object is given in the second and third parameter. The second parameter is the
 			// field of the object that needs to be compared with the values that is given as the third parameter.
 			objectList = defaultBizLogic.retrieve(className, "name", objectName);
 		}
@@ -781,7 +781,7 @@ public class EntityManager
 		{
 			return attributeInterface;
 		}
-		//First the entity object is fetched for the name that is passed.Then the entity's attribute collection is 
+		//First the entity object is fetched for the name that is passed.Then the entity's attribute collection is
 		//scanned to select the required attribute.
 		EntityInterface entityInterface = getEntityByName(entityName);
 		if (entityInterface != null)
@@ -838,7 +838,7 @@ public class EntityManager
 	}
 
 	/**
-	 * This method returns the collection of entities given the concept code for the entity. 
+	 * This method returns the collection of entities given the concept code for the entity.
 	 * @param entityConceptCode concept code for the entity
 	 * @return entityCollection a collection of entities.
 	 * @throws DynamicExtensionsSystemException
@@ -865,7 +865,7 @@ public class EntityManager
 	public Collection<EntityInterface> getAllEntities() throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
-		//CAlling generic method to return all stored instances of the object, the class name of which is passed as 
+		//CAlling generic method to return all stored instances of the object, the class name of which is passed as
 		//the parameter.
 		return getAllObjects(EntityInterface.class.getName());
 	}
@@ -876,7 +876,7 @@ public class EntityManager
 	public EntityInterface getEntityByIdentifier(String identifier)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		//		CAlling generic method to return all stored instances of the object, the identifier of which is passed as 
+		//		CAlling generic method to return all stored instances of the object, the identifier of which is passed as
 		//the parameter.
 		return (EntityInterface) getObjectByIdentifier(EntityInterface.class.getName(), identifier);
 	}
@@ -887,7 +887,7 @@ public class EntityManager
 	public EntityInterface getEntityByIdentifier(Long id) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
-		//		CAlling generic method to return all stored instances of the object, the identifier of which is passed as 
+		//		CAlling generic method to return all stored instances of the object, the identifier of which is passed as
 		//the parameter.
 		return (EntityInterface) getObjectByIdentifier(EntityInterface.class.getName(), id
 				.toString());
@@ -897,20 +897,20 @@ public class EntityManager
 	 * This method populates the TableProperties object in entity which holds the unique tablename for the entity.
 	 * This table name is generated using the unique identifier that is generated after saving the object.
 	 * The format for generating this table/column name is "DE_<E/AT/AS>_<UNIQUE IDENTIFIER>"
-	 * So we need this method to generate the table name for the entity then create the corresponding 
-	 * tableProperties object and then update the entity object with this newly added tableProperties object. 
-	 * Similarly we add ColumnProperties object for each of the attribute and also the ConstraintProperties object 
+	 * So we need this method to generate the table name for the entity then create the corresponding
+	 * tableProperties object and then update the entity object with this newly added tableProperties object.
+	 * Similarly we add ColumnProperties object for each of the attribute and also the ConstraintProperties object
 	 * for each of the associations.
 	 * @param entity Entity object on which to process the post save operations.
-	 * @param rollbackQueryStack 
-	 * @param hibernateDAO 
-	 * @param processedEntityList 
-	 * @param addIdAttribute 
-	 * @throws DynamicExtensionsSystemException 
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws UserNotAuthorizedException 
-	 * @throws DAOException 
-	 * @throws HibernateException 
+	 * @param rollbackQueryStack
+	 * @param hibernateDAO
+	 * @param processedEntityList
+	 * @param addIdAttribute
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws UserNotAuthorizedException
+	 * @throws DAOException
+	 * @throws HibernateException
 	 */
 	private void postSaveProcessEntity(Entity entity, HibernateDAO hibernateDAO,
 			Stack rollbackQueryStack, List<EntityInterface> processedEntityList,
@@ -981,18 +981,18 @@ public class EntityManager
 	}
 
 	/**This method is used for following purposes.
-	 * 1. The method creates a system generated association in case when the association is bidirectional. 
-	 * Bi directional association is supposed to be a part of the target entity's attributes. 
-	 * So we create a replica of the original association (which we call as system generated association) 
+	 * 1. The method creates a system generated association in case when the association is bidirectional.
+	 * Bi directional association is supposed to be a part of the target entity's attributes.
+	 * So we create a replica of the original association (which we call as system generated association)
 	 * and this association is added to the target entity's attribute collection.
-	 * 2. The method also removes the system generated association from the target entity 
-	 * when the association direction of the assciation is changed from "bi-directional" to "SRC-Destination". 
-	 * In this case we no longer need the system generated association. 
+	 * 2. The method also removes the system generated association from the target entity
+	 * when the association direction of the assciation is changed from "bi-directional" to "SRC-Destination".
+	 * In this case we no longer need the system generated association.
 	 * So if the sys. generated association is present , it is removed.
 	 * @param association
-	 * @param hibernateDAO 
-	 * @throws UserNotAuthorizedException 
-	 * @throws DAOException 
+	 * @param hibernateDAO
+	 * @throws UserNotAuthorizedException
+	 * @throws DAOException
 	 */
 	private void populateSystemGeneratedAssociation(Association association,
 			HibernateDAO hibernateDAO) throws DAOException, UserNotAuthorizedException
@@ -1053,7 +1053,7 @@ public class EntityManager
 			}
 			else
 			{
-				//Removing the not required sys. generated association because the direction has been changed 
+				//Removing the not required sys. generated association because the direction has been changed
 				//from "bi directional" to "src-destination".
 				if (systemGeneratedAssociation != null)
 				{
@@ -1083,7 +1083,7 @@ public class EntityManager
 	/**This method is used to get the system generated association given the original association.
 	 * System generated association is searched based on the following criteria
 	 * 1. The flag "isSystemGenerated" should be set.
-	 * 2. The source and target roles are swapped. So original association's source role should be the target role 
+	 * 2. The source and target roles are swapped. So original association's source role should be the target role
 	 * of the sys.generated association and vice versa.
 	 * @param association
 	 * @return
@@ -1109,14 +1109,14 @@ public class EntityManager
 		return null;
 	}
 
-	/**This method populates the constraint properties for the given association. Creation/population of 
+	/**This method populates the constraint properties for the given association. Creation/population of
 	 * constraint properties depend on Cardinalities of the source and target roles.
 	 * Folliowing are the possible cases.
 	 * 1. Many to many. --> source key , target key and middle table name are created and populated.
 	 * 2.Many to one --> Only source key is created and populated as the extra column gets added to the source entity.
-	 * 3. One to one or one to many --> In either case, only target key is populated because one extra column gets 
+	 * 3. One to one or one to many --> In either case, only target key is populated because one extra column gets
 	 * added to the target entity.
-	 * Naming conventions for the source, target keys and the middle table are 
+	 * Naming conventions for the source, target keys and the middle table are
 	 * Source key --> DE_E_S_[Source entity identifier]_[Association_identifier]_IDENTIFIER
 	 * Target key --> DE_E_T_[target entity identifier]_[Association_identifier_IDENTIFIER
 	 * Middle table name --> DE_E_[Source entity identifier]_[target entity identifier]_[Association_identifier]
@@ -1174,7 +1174,7 @@ public class EntityManager
 	}
 
 	/**
-	 * This method checks if the entity can be created with the given name or not. This method will check for the duplicate name 
+	 * This method checks if the entity can be created with the given name or not. This method will check for the duplicate name
 	 * as per the following rule
 	 * <br>The entities which belong to the same entity group can not share same name.
 	 * @param entity Entity whose name's uniqueness is to be checked.
@@ -1188,11 +1188,11 @@ public class EntityManager
 	}
 
 	/**
-	 * This method is called when there any exception occurs while generating the data table queries for the entity. Valid scenario is 
-	 * that if we need to fire Q1 Q2 and Q3 in order to create the data tables and Q1 Q2 get fired successfully and exception occurs 
-	 * while executing query Q3 then this method receives the query list which holds the set of queries which negate the effect of 
+	 * This method is called when there any exception occurs while generating the data table queries for the entity. Valid scenario is
+	 * that if we need to fire Q1 Q2 and Q3 in order to create the data tables and Q1 Q2 get fired successfully and exception occurs
+	 * while executing query Q3 then this method receives the query list which holds the set of queries which negate the effect of
 	 * the queries which were generated successfully so that the metadata information and database are in synchronisation.
-	 * @param reverseQueryList Stack that maintains the queries to execute. 
+	 * @param reverseQueryList Stack that maintains the queries to execute.
 	 * @param conn
 	 * @throws DynamicExtensionsSystemException
 	 */
@@ -1253,8 +1253,8 @@ public class EntityManager
 	}
 
 	/**
-	 * this method is called when exception occurs while executing the rollback queries or reverse queries. When this method is called , it 
-	 * signifies that the database state and the metadata state for the entity are not in synchronisation and administrator needs some 
+	 * this method is called when exception occurs while executing the rollback queries or reverse queries. When this method is called , it
+	 * signifies that the database state and the metadata state for the entity are not in synchronisation and administrator needs some
 	 * database correction.
 	 * @param e The exception that took place.
 	 * @param entity Entity for which data tables are out of sync.
@@ -1279,7 +1279,7 @@ public class EntityManager
 	}
 
 	/**
-	 * Returns a collection of entities having attribute with the given name  
+	 * Returns a collection of entities having attribute with the given name
 	 * @param attributeName
 	 * @return
 	 * @throws DynamicExtensionsSystemException
@@ -1297,13 +1297,13 @@ public class EntityManager
 	public Collection<ContainerInterface> getAllContainers()
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		//CAlling generic method to return all stored instances of the object, the class name of which is passed as 
+		//CAlling generic method to return all stored instances of the object, the class name of which is passed as
 		//the parameter.
 		return getAllObjects(ContainerInterface.class.getName());
 	}
 
 	/**
-	 * This method returns object for a given class name and identifer 
+	 * This method returns object for a given class name and identifer
 	 * @param objectName  name of the class of the object
 	 * @param identifier identifier of the object
 	 * @return  obejct
@@ -1368,11 +1368,11 @@ public class EntityManager
 	public ContainerInterface persistContainer(ContainerInterface containerInterface)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
-		
+
 		return persistContainer(containerInterface,true);
 	}
-	
-   
+
+
 
 //	/**
 //	 * This method is used to save the container into the database.
@@ -1380,7 +1380,7 @@ public class EntityManager
 //	 * @return ContainerInterface container Interface that is saved.
 //	 * @throws DynamicExtensionsSystemException Thrown if for any reason operation can not be completed.
 //	 * @throws DynamicExtensionsApplicationException Thrown if the entity name already exists.
-//	 * @throws DynamicExtensionsSystemException 
+//	 * @throws DynamicExtensionsSystemException
 //	 */
 //	public ContainerInterface persistContainer(ContainerInterface containerInterface,
 //			List<ArrayList> processedContainerListEntityList,boolean addIdAttribute)
@@ -1478,7 +1478,7 @@ public class EntityManager
 			}
 
 			if (entity != null)
-			{				
+			{
 				saveContainerForContainmentAssociation(container, addIdAttribute, hibernateDAO,
 						 processedContainerList, currentEntityGroup);
 			}
@@ -1551,7 +1551,7 @@ public class EntityManager
 	 * @return ContainerInterface container Interface that is saved.
 	 * @throws DynamicExtensionsSystemException Thrown if for any reason operation can not be completed.
 	 * @throws DynamicExtensionsApplicationException Thrown if the entity name already exists.
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public ContainerInterface persistContainer(ContainerInterface containerInterface,
 			boolean addIdAttribute) throws DynamicExtensionsApplicationException,
@@ -1586,7 +1586,7 @@ public class EntityManager
 			{
 				//saveEntityGroup first
 				currentEntityGroup = saveEntityGroup(entity, hibernateDAO);
-				// saves the entity into database. It populates rollbackQueryStack with the 
+				// saves the entity into database. It populates rollbackQueryStack with the
 				// queries that restores the database state to the state before calling this method
 				// in case of exception.
 				List<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
@@ -1662,8 +1662,8 @@ public class EntityManager
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private void saveContainerForContainmentAssociation(ContainerInterface container, 
-			boolean addIdAttribute, HibernateDAO hibernateDAO,			
+	private void saveContainerForContainmentAssociation(ContainerInterface container,
+			boolean addIdAttribute, HibernateDAO hibernateDAO,
 			List<ContainerInterface> processedContainerList, EntityGroupInterface currentEntityGroup) throws HibernateException,
 			DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
@@ -1692,12 +1692,12 @@ public class EntityManager
 			if (control instanceof ContainmentAssociationControlInterface)
 			{
 				ContainmentAssociationControlInterface associationControl = (ContainmentAssociationControlInterface) control;
-				
+
 
 				session.saveOrUpdateCopy(associationControl.getContainer());
-			
+
 				saveChildContainers(associationControl.getContainer(), session);
-				
+
 			}
 		}
 		}
@@ -1720,7 +1720,7 @@ public class EntityManager
 	 * This method processes entity before saving it to databse.
 	 * <li> It validates entity for duplicate name of entity,attributes and association
 	 * <li> It sets created and updated date-time.
-	 * 
+	 *
 	 * @param entity entity
 	 */
 	private void preSaveProcessEntity(EntityInterface entity)
@@ -1764,7 +1764,7 @@ public class EntityManager
 
 	/**
 	 * @param role
-	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsApplicationException
 	 */
 	private void swapCardinality(RoleInterface role) throws DynamicExtensionsApplicationException
 	{
@@ -2090,7 +2090,7 @@ public class EntityManager
 	 * @param e
 	 * @param string
 	 * @param hibernateDAO
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private Exception handleRollback(Exception e, String exceptionMessage, AbstractDAO dao,
 			boolean isExceptionToBeWrapped)
@@ -2171,7 +2171,7 @@ public class EntityManager
 
 					if (collectionRecord != null && listOfValues.isEmpty())
 					{
-						//if updated value is empty list, then delete previously saved value if any. 
+						//if updated value is empty list, then delete previously saved value if any.
 						deleteCollectionRecords.add(collectionRecord);
 					}
 
@@ -2376,10 +2376,10 @@ public class EntityManager
 	}
 
 	/**
-	 * This method returns a list of AttributeRecord that for a particular multiselect attribute of 
+	 * This method returns a list of AttributeRecord that for a particular multiselect attribute of
 	 * the entity.
-	 * @param collectionRecord 
-	 * 
+	 * @param collectionRecord
+	 *
 	 * @param entity entity for which data has been entered.
 	 * @param primitiveAttribute attribute for which data has been entered.
 	 * @param identifier id of the record
@@ -2417,7 +2417,7 @@ public class EntityManager
 
 	/**
 	 * Populates AttributeRecord object for given entity and record id
-	 * 
+	 *
 	 * @param fileRecord if null creates a new AttributeRecord objec t, otheerwise updates the existing one
 	 * @param entity for which this AttributeRecord object belongs
 	 * @param primitiveAttribute  for which this AttributeRecord object belongs
@@ -2461,19 +2461,19 @@ public class EntityManager
 	}
 
 	/**
-	 * This method is used by create as well as edit entity methods. This method holds all the common part 
+	 * This method is used by create as well as edit entity methods. This method holds all the common part
 	 * related to saving the entity into the database and also handling the exceptions .
 	 * @param entityInterface Entity to be stored in the database.
 	 * @param isNew flag for whether it is a save or update.
-	 * @param hibernateDAO 
-	 * @param processedEntityList 
-	 * @param addIdAttribute 
-	 * @param isNewFlag 
+	 * @param hibernateDAO
+	 * @param processedEntityList
+	 * @param addIdAttribute
+	 * @param isNewFlag
 	 * @return Entity . Stored instance of the entity.
 	 * @throws DynamicExtensionsApplicationException System exception in case of any fatal errors.
 	 * @throws DynamicExtensionsSystemException Thrown in case of duplicate name or authentication failure.
-	 * @throws DAOException 
-	 * @throws HibernateException 
+	 * @throws DAOException
+	 * @throws HibernateException
 	 */
 	private EntityInterface saveOrUpdateEntity(EntityInterface entityInterface,
 			HibernateDAO hibernateDAO, Stack rollbackQueryStack, boolean isEntitySaved,
@@ -2608,18 +2608,18 @@ public class EntityManager
 	}
 
 	/**
-	 * This method is used by create as well as edit entity methods. This method holds all the common part 
+	 * This method is used by create as well as edit entity methods. This method holds all the common part
 	 * related to saving the entity into the database and also handling the exceptions .
 	 * @param entityInterface Entity to be stored in the database.
 	 * @param isNew flag for whether it is a save or update.
-	 * @param hibernateDAO 
-	 * @param processedEntityList 
-	 * @param isNewFlag 
+	 * @param hibernateDAO
+	 * @param processedEntityList
+	 * @param isNewFlag
 	 * @return Entity . Stored instance of the entity.
 	 * @throws DynamicExtensionsApplicationException System exception in case of any fatal errors.
 	 * @throws DynamicExtensionsSystemException Thrown in case of duplicate name or authentication failure.
-	 * @throws DAOException 
-	 * @throws HibernateException 
+	 * @throws DAOException
+	 * @throws HibernateException
 	 */
 	private EntityInterface saveOrUpdateEntityMetadata(EntityInterface entityInterface,
 			HibernateDAO hibernateDAO, Stack rollbackQueryStack, boolean isEntitySaved,
@@ -2678,7 +2678,7 @@ public class EntityManager
 			}
 
 			//entity = (Entity) session.saveOrUpdateCopy(entity);
-			//since only metadata is saved 
+			//since only metadata is saved
 			postSaveProcessEntity(entity, hibernateDAO, rollbackQueryStack, processedEntityList,
 					false, false);
 			//entity = (Entity) session.saveOrUpdateCopy(entity);
@@ -2746,15 +2746,15 @@ public class EntityManager
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getRecordById(edu.common.dynamicextensions.domaininterface.EntityInterface, java.lang.Long)
 	 * Value in the map depends on the type of the attribute as explaned below.<br>
-	 * Map 
+	 * Map
 	 *    key    - Attribute Name
 	 *    Value  - List<String> --           multiselect attribute.
 	 *             FileAttributeRecordValue  File attribute.
 	 *             List<Long>                Association
 	 *                  if One-One   |____   List will contain only 1 record id that is of target entity's record
-	 *                     Many-One  | 
-	 *                  otherwise it will contains one or more reocrd ids.   
-	 *                                                      
+	 *                     Many-One  |
+	 *                  otherwise it will contains one or more reocrd ids.
+	 *
 	 *             String                    Other attribute type.
 	 */
 	private Map<AbstractAttributeInterface, Object> getEntityRecordById(EntityInterface entity,
@@ -2779,7 +2779,7 @@ public class EntityManager
 			AttributeInterface attribute = (AttributeInterface) attriIterator.next();
 
 			if (attribute.getIsCollection())
-			{ // need to fetch AttributeRecord object for the multi select type attribute. 
+			{ // need to fetch AttributeRecord object for the multi select type attribute.
 				collectionAttributes.add(attribute);
 			}
 			else if (attribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
@@ -2802,7 +2802,7 @@ public class EntityManager
 			}
 		}
 
-		//get association values. 
+		//get association values.
 		recordValues.putAll(queryBuilder.getAssociationGetRecordQueryList(entity, recordId));
 
 		try
@@ -2895,7 +2895,7 @@ public class EntityManager
 		//		tempAbstractAttributeCollection = EntityManagerUtil
 		//				.filterSystemAttributes(tempAbstractAttributeCollection);
 
-		//Initialising entityRecord and entityRecordMetadata 
+		//Initialising entityRecord and entityRecordMetadata
 
 		EntityRecordResultInterface entityRecordResult = new EntityRecordResult();
 		EntityRecordMetadata recordMetadata = new EntityRecordMetadata();
@@ -2926,7 +2926,7 @@ public class EntityManager
 			AttributeInterface attribute = (AttributeInterface) attriIterator.next();
 			//Filtering attributes into primitive attributes and collection attributes and file attributes
 			if (attribute.getIsCollection())
-			{ // need to fetch AttributeRecord object for the multi select type attribute. 
+			{ // need to fetch AttributeRecord object for the multi select type attribute.
 				collectionAttributes.add(attribute);
 			}
 			else if (attribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
@@ -3034,7 +3034,7 @@ public class EntityManager
 	}
 
 	/**
-	 * filers abstractAttributes into attributes and associations 
+	 * filers abstractAttributes into attributes and associations
 	 * @param abstractAttributeCollection
 	 * @param attributesCollection
 	 * @param associationCollection
@@ -3062,7 +3062,7 @@ public class EntityManager
 	 * @param selectColumnNameList
 	 * @param query
 	 * @param columnNameMap
-	 * @param multipleRows 
+	 * @param multipleRows
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 * @throws SQLException
@@ -3093,8 +3093,8 @@ public class EntityManager
 	 * @param selectColumnNameList
 	 * @param query
 	 * @param columnNameMap
-	 * @param recordMetadata 
-	 * @param multipleRows 
+	 * @param recordMetadata
+	 * @param multipleRows
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 * @throws SQLException
@@ -3164,8 +3164,8 @@ public class EntityManager
 
 	/**
 	 * This method retrives the data for given entity for given record. It also returns the values of
-	 * any inherited attributes. 
-	 * 
+	 * any inherited attributes.
+	 *
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getRecordById(edu.common.dynamicextensions.domaininterface.EntityInterface, java.lang.Long)
 	 */
 	public Map<AbstractAttributeInterface, Object> getRecordById(EntityInterface entity,
@@ -3193,7 +3193,7 @@ public class EntityManager
 	}
 
 	/**
-	 * 
+	 *
 	 * @param attributeInterface
 	 * @param recordId
 	 * @return
@@ -3213,8 +3213,8 @@ public class EntityManager
 	/**
 	 * processes entity group before saving.
 	 * @param entity entity
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private void preSaveProcessEntityGroup(EntityGroupInterface entityGroup)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
@@ -3234,7 +3234,7 @@ public class EntityManager
 	}
 
 	/**
-	 * This method is used by create as well as edit entity group. This method holds all the common part 
+	 * This method is used by create as well as edit entity group. This method holds all the common part
 	 * related to saving the entity group into the database and also handling the exceptions .
 	 * @param entityGroupInterface EntityGroupInterface  to be stored in the database.
 	 * @param isNew flag for whether it is a save or update.
@@ -3327,7 +3327,7 @@ public class EntityManager
 		return entityGroup;
 	}
 	/**
-	 * This method is used by create as well as edit entity group. This method holds all the common part 
+	 * This method is used by create as well as edit entity group. This method holds all the common part
 	 * related to saving the entity group into the database and also handling the exceptions .
 	 * @param entityGroupInterface EntityGroupInterface  to be stored in the database.
 	 * @param isNew flag for whether it is a save or update.
@@ -3353,7 +3353,7 @@ public class EntityManager
 				hibernateDAO.insert(entityGroup, null, false, false);
 			}
 			else
-			{				
+			{
 				hibernateDAO.openSession(null);
 				hibernateDAO.update(entityGroup, null, false, false, false);
 			}
@@ -3380,17 +3380,17 @@ public class EntityManager
 								processedEntityList, false, false);
 					}
 				}
-			}			
+			}
 			//For containers
 			if(containerColl != null && !containerColl.isEmpty())
-			{				
+			{
 				List<ContainerInterface> processedContainerList = new ArrayList<ContainerInterface>();
 				for (ContainerInterface container : containerColl)
 				{
 					persistContainer(container,	false, hibernateDAO, processedContainerList,entityGroupInterface);
-				}				
+				}
 			}
-			
+
 			hibernateDAO.commit();
 		}
 		catch (Exception e)
@@ -3426,11 +3426,11 @@ public class EntityManager
 	}
 
 	/**
-	 * This method checks if the entity group can be created with the given name or not. 
+	 * This method checks if the entity group can be created with the given name or not.
 	 * This method will check for the duplicate name as per the following rule
 	 * @param entityGroup Entity Group whose name's uniqueness is to be checked.
 	 * @throws DynamicExtensionsApplicationException This will basically act as a duplicate name exception.
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public void checkForDuplicateEntityGroupName(EntityGroupInterface entityGroup)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
@@ -3510,7 +3510,7 @@ public class EntityManager
 		{
 			throw new DynamicExtensionsSystemException("Error while rolling back the session", e);
 		}
-		
+
 
 		finally
 		{
@@ -3530,9 +3530,9 @@ public class EntityManager
 	}
 
 	/**
-	 * This method substitues the parameters from substitutionParameterMap into the input query. 
+	 * This method substitues the parameters from substitutionParameterMap into the input query.
 	 * @param substitutionParameterMap
-	 * @throws HibernateException 
+	 * @throws HibernateException
 	 */
 	private Query substitutionParameterForQuery(String queryName, Map substitutionParameterMap)
 			throws HibernateException
@@ -3561,7 +3561,7 @@ public class EntityManager
 
 	}
 
-	/** 
+	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#deleteRecord(edu.common.dynamicextensions.domaininterface.EntityInterface, java.lang.Long)
 	 */
 	public boolean deleteRecord(EntityInterface entity, Long recordId)
@@ -3697,12 +3697,12 @@ public class EntityManager
 	}
 
 	/**
-	 * 
+	 *
 	 * @param hibernateDAO
 	 * @param queryName
 	 * @param substitutionParameterMap
 	 * @return
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private Collection executeHQL(HibernateDAO hibernateDAO, String queryName,
 			Map substitutionParameterMap) throws DynamicExtensionsSystemException
@@ -3747,7 +3747,7 @@ public class EntityManager
 		return executeHQL("getAllContainersByEntityGroupId", substitutionParameterMap);
 	}
 
-	/** 
+	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getMainContainer(java.lang.Long)
 	 */
 	public Collection<NameValueBean> getMainContainer(Long entityGroupIdentifier)
@@ -3800,12 +3800,12 @@ public class EntityManager
 
 	/**
 	 * This method retreives records by executing query of the form
-	 * 
-	 select childTable.identifier, childTable.attribute1, parentTable.attribute5 
-	 from childTable join parentTable 
+	 *
+	 select childTable.identifier, childTable.attribute1, parentTable.attribute5
+	 from childTable join parentTable
 	 on childTable.identifier = parentTable.identifier
 	 where childTable.activity_status = "active"
-	 
+
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getRecordsForAssociationControl(edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface)
 	 */
 	public Map<Long, List<String>> getRecordsForAssociationControl(
@@ -3901,12 +3901,12 @@ public class EntityManager
 	}
 
 	/**
-	 * 
+	 *
 	 * @param entityGroupInterface
 	 * @return
-	 * @throws DynamicExtensionsSystemException 
-	 * @throws DynamicExtensionsSystemException 
-	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
 	 */
 	public Collection<AssociationTreeObject> getAssociationTree()
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -3927,11 +3927,11 @@ public class EntityManager
 	}
 
 	/**
-	 * 
+	 *
 	 * @param objectArray
 	 * @return
 	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsApplicationException
 	 */
 	private AssociationTreeObject processGroupBean(NameValueBean groupBean)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -4012,7 +4012,7 @@ public class EntityManager
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
@@ -4042,7 +4042,7 @@ public class EntityManager
 	}
 
 	/**
-	 * 
+	 *
 	 * @param objectArrayForContainerBeans
 	 * @return
 	 * @throws DynamicExtensionsSystemException
@@ -4117,7 +4117,7 @@ public class EntityManager
 	}
 
 	/**
-	 * 
+	 *
 	 * @param result
 	 * @return
 	 */
@@ -4142,7 +4142,7 @@ public class EntityManager
 	}
 
 	/**
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getChildrenEntities(edu.common.dynamicextensions.domaininterface.EntityInterface)
 	 */
 	public Collection<EntityInterface> getChildrenEntities(EntityInterface entity)
@@ -4253,14 +4253,14 @@ public class EntityManager
 
 	/**
 	 * @param containerId
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public Long getEntityIdByContainerId(Long containerId) throws DynamicExtensionsSystemException
 	{
 		Map substitutionParameterMap = new HashMap();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", containerId));
 		Collection recordCollection = null;
-		//Required HQL is stored in the hbm file. The following method takes the name of the query and 
+		//Required HQL is stored in the hbm file. The following method takes the name of the query and
 		// the actual values for the placeholders as the parameters.
 		recordCollection = executeHQL("getEntityIdForContainerId", substitutionParameterMap);
 		if (recordCollection != null && !recordCollection.isEmpty())
@@ -4296,4 +4296,30 @@ public class EntityManager
 		return map;
 
 	}
+    /**
+    *
+    * @param isAbstarct
+    * @param entityIdentifier
+    * @return
+    * @throws DynamicExtensionsSystemException
+    */
+	public Long checkContainerForAbstractEntity(Long entityIdentifier, boolean isAbstarct)
+	throws DynamicExtensionsSystemException
+	{
+		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long",entityIdentifier));
+		substitutionParameterMap.put("1", new HQLPlaceHolderObject("boolean",isAbstarct));
+
+		Collection containerCollection = executeHQL("checkContainerForAbstractEntity",substitutionParameterMap);
+
+		Long contId = null;
+
+		if (containerCollection != null && containerCollection.size() > 0)
+		{
+			contId = (Long) containerCollection.iterator().next();
+
+		}
+		return contId;
+	}
+
 }

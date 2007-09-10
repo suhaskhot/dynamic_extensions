@@ -1,38 +1,38 @@
 <?xml version="1.0"?>
 
 <!DOCTYPE hibernate-mapping PUBLIC
-    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN"
     "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
-    
- <hibernate-mapping>  
- 
+
+ <hibernate-mapping>
+
 
     <query name="getEntitiesByConceptCode">
-       from Entity entity 
-		   	join entity.semanticPropertyCollection semanticProperty 
-		   		where semanticProperty.conceptCode = ? 
+       from Entity entity
+		   	join entity.semanticPropertyCollection semanticProperty
+		   		where semanticProperty.conceptCode = ?
 	</query>
-	
+
 	<query name="getAssociation">
 		from Association association
            		where  association.entity.name = ?
            		AND association.sourceRole.name = ?
-       			   	
+
 	</query>
-	
+
 	<query name="getAssociations">
        from Association association
-	       	where association.entity.id = ? AND 
+	       	where association.entity.id = ? AND
        			   	association.targetEntity.id = ?
 	</query>
-	
+
 	<query name="getCollectionAttributeRecord">
        from AttributeRecord collectionAttributeRecord
-	       	where collectionAttributeRecord.entity.id = ? AND 
+	       	where collectionAttributeRecord.entity.id = ? AND
        			   	collectionAttributeRecord.attribute.id = ? AND
        			   	     collectionAttributeRecord.recordId = ?
 	</query>
-	
+
 	<query name="getAllContainersByEntityGroupId">
 	   from edu.common.dynamicextensions.domain.userinterface.Container container
 	         	where container.entity.id in
@@ -41,17 +41,17 @@
 	                             join entity.entityGroupCollection entityGroup
 	                                     where entityGroup.id = ?)
 	</query>
-	
+
 	<query name="getContainerOfEntity">
 		from edu.common.dynamicextensions.domain.userinterface.Container container
            		where  container.entity.id = ?
 	</query>
-	
+
 	<query name="getControlOfAbstractAttribute">
 		from Control control
            		where  control.abstractAttribute.id = ?
 	</query>
-	
+
 	<query name="getAllContainersBeansByEntityGroupId">
 			select container.id,container.caption
 			   from edu.common.dynamicextensions.domain.userinterface.Container container
@@ -61,70 +61,74 @@
 			                             join entity.entityGroupCollection entityGroup
 			                                     where entityGroup.id = ?)
 	</query>
-	
+
 	<query name="getAllEntityCreatedDateByContainerId">
 			select container.id,container.entity.createdDate
 			   from edu.common.dynamicextensions.domain.userinterface.Container container
 	</query>
-			
+
 	<query name="getAllContainerBeans">
 			select container.id,container.caption
 			   from edu.common.dynamicextensions.domain.userinterface.Container container
 	</query>
-	
+
 	<query name="getAllContainerInformationObjects">
 			select container.id,container.caption,container.entity.description
 			   from edu.common.dynamicextensions.domain.userinterface.Container container
 	</query>
-	
-	
-	
+
+
+
 	<query name="getEntityIdForContainerId">
 			select container.entity.id
-			   from edu.common.dynamicextensions.domain.userinterface.Container container 
+			   from edu.common.dynamicextensions.domain.userinterface.Container container
 			   where container.id = ?
 	</query>
-		
+
 	<query name="getAllGroupBeans">
 		select entityGroup.name,entityGroup.id
-			   from EntityGroup entityGroup 
+			   from EntityGroup entityGroup
 			   		where  entityGroup.isSystemGenerated = false
 	</query>
-	
+
 	<query name="checkDuplicateGroupName">
 		select count(*)
 			   from EntityGroup entityGroup where entityGroup.name = ?
 	</query>
-	
+
 	<query name="getChildrenEntities">
 	   from Entity entity
 	      where entity.parentEntity.id = ?
 	</query>
-	
+
 	<query name="getAssociationByIdentifier">
 	   from Association association
 	      where association.id = ?
-	</query>	
-	
+	</query>
+
 	<query name="getAssociationsForTargetEntity">
 	   from Association association
 	      where association.targetEntity.id = ?
-	</query>	
-	
+	</query>
+
 	<query name="getMainContainers">
 	  select new edu.wustl.common.beans.NameValueBean(mainContainers.caption , mainContainers.id)
 		    from EntityGroup entityGroup
 		          join entityGroup.mainContainerCollection as mainContainers
- 			       		where entityGroup.id =  ? 
+ 			       		where entityGroup.id =  ?
  			       		  	 and mainContainers.entity.abstract = false
 	</query>
-	
+
 	<query name="getContainerCaption">
-	  select container.caption 
+	  select container.caption
 		    from edu.common.dynamicextensions.domain.userinterface.Container container
- 			       		where container.id =  ? 
+ 			       		where container.id =  ?
 	</query>
-	
-	
+	<query name="checkContainerForAbstractEntity">
+      select container.id
+            from edu.common.dynamicextensions.domain.userinterface.Container container
+                        where container.id = ?
+                        AND container.entity.abstract = ?
+  	</query>
+
 </hibernate-mapping>
-    

@@ -22,12 +22,12 @@ import edu.wustl.common.beans.NameValueBean;
 /**
  * The methods only work on domain object interfaces and also return domain object interfaces or
  * collection of domain object interfaces.
- * 
+ *
  * These methods may throw  DynamicExtensionsApplicationException or DynamicExtensionsSystemException.
- * 
- * DynamicExtensionsApplicationException are application specific exceptions and system can recover from those 
+ *
+ * DynamicExtensionsApplicationException are application specific exceptions and system can recover from those
  * exceptions.
- * 
+ *
  * DynamicExtensionsSystemException are system specific exceptions and system can not recover from those
  * exception.An error page should be displayed in the case.
  * @author sujay_narkar
@@ -36,7 +36,7 @@ import edu.wustl.common.beans.NameValueBean;
 public interface EntityManagerInterface {
 
     /**
-     * Saves the entity into the database.Also prepares the dynamic tables and associations 
+     * Saves the entity into the database.Also prepares the dynamic tables and associations
      * between those tables using the metadata information in the entity object.
      * EntityInterface can be obtained from DomainObjectFactory.
      * @param entityInterface
@@ -60,7 +60,7 @@ public interface EntityManagerInterface {
     /**
      * This method creates an entity group.The entities in the group are also saved.
      * @param entityGroupInterface entity group to be saved.
-     * @return entityGroupInterface Saved  entity group. 
+     * @return entityGroupInterface Saved  entity group.
      * @throws DynamicExtensionsSystemException
      * @throws DynamicExtensionsApplicationException
      */
@@ -68,10 +68,10 @@ public interface EntityManagerInterface {
             throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
     /**
-     * This method returns the EntityGroupInterface given the short name for the 
+     * This method returns the EntityGroupInterface given the short name for the
      * entity.
      * @param entityGroupShortName short name for entity group
-     * @return entityGroupInterface entity group interface 
+     * @return entityGroupInterface entity group interface
      * @throws DynamicExtensionsSystemException
      */
     EntityGroupInterface getEntityGroupByShortName(String entityGroupShortName)
@@ -90,7 +90,7 @@ public interface EntityManagerInterface {
             throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
     /**
-     * Returns an entity object given the entity name; 
+     * Returns an entity object given the entity name;
      * @param entityName
      * @return
      * @throws DynamicExtensionsSystemException
@@ -169,7 +169,7 @@ public interface EntityManagerInterface {
             DynamicExtensionsApplicationException;
 
     /**
-     * Returns a collection of entities having attribute with the given name  
+     * Returns a collection of entities having attribute with the given name
      * @param attributeName
      * @return
      * @throws DynamicExtensionsSystemException
@@ -193,18 +193,18 @@ public interface EntityManagerInterface {
      * @return ContainerInterface container Interface that is saved.
      * @throws DynamicExtensionsSystemException Thrown if for any reason operation can not be completed.
      * @throws DynamicExtensionsApplicationException Thrown if the entity name already exists.
-     * @throws DynamicExtensionsSystemException 
+     * @throws DynamicExtensionsSystemException
      */
     ContainerInterface persistContainer(ContainerInterface containerInterface)
             throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
-    
+
     /**
      * This method is used to save the container into the database.
      * @param containerInterface container to save
      * @return ContainerInterface container Interface that is saved.
      * @throws DynamicExtensionsSystemException Thrown if for any reason operation can not be completed.
      * @throws DynamicExtensionsApplicationException Thrown if the entity name already exists.
-     * @throws DynamicExtensionsSystemException 
+     * @throws DynamicExtensionsSystemException
      */
     public ContainerInterface persistContainer(ContainerInterface containerInterface,boolean addIdAttribute)
             throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException ;
@@ -216,9 +216,9 @@ public interface EntityManagerInterface {
             throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
     /**
-     * This method inserts multiple records for the entity. This is a single transaction, so either all records are inserted or nothing 
+     * This method inserts multiple records for the entity. This is a single transaction, so either all records are inserted or nothing
      * is persisted.
-     * It returns the record id in the same sequence as that of input maps in dataValueMapList. 
+     * It returns the record id in the same sequence as that of input maps in dataValueMapList.
      */
     List<Long> insertData(EntityInterface entity, List<Map<AbstractAttributeInterface, ?>> dataValueMapList)
             throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
@@ -227,14 +227,14 @@ public interface EntityManagerInterface {
      * Returns a particular record for the given recordId of the given entityId
      * @param entityId
      * @param recordId
-     * @return Map key - attribute name 
-     *             value - attribute value  
+     * @return Map key - attribute name
+     *             value - attribute value
      */
     Map<AbstractAttributeInterface, Object> getRecordById(EntityInterface entity, Long recordId)
             throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
     /**
-     * 
+     *
      * @param attribute
      * @param recordId
      * @return
@@ -279,19 +279,19 @@ public interface EntityManagerInterface {
             DynamicExtensionsApplicationException;
 
     /**
-     * This method returns collection of all the containers of the entity contained within a 
+     * This method returns collection of all the containers of the entity contained within a
      * entity group.
-     * 
-     * @param entityGroupIdentifier id of entity group 
+     *
+     * @param entityGroupIdentifier id of entity group
      * @return collection of the containers
      */
     Collection<ContainerInterface> getAllContainersByEntityGroupId(Long entityGroupIdentifier)
             throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
     /**
-     * This method is used to save the metadata information of the given entity without creating it's data 
+     * This method is used to save the metadata information of the given entity without creating it's data
      * table.
-     * 
+     *
      * @param entityInterface entity to be persisted
      * @param isDataTablePresent boolean indicating if data table is already existing or not
      */
@@ -299,10 +299,10 @@ public interface EntityManagerInterface {
             throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
     /**
-     * This method persists an entity group and the associated entities without creating the data table 
-     * for the entities. 
+     * This method persists an entity group and the associated entities without creating the data table
+     * for the entities.
      * @param entityGroupInterface entity group to be saved.
-     * @return entityGroupInterface Saved  entity group. 
+     * @return entityGroupInterface Saved  entity group.
      * @throws DynamicExtensionsSystemException
      * @throws DynamicExtensionsApplicationException
      */
@@ -320,12 +320,12 @@ public interface EntityManagerInterface {
             DynamicExtensionsApplicationException;
 
     /**
-     * This method returns the all the record for the given control of the 
+     * This method returns the all the record for the given control of the
      * association.
-     * 
-     * @return map 
+     *
+     * @return map
      *    key   recordId
-     *    value List<String> list of column values 
+     *    value List<String> list of column values
      */
     Map<Long, List<String>> getRecordsForAssociationControl(AssociationControlInterface associationControl)
             throws DynamicExtensionsSystemException;
@@ -351,10 +351,10 @@ public interface EntityManagerInterface {
             throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
     /**
-     * 
+     *
      * @param entityGroupInterface
      * @return
-     * @throws DynamicExtensionsApplicationException 
+     * @throws DynamicExtensionsApplicationException
      */
     Collection<AssociationTreeObject> getAssociationTree() throws DynamicExtensionsSystemException,
             DynamicExtensionsApplicationException;
@@ -367,7 +367,7 @@ public interface EntityManagerInterface {
     /**
      * This method returns all the children entities of givens entity.
      * @return Collection of EntityInterface
-     * @throws DynamicExtensionsSystemException 
+     * @throws DynamicExtensionsSystemException
      */
     Collection<EntityInterface> getChildrenEntities(EntityInterface entity)
             throws DynamicExtensionsSystemException;
@@ -416,11 +416,11 @@ public interface EntityManagerInterface {
             DynamicExtensionsApplicationException;
 
     /**
-     * This method checks if the entity group can be created with the given name or not. 
+     * This method checks if the entity group can be created with the given name or not.
      * This method will check for the duplicate name as per the following rule
      * @param entityGroup Entity Group whose name's uniqueness is to be checked.
      * @throws DynamicExtensionsApplicationException This will basically act as a duplicate name exception.
-     * @throws DynamicExtensionsSystemException 
+     * @throws DynamicExtensionsSystemException
      */
     void checkForDuplicateEntityGroupName(EntityGroupInterface entityGroup)
             throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
@@ -434,7 +434,7 @@ public interface EntityManagerInterface {
             DynamicExtensionsApplicationException;
 
     /**
-     * 
+     *
      * @return
      * @throws DynamicExtensionsSystemException
      * @throws DynamicExtensionsApplicationException
@@ -459,7 +459,7 @@ public interface EntityManagerInterface {
 
     /**
      * @param containerId
-     * @throws DynamicExtensionsSystemException 
+     * @throws DynamicExtensionsSystemException
      */
     Long getEntityIdByContainerId(Long containerId) throws DynamicExtensionsSystemException;
 
@@ -477,7 +477,7 @@ public interface EntityManagerInterface {
                                                  List<Long> recordIdList) throws DynamicExtensionsSystemException;
 
     /**
-     * 
+     *
      * @return
      * @throws DynamicExtensionsSystemException
      * @throws DynamicExtensionsApplicationException
@@ -486,7 +486,7 @@ public interface EntityManagerInterface {
             DynamicExtensionsApplicationException;
 
     Map<Long, Date> getEntityCreatedDateByContainerId() throws DynamicExtensionsSystemException;
-    
+
 //    public ContainerInterface persistContainer(ContainerInterface containerInterface,List<ArrayList> processedContainerListEntityList,boolean addIdAttribute)
 //	throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
@@ -500,4 +500,14 @@ public interface EntityManagerInterface {
      */
     public EntityGroupInterface persistEntityGroupWithAllContainers(EntityGroupInterface entityGroupInterface,Collection<ContainerInterface> containerColl)
 	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+    /**
+     *
+     * @param isAbstarct
+     * @param entityIdentifier
+     * @return
+     * @throws DynamicExtensionsSystemException
+     */
+    public Long checkContainerForAbstractEntity(Long entityIdentifier, boolean isAbstarct)
+			throws DynamicExtensionsSystemException;
+
 }

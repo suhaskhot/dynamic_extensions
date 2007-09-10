@@ -74,6 +74,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String DATE_ONLY_FORMAT = Constants.DATE_PATTERN_MM_DD_YYYY;
 
 	public static final String ID = "id";
+	public static final String IDENTIFIER = "identifier";
 
 	public enum Cardinality {
 		ZERO(0), ONE(1), MANY(2);

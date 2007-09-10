@@ -16,6 +16,7 @@ public class XMIConstants
 	public static final String TAGGED_NAME_ASSOC_DIRECTION = "direction";
 	public static final String TAGGED_VALUE_ASSOC_BIDIRECTIONAL = "Bi-Directional";
 	public static final String TAGGED_VALUE_ASSOC_SRC_DEST= "Source -> Destination";
+	public static final String TAGGED_VALUE_ASSOC_DEST_SRC= "Destination -> Source";
 	
 	public static final String TAGGED_VALUE_CONTAINMENT = "containment";
 	public static final String TAGGED_VALUE_CONTAINMENT_UNSPECIFIED = "Unspecified";

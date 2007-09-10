@@ -422,7 +422,17 @@ public class EntityManager
 		EntityGroup entityGroup = (EntityGroup) entityGroupInterface;
 		//Calling the following method to process the entity group before saving. 
 		//This includes setting the created date and updated date etc.
-		preSaveProcessEntityGroup(entityGroup);
+		//preSaveProcessEntityGroup(entityGroup);
+		DynamicExtensionsUtility.validateName(entityGroup.getName());		
+		if (entityGroup.getId() != null)
+		{
+			entityGroup.setLastUpdated(new Date());
+		}
+		else
+		{
+			entityGroup.setCreatedDate(new Date());
+			entityGroup.setLastUpdated(entityGroup.getCreatedDate());
+		}
 		//Following method actually calls the dao's insert or update method.
 		boolean isEntityGroupNew = true;
 		if (entityGroupInterface.getId() != null)

@@ -3556,6 +3556,10 @@ public class EntityManager
 			{
 				q.setLong(counter, Long.parseLong(hPlaceHolderObject.getValue() + ""));
 			}
+			else if (objectType.equals("boolean"))
+			{
+				q.setBoolean(counter, Boolean.parseBoolean(hPlaceHolderObject.getValue() + ""));
+			}
 		}
 		return q;
 

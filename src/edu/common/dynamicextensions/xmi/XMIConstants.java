@@ -35,4 +35,10 @@ public class XMIConstants
 	public static final String ASSOC_ONE_MANY = "One_To_Many_Association";
 	public static final String ASSOC_MANY_ONE = "Many_To_One_Association";
 	public static final String ASSOC_MANY_MANY = "Many_To_Many_Association";
+	
+	public static final String XMI_VERSION_1_1 = "1.1";
+	public static final String XMI_VERSION_1_2 = "1.2";
+	
+	public static final String TEMPORARY_XMI1_1_FILENAME = "tempxmi_1_1.xmi";
+	public static final String XSLT_FILENAME = "XMI_1.4-1.3Transformaer.xsl";
 }

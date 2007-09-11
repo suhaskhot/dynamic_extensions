@@ -29,6 +29,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
+import org.netbeans.api.mdr.MDRManager;
 import org.netbeans.api.mdr.MDRepository;
 import org.omg.uml.foundation.core.Attribute;
 import org.omg.uml.foundation.core.Generalization;
@@ -59,7 +60,7 @@ public class XMIUtilities
 	 */
 	public static MDRepository getRepository()
 	{
-		return null;
+		return MDRManager.getDefault().getDefaultRepository();
 	}
 
 	/**
@@ -198,13 +199,13 @@ public class XMIUtilities
 		});
 	}
 
-	public static void transform(File sourceXmiFile, String targetXmiFileName)
+	public static void transform(String sourceXmiFileName, String targetXmiFileName)
 			throws TransformerException, FileNotFoundException
 	{
-		final String XSLT_FILENAME = "XMI_1.4-1.3Transformaer.xsl";
-		if (sourceXmiFile != null)
+		if (sourceXmiFileName != null)
 		{
-			File xsltFile = new File(XSLT_FILENAME);
+			File sourceXmiFile = new File(sourceXmiFileName);
+			File xsltFile = new File(XMIConstants.XSLT_FILENAME);
 			Source xmlSource = new StreamSource(sourceXmiFile);
 			Source xsltSource = new StreamSource(xsltFile);
 			FileOutputStream targetFile = new FileOutputStream(targetXmiFileName);
@@ -215,6 +216,7 @@ public class XMIUtilities
 			Transformer trans = transFact.newTransformer(xsltSource);
 
 			trans.transform(xmlSource, result);
+			System.out.println("Done");
 		}
 
 	}

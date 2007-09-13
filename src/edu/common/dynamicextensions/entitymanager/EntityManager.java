@@ -2600,7 +2600,7 @@ public class EntityManager
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		AttributeInterface idAttribute = domainObjectFactory.createLongAttribute();
 		idAttribute.setName(ID_ATTRIBUTE_NAME);
-		idAttribute.setIsPrimaryKey(new Boolean(true));
+		//idAttribute.setIsPrimaryKey(new Boolean(true));
 		ColumnPropertiesInterface column = domainObjectFactory.createColumnProperties();
 		column.setName(IDENTIFIER);
 		idAttribute.setColumnProperties(column);

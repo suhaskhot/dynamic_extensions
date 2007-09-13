@@ -67,7 +67,7 @@
 							else
 							{
 						%>
-								<html:multibox styleId='tempValidationRules' property='tempValidationRules' value="<%= ruleName%>" onclick="ruleSelected(this)" disabled="true">
+								<html:multibox styleId='tempValidationRules' property='tempValidationRules' value="<%= ruleName%>" onclick="ruleSelected(this)">
 									<bean:message key="<%= ruleLabel%>"/>
 								</html:multibox>
 								<bean:message key="<%= ruleLabel%>"/>

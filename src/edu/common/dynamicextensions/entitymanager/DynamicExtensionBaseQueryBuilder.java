@@ -658,6 +658,26 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
                 query = query.append(COMMA);
             }
         }
+        if (attributeCollection != null && !attributeCollection.isEmpty())
+        {
+            Iterator attributeIterator = attributeCollection.iterator();
+            while (attributeIterator.hasNext())
+            {
+                Attribute attribute = (Attribute) attributeIterator.next();
+                if (attribute.getIsPrimaryKey()
+						&& attribute.getColumnProperties().getName() != null
+						&& !attribute.getColumnProperties().getName()
+								.equalsIgnoreCase(IDENTIFIER))
+                {
+                	query = query.append(CONSTRAINT_KEYWORD + WHITESPACE
+							+ attribute.getColumnProperties().getName() + entity.getId()
+							+ WHITESPACE + UNIQUE_KEYWORD + OPENING_BRACKET
+							+ attribute.getColumnProperties().getName() + CLOSING_BRACKET);
+                	query = query.append(COMMA);
+                }
+            }
+        }
+
         query = query.append(PRIMARY_KEY_CONSTRAINT_FOR_ENTITY_DATA_TABLE + ")"); //identifier set as primary key
 
         // add create query
@@ -783,14 +803,14 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
         String attributeQuery = null;
         if (attribute != null) {
             String columnName = attribute.getColumnProperties().getName();
-            String isUnique = "";
+            //String isUnique = "";
             String nullConstraint = "";
             //			String defaultConstraint = "";
             if (processConstraints) {
-                if (attribute.getIsPrimaryKey()) {
-                    isUnique = CONSTRAINT_KEYWORD + WHITESPACE + attribute.getColumnProperties().getName()
-                            + UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX + WHITESPACE + UNIQUE_KEYWORD;
-                }
+//                if (attribute.getIsPrimaryKey()) {
+//                    isUnique = CONSTRAINT_KEYWORD + WHITESPACE + attribute.getColumnProperties().getName()
+//                            + UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX + WHITESPACE + UNIQUE_KEYWORD;
+//                }
                 nullConstraint = "NULL";
 
                 if (!attribute.getIsNullable()) {
@@ -811,7 +831,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
             }
 
             attributeQuery = columnName + WHITESPACE + type + WHITESPACE + getDatabaseTypeAndSize(attribute) //+ WHITESPACE + defaultConstraint
-                    + WHITESPACE + isUnique + WHITESPACE + nullConstraint;
+                    + WHITESPACE +  nullConstraint;
         }
         return attributeQuery;
     }
@@ -1010,7 +1030,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
 
                 if (isAttributeColumnToBeAdded(attribute, savedAttribute)) {
                     //either attribute is newly added or previously excluded(file type/multiselect) attribute
-                    //modified such that now its column needs to add.
+                    //modified sh that now its column needs to add.
                     String attributeQuery = processAddAttribute(attribute, attributeRollbackQueryList);
                     attributeQueryList.add(attributeQuery);
                 } else {

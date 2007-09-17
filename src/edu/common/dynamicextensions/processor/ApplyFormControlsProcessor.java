@@ -18,6 +18,7 @@ import edu.common.dynamicextensions.ui.interfaces.ControlUIBeanInterface;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
+import java.util.regex.Pattern;
 
 /**
  * @author preeti_munot
@@ -234,7 +235,10 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 					if ((word != null) && (!word.trim().equalsIgnoreCase("")))
 					{
 						firstCharacter = word.charAt(0);
-						word = word.replaceFirst(firstCharacter + "", Character.toUpperCase(firstCharacter) + "");
+                        if (Character.isLetter(firstCharacter))
+                        {
+                            word = word.replaceFirst(firstCharacter + "", Character.toUpperCase(firstCharacter) + "");
+                        }
 						attributeName = attributeName + word;
 					}
 				}

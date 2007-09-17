@@ -1306,6 +1306,7 @@ public class ControlsForm extends AbstractActionForm
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
 					ApplicationProperties.getValue("eav.att.Label")));
 		}
+     
 		validateControlFields(validator, errors);
 		return errors;
 	}
@@ -1621,6 +1622,15 @@ public class ControlsForm extends AbstractActionForm
 						ApplicationProperties.getValue("eav.att.defaultValue")));
 			}
 		}
+        
+        if (attributeDefaultValue.length() != 0) 
+        {
+            if (Float.parseFloat(attributeDefaultValue) < Float.parseFloat(min) || Float.parseFloat(attributeDefaultValue) > Float.parseFloat(max)) 
+            {
+                errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item",
+                        ApplicationProperties.getValue("eav.att.defaultValueExceedsRange")));
+            }
+        }
 	}
 
 	/**

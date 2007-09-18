@@ -2385,6 +2385,10 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 	}
 
 	/**
+	 * 
+	 * Commenting this test case as per bug #5094 as we should be able to see abstract forms for future editing.
+	 * To avoid data entry in abstract forms, we need to check the abstract attribute for entity in code. - Ashish 18/9/07
+	 * 
 	 * PURPOSE : to test the method GetMainContainer
 	 *            
 	 *  
@@ -2401,50 +2405,50 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 	 * 7. invoke getMainContainer
 	 * 8. test if retruned container null or not
 	 */
-	public void testGetMainContainerForAbstractEntity()
-	{
-		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
-		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
-		try
-		{
-			//Step 1.
-			EntityInterface user = factory.createEntity();
-			user.setAbstract(true);
-			user.setName("user");
-
-			//Step 2.
-			EntityGroupInterface userGroup = factory.createEntityGroup();
-			((EntityGroup) userGroup).setCurrent(true);
-
-			//Step 3.
-			userGroup.addEntity(user);
-			user.addEntityGroupInterface(userGroup);
-
-			//Step 4.
-			ContainerInterface userContainer = factory.createContainer();
-			userContainer.setCaption("User Container");
-
-			//Step 5.
-			userContainer.setEntity(user);
-
-			//Step 6.
-			entityManagerInterface.persistContainer(userContainer);
-
-			//Step 7.
-			Collection<NameValueBean> containerNameValueCollection = entityManagerInterface
-					.getMainContainer(userGroup.getId());
-
-			//Step 8.
-			assertEquals(0, containerNameValueCollection.size());
-
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-
-	}
+//	public void testGetMainContainerForAbstractEntity()
+//	{
+//		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+//		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+//
+//		try
+//		{
+//			//Step 1.
+//			EntityInterface user = factory.createEntity();
+//			user.setAbstract(true);
+//			user.setName("user");
+//
+//			//Step 2.
+//			EntityGroupInterface userGroup = factory.createEntityGroup();
+//			((EntityGroup) userGroup).setCurrent(true);
+//
+//			//Step 3.
+//			userGroup.addEntity(user);
+//			user.addEntityGroupInterface(userGroup);
+//
+//			//Step 4.
+//			ContainerInterface userContainer = factory.createContainer();
+//			userContainer.setCaption("User Container");
+//
+//			//Step 5.
+//			userContainer.setEntity(user);
+//
+//			//Step 6.
+//			entityManagerInterface.persistContainer(userContainer);
+//
+//			//Step 7.
+//			Collection<NameValueBean> containerNameValueCollection = entityManagerInterface
+//					.getMainContainer(userGroup.getId());
+//
+//			//Step 8.
+//			assertEquals(0, containerNameValueCollection.size());
+//
+//		}
+//		catch (Exception e)
+//		{
+//			e.printStackTrace();
+//		}
+//
+//	}
 
 	/**
 	 * 

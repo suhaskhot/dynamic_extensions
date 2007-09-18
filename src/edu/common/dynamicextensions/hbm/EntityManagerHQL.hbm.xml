@@ -116,7 +116,10 @@
 		    from EntityGroup entityGroup
 		          join entityGroup.mainContainerCollection as mainContainers
  			       		where entityGroup.id =  ?
- 			       		  	 and mainContainers.entity.abstract = false
+<!--  Bug# 5094 - Commenting this condition as we should be able to see abstract forms for future editing.
+	 To avoid data entry in abstract forms, we need to check the abstract attribute for entity in code. - Ashish 18/9/07
+	 -->
+<!--			       		  	 and mainContainers.entity.abstract = false   -->
 	</query>
 
 	<query name="getContainerCaption">

@@ -201,7 +201,7 @@ public class EntityManager
 			List<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
 
 			entityInterface = saveOrUpdateEntity(entityInterface, hibernateDAO, stack,
-					isEntitySaved, processedEntityList, addIdAttribute, false);
+					isEntitySaved, processedEntityList, addIdAttribute, false,true);
 
 			//Committing the changes done in the hibernate session to the database.
 			hibernateDAO.commit();
@@ -306,7 +306,7 @@ public class EntityManager
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#persistEntityMetadata(edu.common.dynamicextensions.domaininterface.EntityInterface)
 	 */
 	public EntityInterface persistEntityMetadata(EntityInterface entityInterface,
-			boolean isDataTablePresent) throws DynamicExtensionsSystemException,
+			boolean isDataTablePresent,boolean copyDataTableState) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
 		if (isDataTablePresent)
@@ -339,7 +339,7 @@ public class EntityManager
 			List<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
 
 			entityInterface = saveOrUpdateEntityMetadata(entityInterface, hibernateDAO, stack,
-					isEntitySaved, processedEntityList);
+					isEntitySaved, processedEntityList, copyDataTableState);
 
 			//Committing the changes done in the hibernate session to the database.
 			hibernateDAO.commit();
@@ -405,7 +405,7 @@ public class EntityManager
 		}
 		boolean isOnlyMetadata = false;
 		entityGroup = saveOrUpdateEntityGroup(entityGroupInterface, isEntityGroupNew,
-				isOnlyMetadata);
+				isOnlyMetadata,true);
 		logDebug("createEntity", "Exiting method");
 		return entityGroupInterface;
 	}
@@ -442,7 +442,7 @@ public class EntityManager
 		}
 		boolean isOnlyMetadata = false;
 		entityGroup = saveOrUpdateEntityGroupAndContainers(entityGroupInterface, isEntityGroupNew,
-				isOnlyMetadata,containerColl);
+				isOnlyMetadata,containerColl,true);
 		logDebug("createEntity", "Exiting method");
 		return entityGroupInterface;
 	}
@@ -482,7 +482,7 @@ public class EntityManager
 		}
 		boolean isOnlyMetadata = true;
 		entityGroup = saveOrUpdateEntityGroup(entityGroupInterface, isEntityGroupNew,
-				isOnlyMetadata);
+				isOnlyMetadata,true);
 		logDebug("createEntity", "Exiting method");
 		return entityGroupInterface;
 	}
@@ -939,6 +939,9 @@ public class EntityManager
 	 * @param hibernateDAO
 	 * @param processedEntityList
 	 * @param addIdAttribute
+	 * @param copyDataTableState - Bug#5196, 5097 - Copying the dataTableState for entity to the associated target entity 
+	 * based on this boolean value. Default value is 'true'. While adding association with static catissue entity,
+	 * value is 'false'.
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws UserNotAuthorizedException
@@ -947,7 +950,7 @@ public class EntityManager
 	 */
 	private void postSaveProcessEntity(Entity entity, HibernateDAO hibernateDAO,
 			Stack rollbackQueryStack, List<EntityInterface> processedEntityList,
-			boolean addIdAttribute, boolean isEntityFromXMI)
+			boolean addIdAttribute, boolean isEntityFromXMI,boolean copyDataTableState)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException,
 			DAOException, UserNotAuthorizedException, HibernateException
 	{
@@ -988,18 +991,20 @@ public class EntityManager
 						{
 							isEntitySaved = true;
 						}
-
-						((Entity) targetEntity).setDataTableState(entity.getDataTableState());
+						if(copyDataTableState)
+						{
+							((Entity) targetEntity).setDataTableState(entity.getDataTableState());
+						}
 						if (entity.getDataTableState() == DATA_TABLE_STATE_CREATED)
 						{
 							targetEntity = saveOrUpdateEntity(targetEntity, hibernateDAO,
 									rollbackQueryStack, isEntitySaved, processedEntityList,
-									addIdAttribute, isEntityFromXMI);
+									addIdAttribute, isEntityFromXMI,copyDataTableState);
 						}
 						else
 						{
 							targetEntity = saveOrUpdateEntityMetadata(targetEntity, hibernateDAO,
-									rollbackQueryStack, isEntitySaved, processedEntityList);
+									rollbackQueryStack, isEntitySaved, processedEntityList,copyDataTableState);
 						}
 
 					}
@@ -1624,7 +1629,7 @@ public class EntityManager
 				// in case of exception.
 				List<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
 				saveOrUpdateEntity(entity, hibernateDAO, rollbackQueryStack, isentitySaved,
-						processedEntityList, addIdAttribute, false);
+						processedEntityList, addIdAttribute, false, true);
 				saveChildContainers(container, session);
 			}
 
@@ -1725,8 +1730,7 @@ public class EntityManager
 			if (control instanceof ContainmentAssociationControlInterface)
 			{
 				ContainmentAssociationControlInterface associationControl = (ContainmentAssociationControlInterface) control;
-
-
+				
 				session.saveOrUpdateCopy(associationControl.getContainer());
 
 				saveChildContainers(associationControl.getContainer(), session);
@@ -2511,7 +2515,7 @@ public class EntityManager
 	private EntityInterface saveOrUpdateEntity(EntityInterface entityInterface,
 			HibernateDAO hibernateDAO, Stack rollbackQueryStack, boolean isEntitySaved,
 			List<EntityInterface> processedEntityList, boolean addIdAttribute,
-			boolean isEntityFromXMI) throws DynamicExtensionsApplicationException,
+			boolean isEntityFromXMI,boolean copyDataTableState) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException, DAOException, HibernateException
 	{
 		logDebug("saveOrUpdateEntity", "Entering method");
@@ -2588,14 +2592,14 @@ public class EntityManager
 				}
 
 				saveOrUpdateEntity(entity.getParentEntity(), hibernateDAO, rollbackQueryStack,
-						isParentEntitySaved, processedEntityList, addIdAttribute, isEntityFromXMI);
+						isParentEntitySaved, processedEntityList, addIdAttribute, isEntityFromXMI,copyDataTableState);
 
 			}
 
 			entity = (Entity) session.saveOrUpdateCopy(entity);
 
 			postSaveProcessEntity(entity, hibernateDAO, rollbackQueryStack, processedEntityList,
-					addIdAttribute, isEntityFromXMI);
+					addIdAttribute, isEntityFromXMI, copyDataTableState);
 
 			entity = (Entity) session.saveOrUpdateCopy(entity);
 
@@ -2658,7 +2662,7 @@ public class EntityManager
 	 */
 	private EntityInterface saveOrUpdateEntityMetadata(EntityInterface entityInterface,
 			HibernateDAO hibernateDAO, Stack rollbackQueryStack, boolean isEntitySaved,
-			List<EntityInterface> processedEntityList)
+			List<EntityInterface> processedEntityList, boolean copyDataTableState)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException,
 			DAOException, HibernateException
 	{
@@ -2691,7 +2695,7 @@ public class EntityManager
 						isParentEntitySaved = true;
 					}
 					saveOrUpdateEntityMetadata(parentEntity, hibernateDAO, rollbackQueryStack,
-							isParentEntitySaved, processedEntityList);
+							isParentEntitySaved, processedEntityList, copyDataTableState);
 				}
 				hibernateDAO.insert(entity, null, false, false);
 			}
@@ -2707,7 +2711,7 @@ public class EntityManager
 				if (entity.getParentEntity() != null)
 				{
 					saveOrUpdateEntityMetadata(entity.getParentEntity(), hibernateDAO,
-							rollbackQueryStack, true, processedEntityList);
+							rollbackQueryStack, true, processedEntityList, copyDataTableState);
 				}
 				hibernateDAO.update(entity, null, false, false, false);
 			}
@@ -2715,7 +2719,7 @@ public class EntityManager
 			//entity = (Entity) session.saveOrUpdateCopy(entity);
 			//since only metadata is saved
 			postSaveProcessEntity(entity, hibernateDAO, rollbackQueryStack, processedEntityList,
-					false, false);
+					false, false, copyDataTableState);
 			//entity = (Entity) session.saveOrUpdateCopy(entity);
 			hibernateDAO.update(entity, null, false, false, false);
 		}
@@ -3278,7 +3282,7 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException Thrown in case of duplicate name or authentication failure.
 	 */
 	private EntityGroup saveOrUpdateEntityGroup(EntityGroupInterface entityGroupInterface,
-			boolean isNew, boolean isOnlyMetadata) throws DynamicExtensionsApplicationException,
+			boolean isNew, boolean isOnlyMetadata, boolean copyDataTableState) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException
 	{
 		logDebug("saveOrUpdateEntityGroup", "Entering method");
@@ -3316,12 +3320,12 @@ public class EntityManager
 					if (isOnlyMetadata)
 					{
 						saveOrUpdateEntityMetadata(entityInterface, hibernateDAO, stack,
-								isEntitySaved, processedEntityList);
+								isEntitySaved, processedEntityList, copyDataTableState);
 					}
 					else
 					{
 						saveOrUpdateEntity(entityInterface, hibernateDAO, stack, isEntitySaved,
-								processedEntityList, false, false);
+								processedEntityList, false, false, copyDataTableState);
 					}
 				}
 			}
@@ -3371,7 +3375,7 @@ public class EntityManager
 	 * @throws DynamicExtensionsSystemException Thrown in case of duplicate name or authentication failure.
 	 */
 	private EntityGroup saveOrUpdateEntityGroupAndContainers(EntityGroupInterface entityGroupInterface,
-			boolean isNew, boolean isOnlyMetadata, Collection<ContainerInterface> containerColl) throws DynamicExtensionsApplicationException,
+			boolean isNew, boolean isOnlyMetadata, Collection<ContainerInterface> containerColl,boolean copyDataTableState) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException
 	{
 		logDebug("saveOrUpdateEntityGroup", "Entering method");
@@ -3407,12 +3411,12 @@ public class EntityManager
 					if (isOnlyMetadata)
 					{
 						saveOrUpdateEntityMetadata(entityInterface, hibernateDAO, stack,
-								isEntitySaved, processedEntityList);
+								isEntitySaved, processedEntityList, copyDataTableState);
 					}
 					else
 					{
 						saveOrUpdateEntity(entityInterface, hibernateDAO, stack, isEntitySaved,
-								processedEntityList, false, false);
+								processedEntityList, false, false, copyDataTableState);
 					}
 				}
 			}

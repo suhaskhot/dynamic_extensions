@@ -297,7 +297,7 @@ public interface EntityManagerInterface {
      * @param entityInterface entity to be persisted
      * @param isDataTablePresent boolean indicating if data table is already existing or not
      */
-    EntityInterface persistEntityMetadata(EntityInterface entityInterface, boolean isDataTablePresent)
+    EntityInterface persistEntityMetadata(EntityInterface entityInterface, boolean isDataTablePresent, boolean copyDataTableState)
             throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
     /**

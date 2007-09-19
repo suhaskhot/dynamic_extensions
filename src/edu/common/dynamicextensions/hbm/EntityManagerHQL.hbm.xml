@@ -134,4 +134,10 @@
                         AND container.entity.abstract = ?
   	</query>
 
+	<query name="getAttributeRecords">
+		select count(*)
+       		from AttributeRecord attributeRecord
+	       		where attributeRecord.entity.id = ? AND
+       			   	attributeRecord.attribute.id = ?
+	</query>
 </hibernate-mapping>

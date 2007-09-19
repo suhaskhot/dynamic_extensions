@@ -19,6 +19,7 @@ import net.sf.hibernate.Session;
 import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.Attribute;
+import edu.common.dynamicextensions.domain.AttributeRecord;
 import edu.common.dynamicextensions.domain.AttributeTypeInformation;
 import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
@@ -1128,7 +1129,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
                 Attribute savedAttribute = (Attribute) savedAttributeIterator.next();
                 Attribute attribute = (Attribute) entity.getAttributeByIdentifier(savedAttribute.getId());
 
-                if (attribute == null && isDataPresent(tableName, savedAttribute.getColumnProperties().getName())) {
+                if (attribute == null && isDataPresent(tableName, savedAttribute)) {
                     throw new DynamicExtensionsApplicationException(
                             "data is present ,attribute can not be deleted", null, DYEXTN_A_013);
                 }
@@ -1330,9 +1331,11 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
      * @return
      * @throws DynamicExtensionsSystemException
      */
-    public boolean isDataPresent(String tableName, String columnName) throws DynamicExtensionsSystemException {
+    public boolean isDataPresent(String tableName, Attribute savedAttribute) throws DynamicExtensionsSystemException {
+    	boolean dataPresent = false;
         StringBuffer queryBuffer = new StringBuffer();
-        queryBuffer.append(SELECT_KEYWORD).append(WHITESPACE).append("COUNT").append(OPENING_BRACKET).append("*").append(
+        if (!isAttributeColumnToBeExcluded(savedAttribute)) {
+        	queryBuffer.append(SELECT_KEYWORD).append(WHITESPACE).append("COUNT").append(OPENING_BRACKET).append("*").append(
                                                                                                                          CLOSING_BRACKET).append(
                                                                                                                                                  WHITESPACE).append(
                                                                                                                                                                     FROM_KEYWORD).append(
@@ -1341,29 +1344,38 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
                                                                                                                                                                                                                               WHITESPACE).append(
                                                                                                                                                                                                                                                  WHERE_KEYWORD).append(
                                                                                                                                                                                                                                                                        WHITESPACE).append(
-                                                                                                                                                                                                                                                                                          columnName).append(
+                                                                                                                                                                                                                                                                    		   savedAttribute.getColumnProperties().getName()).append(
                                                                                                                                                                                                                                                                                                              WHITESPACE).append(
                                                                                                                                                                                                                                                                                                                                 "IS").append(
                                                                                                                                                                                                                                                                                                                                              WHITESPACE).append(
                                                                                                                                                                                                                                                                                                                                                                 NOT_KEYWORD).append(
                                                                                                                                                                                                                                                                                                                                                                                     WHITESPACE).append(
-                                                                                                                                                                                                                                                                                                                                                                                                       NULL_KEYWORD);
+                                                                                                                                                                                                                                                                                                                                                                                                  NULL_KEYWORD);
+        	ResultSet resultSet = entityManagerUtil.executeQuery(queryBuffer.toString());
+            try {
+                resultSet.next();
+                Long count = resultSet.getLong(1);
+                resultSet.close();
+                if (count > 0) {
+                	dataPresent = true;
+                }
 
-        ResultSet resultSet = entityManagerUtil.executeQuery(queryBuffer.toString());
-
-        try {
-            resultSet.next();
-            Long count = resultSet.getLong(1);
-            resultSet.close();
-            if (count > 0) {
-                return true;
-            } else {
-                return false;
+            } catch (SQLException e) {
+                throw new DynamicExtensionsSystemException("Can not check the availability of data", e);
             }
-
-        } catch (SQLException e) {
-            throw new DynamicExtensionsSystemException("Can not check the availability of data", e);
         }
+        else {
+        	Collection<Integer> recordCollection = EntityManager.getInstance()
+					.getAttributeRecordsCount(savedAttribute.getEntity().getId(),
+							savedAttribute.getId(), null);
+        	if (recordCollection != null && !recordCollection.isEmpty()) {
+        		Integer count = (Integer) recordCollection.iterator().next();
+	       		 if (count > 0) {
+	        		dataPresent = true;
+	       		 }
+        	}
+        }
+        return dataPresent;
     }
 
     public boolean isDataPresent(String tableName) throws DynamicExtensionsSystemException {

@@ -77,6 +77,7 @@ import edu.wustl.common.dao.AbstractDAO;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.HibernateDAO;
 import edu.wustl.common.dao.JDBCDAO;
+import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.dbManager.DBUtil;
@@ -635,7 +636,39 @@ public class EntityManager
 		}
 		return collectionAttributeRecord;
 	}
+	/** The actual values of the multi select attribute are not stored in the entity's data table because there can
+	 * be more than one values associated with the particular multiselect attribute. so for this reason, these values
+	 * are stored in a different table. AttributeRecord is the hibernate object that maps to that table.
+	 * So this method is used to get the AttributeRecord for the given combination of entity attribute and the particular
+	 * record of the entity.
+	 * @param entityId
+	 * @param attributeId
+	 * @return
+	 */
+	public Collection<Integer> getAttributeRecordsCount(Long entityId, Long attributeId,
+			HibernateDAO hibernateDao) throws DynamicExtensionsSystemException
 
+	{
+		Map substitutionParameterMap = new HashMap();
+		AttributeRecord collectionAttributeRecord = null;
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entityId));
+		substitutionParameterMap.put("1", new HQLPlaceHolderObject("long", attributeId));
+		Collection recordCollection = null;
+		if (hibernateDao == null)
+		{
+			//Required HQL is stored in the hbm file. The following method takes the name of the query and
+			// the actual values for the placeholders as the parameters.
+			recordCollection = executeHQLWithCleanSession("getAttributeRecords", substitutionParameterMap);
+		}
+		else
+		{
+			//Required HQL is stored in the hbm file. The following method takes the name of the query and
+			// the actual values for the placeholders as the parameters.
+			recordCollection = executeHQLWithCleanSession(hibernateDao, "getAttributeRecords",
+					substitutionParameterMap);
+		}
+		return recordCollection;
+	}
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAssociations(java.lang.Long, java.lang.Long)
 	 */
@@ -3504,7 +3537,7 @@ public class EntityManager
 		try
 		{
 			hibernateDAO.openSession(null);
-			Query query = substitutionParameterForQuery(queryName, substitutionParameterMap);
+			Query query = substitutionParameterForQuery(queryName, substitutionParameterMap,false);
 			entityCollection = query.list();
 			//	hibernateDAO.commit();
 		}
@@ -3530,16 +3563,66 @@ public class EntityManager
 		}
 		return entityCollection;
 	}
+	/**
+	 *  This method executes the HQL query given the query name and query parameters.
+	 *  The queries are specified in the EntityManagerHQL.hbm.xml file.For each query a name is given.
+	 *  Each query is replaced with parameters before execution.The parametrs are given by each calling method.
+	 * @param entityConceptCode
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	private Collection executeHQLWithCleanSession(String queryName,
+			Map<String, HQLPlaceHolderObject> substitutionParameterMap)
+			throws DynamicExtensionsSystemException
+	{
+		Collection entityCollection = new HashSet();
+		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
+				Constants.HIBERNATE_DAO);
+		try
+		{
+			hibernateDAO.openSession(null);
+			Query query = substitutionParameterForQuery(queryName, substitutionParameterMap,true);
+			entityCollection = query.list();
+			//	hibernateDAO.commit();
+		}
+		catch (Exception e)
+		{
+			throw new DynamicExtensionsSystemException("Error while rolling back the session", e);
+		}
 
+
+		finally
+		{
+			try
+			{
+				hibernateDAO.closeSession();
+
+			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException(
+						"Exception occured while closing the session", e, DYEXTN_S_001);
+			}
+
+		}
+		return entityCollection;
+	}
 	/**
 	 * This method substitues the parameters from substitutionParameterMap into the input query.
 	 * @param substitutionParameterMap
 	 * @throws HibernateException
 	 */
-	private Query substitutionParameterForQuery(String queryName, Map substitutionParameterMap)
-			throws HibernateException
+	private Query substitutionParameterForQuery(String queryName, Map substitutionParameterMap,boolean cleanSession)
+			throws HibernateException,BizLogicException
 	{
-		Session session = DBUtil.currentSession();
+		Session session = null;
+		if (cleanSession) {
+			session = DBUtil.getCleanSession();
+		}
+		else {
+			session = DBUtil.currentSession();
+		}
 		Query q = session.getNamedQuery(queryName);
 		for (int counter = 0; counter < substitutionParameterMap.size(); counter++)
 		{
@@ -3717,18 +3800,49 @@ public class EntityManager
 
 		try
 		{
-			Query query = substitutionParameterForQuery(queryName, substitutionParameterMap);
+			Query query = substitutionParameterForQuery(queryName, substitutionParameterMap,false);
 			entityCollection = query.list();
 		}
 		catch (HibernateException e)
 		{
 			throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
 		}
-
+		catch (BizLogicException e)
+		{
+			throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
+		}
 		return entityCollection;
 
 	}
+	/**
+	 *
+	 * @param hibernateDAO
+	 * @param queryName
+	 * @param substitutionParameterMap
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private Collection executeHQLWithCleanSession(HibernateDAO hibernateDAO, String queryName,
+			Map substitutionParameterMap) throws DynamicExtensionsSystemException
+	{
+		Collection entityCollection = new HashSet();
 
+		try
+		{
+			Query query = substitutionParameterForQuery(queryName, substitutionParameterMap,true);
+			entityCollection = query.list();
+		}
+		catch (HibernateException e)
+		{
+			throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
+		}
+		catch (BizLogicException e)
+		{
+			throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
+		}
+		return entityCollection;
+
+	}
 	/**
 	 * Returns all entitiy groups in the whole system
 	 * @return Collection Entity group Collection

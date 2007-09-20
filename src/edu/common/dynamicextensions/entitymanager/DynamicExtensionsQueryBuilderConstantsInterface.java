@@ -4,7 +4,7 @@
  *<p>Copyright:TODO</p>
  *@author Vishvesh Mulay
  *@version 1.0
- */ 
+ */
 package edu.common.dynamicextensions.entitymanager;
 
 
@@ -33,8 +33,8 @@ public interface DynamicExtensionsQueryBuilderConstantsInterface extends EntityM
 	String UPDATE_KEYWORD = " UPDATE ";
 	String JOIN_KEYWORD = " JOIN ";
 	String ON_KEYWORD = " ON ";
-		
-	
+
+
 	String CONSTRAINT_KEYWORD = " CONSTRAINT ";
 	String UNIQUE_KEYWORD = " UNIQUE ";
 	String COLUMN_KEYWORD = " COLUMN ";
@@ -53,6 +53,7 @@ public interface DynamicExtensionsQueryBuilderConstantsInterface extends EntityM
 	String PRIMARY_KEY_CONSTRAINT_FOR_ENTITY_DATA_TABLE = "primary key (IDENTIFIER)";
 	String ALTER_COLUMN_KEYWORD = "ALTER " + COLUMN_KEYWORD;
 	String REFERENCES_KEYWORD = "REFERENCES";
-	String FOREIGN_KEY_KEYWORD = " foreign key "; 
-
+	String FOREIGN_KEY_KEYWORD = " foreign key ";
+	String AND_KEYWORD = "AND";
+	String LIKE_KEYWORD = "LIKE";
 }

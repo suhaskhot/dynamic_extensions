@@ -1338,22 +1338,17 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
     	boolean dataPresent = false;
         StringBuffer queryBuffer = new StringBuffer();
         if (!isAttributeColumnToBeExcluded(savedAttribute)) {
-        	queryBuffer.append(SELECT_KEYWORD).append(WHITESPACE).append("COUNT").append(OPENING_BRACKET).append("*").append(
-                                                                                                                         CLOSING_BRACKET).append(
-                                                                                                                                                 WHITESPACE).append(
-                                                                                                                                                                    FROM_KEYWORD).append(
-                                                                                                                                                                                         WHITESPACE).append(
-                                                                                                                                                                                                            tableName).append(
-                                                                                                                                                                                                                              WHITESPACE).append(
-                                                                                                                                                                                                                                                 WHERE_KEYWORD).append(
-                                                                                                                                                                                                                                                                       WHITESPACE).append(
-                                                                                                                                                                                                                                                                    		   savedAttribute.getColumnProperties().getName()).append(
-                                                                                                                                                                                                                                                                                                             WHITESPACE).append(
-                                                                                                                                                                                                                                                                                                                                "IS").append(
-                                                                                                                                                                                                                                                                                                                                             WHITESPACE).append(
-                                                                                                                                                                                                                                                                                                                                                                NOT_KEYWORD).append(
-                                                                                                                                                                                                                                                                                                                                                                                    WHITESPACE).append(
-                                                                                                                                                                                                                                                                                                                                                                                                  NULL_KEYWORD);
+    		queryBuffer.append(SELECT_KEYWORD).append(WHITESPACE).append("COUNT").append(
+					OPENING_BRACKET).append("*").append(CLOSING_BRACKET).append(WHITESPACE).append(
+					FROM_KEYWORD).append(WHITESPACE).append(tableName).append(WHITESPACE).append(
+					WHERE_KEYWORD).append(WHITESPACE).append(
+					savedAttribute.getColumnProperties().getName()).append(WHITESPACE).append("IS")
+					.append(WHITESPACE).append(NOT_KEYWORD).append(WHITESPACE).append(NULL_KEYWORD)
+					.append(WHITESPACE).append(AND_KEYWORD).append(WHITESPACE).append(
+							savedAttribute.getColumnProperties().getName()).append(WHITESPACE)
+					.append(NOT_KEYWORD).append(WHITESPACE).append(LIKE_KEYWORD).append(WHITESPACE)
+					.append("''");
+
         	ResultSet resultSet = entityManagerUtil.executeQuery(queryBuffer.toString());
             try {
                 resultSet.next();

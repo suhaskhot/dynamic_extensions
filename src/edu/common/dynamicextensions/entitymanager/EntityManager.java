@@ -2211,7 +2211,16 @@ public class EntityManager
 					FileAttributeRecordValue fileRecordValue = (FileAttributeRecordValue) value;
 					AttributeRecord fileRecord = getAttributeRecord(entity.getId(),
 							primitiveAttribute.getId(), recordId, hibernateDAO);
-					fileRecord.getFileRecord().copyValues(fileRecordValue);
+					if (fileRecord != null)
+					{
+						fileRecord.getFileRecord().copyValues(fileRecordValue);
+					}
+					else
+					{
+						fileRecord = populateFileAttributeRecord(null, entity,primitiveAttribute, recordId, (FileAttributeRecordValue) value);
+					}
+
+			//		fileRecord.getFileRecord().copyValues(fileRecordValue);
 					fileRecords.add(fileRecord);
 				}
 				else if (primitiveAttribute.getAttributeTypeInformation() instanceof ObjectAttributeTypeInformation)
@@ -2335,7 +2344,14 @@ public class EntityManager
 		{
 			logDebug("editData", "updating filereocrd : "
 					+ fileRecord.getFileRecord().getFileName());
-			hibernateDAO.update(fileRecord, null, false, false, false);
+			if(fileRecord.getId() != null)
+			{
+				hibernateDAO.update(fileRecord, null, false, false, false);
+			}
+			else
+			{
+				hibernateDAO.insert(fileRecord, null, false, false);
+			}
 		}
 
 		for (AttributeRecord objectRecord : objectRecords)

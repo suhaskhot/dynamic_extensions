@@ -194,6 +194,8 @@
 															</html:select>
 														</td>
 													</tr>
+													
+												
 													<c:if test='${formDefinitionForm.operationMode != "EditSubForm"}'>
 														<tr valign = "top">
 															<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
@@ -204,9 +206,22 @@
 																<table border='0'>
 																	<tr class="formMessage">
 																		<td>
+																	
+																<c:choose>
+																		<c:when test='${formDefinitionForm.operationMode=="EditForm"}'>
+																			<html:radio styleId= 'createAsNew' property="createAs"  value="NewForm" disabled="true" onclick="createFormAsChanged()">
+																				<bean:message key="eav.createnewentity.title"/>
+																			</html:radio>
+																		</c:when>
+																		<c:otherwise>
 																			<html:radio styleId= 'createAsNew' property="createAs" value="NewForm" onclick="createFormAsChanged()">
 																				<bean:message key="eav.createnewentity.title"/>
 																			</html:radio>
+																		</c:otherwise>
+																</c:choose>
+																		
+																				
+																		
 																			<c:choose>
 																				<c:when test='${formDefinitionForm.operationMode=="AddSubForm"}'>
 																					<html:radio styleId = 'createAsExisting' property="createAs" value="ExistingForm" onclick="createFormAsChanged()" >

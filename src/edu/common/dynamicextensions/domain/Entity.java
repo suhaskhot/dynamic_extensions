@@ -594,4 +594,14 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	{
 		this.discriminatorValue = discriminatorValue;
 	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getEntityAttributes()
+	 */
+	public Collection<AttributeInterface> getEntityAttributes()
+	{
+		Collection<AttributeInterface> AttributeCollection = new ArrayList<AttributeInterface>();
+		AttributeCollection.addAll(getAttributeCollection());
+		return AttributeCollection;
+	}
 }

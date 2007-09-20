@@ -644,7 +644,7 @@ public class DynamicExtensionsUtility
 			throw new DynamicExtensionsApplicationException("Entity description size exceeded ",
 					null, EntityManagerExceptionConstantsInterface.DYEXTN_A_004);
 		}
-		validateDuplicateNamesWithinEntity(entity);
+		validateDuplicateNamesWithinEntity(entity, entity.getName());
 
 		if (entity.getInheritanceStrategy().equals(InheritanceStrategy.TABLE_PER_HEIRARCHY)
 				&& entity.getParentEntity() != null)
@@ -668,7 +668,7 @@ public class DynamicExtensionsUtility
 		return;
 	}
 
-	public static void validateDuplicateNamesWithinEntity(EntityInterface entity)
+	public static void validateDuplicateNamesWithinEntity(EntityInterface entity, String attributeName)
 			throws DynamicExtensionsApplicationException
 	{
 		Collection<AbstractAttributeInterface> collection = entity.getAbstractAttributeCollection();
@@ -681,18 +681,21 @@ public class DynamicExtensionsUtility
 				{
 					nameCollection.add(attribute.getName());
 				}
-				else
-				{
+			}
+			if(!nameCollection.isEmpty()&& nameCollection.contains(attributeName))
+			{
+					
 					throw new DynamicExtensionsApplicationException(
 							"Attribute names should be unique for the entity ", null,
-							EntityManagerExceptionConstantsInterface.DYEXTN_A_006, attribute
-									.getName());
-				}
+							EntityManagerExceptionConstantsInterface.DYEXTN_A_006);
+				
 			}
 		}
 
 	}
 
+	
+	
 	/**
 	 * @param name
 	 * @throws DynamicExtensionsApplicationException

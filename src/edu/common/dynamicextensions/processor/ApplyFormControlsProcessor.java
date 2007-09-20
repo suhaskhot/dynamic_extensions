@@ -87,7 +87,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				
 				//Validate attribute name
 				DynamicExtensionsUtility.validateName(attributeName);
-				DynamicExtensionsUtility.validateDuplicateNamesWithinEntity(entityInterface);
+				DynamicExtensionsUtility.validateDuplicateNamesWithinEntity(entityInterface, attributeName);
 				controlUIBean.setName(attributeName);
 
 				//Create Attribute  

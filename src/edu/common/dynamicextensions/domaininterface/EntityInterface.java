@@ -136,6 +136,11 @@ public interface EntityInterface extends AbstractMetadataInterface
 	 * @return  Collection of AttributeInterface
 	 */
 	Collection<AttributeInterface> getAllAttributes();
+	/**
+	 * This method returns attributs ONLY for the entity. It does not traverse the heirarchy
+	 * @return  Collection of AttributeInterface
+	 */
+	Collection<AttributeInterface> getEntityAttributes();
 
 	/**
 	 * This method returns all the attributes and associations for all the hierarchy.

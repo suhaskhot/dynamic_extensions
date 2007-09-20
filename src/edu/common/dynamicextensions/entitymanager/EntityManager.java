@@ -645,28 +645,19 @@ public class EntityManager
 	 * @param attributeId
 	 * @return
 	 */
-	public Collection<Integer> getAttributeRecordsCount(Long entityId, Long attributeId,
-			HibernateDAO hibernateDao) throws DynamicExtensionsSystemException
+	public Collection<Integer> getAttributeRecordsCount(Long entityId, Long attributeId) throws DynamicExtensionsSystemException
 
 	{
 		Map substitutionParameterMap = new HashMap();
 		AttributeRecord collectionAttributeRecord = null;
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entityId));
 		substitutionParameterMap.put("1", new HQLPlaceHolderObject("long", attributeId));
-		Collection recordCollection = null;
-		if (hibernateDao == null)
-		{
-			//Required HQL is stored in the hbm file. The following method takes the name of the query and
-			// the actual values for the placeholders as the parameters.
-			recordCollection = executeHQLWithCleanSession("getAttributeRecords", substitutionParameterMap);
-		}
-		else
-		{
-			//Required HQL is stored in the hbm file. The following method takes the name of the query and
-			// the actual values for the placeholders as the parameters.
-			recordCollection = executeHQLWithCleanSession(hibernateDao, "getAttributeRecords",
-					substitutionParameterMap);
-		}
+
+		//Required HQL is stored in the hbm file. The following method takes the name of the query and
+		// the actual values for the placeholders as the parameters.
+		Collection recordCollection = executeHQLWithCleanSession("getAttributeRecords",
+				substitutionParameterMap);
+
 		return recordCollection;
 	}
 	/**
@@ -3541,7 +3532,8 @@ public class EntityManager
 		try
 		{
 			hibernateDAO.openSession(null);
-			Query query = substitutionParameterForQuery(queryName, substitutionParameterMap,false);
+			Session session = DBUtil.currentSession();
+			Query query = substitutionParameterForQuery(session,queryName, substitutionParameterMap);
 			entityCollection = query.list();
 			//	hibernateDAO.commit();
 		}
@@ -3581,29 +3573,25 @@ public class EntityManager
 			throws DynamicExtensionsSystemException
 	{
 		Collection entityCollection = new HashSet();
-		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
-				Constants.HIBERNATE_DAO);
+		Session	session = null;
 		try
 		{
-			hibernateDAO.openSession(null);
-			Query query = substitutionParameterForQuery(queryName, substitutionParameterMap,true);
+			session = DBUtil.getCleanSession();
+			Query query = substitutionParameterForQuery(session,queryName, substitutionParameterMap);
 			entityCollection = query.list();
-			//	hibernateDAO.commit();
+
 		}
 		catch (Exception e)
 		{
 			throw new DynamicExtensionsSystemException("Error while rolling back the session", e);
 		}
-
-
 		finally
 		{
 			try
 			{
-				hibernateDAO.closeSession();
-
+				session.close();
 			}
-			catch (DAOException e)
+			catch (HibernateException e)
 			{
 				throw new DynamicExtensionsSystemException(
 						"Exception occured while closing the session", e, DYEXTN_S_001);
@@ -3617,16 +3605,9 @@ public class EntityManager
 	 * @param substitutionParameterMap
 	 * @throws HibernateException
 	 */
-	private Query substitutionParameterForQuery(String queryName, Map substitutionParameterMap,boolean cleanSession)
-			throws HibernateException,BizLogicException
+	private Query substitutionParameterForQuery(Session session,String queryName, Map substitutionParameterMap)
+			throws HibernateException
 	{
-		Session session = null;
-		if (cleanSession) {
-			session = DBUtil.getCleanSession();
-		}
-		else {
-			session = DBUtil.currentSession();
-		}
 		Query q = session.getNamedQuery(queryName);
 		for (int counter = 0; counter < substitutionParameterMap.size(); counter++)
 		{
@@ -3804,49 +3785,18 @@ public class EntityManager
 
 		try
 		{
-			Query query = substitutionParameterForQuery(queryName, substitutionParameterMap,false);
+			Session session = DBUtil.currentSession();
+			Query query = substitutionParameterForQuery(session,queryName, substitutionParameterMap);
 			entityCollection = query.list();
 		}
 		catch (HibernateException e)
 		{
 			throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
 		}
-		catch (BizLogicException e)
-		{
-			throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
-		}
 		return entityCollection;
 
 	}
-	/**
-	 *
-	 * @param hibernateDAO
-	 * @param queryName
-	 * @param substitutionParameterMap
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 */
-	private Collection executeHQLWithCleanSession(HibernateDAO hibernateDAO, String queryName,
-			Map substitutionParameterMap) throws DynamicExtensionsSystemException
-	{
-		Collection entityCollection = new HashSet();
 
-		try
-		{
-			Query query = substitutionParameterForQuery(queryName, substitutionParameterMap,true);
-			entityCollection = query.list();
-		}
-		catch (HibernateException e)
-		{
-			throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
-		}
-		catch (BizLogicException e)
-		{
-			throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
-		}
-		return entityCollection;
-
-	}
 	/**
 	 * Returns all entitiy groups in the whole system
 	 * @return Collection Entity group Collection

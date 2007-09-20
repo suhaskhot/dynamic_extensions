@@ -519,6 +519,6 @@ public interface EntityManagerInterface {
     * @return
     * @throws DynamicExtensionsSystemException
     */
-    public Collection<Integer> getAttributeRecordsCount(Long entityId, Long attributeId,
-			HibernateDAO hibernateDao) throws DynamicExtensionsSystemException;
+    public Collection<Integer> getAttributeRecordsCount(Long entityId, Long attributeId)
+			throws DynamicExtensionsSystemException;
 }

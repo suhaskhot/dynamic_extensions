@@ -1168,9 +1168,12 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
                 columnRemoved = false;
             }
         } else { /* previously not bexcluded now needs to excluded*/
-            if (!isAttributeColumnToBeExcluded(dataBaseCopy) && isAttributeColumnToBeExcluded(attribute)) {
-                columnRemoved = true;
-            }
+        	if (!attribute.getColumnProperties().getName().equalsIgnoreCase(IDENTIFIER))
+        	{
+	            if (!isAttributeColumnToBeExcluded(dataBaseCopy) && isAttributeColumnToBeExcluded(attribute)) {
+	                columnRemoved = true;
+	            }
+        	}
         }
 
         return columnRemoved;
@@ -1367,7 +1370,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
         else {
         	Collection<Integer> recordCollection = EntityManager.getInstance()
 					.getAttributeRecordsCount(savedAttribute.getEntity().getId(),
-							savedAttribute.getId(), null);
+							savedAttribute.getId());
         	if (recordCollection != null && !recordCollection.isEmpty()) {
         		Integer count = (Integer) recordCollection.iterator().next();
 	       		 if (count > 0) {

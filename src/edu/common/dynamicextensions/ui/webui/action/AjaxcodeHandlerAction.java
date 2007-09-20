@@ -30,6 +30,7 @@ import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
@@ -60,7 +61,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 	 * @param  request HttpServletRequest request
 	 * @param response HttpServletResponse response
 	 * @return ActionForward forward to next action
-	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsApplicationException
 	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
@@ -133,7 +134,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * 
+	 *
 	 * @param selectedName
 	 * @return
 	 */
@@ -157,8 +158,8 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 	 * @param request
 	 * @param selectedFormId
 	 * @return
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private String getSelectedFormDetailsById(HttpServletRequest request, String selectedFormId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -216,6 +217,22 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 						controlsSeqNumbers, ProcessorConstants.CONTROLS_SEQUENCE_NUMBER_SEPARATOR);
 				ControlInterface[] oldControlsArray = oldControlsCollection
 						.toArray(new ControlInterface[oldControlsCollection.size()]);
+
+				//adding id attribute to attributecollection
+				AttributeInterface idAttribute = null;
+				Collection<AttributeInterface> attributeCollection = containerInterface.getEntity()
+						.getAttributeCollection();
+				for (AttributeInterface attributeIterator : attributeCollection)
+				{
+					if (attributeIterator.getColumnProperties().getName() != null
+							&& attributeIterator.getColumnProperties().getName().equals(
+									DynamicExtensionsQueryBuilderConstantsInterface.IDENTIFIER))
+					{
+						idAttribute = attributeIterator;
+						break;
+					}
+				}
+
 				//remove old controls from collection
 				containerInterface.removeAllControls();
 				containerInterface.getEntity().removeAllAbstractAttributes();
@@ -235,6 +252,10 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 						}
 					}
 				}
+				if (idAttribute != null)
+				{
+					containerInterface.getEntity().addAbstractAttribute(idAttribute);
+				}
 			}
 		}
 		System.out.println("Coontrols Colln : ");
@@ -246,7 +267,6 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 		}
 		return "";
 	}
-
 	/**
 	 * @param request
 	 * @param deletedRowIds
@@ -294,8 +314,8 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 	 * @param request
 	 * @param selectedGroupName
 	 * @return
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private String getSelectedGroupDetails(HttpServletRequest request, String selectedGroupName)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -442,8 +462,8 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * @throws IOException 
-	 * 
+	 * @throws IOException
+	 *
 	 */
 	private void sendResponse(String responseXML, HttpServletResponse response) throws IOException
 	{
@@ -455,9 +475,9 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 	/**
 	 * @param request
 	 * @param actionForm
-	 * @throws IOException 
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws IOException
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private String changeGroup(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, DynamicExtensionsSystemException,
@@ -475,8 +495,8 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 	/**
 	 * @param groupName
 	 * @return
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private List<NameValueBean> getFormNamesForGroup(String groupId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -555,9 +575,9 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 	 * @param request
 	 * @param response
 	 * @param actionForm
-	 * @throws IOException 
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws IOException
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private String changeForm(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, DynamicExtensionsSystemException,
@@ -576,8 +596,8 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 	/**
 	 * @param parameter
 	 * @return
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private List<NameValueBean> getAttributesForForm(String formId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -601,7 +621,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 					{
 						if (control != null)
 						{
-							//if control contains Attribute interface object then only show on UI. 
+							//if control contains Attribute interface object then only show on UI.
 							//If control contains association objects do not show in attribute list
 							abstractAttribute = control.getAbstractAttribute();
 							if (abstractAttribute != null

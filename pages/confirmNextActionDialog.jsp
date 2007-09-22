@@ -15,7 +15,7 @@
 		<html:form styleId = "controlsForm" action="/LoadFormControlsAction" >
 			<font color="red" ><html:errors/></font>
 			<table border="0" width="100%" height="100%" >
-				<tr>
+				<tr class="formRequiredLabelWithoutBorder">
 					<td align='center'>
 						<bean:message  key="user.saveconfirmation" />
 					</td>

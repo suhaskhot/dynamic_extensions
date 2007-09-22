@@ -644,7 +644,8 @@ public class DynamicExtensionsUtility
 			throw new DynamicExtensionsApplicationException("Entity description size exceeded ",
 					null, EntityManagerExceptionConstantsInterface.DYEXTN_A_004);
 		}
-		validateDuplicateNamesWithinEntity(entity, entity.getName());
+		//This validation is already in place in ApplyFormControlsProcessor
+		//validateDuplicateNamesWithinEntity(entity, entity.getName());
 
 		if (entity.getInheritanceStrategy().equals(InheritanceStrategy.TABLE_PER_HEIRARCHY)
 				&& entity.getParentEntity() != null)
@@ -684,18 +685,18 @@ public class DynamicExtensionsUtility
 			}
 			if(!nameCollection.isEmpty()&& nameCollection.contains(attributeName))
 			{
-					
+
 					throw new DynamicExtensionsApplicationException(
 							"Attribute names should be unique for the entity ", null,
 							EntityManagerExceptionConstantsInterface.DYEXTN_A_006);
-				
+
 			}
 		}
 
 	}
 
-	
-	
+
+
 	/**
 	 * @param name
 	 * @throws DynamicExtensionsApplicationException
@@ -797,7 +798,7 @@ public class DynamicExtensionsUtility
 		}
 
 		return isDateValid;
-	}	
+	}
 
 	/**
 	 * This method determines whether the checkbox is to be checked or not.
@@ -937,7 +938,7 @@ public class DynamicExtensionsUtility
 		}
 		return sqlDateFormat;
 	}
-	
+
 	/**
 	 * @param caption
 	 * @return
@@ -960,12 +961,12 @@ public class DynamicExtensionsUtility
 		{
 			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
-		
+
 		if(objectList.size() > 0)
 		{
 			containerInterface = (ContainerInterface)objectList.get(0);
 		}
-				
+
 		return containerInterface;
 	}
 

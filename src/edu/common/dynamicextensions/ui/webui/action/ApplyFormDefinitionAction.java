@@ -98,7 +98,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 			{
 				callbackURL = redirectCallbackURL(request, WebUIManagerConstants.SUCCESS);
 				if (callbackURL != null && !callbackURL.equals(""))
-				{
+				{					
 					response.sendRedirect(callbackURL);
 					target = null;
 				}
@@ -347,8 +347,18 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 				Constants.CALLBACK_URL);
 		if (calllbackURL != null && !calllbackURL.equals(""))
 		{
+			ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(
+					request, Constants.CONTAINER_INTERFACE);
 			calllbackURL = calllbackURL + "?" + WebUIManager.getOperationStatusParameterName()
-					+ "=" + webUIManagerConstant;
+					+ "=" + webUIManagerConstant ;
+			//Fix for bug 5176
+			if(containerInterface != null && containerInterface.getId() != null)
+			{
+				String containerIdUrl = "&"
+				+ WebUIManager.getContainerIdentifierParameterName() + "=" + containerInterface.getId().toString();
+				calllbackURL = calllbackURL + containerIdUrl;
+			}
+						
 			CacheManager.clearCache(request);
 		}
 		return calllbackURL;

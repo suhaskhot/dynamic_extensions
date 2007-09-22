@@ -1306,7 +1306,7 @@ public class ControlsForm extends AbstractActionForm
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
 					ApplicationProperties.getValue("eav.att.Label")));
 		}
-     
+
 		validateControlFields(validator, errors);
 		return errors;
 	}
@@ -1622,15 +1622,29 @@ public class ControlsForm extends AbstractActionForm
 						ApplicationProperties.getValue("eav.att.defaultValue")));
 			}
 		}
-        
-        if (attributeDefaultValue.length() != 0) 
-        {
-            if (Float.parseFloat(attributeDefaultValue) < Float.parseFloat(min) || Float.parseFloat(attributeDefaultValue) > Float.parseFloat(max)) 
-            {
-                errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item",
-                        ApplicationProperties.getValue("eav.att.defaultValueExceedsRange")));
-            }
-        }
+
+		if (dataType != null && dataType.equals("Number") && attributeDefaultValue.length() != 0)
+		{
+			if (!DynamicExtensionsUtility.isNumeric(attributeDefaultValue))
+			{
+				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.numericField",
+						ApplicationProperties.getValue("eav.att.DefaultValue")));
+			}
+			else
+			{
+				if (min != null 
+						&& !min.equals("")
+						&& max != null
+						&& !max.equals("")
+						
+						&& (Float.parseFloat(attributeDefaultValue) < Float.parseFloat(min) || Float
+								.parseFloat(attributeDefaultValue) > Float.parseFloat(max)))
+				{
+					errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item",
+							ApplicationProperties.getValue("eav.att.defaultValueExceedsRange")));
+				}
+			}
+		}
 	}
 
 	/**

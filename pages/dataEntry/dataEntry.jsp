@@ -59,10 +59,10 @@
 		
 			<c:choose>
 				<c:when test='${showFormPreview == "true"}'>
-					<table valign="top" style="border-right:1px" align='center' width='100%' height="100%" border='0' cellspacing="0" cellpadding="0" class="tbBorders1" >
+					<table valign="top" style="border-right:1px" align='center' width='100%' height="500" border='0' cellspacing="0" cellpadding="0" class="tbBorders1" >
 				</c:when>
 				<c:otherwise>
-					<table valign="top" align='center' width='100%' height="100%" border='0' cellspacing="0" cellpadding="0">
+					<table valign="top" align='center' width='100%' height="500" border='0' cellspacing="0" cellpadding="0">
 				</c:otherwise>
 			</c:choose>
 				<!-- Main Page heading -->

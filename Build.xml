@@ -231,9 +231,13 @@
 		    			<include name="**/dynamicextensions/bizlogic/**/*.class"/>
 	    				<include name="*.properties"/>
 	    				<include name="*.xml"/>
+		    			<include name="**/xmi/**/*.*"/>
+	    				<include name="**/ui/interfaces/*.class"/>
+	    				<include name="**/ui/util/*.class"/>
+	    				<include name="**/processor/**/*.class"/>
 		    			<exclude name="**/*Test*.class"/>
 
-	   		    </fileset>
+	   		    </fileset>    	  
 	        	 <manifest>
 	        	      <attribute name="Built-By" value="${DynamicExtensions.jar.creator}"/>
 

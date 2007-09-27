@@ -39,5 +39,8 @@ public class Constants
 	
 	public static final int DEFAULT_COLUMN_SIZE = 20;
 	public static final int DEFAULT_ROW_SIZE = 2;
+    public static final String STATUS_ATTACHED = "Attached";
+    public static final String STATUS_DETACHED = "Detached";
+   
 
 }

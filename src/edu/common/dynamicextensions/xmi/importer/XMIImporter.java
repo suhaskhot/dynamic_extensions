@@ -1,8 +1,8 @@
 
 package edu.common.dynamicextensions.xmi.importer;
 
-import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Iterator;
 
 import javax.jmi.model.ModelPackage;
@@ -36,47 +36,51 @@ public class XMIImporter
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) throws Exception
+	public static void main(String[] args) 
 	{
-		if(args.length == 0)
-		{
-			throw new Exception("Please Specify the file name to be imported");
-		}	
-		
-		//Ist parameter is fileName
-//		Fully qualified Name of the xmi file to be imported
-		String fileName = args[0]; 
-			//"C://Documents and Settings//ashish_gupta//Desktop//XMLs//caTissueCore_1.4_Edited.xmi";	
-		fileName = fileName.replaceAll("\\\\", "//");		
-		System.out.println("Filename = " +fileName);
-		
-		String packageName = "";
-		if(args.length > 1)
-		{
-			packageName = args[1];
-		}
-		int beginIndex = fileName.lastIndexOf("//");
-		int endIndex = fileName.lastIndexOf(".");
-		String domainModelName = fileName.substring(beginIndex+2, endIndex);
-		System.out.println("Package name = " +packageName);
-		System.out.println("Name of the file = " +domainModelName);
-		
-		// get the default repository
-		rep = MDRManager.getDefault().getDefaultRepository();
-		// create an XMIReader
-		reader = (XmiReader) Lookup.getDefault().lookup(XmiReader.class);
-		
-		init();
-
-		FileInputStream in = new FileInputStream(fileName);
-
-		// start a read-only transaction
-		rep.beginTrans(true);
+		FileInputStream in = null;
 		try
 		{
+			if(args.length == 0)
+			{
+				throw new Exception("Please Specify the file name to be imported");
+			}	
+			
+			//Ist parameter is fileName
+	//		Fully qualified Name of the xmi file to be imported
+			String fileName = args[0];
+//				"C://Documents and Settings//ashish_gupta//Desktop//XMLs//roundtrip_1.4.xmi";	
+			fileName = fileName.replaceAll("\\\\", "//");		
+			System.out.println("Filename = " +fileName);
+			
+			String packageName = "";
+			if(args.length > 1)
+			{
+				packageName = args[1];
+			}
+			int beginIndex = fileName.lastIndexOf("//");
+			int endIndex = fileName.lastIndexOf(".");
+			String domainModelName = fileName.substring(beginIndex+2, endIndex);
+			System.out.println("Package name = " +packageName);
+			System.out.println("Name of the file = " +domainModelName);
+			
+			// get the default repository
+			rep = MDRManager.getDefault().getDefaultRepository();
+			// create an XMIReader
+			reader = (XmiReader) Lookup.getDefault().lookup(XmiReader.class);
+			
+			init();
+	
+			in = new FileInputStream(fileName);
+	
+			// start a read-only transaction
+			rep.beginTrans(true);
+		
 			// read the document
 			reader.read(in, null, uml);
-			new XMIImportProcessor(uml, domainModelName,packageName);
+			XMIImportProcessor xmiImportProcessor = new XMIImportProcessor();
+			
+			xmiImportProcessor.processXmi(uml, domainModelName,packageName);			
 			System.out.println("--------------- Done ------------");
 		
 		}
@@ -90,7 +94,14 @@ public class XMIImporter
 			// release the transaction
 			rep.endTrans();
 			MDRManager.getDefault().shutdownAll();
-			in.close();
+			try
+			{
+				in.close();
+			}
+			catch (IOException e)
+			{
+				System.out.println("Error. Specified file does not exist.");
+			}
 			XMIUtilities.cleanUpRepository();
 		
 		}

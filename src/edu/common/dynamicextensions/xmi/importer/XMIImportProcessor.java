@@ -84,7 +84,7 @@ import edu.wustl.common.util.dbManager.DAOException;
  */
 public class XMIImportProcessor
 {
-
+	public boolean isEditedXmi = false;
 	/**
 	 * Instance of Domain object factory, which will be used to create  dynamic extension's objects.
 	 */
@@ -103,7 +103,7 @@ public class XMIImportProcessor
 	/**
 	 * Map for storing containers corresponding to entities
 	 */
-	protected Map<String, List<ContainerInterface>> entityIdVsContainers = new HashMap<String, List<ContainerInterface>>();
+	protected Map<String, List<ContainerInterface>> entityNameVsContainers = new HashMap<String, List<ContainerInterface>>();
 	/**
 	 * List for retrieved containers corresponding to entity group.
 	 */
@@ -117,20 +117,13 @@ public class XMIImportProcessor
 	{
 		super();
 	}
-
-	/**
-	 * 
-	 * @param parser
-	 * @param applicationName
-	 */
-	public XMIImportProcessor(UmlPackage umlPackage, String entityGroupName, String packageName) throws Exception
+	public Map<String, List<ContainerInterface>> processXmi(UmlPackage umlPackage, String entityGroupName, String packageName) throws Exception
 	{
 		List<UmlClass> umlClassColl = new ArrayList<UmlClass>();
 		List<UmlAssociation> umlAssociationColl = new ArrayList<UmlAssociation>();
 		List<Generalization> umlGeneralisationColl = new ArrayList<Generalization>();
-
+	
 		processModel(umlPackage, umlClassColl, umlAssociationColl, umlGeneralisationColl,packageName);
-
 		
 		List<EntityGroupInterface> entityGroupColl = retrieveEntityGroup(entityGroupName,packageName);
 		
@@ -149,12 +142,13 @@ public class XMIImportProcessor
 		}
 		else
 		{//Edit
+			isEditedXmi = true;
 			entityGroup = entityGroupColl.get(0);
 		}
-
+	
 		int noOfClasses = umlClassColl.size();
 		umlClassIdVsEntity = new HashMap<String, EntityInterface>(noOfClasses);
-
+	
 		//Creating entities and entity group.
 		for (UmlClass umlClass : umlClassColl)
 		{
@@ -172,14 +166,14 @@ public class XMIImportProcessor
 			}
 			umlClassIdVsEntity.put(umlClass.refMofId(), entity);
 		}
-
+	
 		Map<String, List<String>> parentIdVsChildrenIds = new HashMap<String, List<String>>();
-
+	
 		if (umlGeneralisationColl.size() > 0)
 		{
 			parentIdVsChildrenIds = getParentVsChildrenMap(umlGeneralisationColl);
 		}
-
+	
 		if (umlAssociationColl != null)
 		{
 			for (UmlAssociation umlAssociation : umlAssociationColl)
@@ -192,14 +186,14 @@ public class XMIImportProcessor
 			processInheritance(parentIdVsChildrenIds);
 			//			markInheritedAttributes(entityGroup);
 		}
-
+	
 		//Retriving all containers corresponding to the given entity group.
 		if (entityGroup.getId() != null)
 		{
 			retrievedContainerList = EntityManager.getInstance().getAllContainersByEntityGroupId(
 					entityGroup.getId());
 		}
-
+	
 		for (UmlClass umlClass : umlClassColl)
 		{
 			EntityInterface entity = umlClassIdVsEntity.get(umlClass.refMofId());
@@ -216,8 +210,10 @@ public class XMIImportProcessor
 		}
 		//Persist container in DB
 		processPersistence();
+		
+		return entityNameVsContainers;
 	}
-	
+
 	/**
 	 * @param entityGroupName
 	 * @param packageName
@@ -1068,7 +1064,7 @@ public class XMIImportProcessor
 		}
 		List<ContainerInterface> containerList = new ArrayList<ContainerInterface>();
 		containerList.add(containerInterface);
-		entityIdVsContainers.put(entityInterface.getName(), containerList);
+		entityNameVsContainers.put(entityInterface.getName(), containerList);
 	}
 
 	/**
@@ -1289,7 +1285,7 @@ public class XMIImportProcessor
 		{
 			EntityInterface parent = umlClassIdVsEntity.get(entry.getKey());
 
-			List parentContainerList = (ArrayList) entityIdVsContainers.get(parent.getName());
+			List parentContainerList = (ArrayList) entityNameVsContainers.get(parent.getName());
 			ContainerInterface parentContainer = null;
 			if (parentContainerList == null || parentContainerList.size() == 0)
 			{
@@ -1303,7 +1299,7 @@ public class XMIImportProcessor
 			{
 				EntityInterface child = umlClassIdVsEntity.get(childId);
 
-				List childContainerList = (ArrayList) entityIdVsContainers.get(child.getName());
+				List childContainerList = (ArrayList) entityNameVsContainers.get(child.getName());
 				ContainerInterface childContainer = null;
 				if (childContainerList == null || childContainerList.size() == 0)
 				{
@@ -1324,10 +1320,10 @@ public class XMIImportProcessor
 	 */
 	protected void addControlsForAssociation() throws Exception
 	{
-		Set<String> entityIdKeySet = entityIdVsContainers.keySet();
+		Set<String> entityIdKeySet = entityNameVsContainers.keySet();
 		for (String entityId : entityIdKeySet)
 		{
-			List containerList = (ArrayList) entityIdVsContainers.get(entityId);
+			List containerList = (ArrayList) entityNameVsContainers.get(entityId);
 			ContainerInterface containerInterface = (ContainerInterface) containerList.get(0);
 			Collection<ControlInterface> controlCollection = containerInterface
 					.getControlCollection();
@@ -1342,7 +1338,7 @@ public class XMIImportProcessor
 
 					String targetEntityId = associationInterface.getTargetEntity().getName();
 
-					List targetContainerInterfaceList = (ArrayList) entityIdVsContainers
+					List targetContainerInterfaceList = (ArrayList) entityNameVsContainers
 							.get(targetEntityId.toString());
 
 					//					TODO remove this condition to delete association with deleted or renamed entities.
@@ -1563,10 +1559,10 @@ public class XMIImportProcessor
 	{
 		Collection<ContainerInterface> containerColl = new HashSet<ContainerInterface>();
 
-		Set<String> entityIdKeySet = entityIdVsContainers.keySet();
+		Set<String> entityIdKeySet = entityNameVsContainers.keySet();
 		for (String entityId : entityIdKeySet)
 		{
-			List containerList = (ArrayList) entityIdVsContainers.get(entityId);
+			List containerList = (ArrayList) entityNameVsContainers.get(entityId);
 			ContainerInterface containerInterface = (ContainerInterface) containerList.get(0);
 			containerColl.add(containerInterface);
 		}

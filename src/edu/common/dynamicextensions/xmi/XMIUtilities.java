@@ -9,6 +9,7 @@ package edu.common.dynamicextensions.xmi;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -189,34 +190,37 @@ public class XMIUtilities
 	{
 		return CollectionUtils.find(
 
-		modelPackage.getModelManagement().getModel().refAllOfType(), new Predicate()
-		{
+				modelPackage.getModelManagement().getModel().refAllOfType(), new Predicate()
+				{
 
-			public boolean evaluate(Object object)
-			{
-				return (((ModelElement) object).getName()).equals(name);
-			}
-		});
+					public boolean evaluate(Object object)
+					{
+						return (((ModelElement) object).getName()).equals(name);
+					}
+				});
 	}
 
-	public static void transform(String sourceXmiFileName, String targetXmiFileName)
-			throws TransformerException, FileNotFoundException
+	public static void transform(String sourceXmiFileName, String targetXmiFileName,InputStream xsltFileStream)
+	throws TransformerException, FileNotFoundException
 	{
 		if (sourceXmiFileName != null)
 		{
 			File sourceXmiFile = new File(sourceXmiFileName);
-			File xsltFile = new File(XMIConstants.XSLT_FILENAME);
+			
 			Source xmlSource = new StreamSource(sourceXmiFile);
-			Source xsltSource = new StreamSource(xsltFile);
+			Source xsltSource = new StreamSource(xsltFileStream);
 			FileOutputStream targetFile = new FileOutputStream(targetXmiFileName);
 			Result result = new StreamResult(targetFile);
-			//			 create an instance of TransformerFactory 
+			//create an instance of TransformerFactory 
 			TransformerFactory transFact = TransformerFactory.newInstance();
+			if((transFact!=null)&&(xsltSource!=null)&&(xmlSource!=null))
+			{
 
-			Transformer trans = transFact.newTransformer(xsltSource);
-
-			trans.transform(xmlSource, result);
-			System.out.println("Done");
+				Transformer trans = transFact.newTransformer(xsltSource);
+				System.out.println("Transforming");
+				trans.transform(xmlSource, result);
+				System.out.println("Done");
+			}
 		}
 
 	}

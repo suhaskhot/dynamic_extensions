@@ -77,7 +77,6 @@ import edu.wustl.common.dao.AbstractDAO;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.HibernateDAO;
 import edu.wustl.common.dao.JDBCDAO;
-import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.dbManager.DBUtil;
@@ -381,7 +380,85 @@ public class EntityManager
 		logDebug("persistEntity", "exiting the method");
 		return entityInterface;
 	}
+	/**
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#persistEntityMetadata(edu.common.dynamicextensions.domaininterface.EntityInterface)
+	 */
+	public EntityInterface persistEntityMetadataForAnnotation(EntityInterface entityInterface,
+			boolean isDataTablePresent,boolean copyDataTableState,AssociationInterface association) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+		if (isDataTablePresent)
+		{
+			((Entity) entityInterface).setDataTableState(DATA_TABLE_STATE_ALREADY_PRESENT);
+		}
+		else
+		{
+			((Entity) entityInterface).setDataTableState(DATA_TABLE_STATE_NOT_CREATED);
+		}
+		Entity entity = (Entity) entityInterface;
+		boolean isEntitySaved = true;
+		//Depending on the presence of Id field , the method that is to be invoked (insert/update), is decided.
+		if (entity.getId() == null)
+		{
+			isEntitySaved = false;
+		}
 
+		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
+				Constants.HIBERNATE_DAO);
+		Stack stack = new Stack();
+
+		try
+		{
+
+			hibernateDAO.openSession(null);
+			//Calling the method which actually calls the insert/update method on dao.
+			//Hibernatedao is passed to this method and transaction is handled in the calling method.
+			saveEntityGroup(entityInterface, hibernateDAO);
+			List<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
+
+			entityInterface = saveOrUpdateEntityMetadataForSingleAnnotation(entityInterface, hibernateDAO, stack,
+					isEntitySaved, processedEntityList, copyDataTableState,association);
+
+			//Committing the changes done in the hibernate session to the database.
+			hibernateDAO.commit();
+		}
+		catch (Exception e)
+		{
+			//Queries for data table creation and modification are fired in the method saveOrUpdateEntity.
+			//So if there is any exception while storing the metadata ,
+			//we need to roll back the queries that were fired. So calling the following method to do that.
+			rollbackQueries(stack, entity, e, hibernateDAO);
+
+			if (e instanceof DynamicExtensionsApplicationException)
+			{
+				throw (DynamicExtensionsApplicationException) e;
+			}
+			else
+			{
+				throw new DynamicExtensionsSystemException(e.getMessage(), e);
+			}
+
+		}
+		finally
+		{
+			try
+			{
+				postSaveOrUpdateEntity(entityInterface);
+				//In any case , after all the operations , hibernate session needs to be closed. So this call has
+				// been added in the finally clause.
+				hibernateDAO.closeSession();
+			}
+			catch (DAOException e)
+			{
+				//Queries for data table creation and modification are fired in the method saveOrUpdateEntity. So if there
+				//is any exception while storing the metadata , we need to roll back the queries that were fired. So
+				//calling the following method to do that.
+				rollbackQueries(stack, entity, e, hibernateDAO);
+			}
+		}
+		logDebug("persistEntity", "exiting the method");
+		return entityInterface;
+	}
 	/**
 	 * This method creates an entity group.The entities in the group are also saved.
 	 * @param entityGroupInterface entity group to be saved.
@@ -930,7 +1007,101 @@ public class EntityManager
 	 * @param hibernateDAO
 	 * @param processedEntityList
 	 * @param addIdAttribute
-	 * @param copyDataTableState - Bug#5196, 5097 - Copying the dataTableState for entity to the associated target entity 
+	 * @param copyDataTableState - Bug#5196, 5097 - Copying the dataTableState for entity to the associated target entity
+	 * based on this boolean value. Default value is 'true'. While adding association with static catissue entity,
+	 * value is 'false'.
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws UserNotAuthorizedException
+	 * @throws DAOException
+	 * @throws HibernateException
+	 */
+	private void postSaveProcessEntityForSingleAnnotation(Entity entity, HibernateDAO hibernateDAO,
+			Stack rollbackQueryStack, List<EntityInterface> processedEntityList,
+			boolean addIdAttribute, boolean isEntityFromXMI,boolean copyDataTableState,AssociationInterface annotationAssociation)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException,
+			DAOException, UserNotAuthorizedException, HibernateException
+	{
+		if (entity.getTableProperties() == null)
+		{
+			TableProperties tableProperties = new TableProperties();
+			String tableName = TABLE_NAME_PREFIX + UNDERSCORE + entity.getId();
+			tableProperties.setName(tableName);
+			entity.setTableProperties(tableProperties);
+		}
+		Collection attributeCollection = entity.getAbstractAttributeCollection();
+		entity.setLastUpdated(new Date());
+		if (attributeCollection != null && !attributeCollection.isEmpty())
+		{
+			Collection tempAttributeCollection = new HashSet(attributeCollection);
+			Iterator iterator = tempAttributeCollection.iterator();
+			while (iterator.hasNext())
+			{
+				AbstractAttribute attribute = (AbstractAttribute) iterator.next();
+				if (attribute instanceof Attribute
+						&& ((Attribute) attribute).getColumnProperties() == null)
+				{
+					ColumnProperties colProperties = new ColumnProperties();
+					String colName = COLUMN_NAME_PREFIX + UNDERSCORE + attribute.getId();
+					colProperties.setName(colName);
+					((Attribute) attribute).setColumnProperties(colProperties);
+				}
+				else if (attribute instanceof AssociationInterface)
+				{
+					Association association = (Association) attribute;
+					if (annotationAssociation != null && association.equals(annotationAssociation))
+					{
+						ConstraintPropertiesInterface constraintProperties = association
+								.getConstraintProperties();
+						EntityInterface targetEntity = association.getTargetEntity();
+						boolean isEntitySaved = false;
+						if (!association.getIsSystemGenerated())
+						{
+							if (targetEntity.getId() != null)
+							{
+								isEntitySaved = true;
+							}
+							if(copyDataTableState)
+							{
+								((Entity) targetEntity).setDataTableState(entity.getDataTableState());
+							}
+							if (entity.getDataTableState() == DATA_TABLE_STATE_CREATED)
+							{
+								targetEntity = saveOrUpdateEntity(targetEntity, hibernateDAO,
+										rollbackQueryStack, isEntitySaved, processedEntityList,
+										addIdAttribute, isEntityFromXMI,copyDataTableState);
+							}
+							else
+							{
+								targetEntity = saveOrUpdateEntityMetadata(targetEntity, hibernateDAO,
+										rollbackQueryStack, isEntitySaved, processedEntityList,copyDataTableState);
+							}
+
+						}
+						//Calling the particular method that populates the constraint properties for the association.
+						populateConstraintProperties(association);
+						//Calling the method which creates or removes the system generated association depending on
+						//the passed association.
+						populateSystemGeneratedAssociation(association, hibernateDAO);
+					}
+				}
+			}
+		}
+	}
+	/**
+	 * This method populates the TableProperties object in entity which holds the unique tablename for the entity.
+	 * This table name is generated using the unique identifier that is generated after saving the object.
+	 * The format for generating this table/column name is "DE_<E/AT/AS>_<UNIQUE IDENTIFIER>"
+	 * So we need this method to generate the table name for the entity then create the corresponding
+	 * tableProperties object and then update the entity object with this newly added tableProperties object.
+	 * Similarly we add ColumnProperties object for each of the attribute and also the ConstraintProperties object
+	 * for each of the associations.
+	 * @param entity Entity object on which to process the post save operations.
+	 * @param rollbackQueryStack
+	 * @param hibernateDAO
+	 * @param processedEntityList
+	 * @param addIdAttribute
+	 * @param copyDataTableState - Bug#5196, 5097 - Copying the dataTableState for entity to the associated target entity
 	 * based on this boolean value. Default value is 'true'. While adding association with static catissue entity,
 	 * value is 'false'.
 	 * @throws DynamicExtensionsSystemException
@@ -972,6 +1143,7 @@ public class EntityManager
 				else if (attribute instanceof AssociationInterface)
 				{
 					Association association = (Association) attribute;
+
 					ConstraintPropertiesInterface constraintProperties = association
 							.getConstraintProperties();
 					EntityInterface targetEntity = association.getTargetEntity();
@@ -982,7 +1154,7 @@ public class EntityManager
 						{
 							isEntitySaved = true;
 						}
-						if(copyDataTableState)
+						if (copyDataTableState)
 						{
 							((Entity) targetEntity).setDataTableState(entity.getDataTableState());
 						}
@@ -990,12 +1162,13 @@ public class EntityManager
 						{
 							targetEntity = saveOrUpdateEntity(targetEntity, hibernateDAO,
 									rollbackQueryStack, isEntitySaved, processedEntityList,
-									addIdAttribute, isEntityFromXMI,copyDataTableState);
+									addIdAttribute, isEntityFromXMI, copyDataTableState);
 						}
 						else
 						{
 							targetEntity = saveOrUpdateEntityMetadata(targetEntity, hibernateDAO,
-									rollbackQueryStack, isEntitySaved, processedEntityList,copyDataTableState);
+									rollbackQueryStack, isEntitySaved, processedEntityList,
+									copyDataTableState);
 						}
 
 					}
@@ -1008,7 +1181,6 @@ public class EntityManager
 			}
 		}
 	}
-
 	/**This method is used for following purposes.
 	 * 1. The method creates a system generated association in case when the association is bidirectional.
 	 * Bi directional association is supposed to be a part of the target entity's attributes.
@@ -1721,7 +1893,7 @@ public class EntityManager
 			if (control instanceof ContainmentAssociationControlInterface)
 			{
 				ContainmentAssociationControlInterface associationControl = (ContainmentAssociationControlInterface) control;
-				
+
 				session.saveOrUpdateCopy(associationControl.getContainer());
 
 				saveChildContainers(associationControl.getContainer(), session);
@@ -2751,7 +2923,104 @@ public class EntityManager
 
 		return entity;//(Entity) getEntityByIdentifier(entity.getId().toString());
 	}
+	/**
+	 * This method is used by create as well as edit entity methods. This method holds all the common part
+	 * related to saving the entity into the database and also handling the exceptions .
+	 * @param entityInterface Entity to be stored in the database.
+	 * @param isNew flag for whether it is a save or update.
+	 * @param hibernateDAO
+	 * @param processedEntityList
+	 * @param isNewFlag
+	 * @return Entity . Stored instance of the entity.
+	 * @throws DynamicExtensionsApplicationException System exception in case of any fatal errors.
+	 * @throws DynamicExtensionsSystemException Thrown in case of duplicate name or authentication failure.
+	 * @throws DAOException
+	 * @throws HibernateException
+	 */
+	private EntityInterface saveOrUpdateEntityMetadataForSingleAnnotation(EntityInterface entityInterface,
+			HibernateDAO hibernateDAO, Stack rollbackQueryStack, boolean isEntitySaved,
+			List<EntityInterface> processedEntityList, boolean copyDataTableState,AssociationInterface association)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException,
+			DAOException, HibernateException
+	{
+		logDebug("saveOrUpdateEntity", "Entering method");
 
+		Entity entity = (Entity) entityInterface;
+		if (processedEntityList.contains(entity))
+		{
+			return entity;
+		}
+		else
+		{
+			processedEntityList.add(entity);
+		}
+		checkForDuplicateEntityName(entity);
+		//Entity databaseCopy = null;
+		try
+		{
+			Session session = DBUtil.currentSession();
+			Long start = null, end = null;
+			if (!isEntitySaved)
+			{
+				preSaveProcessEntity(entity);
+				EntityInterface parentEntity = entity.getParentEntity();
+				if (parentEntity != null)
+				{
+					boolean isParentEntitySaved = false;
+					if (parentEntity.getId() != null)
+					{
+						isParentEntitySaved = true;
+					}
+					saveOrUpdateEntityMetadata(parentEntity, hibernateDAO, rollbackQueryStack,
+							isParentEntitySaved, processedEntityList, copyDataTableState);
+				}
+				hibernateDAO.insert(entity, null, false, false);
+			}
+			else
+			{
+				//databaseCopy = (Entity) DBUtil.loadCleanObj(Entity.class, entity.getId());
+				Long databaseParentId = getOriginalParentId(entity.getId());
+				if (entity.getDataTableState() == DATA_TABLE_STATE_CREATED
+						&& queryBuilder.isParentChanged(entity, databaseParentId))
+				{
+					checkParentChangeAllowed(entity);
+				}
+				if (entity.getParentEntity() != null)
+				{
+					saveOrUpdateEntityMetadata(entity.getParentEntity(), hibernateDAO,
+							rollbackQueryStack, true, processedEntityList, copyDataTableState);
+				}
+				hibernateDAO.update(entity, null, false, false, false);
+			}
+
+			//entity = (Entity) session.saveOrUpdateCopy(entity);
+			//since only metadata is saved
+			postSaveProcessEntityForSingleAnnotation(entity, hibernateDAO, rollbackQueryStack, processedEntityList,
+					false, false, copyDataTableState,association);
+			//entity = (Entity) session.saveOrUpdateCopy(entity);
+			hibernateDAO.update(entity, null, false, false, false);
+		}
+		catch (UserNotAuthorizedException e)
+		{
+			logDebug("saveOrUpdateEntity", DynamicExtensionsUtility.getStackTrace(e));
+			throw new DynamicExtensionsApplicationException(
+					"User is not authorised to perform this action", e, DYEXTN_A_002);
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			logDebug("saveOrUpdateEntity", DynamicExtensionsUtility.getStackTrace(e));
+			throw e;
+		}
+		catch (Exception e)
+		{
+			logDebug("saveOrUpdateEntity", DynamicExtensionsUtility.getStackTrace(e));
+			throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
+		}
+
+		logDebug("saveOrUpdateEntity", "Exiting Method");
+
+		return entity;//(Entity) getEntityByIdentifier(entity.getId().toString());
+	}
 	/**
 	 * @param id
 	 * @return

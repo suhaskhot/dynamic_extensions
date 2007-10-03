@@ -521,4 +521,11 @@ public interface EntityManagerInterface {
     */
     public Collection<Integer> getAttributeRecordsCount(Long entityId, Long attributeId)
 			throws DynamicExtensionsSystemException;
+
+	/**
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#persistEntityMetadata(edu.common.dynamicextensions.domaininterface.EntityInterface)
+	 */
+	public EntityInterface persistEntityMetadataForAnnotation(EntityInterface entityInterface,
+			boolean isDataTablePresent, boolean copyDataTableState, AssociationInterface association)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 }

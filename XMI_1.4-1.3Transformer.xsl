@@ -66,9 +66,20 @@
 	<xsl:variable name="higherMultRange"  select='UML:AssociationEnd.multiplicity/UML:Multiplicity/UML:Multiplicity.range/UML:MultiplicityRange/@upper'/>
 	<xsl:variable name="participantIdRef"  select='UML:AssociationEnd.participant/UML:Class/@xmi.idref'/>
     <xsl:copy>
+       
     <!-- Multiplicity-->
       <xsl:attribute name="multiplicity">
-        <xsl:value-of select="concat($lowerMultRange,'..',$higherMultRange)"/>
+      <xsl:choose>
+      	<xsl:when test="$lowerMultRange = $higherMultRange">
+      		<xsl:value-of select="$lowerMultRange"/>
+      	</xsl:when> 	
+      	<xsl:when test="$higherMultRange >1">
+	      	<xsl:value-of select="concat($lowerMultRange,'..','*')"/>
+      	</xsl:when> 	
+      	<xsl:otherwise> 
+      		<xsl:value-of select="concat($lowerMultRange,'..',$higherMultRange)"/>
+      	</xsl:otherwise> 
+        </xsl:choose>	
       </xsl:attribute>
     <!--participant id-->  
       <xsl:attribute name="type">

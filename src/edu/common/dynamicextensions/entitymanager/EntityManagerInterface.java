@@ -528,4 +528,28 @@ public interface EntityManagerInterface {
 	public EntityInterface persistEntityMetadataForAnnotation(EntityInterface entityInterface,
 			boolean isDataTablePresent, boolean copyDataTableState, AssociationInterface association)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	/**
+	 * Get entity id for entity. This method fires direct SQL query and does not use hibernate for 
+	 * performance reasons.
+	 * 
+	 * @param entityName : Name of the entity for which Id is to be fetched
+	 * @return :  Id of the specified entity
+	 * @throws DynamicExtensionsSystemException
+	 */
+    public  Long getEntityId(String entityName) throws DynamicExtensionsSystemException ;
+    /**
+	 * Get the container Id for the specified entity Id
+	 * This method fires direct JDBC SQL queries without using hibernate for performance purposes  
+	 * @param entityId : Id for the entity whose container id is to be fetched
+	 * @return : container Id for specified entity
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public  Long getContainerIdForEntity(Long entityId) throws DynamicExtensionsSystemException;
+	/**
+	 * Get next identifier for an entity from entity table when a record is to be inserted to the entity table. 
+	 * @param entityName :  Name of the entity
+	 * @return :  Next identifier that can be assigned to a entity record
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public  Long getNextIdentifierForEntity(String entityName) throws DynamicExtensionsSystemException;
 }

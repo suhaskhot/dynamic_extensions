@@ -145,6 +145,7 @@
     		<fileset dir="${src.dir}">
     			<include name="**/*.properties"/>
     			<include name="**/*.xml"/>
+    			<include name="**/*.xsl"/>
     			<include name="**/*.hbm.xml"/>
     			<include name="**/*.ser"/>
 	    	</fileset>
@@ -232,6 +233,7 @@
 	    				<include name="*.properties"/>
 	    				<include name="*.xml"/>
 		    			<include name="**/xmi/**/*.*"/>
+	    				<include name="*.xsl"/>
 	    				<include name="**/ui/interfaces/*.class"/>
 	    				<include name="**/ui/util/*.class"/>
 	    				<include name="**/processor/**/*.class"/>

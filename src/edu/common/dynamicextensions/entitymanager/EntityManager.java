@@ -4680,5 +4680,151 @@ public class EntityManager
 		}
 		return contId;
 	}
+	public  Long getEntityId(String entityName) throws DynamicExtensionsSystemException 
+    {
+		ResultSet rsltSet = null;
+    	String entityTableName = "dyextn_abstract_metadata";
+    	String NAME = "name";
+    	StringBuffer query = new StringBuffer();
+    	query.append(SELECT_KEYWORD + WHITESPACE + IDENTIFIER);
+        query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + entityTableName + WHITESPACE);
+        query.append(WHERE_KEYWORD  + WHITESPACE + NAME +  WHITESPACE + EQUAL + "'"+entityName+"'");
+        System.out.println("Query = "  +query.toString());
+        try {
+            rsltSet = EntityManagerUtil.executeQuery(query.toString());
+            rsltSet.next();
+            Long identifier = rsltSet.getLong(IDENTIFIER);
+            return identifier;
+        }
+        catch(Exception e)
+        {
+        	e.printStackTrace();
+        }
+        finally
+		{
+			if (rsltSet != null)
+			{
+				try
+				{
+					rsltSet.close();
+				}
+				catch (SQLException e)
+				{
+					throw new DynamicExtensionsSystemException(e.getMessage(), e);
+				}
+			}
+		}
+        return null;
+    }
+	
+	/**
+	 * Get the container Id for the specified entity Id
+	 * This method fires direct JDBC SQL queries without using hibernate for performance purposes  
+	 * @param entityId : Id for the entity whose container id is to be fetched
+	 * @return : container Id for specified entity
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public  Long getContainerIdForEntity(Long entityId) throws DynamicExtensionsSystemException
+	{
+		ResultSet rsltSet = null;
+		String tableName = "dyextn_container";
+    	String ENTITY_ID_FIELD_NAME = "ENTITY_ID";
+    	StringBuffer query = new StringBuffer();
+    	query.append(SELECT_KEYWORD + WHITESPACE + IDENTIFIER);
+        query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName + WHITESPACE);
+        query.append(WHERE_KEYWORD  + WHITESPACE + ENTITY_ID_FIELD_NAME +  WHITESPACE + EQUAL + "'"+entityId+"'");
+        System.out.println("Query = "  +query.toString());
+        try {
+            rsltSet = EntityManagerUtil.executeQuery(query.toString());
+            if(rsltSet!=null)
+            {
+            	rsltSet.next();
+	            Long identifier = rsltSet.getLong(IDENTIFIER);
+	            return identifier;
+            }
+        }
+        catch(Exception e)
+        {
+        	e.printStackTrace();
+        }
+        finally
+		{
+			if (rsltSet != null)
+			{
+				try
+				{
+
+					rsltSet.close();
+
+				}
+				catch (SQLException e)
+				{
+					throw new DynamicExtensionsSystemException(e.getMessage(), e);
+				}
+			}
+		}
+        return null;
+	}
+	/**
+	 * Get next identifier for an entity from entity table when a record is to be inserted to the entity table. 
+	 * @param entityName :  Name of the entity
+	 * @return :  Next identifier that can be assigned to a entity record
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public  Long getNextIdentifierForEntity(String entityName) throws DynamicExtensionsSystemException
+	{
+		ResultSet rsltSet = null;
+		String tableName = "dyextn_database_properties";
+    	String NAME = "NAME";
+    	StringBuffer query = new StringBuffer();
+    	query.append(SELECT_KEYWORD + WHITESPACE + NAME);
+        query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName + WHITESPACE);
+        query.append(WHERE_KEYWORD  + WHITESPACE +  IDENTIFIER +  WHITESPACE + EQUAL );
+        query.append(OPENING_BRACKET);
+            query.append(SELECT_KEYWORD + WHITESPACE + IDENTIFIER);
+	        query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + "dyextn_table_properties" + WHITESPACE);
+	        query.append(WHERE_KEYWORD  + WHITESPACE +  "ENTITY_ID" +  WHITESPACE + EQUAL );
+	        query.append(OPENING_BRACKET);
+	            query.append(SELECT_KEYWORD + WHITESPACE + IDENTIFIER);
+		        query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + "dyextn_abstract_metadata" + WHITESPACE);
+		        query.append(WHERE_KEYWORD  + WHITESPACE +  "NAME" +  WHITESPACE + EQUAL +"'"+ entityName+"'");
+		    query.append(CLOSING_BRACKET);
+        query.append(CLOSING_BRACKET);
+        System.out.println("Query = "  +query.toString());
+        try {
+             rsltSet = EntityManagerUtil.executeQuery(query.toString());
+            if(rsltSet!=null)
+            {
+            	rsltSet.next();
+	            String entityTableName = rsltSet.getString(NAME);
+	            if(entityTableName!=null) 
+	            {
+	            	EntityManagerUtil entityManagerUtil = new EntityManagerUtil();
+	            	return entityManagerUtil.getNextIdentifier(entityTableName);
+	            }
+	        }
+        }
+        catch(Exception e)
+        {
+        	e.printStackTrace();
+        }
+        finally
+		{
+			if (rsltSet != null)
+			{
+				try
+				{
+
+					rsltSet.close();
+
+				}
+				catch (SQLException e)
+				{
+					throw new DynamicExtensionsSystemException(e.getMessage(), e);
+				}
+			}
+		}
+        return null;
+	}
 
 }

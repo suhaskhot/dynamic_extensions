@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.ui.webui.action;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -42,6 +43,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		cacheCallBackURL(request);
+		
 		ContainerInterface containerInterface = getConatinerInterface(request);
 
 		String recordId = request.getParameter("recordIdentifier");
@@ -78,6 +80,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 		}
 
 		DataEntryForm dataEntryForm = (DataEntryForm) form;
+		
 		updateStacks(request, dataEntryForm, containerInterface, recordMap, containerStack,
 				valueMapStack);
 
@@ -203,7 +206,10 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 			Stack<Map<AbstractAttributeInterface, Object>> valueMapStack)
 	{
 		String dataEntryOperation = dataEntryForm.getDataEntryOperation();
-		if (dataEntryOperation != null && dataEntryOperation.equalsIgnoreCase("insertChildData"))
+		
+		
+		
+		if (dataEntryOperation != null && dataEntryOperation.equalsIgnoreCase("insertChildData") && (dataEntryForm.getErrorList().isEmpty()))
 		{
 			String childContainerId = dataEntryForm.getChildContainerId();
 			ContainmentAssociationControl associationControl = UserInterfaceiUtility

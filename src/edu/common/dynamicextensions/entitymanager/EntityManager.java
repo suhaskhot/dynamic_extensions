@@ -2774,8 +2774,16 @@ public class EntityManager
 						isParentEntitySaved, processedEntityList, addIdAttribute, isEntityFromXMI,copyDataTableState);
 
 			}
-
-			entity = (Entity) session.saveOrUpdateCopy(entity);
+			//Fixed bug 5619
+			if(entity.getId() != null)
+			{
+				session.update(entity);
+			}
+			else
+			{
+				session.save(entity);
+			}
+			//entity = (Entity) session.saveOrUpdateCopy(entity);
 
 			postSaveProcessEntity(entity, hibernateDAO, rollbackQueryStack, processedEntityList,
 					addIdAttribute, isEntityFromXMI, copyDataTableState);

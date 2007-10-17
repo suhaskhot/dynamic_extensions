@@ -370,6 +370,7 @@ public class XMIImportProcessor
 		EntityInterface entity = deFactory.createEntity();
 		entity.setName(name);
 		entity.setDescription(umlClass.getName());
+		entity.setAbstract(umlClass.isAbstract());
 		Collection<Attribute> attrColl = XMIUtilities.getAttributes(umlClass, false);
 
 		createAttributes(attrColl, entity);

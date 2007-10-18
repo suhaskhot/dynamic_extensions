@@ -3700,7 +3700,7 @@ public class EntityManager
 					else
 					{
 						saveOrUpdateEntity(entityInterface, hibernateDAO, stack, isEntitySaved,
-								processedEntityList, false, false, copyDataTableState);
+								processedEntityList, true, false, copyDataTableState);
 					}
 				}
 			}

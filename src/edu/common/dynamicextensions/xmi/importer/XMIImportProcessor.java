@@ -275,6 +275,12 @@ public class XMIImportProcessor
 		{
 			return false;
 		}
+		if(umlClassName.equalsIgnoreCase(edu.common.dynamicextensions.ui.util.Constants.COLLECTION) ||
+			umlClassName.equalsIgnoreCase(edu.common.dynamicextensions.ui.util.Constants.DATE) ||
+			umlClassName.equalsIgnoreCase(edu.common.dynamicextensions.ui.util.Constants.TIME))
+		{
+			return true;
+		}
 		return true;
 	}
 

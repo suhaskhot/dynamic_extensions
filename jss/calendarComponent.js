@@ -11,10 +11,144 @@ Changes done by Jitendra on 18/09/2006 to fix the bug when more than one DateTim
 Now each function is getting one extra parameter called id which is used to generate unique id for each component.<b> 
 */
 
-function printCalendar(id,day, month, year)
+function printCalendar(id, day, month, year)
 {   
     printCal(id,"Sun","Mon","Tue","Wed","Thu","Fri","Sat",1,"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec", day, month, year, 'false');
+    //printMonthAndYearCal(id,"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec",year);
+    //printYearOnlyCal(id, year);
 }
+
+function printMonthYearCalendar(id, month, year)
+{       
+    printMonthAndYearCal(id,"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec",year);
+}
+
+function printYearCalendar(id, year)
+{   
+    printYearOnlyCal(id, year);
+}
+
+function printMonthAndYearCal(id,month1, month2, month3, month4, month5, month6, month7, month8, month9, month10, month11, month12, year) 
+{       
+    document.write('<table cellpadding="0" cellspacing="0" border="0" width="150" height="20" bgcolor="#BDDBF3">');
+    document.write('<tr>');
+    document.write('    <td class="CALENDARBORDER" width="5"></td>');
+    //document.write('    <td class="CALENDARTITLE" width="10" align="right"><img src="' + imgsrc + 'previous2.gif"></td>');
+    //document.write('    <td class="CALENDARTITLE" align="left" width="10"><img src="' + imgsrc + 'previous.gif"></td>');
+    document.write('    <td align="center" width="*" class="CALENDARTITLE">');
+    document.write('<select id="calmois'+id+'" name="calmois'+id+'"><OPTION selected>Jan</OPTION><OPTION>Feb</OPTION><OPTION>Mar</OPTION><OPTION>Apr</OPTION><OPTION>May</OPTION><OPTION>Jun</OPTION><OPTION>Jul</OPTION><OPTION>Aug</OPTION><OPTION>Sep</OPTION><OPTION>Oct</OPTION><OPTION>Nov</OPTION><OPTION>Dec</OPTION>');
+    document.write('</select>');
+    document.write('</td>');
+    document.write('    <td align="center" width="10" class="CALENDARTITLE" nowrap>');
+    document.write('<select id="calyear'+id+'" name="calyear'+id+'" onfocus="showYears(id)"><OPTION selected>1900</OPTION>');
+    document.write('</select>');
+    document.write('</td>');
+    //document.write('    <td class="CALENDARTITLE"  width="10" align="right"><img src="' + imgsrc + 'next2.gif"></td>');
+    //document.write('    <td class="CALENDARTITLE" width="10" align="left" width="40"><img src="' + imgsrc + 'next.gif"></td>');
+    document.write('    <td class="CALENDARBORDER" width="5"></td>');
+    document.write('    <td class="CALENDARTITLE" width="10" align="right"><img src="' + imgsrc + 'close.gif" onclick="hideMonthAndYearCal('+"'"+id+"'"+')"></td>');
+    document.write('</tr>');
+    document.write('</table>');
+}
+
+function printYearOnlyCal(id, year) 
+{       
+    document.write('<table cellpadding="0" cellspacing="0" border="0" width="100" height="20" bgcolor="#BDDBF3">');
+    document.write('<tr>');
+    document.write('    <td class="CALENDARBORDER" width="2"></td>');
+    //document.write('    <td class="CALENDARTITLE" width="10" align="right"><img src="' + imgsrc + 'previous2.gif"></td>');
+    //document.write('    <td class="CALENDARTITLE" align="left" width="10"><img src="' + imgsrc + 'previous.gif"></td>');
+    document.write('    <td align="center" width="*" class="CALENDARTITLE">');
+    document.write('</td>');
+    document.write('    <td align="center" width="*" class="CALENDARTITLE" nowrap>');
+    document.write('<select id="calyear'+id+'" name="calyear'+id+'" onfocus="showYears(id)"><OPTION selected>1900</OPTION>');
+    document.write('</select>');
+    document.write('</td>');
+    //document.write('    <td class="CALENDARTITLE"  width="10" align="right"><img src="' + imgsrc + 'next2.gif"></td>');
+    //document.write('    <td class="CALENDARTITLE" width="10" align="left" width="40"><img src="' + imgsrc + 'next.gif"></td>');
+    document.write('    <td class="CALENDARBORDER" width="2"></td>');
+    document.write('    <td class="CALENDARTITLE" width="10" align="right"><img src="' + imgsrc + 'close.gif" onclick="hideYearOnlyCal('+"'"+id+"'"+')"></td>');
+    document.write('</tr>');
+    document.write('</table>');
+}
+
+function showYears(id) {
+    var j=0;
+    var opts;
+    for(prop=1900;prop<2020;prop++) {
+        document.getElementById(id).options[j++] = new Option(prop, prop);
+    }
+}
+
+function hideMonthAndYearCal(id) {     
+    var divId = "slcalcod"+id;
+
+    var monthID = "calmois"+id;
+    var yearID = "calyear"+id;
+
+    var SelectedMonth = document.getElementById(monthID).selectedIndex;
+
+    var SelectedMonthOption = document.getElementById(monthID).options[SelectedMonth].innerHTML;
+
+    var SelectedYear = document.getElementById(yearID).selectedIndex;
+
+    var SelectedYearOption = document.getElementById(yearID).options[SelectedYear].innerHTML;
+
+    var combined = SelectedMonthOption + " " + SelectedYearOption;
+    
+    document.forms[calformname].elements[calformelement].value = combined;
+        
+    if(document.all) {
+        // IE.
+        //alert(document.getElementById(monthID).option);
+        //alert(document.getElementById(yearID).value);
+        document.getElementById(divId).style.visibility="hidden";
+        document.getElementById(divId).style.visibility="hidden";
+
+        showElement("SELECT");
+    } else if(document.layers) {
+        // Netspace 4
+        document.getElementById(divId).visibility="hidden";
+    } else {
+        // Mozilla
+        var calendrier = document.getElementById(divId);
+        calendrier.style.visibility="hidden";
+    }
+    
+}
+
+function hideYearOnlyCal(id) {     
+    var divId = "slcalcod"+id;
+
+    var yearID = "calyear"+id;
+
+    var SelectedYear = document.getElementById(yearID).selectedIndex;
+
+    var SelectedYearOption = document.getElementById(yearID).options[SelectedYear].innerHTML;
+
+    var combined = SelectedYearOption;
+    
+    document.forms[calformname].elements[calformelement].value = combined;
+        
+    if(document.all) {
+        // IE.
+        //alert(document.getElementById(monthID).option);
+        //alert(document.getElementById(yearID).value);
+        document.getElementById(divId).style.visibility="hidden";
+        document.getElementById(divId).style.visibility="hidden";
+
+        showElement("SELECT");
+    } else if(document.layers) {
+        // Netspace 4
+        document.getElementById(divId).visibility="hidden";
+    } else {
+        // Mozilla
+        var calendrier = document.getElementById(divId);
+        calendrier.style.visibility="hidden";
+    }
+    
+}
+
 
 function printTimeCalendar(id,day, month, year, time_hh, time_mm )
 {   
@@ -41,7 +175,7 @@ function printCal(id,day1, day2, day3, day4, day5, day6, day7, first, month1, mo
     document.write('    <td colspan=6 align="right" class="CALENDARTITLE" nowrap>');
     
     // month
-    document.write('<select id="calmois'+id+'" name="calmois'+id+'" onchange="cal_chg('+ '\''+id +'\''+ ',' + day + ');"><option value=0>...</option>');    
+    document.write('<select id="calmois'+id+'" name="calmois'+id+'" onchange="cal_chg('+ '\''+id +'\''+ ',' + day + ');"><option value=0>...</option>');
     
     // use the good day for week start.
     // store the day the week start for later.
@@ -123,6 +257,7 @@ function printCal(id,day1, day2, day3, day4, day5, day6, day7, first, month1, mo
         document.write('</tr>');
     }
 
+
     document.write('<tr><td colspan=15 class="CALENDARBORDER"><img src="' + imgsrc + 'calBackground.gif" width=1 height=1></td></tr>');
     document.write('<tr>');
     document.write('    <td class="CALENDARBORDER" width="1"><img src="' + imgsrc + 'calBackground.gif" width=1 height=1></td>');
@@ -153,7 +288,12 @@ function printCal(id,day1, day2, day3, day4, day5, day6, day7, first, month1, mo
 /**
  * Show the calendar
  */
-function showCalendar(id,year, month, day, pattern, formName, formProperty, event, startYear, endYear) {    
+function showCalendar(id,year, month, day, pattern, formName, formProperty, event, startYear, endYear) { 
+    //alert("year ="+year);
+    //alert("month ="+month);
+    //alert("day ="+day);
+    //alert("id = "+id);
+    
     var divId ="slcalcod"+id;
     var calmoisId="calmois"+id;
     var calyearId="calyear"+id;
@@ -162,27 +302,36 @@ function showCalendar(id,year, month, day, pattern, formName, formProperty, even
     }
     
     if (startYear!=null) {
+        //alert("here, month!=0 && day!=0");
+        //alert("calyearId ="+calyearId);
         var calyear = document.getElementById(calyearId);
         for (i = startYear; i <= endYear; i++) {            
             calyear.options[i - startYear] = new Option(i,i);
         }
         calyear.options.length = endYear - startYear + 1;
-    }   
+    }    
+
     if(document.all) {
         // IE.
         var ofy=document.body.scrollTop;
         var ofx=document.body.scrollLeft;
         document.getElementById(divId).style.left = event.clientX+ofx+10;       
         document.getElementById(divId).style.top = event.clientY+ofy+10;
-        document.getElementById(divId).style.visibility="visible";      
-        document.getElementById(calmoisId).selectedIndex= month;        
+        document.getElementById(divId).style.visibility="visible";
+        if (month!=0)
+        {
+            document.getElementById(calmoisId).selectedIndex= month; 
+        }
         //hideElement("SELECT",id);     
     } else if(document.layers) {
         // Netspace 4
         document.elements[divId].left = e.pageX+10;
         document.elements[divId].top = e.pageY+10;
         document.elements[divId].visibility="visible";
-        document.elements[divId].document.caltitre.document.forms[0].calmois.selectedIndex=month;
+        if (month!=0)
+        {
+            document.elements[divId].document.caltitre.document.forms[0].calmois.selectedIndex=month;
+        }
     } else {
         // Mozilla
         var calendrier = document.getElementById(divId);
@@ -191,15 +340,25 @@ function showCalendar(id,year, month, day, pattern, formName, formProperty, even
         calendrier.style.left = event.clientX+ofx+10;
         calendrier.style.top = event.clientY+ofy+10;
         calendrier.style.visibility="visible";
-        document.getElementById(calmoisId).selectedIndex=month;
+        if (month!=0)
+        {
+            document.getElementById(calmoisId).selectedIndex=month;
+        }
     }   
     if (document.forms[formName].elements[formProperty].stlayout) {
         var lc_day = document.forms[formName].elements[formProperty].stlayout.day;
         var lc_month = document.forms[formName].elements[formProperty].stlayout.month;
         var lc_year = parseInt(document.forms[formName].elements[formProperty].stlayout.year);
-        cal_chg(id,lc_day, lc_month, lc_year);  
+        
+        if (month!=0 && day!=0)
+        {
+            cal_chg(id,lc_day, lc_month, lc_year);  
+        }
     } else {
-        cal_chg(id,day, month, year);   
+        if (month!=0 && day!=0)
+        {
+            cal_chg(id,day, month, year); 
+        }
     }
     calformname = formName;
     calformelement = formProperty;

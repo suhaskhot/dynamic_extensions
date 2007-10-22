@@ -1340,8 +1340,29 @@ public class ControlsForm extends AbstractActionForm
 				//Special case for File upload Control
 				getErrorsForFileUploadControl(validator, errors);
 			}
+            else if (userSelectedTool.equalsIgnoreCase((ProcessorConstants.CHECKBOX_CONTROL)))
+            {
+                //Special case for Check box control
+                getErrorsForCheckBoxControl(validator, errors);
+            }
 		}
 	}
+    
+    /**
+     * @param validator :validator
+     * @param errors : action errors
+     */
+    private void getErrorsForCheckBoxControl(Validator validator, ActionErrors errors)
+    {
+        // Radio button checked status 
+        if (attributeDefaultValue == null)
+        {
+            errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
+                    "errors.item.required", ApplicationProperties
+                            .getValue("dynExtn.validation.radio.notChecked")));
+        }
+
+    }
 
 	/**
 	 * @param validator :validator

@@ -48,6 +48,8 @@ public class ProcessorConstants
     public static final String DATE_ONLY_FORMAT = Constants.DATE_PATTERN_MM_DD_YYYY;
     //public static final String DATE_TIME_FORMAT = Constants.TIMESTAMP_PATTERN;
     public static final String DATE_TIME_FORMAT = "MM-dd-yyyy HH:mm";
+    public static final String MONTH_YEAR_FORMAT = "MM-yyyy";
+    public static final String YEAR_ONLY_FORMAT = "yyyy";
     public static final String SQL_DATE_ONLY_FORMAT = "MM-dd-yyyy";
     public static final String SQL_DATE_TIME_FORMAT = "MM-dd-yyyy HH24:MI";
     public static final String DATE_SEPARATOR = Constants.DATE_SEPARATOR;
@@ -80,6 +82,8 @@ public class ProcessorConstants
     //Date formats
     public static final String DATE_FORMAT_OPTION_DATEONLY = "DateOnly";
     public static final String DATE_FORMAT_OPTION_DATEANDTIME = "DateAndTime";
+    public static final String DATE_FORMAT_OPTION_MONTHANDYEAR = "MonthAndYear";
+    public static final String DATE_FORMAT_OPTION_YEARONLY = "YearOnly";
     
     //Date Values
     public static final String DATE_VALUE_NONE = "None";

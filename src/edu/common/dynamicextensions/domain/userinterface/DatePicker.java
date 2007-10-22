@@ -50,7 +50,8 @@ public class DatePicker extends Control implements DatePickerInterface
 		}
 
 		String htmlComponentName = getHTMLComponentName();
-		String output = "<input class='"
+        String output=null;
+		/*String output = "<input class='"
 				+ cssClass
 				+ "' name='"
 				+ htmlComponentName
@@ -72,13 +73,76 @@ public class DatePicker extends Control implements DatePickerInterface
 				+ "', event, 1900, 2020);\" href=\"javascript://\"><IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 /></A>"
 				+ "<DIV id=slcalcod"
 				+ htmlComponentName
-				+ " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">";
+				+ " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">";*/
+        
+        /*String output = "<input class='"
+        + cssClass
+        + "' name='"
+        + htmlComponentName
+        + "' id='"
+        + htmlComponentName
+        + "' value='"
+        + defaultValue
+        + "'/>"
+        + "<A onclick=\"printMonthYearCalendar('"
+        + htmlComponentName
+        + "', "
+        + DynamicExtensionsUtility.getCurrentMonth()
+        + ", "
+        + DynamicExtensionsUtility.getCurrentYear()
+        + ");\" href=\"javascript://\"><IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 /></A>"
+        + "<DIV id=slcalcod"
+        + htmlComponentName
+        + " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">";*/
+        
+        /*String output = "<input class='"
+            + cssClass
+            + "' name='"
+            + htmlComponentName
+            + "' id='"
+            + htmlComponentName
+            + "' value='"
+            + defaultValue
+            + "'/>"
+            + "<A onclick=\"printMonthYearCalendar('"
+            + htmlComponentName
+            + "', "
+            + DynamicExtensionsUtility.getCurrentMonth()
+            + ", "
+            + DynamicExtensionsUtility.getCurrentYear()
+            + ");\" href=\"javascript://\"><IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 /></A>"
+            + "<DIV id=slcalcod"
+            + htmlComponentName
+            + " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">";*/
 		/* Obtain the date format */
 		AttributeTypeInformationInterface attributeTypeInformationInterface = ((AttributeInterface) this
 				.getAbstractAttribute()).getAttributeTypeInformation();
 		String dateFormat = ControlsUtility.getDateFormat(attributeTypeInformationInterface);
 		if (dateFormat.equals(ProcessorConstants.DATE_ONLY_FORMAT))
 		{
+            output = "<input class='"
+                + cssClass
+                + "' name='"
+                + htmlComponentName
+                + "' id='"
+                + htmlComponentName
+                + "' value='"
+                + defaultValue
+                + "'/>"
+                + "<A onclick=\"showCalendar('"
+                + htmlComponentName
+                + "', "
+                + DynamicExtensionsUtility.getCurrentYear()
+                + ", "
+                + DynamicExtensionsUtility.getCurrentMonth()
+                + ", "
+                + DynamicExtensionsUtility.getCurrentDay()
+                + ", 'MM-dd-yyyy', 'dataEntryForm', '"
+                + htmlComponentName
+                + "', event, 1900, 2020);\" href=\"javascript://\"><IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 /></A>"
+                + "<DIV id=slcalcod"
+                + htmlComponentName
+                + " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">";
 			output += "<SCRIPT>printCalendar('" + htmlComponentName + "',"
 					+ DynamicExtensionsUtility.getCurrentDay() + ","
 					+ DynamicExtensionsUtility.getCurrentMonth() + ","
@@ -87,6 +151,29 @@ public class DatePicker extends Control implements DatePickerInterface
 		}
 		else if (dateFormat.equals(ProcessorConstants.DATE_TIME_FORMAT))
 		{
+            output = "<input class='"
+                + cssClass
+                + "' name='"
+                + htmlComponentName
+                + "' id='"
+                + htmlComponentName
+                + "' value='"
+                + defaultValue
+                + "'/>"
+                + "<A onclick=\"showCalendar('"
+                + htmlComponentName
+                + "', "
+                + DynamicExtensionsUtility.getCurrentYear()
+                + ", "
+                + DynamicExtensionsUtility.getCurrentMonth()
+                + ", "
+                + DynamicExtensionsUtility.getCurrentDay()
+                + ", 'MM-dd-yyyy', 'dataEntryForm', '"
+                + htmlComponentName
+                + "', event, 1900, 2020);\" href=\"javascript://\"><IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 /></A>"
+                + "<DIV id=slcalcod"
+                + htmlComponentName
+                + " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">";
 			output += "<SCRIPT>printTimeCalendar('" + htmlComponentName + "',"
 					+ DynamicExtensionsUtility.getCurrentDay() + ","
 					+ DynamicExtensionsUtility.getCurrentMonth() + ","
@@ -95,6 +182,97 @@ public class DatePicker extends Control implements DatePickerInterface
 					+ DynamicExtensionsUtility.getCurrentMinutes() + ");</SCRIPT>" + "</DIV>"
 					+ "[MM-DD-YYYY HH:MM]&nbsp;";
 		}
+        else if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
+        {
+            output = "<input class='"
+                + cssClass
+                + "' name='"
+                + htmlComponentName
+                + "' id='"
+                + htmlComponentName
+                + "' value='"
+                + defaultValue
+                + "'/>"
+                + "<A onclick=\"showCalendar('"
+                + htmlComponentName
+                + "', "
+                + DynamicExtensionsUtility.getCurrentYear()
+                + ", "
+                + DynamicExtensionsUtility.getCurrentMonth()
+                + ", "
+                + 0
+                + ", 'MM-yyyy', 'dataEntryForm', '"
+                + htmlComponentName
+                + "', event, 1900, 2020);\" href=\"javascript://\"><IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 /></A>"
+                + "<DIV id=slcalcod"
+                + htmlComponentName
+                + " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">";
+            /*output = "<input class='"
+                + cssClass
+                + "' name='"
+                + htmlComponentName
+                + "' id='"
+                + htmlComponentName
+                + "' value='"
+                + defaultValue
+                + "'/>"
+                + "<A onclick=\"printMonthYearCalendar('"
+                + htmlComponentName
+                + "', "
+                + DynamicExtensionsUtility.getCurrentMonth()
+                + ", "
+                + DynamicExtensionsUtility.getCurrentYear()
+                + ");\" href=\"javascript://\"><IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 /></A>"
+                + "<DIV id=slcalcod"
+                + htmlComponentName
+                + " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">";*/
+            output += "<SCRIPT>printMonthYearCalendar('" + htmlComponentName + "',"
+            + DynamicExtensionsUtility.getCurrentMonth() + ","
+            + DynamicExtensionsUtility.getCurrentYear()
+            + ");</SCRIPT>" + "</DIV>"
+            + "[MM-YYYY]&nbsp;";
+        }
+        else if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
+        {
+            /*output += "<SCRIPT>printYearCalendar('" + "attributeDefaultValue" + "',"
+            + DynamicExtensionsUtility.getCurrentYear() + ","
+            + ");</SCRIPT>" + "</DIV>"
+            + "[YYYY]&nbsp;";
+            output += "<SCRIPT>printYearCalendar('" + htmlComponentName + "',"
+            + DynamicExtensionsUtility.getCurrentDay() + ","
+            + DynamicExtensionsUtility.getCurrentMonth() + ","
+            + DynamicExtensionsUtility.getCurrentYear() + ","
+            + DynamicExtensionsUtility.getCurrentHours() + ","
+            + DynamicExtensionsUtility.getCurrentMinutes() + ");</SCRIPT>" + "</DIV>"
+            + "[MM-DD-YYYY HH:MM]&nbsp;";*/
+            output = "<input class='"
+                + cssClass
+                + "' name='"
+                + htmlComponentName
+                + "' id='"
+                + htmlComponentName
+                + "' value='"
+                + defaultValue
+                + "'/>"
+                + "<A onclick=\"showCalendar('"
+                + htmlComponentName
+                + "', "
+                + DynamicExtensionsUtility.getCurrentYear()
+                + ", "
+                + 0
+                + ", "
+                + 0
+                + ", 'yyyy', 'dataEntryForm', '"
+                + htmlComponentName
+                + "', event, 1900, 2020);\" href=\"javascript://\"><IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 /></A>"
+                + "<DIV id=slcalcod"
+                + htmlComponentName
+                + " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">";
+             output += "<SCRIPT>printYearCalendar('" + htmlComponentName + "',"
+            + DynamicExtensionsUtility.getCurrentYear()
+            + ");</SCRIPT>" + "</DIV>"
+            + "[YYYY]&nbsp;";
+        }
 
 		return output;
 	}

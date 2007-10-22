@@ -62,6 +62,18 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String EDIT_SUB_FORM_OPR = "EditSubForm";
 	public static final String INSERT_DATA = "insertData";
 	public static final String CALLBACK_URL = "callbackURL";
+    public static final String JANUARY = "Jan";
+    public static final String FEBRUARY= "Feb";
+    public static final String MARCH= "Mar";
+    public static final String APRIL= "Apr";
+    public static final String MAY= "May";
+    public static final String JUNE= "Jun";
+    public static final String JULY= "Jul";
+    public static final String AUGUST= "Aug";
+    public static final String SEPTEMBER= "Sep";
+    public static final String OCTOBER= "Oct";
+    public static final String NOVEMBER= "Nov";
+    public static final String DECEMBER= "Dec";
 
 	//Constant for groupName prefix
 

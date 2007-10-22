@@ -11,6 +11,8 @@ import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
+import edu.common.dynamicextensions.processor.ProcessorConstants;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.util.Utility;
 
 /**
@@ -38,11 +40,22 @@ public class DateValidator implements ValidatorRuleInterface
 			DateAttributeTypeInformation dateAttributeTypeInformation = (DateAttributeTypeInformation) attributeTypeInformation;
 			String dateFormat = dateAttributeTypeInformation.getFormat();
 			String value = (String) valueObject;
+            
+            if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
+            {
+                value = DynamicExtensionsUtility.formatMonthAndYearDate(value);
+                value = value.substring(0, value.length()-4);
+            }
+            if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
+            {
+                value = DynamicExtensionsUtility.formatYearDate(value);
+                value = value.substring(0, value.length()-4);
+            }
 
 			try
 			{
 				Date date = null;
-				date = Utility.parseDate(value, dateFormat);
+				date = Utility.parseDate(value, "MM-dd-yyyy");
 				if (date != null)
 				{
 					valid = true;

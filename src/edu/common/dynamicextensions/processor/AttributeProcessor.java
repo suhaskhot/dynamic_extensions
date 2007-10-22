@@ -496,11 +496,15 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			allValidationRules.add(implicitRule);
 		}
 
-		String[] validationRules = attributeUIBeanInformationIntf.getValidationRules();
-		for (int i = 0; i < validationRules.length - 1; i++)
-		{
-			allValidationRules.add(validationRules[i]);
-		}
+		String [] validationRules = attributeUIBeanInformationIntf.getValidationRules();
+        
+        for (int i = 0; i < validationRules.length; i++)
+        {
+            if (validationRules[i].length() != 0)
+            {
+                allValidationRules.add(validationRules[i]);
+            }
+        }
 
 		Collection<RuleInterface> attributeRuleCollection = abstractAttributeInterface
 				.getRuleCollection();
@@ -1608,6 +1612,15 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			{
 				format = ProcessorConstants.DATE_FORMAT_OPTION_DATEANDTIME;
 			}
+            else if (dateFormat.equalsIgnoreCase(ProcessorConstants.YEAR_ONLY_FORMAT))
+            {
+                format = ProcessorConstants.DATE_FORMAT_OPTION_YEARONLY;
+            }
+            else if (dateFormat.equalsIgnoreCase(ProcessorConstants.MONTH_YEAR_FORMAT))
+            {
+                format = ProcessorConstants.DATE_FORMAT_OPTION_MONTHANDYEAR;
+            }
+            
 		}
 		else
 		{

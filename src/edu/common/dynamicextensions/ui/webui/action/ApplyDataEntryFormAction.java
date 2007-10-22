@@ -558,7 +558,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				{
 					value = rectifyNumberPrecision(
 							(DoubleAttributeTypeInformation) attributeTypeInformationInterface,
-							value);
+							value.trim());
 				}
 			}
 			attributeValue = value;
@@ -593,6 +593,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			NumberFormat numberFormat = new DecimalFormat(decimalFormat.toString());
 			value = numberFormat.format(Double.parseDouble(value));
 		}
+        
 		return value;
 	}
 

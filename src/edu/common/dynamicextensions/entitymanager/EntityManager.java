@@ -43,6 +43,7 @@ import edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
 import edu.common.dynamicextensions.domain.userinterface.Container;
+import edu.common.dynamicextensions.domain.userinterface.SelectControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
@@ -4165,107 +4166,191 @@ public class EntityManager
 				identifier);
 	}
 
-	/**
-	 * This method retreives records by executing query of the form
-	 *
-	 select childTable.identifier, childTable.attribute1, parentTable.attribute5
-	 from childTable join parentTable
-	 on childTable.identifier = parentTable.identifier
-	 where childTable.activity_status = "active"
+    /**
+     * This method retreives records by executing query of the form
+     *
+     select childTable.identifier, childTable.attribute1, parentTable.attribute5
+     from childTable join parentTable
+     on childTable.identifier = parentTable.identifier
+     where childTable.activity_status = "active"
 
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getRecordsForAssociationControl(edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface)
-	 */
-	public Map<Long, List<String>> getRecordsForAssociationControl(
-			AssociationControlInterface associationControl) throws DynamicExtensionsSystemException
-	{
-		Map<Long, List<String>> outputMap = new HashMap<Long, List<String>>();
-		List<String> tableNames = new ArrayList<String>();
-		String tableName;
-		String columnName;
-		String selectClause = SELECT_KEYWORD;
-		String fromClause = FROM_KEYWORD;
-		String onClause = ON_KEYWORD;
+     * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getRecordsForAssociationControl(edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface)
+     */
+    public Map<Long, List<String>> getRecordsForAssociationControl(
+            AssociationControlInterface associationControl) throws DynamicExtensionsSystemException
+    {
+        Map<Long, List<String>> outputMap = new HashMap<Long, List<String>>();
+        List<String> tableNames = new ArrayList<String>();
+        String tableName;
+        String targetEntityTable = "";
+        String columnName;
+        String onClause = ON_KEYWORD;
+        String multipleColumnsClause = SELECT_KEYWORD + IDENTIFIER + ", ";       
+        int counter = 0;
+        boolean containsMultipleAttributes = false;
 
-		Collection associationAttributesCollection = associationControl
-				.getAssociationDisplayAttributeCollection();
+        Collection associationAttributesCollection = associationControl
+                .getAssociationDisplayAttributeCollection();
+                
+        if (associationControl instanceof SelectControl)
+            targetEntityTable = ((AssociationInterface)((SelectControl)associationControl).getAbstractAttribute()).getTargetEntity().getTableProperties().getName();
 
-		List associationAttributesList = new ArrayList(associationAttributesCollection);
-		Collections.sort(associationAttributesList);
+        String selectClause = SELECT_KEYWORD + targetEntityTable + "." +IDENTIFIER;
+        String fromClause = FROM_KEYWORD;
+        String whereClause = WHERE_KEYWORD;
+        
+        List associationAttributesList = new ArrayList(associationAttributesCollection);
+        Collections.sort(associationAttributesList);
 
-		Iterator attributeIterator = associationAttributesCollection.iterator();
-		AssociationDisplayAttributeInterface displayAttribute = null;
+        Iterator attributeIterator = associationAttributesCollection.iterator();
+        AssociationDisplayAttributeInterface displayAttribute = null;
 
-		while (attributeIterator.hasNext())
-		{
-			displayAttribute = (AssociationDisplayAttributeInterface) attributeIterator.next();
-			columnName = displayAttribute.getAttribute().getColumnProperties().getName();
-			tableName = displayAttribute.getAttribute().getEntity().getTableProperties().getName();
+        while (attributeIterator.hasNext())
+        {
+            displayAttribute = (AssociationDisplayAttributeInterface) attributeIterator.next();
+            columnName = displayAttribute.getAttribute().getColumnProperties().getName();
+            tableName = displayAttribute.getAttribute().getEntity().getTableProperties().getName();
 
-			if (tableNames.size() == 0)
-			{
-				selectClause = selectClause + tableName + "." + IDENTIFIER;
-				fromClause = fromClause + tableName;
-				onClause = onClause + tableName + "." + IDENTIFIER;
-				tableNames.add(tableName);
-			}
-			else
-			{
-				if (tableNames.indexOf(tableName) == -1)
-				{
-					tableNames.add(tableName);
-					fromClause = fromClause + JOIN_KEYWORD + tableName;
-					onClause = onClause + EQUAL + tableName + "." + IDENTIFIER;
-				}
-			}
-			selectClause = selectClause + " , " + columnName;
-		}
+            if (associationControl instanceof SelectControl && ((AssociationInterface)((SelectControl)associationControl).getAbstractAttribute()).getTargetEntity().getParentEntity() != null)
+            {                
+                selectClause = selectClause + ", " + tableName + "." + columnName;
+                
+                fromClause =  fromClause +  tableName + ", ";
+                
+                if (counter == 0 && associationAttributesCollection.size() > 1)
+                {
+                    whereClause = whereClause + tableName +".ACTIVITY_STATUS <> 'Disabled' AND ";
+                    whereClause = whereClause + tableName + "." + IDENTIFIER + " = ";
+                }
+                else if (counter > 0 && associationAttributesCollection.size() > 1)
+                {
+                    whereClause = whereClause + tableName + "." + IDENTIFIER + " AND " + tableName +".ACTIVITY_STATUS <> 'Disabled' AND "+ tableName + "." + IDENTIFIER + " = ";
+                }
+                else if (associationAttributesCollection.size() == 1)
+                {
+                    fromClause =  fromClause +  targetEntityTable + ", ";
+                    whereClause = whereClause + targetEntityTable +".ACTIVITY_STATUS <> 'Disabled' AND ";
+                    whereClause = whereClause + tableName + "." + IDENTIFIER + " = " + targetEntityTable + "." + IDENTIFIER + " AND " + targetEntityTable + "." + IDENTIFIER + " = ";
+                }
+                                    
+                counter++;
+                
+                tableNames.add(tableName);
+            }
+            else 
+            {
+                containsMultipleAttributes = true;
+                multipleColumnsClause += columnName + ", ";                
+                tableNames.add(tableName);
+            }
+            
+            if (tableNames.size() == 0 && !(associationControl instanceof SelectControl))
+            {
+                selectClause = selectClause + tableName + "." + IDENTIFIER;
+                fromClause = fromClause + tableName;
+                onClause = onClause + tableName + "." + IDENTIFIER;
+                tableNames.add(tableName);
+            }
+            else
+            {
+                if (tableNames.indexOf(tableName) == -1)
+                {
+                    tableNames.add(tableName);
+                    fromClause = fromClause + JOIN_KEYWORD + tableName;
+                    onClause = onClause + EQUAL + tableName + "." + IDENTIFIER;
+                }
+            }
+        }
+        
+        if (!containsMultipleAttributes)
+        {
+            int lastIndexOfAND = whereClause.lastIndexOf("AND");
+            whereClause = whereClause.substring(0, lastIndexOfAND);
+            fromClause = fromClause.substring(0, fromClause.length()-2);
+        }
 
-		StringBuffer query = new StringBuffer();
-		query.append(selectClause);
-		query.append(fromClause);
-		if (tableNames.size() > 1)
-		{
-			query.append(onClause);
-		}
-		query.append(WHERE_KEYWORD + queryBuilder.getRemoveDisbledRecordsQuery(tableNames.get(0)));
+        
+        if (((AssociationInterface)((SelectControl)associationControl).getAbstractAttribute()).getTargetEntity().getParentEntity() == null)
+            multipleColumnsClause = multipleColumnsClause.substring(0, multipleColumnsClause.length()-2) + fromClause + targetEntityTable;
 
-		JDBCDAO jdbcDao = null;
-		try
-		{
-			jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
-			jdbcDao.openSession(null);
+        
+        StringBuffer query = new StringBuffer();
+        
+        if (!containsMultipleAttributes)
+        {
+            query.append(selectClause + fromClause + whereClause);
+        }
+        else 
+        {
+            query.append(multipleColumnsClause);
+            query.append(WHERE_KEYWORD + queryBuilder.getRemoveDisbledRecordsQuery(tableNames.get(0)));
+        }
+        
+        JDBCDAO jdbcDao = null;
+        try
+        {
+            jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
+            jdbcDao.openSession(null);
+            List result = new ArrayList();
+            result = jdbcDao.executeQuery(query.toString(), new SessionDataBean(), false, null);
+            
+            if (result != null)
+            {
+                if (!containsMultipleAttributes)
+                {
+                    for (int i = 0; i < result.size(); i++)
+                    {
+                        List innerList = (List) result.get(i);
+                        Long recordId = Long.parseLong((String) innerList.get(0));
+                        innerList.remove(0);
+                        outputMap.put(recordId, innerList);
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < result.size(); i++)
+                    {
+                        List innerList = (List) result.get(i);
+                        Long recordId = Long.parseLong((String) innerList.get(0));
+                        
+                        if (outputMap.containsKey(recordId))
+                        {
+                            List<String> tempStringList = new ArrayList<String>();
+                            
+                            String existingString = outputMap.get(recordId).toString().replace("[", " ");
+                            existingString = existingString.replace("]", " ");
+                            
+                            tempStringList.add(existingString.trim()+ associationControl.getSeparator() +(String)innerList.get(1));
+                            outputMap.put(recordId, tempStringList);
+                        }
+                        else
+                        {
+                            innerList.remove(0);
+                            outputMap.put(recordId, innerList);
+                        }
+                    }
+                }
+            }
+        }
+        
+        catch (Exception e)
+        {
+            throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
+        }
+        finally
+        {
+            try
+            {
+                jdbcDao.closeSession();
+            }
+            catch (DAOException e)
+            {
+                throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
+            }
+        }
 
-			List result = jdbcDao
-					.executeQuery(query.toString(), new SessionDataBean(), false, null);
-			if (result != null)
-			{
-				for (int i = 0; i < result.size(); i++)
-				{
-					List innerList = (List) result.get(i);
-					Long recordId = Long.parseLong((String) innerList.get(0));
-					innerList.remove(0);
-					outputMap.put(recordId, innerList);
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
-		}
-		finally
-		{
-			try
-			{
-				jdbcDao.closeSession();
-			}
-			catch (DAOException e)
-			{
-				throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
-			}
-		}
-
-		return outputMap;
-	}
+        return outputMap;
+    }
 
 	/**
 	 *

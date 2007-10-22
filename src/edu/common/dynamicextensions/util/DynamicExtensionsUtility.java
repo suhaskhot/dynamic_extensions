@@ -783,6 +783,17 @@ public class DynamicExtensionsUtility
 	{
 		boolean isDateValid = false;
 		Date date = null;
+        
+        if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
+        {
+            strDate = formatMonthAndYearDate(strDate);
+            //09-12-2007 0:0
+        }
+        if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
+        {
+            strDate = formatYearDate(strDate);
+            //09-12-2007 0:0
+        }
 
 		try
 		{
@@ -798,7 +809,73 @@ public class DynamicExtensionsUtility
 		}
 
 		return isDateValid;
-	}
+	}	
+    
+    public static String formatMonthAndYearDate(String strDate)
+    {
+        String month = determineMonth(strDate.substring(0, 3));
+        String year = strDate.substring(4, strDate.length());
+        return month+"-"+"01"+"-"+year+" 0:0";
+    }
+    
+    public static String formatYearDate(String strDate)
+    {
+        String year = strDate;
+        return "01"+"-"+"01"+"-"+year+" 0:0";
+    }
+    
+    public static String determineMonth(String month)
+    {
+        if (month.equals(Constants.JANUARY))
+        {
+            return "01";
+        }
+        else if (month.equals(Constants.FEBRUARY))
+        {
+            return "02";
+        }
+        else if (month.equals(Constants.MARCH))
+        {
+            return "03";
+        }
+        else if (month.equals(Constants.APRIL))
+        {
+            return "04";
+        }
+        else if (month.equals(Constants.MAY))
+        {
+            return "05";    
+        }
+        else if (month.equals(Constants.JUNE))
+        {
+            return "06";    
+        }
+        else if (month.equals(Constants.JULY))
+        {
+            return "07";    
+        }
+        else if (month.equals(Constants.AUGUST))
+        {
+            return "08";    
+        }
+        else if (month.equals(Constants.SEPTEMBER))
+        {
+            return "09";    
+        }
+        else if (month.equals(Constants.OCTOBER))
+        {
+            return "10";    
+        }
+        else if (month.equals(Constants.NOVEMBER))
+        {
+            return "11";    
+        }
+        else if (month.equals(Constants.DECEMBER))
+        {
+            return "12";    
+        }
+        return null;
+    }
 
 	/**
 	 * This method determines whether the checkbox is to be checked or not.
@@ -886,6 +963,31 @@ public class DynamicExtensionsUtility
 	public static int compareDates(String date1, String date2, String dateFormat)
 	{
 		int result = 0;
+        
+        if (areBothDatesOfSameFormat(date1, date2))
+        {
+            result = 1;
+            return result;
+        }
+        
+        if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
+        {
+            date1 = formatMonthAndYearDate(date1);
+            date2 = formatMonthAndYearDate(date2);
+            //09-12-2007 0:0
+        }
+        
+        if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
+        {
+            //date1 = formatYearDate(date1);
+            //date2 = formatYearDate(date2);
+            if (Integer.parseInt(date1) > Integer.parseInt(date2))
+            {
+                result = 1;
+                return result;
+            }
+            //09-12-2007 0:0
+        }
 
 		try
 		{
@@ -907,6 +1009,14 @@ public class DynamicExtensionsUtility
 
 		return result;
 	}
+    
+    public static boolean areBothDatesOfSameFormat(String date1, String date2)
+    {
+        if (date1.length() != date2.length())
+            return true;
+        else 
+            return false;
+    }
 
 	/**
 	 * This method returns the format of the date depending upon the the type of the format selected on UI.
@@ -920,6 +1030,14 @@ public class DynamicExtensionsUtility
 		{
 			dateFormat = ProcessorConstants.DATE_TIME_FORMAT;
 		}
+        if (format != null && format.equals(ProcessorConstants.DATE_FORMAT_OPTION_MONTHANDYEAR))
+        {
+            dateFormat = ProcessorConstants.MONTH_YEAR_FORMAT;
+        }
+        if (format != null && format.equals(ProcessorConstants.DATE_FORMAT_OPTION_YEARONLY))
+        {
+            dateFormat = ProcessorConstants.YEAR_ONLY_FORMAT;
+        }
 
 		return dateFormat;
 	}

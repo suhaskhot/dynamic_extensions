@@ -1,9 +1,10 @@
 
 package edu.common.dynamicextensions.ui.webui.action;
 
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,9 +14,12 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -80,7 +84,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 		}
 
 		DataEntryForm dataEntryForm = (DataEntryForm) form;
-		
+        addPrecisionZeroes(recordMap);
 		updateStacks(request, dataEntryForm, containerInterface, recordMap, containerStack,
 				valueMapStack);
 
@@ -249,4 +253,40 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 			}
 		}
 	}
+    
+    /**
+     * Append number of zeroes to the output depending on precision entered while creating the attribute of double type.
+     * @param recordMap
+     */
+    private void addPrecisionZeroes(Map<AbstractAttributeInterface, Object> recordMap)
+    {
+        // If the value is 1.48 and precision entered for it is 3, make it appear as 1.480
+        Set<AbstractAttributeInterface> recordMapKeySet = recordMap.keySet();
+        Iterator iter = recordMapKeySet.iterator();
+        
+        while (iter.hasNext())
+        {
+            AttributeInterface currentAttribute = (AttributeInterface) iter.next();
+            
+            AttributeTypeInformationInterface attributeTypeInformationInterface = ((AttributeInterface) currentAttribute)
+            .getAttributeTypeInformation();       
+            
+            if (attributeTypeInformationInterface instanceof DoubleAttributeTypeInformation) 
+            {
+                int decimalPlaces = ((DoubleAttributeTypeInformation)attributeTypeInformationInterface).getDecimalPlaces();
+                String value = (String) recordMap.get(currentAttribute);
+                int placesAfterDecimal = value.length() - (value.indexOf(".") + 1);
+                
+                if (placesAfterDecimal != decimalPlaces)
+                {
+                    for (int j=decimalPlaces; j>placesAfterDecimal; j--)
+                    {
+                        value = value + "0";
+                    }
+                    recordMap.put(currentAttribute, value);
+                }
+            }
+        }
+        
+    }
 }

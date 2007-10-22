@@ -12,7 +12,7 @@
 <table summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
 	<tr>
     	<td>
-			<table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%' >
+			<table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%' border='0'>
 				<tr valign="top">
 					<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
 					<td class="formRequiredLabelWithoutBorder" width="30%">
@@ -48,15 +48,14 @@
 	</tr>
 	<tr valign="top">
 		<td>
-			<table summary="" cellpadding="3" cellspacing="0"  align = 'center' valign="top">
+			<table summary="" cellpadding="3" cellspacing="0"  align = 'center' valign="top" border="0" width="37%">
 				<tr valign="top">
-					<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-					<td class="formRequiredLabelWithoutBorder" width="30%">&nbsp;</td>
 					<td class="formFieldWithoutBorder" align="left">
-						<html:checkbox styleId='attributeIsPassword' property="attributeIsPassword" value="true">
+						&nbsp;<html:checkbox styleId='attributeIsPassword' property="attributeIsPassword" value="true">
 							<bean:message key="app.att.isPassword" />
 						</html:checkbox>
 					</td>
+					<td class="formRequiredLabelWithoutBorder" width="10%">&nbsp;</td>
 				</tr>
 			</table>
 		</td>

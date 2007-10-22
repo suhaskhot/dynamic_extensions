@@ -3,6 +3,8 @@ package edu.common.dynamicextensions.validation;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -50,11 +52,11 @@ public class NumberValidator implements ValidatorRuleInterface
 			{
 				if (attributeTypeInformation instanceof LongAttributeTypeInformation)
 				{
-					checkIntegerNumberValidity(attributeName, value);
+					checkIntegerNumberValidity(attributeName, value.trim());
 				}
 				else if (attributeTypeInformation instanceof DoubleAttributeTypeInformation)
 				{
-					checkRealNumberValidity(attributeName, value);
+					checkRealNumberValidity(attributeName, value.trim());
 				}
 			}
 			catch (NumberFormatException numberFormatException)
@@ -82,6 +84,17 @@ public class NumberValidator implements ValidatorRuleInterface
 	private void checkIntegerNumberValidity(String attributeName, String value)
 			throws DynamicExtensionsValidationException, NumberFormatException
 	{
+        if (value.contains("."))
+        {
+            if (DynamicExtensionsUtility.isNumeric(value) && (value.indexOf(".") != -1))
+            {
+                //Integer decimalPlaces = 0;
+                StringBuffer decimalFormat = new StringBuffer("#");
+                NumberFormat numberFormat = new DecimalFormat(decimalFormat.toString());
+                value = numberFormat.format(Double.parseDouble(value));
+            }
+        }
+        
 		BigInteger numberValue = new BigInteger(value);
 		String strLongMin = (new Long(Long.MIN_VALUE)).toString();
 		String strLongMax = (new Long(Long.MAX_VALUE)).toString();

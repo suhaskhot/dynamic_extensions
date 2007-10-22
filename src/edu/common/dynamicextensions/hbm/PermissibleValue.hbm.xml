@@ -116,7 +116,7 @@
         />
         <property
             name="value"
-            type="date"
+            type="timestamp"
             update="true"
             insert="true"
             column="VALUE"

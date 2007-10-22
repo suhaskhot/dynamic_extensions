@@ -12,6 +12,8 @@ import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
+import edu.common.dynamicextensions.processor.ProcessorConstants;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.util.Utility;
 
 /**
@@ -44,17 +46,40 @@ public class DateRangeValidator implements ValidatorRuleInterface
 			String dateFormat = dateAttributeTypeInformation.getFormat();
 			String attributeName = attribute.getName();
 			String value = (String) valueObject;
-
+            
+            if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
+            {
+                value = DynamicExtensionsUtility.formatMonthAndYearDate(value);
+                value = value.substring(0, value.length()-4);
+            }
+            if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
+            {
+                value = DynamicExtensionsUtility.formatYearDate(value);
+                value = value.substring(0, value.length()-4);
+            }
+            
 			Set<Map.Entry<String, String>> parameterSet = parameterMap.entrySet();
 			for (Map.Entry<String, String> parameter : parameterSet)
 			{
 				String parameterName = parameter.getKey();
 				String parameterValue = parameter.getValue();
+                
+                if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
+                {
+                    parameterValue= DynamicExtensionsUtility.formatMonthAndYearDate(parameterValue);
+                    parameterValue = parameterValue.substring(0, parameterValue.length()-4);
+                }
+                if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
+                {
+                    parameterValue = DynamicExtensionsUtility.formatYearDate(parameterValue);
+                    parameterValue = parameterValue.substring(0, parameterValue.length()-4);
+                }
+                
 				Date parameterDate = null, valueDate = null;
 				try
 				{
-					parameterDate = Utility.parseDate(parameterValue, dateFormat);
-					valueDate = Utility.parseDate(value, dateFormat);
+					parameterDate = Utility.parseDate(parameterValue, "MM-dd-yyyy");
+					valueDate = Utility.parseDate(value, "MM-dd-yyyy");
 				}
 				catch (ParseException ParseException)
 				{

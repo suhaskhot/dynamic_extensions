@@ -1714,6 +1714,16 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
             } else {
                 str = (String) value;
             }
+            
+            if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
+            {
+                str = DynamicExtensionsUtility.formatMonthAndYearDate(str);
+            }
+            
+            if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
+            {
+                str = DynamicExtensionsUtility.formatYearDate(str);
+            }
 
             /*formattedvalue = Variables.strTodateFunction + "('" + str + "','"
              + variables.datepattern + "')";*/

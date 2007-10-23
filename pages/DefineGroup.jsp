@@ -29,7 +29,8 @@
 		<jsp:useBean id="operationMode" type="java.lang.String"/>
 
 		<html:form styleId = "groupForm"  action="/LoadGroupDefinitionAction">
-			<input type="hidden" name="groupOperation" value=""/>
+		
+		<input type="hidden" id="groupOperation" name="groupOperation" value=""/>
 
 	        <table valign="top" align='right' width='100%' height="100%" border='0' cellspacing="0" cellpadding="0" >
 		    	<!-- Main Page heading -->

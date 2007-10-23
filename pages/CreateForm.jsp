@@ -113,7 +113,7 @@
 													<tr>
 														<td>
 															<label class="formMessage"><%=groupName%></label>
-															<div id="currentEntityTreeDiv" style="overflow:auto;"/>
+															<div id="currentEntityTreeDiv" style="border:solid 0px; padding:1px; width:250px; height:100px; overflow:auto;" />
 														</td>
 													</tr>
 													<tr height='100%'><td>&nbsp;</td></tr>

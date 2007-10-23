@@ -108,6 +108,8 @@ public class XMIImportProcessor
 	 * List for retrieved containers corresponding to entity group.
 	 */
 	private Collection<ContainerInterface> retrievedContainerList = new ArrayList<ContainerInterface>();
+	
+	private List<ContainerInterface> mainContainerList = new ArrayList<ContainerInterface>();
 
 	/**
 	 * Default constructor
@@ -117,7 +119,7 @@ public class XMIImportProcessor
 	{
 		super();
 	}
-	public Map<String, List<ContainerInterface>> processXmi(UmlPackage umlPackage, String entityGroupName, String packageName) throws Exception
+	public List<ContainerInterface> processXmi(UmlPackage umlPackage, String entityGroupName, String packageName, List<String> containerNames) throws Exception
 	{
 		List<UmlClass> umlClassColl = new ArrayList<UmlClass>();
 		List<UmlAssociation> umlAssociationColl = new ArrayList<UmlAssociation>();
@@ -209,9 +211,9 @@ public class XMIImportProcessor
 			postProcessAssociation();
 		}
 		//Persist container in DB
-		processPersistence();
+		processPersistence(containerNames);
 		
-		return entityNameVsContainers;
+		return mainContainerList;
 	}
 
 	/**
@@ -908,7 +910,7 @@ public class XMIImportProcessor
 			role.setAssociationsType(Constants.AssociationType.ASSOCIATION);
 		}
 		else
-		{
+		{		
 			role.setAssociationsType(Constants.AssociationType.CONTAINTMENT);
 		}
 		role.setName(sourceRoleName);
@@ -1562,22 +1564,33 @@ public class XMIImportProcessor
 	 * @param umlClasses
 	 * This method creates all containers.
 	 */
-	protected void processPersistence() throws Exception
+	protected void processPersistence(List<String> containerNames) throws Exception
 	{
-		Collection<ContainerInterface> containerColl = new HashSet<ContainerInterface>();
+		//Collection<ContainerInterface> containerColl = new HashSet<ContainerInterface>();
 
-		Set<String> entityIdKeySet = entityNameVsContainers.keySet();
-		for (String entityId : entityIdKeySet)
+//		Set<String> entityIdKeySet = entityNameVsContainers.keySet();
+		
+		for(String containerName : containerNames)
 		{
-			List containerList = (ArrayList) entityNameVsContainers.get(entityId);
+			List containerList = (ArrayList) entityNameVsContainers.get(containerName);
 			ContainerInterface containerInterface = (ContainerInterface) containerList.get(0);
-			containerColl.add(containerInterface);
+			mainContainerList.add(containerInterface);
 		}
+		
+		
+		
+		
+//		for (String entityId : entityIdKeySet)
+//		{
+//			List containerList = (ArrayList) entityNameVsContainers.get(entityId);
+//			ContainerInterface containerInterface = (ContainerInterface) containerList.get(0);
+//			containerColl.add(containerInterface);
+//		}
 		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
 
 		try
 		{
-			entityManagerInterface.persistEntityGroupWithAllContainers(entityGroup, containerColl);
+			entityManagerInterface.persistEntityGroupWithAllContainers(entityGroup, mainContainerList);
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{
@@ -1596,4 +1609,5 @@ public class XMIImportProcessor
 	{
 		addControlsForAssociation();
 	}
+
 }

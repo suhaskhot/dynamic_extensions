@@ -3,7 +3,9 @@ package edu.common.dynamicextensions.xmi.importer;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.jmi.model.ModelPackage;
 import javax.jmi.model.MofPackage;
@@ -80,7 +82,8 @@ public class XMIImporter
 			reader.read(in, null, uml);
 			XMIImportProcessor xmiImportProcessor = new XMIImportProcessor();
 			
-			xmiImportProcessor.processXmi(uml, domainModelName,packageName);			
+			 List<String> containerNames = new ArrayList<String>();
+			xmiImportProcessor.processXmi(uml, domainModelName,packageName,containerNames);			
 			System.out.println("--------------- Done ------------");
 		
 		}

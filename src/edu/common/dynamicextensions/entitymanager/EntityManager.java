@@ -1352,7 +1352,7 @@ public class EntityManager
 					+ UNDERSCORE + IDENTIFIER);
 			constraintProperties.setName(ASSOCIATION_NAME_PREFIX + UNDERSCORE
 					+ sourceEntity.getId() + UNDERSCORE + targetEntity.getId() + UNDERSCORE
-					+ +association.getId());
+					+ association.getId());
 		}
 		else if (sourceMaxCardinality == Cardinality.MANY
 				&& targetMaxCardinality == Cardinality.ONE)

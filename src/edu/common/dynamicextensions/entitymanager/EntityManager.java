@@ -1940,8 +1940,36 @@ public class EntityManager
 			entity.setCreatedDate(new Date());
 			entity.setLastUpdated(entity.getCreatedDate());
 		}
-	}
 
+		//This check is added because it has been observed on demo site where associations are falsely populated with targetEntity null.
+		checkAssociationsForEntity(entity);
+	}
+	/**
+	 *
+	 * @param entity
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	private void checkAssociationsForEntity(EntityInterface entity) throws DynamicExtensionsApplicationException
+	{
+		Collection associationCollection = entity.getAssociationCollection();
+		if (associationCollection != null && !associationCollection.isEmpty())
+		{
+			Iterator iterator = associationCollection.iterator();
+			while (iterator.hasNext())
+			{
+				Association association = (Association) iterator.next();
+				if (association == null || association.getSourceRole() == null
+						|| association.getTargetRole() == null
+						|| association.getAssociationDirection() == null
+						|| association.getTargetEntity() == null
+						|| association.getEntity() == null)
+				{
+					throw new DynamicExtensionsApplicationException("Association falsely populated",
+							null, DYEXTN_A_016);
+				}
+			}
+		}
+	}
 	/**
 	 * This method corrects cardinalities such that max cardinality  < minimum cardinality ,otherwise it throws exception
 	 * @param entity
@@ -4185,20 +4213,20 @@ public class EntityManager
         String targetEntityTable = "";
         String columnName;
         String onClause = ON_KEYWORD;
-        String multipleColumnsClause = SELECT_KEYWORD + IDENTIFIER + ", ";       
+        String multipleColumnsClause = SELECT_KEYWORD + IDENTIFIER + ", ";
         int counter = 0;
         boolean containsMultipleAttributes = false;
 
         Collection associationAttributesCollection = associationControl
                 .getAssociationDisplayAttributeCollection();
-                
+
         if (associationControl instanceof SelectControl)
             targetEntityTable = ((AssociationInterface)((SelectControl)associationControl).getAbstractAttribute()).getTargetEntity().getTableProperties().getName();
 
         String selectClause = SELECT_KEYWORD + targetEntityTable + "." +IDENTIFIER;
         String fromClause = FROM_KEYWORD;
         String whereClause = WHERE_KEYWORD;
-        
+
         List associationAttributesList = new ArrayList(associationAttributesCollection);
         Collections.sort(associationAttributesList);
 
@@ -4212,11 +4240,11 @@ public class EntityManager
             tableName = displayAttribute.getAttribute().getEntity().getTableProperties().getName();
 
             if (associationControl instanceof SelectControl && ((AssociationInterface)((SelectControl)associationControl).getAbstractAttribute()).getTargetEntity().getParentEntity() != null)
-            {                
+            {
                 selectClause = selectClause + ", " + tableName + "." + columnName;
-                
+
                 fromClause =  fromClause +  tableName + ", ";
-                
+
                 if (counter == 0 && associationAttributesCollection.size() > 1)
                 {
                     whereClause = whereClause + tableName +".ACTIVITY_STATUS <> 'Disabled' AND ";
@@ -4232,18 +4260,18 @@ public class EntityManager
                     whereClause = whereClause + targetEntityTable +".ACTIVITY_STATUS <> 'Disabled' AND ";
                     whereClause = whereClause + tableName + "." + IDENTIFIER + " = " + targetEntityTable + "." + IDENTIFIER + " AND " + targetEntityTable + "." + IDENTIFIER + " = ";
                 }
-                                    
+
                 counter++;
-                
+
                 tableNames.add(tableName);
             }
-            else 
+            else
             {
                 containsMultipleAttributes = true;
-                multipleColumnsClause += columnName + ", ";                
+                multipleColumnsClause += columnName + ", ";
                 tableNames.add(tableName);
             }
-            
+
             if (tableNames.size() == 0 && !(associationControl instanceof SelectControl))
             {
                 selectClause = selectClause + tableName + "." + IDENTIFIER;
@@ -4261,7 +4289,7 @@ public class EntityManager
                 }
             }
         }
-        
+
         if (!containsMultipleAttributes)
         {
             int lastIndexOfAND = whereClause.lastIndexOf("AND");
@@ -4269,23 +4297,23 @@ public class EntityManager
             fromClause = fromClause.substring(0, fromClause.length()-2);
         }
 
-        
+
         if (((AssociationInterface)((SelectControl)associationControl).getAbstractAttribute()).getTargetEntity().getParentEntity() == null)
             multipleColumnsClause = multipleColumnsClause.substring(0, multipleColumnsClause.length()-2) + fromClause + targetEntityTable;
 
-        
+
         StringBuffer query = new StringBuffer();
-        
+
         if (!containsMultipleAttributes)
         {
             query.append(selectClause + fromClause + whereClause);
         }
-        else 
+        else
         {
             query.append(multipleColumnsClause);
             query.append(WHERE_KEYWORD + queryBuilder.getRemoveDisbledRecordsQuery(tableNames.get(0)));
         }
-        
+
         JDBCDAO jdbcDao = null;
         try
         {
@@ -4293,7 +4321,7 @@ public class EntityManager
             jdbcDao.openSession(null);
             List result = new ArrayList();
             result = jdbcDao.executeQuery(query.toString(), new SessionDataBean(), false, null);
-            
+
             if (result != null)
             {
                 if (!containsMultipleAttributes)
@@ -4312,14 +4340,14 @@ public class EntityManager
                     {
                         List innerList = (List) result.get(i);
                         Long recordId = Long.parseLong((String) innerList.get(0));
-                        
+
                         if (outputMap.containsKey(recordId))
                         {
                             List<String> tempStringList = new ArrayList<String>();
-                            
+
                             String existingString = outputMap.get(recordId).toString().replace("[", " ");
                             existingString = existingString.replace("]", " ");
-                            
+
                             tempStringList.add(existingString.trim()+ associationControl.getSeparator() +(String)innerList.get(1));
                             outputMap.put(recordId, tempStringList);
                         }
@@ -4332,7 +4360,7 @@ public class EntityManager
                 }
             }
         }
-        
+
         catch (Exception e)
         {
             throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
@@ -4773,7 +4801,7 @@ public class EntityManager
 		}
 		return contId;
 	}
-	public  Long getEntityId(String entityName) throws DynamicExtensionsSystemException 
+	public  Long getEntityId(String entityName) throws DynamicExtensionsSystemException
     {
 		ResultSet rsltSet = null;
     	String entityTableName = "dyextn_abstract_metadata";
@@ -4809,10 +4837,10 @@ public class EntityManager
 		}
         return null;
     }
-	
+
 	/**
 	 * Get the container Id for the specified entity Id
-	 * This method fires direct JDBC SQL queries without using hibernate for performance purposes  
+	 * This method fires direct JDBC SQL queries without using hibernate for performance purposes
 	 * @param entityId : Id for the entity whose container id is to be fetched
 	 * @return : container Id for specified entity
 	 * @throws DynamicExtensionsSystemException
@@ -4859,7 +4887,7 @@ public class EntityManager
         return null;
 	}
 	/**
-	 * Get next identifier for an entity from entity table when a record is to be inserted to the entity table. 
+	 * Get next identifier for an entity from entity table when a record is to be inserted to the entity table.
 	 * @param entityName :  Name of the entity
 	 * @return :  Next identifier that can be assigned to a entity record
 	 * @throws DynamicExtensionsSystemException
@@ -4890,7 +4918,7 @@ public class EntityManager
             {
             	rsltSet.next();
 	            String entityTableName = rsltSet.getString(NAME);
-	            if(entityTableName!=null) 
+	            if(entityTableName!=null)
 	            {
 	            	EntityManagerUtil entityManagerUtil = new EntityManagerUtil();
 	            	return entityManagerUtil.getNextIdentifier(entityTableName);

@@ -1032,6 +1032,11 @@ public class XMIImportProcessor
 			Collection<AbstractAttributeInterface> attributesToRemove = new HashSet<AbstractAttributeInterface>();
 			for (AbstractAttributeInterface editedAttribute : editedAttributeColl)
 			{
+				if(editedAttribute.getName().equalsIgnoreCase(Constants.SYSTEM_IDENTIFIER))
+				{// We dont edit "id" attribute as it is the system identifier.
+					continue;
+				}
+				
 				ControlsModel controlModel = new ControlsModel();
 				if (editedAttribute instanceof AssociationInterface)
 				{

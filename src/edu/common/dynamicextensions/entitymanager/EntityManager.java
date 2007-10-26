@@ -1643,7 +1643,7 @@ public class EntityManager
 	private ContainerInterface persistContainer(ContainerInterface containerInterface,
 			boolean addIdAttribute, HibernateDAO hibernateDAO,
 			/*List<EntityInterface> processedEntityList,*/
-			List<ContainerInterface> processedContainerList, EntityGroupInterface currentEntityGroup)
+			List<ContainerInterface> processedContainerList, EntityGroupInterface currentEntityGroup, List<String> mainContainerNames)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		Container container = (Container) containerInterface;
@@ -1675,22 +1675,23 @@ public class EntityManager
 				if (container.getBaseContainer().getId() == null)
 				{
 					persistContainer(container.getBaseContainer(), addIdAttribute,
-							hibernateDAO,/* processedEntityList, */processedContainerList,currentEntityGroup);
+							hibernateDAO,/* processedEntityList, */processedContainerList,currentEntityGroup,mainContainerNames);
 				}
 			}
 
 			if (entity != null)
 			{
 				saveContainerForContainmentAssociation(container, addIdAttribute, hibernateDAO,
-						 processedContainerList, currentEntityGroup);
+						 processedContainerList, currentEntityGroup, mainContainerNames);
 			}
 
 			preSaveProcessContainer(container); //preprocess
 
 			session.saveOrUpdateCopy(container);
 
-			if (currentEntityGroup != null)
-			{
+			if (currentEntityGroup != null && (isMainContainer(mainContainerNames,container.getCaption())))
+			{//Adding the group id to the container only if it is a main container as in the Annotation List page grid,
+				//only main containers should be visible.
 				currentEntityGroup.addMainContainer(container);
 				session.saveOrUpdateCopy(currentEntityGroup);
 			}
@@ -1709,6 +1710,25 @@ public class EntityManager
 			throw e;
 		}
 		return container;
+	}
+	/**
+	 * @param mainContainerNames
+	 * @param containerCaption
+	 * @return
+	 */
+	private boolean isMainContainer(List<String> mainContainerNames,String containerCaption)
+	{
+		if(mainContainerNames != null && mainContainerNames.size() > 0)
+		{
+			for(String mainContainerCaption :mainContainerNames)
+			{
+				if(mainContainerCaption.equalsIgnoreCase(containerCaption))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -1866,7 +1886,7 @@ public class EntityManager
 	 */
 	private void saveContainerForContainmentAssociation(ContainerInterface container,
 			boolean addIdAttribute, HibernateDAO hibernateDAO,
-			List<ContainerInterface> processedContainerList, EntityGroupInterface currentEntityGroup) throws HibernateException,
+			List<ContainerInterface> processedContainerList, EntityGroupInterface currentEntityGroup, List<String> mainContainerNames) throws HibernateException,
 			DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		for (ControlInterface control : container.getControlCollection())
@@ -1875,7 +1895,7 @@ public class EntityManager
 			{
 				ContainmentAssociationControlInterface associationControl = (ContainmentAssociationControlInterface) control;
 				persistContainer(associationControl.getContainer(), addIdAttribute,
-						hibernateDAO,  processedContainerList,currentEntityGroup);
+						hibernateDAO,  processedContainerList,currentEntityGroup,mainContainerNames);
 			}
 		}
 	}
@@ -3737,9 +3757,10 @@ public class EntityManager
 			if(containerColl != null && !containerColl.isEmpty())
 			{
 				List<ContainerInterface> processedContainerList = new ArrayList<ContainerInterface>();
+				List<String> mainContainerNames = DynamicExtensionsUtility.getMainContainerNamesList(containerColl);
 				for (ContainerInterface container : containerColl)
 				{
-					persistContainer(container,	false, hibernateDAO, processedContainerList,entityGroupInterface);
+					persistContainer(container,	false, hibernateDAO, processedContainerList,entityGroupInterface, mainContainerNames);
 				}
 			}
 

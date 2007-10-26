@@ -266,24 +266,29 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
         
         while (iter.hasNext())
         {
-            AttributeInterface currentAttribute = (AttributeInterface) iter.next();
+            Object tempObject = iter.next();
             
-            AttributeTypeInformationInterface attributeTypeInformationInterface = ((AttributeInterface) currentAttribute)
-            .getAttributeTypeInformation();       
-            
-            if (attributeTypeInformationInterface instanceof DoubleAttributeTypeInformation) 
+            if (tempObject instanceof AttributeInterface)
             {
-                int decimalPlaces = ((DoubleAttributeTypeInformation)attributeTypeInformationInterface).getDecimalPlaces();
-                String value = (String) recordMap.get(currentAttribute);
-                int placesAfterDecimal = value.length() - (value.indexOf(".") + 1);
+                AttributeInterface currentAttribute = (AttributeInterface) tempObject;
+            
+                AttributeTypeInformationInterface attributeTypeInformationInterface = ((AttributeInterface) currentAttribute)
+                .getAttributeTypeInformation();       
                 
-                if (placesAfterDecimal != decimalPlaces)
+                if (attributeTypeInformationInterface instanceof DoubleAttributeTypeInformation) 
                 {
-                    for (int j=decimalPlaces; j>placesAfterDecimal; j--)
+                    int decimalPlaces = ((DoubleAttributeTypeInformation)attributeTypeInformationInterface).getDecimalPlaces();
+                    String value = (String) recordMap.get(currentAttribute);
+                    int placesAfterDecimal = value.length() - (value.indexOf(".") + 1);
+                    
+                    if (placesAfterDecimal != decimalPlaces)
                     {
-                        value = value + "0";
+                        for (int j=decimalPlaces; j>placesAfterDecimal; j--)
+                        {
+                            value = value + "0";
+                        }
+                        recordMap.put(currentAttribute, value);
                     }
-                    recordMap.put(currentAttribute, value);
                 }
             }
         }

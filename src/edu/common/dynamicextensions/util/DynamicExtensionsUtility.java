@@ -1087,5 +1087,18 @@ public class DynamicExtensionsUtility
 
 		return containerInterface;
 	}
+	/**
+	 * @param containerColl
+	 * @return
+	 */
+	public static List<String> getMainContainerNamesList(Collection<ContainerInterface> containerColl)
+	{
+		List<String> mainContainerNames = new ArrayList<String>();
+		for(ContainerInterface container : containerColl)
+		{
+			mainContainerNames.add(container.getCaption());
+		}
+		return mainContainerNames;
+	}
 
 }

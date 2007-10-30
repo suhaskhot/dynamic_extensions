@@ -198,7 +198,7 @@ public interface EntityInterface extends AbstractMetadataInterface
 	 */
 	void setDiscriminatorValue(String discriminatorValue);
     
-    /*
+    /**
      * Get all attributes for query
      */
     public Collection<AttributeInterface> getEntityAttributesForQuery();

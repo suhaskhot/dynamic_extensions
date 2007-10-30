@@ -4685,6 +4685,19 @@ public class EntityManager
 				"getAssociationsForTargetEntity", substitutionParameterMap);
 		return assocationCollection;
 	}
+    
+    /**
+     * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAssociationsForTargetEntity(edu.common.dynamicextensions.domaininterface.EntityInterface)
+     */
+    public Collection<Long> getIncomingAssociationIds(EntityInterface entity)
+            throws DynamicExtensionsSystemException
+    {
+        Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+        substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entity.getId()));
+        Collection<Long> assocationCollection = executeHQL(null,
+                "getAssociationIdsForTargetEntity", substitutionParameterMap);
+        return assocationCollection;
+    }
 
 	/**
 	 * @param containerId

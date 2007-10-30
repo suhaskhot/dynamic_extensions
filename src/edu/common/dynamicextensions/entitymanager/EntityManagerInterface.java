@@ -551,5 +551,10 @@ public interface EntityManagerInterface {
 	 * @return :  Next identifier that can be assigned to a entity record
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public  Long getNextIdentifierForEntity(String entityName) throws DynamicExtensionsSystemException;
+	public Long getNextIdentifierForEntity(String entityName) throws DynamicExtensionsSystemException;
+    
+    /**
+     * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAssociationsForTargetEntity(edu.common.dynamicextensions.domaininterface.EntityInterface)
+     */
+    public Collection<Long> getIncomingAssociationIds(EntityInterface entity) throws DynamicExtensionsSystemException;
 }

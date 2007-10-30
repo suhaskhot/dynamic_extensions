@@ -604,4 +604,26 @@ public class Entity extends AbstractMetadata implements EntityInterface
 		AttributeCollection.addAll(getAttributeCollection());
 		return AttributeCollection;
 	}
+    
+    public Collection<AttributeInterface> getEntityAttributesForQuery()
+    {
+        Collection<AttributeInterface> AttributeCollection = new ArrayList<AttributeInterface>();
+        AttributeCollection.addAll(getAttributeCollection());
+        EntityInterface parentEntity = this.parentEntity;
+        
+        while (parentEntity != null)
+        {
+            Collection parentAttributeCollection = parentEntity.getAttributeCollection();
+            Iterator parentAttributeCollectionIterator = parentAttributeCollection.iterator();
+            while(parentAttributeCollectionIterator.hasNext())
+            {
+                AttributeInterface nextAttribute = (AttributeInterface) parentAttributeCollectionIterator.next();;
+                nextAttribute.setEntity(this);
+                AttributeCollection.add(nextAttribute);
+            }
+            parentEntity = parentEntity.getParentEntity();
+        }
+
+        return AttributeCollection;
+    }
 }

@@ -16,6 +16,7 @@ import java.util.Stack;
 
 import net.sf.hibernate.HibernateException;
 import net.sf.hibernate.Session;
+import net.sf.hibernate.Transaction;
 import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.Attribute;
@@ -49,6 +50,7 @@ import edu.common.dynamicextensions.util.global.Variables;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.wustl.common.dao.HibernateDAO;
+import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.logger.Logger;
@@ -1485,19 +1487,32 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
      * wrapped inside this exception.
      */
     public Stack executeQueries(List queryList, List reverseQueryList, Stack rollbackQueryStack)
-            throws DynamicExtensionsSystemException {
+            throws DynamicExtensionsSystemException
+    {
         Session session = null;
+        Transaction transaction = null;
+        Connection connection = null;
+
         try {
-            session = DBUtil.currentSession();
-        } catch (HibernateException e1) {
-            throw new DynamicExtensionsSystemException(
-                    "Unable to exectute the data table queries .....Cannot access sesssion", e1, DYEXTN_S_002);
+            session = DBUtil.getCleanSession();
+			transaction = session.beginTransaction();
         }
+		catch (BizLogicException e)
+		{
+            throw new DynamicExtensionsSystemException(
+                    "Exception occured while getting the new session", e, DYEXTN_S_002);
+		}
+		catch (HibernateException e)
+		{
+            throw new DynamicExtensionsSystemException(
+                    "Exception occured while getting the new trasaction", e, DYEXTN_S_002);
+		}
 
         Iterator reverseQueryListIterator = reverseQueryList.iterator();
 
         try {
-            Connection conn = session.connection();
+        	connection = session.connection();
+//            System.out.print("Autocomit flag ********"+ connection.getAutoCommit());
             if (queryList != null && !queryList.isEmpty()) {
                 Iterator queryListIterator = queryList.iterator();
                 while (queryListIterator.hasNext()) {
@@ -1505,7 +1520,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
                     System.out.println("Query: " + query);
                     PreparedStatement statement = null;
                     try {
-                        statement = conn.prepareStatement(query);
+                        statement = connection.prepareStatement(query);
                     } catch (SQLException e) {
                         throw new DynamicExtensionsSystemException(
                                 "Exception occured while executing the data table query", e);
@@ -1522,13 +1537,32 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
                     }
                 }
             }
-        } catch (HibernateException e) {
+        }
+        catch (HibernateException e)
+        {
             throw new DynamicExtensionsSystemException("Cannot obtain connection to execute the data query", e,
                     DYEXTN_S_001);
         }
-
+		finally
+		{
+			try
+			{
+				transaction.commit();
+				connection.close();
+				session.close();
+			}
+			catch (HibernateException e)
+			{
+	            throw new DynamicExtensionsSystemException(
+	                    "Exception occured while commiting trasaction", e, DYEXTN_S_002);
+			}
+			catch (SQLException e)
+			{
+	            throw new DynamicExtensionsSystemException(
+	                    "Exception occured while closing the connection", e, DYEXTN_S_002);
+			}
+		}
         return rollbackQueryStack;
-
     }
 
     public Object[] executeDMLQuery(String query) throws DynamicExtensionsSystemException {
@@ -1714,12 +1748,12 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
             } else {
                 str = (String) value;
             }
-            
+
             if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
             {
                 str = DynamicExtensionsUtility.formatMonthAndYearDate(str);
             }
-            
+
             if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
             {
                 str = DynamicExtensionsUtility.formatYearDate(str);

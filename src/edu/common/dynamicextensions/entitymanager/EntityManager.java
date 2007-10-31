@@ -1270,7 +1270,8 @@ public class EntityManager
 				//Saving the modified target entity.
 				try
 				{
-					DBUtil.currentSession().saveOrUpdateCopy(association.getTargetEntity());
+					hibernateDAO.saveUpdate(association.getTargetEntity(), null, false, false,false);
+					//DBUtil.currentSession().saveOrUpdateCopy(association.getTargetEntity());
 				}
 				catch (Exception e)
 				{
@@ -1666,10 +1667,10 @@ public class EntityManager
 		}
 
 		Entity entity = (Entity) container.getEntity();
-		Session session = null;
+		//Session session = null;
 		try
 		{
-			session = DBUtil.currentSession();
+			//session = DBUtil.currentSession();
 			if (container.getBaseContainer() != null)
 			{
 				if (container.getBaseContainer().getId() == null)
@@ -1687,13 +1688,16 @@ public class EntityManager
 
 			preSaveProcessContainer(container); //preprocess
 
-			session.saveOrUpdateCopy(container);
+
+			hibernateDAO.saveUpdate(container, null, false, false,false);
+			//session.saveOrUpdateCopy(container);
 
 			if (currentEntityGroup != null && (isMainContainer(mainContainerNames,container.getCaption())))
 			{//Adding the group id to the container only if it is a main container as in the Annotation List page grid,
 				//only main containers should be visible.
 				currentEntityGroup.addMainContainer(container);
-				session.saveOrUpdateCopy(currentEntityGroup);
+				hibernateDAO.saveUpdate(currentEntityGroup, null, false, false,false);
+				//session.saveOrUpdateCopy(currentEntityGroup);
 			}
 		}
 		catch (HibernateException e)
@@ -1703,11 +1707,24 @@ public class EntityManager
 			throw new DynamicExtensionsSystemException(
 					"Exception occured while opening a session to save the container.", e);
 		}
+		catch (DAOException e)
+		{
+			rollbackQueries(rollbackQueryStack, entity, e, hibernateDAO);
+			throw new DynamicExtensionsSystemException(
+					"DAOException occured while opening a session to save the container.", e);
+		}
 		catch (DynamicExtensionsSystemException e)
 		{
 			rollbackQueries(rollbackQueryStack, entity, e, hibernateDAO);
 			e.printStackTrace();
 			throw e;
+		}
+		catch (UserNotAuthorizedException e)
+		{
+			rollbackQueries(rollbackQueryStack, entity, e, hibernateDAO);
+			e.printStackTrace();
+			throw new DynamicExtensionsSystemException(
+					"DAOException occured while opening a session to save the container.", e);
 		}
 		return container;
 	}
@@ -1789,7 +1806,7 @@ public class EntityManager
 		Entity entity = (Entity) container.getEntity();
 		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
 				Constants.HIBERNATE_DAO);
-		Session session = null;
+		//Session session = null;
 		boolean isentitySaved = true;
 		if (entity != null && entity.getId() == null)
 		{
@@ -1801,7 +1818,7 @@ public class EntityManager
 
 			hibernateDAO.closeSession();
 			hibernateDAO.openSession(null);
-			session = DBUtil.currentSession();
+			//session = DBUtil.currentSession();
 			EntityGroupInterface currentEntityGroup = null;
 
 			if (entity != null)
@@ -1814,17 +1831,19 @@ public class EntityManager
 				List<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
 				saveOrUpdateEntity(entity, hibernateDAO, rollbackQueryStack, isentitySaved,
 						processedEntityList, addIdAttribute, false, true);
-				saveChildContainers(container, session);
+				saveChildContainers(container, hibernateDAO);
 			}
 
 			preSaveProcessContainer(container); //preprocess
 
-			session.saveOrUpdateCopy(container);
+			hibernateDAO.saveUpdate(container, null, false, false,false);
+			//session.saveOrUpdateCopy(container);
 
 			if (currentEntityGroup != null)
 			{
 				currentEntityGroup.addMainContainer(container);
-				session.saveOrUpdateCopy(currentEntityGroup);
+				hibernateDAO.saveUpdate(currentEntityGroup, null, false, false,false);
+				//session.saveOrUpdateCopy(currentEntityGroup);
 			}
 
 			hibernateDAO.commit();
@@ -1903,9 +1922,10 @@ public class EntityManager
 	 * @param container
 	 * @param session
 	 * @throws HibernateException
+	 * @throws UserNotAuthorizedException
+	 * @throws DAOException
 	 */
-	private void saveChildContainers(ContainerInterface container, Session session) throws HibernateException,
-			DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	private void saveChildContainers(ContainerInterface container, HibernateDAO hibernateDAO) throws DAOException, UserNotAuthorizedException
 	{
 		if (container != null)
 		{
@@ -1915,9 +1935,10 @@ public class EntityManager
 			{
 				ContainmentAssociationControlInterface associationControl = (ContainmentAssociationControlInterface) control;
 
-				session.saveOrUpdateCopy(associationControl.getContainer());
+				hibernateDAO.saveUpdate(associationControl.getContainer(), null, false, false,false);
+				//session.saveOrUpdateCopy(associationControl.getContainer());
 
-				saveChildContainers(associationControl.getContainer(), session);
+				saveChildContainers(associationControl.getContainer(), hibernateDAO);
 
 			}
 		}
@@ -2787,7 +2808,7 @@ public class EntityManager
 
 		try
 		{
-			Session session = DBUtil.currentSession();
+			//Session session = DBUtil.currentSession();
 			if (!isEntitySaved)
 			{
 				if (addIdAttribute)
@@ -2824,20 +2845,21 @@ public class EntityManager
 
 			}
 			//Fixed bug 5619
-			if(entity.getId() != null)
+			if (entity.getId() == null)
 			{
-				session.update(entity);
+				hibernateDAO.insert(entity, null, false, false);
 			}
 			else
 			{
-				session.save(entity);
+				hibernateDAO.update(entity, null, false, false,false);
 			}
 			//entity = (Entity) session.saveOrUpdateCopy(entity);
 
 			postSaveProcessEntity(entity, hibernateDAO, rollbackQueryStack, processedEntityList,
 					addIdAttribute, isEntityFromXMI, copyDataTableState);
 
-			entity = (Entity) session.saveOrUpdateCopy(entity);
+			hibernateDAO.saveUpdate(entity, null, false, false,false);
+			//entity = (Entity) session.saveOrUpdateCopy(entity);
 
 			if (entity.getDataTableState() == DATA_TABLE_STATE_CREATED)
 			{
@@ -2917,7 +2939,7 @@ public class EntityManager
 		//Entity databaseCopy = null;
 		try
 		{
-			Session session = DBUtil.currentSession();
+			//Session session = DBUtil.currentSession();
 			Long start = null, end = null;
 			if (!isEntitySaved)
 			{
@@ -3015,7 +3037,7 @@ public class EntityManager
 		//Entity databaseCopy = null;
 		try
 		{
-			Session session = DBUtil.currentSession();
+			//Session session = DBUtil.currentSession();
 			Long start = null, end = null;
 			if (!isEntitySaved)
 			{
@@ -4685,7 +4707,7 @@ public class EntityManager
 				"getAssociationsForTargetEntity", substitutionParameterMap);
 		return assocationCollection;
 	}
-    
+
     /**
      * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAssociationsForTargetEntity(edu.common.dynamicextensions.domaininterface.EntityInterface)
      */

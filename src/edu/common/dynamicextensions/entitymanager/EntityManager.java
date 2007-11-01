@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.entitymanager;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -3116,7 +3117,10 @@ public class EntityManager
 		Object[] obj = queryBuilder.executeDMLQuery(query.toString());
 		if (obj != null)
 		{
-			parentId = (Long) obj[0];
+            if (obj[0] instanceof BigDecimal)
+                parentId = ((BigDecimal)obj[0]).longValue();
+            else
+                parentId = (Long) obj[0];
 		}
 		return parentId;
 	}

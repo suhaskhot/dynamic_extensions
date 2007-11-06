@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.domain;
 
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
+import edu.wustl.common.actionForm.IValueObject;
 import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.exception.AssignDataException;
 
@@ -31,6 +32,13 @@ public abstract class DynamicExtensionBaseDomainObject extends AbstractDomainObj
 	{
 
 	}
+    
+    public void setAllValues(IValueObject arg0) throws AssignDataException
+    {
+
+    }
+    
+    
 
 	/** 
 	 * @see edu.wustl.common.domain.AbstractDomainObject#setId(java.lang.Long)

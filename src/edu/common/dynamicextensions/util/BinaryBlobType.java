@@ -11,9 +11,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 
-import net.sf.hibernate.Hibernate;
-import net.sf.hibernate.HibernateException;
-import net.sf.hibernate.UserType;
+import org.hibernate.Hibernate;
+import org.hibernate.HibernateException;
+import org.hibernate.usertype.*;
 import oracle.sql.BLOB;
 
 import org.jboss.resource.adapter.jdbc.WrappedPreparedStatement;
@@ -27,7 +27,7 @@ public class BinaryBlobType implements UserType
 {
 
 	/**
-	 * @see net.sf.hibernate.UserType#sqlTypes()
+	 * @see org.hibernate.UserType#sqlTypes()
 	 */
 	public int[] sqlTypes()
 	{
@@ -35,7 +35,7 @@ public class BinaryBlobType implements UserType
 	}
 
 	/**
-	 * @see net.sf.hibernate.UserType#returnedClass()
+	 * @see org.hibernate.UserType#returnedClass()
 	 */
 	public Class returnedClass()
 	{
@@ -43,7 +43,7 @@ public class BinaryBlobType implements UserType
 	}
 
 	/**
-	 * @see net.sf.hibernate.UserType#equals(java.lang.Object, java.lang.Object)
+	 * @see org.hibernate.UserType#equals(java.lang.Object, java.lang.Object)
 	 */
 	public boolean equals(Object x, Object y)
 	{
@@ -52,7 +52,7 @@ public class BinaryBlobType implements UserType
 	}
 
 	/**
-	 * @see net.sf.hibernate.UserType#nullSafeGet(java.sql.ResultSet, java.lang.String[], java.lang.Object)
+	 * @see org.hibernate.UserType#nullSafeGet(java.sql.ResultSet, java.lang.String[], java.lang.Object)
 	 */
 	public Object nullSafeGet(ResultSet rs, String[] names, Object owner)
 			throws HibernateException, SQLException
@@ -83,7 +83,7 @@ public class BinaryBlobType implements UserType
 	}
 
 	/**
-	 * @see net.sf.hibernate.UserType#nullSafeSet(java.sql.PreparedStatement, java.lang.Object, int)
+	 * @see org.hibernate.UserType#nullSafeSet(java.sql.PreparedStatement, java.lang.Object, int)
 	 */
 	public void nullSafeSet(PreparedStatement st, Object value, int index)
 			throws HibernateException, SQLException
@@ -142,7 +142,7 @@ public class BinaryBlobType implements UserType
 	}
 
 	/**
-	 * @see net.sf.hibernate.UserType#deepCopy(java.lang.Object)
+	 * @see org.hibernate.UserType#deepCopy(java.lang.Object)
 	 */
 	public Object deepCopy(Object value)
 	{
@@ -157,7 +157,7 @@ public class BinaryBlobType implements UserType
 	}
 
 	/**
-	 * @see net.sf.hibernate.UserType#isMutable()
+	 * @see org.hibernate.UserType#isMutable()
 	 */
 	public boolean isMutable()
 	{

@@ -14,9 +14,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import net.sf.hibernate.HibernateException;
-import net.sf.hibernate.Session;
-import net.sf.hibernate.Transaction;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
 import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.Attribute;
@@ -53,6 +54,7 @@ import edu.wustl.common.dao.HibernateDAO;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.dbManager.DBUtil;
+import edu.wustl.common.util.dbManager.HibernateMetaData;
 import edu.wustl.common.util.logger.Logger;
 
 /**
@@ -1699,7 +1701,8 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
      * @param databaseCopy
      * @return
      */
-    public boolean isParentChanged(Entity entity, Entity databaseCopy) {
+    public boolean isParentChanged(Entity entity, Entity databaseCopy) 
+    {
         boolean isParentChanged = false;
         if (entity.getParentEntity() != null && !entity.getParentEntity().equals(databaseCopy.getParentEntity())) {
             isParentChanged = true;
@@ -1748,12 +1751,12 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
             } else {
                 str = (String) value;
             }
-
+            
             if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
             {
                 str = DynamicExtensionsUtility.formatMonthAndYearDate(str);
             }
-
+            
             if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
             {
                 str = DynamicExtensionsUtility.formatYearDate(str);

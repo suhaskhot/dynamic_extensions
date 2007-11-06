@@ -1,12 +1,10 @@
-<?xml version="1.0"?>
-
+<?xml version='1.0'?>
 <!DOCTYPE hibernate-mapping PUBLIC
-    "-//Hibernate/Hibernate Mapping DTD 2.0//EN"
-    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
  <hibernate-mapping>
-
-
+ 
     <query name="getEntitiesByConceptCode">
        from Entity entity
 		   	join entity.semanticPropertyCollection semanticProperty
@@ -88,7 +86,7 @@
 	<query name="getAllGroupBeans">
 		select entityGroup.name,entityGroup.id
 			   from EntityGroup entityGroup
-			   		where  entityGroup.isSystemGenerated = false
+			   		where entityGroup.isSystemGenerated = false
 	</query>
 
 	<query name="checkDuplicateGroupName">

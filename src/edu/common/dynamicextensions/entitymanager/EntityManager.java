@@ -21,9 +21,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import net.sf.hibernate.HibernateException;
-import net.sf.hibernate.Query;
-import net.sf.hibernate.Session;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Association;
@@ -1271,7 +1271,15 @@ public class EntityManager
 				//Saving the modified target entity.
 				try
 				{
-					hibernateDAO.saveUpdate(association.getTargetEntity(), null, false, false,false);
+                    if(association.getTargetEntity().getId() != null)
+                    {
+                        hibernateDAO.update(association.getTargetEntity(), null, false, false, false);
+                    }
+                    else
+                    {
+                        hibernateDAO.insert(association.getTargetEntity(), null, false, false);
+                    }
+					//hibernateDAO.saveUpdate(association.getTargetEntity(), null, false, false,false);
 					//DBUtil.currentSession().saveOrUpdateCopy(association.getTargetEntity());
 				}
 				catch (Exception e)
@@ -1689,15 +1697,30 @@ public class EntityManager
 
 			preSaveProcessContainer(container); //preprocess
 
-
-			hibernateDAO.saveUpdate(container, null, false, false,false);
+            if(container.getId() != null)
+            {
+                hibernateDAO.update(container, null, false, false, false);
+            }
+            else
+            {
+                hibernateDAO.insert(container, null, false, false);
+            }
+			//hibernateDAO.saveUpdate(container, null, false, false,false);
 			//session.saveOrUpdateCopy(container);
 
 			if (currentEntityGroup != null && (isMainContainer(mainContainerNames,container.getCaption())))
 			{//Adding the group id to the container only if it is a main container as in the Annotation List page grid,
 				//only main containers should be visible.
 				currentEntityGroup.addMainContainer(container);
-				hibernateDAO.saveUpdate(currentEntityGroup, null, false, false,false);
+                if(currentEntityGroup.getId() != null)
+                {
+                    hibernateDAO.update(currentEntityGroup, null, false, false, false);
+                }
+                else
+                {
+                    hibernateDAO.insert(currentEntityGroup, null, false, false);
+                }
+				//hibernateDAO.saveUpdate(currentEntityGroup, null, false, false,false);
 				//session.saveOrUpdateCopy(currentEntityGroup);
 			}
 		}
@@ -1836,14 +1859,29 @@ public class EntityManager
 			}
 
 			preSaveProcessContainer(container); //preprocess
-
-			hibernateDAO.saveUpdate(container, null, false, false,false);
+            if(container.getId() != null)
+            {
+                hibernateDAO.update(container, null, false, false, false);
+            }
+            else
+            {
+                hibernateDAO.insert(container, null, false, false);
+            }
+			//hibernateDAO.saveUpdate(container, null, false, false,false);
 			//session.saveOrUpdateCopy(container);
 
 			if (currentEntityGroup != null)
 			{
 				currentEntityGroup.addMainContainer(container);
-				hibernateDAO.saveUpdate(currentEntityGroup, null, false, false,false);
+                if(currentEntityGroup.getId() != null)
+                {
+                    hibernateDAO.update(currentEntityGroup, null, false, false, false);
+                }
+                else
+                {
+                    hibernateDAO.insert(currentEntityGroup, null, false, false);
+                }
+				//hibernateDAO.saveUpdate(currentEntityGroup, null, false, false,false);
 				//session.saveOrUpdateCopy(currentEntityGroup);
 			}
 
@@ -1935,8 +1973,15 @@ public class EntityManager
 			if (control instanceof ContainmentAssociationControlInterface)
 			{
 				ContainmentAssociationControlInterface associationControl = (ContainmentAssociationControlInterface) control;
-
-				hibernateDAO.saveUpdate(associationControl.getContainer(), null, false, false,false);
+                if(associationControl.getContainer().getId() != null)
+                {
+                    hibernateDAO.update(associationControl.getContainer(), null, false, false, false);
+                }
+                else
+                {
+                    hibernateDAO.insert(associationControl.getContainer(), null, false, false);
+                }
+				//hibernateDAO.saveUpdate(associationControl.getContainer(), null, false, false,false);
 				//session.saveOrUpdateCopy(associationControl.getContainer());
 
 				saveChildContainers(associationControl.getContainer(), hibernateDAO);
@@ -2858,8 +2903,15 @@ public class EntityManager
 
 			postSaveProcessEntity(entity, hibernateDAO, rollbackQueryStack, processedEntityList,
 					addIdAttribute, isEntityFromXMI, copyDataTableState);
-
-			hibernateDAO.saveUpdate(entity, null, false, false,false);
+            if(entity.getId() != null)
+            {
+                hibernateDAO.update(entity, null, false, false, false);
+            }
+            else
+            {
+                hibernateDAO.insert(entity, null, false, false);
+            }
+			//hibernateDAO.saveUpdate(entity, null, false, false,false);
 			//entity = (Entity) session.saveOrUpdateCopy(entity);
 
 			if (entity.getDataTableState() == DATA_TABLE_STATE_CREATED)

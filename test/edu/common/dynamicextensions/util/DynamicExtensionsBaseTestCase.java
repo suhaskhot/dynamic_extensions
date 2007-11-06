@@ -14,7 +14,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 import junit.framework.TestCase;
-import net.sf.hibernate.HibernateException;
+import org.hibernate.HibernateException;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;

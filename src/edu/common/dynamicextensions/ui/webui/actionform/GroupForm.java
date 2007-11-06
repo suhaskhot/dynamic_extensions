@@ -192,11 +192,11 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 	 * @see edu.wustl.common.actionForm.AbstractActionForm#setAllValues(edu.wustl.common.domain.AbstractDomainObject)
 	 */
 	@Override
-	public void setAllValues(AbstractDomainObject arg0)
-	{
+	//public void setAllValues(AbstractDomainObject arg0)
+	//{
 		// TODO Auto-generated method stub
 
-	}
+	//}
 
 	/**
 	 * Overrides the validate method of ActionForm.
@@ -354,4 +354,9 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 	{
 		this.tempgroupNameText = tempgroupNameText;
 	}
+
+    public void setAllValues(AbstractDomainObject arg0) {
+        // TODO Auto-generated method stub
+        
+    }
 }

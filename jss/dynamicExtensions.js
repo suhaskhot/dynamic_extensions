@@ -1401,8 +1401,11 @@ function removeCheckedRow(containerId)
                         {
                             str = str + ")";
                         }
-                        innerHTML = replaceAll(cell.innerHTML,childObjectName,str);
-                        cell.innerHTML = innerHTML;
+                       
+                      		 var controlValue = document.getElementById(childObjectName).value;
+							cell.innerHTML = replaceAll(cell.innerHTML,childObjectName,str);
+							document.getElementById(str).value  = controlValue;
+                       
                         break;
                     }
                 }

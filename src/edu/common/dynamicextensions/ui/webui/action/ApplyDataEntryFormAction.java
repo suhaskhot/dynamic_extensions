@@ -288,7 +288,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 */
 	private void populateAndValidateValues(Stack<ContainerInterface> containerStack,
 			Stack<Map<AbstractAttributeInterface, Object>> valueMapStack,
-			HttpServletRequest request, DataEntryForm dataEntryForm) throws FileNotFoundException,
+			HttpServletRequest request, DataEntryForm dataEntryForm) throws FileNotFoundException,DynamicExtensionsValidationException,
 			DynamicExtensionsSystemException, IOException
 	{
 		ContainerInterface containerInterface = (ContainerInterface) containerStack.peek();
@@ -297,7 +297,8 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		valueMap = generateAttributeValueMap(containerInterface, request, dataEntryForm, "",
 				valueMap, true);
 
-		List<String> errorList = ValidatorUtil.validateEntity(valueMap);
+		List<String> errorList = ValidatorUtil.validateEntity(valueMap, dataEntryForm
+				.getRecordIdentifier(), dataEntryForm.getErrorList());
 
 		//List<String> errorList = new ArrayList<String>();
 		//saveErrors(request, getErrorMessages(errorList));

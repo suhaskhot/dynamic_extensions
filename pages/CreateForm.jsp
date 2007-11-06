@@ -113,7 +113,7 @@
 													<tr>
 														<td>
 															<label class="formMessage"><%=groupName%></label>
-															<div id="currentEntityTreeDiv" style="border:solid 0px; padding:1px; width:250px; height:100px; overflow:auto;" />
+															<div style="border:solid 0px; padding:1px; width:250px; height:510px; overflow:auto;" id="currentEntityTreeDiv" />
 														</td>
 													</tr>
 													<tr height='100%'><td>&nbsp;</td></tr>
@@ -179,7 +179,7 @@
 														<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
 														<td width="20%"></td>
 														<td class="formMessage"  valign="top">
-															<html:checkbox property="isAbstract" value="true"/>	
+															<html:checkbox property="isAbstract" styleId="isAbstract" value="true"/>	
 															<bean:message key="eav.form.abstract"/>
 														</td>
 													</tr>

@@ -1893,3 +1893,15 @@ function trim( value )
 {
     return LTrim(RTrim(value));
 }
+
+
+//for textArea Max length
+function textCounter( field,  maxlimit ) 
+{
+  if ( field.value.length > maxlimit )
+  {
+    field.value = field.value.substring( 0, maxlimit );
+    alert( 'Textarea value can only be '+  maxlimit + ' characters in length.' );
+   
+  }
+ }

@@ -645,7 +645,7 @@ public class DynamicExtensionsUtility
 					null, EntityManagerExceptionConstantsInterface.DYEXTN_A_004);
 		}
 		//This validation is already in place in ApplyFormControlsProcessor
-		//validateDuplicateNamesWithinEntity(entity, entity.getName());
+		//(entity, entity.getName());
 
 		if (entity.getInheritanceStrategy().equals(InheritanceStrategy.TABLE_PER_HEIRARCHY)
 				&& entity.getParentEntity() != null)
@@ -675,24 +675,17 @@ public class DynamicExtensionsUtility
 		Collection<AbstractAttributeInterface> collection = entity.getAbstractAttributeCollection();
 		if (collection != null || !collection.isEmpty())
 		{
-			Collection<String> nameCollection = new HashSet<String>();
-			for (AbstractAttributeInterface attribute : collection)
+			for(AbstractAttributeInterface attribute : collection)
 			{
-				if (!nameCollection.contains(attribute.getName()))
+				if(attribute.getName().equals(attributeName))
 				{
-					nameCollection.add(attribute.getName());
-				}
-			}
-			if(!nameCollection.isEmpty()&& nameCollection.contains(attributeName))
-			{
-
 					throw new DynamicExtensionsApplicationException(
 							"Attribute names should be unique for the entity ", null,
 							EntityManagerExceptionConstantsInterface.DYEXTN_A_006);
 
+				}
 			}
 		}
-
 	}
 
 

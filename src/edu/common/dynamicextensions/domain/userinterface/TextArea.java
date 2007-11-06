@@ -1,7 +1,10 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
+import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.Constants;
@@ -110,7 +113,35 @@ public class TextArea extends Control implements TextAreaInterface
 		{
 			htmlString += "rows='" + Constants.DEFAULT_ROW_SIZE + "' ";
 		}
-		htmlString += "wrap='virtual'>";
+		
+		int maxChars = 0;
+		AttributeInterface attribute = (AttributeInterface) this.getAbstractAttribute();
+		if (attribute != null)
+		{
+			AttributeTypeInformationInterface attributeTypeInformationInterface = attribute
+					.getAttributeTypeInformation();
+			if (attributeTypeInformationInterface != null)
+			{
+				if (attributeTypeInformationInterface instanceof StringAttributeTypeInformation)
+				{
+					StringAttributeTypeInformation stringAttributeTypeInformation = (StringAttributeTypeInformation) attributeTypeInformationInterface;
+					if (stringAttributeTypeInformation != null)
+					{
+						if(stringAttributeTypeInformation.getSize() != null)
+						{
+						maxChars = stringAttributeTypeInformation.getSize().intValue();
+						}
+					}
+				}
+			}
+		}
+		
+		if(maxChars > 0)
+		{
+			htmlString += " onblur='textCounter(this," + maxChars + ")'  ";
+		}
+		
+		htmlString += " wrap='virtual'>";
 
 		if (defaultValue == null || (defaultValue.length() == 0))
 		{

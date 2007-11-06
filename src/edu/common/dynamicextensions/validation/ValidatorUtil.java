@@ -36,10 +36,13 @@ public class ValidatorUtil
 	 * @throws DynamicExtensionsSystemException : Exception 
 	 */
 	public static List<String> validateEntity(
-			Map<AbstractAttributeInterface, Object> attributeValueMap)
+			Map<AbstractAttributeInterface, Object> attributeValueMap, List<String> errorList)
 			throws DynamicExtensionsSystemException
 	{
-		HashSet<String> errorSet = new HashSet<String>();
+		if(errorList == null)
+		{
+			errorList = new ArrayList<String>();
+		}
 		Set<Map.Entry<AbstractAttributeInterface, Object>> attributeSet = attributeValueMap
 				.entrySet();
 		if (attributeSet != null || !attributeSet.isEmpty())
@@ -49,7 +52,7 @@ public class ValidatorUtil
 				AbstractAttributeInterface abstractAttribute = attributeValueNode.getKey();
 				if (abstractAttribute instanceof AttributeInterface)
 				{
-					errorSet.addAll(validateAttributes(attributeValueNode));
+					errorList.addAll(validateAttributes(attributeValueNode));
 				}
 				else if (abstractAttribute instanceof AssociationInterface)
 				{
@@ -61,18 +64,14 @@ public class ValidatorUtil
 								.get(abstractAttribute);
 						for (Map<AbstractAttributeInterface, Object> subAttributeValueMap : valueObject)
 						{
-							errorSet.addAll(validateEntityAttributes(subAttributeValueMap));
+							errorList.addAll(validateEntityAttributes(subAttributeValueMap));
 						}
 					}
 				}
 			}
 		}
 
-		List<String> errorList = new ArrayList<String>();
-		if (!errorSet.isEmpty())
-		{
-			errorList = new ArrayList<String>(errorSet);
-		}
+		
 		return errorList;
 	}
 

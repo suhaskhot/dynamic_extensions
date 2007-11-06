@@ -297,8 +297,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		valueMap = generateAttributeValueMap(containerInterface, request, dataEntryForm, "",
 				valueMap, true);
 
-		List<String> errorList = ValidatorUtil.validateEntity(valueMap, dataEntryForm
-				.getRecordIdentifier(), dataEntryForm.getErrorList());
+		List<String> errorList = ValidatorUtil.validateEntity(valueMap, dataEntryForm.getErrorList());
 
 		//List<String> errorList = new ArrayList<String>();
 		//saveErrors(request, getErrorMessages(errorList));

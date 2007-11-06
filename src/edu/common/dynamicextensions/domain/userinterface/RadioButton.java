@@ -63,14 +63,17 @@ public class RadioButton extends Control implements RadioButtonInterface
 				{
 					htmlString += "<input type='radio' " + "class='" + cssClass + "' " + "name='"
 							+ htmlComponentName + "' " + "value='" + optionValue + "' " + "id='"
-							+ optionName + "' checked>" + "<label for=\"" + optionName + "\">"
-							+ optionName + "</label> ";
+							+ optionName + "' checked>"  
+							 + "<label for=\"" + htmlComponentName + "\">"
+							+ optionName
+							+ "</label> ";
 				}
 				else
 				{
 					htmlString += "<input type='radio' " + "class='" + cssClass + "' " + "name='"
 							+ htmlComponentName + "' " + "value='" + optionValue + "' " + "id='"
-							+ optionName + "'>" + "<label for=\"" + optionName + "\">" + optionName
+							+ optionName + "'>" 
+							+ "<label for=\"" + htmlComponentName + "\">" + optionName
 							+ "</label>";
 				}
 			}

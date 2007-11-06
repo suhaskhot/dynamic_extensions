@@ -512,12 +512,12 @@ public class Container extends DynamicExtensionBaseDomainObject
             }
         }
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append("<span style='cursor:hand' ");
+        stringBuffer.append("<a href='#' style='cursor:hand' ");
         stringBuffer.append("onclick='showChildContainerInsertDataPage(");
         stringBuffer.append(this.getId() + ",this");
         stringBuffer.append(")'>");
         stringBuffer.append(detailsString);
-        stringBuffer.append("</span>");
+        stringBuffer.append("</a>");
 
         return stringBuffer.toString();
     }

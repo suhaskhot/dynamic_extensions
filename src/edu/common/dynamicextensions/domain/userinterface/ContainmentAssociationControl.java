@@ -142,12 +142,12 @@ public class ContainmentAssociationControl extends Control
 	{
 		String detailsString = "Details";
 		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer.append("<span style='cursor:hand' class='" + cssClass + "' ");
+		stringBuffer.append("<a href='#' style='cursor:hand' class='" + cssClass + "' ");
 		stringBuffer.append("onclick='showChildContainerInsertDataPage(");
 		stringBuffer.append(this.getParentContainer().getIncontextContainer().getId() + ",this");
 		stringBuffer.append(")'>");
 		stringBuffer.append(detailsString);
-		stringBuffer.append("</span>");
+		stringBuffer.append("</a>");
 
 		return stringBuffer.toString();
 	}

@@ -166,6 +166,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 	{
 		ContainerInterface containerForSelectedForm = null;
 		String formName = "", formDescription = "", formConceptCode = "";
+		boolean isAbstract=false;
 		if (selectedFormId != null)
 		{
 			containerForSelectedForm = DynamicExtensionsUtility
@@ -186,11 +187,12 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 					{
 						formConceptCode = "";
 					}
+					isAbstract = entity.isAbstract();
 				}
 			}
 		}
 		String formDetailsXML = createFormDetailsXML(formName, formDescription, formConceptCode,
-				Constants.ADD_SUB_FORM_OPR);
+				Constants.ADD_SUB_FORM_OPR, isAbstract);
 		if (formDetailsXML == null)
 		{
 			formDetailsXML = "";
@@ -400,6 +402,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 		String formDescription = "";
 		String formConceptCode = "";
 		String operationMode = Constants.ADD_SUB_FORM_OPR;
+		boolean isAbstract= false;
 		if (containerForSelectedForm != null)
 		{
 			formName = containerForSelectedForm.getCaption();
@@ -408,6 +411,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 			{
 				formDescription = entity.getDescription();
 				formConceptCode = SemanticPropertyBuilderUtil.getConceptCodeString(entity);
+				isAbstract = entity.isAbstract();
 			}
 			operationMode = Constants.EDIT_FORM;
 		}
@@ -424,7 +428,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 			}
 		}
 		String formDetailsXML = createFormDetailsXML(formName, formDescription, formConceptCode,
-				operationMode);
+				operationMode, isAbstract);
 		if (formDetailsXML == null)
 		{
 			formDetailsXML = "";
@@ -439,7 +443,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 	 * @return
 	 */
 	private String createFormDetailsXML(String formName, String formDescription,
-			String formConceptCode, String operationMode)
+			String formConceptCode, String operationMode, boolean isAbstract)
 	{
 		StringBuffer responseXML = new StringBuffer();
 		responseXML.append("<form>");
@@ -447,6 +451,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 		responseXML.append("<form-description>" + formDescription + "</form-description>");
 		responseXML.append("<form-conceptcode>" + formConceptCode + "</form-conceptcode>");
 		responseXML.append("<operationMode>" + operationMode + "</operationMode>");
+		responseXML.append("<isAbstract>" + isAbstract + "</isAbstract>");
 		responseXML.append("</form>");
 		return responseXML.toString();
 	}

@@ -12,7 +12,7 @@
 
 <input type="hidden" id='linesTypeHidden' name="linesTypeHidden" value='<%=linesType%>' />
 <div id="TextDataType" style="display:none">
-	<table valign="top" summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
+	<table  summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%' >
 		<tr valign="top" >
  			<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
  			<td class="formRequiredLabelWithoutBorder" width="30%">
@@ -27,11 +27,12 @@
 	 			</html:radio>
  			</td>
 		</tr>
- 		<tr valign="top" id="rowForNumberOfLines" style="display:none;">
+ 		<tr  style="display:none" id="rowForNumberOfLines" >
  			<td class="formRequiredNoticeWithoutBorder" width="2%">
- 				&nbsp;
+ 				&nbsp; 
  		 	</td>
-			<td class="formRequiredLabelWithoutBorder" id="noOfLines" >
+
+			<td class="formRequiredLabelWithoutBorder" id="noOfLines" width="30%">
 				<bean:message key="eav.text.noOfLines"/> :
 			</td>
 			<td class="formFieldWithoutBorder">
@@ -53,7 +54,7 @@
 				<bean:message key="eav.att.DefaultValue"/> :
 			</td>
 			<td class="formFieldWithoutBorder">
-				<html:text styleClass="formDateSized" maxlength="100" size="60" styleId='attributeDefaultValue' property="attributeDefaultValue" />
+				<html:text styleClass="formDateSized" maxlength="100" size="60"  styleId='attributeDefaultValue' property="attributeDefaultValue" />
 			</td>
 		</tr>
 		<tr valign="top">
@@ -89,20 +90,6 @@
 				<html:text styleClass="formFieldSized5" maxlength="100" size="60" styleId='attributeDefaultValue' property="attributeDefaultValue" />
 			</td>
 		</tr>
-		<tr>
-			<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-			<td class="formRequiredLabelWithoutBorder" width="30%">
-				<bean:message key="eav.att.AttributeMeasurementUnits"/> :
-			</td>
-			<td class="formFieldWithoutBorder">
-				<html:select styleClass="formDateSized" styleId = 'attributeMeasurementUnits'  property="attributeMeasurementUnits" onchange="measurementUnitsChanged(this)">
-					<c:forEach items="${measurementUnitsList}" var="measurementUnit">
-					<jsp:useBean id="measurementUnit" type="java.lang.String" />
-						<html:option value='<%=measurementUnit%>'></html:option>
-					</c:forEach>
-				</html:select>
-				<html:text styleClass="formFieldSized5" property="measurementUnitOther" styleId='measurementUnitOther' />
-			</td>
-		</tr>
+		
 	</table>
 </div>

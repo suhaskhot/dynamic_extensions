@@ -185,7 +185,9 @@ function dataFldDataTypeChanged(datatypeControl)
         if(divForDataType!=null)
         {
             var substitutionDiv = document.getElementById('substitutionDiv');
+          //  alert(substitutionDiv);
             substitutionDiv.innerHTML = divForDataType.innerHTML;
+            //alert(substitutionDiv.innerHTML);
         }
         insertRules(datatypeControl);
     }
@@ -260,8 +262,8 @@ function initBuildForm()
     initializeOptionsDefaultValue();
 
     //If other option is selected in measurement units, enable the text box next to it
-    var cboMeasurementUnits = document.getElementById('attributeMeasurementUnits');
-    measurementUnitsChanged(cboMeasurementUnits);
+  //  var cboMeasurementUnits = document.getElementById('attributeMeasurementUnits');
+ //   measurementUnitsChanged(cboMeasurementUnits);
 
     //List box type : Combo-box or List box
     var attributeMultiSelect = document.getElementById('hiddenIsMultiSelect');
@@ -482,10 +484,10 @@ function clearControlAttributes()
         document.getElementById('attributeDecimalPlaces').value = "";
     }
 
-    if(document.getElementById('attributeMeasurementUnits') != null)
+/*    if(document.getElementById('attributeMeasurementUnits') != null)
     {
         document.getElementById('attributeMeasurementUnits').value = "";
-    }
+    }*/
     if(document.getElementById('measurementUnitOther') != null)
     {
         document.getElementById('measurementUnitOther').value = "";
@@ -664,7 +666,7 @@ function controlSelected(rowId,colId)
     controlsForm.submit();
 }
 
-function measurementUnitsChanged(cboMeasuremtUnits)
+/*function measurementUnitsChanged(cboMeasuremtUnits)
 {
     if(cboMeasuremtUnits!=null)
     {
@@ -686,7 +688,7 @@ function measurementUnitsChanged(cboMeasuremtUnits)
             }
         }
     }
-}
+}*/
 
 function ruleSelected(ruleObject)
 {

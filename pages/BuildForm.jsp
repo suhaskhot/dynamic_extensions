@@ -27,7 +27,7 @@
 		<script src="<%=request.getContextPath()%>/dhtml_comp/jss/dhtmlXGrid_nxml.js"></script>
 		<script src="<%=request.getContextPath()%>/dhtml_comp/jss/dhtmlXGrid_drag.js"></script>
 		<script src="<%=request.getContextPath()%>/dhtml_comp/jss/dhtmlXGridCell.js"></script>
-		
+
 		<title>Dynamic Extensions</title>
 		<script language="JavaScript" type="text/javascript">
 			function initCancelOperation()
@@ -273,9 +273,9 @@
 
 							<tr>
 								<td colspan="2" align="left" class="formLabelBorderless">
-									<html:submit styleClass="groupButtonMainForm" onclick="saveEntity()">
+									<html:button styleClass="groupButtonMainForm" property="saveButton" onclick="saveEntity()" onkeydown="saveEntityOnKeyDown(event)">
 										<bean:message key="buttons.save"/>
-									</html:submit>
+									</html:button>
 									&nbsp;
 									<html:reset styleClass="groupButtonMainForm" property="cancelButton" onclick='showHomePageFromBuildForm()'>
 										<bean:message key="buttons.cancel"/>

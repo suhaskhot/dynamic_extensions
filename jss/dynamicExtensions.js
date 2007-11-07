@@ -519,16 +519,25 @@ function clearControlAttributes()
 
 function saveEntity()
 {
-    var entitySaved = document.getElementById('entitySaved');
-    if(entitySaved!=null)
-    {
-        entitySaved.value='true';
-    }
-    var controlsForm = document.getElementById('controlsForm');
-    if(controlsForm!=null)
-    {
-        controlsForm.action="/dynamicExtensions/SaveEntityAction.do";
-    }
+	var entitySaved = document.getElementById('entitySaved');
+	if(entitySaved!=null)
+	{
+		entitySaved.value='true';
+	}
+	var controlsForm = document.getElementById('controlsForm');
+	if(controlsForm!=null)
+	{
+		controlsForm.action="/dynamicExtensions/SaveEntityAction.do";
+		controlsForm.submit();
+	}
+}
+function saveEntityOnKeyDown(evt)
+{
+	var evt = evt || window.event;
+	if(evt && evt.keyCode == 13)
+	{
+		saveEntity();
+	}
 }
 
 function loadPreviewForm()
@@ -940,17 +949,25 @@ function loadRecordList(target)
 
 function saveGroup()
 {
-    var groupForm = document.getElementById('groupForm');
-    var groupOperation = document.getElementById('groupOperation');
-    if(groupOperation!=null)
-    {
-        groupOperation.value = "savegroup";
-    }
-    if(groupForm!=null)
-    {
-        groupForm.action = "/dynamicExtensions/ApplyGroupDefinitionAction.do";
-        groupForm.submit();
-    }
+	var groupForm = document.getElementById('groupForm');
+	var groupOperation = document.getElementById('groupOperation');
+	if(groupOperation!=null)
+	{
+		groupOperation.value = "savegroup";
+	}
+	if(groupForm!=null)
+	{
+		groupForm.action = "/dynamicExtensions/ApplyGroupDefinitionAction.do";
+		groupForm.submit();
+	}
+}
+function saveGroupOnKeyDown(evt)
+{
+	var evt = evt || window.event;
+	if(evt && evt.keyCode == 13)
+	{
+		saveGroup();
+	}
 }
 
 function toggle(fldForSelectedObject,id,p)
@@ -1403,11 +1420,11 @@ function removeCheckedRow(containerId)
                         {
                             str = str + ")";
                         }
-                       
+
                       		 var controlValue = document.getElementById(childObjectName).value;
 							cell.innerHTML = replaceAll(cell.innerHTML,childObjectName,str);
 							document.getElementById(str).value  = controlValue;
-                       
+
                         break;
                     }
                 }
@@ -1552,7 +1569,7 @@ function treeNodeSelectedResponse(formNameListXML)
         var htmlOperationMode = document.getElementById('operationMode');
         var htmlOperation = document.getElementById('operation');
         var isAbstract = document.getElementById('isAbstract');
-        
+
         var documentElt = getDocumentElementForXML(formNameListXML);
         var formname = documentElt.getElementsByTagName('form-name');
         var formDesc = documentElt.getElementsByTagName('form-description');
@@ -1915,12 +1932,12 @@ function trim( value )
 
 
 //for textArea Max length
-function textCounter( field,  maxlimit ) 
+function textCounter( field,  maxlimit )
 {
   if ( field.value.length > maxlimit )
   {
     field.value = field.value.substring( 0, maxlimit );
     alert( 'Textarea value can only be '+  maxlimit + ' characters in length.' );
-   
+
   }
  }

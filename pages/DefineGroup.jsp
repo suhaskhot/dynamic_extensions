@@ -24,12 +24,12 @@
 
 		<c:set var="createGroupAs" value="${groupForm.createGroupAs}"/>
 		<jsp:useBean id="createGroupAs" type="java.lang.String"/>
-		
+
 		<c:set var="operationMode" value="${groupForm.operationMode}"/>
 		<jsp:useBean id="operationMode" type="java.lang.String"/>
 
 		<html:form styleId = "groupForm"  action="/LoadGroupDefinitionAction">
-		
+
 		<input type="hidden" id="groupOperation" name="groupOperation" value=""/>
 
 	        <table valign="top" align='right' width='100%' height="100%" border='0' cellspacing="0" cellpadding="0" >
@@ -73,7 +73,7 @@
 										<tr valign="top">
 											<td class="formMessage" colspan="3">&nbsp;</td>
 										</tr>
-										
+
 										<tr valign="top" class="rowWithBottomPadding">
 											<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
 											<td class="formRequiredLabelWithoutBorder" width="12%">
@@ -110,7 +110,7 @@
 							</tr>
 							<tr height='100%' valign="top">
 								<td height='100%' colspan="2" align="left">
-									<html:button styleClass="actionButton" property="saveButton" onclick="saveGroup()">
+									<html:button styleClass="actionButton" property="saveButton" onclick="saveGroup()" onkeydown="saveGroupOnKeyDown(event)">
 										<bean:message key="buttons.save" />
 	 								</html:button>
 									<html:button styleClass="actionButton" property="cancelButton" onclick="showHomePageFromCreateGroup()">

@@ -99,25 +99,29 @@
 								<td colspan="7">
 									<table align='center' width='100%'>
 										<tr>
-											<td align="center" class="formTitle">
-												<%
-													if(errorList.size() != 0)
-													{
-												%>
-														<c:forEach items="${errorList}" var="error">
-														<jsp:useBean id="error" type="java.lang.String" />
+											<%
+												if(errorList.size() != 0)
+												{
+											%>
+												<td align="center" class="formTitleError">
+													<c:forEach items="${errorList}" var="error">
+														<jsp:useBean id="error" type="java.lang.String"/>
 															<c:out value="${error}"/><br />
-														</c:forEach>
-												<%
-													}
-												%>
-												<logic:messagesPresent message="true">
-													<ul>
-														<html:messages id="msg" message="true"> 
-															<li><bean:write name="msg"/></li>
-														</html:messages>
-													</ul>
-												</logic:messagesPresent>
+													</c:forEach>
+											<%
+												} else {
+											%>
+												<td align="center" class="formTitle">
+											<%
+												}
+											%>
+													<logic:messagesPresent message="true">
+														<ul>
+															<html:messages id="msg" message="true"> 
+																<li><bean:write name="msg"/></li>
+															</html:messages>
+														</ul>
+													</logic:messagesPresent>
 											</td>
 										</tr>
 										<tr><td>&nbsp;</td></tr>

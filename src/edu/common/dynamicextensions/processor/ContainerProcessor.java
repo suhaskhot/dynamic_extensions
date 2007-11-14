@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.processor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
@@ -143,17 +144,18 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 	{
 		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
 		List<NameValueBean> containerList = entityManagerInterface.getAllContainerBeans();
-
+        
 		List<NameValueBean> formsList = new ArrayList<NameValueBean>();
 		formsList.add(new NameValueBean("--select--", "0"));
 		if (containerList != null && !containerList.isEmpty())
 		{
+            Collections.sort(containerList);
 			formsList.addAll(containerList);
 		}
 
 		return formsList;
 	}
-
+    
 	/**
 	 * 
 	 * @param containerInterface : Container object 

@@ -965,6 +965,11 @@ public class DynamicExtensionsUtility
         
         if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
         {
+            if (Integer.parseInt(date1.substring(3, date1.length()).trim()) > Integer.parseInt(date2.substring(3, date2.length()).trim()))
+            {
+                result = 1;
+                return result;
+            }
             date1 = formatMonthAndYearDate(date1);
             date2 = formatMonthAndYearDate(date2);
             //09-12-2007 0:0
@@ -984,8 +989,8 @@ public class DynamicExtensionsUtility
 
 		try
 		{
-			Date firstDate = Utility.parseDate(date1, dateFormat);
-			Date secondDate = Utility.parseDate(date2, dateFormat);
+			Date firstDate = Utility.parseDate(date1, "MM-dd-yyyy");
+			Date secondDate = Utility.parseDate(date2, "MM-dd-yyyy");
 			if (firstDate.after(secondDate))
 			{
 				result = 1;

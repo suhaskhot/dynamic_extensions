@@ -100,7 +100,7 @@
 											{
 												String divId = "temp_slcalcod" + paramName;
 										%>
-											<html:text styleId="<%=tempParamName%>" styleClass="formFieldSized5" maxlength="100" size="60" property="<%=tempParamName%>" />
+											<html:text styleId="<%=tempParamName%>" styleClass="formFieldSized5" maxlength="100" size="60" property="<%=tempParamName%>" readonly="true"/>
 											<A onclick="showCalendar('<%=tempParamName%>',<%=DynamicExtensionsUtility.getCurrentYear()%>,<%=DynamicExtensionsUtility.getCurrentMonth()%>,<%=DynamicExtensionsUtility.getCurrentDay()%>,'MM-dd-yyyy','controlsForm','<%=tempParamName%>',event,1900,2020);" href="javascript://">
 												<IMG alt="This is a Calendar" src="images/calendar.gif" border=0>
 											</A>

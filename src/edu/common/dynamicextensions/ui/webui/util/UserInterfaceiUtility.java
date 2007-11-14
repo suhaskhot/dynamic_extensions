@@ -56,7 +56,9 @@ public class UserInterfaceiUtility
 
         List<ControlInterface> controlsList = new ArrayList<ControlInterface>(subContainer
                 .getAllControls());
-        Collections.sort(controlsList);
+        
+        // Do not sort the controls list; it jumbles up the attribute order
+        //Collections.sort(controlsList);
 
         stringBuffer.append("<tr width='100%'><td colspan='3' class='formFieldContainer'>");
         stringBuffer.append("<div style='display:none' id='" + subContainer.getId()
@@ -236,7 +238,9 @@ public class UserInterfaceiUtility
                 .getContainerValueMap();
         List<ControlInterface> controlsList = new ArrayList<ControlInterface>(container
                 .getAllControls());
-        Collections.sort(controlsList);
+        
+        // Do not sort the controls list; it jumbles up the attribute order
+        //Collections.sort(controlsList);
 
         stringBuffer.append("<tr width='100%'>");
 

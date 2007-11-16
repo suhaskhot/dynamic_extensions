@@ -1306,7 +1306,11 @@ public class ControlsForm extends AbstractActionForm
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
 					ApplicationProperties.getValue("eav.att.Label")));
 		}
-
+        
+        if (caption.contains(","))
+            errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.label.containsComma",
+                    ApplicationProperties.getValue("eav.att.Label")));
+        
 		validateControlFields(validator, errors);
 		return errors;
 	}
@@ -1543,6 +1547,13 @@ public class ControlsForm extends AbstractActionForm
 		 *	1) Precision : numeric
 		 *	2) Default value is numeric
 		 */
+        if (attributeDecimalPlaces.contains("."))
+        {
+            errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
+                    "errors.item.precisionNotInteger", ApplicationProperties
+                            .getValue("eav.att.AttributeDecimalPlaces")));
+        }
+        
 		if (!isNaturalNumber(attributeDecimalPlaces, validator))
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(

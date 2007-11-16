@@ -806,8 +806,6 @@ public class DynamicExtensionsUtility
     
     public static String formatMonthAndYearDate(String strDate)
     {
-        if (strDate.length() == 0)
-            strDate = "Jan 1900";
         String month = determineMonth(strDate.substring(0, 3));
         String year = strDate.substring(4, strDate.length());
         return month+"-"+"01"+"-"+year+" 0:0";
@@ -815,8 +813,6 @@ public class DynamicExtensionsUtility
     
     public static String formatYearDate(String strDate)
     {
-        if (strDate.length() == 0)
-            strDate = "1900";
         String year = strDate;
         return "01"+"-"+"01"+"-"+year+" 0:0";
     }

@@ -40,7 +40,7 @@ function printMonthAndYearCal(id,month1, month2, month3, month4, month5, month6,
     document.write('</select>');
     document.write('</td>');
     document.write('    <td align="center" width="10" class="CALENDARTITLE" nowrap>');
-    document.write('<select id="calyear'+id+'" name="calyear'+id+'" onfocus="showYears(id)"><OPTION selected>1900</OPTION>');
+    document.write('<select id="calyear'+id+'" name="calyear'+id+'" onload="showYears(id)"><OPTION selected>1900</OPTION>');
     document.write('</select>');
     document.write('</td>');
     //document.write('    <td class="CALENDARTITLE"  width="10" align="right"><img src="' + imgsrc + 'next2.gif"></td>');
@@ -61,7 +61,7 @@ function printYearOnlyCal(id, year)
     document.write('    <td align="center" width="*" class="CALENDARTITLE">');
     document.write('</td>');
     document.write('    <td align="center" width="*" class="CALENDARTITLE" nowrap>');
-    document.write('<select id="calyear'+id+'" name="calyear'+id+'" onfocus="showYears(id)"><OPTION selected>1900</OPTION>');
+    document.write('<select id="calyear'+id+'" name="calyear'+id+'" onload="showYears(id)"><OPTION selected>1900</OPTION>');
     document.write('</select>');
     document.write('</td>');
     //document.write('    <td class="CALENDARTITLE"  width="10" align="right"><img src="' + imgsrc + 'next2.gif"></td>');

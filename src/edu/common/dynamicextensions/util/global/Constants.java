@@ -89,7 +89,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String IDENTIFIER = "identifier";
 
 	public enum Cardinality {
-		ZERO(0), ONE(1), MANY(2);
+		ZERO(0), ONE(1), MANY(100);
 
 		Integer value;
 

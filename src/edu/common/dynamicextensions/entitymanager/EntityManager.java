@@ -44,6 +44,7 @@ import edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
 import edu.common.dynamicextensions.domain.userinterface.Container;
+import edu.common.dynamicextensions.domain.userinterface.Control;
 import edu.common.dynamicextensions.domain.userinterface.SelectControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeInterface;
@@ -1822,6 +1823,9 @@ public class EntityManager
 	{
 		Container container = (Container) containerInterface;
 		Stack rollbackQueryStack = new Stack();
+        //List<Container> processedContainersList = new ArrayList<Container>();
+        List<Long> processedControlsIdsList = new ArrayList<Long>();
+        
 		if (container == null)
 		{
 			throw new DynamicExtensionsSystemException("Container passed is null");
@@ -1830,7 +1834,7 @@ public class EntityManager
 		Entity entity = (Entity) container.getEntity();
 		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
 				Constants.HIBERNATE_DAO);
-		//Session session = null;
+		Session session = null;
 		boolean isentitySaved = true;
 		if (entity != null && entity.getId() == null)
 		{
@@ -1842,7 +1846,7 @@ public class EntityManager
 
 			hibernateDAO.closeSession();
 			hibernateDAO.openSession(null);
-			//session = DBUtil.currentSession();
+			session = DBUtil.currentSession();
 			EntityGroupInterface currentEntityGroup = null;
 
 			if (entity != null)
@@ -1855,7 +1859,22 @@ public class EntityManager
 				List<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
 				saveOrUpdateEntity(entity, hibernateDAO, rollbackQueryStack, isentitySaved,
 						processedEntityList, addIdAttribute, false, true);
-				saveChildContainers(container, hibernateDAO);
+                
+                //processedContainersList.add(container);
+                
+                if (container != null)
+                {
+                    for (ControlInterface control : container.getControlCollection())
+                    {
+                        if (control instanceof ContainmentAssociationControlInterface)
+                        {
+                            processedControlsIdsList.add(((ContainmentAssociationControlInterface)control).getContainer().getId());
+                        }
+                    }
+                }
+				//saveChildContainers(container, session, processedContainersList);
+                List<Long> idsList = new ArrayList<Long>();
+                saveChildContainers(container, session, processedControlsIdsList, idsList);
 			}
 
 			preSaveProcessContainer(container); //preprocess
@@ -1964,30 +1983,76 @@ public class EntityManager
 	 * @throws UserNotAuthorizedException
 	 * @throws DAOException
 	 */
-	private void saveChildContainers(ContainerInterface container, HibernateDAO hibernateDAO) throws DAOException, UserNotAuthorizedException
+	//private void saveChildContainers(ContainerInterface container, Session session, List<Container> processedCotainersList) throws DAOException, UserNotAuthorizedException
+    private void saveChildContainers(ContainerInterface container, Session session, List<Long> processedControlsIdsList, List<Long> idsList) throws DAOException, UserNotAuthorizedException
 	{
 		if (container != null)
 		{
-		for (ControlInterface control : container.getControlCollection())
-		{
-			if (control instanceof ContainmentAssociationControlInterface)
-			{
-				ContainmentAssociationControlInterface associationControl = (ContainmentAssociationControlInterface) control;
-                if(associationControl.getContainer().getId() != null)
-                {
-                    hibernateDAO.update(associationControl.getContainer(), null, false, false, false);
-                }
-                else
-                {
-                    hibernateDAO.insert(associationControl.getContainer(), null, false, false);
-                }
-				//hibernateDAO.saveUpdate(associationControl.getContainer(), null, false, false,false);
-				//session.saveOrUpdateCopy(associationControl.getContainer());
-
-				saveChildContainers(associationControl.getContainer(), hibernateDAO);
-
-			}
-		}
+    		for (ControlInterface control : container.getControlCollection())
+    		{
+    			if (control instanceof ContainmentAssociationControlInterface)
+    			{
+    				ContainmentAssociationControlInterface associationControl = (ContainmentAssociationControlInterface) control;
+                    
+                    if (associationControl.getContainer().getId() != null && processedControlsIdsList.size() >= 2)
+                    {
+                        if (idsList.contains(associationControl.getContainer().getId()))
+                        {
+                            session.merge(associationControl.getContainer());
+                        }
+                        else
+                        {
+                            session.update(associationControl.getContainer());
+                            idsList.add(associationControl.getContainer().getId());
+                        }
+                        /*for (int i=0; i<processedControlsList.size(); i++)
+                        {
+                            if (((ContainmentAssociationControlInterface) processedControlsList.get(i)).getContainer().getId() == associationControl.getContainer().getId())
+                            {
+                                session.merge(associationControl.getContainer());
+                                break;
+                            }
+                            if (idsList.contains(associationControl.getContainer().getId()))
+                            {
+                                session.merge(associationControl.getContainer());
+                            }
+                            if (processedControlsList.get(i).getContainer().getControlCollection().size() != 0)
+                            {
+                                while(processedControlsList.get(i).getContainer().getControlCollection().iterator().hasNext())
+                                {
+                                    Object tempControl = processedControlsList.get(i).getContainer().getControlCollection().iterator().next();
+                                    if (tempControl instanceof ContainmentAssociationControlInterface)
+                                    {
+                                        if (((ContainmentAssociationControlInterface)tempControl).getContainer().getId() == associationControl.getContainer().getId())
+                                        {
+                                            session.merge(associationControl.getContainer());
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            session.update(associationControl.getContainer());
+                                            break;
+                                        }
+                                    }
+                                }
+                                
+                            }
+                        }*/
+                    }
+                    else if (associationControl.getContainer().getId() != null && processedControlsIdsList.size() < 2)
+                    {
+                        session.update(associationControl.getContainer());
+                        idsList.add(associationControl.getContainer().getId());
+                    }
+                    else
+                    {
+                        session.save(associationControl.getContainer());
+                        idsList.add(associationControl.getContainer().getId());
+                    }
+    
+    				saveChildContainers(associationControl.getContainer(), session, processedControlsIdsList, idsList);
+    			}
+    		}
 		}
 	}
 
@@ -4312,7 +4377,7 @@ public class EntityManager
         String targetEntityTable = "";
         String columnName;
         String onClause = ON_KEYWORD;
-        String multipleColumnsClause = SELECT_KEYWORD + IDENTIFIER + ", ";
+        
         int counter = 0;
         boolean containsMultipleAttributes = false;
 
@@ -4323,8 +4388,9 @@ public class EntityManager
             targetEntityTable = ((AssociationInterface)((SelectControl)associationControl).getAbstractAttribute()).getTargetEntity().getTableProperties().getName();
 
         String selectClause = SELECT_KEYWORD + targetEntityTable + "." +IDENTIFIER;
-        String fromClause = FROM_KEYWORD;
+        String fromClause = FROM_KEYWORD + targetEntityTable + ", ";
         String whereClause = WHERE_KEYWORD;
+        String multipleColumnsClause = SELECT_KEYWORD + targetEntityTable + "." + IDENTIFIER + ", ";
 
         List associationAttributesList = new ArrayList(associationAttributesCollection);
         Collections.sort(associationAttributesList);
@@ -4342,7 +4408,8 @@ public class EntityManager
             {
                 selectClause = selectClause + ", " + tableName + "." + columnName;
 
-                fromClause =  fromClause +  tableName + ", ";
+                if (!(fromClause.contains(tableName)))
+                    fromClause =  fromClause + tableName + ", ";
 
                 if (counter == 0 && associationAttributesCollection.size() > 1)
                 {
@@ -4355,7 +4422,9 @@ public class EntityManager
                 }
                 else if (associationAttributesCollection.size() == 1)
                 {
-                    fromClause =  fromClause +  targetEntityTable + ", ";
+                    if (!(fromClause.contains(targetEntityTable)))
+                        fromClause =  fromClause +  targetEntityTable + ", ";
+                    
                     whereClause = whereClause + targetEntityTable +".ACTIVITY_STATUS <> 'Disabled' AND ";
                     whereClause = whereClause + tableName + "." + IDENTIFIER + " = " + targetEntityTable + "." + IDENTIFIER + " AND " + targetEntityTable + "." + IDENTIFIER + " = ";
                 }
@@ -4398,7 +4467,7 @@ public class EntityManager
 
 
         if (((AssociationInterface)((SelectControl)associationControl).getAbstractAttribute()).getTargetEntity().getParentEntity() == null)
-            multipleColumnsClause = multipleColumnsClause.substring(0, multipleColumnsClause.length()-2) + fromClause + targetEntityTable;
+            multipleColumnsClause = multipleColumnsClause.substring(0, multipleColumnsClause.length()-2) + FROM_KEYWORD + targetEntityTable;
 
 
         StringBuffer query = new StringBuffer();

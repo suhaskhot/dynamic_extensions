@@ -30,5 +30,6 @@ public interface EntityManagerConstantsInterface
 	String DOUBLE_ATTRIBUTE_TYPE = "Double";
 	String LONG_ATTRIBUTE_TYPE = "Long";
     String INTEGER_ATTRIBUTE_TYPE = "Integer";
-    String OBJECT_ATTRIBUTE_TYPE = "Object";   
+    String OBJECT_ATTRIBUTE_TYPE = "Object"; 
+    String ACTIVITY_STATUS_ATTRIBUTE_NAME = "activityStatus";
 }

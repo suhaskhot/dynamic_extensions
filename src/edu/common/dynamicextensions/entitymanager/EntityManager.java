@@ -390,6 +390,7 @@ public class EntityManager
 			boolean isDataTablePresent,boolean copyDataTableState,AssociationInterface association) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
+		Entity entity = (Entity) entityInterface;
 		if (isDataTablePresent)
 		{
 			((Entity) entityInterface).setDataTableState(DATA_TABLE_STATE_ALREADY_PRESENT);
@@ -398,29 +399,31 @@ public class EntityManager
 		{
 			((Entity) entityInterface).setDataTableState(DATA_TABLE_STATE_NOT_CREATED);
 		}
-		Entity entity = (Entity) entityInterface;
-		boolean isEntitySaved = true;
-		//Depending on the presence of Id field , the method that is to be invoked (insert/update), is decided.
-		if (entity.getId() == null)
-		{
-			isEntitySaved = false;
-		}
+
+//		boolean isEntitySaved = true;
+//		//Depending on the presence of Id field , the method that is to be invoked (insert/update), is decided.
+//		if (entity.getId() == null)
+//		{
+//			isEntitySaved = false;
+//		}
 
 		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
 				Constants.HIBERNATE_DAO);
-		Stack stack = new Stack();
+//		Stack stack = new Stack();
 
 		try
 		{
 
 			hibernateDAO.openSession(null);
+
+			hibernateDAO.update(entity, null, false, false,false);
 			//Calling the method which actually calls the insert/update method on dao.
 			//Hibernatedao is passed to this method and transaction is handled in the calling method.
-			saveEntityGroup(entityInterface, hibernateDAO);
-			List<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
-
-			entityInterface = saveOrUpdateEntityMetadataForSingleAnnotation(entityInterface, hibernateDAO, stack,
-					isEntitySaved, processedEntityList, copyDataTableState,association);
+//			saveEntityGroup(entityInterface, hibernateDAO);
+//			List<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
+//
+//			entityInterface = saveOrUpdateEntityMetadataForSingleAnnotation(entityInterface, hibernateDAO, stack,
+//					isEntitySaved, processedEntityList, copyDataTableState,association);
 
 			//Committing the changes done in the hibernate session to the database.
 			hibernateDAO.commit();
@@ -430,7 +433,7 @@ public class EntityManager
 			//Queries for data table creation and modification are fired in the method saveOrUpdateEntity.
 			//So if there is any exception while storing the metadata ,
 			//we need to roll back the queries that were fired. So calling the following method to do that.
-			rollbackQueries(stack, entity, e, hibernateDAO);
+			//rollbackQueries(stack, entity, e, hibernateDAO);
 
 			if (e instanceof DynamicExtensionsApplicationException)
 			{
@@ -446,7 +449,8 @@ public class EntityManager
 		{
 			try
 			{
-				postSaveOrUpdateEntity(entityInterface);
+				//postSaveOrUpdateEntity(entityInterface);
+				 entity.setProcessed(false);
 				//In any case , after all the operations , hibernate session needs to be closed. So this call has
 				// been added in the finally clause.
 				hibernateDAO.closeSession();
@@ -456,7 +460,7 @@ public class EntityManager
 				//Queries for data table creation and modification are fired in the method saveOrUpdateEntity. So if there
 				//is any exception while storing the metadata , we need to roll back the queries that were fired. So
 				//calling the following method to do that.
-				rollbackQueries(stack, entity, e, hibernateDAO);
+				//rollbackQueries(stack, entity, e, hibernateDAO);
 			}
 		}
 		logDebug("persistEntity", "exiting the method");
@@ -1825,7 +1829,7 @@ public class EntityManager
 		Stack rollbackQueryStack = new Stack();
         //List<Container> processedContainersList = new ArrayList<Container>();
         List<Long> processedControlsIdsList = new ArrayList<Long>();
-        
+
 		if (container == null)
 		{
 			throw new DynamicExtensionsSystemException("Container passed is null");
@@ -1859,9 +1863,9 @@ public class EntityManager
 				List<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
 				saveOrUpdateEntity(entity, hibernateDAO, rollbackQueryStack, isentitySaved,
 						processedEntityList, addIdAttribute, false, true);
-                
+
                 //processedContainersList.add(container);
-                
+
                 if (container != null)
                 {
                     for (ControlInterface control : container.getControlCollection())
@@ -1993,7 +1997,7 @@ public class EntityManager
     			if (control instanceof ContainmentAssociationControlInterface)
     			{
     				ContainmentAssociationControlInterface associationControl = (ContainmentAssociationControlInterface) control;
-                    
+
                     if (associationControl.getContainer().getId() != null && processedControlsIdsList.size() >= 2)
                     {
                         if (idsList.contains(associationControl.getContainer().getId()))
@@ -2035,7 +2039,7 @@ public class EntityManager
                                         }
                                     }
                                 }
-                                
+
                             }
                         }*/
                     }
@@ -2049,7 +2053,7 @@ public class EntityManager
                         session.save(associationControl.getContainer());
                         idsList.add(associationControl.getContainer().getId());
                     }
-    
+
     				saveChildContainers(associationControl.getContainer(), session, processedControlsIdsList, idsList);
     			}
     		}
@@ -4377,7 +4381,7 @@ public class EntityManager
         String targetEntityTable = "";
         String columnName;
         String onClause = ON_KEYWORD;
-        
+
         int counter = 0;
         boolean containsMultipleAttributes = false;
 
@@ -4424,7 +4428,7 @@ public class EntityManager
                 {
                     if (!(fromClause.contains(targetEntityTable)))
                         fromClause =  fromClause +  targetEntityTable + ", ";
-                    
+
                     whereClause = whereClause + targetEntityTable +".ACTIVITY_STATUS <> 'Disabled' AND ";
                     whereClause = whereClause + tableName + "." + IDENTIFIER + " = " + targetEntityTable + "." + IDENTIFIER + " AND " + targetEntityTable + "." + IDENTIFIER + " = ";
                 }

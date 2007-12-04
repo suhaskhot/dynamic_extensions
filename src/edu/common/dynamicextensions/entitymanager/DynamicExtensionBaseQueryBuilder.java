@@ -214,7 +214,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
                 query.append(SELECT_KEYWORD + WHITESPACE + IDENTIFIER);
                 query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName + WHITESPACE);
                 query.append(WHITESPACE + WHERE_KEYWORD + WHITESPACE + targetKey + EQUAL + recordId);
-                query.append(" and " + getRemoveDisbledRecordsQuery(""));
+              //  query.append(" and " + getRemoveDisbledRecordsQuery(""));
 
                 List<Long> reocordIdList = getAssociationRecordValues(query.toString());
 

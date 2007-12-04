@@ -32,6 +32,7 @@ import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.common.dynamicextensions.xmi.exporter.XMIExporter;
+import edu.common.dynamicextensions.xmi.importer.XMIImporter;
 import edu.common.dynamicextensions.xmi.importer.XMIImporterUtil;
 import edu.common.dynamicextensions.xmi.importer.XMIImportProcessor;
 
@@ -47,7 +48,7 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 	/**
 	 * Specify the name of the domain model xmi file to import. This file must be present at the path test/ModelXML under the project root directory
 	 */
-	private String XMIFileName = "caFE_Domain_Model.xml";
+	private String XMIFileName = "C:\\EA_1.4.xmi";
 
 	public void testXMIExport()
 	{
@@ -64,7 +65,6 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 		}
 		catch (Exception e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -73,11 +73,13 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 	/**
 	 * Test cases for XMI Import
 	 */
-	public void testPersistContainerForXMIImport()
+	public void testPersistEntityGroupWithContainersForXMIImport()
 	{
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		try
 		{
+			Collection<ContainerInterface> processedContainerList = new HashSet<ContainerInterface>();
+			
 			//Container 1
 			Container container1 = (Container) new MockEntityManager().getContainer("abc");
 			EntityInterface sourceEntity = container1.getEntity();
@@ -123,15 +125,26 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 
 			container4.setBaseContainer(container3);
 
-			List<ArrayList> processedContainerListEntityList = XMIImporterUtil
-					.getProcessedContainerList();
-//			TODO Instead of persist container call persist entity group
-//			EntityManager.getInstance().persistContainer(container4,
-//					processedContainerListEntityList, false);
+			
+			processedContainerList.add(container1);
+			processedContainerList.add(container2);
+			processedContainerList.add(container3);
+			processedContainerList.add(container4);
+			
+			EntityGroupInterface entityGroupInterface = domainObjectFactory.createEntityGroup();
+			//entityGroupInterface.setName("Test Group");
+			entityGroupInterface.setName("test_" + new Double(Math.random()).toString());
+			entityGroupInterface.setDescription("Test description1");
+			entityGroupInterface.setVersion("1");
+			
+			entityGroupInterface.addEntity(container1.getEntity());
+			entityGroupInterface.addEntity(container2.getEntity());
+			entityGroupInterface.addEntity(container3.getEntity());
+			entityGroupInterface.addEntity(container4.getEntity());
+			EntityManager.getInstance().persistEntityGroupWithAllContainers(entityGroupInterface, processedContainerList);
 		}
 		catch (Exception e)
-		{
-			//TODO Auto-generated catch block
+		{			
 			e.printStackTrace();
 			Logger.out.debug(e.getMessage());
 			fail("Exception occured");
@@ -144,11 +157,13 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 	{
 		try
 		{
-			//TODO Change this test case for XMI
+			String[] args = {XMIFileName};
+			XMIImporter.main(args);
+			
 //			DomainModelParser parser = getParser(XMIFileName);
 //			XMIImportProcessor processor = new XMIImportProcessor(
 //					parser, "Application1");
-			System.out.println("--------------- Done ------------");
+			System.out.println("--------------- Test Case to import XMI successful ------------");
 		}
 		catch (Exception e)
 		{
@@ -161,9 +176,10 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 	 * 
 	 */
 	public void testEntitesForDomain_Model_XMI()
-	{
-		try
-		{//TODO Change this test case for XMI
+	{//TODO
+//		try
+//		{
+//			testXMIImport();
 //			DomainModelParser parser = getParser(XMIFileName);
 //			XMIImportProcessor processor = new XMIImportProcessor(
 //					parser, "Application1");
@@ -206,12 +222,12 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 //				Map<String,List<String>> parentVsChildList = parser.getParentVsChildrenMap();
 //				testGeneralizationForEntity(parentVsChildList,umlClasses,entity.getParentEntity(),umlClass);
 //			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			fail("Exception occured");
-		}
+//		}
+//		catch (Exception e)
+//		{
+//			e.printStackTrace();
+//			fail("Exception occured");
+//		}
 	}
 	/**
 	 * @param parentVsChildList
@@ -300,8 +316,15 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		try
 		{
+			EntityGroup entityGroup = (EntityGroup)new MockEntityManager().initializeEntityGroup();
+			Collection<EntityInterface> entityColl = entityGroup.getEntityCollection();
 			//			Container1			
-			EntityInterface entity1 = (EntityInterface) new MockEntityManager().initializeEntity();
+			EntityInterface entity1 = null;
+			for(EntityInterface e : entityColl)
+			{
+				entity1 = e;
+			}
+			
 			Container container1 = (Container) new MockEntityManager()
 					.createContainerForGivenEntity("For Inheritance - Parent", entity1);
 			container1.setEntity(entity1);
@@ -323,16 +346,16 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 
 			entity2.setParentEntity(entity3);
 			entity3.setParentEntity(entity1);
+			entityGroup.addEntity(entity2);
+			entityGroup.addEntity(entity3);
 
-			List<ArrayList> processedContainerListEntityList = XMIImporterUtil
-					.getProcessedContainerList();
-//TODO Instead of persist container call persist entity group
-//			EntityManager.getInstance().persistContainer(container1,
-//					processedContainerListEntityList, false);
+			Collection containerColl = new HashSet();
+			containerColl.add(container1);
+			EntityManager.getInstance().persistEntityGroupWithAllContainers(entityGroup, containerColl);
+					
 		}
 		catch (Exception e)
-		{
-			//TODO Auto-generated catch block
+		{			
 			e.printStackTrace();
 			Logger.out.debug(e.getMessage());
 			fail("Exception occured");
@@ -410,7 +433,6 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 		}
 		catch (Exception e)
 		{
-			//TODO Auto-generated catch block
 			Logger.out.debug(e.getMessage());
 			e.printStackTrace();
 			fail("Exception occured");

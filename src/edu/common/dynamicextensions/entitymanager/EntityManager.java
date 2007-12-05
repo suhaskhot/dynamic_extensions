@@ -24,6 +24,7 @@ import java.util.Stack;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Association;
@@ -44,7 +45,6 @@ import edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
 import edu.common.dynamicextensions.domain.userinterface.Container;
-import edu.common.dynamicextensions.domain.userinterface.Control;
 import edu.common.dynamicextensions.domain.userinterface.SelectControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeInterface;
@@ -100,6 +100,7 @@ import edu.wustl.common.util.logger.Logger;
  * @author Geetika Bangard
  * @author Vishvesh Mulay
  * @author Rahul Ner
+ * @author mandar_shidhore
  */
 public class EntityManager
 		implements

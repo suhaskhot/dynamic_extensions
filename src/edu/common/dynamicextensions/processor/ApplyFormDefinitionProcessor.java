@@ -2,7 +2,7 @@
 package edu.common.dynamicextensions.processor;
 
 /**
- * This processor class mainly helps the action class to call the related Object driven processors 
+ * This processor class mainly helps the action class to call the related Object driven processors
  * to update the Actionforms by retriving data form Cache.
  * @author deepti_shelar
  */
@@ -51,15 +51,15 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	/**
 	 * This method creates a Container if not present in cache. Then it will call to ContainerProcessor will
 	 * populate this Object with the data from actionform.Then EntityProcessor's methods will be called to either create and Populate
-	 * or create and save the entity, Then finally this entity is added to the container. 
-	 * @param containerInterface : Container object 
+	 * or create and save the entity, Then finally this entity is added to the container.
+	 * @param containerInterface : Container object
 	 * @param actionForm : Form object
 	 * @param isActionSave : flag stating whether the object is to be saved to DB
 	 * @return ContainerInterface : Container object
-	 * @throws DynamicExtensionsApplicationException :Exception thrown by Entity Manager 
+	 * @throws DynamicExtensionsApplicationException :Exception thrown by Entity Manager
 	 * @throws DynamicExtensionsSystemException :Exception thrown by Entity Manager
 	 */
-	public ContainerInterface addEntityToContainer(ContainerInterface containerInterface, FormDefinitionForm actionForm, 
+	public ContainerInterface addEntityToContainer(ContainerInterface containerInterface, FormDefinitionForm actionForm,
 			EntityGroupInterface entityGroupInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
@@ -96,16 +96,16 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 			EntityInterface parentEntity = containerInterface.getBaseContainer().getEntity();
 			entityInterface.setParentEntity(parentEntity);
 		}
-		
+
 		return containerInterface;
 	}
 
 	/**
-	 * @param formDefinitionForm 
-	 * @param containerInterface 
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
-	 * 
+	 * @param formDefinitionForm
+	 * @param containerInterface
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
+	 *
 	 */
 	public AssociationInterface associateEntity(AssociationInterface association, ContainerInterface sourceContainer,
 			ContainerInterface targetContainer, FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException,
@@ -144,8 +144,8 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	/**
 	 * @param formDefinitionForm
 	 * @return
-	 * @throws DynamicExtensionsSystemException 
-	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
 	 */
 	private ContainerInterface createTargetEntityContainer(FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
@@ -191,8 +191,8 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	/**
 	 * @param selectedObjectId
 	 * @return
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private ContainerInterface getTargetEntityContainer(String targetContainerId) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
@@ -251,8 +251,8 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 
 	/**
 	 * @param formDefinitionForm
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public ContainerInterface getSubFormContainer(FormDefinitionForm formDefinitionForm, ContainerInterface mainFormContainer)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -270,7 +270,12 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 			String createAs = formDefinitionForm.getCreateAs();
 			if ((createAs != null) && (createAs.equals(ProcessorConstants.CREATE_FROM_EXISTING)))
 			{
-				targetEntityContainer = getSelectedContainer(mainFormContainer, selectedContainerId);
+				List<ContainerInterface> listOfContainers = new ArrayList<ContainerInterface>();
+				getSelectedContainer(mainFormContainer, selectedContainerId,listOfContainers);
+				if (!listOfContainers.isEmpty())
+				{
+					targetEntityContainer = listOfContainers.get(0);
+				}
 				if (targetEntityContainer == null)
 				{
 					targetEntityContainer = getTargetEntityContainer(formDefinitionForm.getSelectedObjectId());
@@ -336,28 +341,31 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		return childContainerList;
 	}
 
-	private ContainerInterface getSelectedContainer(ContainerInterface container, Long containerId)
+	private ContainerInterface getSelectedContainer(ContainerInterface container, Long containerId,List<ContainerInterface> listOfContainers)
 	{
-		Collection<ControlInterface> controlCollection = container.getControlCollection();
-
-		for (ControlInterface controlInterface : controlCollection)
+		if (container.getId().equals(containerId))
 		{
-
-			if (controlInterface instanceof ContainmentAssociationControlInterface)
+			listOfContainers.add(container);
+		}
+		else
+		{
+			Collection<ControlInterface> controlCollection = container.getControlCollection();
+			for (ControlInterface controlInterface : controlCollection)
 			{
-
-				ContainmentAssociationControlInterface containmentAssociationControlInterface = (ContainmentAssociationControlInterface) controlInterface;
-				ContainerInterface tempContainer = containmentAssociationControlInterface.getContainer();
-				if (tempContainer.getId().equals(containerId))
+				if (controlInterface instanceof ContainmentAssociationControlInterface)
 				{
-					return tempContainer;
-
+					ContainmentAssociationControlInterface containmentAssociationControlInterface = (ContainmentAssociationControlInterface) controlInterface;
+					ContainerInterface tempContainer = containmentAssociationControlInterface.getContainer();
+					if (tempContainer.getId().equals(containerId))
+					{
+						listOfContainers.add(tempContainer);
+						break;
+					}
+					else
+					{
+						getSelectedContainer(tempContainer, containerId,listOfContainers);
+					}
 				}
-				else
-				{
-					return getSelectedContainer(tempContainer, containerId);
-				}
-
 			}
 		}
 		return null;

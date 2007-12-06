@@ -31,12 +31,12 @@ import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.global.Constants;
 
 /**
- * This Action class handles two situations , 
+ * This Action class handles two situations ,
  * 1. When user selects 'Next' from createForm.jsp. This time a call to ApplyFormDefinitionProcessor
  * will just create an entity and populate it with actionform's data. This entity is then saved to cache.
- * 2. When user selects 'Save' from createForm.jsp. This time a call to ApplyFormDefinitionProcessor 
+ * 2. When user selects 'Save' from createForm.jsp. This time a call to ApplyFormDefinitionProcessor
  * will create an entity and will save it to database. This entity is then saved to cache.
- * The exception thrown can be of 'Application' type ,in this case the same Screen will be displayed  
+ * The exception thrown can be of 'Application' type ,in this case the same Screen will be displayed
  * added with error messages .
  * And The exception thrown can be of 'System' type, in this case user will be directed to Error Page.
  * @author deepti_shelar
@@ -53,9 +53,9 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	 * @param  request HttpServletRequest request
 	 * @param response HttpServletResponse response
 	 * @return ActionForward forward to next action
-	 * @throws Exception 
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws Exception
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -98,7 +98,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 			{
 				callbackURL = redirectCallbackURL(request, WebUIManagerConstants.SUCCESS);
 				if (callbackURL != null && !callbackURL.equals(""))
-				{					
+				{
 					response.sendRedirect(callbackURL);
 					target = null;
 				}
@@ -142,7 +142,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * @param mapping 
+	 * @param mapping
 	 * @param operation
 	 * @return
 	 */
@@ -163,7 +163,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * 
+	 *
 	 * @param request
 	 * @param formDefinitionForm
 	 * @throws DynamicExtensionsSystemException
@@ -199,9 +199,9 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	/**
 	 * @param parentContainer
 	 * @param childContainer
-	 * @param formDefinitionForm 
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @param formDefinitionForm
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private void updateAssociation(ContainerInterface parentContainer,
 			ContainerInterface childContainer, FormDefinitionForm formDefinitionForm)
@@ -232,18 +232,19 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	/**
 	 * @param request
 	 * @param formDefinitionForm
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private void addSubForm(HttpServletRequest request, FormDefinitionForm formDefinitionForm)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ContainerInterface mainFormContainer = WebUIManager.getCurrentContainer(request);
-
+		ContainerInterface rootFormContainer = (ContainerInterface) CacheManager.getObjectFromCache(
+				request, Constants.CONTAINER_INTERFACE);
 		ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor
 				.getInstance();
 		ContainerInterface subFormContainer = applyFormDefinitionProcessor.getSubFormContainer(
-				formDefinitionForm, mainFormContainer);
+				formDefinitionForm, rootFormContainer);
 		AssociationInterface association = applyFormDefinitionProcessor.createAssociation();
 		association = applyFormDefinitionProcessor.associateEntity(association, mainFormContainer,
 				subFormContainer, formDefinitionForm);
@@ -277,7 +278,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * @param formDefinitionForm 
+	 * @param formDefinitionForm
 	 * @return
 	 */
 	private boolean isNewEnityCreated(FormDefinitionForm formDefinitionForm)
@@ -295,8 +296,8 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	/**
 	 * @param request
 	 * @param formDefinitionForm
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private void applyFormDefinition(HttpServletRequest request,
 			FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException,
@@ -319,7 +320,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * 
+	 *
 	 * @param formDefinitionForm actionform
 	 * @return ActionMessages Messages
 	 */
@@ -333,7 +334,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * This method gets the Callback URL from cahce, reforms it and redirect the response to it. 
+	 * This method gets the Callback URL from cahce, reforms it and redirect the response to it.
 	 * @param request HttpServletRequest to obtain session
 	 * @param response HttpServletResponse to redirect the CallbackURL
 	 * @param recordIdentifier Identifier of the record to reconstruct the CallbackURL
@@ -358,7 +359,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 				+ WebUIManager.getContainerIdentifierParameterName() + "=" + containerInterface.getId().toString();
 				calllbackURL = calllbackURL + containerIdUrl;
 			}
-						
+
 			CacheManager.clearCache(request);
 		}
 		return calllbackURL;

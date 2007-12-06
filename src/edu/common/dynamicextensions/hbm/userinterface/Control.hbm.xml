@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version='1.0'?>
 
 <!DOCTYPE hibernate-mapping PUBLIC
-    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping default-lazy="false">
@@ -122,7 +122,7 @@
         <many-to-one
             name="container"
             class="edu.common.dynamicextensions.domain.userinterface.Container"
-            cascade="save-update"
+            cascade="none"
             outer-join="auto"
             update="true"
             insert="true"
@@ -195,17 +195,6 @@
 
         </joined-subclass>
         <joined-subclass
-            name="edu.common.dynamicextensions.domain.userinterface.DatePicker"
-            table="DYEXTN_DATEPICKER"
-            dynamic-update="false"
-            dynamic-insert="false"
-        >
-        <key
-            column="IDENTIFIER"
-        />
-
-        </joined-subclass>
-        <joined-subclass
             name="edu.common.dynamicextensions.domain.userinterface.SelectControl"
             table="DYEXTN_SELECT_CONTROL"
             dynamic-update="false"
@@ -271,6 +260,17 @@
         />
 
         </joined-subclass>
+
+        </joined-subclass>
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.userinterface.DatePicker"
+            table="DYEXTN_DATEPICKER"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
 
         </joined-subclass>
         <joined-subclass

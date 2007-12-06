@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version='1.0'?>
 
 <!DOCTYPE hibernate-mapping PUBLIC
-    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping auto-import="false" default-lazy="false">
@@ -49,8 +49,8 @@
             cascade="all-delete-orphan"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -65,7 +65,7 @@
         <many-to-one
             name="entity"
             class="edu.common.dynamicextensions.domain.Entity"
-            cascade="save-update"
+            cascade="none"
             outer-join="auto"
             update="true"
             insert="true"
@@ -107,7 +107,7 @@
         <many-to-one
             name="baseContainer"
             class="edu.common.dynamicextensions.domain.userinterface.Container"
-            cascade="save-update"
+            cascade="none"
             outer-join="auto"
             update="true"
             insert="true"

@@ -87,6 +87,11 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 						.getContainerByIdentifier(containerUIBeanInterface.getParentForm());
 				containerInterface.setBaseContainer(parentContainer);
 			}
+			//Added for bug 6068
+			else
+			{
+				containerInterface.setBaseContainer(null);
+			}
 		}
 	}
 

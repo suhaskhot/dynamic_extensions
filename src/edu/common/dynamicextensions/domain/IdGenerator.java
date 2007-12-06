@@ -1,10 +1,13 @@
 package edu.common.dynamicextensions.domain;
 
+import edu.common.dynamicextensions.domaininterface.IdGeneratorInterface;
+
 /**
  * @author kunal_kamble
+ * @hibernate.class table="dyextn_id_generator"
  * @version 1.0
  */
-public class IdGenerator extends AbstractAttribute {
+public class IdGenerator extends AbstractAttribute implements IdGeneratorInterface{
 
 	/** Default serial version id */
 	private static final long serialVersionUID = 1L;
@@ -13,55 +16,41 @@ public class IdGenerator extends AbstractAttribute {
 	private Long id;
 
 	/** nullable persistent field. */
-	private String className;
-
-	/** nullable persistent field. */
-	private Long nextId;
+	private Long nextAvailableId;
 
 	/** default constructor. */
 	public IdGenerator() {
 	}
 
+	/**
+	 * @hibernate.id name="id" column="id" type="java.lang.Long"
+	 * length="11" generator-class="assigned"
+	 */
 	public Long getId() {
 		return this.id;
 	}
 
 	/**
-	 * @param id
-	 *            id
+	 * @param id id
 	 */
 	public void setId(Long id) {
 		this.id = id;
 	}
 
 	/**
-	 * @return class name can be either sample or experiment
-	 */
-	public String getClassName() {
-		return this.className;
-	}
-
-	/**
-	 * @param className
-	 *            class name can be either sample or experiment
-	 */
-	public void setClassName(String className) {
-		this.className = className;
-	}
-
-	/**
 	 * @return next available id
+	 * @hibernate.property name="nextAvailableId" type="java.lang.Long" column="next_available_id" 
 	 */
-	public Long getNextId() {
-		return this.nextId;
+	public Long getNextAvailableId() {
+		return this.nextAvailableId;
 	}
 
 	/**
-	 * @param nextId
+	 * @param nextAvailableId
 	 *            next available id
 	 */
-	public void setNextId(Long nextAvailableId) {
-		this.nextId = nextAvailableId;
+	public void setNextAvailableId(Long nextAvailableId) {
+		this.nextAvailableId = nextAvailableId;
 	}
 
 }

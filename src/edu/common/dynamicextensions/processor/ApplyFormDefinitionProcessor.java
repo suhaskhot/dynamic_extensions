@@ -68,8 +68,8 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 			containerInterface = containerProcessor.createContainer();
 		}
 		//validate container name
-		DynamicExtensionsUtility.validateName(actionForm.getFormName());
-		containerProcessor.populateContainerInterface(containerInterface, actionForm);
+	//	DynamicExtensionsUtility.validateName(actionForm.getFormName());
+	//	containerProcessor.populateContainerInterface(containerInterface, actionForm);
 
 		//Add entity
 		EntityProcessor entityProcessor = EntityProcessor.getInstance();
@@ -159,7 +159,12 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		//Add entity
 		EntityProcessor entityProcessor = EntityProcessor.getInstance();
 		EntityInterface entityInterface = entityProcessor.createAndPopulateEntity(formDefinitionForm);
-
+		// bug fixed 5863
+		if(containerInterface.getBaseContainer() != null){
+			EntityInterface parentEntity = containerInterface.getBaseContainer().getEntity();
+			
+			entityInterface.setParentEntity(parentEntity);
+		}
 		//Add entity to container
 		containerInterface.setEntity(entityInterface);
 		return containerInterface;

@@ -212,4 +212,9 @@ public interface EntityInterface extends AbstractMetadataInterface
     
     public void setDataTableState(int dataTableState);
     
+    /**
+     * @param entityGroupCollection 
+     */
+    public void setEntityGroupCollection(Collection<EntityGroupInterface> entityGroupCollection);
+    
 }

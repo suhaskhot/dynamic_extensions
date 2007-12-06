@@ -226,7 +226,9 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 						.getAttributeCollection();
 				for (AttributeInterface attributeIterator : attributeCollection)
 				{
-					if (attributeIterator.getColumnProperties().getName() != null
+					//Added null check for bug 6013
+					if (attributeIterator.getColumnProperties() != null && 
+							attributeIterator.getColumnProperties().getName() != null
 							&& attributeIterator.getColumnProperties().getName().equals(
 									DynamicExtensionsQueryBuilderConstantsInterface.IDENTIFIER))
 					{

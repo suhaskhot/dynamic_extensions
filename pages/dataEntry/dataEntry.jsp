@@ -159,11 +159,11 @@
 																<bean:message key="buttons.submit" />
 															</html:submit>
 															
-															<c:if test='${(recordIdentifier123 != "")}'>	
+												<!--  		<c:if test='${(recordIdentifier123 != "")}'>	
 																<html:button styleClass="actionButton" property="cancel" onclick="setDeleteDataOperation()">
 																	<bean:message key="buttons.delete1" />
 																</html:button>
-															</c:if>		
+															</c:if>		-->	
 															
 														</c:if>
 														

@@ -3509,13 +3509,16 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     
     public void testSaveEntityGroupWithIDGenerator() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
     {
-        EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
-        EntityGroupInterface entityGroup = entityManagerInterface.getEntityGroupByName("XML");
-        /*EntityGroupInterface entityGroup = DomainObjectFactory.getInstance().createEntityGroup();
-        entityGroup.setName("XML");*/
+        NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
+        //EntityGroupInterface entityGroup = newEntityManagerInterface.getEntityGroupByName("XML");
+        EntityGroupInterface entityGroup = DomainObjectFactory.getInstance().createEntityGroup();
+        entityGroup.setName("XML");
         EntityInterface entity = DomainObjectFactory.getInstance().createEntity();
-        entity.setName("XML E3");
-        ContainerInterface container = DomainObjectFactory.getInstance().createContainer();
+        //EntityInterface entity = entityManagerInterface.getEntityByName("AZS");
+        entity.setName("BXS");
+        
+        
+        /*ContainerInterface container = DomainObjectFactory.getInstance().createContainer();
         container.setCaption("XML C3");
         ControlInterface control = DomainObjectFactory.getInstance().createTextField();
         control.setName("XML TextField");
@@ -3547,14 +3550,14 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
                 Cardinality.MANY));
 
         entity.addAbstractAttribute(association);
-//        association.
         
         entity.addAbstractAttribute(attribute1);
         entity.addAssociation(association);
-        entityGroup.addEntity(entity);
-        //entity.set
+        
         entity.getContainerCollection().add((Container) container);
-        container.setEntity(entity);
+        container.setEntity(entity);*/
+        
+        entityGroup.addEntity(entity);
         
         Collection entityGroupCollection = entity.getEntityGroupCollection();
         entityGroupCollection.add(entityGroup);
@@ -3563,7 +3566,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         
         try
         {
-            entityManagerInterface.saveEntityGroup(entityGroup);
+            newEntityManagerInterface.saveEntityGroup(entityGroup);
             //createDynamicEntityTables(entityGroup);
         }
         catch(Exception e)
@@ -3572,41 +3575,5 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             fail();
         }
     }
-
-    public void createDynamicEntityTables(EntityGroupInterface entityGroupInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException{
-        List reverseQueryList = new LinkedList();
-        List queryList = null;
-        Entity databaseCopy = null;
-        Stack rollbackQueryStack = new Stack();
-        DynamicExtensionBaseQueryBuilder queryBuilder = QueryBuilderFactory.getQueryBuilder();
-
-        HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
-                    Constants.HIBERNATE_DAO);
-        Collection<EntityInterface> entityList = entityGroupInterface.getEntityCollection();
-        for(EntityInterface entityInterface: entityList){
-              if (((Entity)entityInterface).getDataTableState() == EntityManagerConstantsInterface.DATA_TABLE_STATE_CREATED)
-              {
-                  //  if (entityInterface.getId() == null)
-                    {
-                          queryList = queryBuilder.getCreateEntityQueryList((Entity)entityInterface, reverseQueryList,
-                                      hibernateDAO, rollbackQueryStack, false);
-                    }
-//                    else
-//                    {
-//                          databaseCopy = (Entity) DBUtil.loadCleanObj(Entity.class, entityInterface.getId());
-//                          queryList = queryBuilder.getUpdateEntityQueryList((Entity)entityInterface,
-//                                      (Entity) databaseCopy, reverseQueryList);
-//                    }
-                    queryBuilder.executeQueries(queryList, reverseQueryList, rollbackQueryStack);
-              }
-        }
-        
-        for(EntityInterface entityInterface: entityList){
-              queryBuilder.getCreateAssociationsQueryList((Entity)entityInterface, reverseQueryList, hibernateDAO, rollbackQueryStack);
-        }
-    }
-
-	
-
-
+    
 }

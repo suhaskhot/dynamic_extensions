@@ -322,7 +322,49 @@ public class UserInterfaceiUtility
         }
         return null;
     }
-
+    /** Added this method for bug fix 5864
+     * This method returns the associationControl for a given Container and its child caintener id
+     * @param containerInterface
+     * @param childContainerId
+     * @return
+     */
+    public static ContainmentAssociationControl getAssociationControlForpreviewMode(
+            ContainerInterface containerInterface, String childContainerId)
+    {
+        Collection<ControlInterface> controlCollection = containerInterface.getAllControls();
+        for (ControlInterface control : controlCollection)
+        {
+            if (control instanceof ContainmentAssociationControl)
+            {
+                ContainmentAssociationControl containmentAssociationControl = (ContainmentAssociationControl) control;
+                String containmentAssociationControlId = "";
+                if(containmentAssociationControl.getContainer().getId() != null)
+                {
+                	containmentAssociationControlId = containmentAssociationControl.getContainer().getId().toString();
+                }
+                //in case of Add mode the childcontainer id is null so checking it with the caption of container
+                else
+                {
+                	containmentAssociationControlId = containmentAssociationControl.getContainer().getCaption();
+                }
+                         	
+                if (containmentAssociationControlId.equals(childContainerId))
+                {
+                    return containmentAssociationControl;
+                }
+                else
+                {
+                    containmentAssociationControl = getAssociationControl(
+                            containmentAssociationControl.getContainer(), childContainerId);
+                    if (containmentAssociationControl != null)
+                    {
+                        return containmentAssociationControl;
+                    }
+                }
+            }
+        }
+        return null;
+    }
     /**
      *
      * @param controlInterface

@@ -64,7 +64,7 @@ public class LoadFormPreviewAction extends BaseDynamicExtensionsAction
 		{
 			String childContainerId = dataEntryForm.getChildContainerId();
 			ContainmentAssociationControl associationControl = UserInterfaceiUtility
-					.getAssociationControl((ContainerInterface) containerStack.peek(),
+					.getAssociationControlForpreviewMode((ContainerInterface) containerStack.peek(),
 							childContainerId);
 			ContainerInterface childContainer = associationControl.getContainer();
 

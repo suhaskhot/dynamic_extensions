@@ -1,29 +1,38 @@
 package edu.common.dynamicextensions.util;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import edu.common.dynamicextensions.domain.IdGenerator;
+import edu.common.dynamicextensions.domaininterface.IdGeneratorInterface;
 import edu.wustl.common.util.dbManager.DBUtil;
+import edu.wustl.common.util.logger.Logger;
 
 /**
+ * This is singleton util class is used to generate unique ids. 
  * @author kunal_kamble
  * @version 1.0
  */
 public class IdGeneratorUtil 
 {
 
+	/**
+	 * Static instance of the id generator.
+	 */
 	private static IdGeneratorUtil idGeneratorUtil;
 
-	private static final Log log = LogFactory.getLog(IdGeneratorUtil.class);
-
+	/**
+	 * Private constructor used for making this class singleton
+	 */
 	private IdGeneratorUtil() 
     {
 	}
 
+	/**
+	 * Returns the instance of the IdGeneratorUtil class.
+	 * @return idGeneratorUtil singleton instance of the IdGeneratorUtil.
+	 */
 	public static synchronized IdGeneratorUtil getInstance() 
     {
 		if (idGeneratorUtil == null) 
@@ -41,7 +50,7 @@ public class IdGeneratorUtil
 	{
 		Session session = null;
 		Transaction transaction = null;
-		Long uniqueId = null;
+		Long nextAvailableId = null;
 
 		try 
         {
@@ -49,20 +58,12 @@ public class IdGeneratorUtil
 			transaction = session.beginTransaction();
 
 			Query query = session.createQuery("from " + IdGenerator.class.getName());
-			IdGenerator idGenerator = (IdGenerator) query.list().get(0);
+			IdGeneratorInterface idGenerator = (IdGeneratorInterface) query.list().get(0);
+		
+			nextAvailableId = idGenerator.getNextAvailableId();
+			idGenerator.setNextAvailableId(nextAvailableId + 1);
 			
-			/*Criterion[] critList = new Criterion[1];
-			Criteria crit = session.createCriteria(IdGenerator.class);
-			for (Criterion c : critList) 
-            {
-				crit.add(c);
-			}
-			List<IdGenerator> list = crit.list();
-			IdGenerator idGenerator = (IdGenerator) list.get(0);*/
-			
-			uniqueId = idGenerator.getNextId();
-			idGenerator.setNextId(uniqueId + 1);
-			
+			// Remove idGenerator instance from the session cache.
 			session.evict(idGenerator);
 			session.update(idGenerator);
 			transaction.commit();
@@ -75,7 +76,7 @@ public class IdGeneratorUtil
 			} 
             catch (RuntimeException rte) 
             {
-				log.error("Could not rollback transaction", rte);
+            	Logger.out.debug("Could not rollback transaction", rte);
 			}
 		} 
         finally 
@@ -83,6 +84,6 @@ public class IdGeneratorUtil
 			session.close();
 		}
 
-		return uniqueId;
+		return nextAvailableId;
 	}
 }

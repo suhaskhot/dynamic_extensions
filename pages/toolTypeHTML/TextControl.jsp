@@ -43,7 +43,7 @@
  	</tr>
  	<tr valign="top">
 		<td valign="top">
-			<div valign="top" id="substitutionDiv"></div>
+		<jsp:include page="/pages/toolTypeHTML/Datatypes.jsp" />
 		</td>
 	</tr>
 	<tr valign="top">
@@ -67,5 +67,5 @@
 		</td>
 	</tr>
 </table>
-<jsp:include page="/pages/toolTypeHTML/Datatypes.jsp" />
+
 <jsp:include page="/pages/ValidationRules.jsp" />

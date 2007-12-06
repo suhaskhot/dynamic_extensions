@@ -42,8 +42,19 @@
 				mygrid = new dhtmlXGridObject('gridbox');
 				mygrid.setImagePath("dhtml_comp/imgs/");
 				mygrid.setHeader("#,Name,Type");
-				mygrid.enableAutoHeigth(true);
-				mygrid.setInitWidthsP("6,47,47")
+				
+				if(navigator.userAgent.indexOf("Safari")!= -1 )
+				{
+					mygrid.setInitWidths("10,70,70");
+					mygrid.enableAutoHeigth(true,410);
+				}
+				else
+				{
+					mygrid.setInitWidthsP("6,47,47");
+					mygrid.enableAutoHeigth(true,510);
+				}
+				
+			
 				mygrid.setColAlign("center,left,left")
 				mygrid.setColTypes("ch,ed,ed");
 

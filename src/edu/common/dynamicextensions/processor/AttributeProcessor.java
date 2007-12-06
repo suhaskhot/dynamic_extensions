@@ -64,6 +64,7 @@ import edu.common.dynamicextensions.ui.util.RuleConfigurationObject;
 import edu.common.dynamicextensions.ui.util.SemanticPropertyBuilderUtil;
 import edu.common.dynamicextensions.ui.webui.util.OptionValueObject;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
+import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
@@ -937,8 +938,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				{
 					if (attributeUIBeanInformationIntf.getAttributeDefaultValue() != null)
 					{
-						defaultValue = Utility.parseDate(attributeUIBeanInformationIntf
-								.getAttributeDefaultValue(), dateFormat);
+                        String value = formatMonthAndYearDate(attributeUIBeanInformationIntf.getAttributeDefaultValue());
+						defaultValue = Utility.parseDate(value, "MM-dd-yyyy");
 					}
 				}
 			}
@@ -2002,4 +2003,70 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		}
 		return numberAttribIntf;
 	}
+    
+    public String formatMonthAndYearDate(String strDate)
+    {
+        String month = determineMonth(strDate.substring(0, 3));
+        String year = strDate.substring(4, strDate.length());
+        return month+"-"+"01"+"-"+year+" 0:0";
+    }
+    
+    public String formatYearDate(String strDate)
+    {
+        String year = strDate;
+        return "01"+"-"+"01"+"-"+year+" 0:0";
+    }
+    
+    public String determineMonth(String month)
+    {
+        if (month.equals(Constants.JANUARY))
+        {
+            return "01";
+        }
+        else if (month.equals(Constants.FEBRUARY))
+        {
+            return "02";
+        }
+        else if (month.equals(Constants.MARCH))
+        {
+            return "03";
+        }
+        else if (month.equals(Constants.APRIL))
+        {
+            return "04";
+        }
+        else if (month.equals(Constants.MAY))
+        {
+            return "05";    
+        }
+        else if (month.equals(Constants.JUNE))
+        {
+            return "06";    
+        }
+        else if (month.equals(Constants.JULY))
+        {
+            return "07";    
+        }
+        else if (month.equals(Constants.AUGUST))
+        {
+            return "08";    
+        }
+        else if (month.equals(Constants.SEPTEMBER))
+        {
+            return "09";    
+        }
+        else if (month.equals(Constants.OCTOBER))
+        {
+            return "10";    
+        }
+        else if (month.equals(Constants.NOVEMBER))
+        {
+            return "11";    
+        }
+        else if (month.equals(Constants.DECEMBER))
+        {
+            return "12";    
+        }
+        return null;
+    }
 }

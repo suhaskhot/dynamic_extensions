@@ -15,6 +15,7 @@ import java.util.Collection;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
+import edu.common.dynamicextensions.domain.userinterface.Control;
 import edu.common.dynamicextensions.domain.userinterface.SelectControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeInterface;
@@ -141,6 +142,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		if (controlUIBeanInterface != null && controlInterface != null)
 		{
 			controlInterface.setAbstractAttribute(controlUIBeanInterface.getAbstractAttribute());
+            //controlUIBeanInterface.getAbstractAttribute().setControl((Control) controlInterface);
 			controlInterface.setCaption(controlUIBeanInterface.getCaption());
 			controlInterface.setIsHidden(controlUIBeanInterface.getIsHidden());
 		}
@@ -621,6 +623,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		containmentAssociationControl.setCaption(container.getCaption());
 		containmentAssociationControl.setContainer(container);
 		containmentAssociationControl.setAbstractAttribute(attributeIntf);
+        //attributeIntf.setControl((Control) containmentAssociationControl);
 		Integer containerSequenceNumber = new Integer(1);
 		if (container.getControlCollection() != null)
 		{

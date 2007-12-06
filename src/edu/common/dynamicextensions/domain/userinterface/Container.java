@@ -186,7 +186,7 @@ public class Container extends DynamicExtensionBaseDomainObject
 
     /**
      * @hibernate.many-to-one column ="ENTITY_ID" class="edu.common.dynamicextensions.domain.Entity"
-     * cascade="none"
+     * cascade="save-update"
      * @return Returns the entity.
      */
     public EntityInterface getEntity()
@@ -525,7 +525,7 @@ public class Container extends DynamicExtensionBaseDomainObject
     /**
      * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getParentEntity()
      * @hibernate.many-to-one column="BASE_CONTAINER_ID" class="edu.common.dynamicextensions.domain.userinterface.Container" constrained="true"
-     *                        cascade="none"
+     *                        cascade="save-update"
      */
     public ContainerInterface getBaseContainer()
     {

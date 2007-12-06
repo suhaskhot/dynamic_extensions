@@ -28,7 +28,7 @@ public interface AssociationDisplayAttributeInterface
 	/**
 	 * This method returns the source Role of the Association.
 	 * @return the source Role of the Association.
-	 * @hibernate.many-to-one  cascade="none" column="DISPLAY_ATTRIBUTE_ID" class="edu.common.dynamicextensions.domain.Attribute" constrained="true"
+	 * @hibernate.many-to-one  cascade="save-update" column="DISPLAY_ATTRIBUTE_ID" class="edu.common.dynamicextensions.domain.Attribute" constrained="true"
 	 */
 	AttributeInterface getAttribute();
 

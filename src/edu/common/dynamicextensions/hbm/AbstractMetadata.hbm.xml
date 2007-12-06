@@ -1,7 +1,7 @@
-<?xml version='1.0'?>
+<?xml version="1.0"?>
 
 <!DOCTYPE hibernate-mapping PUBLIC
-    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping default-lazy="false">
@@ -153,6 +153,27 @@
             insert="true"
             column="ENTIY_ID"
         />
+
+        <set
+            name="control"
+            table="DYEXTN_CONTROL"
+            lazy="false"
+            inverse="false"
+            cascade="save-update"
+            sort="unsorted"
+        >
+            <cache 
+                usage="read-write" 
+             />
+
+              <key
+                  column="ABSTRACT_ATTRIBUTE_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.userinterface.Control"
+              />
+        </set>
 
         <joined-subclass
             name="edu.common.dynamicextensions.domain.Attribute"
@@ -354,7 +375,7 @@
             table="DYEXTN_ENTITY_GROUP_REL"
             lazy="false"
             inverse="true"
-            cascade="none"
+            cascade="save-update"
             sort="unsorted"
         >
             <cache 
@@ -402,7 +423,7 @@
             table="DYEXTN_CONTAINER"
             lazy="false"
             inverse="false"
-            cascade="none"
+            cascade="save-update"
             sort="unsorted"
         >
             <cache 
@@ -449,7 +470,7 @@
             table="DYEXTN_ENTITY_GROUP_REL"
             lazy="false"
             inverse="false"
-            cascade="none"
+            cascade="save-update"
             sort="unsorted"
         >
             <cache 
@@ -521,7 +542,7 @@
         <many-to-one
             name="parentEntity"
             class="edu.common.dynamicextensions.domain.Entity"
-            cascade="none"
+            cascade="save-update"
             outer-join="auto"
             update="true"
             insert="true"
@@ -551,6 +572,27 @@
             insert="true"
             column="DISCRIMINATOR_VALUE"
         />
+
+        <set
+            name="containerCollection"
+            table="DYEXTN_CONTAINER"
+            lazy="false"
+            inverse="false"
+            cascade="save-update"
+            sort="unsorted"
+        >
+            <cache 
+                usage="read-write" 
+             />
+
+              <key
+                  column="ENTITY_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.userinterface.Container"
+              />
+        </set>
 
         </joined-subclass>
 

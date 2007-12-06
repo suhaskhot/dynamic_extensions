@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.domaininterface;
 
 import java.util.Collection;
 
+import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
 import edu.common.dynamicextensions.util.global.Constants.InheritanceStrategy;
 
@@ -202,4 +203,13 @@ public interface EntityInterface extends AbstractMetadataInterface
      * Get all attributes for query
      */
     public Collection<AttributeInterface> getEntityAttributesForQuery();
+    
+    public Collection getContainerCollection();
+    
+    public void setContainerCollection(Collection containerCollection);
+    
+    public int getDataTableState();
+    
+    public void setDataTableState(int dataTableState);
+    
 }

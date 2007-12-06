@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.domaininterface;
 
 import java.util.Collection;
 
+import edu.common.dynamicextensions.domain.userinterface.Control;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 
 /**
@@ -49,5 +50,8 @@ public interface AbstractAttributeInterface extends AbstractMetadataInterface
 	 * @param entityInterface The entity to be set.
 	 */
 	void setEntity(EntityInterface entityInterface);
-
+    
+    public Collection<Control> getControl();
+    
+    public void setControl(Collection<Control> control);
 }

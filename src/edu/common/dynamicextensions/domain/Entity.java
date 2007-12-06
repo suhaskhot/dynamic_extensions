@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -55,12 +56,15 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	 * 3 - data table is not created by DE but it is already present. calling application take the
 	 *     responsibility of setting Table name and column name to the entity and attributes.
 	 */
-	protected int dataTableState = Constants.DATA_TABLE_STATE_CREATED;
+	protected int dataTableState = Constants.DATA_TABLE_STATE_NOT_CREATED;
 
 	/**
 	 * parent of this entity, null is no parent present. 
 	 */
 	protected EntityInterface parentEntity = null;
+    
+    
+    protected Collection containerCollection = new HashSet<Container>();
 
 	/**
 	 * indicates if this enitity is abstract or not. 
@@ -114,7 +118,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	/**
 	 * This method returns the Collection of the EntityGroups.
 	 * @hibernate.set name="entityGroupCollection" table="DYEXTN_ENTITY_GROUP_REL" 
-	 * cascade="none" inverse="false" lazy="false"
+	 * cascade="save-update" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ENTITY_ID"
 	 * @hibernate.cache  usage="read-write"
 	 * @hibernate.collection-many-to-many class="edu.common.dynamicextensions.domain.EntityGroup" column="ENTITY_GROUP_ID"
@@ -457,7 +461,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getParentEntity()
 	 * @hibernate.many-to-one column="PARENT_ENTITY_ID" class="edu.common.dynamicextensions.domain.Entity" constrained="true" 
-	 *                        cascade="none"    
+	 *                        cascade="save-update"    
 	 */
 	public EntityInterface getParentEntity()
 	{
@@ -626,4 +630,24 @@ public class Entity extends AbstractMetadata implements EntityInterface
 
         return AttributeCollection;
     }
+
+    /**
+     * @hibernate.set name="containerCollection" table="DYEXTN_CONTAINER"
+     * cascade="save-update" inverse="false" lazy="false"
+     * @hibernate.collection-key column="ENTITY_ID"
+     * @hibernate.cache usage="read-write"
+     * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.userinterface.Container"
+     * @return Returns the controlCollection.
+     */
+    public Collection getContainerCollection() {
+        return containerCollection;
+    }
+
+    /**
+     * @param containerCollection the containerCollection to set
+     */
+    public void setContainerCollection(Collection containerCollection) {
+        this.containerCollection = containerCollection;
+    }
+ 
 }

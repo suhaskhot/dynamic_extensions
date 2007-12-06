@@ -1,6 +1,10 @@
-
 package edu.common.dynamicextensions.domain;
 
+import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.ASSOCIATION_COLUMN_PREFIX;
+import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.ASSOCIATION_NAME_PREFIX;
+import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.COLUMN_NAME_PREFIX;
+import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.TABLE_NAME_PREFIX;
+import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.UNDERSCORE;
 import edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
@@ -55,15 +59,16 @@ import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInter
 import edu.common.dynamicextensions.domaininterface.userinterface.ViewInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
+import edu.common.dynamicextensions.util.IdGeneratorUtil;
 
 /**
- * This is a singleton class which provides methods for generating domain objects.
- * For each domain object a create method is provided. 
+ * This is a singleton class which provides methods for generating domain
+ * objects. For each domain object a create method is provided.
+ * 
  * @author sujay_narkar
- *
+ * 
  */
-public class DomainObjectFactory
-{
+public class DomainObjectFactory {
 
 	/**
 	 * Domain Object Factory Instance
@@ -73,121 +78,134 @@ public class DomainObjectFactory
 	/**
 	 * Empty Constructor
 	 */
-	protected DomainObjectFactory()
-	{
+	protected DomainObjectFactory() {
 	}
 
 	/**
 	 * This method returns the instance of SegmentationDomainElementFactory.
+	 * 
 	 * @return the instance of SegmentationDomainElementFactory.
 	 */
-	public static synchronized DomainObjectFactory getInstance()
-	{
-		if (domainObjectFactory == null)
-		{
+	public static synchronized DomainObjectFactory getInstance() {
+		if (domainObjectFactory == null) {
 			domainObjectFactory = new DomainObjectFactory();
 		}
 		return domainObjectFactory;
 	}
 
 	/**
-	 * Mock entity manager can be placed in the entity manager using this method.
+	 * Mock entity manager can be placed in the entity manager using this
+	 * method.
+	 * 
 	 * @param entityManager
 	 */
-	public void setInstance(DomainObjectFactory domainObjectFactory)
-	{
+	public void setInstance(DomainObjectFactory domainObjectFactory) {
 		DomainObjectFactory.domainObjectFactory = domainObjectFactory;
 
 	}
 
 	/**
 	 * This method creates an object of Entity.
+	 * 
 	 * @return an instance of Entity.
 	 */
-	public EntityInterface createEntity()
-	{
+	public EntityInterface createEntity() {
 		Entity entity = new Entity();
+        entity.setTableProperties(createTableProperties());
 		return entity;
 	}
 
 	/**
 	 * This method creates an object of EntityGroup
+	 * 
 	 * @return an instance of EntityGroup.
 	 */
-	public EntityGroupInterface createEntityGroup()
-	{
+	public EntityGroupInterface createEntityGroup() {
 		EntityGroup entityGroup = new EntityGroup();
 		return entityGroup;
 	}
 
 	/**
 	 * This method creates an object of Association
+	 * 
 	 * @return an instance of Association.
 	 */
-	public AssociationInterface createAssociation()
-	{
+	public AssociationInterface createAssociation() {
 		Association association = new Association();
 		return association;
 	}
 
 	/**
 	 * This method creates an object of Role
+	 * 
 	 * @return an instance of Role.
 	 */
-	public RoleInterface createRole()
-	{
+	public RoleInterface createRole() {
 		Role role = new Role();
 		return role;
 	}
 
 	/**
 	 * This method creates an object of SemanticProperty.
+	 * 
 	 * @return an instance of SemanticProperty.
 	 */
-	public SemanticPropertyInterface createSemanticProperty()
-	{
+	public SemanticPropertyInterface createSemanticProperty() {
 		SemanticProperty semanticProperty = new SemanticProperty();
 		return semanticProperty;
 	}
 
 	/**
 	 * This method creates an object of ColunmProperties.
+	 * 
 	 * @return an instance of ColumnProperties.
 	 */
-	public ColumnPropertiesInterface createColumnProperties()
-	{
+	public ColumnPropertiesInterface createColumnProperties() {
 		ColumnProperties columnProperties = new ColumnProperties();
+
+		columnProperties.setName(COLUMN_NAME_PREFIX + UNDERSCORE
+				+ IdGeneratorUtil.getNextUniqeId());
 		return columnProperties;
 	}
 
 	/**
 	 * This method creates an object of TableProperties.
+	 * 
 	 * @return an instance of TableProperties.
 	 */
-	public TablePropertiesInterface createTableProperties()
-	{
+	public TablePropertiesInterface createTableProperties() {
 		TableProperties tableProperties = new TableProperties();
+
+		tableProperties.setName(TABLE_NAME_PREFIX + UNDERSCORE
+				+ IdGeneratorUtil.getNextUniqeId());
 		return tableProperties;
 	}
 
 	/**
 	 * This method creates an object of ConstraintProperties
+	 * 
 	 * @return an instance of ConstraintProperties.
 	 */
-	public ConstraintPropertiesInterface createConstraintProperties()
-	{
+	public ConstraintPropertiesInterface createConstraintProperties() {
 		ConstraintProperties constraintProperties = new ConstraintProperties();
-		return constraintProperties;
+		
+        constraintProperties.setName(ASSOCIATION_NAME_PREFIX + UNDERSCORE + IdGeneratorUtil.getNextUniqeId());
+
+        constraintProperties.setSourceEntityKey(ASSOCIATION_COLUMN_PREFIX + UNDERSCORE + "S" + UNDERSCORE + IdGeneratorUtil.getNextUniqeId());
+
+        constraintProperties.setTargetEntityKey(ASSOCIATION_COLUMN_PREFIX + UNDERSCORE + "T" + UNDERSCORE + IdGeneratorUtil.getNextUniqeId());
+		
+        return constraintProperties;
 	}
 
 	/**
 	 * 
 	 * @return instance of BooleanAttributeTypeInformation.
 	 */
-	public AttributeInterface createBooleanAttribute()
-	{
+	public AttributeInterface createBooleanAttribute() {
 		Attribute booleanAttribute = new Attribute();
-		booleanAttribute.setAttributeTypeInformation(new BooleanAttributeTypeInformation());
+		booleanAttribute
+				.setAttributeTypeInformation(new BooleanAttributeTypeInformation());
 		return booleanAttribute;
 	}
 
@@ -195,10 +213,10 @@ public class DomainObjectFactory
 	 * 
 	 * @return instance of ByteArrayAttributeTypeInformation.
 	 */
-	public AttributeInterface createByteArrayAttribute()
-	{
+	public AttributeInterface createByteArrayAttribute() {
 		Attribute byteArrayAttribute = new Attribute();
-		byteArrayAttribute.setAttributeTypeInformation(new ByteArrayAttributeTypeInformation());
+		byteArrayAttribute
+				.setAttributeTypeInformation(new ByteArrayAttributeTypeInformation());
 		return byteArrayAttribute;
 	}
 
@@ -206,8 +224,7 @@ public class DomainObjectFactory
 	 * 
 	 * @return instance of ByteArrayAttributeTypeInformation.
 	 */
-	public ByteArrayValueInterface createByteArrayValue()
-	{
+	public ByteArrayValueInterface createByteArrayValue() {
 		ByteArrayValue byteArrayValue = new ByteArrayValue();
 		return byteArrayValue;
 	}
@@ -216,10 +233,10 @@ public class DomainObjectFactory
 	 * 
 	 * @return instance of DateAttributeTypeInformation.
 	 */
-	public AttributeInterface createDateAttribute()
-	{
+	public AttributeInterface createDateAttribute() {
 		Attribute dateAttribute = new Attribute();
-		dateAttribute.setAttributeTypeInformation(new DateAttributeTypeInformation());
+		dateAttribute
+				.setAttributeTypeInformation(new DateAttributeTypeInformation());
 		return dateAttribute;
 	}
 
@@ -227,10 +244,10 @@ public class DomainObjectFactory
 	 * 
 	 * @return instance of DoubleAttributeTypeInformation.
 	 */
-	public AttributeInterface createDoubleAttribute()
-	{
+	public AttributeInterface createDoubleAttribute() {
 		Attribute doubleAttribute = new Attribute();
-		doubleAttribute.setAttributeTypeInformation(new DoubleAttributeTypeInformation());
+		doubleAttribute
+				.setAttributeTypeInformation(new DoubleAttributeTypeInformation());
 		return doubleAttribute;
 	}
 
@@ -238,10 +255,10 @@ public class DomainObjectFactory
 	 * 
 	 * @return instance of FloatAttributeTypeInformation.
 	 */
-	public AttributeInterface createFloatAttribute()
-	{
+	public AttributeInterface createFloatAttribute() {
 		Attribute floatAttribute = new Attribute();
-		floatAttribute.setAttributeTypeInformation(new FloatAttributeTypeInformation());
+		floatAttribute
+				.setAttributeTypeInformation(new FloatAttributeTypeInformation());
 		return floatAttribute;
 	}
 
@@ -249,10 +266,10 @@ public class DomainObjectFactory
 	 * 
 	 * @return instance of IntegerAttributeTypeInformation.
 	 */
-	public AttributeInterface createIntegerAttribute()
-	{
+	public AttributeInterface createIntegerAttribute() {
 		Attribute integerAttribute = new Attribute();
-		integerAttribute.setAttributeTypeInformation(new IntegerAttributeTypeInformation());
+		integerAttribute
+				.setAttributeTypeInformation(new IntegerAttributeTypeInformation());
 		return integerAttribute;
 	}
 
@@ -260,10 +277,10 @@ public class DomainObjectFactory
 	 * 
 	 * @return instance of LongAttributeTypeInformation.
 	 */
-	public AttributeInterface createLongAttribute()
-	{
+	public AttributeInterface createLongAttribute() {
 		Attribute longAttribute = new Attribute();
-		longAttribute.setAttributeTypeInformation(new LongAttributeTypeInformation());
+		longAttribute
+				.setAttributeTypeInformation(new LongAttributeTypeInformation());
 		return longAttribute;
 	}
 
@@ -271,10 +288,10 @@ public class DomainObjectFactory
 	 * 
 	 * @return instance of ShortAttributeTypeInformation.
 	 */
-	public AttributeInterface createShortAttribute()
-	{
+	public AttributeInterface createShortAttribute() {
 		Attribute shortAttribute = new Attribute();
-		shortAttribute.setAttributeTypeInformation(new ShortAttributeTypeInformation());
+		shortAttribute
+				.setAttributeTypeInformation(new ShortAttributeTypeInformation());
 		return shortAttribute;
 	}
 
@@ -282,10 +299,10 @@ public class DomainObjectFactory
 	 * 
 	 * @return instance of StringAttributeTypeInformation.
 	 */
-	public AttributeInterface createStringAttribute()
-	{
+	public AttributeInterface createStringAttribute() {
 		Attribute stringAttribute = new Attribute();
-		stringAttribute.setAttributeTypeInformation(new StringAttributeTypeInformation());
+		stringAttribute
+				.setAttributeTypeInformation(new StringAttributeTypeInformation());
 		return stringAttribute;
 	}
 
@@ -293,8 +310,7 @@ public class DomainObjectFactory
 	 * 
 	 * @return instance of BooleanAttributeTypeInformation.
 	 */
-	public AttributeTypeInformation createBooleanAttributeTypeInformation()
-	{
+	public AttributeTypeInformation createBooleanAttributeTypeInformation() {
 		return new BooleanAttributeTypeInformation();
 	}
 
@@ -302,8 +318,7 @@ public class DomainObjectFactory
 	 * 
 	 * @return instance of ByteArrayAttributeTypeInformation.
 	 */
-	public AttributeTypeInformation createByteArrayAttributeTypeInformation()
-	{
+	public AttributeTypeInformation createByteArrayAttributeTypeInformation() {
 		return new ByteArrayAttributeTypeInformation();
 	}
 
@@ -311,8 +326,7 @@ public class DomainObjectFactory
 	 * 
 	 * @return instance of DateAttributeTypeInformation.
 	 */
-	public AttributeTypeInformation createDateAttributeTypeInformation()
-	{
+	public AttributeTypeInformation createDateAttributeTypeInformation() {
 		return new DateAttributeTypeInformation();
 	}
 
@@ -320,8 +334,7 @@ public class DomainObjectFactory
 	 * 
 	 * @return instance of DoubleAttributeTypeInformation.
 	 */
-	public AttributeTypeInformation createDoubleAttributeTypeInformation()
-	{
+	public AttributeTypeInformation createDoubleAttributeTypeInformation() {
 		return new DoubleAttributeTypeInformation();
 	}
 
@@ -329,8 +342,7 @@ public class DomainObjectFactory
 	 * 
 	 * @return instance of FloatAttributeTypeInformation.
 	 */
-	public AttributeTypeInformation createFloatAttributeTypeInformation()
-	{
+	public AttributeTypeInformation createFloatAttributeTypeInformation() {
 		return new FloatAttributeTypeInformation();
 	}
 
@@ -338,8 +350,7 @@ public class DomainObjectFactory
 	 * 
 	 * @return instance of IntegerAttributeTypeInformation.
 	 */
-	public AttributeTypeInformation createIntegerAttributeTypeInformation()
-	{
+	public AttributeTypeInformation createIntegerAttributeTypeInformation() {
 		return new IntegerAttributeTypeInformation();
 	}
 
@@ -347,8 +358,7 @@ public class DomainObjectFactory
 	 * 
 	 * @return instance of LongAttributeTypeInformation.
 	 */
-	public AttributeTypeInformation createLongAttributeTypeInformation()
-	{
+	public AttributeTypeInformation createLongAttributeTypeInformation() {
 		return new LongAttributeTypeInformation();
 	}
 
@@ -356,8 +366,7 @@ public class DomainObjectFactory
 	 * 
 	 * @return instance of ShortAttributeTypeInformation.
 	 */
-	public AttributeTypeInformation createShortAttributeTypeInformation()
-	{
+	public AttributeTypeInformation createShortAttributeTypeInformation() {
 		return new ShortAttributeTypeInformation();
 	}
 
@@ -365,259 +374,258 @@ public class DomainObjectFactory
 	 * 
 	 * @return instance of StringAttributeTypeInformation.
 	 */
-	public AttributeTypeInformation createStringAttributeTypeInformation()
-	{
+	public AttributeTypeInformation createStringAttributeTypeInformation() {
 		return new StringAttributeTypeInformation();
 	}
 
 	/**
 	 * This method creates an object of BooleanValue.
+	 * 
 	 * @return an instance of BooleanValue.
 	 */
-	public BooleanValueInterface createBooleanValue()
-	{
+	public BooleanValueInterface createBooleanValue() {
 		BooleanValue booleanValue = new BooleanValue();
 		return booleanValue;
 	}
 
 	/**
 	 * This method creates an object of DateValue.
+	 * 
 	 * @return an instance of DateValue.
 	 */
-	public DateValueInterface createDateValue()
-	{
+	public DateValueInterface createDateValue() {
 		DateValue dateValue = new DateValue();
 		return dateValue;
 	}
 
 	/**
 	 * This method creates an object of DoubleValue.
+	 * 
 	 * @return an instance of DoubleValue.
 	 */
-	public DoubleValueInterface createDoubleValue()
-	{
+	public DoubleValueInterface createDoubleValue() {
 		DoubleValue doubleValue = new DoubleValue();
 		return doubleValue;
 	}
 
 	/**
 	 * This This method creates an object of FloatValue.
+	 * 
 	 * @return an instance of FloatValue.
 	 */
-	public FloatValueInterface createFloatValue()
-	{
+	public FloatValueInterface createFloatValue() {
 		FloatValue floatValue = new FloatValue();
 		return floatValue;
 	}
 
 	/**
 	 * This method creates an object of IntegerValue.
+	 * 
 	 * @return an instance of IntegerValue.
 	 */
-	public IntegerValueInterface createIntegerValue()
-	{
+	public IntegerValueInterface createIntegerValue() {
 		IntegerValue integerValue = new IntegerValue();
 		return integerValue;
 	}
 
 	/**
 	 * This method creates an object of LongValue.
+	 * 
 	 * @return an instance of LongValue.
 	 */
-	public LongValueInterface createLongValue()
-	{
+	public LongValueInterface createLongValue() {
 		LongValue longValue = new LongValue();
 		return longValue;
 	}
 
 	/**
 	 * This method creates an object of ShortValue.
+	 * 
 	 * @return an instance of ShortValue.
 	 */
-	public ShortValueInterface createShortValue()
-	{
+	public ShortValueInterface createShortValue() {
 		ShortValue shortValue = new ShortValue();
 		return shortValue;
 	}
 
 	/**
 	 * This method creates an object of StringValue.
+	 * 
 	 * @return an instance of StringValue.
 	 */
-	public StringValueInterface createStringValue()
-	{
+	public StringValueInterface createStringValue() {
 		StringValue stringValue = new StringValue();
 		return stringValue;
 	}
 
 	/**
 	 * This method creates an object of CheckBox.
+	 * 
 	 * @return an instance of CheckBox.
 	 */
-	public CheckBoxInterface createCheckBox()
-	{
+	public CheckBoxInterface createCheckBox() {
 		CheckBox checkBox = new CheckBox();
 		return checkBox;
 	}
 
 	/**
 	 * This method creates an object of ComboBox
+	 * 
 	 * @return an instance of ComboBox.
 	 */
-	public ComboBoxInterface createComboBox()
-	{
+	public ComboBoxInterface createComboBox() {
 		ComboBox comboBox = new ComboBox();
 		return comboBox;
 	}
 
 	/**
 	 * This method creates an object of Container.
+	 * 
 	 * @return an instance of Container.
 	 */
-	public ContainerInterface createContainer()
-	{
+	public ContainerInterface createContainer() {
 		Container container = new Container();
 		return container;
 	}
 
 	/**
 	 * This method creates an object of DataGrid.
+	 * 
 	 * @return an instance of DataGrid.
 	 */
-	public DataGridInterface createDataGrid()
-	{
+	public DataGridInterface createDataGrid() {
 		DataGrid dataGrid = new DataGrid();
 		return dataGrid;
 	}
 
 	/**
 	 * This method creates an object of DatePicker.
+	 * 
 	 * @return an instance of DatePicker.
 	 */
-	public DatePickerInterface createDatePicker()
-	{
+	public DatePickerInterface createDatePicker() {
 		DatePicker datePicker = new DatePicker();
 		return datePicker;
 	}
 
 	/**
 	 * This method creates an object of ListBox.
+	 * 
 	 * @return an instance of ListBox.
 	 */
-	public ListBoxInterface createListBox()
-	{
+	public ListBoxInterface createListBox() {
 		ListBox listBox = new ListBox();
 		return listBox;
 	}
 
 	/**
 	 * This method creates an object of RadioButton.
+	 * 
 	 * @return an instance of RadioButton.
 	 */
-	public RadioButtonInterface createRadioButton()
-	{
+	public RadioButtonInterface createRadioButton() {
 		RadioButton radioButton = new RadioButton();
 		return radioButton;
 	}
 
 	/**
-	 * This method creates an object of TextArea. 
+	 * This method creates an object of TextArea.
+	 * 
 	 * @return an instance of TextArea.
 	 */
-	public TextAreaInterface createTextArea()
-	{
+	public TextAreaInterface createTextArea() {
 		TextArea textArea = new TextArea();
 		return textArea;
 	}
 
 	/**
 	 * This method creates an object of TextField.
+	 * 
 	 * @return an instance of TextField.
 	 */
-	public TextFieldInterface createTextField()
-	{
+	public TextFieldInterface createTextField() {
 		TextField textField = new TextField();
 		return textField;
 	}
 
 	/**
 	 * This method creates an object of File Upload Control.
+	 * 
 	 * @return an instance of TextField.
 	 */
-	public FileUploadInterface createFileUploadControl()
-	{
+	public FileUploadInterface createFileUploadControl() {
 		FileUploadControl fileUpload = new FileUploadControl();
 		return fileUpload;
 	}
 
 	/**
 	 * This method creates an object of View.
+	 * 
 	 * @return an instance of View.
 	 */
-	public ViewInterface createView()
-	{
+	public ViewInterface createView() {
 		View view = new View();
 		return view;
 	}
 
 	/**
 	 * This method creates an object of Rule.
+	 * 
 	 * @return an instance of Rule.
 	 */
-	public RuleInterface createRule()
-	{
+	public RuleInterface createRule() {
 		Rule rule = new Rule();
 		return rule;
 	}
 
 	/**
 	 * This method creates an object of RuleParameter.
+	 * 
 	 * @return an instance of RuleParameter.
 	 */
-	public RuleParameterInterface createRuleParameter()
-	{
+	public RuleParameterInterface createRuleParameter() {
 		RuleParameter ruleParameter = new RuleParameter();
 		return ruleParameter;
 	}
 
 	/**
 	 * This method creates an object of CaDSRDE.
+	 * 
 	 * @return an instance of CaDSRDE.
 	 */
-	public CaDSRDEInterface createCaDSRDE()
-	{
+	public CaDSRDEInterface createCaDSRDE() {
 		CaDSRDE caDSRDE = new CaDSRDE();
 		return caDSRDE;
 	}
 
 	/**
 	 * This method creates an object of UserDefinedDE.
+	 * 
 	 * @return an instance of UserDefinedDE.
 	 */
-	public UserDefinedDE createUserDefinedDE()
-	{
+	public UserDefinedDE createUserDefinedDE() {
 		UserDefinedDE userDefinedDE = new UserDefinedDE();
 		return userDefinedDE;
 	}
 
 	/**
 	 * This method creates an object of UserDefinedDE.
+	 * 
 	 * @return an instance of UserDefinedDE.
 	 */
-	public TaggedValueInterface createTaggedValue()
-	{
+	public TaggedValueInterface createTaggedValue() {
 		TaggedValueInterface taggedValueInterface = new TaggedValue();
 		return taggedValueInterface;
 	}
 
 	/**
 	 * 
-	 * @return  fileAttribute.
+	 * @return fileAttribute.
 	 */
-	public AttributeInterface createFileAttribute()
-	{
+	public AttributeInterface createFileAttribute() {
 		Attribute fileAttribute = new Attribute();
-		fileAttribute.setAttributeTypeInformation(new FileAttributeTypeInformation());
+		fileAttribute
+				.setAttributeTypeInformation(new FileAttributeTypeInformation());
 		return fileAttribute;
 	}
 
@@ -625,8 +633,7 @@ public class DomainObjectFactory
 	 * 
 	 * @return instance of StringAttributeTypeInformation.
 	 */
-	public AttributeTypeInformation createFileAttributeTypeInformation()
-	{
+	public AttributeTypeInformation createFileAttributeTypeInformation() {
 		return new FileAttributeTypeInformation();
 	}
 
@@ -634,25 +641,23 @@ public class DomainObjectFactory
 	 * 
 	 * @return
 	 */
-	public FileAttributeRecordValue createFileAttributeRecordValue()
-	{
+	public FileAttributeRecordValue createFileAttributeRecordValue() {
 		return new FileAttributeRecordValue();
 	}
 
 	/**
 	 * @return
 	 */
-	public AssociationDisplayAttributeInterface createAssociationDisplayAttribute()
-	{
+	public AssociationDisplayAttributeInterface createAssociationDisplayAttribute() {
 		return new AssociationDisplayAttribute();
 	}
 
 	/**
 	 * This method creates an object of ColunmProperties.
+	 * 
 	 * @return an instance of ColumnProperties.
 	 */
-	public ColumnPropertiesInterface createColumnProperties(String columnName)
-	{
+	public ColumnPropertiesInterface createColumnProperties(String columnName) {
 		ColumnPropertiesInterface columnProperties = createColumnProperties();
 		columnProperties.setName(columnName);
 		return columnProperties;
@@ -660,10 +665,10 @@ public class DomainObjectFactory
 
 	/**
 	 * This method creates an object of TableProperties.
+	 * 
 	 * @return an instance of TableProperties.
 	 */
-	public TablePropertiesInterface createTableProperties(String tableName)
-	{
+	public TablePropertiesInterface createTableProperties(String tableName) {
 		TablePropertiesInterface tableProperties = createTableProperties();
 		tableProperties.setName(tableName);
 		return tableProperties;
@@ -671,55 +676,53 @@ public class DomainObjectFactory
 
 	/**
 	 * This method creates an object of ConstraintProperties
+	 * 
 	 * @return an instance of ConstraintProperties.
 	 */
-	public ConstraintPropertiesInterface createConstraintProperties(String middleTableName)
-	{
+	public ConstraintPropertiesInterface createConstraintProperties(
+			String middleTableName) {
 		ConstraintPropertiesInterface constraintProperties = createConstraintProperties();
 		constraintProperties.setName(middleTableName);
 		return constraintProperties;
 	}
-	
+
 	/**
 	 * @return
 	 */
-	public ContainmentAssociationControlInterface createContainmentAssociationControl()
-	{
+	public ContainmentAssociationControlInterface createContainmentAssociationControl() {
 		ContainmentAssociationControlInterface containmentAssociationControlInterface = new ContainmentAssociationControl();
 		return containmentAssociationControlInterface;
 	}
-	
+
 	/**
 	 * 
 	 * @return
 	 */
-	public CaDSRValueDomainInfoInterface createCaDSRValueDomainInfo()
-	{
+	public CaDSRValueDomainInfoInterface createCaDSRValueDomainInfo() {
 		CaDSRValueDomainInfoInterface caDSRValueDomainInfoInterface = new CaDSRValueDomainInfo();
-		return caDSRValueDomainInfoInterface ;
+		return caDSRValueDomainInfoInterface;
 	}
 
-    /**
-     * @return
-     */
-    public AttributeInterface createObjectAttribute() {
-        Attribute ObjectAttribute = new Attribute();
-        ObjectAttribute.setAttributeTypeInformation(new ObjectAttributeTypeInformation());
-        return ObjectAttribute;
-    }
-    
-    /**
-     * 
-     * @return instance of IntegerAttributeTypeInformation.
-     */
-    public AttributeTypeInformation createObjectAttributeTypeInformation()
-    {
-        return new ObjectAttributeTypeInformation();
-    }
-    
-    public ObjectAttributeRecordValueInterface createObjectAttributeRecordValue() {
-        return new ObjectAttributeRecordValue();
-    }
-    
-    
+	/**
+	 * @return
+	 */
+	public AttributeInterface createObjectAttribute() {
+		Attribute ObjectAttribute = new Attribute();
+		ObjectAttribute
+				.setAttributeTypeInformation(new ObjectAttributeTypeInformation());
+		return ObjectAttribute;
+	}
+
+	/**
+	 * 
+	 * @return instance of IntegerAttributeTypeInformation.
+	 */
+	public AttributeTypeInformation createObjectAttributeTypeInformation() {
+		return new ObjectAttributeTypeInformation();
+	}
+
+	public ObjectAttributeRecordValueInterface createObjectAttributeRecordValue() {
+		return new ObjectAttributeRecordValue();
+	}
+
 }

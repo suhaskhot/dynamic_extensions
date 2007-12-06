@@ -6,6 +6,8 @@
 
 package edu.common.dynamicextensions.processor;
 
+import edu.common.dynamicextensions.domain.userinterface.Container;
+import edu.common.dynamicextensions.domain.userinterface.Control;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -117,6 +119,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				
 				containerInterface.addControl(controlInterface);
 				containerInterface.setEntity(entityInterface);
+                //entityInterface.setContainer((Container) containerInterface);
 			}
 			else if (controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_EDIT))
 			{
@@ -151,6 +154,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 
 				//update in control interface
 				controlInterface.setAbstractAttribute(abstractAttributeInterface);
+                //abstractAttributeInterface.setControl((Control) controlInterface);
 
 				controlUIBean.setAbstractAttribute(abstractAttributeInterface);
 
@@ -179,6 +183,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 
 					//Set abstract attriibute
 					newControlInterface.setAbstractAttribute(abstractAttributeInterface);
+                    //abstractAttributeInterface.setControl((Control) newControlInterface);
 					//add to container
 					containerInterface.addControl(newControlInterface);
 				}

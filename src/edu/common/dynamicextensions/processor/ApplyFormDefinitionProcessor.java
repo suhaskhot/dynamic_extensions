@@ -13,6 +13,7 @@ import java.util.List;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.EntityGroup;
+import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -85,6 +86,7 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 			entityProcessor.populateEntity(actionForm, entityInterface);
 		}
 		containerInterface.setEntity(entityInterface);
+        //entityInterface.setContainer((Container) containerInterface); 
 
 		if (entityGroupInterface != null)
 		{
@@ -162,6 +164,7 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 
 		//Add entity to container
 		containerInterface.setEntity(entityInterface);
+        //entityInterface.setContainer((Container) containerInterface);
 		return containerInterface;
 	}
 
@@ -182,7 +185,7 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		association.setTargetEntity(targetEntity);
 		association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
 		association.setName(targetEntity.getName());
-		association.setSourceRole(getRole(associationType, null, Cardinality.ONE, sourceCardinality));
+		association.setSourceRole(getRole(associationType, sourceEntity.getName(), Cardinality.ONE, sourceCardinality));
 		association.setTargetRole(getRole(associationType, targetEntity.getName(), Cardinality.ONE, targetCardinality));
 		sourceEntity.addAssociation(association);
 		return association;
@@ -307,6 +310,7 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 					ContainerInterface actualContainer = (ContainerInterface) childContainerList.get(childContainerList
 							.indexOf(containmentAssociationControlInterface.getContainer()));
 					tempContainer.setEntity(actualContainer.getEntity());
+                    //actualContainer.getEntity().setContainer((Container) tempContainer);
 					((AssociationInterface) containmentAssociationControlInterface.getAbstractAttribute()).setTargetEntity(actualContainer
 							.getEntity());
 					containmentAssociationControlInterface.setContainer(actualContainer);

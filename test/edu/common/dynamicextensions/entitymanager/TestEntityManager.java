@@ -18,8 +18,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
+
+import titli.controller.interfaces.TableInterface;
 
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.AttributeTypeInformation;
@@ -33,8 +37,11 @@ import edu.common.dynamicextensions.domain.FileExtension;
 import edu.common.dynamicextensions.domain.ObjectAttributeRecordValue;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.TaggedValue;
+import edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
 import edu.common.dynamicextensions.domain.userinterface.Container;
+import edu.common.dynamicextensions.domain.userinterface.Control;
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
@@ -45,7 +52,11 @@ import edu.common.dynamicextensions.domaininterface.ObjectAttributeRecordValueIn
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
@@ -58,6 +69,8 @@ import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.common.dynamicextensions.util.global.Constants.ValueDomainType;
 import edu.wustl.common.beans.NameValueBean;
+import edu.wustl.common.dao.DAOFactory;
+import edu.wustl.common.dao.HibernateDAO;
 import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.logger.Logger;
 
@@ -3491,6 +3504,105 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         {
             fail();
             e.printStackTrace();
+        }
+    }
+    
+    public void testSaveEntityGroupWithIDGenerator() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+    {
+        EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+        EntityGroupInterface entityGroup = entityManagerInterface.getEntityGroupByName("XML");
+        /*EntityGroupInterface entityGroup = DomainObjectFactory.getInstance().createEntityGroup();
+        entityGroup.setName("XML");*/
+        EntityInterface entity = DomainObjectFactory.getInstance().createEntity();
+        entity.setName("XML E3");
+        ContainerInterface container = DomainObjectFactory.getInstance().createContainer();
+        container.setCaption("XML C3");
+        ControlInterface control = DomainObjectFactory.getInstance().createTextField();
+        control.setName("XML TextField");
+        control.setCaption("XML TextField");
+        
+        TablePropertiesInterface tablePropertiesInterface = DomainObjectFactory.getInstance().createTableProperties();
+        entity.setTableProperties(tablePropertiesInterface);
+        
+        
+        AbstractAttributeInterface attribute1 = DomainObjectFactory.getInstance().createIntegerAttribute();
+        ColumnPropertiesInterface columnPropertiesInterface = DomainObjectFactory.getInstance().createColumnProperties();
+        ((Attribute)attribute1).setColumnProperties(columnPropertiesInterface);
+        
+        
+        attribute1.getControl().add((Control) control);
+        control.setAbstractAttribute(attribute1);
+        
+        AssociationInterface association = DomainObjectFactory.getInstance().createAssociation();
+
+        ConstraintPropertiesInterface constraintPropertiesInterface = DomainObjectFactory.getInstance().createConstraintProperties();
+        association.setConstraintProperties(constraintPropertiesInterface);
+        
+        association.setTargetEntity(entity);
+        association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+        association.setName("primaryInvestigator");
+        association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
+                Cardinality.ONE, Cardinality.ONE));
+        association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study", Cardinality.ZERO,
+                Cardinality.MANY));
+
+        entity.addAbstractAttribute(association);
+//        association.
+        
+        entity.addAbstractAttribute(attribute1);
+        entity.addAssociation(association);
+        entityGroup.addEntity(entity);
+        //entity.set
+        entity.getContainerCollection().add((Container) container);
+        container.setEntity(entity);
+        
+        Collection entityGroupCollection = entity.getEntityGroupCollection();
+        entityGroupCollection.add(entityGroup);
+        
+        ((Entity)entity).setEntityGroupCollection(entityGroupCollection);
+        
+        try
+        {
+            entityManagerInterface.saveEntityGroup(entityGroup);
+            //createDynamicEntityTables(entityGroup);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    public void createDynamicEntityTables(EntityGroupInterface entityGroupInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException{
+        List reverseQueryList = new LinkedList();
+        List queryList = null;
+        Entity databaseCopy = null;
+        Stack rollbackQueryStack = new Stack();
+        DynamicExtensionBaseQueryBuilder queryBuilder = QueryBuilderFactory.getQueryBuilder();
+
+        HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
+                    Constants.HIBERNATE_DAO);
+        Collection<EntityInterface> entityList = entityGroupInterface.getEntityCollection();
+        for(EntityInterface entityInterface: entityList){
+              if (((Entity)entityInterface).getDataTableState() == EntityManagerConstantsInterface.DATA_TABLE_STATE_CREATED)
+              {
+                  //  if (entityInterface.getId() == null)
+                    {
+                          queryList = queryBuilder.getCreateEntityQueryList((Entity)entityInterface, reverseQueryList,
+                                      hibernateDAO, rollbackQueryStack, false);
+                    }
+//                    else
+//                    {
+//                          databaseCopy = (Entity) DBUtil.loadCleanObj(Entity.class, entityInterface.getId());
+//                          queryList = queryBuilder.getUpdateEntityQueryList((Entity)entityInterface,
+//                                      (Entity) databaseCopy, reverseQueryList);
+//                    }
+                    queryBuilder.executeQueries(queryList, reverseQueryList, rollbackQueryStack);
+              }
+        }
+        
+        for(EntityInterface entityInterface: entityList){
+              queryBuilder.getCreateAssociationsQueryList((Entity)entityInterface, reverseQueryList, hibernateDAO, rollbackQueryStack);
         }
     }
 

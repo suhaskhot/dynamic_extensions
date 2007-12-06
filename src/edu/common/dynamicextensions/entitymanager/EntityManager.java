@@ -5134,5 +5134,76 @@ public class EntityManager
 		}
         return null;
 	}
+    
+    public void saveEntityGroup(EntityGroupInterface group)
+    {
+        List reverseQueryList = new LinkedList();
+        List queryList = null;
+        Stack rollbackQueryStack = new Stack();
+        HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
+        
+        try
+        {
+            hibernateDAO.openSession(null);
+            
+            queryList = createDynamicQueries(group, reverseQueryList, hibernateDAO, rollbackQueryStack);
+            
+            if (group.getId() == null)
+            {
+                hibernateDAO.insert(group, null, false, false);
+            }
+            else
+            {
+                hibernateDAO.update(group, null, false, false, false);
+            }
+            
+            hibernateDAO.commit();
+            
+            rollbackQueryStack = queryBuilder.executeQueries(queryList, reverseQueryList, rollbackQueryStack);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            try 
+            {
+                rollbackQueries(rollbackQueryStack, null, e, hibernateDAO);
+            } 
+            catch (DynamicExtensionsSystemException e1) 
+            {
+                e1.printStackTrace();
+            }
+        }
+        finally
+        {
+            try
+            {
+                hibernateDAO.closeSession();
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    public List createDynamicQueries(EntityGroupInterface group, List reverseQueryList, HibernateDAO hibernateDAO, Stack rollbackQueryStack) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+    {
+        List queryList = new ArrayList();
+        for (EntityInterface entityInterface: group.getEntityCollection())
+        {
+            if(entityInterface.getDataTableState() == Constants.DATA_TABLE_STATE_NOT_CREATED)
+            {
+                entityInterface.setDataTableState(Constants.DATA_TABLE_STATE_CREATED);
+                queryList.add(queryBuilder.getCreateEntityQueryList((Entity)entityInterface, reverseQueryList, hibernateDAO, rollbackQueryStack, false).get(0));
+            }
+            else
+            {
+                Entity databaseCopy = (Entity) DBUtil.loadCleanObj(Entity.class, entityInterface.getId());
+                if (queryBuilder.getUpdateEntityQueryList((Entity)entityInterface, (Entity) databaseCopy, reverseQueryList).size() != 0)
+                    queryList.add(queryBuilder.getUpdateEntityQueryList((Entity)entityInterface, (Entity) databaseCopy, reverseQueryList).get(0));
+            }
+        }
+        return queryList;
+    }
 
 }

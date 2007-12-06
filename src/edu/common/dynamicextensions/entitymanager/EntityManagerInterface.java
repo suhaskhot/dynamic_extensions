@@ -557,4 +557,6 @@ public interface EntityManagerInterface {
      * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAssociationsForTargetEntity(edu.common.dynamicextensions.domaininterface.EntityInterface)
      */
     public Collection<Long> getIncomingAssociationIds(EntityInterface entity) throws DynamicExtensionsSystemException;
+    
+    public void saveEntityGroup(EntityGroupInterface group);
 }

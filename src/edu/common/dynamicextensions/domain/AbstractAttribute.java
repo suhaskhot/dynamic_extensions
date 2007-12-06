@@ -4,6 +4,7 @@ package edu.common.dynamicextensions.domain;
 import java.util.Collection;
 import java.util.HashSet;
 
+import edu.common.dynamicextensions.domain.userinterface.Control;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
@@ -32,6 +33,8 @@ public abstract class AbstractAttribute extends AbstractMetadata implements Abst
 	 * Collection of rules.
 	 */
 	protected Collection<RuleInterface> ruleCollection = new HashSet<RuleInterface>();
+    
+    protected Collection<Control> controlCollection = new HashSet<Control>();
 
 	/**
 	 * Empty constructor
@@ -111,5 +114,26 @@ public abstract class AbstractAttribute extends AbstractMetadata implements Abst
 		}
 
 	}
+
+    /**
+     * @hibernate.set name="controlCollection" table="DYEXTN_CONTROL"
+     * cascade="save-update" inverse="false" lazy="false"
+     * @hibernate.collection-key column="ABSTRACT_ATTRIBUTE_ID"
+     * @hibernate.cache usage="read-write"
+     * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.userinterface.Control"
+     * @return Returns the controlCollection.
+     */
+    public Collection<Control> getControl() {
+        return controlCollection;
+    }
+
+    /**
+     * @param control the control to set
+     */
+    public void setControl(Collection<Control> control) {
+        this.controlCollection = control;
+    }
+
+    
 
 }

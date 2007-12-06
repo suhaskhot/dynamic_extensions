@@ -47,7 +47,7 @@ public class ContainmentAssociationControl extends Control
 
 	/**
 	 * @return container
-	 * @hibernate.many-to-one  cascade="none" column="DISPLAY_CONTAINER_ID" class="edu.common.dynamicextensions.domain.userinterface.Container" constrained="true"
+	 * @hibernate.many-to-one  cascade="save-update" column="DISPLAY_CONTAINER_ID" class="edu.common.dynamicextensions.domain.userinterface.Container" constrained="true"
 	 */
 	public ContainerInterface getContainer()
 	{

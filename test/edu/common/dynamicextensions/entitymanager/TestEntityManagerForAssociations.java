@@ -24,6 +24,7 @@ import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface;
@@ -89,17 +90,19 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
 		// create user 
+        EntityGroupInterface entityGroup = DomainObjectFactory.getInstance().createEntityGroup();
+        entityGroup.setName("kunal");
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
-		userNameAttribute.setName("user name");
-		user.setName("user");
+		userNameAttribute.setName("kunal_3");
+		user.setName("kunal_3");
 		user.addAbstractAttribute(userNameAttribute);
 
 		// create study 
 		EntityInterface study = factory.createEntity();
 		AttributeInterface studyNameAttribute = factory.createStringAttribute();
-		studyNameAttribute.setName("study name");
-		study.setName("study");
+		studyNameAttribute.setName("study kunal_3");
+		study.setName("kunal_3");
 		study.addAbstractAttribute(studyNameAttribute);
 
 		// Associate user (1)------ >(*)study       
@@ -118,8 +121,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		try
 		{
 			//entityManager.createEntity(study);
-
-			EntityInterface savedUser = entityManager.persistEntity(user);
+            entityGroup.getEntityCollection().add(user);
+			EntityGroupInterface savedUser = entityManager.persistEntityGroup(entityGroup);
 
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from "
 					+ study.getTableProperties().getName());
@@ -158,6 +161,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
 		// create user 
+        EntityGroupInterface entityGroupInterface = factory.getInstance().createEntityGroup();
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
@@ -188,7 +192,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		{
 			//entityManager.createEntity(study);
 
-			EntityInterface savedUser = entityManager.persistEntity(user);
+            entityGroupInterface.getEntityCollection().add(user);
+			EntityInterface savedUser = (EntityInterface) entityManager.persistEntityGroup(entityGroupInterface);
 
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from "
 					+ user.getTableProperties().getName());

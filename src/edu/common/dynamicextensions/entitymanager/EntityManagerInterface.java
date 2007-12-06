@@ -558,5 +558,4 @@ public interface EntityManagerInterface {
      */
     public Collection<Long> getIncomingAssociationIds(EntityInterface entity) throws DynamicExtensionsSystemException;
     
-    public void saveEntityGroup(EntityGroupInterface group);
 }

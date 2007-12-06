@@ -86,8 +86,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
      * @throws DynamicExtensionsSystemException
      * @throws DynamicExtensionsApplicationException
      */
-    public List getCreateEntityQueryList(Entity entity, List reverseQueryList, HibernateDAO hibernateDAO,
-                                         Stack rollbackQueryStack, boolean addIdAttribute)
+    public List getCreateEntityQueryList(Entity entity, List reverseQueryList, HibernateDAO hibernateDAO, boolean addIdAttribute)
             throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException {
         List queryList = new ArrayList();
         //get query to create main table with primitive attributes.
@@ -95,8 +94,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
 
         // get query to create associations ,it invloves altering source/taget table or creating
         //middle table depending upon the cardinalities.
-        List associationTableQueryList = getCreateAssociationsQueryList(entity, reverseQueryList, hibernateDAO,
-                                                                        rollbackQueryStack);
+        List associationTableQueryList = getCreateAssociationsQueryList(entity, reverseQueryList, hibernateDAO);
 
         queryList.addAll(mainTableQueryList);
         queryList.addAll(associationTableQueryList);
@@ -908,8 +906,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
      * @throws DynamicExtensionsSystemException
      * @throws DynamicExtensionsApplicationException
      */
-    protected List getCreateAssociationsQueryList(Entity entity, List reverseQueryList, HibernateDAO hibernateDAO,
-                                                  Stack rollbackQueryStack)
+    protected List getCreateAssociationsQueryList(Entity entity, List reverseQueryList, HibernateDAO hibernateDAO)
             throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException {
         List associationQueryList = new ArrayList();
         Collection associationCollection = entity.getAssociationCollection();

@@ -25,13 +25,7 @@
     </id>
 
     <property
-        name="className"
-        type="java.lang.String"
-        column="class_name"
-        length="90"
-    />
-    <property
-        name="nextId"
+        name="nextAvailableId"
         type="java.lang.Long"
         column="next_available_id"
         length="11"

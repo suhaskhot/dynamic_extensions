@@ -20,6 +20,7 @@ import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.dao.AbstractDAO;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.HibernateDAO;
+import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.logger.Logger;
@@ -36,6 +37,9 @@ public class NewEntityManager extends AbstractManager implements NewEntityManage
      */
     private static NewEntityManagerInterface entityManager = null;
     
+    /**
+     * Static instance of the queryBuilder.
+     */
     private static DynamicExtensionBaseQueryBuilder queryBuilder = null;
     
     /**
@@ -75,8 +79,9 @@ public class NewEntityManager extends AbstractManager implements NewEntityManage
      * Save entity group which in turn saves the whole hierarchy.
      * @throws DynamicExtensionsSystemException 
      * @throws DAOException 
+     * @throws DynamicExtensionsApplicationException 
      */
-    public void saveEntityGroup(EntityGroupInterface group) throws DynamicExtensionsSystemException, DAOException
+    public void saveEntityGroup(EntityGroupInterface group) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
     {
         List reverseQueryList = new LinkedList();
         List queryList = new ArrayList();
@@ -98,26 +103,34 @@ public class NewEntityManager extends AbstractManager implements NewEntityManage
                 hibernateDAO.update(group, null, false, false, false);
             }
             
-            hibernateDAO.commit();
-            
             postProcess(queryList, reverseQueryList, rollbackQueryStack);    
+            
+            hibernateDAO.commit();
         }
-        catch(Exception e)
+        catch (DAOException e)
         {
+            rollbackQueries(rollbackQueryStack, group, e, hibernateDAO);
+            throw new DynamicExtensionsSystemException(
+                    "DAOException occured while opening a session to save the container.", e);
+        }
+        catch (DynamicExtensionsApplicationException e)
+        {
+            rollbackQueries(rollbackQueryStack, group, e, hibernateDAO);
+            throw new DynamicExtensionsApplicationException(
+                    "DAOException occured while opening a session to save the container.", e);
+        }
+        catch (DynamicExtensionsSystemException e)
+        {
+            rollbackQueries(rollbackQueryStack, group, e, hibernateDAO);
             e.printStackTrace();
-            try 
-            {
-                hibernateDAO.rollback();
-                rollbackQueries(rollbackQueryStack, null, e, hibernateDAO);
-            } 
-            catch (DynamicExtensionsSystemException e1) 
-            {
-                throw new DynamicExtensionsSystemException("Exception while saving metadata");
-            } 
-            catch (DAOException daoException) 
-            {
-                throw new DynamicExtensionsSystemException("DAOException occured while opening a session to save the container.", e);
-            }
+            throw e;
+        }
+        catch (UserNotAuthorizedException e)
+        {
+            rollbackQueries(rollbackQueryStack, group, e, hibernateDAO);
+            e.printStackTrace();
+            throw new DynamicExtensionsSystemException(
+                    "DAOException occured while opening a session to save the container.", e);
         }
         finally
         {
@@ -125,9 +138,9 @@ public class NewEntityManager extends AbstractManager implements NewEntityManage
             {
                 hibernateDAO.closeSession();
             }
-            catch (DAOException e) 
+            catch (Exception e)
             {
-                throw new DynamicExtensionsSystemException("DAOException occured while opening a session to save the container.", e);
+                rollbackQueries(rollbackQueryStack, group, e, hibernateDAO);
             }
         }
     }
@@ -191,7 +204,7 @@ public class NewEntityManager extends AbstractManager implements NewEntityManage
      * @param dao AbstractDAO
      * @throws DynamicExtensionsSystemException
      */
-    private void rollbackQueries(Stack reverseQueryList, Entity entity, Exception e, AbstractDAO dao)
+    private void rollbackQueries(Stack reverseQueryList, EntityGroupInterface group, Exception e, AbstractDAO dao)
             throws DynamicExtensionsSystemException
     {
         String message = "";
@@ -228,7 +241,7 @@ public class NewEntityManager extends AbstractManager implements NewEntityManage
             catch (SQLException exc)
             {
                 message = exc.getMessage();
-                LogFatalError(exc, entity);
+                LogFatalError(exc, group);
             }
             finally
             {
@@ -248,7 +261,7 @@ public class NewEntityManager extends AbstractManager implements NewEntityManage
      */
     private void logDebug(String methodName, String message)
     {
-        Logger.out.debug("[EntityManager.]" + methodName + "()--" + message);
+        Logger.out.debug("[NewEntityManager.]" + methodName + "() -- " + message);
     }
     
     /**
@@ -259,17 +272,14 @@ public class NewEntityManager extends AbstractManager implements NewEntityManage
      * @param e The exception that took place.
      * @param entity Entity for which data tables are out of sync.
      */
-    private void LogFatalError(Exception e, Entity entity)
+    private void LogFatalError(Exception e, EntityGroupInterface group)
     {
-        String table = "";
         String name = "";
-        if (entity != null)
+        if (group != null)
         {
-            entity.getTableProperties().getName();
-            name = entity.getName();
+            name = group.getName();
         }
-        Logger.out.error("***Fatal Error.. Incosistent data table and metadata information for the entity -" + name + "***");
-        Logger.out.error("Please check the table -" + table);
+        Logger.out.error("*** Fatal Error encountered while saving the metadata information for the entity group - " + name + " ***");
         Logger.out.error("The cause of the exception is - " + e.getMessage());
         Logger.out.error("The detailed log is : ");
         e.printStackTrace();

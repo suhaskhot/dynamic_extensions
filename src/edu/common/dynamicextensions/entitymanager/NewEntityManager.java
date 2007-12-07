@@ -87,7 +87,7 @@ public class NewEntityManager extends AbstractManager implements NewEntityManage
         {
             hibernateDAO.openSession(null);
             
-            preProcess(group, queryList, hibernateDAO, reverseQueryList);
+            preProcess(group, reverseQueryList, hibernateDAO, queryList);
             
             if (group.getId() == null)
             {

@@ -132,6 +132,7 @@ public class DomainObjectFactory {
 	 */
 	public AssociationInterface createAssociation() {
 		Association association = new Association();
+		association.setConstraintProperties(createConstraintProperties());
 		return association;
 	}
 
@@ -206,6 +207,7 @@ public class DomainObjectFactory {
 		Attribute booleanAttribute = new Attribute();
 		booleanAttribute
 				.setAttributeTypeInformation(new BooleanAttributeTypeInformation());
+		booleanAttribute.setColumnProperties(createColumnProperties());
 		return booleanAttribute;
 	}
 
@@ -217,6 +219,7 @@ public class DomainObjectFactory {
 		Attribute byteArrayAttribute = new Attribute();
 		byteArrayAttribute
 				.setAttributeTypeInformation(new ByteArrayAttributeTypeInformation());
+		byteArrayAttribute.setColumnProperties(createColumnProperties());		
 		return byteArrayAttribute;
 	}
 
@@ -225,7 +228,7 @@ public class DomainObjectFactory {
 	 * @return instance of ByteArrayAttributeTypeInformation.
 	 */
 	public ByteArrayValueInterface createByteArrayValue() {
-		ByteArrayValue byteArrayValue = new ByteArrayValue();
+		ByteArrayValue byteArrayValue = new ByteArrayValue();		
 		return byteArrayValue;
 	}
 
@@ -237,6 +240,7 @@ public class DomainObjectFactory {
 		Attribute dateAttribute = new Attribute();
 		dateAttribute
 				.setAttributeTypeInformation(new DateAttributeTypeInformation());
+		dateAttribute.setColumnProperties(createColumnProperties());
 		return dateAttribute;
 	}
 
@@ -248,6 +252,7 @@ public class DomainObjectFactory {
 		Attribute doubleAttribute = new Attribute();
 		doubleAttribute
 				.setAttributeTypeInformation(new DoubleAttributeTypeInformation());
+		doubleAttribute.setColumnProperties(createColumnProperties());
 		return doubleAttribute;
 	}
 
@@ -259,6 +264,7 @@ public class DomainObjectFactory {
 		Attribute floatAttribute = new Attribute();
 		floatAttribute
 				.setAttributeTypeInformation(new FloatAttributeTypeInformation());
+		floatAttribute.setColumnProperties(createColumnProperties());
 		return floatAttribute;
 	}
 
@@ -270,6 +276,7 @@ public class DomainObjectFactory {
 		Attribute integerAttribute = new Attribute();
 		integerAttribute
 				.setAttributeTypeInformation(new IntegerAttributeTypeInformation());
+		integerAttribute.setColumnProperties(createColumnProperties());
 		return integerAttribute;
 	}
 
@@ -281,6 +288,7 @@ public class DomainObjectFactory {
 		Attribute longAttribute = new Attribute();
 		longAttribute
 				.setAttributeTypeInformation(new LongAttributeTypeInformation());
+		longAttribute.setColumnProperties(createColumnProperties());
 		return longAttribute;
 	}
 
@@ -292,6 +300,7 @@ public class DomainObjectFactory {
 		Attribute shortAttribute = new Attribute();
 		shortAttribute
 				.setAttributeTypeInformation(new ShortAttributeTypeInformation());
+		shortAttribute.setColumnProperties(createColumnProperties());
 		return shortAttribute;
 	}
 
@@ -303,6 +312,7 @@ public class DomainObjectFactory {
 		Attribute stringAttribute = new Attribute();
 		stringAttribute
 				.setAttributeTypeInformation(new StringAttributeTypeInformation());
+		stringAttribute.setColumnProperties(createColumnProperties());
 		return stringAttribute;
 	}
 
@@ -626,6 +636,7 @@ public class DomainObjectFactory {
 		Attribute fileAttribute = new Attribute();
 		fileAttribute
 				.setAttributeTypeInformation(new FileAttributeTypeInformation());
+		fileAttribute.setColumnProperties(createColumnProperties());
 		return fileAttribute;
 	}
 
@@ -710,6 +721,7 @@ public class DomainObjectFactory {
 		Attribute ObjectAttribute = new Attribute();
 		ObjectAttribute
 				.setAttributeTypeInformation(new ObjectAttributeTypeInformation());
+		ObjectAttribute.setColumnProperties(createColumnProperties());
 		return ObjectAttribute;
 	}
 

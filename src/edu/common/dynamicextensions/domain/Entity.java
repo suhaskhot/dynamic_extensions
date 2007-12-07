@@ -13,11 +13,12 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Constants.InheritanceStrategy;
 
 /**
- * An entity is something that has a distinct, separate existence, though it need not be a material 
+ * An entity is something that has a distinct, separate existence, though it need not be a material
  * existence. In particular, abstractions and legal fictions are usually regarded as entities.
  * An entity can either have many attributes or many associations.
  * @version 1.0
@@ -59,35 +60,40 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	protected int dataTableState = Constants.DATA_TABLE_STATE_NOT_CREATED;
 
 	/**
-	 * parent of this entity, null is no parent present. 
+	 * flag for adding id attribute
+	 */
+	protected boolean addIdAttribute = false;
+
+	/**
+	 * parent of this entity, null is no parent present.
 	 */
 	protected EntityInterface parentEntity = null;
-    
-    
+
+
     protected Collection containerCollection = new HashSet<Container>();
 
 	/**
-	 * indicates if this enitity is abstract or not. 
+	 * indicates if this enitity is abstract or not.
 	 */
 	protected boolean isAbstract = false;
 
 	/**
-	 * 
+	 *
 	 */
 	protected boolean isProcessed = false;
 
 	/*
-	 * 
+	 *
 	 */
 	protected int inheritStrategy = InheritanceStrategy.TABLE_PER_SUB_CLASS.getValue();
 
 	/**
-	 * 
+	 *
 	 */
 	protected String discriminatorColumn;
 
 	/**
-	 * 
+	 *
 	 */
 	protected String discriminatorValue;
 
@@ -117,7 +123,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 
 	/**
 	 * This method returns the Collection of the EntityGroups.
-	 * @hibernate.set name="entityGroupCollection" table="DYEXTN_ENTITY_GROUP_REL" 
+	 * @hibernate.set name="entityGroupCollection" table="DYEXTN_ENTITY_GROUP_REL"
 	 * cascade="save-update" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ENTITY_ID"
 	 * @hibernate.cache  usage="read-write"
@@ -153,7 +159,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	}
 
 	/**
-	 * This method sets the tablePropertiesColletion to the given Collection of TableProperties. 
+	 * This method sets the tablePropertiesColletion to the given Collection of TableProperties.
 	 * @param tablePropertiesColletion Collection of TableProperties to be set.
 	 */
 	private void setTablePropertiesCollection(
@@ -215,7 +221,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public void addEntityGroupInterface(EntityGroupInterface entityGroupInterface)
 	{
@@ -228,7 +234,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public void removeEntityGroupInterface(EntityGroupInterface entityGroupInterface)
 	{
@@ -271,7 +277,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ENTIY_ID"
 	 * @hibernate.cache  usage="read-write"
-	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.AbstractAttribute" 
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.AbstractAttribute"
 	 * @return the Collection of AbstractAttribute.
 	 */
 	public Collection<AbstractAttributeInterface> getAbstractAttributeCollection()
@@ -412,7 +418,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 
 	}
 
-	/** 
+	/**
 	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#removeAttribute(edu.common.dynamicextensions.domaininterface.AttributeInterface)
 	 */
 	public void removeAttribute(AttributeInterface attributeInterface)
@@ -430,7 +436,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 		addAbstractAttribute(associationInterface);
 	}
 
-	/** 
+	/**
 	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#removeAssociation(edu.common.dynamicextensions.domaininterface.AssociationInterface)
 	 */
 	public void removeAssociation(AssociationInterface associationInterface)
@@ -441,7 +447,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#isAbstract()
-	 * 
+	 *
 	 * @hibernate.property name="isAbstract" type="boolean" column="IS_ABSTRACT"
 	 */
 	public boolean isAbstract()
@@ -460,8 +466,8 @@ public class Entity extends AbstractMetadata implements EntityInterface
 
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getParentEntity()
-	 * @hibernate.many-to-one column="PARENT_ENTITY_ID" class="edu.common.dynamicextensions.domain.Entity" constrained="true" 
-	 *                        cascade="save-update"    
+	 * @hibernate.many-to-one column="PARENT_ENTITY_ID" class="edu.common.dynamicextensions.domain.Entity" constrained="true"
+	 *                        cascade="save-update"
 	 */
 	public EntityInterface getParentEntity()
 	{
@@ -493,7 +499,7 @@ public class Entity extends AbstractMetadata implements EntityInterface
 		return associationCollection;
 	}
 
-	/** 
+	/**
 	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getAllAttributes()
 	 */
 	public Collection<AttributeInterface> getAllAttributes()
@@ -608,13 +614,13 @@ public class Entity extends AbstractMetadata implements EntityInterface
 		AttributeCollection.addAll(getAttributeCollection());
 		return AttributeCollection;
 	}
-    
+
     public Collection<AttributeInterface> getEntityAttributesForQuery()
     {
         Collection<AttributeInterface> AttributeCollection = new ArrayList<AttributeInterface>();
         AttributeCollection.addAll(getAttributeCollection());
         EntityInterface parentEntity = this.parentEntity;
-        
+
         while (parentEntity != null)
         {
             Collection parentAttributeCollection = parentEntity.getAttributeCollection();
@@ -649,5 +655,26 @@ public class Entity extends AbstractMetadata implements EntityInterface
     public void setContainerCollection(Collection containerCollection) {
         this.containerCollection = containerCollection;
     }
- 
+
+	/**
+	 * returns the flag for adding id attribute
+	 * @return
+	 */
+	public boolean isAddIdAttribute()
+	{
+		return addIdAttribute;
+	}
+
+	/**
+	 * addIdAttribute flag to add id attribute or not
+	 * @param addIdAttribute
+	 */
+	public void setAddIdAttribute(boolean addIdAttribute)
+	{
+		this.addIdAttribute = addIdAttribute;
+		if (addIdAttribute)
+		{
+			EntityManagerUtil.addIdAttribute(this);
+		}
+	}
 }

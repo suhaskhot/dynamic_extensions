@@ -35,21 +35,21 @@ public interface EntityInterface extends AbstractMetadataInterface
 	Collection<AssociationInterface> getAssociationCollection();
 
 	/**
-	 * The abstractAttributeInterface to be added 
-	 * @param abstractAttributeInterface abstract attribute interface 
+	 * The abstractAttributeInterface to be added
+	 * @param abstractAttributeInterface abstract attribute interface
 	 */
 	void addAbstractAttribute(AbstractAttributeInterface abstractAttribute);
 
 	/**
-	 * Returns a collection of entity groups having this entity. 
+	 * Returns a collection of entity groups having this entity.
 	 * @return Returns the entityGroupCollection.
 	 */
 	Collection<EntityGroupInterface> getEntityGroupCollection();
 
 	/**
-	 * Adds an entity group to the entity 
+	 * Adds an entity group to the entity
 	 * @param entityGroupInterface The entityGroupInterface to be added set.
-	 * 
+	 *
 	 */
 	void addEntityGroupInterface(EntityGroupInterface entityGroup);
 
@@ -152,14 +152,14 @@ public interface EntityInterface extends AbstractMetadataInterface
 	/**
 	 * Method returns  attribute based on the id passed.
 	 * @param id Long identifier of the abstract attribute
-	 * @return 
+	 * @return
 	 */
 	AttributeInterface getAttributeByIdentifier(Long id);
 
 	/**
 	 * Method returns  association based on the id passed.
 	 * @param id Long identifier of the abstract attribute
-	 * @return 
+	 * @return
 	 */
 	AssociationInterface getAssociationByIdentifier(Long id);
 
@@ -174,7 +174,7 @@ public interface EntityInterface extends AbstractMetadataInterface
 	void setInheritanceStrategy(InheritanceStrategy inheritanceStrategy);
 
 	/**
-	 * 
+	 *
 	 *
 	 */
 	void removeAllAbstractAttributes();
@@ -198,23 +198,28 @@ public interface EntityInterface extends AbstractMetadataInterface
 	 * @param discriminatorValue
 	 */
 	void setDiscriminatorValue(String discriminatorValue);
-    
+
     /**
      * Get all attributes for query
      */
     public Collection<AttributeInterface> getEntityAttributesForQuery();
-    
+
     public Collection getContainerCollection();
-    
+
     public void setContainerCollection(Collection containerCollection);
-    
+
     public int getDataTableState();
-    
+
     public void setDataTableState(int dataTableState);
-    
+
     /**
-     * @param entityGroupCollection 
+     * @param entityGroupCollection
      */
     public void setEntityGroupCollection(Collection<EntityGroupInterface> entityGroupCollection);
-    
+	/**
+	 * addIdAttribute flag to add id attribute or not
+	 * @param addIdAttribute
+	 */
+	public void setAddIdAttribute(boolean addIdAttribute);
+
 }

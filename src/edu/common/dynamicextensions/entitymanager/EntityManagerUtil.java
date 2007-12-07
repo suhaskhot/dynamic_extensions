@@ -14,12 +14,14 @@ import java.util.Set;
 import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
@@ -34,12 +36,12 @@ import edu.wustl.common.util.logger.Logger;
 public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstantsInterface
 {
 
-	
+
 
 	/**
 	 * @param query query to be executed
-	 * @return 
-	 * @throws DynamicExtensionsSystemException 
+	 * @return
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public static ResultSet executeQuery(String query) throws DynamicExtensionsSystemException
 	{
@@ -130,8 +132,8 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 
 	/**
 	 * @param query query to be executed
-	 * @return 
-	 * @throws DynamicExtensionsSystemException 
+	 * @return
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public int executeDML(String query) throws DynamicExtensionsSystemException
 	{
@@ -202,7 +204,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 
 	/**
 	 * This method is used in case result of the query is miltiple records.
-	 * 
+	 *
 	 * @param query query to be executed.
 	 * @return List of records.
 	 * @throws DynamicExtensionsSystemException
@@ -230,7 +232,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 
 	/**
 	 * This method returns all the entity groups reachable from given entity.
-	 *  
+	 *
 	 * @param entity
 	 * @param processedEntities
 	 * @param processedEntityGroups
@@ -253,7 +255,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 			if (!processedEntityGroups.contains(entityGroup))
 			{
 				processedEntityGroups.add(entityGroup);
-				// process  all entities of each entity Groups 
+				// process  all entities of each entity Groups
 				for (EntityInterface anotherEntity : entityGroup.getEntityCollection())
 				{
 					getAllEntityGroups(anotherEntity, processedEntities, processedEntityGroups);
@@ -264,7 +266,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 
 	/**
 	 * @return
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public static boolean isValuePresent(AttributeInterface attribute, Object value)
 			throws DynamicExtensionsSystemException
@@ -294,4 +296,46 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	{
 		return filterSystemAttributes(new ArrayList(attributesCollection));
 	}
+    /**
+     * This method adds a system generated attribute to the entity.
+     * @param entity
+     */
+    public static void addIdAttribute(EntityInterface entity)
+    {
+    	if (!isIdAttributePresent(entity))
+    	{
+	        DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+	        AttributeInterface idAttribute = domainObjectFactory.createLongAttribute();
+	        idAttribute.setName(ID_ATTRIBUTE_NAME);
+	        idAttribute.setIsPrimaryKey(new Boolean(true));
+	        idAttribute.setIsNullable(new Boolean(false));
+	        ColumnPropertiesInterface column = domainObjectFactory.createColumnProperties();
+	        column.setName(IDENTIFIER);
+	        idAttribute.setColumnProperties(column);
+	        entity.addAttribute(idAttribute);
+	        idAttribute.setEntity(entity);
+    	}
+    }
+    /**
+     * This method returns boolean whether the id attribute is present or not.
+     * @param entity
+     * @return boolean
+     */
+    private static boolean isIdAttributePresent(EntityInterface entity)
+    {
+    	boolean isAttributePresent = false;
+    	Collection<AbstractAttributeInterface> attributeCollection = entity.getAbstractAttributeCollection();
+		if (attributeCollection != null && !attributeCollection.isEmpty())
+		{
+			for (AbstractAttributeInterface attribute : attributeCollection)
+			{
+				if (ID_ATTRIBUTE_NAME.equalsIgnoreCase(attribute.getName()))
+				{
+					isAttributePresent = true;
+					break;
+				}
+			}
+		}
+    	return isAttributePresent;
+    }
 }

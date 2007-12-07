@@ -1,11 +1,15 @@
 package edu.common.dynamicextensions.entitymanager;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.wustl.common.bizlogic.AbstractBizLogic;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.util.dbManager.DAOException;
 
@@ -14,7 +18,7 @@ import edu.wustl.common.util.dbManager.DAOException;
  * @author mandar_shidhore
  *
  */
-public class AbstractManager {
+public abstract class AbstractManager {
     
     /**
      * This method takes the class name , criteria for the object and returns the object. 
@@ -22,7 +26,7 @@ public class AbstractManager {
      * @param objectName objectName
      * @return DynamicExtensionBaseDomainObjectInterface
      */
-    private DynamicExtensionBaseDomainObjectInterface getObjectByName(String className, String objectName) throws DynamicExtensionsSystemException
+    public DynamicExtensionBaseDomainObjectInterface getObjectByName(String className, String objectName) throws DynamicExtensionsSystemException
     {
         DynamicExtensionBaseDomainObjectInterface object = null;
         
@@ -50,6 +54,33 @@ public class AbstractManager {
         }
 
         return object;
+    }
+    
+    /**
+     * Returns all instances in the whole system for a given type of the object
+     * @return Collection of instances of given class
+     * @throws DynamicExtensionsSystemException
+     * @throws DynamicExtensionsApplicationException
+     */
+    public Collection getAllObjects(String objectName) throws DynamicExtensionsSystemException,
+            DynamicExtensionsApplicationException
+    {
+        AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
+        Collection objectList = new HashSet();
+
+        try
+        {
+            objectList = bizLogic.retrieve(objectName);
+            if (objectList == null)
+            {
+                objectList = new HashSet();
+            }
+        }
+        catch (DAOException e)
+        {
+            throw new DynamicExtensionsSystemException(e.getMessage(), e);
+        }
+        return objectList;
     }
 
 }

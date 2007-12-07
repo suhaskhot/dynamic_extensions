@@ -30,7 +30,7 @@ import edu.wustl.common.util.logger.Logger;
  * @author mandar_shidhore
  *
  */
-public class NewEntityManager implements NewEntityManagerInterface, EntityManagerExceptionConstantsInterface {
+public class NewEntityManager extends AbstractManager implements NewEntityManagerInterface, EntityManagerExceptionConstantsInterface {
     
     /**
      * Static instance of the entity manager.

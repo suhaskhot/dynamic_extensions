@@ -24,7 +24,6 @@ import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.logger.Logger;
 
-
 /**
  * 
  * @author mandar_shidhore
@@ -88,7 +87,7 @@ public class NewEntityManager extends AbstractManager implements NewEntityManage
         {
             hibernateDAO.openSession(null);
             
-            preProcess(group, queryList, hibernateDAO, reverseQueryList, rollbackQueryStack);
+            preProcess(group, queryList, hibernateDAO, reverseQueryList);
             
             if (group.getId() == null)
             {
@@ -133,11 +132,27 @@ public class NewEntityManager extends AbstractManager implements NewEntityManage
         }
     }
     
-    private void preProcess(EntityGroupInterface group, List reverseQueryList, HibernateDAO hibernateDAO, List queryList, Stack rollbackQueryStack) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+    /**
+     * This method creates dynamic table queries for the entities within a group.
+     * @param group EntityGroup
+     * @param reverseQueryList List of queries to be executed in case any problem occurs at DB level.
+     * @param hibernateDAO
+     * @param queryList List of queries to be executed to created dynamicn tables.
+     * @throws DynamicExtensionsSystemException
+     * @throws DynamicExtensionsApplicationException
+     */
+    private void preProcess(EntityGroupInterface group, List reverseQueryList, HibernateDAO hibernateDAO, List queryList) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
     {
         createDynamicQueries(group, reverseQueryList, hibernateDAO, queryList);
     }
     
+    /**
+     * This method executes dynamic table queries created for all the entities within a group.
+     * @param queryList List of queries to be executed to created dynamicn tables.
+     * @param reverseQueryList List of queries to be executed in case any problem occurs at DB level.
+     * @param rollbackQueryStack Stack to undo any changes done beforehand at DB level.
+     * @throws DynamicExtensionsSystemException
+     */
     private void postProcess(List queryList, List reverseQueryList, Stack rollbackQueryStack) throws DynamicExtensionsSystemException
     {
         queryBuilder.executeQueries(queryList, reverseQueryList, rollbackQueryStack);
@@ -161,15 +176,19 @@ public class NewEntityManager extends AbstractManager implements NewEntityManage
             }
         }
         return queryList;
-    }
-    
+    }   
+
     /**
-     * This method is called when there any exception occurs while generating the data table queries for the entity. Valid scenario is
-     * that if we need to fire Q1 Q2 and Q3 in order to create the data tables and Q1 Q2 get fired successfully and exception occurs
-     * while executing query Q3 then this method receives the query list which holds the set of queries which negate the effect of
-     * the queries which were generated successfully so that the metadata information and database are in synchronisation.
-     * @param reverseQueryList Stack that maintains the queries to execute.
-     * @param conn
+     * This method is called when there any exception occurs while generating the data table queries 
+     * for the entity. Valid scenario is that if we need to fire Q1 Q2 and Q3 in order to create the 
+     * data tables and Q1 Q2 get fired successfully and exception occurs while executing query Q3 then 
+     * this method receives the query list which holds the set of queries which negate the effect of the 
+     * queries which were generated successfully so that the metadata information and database are in 
+     * synchronisation.
+     * @param reverseQueryList List of queries to be executed in case any problem occurs at DB level.
+     * @param entity Entity
+     * @param e Exception encountered
+     * @param dao AbstractDAO
      * @throws DynamicExtensionsSystemException
      */
     private void rollbackQueries(Stack reverseQueryList, Entity entity, Exception e, AbstractDAO dao)
@@ -214,8 +233,7 @@ public class NewEntityManager extends AbstractManager implements NewEntityManage
             finally
             {
                 logDebug("rollbackQueries", DynamicExtensionsUtility.getStackTrace(e));
-                DynamicExtensionsSystemException ex = new DynamicExtensionsSystemException(message,
-                        e);
+                DynamicExtensionsSystemException ex = new DynamicExtensionsSystemException(message, e);
                 ex.setErrorCode(DYEXTN_S_000);
                 throw ex;
             }
@@ -234,9 +252,10 @@ public class NewEntityManager extends AbstractManager implements NewEntityManage
     }
     
     /**
-     * this method is called when exception occurs while executing the rollback queries or reverse queries. When this method is called , it
-     * signifies that the database state and the metadata state for the entity are not in synchronisation and administrator needs some
-     * database correction.
+     * This method is called when exception occurs while executing the rollback queries 
+     * or reverse queries. When this method is called , it signifies that the database state 
+     * and the metadata state for the entity are not in synchronisation and administrator 
+     * needs some database correction.
      * @param e The exception that took place.
      * @param entity Entity for which data tables are out of sync.
      */
@@ -249,9 +268,7 @@ public class NewEntityManager extends AbstractManager implements NewEntityManage
             entity.getTableProperties().getName();
             name = entity.getName();
         }
-        Logger.out
-                .error("***Fatal Error.. Incosistent data table and metadata information for the entity -"
-                        + name + "***");
+        Logger.out.error("***Fatal Error.. Incosistent data table and metadata information for the entity -" + name + "***");
         Logger.out.error("Please check the table -" + table);
         Logger.out.error("The cause of the exception is - " + e.getMessage());
         Logger.out.error("The detailed log is : ");

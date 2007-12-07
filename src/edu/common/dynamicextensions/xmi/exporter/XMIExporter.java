@@ -169,6 +169,7 @@ public class XMIExporter implements XMIExportInterface
 			//Data Model creation
 			generateDataModel(entityGroup);
 			exportXMI(filename, umlPackage, xmiVersion);
+			System.out.println("ENTITIES with ENTITYGROUP = " + entityGroup.getEntityCollection());
 		}
 	} 
 
@@ -206,7 +207,7 @@ public class XMIExporter implements XMIExportInterface
 				EntityInterface entity = (EntityInterface)entityCollnIter.next();
 				if(entity!=null)
 				{
-					Collection<AssociationInterface> entityAssociations = entity.getAllAssociations();
+					Collection<AssociationInterface> entityAssociations = entity.getAssociationCollection();
 					if(entityAssociations!=null)
 					{
 						Iterator entityAssocnCollnIter = entityAssociations.iterator();
@@ -306,7 +307,7 @@ public class XMIExporter implements XMIExportInterface
 		if(entity!=null)
 		{
 			//Association relationships
-			Collection<AssociationInterface> entityAssociations = entity.getAllAssociations();
+			Collection<AssociationInterface> entityAssociations = entity.getAssociationCollection();
 			if(entityAssociations!=null)
 			{
 				Iterator<AssociationInterface> entityAssociationsIter = entityAssociations.iterator();
@@ -413,7 +414,7 @@ public class XMIExporter implements XMIExportInterface
 				if((associationType.equals(XMIConstants.ASSOC_ONE_ONE))||(associationType.equals(XMIConstants.ASSOC_ONE_MANY)))
 				{
 					
-					getForeignKeyAttribute(association.getEntity(),association.getTargetEntity(), constraintProperties.getTargetEntityKey(),association.getSourceRole().getName()); 
+					getForeignKeyAttribute(association.getEntity(),association.getTargetEntity(), constraintProperties.getTargetEntityKey(),association.getSourceRole().getName());
 					//One-One OR One-Many source will have primary key, target has foreign key
 					sourceRole.setName(getPrimaryKeyOperationName(association.getEntity().getName(),constraintProperties.getSourceEntityKey()));
 					targetRole.setName(getForeignkeyOperationName(constraintProperties.getTargetEntityKey()));
@@ -424,6 +425,7 @@ public class XMIExporter implements XMIExportInterface
 				}
 				else if(associationType.equals(XMIConstants.ASSOC_MANY_ONE))
 				{
+					System.out.println("ASSOC_MANY_ONE");
 					getForeignKeyAttribute(association.getTargetEntity(),association.getEntity(), constraintProperties.getSourceEntityKey(),association.getTargetRole().getName());
 					//Many-One source will have foreign key, target primary key
 					sourceRole.setName(getForeignkeyOperationName(constraintProperties.getTargetEntityKey()));
@@ -434,6 +436,7 @@ public class XMIExporter implements XMIExportInterface
 				}
 				else if(associationType.equals(XMIConstants.ASSOC_MANY_MANY))
 				{
+					System.out.println("ASSOC_MANY_MANY");
 					handleManyToManyAssociation(association);
 					return null;
 				}
@@ -997,7 +1000,7 @@ public class XMIExporter implements XMIExportInterface
 		if(entity!=null)
 		{
 			//Association relationships
-			Collection<AssociationInterface> entityAssociations = entity.getAllAssociations();
+			Collection<AssociationInterface> entityAssociations = entity.getAssociationCollection();
 			if(entityAssociations!=null)
 			{
 				Iterator<AssociationInterface> entityAssociationsIter = entityAssociations.iterator();

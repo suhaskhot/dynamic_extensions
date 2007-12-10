@@ -7,24 +7,21 @@ import java.util.Map;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
-import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
-import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.wustl.common.beans.NameValueBean;
+import edu.wustl.common.dao.HibernateDAO;
 
 /**
  *
  * @author mandar_shidhore
  *
  */
-public interface NewEntityManagerInterface {
-
-    public void saveEntityGroup(EntityGroupInterface group) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
-
+public interface NewEntityManagerInterface
+{
 	/**
 	 * Saves the entity into the database.Also prepares the dynamic tables and associations
 	 * between those tables using the metadata information in the entity object.
@@ -46,26 +43,6 @@ public interface NewEntityManagerInterface {
 	public EntityInterface persistEntityMetadata(EntityInterface entity)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
-	/**
-	 * This method returns the EntityGroupInterface given the short name for the
-	 * entity.
-	 * @param entityGroupShortName short name for entity group
-	 * @return entityGroupInterface entity group interface
-	 * @throws DynamicExtensionsSystemException
-	 */
-	EntityGroupInterface getEntityGroupByShortName(String entityGroupShortName)
-			throws DynamicExtensionsSystemException;
-
-	/**
-	 * This method persists an entity group and the associated entities without creating the data table
-	 * for the entities.
-	 * @param entityGroupInterface entity group to be saved.
-	 * @return entityGroupInterface Saved  entity group.
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
-	 */
-	EntityGroupInterface persistEntityGroupMetadata(EntityGroupInterface entityGroupInterface)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
     /**
      * Returns a collection of association objects given the source entity id and
      * target entity id.
@@ -86,14 +63,7 @@ public interface NewEntityManagerInterface {
      */
     EntityInterface getEntityByName(String entityName) throws DynamicExtensionsSystemException,
             DynamicExtensionsApplicationException;
-    /**
-     * @param entityGroupName
-     * @return EntityGroupInterface EntityGroupInterface
-     * @throws DynamicExtensionsSystemException
-     * @throws DynamicExtensionsApplicationException
-     */
-    EntityGroupInterface getEntityGroupByName(String entityGroupName) throws DynamicExtensionsSystemException,
-            DynamicExtensionsApplicationException;
+
     /**
      * Returns an association object given the entity name and source role name.
      * @param entityName
@@ -212,14 +182,7 @@ public interface NewEntityManagerInterface {
      */
     void deleteRecords(Long containerId, List<Long> recordIdList) throws DynamicExtensionsSystemException,
             DynamicExtensionsApplicationException;
-    /**
-     * @param entityGroupIdentifier
-     * @return
-     */
-    Collection<NameValueBean> getMainContainer(Long entityGroupIdentifier)
-            throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
-    Collection<NameValueBean> getAllEntityGroupBeans() throws DynamicExtensionsSystemException;
     /**
      * This method returns the all the record for the given control of the
      * association.
@@ -342,4 +305,15 @@ public interface NewEntityManagerInterface {
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public Long getNextIdentifierForEntity(String entityName) throws DynamicExtensionsSystemException;
+	/**
+	 * getDynamicQueryList.
+	 * @param entityInterface
+	 * @param reverseQueryList
+	 * @param hibernateDAO
+	 * @param queryList
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public List getDynamicQueryList(EntityInterface entityInterface, List reverseQueryList,HibernateDAO hibernateDAO, List queryList) throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException;
 }

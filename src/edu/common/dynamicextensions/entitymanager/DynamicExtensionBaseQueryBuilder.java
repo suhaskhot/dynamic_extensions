@@ -21,8 +21,6 @@ import org.hibernate.Transaction;
 import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.Attribute;
-import edu.common.dynamicextensions.domain.AttributeRecord;
-import edu.common.dynamicextensions.domain.AttributeTypeInformation;
 import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
@@ -35,6 +33,7 @@ import edu.common.dynamicextensions.domain.ObjectAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.ShortAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
@@ -54,7 +53,6 @@ import edu.wustl.common.dao.HibernateDAO;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.dbManager.DBUtil;
-import edu.wustl.common.util.dbManager.HibernateMetaData;
 import edu.wustl.common.util.logger.Logger;
 
 /**
@@ -86,8 +84,9 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
      * @throws DynamicExtensionsSystemException
      * @throws DynamicExtensionsApplicationException
      */
-    public List getCreateEntityQueryList(Entity entity, List reverseQueryList, HibernateDAO hibernateDAO, boolean addIdAttribute)
+    public List getCreateEntityQueryList(AbstractMetadataInterface abstractMetadataInterface, List reverseQueryList, HibernateDAO hibernateDAO, boolean addIdAttribute)
             throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException {
+    	Entity entity = (Entity) abstractMetadataInterface;
         List queryList = new ArrayList();
         //get query to create main table with primitive attributes.
         List mainTableQueryList = getCreateMainTableQuery(entity, reverseQueryList, addIdAttribute);
@@ -114,10 +113,11 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
      * @throws DynamicExtensionsSystemException System exception in case of any fatal error
      * @throws DynamicExtensionsApplicationException Thrown in case of authentication failure or duplicate name.
      */
-    public List getUpdateEntityQueryList(Entity entity, Entity databaseCopy, List attributeRollbackQueryList)
+    public List getUpdateEntityQueryList(AbstractMetadataInterface abstractMetadata, AbstractMetadataInterface databaseabstractMetadataCopy, List attributeRollbackQueryList)
             throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException {
         Logger.out.debug("getUpdateEntityQueryList : Entering method");
-
+        Entity entity = (Entity) abstractMetadata;
+        Entity databaseCopy = (Entity) databaseabstractMetadataCopy;
         List entityInheritanceQueryList = getInheritanceQueryList(entity, databaseCopy, attributeRollbackQueryList);
         //get the query for any attribute that is modified.
         List updateAttributeQueryList = getUpdateAttributeQueryList(entity, databaseCopy,
@@ -1698,7 +1698,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
      * @param databaseCopy
      * @return
      */
-    public boolean isParentChanged(Entity entity, Entity databaseCopy) 
+    public boolean isParentChanged(Entity entity, Entity databaseCopy)
     {
         boolean isParentChanged = false;
         if (entity.getParentEntity() != null && !entity.getParentEntity().equals(databaseCopy.getParentEntity())) {
@@ -1748,13 +1748,13 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
             } else {
                 str = (String) value;
             }
-            
+
             if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
             {
                 if (str.length() != 0)
                     str = DynamicExtensionsUtility.formatMonthAndYearDate(str);
             }
-            
+
             if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
             {
                 if (str.length() != 0)

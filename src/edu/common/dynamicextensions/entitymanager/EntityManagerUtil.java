@@ -7,31 +7,25 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import edu.common.dynamicextensions.domain.AbstractAttribute;
-import edu.common.dynamicextensions.domain.Attribute;
-import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
-import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
-import edu.common.dynamicextensions.util.global.Variables;
 import edu.wustl.common.dao.DAOFactory;
+import edu.wustl.common.dao.HibernateDAO;
 import edu.wustl.common.dao.JDBCDAO;
-import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.dbManager.DBUtil;
-import edu.wustl.common.util.logger.Logger;
 
 public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstantsInterface
 {
@@ -338,4 +332,45 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 		}
     	return isAttributePresent;
     }
+    /**
+     * getDynamicQueryList.
+     * @param entityInterface
+     * @param reverseQueryList
+     * @param hibernateDAO
+     * @param queryList
+     * @return
+     * @throws DynamicExtensionsSystemException
+     * @throws DynamicExtensionsApplicationException
+     */
+	public List getDynamicQueryList(AbstractMetadataInterface abstractMetadata, List reverseQueryList,
+			HibernateDAO hibernateDAO, List queryList) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+		DynamicExtensionBaseQueryBuilder queryBuilder = QueryBuilderFactory.getQueryBuilder();
+		if (abstractMetadata.getId() == null)
+		{
+			List createQueryList = queryBuilder.getCreateEntityQueryList(abstractMetadata,
+					reverseQueryList, hibernateDAO, false);
+
+			if (createQueryList != null && !createQueryList.isEmpty())
+			{
+				queryList.add(createQueryList.get(0));
+			}
+		}
+		else
+		{
+			Entity databaseCopy = (Entity) DBUtil.loadCleanObj(Entity.class, abstractMetadata
+					.getId());
+
+			List updateQueryList = queryBuilder.getUpdateEntityQueryList(abstractMetadata,
+					(Entity) databaseCopy, reverseQueryList);
+
+			if (updateQueryList != null && !updateQueryList.isEmpty())
+			{
+				queryList.add(queryBuilder.getUpdateEntityQueryList(abstractMetadata,
+						(Entity) databaseCopy, reverseQueryList).get(0));
+			}
+		}
+		return queryList;
+	}
 }

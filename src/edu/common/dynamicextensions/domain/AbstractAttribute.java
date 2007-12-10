@@ -17,7 +17,7 @@ import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterfac
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  * @hibernate.cache  usage="read-write"
  */
-public abstract class AbstractAttribute extends AbstractMetadata implements AbstractAttributeInterface
+public abstract class AbstractAttribute extends BaseAbstractAttribute implements AbstractAttributeInterface
 {
 	/**
 	 * Serial Version Unique Identifier

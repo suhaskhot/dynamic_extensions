@@ -62,7 +62,16 @@ public class XMIImporter
 			}
 			int beginIndex = fileName.lastIndexOf("//");
 			int endIndex = fileName.lastIndexOf(".");
-			String domainModelName = fileName.substring(beginIndex+2, endIndex);
+			String domainModelName = "";
+			
+			if(beginIndex == -1)
+			{
+				domainModelName = fileName.substring(beginIndex+1, endIndex);
+			}
+			else
+			{
+				domainModelName = fileName.substring(beginIndex+2, endIndex);
+			}
 			System.out.println("Package name = " +packageName);
 			System.out.println("Name of the file = " +domainModelName);
 			

@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Constants.InheritanceStrategy;
@@ -606,24 +608,46 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	}
     
     public Collection<AttributeInterface> getEntityAttributesForQuery()
-    {
-        Collection<AttributeInterface> AttributeCollection = new ArrayList<AttributeInterface>();
-        AttributeCollection.addAll(getAttributeCollection());
+    { 
+        Collection<AttributeInterface> theAttributeCollection = new ArrayList<AttributeInterface>();
+        Set<String> attributeNames = new HashSet<String>();
+        Collection<AttributeInterface> attributeCollection = getAttributeCollection();
+		theAttributeCollection.addAll(attributeCollection);
+		for(AttributeInterface attribute:attributeCollection)
+		{
+			attributeNames.add(attribute.getName());
+			attribute.setEntity(this);
+		}
         EntityInterface parentEntity = this.parentEntity;
         
         while (parentEntity != null)
         {
-            Collection parentAttributeCollection = parentEntity.getAttributeCollection();
-            Iterator parentAttributeCollectionIterator = parentAttributeCollection.iterator();
-            while(parentAttributeCollectionIterator.hasNext())
+            Collection<AttributeInterface> parentAttributeCollection = parentEntity.getAttributeCollection();
+            for (AttributeInterface parentAttribute: parentAttributeCollection)
             {
-                AttributeInterface nextAttribute = (AttributeInterface) parentAttributeCollectionIterator.next();;
-                nextAttribute.setEntity(this);
-                AttributeCollection.add(nextAttribute);
+            	parentAttribute.setEntity(this);
+            	if (attributeNames.add(parentAttribute.getName()))
+            	{
+            		theAttributeCollection.add(parentAttribute);
+            		boolean isDerivedTagPresent = false;
+            		for (TaggedValueInterface tag : parentAttribute.getTaggedValueCollection()) {
+			            if (tag.getKey().equals(edu.wustl.cab2b.common.util.Constants.TYPE_DERIVED)) {
+			            	isDerivedTagPresent = true;
+			            }
+			        }
+            		if (!isDerivedTagPresent)
+            		{
+	            		TaggedValueInterface tag = new TaggedValue();
+	            		tag.setKey(edu.wustl.cab2b.common.util.Constants.TYPE_DERIVED);
+	            		tag.setValue(edu.wustl.cab2b.common.util.Constants.TYPE_DERIVED);
+	            		System.out.println("added tag.....");
+	            		parentAttribute.addTaggedValue(tag);
+            		}
+            	}
             }
             parentEntity = parentEntity.getParentEntity();
         }
 
-        return AttributeCollection;
+        return theAttributeCollection;
     }
 }

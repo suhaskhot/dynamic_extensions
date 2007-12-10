@@ -27,7 +27,7 @@ import edu.common.dynamicextensions.util.global.Constants.InheritanceStrategy;
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  * @hibernate.cache  usage="read-write"
  */
-public class Entity extends AbstractMetadata implements EntityInterface
+public class Entity extends AbstractEntity implements EntityInterface
 {
 
 	/**
@@ -39,11 +39,6 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	 * Collection of attributes in this entity.
 	 */
 	protected Collection<AbstractAttributeInterface> abstractAttributeCollection = new HashSet<AbstractAttributeInterface>();
-
-	/**
-	 * Table property for this entity.
-	 */
-	protected Collection<TablePropertiesInterface> tablePropertiesCollection = new HashSet<TablePropertiesInterface>();
 
 	/**
 	 * Collection of EntityGroup.
@@ -142,30 +137,6 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	public void setEntityGroupCollection(Collection<EntityGroupInterface> entityGroupCollection)
 	{
 		this.entityGroupCollection = entityGroupCollection;
-	}
-
-	/**
-	 * This method returns the Collection of TableProperties of this Entity.
-	 * @hibernate.set name="tablePropertiesColletion" table="DYEXTN_TABLE_PROPERTIES" cascade="all-delete-orphan"
-	 * inverse="false" lazy="false"
-	 * @hibernate.collection-key column="ENTITY_ID"
-	 * @hibernate.cache  usage="read-write"
-	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.databaseproperties.TableProperties"
-	 * @return the Collection of TableProperties of this Entity.
-	 */
-	private Collection<TablePropertiesInterface> getTablePropertiesCollection()
-	{
-		return tablePropertiesCollection;
-	}
-
-	/**
-	 * This method sets the tablePropertiesColletion to the given Collection of TableProperties.
-	 * @param tablePropertiesColletion Collection of TableProperties to be set.
-	 */
-	private void setTablePropertiesCollection(
-			Collection<TablePropertiesInterface> tablePropertiesColletion)
-	{
-		this.tablePropertiesCollection = tablePropertiesColletion;
 	}
 
 	/**

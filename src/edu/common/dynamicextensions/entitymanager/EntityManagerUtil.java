@@ -332,45 +332,4 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 		}
     	return isAttributePresent;
     }
-    /**
-     * getDynamicQueryList.
-     * @param entityInterface
-     * @param reverseQueryList
-     * @param hibernateDAO
-     * @param queryList
-     * @return
-     * @throws DynamicExtensionsSystemException
-     * @throws DynamicExtensionsApplicationException
-     */
-	public List getDynamicQueryList(AbstractMetadataInterface abstractMetadata, List reverseQueryList,
-			HibernateDAO hibernateDAO, List queryList) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
-	{
-		DynamicExtensionBaseQueryBuilder queryBuilder = QueryBuilderFactory.getQueryBuilder();
-		if (abstractMetadata.getId() == null)
-		{
-			List createQueryList = queryBuilder.getCreateEntityQueryList(abstractMetadata,
-					reverseQueryList, hibernateDAO, false);
-
-			if (createQueryList != null && !createQueryList.isEmpty())
-			{
-				queryList.add(createQueryList.get(0));
-			}
-		}
-		else
-		{
-			Entity databaseCopy = (Entity) DBUtil.loadCleanObj(Entity.class, abstractMetadata
-					.getId());
-
-			List updateQueryList = queryBuilder.getUpdateEntityQueryList(abstractMetadata,
-					(Entity) databaseCopy, reverseQueryList);
-
-			if (updateQueryList != null && !updateQueryList.isEmpty())
-			{
-				queryList.add(queryBuilder.getUpdateEntityQueryList(abstractMetadata,
-						(Entity) databaseCopy, reverseQueryList).get(0));
-			}
-		}
-		return queryList;
-	}
 }

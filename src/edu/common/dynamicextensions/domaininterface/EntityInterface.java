@@ -222,4 +222,6 @@ public interface EntityInterface extends AbstractMetadataInterface
 	 */
 	public void setAddIdAttribute(boolean addIdAttribute);
 
+	public boolean isAddIdAttribute();
+
 }

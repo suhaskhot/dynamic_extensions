@@ -56,7 +56,7 @@ public class MockEntityManager
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		ContainerInterface containerInterface = null;
 		ControlInterface controlInterface = null;
-		
+
 
 		containerInterface = domainObjectFactory.createContainer();
 		containerInterface.setButtonCss("actionButton");
@@ -97,7 +97,7 @@ public class MockEntityManager
 
 	/**
 	 * This method returns a dummy Container instance populated with dummy
-	 * Controls, Entity and its attributes.	 * 
+	 * Controls, Entity and its attributes.	 *
 	 * @param containerName Name of the Conatiner
 	 * @return Container instance
 	 * @throws DynamicExtensionsApplicationException On failure to create Container instance
@@ -151,9 +151,9 @@ public class MockEntityManager
 
 	/**
 	 * This method creates the populated dummy Entity instance
-	 * 
+	 *
 	 * @return Manually created dummy Entity along with its attributes
-	 * @throws DynamicExtensionsApplicationException On failure to create Entity 
+	 * @throws DynamicExtensionsApplicationException On failure to create Entity
 	 */
 	public EntityInterface initializeEntity() throws DynamicExtensionsApplicationException
 	{
@@ -185,7 +185,7 @@ public class MockEntityManager
 		abstractAttributeInterface.setEntity(person);
 
 		return person;
-	}		
+	}
 
 	public EntityInterface initializeEntity1() throws DynamicExtensionsApplicationException
 	{
@@ -270,6 +270,7 @@ public class MockEntityManager
 		attributeInterface = initializeStringAttribute("address", "");
 		personal.addAbstractAttribute(attributeInterface);
 		attributeInterface.setEntity(personal);
+		personal.setAddIdAttribute(true);
 
 		RuleInterface ruleRequired = new Rule();
 		ruleRequired.setName("required");
@@ -303,7 +304,7 @@ public class MockEntityManager
 	}
 
 	/**
-	 * This method creates populated dummy StringAttributeTypeInformation 
+	 * This method creates populated dummy StringAttributeTypeInformation
 	 * @param attributeName Name of the Attribute
 	 * @param defaultValue Default value of the Attribute
 	 * @return Manually created StringAttributeTypeInformation instance
@@ -335,7 +336,7 @@ public class MockEntityManager
 
 	/**
 	 * This method creates populated dummy DateAttributeTypeInformation
-	 * 
+	 *
 	 * @return Manually created DateAttributeTypeInformation instance
 	 * @throws DynamicExtensionsApplicationException On failure to create Date
 	 */
@@ -371,7 +372,7 @@ public class MockEntityManager
 
 	/**
 	 * This method creates populated dummy DateAttributeTypeInformation
-	 * 
+	 *
 	 * @return Manually created DateAttributeTypeInformation instance
 	 * @throws DynamicExtensionsApplicationException On failure to create Date
 	 */
@@ -394,7 +395,7 @@ public class MockEntityManager
 
 	/**
 	 * This method creates populated dummy DateAttributeTypeInformation
-	 * 
+	 *
 	 * @return Manually created DateAttributeTypeInformation instance
 	 * @throws DynamicExtensionsApplicationException On failure to create Date
 	 */
@@ -532,9 +533,9 @@ public class MockEntityManager
 
 	/**
 	 * This method creates the populated dummy Entity instance
-	 * 
+	 *
 	 * @return Manually created dummy Entity along with its attributes
-	 * @throws DynamicExtensionsApplicationException On failure to create Entity 
+	 * @throws DynamicExtensionsApplicationException On failure to create Entity
 	 */
 	public EntityGroupInterface initializeEntityGroup()
 			throws DynamicExtensionsApplicationException
@@ -554,7 +555,7 @@ public class MockEntityManager
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 * @throws DynamicExtensionsApplicationException
 	 */
@@ -572,7 +573,7 @@ public class MockEntityManager
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 * @throws DynamicExtensionsApplicationException
 	 */
@@ -599,7 +600,7 @@ public class MockEntityManager
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 * @throws DynamicExtensionsApplicationException
 	 */

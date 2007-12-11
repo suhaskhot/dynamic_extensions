@@ -276,15 +276,15 @@ public class DynamicExtensionsUtility
 	 */
 	public static void initialiseApplicationVariables()
 	{
-//		try
-//		{
-//			DBUtil.currentSession();
+		try
+		{
+			DBUtil.currentSession();
 //			DBUtil.closeSession();
-//		}
-//		catch (Exception e)
-//		{
-//			throw new RuntimeException(e);
-//		}
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException(e);
+		}
 
 		if (Logger.out == null)
 		{
@@ -774,7 +774,7 @@ public class DynamicExtensionsUtility
 	{
 		boolean isDateValid = false;
 		Date date = null;
-        
+
         if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
         {
             strDate = formatMonthAndYearDate(strDate);
@@ -800,21 +800,21 @@ public class DynamicExtensionsUtility
 		}
 
 		return isDateValid;
-	}	
-    
+	}
+
     public static String formatMonthAndYearDate(String strDate)
     {
         String month = determineMonth(strDate.substring(0, 3));
         String year = strDate.substring(4, strDate.length());
         return month+"-"+"01"+"-"+year+" 0:0";
     }
-    
+
     public static String formatYearDate(String strDate)
     {
         String year = strDate;
         return "01"+"-"+"01"+"-"+year+" 0:0";
     }
-    
+
     public static String determineMonth(String month)
     {
         if (month.equals(Constants.JANUARY))
@@ -835,35 +835,35 @@ public class DynamicExtensionsUtility
         }
         else if (month.equals(Constants.MAY))
         {
-            return "05";    
+            return "05";
         }
         else if (month.equals(Constants.JUNE))
         {
-            return "06";    
+            return "06";
         }
         else if (month.equals(Constants.JULY))
         {
-            return "07";    
+            return "07";
         }
         else if (month.equals(Constants.AUGUST))
         {
-            return "08";    
+            return "08";
         }
         else if (month.equals(Constants.SEPTEMBER))
         {
-            return "09";    
+            return "09";
         }
         else if (month.equals(Constants.OCTOBER))
         {
-            return "10";    
+            return "10";
         }
         else if (month.equals(Constants.NOVEMBER))
         {
-            return "11";    
+            return "11";
         }
         else if (month.equals(Constants.DECEMBER))
         {
-            return "12";    
+            return "12";
         }
         return null;
     }
@@ -954,13 +954,13 @@ public class DynamicExtensionsUtility
 	public static int compareDates(String date1, String date2, String dateFormat)
 	{
 		int result = 0;
-        
+
         if (areBothDatesOfSameFormat(date1, date2))
         {
             result = 1;
             return result;
         }
-        
+
         if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
         {
             if (Integer.parseInt(date1.substring(3, date1.length()).trim()) > Integer.parseInt(date2.substring(3, date2.length()).trim()))
@@ -972,7 +972,7 @@ public class DynamicExtensionsUtility
             date2 = formatMonthAndYearDate(date2);
             //09-12-2007 0:0
         }
-        
+
         if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
         {
             //date1 = formatYearDate(date1);
@@ -1005,12 +1005,12 @@ public class DynamicExtensionsUtility
 
 		return result;
 	}
-    
+
     public static boolean areBothDatesOfSameFormat(String date1, String date2)
     {
         if (date1.length() != date2.length())
             return true;
-        else 
+        else
             return false;
     }
 

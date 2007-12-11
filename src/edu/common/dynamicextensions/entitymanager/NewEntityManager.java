@@ -102,7 +102,7 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 
 		return entityManager;
 	}
-    
+
 	/**
 	 * Mock entity manager can be placed in the entity manager using this method.
 	 * @param entityManager
@@ -242,7 +242,7 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 			DynamicExtensionBaseDomainObjectInterface dynamicExtensionBaseDomainObject,
 			List reverseQueryList, HibernateDAO hibernateDAO, List queryList)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
-            
+
 	{
 			EntityInterface entity = (EntityInterface) dynamicExtensionBaseDomainObject;
 			createDynamicQueries(entity, reverseQueryList, hibernateDAO, queryList);
@@ -277,7 +277,7 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 		if (entityInterface.getId() == null)
 		{
 			List createQueryList = queryBuilder.getCreateEntityQueryList((Entity) entityInterface,
-					reverseQueryList, hibernateDAO, false);
+					reverseQueryList, hibernateDAO, entityInterface.isAddIdAttribute());
 
 			if (createQueryList != null && !createQueryList.isEmpty())
 			{
@@ -2384,7 +2384,7 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
        }
        return null;
    }
-   
+
    /**
     * Returns an attribute given the entity name and attribute name.
     * @param entityName name of the entity.
@@ -2404,7 +2404,7 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
        {
            return attributeInterface;
        }
-       
+
        EntityInterface entityInterface = getEntityByName(entityName);
        if (entityInterface != null)
        {
@@ -2430,10 +2430,10 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
                }
            }
        }
-       
+
        return attributeInterface;
    }
-   
+
    /**
     * Returns all entitiy groups in the whole system
     * @return Collection Entity group Beans Collection

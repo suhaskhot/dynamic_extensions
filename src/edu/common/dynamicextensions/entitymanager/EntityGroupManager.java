@@ -73,69 +73,8 @@ public class EntityGroupManager extends AbstractMetadataManager implements Entit
 	public EntityGroupInterface persistEntityGroup(EntityGroupInterface group)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		List reverseQueryList = new LinkedList();
-		List queryList = new ArrayList();
-		Stack rollbackQueryStack = new Stack();
-		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
-				Constants.HIBERNATE_DAO);
-
-		try
-		{
-			hibernateDAO.openSession(null);
-
-			preProcess(group, reverseQueryList, hibernateDAO, queryList);
-
-			if (group.getId() == null)
-			{
-				hibernateDAO.insert(group, null, false, false);
-			}
-			else
-			{
-				hibernateDAO.update(group, null, false, false, false);
-			}
-
-			postProcess(queryList, reverseQueryList, rollbackQueryStack);
-
-			hibernateDAO.commit();
-
-		}
-		catch (DAOException e)
-		{
-			rollbackQueries(rollbackQueryStack, null, e, hibernateDAO);
-			throw new DynamicExtensionsSystemException(
-					"DAOException occured while opening a session to save the container.", e);
-		}
-		catch (DynamicExtensionsApplicationException e)
-		{
-			rollbackQueries(rollbackQueryStack, null, e, hibernateDAO);
-			throw new DynamicExtensionsApplicationException(
-					"DAOException occured while opening a session to save the container.", e);
-		}
-		catch (DynamicExtensionsSystemException e)
-		{
-			rollbackQueries(rollbackQueryStack, null, e, hibernateDAO);
-			e.printStackTrace();
-			throw e;
-		}
-		catch (UserNotAuthorizedException e)
-		{
-			rollbackQueries(rollbackQueryStack, null, e, hibernateDAO);
-			e.printStackTrace();
-			throw new DynamicExtensionsSystemException(
-					"DAOException occured while opening a session to save the container.", e);
-		}
-		finally
-		{
-			try
-			{
-				hibernateDAO.closeSession();
-			}
-			catch (Exception e)
-			{
-				rollbackQueries(rollbackQueryStack, null, e, hibernateDAO);
-			}
-		}
-        return group;
+		EntityGroupInterface entityGroupInterface = (EntityGroupInterface) persistDynamicExtensionObject(group);
+		return entityGroupInterface;
 	}
 
 	/**
@@ -149,49 +88,8 @@ public class EntityGroupManager extends AbstractMetadataManager implements Entit
 	public EntityGroupInterface persistEntityGroupMetadata(EntityGroupInterface entityGroup)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		Stack rollbackQueryStack = new Stack();
-		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
-				Constants.HIBERNATE_DAO);
-		try
-		{
-			hibernateDAO.openSession(null);
-
-			if (entityGroup.getId() == null)
-			{
-				hibernateDAO.insert(entityGroup, null, false, false);
-			}
-			else
-			{
-				hibernateDAO.update(entityGroup, null, false, false, false);
-			}
-
-			hibernateDAO.commit();
-		}
-		catch (DAOException e)
-		{
-			rollbackQueries(rollbackQueryStack, null, e, hibernateDAO);
-			throw new DynamicExtensionsSystemException(
-					"DAOException occured while opening a session to save the container.", e);
-		}
-		catch (UserNotAuthorizedException e)
-		{
-			rollbackQueries(rollbackQueryStack, null, e, hibernateDAO);
-			throw new DynamicExtensionsSystemException(
-					"DAOException occured while opening a session to save the container.", e);
-		}
-		finally
-		{
-			try
-			{
-				hibernateDAO.closeSession();
-			}
-			catch (DAOException e)
-			{
-				throw new DynamicExtensionsSystemException(
-						"DAOException occured while opening a session to save the container.", e);
-			}
-		}
-		return entityGroup;
+		EntityGroupInterface entityGroupInterface = (EntityGroupInterface) persistDynamicExtensionObjectMetdata(entityGroup);
+		return entityGroupInterface;
 	}
 	/**
 	 * This method creates dynamic table queries for the entities within a group.

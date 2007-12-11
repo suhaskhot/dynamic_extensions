@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -18,6 +19,7 @@ import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
+import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
@@ -27,6 +29,7 @@ import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.dao.AbstractDAO;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.HibernateDAO;
+import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.logger.Logger;
@@ -333,6 +336,124 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 	      return entityCollection;
 
 	  }
+	 /**
+	 * This method persists an entity group and the associated entities and also creates the data table
+	 * for the entities.
+	 * @param entityGroupInterface entity group to be saved.
+	 * @return entityGroupInterface Saved  entity group.
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	protected AbstractMetadataInterface persistDynamicExtensionObject(
+			AbstractMetadataInterface abstractMetdata) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+		List reverseQueryList = new LinkedList();
+		List queryList = new ArrayList();
+		Stack rollbackQueryStack = new Stack();
+
+		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
+				Constants.HIBERNATE_DAO);
+		try
+		{
+			hibernateDAO.openSession(null);
+
+			preProcess(abstractMetdata, reverseQueryList, hibernateDAO, queryList);
+
+			if (abstractMetdata.getId() == null)
+			{
+				hibernateDAO.insert(abstractMetdata, null, false, false);
+			}
+			else
+			{
+				hibernateDAO.update(abstractMetdata, null, false, false, false);
+			}
+
+			postProcess(queryList, reverseQueryList, rollbackQueryStack);
+
+			hibernateDAO.commit();
+		}
+		catch (DAOException e)
+		{
+			rollbackQueries(rollbackQueryStack, null, e, hibernateDAO);
+			throw new DynamicExtensionsSystemException(
+					"DAOException occured while opening a session to save the container.", e);
+		}
+		catch (UserNotAuthorizedException e)
+		{
+			rollbackQueries(rollbackQueryStack, null, e, hibernateDAO);
+			e.printStackTrace();
+			throw new DynamicExtensionsSystemException(
+					"DAOException occured while opening a session to save the container.", e);
+		}
+		finally
+		{
+			try
+			{
+				hibernateDAO.closeSession();
+			}
+			catch (Exception e)
+			{
+				rollbackQueries(rollbackQueryStack, null, e, hibernateDAO);
+			}
+		}
+		return abstractMetdata;
+	}
+	/**
+	 * This method persists an entity group and the associated entities without creating the data table
+	 * for the entities.
+	 * @param entityGroupInterface entity group to be saved.
+	 * @return entityGroupInterface Saved  entity group.
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public AbstractMetadataInterface persistDynamicExtensionObjectMetdata(AbstractMetadataInterface abstractMetdata)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		Stack rollbackQueryStack = new Stack();
+		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
+				Constants.HIBERNATE_DAO);
+		try
+		{
+			hibernateDAO.openSession(null);
+
+			if (abstractMetdata.getId() == null)
+			{
+				hibernateDAO.insert(abstractMetdata, null, false, false);
+			}
+			else
+			{
+				hibernateDAO.update(abstractMetdata, null, false, false, false);
+			}
+
+			hibernateDAO.commit();
+		}
+		catch (DAOException e)
+		{
+			rollbackQueries(rollbackQueryStack, null, e, hibernateDAO);
+			throw new DynamicExtensionsSystemException(
+					"DAOException occured while opening a session to save the container.", e);
+		}
+		catch (UserNotAuthorizedException e)
+		{
+			rollbackQueries(rollbackQueryStack, null, e, hibernateDAO);
+			throw new DynamicExtensionsSystemException(
+					"DAOException occured while opening a session to save the container.", e);
+		}
+		finally
+		{
+			try
+			{
+				hibernateDAO.closeSession();
+			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException(
+						"DAOException occured while opening a session to save the container.", e);
+			}
+		}
+		return abstractMetdata;
+	}
 	/**
 	 * This method is used to log the messages in a uniform manner. The method takes the string method name and
 	 * string message. Using these parameters the method formats the message and logs it.

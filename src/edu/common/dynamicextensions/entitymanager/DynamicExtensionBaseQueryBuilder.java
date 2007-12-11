@@ -84,9 +84,8 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
      * @throws DynamicExtensionsSystemException
      * @throws DynamicExtensionsApplicationException
      */
-    public List getCreateEntityQueryList(AbstractMetadataInterface abstractMetadataInterface, List reverseQueryList, HibernateDAO hibernateDAO, boolean addIdAttribute)
+    public List getCreateEntityQueryList(Entity entity, List reverseQueryList, HibernateDAO hibernateDAO, boolean addIdAttribute)
             throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException {
-    	Entity entity = (Entity) abstractMetadataInterface;
         List queryList = new ArrayList();
         //get query to create main table with primitive attributes.
         List mainTableQueryList = getCreateMainTableQuery(entity, reverseQueryList, addIdAttribute);
@@ -113,11 +112,9 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
      * @throws DynamicExtensionsSystemException System exception in case of any fatal error
      * @throws DynamicExtensionsApplicationException Thrown in case of authentication failure or duplicate name.
      */
-    public List getUpdateEntityQueryList(AbstractMetadataInterface abstractMetadata, AbstractMetadataInterface databaseabstractMetadataCopy, List attributeRollbackQueryList)
+    public List getUpdateEntityQueryList(Entity entity, Entity databaseCopy, List attributeRollbackQueryList)
             throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException {
         Logger.out.debug("getUpdateEntityQueryList : Entering method");
-        Entity entity = (Entity) abstractMetadata;
-        Entity databaseCopy = (Entity) databaseabstractMetadataCopy;
         List entityInheritanceQueryList = getInheritanceQueryList(entity, databaseCopy, attributeRollbackQueryList);
         //get the query for any attribute that is modified.
         List updateAttributeQueryList = getUpdateAttributeQueryList(entity, databaseCopy,

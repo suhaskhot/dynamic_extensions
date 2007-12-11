@@ -276,15 +276,15 @@ public class DynamicExtensionsUtility
 	 */
 	public static void initialiseApplicationVariables()
 	{
-		try
-		{
-			DBUtil.currentSession();
-			DBUtil.closeSession();
-		}
-		catch (Exception e)
-		{
-			throw new RuntimeException(e);
-		}
+//		try
+//		{
+//			DBUtil.currentSession();
+//			DBUtil.closeSession();
+//		}
+//		catch (Exception e)
+//		{
+//			throw new RuntimeException(e);
+//		}
 
 		if (Logger.out == null)
 		{
@@ -311,7 +311,6 @@ public class DynamicExtensionsUtility
 			Variables.dateTostrFunction = "TO_CHAR";
 			Variables.strTodateFunction = "STR_TO_DATE";
 		}
-
 	}
 
 	/**
@@ -338,7 +337,6 @@ public class DynamicExtensionsUtility
 		{
 			Logger.out.info("Preloading the DE metadata....This may take a few minutes");
 			EntityManager.getInstance().getAllContainers();
-
 		}
 		catch (Exception e)
 		{

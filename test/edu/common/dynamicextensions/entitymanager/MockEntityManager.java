@@ -120,6 +120,7 @@ public class MockEntityManager
 
 		entityInterface = initializeEntity();
 		containerInterface.setEntity(entityInterface);
+        entityInterface.getContainerCollection().add(containerInterface);
 
 		Collection abstractAttributeCollection = entityInterface.getAbstractAttributeCollection();
 		Iterator abstractAttributeCollectionIterator = abstractAttributeCollection.iterator();
@@ -191,26 +192,16 @@ public class MockEntityManager
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		AttributeInterface atributeInterface = null;
 		EntityInterface person = domainObjectFactory.createEntity();
-		ColumnPropertiesInterface columnProperties = null;
 
 		person.setName("Person");
 		person.setCreatedDate(new Date());
 		person.setDescription("This is a dummy entity");
 		person.setLastUpdated(person.getCreatedDate());
-		TablePropertiesInterface tablePropertiesInterface = new TableProperties();
-		tablePropertiesInterface
-				.setName(DynamicExtensionsQueryBuilderConstantsInterface.TABLE_NAME_PREFIX + "_"
-						+ tableIndex++);
-		person.setTableProperties(tablePropertiesInterface);
 
 		// Attribute 1
 		atributeInterface = initializeDateAttribute();
 		person.addAbstractAttribute(atributeInterface);
 		atributeInterface.setEntity(person);
-		columnProperties = new ColumnProperties();
-		columnProperties.setName(DynamicExtensionsQueryBuilderConstantsInterface.COLUMN_NAME_PREFIX
-				+ "_" + columnIndex++);
-		atributeInterface.setColumnProperties(columnProperties);
 
 		// Attribute 2
 		atributeInterface = initializeStringAttribute("gender", "Male");
@@ -218,19 +209,11 @@ public class MockEntityManager
 				initializeDataElement());
 		person.addAbstractAttribute(atributeInterface);
 		atributeInterface.setEntity(person);
-		columnProperties = new ColumnProperties();
-		columnProperties.setName(DynamicExtensionsQueryBuilderConstantsInterface.COLUMN_NAME_PREFIX
-				+ "_" + columnIndex++);
-		atributeInterface.setColumnProperties(columnProperties);
 
 		// Attribute 3
 		atributeInterface = initializeStringAttribute("name", "");
 		person.addAbstractAttribute(atributeInterface);
 		atributeInterface.setEntity(person);
-		columnProperties = new ColumnProperties();
-		columnProperties.setName(DynamicExtensionsQueryBuilderConstantsInterface.COLUMN_NAME_PREFIX
-				+ "_" + columnIndex++);
-		atributeInterface.setColumnProperties(columnProperties);
 
 		return person;
 	}
@@ -240,26 +223,16 @@ public class MockEntityManager
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		AttributeInterface attributeInterface = null;
 		EntityInterface bioInformation = domainObjectFactory.createEntity();
-		ColumnPropertiesInterface columnProperties = null;
 
 		bioInformation.setName("BioInformation");
 		bioInformation.setCreatedDate(new Date());
 		bioInformation.setDescription("This is a dummy entity");
 		bioInformation.setLastUpdated(bioInformation.getCreatedDate());
-		TablePropertiesInterface tablePropertiesInterface = new TableProperties();
-		tablePropertiesInterface
-				.setName(DynamicExtensionsQueryBuilderConstantsInterface.TABLE_NAME_PREFIX + "_"
-						+ tableIndex++);
-		bioInformation.setTableProperties(tablePropertiesInterface);
 
 		// Attribute 1
 		attributeInterface = initializeLongAttribute();
 		bioInformation.addAbstractAttribute(attributeInterface);
 		attributeInterface.setEntity(bioInformation);
-		columnProperties = new ColumnProperties();
-		columnProperties.setName(DynamicExtensionsQueryBuilderConstantsInterface.COLUMN_NAME_PREFIX
-				+ "_" + columnIndex++);
-		attributeInterface.setColumnProperties(columnProperties);
 
 		// Attribute 2
 		attributeInterface = initializeDoubleAttribute();
@@ -267,10 +240,6 @@ public class MockEntityManager
 				initializeDataElement());
 		bioInformation.addAbstractAttribute(attributeInterface);
 		attributeInterface.setEntity(bioInformation);
-		columnProperties = new ColumnProperties();
-		columnProperties.setName(DynamicExtensionsQueryBuilderConstantsInterface.COLUMN_NAME_PREFIX
-				+ "_" + columnIndex++);
-		attributeInterface.setColumnProperties(columnProperties);
 
 		return bioInformation;
 	}
@@ -280,17 +249,11 @@ public class MockEntityManager
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		AttributeInterface attributeInterface = null;
 		EntityInterface personal = domainObjectFactory.createEntity();
-		ColumnPropertiesInterface columnProperties = null;
 
 		personal.setName("Personal");
 		personal.setCreatedDate(new Date());
 		personal.setDescription("This is a dummy entity");
 		personal.setLastUpdated(personal.getCreatedDate());
-		TablePropertiesInterface tablePropertiesInterface = new TableProperties();
-		tablePropertiesInterface
-				.setName(DynamicExtensionsQueryBuilderConstantsInterface.TABLE_NAME_PREFIX + "_"
-						+ tableIndex++);
-		personal.setTableProperties(tablePropertiesInterface);
 
 		// Attribute 1
 		attributeInterface = initializeStringAttribute("phone", "");
@@ -298,10 +261,6 @@ public class MockEntityManager
 				initializeDataElement());
 		personal.addAbstractAttribute(attributeInterface);
 		attributeInterface.setEntity(personal);
-		columnProperties = new ColumnProperties();
-		columnProperties.setName(DynamicExtensionsQueryBuilderConstantsInterface.COLUMN_NAME_PREFIX
-				+ "_" + columnIndex++);
-		attributeInterface.setColumnProperties(columnProperties);
 
 		RuleInterface ruleUnique = new Rule();
 		ruleUnique.setName("unique");
@@ -311,10 +270,6 @@ public class MockEntityManager
 		attributeInterface = initializeStringAttribute("address", "");
 		personal.addAbstractAttribute(attributeInterface);
 		attributeInterface.setEntity(personal);
-		columnProperties = new ColumnProperties();
-		columnProperties.setName(DynamicExtensionsQueryBuilderConstantsInterface.COLUMN_NAME_PREFIX
-				+ "_" + columnIndex++);
-		attributeInterface.setColumnProperties(columnProperties);
 
 		RuleInterface ruleRequired = new Rule();
 		ruleRequired.setName("required");
@@ -332,11 +287,6 @@ public class MockEntityManager
 		person.setCreatedDate(new Date());
 		person.setDescription("This is a dummy entity");
 		person.setLastUpdated(person.getCreatedDate());
-		TablePropertiesInterface tablePropertiesInterface = new TableProperties();
-		tablePropertiesInterface
-				.setName(DynamicExtensionsQueryBuilderConstantsInterface.TABLE_NAME_PREFIX + "_"
-						+ tableIndex++);
-		person.setTableProperties(tablePropertiesInterface);
 
 		return person;
 	}

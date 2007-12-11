@@ -102,7 +102,7 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 
 		return entityManager;
 	}
-
+    
 	/**
 	 * Mock entity manager can be placed in the entity manager using this method.
 	 * @param entityManager
@@ -134,7 +134,8 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 		{
 			hibernateDAO.openSession(null);
 
-			preProcess(entity, queryList, hibernateDAO, reverseQueryList);
+			//preProcess(entity, queryList, hibernateDAO, reverseQueryList);
+            preProcess(entity, reverseQueryList, hibernateDAO, queryList);
 
 			if (entity.getId() == null)
 			{
@@ -241,6 +242,7 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 			DynamicExtensionBaseDomainObjectInterface dynamicExtensionBaseDomainObject,
 			List reverseQueryList, HibernateDAO hibernateDAO, List queryList)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+            
 	{
 			EntityInterface entity = (EntityInterface) dynamicExtensionBaseDomainObject;
 			createDynamicQueries(entity, reverseQueryList, hibernateDAO, queryList);
@@ -2381,5 +2383,78 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
            }
        }
        return null;
+   }
+   
+   /**
+    * Returns an attribute given the entity name and attribute name.
+    * @param entityName name of the entity.
+    * @param attributeName name of the attribute.
+    * @return AttributeInterface attribute interface
+    * @throws DynamicExtensionsSystemException
+    * @throws DynamicExtensionsApplicationException
+    */
+   public AttributeInterface getAttribute(String entityName, String attributeName)
+           throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+   {
+       AttributeInterface attributeInterface = null;
+       AbstractAttributeInterface abstractAttributeInterface;
+       String name;
+       if (entityName == null || entityName.equals("") || attributeName == null
+               || attributeName.equals(""))
+       {
+           return attributeInterface;
+       }
+       
+       EntityInterface entityInterface = getEntityByName(entityName);
+       if (entityInterface != null)
+       {
+           Collection abstractAttributeCollection = entityInterface
+                   .getAbstractAttributeCollection();
+           if (abstractAttributeCollection != null)
+           {
+               Iterator abstractAttributeIterator = abstractAttributeCollection.iterator();
+
+               while (abstractAttributeIterator.hasNext())
+               {
+                   abstractAttributeInterface = (AbstractAttributeInterface) abstractAttributeIterator
+                           .next();
+                   if (abstractAttributeInterface instanceof AttributeInterface)
+                   {
+                       attributeInterface = (AttributeInterface) abstractAttributeInterface;
+                       name = attributeInterface.getName();
+                       if (name != null && name.equals(attributeName))
+                       {
+                           return attributeInterface;
+                       }
+                   }
+               }
+           }
+       }
+       
+       return attributeInterface;
+   }
+   
+   /**
+    * Returns all entitiy groups in the whole system
+    * @return Collection Entity group Beans Collection
+    * @throws DynamicExtensionsSystemException
+    */
+   public Collection<NameValueBean> getAllEntityGroupBeans() throws DynamicExtensionsSystemException
+   {
+       Collection<NameValueBean> entityGroupBeansCollection = new ArrayList<NameValueBean>();
+       Collection groupBeansCollection = executeHQL("getAllGroupBeans", new HashMap());
+       Iterator groupBeansIterator = groupBeansCollection.iterator();
+       Object[] objectArray;
+
+       while (groupBeansIterator.hasNext())
+       {
+           objectArray = (Object[]) groupBeansIterator.next();
+           NameValueBean entityGroupNameValue = new NameValueBean();
+           entityGroupNameValue.setName(objectArray[0]);
+           entityGroupNameValue.setValue(objectArray[1]);
+           entityGroupBeansCollection.add(entityGroupNameValue);
+       }
+
+       return entityGroupBeansCollection;
    }
 }

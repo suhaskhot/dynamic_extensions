@@ -23,7 +23,7 @@ public interface EntityGroupManagerInterface
      * @throws DynamicExtensionsSystemException
      * @throws DynamicExtensionsApplicationException
      */
-    public void persistEntityGroup(EntityGroupInterface group) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+    public EntityGroupInterface persistEntityGroup(EntityGroupInterface group) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 	/**
 	 * This method persists an entity group and the associated entities without creating the data table
 	 * for the entities.

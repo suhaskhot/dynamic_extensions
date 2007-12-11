@@ -70,7 +70,7 @@ public class EntityGroupManager extends AbstractMetadataManager implements Entit
 	 * @throws DAOException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public void persistEntityGroup(EntityGroupInterface group)
+	public EntityGroupInterface persistEntityGroup(EntityGroupInterface group)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		List reverseQueryList = new LinkedList();
@@ -135,6 +135,7 @@ public class EntityGroupManager extends AbstractMetadataManager implements Entit
 				rollbackQueries(rollbackQueryStack, null, e, hibernateDAO);
 			}
 		}
+        return group;
 	}
 
 	/**

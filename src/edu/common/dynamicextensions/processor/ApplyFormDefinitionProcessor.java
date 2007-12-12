@@ -162,7 +162,7 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		// bug fixed 5863
 		if(containerInterface.getBaseContainer() != null){
 			EntityInterface parentEntity = containerInterface.getBaseContainer().getEntity();
-			
+
 			entityInterface.setParentEntity(parentEntity);
 		}
 		//Add entity to container
@@ -348,7 +348,7 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 
 	private ContainerInterface getSelectedContainer(ContainerInterface container, Long containerId,List<ContainerInterface> listOfContainers)
 	{
-		if (container.getId().equals(containerId))
+		if (container != null && container.getId() != null && container.getId().equals(containerId))
 		{
 			listOfContainers.add(container);
 		}
@@ -361,7 +361,8 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 				{
 					ContainmentAssociationControlInterface containmentAssociationControlInterface = (ContainmentAssociationControlInterface) controlInterface;
 					ContainerInterface tempContainer = containmentAssociationControlInterface.getContainer();
-					if (tempContainer.getId().equals(containerId))
+					if (tempContainer != null && tempContainer.getId() != null
+							&& tempContainer.getId().equals(containerId))
 					{
 						listOfContainers.add(tempContainer);
 						break;

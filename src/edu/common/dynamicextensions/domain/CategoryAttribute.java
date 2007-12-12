@@ -38,7 +38,7 @@ public class CategoryAttribute extends BaseAbstractAttribute {
     /**
      * This method returns the Collection of Column Properties of the Attribute.
      * @hibernate.set name="columnPropertiesCollection" table="DYEXTN_COLUMN_PROPERTIES" cascade="all" inverse="false" lazy="false"
-     * @hibernate.collection-key column="PRIMITIVE_ATTRIBUTE_ID"
+     * @hibernate.collection-key column="CATEGORY_ATTRIBUTE_ID"
      * @hibernate.cache usage="read-write"
      * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties"
      * @return the Collection of Column Properties of the Attribute.
@@ -92,7 +92,7 @@ public class CategoryAttribute extends BaseAbstractAttribute {
     
     /**
      * @hibernate.set name="dataElementCollection" table="DYEXTN_DATA_ELEMENT" cascade="all" inverse="false" lazy="false"
-     * @hibernate.collection-key column="ATTRIBUTE_TYPE_INFO_ID"
+     * @hibernate.collection-key column="CATEGORY_ATTRIBUTE_TYPE_INFO_ID"
      * @hibernate.cache  usage="read-write"
      * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.DataElement"   
      * @return Returns the dataElementCollection.
@@ -142,7 +142,7 @@ public class CategoryAttribute extends BaseAbstractAttribute {
 
     /**
      * @hibernate.set name="ruleCollection" table="DYEXTN_RULE" cascade="all-delete-orphan" inverse="false" lazy="false"
-     * @hibernate.collection-key column="ATTRIBUTE_ID"
+     * @hibernate.collection-key column="CATEGORY_ATTRIBUTE_ID"
      * @hibernate.cache usage="read-write"
      * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.validationrules.Rule"
      * @return the ruleCollection

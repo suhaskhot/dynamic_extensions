@@ -2,7 +2,6 @@ package edu.common.dynamicextensions.domain;
 
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 
-
 /**
  * 
  * @author mandar_shidhore
@@ -15,7 +14,7 @@ public class Category extends AbstractMetadata implements CategoryInterface {
      * Serial Version UID
      */
     private static final long serialVersionUID = 4234527890L;
-        
+    
     //protected Set<CategoryEntity> rootCategoryElement = new HashSet<CategoryEntity>();
     
     protected CategoryEntity rootCategoryElement;

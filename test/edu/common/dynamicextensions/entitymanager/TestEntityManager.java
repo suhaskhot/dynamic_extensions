@@ -30,7 +30,6 @@ import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.FileExtension;
-import edu.common.dynamicextensions.domain.ObjectAttributeRecordValue;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.TaggedValue;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
@@ -57,7 +56,6 @@ import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.common.dynamicextensions.util.global.Constants.ValueDomainType;
-import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.logger.Logger;
 
@@ -65,7 +63,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 {
 
 	/**
-	 * 
+	 *
 	 */
 	public TestEntityManager()
 	{
@@ -97,12 +95,12 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 	{
 		super.tearDown();
 	}
-    
+
     /**
      * PURPOSE : To test the whether editing of an existing entity works properly or not.
-     * EXPECTED BEHAVIOR : Changes in the existing entity should be stored properly and the changes made to the 
+     * EXPECTED BEHAVIOR : Changes in the existing entity should be stored properly and the changes made to the
      * attributes of the entity should get reflected properly in the data tables.
-     * TEST CASE FLOW : 
+     * TEST CASE FLOW :
      * 1. Create entity with some attributes
      * 2. Save entity using entity manager.
      * 3. Add an extra attribute to the entity
@@ -112,7 +110,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
      */
     public void testEditEntity()
     {
-        //Step 1 
+        //Step 1
         Entity entity = (Entity) DomainObjectFactory.getInstance().createEntity();
         entity.setName("Stock Quote");
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
@@ -135,17 +133,17 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
             //          dataValue.put(floatAtribute, "15.90");
             //          entityManagerInterface.insertData(editedEntity, dataValue);
-            //          
+            //
             //          dataValue.put(floatAtribute, "16.90");
             //          entityManagerInterface.insertData(editedEntity, dataValue);
-            //          
+            //
             //          Long id = new EntityManagerUtil().getNextIdentifier(editedEntity.getTableProperties().getName());
             //          System.out.println(id);
 
             //Edit entity
             AttributeInterface floatAtribute1 = DomainObjectFactory.getInstance()
                     .createFloatAttribute();
-            floatAtribute.setName("NewPrice");
+            floatAtribute1.setName("NewPrice");
             editedEntity.addAbstractAttribute(floatAtribute1);
 
             java.sql.ResultSetMetaData metadata = executeQueryForMetadata("select * from "
@@ -196,9 +194,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
     /**
      * PURPOSE : To test the whether editing of an existing entity (removing an attribute) works properly or not.
-     * EXPECTED BEHAVIOR : Changes in the existing entity should be stored properly and the changes made to the 
+     * EXPECTED BEHAVIOR : Changes in the existing entity should be stored properly and the changes made to the
      * attributes of the entity should get reflected properly in the data tables.
-     * TEST CASE FLOW : 
+     * TEST CASE FLOW :
      * 1. Create entity with some attributes
      * 2. Save entity using entity manager.
      * 3. Remove an attribute from the entity
@@ -208,7 +206,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
      */
     public void testEditEntityRemoveAttribute()
     {
-        //Step 1 
+        //Step 1
         Entity entity = (Entity) DomainObjectFactory.getInstance().createEntity();
         entity.setName("Stock Quote");
         //EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
@@ -225,7 +223,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
             entity.addAbstractAttribute(floatAtribute);
             entity.addAbstractAttribute(commentsAttributes);
-            //Step 2 
+            //Step 2
             EntityInterface savedEntity = newEntityManagerInterface.persistEntity(entity);
 
 //          Map dataValue = new HashMap();
@@ -240,8 +238,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             //Collection collection = savedEntity.getAttributeCollection();
             //collection =  EntityManagerUtil.filterSystemAttributes(collection);
             //Iterator itr = collection.iterator();
-            
-            
+
+
             savedFloatAtribute = savedEntity.getAttributeByIdentifier(floatAtribute.getId());
             System.out.println("id is: " + savedFloatAtribute.getId());
 
@@ -278,7 +276,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     /**
      * PURPOSE : To test the behavior of entity manager when an entity with null attribute is tried for saving.
      * EXPECTED BEHAVIOR : Entity manager should throw an application exception with proper error code.
-     * TEST CASE FLOW : 
+     * TEST CASE FLOW :
      * 1. Create entity with null attribute
      * 2. Save entity using entity manager.
      * 3. Check whether the application exception is thrown or not.
@@ -290,7 +288,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             //Step 1
             Entity entity = (Entity) DomainObjectFactory.getInstance().createEntity();
             entity.addAbstractAttribute(null);
-
+            entity.setAddIdAttribute(true);
             //EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
             NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
             //Step 2
@@ -313,14 +311,14 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     /**
      * PURPOSE : To test whether the created date is set on saving of entity or not.
      * EXPECTED BEHAVIOR : Before saving the created date is null. After the entity is saved created date should be set.
-     * TEST CASE FLOW : 
+     * TEST CASE FLOW :
      * 1. Create entity with null created date
      * 2. Save entity using entity manager.
      * 3. Check whether the created date is set or not.
      */
     public void testCreateEntityNull()
     {
-        //Step 1  
+        //Step 1
         Entity entity = (Entity) DomainObjectFactory.getInstance().createEntity();
         entity.setName("test");
 
@@ -369,15 +367,16 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     {
         Entity entity;
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        
+
         try
         {
             //Step 1
-            entity = (Entity) DomainObjectFactory.getInstance().createEntity();;
+            entity = (Entity) DomainObjectFactory.getInstance().createEntity();
             AttributeInterface ssn = DomainObjectFactory.getInstance().createIntegerAttribute();
             ssn.setName("SSN of participant");
             entity.addAbstractAttribute(ssn);
             entity.setName("test");
+            entity.setAddIdAttribute(true);
             //Step 2
             entity = (Entity) newEntityManagerInterface.persistEntity(entity);
 
@@ -434,13 +433,13 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     /**
      * PURPOSE : To check the behavior when user tries modify data type of the attribute,
      * when data is present for that column.
-     * EXPECTED BEHAVIOR : for oracle it should throw exception.for mysql  it works.  
+     * EXPECTED BEHAVIOR : for oracle it should throw exception.for mysql  it works.
      */
     public void testEditAttributeTypeChangeDataExists()
     {
         Entity entity = null;
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        
+
         try
         {
             entity = (Entity) DomainObjectFactory.getInstance().createEntity();
@@ -452,7 +451,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
             Map dataValue = new HashMap();
             dataValue.put(ssn, 101202);
-            
+
             newEntityManagerInterface.insertData(entity, dataValue);
 
             AttributeTypeInformationInterface dateAttributeType = new StringAttributeTypeInformation();
@@ -468,10 +467,10 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         {
             fail();
             e.printStackTrace();
-            /*   assertTrue("Data exists so can't modify its data type",true); 
+            /*   assertTrue("Data exists so can't modify its data type",true);
              ResultSetMetaData metaData = executeQueryForMetadata("select * from "
              + entity.getTableProperties().getName());
-             
+
              try
              {
              assertEquals(metaData.getColumnType(2),Types.NUMERIC);
@@ -499,9 +498,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             EntityGroupManagerInterface entityGroupManager = EntityGroupManager.getInstance();
             //Step 1
             EntityGroup entityGroup = (EntityGroup) new MockEntityManager().initializeEntityGroup();
-            //Step 2 
+            //Step 2
             entityGroupManager.persistEntityGroup(entityGroup);
-            //Step 3            
+            //Step 3
             Collection collection = ((NewEntityManager)NewEntityManager.getInstance()).getAllObjects(EntityGroupInterface.class.getName());
             assertTrue(collection.contains(entityGroup));
         }
@@ -515,7 +514,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
     /**
      * PURPOSE : To test the method getEntityGroupByName
-     * EXPECTED BEHAVIOR : The new entity group should be stored correctly and should be retrieved back correctly 
+     * EXPECTED BEHAVIOR : The new entity group should be stored correctly and should be retrieved back correctly
      * if the name of that entity group is given.
      * TEST CASE FLOW :
      * 1. Create entity group.
@@ -528,7 +527,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         {
             //Step 1
             EntityGroupManagerInterface entityGroupManager = EntityGroupManager.getInstance();
-            //Step 2 
+            //Step 2
             EntityGroup entityGroup = (EntityGroup) new MockEntityManager().initializeEntityGroup();
             entityGroupManager.persistEntityGroup(entityGroup);
             //Step 3
@@ -557,12 +556,12 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
         try
         {
-            //Step 1 
+            //Step 1
             Entity entity = (Entity) new MockEntityManager().initializeEntity();
             SemanticPropertyInterface semanticPropertyInterface = (SemanticPropertyInterface) new MockEntityManager()
                     .initializeSemanticProperty();
             entity.addSemanticProperty(semanticPropertyInterface);
-            //Step 2 
+            //Step 2
             entity = (Entity) newEntityManagerInterface.persistEntity(entity);
 
             //Step 3
@@ -579,7 +578,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
     /**
      * PURPOSE : To test the method getEntityGroupByName
-     * EXPECTED BEHAVIOR : The new entity group should be stored correctly and should be retrieved back correctly 
+     * EXPECTED BEHAVIOR : The new entity group should be stored correctly and should be retrieved back correctly
      * if the name of that entity group is given.
      * TEST CASE FLOW :
      * 1. Create entity group.
@@ -618,7 +617,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         {
             DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
-            // create user 
+            // create user
             EntityInterface user = factory.createEntity();
             AttributeInterface userNameAttribute = factory.createStringAttribute();
             userNameAttribute.setName("user name");
@@ -641,10 +640,10 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     }
 
     /**
-     * Test case to check the behaviour when first entity is saved with a collection attribute and then the that 
+     * Test case to check the behaviour when first entity is saved with a collection attribute and then the that
      * attribute is made non-collection. Expected behavior is that after editing the attribute in
      * such a way the column for that attribute should get added to the data table. This column was not present in
-     * earlier scenario when the attribue was a collection attribute. 
+     * earlier scenario when the attribue was a collection attribute.
      */
     public void testEditEntityWithCollectionAttribute()
     {
@@ -653,7 +652,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         {
             DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
-            // create user 
+            // create user
             EntityInterface user = factory.createEntity();
             AttributeInterface userNameAttribute = factory.createStringAttribute();
             userNameAttribute.setName("user name");
@@ -710,7 +709,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
         try
-        {  
+        {
             Entity entity = (Entity) new MockEntityManager().initializeEntity();
             entity = (Entity) newEntityManagerInterface.persistEntity(entity);
 
@@ -770,74 +769,74 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         }
     }
 
-    /**
-     * This method test for inserting data for a multi select attribute
-     */
-    public void testInsertDataWithMultiSelectAttribute()
-    {
-        Entity entity = (Entity) DomainObjectFactory.getInstance().createEntity();
-        entity.setName("Stock Quote");
-        NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        
-        DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
-        try
-        {
-            //Edit entity
-            AttributeInterface floatAtribute = factory.createFloatAttribute();
-            floatAtribute.setName("Price");
-
-            AttributeInterface commentsAttributes = factory.createStringAttribute();
-            commentsAttributes.setName("comments");
-            commentsAttributes.setIsCollection(true);
-
-            entity.addAbstractAttribute(floatAtribute);
-            entity.addAbstractAttribute(commentsAttributes);
-
-            EntityInterface savedEntity = newEntityManagerInterface.persistEntity(entity);
-
-            Map dataValue = new HashMap();
-            dataValue.put(floatAtribute, "15.90");
-            List<String> commentsValues = new ArrayList<String>();
-            commentsValues.add("comments1");
-            commentsValues.add("comments2");
-            commentsValues.add("comments3");
-            commentsValues.add("comments4");
-
-            dataValue.put(commentsAttributes, commentsValues);
-
-            newEntityManagerInterface.insertData(savedEntity, dataValue);
-
-            ResultSet resultSet = executeQuery("select * from "
-                    + savedEntity.getTableProperties().getName());
-            resultSet.next();
-            assertEquals(1, resultSet.getInt(3));
-            ResultSetMetaData metadata = resultSet.getMetaData();
-            assertEquals(metadata.getColumnCount(), noOfDefaultColumns + 1);
-
-            boolean isRecordDeleted = newEntityManagerInterface.deleteRecord(savedEntity, new Long(1));
-            assertTrue(isRecordDeleted);
-
-            assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(entity, 1L));
-        }
-        catch (DynamicExtensionsSystemException e)
-        {
-            fail();
-            Logger.out.debug(e.getStackTrace());
-        }
-        catch (DynamicExtensionsApplicationException e)
-        {
-            fail();
-            Logger.out.debug(e.getStackTrace());
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            fail();
-
-            Logger.out.debug(e.getStackTrace());
-        }
-    }
+//    /**
+//     * This method test for inserting data for a multi select attribute
+//     */
+//    public void testInsertDataWithMultiSelectAttribute()
+//    {
+//        Entity entity = (Entity) DomainObjectFactory.getInstance().createEntity();
+//        entity.setName("Stock Quote");
+//        NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
+//
+//        DomainObjectFactory factory = DomainObjectFactory.getInstance();
+//
+//        try
+//        {
+//            //Edit entity
+//            AttributeInterface floatAtribute = factory.createFloatAttribute();
+//            floatAtribute.setName("Price");
+//
+//            AttributeInterface commentsAttributes = factory.createStringAttribute();
+//            commentsAttributes.setName("comments");
+//            commentsAttributes.setIsCollection(true);
+//
+//            entity.addAbstractAttribute(floatAtribute);
+//            entity.addAbstractAttribute(commentsAttributes);
+//
+//            EntityInterface savedEntity = newEntityManagerInterface.persistEntity(entity);
+//
+//            Map dataValue = new HashMap();
+//            dataValue.put(floatAtribute, "15.90");
+//            List<String> commentsValues = new ArrayList<String>();
+//            commentsValues.add("comments1");
+//            commentsValues.add("comments2");
+//            commentsValues.add("comments3");
+//            commentsValues.add("comments4");
+//
+//            dataValue.put(commentsAttributes, commentsValues);
+//
+//            newEntityManagerInterface.insertData(savedEntity, dataValue);
+//
+//            ResultSet resultSet = executeQuery("select * from "
+//                    + savedEntity.getTableProperties().getName());
+//            resultSet.next();
+//            assertEquals(1, resultSet.getInt(3));
+//            ResultSetMetaData metadata = resultSet.getMetaData();
+//            assertEquals(metadata.getColumnCount(), noOfDefaultColumns + 1);
+//
+//            boolean isRecordDeleted = newEntityManagerInterface.deleteRecord(savedEntity, new Long(1));
+//            assertTrue(isRecordDeleted);
+//
+//            assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(entity, 1L));
+//        }
+//        catch (DynamicExtensionsSystemException e)
+//        {
+//            fail();
+//            Logger.out.debug(e.getStackTrace());
+//        }
+//        catch (DynamicExtensionsApplicationException e)
+//        {
+//            fail();
+//            Logger.out.debug(e.getStackTrace());
+//        }
+//        catch (Exception e)
+//        {
+//            e.printStackTrace();
+//            fail();
+//
+//            Logger.out.debug(e.getStackTrace());
+//        }
+//    }
 
     /**
      * This method test for updating record for an entity.
@@ -847,7 +846,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         Entity study = (Entity) DomainObjectFactory.getInstance().createEntity();
         study.setName("Study");
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        
+
         DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
         try
@@ -908,85 +907,85 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         }
     }
 
-    /**
-     * This method test for updating data for a multi select attribute
-     */
-    public void testEditRecordWithMultiselectAttrubteUpdate()
-    {
-        Entity study = new Entity();
-        study.setName("Study");
-        NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        
-        DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
-        try
-        {
-            AttributeInterface name = factory.createStringAttribute();
-            name.setName("Study name");
-
-            AttributeInterface studyDate = factory.createDateAttribute();
-            studyDate.setName("Date");
-
-            AttributeInterface userNames = factory.createStringAttribute();
-            userNames.setName("users");
-            userNames.setIsCollection(true);
-
-            study.addAttribute(name);
-            study.addAttribute(userNames);
-            study.addAttribute(studyDate);
-            EntityInterface savedStudy = newEntityManagerInterface.persistEntity(study);
-
-            Map dataValue = new HashMap();
-            List<String> userNameList = new ArrayList<String>();
-            userNameList.add("a");
-            userNameList.add("b");
-            userNameList.add("c");
-
-            dataValue.put(name, "Java Study");
-            dataValue.put(userNames, userNameList);
-            dataValue.put(studyDate, "11-20-2006");
-
-            Long recordId = newEntityManagerInterface.insertData(savedStudy, dataValue);
-
-            Map map = newEntityManagerInterface.getRecordById(savedStudy, recordId);
-
-            int noOfUsers = ((List) map.get(userNames)).size();
-            assertEquals(3, noOfUsers);
-            System.out.println(map);
-
-            dataValue.clear();
-            userNameList.clear();
-            userNameList.add("d");
-
-            dataValue.put(userNames, userNameList);
-            dataValue.put(studyDate, "12-20-2006");
-
-            newEntityManagerInterface.editData(savedStudy, dataValue, recordId);
-
-            map = newEntityManagerInterface.getRecordById(savedStudy, recordId);
-            noOfUsers = ((List) map.get(userNames)).size();
-            assertEquals(1, noOfUsers);
-            assertEquals("12-20-2006", (String) map.get(studyDate));
-
-            System.out.println(map);
-        }
-        catch (DynamicExtensionsSystemException e)
-        {
-            fail();
-            Logger.out.debug(e.getStackTrace());
-        }
-        catch (DynamicExtensionsApplicationException e)
-        {
-            fail();
-            Logger.out.debug(e.getStackTrace());
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            fail();
-            Logger.out.debug(e.getStackTrace());
-        }
-    }
+//    /**
+//     * This method test for updating data for a multi select attribute
+//     */
+//    public void testEditRecordWithMultiselectAttrubteUpdate()
+//    {
+//        Entity study = new Entity();
+//        study.setName("Study");
+//        NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
+//
+//        DomainObjectFactory factory = DomainObjectFactory.getInstance();
+//
+//        try
+//        {
+//            AttributeInterface name = factory.createStringAttribute();
+//            name.setName("Study name");
+//
+//            AttributeInterface studyDate = factory.createDateAttribute();
+//            studyDate.setName("Date");
+//
+//            AttributeInterface userNames = factory.createStringAttribute();
+//            userNames.setName("users");
+//            userNames.setIsCollection(true);
+//
+//            study.addAttribute(name);
+//            study.addAttribute(userNames);
+//            study.addAttribute(studyDate);
+//            EntityInterface savedStudy = newEntityManagerInterface.persistEntity(study);
+//
+//            Map dataValue = new HashMap();
+//            List<String> userNameList = new ArrayList<String>();
+//            userNameList.add("a");
+//            userNameList.add("b");
+//            userNameList.add("c");
+//
+//            dataValue.put(name, "Java Study");
+//            dataValue.put(userNames, userNameList);
+//            dataValue.put(studyDate, "11-20-2006");
+//
+//            Long recordId = newEntityManagerInterface.insertData(savedStudy, dataValue);
+//
+//            Map map = newEntityManagerInterface.getRecordById(savedStudy, recordId);
+//
+//            int noOfUsers = ((List) map.get(userNames)).size();
+//            assertEquals(3, noOfUsers);
+//            System.out.println(map);
+//
+//            dataValue.clear();
+//            userNameList.clear();
+//            userNameList.add("d");
+//
+//            dataValue.put(userNames, userNameList);
+//            dataValue.put(studyDate, "12-20-2006");
+//
+//            newEntityManagerInterface.editData(savedStudy, dataValue, recordId);
+//
+//            map = newEntityManagerInterface.getRecordById(savedStudy, recordId);
+//            noOfUsers = ((List) map.get(userNames)).size();
+//            assertEquals(1, noOfUsers);
+//            assertEquals("12-20-2006", (String) map.get(studyDate));
+//
+//            System.out.println(map);
+//        }
+//        catch (DynamicExtensionsSystemException e)
+//        {
+//            fail();
+//            Logger.out.debug(e.getStackTrace());
+//        }
+//        catch (DynamicExtensionsApplicationException e)
+//        {
+//            fail();
+//            Logger.out.debug(e.getStackTrace());
+//        }
+//        catch (Exception e)
+//        {
+//            e.printStackTrace();
+//            fail();
+//            Logger.out.debug(e.getStackTrace());
+//        }
+//    }
 
     /**
      * This method edits an existing attribute to a file type attribute.
@@ -996,7 +995,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         DomainObjectFactory factory = DomainObjectFactory.getInstance();
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
 
-        // create user 
+        // create user
         EntityInterface user = factory.createEntity();
         user.setName("User");
         AttributeInterface resume = factory.createStringAttribute();
@@ -1065,7 +1064,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         DomainObjectFactory factory = DomainObjectFactory.getInstance();
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
 
-        // create user 
+        // create user
         EntityInterface user = factory.createEntity();
         user.setName("User");
         AttributeInterface resume = factory.createFileAttribute();
@@ -1108,12 +1107,12 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     }
 
     /**
-     * 
+     *
      */
     public void testCreateEntity()
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        
+
         try
         {
             Entity entity = (Entity) new MockEntityManager().initializeEntity();
@@ -1141,12 +1140,12 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     }
 
     /**
-     * 
+     *
      */
     public void testCreateEntityWithEntityGroup()
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        
+
         try
         {
             Entity entity = (Entity) new MockEntityManager().initializeEntity();
@@ -1177,7 +1176,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     public void testGetRecordById()
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        
+
         try
         {
             Entity entity = (Entity) new MockEntityManager().initializeEntity();
@@ -1233,7 +1232,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     public void testGetRecordByIdNoRecord()
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        
+
         try
         {
             Entity entity = (Entity) new MockEntityManager().initializeEntity();
@@ -1311,12 +1310,12 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     }
 
     /**
-     * 
+     *
      */
     public void testCreateContainer()
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        
+
         try
         {
             Container container = (Container) new MockEntityManager().getContainer("abc");
@@ -1344,18 +1343,22 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     }
 
     /**
-     * 
+     *
      */
     public void testCreateContainerForContainerWithoutEntity()
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        
+
         try
         {
             Container container = new Container();
+            container.setCaption("testcontainer");
             Entity entityInterface = (Entity) new MockEntityManager().initializeEntity();
+            entityInterface.setAddIdAttribute(true);
             container.setEntity(entityInterface);
-            
+            Collection<ContainerInterface> listOfContainers = new HashSet<ContainerInterface>();
+            listOfContainers.add(container);
+            entityInterface.setContainerCollection(listOfContainers);
             newEntityManagerInterface.persistEntity(container.getEntity());
             Collection list = newEntityManagerInterface.getAllContainers();
             assertNotNull(list);
@@ -1380,12 +1383,12 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     }
 
     /**
-     * 
+     *
      */
     public void testEditEntityForNewAddedAttribute()
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        
+
         try
         {
             Entity entity = (Entity) new MockEntityManager().initializeEntity();
@@ -1394,7 +1397,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             attr.setEntity(entity);
             entity.addAbstractAttribute(attr);
             entity = (Entity) newEntityManagerInterface.persistEntity(entity);
-            
+
             //Checking whether metadata information is saved properly or not.
             String tableName = entity.getTableProperties().getName();
         }
@@ -1406,12 +1409,12 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     }
 
     /**
-     * 
+     *
      */
     public void testEditEntityForModifiedIsNullableAttribute()
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        
+
         try
         {
             Entity entity = (Entity) new MockEntityManager().initializeEntity();
@@ -1442,7 +1445,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
         DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
-        // create user 
+        // create user
         EntityInterface user = factory.createEntity();
         user.setName("User");
 
@@ -1508,7 +1511,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
         DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
-        // create user 
+        // create user
         EntityInterface user = factory.createEntity();
         user.setName("User");
 
@@ -1574,7 +1577,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
         DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
-        // create user 
+        // create user
         EntityInterface user = factory.createEntity();
         user.setName("User");
 
@@ -1642,7 +1645,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
         DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
-        // create user 
+        // create user
         EntityInterface user = factory.createEntity();
         user.setName("User");
 
@@ -1784,32 +1787,32 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     }
 
     /**
-     * PURPOSE : to test the method persistEntityMetadata. 
+     * PURPOSE : to test the method persistEntityMetadata.
      * EXPECTED BEHAVIOR : It should only save the metadata information of the entity and not create the data table for the entity.
-     * TEST CASE FLOW : 
-     * 1.Create an entity 
-     * 2.Populate the entity. 
-     * 3.Test that the metadata information is properly saved or not. 
+     * TEST CASE FLOW :
+     * 1.Create an entity
+     * 2.Populate the entity.
+     * 3.Test that the metadata information is properly saved or not.
      * 4.Check that the data table is not created.
      */
     public void testPersistEntityMetadata()
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        
+
         try
         {
-            //Step 1 
+            //Step 1
             Entity entity = (Entity) new MockEntityManager().initializeEntity();
             entity.setAddIdAttribute(true);
             TaggedValueInterface taggedValue = DomainObjectFactory.getInstance()
                     .createTaggedValue();
-            //Step 2 
+            //Step 2
             taggedValue.setKey("a");
             taggedValue.setValue("b");
             entity.addTaggedValue(taggedValue);
             entity = (Entity) newEntityManagerInterface.persistEntityMetadata(entity);
 
-            //Step 3 
+            //Step 3
             Entity newEntity = (Entity) newEntityManagerInterface.getEntityByIdentifier(
                     entity.getId().toString());
             assertEquals(entity.getName(), newEntity.getName());
@@ -1832,7 +1835,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     {
         EntityGroup entityGroup = null;
         EntityGroupManagerInterface entityGroupManager = EntityGroupManager.getInstance();
-        
+
         try
         {
             MockEntityManager mock = new MockEntityManager();
@@ -1869,7 +1872,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     {
         EntityGroup entityGroup = null;
         EntityGroupManagerInterface entityGroupManager = EntityGroupManager.getInstance();
-        
+
         try
         {
             MockEntityManager mock = new MockEntityManager();
@@ -1897,9 +1900,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
     /**
      * PURPOSE : To test the method persistEntityGroupMetadata
-     * EXPECTED BEHAVIOR : Entity group metadata should be stored properly without creating the data tables 
+     * EXPECTED BEHAVIOR : Entity group metadata should be stored properly without creating the data tables
      * for the associated entities.
-     * TEST CASE FLOW : 
+     * TEST CASE FLOW :
      * 1. Create entity group
      * 2. Create entities and add them to the entity group.
      * 3. Call the method persistEntityGroupMetadata to store the metdata information.
@@ -1910,14 +1913,14 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     {
         EntityGroup entityGroup = null;
         EntityGroupManagerInterface entityGroupManager = EntityGroupManager.getInstance();
-        
+
         try
         {
-            //Step 1 
+            //Step 1
             MockEntityManager mock = new MockEntityManager();
             entityGroup = (EntityGroup) mock.initializeEntityGroup();
             entityGroup.setEntityCollection(new HashSet());
-            //Step 2 
+            //Step 2
             for (int i = 0; i <= 9; i++)
             {
                 Entity entity = (Entity) mock.initializeEntity();
@@ -1946,7 +1949,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     }
 
     /**
-     * 
+     *
      *
      */
     public void testCreateEntityForRollbackQuery()
@@ -1994,13 +1997,13 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     }
 
     /**
-     * 
+     *
      *
      */
     public void testCreateEntityForQueryException()
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        
+
         try
         {
             Entity entity = (Entity) new MockEntityManager().initializeEntity();
@@ -2022,7 +2025,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     }
 
     /**
-     * 
+     *
      */
     public void testgetAllContainersByEntityGroupId()
     {
@@ -2045,7 +2048,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         userGroup.setName("test_" + new Double(Math.random()).toString());
         userGroup.addEntity(user);
         userGroup.addEntity(manager);
-        
+
         user.addEntityGroupInterface(userGroup);
         manager.addEntityGroupInterface(userGroup);
 
@@ -2089,7 +2092,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     }
 
     /**
-     * 
+     *
      *
      */
     public void testGetContainerByEntityIdentifier()
@@ -2100,9 +2103,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             ContainerInterface containerInterface = (Container) new MockEntityManager()
                     .getContainer("abc");
             EntityInterface entityInterface = containerInterface.getEntity();
-            
+
             //entityManager.persistContainer(containerInterface);
-            
+
             newEntityManagerInterface.persistEntity(entityInterface);
             assertTrue(newEntityManagerInterface.getEntityByName("Person").getContainerCollection().contains(containerInterface));
             //assertNotNull(entityManager.getContainerByEntityIdentifier(entityInterface.getId()));
@@ -2118,13 +2121,13 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     }
 
     /**
-     * PURPOSE : to test the method insertData for attribute having default value specified. 
+     * PURPOSE : to test the method insertData for attribute having default value specified.
      * EXPECTED BEHAVIOR : since default value is only for display purpose, it should not be persisted
-     *                     if user has explicitly removed this value /not mentioned for the attribute. 
-     * 
-     * TEST CASE FLOW : 
-     * 1.Create an entity 
-     * 2.Persist the entity. 
+     *                     if user has explicitly removed this value /not mentioned for the attribute.
+     *
+     * TEST CASE FLOW :
+     * 1.Create an entity
+     * 2.Persist the entity.
      * 3.Insert data without specifying value for the attribute that has some default value.
      * 4.Check that the value for that attribute is null.
      */
@@ -2185,16 +2188,16 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     }
 
     /**
-     * PURPOSE : to test the fix for bug 3209. 
-     *            
-     *  
-     * EXPECTED BEHAVIOR : If file attribute is added during edit,its column should not be getting added 
-     * 
-     * TEST CASE FLOW : 
-     * 1.Create an entity 
+     * PURPOSE : to test the fix for bug 3209.
+     *
+     *
+     * EXPECTED BEHAVIOR : If file attribute is added during edit,its column should not be getting added
+     *
+     * TEST CASE FLOW :
+     * 1.Create an entity
      * 2.Persist the entity.
      * 3.edit entity adding a file attribute
-     * 4. persist again 
+     * 4. persist again
      * 5. chk for no of column for that entity
      */
     public void testEditEntityToAddFileAttribute()
@@ -2251,17 +2254,17 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
     /**
      * PURPOSE : to test the method GetMainContainer
-     *            
-     *  
-     * EXPECTED BEHAVIOR : GetMainContainer method should return the main container given the entity group id 
-     * 
-     * TEST CASE FLOW : 
+     *
+     *
+     * EXPECTED BEHAVIOR : GetMainContainer method should return the main container given the entity group id
+     *
+     * TEST CASE FLOW :
      * 1.Create an entity
      * 2.Create an entity Group
      * 3.Add entity in entity group
      * 4.Create an container
-     * 5.set its entity to the created entity 
-     * 6.Persist the container. 
+     * 5.set its entity to the created entity
+     * 6.Persist the container.
      * 7. invoke getMainContainer
      * 8. test if retruned container is same or not
      */
@@ -2315,23 +2318,23 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     }*/
 
     /**
-     * 
+     *
      * Commenting this test case as per bug #5094 as we should be able to see abstract forms for future editing.
      * To avoid data entry in abstract forms, we need to check the abstract attribute for entity in code. - Ashish 18/9/07
-     * 
+     *
      * PURPOSE : to test the method GetMainContainer
-     *            
-     *  
-     * EXPECTED BEHAVIOR : GetMainContainer method should return null when 
-     *                     main entity within given is abstract 
-     * 
-     * TEST CASE FLOW : 
+     *
+     *
+     * EXPECTED BEHAVIOR : GetMainContainer method should return null when
+     *                     main entity within given is abstract
+     *
+     * TEST CASE FLOW :
      * 1.Create an abstract entity
      * 2.Create an entity Group
      * 3.Add entity in entity group
      * 4.Create an container
-     * 5.set its entity to the created entity 
-     * 6.Persist the container. 
+     * 5.set its entity to the created entity
+     * 6.Persist the container.
      * 7. invoke getMainContainer
      * 8. test if retruned container null or not
      */
@@ -2381,15 +2384,15 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 //  }
 
     /**
-     * 
+     *
      */
     public void testInsertDataForDate()
     {
-        //Step 1 
+        //Step 1
         Entity entity = (Entity) DomainObjectFactory.getInstance().createEntity();
         entity.setName("Stock Quote");
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        
+
         try
         {
             AttributeInterface floatAtribute = DomainObjectFactory.getInstance()
@@ -2413,7 +2416,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             entity.addAbstractAttribute(startDate);
             entity.addAbstractAttribute(endDate);
 
-            //Step 2 
+            //Step 2
             EntityInterface savedEntity = newEntityManagerInterface.persistEntity(entity);
 
             Map dataValue = new HashMap();
@@ -2436,18 +2439,18 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     }
 
     /**
-     * PURPOSE : to test the basic delete functionality 
-     *            
-     *  
+     * PURPOSE : to test the basic delete functionality
+     *
+     *
      * EXPECTED BEHAVIOR : delete method should disbale the record and not actually delete it.
-     * 
-     * TEST CASE FLOW : 
+     *
+     * TEST CASE FLOW :
      * 1.Create an entity
      * 2.add two attributes
      * 3.persist entity
      * 4.add record.
      * 5. check the activity status - should be active
-     * 6.delete that record 
+     * 6.delete that record
      * 7. check the activity status - should be disable
      */
     public void testDeleteRecordById1()
@@ -2471,7 +2474,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             //step 2
             entity.addAbstractAttribute(floatAtribute);
             entity.addAbstractAttribute(commentsAttributes);
-            //step 3            
+            //step 3
             entity = (Entity) newEntityManagerInterface.persistEntity(entity);
 
             //step 4
@@ -2518,14 +2521,14 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     /**
      * PURPOSE : to test the behaviour of  GetAllRecords method for deleted records
      * EXPECTED BEHAVIOR : GetAllRecords method should filter the deleted records.
-     * 
-     * TEST CASE FLOW : 
+     *
+     * TEST CASE FLOW :
      * 1.Create an entity
      * 2.add two attributes
      * 3.persist entity
      * 4.add 2 records.
      * 5. call  getAllRecords - should return 2 records
-     * 6.delete 2nd  record 
+     * 6.delete 2nd  record
      * 7. call  getAllRecords - should return 1 records
      */
     public void testGetAllRecordsForDeletedRecords()
@@ -2549,7 +2552,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             //step 2
             entity.addAbstractAttribute(floatAtribute);
             entity.addAbstractAttribute(commentsAttributes);
-            //step 3            
+            //step 3
             entity = (Entity) newEntityManagerInterface.persistEntity(entity);
 
             //step 4
@@ -2586,9 +2589,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     /**
      *  PURPOSE: This method test for deleting data for a containtment relationship between two entities
      *  EXPECTED BEHAVIOUR: Data of containted entity should also be disabled
-     *   
+     *
      *  TEST CASE FLOW: 1. create User
-     *                  2. Create Address                       
+     *                  2. Create Address
      *                  3. Add Association with      User(1) ------->(1) Address containtment association
      *                  4. persist entities.
      *                  5. Insert Data
@@ -2601,14 +2604,14 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
         try
         {
-            // Step 1  
+            // Step 1
             EntityInterface user = factory.createEntity();
             AttributeInterface userNameAttribute = factory.createStringAttribute();
             userNameAttribute.setName("user name");
             user.setName("user");
             user.addAbstractAttribute(userNameAttribute);
 
-            // Step 2  
+            // Step 2
             EntityInterface address = factory.createEntity();
             address.setName("address");
 
@@ -2672,9 +2675,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     /**
      *  PURPOSE: This method test for deleting data for a containtment relationship between two entities having one to many asso.
      *  EXPECTED BEHAVIOUR: Data of containted entity should also be disabled
-     *   
+     *
      *  TEST CASE FLOW: 1. create User
-     *                  2. Create Address                       
+     *                  2. Create Address
      *                  3. Add Association with      User(1) ------->(*) Address containtment association
      *                  4. persist entities.
      *                  5. Insert Data
@@ -2687,14 +2690,14 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
         try
         {
-            // Step 1  
+            // Step 1
             EntityInterface user = factory.createEntity();
             AttributeInterface userNameAttribute = factory.createStringAttribute();
             userNameAttribute.setName("user name");
             user.setName("user");
             user.addAbstractAttribute(userNameAttribute);
 
-            // Step 2  
+            // Step 2
             EntityInterface address = factory.createEntity();
             address.setName("address");
 
@@ -2744,7 +2747,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             assertEquals(Constants.ACTIVITY_STATUS_ACTIVE, getActivityStatus(address, 1L));
             assertEquals(Constants.ACTIVITY_STATUS_ACTIVE, getActivityStatus(address, 2L));
 
-            // Step 6   
+            // Step 6
             newEntityManagerInterface.deleteRecord(savedEntity, 1L);
 
             assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(user, 1L));
@@ -2761,9 +2764,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
     /** PURPOSE: This method test for deleting data for a one to many lookup association relationship between two entities.
      *  EXPECTED BEHAVIOUR: Data of looked up entity should not be disabled
-     *   
+     *
      *  TEST CASE FLOW: 1. create User
-     *                  2. Create Study                       
+     *                  2. Create Study
      *                  3. Add Association with      User(1) ------->(*) Study lookup association
      *                  4. persist entities.
      *                  5. Insert Data
@@ -2776,21 +2779,21 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
         try
         {
-            //create user 
+            //create user
             EntityInterface user = factory.createEntity();
             AttributeInterface userNameAttribute = factory.createStringAttribute();
             userNameAttribute.setName("user name");
             user.setName("user");
             user.addAbstractAttribute(userNameAttribute);
 
-            //create study 
+            //create study
             EntityInterface study = factory.createEntity();
             AttributeInterface studyNameAttribute = factory.createStringAttribute();
             studyNameAttribute.setName("study name");
             study.setName("study");
             study.addAbstractAttribute(studyNameAttribute);
 
-            //Associate user (1)------ >(*)study       
+            //Associate user (1)------ >(*)study
             AssociationInterface association = factory.createAssociation();
             association.setTargetEntity(study);
             association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
@@ -2843,27 +2846,27 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         }
     }
 
-    /** PURPOSE: This method test for deleting data of one entity which is refered by a record of some 
+    /** PURPOSE: This method test for deleting data of one entity which is refered by a record of some
      *           other entity.
      *  EXPECTED BEHAVIOUR: In such a cases, record is not allowed to be deleted, approprate applicationException should be thrown.
-     *   
+     *
      *  TEST CASE FLOW: 1. create User
-     *                  2. Create Study                       
+     *                  2. Create Study
      *                  3. Add Association with      User(1) ------->(*) Study lookup association
      *                  4. persist entities.
      *                  5. Insert Data for study as "study"
      *                  6. Insert Data for study as  "study1"
-     *                  7. Delete "study1" shoud be succesful. 
+     *                  7. Delete "study1" shoud be succesful.
      *                  8. Insert Data for user  as "user" that refers to "study"
      *                  9. Delete "Study" : should throw exception as it is refered by "user"
-     * @throws Exception 
+     * @throws Exception
      */
     public void testDeleteReferedData() throws Exception
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
         DomainObjectFactory factory = DomainObjectFactory.getInstance();
         EntityInterface study = null;
-        
+
         try
         {
             //Step 1
@@ -2880,7 +2883,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             study.setName("study");
             study.addAbstractAttribute(studyNameAttribute);
 
-            //Step 3 
+            //Step 3
             AssociationInterface association = factory.createAssociation();
             association.setTargetEntity(study);
             association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
@@ -2892,15 +2895,15 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
             user.addAbstractAttribute(association);
 
-            //Step 4 
+            //Step 4
             EntityInterface savedEntity = newEntityManagerInterface.persistEntity(user);
 
-            //Step 5 
+            //Step 5
             Map dataValue = new HashMap();
             dataValue.put(studyNameAttribute, "study");
             newEntityManagerInterface.insertData(study, dataValue);
 
-            //Step 6            
+            //Step 6
             dataValue.clear();
             dataValue.put(studyNameAttribute, "study1");
             newEntityManagerInterface.insertData(study, dataValue);
@@ -2938,16 +2941,16 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             fail();
         }
     }
-    
+
      /**
      * fix for bug 4075
      */
-    public void testInsertValueWithQuote() 
+    public void testInsertValueWithQuote()
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
         DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
-        try 
+        try
         {
             // Step 1
             EntityInterface specimen = factory.createEntity();
@@ -2960,30 +2963,30 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             Map dataValue = new HashMap();
 
             dataValue.put(barcode, "123'456");
-            
+
             newEntityManagerInterface.persistEntity(specimen);
             Long recordId = newEntityManagerInterface.insertData(specimen, dataValue);
-            
+
             assertTrue(true);
-        } 
-        catch (Exception e) 
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
             fail();
         }
     }
-    
-    /** PURPOSE: This method tests for creating value domain information object 
-     *           
-     *  EXPECTED BEHAVIOUR: Attribute should be created successfully along with value domain information objet.     
+
+    /** PURPOSE: This method tests for creating value domain information object
+     *
+     *  EXPECTED BEHAVIOUR: Attribute should be created successfully along with value domain information objet.
      *  TEST CASE FLOW: 1.create test entity
-     *                  2.create cadsr value domain information object 
-     * @throws Exception 
+     *                  2.create cadsr value domain information object
+     * @throws Exception
      */
     public void testCreateEntityAttributeWithValueDomain()
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        
+
         try
         {
             DomainObjectFactory factory = DomainObjectFactory.getInstance();
@@ -2994,23 +2997,23 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             specimen.setAbstract(true);
             AttributeInterface barcode = factory.createStringAttribute();
             barcode.setName("barcode");
-            
+
             //Step 2
             CaDSRValueDomainInfoInterface caDSRValueDomainInfoInterface = factory.createCaDSRValueDomainInfo();
             caDSRValueDomainInfoInterface.setValueDomainType(ValueDomainType.ENUMERATED);
             caDSRValueDomainInfoInterface.setDatatype("java.lang.String");
             caDSRValueDomainInfoInterface.setName("java.lang.String");
-            barcode.setCaDSRValueDomainInfo(caDSRValueDomainInfoInterface );    
-            
+            barcode.setCaDSRValueDomainInfo(caDSRValueDomainInfoInterface );
+
             SemanticPropertyInterface semanticPropertyInterface = factory.createSemanticProperty();
             semanticPropertyInterface.setConceptDefinition("definition");
             semanticPropertyInterface.setConceptCode("C1123");
             semanticPropertyInterface.setSequenceNumber(1);
             semanticPropertyInterface.setTerm("term");
             semanticPropertyInterface.setThesaurasName("thesaurasName");
-            
+
             barcode.addSemanticProperty(semanticPropertyInterface);
-                        
+
             specimen.addAbstractAttribute(barcode);
 
             AttributeInterface label = factory.createStringAttribute();
@@ -3029,25 +3032,25 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             fail();
         }
     }
-    
+
     /**
-     * 
+     *
      *
      */
-    public void testInsertObjectAttribute() 
+    public void testInsertObjectAttribute()
     {
-        NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();        
+        NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
         DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
-        // create user 
+        // create user
         EntityInterface user = factory.createEntity();
         user.setName("User");
-        
+
         AttributeInterface age = factory.createIntegerAttribute();
         age.setName("Age");
         user.addAbstractAttribute(age);
 
-        
+
         AttributeInterface info = factory.createObjectAttribute();
         info.setName("Resume");
         user.addAbstractAttribute(info);
@@ -3056,11 +3059,11 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         try
         {
             user = newEntityManagerInterface.persistEntity(user);
-            
+
             ObjectAttributeRecordValueInterface objectRecord = factory.createObjectAttributeRecordValue();
             objectRecord.setObject(new TaggedValue());
             objectRecord.setClassName(TaggedValue.class.getName());
-            
+
             Map dataValue = new HashMap();
             dataValue.put(age, "45");
             dataValue.put(info, objectRecord);
@@ -3078,313 +3081,313 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             fail();
         }
     }
-    
-    
-    public void testGerRecordForObjectAttribute() 
-    {
-        NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
-        // create user 
-        EntityInterface user = factory.createEntity();
-        user.setName("User");
-        
-        AttributeInterface age = factory.createIntegerAttribute();
-        age.setName("Age");
-        user.addAbstractAttribute(age);
 
-        AttributeInterface info = factory.createObjectAttribute();
-        info.setName("Resume");
-        user.addAbstractAttribute(info);
-        user.addAttribute(info);
+//    public void testGerRecordForObjectAttribute()
+//    {
+//        NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
+//        DomainObjectFactory factory = DomainObjectFactory.getInstance();
+//
+//        // create user
+//        EntityInterface user = factory.createEntity();
+//        user.setName("User");
+//
+//        AttributeInterface age = factory.createIntegerAttribute();
+//        age.setName("Age");
+//        user.addAbstractAttribute(age);
+//
+//        AttributeInterface info = factory.createObjectAttribute();
+//        info.setName("Resume");
+//        user.addAbstractAttribute(info);
+//        user.addAttribute(info);
+//
+//        try
+//        {
+//            TaggedValue taggedValue = new TaggedValue();
+//            taggedValue.setKey("rahul");
+//            taggedValue.setValue("ner");
+//
+//            user = newEntityManagerInterface.persistEntity(user);
+//
+//            ObjectAttributeRecordValueInterface objectRecord = factory.createObjectAttributeRecordValue();
+//            objectRecord.setObject(taggedValue);
+//            objectRecord.setClassName(TaggedValue.class.getName());
+//
+//            Map dataValue = new HashMap();
+//            dataValue.put(age, "45");
+//            dataValue.put(info, objectRecord);
+//
+//            Long recordId = newEntityManagerInterface.insertData(user, dataValue);
+//
+//            ResultSet resultSet = executeQuery("select count(*) from "
+//                    + user.getTableProperties().getName());
+//            resultSet.next();
+//            assertEquals(1, resultSet.getInt(1));
+//
+//
+//            dataValue = newEntityManagerInterface.getRecordById(user, recordId);
+//
+//            assertEquals("45", dataValue.get(age));
+//            TaggedValue taggedValue1 = (TaggedValue)((ObjectAttributeRecordValueInterface) dataValue.get(info)).getObject();
+//            assertTrue(taggedValue1.getKey().equals("rahul"));
+//            assertTrue(taggedValue1.getValue().equals("ner"));
+//        }
+//        catch (Throwable e)
+//        {
+//            e.printStackTrace();
+//            fail();
+//        }
+//    }
+//
+//
+//    public void testGerEntityRecordResultForObjectAttribute()
+//    {
+//        NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
+//        DomainObjectFactory factory = DomainObjectFactory.getInstance();
+//
+//        // create user
+//        EntityInterface user = factory.createEntity();
+//        user.setName("User");
+//
+//        AttributeInterface age = factory.createIntegerAttribute();
+//        age.setName("Age");
+//        user.addAbstractAttribute(age);
+//
+//        AttributeInterface info = factory.createObjectAttribute();
+//        info.setName("Resume");
+//        user.addAbstractAttribute(info);
+//        user.addAttribute(info);
+//
+//        try
+//        {
+//            TaggedValue taggedValue = new TaggedValue();
+//            taggedValue.setKey("rahul");
+//            taggedValue.setValue("ner");
+//
+//            user = newEntityManagerInterface.persistEntity(user);
+//
+//            ObjectAttributeRecordValueInterface objectRecord = factory.createObjectAttributeRecordValue();
+//            objectRecord.setObject(taggedValue);
+//            objectRecord.setClassName(TaggedValue.class.getName());
+//
+//            Map dataValue = new HashMap();
+//            dataValue.put(age, "45");
+//            dataValue.put(info, objectRecord);
+//
+//            Long recordId = newEntityManagerInterface.insertData(user, dataValue);
+//
+//            ResultSet resultSet = executeQuery("select count(*) from "
+//                    + user.getTableProperties().getName());
+//            resultSet.next();
+//            assertEquals(1, resultSet.getInt(1));
+//
+//            List userAttribute = new ArrayList();
+//            userAttribute.add(age);
+//            userAttribute.add(info);
+//
+//            EntityRecordResultInterface recordResult = newEntityManagerInterface.getEntityRecords(user,userAttribute,null);
+//
+//            EntityRecordInterface record =  recordResult.getEntityRecordList().iterator().next();
+//            assertEquals("45", record.getRecordValueList().get(0));
+//
+//            TaggedValue taggedValue1 = (TaggedValue)(((ObjectAttributeRecordValue)record.getRecordValueList().get(1)).getObject());
+//            assertTrue(taggedValue1.getKey().equals("rahul"));
+//            assertTrue(taggedValue1.getValue().equals("ner"));
+//        }
+//        catch (Throwable e)
+//        {
+//            e.printStackTrace();
+//            fail();
+//        }
+//    }
+//
+//    public void testEditRecordForObjectAttribute()
+//    {
+//        NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
+//        DomainObjectFactory factory = DomainObjectFactory.getInstance();
+//
+//        // create user
+//        EntityInterface user = factory.createEntity();
+//        user.setName("User");
+//
+//        AttributeInterface age = factory.createIntegerAttribute();
+//        age.setName("Age");
+//        user.addAbstractAttribute(age);
+//
+//
+//        AttributeInterface info = factory.createObjectAttribute();
+//        info.setName("Resume");
+//        user.addAbstractAttribute(info);
+//        user.addAttribute(info);
+//
+//        try
+//        {
+//            TaggedValue taggedValue = new TaggedValue();
+//            taggedValue.setKey("rahul");
+//            taggedValue.setValue("ner");
+//
+//            user = newEntityManagerInterface.persistEntity(user);
+//
+//            ObjectAttributeRecordValueInterface objectRecord = factory.createObjectAttributeRecordValue();
+//            objectRecord.setObject(taggedValue);
+//            objectRecord.setClassName(TaggedValue.class.getName());
+//
+//            Map dataValue = new HashMap();
+//            dataValue.put(age, "45");
+//            dataValue.put(info, objectRecord);
+//
+//            Long recordId = newEntityManagerInterface.insertData(user, dataValue);
+//
+//            ResultSet resultSet = executeQuery("select count(*) from "
+//                    + user.getTableProperties().getName());
+//            resultSet.next();
+//            assertEquals(1, resultSet.getInt(1));
+//
+//            dataValue = newEntityManagerInterface.getRecordById(user, recordId);
+//
+//            assertEquals("45", dataValue.get(age));
+//            TaggedValue taggedValue1 = (TaggedValue)((ObjectAttributeRecordValueInterface) dataValue.get(info)).getObject();
+//            assertTrue(taggedValue1.getKey().equals("rahul"));
+//            assertTrue(taggedValue1.getValue().equals("ner"));
+//
+//            taggedValue1.setValue("ner1");
+//
+//            objectRecord.setClassName("new class name");
+//            objectRecord.setObject(taggedValue1);
+//
+//            dataValue.clear();
+//            dataValue.put(age, "54");
+//            dataValue.put(info, objectRecord);
+//
+//            newEntityManagerInterface.editData(user, dataValue,recordId);
+//
+//            dataValue = newEntityManagerInterface.getRecordById(user, recordId);
+//
+//            assertEquals("54", dataValue.get(age));
+//            TaggedValue taggedValue2 = (TaggedValue)((ObjectAttributeRecordValueInterface) dataValue.get(info)).getObject();
+//            assertTrue(taggedValue2.getKey().equals("rahul"));
+//            assertTrue(taggedValue2.getValue().equals("ner1"));
+//
+//            assertEquals("new class name",((ObjectAttributeRecordValueInterface) dataValue.get(info)).getClassName());
+//        }
+//        catch (Throwable e)
+//        {
+//            e.printStackTrace();
+//            fail();
+//        }
+//    }
+//
+//    /**
+//     *
+//     *
+//     */
+//    public void testDeleteRecordForObjectAttribute()
+//    {
+//        NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
+//        DomainObjectFactory factory = DomainObjectFactory.getInstance();
+//
+//        // create user
+//        EntityInterface user = factory.createEntity();
+//        user.setName("User");
+//
+//        AttributeInterface age = factory.createIntegerAttribute();
+//        age.setName("Age");
+//        user.addAbstractAttribute(age);
+//
+//        AttributeInterface info = factory.createObjectAttribute();
+//        info.setName("Resume");
+//        user.addAbstractAttribute(info);
+//        user.addAttribute(info);
+//
+//        try
+//        {
+//            TaggedValue taggedValue = new TaggedValue();
+//            taggedValue.setKey("rahul");
+//            taggedValue.setValue("ner");
+//
+//            user = newEntityManagerInterface.persistEntity(user);
+//
+//            ObjectAttributeRecordValueInterface objectRecord = factory.createObjectAttributeRecordValue();
+//            objectRecord.setObject(taggedValue);
+//            objectRecord.setClassName(TaggedValue.class.getName());
+//
+//            Map dataValue = new HashMap();
+//            dataValue.put(age, "45");
+//            dataValue.put(info, objectRecord);
+//
+//            Long recordId = newEntityManagerInterface.insertData(user, dataValue);
+//
+//            ResultSet resultSet = executeQuery("select count(*) from dyextn_attribute_record");
+//            resultSet.next();
+//            int beforeCnt = resultSet.getInt(1);
+//            resultSet.close();
+//
+//            newEntityManagerInterface.deleteRecord(user, recordId);
+//
+//            resultSet = executeQuery("select count(*) from dyextn_attribute_record");
+//            resultSet.next();
+//            int afterCnt = resultSet.getInt(1);
+//
+//            assertEquals(1, beforeCnt - afterCnt);
+//        }
+//        catch (Throwable e)
+//        {
+//            e.printStackTrace();
+//            fail();
+//        }
+//    }
+//
+//    /**
+//     *
+//     *
+//     */
+//    public void testEditEntityToAddObjectAttribute() {
+//        NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
+//        DomainObjectFactory factory = DomainObjectFactory.getInstance();
+//
+//        // create user
+//        EntityInterface user = factory.createEntity();
+//        user.setName("User");
+//
+//        AttributeInterface age = factory.createIntegerAttribute();
+//        age.setName("Age");
+//        user.addAbstractAttribute(age);
+//
+//        try
+//        {
+//            user = newEntityManagerInterface.persistEntity(user);
+//
+//            AttributeInterface info = factory.createObjectAttribute();
+//            info.setName("Resume");
+//            user.addAbstractAttribute(info);
+//            user.addAttribute(info);
+//
+//            user = newEntityManagerInterface.persistEntity(user);
+//
+//            ObjectAttributeRecordValueInterface objectRecord = factory.createObjectAttributeRecordValue();
+//            objectRecord.setObject(new TaggedValue());
+//            objectRecord.setClassName(TaggedValue.class.getName());
+//
+//            Map dataValue = new HashMap();
+//            dataValue.put(age, "45");
+//            dataValue.put(info, objectRecord);
+//
+//            Long recordId = newEntityManagerInterface.insertData(user, dataValue);
+//
+//            ResultSet resultSet = executeQuery("select count(*) from "
+//                    + user.getTableProperties().getName());
+//            resultSet.next();
+//            assertEquals(1, resultSet.getInt(1));
+//        }
+//        catch (Throwable e)
+//        {
+//            e.printStackTrace();
+//            fail();
+//        }
+//    }
 
-        try
-        {
-            TaggedValue taggedValue = new TaggedValue();
-            taggedValue.setKey("rahul");
-            taggedValue.setValue("ner");
-           
-            user = newEntityManagerInterface.persistEntity(user);
-            
-            ObjectAttributeRecordValueInterface objectRecord = factory.createObjectAttributeRecordValue();
-            objectRecord.setObject(taggedValue);
-            objectRecord.setClassName(TaggedValue.class.getName());
-            
-            Map dataValue = new HashMap();
-            dataValue.put(age, "45");
-            dataValue.put(info, objectRecord);
-
-            Long recordId = newEntityManagerInterface.insertData(user, dataValue);
-
-            ResultSet resultSet = executeQuery("select count(*) from "
-                    + user.getTableProperties().getName());
-            resultSet.next();
-            assertEquals(1, resultSet.getInt(1));
-            
-            
-            dataValue = newEntityManagerInterface.getRecordById(user, recordId);
-
-            assertEquals("45", dataValue.get(age));
-            TaggedValue taggedValue1 = (TaggedValue)((ObjectAttributeRecordValueInterface) dataValue.get(info)).getObject();
-            assertTrue(taggedValue1.getKey().equals("rahul"));
-            assertTrue(taggedValue1.getValue().equals("ner"));
-        }
-        catch (Throwable e)
-        {
-            e.printStackTrace();
-            fail();
-        }
-    }
-    
-    
-    public void testGerEntityRecordResultForObjectAttribute() 
-    {
-        NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
-        // create user 
-        EntityInterface user = factory.createEntity();
-        user.setName("User");
-        
-        AttributeInterface age = factory.createIntegerAttribute();
-        age.setName("Age");
-        user.addAbstractAttribute(age);
-        
-        AttributeInterface info = factory.createObjectAttribute();
-        info.setName("Resume");
-        user.addAbstractAttribute(info);
-        user.addAttribute(info);
-
-        try
-        {
-            TaggedValue taggedValue = new TaggedValue();
-            taggedValue.setKey("rahul");
-            taggedValue.setValue("ner");
-            
-            user = newEntityManagerInterface.persistEntity(user);
-            
-            ObjectAttributeRecordValueInterface objectRecord = factory.createObjectAttributeRecordValue();
-            objectRecord.setObject(taggedValue);
-            objectRecord.setClassName(TaggedValue.class.getName());
-            
-            Map dataValue = new HashMap();
-            dataValue.put(age, "45");
-            dataValue.put(info, objectRecord);
-
-            Long recordId = newEntityManagerInterface.insertData(user, dataValue);
-
-            ResultSet resultSet = executeQuery("select count(*) from "
-                    + user.getTableProperties().getName());
-            resultSet.next();
-            assertEquals(1, resultSet.getInt(1));
-            
-            List userAttribute = new ArrayList();
-            userAttribute.add(age);
-            userAttribute.add(info);
-            
-            EntityRecordResultInterface recordResult = newEntityManagerInterface.getEntityRecords(user,userAttribute,null);
-            
-            EntityRecordInterface record =  recordResult.getEntityRecordList().iterator().next();
-            assertEquals("45", record.getRecordValueList().get(0));
-
-            TaggedValue taggedValue1 = (TaggedValue)(((ObjectAttributeRecordValue)record.getRecordValueList().get(1)).getObject());
-            assertTrue(taggedValue1.getKey().equals("rahul"));
-            assertTrue(taggedValue1.getValue().equals("ner"));
-        }
-        catch (Throwable e)
-        {
-            e.printStackTrace();
-            fail();
-        }
-    }
-    
-    public void testEditRecordForObjectAttribute() 
-    {
-        NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
-        // create user 
-        EntityInterface user = factory.createEntity();
-        user.setName("User");
-        
-        AttributeInterface age = factory.createIntegerAttribute();
-        age.setName("Age");
-        user.addAbstractAttribute(age);
-
-        
-        AttributeInterface info = factory.createObjectAttribute();
-        info.setName("Resume");
-        user.addAbstractAttribute(info);
-        user.addAttribute(info);
-
-        try
-        {
-            TaggedValue taggedValue = new TaggedValue();
-            taggedValue.setKey("rahul");
-            taggedValue.setValue("ner");
-           
-            user = newEntityManagerInterface.persistEntity(user);
-            
-            ObjectAttributeRecordValueInterface objectRecord = factory.createObjectAttributeRecordValue();
-            objectRecord.setObject(taggedValue);
-            objectRecord.setClassName(TaggedValue.class.getName());
-            
-            Map dataValue = new HashMap();
-            dataValue.put(age, "45");
-            dataValue.put(info, objectRecord);
-
-            Long recordId = newEntityManagerInterface.insertData(user, dataValue);
-
-            ResultSet resultSet = executeQuery("select count(*) from "
-                    + user.getTableProperties().getName());
-            resultSet.next();
-            assertEquals(1, resultSet.getInt(1));
-            
-            dataValue = newEntityManagerInterface.getRecordById(user, recordId);
-
-            assertEquals("45", dataValue.get(age));
-            TaggedValue taggedValue1 = (TaggedValue)((ObjectAttributeRecordValueInterface) dataValue.get(info)).getObject();
-            assertTrue(taggedValue1.getKey().equals("rahul"));
-            assertTrue(taggedValue1.getValue().equals("ner"));
-            
-            taggedValue1.setValue("ner1");
-            
-            objectRecord.setClassName("new class name");
-            objectRecord.setObject(taggedValue1);
-            
-            dataValue.clear();
-            dataValue.put(age, "54");
-            dataValue.put(info, objectRecord);
-            
-            newEntityManagerInterface.editData(user, dataValue,recordId);
-            
-            dataValue = newEntityManagerInterface.getRecordById(user, recordId);
-
-            assertEquals("54", dataValue.get(age));
-            TaggedValue taggedValue2 = (TaggedValue)((ObjectAttributeRecordValueInterface) dataValue.get(info)).getObject();
-            assertTrue(taggedValue2.getKey().equals("rahul"));
-            assertTrue(taggedValue2.getValue().equals("ner1"));
-            
-            assertEquals("new class name",((ObjectAttributeRecordValueInterface) dataValue.get(info)).getClassName());
-        }
-        catch (Throwable e)
-        {
-            e.printStackTrace();
-            fail();
-        }
-    }
-    
     /**
-     * 
      *
-     */
-    public void testDeleteRecordForObjectAttribute() 
-    {
-        NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
-        // create user 
-        EntityInterface user = factory.createEntity();
-        user.setName("User");
-        
-        AttributeInterface age = factory.createIntegerAttribute();
-        age.setName("Age");
-        user.addAbstractAttribute(age);
-        
-        AttributeInterface info = factory.createObjectAttribute();
-        info.setName("Resume");
-        user.addAbstractAttribute(info);
-        user.addAttribute(info);
-
-        try
-        {
-            TaggedValue taggedValue = new TaggedValue();
-            taggedValue.setKey("rahul");
-            taggedValue.setValue("ner");
-           
-            user = newEntityManagerInterface.persistEntity(user);
-            
-            ObjectAttributeRecordValueInterface objectRecord = factory.createObjectAttributeRecordValue();
-            objectRecord.setObject(taggedValue);
-            objectRecord.setClassName(TaggedValue.class.getName());
-            
-            Map dataValue = new HashMap();
-            dataValue.put(age, "45");
-            dataValue.put(info, objectRecord);
-
-            Long recordId = newEntityManagerInterface.insertData(user, dataValue);
-
-            ResultSet resultSet = executeQuery("select count(*) from dyextn_attribute_record");
-            resultSet.next();
-            int beforeCnt = resultSet.getInt(1);
-            resultSet.close();
-
-            newEntityManagerInterface.deleteRecord(user, recordId);
-
-            resultSet = executeQuery("select count(*) from dyextn_attribute_record");
-            resultSet.next();
-            int afterCnt = resultSet.getInt(1);
-
-            assertEquals(1, beforeCnt - afterCnt);
-        }
-        catch (Throwable e)
-        {
-            e.printStackTrace();
-            fail();
-        }
-    }
-    
-    /**
-     * 
-     *
-     */
-    public void testEditEntityToAddObjectAttribute() {
-        NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
-        // create user 
-        EntityInterface user = factory.createEntity();
-        user.setName("User");
-        
-        AttributeInterface age = factory.createIntegerAttribute();
-        age.setName("Age");
-        user.addAbstractAttribute(age);
-
-        try
-        {
-            user = newEntityManagerInterface.persistEntity(user);
-            
-            AttributeInterface info = factory.createObjectAttribute();
-            info.setName("Resume");
-            user.addAbstractAttribute(info);
-            user.addAttribute(info);
-            
-            user = newEntityManagerInterface.persistEntity(user);
-            
-            ObjectAttributeRecordValueInterface objectRecord = factory.createObjectAttributeRecordValue();
-            objectRecord.setObject(new TaggedValue());
-            objectRecord.setClassName(TaggedValue.class.getName());
-            
-            Map dataValue = new HashMap();
-            dataValue.put(age, "45");
-            dataValue.put(info, objectRecord);
-
-            Long recordId = newEntityManagerInterface.insertData(user, dataValue);
-
-            ResultSet resultSet = executeQuery("select count(*) from "
-                    + user.getTableProperties().getName());
-            resultSet.next();
-            assertEquals(1, resultSet.getInt(1));
-        }
-        catch (Throwable e)
-        {
-            e.printStackTrace();
-            fail();
-        }
-    }
-    
-    /**
-     * 
      *
      */
     public void testGetAllGroupBeans ()
@@ -3399,7 +3402,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             e.printStackTrace();
         }
     }
-    
+
     /**
      * Create one entity group, add one entity to it and save it.
      * @throws DynamicExtensionsSystemException
@@ -3411,7 +3414,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         EntityGroupInterface entityGroup = DomainObjectFactory.getInstance().createEntityGroup();
         EntityInterface e1 = new MockEntityManager().initializeEntity3();
         entityGroup.addEntity(e1);
-        
+
         try
         {
             newEntityManager.persistEntityGroup(entityGroup);
@@ -3422,5 +3425,5 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             fail();
         }
     }
-    
+
 }

@@ -183,7 +183,6 @@ public class MockEntityManager
 		abstractAttributeInterface = initializeStringAttribute("name", "");
 		person.addAbstractAttribute(abstractAttributeInterface);
 		abstractAttributeInterface.setEntity(person);
-
 		return person;
 	}
 
@@ -214,7 +213,7 @@ public class MockEntityManager
 		atributeInterface = initializeStringAttribute("name", "");
 		person.addAbstractAttribute(atributeInterface);
 		atributeInterface.setEntity(person);
-
+		person.setAddIdAttribute(true);
 		return person;
 	}
 
@@ -240,7 +239,7 @@ public class MockEntityManager
 				initializeDataElement());
 		bioInformation.addAbstractAttribute(attributeInterface);
 		attributeInterface.setEntity(bioInformation);
-
+		bioInformation.setAddIdAttribute(true);
 		return bioInformation;
 	}
 
@@ -288,7 +287,7 @@ public class MockEntityManager
 		person.setCreatedDate(new Date());
 		person.setDescription("This is a dummy entity");
 		person.setLastUpdated(person.getCreatedDate());
-
+		person.setAddIdAttribute(true);
 		return person;
 	}
 

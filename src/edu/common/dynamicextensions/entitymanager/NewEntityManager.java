@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,6 +39,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -46,6 +48,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
+import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.dao.AbstractDAO;
@@ -245,8 +248,17 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 
 	{
 			EntityInterface entity = (EntityInterface) dynamicExtensionBaseDomainObject;
+			Set<EntityInterface> entitySet = new HashSet<EntityInterface>();
+			entitySet.add(entity);
+			DynamicExtensionsUtility.getAssociatedAndInheritedEntities(entity,entitySet);
+			for (EntityInterface entityInterface : entitySet)
+			{
+				DynamicExtensionsUtility.preSaveProcessEntity(entityInterface);
+			}
 			createDynamicQueries(entity, reverseQueryList, hibernateDAO, queryList);
 	}
+
+
 
 	/**
 	 * This method executes dynamic table queries created for all the entities within a group.

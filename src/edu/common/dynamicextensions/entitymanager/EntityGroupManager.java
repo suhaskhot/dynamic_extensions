@@ -5,9 +5,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
@@ -20,12 +20,9 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.AssociationTreeObject;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
-import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.HibernateDAO;
-import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.logger.Logger;
 
@@ -109,6 +106,7 @@ public class EntityGroupManager extends AbstractMetadataManager implements Entit
 		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
 		for (EntityInterface entityInterface : entityGroup.getEntityCollection())
 		{
+			DynamicExtensionsUtility.preSaveProcessEntity(entityInterface);
 			entityManagerInterface.getDynamicQueryList(entityInterface, reverseQueryList, hibernateDAO, queryList);
 		}
 	}

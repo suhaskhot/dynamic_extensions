@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
+import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
@@ -35,6 +36,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -53,6 +55,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Variables;
+import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.common.dynamicextensions.util.global.Constants.InheritanceStrategy;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.bizlogic.AbstractBizLogic;
@@ -763,7 +766,32 @@ public class DynamicExtensionsUtility
 			}
 		}
 	}
-
+	/**
+	 * @param entity
+	 * @param entitySet
+	 */
+	public static void getAssociatedAndInheritedEntities(EntityInterface entity, Set<EntityInterface> entitySet)
+	{
+		EntityInterface parentEntity = entity.getParentEntity();
+		if (parentEntity != null)
+		{
+			if (!entitySet.contains(parentEntity))
+			{
+				entitySet.add(parentEntity);
+				getAssociatedAndInheritedEntities(parentEntity,entitySet);
+			}
+		}
+		Collection<AssociationInterface> associationCollection = entity.getAssociationCollection();
+		for (AssociationInterface associationInterface : associationCollection)
+		{
+			EntityInterface targetEntity = associationInterface.getTargetEntity();
+			if (!entitySet.contains(targetEntity))
+			{
+				entitySet.add(targetEntity);
+				getAssociatedAndInheritedEntities(targetEntity, entitySet);
+			}
+		}
+	}
 	/**
 	 * This method checks if the date string is as per the given format or not.
 	 * @param dateFormat Format of the date (e.g. dd/mm/yyyy)
@@ -1096,5 +1124,68 @@ public class DynamicExtensionsUtility
 		}
 		return mainContainerNames;
 	}
+    /**
+     * This method corrects cardinalities such that max cardinality  < minimum cardinality ,otherwise it throws exception
+     * @param entity
+     */
+    private static void correctCardinalities(EntityInterface entity)
+            throws DynamicExtensionsApplicationException
+    {
+        Collection associationCollection = entity.getAssociationCollection();
+        if (associationCollection != null && !associationCollection.isEmpty())
+        {
+            Iterator iterator = associationCollection.iterator();
+            while (iterator.hasNext())
+            {
+                Association association = (Association) iterator.next();
+                swapCardinality(association.getSourceRole());
+                swapCardinality(association.getTargetRole());
+            }
+        }
+    }
+    /**
+     * @param role
+     * @throws DynamicExtensionsApplicationException
+     */
+    private static void swapCardinality(RoleInterface role) throws DynamicExtensionsApplicationException
+    {
+        // make Min cardinality < Max cardinality
+        if (role.getMinimumCardinality().equals(Cardinality.MANY)
+                || role.getMaximumCardinality().equals(Cardinality.ZERO))
+        {
+            Cardinality e = role.getMinimumCardinality();
+            role.setMinimumCardinality(role.getMaximumCardinality());
+            role.setMaximumCardinality(e);
+        }
 
+        if (role.getMaximumCardinality().equals(Cardinality.ZERO))
+        {
+            throw new DynamicExtensionsApplicationException("Cardinality constraint violated",
+                    null, EntityManagerExceptionConstantsInterface.DYEXTN_A_005);
+        }
+    }
+    /**
+     * This method processes entity before saving it to databse.
+     * <li> It validates entity for duplicate name of entity,attributes and association
+     * <li> It sets created and updated date-time.
+     *
+     * @param entity entity
+     */
+    public static void preSaveProcessEntity(EntityInterface entity)
+            throws DynamicExtensionsApplicationException
+    {
+        validateEntityForSaving(entity);// chk if entity is valid or not.
+
+        correctCardinalities(entity); // correct the cardinality if max cardinality  < min cardinality
+
+        if (entity.getId() != null)
+        {
+            entity.setLastUpdated(new Date());
+        }
+        else
+        {
+            entity.setCreatedDate(new Date());
+            entity.setLastUpdated(entity.getCreatedDate());
+        }
+    }
 }

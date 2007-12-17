@@ -606,7 +606,12 @@ public class Entity extends AbstractMetadata implements EntityInterface
 		AttributeCollection.addAll(getAttributeCollection());
 		return AttributeCollection;
 	}
-    
+    /**
+     * This method returns a list of Attributes which includes attributes of an entity as well attributes 
+     * of its parent entity. 
+     * bug id 5546.
+     * @return Collection<AttributeInterface> list of all attributes includeing attributes of it parents'.
+     */
     public Collection<AttributeInterface> getEntityAttributesForQuery()
     { 
         Collection<AttributeInterface> theAttributeCollection = new ArrayList<AttributeInterface>();
@@ -625,7 +630,6 @@ public class Entity extends AbstractMetadata implements EntityInterface
             Collection<AttributeInterface> parentAttributeCollection = parentEntity.getAttributeCollection();
             for (AttributeInterface parentAttribute: parentAttributeCollection)
             {
-            	parentAttribute.setEntity(this);
             	if (attributeNames.add(parentAttribute.getName()))
             	{
             		theAttributeCollection.add(parentAttribute);
@@ -640,14 +644,12 @@ public class Entity extends AbstractMetadata implements EntityInterface
 	            		TaggedValueInterface tag = new TaggedValue();
 	            		tag.setKey(edu.wustl.cab2b.common.util.Constants.TYPE_DERIVED);
 	            		tag.setValue(edu.wustl.cab2b.common.util.Constants.TYPE_DERIVED);
-	            		System.out.println("added tag.....");
 	            		parentAttribute.addTaggedValue(tag);
             		}
             	}
             }
             parentEntity = parentEntity.getParentEntity();
         }
-
         return theAttributeCollection;
     }
 }

@@ -31,6 +31,9 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 {
 
 	protected int noOfDefaultColumns = 2;
+
+	//1:ACTIVITY_STATUS 2:IDENTIFIER 3:FILE NAME 4:CONTENTE_TYPE 5:ACTUAL_CONTENTS
+	protected int noOfDefaultColumnsForfile = 5;
 	/**
 	 * 
 	 */

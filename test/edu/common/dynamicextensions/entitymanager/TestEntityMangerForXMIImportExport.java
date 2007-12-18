@@ -48,7 +48,7 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 	/**
 	 * Specify the name of the domain model xmi file to import. This file must be present at the path test/ModelXML under the project root directory
 	 */
-	private String XMIFileName = "C:\\EA_1.4.xmi";
+	private String XMIFileName = "E:\\Dynamic Extensions\\smokingHistory.xmi";
 
 	public void testXMIExport()
 	{

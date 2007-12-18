@@ -46,5 +46,14 @@
 	  	  <database-datatype>Date</database-datatype>
     </Primitive-Attribute>
     
+    <Primitive-Attribute>
+		  <name>File</name>
+	  	  <database-datatype>blob</database-datatype>
+    </Primitive-Attribute>
+    
+    <Primitive-Attribute>
+		  <name>Object</name>
+	  	  <database-datatype>blob</database-datatype>
+    </Primitive-Attribute>
     
 </Primitive-Attributes>

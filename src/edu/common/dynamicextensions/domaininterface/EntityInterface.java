@@ -216,16 +216,9 @@ public interface EntityInterface extends AbstractMetadataInterface
      * @param entityGroupCollection
      */
     //public void setEntityGroupCollection(Collection<EntityGroupInterface> entityGroupCollection);
-	/**
-	 * addIdAttribute flag to add id attribute or not
-	 * @param addIdAttribute
-	 */
-	public void setAddIdAttribute(boolean addIdAttribute);
 
-	public boolean isAddIdAttribute();
-    
     public EntityGroupInterface getEntityGroup();
-    
+
     public void setEntityGroup(EntityGroupInterface entityGroup);
 
 }

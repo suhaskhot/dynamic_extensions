@@ -213,7 +213,7 @@ public class MockEntityManager
 		atributeInterface = initializeStringAttribute("name", "");
 		person.addAbstractAttribute(atributeInterface);
 		atributeInterface.setEntity(person);
-		person.setAddIdAttribute(true);
+		EntityManagerUtil.addIdAttribute(person);
 		return person;
 	}
 
@@ -239,7 +239,7 @@ public class MockEntityManager
 				initializeDataElement());
 		bioInformation.addAbstractAttribute(attributeInterface);
 		attributeInterface.setEntity(bioInformation);
-		bioInformation.setAddIdAttribute(true);
+		EntityManagerUtil.addIdAttribute(bioInformation);
 		return bioInformation;
 	}
 
@@ -269,7 +269,7 @@ public class MockEntityManager
 		attributeInterface = initializeStringAttribute("address", "");
 		personal.addAbstractAttribute(attributeInterface);
 		attributeInterface.setEntity(personal);
-		personal.setAddIdAttribute(true);
+		EntityManagerUtil.addIdAttribute(personal);
 
 		RuleInterface ruleRequired = new Rule();
 		ruleRequired.setName("required");
@@ -287,7 +287,7 @@ public class MockEntityManager
 		person.setCreatedDate(new Date());
 		person.setDescription("This is a dummy entity");
 		person.setLastUpdated(person.getCreatedDate());
-		person.setAddIdAttribute(true);
+		EntityManagerUtil.addIdAttribute(person);
 		return person;
 	}
 

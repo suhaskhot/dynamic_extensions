@@ -360,14 +360,7 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 
 			preProcess(abstractMetdata, reverseQueryList, hibernateDAO, queryList);
 
-			if (abstractMetdata.getId() == null)
-			{
-				hibernateDAO.insert(abstractMetdata, null, false, false);
-			}
-			else
-			{
-				hibernateDAO.update(abstractMetdata, null, false, false, false);
-			}
+			saveDynamicExtensionObject(abstractMetdata,hibernateDAO,rollbackQueryStack);
 
 			postProcess(queryList, reverseQueryList, rollbackQueryStack);
 
@@ -379,12 +372,11 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 			throw new DynamicExtensionsSystemException(
 					"DAOException occured while opening a session to save the container.", e);
 		}
-		catch (UserNotAuthorizedException e)
+		catch (DynamicExtensionsSystemException e)
 		{
-			rollbackQueries(rollbackQueryStack, null, e, hibernateDAO);
-			e.printStackTrace();
-			throw new DynamicExtensionsSystemException(
-					"DAOException occured while opening a session to save the container.", e);
+            rollbackQueries(rollbackQueryStack, null, e, hibernateDAO);
+            e.printStackTrace();
+            throw e;
 		}
 		finally
 		{
@@ -417,24 +409,11 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 		{
 			hibernateDAO.openSession(null);
 
-			if (abstractMetdata.getId() == null)
-			{
-				hibernateDAO.insert(abstractMetdata, null, false, false);
-			}
-			else
-			{
-				hibernateDAO.update(abstractMetdata, null, false, false, false);
-			}
+			saveDynamicExtensionObject(abstractMetdata,hibernateDAO,rollbackQueryStack);
 
 			hibernateDAO.commit();
 		}
 		catch (DAOException e)
-		{
-			rollbackQueries(rollbackQueryStack, null, e, hibernateDAO);
-			throw new DynamicExtensionsSystemException(
-					"DAOException occured while opening a session to save the container.", e);
-		}
-		catch (UserNotAuthorizedException e)
 		{
 			rollbackQueries(rollbackQueryStack, null, e, hibernateDAO);
 			throw new DynamicExtensionsSystemException(
@@ -453,6 +432,43 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 			}
 		}
 		return abstractMetdata;
+	}
+	/**
+	 * saveDynamicExtensionObject.
+	 * @param abstractMetdata
+	 * @param hibernateDAO
+	 * @param rollbackQueryStack
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	private void saveDynamicExtensionObject(AbstractMetadataInterface abstractMetdata,
+			HibernateDAO hibernateDAO, Stack rollbackQueryStack)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+
+		try
+		{
+			if (abstractMetdata.getId() == null)
+			{
+				hibernateDAO.insert(abstractMetdata, null, false, false);
+			}
+			else
+			{
+				hibernateDAO.update(abstractMetdata, null, false, false, false);
+			}
+		}
+		catch (DAOException e)
+		{
+			rollbackQueries(rollbackQueryStack, null, e, hibernateDAO);
+			throw new DynamicExtensionsSystemException(
+					"DAOException occured while opening a session to save the container.", e);
+		}
+		catch (UserNotAuthorizedException e)
+		{
+			rollbackQueries(rollbackQueryStack, null, e, hibernateDAO);
+			throw new DynamicExtensionsSystemException(
+					"DAOException occured while opening a session to save the container.", e);
+		}
 	}
 	/**
 	 * This method is used to log the messages in a uniform manner. The method takes the string method name and

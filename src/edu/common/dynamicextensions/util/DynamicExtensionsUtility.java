@@ -28,6 +28,7 @@ import java.util.StringTokenizer;
 
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domain.Association;
+import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
@@ -50,6 +51,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInter
 import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerExceptionConstantsInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
@@ -767,32 +769,6 @@ public class DynamicExtensionsUtility
 		}
 	}
 	/**
-	 * @param entity
-	 * @param entitySet
-	 */
-	public static void getAssociatedAndInheritedEntities(EntityInterface entity, Set<EntityInterface> entitySet)
-	{
-		EntityInterface parentEntity = entity.getParentEntity();
-		if (parentEntity != null)
-		{
-			if (!entitySet.contains(parentEntity))
-			{
-				entitySet.add(parentEntity);
-				getAssociatedAndInheritedEntities(parentEntity,entitySet);
-			}
-		}
-		Collection<AssociationInterface> associationCollection = entity.getAssociationCollection();
-		for (AssociationInterface associationInterface : associationCollection)
-		{
-			EntityInterface targetEntity = associationInterface.getTargetEntity();
-			if (!entitySet.contains(targetEntity))
-			{
-				entitySet.add(targetEntity);
-				getAssociatedAndInheritedEntities(targetEntity, entitySet);
-			}
-		}
-	}
-	/**
 	 * This method checks if the date string is as per the given format or not.
 	 * @param dateFormat Format of the date (e.g. dd/mm/yyyy)
 	 * @param strDate Date value in String.
@@ -1171,21 +1147,21 @@ public class DynamicExtensionsUtility
      *
      * @param entity entity
      */
-    public static void preSaveProcessEntity(EntityInterface entity)
+    public static void validateEntity(EntityInterface entity)
             throws DynamicExtensionsApplicationException
     {
         validateEntityForSaving(entity);// chk if entity is valid or not.
 
         correctCardinalities(entity); // correct the cardinality if max cardinality  < min cardinality
 
-        if (entity.getId() != null)
-        {
-            entity.setLastUpdated(new Date());
-        }
-        else
-        {
-            entity.setCreatedDate(new Date());
-            entity.setLastUpdated(entity.getCreatedDate());
-        }
+//        if (entity.getId() != null)
+//        {
+//            entity.setLastUpdated(new Date());
+//        }
+//        else
+//        {
+//            entity.setCreatedDate(new Date());
+//            entity.setLastUpdated(entity.getCreatedDate());
+//        }
     }
 }

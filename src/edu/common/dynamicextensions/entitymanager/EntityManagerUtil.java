@@ -315,7 +315,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
      * @param entity
      * @return boolean
      */
-    private static boolean isIdAttributePresent(EntityInterface entity)
+    public static boolean isIdAttributePresent(EntityInterface entity)
     {
     	boolean isAttributePresent = false;
     	Collection<AbstractAttributeInterface> attributeCollection = entity.getAbstractAttributeCollection();

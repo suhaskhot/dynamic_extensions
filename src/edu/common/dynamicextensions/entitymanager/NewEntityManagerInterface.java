@@ -8,6 +8,7 @@ import java.util.Map;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -317,7 +318,7 @@ public interface NewEntityManagerInterface
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	public List getDynamicQueryList(EntityInterface entityInterface, List reverseQueryList,HibernateDAO hibernateDAO, List queryList) throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException;
-    
+
     /**
      * Returns an attribute given the entity name and attribute name.
      * @param entityName name of the entity.
@@ -327,11 +328,18 @@ public interface NewEntityManagerInterface
      * @throws DynamicExtensionsApplicationException
      */
     public AttributeInterface getAttribute(String entityName, String attributeName) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
-    
+
     /**
      * Returns all entitiy groups in the whole system
      * @return Collection Entity group Beans Collection
      * @throws DynamicExtensionsSystemException
      */
     public Collection<NameValueBean> getAllEntityGroupBeans() throws DynamicExtensionsSystemException;
+
+    /**
+     * validateEntityGroup.
+     * @throws DynamicExtensionsSystemException
+     */
+    public boolean validateEntity(EntityInterface entity)
+            throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 }

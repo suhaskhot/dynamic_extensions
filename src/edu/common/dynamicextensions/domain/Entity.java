@@ -55,11 +55,6 @@ public class Entity extends AbstractEntity implements EntityInterface
 	protected int dataTableState = Constants.DATA_TABLE_STATE_NOT_CREATED;
 
 	/**
-	 * flag for adding id attribute
-	 */
-	protected boolean addIdAttribute = false;
-
-	/**
 	 * parent of this entity, null is no parent present.
 	 */
 	protected EntityInterface parentEntity = null;
@@ -71,11 +66,6 @@ public class Entity extends AbstractEntity implements EntityInterface
 	 * indicates if this enitity is abstract or not.
 	 */
 	protected boolean isAbstract = false;
-
-	/**
-	 *
-	 */
-	protected boolean isProcessed = false;
 
 	/*
 	 *
@@ -125,12 +115,12 @@ public class Entity extends AbstractEntity implements EntityInterface
 //	 * @hibernate.collection-many-to-many class="edu.common.dynamicextensions.domain.EntityGroup" column="ENTITY_GROUP_ID"
 //	 * @return the Collection of the Entities.
 //	 */
-    
+
     /**
      * @hibernate.many-to-one column="ENTITY_GROUP_ID" cascade="save-update" unique="true" class="edu.common.dynamicextensions.domain.EntityGroup"
      * @return the entityGroup
      */
-    public EntityGroupInterface getEntityGroup() 
+    public EntityGroupInterface getEntityGroup()
     {
         return entityGroup;
     }
@@ -138,11 +128,11 @@ public class Entity extends AbstractEntity implements EntityInterface
     /**
      * @param entityGroup the entityGroup to set
      */
-    public void setEntityGroup(EntityGroupInterface entityGroup) 
+    public void setEntityGroup(EntityGroupInterface entityGroup)
     {
         this.entityGroup = entityGroup;
     }
-    
+
 //	public Collection<EntityGroupInterface> getEntityGroupCollection()
 //	{
 //		return entityGroup;
@@ -513,16 +503,6 @@ public class Entity extends AbstractEntity implements EntityInterface
 		return abstractAttributeCollection;
 	}
 
-	public boolean isProcessed()
-	{
-		return isProcessed;
-	}
-
-	public void setProcessed(boolean isProcessed)
-	{
-		this.isProcessed = isProcessed;
-	}
-
 	/**
 	 * @hibernate.property name="inheritStrategy" type="int" column="INHERITANCE_STRATEGY"
 	 * @return Returns the inheritanceStrategy.
@@ -641,26 +621,4 @@ public class Entity extends AbstractEntity implements EntityInterface
         this.containerCollection = containerCollection;
     }
 
-	/**
-	 * returns the flag for adding id attribute
-	 * @return
-	 */
-	public boolean isAddIdAttribute()
-	{
-		return addIdAttribute;
-	}
-
-	/**
-	 * addIdAttribute flag to add id attribute or not
-	 * @param addIdAttribute
-	 */
-	public void setAddIdAttribute(boolean addIdAttribute)
-	{
-		this.addIdAttribute = addIdAttribute;
-		if (addIdAttribute)
-		{
-			EntityManagerUtil.addIdAttribute(this);
-		}
-	}
-    
 }

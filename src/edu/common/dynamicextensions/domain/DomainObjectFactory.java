@@ -5,6 +5,9 @@ import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryB
 import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.COLUMN_NAME_PREFIX;
 import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.TABLE_NAME_PREFIX;
 import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.UNDERSCORE;
+
+import java.util.Date;
+
 import edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
@@ -114,6 +117,8 @@ public class DomainObjectFactory {
 	 */
 	public EntityInterface createEntity() {
 		Entity entity = new Entity();
+        entity.setCreatedDate(new Date());
+        entity.setLastUpdated(entity.getCreatedDate());
         entity.setTableProperties(createTableProperties());
 		return entity;
 	}

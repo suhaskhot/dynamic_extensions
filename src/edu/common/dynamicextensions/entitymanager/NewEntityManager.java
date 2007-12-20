@@ -39,7 +39,6 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -48,7 +47,6 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
-import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.dao.AbstractDAO;
@@ -245,20 +243,26 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 			DynamicExtensionBaseDomainObjectInterface dynamicExtensionBaseDomainObject,
 			List reverseQueryList, HibernateDAO hibernateDAO, List queryList)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
-
 	{
-			EntityInterface entity = (EntityInterface) dynamicExtensionBaseDomainObject;
-			Set<EntityInterface> entitySet = new HashSet<EntityInterface>();
-			entitySet.add(entity);
-			DynamicExtensionsUtility.getAssociatedAndInheritedEntities(entity,entitySet);
-			for (EntityInterface entityInterface : entitySet)
-			{
-				DynamicExtensionsUtility.preSaveProcessEntity(entityInterface);
-			}
-			createDynamicQueries(entity, reverseQueryList, hibernateDAO, queryList);
+			EntityInterface entityObject = (EntityInterface) dynamicExtensionBaseDomainObject;
+			createDynamicQueries(entityObject, reverseQueryList, hibernateDAO, queryList);
 	}
 
-
+    /**
+     * @param entity
+     * @throws DynamicExtensionsSystemException
+     * @throws DynamicExtensionsApplicationException
+     */
+    private void checkParentChangeAllowed(Entity entity) throws DynamicExtensionsSystemException,
+            DynamicExtensionsApplicationException
+    {
+        String tableName = entity.getTableProperties().getName();
+        if (queryBuilder.isDataPresent(tableName))
+        {
+            throw new DynamicExtensionsApplicationException(
+                    "Can not change the data type of the attribute", null, DYEXTN_A_010);
+        }
+    }
 
 	/**
 	 * This method executes dynamic table queries created for all the entities within a group.
@@ -273,15 +277,25 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 		queryBuilder.executeQueries(queryList, reverseQueryList, rollbackQueryStack);
 	}
 
-
-
+	/**
+	 * createDynamicQueries.
+	 * @param entityInterface
+	 * @param reverseQueryList
+	 * @param hibernateDAO
+	 * @param queryList
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
 	private List createDynamicQueries(EntityInterface entityInterface, List reverseQueryList,
 			HibernateDAO hibernateDAO, List queryList) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
 		return getDynamicQueryList(entityInterface, reverseQueryList, hibernateDAO, queryList);
 	}
-
+	/**
+	 * getDynamicQueryList.
+	 */
 	public List getDynamicQueryList(EntityInterface entityInterface, List reverseQueryList,
 			HibernateDAO hibernateDAO, List queryList) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
@@ -289,7 +303,7 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 		if (entityInterface.getId() == null)
 		{
 			List createQueryList = queryBuilder.getCreateEntityQueryList((Entity) entityInterface,
-					reverseQueryList, hibernateDAO, entityInterface.isAddIdAttribute());
+					reverseQueryList, hibernateDAO);
 
 			if (createQueryList != null && !createQueryList.isEmpty())
 			{
@@ -2469,4 +2483,32 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 
        return entityGroupBeansCollection;
    }
+
+	/**
+	 * validateEntity.
+	 */
+	public boolean validateEntity(EntityInterface entityInterface)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	{
+		Collection<EntityInterface> entityCollection = entityInterface.getEntityGroup()
+				.getEntityCollection();
+		for (EntityInterface entity : entityCollection)
+		{
+			Entity entityObject = (Entity) entityInterface;
+			if (entity.getId() == null)
+			{
+				DynamicExtensionsUtility.validateEntity(entity);
+			}
+			else
+			{
+				Entity databaseCopy = (Entity) DBUtil.loadCleanObj(Entity.class, entity.getId());
+				if (queryBuilder.isParentChanged((Entity) entity, databaseCopy))
+				{
+					checkParentChangeAllowed(entityObject);
+				}
+			}
+		}
+		return true;
+	}
+
 }

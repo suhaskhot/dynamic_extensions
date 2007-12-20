@@ -33,7 +33,6 @@ import edu.common.dynamicextensions.domain.ObjectAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.ShortAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
@@ -84,11 +83,11 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
      * @throws DynamicExtensionsSystemException
      * @throws DynamicExtensionsApplicationException
      */
-    public List getCreateEntityQueryList(Entity entity, List reverseQueryList, HibernateDAO hibernateDAO, boolean addIdAttribute)
+    public List getCreateEntityQueryList(Entity entity, List reverseQueryList, HibernateDAO hibernateDAO)
             throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException {
         List queryList = new ArrayList();
         //get query to create main table with primitive attributes.
-        List mainTableQueryList = getCreateMainTableQuery(entity, reverseQueryList, addIdAttribute);
+        List mainTableQueryList = getCreateMainTableQuery(entity, reverseQueryList);
 
         // get query to create associations ,it invloves altering source/taget table or creating
         //middle table depending upon the cardinalities.
@@ -626,7 +625,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
      *
      * @throws DynamicExtensionsSystemException
      */
-    protected List<String> getCreateMainTableQuery(Entity entity, List reverseQueryList, boolean addIdAttribute)
+    protected List<String> getCreateMainTableQuery(Entity entity, List reverseQueryList)
             throws DynamicExtensionsSystemException {
         List<String> queryList = new ArrayList<String>();
         String dataType = getDataTypeForIdentifier();
@@ -636,7 +635,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
 
         StringBuffer query = new StringBuffer(CREATE_TABLE + " " + tableName + " " + OPENING_BRACKET + " "
                 + activityStatusString + COMMA);
-        if (!addIdAttribute) {
+        if (!EntityManagerUtil.isIdAttributePresent(entity)) {
             query.append(IDENTIFIER).append(WHITESPACE).append(getDataTypeForIdentifier()).append(COMMA);
         }
         Collection attributeCollection = entity.getAttributeCollection();

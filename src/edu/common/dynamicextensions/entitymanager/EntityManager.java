@@ -269,7 +269,7 @@ public class EntityManager
         }
         for (EntityInterface entity : entitySet)
         {
-            ((Entity) entity).setProcessed(false);
+//            ((Entity) entity).setProcessed(false);
         }
 
     }
@@ -450,7 +450,7 @@ public class EntityManager
             try
             {
                 //postSaveOrUpdateEntity(entityInterface);
-                 entity.setProcessed(false);
+//                 entity.setProcessed(false);
                 //In any case , after all the operations , hibernate session needs to be closed. So this call has
                 // been added in the finally clause.
                 hibernateDAO.closeSession();
@@ -2988,7 +2988,7 @@ public class EntityManager
                 if (!isEntitySaved)
                 {
                     queryList = queryBuilder.getCreateEntityQueryList(entity, reverseQueryList,
-                            hibernateDAO, addIdAttribute);
+                            hibernateDAO);
                 }
                 else
                 {

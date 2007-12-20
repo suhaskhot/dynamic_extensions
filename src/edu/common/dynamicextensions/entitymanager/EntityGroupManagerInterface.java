@@ -72,4 +72,12 @@ public interface EntityGroupManagerInterface
     */
    Collection<AssociationTreeObject> getAssociationTree() throws DynamicExtensionsSystemException,
            DynamicExtensionsApplicationException;
+   /**
+    * validateEntityGroup.
+    * @param entityGroup
+    * @return
+ * @throws DynamicExtensionsSystemException
+    */
+   boolean validateEntityGroup(EntityGroupInterface entityGroup) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
+
 }

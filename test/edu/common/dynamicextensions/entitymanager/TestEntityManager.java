@@ -2036,37 +2036,43 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         DomainObjectFactory factory = DomainObjectFactory.getInstance();
         EntityGroupManagerInterface entityGroupManager = EntityGroupManager.getInstance();
 
-        ContainerInterface userContainer = factory.createContainer();
-        userContainer.setCaption("userContainer");
-        EntityInterface user = factory.createEntity();
-        user.setName("User");
-        userContainer.setEntity(user);
-
-        ContainerInterface managerContainer = factory.createContainer();
-        managerContainer.setCaption("managerContainer");
-        EntityInterface manager = factory.createEntity();
-        manager.setName("Manager");
-        managerContainer.setEntity(manager);
-
-        EntityGroupInterface userGroup = factory.createEntityGroup();
-        userGroup.setName("test_" + new Double(Math.random()).toString());
-        userGroup.addEntity(user);
-        userGroup.addEntity(manager);
-
-        user.setEntityGroup(userGroup);
-        manager.setEntityGroup(userGroup);
+//        ContainerInterface userContainer = factory.createContainer();
+//        userContainer.setCaption("userContainer");
+//        EntityInterface user = factory.createEntity();
+//        user.setName("User");
+//        userContainer.setEntity(user);
+//
+//        ContainerInterface managerContainer = factory.createContainer();
+//        managerContainer.setCaption("managerContainer");
+//        EntityInterface manager = factory.createEntity();
+//        manager.setName("Manager");
+//        managerContainer.setEntity(manager);
+//
+//        EntityGroupInterface userGroup = factory.createEntityGroup();
+//        userGroup.setName("test_" + new Double(Math.random()).toString());
+//        userGroup.addEntity(user);
+//        userGroup.addEntity(manager);
+//
+//        user.setEntityGroup(userGroup);
+//        manager.setEntityGroup(userGroup);
 
         ContainerInterface studyContainer = factory.createContainer();
         studyContainer.setCaption("newstudyContainer");
         EntityInterface study = factory.createEntity();
         study.setName("study");
         studyContainer.setEntity(study);
+        Collection<ContainerInterface> containerCollection = new HashSet<ContainerInterface> ();
+        containerCollection.add(studyContainer);
+        study.setContainerCollection(containerCollection);
 
         ContainerInterface javaStudyContainer = factory.createContainer();
         javaStudyContainer.setCaption("javaStudyContainer");
         EntityInterface javaStudy = factory.createEntity();
         javaStudy.setName("javaStudy");
         javaStudyContainer.setEntity(javaStudy);
+        Collection<ContainerInterface> containers = new HashSet<ContainerInterface> ();
+        containers.add(javaStudyContainer);
+        javaStudy.setContainerCollection(containers);
 
         EntityGroupInterface studyGroup = factory.createEntityGroup();
         studyGroup.setName("test_" + new Double(Math.random()).toString());

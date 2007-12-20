@@ -13,7 +13,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInter
  * @version 1.0
  * @created 28-Sep-2006 12:20:08 PM
  * @hibernate.joined-subclass table="DYEXTN_ENTITY_GROUP"
- * @hibernate.joined-subclass-key column="IDENTIFIER" 
+ * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
 public class EntityGroup extends AbstractMetadata implements java.io.Serializable, EntityGroupInterface
 {
@@ -22,38 +22,38 @@ public class EntityGroup extends AbstractMetadata implements java.io.Serializabl
 	 * Serial Version Unique Identifier
 	 */
 	private static final long serialVersionUID = 1234567890L;
-	
+
 	/**
 	 * Short name of the Entity group.
 	 */
 	protected String shortName;
-	
+
 	/**
 	 * Long  name of the Entity group.
 	 */
 	protected String longName;
-	
+
 	/**
 	 * The Version of the Entity group.
 	 */
 	protected String version;
-	
+
 	protected Boolean isSystemGenerated = new Boolean(true);
-	
+
 	/**
 	 * Collection of Entity in this Entity group.
 	 */
 	protected Collection<EntityInterface> entityCollection = new HashSet<EntityInterface>();
-	
+
 	/**
-	 * 
+	 *
 	 */
 	boolean isCurrent = false;
-	
+
 	/**
-	 * 
+	 *
 	 */
-	protected Collection<ContainerInterface> mainContainerCollection = new HashSet<ContainerInterface>(); 
+	protected Collection<ContainerInterface> mainContainerCollection = new HashSet<ContainerInterface>();
 
 	/**
 	 * Empty Constructor
@@ -63,14 +63,14 @@ public class EntityGroup extends AbstractMetadata implements java.io.Serializabl
 	}
 
     //column="ENTITY_ID"
-    
+
 	/**
 	 * This method returns the Collection of the Entities in the group.
-	 * @hibernate.set name="entityCollection" table="DYEXTN_ENTITY_GROUP_REL" 
-	 * cascade="save-update" inverse="true" lazy="false"
+	 * @hibernate.set name="entityCollection" table="DYEXTN_ENTITY"
+     * cascade="all-delete-orphan" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ENTITY_GROUP_ID"
 	 * @hibernate.cache  usage="read-write"
-	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Entity" 
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Entity"
 	 * @return Returns the Collection of the Entities in the group.
 	 */
 	public Collection<EntityInterface> getEntityCollection()
@@ -89,7 +89,7 @@ public class EntityGroup extends AbstractMetadata implements java.io.Serializabl
 
 	/**
 	 * This method returns the long name of the Entity group.
-	 * @hibernate.property name="longName" type="string" column="LONG_NAME" 
+	 * @hibernate.property name="longName" type="string" column="LONG_NAME"
 	 * @return the long name of the Entity group..
 	 */
 	public String getLongName()
@@ -108,7 +108,7 @@ public class EntityGroup extends AbstractMetadata implements java.io.Serializabl
 
 	/**
 	 * This method returns the short name of the Entity group.
-	 * @hibernate.property name="shortName" type="string" column="SHORT_NAME"  
+	 * @hibernate.property name="shortName" type="string" column="SHORT_NAME"
 	 * @return the short name of the Entity group.
 	 */
 	public String getShortName()
@@ -127,7 +127,7 @@ public class EntityGroup extends AbstractMetadata implements java.io.Serializabl
 
 	/**
 	 * This method returns the version of the Entity group.
-	 * @hibernate.property name="version" type="string" column="VERSION" 
+	 * @hibernate.property name="version" type="string" column="VERSION"
 	 * @return the version of the Entity group.
 	 */
 	public String getVersion()
@@ -143,43 +143,43 @@ public class EntityGroup extends AbstractMetadata implements java.io.Serializabl
 	{
 		this.version = version;
 	}
-	
+
 
 
      /**
-     * 
+     *
      */
     public void addEntity(EntityInterface entityInterface) {
         if (this.entityCollection == null) {
             entityCollection = new HashSet<EntityInterface>();
         }
         entityCollection.add(entityInterface);
-        
+
     }
-    
+
     /**
-     * 
+     *
      */
     public void removeEntity(EntityInterface entityInterface) {
-    	
+
     	if (entityCollection.contains(entityInterface))
 		{
 			entityCollection.remove(entityInterface);
         }
     }
 
-	
 
 
-	
-	
+
+
+
     /**
 	 * This method returns the Collection of AbstractAttribute.
 	 * @hibernate.set name="mainContainerCollection" table="DYEXTN_CONTAINER"
 	 * cascade="save-update" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ENTITY_GROUP_ID"
 	 * @hibernate.cache  usage="read-write"
-	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.userinterface.Container" 
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.userinterface.Container"
 	 * @return the Collection of main containers of this entity group.
 	 */
 	public Collection<ContainerInterface> getMainContainerCollection()
@@ -187,7 +187,7 @@ public class EntityGroup extends AbstractMetadata implements java.io.Serializabl
 		return mainContainerCollection;
 	}
 
-	
+
 	/**
 	 * @param mainContainerCollection The mainContainerCollection to set.
 	 */
@@ -204,7 +204,7 @@ public class EntityGroup extends AbstractMetadata implements java.io.Serializabl
 		return isCurrent;
 	}
 
-	
+
 	/**
 	 * @param isCurrent The isCurrent to set.
 	 */
@@ -229,10 +229,10 @@ public class EntityGroup extends AbstractMetadata implements java.io.Serializabl
 		this.mainContainerCollection.remove(containerInterface);
 	}
 
-	
+
 	/**
 	 * This method returns whether the Attribute is a Collection or not.
-	 * @hibernate.property name="isSystemGenerated" type="boolean" column="IS_SYSTEM_GENERATED" 
+	 * @hibernate.property name="isSystemGenerated" type="boolean" column="IS_SYSTEM_GENERATED"
 	 * @return Returns the isSystemGenerated.
 	 */
 	public Boolean getIsSystemGenerated()
@@ -240,7 +240,7 @@ public class EntityGroup extends AbstractMetadata implements java.io.Serializabl
 		return isSystemGenerated;
 	}
 
-	
+
 	/**
 	 * @param isSystemGenerated
 	 */
@@ -248,7 +248,7 @@ public class EntityGroup extends AbstractMetadata implements java.io.Serializabl
 	{
 		this.isSystemGenerated = isSystemGenerated;
 	}
-	 
+
 	public EntityInterface getEntityByName(String entityName)
 	{
 		for(EntityInterface entity : entityCollection)

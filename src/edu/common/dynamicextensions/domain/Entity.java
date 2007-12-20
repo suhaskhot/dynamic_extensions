@@ -117,7 +117,7 @@ public class Entity extends AbstractEntity implements EntityInterface
 //	 */
 
     /**
-     * @hibernate.many-to-one column="ENTITY_GROUP_ID" cascade="save-update" unique="true" class="edu.common.dynamicextensions.domain.EntityGroup"
+     * @hibernate.many-to-one column="ENTITY_GROUP_ID" cascade="save-update" class="edu.common.dynamicextensions.domain.EntityGroup"
      * @return the entityGroup
      */
     public EntityGroupInterface getEntityGroup()

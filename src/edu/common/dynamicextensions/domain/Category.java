@@ -6,7 +6,7 @@ import edu.common.dynamicextensions.domaininterface.CategoryInterface;
  * 
  * @author mandar_shidhore
  * @hibernate.joined-subclass table="DYEXTN_CATEGORY"
- * @hibernate.joined-subclass-key column="id"
+ * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
 public class Category extends AbstractMetadata implements CategoryInterface {
      
@@ -25,7 +25,7 @@ public class Category extends AbstractMetadata implements CategoryInterface {
     }
 
     /**
-     * @hibernate.many-to-one cascade="all" unique="true"
+     * @hibernate.many-to-one column="ROOT_CATEGORY_ELEMENT" cascade="all" unique="true"
      * @return the rootCategoryElement.
      */
     public CategoryEntity getRootCategoryElement() {

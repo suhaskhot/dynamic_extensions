@@ -43,7 +43,7 @@ public class Entity extends AbstractEntity implements EntityInterface
 	/**
 	 * Collection of EntityGroup.
 	 */
-	protected Collection<EntityGroupInterface> entityGroupCollection = new HashSet<EntityGroupInterface>();
+	protected EntityGroupInterface entityGroup;
 
 	/**
 	 * state for data table creation
@@ -116,28 +116,46 @@ public class Entity extends AbstractEntity implements EntityInterface
 	{
 	}
 
-	/**
-	 * This method returns the Collection of the EntityGroups.
-	 * @hibernate.set name="entityGroupCollection" table="DYEXTN_ENTITY_GROUP_REL"
-	 * cascade="save-update" inverse="false" lazy="false"
-	 * @hibernate.collection-key column="ENTITY_ID"
-	 * @hibernate.cache  usage="read-write"
-	 * @hibernate.collection-many-to-many class="edu.common.dynamicextensions.domain.EntityGroup" column="ENTITY_GROUP_ID"
-	 * @return the Collection of the Entities.
-	 */
-	public Collection<EntityGroupInterface> getEntityGroupCollection()
-	{
-		return entityGroupCollection;
-	}
+//	/**
+//	 * This method returns the Collection of the EntityGroups.
+//	 * @hibernate.set name="entityGroupCollection" table="DYEXTN_ENTITY_GROUP_REL"
+//	 * cascade="save-update" inverse="false" lazy="false"
+//	 * @hibernate.collection-key column="ENTITY_ID"
+//	 * @hibernate.cache  usage="read-write"
+//	 * @hibernate.collection-many-to-many class="edu.common.dynamicextensions.domain.EntityGroup" column="ENTITY_GROUP_ID"
+//	 * @return the Collection of the Entities.
+//	 */
+    
+    /**
+     * @hibernate.many-to-one column="ENTITY_GROUP_ID" cascade="save-update" unique="true" class="edu.common.dynamicextensions.domain.EntityGroup"
+     * @return the entityGroup
+     */
+    public EntityGroupInterface getEntityGroup() 
+    {
+        return entityGroup;
+    }
+
+    /**
+     * @param entityGroup the entityGroup to set
+     */
+    public void setEntityGroup(EntityGroupInterface entityGroup) 
+    {
+        this.entityGroup = entityGroup;
+    }
+    
+//	public Collection<EntityGroupInterface> getEntityGroupCollection()
+//	{
+//		return entityGroup;
+//	}
 
 	/**
 	 * This method sets the entityGroupCollection to the given Collection of the Entities.
 	 * @param entityGroupCollection The entityGroupCollection to set.
 	 */
-	public void setEntityGroupCollection(Collection<EntityGroupInterface> entityGroupCollection)
-	{
-		this.entityGroupCollection = entityGroupCollection;
-	}
+//	public void setEntityGroupCollection(Collection<EntityGroupInterface> entityGroupCollection)
+//	{
+//		this.entityGroupCollection = entityGroupCollection;
+//	}
 
 	/**
 	 * This method returns the TableProperties of the Entity.
@@ -194,53 +212,49 @@ public class Entity extends AbstractEntity implements EntityInterface
 	/**
 	 *
 	 */
-	public void addEntityGroupInterface(EntityGroupInterface entityGroupInterface)
-	{
-		if (this.entityGroupCollection == null)
-		{
-			entityGroupCollection = new HashSet<EntityGroupInterface>();
-		}
-		entityGroupCollection.add(entityGroupInterface);
-
-	}
+//	public void addEntityGroupInterface(EntityGroupInterface entityGroupInterface)
+//	{
+//		if (this.entityGroupCollection == null)
+//		{
+//			entityGroupCollection = new HashSet<EntityGroupInterface>();
+//		}
+//		entityGroupCollection.add(entityGroupInterface);
+//
+//	}
 
 	/**
 	 *
 	 */
-	public void removeEntityGroupInterface(EntityGroupInterface entityGroupInterface)
-	{
-		if (entityGroupCollection != null)
-		{
-			if (entityGroupCollection.contains(entityGroupInterface))
-			{
-				entityGroupCollection.remove(entityGroupInterface);
-				entityGroupInterface.removeEntity(this);
-
-			}
-		}
-
-	}
+//	public void removeEntityGroupInterface(EntityGroupInterface entityGroupInterface)
+//	{
+//		if (entityGroupCollection != null)
+//		{
+//			if (entityGroupCollection.contains(entityGroupInterface))
+//			{
+//				entityGroupCollection.remove(entityGroupInterface);
+//				entityGroupInterface.removeEntity(this);
+//			}
+//		}
+//	}
 
 	/**
 	 * This method removes all entity groupa of the entity.
 	 *
 	 */
-	public void removeAllEntityGroups()
-	{
-		if (entityGroupCollection != null)
-		{
-			Iterator<EntityGroupInterface> entityGroupIterator = entityGroupCollection.iterator();
-			EntityGroupInterface entityGroupInterface;
-			while (entityGroupIterator.hasNext())
-			{
-				entityGroupInterface = (EntityGroupInterface) entityGroupIterator.next();
-				entityGroupInterface.removeEntity(this);
-				entityGroupIterator.remove();
-
-			}
-
-		}
-	}
+//	public void removeAllEntityGroups()
+//	{
+//		if (entityGroupCollection != null)
+//		{
+//			Iterator<EntityGroupInterface> entityGroupIterator = entityGroupCollection.iterator();
+//			EntityGroupInterface entityGroupInterface;
+//			while (entityGroupIterator.hasNext())
+//			{
+//				entityGroupInterface = (EntityGroupInterface) entityGroupIterator.next();
+//				entityGroupInterface.removeEntity(this);
+//				entityGroupIterator.remove();
+//			}
+//		}
+//	}
 
 	/**
 	 * This method returns the Collection of AbstractAttribute.
@@ -648,4 +662,5 @@ public class Entity extends AbstractEntity implements EntityInterface
 			EntityManagerUtil.addIdAttribute(this);
 		}
 	}
+    
 }

@@ -29,6 +29,9 @@ import edu.common.dynamicextensions.domaininterface.BooleanValueInterface;
 import edu.common.dynamicextensions.domaininterface.ByteArrayValueInterface;
 import edu.common.dynamicextensions.domaininterface.CaDSRDEInterface;
 import edu.common.dynamicextensions.domaininterface.CaDSRValueDomainInfoInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.DateValueInterface;
 import edu.common.dynamicextensions.domaininterface.DoubleValueInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
@@ -736,5 +739,20 @@ public class DomainObjectFactory {
 	public ObjectAttributeRecordValueInterface createObjectAttributeRecordValue() {
 		return new ObjectAttributeRecordValue();
 	}
+    
+    public CategoryInterface createCategory()
+    {
+        return new Category();
+    }
+    
+    public CategoryEntityInterface createCategoryEntity()
+    {
+        return new CategoryEntity();
+    }
+    
+    public CategoryAttributeInterface createCategoryAttribute()
+    {
+        return new CategoryAttribute();
+    }
 
 }

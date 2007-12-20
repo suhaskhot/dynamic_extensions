@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
@@ -13,9 +14,9 @@ import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterfac
  * 
  * @author mandar_shidhore
  * @hibernate.joined-subclass table="DYEXTN_CATEGORY_ATTRIBUTE"
- * @hibernate.joined-subclass-key column="id"
+ * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
-public class CategoryAttribute extends BaseAbstractAttribute {
+public class CategoryAttribute extends BaseAbstractAttribute implements CategoryAttributeInterface {
 
     /**
      * Serial Version UID
@@ -159,17 +160,19 @@ public class CategoryAttribute extends BaseAbstractAttribute {
     }
 
     /**
-     * @hibernate.many-to-one cascade="none" unique="true" class="edu.common.dynamicextensions.domain.Attribute"
+     * @hibernate.many-to-one column="ATTRIBUTE_ID" cascade="save-update" unique="true" class="edu.common.dynamicextensions.domain.Attribute"
      * @return the attribute
      */
-    public AttributeInterface getAttribute() {
+    public AttributeInterface getAttribute() 
+    {
         return attribute;
     }
 
     /**
      * @param attribute the attribute to set
      */
-    public void setAttribute(AttributeInterface attribute) {
+    public void setAttribute(AttributeInterface attribute) 
+    {
         this.attribute = attribute;
     }
 

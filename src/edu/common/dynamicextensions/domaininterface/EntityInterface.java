@@ -44,14 +44,14 @@ public interface EntityInterface extends AbstractMetadataInterface
 	 * Returns a collection of entity groups having this entity.
 	 * @return Returns the entityGroupCollection.
 	 */
-	Collection<EntityGroupInterface> getEntityGroupCollection();
+	//Collection<EntityGroupInterface> getEntityGroupCollection();
 
 	/**
 	 * Adds an entity group to the entity
 	 * @param entityGroupInterface The entityGroupInterface to be added set.
 	 *
 	 */
-	void addEntityGroupInterface(EntityGroupInterface entityGroup);
+	//void addEntityGroupInterface(EntityGroupInterface entityGroup);
 
 	/**
 	 * The table properties object contains name of the dynamically created table.
@@ -98,13 +98,13 @@ public interface EntityInterface extends AbstractMetadataInterface
 	 * This method removes all entity groupa of the entity.
 	 *
 	 */
-	void removeEntityGroupInterface(EntityGroupInterface entityGroupInterface);
+	//void removeEntityGroupInterface(EntityGroupInterface entityGroupInterface);
 
 	/**
 	 * This method removes all entity groupa of the entity.
 	 *
 	 */
-	void removeAllEntityGroups();
+	//void removeAllEntityGroups();
 
 	/**
 	 * @return Returns the isAbstract.
@@ -215,7 +215,7 @@ public interface EntityInterface extends AbstractMetadataInterface
     /**
      * @param entityGroupCollection
      */
-    public void setEntityGroupCollection(Collection<EntityGroupInterface> entityGroupCollection);
+    //public void setEntityGroupCollection(Collection<EntityGroupInterface> entityGroupCollection);
 	/**
 	 * addIdAttribute flag to add id attribute or not
 	 * @param addIdAttribute
@@ -223,5 +223,9 @@ public interface EntityInterface extends AbstractMetadataInterface
 	public void setAddIdAttribute(boolean addIdAttribute);
 
 	public boolean isAddIdAttribute();
+    
+    public EntityGroupInterface getEntityGroup();
+    
+    public void setEntityGroup(EntityGroupInterface entityGroup);
 
 }

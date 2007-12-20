@@ -695,7 +695,7 @@ public class DynamicExtensionsUtility
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	public static void validateName(String name) throws DynamicExtensionsApplicationException
-	{
+	{		
 		/**
 		 * Constant representing valid names
 		 */
@@ -703,7 +703,7 @@ public class DynamicExtensionsUtility
 
 		if (name == null || name.trim().length() == 0 || !name.matches(VALIDCHARSREGEX))
 		{
-			throw new DynamicExtensionsApplicationException("Object name invalid", null,
+			throw new DynamicExtensionsApplicationException("Entity or Attribute name is invalid", null,
 					EntityManagerExceptionConstantsInterface.DYEXTN_A_003);
 		}
 		if (name.trim().length() > 1000)

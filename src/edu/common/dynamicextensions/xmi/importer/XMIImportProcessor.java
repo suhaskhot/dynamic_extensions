@@ -158,7 +158,7 @@ public class XMIImportProcessor
 			if (entity == null)
 			{//Add
 				entity = createEntity(umlClass);
-				entity.addEntityGroupInterface(entityGroup);
+				entity.setEntityGroup(entityGroup);
 				entityGroup.addEntity(entity);
 			}
 			else

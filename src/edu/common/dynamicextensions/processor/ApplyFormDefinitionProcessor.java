@@ -229,7 +229,7 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 			//entity.removeAllEntityGroups();
 			entityGroup.addEntity(entity);
 			((EntityGroup)entityGroup).setCurrent(true);
-			entity.addEntityGroupInterface(entityGroup);
+			entity.setEntityGroup(entityGroup);
 		}
 	}
 
@@ -377,17 +377,16 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		{
 			EntityInterface targetEntity = subFormContainer.getEntity();
 			EntityInterface sourceEntity = mainFormContainer.getEntity();
-			Collection<EntityGroupInterface> sourceEntityGroups = sourceEntity.getEntityGroupCollection();
-			if (sourceEntityGroups != null)
-			{
-				Iterator<EntityGroupInterface> entityGroupIter = sourceEntityGroups.iterator();
-				if (entityGroupIter.hasNext())
-				{
-					EntityGroupInterface sourceEntityGroup = entityGroupIter.next();
-					targetEntity.addEntityGroupInterface(sourceEntityGroup);
-				}
-			}
-
+            targetEntity.setEntityGroup(sourceEntity.getEntityGroup());
+//			if (sourceEntityGroups != null)
+//			{
+//				Iterator<EntityGroupInterface> entityGroupIter = sourceEntityGroups.iterator();
+//				if (entityGroupIter.hasNext())
+//				{
+//					EntityGroupInterface sourceEntityGroup = entityGroupIter.next();
+//					targetEntity.setEntityGroup(sourceEntityGroup);
+//				}
+//			}
 		}
 	}
 

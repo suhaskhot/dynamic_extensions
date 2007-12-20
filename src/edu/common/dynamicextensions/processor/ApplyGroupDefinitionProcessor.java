@@ -122,8 +122,8 @@ public class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsProcesso
 			entity = container.getEntity();
 			if (entity != null)
 			{
-				entity.removeAllEntityGroups();
-				entity.addEntityGroupInterface(entityGroup);
+				//entity.removeAllEntityGroups();
+				entity.setEntityGroup(entityGroup);
 			}
 
 			//Save to DB

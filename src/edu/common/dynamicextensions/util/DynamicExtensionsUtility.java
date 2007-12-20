@@ -565,16 +565,16 @@ public class DynamicExtensionsUtility
 		EntityGroupInterface entityGroup = null;
 		if (entity != null)
 		{
-			Collection<EntityGroupInterface> entityGroupCollection = entity
-					.getEntityGroupCollection();
-			if (entityGroupCollection != null)
-			{
-				Iterator<EntityGroupInterface> entityGroupIter = entityGroupCollection.iterator();
-				if (entityGroupIter.hasNext())
-				{
-					entityGroup = entityGroupIter.next();
-				}
-			}
+//			Collection<EntityGroupInterface> entityGroupCollection = entity
+//					.getEntityGroupCollection();
+//			if (entityGroupCollection != null)
+//			{
+//				Iterator<EntityGroupInterface> entityGroupIter = entityGroupCollection.iterator();
+//				if (entityGroupIter.hasNext())
+//				{
+					entityGroup = entity.getEntityGroup();
+//				}
+//			}
 		}
 		return entityGroup;
 	}

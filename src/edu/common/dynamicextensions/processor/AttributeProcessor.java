@@ -1748,18 +1748,19 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	private String getGroupName(EntityInterface targetEntity)
 	{
 		//Initialize group name
-		Collection<EntityGroupInterface> entityGroups = targetEntity.getEntityGroupCollection();
+		EntityGroupInterface entityGroup = targetEntity.getEntityGroup();
 		//Assumed that the collection will contain just one entity. So fetching first elt of collection
-		if ((entityGroups != null) && (entityGroups.size() > 0))
+		if (entityGroup != null)
 		{
-			EntityGroupInterface entityGroup = entityGroups.iterator().next();
-			if (entityGroup != null)
-			{
-				if (entityGroup.getId() != null)
-				{
-					return entityGroup.getId().toString();
-				}
-			}
+//			EntityGroupInterface entityGroup = entityGroups.iterator().next();
+//			if (entityGroup != null)
+//			{
+//				if (entityGroup.getId() != null)
+//				{
+//					return entityGroup.getId().toString();
+//				}
+//			}
+            return entityGroup.getId().toString();
 		}
 		return null;
 	}

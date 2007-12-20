@@ -243,19 +243,19 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 		processedEntities.add(entity);
 
 		// get all entity Groups of given entity
-		for (EntityGroupInterface entityGroup : entity.getEntityGroupCollection())
-		{
-
-			if (!processedEntityGroups.contains(entityGroup))
-			{
-				processedEntityGroups.add(entityGroup);
-				// process  all entities of each entity Groups
-				for (EntityInterface anotherEntity : entityGroup.getEntityCollection())
-				{
-					getAllEntityGroups(anotherEntity, processedEntities, processedEntityGroups);
-				}
-			}
-		}
+//		for (EntityGroupInterface entityGroup : entity.getEntityGroupCollection())
+//		{
+//
+//			if (!processedEntityGroups.contains(entityGroup))
+//			{
+//				processedEntityGroups.add(entityGroup);
+//				// process  all entities of each entity Groups
+//				for (EntityInterface anotherEntity : entityGroup.getEntityCollection())
+//				{
+//					getAllEntityGroups(anotherEntity, processedEntities, processedEntityGroups);
+//				}
+//			}
+//		}
 	}
 
 	/**

@@ -1153,16 +1153,16 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             Entity entity = (Entity) new MockEntityManager().initializeEntity();
             EntityGroup entityGroup = new EntityGroup();
             entityGroup.setName("testEntityGroup");
-            entity.addEntityGroupInterface(entityGroup);
+            entity.setEntityGroup(entityGroup);
             entityGroup.addEntity(entity);
             entity = (Entity) newEntityManagerInterface.persistEntity(entity);
             Entity newEntity = (Entity) newEntityManagerInterface.getEntityByIdentifier(
                     entity.getId().toString());
             //  Checking whether metadata information is saved properly or not.
             assertEquals(entity.getName(), newEntity.getName());
-            Collection collection = newEntity.getEntityGroupCollection();
-            Iterator iter = collection.iterator();
-            EntityGroup eg = (EntityGroup) iter.next();
+            //Collection collection = newEntity.getEntityGroupCollection();
+            //Iterator iter = collection.iterator();
+            EntityGroup eg = (EntityGroup) newEntity.getEntityGroup();
             assertEquals(eg.getId(), entityGroup.getId());
         }
         catch (Exception e)
@@ -2045,8 +2045,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         userGroup.addEntity(user);
         userGroup.addEntity(manager);
         
-        user.addEntityGroupInterface(userGroup);
-        manager.addEntityGroupInterface(userGroup);
+        user.setEntityGroup(userGroup);
+        manager.setEntityGroup(userGroup);
 
         ContainerInterface studyContainer = factory.createContainer();
         studyContainer.setCaption("newstudyContainer");
@@ -2065,8 +2065,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         studyGroup.addEntity(study);
         studyGroup.addEntity(javaStudy);
 
-        study.addEntityGroupInterface(studyGroup);
-        javaStudy.addEntityGroupInterface(studyGroup);
+        study.setEntityGroup(studyGroup);
+        javaStudy.setEntityGroup(studyGroup);
 
         try
         {

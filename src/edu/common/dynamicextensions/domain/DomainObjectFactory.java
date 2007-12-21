@@ -40,6 +40,7 @@ import edu.common.dynamicextensions.domaininterface.DoubleValueInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.FloatValueInterface;
+import edu.common.dynamicextensions.domaininterface.IdGeneratorInterface;
 import edu.common.dynamicextensions.domaininterface.IntegerValueInterface;
 import edu.common.dynamicextensions.domaininterface.LongValueInterface;
 import edu.common.dynamicextensions.domaininterface.ObjectAttributeRecordValueInterface;
@@ -759,5 +760,13 @@ public class DomainObjectFactory {
     {
         return new CategoryAttribute();
     }
+	
+	/**
+	 * @return IdGeneratorInterface
+	 */
+	public IdGeneratorInterface createIdGenerator() {
+		return new IdGenerator();
+	}
+
 
 }

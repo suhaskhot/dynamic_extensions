@@ -67,7 +67,7 @@ public class EntityGroup extends AbstractMetadata implements java.io.Serializabl
 	/**
 	 * This method returns the Collection of the Entities in the group.
 	 * @hibernate.set name="entityCollection" table="DYEXTN_ENTITY"
-     * cascade="all-delete-orphan" inverse="false" lazy="false"
+     * cascade="save-update" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ENTITY_GROUP_ID"
 	 * @hibernate.cache  usage="read-write"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Entity"

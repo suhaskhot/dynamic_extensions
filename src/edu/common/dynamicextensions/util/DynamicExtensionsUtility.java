@@ -28,7 +28,7 @@ import java.util.StringTokenizer;
 
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domain.Association;
-import edu.common.dynamicextensions.domain.Entity;
+import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
@@ -48,10 +48,8 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterfa
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
-import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerExceptionConstantsInterface;
-import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
@@ -769,6 +767,31 @@ public class DynamicExtensionsUtility
 		}
 	}
 	/**
+	 * @param entity
+	 * @param entitySet
+	 */
+	public static void getAssociatedAndInheritedEntities(EntityInterface entity, List<EntityInterface> entityList)
+	{
+		if (entityList.contains(entity))
+		{
+			return;
+		}
+		else
+		{
+			entityList.add(entity);
+            if (entity.getParentEntity() != null)
+            {
+            	getAssociatedAndInheritedEntities(entity.getParentEntity(),entityList);
+            }
+    		Collection<AssociationInterface> associationCollection = entity.getAssociationCollection();
+    		for (AssociationInterface associationInterface : associationCollection)
+    		{
+    			EntityInterface targetEntity = associationInterface.getTargetEntity();
+    			getAssociatedAndInheritedEntities(targetEntity,entityList);
+    		}
+		}
+	}
+	/**
 	 * This method checks if the date string is as per the given format or not.
 	 * @param dateFormat Format of the date (e.g. dd/mm/yyyy)
 	 * @param strDate Date value in String.
@@ -1163,5 +1186,27 @@ public class DynamicExtensionsUtility
 //            entity.setCreatedDate(new Date());
 //            entity.setLastUpdated(entity.getCreatedDate());
 //        }
+    }
+    public static String getTableName(AssociationInterface association)
+    {
+    	String tableName = "";
+        RoleInterface sourceRole = association.getSourceRole();
+        RoleInterface targetRole = association.getTargetRole();
+        Cardinality sourceMaxCardinality = sourceRole.getMaximumCardinality();
+        Cardinality targetMaxCardinality = targetRole.getMaximumCardinality();
+        if (sourceMaxCardinality == Cardinality.MANY && targetMaxCardinality == Cardinality.MANY)
+        {
+        	tableName = association.getConstraintProperties().getName();
+        }
+        else if (sourceMaxCardinality == Cardinality.MANY
+                && targetMaxCardinality == Cardinality.ONE)
+        {
+        	tableName = association.getEntity().getTableProperties().getName();
+        }
+        else
+        {
+        	tableName = association.getTargetEntity().getTableProperties().getName();
+        }
+    	return tableName;
     }
 }

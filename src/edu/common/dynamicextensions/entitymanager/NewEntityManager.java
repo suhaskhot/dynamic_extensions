@@ -309,7 +309,7 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 
 			if (createQueryList != null && !createQueryList.isEmpty())
 			{
-				queryList.add(createQueryList.get(0));
+				queryList.addAll(createQueryList);
 			}
 		}
 		else
@@ -322,8 +322,7 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 
 			if (updateQueryList != null && !updateQueryList.isEmpty())
 			{
-				queryList.add(queryBuilder.getUpdateEntityQueryList((Entity) entityInterface,
-						(Entity) databaseCopy, reverseQueryList).get(0));
+				queryList.addAll(updateQueryList);
 			}
 		}
 		return queryList;

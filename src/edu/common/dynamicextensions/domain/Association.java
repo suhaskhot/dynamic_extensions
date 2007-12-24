@@ -90,7 +90,7 @@ public class Association extends AbstractAttribute implements AssociationInterfa
 
 	/**
 	 * @return
-	 * @hibernate.many-to-one column="TARGET_ENTITY_ID" class="edu.common.dynamicextensions.domain.Entity" constrained="true"
+	 * @hibernate.many-to-one cascade="save-update" column="TARGET_ENTITY_ID" class="edu.common.dynamicextensions.domain.Entity" constrained="true"
 	 */
 	public EntityInterface getTargetEntity()
 	{

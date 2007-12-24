@@ -87,15 +87,19 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
     public List getCreateEntityQueryList(Entity entity, List reverseQueryList, HibernateDAO hibernateDAO)
             throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException {
         List queryList = new ArrayList();
+        List<EntityInterface> entityList = new ArrayList<EntityInterface>();
+		DynamicExtensionsUtility.getAssociatedAndInheritedEntities(entity,entityList);
+		for (EntityInterface entityInterface : entityList)
+		{
         //get query to create main table with primitive attributes.
-        List mainTableQueryList = getCreateMainTableQuery(entity, reverseQueryList);
-
+			queryList.addAll(getCreateMainTableQuery((Entity) entityInterface, reverseQueryList));
+		}
         // get query to create associations ,it invloves altering source/taget table or creating
         //middle table depending upon the cardinalities.
-        List associationTableQueryList = getCreateAssociationsQueryList(entity, reverseQueryList, hibernateDAO);
-
-        queryList.addAll(mainTableQueryList);
-        queryList.addAll(associationTableQueryList);
+		for (EntityInterface entityInterface : entityList)
+		{
+			queryList.addAll(getCreateAssociationsQueryList((Entity) entityInterface, reverseQueryList, hibernateDAO));
+		}
         return queryList;
     }
 
@@ -115,20 +119,25 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
     public List getUpdateEntityQueryList(Entity entity, Entity databaseCopy, List attributeRollbackQueryList)
             throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException {
         Logger.out.debug("getUpdateEntityQueryList : Entering method");
-        List entityInheritanceQueryList = getInheritanceQueryList(entity, databaseCopy, attributeRollbackQueryList);
-        //get the query for any attribute that is modified.
-        List updateAttributeQueryList = getUpdateAttributeQueryList(entity, databaseCopy,
-                                                                    attributeRollbackQueryList);
-
-        //get the query for any association that is modified.
-        List updateassociationsQueryList = getUpdateAssociationsQueryList(entity, databaseCopy,
-                                                                          attributeRollbackQueryList);
-
         List updateQueryList = new ArrayList();
-        updateQueryList.addAll(entityInheritanceQueryList);
-        updateQueryList.addAll(updateAttributeQueryList);
-        updateQueryList.addAll(updateassociationsQueryList);
+        List<EntityInterface> entityList = new ArrayList<EntityInterface>();
+		DynamicExtensionsUtility.getAssociatedAndInheritedEntities(entity,entityList);
+		for (EntityInterface entityInterface : entityList)
+		{
+			List entityInheritanceQueryList = getInheritanceQueryList(entity, databaseCopy,
+					attributeRollbackQueryList);
+			//get the query for any attribute that is modified.
+			List updateAttributeQueryList = getUpdateAttributeQueryList(entity, databaseCopy,
+					attributeRollbackQueryList);
 
+			//get the query for any association that is modified.
+			List updateassociationsQueryList = getUpdateAssociationsQueryList(entity, databaseCopy,
+					attributeRollbackQueryList);
+
+			updateQueryList.addAll(entityInheritanceQueryList);
+			updateQueryList.addAll(updateAttributeQueryList);
+			updateQueryList.addAll(updateassociationsQueryList);
+		}
         Logger.out.debug("getUpdateEntityQueryList Exiting method");
         return updateQueryList;
     }
@@ -184,18 +193,28 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
         while (associationIterator.hasNext()) {
             Association association = (Association) associationIterator.next();
 
-            String tableName = association.getConstraintProperties().getName();
+            String tableName = DynamicExtensionsUtility.getTableName(association);
             String sourceKey = association.getConstraintProperties().getSourceEntityKey();
             String targetKey = association.getConstraintProperties().getTargetEntityKey();
             StringBuffer query = new StringBuffer();
 
-            if (sourceKey != null && targetKey != null && sourceKey.trim().length() != 0
-                    && targetKey.trim().length() != 0) { /* for Many to many get values from the middle table*/
-                query.append(SELECT_KEYWORD + WHITESPACE + targetKey);
-                query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName + WHITESPACE);
-                query.append(WHITESPACE + WHERE_KEYWORD + WHITESPACE + sourceKey + EQUAL + recordId);
-                associationValuesMap.put(association, getAssociationRecordValues(query.toString()));
-            } else if (sourceKey != null && sourceKey.trim().length() != 0) {
+            RoleInterface sourceRole = association.getSourceRole();
+            RoleInterface targetRole = association.getTargetRole();
+            Cardinality sourceMaxCardinality = sourceRole.getMaximumCardinality();
+            Cardinality targetMaxCardinality = targetRole.getMaximumCardinality();
+            if (sourceMaxCardinality == Cardinality.MANY
+					&& targetMaxCardinality == Cardinality.MANY)
+			{/* for Many to many get values from the middle table*/
+				query.append(SELECT_KEYWORD + WHITESPACE + targetKey);
+				query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName + WHITESPACE);
+				query
+						.append(WHITESPACE + WHERE_KEYWORD + WHITESPACE + sourceKey + EQUAL
+								+ recordId);
+				associationValuesMap.put(association, getAssociationRecordValues(query.toString()));
+			}
+			else if (sourceMaxCardinality == Cardinality.MANY
+					&& targetMaxCardinality == Cardinality.ONE)
+			{
                 /* for all Many to one associations of a single entity create a single query to get values for the target
                  * records.
                  *  */
@@ -280,19 +299,26 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
 
             int index = entityRecordResult.getEntityRecordMetadata().getAttributeList().indexOf(association);
 
-            String tableName = association.getConstraintProperties().getName();
+            String tableName = DynamicExtensionsUtility.getTableName(association);
             String sourceKey = association.getConstraintProperties().getSourceEntityKey();
             String targetKey = association.getConstraintProperties().getTargetEntityKey();
             StringBuffer query = new StringBuffer();
 
-            if (sourceKey != null && targetKey != null && sourceKey.trim().length() != 0
-                    && targetKey.trim().length() != 0) { /* for Many to many get values from the middle table*/
+            RoleInterface sourceRole = association.getSourceRole();
+            RoleInterface targetRole = association.getTargetRole();
+            Cardinality sourceMaxCardinality = sourceRole.getMaximumCardinality();
+            Cardinality targetMaxCardinality = targetRole.getMaximumCardinality();
+            if (sourceMaxCardinality == Cardinality.MANY && targetMaxCardinality == Cardinality.MANY)
+            { /* for Many to many get values from the middle table*/
                 query.append(SELECT_KEYWORD + WHITESPACE + targetKey);
                 query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName + WHITESPACE);
                 query.append(WHITESPACE + WHERE_KEYWORD + WHITESPACE + sourceKey + EQUAL + recordId);
                 List<Long> manyToManyRecordIdList = getAssociationRecordValues(query.toString());
                 entityRecord.getRecordValueList().set(index, manyToManyRecordIdList);
-            } else if (sourceKey != null && sourceKey.trim().length() != 0) {
+            }
+			else if (sourceMaxCardinality == Cardinality.MANY
+					&& targetMaxCardinality == Cardinality.ONE)
+			{
                 /* for all Many to one associations of a single entity create a single query to get values for the target
                  * records.
                  *  */
@@ -368,17 +394,20 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
         }
         Association association = (Association) associationInterface;
         verifyCardinalityConstraints(associationInterface, sourceRecordId);
-        String tableName = association.getConstraintProperties().getName();
         String sourceKey = association.getConstraintProperties().getSourceEntityKey();
         String targetKey = association.getConstraintProperties().getTargetEntityKey();
         StringBuffer query = new StringBuffer();
-        Long id = entityManagerUtil.getNextIdentifier(tableName);
-        if (sourceKey != null && targetKey != null && sourceKey.trim().length() != 0
-                && targetKey.trim().length() != 0) {
+        RoleInterface sourceRole = association.getSourceRole();
+        RoleInterface targetRole = association.getTargetRole();
+        Cardinality sourceMaxCardinality = sourceRole.getMaximumCardinality();
+        Cardinality targetMaxCardinality = targetRole.getMaximumCardinality();
+        if (sourceMaxCardinality == Cardinality.MANY && targetMaxCardinality == Cardinality.MANY)
+        {
+        	Long id = entityManagerUtil.getNextIdentifier(associationInterface.getConstraintProperties().getName());
             //for many to many insert into middle table
             for (int i = 0; i < recordIdList.size(); i++) {
                 query = new StringBuffer();
-                query.append("INSERT INTO " + tableName + " ( ");
+                query.append("INSERT INTO " + association.getConstraintProperties().getName() + " ( ");
                 query.append(IDENTIFIER + "," + sourceKey + "," + targetKey);
                 query.append(" ) VALUES ( ");
                 query.append(id.toString());
@@ -392,10 +421,13 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
                 queryList.add(query.toString());
             }
 
-        } else if (sourceKey != null && sourceKey.trim().length() != 0) {
+        }
+		else if (sourceMaxCardinality == Cardinality.MANY
+				&& targetMaxCardinality == Cardinality.ONE)
+		{
             //many to one : update source entity table
             query.append(UPDATE_KEYWORD);
-            query.append(WHITESPACE + tableName);
+            query.append(WHITESPACE + association.getEntity().getTableProperties().getName());
             query.append(WHITESPACE + SET_KEYWORD + WHITESPACE + sourceKey + EQUAL + recordIdList.get(0)
                     + WHITESPACE);
             query.append(WHERE_KEYWORD + WHITESPACE + IDENTIFIER + EQUAL + sourceRecordId);
@@ -407,7 +439,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
             recordIdString = recordIdString.replace("]", CLOSING_BRACKET);
 
             query.append(UPDATE_KEYWORD);
-            query.append(WHITESPACE + tableName);
+            query.append(WHITESPACE + associationInterface.getTargetEntity().getTableProperties().getName());
             query.append(WHITESPACE + SET_KEYWORD + WHITESPACE + targetKey + EQUAL + sourceRecordId + WHITESPACE);
             query.append(WHERE_KEYWORD + WHITESPACE + IDENTIFIER + WHITESPACE + IN_KEYWORD + WHITESPACE
                     + recordIdString);
@@ -455,7 +487,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
             }
         }
 
-        String tableName = association.getConstraintProperties().getName();
+        String tableName = DynamicExtensionsUtility.getTableName(association);
 
         StringBuffer query = new StringBuffer();
         if (isLogicalDeletion) {
@@ -513,15 +545,19 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
         for (AssociationInterface association : incomingAssociations) {
 
             StringBuffer query = new StringBuffer();
-            tableName = association.getConstraintProperties().getName();
+            tableName = DynamicExtensionsUtility.getTableName(association);
             sourceKey = association.getConstraintProperties().getSourceEntityKey();
             targetKey = association.getConstraintProperties().getTargetEntityKey();
 
             query.append(SELECT_KEYWORD + COUNT_KEYWORD + "(*)");
             query.append(FROM_KEYWORD + tableName);
 
-            if (sourceKey != null && targetKey != null && sourceKey.trim().length() != 0
-                    && targetKey.trim().length() != 0) {
+            RoleInterface sourceRole = association.getSourceRole();
+            RoleInterface targetRole = association.getTargetRole();
+            Cardinality sourceMaxCardinality = sourceRole.getMaximumCardinality();
+            Cardinality targetMaxCardinality = targetRole.getMaximumCardinality();
+            if (sourceMaxCardinality == Cardinality.MANY && targetMaxCardinality == Cardinality.MANY)
+            {
                 //for many to many check into middle table
                 String srcTable = association.getEntity().getTableProperties().getName();
                 query.append(" AS m_table join " + srcTable);
@@ -529,7 +565,9 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
                 query.append(WHERE_KEYWORD + targetKey + WHITESPACE + IN_KEYWORD + WHITESPACE
                         + getListToString(recordIdList));
                 query.append(" and " + DynamicExtensionBaseQueryBuilder.getRemoveDisbledRecordsQuery("s_table"));
-            } else if (sourceKey != null && sourceKey.trim().length() != 0) {
+            } else if (sourceMaxCardinality == Cardinality.MANY
+                        && targetMaxCardinality == Cardinality.ONE)
+            {
                 query.append(WHERE_KEYWORD + sourceKey + WHITESPACE + IN_KEYWORD + WHITESPACE
                         + getListToString(recordIdList));
                 query.append(" and " + DynamicExtensionBaseQueryBuilder.getRemoveDisbledRecordsQuery(""));
@@ -560,7 +598,8 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
      */
     public List<Long> getRecordIdListForContainment(AssociationInterface association, List<Long> recordIdList)
             throws DynamicExtensionsSystemException {
-        String tableName = association.getConstraintProperties().getName();
+    	String tableName = DynamicExtensionsUtility.getTableName(association);
+
         String targetKey = association.getConstraintProperties().getTargetEntityKey();
 
         StringBuffer containmentRecordIdQuery = new StringBuffer();
@@ -590,19 +629,25 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
      * @return
      */
     public String getAssociationRemoveDataQuery(Association association, Long recordId) {
-        String tableName = association.getConstraintProperties().getName();
+    	String tableName = DynamicExtensionsUtility.getTableName(association);
         String sourceKey = association.getConstraintProperties().getSourceEntityKey();
         String targetKey = association.getConstraintProperties().getTargetEntityKey();
         StringBuffer query = new StringBuffer();
 
-        if (sourceKey != null && targetKey != null && sourceKey.trim().length() != 0
-                && targetKey.trim().length() != 0) {
+        RoleInterface sourceRole = association.getSourceRole();
+        RoleInterface targetRole = association.getTargetRole();
+        Cardinality sourceMaxCardinality = sourceRole.getMaximumCardinality();
+        Cardinality targetMaxCardinality = targetRole.getMaximumCardinality();
+        if (sourceMaxCardinality == Cardinality.MANY && targetMaxCardinality == Cardinality.MANY)
+        {
             //for many to many delete all the records having reffered by this recordId
             query.append(DELETE_KEYWORD + WHITESPACE + tableName + WHITESPACE + WHERE_KEYWORD + WHITESPACE
                     + sourceKey);
             query.append(WHITESPACE + EQUAL);
             query.append(recordId.toString());
-        } else if (targetKey != null && targetKey.trim().length() != 0) {
+        } else if (sourceMaxCardinality == Cardinality.MANY
+                    && targetMaxCardinality == Cardinality.ONE)
+        {
             //for one to many and one to one: update  target entities records(set value in target column key = null)
             //that are reffering to  this redord by setting it to null.
             query.append(UPDATE_KEYWORD);
@@ -1942,7 +1987,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
         Cardinality sourceMaxCardinality = sourceRole.getMaximumCardinality();
         Cardinality targetMaxCardinality = targetRole.getMaximumCardinality();
         ConstraintPropertiesInterface constraint = association.getConstraintProperties();
-        String tableName = constraint.getName();
+        String tableName = DynamicExtensionsUtility.getTableName(association);
         StringBuffer query = new StringBuffer();
         query.append(UPDATE_KEYWORD).append(tableName).append(SET_KEYWORD);
         StringBuffer partialQuery = new StringBuffer();

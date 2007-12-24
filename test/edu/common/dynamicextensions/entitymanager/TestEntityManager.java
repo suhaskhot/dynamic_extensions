@@ -2111,14 +2111,12 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         try
         {
             ContainerInterface containerInterface = (Container) new MockEntityManager()
-                    .getContainer("abc");
-            EntityInterface entityInterface = containerInterface.getEntity();
+					.getContainer("abc");
+			EntityInterface entityInterface = containerInterface.getEntity();
 
-            //entityManager.persistContainer(containerInterface);
-
-            newEntityManagerInterface.persistEntity(entityInterface);
-            assertTrue(newEntityManagerInterface.getEntityByName("Person").getContainerCollection().contains(containerInterface));
-            //assertNotNull(entityManager.getContainerByEntityIdentifier(entityInterface.getId()));
+			newEntityManagerInterface.persistEntity(entityInterface);
+			assertTrue(newEntityManagerInterface.getEntityByIdentifier(entityInterface.getId())
+					.getContainerCollection().contains(containerInterface));
         }
         catch (DynamicExtensionsApplicationException e)
         {
@@ -2162,7 +2160,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             AttributeInterface tempAttributes = factory.createStringAttribute();
             tempAttributes.setName("temp");
             entity.addAbstractAttribute(tempAttributes);
-
+            EntityManagerUtil.addIdAttribute(entity);
             //Step 2.
             EntityInterface savedEntity = newEntityManagerInterface.persistEntity(entity);
 

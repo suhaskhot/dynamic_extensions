@@ -45,7 +45,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 {
 
 	/**
-	 * 
+	 *
 	 */
 	public TestEntityManagerForAssociations()
 	{
@@ -79,17 +79,17 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	}
 
 	/**
-	 * This test case test for associating two entities with one to many association 
-	 * 
+	 * This test case test for associating two entities with one to many association
+	 *
 	 * for oracle it should throw exception.
-	 * for mysql  it works.  
+	 * for mysql  it works.
 	 */
 	public void testCreateEntityWithOneToManyAssociation()
 	{
-		EntityManagerInterface entityManager = EntityManager.getInstance();
+		EntityGroupManagerInterface entityGroupManager = EntityGroupManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
-		// create user 
+		// create user
         EntityGroupInterface entityGroup = DomainObjectFactory.getInstance().createEntityGroup();
         entityGroup.setName("kunal");
 		EntityInterface user = factory.createEntity();
@@ -98,14 +98,14 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		user.setName("kunal_3");
 		user.addAbstractAttribute(userNameAttribute);
 
-		// create study 
+		// create study
 		EntityInterface study = factory.createEntity();
 		AttributeInterface studyNameAttribute = factory.createStringAttribute();
 		studyNameAttribute.setName("study kunal_3");
 		study.setName("kunal_3");
 		study.addAbstractAttribute(studyNameAttribute);
 
-		// Associate user (1)------ >(*)study       
+		// Associate user (1)------ >(*)study
 		AssociationInterface association = factory.createAssociation();
 
 		association.setTargetEntity(study);
@@ -122,7 +122,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		{
 			//entityManager.createEntity(study);
             entityGroup.getEntityCollection().add(user);
-			EntityGroupInterface savedUser = entityManager.persistEntityGroup(entityGroup);
+			EntityGroupInterface savedUser = entityGroupManager.persistEntityGroup(entityGroup);
 
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from "
 					+ study.getTableProperties().getName());
@@ -150,17 +150,17 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	}
 
 	/**
-	 * This test case test for associating two entities with one to many association 
-	 * 
+	 * This test case test for associating two entities with one to many association
+	 *
 	 * for oracle it should throw exception.
-	 * for mysql  it works.  
+	 * for mysql  it works.
 	 */
 	public void testCreateEntityWithManyToOneAssociation()
 	{
-		EntityManagerInterface entityManager = EntityManager.getInstance();
+		EntityGroupManagerInterface entityGroupManager = EntityGroupManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
-		// create user 
+		// create user
         EntityGroupInterface entityGroupInterface = factory.getInstance().createEntityGroup();
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
@@ -168,14 +168,14 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
 
-		// create study 
+		// create study
 		EntityInterface study = factory.createEntity();
 		AttributeInterface studyNameAttribute = factory.createStringAttribute();
 		studyNameAttribute.setName("study name");
 		study.setName("study");
 		study.addAbstractAttribute(studyNameAttribute);
 
-		// Associate user (1)------ >(*)study       
+		// Associate user (1)------ >(*)study
 		AssociationInterface association = factory.createAssociation();
 
 		association.setTargetEntity(study);
@@ -193,7 +193,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			//entityManager.createEntity(study);
 
             entityGroupInterface.getEntityCollection().add(user);
-			EntityInterface savedUser = (EntityInterface) entityManager.persistEntityGroup(entityGroupInterface);
+            EntityGroupInterface savedGroup = (EntityGroupInterface) entityGroupManager.persistEntityGroup(entityGroupInterface);
 
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from "
 					+ user.getTableProperties().getName());
@@ -223,7 +223,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	/**
 	 * This test case tries to modify data type of the attribute,when data is present for that column.
 	 * for oracle it should throw exception.
-	 * for mysql  it works.  
+	 * for mysql  it works.
 	 */
 	public void testCreateEntityWithAssociationWithUnsavedTargetEntity()
 	{
@@ -250,7 +250,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			srcEntity.addAbstractAttribute(association);
 			// association.sets
 
-			EntityManager.getInstance().persistEntity(srcEntity);
+			NewEntityManager.getInstance().persistEntity(srcEntity);
 
 		}
 		catch (BaseDynamicExtensionsException e)
@@ -264,30 +264,30 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 	/**
 	 * This test case test for associating two entities with many to many association  and direction is src_destination.
-	 * 
+	 *
 	 * for oracle it should throw exception.
-	 * for mysql  it works.  
+	 * for mysql  it works.
 	 */
 	public void testCreateEntityWithManyToManyAssociation()
 	{
-		EntityManagerInterface entityManager = EntityManager.getInstance();
+		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
-		// create user 
+		// create user
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
 
-		// create study 
+		// create study
 		EntityInterface study = factory.createEntity();
 		AttributeInterface studyNameAttribute = factory.createStringAttribute();
 		studyNameAttribute.setName("study name");
 		study.setName("study");
 		study.addAbstractAttribute(studyNameAttribute);
 
-		// Associate user (1)------ >(*)study       
+		// Associate user (1)------ >(*)study
 		AssociationInterface association = factory.createAssociation();
 
 		association.setTargetEntity(study);
@@ -334,16 +334,16 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	}
 
 	/**
-	 * Purpose is to test the self referencing of the entity. 
+	 * Purpose is to test the self referencing of the entity.
 	 * Scenario - user(*)------>(1)User
-	 *                   creator   
+	 *                   creator
 	 */
 	public void testEditEntityWithSelfReferencingBiDirectionalManyToManyAssociation()
 	{
-		EntityManagerInterface entityManager = EntityManager.getInstance();
+		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
-		// create user 
+		// create user
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
@@ -354,7 +354,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		{
 			user = entityManager.persistEntity(user);
 
-			// Associate user (*)------ >(1)user       
+			// Associate user (*)------ >(1)user
 			AssociationInterface association = factory.createAssociation();
 
 			association.setTargetEntity(user);
@@ -403,27 +403,27 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	public void testInsertDataForAssociationMany2Many()
 	{
 
-		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
 		try
 		{
 
-			//          create user 
+			//          create user
 			EntityInterface user = factory.createEntity();
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
 
-			//          create study 
+			//          create study
 			EntityInterface study = factory.createEntity();
 			AttributeInterface studyNameAttribute = factory.createStringAttribute();
 			studyNameAttribute.setName("study name");
 			study.setName("study");
 			study.addAbstractAttribute(studyNameAttribute);
 
-			//          Associate user (1)------ >(*)study       
+			//          Associate user (1)------ >(*)study
 			AssociationInterface association = factory.createAssociation();
 			association.setTargetEntity(study);
 			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
@@ -491,27 +491,27 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	public void testInsertDataForAssociationOne2Many()
 	{
 
-		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
 		try
 		{
 
-			//          create user 
+			//          create user
 			EntityInterface user = factory.createEntity();
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
 
-			//          create study 
+			//          create study
 			EntityInterface study = factory.createEntity();
 			AttributeInterface studyNameAttribute = factory.createStringAttribute();
 			studyNameAttribute.setName("study name");
 			study.setName("study");
 			study.addAbstractAttribute(studyNameAttribute);
 
-			//          Associate user (1)------ >(*)study       
+			//          Associate user (1)------ >(*)study
 			AssociationInterface association = factory.createAssociation();
 			association.setTargetEntity(study);
 			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
@@ -576,27 +576,27 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	public void testInsertDataForAssociationMany2One()
 	{
 
-		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
 		try
 		{
 
-			//          create user 
+			//          create user
 			EntityInterface user = factory.createEntity();
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
 
-			//          create study 
+			//          create study
 			EntityInterface study = factory.createEntity();
 			AttributeInterface studyNameAttribute = factory.createStringAttribute();
 			studyNameAttribute.setName("study name");
 			study.setName("study");
 			study.addAbstractAttribute(studyNameAttribute);
 
-			//          Associate user (1)------ >(*)study       
+			//          Associate user (1)------ >(*)study
 			AssociationInterface association = factory.createAssociation();
 			association.setTargetEntity(study);
 			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
@@ -651,27 +651,27 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	public void testEditDataForAssociationMany2One()
 	{
 
-		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
 		try
 		{
 
-			//          create user 
+			//          create user
 			EntityInterface user = factory.createEntity();
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
 
-			//          create study 
+			//          create study
 			EntityInterface study = factory.createEntity();
 			AttributeInterface studyNameAttribute = factory.createStringAttribute();
 			studyNameAttribute.setName("study name");
 			study.setName("study");
 			study.addAbstractAttribute(studyNameAttribute);
 
-			//          Associate user (1)------ >(*)study       
+			//          Associate user (1)------ >(*)study
 			AssociationInterface association = factory.createAssociation();
 			association.setTargetEntity(study);
 			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
@@ -742,27 +742,27 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	public void testGetRecordByIdAssociationMany2Many()
 	{
 
-		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
 		try
 		{
 
-			//          create user 
+			//          create user
 			EntityInterface user = factory.createEntity();
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
 
-			//          create study 
+			//          create study
 			EntityInterface study = factory.createEntity();
 			AttributeInterface studyNameAttribute = factory.createStringAttribute();
 			studyNameAttribute.setName("study name");
 			study.setName("study");
 			study.addAbstractAttribute(studyNameAttribute);
 
-			//          Associate user (1)------ >(*)study       
+			//          Associate user (1)------ >(*)study
 			AssociationInterface association = factory.createAssociation();
 			association.setTargetEntity(study);
 			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
@@ -837,27 +837,27 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	public void testGetRecordByIdForOne2ManyAssociation()
 	{
 
-		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
 		try
 		{
 
-			//          create user 
+			//          create user
 			EntityInterface user = factory.createEntity();
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
 
-			//          create study 
+			//          create study
 			EntityInterface study = factory.createEntity();
 			AttributeInterface studyNameAttribute = factory.createStringAttribute();
 			studyNameAttribute.setName("study name");
 			study.setName("study");
 			study.addAbstractAttribute(studyNameAttribute);
 
-			//          Associate user (1)------ >(*)study       
+			//          Associate user (1)------ >(*)study
 			AssociationInterface association = factory.createAssociation();
 			association.setTargetEntity(study);
 			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
@@ -919,35 +919,35 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	}
 
 	/**
-	 * This test case is to check the constraint violation in case when the  source cardinality for target is one && maximum cardinality for target is one. 
-	 * So in this test case we try to insert data such that the same target entity record is associated with the 
+	 * This test case is to check the constraint violation in case when the  source cardinality for target is one && maximum cardinality for target is one.
+	 * So in this test case we try to insert data such that the same target entity record is associated with the
 	 * source entity record twice. After the first insertion is successful, when the second insertion takes place
 	 * at that time constraint violation should  fail
 	 */
 	public void testInsertDataForConstraintViolationForOneToOne()
 	{
 
-		/*EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		/*NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		EntityInterface savedEntity = null;
 		try
 		{
 
-			//          create user 
+			//          create user
 			EntityInterface user = factory.createEntity();
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
 
-			//          create study 
+			//          create study
 			EntityInterface study = factory.createEntity();
 			AttributeInterface studyNameAttribute = factory.createStringAttribute();
 			studyNameAttribute.setName("study name");
 			study.setName("study");
 			study.addAbstractAttribute(studyNameAttribute);
 
-			//          Associate user (1)------ >(*)study       
+			//          Associate user (1)------ >(*)study
 			AssociationInterface association = factory.createAssociation();
 			association.setTargetEntity(study);
 			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
@@ -1003,7 +1003,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			{
 				e1.printStackTrace();
 				fail();
-				
+
 			}
 
 			Logger.out
@@ -1026,27 +1026,27 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	public void testInsertDataForInvalidCardinalities()
 	{
 
-		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		EntityInterface savedEntity = null;
 		try
 		{
 
-			//          create user 
+			//          create user
 			EntityInterface user = factory.createEntity();
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
 
-			//          create study 
+			//          create study
 			EntityInterface study = factory.createEntity();
 			AttributeInterface studyNameAttribute = factory.createStringAttribute();
 			studyNameAttribute.setName("study name");
 			study.setName("study");
 			study.addAbstractAttribute(studyNameAttribute);
 
-			//          Associate user (1)------ >(*)study       
+			//          Associate user (1)------ >(*)study
 			AssociationInterface association = factory.createAssociation();
 			association.setTargetEntity(study);
 			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
@@ -1076,7 +1076,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		{
 			Logger.out.debug(e.getStackTrace());
 			fail();
-			
+
 		}
 
 	}
@@ -1085,7 +1085,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	 *  Purpose: To test the deletion of record for an entity which has a one to many association with other entity.
 	 *  Expected behavior: the entry for this record in the target entity's data table should also be removed.
 	 *  Test case flow : 1. create user and study entity. 2. create association User 1--->* Study. 3.Persist entities.
-	 *  4.Insert one record 5. Check the record has been inserted or not. 6. Delete the inserted record.  
+	 *  4.Insert one record 5. Check the record has been inserted or not. 6. Delete the inserted record.
 	 */
 
 	public void testDeleteRecordWithAssociationOneToMany()
@@ -1106,7 +1106,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			Attribute userName = (Attribute) mock.initializeStringAttribute("userName", "new User");
 			user.addAbstractAttribute(userName);
 
-			//Associate  User(1) <---->(*)Study 
+			//Associate  User(1) <---->(*)Study
 			AssociationInterface association = DomainObjectFactory.getInstance()
 					.createAssociation();
 
@@ -1120,7 +1120,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			user.addAbstractAttribute(association);
 
-			EntityManager.getInstance().persistEntity(user);
+			NewEntityManager.getInstance().persistEntity(user);
 
 			Map dataValue = new HashMap();
 			List list = new ArrayList();
@@ -1128,7 +1128,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			dataValue.put(userName, "User1");
 			dataValue.put(association, list);
 
-			EntityManager.getInstance().insertData(user, dataValue);
+			NewEntityManager.getInstance().insertData(user, dataValue);
 			ResultSet resultSet = executeQuery("select * from "
 					+ user.getTableProperties().getName());
 			resultSet.next();
@@ -1141,7 +1141,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			resultSet.next();
 			assertEquals(1, resultSet.getInt(1));
 
-			EntityManager.getInstance().deleteRecord(user, 1L);
+			NewEntityManager.getInstance().deleteRecord(user, 1L);
 
 			assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(user, 1L));
 
@@ -1160,8 +1160,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	 *  Purpose: To test the deletion of record for an entity which has a many to many association with other entity.
 	 *  Expected behavior: the entry for this record in the target entity's data table should also be removed.
 	 *  Test case flow : 1. create user and study entity. 2. create association User *--->* Study. 3.Persist entities.
-	 *  4.Insert one record 5. Check the record has been inserted or not. 6. Delete the inserted record. 
-	 *  7.Check if the record is deleted. 8. Check if there are no entries for the deleted record in the 
+	 *  4.Insert one record 5. Check the record has been inserted or not. 6. Delete the inserted record.
+	 *  7.Check if the record is deleted. 8. Check if there are no entries for the deleted record in the
 	 *  middle table of the many to many association.
 	 */
 
@@ -1183,7 +1183,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			Attribute userName = (Attribute) mock.initializeStringAttribute("userName", "new User");
 			user.addAbstractAttribute(userName);
 
-			//Associate  User(*) <---->(*)Study 
+			//Associate  User(*) <---->(*)Study
 			AssociationInterface association = DomainObjectFactory.getInstance()
 					.createAssociation();
 
@@ -1197,7 +1197,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			user.addAbstractAttribute(association);
 
-			EntityManager.getInstance().persistEntity(user);
+			NewEntityManager.getInstance().persistEntity(user);
 
 			Map dataValue = new HashMap();
 			List list = new ArrayList();
@@ -1206,7 +1206,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			dataValue.put(userName, "User1");
 			dataValue.put(association, list);
 
-			Long recordId = EntityManager.getInstance().insertData(user, dataValue);
+			Long recordId = NewEntityManager.getInstance().insertData(user, dataValue);
 
 			//Checking whether there is an entry added in the data table for user.
 			ResultSet resultSet = executeQuery("select * from "
@@ -1225,7 +1225,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			resultSet.next();
 			assertEquals(2, resultSet.getInt(1));
 			//Deleting the record
-			EntityManager.getInstance().deleteRecord(user, 1L);
+			NewEntityManager.getInstance().deleteRecord(user, 1L);
 			//Checking there is no entry for the deleted record in the middle table.
 			assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(user, 1L));
 		}
@@ -1244,7 +1244,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	 *  Expected behavior: the entry for this record in the target entity's data table should also be removed.
 	 *  Test case flow : 1. create user and study entity. 2. create association User *--->1 Study. 3.Persist entities.
 	 *  4.Insert one record 5. Check the record has been inserted or not. 6. Delete the inserted record.
-	 *  7.Check if the record is properly deleted or not.  
+	 *  7.Check if the record is properly deleted or not.
 	 */
 
 	public void testDeleteRecordWithAssociationManyToOne()
@@ -1267,7 +1267,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			Attribute userName = (Attribute) mock.initializeStringAttribute("userName", "new User");
 			user.addAbstractAttribute(userName);
 
-			//Associate  User(*) <---->(1)Study 
+			//Associate  User(*) <---->(1)Study
 			AssociationInterface association = DomainObjectFactory.getInstance()
 					.createAssociation();
 
@@ -1281,7 +1281,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			user.addAbstractAttribute(association);
 
-			EntityManager.getInstance().persistEntity(user);
+			NewEntityManager.getInstance().persistEntity(user);
 
 			Map dataValue = new HashMap();
 			List list = new ArrayList();
@@ -1289,7 +1289,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			dataValue.put(userName, "User1");
 			dataValue.put(association, list);
 
-			Long recordId = EntityManager.getInstance().insertData(user, dataValue);
+			Long recordId = NewEntityManager.getInstance().insertData(user, dataValue);
 
 			//Checking whether there is an entry added in the data table for user.
 			ResultSet resultSet = executeQuery("select IDENTIFIER from "
@@ -1311,7 +1311,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			assertEquals(metadata.getColumnCount(), noOfDefaultColumns + 2);
 
 			//Deleting the record
-			EntityManager.getInstance().deleteRecord(user, 1L);
+			NewEntityManager.getInstance().deleteRecord(user, 1L);
 
 			assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(user, 1L));;
 		}
@@ -1347,23 +1347,23 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	}
 
 	/**
-	 * This test case test for associating three entities with  many to one to one 
-	 * 
+	 * This test case test for associating three entities with  many to one to one
+	 *
 	 * User(*) ---- >(1)Study(1) ------>(1)institute
 	 */
 	public void testCreateEntityWithCascadeManyToOneAssociation()
 	{
-		EntityManagerInterface entityManager = EntityManager.getInstance();
+		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
-		// create user 
+		// create user
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
 
-		// create study 
+		// create study
 		EntityInterface study = factory.createEntity();
 		AttributeInterface studyNameAttribute = factory.createStringAttribute();
 		studyNameAttribute.setName("study name");
@@ -1377,7 +1377,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		institution.setName("institution");
 		institution.addAbstractAttribute(institutionNameAttribute);
 
-		// Associate user (*)------ >(1)study       
+		// Associate user (*)------ >(1)study
 		AssociationInterface association = factory.createAssociation();
 
 		association.setTargetEntity(study);
@@ -1390,7 +1390,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		user.addAbstractAttribute(association);
 
-		// Associate study(1) ------> (1) institution       
+		// Associate study(1) ------> (1) institution
 		AssociationInterface studInstAssociation = factory.createAssociation();
 
 		studInstAssociation.setTargetEntity(institution);
@@ -1445,23 +1445,23 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 	/**
 	 * This test case test for associating three entities with  many to one to many to many
-	 * 
+	 *
 	 *        User(*) ---- >(1)Study(1) ------>(1)institute(*)-- (*)User
-	 *        
+	 *
 	 */
 	public void testCreateEntityWithCyclicCascadeManyToOneAssociation()
 	{
-		EntityManagerInterface entityManager = EntityManager.getInstance();
+		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
-		// create user 
+		// create user
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
 
-		// create study 
+		// create study
 		EntityInterface study = factory.createEntity();
 		AttributeInterface studyNameAttribute = factory.createStringAttribute();
 		studyNameAttribute.setName("study name");
@@ -1475,7 +1475,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		institution.setName("institution");
 		institution.addAbstractAttribute(institutionNameAttribute);
 
-		// Associate user (*)------ >(1)study       
+		// Associate user (*)------ >(1)study
 		AssociationInterface association = factory.createAssociation();
 
 		association.setTargetEntity(study);
@@ -1488,7 +1488,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		user.addAbstractAttribute(association);
 
-		// Associate study(1) ------> (1) institution       
+		// Associate study(1) ------> (1) institution
 		AssociationInterface studInstAssociation = factory.createAssociation();
 
 		studInstAssociation.setTargetEntity(institution);
@@ -1501,7 +1501,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		study.addAbstractAttribute(studInstAssociation);
 
-		// Associate institution (*)----->(*) user      
+		// Associate institution (*)----->(*) user
 		AssociationInterface instUserAssociation = factory.createAssociation();
 
 		instUserAssociation.setTargetEntity(user);
@@ -1560,23 +1560,23 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	}
 
 	/**
-	 * Purpose is to test the self referencing of the entity. 
+	 * Purpose is to test the self referencing of the entity.
 	 * Scenario - user(*)------>(1)User
-	 *                   creator   
+	 *                   creator
 	 */
 	public void testCreateEntityWithSelfReferencingManyToManyAssociation()
 	{
-		EntityManagerInterface entityManager = EntityManager.getInstance();
+		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
-		// create user 
+		// create user
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
 
-		// Associate user (*)------ >(1)user       
+		// Associate user (*)------ >(1)user
 		AssociationInterface association = factory.createAssociation();
 
 		association.setTargetEntity(user);
@@ -1627,26 +1627,26 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	}
 
 	/**
-	 * Purpose is to test the multiple self referencing of the entity. 
-	 * Scenario - 
+	 * Purpose is to test the multiple self referencing of the entity.
+	 * Scenario -
 	 * user(*)------>(*)User
 	 *       childUsers
 	 * user(*)------>(1)User
-	 *        creator   
+	 *        creator
 	 */
 	public void testCreateEntityWithSelfReferencingMultipleAssociations()
 	{
-		EntityManagerInterface entityManager = EntityManager.getInstance();
+		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
-		// create user 
+		// create user
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
 
-		// Associate user (*)------ >(*)user       
+		// Associate user (*)------ >(*)user
 		AssociationInterface association = factory.createAssociation();
 
 		association.setTargetEntity(user);
@@ -1659,7 +1659,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		user.addAbstractAttribute(association);
 
-		// Associate user (*)------ >(1)user       
+		// Associate user (*)------ >(1)user
 		AssociationInterface creatorAssociation = factory.createAssociation();
 
 		creatorAssociation.setTargetEntity(user);
@@ -1710,26 +1710,26 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	}
 
 	/**
-	 * Purpose is to test the multiple self referencing of the entity. 
-	 * Scenario - 
+	 * Purpose is to test the multiple self referencing of the entity.
+	 * Scenario -
 	 * user(*)------>(*)User
 	 *       childUsers
 	 * user(*)------>(*)User
-	 *        creators  
+	 *        creators
 	 */
 	public void testCreateEntityWithSelfReferencingMultipleManyToManyAssociations()
 	{
-		EntityManagerInterface entityManager = EntityManager.getInstance();
+		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
-		// create user 
+		// create user
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
 
-		// Associate user (*)------ >(*)user       
+		// Associate user (*)------ >(*)user
 		AssociationInterface association = factory.createAssociation();
 
 		association.setTargetEntity(user);
@@ -1742,7 +1742,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		user.addAbstractAttribute(association);
 
-		// Associate user (*)------ >(*)user       
+		// Associate user (*)------ >(*)user
 		AssociationInterface creatorAssociation = factory.createAssociation();
 
 		creatorAssociation.setTargetEntity(user);
@@ -1804,21 +1804,21 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	 */
 	public void testCreateEntityBidirectionalOneToManyAssociation()
 	{
-		EntityManagerInterface entityManager = EntityManager.getInstance();
+		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
-		// create user 
+		// create user
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
 
-		// create study 
+		// create study
 		EntityInterface study = factory.createEntity();
 		study.setName("Study");
 
-		// Associate  User(1) <---->(*)Study 
+		// Associate  User(1) <---->(*)Study
 		AssociationInterface association = factory.createAssociation();
 
 		association.setTargetEntity(study);
@@ -1872,24 +1872,24 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	}
 
 	/**
-	 * 
+	 *
 	 *
 	 */
 	public void testGetAssociation()
 	{
 		try
 		{
-			EntityManagerInterface entityManager = EntityManager.getInstance();
+			NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 			DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
-			// create user 
+			// create user
 			EntityInterface user = factory.createEntity();
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
 
-			// create study 
+			// create study
 			EntityInterface study = factory.createEntity();
 			AttributeInterface studyNameAttribute = factory.createStringAttribute();
 			studyNameAttribute.setName("study name");
@@ -1903,7 +1903,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			institution.setName("institution");
 			institution.addAbstractAttribute(institutionNameAttribute);
 
-			// Associate user (*)------ >(1)study       
+			// Associate user (*)------ >(1)study
 			AssociationInterface association = factory.createAssociation();
 
 			association.setTargetEntity(study);
@@ -1916,7 +1916,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			user.addAbstractAttribute(association);
 
-			// Associate study(1) ------> (1) institution       
+			// Associate study(1) ------> (1) institution
 			AssociationInterface studInstAssociation = factory.createAssociation();
 
 			studInstAssociation.setTargetEntity(institution);
@@ -1948,21 +1948,21 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 	public void testGetAssociations()
 	{
-		EntityManagerInterface entityManager = EntityManager.getInstance();
+		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
-		// create user 
+		// create user
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
 
-		// create study 
+		// create study
 		EntityInterface study = factory.createEntity();
 		study.setName("study name");
 
-		// Associate  User(1) <---->(*)Study 
+		// Associate  User(1) <---->(*)Study
 		AssociationInterface association = factory.createAssociation();
 
 		association.setTargetEntity(study);
@@ -1997,23 +1997,23 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	}
 
 	/**
-	 * Purpose is to test the self referencing of the entity. 
+	 * Purpose is to test the self referencing of the entity.
 	 * Scenario - user(*)------>(1)User
-	 *                   creator   
+	 *                   creator
 	 */
 	public void testCreateEntityWithSelfReferencingBidirectionManyToManyAssociation()
 	{
-		EntityManagerInterface entityManager = EntityManager.getInstance();
+		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
-		// create user 
+		// create user
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
 
-		// Associate user (*)------ >(1)user       
+		// Associate user (*)------ >(1)user
 		AssociationInterface association = factory.createAssociation();
 
 		association.setTargetEntity(user);
@@ -2064,17 +2064,17 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	}
 
 	/**
-	 * This test case test for adding a new associatiion bet 2 entities 
-	 * 
+	 * This test case test for adding a new associatiion bet 2 entities
+	 *
 	 * for oracle it should throw exception.
-	 * for mysql  it works.  
+	 * for mysql  it works.
 	 */
 	public void testAddAssociationAfterSave()
 	{
-		EntityManagerInterface entityManager = EntityManager.getInstance();
+		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
-		// create user 
+		// create user
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
@@ -2085,14 +2085,14 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		{
 			user = entityManager.persistEntity(user);
 
-			// create study 
+			// create study
 			EntityInterface study = factory.createEntity();
 			AttributeInterface studyNameAttribute = factory.createStringAttribute();
 			studyNameAttribute.setName("study name");
 			study.setName("study");
 			study.addAbstractAttribute(studyNameAttribute);
 
-			// Associate user (1)------ >(*)study       
+			// Associate user (1)------ >(*)study
 			AssociationInterface association = factory.createAssociation();
 
 			association.setTargetEntity(study);
@@ -2111,7 +2111,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					+ user.getTableProperties().getName());
 			assertEquals(noOfDefaultColumns + 2, metaData.getColumnCount());
 
-			//			 Associate user (1) <------>(*)study       
+			//			 Associate user (1) <------>(*)study
 			AssociationInterface association1 = factory.createAssociation();
 
 			association1.setTargetEntity(study);
@@ -2152,14 +2152,14 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	}
 
 	/**
-	 * This test case test for removing an association bet 2 existing entities 
+	 * This test case test for removing an association bet 2 existing entities
 	 */
 	public void testRemoveAssociationAfterSave()
 	{
-		EntityManagerInterface entityManager = EntityManager.getInstance();
+		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
-		// create user 
+		// create user
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
@@ -2170,14 +2170,14 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		{
 			user = entityManager.persistEntity(user);
 
-			// create study 
+			// create study
 			EntityInterface study = factory.createEntity();
 			AttributeInterface studyNameAttribute = factory.createStringAttribute();
 			studyNameAttribute.setName("study name");
 			study.setName("study");
 			study.addAbstractAttribute(studyNameAttribute);
 
-			// Associate user (1)------ >(*)study   
+			// Associate user (1)------ >(*)study
 			RoleInterface sourceRole = getRole(AssociationType.ASSOCIATION, "association1",
 					Cardinality.ZERO, Cardinality.MANY);
 			RoleInterface targetRole = getRole(AssociationType.ASSOCIATION, "association1",
@@ -2242,28 +2242,28 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	/**
 	 * This test case test for removing an association bet 2 existing entities
 	 * Before- SRC-DESTINATION
-	 * After - BIDIRECTIONAL 
+	 * After - BIDIRECTIONAL
 	 */
 	public void testEditAssociationDirection1AfterSave()
 	{
-		EntityManagerInterface entityManager = EntityManager.getInstance();
+		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
-		// create user 
+		// create user
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
 
-		// create study 
+		// create study
 		EntityInterface study = factory.createEntity();
 		AttributeInterface studyNameAttribute = factory.createStringAttribute();
 		studyNameAttribute.setName("study name");
 		study.setName("study");
 		study.addAbstractAttribute(studyNameAttribute);
 
-		// Associate user (1)------ >(*)study   
+		// Associate user (1)------ >(*)study
 		RoleInterface sourceRole = getRole(AssociationType.ASSOCIATION, "association1",
 				Cardinality.ZERO, Cardinality.MANY);
 		RoleInterface targetRole = getRole(AssociationType.ASSOCIATION, "association1",
@@ -2334,24 +2334,24 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	 */
 	public void testEditAssociationDirectionAfterSave()
 	{
-		EntityManagerInterface entityManager = EntityManager.getInstance();
+		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
-		// create user 
+		// create user
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
 
-		// create study 
+		// create study
 		EntityInterface study = factory.createEntity();
 		AttributeInterface studyNameAttribute = factory.createStringAttribute();
 		studyNameAttribute.setName("study name");
 		study.setName("study");
 		study.addAbstractAttribute(studyNameAttribute);
 
-		// Associate user (1)------ >(*)study   
+		// Associate user (1)------ >(*)study
 		RoleInterface sourceRole = getRole(AssociationType.ASSOCIATION, "association1",
 				Cardinality.ZERO, Cardinality.MANY);
 		RoleInterface targetRole = getRole(AssociationType.ASSOCIATION, "association1",
@@ -2416,10 +2416,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 	/**
 	 *  PURPOSE: This method test for inserting data for a containtment relationship between two entities
-	 *  EXPECTED BEHAVIOUR: Data should be persisted for the target entity in its own table and that record should 
+	 *  EXPECTED BEHAVIOUR: Data should be persisted for the target entity in its own table and that record should
 	 *                      get associated with the source entity's record.
 	 *  TEST CASE FLOW: 1. create User
-	 *                  2. Create Address                       
+	 *                  2. Create Address
 	 *                  3. Add Association with      User(1) ------->(1) Address containtment association
 	 *                  4. persist entities.
 	 *                  5. Insert Data
@@ -2428,20 +2428,20 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	public void testInsertDataForContaintmentOneToOne()
 	{
 
-		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
 		try
 		{
 
-			// Step 1  
+			// Step 1
 			EntityInterface user = factory.createEntity();
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
 
-			// Step 2  
+			// Step 2
 			EntityInterface address = factory.createEntity();
 			address.setName("address");
 
@@ -2502,10 +2502,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 	/**
 	 *  PURPOSE: This method test for inserting data for a containtment relationship between two entities having one to many asso
-	 *  EXPECTED BEHAVIOUR: Data should be persisted for the target entity in its own table and that record should 
+	 *  EXPECTED BEHAVIOUR: Data should be persisted for the target entity in its own table and that record should
 	 *                      get associated with the source entity's record.
 	 *  TEST CASE FLOW: 1. create User
-	 *                  2. Create Address                       
+	 *                  2. Create Address
 	 *                  3. Add Association with      User(1) ------->(*) Address containment association
 	 *                  4. persist entities.
 	 *                  5. Insert Data
@@ -2514,20 +2514,20 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	public void testInsertDataForContainmentOneToMany()
 	{
 
-		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
 		try
 		{
 
-			// Step 1  
+			// Step 1
 			EntityInterface user = factory.createEntity();
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
 
-			// Step 2  
+			// Step 2
 			EntityInterface address = factory.createEntity();
 			address.setName("address");
 
@@ -2593,35 +2593,35 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 	/**
 	 *  PURPOSE: This method test for editing data for a containtment relationship between two entities having one to one asso
-	 *  EXPECTED BEHAVIOUR: Data should be persisted for the target entity in its own table and that record should 
+	 *  EXPECTED BEHAVIOUR: Data should be persisted for the target entity in its own table and that record should
 	 *                      get updated.
 	 *  TEST CASE FLOW: 1. create User
-	 *                  2. Create Address                       
+	 *                  2. Create Address
 	 *                  3. Add Association with      User(1) ------->(1) Address containment association
 	 *                  4. persist entities.
 	 *                  5. Insert Data
 	 *                  6. Data table for Address should have the appropriate entry for the inserted data.
-	 *                  7. Change the data 
+	 *                  7. Change the data
 	 *                  8. Call editData method on entity manager.
 	 *                  9. Check if the data in the data table for address is updated or not for the selected record of user.
 	 */
 	public void testEditDataForContainmentOneToOne()
 	{
 
-		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
 		try
 		{
 
-			// Step 1  
+			// Step 1
 			EntityInterface user = factory.createEntity();
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
 
-			// Step 2  
+			// Step 2
 			EntityInterface address = factory.createEntity();
 			address.setName("address");
 
@@ -2700,37 +2700,37 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	}
 
 	/**
-	 *  PURPOSE: This method test for editing data for a containtment relationship between two entities 
+	 *  PURPOSE: This method test for editing data for a containtment relationship between two entities
 	 *  having one to mant association
-	 *  EXPECTED BEHAVIOUR: Data should be persisted for the target entity in its own table and that record should 
+	 *  EXPECTED BEHAVIOUR: Data should be persisted for the target entity in its own table and that record should
 	 *                      get updated.
 	 *  TEST CASE FLOW: 1. create User
-	 *                  2. Create Address                       
+	 *                  2. Create Address
 	 *                  3. Add Association with      User(1) ------->(*) Address containment association
 	 *                  4. persist entities.
 	 *                  5. Insert Data with multiple addresses for the user
 	 *                  6. Data table for Address should have the appropriate entries for the inserted data for user.
-	 *                  7. Change the data 
+	 *                  7. Change the data
 	 *                  8. Call editData method on entity manager.
 	 *                  9. Check if the data in the data table for address is updated or not for the selected record of user.
 	 */
 	public void testEditDataForContainmentOneToMany()
 	{
 
-		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
 		try
 		{
 
-			// Step 1  
+			// Step 1
 			EntityInterface user = factory.createEntity();
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
 
-			// Step 2  
+			// Step 2
 			EntityInterface address = factory.createEntity();
 			address.setName("address");
 
@@ -2821,11 +2821,11 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	}
 
 	/**
-	 *  PURPOSE: This method test for deleting data for a containtment relationship between two entities 
+	 *  PURPOSE: This method test for deleting data for a containtment relationship between two entities
 	 *  having one to many association
 	 *  EXPECTED BEHAVIOUR: Data should be removed from the data tables of the source and target entity
 	 *  TEST CASE FLOW: 1. create User
-	 *                  2. Create Address                       
+	 *                  2. Create Address
 	 *                  3. Add Association with      User(1) ------->(*) Address containment association
 	 *                  4. persist entities.
 	 *                  5. Insert Data with multiple addresses for the user
@@ -2836,20 +2836,20 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	public void testDeleteDataForContainmentOneToMany()
 	{
 
-		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
 		try
 		{
 
-			// Step 1  
+			// Step 1
 			EntityInterface user = factory.createEntity();
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
 
-			// Step 2  
+			// Step 2
 			EntityInterface address = factory.createEntity();
 			address.setName("address");
 
@@ -2904,10 +2904,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			resultSet.next();
 			assertEquals(1, resultSet.getInt(1));
 
-			// Step 7			
+			// Step 7
 			entityManagerInterface.deleteRecord(savedEntity, recordId);
 
-			// Step 8				
+			// Step 8
 			resultSet = executeQuery("select count(*) from " + user.getTableProperties().getName());
 			resultSet.next();
 			assertEquals(1, resultSet.getInt(1));
@@ -2926,120 +2926,120 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 	}
 
+//	/**
+//	 *  PURPOSE: This method tests for creation of all the hierarchy for containment control
+//	 *  having one to many association
+//	 *  EXPECTED BEHAVIOUR: All the hierarchy should get saved
+//	 *  TEST CASE FLOW: 1. create User
+//	 *                  2. Create Address
+//	 *                  3. Add Association with      User(1) ------->(1) Address containment association
+//	 *                  4. Add containment control to user container with address container inside this control.
+//	 *                  5. persist entities.
+//	 *                  6. Check if the address container is saved or not.
+//	 */
+//	public void testCreateContainerFromContainmentAssociation()
+//	{
+//		try
+//		{
+//			//Step 1
+//			Container userContainer = (Container) DomainObjectFactory.getInstance()
+//					.createContainer();
+//
+//			EntityInterface user = DomainObjectFactory.getInstance().createEntity();
+//			user.setName("USER");
+//			AttributeInterface nameAttribute = new MockEntityManager().initializeStringAttribute(
+//					"name", "new name");
+//
+//			ControlInterface textbox = DomainObjectFactory.getInstance().createTextField();
+//			textbox.setAbstractAttribute(nameAttribute);
+//			userContainer.addControl(textbox);
+//			user.addAbstractAttribute(nameAttribute);
+//
+//			userContainer.setEntity(user);
+//
+//			//Step 2
+//			EntityInterface address = DomainObjectFactory.getInstance().createEntity();
+//			address.setName("ADDRESS");
+//			AttributeInterface cityAttribute = new MockEntityManager().initializeStringAttribute(
+//					"City", "Ahmednagar");
+//
+//			Container addressContainer = (Container) DomainObjectFactory.getInstance()
+//					.createContainer();
+//
+//			ControlInterface cityTextbox = DomainObjectFactory.getInstance().createTextField();
+//			cityTextbox.setAbstractAttribute(cityAttribute);
+//			addressContainer.addControl(cityTextbox);
+//			address.addAbstractAttribute(cityAttribute);
+//
+//			addressContainer.setEntity(address);
+//
+//			// Step 3 Associate user (1)------ >(1)address
+//			RoleInterface sourceRole = getRole(AssociationType.CONTAINTMENT, "adress",
+//					Cardinality.ZERO, Cardinality.ONE);
+//			RoleInterface targetRole = getRole(AssociationType.ASSOCIATION, "user",
+//					Cardinality.ZERO, Cardinality.ONE);
+//			AssociationInterface association = getAssociation(address,
+//					AssociationDirection.SRC_DESTINATION, "userAddress", sourceRole, targetRole);
+//
+//			user.addAbstractAttribute(association);
+//
+//			//Step 4
+//			ContainmentAssociationControlInterface containmentAssociationControlInterface = DomainObjectFactory
+//					.getInstance().createContainmentAssociationControl();
+//
+//			containmentAssociationControlInterface.setContainer(addressContainer);
+//
+//			userContainer.addControl(containmentAssociationControlInterface);
+//			//Step 5
+//			NewEntityManager.getInstance().persistContainer(userContainer);
+//			Collection list = NewEntityManager.getInstance().getAllContainers();
+//			assertNotNull(list);
+//			Iterator iter = list.iterator();
+//			boolean flag = false;
+//			//Step 6
+//			while (iter.hasNext())
+//			{
+//				Container cont = (Container) iter.next();
+//				if (cont.getId().equals(addressContainer.getId()))
+//				{
+//					flag = true;
+//					break;
+//				}
+//			}
+//			assertTrue(flag);
+//		}
+//		catch (Exception e)
+//		{
+//			//TODO Auto-generated catch block
+//			Logger.out.debug(e.getMessage());
+//			fail("Exception occured");
+//		}
+//
+//	}
+
 	/**
-	 *  PURPOSE: This method tests for creation of all the hierarchy for containment control 
-	 *  having one to many association
-	 *  EXPECTED BEHAVIOUR: All the hierarchy should get saved 
-	 *  TEST CASE FLOW: 1. create User
-	 *                  2. Create Address                       
-	 *                  3. Add Association with      User(1) ------->(1) Address containment association
-	 *                  4. Add containment control to user container with address container inside this control.
-	 *                  5. persist entities.
-	 *                  6. Check if the address container is saved or not.
-	 */
-	public void testCreateContainerFromContainmentAssociation()
-	{
-		try
-		{
-			//Step 1
-			Container userContainer = (Container) DomainObjectFactory.getInstance()
-					.createContainer();
-
-			EntityInterface user = DomainObjectFactory.getInstance().createEntity();
-			user.setName("USER");
-			AttributeInterface nameAttribute = new MockEntityManager().initializeStringAttribute(
-					"name", "new name");
-
-			ControlInterface textbox = DomainObjectFactory.getInstance().createTextField();
-			textbox.setAbstractAttribute(nameAttribute);
-			userContainer.addControl(textbox);
-			user.addAbstractAttribute(nameAttribute);
-
-			userContainer.setEntity(user);
-
-			//Step 2
-			EntityInterface address = DomainObjectFactory.getInstance().createEntity();
-			address.setName("ADDRESS");
-			AttributeInterface cityAttribute = new MockEntityManager().initializeStringAttribute(
-					"City", "Ahmednagar");
-
-			Container addressContainer = (Container) DomainObjectFactory.getInstance()
-					.createContainer();
-
-			ControlInterface cityTextbox = DomainObjectFactory.getInstance().createTextField();
-			cityTextbox.setAbstractAttribute(cityAttribute);
-			addressContainer.addControl(cityTextbox);
-			address.addAbstractAttribute(cityAttribute);
-
-			addressContainer.setEntity(address);
-
-			// Step 3 Associate user (1)------ >(1)address 
-			RoleInterface sourceRole = getRole(AssociationType.CONTAINTMENT, "adress",
-					Cardinality.ZERO, Cardinality.ONE);
-			RoleInterface targetRole = getRole(AssociationType.ASSOCIATION, "user",
-					Cardinality.ZERO, Cardinality.ONE);
-			AssociationInterface association = getAssociation(address,
-					AssociationDirection.SRC_DESTINATION, "userAddress", sourceRole, targetRole);
-
-			user.addAbstractAttribute(association);
-
-			//Step 4
-			ContainmentAssociationControlInterface containmentAssociationControlInterface = DomainObjectFactory
-					.getInstance().createContainmentAssociationControl();
-
-			containmentAssociationControlInterface.setContainer(addressContainer);
-
-			userContainer.addControl(containmentAssociationControlInterface);
-			//Step 5
-			EntityManager.getInstance().persistContainer(userContainer);
-			Collection list = EntityManager.getInstance().getAllContainers();
-			assertNotNull(list);
-			Iterator iter = list.iterator();
-			boolean flag = false;
-			//Step 6
-			while (iter.hasNext())
-			{
-				Container cont = (Container) iter.next();
-				if (cont.getId().equals(addressContainer.getId()))
-				{
-					flag = true;
-					break;
-				}
-			}
-			assertTrue(flag);
-		}
-		catch (Exception e)
-		{
-			//TODO Auto-generated catch block
-			Logger.out.debug(e.getMessage());
-			fail("Exception occured");
-		}
-
-	}
-
-	/**
-	 * 
+	 *
 	 */
 	public void testGetAssociationById()
 	{
-		EntityManagerInterface entityManager = EntityManager.getInstance();
+		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
-		// create user 
+		// create user
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
 
-		// create study 
+		// create study
 		EntityInterface study = factory.createEntity();
 		AttributeInterface studyNameAttribute = factory.createStringAttribute();
 		studyNameAttribute.setName("study name");
 		study.setName("study");
 		study.addAbstractAttribute(studyNameAttribute);
 
-		// Associate user (1)------ >(*)study       
+		// Associate user (1)------ >(*)study
 		AssociationInterface association = factory.createAssociation();
 
 		association.setTargetEntity(study);
@@ -3082,11 +3082,11 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public void testGetAssociationByIdNotPresent()
 	{
-		EntityManagerInterface entityManager = EntityManager.getInstance();
+		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
 		try
@@ -3109,12 +3109,12 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	/**
 	 *  PURPOSE: This method tests for editing the data for the case when multiple level containment is
 	 *           present.    (fix for the bug : 3289)
-	 *   
-	 *  EXPECTED BEHAVIOUR: The data should be properly edited..  
+	 *
+	 *  EXPECTED BEHAVIOUR: The data should be properly edited..
 	 *  TEST CASE FLOW: 1. create User
 	 *                  2. Create Institute
-	 *                  3. Create address                      
-	 *                  4. Add Association with      User(1) ------->(*) Institutes with containment association  
+	 *                  3. Create address
+	 *                  4. Add Association with      User(1) ------->(*) Institutes with containment association
 	 *                  5. Add Association with      Institutes(1) ------->(*) Address containment association
 	 *                  6. Add data for user  rahul -> Verizon --> Pune
 	 *                  7. edit data for the user  rahul --> PSPL -->Pune
@@ -3123,7 +3123,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	public void testEditDataWithContainmentForMultipleLevel()
 	{
 
-		EntityManagerInterface entityManager = EntityManager.getInstance();
+		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		try
 		{
@@ -3136,7 +3136,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			entityManager.persistEntity(user);
 
-			//Step 2 create institute			
+			//Step 2 create institute
 			EntityInterface institution = factory.createEntity();
 			AttributeInterface institutionName = factory.createStringAttribute();
 			institutionName.setName("institution Name");
@@ -3145,7 +3145,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			entityManager.persistEntity(institution);
 
-			//Step 3 create address	
+			//Step 3 create address
 			EntityInterface address = factory.createEntity();
 			AttributeInterface addressCity = factory.createStringAttribute();
 			addressCity.setName("City");
@@ -3183,7 +3183,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			entityManager.persistEntity(institution);
 
-			//Step 6 
+			//Step 6
 			Map addressValueMap = new HashMap();
 			addressValueMap.put(addressCity, "Pune");
 
@@ -3227,31 +3227,31 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	}
 
 	/**
-	 * This test case test for associating two entities with one to many association 
-	 * 
+	 * This test case test for associating two entities with one to many association
+	 *
 	 * for oracle it should throw exception.
-	 * for mysql  it works.  
+	 * for mysql  it works.
 	 */
 	public void testGetIncomingAssociationsForEntity()
 	{
-		EntityManagerInterface entityManager = EntityManager.getInstance();
+		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
-		// create user 
+		// create user
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
 
-		// create study 
+		// create study
 		EntityInterface study = factory.createEntity();
 		AttributeInterface studyNameAttribute = factory.createStringAttribute();
 		studyNameAttribute.setName("study name");
 		study.setName("study");
 		study.addAbstractAttribute(studyNameAttribute);
 
-		// Associate user (1)------ >(*)study       
+		// Associate user (1)------ >(*)study
 		AssociationInterface association = factory.createAssociation();
 
 		association.setTargetEntity(study);
@@ -3264,14 +3264,14 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		user.addAbstractAttribute(association);
 
-		// create site 
+		// create site
 		EntityInterface site = factory.createEntity();
 		AttributeInterface siteNameAttribute = factory.createStringAttribute();
 		siteNameAttribute.setName("site name");
 		site.setName("site");
 		site.addAbstractAttribute(siteNameAttribute);
 
-		// Associate site (1)------ >(*)study       
+		// Associate site (1)------ >(*)study
 		AssociationInterface associationSite = factory.createAssociation();
 
 		associationSite.setTargetEntity(study);

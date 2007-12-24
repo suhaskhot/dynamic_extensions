@@ -23,6 +23,7 @@ import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
@@ -625,72 +626,110 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
      *
      * @throws DynamicExtensionsSystemException
      */
-    protected List<String> getCreateMainTableQuery(Entity entity, List reverseQueryList)
-            throws DynamicExtensionsSystemException {
-        List<String> queryList = new ArrayList<String>();
-        String dataType = getDataTypeForIdentifier();
-        String tableName = entity.getTableProperties().getName();
-        EntityInterface parentEntity = entity.getParentEntity();
-        String activityStatusString = Constants.ACTIVITY_STATUS_COLUMN + WHITESPACE + getDataTypeForStatus();
+    protected List<String> getCreateMainTableQuery(Entity entity,
+			List<String> reverseQueryList)
+			throws DynamicExtensionsSystemException {
+		
+		
+		EntityInterface parentEntity = entity.getParentEntity();
+		String activityStatusString = Constants.ACTIVITY_STATUS_COLUMN
+				+ WHITESPACE + getDataTypeForStatus();
 
-        StringBuffer query = new StringBuffer(CREATE_TABLE + " " + tableName + " " + OPENING_BRACKET + " "
-                + activityStatusString + COMMA);
-        if (!EntityManagerUtil.isIdAttributePresent(entity)) {
-            query.append(IDENTIFIER).append(WHITESPACE).append(getDataTypeForIdentifier()).append(COMMA);
-        }
-        Collection attributeCollection = entity.getAttributeCollection();
-        //attributeCollection = entityManagerUtil.filterSystemAttributes(attributeCollection);
-        if (attributeCollection != null && !attributeCollection.isEmpty()) {
-            Iterator attributeIterator = attributeCollection.iterator();
-            while (attributeIterator.hasNext()) {
-                Attribute attribute = (Attribute) attributeIterator.next();
+		String tableName = entity.getTableProperties().getName();
+		StringBuffer query = new StringBuffer(CREATE_TABLE + " " + tableName
+				+ " " + OPENING_BRACKET + " " + activityStatusString + COMMA);
+		if (!EntityManagerUtil.isIdAttributePresent(entity)) {
+			query.append(IDENTIFIER).append(WHITESPACE).append(
+					getDataTypeForIdentifier()).append(COMMA);
+		}
+		Collection<AttributeInterface> attributeCollection = entity
+				.getAttributeCollection();
 
-                if (isAttributeColumnToBeExcluded(attribute)) {
-                    //column is not created if it is multi select,file type etc.
-                    continue;
-                }
+		if (attributeCollection != null && !attributeCollection.isEmpty()) {
+			Iterator attributeIterator = attributeCollection.iterator();
+			while (attributeIterator.hasNext()) {
+				Attribute attribute = (Attribute) attributeIterator.next();
+				String type = "";
 
-                String type = "";
-                //get column info for attribute
-                String attributeQueryPart = getQueryPartForAttribute(attribute, type, true);
-                query = query.append(attributeQueryPart);
-                query = query.append(COMMA);
-            }
-        }
-        if (attributeCollection != null && !attributeCollection.isEmpty())
-        {
-            Iterator attributeIterator = attributeCollection.iterator();
-            while (attributeIterator.hasNext())
-            {
-                Attribute attribute = (Attribute) attributeIterator.next();
-                if (attribute.getIsPrimaryKey()
+				// if (isAttributeColumnToBeExcluded(attribute)) {
+				// column is not created if it is multi select,file type
+				// etc.
+
+				// If attribute created is of type file the add two more
+				// attribute
+				// for inserting file name and content type information
+				if (attribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation) {
+
+					AttributeInterface attributeInterface = DomainObjectFactory
+							.getInstance().createStringAttribute();
+					// attributeInterface.setName(attribute.getName()+UNDERSCORE+FILE_NAME);
+					attributeInterface.setName(attribute.getName() + UNDERSCORE
+							+ FILE_NAME);
+					attributeInterface.getColumnProperties().setName(
+							attribute.getName() + UNDERSCORE + FILE_NAME);
+
+					String attributeQueryPart = getQueryPartForAttribute(
+							(Attribute) attributeInterface, type, true);
+					query = query.append(attributeQueryPart + COMMA);
+
+					AttributeInterface attributeInterface1 = DomainObjectFactory
+							.getInstance().createStringAttribute();
+					attributeInterface1.setName(attribute.getName()
+							+ UNDERSCORE + FILE_NAME);
+					attributeInterface1.getColumnProperties().setName(
+							attribute.getName() + UNDERSCORE + CONTENT_TYPE);
+
+					attributeQueryPart = getQueryPartForAttribute(
+							(Attribute) attributeInterface1, type, true);
+					query = query.append(attributeQueryPart + COMMA);
+
+					attributeCollection.add(attributeInterface);
+					attributeCollection.add(attributeInterface1);
+					// } else {
+					// continue;
+					// }
+
+				}
+				// get column info for attribute
+				String attributeQueryPart = getQueryPartForAttribute(attribute,
+						type, true);
+				query = query.append(attributeQueryPart + COMMA);
+
+			}
+		}
+		if (attributeCollection != null && !attributeCollection.isEmpty()) {
+			Iterator attributeIterator = attributeCollection.iterator();
+			while (attributeIterator.hasNext()) {
+				Attribute attribute = (Attribute) attributeIterator.next();
+				if (attribute.getIsPrimaryKey()
 						&& attribute.getColumnProperties().getName() != null
 						&& !attribute.getColumnProperties().getName()
-								.equalsIgnoreCase(IDENTIFIER))
-                {
-                	query = query.append(CONSTRAINT_KEYWORD + WHITESPACE
-							+ attribute.getColumnProperties().getName() + entity.getId()
-							+ WHITESPACE + UNIQUE_KEYWORD + OPENING_BRACKET
-							+ attribute.getColumnProperties().getName() + CLOSING_BRACKET);
-                	query = query.append(COMMA);
-                }
-            }
-        }
+								.equalsIgnoreCase(IDENTIFIER)) {
+					query = query.append(CONSTRAINT_KEYWORD + WHITESPACE
+							+ attribute.getColumnProperties().getName()
+							+ entity.getId() + WHITESPACE + UNIQUE_KEYWORD
+							+ OPENING_BRACKET
+							+ attribute.getColumnProperties().getName()
+							+ CLOSING_BRACKET);
+					query = query.append(COMMA);
+				}
+			}
+		}
 
-        query = query.append(PRIMARY_KEY_CONSTRAINT_FOR_ENTITY_DATA_TABLE + ")"); //identifier set as primary key
+		query = query.append(PRIMARY_KEY_CONSTRAINT_FOR_ENTITY_DATA_TABLE + ")"); 
 
-        // add create query
-        queryList.add(query.toString());
-        //add foerfign key query for inheritance
-        if (parentEntity != null) {
-            String foreignKeyConstraintQueryForInheritance = getForeignKeyConstraintQueryForInheritance(entity);
-            queryList.add(foreignKeyConstraintQueryForInheritance);
-        }
+		List<String> queryList = new ArrayList<String>();
+		queryList.add(query.toString());
+		// add foerfign key query for inheritance
+		if (parentEntity != null) {
+			String foreignKeyConstraintQueryForInheritance = getForeignKeyConstraintQueryForInheritance(entity);
+			queryList.add(foreignKeyConstraintQueryForInheritance);
+		}
 
-        String reverseQuery = getReverseQueryForEntityDataTable(entity);
-        reverseQueryList.add(reverseQuery);
-        return queryList;
-    }
+		String reverseQuery = getReverseQueryForEntityDataTable(entity);
+		reverseQueryList.add(reverseQuery);
+		return queryList;
+	}
 
     /**
      * This method returns the query to add foreign key constraint in the given child entity
@@ -781,10 +820,10 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
         } else {
             AttributeTypeInformationInterface typeInfo = attribute.getAttributeTypeInformation();
 
-            if (typeInfo instanceof FileAttributeTypeInformation
+            /*if (typeInfo instanceof FileAttributeTypeInformation
                     || typeInfo instanceof ObjectAttributeTypeInformation) {
                 isExclude = true;
-            }
+            }*/
         }
 
         return isExclude;
@@ -870,7 +909,11 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
                 return dataTypeFactory.getDatabaseDataType("Long");
             } else if (attributeInformation instanceof ShortAttributeTypeInformation) {
                 return dataTypeFactory.getDatabaseDataType("Short");
-            }
+            }else if (attributeInformation instanceof FileAttributeTypeInformation) {
+				return dataTypeFactory.getDatabaseDataType("File");
+			} else if (attributeInformation instanceof ObjectAttributeTypeInformation) {
+				return dataTypeFactory.getDatabaseDataType("Object");
+			}
 
         } catch (DataTypeFactoryInitializationException e) {
             throw new DynamicExtensionsSystemException("Could Not get data type attribute", e);
@@ -1423,6 +1466,16 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
         modifyAttributeRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + MODIFY_KEYWORD
                 + WHITESPACE + modifyAttributeRollbackQuery;
 
+        /*
+		 * added by: Kunal Two more extra columns file name and content type
+		 * needs to be added to the table.
+		 */
+		if (attribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation) {
+			modifyAttributeQuery += extraColumnQueryStringForFileAttribute(attribute);
+			modifyAttributeRollbackQuery += dropExtraColumnQueryStringForFileAttribute(attribute);
+
+		}
+		
         String nullQueryKeyword = "";
         String nullQueryRollbackKeyword = "";
 
@@ -1445,6 +1498,42 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
         return modifyAttributeQueryList;
     }
 
+    /**
+	 * This method contrsucts the query part for adding tow extra columns when
+	 * an attribute of type File is created
+	 * 
+	 * @param attribute
+	 *            FileAttribute
+	 * @return queryString
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private String extraColumnQueryStringForFileAttribute(Attribute attribute)
+			throws DynamicExtensionsSystemException {
+		Attribute stringAttribute = (Attribute) DomainObjectFactory.getInstance()
+				.createStringAttribute();
+		String queryString = COMMA + ADD_KEYWORD + OPENING_BRACKET
+				+ attribute.getName() + UNDERSCORE + FILE_NAME + WHITESPACE
+				+ getDatabaseTypeAndSize(stringAttribute) + COMMA + WHITESPACE
+				+ attribute.getName() + UNDERSCORE + CONTENT_TYPE + WHITESPACE
+				+ getDatabaseTypeAndSize(stringAttribute) + CLOSING_BRACKET;
+		return queryString;
+	}
+	
+	/**
+	 * This method constructs the query part for dropping the extra columns
+	 * created while creating an attribute of type File
+	 * @param attribute FileAttribute
+	 * @return queryString
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private String dropExtraColumnQueryStringForFileAttribute(
+			Attribute attribute) throws DynamicExtensionsSystemException {
+		String queryString = COMMA + DROP_KEYWORD + OPENING_BRACKET
+				+ attribute.getName() + UNDERSCORE + FILE_NAME + COMMA
+				+ WHITESPACE + attribute.getName() + UNDERSCORE + CONTENT_TYPE
+				+ WHITESPACE + CLOSING_BRACKET;
+		return queryString;
+	}
     /**
      * This method builds the query part for the newly added attribute.
      * @param attribute Newly added attribute in the entity.

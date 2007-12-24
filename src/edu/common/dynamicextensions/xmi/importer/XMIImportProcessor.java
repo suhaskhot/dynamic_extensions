@@ -487,9 +487,10 @@ public class XMIImportProcessor
 	 * Also a back pointer is added to replicated association go get original association.
 	 * @param umlAssociation umlAssociation to process
 	 * @param parentIdVsChildrenIds Map with key as UML-id of parent class and value as list of UML-id of all children classes.
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	private void addAssociation(UmlAssociation umlAssociation,
-			Map<String, List<String>> parentIdVsChildrenIds)
+			Map<String, List<String>> parentIdVsChildrenIds) throws DynamicExtensionsSystemException
 	{
 		List<AssociationEnd> associationEnds = umlAssociation.getConnection();
 
@@ -569,7 +570,7 @@ public class XMIImportProcessor
 		Collection<AssociationInterface> existingAssociationColl = srcEntity
 				.getAssociationCollection();
 		if (existingAssociationColl != null && existingAssociationColl.size() > 0)
-		{
+		{//EDIT Case
 			association = isAssociationPresent(umlAssociation.getName(), existingAssociationColl,
 					srcEntity.getName(), tgtEntity.getName(), direction, sourceRole, targetRole);
 		}
@@ -1093,29 +1094,32 @@ public class XMIImportProcessor
 				.getTargetEntity().getAssociationCollection();
 
 		EntityInterface originalTargetEntity = getEntity(association.getTargetEntity().getName());
-		//Removing redundant association
-		for (AssociationInterface targetAsso : targetEntityAssociationColl)
+		if(originalTargetEntity != null)
 		{
-			if (targetAsso.getTargetEntity().getName().equalsIgnoreCase(
-					association.getEntity().getName()))
+			//Removing redundant association
+			for (AssociationInterface targetAsso : targetEntityAssociationColl)
 			{
-				AssociationInterface originalTargetAssociation = null;
-				for (AssociationInterface originalTgtAsso : originalTargetEntity
-						.getAssociationCollection())
+				if (targetAsso.getTargetEntity().getName().equalsIgnoreCase(
+						association.getEntity().getName()))
 				{
-					if (targetAsso.getName().equalsIgnoreCase(originalTgtAsso.getName()))
+					AssociationInterface originalTargetAssociation = null;
+					for (AssociationInterface originalTgtAsso : originalTargetEntity
+							.getAssociationCollection())
 					{
-						originalTargetAssociation = originalTgtAsso;
-						break;
+						if (targetAsso.getName().equalsIgnoreCase(originalTgtAsso.getName()))
+						{
+							originalTargetAssociation = originalTgtAsso;
+							break;
+						}
 					}
-				}
-
-				if (targetAsso.getAssociationDirection().equals(
-						Constants.AssociationDirection.SRC_DESTINATION)
-						&& originalTargetAssociation.getAssociationDirection().equals(
-								Constants.AssociationDirection.BI_DIRECTIONAL))
-				{//We need to remove system generated association if direction has been changed from bi directional to source destination
-					attributesToRemove.add(editedAttribute);
+	
+					if (targetAsso.getAssociationDirection().equals(
+							Constants.AssociationDirection.SRC_DESTINATION)
+							&& originalTargetAssociation.getAssociationDirection().equals(
+									Constants.AssociationDirection.BI_DIRECTIONAL))
+					{//We need to remove system generated association if direction has been changed from bi directional to source destination
+						attributesToRemove.add(editedAttribute);
+					}
 				}
 			}
 		}
@@ -1576,8 +1580,13 @@ public class XMIImportProcessor
 //		Set<String> entityIdKeySet = entityNameVsContainers.keySet();
 		
 		for(String containerName : containerNames)
-		{
-			List containerList = (ArrayList) entityNameVsContainers.get(containerName);
+		{			
+			List containerList = (ArrayList) entityNameVsContainers.get(containerName);	
+			if(containerList == null || containerList.size() < 1)
+			{
+				throw new DynamicExtensionsApplicationException("The container name " + containerName + " does " +
+						"not match with the container name in the Model.");
+			}
 			ContainerInterface containerInterface = (ContainerInterface) containerList.get(0);
 			mainContainerList.add(containerInterface);
 		}

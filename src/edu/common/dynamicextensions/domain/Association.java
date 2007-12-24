@@ -12,6 +12,7 @@ import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.util.IdGeneratorUtil;
 import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
 
 /**
@@ -286,7 +287,7 @@ public class Association extends AbstractAttribute implements AssociationInterfa
 
                 //For XMI import, we can get self referencing bi directional associations. Hence creating unique name for the sys generated association.
                 systemGeneratedAssociation.setName(association.getName()
-                        + association.getEntity().getId());
+                        + IdGeneratorUtil.getNextUniqeId());
 
                 systemGeneratedAssociation.setDescription(association.getDescription());
                 systemGeneratedAssociation.setTargetEntity(association.getEntity());
@@ -294,9 +295,10 @@ public class Association extends AbstractAttribute implements AssociationInterfa
                 //Swapping the source and target roles.
                 systemGeneratedAssociation.setSourceRole(association.getTargetRole());
                 systemGeneratedAssociation.setTargetRole(association.getSourceRole());
+                systemGeneratedAssociation.setIsSystemGenerated(true);
                 systemGeneratedAssociation
                         .setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
-                systemGeneratedAssociation.setIsSystemGenerated(true);
+
                 systemGeneratedAssociation.setConstraintProperties(constraintPropertiesSysGen);
 
                 for (TaggedValueInterface taggedValue : association.getTaggedValueCollection())

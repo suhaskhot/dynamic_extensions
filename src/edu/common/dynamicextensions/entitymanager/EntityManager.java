@@ -80,6 +80,7 @@ import edu.wustl.common.dao.AbstractDAO;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.HibernateDAO;
 import edu.wustl.common.dao.JDBCDAO;
+import edu.wustl.common.dao.JDBCDAOImpl;
 import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.dbManager.DBUtil;
@@ -2197,7 +2198,10 @@ public class EntityManager
 			dataValue = new HashMap();
 		}
 
-		StringBuffer columnNameString = new StringBuffer("IDENTIFIER ");
+		List<Object> columnValues = new ArrayList<Object>();
+		List<String> columnNames = new ArrayList<String>();
+		
+		
 		Long identifier = null;
 		if (parentRecordId != null)
 		{
@@ -2207,10 +2211,13 @@ public class EntityManager
 		{
 			identifier = entityManagerUtil.getNextIdentifier(entity.getTableProperties().getName());
 		}
-		StringBuffer columnValuesString = new StringBuffer(identifier.toString());
-		columnNameString.append(" , " + Constants.ACTIVITY_STATUS_COLUMN);
-		columnValuesString.append(" , '" + Constants.ACTIVITY_STATUS_ACTIVE + "' ");
-
+		columnNames.add("IDENTIFIER ");
+		columnValues.add(identifier);
+		
+		columnNames.add(Constants.ACTIVITY_STATUS_COLUMN);
+		columnValues.add(Constants.ACTIVITY_STATUS_ACTIVE);
+		
+		
 		String tableName = entity.getTableProperties().getName();
 
 		List<AttributeRecord> attributeRecords = new ArrayList<AttributeRecord>();
@@ -2236,41 +2243,19 @@ public class EntityManager
 				// populate FileAttributeRecordValue HO
 				if (primitiveAttribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
 				{
-					AttributeRecord fileRecord = populateFileAttributeRecord(null, entity,
-							primitiveAttribute, identifier, (FileAttributeRecordValue) value);
-					attributeRecords.add(fileRecord);
-					continue;
+					populateFileAttribute(columnNames,columnValues,(FileAttributeRecordValue)value, primitiveAttribute);
 				}
 
-				// populate ObjectAttributeRecordValue HO
-				if (primitiveAttribute.getAttributeTypeInformation() instanceof ObjectAttributeTypeInformation)
+				else if (primitiveAttribute.getIsCollection())
 				{
-					AttributeRecord objectRecord = populateObjectAttributeRecord(null, entity,
-							primitiveAttribute, identifier, (ObjectAttributeRecordValue) value);
-					attributeRecords.add(objectRecord);
-					continue;
-				}
-
-				//	 For collection type attribute, populate CollectionAttributeRecordValue HO
-				if (primitiveAttribute.getIsCollection())
-				{
-					AttributeRecord collectionRecord = populateCollectionAttributeRecord(null,
-							entity, primitiveAttribute, identifier, (List<String>) value);
-					attributeRecords.add(collectionRecord);
+					//                    AttributeRecord collectionRecord = populateCollectionAttributeRecord(null,
+					//                            entity, primitiveAttribute, identifier, (List<String>) value);
+					//                    attributeRecords.add(collectionRecord);
 				}
 				else
-				// for other attribute, append to query
 				{
-					String strValue = queryBuilder.getFormattedValue(attribute, value);
-
-					if (strValue != null && !strValue.equalsIgnoreCase(""))
-					{
-						columnNameString.append(" , ");
-						columnValuesString.append(" , ");
-						String dbColumnName = primitiveAttribute.getColumnProperties().getName();
-						columnNameString.append(dbColumnName);
-						columnValuesString.append(strValue);
-					}
+					columnNames.add(primitiveAttribute.getColumnProperties().getName());
+					columnValues.add(value);
 				}
 			}
 			else
@@ -2288,8 +2273,8 @@ public class EntityManager
 					//Map valueMapForContainedEntity = (Map) value;
 					for (Map valueMapForContainedEntity : listOfMapsForContainedEntity)
 					{
-						//						Long recordIdForContainedEntity = insertDataForSingleEntity(association
-						//								.getTargetEntity(), valueMapForContainedEntity, hibernateDAO, null);
+						//                      Long recordIdForContainedEntity = insertDataForSingleEntity(association
+						//                              .getTargetEntity(), valueMapForContainedEntity, hibernateDAO, null);
 
 						Long recordIdForContainedEntity = insertDataForHeirarchy(association
 								.getTargetEntity(), valueMapForContainedEntity, hibernateDAO);
@@ -2308,15 +2293,14 @@ public class EntityManager
 			}
 		}
 
-		//query for other attributes.
-		StringBuffer query = new StringBuffer("INSERT INTO " + tableName + " ( ");
-		query.append(columnNameString);
-		query.append(" ) VALUES (");
-		query.append(columnValuesString);
-		query.append(" ) ");
-		queryList.add(0, query.toString());
-
-		logDebug("insertData", "Query is: " + query.toString());
+		JDBCDAOImpl jdbcDao = new JDBCDAOImpl();
+		jdbcDao.openSession(null);
+		jdbcDao.insert(tableName, columnValues, columnNames);
+		jdbcDao.commit();
+		
+/*	ToDo: Correct this logger statement
+ * 	logDebug("insertData", "Query is: " + query.toString());
+ * */
 
 		Connection conn = DBUtil.getConnection();
 
@@ -2517,12 +2501,10 @@ public class EntityManager
 		{
 			return true;
 		}
-		StringBuffer updateColumnString = new StringBuffer();
+		List<String> columnNames = new ArrayList<String>();
+		List<Object> columnValues = new ArrayList<Object>();
+		
 		String tableName = entity.getTableProperties().getName();
-		List<AttributeRecord> collectionRecords = new ArrayList<AttributeRecord>();
-		List<AttributeRecord> deleteCollectionRecords = new ArrayList<AttributeRecord>();
-		List<AttributeRecord> fileRecords = new ArrayList<AttributeRecord>();
-		List<AttributeRecord> objectRecords = new ArrayList<AttributeRecord>();
 
 		Set uiColumnSet = dataValue.keySet();
 		Iterator uiColumnSetIter = uiColumnSet.iterator();
@@ -2542,68 +2524,44 @@ public class EntityManager
 
 				if (primitiveAttribute.getIsCollection())
 				{
-					// get previous values for multi select attributes
-					AttributeRecord collectionRecord = getAttributeRecord(entity.getId(),
-							primitiveAttribute.getId(), recordId, hibernateDAO);
-					List<String> listOfValues = (List<String>) value;
-
-					if (!listOfValues.isEmpty())
-					{ //if some values are provided,set these values clearing previous ones.
-						collectionRecord = populateCollectionAttributeRecord(collectionRecord,
-								entity, primitiveAttribute, recordId, (List<String>) value);
-						collectionRecords.add(collectionRecord);
-					}
-
-					if (collectionRecord != null && listOfValues.isEmpty())
-					{
-						//if updated value is empty list, then delete previously saved value if any.
-						deleteCollectionRecords.add(collectionRecord);
-					}
+					//                    // get previous values for multi select attributes
+					//                    AttributeRecord collectionRecord = getAttributeRecord(entity.getId(),
+					//                            primitiveAttribute.getId(), recordId, hibernateDAO);
+					//                    List<String> listOfValues = (List<String>) value;
+					//
+					//                    if (!listOfValues.isEmpty())
+					//                    { //if some values are provided,set these values clearing previous ones.
+					//                        collectionRecord = populateCollectionAttributeRecord(collectionRecord,
+					//                                entity, primitiveAttribute, recordId, (List<String>) value);
+					//                        collectionRecords.add(collectionRecord);
+					//                    }
+					//
+					//                    if (collectionRecord != null && listOfValues.isEmpty())
+					//                    {
+					//                        //if updated value is empty list, then delete previously saved value if any.
+					//                        deleteCollectionRecords.add(collectionRecord);
+					//                    }
 
 				}
 				else if (primitiveAttribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
 				{
-					//For file type attribute,FileAttributeRecordValue needs to be updated for that record.
-
-					FileAttributeRecordValue fileRecordValue = (FileAttributeRecordValue) value;
-					AttributeRecord fileRecord = getAttributeRecord(entity.getId(),
-							primitiveAttribute.getId(), recordId, hibernateDAO);
-					if (fileRecord != null)
-					{
-						fileRecord.getFileRecord().copyValues(fileRecordValue);
-					}
-					else
-					{
-						fileRecord = populateFileAttributeRecord(null, entity,primitiveAttribute, recordId, (FileAttributeRecordValue) value);
-					}
-
-			//		fileRecord.getFileRecord().copyValues(fileRecordValue);
-					fileRecords.add(fileRecord);
+					populateFileAttribute(columnNames, columnValues, (FileAttributeRecordValue)value, primitiveAttribute);
 				}
-				else if (primitiveAttribute.getAttributeTypeInformation() instanceof ObjectAttributeTypeInformation)
-				{
-					//For object type attribute,ObjectAttributeRecordValue needs to be updated for that record.
-
-					ObjectAttributeRecordValue objectRecordValue = (ObjectAttributeRecordValue) value;
-					AttributeRecord objectRecord = getAttributeRecord(entity.getId(),
-							primitiveAttribute.getId(), recordId, hibernateDAO);
-					objectRecord.getObjectRecord().copyValues(objectRecordValue);
-					objectRecords.add(objectRecord);
-				}
+//				else if (primitiveAttribute.getAttributeTypeInformation() instanceof ObjectAttributeTypeInformation)
+//				{
+//					//For object type attribute,ObjectAttributeRecordValue needs to be updated for that record.
+//
+//					//                    ObjectAttributeRecordValue objectRecordValue = (ObjectAttributeRecordValue) value;
+//					//                    AttributeRecord objectRecord = getAttributeRecord(entity.getId(),
+//					//                            primitiveAttribute.getId(), recordId, hibernateDAO);
+//					//                    objectRecord.getObjectRecord().copyValues(objectRecordValue);
+//					//                    objectRecords.add(objectRecord);
+//				}
 				else
 				{
 					//for other attributes, create the udpate query.
-					String dbColumnName = primitiveAttribute.getColumnProperties().getName();
-
-					if (updateColumnString.length() != 0)
-					{
-						updateColumnString.append(WHITESPACE + COMMA + WHITESPACE);
-					}
-
-					updateColumnString.append(dbColumnName);
-					updateColumnString.append(WHITESPACE + EQUAL + WHITESPACE);
-					value = queryBuilder.getFormattedValue(attribute, value);
-					updateColumnString.append(value);
+					columnNames.add(primitiveAttribute.getColumnProperties().getName());
+					columnValues.add(value);
 				}
 			}
 			else
@@ -2664,18 +2622,33 @@ public class EntityManager
 		editDataQueryList.addAll(associationRemoveDataQueryList);
 		editDataQueryList.addAll(associationInsertDataQueryList);
 
-		if (updateColumnString.length() != 0)
+		Connection conn = DBUtil.getConnection();
+		if (columnNames.size()!= 0)
 		{
 			StringBuffer query = new StringBuffer("UPDATE " + tableName + " SET ");
-			query.append(updateColumnString);
-			query.append(" where ");
+			Iterator<String> iterator = columnNames.iterator();
+			while(iterator.hasNext()){
+				query.append(iterator.next() + EQUAL + "?");
+				if(iterator.hasNext()){
+					query.append(COMMA + WHITESPACE);
+				}
+				
+			}
+			query.append(WHERE_KEYWORD);
 			query.append(IDENTIFIER);
 			query.append(WHITESPACE + EQUAL + WHITESPACE);
 			query.append(recordId);
-			editDataQueryList.add(query.toString());
+			
+			PreparedStatement preparedStatement = conn.prepareStatement(query.toString());
+			int i = 1;
+			for(Object columnValue : columnValues){
+				preparedStatement.setObject(i++, columnValue);
+			}
+			
+			preparedStatement.executeUpdate();
 		}
 
-		Connection conn = DBUtil.getConnection();
+		
 		for (String queryString : editDataQueryList)
 		{
 			logDebug("editData", "Query is: " + queryString.toString());
@@ -2683,43 +2656,31 @@ public class EntityManager
 			statement.executeUpdate();
 		}
 
-		for (AttributeRecord collectionAttributeRecord : collectionRecords)
-		{
-			logDebug("editData", "updating multi select: "
-					+ collectionAttributeRecord.getValueCollection());
-			hibernateDAO.update(collectionAttributeRecord, null, false, false, false);
-		}
-
-		for (AttributeRecord collectionAttributeRecord : deleteCollectionRecords)
-		{
-			logDebug("editData", "deleting multi select: "
-					+ collectionAttributeRecord.getValueCollection());
-			hibernateDAO.update(collectionAttributeRecord, null, false, false, false);
-		}
-
-		for (AttributeRecord fileRecord : fileRecords)
-		{
-			logDebug("editData", "updating filereocrd : "
-					+ fileRecord.getFileRecord().getFileName());
-			if(fileRecord.getId() != null)
-			{
-				hibernateDAO.update(fileRecord, null, false, false, false);
-			}
-			else
-			{
-				hibernateDAO.insert(fileRecord, null, false, false);
-			}
-		}
-
-		for (AttributeRecord objectRecord : objectRecords)
-		{
-			logDebug("editData", "updating object : "
-					+ objectRecord.getObjectRecord().getClassName());
-			hibernateDAO.update(objectRecord, null, false, false, false);
-		}
 
 		return true;
 	}
+	
+	/**
+	 * This method adds the extra columns information 
+	 * that needs to be maintained while adding the file data
+	 * @param columnNames list of column names
+	 * @param columnValues list of column values
+	 * @param value file attribute value
+	 * @param attribute 
+	 */
+	private void populateFileAttribute(List<String> columnNames, List<Object> columnValues, FileAttributeRecordValue value, AttributeInterface attribute)
+	{	
+		columnNames.add(attribute.getName()+UNDERSCORE+FILE_NAME);
+		columnValues.add(value.getFileName());
+		
+		columnNames.add(attribute.getName()+UNDERSCORE+CONTENT_TYPE);
+		columnValues.add(value.getContentType());
+		
+		columnNames.add(attribute.getColumnProperties().getName());
+		columnValues.add(value.getFileContent());
+		
+	}
+	
 
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#editData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map, java.lang.Long)
@@ -3303,14 +3264,14 @@ public class EntityManager
 			}
 			else if (attribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
 			{
-				// need to fetch AttributeRecord object for the File type attribute.
-				fileAttributes.add(attribute);
+				selectColumnNameList.add(attribute.getName()+UNDERSCORE+FILE_NAME);
+				columnNameMap.put(attribute.getName()+UNDERSCORE+FILE_NAME, attribute);
 			}
-			else if (attribute.getAttributeTypeInformation() instanceof ObjectAttributeTypeInformation)
+			/*else if (attribute.getAttributeTypeInformation() instanceof ObjectAttributeTypeInformation)
 			{
 				// need to fetch AttributeRecord object for the File type attribute.
 				objectAttributes.add(attribute);
-			}
+			}*/
 			else
 			{
 				//for the other attributes, create select query.
@@ -3599,7 +3560,7 @@ public class EntityManager
 			{
 
 				String dbColumnName = selectColumnNameList.get(i);
-				String value = getValueFromResultSet(resultSet, columnNameMap, dbColumnName, i);
+				Object value = getValueFromResultSet(resultSet, columnNameMap, dbColumnName, i);
 				Attribute attribute = (Attribute) columnNameMap.get(dbColumnName);
 				recordValues.put(attribute, value);
 			}
@@ -3634,7 +3595,7 @@ public class EntityManager
 			for (int i = 1; i <= selectColumnNameList.size(); i++)
 			{
 				String dbColumnName = selectColumnNameList.get(i - 1);
-				String value = getValueFromResultSet(resultSet, columnNameMap, dbColumnName, i);
+				Object value = getValueFromResultSet(resultSet, columnNameMap, dbColumnName, i);
 				AttributeInterface attribute = (AttributeInterface) columnNameMap.get(dbColumnName);
 				int indexOfAttribute = recordMetadata.getAttributeList().indexOf(attribute);
 				values[indexOfAttribute] = value;
@@ -3646,13 +3607,13 @@ public class EntityManager
 		return entityRecordList;
 	}
 
-	private String getValueFromResultSet(ResultSet resultSet, Map columnNameMap,
+	private Object getValueFromResultSet(ResultSet resultSet, Map columnNameMap,
 			String dbColumnName, int index) throws SQLException
 	{
 		Attribute attribute = (Attribute) columnNameMap.get(dbColumnName);
 
 		Object valueObj = resultSet.getObject(index + 1);
-		String value = "";
+		Object value = "";
 
 		if (valueObj != null)
 		{
@@ -3675,7 +3636,7 @@ public class EntityManager
 			}
 			else
 			{
-				value = valueObj.toString();
+				value = valueObj;
 			}
 		}
 		return value;

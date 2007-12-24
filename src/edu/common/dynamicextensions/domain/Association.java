@@ -287,7 +287,7 @@ public class Association extends AbstractAttribute implements AssociationInterfa
 
                 //For XMI import, we can get self referencing bi directional associations. Hence creating unique name for the sys generated association.
                 systemGeneratedAssociation.setName(association.getName()
-                        + IdGeneratorUtil.getNextUniqeId());
+                        + association.getEntity().getId());
 
                 systemGeneratedAssociation.setDescription(association.getDescription());
                 systemGeneratedAssociation.setTargetEntity(association.getEntity());

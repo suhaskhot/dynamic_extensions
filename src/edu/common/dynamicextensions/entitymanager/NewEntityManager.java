@@ -28,6 +28,7 @@ import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.AttributeRecord;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.Entity;
+import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.ObjectAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.userinterface.SelectControl;
@@ -53,6 +54,7 @@ import edu.wustl.common.dao.AbstractDAO;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.HibernateDAO;
 import edu.wustl.common.dao.JDBCDAO;
+import edu.wustl.common.dao.JDBCDAOImpl;
 import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.dbManager.DBUtil;
@@ -728,7 +730,10 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 			dataValue = new HashMap();
 		}
 
-		StringBuffer columnNameString = new StringBuffer("IDENTIFIER ");
+		List<Object> columnValues = new ArrayList<Object>();
+		List<String> columnNames = new ArrayList<String>();
+		
+		
 		Long identifier = null;
 		if (parentRecordId != null)
 		{
@@ -738,10 +743,13 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 		{
 			identifier = entityManagerUtil.getNextIdentifier(entity.getTableProperties().getName());
 		}
-		StringBuffer columnValuesString = new StringBuffer(identifier.toString());
-		columnNameString.append(" , " + Constants.ACTIVITY_STATUS_COLUMN);
-		columnValuesString.append(" , '" + Constants.ACTIVITY_STATUS_ACTIVE + "' ");
-
+		columnNames.add("IDENTIFIER ");
+		columnValues.add(identifier);
+		
+		columnNames.add(Constants.ACTIVITY_STATUS_COLUMN);
+		columnValues.add(Constants.ACTIVITY_STATUS_ACTIVE);
+		
+		
 		String tableName = entity.getTableProperties().getName();
 
 		List<AttributeRecord> attributeRecords = new ArrayList<AttributeRecord>();
@@ -767,22 +775,9 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 				// populate FileAttributeRecordValue HO
 				if (primitiveAttribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
 				{
-					//                    AttributeRecord fileRecord = populateFileAttributeRecord(null, entity,
-					//                            primitiveAttribute, identifier, (FileAttributeRecordValue) value);
-					//                    attributeRecords.add(fileRecord);
-					continue;
+					populateFileAttribute(columnNames,columnValues,(FileAttributeRecordValue)value, primitiveAttribute);
 				}
 
-				// populate ObjectAttributeRecordValue HO
-				if (primitiveAttribute.getAttributeTypeInformation() instanceof ObjectAttributeTypeInformation)
-				{
-					//                    AttributeRecord objectRecord = populateObjectAttributeRecord(null, entity,
-					//                            primitiveAttribute, identifier, (ObjectAttributeRecordValue) value);
-					//                    attributeRecords.add(objectRecord);
-					continue;
-				}
-
-				//   For collection type attribute, populate CollectionAttributeRecordValue HO
 				if (primitiveAttribute.getIsCollection())
 				{
 					//                    AttributeRecord collectionRecord = populateCollectionAttributeRecord(null,
@@ -792,16 +787,8 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 				else
 				// for other attribute, append to query
 				{
-					String strValue = queryBuilder.getFormattedValue(attribute, value);
-
-					if (strValue != null && !strValue.equalsIgnoreCase(""))
-					{
-						columnNameString.append(" , ");
-						columnValuesString.append(" , ");
-						String dbColumnName = primitiveAttribute.getColumnProperties().getName();
-						columnNameString.append(dbColumnName);
-						columnValuesString.append(strValue);
-					}
+					columnNames.add(primitiveAttribute.getColumnProperties().getName());
+					columnValues.add(value);
 				}
 			}
 			else
@@ -839,15 +826,14 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 			}
 		}
 
-		//query for other attributes.
-		StringBuffer query = new StringBuffer("INSERT INTO " + tableName + " ( ");
-		query.append(columnNameString);
-		query.append(" ) VALUES (");
-		query.append(columnValuesString);
-		query.append(" ) ");
-		queryList.add(0, query.toString());
-
-		logDebug("insertData", "Query is: " + query.toString());
+		JDBCDAOImpl jdbcDao = new JDBCDAOImpl();
+		jdbcDao.openSession(null);
+		jdbcDao.insert(tableName, columnValues, columnNames);
+		jdbcDao.commit();
+		
+/*	ToDo: Correct this logger statement
+ * 	logDebug("insertData", "Query is: " + query.toString());
+ * */
 
 		Connection conn = DBUtil.getConnection();
 
@@ -865,6 +851,24 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 
 		return identifier;
 
+	}
+
+	/**
+	 * This method adds the extra columns information 
+	 * that needs to be maintained while adding the file data
+	 * @param columnNames list of column names
+	 * @param columnValues list of column values
+	 * @param value file attribute value
+	 * @param attribute 
+	 */
+	private void populateFileAttribute(List<String> columnNames, List<Object> columnValues, FileAttributeRecordValue value, AttributeInterface attribute)
+	{	
+		columnNames.add(attribute.getName()+UNDERSCORE+FILE_NAME);
+		columnValues.add(value.getFileName());
+		
+		columnNames.add(attribute.getName()+UNDERSCORE+CONTENT_TYPE);
+		columnValues.add(value.getContentType());
+		
 	}
 
 	/**
@@ -1185,14 +1189,14 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 			}
 			else if (attribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
 			{
-				// need to fetch AttributeRecord object for the File type attribute.
-				//fileAttributes.add(attribute);
+				selectColumnNameList.add(attribute.getName()+UNDERSCORE+FILE_NAME);
+				columnNameMap.put(attribute.getName()+UNDERSCORE+FILE_NAME, attribute);
 			}
-			else if (attribute.getAttributeTypeInformation() instanceof ObjectAttributeTypeInformation)
+			/*else if (attribute.getAttributeTypeInformation() instanceof ObjectAttributeTypeInformation)
 			{
 				// need to fetch AttributeRecord object for the File type attribute.
 				//objectAttributes.add(attribute);
-			}
+			}*/
 			else
 			{
 				//for the other attributes, create select query.

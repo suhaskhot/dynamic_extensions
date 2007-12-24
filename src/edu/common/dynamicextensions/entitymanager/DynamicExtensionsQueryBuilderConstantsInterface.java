@@ -56,4 +56,8 @@ public interface DynamicExtensionsQueryBuilderConstantsInterface extends EntityM
 	String FOREIGN_KEY_KEYWORD = " foreign key ";
 	String AND_KEYWORD = "AND";
 	String LIKE_KEYWORD = "LIKE";
+	
+	String FILE_NAME = "file_name";
+	String CONTENT_TYPE = "content_type";
+	
 }

@@ -1553,6 +1553,12 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
 
         String newAttributeRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + DROP_KEYWORD
                 + WHITESPACE + COLUMN_KEYWORD + WHITESPACE + columnName;
+        
+        if (attribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation) {
+        	newAttributeQuery += extraColumnQueryStringForFileAttribute(attribute);
+        	newAttributeRollbackQuery += dropExtraColumnQueryStringForFileAttribute(attribute);
+
+		}		
 
         attributeRollbackQueryList.add(newAttributeRollbackQuery);
 

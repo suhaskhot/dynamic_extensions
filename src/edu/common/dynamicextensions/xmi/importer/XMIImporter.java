@@ -1,11 +1,15 @@
 
 package edu.common.dynamicextensions.xmi.importer;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.jmi.model.ModelPackage;
 import javax.jmi.model.MofPackage;
@@ -54,11 +58,16 @@ public class XMIImporter
 //				"C://Documents and Settings//ashish_gupta//Desktop//XMLs//roundtrip_1.4.xmi";	
 			fileName = fileName.replaceAll("\\\\", "//");		
 			System.out.println("Filename = " +fileName);
+			String pathCsvFileName = "";
 			
-			String packageName = "";
 			if(args.length > 1)
 			{
-				packageName = args[1];
+				pathCsvFileName = args[1];
+			}
+			String packageName = "";
+			if(args.length > 2)
+			{
+				packageName = args[2];
 			}
 			int beginIndex = fileName.lastIndexOf("//");
 			int endIndex = fileName.lastIndexOf(".");
@@ -91,7 +100,7 @@ public class XMIImporter
 			reader.read(in, null, uml);
 			XMIImportProcessor xmiImportProcessor = new XMIImportProcessor();
 			
-			 List<String> containerNames = new ArrayList<String>();
+			List<String> containerNames = readFile(pathCsvFileName);
 			xmiImportProcessor.processXmi(uml, domainModelName,packageName,containerNames);			
 			System.out.println("--------------- Done ------------");
 		
@@ -99,6 +108,7 @@ public class XMIImporter
 		catch (Exception e)
 		{
 			System.out.println("Fatal error reading XMI.");
+			System.out.println(e.getMessage());
 			e.printStackTrace();
 		}
 		finally
@@ -178,6 +188,32 @@ public class XMIImporter
 		}
 		// a topmost package named "UML" could not be found
 		return null;
+	}
+	
+	/**
+	 * @param path
+	 * @return
+	 * @throws IOException
+	 */
+	private static  List<String> readFile(String path) throws IOException
+	{
+		 List<String> containerNames = new ArrayList<String>();
+		File file = new File(path);
+	 
+		BufferedReader bufRdr  = new BufferedReader(new FileReader(file));
+		String line = null;
+		 
+		//read each line of text file
+		while((line = bufRdr.readLine()) != null)
+		{	
+			StringTokenizer st = new StringTokenizer(line,",");
+			while (st.hasMoreTokens())
+			{
+				//get next token and store it in the array
+				containerNames.add(st.nextToken());
+			}		
+		}
+		return containerNames;
 	}
 
 }

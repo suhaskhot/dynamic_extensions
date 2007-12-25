@@ -1082,7 +1082,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
             metaData = executeQueryForMetadata("select * from "
                     + user.getTableProperties().getName());
-            assertEquals(metaData.getColumnCount(), noOfDefaultColumns);
+            assertEquals(metaData.getColumnCount(), noOfDefaultColumnsForfile);
 
             //executeQuery("select * from dyextn_file_extensions");
 
@@ -1136,7 +1136,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             user = entityManager.persistEntity(user);
             ResultSetMetaData metaData = executeQueryForMetadata("select * from "
                     + user.getTableProperties().getName());
-            assertEquals(metaData.getColumnCount(), noOfDefaultColumns);
+            assertEquals(metaData.getColumnCount(), noOfDefaultColumnsForfile);
 
         }
         catch (Exception e)
@@ -1682,9 +1682,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
             dataValue = entityManager.getRecordById(user, recordId);
 
-            assertEquals("45", dataValue.get(age));
-            assertEquals("tp.java", ((FileAttributeRecordValue) dataValue.get(resume))
-                    .getFileName());
+            assertEquals("45", dataValue.get(age).toString());
+            assertEquals("tp.java",dataValue.get(resume));
 
             System.out.println(dataValue);
 
@@ -1759,8 +1758,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
             dataValue = entityManager.getRecordById(user, recordId);
 
-            assertEquals("new file name", ((FileAttributeRecordValue) dataValue.get(resume))
-                    .getFileName());
+            assertEquals("new file name",dataValue.get(resume));
 
             System.out.println(dataValue);
         }
@@ -2296,7 +2294,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             //Step 5.
             metadata = executeQueryForMetadata("select * from "
                     + savedEntity.getTableProperties().getName());
-            assertEquals(metadata.getColumnCount(), noOfDefaultColumns + 1);
+            assertEquals(metadata.getColumnCount(), noOfDefaultColumnsForfile + 1);
 
         }
         catch (DynamicExtensionsSystemException e)
@@ -3210,7 +3208,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             
             dataValue = entityManager.getRecordById(user, recordId);
 
-            assertEquals("45", dataValue.get(age));
+            assertEquals("45", dataValue.get(age).toString());
             TaggedValue taggedValue1 = (TaggedValue)((ObjectAttributeRecordValueInterface) dataValue.get(info)).getObject();
             assertTrue(taggedValue1.getKey().equals("rahul"));
             assertTrue(taggedValue1.getValue().equals("ner"));
@@ -3274,9 +3272,10 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             EntityRecordResultInterface recordResult = entityManager.getEntityRecords(user,userAttribute,null);
             
             EntityRecordInterface record =  recordResult.getEntityRecordList().iterator().next();
-            assertEquals("45", record.getRecordValueList().get(0));
+            assertEquals("45", record.getRecordValueList().get(0).toString());
 
-            TaggedValue taggedValue1 = (TaggedValue)(((ObjectAttributeRecordValue)record.getRecordValueList().get(1)).getObject());
+            ObjectAttributeRecordValue attributeRecordValue = (ObjectAttributeRecordValue) dataValue.get((info));
+            TaggedValue taggedValue1 = (TaggedValue)attributeRecordValue.getObject();
             assertTrue(taggedValue1.getKey().equals("rahul"));
             assertTrue(taggedValue1.getValue().equals("ner"));
 
@@ -3334,7 +3333,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             
             dataValue = entityManager.getRecordById(user, recordId);
 
-            assertEquals("45", dataValue.get(age));
+            assertEquals("45", dataValue.get(age).toString());
             TaggedValue taggedValue1 = (TaggedValue)((ObjectAttributeRecordValueInterface) dataValue.get(info)).getObject();
             assertTrue(taggedValue1.getKey().equals("rahul"));
             assertTrue(taggedValue1.getValue().equals("ner"));
@@ -3352,7 +3351,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             
             dataValue = entityManager.getRecordById(user, recordId);
 
-            assertEquals("54", dataValue.get(age));
+            assertEquals("54", dataValue.get(age).toString());
             TaggedValue taggedValue2 = (TaggedValue)((ObjectAttributeRecordValueInterface) dataValue.get(info)).getObject();
             assertTrue(taggedValue2.getKey().equals("rahul"));
             assertTrue(taggedValue2.getValue().equals("ner1"));

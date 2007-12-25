@@ -4426,7 +4426,12 @@ public class EntityManager
         if (!containsMultipleAttributes)
         {
             int lastIndexOfAND = whereClause.lastIndexOf("AND");
-            whereClause = whereClause.substring(0, lastIndexOfAND);
+            
+            if (lastIndexOfAND != -1)
+            	whereClause = whereClause.substring(0, lastIndexOfAND);
+            else
+            	whereClause = "";
+            
             fromClause = fromClause.substring(0, fromClause.length()-2);
         }
 

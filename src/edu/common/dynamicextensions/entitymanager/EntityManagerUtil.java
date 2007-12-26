@@ -20,6 +20,7 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.HibernateDAO;
@@ -332,4 +333,44 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 		}
     	return isAttributePresent;
     }
+	/**
+	 * getDynamicQueryList.
+	 */
+	public List getDynamicQueryList(EntityGroupInterface entityGroupInterface, List reverseQueryList,
+			HibernateDAO hibernateDAO, List queryList) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+		DynamicExtensionBaseQueryBuilder queryBuilder = QueryBuilderFactory.getQueryBuilder();
+		List<EntityInterface> entityList = DynamicExtensionsUtility
+				.getUnsavedEntities(entityGroupInterface);
+
+		for (EntityInterface entityObject : entityList)
+		{
+			List createQueryList = queryBuilder.getCreateEntityQueryList((Entity) entityObject,
+					reverseQueryList, hibernateDAO);
+
+			if (createQueryList != null && !createQueryList.isEmpty())
+			{
+				queryList.addAll(createQueryList);
+			}
+		}
+
+		List<EntityInterface> savedEntityList = DynamicExtensionsUtility
+				.getSavedEntities(entityGroupInterface);
+
+		for (EntityInterface savedEntity : savedEntityList)
+		{
+			Entity databaseCopy = (Entity) DBUtil.loadCleanObj(Entity.class, savedEntity
+					.getId());
+
+			List updateQueryList = queryBuilder.getUpdateEntityQueryList((Entity) savedEntity,
+					(Entity) databaseCopy, reverseQueryList);
+
+			if (updateQueryList != null && !updateQueryList.isEmpty())
+			{
+				queryList.addAll(updateQueryList);
+			}
+		}
+		return queryList;
+	}
 }

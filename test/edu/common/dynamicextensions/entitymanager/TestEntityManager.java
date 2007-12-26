@@ -111,9 +111,13 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
      */
     public void testEditEntity()
     {
+		EntityGroupInterface entityGroup = DomainObjectFactory.getInstance().createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
         //Step 1
         Entity entity = (Entity) DomainObjectFactory.getInstance().createEntity();
         entity.setName("Stock Quote");
+        entity.setEntityGroup(entityGroup);
+        entityGroup.addEntity(entity);
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
 
         try
@@ -207,6 +211,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
      */
     public void testEditEntityRemoveAttribute()
     {
+		EntityGroupInterface entityGroup = DomainObjectFactory.getInstance().createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
         //Step 1
         Entity entity = (Entity) DomainObjectFactory.getInstance().createEntity();
         entity.setName("Stock Quote");
@@ -224,6 +230,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
             entity.addAbstractAttribute(floatAtribute);
             entity.addAbstractAttribute(commentsAttributes);
+            entityGroup.addEntity(entity);
+            entity.setEntityGroup(entityGroup);
             //Step 2
             EntityInterface savedEntity = newEntityManagerInterface.persistEntity(entity);
 
@@ -289,11 +297,11 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             //Step 1
             Entity entity = (Entity) DomainObjectFactory.getInstance().createEntity();
             EntityGroup entityGroup = (EntityGroup) DomainObjectFactory.getInstance().createEntityGroup();
-            entityGroup.setName("testGroup");
-            entityGroup.addEntity(entity);
+            entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
             entity.addAbstractAttribute(null);
             EntityManagerUtil.addIdAttribute(entity);
             entity.setEntityGroup(entityGroup);
+            entityGroup.addEntity(entity);
             //EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
             NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
             //Step 2
@@ -323,10 +331,13 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
      */
     public void testCreateEntityNull()
     {
+        EntityGroup entityGroup = (EntityGroup) DomainObjectFactory.getInstance().createEntityGroup();
+        entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
         //Step 1
         Entity entity = (Entity) DomainObjectFactory.getInstance().createEntity();
         entity.setName("test");
-
+        entityGroup.addEntity(entity);
+        entity.setEntityGroup(entityGroup);
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
 
         //EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
@@ -370,6 +381,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
      */
     public void testEditAttributeTypeChange()
     {
+        EntityGroup entityGroup = (EntityGroup) DomainObjectFactory.getInstance().createEntityGroup();
+        entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
         Entity entity;
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
 
@@ -377,6 +390,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         {
             //Step 1
             entity = (Entity) DomainObjectFactory.getInstance().createEntity();
+            entityGroup.addEntity(entity);
+            entity.setEntityGroup(entityGroup);
             AttributeInterface ssn = DomainObjectFactory.getInstance().createIntegerAttribute();
             ssn.setName("SSN of participant");
             entity.addAbstractAttribute(ssn);
@@ -444,10 +459,13 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     {
         Entity entity = null;
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-
+        EntityGroup entityGroup = (EntityGroup) DomainObjectFactory.getInstance().createEntityGroup();
+        entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
         try
         {
             entity = (Entity) DomainObjectFactory.getInstance().createEntity();
+            entityGroup.addEntity(entity);
+            entity.setEntityGroup(entityGroup);
             AttributeInterface ssn = DomainObjectFactory.getInstance().createIntegerAttribute();
             ssn.setName("SSN of participant");
             entity.addAbstractAttribute(ssn);
@@ -558,11 +576,13 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
      */
     public void testGetEntitiesByConceptCode()
     {
+        EntityGroup entityGroup = (EntityGroup) DomainObjectFactory.getInstance().createEntityGroup();
+        entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
         try
         {
             //Step 1
-            Entity entity = (Entity) new MockEntityManager().initializeEntity();
+            Entity entity = (Entity) new MockEntityManager().initializeEntity(entityGroup);
             SemanticPropertyInterface semanticPropertyInterface = (SemanticPropertyInterface) new MockEntityManager()
                     .initializeSemanticProperty();
             entity.addSemanticProperty(semanticPropertyInterface);
@@ -595,8 +615,10 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
         try
         {
+            EntityGroup entityGroup = (EntityGroup) DomainObjectFactory.getInstance().createEntityGroup();
+            entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
             //Step 1
-            Entity entity = (Entity) new MockEntityManager().initializeEntity();
+            Entity entity = (Entity) new MockEntityManager().initializeEntity(entityGroup);
             //Step 2
             entity = (Entity) newEntityManagerInterface.persistEntity(entity);
             //Step 3
@@ -621,14 +643,16 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         try
         {
             DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
+            EntityGroup entityGroup = (EntityGroup) factory.createEntityGroup();
+            entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
             // create user
             EntityInterface user = factory.createEntity();
             AttributeInterface userNameAttribute = factory.createStringAttribute();
             userNameAttribute.setName("user name");
             user.setName("user");
             user.addAbstractAttribute(userNameAttribute);
-
+            entityGroup.addEntity(user);
+            user.setEntityGroup(entityGroup);
             user = (Entity) newEntityManagerInterface.persistEntity(user);
 
             AttributeInterface attributeInterface = (AttributeInterface) newEntityManagerInterface
@@ -656,7 +680,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         try
         {
             DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
+            EntityGroup entityGroup = (EntityGroup) factory.createEntityGroup();
+            entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
             // create user
             EntityInterface user = factory.createEntity();
             AttributeInterface userNameAttribute = factory.createStringAttribute();
@@ -664,7 +689,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             userNameAttribute.setIsCollection(true);
             user.setName("user");
             user.addAbstractAttribute(userNameAttribute);
-
+            entityGroup.addEntity(user);
+            user.setEntityGroup(entityGroup);
+            EntityManagerUtil.addIdAttribute(user);
             user = (Entity) newEntityManagerInterface.persistEntity(user);
 
             Entity newEntity = (Entity) newEntityManagerInterface.getEntityByIdentifier(
@@ -715,7 +742,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
         try
         {
-            Entity entity = (Entity) new MockEntityManager().initializeEntity();
+            EntityGroup entityGroup = (EntityGroup) DomainObjectFactory.getInstance().createEntityGroup();
+            entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
+            Entity entity = (Entity) new MockEntityManager().initializeEntity(entityGroup);
             entity = (Entity) newEntityManagerInterface.persistEntity(entity);
 
             Entity newEntity = (Entity) newEntityManagerInterface.getEntityByIdentifier(entity.getId()
@@ -779,6 +808,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
      */
     public void testInsertDataWithMultiSelectAttribute()
     {
+        EntityGroup entityGroup = (EntityGroup) DomainObjectFactory.getInstance().createEntityGroup();
+        entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
         Entity entity = (Entity) DomainObjectFactory.getInstance().createEntity();
         entity.setName("Stock Quote");
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
@@ -797,7 +828,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
             entity.addAbstractAttribute(floatAtribute);
             entity.addAbstractAttribute(commentsAttributes);
-
+            entityGroup.addEntity(entity);
+            entity.setEntityGroup(entityGroup);
             EntityInterface savedEntity = newEntityManagerInterface.persistEntity(entity);
 
             Map dataValue = new HashMap();
@@ -848,6 +880,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
      */
     public void testEditRecord()
     {
+        EntityGroup entityGroup = (EntityGroup) DomainObjectFactory.getInstance().createEntityGroup();
+        entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
         Entity study = (Entity) DomainObjectFactory.getInstance().createEntity();
         study.setName("Study");
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
@@ -868,7 +902,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             study.addAbstractAttribute(name);
             study.addAbstractAttribute(userNames);
             study.addAbstractAttribute(studyDate);
-
+            entityGroup.addEntity(study);
+            study.setEntityGroup(entityGroup);
             EntityInterface savedStudy = newEntityManagerInterface.persistEntity(study);
 
             Map dataValue = new HashMap();
@@ -917,6 +952,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
      */
     public void testEditRecordWithMultiselectAttrubteUpdate()
     {
+        EntityGroup entityGroup = (EntityGroup) DomainObjectFactory.getInstance().createEntityGroup();
+        entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
         Entity study = new Entity();
         study.setName("Study");
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
@@ -938,6 +975,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             study.addAttribute(name);
             study.addAttribute(userNames);
             study.addAttribute(studyDate);
+            entityGroup.addEntity(study);
+            study.setEntityGroup(entityGroup);
             EntityInterface savedStudy = newEntityManagerInterface.persistEntity(study);
 
             Map dataValue = new HashMap();
@@ -998,6 +1037,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     public void testEditFileAttribute()
     {
         DomainObjectFactory factory = DomainObjectFactory.getInstance();
+        EntityGroup entityGroup = (EntityGroup) factory.createEntityGroup();
+        entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
 
         // create user
@@ -1006,7 +1047,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         AttributeInterface resume = factory.createStringAttribute();
         resume.setName("Resume");
         user.addAbstractAttribute(resume);
-
+        user.setEntityGroup(entityGroup);
+        entityGroup.addEntity(user);
         try
         {
             ResultSet rs = executeQuery("select count(*) from dyextn_file_extensions");
@@ -1067,6 +1109,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     public void testCreateFileAttribute()
     {
         DomainObjectFactory factory = DomainObjectFactory.getInstance();
+        EntityGroup entityGroup = (EntityGroup) factory.createEntityGroup();
+        entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
 
         // create user
@@ -1075,6 +1119,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         AttributeInterface resume = factory.createFileAttribute();
         resume.setName("Resume");
         user.addAbstractAttribute(resume);
+        user.setEntityGroup(entityGroup);
+        entityGroup.addEntity(user);
 
         Collection<FileExtension> allowedExtn = new HashSet<FileExtension>();
 
@@ -1121,7 +1167,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
         try
         {
-            Entity entity = (Entity) new MockEntityManager().initializeEntity();
+            EntityGroup entityGroup = (EntityGroup) DomainObjectFactory.getInstance().createEntityGroup();
+            entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
+            Entity entity = (Entity) new MockEntityManager().initializeEntity(entityGroup);
             TaggedValueInterface taggedValue = DomainObjectFactory.getInstance()
                     .createTaggedValue();
             taggedValue.setKey("a");
@@ -1154,11 +1202,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
         try
         {
-            Entity entity = (Entity) new MockEntityManager().initializeEntity();
-            EntityGroup entityGroup = new EntityGroup();
-            entityGroup.setName("testEntityGroup");
-            entity.setEntityGroup(entityGroup);
-            entityGroup.addEntity(entity);
+            EntityGroup entityGroup = (EntityGroup) DomainObjectFactory.getInstance().createEntityGroup();
+            entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
+            Entity entity = (Entity) new MockEntityManager().initializeEntity(entityGroup);
             entity = (Entity) newEntityManagerInterface.persistEntity(entity);
             Entity newEntity = (Entity) newEntityManagerInterface.getEntityByIdentifier(
                     entity.getId().toString());
@@ -1185,7 +1231,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
         try
         {
-            Entity entity = (Entity) new MockEntityManager().initializeEntity();
+            EntityGroup entityGroup = (EntityGroup) DomainObjectFactory.getInstance().createEntityGroup();
+            entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
+            Entity entity = (Entity) new MockEntityManager().initializeEntity(entityGroup);
             entity = (Entity) newEntityManagerInterface.persistEntity(entity);
 
             Entity newEntity = (Entity) newEntityManagerInterface.getEntityByIdentifier(entity.getId()
@@ -1241,7 +1289,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
         try
         {
-            Entity entity = (Entity) new MockEntityManager().initializeEntity();
+            EntityGroup entityGroup = (EntityGroup) DomainObjectFactory.getInstance().createEntityGroup();
+            entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
+            Entity entity = (Entity) new MockEntityManager().initializeEntity(entityGroup);
             entity = (Entity) newEntityManagerInterface.persistEntity(entity);
 
             Map map = EntityManager.getInstance().getRecordById(entity, new Long(1));
@@ -1269,7 +1319,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
         try
         {
-            entity = (Entity) new MockEntityManager().initializeEntity();
+            EntityGroup entityGroup = (EntityGroup) DomainObjectFactory.getInstance().createEntityGroup();
+            entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
+            entity = (Entity) new MockEntityManager().initializeEntity(entityGroup);
 
             Map map = newEntityManagerInterface.getRecordById(entity, new Long(1));
             fail("Exception should have be thrown since entity is not saved");
@@ -1357,9 +1409,11 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
         try
         {
+            EntityGroup entityGroup = (EntityGroup) DomainObjectFactory.getInstance().createEntityGroup();
+            entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
             Container container = new Container();
             container.setCaption("testcontainer");
-            Entity entityInterface = (Entity) new MockEntityManager().initializeEntity();
+            Entity entityInterface = (Entity) new MockEntityManager().initializeEntity(entityGroup);
             EntityManagerUtil.addIdAttribute(entityInterface);
             container.setEntity(entityInterface);
             Collection<ContainerInterface> listOfContainers = new HashSet<ContainerInterface>();
@@ -1397,7 +1451,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
         try
         {
-            Entity entity = (Entity) new MockEntityManager().initializeEntity();
+            EntityGroup entityGroup = (EntityGroup) DomainObjectFactory.getInstance().createEntityGroup();
+            entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
+            Entity entity = (Entity) new MockEntityManager().initializeEntity(entityGroup);
             entity = (Entity) newEntityManagerInterface.persistEntity(entity);
             AttributeInterface attr = new MockEntityManager().initializeStringAttribute("na", "ab");
             attr.setEntity(entity);
@@ -1423,7 +1479,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
         try
         {
-            Entity entity = (Entity) new MockEntityManager().initializeEntity();
+            EntityGroup entityGroup = (EntityGroup) DomainObjectFactory.getInstance().createEntityGroup();
+            entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
+            Entity entity = (Entity) new MockEntityManager().initializeEntity(entityGroup);
             AttributeInterface attr = new MockEntityManager().initializeStringAttribute("na", "ab");
             attr.setEntity(entity);
             entity.addAbstractAttribute(attr);
@@ -1450,6 +1508,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
         DomainObjectFactory factory = DomainObjectFactory.getInstance();
+        EntityGroup entityGroup = (EntityGroup) factory.createEntityGroup();
+        entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
+
 
         // create user
         EntityInterface user = factory.createEntity();
@@ -1462,7 +1523,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         AttributeInterface resume = factory.createFileAttribute();
         resume.setName("Resume");
         user.addAbstractAttribute(resume);
-
+        user.setEntityGroup(entityGroup);
+        entityGroup.addEntity(user);
         Collection<FileExtension> allowedExtn = new HashSet<FileExtension>();
 
         FileExtension txtExtn = new FileExtension();
@@ -1516,6 +1578,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
         DomainObjectFactory factory = DomainObjectFactory.getInstance();
+        EntityGroup entityGroup = (EntityGroup) factory.createEntityGroup();
+        entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
 
         // create user
         EntityInterface user = factory.createEntity();
@@ -1528,7 +1592,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         AttributeInterface resume = factory.createFileAttribute();
         resume.setName("Resume");
         user.addAbstractAttribute(resume);
-
+        entityGroup.addEntity(user);
+        user.setEntityGroup(entityGroup);
         Collection<FileExtension> allowedExtn = new HashSet<FileExtension>();
 
         FileExtension txtExtn = new FileExtension();
@@ -1582,6 +1647,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
         DomainObjectFactory factory = DomainObjectFactory.getInstance();
+        EntityGroup entityGroup = (EntityGroup) factory.createEntityGroup();
+        entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
 
         // create user
         EntityInterface user = factory.createEntity();
@@ -1594,7 +1661,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         AttributeInterface resume = factory.createFileAttribute();
         resume.setName("Resume");
         user.addAbstractAttribute(resume);
-
+        user.setEntityGroup(entityGroup);
+        entityGroup.addEntity(user);
         Collection<FileExtension> allowedExtn = new HashSet<FileExtension>();
 
         FileExtension txtExtn = new FileExtension();
@@ -1649,7 +1717,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
         DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
+        EntityGroup entityGroup = (EntityGroup) factory.createEntityGroup();
+        entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
         // create user
         EntityInterface user = factory.createEntity();
         user.setName("User");
@@ -1661,7 +1730,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         AttributeInterface resume = factory.createFileAttribute();
         resume.setName("Resume");
         user.addAbstractAttribute(resume);
-
+        entityGroup.addEntity(user);
+        user.setEntityGroup(entityGroup);
         Collection<FileExtension> allowedExtn = new HashSet<FileExtension>();
 
         FileExtension txtExtn = new FileExtension();
@@ -1723,6 +1793,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
         DomainObjectFactory factory = DomainObjectFactory.getInstance();
+        EntityGroup entityGroup = (EntityGroup) factory.createEntityGroup();
+        entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
 
         EntityInterface user = factory.createEntity();
         user.setName("User");
@@ -1734,7 +1806,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         AttributeInterface resume = factory.createFileAttribute();
         resume.setName("Resume");
         user.addAbstractAttribute(resume);
-
+        entityGroup.addEntity(user);
+        user.setEntityGroup(entityGroup);
         Collection<FileExtension> allowedExtn = new HashSet<FileExtension>();
 
         FileExtension txtExtn = new FileExtension();
@@ -1805,8 +1878,10 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
         try
         {
+            EntityGroup entityGroup = (EntityGroup) DomainObjectFactory.getInstance().createEntityGroup();
+            entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
             //Step 1
-            Entity entity = (Entity) new MockEntityManager().initializeEntity();
+            Entity entity = (Entity) new MockEntityManager().initializeEntity(entityGroup);
             EntityManagerUtil.addIdAttribute(entity);
             TaggedValueInterface taggedValue = DomainObjectFactory.getInstance()
                     .createTaggedValue();
@@ -1846,11 +1921,11 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             entityGroup = (EntityGroup) mock.initializeEntityGroup();
             for (int i = 0; i <= 11; i++)
             {
-                Entity entity = (Entity) mock.initializeEntity();
+                Entity entity = (Entity) mock.initializeEntity(entityGroup);
                 entityGroup.addEntity(entity);
                 if (i == 10)
                 {
-                    entity = (Entity) mock.initializeEntity();
+                    entity = (Entity) mock.initializeEntity(entityGroup);
                     TableProperties tableProperties = new TableProperties();
                     tableProperties.setName("@#$%@$%$^");
                     entity.setTableProperties(tableProperties);
@@ -1883,7 +1958,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             entityGroup = (EntityGroup) mock.initializeEntityGroup();
             for (int i = 0; i <= 11; i++)
             {
-                Entity entity = (Entity) mock.initializeEntity();
+                Entity entity = (Entity) mock.initializeEntity(entityGroup);
                 entityGroup.addEntity(entity);
             }
             entityGroup = (EntityGroup) entityGroupManager.persistEntityGroup(entityGroup);
@@ -1927,7 +2002,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             //Step 2
             for (int i = 0; i <= 9; i++)
             {
-                Entity entity = (Entity) mock.initializeEntity();
+                Entity entity = (Entity) mock.initializeEntity(entityGroup);
                 entityGroup.addEntity(entity);
             }
             //Step 3
@@ -1962,7 +2037,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         Entity entity = null;
         try
         {
-            entity = (Entity) new MockEntityManager().initializeEntity();
+			EntityGroupInterface entityGroup = DomainObjectFactory.getInstance().createEntityGroup();
+			entityGroup.setName("test_" + new Double(Math.random()).toString());
+            entity = (Entity) new MockEntityManager().initializeEntity(entityGroup);
             TableProperties tableProperties = new TableProperties();
             tableProperties.setName("Created_table");
             entity.setTableProperties(tableProperties);
@@ -2010,7 +2087,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
         try
         {
-            Entity entity = (Entity) new MockEntityManager().initializeEntity();
+			EntityGroupInterface entityGroup = DomainObjectFactory.getInstance().createEntityGroup();
+			entityGroup.setName("test_" + new Double(Math.random()).toString());
+            Entity entity = (Entity) new MockEntityManager().initializeEntity(entityGroup);
             TableProperties tableProperties = new TableProperties();
             tableProperties.setName("!##$$%");
             entity.setTableProperties(tableProperties);
@@ -2141,10 +2220,12 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
      */
     public void testInsertDataWithdefaultValue()
     {
+    	DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
         Entity entity = (Entity) DomainObjectFactory.getInstance().createEntity();
         entity.setName("Stock Quote");
-        DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
         try
         {
@@ -2161,6 +2242,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             tempAttributes.setName("temp");
             entity.addAbstractAttribute(tempAttributes);
             EntityManagerUtil.addIdAttribute(entity);
+            entityGroup.addEntity(entity);
+            entity.setEntityGroup(entityGroup);
             //Step 2.
             EntityInterface savedEntity = newEntityManagerInterface.persistEntity(entity);
 
@@ -2211,7 +2294,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     public void testEditEntityToAddFileAttribute()
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        DomainObjectFactory factory = DomainObjectFactory.getInstance();
+    	DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
         try
         {
@@ -2222,6 +2307,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             AttributeInterface commentsAttributes = factory.createStringAttribute();
             commentsAttributes.setName("comments");
             user.addAbstractAttribute(commentsAttributes);
+            user.setEntityGroup(entityGroup);
+            entityGroup.addEntity(user);
 
             //Step 2.
             EntityInterface savedEntity = newEntityManagerInterface.persistEntity(user);
@@ -2396,6 +2483,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
      */
     public void testInsertDataForDate()
     {
+    	DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
         //Step 1
         Entity entity = (Entity) DomainObjectFactory.getInstance().createEntity();
         entity.setName("Stock Quote");
@@ -2423,7 +2513,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             entity.addAbstractAttribute(commentsAttributes);
             entity.addAbstractAttribute(startDate);
             entity.addAbstractAttribute(endDate);
-
+            entityGroup.addEntity(entity);
+            entity.setEntityGroup(entityGroup);
             //Step 2
             EntityInterface savedEntity = newEntityManagerInterface.persistEntity(entity);
 
@@ -2468,7 +2559,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         try
         {
             //step 1
-            DomainObjectFactory factory = DomainObjectFactory.getInstance();
+        	DomainObjectFactory factory = DomainObjectFactory.getInstance();
+    		EntityGroupInterface entityGroup = factory.createEntityGroup();
+    		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
             Entity entity = (Entity) factory.createEntity();
             entity.setName("Stock Quote");
@@ -2482,6 +2575,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             //step 2
             entity.addAbstractAttribute(floatAtribute);
             entity.addAbstractAttribute(commentsAttributes);
+            entityGroup.addEntity(entity);
+            entity.setEntityGroup(entityGroup);
             //step 3
             entity = (Entity) newEntityManagerInterface.persistEntity(entity);
 
@@ -2546,7 +2641,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         try
         {
             //step 1
-            DomainObjectFactory factory = DomainObjectFactory.getInstance();
+        	DomainObjectFactory factory = DomainObjectFactory.getInstance();
+    		EntityGroupInterface entityGroup = factory.createEntityGroup();
+    		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
             Entity entity = (Entity) factory.createEntity();
             entity.setName("Stock Quote");
@@ -2560,6 +2657,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             //step 2
             entity.addAbstractAttribute(floatAtribute);
             entity.addAbstractAttribute(commentsAttributes);
+            entityGroup.addEntity(entity);
+            entity.setEntityGroup(entityGroup);
             //step 3
             entity = (Entity) newEntityManagerInterface.persistEntity(entity);
 
@@ -2608,7 +2707,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     public void testDeleteDataForContaintmentOneToOne()
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        DomainObjectFactory factory = DomainObjectFactory.getInstance();
+    	DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
         try
         {
@@ -2642,7 +2743,10 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
                     Cardinality.ZERO, Cardinality.ONE));
 
             user.addAbstractAttribute(association);
-
+            entityGroup.addEntity(user);
+            user.setEntityGroup(entityGroup);
+            entityGroup.addEntity(address);
+            address.setEntityGroup(entityGroup);
             // Step 4
             EntityInterface savedEntity = newEntityManagerInterface.persistEntity(user);
 
@@ -2694,7 +2798,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     public void testDeleteDataForContaintmentOneToMany()
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        DomainObjectFactory factory = DomainObjectFactory.getInstance();
+    	DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
         try
         {
@@ -2704,7 +2810,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             userNameAttribute.setName("user name");
             user.setName("user");
             user.addAbstractAttribute(userNameAttribute);
-
+            user.setEntityGroup(entityGroup);
+            entityGroup.addEntity(user);
             // Step 2
             EntityInterface address = factory.createEntity();
             address.setName("address");
@@ -2728,7 +2835,10 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
                     Cardinality.ZERO, Cardinality.MANY));
 
             user.addAbstractAttribute(association);
-
+            entityGroup.addEntity(user);
+            user.setEntityGroup(entityGroup);
+            entityGroup.addEntity(address);
+            address.setEntityGroup(entityGroup);
             // Step 4
             EntityInterface savedEntity = newEntityManagerInterface.persistEntity(user);
 
@@ -2783,7 +2893,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     public void testDeleteDataForAssociationOne2Many()
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        DomainObjectFactory factory = DomainObjectFactory.getInstance();
+    	DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
         try
         {
@@ -2812,7 +2924,10 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
                     Cardinality.ZERO, Cardinality.MANY));
 
             user.addAbstractAttribute(association);
-
+            user.setEntityGroup(entityGroup);
+            entityGroup.addEntity(study);
+            study.setEntityGroup(entityGroup);
+            entityGroup.addEntity(user);
             //persist entity
             EntityInterface savedEntity = newEntityManagerInterface.persistEntity(user);
 
@@ -2872,7 +2987,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     public void testDeleteReferedData() throws Exception
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        DomainObjectFactory factory = DomainObjectFactory.getInstance();
+    	DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
         EntityInterface study = null;
 
         try
@@ -2902,7 +3019,10 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
                     Cardinality.ZERO, Cardinality.ONE));
 
             user.addAbstractAttribute(association);
-
+            user.setEntityGroup(entityGroup);
+            entityGroup.addEntity(study);
+            study.setEntityGroup(entityGroup);
+            entityGroup.addEntity(user);
             //Step 4
             EntityInterface savedEntity = newEntityManagerInterface.persistEntity(user);
 
@@ -2956,7 +3076,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     public void testInsertValueWithQuote()
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        DomainObjectFactory factory = DomainObjectFactory.getInstance();
+    	DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
         try
         {
@@ -2967,7 +3089,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             AttributeInterface barcode = factory.createStringAttribute();
             barcode.setName("barcode");
             specimen.addAbstractAttribute(barcode);
-
+            entityGroup.addEntity(specimen);
+            specimen.setEntityGroup(entityGroup);
             Map dataValue = new HashMap();
 
             dataValue.put(barcode, "123'456");
@@ -2997,7 +3120,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
         try
         {
-            DomainObjectFactory factory = DomainObjectFactory.getInstance();
+        	DomainObjectFactory factory = DomainObjectFactory.getInstance();
+    		EntityGroupInterface entityGroup = factory.createEntityGroup();
+    		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
             // Step 1
             EntityInterface specimen = factory.createEntity();
@@ -3031,7 +3156,10 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
             EntityInterface tissueSpecimen = factory.createEntity();
             tissueSpecimen.setParentEntity(specimen);
-
+            entityGroup.addEntity(tissueSpecimen);
+            tissueSpecimen.setEntityGroup(entityGroup);
+            entityGroup.addEntity(specimen);
+            specimen.setEntityGroup(entityGroup);
             specimen = newEntityManagerInterface.persistEntity(specimen);
         }
         catch (Exception e)
@@ -3048,7 +3176,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     public void testInsertObjectAttribute()
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        DomainObjectFactory factory = DomainObjectFactory.getInstance();
+    	DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
         // create user
         EntityInterface user = factory.createEntity();
@@ -3063,7 +3193,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         info.setName("Resume");
         user.addAbstractAttribute(info);
         user.addAttribute(info);
-
+        entityGroup.addEntity(user);
+        user.setEntityGroup(entityGroup);
         try
         {
             user = newEntityManagerInterface.persistEntity(user);
@@ -3094,7 +3225,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     public void testGerRecordForObjectAttribute()
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        DomainObjectFactory factory = DomainObjectFactory.getInstance();
+    	DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
         // create user
         EntityInterface user = factory.createEntity();
@@ -3108,7 +3241,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         info.setName("Resume");
         user.addAbstractAttribute(info);
         user.addAttribute(info);
-
+        entityGroup.addEntity(user);
+        user.setEntityGroup(entityGroup);
         try
         {
             TaggedValue taggedValue = new TaggedValue();
@@ -3153,7 +3287,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     public void testGerEntityRecordResultForObjectAttribute()
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        DomainObjectFactory factory = DomainObjectFactory.getInstance();
+    	DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
         // create user
         EntityInterface user = factory.createEntity();
@@ -3167,7 +3303,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         info.setName("Resume");
         user.addAbstractAttribute(info);
         user.addAttribute(info);
-
+        entityGroup.addEntity(user);
+        user.setEntityGroup(entityGroup);
         try
         {
             TaggedValue taggedValue = new TaggedValue();
@@ -3215,7 +3352,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     public void testEditRecordForObjectAttribute()
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        DomainObjectFactory factory = DomainObjectFactory.getInstance();
+    	DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
         // create user
         EntityInterface user = factory.createEntity();
@@ -3230,7 +3369,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         info.setName("Resume");
         user.addAbstractAttribute(info);
         user.addAttribute(info);
-
+        entityGroup.addEntity(user);
+        user.setEntityGroup(entityGroup);
         try
         {
             TaggedValue taggedValue = new TaggedValue();
@@ -3297,7 +3437,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     public void testDeleteRecordForObjectAttribute()
     {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        DomainObjectFactory factory = DomainObjectFactory.getInstance();
+    	DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
         // create user
         EntityInterface user = factory.createEntity();
@@ -3311,7 +3453,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         info.setName("Resume");
         user.addAbstractAttribute(info);
         user.addAttribute(info);
-
+        entityGroup.addEntity(user);
+        user.setEntityGroup(entityGroup);
         try
         {
             TaggedValue taggedValue = new TaggedValue();
@@ -3356,7 +3499,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
      */
     public void testEditEntityToAddObjectAttribute() {
         NewEntityManagerInterface newEntityManagerInterface = NewEntityManager.getInstance();
-        DomainObjectFactory factory = DomainObjectFactory.getInstance();
+    	DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
         // create user
         EntityInterface user = factory.createEntity();
@@ -3365,7 +3510,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         AttributeInterface age = factory.createIntegerAttribute();
         age.setName("Age");
         user.addAbstractAttribute(age);
-
+        entityGroup.addEntity(user);
+        user.setEntityGroup(entityGroup);
         try
         {
             user = newEntityManagerInterface.persistEntity(user);
@@ -3427,7 +3573,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         EntityGroupInterface entityGroup = DomainObjectFactory.getInstance().createEntityGroup();
         EntityInterface e1 = new MockEntityManager().initializeEntity3();
         entityGroup.addEntity(e1);
-
+        e1.setEntityGroup(entityGroup);
         try
         {
             newEntityManager.persistEntityGroup(entityGroup);

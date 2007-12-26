@@ -770,27 +770,53 @@ public class DynamicExtensionsUtility
 	 * @param entity
 	 * @param entitySet
 	 */
-	public static void getAssociatedAndInheritedEntities(EntityInterface entity, List<EntityInterface> entityList)
+	public static List getUnsavedEntities(EntityGroupInterface entityGroup)
 	{
-		if (entityList.contains(entity))
+		List<EntityInterface> entityList = new ArrayList<EntityInterface>();
+		Collection<EntityInterface> entityCollection = entityGroup.getEntityCollection();
+		for (EntityInterface entity : entityCollection)
 		{
-			return;
+			if (entity.getId() == null)
+			{
+				entityList.add(entity);
+			}
 		}
-		else
-		{
-			entityList.add(entity);
-            if (entity.getParentEntity() != null)
-            {
-            	getAssociatedAndInheritedEntities(entity.getParentEntity(),entityList);
-            }
-    		Collection<AssociationInterface> associationCollection = entity.getAssociationCollection();
-    		for (AssociationInterface associationInterface : associationCollection)
-    		{
-    			EntityInterface targetEntity = associationInterface.getTargetEntity();
-    			getAssociatedAndInheritedEntities(targetEntity,entityList);
-    		}
-		}
+		return entityList;
 	}
+	/**
+	 * @param entity
+	 * @param entitySet
+	 */
+	public static List getSavedEntities(EntityGroupInterface entityGroup)
+	{
+		List<EntityInterface> entityList = new ArrayList<EntityInterface>();
+		Collection<EntityInterface> entityCollection = entityGroup.getEntityCollection();
+		for (EntityInterface entity : entityCollection)
+		{
+			if (entity.getId() != null)
+			{
+				entityList.add(entity);
+			}
+		}
+		return entityList;
+	}
+    /**
+     * @param processedEntityList
+     * @param entity
+     * @return
+     */
+    private static boolean isEntityPresent(List<EntityInterface> entityList,
+            EntityInterface entity)
+    {
+        for (EntityInterface entityInterface : entityList)
+        {
+            if (entityInterface.getName().equalsIgnoreCase(entity.getName()))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 	/**
 	 * This method checks if the date string is as per the given format or not.
 	 * @param dateFormat Format of the date (e.g. dd/mm/yyyy)

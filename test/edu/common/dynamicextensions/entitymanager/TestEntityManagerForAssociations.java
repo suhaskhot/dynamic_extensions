@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -21,15 +20,11 @@ import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.Entity;
-import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
-import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface;
-import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
-import edu.common.dynamicextensions.exception.BaseDynamicExtensionsException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
@@ -91,18 +86,18 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		// create user
         EntityGroupInterface entityGroup = DomainObjectFactory.getInstance().createEntityGroup();
-        entityGroup.setName("kunal");
+        entityGroup.setName("kunal"+ new Double(Math.random()).toString());
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("kunal_3");
-		user.setName("kunal_3");
+		user.setName("kunal_3_user");
 		user.addAbstractAttribute(userNameAttribute);
 
 		// create study
 		EntityInterface study = factory.createEntity();
 		AttributeInterface studyNameAttribute = factory.createStringAttribute();
 		studyNameAttribute.setName("study kunal_3");
-		study.setName("kunal_3");
+		study.setName("kunal_3_study");
 		study.addAbstractAttribute(studyNameAttribute);
 
 		// Associate user (1)------ >(*)study
@@ -121,7 +116,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		try
 		{
 			//entityManager.createEntity(study);
-            entityGroup.getEntityCollection().add(user);
+            entityGroup.addEntity(user);
+            user.setEntityGroup(entityGroup);
+            entityGroup.addEntity(study);
+            study.setEntityGroup(entityGroup);
 			EntityGroupInterface savedUser = entityGroupManager.persistEntityGroup(entityGroup);
 
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from "
@@ -227,14 +225,16 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	 */
 	public void testCreateEntityWithAssociationWithUnsavedTargetEntity()
 	{
-		Entity srcEntity;
-
 		try
 		{
-			srcEntity = (Entity) new MockEntityManager().initializeEntity();
+			DomainObjectFactory factory = DomainObjectFactory.getInstance();
+			EntityGroupInterface entityGroup = factory.createEntityGroup();
+			entityGroup.setName("test_" + new Double(Math.random()).toString());
+
+			Entity srcEntity = (Entity) new MockEntityManager().initializeEntity(entityGroup);
 			srcEntity.setName("study");
 			//Entity savedSrcEntity = (Entity) EntityManager.getInstance().createEntity(srcEntity);
-			Entity targetEntity = (Entity) new MockEntityManager().initializeEntity();
+			Entity targetEntity = (Entity) new MockEntityManager().initializeEntity(entityGroup);
 			targetEntity.setName("user");
 			//Entity savedTargetEntity = (Entity) EntityManager.getInstance().createEntity(targetEntity);
 			Association association = (Association) DomainObjectFactory.getInstance()
@@ -253,7 +253,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			NewEntityManager.getInstance().persistEntity(srcEntity);
 
 		}
-		catch (BaseDynamicExtensionsException e)
+		catch (Exception e)
 		{
 			// TODO Auto-generated catch block
 			fail();
@@ -272,6 +272,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	{
 		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
 		// create user
 		EntityInterface user = factory.createEntity();
@@ -299,6 +301,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 				Cardinality.MANY));
 
 		user.addAbstractAttribute(association);
+		entityGroup.addEntity(user);
+		user.setEntityGroup(entityGroup);
+		entityGroup.addEntity(study);
+		study.setEntityGroup(entityGroup);
 
 		try
 		{
@@ -342,6 +348,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	{
 		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
 		// create user
 		EntityInterface user = factory.createEntity();
@@ -349,14 +357,16 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		userNameAttribute.setName("user name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
-
+		entityGroup.addEntity(user);
+		user.setEntityGroup(entityGroup);
 		try
 		{
 			user = entityManager.persistEntity(user);
 
 			// Associate user (*)------ >(1)user
 			AssociationInterface association = factory.createAssociation();
-
+			association.setName("testassociation");
+			association.setEntity(user);
 			association.setTargetEntity(user);
 			association.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
 			association.setName("primaryInvestigator");
@@ -366,6 +376,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.MANY));
 
 			user.addAbstractAttribute(association);
+
 
 			EntityInterface savedUser = entityManager.persistEntity(user);
 
@@ -405,7 +416,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 		try
 		{
 
@@ -434,6 +446,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.MANY));
 
 			user.addAbstractAttribute(association);
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
+			entityGroup.addEntity(study);
+			study.setEntityGroup(entityGroup);
 
 			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
 
@@ -493,7 +509,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 		try
 		{
 
@@ -522,7 +539,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.MANY));
 
 			user.addAbstractAttribute(association);
-
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
+			entityGroup.addEntity(study);
+			study.setEntityGroup(entityGroup);
 			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
 
 			Map dataValue = new HashMap();
@@ -578,7 +598,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 		try
 		{
 
@@ -607,6 +628,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.ONE));
 
 			user.addAbstractAttribute(association);
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
+			entityGroup.addEntity(study);
+			study.setEntityGroup(entityGroup);
 
 			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
 
@@ -653,7 +678,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 		try
 		{
 
@@ -682,6 +708,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.ONE));
 
 			user.addAbstractAttribute(association);
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
+			entityGroup.addEntity(study);
+			study.setEntityGroup(entityGroup);
 
 			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
 
@@ -744,7 +774,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 		try
 		{
 
@@ -773,6 +804,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.MANY));
 
 			user.addAbstractAttribute(association);
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
+			entityGroup.addEntity(study);
+			study.setEntityGroup(entityGroup);
 
 			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
 
@@ -839,6 +874,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
 		try
 		{
@@ -868,6 +905,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.MANY));
 
 			user.addAbstractAttribute(association);
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
+			entityGroup.addEntity(study);
+			study.setEntityGroup(entityGroup);
 
 			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
 
@@ -915,7 +956,6 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			Logger.out.debug(e.getStackTrace());
 		}
-
 	}
 
 	/**
@@ -1028,6 +1068,9 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
+
 		EntityInterface savedEntity = null;
 		try
 		{
@@ -1057,6 +1100,11 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ONE, Cardinality.ZERO));
 
 			user.addAbstractAttribute(association);
+            entityGroup.addEntity(user);
+            user.setEntityGroup(entityGroup);
+            entityGroup.addEntity(study);
+            study.setEntityGroup(entityGroup);
+
 			savedEntity = entityManagerInterface.persistEntity(user);
 
 			Map dataValue = new HashMap();
@@ -1093,6 +1141,9 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		try
 		{
+			DomainObjectFactory factory = DomainObjectFactory.getInstance();
+			EntityGroupInterface entityGroup = factory.createEntityGroup();
+			entityGroup.setName("test_" + new Double(Math.random()).toString());
 			MockEntityManager mock = new MockEntityManager();
 			Entity study = (Entity) DomainObjectFactory.getInstance().createEntity();
 			study.setName("study");
@@ -1119,6 +1170,11 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.MANY));
 
 			user.addAbstractAttribute(association);
+			EntityManagerUtil.addIdAttribute(user);
+            entityGroup.addEntity(user);
+            user.setEntityGroup(entityGroup);
+            entityGroup.addEntity(study);
+            study.setEntityGroup(entityGroup);
 
 			NewEntityManager.getInstance().persistEntity(user);
 
@@ -1170,6 +1226,9 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		try
 		{
+			DomainObjectFactory factory = DomainObjectFactory.getInstance();
+			EntityGroupInterface entityGroup = factory.createEntityGroup();
+			entityGroup.setName("test_" + new Double(Math.random()).toString());
 			MockEntityManager mock = new MockEntityManager();
 			Entity study = (Entity) DomainObjectFactory.getInstance().createEntity();
 			study.setName("study");
@@ -1196,6 +1255,11 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.MANY));
 
 			user.addAbstractAttribute(association);
+			EntityManagerUtil.addIdAttribute(user);
+            entityGroup.addEntity(user);
+            user.setEntityGroup(entityGroup);
+            entityGroup.addEntity(study);
+            study.setEntityGroup(entityGroup);
 
 			NewEntityManager.getInstance().persistEntity(user);
 
@@ -1253,7 +1317,9 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		try
 		{
 			Variables.databaseName = Constants.ORACLE_DATABASE;
-
+			DomainObjectFactory factory = DomainObjectFactory.getInstance();
+			EntityGroupInterface entityGroup = factory.createEntityGroup();
+			entityGroup.setName("test_" + new Double(Math.random()).toString());
 			MockEntityManager mock = new MockEntityManager();
 			Entity study = (Entity) DomainObjectFactory.getInstance().createEntity();
 			study.setName("study");
@@ -1280,6 +1346,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.ONE));
 
 			user.addAbstractAttribute(association);
+            entityGroup.addEntity(user);
+            user.setEntityGroup(entityGroup);
+            entityGroup.addEntity(study);
+            study.setEntityGroup(entityGroup);
 
 			NewEntityManager.getInstance().persistEntity(user);
 
@@ -1355,6 +1425,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	{
 		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
 		// create user
 		EntityInterface user = factory.createEntity();
@@ -1402,7 +1474,12 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 				Cardinality.ZERO, Cardinality.ONE));
 
 		study.addAbstractAttribute(studInstAssociation);
-
+        entityGroup.addEntity(user);
+        user.setEntityGroup(entityGroup);
+        entityGroup.addEntity(study);
+        study.setEntityGroup(entityGroup);
+        entityGroup.addEntity(institution);
+        institution.setEntityGroup(entityGroup);
 		try
 		{
 			//entityManager.createEntity(study);
@@ -1453,6 +1530,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	{
 		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
 		// create user
 		EntityInterface user = factory.createEntity();
@@ -1487,7 +1566,9 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 				Cardinality.ONE));
 
 		user.addAbstractAttribute(association);
-
+		EntityManagerUtil.addIdAttribute(user);
+		entityGroup.addEntity(user);
+		user.setEntityGroup(entityGroup);
 		// Associate study(1) ------> (1) institution
 		AssociationInterface studInstAssociation = factory.createAssociation();
 
@@ -1500,7 +1581,9 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 				Cardinality.ZERO, Cardinality.ONE));
 
 		study.addAbstractAttribute(studInstAssociation);
-
+		EntityManagerUtil.addIdAttribute(study);
+		entityGroup.addEntity(study);
+		study.setEntityGroup(entityGroup);
 		// Associate institution (*)----->(*) user
 		AssociationInterface instUserAssociation = factory.createAssociation();
 
@@ -1513,7 +1596,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 				Cardinality.ONE, Cardinality.MANY));
 
 		institution.addAbstractAttribute(instUserAssociation);
-
+		entityGroup.addEntity(institution);
+		institution.setEntityGroup(entityGroup);
 		try
 		{
 
@@ -1568,7 +1652,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	{
 		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 		// create user
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
@@ -1588,6 +1673,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 				Cardinality.MANY));
 
 		user.addAbstractAttribute(association);
+		entityGroup.addEntity(user);
+		user.setEntityGroup(entityGroup);
 
 		try
 		{
@@ -1638,7 +1725,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	{
 		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 		// create user
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
@@ -1671,7 +1759,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 				Cardinality.ONE, Cardinality.ONE));
 
 		user.addAbstractAttribute(creatorAssociation);
-
+		entityGroup.addEntity(user);
+		user.setEntityGroup(entityGroup);
 		try
 		{
 
@@ -1721,7 +1810,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	{
 		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 		// create user
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
@@ -1754,7 +1844,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 				Cardinality.ONE, Cardinality.MANY));
 
 		user.addAbstractAttribute(creatorAssociation);
-
+		entityGroup.addEntity(user);
+		user.setEntityGroup(entityGroup);
 		try
 		{
 
@@ -1806,21 +1897,22 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	{
 		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 		// create user
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
-
+        EntityManagerUtil.addIdAttribute(user);
 		// create study
 		EntityInterface study = factory.createEntity();
 		study.setName("Study");
 
 		// Associate  User(1) <---->(*)Study
 		AssociationInterface association = factory.createAssociation();
-
+		association.setEntity(user);
 		association.setTargetEntity(study);
 		association.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
 		association.setName("primaryInvestigator");
@@ -1830,6 +1922,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 				Cardinality.MANY));
 
 		user.addAbstractAttribute(association);
+		entityGroup.addEntity(user);
+		entityGroup.addEntity(study);
+		user.setEntityGroup(entityGroup);
+		study.setEntityGroup(entityGroup);
 
 		try
 		{
@@ -1840,7 +1936,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					+ study.getTableProperties().getName());
 			assertEquals(noOfDefaultColumns + 1, metaData.getColumnCount());
 			//1 user attribute + 1 system generated attribute
-			assertEquals(2, study.getAbstractAttributeCollection().size());
+			assertEquals(1, study.getAbstractAttributeCollection().size());
 
 			Association systemGeneratedAssociation = (Association) study
 					.getAbstractAttributeCollection().toArray()[0];
@@ -1870,7 +1966,6 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		}
 
 	}
-
 	/**
 	 *
 	 *
@@ -1881,6 +1976,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		{
 			NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 			DomainObjectFactory factory = DomainObjectFactory.getInstance();
+			EntityGroupInterface entityGroup = factory.createEntityGroup();
+			entityGroup.setName("test_" + new Double(Math.random()).toString());
 
 			// create user
 			EntityInterface user = factory.createEntity();
@@ -1928,7 +2025,12 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.ONE));
 
 			study.addAbstractAttribute(studInstAssociation);
-
+			entityGroup.addEntity(user);
+			entityGroup.addEntity(study);
+			user.setEntityGroup(entityGroup);
+			study.setEntityGroup(entityGroup);
+			entityGroup.addEntity(institution);
+			institution.setEntityGroup(entityGroup);
 			user = (Entity) entityManager.persistEntity(user);
 			Collection<AssociationInterface> associationInterface = entityManager.getAssociation(
 					"user", "primaryInvestigator");
@@ -1950,6 +2052,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	{
 		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
 		// create user
 		EntityInterface user = factory.createEntity();
@@ -1964,7 +2068,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		// Associate  User(1) <---->(*)Study
 		AssociationInterface association = factory.createAssociation();
-
+		association.setEntity(user);
 		association.setTargetEntity(study);
 		association.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
 		association.setName("primaryInvestigator");
@@ -1974,7 +2078,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 				Cardinality.MANY));
 
 		user.addAbstractAttribute(association);
-
+		entityGroup.addEntity(user);
+		user.setEntityGroup(entityGroup);
+		entityGroup.addEntity(study);
+		study.setEntityGroup(entityGroup);
 		try
 		{
 			EntityInterface savedUser = entityManager.persistEntity(user);
@@ -2005,6 +2112,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	{
 		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
 		// create user
 		EntityInterface user = factory.createEntity();
@@ -2015,7 +2124,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		// Associate user (*)------ >(1)user
 		AssociationInterface association = factory.createAssociation();
-
+		association.setEntity(user);
 		association.setTargetEntity(user);
 		association.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
 		association.setName("primaryInvestigator");
@@ -2025,7 +2134,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 				Cardinality.MANY));
 
 		user.addAbstractAttribute(association);
-
+		entityGroup.addEntity(user);
+		user.setEntityGroup(entityGroup);
 		try
 		{
 
@@ -2073,6 +2183,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	{
 		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
 		// create user
 		EntityInterface user = factory.createEntity();
@@ -2080,7 +2192,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		userNameAttribute.setName("user name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
-
+		entityGroup.addEntity(user);
+		user.setEntityGroup(entityGroup);
 		try
 		{
 			user = entityManager.persistEntity(user);
@@ -2091,17 +2204,20 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			studyNameAttribute.setName("study name");
 			study.setName("study");
 			study.addAbstractAttribute(studyNameAttribute);
+			entityGroup.addEntity(study);
+			study.setEntityGroup(entityGroup);
 
 			// Associate user (1)------ >(*)study
 			AssociationInterface association = factory.createAssociation();
-
+			association.setEntity(user);
 			association.setTargetEntity(study);
-			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+
 			association.setName("primaryInvestigator");
 			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
 					Cardinality.ZERO, Cardinality.MANY));
 			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
 					Cardinality.ZERO, Cardinality.ONE));
+			association.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
 
 			user.addAbstractAttribute(association);
 
@@ -2113,14 +2229,15 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			//			 Associate user (1) <------>(*)study
 			AssociationInterface association1 = factory.createAssociation();
-
+			association1.setEntity(user);
 			association1.setTargetEntity(study);
-			association1.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
+
 			association1.setName("primaryInvestigator");
 			association1.setSourceRole(getRole(AssociationType.ASSOCIATION, "association1",
 					Cardinality.ZERO, Cardinality.ONE));
 			association1.setTargetRole(getRole(AssociationType.ASSOCIATION, "association1",
 					Cardinality.ZERO, Cardinality.MANY));
+			association1.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
 
 			savedUser.addAbstractAttribute(association1);
 
@@ -2158,6 +2275,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	{
 		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
 		// create user
 		EntityInterface user = factory.createEntity();
@@ -2165,6 +2284,9 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		userNameAttribute.setName("user name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
+        entityGroup.addEntity(user);
+        user.setEntityGroup(entityGroup);
+
 
 		try
 		{
@@ -2176,16 +2298,19 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			studyNameAttribute.setName("study name");
 			study.setName("study");
 			study.addAbstractAttribute(studyNameAttribute);
-
+	        entityGroup.addEntity(study);
+	        study.setEntityGroup(entityGroup);
 			// Associate user (1)------ >(*)study
 			RoleInterface sourceRole = getRole(AssociationType.ASSOCIATION, "association1",
 					Cardinality.ZERO, Cardinality.MANY);
 			RoleInterface targetRole = getRole(AssociationType.ASSOCIATION, "association1",
 					Cardinality.ZERO, Cardinality.ONE);
-			AssociationInterface association = getAssociation(user,
+			AssociationInterface association = getAssociation(study,user,
 					AssociationDirection.SRC_DESTINATION, "prim", sourceRole, targetRole);
 
 			user.addAbstractAttribute(association);
+
+
 			user = entityManager.persistEntity(user);
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from "
 					+ user.getTableProperties().getName());
@@ -2202,7 +2327,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.MANY);
 			targetRole = getRole(AssociationType.ASSOCIATION, "association1", Cardinality.ZERO,
 					Cardinality.MANY);
-			association = getAssociation(user, AssociationDirection.SRC_DESTINATION, "prim",
+			association = getAssociation(study,user, AssociationDirection.SRC_DESTINATION, "prim",
 					sourceRole, targetRole);
 
 			user.addAbstractAttribute(association);
@@ -2248,6 +2373,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	{
 		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
 		// create user
 		EntityInterface user = factory.createEntity();
@@ -2268,10 +2395,14 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 				Cardinality.ZERO, Cardinality.MANY);
 		RoleInterface targetRole = getRole(AssociationType.ASSOCIATION, "association1",
 				Cardinality.ZERO, Cardinality.ONE);
-		AssociationInterface association = getAssociation(study,
+		AssociationInterface association = getAssociation(user,study,
 				AssociationDirection.SRC_DESTINATION, "prim", sourceRole, targetRole);
 
 		user.addAbstractAttribute(association);
+        entityGroup.addEntity(user);
+        user.setEntityGroup(entityGroup);
+        entityGroup.addEntity(study);
+        study.setEntityGroup(entityGroup);
 
 		try
 		{
@@ -2336,7 +2467,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	{
 		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 		// create user
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
@@ -2356,10 +2488,14 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 				Cardinality.ZERO, Cardinality.MANY);
 		RoleInterface targetRole = getRole(AssociationType.ASSOCIATION, "association1",
 				Cardinality.ZERO, Cardinality.ONE);
-		AssociationInterface association = getAssociation(study,
+		AssociationInterface association = getAssociation(study,user,
 				AssociationDirection.BI_DIRECTIONAL, "prim", sourceRole, targetRole);
 
 		user.addAbstractAttribute(association);
+        entityGroup.addEntity(user);
+        user.setEntityGroup(entityGroup);
+        entityGroup.addEntity(study);
+        study.setEntityGroup(entityGroup);
 
 		try
 		{
@@ -2371,7 +2507,6 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			metaData = executeQueryForMetadata("select * from "
 					+ study.getTableProperties().getName());
 			assertEquals(noOfDefaultColumns + 1, metaData.getColumnCount());
-
 			association.getSourceRole().setMaximumCardinality(Cardinality.ONE);
 			association.getTargetRole().setMaximumCardinality(Cardinality.MANY);
 			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
@@ -2380,7 +2515,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			metaData = executeQueryForMetadata("select * from "
 					+ user.getTableProperties().getName());
-			assertEquals(noOfDefaultColumns + 1, metaData.getColumnCount());
+			assertEquals(noOfDefaultColumns , metaData.getColumnCount());
 			metaData = executeQueryForMetadata("select * from "
 					+ study.getTableProperties().getName());
 			assertEquals(noOfDefaultColumns + 2, metaData.getColumnCount());
@@ -2430,7 +2565,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 		try
 		{
 
@@ -2464,6 +2600,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.ONE));
 
 			user.addAbstractAttribute(association);
+	        entityGroup.addEntity(user);
+	        user.setEntityGroup(entityGroup);
+	        entityGroup.addEntity(address);
+	        address.setEntityGroup(entityGroup);
 
 			// Step 4
 			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
@@ -2516,7 +2656,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 		try
 		{
 
@@ -2550,6 +2691,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.MANY));
 
 			user.addAbstractAttribute(association);
+	        entityGroup.addEntity(user);
+	        user.setEntityGroup(entityGroup);
+	        entityGroup.addEntity(address);
+	        address.setEntityGroup(entityGroup);
 
 			// Step 4
 			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
@@ -2610,7 +2755,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 		try
 		{
 
@@ -2644,7 +2790,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.ONE));
 
 			user.addAbstractAttribute(association);
-
+	        entityGroup.addEntity(user);
+	        user.setEntityGroup(entityGroup);
+	        entityGroup.addEntity(address);
+	        address.setEntityGroup(entityGroup);
 			// Step 4
 			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
 
@@ -2719,7 +2868,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 		try
 		{
 
@@ -2753,7 +2903,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.MANY));
 
 			user.addAbstractAttribute(association);
-
+	        entityGroup.addEntity(user);
+	        user.setEntityGroup(entityGroup);
+	        entityGroup.addEntity(address);
+	        address.setEntityGroup(entityGroup);
 			// Step 4
 			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
 
@@ -2838,7 +2991,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 		try
 		{
 
@@ -2872,7 +3026,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.MANY));
 
 			user.addAbstractAttribute(association);
-
+	        entityGroup.addEntity(user);
+	        user.setEntityGroup(entityGroup);
+	        entityGroup.addEntity(address);
+	        address.setEntityGroup(entityGroup);
 			// Step 4
 			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
 
@@ -3024,7 +3181,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	{
 		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 		// create user
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
@@ -3051,7 +3209,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 				Cardinality.ONE));
 
 		user.addAbstractAttribute(association);
-
+        entityGroup.addEntity(user);
+        user.setEntityGroup(entityGroup);
+        entityGroup.addEntity(study);
+        study.setEntityGroup(entityGroup);
 		try
 		{
 			//entityManager.createEntity(study);
@@ -3125,6 +3286,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 		try
 		{
 			//Step 1
@@ -3133,6 +3296,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
+	        entityGroup.addEntity(user);
+	        user.setEntityGroup(entityGroup);
 
 			entityManager.persistEntity(user);
 
@@ -3142,6 +3307,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			institutionName.setName("institution Name");
 			institution.setName("institution");
 			institution.addAbstractAttribute(institutionName);
+	        entityGroup.addEntity(institution);
+	        institution.setEntityGroup(entityGroup);
 
 			entityManager.persistEntity(institution);
 
@@ -3151,7 +3318,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			addressCity.setName("City");
 			address.setName("address");
 			address.addAbstractAttribute(addressCity);
-
+	        entityGroup.addEntity(address);
+	        address.setEntityGroup(entityGroup);
 			entityManager.persistEntity(address);
 
 			//Step 4 user --- > institute
@@ -3236,21 +3404,24 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	{
 		NewEntityManagerInterface entityManager = NewEntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 		// create user
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
-
+        entityGroup.addEntity(user);
+        user.setEntityGroup(entityGroup);
 		// create study
 		EntityInterface study = factory.createEntity();
 		AttributeInterface studyNameAttribute = factory.createStringAttribute();
 		studyNameAttribute.setName("study name");
 		study.setName("study");
 		study.addAbstractAttribute(studyNameAttribute);
-
+        entityGroup.addEntity(study);
+        study.setEntityGroup(entityGroup);
 		// Associate user (1)------ >(*)study
 		AssociationInterface association = factory.createAssociation();
 
@@ -3270,7 +3441,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		siteNameAttribute.setName("site name");
 		site.setName("site");
 		site.addAbstractAttribute(siteNameAttribute);
-
+        entityGroup.addEntity(site);
+        site.setEntityGroup(entityGroup);
 		// Associate site (1)------ >(*)study
 		AssociationInterface associationSite = factory.createAssociation();
 
@@ -3313,6 +3485,27 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		}
 
+	}
+	/**
+	 * @param targetEntity
+	 * @param associationDirection
+	 * @param assoName
+	 * @param sourceRole
+	 * @param targetRole
+	 * @return
+	 */
+	private AssociationInterface getAssociation(EntityInterface sourceEntity,
+			EntityInterface targetEntity, AssociationDirection associationDirection,
+			String assoName, RoleInterface sourceRole, RoleInterface targetRole)
+	{
+		AssociationInterface association = DomainObjectFactory.getInstance().createAssociation();
+		association.setTargetEntity(targetEntity);
+		association.setEntity(sourceEntity);
+		association.setName(assoName);
+		association.setSourceRole(sourceRole);
+		association.setTargetRole(targetRole);
+		association.setAssociationDirection(associationDirection);
+		return association;
 	}
 
 }

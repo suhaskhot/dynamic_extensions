@@ -12,7 +12,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,7 +20,6 @@ import java.util.Set;
 import java.util.Stack;
 
 import org.hibernate.HibernateException;
-import org.hibernate.Session;
 
 import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Association;
@@ -40,6 +38,7 @@ import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
+import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
@@ -295,18 +294,21 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 			HibernateDAO hibernateDAO, List queryList) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
-		return getDynamicQueryList(entityInterface, reverseQueryList, hibernateDAO, queryList);
+		return getDynamicQueryList(entityInterface.getEntityGroup(), reverseQueryList, hibernateDAO, queryList);
 	}
 	/**
 	 * getDynamicQueryList.
 	 */
-	public List getDynamicQueryList(EntityInterface entityInterface, List reverseQueryList,
+	public List getDynamicQueryList(EntityGroupInterface entityGroupInterface, List reverseQueryList,
 			HibernateDAO hibernateDAO, List queryList) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
-		if (entityInterface.getId() == null)
+        List<EntityInterface> entityList = DynamicExtensionsUtility
+				.getUnsavedEntities(entityGroupInterface);
+
+		for (EntityInterface entityObject : entityList)
 		{
-			List createQueryList = queryBuilder.getCreateEntityQueryList((Entity) entityInterface,
+			List createQueryList = queryBuilder.getCreateEntityQueryList((Entity) entityObject,
 					reverseQueryList, hibernateDAO);
 
 			if (createQueryList != null && !createQueryList.isEmpty())
@@ -314,12 +316,16 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 				queryList.addAll(createQueryList);
 			}
 		}
-		else
+
+        List<EntityInterface> savedEntityList = DynamicExtensionsUtility
+		.getSavedEntities(entityGroupInterface);
+
+		for (EntityInterface savedEntity : savedEntityList)
 		{
-			Entity databaseCopy = (Entity) DBUtil.loadCleanObj(Entity.class, entityInterface
+			Entity databaseCopy = (Entity) DBUtil.loadCleanObj(Entity.class, savedEntity
 					.getId());
 
-			List updateQueryList = queryBuilder.getUpdateEntityQueryList((Entity) entityInterface,
+			List updateQueryList = queryBuilder.getUpdateEntityQueryList((Entity) savedEntity,
 					(Entity) databaseCopy, reverseQueryList);
 
 			if (updateQueryList != null && !updateQueryList.isEmpty())
@@ -733,8 +739,8 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 
 		List<Object> columnValues = new ArrayList<Object>();
 		List<String> columnNames = new ArrayList<String>();
-		
-		
+
+
 		Long identifier = null;
 		if (parentRecordId != null)
 		{
@@ -744,13 +750,13 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 		{
 			identifier = entityManagerUtil.getNextIdentifier(entity.getTableProperties().getName());
 		}
-		columnNames.add("IDENTIFIER ");
+		columnNames.add("IDENTIFIER");
 		columnValues.add(identifier);
-		
+
 		columnNames.add(Constants.ACTIVITY_STATUS_COLUMN);
 		columnValues.add(Constants.ACTIVITY_STATUS_ACTIVE);
-		
-		
+
+
 		String tableName = entity.getTableProperties().getName();
 
 		List<AttributeRecord> attributeRecords = new ArrayList<AttributeRecord>();
@@ -830,7 +836,7 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 		jdbcDao.openSession(null);
 		jdbcDao.insert(tableName, columnValues, columnNames);
 		jdbcDao.commit();
-		
+
 /*	ToDo: Correct this logger statement
  * 	logDebug("insertData", "Query is: " + query.toString());
  * */
@@ -854,24 +860,29 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 	}
 
 	/**
-	 * This method adds the extra columns information 
+	 * This method adds the extra columns information
 	 * that needs to be maintained while adding the file data
 	 * @param columnNames list of column names
 	 * @param columnValues list of column values
 	 * @param value file attribute value
-	 * @param attribute 
+	 * @param attribute
 	 */
 	private void populateFileAttribute(List<String> columnNames, List<Object> columnValues, FileAttributeRecordValue value, AttributeInterface attribute)
-	{	
+	{
 		columnNames.add(attribute.getName()+UNDERSCORE+FILE_NAME);
 		columnValues.add(value.getFileName());
-		
+
 		columnNames.add(attribute.getName()+UNDERSCORE+CONTENT_TYPE);
 		columnValues.add(value.getContentType());
-		
+
+
 		columnNames.add(attribute.getColumnProperties().getName());
 		columnValues.add(value.getFileContent());
-		
+
+
+		columnNames.add(attribute.getColumnProperties().getName());
+		columnValues.add(value.getFileContent());
+
 	}
 
 	/**
@@ -936,7 +947,8 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 	 * @return
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
-	 * @throws BizLogicException 
+	 * @throws BizLogicException
+	 * @throws BizLogicException
 	 */
 	private boolean editDataForSingleEntity(EntityInterface entity, Map dataValue, Long recordId,
 			HibernateDAO hibernateDAO) throws DynamicExtensionsSystemException,
@@ -950,7 +962,7 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 		}
 		List<String> columnNames = new ArrayList<String>();
 		List<Object> columnValues = new ArrayList<Object>();
-		
+
 		String tableName = entity.getTableProperties().getName();
 
 		Set uiColumnSet = dataValue.keySet();
@@ -1079,23 +1091,28 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 				if(iterator.hasNext()){
 					query.append(COMMA + WHITESPACE);
 				}
-				
+
 			}
 			query.append(WHERE_KEYWORD);
+
 			query.append(IDENTIFIER);
 			query.append(WHITESPACE + EQUAL + WHITESPACE);
 			query.append(recordId);
-			
+
 			PreparedStatement preparedStatement = conn.prepareStatement(query.toString());
 			int i = 1;
 			for(Object columnValue : columnValues){
 				preparedStatement.setObject(i++, columnValue);
 			}
-			
+
 			preparedStatement.executeUpdate();
+
 		}
 
-		
+
+
+
+
 		for (String queryString : editDataQueryList)
 		{
 			logDebug("editData", "Query is: " + queryString.toString());
@@ -1129,7 +1146,8 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 
 		Collection attributesCollection = entity.getAttributeCollection();
 		attributesCollection = entityManagerUtil.filterSystemAttributes(attributesCollection);
-	
+
+
 		String tableName = entity.getTableProperties().getName();
 		List<String> selectColumnNameList = new ArrayList<String>();
 

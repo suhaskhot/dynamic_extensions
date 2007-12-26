@@ -44,7 +44,7 @@ import gov.nih.nci.cagrid.metadata.dataservice.UMLAssociation;
 
 public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTestCase
 {
-	
+
 	/**
 	 * Specify the name of the domain model xmi file to import. This file must be present at the path test/ModelXML under the project root directory
 	 */
@@ -68,18 +68,20 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 			e.printStackTrace();
 		}
 	}
-	
-	
+
+
 	/**
 	 * Test cases for XMI Import
 	 */
 	public void testPersistEntityGroupWithContainersForXMIImport()
 	{
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = domainObjectFactory.createEntityGroup();
+		entityGroup.setName("test_" + new Double(Math.random()).toString());
 		try
 		{
 			Collection<ContainerInterface> processedContainerList = new HashSet<ContainerInterface>();
-			
+
 			//Container 1
 			Container container1 = (Container) new MockEntityManager().getContainer("abc");
 			EntityInterface sourceEntity = container1.getEntity();
@@ -87,11 +89,11 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 			association.setName("AssociationName_1");
 			association.setEntity(sourceEntity);
 			sourceEntity.addAssociation(association);
-			//			Adding association to entity			
+			//			Adding association to entity
 			RoleInterface role = domainObjectFactory.createRole();
 			association.setSourceRole(getRole(role, 1, 1, "Role_1"));
 			association.setTargetRole(getRole(role, 1, 1, "Role_2"));
-			//	association.setAssociationDirection(Constants.AssociationDirection.BI_DIRECTIONAL);				
+			//	association.setAssociationDirection(Constants.AssociationDirection.BI_DIRECTIONAL);
 			association.setAssociationDirection(Constants.AssociationDirection.SRC_DESTINATION);
 
 			//Container 2
@@ -105,7 +107,7 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 			//			Container 3
 
 			EntityInterface parentEntity = (EntityInterface) new MockEntityManager()
-					.initializeEntity();
+					.initializeEntity(entityGroup);
 			Container container3 = (Container) new MockEntityManager()
 					.createContainerForGivenEntity("For Inheritance - Parent", parentEntity);
 
@@ -114,7 +116,7 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 			//			Container 4
 
 			EntityInterface childEntity = (EntityInterface) new MockEntityManager()
-					.initializeEntity();
+					.initializeEntity(entityGroup);
 			childEntity.setName("abc");
 			childEntity.setParentEntity(parentEntity);
 
@@ -125,18 +127,18 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 
 			container4.setBaseContainer(container3);
 
-			
+
 			processedContainerList.add(container1);
 			processedContainerList.add(container2);
 			processedContainerList.add(container3);
 			processedContainerList.add(container4);
-			
+
 			EntityGroupInterface entityGroupInterface = domainObjectFactory.createEntityGroup();
 			//entityGroupInterface.setName("Test Group");
 			entityGroupInterface.setName("test_" + new Double(Math.random()).toString());
 			entityGroupInterface.setDescription("Test description1");
 			entityGroupInterface.setVersion("1");
-			
+
 			entityGroupInterface.addEntity(container1.getEntity());
 			entityGroupInterface.addEntity(container2.getEntity());
 			entityGroupInterface.addEntity(container3.getEntity());
@@ -144,14 +146,14 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 			EntityManager.getInstance().persistEntityGroupWithAllContainers(entityGroupInterface, processedContainerList);
 		}
 		catch (Exception e)
-		{			
+		{
 			e.printStackTrace();
 			Logger.out.debug(e.getMessage());
 			fail("Exception occured");
 		}
 	}
 	/**
-	 * 
+	 *
 	 */
 	public void testXMIImport()
 	{
@@ -159,7 +161,7 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 		{
 			String[] args = {XMIFileName};
 			XMIImporter.main(args);
-			
+
 //			DomainModelParser parser = getParser(XMIFileName);
 //			XMIImportProcessor processor = new XMIImportProcessor(
 //					parser, "Application1");
@@ -173,7 +175,7 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public void testEntitesForDomain_Model_XMI()
 	{//TODO
@@ -186,39 +188,39 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 //
 //			UMLClass[] umlClasses = parser.getUmlClasses();
 //			EntityInterface entity = null;
-//			
-//			Map<String,List<UMLAssociation>> umlClassIdVsUmlAssociationList = new HashMap<String,List<UMLAssociation>>();			
-//			
+//
+//			Map<String,List<UMLAssociation>> umlClassIdVsUmlAssociationList = new HashMap<String,List<UMLAssociation>>();
+//
 //			for (UMLClass umlClass : umlClasses)
 //			{
 //				umlClassIdVsUmlAssociationList.put(umlClass.getId(), new ArrayList<UMLAssociation>());
 //			}
-//			
+//
 //			for(UMLAssociation association : parser.getUmlAssociations())
-//			{				
+//			{
 //				String refId = association.getSourceUMLAssociationEdge().getUMLAssociationEdge().getUMLClassReference().getRefid();
 //				List<UMLAssociation> umlAssociationList = umlClassIdVsUmlAssociationList.get(refId);
 //				umlAssociationList.add(association);
-//				
+//
 //				String targetRefId = association.getTargetUMLAssociationEdge().getUMLAssociationEdge().getUMLClassReference().getRefid();
 //				umlAssociationList = umlClassIdVsUmlAssociationList.get(targetRefId);
 //				umlAssociationList.add(association);
 //			}
-//			
+//
 //			for (UMLClass umlClass : umlClasses)
 //			{
 //				entity = EntityManager.getInstance().getEntityByName(
 //						umlClass.getPackageName() + "." + umlClass.getClassName());
-//				
+//
 //				if (entity == null)
 //				{
 //					fail("Entity present in the XMI file has not been persisted");
 //				}
 //
 //				testAttributesForEntity(entity.getAttributeCollection(), umlClass.getUmlAttributeCollection().getUMLAttribute());
-//								
+//
 ////				testAssociationsForEntity(entity.getAssociationCollection(),umlClassIdVsUmlAssociationList.get(umlClass.getId()));
-//				
+//
 //				Map<String,List<String>> parentVsChildList = parser.getParentVsChildrenMap();
 //				testGeneralizationForEntity(parentVsChildList,umlClasses,entity.getParentEntity(),umlClass);
 //			}
@@ -237,7 +239,7 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 	 */
 	public void testGeneralizationForEntity(Map<String,List<String>> parentVsChildList,UMLClass[] umlClasses,EntityInterface parentEntity,UMLClass umlClass)
 	{
-		
+
 		Set<String> parentIds = parentVsChildList.keySet();
 		for(String parentId : parentIds)
 		{
@@ -252,7 +254,7 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 						parent = parentUmlClass;
 					}
 				}
-				
+
 				if(!(parentEntity.getName().equalsIgnoreCase(parent.getPackageName() + "." + parent.getClassName())))
 				{
 					fail("Parent Entity has not been persisted");
@@ -261,7 +263,7 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 		}
 	}
 	/**
-	 * 
+	 *
 	 */
 		public void testAssociationsForEntity(Collection<AssociationInterface> associationColl,List<UMLAssociation> umlAssociations)
 		{
@@ -309,7 +311,7 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public void testUniqueCase1ForXMIImport()//E1 associated with E2 extends E3 extends E1
 	{
@@ -318,20 +320,20 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 		{
 			EntityGroup entityGroup = (EntityGroup)new MockEntityManager().initializeEntityGroup();
 			Collection<EntityInterface> entityColl = entityGroup.getEntityCollection();
-			//			Container1			
+			//			Container1
 			EntityInterface entity1 = null;
 			for(EntityInterface e : entityColl)
 			{
 				entity1 = e;
 			}
-			
+
 			Container container1 = (Container) new MockEntityManager()
 					.createContainerForGivenEntity("For Inheritance - Parent", entity1);
 			container1.setEntity(entity1);
 
-			EntityInterface entity2 = (EntityInterface) new MockEntityManager().initializeEntity();
+			EntityInterface entity2 = (EntityInterface) new MockEntityManager().initializeEntity(entityGroup);
 			entity2.setName("Entity2");
-			EntityInterface entity3 = (EntityInterface) new MockEntityManager().initializeEntity();
+			EntityInterface entity3 = (EntityInterface) new MockEntityManager().initializeEntity(entityGroup);
 			entity3.setName("Entity3");
 
 			AssociationInterface association1_2 = domainObjectFactory.createAssociation();
@@ -352,10 +354,10 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 			Collection containerColl = new HashSet();
 			containerColl.add(container1);
 			EntityManager.getInstance().persistEntityGroupWithAllContainers(entityGroup, containerColl);
-					
+
 		}
 		catch (Exception e)
-		{			
+		{
 			e.printStackTrace();
 			Logger.out.debug(e.getMessage());
 			fail("Exception occured");
@@ -395,7 +397,7 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 		return Constants.Cardinality.MANY;
 	}
 
-	
+
 	/**
 	 * PURPOSE : To test the method persistEntityGroup
 	 * EXPECTED BEHAVIOR : The new entity group should be stored correctly and should be retrieved back correctly.
@@ -411,7 +413,7 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 			MockEntityManager mockEM = new MockEntityManager();
 			//Step 1
 			EntityGroupInterface entityGroup = (EntityGroupInterface) mockEM.initializeEntityGroup();
-			
+
 			Collection<ContainerInterface> containerColl = new HashSet<ContainerInterface>();
 			EntityInterface entity = null;
 			Collection<EntityInterface> entityColl = entityGroup.getEntityCollection();
@@ -420,14 +422,14 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 				entity = entityInterface;
 			}
 			containerColl.add(mockEM.createContainerForGivenEntity("ABC", entity));
-				
-			
-			//Step 2 
+
+
+			//Step 2
 			entityGroup = (EntityGroupInterface) entityManager.persistEntityGroupWithAllContainers(entityGroup, containerColl);
-			//Step 3			
+			//Step 3
 			DefaultBizLogic defaultBizLogic = BizLogicFactory.getDefaultBizLogic();
 			List entityGroupColl = defaultBizLogic.retrieve(EntityGroup.class.getName(), "name", entityGroup.getName());
-			
+
 			assertTrue(entityGroupColl.contains(entityGroup));
 
 		}

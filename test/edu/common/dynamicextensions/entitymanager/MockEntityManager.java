@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Iterator;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
+import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
@@ -106,6 +107,8 @@ public class MockEntityManager
 			throws DynamicExtensionsApplicationException
 	{
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+        EntityGroup entityGroup = (EntityGroup) domainObjectFactory.createEntityGroup();
+        entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
 		ContainerInterface containerInterface = null;
 		ControlInterface controlInterface = null;
 		EntityInterface entityInterface = null;
@@ -118,7 +121,7 @@ public class MockEntityManager
 		containerInterface.setRequiredFieldWarningMessage("indicates mandatory fields.");
 		containerInterface.setTitleCss("formTitle");
 
-		entityInterface = initializeEntity();
+		entityInterface = initializeEntity(entityGroup);
 		containerInterface.setEntity(entityInterface);
         entityInterface.getContainerCollection().add(containerInterface);
 
@@ -155,7 +158,7 @@ public class MockEntityManager
 	 * @return Manually created dummy Entity along with its attributes
 	 * @throws DynamicExtensionsApplicationException On failure to create Entity
 	 */
-	public EntityInterface initializeEntity() throws DynamicExtensionsApplicationException
+	public EntityInterface initializeEntity(EntityGroupInterface entityGroup) throws DynamicExtensionsApplicationException
 	{
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		AbstractAttributeInterface abstractAttributeInterface = null;
@@ -183,6 +186,8 @@ public class MockEntityManager
 		abstractAttributeInterface = initializeStringAttribute("name", "");
 		person.addAbstractAttribute(abstractAttributeInterface);
 		abstractAttributeInterface.setEntity(person);
+		entityGroup.addEntity(person);
+		person.setEntityGroup(entityGroup);
 		return person;
 	}
 
@@ -546,7 +551,7 @@ public class MockEntityManager
 		entityGroupInterface.setDescription("Test description1");
 		entityGroupInterface.setVersion("1");
 
-		EntityInterface entity1 = initializeEntity();
+		EntityInterface entity1 = initializeEntity(entityGroupInterface);
 
 		entityGroupInterface.addEntity(entity1);
 

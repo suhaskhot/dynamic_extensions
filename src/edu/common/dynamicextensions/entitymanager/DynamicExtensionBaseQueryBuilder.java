@@ -87,20 +87,16 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
     public List getCreateEntityQueryList(Entity entity, List reverseQueryList, HibernateDAO hibernateDAO)
             throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException {
         List queryList = new ArrayList();
-        List<EntityInterface> entityList = new ArrayList<EntityInterface>();
-		DynamicExtensionsUtility.getAssociatedAndInheritedEntities(entity,entityList);
-		for (EntityInterface entityInterface : entityList)
-		{
+
         //get query to create main table with primitive attributes.
-			queryList.addAll(getCreateMainTableQuery((Entity) entityInterface, reverseQueryList));
-		}
-        // get query to create associations ,it invloves altering source/taget table or creating
-        //middle table depending upon the cardinalities.
-		for (EntityInterface entityInterface : entityList)
-		{
-			queryList.addAll(getCreateAssociationsQueryList((Entity) entityInterface, reverseQueryList, hibernateDAO));
-		}
-        return queryList;
+		queryList.addAll(getCreateMainTableQuery(entity, reverseQueryList));
+
+		// get query to create associations ,it invloves altering source/taget table or creating
+		//middle table depending upon the cardinalities.
+
+		queryList.addAll(getCreateAssociationsQueryList(entity, reverseQueryList,
+				hibernateDAO));
+		return queryList;
     }
 
     /**
@@ -119,27 +115,24 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
     public List getUpdateEntityQueryList(Entity entity, Entity databaseCopy, List attributeRollbackQueryList)
             throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException {
         Logger.out.debug("getUpdateEntityQueryList : Entering method");
-        List updateQueryList = new ArrayList();
-        List<EntityInterface> entityList = new ArrayList<EntityInterface>();
-		DynamicExtensionsUtility.getAssociatedAndInheritedEntities(entity,entityList);
-		for (EntityInterface entityInterface : entityList)
-		{
-			List entityInheritanceQueryList = getInheritanceQueryList(entity, databaseCopy,
-					attributeRollbackQueryList);
-			//get the query for any attribute that is modified.
-			List updateAttributeQueryList = getUpdateAttributeQueryList(entity, databaseCopy,
-					attributeRollbackQueryList);
+		List updateQueryList = new ArrayList();
 
-			//get the query for any association that is modified.
-			List updateassociationsQueryList = getUpdateAssociationsQueryList(entity, databaseCopy,
-					attributeRollbackQueryList);
+		List entityInheritanceQueryList = getInheritanceQueryList(entity, databaseCopy,
+				attributeRollbackQueryList);
+		//get the query for any attribute that is modified.
+		List updateAttributeQueryList = getUpdateAttributeQueryList(entity, databaseCopy,
+				attributeRollbackQueryList);
 
-			updateQueryList.addAll(entityInheritanceQueryList);
-			updateQueryList.addAll(updateAttributeQueryList);
-			updateQueryList.addAll(updateassociationsQueryList);
-		}
-        Logger.out.debug("getUpdateEntityQueryList Exiting method");
-        return updateQueryList;
+		//get the query for any association that is modified.
+		List updateassociationsQueryList = getUpdateAssociationsQueryList(entity, databaseCopy,
+				attributeRollbackQueryList);
+
+		updateQueryList.addAll(entityInheritanceQueryList);
+		updateQueryList.addAll(updateAttributeQueryList);
+		updateQueryList.addAll(updateassociationsQueryList);
+
+		Logger.out.debug("getUpdateEntityQueryList Exiting method");
+		return updateQueryList;
     }
 
     private List getInheritanceQueryList(Entity entity, Entity databaseCopy, List attributeRollbackQueryList) {
@@ -674,8 +667,8 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
     protected List<String> getCreateMainTableQuery(Entity entity,
 			List<String> reverseQueryList)
 			throws DynamicExtensionsSystemException {
-		
-		
+
+
 		EntityInterface parentEntity = entity.getParentEntity();
 		String activityStatusString = Constants.ACTIVITY_STATUS_COLUMN
 				+ WHITESPACE + getDataTypeForStatus();
@@ -761,7 +754,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
 			}
 		}
 
-		query = query.append(PRIMARY_KEY_CONSTRAINT_FOR_ENTITY_DATA_TABLE + ")"); 
+		query = query.append(PRIMARY_KEY_CONSTRAINT_FOR_ENTITY_DATA_TABLE + ")");
 
 		List<String> queryList = new ArrayList<String>();
 		queryList.add(query.toString());
@@ -1520,7 +1513,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
 			modifyAttributeRollbackQuery += dropExtraColumnQueryStringForFileAttribute(attribute);
 
 		}
-		
+
         String nullQueryKeyword = "";
         String nullQueryRollbackKeyword = "";
 
@@ -1546,7 +1539,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
     /**
 	 * This method contrsucts the query part for adding tow extra columns when
 	 * an attribute of type File is created
-	 * 
+	 *
 	 * @param attribute
 	 *            FileAttribute
 	 * @return queryString
@@ -1563,7 +1556,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
 				+ getDatabaseTypeAndSize(stringAttribute) + CLOSING_BRACKET;
 		return queryString;
 	}
-	
+
 	/**
 	 * This method constructs the query part for dropping the extra columns
 	 * created while creating an attribute of type File
@@ -1598,12 +1591,12 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
 
         String newAttributeRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + DROP_KEYWORD
                 + WHITESPACE + COLUMN_KEYWORD + WHITESPACE + columnName;
-        
+
         if (attribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation) {
         	newAttributeQuery += extraColumnQueryStringForFileAttribute(attribute);
         	newAttributeRollbackQuery += dropExtraColumnQueryStringForFileAttribute(attribute);
 
-		}		
+		}
 
         attributeRollbackQueryList.add(newAttributeRollbackQuery);
 

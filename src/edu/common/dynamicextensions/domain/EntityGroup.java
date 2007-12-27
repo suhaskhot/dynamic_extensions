@@ -15,7 +15,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInter
  * @hibernate.joined-subclass table="DYEXTN_ENTITY_GROUP"
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
-public class EntityGroup extends AbstractMetadata implements java.io.Serializable, EntityGroupInterface
+public class EntityGroup extends AbstractMetadata implements EntityGroupInterface
 {
 
 	/**

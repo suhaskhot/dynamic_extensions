@@ -3,11 +3,12 @@ package edu.common.dynamicextensions.domaininterface.userinterface;
 
 import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
 /**
- * This interface stores necessary informations about the control that gets added 
+ * This interface stores necessary informations about the control that gets added
  * to the Container on dynamically generated User Interface.
  * @author geetika_bangard
  */
@@ -16,7 +17,7 @@ public interface ControlInterface extends DynamicExtensionBaseDomainObjectInterf
 
 	/**
 	 * Id of the control
-	 * @return id 
+	 * @return id
 	 */
 	Long getId();
 
@@ -24,12 +25,12 @@ public interface ControlInterface extends DynamicExtensionBaseDomainObjectInterf
 	 * This can be a primitive type or derived type.
 	 * @return Returns the attribute.
 	 */
-	AbstractAttributeInterface getAbstractAttribute();
+	BaseAbstractAttributeInterface getBaseAbstractAttribute();
 
 	/**
 	 * @param abstractAttributeInterface The attribute to set.
 	 */
-	void setAbstractAttribute(AbstractAttributeInterface abstractAttributeInterface);
+	void setBaseAbstractAttribute(BaseAbstractAttributeInterface abstractAttributeInterface);
 
 	/**
 	 * Caption/Title for the control.
@@ -99,7 +100,7 @@ public interface ControlInterface extends DynamicExtensionBaseDomainObjectInterf
 
 	/**
 	 * @return return the HTML string for this type of a object
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException
 	 */
 	String generateHTML() throws DynamicExtensionsSystemException;
 
@@ -128,7 +129,7 @@ public interface ControlInterface extends DynamicExtensionBaseDomainObjectInterf
 	 * @param sequenceNumberChanged
 	 */
 	void setSequenceNumberChanged(Boolean sequenceNumberChanged);
-	
+
 	/**
 	 * @return parentContainer
 	 */
@@ -139,7 +140,7 @@ public interface ControlInterface extends DynamicExtensionBaseDomainObjectInterf
 	 * @param parentContainer parentContainer
 	 */
 	void setParentContainer(Container parentContainer);
-	
+
 	/**
 	 * @return the isSubControl
 	 */

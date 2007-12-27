@@ -12,8 +12,6 @@ import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
-import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Constants.InheritanceStrategy;
 
@@ -106,16 +104,6 @@ public class Entity extends AbstractEntity implements EntityInterface
 	{
 	}
 
-//	/**
-//	 * This method returns the Collection of the EntityGroups.
-//	 * @hibernate.set name="entityGroupCollection" table="DYEXTN_ENTITY_GROUP_REL"
-//	 * cascade="save-update" inverse="false" lazy="false"
-//	 * @hibernate.collection-key column="ENTITY_ID"
-//	 * @hibernate.cache  usage="read-write"
-//	 * @hibernate.collection-many-to-many class="edu.common.dynamicextensions.domain.EntityGroup" column="ENTITY_GROUP_ID"
-//	 * @return the Collection of the Entities.
-//	 */
-
     /**
      * @hibernate.many-to-one column="ENTITY_GROUP_ID" cascade="save-update" class="edu.common.dynamicextensions.domain.EntityGroup"
      * @return the entityGroup
@@ -132,52 +120,6 @@ public class Entity extends AbstractEntity implements EntityInterface
     {
         this.entityGroup = entityGroup;
     }
-
-//	public Collection<EntityGroupInterface> getEntityGroupCollection()
-//	{
-//		return entityGroup;
-//	}
-
-	/**
-	 * This method sets the entityGroupCollection to the given Collection of the Entities.
-	 * @param entityGroupCollection The entityGroupCollection to set.
-	 */
-//	public void setEntityGroupCollection(Collection<EntityGroupInterface> entityGroupCollection)
-//	{
-//		this.entityGroupCollection = entityGroupCollection;
-//	}
-
-	/**
-	 * This method returns the TableProperties of the Entity.
-	 * @return the TableProperties of the Entity.
-	 */
-	public TablePropertiesInterface getTableProperties()
-	{
-		TablePropertiesInterface tableProperties = null;
-		if (tablePropertiesCollection != null && !tablePropertiesCollection.isEmpty())
-		{
-			Iterator tabletPropertiesIterator = tablePropertiesCollection.iterator();
-			tableProperties = (TablePropertiesInterface) tabletPropertiesIterator.next();
-		}
-		return tableProperties;
-	}
-
-	/**
-	 * This method sets the TableProperties of the Entity to the given TableProperties.
-	 * @param tableProperties the TableProperties to be set.
-	 */
-	public void setTableProperties(TablePropertiesInterface tableProperties)
-	{
-		if (tablePropertiesCollection == null)
-		{
-			tablePropertiesCollection = new HashSet<TablePropertiesInterface>();
-		}
-		else
-		{
-			this.tablePropertiesCollection.clear();
-		}
-		this.tablePropertiesCollection.add(tableProperties);
-	}
 
 	/**
 	 * This method adds an AbstractAttribute to the Entity's Collection of AbstractAttribute.
@@ -198,53 +140,6 @@ public class Entity extends AbstractEntity implements EntityInterface
 		abstractAttribute.setEntity(this);
 
 	}
-
-	/**
-	 *
-	 */
-//	public void addEntityGroupInterface(EntityGroupInterface entityGroupInterface)
-//	{
-//		if (this.entityGroupCollection == null)
-//		{
-//			entityGroupCollection = new HashSet<EntityGroupInterface>();
-//		}
-//		entityGroupCollection.add(entityGroupInterface);
-//
-//	}
-
-	/**
-	 *
-	 */
-//	public void removeEntityGroupInterface(EntityGroupInterface entityGroupInterface)
-//	{
-//		if (entityGroupCollection != null)
-//		{
-//			if (entityGroupCollection.contains(entityGroupInterface))
-//			{
-//				entityGroupCollection.remove(entityGroupInterface);
-//				entityGroupInterface.removeEntity(this);
-//			}
-//		}
-//	}
-
-	/**
-	 * This method removes all entity groupa of the entity.
-	 *
-	 */
-//	public void removeAllEntityGroups()
-//	{
-//		if (entityGroupCollection != null)
-//		{
-//			Iterator<EntityGroupInterface> entityGroupIterator = entityGroupCollection.iterator();
-//			EntityGroupInterface entityGroupInterface;
-//			while (entityGroupIterator.hasNext())
-//			{
-//				entityGroupInterface = (EntityGroupInterface) entityGroupIterator.next();
-//				entityGroupInterface.removeEntity(this);
-//				entityGroupIterator.remove();
-//			}
-//		}
-//	}
 
 	/**
 	 * This method returns the Collection of AbstractAttribute.

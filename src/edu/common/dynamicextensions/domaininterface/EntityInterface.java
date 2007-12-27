@@ -3,8 +3,6 @@ package edu.common.dynamicextensions.domaininterface;
 
 import java.util.Collection;
 
-import edu.common.dynamicextensions.domain.userinterface.Container;
-import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
 import edu.common.dynamicextensions.util.global.Constants.InheritanceStrategy;
 
 /**
@@ -53,16 +51,16 @@ public interface EntityInterface extends AbstractMetadataInterface
 	 */
 	//void addEntityGroupInterface(EntityGroupInterface entityGroup);
 
-	/**
-	 * The table properties object contains name of the dynamically created table.
-	 * @return
-	 */
-	TablePropertiesInterface getTableProperties();
-
-	/**
-	 * @param tableProperties
-	 */
-	void setTableProperties(TablePropertiesInterface tableProperties);
+//	/**
+//	 * The table properties object contains name of the dynamically created table.
+//	 * @return
+//	 */
+//	TablePropertiesInterface getTableProperties();
+//
+//	/**
+//	 * @param tableProperties
+//	 */
+//	void setTableProperties(TablePropertiesInterface tableProperties);
 
 	/**
 	 * This method removes an AbstractAttribute from the Entity's Collection of AbstractAttribute.

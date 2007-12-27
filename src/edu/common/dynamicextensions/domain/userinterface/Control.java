@@ -3,8 +3,9 @@ package edu.common.dynamicextensions.domain.userinterface;
 
 import java.io.Serializable;
 
+import edu.common.dynamicextensions.domain.BaseAbstractAttribute;
 import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
-import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -71,18 +72,18 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	/**
 	 * Attribute to which this control is associated.
 	 */
-	protected AbstractAttributeInterface abstractAttribute;
+	protected BaseAbstractAttribute baseAbstractAttribute;
 	/**
-	 * 
+	 *
 	 */
 	protected Boolean sequenceNumberChanged = false;
 	/**
-	 * 
+	 *
 	 */
 	protected Container parentContainer;
 
 	/**
-	 * 
+	 *
 	 */
 	protected boolean isSubControl = false;
 
@@ -94,7 +95,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	}
 
 	/**
-	 * @hibernate.property name="caption" type="string" column="CAPTION" 
+	 * @hibernate.property name="caption" type="string" column="CAPTION"
 	 * @return Returns the caption.
 	 */
 	public String getCaption()
@@ -111,7 +112,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	}
 
 	/**
-	 * @hibernate.property name="cssClass" type="string" column="CSS_CLASS" 
+	 * @hibernate.property name="cssClass" type="string" column="CSS_CLASS"
 	 * @return Returns the cssClass.
 	 */
 	public String getCssClass()
@@ -128,7 +129,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	}
 
 	/**
-	 * @hibernate.property name="isHidden" type="boolean" column="HIDDEN" 
+	 * @hibernate.property name="isHidden" type="boolean" column="HIDDEN"
 	 * @return Returns the isHidden.
 	 */
 	public Boolean getIsHidden()
@@ -145,7 +146,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	}
 
 	/**
-	 * @hibernate.property name="name" type="string" column="NAME" 
+	 * @hibernate.property name="name" type="string" column="NAME"
 	 * @return Returns the name.
 	 */
 	public String getName()
@@ -162,7 +163,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	}
 
 	/**
-	 * @hibernate.property name="sequenceNumber" type="integer" column="SEQUENCE_NUMBER" 
+	 * @hibernate.property name="sequenceNumber" type="integer" column="SEQUENCE_NUMBER"
 	 * @return Returns the sequenceNumber.
 	 */
 	public Integer getSequenceNumber()
@@ -179,7 +180,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	}
 
 	/**
-	 * @hibernate.property name="tooltip" type="string" column="TOOLTIP" 
+	 * @hibernate.property name="tooltip" type="string" column="TOOLTIP"
 	 * @return Returns the tooltip.
 	 */
 	public String getTooltip()
@@ -287,25 +288,25 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 		this.value = value;
 	}
 
-	/**
-	 * @hibernate.many-to-one  cascade="save-update" column="ABSTRACT_ATTRIBUTE_ID" class="edu.common.dynamicextensions.domain.AbstractAttribute" constrained="true"
-	 */
-	public AbstractAttributeInterface getAbstractAttribute()
-	{
-		return this.abstractAttribute;
-	}
-
-	/**
-	 * @param abstractAttribute The abstractAttribute to set.
-	 */
-	public void setAbstractAttribute(AbstractAttributeInterface abstractAttributeInterface)
-	{
-		this.abstractAttribute = abstractAttributeInterface;
-	}
+//	/**
+//	 * @hibernate.many-to-one  cascade="save-update" column="ABSTRACT_ATTRIBUTE_ID" class="edu.common.dynamicextensions.domain.AbstractAttribute" constrained="true"
+//	 */
+//	public AbstractAttributeInterface getAbstractAttribute()
+//	{
+//		return this.abstractAttribute;
+//	}
+//
+//	/**
+//	 * @param abstractAttribute The abstractAttribute to set.
+//	 */
+//	public void setAbstractAttribute(AbstractAttributeInterface abstractAttributeInterface)
+//	{
+//		this.abstractAttribute = abstractAttributeInterface;
+//	}
 
 	/**
 	 * @return String
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public String getHTMLComponentName() throws DynamicExtensionsSystemException
 	{
@@ -328,7 +329,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public Boolean getSequenceNumberChanged()
 	{
@@ -336,7 +337,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	}
 
 	/**
-	 * 
+	 *
 	 * @param sequenceNumberChanged
 	 */
 	public void setSequenceNumberChanged(Boolean sequenceNumberChanged)
@@ -344,7 +345,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 		this.sequenceNumberChanged = sequenceNumberChanged;
 	}
 
-	/** 
+	/**
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
 	public int compareTo(Object object)
@@ -390,6 +391,25 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	public void setIsSubControl(boolean isSubControl)
 	{
 		this.isSubControl = isSubControl;
+	}
+
+	/**
+	 * @hibernate.many-to-one  cascade="save-update" column="BASE_ABSTRACT_ATTRIBUTE_ID" class="edu.common.dynamicextensions.domain.BaseAbstractAttribute" constrained="true"
+	 */
+
+	public BaseAbstractAttributeInterface getBaseAbstractAttribute()
+	{
+		return baseAbstractAttribute;
+	}
+
+	/**
+	 *
+	 * @param baseAbstractAttribute
+	 */
+
+	public void setBaseAbstractAttribute(BaseAbstractAttributeInterface baseAbstractAttribute)
+	{
+		this.baseAbstractAttribute = (BaseAbstractAttribute) baseAbstractAttribute;
 	}
 
 }

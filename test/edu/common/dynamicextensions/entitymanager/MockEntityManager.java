@@ -9,10 +9,9 @@ import java.util.Iterator;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
-import edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties;
-import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
 import edu.common.dynamicextensions.domain.validationrules.Rule;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
@@ -23,8 +22,6 @@ import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
-import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
-import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
@@ -52,7 +49,7 @@ public class MockEntityManager
 	int columnIndex = 0;
 
 	public ContainerInterface createContainerForGivenEntity(String containerName,
-			EntityInterface entityInterface) throws DynamicExtensionsApplicationException
+			AbstractEntityInterface entity) throws DynamicExtensionsApplicationException
 	{
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		ContainerInterface containerInterface = null;
@@ -67,7 +64,9 @@ public class MockEntityManager
 		containerInterface.setRequiredFieldWarningMessage("indicates mandatory fields.");
 		containerInterface.setTitleCss("formTitle");
 
-		containerInterface.setEntity(entityInterface);
+		containerInterface.setAbstarctEntity(entity);
+
+		EntityInterface entityInterface = (EntityInterface) entity;
 
 		Collection abstractAttributeCollection = entityInterface.getAbstractAttributeCollection();
 		Iterator abstractAttributeCollectionIterator = abstractAttributeCollection.iterator();
@@ -122,7 +121,7 @@ public class MockEntityManager
 		containerInterface.setTitleCss("formTitle");
 
 		entityInterface = initializeEntity(entityGroup);
-		containerInterface.setEntity(entityInterface);
+		containerInterface.setAbstarctEntity((AbstractEntityInterface) entityInterface);
         entityInterface.getContainerCollection().add(containerInterface);
 
 		Collection abstractAttributeCollection = entityInterface.getAbstractAttributeCollection();

@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.DatabasePropertiesInterface;
-import edu.wustl.common.domain.AbstractDomainObject;
 
 /**
  * @version 1.0
@@ -16,9 +15,9 @@ public  abstract class DatabaseProperties extends DynamicExtensionBaseDomainObje
 	 * Name of the database property.
 	 */
 	protected String name;
-    
+
     /**
-     * 
+     *
      *
      */
 	public DatabaseProperties(){
@@ -33,9 +32,9 @@ public  abstract class DatabaseProperties extends DynamicExtensionBaseDomainObje
     public Long getId() {
         return id;
     }
-	
+
     /**
-     * @hibernate.property name="name" type="string" column="NAME" 
+     * @hibernate.property name="name" type="string" column="NAME"
      * @return Returns the name.
      */
     public String getName() {
@@ -47,6 +46,6 @@ public  abstract class DatabaseProperties extends DynamicExtensionBaseDomainObje
     public void setName(String name) {
         this.name = name;
     }
- 
+
 
 }

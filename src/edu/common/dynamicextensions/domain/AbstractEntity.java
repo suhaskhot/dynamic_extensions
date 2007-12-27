@@ -9,7 +9,7 @@ import edu.common.dynamicextensions.domaininterface.databaseproperties.TableProp
 
 /**
  * This is an abstract class extended by Entity, Entity group, Attribute.
- * This class stores basic information needed for metadata objects.  
+ * This class stores basic information needed for metadata objects.
  * @version 1.0
  * @created 28-Sep-2006 12:20:06 PM
  * @hibernate.joined-subclass table="DYEXTN_ABSTRACT_ENTITY"
@@ -22,18 +22,21 @@ public abstract class AbstractEntity extends AbstractMetadata implements Abstrac
      * Serial Version UID
      */
     private static final long serialVersionUID = 1234523890L;
-    
+    /**
+     *
+     */
     protected Set<TablePropertiesInterface> tablePropertiesCollection = new HashSet<TablePropertiesInterface>();
-    
+
     public AbstractEntity()
     {
-        
+
     }
 
     /**
      * This method returns the Collection of TableProperties of this Entity.
-     * @hibernate.set name="tablePropertiesColletion" table="DYEXTN_TABLE_PROPERTIES" cascade="all-delete-orphan" inverse="false" lazy="false"
-     * @hibernate.collection-key column="ENTITY_ID"
+     * @hibernate.set name="tablePropertiesColletion" table="DYEXTN_TABLE_PROPERTIES"
+     * cascade="all-delete-orphan" inverse="false" lazy="false"
+     * @hibernate.collection-key column="ABSTRACT_ENTITY_ID"
      * @hibernate.cache usage="read-write"
      * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.databaseproperties.TableProperties"
      * @return the Collection of TableProperties of this Entity.
@@ -48,7 +51,7 @@ public abstract class AbstractEntity extends AbstractMetadata implements Abstrac
     public void setTablePropertiesCollection(Set<TablePropertiesInterface> tablePropertiesCollection) {
         this.tablePropertiesCollection = tablePropertiesCollection;
     }
-    
+
     /**
      * This method returns the TableProperties of the Entity.
      * @return the TableProperties of the Entity.
@@ -63,7 +66,7 @@ public abstract class AbstractEntity extends AbstractMetadata implements Abstrac
         }
         return tableProperties;
     }
-    
+
     /**
      * This method sets the TableProperties of the Entity to the given TableProperties.
      * @param tableProperties the TableProperties to be set.
@@ -80,7 +83,7 @@ public abstract class AbstractEntity extends AbstractMetadata implements Abstrac
           }
           this.tablePropertiesCollection.add(tableProperties);
       }
-      
-      
+
+
 
 }

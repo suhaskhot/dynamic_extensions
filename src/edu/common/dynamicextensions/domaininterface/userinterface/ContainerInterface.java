@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
-import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
 /**
  * This interface stores the necessary information about the container on dynamically generated user interface.
- * 
+ *
  * @author geetika_bangard
  */
 public interface ContainerInterface extends DynamicExtensionBaseDomainObjectInterface
@@ -46,7 +46,7 @@ public interface ContainerInterface extends DynamicExtensionBaseDomainObjectInte
 	void setCaption(String caption);
 
 	/**
-	 * The list of user selected controls. 
+	 * The list of user selected controls.
 	 * @return Returns the controlCollection.
 	 */
 	Collection<ControlInterface> getControlCollection();
@@ -60,12 +60,12 @@ public interface ContainerInterface extends DynamicExtensionBaseDomainObjectInte
 	 * Entity Interface which is added to the container.
 	 * @return Returns the entity.
 	 */
-	EntityInterface getEntity();
+	AbstractEntityInterface getAbstarctEntity();
 
 	/**
 	 * @param entityInterface The entity to set.
 	 */
-	void setEntity(EntityInterface entityInterface);
+	void setAbstarctEntity(AbstractEntityInterface abstractEntityInterface);
 
 	/**
 	 * css style for the main table.
@@ -110,24 +110,24 @@ public interface ContainerInterface extends DynamicExtensionBaseDomainObjectInte
 	void setTitleCss(String titleCss);
 
 	/**
-	 * 
+	 *
 	 * @param sequenceNumber the Sequence Number of the control
 	 * @return the Control Interface
 	 */
 	ControlInterface getControlInterfaceBySequenceNumber(String sequenceNumber);
 
 	/**
-	 * 
+	 *
 	 * @param controlInterface : control interface object to be removed
 	 */
 	void removeControl(ControlInterface controlInterface);
-	
+
 	/**
-	 * Remove all controls 
+	 * Remove all controls
 	 *
 	 */
 	void removeAllControls();
-	
+
 	/**
 	 * @return
 	 */
@@ -137,71 +137,71 @@ public interface ContainerInterface extends DynamicExtensionBaseDomainObjectInte
 	 * @param mode
 	 */
 	void setMode(String mode);
-	
+
 	/**
 	 * @return return the HTML string for this type of a object
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException
 	 */
 	String generateContainerHTML() throws DynamicExtensionsSystemException;
-	
+
 	/**
 	 * @return return the HTML string for this type of a object
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException
 	 */
 	String generateControlsHTML() throws DynamicExtensionsSystemException;
-	
+
 	/**
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
 	String generateControlsHTMLAsGrid(List<Map<AbstractAttributeInterface, Object>> valueMap) throws DynamicExtensionsSystemException;
-	
+
 	/**
 	 * @return
 	 */
 	Map<AbstractAttributeInterface, Object> getContainerValueMap();
 
-	
+
 	/**
 	 * @param containerValueMap
 	 */
 	void setContainerValueMap(Map<AbstractAttributeInterface, Object> containerValueMap);
-	
+
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	Boolean getShowAssociationControlsAsLink();
-	
+
 	/**
-	 * 
+	 *
 	 * @param showAssociationControlsAsLink
 	 */
 	void setShowAssociationControlsAsLink(Boolean showAssociationControlsAsLink);
-	
+
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	List <ControlInterface> getAllControls();
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	ContainerInterface getBaseContainer();
 	/**
-	 * 
+	 *
 	 * @param baseContainer
 	 */
 	void setBaseContainer(ContainerInterface baseContainer);
-	
+
 	/**
 	 * @return the incontextContainer
 	 */
 	ContainerInterface getIncontextContainer();
-	
+
 	/**
 	 * @param incontextContainer the incontextContainer to set
 	 */
-	void setIncontextContainer(ContainerInterface incontextContainer);	
+	void setIncontextContainer(ContainerInterface incontextContainer);
 }

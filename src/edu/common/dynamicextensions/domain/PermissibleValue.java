@@ -9,7 +9,6 @@ import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
-import edu.wustl.common.domain.AbstractDomainObject;
 
 /**
  * @author sujay_narkar

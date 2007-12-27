@@ -1828,8 +1828,6 @@ public class EntityManager
 	{
 		Container container = (Container) containerInterface;
 		Stack rollbackQueryStack = new Stack();
-        //List<Container> processedContainersList = new ArrayList<Container>();
-        List<Long> processedControlsIdsList = new ArrayList<Long>();
 
 		if (container == null)
 		{
@@ -1865,21 +1863,7 @@ public class EntityManager
 				saveOrUpdateEntity(entity, hibernateDAO, rollbackQueryStack, isentitySaved,
 						processedEntityList, addIdAttribute, false, true);
 
-                //processedContainersList.add(container);
-
-                if (container != null)
-                {
-                    for (ControlInterface control : container.getControlCollection())
-                    {
-                        if (control instanceof ContainmentAssociationControlInterface)
-                        {
-                            processedControlsIdsList.add(((ContainmentAssociationControlInterface)control).getContainer().getId());
-                        }
-                    }
-                }
-				//saveChildContainers(container, session, processedContainersList);
-                List<Long> idsList = new ArrayList<Long>();
-                saveChildContainers(container, session, processedControlsIdsList, idsList);
+				saveChildContainers(container,hibernateDAO);
 			}
 
 			preSaveProcessContainer(container); //preprocess
@@ -1988,76 +1972,30 @@ public class EntityManager
 	 * @throws UserNotAuthorizedException
 	 * @throws DAOException
 	 */
-	//private void saveChildContainers(ContainerInterface container, Session session, List<Container> processedCotainersList) throws DAOException, UserNotAuthorizedException
-    private void saveChildContainers(ContainerInterface container, Session session, List<Long> processedControlsIdsList, List<Long> idsList) throws DAOException, UserNotAuthorizedException
+	private void saveChildContainers(ContainerInterface container, HibernateDAO hibernateDAO) throws DAOException, UserNotAuthorizedException
 	{
 		if (container != null)
 		{
-    		for (ControlInterface control : container.getControlCollection())
-    		{
-    			if (control instanceof ContainmentAssociationControlInterface)
-    			{
-    				ContainmentAssociationControlInterface associationControl = (ContainmentAssociationControlInterface) control;
-
-                    if (associationControl.getContainer().getId() != null && processedControlsIdsList.size() >= 2)
-                    {
-                        if (idsList.contains(associationControl.getContainer().getId()))
-                        {
-                            session.merge(associationControl.getContainer());
-                        }
-                        else
-                        {
-                            session.update(associationControl.getContainer());
-                            idsList.add(associationControl.getContainer().getId());
-                        }
-                        /*for (int i=0; i<processedControlsList.size(); i++)
-                        {
-                            if (((ContainmentAssociationControlInterface) processedControlsList.get(i)).getContainer().getId() == associationControl.getContainer().getId())
-                            {
-                                session.merge(associationControl.getContainer());
-                                break;
-                            }
-                            if (idsList.contains(associationControl.getContainer().getId()))
-                            {
-                                session.merge(associationControl.getContainer());
-                            }
-                            if (processedControlsList.get(i).getContainer().getControlCollection().size() != 0)
-                            {
-                                while(processedControlsList.get(i).getContainer().getControlCollection().iterator().hasNext())
-                                {
-                                    Object tempControl = processedControlsList.get(i).getContainer().getControlCollection().iterator().next();
-                                    if (tempControl instanceof ContainmentAssociationControlInterface)
-                                    {
-                                        if (((ContainmentAssociationControlInterface)tempControl).getContainer().getId() == associationControl.getContainer().getId())
-                                        {
-                                            session.merge(associationControl.getContainer());
-                                            break;
-                                        }
-                                        else
-                                        {
-                                            session.update(associationControl.getContainer());
-                                            break;
-                                        }
-                                    }
-                                }
-
-                            }
-                        }*/
-                    }
-                    else if (associationControl.getContainer().getId() != null && processedControlsIdsList.size() < 2)
-                    {
-                        session.update(associationControl.getContainer());
-                        idsList.add(associationControl.getContainer().getId());
-                    }
-                    else
-                    {
-                        session.save(associationControl.getContainer());
-                        idsList.add(associationControl.getContainer().getId());
-                    }
-
-    				saveChildContainers(associationControl.getContainer(), session, processedControlsIdsList, idsList);
-    			}
-    		}
+			for (ControlInterface control : container.getControlCollection())
+			{
+				if (control instanceof ContainmentAssociationControlInterface)
+				{
+					ContainmentAssociationControlInterface associationControl = (ContainmentAssociationControlInterface) control;
+	                if(associationControl.getContainer().getId() != null)
+	                {
+	                    hibernateDAO.update(associationControl.getContainer(), null, false, false, false);
+	                }
+	                else
+	                {
+	                    hibernateDAO.insert(associationControl.getContainer(), null, false, false);
+	                }
+					//hibernateDAO.saveUpdate(associationControl.getContainer(), null, false, false,false);
+					//session.saveOrUpdateCopy(associationControl.getContainer());
+	
+					saveChildContainers(associationControl.getContainer(), hibernateDAO);
+	
+				}
+			}
 		}
 	}
 

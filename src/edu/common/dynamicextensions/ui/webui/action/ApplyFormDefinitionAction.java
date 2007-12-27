@@ -209,8 +209,17 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	{
 		if ((parentContainer != null) && (childContainer != null))
 		{
+			String childContainerId = "";
+			if(childContainer.getId() != null)
+			{
+				childContainerId = childContainer.getId().toString();
+			}
+			else
+			{
+				childContainerId = childContainer.getCaption();
+			}
 			ContainmentAssociationControl containmentAssociationControl = UserInterfaceiUtility
-					.getAssociationControl(parentContainer, childContainer.getId().toString());
+					.getAssociationControlForpreviewMode(parentContainer, childContainerId);
 			if (containmentAssociationControl != null)
 			{
 				AssociationInterface association = null;

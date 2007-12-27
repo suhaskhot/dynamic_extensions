@@ -45,6 +45,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
+import edu.common.dynamicextensions.util.IdGeneratorUtil;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Variables;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
@@ -91,6 +92,30 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
         //get query to create main table with primitive attributes.
 		queryList.addAll(getCreateMainTableQuery(entity, reverseQueryList));
 
+		return queryList;
+    }
+    /**
+     * This method builds the list of all the queries that need to be executed in order to
+     * create the data table for the entity and its associations.
+     *
+     * @param entity Entity for which to get the queries.
+     * @param reverseQueryList For every data table query the method builds one more query
+     * which negates the effect of that data table query. All such reverse queries are added in this list.
+     * @param rollbackQueryStack
+     * @param hibernateDAO
+     * @param addIdAttribute
+     *
+     * @return List of all the data table queries
+     *
+     * @throws DynamicExtensionsSystemException
+     * @throws DynamicExtensionsApplicationException
+     */
+    public List getUpdateEntityQueryList(Entity entity, List reverseQueryList, HibernateDAO hibernateDAO)
+            throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException {
+        List queryList = new ArrayList();
+
+		queryList.addAll(getForeignKeyConstraintQuery(entity, reverseQueryList));
+
 		// get query to create associations ,it invloves altering source/taget table or creating
 		//middle table depending upon the cardinalities.
 
@@ -98,7 +123,6 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
 				hibernateDAO));
 		return queryList;
     }
-
     /**
      * This method is used to execute the data table queries for entity in case of editing the entity.
      * This method takes each attribute of the entity and then scans for any changes and builds the alter query
@@ -758,17 +782,36 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
 
 		List<String> queryList = new ArrayList<String>();
 		queryList.add(query.toString());
-		// add foerfign key query for inheritance
-		if (parentEntity != null) {
-			String foreignKeyConstraintQueryForInheritance = getForeignKeyConstraintQueryForInheritance(entity);
-			queryList.add(foreignKeyConstraintQueryForInheritance);
-		}
+//		// add foerfign key query for inheritance
+//		if (parentEntity != null) {
+//			String foreignKeyConstraintQueryForInheritance = getForeignKeyConstraintQueryForInheritance(entity);
+//			queryList.add(foreignKeyConstraintQueryForInheritance);
+//		}
 
 		String reverseQuery = getReverseQueryForEntityDataTable(entity);
 		reverseQueryList.add(reverseQuery);
 		return queryList;
 	}
-
+    /**
+     * getForeignKeyConstraintQuery.
+     * @param entity
+     * @param reverseQueryList
+     * @return
+     */
+    private List<String> getForeignKeyConstraintQuery(Entity entity,
+			List<String> reverseQueryList)
+    {
+    	List<String> queryList = new ArrayList<String>();
+    	EntityInterface parentEntity = entity.getParentEntity();
+//    	 add foerfign key query for inheritance
+		if (parentEntity != null) {
+			String foreignKeyConstraintQueryForInheritance = getForeignKeyConstraintQueryForInheritance(entity);
+			queryList.add(foreignKeyConstraintQueryForInheritance);
+			String foreignKeyRemoveConstraintQueryForInheritance = getForeignKeyRemoveConstraintQueryForInheritance(entity);
+			reverseQueryList.add(foreignKeyRemoveConstraintQueryForInheritance);
+		}
+		return queryList;
+    }
     /**
      * This method returns the query to add foreign key constraint in the given child entity
      * that refers to identifier column of the parent.
@@ -779,7 +822,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
 
         StringBuffer foreignKeyConstraint = new StringBuffer();
         EntityInterface parentEntity = entity.getParentEntity();
-        String foreignConstraintName = "FK" + "E" + entity.getId() + "E" + parentEntity.getId();
+        String foreignConstraintName = "FK" + "E" + IdGeneratorUtil.getNextUniqeId() + "E" + IdGeneratorUtil.getNextUniqeId();
 
         foreignKeyConstraint.append(ALTER_TABLE).append(WHITESPACE).append(entity.getTableProperties().getName()).append(
                                                                                                                          WHITESPACE).append(
@@ -813,7 +856,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
 
         StringBuffer foreignKeyConstraint = new StringBuffer();
         EntityInterface parentEntity = entity.getParentEntity();
-        String foreignConstraintName = "FK" + "E" + entity.getId() + "E" + parentEntity.getId();
+        String foreignConstraintName = "FK" + "E" + IdGeneratorUtil.getNextUniqeId() + "E" + IdGeneratorUtil.getNextUniqeId();
 
         foreignKeyConstraint.append(ALTER_TABLE).append(WHITESPACE).append(entity.getTableProperties().getName()).append(
                                                                                                                          WHITESPACE).append(

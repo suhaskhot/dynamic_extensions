@@ -316,7 +316,16 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 				queryList.addAll(createQueryList);
 			}
 		}
+		for (EntityInterface entityObject : entityList)
+		{
+			List createQueryList = queryBuilder.getUpdateEntityQueryList((Entity) entityObject,
+					reverseQueryList, hibernateDAO);
 
+			if (createQueryList != null && !createQueryList.isEmpty())
+			{
+				queryList.addAll(createQueryList);
+			}
+		}
         List<EntityInterface> savedEntityList = DynamicExtensionsUtility
 		.getSavedEntities(entityGroupInterface);
 

@@ -1407,7 +1407,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
             checkIfDataTypeChangeAllowable(attribute);
             modifyAttributeQueryList = getAttributeDataTypeChangedQuery(attribute, savedAttribute,
                                                                         attributeRollbackQueryList);
-            modifyAttributeQueryList.addAll(modifyAttributeQueryList);
+            //modifyAttributeQueryList.addAll(modifyAttributeQueryList);
         }
 
         if (attribute.getIsPrimaryKey() && !savedAttribute.getIsPrimaryKey()) {

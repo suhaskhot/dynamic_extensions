@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import edu.common.dynamicextensions.domain.AbstractAttribute;
@@ -266,10 +267,10 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	 * @return
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public static boolean isValuePresent(AttributeInterface attribute, Object value)
+	public static boolean isValuePresent(AttributeInterface attribute, Object value, Map<String, String> parameterMap)
 			throws DynamicExtensionsSystemException
 	{
-		return new DynamicExtensionBaseQueryBuilder().isValuePresent(attribute, value);
+		return new DynamicExtensionBaseQueryBuilder().isValuePresent(attribute, value, parameterMap);
 	}
 
 	public static List<AbstractAttributeInterface> filterSystemAttributes(

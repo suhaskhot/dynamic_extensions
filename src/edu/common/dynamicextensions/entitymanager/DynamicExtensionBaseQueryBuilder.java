@@ -65,7 +65,7 @@ import edu.wustl.common.util.logger.Logger;
  *
  * @author Rahul Ner
  */
-class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterface,
+public class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterface,
         EntityManagerExceptionConstantsInterface, DynamicExtensionsQueryBuilderConstantsInterface {
 
     EntityManagerUtil entityManagerUtil = new EntityManagerUtil();
@@ -1875,13 +1875,17 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
     /**
      * @return
      */
-    public boolean isValuePresent(AttributeInterface attribute, Object value)
+    public boolean isValuePresent(AttributeInterface attribute, Object value, Map<String, String> parameterMap)
             throws DynamicExtensionsSystemException {
         boolean present = false;
 
         String tableName = attribute.getEntity().getTableProperties().getName();
         String columnName = attribute.getColumnProperties().getName();
+        String identifier = "";
+     
         Object formattedValue = getFormattedValue((AbstractAttribute) attribute, value);
+           
+        identifier = parameterMap.get("recordId");
 
         StringBuffer queryBuffer = new StringBuffer();
         queryBuffer.append(SELECT_KEYWORD).append(WHITESPACE).append(COUNT_KEYWORD).append(OPENING_BRACKET).append(
@@ -1898,7 +1902,13 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
                                                                                                                                                                                                                                                                                                                    EQUAL).append(
                                                                                                                                                                                                                                                                                                                                  formattedValue).append(
                                                                                                                                                                                                                                                                                                                                                         " and "
-                                                                                                                                                                                                                                                                                                                                                                + getRemoveDisbledRecordsQuery(""));
+                                                                                                                                                                                                                                                                                                                                                             + getRemoveDisbledRecordsQuery(""));
+        
+        if(!identifier.equals(""))
+        {
+        	queryBuffer.append(WHITESPACE).append(AND_KEYWORD).append(WHITESPACE).append(IDENTIFIER).append(WHITESPACE).append("!=").append(WHITESPACE).append(identifier);
+        	
+        }
 
         ResultSet resultSet = EntityManagerUtil.executeQuery(queryBuffer.toString());
 

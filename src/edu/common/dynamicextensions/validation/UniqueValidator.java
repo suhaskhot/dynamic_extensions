@@ -45,7 +45,7 @@ public class UniqueValidator implements ValidatorRuleInterface
 			numberValidator.validate(attribute, valueObject, parameterMap);			
 		}
 		
-		if (EntityManagerUtil.isValuePresent(attribute, valueObject))
+		if (EntityManagerUtil.isValuePresent(attribute, valueObject, parameterMap))
 		{
 			List<String> placeHolders = new ArrayList<String>();
 			placeHolders.add(attribute.getName());

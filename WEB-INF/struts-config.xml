@@ -216,6 +216,9 @@ PUBLIC
 			scope="request">
 			<forward name="success" path="/LoadRecordListAction.do" />
 		</action>
+		
+		<action path="/viewErrorDetails" forward="/pages/ErrorDetails.jsp"
+			validate="false" />
 	</action-mappings>	
 	
 	<message-resources parameter="ApplicationResources" />

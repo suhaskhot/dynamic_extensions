@@ -36,8 +36,8 @@ public class ValidatorUtil
 	 * @throws DynamicExtensionsSystemException : Exception 
 	 */
 	public static List<String> validateEntity(
-			Map<AbstractAttributeInterface, Object> attributeValueMap, List<String> errorList)
-			throws DynamicExtensionsSystemException
+			Map<AbstractAttributeInterface, Object> attributeValueMap, String recordIdentifier, List<String> errorList)
+			throws DynamicExtensionsSystemException, DynamicExtensionsValidationException
 	{
 		if(errorList == null)
 		{
@@ -52,7 +52,7 @@ public class ValidatorUtil
 				AbstractAttributeInterface abstractAttribute = attributeValueNode.getKey();
 				if (abstractAttribute instanceof AttributeInterface)
 				{
-					errorList.addAll(validateAttributes(attributeValueNode));
+					errorList.addAll(validateAttributes(attributeValueNode, recordIdentifier));
 				}
 				else if (abstractAttribute instanceof AssociationInterface)
 				{
@@ -64,7 +64,7 @@ public class ValidatorUtil
 								.get(abstractAttribute);
 						for (Map<AbstractAttributeInterface, Object> subAttributeValueMap : valueObject)
 						{
-							errorList.addAll(validateEntityAttributes(subAttributeValueMap));
+							errorList.addAll(validateEntityAttributes(subAttributeValueMap, recordIdentifier) );
 						}
 					}
 				}
@@ -82,8 +82,8 @@ public class ValidatorUtil
 	 * @throws DynamicExtensionsSystemException
 	 */
 	private static List<String> validateEntityAttributes(
-			Map<AbstractAttributeInterface, Object> attributeValueMap)
-			throws DynamicExtensionsSystemException
+			Map<AbstractAttributeInterface, Object> attributeValueMap, String recordIdentifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsValidationException
 	{
 		List<String> errorList = new ArrayList<String>();
 
@@ -99,7 +99,7 @@ public class ValidatorUtil
 			AbstractAttributeInterface abstractAttribute = attributeValueNode.getKey();
 			if (abstractAttribute instanceof AttributeInterface)
 			{
-				errorList.addAll(validateAttributes(attributeValueNode));
+				errorList.addAll(validateAttributes(attributeValueNode, recordIdentifier));
 			}
 		}
 
@@ -107,11 +107,11 @@ public class ValidatorUtil
 	}
 
 	private static List<String> validateAttributes(
-			Map.Entry<AbstractAttributeInterface, Object> attributeValueNode)
-			throws DynamicExtensionsSystemException
+			Map.Entry<AbstractAttributeInterface, Object> attributeValueNode, String recordIdentifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsValidationException
 	{
 		List<String> errorList = new ArrayList<String>();
-
+		
 		AbstractAttributeInterface abstractAttribute = attributeValueNode.getKey();
 		AttributeInterface attribute = (AttributeInterface) abstractAttribute;
 		Collection<RuleInterface> attributeRuleCollection = attribute.getRuleCollection();
@@ -121,18 +121,33 @@ public class ValidatorUtil
 			for (RuleInterface rule : attributeRuleCollection)
 			{
 				String ruleName = rule.getName();
-				if (!ruleName.equals("unique"))
+				
+				try
 				{
-					Object valueObject = attributeValueNode.getValue();
-					Map<String, String> parameterMap = getParamMap(rule);
-					try
+					
+					if (!ruleName.equals("unique"))
 					{
+						Object valueObject = attributeValueNode.getValue();
+						Map<String, String> parameterMap = getParamMap(rule);
 						checkValidation(attribute, valueObject, rule, parameterMap);
-					}
-					catch (DynamicExtensionsValidationException e)
+					}else 
 					{
-						errorMessage = ApplicationProperties.getValue(e.getErrorCode(), e
-								.getPlaceHolderList());
+						if(attributeValueNode.getValue().equals(""))
+						{
+							errorList.add(ApplicationProperties.getValue("DYEXTN_A_017", attribute.getName()));
+						}
+						else
+						{
+							checkUniqueValidationForAttribute(attribute, attributeValueNode.getValue(), recordIdentifier);
+						}
+					}
+				}
+				catch (DynamicExtensionsValidationException e)
+				{
+					errorMessage = ApplicationProperties.getValue(e.getErrorCode(), e
+							.getPlaceHolderList());
+					if(!errorList.contains(errorMessage))
+					{
 						errorList.add(errorMessage);
 					}
 				}
@@ -143,7 +158,7 @@ public class ValidatorUtil
 	}
 
 	public static void checkUniqueValidationForAttribute(AttributeInterface attribute,
-			Object valueObject, Long recordId) throws DynamicExtensionsValidationException,
+			Object valueObject, String recordId) throws DynamicExtensionsValidationException,
 			DynamicExtensionsSystemException
 	{
 		Collection<RuleInterface> attributeRuleCollection = attribute.getRuleCollection();
@@ -158,7 +173,7 @@ public class ValidatorUtil
 					Map<String, String> parameterMap = new HashMap<String, String>();
 					if (recordId != null)
 					{
-						parameterMap.put("recordId", recordId.toString());
+						parameterMap.put("recordId", recordId);
 					}
 					checkValidation(attribute, valueObject, rule, parameterMap);
 					break;

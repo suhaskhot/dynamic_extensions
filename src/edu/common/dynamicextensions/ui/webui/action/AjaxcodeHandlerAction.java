@@ -165,7 +165,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ContainerInterface containerForSelectedForm = null;
-		String formName = "", formDescription = "", formConceptCode = "";
+		String formName = "", formDescription = "", formConceptCode = "" , parentEntity = "";
 		boolean isAbstract=false;
 		if (selectedFormId != null)
 		{
@@ -188,11 +188,15 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 						formConceptCode = "";
 					}
 					isAbstract = entity.isAbstract();
+					if(containerForSelectedForm.getBaseContainer() != null)
+					{
+						parentEntity = containerForSelectedForm.getBaseContainer().getId().toString();
+					}
 				}
 			}
 		}
 		String formDetailsXML = createFormDetailsXML(formName, formDescription, formConceptCode,
-				Constants.ADD_SUB_FORM_OPR, isAbstract);
+				Constants.ADD_SUB_FORM_OPR, isAbstract, parentEntity);
 		if (formDetailsXML == null)
 		{
 			formDetailsXML = "";
@@ -405,6 +409,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 		String formConceptCode = "";
 		String operationMode = Constants.ADD_SUB_FORM_OPR;
 		boolean isAbstract= false;
+		String parentEntity = "";
 		if (containerForSelectedForm != null)
 		{
 			formName = containerForSelectedForm.getCaption();
@@ -414,6 +419,10 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 				formDescription = entity.getDescription();
 				formConceptCode = SemanticPropertyBuilderUtil.getConceptCodeString(entity);
 				isAbstract = entity.isAbstract();
+				if(containerForSelectedForm.getBaseContainer() != null)
+				{
+					parentEntity = containerForSelectedForm.getBaseContainer().getId().toString();
+				}
 			}
 			operationMode = Constants.EDIT_FORM;
 		}
@@ -430,7 +439,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 			}
 		}
 		String formDetailsXML = createFormDetailsXML(formName, formDescription, formConceptCode,
-				operationMode, isAbstract);
+				operationMode, isAbstract, parentEntity);
 		if (formDetailsXML == null)
 		{
 			formDetailsXML = "";
@@ -445,7 +454,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 	 * @return
 	 */
 	private String createFormDetailsXML(String formName, String formDescription,
-			String formConceptCode, String operationMode, boolean isAbstract)
+			String formConceptCode, String operationMode, boolean isAbstract, String parentEntity)
 	{
 		StringBuffer responseXML = new StringBuffer();
 		responseXML.append("<form>");
@@ -454,6 +463,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 		responseXML.append("<form-conceptcode>" + formConceptCode + "</form-conceptcode>");
 		responseXML.append("<operationMode>" + operationMode + "</operationMode>");
 		responseXML.append("<isAbstract>" + isAbstract + "</isAbstract>");
+		responseXML.append("<parentEntity>" + parentEntity + "</parentEntity>");
 		responseXML.append("</form>");
 		return responseXML.toString();
 	}

@@ -1624,6 +1624,7 @@ function treeNodeSelectedResponse(formNameListXML)
         var htmlOperationMode = document.getElementById('operationMode');
         var htmlOperation = document.getElementById('operation');
         var isAbstract = document.getElementById('isAbstract');
+        var htmlParentEntity = document.getElementById('parentForm');
 
         var documentElt = getDocumentElementForXML(formNameListXML);
         var formname = documentElt.getElementsByTagName('form-name');
@@ -1631,6 +1632,7 @@ function treeNodeSelectedResponse(formNameListXML)
         var formConceptCode = documentElt.getElementsByTagName('form-conceptcode');
         var operationmode = documentElt.getElementsByTagName('operationMode');
         var checkAbstract = documentElt.getElementsByTagName('isAbstract');
+        var parentEntityName = documentElt.getElementsByTagName('parentEntity');
 
         if((htmlFormName!=null)&&(formname!=null))
         {
@@ -1682,7 +1684,13 @@ function treeNodeSelectedResponse(formNameListXML)
 				}
 			}
 		}
-    }
+		
+		if((htmlParentEntity!=null)&&(parentEntityName!=null))
+		{
+			htmlParentEntity.value= getElementText(parentEntityName[0]);
+		}
+		
+	}
 }
 
 function getElementText(element)

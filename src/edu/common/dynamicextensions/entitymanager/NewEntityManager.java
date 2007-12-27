@@ -884,14 +884,9 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 		columnNames.add(attribute.getName()+UNDERSCORE+CONTENT_TYPE);
 		columnValues.add(value.getContentType());
 
-
 		columnNames.add(attribute.getColumnProperties().getName());
 		columnValues.add(value.getFileContent());
-
-
-		columnNames.add(attribute.getColumnProperties().getName());
-		columnValues.add(value.getFileContent());
-
+		
 	}
 
 	/**

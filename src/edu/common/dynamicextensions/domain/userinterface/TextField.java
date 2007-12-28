@@ -245,7 +245,7 @@ public class TextField extends Control implements TextFieldInterface
 
 	private String getDefaultValue()
 	{
-		String defaultValue = (String) this.value;
+		String defaultValue = String.valueOf(this.value);
 		if (isUrl != null && isUrl.booleanValue() == true)
 		{
 			defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());

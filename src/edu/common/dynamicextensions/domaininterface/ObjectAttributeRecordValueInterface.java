@@ -2,7 +2,7 @@ package edu.common.dynamicextensions.domaininterface;
 
 import java.io.IOException;
 
-import edu.common.dynamicextensions.domain.ObjectAttributeRecordValue;
+import edu.common.dynamicextensions.ui.util.ObjectAttributeRecordValue;
 
 /**
  * @author rahul_ner

@@ -10,6 +10,7 @@ import edu.common.dynamicextensions.domain.CategoryAttribute;
 import edu.common.dynamicextensions.domain.CategoryEntity;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.Entity;
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
@@ -17,6 +18,8 @@ import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface;
 import edu.common.dynamicextensions.entitymanager.CategoryManager;
 import edu.common.dynamicextensions.entitymanager.CategoryManagerInterface;
 import edu.common.dynamicextensions.entitymanager.MockEntityManager;
@@ -193,6 +196,84 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase {
         }
     }
 
+    /**
+     * Create a category, a category entity, category attributes and an entity with 3 attributes.
+     * Add the attributes to category attributes, entity to category entity. Add catrgory attributes
+     * to category entity, category entity to category and save it to database.
+     * Category tree created 
+     * 	categoryInterface => ce
+     * 
+     * 	ce
+     * 	|
+     * 	|_ce1
+     *  	|
+     * 		|_ce2
+     */
+    /*public void testCreateCategoryWithContainer() 
+    {
+        try 
+        {
+        	//create entity tree 
+        	EntityInterface entity = new MockEntityManager().initializeEntity();
+        	DomainObjectFactory factory = DomainObjectFactory.getInstance();
+        	
+        	AssociationInterface association1 = factory.createAssociation();
+        	EntityInterface entity1 = new MockEntityManager().initializeEntity();
+        	association1.setTargetEntity(entity1);
+        	entity.getAssociationCollection().add(association1);
+        	
+        	AssociationInterface association2 = factory.createAssociation();
+        	EntityInterface entity2 = new MockEntityManager().initializeEntity();
+        	association2.setTargetEntity(entity2);
+        	entity1.getAssociationCollection().add(association2);
+        	
+        	//create category tree from above entity tree
+        	CategoryInterface category = DomainObjectFactory.getInstance().createCategory();        	
+            category.setName("C1");
+            category.setCreatedDate(new Date());
+        	
+            CategoryEntityInterface categoryEntityInterface = createCategoryEntity(entity);
+            CategoryEntityInterface categoryEntityInterface1 = createCategoryEntity(entity1);
+            categoryEntityInterface.getChildCategories().add((CategoryEntity)categoryEntityInterface1);
+            
+            CategoryEntityInterface categoryEntityInterface2 = createCategoryEntity(entity2);
+            categoryEntityInterface1.getChildCategories().add((CategoryEntity)categoryEntityInterface2);
+
+            //save category
+            category.setRootCategoryElement((CategoryEntity) categoryEntityInterface);
+            CategoryManagerInterface categoryManager = CategoryManager.getInstance();
+            categoryManager.persistCategory(category);
+            
+            //create conatiner for the category
+            
+            ContainerInterface containerInterface = new MockEntityManager().getContainer("", categoryEntityInterface);
+            ContainerInterface containerInterface1 = new MockEntityManager().getContainer("", categoryEntityInterface1);
+            ContainmentAssociationControlInterface  containmentAssociationControl = factory.createContainmentAssociationControl();
+            containerInterface.getControlCollection().add(containmentAssociationControl);
+            containmentAssociationControl.setContainer(containerInterface1);
+            
+            ContainerInterface containerInterface2 = new MockEntityManager().getContainer("", categoryEntityInterface2);
+            ContainmentAssociationControlInterface  containmentAssociationControl1 = factory.createContainmentAssociationControl();
+            containerInterface1.getControlCollection().add(containmentAssociationControl1);
+            containmentAssociationControl1.setContainer(containerInterface2);
+            
+                        
+            category.setRootCategoryElement((CategoryEntity) categoryEntityInterface);
+            categoryManager.persistCategory(category);
+        } 
+        catch (DynamicExtensionsSystemException e) 
+        {
+            fail();
+            e.printStackTrace();
+        } 
+        catch (DynamicExtensionsApplicationException e) 
+        {
+            fail();
+            e.printStackTrace();
+        }
+    }
+*/
+    
     /**
      * Retrieve a category with some identifier, change its metadata and save it to database.
      * The metadata information for category with the identifier should get modified.

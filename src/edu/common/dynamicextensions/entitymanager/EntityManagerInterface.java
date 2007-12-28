@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import edu.common.dynamicextensions.domain.AttributeRecord;
-import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -17,9 +15,9 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInter
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.ui.util.FileAttributeRecordValue;
 import edu.common.dynamicextensions.util.AssociationTreeObject;
 import edu.wustl.common.beans.NameValueBean;
-import edu.wustl.common.dao.HibernateDAO;
 
 /**
  * The methods only work on domain object interfaces and also return domain object interfaces or

@@ -66,6 +66,8 @@ import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInter
 import edu.common.dynamicextensions.domaininterface.userinterface.ViewInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
+import edu.common.dynamicextensions.ui.util.FileAttributeRecordValue;
+import edu.common.dynamicextensions.ui.util.ObjectAttributeRecordValue;
 import edu.common.dynamicextensions.util.IdGeneratorUtil;
 
 /**

@@ -662,7 +662,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
      * such a way the column for that attribute should get added to the data table. This column was not present in
      * earlier scenario when the attribue was a collection attribute. 
      */
-    public void testEditEntityWithCollectionAttribute()
+    /*public void testEditEntityWithCollectionAttribute()
     {
         try
         {
@@ -719,7 +719,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             fail("Exception occured");
         }
 
-    }
+    }*/
 
     /**
      * This method tests GetRecordById method for the condition where record and entity does exists
@@ -799,7 +799,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     /**
      * This method test for inserting data for a multi select attribute
      */
-    public void testInsertDataWithMultiSelectAttribute()
+    /*public void testInsertDataWithMultiSelectAttribute()
     {
         Entity entity = new Entity();
         entity.setName("Stock Quote");
@@ -865,7 +865,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             Logger.out.debug(e.getStackTrace());
         }
 
-    }
+    }*/
 
     /**
      * This method test for updating record for an entity.
@@ -887,6 +887,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             userNames.setName("users");
 
             AttributeInterface studyDate = factory.createDateAttribute();
+            ((DateAttributeTypeInformation) studyDate.getAttributeTypeInformation())
+            .setFormat(ProcessorConstants.SQL_DATE_ONLY_FORMAT);
             studyDate.setName("Date");
 
             study.addAbstractAttribute(name);
@@ -916,7 +918,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             map = entityManagerInterface.getRecordById(savedStudy, recordId);
             userName = (String) map.get(userNames);
             assertEquals("b", userName);
-            //assertEquals("12-20-2006", (String) map.get(studyDate));
+            assertEquals("12-20-2006", (String) map.get(studyDate));
 
         }
         catch (DynamicExtensionsSystemException e)
@@ -942,7 +944,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     /**
      * This method test for updating data for a multi select attribute
      */
-    public void testEditRecordWithMultiselectAttrubteUpdate()
+    /*public void testEditRecordWithMultiselectAttrubteUpdate()
     {
         Entity study = new Entity();
         study.setName("Study");
@@ -1020,7 +1022,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             Logger.out.debug(e.getStackTrace());
         }
 
-    }
+    }*/
 
     /**
      * This method edits an existing attribute to a file type attribute.
@@ -1772,7 +1774,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     /**
      * This method tests for creating a entity with file attribute.
      */
-    public void testDeleteRecordForFileAttribute()
+    /*public void testDeleteRecordForFileAttribute()
     {
         EntityManagerInterface entityManager = EntityManager.getInstance();
         DomainObjectFactory factory = DomainObjectFactory.getInstance();
@@ -1844,7 +1846,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         }
 
     }
-
+*/
     /**
      * PURPOSE : to test the method persistEntityMetadata. 
      * EXPECTED BEHAVIOR : It should only save the metadata information of the entity and not create the data table for the entity.
@@ -2475,6 +2477,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
                     .setFormat(ProcessorConstants.DATE_TIME_FORMAT);
 
             AttributeInterface endDate = DomainObjectFactory.getInstance().createDateAttribute();
+            ((DateAttributeTypeInformation) endDate.getAttributeTypeInformation())
+            .setFormat(ProcessorConstants.SQL_DATE_ONLY_FORMAT);
             endDate.setName("endDate");
 
             entity.addAbstractAttribute(floatAtribute);
@@ -3368,7 +3372,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
     }
     
     
-    public void testDeleteRecordForObjectAttribute() {
+   /* public void testDeleteRecordForObjectAttribute() {
         EntityManagerInterface entityManager = EntityManager.getInstance();
         DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
@@ -3425,7 +3429,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             fail();
         }
 
-    }
+    }*/
     
     
     public void testEditEntityToAddObjectAttribute() {

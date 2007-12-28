@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -2119,11 +2120,12 @@ public class EntityManager
 	 * @throws SQLException
 	 * @throws DAOException
 	 * @throws UserNotAuthorizedException
+	 * @throws ParseException 
 	 */
 	private Long insertDataForSingleEntity(EntityInterface entity, Map dataValue,
 			HibernateDAO hibernateDAO, Long parentRecordId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException,
-			HibernateException, SQLException, DAOException, UserNotAuthorizedException
+			HibernateException, SQLException, DAOException, UserNotAuthorizedException, ParseException
 	{
 		if (entity == null)
 		{
@@ -2176,25 +2178,7 @@ public class EntityManager
 
 			if (attribute instanceof AttributeInterface)
 			{
-				AttributeInterface primitiveAttribute = (AttributeInterface) attribute;
-
-				// populate FileAttributeRecordValue HO
-				if (primitiveAttribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
-				{
-					populateFileAttribute(columnNames,columnValues,(FileAttributeRecordValue)value, primitiveAttribute);
-				}
-
-				else if (primitiveAttribute.getIsCollection())
-				{
-					//                    AttributeRecord collectionRecord = populateCollectionAttributeRecord(null,
-					//                            entity, primitiveAttribute, identifier, (List<String>) value);
-					//                    attributeRecords.add(collectionRecord);
-				}
-				else
-				{
-					columnNames.add(primitiveAttribute.getColumnProperties().getName());
-					columnValues.add(value);
-				}
+				updateColumnNamesAndColumnValues(attribute,value,columnNames,columnValues);
 			}
 			else
 			{
@@ -2258,6 +2242,30 @@ public class EntityManager
 
 	}
 
+	private void updateColumnNamesAndColumnValues(AbstractAttribute attribute, Object value, List<String> columnNames, List<Object> columnValues) throws ParseException 
+	{
+		AttributeInterface primitiveAttribute = (AttributeInterface) attribute;
+
+		// populate FileAttributeRecordValue HO
+		if (primitiveAttribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
+		{
+			populateFileAttribute(columnNames,columnValues,(FileAttributeRecordValue)value, primitiveAttribute);
+		}
+
+		else if (primitiveAttribute.getIsCollection())
+		{
+			//toDo: 
+		}
+		else
+		{
+			columnNames.add(primitiveAttribute.getColumnProperties().getName());
+			if (primitiveAttribute.getAttributeTypeInformation() instanceof DateAttributeTypeInformation){
+				String dateFormat = ((DateAttributeTypeInformation)primitiveAttribute.getAttributeTypeInformation()).getFormat();
+				value = new SimpleDateFormat(dateFormat).parse(value.toString());
+			}
+			columnValues.add(value);
+		}
+	}
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#insertData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map)
 	 */
@@ -2331,11 +2339,12 @@ public class EntityManager
 	 * @throws SQLException
 	 * @throws DAOException
 	 * @throws UserNotAuthorizedException
+	 * @throws ParseException 
 	 */
 	private Long insertDataForHeirarchy(EntityInterface entity,
 			Map<AbstractAttributeInterface, ?> dataValue, HibernateDAO hibernateDAO)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException,
-			HibernateException, SQLException, DAOException, UserNotAuthorizedException
+			HibernateException, SQLException, DAOException, UserNotAuthorizedException, ParseException
 	{
 		List<EntityInterface> entityList = getParentEntityList(entity);
 		Map<EntityInterface, Map> entityValueMap = initialiseEntityValueMap(entity, dataValue);
@@ -2428,11 +2437,12 @@ public class EntityManager
 	 * @return
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
+	 * @throws ParseException 
 	 */
 	private boolean editDataForSingleEntity(EntityInterface entity, Map dataValue, Long recordId,
 			HibernateDAO hibernateDAO) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
-			UserNotAuthorizedException
+			UserNotAuthorizedException, ParseException
 	{
 
 		if (entity == null || dataValue == null || dataValue.isEmpty())
@@ -2458,49 +2468,7 @@ public class EntityManager
 			}
 			if (attribute instanceof AttributeInterface)
 			{
-				AttributeInterface primitiveAttribute = (AttributeInterface) attribute;
-
-				if (primitiveAttribute.getIsCollection())
-				{
-					//                    // get previous values for multi select attributes
-					//                    AttributeRecord collectionRecord = getAttributeRecord(entity.getId(),
-					//                            primitiveAttribute.getId(), recordId, hibernateDAO);
-					//                    List<String> listOfValues = (List<String>) value;
-					//
-					//                    if (!listOfValues.isEmpty())
-					//                    { //if some values are provided,set these values clearing previous ones.
-					//                        collectionRecord = populateCollectionAttributeRecord(collectionRecord,
-					//                                entity, primitiveAttribute, recordId, (List<String>) value);
-					//                        collectionRecords.add(collectionRecord);
-					//                    }
-					//
-					//                    if (collectionRecord != null && listOfValues.isEmpty())
-					//                    {
-					//                        //if updated value is empty list, then delete previously saved value if any.
-					//                        deleteCollectionRecords.add(collectionRecord);
-					//                    }
-
-				}
-				else if (primitiveAttribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
-				{
-					populateFileAttribute(columnNames, columnValues, (FileAttributeRecordValue)value, primitiveAttribute);
-				}
-//				else if (primitiveAttribute.getAttributeTypeInformation() instanceof ObjectAttributeTypeInformation)
-//				{
-//					//For object type attribute,ObjectAttributeRecordValue needs to be updated for that record.
-//
-//					//                    ObjectAttributeRecordValue objectRecordValue = (ObjectAttributeRecordValue) value;
-//					//                    AttributeRecord objectRecord = getAttributeRecord(entity.getId(),
-//					//                            primitiveAttribute.getId(), recordId, hibernateDAO);
-//					//                    objectRecord.getObjectRecord().copyValues(objectRecordValue);
-//					//                    objectRecords.add(objectRecord);
-//				}
-				else
-				{
-					//for other attributes, create the udpate query.
-					columnNames.add(primitiveAttribute.getColumnProperties().getName());
-					columnValues.add(value);
-				}
+				updateColumnNamesAndColumnValues(attribute,value,columnNames,columnValues);
 			}
 			else
 			{

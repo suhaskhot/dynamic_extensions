@@ -6,9 +6,9 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
-import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.ui.util.FileAttributeRecordValue;
 import edu.wustl.common.util.global.ApplicationProperties;
 
 /**

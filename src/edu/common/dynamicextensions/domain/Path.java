@@ -2,12 +2,15 @@ package edu.common.dynamicextensions.domain;
 
 import java.util.Collection;
 import java.util.HashSet;
+
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 /**
  * @hibernate.class table="DYEXTN_PATH"
  * @author rajesh_patil
  *
  */
-public class Path {
+public class Path implements PathInterface
+{
 
 	/**
 	 *
@@ -31,15 +34,33 @@ public class Path {
 	 * @hibernate.cache  usage="read-write"
 	 * @hibernate.collection-many-to-many class="edu.common.dynamicextensions.domain.Association" column="ASSOCTION_ID"
      */
-    private Collection<Association> getAssociationCollection() {
+    public Collection<Association> getAssociationCollection() {
         return associationCollection;
     }
 
     /**
      * @param associationCollection the associationCollection to set
      */
-    private void setAssociationCollection(Collection<Association> associationCollection) {
+    public void setAssociationCollection(Collection<Association> associationCollection) {
         this.associationCollection = associationCollection;
     }
+
+	public void addAssociation(AssociationInterface associationInterface)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	public void removeAssociation(AssociationInterface associationInterface)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	public void removeAllAssociations()
+	{
+		// TODO Auto-generated method stub
+
+	}
 
 }

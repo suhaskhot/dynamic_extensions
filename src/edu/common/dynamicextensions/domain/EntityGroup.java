@@ -38,6 +38,9 @@ public class EntityGroup extends AbstractMetadata implements EntityGroupInterfac
 	 */
 	protected String version;
 
+	/**
+	 * isSystemGenerated.
+	 */
 	protected Boolean isSystemGenerated = new Boolean(true);
 
 	/**
@@ -46,12 +49,12 @@ public class EntityGroup extends AbstractMetadata implements EntityGroupInterfac
 	protected Collection<EntityInterface> entityCollection = new HashSet<EntityInterface>();
 
 	/**
-	 *
+	 * isCurrent.
 	 */
 	boolean isCurrent = false;
 
 	/**
-	 *
+	 * mainContainerCollection.
 	 */
 	protected Collection<ContainerInterface> mainContainerCollection = new HashSet<ContainerInterface>();
 

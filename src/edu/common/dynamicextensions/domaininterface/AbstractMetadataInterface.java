@@ -3,12 +3,13 @@ package edu.common.dynamicextensions.domaininterface;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import edu.common.dynamicextensions.domain.SemanticAnnotatableInterface;
 
 /**
  * This is an interface extended by EntityInterface,EntityGroupInterface,AttributeInterface.This interface contains
- * basic information needed for each metadata objects. 
+ * basic information needed for each metadata objects.
  * @author sujay_narkar
  *
  */
@@ -76,7 +77,7 @@ public interface AbstractMetadataInterface extends SemanticAnnotatableInterface
 	void setName(String name);
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	Collection<TaggedValueInterface> getTaggedValueCollection();
@@ -88,20 +89,20 @@ public interface AbstractMetadataInterface extends SemanticAnnotatableInterface
 	void setTaggedValueCollection(Collection<TaggedValueInterface> taggedValueCollection);
 
 	/**
-	 * 
+	 *
 	 * @param taggedValueInterface
 	 */
 	void addTaggedValue(TaggedValueInterface taggedValueInterface);
-	
+
 	/**
 	 * @return the publicId
 	 */
 	public String getPublicId();
-		
+
 	/**
-	 * This method stores public id of metadata object 
+	 * This method stores public id of metadata object
 	 * @param publicId the publicId to set
 	 */
 	public void setPublicId(String publicId);
-	
+
 }

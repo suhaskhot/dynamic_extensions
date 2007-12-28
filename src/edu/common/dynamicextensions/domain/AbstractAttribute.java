@@ -33,7 +33,9 @@ public abstract class AbstractAttribute extends BaseAbstractAttribute implements
 	 * Collection of rules.
 	 */
 	protected Collection<RuleInterface> ruleCollection = new HashSet<RuleInterface>();
-    
+    /**
+     * controlCollection.
+     */
     protected Collection<Control> controlCollection = new HashSet<Control>();
 
 	/**
@@ -80,7 +82,7 @@ public abstract class AbstractAttribute extends BaseAbstractAttribute implements
 	}
 
 	/**
-	 * This method removes the Rule form the Collection of Rules of this Attribute. 
+	 * This method removes the Rule form the Collection of Rules of this Attribute.
 	 * ruleInterface the Rule instance to be removed
 	 */
 	public void removeRule(RuleInterface ruleInterface)
@@ -134,6 +136,6 @@ public abstract class AbstractAttribute extends BaseAbstractAttribute implements
         this.controlCollection = control;
     }
 
-    
+
 
 }

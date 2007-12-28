@@ -22,11 +22,6 @@ public class CategoryAssociationControl extends Control implements CategoryAssoc
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 *  Maximum cardinality of this role.
-	 */
-	protected Integer numberOfEntries;
-
-	/**
 	 *
 	 */
 	protected ContainerInterface container;
@@ -81,23 +76,6 @@ public class CategoryAssociationControl extends Control implements CategoryAssoc
 	{
 		// TODO Auto-generated method stub
 
-	}
-
-	/**
-	 * This method returns the number of entries.
-	 * @hibernate.property name="numberOfEntries" type="integer" column="NUMBER_OF_ENTRIES"
-	 * @return the maximum cardinality.
-	 */
-
-	public Integer getNumberOfEntries()
-	{
-		return numberOfEntries;
-	}
-
-
-	public void setNumberOfEntries(Integer numberOfEntries)
-	{
-		this.numberOfEntries = numberOfEntries;
 	}
 
 }

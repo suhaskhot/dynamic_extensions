@@ -3,7 +3,7 @@ package edu.common.dynamicextensions.domain;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 
 /**
- * This is an abstract class extended by Entity, Entity group, Attribute.
+ * This is an abstract class extended by CategoryAttribute, AbstractAttribute.
  * This class stores basic information needed for metadata objects.
  * @version 1.0
  * @created 28-Sep-2006 12:20:06 PM
@@ -11,6 +11,6 @@ import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterfa
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  * @hibernate.cache  usage="read-write"
  */
-public abstract class BaseAbstractAttribute extends AbstractMetadata implements BaseAbstractAttributeInterface{
+public abstract class BaseAbstractAttribute extends AbstractMetadata implements BaseAbstractAttributeInterface {
 
 }

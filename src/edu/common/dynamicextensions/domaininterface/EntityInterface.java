@@ -39,30 +39,6 @@ public interface EntityInterface extends AbstractMetadataInterface
 	void addAbstractAttribute(AbstractAttributeInterface abstractAttribute);
 
 	/**
-	 * Returns a collection of entity groups having this entity.
-	 * @return Returns the entityGroupCollection.
-	 */
-	//Collection<EntityGroupInterface> getEntityGroupCollection();
-
-	/**
-	 * Adds an entity group to the entity
-	 * @param entityGroupInterface The entityGroupInterface to be added set.
-	 *
-	 */
-	//void addEntityGroupInterface(EntityGroupInterface entityGroup);
-
-//	/**
-//	 * The table properties object contains name of the dynamically created table.
-//	 * @return
-//	 */
-//	TablePropertiesInterface getTableProperties();
-//
-//	/**
-//	 * @param tableProperties
-//	 */
-//	void setTableProperties(TablePropertiesInterface tableProperties);
-
-	/**
 	 * This method removes an AbstractAttribute from the Entity's Collection of AbstractAttribute.
 	 * @param abstractAttribute an AbstractAttribute to be removed.
 	 */
@@ -91,18 +67,6 @@ public interface EntityInterface extends AbstractMetadataInterface
 	 * @param associationInterface
 	 */
 	void removeAssociation(AssociationInterface associationInterface);
-
-	/**
-	 * This method removes all entity groupa of the entity.
-	 *
-	 */
-	//void removeEntityGroupInterface(EntityGroupInterface entityGroupInterface);
-
-	/**
-	 * This method removes all entity groupa of the entity.
-	 *
-	 */
-	//void removeAllEntityGroups();
 
 	/**
 	 * @return Returns the isAbstract.
@@ -201,22 +165,35 @@ public interface EntityInterface extends AbstractMetadataInterface
      * Get all attributes for query
      */
     public Collection<AttributeInterface> getEntityAttributesForQuery();
-
-    public Collection getContainerCollection();
-
-    public void setContainerCollection(Collection containerCollection);
-
-    public int getDataTableState();
-
-    public void setDataTableState(int dataTableState);
-
     /**
-     * @param entityGroupCollection
+     *
+     * @return
      */
-    //public void setEntityGroupCollection(Collection<EntityGroupInterface> entityGroupCollection);
-
+    public Collection getContainerCollection();
+    /**
+     *
+     * @param containerCollection
+     */
+    public void setContainerCollection(Collection containerCollection);
+    /**
+     *
+     * @return
+     */
+    public int getDataTableState();
+    /**
+     *
+     * @param dataTableState
+     */
+    public void setDataTableState(int dataTableState);
+    /**
+     *
+     * @return
+     */
     public EntityGroupInterface getEntityGroup();
-
+    /**
+     *
+     * @param entityGroup
+     */
     public void setEntityGroup(EntityGroupInterface entityGroup);
 
 }

@@ -8,15 +8,17 @@ import edu.common.dynamicextensions.domaininterface.CategoryInterface;
  * @hibernate.joined-subclass table="DYEXTN_CATEGORY"
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
-public class Category extends AbstractMetadata implements CategoryInterface {
+public class Category extends AbstractMetadata implements CategoryInterface
+{
 
     /**
      * Serial Version UID
      */
     private static final long serialVersionUID = 4234527890L;
 
-    //protected Set<CategoryEntity> rootCategoryElement = new HashSet<CategoryEntity>();
-
+    /**
+     * rootCategoryElement.
+     */
     protected CategoryEntity rootCategoryElement;
 
     /**

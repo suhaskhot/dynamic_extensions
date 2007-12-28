@@ -2,8 +2,8 @@ package edu.common.dynamicextensions.domain;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
+import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 
 /**
@@ -13,7 +13,8 @@ import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  *
  */
-public class CategoryEntity extends AbstractEntity implements CategoryEntityInterface {
+public class CategoryEntity extends AbstractEntity implements CategoryEntityInterface
+{
 
     /**
      * Serial Version UID
@@ -152,6 +153,46 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	private void setPathCollection(Collection<Path> pathCollection)
 	{
 		this.pathCollection = pathCollection;
+	}
+	/**
+	 *
+	 */
+	public void addCategoryAttribute(CategoryAttributeInterface categoryAttributeInterface)
+	{
+
+	}
+	/**
+	 *
+	 */
+	public void removeCategoryAttribute(CategoryAttributeInterface categoryAttributeInterface)
+	{
+
+	}
+	/**
+	 *
+	 */
+	public void addPath(PathInterface pathInterface)
+	{
+
+	}
+	/**
+	 *
+	 */
+	public void removePath(PathInterface pathInterface)
+	{
+
+	}
+	/**
+	 *
+	 */
+	public void removeAllPaths()
+	{
+
+	}
+	public void removeAllCategoryAttributes()
+	{
+		// TODO Auto-generated method stub
+
 	}
 
 

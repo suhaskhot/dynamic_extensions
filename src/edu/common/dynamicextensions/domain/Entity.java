@@ -57,7 +57,9 @@ public class Entity extends AbstractEntity implements EntityInterface
 	 */
 	protected EntityInterface parentEntity = null;
 
-
+	/**
+	 * containerCollection.
+	 */
     protected Collection containerCollection = new HashSet<Container>();
 
 	/**
@@ -465,8 +467,8 @@ public class Entity extends AbstractEntity implements EntityInterface
 		this.discriminatorValue = discriminatorValue;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getEntityAttributes()
+	/**
+	 * getEntityAttributes.
 	 */
 	public Collection<AttributeInterface> getEntityAttributes()
 	{
@@ -474,7 +476,9 @@ public class Entity extends AbstractEntity implements EntityInterface
 		AttributeCollection.addAll(getAttributeCollection());
 		return AttributeCollection;
 	}
-
+	/**
+	 * getEntityAttributesForQuery.
+	 */
     public Collection<AttributeInterface> getEntityAttributesForQuery()
     {
         Collection<AttributeInterface> AttributeCollection = new ArrayList<AttributeInterface>();

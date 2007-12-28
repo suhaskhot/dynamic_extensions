@@ -278,7 +278,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
                 if (attributeTypeInformationInterface instanceof DoubleAttributeTypeInformation) 
                 {
                     int decimalPlaces = ((DoubleAttributeTypeInformation)attributeTypeInformationInterface).getDecimalPlaces();
-                    String value = (String) recordMap.get(currentAttribute);
+                    String value = String.valueOf(recordMap.get(currentAttribute));
                     int placesAfterDecimal = value.length() - (value.indexOf(".") + 1);
                     
                     if (placesAfterDecimal != decimalPlaces)

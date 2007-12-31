@@ -7,7 +7,7 @@ import edu.common.dynamicextensions.domain.CategoryEntity;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.PathInterface;
 
-public interface CategoryEntityInterface extends AbstractMetadataInterface
+public interface CategoryEntityInterface extends AbstractEntityInterface
 {
 	/**
 	 *

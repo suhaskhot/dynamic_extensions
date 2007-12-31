@@ -11,7 +11,7 @@ import edu.common.dynamicextensions.util.global.Constants.InheritanceStrategy;
  * @author sujay_narkar
  *
  */
-public interface EntityInterface extends AbstractMetadataInterface
+public interface EntityInterface  extends AbstractEntityInterface
 {
 
 	/**

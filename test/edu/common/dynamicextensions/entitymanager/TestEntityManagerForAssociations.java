@@ -20,7 +20,6 @@ import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.Entity;
-import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
@@ -124,7 +123,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			EntityGroupInterface savedUser = entityGroupManager.persistEntityGroup(entityGroup);
 
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from "
-					+ ((AbstractEntityInterface) study).getTableProperties().getName());
+					+ study.getTableProperties().getName());
 			assertEquals(metaData.getColumnCount(), noOfDefaultColumns + 2);
 		}
 		catch (DynamicExtensionsSystemException e)
@@ -195,7 +194,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
             EntityGroupInterface savedGroup = (EntityGroupInterface) entityGroupManager.persistEntityGroup(entityGroupInterface);
 
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from "
-					+ ((AbstractEntityInterface) user).getTableProperties().getName());
+					+ user.getTableProperties().getName());
 			assertEquals(metaData.getColumnCount(), noOfDefaultColumns + 2);
 		}
 		catch (DynamicExtensionsSystemException e)
@@ -363,7 +362,6 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		try
 		{
 			user = entityManager.persistEntity(user);
-			AbstractEntityInterface abstractEntityInterface = (AbstractEntityInterface) user;
 
 			// Associate user (*)------ >(1)user
 			AssociationInterface association = factory.createAssociation();
@@ -382,7 +380,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			EntityInterface savedUser = entityManager.persistEntity(user);
 
-			String tableName = abstractEntityInterface.getTableProperties().getName();
+			String tableName = user.getTableProperties().getName();
 
 			assertNotNull(tableName);
 
@@ -546,7 +544,6 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			entityGroup.addEntity(study);
 			study.setEntityGroup(entityGroup);
 			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
-			AbstractEntityInterface abstractEntityInterface = (AbstractEntityInterface) savedEntity;
 
 			Map dataValue = new HashMap();
 
@@ -568,7 +565,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			entityManagerInterface.insertData(savedEntity, dataValue);
 
 			ResultSet resultSet = executeQuery("select count(*) from "
-					+ abstractEntityInterface.getTableProperties().getName());
+					+ study.getTableProperties().getName());
 			resultSet.next();
 			assertEquals(2, resultSet.getInt(1));
 		}
@@ -637,7 +634,6 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			study.setEntityGroup(entityGroup);
 
 			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
-			AbstractEntityInterface abstractEntityInterface = (AbstractEntityInterface) savedEntity;
 
 			Map dataValue = new HashMap();
 			List<Long> targetIdList = new ArrayList<Long>();
@@ -649,7 +645,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			entityManagerInterface.insertData(savedEntity, dataValue);
 
 			ResultSet resultSet = executeQuery("select IDENTIFIER from "
-					+ abstractEntityInterface.getTableProperties().getName());
+					+ savedEntity.getTableProperties().getName());
 			resultSet.next();
 			assertEquals(1, resultSet.getInt(1));
 
@@ -1110,7 +1106,6 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
             study.setEntityGroup(entityGroup);
 
 			savedEntity = entityManagerInterface.persistEntity(user);
-			AbstractEntityInterface abstractEntityInterface = (AbstractEntityInterface) savedEntity;
 
 			Map dataValue = new HashMap();
 			dataValue.put(userNameAttribute, "rahul");
@@ -1121,7 +1116,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			entityManagerInterface.insertData(savedEntity, dataValue);
 			ResultSet resultSet = executeQuery("select IDENTIFIER from "
-					+ abstractEntityInterface.getTableProperties().getName());
+					+ savedEntity.getTableProperties().getName());
 			resultSet.next();
 			assertEquals(1, resultSet.getInt(1));
 		}
@@ -1490,18 +1485,17 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			//entityManager.createEntity(study);
 
 			EntityInterface savedUser = entityManager.persistEntity(user);
-			AbstractEntityInterface abstractEntityInterface = (AbstractEntityInterface) user;
 
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from "
-					+ abstractEntityInterface.getTableProperties().getName());
+					+ user.getTableProperties().getName());
 			assertEquals(metaData.getColumnCount(), noOfDefaultColumns + 2);
 
 			metaData = executeQueryForMetadata("select * from "
-					+ abstractEntityInterface.getTableProperties().getName());
+					+ study.getTableProperties().getName());
 			assertEquals(metaData.getColumnCount(), noOfDefaultColumns + 1);
 
 			metaData = executeQueryForMetadata("select * from "
-					+ abstractEntityInterface.getTableProperties().getName());
+					+ institution.getTableProperties().getName());
 			assertEquals(metaData.getColumnCount(), noOfDefaultColumns + 2);
 
 		}
@@ -1608,18 +1602,17 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		{
 
 			EntityInterface savedUser = entityManager.persistEntity(user);
-			AbstractEntityInterface abstractEntityInterface = (AbstractEntityInterface) user;
 
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from "
-					+ abstractEntityInterface.getTableProperties().getName());
+					+ user.getTableProperties().getName());
 			assertEquals(metaData.getColumnCount(), noOfDefaultColumns + 2);
 
 			metaData = executeQueryForMetadata("select * from "
-					+ abstractEntityInterface.getTableProperties().getName());
+					+ study.getTableProperties().getName());
 			assertEquals(metaData.getColumnCount(), noOfDefaultColumns + 1);
 
 			metaData = executeQueryForMetadata("select * from "
-					+ abstractEntityInterface.getTableProperties().getName());
+					+ institution.getTableProperties().getName());
 			assertEquals(metaData.getColumnCount(), noOfDefaultColumns + 2);
 
 			assertNotNull(instUserAssociation.getConstraintProperties().getName());
@@ -1687,9 +1680,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		{
 
 			EntityInterface savedUser = entityManager.persistEntity(user);
-			AbstractEntityInterface abstractEntityInterface = (AbstractEntityInterface) user;
 
-			String tableName = abstractEntityInterface.getTableProperties().getName();
+			String tableName = user.getTableProperties().getName();
 
 			assertNotNull(tableName);
 
@@ -1774,7 +1766,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			EntityInterface savedUser = entityManager.persistEntity(user);
 
-			String tableName = ((AbstractEntityInterface) user).getTableProperties().getName();
+			String tableName = user.getTableProperties().getName();
 
 			assertNotNull(tableName);
 
@@ -1858,9 +1850,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		{
 
 			EntityInterface savedUser = entityManager.persistEntity(user);
-			AbstractEntityInterface abstractEntityInterface = (AbstractEntityInterface) savedUser;
 
-			String tableName = abstractEntityInterface.getTableProperties().getName();
+			String tableName = user.getTableProperties().getName();
 
 			assertNotNull(tableName);
 
@@ -1940,10 +1931,9 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		{
 
 			EntityInterface savedUser = entityManager.persistEntity(user);
-			AbstractEntityInterface abstractEntityInterface = (AbstractEntityInterface) study;
 
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from "
-					+ abstractEntityInterface.getTableProperties().getName());
+					+ study.getTableProperties().getName());
 			assertEquals(noOfDefaultColumns + 1, metaData.getColumnCount());
 			//1 user attribute + 1 system generated attribute
 			assertEquals(1, study.getAbstractAttributeCollection().size());
@@ -2150,9 +2140,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		{
 
 			EntityInterface savedUser = entityManager.persistEntity(user);
-			AbstractEntityInterface abstractEntityInterface = (AbstractEntityInterface) user;
 
-			String tableName = abstractEntityInterface.getTableProperties().getName();
+			String tableName = user.getTableProperties().getName();
 
 			assertNotNull(tableName);
 
@@ -2208,7 +2197,6 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		try
 		{
 			user = entityManager.persistEntity(user);
-			AbstractEntityInterface abstractEntityInterface = (AbstractEntityInterface) user;
 
 			// create study
 			EntityInterface study = factory.createEntity();
@@ -2236,7 +2224,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			EntityInterface savedUser = entityManager.persistEntity(user);
 
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from "
-					+ abstractEntityInterface.getTableProperties().getName());
+					+ user.getTableProperties().getName());
 			assertEquals(noOfDefaultColumns + 2, metaData.getColumnCount());
 
 			//			 Associate user (1) <------>(*)study
@@ -2256,7 +2244,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			savedUser = entityManager.persistEntity(savedUser);
 
 			metaData = executeQueryForMetadata("select * from "
-					+ ((AbstractEntityInterface) study).getTableProperties().getName());
+					+ study.getTableProperties().getName());
 			assertEquals(noOfDefaultColumns + 2, metaData.getColumnCount());
 		}
 		catch (DynamicExtensionsSystemException e)
@@ -2324,17 +2312,15 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 
 			user = entityManager.persistEntity(user);
-			AbstractEntityInterface abstractEntityInterface = (AbstractEntityInterface) user;
-
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from "
-					+ abstractEntityInterface.getTableProperties().getName());
+					+ user.getTableProperties().getName());
 			assertEquals(noOfDefaultColumns + 2, metaData.getColumnCount());
 
 			user.removeAssociation(association);
 			user = entityManager.persistEntity(user);
 
 			metaData = executeQueryForMetadata("select * from "
-					+ abstractEntityInterface.getTableProperties().getName());
+					+ user.getTableProperties().getName());
 			assertEquals(noOfDefaultColumns + 1, metaData.getColumnCount());
 
 			sourceRole = getRole(AssociationType.ASSOCIATION, "association1", Cardinality.ZERO,
@@ -2421,14 +2407,12 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		try
 		{
 			user = entityManager.persistEntity(user);
-			AbstractEntityInterface userAbstractEntityInterface = (AbstractEntityInterface) user;
-			AbstractEntityInterface studyAbstractEntityInterface = (AbstractEntityInterface) study;
 
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from "
-					+ userAbstractEntityInterface.getTableProperties().getName());
+					+ user.getTableProperties().getName());
 			assertEquals(noOfDefaultColumns + 2, metaData.getColumnCount());
 			metaData = executeQueryForMetadata("select * from "
-					+ studyAbstractEntityInterface.getTableProperties().getName());
+					+ study.getTableProperties().getName());
 			assertEquals(noOfDefaultColumns + 1, metaData.getColumnCount());
 
 			association.getSourceRole().setMaximumCardinality(Cardinality.ONE);
@@ -2438,10 +2422,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			user = entityManager.persistEntity(user);
 
 			metaData = executeQueryForMetadata("select * from "
-					+ userAbstractEntityInterface.getTableProperties().getName());
+					+ user.getTableProperties().getName());
 			assertEquals(noOfDefaultColumns + 1, metaData.getColumnCount());
 			metaData = executeQueryForMetadata("select * from "
-					+ studyAbstractEntityInterface.getTableProperties().getName());
+					+ study.getTableProperties().getName());
 			assertEquals(noOfDefaultColumns + 2, metaData.getColumnCount());
 
 			EntityInterface savedUser = entityManager
@@ -2516,14 +2500,12 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		try
 		{
 			user = entityManager.persistEntity(user);
-			AbstractEntityInterface abstractEntityInterface = (AbstractEntityInterface) user;
-			AbstractEntityInterface studyAbstractEntityInterface = (AbstractEntityInterface) study;
 
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from "
-					+ abstractEntityInterface.getTableProperties().getName());
+					+ user.getTableProperties().getName());
 			assertEquals(noOfDefaultColumns + 2, metaData.getColumnCount());
 			metaData = executeQueryForMetadata("select * from "
-					+ studyAbstractEntityInterface.getTableProperties().getName());
+					+ study.getTableProperties().getName());
 			assertEquals(noOfDefaultColumns + 1, metaData.getColumnCount());
 			association.getSourceRole().setMaximumCardinality(Cardinality.ONE);
 			association.getTargetRole().setMaximumCardinality(Cardinality.MANY);
@@ -2532,10 +2514,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			user = entityManager.persistEntity(user);
 
 			metaData = executeQueryForMetadata("select * from "
-					+ abstractEntityInterface.getTableProperties().getName());
+					+ user.getTableProperties().getName());
 			assertEquals(noOfDefaultColumns , metaData.getColumnCount());
 			metaData = executeQueryForMetadata("select * from "
-					+ studyAbstractEntityInterface.getTableProperties().getName());
+					+ study.getTableProperties().getName());
 			assertEquals(noOfDefaultColumns + 2, metaData.getColumnCount());
 
 			EntityInterface savedUser = entityManager
@@ -2642,11 +2624,11 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			// Step 6
 			ResultSet resultSet = executeQuery("select count(*) from "
-					+ ((AbstractEntityInterface) address).getTableProperties().getName());
+					+ address.getTableProperties().getName());
 			resultSet.next();
 			assertEquals(1, resultSet.getInt(1));
 
-			resultSet = executeQuery("select count(*) from " + ((AbstractEntityInterface) user).getTableProperties().getName());
+			resultSet = executeQuery("select count(*) from " + user.getTableProperties().getName());
 			resultSet.next();
 			assertEquals(1, resultSet.getInt(1));
 		}
@@ -2738,11 +2720,11 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			// Step 6
 			ResultSet resultSet = executeQuery("select count(*) from "
-					+ ((AbstractEntityInterface) address).getTableProperties().getName());
+					+ address.getTableProperties().getName());
 			resultSet.next();
 			assertEquals(2, resultSet.getInt(1));
 
-			resultSet = executeQuery("select count(*) from " + ((AbstractEntityInterface) user).getTableProperties().getName());
+			resultSet = executeQuery("select count(*) from " + user.getTableProperties().getName());
 			resultSet.next();
 			assertEquals(1, resultSet.getInt(1));
 		}
@@ -2780,7 +2762,6 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			// Step 1
 			EntityInterface user = factory.createEntity();
-			AbstractEntityInterface userAbstractEntityInterface = (AbstractEntityInterface) user;
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
@@ -2788,7 +2769,6 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			// Step 2
 			EntityInterface address = factory.createEntity();
-			AbstractEntityInterface addressAbstractEntityInterface = (AbstractEntityInterface) address;
 			address.setName("address");
 
 			AttributeInterface streetAttribute = factory.createStringAttribute();
@@ -2833,11 +2813,11 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			// Step 6
 			ResultSet resultSet = executeQuery("select count(*) from "
-					+ addressAbstractEntityInterface.getTableProperties().getName());
+					+ address.getTableProperties().getName());
 			resultSet.next();
 			assertEquals(1, resultSet.getInt(1));
 
-			resultSet = executeQuery("select count(*) from " + userAbstractEntityInterface.getTableProperties().getName());
+			resultSet = executeQuery("select count(*) from " + user.getTableProperties().getName());
 			resultSet.next();
 			assertEquals(1, resultSet.getInt(1));
 
@@ -2851,11 +2831,11 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			// Step 9
 			resultSet = executeQuery("select count(*) from "
-					+ addressAbstractEntityInterface.getTableProperties().getName());
+					+ address.getTableProperties().getName());
 			resultSet.next();
 			assertEquals(1, resultSet.getInt(1));
 
-			resultSet = executeQuery("select count(*) from " + userAbstractEntityInterface.getTableProperties().getName());
+			resultSet = executeQuery("select count(*) from " + user.getTableProperties().getName());
 			resultSet.next();
 			assertEquals(1, resultSet.getInt(1));
 
@@ -2895,8 +2875,6 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			// Step 1
 			EntityInterface user = factory.createEntity();
-			AbstractEntityInterface userAbstractEntityInterface = (AbstractEntityInterface) user;
-
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
@@ -2904,8 +2882,6 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			// Step 2
 			EntityInterface address = factory.createEntity();
-			AbstractEntityInterface addressAbstractEntityInterface = (AbstractEntityInterface) address;
-
 			address.setName("address");
 
 			AttributeInterface streetAttribute = factory.createStringAttribute();
@@ -2954,11 +2930,11 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			// Step 6
 			ResultSet resultSet = executeQuery("select count(*) from "
-					+ addressAbstractEntityInterface.getTableProperties().getName());
+					+ address.getTableProperties().getName());
 			resultSet.next();
 			assertEquals(2, resultSet.getInt(1));
 
-			resultSet = executeQuery("select count(*) from " + userAbstractEntityInterface.getTableProperties().getName());
+			resultSet = executeQuery("select count(*) from " + user.getTableProperties().getName());
 			resultSet.next();
 			assertEquals(1, resultSet.getInt(1));
 
@@ -2975,16 +2951,16 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			// Step 9
 			resultSet = executeQuery("select count(*) from "
-					+ addressAbstractEntityInterface.getTableProperties().getName());
+					+ address.getTableProperties().getName());
 			resultSet.next();
 			assertEquals(1, resultSet.getInt(1));
 
-			resultSet = executeQuery("select * from " + addressAbstractEntityInterface.getTableProperties().getName());
+			resultSet = executeQuery("select * from " + address.getTableProperties().getName());
 			resultSet.next();
 			assertEquals("Swami Vivekand Road", resultSet.getString(2));
 			assertEquals("Pune 37", resultSet.getString(3));
 
-			resultSet = executeQuery("select count(*) from " + userAbstractEntityInterface.getTableProperties().getName());
+			resultSet = executeQuery("select count(*) from " + user.getTableProperties().getName());
 			resultSet.next();
 			assertEquals(1, resultSet.getInt(1));
 
@@ -3022,8 +2998,6 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			// Step 1
 			EntityInterface user = factory.createEntity();
-			AbstractEntityInterface userAbstractEntityInterface = (AbstractEntityInterface) user;
-
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
@@ -3031,8 +3005,6 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			// Step 2
 			EntityInterface address = factory.createEntity();
-			AbstractEntityInterface addressAbstractEntityInterface = (AbstractEntityInterface) address;
-
 			address.setName("address");
 
 			AttributeInterface streetAttribute = factory.createStringAttribute();
@@ -3081,11 +3053,11 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			// Step 6
 			ResultSet resultSet = executeQuery("select count(*) from "
-					+ addressAbstractEntityInterface.getTableProperties().getName());
+					+ address.getTableProperties().getName());
 			resultSet.next();
 			assertEquals(2, resultSet.getInt(1));
 
-			resultSet = executeQuery("select count(*) from " + userAbstractEntityInterface.getTableProperties().getName());
+			resultSet = executeQuery("select count(*) from " + user.getTableProperties().getName());
 			resultSet.next();
 			assertEquals(1, resultSet.getInt(1));
 
@@ -3093,12 +3065,12 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			entityManagerInterface.deleteRecord(savedEntity, recordId);
 
 			// Step 8
-			resultSet = executeQuery("select count(*) from " + userAbstractEntityInterface.getTableProperties().getName());
+			resultSet = executeQuery("select count(*) from " + user.getTableProperties().getName());
 			resultSet.next();
 			assertEquals(1, resultSet.getInt(1));
 
 			resultSet = executeQuery("select count(*) from "
-					+ addressAbstractEntityInterface.getTableProperties().getName());
+					+ address.getTableProperties().getName());
 			resultSet.next();
 			assertEquals(2, resultSet.getInt(1));
 
@@ -3342,8 +3314,6 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			//Step 3 create address
 			EntityInterface address = factory.createEntity();
-			AbstractEntityInterface addressAbstractEntityInterface = (AbstractEntityInterface) address;
-
 			AttributeInterface addressCity = factory.createStringAttribute();
 			addressCity.setName("City");
 			address.setName("address");
@@ -3411,7 +3381,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			//step 8
 			ResultSet resultSet = executeQuery("select count(*) from "
-					+ addressAbstractEntityInterface.getTableProperties().getName());
+					+ address.getTableProperties().getName());
 			resultSet.next();
 			assertEquals(1, resultSet.getInt(1));
 

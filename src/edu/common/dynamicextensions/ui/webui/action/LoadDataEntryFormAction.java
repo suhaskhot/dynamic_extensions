@@ -206,7 +206,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 					(ContainerInterface) containerStack.peek(), childContainerId);
 
 			Map<AbstractAttributeInterface, Object> containerValueMap = valueMapStack.peek();
-			AssociationInterface association = (AssociationInterface) associationControl.getAbstractAttribute();
+			AssociationInterface association = (AssociationInterface) associationControl.getBaseAbstractAttribute();
 			List<Map<AbstractAttributeInterface, Object>> childContainerValueMapList = (List<Map<AbstractAttributeInterface, Object>>) containerValueMap
 					.get(association);
 

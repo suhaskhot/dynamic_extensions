@@ -415,7 +415,7 @@ public class Container extends DynamicExtensionBaseDomainObject
         /*Collections.sort(controlsList);*/
         for (ControlInterface control : controlsList)
         {
-            Object value = containerValueMap.get(control.getAbstractAttribute());
+            Object value = containerValueMap.get(control.getBaseAbstractAttribute());
             control.setValue(value);
             if (this.showAssociationControlsAsLink
                     && control instanceof ContainmentAssociationControl)

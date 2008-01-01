@@ -291,7 +291,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 				.getAssociationControl(containerInterface, childContainerId);
 
 		AssociationInterface association = (AssociationInterface) associationControl
-				.getAbstractAttribute();
+				.getBaseAbstractAttribute();
 
 		List<Map<AbstractAttributeInterface, Object>> associationValueMapList = (List<Map<AbstractAttributeInterface, Object>>) valueMap
 				.get(association);

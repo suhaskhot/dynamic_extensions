@@ -127,7 +127,7 @@ public class TextField extends Control implements TextFieldInterface
 			}
 
 			int maxChars = 0;
-			AttributeInterface attribute = (AttributeInterface) this.getAbstractAttribute();
+			AttributeInterface attribute = (AttributeInterface) this.getBaseAbstractAttribute();
 			if (attribute != null)
 			{
 				AttributeTypeInformationInterface attributeTypeInformationInterface = attribute
@@ -156,7 +156,7 @@ public class TextField extends Control implements TextFieldInterface
 				htmlString += "/>";
 			}
 
-			String measurementUnit = getMeasurementUnit(this.getAbstractAttribute());
+			String measurementUnit = getMeasurementUnit((AbstractAttributeInterface)this.getBaseAbstractAttribute());
 			if (measurementUnit != null)
 			{
 				if (measurementUnit.equalsIgnoreCase("none"))
@@ -248,13 +248,13 @@ public class TextField extends Control implements TextFieldInterface
 		String defaultValue = (String) this.value;
 		if (isUrl != null && isUrl.booleanValue() == true)
 		{
-			defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
+			defaultValue = ControlsUtility.getDefaultValue((AttributeInterface)this.getBaseAbstractAttribute());
 		}
 		else
 		{
 			if (this.value == null)
 			{
-				defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
+				defaultValue = ControlsUtility.getDefaultValue((AttributeInterface)this.getBaseAbstractAttribute());
 				if (defaultValue == null || (defaultValue.length() == 0))
 				{
 					defaultValue = "";

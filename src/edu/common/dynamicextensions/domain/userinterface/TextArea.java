@@ -85,7 +85,7 @@ public class TextArea extends Control implements TextAreaInterface
 		String defaultValue = (String) this.value;
 		if (this.value == null)
 		{
-			defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
+			defaultValue = ControlsUtility.getDefaultValue((AbstractAttributeInterface)this.getBaseAbstractAttribute());
 		}
 
 		String htmlComponentName = getHTMLComponentName();
@@ -115,7 +115,7 @@ public class TextArea extends Control implements TextAreaInterface
 		}
 		
 		int maxChars = 0;
-		AttributeInterface attribute = (AttributeInterface) this.getAbstractAttribute();
+		AttributeInterface attribute = (AttributeInterface) this.getBaseAbstractAttribute();
 		if (attribute != null)
 		{
 			AttributeTypeInformationInterface attributeTypeInformationInterface = attribute

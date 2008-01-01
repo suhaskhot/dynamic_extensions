@@ -214,8 +214,8 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 			if (containmentAssociationControl != null)
 			{
 				AssociationInterface association = null;
-				AbstractAttributeInterface abstractAttributeInterface = containmentAssociationControl
-						.getAbstractAttribute();
+				AbstractAttributeInterface abstractAttributeInterface = (AbstractAttributeInterface) containmentAssociationControl
+						.getBaseAbstractAttribute();
 				if ((abstractAttributeInterface != null)
 						&& (abstractAttributeInterface instanceof AssociationInterface))
 				{

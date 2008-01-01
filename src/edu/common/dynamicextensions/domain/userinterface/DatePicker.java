@@ -42,7 +42,7 @@ public class DatePicker extends Control implements DatePickerInterface
 		String defaultValue = (String) this.value;
 		if (value == null)
 		{
-			defaultValue = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
+			defaultValue = ControlsUtility.getDefaultValue((AbstractAttributeInterface)this.getBaseAbstractAttribute());
 			if (defaultValue == null)
 			{
 				defaultValue = "";
@@ -116,7 +116,7 @@ public class DatePicker extends Control implements DatePickerInterface
             + " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">";*/
 		/* Obtain the date format */
 		AttributeTypeInformationInterface attributeTypeInformationInterface = ((AttributeInterface) this
-				.getAbstractAttribute()).getAttributeTypeInformation();
+				.getBaseAbstractAttribute()).getAttributeTypeInformation();
 		String dateFormat = ControlsUtility.getDateFormat(attributeTypeInformationInterface);
 		if (dateFormat.equals(ProcessorConstants.DATE_ONLY_FORMAT))
 		{

@@ -147,7 +147,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				 */
 
 				//***********New Code starts here*********
-				abstractAttributeInterface = controlInterface.getAbstractAttribute();
+				abstractAttributeInterface = (AbstractAttributeInterface) controlInterface.getBaseAbstractAttribute();
 				abstractAttributeInterface = attributeProcessor.updateAttributeInformation(controlUIBean.getUserSelectedTool(),
 						abstractAttributeInterface, attrUIBean);
 				setPermissibleValues(attributeProcessor, abstractAttributeInterface, controlUIBean, attrUIBean);
@@ -182,7 +182,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 					newControlInterface.setSequenceNumber(controlInterface.getSequenceNumber());
 
 					//Set abstract attriibute
-					newControlInterface.setAbstractAttribute(abstractAttributeInterface);
+					newControlInterface.setBaseAbstractAttribute(abstractAttributeInterface);
                     //abstractAttributeInterface.setControl((Control) newControlInterface);
 					//add to container
 					containerInterface.addControl(newControlInterface);

@@ -303,7 +303,7 @@ public class ControlsUtility
 		List<NameValueBean> nameValueBeanList = null;
 		try
 		{
-			AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
+			AbstractAttributeInterface abstractAttribute = (AbstractAttributeInterface) control.getBaseAbstractAttribute();
 			if (abstractAttribute != null)
 			{
 				if (abstractAttribute instanceof AttributeInterface)

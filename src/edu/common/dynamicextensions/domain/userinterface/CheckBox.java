@@ -38,7 +38,7 @@ public class CheckBox extends Control implements CheckBoxInterface
         String htmlString = "";
         if (this.value == null)
         {
-            checked = ControlsUtility.getDefaultValue(this.getAbstractAttribute());
+            checked = ControlsUtility.getDefaultValue((AbstractAttributeInterface)this.getBaseAbstractAttribute());
         }
 
         String htmlComponentName = getHTMLComponentName();

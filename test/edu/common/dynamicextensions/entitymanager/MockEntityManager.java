@@ -430,7 +430,7 @@ public class MockEntityManager
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		TextFieldInterface textFieldInterface = domainObjectFactory.createTextField();
 
-		textFieldInterface.setAbstractAttribute(abstractAttributeInterface);
+		textFieldInterface.setBaseAbstractAttribute(abstractAttributeInterface);
 
 		textFieldInterface.setColumns(new Integer(COLUMNS));
 		textFieldInterface.setIsPassword(new Boolean(false));
@@ -455,7 +455,7 @@ public class MockEntityManager
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		TextAreaInterface textAreaInterface = domainObjectFactory.createTextArea();
 
-		textAreaInterface.setAbstractAttribute(abstractAttributeInterface);
+		textAreaInterface.setBaseAbstractAttribute(abstractAttributeInterface);
 
 		textAreaInterface.setColumns(new Integer(COLUMNS));
 		textAreaInterface.setRows(new Integer(ROWS));
@@ -479,7 +479,7 @@ public class MockEntityManager
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		DatePickerInterface datePickerInterface = domainObjectFactory.createDatePicker();
 
-		datePickerInterface.setAbstractAttribute(abstractAttributeInterface);
+		datePickerInterface.setBaseAbstractAttribute(abstractAttributeInterface);
 
 		datePickerInterface.setCaption("Date of Joining");
 		datePickerInterface.setSequenceNumber(new Integer(sequence++));
@@ -499,7 +499,7 @@ public class MockEntityManager
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		ComboBoxInterface comboBoxInterface = domainObjectFactory.createComboBox();
 
-		comboBoxInterface.setAbstractAttribute(abstractAttributeInterface);
+		comboBoxInterface.setBaseAbstractAttribute(abstractAttributeInterface);
 
 		comboBoxInterface.setCaption("Gender");
 		comboBoxInterface.setSequenceNumber(new Integer(sequence));

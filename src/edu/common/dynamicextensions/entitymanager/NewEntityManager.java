@@ -36,6 +36,7 @@ import edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeI
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -629,7 +630,7 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 	 * @throws SQLException
 	 * @throws DAOException
 	 * @throws UserNotAuthorizedException
-	 * @throws ParseException 
+	 * @throws ParseException
 	 */
 	private Long insertDataForHeirarchy(EntityInterface entity,
 			Map<AbstractAttributeInterface, ?> dataValue, HibernateDAO hibernateDAO)
@@ -731,7 +732,7 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 	 * @throws SQLException
 	 * @throws DAOException
 	 * @throws UserNotAuthorizedException
-	 * @throws ParseException 
+	 * @throws ParseException
 	 */
 	private Long insertDataForSingleEntity(EntityInterface entity, Map dataValue,
 			HibernateDAO hibernateDAO, Long parentRecordId)
@@ -871,7 +872,7 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 
 		columnNames.add(attribute.getColumnProperties().getName());
 		columnValues.add(value.getFileContent());
-		
+
 	}
 
 	/**
@@ -938,7 +939,7 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 	 * @throws DynamicExtensionsSystemException
 	 * @throws BizLogicException
 	 * @throws BizLogicException
-	 * @throws ParseException 
+	 * @throws ParseException
 	 */
 	private boolean editDataForSingleEntity(EntityInterface entity, Map dataValue, Long recordId,
 			HibernateDAO hibernateDAO) throws DynamicExtensionsSystemException,
@@ -969,7 +970,7 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 			}
 			if (attribute instanceof AttributeInterface)
 			{
-				updateColumnNamesAndColumnValues(attribute,value,columnNames,columnValues);				
+				updateColumnNamesAndColumnValues(attribute,value,columnNames,columnValues);
 			}
 			else
 			{
@@ -1655,7 +1656,7 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 		ContainerInterface container = DynamicExtensionsUtility
 				.getContainerByIdentifier(containerId.toString());
 
-		EntityInterface entityInterface = container.getEntity();
+		EntityInterface entityInterface = (EntityInterface) container.getAbstarctEntity();
 		for (Long recordId : recordIdList)
 		{
 			deleteRecord(entityInterface, recordId);
@@ -1691,7 +1692,7 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 
 		if (associationControl instanceof SelectControl)
 			targetEntityTable = ((AssociationInterface) ((SelectControl) associationControl)
-					.getAbstractAttribute()).getTargetEntity().getTableProperties().getName();
+					.getBaseAbstractAttribute()).getTargetEntity().getTableProperties().getName();
 
 		String selectClause = SELECT_KEYWORD + targetEntityTable + "." + IDENTIFIER;
 		String fromClause = FROM_KEYWORD + targetEntityTable + ", ";
@@ -1712,7 +1713,7 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 
 			if (associationControl instanceof SelectControl
 					&& ((AssociationInterface) ((SelectControl) associationControl)
-							.getAbstractAttribute()).getTargetEntity().getParentEntity() != null)
+							.getBaseAbstractAttribute()).getTargetEntity().getParentEntity() != null)
 			{
 				selectClause = selectClause + ", " + tableName + "." + columnName;
 
@@ -1778,7 +1779,7 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 			fromClause = fromClause.substring(0, fromClause.length() - 2);
 		}
 
-		if (((AssociationInterface) ((SelectControl) associationControl).getAbstractAttribute())
+		if (((AssociationInterface) ((SelectControl) associationControl).getBaseAbstractAttribute())
 				.getTargetEntity().getParentEntity() == null)
 			multipleColumnsClause = multipleColumnsClause.substring(0, multipleColumnsClause
 					.length() - 2)

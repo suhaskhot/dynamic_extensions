@@ -1381,7 +1381,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         try
         {
             Container container = (Container) new MockEntityManager().getContainer("abc");
-            newEntityManagerInterface.persistEntity(container.getEntity());
+            newEntityManagerInterface.persistEntity((EntityInterface) container.getAbstarctEntity());
             Collection list = newEntityManagerInterface.getAllContainers();
             assertNotNull(list);
             Iterator iter = list.iterator();
@@ -1419,11 +1419,11 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             container.setCaption("testcontainer");
             Entity entityInterface = (Entity) new MockEntityManager().initializeEntity(entityGroup);
             EntityManagerUtil.addIdAttribute(entityInterface);
-            container.setEntity(entityInterface);
+            container.setAbstarctEntity(entityInterface);
             Collection<ContainerInterface> listOfContainers = new HashSet<ContainerInterface>();
             listOfContainers.add(container);
             entityInterface.setContainerCollection(listOfContainers);
-            newEntityManagerInterface.persistEntity(container.getEntity());
+            newEntityManagerInterface.persistEntity((EntityInterface) container.getAbstarctEntity());
             Collection list = newEntityManagerInterface.getAllContainers();
             assertNotNull(list);
             Iterator iter = list.iterator();
@@ -2143,7 +2143,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         studyContainer.setCaption("newstudyContainer");
         EntityInterface study = factory.createEntity();
         study.setName("study");
-        studyContainer.setEntity(study);
+        studyContainer.setAbstarctEntity(study);
         Collection<ContainerInterface> containerCollection = new HashSet<ContainerInterface> ();
         containerCollection.add(studyContainer);
         study.setContainerCollection(containerCollection);
@@ -2152,7 +2152,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         javaStudyContainer.setCaption("javaStudyContainer");
         EntityInterface javaStudy = factory.createEntity();
         javaStudy.setName("javaStudy");
-        javaStudyContainer.setEntity(javaStudy);
+        javaStudyContainer.setAbstarctEntity(javaStudy);
         Collection<ContainerInterface> containers = new HashSet<ContainerInterface> ();
         containers.add(javaStudyContainer);
         javaStudy.setContainerCollection(containers);
@@ -2195,7 +2195,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         {
             ContainerInterface containerInterface = (Container) new MockEntityManager()
 					.getContainer("abc");
-			EntityInterface entityInterface = containerInterface.getEntity();
+			EntityInterface entityInterface = (EntityInterface) containerInterface.getAbstarctEntity();
 
 			newEntityManagerInterface.persistEntity(entityInterface);
 			assertTrue(newEntityManagerInterface.getEntityByIdentifier(entityInterface.getId())

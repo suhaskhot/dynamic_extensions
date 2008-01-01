@@ -8,11 +8,11 @@ import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterfac
 
 /**
  * This interface is extended by AssociationInterface and PrimitiveAttributeInterface.
- * Associations are also treated as attributes.  
+ * Associations are also treated as attributes.
  *      Using the information of Attribute object coulmns are perpared in the dynamically create tables.
  * @author geetika_bangard
  */
-public interface AbstractAttributeInterface extends AbstractMetadataInterface
+public interface AbstractAttributeInterface extends BaseAbstractAttributeInterface
 {
 
 	/**
@@ -34,7 +34,7 @@ public interface AbstractAttributeInterface extends AbstractMetadataInterface
 	void addRule(RuleInterface ruleInterface);
 
 	/**
-	 * This method removes the Rule form the Collection of Rules of this Attribute. 
+	 * This method removes the Rule form the Collection of Rules of this Attribute.
 	 * ruleInterface the Rule instance to be removed
 	 */
 	void removeRule(RuleInterface ruleInterface);
@@ -50,8 +50,8 @@ public interface AbstractAttributeInterface extends AbstractMetadataInterface
 	 * @param entityInterface The entity to be set.
 	 */
 	void setEntity(EntityInterface entityInterface);
-    
+
     public Collection<Control> getControl();
-    
+
     public void setControl(Collection<Control> control);
 }

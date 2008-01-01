@@ -77,7 +77,7 @@ import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.util.dbManager.DAOException;
 
 /**
- * 
+ *
  * @author sujay_narkar
  * @author ashish_gupta
  *
@@ -91,7 +91,7 @@ public class XMIImportProcessor
 	protected static DomainObjectFactory deFactory = DomainObjectFactory.getInstance();
 
 	/**
-	 * Map with KEY : UML id of a class(coming from domain model) VALUE : dynamic extension Entity created for this UML class.  
+	 * Map with KEY : UML id of a class(coming from domain model) VALUE : dynamic extension Entity created for this UML class.
 	 */
 	protected Map<String, EntityInterface> umlClassIdVsEntity;
 
@@ -108,7 +108,7 @@ public class XMIImportProcessor
 	 * List for retrieved containers corresponding to entity group.
 	 */
 	private Collection<ContainerInterface> retrievedContainerList = new ArrayList<ContainerInterface>();
-	
+
 	private List<ContainerInterface> mainContainerList = new ArrayList<ContainerInterface>();
 
 	/**
@@ -124,11 +124,11 @@ public class XMIImportProcessor
 		List<UmlClass> umlClassColl = new ArrayList<UmlClass>();
 		List<UmlAssociation> umlAssociationColl = new ArrayList<UmlAssociation>();
 		List<Generalization> umlGeneralisationColl = new ArrayList<Generalization>();
-	
+
 		processModel(umlPackage, umlClassColl, umlAssociationColl, umlGeneralisationColl,packageName);
-		
+
 		List<EntityGroupInterface> entityGroupColl = retrieveEntityGroup(entityGroupName,packageName);
-		
+
 		if (entityGroupColl == null || entityGroupColl.size() == 0)
 		{//Add
 			entityGroup = DomainObjectFactory.getInstance().createEntityGroup();
@@ -147,10 +147,10 @@ public class XMIImportProcessor
 			isEditedXmi = true;
 			entityGroup = entityGroupColl.get(0);
 		}
-	
+
 		int noOfClasses = umlClassColl.size();
 		umlClassIdVsEntity = new HashMap<String, EntityInterface>(noOfClasses);
-	
+
 		//Creating entities and entity group.
 		for (UmlClass umlClass : umlClassColl)
 		{
@@ -168,14 +168,14 @@ public class XMIImportProcessor
 			}
 			umlClassIdVsEntity.put(umlClass.refMofId(), entity);
 		}
-	
+
 		Map<String, List<String>> parentIdVsChildrenIds = new HashMap<String, List<String>>();
-	
+
 		if (umlGeneralisationColl.size() > 0)
 		{
 			parentIdVsChildrenIds = getParentVsChildrenMap(umlGeneralisationColl);
 		}
-	
+
 		if (umlAssociationColl != null)
 		{
 			for (UmlAssociation umlAssociation : umlAssociationColl)
@@ -188,14 +188,14 @@ public class XMIImportProcessor
 			processInheritance(parentIdVsChildrenIds);
 			//			markInheritedAttributes(entityGroup);
 		}
-	
+
 		//Retriving all containers corresponding to the given entity group.
 		if (entityGroup.getId() != null)
 		{
 			retrievedContainerList = EntityManager.getInstance().getAllContainersByEntityGroupId(
 					entityGroup.getId());
 		}
-	
+
 		for (UmlClass umlClass : umlClassColl)
 		{
 			EntityInterface entity = umlClassIdVsEntity.get(umlClass.refMofId());
@@ -212,7 +212,7 @@ public class XMIImportProcessor
 		}
 		//Persist container in DB
 		processPersistence(containerNames);
-		
+
 		return mainContainerList;
 	}
 
@@ -261,8 +261,8 @@ public class XMIImportProcessor
 	//
 	//		String hql ="Select c from " + Container.class.getName() + " c join c.entity.entityGroupCollection as eg where eg.name = '"+ entityGroupName +"'";
 	//		List<ContainerInterface> list = dao.executeQuery(hql, null, false, null);
-	//		
-	//		dao.closeSession();	
+	//
+	//		dao.closeSession();
 	//		return list;
 	//	}
 	/**
@@ -483,7 +483,7 @@ public class XMIImportProcessor
 	/**
 	 * Converts the UML association to dynamic Extension Association.Adds it to the entity group.
 	 * It replicates this association in all children of source and all children of target class.
-	 * It taggs replicated association to identify them later on and mark them inherited. 
+	 * It taggs replicated association to identify them later on and mark them inherited.
 	 * Also a back pointer is added to replicated association go get original association.
 	 * @param umlAssociation umlAssociation to process
 	 * @param parentIdVsChildrenIds Map with key as UML-id of parent class and value as list of UML-id of all children classes.
@@ -595,13 +595,13 @@ public class XMIImportProcessor
 	}
 
 	/**
-	 * Logic: 
+	 * Logic:
 	 * 1. If association name is present and matches with an existing association name, edit that association
 	 * 2. If association name is not present, check for other matching parameters like  source entity name, target entity name,
-	 * 	  direction, source role and target role. 
+	 * 	  direction, source role and target role.
 	 * 		a. If any one parameter does not match, make a new association
 	 * 		b. If all parameters match, association has not been edited.
-	 * 
+	 *
 	 * @param umlAssociationName
 	 * @param existingAssociationColl
 	 * @param srcEntityName
@@ -813,7 +813,7 @@ public class XMIImportProcessor
 	}
 
 	/**
-	 * Processes inheritance relation ship present in domain model 
+	 * Processes inheritance relation ship present in domain model
 	 * @param parentIdVsChildrenIds Map with key as UML-id of parent class and value as list of UML-id of all children classes.
 	 */
 	private void processInheritance(Map<String, List<String>> parentIdVsChildrenIds)
@@ -831,7 +831,7 @@ public class XMIImportProcessor
 
 	/**
 	 * Taggs inherited attributes present in given entity group. The processing is based on name.
-	 * For a attribute, if attribute with same name present in parent hirarchy then it is considered as inherited. 
+	 * For a attribute, if attribute with same name present in parent hirarchy then it is considered as inherited.
 	 * @param eg Entity Group top process
 	 */
 	private void markInheritedAttributes(EntityGroupInterface eg)
@@ -910,7 +910,7 @@ public class XMIImportProcessor
 			role.setAssociationsType(Constants.AssociationType.ASSOCIATION);
 		}
 		else
-		{		
+		{
 			role.setAssociationsType(Constants.AssociationType.CONTAINTMENT);
 		}
 		role.setName(sourceRoleName);
@@ -947,7 +947,7 @@ public class XMIImportProcessor
 	{
 		ContainerInterface containerInterface = deFactory.createContainer();
 		containerInterface.setCaption(entityInterface.getName());
-		containerInterface.setEntity(entityInterface);
+		containerInterface.setAbstarctEntity(entityInterface);
 
 		//Adding Required field indicator
 		containerInterface.setRequiredFieldIndicatior(" ");
@@ -997,9 +997,9 @@ public class XMIImportProcessor
 		{
 			for (ContainerInterface container : retrievedContainerList)
 			{
-				if (container.getEntity().getName().equals(entityName))
+				if (container.getAbstarctEntity().getName().equals(entityName))
 				{
-					return container.getEntity();
+					return (EntityInterface) container.getAbstarctEntity();
 				}
 			}
 		}
@@ -1020,14 +1020,14 @@ public class XMIImportProcessor
 			containerInterface = createNewContainer(entityInterface);
 		}
 		else
-		{//Edit			
+		{//Edit
 			editEntityAndContainer(containerInterface, entityInterface);
 
 			//Populating Attributes and Controls
 			Collection<AbstractAttributeInterface> editedAttributeColl = entityInterface
 					.getAbstractAttributeCollection();
-			Collection<AbstractAttributeInterface> originalAttributeColl = containerInterface
-					.getEntity().getAbstractAttributeCollection();
+			Collection<AbstractAttributeInterface> originalAttributeColl = ((EntityInterface) containerInterface
+					.getAbstarctEntity()).getAbstractAttributeCollection();
 
 			Collection<AbstractAttributeInterface> attributesToRemove = new HashSet<AbstractAttributeInterface>();
 			for (AbstractAttributeInterface editedAttribute : editedAttributeColl)
@@ -1036,7 +1036,7 @@ public class XMIImportProcessor
 				{// We dont edit "id" attribute as it is the system identifier.
 					continue;
 				}
-				
+
 				ControlsModel controlModel = new ControlsModel();
 				if (editedAttribute instanceof AssociationInterface)
 				{
@@ -1048,7 +1048,7 @@ public class XMIImportProcessor
 				boolean isAttrPresent = getAttrToEdit(originalAttributeColl, editedAttribute);
 
 				if (isAttrPresent)
-				{//Edit					
+				{//Edit
 					editAttributeAndControl(controlModel, editedAttribute, containerInterface);
 				}
 				else
@@ -1177,7 +1177,7 @@ public class XMIImportProcessor
 		ControlInterface originalControlObj = null;
 		for (ControlInterface originalcontrol : originalControlColl)
 		{
-			if (originalcontrol.getAbstractAttribute().getName().equalsIgnoreCase(
+			if (originalcontrol.getBaseAbstractAttribute().getName().equalsIgnoreCase(
 					editedAttribute.getName()))
 			{
 				originalControlObj = originalcontrol;
@@ -1187,7 +1187,7 @@ public class XMIImportProcessor
 
 		if (originalControlObj != null)
 		{
-			originalControlObj.setAbstractAttribute(editedAttribute);
+			originalControlObj.setBaseAbstractAttribute(editedAttribute);
 			//This method wil give us populated ControlUIBean and AttributeUIBean with original control object corresponding to edited attribute
 			if (!(editedAttribute instanceof AssociationInterface))
 			{
@@ -1215,7 +1215,7 @@ public class XMIImportProcessor
 		EntityProcessor entityProcessor = EntityProcessor.getInstance();
 		ContainerModel containerModel = new ContainerModel();
 
-		//Setting Edited entity name as caption for container. 
+		//Setting Edited entity name as caption for container.
 		//Also not setting parentform to avoid unncessary DB call as base container is already present in the container object
 		containerModel.setFormName(entityInterface.getName());
 		//Container Object is now populated
@@ -1223,7 +1223,7 @@ public class XMIImportProcessor
 
 		containerModel.setFormDescription(entityInterface.getDescription());
 		//Entity Object is now populated
-		entityProcessor.populateEntity(containerModel, containerInterface.getEntity());
+		entityProcessor.populateEntity(containerModel, (EntityInterface) containerInterface.getAbstarctEntity());
 	}
 
 	/**
@@ -1348,7 +1348,7 @@ public class XMIImportProcessor
 				{
 					ContainmentAssociationControl containmentAssociationControl = (ContainmentAssociationControl) controlInterface;
 					AssociationInterface associationInterface = (AssociationInterface) controlInterface
-							.getAbstractAttribute();
+							.getBaseAbstractAttribute();
 
 					String targetEntityId = associationInterface.getTargetEntity().getName();
 
@@ -1375,7 +1375,7 @@ public class XMIImportProcessor
 	}
 
 	/**
-	 * 
+	 *
 	 * @param abstractAttributeInterface
 	 * @return
 	 * This method creates a control for the attribute.
@@ -1387,7 +1387,7 @@ public class XMIImportProcessor
 		ControlInterface controlInterface = null;
 		ControlConfigurationsFactory configurationsFactory = ControlConfigurationsFactory
 				.getInstance();
-		// Collect all the applicable Rule names 
+		// Collect all the applicable Rule names
 		List<String> implicitRuleList = null;
 		if (abstractAttributeInterface instanceof AssociationInterface)
 		{
@@ -1438,7 +1438,7 @@ public class XMIImportProcessor
 			{
 				controlInterface = deFactory.createListBox();
 
-				// multiselect for permisible values 
+				// multiselect for permisible values
 				((ListBoxInterface) controlInterface).setIsMultiSelect(true);
 				attributeInterface.setIsCollection(new Boolean(true));
 				implicitRuleList = configurationsFactory.getAllImplicitRules(
@@ -1480,7 +1480,7 @@ public class XMIImportProcessor
 		}
 		controlInterface.setName(abstractAttributeInterface.getName());
 		controlInterface.setCaption(abstractAttributeInterface.getName());
-		controlInterface.setAbstractAttribute(abstractAttributeInterface);
+		controlInterface.setBaseAbstractAttribute(abstractAttributeInterface);
 
 		if (implicitRuleList != null && implicitRuleList.size() > 0)
 		{
@@ -1574,17 +1574,17 @@ public class XMIImportProcessor
 		//Collection<ContainerInterface> containerColl = new HashSet<ContainerInterface>();
 
 //		Set<String> entityIdKeySet = entityNameVsContainers.keySet();
-		
+
 		for(String containerName : containerNames)
 		{
 			List containerList = (ArrayList) entityNameVsContainers.get(containerName);
 			ContainerInterface containerInterface = (ContainerInterface) containerList.get(0);
 			mainContainerList.add(containerInterface);
 		}
-		
-		
-		
-		
+
+
+
+
 //		for (String entityId : entityIdKeySet)
 //		{
 //			List containerList = (ArrayList) entityNameVsContainers.get(entityId);

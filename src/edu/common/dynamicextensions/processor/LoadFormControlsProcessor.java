@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -145,7 +146,7 @@ public class LoadFormControlsProcessor
 		AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
 		if (controlInterface != null)
 		{
-			attributeProcessor.populateAttributeUIBeanInterface(controlInterface.getAbstractAttribute(), attributeUIBeanInterface);
+			attributeProcessor.populateAttributeUIBeanInterface((AbstractAttributeInterface)controlInterface.getBaseAbstractAttribute(), attributeUIBeanInterface);
 		}
 
 		String userSelectedTool = DynamicExtensionsUtility.getControlName(controlInterface);

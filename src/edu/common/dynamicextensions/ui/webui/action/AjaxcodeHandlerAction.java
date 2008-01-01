@@ -250,7 +250,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 						{
 							containerInterface.addControl(control);
 							containerInterface.getEntity().addAbstractAttribute(
-									control.getAbstractAttribute());
+									control.getBaseAbstractAttribute());
 						}
 					}
 				}
@@ -628,7 +628,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 						{
 							//if control contains Attribute interface object then only show on UI.
 							//If control contains association objects do not show in attribute list
-							abstractAttribute = control.getAbstractAttribute();
+							abstractAttribute = (AbstractAttributeInterface) control.getBaseAbstractAttribute();
 							if (abstractAttribute != null
 									&& (abstractAttribute instanceof AttributeInterface))
 							{

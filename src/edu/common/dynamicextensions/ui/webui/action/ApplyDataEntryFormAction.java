@@ -341,7 +341,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 						controlSequence = controlSequence + "_" + rowId;
 					}
 
-					AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
+					AbstractAttributeInterface abstractAttribute = (AbstractAttributeInterface) control.getBaseAbstractAttribute();
 					if (abstractAttribute instanceof AttributeInterface)
 					{
 						collectAttributeValues(request, dataEntryForm, controlSequence, control,

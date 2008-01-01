@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface;
@@ -160,7 +161,7 @@ public class UserInterfaceiUtility
      */
     public static boolean isControlRequired(ControlInterface controlInterface)
     {
-        AbstractAttributeInterface abstractAttribute = controlInterface.getAbstractAttribute();
+    	BaseAbstractAttributeInterface baseAbstractAttributeInterface = (BaseAbstractAttributeInterface) controlInterface.getBaseAbstractAttribute();
         Collection<RuleInterface> ruleCollection = abstractAttribute.getRuleCollection();
         boolean required = false;
         if (ruleCollection != null && !ruleCollection.isEmpty())
@@ -266,7 +267,7 @@ public class UserInterfaceiUtility
             {
                 if (containerValueMap != null)
                 {
-                    Object value = containerValueMap.get(control.getAbstractAttribute());
+                    Object value = containerValueMap.get(control.getBaseAbstractAttribute());
                     control.setValue(value);
                 }
                 controlHTML = control.generateHTML();
@@ -369,7 +370,7 @@ public class UserInterfaceiUtility
     {
         boolean isOneToMany = false;
         AssociationInterface associationInterface = (AssociationInterface) control
-                .getAbstractAttribute();
+                .getBaseAbstractAttribute();
         RoleInterface targetRole = associationInterface.getTargetRole();
         if (targetRole.getMaximumCardinality() == Cardinality.MANY)
         {

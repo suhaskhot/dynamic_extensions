@@ -376,8 +376,8 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			ControlInterface control = DynamicExtensionsUtility.getControlByIdentifier(controlId);
 			if (control != null)
 			{
-				if ((control.getAbstractAttribute() != null) && (control.getAbstractAttribute() instanceof AttributeInterface))
-					attribute = (AttributeInterface) control.getAbstractAttribute();
+				if ((control.getBaseAbstractAttribute() != null) && (control.getBaseAbstractAttribute() instanceof AttributeInterface))
+					attribute = (AttributeInterface) control.getBaseAbstractAttribute();
 			}
 		}
 		return attribute;
@@ -607,7 +607,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private void populateControlCommonAttributes(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
 	{
-		controlUIBeanInterface.setAbstractAttribute(controlInterface.getAbstractAttribute());
+		controlUIBeanInterface.setAbstractAttribute((AbstractAttributeInterface)controlInterface.getBaseAbstractAttribute());
 		controlUIBeanInterface.setCaption(controlInterface.getCaption());
 		controlUIBeanInterface.setIsHidden(controlInterface.getIsHidden());
 		controlUIBeanInterface.setSequenceNumber(controlInterface.getSequenceNumber());

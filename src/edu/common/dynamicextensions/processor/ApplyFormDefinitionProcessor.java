@@ -311,7 +311,7 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 							.indexOf(containmentAssociationControlInterface.getContainer()));
 					tempContainer.setEntity(actualContainer.getEntity());
                     //actualContainer.getEntity().setContainer((Container) tempContainer);
-					((AssociationInterface) containmentAssociationControlInterface.getAbstractAttribute()).setTargetEntity(actualContainer
+					((AssociationInterface) containmentAssociationControlInterface.getBaseAbstractAttribute()).setTargetEntity(actualContainer
 							.getEntity());
 					containmentAssociationControlInterface.setContainer(actualContainer);
 				}

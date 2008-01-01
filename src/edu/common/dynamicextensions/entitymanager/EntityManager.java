@@ -1680,7 +1680,7 @@ public class EntityManager
             throw new DynamicExtensionsSystemException("Container passed is null");
         }
 
-        Entity entity = (Entity) container.getEntity();
+        Entity entity = (Entity) container.getAbstarctEntity();
         //Session session = null;
         try
         {
@@ -1835,7 +1835,7 @@ public class EntityManager
             throw new DynamicExtensionsSystemException("Container passed is null");
         }
 
-        Entity entity = (Entity) container.getEntity();
+        Entity entity = (Entity) container.getAbstarctEntity();
         HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
                 Constants.HIBERNATE_DAO);
         Session session = null;
@@ -2067,9 +2067,9 @@ public class EntityManager
     private void preSaveProcessContainer(Container container)
             throws DynamicExtensionsApplicationException
     {
-        if (container.getEntity() != null)
+        if (container.getAbstarctEntity() != null)
         {
-            preSaveProcessEntity(container.getEntity());
+            preSaveProcessEntity((EntityInterface)container.getAbstarctEntity());
         }
     }
 
@@ -4870,7 +4870,7 @@ public class EntityManager
         ContainerInterface container = DynamicExtensionsUtility
                 .getContainerByIdentifier(containerId.toString());
 
-        EntityInterface entityInterface = container.getEntity();
+        EntityInterface entityInterface = (EntityInterface) container.getAbstarctEntity();
         for (Long recordId : recordIdList)
         {
             deleteRecord(entityInterface, recordId);

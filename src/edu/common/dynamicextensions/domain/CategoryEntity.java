@@ -5,6 +5,7 @@ import java.util.HashSet;
 
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 
 /**
  *
@@ -29,22 +30,22 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
     /**
      *
      */
-    protected Collection<CategoryEntity> childCategories = new HashSet<CategoryEntity>();
+    protected Collection<CategoryEntityInterface> childCategories = new HashSet<CategoryEntityInterface>();
 
     /**
      *
      */
-    protected Collection<CategoryAttribute> categoryAttributeCollection = new HashSet<CategoryAttribute>();
+    protected Collection<CategoryAttributeInterface> categoryAttributeCollection = new HashSet<CategoryAttributeInterface>();
 
     /**
      *
      */
-    protected Entity entity;
+    protected EntityInterface entity;
 
    /**
     *
     */
-    protected Collection<Path> pathCollection;
+    protected Collection<PathInterface> pathCollection = new HashSet<PathInterface>();
 
 
     /**
@@ -82,7 +83,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
      * @return the categoryAttributeCollection
      */
 
-    public Collection<CategoryAttribute> getCategoryAttributeCollection()
+    public Collection<CategoryAttributeInterface> getCategoryAttributeCollection()
     {
         return categoryAttributeCollection;
     }
@@ -90,7 +91,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
     /**
      * @param categoryAttributeCollection the categoryAttributeCollection to set
      */
-    public void setCategoryAttributeCollection(Collection<CategoryAttribute> categoryAttributeCollection)
+    public void setCategoryAttributeCollection(Collection<CategoryAttributeInterface> categoryAttributeCollection)
     {
         this.categoryAttributeCollection = categoryAttributeCollection;
     }
@@ -103,7 +104,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.CategoryEntity"
      * @return the childCategories
      */
-    public Collection<CategoryEntity> getChildCategories()
+    public Collection<CategoryEntityInterface> getChildCategories()
     {
         return childCategories;
     }
@@ -111,17 +112,17 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
     /**
      * @param childCategories the childCategories to set
      */
-    public void setChildCategories(Collection<CategoryEntity> childCategories)
+    public void setChildCategories(Collection<CategoryEntityInterface> childCategories)
     {
         this.childCategories = childCategories;
     }
 
 
     /**
-     * @hibernate.many-to-one column="ENTITY_ID" cascade="save-update"
+     * @hibernate.many-to-one class="edu.common.dynamicextensions.domain.Entity" column="ENTITY_ID" cascade="save-update"
      * @return the entity
      */
-    public Entity getEntity()
+    public EntityInterface getEntity()
     {
         return entity;
     }
@@ -129,19 +130,20 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
     /**
      * @param entity the entity to set
      */
-    public void setEntity(Entity entity)
+    public void setEntity(EntityInterface entity)
     {
         this.entity = entity;
     }
 
     /**
      * @hibernate.set name="pathCollection" table="DYEXTN_PATH"
-	 * cascade="all-delete-orphan" inverse="false" lazy="false"
+	 * cascade="save-update" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="CATEGORY_ENTITY_ID"
 	 * @hibernate.cache  usage="read-write"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Path"
+     * @return the pathCollection
      */
-	private Collection<Path> getPathCollection()
+	private Collection<PathInterface> getPathCollection()
 	{
 		return pathCollection;
 	}
@@ -150,7 +152,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	 *
 	 * @param pathCollection
 	 */
-	private void setPathCollection(Collection<Path> pathCollection)
+	private void setPathCollection(Collection<PathInterface> pathCollection)
 	{
 		this.pathCollection = pathCollection;
 	}

@@ -16,7 +16,7 @@ import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPro
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 
 /**
- * 
+ *
  * @author mandar_shidhore
  * @hibernate.joined-subclass table="DYEXTN_CATEGORY_ATTRIBUTE"
  * @hibernate.joined-subclass-key column="IDENTIFIER"
@@ -27,20 +27,20 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
      * Serial Version UID
      */
     private static final long serialVersionUID = 12345235L;
-    
+
     protected Set<DataElementInterface> dataElementCollection = new HashSet<DataElementInterface>();
-    
+
     protected Set<ColumnPropertiesInterface> columnPropertiesCollection = new HashSet<ColumnPropertiesInterface>();
-    
+
     protected Set<RuleInterface> ruleCollection =  new HashSet<RuleInterface>();
-    
+
     protected AttributeInterface attribute;
-    
+
     public CategoryAttribute()
     {
-        
+        super();
     }
-   
+
     /**
      * This method returns the Collection of Column Properties of the Attribute.
      * @hibernate.set name="columnPropertiesCollection" table="DYEXTN_COLUMN_PROPERTIES" cascade="all" inverse="false" lazy="false"
@@ -95,12 +95,12 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
         }
         this.columnPropertiesCollection.add(columnProperties);
     }
-    
+
     /**
      * @hibernate.set name="dataElementCollection" table="DYEXTN_DATA_ELEMENT" cascade="all" inverse="false" lazy="false"
      * @hibernate.collection-key column="CATEGORY_ATTRIBUTE_TYPE_INFO_ID"
      * @hibernate.cache  usage="read-write"
-     * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.DataElement"   
+     * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.DataElement"
      * @return Returns the dataElementCollection.
      */
     private Set<DataElementInterface> getDataElementCollection()
@@ -117,7 +117,7 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
     }
 
     /**
-     * 
+     *
      * @return
      */
     public DataElementInterface getDataElement()
@@ -134,7 +134,7 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
     }
 
     /**
-     * 
+     *
      * @param sourceEntity
      */
     public void setDataElement(DataElementInterface dataElementInterface)
@@ -168,7 +168,7 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
      * @hibernate.many-to-one column="ATTRIBUTE_ID" cascade="save-update" unique="true" class="edu.common.dynamicextensions.domain.Attribute"
      * @return the attribute
      */
-    public AttributeInterface getAttribute() 
+    public AttributeInterface getAttribute()
     {
         return attribute;
     }
@@ -176,7 +176,7 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
     /**
      * @param attribute the attribute to set
      */
-    public void setAttribute(AttributeInterface attribute) 
+    public void setAttribute(AttributeInterface attribute)
     {
         this.attribute = attribute;
     }

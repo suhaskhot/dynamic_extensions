@@ -2,9 +2,6 @@ package edu.common.dynamicextensions.domaininterface;
 
 import java.util.Collection;
 
-import edu.common.dynamicextensions.domain.CategoryAttribute;
-import edu.common.dynamicextensions.domain.CategoryEntity;
-import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.PathInterface;
 
 public interface CategoryEntityInterface extends AbstractEntityInterface
@@ -13,32 +10,32 @@ public interface CategoryEntityInterface extends AbstractEntityInterface
 	 *
 	 * @return
 	 */
-    Collection<CategoryAttribute> getCategoryAttributeCollection();
+    Collection<CategoryAttributeInterface> getCategoryAttributeCollection();
     /**
      *
      * @param categoryAttributeCollection
      */
-    void setCategoryAttributeCollection(Collection<CategoryAttribute> categoryAttributeCollection);
+    void setCategoryAttributeCollection(Collection<CategoryAttributeInterface> categoryAttributeCollection);
     /**
      *
      * @return
      */
-    Collection<CategoryEntity> getChildCategories();
+    Collection<CategoryEntityInterface> getChildCategories();
     /**
      *
      * @param childCategories
      */
-    void setChildCategories(Collection<CategoryEntity> childCategories);
+    void setChildCategories(Collection<CategoryEntityInterface> childCategories);
     /**
      *
      * @return
      */
-    Entity getEntity();
+    EntityInterface getEntity();
     /**
      *
      * @param entity
      */
-    void setEntity(Entity entity);
+    void setEntity(EntityInterface entity);
 	/**
 	 * This method adds an AbstractAttribute to the Entity's Collection of AbstractAttribute.
 	 * @param abstractAttribute AbstractAttribute to be added.

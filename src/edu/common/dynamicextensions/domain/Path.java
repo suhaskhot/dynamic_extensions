@@ -12,14 +12,14 @@ import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 public class Path extends DynamicExtensionBaseDomainObject implements PathInterface
 {
 	/**
-	 * Serial Version Unique Identifief
+	 * Serial Version Unique Identifier
 	 */
 	protected static final long serialVersionUID = 1234567890L;
 
 	/**
 	 *
 	 */
-    Collection<Association> associationCollection = new HashSet<Association>();
+    Collection<AssociationInterface> associationCollection = new HashSet<AssociationInterface>();
 
     /**
      *
@@ -32,20 +32,20 @@ public class Path extends DynamicExtensionBaseDomainObject implements PathInterf
 
     /**
 
-     * @hibernate.set name="associationCollection" table="DYEXTN_PATH_ASSOCTION_REL"
-	 * cascade="none" inverse="false" lazy="false"
+     * @hibernate.set name="associationCollection" table="DYEXTN_PATH_ASSOCIATION_REL"
+	 * cascade="save-update" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="PATH_ID"
 	 * @hibernate.cache  usage="read-write"
-	 * @hibernate.collection-many-to-many class="edu.common.dynamicextensions.domain.Association" column="ASSOCTION_ID"
+	 * @hibernate.collection-many-to-many class="edu.common.dynamicextensions.domain.Association" column="ASSOCIATION_ID"
      */
-    public Collection<Association> getAssociationCollection() {
+    public Collection<AssociationInterface> getAssociationCollection() {
         return associationCollection;
     }
 
     /**
      * @param associationCollection the associationCollection to set
      */
-    public void setAssociationCollection(Collection<Association> associationCollection) {
+    public void setAssociationCollection(Collection<AssociationInterface> associationCollection) {
         this.associationCollection = associationCollection;
     }
 

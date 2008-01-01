@@ -72,16 +72,13 @@
         <mapping resource="edu/common/dynamicextensions/hbm/DataElement.hbm.xml"/>
 
         <mapping resource="edu/common/dynamicextensions/hbm/TaggedValue.hbm.xml"/>
-        <mapping resource="edu/common/dynamicextensions/hbm/AttributeRecord.hbm.xml"/>
-        <mapping resource="edu/common/dynamicextensions/hbm/CollectionAttributeRecordValue.hbm.xml"/>
+
 
         <mapping resource="edu/common/dynamicextensions/hbm/AssociationDisplayAttribute.hbm.xml"/>
         <mapping resource="edu/common/dynamicextensions/hbm/databaseproperties/DatabaseProperties.hbm.xml"/>
         <mapping resource="edu/common/dynamicextensions/hbm/CaDSRValueDomainInfo.hbm.xml"/>
 
-        <mapping resource="edu/common/dynamicextensions/hbm/FileAttributeRecordValue.hbm.xml"/>
         <mapping resource="edu/common/dynamicextensions/hbm/FileExtension.hbm.xml"/>
-        <mapping resource="edu/common/dynamicextensions/hbm/ObjectAttributeRecordValue.hbm.xml"/>
 
         <mapping resource="edu/common/dynamicextensions/hbm/userinterface/DEContainer.hbm.xml"/>
         <mapping resource="edu/common/dynamicextensions/hbm/userinterface/Control.hbm.xml"/>
@@ -96,6 +93,7 @@
         <mapping resource="edu/common/dynamicextensions/hbm/integration/FormContext.hbm.xml"/>
         <mapping resource="edu/common/dynamicextensions/hbm/integration/EntityMapRecord.hbm.xml"/>
         <mapping resource="edu/common/dynamicextensions/hbm/IdGenerator.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/Path.hbm.xml"/>
 
     </session-factory>
 

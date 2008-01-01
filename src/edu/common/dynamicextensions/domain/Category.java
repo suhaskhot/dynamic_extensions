@@ -31,7 +31,7 @@ public class Category extends AbstractMetadata implements CategoryInterface
     }
 
     /**
-     * @hibernate.many-to-one column="ROOT_CATEGORY_ELEMENT" cascade="all-delete-orphan"
+     * @hibernate.many-to-one column="ROOT_CATEGORY_ELEMENT" cascade="all"
      * @return the rootCategoryElement.
      */
     public CategoryEntity getRootCategoryElement() {

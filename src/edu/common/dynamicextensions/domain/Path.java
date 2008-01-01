@@ -9,8 +9,12 @@ import edu.common.dynamicextensions.domaininterface.AssociationInterface;
  * @author rajesh_patil
  *
  */
-public class Path implements PathInterface
+public class Path extends DynamicExtensionBaseDomainObject implements PathInterface
 {
+	/**
+	 * Serial Version Unique Identifief
+	 */
+	protected static final long serialVersionUID = 1234567890L;
 
 	/**
 	 *
@@ -61,6 +65,18 @@ public class Path implements PathInterface
 	{
 		// TODO Auto-generated method stub
 
+	}
+
+	/**
+	 * This method returns the unique identifier of the Path.
+	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
+	 * length="30" unsaved-value="null" generator-class="native"
+	 * @hibernate.generator-param name="sequence" value="DYEXTN_PATH_SEQ"
+	 * @return the identifier of the Path.
+	 */
+	public Long getId()
+	{
+		return id;
 	}
 
 }

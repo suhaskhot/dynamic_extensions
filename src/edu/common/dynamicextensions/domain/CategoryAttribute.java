@@ -1,12 +1,17 @@
 package edu.common.dynamicextensions.domain;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import edu.common.dynamicextensions.domain.userinterface.Control;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.CaDSRValueDomainInfoInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 
@@ -16,7 +21,7 @@ import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterfac
  * @hibernate.joined-subclass table="DYEXTN_CATEGORY_ATTRIBUTE"
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
-public class CategoryAttribute extends BaseAbstractAttribute implements CategoryAttributeInterface {
+public class CategoryAttribute extends BaseAbstractAttribute implements CategoryAttributeInterface,AttributeInterface {
 
     /**
      * Serial Version UID
@@ -175,5 +180,125 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
     {
         this.attribute = attribute;
     }
+
+	public AttributeTypeInformationInterface getAttributeTypeInformation()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public CaDSRValueDomainInfoInterface getCaDSRValueDomainInfo()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getDataType()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Boolean getIsCollection()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Boolean getIsIdentified()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Boolean getIsNullable()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Boolean getIsPrimaryKey()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setAttributeTypeInformation(AttributeTypeInformationInterface attributeTypeInformationInterface)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setCaDSRValueDomainInfo(CaDSRValueDomainInfoInterface caDSRValueDomainInfoInterface)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setIsCollection(Boolean isCollection)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setIsIdentified(Boolean isIdentified)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setIsNullable(Boolean isNullable)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setIsPrimaryKey(Boolean isPrimaryKey)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void addRule(RuleInterface ruleInterface)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	public Collection<Control> getControl()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public EntityInterface getEntity()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void removeRule(RuleInterface ruleInterface)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setControl(Collection<Control> control)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setEntity(EntityInterface entityInterface)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setRuleCollection(Collection<RuleInterface> ruleCollection)
+	{
+		// TODO Auto-generated method stub
+		
+	}
 
 }

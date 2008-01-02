@@ -4,7 +4,7 @@
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
  <hibernate-mapping>
- 
+
     <query name="getEntitiesByConceptCode">
        from Entity entity
 		   	join entity.semanticPropertyCollection semanticProperty
@@ -24,16 +24,9 @@
        			   	association.targetEntity.id = ?
 	</query>
 
-	<query name="getCollectionAttributeRecord">
-       from AttributeRecord collectionAttributeRecord
-	       	where collectionAttributeRecord.entity.id = ? AND
-       			   	collectionAttributeRecord.attribute.id = ? AND
-       			   	     collectionAttributeRecord.recordId = ?
-	</query>
-
 	<query name="getAllContainersByEntityGroupId">
 	   from edu.common.dynamicextensions.domain.userinterface.Container container
-	         	where container.entity.id in
+	         	where container.abstarctEntity.id in
              			(select entity.id
                       		from Entity entity
 	                             join entity.entityGroup entityGroup
@@ -42,18 +35,18 @@
 
 	<query name="getContainerOfEntity">
 		from edu.common.dynamicextensions.domain.userinterface.Container container
-           		where  container.entity.id = ?
+           		where  container.abstarctEntity.id = ?
 	</query>
 
 	<query name="getControlOfAbstractAttribute">
 		from Control control
-           		where  control.abstractAttribute.id = ?
+           		where  control.baseAbstractAttribute.id = ?
 	</query>
 
 	<query name="getAllContainersBeansByEntityGroupId">
 			select container.id,container.caption
 			   from edu.common.dynamicextensions.domain.userinterface.Container container
-			         	where container.entity.id in
+			         	where container.abstarctEntity.id in
 		             			(select entity.id
 		                      		from Entity entity
 			                             join entity.entityGroup entityGroup
@@ -61,7 +54,7 @@
 	</query>
 
 	<query name="getAllEntityCreatedDateByContainerId">
-			select container.id,container.entity.createdDate
+			select container.id,container.abstarctEntity.createdDate
 			   from edu.common.dynamicextensions.domain.userinterface.Container container
 	</query>
 
@@ -71,14 +64,14 @@
 	</query>
 
 	<query name="getAllContainerInformationObjects">
-			select container.id,container.caption,container.entity.description
+			select container.id,container.caption,container.abstarctEntity.description
 			   from edu.common.dynamicextensions.domain.userinterface.Container container
 	</query>
 
 
 
 	<query name="getEntityIdForContainerId">
-			select container.entity.id
+			select container.abstarctEntity.id
 			   from edu.common.dynamicextensions.domain.userinterface.Container container
 			   where container.id = ?
 	</query>
@@ -129,20 +122,13 @@
       select container.id
             from edu.common.dynamicextensions.domain.userinterface.Container container
                         where container.id = ?
-                        AND container.entity.abstract = ?
+                        AND container.abstarctEntity.abstract = ?
   	</query>
 
-	<query name="getAttributeRecords">
-		select count(*)
-       		from AttributeRecord attributeRecord
-	       		where attributeRecord.entity.id = ? AND
-       			   	attributeRecord.attribute.id = ?
-	</query>
-	
 	<query name="getAssociationIdsForTargetEntity">
 	   select association.id
 	   	from edu.common.dynamicextensions.domain.Association association
 	      where association.targetEntity.id = ?
 	</query>
-	
+
 </hibernate-mapping>

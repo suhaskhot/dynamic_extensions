@@ -1895,16 +1895,45 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
                                                                                                                                                                    targetEntityRecordId);
         }
 
-        try {
-            Connection conn = DBUtil.getConnection();
-            Statement stmt = conn.createStatement();
-            stmt.execute(query.toString());
-        } catch (HibernateException e) {
-            throw new DynamicExtensionsSystemException("Can not obtain connection", e);
-        } catch (SQLException e) {
-            throw new DynamicExtensionsSystemException("Can not execute query", e);
-        }
+        Connection conn = null;
+		try {
+			conn = DBUtil.getConnection();
+			Statement stmt = conn.createStatement();
+			stmt.execute(query.toString());
+			conn.commit();
+		} catch (HibernateException e) {
+			connectionRollBack(conn);
+		} catch (SQLException e) {
+			connectionRollBack(conn);
+		}
+		finally
+		{
+			DBUtil.closeConnection();
+		}
+	}
 
-    }
+	/**
+
+	 * This method rollbacks the conncetion
+
+	 * @param connection
+
+	 * @throws DynamicExtensionsSystemException
+
+	 */
+
+	private static void connectionRollBack(Connection connection)
+			throws DynamicExtensionsSystemException
+	{
+		try
+		{
+			connection.rollback();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		throw new DynamicExtensionsSystemException("Can not execute query");
+	}
 
 }

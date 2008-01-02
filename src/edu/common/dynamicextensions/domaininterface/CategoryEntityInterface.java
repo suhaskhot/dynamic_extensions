@@ -66,4 +66,15 @@ public interface CategoryEntityInterface extends AbstractEntityInterface
 	 * @param associationInterface an AssociationInterface to be removed.
 	 */
 	void removeAllPaths();
+	/**
+	 *
+	 * @return
+	 */
+	CategoryInterface getCategory();
+	/**
+	 *
+	 * @param categoryInterface
+	 */
+	void setCategory(CategoryInterface categoryInterface);
+
 }

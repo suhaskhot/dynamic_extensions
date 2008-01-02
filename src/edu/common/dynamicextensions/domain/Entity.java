@@ -57,10 +57,6 @@ public class Entity extends AbstractEntity implements EntityInterface
 	 */
 	protected EntityInterface parentEntity = null;
 
-	/**
-	 * containerCollection.
-	 */
-    protected Collection containerCollection = new HashSet<Container>();
 
 	/**
 	 * indicates if this enitity is abstract or not.
@@ -499,25 +495,6 @@ public class Entity extends AbstractEntity implements EntityInterface
         }
 
         return AttributeCollection;
-    }
-
-    /**
-     * @hibernate.set name="containerCollection" table="DYEXTN_CONTAINER"
-     * cascade="save-update" inverse="false" lazy="false"
-     * @hibernate.collection-key column="ENTITY_ID"
-     * @hibernate.cache usage="read-write"
-     * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.userinterface.Container"
-     * @return Returns the controlCollection.
-     */
-    public Collection getContainerCollection() {
-        return containerCollection;
-    }
-
-    /**
-     * @param containerCollection the containerCollection to set
-     */
-    public void setContainerCollection(Collection containerCollection) {
-        this.containerCollection = containerCollection;
     }
 
 }

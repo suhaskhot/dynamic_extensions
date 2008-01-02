@@ -10,6 +10,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.CaDSRValueDomainInfoInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
@@ -27,14 +28,30 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
      * Serial Version UID
      */
     private static final long serialVersionUID = 12345235L;
-
+    /**
+     *
+     */
     protected Set<DataElementInterface> dataElementCollection = new HashSet<DataElementInterface>();
-
+    /**
+     *
+     */
     protected Set<ColumnPropertiesInterface> columnPropertiesCollection = new HashSet<ColumnPropertiesInterface>();
-
+    /**
+     *
+     */
     protected Set<RuleInterface> ruleCollection =  new HashSet<RuleInterface>();
-
+    /**
+     *
+     */
     protected AttributeInterface attribute;
+    /**
+     *
+     */
+    protected CategoryEntityInterface categoryEntity;
+    /**
+    *
+    */
+   protected Collection<CategoryEntityInterface> categoryEntityCollection = new HashSet<CategoryEntityInterface>();
 
     public CategoryAttribute()
     {
@@ -226,43 +243,43 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	public void setAttributeTypeInformation(AttributeTypeInformationInterface attributeTypeInformationInterface)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void setCaDSRValueDomainInfo(CaDSRValueDomainInfoInterface caDSRValueDomainInfoInterface)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void setIsCollection(Boolean isCollection)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void setIsIdentified(Boolean isIdentified)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void setIsNullable(Boolean isNullable)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void setIsPrimaryKey(Boolean isPrimaryKey)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void addRule(RuleInterface ruleInterface)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public Collection<Control> getControl()
@@ -280,25 +297,46 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	public void removeRule(RuleInterface ruleInterface)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void setControl(Collection<Control> control)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void setEntity(EntityInterface entityInterface)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void setRuleCollection(Collection<RuleInterface> ruleCollection)
 	{
 		// TODO Auto-generated method stub
-		
+
+	}
+	/**
+	 * This method returns the Entity associated with this Attribute.
+	 * @hibernate.many-to-one column="CATEGORY_ENTIY_ID" class="edu.common.dynamicextensions.domain.CategoryEntity" constrained="true"
+	 * @return CategoryEntityInterface the Entity associated with the Attribute.
+	 */
+	public CategoryEntityInterface getCategoryEntity()
+	{
+		return categoryEntity;
+	}
+
+	/**
+	 * This method sets the Entity associated with this Attribute.
+	 * @param entityInterface The entity to be set.
+	 */
+	public void setCategoryEntity(CategoryEntityInterface categoryEntityInterface)
+	{
+		if (categoryEntityInterface != null)
+		{
+			this.categoryEntity = categoryEntityInterface;
+		}
 	}
 
 }

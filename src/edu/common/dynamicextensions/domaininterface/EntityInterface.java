@@ -165,16 +165,7 @@ public interface EntityInterface  extends AbstractEntityInterface
      * Get all attributes for query
      */
     public Collection<AttributeInterface> getEntityAttributesForQuery();
-    /**
-     *
-     * @return
-     */
-    public Collection getContainerCollection();
-    /**
-     *
-     * @param containerCollection
-     */
-    public void setContainerCollection(Collection containerCollection);
+
     /**
      *
      * @return

@@ -2,10 +2,13 @@ package edu.common.dynamicextensions.domain;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 
 /**
  *
@@ -47,7 +50,10 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
     */
     protected Collection<PathInterface> pathCollection = new HashSet<PathInterface>();
 
-
+    /**
+    *
+    */
+   protected Collection<CategoryInterface> categoryCollection = new HashSet<CategoryInterface>();
     /**
      *
      *
@@ -195,6 +201,54 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	{
 		// TODO Auto-generated method stub
 
+	}
+    /**
+     * @hibernate.set name="categoryCollection" table="DYEXTN_CATEGORY"
+	 * cascade="all-delete-orphan" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="CATEGORY_ENTITY_ID"
+	 * @hibernate.cache  usage="read-write"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Category"
+     * @return the categoryCollection
+     */
+	public Collection<CategoryInterface> getCategoryCollection()
+	{
+		return categoryCollection;
+	}
+	/**
+	 *
+	 * @param categoryCollection
+	 */
+	public void setCategoryCollection(Collection<CategoryInterface> categoryCollection)
+	{
+		this.categoryCollection = categoryCollection;
+	}
+	/**
+	 *
+	 */
+	public CategoryInterface getCategory()
+	{
+		CategoryInterface categoryInterface = null;
+		if (categoryCollection != null && !categoryCollection.isEmpty())
+		{
+			Iterator categoryCollectionIterator = categoryCollection.iterator();
+			categoryInterface = (CategoryInterface) categoryCollectionIterator.next();
+		}
+		return categoryInterface;
+	}
+	/**
+	 *
+	 */
+	public void setCategory(CategoryInterface categoryInterface)
+	{
+		if (categoryCollection == null)
+		{
+			categoryCollection = new HashSet<CategoryInterface>();
+		}
+		else
+		{
+			categoryCollection.clear();
+		}
+		this.categoryCollection.add(categoryInterface);
 	}
 
 

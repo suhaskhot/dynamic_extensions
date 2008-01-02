@@ -90,9 +90,8 @@ public class BaseDynamicExtensionsAction extends DispatchAction
 		if (isSystemException)
 		{
 			actionForwardString = Constants.SYSTEM_EXCEPTION;
-			String errorMsg = e.getMessage();
 			System.out.println(DynamicExtensionsUtility.getStackTrace(e));
-			request.getSession().setAttribute(Constants.ERROR_DETAIL, errorMsg);
+			request.setAttribute("exceptionString", DynamicExtensionsUtility.getStackTrace(e));
 		}
 		return actionForwardString;
 	}

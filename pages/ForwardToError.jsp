@@ -27,9 +27,15 @@
 					<c:set var="exception" value="${requestScope.exceptionString}"/>
 					<jsp:useBean id="exception" type="java.lang.String"/>
 					
+					<!--
 					<div style="border:solid 1px; padding:1px; width:800px; height:400px; overflow:auto;">
-						<%=exception%>
+						 <%=exception%>
+						
+						
 					</div>
+					 -->
+					 
+					Exception occurred.Please contact system administrator.
 				</td>
 			</tr>
 		</table>

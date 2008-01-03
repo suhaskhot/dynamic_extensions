@@ -12,6 +12,7 @@ package edu.common.dynamicextensions.entitymanager;
 public interface DynamicExtensionsQueryBuilderConstantsInterface extends EntityManagerConstantsInterface
 {
 	String TABLE_NAME_PREFIX = "DE_E";
+	String CATEGORY_TABLE_NAME_PREFIX = "DE_C";
 	String UNDERSCORE = "_";
 	String COLUMN_NAME_PREFIX = "DE_AT";
 	String ASSOCIATION_NAME_PREFIX = "DE_AS";
@@ -49,6 +50,7 @@ public interface DynamicExtensionsQueryBuilderConstantsInterface extends EntityM
 	String IN_KEYWORD = " IN ";
 	String WHITESPACE = " ";
 	String IDENTIFIER = "IDENTIFIER";
+	String CATEGORY_ROOT_ID = "CATEGORY_ROOT_ID";
 	String STATUS = "STATUS";
 	String PRIMARY_KEY_CONSTRAINT_FOR_ENTITY_DATA_TABLE = "primary key (IDENTIFIER)";
 	String ALTER_COLUMN_KEYWORD = "ALTER " + COLUMN_KEYWORD;
@@ -56,8 +58,8 @@ public interface DynamicExtensionsQueryBuilderConstantsInterface extends EntityM
 	String FOREIGN_KEY_KEYWORD = " foreign key ";
 	String AND_KEYWORD = "AND";
 	String LIKE_KEYWORD = "LIKE";
-	
+
 	String FILE_NAME = "file_name";
 	String CONTENT_TYPE = "content_type";
-	
+
 }

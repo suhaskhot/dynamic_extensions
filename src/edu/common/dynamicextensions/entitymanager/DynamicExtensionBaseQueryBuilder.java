@@ -23,8 +23,9 @@ import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.Category;
+import edu.common.dynamicextensions.domain.CategoryEntity;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
-import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
@@ -718,92 +719,138 @@ class DynamicExtensionBaseQueryBuilder
 	 */
 	protected List<String> getCreateMainTableQuery(Entity entity, List<String> reverseQueryList) throws DynamicExtensionsSystemException
 	{
-
-		EntityInterface parentEntity = entity.getParentEntity();
-		String activityStatusString = Constants.ACTIVITY_STATUS_COLUMN + WHITESPACE + getDataTypeForStatus();
-
-		String tableName = entity.getTableProperties().getName();
-		StringBuffer query = new StringBuffer(CREATE_TABLE + " " + tableName + " " + OPENING_BRACKET + " " + activityStatusString + COMMA);
-		if (!EntityManagerUtil.isIdAttributePresent(entity))
+		List<String> queryList = new ArrayList<String>();
+		if (entity.getTableProperties() != null)
 		{
-			query.append(IDENTIFIER).append(WHITESPACE).append(getDataTypeForIdentifier()).append(COMMA);
-		}
-		Collection<AttributeInterface> attributeCollection = entity.getAttributeCollection();
+			String activityStatusString = Constants.ACTIVITY_STATUS_COLUMN + WHITESPACE
+					+ getDataTypeForStatus();
 
-		if (attributeCollection != null && !attributeCollection.isEmpty())
-		{
-			Iterator attributeIterator = attributeCollection.iterator();
-			while (attributeIterator.hasNext())
+			String tableName = entity.getTableProperties().getName();
+			StringBuffer query = new StringBuffer(CREATE_TABLE + " " + tableName + " "
+					+ OPENING_BRACKET + " " + activityStatusString + COMMA);
+			if (!EntityManagerUtil.isIdAttributePresent(entity))
 			{
-				Attribute attribute = (Attribute) attributeIterator.next();
-				String type = "";
-
-				if (isAttributeColumnToBeExcluded(attribute)) {
-                    //column is not created if it is multi select,file type etc.
-                    continue;
-                }
-				/*if (attribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
-				{
-
-					AttributeInterface attributeInterface = DomainObjectFactory.getInstance().createStringAttribute();
-					// attributeInterface.setName(attribute.getName()+UNDERSCORE+FILE_NAME);
-					attributeInterface.setName(attribute.getName() + UNDERSCORE + FILE_NAME);
-					attributeInterface.getColumnProperties().setName(attribute.getName() + UNDERSCORE + FILE_NAME);
-
-					String attributeQueryPart = getQueryPartForAttribute((Attribute) attributeInterface, type, true);
-					query = query.append(attributeQueryPart + COMMA);
-
-					AttributeInterface attributeInterface1 = DomainObjectFactory.getInstance().createStringAttribute();
-					attributeInterface1.setName(attribute.getName() + UNDERSCORE + FILE_NAME);
-					attributeInterface1.getColumnProperties().setName(attribute.getName() + UNDERSCORE + CONTENT_TYPE);
-
-					attributeQueryPart = getQueryPartForAttribute((Attribute) attributeInterface1, type, true);
-					query = query.append(attributeQueryPart + COMMA);
-
-					attributeCollection.add(attributeInterface);
-					attributeCollection.add(attributeInterface1);
-					// } else {
-					// continue;
-					// }
-
-				}*/
-				// get column info for attribute
-				String attributeQueryPart = getQueryPartForAttribute(attribute, type, true);
-				query = query.append(attributeQueryPart + COMMA);
-
+				query.append(IDENTIFIER).append(WHITESPACE).append(getDataTypeForIdentifier())
+						.append(COMMA);
 			}
-		}
-		if (attributeCollection != null && !attributeCollection.isEmpty())
-		{
-			Iterator attributeIterator = attributeCollection.iterator();
-			while (attributeIterator.hasNext())
+			Collection<AttributeInterface> attributeCollection = entity.getAttributeCollection();
+
+			if (attributeCollection != null && !attributeCollection.isEmpty())
 			{
-				Attribute attribute = (Attribute) attributeIterator.next();
-				if (attribute.getIsPrimaryKey() && attribute.getColumnProperties().getName() != null
-						&& !attribute.getColumnProperties().getName().equalsIgnoreCase(IDENTIFIER))
+				Iterator attributeIterator = attributeCollection.iterator();
+				while (attributeIterator.hasNext())
 				{
-					query = query.append(CONSTRAINT_KEYWORD + WHITESPACE + attribute.getColumnProperties().getName() + entity.getId() + WHITESPACE
-							+ UNIQUE_KEYWORD + OPENING_BRACKET + attribute.getColumnProperties().getName() + CLOSING_BRACKET);
+					Attribute attribute = (Attribute) attributeIterator.next();
+
+					if (isAttributeColumnToBeExcluded(attribute))
+					{
+						//column is not created if it is multi select,file type etc.
+						continue;
+					}
+
+					String type = "";
+					//get column info for attribute
+					String attributeQueryPart = getQueryPartForAttribute(attribute, type, true);
+					query = query.append(attributeQueryPart);
 					query = query.append(COMMA);
 				}
 			}
+			if (attributeCollection != null && !attributeCollection.isEmpty())
+			{
+				Iterator attributeIterator = attributeCollection.iterator();
+				while (attributeIterator.hasNext())
+				{
+					Attribute attribute = (Attribute) attributeIterator.next();
+					if (attribute.getIsPrimaryKey()
+							&& attribute.getColumnProperties().getName() != null
+							&& !attribute.getColumnProperties().getName().equalsIgnoreCase(
+									IDENTIFIER))
+					{
+						query = query.append(CONSTRAINT_KEYWORD + WHITESPACE
+								+ attribute.getColumnProperties().getName() + entity.getId()
+								+ WHITESPACE + UNIQUE_KEYWORD + OPENING_BRACKET
+								+ attribute.getColumnProperties().getName() + CLOSING_BRACKET);
+						query = query.append(COMMA);
+					}
+				}
+			}
+
+			query = query.append(PRIMARY_KEY_CONSTRAINT_FOR_ENTITY_DATA_TABLE + ")"); //identifier set as primary key
+
+			// add create query
+			queryList.add(query.toString());
+			//		// add foerfign key query for inheritance
+			//		if (parentEntity != null) {
+			//			String foreignKeyConstraintQueryForInheritance = getForeignKeyConstraintQueryForInheritance(entity);
+			//			queryList.add(foreignKeyConstraintQueryForInheritance);
+			//		}
+
+			String reverseQuery = getReverseQueryForEntityDataTable(entity.getTableProperties()
+					.getName());
+			reverseQueryList.add(reverseQuery);
 		}
-
-		query = query.append(PRIMARY_KEY_CONSTRAINT_FOR_ENTITY_DATA_TABLE + ")");
-
-		List<String> queryList = new ArrayList<String>();
-		queryList.add(query.toString());
-		//		// add foerfign key query for inheritance
-		//		if (parentEntity != null) {
-		//			String foreignKeyConstraintQueryForInheritance = getForeignKeyConstraintQueryForInheritance(entity);
-		//			queryList.add(foreignKeyConstraintQueryForInheritance);
-		//		}
-
-		String reverseQuery = getReverseQueryForEntityDataTable(entity);
-		reverseQueryList.add(reverseQuery);
 		return queryList;
 	}
+    /**
+     * This method builds the list of all the queries that need to be executed in order to
+     * create the data table for the entity and its associations.
+     *
+     * @param category Category for which to get the queries.
+     * @param reverseQueryList For every data table query the method builds one more query
+     * which negates the effect of that data table query. All such reverse queries are added in this list.
+     * @param rollbackQueryStack
+     * @param hibernateDAO
+     * @param addIdAttribute
+     *
+     * @return List of all the data table queries
+     *
+     * @throws DynamicExtensionsSystemException
+     * @throws DynamicExtensionsApplicationException
+     */
+    public List getCreateCategoryQueryList(Category category, List reverseQueryList, HibernateDAO hibernateDAO)
+            throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException {
+        List queryList = new ArrayList();
 
+		//get query to create main table with primitive attributes.
+		queryList.addAll(getCreateCategoryMainTableQuery(category, reverseQueryList));
+
+		return queryList;
+    }
+    /**
+     * getCreateCategoryMainTableQuery.
+     * @param category
+     * @param reverseQueryList
+     * @return
+     * @throws DynamicExtensionsSystemException
+     */
+    protected List<String> getCreateCategoryMainTableQuery(Category category,
+			List<String> reverseQueryList) throws DynamicExtensionsSystemException
+	{
+    	CategoryEntity categoryEntity = category.getRootCategoryElement();
+    	List<String> queryList = new ArrayList<String>();
+    	if (categoryEntity.getTableProperties() != null)
+    	{
+	    	String activityStatusString = Constants.ACTIVITY_STATUS_COLUMN + WHITESPACE
+					+ getDataTypeForStatus();
+
+			String tableName = categoryEntity.getTableProperties().getName();
+			StringBuffer query = new StringBuffer(CREATE_TABLE + " " + tableName + " "
+					+ OPENING_BRACKET + " " + activityStatusString + COMMA);
+			query.append(IDENTIFIER).append(WHITESPACE).append(getDataTypeForIdentifier()).append(
+						COMMA);
+			query.append(CATEGORY_ROOT_ID).append(WHITESPACE).append(getDataTypeForIdentifier());
+			query.append(COMMA);
+			query = query.append(PRIMARY_KEY_CONSTRAINT_FOR_ENTITY_DATA_TABLE + ")");
+
+
+			queryList.add(query.toString());
+
+			String reverseQuery = getReverseQueryForEntityDataTable(categoryEntity.getTableProperties().getName());
+			reverseQueryList.add(reverseQuery);
+		}
+
+		return queryList;
+	}
 	/**
 	 * getForeignKeyConstraintQuery.
 	 * @param entity
@@ -1026,20 +1073,19 @@ class DynamicExtensionBaseQueryBuilder
 		return null;
 	}
 
-	/**
-	 * This method gives the opposite query to negate the effect of "CREATE TABLE" query for the data table for the entity.
-	 * @param entity Entity for which query generation is done.
-	 * @return String query that basically holds the "DROP TABLE" query.
-	 */
-	protected String getReverseQueryForEntityDataTable(Entity entity)
-	{
-		String query = null;
-		if (entity != null && entity.getTableProperties() != null)
-		{
-			query = "Drop table" + " " + entity.getTableProperties().getName();
-		}
-		return query;
-	}
+    /**
+     * This method gives the opposite query to negate the effect of "CREATE TABLE" query for the data table for the entity.
+     * @param entity Entity for which query generation is done.
+     * @return String query that basically holds the "DROP TABLE" query.
+     */
+    protected String getReverseQueryForEntityDataTable(String tableName) {
+        String query = null;
+        if (tableName != null && tableName.length() > 0)
+        {
+            query = "Drop table" + " " + tableName;
+        }
+        return query;
+    }
 
 	/**
 	 * This method returns all the CREATE table entries for associations present in the entity.

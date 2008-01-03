@@ -48,10 +48,7 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
      *
      */
     protected CategoryEntityInterface categoryEntity;
-    /**
-    *
-    */
-   protected Collection<CategoryEntityInterface> categoryEntityCollection = new HashSet<CategoryEntityInterface>();
+
 
     public CategoryAttribute()
     {

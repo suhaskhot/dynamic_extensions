@@ -4,6 +4,7 @@ import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryB
 import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.ASSOCIATION_NAME_PREFIX;
 import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.COLUMN_NAME_PREFIX;
 import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.TABLE_NAME_PREFIX;
+import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.CATEGORY_TABLE_NAME_PREFIX;
 import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.UNDERSCORE;
 
 import java.util.Date;
@@ -745,22 +746,27 @@ public class DomainObjectFactory {
 	public ObjectAttributeRecordValueInterface createObjectAttributeRecordValue() {
 		return new ObjectAttributeRecordValue();
 	}
-    
+
     public CategoryInterface createCategory()
     {
         return new Category();
     }
-    
+
     public CategoryEntityInterface createCategoryEntity()
     {
-        return new CategoryEntity();
+    	CategoryEntity categoryEntity = new CategoryEntity();
+		categoryEntity.setCreatedDate(new Date());
+		categoryEntity.setLastUpdated(categoryEntity.getCreatedDate());
+		categoryEntity.setTableProperties(createTableProperties(CATEGORY_TABLE_NAME_PREFIX
+				+ UNDERSCORE + IdGeneratorUtil.getNextUniqeId()));
+        return categoryEntity;
     }
-    
+
     public CategoryAttributeInterface createCategoryAttribute()
     {
         return new CategoryAttribute();
     }
-	
+
 	/**
 	 * @return IdGeneratorInterface
 	 */

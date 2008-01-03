@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.entitymanager;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 import edu.common.dynamicextensions.domain.Category;
@@ -73,6 +74,17 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			DynamicExtensionsApplicationException
 	{
         CategoryInterface category = (CategoryInterface) persistDynamicExtensionObject(categoryInterface);
+        return category;
+	}
+	/**
+	 * Method to persist categroy metadata.
+	 * @param categoryInterface interface for Category
+	 * @throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	 */
+	public CategoryInterface persistCategoryMetadata(CategoryInterface categoryInterface) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+        CategoryInterface category = (CategoryInterface) persistDynamicExtensionObjectMetdata(categoryInterface);
         return category;
 	}
 
@@ -153,6 +165,20 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	protected void postProcess(List queryList, List reverseQueryList, Stack rollbackQueryStack) throws DynamicExtensionsSystemException
 	{
 		 queryBuilder.executeQueries(queryList, reverseQueryList, rollbackQueryStack);
+	}
+	/**
+	 *
+	 */
+	public Long insertData(CategoryInterface category, Map<AbstractMetadataInterface, ?> dataValue) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	{
+		return null;
+	}
+	/**
+	 *
+	 */
+	public List<Long> insertData(CategoryInterface category, List<Map<AbstractMetadataInterface, ?>> dataValueMapList) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	{
+		return null;
 	}
 
 }

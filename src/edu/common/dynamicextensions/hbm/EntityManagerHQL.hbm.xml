@@ -130,5 +130,16 @@
 	   	from edu.common.dynamicextensions.domain.Association association
 	      where association.targetEntity.id = ?
 	</query>
-
+	<query name="getAttributeRecords">
+		select count(*)
+       		from AttributeRecord attributeRecord
+	       		where attributeRecord.entity.id = ? AND
+       			   	attributeRecord.attribute.id = ?
+	</query>
+	<query name="getCollectionAttributeRecord">
+       from AttributeRecord collectionAttributeRecord
+	       	where collectionAttributeRecord.entity.id = ? AND
+       			   	collectionAttributeRecord.attribute.id = ? AND
+       			   	     collectionAttributeRecord.recordId = ?
+	</query>
 </hibernate-mapping>

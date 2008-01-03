@@ -79,6 +79,11 @@
         <mapping resource="edu/common/dynamicextensions/hbm/CaDSRValueDomainInfo.hbm.xml"/>
 
         <mapping resource="edu/common/dynamicextensions/hbm/FileExtension.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/ObjectAttributeRecordValue.hbm.xml"/>
+		<mapping resource="edu/common/dynamicextensions/hbm/FileAttributeRecordValue.hbm.xml"/>
+		<mapping resource="edu/common/dynamicextensions/hbm/AttributeRecord.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/CollectionAttributeRecordValue.hbm.xml"/>
+		
 
         <mapping resource="edu/common/dynamicextensions/hbm/userinterface/DEContainer.hbm.xml"/>
         <mapping resource="edu/common/dynamicextensions/hbm/userinterface/Control.hbm.xml"/>

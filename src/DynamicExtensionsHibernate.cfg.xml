@@ -8,12 +8,11 @@
     <session-factory>
     	<property name="show_sql">false</property>
 
-   	 	<property name="connection.datasource">java:/catissuecore</property>
+   	 <!--property name="connection.datasource">java:/cawebeav</property>
        	<property name="transaction.manager_lookup_class">org.hibernate.transaction.JBossTransactionManagerLookup</property>
-		<property name="hibernate.jdbc.batch_size">0</property>
+		<property name="hibernate.jdbc.batch_size">0</property-->
 
     	<property name="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property>
-    	<property name="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</property>
 
 <!-- oracle settings-->
    <!--
@@ -41,6 +40,12 @@
 		<property name="hibernate.c3p0.idle_test_period">3000</property>
 		<property name="hibernate.c3p0.acquire_increment">2</property>
 		<property name="hibernate.c3p0.validate">false</property>
+
+
+       	<property name="hibernate.jdbc.batch_size">0</property>
+       	<property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.password">pspl</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost/de_category</property>
 
 
 <!-- My sql settings end -->
@@ -74,6 +79,10 @@
         <mapping resource="edu/common/dynamicextensions/hbm/CaDSRValueDomainInfo.hbm.xml"/>
 
         <mapping resource="edu/common/dynamicextensions/hbm/FileExtension.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/ObjectAttributeRecordValue.hbm.xml"/>
+		<mapping resource="edu/common/dynamicextensions/hbm/FileAttributeRecordValue.hbm.xml"/>
+		<mapping resource="edu/common/dynamicextensions/hbm/AttributeRecord.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/CollectionAttributeRecordValue.hbm.xml"/>
 
         <mapping resource="edu/common/dynamicextensions/hbm/userinterface/DEContainer.hbm.xml"/>
         <mapping resource="edu/common/dynamicextensions/hbm/userinterface/Control.hbm.xml"/>

@@ -7,8 +7,6 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
 /**
  * This Class represents the category.
- * @version 1.0
- * @created 28-Sep-2006 12:20:09 PM
  * @hibernate.joined-subclass table="DYEXTN_CATEGORY_ASSOCIATION"
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
@@ -76,6 +74,12 @@ public class CategoryAssociationControl extends Control implements CategoryAssoc
 	{
 		// TODO Auto-generated method stub
 
+	}
+
+	public String generateLinkHTML() throws DynamicExtensionsSystemException
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

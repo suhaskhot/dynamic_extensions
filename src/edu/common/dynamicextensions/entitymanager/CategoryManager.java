@@ -1,20 +1,25 @@
 
 package edu.common.dynamicextensions.entitymanager;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
 import edu.common.dynamicextensions.domain.Category;
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.HibernateDAO;
+import edu.wustl.common.util.dbManager.DAOException;
 
 /**
  *
@@ -171,14 +176,64 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 */
 	public Long insertData(CategoryInterface category, Map<AbstractMetadataInterface, ?> dataValue) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
-		return null;
+		List<Map<AbstractMetadataInterface, ?>> dataValueMapList = new ArrayList<Map<AbstractMetadataInterface, ?>>();
+		dataValueMapList.add(dataValue);
+		List<Long> recordIdList = insertData(category, dataValueMapList);
+		return recordIdList.get(0);
 	}
 	/**
 	 *
 	 */
 	public List<Long> insertData(CategoryInterface category, List<Map<AbstractMetadataInterface, ?>> dataValueMapList) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
-		return null;
+		List<Long> recordIdList = new ArrayList<Long>();
+		HibernateDAO hibernateDAO = null;
+		try
+		{
+			DAOFactory factory = DAOFactory.getInstance();
+			hibernateDAO = (HibernateDAO) factory.getDAO(Constants.HIBERNATE_DAO);
+			hibernateDAO.openSession(null);
+			NewEntityManagerInterface newEntityManager = NewEntityManager.getInstance();
+			for (Map<AbstractMetadataInterface, ?> dataValue : dataValueMapList)
+			{
+				EntityInterface entity = null;
+				List<Map<AbstractAttributeInterface, ?>> dataValueMap = new ArrayList<Map<AbstractAttributeInterface, ?>>();
+				recordIdList.addAll(newEntityManager.insertData(entity,dataValueMap));
+			}
+
+			hibernateDAO.commit();
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			throw (DynamicExtensionsApplicationException) handleRollback(e,
+					"Error while inserting data", hibernateDAO, false);
+		}
+		catch (Exception e)
+		{
+			throw (DynamicExtensionsSystemException) handleRollback(e,
+					"Error while inserting data", hibernateDAO, true);
+		}
+		finally
+		{
+			try
+			{
+				hibernateDAO.closeSession();
+			}
+			catch (DAOException e)
+			{
+				throw (DynamicExtensionsSystemException) handleRollback(e, "Error while closing",
+						hibernateDAO, true);
+			}
+		}
+
+		return recordIdList;
+	}
+	/**
+	 *
+	 */
+	protected DynamicExtensionBaseQueryBuilder getQueryBuilderInstance()
+	{
+		return queryBuilder;
 	}
 
 }

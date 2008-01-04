@@ -300,54 +300,6 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 	{
 		return getDynamicQueryList(entityInterface.getEntityGroup(), reverseQueryList, hibernateDAO, queryList);
 	}
-	/**
-	 * getDynamicQueryList.
-	 */
-	public List getDynamicQueryList(EntityGroupInterface entityGroupInterface, List reverseQueryList,
-			HibernateDAO hibernateDAO, List queryList) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
-	{
-        List<EntityInterface> entityList = DynamicExtensionsUtility
-				.getUnsavedEntities(entityGroupInterface);
-
-		for (EntityInterface entityObject : entityList)
-		{
-			List createQueryList = queryBuilder.getCreateEntityQueryList((Entity) entityObject,
-					reverseQueryList, hibernateDAO);
-
-			if (createQueryList != null && !createQueryList.isEmpty())
-			{
-				queryList.addAll(createQueryList);
-			}
-		}
-		for (EntityInterface entityObject : entityList)
-		{
-			List createQueryList = queryBuilder.getUpdateEntityQueryList((Entity) entityObject,
-					reverseQueryList, hibernateDAO);
-
-			if (createQueryList != null && !createQueryList.isEmpty())
-			{
-				queryList.addAll(createQueryList);
-			}
-		}
-        List<EntityInterface> savedEntityList = DynamicExtensionsUtility
-		.getSavedEntities(entityGroupInterface);
-
-		for (EntityInterface savedEntity : savedEntityList)
-		{
-			Entity databaseCopy = (Entity) DBUtil.loadCleanObj(Entity.class, savedEntity
-					.getId());
-
-			List updateQueryList = queryBuilder.getUpdateEntityQueryList((Entity) savedEntity,
-					(Entity) databaseCopy, reverseQueryList);
-
-			if (updateQueryList != null && !updateQueryList.isEmpty())
-			{
-				queryList.addAll(updateQueryList);
-			}
-		}
-		return queryList;
-	}
 
 	/**
 	 * This method is called when there any exception occurs while generating the data table queries
@@ -665,34 +617,6 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 			entity = entity.getParentEntity();
 		}
 		return entityList;
-	}
-
-	/**
-	 * @param e
-	 * @param string
-	 * @param hibernateDAO
-	 * @throws DynamicExtensionsSystemException
-	 */
-	private Exception handleRollback(Exception e, String exceptionMessage, AbstractDAO dao,
-			boolean isExceptionToBeWrapped)
-	{
-		try
-		{
-			dao.rollback();
-		}
-		catch (DAOException e1)
-		{
-			return new DynamicExtensionsSystemException("error while rollback", e);
-		}
-
-		if (isExceptionToBeWrapped)
-		{
-			return new DynamicExtensionsSystemException(exceptionMessage, e);
-		}
-		else
-		{
-			return e;
-		}
 	}
 
 	/**
@@ -2834,5 +2758,12 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 		}
 		return q;
 
+	}
+	/**
+	 *
+	 */
+	protected DynamicExtensionBaseQueryBuilder getQueryBuilderInstance()
+	{
+		return queryBuilder;
 	}
 }

@@ -105,10 +105,7 @@ public class EntityGroupManager extends AbstractMetadataManager implements Entit
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
     {
         EntityGroupInterface entityGroup = (EntityGroupInterface) dynamicExtensionBaseDomainObject;
-		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
-
-		entityManagerInterface.getDynamicQueryList(entityGroup, reverseQueryList, hibernateDAO,
-				queryList);
+		getDynamicQueryList(entityGroup, reverseQueryList, hibernateDAO, queryList);
 	}
 
     /**
@@ -356,4 +353,11 @@ public class EntityGroupManager extends AbstractMetadataManager implements Entit
     	}
     	return null;
     }
+	/**
+	 *
+	 */
+	protected DynamicExtensionBaseQueryBuilder getQueryBuilderInstance()
+	{
+		return queryBuilder;
+	}
 }

@@ -17,9 +17,11 @@ import org.hibernate.Session;
 
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
+import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
@@ -71,6 +73,12 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 	 * @param abstractMetadata
 	 */
 	protected abstract void LogFatalError(Exception e, AbstractMetadataInterface abstractMetadata);
+	/**
+	 * LogFatalError.
+	 * @param e
+	 * @param abstractMetadata
+	 */
+	protected abstract DynamicExtensionBaseQueryBuilder getQueryBuilderInstance();
     /**
      * This method takes the class name , criteria for the object and returns the object.
      * @param className class name
@@ -479,5 +487,80 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 	protected void logDebug(String methodName, String message)
 	{
 		Logger.out.debug("[AbstractMetadataManager.]" + methodName + "() -- " + message);
+	}
+	/**
+	 * @param e
+	 * @param string
+	 * @param hibernateDAO
+	 * @throws DynamicExtensionsSystemException
+	 */
+	protected Exception handleRollback(Exception e, String exceptionMessage, AbstractDAO dao,
+			boolean isExceptionToBeWrapped)
+	{
+		try
+		{
+			dao.rollback();
+		}
+		catch (DAOException e1)
+		{
+			return new DynamicExtensionsSystemException("error while rollback", e);
+		}
+
+		if (isExceptionToBeWrapped)
+		{
+			return new DynamicExtensionsSystemException(exceptionMessage, e);
+		}
+		else
+		{
+			return e;
+		}
+	}
+	/**
+	 * getDynamicQueryList.
+	 */
+	protected List getDynamicQueryList(EntityGroupInterface entityGroupInterface, List reverseQueryList,
+			HibernateDAO hibernateDAO, List queryList) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+        List<EntityInterface> entityList = DynamicExtensionsUtility
+				.getUnsavedEntities(entityGroupInterface);
+
+		for (EntityInterface entityObject : entityList)
+		{
+			List createQueryList = getQueryBuilderInstance().getCreateEntityQueryList((Entity) entityObject,
+					reverseQueryList, hibernateDAO);
+
+			if (createQueryList != null && !createQueryList.isEmpty())
+			{
+				queryList.addAll(createQueryList);
+			}
+		}
+		for (EntityInterface entityObject : entityList)
+		{
+			List createQueryList = getQueryBuilderInstance().getUpdateEntityQueryList((Entity) entityObject,
+					reverseQueryList, hibernateDAO);
+
+			if (createQueryList != null && !createQueryList.isEmpty())
+			{
+				queryList.addAll(createQueryList);
+			}
+		}
+        List<EntityInterface> savedEntityList = DynamicExtensionsUtility
+		.getSavedEntities(entityGroupInterface);
+
+		for (EntityInterface savedEntity : savedEntityList)
+		{
+			Entity databaseCopy = (Entity) DBUtil.loadCleanObj(Entity.class, savedEntity
+					.getId());
+
+			List updateQueryList = getQueryBuilderInstance().getUpdateEntityQueryList((Entity) savedEntity,
+					(Entity) databaseCopy, reverseQueryList);
+
+			if (updateQueryList != null && !updateQueryList.isEmpty())
+			{
+				queryList.addAll(updateQueryList);
+			}
+		}
+		return queryList;
 	}
 }

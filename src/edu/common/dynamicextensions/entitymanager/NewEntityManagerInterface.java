@@ -307,17 +307,6 @@ public interface NewEntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public Long getNextIdentifierForEntity(String entityName) throws DynamicExtensionsSystemException;
-	/**
-	 * getDynamicQueryList.
-	 * @param entityInterface
-	 * @param reverseQueryList
-	 * @param hibernateDAO
-	 * @param queryList
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
-	 */
-	public List getDynamicQueryList(EntityGroupInterface entityGroupInterface, List reverseQueryList,HibernateDAO hibernateDAO, List queryList) throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException;
 
     /**
      * Returns an attribute given the entity name and attribute name.

@@ -7,9 +7,7 @@
  */
 package edu.common.dynamicextensions.entitymanager;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -33,9 +31,6 @@ import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.common.dynamicextensions.xmi.exporter.XMIExporter;
 import edu.common.dynamicextensions.xmi.importer.XMIImporter;
-import edu.common.dynamicextensions.xmi.importer.XMIImporterUtil;
-import edu.common.dynamicextensions.xmi.importer.XMIImportProcessor;
-
 import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.util.logger.Logger;
 import gov.nih.nci.cagrid.metadata.common.UMLAttribute;
@@ -48,7 +43,8 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 	/**
 	 * Specify the name of the domain model xmi file to import. This file must be present at the path test/ModelXML under the project root directory
 	 */
-	private String XMIFileName = "C:\\EA_1.4.xmi";
+	private String XMIFileName = "EA_1.4.xmi";
+	
 
 	public void testXMIExport()
 	{
@@ -72,6 +68,9 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 	
 	/**
 	 * Test cases for XMI Import
+	 * This test case passes an entity group and a container collection to the method persistEntityGroupWithAllContainers()
+	 * in Entity Manager. 
+	 * Expected Result : The entity group with the containers should be persisted. 
 	 */
 	public void testPersistEntityGroupWithContainersForXMIImport()
 	{
@@ -151,7 +150,7 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 		}
 	}
 	/**
-	 * 
+	 * This test case test importing an xmi as a whole.
 	 */
 	public void testXMIImport()
 	{
@@ -437,6 +436,50 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 			e.printStackTrace();
 			fail("Exception occured");
 		}
+	}
+	
+	/**
+	 * 
+	 */
+	public void testEntityGroupName()
+	{
+		try
+		{
+			String[] args = {XMIFileName};
+			XMIImporter.main(args);
+
+			
+			int beginIndex = XMIFileName.lastIndexOf("//");
+			int endIndex = XMIFileName.lastIndexOf(".");
+			String groupName = "";
+			
+			if(beginIndex == -1)
+			{
+				groupName = XMIFileName.substring(beginIndex+1, endIndex);
+			}
+			else
+			{
+				groupName = XMIFileName.substring(beginIndex+2, endIndex);
+			}
+			
+			DefaultBizLogic defaultBizLogic = BizLogicFactory.getDefaultBizLogic();
+			List entityGroupColl = defaultBizLogic.retrieve(EntityGroup.class.getName(), "name", groupName);
+			
+			if(entityGroupColl != null && entityGroupColl.size() > 0)
+			{
+				System.out.println("--------------- Test Case to test entity Group name successful ------------");				
+			}
+			else
+			{
+				fail("Exception occured");
+			}
+			
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail("Exception occured");
+		}		
 	}
 
 }

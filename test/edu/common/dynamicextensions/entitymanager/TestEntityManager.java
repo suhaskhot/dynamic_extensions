@@ -1053,7 +1053,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         AttributeInterface resume = factory.createStringAttribute();
         resume.setName("Resume");
         user.addAbstractAttribute(resume);
-        
+
         user.setEntityGroup(entityGroup);
         entityGroup.addEntity(user);
 
@@ -1302,7 +1302,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             Entity entity = (Entity) new MockEntityManager().initializeEntity(entityGroup);
             entity = (Entity) newEntityManagerInterface.persistEntity(entity);
 
-            Map map = EntityManager.getInstance().getRecordById(entity, new Long(1));
+            Map map = NewEntityManager.getInstance().getRecordById(entity, new Long(1));
             assertEquals(0, map.size());
         }
         catch (DynamicExtensionsSystemException e)
@@ -2450,7 +2450,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
      */
 //  public void testGetMainContainerForAbstractEntity()
 //  {
-//      //EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+//      //EntityManagerInterface entityManagerInterface = NewEntityManger.getInstance();
 //      DomainObjectFactory factory = DomainObjectFactory.getInstance();
 //
 //      try
@@ -2695,7 +2695,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             assertEquals(2, recordList.size());
 
             //step 6
-            boolean isRecordDeleted = EntityManager.getInstance().deleteRecord(entity, new Long(2));
+            boolean isRecordDeleted = newEntityManagerInterface.deleteRecord(entity, new Long(2));
 
             //step 7
             assertTrue(isRecordDeleted);
@@ -3201,7 +3201,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
         EntityInterface user = factory.createEntity();
         user.setEntityGroup(entityGroup);
         entityGroup.addEntity(user);
-        
+
         user.setName("User");
 
         AttributeInterface age = factory.createIntegerAttribute();

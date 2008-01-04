@@ -267,7 +267,7 @@ class DynamicExtensionBaseQueryBuilder
 
 					for (Long containmentRecordId : reocordIdList)
 					{
-						Map recordMap = EntityManager.getInstance().getRecordById(association.getTargetEntity(), containmentRecordId);
+						Map recordMap = NewEntityManager.getInstance().getRecordById(association.getTargetEntity(), containmentRecordId);
 						containmentRecordMapList.add(recordMap);
 					}
 					associationValuesMap.put(association, containmentRecordMapList);
@@ -375,7 +375,7 @@ class DynamicExtensionBaseQueryBuilder
 				if (association.getSourceRole().getAssociationsType().equals(AssociationType.CONTAINTMENT))
 				{
 					List<AbstractAttributeInterface> targetAttributes = new ArrayList(association.getTargetEntity().getAbstractAttributeCollection());
-					EntityRecordResultInterface containmentEntityRecordResult = EntityManager.getInstance().getEntityRecords(
+					EntityRecordResultInterface containmentEntityRecordResult = NewEntityManager.getInstance().getEntityRecords(
 							association.getTargetEntity(), targetAttributes, recordIdList);
 					entityRecord.getRecordValueList().set(index, containmentEntityRecordResult);
 				}
@@ -514,7 +514,7 @@ class DynamicExtensionBaseQueryBuilder
 		EntityInterface targetEntity = association.getTargetEntity();
 
 		/*now chk if these records are referred by some other incoming association , if so this should not be disabled*/
-		Collection<AssociationInterface> incomingAssociations = EntityManager.getInstance().getIncomingAssociations(targetEntity);
+		Collection<AssociationInterface> incomingAssociations = NewEntityManager.getInstance().getIncomingAssociations(targetEntity);
 		incomingAssociations.remove(association);
 		validateForDeleteRecord(targetEntity, childrenRecordIdList, incomingAssociations);
 
@@ -578,7 +578,7 @@ class DynamicExtensionBaseQueryBuilder
 	{
 		if (incomingAssociations == null)
 		{
-			incomingAssociations = EntityManager.getInstance().getIncomingAssociations(entity);
+			incomingAssociations = NewEntityManager.getInstance().getIncomingAssociations(entity);
 		}
 
 		String tableName = "";
@@ -1593,7 +1593,7 @@ class DynamicExtensionBaseQueryBuilder
 		}
 		else
 		{
-			Collection<Integer> recordCollection = EntityManager.getInstance().getAttributeRecordsCount(savedAttribute.getEntity().getId(),
+			Collection<Integer> recordCollection = NewEntityManager.getInstance().getAttributeRecordsCount(savedAttribute.getEntity().getId(),
 					savedAttribute.getId());
 			if (recordCollection != null && !recordCollection.isEmpty())
 			{

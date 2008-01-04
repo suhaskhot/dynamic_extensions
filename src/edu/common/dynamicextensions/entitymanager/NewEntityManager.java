@@ -21,6 +21,8 @@ import java.util.Set;
 import java.util.Stack;
 
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
 
 import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Association;
@@ -2734,5 +2736,103 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 		}
 		return true;
 	}
+	/** The actual values of the multi select attribute are not stored in the entity's data table because there can
+	 * be more than one values associated with the particular multiselect attribute. so for this reason, these values
+	 * are stored in a different table. AttributeRecord is the hibernate object that maps to that table.
+	 * So this method is used to get the AttributeRecord for the given combination of entity attribute and the particular
+	 * record of the entity.
+	 * @param entityId
+	 * @param attributeId
+	 * @return
+	 */
+	public Collection<Integer> getAttributeRecordsCount(Long entityId, Long attributeId) throws DynamicExtensionsSystemException
 
+	{
+		Map substitutionParameterMap = new HashMap();
+		AttributeRecord collectionAttributeRecord = null;
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entityId));
+		substitutionParameterMap.put("1", new HQLPlaceHolderObject("long", attributeId));
+
+		//Required HQL is stored in the hbm file. The following method takes the name of the query and
+		// the actual values for the placeholders as the parameters.
+		Collection recordCollection = executeHQLWithCleanSession("getAttributeRecords",
+				substitutionParameterMap);
+
+		return recordCollection;
+	}
+	/**
+	 *  This method executes the HQL query given the query name and query parameters.
+	 *  The queries are specified in the EntityManagerHQL.hbm.xml file.For each query a name is given.
+	 *  Each query is replaced with parameters before execution.The parametrs are given by each calling method.
+	 * @param entityConceptCode
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	private Collection executeHQLWithCleanSession(String queryName,
+			Map<String, HQLPlaceHolderObject> substitutionParameterMap)
+			throws DynamicExtensionsSystemException
+	{
+		Collection entityCollection = new HashSet();
+		Session	session = null;
+		try
+		{
+			session = DBUtil.getCleanSession();
+			Query query = substitutionParameterForQuery(session,queryName, substitutionParameterMap);
+			entityCollection = query.list();
+
+		}
+		catch (Exception e)
+		{
+			throw new DynamicExtensionsSystemException("Error while rolling back the session", e);
+		}
+		finally
+		{
+			try
+			{
+				session.close();
+			}
+			catch (HibernateException e)
+			{
+				throw new DynamicExtensionsSystemException(
+						"Exception occured while closing the session", e, DYEXTN_S_001);
+			}
+
+		}
+		return entityCollection;
+	}
+	/**
+	 * This method substitues the parameters from substitutionParameterMap into the input query.
+	 * @param substitutionParameterMap
+	 * @throws HibernateException
+	 */
+	private Query substitutionParameterForQuery(Session session,String queryName, Map substitutionParameterMap)
+			throws HibernateException
+	{
+		Query q = session.getNamedQuery(queryName);
+		for (int counter = 0; counter < substitutionParameterMap.size(); counter++)
+		{
+			HQLPlaceHolderObject hPlaceHolderObject = (HQLPlaceHolderObject) substitutionParameterMap
+					.get(counter + "");
+			String objectType = hPlaceHolderObject.getType();
+			if (objectType.equals("string"))
+			{
+				q.setString(counter, hPlaceHolderObject.getValue() + "");
+			}
+			else if (objectType.equals("integer"))
+			{
+				q.setInteger(counter, Integer.parseInt(hPlaceHolderObject.getValue() + ""));
+			}
+			else if (objectType.equals("long"))
+			{
+				q.setLong(counter, Long.parseLong(hPlaceHolderObject.getValue() + ""));
+			}
+			else if (objectType.equals("boolean"))
+			{
+				q.setBoolean(counter, Boolean.parseBoolean(hPlaceHolderObject.getValue() + ""));
+			}
+		}
+		return q;
+
+	}
 }

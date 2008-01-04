@@ -342,4 +342,13 @@ public interface NewEntityManagerInterface
      */
     public boolean validateEntity(EntityInterface entity)
             throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
+    /**
+    *
+    * @param entityId
+    * @param attributeId
+    * @return
+    * @throws DynamicExtensionsSystemException
+    */
+    public Collection<Integer> getAttributeRecordsCount(Long entityId, Long attributeId)
+			throws DynamicExtensionsSystemException;
 }

@@ -167,4 +167,4 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 	{
 		return EntityManager.getInstance().persistContainer(containerInterface);
 	}
-};
+}

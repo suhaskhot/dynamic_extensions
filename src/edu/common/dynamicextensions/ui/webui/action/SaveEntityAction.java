@@ -14,8 +14,11 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
+import org.jboss.ejb.EntityEnterpriseContext;
 
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.entitymanager.EntityGroupManager;
 import edu.common.dynamicextensions.processor.ContainerProcessor;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
@@ -58,7 +61,11 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 			ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
 			String formName = "";
 
-			containerInterface = containerProcessor.saveContainer(containerInterface);
+			//Changed by: Kunal
+			// For saving entity metadata
+			//containerInterface = containerProcessor.saveContainer(containerInterface);
+			EntityGroupManager.getInstance().persistEntityGroup(((EntityInterface)containerInterface.getAbstractEntity()).getEntityGroup());
+			
 			if ((containerInterface != null) && (containerInterface.getAbstractEntity() != null))
 			{
 				formName = containerInterface.getAbstractEntity().getName();

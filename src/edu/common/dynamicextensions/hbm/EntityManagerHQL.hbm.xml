@@ -26,7 +26,7 @@
 
 	<query name="getAllContainersByEntityGroupId">
 	   from edu.common.dynamicextensions.domain.userinterface.Container container
-	         	where container.abstarctEntity.id in
+	         	where container.abstractEntity.id in
              			(select entity.id
                       		from Entity entity
 	                             join entity.entityGroup entityGroup
@@ -35,7 +35,7 @@
 
 	<query name="getContainerOfEntity">
 		from edu.common.dynamicextensions.domain.userinterface.Container container
-           		where  container.abstarctEntity.id = ?
+           		where  container.abstractEntity.id = ?
 	</query>
 
 	<query name="getControlOfAbstractAttribute">
@@ -46,7 +46,7 @@
 	<query name="getAllContainersBeansByEntityGroupId">
 			select container.id,container.caption
 			   from edu.common.dynamicextensions.domain.userinterface.Container container
-			         	where container.abstarctEntity.id in
+			         	where container.abstractEntity.id in
 		             			(select entity.id
 		                      		from Entity entity
 			                             join entity.entityGroup entityGroup
@@ -54,7 +54,7 @@
 	</query>
 
 	<query name="getAllEntityCreatedDateByContainerId">
-			select container.id,container.abstarctEntity.createdDate
+			select container.id,container.abstractEntity.createdDate
 			   from edu.common.dynamicextensions.domain.userinterface.Container container
 	</query>
 
@@ -64,14 +64,14 @@
 	</query>
 
 	<query name="getAllContainerInformationObjects">
-			select container.id,container.caption,container.abstarctEntity.description
+			select container.id,container.caption,container.abstractEntity.description
 			   from edu.common.dynamicextensions.domain.userinterface.Container container
 	</query>
 
 
 
 	<query name="getEntityIdForContainerId">
-			select container.abstarctEntity.id
+			select container.abstractEntity.id
 			   from edu.common.dynamicextensions.domain.userinterface.Container container
 			   where container.id = ?
 	</query>
@@ -122,7 +122,7 @@
       select container.id
             from edu.common.dynamicextensions.domain.userinterface.Container container
                         where container.id = ?
-                        AND container.abstarctEntity.abstract = ?
+                        AND container.abstractEntity.abstract = ?
   	</query>
 
 	<query name="getAssociationIdsForTargetEntity">

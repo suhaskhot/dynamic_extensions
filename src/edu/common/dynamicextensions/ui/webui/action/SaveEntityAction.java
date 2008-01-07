@@ -59,9 +59,9 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 			String formName = "";
 
 			containerInterface = containerProcessor.saveContainer(containerInterface);
-			if ((containerInterface != null) && (containerInterface.getEntity() != null))
+			if ((containerInterface != null) && (containerInterface.getAbstractEntity() != null))
 			{
-				formName = containerInterface.getEntity().getName();
+				formName = containerInterface.getAbstractEntity().getName();
 			}
 			saveMessages(request, getSuccessMessage(formName));
 			String callbackURL = (String) CacheManager.getObjectFromCache(request, Constants.CALLBACK_URL);

@@ -13,6 +13,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -75,7 +76,7 @@ public class LoadGroupDefinitionAction extends BaseDynamicExtensionsAction
 		EntityGroupInterface entityGroup = null;
 		if (container != null)
 		{
-			EntityInterface entity = container.getEntity();
+			EntityInterface entity = (Entity) container.getAbstractEntity();
 			entityGroup = DynamicExtensionsUtility.getEntityGroup(entity);
 		}
 		else

@@ -1883,7 +1883,7 @@ public class NewEntityManager extends AbstractMetadataManager implements NewEnti
 		ContainerInterface container = DynamicExtensionsUtility
 				.getContainerByIdentifier(containerId.toString());
 
-		EntityInterface entityInterface = (EntityInterface) container.getAbstarctEntity();
+		EntityInterface entityInterface = (EntityInterface) container.getAbstractEntity();
 		for (Long recordId : recordIdList)
 		{
 			deleteRecord(entityInterface, recordId);

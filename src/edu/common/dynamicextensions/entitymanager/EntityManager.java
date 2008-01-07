@@ -62,10 +62,10 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAss
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.ui.util.AttributeRecord;
-import edu.common.dynamicextensions.ui.util.CollectionAttributeRecordValue;
-import edu.common.dynamicextensions.ui.util.FileAttributeRecordValue;
-import edu.common.dynamicextensions.ui.util.ObjectAttributeRecordValue;
+import edu.common.dynamicextensions.domain.AttributeRecord;
+import edu.common.dynamicextensions.domain.CollectionAttributeRecordValue;
+import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
+import edu.common.dynamicextensions.domain.ObjectAttributeRecordValue;
 import edu.common.dynamicextensions.util.AssociationTreeObject;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
@@ -1680,7 +1680,7 @@ public class EntityManager
             throw new DynamicExtensionsSystemException("Container passed is null");
         }
 
-        Entity entity = (Entity) container.getAbstarctEntity();
+        Entity entity = (Entity) container.getAbstractEntity();
         //Session session = null;
         try
         {
@@ -1835,7 +1835,7 @@ public class EntityManager
             throw new DynamicExtensionsSystemException("Container passed is null");
         }
 
-        Entity entity = (Entity) container.getAbstarctEntity();
+        Entity entity = (Entity) container.getAbstractEntity();
         HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
                 Constants.HIBERNATE_DAO);
         Session session = null;
@@ -2067,9 +2067,9 @@ public class EntityManager
     private void preSaveProcessContainer(Container container)
             throws DynamicExtensionsApplicationException
     {
-        if (container.getAbstarctEntity() != null)
+        if (container.getAbstractEntity() != null)
         {
-            preSaveProcessEntity((EntityInterface)container.getAbstarctEntity());
+            preSaveProcessEntity((EntityInterface)container.getAbstractEntity());
         }
     }
 
@@ -4389,7 +4389,7 @@ public class EntityManager
                 .getAssociationDisplayAttributeCollection();
 
         if (associationControl instanceof SelectControl)
-            targetEntityTable = ((AssociationInterface)((SelectControl)associationControl).getAbstractAttribute()).getTargetEntity().getTableProperties().getName();
+            targetEntityTable = ((AssociationInterface)((SelectControl)associationControl).getBaseAbstractAttribute()).getTargetEntity().getTableProperties().getName();
 
         String selectClause = SELECT_KEYWORD + targetEntityTable + "." +IDENTIFIER;
         String fromClause = FROM_KEYWORD + targetEntityTable + ", ";
@@ -4408,7 +4408,7 @@ public class EntityManager
             columnName = displayAttribute.getAttribute().getColumnProperties().getName();
             tableName = displayAttribute.getAttribute().getEntity().getTableProperties().getName();
 
-            if (associationControl instanceof SelectControl && ((AssociationInterface)((SelectControl)associationControl).getAbstractAttribute()).getTargetEntity().getParentEntity() != null)
+            if (associationControl instanceof SelectControl && ((AssociationInterface)((SelectControl)associationControl).getBaseAbstractAttribute()).getTargetEntity().getParentEntity() != null)
             {
                 selectClause = selectClause + ", " + tableName + "." + columnName;
 
@@ -4470,7 +4470,7 @@ public class EntityManager
         }
 
 
-        if (((AssociationInterface)((SelectControl)associationControl).getAbstractAttribute()).getTargetEntity().getParentEntity() == null)
+        if (((AssociationInterface)((SelectControl)associationControl).getBaseAbstractAttribute()).getTargetEntity().getParentEntity() == null)
             multipleColumnsClause = multipleColumnsClause.substring(0, multipleColumnsClause.length()-2) + FROM_KEYWORD + targetEntityTable;
 
 
@@ -4870,7 +4870,7 @@ public class EntityManager
         ContainerInterface container = DynamicExtensionsUtility
                 .getContainerByIdentifier(containerId.toString());
 
-        EntityInterface entityInterface = (EntityInterface) container.getAbstarctEntity();
+        EntityInterface entityInterface = (EntityInterface) container.getAbstractEntity();
         for (Long recordId : recordIdList)
         {
             deleteRecord(entityInterface, recordId);

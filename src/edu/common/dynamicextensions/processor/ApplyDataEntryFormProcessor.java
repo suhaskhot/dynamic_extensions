@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -79,7 +80,7 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		EntityManagerInterface entityManager = EntityManager.getInstance();
-		EntityInterface entity = container.getEntity();
+		EntityInterface entity = (Entity) container.getAbstractEntity();
 		Long recordIdentifier = entityManager.insertData(entity, attributeValueMap);
 		return recordIdentifier.toString();
 	}
@@ -98,7 +99,7 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		EntityManagerInterface entityManager = EntityManager.getInstance();
-		EntityInterface entity = container.getEntity();
+		EntityInterface entity = (Entity) container.getAbstractEntity();
 		Boolean edited = entityManager.editData(entity, attributeValueMap, recordIdentifier);
 		return edited;
 	}

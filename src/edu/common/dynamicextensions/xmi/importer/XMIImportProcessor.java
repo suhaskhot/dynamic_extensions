@@ -947,7 +947,7 @@ public class XMIImportProcessor
 	{
 		ContainerInterface containerInterface = deFactory.createContainer();
 		containerInterface.setCaption(entityInterface.getName());
-		containerInterface.setAbstarctEntity(entityInterface);
+		containerInterface.setAbstractEntity(entityInterface);
 
 		//Adding Required field indicator
 		containerInterface.setRequiredFieldIndicatior(" ");
@@ -997,9 +997,9 @@ public class XMIImportProcessor
 		{
 			for (ContainerInterface container : retrievedContainerList)
 			{
-				if (container.getAbstarctEntity().getName().equals(entityName))
+				if (container.getAbstractEntity().getName().equals(entityName))
 				{
-					return (EntityInterface) container.getAbstarctEntity();
+					return (EntityInterface) container.getAbstractEntity();
 				}
 			}
 		}
@@ -1027,7 +1027,7 @@ public class XMIImportProcessor
 			Collection<AbstractAttributeInterface> editedAttributeColl = entityInterface
 					.getAbstractAttributeCollection();
 			Collection<AbstractAttributeInterface> originalAttributeColl = ((EntityInterface) containerInterface
-					.getAbstarctEntity()).getAbstractAttributeCollection();
+					.getAbstractEntity()).getAbstractAttributeCollection();
 
 			Collection<AbstractAttributeInterface> attributesToRemove = new HashSet<AbstractAttributeInterface>();
 			for (AbstractAttributeInterface editedAttribute : editedAttributeColl)
@@ -1223,7 +1223,7 @@ public class XMIImportProcessor
 
 		containerModel.setFormDescription(entityInterface.getDescription());
 		//Entity Object is now populated
-		entityProcessor.populateEntity(containerModel, (EntityInterface) containerInterface.getAbstarctEntity());
+		entityProcessor.populateEntity(containerModel, (EntityInterface) containerInterface.getAbstractEntity());
 	}
 
 	/**

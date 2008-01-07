@@ -141,7 +141,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		//Load common properties for controls
 		if (controlUIBeanInterface != null && controlInterface != null)
 		{
-			controlInterface.setAbstractAttribute(controlUIBeanInterface.getAbstractAttribute());
+			controlInterface.setBaseAbstractAttribute(controlUIBeanInterface.getAbstractAttribute());
             //controlUIBeanInterface.getAbstractAttribute().setControl((Control) controlInterface);
 			controlInterface.setCaption(controlUIBeanInterface.getCaption());
 			controlInterface.setIsHidden(controlUIBeanInterface.getIsHidden());
@@ -622,7 +622,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 				.createContainmentAssociationControl();
 		containmentAssociationControl.setCaption(container.getCaption());
 		containmentAssociationControl.setContainer(container);
-		containmentAssociationControl.setAbstractAttribute(attributeIntf);
+		containmentAssociationControl.setBaseAbstractAttribute(attributeIntf);
         //attributeIntf.setControl((Control) containmentAssociationControl);
 		Integer containerSequenceNumber = new Integer(1);
 		if (container.getControlCollection() != null)

@@ -60,12 +60,12 @@ public interface ContainerInterface extends DynamicExtensionBaseDomainObjectInte
 	 * Entity Interface which is added to the container.
 	 * @return Returns the entity.
 	 */
-	AbstractEntityInterface getAbstarctEntity();
+	AbstractEntityInterface getAbstractEntity();
 
 	/**
 	 * @param entityInterface The entity to set.
 	 */
-	void setAbstarctEntity(AbstractEntityInterface abstractEntityInterface);
+	void setAbstractEntity(AbstractEntityInterface abstractEntityInterface);
 
 	/**
 	 * css style for the main table.

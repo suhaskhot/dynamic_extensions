@@ -60,7 +60,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 	{
 		if ((containerInterface != null) && (controlUIBean != null) && (attrUIBean != null))
 		{
-			EntityInterface entityInterface = containerInterface.getEntity();
+			EntityInterface entityInterface = (EntityInterface) containerInterface.getAbstractEntity();
 			ControlProcessor controlProcessor = ControlProcessor.getInstance();
 			AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
 			AbstractAttributeInterface abstractAttributeInterface = null;
@@ -118,7 +118,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				//Container : Add control and entity
 				
 				containerInterface.addControl(controlInterface);
-				containerInterface.setEntity(entityInterface);
+				containerInterface.setAbstractEntity(entityInterface);
                 //entityInterface.setContainer((Container) containerInterface);
 			}
 			else if (controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_EDIT))
@@ -153,7 +153,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				setPermissibleValues(attributeProcessor, abstractAttributeInterface, controlUIBean, attrUIBean);
 
 				//update in control interface
-				controlInterface.setAbstractAttribute(abstractAttributeInterface);
+				controlInterface.setBaseAbstractAttribute(abstractAttributeInterface);
                 //abstractAttributeInterface.setControl((Control) controlInterface);
 
 				controlUIBean.setAbstractAttribute(abstractAttributeInterface);

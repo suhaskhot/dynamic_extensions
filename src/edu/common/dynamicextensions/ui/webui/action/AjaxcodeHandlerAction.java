@@ -174,7 +174,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 			if (containerForSelectedForm != null)
 			{
 				formName = containerForSelectedForm.getCaption();
-				EntityInterface entity = containerForSelectedForm.getEntity();
+				EntityInterface entity = (EntityInterface) containerForSelectedForm.getAbstractEntity();
 				if (entity != null)
 				{
 					formDescription = entity.getDescription();
@@ -222,7 +222,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 
 				//adding id attribute to attributecollection
 				AttributeInterface idAttribute = null;
-				Collection<AttributeInterface> attributeCollection = containerInterface.getEntity()
+				Collection<AttributeInterface> attributeCollection = ((EntityInterface) containerInterface.getAbstractEntity())
 						.getAttributeCollection();
 				for (AttributeInterface attributeIterator : attributeCollection)
 				{
@@ -237,7 +237,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 
 				//remove old controls from collection
 				containerInterface.removeAllControls();
-				containerInterface.getEntity().removeAllAbstractAttributes();
+				((EntityInterface) containerInterface.getAbstractEntity()).removeAllAbstractAttributes();
 				ControlInterface control = null;
 				if (sequenceNumbers != null)
 				{
@@ -249,14 +249,14 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 						if (control != null)
 						{
 							containerInterface.addControl(control);
-							containerInterface.getEntity().addAbstractAttribute(
-									control.getBaseAbstractAttribute());
+							((EntityInterface) containerInterface.getAbstractEntity()).addAbstractAttribute(
+									(AbstractAttributeInterface) control.getBaseAbstractAttribute());
 						}
 					}
 				}
 				if (idAttribute != null)
 				{
-					containerInterface.getEntity().addAbstractAttribute(idAttribute);
+					((EntityInterface)containerInterface.getAbstractEntity()).addAbstractAttribute(idAttribute);
 				}
 			}
 		}
@@ -406,7 +406,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 		if (containerForSelectedForm != null)
 		{
 			formName = containerForSelectedForm.getCaption();
-			EntityInterface entity = containerForSelectedForm.getEntity();
+			EntityInterface entity = (EntityInterface) containerForSelectedForm.getAbstractEntity();
 			if (entity != null)
 			{
 				formDescription = entity.getDescription();

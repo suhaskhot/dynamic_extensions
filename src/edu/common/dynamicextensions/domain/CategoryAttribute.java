@@ -13,6 +13,7 @@ import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 
@@ -22,7 +23,7 @@ import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterfac
  * @hibernate.joined-subclass table="DYEXTN_CATEGORY_ATTRIBUTE"
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
-public class CategoryAttribute extends BaseAbstractAttribute implements CategoryAttributeInterface,AttributeInterface {
+public class CategoryAttribute extends BaseAbstractAttribute implements CategoryAttributeInterface, AttributeInterface {
 
     /**
      * Serial Version UID
@@ -48,7 +49,8 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
      *
      */
     protected CategoryEntityInterface categoryEntity;
-
+    
+    protected Collection<PermissibleValueInterface> defaultPermissibleValuesCollection = new HashSet<PermissibleValueInterface>();
 
     public CategoryAttribute()
     {
@@ -334,6 +336,58 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 		{
 			this.categoryEntity = categoryEntityInterface;
 		}
+	}
+
+	/**
+	 * @hibernate.set name="defaultPermissibleValuesCollection" table="DYEXTN_PERMISSIBLE_VALUE"
+	 * cascade="all-delete-orphan" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="CATEGORY_ATTRIBUTE_TYPE_INFO_ID"
+	 * @hibernate.cache usage="read-write"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.PermissibleValue"   
+	 * @return Returns the dataElementCollection.
+	 */
+	public Collection<PermissibleValueInterface> getDefaultPermissibleValuesCollection()
+	{
+		return defaultPermissibleValuesCollection;
+	}
+
+	/**
+	 * @param defaultPermissibleValuesCollection the defaultPermissibleValuesCollection to set
+	 */
+	public void setDefaultPermissibleValuesCollection(Collection<PermissibleValueInterface> defaultPermissibleValuesCollection)
+	{
+		this.defaultPermissibleValuesCollection = defaultPermissibleValuesCollection;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public PermissibleValueInterface getDefaultValue()
+	{
+		if (defaultPermissibleValuesCollection != null && !defaultPermissibleValuesCollection.isEmpty())
+		{
+			Iterator dataElementIterator = defaultPermissibleValuesCollection.iterator();
+			return (PermissibleValueInterface) dataElementIterator.next();
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	/**
+	 * 
+	 * @param sourceEntity
+	 */
+	public void setDefaultValue(PermissibleValueInterface permissibleValueInterface)
+	{
+		if (defaultPermissibleValuesCollection == null)
+		{
+			defaultPermissibleValuesCollection = new HashSet<PermissibleValueInterface>();
+		}
+		
+		this.defaultPermissibleValuesCollection.add(permissibleValueInterface);
 	}
 
 }

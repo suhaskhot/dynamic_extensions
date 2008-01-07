@@ -16,6 +16,7 @@ import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationC
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -181,7 +182,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 
 			//update entity
 			EntityProcessor entityProcessor = EntityProcessor.getInstance();
-			entityProcessor.populateEntity(formDefinitionForm, currentContainer.getEntity());
+			entityProcessor.populateEntity(formDefinitionForm, (EntityInterface) currentContainer.getAbstractEntity());
 
 			//Update Associations
 			//Get parent container

@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.processor;
 
+import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
@@ -35,7 +36,7 @@ public class DeleteRecordProcessor extends BaseDynamicExtensionsProcessor
 	public void deleteRecord(ContainerInterface container, Long recordIdentifier)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		EntityManager.getInstance().deleteRecord(container.getEntity(), recordIdentifier);
+		EntityManager.getInstance().deleteRecord((Entity) container.getAbstractEntity(), recordIdentifier);
 	}
 
 }

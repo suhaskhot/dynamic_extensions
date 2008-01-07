@@ -85,7 +85,7 @@ public class Container extends DynamicExtensionBaseDomainObject
     /**
      * Entity to which this container is associated.
      */
-    protected AbstractEntity abstarctEntity;
+    protected AbstractEntity abstractEntity;
     /**
      *
      */
@@ -189,9 +189,9 @@ public class Container extends DynamicExtensionBaseDomainObject
      * cascade="save-update"
      * @return Returns the entity.
      */
-    public AbstractEntityInterface getAbstarctEntity()
+    public AbstractEntityInterface getAbstractEntity()
     {
-        return abstarctEntity;
+        return abstractEntity;
     }
 
     /**
@@ -278,9 +278,9 @@ public class Container extends DynamicExtensionBaseDomainObject
     /**
      *
      */
-    public void setAbstarctEntity(AbstractEntityInterface abstractEntityInterface)
+    public void setAbstractEntity(AbstractEntityInterface abstractEntityInterface)
     {
-    	abstarctEntity = (AbstractEntity) abstractEntityInterface;
+    	abstractEntity = (AbstractEntity) abstractEntityInterface;
     }
 
     /**

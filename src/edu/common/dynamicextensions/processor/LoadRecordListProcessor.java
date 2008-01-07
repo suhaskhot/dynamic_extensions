@@ -7,6 +7,7 @@ package edu.common.dynamicextensions.processor;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
@@ -53,7 +54,7 @@ public class LoadRecordListProcessor extends BaseDynamicExtensionsProcessor
 		EntityManagerInterface entityManager = EntityManager.getInstance();
 		if (container != null)
 		{
-			EntityInterface entity = container.getEntity();
+			EntityInterface entity = (Entity) container.getAbstractEntity();
 			entityRecordList = entityManager.getAllRecords(entity);
 			container.setMode(mode);
 		}

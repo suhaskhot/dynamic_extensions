@@ -76,5 +76,9 @@ public interface CategoryEntityInterface extends AbstractEntityInterface
 	 * @param categoryInterface
 	 */
 	void setCategory(CategoryInterface categoryInterface);
+	
+	Collection<PathInterface> getPathCollection();
+	
+	void setPathCollection(Collection<PathInterface> pathCollection);
 
 }

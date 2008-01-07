@@ -11,6 +11,7 @@ package edu.common.dynamicextensions.processor;
 import java.util.Collection;
 import java.util.Iterator;
 
+import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -74,7 +75,7 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		{
 			containerInterface = containerProcessor.createContainer();
 		}
-		populateEntityInformation(containerInterface.getEntity(), ((EntityUIBeanInterface) containerUIBeanInterface));
+		populateEntityInformation((Entity) containerInterface.getAbstractEntity(), ((EntityUIBeanInterface) containerUIBeanInterface));
 		containerProcessor.populateContainerUIBeanInterface(containerInterface, containerUIBeanInterface);
 	}
 

@@ -20,6 +20,7 @@ import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -64,7 +65,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 		}
 
 		LoadDataEntryFormProcessor loadDataEntryFormProcessor = LoadDataEntryFormProcessor.getInstance();
-		Map<AbstractAttributeInterface, Object> recordMap = loadDataEntryFormProcessor.getValueMapFromRecordId(containerInterface.getEntity(),
+		Map<AbstractAttributeInterface, Object> recordMap = loadDataEntryFormProcessor.getValueMapFromRecordId((EntityInterface) containerInterface.getAbstractEntity(),
 				recordId);
 
 		Stack<ContainerInterface> containerStack = (Stack<ContainerInterface>) CacheManager.getObjectFromCache(request, Constants.CONTAINER_STACK);

@@ -44,7 +44,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
 import edu.common.dynamicextensions.processor.ApplyDataEntryFormProcessor;
 import edu.common.dynamicextensions.processor.DeleteRecordProcessor;
-import edu.common.dynamicextensions.ui.util.FileAttributeRecordValue;
+import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.ui.webui.actionform.DataEntryForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
@@ -375,7 +375,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			Map<AbstractAttributeInterface, Object> attributeValueMap, Boolean processOneToMany)
 			throws DynamicExtensionsSystemException, FileNotFoundException, IOException
 	{
-		AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
+		AbstractAttributeInterface abstractAttribute = (AbstractAttributeInterface) control.getBaseAbstractAttribute();
 		List<Map<AbstractAttributeInterface, Object>> associationValueMapList = (List<Map<AbstractAttributeInterface, Object>>) attributeValueMap
 				.get(abstractAttribute);
 
@@ -505,7 +505,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			Map<AbstractAttributeInterface, Object> attributeValueMap)
 			throws FileNotFoundException, IOException
 	{
-		AbstractAttributeInterface abstractAttribute = control.getAbstractAttribute();
+		AbstractAttributeInterface abstractAttribute = (AbstractAttributeInterface) control.getBaseAbstractAttribute();
 		Object attributeValue = null;
 
 		if (control instanceof ListBoxInterface)
@@ -680,7 +680,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		}
 				
 
-		Attribute attribute = (Attribute) control.getAbstractAttribute();
+		Attribute attribute = (Attribute) control.getBaseAbstractAttribute();
 		AttributeTypeInformationInterface attributeTypeInformation = attribute
 				.getAttributeTypeInformation();
 

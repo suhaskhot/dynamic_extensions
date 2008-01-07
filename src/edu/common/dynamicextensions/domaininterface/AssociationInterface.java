@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.domaininterface;
 
 import java.util.Collection;
 
+import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
 import edu.common.dynamicextensions.domain.PathInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
@@ -97,16 +98,19 @@ public interface AssociationInterface extends AbstractAttributeInterface
 	 */
 	void setIsSystemGenerated(Boolean isSystemGenerated);
 
-	/**
-	 *
-	 * @return
-	 */
-	Collection<PathInterface> getPathCollection();
-	/**
-	 *
-	 * @param pathCollection
-	 */
-	void setPathCollection(Collection<PathInterface> pathCollection);
-
+//	/**
+//	 *
+//	 * @return
+//	 */
+//	Collection<PathInterface> getPathCollection();
+//	/**
+//	 *
+//	 * @param pathCollection
+//	 */
+//	void setPathCollection(Collection<PathInterface> pathCollection);
+	
+	public Collection<PathAssociationRelationInterface> getPathAssociationRelationColletion();
+	
+	public void setPathAssociationRelationColletion(Collection<PathAssociationRelationInterface> pathAssociationRelationColletion);
 
 }

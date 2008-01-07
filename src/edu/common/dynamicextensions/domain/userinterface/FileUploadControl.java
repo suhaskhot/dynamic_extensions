@@ -6,9 +6,9 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
+import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.ui.util.FileAttributeRecordValue;
 import edu.wustl.common.util.global.ApplicationProperties;
 
 /**
@@ -38,7 +38,7 @@ public class FileUploadControl extends Control implements FileUploadInterface
 			htmlString = ApplicationProperties.getValue("eav.file.fileName")
 					+ "&nbsp;"
 					+ " <A onclick='appendRecordId(this);' href='/dynamicExtensions/DownloadFileAction?attributeIdentifier="
-					+ this.abstractAttribute.getId() + "'>"
+					+ this.baseAbstractAttribute.getId() + "'>"
 					+ fileAttributeRecordValue.getFileName() + "</A>";
 
 		}

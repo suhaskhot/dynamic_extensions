@@ -106,7 +106,7 @@ public class LoadFormControlsProcessor
 		controlsForm.setDataTypeList(controlConfigurationsFactory.getControlsDataTypes(userSelectedTool));
 
 		//Set Entity Name as root
-		EntityInterface entity = containerInterface.getEntity();
+		EntityInterface entity = (EntityInterface) containerInterface.getAbstractEntity();
 		if (entity != null)
 		{
 			controlsForm.setRootName(entity.getName());

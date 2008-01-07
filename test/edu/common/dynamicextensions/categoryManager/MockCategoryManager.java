@@ -31,7 +31,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
  */
 public class MockCategoryManager
 {
-	
+
 	/**
 	 * Create following hierarchy.
 	 * 
@@ -211,7 +211,10 @@ public class MockCategoryManager
 		PathAssociationRelationInterface pathAssociationRelation = DomainObjectFactory.getInstance().createPathAssociationRelation();
 		pathAssociationRelation.setAssociation((Association) association);
 		pathAssociationRelation.setPath((Path) path);
+		pathAssociationRelation.setPathSequenceNumber(1);
 		path.getPathAssociationRelation().add((PathAssociationRelation) pathAssociationRelation);
+
+		association.getPathAssociationRelationColletion().add(pathAssociationRelation);
 
 		rootCategoryEntity.getPathCollection().add(path);
 
@@ -262,14 +265,160 @@ public class MockCategoryManager
 	}
 
 	/**
+	 * Create a category with one root category entity, one child category entity and
+	 * two category attributes. Create multiple Paths, Associations and PathAssociationRelation objects with 
+	 * their appropriate metadata. Add the path information to the root category entity and save the category.
+	 * 
+	 * Three entities : Entity 1, Entity 2, Entity 3
+	 * 
+	 * We can have 2 different paths:
+	 * 
+	 * 							Path 1:			Entity 1 ------> Entity 2 ------> Entity 3	
+	 * 	
+	 * 																OR
+	 * 	
+	 * 							Path 2:					Entity 1 ------> Entity 3
+	 * 
+	 * @return category
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public CategoryInterface createCategoryWithMultiplePaths() throws DynamicExtensionsApplicationException
+	{
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("Entity Group " + new Double(Math.random()).toString());
+		entityGroup.setCreatedDate(new Date());
+		entityGroup.setDescription("This is a description for entity group");
+
+		CategoryInterface category = DomainObjectFactory.getInstance().createCategory();
+		category.setName("Category 1");
+		category.setCreatedDate(new Date());
+
+		// Create root category entity.
+		CategoryEntityInterface rootCategoryEntity = DomainObjectFactory.getInstance().createCategoryEntity();
+		rootCategoryEntity.setCreatedDate(new Date());
+		rootCategoryEntity.setName("Root Category Entity");
+
+		EntityInterface entity = new MockEntityManager().initializeEntity(entityGroup);
+		entity.setName("Entity 1");
+		rootCategoryEntity.setEntity((Entity) entity);
+		
+		List<AttributeInterface> attributeCollection = new ArrayList<AttributeInterface>(entity.getAttributeCollection());
+
+		CategoryAttributeInterface rootCategoryAttribute1 = DomainObjectFactory.getInstance().createCategoryAttribute();
+		rootCategoryAttribute1.setCreatedDate(new Date());
+		rootCategoryAttribute1.setName("Category Attribute 1");
+		rootCategoryAttribute1.setAttribute(attributeCollection.get(0));
+		rootCategoryEntity.getCategoryAttributeCollection().add((CategoryAttribute) rootCategoryAttribute1);
+
+		CategoryAttributeInterface rootCategoryAttribute2 = DomainObjectFactory.getInstance().createCategoryAttribute();
+		rootCategoryAttribute2.setCreatedDate(new Date());
+		rootCategoryAttribute2.setName("Category Attribute 2");
+		rootCategoryAttribute2.setAttribute(attributeCollection.get(1));
+		rootCategoryEntity.getCategoryAttributeCollection().add((CategoryAttribute) rootCategoryAttribute2);
+
+		EntityInterface entityTwo = new MockEntityManager().initializeEntity(entityGroup);
+		entityTwo.setName("Entity 2");
+
+		// Create another category entity.
+		CategoryEntityInterface chilCategoryEntity = DomainObjectFactory.getInstance().createCategoryEntity();
+		chilCategoryEntity.setCreatedDate(new Date());
+		chilCategoryEntity.setName("Child Category Entity 1");
+
+		EntityInterface entityThree = new MockEntityManager().initializeEntity(entityGroup);
+		entityThree.setName("Entity 3");
+		chilCategoryEntity.setEntity((Entity) entityThree);
+
+		List<AttributeInterface> attributeCollection2 = new ArrayList<AttributeInterface>(entityThree.getAttributeCollection());
+
+		CategoryAttributeInterface childCategoryAttribute1 = DomainObjectFactory.getInstance().createCategoryAttribute();
+		childCategoryAttribute1.setCreatedDate(new Date());
+		childCategoryAttribute1.setName("Attr 1");
+		childCategoryAttribute1.setAttribute(attributeCollection2.get(0));
+		chilCategoryEntity.getCategoryAttributeCollection().add((CategoryAttribute) childCategoryAttribute1);
+
+		CategoryAttributeInterface childCategoryAttribute2 = DomainObjectFactory.getInstance().createCategoryAttribute();
+		childCategoryAttribute2.setCreatedDate(new Date());
+		childCategoryAttribute2.setName("Attr 2");
+		childCategoryAttribute2.setAttribute(attributeCollection2.get(1));
+		chilCategoryEntity.getCategoryAttributeCollection().add((CategoryAttribute) childCategoryAttribute2);
+		
+		// Create association between Entity 1 and Entity 2
+		AssociationInterface association1 = DomainObjectFactory.getInstance().createAssociation();
+		association1.setCreatedDate(new Date());
+		association1.setName("Association 1");
+		association1.setEntity(entity);
+		association1.setTargetEntity(entityTwo);
+		
+		entity.getAbstractAttributeCollection().add(association1);
+		
+		// Create association between Entity 2 and Entity 3
+		AssociationInterface association2 = DomainObjectFactory.getInstance().createAssociation();
+		association2.setCreatedDate(new Date());
+		association2.setName("Association 2");
+		association2.setEntity(entityTwo);
+		association2.setTargetEntity(entityThree);
+		
+		entityTwo.getAbstractAttributeCollection().add(association2);
+		
+		// Create association between Entity 1 and Entity 3
+		AssociationInterface association3 = DomainObjectFactory.getInstance().createAssociation();
+		association3.setCreatedDate(new Date());
+		association3.setName("Association 3");
+		association3.setEntity(entity);
+		association3.setTargetEntity(entityThree);
+		
+		entity.getAbstractAttributeCollection().add(association3);
+
+		PathInterface path1 = DomainObjectFactory.getInstance().createPath();
+		
+		PathAssociationRelationInterface pathAssociationRelation1 = DomainObjectFactory.getInstance().createPathAssociationRelation();
+		pathAssociationRelation1.setAssociation((Association) association1);
+		pathAssociationRelation1.setPath((Path) path1);
+		pathAssociationRelation1.setPathSequenceNumber(1);
+		association1.getPathAssociationRelationColletion().add(pathAssociationRelation1);
+		
+		PathAssociationRelationInterface pathAssociationRelation2 = DomainObjectFactory.getInstance().createPathAssociationRelation();
+		pathAssociationRelation2.setAssociation((Association) association2);
+		pathAssociationRelation2.setPath((Path) path1);
+		pathAssociationRelation2.setPathSequenceNumber(2);
+		association2.getPathAssociationRelationColletion().add(pathAssociationRelation2);
+		
+		path1.getPathAssociationRelation().add((PathAssociationRelation) pathAssociationRelation1);
+		path1.getPathAssociationRelation().add((PathAssociationRelation) pathAssociationRelation2);
+		
+		
+		PathInterface path2 = DomainObjectFactory.getInstance().createPath();
+		
+		PathAssociationRelationInterface pathAssociationRelation3 = DomainObjectFactory.getInstance().createPathAssociationRelation();
+		pathAssociationRelation3.setAssociation((Association) association3);
+		pathAssociationRelation3.setPath((Path) path1);
+		pathAssociationRelation3.setPathSequenceNumber(3);
+		association3.getPathAssociationRelationColletion().add(pathAssociationRelation3);
+		
+		path2.getPathAssociationRelation().add((PathAssociationRelation) pathAssociationRelation3);
+
+		// Add all paths to root category element.
+		rootCategoryEntity.getPathCollection().add(path1);
+		rootCategoryEntity.getPathCollection().add(path2);
+		
+		// Add child category entities to root category entity.
+		rootCategoryEntity.getChildCategories().add((CategoryEntity) chilCategoryEntity);
+
+		// Set root category element of the category.
+		category.setRootCategoryElement((CategoryEntity) rootCategoryEntity);
+
+		return category;
+	}
+
+	/**
 	 * Create a new category entity with two category attributes and add it 
 	 * to root category entity of the category.
 	 * @param category
 	 * @return category entity
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public CategoryEntityInterface addNewCategoryEntityToExistingCategory(CategoryInterface category)
-			throws DynamicExtensionsApplicationException
+	public CategoryEntityInterface addNewCategoryEntityToExistingCategory(CategoryInterface category) throws DynamicExtensionsApplicationException
 	{
 		CategoryEntityInterface categoryEntityNew = DomainObjectFactory.getInstance().createCategoryEntity();
 		categoryEntityNew.setCreatedDate(new Date());

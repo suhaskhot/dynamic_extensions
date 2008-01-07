@@ -64,7 +64,7 @@ public class MockEntityManager
 		containerInterface.setRequiredFieldWarningMessage("indicates mandatory fields.");
 		containerInterface.setTitleCss("formTitle");
 
-		containerInterface.setAbstarctEntity(entity);
+		containerInterface.setAbstractEntity(entity);
 
 		EntityInterface entityInterface = (EntityInterface) entity;
 
@@ -121,7 +121,7 @@ public class MockEntityManager
 		containerInterface.setTitleCss("formTitle");
 
 		entityInterface = initializeEntity(entityGroup);
-		containerInterface.setAbstarctEntity((AbstractEntityInterface) entityInterface);
+		containerInterface.setAbstractEntity((AbstractEntityInterface) entityInterface);
         entityInterface.getContainerCollection().add(containerInterface);
 
 		Collection abstractAttributeCollection = entityInterface.getAbstractAttributeCollection();

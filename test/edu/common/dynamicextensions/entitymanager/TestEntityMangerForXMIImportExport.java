@@ -84,7 +84,7 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 
 			//Container 1
 			Container container1 = (Container) new MockEntityManager().getContainer("abc");
-			EntityInterface sourceEntity = (EntityInterface) container1.getAbstarctEntity();
+			EntityInterface sourceEntity = (EntityInterface) container1.getAbstractEntity();
 			AssociationInterface association = domainObjectFactory.createAssociation();
 			association.setName("AssociationName_1");
 			association.setEntity(sourceEntity);
@@ -100,7 +100,7 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 			Container container2 = (Container) new MockEntityManager().getContainer("xyz");
 			EntityInterface targetEntity = (EntityInterface) new MockEntityManager()
 					.initializeEntity2();
-			container2.setAbstarctEntity(targetEntity);
+			container2.setAbstractEntity(targetEntity);
 			association.setTargetEntity(targetEntity);
 			//container1.setBaseContainer(container2);
 
@@ -139,10 +139,10 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 			entityGroupInterface.setDescription("Test description1");
 			entityGroupInterface.setVersion("1");
 
-			entityGroupInterface.addEntity((EntityInterface) container1.getAbstarctEntity());
-			entityGroupInterface.addEntity((EntityInterface) container2.getAbstarctEntity());
-			entityGroupInterface.addEntity((EntityInterface) container3.getAbstarctEntity());
-			entityGroupInterface.addEntity((EntityInterface) container4.getAbstarctEntity());
+			entityGroupInterface.addEntity((EntityInterface) container1.getAbstractEntity());
+			entityGroupInterface.addEntity((EntityInterface) container2.getAbstractEntity());
+			entityGroupInterface.addEntity((EntityInterface) container3.getAbstractEntity());
+			entityGroupInterface.addEntity((EntityInterface) container4.getAbstractEntity());
 			EntityManager.getInstance().persistEntityGroupWithAllContainers(entityGroupInterface, processedContainerList);
 		}
 		catch (Exception e)
@@ -329,7 +329,7 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 
 			Container container1 = (Container) new MockEntityManager()
 					.createContainerForGivenEntity("For Inheritance - Parent", entity1);
-			container1.setAbstarctEntity(entity1);
+			container1.setAbstractEntity(entity1);
 
 			EntityInterface entity2 = (EntityInterface) new MockEntityManager().initializeEntity(entityGroup);
 			entity2.setName("Entity2");

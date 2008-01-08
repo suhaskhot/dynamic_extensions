@@ -3,8 +3,10 @@ package edu.common.dynamicextensions.entitymanager;
 import java.util.List;
 import java.util.Map;
 
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
@@ -52,6 +54,17 @@ public interface CategoryManagerInterface
      */
     List<Long> insertData(CategoryInterface category, List<Map<AbstractMetadataInterface, ?>> dataValueMapList)
             throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
+    /**
+    *
+    * @param category
+    * @param recordId
+    * @return
+    * @throws DynamicExtensionsApplicationException
+    * @throws DynamicExtensionsSystemException
+    */
+    public Map<AbstractMetadataInterface, Object> getRecordById(CategoryInterface category,
+            Long recordId) throws DynamicExtensionsSystemException,
+            DynamicExtensionsApplicationException;
     /**
      *
      * @param category

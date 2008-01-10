@@ -2,13 +2,37 @@
 package edu.common.dynamicextensions.categoryManager;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
+import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.Category;
+import edu.common.dynamicextensions.domain.CategoryAttribute;
+import edu.common.dynamicextensions.domain.CategoryEntity;
+import edu.common.dynamicextensions.domain.DomainObjectFactory;
+import edu.common.dynamicextensions.domain.Path;
+import edu.common.dynamicextensions.domain.PathAssociationRelation;
+import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.PathInterface;
 import edu.common.dynamicextensions.entitymanager.CategoryManager;
 import edu.common.dynamicextensions.entitymanager.CategoryManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
@@ -56,6 +80,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 	{
 		super.tearDown();
 	}
+	
+	Map<AbstractMetadataInterface, Object> entityDataMap = new HashMap<AbstractMetadataInterface, Object>();
 
 	/**
 	 * Create a category, some category entities, category attributes and some entities with attributes.
@@ -117,70 +143,68 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 	 *  	|
 	 * 		|_ce2
 	 */
-	/*public void testCreateCategoryWithContainer() 
+	/*public void testCreateCategoryWithContainer()
 	 {
-	 try 
+	 try
 	 {
 	 //create entity tree 
 	 EntityInterface entity = new MockEntityManager().initializeEntity();
 	 DomainObjectFactory factory = DomainObjectFactory.getInstance();
-	 
+
 	 AssociationInterface association1 = factory.createAssociation();
 	 EntityInterface entity1 = new MockEntityManager().initializeEntity();
 	 association1.setTargetEntity(entity1);
 	 entity.getAssociationCollection().add(association1);
-	 
+
 	 AssociationInterface association2 = factory.createAssociation();
 	 EntityInterface entity2 = new MockEntityManager().initializeEntity();
 	 association2.setTargetEntity(entity2);
 	 entity1.getAssociationCollection().add(association2);
-	 
+
 	 //create category tree from above entity tree
-	 CategoryInterface category = DomainObjectFactory.getInstance().createCategory();        	
+	 CategoryInterface category = DomainObjectFactory.getInstance().createCategory();
 	 category.setName("C1");
 	 category.setCreatedDate(new Date());
-	 
+
 	 CategoryEntityInterface categoryEntityInterface = createCategoryEntity(entity);
 	 CategoryEntityInterface categoryEntityInterface1 = createCategoryEntity(entity1);
-	 categoryEntityInterface.getChildCategories().add((CategoryEntity)categoryEntityInterface1);
-	 
+	 categoryEntityInterface.getChildCategories().add((CategoryEntity) categoryEntityInterface1);
+
 	 CategoryEntityInterface categoryEntityInterface2 = createCategoryEntity(entity2);
-	 categoryEntityInterface1.getChildCategories().add((CategoryEntity)categoryEntityInterface2);
+	 categoryEntityInterface1.getChildCategories().add((CategoryEntity) categoryEntityInterface2);
 
 	 //save category
 	 category.setRootCategoryElement((CategoryEntity) categoryEntityInterface);
 	 CategoryManagerInterface categoryManager = CategoryManager.getInstance();
 	 categoryManager.persistCategory(category);
-	 
+
 	 //create conatiner for the category
-	 
+
 	 ContainerInterface containerInterface = new MockEntityManager().getContainer("", categoryEntityInterface);
 	 ContainerInterface containerInterface1 = new MockEntityManager().getContainer("", categoryEntityInterface1);
-	 ContainmentAssociationControlInterface  containmentAssociationControl = factory.createContainmentAssociationControl();
+	 ContainmentAssociationControlInterface containmentAssociationControl = factory.createContainmentAssociationControl();
 	 containerInterface.getControlCollection().add(containmentAssociationControl);
 	 containmentAssociationControl.setContainer(containerInterface1);
-	 
+
 	 ContainerInterface containerInterface2 = new MockEntityManager().getContainer("", categoryEntityInterface2);
-	 ContainmentAssociationControlInterface  containmentAssociationControl1 = factory.createContainmentAssociationControl();
+	 ContainmentAssociationControlInterface containmentAssociationControl1 = factory.createContainmentAssociationControl();
 	 containerInterface1.getControlCollection().add(containmentAssociationControl1);
 	 containmentAssociationControl1.setContainer(containerInterface2);
-	 
-	 
+
 	 category.setRootCategoryElement((CategoryEntity) categoryEntityInterface);
 	 categoryManager.persistCategory(category);
-	 } 
-	 catch (DynamicExtensionsSystemException e) 
-	 {
-	 fail();
-	 e.printStackTrace();
-	 } 
-	 catch (DynamicExtensionsApplicationException e) 
+	 }
+	 catch (DynamicExtensionsSystemException e)
 	 {
 	 fail();
 	 e.printStackTrace();
 	 }
+	 catch (DynamicExtensionsApplicationException e)
+	 {
+	 fail();
+	 e.printStackTrace();
 	 }
-	 */
+	 }*/
 
 	/**
 	 * Retrieve a category with some identifier, change its metadata and save it to database.
@@ -344,7 +368,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		{
 			//CategoryInterface category = new MockCategoryManager().createCategoryWithPath();
 
-			CategoryInterface category = new MockCategoryManager().createCategoryWithMultiplePaths();
+			CategoryInterface category = new MockCategoryManager().createCategoryWithPath();
 
 			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
 
@@ -363,44 +387,251 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		}
 	}
 
-	//	/**
-	//	 * Add Path information to existing category
-	//	 *
-	//	 */
-	//	public void testAddPathToExistingCategory()
-	//	{
-	//		try
-	//		{
-	//			Object object = null;
-	//
-	//			DefaultBizLogic defaultBizLogic = BizLogicFactory.getDefaultBizLogic();
-	//			List objectList = new ArrayList();
-	//
-	//			objectList = defaultBizLogic.retrieve(Category.class.getName(), "id", 30);
-	//
-	//			if (objectList != null && objectList.size() > 0)
-	//			{
-	//				object = (DynamicExtensionBaseDomainObjectInterface) objectList.get(0);
-	//			}
-	//
-	//			CategoryInterface category = (Category) object;
-	//
-	//			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
-	//			categoryManager.persistCategory(category);
-	//		}
-	//		catch (DAOException e)
-	//		{
-	//			e.printStackTrace();
-	//		}
-	//		catch (DynamicExtensionsSystemException e)
-	//		{
-	//			e.printStackTrace();
-	//		}
-	//		catch (DynamicExtensionsApplicationException e)
-	//		{
-	//			e.printStackTrace();
-	//		}
-	//	}
+	/**
+	 * Study (1) ------> Experiment (*)
+	 *
+	 */
+	public void testCreateCategoryDataMap()
+	{
+		try
+		{
+			// Study entity.
+			EntityInterface study = DomainObjectFactory.getInstance().createEntity();
+			study.setName("Study");
+			
+			AbstractAttributeInterface studyAttribute1 = DomainObjectFactory.getInstance().createStringAttribute();
+			studyAttribute1.setName("Study Name");
+			studyAttribute1.setEntity(study);
+			
+			AbstractAttributeInterface studyAttribute2 = DomainObjectFactory.getInstance().createStringAttribute();
+			studyAttribute2.setName("Study Type");
+			studyAttribute2.setEntity(study);
+			
+			study.getAbstractAttributeCollection().add(studyAttribute1);
+			study.getAbstractAttributeCollection().add(studyAttribute2);
+			
+			// Experiment entity.
+			EntityInterface experiment = DomainObjectFactory.getInstance().createEntity();
+			experiment.setName("Experiment");
+			
+			AbstractAttributeInterface experimentAttribute1 = DomainObjectFactory.getInstance().createStringAttribute();
+			experimentAttribute1.setName("Experiment Name");
+			experimentAttribute1.setEntity(experiment);
+			
+			AbstractAttributeInterface experimentAttribute2 = DomainObjectFactory.getInstance().createStringAttribute();
+			experimentAttribute2.setName("Experiment Type");
+			experimentAttribute2.setEntity(experiment);
+			
+			experiment.getAbstractAttributeCollection().add(experimentAttribute1);
+			experiment.getAbstractAttributeCollection().add(experimentAttribute2);
+			
+			// Study-Experiment association.
+			AssociationInterface studyExperimentAssociation = DomainObjectFactory.getInstance().createAssociation();
+			studyExperimentAssociation.setName("Study-Experiment association");
+			studyExperimentAssociation.setEntity(study);
+			studyExperimentAssociation.setTargetEntity(experiment);
+			
+			study.getAbstractAttributeCollection().add(studyExperimentAssociation);
+			
+			// Create a category.
+			CategoryInterface category = DomainObjectFactory.getInstance().createCategory();
+			category.setName("Category 1");
+			
+			CategoryEntityInterface rootCategoryEntity = DomainObjectFactory.getInstance().createCategoryEntity();
+			rootCategoryEntity.setName("Study category entity");
+			rootCategoryEntity.setEntity(study);
+			
+			List<AttributeInterface> studyAttributeCollection = new ArrayList<AttributeInterface>(study.getAttributeCollection());
+			
+			CategoryAttributeInterface rootCategoryEntityAttribute1 = DomainObjectFactory.getInstance().createCategoryAttribute();
+			rootCategoryEntityAttribute1.setName("Study Name");
+			rootCategoryEntityAttribute1.setAttribute(studyAttributeCollection.get(0));
+			rootCategoryEntityAttribute1.setCategoryEntity(rootCategoryEntity);
+			rootCategoryEntity.getCategoryAttributeCollection().add(rootCategoryEntityAttribute1);
+			
+			CategoryAttributeInterface rootCategoryEntityAttribute2 = DomainObjectFactory.getInstance().createCategoryAttribute();
+			rootCategoryEntityAttribute2.setName("Study Type");
+			rootCategoryEntityAttribute2.setAttribute(studyAttributeCollection.get(1));
+			rootCategoryEntityAttribute2.setCategoryEntity(rootCategoryEntity);
+			rootCategoryEntity.getCategoryAttributeCollection().add(rootCategoryEntityAttribute2);
+			
+			CategoryEntityInterface childCategoryEntity = DomainObjectFactory.getInstance().createCategoryEntity();
+			childCategoryEntity.setName("Experiment category entity");
+			childCategoryEntity.setEntity(experiment);
+			childCategoryEntity.setNumberOfEntries(2);
+			
+			List<AttributeInterface> experimentAttributeCollection = new ArrayList<AttributeInterface>(experiment.getAttributeCollection());
+			
+			CategoryAttributeInterface childCategoryEntityAttribute1 = DomainObjectFactory.getInstance().createCategoryAttribute();
+			childCategoryEntityAttribute1.setName("Experiment Name");
+			childCategoryEntityAttribute1.setAttribute(experimentAttributeCollection.get(0));
+			childCategoryEntityAttribute1.setCategoryEntity(childCategoryEntity);
+			childCategoryEntity.getCategoryAttributeCollection().add(childCategoryEntityAttribute1);
+			
+			CategoryAttributeInterface childCategoryEntityAttribute2 = DomainObjectFactory.getInstance().createCategoryAttribute();
+			childCategoryEntityAttribute2.setName("Experiment Type");
+			childCategoryEntityAttribute2.setAttribute(experimentAttributeCollection.get(1));
+			childCategoryEntityAttribute2.setCategoryEntity(childCategoryEntity);
+			childCategoryEntity.getCategoryAttributeCollection().add(childCategoryEntityAttribute2);
+			
+			// Add path information
+			PathInterface path = DomainObjectFactory.getInstance().createPath();
+			PathAssociationRelationInterface pathAssociationRelation = DomainObjectFactory.getInstance().createPathAssociationRelation();
+			pathAssociationRelation.setAssociation((Association) studyExperimentAssociation);
+			pathAssociationRelation.setPathSequenceNumber(1);
+			pathAssociationRelation.setPath((Path) path);
+			
+			path.getPathAssociationRelationCollection().add(pathAssociationRelation);
+			studyExperimentAssociation.getPathAssociationRelationColletion().add(pathAssociationRelation);
+			
+			childCategoryEntity.setPath(path);
+			
+			rootCategoryEntity.getChildCategories().add(childCategoryEntity);
+			
+			category.setRootCategoryElement((CategoryEntity) rootCategoryEntity);
+			
+			Map<AbstractMetadataInterface, Object> categoryDataMap = new HashMap<AbstractMetadataInterface, Object>();
+			categoryDataMap.put(rootCategoryEntityAttribute1, "Root Category Attribute 1");
+			categoryDataMap.put(rootCategoryEntityAttribute2, "Root Category Attribute 2");
+			
+			List<Map> dataValueList = new ArrayList<Map>();
+			Map map = null;
+			for (int i=0; i< childCategoryEntity.getNumberOfEntries(); i++)
+			{
+				map = new HashMap();
+				for (CategoryAttributeInterface c: childCategoryEntity.getCategoryAttributeCollection())
+					map.put(c, c.getName()+Math.random());
+				dataValueList.add(map);
+			}
+			
+			categoryDataMap.put(childCategoryEntity, dataValueList);
+			//generateEntityDataMap((Category) category, categoryDataMap);
+			generateEntityDataMap2(entityDataMap, categoryDataMap);
+			System.out.println("HELLO!");
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	//public void generateEntityDataMap(Category c, Map<AbstractMetadataInterface, Object> categoryDataMap)
+	public void generateEntityDataMap(Map<AbstractMetadataInterface, Object> entityDataMap, Map<AbstractMetadataInterface, Object> categoryDataMap)
+	{						
+		Iterator iter = categoryDataMap.keySet().iterator();
+		while (iter.hasNext())
+		{
+			Object obj = iter.next();
+			if (obj.getClass().equals(CategoryAttribute.class))
+			{
+//				if (((CategoryAttribute) obj).getCategoryEntity().getName().equalsIgnoreCase(c.getRootCategoryElement().getName()))
+//				{
+//					entityDataMap.put(((CategoryAttribute) obj).getAttribute(), getValue(categoryDataMap, obj));
+//				}
+				entityDataMap.put(((CategoryAttribute) obj).getAttribute(), getValue(categoryDataMap, obj));
+			}
+			if (obj.getClass().equals(CategoryEntity.class))
+			{
+//				if (!(((CategoryEntity) obj).getEntity().getName().equalsIgnoreCase(c.getRootCategoryElement().getName())))
+//				{
+//					putDataForCategoryEntity(entityDataMap, categoryDataMap, (CategoryEntity) obj);
+//				}
+
+				List<Map<AbstractMetadataInterface, Object>> tempList = new ArrayList<Map<AbstractMetadataInterface, Object>>();
+				Map<AbstractMetadataInterface, Object> categoryEntityDataMap = null;
+				tempList = (ArrayList) categoryDataMap.get(obj);
+				
+				for (int i=0; i<tempList.size(); i++)
+				{
+					if (tempList.get(i) != null)
+					{
+						categoryEntityDataMap = new HashMap<AbstractMetadataInterface, Object>();
+						Map tempMap = tempList.get(i);
+						generateEntityDataMap(categoryEntityDataMap, tempMap);
+					}
+				}				
+
+				tempList.clear();
+				tempList.add(categoryEntityDataMap);
+				entityDataMap.put((CategoryEntity)obj, tempList);
+			}
+		}
+	}
+	
+	public Object getValue(Map<AbstractMetadataInterface, ?> categoryDataMap, Object obj)
+	{
+		if (categoryDataMap != null && categoryDataMap.containsKey(obj))
+			return categoryDataMap.get(obj);
+		return null;
+	}
+	
+	public void putDataForCategoryEntity(Map<AbstractMetadataInterface, Object> entityDataMap, Map<AbstractMetadataInterface, Object> categoryDataMap, CategoryEntity categoryEntity)
+	{
+		List<Map<AbstractMetadataInterface, Object>> dataValueList = new ArrayList<Map<AbstractMetadataInterface, Object>>(); 
+		
+		Map dataValueMap = null;
+		
+		List<Map<AbstractMetadataInterface, Object>> tempList = new ArrayList<Map<AbstractMetadataInterface, Object>>();
+		tempList = (ArrayList) categoryDataMap.get(categoryEntity);
+		
+		for (int i=0; i<tempList.size(); i++)
+		{
+			if (tempList.get(i) != null)
+			{
+				Map tempMap = tempList.get(i);
+								
+				dataValueMap = new HashMap();
+				for (CategoryAttributeInterface c: categoryEntity.getCategoryAttributeCollection())
+					dataValueMap.put(c.getAttribute(), getValue(tempMap, c));
+									
+				dataValueList.add(dataValueMap);
+			}
+		}
+
+		Collection<PathAssociationRelationInterface> PathAssociationRelationCollection = categoryEntity.getPath().getSortedPathAssociationRelationCollection();
+		AssociationInterface asso = null;
+		for (PathAssociationRelationInterface p: PathAssociationRelationCollection)
+		{
+			asso = p.getAssociation();
+		}
+		
+		entityDataMap.put(asso, dataValueList);
+		//getValue(categoryEntity.getChildCategories(), categoryEntity);
+	}
+	
+	public void putDataForCategoryEntity2(Map<AbstractMetadataInterface, Object> entityDataMap, Map<AbstractMetadataInterface, Object> categoryDataMap, CategoryEntity categoryEntity)
+	{
+		List<Map<AbstractMetadataInterface, Object>> dataValueList = new ArrayList<Map<AbstractMetadataInterface, Object>>(); 
+		
+		Map dataValueMap = null;
+		
+		List<Map<AbstractMetadataInterface, Object>> tempList = new ArrayList<Map<AbstractMetadataInterface, Object>>();
+		tempList = (ArrayList) categoryDataMap.get(categoryEntity);
+		
+		for (int i=0; i<tempList.size(); i++)
+		{
+			if (tempList.get(i) != null)
+			{
+				Map tempMap = tempList.get(i);
+								
+				dataValueMap = new HashMap();
+				for (CategoryAttributeInterface c: categoryEntity.getCategoryAttributeCollection())
+					dataValueMap.put(c.getAttribute(), getValue(tempMap, c));
+									
+				dataValueList.add(dataValueMap);
+			}
+		}
+
+		Collection<PathAssociationRelationInterface> PathAssociationRelationCollection = categoryEntity.getPath().getSortedPathAssociationRelationCollection();
+		AssociationInterface asso = null;
+		for (PathAssociationRelationInterface p: PathAssociationRelationCollection)
+		{
+			asso = p.getAssociation();
+		}
+		
+		entityDataMap.put(asso, dataValueList);
+		//getValue(categoryEntity.getChildCategories(), categoryEntity);
+	}
 
 	/**
 	 * Retrieve a category with some identifier, and delete the same from database.
@@ -443,5 +674,466 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			e.printStackTrace();
 		}
 	}
+	
+	
+	/**
+	 * Study (1) ------> Experiment (*)
+	 * Experiment (1) ------> User (*)
+	 *
+	 */
+	public void testCreateCategoryDataMap2()
+	{
+		try
+		{
+			// Study entity.
+			EntityInterface study = DomainObjectFactory.getInstance().createEntity();
+			study.setName("Study");
+			
+			AbstractAttributeInterface studyAttribute1 = DomainObjectFactory.getInstance().createStringAttribute();
+			studyAttribute1.setName("Study Name");
+			studyAttribute1.setEntity(study);
+			
+			AbstractAttributeInterface studyAttribute2 = DomainObjectFactory.getInstance().createStringAttribute();
+			studyAttribute2.setName("Study Type");
+			studyAttribute2.setEntity(study);
+			
+			study.getAbstractAttributeCollection().add(studyAttribute1);
+			study.getAbstractAttributeCollection().add(studyAttribute2);
+			
+			// Experiment entity.
+			EntityInterface experiment = DomainObjectFactory.getInstance().createEntity();
+			experiment.setName("Experiment");
+			
+			AbstractAttributeInterface experimentAttribute1 = DomainObjectFactory.getInstance().createStringAttribute();
+			experimentAttribute1.setName("Experiment Name");
+			experimentAttribute1.setEntity(experiment);
+			
+			AbstractAttributeInterface experimentAttribute2 = DomainObjectFactory.getInstance().createStringAttribute();
+			experimentAttribute2.setName("Experiment Type");
+			experimentAttribute2.setEntity(experiment);
+			
+			experiment.getAbstractAttributeCollection().add(experimentAttribute1);
+			experiment.getAbstractAttributeCollection().add(experimentAttribute2);
+			
+			// User entity
+			EntityInterface user = DomainObjectFactory.getInstance().createEntity();
+			user.setName("User");
+			
+			AbstractAttributeInterface userAttribute1 = DomainObjectFactory.getInstance().createStringAttribute();
+			userAttribute1.setName("User Name");
+			userAttribute1.setEntity(user);
+			
+			AbstractAttributeInterface userAttribute2 = DomainObjectFactory.getInstance().createStringAttribute();
+			userAttribute2.setName("User Type");
+			userAttribute2.setEntity(user);
+			
+			user.getAbstractAttributeCollection().add(userAttribute1);
+			user.getAbstractAttributeCollection().add(userAttribute2);
+			
+			// Study-Experiment association.
+			AssociationInterface studyExperimentAssociation = DomainObjectFactory.getInstance().createAssociation();
+			studyExperimentAssociation.setName("Study-Experiment association");
+			studyExperimentAssociation.setEntity(study);
+			studyExperimentAssociation.setTargetEntity(experiment);
+			
+			study.getAbstractAttributeCollection().add(studyExperimentAssociation);
+			
+			// Experiment-User association.
+			AssociationInterface experimentUserAssociation = DomainObjectFactory.getInstance().createAssociation();
+			experimentUserAssociation.setName("Experiment-User association");
+			experimentUserAssociation.setEntity(experiment);
+			experimentUserAssociation.setTargetEntity(user);
+			
+			experiment.getAbstractAttributeCollection().add(experimentUserAssociation);
+			
+			// Create a category.
+			CategoryInterface category = DomainObjectFactory.getInstance().createCategory();
+			category.setName("Category 1");
+			
+			CategoryEntityInterface rootCategoryEntity = DomainObjectFactory.getInstance().createCategoryEntity();
+			rootCategoryEntity.setName("Study category entity");
+			rootCategoryEntity.setEntity(study);
+			
+			List<AttributeInterface> studyAttributeCollection = new ArrayList<AttributeInterface>(study.getAttributeCollection());
+			
+			CategoryAttributeInterface rootCategoryEntityAttribute1 = DomainObjectFactory.getInstance().createCategoryAttribute();
+			rootCategoryEntityAttribute1.setName("Study Name");
+			rootCategoryEntityAttribute1.setAttribute(studyAttributeCollection.get(0));
+			rootCategoryEntityAttribute1.setCategoryEntity(rootCategoryEntity);
+			rootCategoryEntity.getCategoryAttributeCollection().add(rootCategoryEntityAttribute1);
+			
+			CategoryAttributeInterface rootCategoryEntityAttribute2 = DomainObjectFactory.getInstance().createCategoryAttribute();
+			rootCategoryEntityAttribute2.setName("Study Type");
+			rootCategoryEntityAttribute2.setAttribute(studyAttributeCollection.get(1));
+			rootCategoryEntityAttribute2.setCategoryEntity(rootCategoryEntity);
+			rootCategoryEntity.getCategoryAttributeCollection().add(rootCategoryEntityAttribute2);
+			
+			CategoryEntityInterface childCategoryEntity = DomainObjectFactory.getInstance().createCategoryEntity();
+			childCategoryEntity.setName("Experiment category entity");
+			childCategoryEntity.setEntity(experiment);
+			childCategoryEntity.setNumberOfEntries(1);
+			childCategoryEntity.setCategory(category);
+			
+			List<AttributeInterface> experimentAttributeCollection = new ArrayList<AttributeInterface>(experiment.getAttributeCollection());
+			
+			CategoryAttributeInterface childCategoryEntityAttribute1 = DomainObjectFactory.getInstance().createCategoryAttribute();
+			childCategoryEntityAttribute1.setName("Experiment Name");
+			childCategoryEntityAttribute1.setAttribute(experimentAttributeCollection.get(0));
+			childCategoryEntityAttribute1.setCategoryEntity(childCategoryEntity);
+			childCategoryEntity.getCategoryAttributeCollection().add(childCategoryEntityAttribute1);
+			
+			CategoryAttributeInterface childCategoryEntityAttribute2 = DomainObjectFactory.getInstance().createCategoryAttribute();
+			childCategoryEntityAttribute2.setName("Experiment Type");
+			childCategoryEntityAttribute2.setAttribute(experimentAttributeCollection.get(1));
+			childCategoryEntityAttribute2.setCategoryEntity(childCategoryEntity);
+			childCategoryEntity.getCategoryAttributeCollection().add(childCategoryEntityAttribute2);
+			
+			// Add path information
+			PathInterface path = DomainObjectFactory.getInstance().createPath();
+			PathAssociationRelationInterface pathAssociationRelation = DomainObjectFactory.getInstance().createPathAssociationRelation();
+			pathAssociationRelation.setAssociation((Association) studyExperimentAssociation);
+			pathAssociationRelation.setPathSequenceNumber(1);
+			pathAssociationRelation.setPath((Path) path);
+			
+			path.getPathAssociationRelationCollection().add(pathAssociationRelation);
+			studyExperimentAssociation.getPathAssociationRelationColletion().add(pathAssociationRelation);
+			
+			childCategoryEntity.setPath(path);
+			
+			rootCategoryEntity.getChildCategories().add(childCategoryEntity);
+			
+			CategoryEntityInterface userCategoryEntity = DomainObjectFactory.getInstance().createCategoryEntity();
+			userCategoryEntity.setName("User category entity");
+			userCategoryEntity.setEntity(user);
+			userCategoryEntity.setNumberOfEntries(1);
+			userCategoryEntity.setCategory(category);
+			
+			List<AttributeInterface> userAttributeCollection = new ArrayList<AttributeInterface>(user.getAttributeCollection());
+			
+			CategoryAttributeInterface userCategoryEntityAttribute1 = DomainObjectFactory.getInstance().createCategoryAttribute();
+			userCategoryEntityAttribute1.setName("User Name");
+			userCategoryEntityAttribute1.setAttribute(userAttributeCollection.get(0));
+			userCategoryEntityAttribute1.setCategoryEntity(userCategoryEntity);
+			userCategoryEntity.getCategoryAttributeCollection().add(userCategoryEntityAttribute1);
+			
+			CategoryAttributeInterface userCategoryEntityAttribute2 = DomainObjectFactory.getInstance().createCategoryAttribute();
+			userCategoryEntityAttribute2.setName("User Type");
+			userCategoryEntityAttribute2.setAttribute(userAttributeCollection.get(1));
+			userCategoryEntityAttribute2.setCategoryEntity(userCategoryEntity);
+			userCategoryEntity.getCategoryAttributeCollection().add(userCategoryEntityAttribute2);
+			
+			PathAssociationRelationInterface pathAssociationRelation2 = DomainObjectFactory.getInstance().createPathAssociationRelation();
+			pathAssociationRelation2.setAssociation((Association) experimentUserAssociation);
+			pathAssociationRelation2.setPathSequenceNumber(2);
+			pathAssociationRelation2.setPath((Path) path);
+			
+			path.getPathAssociationRelationCollection().add(pathAssociationRelation2);
+			experimentUserAssociation.getPathAssociationRelationColletion().add(pathAssociationRelation2);
+			
+			userCategoryEntity.setPath(path);
+			
+			childCategoryEntity.getChildCategories().add(userCategoryEntity);			
+			
+			category.setRootCategoryElement((CategoryEntity) rootCategoryEntity);
+			
+			Map<AbstractMetadataInterface, Object> categoryDataMap = new HashMap<AbstractMetadataInterface, Object>();
+			categoryDataMap.put(rootCategoryEntityAttribute1, "Root Category Attribute 1");
+			categoryDataMap.put(rootCategoryEntityAttribute2, "Root Category Attribute 2");
+			
+			List<Map> dataValueList = new ArrayList<Map>();
+			Map map = null;
+			for (int i=0; i< childCategoryEntity.getNumberOfEntries(); i++)
+			{
+				map = new HashMap();
+				for (CategoryAttributeInterface c: childCategoryEntity.getCategoryAttributeCollection())
+				{
+					map.put(c, c.getName()+Math.random());
+				}
+				List<Map> dataValueList2 = new ArrayList<Map>();
+				Map map2 = null;
+				for (int j=0; j< userCategoryEntity.getNumberOfEntries(); j++)
+				{
+					map2 = new HashMap();
+					for (CategoryAttributeInterface c: userCategoryEntity.getCategoryAttributeCollection())
+					{
+						map2.put(c, c.getName()+Math.random());
+					}
+					dataValueList2.add(map2);
+					map.put(userCategoryEntity, dataValueList2);
+				}
+				dataValueList.add(map);
+			}
+			
+			categoryDataMap.put(childCategoryEntity, dataValueList);
+			//generateEntityDataMap((Category) category, categoryDataMap);
+			generateEntityDataMap2(entityDataMap, categoryDataMap);
+			System.out.println("HELLIO");
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public void generateEntityDataMap2(Map<AbstractMetadataInterface, Object> entityDataMap, Map<AbstractMetadataInterface, Object> categoryDataMap)
+	{						
+		Iterator iter = categoryDataMap.keySet().iterator();
+		while (iter.hasNext())
+		{
+			Object obj = iter.next();
+			if (obj.getClass().equals(CategoryAttribute.class))
+			{
+				entityDataMap.put(((CategoryAttribute) obj).getAttribute(), getValue(categoryDataMap, obj));
+			}
+			if (obj.getClass().equals(CategoryEntity.class))
+			{
+				List<Map<AbstractMetadataInterface, Object>> tempList = new ArrayList<Map<AbstractMetadataInterface, Object>>();
+				Map<AbstractMetadataInterface, Object> categoryEntityDataMap = new HashMap<AbstractMetadataInterface, Object>();
+				tempList = (ArrayList) categoryDataMap.get(obj);
+				
+				for (int i=0; i<tempList.size(); i++)
+				{
+					if (tempList.get(i) != null)
+					{
+						Map tempMap = tempList.get(i);
+						generateEntityDataMap2(categoryEntityDataMap, tempMap);
+					}
+				}				
 
+				tempList.clear();
+				
+				for (int i=0; i<((CategoryEntity)obj).getNumberOfEntries(); i++)
+					tempList.add(categoryEntityDataMap);
+				
+				Association association = (Association) getAsso((CategoryEntity)obj);
+				
+				entityDataMap.put(association, tempList);
+				//entityDataMap.put((CategoryEntity)obj, tempList);
+			}
+		}
+	}
+	
+	public AssociationInterface getAsso(CategoryEntity obj)
+	{
+		Collection<PathAssociationRelationInterface> PathAssociationRelationCollection = obj.getPath().getSortedPathAssociationRelationCollection();
+		AssociationInterface asso = null;
+		
+		for (PathAssociationRelationInterface p: PathAssociationRelationCollection)
+		{
+			asso = p.getAssociation();
+			if (asso.getTargetEntity().getName().equalsIgnoreCase(obj.getEntity().getName()))
+				return asso;
+		}
+		return asso;
+	}
+	
+	public void testSortPathCollections()
+	{
+		try
+		{
+			Category c = (Category) new MockCategoryManager().createCategoryWithPath();
+			System.out.println("HELLO");
+			c.getRootCategoryElement().getPath().getSortedPathAssociationRelationCollection();
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void testCreateCategoryDataMap3()
+	{
+		try
+		{
+			// Study entity.
+			EntityInterface study = DomainObjectFactory.getInstance().createEntity();
+			study.setName("Study");
+			
+			AbstractAttributeInterface studyAttribute1 = DomainObjectFactory.getInstance().createStringAttribute();
+			studyAttribute1.setName("Study Name");
+			studyAttribute1.setEntity(study);
+			
+			AbstractAttributeInterface studyAttribute2 = DomainObjectFactory.getInstance().createStringAttribute();
+			studyAttribute2.setName("Study Type");
+			studyAttribute2.setEntity(study);
+			
+			study.getAbstractAttributeCollection().add(studyAttribute1);
+			study.getAbstractAttributeCollection().add(studyAttribute2);
+			
+			// Experiment entity.
+			EntityInterface experiment = DomainObjectFactory.getInstance().createEntity();
+			experiment.setName("Experiment");
+			
+			AbstractAttributeInterface experimentAttribute1 = DomainObjectFactory.getInstance().createStringAttribute();
+			experimentAttribute1.setName("Experiment Name");
+			experimentAttribute1.setEntity(experiment);
+			
+			AbstractAttributeInterface experimentAttribute2 = DomainObjectFactory.getInstance().createStringAttribute();
+			experimentAttribute2.setName("Experiment Type");
+			experimentAttribute2.setEntity(experiment);
+			
+			experiment.getAbstractAttributeCollection().add(experimentAttribute1);
+			experiment.getAbstractAttributeCollection().add(experimentAttribute2);
+			
+			// User entity
+			EntityInterface user = DomainObjectFactory.getInstance().createEntity();
+			user.setName("User");
+			
+			AbstractAttributeInterface userAttribute1 = DomainObjectFactory.getInstance().createStringAttribute();
+			userAttribute1.setName("User Name");
+			userAttribute1.setEntity(user);
+			
+			AbstractAttributeInterface userAttribute2 = DomainObjectFactory.getInstance().createStringAttribute();
+			userAttribute2.setName("User Type");
+			userAttribute2.setEntity(user);
+			
+			user.getAbstractAttributeCollection().add(userAttribute1);
+			user.getAbstractAttributeCollection().add(userAttribute2);
+			
+			// Study-Experiment association.
+			AssociationInterface studyExperimentAssociation = DomainObjectFactory.getInstance().createAssociation();
+			studyExperimentAssociation.setName("Study-Experiment association");
+			studyExperimentAssociation.setEntity(study);
+			studyExperimentAssociation.setTargetEntity(experiment);
+			
+			study.getAbstractAttributeCollection().add(studyExperimentAssociation);
+			
+			// Experiment-User association.
+			AssociationInterface experimentUserAssociation = DomainObjectFactory.getInstance().createAssociation();
+			experimentUserAssociation.setName("Experiment-User association");
+			experimentUserAssociation.setEntity(experiment);
+			experimentUserAssociation.setTargetEntity(user);
+			
+			experiment.getAbstractAttributeCollection().add(experimentUserAssociation);
+			
+			// Create a category.
+			CategoryInterface category = DomainObjectFactory.getInstance().createCategory();
+			category.setName("Category 1");
+			
+			CategoryEntityInterface rootCategoryEntity = DomainObjectFactory.getInstance().createCategoryEntity();
+			rootCategoryEntity.setName("Study category entity");
+			rootCategoryEntity.setEntity(study);
+			
+			List<AttributeInterface> studyAttributeCollection = new ArrayList<AttributeInterface>(study.getAttributeCollection());
+			
+			CategoryAttributeInterface rootCategoryEntityAttribute1 = DomainObjectFactory.getInstance().createCategoryAttribute();
+			rootCategoryEntityAttribute1.setName("Study Name");
+			rootCategoryEntityAttribute1.setAttribute(studyAttributeCollection.get(0));
+			rootCategoryEntityAttribute1.setCategoryEntity(rootCategoryEntity);
+			rootCategoryEntity.getCategoryAttributeCollection().add(rootCategoryEntityAttribute1);
+			
+			CategoryAttributeInterface rootCategoryEntityAttribute2 = DomainObjectFactory.getInstance().createCategoryAttribute();
+			rootCategoryEntityAttribute2.setName("Study Type");
+			rootCategoryEntityAttribute2.setAttribute(studyAttributeCollection.get(1));
+			rootCategoryEntityAttribute2.setCategoryEntity(rootCategoryEntity);
+			rootCategoryEntity.getCategoryAttributeCollection().add(rootCategoryEntityAttribute2);
+			
+			CategoryEntityInterface childCategoryEntity = DomainObjectFactory.getInstance().createCategoryEntity();
+			childCategoryEntity.setName("Experiment category entity");
+			childCategoryEntity.setEntity(experiment);
+			childCategoryEntity.setNumberOfEntries(1);
+			childCategoryEntity.setCategory(category);
+			
+			List<AttributeInterface> experimentAttributeCollection = new ArrayList<AttributeInterface>(experiment.getAttributeCollection());
+			
+			CategoryAttributeInterface childCategoryEntityAttribute1 = DomainObjectFactory.getInstance().createCategoryAttribute();
+			childCategoryEntityAttribute1.setName("Experiment Name");
+			childCategoryEntityAttribute1.setAttribute(experimentAttributeCollection.get(0));
+			childCategoryEntityAttribute1.setCategoryEntity(childCategoryEntity);
+			childCategoryEntity.getCategoryAttributeCollection().add(childCategoryEntityAttribute1);
+			
+			CategoryAttributeInterface childCategoryEntityAttribute2 = DomainObjectFactory.getInstance().createCategoryAttribute();
+			childCategoryEntityAttribute2.setName("Experiment Type");
+			childCategoryEntityAttribute2.setAttribute(experimentAttributeCollection.get(1));
+			childCategoryEntityAttribute2.setCategoryEntity(childCategoryEntity);
+			childCategoryEntity.getCategoryAttributeCollection().add(childCategoryEntityAttribute2);
+			
+			// Add path information
+			PathInterface path = DomainObjectFactory.getInstance().createPath();
+			PathAssociationRelationInterface pathAssociationRelation = DomainObjectFactory.getInstance().createPathAssociationRelation();
+			pathAssociationRelation.setAssociation((Association) studyExperimentAssociation);
+			pathAssociationRelation.setPathSequenceNumber(1);
+			pathAssociationRelation.setPath((Path) path);
+			
+			path.getPathAssociationRelationCollection().add(pathAssociationRelation);
+			studyExperimentAssociation.getPathAssociationRelationColletion().add(pathAssociationRelation);
+			
+			childCategoryEntity.setPath(path);
+			
+			rootCategoryEntity.getChildCategories().add(childCategoryEntity);
+			
+			CategoryEntityInterface userCategoryEntity = DomainObjectFactory.getInstance().createCategoryEntity();
+			userCategoryEntity.setName("User category entity");
+			userCategoryEntity.setEntity(user);
+			userCategoryEntity.setNumberOfEntries(1);
+			userCategoryEntity.setCategory(category);
+			
+			List<AttributeInterface> userAttributeCollection = new ArrayList<AttributeInterface>(user.getAttributeCollection());
+			
+			CategoryAttributeInterface userCategoryEntityAttribute1 = DomainObjectFactory.getInstance().createCategoryAttribute();
+			userCategoryEntityAttribute1.setName("User Name");
+			userCategoryEntityAttribute1.setAttribute(userAttributeCollection.get(0));
+			userCategoryEntityAttribute1.setCategoryEntity(userCategoryEntity);
+			userCategoryEntity.getCategoryAttributeCollection().add(userCategoryEntityAttribute1);
+			
+			CategoryAttributeInterface userCategoryEntityAttribute2 = DomainObjectFactory.getInstance().createCategoryAttribute();
+			userCategoryEntityAttribute2.setName("User Type");
+			userCategoryEntityAttribute2.setAttribute(userAttributeCollection.get(1));
+			userCategoryEntityAttribute2.setCategoryEntity(userCategoryEntity);
+			userCategoryEntity.getCategoryAttributeCollection().add(userCategoryEntityAttribute2);
+			
+			PathAssociationRelationInterface pathAssociationRelation2 = DomainObjectFactory.getInstance().createPathAssociationRelation();
+			pathAssociationRelation2.setAssociation((Association) experimentUserAssociation);
+			pathAssociationRelation2.setPathSequenceNumber(2);
+			pathAssociationRelation2.setPath((Path) path);
+			
+			path.getPathAssociationRelationCollection().add(pathAssociationRelation2);
+			experimentUserAssociation.getPathAssociationRelationColletion().add(pathAssociationRelation2);
+			
+			userCategoryEntity.setPath(path);
+			
+			childCategoryEntity.getChildCategories().add(userCategoryEntity);			
+			
+			category.setRootCategoryElement((CategoryEntity) rootCategoryEntity);
+			
+			Map<AbstractMetadataInterface, Object> categoryDataMap = new HashMap<AbstractMetadataInterface, Object>();
+			categoryDataMap.put(rootCategoryEntityAttribute1, "Root Category Attribute 1");
+			categoryDataMap.put(rootCategoryEntityAttribute2, "Root Category Attribute 2");
+			
+			//List<Map> dataValueList = new ArrayList<Map>();
+			//Map map = null;
+			//for (int i=0; i< childCategoryEntity.getNumberOfEntries(); i++)
+			//{
+				//map = new HashMap();
+				//for (CategoryAttributeInterface c: childCategoryEntity.getCategoryAttributeCollection())
+				//{
+					//map.put(c, c.getName()+Math.random());
+				//}
+				List<Map> dataValueList2 = new ArrayList<Map>();
+				Map map2 = null;
+				for (int j=0; j< userCategoryEntity.getNumberOfEntries(); j++)
+				{
+					map2 = new HashMap();
+					for (CategoryAttributeInterface c: userCategoryEntity.getCategoryAttributeCollection())
+					{
+						map2.put(c, c.getName()+Math.random());
+					}
+					dataValueList2.add(map2);
+					//map.put(userCategoryEntity, dataValueList2);
+				}
+				//dataValueList.add(map);
+			//}
+			
+			categoryDataMap.put(userCategoryEntity, dataValueList2);
+			//generateEntityDataMap((Category) category, categoryDataMap);
+			generateEntityDataMap2(entityDataMap, categoryDataMap);
+			System.out.println("HELLIO");
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+		
 }

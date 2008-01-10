@@ -13,7 +13,6 @@ import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.Path;
 import edu.common.dynamicextensions.domain.PathAssociationRelation;
 import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
-import edu.common.dynamicextensions.domain.PathInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
@@ -21,6 +20,7 @@ import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.PathInterface;
 import edu.common.dynamicextensions.entitymanager.MockEntityManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 
@@ -175,7 +175,7 @@ public class MockCategoryManager
 	 * @return category
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public CategoryInterface createCategoryWithPath() throws DynamicExtensionsApplicationException
+	public CategoryInterface createCategoryWithPath1() throws DynamicExtensionsApplicationException
 	{
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		EntityGroupInterface entityGroup = factory.createEntityGroup();
@@ -212,11 +212,12 @@ public class MockCategoryManager
 		pathAssociationRelation.setAssociation((Association) association);
 		pathAssociationRelation.setPath((Path) path);
 		pathAssociationRelation.setPathSequenceNumber(1);
-		path.getPathAssociationRelation().add((PathAssociationRelation) pathAssociationRelation);
+		
+		path.getPathAssociationRelationCollection().add(pathAssociationRelation);
 
 		association.getPathAssociationRelationColletion().add(pathAssociationRelation);
 
-		rootCategoryEntity.getPathCollection().add(path);
+		rootCategoryEntity.setPath(path);
 
 		List<AttributeInterface> attributeCollection = new ArrayList<AttributeInterface>(entity.getAttributeCollection());
 
@@ -282,7 +283,7 @@ public class MockCategoryManager
 	 * @return category
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public CategoryInterface createCategoryWithMultiplePaths() throws DynamicExtensionsApplicationException
+	public CategoryInterface createCategoryWithPath() throws DynamicExtensionsApplicationException
 	{
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		EntityGroupInterface entityGroup = factory.createEntityGroup();
@@ -384,23 +385,11 @@ public class MockCategoryManager
 		pathAssociationRelation2.setPathSequenceNumber(2);
 		association2.getPathAssociationRelationColletion().add(pathAssociationRelation2);
 		
-		path1.getPathAssociationRelation().add((PathAssociationRelation) pathAssociationRelation1);
-		path1.getPathAssociationRelation().add((PathAssociationRelation) pathAssociationRelation2);
+		path1.getPathAssociationRelationCollection().add(pathAssociationRelation1);
+		path1.getPathAssociationRelationCollection().add(pathAssociationRelation2);
 		
-		
-		PathInterface path2 = DomainObjectFactory.getInstance().createPath();
-		
-		PathAssociationRelationInterface pathAssociationRelation3 = DomainObjectFactory.getInstance().createPathAssociationRelation();
-		pathAssociationRelation3.setAssociation((Association) association3);
-		pathAssociationRelation3.setPath((Path) path1);
-		pathAssociationRelation3.setPathSequenceNumber(3);
-		association3.getPathAssociationRelationColletion().add(pathAssociationRelation3);
-		
-		path2.getPathAssociationRelation().add((PathAssociationRelation) pathAssociationRelation3);
-
 		// Add all paths to root category element.
-		rootCategoryEntity.getPathCollection().add(path1);
-		rootCategoryEntity.getPathCollection().add(path2);
+		rootCategoryEntity.setPath(path1);
 		
 		// Add child category entities to root category entity.
 		rootCategoryEntity.getChildCategories().add((CategoryEntity) chilCategoryEntity);

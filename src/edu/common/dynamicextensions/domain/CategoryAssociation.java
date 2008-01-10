@@ -47,7 +47,7 @@ public class CategoryAssociation extends BaseAbstractAttribute implements Catego
 		this.categoryEntityCollection = categoryEntityCollection;
 	}
 	
-	public CategoryEntityInterface getCategoryAssociation()
+	public CategoryEntityInterface getCategoryEntity()
 	{
 		CategoryEntityInterface categoryEntity = null;
 		if (categoryEntityCollection != null && !categoryEntityCollection.isEmpty())

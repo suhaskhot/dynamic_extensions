@@ -5,10 +5,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.PathInterface;
 
 /**
  *
@@ -54,6 +56,11 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	 *
 	 */
 	protected Collection<CategoryInterface> categoryCollection = new HashSet<CategoryInterface>();
+
+	/**
+	 * 
+	 */
+	protected Collection<CategoryAssociationInterface> CategoryAssociationCollection = new HashSet<CategoryAssociationInterface>();
 
 	/**
 	 *
@@ -151,7 +158,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Path"
 	 * @return the pathCollection
 	 */
-	public Collection<PathInterface> getPathCollection()
+	private Collection<PathInterface> getPathCollection()
 	{
 		return pathCollection;
 	}
@@ -160,9 +167,33 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	 *
 	 * @param pathCollection
 	 */
-	public void setPathCollection(Collection<PathInterface> pathCollection)
+	private void setPathCollection(Collection<PathInterface> pathCollection)
 	{
 		this.pathCollection = pathCollection;
+	}
+
+	public PathInterface getPath()
+	{
+		PathInterface path = null;
+		if (pathCollection != null && !pathCollection.isEmpty())
+		{
+			Iterator pathIterator = pathCollection.iterator();
+			path = (Path) pathIterator.next();
+		}
+		return path;
+	}
+
+	public void setPath(PathInterface path)
+	{
+		if (pathCollection == null)
+		{
+			pathCollection = new HashSet<PathInterface>();
+		}
+		else
+		{
+			pathCollection.clear();
+		}
+		this.pathCollection.add(path);
 	}
 
 	/**
@@ -263,4 +294,51 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 		this.categoryCollection.add(categoryInterface);
 	}
 
+	/**
+	 * @hibernate.set name="categoryAssociationCollection" table="DYEXTN_CATEGORY_ASSOCIATION"
+	 * cascade="all-delete-orphan" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="CATEGORY_ASSOCIATION_ID"
+	 * @hibernate.cache usage="read-write"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.CategoryAssociation"
+	 * @return the categoryAssociationCollection
+	 */
+	private Collection<CategoryAssociationInterface> getCategoryAssociationCollection()
+	{
+		return CategoryAssociationCollection;
+	}
+
+	/**
+	 * @param categoryAssociationCollection the categoryAssociationCollection to set
+	 */
+	private void setCategoryAssociationCollection(Collection<CategoryAssociationInterface> categoryAssociationCollection)
+	{
+		CategoryAssociationCollection = categoryAssociationCollection;
+	}
+
+	public CategoryAssociationInterface getCategoryAssociation()
+	{
+		CategoryAssociationInterface categoryAssociation = null;
+		if (CategoryAssociationCollection != null && !CategoryAssociationCollection.isEmpty())
+		{
+			Iterator categoryAssociationCollectionIterator = CategoryAssociationCollection.iterator();
+			categoryAssociation = (CategoryAssociation) categoryAssociationCollectionIterator.next();
+		}
+		return categoryAssociation;
+	}
+
+	/**
+	 *
+	 */
+	public void setCategoryAssociation(CategoryAssociationInterface categoryAssociation)
+	{
+		if (CategoryAssociationCollection == null)
+		{
+			CategoryAssociationCollection = new HashSet<CategoryAssociationInterface>();
+		}
+		else
+		{
+			CategoryAssociationCollection.clear();
+		}
+		this.CategoryAssociationCollection.add(categoryAssociation);
+	}
 }

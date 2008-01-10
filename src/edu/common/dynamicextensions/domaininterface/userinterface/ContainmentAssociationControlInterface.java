@@ -9,21 +9,8 @@ package edu.common.dynamicextensions.domaininterface.userinterface;
 
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
-
-
-
-public interface ContainmentAssociationControlInterface extends ControlInterface
-{
-	/**
-	 * @return container
-	 */
-	ContainerInterface getContainer();
-	
-	/**
-	 * @param container The container to set.
-	 */
-	void setContainer(ContainerInterface container);
-	
+public interface ContainmentAssociationControlInterface extends AbstractContainmentControlInterface
+{	
 	/**
 	 * This method returns true if the cardinality of the Containment Association is One to Many.
 	 * @return true if Caridnality is One to Many, false otherwise.

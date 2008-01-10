@@ -22,9 +22,7 @@ import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
  * @hibernate.joined-subclass table="DYEXTN_CONTAINMENT_CONTROL"
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
-public class ContainmentAssociationControl extends Control
-		implements
-			ContainmentAssociationControlInterface
+public class ContainmentAssociationControl extends AbstractContainmentControl implements ContainmentAssociationControlInterface
 {
 
 	/**
@@ -35,32 +33,9 @@ public class ContainmentAssociationControl extends Control
 	/**
 	 * 
 	 */
-	protected ContainerInterface container;
-
-	/**
-	 * 
-	 */
 	public ContainmentAssociationControl()
 	{
 		super();
-	}
-
-	/**
-	 * @return container
-	 * @hibernate.many-to-one  cascade="save-update" column="DISPLAY_CONTAINER_ID" class="edu.common.dynamicextensions.domain.userinterface.Container" constrained="true"
-	 */
-	public ContainerInterface getContainer()
-	{
-		return container;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface#setContainer(edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface)
-	 */
-	public void setContainer(ContainerInterface container)
-	{
-		this.container = container;
 	}
 
 	/*
@@ -88,8 +63,7 @@ public class ContainmentAssociationControl extends Control
 		{
 			if (value != null && ((List) value).size() > 0)
 			{
-				Map<AbstractAttributeInterface, Object> displayContainerValueMap = ((List<Map<AbstractAttributeInterface, Object>>) value)
-						.get(0);
+				Map<AbstractAttributeInterface, Object> displayContainerValueMap = ((List<Map<AbstractAttributeInterface, Object>>) value).get(0);
 				this.getContainer().setContainerValueMap(displayContainerValueMap);
 			}
 			this.getContainer().setShowAssociationControlsAsLink(true);
@@ -97,7 +71,7 @@ public class ContainmentAssociationControl extends Control
 		}
 		return subContainerHTML;
 	}
-	
+
 	/**
 	 * This method returns true if the cardinality of the Containment Association is One to Many.
 	 * @return true if Caridnality is One to Many, false otherwise.
@@ -122,8 +96,7 @@ public class ContainmentAssociationControl extends Control
 		{
 			if (value != null && ((List) value).size() > 0)
 			{
-				Map<AbstractAttributeInterface, Object> displayContainerValueMap = ((List<Map<AbstractAttributeInterface, Object>>) value)
-						.get(0);
+				Map<AbstractAttributeInterface, Object> displayContainerValueMap = ((List<Map<AbstractAttributeInterface, Object>>) value).get(0);
 				this.getContainer().setContainerValueMap(displayContainerValueMap);
 			}
 			this.getContainer().setShowAssociationControlsAsLink(true);
@@ -151,7 +124,5 @@ public class ContainmentAssociationControl extends Control
 
 		return stringBuffer.toString();
 	}
-	
-		
 
 }

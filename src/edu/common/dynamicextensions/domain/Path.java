@@ -1,9 +1,13 @@
 
 package edu.common.dynamicextensions.domain;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 
+import edu.common.dynamicextensions.domaininterface.PathInterface;
 
 /**
  * @hibernate.class table="DYEXTN_PATH"
@@ -20,7 +24,7 @@ public class Path extends DynamicExtensionBaseDomainObject implements PathInterf
 	/**
 	 *
 	 */
-	Collection<PathAssociationRelationInterface> pathAssociationRelation = new HashSet<PathAssociationRelationInterface>();
+	Collection<PathAssociationRelationInterface> pathAssociationRelationCollection = new HashSet<PathAssociationRelationInterface>();
 
 	/**
 	 *
@@ -78,23 +82,30 @@ public class Path extends DynamicExtensionBaseDomainObject implements PathInterf
 
 	/**
 	 * @hibernate.set name="pathAssociationRelationCollection" table="DYEXTN_PATH_ASSOCIATION_RELATION"
-	 * cascade="save-update" inverse="false" lazy="false"
+	 * cascade="save-update" inverse="false" lazy="false" order-by="PATH_SEQUENCE_NUMBER desc"
 	 * @hibernate.collection-key column="PATH_ID"
 	 * @hibernate.cache usage="read-write"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.PathAssociationRelation"
 	 * @return the pathAssociationRelation
 	 */
-	public Collection<PathAssociationRelationInterface> getPathAssociationRelation()
+	public Collection<PathAssociationRelationInterface> getPathAssociationRelationCollection()
 	{
-		return pathAssociationRelation;
+		return pathAssociationRelationCollection;
 	}
 
 	/**
 	 * @param pathAssociationRelation the pathAssociationRelation to set
 	 */
-	public void setPathAssociationRelation(Collection<PathAssociationRelationInterface> pathAssociationRelation)
+	public void setPathAssociationRelationCollection(Collection<PathAssociationRelationInterface> pathAssociationRelationCollection)
 	{
-		this.pathAssociationRelation = pathAssociationRelation;
+		this.pathAssociationRelationCollection = pathAssociationRelationCollection;
+	}
+
+	public Collection<PathAssociationRelationInterface> getSortedPathAssociationRelationCollection()
+	{
+		List PathAssociationRelationList = new ArrayList(getPathAssociationRelationCollection());
+		Collections.sort(PathAssociationRelationList);
+		return PathAssociationRelationList;
 	}
 
 }

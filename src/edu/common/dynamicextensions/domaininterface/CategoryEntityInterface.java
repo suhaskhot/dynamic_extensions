@@ -2,8 +2,6 @@ package edu.common.dynamicextensions.domaininterface;
 
 import java.util.Collection;
 
-import edu.common.dynamicextensions.domain.PathInterface;
-
 public interface CategoryEntityInterface extends AbstractEntityInterface
 {
 	/**
@@ -77,8 +75,15 @@ public interface CategoryEntityInterface extends AbstractEntityInterface
 	 */
 	void setCategory(CategoryInterface categoryInterface);
 	
-	Collection<PathInterface> getPathCollection();
+	public PathInterface getPath();
 	
-	void setPathCollection(Collection<PathInterface> pathCollection);
+	public void setPath(PathInterface path);
+	
+	public Integer getNumberOfEntries();
+	
+	public void setNumberOfEntries(Integer numberOfEntries);
+	
+	public CategoryAssociationInterface getCategoryAssociation();
 
+	public void setCategoryAssociation(CategoryAssociationInterface categoryAssociation);
 }

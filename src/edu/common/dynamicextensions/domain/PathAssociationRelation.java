@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.domain;
 
 /**
@@ -5,7 +6,7 @@ package edu.common.dynamicextensions.domain;
  * @author mandar_shidhore
  *
  */
-public class PathAssociationRelation extends DynamicExtensionBaseDomainObject implements PathAssociationRelationInterface
+public class PathAssociationRelation extends DynamicExtensionBaseDomainObject implements PathAssociationRelationInterface, Comparable
 {
 
 	/**
@@ -17,7 +18,7 @@ public class PathAssociationRelation extends DynamicExtensionBaseDomainObject im
 	{
 		super();
 	}
-	
+
 	/**
 	 * This method returns the unique identifier of the PathAssociationRelation.
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
@@ -29,11 +30,11 @@ public class PathAssociationRelation extends DynamicExtensionBaseDomainObject im
 	{
 		return id;
 	}
-	
+
 	protected Path path;
-	
+
 	protected Association association;
-	
+
 	protected int pathSequenceNumber;
 
 	/**
@@ -85,6 +86,14 @@ public class PathAssociationRelation extends DynamicExtensionBaseDomainObject im
 	public void setPathSequenceNumber(int pathSequenceNumber)
 	{
 		this.pathSequenceNumber = pathSequenceNumber;
+	}
+
+	public int compareTo(Object object)
+	{
+		PathAssociationRelationInterface pathAssociationRelation = (PathAssociationRelation) object;
+		Integer thisPathSequenceNumber = this.pathSequenceNumber;
+		Integer otherPathSequenceNumber = pathAssociationRelation.getPathSequenceNumber();
+		return thisPathSequenceNumber.compareTo(otherPathSequenceNumber);
 	}
 
 }

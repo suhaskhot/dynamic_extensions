@@ -7,7 +7,7 @@ import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainOb
  * @author mandar_shidhore
  *
  */
-public interface PathAssociationRelationInterface extends DynamicExtensionBaseDomainObjectInterface
+public interface PathAssociationRelationInterface extends DynamicExtensionBaseDomainObjectInterface, Comparable
 {
 	public Path getPath();
 	

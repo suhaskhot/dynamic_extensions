@@ -4,7 +4,6 @@ package edu.common.dynamicextensions.domaininterface;
 import java.util.Collection;
 
 import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
-import edu.common.dynamicextensions.domain.PathInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
 

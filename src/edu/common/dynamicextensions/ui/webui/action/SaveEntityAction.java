@@ -14,7 +14,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
-import org.jboss.ejb.EntityEnterpriseContext;
 
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -52,11 +51,12 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 			ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 			ControlsForm controlsForm = (ControlsForm) form;
 			ContainerInterface currentContainerInterface = WebUIManager.getCurrentContainer(request);
-			if((controlsForm!=null)&&(currentContainerInterface!=null))
+			if ((controlsForm != null) && (currentContainerInterface != null))
 			{
-				ControlsUtility.reinitializeSequenceNumbers(currentContainerInterface.getControlCollection(),controlsForm.getControlsSequenceNumbers());
+				ControlsUtility.reinitializeSequenceNumbers(currentContainerInterface.getControlCollection(), controlsForm
+						.getControlsSequenceNumbers());
 			}
-			
+
 			//Call container processor save method
 			ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
 			String formName = "";
@@ -64,8 +64,8 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 			//Changed by: Kunal
 			// For saving entity metadata
 			//containerInterface = containerProcessor.saveContainer(containerInterface);
-			EntityGroupManager.getInstance().persistEntityGroup(((EntityInterface)containerInterface.getAbstractEntity()).getEntityGroup());
-			
+			EntityGroupManager.getInstance().persistEntityGroup(((EntityInterface) containerInterface.getAbstractEntity()).getEntityGroup());
+
 			if ((containerInterface != null) && (containerInterface.getAbstractEntity() != null))
 			{
 				formName = containerInterface.getAbstractEntity().getName();

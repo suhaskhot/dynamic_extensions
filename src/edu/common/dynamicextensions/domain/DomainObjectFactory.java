@@ -34,6 +34,7 @@ import edu.common.dynamicextensions.domaininterface.BooleanValueInterface;
 import edu.common.dynamicextensions.domaininterface.ByteArrayValueInterface;
 import edu.common.dynamicextensions.domaininterface.CaDSRDEInterface;
 import edu.common.dynamicextensions.domaininterface.CaDSRValueDomainInfoInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
@@ -838,6 +839,11 @@ public class DomainObjectFactory
 	public PathAssociationRelationInterface createPathAssociationRelation()
 	{
 		return new PathAssociationRelation();
+	}
+	
+	public CategoryAssociationInterface createCategoryAssociation()
+	{
+		return new CategoryAssociation();
 	}
 
 }

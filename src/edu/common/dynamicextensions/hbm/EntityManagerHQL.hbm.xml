@@ -145,4 +145,23 @@
 	      where association.targetEntity.id = ?
 	</query>
 	
+	<query name="getAllEntityInformationObjects">
+			select entity.id,entity.name
+			   from edu.common.dynamicextensions.domain.Entity entity
+	</query>
+	
+	<query name="getAttributeInformationObjectsForEntity">
+			select attribute.id,attribute.name
+			   from edu.common.dynamicextensions.domain.Attribute attribute
+			   		where attribute.entity.id = ?
+	</query>
+	
+	<query name="getAssociationInformationObjectsForEntity">
+			select association.name,association.id,association.sourceRole.name,association.targetRole.name,
+				   association.entity.name,association.targetEntity.name	
+			   from edu.common.dynamicextensions.domain.Association association
+			   		where association.entity.id = ?
+	</query>
+	
+	
 </hibernate-mapping>

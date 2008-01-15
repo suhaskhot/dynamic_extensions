@@ -5077,5 +5077,84 @@ public class EntityManager
 		}
         return null;
 	}
+	
+	/**
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllContainerBeans()
+	 */
+	public List<EntityInformationObject> getAllEntityInformationObjects()
+			throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException {
+		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+		Collection<Object[]> entityBeansCollection = executeHQL(
+				"getAllEntityInformationObjects", substitutionParameterMap);
+		List<EntityInformationObject> entityInformationObjectList = new ArrayList<EntityInformationObject>();
+		for (Object[] objectArrayForEntityBeans : entityBeansCollection) {
+			String entityName = (String) objectArrayForEntityBeans[1];
+			Long entityIdentifier = (Long) objectArrayForEntityBeans[0];
+			EntityInformationObject entityInformationObject = new EntityInformationObject(
+					entityName, entityIdentifier);
+			Collection<AttributeInformationObject> attributeInformationObjectCollection = getAllAttributeInformationObjects(entityIdentifier);
+			entityInformationObject
+					.setAttributeInformationObjectCollection(attributeInformationObjectCollection);
+			Collection<AssociationInformationObject> associationInformationObjectCollection = getAllAssociationInformationObjects(entityIdentifier);
+			entityInformationObject.setAssociationInformationObjectCollection(associationInformationObjectCollection);
+			entityInformationObjectList.add(entityInformationObject);
+		}
+		return entityInformationObjectList;
+	}
 
+	/**
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllContainerBeans()
+	 */
+	private List<AttributeInformationObject> getAllAttributeInformationObjects(
+			Long entityId) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException {
+		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long",
+				entityId));
+		Collection<Object[]> attributeBeansCollection = executeHQL(
+				"getAttributeInformationObjectsForEntity",
+				substitutionParameterMap);
+		List<AttributeInformationObject> attributeInformationObjectList = new ArrayList<AttributeInformationObject>();
+
+		for (Object[] objectArrayForAttributeBeans : attributeBeansCollection) {
+			String attributeName = (String) objectArrayForAttributeBeans[1];
+			Long attributeIdentifier = (Long) objectArrayForAttributeBeans[0];
+			attributeInformationObjectList.add(new AttributeInformationObject(
+					attributeName, attributeIdentifier));
+		}
+
+		return attributeInformationObjectList;
+
+	}
+
+	/**
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllContainerBeans()
+	 */
+	private List<AssociationInformationObject> getAllAssociationInformationObjects(
+			Long entityId) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException {
+		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long",
+				entityId));
+		Collection<Object[]> associationBeansCollection = executeHQL(
+				"getAssociationInformationObjectsForEntity",
+				substitutionParameterMap);
+		List<AssociationInformationObject> associationInformationObjectList = new ArrayList<AssociationInformationObject>();
+
+		for (Object[] objectArrayForAssociationBeans : associationBeansCollection) {
+			String associationName = (String) objectArrayForAssociationBeans[0];
+			Long associationIdentifier = (Long) objectArrayForAssociationBeans[1];
+			String sourceRoleName = (String) objectArrayForAssociationBeans[2];
+			String targetRoleName = (String) objectArrayForAssociationBeans[3];
+			String sourceEntityName = (String) objectArrayForAssociationBeans[4];
+			String targetEntityName = (String) objectArrayForAssociationBeans[5];
+
+			associationInformationObjectList
+					.add(new AssociationInformationObject(associationName,
+							associationIdentifier, sourceRoleName,
+							targetRoleName, sourceEntityName, targetEntityName));
+		}
+		return associationInformationObjectList;
+	}
 }

@@ -242,7 +242,7 @@ public class MockCategoryManager
 
 		CategoryAssociationInterface rootCategoryEntityAssociation = DomainObjectFactory.getInstance().createCategoryAssociation();
 		rootCategoryEntityAssociation.setName("Study Category Entity Association");
-		rootCategoryEntityAssociation.setCategoryEntity(rootCategoryEntity);
+		rootCategoryEntityAssociation.setCategoryEntity((CategoryEntity) rootCategoryEntity);
 		rootCategoryEntity.setCategoryAssociation(rootCategoryEntityAssociation);		
 
 		CategoryEntityInterface childCategoryEntity = DomainObjectFactory.getInstance().createCategoryEntity();
@@ -265,7 +265,7 @@ public class MockCategoryManager
 		
 		CategoryAssociationInterface childCategoryEntityAssociation = DomainObjectFactory.getInstance().createCategoryAssociation();
 		childCategoryEntityAssociation.setName("Experiment Category Entity Association");
-		childCategoryEntityAssociation.setCategoryEntity(childCategoryEntity);
+		childCategoryEntityAssociation.setCategoryEntity((CategoryEntity) childCategoryEntity);
 		childCategoryEntity.setCategoryAssociation(childCategoryEntityAssociation);	
 
 		// Add path information
@@ -276,7 +276,6 @@ public class MockCategoryManager
 		pathAssociationRelation.setPath((Path) path);
 
 		path.getPathAssociationRelationCollection().add(pathAssociationRelation);
-		studyExperimentAssociation.getPathAssociationRelationColletion().add(pathAssociationRelation);
 
 		childCategoryEntity.setPath(path);
 
@@ -536,13 +535,11 @@ public class MockCategoryManager
 		pathAssociationRelation1.setAssociation((Association) association1);
 		pathAssociationRelation1.setPath((Path) path);
 		pathAssociationRelation1.setPathSequenceNumber(1);
-		association1.getPathAssociationRelationColletion().add(pathAssociationRelation1);
 
 		PathAssociationRelationInterface pathAssociationRelation2 = DomainObjectFactory.getInstance().createPathAssociationRelation();
 		pathAssociationRelation2.setAssociation((Association) association2);
 		pathAssociationRelation2.setPath((Path) path);
 		pathAssociationRelation2.setPathSequenceNumber(2);
-		association2.getPathAssociationRelationColletion().add(pathAssociationRelation2);
 
 		path.getPathAssociationRelationCollection().add(pathAssociationRelation1);
 		path.getPathAssociationRelationCollection().add(pathAssociationRelation2);
@@ -605,8 +602,6 @@ public class MockCategoryManager
 		pathAssociationRelation.setPathSequenceNumber(1);
 
 		path.getPathAssociationRelationCollection().add(pathAssociationRelation);
-
-		association.getPathAssociationRelationColletion().add(pathAssociationRelation);
 
 		rootCategoryEntity.setPath(path);
 

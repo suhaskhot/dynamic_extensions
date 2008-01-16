@@ -3,8 +3,10 @@ package edu.common.dynamicextensions.entitymanager;
 import java.util.List;
 import java.util.Map;
 
+import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
@@ -62,9 +64,9 @@ public interface CategoryManagerInterface
     * @throws DynamicExtensionsApplicationException
     * @throws DynamicExtensionsSystemException
     */
-    public Map<AbstractMetadataInterface, Object> getRecordById(CategoryInterface category,
-            Long recordId) throws DynamicExtensionsSystemException,
-            DynamicExtensionsApplicationException;
+//    public Map<AbstractMetadataInterface, Object> getRecordById(CategoryInterface category,
+//            Long recordId) throws DynamicExtensionsSystemException,
+//            DynamicExtensionsApplicationException;
     /**
      *
      * @param category
@@ -73,4 +75,15 @@ public interface CategoryManagerInterface
      * @throws DynamicExtensionsApplicationException
      */
     CategoryInterface deleteCategory(CategoryInterface categoryInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+    
+    /**
+     * This method accepts a category data map and converts it to corresponding entity data map.
+     * @param rootCategoryEntity
+     * @param entityDataMap
+     * @param categoryDataMap
+     * @param existingAssociations
+     * @return Map<AbstractMetadataInterface, Object>
+     */
+    public Map<AbstractAttributeInterface, Object> generateEntityDataValueMap(CategoryEntityInterface rootCategoryEntity, Map<AbstractAttributeInterface, Object> entityDataMap,
+			Map<AbstractMetadataInterface, Object> categoryDataMap, List<Association> existingAssociations);
 }

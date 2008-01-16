@@ -12,8 +12,10 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.domain.userinterface.AbstractContainmentControl;
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
-import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.ui.webui.actionform.DataEntryForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
@@ -39,7 +41,7 @@ public class LoadFormPreviewAction extends BaseDynamicExtensionsAction
 
 		Stack<ContainerInterface> containerStack = (Stack<ContainerInterface>) CacheManager
 				.getObjectFromCache(request, Constants.CONTAINER_STACK);
-		Stack<Map<AbstractAttributeInterface, Object>> valueMapStack = (Stack<Map<AbstractAttributeInterface, Object>>) CacheManager
+		Stack<Map<BaseAbstractAttributeInterface, Object>> valueMapStack = (Stack<Map<BaseAbstractAttributeInterface, Object>>) CacheManager
 				.getObjectFromCache(request, Constants.VALUE_MAP_STACK);
 
 		DataEntryForm dataEntryForm = (DataEntryForm) form;
@@ -51,10 +53,10 @@ public class LoadFormPreviewAction extends BaseDynamicExtensionsAction
 			containerStack = new Stack<ContainerInterface>();
 			CacheManager.addObjectToCache(request, Constants.CONTAINER_STACK, containerStack);
 
-			valueMapStack = new Stack<Map<AbstractAttributeInterface, Object>>();
+			valueMapStack = new Stack<Map<BaseAbstractAttributeInterface, Object>>();
 			CacheManager.addObjectToCache(request, Constants.VALUE_MAP_STACK, valueMapStack);
 
-			Map<AbstractAttributeInterface, Object> recordMap = new HashMap<AbstractAttributeInterface, Object>();
+			Map<BaseAbstractAttributeInterface, Object> recordMap = new HashMap<BaseAbstractAttributeInterface, Object>();
 			UserInterfaceiUtility.addContainerInfo(containerStack, containerInterface,
 					valueMapStack, recordMap);
 			dataEntryForm.setContainerInterface(containerInterface);
@@ -63,12 +65,12 @@ public class LoadFormPreviewAction extends BaseDynamicExtensionsAction
 				&& dataEntryOperation.equalsIgnoreCase("insertChildData"))
 		{
 			String childContainerId = dataEntryForm.getChildContainerId();
-			ContainmentAssociationControl associationControl = UserInterfaceiUtility
+			AbstractContainmentControlInterface associationControl = UserInterfaceiUtility
 					.getAssociationControl((ContainerInterface) containerStack.peek(),
 							childContainerId);
 			ContainerInterface childContainer = associationControl.getContainer();
 
-			Map<AbstractAttributeInterface, Object> childContainerValueMap = new HashMap<AbstractAttributeInterface, Object>();
+			Map<BaseAbstractAttributeInterface, Object> childContainerValueMap = new HashMap<BaseAbstractAttributeInterface, Object>();
 			UserInterfaceiUtility.addContainerInfo(containerStack, childContainer, valueMapStack,
 					childContainerValueMap);
 			dataEntryForm.setContainerInterface(childContainer);

@@ -23,6 +23,7 @@ import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationC
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
@@ -174,7 +175,7 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 	{
 		if ((parentContainer != null) && (childContainer != null))
 		{
-			ContainmentAssociationControl containmentAssociationControl = UserInterfaceiUtility
+			AbstractContainmentControlInterface containmentAssociationControl = UserInterfaceiUtility
 					.getAssociationControl(parentContainer, childContainer.getId() + "");
 			if (containmentAssociationControl != null)
 			{

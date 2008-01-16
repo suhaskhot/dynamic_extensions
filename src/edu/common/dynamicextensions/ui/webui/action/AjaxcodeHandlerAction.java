@@ -22,12 +22,12 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
-import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface;
@@ -287,7 +287,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 				.peek();
 		ContainerInterface containerInterface = (ContainerInterface) containerStack.peek();
 
-		ContainmentAssociationControl associationControl = UserInterfaceiUtility
+		AbstractContainmentControlInterface associationControl = UserInterfaceiUtility
 				.getAssociationControl(containerInterface, childContainerId);
 
 		AssociationInterface association = (AssociationInterface) associationControl

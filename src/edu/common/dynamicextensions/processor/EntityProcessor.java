@@ -7,7 +7,6 @@ import java.util.Iterator;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
-import edu.common.dynamicextensions.entitymanager.NewEntityManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.interfaces.EntityUIBeanInterface;
@@ -74,7 +73,7 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
 		if (entityUIBeanInterface != null)
 		{
 			entityInterface = createAndPopulateEntity(entityUIBeanInterface);
-			entityInterface = NewEntityManager.getInstance().persistEntity(entityInterface);
+			//entityInterface = EntityManager.getInstance().persistEntity(entityInterface);
 		}
 		return entityInterface;
 	}

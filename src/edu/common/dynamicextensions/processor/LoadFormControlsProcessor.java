@@ -361,7 +361,7 @@ public class LoadFormControlsProcessor
 	{
 		ArrayList<NameValueBean> groupNamesList = new ArrayList<NameValueBean>();
 		EntityManagerInterface entityManager = EntityManager.getInstance();
-		Collection<EntityGroupInterface> listOfGroups = entityManager.getAllEntitiyGroups();
+		Collection<EntityGroupInterface> listOfGroups = null ;//entityManager.getAllEntitiyGroups();
 		if(listOfGroups!=null)
 		{
 			EntityGroupInterface entityGroup = null;

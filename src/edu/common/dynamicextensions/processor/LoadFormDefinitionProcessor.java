@@ -118,7 +118,7 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	{
 		StringBuffer definedEntitiesXML = new StringBuffer();
 		EntityManagerInterface entityManager = EntityManager.getInstance();
-		Collection<AssociationTreeObject> associationsCollection = entityManager.getAssociationTree();
+		Collection<AssociationTreeObject> associationsCollection = null;//entityManager.getAssociationTree();
 		definedEntitiesXML.append("<?xml version='1.0' encoding='iso-8859-1'?> ");
 		definedEntitiesXML.append("<tree id='0'>");
 		//Special handling for grp : assign id as "Group_ number

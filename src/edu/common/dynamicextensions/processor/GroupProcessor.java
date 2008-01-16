@@ -60,7 +60,7 @@ public class GroupProcessor extends BaseDynamicExtensionsProcessor
 			entityGroup.setName(groupUIBean.getGroupNameText());
 			entityGroup.setDescription(groupUIBean.getGroupDescription());
 			entityGroup.setIsSystemGenerated(new Boolean(false));
-			EntityManager.getInstance().checkForDuplicateEntityGroupName(entityGroup);
+			//EntityManager.getInstance().checkForDuplicateEntityGroupName(entityGroup);
 		}
 	}
 	/**
@@ -100,7 +100,7 @@ public class GroupProcessor extends BaseDynamicExtensionsProcessor
 	public EntityGroupInterface saveEntityGroup(EntityGroupInterface entityGroupInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
-		EntityGroupInterface savedEntityGroupInterface = entityManagerInterface.persistEntityGroup(entityGroupInterface);
+		EntityGroupInterface savedEntityGroupInterface = null ;//= entityManagerInterface.persistEntityGroup(entityGroupInterface);
 		return savedEntityGroupInterface;
 		
 	}

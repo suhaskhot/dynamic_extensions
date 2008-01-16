@@ -165,6 +165,7 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 	public ContainerInterface saveContainer(ContainerInterface containerInterface)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
-		return EntityManager.getInstance().persistContainer(containerInterface);
+		//return EntityManager.getInstance().persistContainer(containerInterface);
+		return null;
 	}
 }

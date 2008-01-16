@@ -192,8 +192,8 @@ public class XMIImportProcessor
 		//Retriving all containers corresponding to the given entity group.
 		if (entityGroup.getId() != null)
 		{
-			retrievedContainerList = EntityManager.getInstance().getAllContainersByEntityGroupId(
-					entityGroup.getId());
+			retrievedContainerList = null;/*EntityManager.getInstance().getAllContainersByEntityGroupId(
+					entityGroup.getId());*/
 		}
 
 		for (UmlClass umlClass : umlClassColl)
@@ -1593,18 +1593,18 @@ public class XMIImportProcessor
 //		}
 		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
 
-		try
-		{
-			entityManagerInterface.persistEntityGroupWithAllContainers(entityGroup, mainContainerList);
-		}
-		catch (DynamicExtensionsApplicationException e)
-		{
-			throw new DynamicExtensionsApplicationException(e.getMessage(), e);
-		}
-		catch (DynamicExtensionsSystemException e)
-		{
-			throw new DynamicExtensionsSystemException(e.getMessage(), e);
-		}
+//		try
+//		{
+//			entityManagerInterface.persistEntityGroupWithAllContainers(entityGroup, mainContainerList);
+//		}
+//		catch (DynamicExtensionsApplicationException e)
+//		{
+//			throw new DynamicExtensionsApplicationException(e.getMessage(), e);
+//		}
+//		catch (DynamicExtensionsSystemException e)
+//		{
+//			throw new DynamicExtensionsSystemException(e.getMessage(), e);
+//		}
 	}
 
 	/**

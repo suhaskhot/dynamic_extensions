@@ -536,7 +536,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 					if (attribute != null)
 					{
 						EntityManagerInterface entityManager = EntityManager.getInstance();
-						control = entityManager.getControlByAbstractAttributeIdentifier(attribute.getId());
+						//control = entityManager.getControlByAbstractAttributeIdentifier(attribute.getId());
 						if (control != null)
 						{
 							selectedAttribute = new NameValueBean(control.getCaption(), control.getId());

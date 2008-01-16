@@ -2,22 +2,16 @@
 package edu.common.dynamicextensions.categoryManager;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.Category;
-import edu.common.dynamicextensions.domain.CategoryAssociation;
-import edu.common.dynamicextensions.domain.CategoryAttribute;
 import edu.common.dynamicextensions.domain.CategoryEntity;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.Path;
 import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
-import edu.common.dynamicextensions.domain.Role;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
@@ -33,10 +27,8 @@ import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.entitymanager.CategoryManager;
 import edu.common.dynamicextensions.entitymanager.CategoryManagerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManager;
-import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.ui.util.Constants;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
@@ -274,7 +266,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 	}
-	
+
 	public void testCreateCategoryWithCategoryAssociations()
 	{
 		try
@@ -403,7 +395,6 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 	}
-	
 
 	/**
 	 * Study (1) ------> Experiment (*)
@@ -498,7 +489,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 			// Add path information
 			PathInterface path = DomainObjectFactory.getInstance().createPath();
-			
+
 			PathAssociationRelationInterface pathAssociationRelation = DomainObjectFactory.getInstance().createPathAssociationRelation();
 			pathAssociationRelation.setAssociation((Association) studyExperimentAssociation);
 			pathAssociationRelation.setPathSequenceNumber(1);
@@ -507,7 +498,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			path.getPathAssociationRelationCollection().add(pathAssociationRelation);
 
 			experimentCategoryEntity.setPath(path);
-			
+
 			// Add category association between Study and User category entities.
 			CategoryAssociationInterface studyExperimentCategoryEntityAssociation = DomainObjectFactory.getInstance().createCategoryAssociation();
 			studyExperimentCategoryEntityAssociation.setName("Study Experiment Category Entity Association");
@@ -539,9 +530,9 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 			categoryDataMap.put(experimentCategoryEntity.getCategoryAssociation(), dataValueList);
 
-//			Map<AbstractAttributeInterface, Object> entityDataMap = new HashMap<AbstractAttributeInterface, Object>();
-//			entityDataMap = CategoryManager.getInstance().generateEntityDataValueMap(rootCategoryEntity, entityDataMap, categoryDataMap,
-//					new ArrayList<Association>());
+			//			Map<AbstractAttributeInterface, Object> entityDataMap = new HashMap<AbstractAttributeInterface, Object>();
+			//			entityDataMap = CategoryManager.getInstance().generateEntityDataValueMap(rootCategoryEntity, entityDataMap, categoryDataMap,
+			//					new ArrayList<Association>());
 
 			System.out.println("EXITING testTransformCategoryDataMap METHOD");
 		}
@@ -551,8 +542,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 	}
-	
-	
+
 	/**
 	 * 3 Entities:			 Study (1) ------> (*) Experiment (1) ------> (*) User
 	 * 
@@ -646,7 +636,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			rootCategoryEntityCategoryAttribute2.setAttribute(studyAttributeCollection.get(1));
 			rootCategoryEntityCategoryAttribute2.setCategoryEntity(studyCategoryEntity);
 			studyCategoryEntity.getCategoryAttributeCollection().add(rootCategoryEntityCategoryAttribute2);
-		
+
 			// Add user category entity.
 			CategoryEntityInterface userCategoryEntity = DomainObjectFactory.getInstance().createCategoryEntity();
 			userCategoryEntity.setName("User category entity");
@@ -683,16 +673,16 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 			path.getPathAssociationRelationCollection().add(pathAssociationRelation1);
 			path.getPathAssociationRelationCollection().add(pathAssociationRelation2);
-			
+
 			userCategoryEntity.setPath(path);
-			
+
 			// Add category association between Study and User category entities.
 			CategoryAssociationInterface userCategoryEntityAssociation = DomainObjectFactory.getInstance().createCategoryAssociation();
 			userCategoryEntityAssociation.setName("Study User Category Entity Association");
 			userCategoryEntityAssociation.setCategoryEntity((CategoryEntity) studyCategoryEntity);
 			userCategoryEntityAssociation.setTargetCategoryEntity((CategoryEntity) userCategoryEntity);
 			studyCategoryEntity.setCategoryAssociation(userCategoryEntityAssociation);
-			
+
 			// Add child category entity to root catergory entity.
 			studyCategoryEntity.getChildCategories().add(userCategoryEntity);
 
@@ -718,9 +708,9 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 			categoryDataMap.put(userCategoryEntity.getCategoryAssociation(), dataValueList2);
 
-//			Map<AbstractAttributeInterface, Object> entityDataMap = new HashMap<AbstractAttributeInterface, Object>();
-//			entityDataMap = CategoryManager.getInstance().generateEntityDataValueMap(rootCategoryEntity, entityDataMap, categoryDataMap,
-//					new ArrayList<Association>());
+			//			Map<AbstractAttributeInterface, Object> entityDataMap = new HashMap<AbstractAttributeInterface, Object>();
+			//			entityDataMap = CategoryManager.getInstance().generateEntityDataValueMap(rootCategoryEntity, entityDataMap, categoryDataMap,
+			//					new ArrayList<Association>());
 
 			System.out.println("EXITING testTransformCategoryDataMapWithTwoCategoryEntities METHOD");
 		}
@@ -730,7 +720,6 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 	}
-
 
 	/**
 	 * 3 Entities:			 Study (1) ------> (*) Experiment (1) ------> (*) User
@@ -800,7 +789,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			studyExperimentAssociationSourceRole.setName("Study-Experiment association source Role");
 			studyExperimentAssociationSourceRole.setMaximumCardinality(Cardinality.ONE);
 			studyExperimentAssociationSourceRole.setAssociationsType(AssociationType.ASSOCIATION);
-			
+
 			RoleInterface studyExperimentAssociationTargetRole = DomainObjectFactory.getInstance().createRole();
 			studyExperimentAssociationTargetRole.setName("Study-Experiment association target Role");
 			studyExperimentAssociationTargetRole.setMaximumCardinality(Cardinality.MANY);
@@ -815,12 +804,12 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			experimentUserAssociation.setName("Experiment-User association");
 			experimentUserAssociation.setEntity(experiment);
 			experimentUserAssociation.setTargetEntity(user);
-			
+
 			RoleInterface experimentUserAssociationSourceRole = DomainObjectFactory.getInstance().createRole();
 			experimentUserAssociationSourceRole.setName("Experiment-User association source Role");
 			experimentUserAssociationSourceRole.setMaximumCardinality(Cardinality.ONE);
 			experimentUserAssociationSourceRole.setAssociationsType(AssociationType.ASSOCIATION);
-			
+
 			RoleInterface experimentUserAssociationTargetRole = DomainObjectFactory.getInstance().createRole();
 			experimentUserAssociationTargetRole.setName("Experiment-User association target Role");
 			experimentUserAssociationTargetRole.setMaximumCardinality(Cardinality.MANY);
@@ -834,7 +823,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			group.addEntity(study);
 			group.addEntity(experiment);
 			group.addEntity(user);
-						
+
 			EntityGroupManager.getInstance().persistEntityGroup(group);
 
 			// Create a category.
@@ -901,15 +890,15 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			userCategoryEntityCategoryAttribute2.setAttribute(userAttributeCollection.get(1));
 			userCategoryEntityCategoryAttribute2.setCategoryEntity(userCategoryEntity);
 			userCategoryEntity.getCategoryAttributeCollection().add(userCategoryEntityCategoryAttribute2);
-			
+
 			// Add path information
 			PathInterface path = DomainObjectFactory.getInstance().createPath();
-			
+
 			PathAssociationRelationInterface pathAssociationRelation1 = DomainObjectFactory.getInstance().createPathAssociationRelation();
 			pathAssociationRelation1.setAssociation((Association) studyExperimentAssociation);
 			pathAssociationRelation1.setPathSequenceNumber(1);
 			pathAssociationRelation1.setPath((Path) path);
-			
+
 			PathAssociationRelationInterface pathAssociationRelation2 = DomainObjectFactory.getInstance().createPathAssociationRelation();
 			pathAssociationRelation2.setAssociation((Association) experimentUserAssociation);
 			pathAssociationRelation2.setPathSequenceNumber(2);
@@ -917,22 +906,22 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 			path.getPathAssociationRelationCollection().add(pathAssociationRelation1);
 			path.getPathAssociationRelationCollection().add(pathAssociationRelation2);
-			
+
 			experimentCategoryEntity.setPath(path);
 			userCategoryEntity.setPath(path);
-			
+
 			// Add category associations.
 			CategoryAssociationInterface studyExperimentCategoryEntityAssociation = DomainObjectFactory.getInstance().createCategoryAssociation();
 			studyExperimentCategoryEntityAssociation.setName("Study Experiment Category Entity Association");
 			studyExperimentCategoryEntityAssociation.setCategoryEntity((CategoryEntity) studyCategoryEntity);
 			studyExperimentCategoryEntityAssociation.setTargetCategoryEntity((CategoryEntity) experimentCategoryEntity);
 			studyCategoryEntity.setCategoryAssociation(studyExperimentCategoryEntityAssociation);
-			
+
 			CategoryAssociationInterface experimentUserCategoryEntityAssociation = DomainObjectFactory.getInstance().createCategoryAssociation();
 			experimentUserCategoryEntityAssociation.setName("Experiment User Category Entity Association");
 			experimentUserCategoryEntityAssociation.setCategoryEntity((CategoryEntity) experimentCategoryEntity);
 			experimentUserCategoryEntityAssociation.setTargetCategoryEntity((CategoryEntity) userCategoryEntity);
-			experimentCategoryEntity.setCategoryAssociation(experimentUserCategoryEntityAssociation);	
+			experimentCategoryEntity.setCategoryAssociation(experimentUserCategoryEntityAssociation);
 
 			// Add child category entities to each root catergory entity.
 			studyCategoryEntity.getChildCategories().add(experimentCategoryEntity);
@@ -971,11 +960,11 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 			categoryDataMap.put(experimentCategoryEntity.getCategoryAssociation(), dataValueList);
 
-//			Map<AbstractAttributeInterface, Object> entityDataMap = new HashMap<AbstractAttributeInterface, Object>();
-//			entityDataMap = CategoryManager.getInstance().generateEntityDataValueMap(rootCategoryEntity, entityDataMap, categoryDataMap,
-//					new ArrayList<Association>());
-			
-//			EntityManager.getInstance().insertData(rootCategoryEntity.getEntity(), entityDataMap);
+			//			Map<AbstractAttributeInterface, Object> entityDataMap = new HashMap<AbstractAttributeInterface, Object>();
+			//			entityDataMap = CategoryManager.getInstance().generateEntityDataValueMap(rootCategoryEntity, entityDataMap, categoryDataMap,
+			//					new ArrayList<Association>());
+
+			//			EntityManager.getInstance().insertData(rootCategoryEntity.getEntity(), entityDataMap);
 
 			System.out.println("EXITING testTransformCategoryDataMapWithThreeCategoryEntities METHOD");
 		}

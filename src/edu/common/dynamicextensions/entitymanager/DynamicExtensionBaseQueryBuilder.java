@@ -812,7 +812,8 @@ class DynamicExtensionBaseQueryBuilder
         List queryList = new ArrayList();
 
 		//get query to create main table with primitive attributes.
-		queryList.addAll(getCreateCategoryMainTableQuery(category, reverseQueryList));
+        if (category.getId() == null)
+        	queryList.addAll(getCreateCategoryMainTableQuery(category, reverseQueryList));
 
 		return queryList;
     }

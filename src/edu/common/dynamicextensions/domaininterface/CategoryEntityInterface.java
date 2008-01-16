@@ -86,4 +86,5 @@ public interface CategoryEntityInterface extends AbstractEntityInterface
 	public CategoryAssociationInterface getCategoryAssociation();
 
 	public void setCategoryAssociation(CategoryAssociationInterface categoryAssociation);
+	
 }

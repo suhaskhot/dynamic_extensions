@@ -38,8 +38,6 @@ public abstract class DynamicExtensionBaseDomainObject extends AbstractDomainObj
 
     }
     
-    
-
 	/** 
 	 * @see edu.wustl.common.domain.AbstractDomainObject#setId(java.lang.Long)
 	 */

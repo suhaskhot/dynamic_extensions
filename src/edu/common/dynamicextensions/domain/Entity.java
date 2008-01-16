@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -57,7 +56,6 @@ public class Entity extends AbstractEntity implements EntityInterface
 	 */
 	protected EntityInterface parentEntity = null;
 
-
 	/**
 	 * indicates if this enitity is abstract or not.
 	 */
@@ -102,22 +100,22 @@ public class Entity extends AbstractEntity implements EntityInterface
 	{
 	}
 
-    /**
-     * @hibernate.many-to-one column="ENTITY_GROUP_ID" cascade="save-update" class="edu.common.dynamicextensions.domain.EntityGroup"
-     * @return the entityGroup
-     */
-    public EntityGroupInterface getEntityGroup()
-    {
-        return entityGroup;
-    }
+	/**
+	 * @hibernate.many-to-one column="ENTITY_GROUP_ID" cascade="save-update" class="edu.common.dynamicextensions.domain.EntityGroup"
+	 * @return the entityGroup
+	 */
+	public EntityGroupInterface getEntityGroup()
+	{
+		return entityGroup;
+	}
 
-    /**
-     * @param entityGroup the entityGroup to set
-     */
-    public void setEntityGroup(EntityGroupInterface entityGroup)
-    {
-        this.entityGroup = entityGroup;
-    }
+	/**
+	 * @param entityGroup the entityGroup to set
+	 */
+	public void setEntityGroup(EntityGroupInterface entityGroup)
+	{
+		this.entityGroup = entityGroup;
+	}
 
 	/**
 	 * This method adds an AbstractAttribute to the Entity's Collection of AbstractAttribute.
@@ -157,8 +155,7 @@ public class Entity extends AbstractEntity implements EntityInterface
 	 * This method sets the abstractAttributeCollection to the given Collection of AbstractAttribute.
 	 * @param abstractAttributeCollection The abstractAttributeCollection to set.
 	 */
-	public void setAbstractAttributeCollection(
-			Collection<AbstractAttributeInterface> abstractAttributeCollection)
+	public void setAbstractAttributeCollection(Collection<AbstractAttributeInterface> abstractAttributeCollection)
 	{
 		this.abstractAttributeCollection = abstractAttributeCollection;
 	}
@@ -472,29 +469,30 @@ public class Entity extends AbstractEntity implements EntityInterface
 		AttributeCollection.addAll(getAttributeCollection());
 		return AttributeCollection;
 	}
+
 	/**
 	 * getEntityAttributesForQuery.
 	 */
-    public Collection<AttributeInterface> getEntityAttributesForQuery()
-    {
-        Collection<AttributeInterface> AttributeCollection = new ArrayList<AttributeInterface>();
-        AttributeCollection.addAll(getAttributeCollection());
-        EntityInterface parentEntity = this.parentEntity;
+	public Collection<AttributeInterface> getEntityAttributesForQuery()
+	{
+		Collection<AttributeInterface> AttributeCollection = new ArrayList<AttributeInterface>();
+		AttributeCollection.addAll(getAttributeCollection());
+		EntityInterface parentEntity = this.parentEntity;
 
-        while (parentEntity != null)
-        {
-            Collection parentAttributeCollection = parentEntity.getAttributeCollection();
-            Iterator parentAttributeCollectionIterator = parentAttributeCollection.iterator();
-            while(parentAttributeCollectionIterator.hasNext())
-            {
-                AttributeInterface nextAttribute = (AttributeInterface) parentAttributeCollectionIterator.next();;
-                nextAttribute.setEntity(this);
-                AttributeCollection.add(nextAttribute);
-            }
-            parentEntity = parentEntity.getParentEntity();
-        }
+		while (parentEntity != null)
+		{
+			Collection parentAttributeCollection = parentEntity.getAttributeCollection();
+			Iterator parentAttributeCollectionIterator = parentAttributeCollection.iterator();
+			while (parentAttributeCollectionIterator.hasNext())
+			{
+				AttributeInterface nextAttribute = (AttributeInterface) parentAttributeCollectionIterator.next();;
+				nextAttribute.setEntity(this);
+				AttributeCollection.add(nextAttribute);
+			}
+			parentEntity = parentEntity.getParentEntity();
+		}
 
-        return AttributeCollection;
-    }
+		return AttributeCollection;
+	}
 
 }

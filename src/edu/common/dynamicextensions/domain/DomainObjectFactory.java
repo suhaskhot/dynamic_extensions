@@ -13,6 +13,7 @@ import java.util.Date;
 import edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
+import edu.common.dynamicextensions.domain.userinterface.CategoryAssociationControl;
 import edu.common.dynamicextensions.domain.userinterface.CheckBox;
 import edu.common.dynamicextensions.domain.userinterface.ComboBox;
 import edu.common.dynamicextensions.domain.userinterface.Container;
@@ -56,6 +57,7 @@ import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.CategoryAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -844,6 +846,14 @@ public class DomainObjectFactory
 	public CategoryAssociationInterface createCategoryAssociation()
 	{
 		return new CategoryAssociation();
+	}
+	
+	/**
+	 * @return IdGeneratorInterface
+	 */
+	public CategoryAssociationControlInterface createCategoryAssociationControl()
+	{
+		return new CategoryAssociationControl();
 	}
 
 }

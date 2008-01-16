@@ -5079,6 +5079,18 @@ public class EntityManager
 	}
 	
 	/**
+	 * This method helps to retrive entity information selectively.It returns a list of EntityInformationObjects.
+	 * 
+	 * EntityInformationObject contains name and identifier if entity.This object does not have any other 
+	 * entity information.
+	 * 
+	 * EntityInformationObject contains a collection of AttributeInformationObject.AttributeInformationObject 
+	 * contains name and identifier of the attribute.
+	 * 
+	 * EntityInformationObject contains a collection of AssociationInformationObject.AssociationInformationObject 
+	 * contains name,identifier,source role name, target role name,source entity name ,target entity name
+	 * of the association.
+	 *  
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllContainerBeans()
 	 */
 	public List<EntityInformationObject> getAllEntityInformationObjects()
@@ -5104,6 +5116,9 @@ public class EntityManager
 	}
 
 	/**
+	 * This method returns a collection of AttributeInformationObject.AttributeInformationObject 
+	 * contains name and identifier of the attribute. 
+	 * 
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllContainerBeans()
 	 */
 	private List<AttributeInformationObject> getAllAttributeInformationObjects(
@@ -5129,6 +5144,10 @@ public class EntityManager
 	}
 
 	/**
+	 * This method returns a collection of AssociationInformationObject.AssociationInformationObject 
+	 * contains name,identifier,source role name, target role name,source entity name ,target entity name
+	 * of the association. 
+	 * 
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllContainerBeans()
 	 */
 	private List<AssociationInformationObject> getAllAssociationInformationObjects(

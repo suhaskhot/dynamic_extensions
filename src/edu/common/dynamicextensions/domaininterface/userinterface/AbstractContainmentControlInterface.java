@@ -11,5 +11,7 @@ public interface AbstractContainmentControlInterface extends ControlInterface
 	 * @param container The container to set.
 	 */
 	void setContainer(ContainerInterface container);
+	
+	public boolean isCardinalityOneToMany();
 
 }

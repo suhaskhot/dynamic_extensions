@@ -2,7 +2,7 @@ package edu.common.dynamicextensions.domaininterface;
 
 import java.util.Collection;
 
-public interface CategoryAttributeInterface extends AbstractMetadataInterface
+public interface CategoryAttributeInterface extends BaseAbstractAttributeInterface
 {
 	/**
 	 *

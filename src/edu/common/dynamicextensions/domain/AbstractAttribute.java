@@ -6,6 +6,7 @@ import java.util.HashSet;
 
 import edu.common.dynamicextensions.domain.userinterface.Control;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 
@@ -17,7 +18,7 @@ import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterfac
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  * @hibernate.cache  usage="read-write"
  */
-public abstract class AbstractAttribute extends BaseAbstractAttribute implements AbstractAttributeInterface
+public abstract class AbstractAttribute extends BaseAbstractAttribute implements AbstractAttributeInterface,AbstractMetadataInterface
 {
 	/**
 	 * Serial Version Unique Identifier

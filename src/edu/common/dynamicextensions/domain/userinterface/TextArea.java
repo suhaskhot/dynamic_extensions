@@ -5,6 +5,7 @@ import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.AttibuteMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.Constants;
@@ -85,7 +86,7 @@ public class TextArea extends Control implements TextAreaInterface
 		String defaultValue = (String) this.value;
 		if (this.value == null)
 		{
-			defaultValue = ControlsUtility.getDefaultValue((AbstractAttributeInterface)this.getBaseAbstractAttribute());
+			defaultValue = this.getAttibuteMetadataInterface().getDefaultValue();
 		}
 
 		String htmlComponentName = getHTMLComponentName();
@@ -115,25 +116,10 @@ public class TextArea extends Control implements TextAreaInterface
 		}
 		
 		int maxChars = 0;
-		AttributeInterface attribute = (AttributeInterface) this.getBaseAbstractAttribute();
-		if (attribute != null)
+		AttibuteMetadataInterface attibute =  this.getAttibuteMetadataInterface();
+		if (attibute != null)
 		{
-			AttributeTypeInformationInterface attributeTypeInformationInterface = attribute
-					.getAttributeTypeInformation();
-			if (attributeTypeInformationInterface != null)
-			{
-				if (attributeTypeInformationInterface instanceof StringAttributeTypeInformation)
-				{
-					StringAttributeTypeInformation stringAttributeTypeInformation = (StringAttributeTypeInformation) attributeTypeInformationInterface;
-					if (stringAttributeTypeInformation != null)
-					{
-						if(stringAttributeTypeInformation.getSize() != null)
-						{
-						maxChars = stringAttributeTypeInformation.getSize().intValue();
-						}
-					}
-				}
-			}
+			maxChars = attibute.getMaxSize();
 		}
 		
 		if(maxChars > 0)

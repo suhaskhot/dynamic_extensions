@@ -4,7 +4,6 @@ package edu.common.dynamicextensions.domain.userinterface;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
@@ -105,7 +104,7 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		{
 			valueList = new ArrayList<String>();
 
-			String defaultValue = ControlsUtility.getDefaultValue((AbstractAttributeInterface)this.getBaseAbstractAttribute());
+			String defaultValue = this.getAttibuteMetadataInterface().getDefaultValue();
 			if (defaultValue != null && defaultValue.trim().length() != 0)
 			{
 				valueList.add(defaultValue);

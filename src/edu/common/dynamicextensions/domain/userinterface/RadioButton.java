@@ -4,7 +4,6 @@ package edu.common.dynamicextensions.domain.userinterface;
 import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
@@ -44,7 +43,7 @@ public class RadioButton extends Control implements RadioButtonInterface
 		String defaultValue = (String) this.value;
 		if (defaultValue == null)
 		{
-			defaultValue = ControlsUtility.getDefaultValue((AttributeInterface)this.getBaseAbstractAttribute());
+			defaultValue = this.getAttibuteMetadataInterface().getDefaultValue();
 			if (defaultValue == null || defaultValue.length() == 0)
 			{
 				defaultValue = "";

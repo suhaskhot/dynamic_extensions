@@ -13,8 +13,10 @@ import java.util.Map;
 
 import edu.common.dynamicextensions.domain.AbstractEntity;
 import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
-import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
+import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.CategoryAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -81,7 +83,7 @@ public class Container extends DynamicExtensionBaseDomainObject
     /**
      *
      */
-    protected Map<AbstractAttributeInterface, Object> containerValueMap = new HashMap<AbstractAttributeInterface, Object>();
+    protected Map containerValueMap = new HashMap<BaseAbstractAttributeInterface, Object>();
     /**
      * Entity to which this container is associated.
      */
@@ -105,6 +107,7 @@ public class Container extends DynamicExtensionBaseDomainObject
      */
     protected ContainerInterface incontextContainer = this;
 
+    private boolean addCaption = true;
     /**
      * @return
      */
@@ -402,11 +405,10 @@ public class Container extends DynamicExtensionBaseDomainObject
     {
         StringBuffer stringBuffer = new StringBuffer();
 
-        stringBuffer.append("<tr>");
-        stringBuffer.append("<td class='formTitle' colspan='3' align='left'>");
-        stringBuffer.append(this.getCaption());
-        stringBuffer.append("</td>");
-        stringBuffer.append("</tr>");
+        if(addCaption){
+        	addCaption(stringBuffer);
+        }
+        
 
         /*	List<ControlInterface> controlsList = new ArrayList<ControlInterface>(this
          .getControlCollection());
@@ -417,30 +419,28 @@ public class Container extends DynamicExtensionBaseDomainObject
         {
             Object value = containerValueMap.get(control.getBaseAbstractAttribute());
             control.setValue(value);
-            if (this.showAssociationControlsAsLink
-                    && control instanceof ContainmentAssociationControl)
-            {
-                ContainmentAssociationControl containmentAssociationControl = (ContainmentAssociationControl) control;
-                String link = generateLink(containmentAssociationControl.getParentContainer());
-                link = UserInterfaceiUtility.getControlHTMLAsARow(control, link);
-                stringBuffer.append(link);
-            }
-            else
-            {
-                stringBuffer.append(control.generateHTML());
-            }
+            stringBuffer.append(control.generateHTML());
         }
         this.showAssociationControlsAsLink = false;
         return stringBuffer.toString();
     }
 
-    /**
+    private void addCaption(StringBuffer stringBuffer)
+	{
+    	stringBuffer.append("<tr>");
+        stringBuffer.append("<td class='formTitle' colspan='3' align='left'>");
+        stringBuffer.append(this.getCaption());
+        stringBuffer.append("</td>");
+        stringBuffer.append("</tr>");
+	}
+
+	/**
      *
      * @return
      * @throws DynamicExtensionsSystemException
      */
     public String generateControlsHTMLAsGrid(
-            List<Map<AbstractAttributeInterface, Object>> valueMapList)
+            List<Map<BaseAbstractAttributeInterface, Object>> valueMapList)
             throws DynamicExtensionsSystemException
     {
         return UserInterfaceiUtility.generateHTMLforGrid(this, valueMapList);
@@ -449,7 +449,7 @@ public class Container extends DynamicExtensionBaseDomainObject
     /**
      * @return
      */
-    public Map<AbstractAttributeInterface, Object> getContainerValueMap()
+    public Map<BaseAbstractAttributeInterface, Object> getContainerValueMap()
     {
         return containerValueMap;
     }
@@ -457,7 +457,7 @@ public class Container extends DynamicExtensionBaseDomainObject
     /**
      * @param containerValueMap
      */
-    public void setContainerValueMap(Map<AbstractAttributeInterface, Object> containerValueMap)
+    public void setContainerValueMap(Map<BaseAbstractAttributeInterface, Object> containerValueMap)
     {
         this.containerValueMap = containerValueMap;
     }
@@ -556,5 +556,15 @@ public class Container extends DynamicExtensionBaseDomainObject
     {
         this.incontextContainer = incontextContainer;
     }
+
+	public boolean isAddCaption()
+	{
+		return addCaption;
+	}
+
+	public void setAddCaption(boolean addCaption)
+	{
+		this.addCaption = addCaption;
+	}
 
 }

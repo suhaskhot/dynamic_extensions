@@ -7,6 +7,7 @@ import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.AttibuteMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.Constants;
@@ -127,25 +128,10 @@ public class TextField extends Control implements TextFieldInterface
 			}
 
 			int maxChars = 0;
-			AttributeInterface attribute = (AttributeInterface) this.getBaseAbstractAttribute();
-			if (attribute != null)
+			AttibuteMetadataInterface attibute =  this.getAttibuteMetadataInterface();
+			if (attibute != null)
 			{
-				AttributeTypeInformationInterface attributeTypeInformationInterface = attribute
-						.getAttributeTypeInformation();
-				if (attributeTypeInformationInterface != null)
-				{
-					if (attributeTypeInformationInterface instanceof StringAttributeTypeInformation)
-					{
-						StringAttributeTypeInformation stringAttributeTypeInformation = (StringAttributeTypeInformation) attributeTypeInformationInterface;
-						if (stringAttributeTypeInformation != null)
-						{
-							if(stringAttributeTypeInformation.getSize() != null)
-							{
-							maxChars = stringAttributeTypeInformation.getSize().intValue();
-							}
-						}
-					}
-				}
+				maxChars = attibute.getMaxSize();
 			}
 			if (maxChars != 0)
 			{
@@ -156,7 +142,8 @@ public class TextField extends Control implements TextFieldInterface
 				htmlString += "/>";
 			}
 
-			String measurementUnit = getMeasurementUnit((AbstractAttributeInterface)this.getBaseAbstractAttribute());
+			//String measurementUnit = getMeasurementUnit(this.getAbstractAttribute());
+			String measurementUnit = this.getAttibuteMetadataInterface().getMeasurementUnit();
 			if (measurementUnit != null)
 			{
 				if (measurementUnit.equalsIgnoreCase("none"))
@@ -177,31 +164,7 @@ public class TextField extends Control implements TextFieldInterface
 	{
 	}
 
-	/**
-	 * This method returns the measurement units of the numeric attribute associated with this Control.
-	 * @param abstractAttribute AbstractAttribute whose measurement units are to be known.
-	 * @return the measurement units of the numeric attribute associated with this Control.
-	 */
-	private String getMeasurementUnit(AbstractAttributeInterface abstractAttribute)
-	{
-		String measurementUnit = null;
-		AttributeTypeInformationInterface attributeTypeInformationInterface = DynamicExtensionsUtility
-				.getAttributeTypeInformation(abstractAttribute);
-		if (attributeTypeInformationInterface != null)
-		{
-			if (attributeTypeInformationInterface instanceof LongAttributeTypeInformation)
-			{
-				LongAttributeTypeInformation longAttribute = (LongAttributeTypeInformation) attributeTypeInformationInterface;
-				measurementUnit = longAttribute.getMeasurementUnits();
-			}
-			else if (attributeTypeInformationInterface instanceof DoubleAttributeTypeInformation)
-			{
-				DoubleAttributeTypeInformation doubleAttribute = (DoubleAttributeTypeInformation) attributeTypeInformationInterface;
-				measurementUnit = doubleAttribute.getMeasurementUnits();
-			}
-		}
-		return measurementUnit;
-	}
+	
 
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface#getIsUrl()
@@ -245,16 +208,16 @@ public class TextField extends Control implements TextFieldInterface
 
 	private String getDefaultValue()
 	{
-		String defaultValue = (String) this.value;
+		String defaultValue = String.valueOf(this.value);
 		if (isUrl != null && isUrl.booleanValue() == true)
 		{
-			defaultValue = ControlsUtility.getDefaultValue((AttributeInterface)this.getBaseAbstractAttribute());
+			defaultValue = this.getAttibuteMetadataInterface().getDefaultValue();
 		}
 		else
 		{
 			if (this.value == null)
 			{
-				defaultValue = ControlsUtility.getDefaultValue((AttributeInterface)this.getBaseAbstractAttribute());
+				defaultValue = this.getAttibuteMetadataInterface().getDefaultValue();
 				if (defaultValue == null || (defaultValue.length() == 0))
 				{
 					defaultValue = "";

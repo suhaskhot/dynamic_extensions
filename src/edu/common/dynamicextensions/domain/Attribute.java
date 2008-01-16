@@ -8,7 +8,10 @@ import java.util.Iterator;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.CaDSRValueDomainInfoInterface;
+import edu.common.dynamicextensions.domaininterface.AttibuteMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
+import edu.common.dynamicextensions.ui.util.ControlsUtility;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 
 /**
  * Entites have attributes that distinguishes them form other entities.
@@ -19,7 +22,7 @@ import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPro
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  * @hibernate.cache  usage="read-write"
  */
-public class Attribute extends AbstractAttribute implements AttributeInterface
+public class Attribute extends AbstractAttribute implements AttributeInterface,AttibuteMetadataInterface
 {
 
 	/**
@@ -336,5 +339,73 @@ public class Attribute extends AbstractAttribute implements AttributeInterface
 			caDSRValueDomainInfoCollection.clear();
 		}
 		this.caDSRValueDomainInfoCollection.add((CaDSRValueDomainInfo)caDSRValueDomainInfoInterface);
+	}
+
+	public String getDefaultValue()
+	{
+		return ControlsUtility.getDefaultValue(this);
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.AttibuteMetadataInterface#getMaxSize()
+	 */
+	public int getMaxSize()
+	{
+		AttributeTypeInformationInterface attributeTypeInformationInterface = this
+					.getAttributeTypeInformation();
+		if (attributeTypeInformationInterface != null)
+		{
+			if (attributeTypeInformationInterface instanceof StringAttributeTypeInformation)
+			{
+				StringAttributeTypeInformation stringAttributeTypeInformation = (StringAttributeTypeInformation) attributeTypeInformationInterface;
+				if (stringAttributeTypeInformation != null)
+				{
+					if(stringAttributeTypeInformation.getSize() != null)
+					{
+						return stringAttributeTypeInformation.getSize().intValue();
+					}
+				}
+			}
+		}
+		return -1;
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.AttibuteMetadataInterface#getMeasurementUnit()
+	 */
+	public String getMeasurementUnit()
+	{
+		String measurementUnit = null;
+		AttributeTypeInformationInterface attributeTypeInformationInterface = DynamicExtensionsUtility
+				.getAttributeTypeInformation(this);
+		if (attributeTypeInformationInterface != null)
+		{
+			if (attributeTypeInformationInterface instanceof LongAttributeTypeInformation)
+			{
+				LongAttributeTypeInformation longAttribute = (LongAttributeTypeInformation) attributeTypeInformationInterface;
+				measurementUnit = longAttribute.getMeasurementUnits();
+			}
+			else if (attributeTypeInformationInterface instanceof DoubleAttributeTypeInformation)
+			{
+				DoubleAttributeTypeInformation doubleAttribute = (DoubleAttributeTypeInformation) attributeTypeInformationInterface;
+				measurementUnit = doubleAttribute.getMeasurementUnits();
+			}
+		}
+		return measurementUnit;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.AttibuteMetadataInterface#getDecimalPlaces()
+	 */
+	public int getDecimalPlaces()
+	{
+		AttributeTypeInformationInterface attributeTypeInformationInterface = this.getAttributeTypeInformation();
+		if (attributeTypeInformationInterface instanceof DoubleAttributeTypeInformation)
+		{
+			return  ((DoubleAttributeTypeInformation) attributeTypeInformationInterface).getDecimalPlaces();
+		}
+		return -1;
 	}
 }

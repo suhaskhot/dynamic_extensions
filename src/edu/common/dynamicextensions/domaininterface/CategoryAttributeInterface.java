@@ -25,11 +25,15 @@ public interface CategoryAttributeInterface extends BaseAbstractAttributeInterfa
      */
     public void setCategoryEntity(CategoryEntityInterface categoryEntityInterface);
     
-    public Collection<PermissibleValueInterface> getDefaultPermissibleValuesCollection();
+    /**
+     * 
+     * @return
+     */
+    public String getDefaultValue();
     
-    public void setDefaultPermissibleValuesCollection(Collection<PermissibleValueInterface> defaultPermissibleValuesCollection);
-    
-    public PermissibleValueInterface getDefaultValue();
-    
+    /**
+     * 
+     * @param permissibleValueInterface
+     */
     public void setDefaultValue(PermissibleValueInterface permissibleValueInterface);
 }

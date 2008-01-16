@@ -232,7 +232,7 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.PermissibleValue"   
 	 * @return Returns the dataElementCollection.
 	 */
-	public Collection<PermissibleValueInterface> getDefaultPermissibleValuesCollection()
+	private Collection<PermissibleValueInterface> getDefaultPermissibleValuesCollection()
 	{
 		return defaultPermissibleValuesCollection;
 	}
@@ -240,7 +240,7 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	/**
 	 * @param defaultPermissibleValuesCollection the defaultPermissibleValuesCollection to set
 	 */
-	public void setDefaultPermissibleValuesCollection(Collection<PermissibleValueInterface> defaultPermissibleValuesCollection)
+	private void setDefaultPermissibleValuesCollection(Collection<PermissibleValueInterface> defaultPermissibleValuesCollection)
 	{
 		this.defaultPermissibleValuesCollection = defaultPermissibleValuesCollection;
 	}

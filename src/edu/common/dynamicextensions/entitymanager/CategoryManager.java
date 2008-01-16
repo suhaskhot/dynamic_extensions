@@ -15,6 +15,9 @@ import edu.common.dynamicextensions.domain.CategoryAttribute;
 import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
@@ -102,57 +105,6 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	}
 
 	/**
-	 * Method to delete category metadata.
-	 * @param categoryInterface interface for Category
-	 * @throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
-	 */
-	public CategoryInterface deleteCategory(CategoryInterface categoryInterface) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
-	{
-		logDebug("deleteCategory", "entering the method");
-		Category category = (Category) categoryInterface;
-
-		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
-		Stack stack = new Stack();
-
-		try
-		{
-			hibernateDAO.openSession(null);
-
-			if (category.getId() != null)
-				hibernateDAO.delete(category);
-
-			hibernateDAO.commit();
-		}
-		catch (Exception e)
-		{
-			rollbackQueries(stack, category, e, hibernateDAO);
-
-			if (e instanceof DynamicExtensionsApplicationException)
-			{
-				throw (DynamicExtensionsApplicationException) e;
-			}
-			else
-			{
-				throw new DynamicExtensionsSystemException(e.getMessage(), e);
-			}
-		}
-		finally
-		{
-			try
-			{
-				hibernateDAO.closeSession();
-			}
-			catch (Exception e)
-			{
-				rollbackQueries(stack, category, e, hibernateDAO);
-			}
-		}
-		logDebug("persistCategory", "exiting the method");
-		return category;
-	}
-
-	/**
 	 *
 	 */
 	protected void preProcess(DynamicExtensionBaseDomainObjectInterface dynamicExtensionBaseDomainObject, List reverseQueryList,
@@ -183,10 +135,10 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	/**
 	 *
 	 */
-	public Long insertData(CategoryInterface category, Map<AbstractMetadataInterface, ?> dataValue) throws DynamicExtensionsApplicationException,
+	public Long insertData(CategoryInterface category, Map<BaseAbstractAttributeInterface, ?> dataValue) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException
 	{
-		List<Map<AbstractMetadataInterface, ?>> dataValueMapList = new ArrayList<Map<AbstractMetadataInterface, ?>>();
+		List<Map<BaseAbstractAttributeInterface, ?>> dataValueMapList = new ArrayList<Map<BaseAbstractAttributeInterface, ?>>();
 		dataValueMapList.add(dataValue);
 		List<Long> recordIdList = insertData(category, dataValueMapList);
 		return recordIdList.get(0);
@@ -195,9 +147,12 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	/**
 	 *
 	 */
-	public List<Long> insertData(CategoryInterface category, List<Map<AbstractMetadataInterface, ?>> dataValueMapList)
+	public List<Long> insertData(CategoryInterface category, List<Map<BaseAbstractAttributeInterface, ?>> categoryDataValueMapList)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
+		List<Map<AbstractAttributeInterface, ?>> EntityDataValueMapList = createEntityDataValueMapList(categoryDataValueMapList);
+		CategoryEntityInterface rootCategoryEntity = category.getRootCategoryElement();
+		EntityInterface entity = rootCategoryEntity.getEntity();
 		List<Long> recordIdList = new ArrayList<Long>();
 		HibernateDAO hibernateDAO = null;
 		try
@@ -205,14 +160,8 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			DAOFactory factory = DAOFactory.getInstance();
 			hibernateDAO = (HibernateDAO) factory.getDAO(Constants.HIBERNATE_DAO);
 			hibernateDAO.openSession(null);
-			NewEntityManagerInterface newEntityManager = NewEntityManager.getInstance();
-			for (Map<AbstractMetadataInterface, ?> dataValue : dataValueMapList)
-			{
-				EntityInterface entity = null;
-				List<Map<AbstractAttributeInterface, ?>> dataValueMap = new ArrayList<Map<AbstractAttributeInterface, ?>>();
-				recordIdList.addAll(newEntityManager.insertData(entity, dataValueMap));
-			}
-
+			EntityManagerInterface entityManager = EntityManager.getInstance();
+			entityManager.insertData(entity, EntityDataValueMapList);
 			hibernateDAO.commit();
 		}
 		catch (DynamicExtensionsApplicationException e)
@@ -238,6 +187,11 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		return recordIdList;
 	}
 
+	private List<Map<AbstractAttributeInterface, ?>> createEntityDataValueMapList(List<Map<BaseAbstractAttributeInterface, ?>> categoryDataValueMapList) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	/**
 	 *
 	 */
@@ -249,24 +203,29 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	/**
 	 * This method accepts a category data map and converts it to corresponding entity data map.
 	 */
-	public Map<AbstractAttributeInterface, Object> generateEntityDataValueMap(CategoryEntityInterface rootCategoryEntity,
-			Map<AbstractAttributeInterface, Object> entityDataMap, Map<AbstractMetadataInterface, Object> categoryDataMap,
-			List<Association> existingAssociationsList)
+	private Map<AbstractAttributeInterface, Object> generateEntityDataValueMap(CategoryEntityInterface rootCategoryEntity, Map<BaseAbstractAttributeInterface, Object> categoryDataMap,
+			List<AssociationInterface> existingAssociationsList)
 	{
-		Set<AbstractMetadataInterface> dataSet = categoryDataMap.keySet();
+		Map<AbstractAttributeInterface, Object> entityDataValueMap = new HashMap<AbstractAttributeInterface, Object>();
+		Set<BaseAbstractAttributeInterface> categoryDataMapKeys = categoryDataMap.keySet();
+		
+		AttributeInterface attributeInterface;
+		Object attributeValue;
 
-		for (AbstractMetadataInterface object : dataSet)
+		for (BaseAbstractAttributeInterface baseAbstractAttributeInterface: categoryDataMapKeys)
 		{
-			if (object instanceof CategoryAssociation)
+			if (baseAbstractAttributeInterface instanceof CategoryAssociation)
 			{
-				addDataForEntitiesOnPath(entityDataMap, categoryDataMap, (CategoryAssociation) object, existingAssociationsList);
+				addDataForEntitiesOnPath(entityDataValueMap, categoryDataMap, (CategoryAssociation) baseAbstractAttributeInterface, existingAssociationsList);
 			}
 			else
 			{
-				entityDataMap.put(((CategoryAttribute) object).getAttribute(), categoryDataMap.get(object));
+				attributeInterface = ((CategoryAttribute) baseAbstractAttributeInterface).getAttribute();
+				attributeValue = categoryDataMap.get(baseAbstractAttributeInterface);
+				entityDataValueMap.put(attributeInterface,attributeValue);
 			}
 		}
-		return entityDataMap;
+		return entityDataValueMap;
 	}
 
 	/**
@@ -277,8 +236,8 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @param existingAssociationsList
 	 */
 	private void addDataForEntitiesOnPath(Map<AbstractAttributeInterface, Object> entityDataMap,
-			Map<AbstractMetadataInterface, Object> categoryDataMap, CategoryAssociationInterface categoryAssociationInterface,
-			List<Association> existingAssociationsList)
+			Map<BaseAbstractAttributeInterface, Object> categoryDataMap, CategoryAssociationInterface categoryAssociationInterface,
+			List<AssociationInterface> existingAssociationsList)
 	{
 		Map<AbstractAttributeInterface, Object> dynamicDataMap = entityDataMap;
 
@@ -291,7 +250,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			}
 			if (associationRelationInterface.getAssociation().getTargetEntity() == categoryAssociationInterface.getCategoryEntity().getEntity())
 			{
-				List<Map<AbstractMetadataInterface, Object>> oldDataList = (List<Map<AbstractMetadataInterface, Object>>) categoryDataMap
+				List<Map<BaseAbstractAttributeInterface, Object>> oldDataList = (List<Map<BaseAbstractAttributeInterface, Object>>) categoryDataMap
 						.get(categoryAssociationInterface);
 				List<Map<AbstractAttributeInterface, Object>> newDataList = new ArrayList<Map<AbstractAttributeInterface, Object>>();
 
@@ -324,15 +283,15 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @param categoryDataMap
 	 * @param existingAssociationsList
 	 */
-	private void populateNewDataList(List<Map<AbstractMetadataInterface, Object>> oldDataList,
+	private void populateNewDataList(List<Map<BaseAbstractAttributeInterface, Object>> oldDataList,
 			List<Map<AbstractAttributeInterface, Object>> newDataList, Map<AbstractAttributeInterface, Object> entityDataMap,
-			Map<AbstractMetadataInterface, Object> categoryDataMap, List<Association> existingAssociationsList)
+			Map<BaseAbstractAttributeInterface, Object> categoryDataMap, List<AssociationInterface> existingAssociationsList)
 	{
 		Map<AbstractAttributeInterface, Object> newDataMap = null;
-		for (Map<AbstractMetadataInterface, Object> oldDataMap : oldDataList)
+		for (Map<BaseAbstractAttributeInterface, Object> oldDataMap : oldDataList)
 		{
 			newDataMap = new HashMap<AbstractAttributeInterface, Object>();
-			Set<AbstractMetadataInterface> dataSet = oldDataMap.keySet();
+			Set<BaseAbstractAttributeInterface> dataSet = oldDataMap.keySet();
 			for (AbstractMetadataInterface object : dataSet)
 			{
 				if (object instanceof CategoryAssociation)
@@ -354,9 +313,9 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @param association
 	 * @return true if an association has already been added, false otherwise.
 	 */
-	private boolean associationExists(List<Association> existingAssociationsList, Association association)
+	private boolean associationExists(List<AssociationInterface> existingAssociationsList, Association association)
 	{
-		for (Association currentAssociation : existingAssociationsList)
+		for (AssociationInterface currentAssociation : existingAssociationsList)
 		{
 			if (currentAssociation.getName().equals(association.getName()))
 				return true;

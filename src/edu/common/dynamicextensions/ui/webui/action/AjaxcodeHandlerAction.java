@@ -514,8 +514,8 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 			try
 			{
 				iGroupId = Long.parseLong(groupId);
-				Collection<ContainerInterface> containerInterfaceList = entityManager
-						.getAllContainersByEntityGroupId(iGroupId);
+				Collection<ContainerInterface> containerInterfaceList = null; /*entityManager
+						.getAllContainersByEntityGroupId(iGroupId);*/
 				if (containerInterfaceList != null)
 				{
 					//EntityInterface entity = null;

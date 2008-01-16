@@ -19,7 +19,7 @@ public class CategoryAssociation extends BaseAbstractAttribute implements Catego
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 12345678L;
 	
 	/**
 	 * 
@@ -28,10 +28,10 @@ public class CategoryAssociation extends BaseAbstractAttribute implements Catego
 
 	/**
 	 * @hibernate.set name="categoryEntityCollection" table="DYEXTN_CATEGORY_ENTITY"
-	 * cascade="all-delete-orphan" inverse="false" lazy="false"
-	 * @hibernate.collection-key column="CATEGORY_ENTITY_ID"
+	 * cascade="save-update" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="CATEGORY_ASSOCIATION_ID"
 	 * @hibernate.cache usage="read-write"
-	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.CategoryAssociation"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.CategoryEntity"
 	 * @return the categoryEntityCollection
 	 */
 	private Collection<CategoryEntityInterface> getCategoryEntityCollection()

@@ -297,7 +297,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	/**
 	 * @hibernate.set name="categoryAssociationCollection" table="DYEXTN_CATEGORY_ASSOCIATION"
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"
-	 * @hibernate.collection-key column="CATEGORY_ASSOCIATION_ID"
+	 * @hibernate.collection-key column="CATEGORY_ENTITY_ID"
 	 * @hibernate.cache usage="read-write"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.CategoryAssociation"
 	 * @return the categoryAssociationCollection
@@ -341,4 +341,5 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 		}
 		this.CategoryAssociationCollection.add(categoryAssociation);
 	}
+	
 }

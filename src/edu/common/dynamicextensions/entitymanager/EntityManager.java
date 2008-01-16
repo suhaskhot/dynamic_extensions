@@ -5087,7 +5087,7 @@ public class EntityManager
 	 * EntityInformationObject contains a collection of AttributeInformationObject.AttributeInformationObject 
 	 * contains name and identifier of the attribute.
 	 * 
-	 * EntityInformationObject contains a collection of AssociationInformationObject.AssociationInformationObject 
+	 * EntityInformationObject also contains a collection of AssociationInformationObject.AssociationInformationObject 
 	 * contains name,identifier,source role name, target role name,source entity name ,target entity name
 	 * of the association.
 	 *  

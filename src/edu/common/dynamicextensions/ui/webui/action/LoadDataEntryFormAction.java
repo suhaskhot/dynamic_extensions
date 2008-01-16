@@ -16,11 +16,14 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
-import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -65,17 +68,17 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 		}
 
 		LoadDataEntryFormProcessor loadDataEntryFormProcessor = LoadDataEntryFormProcessor.getInstance();
-		Map<AbstractAttributeInterface, Object> recordMap = loadDataEntryFormProcessor.getValueMapFromRecordId((EntityInterface) containerInterface.getAbstractEntity(),
+		Map<BaseAbstractAttributeInterface, Object> recordMap = loadDataEntryFormProcessor.getValueMapFromRecordId((AbstractEntityInterface) containerInterface.getAbstractEntity(),
 				recordId);
 
 		Stack<ContainerInterface> containerStack = (Stack<ContainerInterface>) CacheManager.getObjectFromCache(request, Constants.CONTAINER_STACK);
-		Stack<Map<AbstractAttributeInterface, Object>> valueMapStack = (Stack<Map<AbstractAttributeInterface, Object>>) CacheManager
+		Stack<Map<BaseAbstractAttributeInterface, Object>> valueMapStack = (Stack<Map<BaseAbstractAttributeInterface, Object>>) CacheManager
 				.getObjectFromCache(request, Constants.VALUE_MAP_STACK);
 		if (containerStack == null)
 		{
 			containerStack = new Stack<ContainerInterface>();
 			CacheManager.addObjectToCache(request, Constants.CONTAINER_STACK, containerStack);
-			valueMapStack = new Stack<Map<AbstractAttributeInterface, Object>>();
+			valueMapStack = new Stack<Map<BaseAbstractAttributeInterface, Object>>();
 			CacheManager.addObjectToCache(request, Constants.VALUE_MAP_STACK, valueMapStack);
 			UserInterfaceiUtility.addContainerInfo(containerStack, containerInterface, valueMapStack, recordMap);
 		}
@@ -195,24 +198,24 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @param valueMapStack
 	 */
 	private void updateStacks(HttpServletRequest request, DataEntryForm dataEntryForm, ContainerInterface containerInterface,
-			Map<AbstractAttributeInterface, Object> recordMap, Stack<ContainerInterface> containerStack,
-			Stack<Map<AbstractAttributeInterface, Object>> valueMapStack)
+			Map<BaseAbstractAttributeInterface, Object> recordMap, Stack<ContainerInterface> containerStack,
+			Stack<Map<BaseAbstractAttributeInterface, Object>> valueMapStack)
 	{
 		String dataEntryOperation = dataEntryForm.getDataEntryOperation();
 
 		if (dataEntryOperation != null && dataEntryOperation.equalsIgnoreCase("insertChildData") && (dataEntryForm.getErrorList().isEmpty()))
 		{
 			String childContainerId = dataEntryForm.getChildContainerId();
-			ContainmentAssociationControl associationControl = UserInterfaceiUtility.getAssociationControl(
+			AbstractContainmentControlInterface associationControl = UserInterfaceiUtility.getAssociationControl(
 					(ContainerInterface) containerStack.peek(), childContainerId);
 
-			Map<AbstractAttributeInterface, Object> containerValueMap = valueMapStack.peek();
+			Map<BaseAbstractAttributeInterface, Object> containerValueMap = valueMapStack.peek();
 			AssociationInterface association = (AssociationInterface) associationControl.getBaseAbstractAttribute();
-			List<Map<AbstractAttributeInterface, Object>> childContainerValueMapList = (List<Map<AbstractAttributeInterface, Object>>) containerValueMap
+			List<Map<BaseAbstractAttributeInterface, Object>> childContainerValueMapList = (List<Map<BaseAbstractAttributeInterface, Object>>) containerValueMap
 					.get(association);
 
-			Map<AbstractAttributeInterface, Object> childContainerValueMap = null;
-			if (UserInterfaceiUtility.isCardinalityOneToMany(associationControl))
+			Map<BaseAbstractAttributeInterface, Object> childContainerValueMap = null;
+			if (associationControl.isCardinalityOneToMany())
 			{
 				childContainerValueMap = childContainerValueMapList.get(Integer.parseInt(dataEntryForm.getChildRowId()) - 1);
 			}
@@ -239,10 +242,10 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * Append number of zeroes to the output depending on precision entered while creating the attribute of double type.
 	 * @param recordMap
 	 */
-	private void addPrecisionZeroes(Map<AbstractAttributeInterface, Object> recordMap)
+	private void addPrecisionZeroes(Map<BaseAbstractAttributeInterface, Object> recordMap)
 	{
 		// If the value is 1.48 and precision entered for it is 3, make it appear as 1.480
-		Set<AbstractAttributeInterface> recordMapKeySet = recordMap.keySet();
+		Set<BaseAbstractAttributeInterface> recordMapKeySet = recordMap.keySet();
 		Iterator iter = recordMapKeySet.iterator();
 
 		while (iter.hasNext())

@@ -15,10 +15,13 @@ import java.util.Stack;
 import javax.servlet.http.HttpServletRequest;
 
 import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
+import edu.common.dynamicextensions.domain.userinterface.AbstractContainmentControl;
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
-import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
@@ -42,7 +45,7 @@ public class UserInterfaceiUtility
 	 * @param containerInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public static String generateHTMLforGrid(ContainerInterface subContainer, List<Map<AbstractAttributeInterface, Object>> valueMapList)
+	public static String generateHTMLforGrid(ContainerInterface subContainer, List<Map<BaseAbstractAttributeInterface, Object>> valueMapList)
 			throws DynamicExtensionsSystemException
 	{
 		StringBuffer stringBuffer = new StringBuffer();
@@ -60,7 +63,7 @@ public class UserInterfaceiUtility
 		stringBuffer.append("<tr width='100%'><td colspan='3' class='formFieldContainer'>");
 		stringBuffer.append("<div style='display:none' id='" + subContainer.getId() + "_substitutionDiv'>");
 		stringBuffer.append("<table>");
-		subContainer.setContainerValueMap(new HashMap<AbstractAttributeInterface, Object>()); //empty hashmap to generate hidden row
+		subContainer.setContainerValueMap(new HashMap<BaseAbstractAttributeInterface, Object>()); //empty hashmap to generate hidden row
 		stringBuffer.append(getContainerHTMLAsARow(subContainer, -1));
 		stringBuffer.append("</table>");
 		stringBuffer.append("</div>");
@@ -105,7 +108,7 @@ public class UserInterfaceiUtility
 		if (valueMapList != null)
 		{
 			int index = 1;
-			for (Map<AbstractAttributeInterface, Object> rowValueMap : valueMapList)
+			for (Map<BaseAbstractAttributeInterface, Object> rowValueMap : valueMapList)
 			{
 				subContainer.setContainerValueMap(rowValueMap);
 				stringBuffer.append(getContainerHTMLAsARow(subContainer, index));
@@ -150,8 +153,13 @@ public class UserInterfaceiUtility
 	 */
 	public static boolean isControlRequired(ControlInterface controlInterface)
 	{
-		AbstractAttributeInterface abstractAttribute = (AbstractAttributeInterface) controlInterface.getBaseAbstractAttribute();
-		Collection<RuleInterface> ruleCollection = abstractAttribute.getRuleCollection();
+		BaseAbstractAttributeInterface abstractAttribute = (BaseAbstractAttributeInterface) controlInterface.getBaseAbstractAttribute();
+		/*//Quick fix: Insert category with association set in it is not working 
+		if(abstractAttribute == null){
+			return false;
+		}
+		//Quickfix ends
+*/		Collection<RuleInterface> ruleCollection = abstractAttribute.getRuleCollection();
 		boolean required = false;
 		if (ruleCollection != null && !ruleCollection.isEmpty())
 		{
@@ -175,7 +183,7 @@ public class UserInterfaceiUtility
 	 * @param valueMap
 	 */
 	public static void addContainerInfo(Stack<ContainerInterface> containerStack, ContainerInterface containerInterface,
-			Stack<Map<AbstractAttributeInterface, Object>> valueMapStack, Map<AbstractAttributeInterface, Object> valueMap)
+			Stack<Map<BaseAbstractAttributeInterface, Object>> valueMapStack, Map<BaseAbstractAttributeInterface, Object> valueMap)
 	{
 		containerStack.push(containerInterface);
 		valueMapStack.push(valueMap);
@@ -186,7 +194,7 @@ public class UserInterfaceiUtility
 	 * @param containerStack
 	 * @param valueMapStack
 	 */
-	public static void removeContainerInfo(Stack<ContainerInterface> containerStack, Stack<Map<AbstractAttributeInterface, Object>> valueMapStack)
+	public static void removeContainerInfo(Stack<ContainerInterface> containerStack, Stack<Map<BaseAbstractAttributeInterface, Object>> valueMapStack)
 	{
 		containerStack.pop();
 		valueMapStack.pop();
@@ -218,7 +226,7 @@ public class UserInterfaceiUtility
 	{
 
 		StringBuffer stringBuffer = new StringBuffer();
-		Map<AbstractAttributeInterface, Object> containerValueMap = container.getContainerValueMap();
+		Map<BaseAbstractAttributeInterface, Object> containerValueMap = container.getContainerValueMap();
 		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(container.getAllControls());
 
 		// Do not sort the controls list; it jumbles up the attribute order
@@ -276,25 +284,25 @@ public class UserInterfaceiUtility
 	 * @param childContainerId
 	 * @return
 	 */
-	public static ContainmentAssociationControl getAssociationControl(ContainerInterface containerInterface, String childContainerId)
+	public static AbstractContainmentControlInterface getAssociationControl(ContainerInterface containerInterface, String childContainerId)
 	{
 		Collection<ControlInterface> controlCollection = containerInterface.getAllControls();
 		for (ControlInterface control : controlCollection)
 		{
-			if (control instanceof ContainmentAssociationControl)
+			if (control instanceof AssociationControlInterface)
 			{
-				ContainmentAssociationControl containmentAssociationControl = (ContainmentAssociationControl) control;
-				String containmentAssociationControlId = containmentAssociationControl.getContainer().getId().toString();
+				AbstractContainmentControl abstractContainmentControl = (AbstractContainmentControl) control;
+				String containmentAssociationControlId = abstractContainmentControl.getContainer().getId().toString();
 				if (containmentAssociationControlId.equals(childContainerId))
 				{
-					return containmentAssociationControl;
+					return abstractContainmentControl;
 				}
 				else
 				{
-					containmentAssociationControl = getAssociationControl(containmentAssociationControl.getContainer(), childContainerId);
-					if (containmentAssociationControl != null)
+					abstractContainmentControl = (AbstractContainmentControl) getAssociationControl(abstractContainmentControl.getContainer(), childContainerId);
+					if (abstractContainmentControl != null)
 					{
-						return containmentAssociationControl;
+						return abstractContainmentControl;
 					}
 				}
 			}
@@ -344,7 +352,7 @@ public class UserInterfaceiUtility
 	 * This method returns true if the cardinality of the Containment Association is One to Many.
 	 * @return true if Caridnality is One to Many, false otherwise.
 	 */
-	public static boolean isCardinalityOneToMany(ContainmentAssociationControlInterface control)
+	public static boolean isCardinalityOneToMany(AbstractContainmentControlInterface control)
 	{
 		boolean isOneToMany = false;
 		AssociationInterface associationInterface = (AssociationInterface) control.getBaseAbstractAttribute();
@@ -361,13 +369,13 @@ public class UserInterfaceiUtility
 	 * @param container
 	 * @return
 	 */
-	public static boolean isDataPresent(Map<AbstractAttributeInterface, Object> valueMap)
+	public static boolean isDataPresent(Map<BaseAbstractAttributeInterface, Object> valueMap)
 	{
 		boolean isDataPresent = false;
 		if (valueMap != null)
 		{
-			Set<Map.Entry<AbstractAttributeInterface, Object>> mapEntrySet = valueMap.entrySet();
-			for (Map.Entry<AbstractAttributeInterface, Object> mapEntry : mapEntrySet)
+			Set<Map.Entry<BaseAbstractAttributeInterface, Object>> mapEntrySet = valueMap.entrySet();
+			for (Map.Entry<BaseAbstractAttributeInterface, Object> mapEntry : mapEntrySet)
 			{
 				Object value = mapEntry.getValue();
 				if (value != null)
@@ -394,7 +402,7 @@ public class UserInterfaceiUtility
 						}
 						else if ((valueObject != null) && (valueObject instanceof Map))
 						{
-							isDataPresent = isDataPresent((Map<AbstractAttributeInterface, Object>) valueObject);
+							isDataPresent = isDataPresent((Map<BaseAbstractAttributeInterface, Object>) valueObject);
 							break;
 						}
 					}
@@ -403,4 +411,6 @@ public class UserInterfaceiUtility
 		}
 		return isDataPresent;
 	}
+	
+	
 }

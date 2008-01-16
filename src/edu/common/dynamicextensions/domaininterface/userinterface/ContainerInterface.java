@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
+import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
@@ -154,18 +154,18 @@ public interface ContainerInterface extends DynamicExtensionBaseDomainObjectInte
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	String generateControlsHTMLAsGrid(List<Map<AbstractAttributeInterface, Object>> valueMap) throws DynamicExtensionsSystemException;
+	String generateControlsHTMLAsGrid(List<Map<BaseAbstractAttributeInterface, Object>> valueMap) throws DynamicExtensionsSystemException;
 
 	/**
 	 * @return
 	 */
-	Map<AbstractAttributeInterface, Object> getContainerValueMap();
+	Map<BaseAbstractAttributeInterface, Object> getContainerValueMap();
 
 
 	/**
 	 * @param containerValueMap
 	 */
-	void setContainerValueMap(Map<AbstractAttributeInterface, Object> containerValueMap);
+	void setContainerValueMap(Map<BaseAbstractAttributeInterface, Object> containerValueMap);
 
 	/**
 	 *
@@ -204,4 +204,20 @@ public interface ContainerInterface extends DynamicExtensionBaseDomainObjectInte
 	 * @param incontextContainer the incontextContainer to set
 	 */
 	void setIncontextContainer(ContainerInterface incontextContainer);
+	
+	/**
+	 * This method is used to decide whtere caption is to be added to the table or not
+	 * @return
+	 */
+	public boolean isAddCaption();
+
+	/**
+	 * @param addCaption
+	 */
+	public void setAddCaption(boolean addCaption);
+	
+    /**
+     * @see edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface#generateLinkHTML()
+     */
+    public String generateLink(ContainerInterface containerInterface)throws DynamicExtensionsSystemException;
 }

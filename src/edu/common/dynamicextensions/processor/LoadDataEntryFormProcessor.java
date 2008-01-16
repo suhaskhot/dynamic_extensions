@@ -6,7 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
+import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
@@ -51,7 +52,7 @@ public class LoadDataEntryFormProcessor
 	 */
 	public ContainerInterface loadDataEntryForm(AbstractActionForm actionForm,
 			ContainerInterface containerInterface,
-			Map<AbstractAttributeInterface, Object> valueMap, String mode, String recordIdentifier)
+			Map<BaseAbstractAttributeInterface, Object> valueMap, String mode, String recordIdentifier)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		DataEntryForm dataEntryForm = (DataEntryForm) actionForm;
@@ -96,17 +97,17 @@ public class LoadDataEntryFormProcessor
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Map<AbstractAttributeInterface, Object> getValueMapFromRecordId(
-			EntityInterface entityInterface, String recordIdentifier) throws NumberFormatException,
+	public Map<BaseAbstractAttributeInterface, Object> getValueMapFromRecordId(
+			AbstractEntityInterface entityInterface, String recordIdentifier) throws NumberFormatException,
 			DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		Map<AbstractAttributeInterface, Object> recordMap = new HashMap<AbstractAttributeInterface, Object>();
+		Map<BaseAbstractAttributeInterface, Object> recordMap = new HashMap<BaseAbstractAttributeInterface, Object>();
 		if (recordIdentifier != null && !recordIdentifier.equals(""))
 		{
-			//Get corresponding Entity of the Container
+			/*//Get corresponding Entity of the Container
 			EntityManagerInterface entityManager = EntityManager.getInstance();
 			recordMap = entityManager
-					.getRecordById(entityInterface, Long.valueOf(recordIdentifier));
+					.getRecordById(entityInterface, Long.valueOf(recordIdentifier));*/
 
 		}
 		return recordMap;

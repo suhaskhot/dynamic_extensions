@@ -11,7 +11,7 @@ import edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeI
  * @author Rahul Ner
  *
  */
-public interface AssociationControlInterface
+public interface AssociationControlInterface extends ControlInterface
 {
 
 	/**

@@ -7,6 +7,7 @@ import java.util.Iterator;
 
 import edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
@@ -23,7 +24,7 @@ import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  * @hibernate.cache  usage="read-write"
  */
-public class Association extends AbstractAttribute implements AssociationInterface
+public class Association extends AbstractAttribute implements AssociationInterface,AssociationMetadataInterface
 {
 
 	/**
@@ -399,4 +400,6 @@ public class Association extends AbstractAttribute implements AssociationInterfa
 	{
 		this.pathAssociationRelationColletion = pathAssociationRelationColletion;
 	}
+	
+	
 }

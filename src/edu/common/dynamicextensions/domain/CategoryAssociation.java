@@ -5,15 +5,17 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
+import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 
 /**
  * @author mandar_shidhore
  * @hibernate.joined-subclass table="DYEXTN_CATEGORY_ASSOCIATION"
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
-public class CategoryAssociation extends BaseAbstractAttribute implements CategoryAssociationInterface
+public class CategoryAssociation extends BaseAbstractAttribute implements CategoryAssociationInterface,AssociationMetadataInterface
 {
 
 	/**
@@ -72,6 +74,12 @@ public class CategoryAssociation extends BaseAbstractAttribute implements Catego
 			categoryEntityCollection.clear();
 		}
 		this.categoryEntityCollection.add(categoryEntity);
+	}
+
+	public Collection<RuleInterface> getRuleCollection()
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
 import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
 
 /**
@@ -17,7 +18,7 @@ import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
  * @author sujay_narkar
  *
  */
-public interface AssociationInterface extends AbstractAttributeInterface
+public interface AssociationInterface extends AssociationMetadataInterface,AbstractAttributeInterface
 {
 
 	/**
@@ -111,5 +112,6 @@ public interface AssociationInterface extends AbstractAttributeInterface
 	public Collection<PathAssociationRelationInterface> getPathAssociationRelationColletion();
 	
 	public void setPathAssociationRelationColletion(Collection<PathAssociationRelationInterface> pathAssociationRelationColletion);
+	
 
 }

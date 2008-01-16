@@ -7,7 +7,6 @@ import java.util.Iterator;
 
 import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
-import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 
 /**
@@ -25,61 +24,86 @@ public class CategoryAssociation extends BaseAbstractAttribute implements Catego
 	
 	/**
 	 * 
-	 */
-	protected Collection<CategoryEntityInterface> categoryEntityCollection = new HashSet<CategoryEntityInterface>();
-
-	/**
-	 * @hibernate.set name="categoryEntityCollection" table="DYEXTN_CATEGORY_ENTITY"
-	 * cascade="save-update" inverse="false" lazy="false"
-	 * @hibernate.collection-key column="CATEGORY_ASSOCIATION_ID"
-	 * @hibernate.cache usage="read-write"
-	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.CategoryEntity"
-	 * @return the categoryEntityCollection
-	 */
-	private Collection<CategoryEntityInterface> getCategoryEntityCollection()
-	{
-		return categoryEntityCollection;
-	}
-
-	/**
-	 * @param categoryEntityCollection the categoryEntityCollection to set
-	 */
-	private void setCategoryEntityCollection(Collection<CategoryEntityInterface> categoryEntityCollection)
-	{
-		this.categoryEntityCollection = categoryEntityCollection;
-	}
+	 */	
+	protected CategoryEntity categoryEntity;
 	
-	public CategoryEntityInterface getCategoryEntity()
-	{
-		CategoryEntityInterface categoryEntity = null;
-		if (categoryEntityCollection != null && !categoryEntityCollection.isEmpty())
-		{
-			Iterator categoryEntityCollectionIterator = categoryEntityCollection.iterator();
-			categoryEntity = (CategoryEntity) categoryEntityCollectionIterator.next();
-		}
+	/**
+	 * 
+	 */
+	protected Collection<CategoryEntity> targetCategoryEntityCollection = new HashSet<CategoryEntity>();
+	
+
+	/**
+	 * @hibernate.many-to-one column="CATEGORY_ENTIY_ID" class="edu.common.dynamicextensions.domain.CategoryEntity" constrained="true" 
+	 */
+	public CategoryEntity getCategoryEntity() {
 		return categoryEntity;
 	}
 
 	/**
-	 *
+	 * 
+	 * @param categoryEntity
 	 */
-	public void setCategoryEntity(CategoryEntityInterface categoryEntity)
+	public void setCategoryEntity(CategoryEntity categoryEntity) {
+		this.categoryEntity = categoryEntity;
+	}
+	
+
+	/**
+	 * @hibernate.set name="targetCategoryEntityCollection" table="DYEXTN_CATEGORY_ENTITY"
+	 * cascade="all-delete-orphan" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="CATEGORY_ASSOCIATION_ID"
+	 * @hibernate.cache usage="read-write"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.CategoryEntity"
+	 * @return the categoryAssociationCollection
+	 */
+	private Collection<CategoryEntity> getTargetCategoryEntityCollection() 
 	{
-		if (categoryEntityCollection == null)
+		return targetCategoryEntityCollection;
+	}
+
+	private void setTargetCategoryEntityCollection(Collection<CategoryEntity> targetCategoryEntityCollection) 
+	{
+		this.targetCategoryEntityCollection = targetCategoryEntityCollection;
+	}
+
+	/**
+	 * @return
+	 */
+	public CategoryEntity getTargetCategoryEntity()
+	{
+		CategoryEntity targetCategoryEntity = null;
+		if (targetCategoryEntityCollection != null && !targetCategoryEntityCollection.isEmpty())
 		{
-			categoryEntityCollection = new HashSet<CategoryEntityInterface>();
+			Iterator<CategoryEntity> targetCategoryEntityCollectionIterator = targetCategoryEntityCollection.iterator();
+			targetCategoryEntity = targetCategoryEntityCollectionIterator.next();
+		}
+		return targetCategoryEntity;
+	}
+	
+	/**
+	 * @param
+	 */
+	public void setTargetCategoryEntity(CategoryEntity targetCategoryEntity)
+	{
+		if (targetCategoryEntityCollection == null)
+		{
+			targetCategoryEntityCollection = new HashSet<CategoryEntity>();
 		}
 		else
 		{
-			categoryEntityCollection.clear();
+			targetCategoryEntityCollection.clear();
 		}
-		this.categoryEntityCollection.add(categoryEntity);
+		targetCategoryEntityCollection.add(targetCategoryEntity);
 	}
 
-	public Collection<RuleInterface> getRuleCollection()
-	{
+	/**
+	 * 
+	 */
+	public Collection<RuleInterface> getRuleCollection() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	
 }

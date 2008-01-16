@@ -1,13 +1,37 @@
 
 package edu.common.dynamicextensions.domaininterface;
 
-import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
+import edu.common.dynamicextensions.domain.CategoryEntity;
 
-public interface CategoryAssociationInterface extends BaseAbstractAttributeInterface 
+/**
+ * 
+ * @author sujay_narkar
+ *
+ */
+public interface CategoryAssociationInterface extends BaseAbstractAttributeInterface
 {
-	public CategoryEntityInterface getCategoryEntity();
+	/**
+	 * 
+	 * @return
+	 */
+	public CategoryEntity getCategoryEntity();
 
-	public void setCategoryEntity(CategoryEntityInterface categoryEntity);
+	/**
+	 * 
+	 * @param categoryEntity
+	 */
+	public void setCategoryEntity(CategoryEntity categoryEntity);
 	
+	/**
+	 * 
+	 * @return
+	 */
+	public CategoryEntity getTargetCategoryEntity();
+	
+	/**
+	 * 
+	 * @param targetCategoryEntity
+	 */
+	public void setTargetCategoryEntity(CategoryEntity targetCategoryEntity);
 
 }

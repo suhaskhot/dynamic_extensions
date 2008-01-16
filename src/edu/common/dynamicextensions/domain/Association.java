@@ -57,12 +57,6 @@ public class Association extends AbstractAttribute implements AssociationInterfa
 	 */
 	public Collection<ConstraintPropertiesInterface> constraintPropertiesCollection = new HashSet<ConstraintPropertiesInterface>();
 
-//	/**
-//	 * Collection of Path in Association.
-//	 */
-//	protected Collection<PathInterface> pathCollection = new HashSet<PathInterface>();
-	
-	protected Collection<PathAssociationRelationInterface> pathAssociationRelationColletion = new HashSet<PathAssociationRelationInterface>();
 
 	/**
 	 *
@@ -357,49 +351,5 @@ public class Association extends AbstractAttribute implements AssociationInterfa
         return null;
     }
 
-//	/**
-//	 * This method returns the Collection of the Paths in the Association.
-//	 * @hibernate.set name="pathCollection" table="DYEXTN_PATH_ASSOCIATION_REL"
-//	 * cascade="save-update" inverse="true" lazy="false"
-//	 * @hibernate.collection-key column="ASSOCIATION_ID"
-//	 * @hibernate.cache  usage="read-write"
-//	 * @hibernate.collection-many-to-many class="edu.common.dynamicextensions.domain.Path" column="PATH_ID"
-//	 * @return Returns the Collection of the Paths in the association.
-//	 */
-//	public Collection<PathInterface> getPathCollection()
-//	{
-//		return pathCollection;
-//	}
-//
-//	/**
-//	 *
-//	 * @param pathCollection
-//	 */
-//	public void setPathCollection(Collection<PathInterface> pathCollection)
-//	{
-//		this.pathCollection = pathCollection;
-//	}
 
-	/**
-	 * @hibernate.set name="pathAssociationRelationCollection" table="DYEXTN_PATH_ASSOCIATION_RELATION"
-	 * cascade="save-update" inverse="true" lazy="false"
-	 * @hibernate.collection-key column="ASSOCIATION_ID"
-	 * @hibernate.cache usage="read-write"
-	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.PathAssociationRelation"
-	 * @return the pathAssociationRelationColletion
-	 */
-	public Collection<PathAssociationRelationInterface> getPathAssociationRelationColletion()
-	{
-		return pathAssociationRelationColletion;
-	}
-
-	/**
-	 * @param pathAssociationRelationColletion the pathAssociationRelationColletion to set
-	 */
-	public void setPathAssociationRelationColletion(Collection<PathAssociationRelationInterface> pathAssociationRelationColletion)
-	{
-		this.pathAssociationRelationColletion = pathAssociationRelationColletion;
-	}
-	
-	
 }

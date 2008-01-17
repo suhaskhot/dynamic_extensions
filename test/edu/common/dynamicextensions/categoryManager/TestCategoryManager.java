@@ -16,6 +16,7 @@ import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
@@ -375,8 +376,6 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 	{
 		try
 		{
-			//CategoryInterface category = new MockCategoryManager().createCategoryWithPath();
-
 			CategoryInterface category = new MockCategoryManager().createCategoryWithPath();
 
 			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
@@ -930,7 +929,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			// Set root category entity for the category.
 			category.setRootCategoryElement((CategoryEntity) studyCategoryEntity);
 
-			Map<AbstractMetadataInterface, Object> categoryDataMap = new HashMap<AbstractMetadataInterface, Object>();
+			Map<BaseAbstractAttributeInterface, Object> categoryDataMap = new HashMap<BaseAbstractAttributeInterface, Object>();
 			categoryDataMap.put(studyCategoryEntityCategoryAttribute1, "Root Category Attribute 1");
 			categoryDataMap.put(studyCategoryEntityCategoryAttribute2, "Root Category Attribute 2");
 
@@ -953,18 +952,17 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 						map2.put(c, c.getName() + Math.random());
 					}
 					dataValueList2.add(map2);
-					map.put(userCategoryEntity.getCategoryAssociation(), dataValueList2);
+					map.put(experimentCategoryEntity.getCategoryAssociation(), dataValueList2);
 				}
 				dataValueList.add(map);
 			}
 
-			categoryDataMap.put(experimentCategoryEntity.getCategoryAssociation(), dataValueList);
+			categoryDataMap.put(studyCategoryEntity.getCategoryAssociation(), dataValueList);
 
-			//			Map<AbstractAttributeInterface, Object> entityDataMap = new HashMap<AbstractAttributeInterface, Object>();
-			//			entityDataMap = CategoryManager.getInstance().generateEntityDataValueMap(rootCategoryEntity, entityDataMap, categoryDataMap,
-			//					new ArrayList<Association>());
+			//Map<AbstractAttributeInterface, Object> entityDataMap = new HashMap<AbstractAttributeInterface, Object>();
+			Map<AbstractAttributeInterface, Object> entityDataMap = CategoryManager.getInstance().generateEntityDataValueMap(categoryDataMap);
 
-			//			EntityManager.getInstance().insertData(rootCategoryEntity.getEntity(), entityDataMap);
+//			EntityManager.getInstance().insertData(rootCategoryEntity.getEntity(), entityDataMap);
 
 			System.out.println("EXITING testTransformCategoryDataMapWithThreeCategoryEntities METHOD");
 		}

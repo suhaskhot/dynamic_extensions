@@ -10,7 +10,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
-import edu.common.dynamicextensions.domaininterface.AttibuteMetadataInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
@@ -22,7 +22,7 @@ import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterfac
  * @hibernate.joined-subclass table="DYEXTN_CATEGORY_ATTRIBUTE"
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
-public class CategoryAttribute extends BaseAbstractAttribute implements CategoryAttributeInterface, AttibuteMetadataInterface
+public class CategoryAttribute extends BaseAbstractAttribute implements CategoryAttributeInterface, AttributeMetadataInterface
 {
 
 	/**
@@ -259,7 +259,7 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 		}
 		else
 		{
-			return ((AttibuteMetadataInterface)this.attribute).getDefaultValue();
+			return ((AttributeMetadataInterface)this.attribute).getDefaultValue();
 		}
 	}
 
@@ -277,32 +277,32 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domaininterface.AttibuteMetadataInterface#getMaxSize()
+	 * @see edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface#getMaxSize()
 	 */
 	public int getMaxSize()
 	{
-		return ((AttibuteMetadataInterface)this.attribute).getMaxSize();
+		return ((AttributeMetadataInterface)this.attribute).getMaxSize();
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domaininterface.AttibuteMetadataInterface#getMeasurementUnit()
+	 * @see edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface#getMeasurementUnit()
 	 */
 	public String getMeasurementUnit()
 	{
-		return ((AttibuteMetadataInterface)this.attribute).getMeasurementUnit();
+		return ((AttributeMetadataInterface)this.attribute).getMeasurementUnit();
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domaininterface.AttibuteMetadataInterface#getDecimalPlaces()
+	 * @see edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface#getDecimalPlaces()
 	 */
 	public int getDecimalPlaces()
 	{
-		return ((AttibuteMetadataInterface)this.attribute).getDecimalPlaces();
+		return ((AttributeMetadataInterface)this.attribute).getDecimalPlaces();
 	}
 
 	public AttributeTypeInformationInterface getAttributeTypeInformation()
 	{
-		return ((AttibuteMetadataInterface)this.attribute).getAttributeTypeInformation();
+		return ((AttributeMetadataInterface)this.attribute).getAttributeTypeInformation();
 	}
 
 

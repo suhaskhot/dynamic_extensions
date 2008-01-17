@@ -8,7 +8,7 @@ import com.sun.org.apache.regexp.internal.recompile;
 import edu.common.dynamicextensions.domain.BaseAbstractAttribute;
 import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AttibuteMetadataInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -415,8 +415,8 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 		this.baseAbstractAttribute = (BaseAbstractAttribute) baseAbstractAttribute;
 	}
 	
-	public AttibuteMetadataInterface getAttibuteMetadataInterface(){
-		return (AttibuteMetadataInterface) baseAbstractAttribute;
+	public AttributeMetadataInterface getAttibuteMetadataInterface(){
+		return (AttributeMetadataInterface) baseAbstractAttribute;
 	}
 
 }

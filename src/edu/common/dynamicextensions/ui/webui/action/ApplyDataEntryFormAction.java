@@ -30,7 +30,7 @@ import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationC
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
-import edu.common.dynamicextensions.domaininterface.AttibuteMetadataInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
@@ -345,7 +345,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 					}
 
 					BaseAbstractAttributeInterface abstractAttribute = (BaseAbstractAttributeInterface) control.getBaseAbstractAttribute();
-					if (abstractAttribute instanceof AttibuteMetadataInterface)
+					if (abstractAttribute instanceof AttributeMetadataInterface)
 					{
 						collectAttributeValues(request, dataEntryForm, controlSequence, control,
 								attributeValueMap);
@@ -563,7 +563,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			}
 			else if (control instanceof TextFieldInterface)
 			{
-				AttributeTypeInformationInterface attributeTypeInformationInterface = ((AttibuteMetadataInterface) abstractAttribute)
+				AttributeTypeInformationInterface attributeTypeInformationInterface = ((AttributeMetadataInterface) abstractAttribute)
 						.getAttributeTypeInformation();
 				if (attributeTypeInformationInterface instanceof DoubleAttributeTypeInformation)
 				{

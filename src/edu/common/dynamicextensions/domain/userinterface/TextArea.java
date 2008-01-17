@@ -5,7 +5,7 @@ import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
-import edu.common.dynamicextensions.domaininterface.AttibuteMetadataInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.Constants;
@@ -116,7 +116,7 @@ public class TextArea extends Control implements TextAreaInterface
 		}
 		
 		int maxChars = 0;
-		AttibuteMetadataInterface attibute =  this.getAttibuteMetadataInterface();
+		AttributeMetadataInterface attibute =  this.getAttibuteMetadataInterface();
 		if (attibute != null)
 		{
 			maxChars = attibute.getMaxSize();

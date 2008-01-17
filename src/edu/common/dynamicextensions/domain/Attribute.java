@@ -8,7 +8,7 @@ import java.util.Iterator;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.CaDSRValueDomainInfoInterface;
-import edu.common.dynamicextensions.domaininterface.AttibuteMetadataInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
@@ -22,7 +22,7 @@ import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  * @hibernate.cache  usage="read-write"
  */
-public class Attribute extends AbstractAttribute implements AttributeInterface,AttibuteMetadataInterface
+public class Attribute extends AbstractAttribute implements AttributeInterface,AttributeMetadataInterface
 {
 
 	/**
@@ -348,7 +348,7 @@ public class Attribute extends AbstractAttribute implements AttributeInterface,A
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domaininterface.AttibuteMetadataInterface#getMaxSize()
+	 * @see edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface#getMaxSize()
 	 */
 	public int getMaxSize()
 	{
@@ -373,7 +373,7 @@ public class Attribute extends AbstractAttribute implements AttributeInterface,A
 	
 
 	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domaininterface.AttibuteMetadataInterface#getMeasurementUnit()
+	 * @see edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface#getMeasurementUnit()
 	 */
 	public String getMeasurementUnit()
 	{
@@ -397,7 +397,7 @@ public class Attribute extends AbstractAttribute implements AttributeInterface,A
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domaininterface.AttibuteMetadataInterface#getDecimalPlaces()
+	 * @see edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface#getDecimalPlaces()
 	 */
 	public int getDecimalPlaces()
 	{

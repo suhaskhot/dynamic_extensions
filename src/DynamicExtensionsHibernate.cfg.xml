@@ -98,6 +98,7 @@
         <mapping resource="edu/common/dynamicextensions/hbm/integration/EntityMapRecord.hbm.xml"/>
         <mapping resource="edu/common/dynamicextensions/hbm/IdGenerator.hbm.xml"/>
         <mapping resource="edu/common/dynamicextensions/hbm/Path.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/PathAssociationRelation.hbm.xml"/>
 
     </session-factory>
 

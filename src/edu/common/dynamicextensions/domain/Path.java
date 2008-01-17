@@ -35,39 +35,6 @@ public class Path extends DynamicExtensionBaseDomainObject implements PathInterf
 		super();
 	}
 
-	//    /**
-	//     * @hibernate.set name="associationCollection" table="DYEXTN_PATH_ASSOCIATION_REL"
-	//	 * cascade="save-update" inverse="false" lazy="false"
-	//	 * @hibernate.collection-key column="PATH_ID"
-	//	 * @hibernate.cache  usage="read-write"
-	//	 * @hibernate.collection-many-to-many class="edu.common.dynamicextensions.domain.Association" column="ASSOCIATION_ID"
-	//     */
-	//    public Collection<AssociationInterface> getAssociationCollection() {
-	//        return associationCollection;
-	//    }
-	//
-	//    /**
-	//     * @param associationCollection the associationCollection to set
-	//     */
-	//    public void setAssociationCollection(Collection<AssociationInterface> associationCollection) {
-	//        this.associationCollection = associationCollection;
-	//    }
-	//
-	//	public void addAssociation(AssociationInterface associationInterface)
-	//	{
-	//		// TODO Auto-generated method stub
-	//	}
-	//
-	//	public void removeAssociation(AssociationInterface associationInterface)
-	//	{
-	//		// TODO Auto-generated method stub
-	//	}
-	//
-	//	public void removeAllAssociations()
-	//	{
-	//		// TODO Auto-generated method stub
-	//	}
-
 	/**
 	 * This method returns the unique identifier of the Path.
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
@@ -101,7 +68,7 @@ public class Path extends DynamicExtensionBaseDomainObject implements PathInterf
 		this.pathAssociationRelationCollection = pathAssociationRelationCollection;
 	}
 
-	public Collection<PathAssociationRelationInterface> getSortedPathAssociationRelationCollection()
+	public List<PathAssociationRelationInterface> getSortedPathAssociationRelationCollection()
 	{
 		List PathAssociationRelationList = new ArrayList(getPathAssociationRelationCollection());
 		Collections.sort(PathAssociationRelationList);

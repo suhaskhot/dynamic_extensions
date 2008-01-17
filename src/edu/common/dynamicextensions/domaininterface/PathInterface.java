@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.domaininterface;
 
 import java.util.Collection;
+import java.util.List;
 
 import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
 
@@ -17,6 +18,6 @@ public interface PathInterface extends DynamicExtensionBaseDomainObjectInterface
 
 	public void setPathAssociationRelationCollection(Collection<PathAssociationRelationInterface> pathAssociationRelationCollection);
 
-	public Collection<PathAssociationRelationInterface> getSortedPathAssociationRelationCollection();
+	public List<PathAssociationRelationInterface> getSortedPathAssociationRelationCollection();
 
 }

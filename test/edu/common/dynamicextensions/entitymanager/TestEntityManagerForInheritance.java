@@ -50,7 +50,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 	public void testInheritanceGetAllAttributes()
 	{
 
-		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		EntityGroupInterface entityGroup = factory.createEntityGroup();
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
@@ -161,7 +161,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 	public void testGetAllChildrenEntities()
 	{
 
-		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		EntityGroupInterface entityGroup = factory.createEntityGroup();
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
@@ -279,7 +279,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 	public void testInsertDataForInheritance()
 	{
 
-		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		EntityGroupInterface entityGroup = factory.createEntityGroup();
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
@@ -414,7 +414,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 	public void testInsertDataForInheritanceParentNoData()
 	{
 
-		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		EntityGroupInterface entityGroup = factory.createEntityGroup();
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
@@ -516,7 +516,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 	public void testGetDataForInheritance()
 	{
 
-		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		EntityGroupInterface entityGroup = factory.createEntityGroup();
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
@@ -666,7 +666,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 	public void testInheritanceEditMetadataCreateChildWithParent()
 	{
 
-		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		EntityGroupInterface entityGroup = factory.createEntityGroup();
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
@@ -740,7 +740,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 	public void testInheritanceEditMetadataCreateChildWithEditedParent()
 	{
 
-		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		EntityGroupInterface entityGroup = factory.createEntityGroup();
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
@@ -811,7 +811,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 	public void testInheritanceEditMetadataEditChildWithUnsavedParent()
 	{
 
-		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		EntityGroupInterface entityGroup = factory.createEntityGroup();
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
@@ -877,7 +877,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 	public void testInheritanceEditMetadataEditChildWithEditedParent()
 	{
 
-		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		EntityGroupInterface entityGroup = factory.createEntityGroup();
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
@@ -968,7 +968,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 	public void testInheritanceEditMetadataForMakeParentNullWithData()
 	{
 
-		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		EntityGroupInterface entityGroup = factory.createEntityGroup();
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
@@ -1047,7 +1047,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 	public void testInheritanceEditMetadataForMakeParentNullNoData()
 	{
 
-		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		EntityGroupInterface entityGroup = factory.createEntityGroup();
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
@@ -1139,7 +1139,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 	public void testInheritanceEditMetadataForChangeParentWithNoData()
 	{
 
-		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		EntityGroupInterface entityGroup = factory.createEntityGroup();
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
@@ -1253,7 +1253,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 	public void testEditDataForInheritance()
 	{
 
-		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		EntityGroupInterface entityGroup = factory.createEntityGroup();
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
@@ -1438,7 +1438,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 	public void testDiscriminator()
 	{
 
-		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		EntityGroupInterface entityGroup = factory.createEntityGroup();
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
@@ -1496,7 +1496,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 	public void testSetParentInEditMode()
 	{
 
-		NewEntityManagerInterface entityManagerInterface = NewEntityManager.getInstance();
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		EntityGroupInterface entityGroup = factory.createEntityGroup();
 		entityGroup.setName("test_" + new Double(Math.random()).toString());

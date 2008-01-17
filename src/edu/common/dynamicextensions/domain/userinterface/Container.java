@@ -107,7 +107,7 @@ public class Container extends DynamicExtensionBaseDomainObject
      */
     protected ContainerInterface incontextContainer = this;
 
-    private boolean addCaption = true;
+    private Boolean addCaption;
     /**
      * @return
      */
@@ -557,12 +557,16 @@ public class Container extends DynamicExtensionBaseDomainObject
         this.incontextContainer = incontextContainer;
     }
 
-	public boolean isAddCaption()
+    /**
+     * @hibernate.property name="addCaption" type="boolean" column="ADD_CAPTION"
+     * @return Returns the addCaption.
+     */
+	public Boolean getAddCaption()
 	{
 		return addCaption;
 	}
 
-	public void setAddCaption(boolean addCaption)
+	public void setAddCaption(Boolean addCaption)
 	{
 		this.addCaption = addCaption;
 	}

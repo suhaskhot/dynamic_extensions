@@ -209,12 +209,12 @@ public interface ContainerInterface extends DynamicExtensionBaseDomainObjectInte
 	 * This method is used to decide whtere caption is to be added to the table or not
 	 * @return
 	 */
-	public boolean isAddCaption();
+	public Boolean getAddCaption();
 
 	/**
 	 * @param addCaption
 	 */
-	public void setAddCaption(boolean addCaption);
+	public void setAddCaption(Boolean addCaption);
 	
     /**
      * @see edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface#generateLinkHTML()

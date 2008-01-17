@@ -3,9 +3,9 @@ package edu.common.dynamicextensions.domain;
 
 import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.ASSOCIATION_COLUMN_PREFIX;
 import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.ASSOCIATION_NAME_PREFIX;
+import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.CATEGORY_TABLE_NAME_PREFIX;
 import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.COLUMN_NAME_PREFIX;
 import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.TABLE_NAME_PREFIX;
-import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.CATEGORY_TABLE_NAME_PREFIX;
 import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.UNDERSCORE;
 
 import java.util.Date;
@@ -842,12 +842,12 @@ public class DomainObjectFactory
 	{
 		return new PathAssociationRelation();
 	}
-	
+
 	public CategoryAssociationInterface createCategoryAssociation()
 	{
 		return new CategoryAssociation();
 	}
-	
+
 	/**
 	 * @return IdGeneratorInterface
 	 */

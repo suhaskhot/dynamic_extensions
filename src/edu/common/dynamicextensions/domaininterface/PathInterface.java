@@ -12,6 +12,7 @@ import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
  */
 public interface PathInterface extends DynamicExtensionBaseDomainObjectInterface
 {
+	
 	public Collection<PathAssociationRelationInterface> getPathAssociationRelationCollection();
 
 	public void setPathAssociationRelationCollection(Collection<PathAssociationRelationInterface> pathAssociationRelationCollection);

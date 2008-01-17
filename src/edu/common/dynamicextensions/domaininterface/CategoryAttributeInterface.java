@@ -1,6 +1,5 @@
-package edu.common.dynamicextensions.domaininterface;
 
-import java.util.Collection;
+package edu.common.dynamicextensions.domaininterface;
 
 public interface CategoryAttributeInterface extends BaseAbstractAttributeInterface
 {
@@ -8,32 +7,35 @@ public interface CategoryAttributeInterface extends BaseAbstractAttributeInterfa
 	 *
 	 * @return
 	 */
-    public AttributeInterface getAttribute();
-    /**
-     *
-     * @param attribute
-     */
-    public void setAttribute(AttributeInterface attribute);
-    /**
-     *
-     * @return
-     */
-    public CategoryEntityInterface getCategoryEntity();
-    /**
-     *
-     * @param categoryEntityInterface
-     */
-    public void setCategoryEntity(CategoryEntityInterface categoryEntityInterface);
-    
-    /**
-     * 
-     * @return
-     */
-    public String getDefaultValue();
-    
-    /**
-     * 
-     * @param permissibleValueInterface
-     */
-    public void setDefaultValue(PermissibleValueInterface permissibleValueInterface);
+	public AttributeInterface getAttribute();
+
+	/**
+	 *
+	 * @param attribute
+	 */
+	public void setAttribute(AttributeInterface attribute);
+
+	/**
+	 *
+	 * @return
+	 */
+	public CategoryEntityInterface getCategoryEntity();
+
+	/**
+	 *
+	 * @param categoryEntityInterface
+	 */
+	public void setCategoryEntity(CategoryEntityInterface categoryEntityInterface);
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String getDefaultValue();
+
+	/**
+	 * 
+	 * @param permissibleValueInterface
+	 */
+	public void setDefaultValue(PermissibleValueInterface permissibleValueInterface);
 }

@@ -1,7 +1,7 @@
+
 package edu.common.dynamicextensions.domain;
 
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AttibuteMetadataInterface;
 
 /**
  * This is an abstract class extended by CategoryAttribute, AbstractAttribute.
@@ -12,6 +12,7 @@ import edu.common.dynamicextensions.domaininterface.AttibuteMetadataInterface;
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  * @hibernate.cache  usage="read-write"
  */
-public abstract class BaseAbstractAttribute extends AbstractMetadata implements BaseAbstractAttributeInterface{
+public abstract class BaseAbstractAttribute extends AbstractMetadata implements BaseAbstractAttributeInterface
+{
 
 }

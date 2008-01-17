@@ -14,29 +14,29 @@ import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterfac
  * @hibernate.joined-subclass table="DYEXTN_CATEGORY_ASSOCIATION"
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
-public class CategoryAssociation extends BaseAbstractAttribute implements CategoryAssociationInterface,AssociationMetadataInterface
+public class CategoryAssociation extends BaseAbstractAttribute implements CategoryAssociationInterface, AssociationMetadataInterface
 {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 12345678L;
-	
+
 	/**
 	 * 
-	 */	
+	 */
 	protected CategoryEntity categoryEntity;
-	
+
 	/**
 	 * 
 	 */
 	protected Collection<CategoryEntity> targetCategoryEntityCollection = new HashSet<CategoryEntity>();
-	
 
 	/**
 	 * @hibernate.many-to-one column="CATEGORY_ENTIY_ID" class="edu.common.dynamicextensions.domain.CategoryEntity" constrained="true" 
 	 */
-	public CategoryEntity getCategoryEntity() {
+	public CategoryEntity getCategoryEntity()
+	{
 		return categoryEntity;
 	}
 
@@ -44,10 +44,10 @@ public class CategoryAssociation extends BaseAbstractAttribute implements Catego
 	 * 
 	 * @param categoryEntity
 	 */
-	public void setCategoryEntity(CategoryEntity categoryEntity) {
+	public void setCategoryEntity(CategoryEntity categoryEntity)
+	{
 		this.categoryEntity = categoryEntity;
 	}
-	
 
 	/**
 	 * @hibernate.set name="targetCategoryEntityCollection" table="DYEXTN_CATEGORY_ENTITY"
@@ -57,12 +57,12 @@ public class CategoryAssociation extends BaseAbstractAttribute implements Catego
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.CategoryEntity"
 	 * @return the categoryAssociationCollection
 	 */
-	private Collection<CategoryEntity> getTargetCategoryEntityCollection() 
+	private Collection<CategoryEntity> getTargetCategoryEntityCollection()
 	{
 		return targetCategoryEntityCollection;
 	}
 
-	private void setTargetCategoryEntityCollection(Collection<CategoryEntity> targetCategoryEntityCollection) 
+	private void setTargetCategoryEntityCollection(Collection<CategoryEntity> targetCategoryEntityCollection)
 	{
 		this.targetCategoryEntityCollection = targetCategoryEntityCollection;
 	}
@@ -80,7 +80,7 @@ public class CategoryAssociation extends BaseAbstractAttribute implements Catego
 		}
 		return targetCategoryEntity;
 	}
-	
+
 	/**
 	 * @param
 	 */
@@ -100,10 +100,10 @@ public class CategoryAssociation extends BaseAbstractAttribute implements Catego
 	/**
 	 * 
 	 */
-	public Collection<RuleInterface> getRuleCollection() {
+	public Collection<RuleInterface> getRuleCollection()
+	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	
 }

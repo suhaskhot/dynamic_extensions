@@ -4,7 +4,7 @@ package edu.common.dynamicextensions.domaininterface.userinterface;
 import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AttibuteMetadataInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
@@ -36,7 +36,7 @@ public interface ControlInterface extends DynamicExtensionBaseDomainObjectInterf
 	/**
 	 * @param abstractAttributeInterface The attribute to set.
 	 */
-	public AttibuteMetadataInterface getAttibuteMetadataInterface();
+	public AttributeMetadataInterface getAttibuteMetadataInterface();
 	/**
 	 * Caption/Title for the control.
 	 * @return Returns the caption.

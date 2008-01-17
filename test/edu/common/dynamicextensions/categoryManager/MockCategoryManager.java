@@ -240,11 +240,6 @@ public class MockCategoryManager
 		rootCategoryEntityAttribute2.setCategoryEntity(rootCategoryEntity);
 		rootCategoryEntity.getCategoryAttributeCollection().add(rootCategoryEntityAttribute2);
 
-		CategoryAssociationInterface rootCategoryEntityAssociation = DomainObjectFactory.getInstance().createCategoryAssociation();
-		rootCategoryEntityAssociation.setName("Study Category Entity Association");
-		rootCategoryEntityAssociation.setCategoryEntity((CategoryEntity) rootCategoryEntity);
-		rootCategoryEntity.setCategoryAssociation(rootCategoryEntityAssociation);		
-
 		CategoryEntityInterface childCategoryEntity = DomainObjectFactory.getInstance().createCategoryEntity();
 		childCategoryEntity.setName("Experiment category entity");
 		childCategoryEntity.setEntity(experiment);
@@ -262,11 +257,6 @@ public class MockCategoryManager
 		childCategoryEntityAttribute2.setAttribute(experimentAttributeCollection.get(1));
 		childCategoryEntityAttribute2.setCategoryEntity(childCategoryEntity);
 		childCategoryEntity.getCategoryAttributeCollection().add(childCategoryEntityAttribute2);
-		
-		CategoryAssociationInterface childCategoryEntityAssociation = DomainObjectFactory.getInstance().createCategoryAssociation();
-		childCategoryEntityAssociation.setName("Experiment Category Entity Association");
-		childCategoryEntityAssociation.setCategoryEntity((CategoryEntity) childCategoryEntity);
-		childCategoryEntity.setCategoryAssociation(childCategoryEntityAssociation);	
 
 		// Add path information
 		PathInterface path = DomainObjectFactory.getInstance().createPath();
@@ -276,8 +266,15 @@ public class MockCategoryManager
 		pathAssociationRelation.setPath((Path) path);
 
 		path.getPathAssociationRelationCollection().add(pathAssociationRelation);
-
+		
 		childCategoryEntity.setPath(path);
+		
+		// Add category Associations.
+		CategoryAssociationInterface rootCategoryEntityAssociation = DomainObjectFactory.getInstance().createCategoryAssociation();
+		rootCategoryEntityAssociation.setName("Study Category Entity Association");
+		rootCategoryEntityAssociation.setCategoryEntity((CategoryEntity) rootCategoryEntity);
+		rootCategoryEntityAssociation.setTargetCategoryEntity((CategoryEntity) childCategoryEntity);
+		rootCategoryEntity.setCategoryAssociation(rootCategoryEntityAssociation);		
 
 		rootCategoryEntity.getChildCategories().add(childCategoryEntity);
 

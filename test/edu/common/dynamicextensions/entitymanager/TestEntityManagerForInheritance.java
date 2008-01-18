@@ -330,12 +330,12 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 			ResultSet resultSet = executeQuery("select * from "
 					+ specimen.getTableProperties().getName());
 			resultSet.next();
-			assertEquals(1, resultSet.getInt(4));
+			assertEquals(1, resultSet.getInt(2));
 
 			resultSet = executeQuery("select * from "
 					+ tissueSpecimen.getTableProperties().getName());
 			resultSet.next();
-			assertEquals(1, resultSet.getInt(4));
+			assertEquals(1, resultSet.getInt(2));
 
 			EntityInterface advanceTissueSpecimenA = factory.createEntity();
 			advanceTissueSpecimenA.setParentEntity(tissueSpecimen);
@@ -468,12 +468,12 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 			ResultSet resultSet = executeQuery("select * from "
 					+ specimen.getTableProperties().getName());
 			resultSet.next();
-			assertEquals(1, resultSet.getInt(4));
+			assertEquals(1, resultSet.getInt(2));
 
 			resultSet = executeQuery("select * from "
 					+ tissueSpecimen.getTableProperties().getName());
 			resultSet.next();
-			assertEquals(1, resultSet.getInt(4));
+			assertEquals(1, resultSet.getInt(2));
 		}
 		catch (Exception e)
 		{
@@ -601,7 +601,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 			assertEquals(4, outputMap.size());
 			assertEquals("123456", outputMap.get(barcode));
 			assertEquals("specimen parent label", outputMap.get(label));
-			assertEquals(45, outputMap.get(quantityInCellCount));
+			assertEquals("45", outputMap.get(quantityInCellCount));
 			assertEquals("11-12-1982", outputMap.get(arivalDate));
 
 			//step 5
@@ -620,7 +620,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 			assertEquals(5, outputMap.size());
 			assertEquals("869", outputMap.get(barcode));
 			assertEquals("specimen parent label", outputMap.get(label));
-			assertEquals(46, outputMap.get(quantityInCellCount));
+			assertEquals("46", outputMap.get(quantityInCellCount));
 			assertEquals("11-11-1982", outputMap.get(arivalDate));
 
 			//step 7
@@ -639,10 +639,10 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 			assertEquals(6, outputMap.size());
 			assertEquals("1001", outputMap.get(barcode));
 			assertEquals("specimen parent label new", outputMap.get(label));
-			assertEquals(411, outputMap.get(quantityInCellCount));
+			assertEquals("411", outputMap.get(quantityInCellCount));
 			assertEquals("01-11-1982", outputMap.get(arivalDate));
-			assertEquals(40, outputMap.get(newAttributeB));
-			assertEquals(41, outputMap.get(newAttributeB2));
+			assertEquals("40", outputMap.get(newAttributeB));
+			assertEquals("41", outputMap.get(newAttributeB2));
 		}
 		catch (Exception e)
 		{

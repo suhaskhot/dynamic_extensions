@@ -86,18 +86,18 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		// create user
         EntityGroupInterface entityGroup = DomainObjectFactory.getInstance().createEntityGroup();
-        entityGroup.setName("kunal"+ new Double(Math.random()).toString());
+        entityGroup.setName("User"+ new Double(Math.random()).toString());
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
-		userNameAttribute.setName("kunal_3");
-		user.setName("kunal_3_user");
+		userNameAttribute.setName("user_name");
+		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
 
 		// create study
 		EntityInterface study = factory.createEntity();
 		AttributeInterface studyNameAttribute = factory.createStringAttribute();
-		studyNameAttribute.setName("study kunal_3");
-		study.setName("kunal_3_study");
+		studyNameAttribute.setName("study_name");
+		study.setName("study");
 		study.addAbstractAttribute(studyNameAttribute);
 
 		// Associate user (1)------ >(*)study
@@ -2957,8 +2957,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			resultSet = executeQuery("select * from " + address.getTableProperties().getName());
 			resultSet.next();
-			assertEquals("Swami Vivekand Road", resultSet.getString(2));
-			assertEquals("Pune 37", resultSet.getString(3));
+			assertEquals("Swami Vivekand Road", resultSet.getString(3));
+			assertEquals("Pune 37", resultSet.getString(4));
 
 			resultSet = executeQuery("select count(*) from " + user.getTableProperties().getName());
 			resultSet.next();

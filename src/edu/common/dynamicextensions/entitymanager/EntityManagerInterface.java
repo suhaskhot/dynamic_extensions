@@ -119,7 +119,7 @@ public interface EntityManagerInterface
     /**
      * This method inserts one record for the entity.
      */
-    Long insertData(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue)
+    Long insertData(EntityInterface entity, Map<AbstractAttributeInterface, Object> dataValue)
             throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
     /**
@@ -127,7 +127,7 @@ public interface EntityManagerInterface
      * is persisted.
      * It returns the record id in the same sequence as that of input maps in dataValueMapList.
      */
-    List<Long> insertData(EntityInterface entity, List<Map<AbstractAttributeInterface, ?>> dataValueMapList)
+    List<Long> insertData(EntityInterface entity, List<Map<AbstractAttributeInterface, Object>> dataValueMapList)
             throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
     /**
      * This method updates the existing record for the given entity.

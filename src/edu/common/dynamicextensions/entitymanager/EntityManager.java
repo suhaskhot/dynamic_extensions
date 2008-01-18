@@ -513,10 +513,10 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#insertData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map)
 	 */
-	public Long insertData(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue)
+	public Long insertData(EntityInterface entity, Map<AbstractAttributeInterface, Object> dataValue)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
-		List<Map<AbstractAttributeInterface, ?>> dataValueMapList = new ArrayList<Map<AbstractAttributeInterface, ?>>();
+		List<Map<AbstractAttributeInterface,Object>> dataValueMapList = new ArrayList<Map<AbstractAttributeInterface, Object>>();
 		dataValueMapList.add(dataValue);
 		List<Long> recordIdList = insertData(entity, dataValueMapList);
 		return recordIdList.get(0);
@@ -526,7 +526,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#insertData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map)
 	 */
 	public List<Long> insertData(EntityInterface entity,
-			List<Map<AbstractAttributeInterface, ?>> dataValueMapList)
+			List<Map<AbstractAttributeInterface, Object>> dataValueMapList)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 

@@ -1467,11 +1467,11 @@ public class XMIImportProcessor
 			else
 			{
 				controlInterface = deFactory.createTextField();
-				((TextFieldInterface) controlInterface).setColumns(10);
+				((TextFieldInterface) controlInterface).setColumns(0);
 				if (attributeTypeInformation instanceof StringAttributeTypeInformation)
 				{
 					((StringAttributeTypeInformation) attributeTypeInformation)
-							.setSize(new Integer(10));
+							.setSize(new Integer(0));
 					implicitRuleList = configurationsFactory.getAllImplicitRules(
 							ProcessorConstants.TEXT_CONTROL, ProcessorConstants.DATATYPE_STRING);
 				}

@@ -38,6 +38,10 @@ public interface AttributeMetadataInterface extends AbstractMetadataInterface
 	 */
 	public int getDecimalPlaces();
 	
+	/**
+	 * This method returns the Collection of rules.
+	 * @return Collection the ruleCollection associated with the Attribute.
+	 */
 	public Collection<RuleInterface> getRuleCollection();
 	
 	/**

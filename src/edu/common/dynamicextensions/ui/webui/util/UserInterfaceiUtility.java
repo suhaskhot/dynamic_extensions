@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domain.userinterface.AbstractContainmentControl;
-import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
@@ -76,11 +75,14 @@ public class UserInterfaceiUtility
 		stringBuffer.append("<td class='formFieldContainer' colspan='3' align='center'>");
 		stringBuffer.append("<table cellpadding='3' cellspacing='0' align='center' width='100%'>");
 
-		stringBuffer.append("<tr width='100%'>");
-		stringBuffer.append("<td class='formTitle' colspan='3' align='left'>");
-		stringBuffer.append(subContainer.getCaption());
-		stringBuffer.append("</td>");
-		stringBuffer.append("</tr>");
+		if(subContainer.getAddCaption())
+		{
+			stringBuffer.append("<tr width='100%'>");
+			stringBuffer.append("<td class='formTitle' colspan='3' align='left'>");
+			stringBuffer.append(subContainer.getCaption());
+			stringBuffer.append("</td>");
+			stringBuffer.append("</tr>");
+		}
 
 		stringBuffer.append("<tr width='100%'>");
 		stringBuffer.append("<td class='formFieldContainer' colspan='3'>");

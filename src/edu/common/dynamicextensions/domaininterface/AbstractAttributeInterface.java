@@ -16,12 +16,6 @@ public interface AbstractAttributeInterface extends BaseAbstractAttributeInterfa
 {
 
 	/**
-	 * This method returns the Collection of rules.
-	 * @return Collection the ruleCollection associated with the Attribute.
-	 */
-	Collection<RuleInterface> getRuleCollection();
-
-	/**
 	 * This method sets the ruleCollection field member to given rule Collection.
 	 * @param ruleCollection The ruleCollection to set.
 	 */
@@ -51,7 +45,7 @@ public interface AbstractAttributeInterface extends BaseAbstractAttributeInterfa
 	 */
 	void setEntity(EntityInterface entityInterface);
 
-    public Collection<Control> getControl();
+	public Collection<Control> getControl();
 
-    public void setControl(Collection<Control> control);
+	public void setControl(Collection<Control> control);
 }

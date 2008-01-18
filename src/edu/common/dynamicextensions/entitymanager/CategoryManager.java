@@ -136,10 +136,10 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	/**
 	 *
 	 */
-	public Long insertData(CategoryInterface category, Map<BaseAbstractAttributeInterface, ?> dataValue) throws DynamicExtensionsApplicationException,
+	public Long insertData(CategoryInterface category, Map<BaseAbstractAttributeInterface, Object> dataValue) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException
 	{
-		List<Map<BaseAbstractAttributeInterface, ?>> dataValueMapList = new ArrayList<Map<BaseAbstractAttributeInterface, ?>>();
+		List<Map<BaseAbstractAttributeInterface, Object>> dataValueMapList = new ArrayList<Map<BaseAbstractAttributeInterface, Object>>();
 		dataValueMapList.add(dataValue);
 		List<Long> recordIdList = insertData(category, dataValueMapList);
 		return recordIdList.get(0);
@@ -148,10 +148,10 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	/**
 	 *
 	 */
-	public List<Long> insertData(CategoryInterface category, List<Map<BaseAbstractAttributeInterface, ?>> categoryDataValueMapList)
+	public List<Long> insertData(CategoryInterface category, List<Map<BaseAbstractAttributeInterface, Object>> categoryDataValueMapList)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
-		List<Map<AbstractAttributeInterface, ?>> EntityDataValueMapList = createEntityDataValueMapList(categoryDataValueMapList);
+		List<Map<AbstractAttributeInterface, Object>> EntityDataValueMapList = generateEntityDataValueMapList(categoryDataValueMapList);
 		CategoryEntityInterface rootCategoryEntity = category.getRootCategoryElement();
 		EntityInterface entity = rootCategoryEntity.getEntity();
 		List<Long> recordIdList = new ArrayList<Long>();
@@ -162,8 +162,8 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			hibernateDAO = (HibernateDAO) factory.getDAO(Constants.HIBERNATE_DAO);
 			hibernateDAO.openSession(null);
 			EntityManagerInterface entityManager = EntityManager.getInstance();
-			entityManager.insertData(entity, EntityDataValueMapList);
-			hibernateDAO.commit();
+			recordIdList =  entityManager.insertData(entity, EntityDataValueMapList);
+			
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{
@@ -188,10 +188,21 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		return recordIdList;
 	}
 
-	private List<Map<AbstractAttributeInterface, ?>> createEntityDataValueMapList(List<Map<BaseAbstractAttributeInterface, ?>> categoryDataValueMapList) {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * 
+	 * @param categoryDataValueMapList
+	 * @return
+	 */
+	private List<Map<AbstractAttributeInterface, Object>> generateEntityDataValueMapList(List<Map<BaseAbstractAttributeInterface,Object>> categoryDataValueMapList) {
+		List<Map<AbstractAttributeInterface, Object>> entityDataValueMapList = new ArrayList<Map<AbstractAttributeInterface,Object>>();
+		
+		for(Map<BaseAbstractAttributeInterface,Object>categoryDataValueMap:categoryDataValueMapList)
+		{
+			entityDataValueMapList.add(generateEntityDataValueMap(categoryDataValueMap));
+		}
+		return entityDataValueMapList;
 	}
+
 
 	/**
 	 *

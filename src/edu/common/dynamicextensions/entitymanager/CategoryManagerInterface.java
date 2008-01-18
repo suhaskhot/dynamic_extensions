@@ -46,7 +46,7 @@ public interface CategoryManagerInterface {
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public Long insertData(CategoryInterface category,
-			Map<BaseAbstractAttributeInterface, ?> dataValue)
+			Map<BaseAbstractAttributeInterface, Object> dataValue)
 			throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException;
 
@@ -59,7 +59,7 @@ public interface CategoryManagerInterface {
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public List<Long> insertData(CategoryInterface category,
-			List<Map<BaseAbstractAttributeInterface, ?>> dataValueMapList)
+			List<Map<BaseAbstractAttributeInterface, Object>> dataValueMapList)
 			throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException;
 

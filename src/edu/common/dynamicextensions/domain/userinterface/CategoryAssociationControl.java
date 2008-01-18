@@ -1,21 +1,9 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
-import java.util.List;
-import java.util.Map;
-
-import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AssociationInterface;
-import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
-import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
-import edu.common.dynamicextensions.domaininterface.RoleInterface;
-import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CategoryAssociationControlInterface;
-import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
-import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 
 /**
  * This Class represents the category.
@@ -31,35 +19,11 @@ public class CategoryAssociationControl extends AbstractContainmentControl imple
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 *
+	 * Default constructor
 	 */
 	public CategoryAssociationControl()
 	{
-		super();		
-	}
-
-	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public AbstractAttributeInterface getAbstractAttribute()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void setAbstractAttribute(AbstractAttributeInterface abstractAttributeInterface)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	public String generateLinkHTML() throws DynamicExtensionsSystemException
-	{
-		// TODO Auto-generated method stub
-		return null;
+		super();
 	}
 
 	/**
@@ -70,12 +34,7 @@ public class CategoryAssociationControl extends AbstractContainmentControl imple
 	{
 		boolean isOneToMany = false;
 		CategoryAssociationInterface associationInterface = (CategoryAssociationInterface) this.getBaseAbstractAttribute();
-		/*//Quick fix: since association is not getting saved properly
-		if(associationInterface == null){
-			return false;
-		}
-		//quickfix ends
-*/		if (associationInterface.getCategoryEntity().getNumberOfEntries() == -1)
+		if (associationInterface.getCategoryEntity().getNumberOfEntries() == -1)
 		{
 			isOneToMany = true;
 		}

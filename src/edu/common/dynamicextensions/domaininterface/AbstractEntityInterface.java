@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.domaininterface;
 import java.util.Collection;
 
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 
 public interface AbstractEntityInterface extends AbstractMetadataInterface {
 
@@ -26,6 +27,11 @@ public interface AbstractEntityInterface extends AbstractMetadataInterface {
     * @param containerCollection
     */
    public void setContainerCollection(Collection containerCollection);
+   /**
+    * 
+    * @param containerInterface
+    */
+   public void addContaier(ContainerInterface containerInterface );
 
 
 }

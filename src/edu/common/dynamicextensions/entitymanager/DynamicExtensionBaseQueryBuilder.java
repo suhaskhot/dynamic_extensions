@@ -827,7 +827,7 @@ class DynamicExtensionBaseQueryBuilder
     protected List<String> getCreateCategoryMainTableQuery(Category category,
 			List<String> reverseQueryList) throws DynamicExtensionsSystemException
 	{
-    	CategoryEntity categoryEntity = category.getRootCategoryElement();
+    	CategoryEntity categoryEntity = (CategoryEntity)category.getRootCategoryElement();
     	List<String> queryList = new ArrayList<String>();
     	if (categoryEntity.getTableProperties() != null)
     	{

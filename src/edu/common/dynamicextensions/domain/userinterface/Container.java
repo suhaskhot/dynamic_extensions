@@ -15,8 +15,6 @@ import edu.common.dynamicextensions.domain.AbstractEntity;
 import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
-import edu.common.dynamicextensions.domaininterface.userinterface.CategoryAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -107,7 +105,7 @@ public class Container extends DynamicExtensionBaseDomainObject
      */
     protected ContainerInterface incontextContainer = this;
 
-    private Boolean addCaption;
+    private Boolean addCaption = true;
     /**
      * @return
      */

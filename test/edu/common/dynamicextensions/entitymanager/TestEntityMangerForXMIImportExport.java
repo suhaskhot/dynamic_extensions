@@ -16,6 +16,7 @@ import java.util.Set;
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.EntityGroup;
+import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -23,7 +24,10 @@ import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
@@ -480,6 +484,66 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 			e.printStackTrace();
 			fail("Exception occured");
 		}		
+	}
+	public void testEditBoxLength()
+	{
+		testXMIImport();
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+		EntityInterface entity = null;
+		ContainerInterface container = null;
+		try
+		{
+			entity = entityManager.getEntityByName("TissueSite");
+			container = entityManager.getContainerByEntityIdentifier(entity.getId());
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			fail(e.getMessage());
+			e.printStackTrace();
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			fail(e.getMessage());
+			e.printStackTrace();
+		}
+		
+		Collection<AttributeInterface> attrColl = entity.getAttributeCollection();
+		AttributeInterface stringAttr = null;
+		ControlInterface textField = null;
+		for(AttributeInterface attr : attrColl)
+		{
+			if(attr.getName().equalsIgnoreCase("value"))
+			{
+				stringAttr = attr;
+			}
+		}
+		for(ControlInterface control : container.getControlCollection())
+		{
+			if(control.getName().equalsIgnoreCase("value"))
+			{
+				textField = control;
+			}
+		}
+		if(stringAttr != null && textField != null)
+		{
+			int attrSize = ((StringAttributeTypeInformation)(stringAttr.getAttributeTypeInformation())).getSize();
+			if(attrSize != 0)
+			{
+				fail("StringAttributeTypeInformation size is not 0");
+			}
+			int textFieldSize =((TextFieldInterface) (textField)).getColumns();
+			if(textFieldSize != 0)
+			{
+				fail("Text field size is not 0");
+			}
+		}
+		else
+		{
+			fail("Specified Attribute is not present in the Entity");
+		}
+		
+		
+		
 	}
 
 }

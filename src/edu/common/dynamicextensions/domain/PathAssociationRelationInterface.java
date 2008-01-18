@@ -1,6 +1,8 @@
 package edu.common.dynamicextensions.domain;
 
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
+import edu.common.dynamicextensions.domaininterface.PathInterface;
 
 /**
  * 
@@ -9,16 +11,36 @@ import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainOb
  */
 public interface PathAssociationRelationInterface extends DynamicExtensionBaseDomainObjectInterface, Comparable
 {
-	public Path getPath();
+	/**
+	 * 
+	 * @return
+	 */
+	public PathInterface getPath();
 	
-	public void setPath(Path path);
-	
-	public Association getAssociation();
-	
-	public void setAssociation(Association association);
-	
+	/**
+	 * 
+	 * @param path
+	 */
+	public void setPath(PathInterface path);
+	/**
+	 * 
+	 * @return
+	 */
+	public AssociationInterface getAssociation();
+	/**
+	 * 
+	 * @param association
+	 */
+	public void setAssociation(AssociationInterface association);
+	/**
+	 * 
+	 * @return
+	 */
 	public int getPathSequenceNumber();
-	
+	/**
+	 * 
+	 * @param pathSequenceNumber
+	 */
 	public void setPathSequenceNumber(int pathSequenceNumber);
 
 }

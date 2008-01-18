@@ -7,6 +7,7 @@ import java.util.Iterator;
 
 import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 
 /**
@@ -35,18 +36,18 @@ public class CategoryAssociation extends BaseAbstractAttribute implements Catego
 	/**
 	 * @hibernate.many-to-one column="CATEGORY_ENTIY_ID" class="edu.common.dynamicextensions.domain.CategoryEntity" constrained="true" 
 	 */
-	public CategoryEntity getCategoryEntity()
+	public CategoryEntityInterface getCategoryEntity()
 	{
-		return categoryEntity;
+		return (CategoryEntityInterface)categoryEntity;
 	}
 
 	/**
 	 * 
 	 * @param categoryEntity
 	 */
-	public void setCategoryEntity(CategoryEntity categoryEntity)
+	public void setCategoryEntity(CategoryEntityInterface categoryEntityInterface)
 	{
-		this.categoryEntity = categoryEntity;
+		this.categoryEntity = (CategoryEntity)categoryEntityInterface;
 	}
 
 	/**
@@ -70,7 +71,7 @@ public class CategoryAssociation extends BaseAbstractAttribute implements Catego
 	/**
 	 * @return
 	 */
-	public CategoryEntity getTargetCategoryEntity()
+	public CategoryEntityInterface getTargetCategoryEntity()
 	{
 		CategoryEntity targetCategoryEntity = null;
 		if (targetCategoryEntityCollection != null && !targetCategoryEntityCollection.isEmpty())
@@ -84,7 +85,7 @@ public class CategoryAssociation extends BaseAbstractAttribute implements Catego
 	/**
 	 * @param
 	 */
-	public void setTargetCategoryEntity(CategoryEntity targetCategoryEntity)
+	public void setTargetCategoryEntity(CategoryEntityInterface targetCategoryEntityInterface)
 	{
 		if (targetCategoryEntityCollection == null)
 		{
@@ -94,7 +95,7 @@ public class CategoryAssociation extends BaseAbstractAttribute implements Catego
 		{
 			targetCategoryEntityCollection.clear();
 		}
-		targetCategoryEntityCollection.add(targetCategoryEntity);
+		targetCategoryEntityCollection.add((CategoryEntity)targetCategoryEntityInterface);
 	}
 
 	/**

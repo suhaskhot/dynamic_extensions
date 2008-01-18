@@ -1,7 +1,6 @@
 
 package edu.common.dynamicextensions.domaininterface;
 
-import edu.common.dynamicextensions.domain.CategoryEntity;
 
 /**
  * 
@@ -14,24 +13,24 @@ public interface CategoryAssociationInterface extends BaseAbstractAttributeInter
 	 * 
 	 * @return
 	 */
-	public CategoryEntity getCategoryEntity();
+	public CategoryEntityInterface getCategoryEntity();
 
 	/**
 	 * 
 	 * @param categoryEntity
 	 */
-	public void setCategoryEntity(CategoryEntity categoryEntity);
+	public void setCategoryEntity(CategoryEntityInterface categoryEntity);
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public CategoryEntity getTargetCategoryEntity();
+	public CategoryEntityInterface getTargetCategoryEntity();
 	
 	/**
 	 * 
 	 * @param targetCategoryEntity
 	 */
-	public void setTargetCategoryEntity(CategoryEntity targetCategoryEntity);
+	public void setTargetCategoryEntity(CategoryEntityInterface targetCategoryEntity);
 
 }

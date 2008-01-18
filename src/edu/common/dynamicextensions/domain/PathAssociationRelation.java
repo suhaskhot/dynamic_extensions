@@ -1,6 +1,9 @@
 
 package edu.common.dynamicextensions.domain;
 
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domaininterface.PathInterface;
+
 /**
  * @hibernate.class table="DYEXTN_PATH_ASSOCIATION_RELATION"
  * @author mandar_shidhore
@@ -13,6 +16,21 @@ public class PathAssociationRelation extends DynamicExtensionBaseDomainObject im
 	 * 
 	 */
 	private static final long serialVersionUID = 12345678L;
+	/**
+	 * 
+	 */
+	protected Path path;
+
+	/**
+	 * 
+	 */
+	protected Association association;
+
+	/**
+	 * 
+	 */
+	protected int pathSequenceNumber;
+	
 
 	public PathAssociationRelation()
 	{
@@ -31,11 +49,7 @@ public class PathAssociationRelation extends DynamicExtensionBaseDomainObject im
 		return id;
 	}
 
-	protected Path path;
 
-	protected Association association;
-
-	protected int pathSequenceNumber;
 
 	/**
 	 * @hibernate.many-to-one column="PATH_ID" class="edu.common.dynamicextensions.domain.Path" cascade="save-update"
@@ -49,24 +63,24 @@ public class PathAssociationRelation extends DynamicExtensionBaseDomainObject im
 	/**
 	 * @param path the path to set
 	 */
-	public void setPath(Path path)
+	public void setPath(PathInterface path)
 	{
-		this.path = path;
+		this.path = (Path)path;
 	}
 
 	/**
 	 * @hibernate.many-to-one column="ASSOCIATION_ID" class="edu.common.dynamicextensions.domain.Association" cascade="save-update"
 	 * @return the association
 	 */
-	public Association getAssociation()
+	public AssociationInterface getAssociation()
 	{
-		return association;
+		return (AssociationInterface)association;
 	}
 
 	/**
 	 * @param association the association to set
 	 */
-	public void setAssociation(Association association)
+	public void setAssociation(AssociationInterface associationInterface)
 	{
 		this.association = association;
 	}

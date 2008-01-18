@@ -132,6 +132,18 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	{
 		this.childCategories = childCategories;
 	}
+	/**
+	 * 
+	 * @param categoryEntityInterface
+	 */
+	public void addChildCategory(CategoryEntityInterface categoryEntityInterface)
+	{
+		if(this.childCategories == null)
+		{
+			childCategories = new HashSet<CategoryEntityInterface>();
+		}
+		childCategories.add(categoryEntityInterface);
+	}
 
 	/**
 	 * @hibernate.many-to-one class="edu.common.dynamicextensions.domain.Entity" column="ENTITY_ID" cascade="save-update"
@@ -244,7 +256,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 
 	/**
 	 * @hibernate.set name="categoryCollection" table="DYEXTN_CATEGORY"
-	 * cascade="all-delete-orphan" inverse="false" lazy="false"
+	 * cascade="none" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="CATEGORY_ENTITY_ID"
 	 * @hibernate.cache  usage="read-write"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Category"

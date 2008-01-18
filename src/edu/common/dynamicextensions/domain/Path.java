@@ -67,7 +67,24 @@ public class Path extends DynamicExtensionBaseDomainObject implements PathInterf
 	{
 		this.pathAssociationRelationCollection = pathAssociationRelationCollection;
 	}
+	
+	/**
+	 * 
+	 * @param pathAssociationRelationInterface
+	 */
+	public void addPathAssociationRelation(PathAssociationRelationInterface pathAssociationRelationInterface)
+	{
+		if(this.pathAssociationRelationCollection == null)
+		{
+			pathAssociationRelationCollection  = new HashSet<PathAssociationRelationInterface>();
+			
+		}
+		pathAssociationRelationCollection.add(pathAssociationRelationInterface);
+	}
 
+	/**
+	 * 
+	 */
 	public List<PathAssociationRelationInterface> getSortedPathAssociationRelationCollection()
 	{
 		List PathAssociationRelationList = new ArrayList(getPathAssociationRelationCollection());

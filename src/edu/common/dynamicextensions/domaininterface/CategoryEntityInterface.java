@@ -24,6 +24,12 @@ public interface CategoryEntityInterface extends AbstractEntityInterface
      * @param childCategories
      */
     void setChildCategories(Collection<CategoryEntityInterface> childCategories);
+    
+    /**
+     * 
+     * @param categoryEntityInterface
+     */
+    public void addChildCategory(CategoryEntityInterface categoryEntityInterface);
     /**
      *
      * @return

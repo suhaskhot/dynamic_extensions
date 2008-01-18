@@ -1,17 +1,21 @@
 
 package edu.common.dynamicextensions.categoryManager;
 
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.common.dynamicextensions.domain.AbstractMetadata;
 import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.Category;
 import edu.common.dynamicextensions.domain.CategoryEntity;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.Path;
 import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
+import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
@@ -25,12 +29,20 @@ import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PathInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.CategoryAssociationControlInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.entitymanager.AbstractMetadataManager;
 import edu.common.dynamicextensions.entitymanager.CategoryManager;
 import edu.common.dynamicextensions.entitymanager.CategoryManagerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManager;
+import edu.common.dynamicextensions.entitymanager.EntityGroupManagerInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManager;
+import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
+import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 
@@ -73,6 +85,148 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 	{
 		super.tearDown();
 	}
+	
+	public void testCreateCategory()
+	{
+		EntityGroupManagerInterface entityGroupManager = EntityGroupManager.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+		// create user
+        EntityGroupInterface entityGroup = DomainObjectFactory.getInstance().createEntityGroup();
+        entityGroup.setName("User"+ new Double(Math.random()).toString());
+        
+		EntityInterface user = factory.createEntity();
+		AttributeInterface userNameAttribute = factory.createStringAttribute();
+		userNameAttribute.setName("user_name");
+		user.setName("user");
+		user.addAbstractAttribute(userNameAttribute);
+
+		// create study
+		EntityInterface study = factory.createEntity();
+		AttributeInterface studyNameAttribute = factory.createStringAttribute();
+		studyNameAttribute.setName("study_name");
+		study.setName("study");
+		study.addAbstractAttribute(studyNameAttribute);
+
+		// Associate user (1)------ >(*)study
+		AssociationInterface association = factory.createAssociation();
+
+		association.setTargetEntity(study);
+		association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+		association.setName("primaryInvestigator");
+		association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
+				Cardinality.ONE, Cardinality.ONE));
+		association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study", Cardinality.ZERO,
+				Cardinality.MANY));
+
+		user.addAbstractAttribute(association);
+
+		try
+		{
+			//entityManager.createEntity(study);
+            entityGroup.addEntity(user);
+            user.setEntityGroup(entityGroup);
+            entityGroup.addEntity(study);
+            study.setEntityGroup(entityGroup);
+			EntityGroupInterface savedUser = entityGroupManager.persistEntityGroup(entityGroup);
+
+			ResultSetMetaData metaData = executeQueryForMetadata("select * from "
+					+ study.getTableProperties().getName());
+			assertEquals(metaData.getColumnCount(), noOfDefaultColumns + 2);
+					
+			CategoryInterface categoryInterface = factory.createCategory();
+			
+			CategoryEntityInterface userCategoryEntityInterface =  factory.createCategoryEntity();
+			userCategoryEntityInterface.setEntity(user);
+			
+			userCategoryEntityInterface.setCategory(categoryInterface);
+			categoryInterface.setRootCategoryElement(userCategoryEntityInterface);
+			
+			CategoryAttributeInterface userCategoryAttributeInterface = factory.createCategoryAttribute();
+			userCategoryAttributeInterface.setAttribute(userNameAttribute);
+			userCategoryEntityInterface.addCategoryAttribute(userCategoryAttributeInterface);
+			userCategoryAttributeInterface.setCategoryEntity(userCategoryEntityInterface);
+			
+			CategoryEntityInterface studyCategoryEntityInterface =  factory.createCategoryEntity();
+			studyCategoryEntityInterface.setEntity(study);
+			CategoryAttributeInterface studyCategoryAttributeInterface = factory.createCategoryAttribute();
+			studyCategoryAttributeInterface.setAttribute(studyNameAttribute);
+			studyCategoryEntityInterface.addCategoryAttribute(studyCategoryAttributeInterface);
+			studyCategoryAttributeInterface.setCategoryEntity(studyCategoryEntityInterface);
+			
+			PathInterface pathInterface = factory.createPath();
+			PathAssociationRelationInterface pathAssociationRelationInterface = factory.createPathAssociationRelation();
+			pathAssociationRelationInterface.setAssociation(association);
+			pathAssociationRelationInterface.setPathSequenceNumber(1);
+			
+			pathInterface.addPathAssociationRelation(pathAssociationRelationInterface);
+			pathAssociationRelationInterface.setPath(pathInterface);
+			
+			studyCategoryEntityInterface.setPath(pathInterface);
+			userCategoryEntityInterface.addChildCategory(studyCategoryEntityInterface);
+			
+			CategoryAssociationInterface categoryAssociationInterface = factory.createCategoryAssociation();
+			categoryAssociationInterface.setTargetCategoryEntity(studyCategoryEntityInterface);
+			userCategoryEntityInterface.setCategoryAssociation(categoryAssociationInterface);
+	
+			ContainerInterface userContainerInterface = factory.createContainer();
+			userContainerInterface.setAbstractEntity(userCategoryEntityInterface);
+			userCategoryEntityInterface.addContaier(userContainerInterface);
+			
+			ControlInterface controlInterface = factory.createTextField();
+			controlInterface.setBaseAbstractAttribute(userCategoryAttributeInterface);
+			
+			controlInterface.setParentContainer((Container)userContainerInterface);
+			userContainerInterface.addControl(controlInterface);
+						
+			ContainerInterface studyContainerInterface = factory.createContainer();
+			ControlInterface studyControlInterface = factory.createTextField();
+			studyControlInterface .setBaseAbstractAttribute(studyCategoryAttributeInterface);
+			studyCategoryEntityInterface.addContaier(studyContainerInterface);
+			
+			controlInterface.setParentContainer((Container)studyContainerInterface);
+			studyContainerInterface.addControl(studyControlInterface);
+			
+			CategoryAssociationControlInterface categoryAssociationControlInterface = factory.createCategoryAssociationControl();
+			categoryAssociationControlInterface.setContainer(studyContainerInterface);
+			
+			categoryAssociationControlInterface.setParentContainer((Container)userContainerInterface);
+			userContainerInterface.addControl(categoryAssociationControlInterface);
+			
+			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
+			CategoryInterface savedCategory = categoryManager.persistCategory(categoryInterface);
+			
+			Map<BaseAbstractAttributeInterface, Object> categoryDataMap = new HashMap<BaseAbstractAttributeInterface, Object>();
+			categoryDataMap.put(userCategoryAttributeInterface, "100");
+			
+			categoryManager.insertData(savedCategory, categoryDataMap);
+			
+			
+			
+		}
+		
+		
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+
+		catch (DynamicExtensionsApplicationException e)
+		{
+			e.printStackTrace();
+			fail();
+
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			fail();
+
+		}
+
+	}
+	
 
 	/**
 	 * Create a new category, some category entities, category attributes and some new entities with attributes.
@@ -98,7 +252,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 	 *  		Attr 1      Attr 2			Attr 1      Attr 2			Attr 1      Attr 2			      
 	 *       
 	 */
-	public void testCreateCategory()
+	public void testCreateCategory1()
 	{
 		try
 		{
@@ -242,31 +396,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		}
 	}
 
-	/**
-	 * Create a simple category with entities that have already been stored to the database.
-	 */
-	public void testCreateCategoryFromExistingEntities()
-	{
-		try
-		{
-			CategoryInterface category = new MockCategoryManager().createCategoryFromExistingEntities();
-
-			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
-
-			if (category != null)
-				categoryManager.persistCategory(category);
-		}
-		catch (DynamicExtensionsSystemException e)
-		{
-			e.printStackTrace();
-			fail();
-		}
-		catch (DynamicExtensionsApplicationException e)
-		{
-			e.printStackTrace();
-			fail();
-		}
-	}
+	
 
 	public void testCreateCategoryWithCategoryAssociations()
 	{
@@ -960,7 +1090,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			categoryDataMap.put(studyCategoryEntity.getCategoryAssociation(), dataValueList);
 
 			//Map<AbstractAttributeInterface, Object> entityDataMap = new HashMap<AbstractAttributeInterface, Object>();
-			Map<AbstractAttributeInterface, Object> entityDataMap = CategoryManager.getInstance().generateEntityDataValueMap(categoryDataMap);
+			//Map<AbstractAttributeInterface, Object> entityDataMap = CategoryManager.getInstance().generateEntityDataValueMap(categoryDataMap);
 
 //			EntityManager.getInstance().insertData(rootCategoryEntity.getEntity(), entityDataMap);
 

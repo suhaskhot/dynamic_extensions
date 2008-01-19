@@ -15,6 +15,7 @@ import java.util.Set;
 
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
+import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.userinterface.Container;
@@ -485,6 +486,9 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 			fail("Exception occured");
 		}		
 	}
+	/**
+	 * 
+	 */
 	public void testEditBoxLength()
 	{
 		testXMIImport();
@@ -544,6 +548,39 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 		
 		
 		
+	}
+	public void testAttributePrecision()
+	{
+		testXMIImport();
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+		EntityInterface entity = null;
+		try
+		{
+			entity = entityManager.getEntityByName("DryingEventParameters");
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			fail(e.getMessage());
+			e.printStackTrace();
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			fail(e.getMessage());
+			e.printStackTrace();
+		}
+		Collection<AttributeInterface> attrColl = entity.getAttributeCollection();
+		
+		for(AttributeInterface attr : attrColl)
+		{
+			if(attr.getName().equalsIgnoreCase("temperatureInCentigrade"))
+			{				
+				Integer deimalPlaces = ((DoubleAttributeTypeInformation)(attr.getAttributeTypeInformation())).getDecimalPlaces();
+				if(deimalPlaces != 4)
+				{
+					fail("Double attribute prescision is not 4");
+				}
+			}
+		}
 	}
 
 }

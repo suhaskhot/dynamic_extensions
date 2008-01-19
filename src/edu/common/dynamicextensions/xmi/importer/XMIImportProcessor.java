@@ -273,17 +273,14 @@ public class XMIImportProcessor
 	private boolean checkEntityWithDataTypeEntities(String umlClassName)
 	{
 		DatatypeMappings dataType = DatatypeMappings.get(umlClassName);
-		if (dataType == null)
-		{
-			return false;
-		}
-		if(umlClassName.equalsIgnoreCase(edu.common.dynamicextensions.ui.util.Constants.COLLECTION) ||
+
+		if(dataType != null || umlClassName.equalsIgnoreCase(edu.common.dynamicextensions.ui.util.Constants.COLLECTION) ||
 			umlClassName.equalsIgnoreCase(edu.common.dynamicextensions.ui.util.Constants.DATE) ||
 			umlClassName.equalsIgnoreCase(edu.common.dynamicextensions.ui.util.Constants.TIME))
 		{
 			return true;
 		}
-		return true;
+		return false;
 	}
 
 	/**
@@ -1474,6 +1471,20 @@ public class XMIImportProcessor
 							.setSize(new Integer(0));
 					implicitRuleList = configurationsFactory.getAllImplicitRules(
 							ProcessorConstants.TEXT_CONTROL, ProcessorConstants.DATATYPE_STRING);
+				}
+				else if (attributeTypeInformation instanceof DoubleAttributeTypeInformation)
+				{
+					((DoubleAttributeTypeInformation) attributeTypeInformation)
+							.setDecimalPlaces(new Integer(4));	
+					implicitRuleList = configurationsFactory.getAllImplicitRules(
+							ProcessorConstants.TEXT_CONTROL, ProcessorConstants.DATATYPE_NUMBER);
+				}
+				else if (attributeTypeInformation instanceof FloatAttributeTypeInformation)
+				{
+					((FloatAttributeTypeInformation) attributeTypeInformation)
+							.setDecimalPlaces(new Integer(4));	
+					implicitRuleList = configurationsFactory.getAllImplicitRules(
+							ProcessorConstants.TEXT_CONTROL, ProcessorConstants.DATATYPE_NUMBER);
 				}
 				else
 				{

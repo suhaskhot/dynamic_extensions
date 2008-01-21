@@ -7,40 +7,31 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import edu.common.dynamicextensions.domain.AbstractAttribute;
-import edu.common.dynamicextensions.domain.Attribute;
-import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
-import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
+import org.hibernate.Session;
+
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.global.Constants;
-import edu.common.dynamicextensions.util.global.Variables;
-import edu.wustl.common.dao.DAOFactory;
-import edu.wustl.common.dao.JDBCDAO;
-import edu.wustl.common.util.Utility;
+import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.dbManager.DBUtil;
-import edu.wustl.common.util.logger.Logger;
 
 public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstantsInterface
 {
 
-	
+	private static Map idMap = new HashMap();
 
 	/**
 	 * @param query query to be executed
-	 * @return 
-	 * @throws DynamicExtensionsSystemException 
+	 * @return
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public static ResultSet executeQuery(String query) throws DynamicExtensionsSystemException
 	{
@@ -131,8 +122,8 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 
 	/**
 	 * @param query query to be executed
-	 * @return 
-	 * @throws DynamicExtensionsSystemException 
+	 * @return
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public int executeDML(String query) throws DynamicExtensionsSystemException
 	{
@@ -181,7 +172,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	 * @throws DAOException
 	 * @throws ClassNotFoundException
 	 */
-	synchronized public Long getNextIdentifier(String entityTableName)
+	synchronized public static Long getNextIdentifier(String entityTableName)
 			throws DynamicExtensionsSystemException
 	{
 
@@ -189,10 +180,21 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 				+ entityTableName);
 		try
 		{
-			ResultSet resultSet = executeQuery(queryToGetNextIdentifier.toString());
-			resultSet.next();
-			Long identifier = resultSet.getLong(1);
-			return identifier + 1;
+			Long identifier = null;
+			if (idMap.containsKey(entityTableName))
+			{
+				Long id = (Long) idMap.get(entityTableName);
+				identifier = id + 1;
+			}
+			else
+			{
+				ResultSet resultSet = executeQuery(queryToGetNextIdentifier.toString());
+				resultSet.next();
+				identifier = resultSet.getLong(1);
+				identifier = identifier + 1;
+			}
+			idMap.put(entityTableName,identifier);
+			return identifier;
 		}
 		catch (SQLException e)
 		{
@@ -203,35 +205,61 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 
 	/**
 	 * This method is used in case result of the query is miltiple records.
-	 * 
+	 *
 	 * @param query query to be executed.
 	 * @return List of records.
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public List getResultInList(String query) throws DynamicExtensionsSystemException
 	{
-		List resultList = null;
-		JDBCDAO jdbcDAO = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
-
+		List resultList = new ArrayList();
+		Session session = null;
+		Connection con = null;
+		Statement statement = null;
+		ResultSet resultSet = null;
 		try
 		{
-			jdbcDAO.openSession(null);
-			resultList = jdbcDAO.executeQuery(query, null, false, false, null);
+			session = DBUtil.getCleanSession();
+			con = session.connection();
+			statement = con.createStatement();
+			resultSet = statement.executeQuery(query);
+			while (resultSet.next())
+			{
+				Long id = resultSet.getLong(1);
+				resultList.add(id);
+			}
 		}
-		catch (DAOException e)
+		catch (SQLException e)
 		{
-			throw new DynamicExtensionsSystemException("Could notexecuting the query ", e);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		catch (ClassNotFoundException e)
+		catch (BizLogicException e)
 		{
-			throw new DynamicExtensionsSystemException("Could notexecuting the query ", e);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally
+		{
+			try
+			{
+				resultSet.close();
+				statement.close();
+				con.close();
+				session.close();
+			}
+			catch (SQLException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return resultList;
 	}
 
 	/**
 	 * This method returns all the entity groups reachable from given entity.
-	 *  
+	 *
 	 * @param entity
 	 * @param processedEntities
 	 * @param processedEntityGroups
@@ -254,7 +282,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 			if (!processedEntityGroups.contains(entityGroup))
 			{
 				processedEntityGroups.add(entityGroup);
-				// process  all entities of each entity Groups 
+				// process  all entities of each entity Groups
 				for (EntityInterface anotherEntity : entityGroup.getEntityCollection())
 				{
 					getAllEntityGroups(anotherEntity, processedEntities, processedEntityGroups);
@@ -265,7 +293,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 
 	/**
 	 * @return
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public static boolean isValuePresent(AttributeInterface attribute, Object value, Map<String, String> parameterMap)
 			throws DynamicExtensionsSystemException

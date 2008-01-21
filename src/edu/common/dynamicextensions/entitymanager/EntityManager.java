@@ -1828,7 +1828,7 @@ public class EntityManager
 	{
 		Container container = (Container) containerInterface;
 		Stack rollbackQueryStack = new Stack();
-        
+
 
 		if (container == null)
 		{
@@ -1864,7 +1864,7 @@ public class EntityManager
 				saveOrUpdateEntity(entity, hibernateDAO, rollbackQueryStack, isentitySaved,
 						processedEntityList, addIdAttribute, false, true);
 
-              
+
                 saveChildContainers(container,hibernateDAO );
 			}
 
@@ -1993,9 +1993,9 @@ public class EntityManager
 	                }
 					//hibernateDAO.saveUpdate(associationControl.getContainer(), null, false, false,false);
 					//session.saveOrUpdateCopy(associationControl.getContainer());
-	
+
 					saveChildContainers(associationControl.getContainer(), hibernateDAO);
-	
+
 				}
 			}
 		}
@@ -2263,6 +2263,7 @@ public class EntityManager
 
 		for (String queryString : queryList)
 		{
+//			System.out.println("$$$$$$$$ insertDataForSingleEntity ::" + queryString.toString());
 			logDebug("insertData", "Query for insert data is : " + queryString);
 			PreparedStatement statement = conn.prepareStatement(queryString);
 			statement.executeUpdate();
@@ -2544,7 +2545,14 @@ public class EntityManager
 					updateColumnString.append(dbColumnName);
 					updateColumnString.append(WHITESPACE + EQUAL + WHITESPACE);
 					value = queryBuilder.getFormattedValue(attribute, value);
-					updateColumnString.append(value);
+					if (value == null)
+					{
+						updateColumnString.append(" NULL ");
+					}
+					else
+					{
+						updateColumnString.append(value);
+					}
 				}
 			}
 			else
@@ -2561,6 +2569,9 @@ public class EntityManager
 					queryBuilder.getContenmentAssociationRemoveDataQueryList(
 							((Association) attribute), recordIdList, removeContainmentRecordQuery,
 							false);
+
+//					System.out.println("removeContainmentRecordQuery :::"
+//							+ removeContainmentRecordQuery.size());
 
 					entityManagerUtil.executeDML(removeContainmentRecordQuery);
 
@@ -4406,12 +4417,12 @@ public class EntityManager
         if (!containsMultipleAttributes)
         {
             int lastIndexOfAND = whereClause.lastIndexOf("AND");
-            
+
             if (lastIndexOfAND != -1)
             	whereClause = whereClause.substring(0, lastIndexOfAND);
             else
             	whereClause = "";
-            
+
             fromClause = fromClause.substring(0, fromClause.length()-2);
         }
 
@@ -5084,20 +5095,20 @@ public class EntityManager
 		}
         return null;
 	}
-	
+
 	/**
 	 * This method helps to retrive entity information selectively.It returns a list of EntityInformationObjects.
-	 * 
-	 * EntityInformationObject contains name and identifier if entity.This object does not have any other 
+	 *
+	 * EntityInformationObject contains name and identifier if entity.This object does not have any other
 	 * entity information.
-	 * 
-	 * EntityInformationObject contains a collection of AttributeInformationObject.AttributeInformationObject 
+	 *
+	 * EntityInformationObject contains a collection of AttributeInformationObject.AttributeInformationObject
 	 * contains name and identifier of the attribute.
-	 * 
-	 * EntityInformationObject also contains a collection of AssociationInformationObject.AssociationInformationObject 
+	 *
+	 * EntityInformationObject also contains a collection of AssociationInformationObject.AssociationInformationObject
 	 * contains name,identifier,source role name, target role name,source entity name ,target entity name
 	 * of the association.
-	 *  
+	 *
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllContainerBeans()
 	 */
 	public List<EntityInformationObject> getAllEntityInformationObjects()
@@ -5123,9 +5134,9 @@ public class EntityManager
 	}
 
 	/**
-	 * This method returns a collection of AttributeInformationObject.AttributeInformationObject 
-	 * contains name and identifier of the attribute. 
-	 * 
+	 * This method returns a collection of AttributeInformationObject.AttributeInformationObject
+	 * contains name and identifier of the attribute.
+	 *
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllContainerBeans()
 	 */
 	private List<AttributeInformationObject> getAllAttributeInformationObjects(
@@ -5151,10 +5162,10 @@ public class EntityManager
 	}
 
 	/**
-	 * This method returns a collection of AssociationInformationObject.AssociationInformationObject 
+	 * This method returns a collection of AssociationInformationObject.AssociationInformationObject
 	 * contains name,identifier,source role name, target role name,source entity name ,target entity name
-	 * of the association. 
-	 * 
+	 * of the association.
+	 *
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllContainerBeans()
 	 */
 	private List<AssociationInformationObject> getAllAssociationInformationObjects(

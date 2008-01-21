@@ -21,8 +21,6 @@ import org.hibernate.Transaction;
 import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.Attribute;
-import edu.common.dynamicextensions.domain.AttributeRecord;
-import edu.common.dynamicextensions.domain.AttributeTypeInformation;
 import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
@@ -54,7 +52,6 @@ import edu.wustl.common.dao.HibernateDAO;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.dbManager.DBUtil;
-import edu.wustl.common.util.dbManager.HibernateMetaData;
 import edu.wustl.common.util.logger.Logger;
 
 /**
@@ -436,21 +433,27 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
                                                             boolean isLogicalDeletion)
             throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException {
         if (recordIdList == null || recordIdList.isEmpty()) {
+//			System.out.println("getContenmentAssociationRemoveDataQueryList ::recordIdList :::"
+//					+ recordIdList.size());
             return;
         }
 
         List<Long> childrenRecordIdList = getRecordIdListForContainment(association, recordIdList);
         if (childrenRecordIdList == null || childrenRecordIdList.isEmpty()) {
+//			System.out.println("getContenmentAssociationRemoveDataQueryList ::childrenRecordIdList :::"
+//					+ childrenRecordIdList.size());
             return;
         }
 
         EntityInterface targetEntity = association.getTargetEntity();
-
+//		System.out.println("before getting incomingAssociations :::");
         /*now chk if these records are referred by some other incoming association , if so this should not be disabled*/
         Collection<AssociationInterface> incomingAssociations = EntityManager.getInstance().getIncomingAssociations(
                                                                                                                     targetEntity);
         incomingAssociations.remove(association);
+//        System.out.println("before validateForDeleteRecord :::");
         validateForDeleteRecord(targetEntity, childrenRecordIdList, incomingAssociations);
+//        System.out.println("after validateForDeleteRecord :::");
 
         Collection<AssociationInterface> associationCollection = targetEntity.getAssociationCollection();
         for (AssociationInterface targetEntityAssociation : associationCollection) {
@@ -459,7 +462,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
                                                             queryList, isLogicalDeletion);
             }
         }
-
+//        System.out.println("before forming delete query :::");
         String tableName = association.getConstraintProperties().getName();
 
         StringBuffer query = new StringBuffer();
@@ -477,7 +480,8 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
             query.append(WHERE_KEYWORD + WHITESPACE + IDENTIFIER + WHITESPACE + IN_KEYWORD);
             query.append(WHITESPACE + getListToString(childrenRecordIdList) + WHITESPACE);
         }
-
+//        System.out.println("after forming delete query :::");
+//        System.out.println("before returning delete query :::" + query.toString());
         queryList.add(query.toString());
     }
 
@@ -575,17 +579,18 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
         containmentRecordIdQuery.append(WHITESPACE + getListToString(recordIdList) + WHITESPACE);
 
         List tempList = entityManagerUtil.getResultInList(containmentRecordIdQuery.toString());
-        List<Long> childrenRecordIdList = new ArrayList<Long>();
+// removed the below code because the conversion is not required
 
-        if (tempList != null && tempList.size() > 0) {
+//        List<Long> childrenRecordIdList = new ArrayList<Long>();
 
-            for (int i = 0; i < tempList.size(); i++) {
-                String recordValue = (String) ((List) tempList.get(i)).get(0);
-                childrenRecordIdList.add(Long.parseLong(recordValue));
-            }
-        }
-
-        return childrenRecordIdList;
+//        if (tempList != null && tempList.size() > 0) {
+//
+//            for (int i = 0; i < tempList.size(); i++) {
+//                String recordValue = (String) ((List) tempList.get(i)).get(0);
+//                childrenRecordIdList.add(Long.parseLong(recordValue));
+//            }
+//        }
+        return tempList;
     }
 
     /**
@@ -1701,7 +1706,7 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
      * @param databaseCopy
      * @return
      */
-    public boolean isParentChanged(Entity entity, Entity databaseCopy) 
+    public boolean isParentChanged(Entity entity, Entity databaseCopy)
     {
         boolean isParentChanged = false;
         if (entity.getParentEntity() != null && !entity.getParentEntity().equals(databaseCopy.getParentEntity())) {
@@ -1751,13 +1756,13 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
             } else {
                 str = (String) value;
             }
-            
+
             if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
             {
                 if (str.length() != 0)
                     str = DynamicExtensionsUtility.formatMonthAndYearDate(str);
             }
-            
+
             if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
             {
                 if (str.length() != 0)
@@ -1769,7 +1774,10 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
             formattedvalue = Variables.strTodateFunction + "('" + str + "','"
                     + DynamicExtensionsUtility.getSQLDateFormat(dateFormat) + "')";
         } else {
-            formattedvalue = value.toString();
+        	if (value != null && value.toString().length() > 0)
+        	{
+        		formattedvalue = value.toString();
+        	}
         }
         Logger.out.debug("getFormattedValue The formatted value for attribute " + attribute.getName() + "is "
                 + formattedvalue);
@@ -1794,9 +1802,9 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
         String tableName = attribute.getEntity().getTableProperties().getName();
         String columnName = attribute.getColumnProperties().getName();
         String identifier = "";
-     
+
         Object formattedValue = getFormattedValue((AbstractAttribute) attribute, value);
-           
+
         identifier = parameterMap.get("recordId");
 
         StringBuffer queryBuffer = new StringBuffer();
@@ -1815,11 +1823,11 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
                                                                                                                                                                                                                                                                                                                                  formattedValue).append(
                                                                                                                                                                                                                                                                                                                                                         " and "
                                                                                                                                                                                                                                                                                                                                                              + getRemoveDisbledRecordsQuery(""));
-        
+
         if(!identifier.equals(""))
         {
         	queryBuffer.append(WHITESPACE).append(AND_KEYWORD).append(WHITESPACE).append(IDENTIFIER).append(WHITESPACE).append("!=").append(WHITESPACE).append(identifier);
-        	
+
         }
 
         ResultSet resultSet = EntityManagerUtil.executeQuery(queryBuffer.toString());

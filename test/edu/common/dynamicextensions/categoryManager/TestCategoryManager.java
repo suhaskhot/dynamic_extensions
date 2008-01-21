@@ -279,8 +279,11 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 		association.setTargetEntity(study);
 		association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+		RoleInterface sourceRoleInterface = getRole(AssociationType.ASSOCIATION, "primaryExperiment", Cardinality.ONE, Cardinality.ONE);
+		sourceRoleInterface.setAssociationsType(AssociationType.CONTAINTMENT);
+		
 		association.setName("primaryInvestigator");
-		association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator", Cardinality.ONE, Cardinality.ONE));
+		association.setSourceRole(sourceRoleInterface);
 		association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study", Cardinality.ZERO, Cardinality.MANY));
 
 		user.addAbstractAttribute(association);
@@ -291,7 +294,9 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		association2.setTargetEntity(experiment);
 		association2.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
 		association2.setName("primaryExperiment");
-		association2.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryExperiment", Cardinality.ONE, Cardinality.ONE));
+		RoleInterface studyRoleInterface =  getRole(AssociationType.ASSOCIATION, "primaryExperiment", Cardinality.ONE, Cardinality.ONE);
+		studyRoleInterface.setAssociationsType(AssociationType.CONTAINTMENT);
+		association2.setSourceRole(studyRoleInterface);
 		association2.setTargetRole(getRole(AssociationType.ASSOCIATION, "experiment", Cardinality.ZERO, Cardinality.MANY));
 
 		study.addAbstractAttribute(association2);
@@ -313,6 +318,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			CategoryInterface categoryInterface = factory.createCategory();
 
 			CategoryEntityInterface userCategoryEntityInterface = factory.createCategoryEntity();
+			userCategoryEntityInterface.setName("UsercategoryEntity");
 			userCategoryEntityInterface.setEntity(user);
 
 			userCategoryEntityInterface.setCategory(categoryInterface);
@@ -321,7 +327,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			CategoryAttributeInterface userCategoryAttributeInterface = factory.createCategoryAttribute();
 			userCategoryAttributeInterface.setName("userCategoryAttributeInterface");
 			userCategoryAttributeInterface.setAttribute(userNameAttribute);
-			userCategoryEntityInterface.getCategoryAttributeCollection().add(userCategoryAttributeInterface);
+			userCategoryEntityInterface.addCategoryAttribute(userCategoryAttributeInterface);
 			userCategoryAttributeInterface.setCategoryEntity(userCategoryEntityInterface);
 
 			CategoryEntityInterface experimentCategoryEntityInterface = factory.createCategoryEntity();
@@ -331,7 +337,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			CategoryAttributeInterface experimentCategoryAttributeInterface = factory.createCategoryAttribute();
 			experimentCategoryAttributeInterface.setName("experimentCategoryAttributeInterface");
 			experimentCategoryAttributeInterface.setAttribute(experimentNameAttribute);
-			experimentCategoryEntityInterface.getCategoryAttributeCollection().add(experimentCategoryAttributeInterface);
+			experimentCategoryEntityInterface.addCategoryAttribute(experimentCategoryAttributeInterface);
 			experimentCategoryAttributeInterface.setCategoryEntity(experimentCategoryEntityInterface);
 
 			PathInterface pathInterface = factory.createPath();
@@ -461,7 +467,10 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		association.setTargetEntity(study);
 		association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
 		association.setName("primaryInvestigator");
-		association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator", Cardinality.ONE, Cardinality.ONE));
+		
+		RoleInterface userSourceRole = getRole(AssociationType.ASSOCIATION, "primaryInvestigator", Cardinality.ONE, Cardinality.ONE);
+		userSourceRole.setAssociationsType(AssociationType.CONTAINTMENT);
+		association.setSourceRole(userSourceRole);
 		association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study", Cardinality.ZERO, Cardinality.MANY));
 
 		user.addAbstractAttribute(association);
@@ -472,7 +481,10 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		association2.setTargetEntity(experiment);
 		association2.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
 		association2.setName("primaryExperiment");
-		association2.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryExperiment", Cardinality.ONE, Cardinality.ONE));
+		
+		RoleInterface studySourceRole = getRole(AssociationType.ASSOCIATION, "primaryExperiment", Cardinality.ONE, Cardinality.ONE);
+		studySourceRole.setAssociationsType(AssociationType.CONTAINTMENT);
+		association2.setSourceRole(studySourceRole);
 		association2.setTargetRole(getRole(AssociationType.ASSOCIATION, "experiment", Cardinality.ZERO, Cardinality.MANY));
 
 		study.addAbstractAttribute(association2);
@@ -503,7 +515,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			CategoryAttributeInterface userCategoryAttributeInterface = factory.createCategoryAttribute();
 			userCategoryAttributeInterface.setName("userCategoryAttributeInterface");
 			userCategoryAttributeInterface.setAttribute(userNameAttribute);
-			userCategoryEntityInterface.getCategoryAttributeCollection().add(userCategoryAttributeInterface);
+			userCategoryEntityInterface.addCategoryAttribute(userCategoryAttributeInterface);
 			userCategoryAttributeInterface.setCategoryEntity(userCategoryEntityInterface);
 
 			CategoryEntityInterface studyCategoryEntityInterface = factory.createCategoryEntity();
@@ -515,7 +527,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			CategoryAttributeInterface studyCategoryAttributeInterface = factory.createCategoryAttribute();
 			studyCategoryAttributeInterface.setName("studyCategoryAttributeInterface");
 			studyCategoryAttributeInterface.setAttribute(studyNameAttribute);
-			studyCategoryEntityInterface.getCategoryAttributeCollection().add(studyCategoryAttributeInterface);
+			studyCategoryEntityInterface.addCategoryAttribute(studyCategoryAttributeInterface);
 			studyCategoryAttributeInterface.setCategoryEntity(studyCategoryEntityInterface);
 
 			CategoryEntityInterface experimentCategoryEntityInterface = factory.createCategoryEntity();
@@ -525,27 +537,29 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			CategoryAttributeInterface experimentCategoryAttributeInterface = factory.createCategoryAttribute();
 			experimentCategoryAttributeInterface.setName("experimentCategoryAttributeInterface");
 			experimentCategoryAttributeInterface.setAttribute(experimentNameAttribute);
-			experimentCategoryEntityInterface.getCategoryAttributeCollection().add(experimentCategoryAttributeInterface);
+			experimentCategoryEntityInterface.addCategoryAttribute(experimentCategoryAttributeInterface);
 			experimentCategoryAttributeInterface.setCategoryEntity(experimentCategoryEntityInterface);
 
-			PathInterface pathInterface = factory.createPath();
+			PathInterface path1 = factory.createPath();
 
 			PathAssociationRelationInterface pathAssociationRelationInterface = factory.createPathAssociationRelation();
 			pathAssociationRelationInterface.setAssociation(association);
 			pathAssociationRelationInterface.setPathSequenceNumber(1);
+			
+			PathInterface path2 = factory.createPath();
 
 			PathAssociationRelationInterface pathAssociationRelationInterface2 = factory.createPathAssociationRelation();
 			pathAssociationRelationInterface2.setAssociation(association2);
 			pathAssociationRelationInterface2.setPathSequenceNumber(2);
 
-			pathAssociationRelationInterface.setPath(pathInterface);
-			pathAssociationRelationInterface2.setPath(pathInterface);
+			pathAssociationRelationInterface.setPath(path1);
+			pathAssociationRelationInterface2.setPath(path2);
 
-			pathInterface.addPathAssociationRelation(pathAssociationRelationInterface);
-			pathInterface.addPathAssociationRelation(pathAssociationRelationInterface2);
+			path1.addPathAssociationRelation(pathAssociationRelationInterface);
+			path2.addPathAssociationRelation(pathAssociationRelationInterface2);
 
-			studyCategoryEntityInterface.setPath(pathInterface);
-			experimentCategoryEntityInterface.setPath(pathInterface);
+			studyCategoryEntityInterface.setPath(path1);
+			experimentCategoryEntityInterface.setPath(path2);
 
 			userCategoryEntityInterface.addChildCategory(studyCategoryEntityInterface);
 			studyCategoryEntityInterface.addChildCategory(experimentCategoryEntityInterface);
@@ -623,8 +637,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 						map2.put(c, c.getName() + Math.random());
 					}
 					dataValueList2.add(map2);
-					map.put(studyCategoryEntityInterface.getCategoryAssociation(), dataValueList2);
 				}
+				map.put(studyCategoryEntityInterface.getCategoryAssociation(), dataValueList2);
 				dataValueList.add(map);
 			}
 

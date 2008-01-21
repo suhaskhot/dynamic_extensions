@@ -60,7 +60,7 @@ public abstract class AbstractContainmentControl extends Control implements Abst
 		return subContainerHTML;
 	}
 
-	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
+	public String generateViewModeHTML() throws DynamicExtensionsSystemException
 	{
 		String subContainerHTML = "";
 		if (isCardinalityOneToMany())

@@ -28,8 +28,8 @@ import java.util.StringTokenizer;
 
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domain.Association;
+import edu.common.dynamicextensions.domain.userinterface.AbstractContainmentControl;
 import edu.common.dynamicextensions.domain.userinterface.Container;
-import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
@@ -213,7 +213,7 @@ public class DynamicExtensionsUtility
 			{
 				return ProcessorConstants.FILEUPLOAD_CONTROL;
 			}
-			if (controlInterface instanceof ContainmentAssociationControl)
+			if (controlInterface instanceof AbstractContainmentControl)
 			{
 				return ProcessorConstants.ADD_SUBFORM_CONTROL;
 			}

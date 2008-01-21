@@ -240,13 +240,14 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 				categoryAttributeInterface = (CategoryAttributeInterface)baseAbstractAttributeInterface;
 				abstractAttributeInterface = categoryAttributeInterface.getAttribute();
 				entityValue = categoryValue;
+				entityDataValueMap.put(abstractAttributeInterface, entityValue);
 			}
 			else
 			{
 				categoryAssociationInterface = (CategoryAssociationInterface)baseAbstractAttributeInterface;
-				populateMapValuesForCategortyAssociation(abstractAttributeInterface,entityValue,categoryAssociationInterface,categoryValue);
+				populateMapValuesForCategortyAssociation(entityDataValueMap,categoryAssociationInterface,categoryValue);
 			}
-			entityDataValueMap.put(abstractAttributeInterface, entityValue);
+			
 		}
 		return entityDataValueMap;
 	}
@@ -258,12 +259,12 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @param baseAbstractAttributeInterface
 	 * @param categoryValue
 	 */
-	private void populateMapValuesForCategortyAssociation(AbstractAttributeInterface abstractAttributeInterface, Object entityValue, CategoryAssociationInterface categoryAssociationInterface, Object categoryValue) {
+	private void populateMapValuesForCategortyAssociation(Map<AbstractAttributeInterface, Object>entityDataValueMap, CategoryAssociationInterface categoryAssociationInterface, Object categoryValue) {
 		CategoryEntityInterface catEntityInterface = categoryAssociationInterface.getTargetCategoryEntity();
 		PathInterface pathInterface = catEntityInterface.getPath();
 		List<PathAssociationRelationInterface> pathAssociationRelationList = pathInterface.getSortedPathAssociationRelationCollection();
 		List<AssociationInterface>sortedAssociations = getSortedAssociations(pathAssociationRelationList);
-		abstractAttributeInterface = sortedAssociations.get(0);
+		AbstractAttributeInterface abstractAttributeInterface = sortedAssociations.get(0);
 		
 		List<Map<AbstractAttributeInterface,Object>> entityDataValueMapList= new ArrayList<Map<AbstractAttributeInterface,Object>>();
 		List<Map<AbstractAttributeInterface,Object>> targetEntityDataValueMapList = createNestedMap(sortedAssociations,entityDataValueMapList);
@@ -273,7 +274,8 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			targetEntityDataValueMapList.add(generateEntityDataValueMap(categoryDataMap));
 			
 		}
-		entityValue = entityDataValueMapList;
+		Object entityValue = entityDataValueMapList;
+		entityDataValueMap.put(abstractAttributeInterface, entityValue);
 	}
 
 	/**

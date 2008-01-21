@@ -69,7 +69,7 @@ public class PathAssociationRelation extends DynamicExtensionBaseDomainObject im
 	}
 
 	/**
-	 * @hibernate.many-to-one column="ASSOCIATION_ID" class="edu.common.dynamicextensions.domain.Association" cascade="save-update"
+	 * @hibernate.many-to-one column="ASSOCIATION_ID" class="edu.common.dynamicextensions.domain.Association" cascade="none"
 	 * @return the association
 	 */
 	public AssociationInterface getAssociation()
@@ -82,7 +82,7 @@ public class PathAssociationRelation extends DynamicExtensionBaseDomainObject im
 	 */
 	public void setAssociation(AssociationInterface associationInterface)
 	{
-		this.association = association;
+		this.association = (Association)associationInterface;
 	}
 
 	/**

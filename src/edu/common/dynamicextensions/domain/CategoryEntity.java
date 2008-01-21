@@ -213,7 +213,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	 */
 	public void addCategoryAttribute(CategoryAttributeInterface categoryAttributeInterface)
 	{
-
+		categoryAttributeCollection.add(categoryAttributeInterface); 
 	}
 
 	/**

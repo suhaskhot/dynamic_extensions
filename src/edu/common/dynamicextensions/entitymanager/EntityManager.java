@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +25,7 @@ import java.util.Stack;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Association;
@@ -44,7 +46,6 @@ import edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
 import edu.common.dynamicextensions.domain.userinterface.Container;
-import edu.common.dynamicextensions.domain.userinterface.Control;
 import edu.common.dynamicextensions.domain.userinterface.SelectControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeInterface;
@@ -4933,6 +4934,7 @@ public class EntityManager
 	}
 	public  Long getEntityId(String entityName) throws DynamicExtensionsSystemException
     {
+		Connection conn = null;
 		ResultSet rsltSet = null;
     	String entityTableName = "dyextn_abstract_metadata";
     	String NAME = "name";
@@ -4942,7 +4944,10 @@ public class EntityManager
         query.append(WHERE_KEYWORD  + WHITESPACE + NAME +  WHITESPACE + EQUAL + "'"+entityName+"'");
         System.out.println("Query = "  +query.toString());
         try {
-            rsltSet = EntityManagerUtil.executeQuery(query.toString());
+			conn = DBUtil.getConnection();
+			Statement statement = null;
+			statement = conn.createStatement();
+			rsltSet = statement.executeQuery(query.toString());
             rsltSet.next();
             Long identifier = rsltSet.getLong(IDENTIFIER);
             return identifier;
@@ -4958,6 +4963,8 @@ public class EntityManager
 				try
 				{
 					rsltSet.close();
+					conn.close();
+					DBUtil.closeConnection();
 				}
 				catch (SQLException e)
 				{

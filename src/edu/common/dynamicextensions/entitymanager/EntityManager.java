@@ -294,8 +294,7 @@ public class EntityManager
 		{
 			if (tempEntityGroup.getId() == null)
 			{
-
-				hibernateDAO.insert(tempEntityGroup, null, false, false);
+				hibernateDAO.insert(addTaggedValue(tempEntityGroup), null, false, false);
 			}
 			if (((EntityGroup) tempEntityGroup).isCurrent())
 			{
@@ -304,7 +303,33 @@ public class EntityManager
 		}
 		return entityGroup;
 	}
-
+	/**
+	 * This method adds caB2BEntityGroup tagged value to the entity group
+	 * @param entityGroup
+	 * @return
+	 */
+	private EntityGroupInterface addTaggedValue(EntityGroupInterface entityGroup)
+	{
+		Collection<TaggedValueInterface> taggedValueCollection = entityGroup
+				.getTaggedValueCollection();
+		boolean isTaggedValueAdded = false;
+		for (TaggedValueInterface taggedValue : taggedValueCollection)
+		{
+			if (taggedValue.getKey().equalsIgnoreCase(CAB2B_ENTITY_GROUP))
+			{
+				isTaggedValueAdded = true;
+			}
+		}
+		if (!isTaggedValueAdded)
+		{
+			TaggedValueInterface taggedValueInterface = DomainObjectFactory.getInstance()
+					.createTaggedValue();
+			taggedValueInterface.setKey(CAB2B_ENTITY_GROUP);
+			taggedValueInterface.setValue(CAB2B_ENTITY_GROUP);
+			entityGroup.addTaggedValue(taggedValueInterface);
+		}
+		return entityGroup;
+	}
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#persistEntityMetadata(edu.common.dynamicextensions.domaininterface.EntityInterface)
 	 */
@@ -1724,7 +1749,7 @@ public class EntityManager
                 }
                 else
                 {
-                    hibernateDAO.insert(currentEntityGroup, null, false, false);
+                    hibernateDAO.insert(addTaggedValue(currentEntityGroup), null, false, false);
                 }
 				//hibernateDAO.saveUpdate(currentEntityGroup, null, false, false,false);
 				//session.saveOrUpdateCopy(currentEntityGroup);
@@ -1889,7 +1914,7 @@ public class EntityManager
                 }
                 else
                 {
-                    hibernateDAO.insert(currentEntityGroup, null, false, false);
+                    hibernateDAO.insert(addTaggedValue(currentEntityGroup), null, false, false);
                 }
 				//hibernateDAO.saveUpdate(currentEntityGroup, null, false, false,false);
 				//session.saveOrUpdateCopy(currentEntityGroup);
@@ -3729,7 +3754,7 @@ public class EntityManager
 			if (isNew)
 			{
 				hibernateDAO.openSession(null);
-				hibernateDAO.insert(entityGroup, null, false, false);
+				hibernateDAO.insert(addTaggedValue(entityGroup), null, false, false);
 			}
 			else
 			{
@@ -3821,7 +3846,7 @@ public class EntityManager
 			if (isNew)
 			{
 				hibernateDAO.openSession(null);
-				hibernateDAO.insert(entityGroup, null, false, false);
+				hibernateDAO.insert(addTaggedValue(entityGroup), null, false, false);
 			}
 			else
 			{

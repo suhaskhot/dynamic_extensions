@@ -11,8 +11,6 @@ import java.util.Map.Entry;
 
 import edu.common.dynamicextensions.domain.Category;
 import edu.common.dynamicextensions.domain.CategoryAttribute;
-import edu.common.dynamicextensions.domain.CategoryEntity;
-import edu.common.dynamicextensions.domain.PathAssociationRelation;
 import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
@@ -136,8 +134,8 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	/**
 	 *
 	 */
-	public Long insertData(CategoryInterface category, Map<BaseAbstractAttributeInterface, Object> dataValue) throws DynamicExtensionsApplicationException,
-			DynamicExtensionsSystemException
+	public Long insertData(CategoryInterface category, Map<BaseAbstractAttributeInterface, Object> dataValue)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		List<Map<BaseAbstractAttributeInterface, Object>> dataValueMapList = new ArrayList<Map<BaseAbstractAttributeInterface, Object>>();
 		dataValueMapList.add(dataValue);
@@ -162,8 +160,8 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			hibernateDAO = (HibernateDAO) factory.getDAO(Constants.HIBERNATE_DAO);
 			hibernateDAO.openSession(null);
 			EntityManagerInterface entityManager = EntityManager.getInstance();
-			recordIdList =  entityManager.insertData(entity, EntityDataValueMapList);
-			
+			recordIdList = entityManager.insertData(entity, EntityDataValueMapList);
+
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{
@@ -193,16 +191,17 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @param categoryDataValueMapList
 	 * @return
 	 */
-	private List<Map<AbstractAttributeInterface, Object>> generateEntityDataValueMapList(List<Map<BaseAbstractAttributeInterface,Object>> categoryDataValueMapList) {
-		List<Map<AbstractAttributeInterface, Object>> entityDataValueMapList = new ArrayList<Map<AbstractAttributeInterface,Object>>();
-		
-		for(Map<BaseAbstractAttributeInterface,Object>categoryDataValueMap:categoryDataValueMapList)
+	private List<Map<AbstractAttributeInterface, Object>> generateEntityDataValueMapList(
+			List<Map<BaseAbstractAttributeInterface, Object>> categoryDataValueMapList)
+	{
+		List<Map<AbstractAttributeInterface, Object>> entityDataValueMapList = new ArrayList<Map<AbstractAttributeInterface, Object>>();
+
+		for (Map<BaseAbstractAttributeInterface, Object> categoryDataValueMap : categoryDataValueMapList)
 		{
 			entityDataValueMapList.add(generateEntityDataValueMap(categoryDataValueMap));
 		}
 		return entityDataValueMapList;
 	}
-
 
 	/**
 	 *
@@ -211,7 +210,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	{
 		return queryBuilder;
 	}
-	
+
 	/**
 	 * 
 	 * @param rootCategoryEntity
@@ -220,38 +219,38 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @return
 	 */
 	public Map<AbstractAttributeInterface, Object> generateEntityDataValueMap(Map<BaseAbstractAttributeInterface, Object> categoryDataMap)
-				
+
 	{
 		Map<AbstractAttributeInterface, Object> entityDataValueMap = new HashMap<AbstractAttributeInterface, Object>();
-		Set<Entry<BaseAbstractAttributeInterface,Object>>  categoryDataMapEntries =  categoryDataMap.entrySet();
-		
+		Set<Entry<BaseAbstractAttributeInterface, Object>> categoryDataMapEntries = categoryDataMap.entrySet();
+
 		AbstractAttributeInterface abstractAttributeInterface = null;
 		Object entityValue = null;
 		CategoryAttributeInterface categoryAttributeInterface;
 		CategoryAssociationInterface categoryAssociationInterface;
 		BaseAbstractAttributeInterface baseAbstractAttributeInterface;
 		Object categoryValue;
-		for(Entry<BaseAbstractAttributeInterface,Object> entry:categoryDataMapEntries)
+		for (Entry<BaseAbstractAttributeInterface, Object> entry : categoryDataMapEntries)
 		{
 			baseAbstractAttributeInterface = entry.getKey();
 			categoryValue = entry.getValue();
-			if(baseAbstractAttributeInterface instanceof CategoryAttribute)
+			if (baseAbstractAttributeInterface instanceof CategoryAttribute)
 			{
-				categoryAttributeInterface = (CategoryAttributeInterface)baseAbstractAttributeInterface;
+				categoryAttributeInterface = (CategoryAttributeInterface) baseAbstractAttributeInterface;
 				abstractAttributeInterface = categoryAttributeInterface.getAttribute();
 				entityValue = categoryValue;
 				entityDataValueMap.put(abstractAttributeInterface, entityValue);
 			}
 			else
 			{
-				categoryAssociationInterface = (CategoryAssociationInterface)baseAbstractAttributeInterface;
-				populateMapValuesForCategortyAssociation(entityDataValueMap,categoryAssociationInterface,categoryValue);
+				categoryAssociationInterface = (CategoryAssociationInterface) baseAbstractAttributeInterface;
+				populateMapValuesForCategoryAssociation(entityDataValueMap, categoryAssociationInterface, categoryValue);
 			}
-			
+
 		}
 		return entityDataValueMap;
 	}
-	
+
 	/**
 	 * 
 	 * @param abstractAttributeInterface
@@ -259,20 +258,22 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @param baseAbstractAttributeInterface
 	 * @param categoryValue
 	 */
-	private void populateMapValuesForCategortyAssociation(Map<AbstractAttributeInterface, Object>entityDataValueMap, CategoryAssociationInterface categoryAssociationInterface, Object categoryValue) {
+	private void populateMapValuesForCategoryAssociation(Map<AbstractAttributeInterface, Object> entityDataValueMap,
+			CategoryAssociationInterface categoryAssociationInterface, Object categoryValue)
+	{
 		CategoryEntityInterface catEntityInterface = categoryAssociationInterface.getTargetCategoryEntity();
 		PathInterface pathInterface = catEntityInterface.getPath();
 		List<PathAssociationRelationInterface> pathAssociationRelationList = pathInterface.getSortedPathAssociationRelationCollection();
-		List<AssociationInterface>sortedAssociations = getSortedAssociations(pathAssociationRelationList);
+		List<AssociationInterface> sortedAssociations = getSortedAssociations(pathAssociationRelationList);
 		AbstractAttributeInterface abstractAttributeInterface = sortedAssociations.get(0);
-		
-		List<Map<AbstractAttributeInterface,Object>> entityDataValueMapList= new ArrayList<Map<AbstractAttributeInterface,Object>>();
-		List<Map<AbstractAttributeInterface,Object>> targetEntityDataValueMapList = createNestedMap(sortedAssociations,entityDataValueMapList);
-		List<Map<BaseAbstractAttributeInterface, Object>> categoryDataMapList = (List<Map<BaseAbstractAttributeInterface, Object>>) categoryValue; 
-		for(Map<BaseAbstractAttributeInterface, Object>categoryDataMap:categoryDataMapList)
+
+		List<Map<AbstractAttributeInterface, Object>> entityDataValueMapList = new ArrayList<Map<AbstractAttributeInterface, Object>>();
+		List<Map<AbstractAttributeInterface, Object>> targetEntityDataValueMapList = createNestedMap(sortedAssociations, entityDataValueMapList);
+		List<Map<BaseAbstractAttributeInterface, Object>> categoryDataMapList = (List<Map<BaseAbstractAttributeInterface, Object>>) categoryValue;
+		for (Map<BaseAbstractAttributeInterface, Object> categoryDataMap : categoryDataMapList)
 		{
 			targetEntityDataValueMapList.add(generateEntityDataValueMap(categoryDataMap));
-			
+
 		}
 		Object entityValue = entityDataValueMapList;
 		entityDataValueMap.put(abstractAttributeInterface, entityValue);
@@ -284,17 +285,19 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @param entityDataValueMapList 
 	 * @return
 	 */
-	private List<Map<AbstractAttributeInterface, Object>> createNestedMap(List<AssociationInterface> sortedAssociations, List<Map<AbstractAttributeInterface, Object>> entityDataValueMapList) {
+	private List<Map<AbstractAttributeInterface, Object>> createNestedMap(List<AssociationInterface> sortedAssociations,
+			List<Map<AbstractAttributeInterface, Object>> entityDataValueMapList)
+	{
 		AssociationInterface associationInterface;
-		
+
 		List<Map<AbstractAttributeInterface, Object>> newEntityDataMapList;
-		
-		Map<AbstractAttributeInterface, Object>entityDataMap;
-		for(int counter = 1;counter<sortedAssociations.size();counter++)
+
+		Map<AbstractAttributeInterface, Object> entityDataMap;
+		for (int counter = 1; counter < sortedAssociations.size(); counter++)
 		{
 			associationInterface = sortedAssociations.get(counter);
 			entityDataMap = new HashMap<AbstractAttributeInterface, Object>();
-			newEntityDataMapList= new ArrayList<Map<AbstractAttributeInterface,Object>>();
+			newEntityDataMapList = new ArrayList<Map<AbstractAttributeInterface, Object>>();
 			entityDataMap.put(associationInterface, newEntityDataMapList);
 			entityDataValueMapList.add(entityDataMap);
 			entityDataValueMapList = newEntityDataMapList;
@@ -307,144 +310,108 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @param pathAssociationRelationList
 	 * @return
 	 */
-	private List<AssociationInterface> getSortedAssociations(List<PathAssociationRelationInterface> pathAssociationRelationList) {
+	private List<AssociationInterface> getSortedAssociations(List<PathAssociationRelationInterface> pathAssociationRelationList)
+	{
 		List<AssociationInterface> associationList = new ArrayList<AssociationInterface>();
-		for(PathAssociationRelationInterface pathAssociationRelationInterface:pathAssociationRelationList)
+		for (PathAssociationRelationInterface pathAssociationRelationInterface : pathAssociationRelationList)
 		{
 			associationList.add(pathAssociationRelationInterface.getAssociation());
 		}
 		return associationList;
 	}
-	
-	
-	
-	
-	
-	
-//
-//	/**
-//	 * This method accepts a category data map and converts it to corresponding entity data map.
-//	 */
-//	private Map<AbstractAttributeInterface, Object> generateEntityDataValueMap(CategoryEntityInterface rootCategoryEntity, Map<BaseAbstractAttributeInterface, Object> categoryDataMap,
-//			List<AssociationInterface> existingAssociationsList)
-//	{
-//		Map<AbstractAttributeInterface, Object> entityDataValueMap = new HashMap<AbstractAttributeInterface, Object>();
-//		Set<BaseAbstractAttributeInterface> categoryDataMapKeys = categoryDataMap.keySet();
-//		
-//		AttributeInterface attributeInterface;
-//		Object attributeValue;
-//
-//		for (BaseAbstractAttributeInterface baseAbstractAttributeInterface: categoryDataMapKeys)
-//		{
-//			if (baseAbstractAttributeInterface instanceof CategoryAssociation)
-//			{
-//				addDataForEntitiesOnPath(entityDataValueMap, categoryDataMap, (CategoryAssociation) baseAbstractAttributeInterface, existingAssociationsList);
-//			}
-//			else
-//			{
-//				attributeInterface = ((CategoryAttribute) baseAbstractAttributeInterface).getAttribute();
-//				attributeValue = categoryDataMap.get(baseAbstractAttributeInterface);
-//				entityDataValueMap.put(attributeInterface,attributeValue);
-//			}
-//		}
-//		return entityDataValueMap;
-//	}
-//
-//	/**
-//	 * This method adds data for all entities present on the path between two category entities.
-//	 * @param entityDataMap
-//	 * @param categoryDataMap
-//	 * @param categoryAssociationInterface
-//	 * @param existingAssociationsList
-//	 */
-//	private void addDataForEntitiesOnPath(Map<AbstractAttributeInterface, Object> entityDataMap,
-//			Map<BaseAbstractAttributeInterface, Object> categoryDataMap, CategoryAssociationInterface categoryAssociationInterface,
-//			List<AssociationInterface> existingAssociationsList)
-//	{
-//		Map<AbstractAttributeInterface, Object> dynamicDataMap = entityDataMap;
-//
-//		for (PathAssociationRelationInterface associationRelationInterface : categoryAssociationInterface.getCategoryEntity().getPath()
-//				.getSortedPathAssociationRelationCollection())
-//		{
-//			if (associationExists(existingAssociationsList, associationRelationInterface.getAssociation()))
-//			{
-//				continue;
-//			}
-//			if (associationRelationInterface.getAssociation().getTargetEntity() == categoryAssociationInterface.getCategoryEntity().getEntity())
-//			{
-//				List<Map<BaseAbstractAttributeInterface, Object>> oldDataList = (List<Map<BaseAbstractAttributeInterface, Object>>) categoryDataMap
-//						.get(categoryAssociationInterface);
-//				List<Map<AbstractAttributeInterface, Object>> newDataList = new ArrayList<Map<AbstractAttributeInterface, Object>>();
-//
-//				// When an association is added, add the same to existing associations' list
-//				existingAssociationsList.add(associationRelationInterface.getAssociation());
-//
-//				populateNewDataList(oldDataList, newDataList, entityDataMap, categoryDataMap, existingAssociationsList);
-//				dynamicDataMap.put(associationRelationInterface.getAssociation(), newDataList);
-//			}
-//			else
-//			{
-//				Map<AbstractAttributeInterface, Object> newDataMap = new HashMap<AbstractAttributeInterface, Object>();
-//				List<Map<AbstractAttributeInterface, Object>> newDataList = new ArrayList<Map<AbstractAttributeInterface, Object>>();
-//				newDataList.add(newDataMap);
-//				dynamicDataMap.put(associationRelationInterface.getAssociation(), newDataList);
-//
-//				// When an association is added, add the same to existing associations' list
-//				existingAssociationsList.add(associationRelationInterface.getAssociation());
-//
-//				dynamicDataMap = newDataMap;
-//			}
-//		}
-//	}
-//
-//	/**
-//	 * Create a new data list, and populate it with the values from old data list.
-//	 * @param oldDataList
-//	 * @param newDataList
-//	 * @param entityDataMap
-//	 * @param categoryDataMap
-//	 * @param existingAssociationsList
-//	 */
-//	private void populateNewDataList(List<Map<BaseAbstractAttributeInterface, Object>> oldDataList,
-//			List<Map<AbstractAttributeInterface, Object>> newDataList, Map<AbstractAttributeInterface, Object> entityDataMap,
-//			Map<BaseAbstractAttributeInterface, Object> categoryDataMap, List<AssociationInterface> existingAssociationsList)
-//	{
-//		Map<AbstractAttributeInterface, Object> newDataMap = null;
-//		for (Map<BaseAbstractAttributeInterface, Object> oldDataMap : oldDataList)
-//		{
-//			newDataMap = new HashMap<AbstractAttributeInterface, Object>();
-//			Set<BaseAbstractAttributeInterface> dataSet = oldDataMap.keySet();
-//			for (AbstractMetadataInterface object : dataSet)
-//			{
-//				if (object instanceof CategoryAssociation)
-//				{
-//					addDataForEntitiesOnPath(newDataMap, oldDataMap, (CategoryAssociationInterface) object, existingAssociationsList);
-//				}
-//				else
-//				{
-//					newDataMap.put(((CategoryAttributeInterface) object).getAttribute(), oldDataMap.get(object));
-//				}
-//			}
-//			newDataList.add(newDataMap);
-//		}
-//	}
-//
-//	/**
-//	 * This method checks if an association has already been added to entity data map.
-//	 * @param existingAssociationsList
-//	 * @param association
-//	 * @return true if an association has already been added, false otherwise.
-//	 */
-//	private boolean associationExists(List<AssociationInterface> existingAssociationsList, Association association)
-//	{
-//		for (AssociationInterface currentAssociation : existingAssociationsList)
-//		{
-//			if (currentAssociation.getName().equals(association.getName()))
-//				return true;
-//		}
-//		return false;
-//	}
 
+	/**
+	 * 
+	 * @param entityDataMap
+	 * @return
+	 */
+	public Map<BaseAbstractAttributeInterface, Object> generateCategoryDataValueMap(CategoryInterface category,
+			Map<AbstractAttributeInterface, Object> entityDataMap)
+	{
+		Map<BaseAbstractAttributeInterface, Object> categoryDataValueMap = new HashMap<BaseAbstractAttributeInterface, Object>();
+		CategoryEntityInterface rootCategoryEntity = category.getRootCategoryElement();
+		generateCategoryDataValueMapList(rootCategoryEntity, categoryDataValueMap, entityDataMap);
+		return categoryDataValueMap;
+	}
 
+	/**
+	 * 
+	 * @param rootCategoryEntity
+	 * @param categoryDataValueMap
+	 * @param entityDataMap
+	 * @return
+	 */
+	private Map<BaseAbstractAttributeInterface, Object> addCategoryAttributes(CategoryEntityInterface rootCategoryEntity,
+			Map<BaseAbstractAttributeInterface, Object> categoryDataValueMap, Map<AbstractAttributeInterface, Object> entityDataMap)
+	{
+		if (entityDataMap != null)
+		{
+			for (CategoryAttributeInterface categoryAttribute : rootCategoryEntity.getCategoryAttributeCollection())
+			{
+				if (entityDataMap.get(categoryAttribute.getAttribute()) == null)
+				{
+					for (int i = 0; i < rootCategoryEntity.getPath().getSortedPathAssociationRelationCollection().size(); i++)
+					{
+						if (entityDataMap.containsKey(rootCategoryEntity.getPath().getSortedPathAssociationRelationCollection().get(i)
+								.getAssociation()))
+						{
+							Object categoryAttributeValue = ((Map) ((List) entityDataMap.get(rootCategoryEntity.getPath()
+									.getSortedPathAssociationRelationCollection().get(i).getAssociation())).get(0)).get(categoryAttribute
+									.getAttribute());
+							categoryDataValueMap.put(categoryAttribute, categoryAttributeValue);
+							break;
+						}
+					}
+				}
+				else
+				{
+					categoryDataValueMap.put(categoryAttribute, entityDataMap.get(categoryAttribute.getAttribute()));
+				}
+			}
+		}
+		return categoryDataValueMap;
+	}
+
+	/**
+	 * 
+	 * @param rootCategoryEntity
+	 * @param categoryDataValueMap
+	 * @param entityDataMap
+	 */
+	private void generateCategoryDataValueMapList(CategoryEntityInterface rootCategoryEntity,
+			Map<BaseAbstractAttributeInterface, Object> categoryDataValueMap, Map<AbstractAttributeInterface, Object> entityDataMap)
+	{
+		Map<BaseAbstractAttributeInterface, Object> innerCategoryDataValueMap = new HashMap<BaseAbstractAttributeInterface, Object>();
+
+		for (CategoryAssociationInterface c : rootCategoryEntity.getCategoryAssociationCollection())
+		{
+			if (c != null)
+			{
+				addCategoryAttributes(rootCategoryEntity, categoryDataValueMap, entityDataMap);
+
+				CategoryEntityInterface targetCategoryEntity = c.getTargetCategoryEntity();
+				PathAssociationRelationInterface pathAssociationRelation = targetCategoryEntity.getPath()
+						.getSortedPathAssociationRelationCollection().get(0);
+
+				List<Map<AbstractAttributeInterface, Object>> innerCategoryDataValueMapList = (List) entityDataMap.get(pathAssociationRelation
+						.getAssociation());
+				List<Map<BaseAbstractAttributeInterface, Object>> outerCategoryDataValueMapList = new ArrayList<Map<BaseAbstractAttributeInterface, Object>>();
+
+				for (int i=0; i<targetCategoryEntity.getNumberOfEntries(); i++)
+				{
+					outerCategoryDataValueMapList.add(addCategoryAttributes(targetCategoryEntity, innerCategoryDataValueMap,
+							innerCategoryDataValueMapList.get(0)));
+				}
+				//outerCategoryDataValueMapList.add(addCategoryAttributes(targetCategoryEntity, innerCategoryDataValueMap,
+						//innerCategoryDataValueMapList.get(0)));
+
+				entityDataMap = innerCategoryDataValueMapList.get(0);
+
+				categoryDataValueMap.put(c, outerCategoryDataValueMapList);
+
+				generateCategoryDataValueMapList(targetCategoryEntity, innerCategoryDataValueMap, entityDataMap);
+			}
+		}
+	}
 
 }

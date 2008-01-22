@@ -1,8 +1,10 @@
+
 package edu.common.dynamicextensions.entitymanager;
 
 import java.util.List;
 import java.util.Map;
 
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
@@ -13,7 +15,8 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
  * @author rajesh_patil
  * 
  */
-public interface CategoryManagerInterface {
+public interface CategoryManagerInterface
+{
 	/**
 	 * 
 	 * @param categoryInterface
@@ -21,8 +24,7 @@ public interface CategoryManagerInterface {
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	CategoryInterface persistCategory(CategoryInterface categoryInterface)
-			throws DynamicExtensionsSystemException,
+	CategoryInterface persistCategory(CategoryInterface categoryInterface) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException;
 
 	/**
@@ -32,9 +34,7 @@ public interface CategoryManagerInterface {
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	CategoryInterface persistCategoryMetadata(
-			CategoryInterface categoryInterface)
-			throws DynamicExtensionsSystemException,
+	CategoryInterface persistCategoryMetadata(CategoryInterface categoryInterface) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException;
 
 	/**
@@ -45,10 +45,8 @@ public interface CategoryManagerInterface {
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Long insertData(CategoryInterface category,
-			Map<BaseAbstractAttributeInterface, Object> dataValue)
-			throws DynamicExtensionsApplicationException,
-			DynamicExtensionsSystemException;
+	public Long insertData(CategoryInterface category, Map<BaseAbstractAttributeInterface, Object> dataValue)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
 	 * 
@@ -58,9 +56,12 @@ public interface CategoryManagerInterface {
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public List<Long> insertData(CategoryInterface category,
-			List<Map<BaseAbstractAttributeInterface, Object>> dataValueMapList)
-			throws DynamicExtensionsApplicationException,
-			DynamicExtensionsSystemException;
+	public List<Long> insertData(CategoryInterface category, List<Map<BaseAbstractAttributeInterface, Object>> dataValueMapList)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
+
+	public Map<AbstractAttributeInterface, Object> generateEntityDataValueMap(Map<BaseAbstractAttributeInterface, Object> categoryDataMap);
+
+	public Map<BaseAbstractAttributeInterface, Object> generateCategoryDataValueMap(CategoryInterface category,
+			Map<AbstractAttributeInterface, Object> entityDataMap);
 
 }

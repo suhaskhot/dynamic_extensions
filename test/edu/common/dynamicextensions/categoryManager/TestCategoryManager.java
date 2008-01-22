@@ -14,6 +14,7 @@ import edu.common.dynamicextensions.domain.CategoryEntity;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.Path;
 import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
+import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
@@ -30,7 +31,7 @@ import edu.common.dynamicextensions.domaininterface.PathInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CategoryAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
-import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.entitymanager.CategoryManager;
 import edu.common.dynamicextensions.entitymanager.CategoryManagerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManager;
@@ -102,6 +103,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		userNameAttribute.setName("user_name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
+		((StringAttributeTypeInformation)userNameAttribute.getAttributeTypeInformation()).setSize(40);
 
 		// create study
 		EntityInterface study = factory.createEntity();
@@ -109,6 +111,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		studyNameAttribute.setName("study_name");
 		study.setName("study");
 		study.addAbstractAttribute(studyNameAttribute);
+		((StringAttributeTypeInformation)studyNameAttribute.getAttributeTypeInformation()).setSize(40);
 
 		// Associate user (1)------ >(*)study
 		AssociationInterface association = factory.createAssociation();
@@ -142,6 +145,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			CategoryEntityInterface userCategoryEntityInterface =  factory.createCategoryEntity();
 			userCategoryEntityInterface.setName("userCategoryEntity");
 			userCategoryEntityInterface.setEntity(user);
+			userCategoryEntityInterface.setNumberOfEntries(-1);
 			
 			userCategoryEntityInterface.setCategory(categoryInterface);
 			categoryInterface.setRootCategoryElement(userCategoryEntityInterface);
@@ -176,20 +180,33 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			categoryAssociationInterface.setName("UserToStudyAssociation");
 			categoryAssociationInterface.setTargetCategoryEntity(studyCategoryEntityInterface);
 			userCategoryEntityInterface.setCategoryAssociation(categoryAssociationInterface);
+			categoryAssociationInterface.setCategoryEntity(userCategoryEntityInterface);
 	
+			int sequenceNumber = 1;
 			ContainerInterface userContainerInterface = factory.createContainer();
 			userContainerInterface.setAbstractEntity(userCategoryEntityInterface);
+			userContainerInterface.setCaption("User container");
+			userContainerInterface.setMainTableCss("formRequiredLabel");
+			userContainerInterface.setRequiredFieldIndicatior("*");
+			userContainerInterface.setRequiredFieldWarningMessage("indicates mandatory fields.");
 			userCategoryEntityInterface.addContaier(userContainerInterface);
 			
-			ControlInterface controlInterface = factory.createTextField();
+			TextFieldInterface controlInterface = factory.createTextField();
 			controlInterface.setBaseAbstractAttribute(userCategoryAttributeInterface);
+			controlInterface.setColumns(50);
+			controlInterface.setCaption("user control");
+			controlInterface.setSequenceNumber(sequenceNumber++);
 			
 			controlInterface.setParentContainer((Container)userContainerInterface);
 			userContainerInterface.addControl(controlInterface);
 						
 			ContainerInterface studyContainerInterface = factory.createContainer();
-			ControlInterface studyControlInterface = factory.createTextField();
+			studyContainerInterface.setAddCaption(false);
+			TextFieldInterface studyControlInterface = factory.createTextField();
 			studyControlInterface .setBaseAbstractAttribute(studyCategoryAttributeInterface);
+			studyControlInterface.setColumns(50);
+			studyControlInterface.setCaption("study control");
+			studyControlInterface.setSequenceNumber(sequenceNumber++);
 			studyCategoryEntityInterface.addContaier(studyContainerInterface);
 			
 			studyControlInterface.setParentContainer((Container)studyContainerInterface);
@@ -197,6 +214,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			
 			CategoryAssociationControlInterface categoryAssociationControlInterface = factory.createCategoryAssociationControl();
 			categoryAssociationControlInterface.setContainer(studyContainerInterface);
+			categoryAssociationControlInterface.setBaseAbstractAttribute(categoryAssociationInterface);
+			categoryAssociationControlInterface.setSequenceNumber(sequenceNumber++);
 			
 			categoryAssociationControlInterface.setParentContainer((Container)userContainerInterface);
 			userContainerInterface.addControl(categoryAssociationControlInterface);
@@ -204,7 +223,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
 			CategoryInterface savedCategory = categoryManager.persistCategory(categoryInterface);
 			
-			Map<BaseAbstractAttributeInterface, Object> categoryDataMap = new HashMap<BaseAbstractAttributeInterface, Object>();
+			/*Map<BaseAbstractAttributeInterface, Object> categoryDataMap = new HashMap<BaseAbstractAttributeInterface, Object>();
 			categoryDataMap.put(userCategoryAttributeInterface, "100");
 			List<Map<BaseAbstractAttributeInterface, Object>> studyDataList = new ArrayList<Map<BaseAbstractAttributeInterface,Object>>();
 			Map<BaseAbstractAttributeInterface, Object> studyData = new HashMap<BaseAbstractAttributeInterface, Object>();
@@ -212,7 +231,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			studyDataList.add(studyData);
 			
 			categoryDataMap.put(categoryAssociationInterface, studyDataList);
-			categoryManager.insertData(savedCategory, categoryDataMap);
+			categoryManager.insertData(savedCategory, categoryDataMap);*/
 			
 		}
 		
@@ -256,6 +275,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
+		((StringAttributeTypeInformation)userNameAttribute.getAttributeTypeInformation()).setSize(40);
 		userNameAttribute.setName("user_name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
@@ -263,6 +283,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		// create study
 		EntityInterface study = factory.createEntity();
 		AttributeInterface studyNameAttribute = factory.createStringAttribute();
+		((StringAttributeTypeInformation)studyNameAttribute.getAttributeTypeInformation()).setSize(40);
 		studyNameAttribute.setName("study_name");
 		study.setName("study");
 		study.addAbstractAttribute(studyNameAttribute);
@@ -270,6 +291,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		// create experiment
 		EntityInterface experiment = factory.createEntity();
 		AttributeInterface experimentNameAttribute = factory.createStringAttribute();
+		((StringAttributeTypeInformation)experimentNameAttribute.getAttributeTypeInformation()).setSize(40);
 		experimentNameAttribute.setName("experiment_name");
 		experiment.setName("experiment");
 		experiment.addAbstractAttribute(experimentNameAttribute);
@@ -318,6 +340,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			CategoryInterface categoryInterface = factory.createCategory();
 
 			CategoryEntityInterface userCategoryEntityInterface = factory.createCategoryEntity();
+			userCategoryEntityInterface.setNumberOfEntries(-1);
 			userCategoryEntityInterface.setName("UsercategoryEntity");
 			userCategoryEntityInterface.setEntity(user);
 
@@ -332,7 +355,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 			CategoryEntityInterface experimentCategoryEntityInterface = factory.createCategoryEntity();
 			experimentCategoryEntityInterface.setEntity(experiment);
-			experimentCategoryEntityInterface.setNumberOfEntries(1);
+			experimentCategoryEntityInterface.setNumberOfEntries(-1);
 
 			CategoryAttributeInterface experimentCategoryAttributeInterface = factory.createCategoryAttribute();
 			experimentCategoryAttributeInterface.setName("experimentCategoryAttributeInterface");
@@ -361,20 +384,35 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 			CategoryAssociationInterface categoryAssociationInterface = factory.createCategoryAssociation();
 			categoryAssociationInterface.setTargetCategoryEntity(experimentCategoryEntityInterface);
+			categoryAssociationInterface.setCategoryEntity(userCategoryEntityInterface);
 			userCategoryEntityInterface.setCategoryAssociation(categoryAssociationInterface);
 
 			ContainerInterface userContainerInterface = factory.createContainer();
+			userContainerInterface.setCaption("User container");
+			userContainerInterface.setMainTableCss("formRequiredLabel");
+			userContainerInterface.setRequiredFieldIndicatior("*");
+			userContainerInterface.setRequiredFieldWarningMessage("indicates mandatory fields.");
 			userContainerInterface.setAbstractEntity(userCategoryEntityInterface);
 
-			ControlInterface userControlInterface = factory.createTextField();
+			int sequenceNumber = 1;
+			TextFieldInterface userControlInterface = factory.createTextField();
+			userControlInterface.setColumns(50);
+			userControlInterface.setCaption("user control");
+			userControlInterface.setSequenceNumber(sequenceNumber++);
+			
 			userControlInterface.setBaseAbstractAttribute(userCategoryAttributeInterface);
 			userControlInterface.setParentContainer((Container) userContainerInterface);
 			userContainerInterface.addControl(userControlInterface);
 
 			ContainerInterface experimentContainerInterface = factory.createContainer();
+			experimentContainerInterface.setAddCaption(false);
 			experimentContainerInterface.setAbstractEntity(experimentCategoryEntityInterface);
 
-			ControlInterface experimentControlInterface = factory.createTextField();
+			TextFieldInterface experimentControlInterface = factory.createTextField();
+			experimentControlInterface.setColumns(50);
+			experimentControlInterface.setCaption("experiment control");
+			experimentControlInterface.setSequenceNumber(sequenceNumber++);
+			
 			experimentControlInterface.setBaseAbstractAttribute(experimentCategoryAttributeInterface);
 			experimentControlInterface.setParentContainer((Container) experimentContainerInterface);
 			experimentContainerInterface.addControl(experimentControlInterface);
@@ -384,13 +422,16 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 			CategoryAssociationControlInterface categoryAssociationControlInterface = factory.createCategoryAssociationControl();
 			categoryAssociationControlInterface.setContainer(experimentContainerInterface);
+			categoryAssociationControlInterface.setBaseAbstractAttribute(categoryAssociationInterface);
+			categoryAssociationControlInterface.setSequenceNumber(sequenceNumber++);
+			
 			categoryAssociationControlInterface.setParentContainer((Container) userContainerInterface);
 			userContainerInterface.addControl(categoryAssociationControlInterface);
 
 			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
 			CategoryInterface savedCategory = categoryManager.persistCategory(categoryInterface);
 
-			Map<BaseAbstractAttributeInterface, Object> categoryDataMap = new HashMap<BaseAbstractAttributeInterface, Object>();
+			/*Map<BaseAbstractAttributeInterface, Object> categoryDataMap = new HashMap<BaseAbstractAttributeInterface, Object>();
 			categoryDataMap.put(userCategoryAttributeInterface, "100");
 
 			List<Map> dataValueList = new ArrayList<Map>();
@@ -406,7 +447,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			}
 			categoryDataMap.put(userCategoryEntityInterface.getCategoryAssociation(), dataValueList);
 
-			categoryManager.insertData(savedCategory, categoryDataMap);
+			categoryManager.insertData(savedCategory, categoryDataMap);*/
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -443,6 +484,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 		EntityInterface user = factory.createEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
+		((StringAttributeTypeInformation)userNameAttribute.getAttributeTypeInformation()).setSize(40);
 		userNameAttribute.setName("user_name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
@@ -450,6 +492,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		// create study
 		EntityInterface study = factory.createEntity();
 		AttributeInterface studyNameAttribute = factory.createStringAttribute();
+		((StringAttributeTypeInformation)studyNameAttribute.getAttributeTypeInformation()).setSize(40);
 		studyNameAttribute.setName("study_name");
 		study.setName("study");
 		study.addAbstractAttribute(studyNameAttribute);
@@ -457,6 +500,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		// create experiment
 		EntityInterface experiment = factory.createEntity();
 		AttributeInterface experimentNameAttribute = factory.createStringAttribute();
+		((StringAttributeTypeInformation)experimentNameAttribute.getAttributeTypeInformation()).setSize(40);
 		experimentNameAttribute.setName("experiment_name");
 		experiment.setName("experiment");
 		experiment.addAbstractAttribute(experimentNameAttribute);
@@ -506,8 +550,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			CategoryInterface categoryInterface = factory.createCategory();
 
 			CategoryEntityInterface userCategoryEntityInterface = factory.createCategoryEntity();
+			userCategoryEntityInterface.setNumberOfEntries(-1);
 			userCategoryEntityInterface.setEntity(user);
-			userCategoryEntityInterface.setNumberOfEntries(1);
 
 			userCategoryEntityInterface.setCategory(categoryInterface);
 			categoryInterface.setRootCategoryElement(userCategoryEntityInterface);
@@ -519,10 +563,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			userCategoryAttributeInterface.setCategoryEntity(userCategoryEntityInterface);
 
 			CategoryEntityInterface studyCategoryEntityInterface = factory.createCategoryEntity();
+			studyCategoryEntityInterface.setNumberOfEntries(-1);
 			studyCategoryEntityInterface.setEntity(study);
-			studyCategoryEntityInterface.setNumberOfEntries(1);
-
-			studyCategoryEntityInterface.setCategory(categoryInterface);
 
 			CategoryAttributeInterface studyCategoryAttributeInterface = factory.createCategoryAttribute();
 			studyCategoryAttributeInterface.setName("studyCategoryAttributeInterface");
@@ -532,7 +574,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 			CategoryEntityInterface experimentCategoryEntityInterface = factory.createCategoryEntity();
 			experimentCategoryEntityInterface.setEntity(experiment);
-			experimentCategoryEntityInterface.setNumberOfEntries(1);
+			experimentCategoryEntityInterface.setNumberOfEntries(-1);
 
 			CategoryAttributeInterface experimentCategoryAttributeInterface = factory.createCategoryAttribute();
 			experimentCategoryAttributeInterface.setName("experimentCategoryAttributeInterface");
@@ -565,35 +607,65 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			studyCategoryEntityInterface.addChildCategory(experimentCategoryEntityInterface);
 
 			CategoryAssociationInterface categoryAssociationInterface = factory.createCategoryAssociation();
+			categoryAssociationInterface.setCategoryEntity(userCategoryEntityInterface);
 			categoryAssociationInterface.setName("user-study category association");
 			categoryAssociationInterface.setTargetCategoryEntity(studyCategoryEntityInterface);
 			userCategoryEntityInterface.setCategoryAssociation(categoryAssociationInterface);
 
 			CategoryAssociationInterface categoryAssociationInterface2 = factory.createCategoryAssociation();
+			categoryAssociationInterface2.setCategoryEntity(studyCategoryEntityInterface);
 			categoryAssociationInterface2.setName("study-experiment category association");
 			categoryAssociationInterface2.setTargetCategoryEntity(experimentCategoryEntityInterface);
 			studyCategoryEntityInterface.setCategoryAssociation(categoryAssociationInterface2);
 
+			int sequenceNumber = 1;
 			ContainerInterface userContainerInterface = factory.createContainer();
+			userContainerInterface.setCaption("User container");
+			userContainerInterface.setMainTableCss("formRequiredLabel");
+			userContainerInterface.setRequiredFieldIndicatior("*");
+			userContainerInterface.setRequiredFieldWarningMessage("indicates mandatory fields.");
 			userContainerInterface.setAbstractEntity(userCategoryEntityInterface);
 
-			ControlInterface userControlInterface = factory.createTextField();
+			TextFieldInterface userControlInterface = factory.createTextField();
+			userControlInterface.setColumns(50);
+			userControlInterface.setCaption("user control");
+			userControlInterface.setSequenceNumber(sequenceNumber++);
+			
 			userControlInterface.setBaseAbstractAttribute(userCategoryAttributeInterface);
 			userControlInterface.setParentContainer((Container) userContainerInterface);
 			userContainerInterface.addControl(userControlInterface);
 
 			ContainerInterface studyContainerInterface = factory.createContainer();
+			studyContainerInterface.setAddCaption(false);
+			studyContainerInterface.setCaption("study container");
+			studyContainerInterface.setMainTableCss("formRequiredLabel");
+			studyContainerInterface.setRequiredFieldIndicatior("*");
+			studyContainerInterface.setRequiredFieldWarningMessage("indicates mandatory fields.");
 			studyContainerInterface.setAbstractEntity(studyCategoryEntityInterface);
 
-			ControlInterface studyControlInterface = factory.createTextField();
+			TextFieldInterface studyControlInterface = factory.createTextField();
+			studyControlInterface.setColumns(50);
+			studyControlInterface.setCaption("study control");
+			studyControlInterface.setSequenceNumber(sequenceNumber++);
+			
 			studyControlInterface.setBaseAbstractAttribute(studyCategoryAttributeInterface);
 			studyControlInterface.setParentContainer((Container) studyContainerInterface);
 			studyContainerInterface.addControl(studyControlInterface);
 
 			ContainerInterface experimentContainerInterface = factory.createContainer();
+			experimentContainerInterface.setAddCaption(false);
+			experimentContainerInterface.setCaption("experiment container");
+			experimentContainerInterface.setMainTableCss("formRequiredLabel");
+			experimentContainerInterface.setRequiredFieldIndicatior("*");
+			experimentContainerInterface.setRequiredFieldWarningMessage("indicates mandatory fields.");
+			
 			experimentContainerInterface.setAbstractEntity(experimentCategoryEntityInterface);
 
-			ControlInterface experimentControlInterface = factory.createTextField();
+			TextFieldInterface experimentControlInterface = factory.createTextField();
+			experimentControlInterface.setColumns(50);
+			experimentControlInterface.setCaption("experiment control");
+			experimentControlInterface.setSequenceNumber(sequenceNumber++);
+			
 			experimentControlInterface.setBaseAbstractAttribute(experimentCategoryAttributeInterface);
 			experimentControlInterface.setParentContainer((Container) experimentContainerInterface);
 			experimentContainerInterface.addControl(experimentControlInterface);
@@ -603,11 +675,17 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			experimentCategoryEntityInterface.addContaier(experimentContainerInterface);
 
 			CategoryAssociationControlInterface categoryAssociationControlInterface = factory.createCategoryAssociationControl();
+			categoryAssociationControlInterface.setBaseAbstractAttribute(categoryAssociationInterface);
+			categoryAssociationControlInterface.setSequenceNumber(sequenceNumber++);
+			
 			categoryAssociationControlInterface.setContainer(studyContainerInterface);
 			categoryAssociationControlInterface.setParentContainer((Container) userContainerInterface);
 			userContainerInterface.addControl(categoryAssociationControlInterface);
 
 			CategoryAssociationControlInterface categoryAssociationControlInterface2 = factory.createCategoryAssociationControl();
+			categoryAssociationControlInterface2.setBaseAbstractAttribute(categoryAssociationInterface2);
+			categoryAssociationControlInterface2.setSequenceNumber(sequenceNumber++);
+			
 			categoryAssociationControlInterface2.setContainer(experimentContainerInterface);
 			categoryAssociationControlInterface2.setParentContainer((Container) studyContainerInterface);
 			studyContainerInterface.addControl(categoryAssociationControlInterface2);
@@ -615,7 +693,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
 			CategoryInterface savedCategory = categoryManager.persistCategory(categoryInterface);
 
-			Map<BaseAbstractAttributeInterface, Object> categoryDataMap = new HashMap<BaseAbstractAttributeInterface, Object>();
+			/*Map<BaseAbstractAttributeInterface, Object> categoryDataMap = new HashMap<BaseAbstractAttributeInterface, Object>();
 			categoryDataMap.put(userCategoryAttributeInterface, "100");
 
 			List<Map> dataValueList = new ArrayList<Map>();
@@ -644,7 +722,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 			categoryDataMap.put(userCategoryEntityInterface.getCategoryAssociation(), dataValueList);
 
-			categoryManager.insertData(savedCategory, categoryDataMap);
+			categoryManager.insertData(savedCategory, categoryDataMap);*/
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -1033,7 +1111,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			CategoryEntityInterface experimentCategoryEntity = DomainObjectFactory.getInstance().createCategoryEntity();
 			experimentCategoryEntity.setName("Experiment category entity");
 			experimentCategoryEntity.setEntity(experiment);
-			experimentCategoryEntity.setNumberOfEntries(1);
+			experimentCategoryEntity.setNumberOfEntries(-1);
 			experimentCategoryEntity.setCategory(category);
 
 			List<AttributeInterface> experimentAttributeCollection = new ArrayList<AttributeInterface>(experiment.getAttributeCollection());
@@ -1204,7 +1282,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			CategoryEntityInterface userCategoryEntity = DomainObjectFactory.getInstance().createCategoryEntity();
 			userCategoryEntity.setName("User category entity");
 			userCategoryEntity.setEntity(user);
-			userCategoryEntity.setNumberOfEntries(1);
+			userCategoryEntity.setNumberOfEntries(-1);
 			userCategoryEntity.setCategory(category);
 
 			List<AttributeInterface> userAttributeCollection = new ArrayList<AttributeInterface>(user.getAttributeCollection());
@@ -1416,7 +1494,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			CategoryEntityInterface experimentCategoryEntity = DomainObjectFactory.getInstance().createCategoryEntity();
 			experimentCategoryEntity.setName("Experiment category entity");
 			experimentCategoryEntity.setEntity(experiment);
-			experimentCategoryEntity.setNumberOfEntries(1);
+			experimentCategoryEntity.setNumberOfEntries(-1);
 			experimentCategoryEntity.setCategory(category);
 
 			List<AttributeInterface> experimentAttributeCollection = new ArrayList<AttributeInterface>(experiment.getAttributeCollection());
@@ -1437,7 +1515,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			CategoryEntityInterface userCategoryEntity = DomainObjectFactory.getInstance().createCategoryEntity();
 			userCategoryEntity.setName("User category entity");
 			userCategoryEntity.setEntity(user);
-			userCategoryEntity.setNumberOfEntries(1);
+			userCategoryEntity.setNumberOfEntries(-1);
 			userCategoryEntity.setCategory(category);
 
 			List<AttributeInterface> userAttributeCollection = new ArrayList<AttributeInterface>(user.getAttributeCollection());

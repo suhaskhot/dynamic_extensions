@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.Map.Entry;
 
 import org.omg.uml.UmlPackage;
@@ -47,6 +48,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInte
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
+import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
@@ -85,6 +87,8 @@ import edu.wustl.common.util.dbManager.DAOException;
 public class XMIImportProcessor
 {
 	public boolean isEditedXmi = false;
+	
+	public boolean isPackagePresent = false;
 	/**
 	 * Instance of Domain object factory, which will be used to create  dynamic extension's objects.
 	 */
@@ -127,27 +131,33 @@ public class XMIImportProcessor
 	
 		processModel(umlPackage, umlClassColl, umlAssociationColl, umlGeneralisationColl,packageName);
 		
+		if(!isPackagePresent)
+		{
+			throw new Exception("Specified package is not present in the XMI.");
+		}		
+		
 		List<EntityGroupInterface> entityGroupColl = retrieveEntityGroup(entityGroupName,packageName);
 		
 		if (entityGroupColl == null || entityGroupColl.size() == 0)
 		{//Add
 			entityGroup = DomainObjectFactory.getInstance().createEntityGroup();
-			if(packageName.equals(""))
-			{
+//			if(packageName.equals(""))
+//			{
 				setEntityGroupName(entityGroupName);
-			}
-			else
-			{
-				setEntityGroupName(packageName);
-			}
+//			}
+//			else
+//			{
+//				setEntityGroupName(packageName);
+//			}
 			entityGroup.setIsSystemGenerated(false);
 		}
 		else
 		{//Edit
 			isEditedXmi = true;
-			entityGroup = entityGroupColl.get(0);
+			entityGroup = entityGroupColl.get(0);			
 		}
-	
+		addTaggedValue(packageName);		
+		
 		int noOfClasses = umlClassColl.size();
 		umlClassIdVsEntity = new HashMap<String, EntityInterface>(noOfClasses);
 	
@@ -246,7 +256,20 @@ public class XMIImportProcessor
 		entityGroup.setShortName(entityGroupName);
 		entityGroup.setName(entityGroupName);
 		entityGroup.setLongName(entityGroupName);
-		entityGroup.setDescription(entityGroupName);
+		entityGroup.setDescription(entityGroupName);		
+	}
+	/**
+	 * @param packageName
+	 */
+	private void addTaggedValue(String packageName)
+	{
+		TaggedValueInterface tv = DomainObjectFactory.getInstance().createTaggedValue();
+		tv.setKey("PackageName");
+		tv.setValue(packageName);
+		
+		Collection<TaggedValueInterface> tvColl = new HashSet<TaggedValueInterface>();
+		tvColl.add(tv);
+		entityGroup.setTaggedValueCollection(tvColl);
 	}
 	/**
 	 * @param entityGroupName
@@ -291,7 +314,7 @@ public class XMIImportProcessor
 	 */
 	private void processModel(UmlPackage umlPackage, List<UmlClass> umlClassColl,
 			List<UmlAssociation> umlAssociationColl, List<Generalization> umlGeneralisationColl, String packageName)
-	{
+	{		
 		ModelManagementPackage modelManagementPackage = umlPackage.getModelManagement();
 		ModelClass modelClass = modelManagementPackage.getModel();
 		Collection<Model> modelColl = modelClass.refAllOfClass();
@@ -301,17 +324,63 @@ public class XMIImportProcessor
 			Collection ownedElementColl = model.getOwnedElement();
 			System.out.println("MODEL OWNED ELEMENT SIZE: " + ownedElementColl.size());
 			Iterator iter = ownedElementColl.iterator();
+			
 			while (iter.hasNext())
 			{
+				StringTokenizer tokens = new StringTokenizer(packageName,XMIConstants.DOT_SEPARATOR);
 				Object obj = iter.next();
+						
 				if (obj instanceof org.omg.uml.modelmanagement.UmlPackage)
 				{
 					org.omg.uml.modelmanagement.UmlPackage umlPackageObj = (org.omg.uml.modelmanagement.UmlPackage) obj;
-					processPackage(umlPackageObj, umlClassColl, umlAssociationColl,
-							umlGeneralisationColl , packageName);
+									
+					processSelectedPackage(umlPackageObj,tokens,umlClassColl,umlAssociationColl,umlGeneralisationColl);
+										
+//					processPackage(umlPackageObj, umlClassColl, umlAssociationColl,
+//							umlGeneralisationColl , packageName);
 				}
 			}
 		}
+	}
+	/**
+	 * @param parentPkg
+	 * @param tokens
+	 * @param umlClassColl
+	 * @param umlAssociationColl
+	 * @param umlGeneralisationColl
+	 */
+	private void processSelectedPackage(org.omg.uml.modelmanagement.UmlPackage parentPkg,StringTokenizer tokens, List<UmlClass> umlClassColl,
+			List<UmlAssociation> umlAssociationColl, List<Generalization> umlGeneralisationColl)
+	{	
+		String token = "";
+		if(tokens.hasMoreTokens())
+		{
+			token = tokens.nextToken();
+		}
+		
+		//If no package is present in the XMI take package name as "Default"
+		if(token.trim().equalsIgnoreCase(XMIConstants.DEFAULT_PACKAGE))
+		{
+			processPackage(parentPkg,umlClassColl,umlAssociationColl,umlGeneralisationColl);
+		}
+		else if(parentPkg.getName().equalsIgnoreCase(token))
+		{
+			int temp = 0;
+			for (Iterator i = parentPkg.getOwnedElement().iterator(); i.hasNext();)
+			{
+				Object o = i.next();//				
+				if (o instanceof org.omg.uml.modelmanagement.UmlPackage)
+				{
+					org.omg.uml.modelmanagement.UmlPackage subPkg = (org.omg.uml.modelmanagement.UmlPackage) o;
+					processSelectedPackage(subPkg,tokens,umlClassColl,umlAssociationColl,umlGeneralisationColl);
+					temp++;
+				}			
+			}
+			if(temp == 0)
+			{//if package name is present, import only that package.
+				processPackage(parentPkg,umlClassColl,umlAssociationColl,umlGeneralisationColl);
+			}
+		}		
 	}
 
 	/**
@@ -321,17 +390,20 @@ public class XMIImportProcessor
 	 */
 	private void processPackage(org.omg.uml.modelmanagement.UmlPackage parentPkg,
 			List<UmlClass> umlClasses, List<UmlAssociation> associations,
-			List<Generalization> generalizations ,String packageName)
-	{//TODO if package name is present, import only that package.
+			List<Generalization> generalizations)
+	{
+		isPackagePresent = true;
 		for (Iterator i = parentPkg.getOwnedElement().iterator(); i.hasNext();)
 		{
 			Object o = i.next();
-			if (o instanceof org.omg.uml.modelmanagement.UmlPackage && !(packageName.equals(parentPkg.getName())))
+		/*	if (o instanceof org.omg.uml.modelmanagement.UmlPackage && !(packageName.equals(parentPkg.getName())))
 			{
 				org.omg.uml.modelmanagement.UmlPackage subPkg = (org.omg.uml.modelmanagement.UmlPackage) o;
 				processPackage(subPkg, umlClasses, associations, generalizations,packageName);
 			}
-			else if (o instanceof UmlAssociation)
+			else*/
+				
+				if (o instanceof UmlAssociation)
 			{
 				associations.add((UmlAssociation) o);
 			}

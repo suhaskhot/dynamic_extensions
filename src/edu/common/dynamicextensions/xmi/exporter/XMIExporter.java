@@ -169,7 +169,7 @@ public class XMIExporter implements XMIExportInterface
 			//Data Model creation
 			generateDataModel(entityGroup);
 			exportXMI(filename, umlPackage, xmiVersion);
-			System.out.println("ENTITIES with ENTITYGROUP = " + entityGroup.getEntityCollection());
+	//		System.out.println("ENTITIES with ENTITYGROUP = " + entityGroup.getEntityCollection());
 		}
 	} 
 
@@ -425,7 +425,7 @@ public class XMIExporter implements XMIExportInterface
 				}
 				else if(associationType.equals(XMIConstants.ASSOC_MANY_ONE))
 				{
-					System.out.println("ASSOC_MANY_ONE");
+	//				System.out.println("ASSOC_MANY_ONE");
 					getForeignKeyAttribute(association.getTargetEntity(),association.getEntity(), constraintProperties.getSourceEntityKey(),association.getTargetRole().getName());
 					//Many-One source will have foreign key, target primary key
 					sourceRole.setName(getForeignkeyOperationName(constraintProperties.getTargetEntityKey()));
@@ -436,7 +436,7 @@ public class XMIExporter implements XMIExportInterface
 				}
 				else if(associationType.equals(XMIConstants.ASSOC_MANY_MANY))
 				{
-					System.out.println("ASSOC_MANY_MANY");
+	//				System.out.println("ASSOC_MANY_MANY");
 					handleManyToManyAssociation(association);
 					return null;
 				}
@@ -907,7 +907,7 @@ public class XMIExporter implements XMIExportInterface
 		if(entityGroup!=null)
 		{
 			//Create package for entity group
-			org.omg.uml.modelmanagement.UmlPackage umlGroupPackage = getLeafPackage(entityGroup.getName());
+			org.omg.uml.modelmanagement.UmlPackage umlGroupPackage = getLeafPackage(entityGroup);
 
 			//CLASSES : CREATE : create classes for entities 
 			Collection<UmlClass> umlEntityClasses = createUMLClasses(entityGroup.getEntityCollection());
@@ -1267,7 +1267,7 @@ public class XMIExporter implements XMIExportInterface
 
 			if(entityAttribute.getIsPrimaryKey())
 			{
-				System.out.println("Found primary key " + entityAttribute.getName());
+	//			System.out.println("Found primary key " + entityAttribute.getName());
 				umlAttribute.getTaggedValue().add(createTaggedValue(XMIConstants.STEREOTYPE, XMIConstants.PRIMARY_KEY));
 				umlAttribute.getStereotype().addAll(getOrCreateStereotypes(XMIConstants.PRIMARY_KEY, XMIConstants.STEREOTYPE_BASECLASS_ATTRIBUTE));
 
@@ -1401,9 +1401,20 @@ public class XMIExporter implements XMIExportInterface
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	private org.omg.uml.modelmanagement.UmlPackage getLeafPackage(String leafName)
+	private org.omg.uml.modelmanagement.UmlPackage getLeafPackage(EntityGroupInterface entityGroup)
 	{
-		org.omg.uml.modelmanagement.UmlPackage leafPackage = getOrCreatePackage(leafName,logicalModel);
+		String packageName = "";
+		Collection<TaggedValueInterface> tvColl = entityGroup.getTaggedValueCollection();
+		for(TaggedValueInterface tv : tvColl)
+		{
+			if(tv.getKey().equalsIgnoreCase("PackageName"))
+			{
+				packageName = tv.getValue();
+			}
+		}
+		
+		
+		org.omg.uml.modelmanagement.UmlPackage leafPackage = getOrCreatePackage(packageName,logicalModel);
 		return leafPackage;
 	}
 	/**

@@ -274,7 +274,7 @@ public class MockCategoryManager
 		rootCategoryEntityAssociation.setName("Study Category Entity Association");
 		rootCategoryEntityAssociation.setCategoryEntity((CategoryEntity) rootCategoryEntity);
 		rootCategoryEntityAssociation.setTargetCategoryEntity((CategoryEntity) childCategoryEntity);
-		rootCategoryEntity.setCategoryAssociation(rootCategoryEntityAssociation);		
+		//rootCategoryEntity.setCategoryAssociation(rootCategoryEntityAssociation);		
 
 		rootCategoryEntity.getChildCategories().add(childCategoryEntity);
 

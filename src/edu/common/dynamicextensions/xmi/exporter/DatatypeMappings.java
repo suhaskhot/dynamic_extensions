@@ -111,7 +111,7 @@ public enum DatatypeMappings {
 		AttributeInterface a = DomainObjectFactory.getInstance().createFloatAttribute();
 		Variables.databaseName="MYSQL";
 		DatatypeMappings d = DatatypeMappings.get(a.getDataType());
-		System.out.println(d.getJavaClassMapping());
-		System.out.println(d.getSQLClassMapping());
+//		System.out.println(d.getJavaClassMapping());
+//		System.out.println(d.getSQLClassMapping());
 	}
 }

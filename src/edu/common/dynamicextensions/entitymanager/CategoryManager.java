@@ -355,9 +355,9 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 						if (entityDataMap.containsKey(rootCategoryEntity.getPath().getSortedPathAssociationRelationCollection().get(i)
 								.getAssociation()))
 						{
-							Object categoryAttributeValue = ((Map) ((List) entityDataMap.get(rootCategoryEntity.getPath()
-									.getSortedPathAssociationRelationCollection().get(i).getAssociation())).get(0)).get(categoryAttribute
-									.getAttribute());
+							List tempList = ((List) entityDataMap.get(rootCategoryEntity.getPath().getSortedPathAssociationRelationCollection()
+									.get(i).getAssociation()));
+							Object categoryAttributeValue = ((Map) tempList.get(0)).get(categoryAttribute.getAttribute());
 							categoryDataValueMap.put(categoryAttribute, categoryAttributeValue);
 							break;
 						}
@@ -395,15 +395,46 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 
 				List<Map<AbstractAttributeInterface, Object>> innerCategoryDataValueMapList = (List) entityDataMap.get(pathAssociationRelation
 						.getAssociation());
+
 				List<Map<BaseAbstractAttributeInterface, Object>> outerCategoryDataValueMapList = new ArrayList<Map<BaseAbstractAttributeInterface, Object>>();
 
-				for (int i=0; i<targetCategoryEntity.getNumberOfEntries(); i++)
+				for (CategoryAttributeInterface categoryAttribute : targetCategoryEntity.getCategoryAttributeCollection())
 				{
-					outerCategoryDataValueMapList.add(addCategoryAttributes(targetCategoryEntity, innerCategoryDataValueMap,
-							innerCategoryDataValueMapList.get(0)));
+					if (innerCategoryDataValueMapList.get(0).get(categoryAttribute.getAttribute()) == null)
+					{
+						for (int i = 0; i < targetCategoryEntity.getPath().getSortedPathAssociationRelationCollection().size(); i++)
+						{
+							if (innerCategoryDataValueMapList.get(0).containsKey(
+									targetCategoryEntity.getPath().getSortedPathAssociationRelationCollection().get(i).getAssociation()))
+							{
+								List tempList = ((List) innerCategoryDataValueMapList.get(0).get(
+										targetCategoryEntity.getPath().getSortedPathAssociationRelationCollection().get(i).getAssociation()));
+								for (int j = 0; j < tempList.size(); j++)
+								{
+									outerCategoryDataValueMapList.add(addCategoryAttributes(targetCategoryEntity, innerCategoryDataValueMap,
+											innerCategoryDataValueMapList.get(0)));
+								}
+								break;
+							}
+						}
+					}
+					else
+					{
+						List tempList = ((List) entityDataMap.get(targetCategoryEntity.getPath().getSortedPathAssociationRelationCollection().get(0)
+								.getAssociation()));
+						for (int k = 0; k < tempList.size(); k++)
+						{
+							//Map tempMap = new HashMap();
+							//tempMap.put(categoryAttribute, innerCategoryDataValueMapList.get(k).get(categoryAttribute.getAttribute()));
+							outerCategoryDataValueMapList.add(addCategoryAttributes(targetCategoryEntity, innerCategoryDataValueMap,
+									innerCategoryDataValueMapList.get(k)));
+							//outerCategoryDataValueMapList.add(tempMap);
+						}
+					}
 				}
+
 				//outerCategoryDataValueMapList.add(addCategoryAttributes(targetCategoryEntity, innerCategoryDataValueMap,
-						//innerCategoryDataValueMapList.get(0)));
+				//innerCategoryDataValueMapList.get(0)));
 
 				entityDataMap = innerCategoryDataValueMapList.get(0);
 

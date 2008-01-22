@@ -314,7 +314,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.CategoryAssociation"
 	 * @return the categoryAssociationCollection
 	 */
-	private Collection<CategoryAssociationInterface> getCategoryAssociationCollection()
+	public Collection<CategoryAssociationInterface> getCategoryAssociationCollection()
 	{
 		return CategoryAssociationCollection;
 	}
@@ -322,36 +322,36 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	/**
 	 * @param categoryAssociationCollection the categoryAssociationCollection to set
 	 */
-	private void setCategoryAssociationCollection(Collection<CategoryAssociationInterface> categoryAssociationCollection)
+	public void setCategoryAssociationCollection(Collection<CategoryAssociationInterface> categoryAssociationCollection)
 	{
 		CategoryAssociationCollection = categoryAssociationCollection;
 	}
 
-	public CategoryAssociationInterface getCategoryAssociation()
-	{
-		CategoryAssociationInterface categoryAssociation = null;
-		if (CategoryAssociationCollection != null && !CategoryAssociationCollection.isEmpty())
-		{
-			Iterator categoryAssociationCollectionIterator = CategoryAssociationCollection.iterator();
-			categoryAssociation = (CategoryAssociation) categoryAssociationCollectionIterator.next();
-		}
-		return categoryAssociation;
-	}
+//	public CategoryAssociationInterface getCategoryAssociation()
+//	{
+//		CategoryAssociationInterface categoryAssociation = null;
+//		if (CategoryAssociationCollection != null && !CategoryAssociationCollection.isEmpty())
+//		{
+//			Iterator categoryAssociationCollectionIterator = CategoryAssociationCollection.iterator();
+//			categoryAssociation = (CategoryAssociation) categoryAssociationCollectionIterator.next();
+//		}
+//		return categoryAssociation;
+//	}
 
-	/**
-	 *
-	 */
-	public void setCategoryAssociation(CategoryAssociationInterface categoryAssociation)
-	{
-		if (CategoryAssociationCollection == null)
-		{
-			CategoryAssociationCollection = new HashSet<CategoryAssociationInterface>();
-		}
-		else
-		{
-			CategoryAssociationCollection.clear();
-		}
-		this.CategoryAssociationCollection.add(categoryAssociation);
-	}
+//	/**
+//	 *
+//	 */
+//	public void setCategoryAssociation(CategoryAssociationInterface categoryAssociation)
+//	{
+//		if (CategoryAssociationCollection == null)
+//		{
+//			CategoryAssociationCollection = new HashSet<CategoryAssociationInterface>();
+//		}
+//		else
+//		{
+//			CategoryAssociationCollection.clear();
+//		}
+//		this.CategoryAssociationCollection.add(categoryAssociation);
+//	}
 	
 }

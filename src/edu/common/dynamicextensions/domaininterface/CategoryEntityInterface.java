@@ -89,8 +89,12 @@ public interface CategoryEntityInterface extends AbstractEntityInterface
 	
 	public void setNumberOfEntries(Integer numberOfEntries);
 	
-	public CategoryAssociationInterface getCategoryAssociation();
-
-	public void setCategoryAssociation(CategoryAssociationInterface categoryAssociation);
+	public Collection<CategoryAssociationInterface> getCategoryAssociationCollection();
+	
+	public void setCategoryAssociationCollection(Collection<CategoryAssociationInterface> categoryAssociationCollection);
+	
+//	public CategoryAssociationInterface getCategoryAssociation();
+//
+//	public void setCategoryAssociation(CategoryAssociationInterface categoryAssociation);
 	
 }

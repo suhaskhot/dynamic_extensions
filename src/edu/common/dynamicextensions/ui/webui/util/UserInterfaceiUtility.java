@@ -25,6 +25,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAss
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.wustl.common.util.global.ApplicationProperties;
@@ -56,7 +57,7 @@ public class UserInterfaceiUtility
 
         List<ControlInterface> controlsList = new ArrayList<ControlInterface>(subContainer
                 .getAllControls());
-        
+
         // Do not sort the controls list; it jumbles up the attribute order
         //Collections.sort(controlsList);
 
@@ -80,7 +81,8 @@ public class UserInterfaceiUtility
 
         stringBuffer.append("<tr width='100%'>");
         stringBuffer.append("<td class='formTitle' colspan='3' align='left'>");
-        stringBuffer.append(subContainer.getCaption());
+        stringBuffer.append(DynamicExtensionsUtility
+				.getFormattedStringForCapitalization(subContainer.getCaption()));
         stringBuffer.append("</td>");
         stringBuffer.append("</tr>");
 
@@ -97,13 +99,17 @@ public class UserInterfaceiUtility
             if (isControlRequired)
             {
                 stringBuffer.append("<th class='formRequiredLabel'>");
-                stringBuffer.append(subContainer.getRequiredFieldIndicatior() + "&nbsp;"
-                        + control.getCaption());
+				stringBuffer.append(subContainer.getRequiredFieldIndicatior()
+						+ "&nbsp;"
+						+ DynamicExtensionsUtility.getFormattedStringForCapitalization(control
+								.getCaption()));
             }
             else
             {
                 stringBuffer.append("<th class='formLabel'>");
-                stringBuffer.append("&nbsp;" + control.getCaption());
+				stringBuffer.append("&nbsp;"
+						+ DynamicExtensionsUtility.getFormattedStringForCapitalization(control
+								.getCaption()));
             }
             stringBuffer.append("</th>");
         }
@@ -238,7 +244,7 @@ public class UserInterfaceiUtility
                 .getContainerValueMap();
         List<ControlInterface> controlsList = new ArrayList<ControlInterface>(container
                 .getAllControls());
-        
+
         // Do not sort the controls list; it jumbles up the attribute order
         //Collections.sort(controlsList);
 
@@ -347,7 +353,7 @@ public class UserInterfaceiUtility
                 {
                 	containmentAssociationControlId = containmentAssociationControl.getContainer().getCaption();
                 }
-                         	
+
                 if (containmentAssociationControlId.equals(childContainerId))
                 {
                     return containmentAssociationControl;
@@ -393,7 +399,8 @@ public class UserInterfaceiUtility
 
             stringBuffer.append("<td class='formLabel' width='20%'>");
         }
-        stringBuffer.append(controlInterface.getCaption());
+        stringBuffer.append(DynamicExtensionsUtility
+				.getFormattedStringForCapitalization(controlInterface.getCaption()));
         stringBuffer.append("</td>");
 
         stringBuffer.append("<td class='formField'>");

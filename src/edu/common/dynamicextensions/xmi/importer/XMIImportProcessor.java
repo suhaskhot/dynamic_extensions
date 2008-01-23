@@ -325,19 +325,33 @@ public class XMIImportProcessor
 			System.out.println("MODEL OWNED ELEMENT SIZE: " + ownedElementColl.size());
 			Iterator iter = ownedElementColl.iterator();
 			
-			while (iter.hasNext())
+			StringTokenizer tokens = new StringTokenizer(packageName,XMIConstants.DOT_SEPARATOR);
+			String token = "";
+			if(tokens.hasMoreTokens())
 			{
-				StringTokenizer tokens = new StringTokenizer(packageName,XMIConstants.DOT_SEPARATOR);
-				Object obj = iter.next();
-						
-				if (obj instanceof org.omg.uml.modelmanagement.UmlPackage)
+				token = tokens.nextToken();
+			}
+			if(token.trim().equalsIgnoreCase(XMIConstants.DEFAULT_PACKAGE))
+			{
+				processPackageForModel(model,umlClassColl,umlAssociationColl,umlGeneralisationColl);				
+			}
+			else
+			{
+				
+				while (iter.hasNext())
 				{
-					org.omg.uml.modelmanagement.UmlPackage umlPackageObj = (org.omg.uml.modelmanagement.UmlPackage) obj;
-									
-					processSelectedPackage(umlPackageObj,tokens,umlClassColl,umlAssociationColl,umlGeneralisationColl);
-										
-//					processPackage(umlPackageObj, umlClassColl, umlAssociationColl,
-//							umlGeneralisationColl , packageName);
+					StringTokenizer initializedTokens = new StringTokenizer(packageName,XMIConstants.DOT_SEPARATOR);
+					Object obj = iter.next();
+							
+					if (obj instanceof org.omg.uml.modelmanagement.UmlPackage)
+					{
+						org.omg.uml.modelmanagement.UmlPackage umlPackageObj = (org.omg.uml.modelmanagement.UmlPackage) obj;
+						
+						processSelectedPackage(umlPackageObj,initializedTokens,umlClassColl,umlAssociationColl,umlGeneralisationColl);
+											
+	//					processPackage(umlPackageObj, umlClassColl, umlAssociationColl,
+	//							umlGeneralisationColl , packageName);
+					}
 				}
 			}
 		}
@@ -359,11 +373,12 @@ public class XMIImportProcessor
 		}
 		
 		//If no package is present in the XMI take package name as "Default"
-		if(token.trim().equalsIgnoreCase(XMIConstants.DEFAULT_PACKAGE))
-		{
-			processPackage(parentPkg,umlClassColl,umlAssociationColl,umlGeneralisationColl);
-		}
-		else if(parentPkg.getName().equalsIgnoreCase(token))
+//		if(token.trim().equalsIgnoreCase(XMIConstants.DEFAULT_PACKAGE))
+//		{
+//			processPackage(parentPkg,umlClassColl,umlAssociationColl,umlGeneralisationColl);
+//		}
+//		else
+		if(parentPkg.getName().equalsIgnoreCase(token))
 		{
 			int temp = 0;
 			for (Iterator i = parentPkg.getOwnedElement().iterator(); i.hasNext();)
@@ -382,7 +397,47 @@ public class XMIImportProcessor
 			}
 		}		
 	}
+	private void processPackageForModel(Model parentPkg,
+			List<UmlClass> umlClasses, List<UmlAssociation> associations,
+			List<Generalization> generalizations)
+	{
+		isPackagePresent = true;
+		for (Iterator i = parentPkg.getOwnedElement().iterator(); i.hasNext();)
+		{
+			Object o = i.next();
+		/*	if (o instanceof org.omg.uml.modelmanagement.UmlPackage && !(packageName.equals(parentPkg.getName())))
+			{
+				org.omg.uml.modelmanagement.UmlPackage subPkg = (org.omg.uml.modelmanagement.UmlPackage) o;
+				processPackage(subPkg, umlClasses, associations, generalizations,packageName);
+			}
+			else*/
+				
+				if (o instanceof UmlAssociation)
+			{
+				associations.add((UmlAssociation) o);
+			}
+			else if (o instanceof Generalization)
+			{
+				generalizations.add((Generalization) o);
+			}
+			else if (o instanceof UmlClass)
+			{
+				UmlClass umlClass = (UmlClass) o;
+				boolean isEntityADatatype = checkEntityWithDataTypeEntities(umlClass.getName());
+				if (isEntityADatatype)
+				{//Skipping classes having datatype names eg Integer,String etc.
+					continue;
+				}
 
+				Collection<Generalization> generalizationColl = umlClass.getGeneralization();
+				if (generalizationColl != null && generalizationColl.size() > 0)
+				{
+					generalizations.addAll(generalizationColl);
+				}
+				umlClasses.add(umlClass);
+			}
+		}
+	}
 	/**
 	 * @param parentPkg
 	 * @param pkgName

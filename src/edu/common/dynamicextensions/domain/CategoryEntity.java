@@ -370,5 +370,28 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 		}
 		return allCategoryAttributesCollection;		
 	}
+	
+	/* (non-Javadoc)
+	 * Incase of CategoryEntity this method will alwas return false, 
+	 * since category entity cannot be abstract. 
+	 * @see edu.common.dynamicextensions.domaininterface.AbstractEntityInterface#isAbstract()
+	 */
+	public boolean isAbstract()
+	{
+		return false;
+	}
+	
+	
+	/* (non-Javadoc)
+	 * Clears the categoryAttributeCollection
+	 * @see edu.common.dynamicextensions.domaininterface.AbstractEntityInterface#removeAllAttributes()
+	 */
+	public void removeAllAttributes()
+	{
+		if (categoryAttributeCollection != null)
+		{
+			categoryAttributeCollection.clear();
+		}
+	}
 
 }

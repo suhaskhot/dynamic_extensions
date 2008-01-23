@@ -36,6 +36,16 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	 *
 	 */
 	protected Collection<CategoryEntityInterface> childCategories = new HashSet<CategoryEntityInterface>();
+	
+	/**
+	 * 
+	 */
+	protected CategoryEntityInterface parentCategoryEntity;
+	
+	/**
+	 * 
+	 */
+	//protected Collection<CategoryEntityInterface> parentCategoryEntityCollection = new HashSet<CategoryEntityInterface>();
 
 	/**
 	 *
@@ -327,31 +337,38 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 		CategoryAssociationCollection = categoryAssociationCollection;
 	}
 
-//	public CategoryAssociationInterface getCategoryAssociation()
-//	{
-//		CategoryAssociationInterface categoryAssociation = null;
-//		if (CategoryAssociationCollection != null && !CategoryAssociationCollection.isEmpty())
-//		{
-//			Iterator categoryAssociationCollectionIterator = CategoryAssociationCollection.iterator();
-//			categoryAssociation = (CategoryAssociation) categoryAssociationCollectionIterator.next();
-//		}
-//		return categoryAssociation;
-//	}
+	/**
+     * @hibernate.many-to-one column="OWN_PARENT_CATEGORY_ENTITY_ID" cascade="all" class="edu.common.dynamicextensions.domain.CategoryEntity"
+	 * @return the parentCategoryEntity
+     */
+	public CategoryEntityInterface getParentCategoryEntity()
+	{
+		return parentCategoryEntity;
+	}
 
-//	/**
-//	 *
-//	 */
-//	public void setCategoryAssociation(CategoryAssociationInterface categoryAssociation)
-//	{
-//		if (CategoryAssociationCollection == null)
-//		{
-//			CategoryAssociationCollection = new HashSet<CategoryAssociationInterface>();
-//		}
-//		else
-//		{
-//			CategoryAssociationCollection.clear();
-//		}
-//		this.CategoryAssociationCollection.add(categoryAssociation);
-//	}
+	/**
+	 * @param parentCategoryEntity the parentCategoryEntity to set
+	 */
+	public void setParentCategoryEntity(CategoryEntityInterface parentCategoryEntity)
+	{
+		this.parentCategoryEntity = parentCategoryEntity;
+	}
 	
+	/**
+	 * Fetch self plus all parents' category attributes for a category entity.
+	 * @return allCategoryAttributesCollection
+	 */
+	public Collection<CategoryAttributeInterface> getAllCategoryAttributes()
+	{
+		Collection<CategoryAttributeInterface> allCategoryAttributesCollection = new HashSet<CategoryAttributeInterface>();
+		allCategoryAttributesCollection.addAll(getCategoryAttributeCollection());
+		CategoryEntityInterface parent = this.parentCategoryEntity;
+		while (parent != null)
+		{
+			allCategoryAttributesCollection.addAll(parent.getCategoryAttributeCollection());
+			parent = parent.getParentCategoryEntity();
+		}
+		return allCategoryAttributesCollection;		
+	}
+
 }

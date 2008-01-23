@@ -92,9 +92,11 @@ public interface CategoryEntityInterface extends AbstractEntityInterface
 	public Collection<CategoryAssociationInterface> getCategoryAssociationCollection();
 	
 	public void setCategoryAssociationCollection(Collection<CategoryAssociationInterface> categoryAssociationCollection);
+
+	public CategoryEntityInterface getParentCategoryEntity();
 	
-//	public CategoryAssociationInterface getCategoryAssociation();
-//
-//	public void setCategoryAssociation(CategoryAssociationInterface categoryAssociation);
+	public void setParentCategoryEntity(CategoryEntityInterface parentCategoryEntity);
+	
+	public Collection<CategoryAttributeInterface> getAllCategoryAttributes();
 	
 }

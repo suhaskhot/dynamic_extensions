@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.processor;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,10 +9,10 @@ import java.util.Map;
 
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
-import edu.common.dynamicextensions.entitymanager.EntityManager;
-import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
+import edu.common.dynamicextensions.entitymanager.CategoryManager;
+import edu.common.dynamicextensions.entitymanager.CategoryManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.actionform.DataEntryForm;
@@ -96,18 +97,18 @@ public class LoadDataEntryFormProcessor
 	 * @throws NumberFormatException
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
+	 * @throws SQLException 
 	 */
 	public Map<BaseAbstractAttributeInterface, Object> getValueMapFromRecordId(
 			AbstractEntityInterface entityInterface, String recordIdentifier) throws NumberFormatException,
-			DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+			DynamicExtensionsSystemException, DynamicExtensionsApplicationException, SQLException
 	{
 		Map<BaseAbstractAttributeInterface, Object> recordMap = new HashMap<BaseAbstractAttributeInterface, Object>();
 		if (recordIdentifier != null && !recordIdentifier.equals(""))
 		{
-			/*//Get corresponding Entity of the Container
-			EntityManagerInterface entityManager = EntityManager.getInstance();
-			recordMap = entityManager
-					.getRecordById(entityInterface, Long.valueOf(recordIdentifier));*/
+			
+			CategoryManagerInterface categoryManagerInterface = CategoryManager.getInstance();
+			recordMap = categoryManagerInterface.getRecordById((CategoryEntityInterface)entityInterface, Long.valueOf(recordIdentifier));
 
 		}
 		return recordMap;

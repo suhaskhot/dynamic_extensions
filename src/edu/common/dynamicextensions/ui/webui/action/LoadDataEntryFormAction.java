@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.ui.webui.action;
 
+import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -15,15 +16,12 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
-import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
-import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
-import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -47,7 +45,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @see org.apache.struts.actions.DispatchAction#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, NumberFormatException, SQLException
 	{
 		cacheCallBackURL(request);
 
@@ -203,14 +201,14 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 	{
 		String dataEntryOperation = dataEntryForm.getDataEntryOperation();
 
-		if (dataEntryOperation != null && dataEntryOperation.equalsIgnoreCase("insertChildData") && (dataEntryForm.getErrorList().isEmpty()))
+		if (dataEntryOperation != null && dataEntryOperation.equalsIgnoreCase("insertChildData"))// && (dataEntryForm.getErrorList().isEmpty()))
 		{
 			String childContainerId = dataEntryForm.getChildContainerId();
 			AbstractContainmentControlInterface associationControl = UserInterfaceiUtility.getAssociationControl(
 					(ContainerInterface) containerStack.peek(), childContainerId);
 
 			Map<BaseAbstractAttributeInterface, Object> containerValueMap = valueMapStack.peek();
-			AssociationInterface association = (AssociationInterface) associationControl.getBaseAbstractAttribute();
+			AssociationMetadataInterface association = (AssociationMetadataInterface) associationControl.getBaseAbstractAttribute();
 			List<Map<BaseAbstractAttributeInterface, Object>> childContainerValueMapList = (List<Map<BaseAbstractAttributeInterface, Object>>) containerValueMap
 					.get(association);
 

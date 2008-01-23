@@ -223,7 +223,7 @@ public class Entity extends AbstractEntity implements EntityInterface
 	/**
 	 * This method removes all abstract attributes from the entity.
 	 */
-	public void removeAllAbstractAttributes()
+	public void removeAllAttributes()
 	{
 		if (abstractAttributeCollection != null)
 		{

@@ -20,9 +20,7 @@ import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
-import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
-import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -156,12 +154,7 @@ public class UserInterfaceiUtility
 	public static boolean isControlRequired(ControlInterface controlInterface)
 	{
 		BaseAbstractAttributeInterface abstractAttribute = (BaseAbstractAttributeInterface) controlInterface.getBaseAbstractAttribute();
-		/*//Quick fix: Insert category with association set in it is not working 
-		if(abstractAttribute == null){
-			return false;
-		}
-		//Quickfix ends
-*/		Collection<RuleInterface> ruleCollection = abstractAttribute.getRuleCollection();
+		Collection<RuleInterface> ruleCollection = abstractAttribute.getRuleCollection();
 		boolean required = false;
 		if (ruleCollection != null && !ruleCollection.isEmpty())
 		{
@@ -251,9 +244,9 @@ public class UserInterfaceiUtility
 			String controlHTML = "";
 			control.setIsSubControl(true);
 
-			if (control instanceof ContainmentAssociationControlInterface)
+			if (control instanceof AbstractContainmentControlInterface)
 			{
-				controlHTML = ((ContainmentAssociationControlInterface) control).generateLinkHTML();
+				controlHTML = ((AbstractContainmentControlInterface) control).generateLinkHTML();
 			}
 			else
 			{
@@ -291,7 +284,7 @@ public class UserInterfaceiUtility
 		Collection<ControlInterface> controlCollection = containerInterface.getAllControls();
 		for (ControlInterface control : controlCollection)
 		{
-			if (control instanceof AssociationControlInterface)
+			if (control instanceof AbstractContainmentControlInterface)
 			{
 				AbstractContainmentControl abstractContainmentControl = (AbstractContainmentControl) control;
 				String containmentAssociationControlId = abstractContainmentControl.getContainer().getId().toString();

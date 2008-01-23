@@ -1,16 +1,17 @@
 package edu.common.dynamicextensions.processor;
 
+import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
-import edu.common.dynamicextensions.entitymanager.EntityManager;
-import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
+import edu.common.dynamicextensions.entitymanager.CategoryManager;
+import edu.common.dynamicextensions.entitymanager.CategoryManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
@@ -79,10 +80,9 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 			Map<BaseAbstractAttributeInterface, Object> attributeValueMap)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
-		EntityManagerInterface entityManager = EntityManager.getInstance();
-		EntityInterface entity = (Entity) container.getAbstractEntity();
-		//Quick fix
-		Long recordIdentifier=null;// = entityManager.insertData(entity, attributeValueMap);
+		CategoryInterface categoryInterface= ((CategoryEntityInterface) container.getAbstractEntity()).getCategory();
+		CategoryManagerInterface categoryManager = CategoryManager.getInstance();
+		Long recordIdentifier = categoryManager.insertData(categoryInterface, attributeValueMap);
 		return recordIdentifier.toString();
 	}
 
@@ -94,16 +94,20 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	 * @return
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
+	 * @throws SQLException 
 	 */
 	public Boolean editDataEntryForm(ContainerInterface container,
 			Map<BaseAbstractAttributeInterface, Object> attributeValueMap, Long recordIdentifier)
-			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException, SQLException
 	{
-		EntityManagerInterface entityManager = EntityManager.getInstance();
-		EntityInterface entity = (Entity) container.getAbstractEntity();
 		//Quick fix
-		Boolean edited= false ;//= entityManager.editData(entity, attributeValueMap, recordIdentifier);
-		return edited;
+		/*EntityManagerInterface entityManager = EntityManager.getInstance();
+		EntityInterface entity = (Entity) container.getAbstractEntity();
+		Boolean edited= = entityManager.editData(entity, attributeValueMap, recordIdentifier);
+		return edited;*/
+		
+		return CategoryManager.getInstance().editData((CategoryEntityInterface)container.getAbstractEntity(),
+				attributeValueMap, recordIdentifier);
 	}
 
 }

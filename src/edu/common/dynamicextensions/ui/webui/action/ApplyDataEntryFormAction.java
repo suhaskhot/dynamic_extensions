@@ -2,6 +2,7 @@ package edu.common.dynamicextensions.ui.webui.action;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -26,12 +27,9 @@ import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.FileExtension;
-import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
-import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domain.userinterface.AbstractContainmentControl;
 import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
@@ -55,7 +53,6 @@ import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
-import edu.common.dynamicextensions.validation.ValidatorUtil;
 import edu.wustl.common.util.global.ApplicationProperties;
 
 /**
@@ -300,7 +297,6 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				valueMap, true);
 
 		//List<String> errorList = ValidatorUtil.validateEntity(valueMap, dataEntryForm.getErrorList());
-
 		List<String> errorList = new ArrayList<String>();
 		//saveErrors(request, getErrorMessages(errorList));
 		dataEntryForm.setErrorList(errorList);
@@ -465,7 +461,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			List<Map<BaseAbstractAttributeInterface, Object>> oneToManyContainmentValueList)
 			throws FileNotFoundException, DynamicExtensionsSystemException, IOException
 	{
-		ContainmentAssociationControl containmentAssociationControl = (ContainmentAssociationControl) control;
+		AbstractContainmentControl containmentAssociationControl = (AbstractContainmentControl) control;
 		int currentSize = oneToManyContainmentValueList.size();
 
 		String parameterString = containerId + "_rowCount";
@@ -619,12 +615,13 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @throws NumberFormatException If record identifier is not a numeric value.
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
+	 * @throws SQLException 
 	 */
 	private String storeParentContainer(
 			Stack<Map<BaseAbstractAttributeInterface, Object>> valueMapStack,
 			Stack<ContainerInterface> containerStack, HttpServletRequest request,
 			String recordIdentifier) throws NumberFormatException,
-			DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+			DynamicExtensionsApplicationException, DynamicExtensionsSystemException, SQLException
 	{
 		Map<BaseAbstractAttributeInterface, Object> rootValueMap = (Map<BaseAbstractAttributeInterface, Object>) valueMapStack
 				.firstElement();

@@ -1,6 +1,12 @@
 
 package edu.common.dynamicextensions.entitymanager;
 
+import static edu.wustl.common.util.global.Constants.ACTIVITY_STATUS_ACTIVE;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +36,7 @@ import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.HibernateDAO;
 import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.common.util.dbManager.DBUtil;
 
 /**
  * @author rajesh_patil
@@ -161,6 +168,20 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			hibernateDAO.openSession(null);
 			EntityManagerInterface entityManager = EntityManager.getInstance();
 			recordIdList = entityManager.insertData(entity, EntityDataValueMapList);
+
+			//Quick fix
+			EntityManagerUtil entityManagerUtil = new EntityManagerUtil();
+			StringBuffer query = new StringBuffer();
+			query.append(INSERT_INTO_KEYWORD + WHITESPACE + rootCategoryEntity.getTableProperties().getName() + WHITESPACE + OPENING_BRACKET
+					+ "ACTIVITY_STATUS" + COMMA + IDENTIFIER + COMMA + CATEGORY_ROOT_ID + CLOSING_BRACKET + WHITESPACE + VALUES_KEYWORD
+					+ OPENING_BRACKET + "'" + ACTIVITY_STATUS_ACTIVE + "'" + COMMA
+					+ entityManagerUtil.getNextIdentifier(rootCategoryEntity.getTableProperties().getName()) + COMMA + recordIdList.get(0)
+					+ CLOSING_BRACKET);
+			Connection conn = DBUtil.getConnection();
+			Statement statement = null;
+			statement = conn.createStatement();
+			statement.executeUpdate(query.toString());
+			conn.commit();
 
 		}
 		catch (DynamicExtensionsApplicationException e)
@@ -321,21 +342,6 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	}
 
 	/**
-	 * 
-	 * @param entityDataMap
-	 * @return
-	 */
-	public Map<BaseAbstractAttributeInterface, Object> generateCategoryDataValueMap(CategoryInterface category,
-			Map<AbstractAttributeInterface, Object> entityDataMap)
-	{
-		Map<BaseAbstractAttributeInterface, Object> categoryDataValueMap = new HashMap<BaseAbstractAttributeInterface, Object>();
-		CategoryEntityInterface rootCategoryEntity = category.getRootCategoryElement();
-		generateCategoryDataValueMapList(rootCategoryEntity, categoryDataValueMap, entityDataMap);
-		return categoryDataValueMap;
-	}
-
-	/**
-	 * 
 	 * @param rootCategoryEntity
 	 * @param categoryDataValueMap
 	 * @param entityDataMap
@@ -344,105 +350,127 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	private Map<BaseAbstractAttributeInterface, Object> addCategoryAttributes(CategoryEntityInterface rootCategoryEntity,
 			Map<BaseAbstractAttributeInterface, Object> categoryDataValueMap, Map<AbstractAttributeInterface, Object> entityDataMap)
 	{
-		if (entityDataMap != null)
+		for (CategoryAttributeInterface categoryAttribute : rootCategoryEntity.getCategoryAttributeCollection())
 		{
-			for (CategoryAttributeInterface categoryAttribute : rootCategoryEntity.getCategoryAttributeCollection())
+			categoryDataValueMap.put(categoryAttribute, entityDataMap.get(categoryAttribute.getAttribute()));
+		}
+
+		return categoryDataValueMap;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.entitymanager.CategoryManagerInterface#populateCategoryDataValueMap(edu.common.dynamicextensions.domaininterface.CategoryEntityInterface, java.util.Map, java.util.Map)
+	 */
+	public void populateCategoryDataValueMap(CategoryEntityInterface categoryEntityInterface,
+			Map<BaseAbstractAttributeInterface, Object> categoryDataMap, Map<AbstractAttributeInterface, Object> entityDataMap)
+	{
+		addCategoryAttributes(categoryEntityInterface, categoryDataMap, entityDataMap);
+
+		for (CategoryAssociationInterface associationInterface : categoryEntityInterface.getCategoryAssociationCollection())
+		{
+			List<Map<BaseAbstractAttributeInterface, Object>> categoryDataValueMapList = new ArrayList<Map<BaseAbstractAttributeInterface, Object>>();
+			categoryDataMap.put(associationInterface, categoryDataValueMapList);
+
+			EntityInterface searchEntity = associationInterface.getTargetCategoryEntity().getEntity();
+			List<Map<AbstractAttributeInterface, Object>> dataValueMapList = getList(searchEntity, entityDataMap);
+			
+			for (Map<AbstractAttributeInterface, Object> map : dataValueMapList)
 			{
-				if (entityDataMap.get(categoryAttribute.getAttribute()) == null)
+				Map<BaseAbstractAttributeInterface, Object> map2 = new HashMap<BaseAbstractAttributeInterface, Object>();
+				categoryDataValueMapList.add(map2);
+				populateCategoryDataValueMap(associationInterface.getTargetCategoryEntity(), map2, map);
+			}
+		}
+
+	}
+
+	/**
+	 * This method traverse the entity data value map.
+	 * Finds the association whose target entity matches with the searchEntity.
+	 * @param searchEntity
+	 * @param entityMap
+	 * @return the list associated with the searched association
+	 */
+	private List<Map<AbstractAttributeInterface, Object>> getList(EntityInterface searchEntity,
+			Map<AbstractAttributeInterface, Object> entityMap)
+	{
+		Set<AbstractAttributeInterface> set = entityMap.keySet();
+		List<Map<AbstractAttributeInterface, Object>> resultList = null;
+		for (AbstractAttributeInterface key : set)
+		{
+			if (key instanceof AssociationInterface)
+			{
+				AssociationInterface associationInterface = (AssociationInterface) key;
+				if (searchEntity == associationInterface.getTargetEntity())
 				{
-					for (int i = 0; i < rootCategoryEntity.getPath().getSortedPathAssociationRelationCollection().size(); i++)
-					{
-						if (entityDataMap.containsKey(rootCategoryEntity.getPath().getSortedPathAssociationRelationCollection().get(i)
-								.getAssociation()))
-						{
-							List tempList = ((List) entityDataMap.get(rootCategoryEntity.getPath().getSortedPathAssociationRelationCollection()
-									.get(i).getAssociation()));
-							Object categoryAttributeValue = ((Map) tempList.get(0)).get(categoryAttribute.getAttribute());
-							categoryDataValueMap.put(categoryAttribute, categoryAttributeValue);
-							break;
-						}
-					}
+					resultList = (List<Map<AbstractAttributeInterface, Object>>) entityMap.get(key);
 				}
 				else
 				{
-					categoryDataValueMap.put(categoryAttribute, entityDataMap.get(categoryAttribute.getAttribute()));
+					resultList = getList(searchEntity, ((List<Map<AbstractAttributeInterface, Object>>) entityMap.get(key)).get(0));
 				}
 			}
 		}
+		return resultList;
+	}
+
+	/**
+	 * This method returns the categoryDataValueMap for the given rootCategoryEntity 
+	 * and recordId
+	 * @param rootCategoryEntity
+	 * @param recordId
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws SQLException
+	 */
+	public Map<BaseAbstractAttributeInterface, Object> getRecordById(CategoryEntityInterface rootCategoryEntity, Long recordId)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, SQLException
+	{
+		Map<AbstractAttributeInterface, Object> entityDataValueMap = EntityManager.getInstance().getRecordById(rootCategoryEntity.getEntity(),
+				getRootEntityRecordId(rootCategoryEntity, recordId));
+		Map<BaseAbstractAttributeInterface, Object> categoryDataValueMap = new HashMap<BaseAbstractAttributeInterface, Object>();
+		populateCategoryDataValueMap(rootCategoryEntity, categoryDataValueMap,entityDataValueMap);
 		return categoryDataValueMap;
 	}
 
 	/**
-	 * 
-	 * @param rootCategoryEntity
-	 * @param categoryDataValueMap
-	 * @param entityDataMap
+	 * @param rootCategoryEntityInterface
+	 * @param recordId
+	 * @return
+	 * @throws SQLException
+	 * @throws DynamicExtensionsSystemException
 	 */
-	private void generateCategoryDataValueMapList(CategoryEntityInterface rootCategoryEntity,
-			Map<BaseAbstractAttributeInterface, Object> categoryDataValueMap, Map<AbstractAttributeInterface, Object> entityDataMap)
+	public Long getRootEntityRecordId(CategoryEntityInterface rootCategoryEntityInterface, Long recordId) throws SQLException,
+			DynamicExtensionsSystemException
 	{
-		Map<BaseAbstractAttributeInterface, Object> innerCategoryDataValueMap = new HashMap<BaseAbstractAttributeInterface, Object>();
+		StringBuffer query = new StringBuffer();
+		query.append(SELECT_KEYWORD + WHITESPACE + CATEGORY_ROOT_ID + WHITESPACE + FROM_KEYWORD + WHITESPACE
+				+ rootCategoryEntityInterface.getTableProperties().getName() + WHITESPACE + WHERE_KEYWORD + WHITESPACE + IDENTIFIER + EQUAL
+				+ recordId);
 
-		for (CategoryAssociationInterface c : rootCategoryEntity.getCategoryAssociationCollection())
+		ResultSet resultSet = new EntityManagerUtil().executeQuery(query.toString());
+
+		if (resultSet.next())
 		{
-			if (c != null)
-			{
-				addCategoryAttributes(rootCategoryEntity, categoryDataValueMap, entityDataMap);
-
-				CategoryEntityInterface targetCategoryEntity = c.getTargetCategoryEntity();
-				PathAssociationRelationInterface pathAssociationRelation = targetCategoryEntity.getPath()
-						.getSortedPathAssociationRelationCollection().get(0);
-
-				List<Map<AbstractAttributeInterface, Object>> innerCategoryDataValueMapList = (List) entityDataMap.get(pathAssociationRelation
-						.getAssociation());
-
-				List<Map<BaseAbstractAttributeInterface, Object>> outerCategoryDataValueMapList = new ArrayList<Map<BaseAbstractAttributeInterface, Object>>();
-
-				for (CategoryAttributeInterface categoryAttribute : targetCategoryEntity.getCategoryAttributeCollection())
-				{
-					if (innerCategoryDataValueMapList.get(0).get(categoryAttribute.getAttribute()) == null)
-					{
-						for (int i = 0; i < targetCategoryEntity.getPath().getSortedPathAssociationRelationCollection().size(); i++)
-						{
-							if (innerCategoryDataValueMapList.get(0).containsKey(
-									targetCategoryEntity.getPath().getSortedPathAssociationRelationCollection().get(i).getAssociation()))
-							{
-								List tempList = ((List) innerCategoryDataValueMapList.get(0).get(
-										targetCategoryEntity.getPath().getSortedPathAssociationRelationCollection().get(i).getAssociation()));
-								for (int j = 0; j < tempList.size(); j++)
-								{
-									outerCategoryDataValueMapList.add(addCategoryAttributes(targetCategoryEntity, innerCategoryDataValueMap,
-											innerCategoryDataValueMapList.get(0)));
-								}
-								break;
-							}
-						}
-					}
-					else
-					{
-						List tempList = ((List) entityDataMap.get(targetCategoryEntity.getPath().getSortedPathAssociationRelationCollection().get(0)
-								.getAssociation()));
-						for (int k = 0; k < tempList.size(); k++)
-						{
-							//Map tempMap = new HashMap();
-							//tempMap.put(categoryAttribute, innerCategoryDataValueMapList.get(k).get(categoryAttribute.getAttribute()));
-							outerCategoryDataValueMapList.add(addCategoryAttributes(targetCategoryEntity, innerCategoryDataValueMap,
-									innerCategoryDataValueMapList.get(k)));
-							//outerCategoryDataValueMapList.add(tempMap);
-						}
-					}
-				}
-
-				//outerCategoryDataValueMapList.add(addCategoryAttributes(targetCategoryEntity, innerCategoryDataValueMap,
-				//innerCategoryDataValueMapList.get(0)));
-
-				entityDataMap = innerCategoryDataValueMapList.get(0);
-
-				categoryDataValueMap.put(c, outerCategoryDataValueMapList);
-
-				generateCategoryDataValueMapList(targetCategoryEntity, innerCategoryDataValueMap, entityDataMap);
-			}
+			return Long.valueOf(resultSet.getObject(1).toString());
 		}
+		resultSet.close();
+		return new Long(-1);
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.entitymanager.CategoryManagerInterface#editData(edu.common.dynamicextensions.domaininterface.CategoryEntityInterface, java.util.Map, java.lang.Long)
+	 */
+	public boolean editData(CategoryEntityInterface categoryEntity, Map<BaseAbstractAttributeInterface, Object> attributeValueMap, Long recordId)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException, SQLException
+	{
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+
+		Boolean edited = entityManager.editData(categoryEntity.getEntity(), generateEntityDataValueMap(attributeValueMap), getRootEntityRecordId(
+				categoryEntity, recordId));
+		return edited;
 	}
 
 }

@@ -20,6 +20,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterfa
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.util.global.ApplicationProperties;
 
 /**
@@ -400,11 +401,14 @@ public class Container extends DynamicExtensionBaseDomainObject
      */
     public String generateControlsHTML() throws DynamicExtensionsSystemException
     {
+
+
         StringBuffer stringBuffer = new StringBuffer();
 
         stringBuffer.append("<tr>");
         stringBuffer.append("<td class='formTitle' colspan='3' align='left'>");
-        stringBuffer.append(this.getCaption());
+        stringBuffer.append(DynamicExtensionsUtility.getFormattedStringForCapitalization(this
+				.getCaption()));
         stringBuffer.append("</td>");
         stringBuffer.append("</tr>");
 
@@ -514,17 +518,19 @@ public class Container extends DynamicExtensionBaseDomainObject
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append("<a href='#' style='cursor:hand' ");
         stringBuffer.append("onclick='showChildContainerInsertDataPage(");
-      //for bug 5864        
+      //for bug 5864
         if(this.getId() == null)
         {
-        	stringBuffer.append("\"" + this.getCaption() + "\"" + ",this");
+        	stringBuffer.append("\""
+					+ DynamicExtensionsUtility.getFormattedStringForCapitalization(this
+							.getCaption()) + "\"" + ",this");
         }
         else
         {
         	stringBuffer.append(this.getId() + ",this");
         }
-        
-        
+
+
         stringBuffer.append(")'>");
         stringBuffer.append(detailsString);
         stringBuffer.append("</a>");

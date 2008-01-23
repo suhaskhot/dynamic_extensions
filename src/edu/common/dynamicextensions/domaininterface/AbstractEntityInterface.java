@@ -32,6 +32,16 @@ public interface AbstractEntityInterface extends AbstractMetadataInterface {
     * @param containerInterface
     */
    public void addContaier(ContainerInterface containerInterface );
+   
+   /**
+	 * @return Returns the isAbstract.
+	 */
+	boolean isAbstract();
+	
+	/**
+	 * Clears the attibute list.
+	 */
+	public void removeAllAttributes();
 
 
 }

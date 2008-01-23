@@ -23,24 +23,21 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
-import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
-import edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.GroupProcessor;
-import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.util.SemanticPropertyBuilderUtil;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
-import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.beans.NameValueBean;
@@ -174,7 +171,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 			if (containerForSelectedForm != null)
 			{
 				formName = containerForSelectedForm.getCaption();
-				EntityInterface entity = (EntityInterface) containerForSelectedForm.getAbstractEntity();
+				AbstractEntityInterface entity = (AbstractEntityInterface) containerForSelectedForm.getAbstractEntity();
 				if (entity != null)
 				{
 					formDescription = entity.getDescription();
@@ -207,7 +204,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 	 */
 	private String updateControlsSequence(HttpServletRequest request, String controlsSeqNumbers)
 	{
-		System.out.println("ControlsId " + controlsSeqNumbers);
+		/*System.out.println("ControlsId " + controlsSeqNumbers);
 		ContainerInterface containerInterface = WebUIManager.getCurrentContainer(request);
 		if (containerInterface != null)
 		{
@@ -222,7 +219,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 
 				//adding id attribute to attributecollection
 				AttributeInterface idAttribute = null;
-				Collection<AttributeInterface> attributeCollection = ((EntityInterface) containerInterface.getAbstractEntity())
+				Collection<AttributeInterface> attributeCollection = ((AbstractEntityInterface) containerInterface.getAbstractEntity())
 						.getAttributeCollection();
 				for (AttributeInterface attributeIterator : attributeCollection)
 				{
@@ -237,7 +234,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 
 				//remove old controls from collection
 				containerInterface.removeAllControls();
-				((EntityInterface) containerInterface.getAbstractEntity()).removeAllAbstractAttributes();
+				((AbstractEntityInterface) containerInterface.getAbstractEntity()).removeAllAttributes();
 				ControlInterface control = null;
 				if (sequenceNumbers != null)
 				{
@@ -249,14 +246,14 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 						if (control != null)
 						{
 							containerInterface.addControl(control);
-							((EntityInterface) containerInterface.getAbstractEntity()).addAbstractAttribute(
+							((AbstractEntityInterface) containerInterface.getAbstractEntity()).addAbstractAttribute(
 									(AbstractAttributeInterface) control.getBaseAbstractAttribute());
 						}
 					}
 				}
 				if (idAttribute != null)
 				{
-					((EntityInterface)containerInterface.getAbstractEntity()).addAbstractAttribute(idAttribute);
+					((AbstractEntityInterface)containerInterface.getAbstractEntity()).addAbstractAttribute(idAttribute);
 				}
 			}
 		}
@@ -266,7 +263,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 		{
 			System.out.println("[" + control.getSequenceNumber() + "] = [" + control.getCaption()
 					+ "]");
-		}
+		}*/
 		return "";
 	}
 	/**
@@ -290,7 +287,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 		AbstractContainmentControlInterface associationControl = UserInterfaceiUtility
 				.getAssociationControl(containerInterface, childContainerId);
 
-		AssociationInterface association = (AssociationInterface) associationControl
+		AssociationMetadataInterface association = (AssociationMetadataInterface) associationControl
 				.getBaseAbstractAttribute();
 
 		List<Map<AbstractAttributeInterface, Object>> associationValueMapList = (List<Map<AbstractAttributeInterface, Object>>) valueMap
@@ -406,7 +403,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 		if (containerForSelectedForm != null)
 		{
 			formName = containerForSelectedForm.getCaption();
-			EntityInterface entity = (EntityInterface) containerForSelectedForm.getAbstractEntity();
+			AbstractEntityInterface entity = (AbstractEntityInterface) containerForSelectedForm.getAbstractEntity();
 			if (entity != null)
 			{
 				formDescription = entity.getDescription();

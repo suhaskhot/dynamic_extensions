@@ -1,11 +1,13 @@
 
 package edu.common.dynamicextensions.entitymanager;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -60,8 +62,38 @@ public interface CategoryManagerInterface
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	public Map<AbstractAttributeInterface, Object> generateEntityDataValueMap(Map<BaseAbstractAttributeInterface, Object> categoryDataMap);
-
-	public Map<BaseAbstractAttributeInterface, Object> generateCategoryDataValueMap(CategoryInterface category,
-			Map<AbstractAttributeInterface, Object> entityDataMap);
+	
+	/**
+	 * @param categoryEntityInterface
+	 * @param categoryDataMap
+	 * @param entityDataMap
+	 */
+	public void populateCategoryDataValueMap(CategoryEntityInterface categoryEntityInterface,
+			Map<BaseAbstractAttributeInterface, Object> categoryDataMap, Map<AbstractAttributeInterface, Object> entityDataMap);
+	
+	
+	/**
+	 * @param rootCategoryEntity
+	 * @param recordId
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws SQLException
+	 */
+	public Map<BaseAbstractAttributeInterface, Object> getRecordById(CategoryEntityInterface rootCategoryEntity,
+			Long recordId) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException, SQLException;
+	
+	/**
+	 * @param categoryEntity
+	 * @param attributeValueMap
+	 * @param recordId
+	 * @return
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
+	 * @throws SQLException
+	 */
+	public boolean editData(CategoryEntityInterface categoryEntity, Map<BaseAbstractAttributeInterface, Object> attributeValueMap, Long recordId)
+	throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException, SQLException;
 
 }

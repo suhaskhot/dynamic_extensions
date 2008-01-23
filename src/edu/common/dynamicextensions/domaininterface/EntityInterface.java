@@ -68,10 +68,6 @@ public interface EntityInterface  extends AbstractEntityInterface
 	 */
 	void removeAssociation(AssociationInterface associationInterface);
 
-	/**
-	 * @return Returns the isAbstract.
-	 */
-	boolean isAbstract();
 
 	/**
 	 * @param isAbstract The isAbstract to set.
@@ -138,8 +134,8 @@ public interface EntityInterface  extends AbstractEntityInterface
 	/**
 	 *
 	 *
-	 */
-	void removeAllAbstractAttributes();
+	 *//*
+	void removeAllAbstractAttributes();*/
 
 	/**
 	 * @return

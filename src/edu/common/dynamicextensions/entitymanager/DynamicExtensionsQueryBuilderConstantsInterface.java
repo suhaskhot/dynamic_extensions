@@ -61,5 +61,7 @@ public interface DynamicExtensionsQueryBuilderConstantsInterface extends EntityM
 
 	String FILE_NAME = "file_name";
 	String CONTENT_TYPE = "content_type";
+	
+	String VALUES_KEYWORD = "VALUES";
 
 }

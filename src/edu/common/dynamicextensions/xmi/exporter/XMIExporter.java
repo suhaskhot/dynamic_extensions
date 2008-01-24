@@ -103,7 +103,7 @@ public class XMIExporter implements XMIExportInterface
 	private static HashMap<String, UmlClass> entityDataClassMappings = null;
 	private static HashMap<EntityInterface, List<String>> entityForeignKeyAttributes = null;
 	private static HashMap<String, String> foreignKeyOperationNameMappings = null;
-	private static String groupName = null;
+	private static String packageName = null;
 
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.xmi.exporter.XMIExportInterface#exportXMI(java.lang.String, javax.jmi.reflect.RefPackage, java.lang.String)
@@ -163,7 +163,7 @@ public class XMIExporter implements XMIExportInterface
 		init();
 		if(entityGroup!=null)
 		{
-			groupName = entityGroup.getName();
+			//groupName = entityGroup.getName();
 			//UML Model generation
 			generateUMLModel(entityGroup);
 			//Data Model creation
@@ -475,7 +475,7 @@ public class XMIExporter implements XMIExportInterface
 			//Add foreign key operation
 			foreignKeySQLClass.getFeature().add(createForeignKeyOperation(foreignKeyAttribute));
 		}
-		String implementedAssociation = groupName + XMIConstants.DOT_SEPARATOR+foreignKeyEntity.getName()+XMIConstants.DOT_SEPARATOR +implementedAssociationName;
+		String implementedAssociation = packageName + XMIConstants.DOT_SEPARATOR+foreignKeyEntity.getName()+XMIConstants.DOT_SEPARATOR +implementedAssociationName;
 		if(foreignKeyAttribute!=null)
 		{
 			foreignKeyAttribute.getTaggedValue().add(createTaggedValue(XMIConstants.TAGGED_VALUE_IMPLEMENTS_ASSOCIATION,implementedAssociation));
@@ -577,10 +577,10 @@ public class XMIExporter implements XMIExportInterface
 			Attribute coRelationTargetAttribute = createDataAttribute(corelationTableDestAttributeName, targetAttribute.getDataType());
 
 			//Add "implements-association tagged value for both
-			String srcAttribImplementedAssocn = groupName+XMIConstants.DOT_SEPARATOR+ association.getTargetEntity().getName()+XMIConstants.DOT_SEPARATOR+association.getSourceRole().getName();
+			String srcAttribImplementedAssocn = packageName+XMIConstants.DOT_SEPARATOR+ association.getTargetEntity().getName()+XMIConstants.DOT_SEPARATOR+association.getSourceRole().getName();
 			coRelationSourceAttribute.getTaggedValue().add(createTaggedValue(XMIConstants.TAGGED_VALUE_IMPLEMENTS_ASSOCIATION,srcAttribImplementedAssocn));
 
-			String targetAttribImplementedAssocn = groupName+XMIConstants.DOT_SEPARATOR+ association.getEntity().getName()+XMIConstants.DOT_SEPARATOR+association.getTargetRole().getName();
+			String targetAttribImplementedAssocn = packageName+XMIConstants.DOT_SEPARATOR+ association.getEntity().getName()+XMIConstants.DOT_SEPARATOR+association.getTargetRole().getName();
 			coRelationTargetAttribute.getTaggedValue().add(createTaggedValue(XMIConstants.TAGGED_VALUE_IMPLEMENTS_ASSOCIATION,targetAttribImplementedAssocn));
 
 			corelationTableFeatures.add(coRelationSourceAttribute);
@@ -813,7 +813,7 @@ public class XMIExporter implements XMIExportInterface
 				{
 					if(umlAttribute!=null)
 					{
-						umlAttribute.getTaggedValue().add(createTaggedValue(XMIConstants.TAGGED_VALUE_MAPPED_ATTRIBUTES,groupName + XMIConstants.DOT_SEPARATOR+attribute.getEntity().getName()+XMIConstants.DOT_SEPARATOR+attribute.getName()));
+						umlAttribute.getTaggedValue().add(createTaggedValue(XMIConstants.TAGGED_VALUE_MAPPED_ATTRIBUTES,packageName + XMIConstants.DOT_SEPARATOR+attribute.getEntity().getName()+XMIConstants.DOT_SEPARATOR+attribute.getName()));
 					}
 				}
 			}
@@ -1403,18 +1403,19 @@ public class XMIExporter implements XMIExportInterface
 	@SuppressWarnings("unchecked")
 	private org.omg.uml.modelmanagement.UmlPackage getLeafPackage(EntityGroupInterface entityGroup)
 	{
-		String packageName = "";
+		String completePackageName = "";
 		Collection<TaggedValueInterface> tvColl = entityGroup.getTaggedValueCollection();
 		for(TaggedValueInterface tv : tvColl)
 		{
 			if(tv.getKey().equalsIgnoreCase("PackageName"))
 			{
-				packageName = tv.getValue();
+				completePackageName = tv.getValue();
+				packageName = completePackageName;
 			}
 		}
+//		packageName = entityGroup.getName();
 		
-		
-		org.omg.uml.modelmanagement.UmlPackage leafPackage = getOrCreatePackage(packageName,logicalModel);
+		org.omg.uml.modelmanagement.UmlPackage leafPackage = getOrCreatePackage(completePackageName,logicalModel);
 		return leafPackage;
 	}
 	/**

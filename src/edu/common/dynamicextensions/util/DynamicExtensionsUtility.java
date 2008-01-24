@@ -25,10 +25,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
+import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
@@ -47,7 +46,6 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterfa
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
-import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerExceptionConstantsInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
@@ -1107,22 +1105,6 @@ public class DynamicExtensionsUtility
 	 */
 	public static String getFormattedStringForCapitalization(String entityName)
 	{
-		StringBuffer str = new StringBuffer();
-		StringTokenizer stringTokenizer = new StringTokenizer(entityName.trim()," ");
-		while(stringTokenizer.hasMoreTokens())
-		{
-			str.append(stringTokenizer.nextToken());
-		}
-		Pattern p = Pattern.compile("[A-Z]");
-		Matcher m = p.matcher(str.toString());
-		StringBuffer sb = new StringBuffer();
-		boolean result = m.find();
-		while (result)
-		{
-			m.appendReplacement(sb, " " + str.toString().subSequence(m.start(), m.end()));
-			result = m.find();
-		}
-		m.appendTail(sb);
-		return sb.toString().trim();
+		return Utility.getDisplayLabel(entityName.trim());
 	}
 }

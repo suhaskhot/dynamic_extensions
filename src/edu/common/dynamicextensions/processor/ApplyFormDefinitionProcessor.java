@@ -187,8 +187,10 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		association.setTargetEntity(targetEntity);
 		association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
 		association.setName(targetEntity.getName());
-		association.setSourceRole(getRole(associationType, null, Cardinality.ONE, sourceCardinality));
-		association.setTargetRole(getRole(associationType, targetEntity.getName(), Cardinality.ONE, targetCardinality));
+		association.setSourceRole(getRole(associationType, association.getEntity().getName(),
+				Cardinality.ONE, sourceCardinality));
+		association.setTargetRole(getRole(associationType, targetEntity.getName(), Cardinality.ONE,
+				targetCardinality));
 		sourceEntity.addAssociation(association);
 		return association;
 	}

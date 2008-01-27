@@ -99,14 +99,14 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 
 	/**
 	 * Creates a new AttributeInterface object based on the Datatype.
-	 * If datatype is "DATATYPE_STRING" get a new instance of String attribute from DomainObjectFactory 
+	 * If datatype is "DATATYPE_STRING" get a new instance of String attribute from DomainObjectFactory
 	 * and return it.
-	 * Similarly for each Datatype a new Attribute object is created and returned back.  
+	 * Similarly for each Datatype a new Attribute object is created and returned back.
 	 * @param attributeUIBeanInformationIntf : UI Bean Information interface object that contains information of
 	 * datatype selected by the user on the UI.
 	 * @return New (Domain Object) Attribute object based on datatype
 	 * @throws DynamicExtensionsApplicationException  : Exception
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public AbstractAttributeInterface createAttribute(
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
@@ -176,9 +176,9 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * This method populates the Attribute Interface objects with appropriate information based on its type.
 	 * Each attribute object has different relevant information to be filled in based on the interface it implements
 	 * This method accepts an AbstractAttributeInterface object and populates required fields.
-	 * Information to be filled is available in the  AbstractAttributeUIBeanInterface object which is populated 
+	 * Information to be filled is available in the  AbstractAttributeUIBeanInterface object which is populated
 	 * in the UI.
-	 * @param attributeInterface : Attribute(Domain Object to be populated) 
+	 * @param attributeInterface : Attribute(Domain Object to be populated)
 	 * @param attributeUIBeanInformationIntf : UI Bean object containing the information entered by the end-user on the UI.
 	 *  @throws DynamicExtensionsSystemException : Exception
 	 *  @throws DynamicExtensionsApplicationException : Excedption
@@ -226,8 +226,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param userSelectedControlName
 	 * @param attributeInterface
 	 * @param attributeUIBeanInformationIntf
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private void populateAssociation(String userSelectedControlName,
 			AssociationInterface associationIntf,
@@ -242,8 +242,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			associationIntf.setTargetEntity(targetEntity);
 			associationIntf.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
 			associationIntf.setName(attributeUIBeanInformationIntf.getName());
-			associationIntf.setSourceRole(getRole(AssociationType.ASSOCIATION, null,
-					Cardinality.ONE, Cardinality.MANY));
+			associationIntf.setSourceRole(getRole(AssociationType.ASSOCIATION, associationIntf
+					.getEntity().getName(), Cardinality.ONE, Cardinality.MANY));
 			if ((userSelectedControlName != null)
 					&& (userSelectedControlName.equals(ProcessorConstants.LISTBOX_CONTROL)))
 			{
@@ -309,8 +309,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 
 	/**
 	 * @param attributeTypeInformation
-	 * @param attributeUIBeanInformationIntf 
-	 * @throws DynamicExtensionsApplicationException 
+	 * @param attributeUIBeanInformationIntf
+	 * @throws DynamicExtensionsApplicationException
 	 */
 	private void populateAttributeSpecificInfo(AbstractAttributeInterface attributeInterface,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
@@ -469,7 +469,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 
 	/**
 	 * @author deepti_shelar
-	 * 
+	 *
 	 * Populate validation rules information for the attribute.
 	 * There are some validation rules that are applicable to the attributes. These need to be stored along with the attributes
 	 *
@@ -486,7 +486,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				.getInstance();
 		HashSet<String> allValidationRules = new HashSet<String>();
 
-		// Collect all the applicable Rule names 
+		// Collect all the applicable Rule names
 		List<String> implicitRuleList = null;
 
 		implicitRuleList = configurationsFactory.getAllImplicitRules(userSelectedControlName,
@@ -497,7 +497,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		}
 
 		String [] validationRules = attributeUIBeanInformationIntf.getValidationRules();
-        
+
         for (int i = 0; i < validationRules.length; i++)
         {
             if (validationRules[i].length() != 0)
@@ -576,10 +576,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * This method populates and returns the Collection of parameters of the Rule. 
+	 * This method populates and returns the Collection of parameters of the Rule.
 	 * @param ruleConfigurationObject the Rule configuration object
 	 * @param abstractAttributeUIBeanInterface the UI Bean for attribute information
-	 * @return the Collection of parameters of the Rule. 
+	 * @return the Collection of parameters of the Rule.
 	 * @throws DynamicExtensionsSystemException
 	 */
 	private Collection<RuleParameterInterface> getRuleParameterCollection(
@@ -657,9 +657,9 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * @param attributeUIBeanInformationIntf 
-	 * @throws DynamicExtensionsApplicationException 
-	 * 
+	 * @param attributeUIBeanInformationIntf
+	 * @throws DynamicExtensionsApplicationException
+	 *
 	 */
 	private DataElementInterface getDataElementForUserDefinedValues(
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
@@ -701,7 +701,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * 
+	 *
 	 * @param csvString
 	 * @return
 	 */
@@ -743,7 +743,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	/**
 	 * @param attributeUIBeanInformationIntf : UI Bean containing attribute information
 	 * @param permissibleValue : permissible value  for attribute
-	 * @return Permissible value object for given permissible value 
+	 * @return Permissible value object for given permissible value
 	 * @throws DynamicExtensionsApplicationException  : dynamicExtensionsApplicationException
 	 */
 	private PermissibleValueInterface getPermissibleValue(
@@ -822,7 +822,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		PermissibleValueInterface permissibleValueIntf = null;
 		//If it is numberic it can either be float, simple integer, etc based on number of decimals
 		int noOfDecimalPlaces = 0;
-		//Number of decimal places 
+		//Number of decimal places
 		String strNoOfDecimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces();
 		if (strNoOfDecimalPlaces != null)
 		{
@@ -876,7 +876,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * 
+	 *
 	 * @param attributeUIBeanInformationIntf  :UI Bean containing attribute information entered by user on UI
 	 * @return Attribute object populated with all required information
 	 * @throws DynamicExtensionsSystemException : Exception
@@ -893,7 +893,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * 
+	 *
 	 * @param booleanAttributeIntf Boolean attribute object
 	 * @param attributeUIBeanInformationIntf : UI Bean containing attribute information entered by user on UI
 	 */
@@ -908,7 +908,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * 
+	 *
 	 * @param dateAttributeIntf : date Attribute ObjectUI Bean containing attribute information entered by user on UI
 	 * @param attributeUIBeanInformationIntf : UI Bean containing attribute information entered by user on UI
 	 * @throws DynamicExtensionsApplicationException : Exception
@@ -954,7 +954,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * 
+	 *
 	 * @param stringAttributeIntf : String attribute object
 	 * @param attributeUIBeanInformationIntf  : UI Bean containing attribute information entered by user on UI
 	 * @throws DynamicExtensionsApplicationException : Exception
@@ -992,7 +992,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * 
+	 *
 	 * @param shortAttributeInterface : Short attribute object
 	 * @param attributeUIBeanInformationIntf  : UI Bean containing attribute information entered by user on UI
 	 */
@@ -1026,7 +1026,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * 
+	 *
 	 * @param integerAttributeInterface : Integer Attribute object
 	 * @param attributeUIBeanInformationIntf  : UI Bean containing attribute information entered by user on UI
 	 * @throws DynamicExtensionsApplicationException : Excpetion
@@ -1079,7 +1079,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * 
+	 *
 	 * @param longAttributeInterface : Long attribute object
 	 * @param attributeUIBeanInformationIntf : UI Bean containing attribute information entered by user on UI
 	 */
@@ -1113,7 +1113,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * 
+	 *
 	 * @param floatAttributeInterface : Float attribute
 	 * @param attributeUIBeanInformationIntf  : UI Bean containing attribute information entered by user on UI
 	 */
@@ -1147,7 +1147,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * 
+	 *
 	 * @param doubleAttributeInterface : Double attribute
 	 * @param attributeUIBeanInformationIntf : UI Bean containing attribute information entered by user on UI
 	 */
@@ -1183,9 +1183,9 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * 
+	 *
 	 * @param attributeUIBeanInformationIntf : UI Bean containing attribute information entered by user on UI
-	 * @return Attribute for appropriate numeric data type based on number of decimal places and digits 
+	 * @return Attribute for appropriate numeric data type based on number of decimal places and digits
 	 */
 	private AttributeInterface getInterfaceForNumericDataType(int noOfDecimalPlaces)
 	{
@@ -1203,7 +1203,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * 
+	 *
 	 * @param attributeInterface : Attribute object
 	 * @param attributeUIBeanInformationIntf  : UI Bean containing attribute information entered by user on UI
 	 */
@@ -1248,11 +1248,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * 
+	 *
 	 * @param attributeInterface :Attribute object
 	 * @param attributeUIBeanInformationIntf  : UI Bean containing attribute information to be displayed on UI
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public void populateAttributeUIBeanInterface(AbstractAttributeInterface attributeInterface,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
@@ -1620,7 +1620,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
             {
                 format = ProcessorConstants.DATE_FORMAT_OPTION_MONTHANDYEAR;
             }
-            
+
 		}
 		else
 		{
@@ -1657,12 +1657,12 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * 
+	 *
 	 * @param attributeInterface : Attribute interface
-	 * @param attributeUIBeanInformationIntf    : UI Bean containing attribute information to be displayed on UI 
+	 * @param attributeUIBeanInformationIntf    : UI Bean containing attribute information to be displayed on UI
 	 * @return Comma separated list of permissible values
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private void setOptionsInformation(AbstractAttributeInterface attributeInterface,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
@@ -1699,8 +1699,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	/**
 	 * @param interface1
 	 * @param attributeUIBeanInformationIntf
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private void populateUIBeanAssociationInformation(AssociationInterface associationInterface,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
@@ -1721,8 +1721,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	/**
 	 * @param targetEntity
 	 * @return
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private String getFormName(EntityInterface entity) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
@@ -1821,7 +1821,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * @param optionValue 
+	 * @param optionValue
 	 * @param permissibleValueIntf
 	 */
 	private void populateOptionDetails(OptionValueObject optionValue,
@@ -1854,8 +1854,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param abstractAttributeInterface
 	 * @param controlsForm
 	 * @return TODO
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public AbstractAttributeInterface updateAttributeInformation(String userSelectedControlName,
 			AbstractAttributeInterface abstractAttributeInformation,
@@ -1898,11 +1898,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * @param attributeUIBeanInformation 
+	 * @param attributeUIBeanInformation
 	 * @param abstractAttributeInformation
 	 * @return
-	 * @throws DynamicExtensionsSystemException 
-	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
 	 */
 	private boolean canUpdateExistingAttribute(
 			AbstractAttributeInterface existingAbstractAttributeIntf,
@@ -1929,7 +1929,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 
 	/**
 	 * @param attributeUIBeanInformation
-	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsApplicationException
 	 */
 	private AttributeTypeInformationInterface createAttributeTypeInformation(
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
@@ -1980,9 +1980,9 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * 
+	 *
 	 * @param attributeUIBeanInformationIntf : UI Bean containing attribute information entered by user on UI
-	 * @return Attribute for appropriate numeric data type based on number of decimal places and digits 
+	 * @return Attribute for appropriate numeric data type based on number of decimal places and digits
 	 */
 	private AttributeTypeInformationInterface getInterfaceForNumericDataTypeInformation(
 			int noOfDecimalPlaces)

@@ -242,8 +242,13 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			associationIntf.setTargetEntity(targetEntity);
 			associationIntf.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
 			associationIntf.setName(attributeUIBeanInformationIntf.getName());
-			associationIntf.setSourceRole(getRole(AssociationType.ASSOCIATION, associationIntf
-					.getEntity().getName(), Cardinality.ONE, Cardinality.MANY));
+			String sourceRoleName = "";
+			if (associationIntf.getEntity() != null)
+			{
+				sourceRoleName = associationIntf.getEntity().getName();
+			}
+			associationIntf.setSourceRole(getRole(AssociationType.ASSOCIATION, sourceRoleName,
+					Cardinality.ONE, Cardinality.MANY));
 			if ((userSelectedControlName != null)
 					&& (userSelectedControlName.equals(ProcessorConstants.LISTBOX_CONTROL)))
 			{

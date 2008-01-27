@@ -34,4 +34,5 @@ public interface EntityManagerConstantsInterface
     String ACTIVITY_STATUS_ATTRIBUTE_NAME = "activityStatus";
 
     String CAB2B_ENTITY_GROUP = "caB2BEntityGroup";
+    String PACKAGE_NAME = "PackageName";
 }

@@ -310,12 +310,23 @@ public class EntityManager
 	 */
 	private EntityGroupInterface addTaggedValue(EntityGroupInterface entityGroup)
 	{
+		addTaggedValue(entityGroup,CAB2B_ENTITY_GROUP,CAB2B_ENTITY_GROUP);
+		addTaggedValue(entityGroup,PACKAGE_NAME,entityGroup.getName());
+		return entityGroup;
+	}
+	/**
+	 * This method adds caB2BEntityGroup tagged value to the entity group
+	 * @param entityGroup
+	 * @return
+	 */
+	private EntityGroupInterface addTaggedValue(EntityGroupInterface entityGroup,String key,String value)
+	{
 		Collection<TaggedValueInterface> taggedValueCollection = entityGroup
 				.getTaggedValueCollection();
 		boolean isTaggedValueAdded = false;
 		for (TaggedValueInterface taggedValue : taggedValueCollection)
 		{
-			if (taggedValue.getKey().equalsIgnoreCase(CAB2B_ENTITY_GROUP))
+			if (taggedValue.getKey().equalsIgnoreCase(key))
 			{
 				isTaggedValueAdded = true;
 			}
@@ -324,8 +335,8 @@ public class EntityManager
 		{
 			TaggedValueInterface taggedValueInterface = DomainObjectFactory.getInstance()
 					.createTaggedValue();
-			taggedValueInterface.setKey(CAB2B_ENTITY_GROUP);
-			taggedValueInterface.setValue(CAB2B_ENTITY_GROUP);
+			taggedValueInterface.setKey(key);
+			taggedValueInterface.setValue(value);
 			entityGroup.addTaggedValue(taggedValueInterface);
 		}
 		return entityGroup;

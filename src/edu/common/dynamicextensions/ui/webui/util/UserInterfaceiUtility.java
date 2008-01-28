@@ -73,6 +73,9 @@ public class UserInterfaceiUtility
 		stringBuffer.append("<td class='formFieldContainer' colspan='3' align='center'>");
 		stringBuffer.append("<table cellpadding='3' cellspacing='0' align='center' width='100%'>");
 
+		String tableHeaderClass = "formLabelWithTopBorder";
+		String formFieldContainerClass = "formFieldContainerWithTopBorder";
+		String formformRequiredNoticeClass = "formRequiredNoticeWithTopBorder";
 		if(subContainer.getAddCaption())
 		{
 			stringBuffer.append("<tr width='100%'>");
@@ -80,14 +83,18 @@ public class UserInterfaceiUtility
 			stringBuffer.append(subContainer.getCaption());
 			stringBuffer.append("</td>");
 			stringBuffer.append("</tr>");
+			
+			tableHeaderClass = "formLabel";
+			formFieldContainerClass = "formFieldContainer";
+			formformRequiredNoticeClass = "formRequiredNotice";
 		}
 
 		stringBuffer.append("<tr width='100%'>");
-		stringBuffer.append("<td class='formFieldContainer' colspan='3'>");
+		stringBuffer.append("<td class='"+formFieldContainerClass+"' colspan='3'>");
 		stringBuffer.append("<table id='" + subContainer.getId() + "_table' cellpadding='3' cellspacing='0' align='center' width='100%'>");
 
 		stringBuffer.append("<tr width='100%'>");
-		stringBuffer.append("<th class='formRequiredNotice' width='1%'>&nbsp;</th>");
+		stringBuffer.append("<th class='"+formformRequiredNoticeClass+"' width='1%'>&nbsp;</th>");
 		for (ControlInterface control : controlsList)
 		{
 			boolean isControlRequired = isControlRequired(control);
@@ -98,7 +105,7 @@ public class UserInterfaceiUtility
 			}
 			else
 			{
-				stringBuffer.append("<th class='formLabel'>");
+				stringBuffer.append("<th class='"+tableHeaderClass+"'>");
 				stringBuffer.append("&nbsp;" + control.getCaption());
 			}
 			stringBuffer.append("</th>");

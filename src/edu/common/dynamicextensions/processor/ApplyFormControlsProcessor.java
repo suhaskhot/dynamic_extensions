@@ -84,14 +84,14 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				//Set Name of the attribute in controlsForm.
 				//It is not accepted from UI. It has to be derived from caption
 				String attributeName = deriveAttributeNameFromCaption(controlUIBean.getCaption());
-				
+
 				//Validate attribute name
 				DynamicExtensionsUtility.validateName(attributeName);
 				DynamicExtensionsUtility.validateDuplicateNamesWithinEntity(entityInterface, attributeName);
 				controlUIBean.setName(attributeName);
 
-				//Create Attribute  
-				abstractAttributeInterface = attributeProcessor.createAndPopulateAttribute(controlUIBean.getUserSelectedTool(), attrUIBean);
+				//Create Attribute
+				abstractAttributeInterface = attributeProcessor.createAndPopulateAttribute(controlUIBean.getUserSelectedTool(), attrUIBean,entityInterface);
 
 				//Set permisible values
 				setPermissibleValues(attributeProcessor, abstractAttributeInterface, controlUIBean, attrUIBean);
@@ -102,8 +102,8 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				//Control Interface : Add control
 				controlInterface = controlProcessor.createAndPopulateControl(controlUIBean.getUserSelectedTool(), controlUIBean);
 				controlInterface.setSequenceNumber(WebUIManager.getSequenceNumberForNextControl(containerInterface));
-				
-				
+
+
 
 				//Entity Interface  : Add attribute
 				if ((entityInterface != null) && (abstractAttributeInterface != null))
@@ -112,9 +112,9 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 					abstractAttributeInterface.setEntity(entityInterface);
 				}
 				//DynamicExtensionsUtility.updateEntityReferences(abstractAttributeInterface);
-				
+
 				//Container : Add control and entity
-				
+
 				containerInterface.addControl(controlInterface);
 				containerInterface.setEntity(entityInterface);
 			}
@@ -130,9 +130,9 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 
 				/*
 				 * CODE COMMENTED BY PREETI : 24 Nov 2006
-				 * The attribute reference need not be removed. Its type information needs to be updated as per the 
-				 * new design 
-				 * 
+				 * The attribute reference need not be removed. Its type information needs to be updated as per the
+				 * new design
+				 *
 				 * //Remove old refernces : From Entity
 				 entityInterface.removeAbstractAttribute(controlInterface.getAbstractAttribute());
 
@@ -146,7 +146,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				//***********New Code starts here*********
 				abstractAttributeInterface = controlInterface.getAbstractAttribute();
 				abstractAttributeInterface = attributeProcessor.updateAttributeInformation(controlUIBean.getUserSelectedTool(),
-						abstractAttributeInterface, attrUIBean);
+						abstractAttributeInterface, attrUIBean,containerInterface.getEntity());
 				setPermissibleValues(attributeProcessor, abstractAttributeInterface, controlUIBean, attrUIBean);
 
 				//update in control interface
@@ -213,9 +213,9 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * 
+	 *
 	 * @param caption :Caption of the attribute
-	 * @return : Name of the attribute derived from the caption. 
+	 * @return : Name of the attribute derived from the caption.
 	 * The name has all spaces removed and first letter of every word capitalized
 	 */
 	private String deriveAttributeNameFromCaption(String caption)

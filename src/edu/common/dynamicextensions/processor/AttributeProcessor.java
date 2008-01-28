@@ -185,7 +185,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	public void populateAttribute(String userSelectedControlName,
 			AbstractAttributeInterface attributeInterface,
-			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
+			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf,EntityInterface srcEntity)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		if ((attributeUIBeanInformationIntf != null) && (attributeInterface != null))
@@ -193,7 +193,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			if (attributeInterface instanceof AssociationInterface)
 			{
 				populateAssociation(userSelectedControlName,
-						(AssociationInterface) attributeInterface, attributeUIBeanInformationIntf);
+						(AssociationInterface) attributeInterface, attributeUIBeanInformationIntf,srcEntity);
 			}
 			//populate information specific to attribute type
 			 populateAttributeSpecificInfo(attributeInterface, attributeUIBeanInformationIntf);
@@ -231,7 +231,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private void populateAssociation(String userSelectedControlName,
 			AssociationInterface associationIntf,
-			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
+			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf,EntityInterface srcEntity)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ContainerInterface containerInterface = DynamicExtensionsUtility
@@ -242,10 +242,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			associationIntf.setTargetEntity(targetEntity);
 			associationIntf.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
 			associationIntf.setName(attributeUIBeanInformationIntf.getName());
-			String sourceRoleName = "";
-			if (associationIntf.getEntity() != null)
+			String sourceRoleName = null;
+			if (srcEntity != null)
 			{
-				sourceRoleName = associationIntf.getEntity().getName();
+				sourceRoleName = srcEntity.getName();
 			}
 			associationIntf.setSourceRole(getRole(AssociationType.ASSOCIATION, sourceRoleName,
 					Cardinality.ONE, Cardinality.MANY));
@@ -888,12 +888,12 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException : Exception
 	 */
 	public AbstractAttributeInterface createAndPopulateAttribute(String userSelectedControlName,
-			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
+			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf,EntityInterface srcEntity)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		AbstractAttributeInterface attributeInterface = createAttribute(attributeUIBeanInformationIntf);
 		populateAttribute(userSelectedControlName, attributeInterface,
-				attributeUIBeanInformationIntf);
+				attributeUIBeanInformationIntf,srcEntity);
 		return attributeInterface;
 	}
 
@@ -1864,7 +1864,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	public AbstractAttributeInterface updateAttributeInformation(String userSelectedControlName,
 			AbstractAttributeInterface abstractAttributeInformation,
-			AbstractAttributeUIBeanInterface attributeUIBeanInformation)
+			AbstractAttributeUIBeanInterface attributeUIBeanInformation,EntityInterface srcEntity)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		AbstractAttributeInterface attributeInterface = null;
@@ -1879,12 +1879,12 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 					AttributeTypeInformationInterface attributeTypeInformation = createAttributeTypeInformation(attributeUIBeanInformation);
 					attributeInformation.setAttributeTypeInformation(attributeTypeInformation);
 					populateAttribute(userSelectedControlName, attributeInformation,
-							attributeUIBeanInformation);
+							attributeUIBeanInformation,srcEntity);
 				}
 				else if (attributeInterface instanceof AssociationInterface)
 				{
 					populateAssociation(userSelectedControlName,
-							(AssociationInterface) attributeInterface, attributeUIBeanInformation);
+							(AssociationInterface) attributeInterface, attributeUIBeanInformation,srcEntity);
 				}
 			}
 			else

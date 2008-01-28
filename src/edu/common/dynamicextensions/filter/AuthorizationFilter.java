@@ -19,7 +19,7 @@ import edu.wustl.common.util.dbManager.DBUtil;
 import java.util.Properties;
 
 /**
- * This filter class is used to check the URL, So that the dynamic Extensions should not be accessed directly. 
+ * This filter class is used to check the URL, So that the dynamic Extensions should not be accessed directly.
  * @author megha_likhar
  *
  */
@@ -48,7 +48,7 @@ public class AuthorizationFilter implements Filter
 		{
 			isAuthenticatedUser = session.getAttribute("isAuthenticatedUser").toString();
 		}
-		System.out.println("isAuthenticatedUser...." + isAuthenticatedUser);
+		//System.out.println("isAuthenticatedUser...." + isAuthenticatedUser);
 		InputStream inputStream = DBUtil.class.getClassLoader().getResourceAsStream(
 				"FilterConfiguration.properties");
 		Properties properties = new Properties();
@@ -83,9 +83,9 @@ public class AuthorizationFilter implements Filter
 	}
 
 	/**
-	 *  
+	 *
 	 * @param response
-	 * @param string 
+	 * @param string
 	 * @throws IOException
 	 */
 	private void showError(ServletResponse response, String errorMessage) throws IOException

@@ -6,9 +6,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.CaDSRValueDomainInfoInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
+import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
@@ -22,8 +23,13 @@ import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  * @hibernate.cache  usage="read-write"
  */
-public class Attribute extends AbstractAttribute implements AttributeInterface,AttributeMetadataInterface
+public class Attribute extends AbstractAttribute implements AttributeInterface, AttributeMetadataInterface
 {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Specifies whether this primitive attribute is a collection or not.
@@ -75,8 +81,7 @@ public class Attribute extends AbstractAttribute implements AttributeInterface,A
 	/**
 	 * @param dataElementCollection The dataElementCollection to set.
 	 */
-	private void setAttributeTypeInformationCollection(
-			Collection<AttributeTypeInformationInterface> attributeTypeInformationCollection)
+	private void setAttributeTypeInformationCollection(Collection<AttributeTypeInformationInterface> attributeTypeInformationCollection)
 	{
 		this.attributeTypeInformationCollection = attributeTypeInformationCollection;
 	}
@@ -89,8 +94,7 @@ public class Attribute extends AbstractAttribute implements AttributeInterface,A
 	{
 		if (attributeTypeInformationCollection != null)
 		{
-			Iterator attributeTypeInformationIterator = attributeTypeInformationCollection
-					.iterator();
+			Iterator attributeTypeInformationIterator = attributeTypeInformationCollection.iterator();
 			return (AttributeTypeInformationInterface) attributeTypeInformationIterator.next();
 		}
 		else
@@ -104,8 +108,7 @@ public class Attribute extends AbstractAttribute implements AttributeInterface,A
 	 * 
 	 * @return AttributeTypeInformationInterface
 	 */
-	public void setAttributeTypeInformation(
-			AttributeTypeInformationInterface attributeTypeInformationInterface)
+	public void setAttributeTypeInformation(AttributeTypeInformationInterface attributeTypeInformationInterface)
 	{
 		if (attributeTypeInformationCollection == null)
 		{
@@ -202,8 +205,7 @@ public class Attribute extends AbstractAttribute implements AttributeInterface,A
 	 * This method sets the columnPropertiesCollection to given Collection of the ColumnProperties.
 	 * @param columnPropertiesCollection the Collection of the ColumnProperties to be set.
 	 */
-	private void setColumnPropertiesCollection(
-			Collection<ColumnPropertiesInterface> columnPropertiesCollection)
+	private void setColumnPropertiesCollection(Collection<ColumnPropertiesInterface> columnPropertiesCollection)
 	{
 		this.columnPropertiesCollection = columnPropertiesCollection;
 	}
@@ -274,9 +276,7 @@ public class Attribute extends AbstractAttribute implements AttributeInterface,A
 		}
 
 	}
-	
-	
-	
+
 	/**
 	 * @hibernate.set name="caDSRValueDomainInfoCollection" table="DYEXTN_CADSR_VALUE_DOMAIN_INFO"
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"
@@ -290,21 +290,14 @@ public class Attribute extends AbstractAttribute implements AttributeInterface,A
 		return caDSRValueDomainInfoCollection;
 	}
 
-	
 	/**
 	 * @param caDSRValueDomainInfoCollection the caDSRValueDomainInfoCollection to set
 	 */
-	public void setCaDSRValueDomainInfoCollection(
-			Collection<CaDSRValueDomainInfo> caDSRValueDomainInfoCollection)
+	public void setCaDSRValueDomainInfoCollection(Collection<CaDSRValueDomainInfo> caDSRValueDomainInfoCollection)
 	{
 		this.caDSRValueDomainInfoCollection = caDSRValueDomainInfoCollection;
 	}
 
-
-	
-	
-	
-	
 	/**
 	 * 
 	 * @return CaDSRValueDomainInfoInterface
@@ -313,9 +306,8 @@ public class Attribute extends AbstractAttribute implements AttributeInterface,A
 	{
 		if (caDSRValueDomainInfoCollection != null)
 		{
-			Iterator caDSRValueDomainInfoIterator = caDSRValueDomainInfoCollection 
-					.iterator();
-			return (CaDSRValueDomainInfoInterface) caDSRValueDomainInfoIterator .next();
+			Iterator caDSRValueDomainInfoIterator = caDSRValueDomainInfoCollection.iterator();
+			return (CaDSRValueDomainInfoInterface) caDSRValueDomainInfoIterator.next();
 		}
 		else
 		{
@@ -332,19 +324,19 @@ public class Attribute extends AbstractAttribute implements AttributeInterface,A
 	{
 		if (caDSRValueDomainInfoCollection == null)
 		{
-			caDSRValueDomainInfoCollection= new HashSet<CaDSRValueDomainInfo>();
+			caDSRValueDomainInfoCollection = new HashSet<CaDSRValueDomainInfo>();
 		}
 		else
 		{
 			caDSRValueDomainInfoCollection.clear();
 		}
-		this.caDSRValueDomainInfoCollection.add((CaDSRValueDomainInfo)caDSRValueDomainInfoInterface);
+		this.caDSRValueDomainInfoCollection.add((CaDSRValueDomainInfo) caDSRValueDomainInfoInterface);
 	}
 
 	public String getDefaultValue()
 	{
 		return ControlsUtility.getDefaultValue(this);
-		
+
 	}
 
 	/* (non-Javadoc)
@@ -352,8 +344,7 @@ public class Attribute extends AbstractAttribute implements AttributeInterface,A
 	 */
 	public int getMaxSize()
 	{
-		AttributeTypeInformationInterface attributeTypeInformationInterface = this
-					.getAttributeTypeInformation();
+		AttributeTypeInformationInterface attributeTypeInformationInterface = this.getAttributeTypeInformation();
 		if (attributeTypeInformationInterface != null)
 		{
 			if (attributeTypeInformationInterface instanceof StringAttributeTypeInformation)
@@ -361,7 +352,7 @@ public class Attribute extends AbstractAttribute implements AttributeInterface,A
 				StringAttributeTypeInformation stringAttributeTypeInformation = (StringAttributeTypeInformation) attributeTypeInformationInterface;
 				if (stringAttributeTypeInformation != null)
 				{
-					if(stringAttributeTypeInformation.getSize() != null)
+					if (stringAttributeTypeInformation.getSize() != null)
 					{
 						return stringAttributeTypeInformation.getSize().intValue();
 					}
@@ -370,7 +361,6 @@ public class Attribute extends AbstractAttribute implements AttributeInterface,A
 		}
 		return -1;
 	}
-	
 
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface#getMeasurementUnit()
@@ -378,8 +368,7 @@ public class Attribute extends AbstractAttribute implements AttributeInterface,A
 	public String getMeasurementUnit()
 	{
 		String measurementUnit = null;
-		AttributeTypeInformationInterface attributeTypeInformationInterface = DynamicExtensionsUtility
-				.getAttributeTypeInformation(this);
+		AttributeTypeInformationInterface attributeTypeInformationInterface = DynamicExtensionsUtility.getAttributeTypeInformation(this);
 		if (attributeTypeInformationInterface != null)
 		{
 			if (attributeTypeInformationInterface instanceof LongAttributeTypeInformation)
@@ -404,8 +393,16 @@ public class Attribute extends AbstractAttribute implements AttributeInterface,A
 		AttributeTypeInformationInterface attributeTypeInformationInterface = this.getAttributeTypeInformation();
 		if (attributeTypeInformationInterface instanceof DoubleAttributeTypeInformation)
 		{
-			return  ((DoubleAttributeTypeInformation) attributeTypeInformationInterface).getDecimalPlaces();
+			return ((DoubleAttributeTypeInformation) attributeTypeInformationInterface).getDecimalPlaces();
 		}
 		return -1;
+	}
+
+	/**
+	 * 
+	 */
+	public DataElementInterface getDataElement()
+	{
+		return this.getAttributeTypeInformation().getDataElement();
 	}
 }

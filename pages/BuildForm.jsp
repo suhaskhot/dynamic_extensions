@@ -29,7 +29,9 @@
 		<script src="<%=request.getContextPath()%>/dhtml_comp/jss/dhtmlXGridCell.js"></script>
 
 		<title>Dynamic Extensions</title>
+		<!--Java Script Function Start -->
 		<script language="JavaScript" type="text/javascript">
+		
 			function initCancelOperation()
 			{
 				var addControlBtnCaption = '<bean:message  key="buttons.addControlToForm"/>';

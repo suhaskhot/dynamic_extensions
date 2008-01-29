@@ -1,6 +1,11 @@
 
 package edu.common.dynamicextensions.domaininterface;
 
+/**
+ * 
+ * @author mandar_shidhore
+ *
+ */
 public interface CategoryAttributeInterface extends BaseAbstractAttributeInterface
 {
 	/**
@@ -38,4 +43,11 @@ public interface CategoryAttributeInterface extends BaseAbstractAttributeInterfa
 	 * @param permissibleValueInterface
 	 */
 	public void setDefaultValue(PermissibleValueInterface permissibleValueInterface);
+
+	/**
+	 * 
+	 * @param dataElementInterface
+	 */
+	public void setDataElement(DataElementInterface dataElementInterface);
+
 }

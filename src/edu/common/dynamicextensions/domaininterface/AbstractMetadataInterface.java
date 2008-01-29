@@ -3,7 +3,6 @@ package edu.common.dynamicextensions.domaininterface;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 import edu.common.dynamicextensions.domain.SemanticAnnotatableInterface;
 

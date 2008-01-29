@@ -7,10 +7,10 @@ import java.util.Iterator;
 import java.util.Set;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
@@ -29,27 +29,35 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	 * Serial Version UID
 	 */
 	private static final long serialVersionUID = 12345235L;
+
 	/**
 	 *
 	 */
 	protected Set<DataElementInterface> dataElementCollection = new HashSet<DataElementInterface>();
+
 	/**
 	 *
 	 */
 	protected Set<ColumnPropertiesInterface> columnPropertiesCollection = new HashSet<ColumnPropertiesInterface>();
+
 	/**
 	 *
 	 */
 	protected Set<RuleInterface> ruleCollection = new HashSet<RuleInterface>();
+
 	/**
 	 *
 	 */
 	protected AttributeInterface attribute;
+
 	/**
 	 *
 	 */
 	protected CategoryEntityInterface categoryEntity;
 
+	/**
+	 * 
+	 */
 	protected Collection<PermissibleValueInterface> defaultPermissibleValuesCollection = new HashSet<PermissibleValueInterface>();
 
 	public CategoryAttribute()
@@ -113,7 +121,7 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 
 	/**
 	 * @hibernate.set name="dataElementCollection" table="DYEXTN_DATA_ELEMENT" cascade="all" inverse="false" lazy="false"
-	 * @hibernate.collection-key column="CATEGORY_ATTRIBUTE_TYPE_INFO_ID"
+	 * @hibernate.collection-key column="CATEGORY_ATTRIBUTE_ID"
 	 * @hibernate.cache  usage="read-write"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.DataElement"
 	 * @return Returns the dataElementCollection.
@@ -149,8 +157,8 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	}
 
 	/**
-	 *
-	 * @param sourceEntity
+	 * 
+	 * @param dataElementInterface
 	 */
 	public void setDataElement(DataElementInterface dataElementInterface)
 	{
@@ -227,7 +235,7 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	/**
 	 * @hibernate.set name="defaultPermissibleValuesCollection" table="DYEXTN_PERMISSIBLE_VALUE"
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"
-	 * @hibernate.collection-key column="CATEGORY_ATTRIBUTE_TYPE_INFO_ID"
+	 * @hibernate.collection-key column="CATEGORY_ATTRIBUTE_ID"
 	 * @hibernate.cache usage="read-write"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.PermissibleValue"   
 	 * @return Returns the dataElementCollection.
@@ -259,7 +267,7 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 		}
 		else
 		{
-			return ((AttributeMetadataInterface)this.attribute).getDefaultValue();
+			return ((AttributeMetadataInterface) this.attribute).getDefaultValue();
 		}
 	}
 
@@ -281,7 +289,7 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	 */
 	public int getMaxSize()
 	{
-		return ((AttributeMetadataInterface)this.attribute).getMaxSize();
+		return ((AttributeMetadataInterface) this.attribute).getMaxSize();
 	}
 
 	/* (non-Javadoc)
@@ -289,7 +297,7 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	 */
 	public String getMeasurementUnit()
 	{
-		return ((AttributeMetadataInterface)this.attribute).getMeasurementUnit();
+		return ((AttributeMetadataInterface) this.attribute).getMeasurementUnit();
 	}
 
 	/* (non-Javadoc)
@@ -297,13 +305,12 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	 */
 	public int getDecimalPlaces()
 	{
-		return ((AttributeMetadataInterface)this.attribute).getDecimalPlaces();
+		return ((AttributeMetadataInterface) this.attribute).getDecimalPlaces();
 	}
 
 	public AttributeTypeInformationInterface getAttributeTypeInformation()
 	{
-		return ((AttributeMetadataInterface)this.attribute).getAttributeTypeInformation();
+		return ((AttributeMetadataInterface) this.attribute).getAttributeTypeInformation();
 	}
-
 
 }

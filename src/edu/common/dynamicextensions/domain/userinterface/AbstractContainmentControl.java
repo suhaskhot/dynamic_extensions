@@ -12,7 +12,7 @@ import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 
 /**
  * @author mandar_shidhore
- * @hibernate.joined-subclass table="DYEXTN_ABSTRACT_CONTAINMENT_CONTROL"
+ * @hibernate.joined-subclass table="DYEXTN_ABSTR_CONTAIN_CTR"
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
 public abstract class AbstractContainmentControl extends Control implements AbstractContainmentControlInterface

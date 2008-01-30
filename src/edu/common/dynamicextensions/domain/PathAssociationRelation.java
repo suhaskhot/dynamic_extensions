@@ -41,7 +41,7 @@ public class PathAssociationRelation extends DynamicExtensionBaseDomainObject im
 	 * This method returns the unique identifier of the PathAssociationRelation.
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
 	 * length="30" unsaved-value="null" generator-class="native"
-	 * @hibernate.generator-param name="sequence" value="DYEXTN_PATH_ASSOCIATION_RELATION_SEQ"
+	 * @hibernate.generator-param name="sequence" value="DYEXTN_PATH_ASSO_REL_SEQ"
 	 * @return the identifier of the Path.
 	 */
 	public Long getId()

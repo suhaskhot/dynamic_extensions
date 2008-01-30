@@ -34,10 +34,7 @@ public abstract class AbstractAttribute extends BaseAbstractAttribute implements
 	 * Collection of rules.
 	 */
 	protected Collection<RuleInterface> ruleCollection = new HashSet<RuleInterface>();
-    /**
-     * controlCollection.
-     */
-    protected Collection<Control> controlCollection = new HashSet<Control>();
+    
 
 	/**
 	 * Empty constructor
@@ -118,24 +115,7 @@ public abstract class AbstractAttribute extends BaseAbstractAttribute implements
 
 	}
 
-    /**
-     * @hibernate.set name="controlCollection" table="DYEXTN_CONTROL"
-     * cascade="save-update" inverse="false" lazy="false"
-     * @hibernate.collection-key column="ABSTRACT_ATTRIBUTE_ID"
-     * @hibernate.cache usage="read-write"
-     * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.userinterface.Control"
-     * @return Returns the controlCollection.
-     */
-    public Collection<Control> getControl() {
-        return controlCollection;
-    }
-
-    /**
-     * @param control the control to set
-     */
-    public void setControl(Collection<Control> control) {
-        this.controlCollection = control;
-    }
+    
 
 
 

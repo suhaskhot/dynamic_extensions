@@ -45,7 +45,5 @@ public interface AbstractAttributeInterface extends BaseAbstractAttributeInterfa
 	 */
 	void setEntity(EntityInterface entityInterface);
 
-	public Collection<Control> getControl();
-
-	public void setControl(Collection<Control> control);
+	
 }

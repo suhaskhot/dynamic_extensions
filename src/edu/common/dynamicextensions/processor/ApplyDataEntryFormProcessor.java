@@ -9,9 +9,12 @@ import java.util.Set;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.entitymanager.CategoryManager;
 import edu.common.dynamicextensions.entitymanager.CategoryManagerInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManager;
+import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
@@ -80,9 +83,18 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 			Map<BaseAbstractAttributeInterface, Object> attributeValueMap)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
-		CategoryInterface categoryInterface= ((CategoryEntityInterface) container.getAbstractEntity()).getCategory();
-		CategoryManagerInterface categoryManager = CategoryManager.getInstance();
-		Long recordIdentifier = categoryManager.insertData(categoryInterface, attributeValueMap);
+		Long recordIdentifier= null;
+		//quick fix: common manager interface should be used here
+		if(container.getAbstractEntity()instanceof CategoryEntityInterface){
+			CategoryInterface categoryInterface= ((CategoryEntityInterface) container.getAbstractEntity()).getCategory();
+			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
+			recordIdentifier = categoryManager.insertData(categoryInterface, attributeValueMap);	
+		}else{
+			Map map = attributeValueMap;
+			EntityManagerInterface entityManagerInterface= EntityManager.getInstance();
+			recordIdentifier = entityManagerInterface.insertData((EntityInterface) container.getAbstractEntity(), map);
+		}
+		
 		return recordIdentifier.toString();
 	}
 

@@ -194,7 +194,7 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	}
 
 	/**
-	 * @hibernate.many-to-one column="ATTRIBUTE_ID" cascade="save-update" unique="true" class="edu.common.dynamicextensions.domain.Attribute"
+	 * @hibernate.many-to-one column="ATTRIBUTE_ID" cascade="save-update" class="edu.common.dynamicextensions.domain.Attribute"
 	 * @return the attribute
 	 */
 	public AttributeInterface getAttribute()

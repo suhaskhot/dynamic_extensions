@@ -45,7 +45,6 @@ import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInte
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.ObjectAttributeRecordValueInterface;
-import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
@@ -2170,72 +2169,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
         }
         return containerBeansMap;
     }
+    
     /**
-     * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllRecords(edu.common.dynamicextensions.domaininterface.EntityInterface)
-     */
-    public List<EntityRecord> getAllRecords(EntityInterface entity)
-            throws DynamicExtensionsSystemException
-    {
-        List<EntityRecord> recordList = new ArrayList<EntityRecord>();
-        JDBCDAO jdbcDao = null;
-        List<List> result;
-        try
-        {
-            jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
-            jdbcDao.openSession(null);
-            TablePropertiesInterface tablePropertiesInterface = entity.getTableProperties();
-            String tableName = tablePropertiesInterface.getName();
-            String[] selectColumnName = {IDENTIFIER};
-            String[] whereColumnName = {Constants.ACTIVITY_STATUS_COLUMN};
-            String[] whereColumnCondition = {EQUAL};
-            Object[] whereColumnValue = {"'" + Constants.ACTIVITY_STATUS_ACTIVE + "'"};
-            result = jdbcDao.retrieve(tableName, selectColumnName, whereColumnName,
-                    whereColumnCondition, whereColumnValue, null);
-            recordList = getRecordList(result);
-
-        }
-        catch (DAOException e)
-        {
-            throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
-        }
-        finally
-        {
-            try
-            {
-                jdbcDao.closeSession();
-            }
-            catch (DAOException e)
-            {
-                throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
-            }
-        }
-        return recordList;
-    }
-    /**
-    *
-    * @param result
-    * @return
-    */
-   private List<EntityRecord> getRecordList(List<List> result)
-   {
-       List<EntityRecord> recordList = new ArrayList<EntityRecord>();
-       EntityRecord entityRecord;
-       String id;
-       for (List innnerList : result)
-       {
-           if (innnerList != null && !innnerList.isEmpty())
-           {
-               id = (String) innnerList.get(0);
-               if (id != null)
-               {
-                   entityRecord = new EntityRecord(new Long(id));
-                   recordList.add(entityRecord);
-               }
-           }
-       }
-       return recordList;
-   }
-   /**
     * @throws DynamicExtensionsSystemException
     * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getChildrenEntities(edu.common.dynamicextensions.domaininterface.EntityInterface)
     */

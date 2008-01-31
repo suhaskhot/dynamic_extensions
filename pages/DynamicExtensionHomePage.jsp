@@ -133,8 +133,8 @@
 											</html:link>
 										</td>
 										<td>
-											<c:set var="entityInterface" value="${containerInterface.entity}"/>
-	 										<jsp:useBean id="entityInterface" type="edu.common.dynamicextensions.domaininterface.EntityInterface"/>
+											<c:set var="entityInterface" value="${containerInterface.abstractEntity}"/>
+	 										<jsp:useBean id="entityInterface" type="edu.common.dynamicextensions.domaininterface.AbstractEntityInterface"/>
 											<c:out value='${entityInterface.createdDate}'/>&nbsp;
 										</td>
 										<td><c:out value='admin'/>&nbsp</td>

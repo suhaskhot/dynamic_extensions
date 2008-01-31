@@ -10,9 +10,12 @@ import java.util.Map;
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.entitymanager.CategoryManager;
 import edu.common.dynamicextensions.entitymanager.CategoryManagerInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManager;
+import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.actionform.DataEntryForm;
@@ -106,9 +109,15 @@ public class LoadDataEntryFormProcessor
 		Map<BaseAbstractAttributeInterface, Object> recordMap = new HashMap<BaseAbstractAttributeInterface, Object>();
 		if (recordIdentifier != null && !recordIdentifier.equals(""))
 		{
-			
+			//Quic fix:
+			if(entityInterface instanceof EntityInterface){
+				EntityManagerInterface categoryManagerInterface = EntityManager.getInstance();
+				Map map= categoryManagerInterface.getRecordById((EntityInterface)entityInterface, Long.valueOf(recordIdentifier));
+				recordMap = map;
+			}else{
 			CategoryManagerInterface categoryManagerInterface = CategoryManager.getInstance();
 			recordMap = categoryManagerInterface.getRecordById((CategoryEntityInterface)entityInterface, Long.valueOf(recordIdentifier));
+			}
 
 		}
 		return recordMap;

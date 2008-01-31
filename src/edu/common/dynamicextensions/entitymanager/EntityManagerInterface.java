@@ -7,6 +7,7 @@ import java.util.Map;
 
 import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -222,7 +223,7 @@ public interface EntityManagerInterface
    /**
     * returns all the records for a given entity
     */
-   List<EntityRecord> getAllRecords(EntityInterface entity) throws DynamicExtensionsSystemException;
+   List<EntityRecord> getAllRecords(AbstractEntityInterface entity) throws DynamicExtensionsSystemException;
    /**
     * This method returns all the children entities of givens entity.
     * @return Collection of EntityInterface

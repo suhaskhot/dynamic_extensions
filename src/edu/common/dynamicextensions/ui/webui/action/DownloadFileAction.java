@@ -18,12 +18,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 
 /**
@@ -59,9 +59,10 @@ public class DownloadFileAction extends HttpServlet
 
 			EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
 			String recordIdentifier = req.getParameter("recordIdentifier");
-			FileAttributeRecordValue fileAttributeRecordValue = null ;/*entityManagerInterface
+			
+			FileAttributeRecordValue fileAttributeRecordValue =entityManagerInterface
 					.getFileAttributeRecordValueByRecordId(attributeInterface, new Long(
-							recordIdentifier));*/
+							recordIdentifier));
 
 			byte[] filedata = fileAttributeRecordValue.getFileContent();
 			String filename = fileAttributeRecordValue.getFileName();

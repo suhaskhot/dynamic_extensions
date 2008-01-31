@@ -5,7 +5,7 @@ import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.PathInterface;
 
 /**
- * @hibernate.class table="DYEXTN_PATH_ASSOCIATION_RELATION"
+ * @hibernate.class table="DYEXTN_PATH_ASSO_REL"
  * @author mandar_shidhore
  *
  */

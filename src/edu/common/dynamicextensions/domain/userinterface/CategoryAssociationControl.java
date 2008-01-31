@@ -7,7 +7,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
 /**
  * This Class represents the category.
- * @hibernate.joined-subclass table="DYEXTN_CATEGORY_ASSOCIATION_CONTROL"
+ * @hibernate.joined-subclass table="DYEXTN_CAT_ASSO_CTL"
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
 public class CategoryAssociationControl extends AbstractContainmentControl implements CategoryAssociationControlInterface

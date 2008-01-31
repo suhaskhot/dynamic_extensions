@@ -397,7 +397,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	}
 
 	/**
-	 * @hibernate.many-to-one  cascade="save-update" column="BASE_ABSTRACT_ATTRIBUTE_ID" class="edu.common.dynamicextensions.domain.BaseAbstractAttribute" constrained="true"
+	 * @hibernate.many-to-one  cascade="save-update" column="BASE_ABST_ATR_ID" class="edu.common.dynamicextensions.domain.BaseAbstractAttribute" constrained="true"
 	 */
 
 	public BaseAbstractAttributeInterface getBaseAbstractAttribute()

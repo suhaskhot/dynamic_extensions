@@ -1,8 +1,5 @@
 package edu.common.dynamicextensions.domaininterface;
 
-import java.util.Collection;
-
-import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 
 
 /**
@@ -12,10 +9,4 @@ import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterfac
 public interface BaseAbstractAttributeInterface extends AbstractMetadataInterface
 {
 	
-	/**
-	 * This method returns the Collection of rules.
-	 * @return Collection the ruleCollection associated with the Attribute.
-	 */
-	Collection<RuleInterface> getRuleCollection();
-
 }

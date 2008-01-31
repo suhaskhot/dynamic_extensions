@@ -9,6 +9,7 @@ import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
+import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 
 /**
  * @author mandar_shidhore
@@ -105,6 +106,14 @@ public class CategoryAssociation extends BaseAbstractAttribute implements Catego
 	{
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface#getAssociationType()
+	 */
+	public AssociationType getAssociationType()
+	{
+		return AssociationType.CONTAINTMENT;
 	}
 
 }

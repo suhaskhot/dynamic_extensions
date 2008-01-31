@@ -14,6 +14,7 @@ import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
+import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 
 /**
  * An entity can have multiple associations, where each association is linked to another entity.
@@ -350,6 +351,12 @@ public class Association extends AbstractAttribute implements AssociationInterfa
         }
         return null;
     }
+
+	public AssociationType getAssociationType()
+	{
+		RoleInterface roleInterface = this.getTargetRole();
+		return roleInterface.getAssociationsType();
+	}
 
 
 }

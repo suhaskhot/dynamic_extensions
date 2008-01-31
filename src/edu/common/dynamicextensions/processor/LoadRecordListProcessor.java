@@ -51,11 +51,12 @@ public class LoadRecordListProcessor extends BaseDynamicExtensionsProcessor
 	{
 		List<EntityRecord> entityRecordList = null;
 
+		//Quick fix:
+		//Method getall records should be invoked with commom managers instance
 		EntityManagerInterface entityManager = EntityManager.getInstance();
 		if (container != null)
 		{
-			EntityInterface entity = (Entity) container.getAbstractEntity();
-			entityRecordList = entityManager.getAllRecords(entity);
+			entityRecordList = entityManager.getAllRecords(container.getAbstractEntity());
 			container.setMode(mode);
 		}
 

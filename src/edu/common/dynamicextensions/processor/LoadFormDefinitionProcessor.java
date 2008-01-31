@@ -11,7 +11,6 @@ package edu.common.dynamicextensions.processor;
 import java.util.Collection;
 import java.util.Iterator;
 
-import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -118,7 +117,7 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	{
 		StringBuffer definedEntitiesXML = new StringBuffer();
 		EntityManagerInterface entityManager = EntityManager.getInstance();
-		Collection<AssociationTreeObject> associationsCollection = null;//entityManager.getAssociationTree();
+		Collection<AssociationTreeObject> associationsCollection = entityManager.getAssociationTree();
 		definedEntitiesXML.append("<?xml version='1.0' encoding='iso-8859-1'?> ");
 		definedEntitiesXML.append("<tree id='0'>");
 		//Special handling for grp : assign id as "Group_ number

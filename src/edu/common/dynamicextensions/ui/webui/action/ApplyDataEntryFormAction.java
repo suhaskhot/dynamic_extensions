@@ -292,6 +292,9 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			DynamicExtensionsSystemException, IOException
 	{
 		ContainerInterface containerInterface = (ContainerInterface) containerStack.peek();
+		List processedContainersList = new ArrayList<ContainerInterface>();
+		DynamicExtensionsUtility.setAllInContextContainers(containerInterface,
+				processedContainersList);
 		Map<AbstractAttributeInterface, Object> valueMap = (Map<AbstractAttributeInterface, Object>) valueMapStack
 				.peek();
 		valueMap = generateAttributeValueMap(containerInterface, request, dataEntryForm, "",
@@ -603,7 +606,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			NumberFormat numberFormat = new DecimalFormat(decimalFormat.toString());
 			value = numberFormat.format(Double.parseDouble(value));
 		}
-        
+
 		return value;
 	}
 
@@ -657,30 +660,30 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		}
 		return recordIdentifier;
 	}
-	
+
 	/**
-	 * This method is used to check for the valid File Extensions. 
-	 * 
+	 * This method is used to check for the valid File Extensions.
+	 *
 	 * @param dataEntryForm
-	 *            
+	 *
 	 * @param control
-	 *           
+	 *
 	 * @param selectedFile
-	 *           
+	 *
 	 */
 	private void checkValidFormat(DataEntryForm dataEntryForm,
 			ControlInterface control, String selectedFile, int selectedFileSize) {
 		String validFileExtension = "";
 		String selectedfileExt = "";
 		String allFileExtension = "";
-	
+
 		boolean isValidExtension = false;
 		List<String> errorList = dataEntryForm.getErrorList();
 		if(errorList == null)
 		{
 			errorList = new ArrayList<String>();
 		}
-				
+
 
 		Attribute attribute = (Attribute) control.getAbstractAttribute();
 		AttributeTypeInformationInterface attributeTypeInformation = attribute
@@ -691,20 +694,20 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			FileAttributeTypeInformation fileAttibuteInformation = (FileAttributeTypeInformation) attributeTypeInformation;
 			Collection<FileExtension> fileExtensionsCollection = fileAttibuteInformation
 					.getFileExtensionCollection();
-						
+
 			for (FileExtension fileExtensionsIterator : fileExtensionsCollection)
 			{
 				validFileExtension = fileExtensionsIterator.getFileExtension();
 				selectedfileExt = selectedFile.substring(selectedFile
 						.lastIndexOf(".") + 1, selectedFile.length());
 				allFileExtension = validFileExtension + "," + allFileExtension;
-								
+
 				if (selectedfileExt.equalsIgnoreCase(validFileExtension))
 				{
 					isValidExtension = true;
 					break;
 				}
-				
+
 			}
 			if(allFileExtension.length() > 0)
 			{
@@ -721,19 +724,19 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			}
 			checkFileSize(fileAttibuteInformation.getMaxFileSize(), selectedFileSize, control.getCaption(), errorList);
 		}
-		
+
 		dataEntryForm.setErrorList(errorList);
 	}
-	
+
 	/**
-	 * This method is used to check for the maximum file size. 
-	 * 
+	 * This method is used to check for the maximum file size.
+	 *
 	 * @param dataEntryForm
-	 *            
+	 *
 	 * @param control
-	 *           
+	 *
 	 * @param selectedFile
-	 *           
+	 *
 	 */
 	private void checkFileSize(Float maxFileSize, int selectedFileSize, String attributeName, List<String> errorList)
 	{
@@ -745,7 +748,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			errorList.add(ApplicationProperties.getValue(
 					"app.selectProperFileSize", parameterList));
 		}
-		
+
 	}
 
 }

@@ -15,6 +15,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.actionform.DataEntryForm;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.actionForm.AbstractActionForm;
 
 /**
@@ -42,10 +43,10 @@ public class LoadDataEntryFormProcessor
 	}
 
 	/**
-	 * 
+	 *
 	 * @param actionForm
 	 * @param containerInterface
-	 * @param recordIdentifier 
+	 * @param recordIdentifier
 	 * @throws DynamicExtensionsSystemException DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException DynamicExtensionsApplicationException
 	 */
@@ -65,7 +66,9 @@ public class LoadDataEntryFormProcessor
 		{
 			containerInterface.setContainerValueMap(valueMap);
 		}
-
+		List processedContainersList = new ArrayList<ContainerInterface>();
+		DynamicExtensionsUtility.setAllInContextContainers(containerInterface,
+				processedContainersList);
 		dataEntryForm.setContainerInterface(containerInterface);
 		if (dataEntryForm.getErrorList() == null)
 		{
@@ -88,7 +91,7 @@ public class LoadDataEntryFormProcessor
 	}
 
 	/**
-	 * 
+	 *
 	 * @param entityInterface
 	 * @param recordIdentifier
 	 * @return

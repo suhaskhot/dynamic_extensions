@@ -1107,4 +1107,38 @@ public class DynamicExtensionsUtility
 	{
 		return Utility.getDisplayLabel(entityName.trim());
 	}
+	/**
+	 *
+	 * @param containerInterface
+	 * @param inContextContainerInterface
+	 * @param processedContainersList
+	 */
+	public static void setAllInContextContainers(ContainerInterface containerInterface,
+			List<ContainerInterface> processedContainersList)
+	{
+		if (processedContainersList.contains(containerInterface))
+		{
+			return;
+		}
+		else
+		{
+			processedContainersList.add(containerInterface);
+			containerInterface.setIncontextContainer(containerInterface);
+
+			if (containerInterface.getBaseContainer() != null)
+			{
+				setAllInContextContainers(containerInterface.getBaseContainer(),
+						processedContainersList);
+			}
+			for (ControlInterface controlInterface : containerInterface.getControlCollection())
+			{
+				if (controlInterface instanceof ContainmentAssociationControl)
+				{
+					ContainmentAssociationControl containmentAssociationControl = (ContainmentAssociationControl) controlInterface;
+					setAllInContextContainers(containmentAssociationControl.getContainer(),
+							processedContainersList);
+				}
+			}
+		}
+	}
 }

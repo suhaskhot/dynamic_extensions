@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
@@ -112,14 +113,20 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 			Map<BaseAbstractAttributeInterface, Object> attributeValueMap, Long recordIdentifier)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException, SQLException
 	{
-		//Quick fix
-		/*EntityManagerInterface entityManager = EntityManager.getInstance();
-		EntityInterface entity = (Entity) container.getAbstractEntity();
-		Boolean edited= = entityManager.editData(entity, attributeValueMap, recordIdentifier);
-		return edited;*/
-		
+		//Quick fix:
+		if (container.getAbstractEntity() instanceof EntityInterface)
+		{
+			EntityManagerInterface entityManager = EntityManager.getInstance();
+			EntityInterface entity = (Entity) container.getAbstractEntity();
+			//Correct this:
+			Map map = attributeValueMap;
+			Boolean edited = entityManager.editData(entity, map, recordIdentifier);
+			return edited;
+			
+		}
 		return CategoryManager.getInstance().editData((CategoryEntityInterface)container.getAbstractEntity(),
 				attributeValueMap, recordIdentifier);
+		
 	}
 
 }

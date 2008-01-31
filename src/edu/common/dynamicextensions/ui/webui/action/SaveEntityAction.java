@@ -18,7 +18,6 @@ import org.apache.struts.action.ActionMessages;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManager;
-import edu.common.dynamicextensions.processor.ContainerProcessor;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
@@ -57,13 +56,8 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 						.getControlsSequenceNumbers());
 			}
 
-			//Call container processor save method
-			ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
 			String formName = "";
 
-			//Changed by: Kunal
-			// For saving entity metadata
-			//containerInterface = containerProcessor.saveContainer(containerInterface);
 			EntityGroupManager.getInstance().persistEntityGroup(((EntityInterface) containerInterface.getAbstractEntity()).getEntityGroup());
 
 			if ((containerInterface != null) && (containerInterface.getAbstractEntity() != null))

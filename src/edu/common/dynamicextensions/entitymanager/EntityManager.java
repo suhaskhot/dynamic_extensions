@@ -2855,4 +2855,23 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		return associationTreeObjectForGroup;
 	}
+	
+	/**
+	 *
+	 * @param attributeInterface
+	 * @param recordId
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public FileAttributeRecordValue getFileAttributeRecordValueByRecordId(
+			AttributeInterface attribute, Long recordId) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+		EntityInterface entity = attribute.getEntity();
+		FileAttributeRecordValue fileRecordValue = getFileAttributeRecordValue(entity.getId(),
+				attribute.getId(), recordId);
+		return fileRecordValue;
+	}
+
 }

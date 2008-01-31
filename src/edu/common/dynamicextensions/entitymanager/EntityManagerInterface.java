@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -357,5 +358,16 @@ public interface EntityManagerInterface
 	 */
 	public Collection<AssociationTreeObject> getAssociationTree()
 	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	
+	/**
+	 * @param attribute
+	 * @param recordId
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public FileAttributeRecordValue getFileAttributeRecordValueByRecordId(
+			AttributeInterface attribute, Long recordId) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException;
     
 }

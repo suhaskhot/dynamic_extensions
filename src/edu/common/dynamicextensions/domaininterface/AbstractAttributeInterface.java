@@ -3,7 +3,6 @@ package edu.common.dynamicextensions.domaininterface;
 
 import java.util.Collection;
 
-import edu.common.dynamicextensions.domain.userinterface.Control;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 
 /**
@@ -45,5 +44,11 @@ public interface AbstractAttributeInterface extends BaseAbstractAttributeInterfa
 	 */
 	void setEntity(EntityInterface entityInterface);
 
+
+	/**
+	 * This method returns the Collection of rules.
+	 * @return Collection the ruleCollection associated with the Attribute.
+	 */
+	Collection<RuleInterface> getRuleCollection();
 	
 }

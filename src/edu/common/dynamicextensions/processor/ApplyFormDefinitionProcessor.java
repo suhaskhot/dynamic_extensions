@@ -8,12 +8,10 @@ package edu.common.dynamicextensions.processor;
  */
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.EntityGroup;
-import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -98,7 +96,7 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 			EntityInterface parentEntity = (EntityInterface) containerInterface.getBaseContainer().getAbstractEntity();
 			entityInterface.setParentEntity(parentEntity);
 		}
-		
+		entityInterface.addContaier(containerInterface);
 		return containerInterface;
 	}
 

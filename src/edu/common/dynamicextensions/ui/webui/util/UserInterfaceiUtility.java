@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domain.userinterface.AbstractContainmentControl;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
@@ -161,6 +162,9 @@ public class UserInterfaceiUtility
 	 */
 	public static boolean isControlRequired(ControlInterface controlInterface)
 	{
+		if(controlInterface.getBaseAbstractAttribute() instanceof AssociationMetadataInterface){
+			return false;
+		}
 		AttributeMetadataInterface attributeMetadataInterface= (AttributeMetadataInterface) controlInterface.getBaseAbstractAttribute();
 		Collection<RuleInterface> ruleCollection = attributeMetadataInterface.getRuleCollection();
 		boolean required = false;

@@ -18,10 +18,12 @@ import org.hibernate.Session;
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.domain.Entity;
+import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
@@ -31,6 +33,7 @@ import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.dao.AbstractDAO;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.HibernateDAO;
+import edu.wustl.common.dao.JDBCDAO;
 import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.dbManager.DBUtil;
@@ -563,4 +566,69 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 		}
 		return queryList;
 	}
+	
+	/**
+     * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllRecords(edu.common.dynamicextensions.domaininterface.EntityInterface)
+     */
+    public List<EntityRecord> getAllRecords(AbstractEntityInterface entity)
+            throws DynamicExtensionsSystemException
+    {
+        List<EntityRecord> recordList = new ArrayList<EntityRecord>();
+        JDBCDAO jdbcDao = null;
+        List<List> result;
+        try
+        {
+            jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
+            jdbcDao.openSession(null);
+            TablePropertiesInterface tablePropertiesInterface = entity.getTableProperties();
+            String tableName = tablePropertiesInterface.getName();
+            String[] selectColumnName = {IDENTIFIER};
+            String[] whereColumnName = {Constants.ACTIVITY_STATUS_COLUMN};
+            String[] whereColumnCondition = {EQUAL};
+            Object[] whereColumnValue = {"'" + Constants.ACTIVITY_STATUS_ACTIVE + "'"};
+            result = jdbcDao.retrieve(tableName, selectColumnName, whereColumnName,
+                    whereColumnCondition, whereColumnValue, null);
+            recordList = getRecordList(result);
+
+        }
+        catch (DAOException e)
+        {
+            throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
+        }
+        finally
+        {
+            try
+            {
+                jdbcDao.closeSession();
+            }
+            catch (DAOException e)
+            {
+                throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
+            }
+        }
+        return recordList;
+    }
+	/**
+    * @param result
+    * @return
+    */
+   protected List<EntityRecord> getRecordList(List<List> result)
+   {
+       List<EntityRecord> recordList = new ArrayList<EntityRecord>();
+       EntityRecord entityRecord;
+       String id;
+       for (List innnerList : result)
+       {
+           if (innnerList != null && !innnerList.isEmpty())
+           {
+               id = (String) innnerList.get(0);
+               if (id != null)
+               {
+                   entityRecord = new EntityRecord(new Long(id));
+                   recordList.add(entityRecord);
+               }
+           }
+       }
+       return recordList;
+   }
 }

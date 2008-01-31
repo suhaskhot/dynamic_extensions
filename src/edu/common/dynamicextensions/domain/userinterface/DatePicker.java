@@ -2,7 +2,7 @@
 package edu.common.dynamicextensions.domain.userinterface;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -42,7 +42,7 @@ public class DatePicker extends Control implements DatePickerInterface
 		String defaultValue = (String) this.value;
 		if (value == null)
 		{
-			defaultValue = ControlsUtility.getDefaultValue((AbstractAttributeInterface)this.getBaseAbstractAttribute());
+			defaultValue = this.getAttibuteMetadataInterface().getDefaultValue();
 			if (defaultValue == null)
 			{
 				defaultValue = "";
@@ -115,7 +115,7 @@ public class DatePicker extends Control implements DatePickerInterface
             + htmlComponentName
             + " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">";*/
 		/* Obtain the date format */
-		AttributeTypeInformationInterface attributeTypeInformationInterface = ((AttributeInterface) this
+		AttributeTypeInformationInterface attributeTypeInformationInterface = ((AttributeMetadataInterface) this
 				.getBaseAbstractAttribute()).getAttributeTypeInformation();
 		String dateFormat = ControlsUtility.getDateFormat(attributeTypeInformationInterface);
 		if (dateFormat.equals(ProcessorConstants.DATE_ONLY_FORMAT))

@@ -50,6 +50,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.AssociationCon
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.util.AssociationTreeObject;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
@@ -2789,4 +2790,69 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
         return containerInterface;
 
     }
+    
+    /**
+	 *
+	 * @param entityGroupInterface
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public Collection<AssociationTreeObject> getAssociationTree()
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		Collection associationTreeObjectCollection = new HashSet();
+
+		Collection groupBeansCollection = getAllEntityGroupBeans();
+		Iterator groupBeansIterator = groupBeansCollection.iterator();
+		AssociationTreeObject associationTreeObject;
+
+		while (groupBeansIterator.hasNext())
+		{
+			associationTreeObject = processGroupBean((NameValueBean) groupBeansIterator.next());
+			associationTreeObjectCollection.add(associationTreeObject);
+		}
+
+		return associationTreeObjectCollection;
+	}
+
+	/**
+	 *
+	 * @param objectArray
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	private AssociationTreeObject processGroupBean(NameValueBean groupBean)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		AssociationTreeObject associationTreeObjectForGroup = new AssociationTreeObject(new Long(
+				groupBean.getValue()), groupBean.getName());
+
+		Map substitutionParameterMap = new HashMap();
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long",
+				associationTreeObjectForGroup.getId()));
+
+		Collection containersBeansCollection = executeHQL("getAllContainersBeansByEntityGroupId",
+				substitutionParameterMap);
+
+		Iterator containerBeansIterator = containersBeansCollection.iterator();
+		Object[] objectArrayForContainerBeans;
+		AssociationTreeObject associationTreeObjectForContainer;
+
+		while (containerBeansIterator.hasNext())
+		{
+			objectArrayForContainerBeans = (Object[]) containerBeansIterator.next();
+			associationTreeObjectForContainer = new AssociationTreeObject(
+					(Long) objectArrayForContainerBeans[0],
+					(String) objectArrayForContainerBeans[1]);
+			//processForChildContainer(associationTreeObjectForContainer);
+			associationTreeObjectForGroup
+					.addAssociationTreeObject(associationTreeObjectForContainer);
+
+		}
+
+		return associationTreeObjectForGroup;
+	}
 }

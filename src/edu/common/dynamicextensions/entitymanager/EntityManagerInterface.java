@@ -13,6 +13,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.AssociationCon
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.util.AssociationTreeObject;
 import edu.wustl.common.beans.NameValueBean;
 
 /**
@@ -348,5 +349,13 @@ public interface EntityManagerInterface
      */
     public ContainerInterface getContainerByEntityIdentifier(Long entityIdentifier)
             throws DynamicExtensionsSystemException;
+    
+	/**
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public Collection<AssociationTreeObject> getAssociationTree()
+	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
     
 }

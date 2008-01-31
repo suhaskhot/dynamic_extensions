@@ -6,7 +6,9 @@ import java.util.Collections;
 import java.util.List;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.entitymanager.EntityGroupManager;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
@@ -87,6 +89,11 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 						.getContainerByIdentifier(containerUIBeanInterface.getParentForm());
 				containerInterface.setBaseContainer(parentContainer);
 			}
+			//Added for bug 6068
+			else
+			{
+				containerInterface.setBaseContainer(null);
+			}
 		}
 	}
 
@@ -165,7 +172,10 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 	public ContainerInterface saveContainer(ContainerInterface containerInterface)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
-		//return EntityManager.getInstance().persistContainer(containerInterface);
-		return null;
+		//Quick fix
+		//metadata createion needs to run incase of entity only
+		EntityGroupManager.getInstance().persistEntityGroup(((EntityInterface)
+				containerInterface.getAbstractEntity()).getEntityGroup());
+		return containerInterface;
 	}
 }

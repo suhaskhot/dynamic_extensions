@@ -53,6 +53,7 @@ import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.validation.ValidatorUtil;
 import edu.wustl.common.util.global.ApplicationProperties;
 
 /**
@@ -296,8 +297,8 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		valueMap = generateAttributeValueMap(containerInterface, request, dataEntryForm, "",
 				valueMap, true);
 
-		//List<String> errorList = ValidatorUtil.validateEntity(valueMap, dataEntryForm.getErrorList());
-		List<String> errorList = new ArrayList<String>();
+		List<String> errorList = ValidatorUtil.validateEntity(valueMap, dataEntryForm.getErrorList());
+		//List<String> errorList = new ArrayList<String>();
 		//saveErrors(request, getErrorMessages(errorList));
 		dataEntryForm.setErrorList(errorList);
 	}

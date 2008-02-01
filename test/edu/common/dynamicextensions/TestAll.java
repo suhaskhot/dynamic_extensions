@@ -7,6 +7,7 @@ package edu.common.dynamicextensions;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import edu.common.dynamicextensions.categoryManager.TestCategoryManager;
 import edu.common.dynamicextensions.entitymanager.TestEntityManager;
 import edu.common.dynamicextensions.entitymanager.TestEntityManagerForAssociations;
 import edu.common.dynamicextensions.entitymanager.TestEntityManagerForInheritance;
@@ -34,6 +35,7 @@ public class TestAll
 		suite.addTestSuite(TestEntityManager.class);
 		suite.addTestSuite(TestEntityManagerForAssociations.class);
 		suite.addTestSuite(TestEntityManagerForInheritance.class);
+		suite.addTestSuite(TestCategoryManager.class);
 		return suite;
 	}
 }

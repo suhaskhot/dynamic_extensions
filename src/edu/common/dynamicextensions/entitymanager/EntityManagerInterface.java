@@ -10,6 +10,7 @@ import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -371,4 +372,93 @@ public interface EntityManagerInterface
 			AttributeInterface attribute, Long recordId) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException;
     
+    public Long isCategory(Long containerId)
+          throws DynamicExtensionsSystemException;
+    
+    /**
+    * 
+    * @param hookEntityId
+    * @return the container Id of the DE entities that are associated with given static hook entity
+    */
+    public Collection<ContainerInterface> getDynamicEntitiesContainerIdFromHookEntity(
+          Long hookEntityId) throws DynamicExtensionsSystemException;
+    
+    /**
+    * 
+    * @param hookEntityId
+    * @return  the container Id of the DE entities/categories that are associated with given static hook entity
+    * @throws DynamicExtensionsSystemException
+    */
+    public Collection<ContainerInterface> getCategoriesContainerIdFromHookEntity(
+          Long hookEntityId) throws DynamicExtensionsSystemException;
+    
+    /**
+    * 
+    * @param hookEntityRecId
+    * @param containerId
+    * @return the category or form record id based on the containerId and hookentityRecId  
+    */
+    public String getDynamicTableName(Long containerId)
+          throws DynamicExtensionsSystemException;
+    
+    /**
+    * 
+    * @param categoryContainerId
+    * @param staticRecId
+    * @return the record id of the category depending on hook entity record id. 
+    */
+    public String getColumnNameForAssociation(Long hookEntityId,Long containerId)
+          throws DynamicExtensionsSystemException;
+    
+    public Long getCategoryRootContainerId(Long containerId)
+          throws DynamicExtensionsSystemException;
+    
+    
+    /**
+    * @param entityGroupIdentifier
+    * @return
+    */
+    Collection<NameValueBean> getMainContainer(Long entityGroupIdentifier)
+          throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+    
+    /**
+    * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#persistEntityMetadata(edu.common.dynamicextensions.domaininterface.EntityInterface)
+    */
+    public EntityInterface persistEntityMetadataForAnnotation(EntityInterface entityInterface,
+          boolean isDataTablePresent, boolean copyDataTableState, AssociationInterface association)
+          throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+    
+    /**
+    * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAssociationsForTargetEntity(edu.common.dynamicextensions.domaininterface.EntityInterface)
+    */
+    public Collection<Long> getIncomingAssociationIds(EntityInterface entity) throws DynamicExtensionsSystemException;
+    
+    /**
+    * @param entityGroupName
+    * @return EntityGroupInterface EntityGroupInterface
+    * @throws DynamicExtensionsSystemException
+    * @throws DynamicExtensionsApplicationException
+    */
+    EntityGroupInterface getEntityGroupByName(String entityGroupName) throws DynamicExtensionsSystemException,
+          DynamicExtensionsApplicationException;
+    
+    
+    /**
+    * This method returns the EntityGroupInterface given the short name for the
+    * entity.
+    * @param entityGroupShortName short name for entity group
+    * @return entityGroupInterface entity group interface
+    * @throws DynamicExtensionsSystemException
+    */
+    EntityGroupInterface getEntityGroupByShortName(String entityGroupShortName)
+          throws DynamicExtensionsSystemException;
+    
+    /**
+    * Returns all entityGroups in the system.
+    * @return
+    * @throws DynamicExtensionsSystemException
+    * @throws DynamicExtensionsApplicationException
+    */
+    Collection<EntityGroupInterface> getAllEntitiyGroups() throws DynamicExtensionsSystemException,
+          DynamicExtensionsApplicationException;    
 }

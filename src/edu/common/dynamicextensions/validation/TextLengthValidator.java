@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
 
@@ -23,7 +23,7 @@ public class TextLengthValidator implements ValidatorRuleInterface
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.validation.ValidatorRuleInterface#validate(edu.common.dynamicextensions.domaininterface.AttributeInterface, java.lang.Object, java.util.Map)
 	 */
-	public boolean validate(AttributeInterface attribute, Object valueObject,
+	public boolean validate(AttributeMetadataInterface attribute, Object valueObject,
 			Map<String, String> parameterMap) throws DynamicExtensionsValidationException
 	{
 		boolean isValid = false;

@@ -10,7 +10,7 @@ import edu.common.dynamicextensions.domain.FloatAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.IntegerAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.LongAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.ShortAttributeTypeInformation;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -27,7 +27,7 @@ public class UniqueValidator implements ValidatorRuleInterface
 	 * @see edu.common.dynamicextensions.validation.ValidatorRuleInterface#validate(edu.common.dynamicextensions.domaininterface.AttributeInterface, java.lang.Object, java.util.Map)
 	 * @throws DynamicExtensionsValidationException
 	 */
-	public boolean validate(AttributeInterface attribute, Object valueObject,
+	public boolean validate(AttributeMetadataInterface attribute, Object valueObject,
 			Map<String, String> parameterMap) throws DynamicExtensionsValidationException,
 			DynamicExtensionsSystemException
 	{
@@ -45,7 +45,8 @@ public class UniqueValidator implements ValidatorRuleInterface
 			numberValidator.validate(attribute, valueObject, parameterMap);			
 		}
 		
-		if (EntityManagerUtil.isValuePresent(attribute, valueObject))
+		//if (EntityManagerUtil.isValuePresent(attribute, valueObject))
+		if(false)
 		{
 			List<String> placeHolders = new ArrayList<String>();
 			placeHolders.add(attribute.getName());

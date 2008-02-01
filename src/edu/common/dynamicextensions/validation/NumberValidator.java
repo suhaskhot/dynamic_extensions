@@ -11,7 +11,7 @@ import java.util.Map;
 
 import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.LongAttributeTypeInformation;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
@@ -32,7 +32,7 @@ public class NumberValidator implements ValidatorRuleInterface
 	 * @param parameterMap the parameters of the Rule.
 	 * @throws DynamicExtensionsValidationException if the value is not following the Numeric Rule. 
 	 */
-	public boolean validate(AttributeInterface attribute, Object valueObject,
+	public boolean validate(AttributeMetadataInterface attribute, Object valueObject,
 			Map<String, String> parameterMap) throws DynamicExtensionsValidationException
 	{
 		boolean isValid = false;

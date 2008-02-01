@@ -4,7 +4,7 @@ package edu.common.dynamicextensions.validation;
 import java.util.List;
 import java.util.Map;
 
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
 
 /**
@@ -18,7 +18,7 @@ public class RequiredValidator implements ValidatorRuleInterface
 	 * @see edu.common.dynamicextensions.validation.ValidatorRuleInterface#validate(edu.common.dynamicextensions.domaininterface.AttributeInterface, java.lang.Object, java.util.Map)
 	 * @throws DynamicExtensionsValidationException
 	 */
-	public boolean validate(AttributeInterface attribute, Object valueObject, Map parameterMap) throws DynamicExtensionsValidationException
+	public boolean validate(AttributeMetadataInterface attribute, Object valueObject, Map parameterMap) throws DynamicExtensionsValidationException
 	{
 		String attributeName = attribute.getName();
 		if (valueObject != null)

@@ -9,8 +9,9 @@ import java.util.Map;
 import java.util.Set;
 
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
@@ -26,9 +27,10 @@ public class DateRangeValidator implements ValidatorRuleInterface
 	/**
 	 * @see edu.common.dynamicextensions.validation.ValidatorRuleInterface#validate(edu.common.dynamicextensions.domaininterface.AttributeInterface, java.lang.Object, java.util.Map)
 	 * @throws DynamicExtensionsValidationException
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	public boolean validate(AttributeInterface attribute, Object valueObject,
-			Map<String, String> parameterMap) throws DynamicExtensionsValidationException
+	public boolean validate(AttributeMetadataInterface attribute, Object valueObject,
+			Map<String, String> parameterMap) throws DynamicExtensionsValidationException, DynamicExtensionsSystemException
 	{
 		boolean valid = true;
 

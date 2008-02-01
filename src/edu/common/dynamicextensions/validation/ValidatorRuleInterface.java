@@ -3,7 +3,7 @@ package edu.common.dynamicextensions.validation;
 
 import java.util.Map;
 
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
 
@@ -28,6 +28,6 @@ public interface ValidatorRuleInterface
 	 * @return  boolean if no error it return true
 	 * @throws DynamicExtensionsValidationException : Validation Exception
 	 */
-	boolean validate(AttributeInterface attribute, Object valueObject, Map<String, String> parameterMap)
+	boolean validate(AttributeMetadataInterface attribute, Object valueObject, Map<String, String> parameterMap)
 			throws DynamicExtensionsValidationException,DynamicExtensionsSystemException;
 }

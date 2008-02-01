@@ -8,7 +8,7 @@ import java.util.Set;
 
 import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.LongAttributeTypeInformation;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
 
@@ -30,7 +30,7 @@ public class RangeValidator implements ValidatorRuleInterface
 	 * @param parameterMap the parameters of the Rule.
 	 * @throws DynamicExtensionsValidationException if the value is not following the range Rule. 
 	 */
-	public boolean validate(AttributeInterface attribute, Object valueObject,
+	public boolean validate(AttributeMetadataInterface attribute, Object valueObject,
 			Map<String, String> parameterMap) throws DynamicExtensionsValidationException
 	{
 		boolean valid = true;

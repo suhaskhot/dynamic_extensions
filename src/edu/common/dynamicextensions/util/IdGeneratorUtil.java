@@ -104,7 +104,7 @@ public class IdGeneratorUtil
 		}
 		finally
 		{
-			session.close();
+			//session.close();
 		}
 
 		return nextAvailableId;

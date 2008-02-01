@@ -1075,7 +1075,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			categoryAssociation2.setTargetCategoryEntity(melanomaMarginCategoryEntity);
 			radicalProstatectomyPathologyAnnotationCategoryEntity.getCategoryAssociationCollection().add(categoryAssociation2);
 
-			// Create a path between pradical prostatectomy pathology annotation category entity and melanoma margin category entity.
+			// Create a path between radical prostatectomy pathology annotation category entity and melanoma margin category entity.
 			PathInterface path2 = factory.createPath();
 
 			PathAssociationRelationInterface pathAssociationRelation1ForPath2 = factory.createPathAssociationRelation();
@@ -2179,13 +2179,184 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 	}
+	
+	/**
+	 * Create a non-linear category tree from non-linear entity tree.
+	 * Save the category.
+	 */
+	public void testCreateCategoryFromNonLinearEntityTree()
+	{
+		MockCategoryManager mockCategoryManager = new MockCategoryManager();
+		CategoryManagerInterface categoryManager = CategoryManager.getInstance();
+		CategoryInterface category = mockCategoryManager.createCategoryFromModel1();
+		
+		try
+		{
+			// Save category.
+			categoryManager.persistCategory(category);
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
+	
+	/**
+	 * Add a category entity to a category.
+	 * Save the category. This should not result in new tables creation, 
+	 * just one more category entity should be added to category.
+	 */
+	public void testAddCategoryEntityToCategoryFromNonLinearEntityTree()
+	{
+		MockCategoryManager mockCategoryManager = new MockCategoryManager();
+		CategoryManagerInterface categoryManager = CategoryManager.getInstance();
+		CategoryInterface category = mockCategoryManager.createCategoryFromModel1();
+				
+		try
+		{
+			// Save the category.
+			categoryManager.persistCategory(category);
+			
+			// Add another category entity to present category.
+			category = mockCategoryManager.addNewCategoryEntityToExistingCategory(category);
+			
+			// Again save the category.
+			categoryManager.persistCategory(category);
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
+	
+	/**
+	 * Edit metadata for a category entity in a category.
+	 * Save the category. This should not result in new tables creation, 
+	 * just the category entity metadata information should get updated.
+	 */
+	public void testEditCategoryEntityMetadataFromCategoryFromNonLinearEntityTree()
+	{
+		MockCategoryManager mockCategoryManager = new MockCategoryManager();
+		CategoryManagerInterface categoryManager = CategoryManager.getInstance();
+		CategoryInterface category = mockCategoryManager.createCategoryFromModel1();
+				
+		try
+		{
+			// Save the category.
+			categoryManager.persistCategory(category);
+			
+			// Edit category entity metadata.
+			category.getRootCategoryElement().setName("chemotherapyTrialsCategoryEntity name changed");
+			
+			// Again save the category. This should not result in new tables creation, 
+			// just the category entity metadata information should get updated.
+			categoryManager.persistCategory(category);
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
+	
+	/**
+	 * Add a category attribute to a category entity.
+	 * Save the category. This should not result in new tables creation, 
+	 * just one more category attribute should be added to category entity.
+	 */
+	public void testAddCategoryAttributeToCategoryFromNonLinearEntityTree()
+	{
+		MockCategoryManager mockCategoryManager = new MockCategoryManager();
+		CategoryManagerInterface categoryManager = CategoryManager.getInstance();
+		CategoryInterface category = mockCategoryManager.createCategoryFromModel1();
+				
+		try
+		{
+			// Save the category.
+			categoryManager.persistCategory(category);
+			
+			// Add category attribute to category entity.
+			category = mockCategoryManager.addCategoryAttributetyToCategoryEntity(category);
+			
+			// Again save the category. This should not result in new tables creation, 
+			// just one more category attribute should be added to category entity.
+			categoryManager.persistCategory(category);
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
+	
+	/**
+	 * Edit metadata for a category attribute in a category entity.
+	 * Save the category. This should not result in new tables creation, 
+	 * just the category attribute metadata information should get updated.
+	 */
+	public void testEditCategoryAttributeMetadataFromCategoryFromNonLinearEntityTree()
+	{
+		MockCategoryManager mockCategoryManager = new MockCategoryManager();
+		CategoryManagerInterface categoryManager = CategoryManager.getInstance();
+		CategoryInterface category = mockCategoryManager.createCategoryFromModel1();
+				
+		try
+		{
+			// Save the category.
+			categoryManager.persistCategory(category);
+			
+			// Edit category attribute metadata.
+			CategoryEntityInterface rootCategoryEntity = category.getRootCategoryElement();
+			
+			for (CategoryAttributeInterface ca: rootCategoryEntity.getCategoryAttributeCollection())
+			{
+				ca.setName(ca.getName() + String.valueOf(new Double(Math.random()).intValue())); 
+			}
+			
+			// Again save the category. This should not result in new tables creation, 
+			// just the category attribute metadata information should get updated.
+			categoryManager.persistCategory(category);
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
 
 	/**
 	 * 
 	 * @param categoryEntity
 	 * @return ContainerInterface
 	 */
-	private ContainerInterface createContainer(CategoryEntityInterface categoryEntity)
+	protected ContainerInterface createContainer(CategoryEntityInterface categoryEntity)
 	{
 		ContainerInterface containerInterface = DomainObjectFactory.getInstance().createContainer();
 		containerInterface.setAbstractEntity(categoryEntity);
@@ -2203,7 +2374,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 	 * @param sequenceNumber
 	 * @return
 	 */
-	private TextFieldInterface createTextFieldControl(CategoryAttributeInterface categoryAttribute, int sequenceNumber)
+	protected TextFieldInterface createTextFieldControl(CategoryAttributeInterface categoryAttribute, int sequenceNumber)
 	{
 		TextFieldInterface textFieldInterface = DomainObjectFactory.getInstance().createTextField();
 		textFieldInterface.setBaseAbstractAttribute(categoryAttribute);
@@ -2220,7 +2391,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 	 * @param sequenceNumber
 	 * @return ComboBoxInterface
 	 */
-	private ComboBoxInterface createComboBoxControl(CategoryAttributeInterface categoryAttribute, int sequenceNumber)
+	protected ComboBoxInterface createComboBoxControl(CategoryAttributeInterface categoryAttribute, int sequenceNumber)
 	{
 		ComboBoxInterface comboBox = DomainObjectFactory.getInstance().createComboBox();
 		comboBox.setBaseAbstractAttribute(categoryAttribute);

@@ -142,4 +142,67 @@
        			   	collectionAttributeRecord.attribute.id = ? AND
        			   	     collectionAttributeRecord.recordId = ?
 	</query>
+
+    <query name="isCategory">
+	 select catEntity.id
+         from  edu.common.dynamicextensions.domain.CategoryEntity catEntity 	
+            where catEntity.containerCollection.id=?
+	</query>
+
+    <query name="getFormsContainerIdFromHookEntiy">
+     select new edu.wustl.common.beans.NameValueBean(container.caption , container.id) 
+	   from edu.common.dynamicextensions.domain.userinterface.Container container   
+		   where container.abstractEntity.id in
+		   (      
+			   select association.targetEntity.id
+			       from Association association
+				       	where association.entity.id = ?
+
+		   )
+    </query>
+
+	<query name="getCategoryContainerIdFromHookEntiy">
+	 select new edu.wustl.common.beans.NameValueBean(container.caption , container.id) 
+	   from edu.common.dynamicextensions.domain.userinterface.Container container   
+		   where container.abstractEntity.id in
+		   (
+		      select category.rootCategoryElement.id
+				from  edu.common.dynamicextensions.domain.Category category
+					where category.rootCategoryElement.entity.id = 
+						(
+							select association.targetEntity.id
+						       from Association association
+							       	where association.entity.id = ?
+						)
+			)   
+	</query>
+
+	<query name="getDynamicTableName">
+	 select tableProperty.name
+		from edu.common.dynamicextensions.domain.userinterface.Container container   
+			join container.abstractEntity.tablePropertiesCollection tableProperty
+				where container.id = ?
+	</query>
+
+	<query name="getColumnNameForAssociation">
+	 select constraintColl.targetEntityKey
+       from Association association
+		   join association.constraintPropertiesCollection constraintColl
+		   join association.targetEntity.containerCollection contColl
+			   	where association.entity.id = ?
+				and contColl.id = ?
+	</query>
+
+	<query name="getCategoryRootContainerId">
+	 select  container.id
+		from edu.common.dynamicextensions.domain.userinterface.Container container
+		   where container.abstractEntity.id in
+		   (
+			select category.rootCategoryElement.entity.id
+				from  edu.common.dynamicextensions.domain.Category category
+					join category.rootCategoryElement.containerCollection contColl
+						where contColl.id= ?
+			)
+   </query>
+
 </hibernate-mapping>

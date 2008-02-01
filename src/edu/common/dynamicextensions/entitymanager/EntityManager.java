@@ -24,6 +24,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
+import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.Attribute;
@@ -31,6 +32,7 @@ import edu.common.dynamicextensions.domain.AttributeRecord;
 import edu.common.dynamicextensions.domain.CollectionAttributeRecordValue;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.Entity;
+import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.ObjectAttributeRecordValue;
@@ -43,6 +45,7 @@ import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
+import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.ObjectAttributeRecordValueInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
@@ -55,6 +58,7 @@ import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.SessionDataBean;
+import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.dao.AbstractDAO;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.HibernateDAO;
@@ -2808,5 +2812,279 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				attribute.getId(), recordId);
 		return fileRecordValue;
 	}
+    
+      /**
+     * 
+     * @param hookEntityId
+     * @return  the container Id of the DE entities/categories that are associated with given static hook entity
+     * @throws DynamicExtensionsSystemException
+     */
+    public Collection<ContainerInterface> getCategoriesContainerIdFromHookEntity(
+            Long hookEntityId) throws DynamicExtensionsSystemException
+    {
+        Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+        substitutionParameterMap.put("0", new HQLPlaceHolderObject("long",
+                hookEntityId));
+        Collection containerCollection = executeHQL(
+                "getCategoryContainerIdFromHookEntiy", substitutionParameterMap);
+        return containerCollection;
+    }
+
+    /**
+     * This method returns the Table name generated fro this container
+     */
+    public String getDynamicTableName(Long containerId)
+            throws DynamicExtensionsSystemException
+    {
+        String tableName = "";
+        Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+        substitutionParameterMap.put("0", new HQLPlaceHolderObject("long",
+                containerId));
+        Collection containerCollection = executeHQL("getDynamicTableName",
+                substitutionParameterMap);
+
+        if (containerCollection != null && containerCollection.size() > 0)
+        {
+            tableName = (String) containerCollection.iterator().next();
+        }
+        return tableName;
+    }
+
+    /**
+     * 
+     * @param hookEntityId
+     * @return the container Id of the DE entities that are associated with given static hook entity
+     */
+    public Collection<ContainerInterface> getDynamicEntitiesContainerIdFromHookEntity(
+            Long hookEntityId) throws DynamicExtensionsSystemException
+    {
+        Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+        substitutionParameterMap.put("0", new HQLPlaceHolderObject("long",
+                hookEntityId));
+        Collection containerCollection = executeHQL(
+                "getFormsContainerIdFromHookEntiy", substitutionParameterMap);
+        return containerCollection;
+    }
+
+    /**
+     * 
+     * @param containerId
+     * @return whether this entity is simple DE form /category. 
+     */
+    public Long isCategory(Long containerId)
+            throws DynamicExtensionsSystemException
+    {
+        Long containerIdentifier = null;
+        Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+        substitutionParameterMap.put("0", new HQLPlaceHolderObject("long",
+                containerId));
+        Collection containerCollection = executeHQL("isCategory",
+                substitutionParameterMap);
+        if (containerCollection != null && containerCollection.size() > 0)
+        {
+            containerIdentifier = (Long) containerCollection.iterator().next();
+        }
+        return containerIdentifier;
+    }
+    
+    /**
+     * This method returns container id for the root entity for the given category conatainer id
+     */
+    public Long getCategoryRootContainerId(Long containerId)
+            throws DynamicExtensionsSystemException
+    {
+        Long containerIdentifier = null;
+        Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+        substitutionParameterMap.put("0", new HQLPlaceHolderObject("long",
+                containerId));
+        Collection containerCollection = executeHQL("getCategoryRootContainerId",
+                substitutionParameterMap);
+        if (containerCollection != null && containerCollection.size() > 0)
+        {
+            containerIdentifier = (Long) containerCollection.iterator().next();
+        }
+        return containerIdentifier;
+    }
+
+/**
+ * this method returns the column name for the assocation  
+ */
+    public String getColumnNameForAssociation(Long hookEntityId,Long containerId)
+            throws DynamicExtensionsSystemException
+    {
+        String colName = null;
+        Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+        substitutionParameterMap.put("0", new HQLPlaceHolderObject("long",
+                hookEntityId));
+        substitutionParameterMap.put("1", new HQLPlaceHolderObject("long",
+                containerId));
+        Collection containerCollection = executeHQL(
+                "getColumnNameForAssociation", substitutionParameterMap);
+
+        if (containerCollection != null && containerCollection.size() > 0)
+        {
+            colName = (String) containerCollection.iterator().next();
+        }
+        return colName;
+    }
+    
+    
+    public EntityInterface persistEntityMetadataForAnnotation(EntityInterface entityInterface,
+            boolean isDataTablePresent,boolean copyDataTableState,AssociationInterface association) throws DynamicExtensionsSystemException,
+            DynamicExtensionsApplicationException
+    {
+        Entity entity = (Entity) entityInterface;
+        if (isDataTablePresent)
+        {
+            ((Entity) entityInterface).setDataTableState(DATA_TABLE_STATE_ALREADY_PRESENT);
+        }
+        else
+        {
+            ((Entity) entityInterface).setDataTableState(DATA_TABLE_STATE_NOT_CREATED);
+        }
+
+//      boolean isEntitySaved = true;
+//      //Depending on the presence of Id field , the method that is to be invoked (insert/update), is decided.
+//      if (entity.getId() == null)
+//      {
+//          isEntitySaved = false;
+//      }
+
+        HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
+                Constants.HIBERNATE_DAO);
+//      Stack stack = new Stack();
+
+        try
+        {
+
+            hibernateDAO.openSession(null);
+
+            hibernateDAO.update(entity, null, false, false,false);
+            //Calling the method which actually calls the insert/update method on dao.
+            //Hibernatedao is passed to this method and transaction is handled in the calling method.
+//          saveEntityGroup(entityInterface, hibernateDAO);
+//          List<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
+//
+//          entityInterface = saveOrUpdateEntityMetadataForSingleAnnotation(entityInterface, hibernateDAO, stack,
+//                  isEntitySaved, processedEntityList, copyDataTableState,association);
+
+            //Committing the changes done in the hibernate session to the database.
+            hibernateDAO.commit();
+        }
+        catch (Exception e)
+        {
+            //Queries for data table creation and modification are fired in the method saveOrUpdateEntity.
+            //So if there is any exception while storing the metadata ,
+            //we need to roll back the queries that were fired. So calling the following method to do that.
+            //rollbackQueries(stack, entity, e, hibernateDAO);
+
+            if (e instanceof DynamicExtensionsApplicationException)
+            {
+                throw (DynamicExtensionsApplicationException) e;
+            }
+            else
+            {
+                throw new DynamicExtensionsSystemException(e.getMessage(), e);
+            }
+
+        }
+        finally
+        {
+            try
+            {
+                //postSaveOrUpdateEntity(entityInterface);
+                // entity.setProcessed(false);
+                //In any case , after all the operations , hibernate session needs to be closed. So this call has
+                // been added in the finally clause.
+                hibernateDAO.closeSession();
+            }
+            catch (DAOException e)
+            {
+                //Queries for data table creation and modification are fired in the method saveOrUpdateEntity. So if there
+                //is any exception while storing the metadata , we need to roll back the queries that were fired. So
+                //calling the following method to do that.
+                //rollbackQueries(stack, entity, e, hibernateDAO);
+            }
+        }
+        logDebug("persistEntity", "exiting the method");
+        return entityInterface;
+    }
+    
+    /**
+     * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getMainContainer(java.lang.Long)
+     */
+    public Collection<NameValueBean> getMainContainer(Long entityGroupIdentifier)
+            throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+    {
+        Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+        substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entityGroupIdentifier));
+        return executeHQL("getMainContainers", substitutionParameterMap);
+    }
+    
+    /**
+     * This method returns the EntityInterface given the entity name.
+     * @param entityGroupShortName
+     * @return
+     */
+    public EntityGroupInterface getEntityGroupByName(String entityGroupName)
+            throws DynamicExtensionsSystemException
+    {
+        EntityGroupInterface entityGroupInterface = (EntityGroupInterface) getObjectByName(
+                EntityGroup.class.getName(), entityGroupName);
+        return entityGroupInterface;
+    }
+    
+    
+    /**
+     * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getEntityGroupByShortName(java.lang.String)
+     */
+    public EntityGroupInterface getEntityGroupByShortName(String entityGroupShortName)
+            throws DynamicExtensionsSystemException
+    {
+        EntityGroupInterface entityGroupInterface = null;
+        Collection entityGroupCollection = new HashSet();
+        if (entityGroupShortName == null || entityGroupShortName.equals(""))
+        {
+            return entityGroupInterface;
+        }
+        //Getting the instance of the default biz logic class which has the method that returns the particular object
+        //depending on the value of a particular column of the associated table.
+        DefaultBizLogic defaultBizLogic = BizLogicFactory.getDefaultBizLogic();
+
+        try
+        {
+            //Calling retrieve method to  get the entity group object based on the given value of short name.
+            //Passed parameters are the class name of the entity group class, the name of the hibernate object member variable
+            // and the value of that member variable.
+            entityGroupCollection = defaultBizLogic.retrieve(EntityGroup.class.getName(),
+                    "shortName", entityGroupShortName);
+            if (entityGroupCollection != null && entityGroupCollection.size() > 0)
+            {
+                entityGroupInterface = (EntityGroupInterface) entityGroupCollection.iterator()
+                        .next();
+            }
+        }
+        catch (DAOException e)
+        {
+            throw new DynamicExtensionsSystemException(e.getMessage(), e);
+        }
+        return entityGroupInterface;
+
+    }
+    
+    /**
+     * Returns all entitiy groups in the whole system
+     * @return Collection Entity group Collection
+     * @throws DynamicExtensionsSystemException
+     * @throws DynamicExtensionsApplicationException
+     */
+    public Collection<EntityGroupInterface> getAllEntitiyGroups()
+            throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+    {
+        return getAllObjects(EntityGroupInterface.class.getName());
+    }
+    
+    
+    
 
 }

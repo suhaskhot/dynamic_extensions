@@ -169,6 +169,8 @@ class DynamicExtensionBaseQueryBuilder
 	private List getInheritanceQueryList(Entity entity, Entity databaseCopy, List attributeRollbackQueryList)
 	{
 		List queryList = new ArrayList();
+        if(entity.getTableProperties()!=null)
+        {
 		String tableName = entity.getTableProperties().getName();
 
 		if (isParentChanged(entity, databaseCopy))
@@ -191,6 +193,7 @@ class DynamicExtensionBaseQueryBuilder
 				attributeRollbackQueryList.add(foreignConstraintRollbackQuery);
 			}
 		}
+        }
 
 		return queryList;
 	}
@@ -1331,6 +1334,8 @@ class DynamicExtensionBaseQueryBuilder
 	{
 		Collection savedAttributeCollection = databaseCopy.getAttributeCollection();
 		//savedAttributeCollection = entityManagerUtil.filterSystemAttributes(savedAttributeCollection);
+        if (entity.getTableProperties() != null)
+        {
 		String tableName = entity.getTableProperties().getName();
 
 		if (savedAttributeCollection != null && !savedAttributeCollection.isEmpty())
@@ -1364,6 +1369,7 @@ class DynamicExtensionBaseQueryBuilder
 				}
 			}
 		}
+        }
 	}
 
 	/**
@@ -1433,6 +1439,8 @@ class DynamicExtensionBaseQueryBuilder
 		Logger.out.debug("processRemovedAssociation Entering method");
 
 		Collection savedAssociationCollection = databaseCopy.getAssociationCollection();
+        if (entity.getTableProperties() != null)
+        {
 		String tableName = entity.getTableProperties().getName();
 
 		if (savedAssociationCollection != null && !savedAssociationCollection.isEmpty())
@@ -1452,6 +1460,7 @@ class DynamicExtensionBaseQueryBuilder
 				}
 			}
 		}
+        }
 		Logger.out.debug("processRemovedAssociation Exiting method");
 	}
 
@@ -2146,22 +2155,45 @@ class DynamicExtensionBaseQueryBuilder
 			query.append(constraint.getTargetEntityKey()).append(EQUAL).append(sourceEntityRecordId).append(WHERE_KEYWORD).append(IDENTIFIER).append(
 					EQUAL).append(targetEntityRecordId);
 		}
+           Connection conn = null;
+           try {
+               conn = DBUtil.getConnection();
+               Statement stmt = conn.createStatement();
+               stmt.execute(query.toString());
+               conn.commit();
+           } catch (HibernateException e) {
+               connectionRollBack(conn);
+           } catch (SQLException e) {
+               connectionRollBack(conn);
+           }
+           finally
+           {
+               DBUtil.closeConnection();
+           }
+       }
 
-		try
-		{
-			Connection conn = DBUtil.getConnection();
-			Statement stmt = conn.createStatement();
-			stmt.execute(query.toString());
-		}
-		catch (HibernateException e)
-		{
-			throw new DynamicExtensionsSystemException("Can not obtain connection", e);
-		}
-		catch (SQLException e)
-		{
-			throw new DynamicExtensionsSystemException("Can not execute query", e);
-		}
+       /**
 
-	}
+        * This method rollbacks the conncetion
+
+        * @param connection
+
+        * @throws DynamicExtensionsSystemException
+
+        */
+
+       private static void connectionRollBack(Connection connection)
+               throws DynamicExtensionsSystemException
+       {
+           try
+           {
+               connection.rollback();
+           }
+           catch (SQLException e)
+           {
+               e.printStackTrace();
+           }
+           throw new DynamicExtensionsSystemException("Can not execute query");
+       }
 
 }

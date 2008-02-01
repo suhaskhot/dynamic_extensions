@@ -223,6 +223,7 @@
     	   <jar taskname="buildJar" jarfile="${interface.dir}/DynamicExtensions.jar">
 	    		<fileset dir="${target.dir}" >
 		    			<include name="**/domain/**/*.class"/>
+		    			<include name="**/DEIntegration/**.class"/>
 	    				<include name="**/domaininterface/**/*.class"/>
 	    				<include name="**/entitymanager/**.class"/>
 	    				<include name="**/exception/*.class"/>

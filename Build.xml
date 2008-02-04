@@ -662,7 +662,7 @@
        	<copy file="${interface.dir}/DynamicExtensions.jar" todir="${de_release_dir}" />
        	<copy file="${interface.src.dir}/DynamicExtensions-src.zip" todir="${de_release_dir}" />
        	<copy file="${javadoc.dir}/${javadoc.zip}" todir="${de_release_dir}" />
-       	<copy file="${base.dir}/dynamicextension.sql" todir="${de_release_dir}" />
+       	<copy file="${base.dir}/query.sql" todir="${de_release_dir}" />
 	</target>
 	
 	<property name="filename" value="" />

@@ -9,6 +9,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContai
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
+import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 
 /**
  * @author mandar_shidhore
@@ -63,11 +64,12 @@ public abstract class AbstractContainmentControl extends Control implements Abst
 	public String generateViewModeHTML() throws DynamicExtensionsSystemException
 	{
 		String subContainerHTML = "";
+		this.setIsSubControl(true);
 		if (isCardinalityOneToMany())
 		{
 			List<Map<BaseAbstractAttributeInterface, Object>> valueMapList = (List<Map<BaseAbstractAttributeInterface, Object>>) value;
 			String oldMode = this.getContainer().getMode();
-			this.getContainer().setMode("view");
+			this.getContainer().setMode(WebUIManagerConstants.VIEW_MODE);
 			subContainerHTML = this.getContainer().generateControlsHTMLAsGrid(valueMapList);
 			this.getContainer().setMode(oldMode);
 		}
@@ -80,7 +82,7 @@ public abstract class AbstractContainmentControl extends Control implements Abst
 			}
 			this.getContainer().setShowAssociationControlsAsLink(true);
 			String oldMode = this.getContainer().getMode();
-			this.getContainer().setMode("view");
+			this.getContainer().setMode(WebUIManagerConstants.VIEW_MODE);
 			subContainerHTML = this.getContainer().generateControlsHTML();
 			this.getContainer().setMode(oldMode);
 		}

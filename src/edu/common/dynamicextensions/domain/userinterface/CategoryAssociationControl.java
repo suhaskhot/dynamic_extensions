@@ -3,7 +3,6 @@ package edu.common.dynamicextensions.domain.userinterface;
 
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CategoryAssociationControlInterface;
-import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
 /**
  * This Class represents the category.

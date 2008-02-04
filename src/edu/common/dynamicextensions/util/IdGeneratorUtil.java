@@ -61,7 +61,7 @@ public class IdGeneratorUtil
 
 		try
 		{
-			session = DBUtil.currentSession().getSessionFactory().openSession();
+			session = DBUtil.currentSession();
 			transaction = session.beginTransaction();
 
 			Query query = session.createQuery("from " + IdGenerator.class.getName());

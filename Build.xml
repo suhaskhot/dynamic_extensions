@@ -637,7 +637,7 @@
 	    </fileset>
 	  </path>
 
-	  <!--<taskdef classpathref="cobertura.classpath" resource="tasks.properties"/> -->
+	  <taskdef classpathref="cobertura.classpath" resource="tasks.properties"/>
 
 
 	<target name="generate_codecoverage_report" >

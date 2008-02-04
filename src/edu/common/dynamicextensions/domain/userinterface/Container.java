@@ -385,10 +385,16 @@ public class Container extends DynamicExtensionBaseDomainObject
         }
         else
         {
-            if (this.baseContainer != null)
-            {
-                this.baseContainer.setMode(this.mode);
-            }
+        	//Changed by : Kunal
+        	//Reviewed by: Sujay
+        	//Container hierarchy can be n level
+        	//So, mode of the n coatiners in the hierarchy need to be same.
+        	
+           	ContainerInterface tempContainerInterface = this.baseContainer;
+           	while(tempContainerInterface != null){
+           		tempContainerInterface.setMode(this.mode);
+           		tempContainerInterface = tempContainerInterface.getBaseContainer();
+           	}
         }
         stringBuffer.append(generateControlsHTML());
         stringBuffer.append("</table>");

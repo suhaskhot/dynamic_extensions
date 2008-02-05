@@ -2113,6 +2113,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
         while (containerBeansIterator.hasNext())
         {
             objectArrayForContainerBeans = (Object[]) containerBeansIterator.next();
+            //In case of category creation form caption is optional.
+            if((String) objectArrayForContainerBeans[1]!=null)
             list.add(new NameValueBean((String) objectArrayForContainerBeans[1],
                     (Long) objectArrayForContainerBeans[0]));
         }

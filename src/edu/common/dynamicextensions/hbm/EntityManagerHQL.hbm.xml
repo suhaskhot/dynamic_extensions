@@ -168,12 +168,14 @@
 		   (
 		      select category.rootCategoryElement.id
 				from  edu.common.dynamicextensions.domain.Category category
-					where category.rootCategoryElement.entity.id = 
+				join category.rootCategoryElement.entity.containerCollection contColl
+					where category.rootCategoryElement.entity.id in
 						(
 							select association.targetEntity.id
 						       from Association association
 							       	where association.entity.id = ?
 						)
+						and contColl.id != null
 			)   
 	</query>
 

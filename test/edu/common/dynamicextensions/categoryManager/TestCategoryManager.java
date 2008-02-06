@@ -1207,35 +1207,34 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			categoryManager.persistCategory(category);
 
 			// Create data insertion map for category
-			//			Map<BaseAbstractAttributeInterface, Object> radicalProstateDataCategoryMap = new HashMap<BaseAbstractAttributeInterface, Object>();
-			//
-			//			radicalProstateDataCategoryMap.put(tissueSlideCategoryAttribute, "tissueSlideCategoryAttribute");
-			//			radicalProstateDataCategoryMap.put(tumourTissueSiteCategoryAttribute, "tumourTissueSiteCategoryAttribute");
-			//			radicalProstateDataCategoryMap.put(seminalVesicleInvasionCategoryAttribute, "seminalVesicleInvasionCategoryAttribute");
-			//			radicalProstateDataCategoryMap.put(periprostaticFatInvasionCategoryAttribute, "periprostaticFatInvasionCategoryAttribute");
-			//
-			//			List<Map<BaseAbstractAttributeInterface, Object>> prostateGleasonCategoryAssociationDataList = new ArrayList<Map<BaseAbstractAttributeInterface, Object>>();
-			//
-			//			Map<BaseAbstractAttributeInterface, Object> prostateGleasonAssociationCategoryAssociationDataMap = new HashMap<BaseAbstractAttributeInterface, Object>();
-			//			prostateGleasonAssociationCategoryAssociationDataMap.put(primaryPatternCategoryAttribute, "primaryPatternCategoryAttribute");
-			//			prostateGleasonAssociationCategoryAssociationDataMap.put(secondaryPatternCategoryAttribute, "secondaryPatternCategoryAttribute");
-			//			prostateGleasonCategoryAssociationDataList.add(prostateGleasonAssociationCategoryAssociationDataMap);
-			//
-			//			radicalProstateDataCategoryMap.put(categoryAssociation1, prostateGleasonCategoryAssociationDataList);
-			//
-			//			radicalProstateDataCategoryMap.put(radicalProstateNameCategoryAttribute, "radicalProstateNameCategoryAttribute");
-			//			radicalProstateDataCategoryMap.put(radicalProstateTypeCategoryAttribute, "radicalProstateTypeCategoryAttribute");
-			//
-			//			List<Map<BaseAbstractAttributeInterface, Object>> prostatePathologyMelanomaMarginCategoryAssociationDataList = new ArrayList<Map<BaseAbstractAttributeInterface, Object>>();
-			//			Map<BaseAbstractAttributeInterface, Object> prostatePathologyMelanomaMarginCategoryAssociationDataMap = new HashMap<BaseAbstractAttributeInterface, Object>();
-			//			prostatePathologyMelanomaMarginCategoryAssociationDataMap.put(melanomaMarginNameCategoryAttribute, "melanomaMarginNameCategoryAttribute");
-			//			prostatePathologyMelanomaMarginCategoryAssociationDataMap.put(melanomaMarginTypeCategoryAttribute, "melanomaMarginTypeCategoryAttribute");
-			//			prostatePathologyMelanomaMarginCategoryAssociationDataList.add(prostatePathologyMelanomaMarginCategoryAssociationDataMap);
-			//
-			//			radicalProstateDataCategoryMap.put(categoryAssociation2,
-			//					prostatePathologyMelanomaMarginCategoryAssociationDataList);
-			//
-			//			categoryManager.insertData(category, radicalProstateDataCategoryMap);
+//			Map<BaseAbstractAttributeInterface, Object> radicalProstateDataCategoryMap = new HashMap<BaseAbstractAttributeInterface, Object>();
+//
+//			radicalProstateDataCategoryMap.put(tissueSlideCategoryAttribute, "tissueSlideCategoryAttribute");
+//			radicalProstateDataCategoryMap.put(tumourTissueSiteCategoryAttribute, "tumourTissueSiteCategoryAttribute");
+//			radicalProstateDataCategoryMap.put(seminalVesicleInvasionCategoryAttribute, "seminalVesicleInvasionCategoryAttribute");
+//			radicalProstateDataCategoryMap.put(periprostaticFatInvasionCategoryAttribute, "periprostaticFatInvasionCategoryAttribute");
+//
+//			List<Map<BaseAbstractAttributeInterface, Object>> prostateGleasonCategoryAssociationDataList = new ArrayList<Map<BaseAbstractAttributeInterface, Object>>();
+//
+//			Map<BaseAbstractAttributeInterface, Object> prostateGleasonAssociationCategoryAssociationDataMap = new HashMap<BaseAbstractAttributeInterface, Object>();
+//			prostateGleasonAssociationCategoryAssociationDataMap.put(primaryPatternCategoryAttribute, "primaryPatternCategoryAttribute");
+//			prostateGleasonAssociationCategoryAssociationDataMap.put(secondaryPatternCategoryAttribute, "secondaryPatternCategoryAttribute");
+//			prostateGleasonCategoryAssociationDataList.add(prostateGleasonAssociationCategoryAssociationDataMap);
+//
+//			radicalProstateDataCategoryMap.put(categoryAssociation1, prostateGleasonCategoryAssociationDataList);
+//
+//			radicalProstateDataCategoryMap.put(radicalProstateNameCategoryAttribute, "radicalProstateNameCategoryAttribute");
+//			radicalProstateDataCategoryMap.put(radicalProstateTypeCategoryAttribute, "radicalProstateTypeCategoryAttribute");
+//
+//			List<Map<BaseAbstractAttributeInterface, Object>> prostatePathologyMelanomaMarginCategoryAssociationDataList = new ArrayList<Map<BaseAbstractAttributeInterface, Object>>();
+//			Map<BaseAbstractAttributeInterface, Object> prostatePathologyMelanomaMarginCategoryAssociationDataMap = new HashMap<BaseAbstractAttributeInterface, Object>();
+//			prostatePathologyMelanomaMarginCategoryAssociationDataMap.put(melanomaMarginNameCategoryAttribute, "melanomaMarginNameCategoryAttribute");
+//			prostatePathologyMelanomaMarginCategoryAssociationDataMap.put(melanomaMarginTypeCategoryAttribute, "melanomaMarginTypeCategoryAttribute");
+//			prostatePathologyMelanomaMarginCategoryAssociationDataList.add(prostatePathologyMelanomaMarginCategoryAssociationDataMap);
+//
+//			radicalProstateDataCategoryMap.put(categoryAssociation2, prostatePathologyMelanomaMarginCategoryAssociationDataList);
+//
+//			categoryManager.insertData(category, radicalProstateDataCategoryMap);
 		}
 		catch (Exception e)
 		{
@@ -1628,25 +1627,25 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			categoryManager.persistCategory(category);
 
 			// Create data insertion map for category
-			Map<BaseAbstractAttributeInterface, Object> radicalProstateDataCategoryMap = new HashMap<BaseAbstractAttributeInterface, Object>();
-
-			radicalProstateDataCategoryMap.put(tissueSlideCategoryAttribute, "tissueSlideCategoryAttribute");
-			radicalProstateDataCategoryMap.put(tumourTissueSiteCategoryAttribute, "tumourTissueSiteCategoryAttribute");
-			radicalProstateDataCategoryMap.put(seminalVesicleInvasionCategoryAttribute, "seminalVesicleInvasionCategoryAttribute");
-			radicalProstateDataCategoryMap.put(periprostaticFatInvasionCategoryAttribute, "periprostaticFatInvasionCategoryAttribute");
-			radicalProstateDataCategoryMap.put(radicalProstateNameCategoryAttribute, "radicalProstateNameCategoryAttribute");
-			radicalProstateDataCategoryMap.put(radicalProstateTypeCategoryAttribute, "radicalProstateTypeCategoryAttribute");
-
-			List<Map<BaseAbstractAttributeInterface, Object>> prostatePathologyMelanomaMarginCategoryAssociationDataList = new ArrayList<Map<BaseAbstractAttributeInterface, Object>>();
-			Map<BaseAbstractAttributeInterface, Object> prostatePathologyMelanomaMarginCategoryAssociationDataMap = new HashMap<BaseAbstractAttributeInterface, Object>();
-			prostatePathologyMelanomaMarginCategoryAssociationDataMap.put(melanomaMarginNameCategoryAttribute, "melanomaMarginNameCategoryAttribute");
-			prostatePathologyMelanomaMarginCategoryAssociationDataMap.put(melanomaMarginTypeCategoryAttribute, "melanomaMarginTypeCategoryAttribute");
-			prostatePathologyMelanomaMarginCategoryAssociationDataList.add(prostatePathologyMelanomaMarginCategoryAssociationDataMap);
-
-			radicalProstateDataCategoryMap.put(radicalProstatectomyMelanomaMarginCategoryAssociation,
-					prostatePathologyMelanomaMarginCategoryAssociationDataList);
-
-			categoryManager.insertData(category, radicalProstateDataCategoryMap);
+//			Map<BaseAbstractAttributeInterface, Object> radicalProstateDataCategoryMap = new HashMap<BaseAbstractAttributeInterface, Object>();
+//
+//			radicalProstateDataCategoryMap.put(tissueSlideCategoryAttribute, "tissueSlideCategoryAttribute");
+//			radicalProstateDataCategoryMap.put(tumourTissueSiteCategoryAttribute, "tumourTissueSiteCategoryAttribute");
+//			radicalProstateDataCategoryMap.put(seminalVesicleInvasionCategoryAttribute, "seminalVesicleInvasionCategoryAttribute");
+//			radicalProstateDataCategoryMap.put(periprostaticFatInvasionCategoryAttribute, "periprostaticFatInvasionCategoryAttribute");
+//			radicalProstateDataCategoryMap.put(radicalProstateNameCategoryAttribute, "radicalProstateNameCategoryAttribute");
+//			radicalProstateDataCategoryMap.put(radicalProstateTypeCategoryAttribute, "radicalProstateTypeCategoryAttribute");
+//
+//			List<Map<BaseAbstractAttributeInterface, Object>> prostatePathologyMelanomaMarginCategoryAssociationDataList = new ArrayList<Map<BaseAbstractAttributeInterface, Object>>();
+//			Map<BaseAbstractAttributeInterface, Object> prostatePathologyMelanomaMarginCategoryAssociationDataMap = new HashMap<BaseAbstractAttributeInterface, Object>();
+//			prostatePathologyMelanomaMarginCategoryAssociationDataMap.put(melanomaMarginNameCategoryAttribute, "melanomaMarginNameCategoryAttribute");
+//			prostatePathologyMelanomaMarginCategoryAssociationDataMap.put(melanomaMarginTypeCategoryAttribute, "melanomaMarginTypeCategoryAttribute");
+//			prostatePathologyMelanomaMarginCategoryAssociationDataList.add(prostatePathologyMelanomaMarginCategoryAssociationDataMap);
+//
+//			radicalProstateDataCategoryMap.put(radicalProstatectomyMelanomaMarginCategoryAssociation,
+//					prostatePathologyMelanomaMarginCategoryAssociationDataList);
+//
+//			categoryManager.insertData(category, radicalProstateDataCategoryMap);
 		}
 		catch (Exception e)
 		{
@@ -2179,7 +2178,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 	}
-	
+
 	/**
 	 * Create a non-linear category tree from non-linear entity tree.
 	 * Save the category.
@@ -2189,7 +2188,6 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		MockCategoryManager mockCategoryManager = new MockCategoryManager();
 		CategoryManagerInterface categoryManager = CategoryManager.getInstance();
 		CategoryInterface category = mockCategoryManager.createCategoryFromModel1();
-		
 		try
 		{
 			// Save category.
@@ -2206,7 +2204,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 	}
-	
+
 	/**
 	 * Add a category entity to a category.
 	 * Save the category. This should not result in new tables creation, 
@@ -2217,15 +2215,15 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		MockCategoryManager mockCategoryManager = new MockCategoryManager();
 		CategoryManagerInterface categoryManager = CategoryManager.getInstance();
 		CategoryInterface category = mockCategoryManager.createCategoryFromModel1();
-				
+
 		try
 		{
 			// Save the category.
 			categoryManager.persistCategory(category);
-			
+
 			// Add another category entity to present category.
 			category = mockCategoryManager.addNewCategoryEntityToExistingCategory(category);
-			
+
 			// Again save the category.
 			categoryManager.persistCategory(category);
 		}
@@ -2240,7 +2238,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 	}
-	
+
 	/**
 	 * Edit metadata for a category entity in a category.
 	 * Save the category. This should not result in new tables creation, 
@@ -2251,15 +2249,15 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		MockCategoryManager mockCategoryManager = new MockCategoryManager();
 		CategoryManagerInterface categoryManager = CategoryManager.getInstance();
 		CategoryInterface category = mockCategoryManager.createCategoryFromModel1();
-				
+
 		try
 		{
 			// Save the category.
 			categoryManager.persistCategory(category);
-			
+
 			// Edit category entity metadata.
 			category.getRootCategoryElement().setName("chemotherapyTrialsCategoryEntity name changed");
-			
+
 			// Again save the category. This should not result in new tables creation, 
 			// just the category entity metadata information should get updated.
 			categoryManager.persistCategory(category);
@@ -2275,7 +2273,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 	}
-	
+
 	/**
 	 * Add a category attribute to a category entity.
 	 * Save the category. This should not result in new tables creation, 
@@ -2286,15 +2284,15 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		MockCategoryManager mockCategoryManager = new MockCategoryManager();
 		CategoryManagerInterface categoryManager = CategoryManager.getInstance();
 		CategoryInterface category = mockCategoryManager.createCategoryFromModel1();
-				
+
 		try
 		{
 			// Save the category.
 			categoryManager.persistCategory(category);
-			
+
 			// Add category attribute to category entity.
 			category = mockCategoryManager.addCategoryAttributetyToCategoryEntity(category);
-			
+
 			// Again save the category. This should not result in new tables creation, 
 			// just one more category attribute should be added to category entity.
 			categoryManager.persistCategory(category);
@@ -2310,7 +2308,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 	}
-	
+
 	/**
 	 * Edit metadata for a category attribute in a category entity.
 	 * Save the category. This should not result in new tables creation, 
@@ -2321,20 +2319,20 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		MockCategoryManager mockCategoryManager = new MockCategoryManager();
 		CategoryManagerInterface categoryManager = CategoryManager.getInstance();
 		CategoryInterface category = mockCategoryManager.createCategoryFromModel1();
-				
+
 		try
 		{
 			// Save the category.
 			categoryManager.persistCategory(category);
-			
+
 			// Edit category attribute metadata.
 			CategoryEntityInterface rootCategoryEntity = category.getRootCategoryElement();
-			
-			for (CategoryAttributeInterface ca: rootCategoryEntity.getCategoryAttributeCollection())
+
+			for (CategoryAttributeInterface ca : rootCategoryEntity.getCategoryAttributeCollection())
 			{
-				ca.setName(ca.getName() + String.valueOf(new Double(Math.random()).intValue())); 
+				ca.setName(ca.getName() + String.valueOf(new Double(Math.random()).intValue()));
 			}
-			
+
 			// Again save the category. This should not result in new tables creation, 
 			// just the category attribute metadata information should get updated.
 			categoryManager.persistCategory(category);

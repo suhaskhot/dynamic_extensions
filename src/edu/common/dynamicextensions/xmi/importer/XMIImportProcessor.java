@@ -236,16 +236,16 @@ public class XMIImportProcessor
 	{
 		List<EntityGroupInterface> entityGroupColl = null;
 		DefaultBizLogic defaultBizLogic = BizLogicFactory.getDefaultBizLogic();
-		if(packageName.equals(""))
-		{
+//		if(packageName.equals(""))
+//		{
 			entityGroupColl = defaultBizLogic.retrieve(EntityGroup.class
 					.getName(), edu.common.dynamicextensions.ui.util.Constants.NAME, entityGroupName);
-		}
-		else
-		{
-			entityGroupColl = defaultBizLogic.retrieve(EntityGroup.class
-					.getName(), edu.common.dynamicextensions.ui.util.Constants.NAME, packageName);
-		}
+//		}
+//		else
+//		{
+//			entityGroupColl = defaultBizLogic.retrieve(EntityGroup.class
+//					.getName(), edu.common.dynamicextensions.ui.util.Constants.NAME, packageName);
+//		}
 		return entityGroupColl;
 	}
 	/**

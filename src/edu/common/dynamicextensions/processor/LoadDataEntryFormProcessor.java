@@ -111,8 +111,8 @@ public class LoadDataEntryFormProcessor
 		{
 			//Quic fix:
 			if(entityInterface instanceof EntityInterface){
-				EntityManagerInterface categoryManagerInterface = EntityManager.getInstance();
-				Map map= categoryManagerInterface.getRecordById((EntityInterface)entityInterface, Long.valueOf(recordIdentifier));
+				EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+				Map map= entityManagerInterface.getRecordById((EntityInterface)entityInterface, Long.valueOf(recordIdentifier));
 				recordMap = map;
 			}else{
 			CategoryManagerInterface categoryManagerInterface = CategoryManager.getInstance();

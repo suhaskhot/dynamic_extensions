@@ -656,20 +656,19 @@ class DynamicExtensionBaseQueryBuilder
 		containmentRecordIdQuery.append(WHERE_KEYWORD + WHITESPACE + targetKey + WHITESPACE + IN_KEYWORD);
 		containmentRecordIdQuery.append(WHITESPACE + getListToString(recordIdList) + WHITESPACE);
 
-		List tempList = entityManagerUtil.getResultInList(containmentRecordIdQuery.toString());
-		List<Long> childrenRecordIdList = new ArrayList<Long>();
+        List tempList = entityManagerUtil.getResultInList(containmentRecordIdQuery.toString());
+//      removed the below code because the conversion is not required
 
-		if (tempList != null && tempList.size() > 0)
-		{
+//             List<Long> childrenRecordIdList = new ArrayList<Long>();
 
-			for (int i = 0; i < tempList.size(); i++)
-			{
-				String recordValue = (String) ((List) tempList.get(i)).get(0);
-				childrenRecordIdList.add(Long.parseLong(recordValue));
-			}
-		}
-
-		return childrenRecordIdList;
+//             if (tempList != null && tempList.size() > 0) {
+     //
+//                 for (int i = 0; i < tempList.size(); i++) {
+//                     String recordValue = (String) ((List) tempList.get(i)).get(0);
+//                     childrenRecordIdList.add(Long.parseLong(recordValue));
+//                 }
+//             }
+             return tempList;
 	}
 
 	/**

@@ -7,13 +7,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
+import org.hibernate.Session;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -21,17 +24,15 @@ import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPro
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.global.Constants;
-import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.HibernateDAO;
-import edu.wustl.common.dao.JDBCDAO;
+import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.dbManager.DBUtil;
 
 public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstantsInterface
 {
 
-
+	private static Map idMap = new HashMap();
 
 	/**
 	 * @param query query to be executed
@@ -177,7 +178,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	 * @throws DAOException
 	 * @throws ClassNotFoundException
 	 */
-	synchronized public Long getNextIdentifier(String entityTableName)
+	synchronized public static Long getNextIdentifier(String entityTableName)
 			throws DynamicExtensionsSystemException
 	{
 
@@ -185,10 +186,21 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 				+ entityTableName);
 		try
 		{
-			ResultSet resultSet = executeQuery(queryToGetNextIdentifier.toString());
-			resultSet.next();
-			Long identifier = resultSet.getLong(1);
-			return identifier + 1;
+			Long identifier = null;
+			if (idMap.containsKey(entityTableName))
+			{
+				Long id = (Long) idMap.get(entityTableName);
+				identifier = id + 1;
+			}
+			else
+			{
+				ResultSet resultSet = executeQuery(queryToGetNextIdentifier.toString());
+				resultSet.next();
+				identifier = resultSet.getLong(1);
+				identifier = identifier + 1;
+			}
+			idMap.put(entityTableName,identifier);
+			return identifier;
 		}
 		catch (SQLException e)
 		{
@@ -206,21 +218,47 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	 */
 	public List getResultInList(String query) throws DynamicExtensionsSystemException
 	{
-		List resultList = null;
-		JDBCDAO jdbcDAO = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
-
+		List resultList = new ArrayList();
+		Session session = null;
+		Connection con = null;
+		Statement statement = null;
+		ResultSet resultSet = null;
 		try
 		{
-			jdbcDAO.openSession(null);
-			resultList = jdbcDAO.executeQuery(query, null, false, false, null);
+			session = DBUtil.getCleanSession();
+			con = session.connection();
+			statement = con.createStatement();
+			resultSet = statement.executeQuery(query);
+			while (resultSet.next())
+			{
+				Long id = resultSet.getLong(1);
+				resultList.add(id);
+			}
 		}
-		catch (DAOException e)
+		catch (SQLException e)
 		{
-			throw new DynamicExtensionsSystemException("Could notexecuting the query ", e);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		catch (ClassNotFoundException e)
+		catch (BizLogicException e)
 		{
-			throw new DynamicExtensionsSystemException("Could notexecuting the query ", e);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally
+		{
+			try
+			{
+				resultSet.close();
+				statement.close();
+				con.close();
+				session.close();
+			}
+			catch (SQLException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return resultList;
 	}

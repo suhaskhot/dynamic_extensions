@@ -4,7 +4,6 @@ package edu.common.dynamicextensions.entitymanager;
 import static edu.wustl.common.util.global.Constants.ACTIVITY_STATUS_ACTIVE;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -164,12 +163,13 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		HibernateDAO hibernateDAO = null;
 		try
 		{
-			DAOFactory factory = DAOFactory.getInstance();
-			hibernateDAO = (HibernateDAO) factory.getDAO(Constants.HIBERNATE_DAO);
-			hibernateDAO.openSession(null);
+			
 			EntityManagerInterface entityManager = EntityManager.getInstance();
 			recordIdList = entityManager.insertData(entity, EntityDataValueMapList);
 
+			DAOFactory factory = DAOFactory.getInstance();
+			hibernateDAO = (HibernateDAO) factory.getDAO(Constants.HIBERNATE_DAO);
+			hibernateDAO.openSession(null);
 			//Quick fix
 			EntityManagerUtil entityManagerUtil = new EntityManagerUtil();
 			StringBuffer query = new StringBuffer();
@@ -378,8 +378,8 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			categoryDataMap.put(associationInterface, categoryDataValueMapList);
 
 			EntityInterface searchEntity = associationInterface.getTargetCategoryEntity().getEntity();
-			List<PathAssociationRelationInterface> SortedPathAssociationRelationCollection = associationInterface.getTargetCategoryEntity()
-					.getPath().getSortedPathAssociationRelationCollection();
+			List<PathAssociationRelationInterface> SortedPathAssociationRelationCollection = associationInterface.getTargetCategoryEntity().getPath()
+					.getSortedPathAssociationRelationCollection();
 
 			List<Map<AbstractAttributeInterface, Object>> dataValueMapList = getList(searchEntity, entityDataMap,
 					getSortedAssociations(SortedPathAssociationRelationCollection));
@@ -453,7 +453,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	/**
 	 * @param rootCategoryEntityInterface
 	 * @param recordId
-	 * @return
+	 * @return the record id of the hook entity
 	 * @throws SQLException
 	 * @throws DynamicExtensionsSystemException
 	 */
@@ -462,17 +462,16 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	{
 		StringBuffer query = new StringBuffer();
 		query.append(SELECT_KEYWORD + WHITESPACE + CATEGORY_ROOT_ID + WHITESPACE + FROM_KEYWORD + WHITESPACE
-				+ rootCategoryEntityInterface.getTableProperties().getName() + WHITESPACE + WHERE_KEYWORD + WHITESPACE + IDENTIFIER + EQUAL
-				+ recordId);
-
-		ResultSet resultSet = new EntityManagerUtil().executeQuery(query.toString());
-
-		if (resultSet.next())
-		{
-			return Long.valueOf(resultSet.getObject(1).toString());
+				+ rootCategoryEntityInterface.getTableProperties().getName() + WHITESPACE + WHERE_KEYWORD + 
+				WHITESPACE + IDENTIFIER + EQUAL+ recordId);
+		Long rootEntityRecordId = null;
+		
+		EntityManagerUtil entityManagerUtil = new EntityManagerUtil();
+		List resultList = entityManagerUtil.getResultInList(query.toString());
+		if(resultList.size() > 0){
+			rootEntityRecordId = (Long) resultList.get(0); 
 		}
-		resultSet.close();
-		return new Long(-1);
+		return rootEntityRecordId;
 	}
 
 	/* (non-Javadoc)
@@ -482,9 +481,10 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException, SQLException
 	{
 		EntityManagerInterface entityManager = EntityManager.getInstance();
+		Map<AbstractAttributeInterface, Object> entityValueMap = generateEntityDataValueMap(attributeValueMap);
+		Long entityRecordId = getRootEntityRecordId(categoryEntity, recordId);
 
-		Boolean edited = entityManager.editData(categoryEntity.getEntity(), generateEntityDataValueMap(attributeValueMap), getRootEntityRecordId(
-				categoryEntity, recordId));
+		Boolean edited = entityManager.editData(categoryEntity.getEntity(), entityValueMap, entityRecordId);
 		return edited;
 	}
 

@@ -7,13 +7,18 @@
  */ 
 package edu.common.dynamicextensions.DEIntegration;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+
+import org.hibernate.Session;
 
 import net.sf.ehcache.CacheException;
 
@@ -21,8 +26,12 @@ import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.util.global.Constants;
+import edu.wustl.common.dao.DAOFactory;
+import edu.wustl.common.dao.HibernateDAO;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.common.util.dbManager.DBUtil;
 
 
 /**
@@ -59,30 +68,67 @@ public class DEIntegration implements IntegrationInterface
                 .getDynamicTableName(enitityContainerId);
         String columnName = EntityManager.getInstance()
                 .getColumnNameForAssociation(hookEntityId, enitityContainerId);
-
-        String entitySql = "select identifier from " + entityTableName
-                + " where " + columnName + " = " + staticRecId;
-        EntityManagerUtil util = new EntityManagerUtil();
-        ResultSet resultSet = util.executeQuery(entitySql);
-        List recIdList = new ArrayList();
-        while (resultSet.next())
+        Session session = null;
+        ResultSet resultSet = null;
+        Statement statement= null;
+        Connection connection = null;
+        try
         {
-            recIdList.add(resultSet.getLong(1));
-        }
-        resultSet.close();
+            session =DBUtil.getCleanSession();
+            connection = session.connection();
+            statement = connection.createStatement();
 
-        Iterator recIt = recIdList.iterator();
-
-        while (recIt.hasNext())
-        {
-            String catSql = "select identifier from " + catTableName
-                    + " where CATEGORY_ROOT_ID= " + recIt.next();
-            ResultSet catRecResultSet = util.executeQuery(catSql);
-            while (catRecResultSet.next())
+            String entitySql = "select identifier from " + entityTableName
+                    + " where " + columnName + " = " + staticRecId;
+            //EntityManagerUtil util = new EntityManagerUtil();
+            resultSet = statement.executeQuery(entitySql.toString()); //util.executeQuery(entitySql);
+            List recIdList = new ArrayList();
+            while (resultSet.next())
             {
-                catRecId.add(catRecResultSet.getLong(1));
+                recIdList.add(resultSet.getLong(1));
             }
-            catRecResultSet.close();
+            Iterator recIt = recIdList.iterator();
+            while (recIt.hasNext())
+            {
+                String catSql = "select identifier from " + catTableName
+                        + " where CATEGORY_ROOT_ID= " + recIt.next();
+                ResultSet catRecResultSet = null;
+                PreparedStatement preparedStmt = null;
+                try
+                {
+                    preparedStmt = connection
+                            .prepareStatement(catSql);
+                    catRecResultSet = preparedStmt.executeQuery();
+                    while (catRecResultSet.next())
+                    {
+                        catRecId.add(catRecResultSet.getLong(1));
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw new DynamicExtensionsSystemException(
+                            "Error while executing query", e);
+                }
+                finally
+                {
+                    catRecResultSet.close();
+                    preparedStmt.close();
+                }
+
+            }
+
+        }
+        catch (BizLogicException e)
+        {
+            throw new DynamicExtensionsSystemException(
+                    "Error while opening session", e);
+        }
+        finally
+        {            
+            resultSet.close();
+            statement.close();
+            connection.close();
+            session.close();
         }
 
         return catRecId;
@@ -124,20 +170,14 @@ public class DEIntegration implements IntegrationInterface
      */
     public Collection getDynamicEntityRecordIdFromHookEntityRecordId(String hookEntityRecId, Long containerId, Long hookEntityId) throws DynamicExtensionsSystemException, SQLException
     {      
-        String tableName = EntityManager.getInstance().getDynamicTableName(containerId); 
-        String columnName = EntityManager.getInstance().getColumnNameForAssociation(hookEntityId,containerId);
-        
-        String entitySql = "select identifier from " + tableName + " where "
-        + columnName + "=" + hookEntityRecId;
-        
-        EntityManagerUtil util = new EntityManagerUtil();
-        ResultSet resultSet = util.executeQuery(entitySql);
         Collection recIdList = new HashSet();
-        while (resultSet.next())
-        {
-            recIdList.add(resultSet.getLong(1));
-        }
-        resultSet.close();
+        String tableName = EntityManager.getInstance().getDynamicTableName(containerId); 
+        String columnName = EntityManager.getInstance().getColumnNameForAssociation(hookEntityId,containerId); 
+        
+        EntityManagerUtil entityManagerUtil = new EntityManagerUtil();              
+        String entitySql = "select identifier from " + tableName + " where " + columnName + "=" + hookEntityRecId;            
+        recIdList=entityManagerUtil.getResultInList(entitySql);
+        
         return recIdList;
     }
     

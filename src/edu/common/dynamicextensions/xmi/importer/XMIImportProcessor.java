@@ -48,12 +48,15 @@ import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
+import edu.common.dynamicextensions.entitymanager.EntityGroupManager;
+import edu.common.dynamicextensions.entitymanager.EntityGroupManagerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
@@ -425,6 +428,21 @@ public class XMIImportProcessor
 					//				{//Temporary solution for unsupported datatypes. Not adding attributes having unsupported datatypes.
 					//					throw new DynamicExtensionsApplicationException("File contains Unsupported DataType");
 					//				}
+				}
+				else
+				{
+					
+					DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+					AttributeInterface idAttribute = domainObjectFactory.createLongAttribute();
+					idAttribute.setName(Constants.SYSTEM_IDENTIFIER);
+					idAttribute.setIsPrimaryKey(new Boolean(true));
+					idAttribute.setIsNullable(new Boolean(false));
+					ColumnPropertiesInterface column = domainObjectFactory.createColumnProperties();
+					column.setName(Constants.IDENTIFIER);
+					idAttribute.setColumnProperties(column);
+					entity.addAttribute(idAttribute);
+					
+					idAttribute.setEntity(entity);
 				}
 			}
 		}
@@ -1591,20 +1609,27 @@ public class XMIImportProcessor
 //			ContainerInterface containerInterface = (ContainerInterface) containerList.get(0);
 //			containerColl.add(containerInterface);
 //		}
-		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		EntityGroupManagerInterface entityManagerInterface = EntityGroupManager.getInstance();
 
-//		try
-//		{
-//			entityManagerInterface.persistEntityGroupWithAllContainers(entityGroup, mainContainerList);
-//		}
-//		catch (DynamicExtensionsApplicationException e)
-//		{
-//			throw new DynamicExtensionsApplicationException(e.getMessage(), e);
-//		}
-//		catch (DynamicExtensionsSystemException e)
-//		{
-//			throw new DynamicExtensionsSystemException(e.getMessage(), e);
-//		}
+		try
+		{
+		//	entityManagerInterface.persistEntityGroupWithAllContainers(entityGroup, mainContainerList);
+			
+			
+			for(ContainerInterface container : mainContainerList)
+			{
+				entityGroup.addMainContainer(container);
+			}
+			entityManagerInterface.persistEntityGroup(entityGroup);
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			throw new DynamicExtensionsApplicationException(e.getMessage(), e);
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			throw new DynamicExtensionsSystemException(e.getMessage(), e);
+		}
 	}
 
 	/**

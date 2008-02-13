@@ -33,7 +33,7 @@ public class CategoryAssociationControl extends AbstractContainmentControl imple
 	{
 		boolean isOneToMany = false;
 		CategoryAssociationInterface associationInterface = (CategoryAssociationInterface) this.getBaseAbstractAttribute();
-		if (associationInterface.getCategoryEntity().getNumberOfEntries() == -1)
+		if (associationInterface.getTargetCategoryEntity().getNumberOfEntries() == -1)
 		{
 			isOneToMany = true;
 		}

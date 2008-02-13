@@ -96,7 +96,7 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 			EntityInterface parentEntity = (EntityInterface) containerInterface.getBaseContainer().getAbstractEntity();
 			entityInterface.setParentEntity(parentEntity);
 		}
-		entityInterface.addContaier(containerInterface);
+		entityInterface.addContainer(containerInterface);
 		return containerInterface;
 	}
 
@@ -376,6 +376,7 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 			EntityInterface targetEntity = (EntityInterface) subFormContainer.getAbstractEntity();
 			EntityInterface sourceEntity = (EntityInterface) mainFormContainer.getAbstractEntity();
             targetEntity.setEntityGroup(sourceEntity.getEntityGroup());
+            sourceEntity.getEntityGroup().addEntity(targetEntity);
 //			if (sourceEntityGroups != null)
 //			{
 //				Iterator<EntityGroupInterface> entityGroupIter = sourceEntityGroups.iterator();

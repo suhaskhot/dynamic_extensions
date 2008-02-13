@@ -1,18 +1,11 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
-import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
-import edu.common.dynamicextensions.domain.LongAttributeTypeInformation;
-import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.Constants;
-import edu.common.dynamicextensions.ui.util.ControlsUtility;
-import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 
 /**
  * This Class represents the TextField (TextBox) of the HTML page.
@@ -133,7 +126,10 @@ public class TextField extends Control implements TextFieldInterface
 			{
 				maxChars = attibute.getMaxSize();
 			}
-			if (maxChars != 0)
+			//Changed by: Kunal
+			//Incase of input type is chose as number 
+			//the max char size is -1
+			if (maxChars > 0)
 			{
 				htmlString += "maxlength='" + maxChars + "'>";
 			}

@@ -1904,7 +1904,7 @@ public class MockCategoryManager
 		containerInterface.setMainTableCss("formRequiredLabel");
 		containerInterface.setRequiredFieldIndicatior("*");
 		containerInterface.setRequiredFieldWarningMessage("indicates mandatory fields.");
-		categoryEntity.addContaier(containerInterface);
+		categoryEntity.addContainer(containerInterface);
 
 		return containerInterface;
 	}

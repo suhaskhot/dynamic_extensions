@@ -170,7 +170,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			DAOFactory factory = DAOFactory.getInstance();
 			hibernateDAO = (HibernateDAO) factory.getDAO(Constants.HIBERNATE_DAO);
 			hibernateDAO.openSession(null);
-			//Quick fix
+
 			EntityManagerUtil entityManagerUtil = new EntityManagerUtil();
 			StringBuffer query = new StringBuffer();
 			query.append(INSERT_INTO_KEYWORD + WHITESPACE + rootCategoryEntity.getTableProperties().getName() + WHITESPACE + OPENING_BRACKET
@@ -179,8 +179,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 					+ entityManagerUtil.getNextIdentifier(rootCategoryEntity.getTableProperties().getName()) + COMMA + recordIdList.get(0)
 					+ CLOSING_BRACKET);
 			Connection conn = DBUtil.getConnection();
-			Statement statement = null;
-			statement = conn.createStatement();
+			Statement statement =conn.createStatement();
 			statement.executeUpdate(query.toString());
 			conn.commit();
 
@@ -457,7 +456,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @throws SQLException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Long getRootEntityRecordId(CategoryEntityInterface rootCategoryEntityInterface, Long recordId) throws SQLException,
+	private Long getRootEntityRecordId(CategoryEntityInterface rootCategoryEntityInterface, Long recordId) throws SQLException,
 			DynamicExtensionsSystemException
 	{
 		StringBuffer query = new StringBuffer();
@@ -484,8 +483,8 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		Map<AbstractAttributeInterface, Object> entityValueMap = generateEntityDataValueMap(attributeValueMap);
 		Long entityRecordId = getRootEntityRecordId(categoryEntity, recordId);
 
-		Boolean edited = entityManager.editData(categoryEntity.getEntity(), entityValueMap, entityRecordId);
-		return edited;
+		Boolean isEdited = entityManager.editData(categoryEntity.getEntity(), entityValueMap, entityRecordId);
+		return isEdited ;
 	}
 
 }

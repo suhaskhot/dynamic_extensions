@@ -173,6 +173,9 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		//Quick fix
+        ((EntityInterface)
+                containerInterface.getAbstractEntity()).getEntityGroup().addMainContainer(containerInterface);
+        
 		//metadata createion needs to run incase of entity only
 		EntityGroupManager.getInstance().persistEntityGroup(((EntityInterface)
 				containerInterface.getAbstractEntity()).getEntityGroup());

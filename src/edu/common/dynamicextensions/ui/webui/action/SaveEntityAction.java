@@ -57,7 +57,8 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 			}
 
 			String formName = "";
-
+            ((EntityInterface)
+                    containerInterface.getAbstractEntity()).getEntityGroup().addMainContainer(containerInterface);
 			EntityGroupManager.getInstance().persistEntityGroup(((EntityInterface) containerInterface.getAbstractEntity()).getEntityGroup());
 
 			if ((containerInterface != null) && (containerInterface.getAbstractEntity() != null))

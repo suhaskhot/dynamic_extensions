@@ -446,6 +446,37 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		return associationCollection;
 	}
+	
+	/**
+	 * Returns an association object given the entity name and source role name.
+	 * @param entityName
+	 * @param sourceRoleName
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+
+	public AssociationInterface getAssociation(String sourceEntityName, String sourceRoleName,String targetEntityName) 
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		Map substitutionParameterMap = new HashMap();
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("string", sourceEntityName));
+		substitutionParameterMap.put("1", new HQLPlaceHolderObject("string", sourceRoleName));
+		substitutionParameterMap.put("2", new HQLPlaceHolderObject("string", targetEntityName));
+		
+		//Following method is called to execute the stored HQL , the name of which is given as the first parameter.
+		//The second parameter is the map which contains the actual values that are replaced for the placeholders.
+
+		Collection<AssociationInterface> associationCollection = executeHQL("getAssociationBySourceTargetEntity",
+				substitutionParameterMap);
+		AssociationInterface associationInterface = null;
+        if(associationCollection!= null && associationCollection.size() != 0)
+        {
+        	associationInterface = associationCollection.iterator().next();
+        }
+		return associationInterface;
+		
+	}
 
 	/**
 	 * This method returns the collection of entities given the concept code for the entity.

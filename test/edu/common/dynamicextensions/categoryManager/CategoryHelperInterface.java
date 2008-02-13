@@ -3,10 +3,14 @@ package edu.common.dynamicextensions.categoryManager;
 
 import java.util.List;
 
+import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.PathInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
 /**
  * 
@@ -16,36 +20,40 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInter
  */
 public interface CategoryHelperInterface
 {
-	public int textFieldControlNumber = 1;
+//	public int textFieldControl = 1;
+//	public int listBoxControl = 2;
+//	public int datePickerControl = 3;
+//	public int fileControl = 4;
+//	public int radioButtonControl = 5;
 
 	public enum ControlEnum {
-		textFieldControlNumber(1);
+		textFieldControl, listBoxControl, datePickerControl, fileControl, radioButtonControl, TEXTAREA;
 
 		Integer value;
 
-		ControlEnum(Integer value)
-		{
-			this.value = value;
-		}
+//		ControlEnum(Integer value)
+//		{
+//			this.value = value;
+//		}
 
-		public Integer getValue()
-		{
-			return value;
-		}
-
-		public static ControlEnum get(Integer value)
-		{
-			ControlEnum[] controlValues = ControlEnum.values();
-
-			for (ControlEnum controlNumber : controlValues)
-			{
-				if (controlNumber.getValue().equals(value))
-				{
-					return controlNumber;
-				}
-			}
-			return null;
-		}
+//		public Integer getValue()
+//		{
+//			return value;
+//		}
+//
+//		public static ControlEnum get(Integer value)
+//		{
+//			ControlEnum[] controlValues = ControlEnum.values();
+//
+//			for (ControlEnum controlNumber : controlValues)
+//			{
+//				if (controlNumber.getValue().equals(value))
+//				{
+//					return controlNumber;
+//				}
+//			}
+//			return null;
+//		}
 	};
 
 	/**
@@ -81,6 +89,16 @@ public interface CategoryHelperInterface
 	 * @param parentContainer
 	 * @param childContainer
 	 */
-	public void setParentCategoryEntity(ContainerInterface parentContainer, ContainerInterface childContainer);
+	public void setParent(ContainerInterface parentContainer, ContainerInterface childContainer);
+	
+	/**
+	 * @param sourceContainer
+	 * @param targetContainer
+	 * @param sourceRoleList
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public void associateCategoryContainers(ContainerInterface sourceContainer, ContainerInterface targetContainer, List<String> sourceRoleList)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 }

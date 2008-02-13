@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.categoryManager;
 
 import java.util.List;
 
+import edu.common.dynamicextensions.domain.CategoryAttribute;
 import edu.common.dynamicextensions.domain.CategoryEntity;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
@@ -20,6 +21,7 @@ import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CategoryAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
@@ -81,20 +83,13 @@ public class CategoryHelper implements CategoryHelperInterface
 		categoryEntity.addCategoryAttribute(categoryAttribute);
 		categoryAttribute.setCategoryEntity(categoryEntity);
 
-		if (controlValue == ControlEnum.textFieldControlNumber)
+		if (controlValue == ControlEnum.textFieldControl)
 		{
-			int sequenceNo = getNextSequenceNumber(container);
-			createTextFieldControl(container, categoryAttribute, sequenceNo);
+			createTextFieldControl(container, categoryAttribute);
 		}
-
-		if (permissibleValueList != null && permissibleValueList.length != 0)
+		else if(controlValue == ControlEnum.listBoxControl)
 		{
-			UserDefinedDEInterface userDefinedDE = factory.createUserDefinedDE();
-
-			for (PermissibleValueInterface pv : permissibleValueList[0])
-			{
-				userDefinedDE.addPermissibleValue(pv);
-			}
+			createListBox(container, categoryAttribute, permissibleValueList[0]);
 		}
 
 		categoryEntity.addCategoryAttribute(categoryAttribute);
@@ -114,13 +109,22 @@ public class CategoryHelper implements CategoryHelperInterface
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.categoryManager.CategoryHelperInterface#setParentCategoryEntity(edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface, edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface)
 	 */
-	public void setParentCategoryEntity(ContainerInterface parentContainer, ContainerInterface childContainer)
+	public void setParent(ContainerInterface parentContainer, ContainerInterface childContainer)
 	{
 		CategoryEntityInterface parentCategoryEntity = (CategoryEntity) parentContainer.getAbstractEntity();
 		CategoryEntityInterface childCategoryEntity = (CategoryEntity) childContainer.getAbstractEntity();
 		childCategoryEntity.setParentCategoryEntity(parentCategoryEntity);
+		
+		childContainer.setBaseContainer(parentContainer);
 	}
 
+	/**
+	 * @param sourceContainer
+	 * @param targetContainer
+	 * @param sourceRoleList
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
 	public void associateCategoryContainers(ContainerInterface sourceContainer, ContainerInterface targetContainer, List<String> sourceRoleList)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
@@ -137,8 +141,10 @@ public class CategoryHelper implements CategoryHelperInterface
 
 			//todo: what if many associtions exist with this combination
 			EntityInterface sourceEntity = ((CategoryEntityInterface) sourceContainer.getAbstractEntity()).getEntity();
-			pathAssociationRelationInterface.setAssociation(((List<AssociationInterface>) entityManagerInterface.getAssociation(sourceEntity
-					.getName(), sourceRole)).get(0));
+			EntityInterface tatgetEntity = ((CategoryEntityInterface) targetContainer.getAbstractEntity()).getEntity();
+			
+			pathAssociationRelationInterface.setAssociation(entityManagerInterface.getAssociation(sourceEntity
+					.getName(), sourceRole, tatgetEntity.getName()));
 
 			pathAssociationRelationInterface.setPath(path);
 			path.addPathAssociationRelation(pathAssociationRelationInterface);
@@ -186,6 +192,8 @@ public class CategoryHelper implements CategoryHelperInterface
 		categoryAssociation.setName(name);
 		categoryAssociation.setTargetCategoryEntity(targetCategoryEntity);
 		categoryAssociation.setCategoryEntity(sourceCategoryEntity);
+		
+		sourceCategoryEntity.addChildCategory(targetCategoryEntity);
 
 		sourceCategoryEntity.getCategoryAssociationCollection().add(categoryAssociation);
 
@@ -237,19 +245,43 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @param sequenceNumber
 	 * @return
 	 */
-	private TextFieldInterface createTextFieldControl(ContainerInterface container, BaseAbstractAttributeInterface baseAbstractAttribute,
-			int sequenceNumber)
+	private TextFieldInterface createTextFieldControl(ContainerInterface container, BaseAbstractAttributeInterface baseAbstractAttribute)
 	{
 		TextFieldInterface textField = DomainObjectFactory.getInstance().createTextField();
 		textField.setCaption(baseAbstractAttribute.getName());
 		textField.setBaseAbstractAttribute(baseAbstractAttribute);
 		textField.setColumns(50);
-		textField.setSequenceNumber(sequenceNumber);
+		textField.setSequenceNumber(getNextSequenceNumber(container));
 
 		textField.setParentContainer((Container) container);
 		container.addControl(textField);
 
 		return textField;
+	}
+	
+	private ListBoxInterface createListBox(ContainerInterface container, BaseAbstractAttributeInterface baseAbstractAttribute, List<PermissibleValueInterface> permissibleValueList)
+	{
+		ListBoxInterface listBox = DomainObjectFactory.getInstance().createListBox();
+		listBox.setCaption(baseAbstractAttribute.getName());
+		listBox.setBaseAbstractAttribute(baseAbstractAttribute);
+		listBox.setSequenceNumber(getNextSequenceNumber(container));
+
+		listBox.setParentContainer((Container) container);
+		container.addControl(listBox);
+		
+		if (permissibleValueList != null && permissibleValueList.size() != 0)
+		{
+			UserDefinedDEInterface userDefinedDE = factory.createUserDefinedDE();
+
+			for (PermissibleValueInterface pv : permissibleValueList)
+			{
+				userDefinedDE.addPermissibleValue(pv);
+			}
+			((CategoryAttribute) baseAbstractAttribute).setDataElement(userDefinedDE);
+		}
+
+
+		return listBox;
 	}
 
 	/**

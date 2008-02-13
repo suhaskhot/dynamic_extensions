@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import edu.common.dynamicextensions.categoryManager.CategoryHelperInterface.ControlEnum;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
@@ -176,7 +177,6 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 	 */
 	public void testCreateAndSaveCategoryWithAttributesFromTwoEntities()
 	{
-		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		try
 		{			
 			// Fetch the entity group from the database.
@@ -197,102 +197,50 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from " + study.getTableProperties().getName());
 			assertEquals(metaData.getColumnCount(), noOfDefaultColumns + 4);
-
-			// Create a category from user and study entities.
-			CategoryInterface category = factory.createCategory();
-			category.setName("Category From User and Study Entities");
+			
+			CategoryHelper categoryHelper = new CategoryHelper();
+			
+			CategoryInterface category = categoryHelper.createCtaegory("Category From User and Study Entities");
 
 			// Create category entity from user entity.
-			CategoryEntityInterface userCategoryEntity = factory.createCategoryEntity();
-			userCategoryEntity.setName("User Category Entity");
-			userCategoryEntity.setNumberOfEntries(-1);
-			userCategoryEntity.setEntity(user);
-			userCategoryEntity.setCategory(category);
-
-			// Set the root category element of the category.
-			category.setRootCategoryElement(userCategoryEntity);
+			ContainerInterface userCategoryContainer = categoryHelper.createCategoryEntityAndContainer(user, category);	
 			
 			// Create category attribute(s) for user category entity.
-			CategoryAttributeInterface userCategoryAttribute = factory.createCategoryAttribute();
-			userCategoryAttribute.setName("User Category Attribute");
-			userCategoryAttribute.setAttribute(user.getAttributeByName("User Name"));
-
-			userCategoryEntity.addCategoryAttribute(userCategoryAttribute);
-			userCategoryAttribute.setCategoryEntity(userCategoryEntity);
+			categoryHelper.addControl(user, "User Name", userCategoryContainer, ControlEnum.textFieldControlNumber);
+			
+			// Permissible values.
+//			PermissibleValueInterface permissibleValue1 = factory.createStringValue();
+//			((StringValue) permissibleValue1).setValue("Permissible Value 1");
+//
+//			PermissibleValueInterface permissibleValue2 = factory.createStringValue();
+//			((StringValue) permissibleValue2).setValue("Permissible Value 2");
+//
+//			PermissibleValueInterface permissibleValue3 = factory.createStringValue();
+//			((StringValue) permissibleValue3).setValue("Permissible Value 3");
+//
+//			List<PermissibleValueInterface> pvList = new ArrayList<PermissibleValueInterface>();
+//			pvList.add(permissibleValue1);
+//			pvList.add(permissibleValue2);
+//			pvList.add(permissibleValue3);
+//			
+//			// Create category attribute(s) for user category entity.
+//			categoryHelper.addControl(user, "User Name", userCategoryContainer, ControlEnum.textFieldControlNumber, pvList);
 
 			// Create category entity from study entity.
-			CategoryEntityInterface studyCategoryEntity = factory.createCategoryEntity();
-			studyCategoryEntity.setName("Study Category Entity");
-			studyCategoryEntity.setEntity(study);
+			ContainerInterface studyCategoryContainer = categoryHelper.createCategoryEntityAndContainer(study);
+			studyCategoryContainer.setAddCaption(false);
 
-			// Create category attribute(s) for study category entity.
-			CategoryAttributeInterface studyCategoryAttribute = factory.createCategoryAttribute();
-			studyCategoryAttribute.setName("Study Category Attribute");
-			studyCategoryAttribute.setAttribute(study.getAttributeByName("Study Name"));
-
-			studyCategoryEntity.addCategoryAttribute(studyCategoryAttribute);
-			studyCategoryAttribute.setCategoryEntity(studyCategoryEntity);
+			// Create category attribute(s) for user category entity.
+			categoryHelper.addControl(study, "Study Name", studyCategoryContainer, ControlEnum.textFieldControlNumber);
 			
-			// Fetch the user's associations list.
-			List<AssociationInterface> userAssociationsList = new ArrayList<AssociationInterface>(user.getAssociationCollection());
-
-			// Create a path between user category entity and study category entity.
-			PathInterface path = factory.createPath();
-
-			PathAssociationRelationInterface pathAssociationRelation = factory.createPathAssociationRelation();
-			pathAssociationRelation.setAssociation(userAssociationsList.get(0));
-			pathAssociationRelation.setPathSequenceNumber(1);
-
-			path.addPathAssociationRelation(pathAssociationRelation);
-			pathAssociationRelation.setPath(path);
-
-			// Add path information to the target category entity.
-			studyCategoryEntity.setPath(path);
-
-			// Create a category association between user category entity and study category entity
-			// that corresponds to association between user and study entities.
-			CategoryAssociationInterface categoryAssociation = factory.createCategoryAssociation();
-			categoryAssociation.setName("User Category Entity To Study Category Entity Category Association");
-			categoryAssociation.setCategoryEntity(userCategoryEntity);
-			categoryAssociation.setTargetCategoryEntity(studyCategoryEntity);
-
-			userCategoryEntity.getCategoryAssociationCollection().add(categoryAssociation);
-
-			// Make study category entity a child of user category entity.
-			userCategoryEntity.addChildCategory(studyCategoryEntity);
-
-			// Create containers for category entities.
-			int sequenceNumber = 1;
-
-			// Create a container for user category entity.
-			ContainerInterface userContainer = createContainer(userCategoryEntity);
-
-			// Create a control for user category attribute.
-			TextFieldInterface userControl = createTextFieldControl(userCategoryAttribute, sequenceNumber++);
-			userControl.setParentContainer((Container) userContainer);
-
-			userContainer.addControl(userControl);
-
-			// Create a container for study category entity.
-			ContainerInterface studyContainer = createContainer(studyCategoryEntity);
-			studyContainer.setAddCaption(false);
-
-			// Create a control for study category attribute.
-			TextFieldInterface studyControl = createTextFieldControl(studyCategoryAttribute, sequenceNumber++);
-			studyControl.setParentContainer((Container) studyContainer);
-
-			studyContainer.addControl(studyControl);
-
-			// Create a control for category association.
-			CategoryAssociationControlInterface categoryAssociationControl = factory.createCategoryAssociationControl();
-			categoryAssociationControl.setCaption("UserToStudyCategoryAssociationControl");
-			categoryAssociationControl.setContainer(studyContainer);
-			categoryAssociationControl.setBaseAbstractAttribute(categoryAssociation);
-			categoryAssociationControl.setSequenceNumber(sequenceNumber++);
-			categoryAssociationControl.setParentContainer((Container) userContainer);
-
-			userContainer.addControl(categoryAssociationControl);
-
+			List<String> list = new ArrayList<String>();
+			list.add("primaryInvestigator");
+			
+			categoryHelper.associateCategoryContainers(userCategoryContainer, studyCategoryContainer, list);
+			
+			// Set appropriate child category entities.
+			categoryHelper.setChildCategoryEntity(userCategoryContainer, studyCategoryContainer);
+	
 			// Save the category.
 			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
 			categoryManager.persistCategory(category);
@@ -317,6 +265,11 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			e.printStackTrace();
 			fail();
 		}
+	}
+	
+	public void testCreateCategoryFromModel()
+	{
+		
 	}
 
 	/**

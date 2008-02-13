@@ -31,7 +31,7 @@ public interface AbstractEntityInterface extends AbstractMetadataInterface {
     * 
     * @param containerInterface
     */
-   public void addContaier(ContainerInterface containerInterface );
+   public void addContainer(ContainerInterface containerInterface );
    
    /**
 	 * @return Returns the isAbstract.

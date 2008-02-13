@@ -494,5 +494,25 @@ public class Entity extends AbstractEntity implements EntityInterface
 
 		return AttributeCollection;
 	}
+	
+	/**
+	 * 
+	 * @param attributeName
+	 * @return
+	 */
+	public AttributeInterface getAttributeByName(String attributeName)
+	{
+		AttributeInterface attribute = null;
+		
+		for (AttributeInterface attr: this.getAttributeCollection())
+		{
+			if (attr.getName().equals(attributeName))
+			{
+				attribute = attr;
+			}
+		}
+		
+		return attribute;
+	}
 
 }

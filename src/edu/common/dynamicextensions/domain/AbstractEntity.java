@@ -111,7 +111,7 @@ public abstract class AbstractEntity extends AbstractMetadata implements Abstrac
        * 
        * @param containerInterface
        */
-      public void addContaier(ContainerInterface containerInterface )
+      public void addContainer(ContainerInterface containerInterface )
       {
     	  containerCollection.add(containerInterface);
       }

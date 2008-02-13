@@ -182,5 +182,12 @@ public interface EntityInterface  extends AbstractEntityInterface
      * @param entityGroup
      */
     public void setEntityGroup(EntityGroupInterface entityGroup);
+    
+	/**
+	 * 
+	 * @param attributeName
+	 * @return
+	 */
+	public AttributeInterface getAttributeByName(String attributeName);
 
 }

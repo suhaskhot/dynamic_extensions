@@ -73,16 +73,6 @@
         />
 
         <many-to-one
-            name="abstractAttribute"
-            class="edu.common.dynamicextensions.domain.AbstractAttribute"
-            cascade="save-update"
-            outer-join="auto"
-            update="true"
-            insert="true"
-            column="ABSTRACT_ATTRIBUTE_ID"
-        />
-
-        <many-to-one
             name="parentContainer"
             class="edu.common.dynamicextensions.domain.userinterface.Container"
             cascade="none"
@@ -90,6 +80,16 @@
             update="true"
             insert="true"
             column="CONTAINER_ID"
+        />
+
+        <many-to-one
+            name="baseAbstractAttribute"
+            class="edu.common.dynamicextensions.domain.BaseAbstractAttribute"
+            cascade="save-update"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="BASE_ABST_ATR_ID"
         />
 
         <!--
@@ -110,8 +110,8 @@
 
         </joined-subclass>
         <joined-subclass
-            name="edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl"
-            table="DYEXTN_CONTAINMENT_CONTROL"
+            name="edu.common.dynamicextensions.domain.userinterface.AbstractContainmentControl"
+            table="DYEXTN_ABSTR_CONTAIN_CTR"
             dynamic-update="false"
             dynamic-insert="false"
         >
@@ -126,8 +126,31 @@
             outer-join="auto"
             update="true"
             insert="true"
-            column="DISPLAY_CONTAINER_ID"
+            column="CONTAINER_ID"
         />
+
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl"
+            table="DYEXTN_CONTAINMENT_CONTROL"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+
+        </joined-subclass>
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.userinterface.CategoryAssociationControl"
+            table="DYEXTN_CAT_ASSO_CTL"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+
+        </joined-subclass>
 
         </joined-subclass>
         <joined-subclass

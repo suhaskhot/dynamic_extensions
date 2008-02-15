@@ -450,18 +450,18 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	/**
 	 * Returns an association object given the entity name and source role name.
 	 * @param entityName
-	 * @param sourceRoleName
+	 * @param associationName
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
 
-	public AssociationInterface getAssociation(String sourceEntityName, String sourceRoleName,String targetEntityName) 
+	public AssociationInterface getAssociation(String sourceEntityName, String asociationName,String targetEntityName) 
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Map substitutionParameterMap = new HashMap();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("string", sourceEntityName));
-		substitutionParameterMap.put("1", new HQLPlaceHolderObject("string", sourceRoleName));
+		substitutionParameterMap.put("1", new HQLPlaceHolderObject("string", asociationName));
 		substitutionParameterMap.put("2", new HQLPlaceHolderObject("string", targetEntityName));
 		
 		//Following method is called to execute the stored HQL , the name of which is given as the first parameter.

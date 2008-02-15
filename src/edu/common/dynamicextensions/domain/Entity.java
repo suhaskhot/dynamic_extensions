@@ -504,7 +504,7 @@ public class Entity extends AbstractEntity implements EntityInterface
 	{
 		AttributeInterface attribute = null;
 		
-		for (AttributeInterface attr: this.getAttributeCollection())
+		for (AttributeInterface attr: this.getAllAttributes())
 		{
 			if (attr.getName().equals(attributeName))
 			{

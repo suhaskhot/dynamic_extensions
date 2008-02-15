@@ -61,7 +61,7 @@ public class IdGeneratorUtil
 
 		try
 		{
-			session = DBUtil.currentSession();
+			session = DBUtil.getCleanSession();
 			transaction = session.beginTransaction();
 
 			Query query = session.createQuery("from " + IdGenerator.class.getName());
@@ -104,7 +104,7 @@ public class IdGeneratorUtil
 		}
 		finally
 		{
-			//session.close();
+			session.close();
 		}
 
 		return nextAvailableId;

@@ -21,7 +21,7 @@
 	<query name="getAssociationBySourceTargetEntity">
 		from Association association
            		where  association.entity.name = ?
-           		AND association.sourceRole.name = ?
+           		AND association.name = ?
           		AND association.targetEntity.name = ?
            		
 

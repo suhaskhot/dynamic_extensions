@@ -20,7 +20,7 @@
             unsaved-value="null"
         >
             <generator class="native">
-                <param name="sequence">DYEXTN_ATTRIBUTE_TYPE_INFO_SEQ</param>
+                <param name="sequence">DYEX_ATTR_TYP_INFO_SEQ</param>
             </generator>
         </id>
 

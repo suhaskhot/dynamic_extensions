@@ -4,7 +4,7 @@
     "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
-<hibernate-mapping auto-import="false" default-lazy="false">
+<hibernate-mapping auto-import="false">
     <class
         name="edu.common.dynamicextensions.domain.userinterface.Container"
         table="DYEXTN_CONTAINER"
@@ -63,13 +63,13 @@
         </set>
 
         <many-to-one
-            name="entity"
-            class="edu.common.dynamicextensions.domain.Entity"
+            name="abstractEntity"
+            class="edu.common.dynamicextensions.domain.AbstractEntity"
             cascade="save-update"
             outer-join="auto"
             update="true"
             insert="true"
-            column="ENTITY_ID"
+            column="ABSTRACT_ENTITY_ID"
         />
 
         <property
@@ -112,6 +112,14 @@
             update="true"
             insert="true"
             column="BASE_CONTAINER_ID"
+        />
+
+        <property
+            name="addCaption"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="ADD_CAPTION"
         />
 
         <!--

@@ -26,6 +26,11 @@
            		
 
 	</query>
+	
+	<query name="getAssociationByName">
+		from Association association
+           		where  association.name = ? 		
+	</query>
 
 	<query name="getAssociations">
        from Association association

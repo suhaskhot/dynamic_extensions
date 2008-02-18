@@ -1,13 +1,9 @@
-
 package edu.common.dynamicextensions.categoryManager;
 
 import java.util.List;
-
-import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.common.dynamicextensions.domaininterface.PathInterface;
-import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.CategoryAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -20,40 +16,9 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
  */
 public interface CategoryHelperInterface
 {
-//	public int textFieldControl = 1;
-//	public int listBoxControl = 2;
-//	public int datePickerControl = 3;
-//	public int fileControl = 4;
-//	public int radioButtonControl = 5;
-
 	public enum ControlEnum {
-		textFieldControl, listBoxControl, datePickerControl, fileControl, radioButtonControl, TEXTAREA;
-
-		Integer value;
-
-//		ControlEnum(Integer value)
-//		{
-//			this.value = value;
-//		}
-
-//		public Integer getValue()
-//		{
-//			return value;
-//		}
-//
-//		public static ControlEnum get(Integer value)
-//		{
-//			ControlEnum[] controlValues = ControlEnum.values();
-//
-//			for (ControlEnum controlNumber : controlValues)
-//			{
-//				if (controlNumber.getValue().equals(value))
-//				{
-//					return controlNumber;
-//				}
-//			}
-//			return null;
-//		}
+		TEXT_FIELD_CONTROL, LIST_BOX_CONTROL, DATE_PICKER_CONTROL, FILE_UPLOAD_CONTROL, RADIO_BUTTON_CONTROL, 
+		TEXT_AREA_CONTROL,CHECK_BOX_CONTROL;
 	};
 
 	/**
@@ -77,7 +42,7 @@ public interface CategoryHelperInterface
 	 * @param permissibleValueList
 	 */
 	public void addControl(EntityInterface entity, String attributeName, ContainerInterface container, ControlEnum controlValue,
-			List<PermissibleValueInterface>... permissibleValueList);
+			String controlCaption, List<String>... permissibleValueList);
 
 	/**
 	 * @param parentContainer
@@ -90,15 +55,19 @@ public interface CategoryHelperInterface
 	 * @param childContainer
 	 */
 	public void setParent(ContainerInterface parentContainer, ContainerInterface childContainer);
-	
+
+
 	/**
 	 * @param sourceContainer
 	 * @param targetContainer
 	 * @param sourceRoleList
+	 * @param noOfEntries
+	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public void associateCategoryContainers(ContainerInterface sourceContainer, ContainerInterface targetContainer, List<String> sourceRoleList)
+	public CategoryAssociationControlInterface associateCategoryContainers(ContainerInterface sourceContainer, ContainerInterface targetContainer, 
+			List<String> sourceRoleList,int noOfEntries)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 }

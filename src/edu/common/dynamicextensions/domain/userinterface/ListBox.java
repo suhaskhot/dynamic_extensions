@@ -90,7 +90,19 @@ public class ListBox extends SelectControl implements ListBoxInterface
 	public String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
 		List<NameValueBean> nameValueBeanList = null;
-		List<String> valueList = (List<String>) this.value;
+		List<String> valueList = null;
+		
+		// quick fix. 
+		if (!(value instanceof List) && value != null)
+		{
+			List<String> tempList = new ArrayList<String>();
+			tempList.add((String) value);
+			valueList = tempList;
+		}
+		else
+		{
+			valueList = (List<String>) this.value;
+		}
 
 		String strMultiSelect = "";
 		if ((isMultiSelect != null) && (isMultiSelect.booleanValue() == true))
@@ -137,8 +149,21 @@ public class ListBox extends SelectControl implements ListBoxInterface
 
 	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
 	{
+		List<String> selectedOptions = null;
+		
+		// quick fix. 
+		if (!(value instanceof List) && value != null)
+		{
+			List<String> tempList = new ArrayList<String>();
+			tempList.add((String) value);
+			selectedOptions = tempList;
+		}
+		else
+		{
+			selectedOptions = (List<String>) this.value;
+		}
 
-		List<String> selectedOptions = (List<String>) this.value;
+		//List<String> selectedOptions = (List<String>) this.value;
 		StringBuffer htmlString = new StringBuffer("&nbsp;");
 		if (value != null)
 		{

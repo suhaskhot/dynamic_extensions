@@ -90,6 +90,10 @@ public interface EntityManagerInterface
      */
     AssociationInterface getAssociation(String sourceEntityName, String sourceRoleName,String targetEntityName) 
 	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+    
+    AssociationInterface getAssociationByName(String associationName) 
+	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+    
     /**
      * Returns a collection of entities given the entity concept code.
      * @param entityConceptCode

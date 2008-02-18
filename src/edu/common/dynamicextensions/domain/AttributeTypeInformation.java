@@ -19,7 +19,7 @@ import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 /**
  * @version 1.0
  * @created 28-Sep-2006 12:20:07 PM
- * @hibernate.class table="DYEXTN_ATTRIBUTE_TYPE_INFO"
+ * @hibernate.class table="DYEX_ATTR_TYP_INFO"
  */
 public abstract class AttributeTypeInformation extends DynamicExtensionBaseDomainObject
 implements
@@ -34,7 +34,7 @@ AttributeTypeInformationInterface
 	/**
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
 	 * length="30" unsaved-value="null" generator-class="native"
-	 * @hibernate.generator-param name="sequence" value="DYEXTN_ATTRIBUTE_TYPE_INFO_SEQ" 
+	 * @hibernate.generator-param name="sequence" value="DYEX_ATTR_TYP_INFO_SEQ" 
 	 * @return Returns the id.
 	 */
 	public Long getId()

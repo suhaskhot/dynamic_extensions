@@ -199,7 +199,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 			CategoryHelper categoryHelper = new CategoryHelper();
 
-			CategoryInterface category = categoryHelper.createCtaegory("Category From User and Study Entities");
+			CategoryInterface category = categoryHelper.createCategory("Category From User and Study Entities");
 
 			// Create category entity from user entity.
 			ContainerInterface userCategoryContainer = categoryHelper.createCategoryEntityAndContainer(user, category);
@@ -287,7 +287,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			// Create category.
 			CategoryHelper categoryHelper = new CategoryHelper();
 
-			CategoryInterface category = categoryHelper.createCtaegory("Needle Biopsy Pathology Annotation");
+			CategoryInterface category = categoryHelper.createCategory("Needle Biopsy Pathology Annotation");
 
 			List<String> pvList = new ArrayList<String>();
 			pvList.add("Permissible Value 1");
@@ -366,8 +366,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			categoryHelper.addControl(tumorQuant, "totalNumberOfCores", tumorQuantContainer, ControlEnum.TEXT_FIELD_CONTROL, "totalNumberOfCores");
 
 			// Set appropriate child category entities.
-			categoryHelper.setParent(baseAnnotationContainer, baseTissuePathoAnnoContainer);
-			categoryHelper.setParent(baseTissuePathoAnnoContainer, prostateAnnotationContainer);
+			categoryHelper.setParentContainer(baseAnnotationContainer, baseTissuePathoAnnoContainer);
+			categoryHelper.setParentContainer(baseTissuePathoAnnoContainer, prostateAnnotationContainer);
 
 			List<String> list = new ArrayList<String>();
 			list.add("histology");
@@ -442,7 +442,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			// Create category.
 			CategoryHelper categoryHelper = new CategoryHelper();
 
-			CategoryInterface category = categoryHelper.createCtaegory("Vitals Category");
+			CategoryInterface category = categoryHelper.createCategory("Vitals Category");
 
 			// Create category entity from user entity.
 			ContainerInterface vitalsContainer = categoryHelper.createCategoryEntityAndContainer(vitals);
@@ -499,7 +499,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			// Create category.
 			CategoryHelper categoryHelper = new CategoryHelper();
 
-			CategoryInterface category = categoryHelper.createCtaegory("Body Composition Category");
+			CategoryInterface category = categoryHelper.createCategory("Body Composition Category");
 
 			// Create category entity from vitals entity.
 			ContainerInterface visitContainer = categoryHelper.createCategoryEntityAndContainer(visit);
@@ -527,7 +527,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			categoryHelper.addControl(bodyComposition, "testName", bodyCompositionContainer, ControlEnum.LIST_BOX_CONTROL, "testName", permissibleValuesList2);
 			
 			// Set appropriate child category entities.
-			categoryHelper.setParent(visitContainer, bodyCompositionContainer);
+			categoryHelper.setParentContainer(visitContainer, bodyCompositionContainer);
 			
 			List<String> list = new ArrayList<String>();
 			list.add("bodyComposition");
@@ -577,7 +577,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			// Create category.
 			CategoryHelper categoryHelper = new CategoryHelper();
 
-			CategoryInterface category = categoryHelper.createCtaegory("LipidCMP Category");
+			CategoryInterface category = categoryHelper.createCategory("LipidCMP Category");
 
 			// Create category entity from ClinicalAnnotationLabAnnotation entity.
 			ContainerInterface visitContainer = categoryHelper.createCategoryEntityAndContainer(visit);
@@ -619,8 +619,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "permissibleUpperLimit", clinAnnoLabAnnoContainer2, ControlEnum.TEXT_FIELD_CONTROL, "");
 			
 			// Set appropriate child category entities.
-			categoryHelper.setParent(visitContainer, clinAnnoLabAnnoContainer1);
-			categoryHelper.setParent(visitContainer, clinAnnoLabAnnoContainer2);
+			categoryHelper.setParentContainer(visitContainer, clinAnnoLabAnnoContainer1);
+			categoryHelper.setParentContainer(visitContainer, clinAnnoLabAnnoContainer2);
 			
 			List<String> list = new ArrayList<String>();
 			list.add("lipidPanel");
@@ -674,7 +674,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			// Create category.
 			CategoryHelper categoryHelper = new CategoryHelper();
 
-			CategoryInterface category = categoryHelper.createCtaegory("CMPCBC Category");
+			CategoryInterface category = categoryHelper.createCategory("CMPCBC Category");
 
 			// Create category entity from ClinicalAnnotationLabAnnotation entity.
 			ContainerInterface visitContainer = categoryHelper.createCategoryEntityAndContainer(visit);
@@ -718,8 +718,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "permissibleUpperLimit", clinAnnoLabAnnoContainer2, ControlEnum.TEXT_FIELD_CONTROL, "");
 			
 			// Set appropriate child category entities.
-			categoryHelper.setParent(visitContainer, clinAnnoLabAnnoContainer1);
-			categoryHelper.setParent(visitContainer, clinAnnoLabAnnoContainer2);
+			categoryHelper.setParentContainer(visitContainer, clinAnnoLabAnnoContainer1);
+			categoryHelper.setParentContainer(visitContainer, clinAnnoLabAnnoContainer2);
 			
 			List<String> list = new ArrayList<String>();
 			list.add("CMP");
@@ -773,7 +773,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			// Create category.
 			CategoryHelper categoryHelper = new CategoryHelper();
 
-			CategoryInterface category = categoryHelper.createCtaegory("MetabTest Category");
+			CategoryInterface category = categoryHelper.createCategory("MetabTest Category");
 
 			// Create category entity from ClinicalAnnotationLabAnnotation entity.
 			ContainerInterface visitContainer = categoryHelper.createCategoryEntityAndContainer(visit);
@@ -807,8 +807,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "quantitativeResult", clinAnnoLabAnnoContainer2, ControlEnum.TEXT_FIELD_CONTROL, "");
 			
 			// Set appropriate child category entities.
-			categoryHelper.setParent(visitContainer, clinAnnoLabAnnoContainer1);
-			categoryHelper.setParent(visitContainer, clinAnnoLabAnnoContainer2);
+			categoryHelper.setParentContainer(visitContainer, clinAnnoLabAnnoContainer1);
+			categoryHelper.setParentContainer(visitContainer, clinAnnoLabAnnoContainer2);
 			
 			List<String> list = new ArrayList<String>();
 			list.add("CMP");
@@ -862,7 +862,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			// Create category.
 			CategoryHelper categoryHelper = new CategoryHelper();
 
-			CategoryInterface category = categoryHelper.createCtaegory("ClinicalDX Category");
+			CategoryInterface category = categoryHelper.createCategory("ClinicalDX Category");
 
 			// Create category entity from ClinicalAnnotationLabAnnotation entity.
 			ContainerInterface visitContainer = categoryHelper.createCategoryEntityAndContainer(visit);
@@ -880,8 +880,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			categoryHelper.addControl(clinicalDiagnosis, "value", otherDiagnosisContainer, ControlEnum.TEXT_FIELD_CONTROL, "");
 			
 			// Set appropriate child category entities.
-			categoryHelper.setParent(visitContainer, frequentDiagnosisContainer);
-			categoryHelper.setParent(visitContainer, otherDiagnosisContainer);
+			categoryHelper.setParentContainer(visitContainer, frequentDiagnosisContainer);
+			categoryHelper.setParentContainer(visitContainer, otherDiagnosisContainer);
 			
 			List<String> list = new ArrayList<String>();
 			list.add("otherDiagnosis");

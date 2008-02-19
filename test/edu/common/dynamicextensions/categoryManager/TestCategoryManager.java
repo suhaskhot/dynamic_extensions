@@ -19,7 +19,6 @@ import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.StringValue;
 import edu.common.dynamicextensions.domain.UserDefinedDE;
 import edu.common.dynamicextensions.domain.userinterface.Container;
-import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -206,37 +205,28 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			ContainerInterface userCategoryContainer = categoryHelper.createCategoryEntityAndContainer(user, category);
 
 			// Create category attribute(s) for user category entity.
-			categoryHelper.addControl(user, "User Name", userCategoryContainer, ControlEnum.textFieldControl);
+			//categoryHelper.addControl(user, "User Name", userCategoryContainer, ControlEnum.TEXT_FIELD_CONTROL);
 
 			// Permissible values.
-			//			PermissibleValueInterface permissibleValue1 = factory.createStringValue();
-			//			((StringValue) permissibleValue1).setValue("Permissible Value 1");
-			//
-			//			PermissibleValueInterface permissibleValue2 = factory.createStringValue();
-			//			((StringValue) permissibleValue2).setValue("Permissible Value 2");
-			//
-			//			PermissibleValueInterface permissibleValue3 = factory.createStringValue();
-			//			((StringValue) permissibleValue3).setValue("Permissible Value 3");
-			//
-			//			List<PermissibleValueInterface> pvList = new ArrayList<PermissibleValueInterface>();
-			//			pvList.add(permissibleValue1);
-			//			pvList.add(permissibleValue2);
-			//			pvList.add(permissibleValue3);
-			//			
-			//			// Create category attribute(s) for user category entity.
-			//			categoryHelper.addControl(user, "User Name", userCategoryContainer, ControlEnum.textFieldControlNumber, pvList);
+			List<String> pvList = new ArrayList<String>();
+			pvList.add("Permissible Value 1");
+			pvList.add("Permissible Value 2");
+			pvList.add("Permissible Value 3");
+						
+			// Create category attribute(s) for user category entity.
+			categoryHelper.addControl(user, "User Name", userCategoryContainer, ControlEnum.LIST_BOX_CONTROL, "User Name", pvList);
 
 			// Create category entity from study entity.
 			ContainerInterface studyCategoryContainer = categoryHelper.createCategoryEntityAndContainer(study);
 			studyCategoryContainer.setAddCaption(false);
 
 			// Create category attribute(s) for user category entity.
-			categoryHelper.addControl(study, "Study Name", studyCategoryContainer, ControlEnum.textFieldControl);
+			categoryHelper.addControl(study, "Study Name", studyCategoryContainer, ControlEnum.TEXT_FIELD_CONTROL, "Study Name");
 
 			List<String> list = new ArrayList<String>();
 			list.add("primaryInvestigator");
 
-			categoryHelper.associateCategoryContainers(userCategoryContainer, studyCategoryContainer, list);
+			categoryHelper.associateCategoryContainers(userCategoryContainer, studyCategoryContainer, list, -1);
 
 			// Set appropriate child category entities.
 			categoryHelper.setChildCategoryEntity(userCategoryContainer, studyCategoryContainer);
@@ -275,7 +265,6 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			DefaultBizLogic bizlogic = new DefaultBizLogic();
 			Collection<EntityGroupInterface> entityGroupCollection = new HashSet<EntityGroupInterface>();
 			EntityGroupInterface entityGroup = null;
-			DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
 			entityGroupCollection = bizlogic.retrieve(EntityGroup.class.getName(), "shortName", "Needle Biopsy EG");
 
@@ -285,119 +274,618 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			}
 
 			// Fetch the user and study entities
-			EntityInterface baseAnnotation = entityGroup.getEntityByName("Base Annotation");
-			EntityInterface baseTissuePathoAnno = entityGroup.getEntityByName("Base Tissue Pathology Annotation");
-			EntityInterface needleBioProPathAnno = entityGroup.getEntityByName("Needle Biopsy Prostate Pathology " +
-					"Annotation");
+			EntityInterface baseAnnotation = entityGroup.getEntityByName("BaseAnnotation");
+			EntityInterface baseTissuePathoAnno = entityGroup.getEntityByName("BaseTissuePathologyAnnotation");
+			EntityInterface prostateAnnotation = entityGroup.getEntityByName("ProstateAnnotation");
 			EntityInterface histology = entityGroup.getEntityByName("Histology");
-			EntityInterface additionalFinding = entityGroup.getEntityByName("Additional Finding");
+			EntityInterface additionalFinding = entityGroup.getEntityByName("AdditionalFinding");
 			EntityInterface invasion = entityGroup.getEntityByName("Invasion");
-			EntityInterface gleasonScore = entityGroup.getEntityByName("Gleason Score");
-			EntityInterface tumorQuant = entityGroup.getEntityByName("Tumor Quantitation");
+			EntityInterface gleasonScore = entityGroup.getEntityByName("GleasonScore");
+			EntityInterface tumorQuant = entityGroup.getEntityByName("TumorQuantitaion");
 			EntityInterface varHistoType = entityGroup.getEntityByName("VariantHistologicType");
-			
+
 			// Create category.
 			CategoryHelper categoryHelper = new CategoryHelper();
 
 			CategoryInterface category = categoryHelper.createCtaegory("Needle Biopsy Pathology Annotation");
-			
-			PermissibleValueInterface permissibleValue1 = factory.createStringValue();
-			((StringValue) permissibleValue1).setValue("Permissible Value 1");
 
-			PermissibleValueInterface permissibleValue2 = factory.createStringValue();
-			((StringValue) permissibleValue2).setValue("Permissible Value 2");
+			List<String> pvList = new ArrayList<String>();
+			pvList.add("Permissible Value 1");
+			pvList.add("Permissible Value 2");
+			pvList.add("Permissible Value 3");
 
-			PermissibleValueInterface permissibleValue3 = factory.createStringValue();
-			((StringValue) permissibleValue3).setValue("Permissible Value 3");
-
-			List<PermissibleValueInterface> pvList = new ArrayList<PermissibleValueInterface>();
-			pvList.add(permissibleValue1);
-			pvList.add(permissibleValue2);
-			pvList.add(permissibleValue3);
-			
 			// Create category entity from user entity.
 			ContainerInterface baseAnnotationContainer = categoryHelper.createCategoryEntityAndContainer(baseAnnotation);
-			
-            // Create category entity from user entity.
+
+			// Create category entity from user entity.
 			ContainerInterface baseTissuePathoAnnoContainer = categoryHelper.createCategoryEntityAndContainer(baseTissuePathoAnno);
 
 			// Create category entity from user entity.
-			ContainerInterface prostateAnnotationContainer = categoryHelper.createCategoryEntityAndContainer(needleBioProPathAnno, category);
+			ContainerInterface prostateAnnotationContainer = categoryHelper.createCategoryEntityAndContainer(prostateAnnotation, category);
 
 			// Create category attribute(s) for needleBioProPathAnno category entity.
-			categoryHelper.addControl(needleBioProPathAnno, "specimenProcedure", prostateAnnotationContainer, ControlEnum.listBoxControl, pvList);
-			categoryHelper.addControl(needleBioProPathAnno, "procedureDate", prostateAnnotationContainer, ControlEnum.datePickerControl);
-			categoryHelper.addControl(needleBioProPathAnno, "procedureDetailsDocument", prostateAnnotationContainer, ControlEnum.fileControl);
-			categoryHelper.addControl(needleBioProPathAnno, "comments", prostateAnnotationContainer, ControlEnum.TEXTAREA);
+			categoryHelper.addControl(prostateAnnotation, "specimenProcedoure", prostateAnnotationContainer, ControlEnum.LIST_BOX_CONTROL, "specimenProcedoure", pvList);
+			categoryHelper.addControl(prostateAnnotation, "procedureDate", prostateAnnotationContainer, ControlEnum.DATE_PICKER_CONTROL, "procedureDate");
+			categoryHelper.addControl(prostateAnnotation, "procedureDetailsDocument", prostateAnnotationContainer, ControlEnum.TEXT_FIELD_CONTROL, "procedureDetailsDocument");
+			categoryHelper.addControl(prostateAnnotation, "comments", prostateAnnotationContainer, ControlEnum.TEXT_AREA_CONTROL, "comments");
 
 			// Create category entity from  entity.
 			ContainerInterface histologyContainer = categoryHelper.createCategoryEntityAndContainer(histology);
 
 			// Create category attribute(s) for histology category entity.
-			categoryHelper.addControl(histology, "type", histologyContainer, ControlEnum.listBoxControl, pvList);
-			
+			categoryHelper.addControl(histology, "type", histologyContainer, ControlEnum.LIST_BOX_CONTROL, "type", pvList);
+
 			// Create category entity from  entity.
 			ContainerInterface variantHistologicContainer = categoryHelper.createCategoryEntityAndContainer(varHistoType);
-			
+
 			//  Create category attribute(s) for varHistoType category entity.
-			categoryHelper.addControl(varHistoType, "variantType", variantHistologicContainer, ControlEnum.textFieldControl);
-			
+			categoryHelper.addControl(varHistoType, "variantType", variantHistologicContainer, ControlEnum.TEXT_FIELD_CONTROL, "variantType");
+
 			// Create category entity from  entity.
 			ContainerInterface additionalFindingContainer = categoryHelper.createCategoryEntityAndContainer(additionalFinding);
 
 			// Create category attribute(s) for histology category entity.
-			categoryHelper.addControl(additionalFinding, "Details", additionalFindingContainer, ControlEnum.listBoxControl, pvList);
-			
+			categoryHelper.addControl(additionalFinding, "Detail", additionalFindingContainer, ControlEnum.LIST_BOX_CONTROL, "Detail", pvList);
+
 			// Create category entity from  entity.
 			ContainerInterface invasionContainer = categoryHelper.createCategoryEntityAndContainer(invasion);
 			// Create category attribute(s) for histology category entity.
-			categoryHelper.addControl(invasion, "lymphaticInvasion", invasionContainer, ControlEnum.radioButtonControl);
-			categoryHelper.addControl(invasion, "perineuralInvasion", invasionContainer, ControlEnum.radioButtonControl);
-			
+
+			List<String> lymInvValues = new ArrayList<String>();
+			lymInvValues.add("Absent");
+			lymInvValues.add("Indereminate");
+			lymInvValues.add("Not Specified");
+			lymInvValues.add("Present");
+			lymInvValues.add("Present External");
+			lymInvValues.add("Present Internal");
+
+			categoryHelper.addControl(invasion, "lymphaticInvasion", invasionContainer, ControlEnum.RADIO_BUTTON_CONTROL, "lymphaticInvasion", lymInvValues);
+
+			List<String> perInvValues = new ArrayList<String>();
+			perInvValues.add("Absent");
+			perInvValues.add("Indereminate");
+			perInvValues.add("Not Specified");
+			perInvValues.add("Present");
+			categoryHelper.addControl(invasion, "perneuralInvasion", invasionContainer, ControlEnum.RADIO_BUTTON_CONTROL, "perneuralInvasion", perInvValues);
+
 			// Create category entity from  entity.
 			ContainerInterface gleasonContainer = categoryHelper.createCategoryEntityAndContainer(gleasonScore);
-			
+
 			// Create category attribute(s) for histology category entity.
-			categoryHelper.addControl(gleasonScore, "primaryPattern", gleasonContainer, ControlEnum.textFieldControl);
-			categoryHelper.addControl(gleasonScore, "secondaryPattern", gleasonContainer, ControlEnum.textFieldControl);
-			categoryHelper.addControl(gleasonScore, "tertiaryPattern", gleasonContainer, ControlEnum.textFieldControl);
-			
+			categoryHelper.addControl(gleasonScore, "primaryPattern", gleasonContainer, ControlEnum.TEXT_FIELD_CONTROL, "primaryPattern");
+			categoryHelper.addControl(gleasonScore, "secondaryPattern", gleasonContainer, ControlEnum.TEXT_FIELD_CONTROL, "secondaryPattern");
+			categoryHelper.addControl(gleasonScore, "tertiaryPattern", gleasonContainer, ControlEnum.TEXT_FIELD_CONTROL, "tertiaryPattern");
+
 			// Create category entity from  entity.
 			ContainerInterface tumorQuantContainer = categoryHelper.createCategoryEntityAndContainer(tumorQuant);
-			
+
 			// Create category attribute(s) for histology category entity.
-			categoryHelper.addControl(tumorQuant, "totalLengthOfCarcinomalnMilimeters", tumorQuantContainer, ControlEnum.textFieldControl);
-			categoryHelper.addControl(tumorQuant, "totalLengthOfCoreslnMilimeters", tumorQuantContainer, ControlEnum.textFieldControl);
-			categoryHelper.addControl(tumorQuant, "totalNumberOfPositiveCores", tumorQuantContainer, ControlEnum.textFieldControl);
-			categoryHelper.addControl(tumorQuant, "totalNumberOfCores", tumorQuantContainer, ControlEnum.textFieldControl);
-			
+			categoryHelper.addControl(tumorQuant, "totalLengthOfCarcinomaInMilimeters", tumorQuantContainer, ControlEnum.TEXT_FIELD_CONTROL, "totalLengthOfCarcinomaInMilimeters");
+			categoryHelper.addControl(tumorQuant, "totalLengthOfCoresInMilimeters", tumorQuantContainer, ControlEnum.TEXT_FIELD_CONTROL, "totalLengthOfCoresInMilimeters");
+			categoryHelper.addControl(tumorQuant, "totalNumberOfPositiveCores", tumorQuantContainer, ControlEnum.TEXT_FIELD_CONTROL, "totalNumberOfPositiveCores");
+			categoryHelper.addControl(tumorQuant, "totalNumberOfCores", tumorQuantContainer, ControlEnum.TEXT_FIELD_CONTROL, "totalNumberOfCores");
+
 			// Set appropriate child category entities.
 			categoryHelper.setParent(baseAnnotationContainer, baseTissuePathoAnnoContainer);
-			categoryHelper.setParent(baseTissuePathoAnnoContainer,prostateAnnotationContainer);
-					
+			categoryHelper.setParent(baseTissuePathoAnnoContainer, prostateAnnotationContainer);
+
 			List<String> list = new ArrayList<String>();
-			list.add("additionalFinding");
-			categoryHelper.associateCategoryContainers(baseAnnotationContainer, additionalFindingContainer, list);
-			
-			list = new ArrayList<String>();
 			list.add("histology");
-			categoryHelper.associateCategoryContainers(baseAnnotationContainer, histologyContainer, list);
-			
+			CategoryAssociationControlInterface associationControlInterface = categoryHelper.associateCategoryContainers(baseAnnotationContainer,
+					histologyContainer, list, -1);
+			associationControlInterface.setSequenceNumber(categoryHelper.getNextSequenceNumber(prostateAnnotationContainer));
+
+			list = new ArrayList<String>();
+			list.add("additionalFinding");
+			CategoryAssociationControlInterface associationControlInterface2 = categoryHelper.associateCategoryContainers(baseAnnotationContainer,
+					additionalFindingContainer, list, -1);
+			associationControlInterface2.setSequenceNumber(categoryHelper.getNextSequenceNumber(prostateAnnotationContainer));
+
 			list = new ArrayList<String>();
 			list.add("invasion");
-			categoryHelper.associateCategoryContainers(baseTissuePathoAnnoContainer, invasionContainer, list);
-			
+			CategoryAssociationControlInterface associationControlInterface3 = categoryHelper.associateCategoryContainers(
+					baseTissuePathoAnnoContainer, invasionContainer, list, 1);
+			associationControlInterface3.setSequenceNumber(categoryHelper.getNextSequenceNumber(prostateAnnotationContainer));
+
 			list = new ArrayList<String>();
 			list.add("gleasonScore");
-			categoryHelper.associateCategoryContainers(prostateAnnotationContainer, gleasonContainer, list);
-			
+			categoryHelper.associateCategoryContainers(prostateAnnotationContainer, gleasonContainer, list, 1);
+
 			list = new ArrayList<String>();
 			list.add("tumorQuantitation");
-			categoryHelper.associateCategoryContainers(prostateAnnotationContainer, tumorQuantContainer, list);
-			
+			categoryHelper.associateCategoryContainers(prostateAnnotationContainer, tumorQuantContainer, list, 1);
+
 			list = new ArrayList<String>();
 			list.add("variantHistology");
-			categoryHelper.associateCategoryContainers(histologyContainer, variantHistologicContainer, list);
+			categoryHelper.associateCategoryContainers(histologyContainer, variantHistologicContainer, list, 1);
+
+			// Save the category.
+			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
+			categoryManager.persistCategory(category);
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+		catch (DAOException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
+	
+	public void testCreateVitalsCategory()
+	{
+		try
+		{
+			// Fetch the entity group from the database.
+			DefaultBizLogic bizlogic = new DefaultBizLogic();
+			Collection<EntityGroupInterface> entityGroupCollection = new HashSet<EntityGroupInterface>();
+			EntityGroupInterface entityGroup = null;
+
+			entityGroupCollection = bizlogic.retrieve(EntityGroup.class.getName(), "shortName", "EG");
+
+			if (entityGroupCollection != null && entityGroupCollection.size() > 0)
+			{
+				entityGroup = (EntityGroupInterface) entityGroupCollection.iterator().next();
+			}
+
+			// Fetch the vitals entity.
+			EntityInterface vitals = entityGroup.getEntityByName("Vitals");
+
+			// Create category.
+			CategoryHelper categoryHelper = new CategoryHelper();
+
+			CategoryInterface category = categoryHelper.createCtaegory("Vitals Category");
+
+			// Create category entity from user entity.
+			ContainerInterface vitalsContainer = categoryHelper.createCategoryEntityAndContainer(vitals);
+
+			// Create category attribute(s) for vitals category entity.
+			categoryHelper.addControl(vitals, "heartRate", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Pulse");
+			categoryHelper.addControl(vitals, "diastolicBloodPressure", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Diastolic BP");
+			categoryHelper.addControl(vitals, "systolicBloodPressure", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Systolic BP");
+			categoryHelper.addControl(vitals, "weight", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Weight (kg)");
+			categoryHelper.addControl(vitals, "height", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Height (cm)");
+			categoryHelper.addControl(vitals, "respiratoryRate", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Respiration");
+
+			// Save the category.
+			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
+			categoryManager.persistCategory(category);
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+		catch (DAOException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
+	
+	public void testCreateBodyCompositionCategory()
+	{
+		try
+		{
+			// Fetch the entity group from the database.
+			DefaultBizLogic bizlogic = new DefaultBizLogic();
+			Collection<EntityGroupInterface> entityGroupCollection = new HashSet<EntityGroupInterface>();
+			EntityGroupInterface entityGroup = null;
+
+			entityGroupCollection = bizlogic.retrieve(EntityGroup.class.getName(), "shortName", "EG");
+
+			if (entityGroupCollection != null && entityGroupCollection.size() > 0)
+			{
+				entityGroup = (EntityGroupInterface) entityGroupCollection.iterator().next();
+			}
+
+			// Fetch the vitals entity.
+			EntityInterface visit = entityGroup.getEntityByName("visit");
+			EntityInterface bodyComposition = entityGroup.getEntityByName("BodyComposition");
+
+			// Create category.
+			CategoryHelper categoryHelper = new CategoryHelper();
+
+			CategoryInterface category = categoryHelper.createCtaegory("Body Composition Category");
+
+			// Create category entity from vitals entity.
+			ContainerInterface visitContainer = categoryHelper.createCategoryEntityAndContainer(visit);
+			
+			// Create category entity from bodyComposition entity.
+			ContainerInterface bodyCompositionContainer = categoryHelper.createCategoryEntityAndContainer(bodyComposition);
+			
+			List<String> permissibleValuesList1 = new ArrayList<String>();
+			permissibleValuesList1.add("BMI");
+			permissibleValuesList1.add("Body fat(%)");
+			permissibleValuesList1.add("Body fat(kg)");
+			permissibleValuesList1.add("Fat free mass(kg)");
+			permissibleValuesList1.add("Liver fat(%)");
+			permissibleValuesList1.add("Muscle fat(kg)");
+			permissibleValuesList1.add("Subcu Abdom fat(cubic cm)");
+			permissibleValuesList1.add("Intra Abdom fat(cubic cm)");
+
+			List<String> permissibleValuesList2 = new ArrayList<String>();
+			permissibleValuesList2.add("DEXA");
+			permissibleValuesList2.add("MRI");
+
+			// Create category attribute(s) for bodyComposition category entity.
+			categoryHelper.addControl(bodyComposition, "result", bodyCompositionContainer, ControlEnum.LIST_BOX_CONTROL, "result", permissibleValuesList1);
+			categoryHelper.addControl(bodyComposition, "source", bodyCompositionContainer, ControlEnum.TEXT_FIELD_CONTROL, "source");
+			categoryHelper.addControl(bodyComposition, "testName", bodyCompositionContainer, ControlEnum.LIST_BOX_CONTROL, "testName", permissibleValuesList2);
+			
+			// Set appropriate child category entities.
+			categoryHelper.setParent(visitContainer, bodyCompositionContainer);
+			
+			List<String> list = new ArrayList<String>();
+			list.add("bodyComposition");
+			categoryHelper.associateCategoryContainers(visitContainer, bodyCompositionContainer, list, -1);
+
+			// Save the category.
+			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
+			categoryManager.persistCategory(category);
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+		catch (DAOException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
+	
+	public void testCreateLipidCMPCategory()
+	{
+		try
+		{
+			// Fetch the entity group from the database.
+			DefaultBizLogic bizlogic = new DefaultBizLogic();
+			Collection<EntityGroupInterface> entityGroupCollection = new HashSet<EntityGroupInterface>();
+			EntityGroupInterface entityGroup = null;
+
+			entityGroupCollection = bizlogic.retrieve(EntityGroup.class.getName(), "shortName", "EG");
+
+			if (entityGroupCollection != null && entityGroupCollection.size() > 0)
+			{
+				entityGroup = (EntityGroupInterface) entityGroupCollection.iterator().next();
+			}
+
+			// Fetch the vitals entity.
+			EntityInterface visit = entityGroup.getEntityByName("visit");
+			EntityInterface ClinicalAnnotationLabAnnotation = entityGroup.getEntityByName("ClinicalAnnotationLabAnnotation");
+
+			// Create category.
+			CategoryHelper categoryHelper = new CategoryHelper();
+
+			CategoryInterface category = categoryHelper.createCtaegory("LipidCMP Category");
+
+			// Create category entity from ClinicalAnnotationLabAnnotation entity.
+			ContainerInterface visitContainer = categoryHelper.createCategoryEntityAndContainer(visit);
+			ContainerInterface clinAnnoLabAnnoContainer1 = categoryHelper.createCategoryEntityAndContainer(ClinicalAnnotationLabAnnotation);
+			ContainerInterface clinAnnoLabAnnoContainer2 = categoryHelper.createCategoryEntityAndContainer(ClinicalAnnotationLabAnnotation);
+			
+			List<String> permissibleValuesList1 = new ArrayList<String>();
+			permissibleValuesList1.add("Cholesterol");
+			permissibleValuesList1.add("HDL cholesterol");
+			permissibleValuesList1.add("LDL cholesterol");
+			permissibleValuesList1.add("Triglycerides");
+			
+			List<String> permissibleValuesList2 = new ArrayList<String>();
+			permissibleValuesList2.add("Glu");
+			permissibleValuesList2.add("Na");
+			permissibleValuesList2.add("K");
+			permissibleValuesList2.add("Cl");
+			permissibleValuesList2.add("Crt");			
+			permissibleValuesList2.add("BUN");
+			permissibleValuesList2.add("Tot Prot");
+			permissibleValuesList2.add("Tot Bili");
+			permissibleValuesList2.add("Alk Phos");
+			permissibleValuesList2.add("AST");
+			permissibleValuesList2.add("ALT");
+			permissibleValuesList2.add("Ca");
+			
+			// Create category attribute(s) for bodyComposition category entity.
+			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "labTestName", clinAnnoLabAnnoContainer1, ControlEnum.LIST_BOX_CONTROL, "", permissibleValuesList1);
+			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "quantitativeResult", clinAnnoLabAnnoContainer1, ControlEnum.TEXT_FIELD_CONTROL, "");
+			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "resultUnits", clinAnnoLabAnnoContainer1, ControlEnum.TEXT_FIELD_CONTROL, "");
+			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "permissibleLowerLimit", clinAnnoLabAnnoContainer1, ControlEnum.TEXT_FIELD_CONTROL, "");
+			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "permissibleUpperLimit", clinAnnoLabAnnoContainer1, ControlEnum.TEXT_FIELD_CONTROL, "");
+			
+			// Create category attribute(s) for bodyComposition category entity.
+			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "labTestName", clinAnnoLabAnnoContainer2, ControlEnum.LIST_BOX_CONTROL, "", permissibleValuesList2);
+			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "quantitativeResult", clinAnnoLabAnnoContainer2, ControlEnum.TEXT_FIELD_CONTROL, "");
+			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "resultUnits", clinAnnoLabAnnoContainer2, ControlEnum.TEXT_FIELD_CONTROL, "");
+			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "permissibleLowerLimit", clinAnnoLabAnnoContainer2, ControlEnum.TEXT_FIELD_CONTROL, "");
+			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "permissibleUpperLimit", clinAnnoLabAnnoContainer2, ControlEnum.TEXT_FIELD_CONTROL, "");
+			
+			// Set appropriate child category entities.
+			categoryHelper.setParent(visitContainer, clinAnnoLabAnnoContainer1);
+			categoryHelper.setParent(visitContainer, clinAnnoLabAnnoContainer2);
+			
+			List<String> list = new ArrayList<String>();
+			list.add("lipidPanel");
+			categoryHelper.associateCategoryContainers(visitContainer, clinAnnoLabAnnoContainer1, list, -1);
+			
+			list = new ArrayList<String>();
+			list.add("CMP");
+			categoryHelper.associateCategoryContainers(visitContainer, clinAnnoLabAnnoContainer2, list, -1);
+
+			// Save the category.
+			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
+			categoryManager.persistCategory(category);
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+		catch (DAOException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
+	
+	public void testCreateCMPCBCCategory()
+	{
+		try
+		{
+			// Fetch the entity group from the database.
+			DefaultBizLogic bizlogic = new DefaultBizLogic();
+			Collection<EntityGroupInterface> entityGroupCollection = new HashSet<EntityGroupInterface>();
+			EntityGroupInterface entityGroup = null;
+
+			entityGroupCollection = bizlogic.retrieve(EntityGroup.class.getName(), "shortName", "EG");
+
+			if (entityGroupCollection != null && entityGroupCollection.size() > 0)
+			{
+				entityGroup = (EntityGroupInterface) entityGroupCollection.iterator().next();
+			}
+
+			// Fetch the vitals entity.
+			EntityInterface visit = entityGroup.getEntityByName("visit");
+			EntityInterface ClinicalAnnotationLabAnnotation = entityGroup.getEntityByName("ClinicalAnnotationLabAnnotation");
+
+			// Create category.
+			CategoryHelper categoryHelper = new CategoryHelper();
+
+			CategoryInterface category = categoryHelper.createCtaegory("CMPCBC Category");
+
+			// Create category entity from ClinicalAnnotationLabAnnotation entity.
+			ContainerInterface visitContainer = categoryHelper.createCategoryEntityAndContainer(visit);
+			ContainerInterface clinAnnoLabAnnoContainer1 = categoryHelper.createCategoryEntityAndContainer(ClinicalAnnotationLabAnnotation);
+			ContainerInterface clinAnnoLabAnnoContainer2 = categoryHelper.createCategoryEntityAndContainer(ClinicalAnnotationLabAnnotation);
+			
+			List<String> permissibleValuesList1 = new ArrayList<String>();
+			permissibleValuesList1.add("Glu");
+			permissibleValuesList1.add("Na");
+			permissibleValuesList1.add("K");
+			permissibleValuesList1.add("Cl");
+			permissibleValuesList1.add("Crt");			
+			permissibleValuesList1.add("BUN");
+			permissibleValuesList1.add("Tot Prot");
+			permissibleValuesList1.add("Tot Bili");
+			permissibleValuesList1.add("Alk Phos");
+			permissibleValuesList1.add("AST");
+			permissibleValuesList1.add("ALT");
+			permissibleValuesList1.add("Ca");
+			
+			List<String> permissibleValuesList2 = new ArrayList<String>();
+			permissibleValuesList2.add("Hct");
+			permissibleValuesList2.add("Hgb");
+			permissibleValuesList2.add("MCHC");
+			permissibleValuesList2.add("MCV");
+			permissibleValuesList2.add("RBC");
+			permissibleValuesList2.add("WBC");
+			
+			// Create category attribute(s) for bodyComposition category entity.
+			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "labTestName", clinAnnoLabAnnoContainer1, ControlEnum.LIST_BOX_CONTROL, "", permissibleValuesList1);
+			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "quantitativeResult", clinAnnoLabAnnoContainer1, ControlEnum.TEXT_FIELD_CONTROL, "");
+			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "resultUnits", clinAnnoLabAnnoContainer1, ControlEnum.TEXT_FIELD_CONTROL, "");
+			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "permissibleLowerLimit", clinAnnoLabAnnoContainer1, ControlEnum.TEXT_FIELD_CONTROL, "");
+			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "permissibleUpperLimit", clinAnnoLabAnnoContainer1, ControlEnum.TEXT_FIELD_CONTROL, "");
+			
+			// Create category attribute(s) for bodyComposition category entity.
+			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "labTestName", clinAnnoLabAnnoContainer2, ControlEnum.LIST_BOX_CONTROL, "", permissibleValuesList2);
+			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "quantitativeResult", clinAnnoLabAnnoContainer2, ControlEnum.TEXT_FIELD_CONTROL, "");
+			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "resultUnits", clinAnnoLabAnnoContainer2, ControlEnum.TEXT_FIELD_CONTROL, "");
+			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "permissibleLowerLimit", clinAnnoLabAnnoContainer2, ControlEnum.TEXT_FIELD_CONTROL, "");
+			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "permissibleUpperLimit", clinAnnoLabAnnoContainer2, ControlEnum.TEXT_FIELD_CONTROL, "");
+			
+			// Set appropriate child category entities.
+			categoryHelper.setParent(visitContainer, clinAnnoLabAnnoContainer1);
+			categoryHelper.setParent(visitContainer, clinAnnoLabAnnoContainer2);
+			
+			List<String> list = new ArrayList<String>();
+			list.add("CMP");
+			categoryHelper.associateCategoryContainers(visitContainer, clinAnnoLabAnnoContainer1, list, -1);
+			
+			list = new ArrayList<String>();
+			list.add("CBC");
+			categoryHelper.associateCategoryContainers(visitContainer, clinAnnoLabAnnoContainer2, list, -1);
+
+			// Save the category.
+			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
+			categoryManager.persistCategory(category);
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+		catch (DAOException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
+	
+	public void testCreateMetabTestCategory()
+	{
+		try
+		{
+			// Fetch the entity group from the database.
+			DefaultBizLogic bizlogic = new DefaultBizLogic();
+			Collection<EntityGroupInterface> entityGroupCollection = new HashSet<EntityGroupInterface>();
+			EntityGroupInterface entityGroup = null;
+
+			entityGroupCollection = bizlogic.retrieve(EntityGroup.class.getName(), "shortName", "EG");
+
+			if (entityGroupCollection != null && entityGroupCollection.size() > 0)
+			{
+				entityGroup = (EntityGroupInterface) entityGroupCollection.iterator().next();
+			}
+
+			// Fetch the vitals entity.
+			EntityInterface visit = entityGroup.getEntityByName("visit");
+			EntityInterface ClinicalAnnotationLabAnnotation = entityGroup.getEntityByName("ClinicalAnnotationLabAnnotation");
+
+			// Create category.
+			CategoryHelper categoryHelper = new CategoryHelper();
+
+			CategoryInterface category = categoryHelper.createCtaegory("MetabTest Category");
+
+			// Create category entity from ClinicalAnnotationLabAnnotation entity.
+			ContainerInterface visitContainer = categoryHelper.createCategoryEntityAndContainer(visit);
+			ContainerInterface clinAnnoLabAnnoContainer1 = categoryHelper.createCategoryEntityAndContainer(ClinicalAnnotationLabAnnotation);
+			ContainerInterface clinAnnoLabAnnoContainer2 = categoryHelper.createCategoryEntityAndContainer(ClinicalAnnotationLabAnnotation);
+			
+			List<String> permissibleValuesList1 = new ArrayList<String>();
+			permissibleValuesList1.add("Glucose conc-fasting");
+			permissibleValuesList1.add("Glucose conc-2 hr fasting");
+			permissibleValuesList1.add("FFA conc-fasting");
+			permissibleValuesList1.add("Insulin conc-fasting");
+			permissibleValuesList1.add("HOMA-IR");			
+	
+			
+			List<String> permissibleValuesList2 = new ArrayList<String>();
+			permissibleValuesList2.add("hour 0 - Baseline");
+			permissibleValuesList2.add("hour 1");
+			permissibleValuesList2.add("hour 2");
+			permissibleValuesList2.add("hour 3");
+			permissibleValuesList2.add("hour 4");
+			
+			// Create category attribute(s) for bodyComposition category entity.
+			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "labTestName", clinAnnoLabAnnoContainer1, ControlEnum.LIST_BOX_CONTROL, "", permissibleValuesList1);
+			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "quantitativeResult", clinAnnoLabAnnoContainer1, ControlEnum.TEXT_FIELD_CONTROL, "");
+			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "resultUnits", clinAnnoLabAnnoContainer1, ControlEnum.TEXT_FIELD_CONTROL, "");
+			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "permissibleLowerLimit", clinAnnoLabAnnoContainer1, ControlEnum.TEXT_FIELD_CONTROL, "");
+			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "permissibleUpperLimit", clinAnnoLabAnnoContainer1, ControlEnum.TEXT_FIELD_CONTROL, "");
+			
+			// Create category attribute(s) for bodyComposition category entity.
+			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "labTestName", clinAnnoLabAnnoContainer2, ControlEnum.LIST_BOX_CONTROL, "", permissibleValuesList2);
+			categoryHelper.addControl(ClinicalAnnotationLabAnnotation, "quantitativeResult", clinAnnoLabAnnoContainer2, ControlEnum.TEXT_FIELD_CONTROL, "");
+			
+			// Set appropriate child category entities.
+			categoryHelper.setParent(visitContainer, clinAnnoLabAnnoContainer1);
+			categoryHelper.setParent(visitContainer, clinAnnoLabAnnoContainer2);
+			
+			List<String> list = new ArrayList<String>();
+			list.add("CMP");
+			categoryHelper.associateCategoryContainers(visitContainer, clinAnnoLabAnnoContainer1, list, -1);
+			
+			list = new ArrayList<String>();
+			list.add("CBC");
+			categoryHelper.associateCategoryContainers(visitContainer, clinAnnoLabAnnoContainer2, list, -1);
+
+			// Save the category.
+			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
+			categoryManager.persistCategory(category);
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+		catch (DAOException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
+	
+	public void testCreateClinicalDXCategory()
+	{
+		try
+		{
+			// Fetch the entity group from the database.
+			DefaultBizLogic bizlogic = new DefaultBizLogic();
+			Collection<EntityGroupInterface> entityGroupCollection = new HashSet<EntityGroupInterface>();
+			EntityGroupInterface entityGroup = null;
+
+			entityGroupCollection = bizlogic.retrieve(EntityGroup.class.getName(), "shortName", "EG");
+
+			if (entityGroupCollection != null && entityGroupCollection.size() > 0)
+			{
+				entityGroup = (EntityGroupInterface) entityGroupCollection.iterator().next();
+			}
+
+			// Fetch the vitals entity.
+			EntityInterface visit = entityGroup.getEntityByName("visit");
+			EntityInterface clinicalDiagnosis = entityGroup.getEntityByName("ClinicalDiagnosis");
+
+			// Create category.
+			CategoryHelper categoryHelper = new CategoryHelper();
+
+			CategoryInterface category = categoryHelper.createCtaegory("ClinicalDX Category");
+
+			// Create category entity from ClinicalAnnotationLabAnnotation entity.
+			ContainerInterface visitContainer = categoryHelper.createCategoryEntityAndContainer(visit);
+			ContainerInterface frequentDiagnosisContainer = categoryHelper.createCategoryEntityAndContainer(clinicalDiagnosis);
+			ContainerInterface otherDiagnosisContainer = categoryHelper.createCategoryEntityAndContainer(clinicalDiagnosis);	
+	
+			// Create category attribute(s) for bodyComposition category entity.
+			categoryHelper.addControl(clinicalDiagnosis, "value", frequentDiagnosisContainer, ControlEnum.CHECK_BOX_CONTROL, "");
+			categoryHelper.addControl(clinicalDiagnosis, "value", frequentDiagnosisContainer, ControlEnum.CHECK_BOX_CONTROL, "");
+			categoryHelper.addControl(clinicalDiagnosis, "value", frequentDiagnosisContainer, ControlEnum.CHECK_BOX_CONTROL, "");
+			categoryHelper.addControl(clinicalDiagnosis, "value", frequentDiagnosisContainer, ControlEnum.CHECK_BOX_CONTROL, "");
+			categoryHelper.addControl(clinicalDiagnosis, "value", frequentDiagnosisContainer, ControlEnum.CHECK_BOX_CONTROL, "");
+			
+			// Create category attribute(s) for bodyComposition category entity.
+			categoryHelper.addControl(clinicalDiagnosis, "value", otherDiagnosisContainer, ControlEnum.TEXT_FIELD_CONTROL, "");
+			
+			// Set appropriate child category entities.
+			categoryHelper.setParent(visitContainer, frequentDiagnosisContainer);
+			categoryHelper.setParent(visitContainer, otherDiagnosisContainer);
+			
+			List<String> list = new ArrayList<String>();
+			list.add("otherDiagnosis");
+			categoryHelper.associateCategoryContainers(visitContainer, otherDiagnosisContainer, list, -1);
 
 			// Save the category.
 			CategoryManagerInterface categoryManager = CategoryManager.getInstance();

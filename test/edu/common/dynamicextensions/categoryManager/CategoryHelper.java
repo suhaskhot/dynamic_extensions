@@ -48,7 +48,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.categoryManager.CategoryHelperInterface#createCtaegory(java.lang.String)
 	 */
-	public CategoryInterface createCtaegory(String name)
+	public CategoryInterface createCategory(String name)
 	{
 		CategoryInterface category = factory.createCategory();
 		category.setName(name);
@@ -137,7 +137,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.categoryManager.CategoryHelperInterface#setParentCategoryEntity(edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface, edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface)
 	 */
-	public void setParent(ContainerInterface parentContainer, ContainerInterface childContainer)
+	public void setParentContainer(ContainerInterface parentContainer, ContainerInterface childContainer)
 	{
 		CategoryEntityInterface parentCategoryEntity = (CategoryEntity) parentContainer.getAbstractEntity();
 		CategoryEntityInterface childCategoryEntity = (CategoryEntity) childContainer.getAbstractEntity();
@@ -146,16 +146,11 @@ public class CategoryHelper implements CategoryHelperInterface
 		childContainer.setBaseContainer(parentContainer);
 	}
 
-	/**
-	 * @param sourceContainer
-	 * @param targetContainer
-	 * @param sourceRoleList
-	 * @param noOfEntries
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
+	/* (non-Javadoc)
+	 * @see edu.wustl.catissuecore.test.CategoryHelperInterface#associateCategoryContainers(edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface, edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface, java.util.List, int)
 	 */
 	public CategoryAssociationControlInterface associateCategoryContainers(ContainerInterface sourceContainer, ContainerInterface targetContainer,
-			List<String> sourceRoleList, int noOfEntries) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+			List<String> associationNamesList, int noOfEntries) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		PathInterface path = factory.createPath();
@@ -163,16 +158,11 @@ public class CategoryHelper implements CategoryHelperInterface
 		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
 		int pathSequenceNumber = 1;
 
-		for (String sourceRole : sourceRoleList)
+		for (String associationName : associationNamesList)
 		{
 			PathAssociationRelationInterface pathAssociationRelationInterface = factory.createPathAssociationRelation();
 			pathAssociationRelationInterface.setPathSequenceNumber(pathSequenceNumber++);
-
-			EntityInterface sourceEntity = ((CategoryEntityInterface) sourceContainer.getAbstractEntity()).getEntity();
-			EntityInterface tatgetEntity = ((CategoryEntityInterface) targetContainer.getAbstractEntity()).getEntity();
-
-			System.out.println("\tassociation name " + sourceRole);
-			pathAssociationRelationInterface.setAssociation(entityManagerInterface.getAssociationByName(sourceRole));
+			pathAssociationRelationInterface.setAssociation(entityManagerInterface.getAssociationByName(associationName));
 
 			pathAssociationRelationInterface.setPath(path);
 			path.addPathAssociationRelation(pathAssociationRelationInterface);

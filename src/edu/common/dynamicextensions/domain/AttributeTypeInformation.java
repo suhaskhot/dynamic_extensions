@@ -19,7 +19,7 @@ import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 /**
  * @version 1.0
  * @created 28-Sep-2006 12:20:07 PM
- * @hibernate.class table="DYEX_ATTR_TYP_INFO"
+ * @hibernate.class table="DYEXTN_ATTRIBUTE_TYPE_INFO"
  */
 public abstract class AttributeTypeInformation extends DynamicExtensionBaseDomainObject
 implements

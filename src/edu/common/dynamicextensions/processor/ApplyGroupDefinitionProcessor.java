@@ -59,7 +59,9 @@ public class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsProcesso
 		String createGroupAs = groupUIBean.getCreateGroupAs();
 		if ((createGroupAs != null) && (createGroupAs.equals(ProcessorConstants.GROUP_CREATEFROM_EXISTING)))
 		{
-			entityGroup = groupProcessor.getEntityGroupByIdentifier(groupUIBean.getGroupName());
+			//entityGroup = groupProcessor.getEntityGroupByIdentifier(groupUIBean.getGroupName());
+			EntityInterface entity = (EntityInterface) containerInterface.getAbstractEntity();
+			entityGroup = DynamicExtensionsUtility.getEntityGroup(entity);
 			if (operationMode.equals(Constants.EDIT_FORM))
 			{
 				entityGroup.setDescription(groupUIBean.getGroupDescription());

@@ -167,6 +167,83 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 	}
+	
+    /**
+	 * Retrieve entity group by its name from database.
+	 * @param name name of category
+	 * @return entity group
+	 */
+	private EntityGroupInterface retrieveEntityGroup(String name)
+	{
+		DefaultBizLogic bizlogic = new DefaultBizLogic();
+		Collection<EntityGroupInterface> entityGroupCollection = new HashSet<EntityGroupInterface>();
+		EntityGroupInterface entityGroup = null;
+
+		try
+		{
+			// Fetch the entity group from the database.
+			entityGroupCollection = bizlogic.retrieve(EntityGroup.class.getName(), "shortName", name);
+
+			if (entityGroupCollection != null && entityGroupCollection.size() > 0)
+			{
+				entityGroup = (EntityGroupInterface) entityGroupCollection.iterator().next();
+			}
+		}
+		catch (DAOException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+
+		return entityGroup;
+	}
+	
+	/**
+	 * Create a category from vitals entity and its attributes.
+	 *
+	 */
+	public void testCreateVitalsCategory()
+	{
+		try
+		{
+			EntityGroupInterface entityGroup = retrieveEntityGroup("gcrc");
+
+			// Get the VitalSigns entity from entity group.
+			EntityInterface vitals = entityGroup.getEntityByName("VitalSigns");
+
+			// Create category.
+			CategoryHelperInterface categoryHelper = new CategoryHelper();
+
+			CategoryInterface category = categoryHelper.createCategory("Vitals Category");
+
+			// Create category entity from VitalSigns entity.
+			ContainerInterface vitalsContainer = categoryHelper.createCategoryEntityAndContainer(vitals);
+
+			// Set the root category entity.
+			categoryHelper.setRootCategoryEntity(vitalsContainer, category);
+
+			// Create category attribute(s) for VitalSigns category entity.
+			categoryHelper.addControl(vitals, "heartRate", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Pulse");
+			categoryHelper.addControl(vitals, "diastolicBloodPressure", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Diastolic BP");
+			categoryHelper.addControl(vitals, "systolicBloodPressure", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Systolic BP");
+			categoryHelper.addControl(vitals, "weight", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Weight (kg)");
+			categoryHelper.addControl(vitals, "height", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Height (cm)");
+			categoryHelper.addControl(vitals, "respiratoryRate", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Respiration");
+
+			// Save the category.
+			categoryHelper.saveCategory(category);
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
 
 	/**
 	 * Entities : user (1)------>(*) study
@@ -202,7 +279,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			CategoryInterface category = categoryHelper.createCategory("Category From User and Study Entities");
 
 			// Create category entity from user entity.
-			ContainerInterface userCategoryContainer = categoryHelper.createCategoryEntityAndContainer(user, category);
+			ContainerInterface userCategoryContainer = categoryHelper.createCategoryEntityAndContainer(user);
+			categoryHelper.setRootCategoryEntity(userCategoryContainer, category);
 
 			// Create category attribute(s) for user category entity.
 			//categoryHelper.addControl(user, "User Name", userCategoryContainer, ControlEnum.TEXT_FIELD_CONTROL);
@@ -228,12 +306,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 			categoryHelper.associateCategoryContainers(userCategoryContainer, studyCategoryContainer, list, -1);
 
-			// Set appropriate child category entities.
-			categoryHelper.setChildCategoryEntity(userCategoryContainer, studyCategoryContainer);
-
 			// Save the category.
-			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
-			categoryManager.persistCategory(category);
+			categoryHelper.saveCategory(category);
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -301,7 +375,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			ContainerInterface baseTissuePathoAnnoContainer = categoryHelper.createCategoryEntityAndContainer(baseTissuePathoAnno);
 
 			// Create category entity from user entity.
-			ContainerInterface prostateAnnotationContainer = categoryHelper.createCategoryEntityAndContainer(prostateAnnotation, category);
+			ContainerInterface prostateAnnotationContainer = categoryHelper.createCategoryEntityAndContainer(prostateAnnotation);
+			categoryHelper.setRootCategoryEntity(prostateAnnotationContainer, category);
 
 			// Create category attribute(s) for needleBioProPathAnno category entity.
 			categoryHelper.addControl(prostateAnnotation, "specimenProcedoure", prostateAnnotationContainer, ControlEnum.LIST_BOX_CONTROL, "specimenProcedoure", pvList);
@@ -400,64 +475,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			categoryHelper.associateCategoryContainers(histologyContainer, variantHistologicContainer, list, 1);
 
 			// Save the category.
-			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
-			categoryManager.persistCategory(category);
-		}
-		catch (DynamicExtensionsSystemException e)
-		{
-			e.printStackTrace();
-			fail();
-		}
-		catch (DynamicExtensionsApplicationException e)
-		{
-			e.printStackTrace();
-			fail();
-		}
-		catch (DAOException e)
-		{
-			e.printStackTrace();
-			fail();
-		}
-	}
-	
-	public void testCreateVitalsCategory()
-	{
-		try
-		{
-			// Fetch the entity group from the database.
-			DefaultBizLogic bizlogic = new DefaultBizLogic();
-			Collection<EntityGroupInterface> entityGroupCollection = new HashSet<EntityGroupInterface>();
-			EntityGroupInterface entityGroup = null;
-
-			entityGroupCollection = bizlogic.retrieve(EntityGroup.class.getName(), "shortName", "EG");
-
-			if (entityGroupCollection != null && entityGroupCollection.size() > 0)
-			{
-				entityGroup = (EntityGroupInterface) entityGroupCollection.iterator().next();
-			}
-
-			// Fetch the vitals entity.
-			EntityInterface vitals = entityGroup.getEntityByName("Vitals");
-
-			// Create category.
-			CategoryHelper categoryHelper = new CategoryHelper();
-
-			CategoryInterface category = categoryHelper.createCategory("Vitals Category");
-
-			// Create category entity from user entity.
-			ContainerInterface vitalsContainer = categoryHelper.createCategoryEntityAndContainer(vitals);
-
-			// Create category attribute(s) for vitals category entity.
-			categoryHelper.addControl(vitals, "heartRate", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Pulse");
-			categoryHelper.addControl(vitals, "diastolicBloodPressure", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Diastolic BP");
-			categoryHelper.addControl(vitals, "systolicBloodPressure", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Systolic BP");
-			categoryHelper.addControl(vitals, "weight", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Weight (kg)");
-			categoryHelper.addControl(vitals, "height", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Height (cm)");
-			categoryHelper.addControl(vitals, "respiratoryRate", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Respiration");
-
-			// Save the category.
-			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
-			categoryManager.persistCategory(category);
+			categoryHelper.saveCategory(category);
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -534,8 +552,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			categoryHelper.associateCategoryContainers(visitContainer, bodyCompositionContainer, list, -1);
 
 			// Save the category.
-			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
-			categoryManager.persistCategory(category);
+			categoryHelper.saveCategory(category);
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -631,8 +648,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			categoryHelper.associateCategoryContainers(visitContainer, clinAnnoLabAnnoContainer2, list, -1);
 
 			// Save the category.
-			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
-			categoryManager.persistCategory(category);
+			categoryHelper.saveCategory(category);
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -730,8 +746,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			categoryHelper.associateCategoryContainers(visitContainer, clinAnnoLabAnnoContainer2, list, -1);
 
 			// Save the category.
-			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
-			categoryManager.persistCategory(category);
+			categoryHelper.saveCategory(category);
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -819,8 +834,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			categoryHelper.associateCategoryContainers(visitContainer, clinAnnoLabAnnoContainer2, list, -1);
 
 			// Save the category.
-			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
-			categoryManager.persistCategory(category);
+			categoryHelper.saveCategory(category);
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -888,8 +902,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			categoryHelper.associateCategoryContainers(visitContainer, otherDiagnosisContainer, list, -1);
 
 			// Save the category.
-			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
-			categoryManager.persistCategory(category);
+			categoryHelper.saveCategory(category);
 		}
 		catch (DynamicExtensionsSystemException e)
 		{

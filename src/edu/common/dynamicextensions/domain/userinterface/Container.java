@@ -418,7 +418,7 @@ public class Container extends DynamicExtensionBaseDomainObject
          .getControlCollection());
          */
         List<ControlInterface> controlsList = getAllControls();
-        /*Collections.sort(controlsList);*/
+        Collections.sort(controlsList);
         for (ControlInterface control : controlsList)
         {
             Object value = containerValueMap.get(control.getBaseAbstractAttribute());

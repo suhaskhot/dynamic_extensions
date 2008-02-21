@@ -81,13 +81,13 @@ public class CategoryHelper implements CategoryHelperInterface
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.categoryManager.CategoryHelperInterface#createCategoryEntity(java.lang.String, edu.common.dynamicextensions.domaininterface.CategoryInterface[])
 	 */
-	public ContainerInterface createCategoryEntityAndContainer(EntityInterface entity)
+	public ContainerInterface createCategoryEntityAndContainer(EntityInterface entity, String containerCaption)
 	{
 		CategoryEntityInterface categoryEntity = DomainObjectFactory.getInstance().createCategoryEntity();
 		categoryEntity.setName(entity.getName() + " Category Entity");
 		categoryEntity.setEntity(entity);
 
-		ContainerInterface container = createContainer(categoryEntity);
+		ContainerInterface container = createContainer(categoryEntity, containerCaption);
 		return container;
 	}
 
@@ -273,10 +273,10 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @param abstractEntity category entity
 	 * @return container object for category entity
 	 */
-	private ContainerInterface createContainer(AbstractEntityInterface abstractEntity)
+	private ContainerInterface createContainer(AbstractEntityInterface abstractEntity, String caption)
 	{
 		ContainerInterface container = DomainObjectFactory.getInstance().createContainer();
-		container.setCaption(abstractEntity.getName() + "_container");
+		container.setCaption(caption);
 		container.setAbstractEntity(abstractEntity);
 		container.setMainTableCss("formRequiredLabel");
 		container.setRequiredFieldIndicatior("*");

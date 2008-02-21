@@ -2,7 +2,6 @@
 package edu.common.dynamicextensions.categoryManager;
 
 import java.util.List;
-
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CategoryAssociationControlInterface;
@@ -32,7 +31,7 @@ public interface CategoryHelperInterface
 	public CategoryInterface createCategory(String name);
 
 	/**
-	 * Saves a category to the database.
+	 * Saves a category.
 	 * @param category category object to be saved.
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
@@ -42,9 +41,10 @@ public interface CategoryHelperInterface
 	/**
 	 * Create category container and category entity from given entity.
 	 * @param entity entity used to create a category entity and category container.
+	 * @param containerCaption container name on UI.
 	 * @return container.
 	 */
-	public ContainerInterface createCategoryEntityAndContainer(EntityInterface entity);
+	public ContainerInterface createCategoryEntityAndContainer(EntityInterface entity, String containerCaption);
 
 	/**
 	 * Set the root category entity of this category.

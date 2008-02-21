@@ -217,7 +217,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			CategoryInterface category = categoryHelper.createCategory("Vitals Category");
 
 			// Create category entity from VitalSigns entity.
-			ContainerInterface vitalsContainer = categoryHelper.createCategoryEntityAndContainer(vitals);
+			ContainerInterface vitalsContainer = categoryHelper.createCategoryEntityAndContainer(vitals, "Vitals");
 
 			// Set the root category entity.
 			categoryHelper.setRootCategoryEntity(vitalsContainer, category);
@@ -279,7 +279,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			CategoryInterface category = categoryHelper.createCategory("Category From User and Study Entities");
 
 			// Create category entity from user entity.
-			ContainerInterface userCategoryContainer = categoryHelper.createCategoryEntityAndContainer(user);
+			ContainerInterface userCategoryContainer = categoryHelper.createCategoryEntityAndContainer(user, "User");
 			categoryHelper.setRootCategoryEntity(userCategoryContainer, category);
 
 			// Create category attribute(s) for user category entity.
@@ -295,7 +295,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			categoryHelper.addControl(user, "User Name", userCategoryContainer, ControlEnum.LIST_BOX_CONTROL, "User Name", pvList);
 
 			// Create category entity from study entity.
-			ContainerInterface studyCategoryContainer = categoryHelper.createCategoryEntityAndContainer(study);
+			ContainerInterface studyCategoryContainer = categoryHelper.createCategoryEntityAndContainer(study, "Study");
 			studyCategoryContainer.setAddCaption(false);
 
 			// Create category attribute(s) for user category entity.
@@ -369,13 +369,13 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			pvList.add("Permissible Value 3");
 
 			// Create category entity from user entity.
-			ContainerInterface baseAnnotationContainer = categoryHelper.createCategoryEntityAndContainer(baseAnnotation);
+			ContainerInterface baseAnnotationContainer = categoryHelper.createCategoryEntityAndContainer(baseAnnotation, "Base Annotation");
 
 			// Create category entity from user entity.
-			ContainerInterface baseTissuePathoAnnoContainer = categoryHelper.createCategoryEntityAndContainer(baseTissuePathoAnno);
+			ContainerInterface baseTissuePathoAnnoContainer = categoryHelper.createCategoryEntityAndContainer(baseTissuePathoAnno, "Base Tissue Patholgy Annotation");
 
 			// Create category entity from user entity.
-			ContainerInterface prostateAnnotationContainer = categoryHelper.createCategoryEntityAndContainer(prostateAnnotation);
+			ContainerInterface prostateAnnotationContainer = categoryHelper.createCategoryEntityAndContainer(prostateAnnotation, "Prostate Annotation");
 			categoryHelper.setRootCategoryEntity(prostateAnnotationContainer, category);
 
 			// Create category attribute(s) for needleBioProPathAnno category entity.
@@ -385,25 +385,25 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			categoryHelper.addControl(prostateAnnotation, "comments", prostateAnnotationContainer, ControlEnum.TEXT_AREA_CONTROL, "comments");
 
 			// Create category entity from  entity.
-			ContainerInterface histologyContainer = categoryHelper.createCategoryEntityAndContainer(histology);
+			ContainerInterface histologyContainer = categoryHelper.createCategoryEntityAndContainer(histology, "Histology");
 
 			// Create category attribute(s) for histology category entity.
 			categoryHelper.addControl(histology, "type", histologyContainer, ControlEnum.LIST_BOX_CONTROL, "type", pvList);
 
 			// Create category entity from  entity.
-			ContainerInterface variantHistologicContainer = categoryHelper.createCategoryEntityAndContainer(varHistoType);
+			ContainerInterface variantHistologicContainer = categoryHelper.createCategoryEntityAndContainer(varHistoType, "Variant Histology Type");
 
 			//  Create category attribute(s) for varHistoType category entity.
 			categoryHelper.addControl(varHistoType, "variantType", variantHistologicContainer, ControlEnum.TEXT_FIELD_CONTROL, "variantType");
 
 			// Create category entity from  entity.
-			ContainerInterface additionalFindingContainer = categoryHelper.createCategoryEntityAndContainer(additionalFinding);
+			ContainerInterface additionalFindingContainer = categoryHelper.createCategoryEntityAndContainer(additionalFinding, "Additional Finding");
 
 			// Create category attribute(s) for histology category entity.
 			categoryHelper.addControl(additionalFinding, "Detail", additionalFindingContainer, ControlEnum.LIST_BOX_CONTROL, "Detail", pvList);
 
 			// Create category entity from  entity.
-			ContainerInterface invasionContainer = categoryHelper.createCategoryEntityAndContainer(invasion);
+			ContainerInterface invasionContainer = categoryHelper.createCategoryEntityAndContainer(invasion, "Invasion");
 			// Create category attribute(s) for histology category entity.
 
 			List<String> lymInvValues = new ArrayList<String>();
@@ -424,7 +424,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			categoryHelper.addControl(invasion, "perneuralInvasion", invasionContainer, ControlEnum.RADIO_BUTTON_CONTROL, "perneuralInvasion", perInvValues);
 
 			// Create category entity from  entity.
-			ContainerInterface gleasonContainer = categoryHelper.createCategoryEntityAndContainer(gleasonScore);
+			ContainerInterface gleasonContainer = categoryHelper.createCategoryEntityAndContainer(gleasonScore, "Gleason Score");
 
 			// Create category attribute(s) for histology category entity.
 			categoryHelper.addControl(gleasonScore, "primaryPattern", gleasonContainer, ControlEnum.TEXT_FIELD_CONTROL, "primaryPattern");
@@ -432,7 +432,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			categoryHelper.addControl(gleasonScore, "tertiaryPattern", gleasonContainer, ControlEnum.TEXT_FIELD_CONTROL, "tertiaryPattern");
 
 			// Create category entity from  entity.
-			ContainerInterface tumorQuantContainer = categoryHelper.createCategoryEntityAndContainer(tumorQuant);
+			ContainerInterface tumorQuantContainer = categoryHelper.createCategoryEntityAndContainer(tumorQuant, "Tumor Quantitation");
 
 			// Create category attribute(s) for histology category entity.
 			categoryHelper.addControl(tumorQuant, "totalLengthOfCarcinomaInMilimeters", tumorQuantContainer, ControlEnum.TEXT_FIELD_CONTROL, "totalLengthOfCarcinomaInMilimeters");
@@ -520,10 +520,10 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			CategoryInterface category = categoryHelper.createCategory("Body Composition Category");
 
 			// Create category entity from vitals entity.
-			ContainerInterface visitContainer = categoryHelper.createCategoryEntityAndContainer(visit);
+			ContainerInterface visitContainer = categoryHelper.createCategoryEntityAndContainer(visit, "Visit");
 			
 			// Create category entity from bodyComposition entity.
-			ContainerInterface bodyCompositionContainer = categoryHelper.createCategoryEntityAndContainer(bodyComposition);
+			ContainerInterface bodyCompositionContainer = categoryHelper.createCategoryEntityAndContainer(bodyComposition, "Body Composition");
 			
 			List<String> permissibleValuesList1 = new ArrayList<String>();
 			permissibleValuesList1.add("BMI");
@@ -597,9 +597,9 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			CategoryInterface category = categoryHelper.createCategory("LipidCMP Category");
 
 			// Create category entity from ClinicalAnnotationLabAnnotation entity.
-			ContainerInterface visitContainer = categoryHelper.createCategoryEntityAndContainer(visit);
-			ContainerInterface clinAnnoLabAnnoContainer1 = categoryHelper.createCategoryEntityAndContainer(ClinicalAnnotationLabAnnotation);
-			ContainerInterface clinAnnoLabAnnoContainer2 = categoryHelper.createCategoryEntityAndContainer(ClinicalAnnotationLabAnnotation);
+			ContainerInterface visitContainer = categoryHelper.createCategoryEntityAndContainer(visit, "Visit");
+			ContainerInterface clinAnnoLabAnnoContainer1 = categoryHelper.createCategoryEntityAndContainer(ClinicalAnnotationLabAnnotation, "Clinical Annotation Lab Annotation");
+			ContainerInterface clinAnnoLabAnnoContainer2 = categoryHelper.createCategoryEntityAndContainer(ClinicalAnnotationLabAnnotation, "Clinical Annotation Lab Annotation");
 			
 			List<String> permissibleValuesList1 = new ArrayList<String>();
 			permissibleValuesList1.add("Cholesterol");
@@ -693,9 +693,9 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			CategoryInterface category = categoryHelper.createCategory("CMPCBC Category");
 
 			// Create category entity from ClinicalAnnotationLabAnnotation entity.
-			ContainerInterface visitContainer = categoryHelper.createCategoryEntityAndContainer(visit);
-			ContainerInterface clinAnnoLabAnnoContainer1 = categoryHelper.createCategoryEntityAndContainer(ClinicalAnnotationLabAnnotation);
-			ContainerInterface clinAnnoLabAnnoContainer2 = categoryHelper.createCategoryEntityAndContainer(ClinicalAnnotationLabAnnotation);
+			ContainerInterface visitContainer = categoryHelper.createCategoryEntityAndContainer(visit, "Visit");
+			ContainerInterface clinAnnoLabAnnoContainer1 = categoryHelper.createCategoryEntityAndContainer(ClinicalAnnotationLabAnnotation, "Clinical Annotation Lab Annotation");
+			ContainerInterface clinAnnoLabAnnoContainer2 = categoryHelper.createCategoryEntityAndContainer(ClinicalAnnotationLabAnnotation, "Clinical Annotation Lab Annotation");
 			
 			List<String> permissibleValuesList1 = new ArrayList<String>();
 			permissibleValuesList1.add("Glu");
@@ -791,9 +791,9 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			CategoryInterface category = categoryHelper.createCategory("MetabTest Category");
 
 			// Create category entity from ClinicalAnnotationLabAnnotation entity.
-			ContainerInterface visitContainer = categoryHelper.createCategoryEntityAndContainer(visit);
-			ContainerInterface clinAnnoLabAnnoContainer1 = categoryHelper.createCategoryEntityAndContainer(ClinicalAnnotationLabAnnotation);
-			ContainerInterface clinAnnoLabAnnoContainer2 = categoryHelper.createCategoryEntityAndContainer(ClinicalAnnotationLabAnnotation);
+			ContainerInterface visitContainer = categoryHelper.createCategoryEntityAndContainer(visit, "Visit");
+			ContainerInterface clinAnnoLabAnnoContainer1 = categoryHelper.createCategoryEntityAndContainer(ClinicalAnnotationLabAnnotation, "Clinical Annotation Lab Annotation");
+			ContainerInterface clinAnnoLabAnnoContainer2 = categoryHelper.createCategoryEntityAndContainer(ClinicalAnnotationLabAnnotation, "Clinical Annotation Lab Annotation");
 			
 			List<String> permissibleValuesList1 = new ArrayList<String>();
 			permissibleValuesList1.add("Glucose conc-fasting");
@@ -879,9 +879,9 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			CategoryInterface category = categoryHelper.createCategory("ClinicalDX Category");
 
 			// Create category entity from ClinicalAnnotationLabAnnotation entity.
-			ContainerInterface visitContainer = categoryHelper.createCategoryEntityAndContainer(visit);
-			ContainerInterface frequentDiagnosisContainer = categoryHelper.createCategoryEntityAndContainer(clinicalDiagnosis);
-			ContainerInterface otherDiagnosisContainer = categoryHelper.createCategoryEntityAndContainer(clinicalDiagnosis);	
+			ContainerInterface visitContainer = categoryHelper.createCategoryEntityAndContainer(visit, "Visit");
+			ContainerInterface frequentDiagnosisContainer = categoryHelper.createCategoryEntityAndContainer(clinicalDiagnosis, "Clinical Diagnosis");
+			ContainerInterface otherDiagnosisContainer = categoryHelper.createCategoryEntityAndContainer(clinicalDiagnosis, "Clinical Diagnosis");	
 	
 			// Create category attribute(s) for bodyComposition category entity.
 			categoryHelper.addControl(clinicalDiagnosis, "value", frequentDiagnosisContainer, ControlEnum.CHECK_BOX_CONTROL, "");

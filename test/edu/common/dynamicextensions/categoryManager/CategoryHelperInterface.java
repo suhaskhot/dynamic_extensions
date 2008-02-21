@@ -11,68 +11,91 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
 /**
- * 
+ * This is an helper API for creating category.
  * @author mandar_shidhore
  * @author kunal_kamble
- *
  */
 public interface CategoryHelperInterface
 {
+	/**
+	 * These are constants to be used while creating controls.
+	 */
 	public enum ControlEnum {
 		TEXT_FIELD_CONTROL, LIST_BOX_CONTROL, DATE_PICKER_CONTROL, FILE_UPLOAD_CONTROL, RADIO_BUTTON_CONTROL, TEXT_AREA_CONTROL, CHECK_BOX_CONTROL;
 	};
 
 	/**
 	 * Create category with the given name.
-	 * @param name
-	 * @return
+	 * @param name name by which we wish to create the category.
+	 * @return category
 	 */
 	public CategoryInterface createCategory(String name);
 
 	/**
-	 * Create Category entity and category container from given entity. Category name should  
-	 * be passed if we want to make this category entity as root category entity.
-	 * @param entity
-	 * @param category
-	 * @return
+	 * Saves a category to the database.
+	 * @param category category object to be saved.
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
 	 */
-	public ContainerInterface createCategoryEntityAndContainer(EntityInterface entity, CategoryInterface... category);
+	public void saveCategory(CategoryInterface category) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+
+	/**
+	 * Create category container and category entity from given entity.
+	 * @param entity entity used to create a category entity and category container.
+	 * @return container.
+	 */
+	public ContainerInterface createCategoryEntityAndContainer(EntityInterface entity);
+
+	/**
+	 * Set the root category entity of this category.
+	 * @param container root category entity's container.
+	 * @param category
+	 */
+	public void setRootCategoryEntity(ContainerInterface container, CategoryInterface category);
 
 	/**
 	 * Add a controls to category containers. Attribute name is used to get the attribute of the entity. 
 	 * controlValue is used to select the type of control desired. controlCaption is used to modify the 
 	 * UI property i.e. label of the attribute. Lastly a list of permissible values is passed if any permissible
 	 * values subset exist for an attribute.
-	 * @param entity
-	 * @param attributeName
-	 * @param container
-	 * @param controlValue
-	 * @param permissibleValueList
+	 * @param entity used to create a category entity.
+	 * @param attributeName name of the attribute belonging to the entity.
+	 * @param container the container created for category entity to which we wish to add a control.
+	 * @param controlValue type of control to be created. (e.g. ControlEnum.TEXT_FIELD_CONTROL)
+	 * @param permissibleValueList in case of radio buttons, lists and combo boxes, the list of permissible values is required, optional otherwise.
 	 */
 	public void addControl(EntityInterface entity, String attributeName, ContainerInterface container, ControlEnum controlValue,
 			String controlCaption, List<String>... permissibleValueList);
 
 	/**
-	 * Set parent container.
-	 * @param parentContainer
-	 * @param childContainer
+	 * This method is used when there is inheritance between two entities.
+	 * @param parentContainer parentForm
+	 * @param childContainer childForm
 	 */
 	public void setParentContainer(ContainerInterface parentContainer, ContainerInterface childContainer);
 
 	/**
 	 * Associate category containers with each other.
-	 * E.G. User (1) ----> (*) Study. Here user category entity's container will be sourceContainer,
-	 * study category entity's container will be targetContainer, sourceRoleList will contain source roles
+	 * E.G. User (1) ------userstudyassociation------> (*) Study. Here user category entity's container will be sourceContainer,
+	 * study category entity's container will be targetContainer, associationNameList will contain source roles
 	 * for all associations between the containers. noOfEntries indicates multiplicity.
-	 * @param sourceContainer
-	 * @param targetContainer
-	 * @param associationNamesList
-	 * @param noOfEntries
+	 * @param sourceContainer equivalent to main form
+	 * @param targetContainer equivalent to sub form
+	 * @param associationNameList names of the association(s) present between two entities involved.
+	 * e.g 'userstudyassociation' as depicted above
+	 * @param noOfEntries indicates multiplicity. e.g. one-to-one (1) or one-to-many (-1) etc.
 	 * @return CategoryAssociationControlInterface 
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	public CategoryAssociationControlInterface associateCategoryContainers(ContainerInterface sourceContainer, ContainerInterface targetContainer,
-			List<String> associationNamesList, int noOfEntries) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+			List<String> associationNameList, int noOfEntries) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+
+	/**
+	 * Method returns the next sequenceNumber
+	 * @param container category entity container
+	 * @return next sequence number
+	 */
+	public int getNextSequenceNumber(ContainerInterface container);
 
 }

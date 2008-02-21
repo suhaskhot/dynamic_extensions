@@ -30,6 +30,8 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterfa
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
+import edu.common.dynamicextensions.entitymanager.CategoryManager;
+import edu.common.dynamicextensions.entitymanager.CategoryManagerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
@@ -43,38 +45,59 @@ import edu.common.dynamicextensions.processor.ProcessorConstants;
  */
 public class CategoryHelper implements CategoryHelperInterface
 {
-	DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.categoryManager.CategoryHelperInterface#createCtaegory(java.lang.String)
 	 */
 	public CategoryInterface createCategory(String name)
 	{
-		CategoryInterface category = factory.createCategory();
+		CategoryInterface category = DomainObjectFactory.getInstance().createCategory();
 		category.setName(name);
 		return category;
 	}
 
 	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.categoryManager.CategoryHelperInterface#saveCategory(edu.common.dynamicextensions.domaininterface.CategoryInterface)
+	 */
+	public void saveCategory(CategoryInterface category) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		try
+		{
+			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
+			categoryManager.persistCategory(category);
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+			throw new DynamicExtensionsSystemException("Error while saving a category");
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			e.printStackTrace();
+			throw new DynamicExtensionsApplicationException("Error while saving a category");
+		}
+	}
+
+	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.categoryManager.CategoryHelperInterface#createCategoryEntity(java.lang.String, edu.common.dynamicextensions.domaininterface.CategoryInterface[])
 	 */
-	public ContainerInterface createCategoryEntityAndContainer(EntityInterface entity, CategoryInterface... category)
+	public ContainerInterface createCategoryEntityAndContainer(EntityInterface entity)
 	{
-		CategoryEntityInterface categoryEntity = factory.createCategoryEntity();
+		CategoryEntityInterface categoryEntity = DomainObjectFactory.getInstance().createCategoryEntity();
 		categoryEntity.setName(entity.getName() + " Category Entity");
 		categoryEntity.setEntity(entity);
 
-		if (category != null && category.length != 0)
-		{
-			for (CategoryInterface c : category)
-			{
-				categoryEntity.setCategory(c);
-				c.setRootCategoryElement(categoryEntity);
-			}
-		}
-
 		ContainerInterface container = createContainer(categoryEntity);
 		return container;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.categoryManager.CategoryHelperInterface#setRootCategoryEntity(edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface, edu.common.dynamicextensions.domaininterface.CategoryInterface)
+	 */
+	public void setRootCategoryEntity(ContainerInterface container, CategoryInterface category)
+	{
+		category.setRootCategoryElement((CategoryEntityInterface) container.getAbstractEntity());
+		((CategoryEntityInterface) container.getAbstractEntity()).setCategory(category);
 	}
 
 	/* (non-Javadoc)
@@ -83,7 +106,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	public void addControl(EntityInterface entity, String attributeName, ContainerInterface container, ControlEnum controlValue,
 			String controlCaption, List<String>... permissibleValueList)
 	{
-		CategoryAttributeInterface categoryAttribute = factory.createCategoryAttribute();
+		CategoryAttributeInterface categoryAttribute = DomainObjectFactory.getInstance().createCategoryAttribute();
 		categoryAttribute.setName(attributeName + " Category Attribute");
 		categoryAttribute.setAttribute(entity.getAttributeByName(attributeName));
 
@@ -91,47 +114,36 @@ public class CategoryHelper implements CategoryHelperInterface
 		categoryEntity.addCategoryAttribute(categoryAttribute);
 		categoryAttribute.setCategoryEntity(categoryEntity);
 
-		ControlInterface controlInterface = null;
+		ControlInterface control = null;
 		switch (controlValue)
 		{
 			case TEXT_FIELD_CONTROL :
-				controlInterface = createTextFieldControl(container, categoryAttribute);
+				control = createTextFieldControl(container, categoryAttribute);
 				break;
 			case LIST_BOX_CONTROL :
-				controlInterface = createListBoxControl(container, categoryAttribute, createPermissibleValueList(permissibleValueList[0]));
+				control = createListBoxControl(container, categoryAttribute, createPermissibleValueList(permissibleValueList[0]));
 				break;
 			case DATE_PICKER_CONTROL :
-				controlInterface = createDatePickerControl(container, categoryAttribute);
+				control = createDatePickerControl(container, categoryAttribute);
 				break;
 			case FILE_UPLOAD_CONTROL :
-				controlInterface = createFileUploadControl(container, categoryAttribute);
+				control = createFileUploadControl(container, categoryAttribute);
 				break;
 			case TEXT_AREA_CONTROL :
-				controlInterface = createTextAreaControl(container, categoryAttribute);
+				control = createTextAreaControl(container, categoryAttribute);
 				break;
 			case RADIO_BUTTON_CONTROL :
-				controlInterface = createRadioButtonControl(container, categoryAttribute, createPermissibleValueList(permissibleValueList[0]));
+				control = createRadioButtonControl(container, categoryAttribute, createPermissibleValueList(permissibleValueList[0]));
 				break;
 			case CHECK_BOX_CONTROL :
-				controlInterface = createCheckBoxControl(container, categoryAttribute);
+				control = createCheckBoxControl(container, categoryAttribute);
 				break;
-
 		}
 
-		controlInterface.setCaption(controlCaption);
+		control.setCaption(controlCaption);
 
 		categoryEntity.addCategoryAttribute(categoryAttribute);
 		categoryAttribute.setCategoryEntity(categoryEntity);
-	}
-
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.categoryManager.CategoryHelperInterface#setChildCategoryEntity(edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface, edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface)
-	 */
-	public void setChildCategoryEntity(ContainerInterface parentContainer, ContainerInterface childContainer)
-	{
-		CategoryEntityInterface parentCategoryEntity = (CategoryEntity) parentContainer.getAbstractEntity();
-		CategoryEntityInterface childCategoryEntity = (CategoryEntity) childContainer.getAbstractEntity();
-		parentCategoryEntity.addChildCategory(childCategoryEntity);
 	}
 
 	/* (non-Javadoc)
@@ -153,24 +165,27 @@ public class CategoryHelper implements CategoryHelperInterface
 			List<String> associationNamesList, int noOfEntries) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
 		PathInterface path = factory.createPath();
 
-		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+
 		int pathSequenceNumber = 1;
 
 		for (String associationName : associationNamesList)
 		{
-			PathAssociationRelationInterface pathAssociationRelationInterface = factory.createPathAssociationRelation();
-			pathAssociationRelationInterface.setPathSequenceNumber(pathSequenceNumber++);
-			pathAssociationRelationInterface.setAssociation(entityManagerInterface.getAssociationByName(associationName));
+			PathAssociationRelationInterface pathAssociationRelation = factory.createPathAssociationRelation();
+			pathAssociationRelation.setPathSequenceNumber(pathSequenceNumber++);
+			pathAssociationRelation.setAssociation(entityManager.getAssociationByName(associationName));
 
-			pathAssociationRelationInterface.setPath(path);
-			path.addPathAssociationRelation(pathAssociationRelationInterface);
+			pathAssociationRelation.setPath(path);
+			path.addPathAssociationRelation(pathAssociationRelation);
 		}
 
 		CategoryEntityInterface sourceCategoryEntity = (CategoryEntityInterface) sourceContainer.getAbstractEntity();
 		CategoryEntityInterface targetCategoryEntity = (CategoryEntityInterface) targetContainer.getAbstractEntity();
 
+		// Add path information.
 		addPathBetweenCategoryEntities(sourceCategoryEntity, targetCategoryEntity, path);
 		targetCategoryEntity.setNumberOfEntries(noOfEntries);
 
@@ -178,16 +193,31 @@ public class CategoryHelper implements CategoryHelperInterface
 				.getName()
 				+ " to " + targetCategoryEntity.getName() + " category association");
 
-		CategoryAssociationControlInterface categoryAssociationControlInterface = createCategoryAssociationControl(sourceContainer, targetContainer,
+		CategoryAssociationControlInterface categoryAssociationControl = createCategoryAssociationControl(sourceContainer, targetContainer,
 				categoryAssociation, sourceCategoryEntity.getName() + "-" + targetCategoryEntity.getName() + " association control");
 
-		return categoryAssociationControlInterface;
+		return categoryAssociationControl;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.wustl.catissuecore.test.CategoryHelperInterface#getNextSequenceNumber(edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface)
+	 */
+	public int getNextSequenceNumber(ContainerInterface container)
+	{
+		int nextSequenceNumber = 1;
+
+		if (container.getAllControls() != null)
+		{
+			nextSequenceNumber = container.getAllControls().size() + 1;
+		}
+
+		return nextSequenceNumber;
 	}
 
 	/**
-	 * @param sourceCategoryEntity
-	 * @param targetCategoryEntity
-	 * @param path
+	 * @param sourceCategoryEntity source category entity 
+	 * @param targetCategoryEntity target category entity 
+	 * @param path path information between the category entities
 	 */
 	private void addPathBetweenCategoryEntities(CategoryEntityInterface sourceCategoryEntity, CategoryEntityInterface targetCategoryEntity,
 			PathInterface path)
@@ -198,22 +228,18 @@ public class CategoryHelper implements CategoryHelperInterface
 
 	/**
 	 * Method associates the source and the target category entity
-	 * @param sourceCategoryEntity
-	 * @param targetCategoryEntity
-	 * @param name
-	 * @return category association object
+	 * @param sourceCategoryEntity source category entity 
+	 * @param targetCategoryEntity target category entity 
+	 * @param name name of the category association
+	 * @return CategoryAssociationInterface category association object
 	 */
 	private CategoryAssociationInterface associateCategoryEntities(CategoryEntityInterface sourceCategoryEntity,
 			CategoryEntityInterface targetCategoryEntity, String name)
 	{
-		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-		CategoryAssociationInterface categoryAssociation = factory.createCategoryAssociation();
-
+		CategoryAssociationInterface categoryAssociation = DomainObjectFactory.getInstance().createCategoryAssociation();
 		categoryAssociation.setName(name);
 		categoryAssociation.setTargetCategoryEntity(targetCategoryEntity);
 		categoryAssociation.setCategoryEntity(sourceCategoryEntity);
-
-		sourceCategoryEntity.addChildCategory(targetCategoryEntity);
 
 		sourceCategoryEntity.getCategoryAssociationCollection().add(categoryAssociation);
 
@@ -222,31 +248,30 @@ public class CategoryHelper implements CategoryHelperInterface
 
 	/**
 	 * Method creates the association between the given parent and the target container 
-	 * @param parentContainer
-	 * @param targetContainer
-	 * @param categoryAssociation
-	 * @param caption
+	 * @param parentContainer main form
+	 * @param targetContainer sub form
+	 * @param categoryAssociation association between category entities
+	 * @param caption name to be displayed on UI
+	 * @return CategoryAssociationControlInterface category association control object
 	 */
 	private CategoryAssociationControlInterface createCategoryAssociationControl(ContainerInterface parentContainer,
 			ContainerInterface targetContainer, CategoryAssociationInterface categoryAssociation, String caption)
 	{
-		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-		CategoryAssociationControlInterface categoryAssociationControl = factory.createCategoryAssociationControl();
-
+		CategoryAssociationControlInterface categoryAssociationControl = DomainObjectFactory.getInstance().createCategoryAssociationControl();
 		categoryAssociationControl.setCaption(caption);
 		categoryAssociationControl.setContainer(targetContainer);
 		categoryAssociationControl.setBaseAbstractAttribute(categoryAssociation);
 		categoryAssociationControl.setSequenceNumber(getNextSequenceNumber(parentContainer));
-
 		categoryAssociationControl.setParentContainer((Container) parentContainer);
+
 		parentContainer.addControl(categoryAssociationControl);
 
 		return categoryAssociationControl;
 	}
 
 	/**
-	 * @param abstractEntity
-	 * @return
+	 * @param abstractEntity category entity
+	 * @return container object for category entity
 	 */
 	private ContainerInterface createContainer(AbstractEntityInterface abstractEntity)
 	{
@@ -256,6 +281,7 @@ public class CategoryHelper implements CategoryHelperInterface
 		container.setMainTableCss("formRequiredLabel");
 		container.setRequiredFieldIndicatior("*");
 		container.setRequiredFieldWarningMessage("indicates mandatory fields.");
+
 		abstractEntity.addContainer(container);
 
 		return container;
@@ -263,10 +289,9 @@ public class CategoryHelper implements CategoryHelperInterface
 
 	/**
 	 * 
-	 * @param container
-	 * @param baseAbstractAttribute
-	 * @param sequenceNumber
-	 * @return
+	 * @param container category entity container
+	 * @param baseAbstractAttribute category attribute
+	 * @return text field object
 	 */
 	private TextFieldInterface createTextFieldControl(ContainerInterface container, BaseAbstractAttributeInterface baseAbstractAttribute)
 	{
@@ -275,32 +300,32 @@ public class CategoryHelper implements CategoryHelperInterface
 		textField.setBaseAbstractAttribute(baseAbstractAttribute);
 		textField.setColumns(50);
 		textField.setSequenceNumber(getNextSequenceNumber(container));
-
 		textField.setParentContainer((Container) container);
+
 		container.addControl(textField);
 
 		return textField;
 	}
 
 	/**
-	 * @param container
-	 * @param baseAbstractAttribute
-	 * @param permissibleValueList
-	 * @return
+	 * @param container category entity container
+	 * @param baseAbstractAttribute category attribute
+	 * @param permissibleValues list of permissible values
+	 * @return list box object
 	 */
 	private ListBoxInterface createListBoxControl(ContainerInterface container, BaseAbstractAttributeInterface baseAbstractAttribute,
-			List<PermissibleValueInterface> permissibleValueList)
+			List<PermissibleValueInterface> permissibleValues)
 	{
 		ListBoxInterface listBox = DomainObjectFactory.getInstance().createListBox();
 		listBox.setCaption(baseAbstractAttribute.getName());
 		listBox.setBaseAbstractAttribute(baseAbstractAttribute);
 		listBox.setSequenceNumber(getNextSequenceNumber(container));
-
 		listBox.setParentContainer((Container) container);
+
 		container.addControl(listBox);
 
-		UserDefinedDEInterface userDefinedDE = factory.createUserDefinedDE();
-		for (PermissibleValueInterface pv : permissibleValueList)
+		UserDefinedDEInterface userDefinedDE = DomainObjectFactory.getInstance().createUserDefinedDE();
+		for (PermissibleValueInterface pv : permissibleValues)
 		{
 			userDefinedDE.addPermissibleValue(pv);
 		}
@@ -310,9 +335,9 @@ public class CategoryHelper implements CategoryHelperInterface
 	}
 
 	/**
-	 * @param container
-	 * @param baseAbstractAttribute
-	 * @return
+	 * @param container category entity container
+	 * @param baseAbstractAttribute category attribute
+	 * @return date picker object
 	 */
 	private DatePickerInterface createDatePickerControl(ContainerInterface container, BaseAbstractAttributeInterface baseAbstractAttribute)
 	{
@@ -320,17 +345,18 @@ public class CategoryHelper implements CategoryHelperInterface
 		datePicker.setCaption(baseAbstractAttribute.getName());
 		datePicker.setBaseAbstractAttribute(baseAbstractAttribute);
 		datePicker.setSequenceNumber(getNextSequenceNumber(container));
-
 		datePicker.setParentContainer((Container) container);
-		container.addControl(datePicker);
 		datePicker.setDateValueType(ProcessorConstants.DATE_ONLY_FORMAT);
+
+		container.addControl(datePicker);
+
 		return datePicker;
 	}
 
 	/**
-	 * @param container
-	 * @param baseAbstractAttribute
-	 * @return
+	 * @param container category entity container
+	 * @param baseAbstractAttribute category attribute
+	 * @return file upload object
 	 */
 	private FileUploadInterface createFileUploadControl(ContainerInterface container, BaseAbstractAttributeInterface baseAbstractAttribute)
 	{
@@ -338,17 +364,17 @@ public class CategoryHelper implements CategoryHelperInterface
 		fileUpload.setCaption(baseAbstractAttribute.getName());
 		fileUpload.setBaseAbstractAttribute(baseAbstractAttribute);
 		fileUpload.setSequenceNumber(getNextSequenceNumber(container));
-
 		fileUpload.setParentContainer((Container) container);
+
 		container.addControl(fileUpload);
 
 		return fileUpload;
 	}
 
 	/**
-	 * @param container
-	 * @param baseAbstractAttribute
-	 * @return
+	 * @param container category entity container
+	 * @param baseAbstractAttribute category attribute
+	 * @return text area object
 	 */
 	private TextAreaInterface createTextAreaControl(ContainerInterface container, BaseAbstractAttributeInterface baseAbstractAttribute)
 	{
@@ -358,44 +384,46 @@ public class CategoryHelper implements CategoryHelperInterface
 		textArea.setSequenceNumber(getNextSequenceNumber(container));
 		textArea.setColumns(50);
 		textArea.setRows(5);
-
 		textArea.setParentContainer((Container) container);
+
 		container.addControl(textArea);
 
 		return textArea;
 	}
 
 	/**
-	 * @param container
-	 * @param baseAbstractAttribute
-	 * @param permissibleValueList
-	 * @return
+	 * @param container category entity container
+	 * @param baseAbstractAttribute category attribute
+	 * @param permissibleValues list of permissible values
+	 * @return RadioButtonInterface radio button object
 	 */
 	private RadioButtonInterface createRadioButtonControl(ContainerInterface container, BaseAbstractAttributeInterface baseAbstractAttribute,
-			List<PermissibleValueInterface> permissibleValueList)
+			List<PermissibleValueInterface> permissibleValues)
 	{
 		RadioButtonInterface radioButton = DomainObjectFactory.getInstance().createRadioButton();
 		radioButton.setCaption(baseAbstractAttribute.getName());
 		radioButton.setBaseAbstractAttribute(baseAbstractAttribute);
 		radioButton.setSequenceNumber(getNextSequenceNumber(container));
-		UserDefinedDEInterface userDefinedDE = factory.createUserDefinedDE();
+		radioButton.setParentContainer((Container) container);
 
-		for (PermissibleValueInterface pv : permissibleValueList)
+		UserDefinedDEInterface userDefinedDE = DomainObjectFactory.getInstance().createUserDefinedDE();
+
+		for (PermissibleValueInterface pv : permissibleValues)
 		{
 			userDefinedDE.addPermissibleValue(pv);
 		}
+
 		((CategoryAttribute) baseAbstractAttribute).setDataElement(userDefinedDE);
 
-		radioButton.setParentContainer((Container) container);
 		container.addControl(radioButton);
 
 		return radioButton;
 	}
 
 	/**
-	 * @param container
-	 * @param baseAbstractAttribute
-	 * @return
+	 * @param container category entity container
+	 * @param baseAbstractAttribute category attribute
+	 * @return check box object
 	 */
 	private CheckBoxInterface createCheckBoxControl(ContainerInterface container, BaseAbstractAttributeInterface baseAbstractAttribute)
 	{
@@ -403,44 +431,30 @@ public class CategoryHelper implements CategoryHelperInterface
 		checkBox.setCaption(baseAbstractAttribute.getName());
 		checkBox.setBaseAbstractAttribute(baseAbstractAttribute);
 		checkBox.setSequenceNumber(getNextSequenceNumber(container));
-
 		checkBox.setParentContainer((Container) container);
+
 		container.addControl(checkBox);
 
 		return checkBox;
 	}
 
 	/**
-	 * @param values
-	 * @return
+	 * @param values list of values
+	 * @return list of permissible values
 	 */
 	private List<PermissibleValueInterface> createPermissibleValueList(List<String> values)
 	{
-		List<PermissibleValueInterface> pvList = new ArrayList<PermissibleValueInterface>();
+		List<PermissibleValueInterface> permissibleValues = new ArrayList<PermissibleValueInterface>();
+
 		for (String permissibleValueString : values)
 		{
-			PermissibleValueInterface permissibleValue = factory.createStringValue();
+			PermissibleValueInterface permissibleValue = DomainObjectFactory.getInstance().createStringValue();
 			((StringValue) permissibleValue).setValue(permissibleValueString);
 
-			pvList.add(permissibleValue);
+			permissibleValues.add(permissibleValue);
 		}
-		return pvList;
-	}
 
-	/**
-	 * Method returns the next sequenceNumber
-	 * @param container
-	 * @return
-	 */
-	public int getNextSequenceNumber(ContainerInterface container)
-	{
-		int nextSequenceNumber = 1;
-
-		if (container.getAllControls() != null)
-		{
-			nextSequenceNumber = container.getAllControls().size() + 1;
-		}
-		return nextSequenceNumber;
+		return permissibleValues;
 	}
 
 }

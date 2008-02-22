@@ -7,6 +7,7 @@ import java.util.Iterator;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.interfaces.EntityUIBeanInterface;
@@ -29,7 +30,7 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
 {
 
 	/**
-	 * This is a singleton class so we have a protected constructor , We are providing getInstance method 
+	 * This is a singleton class so we have a protected constructor , We are providing getInstance method
 	 * to return the EntityProcessor's instance.
 	 */
 	protected EntityProcessor()
@@ -52,16 +53,18 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	public EntityInterface createEntity()
 	{
-		return DomainObjectFactory.getInstance().createEntity();
+		EntityInterface entityInterface = DomainObjectFactory.getInstance().createEntity();
+		EntityManagerUtil.addIdAttribute(entityInterface);
+		return entityInterface;
 	}
 
 	/**
 	 * This method creates a new instance of the EntityInterface from the domain object factory. After the creation
-	 * of this instance it populates the entityInterface with the information that is provided through 
+	 * of this instance it populates the entityInterface with the information that is provided through
 	 * the entityInformationInterface which is a parameter to the method.
-	 * @param entityUIBeanInterface Implementation of entityInformationInterface 
+	 * @param entityUIBeanInterface Implementation of entityInformationInterface
 	 * which has all the data required for the creation of the entity.
-	 * @return EntityInterface Returns the unsaved instance of EntityInterface with populated values taken 
+	 * @return EntityInterface Returns the unsaved instance of EntityInterface with populated values taken
 	 * from the entityInformationInterface.
 	 * @throws DynamicExtensionsSystemException in case of system error
 	 * @throws DynamicExtensionsApplicationException in case of application error.
@@ -116,10 +119,10 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * This method will populate the EntityUIBeanInterface using the EntityInterface so that the 
+	 * This method will populate the EntityUIBeanInterface using the EntityInterface so that the
 	 * information of the Entity can be shown on the user page using the EntityUIBeanInterface.
 	 * @param entityInterface Instance of EntityInterface from which to populate the informationInterface.
-	 * @param entityUIBeanInterface Instance of EntityUIBeanInterface which will be populated using 
+	 * @param entityUIBeanInterface Instance of EntityUIBeanInterface which will be populated using
 	 * the first parameter that is EntityInterface.
 	 */
 	public void populateEntityUIBeanInterface(EntityInterface entityInterface,
@@ -154,11 +157,11 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
 
 	/**
 	 * This method creates a new instance of the EntityInterface from the domain object factory. After the creation
-	 * of this instance it populates the entityInterface with the information that is provided through 
+	 * of this instance it populates the entityInterface with the information that is provided through
 	 * the entityInformationInterface which is a parameter to the method.
-	 * @param entityUIBeanInterface Implementation of entityInformationInterface 
+	 * @param entityUIBeanInterface Implementation of entityInformationInterface
 	 * which has all the data required for the creation of the entity.
-	 * @return EntityInterface Returns the unsaved instance of EntityInterface with populated values taken 
+	 * @return EntityInterface Returns the unsaved instance of EntityInterface with populated values taken
 	 * from the entityInformationInterface.
 	 * @throws DynamicExtensionsSystemException Exception
 	 */
@@ -166,6 +169,7 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
 			throws DynamicExtensionsSystemException
 	{
 		EntityInterface entityInterface = DomainObjectFactory.getInstance().createEntity();
+		EntityManagerUtil.addIdAttribute(entityInterface);
 		populateEntity(entityUIBeanInterface, entityInterface);
 		return entityInterface;
 	}

@@ -8,9 +8,10 @@ import edu.common.dynamicextensions.domain.CategoryAttribute;
 import edu.common.dynamicextensions.domain.CategoryEntity;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
-import edu.common.dynamicextensions.domain.StringValue;
+import edu.common.dynamicextensions.domain.UserDefinedDE;
 import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
@@ -121,7 +122,7 @@ public class CategoryHelper implements CategoryHelperInterface
 				control = createTextFieldControl(container, categoryAttribute);
 				break;
 			case LIST_BOX_CONTROL :
-				control = createListBoxControl(container, categoryAttribute, createPermissibleValueList(permissibleValueList[0]));
+				control = createListBoxControl(container, categoryAttribute, createPermissibleValuesList(entity, attributeName, permissibleValueList[0]));
 				break;
 			case DATE_PICKER_CONTROL :
 				control = createDatePickerControl(container, categoryAttribute);
@@ -133,7 +134,7 @@ public class CategoryHelper implements CategoryHelperInterface
 				control = createTextAreaControl(container, categoryAttribute);
 				break;
 			case RADIO_BUTTON_CONTROL :
-				control = createRadioButtonControl(container, categoryAttribute, createPermissibleValueList(permissibleValueList[0]));
+				control = createRadioButtonControl(container, categoryAttribute, createPermissibleValuesList(entity, attributeName, permissibleValueList[0]));
 				break;
 			case CHECK_BOX_CONTROL :
 				control = createCheckBoxControl(container, categoryAttribute);
@@ -330,7 +331,8 @@ public class CategoryHelper implements CategoryHelperInterface
 			userDefinedDE.addPermissibleValue(pv);
 		}
 		((CategoryAttribute) baseAbstractAttribute).setDataElement(userDefinedDE);
-
+		AttributeTypeInformationInterface attributeTypeInformation = ((CategoryAttribute) baseAbstractAttribute).getAttribute().getAttributeTypeInformation();
+		((CategoryAttribute) baseAbstractAttribute).setDefaultValue(attributeTypeInformation.getDefaultValue());
 		return listBox;
 	}
 
@@ -407,7 +409,6 @@ public class CategoryHelper implements CategoryHelperInterface
 		radioButton.setParentContainer((Container) container);
 
 		UserDefinedDEInterface userDefinedDE = DomainObjectFactory.getInstance().createUserDefinedDE();
-
 		for (PermissibleValueInterface pv : permissibleValues)
 		{
 			userDefinedDE.addPermissibleValue(pv);
@@ -437,23 +438,27 @@ public class CategoryHelper implements CategoryHelperInterface
 
 		return checkBox;
 	}
-
+	
 	/**
-	 * @param values list of values
-	 * @return list of permissible values
+	 * This method creates a list of permissible values for a category attribute
+	 * @param entity entity which contains attribute by the given name
+	 * @param attributeName name of the attribute
+	 * @param desiredPermissibleValues subset of permissible values for this category attribute
+	 * @return list of permissible values for category attribute
 	 */
-	private List<PermissibleValueInterface> createPermissibleValueList(List<String> values)
+	private List<PermissibleValueInterface> createPermissibleValuesList(EntityInterface entity, String attributeName, List<String> desiredPermissibleValues)
 	{
+		AttributeTypeInformationInterface attributeTypeInformation = entity.getAttributeByName(attributeName).getAttributeTypeInformation();
+		UserDefinedDEInterface userDefinedDE = (UserDefinedDE) attributeTypeInformation.getDataElement();
+		
 		List<PermissibleValueInterface> permissibleValues = new ArrayList<PermissibleValueInterface>();
-
-		for (String permissibleValueString : values)
+		for (PermissibleValueInterface pv : userDefinedDE.getPermissibleValueCollection())
 		{
-			PermissibleValueInterface permissibleValue = DomainObjectFactory.getInstance().createStringValue();
-			((StringValue) permissibleValue).setValue(permissibleValueString);
-
-			permissibleValues.add(permissibleValue);
+			if (desiredPermissibleValues.contains(pv.getValueAsObject().toString()))
+			{
+				permissibleValues.add(pv);
+			}
 		}
-
 		return permissibleValues;
 	}
 

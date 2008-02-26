@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.categoryManager;
 
 import java.util.List;
+
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CategoryAssociationControlInterface;
@@ -20,7 +21,39 @@ public interface CategoryHelperInterface
 	 * These are constants to be used while creating controls.
 	 */
 	public enum ControlEnum {
-		TEXT_FIELD_CONTROL, LIST_BOX_CONTROL, DATE_PICKER_CONTROL, FILE_UPLOAD_CONTROL, RADIO_BUTTON_CONTROL, TEXT_AREA_CONTROL, CHECK_BOX_CONTROL;
+		TEXT_FIELD_CONTROL("textField"), LIST_BOX_CONTROL("listBox"), DATE_PICKER_CONTROL("datePicker"), FILE_UPLOAD_CONTROL("fileUpload"), RADIO_BUTTON_CONTROL(
+				"radioButton"), TEXT_AREA_CONTROL("textArea"), CHECK_BOX_CONTROL("checkBox"), COMBO_BOX_CONTROL("comboBox");
+
+		String value;
+
+		ControlEnum()
+		{
+
+		}
+
+		ControlEnum(String value)
+		{
+			this.value = value;
+		}
+
+		public String getValue()
+		{
+			return value;
+		}
+
+		public static ControlEnum get(String value)
+		{
+			ControlEnum[] ControlEnumValues = ControlEnum.values();
+
+			for (ControlEnum ce : ControlEnumValues)
+			{
+				if (ce.getValue().equalsIgnoreCase(value))
+				{
+					return ce;
+				}
+			}
+			return null;
+		}
 	};
 
 	/**
@@ -62,10 +95,10 @@ public interface CategoryHelperInterface
 	 * @param attributeName name of the attribute belonging to the entity.
 	 * @param container the container created for category entity to which we wish to add a control.
 	 * @param controlValue type of control to be created. (e.g. ControlEnum.TEXT_FIELD_CONTROL)
-	 * @param permissibleValueList in case of radio buttons, lists and combo boxes, the list of permissible values is required, optional otherwise.
+	 * @param permissibleValues in case of radio buttons, lists and combo boxes, the list of permissible values is required, optional otherwise.
 	 */
 	public void addControl(EntityInterface entity, String attributeName, ContainerInterface container, ControlEnum controlValue,
-			String controlCaption, List<String>... permissibleValueList);
+			String controlCaption, List<String>... permissibleValues);
 
 	/**
 	 * This method is used when there is inheritance between two entities.

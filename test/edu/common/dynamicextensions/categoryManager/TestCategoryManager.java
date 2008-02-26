@@ -251,7 +251,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 	 * Category: Make 2 category entities, choosing attributes from user and study.
 	 * Persist the category.
 	 */
-	public void testCreateAndSaveCategoryWithAttributesFromTwoEntities()
+	/*public void testCreateAndSaveCategoryWithAttributesFromTwoEntities()
 	{
 		try
 		{
@@ -919,7 +919,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			e.printStackTrace();
 			fail();
 		}
-	}
+	}*/
 
 	/**
 	 * Entities : user (1)------>(*) study (1) ------>(*) experiment

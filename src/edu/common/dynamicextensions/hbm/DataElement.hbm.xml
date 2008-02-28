@@ -42,7 +42,7 @@
 
         <set
             name="permissibleValueCollection"
-            table="DYEXTN_PERMISSIBLE_VALUE"
+            table="DYEXTN_USERDEF_DE_VALUE_REL"
             lazy="false"
             inverse="false"
             cascade="save-update"
@@ -56,9 +56,12 @@
                   column="USER_DEF_DE_ID"
               />
 
-              <one-to-many
+              <many-to-many
                   class="edu.common.dynamicextensions.domain.PermissibleValue"
+                  column="PERMISSIBLE_VALUE_ID"
+                  outer-join="auto"
               />
+
         </set>
 
         </joined-subclass>

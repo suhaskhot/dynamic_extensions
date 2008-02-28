@@ -3,12 +3,13 @@
  * @author
  *
  */
+
 package edu.common.dynamicextensions.processor;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
-import edu.common.dynamicextensions.entitymanager.EntityManager;
-import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
+import edu.common.dynamicextensions.entitymanager.EntityGroupManager;
+import edu.common.dynamicextensions.entitymanager.EntityGroupManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.interfaces.GroupUIBeanInterface;
@@ -28,8 +29,9 @@ public class GroupProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private GroupProcessor()
 	{
-		
+
 	}
+
 	/**
 	 * 
 	 * @return new instance of GroupProcessor
@@ -38,6 +40,7 @@ public class GroupProcessor extends BaseDynamicExtensionsProcessor
 	{
 		return new GroupProcessor();
 	}
+
 	/**
 	 * 
 	 * @return new object of entity group 
@@ -46,6 +49,7 @@ public class GroupProcessor extends BaseDynamicExtensionsProcessor
 	{
 		return DomainObjectFactory.getInstance().createEntityGroup();
 	}
+
 	/**
 	 * 
 	 * @param entityGroup : Entity Group object to be populated
@@ -53,29 +57,32 @@ public class GroupProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsSystemException 
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	public void populateEntityGroupDetails(EntityGroupInterface entityGroup,GroupUIBeanInterface groupUIBean) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	public void populateEntityGroupDetails(EntityGroupInterface entityGroup, GroupUIBeanInterface groupUIBean)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
-		if((entityGroup!=null)&&(groupUIBean!=null))
+		if ((entityGroup != null) && (groupUIBean != null))
 		{
 			entityGroup.setName(groupUIBean.getGroupNameText());
 			entityGroup.setDescription(groupUIBean.getGroupDescription());
 			entityGroup.setIsSystemGenerated(new Boolean(false));
-			//EntityManager.getInstance().checkForDuplicateEntityGroupName(entityGroup);
+			EntityGroupManager.getInstance().checkForDuplicateEntityGroupName(entityGroup);
 		}
 	}
+
 	/**
 	 * 
 	 * @param groupUIBean : Group UI Bean object to be populated
 	 * @param entityGroup : Entity Group object containing group details
 	 */
-	public void populategroupUIBeanDetails(GroupUIBeanInterface groupUIBean,EntityGroupInterface entityGroup)
+	public void populategroupUIBeanDetails(GroupUIBeanInterface groupUIBean, EntityGroupInterface entityGroup)
 	{
-		if((entityGroup!=null)&&(groupUIBean!=null))
+		if ((entityGroup != null) && (groupUIBean != null))
 		{
 			groupUIBean.setGroupNameText(entityGroup.getName());
 			groupUIBean.setGroupDescription(entityGroup.getDescription());
 		}
 	}
+
 	/**
 	 * Create entity group object, populate its details and save to DB
 	 * @param groupUIBean  : Bean containing group information added by user on UI
@@ -83,13 +90,15 @@ public class GroupProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public EntityGroupInterface createAndSaveGroup(GroupUIBeanInterface groupUIBean) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public EntityGroupInterface createAndSaveGroup(GroupUIBeanInterface groupUIBean) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		EntityGroupInterface entityGroup = createEntityGroup();
 		populateEntityGroupDetails(entityGroup, groupUIBean);
 		entityGroup = saveEntityGroup(entityGroup);
 		return entityGroup;
 	}
+
 	/**
 	 * 
 	 * @param entityGroup Entity group to be saved to the DB
@@ -97,13 +106,14 @@ public class GroupProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public EntityGroupInterface saveEntityGroup(EntityGroupInterface entityGroupInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public EntityGroupInterface saveEntityGroup(EntityGroupInterface entityGroupInterface) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
-		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
-		EntityGroupInterface savedEntityGroupInterface = null ;//= entityManagerInterface.persistEntityGroup(entityGroupInterface);
-		return savedEntityGroupInterface;
-		
+		EntityGroupManagerInterface entityGroupManager = EntityGroupManager.getInstance();
+		EntityGroupInterface savedEntityGroup = entityGroupManager.persistEntityGroup(entityGroupInterface);
+		return savedEntityGroup;
 	}
+
 	/**
 	 * 
 	 * @param groupName Name of the group
@@ -111,9 +121,10 @@ public class GroupProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public EntityGroupInterface getEntityGroupByIdentifier(String entityGroupIdentifier) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public EntityGroupInterface getEntityGroupByIdentifier(String entityGroupIdentifier) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		return DynamicExtensionsUtility.getEntityGroupByIdentifier(entityGroupIdentifier);
-		
 	}
+
 }

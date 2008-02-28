@@ -23,9 +23,13 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.AssociationTreeObject;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
+import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.beans.NameValueBean;
+import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
+import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.HibernateDAO;
+import edu.wustl.common.dao.JDBCDAO;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.logger.Logger;
@@ -35,7 +39,7 @@ import edu.wustl.common.util.logger.Logger;
  * @author rajesh_patil
  *
  */
-public class EntityGroupManager extends AbstractMetadataManager implements EntityGroupManagerInterface,EntityGroupManagerConstantsInterface
+public class EntityGroupManager extends AbstractMetadataManager implements EntityGroupManagerInterface, EntityGroupManagerConstantsInterface
 {
 	private static EntityGroupManagerInterface entityGroupManager = null;
 	/**
@@ -110,49 +114,44 @@ public class EntityGroupManager extends AbstractMetadataManager implements Entit
 		EntityGroupInterface entityGroup = (EntityGroupInterface) dynamicExtensionBaseDomainObject;
 		getDynamicQueryList(addTaggedValue(entityGroup), reverseQueryList, hibernateDAO, queryList);
 	}
-    
-    
-    /**
-     * This method adds caB2BEntityGroup tagged value to the entity group
-     * @param entityGroup
-     * @return
-     */
-    private EntityGroupInterface addTaggedValue(EntityGroupInterface entityGroup)
-    {
-        addTaggedValue(entityGroup,CAB2B_ENTITY_GROUP,CAB2B_ENTITY_GROUP);
-        addTaggedValue(entityGroup,PACKAGE_NAME,entityGroup.getName());
-        return entityGroup;
-    }
-    
-    
-    /**
-     * This method adds caB2BEntityGroup tagged value to the entity group
-     * @param entityGroup
-     * @return
-     */
-    private EntityGroupInterface addTaggedValue(EntityGroupInterface entityGroup,String key,String value)
-    {
-        Collection<TaggedValueInterface> taggedValueCollection = entityGroup
-                .getTaggedValueCollection();
-        boolean isTaggedValueAdded = false;
-        for (TaggedValueInterface taggedValue : taggedValueCollection)
-        {
-            if (taggedValue.getKey().equalsIgnoreCase(key))
-            {
-                isTaggedValueAdded = true;
-            }
-        }
-        if (!isTaggedValueAdded)
-        {
-            TaggedValueInterface taggedValueInterface = DomainObjectFactory.getInstance()
-                    .createTaggedValue();
-            taggedValueInterface.setKey(key);
-            taggedValueInterface.setValue(value);
-            entityGroup.addTaggedValue(taggedValueInterface);
-        }
-        return entityGroup;
-    }
-    
+
+	/**
+	 * This method adds caB2BEntityGroup tagged value to the entity group
+	 * @param entityGroup
+	 * @return
+	 */
+	private EntityGroupInterface addTaggedValue(EntityGroupInterface entityGroup)
+	{
+		addTaggedValue(entityGroup, CAB2B_ENTITY_GROUP, CAB2B_ENTITY_GROUP);
+		addTaggedValue(entityGroup, PACKAGE_NAME, entityGroup.getName());
+		return entityGroup;
+	}
+
+	/**
+	 * This method adds caB2BEntityGroup tagged value to the entity group
+	 * @param entityGroup
+	 * @return
+	 */
+	private EntityGroupInterface addTaggedValue(EntityGroupInterface entityGroup, String key, String value)
+	{
+		Collection<TaggedValueInterface> taggedValueCollection = entityGroup.getTaggedValueCollection();
+		boolean isTaggedValueAdded = false;
+		for (TaggedValueInterface taggedValue : taggedValueCollection)
+		{
+			if (taggedValue.getKey().equalsIgnoreCase(key))
+			{
+				isTaggedValueAdded = true;
+			}
+		}
+		if (!isTaggedValueAdded)
+		{
+			TaggedValueInterface taggedValueInterface = DomainObjectFactory.getInstance().createTaggedValue();
+			taggedValueInterface.setKey(key);
+			taggedValueInterface.setValue(value);
+			entityGroup.addTaggedValue(taggedValueInterface);
+		}
+		return entityGroup;
+	}
 
 	/**
 	 * This method executes dynamic table queries created for all the entities within a group.
@@ -396,5 +395,46 @@ public class EntityGroupManager extends AbstractMetadataManager implements Entit
 	protected DynamicExtensionBaseQueryBuilder getQueryBuilderInstance()
 	{
 		return queryBuilder;
+	}
+
+	/**
+	 * This method checks if the entity group can be created with the given name or not.
+	 * @param entityGroup
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public void checkForDuplicateEntityGroupName(EntityGroupInterface entityGroup) throws DynamicExtensionsApplicationException,
+			DynamicExtensionsSystemException
+	{
+		try
+		{
+			JDBCDAO dao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
+			dao.openSession(null);
+
+			String query = "select count(*) from dyextn_abstract_metadata d , dyextn_entity_group e where d.identifier = e.identifier and d.name = '"
+					+ entityGroup.getName() + "'";
+			List result = dao.executeQuery(query, new SessionDataBean(), false, null);
+
+			if (result != null && !result.isEmpty())
+			{
+				List count = (List) result.get(0);
+				if (count != null && !count.isEmpty())
+				{
+					int numberOfOccurence = new Integer((String) count.get(0)).intValue();
+					if (numberOfOccurence > 0)
+					{
+						throw new DynamicExtensionsApplicationException("Duplicate Entity Group name", null, DYEXTN_A_015);
+					}
+				}
+			}
+		}
+		catch(DAOException e)
+		{
+			throw new DynamicExtensionsSystemException("Error while checking for duplicate group", e);
+		}
+		catch (ClassNotFoundException e)
+		{
+			throw new DynamicExtensionsSystemException("Class not found", e);
+		}
 	}
 }

@@ -28,6 +28,7 @@ import java.util.StringTokenizer;
 
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domain.Association;
+import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.userinterface.AbstractContainmentControl;
 import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
@@ -1235,4 +1236,34 @@ public class DynamicExtensionsUtility
         }
     	return tableName;
     }
+    
+    /**
+	 * Retrieve entity group by its name from database.
+	 * @param name name of category
+	 * @return entity group
+	 */
+	public static EntityGroupInterface retrieveEntityGroup(String name)
+	{
+		DefaultBizLogic bizlogic = new DefaultBizLogic();
+		Collection<EntityGroupInterface> entityGroupCollection = new HashSet<EntityGroupInterface>();
+		EntityGroupInterface entityGroup = null;
+
+		try
+		{
+			// Fetch the entity group from the database.
+			entityGroupCollection = bizlogic.retrieve(EntityGroup.class.getName(), "shortName", name);
+
+			if (entityGroupCollection != null && entityGroupCollection.size() > 0)
+			{
+				entityGroup = (EntityGroupInterface) entityGroupCollection.iterator().next();
+			}
+		}
+		catch (DAOException e)
+		{
+			e.printStackTrace();
+		
+		}
+
+		return entityGroup;
+	}
 }

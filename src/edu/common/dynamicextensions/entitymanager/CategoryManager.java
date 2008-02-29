@@ -18,9 +18,12 @@ import java.util.Map.Entry;
 import edu.common.dynamicextensions.domain.Category;
 import edu.common.dynamicextensions.domain.CategoryAttribute;
 import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
+import edu.common.dynamicextensions.domain.UserDefinedDE;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
@@ -29,6 +32,8 @@ import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PathInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
+import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
@@ -485,6 +490,37 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 
 		Boolean isEdited = entityManager.editData(categoryEntity.getEntity(), entityValueMap, entityRecordId);
 		return isEdited ;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.entitymanager.CategoryManagerInterface#isPermissibleValuesSubsetValid(edu.common.dynamicextensions.domaininterface.AttributeInterface, java.util.List)
+	 */
+	public boolean isPermissibleValuesSubsetValid(AttributeInterface attribute, List<String> desiredPermissibleValues)
+	{
+		boolean arePermissibleValuesCorrect = true;
+		
+		if (attribute != null)
+		{
+			AttributeTypeInformationInterface attributeTypeInformation = attribute.getAttributeTypeInformation();
+			UserDefinedDEInterface userDefinedDE = (UserDefinedDE) attributeTypeInformation.getDataElement();
+			
+			List<String> attributePermissibleValues = new ArrayList<String>();
+			
+			for (PermissibleValueInterface pv : userDefinedDE.getPermissibleValueCollection())
+			{
+				attributePermissibleValues.add(pv.getValueAsObject().toString());
+			}
+						
+			for (String s : desiredPermissibleValues)
+			{
+				if (!attributePermissibleValues.contains(s))
+				{
+					arePermissibleValuesCorrect = false;
+				}
+			}
+		}
+		
+		return arePermissibleValuesCorrect;
 	}
 
 }

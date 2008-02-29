@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
@@ -95,5 +96,13 @@ public interface CategoryManagerInterface
 	 */
 	public boolean editData(CategoryEntityInterface categoryEntity, Map<BaseAbstractAttributeInterface, Object> attributeValueMap, Long recordId)
 	throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException, SQLException;
+	
+	/**
+	 * Check if the subset of permissible values passed is valid.
+	 * @param attribute
+	 * @param desiredPermissibleValues
+	 * @return true or false depending on valid permissible values subset
+	 */
+	public boolean isPermissibleValuesSubsetValid(AttributeInterface attribute, List<String> desiredPermissibleValues);
 
 }

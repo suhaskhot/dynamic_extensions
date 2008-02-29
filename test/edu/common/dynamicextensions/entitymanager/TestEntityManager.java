@@ -32,6 +32,7 @@ import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.FileExtension;
 import edu.common.dynamicextensions.domain.ObjectAttributeRecordValue;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.StringValue;
 import edu.common.dynamicextensions.domain.TaggedValue;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
 import edu.common.dynamicextensions.domain.userinterface.Container;
@@ -42,9 +43,11 @@ import edu.common.dynamicextensions.domaininterface.CaDSRValueDomainInfoInterfac
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.ObjectAttributeRecordValueInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
+import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -3603,5 +3606,67 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
             fail();
         }
     }
+    
+    /**
+     * Test case to create entity with one attribute having permissible values.
+     */
+    public void testCreateEntityWithAttributeHavingPermissibleValues()
+	{
+		try
+		{
+			DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+			EntityGroupInterface entityGroup = factory.createEntityGroup();
+			entityGroup.setName("Entity Group 1");
+			
+			// Create vitals entity.
+			EntityInterface vitalsEntity = factory.createEntity();
+			vitalsEntity.setName("vitalsEntity");
+
+			AttributeInterface bmi = factory.createStringAttribute();
+			bmi.setName("BMI");
+			((StringAttributeTypeInformation) bmi.getAttributeTypeInformation()).setSize(40);
+
+			vitalsEntity.addAbstractAttribute(bmi);
+
+			// Add permissible values.
+			UserDefinedDEInterface userDefinedDE = factory.createUserDefinedDE();
+
+			PermissibleValueInterface permissibleValue1 = factory.createStringValue();
+			((StringValue) permissibleValue1).setValue("Underweight: 18.5 or below");
+
+			PermissibleValueInterface permissibleValue2 = factory.createStringValue();
+			((StringValue) permissibleValue2).setValue("Healthy Weight: 18.5 - 24.9");
+
+			PermissibleValueInterface permissibleValue3 = factory.createStringValue();
+			((StringValue) permissibleValue3).setValue("Overweight: 25.0 - 29.9");
+
+			PermissibleValueInterface permissibleValue4 = factory.createStringValue();
+			((StringValue) permissibleValue4).setValue("Obese: 30.0 and above");
+
+			userDefinedDE.addPermissibleValue(permissibleValue1);
+			userDefinedDE.addPermissibleValue(permissibleValue2);
+			userDefinedDE.addPermissibleValue(permissibleValue3);
+			userDefinedDE.addPermissibleValue(permissibleValue4);
+
+			StringAttributeTypeInformation bmiTypeInfo = (StringAttributeTypeInformation) bmi.getAttributeTypeInformation();
+			bmiTypeInfo.setDataElement(userDefinedDE);
+			bmiTypeInfo.setDefaultValue(permissibleValue2);
+			
+			entityGroup.addEntity(vitalsEntity);
+
+			EntityGroupManager.getInstance().persistEntityGroup(entityGroup);
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
 
 }

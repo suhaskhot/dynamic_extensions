@@ -37,6 +37,10 @@ public class CategoryGenerator
 
 	private CSVReader reader;
 
+	private long lineNumber = 0;
+
+	private String rootEntityName;
+
 	private static final String FORM_DEFINITION = "Form_Definition";
 
 	private static final String DISPLAY_LABEL = "Display_Label";
@@ -44,8 +48,6 @@ public class CategoryGenerator
 	private static final String PERMISSIBLE_VALUES = "Permissible_Values";
 
 	private static final String PERMISSIBLE_VALUES_FILE = "Permissible_Values_File";
-
-	private static final String NOT_APPLICABLE = "N/A";
 
 	public String getFileName()
 	{
@@ -70,6 +72,12 @@ public class CategoryGenerator
 		}
 	}
 
+	private String[] getNextLine(CSVReader reader) throws IOException
+	{
+		lineNumber++;
+		return reader.readNext();
+	}
+
 	private Map<String, List<String>> getPaths(String[] string) throws DynamicExtensionsSystemException
 	{
 		Map<String, List<String>> entityNamePath = new HashMap<String, List<String>>();
@@ -87,6 +95,11 @@ public class CategoryGenerator
 
 			entityNamePath.put(entityName, path);
 		}
+
+		//set the rooEntityName
+		//read the first path given and the first entity in that path is the root
+		rootEntityName = string[0].split("~")[1].split(":")[0];
+
 		return entityNamePath;
 	}
 
@@ -119,16 +132,6 @@ public class CategoryGenerator
 		return listOfPath;
 	}
 
-	/*private Map<String, String> getContainerCaption(String[] strings)
-	{
-		Map<String, String> entityNameContainerCaptionMap = new HashMap<String, String>();
-		for (String entityContainerString : strings)
-		{
-			entityNameContainerCaptionMap.put(entityContainerString.split(":")[0], entityContainerString.split(":")[1]);
-		}
-		return entityNameContainerCaptionMap;
-	}
-*/
 	private String getEntityName(String[] strings)
 	{
 		String entityName = strings[0].split(":")[0];
@@ -189,7 +192,6 @@ public class CategoryGenerator
 		String[] tempString = nextLine[i].split("~");
 		String permissibleValueKey = tempString[0];
 
-		
 		List<String> permissibleValues = new ArrayList<String>();
 		if (PERMISSIBLE_VALUES.equals(permissibleValueKey))
 		{
@@ -232,7 +234,7 @@ public class CategoryGenerator
 		{
 			String[] nextLine = null;
 
-			while ((nextLine = reader.readNext()) != null)
+			while ((nextLine = getNextLine(reader)) != null)
 			{
 				//first line in the categopry file is Category_Definition
 				if (FORM_DEFINITION.equals(nextLine[0]))
@@ -245,15 +247,17 @@ public class CategoryGenerator
 				CategoryInterface category = categoryHelper.createCategory(nextLine[0]);
 
 				//2:read the entity group
-				nextLine = reader.readNext();
+				nextLine = getNextLine(reader);
 				EntityGroupInterface entityGroup = DynamicExtensionsUtility.retrieveEntityGroup(nextLine[0].trim());
 
-				checkForNullRefernce(entityGroup, "Entity group with name " + nextLine[0].trim() + " does not exist");
+				checkForNullRefernce(entityGroup, "Entity group with name " + nextLine[0].trim() + " at line number " + lineNumber
+						+ " does not exist");
 
 				//3:get the path represneted by ordered entity names
-				Map<String, List<String>> paths = getPaths(reader.readNext());
+				String[] entityNamePath = getNextLine(reader);
+				Map<String, List<String>> paths = getPaths(entityNamePath);
 
-				//get the association names list
+				//4:get the association names list
 				Map<String, List<String>> associationNamesMap = getAssociationList(paths, entityGroup);
 
 				List<ContainerInterface> containerCollection = new ArrayList<ContainerInterface>();
@@ -262,12 +266,10 @@ public class CategoryGenerator
 				EntityInterface entityInterface = null;
 				List<String> entityNamelist = new ArrayList<String>();
 
-				//4: get the continer captions
-				//Map<String, String> entityNameContainerCaptionMap = getContainerCaption(reader.readNext());
-
 				//5: get the selected attributes and create the controls for them 
 				String displyLabel = null;
-				while ((nextLine = reader.readNext()) != null)
+				String currentEntityName =null;
+				while ((nextLine = getNextLine(reader)) != null)
 				{
 					if (nextLine[0].length() == 0)
 					{
@@ -281,76 +283,74 @@ public class CategoryGenerator
 					{
 						displyLabel = nextLine[0].split(":")[1];
 
-						nextLine = reader.readNext();
-					}
-
-					//Entity is not processed: create a new container for its category
-					if (!entityNamelist.contains(getEntityName(nextLine)))
-					{
-						String entityName = getEntityName(nextLine);
-						entityInterface = entityGroup.getEntityByName(entityName);
-
-						checkForNullRefernce(entityInterface, "Entity with name " + entityName + " does not exist");
-
-						entityNamelist.add(entityName);
-
-						containerInterface = categoryHelper.createCategoryEntityAndContainer(entityInterface, 
-								displyLabel);
-
-						if (displyLabel == null)
-						{
-							containerInterface.setAddCaption(false);
-						}
-
-						containerCollection.add(containerInterface);
-					}
-
-					//add control to the container
-					List<String> permissibleValues = getPermissibleValues(nextLine);
-
-					if (permissibleValues != null)
-					{
-						categoryHelper.addControl(entityInterface, getAttributeName(nextLine), containerInterface, ControlEnum
-								.get(getControlType(nextLine)), getControlCaption(nextLine), permissibleValues);
+						nextLine = getNextLine(reader);
 					}
 					else
 					{
-						categoryHelper.addControl(entityInterface, getAttributeName(nextLine), containerInterface, ControlEnum
-								.get(getControlType(nextLine)), getControlCaption(nextLine));
+						displyLabel = null;
 					}
 
+					if (nextLine[0].contains("subcategory:"))
+					{
+						String sourceEntityName = nextLine[0].split(":")[0];
+						if(getContainer(containerCollection, sourceEntityName) == null)
+						{
+							containerCollection.add(createCategoryEntityAndContainer
+									(entityGroup.getEntityByName(sourceEntityName), displyLabel));
+						}
+						ContainerInterface sourceContainer = getContainer(containerCollection, sourceEntityName);
+
+						String targetEntityName = nextLine[0].split(":")[2];
+						ContainerInterface targetContainer = getContainer(containerCollection, targetEntityName);
+
+						String multiplicity = nextLine[0].split(":")[3];
+						
+						checkForNullRefernce(associationNamesMap.get(targetEntityName), 
+								"Line No:"+lineNumber+" Does not found entities in the path for the category entity "+
+								targetEntityName);
+						
+						categoryHelper.associateCategoryContainers(sourceContainer, targetContainer, associationNamesMap.get(targetEntityName),
+								getMultiplicityInNumbers(multiplicity));
+
+					}
+					else
+					{
+						//Entity is not processed: create a new container for its category
+						if (!entityNamelist.contains(getEntityName(nextLine)))
+						{
+							currentEntityName = getEntityName(nextLine);
+							entityInterface = entityGroup.getEntityByName(currentEntityName);
+
+							checkForNullRefernce(entityInterface, "Entity with name " + currentEntityName + " at line " + lineNumber
+									+ " does not exist");
+
+							entityNamelist.add(currentEntityName);
+
+							containerInterface = createCategoryEntityAndContainer(entityInterface, displyLabel);
+							containerCollection.add(containerInterface);
+						}
+
+						//add control to the container
+						List<String> permissibleValues = getPermissibleValues(nextLine);
+
+						if (permissibleValues != null)
+						{
+							categoryHelper.addControl(entityInterface, getAttributeName(nextLine), containerInterface, ControlEnum
+									.get(getControlType(nextLine)), getControlCaption(nextLine), permissibleValues);
+						}
+						else
+						{
+							categoryHelper.addControl(entityInterface, getAttributeName(nextLine), containerInterface, ControlEnum
+									.get(getControlType(nextLine)), getControlCaption(nextLine));
+						}
+
+					}
 				}
 
-				//get the first entity in the path 
-				String entityName = paths.get(entityNamelist.get(0)).get(0);
-
-				// if entity is there in the path but no attributes are selected from it
-				// then create the container for that entity
-				if (!entityName.equals(entityNamelist.get(0)))
-				{
-					String caption = (displyLabel == null
-							? entityName + " Category Container"
-							: displyLabel);
-					ContainerInterface rootContainer = categoryHelper.createCategoryEntityAndContainer(entityGroup.getEntityByName(entityName),
-							caption);
-					containerCollection.add(0, rootContainer);
-
-				}
-
-				categoryHelper.setRootCategoryEntity(containerCollection.get(0), category);
-
-				Iterator<ContainerInterface> containerCollectionIterator = containerCollection.iterator();
-				ContainerInterface sourceContainer = sourceContainer = containerCollectionIterator.next();
-
-				while (containerCollectionIterator.hasNext())
-				{
-					ContainerInterface targetContainer = containerCollectionIterator.next();
-					String key = ((CategoryEntityInterface) targetContainer.getAbstractEntity()).getEntity().getName();
-					categoryHelper.associateCategoryContainers(sourceContainer, targetContainer, associationNamesMap.get(key), -1);
-
-					sourceContainer = targetContainer;
-
-				}
+				
+				ContainerInterface rootContainer = getRootContainer(containerCollection);
+				categoryHelper.setRootCategoryEntity(rootContainer, category);
+		
 				categoryList.add(category);
 			}
 
@@ -362,10 +362,61 @@ public class CategoryGenerator
 		}
 		catch (IOException e)
 		{
-			throw new DynamicExtensionsSystemException("Error while openig CSV file ", e);
+			throw new DynamicExtensionsSystemException("Error redaring CSV file " + fileName + " at line " + lineNumber, e);
 		}
 		return categoryList;
 
+	}
+
+	private int getMultiplicityInNumbers(String multiplicity)
+	{
+		int multiplicityI = 1;
+		if (multiplicity.equalsIgnoreCase("multiline"))
+		{
+			multiplicityI = -1;
+		}
+		if (multiplicity.equalsIgnoreCase("single"))
+		{
+			multiplicityI = 1;
+		}
+		return multiplicityI;
+	}
+
+	private ContainerInterface getRootContainer(List<ContainerInterface> containerCollection)
+	{
+		return getContainer(containerCollection, rootEntityName);
+	}
+
+	private ContainerInterface getContainer(List<ContainerInterface> containerCollection, String entityName)
+	{
+		ContainerInterface container = null;
+		for (ContainerInterface containerInterface : containerCollection)
+		{
+			CategoryEntityInterface categoryEntityInterface = (CategoryEntityInterface) containerInterface.getAbstractEntity();
+			if (categoryEntityInterface.getEntity().getName().equals(entityName))
+			{
+				container = containerInterface;
+			}
+
+		}
+		return container;
+	}
+
+	private ContainerInterface createCategoryEntityAndContainer(EntityInterface entityInterface, String displyLabel)
+	{
+		ContainerInterface containerInterface = null;
+		CategoryHelperInterface categoryHelper = new CategoryHelper();
+		if (displyLabel == null)
+		{
+			containerInterface = categoryHelper.createCategoryEntityAndContainer(entityInterface, entityInterface.getName()
+					+ " Category Entity Container");
+			containerInterface.setAddCaption(false);
+		}
+		else
+		{
+			containerInterface = categoryHelper.createCategoryEntityAndContainer(entityInterface, displyLabel);
+		}
+		return containerInterface;
 	}
 
 	private void checkForNullRefernce(Object object, String message) throws DynamicExtensionsSystemException
@@ -390,7 +441,7 @@ public class CategoryGenerator
 		return uri.getPath();
 	}
 
-	public static void main(String args[]) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, URISyntaxException,
+/*	public static void main(String args[]) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, URISyntaxException,
 			IOException
 	{
 		CategoryGenerator categoryFileParser = new CategoryGenerator("e:/test.csv");
@@ -402,16 +453,7 @@ public class CategoryGenerator
 			categoryHelper.saveCategory(category);
 			System.out.println("saved category " + category.getName());
 		}
-		System.out.println("hi");
-
-		/*BufferedReader reader = new BufferedReader(new InputStreamReader
-		 (new FileInputStream(categoryFileParser.getSystemIndependantFilePath("e:/pv.txt"))));
-		 String newLine = "";
-		 while((newLine = reader.readLine()) != null)
-		 {
-		 System.out.println(newLine);
-		 }*/
 
 	}
-
+*/
 }

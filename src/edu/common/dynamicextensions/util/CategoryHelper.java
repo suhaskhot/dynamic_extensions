@@ -11,6 +11,7 @@ import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
 import edu.common.dynamicextensions.domain.UserDefinedDE;
 import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
@@ -105,7 +106,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @see edu.common.dynamicextensions.categoryManager.CategoryHelperInterface#addControl(edu.common.dynamicextensions.domaininterface.AttributeInterface, edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface, edu.common.dynamicextensions.categoryManager.CategoryHelperInterface.ControlEnum, java.util.List<edu.common.dynamicextensions.domaininterface.PermissibleValueInterface>[])
 	 */
 	public void addControl(EntityInterface entity, String attributeName, ContainerInterface container, ControlEnum controlValue,
-			String controlCaption, List<String>... permissibleValueList)
+			String controlCaption, List<String>... permissibleValueList) throws DynamicExtensionsApplicationException
 	{
 		CategoryAttributeInterface categoryAttribute = DomainObjectFactory.getInstance().createCategoryAttribute();
 		categoryAttribute.setName(attributeName + " Category Attribute");
@@ -445,19 +446,32 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @param attributeName name of the attribute
 	 * @param desiredPermissibleValues subset of permissible values for this category attribute
 	 * @return list of permissible values for category attribute
+	 * @throws DynamicExtensionsApplicationException 
 	 */
-	private List<PermissibleValueInterface> createPermissibleValuesList(EntityInterface entity, String attributeName, List<String> desiredPermissibleValues)
+	private List<PermissibleValueInterface> createPermissibleValuesList(EntityInterface entity, String attributeName, List<String> desiredPermissibleValues) throws DynamicExtensionsApplicationException
 	{
-		AttributeTypeInformationInterface attributeTypeInformation = entity.getAttributeByName(attributeName).getAttributeTypeInformation();
-		UserDefinedDEInterface userDefinedDE = (UserDefinedDE) attributeTypeInformation.getDataElement();
+		List<PermissibleValueInterface> permissibleValues = null;
+		AttributeInterface attribute = entity.getAttributeByName(attributeName);
 		
-		List<PermissibleValueInterface> permissibleValues = new ArrayList<PermissibleValueInterface>();
-		for (PermissibleValueInterface pv : userDefinedDE.getPermissibleValueCollection())
+		CategoryManagerInterface categoryManager = CategoryManager.getInstance();
+		
+		if (categoryManager.isPermissibleValuesSubsetValid(attribute, desiredPermissibleValues))
 		{
-			if (desiredPermissibleValues.contains(pv.getValueAsObject().toString()))
+			AttributeTypeInformationInterface attributeTypeInformation = attribute.getAttributeTypeInformation();
+			UserDefinedDEInterface userDefinedDE = (UserDefinedDE) attributeTypeInformation.getDataElement();
+			
+			permissibleValues = new ArrayList<PermissibleValueInterface>();
+			for (PermissibleValueInterface pv : userDefinedDE.getPermissibleValueCollection())
 			{
-				permissibleValues.add(pv);
+				if (desiredPermissibleValues.contains(pv.getValueAsObject().toString()))
+				{
+					permissibleValues.add(pv);
+				}
 			}
+		}
+		else 
+		{
+			throw new DynamicExtensionsApplicationException("This subset of persmissible values is invalid");
 		}
 		return permissibleValues;
 	}

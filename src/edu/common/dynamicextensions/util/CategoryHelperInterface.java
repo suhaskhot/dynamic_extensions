@@ -96,9 +96,10 @@ public interface CategoryHelperInterface
 	 * @param container the container created for category entity to which we wish to add a control.
 	 * @param controlValue type of control to be created. (e.g. ControlEnum.TEXT_FIELD_CONTROL)
 	 * @param permissibleValues in case of radio buttons, lists and combo boxes, the list of permissible values is required, optional otherwise.
+	 * @throws DynamicExtensionsApplicationException
 	 */
 	public void addControl(EntityInterface entity, String attributeName, ContainerInterface container, ControlEnum controlValue,
-			String controlCaption, List<String>... permissibleValues);
+			String controlCaption, List<String>... permissibleValues) throws DynamicExtensionsApplicationException;
 
 	/**
 	 * This method is used when there is inheritance between two entities.

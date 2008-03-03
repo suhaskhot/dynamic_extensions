@@ -440,7 +440,7 @@
 		<sql
 			driver="${hibernate.connection.driver_class}"
 			url="${hibernate.connection.url}"
-			userid="${database.tempusername}" password="${database.temppassword}" onerror="continue"
+			userid="${database.username}" password="${database.password}" onerror="continue"
 	    	rdbms="oracle">
 			<classpath>
 	        	<fileset dir="${lib.dir}">

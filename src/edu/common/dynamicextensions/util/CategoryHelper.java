@@ -123,7 +123,8 @@ public class CategoryHelper implements CategoryHelperInterface
 				control = createTextFieldControl(container, categoryAttribute);
 				break;
 			case LIST_BOX_CONTROL :
-				control = createListBoxControl(container, categoryAttribute, createPermissibleValuesList(entity, attributeName, permissibleValueList[0]));
+				control = createListBoxControl(container, categoryAttribute, createPermissibleValuesList(entity, attributeName,
+						permissibleValueList[0]));
 				break;
 			case DATE_PICKER_CONTROL :
 				control = createDatePickerControl(container, categoryAttribute);
@@ -135,7 +136,8 @@ public class CategoryHelper implements CategoryHelperInterface
 				control = createTextAreaControl(container, categoryAttribute);
 				break;
 			case RADIO_BUTTON_CONTROL :
-				control = createRadioButtonControl(container, categoryAttribute, createPermissibleValuesList(entity, attributeName, permissibleValueList[0]));
+				control = createRadioButtonControl(container, categoryAttribute, createPermissibleValuesList(entity, attributeName,
+						permissibleValueList[0]));
 				break;
 			case CHECK_BOX_CONTROL :
 				control = createCheckBoxControl(container, categoryAttribute);
@@ -332,7 +334,8 @@ public class CategoryHelper implements CategoryHelperInterface
 			userDefinedDE.addPermissibleValue(pv);
 		}
 		((CategoryAttribute) baseAbstractAttribute).setDataElement(userDefinedDE);
-		AttributeTypeInformationInterface attributeTypeInformation = ((CategoryAttribute) baseAbstractAttribute).getAttribute().getAttributeTypeInformation();
+		AttributeTypeInformationInterface attributeTypeInformation = ((CategoryAttribute) baseAbstractAttribute).getAttribute()
+				.getAttributeTypeInformation();
 		((CategoryAttribute) baseAbstractAttribute).setDefaultValue(attributeTypeInformation.getDefaultValue());
 		return listBox;
 	}
@@ -439,7 +442,7 @@ public class CategoryHelper implements CategoryHelperInterface
 
 		return checkBox;
 	}
-	
+
 	/**
 	 * This method creates a list of permissible values for a category attribute
 	 * @param entity entity which contains attribute by the given name
@@ -448,18 +451,22 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @return list of permissible values for category attribute
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	private List<PermissibleValueInterface> createPermissibleValuesList(EntityInterface entity, String attributeName, List<String> desiredPermissibleValues) throws DynamicExtensionsApplicationException
+	private List<PermissibleValueInterface> createPermissibleValuesList(EntityInterface entity, String attributeName,
+			List<String> desiredPermissibleValues) throws DynamicExtensionsApplicationException
 	{
 		List<PermissibleValueInterface> permissibleValues = null;
 		AttributeInterface attribute = entity.getAttributeByName(attributeName);
-		
+		AttributeTypeInformationInterface attributeTypeInformation = attribute.getAttributeTypeInformation();
+		UserDefinedDEInterface userDefinedDE = (UserDefinedDE) attributeTypeInformation.getDataElement();
+
+		if (userDefinedDE == null)
+		{
+			throw new DynamicExtensionsApplicationException("No permissible values exist for the original attribute.");
+		}
+
 		CategoryManagerInterface categoryManager = CategoryManager.getInstance();
-		
 		if (categoryManager.isPermissibleValuesSubsetValid(attribute, desiredPermissibleValues))
 		{
-			AttributeTypeInformationInterface attributeTypeInformation = attribute.getAttributeTypeInformation();
-			UserDefinedDEInterface userDefinedDE = (UserDefinedDE) attributeTypeInformation.getDataElement();
-			
 			permissibleValues = new ArrayList<PermissibleValueInterface>();
 			for (PermissibleValueInterface pv : userDefinedDE.getPermissibleValueCollection())
 			{
@@ -469,7 +476,7 @@ public class CategoryHelper implements CategoryHelperInterface
 				}
 			}
 		}
-		else 
+		else
 		{
 			throw new DynamicExtensionsApplicationException("This subset of persmissible values is invalid");
 		}

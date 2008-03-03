@@ -461,7 +461,7 @@ public class CategoryHelper implements CategoryHelperInterface
 
 		if (userDefinedDE == null)
 		{
-			throw new DynamicExtensionsApplicationException("No permissible values exist for the original attribute.");
+			throw new DynamicExtensionsApplicationException("No permissible values exist for the original attribute " + attribute.getName() +" of the entity "+entity.getName());
 		}
 
 		CategoryManagerInterface categoryManager = CategoryManager.getInstance();
@@ -478,7 +478,7 @@ public class CategoryHelper implements CategoryHelperInterface
 		}
 		else
 		{
-			throw new DynamicExtensionsApplicationException("This subset of persmissible values is invalid");
+			throw new DynamicExtensionsApplicationException("Invalid subset of persmissible values. Original set of permissible values for the attribute "+ attribute.getName() +" of the entity "+entity.getName() + "is different.");
 		}
 		return permissibleValues;
 	}

@@ -48,7 +48,6 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 			response.sendRedirect("http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath()
 					+ actionForward.getPath());
 			return null;
-			//return null;
 		}
 		catch (Exception e)
 		{

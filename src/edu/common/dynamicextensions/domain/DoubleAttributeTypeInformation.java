@@ -2,6 +2,8 @@
 package edu.common.dynamicextensions.domain;
 
 import edu.common.dynamicextensions.domaininterface.DoubleTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.DoubleValueInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
 
 /**
@@ -30,5 +32,17 @@ public class DoubleAttributeTypeInformation extends NumericAttributeTypeInformat
 	{
 		
 		return EntityManagerConstantsInterface.DOUBLE_ATTRIBUTE_TYPE;
+	}
+	
+	@Override
+	/**
+	 * 
+	 */
+	public PermissibleValueInterface getPermissibleValueForString(String value) {
+		
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+		DoubleValueInterface doubleValueInterface = domainObjectFactory.createDoubleValue();
+		doubleValueInterface.setValue(new Double(value));
+		return doubleValueInterface ;
 	}
 }

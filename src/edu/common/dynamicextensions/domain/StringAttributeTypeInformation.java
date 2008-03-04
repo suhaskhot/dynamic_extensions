@@ -1,10 +1,10 @@
 
 package edu.common.dynamicextensions.domain;
 
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.StringTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
-import edu.wustl.common.actionForm.AbstractActionForm;
-import edu.wustl.common.exception.AssignDataException;
 
 /**
  * @version 1.0
@@ -66,5 +66,15 @@ public class StringAttributeTypeInformation extends AttributeTypeInformation imp
 	{
 		
 		return EntityManagerConstantsInterface.STRING_ATTRIBUTE_TYPE;
+	}
+	
+	/**
+	 * 
+	 */
+	public PermissibleValueInterface getPermissibleValueForString(String value) {
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+		StringValueInterface stringValueInterface = domainObjectFactory.createStringValue();
+		stringValueInterface.setValue(value);
+		return stringValueInterface;
 	}
 }

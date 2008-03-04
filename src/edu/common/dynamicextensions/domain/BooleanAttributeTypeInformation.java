@@ -2,6 +2,8 @@
 package edu.common.dynamicextensions.domain;
 
 import edu.common.dynamicextensions.domaininterface.BooleanTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.BooleanValueInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
 
 /**
@@ -26,6 +28,15 @@ public class BooleanAttributeTypeInformation extends AttributeTypeInformation
 	public String getDataType()
 	{
 		return EntityManagerConstantsInterface.BOOLEAN_ATTRIBUTE_TYPE;
+	}
+
+	@Override
+	public PermissibleValueInterface getPermissibleValueForString(String value) {
+		
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+		BooleanValueInterface booleanValueInterface = domainObjectFactory.createBooleanValue();
+		booleanValueInterface.setValue(new Boolean(value));
+		return booleanValueInterface;
 	}
 
 }

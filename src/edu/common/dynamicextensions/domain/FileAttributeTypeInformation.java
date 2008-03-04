@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import edu.common.dynamicextensions.domaininterface.FileTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
+import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
 
 /**
@@ -119,4 +121,13 @@ public class FileAttributeTypeInformation extends AttributeTypeInformation
 		
 		return EntityManagerConstantsInterface.FILE_ATTRIBUTE_TYPE;
 	}
+	
+	/**
+	 * 
+	 */
+	public PermissibleValueInterface getPermissibleValueForString(String value) {
+		return null;
+	}
+	
+	
 }

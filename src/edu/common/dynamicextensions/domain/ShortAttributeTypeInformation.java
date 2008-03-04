@@ -1,7 +1,9 @@
 
 package edu.common.dynamicextensions.domain;
 
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.ShortTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.ShortValueInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
 
 /**
@@ -29,5 +31,15 @@ public class ShortAttributeTypeInformation extends NumericAttributeTypeInformati
 	{
 		
 		return EntityManagerConstantsInterface.SHORT_ATTRIBUTE_TYPE;
+	}
+	
+	/**
+	 * 
+	 */
+	public PermissibleValueInterface getPermissibleValueForString(String value) {
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+		ShortValueInterface shortValueInterface = domainObjectFactory.createShortValue();
+		shortValueInterface.setValue(new Short(value));
+		return shortValueInterface;
 	}
 }

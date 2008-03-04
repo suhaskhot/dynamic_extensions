@@ -2,6 +2,8 @@
 package edu.common.dynamicextensions.domain;
 
 import edu.common.dynamicextensions.domaininterface.IntegerTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.IntegerValueInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
 
 /**
@@ -30,5 +32,15 @@ public class IntegerAttributeTypeInformation extends NumericAttributeTypeInforma
 	{
 		
 		return EntityManagerConstantsInterface.INTEGER_ATTRIBUTE_TYPE;
+	}
+	
+	/**
+	 * 
+	 */
+	public PermissibleValueInterface getPermissibleValueForString(String value) {
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+		IntegerValueInterface integerValueInterface = domainObjectFactory.createIntegerValue();
+		integerValueInterface.setValue(new Integer(value));
+		return integerValueInterface;
 	}
 }

@@ -1,7 +1,9 @@
 
 package edu.common.dynamicextensions.domain;
 
+import edu.common.dynamicextensions.domaininterface.BooleanValueInterface;
 import edu.common.dynamicextensions.domaininterface.ByteArrayTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.exception.AssignDataException;
 
@@ -52,6 +54,11 @@ public class ByteArrayAttributeTypeInformation extends AttributeTypeInformation 
 	public String getDataType()
 	{
 		
+		return null;
+	}
+	
+	@Override
+	public PermissibleValueInterface getPermissibleValueForString(String value) {
 		return null;
 	}
 

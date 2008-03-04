@@ -2,6 +2,8 @@
 package edu.common.dynamicextensions.domain;
 
 import edu.common.dynamicextensions.domaininterface.LongTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.LongValueInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
 
 /**
@@ -30,5 +32,15 @@ public class LongAttributeTypeInformation extends NumericAttributeTypeInformatio
 	{
 		
 		return EntityManagerConstantsInterface.LONG_ATTRIBUTE_TYPE;
+	}
+	
+	/**
+	 * 
+	 */
+	public PermissibleValueInterface getPermissibleValueForString(String value) {
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+		LongValueInterface longValueInterface = domainObjectFactory.createLongValue();
+		longValueInterface.setValue(new Long(value));
+		return longValueInterface;
 	}
 }

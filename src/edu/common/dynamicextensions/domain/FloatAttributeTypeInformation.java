@@ -2,6 +2,8 @@
 package edu.common.dynamicextensions.domain;
 
 import edu.common.dynamicextensions.domaininterface.FloatTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.FloatValueInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
 
 /**
@@ -30,5 +32,15 @@ public class FloatAttributeTypeInformation extends NumericAttributeTypeInformati
 	{
 		
 		return EntityManagerConstantsInterface.FLOAT_ATTRIBUTE_TYPE;
+	}
+	
+	/**
+	 * 
+	 */
+	public PermissibleValueInterface getPermissibleValueForString(String value) {
+		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+		FloatValueInterface floatValueInterface = domainObjectFactory.createFloatValue();
+		floatValueInterface.setValue(new Float(value));
+		return floatValueInterface ;
 	}
 }

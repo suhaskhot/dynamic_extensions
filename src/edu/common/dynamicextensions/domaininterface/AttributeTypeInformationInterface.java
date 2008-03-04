@@ -8,6 +8,8 @@
 
 package edu.common.dynamicextensions.domaininterface;
 
+import java.text.ParseException;
+
 public interface AttributeTypeInformationInterface extends DynamicExtensionBaseDomainObjectInterface
 {
 
@@ -40,4 +42,12 @@ public interface AttributeTypeInformationInterface extends DynamicExtensionBaseD
 	 * @return Strin attribute type
 	 */
 	String getDataType();
+	
+	/**
+	 * 
+	 * @param value
+	 * @return
+	 * @throws ParseException 
+	 */
+	PermissibleValueInterface getPermissibleValueForString(String value) throws ParseException;
 }

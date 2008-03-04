@@ -8,6 +8,7 @@
 
 package edu.common.dynamicextensions.domain;
 
+import java.text.ParseException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -169,4 +170,14 @@ AttributeTypeInformationInterface
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	/**
+	 * 
+	 * @param value
+	 * @return
+	 * @throws ParseException 
+	 */
+	public abstract PermissibleValueInterface getPermissibleValueForString(String value) throws ParseException;
+	
+		
+	
 }

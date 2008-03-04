@@ -4,10 +4,8 @@ package edu.common.dynamicextensions.util.parser;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,7 +15,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import au.com.bytecode.opencsv.CSVReader;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
@@ -31,14 +28,12 @@ import edu.common.dynamicextensions.util.CategoryHelperInterface;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.CategoryHelperInterface.ControlEnum;
 
-public class CategoryGenerator
+/**
+ * @author kunal_kamble
+ *
+ */
+public class CategoryGenerator extends CSVFileReader
 {
-	private String fileName;
-
-	private CSVReader reader;
-
-	private long lineNumber = 0;
-
 	private String rootEntityName;
 
 	private static final String FORM_DEFINITION = "Form_Definition";
@@ -49,35 +44,21 @@ public class CategoryGenerator
 
 	private static final String PERMISSIBLE_VALUES_FILE = "Permissible_Values_File";
 
-	public String getFileName()
-	{
-		return fileName;
-	}
-
-	public void setFileName(String filePath)
-	{
-		this.fileName = filePath;
-	}
-
+	/**
+	 * @param filePath
+	 * @throws DynamicExtensionsSystemException
+	 */
 	public CategoryGenerator(String filePath) throws DynamicExtensionsSystemException
 	{
-		this.fileName = filePath;
-		try
-		{
-			reader = new CSVReader(new FileReader(getSystemIndependantFilePath(filePath)));
-		}
-		catch (FileNotFoundException e)
-		{
-			throw new DynamicExtensionsSystemException("Error while openig file " + filePath, e);
-		}
+		super(filePath);
 	}
 
-	private String[] getNextLine(CSVReader reader) throws IOException
-	{
-		lineNumber++;
-		return reader.readNext();
-	}
-
+	
+	/**
+	 * @param string
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
 	private Map<String, List<String>> getPaths(String[] string) throws DynamicExtensionsSystemException
 	{
 		Map<String, List<String>> entityNamePath = new HashMap<String, List<String>>();
@@ -103,6 +84,11 @@ public class CategoryGenerator
 		return entityNamePath;
 	}
 
+	/**
+	 * @param paths
+	 * @param entityGroup
+	 * @return
+	 */
 	private Map<String, List<String>> getAssociationList(Map<String, List<String>> paths, EntityGroupInterface entityGroup)
 	{
 		Map<String, List<String>> listOfPath = new HashMap<String, List<String>>();
@@ -132,28 +118,48 @@ public class CategoryGenerator
 		return listOfPath;
 	}
 
+	/**
+	 * @param strings
+	 * @return
+	 */
 	private String getEntityName(String[] strings)
 	{
 		String entityName = strings[0].split(":")[0];
 		return entityName;
 	}
 
+	/**
+	 * @param strings
+	 * @return
+	 */
 	private String getAttributeName(String[] strings)
 	{
 		String entityName = strings[0].split(":")[1];
 		return entityName;
 	}
 
+	/**
+	 * @param strings
+	 * @return
+	 */
 	private String getControlType(String[] strings)
 	{
 		return strings[1];
 	}
 
+	/**
+	 * @param strings
+	 * @return
+	 */
 	private String getControlCaption(String[] strings)
 	{
 		return strings[2];
 	}
 
+	/**
+	 * @param strings
+	 * @return
+	 */
 	private Map<String, String> getControlOptions(String[] strings)
 	{
 		String controlOptions = strings[3];
@@ -171,6 +177,11 @@ public class CategoryGenerator
 
 	}
 
+	/**
+	 * @param nextLine
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
 	private List<String> getPermissibleValues(String[] nextLine) throws DynamicExtensionsSystemException
 	{
 		//counter for to locate the start of the permissible values
@@ -226,6 +237,11 @@ public class CategoryGenerator
 		return permissibleValues;
 	}
 
+	/**
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
 	public List<CategoryInterface> getCategoryList() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		CategoryHelperInterface categoryHelper = new CategoryHelper();
@@ -271,10 +287,6 @@ public class CategoryGenerator
 				String currentEntityName =null;
 				while ((nextLine = getNextLine(reader)) != null)
 				{
-					if (nextLine[0].length() == 0)
-					{
-						continue;
-					}
 					if (FORM_DEFINITION.equals(nextLine[0]))
 					{
 						break;
@@ -340,6 +352,8 @@ public class CategoryGenerator
 						}
 						else
 						{
+							checkForNullRefernce(ControlEnum.get(getControlType(nextLine)),"Line No:"+lineNumber
+									+" Illegal control type "+getControlType(nextLine));
 							categoryHelper.addControl(entityInterface, getAttributeName(nextLine), containerInterface, ControlEnum
 									.get(getControlType(nextLine)), getControlCaption(nextLine));
 						}
@@ -368,6 +382,10 @@ public class CategoryGenerator
 
 	}
 
+	/**
+	 * @param multiplicity
+	 * @return
+	 */
 	private int getMultiplicityInNumbers(String multiplicity)
 	{
 		int multiplicityI = 1;
@@ -382,11 +400,20 @@ public class CategoryGenerator
 		return multiplicityI;
 	}
 
+	/**
+	 * @param containerCollection
+	 * @return
+	 */
 	private ContainerInterface getRootContainer(List<ContainerInterface> containerCollection)
 	{
 		return getContainer(containerCollection, rootEntityName);
 	}
 
+	/**
+	 * @param containerCollection
+	 * @param entityName
+	 * @return
+	 */
 	private ContainerInterface getContainer(List<ContainerInterface> containerCollection, String entityName)
 	{
 		ContainerInterface container = null;
@@ -402,6 +429,11 @@ public class CategoryGenerator
 		return container;
 	}
 
+	/**
+	 * @param entityInterface
+	 * @param displyLabel
+	 * @return
+	 */
 	private ContainerInterface createCategoryEntityAndContainer(EntityInterface entityInterface, String displyLabel)
 	{
 		ContainerInterface containerInterface = null;
@@ -419,6 +451,11 @@ public class CategoryGenerator
 		return containerInterface;
 	}
 
+	/**
+	 * @param object
+	 * @param message
+	 * @throws DynamicExtensionsSystemException
+	 */
 	private void checkForNullRefernce(Object object, String message) throws DynamicExtensionsSystemException
 	{
 		if (object == null)
@@ -427,33 +464,19 @@ public class CategoryGenerator
 		}
 	}
 
-	private String getSystemIndependantFilePath(String path) throws DynamicExtensionsSystemException
-	{
-		URI uri = null;
-		try
-		{
-			uri = new URI("file:///" + path);
-		}
-		catch (URISyntaxException e)
-		{
-			throw new DynamicExtensionsSystemException("Error while openig CSV file  " + path, e);
-		}
-		return uri.getPath();
-	}
 
-/*	public static void main(String args[]) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, URISyntaxException,
+	public static void main(String args[]) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, URISyntaxException,
 			IOException
 	{
-		CategoryGenerator categoryFileParser = new CategoryGenerator("e:/test.csv");
+		CategoryGenerator categoryFileParser = new CategoryGenerator("E:/releases/category files/gcrc.csv");
 		CategoryHelper categoryHelper = new CategoryHelper();
 
 		List<CategoryInterface> list = categoryFileParser.getCategoryList();
 		for (CategoryInterface category : list)
 		{
-			categoryHelper.saveCategory(category);
+			//categoryHelper.saveCategory(category);
 			System.out.println("saved category " + category.getName());
 		}
 
 	}
-*/
 }

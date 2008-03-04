@@ -1,6 +1,9 @@
 package edu.common.dynamicextensions.domain;
 
+import java.text.ParseException;
+
 import edu.common.dynamicextensions.domaininterface.ObjectTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
 
 /**
@@ -25,4 +28,12 @@ public class ObjectAttributeTypeInformation extends AttributeTypeInformation imp
     public String getDataType() {
         return EntityManagerConstantsInterface.OBJECT_ATTRIBUTE_TYPE;
     }
+
+	/**
+	 * 
+	 */
+	public PermissibleValueInterface getPermissibleValueForString(String value) throws ParseException 
+	{
+		return null;
+	}
 }

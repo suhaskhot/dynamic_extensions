@@ -495,15 +495,12 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.entitymanager.CategoryManagerInterface#isPermissibleValuesSubsetValid(edu.common.dynamicextensions.domaininterface.AttributeInterface, java.util.List)
 	 */
-	public boolean isPermissibleValuesSubsetValid(AttributeInterface attribute, List<String> desiredPermissibleValues)
+	public boolean isPermissibleValuesSubsetValid(UserDefinedDEInterface userDefinedDE, List<String> desiredPermissibleValues)
 	{
 		boolean arePermissibleValuesCorrect = true;
 		
-		if (attribute != null)
+		if (userDefinedDE != null)
 		{
-			AttributeTypeInformationInterface attributeTypeInformation = attribute.getAttributeTypeInformation();
-			UserDefinedDEInterface userDefinedDE = (UserDefinedDE) attributeTypeInformation.getDataElement();
-			
 			List<String> attributePermissibleValues = new ArrayList<String>();
 			
 			for (PermissibleValueInterface pv : userDefinedDE.getPermissibleValueCollection())

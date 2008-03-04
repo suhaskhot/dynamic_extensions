@@ -5,6 +5,7 @@ import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CategoryAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
@@ -97,9 +98,10 @@ public interface CategoryHelperInterface
 	 * @param controlValue type of control to be created. (e.g. ControlEnum.TEXT_FIELD_CONTROL)
 	 * @param permissibleValues in case of radio buttons, lists and combo boxes, the list of permissible values is required, optional otherwise.
 	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	public void addControl(EntityInterface entity, String attributeName, ContainerInterface container, ControlEnum controlValue,
-			String controlCaption, List<String>... permissibleValues) throws DynamicExtensionsApplicationException;
+			String controlCaption, List<String>... permissibleValues) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
 	 * This method is used when there is inheritance between two entities.
@@ -131,5 +133,16 @@ public interface CategoryHelperInterface
 	 * @return next sequence number
 	 */
 	public int getNextSequenceNumber(ContainerInterface container);
+	/**
+	 * 
+	 * @param entity
+	 * @param attributeName
+	 * @param desiredPermissibleValues
+	 * @return
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public List<PermissibleValueInterface> createPermissibleValuesList(EntityInterface entity, String attributeName,
+			List<String> desiredPermissibleValues) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 }

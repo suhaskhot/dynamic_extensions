@@ -10,6 +10,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
+import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
@@ -99,10 +100,10 @@ public interface CategoryManagerInterface
 	
 	/**
 	 * Check if the subset of permissible values passed is valid.
-	 * @param attribute
+	 * @param userDefinedDE
 	 * @param desiredPermissibleValues
 	 * @return true or false depending on valid permissible values subset
 	 */
-	public boolean isPermissibleValuesSubsetValid(AttributeInterface attribute, List<String> desiredPermissibleValues);
+	public boolean isPermissibleValuesSubsetValid(UserDefinedDEInterface userDefinedDE, List<String> desiredPermissibleValues);
 
 }

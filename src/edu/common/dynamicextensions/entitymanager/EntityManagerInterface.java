@@ -14,6 +14,7 @@ import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.AssociationTreeObject;
@@ -136,6 +137,17 @@ public interface EntityManagerInterface
      */
     Collection<ContainerInterface> getAllContainers() throws DynamicExtensionsSystemException,
             DynamicExtensionsApplicationException;
+    
+    /**
+     * Retrieve all containers from a particular group.
+     * @param entityGroupIdentifier
+     * @return collection of containers.
+     * @throws DynamicExtensionsSystemException
+     * @throws DynamicExtensionsApplicationException
+     */
+    public Collection<ContainerInterface> getAllContainersByEntityGroupId(Long entityGroupIdentifier)
+    throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+    
     /**
      * This method inserts one record for the entity.
      */
@@ -477,4 +489,14 @@ public interface EntityManagerInterface
     */
     Collection<EntityGroupInterface> getAllEntitiyGroups() throws DynamicExtensionsSystemException,
           DynamicExtensionsApplicationException;    
+    
+    /**
+     * This method returns the control given the attribute identifier
+     * @param controlIdentifier
+     * @return
+     * @throws DynamicExtensionsSystemException
+     * @throws DynamicExtensionsApplicationException
+     */
+    public ControlInterface getControlByAbstractAttributeIdentifier(Long abstractAttributeIdentifier)
+            throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 }

@@ -50,6 +50,7 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.ObjectAttributeRecordValueInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.AssociationTreeObject;
@@ -534,6 +535,16 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		//the parameter.
 		return getAllObjects(ContainerInterface.class.getName());
 	}
+	
+
+    public Collection<ContainerInterface> getAllContainersByEntityGroupId(Long entityGroupIdentifier)
+            throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+
+    {
+        Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+        substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entityGroupIdentifier));
+        return executeHQL("getAllContainersByEntityGroupId", substitutionParameterMap);
+    }
 
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#insertData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map)
@@ -2968,5 +2979,29 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	{
 		return getAllObjects(EntityGroupInterface.class.getName());
 	}
+	
+    /**
+     * This method returns the control given the attribute identifier
+     * @param controlIdentifier
+     * @return
+     * @throws DynamicExtensionsSystemException
+     * @throws DynamicExtensionsApplicationException
+     */
+    public ControlInterface getControlByAbstractAttributeIdentifier(Long abstractAttributeIdentifier)
+            throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+    {
+        ControlInterface controlInterface = null;
+        Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+        substitutionParameterMap.put("0", new HQLPlaceHolderObject("long",
+                abstractAttributeIdentifier));
+        Collection controlCollection = executeHQL("getControlOfAbstractAttribute",
+                substitutionParameterMap);
+        if (controlCollection != null && controlCollection.size() > 0)
+        {
+            controlInterface = (ControlInterface) controlCollection.iterator().next();
+        }
+
+        return controlInterface;
+    }
 
 }

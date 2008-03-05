@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
+import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
@@ -65,7 +66,6 @@ public class ImportPermissibleValues extends CSVFileReader {
 				EntityGroupInterface entityGroup = DynamicExtensionsUtility
 						.retrieveEntityGroup(nextLine[0].trim());
 
-				List<String> entityNameList = new ArrayList<String>();
 				EntityInterface currentEntity = null;
 				while ((nextLine = getNextLine(reader)) != null) {
 					if (ENTITY_GROUP.equals(nextLine[0])) {
@@ -73,35 +73,35 @@ public class ImportPermissibleValues extends CSVFileReader {
 					}
 
 					String entityName = getEntityName(nextLine);
-					if (!entityNameList.contains(entityName)) {
-						currentEntity = entityGroup.getEntityByName(entityName);
-					}
-
+					currentEntity = entityGroup.getEntityByName(entityName);
+			
 					String attributeName = getAttributeName(nextLine);
 					List<String> pvList = getPermissibleValues(nextLine);
 					List<PermissibleValueInterface> list = categoryHelper.createPermissibleValuesList
 					(currentEntity,attributeName, pvList);
-					
-					UserDefinedDEInterface userDefinedDE = (UserDefinedDEInterface) currentEntity.getAttributeByName(attributeName).
-					getAttributeTypeInformation().getDataElement();
+					AttributeTypeInformationInterface attributeTypeInformation = currentEntity.getAttributeByName
+					(attributeName).getAttributeTypeInformation();
+					UserDefinedDEInterface userDefinedDE = (UserDefinedDEInterface) attributeTypeInformation.
+					getDataElement();
 					
 					if(userDefinedDE == null)
 					{
 						userDefinedDE = DomainObjectFactory.getInstance().createUserDefinedDE();
-						currentEntity.getAttributeByName(attributeName).
-						getAttributeTypeInformation().setDataElement(userDefinedDE);
+						attributeTypeInformation.setDataElement(userDefinedDE);
+						
 					}
 					
 					for(PermissibleValueInterface pv: list)
 					{
 							userDefinedDE.addPermissibleValue(pv);	
-							
 					}
-					
+
+					//set the first value in the list as the default value
+					attributeTypeInformation.setDefaultValue(list.get(0));
 					
 				}
 				EntityGroupManager.getInstance().persistEntityGroup(entityGroup);
-				//System.out.println("saved pvs");
+				
 			}
 		} catch (IOException e) {
 			throw new DynamicExtensionsSystemException("Line number:"+ lineNumber+"Error while csv file " 
@@ -177,18 +177,20 @@ public class ImportPermissibleValues extends CSVFileReader {
 	{
 		try
 		{
-			if (args.length == 0)
+			/*if (args.length == 0)
 			{
 				throw new Exception("Please Specify the path for .csv file");
 			}
-			String filePath = args[0];
+			//String filePath = args[0];
+*/			String filePath = "E:/ClinPortal/models from burr/21feb 2008/importPv.csv";
 			System.out.println("---- The .csv file path is " + filePath + " ----");
 			ImportPermissibleValues importPermissibleValues = new ImportPermissibleValues(filePath);
 			importPermissibleValues.importValues();
+			System.out.println("Added permissible values successfully!!!!");
 		}
 		catch (Exception ex)
 		{
-			System.out.println("Exception: " + ex.getMessage());
+			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		}
 

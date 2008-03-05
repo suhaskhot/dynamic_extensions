@@ -177,12 +177,11 @@ public class ImportPermissibleValues extends CSVFileReader {
 	{
 		try
 		{
-			/*if (args.length == 0)
+			if (args.length == 0)
 			{
 				throw new Exception("Please Specify the path for .csv file");
 			}
-			//String filePath = args[0];
-*/			String filePath = "E:/ClinPortal/models from burr/21feb 2008/importPv.csv";
+			String filePath = args[0];
 			System.out.println("---- The .csv file path is " + filePath + " ----");
 			ImportPermissibleValues importPermissibleValues = new ImportPermissibleValues(filePath);
 			importPermissibleValues.importValues();

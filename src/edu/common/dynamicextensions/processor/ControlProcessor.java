@@ -15,7 +15,6 @@ import java.util.Collection;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
-import edu.common.dynamicextensions.domain.userinterface.Control;
 import edu.common.dynamicextensions.domain.userinterface.SelectControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeInterface;
@@ -142,7 +141,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		if (controlUIBeanInterface != null && controlInterface != null)
 		{
 			controlInterface.setBaseAbstractAttribute(controlUIBeanInterface.getAbstractAttribute());
-            //controlUIBeanInterface.getAbstractAttribute().setControl((Control) controlInterface);
+			//controlUIBeanInterface.getAbstractAttribute().setControl((Control) controlInterface);
 			controlInterface.setCaption(controlUIBeanInterface.getCaption());
 			controlInterface.setIsHidden(controlUIBeanInterface.getIsHidden());
 		}
@@ -528,7 +527,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		AttributeInterface attribute = null;
 		if (associationAttributeCollection != null)
 		{
-			for(AssociationDisplayAttributeInterface assocnDisplayAttribute:associationAttributeCollection)
+			for (AssociationDisplayAttributeInterface assocnDisplayAttribute : associationAttributeCollection)
 			{
 				if (assocnDisplayAttribute != null)
 				{
@@ -536,7 +535,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 					if (attribute != null)
 					{
 						EntityManagerInterface entityManager = EntityManager.getInstance();
-						//control = entityManager.getControlByAbstractAttributeIdentifier(attribute.getId());
+						control = entityManager.getControlByAbstractAttributeIdentifier(attribute.getId());
 						if (control != null)
 						{
 							selectedAttribute = new NameValueBean(control.getCaption(), control.getId());
@@ -607,7 +606,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private void populateControlCommonAttributes(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
 	{
-		controlUIBeanInterface.setAbstractAttribute((AbstractAttributeInterface)controlInterface.getBaseAbstractAttribute());
+		controlUIBeanInterface.setAbstractAttribute((AbstractAttributeInterface) controlInterface.getBaseAbstractAttribute());
 		controlUIBeanInterface.setCaption(controlInterface.getCaption());
 		controlUIBeanInterface.setIsHidden(controlInterface.getIsHidden());
 		controlUIBeanInterface.setSequenceNumber(controlInterface.getSequenceNumber());
@@ -623,7 +622,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		containmentAssociationControl.setCaption(container.getCaption());
 		containmentAssociationControl.setContainer(container);
 		containmentAssociationControl.setBaseAbstractAttribute(attributeIntf);
-        //attributeIntf.setControl((Control) containmentAssociationControl);
+		//attributeIntf.setControl((Control) containmentAssociationControl);
 		Integer containerSequenceNumber = new Integer(1);
 		if (container.getControlCollection() != null)
 		{

@@ -50,11 +50,11 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 	{
 		if ((container != null) && (controlUIBean != null) && (attrUIBean != null))
 		{
-			EntityInterface entityInterface = (EntityInterface) container.getAbstractEntity();
+			EntityInterface entity = (EntityInterface) container.getAbstractEntity();
 			ControlProcessor controlProcessor = ControlProcessor.getInstance();
 			AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
-			AbstractAttributeInterface abstractAttributeInterface = null;
-			ControlInterface controlInterface = null;
+			AbstractAttributeInterface abstractAttribute = null;
+			ControlInterface control = null;
 
 			//Check for operation
 			String controlOperation = controlUIBean.getControlOperation();
@@ -80,33 +80,33 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 
 				//Validate attribute name
 				DynamicExtensionsUtility.validateName(attributeName);
-				DynamicExtensionsUtility.validateDuplicateNamesWithinEntity(entityInterface, attributeName);
+				DynamicExtensionsUtility.validateDuplicateNamesWithinEntity(entity, attributeName);
 				controlUIBean.setName(attributeName);
 
 				//Create Attribute  
-				abstractAttributeInterface = attributeProcessor.createAndPopulateAttribute(controlUIBean.getUserSelectedTool(), attrUIBean);
+				abstractAttribute = attributeProcessor.createAndPopulateAttribute(controlUIBean.getUserSelectedTool(), attrUIBean);
 
 				//Set permissible values
-				setPermissibleValues(attributeProcessor, abstractAttributeInterface, controlUIBean, attrUIBean);
+				setPermissibleValues(attributeProcessor, abstractAttribute, controlUIBean, attrUIBean);
 
 				//Set attribute in controlInformationInterface object(controlsForm)
-				controlUIBean.setAbstractAttribute(abstractAttributeInterface);
+				controlUIBean.setAbstractAttribute(abstractAttribute);
 
 				//Control Interface : Add control
-				controlInterface = controlProcessor.createAndPopulateControl(controlUIBean.getUserSelectedTool(), controlUIBean);
-				controlInterface.setSequenceNumber(WebUIManager.getSequenceNumberForNextControl(container));
+				control = controlProcessor.createAndPopulateControl(controlUIBean.getUserSelectedTool(), controlUIBean);
+				control.setSequenceNumber(WebUIManager.getSequenceNumberForNextControl(container));
 
 				//Entity Interface  : Add attribute
-				if ((entityInterface != null) && (abstractAttributeInterface != null))
+				if ((entity != null) && (abstractAttribute != null))
 				{
-					entityInterface.addAbstractAttribute(abstractAttributeInterface);
-					abstractAttributeInterface.setEntity(entityInterface);
+					entity.addAbstractAttribute(abstractAttribute);
+					abstractAttribute.setEntity(entity);
 				}
 				//DynamicExtensionsUtility.updateEntityReferences(abstractAttributeInterface);
 
 				//Container : Add control and entity
-				container.addControl(controlInterface);
-				container.setAbstractEntity(entityInterface);
+				container.addControl(control);
+				container.setAbstractEntity(entity);
 				//entityInterface.setContainer((Container) containerInterface);
 			}
 			else if (controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_EDIT))
@@ -117,7 +117,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				controlUIBean.setName(attributeName);
 				//Get the control from container
 				String selectedControlSeqNumber = controlUIBean.getSelectedControlId();
-				controlInterface = container.getControlInterfaceBySequenceNumber(selectedControlSeqNumber);
+				control = container.getControlInterfaceBySequenceNumber(selectedControlSeqNumber);
 
 				/*
 				 * CODE COMMENTED BY PREETI : 24 Nov 2006
@@ -135,46 +135,46 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				 */
 
 				//***********New Code starts here*********
-				abstractAttributeInterface = (AbstractAttributeInterface) controlInterface.getBaseAbstractAttribute();
-				abstractAttributeInterface = attributeProcessor.updateAttributeInformation(controlUIBean.getUserSelectedTool(),
-						abstractAttributeInterface, attrUIBean);
-				setPermissibleValues(attributeProcessor, abstractAttributeInterface, controlUIBean, attrUIBean);
+				abstractAttribute = (AbstractAttributeInterface) control.getBaseAbstractAttribute();
+				abstractAttribute = attributeProcessor.updateAttributeInformation(controlUIBean.getUserSelectedTool(),
+						abstractAttribute, attrUIBean);
+				setPermissibleValues(attributeProcessor, abstractAttribute, controlUIBean, attrUIBean);
 
 				//update in control interface
-				controlInterface.setBaseAbstractAttribute(abstractAttributeInterface);
+				control.setBaseAbstractAttribute(abstractAttribute);
 				//abstractAttributeInterface.setControl((Control) controlInterface);
 
-				controlUIBean.setAbstractAttribute(abstractAttributeInterface);
+				controlUIBean.setAbstractAttribute(abstractAttribute);
 
-				String oldControlType = DynamicExtensionsUtility.getControlName(controlInterface);
+				String oldControlType = DynamicExtensionsUtility.getControlName(control);
 				String newControlType = controlUIBean.getUserSelectedTool();
-				ControlInterface newControlInterface = null;
+				ControlInterface newControl = null;
 
 				if (!oldControlType.equals(newControlType))
 				{
-					newControlInterface = controlProcessor.createAndPopulateControl(newControlType, controlUIBean);
+					newControl = controlProcessor.createAndPopulateControl(newControlType, controlUIBean);
 				}
 				else
 				{
-					newControlInterface = controlProcessor.populateControlInterface(controlUIBean.getUserSelectedTool(), controlInterface,
+					newControl = controlProcessor.populateControlInterface(controlUIBean.getUserSelectedTool(), control,
 							controlUIBean);
 				}
 
 				//update control
 				//If new control interface is same as old one, do nothing. Else remove old references from container and add new one
-				if ((newControlInterface != null) && (!newControlInterface.equals(controlInterface)))
+				if ((newControl != null) && (!newControl.equals(control)))
 				{
 					//Remove control from container
-					container.removeControl(controlInterface);
+					container.removeControl(control);
 
 					//Set Sequence number
-					newControlInterface.setSequenceNumber(controlInterface.getSequenceNumber());
+					newControl.setSequenceNumber(control.getSequenceNumber());
 
 					//Set abstract attribute
-					newControlInterface.setBaseAbstractAttribute(abstractAttributeInterface);
+					newControl.setBaseAbstractAttribute(abstractAttribute);
 					//abstractAttributeInterface.setControl((Control) newControlInterface);
 					//add to container
-					container.addControl(newControlInterface);
+					container.addControl(newControl);
 				}
 			}
 		}
@@ -195,11 +195,11 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 			if ((userSelectedControl.equalsIgnoreCase(ProcessorConstants.COMBOBOX_CONTROL))
 					|| (userSelectedControl.equalsIgnoreCase(ProcessorConstants.RADIOBUTTON_CONTROL)))
 			{
-				AttributeTypeInformationInterface attributeTypeInformationIntf = DynamicExtensionsUtility
+				AttributeTypeInformationInterface attributeTypeInformation = DynamicExtensionsUtility
 						.getAttributeTypeInformation(abstractAttribute);
-				if (attributeTypeInformationIntf != null)
+				if (attributeTypeInformation != null)
 				{
-					attributeTypeInformationIntf.setDataElement(attributeProcessor.getDataElementInterface(attributeUIBean));
+					attributeTypeInformation.setDataElement(attributeProcessor.getDataElementInterface(attributeUIBean));
 				}
 			}
 		}

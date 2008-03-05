@@ -33,30 +33,24 @@ import edu.common.dynamicextensions.util.global.Constants;
  */
 public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 {
-
-	public ActionForward execute(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) throws Exception
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-
 		ActionForward actionForward = null;
 
 		GroupForm groupForm = (GroupForm) form;
-		ApplyGroupDefinitionProcessor applyGroupDefinitionProcessor = ApplyGroupDefinitionProcessor
-				.getInstance();
+		ApplyGroupDefinitionProcessor applyGroupDefinitionProcessor = ApplyGroupDefinitionProcessor.getInstance();
 
 		String operationMode = groupForm.getOperationMode();
 		EntityGroupInterface entityGroup = null;
+
 		try
 		{
-			ContainerInterface containerInterface = (ContainerInterface) CacheManager
-					.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-			entityGroup = applyGroupDefinitionProcessor.saveGroupDetails(groupForm,
-					containerInterface,operationMode);
-			
+			ContainerInterface container = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+			entityGroup = applyGroupDefinitionProcessor.saveGroupDetails(groupForm, container, operationMode, request);
+
 			if ((operationMode != null) && (operationMode.equals(Constants.EDIT_FORM)))
 			{
-				applyGroupDefinitionProcessor.updateEntityGroup(containerInterface, entityGroup,
-						groupForm);
+				applyGroupDefinitionProcessor.updateEntityGroup(container, entityGroup, groupForm);
 			}
 		}
 		catch (Exception e)
@@ -81,7 +75,7 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 		if (operationPerformed.equals(ProcessorConstants.SAVE_GROUP) && actionForward == null)
 		{
 			isCallbackURL = redirectCallbackURL(request, response, WebUIManagerConstants.SUCCESS);
-			
+
 		}
 		if (actionForward == null)
 		{
@@ -94,8 +88,7 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 	 * @param operationPerformed : Operation performed
 	 * @return Action forward for redirection
 	 */
-	private ActionForward getNextPage(String operationPerformed, ActionMapping mapping,
-			boolean isCallbackURL)
+	private ActionForward getNextPage(String operationPerformed, ActionMapping mapping, boolean isCallbackURL)
 	{
 		ActionForward actionForward = null;
 		if (operationPerformed != null)
@@ -123,16 +116,13 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 	 * @return true if CallbackURL is redirected, false otherwise
 	 * @throws IOException
 	 */
-	private boolean redirectCallbackURL(HttpServletRequest request, HttpServletResponse response,
-			String webUIManagerConstant) throws IOException
+	private boolean redirectCallbackURL(HttpServletRequest request, HttpServletResponse response, String webUIManagerConstant) throws IOException
 	{
 		boolean isCallbackURL = false;
-		String calllbackURL = (String) CacheManager.getObjectFromCache(request,
-				Constants.CALLBACK_URL);
+		String calllbackURL = (String) CacheManager.getObjectFromCache(request, Constants.CALLBACK_URL);
 		if (calllbackURL != null && !calllbackURL.equals(""))
 		{
-			calllbackURL = calllbackURL + "?" + WebUIManager.getOperationStatusParameterName()
-					+ "=" + webUIManagerConstant;
+			calllbackURL = calllbackURL + "?" + WebUIManager.getOperationStatusParameterName() + "=" + webUIManagerConstant;
 			CacheManager.clearCache(request);
 			response.sendRedirect(calllbackURL);
 			isCallbackURL = true;

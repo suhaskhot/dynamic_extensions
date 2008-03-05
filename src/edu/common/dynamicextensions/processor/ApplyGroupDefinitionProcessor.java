@@ -6,6 +6,9 @@
 
 package edu.common.dynamicextensions.processor;
 
+import javax.servlet.http.HttpServletRequest;
+
+import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -14,6 +17,7 @@ import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.interfaces.GroupUIBeanInterface;
+import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 
@@ -48,8 +52,8 @@ public class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsProcesso
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public EntityGroupInterface saveGroupDetails(GroupUIBeanInterface groupUIBean, ContainerInterface containerInterface, String operationMode)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public EntityGroupInterface saveGroupDetails(GroupUIBeanInterface groupUIBean, ContainerInterface container, String operationMode,
+			HttpServletRequest request) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		GroupProcessor groupProcessor = GroupProcessor.getInstance();
 		String groupOperation = groupUIBean.getGroupOperation();
@@ -60,11 +64,22 @@ public class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsProcesso
 		if ((createGroupAs != null) && (createGroupAs.equals(ProcessorConstants.GROUP_CREATEFROM_EXISTING)))
 		{
 			//entityGroup = groupProcessor.getEntityGroupByIdentifier(groupUIBean.getGroupName());
-			EntityInterface entity = (EntityInterface) containerInterface.getAbstractEntity();
-			entityGroup = DynamicExtensionsUtility.getEntityGroup(entity);
-			if (operationMode.equals(Constants.EDIT_FORM))
+			if (container != null)
 			{
-				entityGroup.setDescription(groupUIBean.getGroupDescription());
+				EntityInterface entity = (EntityInterface) container.getAbstractEntity();
+				entityGroup = DynamicExtensionsUtility.getEntityGroup(entity);
+				if (operationMode.equals(Constants.EDIT_FORM))
+				{
+					entityGroup.setDescription(groupUIBean.getGroupDescription());
+				}
+			}
+			else
+			{
+				entityGroup = groupProcessor.getEntityGroupByIdentifier(groupUIBean.getGroupName());
+				container = DomainObjectFactory.getInstance().createContainer();
+				container.setCaption("New Form");
+				CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, container);
+				CacheManager.addObjectToCache(request, Constants.ENTITYGROUP_INTERFACE, entityGroup);
 			}
 		}
 		else

@@ -1,8 +1,11 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
+import java.util.Iterator;
 import java.util.List;
 
+import edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
@@ -62,7 +65,9 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 		}
 		else
 		{
-			defaultValue = this.getAttibuteMetadataInterface().getDefaultValue();
+			if(this.getBaseAbstractAttribute() instanceof AttributeMetadataInterface){
+				defaultValue = this.getAttibuteMetadataInterface().getDefaultValue();	
+			}
 			if (defaultValue == null || defaultValue.length() == 0)
 			{
 				defaultValue = "";

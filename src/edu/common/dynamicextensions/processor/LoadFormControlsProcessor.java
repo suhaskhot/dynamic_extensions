@@ -2,18 +2,15 @@
 package edu.common.dynamicextensions.processor;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
-import edu.common.dynamicextensions.entitymanager.EntityManager;
-import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.interfaces.AbstractAttributeUIBeanInterface;
@@ -372,28 +369,11 @@ public class LoadFormControlsProcessor
 			DynamicExtensionsApplicationException
 	{
 		ArrayList<NameValueBean> groupNamesList = new ArrayList<NameValueBean>();
-		List<NameValueBean> entityGroupFormsList = new ArrayList<NameValueBean>();
-
-		NameValueBean entityGroupNameValue = new NameValueBean();
-		entityGroupNameValue.setName(((Entity) container.getAbstractEntity()).getEntityGroup().getName());
-		entityGroupNameValue.setValue(((Entity) container.getAbstractEntity()).getEntityGroup().getId());
-		
-		entityGroupFormsList.add(entityGroupNameValue);
-
-		NameValueBean groupName = null;
-		Iterator<NameValueBean> groupIterator = entityGroupFormsList.iterator();
-		while (groupIterator.hasNext())
-		{
-			groupName = groupIterator.next();
-			if (groupName != null)
-			{
-				groupName = new NameValueBean(groupName.getName(), groupName.getValue());
-				groupNamesList.add(groupName);
-			}
-		}
+		EntityGroupInterface entityGroup = ((Entity) container.getAbstractEntity()).getEntityGroup();
+		NameValueBean groupName = new NameValueBean(entityGroup.getName(), entityGroup.getId());
+		groupNamesList.add(groupName);
 
 		DynamicExtensionsUtility.sortNameValueBeanListByName(groupNamesList);
-
 		return groupNamesList;
 	}
 

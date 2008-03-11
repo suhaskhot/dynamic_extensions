@@ -1087,7 +1087,7 @@ public class XMIImportProcessor
 					ApplyFormControlsProcessor applyFormControlsProcessor = ApplyFormControlsProcessor
 							.getInstance();
 					applyFormControlsProcessor.addControlToForm(containerInterface, controlModel,
-							controlModel);
+							controlModel, entityInterface.getEntityGroup());
 				}
 			}
 			//Since we are creating attributes in createAttributes method and also in applyFormControlsProcessor.addControlToForm method

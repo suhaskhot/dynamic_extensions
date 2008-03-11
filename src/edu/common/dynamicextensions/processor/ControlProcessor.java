@@ -20,6 +20,8 @@ import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -36,7 +38,6 @@ import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.interfaces.ControlUIBeanInterface;
-import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.beans.NameValueBean;
 
 /**
@@ -72,10 +73,10 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsSystemException 
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	public ControlInterface createAndPopulateControl(String userSelectedControlName, ControlUIBeanInterface controlUIBeanInterface)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public ControlInterface createAndPopulateControl(String userSelectedControlName, ControlUIBeanInterface controlUIBeanInterface,
+			EntityGroupInterface... entityGroup) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		ControlInterface controlInterface = populateControlInterface(userSelectedControlName, null, controlUIBeanInterface);
+		ControlInterface controlInterface = populateControlInterface(userSelectedControlName, null, controlUIBeanInterface, entityGroup);
 		return controlInterface;
 	}
 
@@ -89,7 +90,8 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 */
 	public ControlInterface populateControlInterface(String userSelectedControlName, ControlInterface controlIntf,
-			ControlUIBeanInterface controlUIBeanInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+			ControlUIBeanInterface controlUIBeanInterface, EntityGroupInterface... entityGroup) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		ControlInterface controlInterface = null;
 		if ((userSelectedControlName != null) && (controlUIBeanInterface != null))
@@ -113,7 +115,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 				}
 				else
 				{
-					controlInterface = getComboBoxControl(controlIntf, controlUIBeanInterface);
+					controlInterface = getComboBoxControl(controlIntf, controlUIBeanInterface, entityGroup);
 				}
 			}
 			else if (userSelectedControlName.equalsIgnoreCase(ProcessorConstants.LISTBOX_CONTROL))
@@ -278,8 +280,8 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private ControlInterface getComboBoxControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private ControlInterface getComboBoxControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface,
+			EntityGroupInterface... entityGroup) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ComboBoxInterface comboBoxIntf = null;
 		if (controlInterface == null) //If does not exist create it 
@@ -299,7 +301,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		}
 		if (comboBoxIntf instanceof SelectControl)
 		{
-			initializeSelectControl((SelectControl) comboBoxIntf, controlUIBeanInterface);
+			initializeSelectControl((SelectControl) comboBoxIntf, controlUIBeanInterface, entityGroup);
 		}
 		return comboBoxIntf;
 
@@ -311,8 +313,8 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private void initializeSelectControl(SelectControl selectControl, ControlUIBeanInterface controlUIBeanInterface)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private void initializeSelectControl(SelectControl selectControl, ControlUIBeanInterface controlUIBeanInterface,
+			EntityGroupInterface... entityGroup) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		//initialize the select control object with the separator etc properties
 		if (selectControl != null)
@@ -328,7 +330,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 					int noOfIds = associationControlIds.length;
 					for (int i = 0; i < noOfIds; i++)
 					{
-						selectControl.addAssociationDisplayAttribute(getAssociationDisplayAttribute(associationControlIds[i], i + 1));
+						selectControl.addAssociationDisplayAttribute(getAssociationDisplayAttribute(associationControlIds[i], i + 1, entityGroup));
 					}
 				}
 			}
@@ -346,7 +348,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private AssociationDisplayAttributeInterface getAssociationDisplayAttribute(String controlId, int sequenceNo)
+	private AssociationDisplayAttributeInterface getAssociationDisplayAttribute(String controlId, int sequenceNo, EntityGroupInterface... entityGroup)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		AssociationDisplayAttributeInterface associationDisplayAttribute = null;
@@ -356,7 +358,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 
 			associationDisplayAttribute = domainObjectFactory.createAssociationDisplayAttribute();
 			associationDisplayAttribute.setSequenceNumber(sequenceNo);
-			associationDisplayAttribute.setAttribute(getAttributeForId(controlId));
+			associationDisplayAttribute.setAttribute(getAttributeForId(controlId, entityGroup[0]));
 		}
 		return associationDisplayAttribute;
 	}
@@ -367,12 +369,29 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private AttributeInterface getAttributeForId(String controlId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private AttributeInterface getAttributeForId(String controlId, EntityGroupInterface entityGroup) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
+		ControlInterface control = null;
+		
+		for (EntityInterface entity : entityGroup.getEntityCollection())
+		{
+			Collection<ContainerInterface> containerCollection = entity.getContainerCollection();
+			for (ContainerInterface container : containerCollection)
+			{
+				Collection<ControlInterface> controlCollection = container.getControlCollection();
+				for (ControlInterface currentControl : controlCollection)
+				{
+					if (currentControl.getId().toString().equals(controlId))
+					{
+						control = currentControl;
+					}
+				}
+			}
+		}
 		AttributeInterface attribute = null;
 		if (controlId != null)
 		{
-			ControlInterface control = DynamicExtensionsUtility.getControlByIdentifier(controlId);
 			if (control != null)
 			{
 				if ((control.getBaseAbstractAttribute() != null) && (control.getBaseAbstractAttribute() instanceof AttributeInterface))

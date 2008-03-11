@@ -21,6 +21,7 @@ import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.BooleanTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.BooleanValueInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
@@ -300,7 +301,7 @@ public class ControlsUtility
 		List<NameValueBean> nameValueBeanList = null;
 		try
 		{
-			AttributeMetadataInterface attribute = control.getAttibuteMetadataInterface();
+			BaseAbstractAttributeInterface attribute = control.getBaseAbstractAttribute();
 			if (attribute != null)
 			{
 				if (attribute instanceof AttributeMetadataInterface)

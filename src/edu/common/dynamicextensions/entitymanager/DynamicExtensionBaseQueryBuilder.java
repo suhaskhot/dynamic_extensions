@@ -2037,12 +2037,20 @@ class DynamicExtensionBaseQueryBuilder
 			{
 				if (str.length() != 0)
 					str = DynamicExtensionsUtility.formatMonthAndYearDate(str);
+				if (Variables.databaseName.equals(Constants.ORACLE_DATABASE))
+				{
+					str = str.substring(0, str.length()-4);
+				}
 			}
 
 			if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
 			{
 				if (str.length() != 0)
 					str = DynamicExtensionsUtility.formatYearDate(str);
+				if (Variables.databaseName.equals(Constants.ORACLE_DATABASE))
+				{
+					str = str.substring(0, str.length()-4);
+				}
 			}
 
 			/*formattedvalue = Variables.strTodateFunction + "('" + str + "','"

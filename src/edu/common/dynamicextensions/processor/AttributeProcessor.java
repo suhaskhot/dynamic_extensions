@@ -18,7 +18,6 @@ import edu.common.dynamicextensions.domain.DateValue;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DoubleValue;
-import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.FileExtension;
 import edu.common.dynamicextensions.domain.FloatAttributeTypeInformation;
@@ -181,14 +180,14 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 *  @throws DynamicExtensionsApplicationException : Excedption
 	 */
 	public void populateAttribute(String userSelectedControlName, AbstractAttributeInterface attributeInterface,
-			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf, EntityGroupInterface... entityGroup)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		if ((attributeUIBeanInformationIntf != null) && (attributeInterface != null))
 		{
 			if (attributeInterface instanceof AssociationInterface)
 			{
-				populateAssociation(userSelectedControlName, (AssociationInterface) attributeInterface, attributeUIBeanInformationIntf);
+				populateAssociation(userSelectedControlName, (AssociationInterface) attributeInterface, attributeUIBeanInformationIntf, entityGroup);
 			}
 			//populate information specific to attribute type
 			populateAttributeSpecificInfo(attributeInterface, attributeUIBeanInformationIntf);
@@ -221,11 +220,24 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsSystemException 
 	 */
 	private void populateAssociation(String userSelectedControlName, AssociationInterface associationIntf,
-			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf, EntityGroupInterface... entityGroup)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		ContainerInterface containerInterface = DynamicExtensionsUtility.getContainerByIdentifier(attributeUIBeanInformationIntf.getFormName());
-		EntityInterface targetEntity = (Entity) containerInterface.getAbstractEntity();
+		EntityInterface targetEntity = entityGroup[0].getEntityByName(attributeUIBeanInformationIntf.getFormName());
+		for (EntityInterface entity : entityGroup[0].getEntityCollection())
+		{
+			Collection<ContainerInterface> containerCollection = entity.getContainerCollection();
+			for (ContainerInterface container : containerCollection)
+			{
+				if (container.getId() != null)
+				{
+					if (container.getId().toString().equals(attributeUIBeanInformationIntf.getFormName()))
+					{
+						targetEntity = entity;
+					}
+				}
+			}
+		}
 		if ((targetEntity != null) && (associationIntf != null))
 		{
 			associationIntf.setTargetEntity(targetEntity);
@@ -240,7 +252,6 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			{
 				associationIntf.setTargetRole(getRole(AssociationType.ASSOCIATION, targetEntity.getName(), Cardinality.ONE, Cardinality.ONE));
 			}
-
 		}
 
 	}
@@ -809,11 +820,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException : Exception
 	 */
 	public AbstractAttributeInterface createAndPopulateAttribute(String userSelectedControlName,
-			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf, EntityGroupInterface... entityGroup)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		AbstractAttributeInterface attributeInterface = createAttribute(attributeUIBeanInformationIntf);
-		populateAttribute(userSelectedControlName, attributeInterface, attributeUIBeanInformationIntf);
+		populateAttribute(userSelectedControlName, attributeInterface, attributeUIBeanInformationIntf, entityGroup);
 		return attributeInterface;
 	}
 
@@ -1697,7 +1708,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsSystemException 
 	 */
 	public AbstractAttributeInterface updateAttributeInformation(String userSelectedControlName,
-			AbstractAttributeInterface abstractAttributeInformation, AbstractAttributeUIBeanInterface attributeUIBeanInformation)
+			AbstractAttributeInterface abstractAttributeInformation, AbstractAttributeUIBeanInterface attributeUIBeanInformation, EntityGroupInterface... entityGroup)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		AbstractAttributeInterface attributeInterface = null;
@@ -1715,7 +1726,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				}
 				else if (attributeInterface instanceof AssociationInterface)
 				{
-					populateAssociation(userSelectedControlName, (AssociationInterface) attributeInterface, attributeUIBeanInformation);
+					populateAssociation(userSelectedControlName, (AssociationInterface) attributeInterface, attributeUIBeanInformation, entityGroup);
 				}
 			}
 			else

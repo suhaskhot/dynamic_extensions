@@ -19,6 +19,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
@@ -52,11 +53,11 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response)
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		FormDefinitionForm formDefinitionForm = (FormDefinitionForm) form;
+
 		try
 		{
 			populateContainerInformation(request, formDefinitionForm);
@@ -79,13 +80,13 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private void populateContainerInformation(HttpServletRequest request,
-			FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	private void populateContainerInformation(HttpServletRequest request, FormDefinitionForm formDefinitionForm)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		LoadFormDefinitionProcessor loadFormDefinitionProcessor = LoadFormDefinitionProcessor
-				.getInstance();
+		LoadFormDefinitionProcessor loadFormDefinitionProcessor = LoadFormDefinitionProcessor.getInstance();
 		ContainerInterface container = null;
+
+		EntityGroupInterface entityGroup = (EntityGroup) CacheManager.getObjectFromCache(request, Constants.ENTITYGROUP_INTERFACE);
 
 		String operationMode = formDefinitionForm.getOperationMode();
 		if (operationMode == null && request.getAttribute("operationMode") != null)
@@ -98,46 +99,41 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 		{
 			if (operationMode.equalsIgnoreCase(Constants.ADD_NEW_FORM))
 			{
-				loadFormDefinitionProcessor.populateContainerInformation(container,
-						formDefinitionForm);
+				loadFormDefinitionProcessor.populateContainerInformation(container, formDefinitionForm, entityGroup);
 			}
 			else if (operationMode.equalsIgnoreCase(Constants.EDIT_FORM))
 			{
 				if (containerIdentifier != null)
 				{
-					container = loadFormDefinitionProcessor
-							.getContainerForEditing(containerIdentifier);
+					container = loadFormDefinitionProcessor.getContainerForEditing(containerIdentifier);
 				}
 				else
 				{
 					container = WebUIManager.getCurrentContainer(request);
 				}
-				loadFormDefinitionProcessor.populateContainerInformation(container,
-						formDefinitionForm);
+				loadFormDefinitionProcessor.populateContainerInformation(container, formDefinitionForm, entityGroup);
 			}
 			else if (operationMode.equalsIgnoreCase(Constants.ADD_SUB_FORM_OPR))
 			{
-				loadFormDefinitionProcessor.initializeSubFormAttributes(formDefinitionForm);
+				loadFormDefinitionProcessor.initializeSubFormAttributes(formDefinitionForm, entityGroup);
 			}
 			else if (operationMode.equalsIgnoreCase(Constants.EDIT_SUB_FORM_OPR))
 			{
 				container = WebUIManager.getCurrentContainer(request);
-				loadFormDefinitionProcessor.populateContainerInformation(container,
-						formDefinitionForm);
+				loadFormDefinitionProcessor.populateContainerInformation(container, formDefinitionForm, entityGroup);
 
 				ContainerInterface parentContainer = null;
-				
+
 				String parentContainerName = formDefinitionForm.getCurrentContainerName();
 				if (parentContainerName == null && request.getAttribute("currentContainerName") != null)
 				{
 					parentContainerName = (String) request.getAttribute("currentContainerName");
 					formDefinitionForm.setCurrentContainerName(parentContainerName);
 				}
-				
+
 				if (parentContainerName != null)
 				{
-					parentContainer = (ContainerInterface) CacheManager.getObjectFromCache(request,
-							parentContainerName);
+					parentContainer = (ContainerInterface) CacheManager.getObjectFromCache(request, parentContainerName);
 					populateAssociationInformation(parentContainer, container, formDefinitionForm);
 				}
 			}
@@ -148,18 +144,13 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 			container = WebUIManager.getCurrentContainer(request);
 			if (container != null)
 			{
-				loadFormDefinitionProcessor.populateContainerInformation(container,
-						formDefinitionForm);
+				loadFormDefinitionProcessor.populateContainerInformation(container, formDefinitionForm, entityGroup);
 			}
 		}
-		EntityGroupInterface entityGroup = (EntityGroupInterface) CacheManager.getObjectFromCache(
-				request, Constants.ENTITYGROUP_INTERFACE);
-		ContainerInterface cachedContainer = (ContainerInterface) CacheManager.getObjectFromCache(
-				request, Constants.CONTAINER_INTERFACE);
-		String currentContainerName = (String) CacheManager.getObjectFromCache(request,
-				Constants.CURRENT_CONTAINER_NAME);
-		loadFormDefinitionProcessor.initializeFormAttributes(entityGroup, cachedContainer,
-				currentContainerName, formDefinitionForm);
+
+		ContainerInterface cachedContainer = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+		String currentContainerName = (String) CacheManager.getObjectFromCache(request, Constants.CURRENT_CONTAINER_NAME);
+		loadFormDefinitionProcessor.initializeFormAttributes(entityGroup, cachedContainer, currentContainerName, formDefinitionForm);
 
 		//Added container and its child container into cache.
 		populateChildFormMapInCache(request, cachedContainer);
@@ -170,13 +161,13 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 	 * @param container
 	 * @param formDefinitionForm
 	 */
-	private void populateAssociationInformation(ContainerInterface parentContainer,
-			ContainerInterface childContainer, FormDefinitionForm formDefinitionForm)
+	private void populateAssociationInformation(ContainerInterface parentContainer, ContainerInterface childContainer,
+			FormDefinitionForm formDefinitionForm)
 	{
 		if ((parentContainer != null) && (childContainer != null))
 		{
 			String childContainerId = "";
-			if(childContainer.getId() != null)
+			if (childContainer.getId() != null)
 			{
 				childContainerId = childContainer.getId().toString();
 			}
@@ -184,15 +175,14 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 			{
 				childContainerId = childContainer.getCaption();
 			}
-			AbstractContainmentControlInterface containmentAssociationControl = UserInterfaceiUtility
-					.getAssociationControl(parentContainer, childContainerId + "");
+			AbstractContainmentControlInterface containmentAssociationControl = UserInterfaceiUtility.getAssociationControl(parentContainer,
+					childContainerId + "");
 			if (containmentAssociationControl != null)
 			{
 				AssociationInterface association = null;
 				AbstractAttributeInterface abstractAttributeInterface = (AbstractAttributeInterface) containmentAssociationControl
 						.getBaseAbstractAttribute();
-				if ((abstractAttributeInterface != null)
-						&& (abstractAttributeInterface instanceof AssociationInterface))
+				if ((abstractAttributeInterface != null) && (abstractAttributeInterface instanceof AssociationInterface))
 				{
 					association = (AssociationInterface) abstractAttributeInterface;
 					Cardinality cardinality = association.getTargetRole().getMaximumCardinality();
@@ -213,24 +203,21 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 	 * This method populates the child sub-form of the cached parent Container into Cache.
 	 * @param parentContainer
 	 */
-	private void populateChildFormMapInCache(HttpServletRequest request,
-			ContainerInterface parentContainer)
+	private void populateChildFormMapInCache(HttpServletRequest request, ContainerInterface parentContainer)
 	{
 		if (parentContainer != null)
 		{
 			String containerName = parentContainer.getCaption();
 			CacheManager.addObjectToCache(request, containerName, parentContainer);
 
-			Collection<ControlInterface> controlsCollection = parentContainer
-					.getControlCollection();
+			Collection<ControlInterface> controlsCollection = parentContainer.getControlCollection();
 			if ((controlsCollection != null) || (!controlsCollection.isEmpty()))
 			{
 				for (ControlInterface control : controlsCollection)
 				{
 					if ((control != null) && (control instanceof ContainmentAssociationControl))
 					{
-						ContainerInterface childContainer = ((ContainmentAssociationControl) control)
-								.getContainer();
+						ContainerInterface childContainer = ((ContainmentAssociationControl) control).getContainer();
 						populateChildFormMapInCache(request, childContainer);
 					}
 				}

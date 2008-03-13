@@ -8,6 +8,7 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CategoryAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
@@ -100,7 +101,7 @@ public interface CategoryHelperInterface
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public void addControl(EntityInterface entity, String attributeName, ContainerInterface container, ControlEnum controlValue,
+	public ControlInterface addControl(EntityInterface entity, String attributeName, ContainerInterface container, ControlEnum controlValue,
 			String controlCaption, List<String>... permissibleValues) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**

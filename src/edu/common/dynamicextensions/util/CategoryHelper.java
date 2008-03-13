@@ -106,7 +106,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.categoryManager.CategoryHelperInterface#addControl(edu.common.dynamicextensions.domaininterface.AttributeInterface, edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface, edu.common.dynamicextensions.categoryManager.CategoryHelperInterface.ControlEnum, java.util.List<edu.common.dynamicextensions.domaininterface.PermissibleValueInterface>[])
 	 */
-	public void addControl(EntityInterface entity, String attributeName, ContainerInterface container, ControlEnum controlValue,
+	public ControlInterface addControl(EntityInterface entity, String attributeName, ContainerInterface container, ControlEnum controlValue,
 			String controlCaption, List<String>... permissibleValueList) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		CategoryAttributeInterface categoryAttribute = DomainObjectFactory.getInstance().createCategoryAttribute();
@@ -149,6 +149,7 @@ public class CategoryHelper implements CategoryHelperInterface
 
 		categoryEntity.addCategoryAttribute(categoryAttribute);
 		categoryAttribute.setCategoryEntity(categoryEntity);
+		return control;
 	}
 
 	/* (non-Javadoc)

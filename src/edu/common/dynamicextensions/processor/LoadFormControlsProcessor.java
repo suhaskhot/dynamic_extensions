@@ -370,8 +370,13 @@ public class LoadFormControlsProcessor
 	{
 		ArrayList<NameValueBean> groupNamesList = new ArrayList<NameValueBean>();
 		EntityGroupInterface entityGroup = ((Entity) container.getAbstractEntity()).getEntityGroup();
-		NameValueBean groupName = new NameValueBean(entityGroup.getName(), entityGroup.getId());
-		groupNamesList.add(groupName);
+		NameValueBean groupName = null;
+
+		if (entityGroup.getId() != null)
+		{
+			groupName = new NameValueBean(entityGroup.getName(), entityGroup.getId());
+			groupNamesList.add(groupName);
+		}
 
 		DynamicExtensionsUtility.sortNameValueBeanListByName(groupNamesList);
 		return groupNamesList;

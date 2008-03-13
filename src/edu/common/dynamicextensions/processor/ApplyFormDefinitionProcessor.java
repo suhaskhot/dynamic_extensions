@@ -147,14 +147,14 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsSystemException 
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	private ContainerInterface createTargetEntityContainer(FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException,
+	private ContainerInterface createTargetEntityContainer(FormDefinitionForm formDefinitionForm, EntityGroupInterface entityGroup) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
 		//validate container name b4 creating it
 		ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
 		DynamicExtensionsUtility.validateName(formDefinitionForm.getFormName());
 		ContainerInterface containerInterface = containerProcessor.createContainer();
-		containerProcessor.populateContainerInterface(containerInterface, formDefinitionForm);
+		containerProcessor.populateContainer(containerInterface, formDefinitionForm, entityGroup);
 
 		//Add entity
 		EntityProcessor entityProcessor = EntityProcessor.getInstance();
@@ -195,13 +195,30 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private ContainerInterface getTargetEntityContainer(String targetContainerId) throws DynamicExtensionsSystemException,
+	private ContainerInterface getTargetEntityContainer(String targetContainerId, EntityGroupInterface entityGroup) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
 		ContainerInterface targetContainer = null;
 		if ((targetContainerId != null) && (!targetContainerId.trim().equals("")))
 		{
-			targetContainer = DynamicExtensionsUtility.getContainerByIdentifier(targetContainerId);
+			for (EntityInterface entity : entityGroup.getEntityCollection())
+			{
+				Collection<ContainerInterface> containerCollection = entity.getContainerCollection();
+				for (ContainerInterface currentContainer : containerCollection)
+				{
+					if (currentContainer.getId() != null)
+					{
+						if (currentContainer.getId().toString().equals(targetContainerId))
+						{
+							targetContainer = currentContainer;
+						}
+					}
+				}
+			}
+			
+			
+			
+			//targetContainer = DynamicExtensionsUtility.getContainerByIdentifier(targetContainerId);
 		}
 		return targetContainer;
 	}
@@ -255,7 +272,7 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public ContainerInterface getSubFormContainer(FormDefinitionForm formDefinitionForm, ContainerInterface mainFormContainer)
+	public ContainerInterface getSubFormContainer(FormDefinitionForm formDefinitionForm, ContainerInterface mainFormContainer, EntityGroupInterface entityGroup)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ContainerInterface targetEntityContainer = null;
@@ -274,7 +291,7 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 				targetEntityContainer = getSelectedContainer(mainFormContainer, selectedContainerId);
 				if (targetEntityContainer == null)
 				{
-					targetEntityContainer = getTargetEntityContainer(formDefinitionForm.getSelectedObjectId());
+					targetEntityContainer = getTargetEntityContainer(formDefinitionForm.getSelectedObjectId(), entityGroup);
 					List<ContainerInterface> childContainerList = getAllChildContainers(mainFormContainer);
 					updateReferences(targetEntityContainer, childContainerList);
 
@@ -284,7 +301,7 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 			}
 			else if ((createAs != null) && (createAs.equals(ProcessorConstants.CREATE_AS_NEW)))
 			{
-				targetEntityContainer = createTargetEntityContainer(formDefinitionForm);
+				targetEntityContainer = createTargetEntityContainer(formDefinitionForm, entityGroup);
 			}
 		}
 		return targetEntityContainer;

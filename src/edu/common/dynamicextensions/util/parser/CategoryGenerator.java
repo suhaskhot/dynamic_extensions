@@ -6,8 +6,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -21,6 +23,7 @@ import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.CategoryHelper;
@@ -44,6 +47,10 @@ public class CategoryGenerator extends CSVFileReader
 
 	private static final String PERMISSIBLE_VALUES_FILE = "Permissible_Values_File";
 
+	private static final String SET = "set";
+
+	private static final String OPTIONS = "options";
+
 	/**
 	 * @param filePath
 	 * @throws DynamicExtensionsSystemException
@@ -53,7 +60,6 @@ public class CategoryGenerator extends CSVFileReader
 		super(filePath);
 	}
 
-	
 	/**
 	 * @param string
 	 * @return
@@ -284,7 +290,7 @@ public class CategoryGenerator extends CSVFileReader
 
 				//5: get the selected attributes and create the controls for them 
 				String displyLabel = null;
-				String currentEntityName =null;
+				String currentEntityName = null;
 				while ((nextLine = getNextLine(reader)) != null)
 				{
 					if (FORM_DEFINITION.equals(nextLine[0]))
@@ -305,10 +311,12 @@ public class CategoryGenerator extends CSVFileReader
 					if (nextLine[0].contains("subcategory:"))
 					{
 						String sourceEntityName = nextLine[0].split(":")[0];
-						if(getContainer(containerCollection, sourceEntityName) == null)
+						if (getContainer(containerCollection, sourceEntityName) == null)
 						{
-							containerCollection.add(createCategoryEntityAndContainer
-									(entityGroup.getEntityByName(sourceEntityName), displyLabel));
+							entityInterface = getEntity(sourceEntityName, entityGroup);
+							containerInterface = createCategoryEntityAndContainer(entityInterface, displyLabel, 
+									containerCollection, entityNamelist);
+							containerCollection.add(containerInterface);
 						}
 						ContainerInterface sourceContainer = getContainer(containerCollection, sourceEntityName);
 
@@ -316,11 +324,10 @@ public class CategoryGenerator extends CSVFileReader
 						ContainerInterface targetContainer = getContainer(containerCollection, targetEntityName);
 
 						String multiplicity = nextLine[0].split(":")[3];
-						
-						checkForNullRefernce(associationNamesMap.get(targetEntityName), 
-								"Line No:"+lineNumber+" Does not found entities in the path for the category entity "+
-								targetEntityName);
-						
+
+						checkForNullRefernce(associationNamesMap.get(targetEntityName), "Line No:" + lineNumber
+								+ " Does not found entities in the path for the category entity " + targetEntityName);
+
 						categoryHelper.associateCategoryContainers(sourceContainer, targetContainer, associationNamesMap.get(targetEntityName),
 								getMultiplicityInNumbers(multiplicity));
 
@@ -331,40 +338,37 @@ public class CategoryGenerator extends CSVFileReader
 						if (!entityNamelist.contains(getEntityName(nextLine)))
 						{
 							currentEntityName = getEntityName(nextLine);
-							entityInterface = entityGroup.getEntityByName(currentEntityName);
-
-							checkForNullRefernce(entityInterface, "Entity with name " + currentEntityName + " at line " + lineNumber
-									+ " does not exist");
-
-							entityNamelist.add(currentEntityName);
-
-							containerInterface = createCategoryEntityAndContainer(entityInterface, displyLabel);
-							containerCollection.add(containerInterface);
+							entityInterface = getEntity(currentEntityName, entityGroup);
+							containerInterface = createCategoryEntityAndContainer(entityInterface,
+									displyLabel,containerCollection,entityNamelist);							
+							
 						}
 
 						//add control to the container
 						List<String> permissibleValues = getPermissibleValues(nextLine);
 
+						ControlInterface control;
 						if (permissibleValues != null)
 						{
-							categoryHelper.addControl(entityInterface, getAttributeName(nextLine), containerInterface, ControlEnum
+							control = categoryHelper.addControl(entityInterface, getAttributeName(nextLine), containerInterface, ControlEnum
 									.get(getControlType(nextLine)), getControlCaption(nextLine), permissibleValues);
 						}
 						else
 						{
-							checkForNullRefernce(ControlEnum.get(getControlType(nextLine)),"Line No:"+lineNumber
-									+" Illegal control type "+getControlType(nextLine));
-							categoryHelper.addControl(entityInterface, getAttributeName(nextLine), containerInterface, ControlEnum
+							checkForNullRefernce(ControlEnum.get(getControlType(nextLine)), "Line No:" + lineNumber + " Illegal control type "
+									+ getControlType(nextLine));
+							control = categoryHelper.addControl(entityInterface, getAttributeName(nextLine), containerInterface, ControlEnum
 									.get(getControlType(nextLine)), getControlCaption(nextLine));
 						}
+
+						setControlsOptions(control, nextLine);
 
 					}
 				}
 
-				
 				ContainerInterface rootContainer = getRootContainer(containerCollection);
 				categoryHelper.setRootCategoryEntity(rootContainer, category);
-		
+
 				categoryList.add(category);
 			}
 
@@ -380,6 +384,22 @@ public class CategoryGenerator extends CSVFileReader
 		}
 		return categoryList;
 
+	}
+
+	/**
+	 * @param entityName
+	 * @param entityGroup
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private EntityInterface getEntity(String entityName, EntityGroupInterface entityGroup) throws DynamicExtensionsSystemException
+	{
+		EntityInterface entityInterface = entityGroup.getEntityByName(entityName);
+		checkForNullRefernce(entityInterface, "Entity with name " + entityName + " at line " + lineNumber
+				+ " does not exist");
+		
+		return entityInterface;
+		
 	}
 
 	/**
@@ -429,12 +449,17 @@ public class CategoryGenerator extends CSVFileReader
 		return container;
 	}
 
+
 	/**
 	 * @param entityInterface
 	 * @param displyLabel
+	 * @param containerCollection
+	 * @param entityNameList
 	 * @return
+	 * @throws DynamicExtensionsSystemException
 	 */
-	private ContainerInterface createCategoryEntityAndContainer(EntityInterface entityInterface, String displyLabel)
+	private ContainerInterface createCategoryEntityAndContainer(EntityInterface entityInterface, 
+			String displyLabel, Collection<ContainerInterface> containerCollection, List<String> entityNameList) throws DynamicExtensionsSystemException
 	{
 		ContainerInterface containerInterface = null;
 		CategoryHelperInterface categoryHelper = new CategoryHelper();
@@ -448,6 +473,9 @@ public class CategoryGenerator extends CSVFileReader
 		{
 			containerInterface = categoryHelper.createCategoryEntityAndContainer(entityInterface, displyLabel);
 		}
+		
+		entityNameList.add(entityInterface.getName());
+		containerCollection.add(containerInterface);
 		return containerInterface;
 	}
 
@@ -464,19 +492,107 @@ public class CategoryGenerator extends CSVFileReader
 		}
 	}
 
-
-	public static void main(String args[]) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, URISyntaxException,
-			IOException
+	/**
+	 * @param control
+	 * @param nextLine
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private void setControlsOptions(ControlInterface control, String[] nextLine) throws DynamicExtensionsSystemException
 	{
-		CategoryGenerator categoryFileParser = new CategoryGenerator("E:/releases/category files/gcrc.csv");
-		CategoryHelper categoryHelper = new CategoryHelper();
-
-		List<CategoryInterface> list = categoryFileParser.getCategoryList();
-		for (CategoryInterface category : list)
+		try
 		{
-			//categoryHelper.saveCategory(category);
-			System.out.println("saved category " + category.getName());
+			String[] controlOptions = null;
+			for (String string : nextLine)
+			{
+				if (string.startsWith(OPTIONS + "~"))
+				{
+					controlOptions = string.split("~")[1].split(":");
+				}
+			}
+
+			if (controlOptions == null)
+			{
+				return;
+			}
+			for (String optionValue : controlOptions)
+			{
+				String optionString = optionValue.split("=")[0];
+				String methodName = SET + optionString;
+
+				Class[] types = getParameterType(methodName, control);
+				List<Object> values = new ArrayList<Object>();
+				values.add(getFormattedValues(types[0], optionValue.split("=")[1]));
+
+				Method method;
+
+				method = control.getClass().getMethod(methodName, types);
+
+				method.invoke(control, values.toArray());
+
+			}
+		}
+		catch (SecurityException e)
+		{
+			throw new DynamicExtensionsSystemException("Please conatct administartor",e); 
+		}
+		catch (NoSuchMethodException e)
+		{
+			throw new DynamicExtensionsSystemException("Line number:"+lineNumber+"Incorrect option",e);
+		}
+		catch (IllegalArgumentException e)
+		{
+			throw new DynamicExtensionsSystemException("Please conatct administartor",e);
+		}
+		catch (IllegalAccessException e)
+		{
+			throw new DynamicExtensionsSystemException("Please conatct administartor",e);
+		}
+		catch (InvocationTargetException e)
+		{
+			throw new DynamicExtensionsSystemException("Please conatct administartor",e);
+		}
+		catch (InstantiationException e)
+		{
+			throw new DynamicExtensionsSystemException("Please conatct administartor",e);
 		}
 
 	}
+
+	/**
+	 * This meth
+	 * @param methodName
+	 * @param object
+	 * @return
+	 */
+	private Class[] getParameterType(String methodName, Object object)
+	{
+		Class[] parameterTypes = new Class[0];
+		for (Method method : object.getClass().getMethods())
+		{
+			if (methodName.equals(method.getName()))
+			{
+				parameterTypes = method.getParameterTypes();
+			}
+		}
+
+		return parameterTypes;
+	}
+
+	/**
+	 * @param type
+	 * @param string
+	 * @return
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 * @throws NoSuchMethodException 
+	 * @throws SecurityException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 */
+	private Object getFormattedValues(Class type, String string) throws SecurityException, NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+	{
+		Method method = type.getMethod("valueOf", new Class[]{String.class});
+		return method.invoke(type, new Object[]{string});
+	}
+
 }

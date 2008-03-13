@@ -67,7 +67,8 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public void populateContainerInformation(ContainerInterface containerInterface, ContainerUIBeanInterface containerUIBeanInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public void populateContainerInformation(ContainerInterface containerInterface, ContainerUIBeanInterface containerUIBeanInterface,
+			EntityGroupInterface entityGroup) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
 		if (containerInterface == null)
@@ -75,7 +76,7 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 			containerInterface = containerProcessor.createContainer();
 		}
 		populateEntityInformation((EntityInterface) containerInterface.getAbstractEntity(), ((EntityUIBeanInterface) containerUIBeanInterface));
-		containerProcessor.populateContainerUIBeanInterface(containerInterface, containerUIBeanInterface);
+		containerProcessor.populateContainerUIBeanInterface(containerInterface, containerUIBeanInterface, entityGroup);
 	}
 
 	/**
@@ -97,14 +98,14 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public void initializeSubFormAttributes(FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public void initializeSubFormAttributes(FormDefinitionForm formDefinitionForm, EntityGroupInterface entityGroup)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		formDefinitionForm.setDefinedEntitiesTreeXML(getXMLForDefinedEntities());
-		
+
 		ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
-		formDefinitionForm.setFormList(containerProcessor.getFormsList());
-		
+		formDefinitionForm.setFormList(containerProcessor.getFormsList(entityGroup.getId()));
+
 		formDefinitionForm.setParentForm("0");
 	}
 

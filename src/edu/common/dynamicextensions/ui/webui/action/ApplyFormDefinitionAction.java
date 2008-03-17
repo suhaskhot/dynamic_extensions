@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.ui.webui.action;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -357,10 +358,26 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 				Constants.CALLBACK_URL);
 		if (calllbackURL != null && !calllbackURL.equals(""))
 		{
+			List<Long> deletedIdList = (List<Long>) CacheManager.getObjectFromCache(request,
+					WebUIManagerConstants.DELETED_ASSOCIATION_IDS);
+			String associationIds = "";
+			if (deletedIdList != null)
+			{
+				for (int i = 0; i < deletedIdList.size(); i++)
+				{
+					associationIds += deletedIdList.get(i);
+					if (i < deletedIdList.size() - 1)
+					{
+						associationIds += "_";
+					}
+				}
+			}
+
 			ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(
 					request, Constants.CONTAINER_INTERFACE);
 			calllbackURL = calllbackURL + "?" + WebUIManager.getOperationStatusParameterName()
-					+ "=" + webUIManagerConstant ;
+					+ "=" + webUIManagerConstant + "&"
+					+ WebUIManagerConstants.DELETED_ASSOCIATION_IDS + "=" + associationIds;
 			//Fix for bug 5176
 			if(containerInterface != null && containerInterface.getId() != null)
 			{

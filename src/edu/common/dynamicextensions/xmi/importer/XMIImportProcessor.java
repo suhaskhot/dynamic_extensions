@@ -435,7 +435,7 @@ public class XMIImportProcessor
 					generalizations.addAll(generalizationColl);
 				}
 				umlClasses.add(umlClass);
-			}
+			} 
 		}
 	}
 	/**
@@ -1238,7 +1238,7 @@ public class XMIImportProcessor
 					}
 	
 					if (targetAsso.getAssociationDirection().equals(
-							Constants.AssociationDirection.SRC_DESTINATION)
+							Constants.AssociationDirection.SRC_DESTINATION) && originalTargetAssociation != null 
 							&& originalTargetAssociation.getAssociationDirection().equals(
 									Constants.AssociationDirection.BI_DIRECTIONAL))
 					{//We need to remove system generated association if direction has been changed from bi directional to source destination

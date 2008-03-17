@@ -270,7 +270,48 @@ public class DynamicExtensionsUtility
 		}
 		return controlInterface;
 	}
-
+	/**
+	 *
+	 * @param controlCollection
+	 * @param sequenceNumber
+	 * @return
+	 */
+	public static List<Long> getDeletedAssociationIds(ControlInterface[] controlCollection,
+			Integer[] sequenceNumbers)
+	{
+		List<Long> listOfIds = new ArrayList<Long>();
+		boolean isPresent = false;
+		if (controlCollection != null)
+		{
+			for (ControlInterface control : controlCollection)
+			{
+				isPresent = false;
+				if (control instanceof ContainmentAssociationControl)
+				{
+					ContainmentAssociationControl containmentAssociationControl = (ContainmentAssociationControl) control;
+					if (sequenceNumbers != null)
+					{
+						for (Integer sequenceNumber : sequenceNumbers)
+						{
+							if (containmentAssociationControl.getSequenceNumber() != null
+									&& containmentAssociationControl.getSequenceNumber().equals(
+											sequenceNumber))
+							{
+								isPresent = true;
+							}
+						}
+						if (!isPresent)
+						{
+							AssociationInterface associationInterface = (AssociationInterface) containmentAssociationControl
+									.getAbstractAttribute();
+							listOfIds.add(associationInterface.getId());
+						}
+					}
+				}
+			}
+		}
+		return listOfIds;
+	}
 	/**
 	 *
 	 */

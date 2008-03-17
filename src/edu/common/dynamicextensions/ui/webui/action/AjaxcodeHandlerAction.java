@@ -41,6 +41,7 @@ import edu.common.dynamicextensions.ui.util.SemanticPropertyBuilderUtil;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
+import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.beans.NameValueBean;
@@ -231,7 +232,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 				for (AttributeInterface attributeIterator : attributeCollection)
 				{
 					//Added null check for bug 6013
-					if (attributeIterator.getColumnProperties() != null && 
+					if (attributeIterator.getColumnProperties() != null &&
 							attributeIterator.getColumnProperties().getName() != null
 							&& attributeIterator.getColumnProperties().getName().equals(
 									DynamicExtensionsQueryBuilderConstantsInterface.IDENTIFIER))
@@ -264,8 +265,25 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 				{
 					containerInterface.getEntity().addAbstractAttribute(idAttribute);
 				}
+				//Added by Rajesh for removing deleted associations and it's path from path tables.
+				List<Long> deletedIdList = (List<Long>) CacheManager.getObjectFromCache(request,
+						WebUIManagerConstants.DELETED_ASSOCIATION_IDS);
+				List<Long> listOfIds = DynamicExtensionsUtility.getDeletedAssociationIds(
+						oldControlsArray, sequenceNumbers);
+				if (deletedIdList == null)
+				{
+					deletedIdList = listOfIds;
+				}
+				else
+				{
+					deletedIdList.addAll(listOfIds);
+				}
+				CacheManager.addObjectToCache(request,
+						WebUIManagerConstants.DELETED_ASSOCIATION_IDS, deletedIdList);
+//				System.out.println("deletedIdList : " + deletedIdList.size());
 			}
 		}
+
 		System.out.println("Coontrols Colln : ");
 		Collection<ControlInterface> controlCollection = containerInterface.getControlCollection();
 		for (ControlInterface control : controlCollection)

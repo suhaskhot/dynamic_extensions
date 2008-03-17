@@ -6,6 +6,8 @@
 
 package edu.common.dynamicextensions.ui.webui.action;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -53,7 +55,7 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 			{
 				ControlsUtility.reinitializeSequenceNumbers(currentContainerInterface.getControlCollection(),controlsForm.getControlsSequenceNumbers());
 			}
-			
+
 			//Call container processor save method
 			ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
 			String formName = "";
@@ -67,8 +69,26 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 			String callbackURL = (String) CacheManager.getObjectFromCache(request, Constants.CALLBACK_URL);
 			if (callbackURL != null && !callbackURL.equals(""))
 			{
-				callbackURL = callbackURL + "?" + WebUIManager.getOperationStatusParameterName() + "=" + WebUIManagerConstants.SUCCESS + "&"
-						+ WebUIManager.getContainerIdentifierParameterName() + "=" + containerInterface.getId().toString();
+				List<Long> deletedIdList = (List<Long>) CacheManager.getObjectFromCache(request,
+						WebUIManagerConstants.DELETED_ASSOCIATION_IDS);
+				String associationIds = "";
+				if (deletedIdList != null)
+				{
+					for (int i = 0; i < deletedIdList.size(); i++)
+					{
+						associationIds += deletedIdList.get(i);
+						if (i < deletedIdList.size() - 1)
+						{
+							associationIds += "_";
+						}
+					}
+				}
+				callbackURL = callbackURL + "?" + WebUIManager.getOperationStatusParameterName()
+						+ "=" + WebUIManagerConstants.SUCCESS + "&"
+						+ WebUIManager.getContainerIdentifierParameterName() + "="
+						+ containerInterface.getId().toString() + "&"
+						+ WebUIManagerConstants.DELETED_ASSOCIATION_IDS + "=" + associationIds;
+
 				CacheManager.clearCache(request);
 				response.sendRedirect(callbackURL);
 				return null;
@@ -90,7 +110,7 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 	/**
 	 * Get messages for successful save of entity
 	 * @param formName formname
-	 * @return ActionMessages messages 
+	 * @return ActionMessages messages
 	 */
 	private ActionMessages getSuccessMessage(String formName)
 	{

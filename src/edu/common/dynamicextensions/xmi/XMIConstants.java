@@ -40,6 +40,8 @@ public class XMIConstants
 	public static final String TAGGED_VALUE_DATASOURCE ="DataSource";
 	public static final String TAGGED_VALUE_DEPENDENCY = "Dependency";
 	
+	public static final String TAGGED_VALUE_MAX_LENGTH = "MaxLength";
+	
 	//Package & model name
 	public static final String PACKAGE_NAME_LOGICAL_VIEW ="Logical View";
 	public static final String PACKAGE_NAME_LOGICAL_MODEL ="Logical Model";

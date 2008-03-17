@@ -1,4 +1,3 @@
-
 package edu.common.dynamicextensions.xmi.importer;
 
 import java.util.ArrayList;
@@ -113,7 +112,8 @@ public class XMIImportProcessor
 	private Collection<ContainerInterface> retrievedContainerList = new ArrayList<ContainerInterface>();
 
 	private List<ContainerInterface> mainContainerList = new ArrayList<ContainerInterface>();
-
+	
+	private Map<AttributeInterface, Integer> attrNameVsMaxLen = new HashMap<AttributeInterface,Integer>();
 	/**
 	 * Default constructor
 	 *
@@ -420,6 +420,13 @@ public class XMIImportProcessor
 								attribute.setName(umlAttribute.getName());
 								//					attribute.setDescription(umlAttribute.getTaggedValue().getDescription());
 								//					setSemanticMetadata(attribute, umlAttribute.getSemanticMetadata());
+								Collection<TaggedValue> taggedValueColl = umlAttribute.getTaggedValue();
+								String max_length = getTaggedValue(taggedValueColl, XMIConstants.TAGGED_VALUE_MAX_LENGTH);
+								if(max_length!=null && !max_length.equals(""))
+								{
+									attrNameVsMaxLen.put(attribute, Integer.parseInt(max_length));
+								}
+								
 								entity.addAttribute(attribute);
 							}
 						}
@@ -1484,8 +1491,14 @@ public class XMIImportProcessor
 				((TextFieldInterface) controlInterface).setColumns(10);
 				if (attributeTypeInformation instanceof StringAttributeTypeInformation)
 				{
+					Integer maxLen = attrNameVsMaxLen.get(attributeInterface);
+					if(maxLen==null)
+					{
+						maxLen=100;
+					}
+					
 					((StringAttributeTypeInformation) attributeTypeInformation)
-							.setSize(new Integer(10));
+							.setSize(new Integer(maxLen));
 					implicitRuleList = configurationsFactory.getAllImplicitRules(
 							ProcessorConstants.TEXT_CONTROL, ProcessorConstants.DATATYPE_STRING);
 				}

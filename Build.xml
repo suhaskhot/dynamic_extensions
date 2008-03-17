@@ -237,6 +237,7 @@
 	    				<include name="**/ui/interfaces/*.class"/>
 	    				<include name="**/ui/util/*.class"/>
 	    				<include name="**/processor/**/*.class"/>
+		    			<include name="**/ui/webui/util/*.class"/>
 		    			<exclude name="**/*Test*.class"/>
 
 	   		    </fileset>    	  

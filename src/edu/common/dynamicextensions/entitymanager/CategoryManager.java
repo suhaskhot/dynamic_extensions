@@ -412,7 +412,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			List<AssociationInterface> sortedAssociationList)
 	{
 		Set<AbstractAttributeInterface> set = entityMap.keySet();
-		List<Map<AbstractAttributeInterface, Object>> resultList = null;
+		List<Map<AbstractAttributeInterface, Object>> resultList = new ArrayList<Map<AbstractAttributeInterface,Object>>();
 
 		for (AbstractAttributeInterface key : set)
 		{

@@ -34,13 +34,13 @@ public abstract class AbstractContainmentControl extends Control implements Abst
 	{
 		ContainerInterface containerInterface = this.getContainer();
 		this.setIsSubControl(true);
-		  if (this.getParentContainer().showAssociationControlsAsLink)
-          {
-              String link = containerInterface.generateLink(containerInterface);
-              
-              link = UserInterfaceiUtility.getControlHTMLAsARow(this, link);
-              return link;
-          }
+		
+		if (this.getParentContainer().getShowAssociationControlsAsLink() == true)
+		{
+			String link = containerInterface.generateLink(getParentContainer());
+			link = UserInterfaceiUtility.getControlHTMLAsARow(this, link);
+			return link;
+		}
          
 		String subContainerHTML = "";
 		if (isCardinalityOneToMany())
@@ -88,6 +88,7 @@ public abstract class AbstractContainmentControl extends Control implements Abst
 		}
 		return subContainerHTML;
 	}
+
 
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface#generateLinkHTML()

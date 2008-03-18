@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -395,7 +394,7 @@ public class CategoryGenerator extends CSVFileReader
 					}
 				}
 
-				ContainerInterface rootContainer = getRootContainer(containerCollection, paths);
+				ContainerInterface rootContainer = getRootContainer(containerCollection, associationNamesMap, paths);
 				
 				categoryHelper.setRootCategoryEntity(rootContainer, category);
 
@@ -464,12 +463,13 @@ public class CategoryGenerator extends CSVFileReader
 
 	/**
 	 * @param containerCollection
+	 * @param absolutePath 
 	 * @return
 	 * @throws DynamicExtensionsSystemException 
 	 * @throws DynamicExtensionsApplicationException 
 	 */
 	private ContainerInterface getRootContainer(List<ContainerInterface> containerCollection, 
-			Map<String, List<String>> paths) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+			Map<String, List<String>> paths, Map<String, List<String>> absolutePath) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		
 		
@@ -484,9 +484,9 @@ public class CategoryGenerator extends CSVFileReader
 			}
 		}
 		
-		for(String entityName: paths.keySet())
+		for(String entityName: absolutePath.keySet())
 		{
-			if(paths.get(entityName).size() == 1)
+			if(absolutePath.get(entityName).size() == 1)
 			{
 				CategoryEntityInterface categoryEntityInterface = (CategoryEntityInterface) 
 				rootContainer.getAbstractEntity();
@@ -676,18 +676,4 @@ public class CategoryGenerator extends CSVFileReader
 		return method.invoke(type, new Object[]{string});
 	}
 
-	public static void main(String args[]) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, URISyntaxException,
-			IOException
-	{
-		CategoryGenerator categoryFileParser = new CategoryGenerator("E:/ClinPortal/model from rakesh/category_breastContactInfo.csv");
-		CategoryHelper categoryHelper = new CategoryHelper();
-
-		List<CategoryInterface> list = categoryFileParser.getCategoryList();
-		for (CategoryInterface category : list)
-		{
-			categoryHelper.saveCategory(category);
-			System.out.println("saved category " + category.getName());
-		}
-
-	}
 }

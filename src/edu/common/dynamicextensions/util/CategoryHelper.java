@@ -230,6 +230,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	{
 		targetCategoryEntity.setPath(path);
 		sourceCategoryEntity.addChildCategory(targetCategoryEntity);
+		targetCategoryEntity.setParentCategoryEntity(sourceCategoryEntity);
 	}
 
 	/**
@@ -282,6 +283,10 @@ public class CategoryHelper implements CategoryHelperInterface
 	private ContainerInterface createContainer(AbstractEntityInterface abstractEntity, String caption)
 	{
 		ContainerInterface container = DomainObjectFactory.getInstance().createContainer();
+		if(caption == null)
+		{
+			caption = abstractEntity.getName() + " category container";
+		}
 		container.setCaption(caption);
 		container.setAbstractEntity(abstractEntity);
 		container.setMainTableCss("formRequiredLabel");

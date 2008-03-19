@@ -176,8 +176,11 @@
     </query>
 
 	<query name="getCategoryContainerIdFromHookEntiy">
-	 select new edu.wustl.common.beans.NameValueBean(container.caption , container.id) 
-	   from edu.common.dynamicextensions.domain.userinterface.Container container   
+	  select new edu.wustl.common.beans.NameValueBean(catColl.name , container.id) 
+	   from edu.common.dynamicextensions.domain.userinterface.Container container  , 
+         edu.common.dynamicextensions.domain.CategoryEntity catEntity 	
+		 join catEntity.categoryCollection as catColl           
+
 		   where container.abstractEntity.id in
 		   (
 		      select category.rootCategoryElement.id
@@ -188,7 +191,8 @@
 						       from Association association
 							       	where association.entity.id = ?
 						)						
-			)   
+			)  
+			and catEntity.containerCollection.id=container.id
 	</query>
 
 	<query name="getDynamicTableName">

@@ -40,8 +40,8 @@ public class QueryBuilderFactory
 		{
 			queryBuilder = new DynamicExtensionPostGreSQLQueryBuilder();
 		}
-		//return queryBuilder;
-        return new DynamicExtensionMySQLQueryBuilder();
+		
+		return queryBuilder;
 	}
 
 }

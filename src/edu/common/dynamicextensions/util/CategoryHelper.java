@@ -200,7 +200,7 @@ public class CategoryHelper implements CategoryHelperInterface
 				+ " to " + targetCategoryEntity.getName() + " category association");
 
 		CategoryAssociationControlInterface categoryAssociationControl = createCategoryAssociationControl(sourceContainer, targetContainer,
-				categoryAssociation, sourceCategoryEntity.getName() + "-" + targetCategoryEntity.getName() + " association control");
+				categoryAssociation, targetContainer.getCaption());
 
 		return categoryAssociationControl;
 	}

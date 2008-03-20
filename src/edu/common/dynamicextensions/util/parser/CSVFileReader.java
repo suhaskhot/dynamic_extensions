@@ -3,16 +3,13 @@ package edu.common.dynamicextensions.util.parser;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
 import au.com.bytecode.opencsv.CSVReader;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
-public class CSVFileReader
+public class CSVFileReader extends edu.common.dynamicextensions.util.FileReader
 {
-	protected String fileName;
+	
 
 	protected CSVReader reader;
 
@@ -21,35 +18,13 @@ public class CSVFileReader
 	/**
 	 * @param filePath
 	 * @throws DynamicExtensionsSystemException
+	 * @throws FileNotFoundException 
 	 */
-	public CSVFileReader(String filePath) throws DynamicExtensionsSystemException
+	public CSVFileReader(String filePath) throws DynamicExtensionsSystemException, FileNotFoundException
 	{
-		this.fileName = filePath;
-		this.fileName = this.fileName.replace(" ", "%20");
-		try
-		{
-			reader = new CSVReader(new FileReader(getSystemIndependantFilePath(this.fileName)));
-		}
-		catch (FileNotFoundException e)
-		{
-			throw new DynamicExtensionsSystemException("Error while openig file " + filePath, e);
-		}
-	}
-
-	/**
-	 * @return
-	 */
-	public String getFileName()
-	{
-		return fileName;
-	}
-
-	/**
-	 * @param fileName
-	 */
-	public void setFileName(String fileName)
-	{
-		this.fileName = fileName;
+		super(filePath);
+		reader =  new CSVReader(new FileReader(filePath));
+		
 	}
 
 	/**
@@ -89,7 +64,7 @@ public class CSVFileReader
 	 * @return
 	 * @throws IOException
 	 */
-	protected String[] getNextLine(CSVReader reader) throws IOException
+	public String[] getNextLine() throws IOException
 	{
 		String[] nextLine;
 		//To skip the blank lines
@@ -103,25 +78,6 @@ public class CSVFileReader
 		return nextLine ;
 	}
 	
-	/**
-	 * @param path
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 */
-	protected String getSystemIndependantFilePath(String path) throws DynamicExtensionsSystemException
-	{
-		URI uri = null;
-		try
-		{
-			uri = new URI("file:///" + path);
-		}
-		catch (URISyntaxException e)
-		{
-			throw new DynamicExtensionsSystemException("Error while openig CSV file  " + path, e);
-		}
-		return uri.getPath();
-	}
-
 
 
 }

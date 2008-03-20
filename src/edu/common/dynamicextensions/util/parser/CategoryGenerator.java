@@ -36,6 +36,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.CategoryHelper;
 import edu.common.dynamicextensions.util.CategoryHelperInterface;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
+import edu.common.dynamicextensions.util.FileReader;
 import edu.common.dynamicextensions.util.CategoryHelperInterface.ControlEnum;
 
 /**
@@ -43,17 +44,19 @@ import edu.common.dynamicextensions.util.CategoryHelperInterface.ControlEnum;
  * This class creates the catgory/categories defined in 
  * the csv file.
  */
-public class CategoryGenerator extends CSVFileReader
+public class CategoryGenerator
 {
+	private CSVFileReader reader;
 	private static final String SET = "set";
-	
+
 	/**
 	 * @param filePath
 	 * @throws DynamicExtensionsSystemException
+	 * @throws FileNotFoundException 
 	 */
-	public CategoryGenerator(String filePath) throws DynamicExtensionsSystemException
+	public CategoryGenerator(String filePath) throws DynamicExtensionsSystemException, FileNotFoundException
 	{
-		super(filePath);
+		reader = new CSVFileReader(filePath);
 	}
 
 	/**
@@ -93,11 +96,11 @@ public class CategoryGenerator extends CSVFileReader
 		Set<String> entityNames = paths.keySet();
 		for (String entityName : entityNames)
 		{
-			
-			List<String> list = getRelativePath(paths.get(entityName),listOfPath);
+
+			List<String> list = getRelativePath(paths.get(entityName), listOfPath);
 			List<String> assocaitionList = new ArrayList<String>();
 			Iterator<String> entityNamesIterator = list.iterator();
-			
+
 			String sourceEntityName = entityNamesIterator.next();
 			EntityInterface sourcEntity = entityGroup.getEntityByName(sourceEntityName);
 			while (entityNamesIterator.hasNext())
@@ -126,11 +129,11 @@ public class CategoryGenerator extends CSVFileReader
 	 */
 	private List<String> getRelativePath(List<String> entityNameList, Map<String, List<String>> pathMap)
 	{
-		List<String> newEntityNameList = new  ArrayList<String>();
+		List<String> newEntityNameList = new ArrayList<String>();
 		String lastProcessedEntityName = null;
-		for(String entityName: entityNameList)
+		for (String entityName : entityNameList)
 		{
-			if(pathMap.get(entityName)== null)
+			if (pathMap.get(entityName) == null)
 			{
 				newEntityNameList.add(entityName);
 			}
@@ -139,11 +142,11 @@ public class CategoryGenerator extends CSVFileReader
 				lastProcessedEntityName = entityName;
 			}
 		}
-		if(lastProcessedEntityName != null && !newEntityNameList.contains(lastProcessedEntityName))
+		if (lastProcessedEntityName != null && !newEntityNameList.contains(lastProcessedEntityName))
 		{
-			newEntityNameList.add(0, lastProcessedEntityName);	
+			newEntityNameList.add(0, lastProcessedEntityName);
 		}
-		
+
 		return newEntityNameList;
 	}
 
@@ -243,10 +246,10 @@ public class CategoryGenerator extends CSVFileReader
 		}
 		else if (PERMISSIBLE_VALUES_FILE.equals(permissibleValueKey))
 		{
-			String filePath = tempString[1];
+			String filePath = FileReader.getSystemIndependantFilePath(tempString[1]);
 			try
 			{
-				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(getSystemIndependantFilePath(filePath))));
+				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
 				String line = null;
 				while ((line = reader.readLine()) != null)
 				{
@@ -279,7 +282,7 @@ public class CategoryGenerator extends CSVFileReader
 		{
 			String[] nextLine = null;
 
-			while ((nextLine = getNextLine(reader)) != null)
+			while ((nextLine = reader.getNextLine()) != null)
 			{
 				//first line in the categopry file is Category_Definition
 				if (FORM_DEFINITION.equals(nextLine[0]))
@@ -292,14 +295,14 @@ public class CategoryGenerator extends CSVFileReader
 				CategoryInterface category = categoryHelper.createCategory(nextLine[0]);
 
 				//2:read the entity group
-				nextLine = getNextLine(reader);
+				nextLine = reader.getNextLine();
 				EntityGroupInterface entityGroup = DynamicExtensionsUtility.retrieveEntityGroup(nextLine[0].trim());
 
-				checkForNullRefernce(entityGroup, "Entity group with name " + nextLine[0].trim() + " at line number " + lineNumber
+				checkForNullRefernce(entityGroup, "Entity group with name " + nextLine[0].trim() + " at line number " + reader.getLineNumber()
 						+ " does not exist");
 
 				//3:get the path represneted by ordered entity names
-				String[] entityNamePath = getNextLine(reader);
+				String[] entityNamePath = reader.getNextLine();
 				Map<String, List<String>> paths = getPaths(entityNamePath);
 
 				//4:get the association names list
@@ -316,19 +319,18 @@ public class CategoryGenerator extends CSVFileReader
 				String currentEntityName = null;
 				Boolean showCaption = null;
 
-				while ((nextLine = getNextLine(reader)) != null)
+				while ((nextLine = reader.getNextLine()) != null)
 				{
 					if (FORM_DEFINITION.equals(nextLine[0]))
 					{
 						break;
 					}
-					if(nextLine[0].startsWith(DISPLAY_LABLE))
+					if (nextLine[0].startsWith(DISPLAY_LABLE))
 					{
 						displyLabel = nextLine[0].split(":")[1];
 						showCaption = new Boolean(nextLine[1].split("=")[1]);
-						nextLine = getNextLine(reader);
+						nextLine = reader.getNextLine();
 					}
-					
 
 					if (nextLine[0].contains("subcategory:"))
 					{
@@ -348,13 +350,13 @@ public class CategoryGenerator extends CSVFileReader
 
 						String multiplicity = nextLine[0].split(":")[2];
 
-						List<String> associationNameList = getAssociationNameList(associationNamesMap,getContainer(
-								containerCollection,targetContainerCaption)); 
-						checkForNullRefernce(associationNameList, "Line No:" + lineNumber+ " Does not found entities in the path " +
-										"for the category entity " + targetContainerCaption);
+						List<String> associationNameList = getAssociationNameList(associationNamesMap, getContainer(containerCollection,
+								targetContainerCaption));
+						checkForNullRefernce(associationNameList, "Line No:" + reader.getLineNumber() + " Does not found entities in the path "
+								+ "for the category entity " + targetContainerCaption);
 
-						categoryHelper.associateCategoryContainers(sourceContainer, targetContainer, 
-								associationNameList,getMultiplicityInNumbers(multiplicity));
+						categoryHelper.associateCategoryContainers(sourceContainer, targetContainer, associationNameList,
+								getMultiplicityInNumbers(multiplicity));
 
 					}
 					else
@@ -373,8 +375,8 @@ public class CategoryGenerator extends CSVFileReader
 
 						ControlInterface control;
 						String attributeName = getAttributeName(nextLine);
-						checkForNullRefernce(entityInterface.getAttributeByName(attributeName), "Line Number:" + lineNumber + " attribute with name "
-								+ attributeName + " in the entity " + entityInterface.getName() + " does not exist!");
+						checkForNullRefernce(entityInterface.getAttributeByName(attributeName), "Line Number:" + reader.getLineNumber()
+								+ " attribute with name " + attributeName + " in the entity " + entityInterface.getName() + " does not exist!");
 
 						if (permissibleValues != null)
 						{
@@ -383,8 +385,8 @@ public class CategoryGenerator extends CSVFileReader
 						}
 						else
 						{
-							checkForNullRefernce(ControlEnum.get(getControlType(nextLine)), "Line No:" + lineNumber + " Illegal control type "
-									+ getControlType(nextLine));
+							checkForNullRefernce(ControlEnum.get(getControlType(nextLine)), "Line No:" + reader.getLineNumber()
+									+ " Illegal control type " + getControlType(nextLine));
 							control = categoryHelper.addControl(entityInterface, attributeName, containerInterface, ControlEnum
 									.get(getControlType(nextLine)), getControlCaption(nextLine));
 						}
@@ -395,7 +397,7 @@ public class CategoryGenerator extends CSVFileReader
 				}
 
 				ContainerInterface rootContainer = getRootContainer(containerCollection, associationNamesMap, paths);
-				
+
 				categoryHelper.setRootCategoryEntity(rootContainer, category);
 
 				categoryList.add(category);
@@ -409,7 +411,7 @@ public class CategoryGenerator extends CSVFileReader
 		}
 		catch (IOException e)
 		{
-			throw new DynamicExtensionsSystemException("Error redaring CSV file " + fileName + " at line " + lineNumber, e);
+			throw new DynamicExtensionsSystemException("Error redaring CSV file " + reader.getFilePath() + " at line " + reader.getLineNumber(), e);
 		}
 		return categoryList;
 
@@ -420,12 +422,11 @@ public class CategoryGenerator extends CSVFileReader
 	 * @param containerInterface
 	 * @return
 	 */
-	private List<String> getAssociationNameList(Map<String, List<String>> associationNamesMap, 
-			ContainerInterface containerInterface)
+	private List<String> getAssociationNameList(Map<String, List<String>> associationNamesMap, ContainerInterface containerInterface)
 	{
 		CategoryEntityInterface categoryEntityInterface = (CategoryEntityInterface) containerInterface.getAbstractEntity();
 		return associationNamesMap.get(categoryEntityInterface.getEntity().getName());
-		
+
 	}
 
 	/**
@@ -437,7 +438,7 @@ public class CategoryGenerator extends CSVFileReader
 	private EntityInterface getEntity(String entityName, EntityGroupInterface entityGroup) throws DynamicExtensionsSystemException
 	{
 		EntityInterface entityInterface = entityGroup.getEntityByName(entityName);
-		checkForNullRefernce(entityInterface, "Entity with name " + entityName + " at line " + lineNumber + " does not exist");
+		checkForNullRefernce(entityInterface, "Entity with name " + entityName + " at line " + reader.getLineNumber() + " does not exist");
 
 		return entityInterface;
 
@@ -468,44 +469,40 @@ public class CategoryGenerator extends CSVFileReader
 	 * @throws DynamicExtensionsSystemException 
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	private ContainerInterface getRootContainer(List<ContainerInterface> containerCollection, 
-			Map<String, List<String>> paths, Map<String, List<String>> absolutePath) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private ContainerInterface getRootContainer(List<ContainerInterface> containerCollection, Map<String, List<String>> paths,
+			Map<String, List<String>> absolutePath) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		
-		
+
 		ContainerInterface rootContainer = null;
-		for(ContainerInterface containerInterface: containerCollection)
+		for (ContainerInterface containerInterface : containerCollection)
 		{
 			CategoryEntityInterface categoryEntityInterface = (CategoryEntityInterface) containerInterface.getAbstractEntity();
-			if(categoryEntityInterface.getParentCategoryEntity() == null)
+			if (categoryEntityInterface.getParentCategoryEntity() == null)
 			{
 				rootContainer = containerInterface;
 				break;
 			}
 		}
-		
-		for(String entityName: absolutePath.keySet())
+
+		for (String entityName : absolutePath.keySet())
 		{
-			if(absolutePath.get(entityName).size() == 1)
+			if (absolutePath.get(entityName).size() == 1)
 			{
-				CategoryEntityInterface categoryEntityInterface = (CategoryEntityInterface) 
-				rootContainer.getAbstractEntity();
-				if(!entityName.equals(categoryEntityInterface.getEntity().getName()))
+				CategoryEntityInterface categoryEntityInterface = (CategoryEntityInterface) rootContainer.getAbstractEntity();
+				if (!entityName.equals(categoryEntityInterface.getEntity().getName()))
 				{
 					EntityGroupInterface entityGroup = categoryEntityInterface.getEntity().getEntityGroup();
 					EntityInterface entity = getEntity(entityName, entityGroup);
-					
+
 					CategoryHelperInterface categoryHelper = new CategoryHelper();
-					ContainerInterface newRootContainer = categoryHelper.createCategoryEntityAndContainer
-					(entity, null);
+					ContainerInterface newRootContainer = categoryHelper.createCategoryEntityAndContainer(entity, null);
 					newRootContainer.setAddCaption(false);
-					
-					categoryHelper.associateCategoryContainers(newRootContainer, rootContainer,
-							paths.get(categoryEntityInterface.getEntity().getName()), 1);
-					
+
+					categoryHelper.associateCategoryContainers(newRootContainer, rootContainer, paths.get(categoryEntityInterface.getEntity()
+							.getName()), 1);
+
 					rootContainer = newRootContainer;
-					
-					
+
 				}
 			}
 		}
@@ -549,7 +546,7 @@ public class CategoryGenerator extends CSVFileReader
 
 		containerInterface = categoryHelper.createCategoryEntityAndContainer(entityInterface, entityInterface.getName()
 				+ " Category Entity Container");
-		
+
 		containerInterface.setCaption(displyLabel);
 		containerInterface.setAddCaption(showCaption);
 
@@ -617,7 +614,7 @@ public class CategoryGenerator extends CSVFileReader
 		}
 		catch (NoSuchMethodException e)
 		{
-			throw new DynamicExtensionsSystemException("Line number:" + lineNumber + "Incorrect option", e);
+			throw new DynamicExtensionsSystemException("Line number:" + reader.getLineNumber() + "Incorrect option", e);
 		}
 		catch (IllegalArgumentException e)
 		{

@@ -20,13 +20,16 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.CategoryHelper;
 import edu.common.dynamicextensions.util.CategoryHelperInterface;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
+import edu.common.dynamicextensions.util.FileReader;
 
 /**
  * @author kunal_kamble
  * This class the imports the permissible values from csv file into the database.
  *
  */
-public class ImportPermissibleValues extends CSVFileReader {
+public class ImportPermissibleValues {
+	
+	private CSVFileReader reader;
 
 	private static final String ENTITY_GROUP = "Entity_Group";
 
@@ -38,10 +41,12 @@ public class ImportPermissibleValues extends CSVFileReader {
 	 * 
 	 * @param filePath
 	 * @throws DynamicExtensionsSystemException
+	 * @throws FileNotFoundException 
 	 */
 	public ImportPermissibleValues(String filePath)
-			throws DynamicExtensionsSystemException {
-		super(filePath);
+			throws DynamicExtensionsSystemException, FileNotFoundException {
+		
+		this.reader = new CSVFileReader(filePath); 
 	}
 
 	/**
@@ -57,7 +62,7 @@ public class ImportPermissibleValues extends CSVFileReader {
 		CategoryHelperInterface categoryHelper = new CategoryHelper();
 
 		try {
-			while ((nextLine = getNextLine(reader)) != null) {
+			while ((nextLine = reader.getNextLine()) != null) {
 				//first line in the categopry file is Category_Definition
 				if (ENTITY_GROUP.equals(nextLine[0])) {
 					continue;
@@ -67,7 +72,7 @@ public class ImportPermissibleValues extends CSVFileReader {
 						.retrieveEntityGroup(nextLine[0].trim());
 
 				EntityInterface currentEntity = null;
-				while ((nextLine = getNextLine(reader)) != null) {
+				while ((nextLine = reader.getNextLine()) != null) {
 					if (ENTITY_GROUP.equals(nextLine[0])) {
 						break;
 					}
@@ -104,8 +109,8 @@ public class ImportPermissibleValues extends CSVFileReader {
 				
 			}
 		} catch (IOException e) {
-			throw new DynamicExtensionsSystemException("Line number:"+ lineNumber+"Error while csv file " 
-					+ fileName, e);
+			throw new DynamicExtensionsSystemException("Line number:"+ reader.getLineNumber()+"Error while reading csv file " 
+					+ reader.getFilePath(), e);
 		}
 
 	}
@@ -153,7 +158,7 @@ public class ImportPermissibleValues extends CSVFileReader {
 			try {
 				BufferedReader reader = new BufferedReader(
 						new InputStreamReader(new FileInputStream(
-								getSystemIndependantFilePath(filePath))));
+								FileReader.getSystemIndependantFilePath(filePath))));
 				String line = null;
 				while ((line = reader.readLine()) != null) {
 					permissibleValues.add(line.trim());

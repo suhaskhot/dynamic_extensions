@@ -118,6 +118,8 @@ public class CategoryHelper implements CategoryHelperInterface
 		categoryAttribute.setCategoryEntity(categoryEntity);
 
 		ControlInterface control = null;
+		List<String> permissibleValueNameList = (permissibleValueList.length==0?null:permissibleValueList[0]);
+		
 		switch (controlValue)
 		{
 			case TEXT_FIELD_CONTROL :
@@ -125,7 +127,7 @@ public class CategoryHelper implements CategoryHelperInterface
 				break;
 			case LIST_BOX_CONTROL :
 				control = createListBoxControl(container, categoryAttribute, createPermissibleValuesList(entity, attributeName,
-						permissibleValueList[0]));
+						permissibleValueNameList));
 				break;
 			case DATE_PICKER_CONTROL :
 				control = createDatePickerControl(container, categoryAttribute);
@@ -138,7 +140,7 @@ public class CategoryHelper implements CategoryHelperInterface
 				break;
 			case RADIO_BUTTON_CONTROL :
 				control = createRadioButtonControl(container, categoryAttribute, createPermissibleValuesList(entity, attributeName,
-						permissibleValueList[0]));
+						permissibleValueNameList));
 				break;
 			case CHECK_BOX_CONTROL :
 				control = createCheckBoxControl(container, categoryAttribute);
@@ -502,7 +504,13 @@ public class CategoryHelper implements CategoryHelperInterface
 		
 		CategoryManagerInterface categoryManager = CategoryManager.getInstance();
 		
-		if (categoryManager.isPermissibleValuesSubsetValid(userDefinedDE, desiredPermissibleValues))
+		//if no prmissible values are defined, copy  the all the permissible values 
+		//of the original attribute
+		if(desiredPermissibleValues == null)
+		{
+			permissibleValues.addAll(userDefinedDE.getPermissibleValueCollection());
+		}		
+		else if (categoryManager.isPermissibleValuesSubsetValid(userDefinedDE, desiredPermissibleValues))
 		{
 			permissibleValues = new ArrayList<PermissibleValueInterface>();
 			for (PermissibleValueInterface pv : userDefinedDE.getPermissibleValueCollection())

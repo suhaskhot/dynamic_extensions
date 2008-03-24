@@ -33,6 +33,7 @@ import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.FloatAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.IntegerAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.LongAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.ShortAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.userinterface.Container;
@@ -114,6 +115,9 @@ public class XMIImportProcessor
 	private List<ContainerInterface> mainContainerList = new ArrayList<ContainerInterface>();
 	
 	private Map<AttributeInterface, Integer> attrNameVsMaxLen = new HashMap<AttributeInterface,Integer>();
+	private Map<AttributeInterface, String> attrNameVsDateFormat = new HashMap<AttributeInterface,String>();
+	private Map<AttributeInterface, Integer> attrNameVsPrecision = new HashMap<AttributeInterface,Integer>();
+
 	/**
 	 * Default constructor
 	 *
@@ -438,7 +442,16 @@ public class XMIImportProcessor
 								{
 									attrNameVsMaxLen.put(attribute, Integer.parseInt(max_length));
 								}
-								
+								String format = getTaggedValue(taggedValueColl, XMIConstants.TAGGED_VALUE_DATE_FORMAT);
+								if(format!=null && !format.equals(""))
+								{
+									attrNameVsDateFormat.put(attribute,format);
+								}
+								String precision = getTaggedValue(taggedValueColl, XMIConstants.TAGGED_VALUE_PRECISION);
+								if(precision!=null && !precision.equals(""))
+								{
+									attrNameVsPrecision.put(attribute,Integer.parseInt(precision));
+								}
 								entity.addAttribute(attribute);
 							}
 						}
@@ -449,6 +462,16 @@ public class XMIImportProcessor
 							if(max_length!=null && !max_length.equals(""))
 							{
 								attrNameVsMaxLen.put(originalAttribute, Integer.parseInt(max_length));
+							}
+							String format = getTaggedValue(taggedValueColl, XMIConstants.TAGGED_VALUE_DATE_FORMAT);
+							if(format!=null && !format.equals(""))
+							{
+								attrNameVsDateFormat.put(originalAttribute,format);
+							}
+							String precision = getTaggedValue(taggedValueColl, XMIConstants.TAGGED_VALUE_PRECISION);
+							if(precision!=null && !precision.equals(""))
+							{
+								attrNameVsPrecision.put(originalAttribute,Integer.parseInt(precision));
 							}
 						}
 					}
@@ -1255,13 +1278,29 @@ public class XMIImportProcessor
 
 				controlModel
 						.setSelectedControlId(originalControlObj.getSequenceNumber().toString());
+				// max length of string from tagged value		
 				Integer maxLen = attrNameVsMaxLen.get(editedAttribute);
 				if(maxLen==null)
 				{
 					maxLen=100;
 				}
-				
 				controlModel.setAttributeSize(maxLen.toString());
+				//date format tagged value
+				String format = attrNameVsDateFormat.get(editedAttribute);
+				if(format==null)
+				{
+					format=Constants.DATE_PATTERN_MM_DD_YYYY;
+				}
+				controlModel.setFormat(format);
+				String dateFormat =DynamicExtensionsUtility.getDateFormat(format); 
+				controlModel.setDateValueType(dateFormat);
+				// precision tagged value
+				Integer precision = attrNameVsPrecision.get(editedAttribute);
+				if(precision==null)
+				{
+					precision=0;
+				}
+				controlModel.setAttributeDecimalPlaces(precision.toString());
 			}
 			//controlModel.setCaption(originalControlObj.getCaption());
 		}
@@ -1515,8 +1554,16 @@ public class XMIImportProcessor
 					}
 					else if (attributeTypeInformation instanceof DateAttributeTypeInformation)
 					{
+						String format = attrNameVsDateFormat.get(attributeInterface);
+						if(format==null)
+						{
+							format=Constants.DATE_PATTERN_MM_DD_YYYY;
+						}
+						String dateFormat =DynamicExtensionsUtility.getDateFormat(format); 
 						((DateAttributeTypeInformation) attributeTypeInformation)
-								.setFormat(Constants.DATE_PATTERN_MM_DD_YYYY);
+								.setFormat(dateFormat);
+						//((DateAttributeTypeInformation) attributeTypeInformation)
+							//	.setFormat(Constants.DATE_PATTERN_MM_DD_YYYY);
 						controlInterface = deFactory.createDatePicker();
 						implicitRuleList = configurationsFactory.getAllImplicitRules(
 								ProcessorConstants.DATEPICKER_CONTROL, attributeInterface.getDataType());
@@ -1547,6 +1594,14 @@ public class XMIImportProcessor
 						}
 						else
 						{
+							Integer precision = attrNameVsPrecision.get(attributeInterface);
+							if(precision==null)
+							{
+								precision=0;
+							}
+							
+							((NumericAttributeTypeInformation) attributeTypeInformation)
+									.setDecimalPlaces(new Integer(precision));
 							implicitRuleList = configurationsFactory.getAllImplicitRules(
 									ProcessorConstants.TEXT_CONTROL, ProcessorConstants.DATATYPE_NUMBER);
 						}

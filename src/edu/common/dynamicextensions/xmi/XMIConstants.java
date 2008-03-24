@@ -41,6 +41,8 @@ public class XMIConstants
 	public static final String TAGGED_VALUE_DEPENDENCY = "Dependency";
 	
 	public static final String TAGGED_VALUE_MAX_LENGTH = "MaxLength";
+	public static final String TAGGED_VALUE_DATE_FORMAT = "Format";
+	public static final String TAGGED_VALUE_PRECISION = "Precision";
 	
 	//Package & model name
 	public static final String PACKAGE_NAME_LOGICAL_VIEW ="Logical View";

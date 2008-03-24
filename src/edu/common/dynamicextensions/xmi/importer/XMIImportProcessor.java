@@ -195,8 +195,17 @@ public class XMIImportProcessor
 		//Retriving all containers corresponding to the given entity group.
 		if (entityGroup.getId() != null)
 		{
-			retrievedContainerList = null;/*EntityManager.getInstance().getAllContainersByEntityGroupId(
+			//retrievedContainerList = null;
+			/*EntityManager.getInstance().getAllContainersByEntityGroupId(
 					entityGroup.getId());*/
+			/*
+			 *  retrievedContainerList populated by containerCollection of each entity
+			 */
+			
+			Collection<EntityInterface> entityCollection = entityGroup.getEntityCollection();
+			for(EntityInterface entity: entityCollection){
+				retrievedContainerList.addAll(entity.getContainerCollection());
+			}
 		}
 
 		for (UmlClass umlClass : umlClassColl)
@@ -378,7 +387,10 @@ public class XMIImportProcessor
 	private EntityInterface createEntity(UmlClass umlClass)
 	{
 		String name = (umlClass.getName());
-		EntityInterface entity = deFactory.createEntity();
+		//EntityInterface entity = deFactory.createEntity();
+		// calling createEntity of EntityProcessor as it generates id attibute for that entity
+		EntityProcessor entityProcessor = EntityProcessor.getInstance();
+		EntityInterface entity = entityProcessor.createEntity();
 		entity.setName(name);
 		entity.setDescription(umlClass.getName());
 		entity.setAbstract(umlClass.isAbstract());
@@ -430,26 +442,20 @@ public class XMIImportProcessor
 								entity.addAttribute(attribute);
 							}
 						}
+						else
+						{
+							Collection<TaggedValue> taggedValueColl = umlAttribute.getTaggedValue();
+							String max_length = getTaggedValue(taggedValueColl, XMIConstants.TAGGED_VALUE_MAX_LENGTH);
+							if(max_length!=null && !max_length.equals(""))
+							{
+								attrNameVsMaxLen.put(originalAttribute, Integer.parseInt(max_length));
+							}
+						}
 					}
 					//				else
 					//				{//Temporary solution for unsupported datatypes. Not adding attributes having unsupported datatypes.
 					//					throw new DynamicExtensionsApplicationException("File contains Unsupported DataType");
 					//				}
-				}
-				else
-				{
-					
-					DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
-					AttributeInterface idAttribute = domainObjectFactory.createLongAttribute();
-					idAttribute.setName(Constants.SYSTEM_IDENTIFIER);
-					idAttribute.setIsPrimaryKey(new Boolean(true));
-					idAttribute.setIsNullable(new Boolean(false));
-					ColumnPropertiesInterface column = domainObjectFactory.createColumnProperties();
-					column.setName(Constants.IDENTIFIER);
-					idAttribute.setColumnProperties(column);
-					entity.addAttribute(idAttribute);
-					
-					idAttribute.setEntity(entity);
 				}
 			}
 		}
@@ -985,10 +991,13 @@ public class XMIImportProcessor
 		for (AbstractAttributeInterface abstractAttributeInterface : abstractAttributeCollection)
 		{
 			controlInterface = getControlForAttribute(abstractAttributeInterface);
-			sequenceNumber++;
-			controlInterface.setSequenceNumber(sequenceNumber);
-			containerInterface.addControl(controlInterface);
-			controlInterface.setParentContainer((Container) containerInterface);
+			if(controlInterface!=null)  //no control created for id attribute
+			{
+				sequenceNumber++;
+				controlInterface.setSequenceNumber(sequenceNumber);
+				containerInterface.addControl(controlInterface);
+				controlInterface.setParentContainer((Container) containerInterface);
+			}
 		}
 		return containerInterface;
 	}
@@ -1049,11 +1058,34 @@ public class XMIImportProcessor
 			editEntityAndContainer(containerInterface, entityInterface);
 
 			//Populating Attributes and Controls
-			Collection<AbstractAttributeInterface> editedAttributeColl = entityInterface
-					.getAbstractAttributeCollection();
-			Collection<AbstractAttributeInterface> originalAttributeColl = ((EntityInterface) containerInterface
-					.getAbstractEntity()).getAbstractAttributeCollection();
-
+//			Collection<AbstractAttributeInterface> editedAttributeColl = entityInterface
+//				.getAbstractAttributeCollection();
+//			Collection<AbstractAttributeInterface> originalAttributeColl = ((EntityInterface) containerInterface
+//					.getAbstractEntity()).getAbstractAttributeCollection();
+			
+			
+			/* Bug Id: 7209
+			 * editedAttributeColl - contains new attribute that needs to be added
+			 * originalAttributeColl - contains only original attributes from database
+			 * As both these objects point to the same entity object hence both collections have same attributes.
+			 * Hence a new object for editedAttributeColl is created and the 
+			 * new attribute is removed from the originalAttributeColl on the basis of objects having id as null
+			 */
+			Collection<AbstractAttributeInterface> editedAttributeColl=new ArrayList<AbstractAttributeInterface>();
+			editedAttributeColl.addAll(entityInterface.getAbstractAttributeCollection());
+			
+			Collection<AbstractAttributeInterface> originalAttributeColl =((EntityInterface) containerInterface
+				.getAbstractEntity()).getAbstractAttributeCollection(); 
+			
+			Iterator<AbstractAttributeInterface> it=originalAttributeColl.iterator();
+			while(it.hasNext())
+			{
+				AbstractAttributeInterface originalAttr = it.next();
+				if(originalAttr.getId()==null)
+				{
+					it.remove();
+				}
+			}
 			Collection<AbstractAttributeInterface> attributesToRemove = new HashSet<AbstractAttributeInterface>();
 			for (AbstractAttributeInterface editedAttribute : editedAttributeColl)
 			{
@@ -1071,7 +1103,7 @@ public class XMIImportProcessor
 				}
 
 				boolean isAttrPresent = getAttrToEdit(originalAttributeColl, editedAttribute);
-
+				
 				if (isAttrPresent)
 				{//Edit
 					editAttributeAndControl(controlModel, editedAttribute, containerInterface);
@@ -1158,25 +1190,27 @@ public class XMIImportProcessor
 	{
 		controlModel.setControlOperation(ProcessorConstants.OPERATION_ADD);
 		ControlInterface newcontrol = getControlForAttribute(editedAttribute);
-		int sequenceNumber = containerInterface.getControlCollection().size() + 1;
-		newcontrol.setSequenceNumber(sequenceNumber);
-		//containerInterface.addControl(newcontrol);
-		newcontrol.setParentContainer((Container) containerInterface);
-
-		String userSelectedTool = DynamicExtensionsUtility.getControlName(newcontrol);
-		controlModel.setUserSelectedTool(userSelectedTool);
-		//For Text Control
-		if (newcontrol instanceof TextFieldInterface)
-		{
-			controlModel.setColumns(new Integer(0));
-		}
-		//For creating Association or Attribute
-		populateControlModel(controlModel, editedAttribute);
-
-		//if(controlModel.getUserSelectedTool().equalsIgnoreCase(ProcessorConstants.ADD_SUBFORM_CONTROL))
-		if (editedAttribute instanceof AssociationInterface)
-		{
-			containerInterface.addControl(newcontrol);
+		if(newcontrol != null){  //no control created for id attribute
+			int sequenceNumber = containerInterface.getControlCollection().size() + 1;
+			newcontrol.setSequenceNumber(sequenceNumber);
+			//containerInterface.addControl(newcontrol);
+			newcontrol.setParentContainer((Container) containerInterface);
+	
+			String userSelectedTool = DynamicExtensionsUtility.getControlName(newcontrol);
+			controlModel.setUserSelectedTool(userSelectedTool);
+			//For Text Control
+			if (newcontrol instanceof TextFieldInterface)
+			{
+				controlModel.setColumns(new Integer(0));
+			}
+			//For creating Association or Attribute
+			populateControlModel(controlModel, editedAttribute);
+	
+			//if(controlModel.getUserSelectedTool().equalsIgnoreCase(ProcessorConstants.ADD_SUBFORM_CONTROL))
+			if (editedAttribute instanceof AssociationInterface)
+			{
+				containerInterface.addControl(newcontrol);
+			}
 		}
 	}
 
@@ -1221,6 +1255,13 @@ public class XMIImportProcessor
 
 				controlModel
 						.setSelectedControlId(originalControlObj.getSequenceNumber().toString());
+				Integer maxLen = attrNameVsMaxLen.get(editedAttribute);
+				if(maxLen==null)
+				{
+					maxLen=100;
+				}
+				
+				controlModel.setAttributeSize(maxLen.toString());
 			}
 			//controlModel.setCaption(originalControlObj.getCaption());
 		}
@@ -1456,58 +1497,63 @@ public class XMIImportProcessor
 					.getAttributeTypeInformation();
 			UserDefinedDEInterface userDefinedDEInterface = (UserDefinedDEInterface) attributeTypeInformation
 					.getDataElement();
-
-			if (userDefinedDEInterface != null
-					&& userDefinedDEInterface.getPermissibleValueCollection() != null
-					&& userDefinedDEInterface.getPermissibleValueCollection().size() > 0)
+			if (!(attributeInterface.getName().equalsIgnoreCase(Constants.ID) || attributeInterface
+					.getName().equalsIgnoreCase(Constants.IDENTIFIER)))
 			{
-				controlInterface = deFactory.createListBox();
-
-				// multiselect for permisible values
-				((ListBoxInterface) controlInterface).setIsMultiSelect(true);
-				attributeInterface.setIsCollection(new Boolean(true));
-				implicitRuleList = configurationsFactory.getAllImplicitRules(
-						ProcessorConstants.LISTBOX_CONTROL, attributeInterface.getDataType());
-
-			}
-			else if (attributeTypeInformation instanceof DateAttributeTypeInformation)
-			{
-				((DateAttributeTypeInformation) attributeTypeInformation)
-						.setFormat(Constants.DATE_PATTERN_MM_DD_YYYY);
-				controlInterface = deFactory.createDatePicker();
-				implicitRuleList = configurationsFactory.getAllImplicitRules(
-						ProcessorConstants.DATEPICKER_CONTROL, attributeInterface.getDataType());
-			}
-			//Creating check box for boolean attributes
-			else if (attributeTypeInformation instanceof BooleanAttributeTypeInformation)
-			{
-				controlInterface = deFactory.createCheckBox();
-				implicitRuleList = configurationsFactory.getAllImplicitRules(
-						ProcessorConstants.CHECKBOX_CONTROL, attributeInterface.getDataType());
+					if (userDefinedDEInterface != null
+							&& userDefinedDEInterface.getPermissibleValueCollection() != null
+							&& userDefinedDEInterface.getPermissibleValueCollection().size() > 0)
+					{
+						controlInterface = deFactory.createListBox();
+		
+						// multiselect for permisible values
+						((ListBoxInterface) controlInterface).setIsMultiSelect(true);
+						attributeInterface.setIsCollection(new Boolean(true));
+						implicitRuleList = configurationsFactory.getAllImplicitRules(
+								ProcessorConstants.LISTBOX_CONTROL, attributeInterface.getDataType());
+		
+					}
+					else if (attributeTypeInformation instanceof DateAttributeTypeInformation)
+					{
+						((DateAttributeTypeInformation) attributeTypeInformation)
+								.setFormat(Constants.DATE_PATTERN_MM_DD_YYYY);
+						controlInterface = deFactory.createDatePicker();
+						implicitRuleList = configurationsFactory.getAllImplicitRules(
+								ProcessorConstants.DATEPICKER_CONTROL, attributeInterface.getDataType());
+					}
+					//Creating check box for boolean attributes
+					else if (attributeTypeInformation instanceof BooleanAttributeTypeInformation)
+					{
+						controlInterface = deFactory.createCheckBox();
+						implicitRuleList = configurationsFactory.getAllImplicitRules(
+								ProcessorConstants.CHECKBOX_CONTROL, attributeInterface.getDataType());
+					}
+					else
+					{
+						controlInterface = deFactory.createTextField();
+						((TextFieldInterface) controlInterface).setColumns(10);
+						if (attributeTypeInformation instanceof StringAttributeTypeInformation)
+						{
+							Integer maxLen = attrNameVsMaxLen.get(attributeInterface);
+							if(maxLen==null)
+							{
+								maxLen=100;
+							}
+							
+							((StringAttributeTypeInformation) attributeTypeInformation)
+									.setSize(new Integer(maxLen));
+							implicitRuleList = configurationsFactory.getAllImplicitRules(
+									ProcessorConstants.TEXT_CONTROL, ProcessorConstants.DATATYPE_STRING);
+						}
+						else
+						{
+							implicitRuleList = configurationsFactory.getAllImplicitRules(
+									ProcessorConstants.TEXT_CONTROL, ProcessorConstants.DATATYPE_NUMBER);
+						}
+					}
 			}
 			else
-			{
-				controlInterface = deFactory.createTextField();
-				((TextFieldInterface) controlInterface).setColumns(10);
-				if (attributeTypeInformation instanceof StringAttributeTypeInformation)
-				{
-					Integer maxLen = attrNameVsMaxLen.get(attributeInterface);
-					if(maxLen==null)
-					{
-						maxLen=100;
-					}
-					
-					((StringAttributeTypeInformation) attributeTypeInformation)
-							.setSize(new Integer(maxLen));
-					implicitRuleList = configurationsFactory.getAllImplicitRules(
-							ProcessorConstants.TEXT_CONTROL, ProcessorConstants.DATATYPE_STRING);
-				}
-				else
-				{
-					implicitRuleList = configurationsFactory.getAllImplicitRules(
-							ProcessorConstants.TEXT_CONTROL, ProcessorConstants.DATATYPE_NUMBER);
-				}
-			}
+				return null;		//no control created for id attribute
 		}
 		controlInterface.setName(abstractAttributeInterface.getName());
 		controlInterface.setCaption(abstractAttributeInterface.getName());
@@ -1627,7 +1673,7 @@ public class XMIImportProcessor
 		try
 		{
 		//	entityManagerInterface.persistEntityGroupWithAllContainers(entityGroup, mainContainerList);
-			
+		
 			
 			for(ContainerInterface container : mainContainerList)
 			{

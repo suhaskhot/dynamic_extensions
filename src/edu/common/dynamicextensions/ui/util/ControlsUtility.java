@@ -51,6 +51,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.webui.util.ControlInformationObject;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
+import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.beans.NameValueBean;
 
 public class ControlsUtility
@@ -254,6 +255,12 @@ public class ControlsUtility
 			if (defaultDate != null)
 			{
 				defaultValue = new SimpleDateFormat(getDateFormat(dateAttribute)).format(defaultDate);
+				if (getDateFormat(dateAttribute).equals("MM-yyyy"))
+				{
+					String month = determineMonth(defaultValue.toString().substring(0, 2));
+					String year = defaultValue.toString().substring(3, defaultValue.length());
+					defaultValue = month + " " + year;
+				}
 			}
 		}
 		return defaultValue;
@@ -627,5 +634,63 @@ public class ControlsUtility
 		}
 		return null;
 	}
+	
+	/**
+	 * Determine month constant from month digits.
+	 * @param month
+	 * @return month constant
+	 */
+	public static String determineMonth(String month)
+    {
+        if (month.equals("01"))
+        {
+            return Constants.JANUARY;
+        }
+        else if (month.equals("02"))
+        {
+            return Constants.FEBRUARY;
+        }
+        else if (month.equals("03"))
+        {
+            return Constants.MARCH;
+        }
+        else if (month.equals("04"))
+        {
+            return Constants.APRIL;
+        }
+        else if (month.equals("05"))
+        {
+            return Constants.MAY;
+        }
+        else if (month.equals("06"))
+        {
+            return Constants.JUNE;
+        }
+        else if (month.equals("07"))
+        {
+            return Constants.JULY;
+        }
+        else if (month.equals("08"))
+        {
+            return Constants.AUGUST;
+        }
+        else if (month.equals("09"))
+        {
+            return Constants.SEPTEMBER;
+        }
+        else if (month.equals("10"))
+        {
+            return Constants.OCTOBER;
+        }
+        else if (month.equals("11"))
+        {
+            return Constants.NOVEMBER;
+        }
+        else if (month.equals("12"))
+        {
+            return Constants.DECEMBER;
+        }
+        return null;
+    }
 
 }

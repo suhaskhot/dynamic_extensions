@@ -36,6 +36,7 @@ import edu.common.dynamicextensions.domain.ObjectAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.ShortAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
@@ -178,7 +179,8 @@ class DynamicExtensionBaseQueryBuilder
 				String foreignConstraintRollbackQuery = "";
 				if (databaseCopy.getParentEntity() != null)
 				{
-					String foreignConstraintRemoveQuery = getForeignKeyRemoveConstraintQueryForInheritance(databaseCopy);
+					String foreignConstraintRemoveQuery = getForeignKeyRemoveConstraintQueryForInheritance(
+							databaseCopy, databaseCopy.getParentEntity());
 					foreignConstraintRollbackQuery = getForeignKeyConstraintQueryForInheritance(databaseCopy);
 					queryList.add(foreignConstraintRemoveQuery);
 					attributeRollbackQueryList.add(foreignConstraintRollbackQuery);
@@ -188,7 +190,8 @@ class DynamicExtensionBaseQueryBuilder
 				{
 					String foreignConstraintAddQuery = getForeignKeyConstraintQueryForInheritance(entity);
 
-					foreignConstraintRollbackQuery = getForeignKeyRemoveConstraintQueryForInheritance(entity);
+					foreignConstraintRollbackQuery = getForeignKeyRemoveConstraintQueryForInheritance(
+							entity, entity.getParentEntity());
 					queryList.add(foreignConstraintAddQuery);
 					attributeRollbackQueryList.add(foreignConstraintRollbackQuery);
 				}
@@ -860,7 +863,8 @@ class DynamicExtensionBaseQueryBuilder
 		{
 			String foreignKeyConstraintQueryForInheritance = getForeignKeyConstraintQueryForInheritance(entity);
 			queryList.add(foreignKeyConstraintQueryForInheritance);
-			String foreignKeyRemoveConstraintQueryForInheritance = getForeignKeyRemoveConstraintQueryForInheritance(entity);
+			String foreignKeyRemoveConstraintQueryForInheritance = getForeignKeyRemoveConstraintQueryForInheritance(
+					entity, entity.getParentEntity());
 			reverseQueryList.add(foreignKeyRemoveConstraintQueryForInheritance);
 		}
 		return queryList;
@@ -874,17 +878,30 @@ class DynamicExtensionBaseQueryBuilder
 	 */
 	protected String getForeignKeyConstraintQueryForInheritance(EntityInterface entity)
 	{
-
-		StringBuffer foreignKeyConstraint = new StringBuffer();
 		EntityInterface parentEntity = entity.getParentEntity();
-		String foreignConstraintName = "FK" + "E" + IdGeneratorUtil.getNextUniqeId() + "E" + IdGeneratorUtil.getNextUniqeId();
+		return getForeignKeyConstraintQueryForInheritance(entity, parentEntity);
+	}
+	/**
+	 *
+	 * @param entity
+	 * @param parentEntity
+	 * @return
+	 */
+	protected String getForeignKeyConstraintQueryForInheritance(AbstractEntityInterface entity,
+			AbstractEntityInterface parentEntity)
+	{
+		StringBuffer foreignKeyConstraint = new StringBuffer();
+		String foreignConstraintName = entity.getTableProperties().getConstraintName() + UNDERSCORE
+				+ parentEntity.getTableProperties().getConstraintName();
 
-		foreignKeyConstraint.append(ALTER_TABLE).append(WHITESPACE).append(entity.getTableProperties().getName()).append(WHITESPACE).append(
-				ADD_KEYWORD).append(WHITESPACE).append(CONSTRAINT_KEYWORD).append(WHITESPACE).append(foreignConstraintName).append(
-				FOREIGN_KEY_KEYWORD).append(OPENING_BRACKET).append(IDENTIFIER).append(CLOSING_BRACKET).append(WHITESPACE).append(REFERENCES_KEYWORD)
-				.append(WHITESPACE).append(parentEntity.getTableProperties().getName()).append(OPENING_BRACKET).append(IDENTIFIER).append(
-						CLOSING_BRACKET);
-
+		foreignKeyConstraint.append(ALTER_TABLE).append(WHITESPACE).append(
+				entity.getTableProperties().getName()).append(WHITESPACE).append(ADD_KEYWORD)
+				.append(WHITESPACE).append(CONSTRAINT_KEYWORD).append(WHITESPACE).append(
+						foreignConstraintName).append(FOREIGN_KEY_KEYWORD).append(OPENING_BRACKET)
+				.append(IDENTIFIER).append(CLOSING_BRACKET).append(WHITESPACE).append(
+						REFERENCES_KEYWORD).append(WHITESPACE).append(
+						parentEntity.getTableProperties().getName()).append(OPENING_BRACKET)
+				.append(IDENTIFIER).append(CLOSING_BRACKET);
 		return foreignKeyConstraint.toString();
 	}
 
@@ -894,12 +911,12 @@ class DynamicExtensionBaseQueryBuilder
 	 * @param entity
 	 * @return
 	 */
-	protected String getForeignKeyRemoveConstraintQueryForInheritance(EntityInterface entity)
+	protected String getForeignKeyRemoveConstraintQueryForInheritance(AbstractEntityInterface entity,
+			AbstractEntityInterface parentEntity)
 	{
-
 		StringBuffer foreignKeyConstraint = new StringBuffer();
-		EntityInterface parentEntity = entity.getParentEntity();
-		String foreignConstraintName = "FK" + "E" + IdGeneratorUtil.getNextUniqeId() + "E" + IdGeneratorUtil.getNextUniqeId();
+		String foreignConstraintName = entity.getTableProperties().getConstraintName() + UNDERSCORE
+		+ parentEntity.getTableProperties().getConstraintName();
 
 		foreignKeyConstraint.append(ALTER_TABLE).append(WHITESPACE).append(entity.getTableProperties().getName()).append(WHITESPACE).append(
 				DROP_KEYWORD).append(WHITESPACE).append(CONSTRAINT_KEYWORD).append(WHITESPACE).append(foreignConstraintName);

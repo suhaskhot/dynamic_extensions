@@ -34,7 +34,7 @@ public interface DynamicExtensionsQueryBuilderConstantsInterface extends EntityM
 	String UPDATE_KEYWORD = " UPDATE ";
 	String JOIN_KEYWORD = " JOIN ";
 	String ON_KEYWORD = " ON ";
-
+	String CONSTRAINT = "CONSTR";
 
 	String CONSTRAINT_KEYWORD = " CONSTRAINT ";
 	String UNIQUE_KEYWORD = " UNIQUE ";

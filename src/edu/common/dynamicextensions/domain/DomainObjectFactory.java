@@ -7,6 +7,7 @@ import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryB
 import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.COLUMN_NAME_PREFIX;
 import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.TABLE_NAME_PREFIX;
 import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.UNDERSCORE;
+import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.CONSTRAINT;
 
 import java.util.Date;
 
@@ -204,6 +205,9 @@ public class DomainObjectFactory
 		TableProperties tableProperties = new TableProperties();
 
 		tableProperties.setName(TABLE_NAME_PREFIX + UNDERSCORE + IdGeneratorUtil.getNextUniqeId());
+
+		tableProperties.setConstraintName(CONSTRAINT + UNDERSCORE + IdGeneratorUtil.getNextUniqeId());
+
 		return tableProperties;
 	}
 

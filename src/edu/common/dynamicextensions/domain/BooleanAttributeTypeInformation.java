@@ -24,13 +24,17 @@ public class BooleanAttributeTypeInformation extends AttributeTypeInformation
 	{
 
 	}
-
+	/** 
+	 * @see edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface#getDataType()
+	 */
 	public String getDataType()
 	{
 		return EntityManagerConstantsInterface.BOOLEAN_ATTRIBUTE_TYPE;
 	}
 
-	@Override
+	/**
+	 * 
+	 */
 	public PermissibleValueInterface getPermissibleValueForString(String value) {
 		
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();

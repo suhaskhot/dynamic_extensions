@@ -57,7 +57,9 @@ public class ByteArrayAttributeTypeInformation extends AttributeTypeInformation 
 		return null;
 	}
 	
-	@Override
+	/**
+	 * 
+	 */
 	public PermissibleValueInterface getPermissibleValueForString(String value) {
 		return null;
 	}

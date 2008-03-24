@@ -34,7 +34,6 @@ public class DoubleAttributeTypeInformation extends NumericAttributeTypeInformat
 		return EntityManagerConstantsInterface.DOUBLE_ATTRIBUTE_TYPE;
 	}
 	
-	@Override
 	/**
 	 * 
 	 */

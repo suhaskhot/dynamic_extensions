@@ -19,10 +19,10 @@
 						<bean:message key="eav.att.DefaultValue"/> :
 					</td>
 					<td class="formFieldWithoutBorder">
-						<html:radio styleId = 'attributeDefaultValue' property="attributeDefaultValue" value="<%=DynamicExtensionsUtility.getValueForCheckBox(true)%>">
+						<html:radio styleId = 'attributeDefaultValue' property="attributeDefaultValue" value="true">
 							<bean:message key="eav.att.CheckedAttributeTitle"/>
 						</html:radio>
-						<html:radio styleId= 'attributeDefaultValue' property="attributeDefaultValue" value="<%=DynamicExtensionsUtility.getValueForCheckBox(false)%>">
+						<html:radio styleId= 'attributeDefaultValue' property="attributeDefaultValue" value="false">
 							<bean:message key="eav.att.UnCheckedAttributeTitle"/>
 						</html:radio>
 					</td>

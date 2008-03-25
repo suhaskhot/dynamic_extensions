@@ -43,7 +43,7 @@ public class CheckBox extends Control implements CheckBoxInterface
         }
 
         String htmlComponentName = getHTMLComponentName();
-        if (DynamicExtensionsUtility.isCheckBoxChecked(checked))
+        if (checked.equals("true"))
         {
             htmlString = "<input type='checkbox' class='" + this.cssClass + "' name='"
                     + htmlComponentName + "' checkedValue='"
@@ -51,7 +51,7 @@ public class CheckBox extends Control implements CheckBoxInterface
                     + DynamicExtensionsUtility.getValueForCheckBox(false) + "'" + "value='"
                     + DynamicExtensionsUtility.getValueForCheckBox(true) + "' " + "id='"
                     + htmlComponentName + "'"
-                    + DynamicExtensionsUtility.getCheckboxSelectionValue(checked)
+                    + "checked"
                     + " onclick='changeValueForCheckBox(this);'>";
         }
         else

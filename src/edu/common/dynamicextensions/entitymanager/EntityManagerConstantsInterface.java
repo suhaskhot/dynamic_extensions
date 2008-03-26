@@ -31,6 +31,7 @@ public interface EntityManagerConstantsInterface
 	String LONG_ATTRIBUTE_TYPE = "Long";
     String INTEGER_ATTRIBUTE_TYPE = "Integer";
     String OBJECT_ATTRIBUTE_TYPE = "Object";
+    String BYTE_ARRAY_ATTRIBUTE_TYPE = "ByteArray";
     String ACTIVITY_STATUS_ATTRIBUTE_NAME = "activityStatus";
 
     String CAB2B_ENTITY_GROUP = "caB2BEntityGroup";

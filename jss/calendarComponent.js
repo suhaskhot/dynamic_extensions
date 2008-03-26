@@ -80,7 +80,7 @@ function showYears(id) {
     }
 }
 
-function hideMonthAndYearCal(id) {     
+function hideMonthAndYearCal(id) {  
     var divId = "slcalcod"+id;
 
     var monthID = "calmois"+id;
@@ -90,11 +90,60 @@ function hideMonthAndYearCal(id) {
 
     var SelectedMonthOption = document.getElementById(monthID).options[SelectedMonth].innerHTML;
 
+	if (SelectedMonthOption == "Jan")
+	{
+		SelectedMonthOption = "01-";
+	}
+	else if (SelectedMonthOption == "Feb")
+	{
+		SelectedMonthOption = "02-";
+	}
+	else if (SelectedMonthOption == "Mar")
+	{
+		SelectedMonthOption = "03-";
+	}
+	else if (SelectedMonthOption == "Apr")
+	{
+		SelectedMonthOption = "04-";
+	}
+	else if (SelectedMonthOption == "May")
+	{
+		SelectedMonthOption = "05-";
+	}
+	else if (SelectedMonthOption == "Jun")
+	{
+		SelectedMonthOption = "06-";
+	}
+	else if (SelectedMonthOption == "Jul")
+	{
+		SelectedMonthOption = "07-";
+	}
+	else if (SelectedMonthOption == "Aug")
+	{
+		SelectedMonthOption = "08-";
+	}
+	else if (SelectedMonthOption == "Sep")
+	{
+		SelectedMonthOption = "09-";
+	}
+		else if (SelectedMonthOption == "Oct")
+	{
+		SelectedMonthOption = "10-";
+	}
+		else if (SelectedMonthOption == "Nov")
+	{
+		SelectedMonthOption = "11-";
+	}
+		else if (SelectedMonthOption == "Dec")
+	{
+		SelectedMonthOption = "12-";
+	}
+
     var SelectedYear = document.getElementById(yearID).selectedIndex;
 
     var SelectedYearOption = document.getElementById(yearID).options[SelectedYear].innerHTML;
 
-    var combined = SelectedMonthOption + " " + SelectedYearOption;
+    var combined = SelectedMonthOption + SelectedYearOption;
     
     document.forms[calformname].elements[calformelement].value = combined;
         

@@ -40,11 +40,23 @@ public class DateValidator implements ValidatorRuleInterface
 			DateAttributeTypeInformation dateAttributeTypeInformation = (DateAttributeTypeInformation) attributeTypeInformation;
 			String dateFormat = dateAttributeTypeInformation.getFormat();
 			String value = (String) valueObject;
+			
+			for (int i=0; i<value.length(); i++)
+			{
+				if (Character.isLetter(value.charAt(i)))
+				{
+					List<String> placeHolders = new ArrayList<String>();
+					placeHolders.add(attributeName);
+					throw new DynamicExtensionsValidationException("Validation failed", null,
+							"dynExtn.validation.Number", placeHolders);
+				}
+			}
             
             if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
             {
-                value = DynamicExtensionsUtility.formatMonthAndYearDate(value);
-                value = value.substring(0, value.length()-4);
+            	String month = value.substring(0, 2);
+				String year = value.substring(3, value.length());
+                value = month + "-01-" + year;
             }
             if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
             {

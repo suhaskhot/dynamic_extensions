@@ -57,6 +57,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInter
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
+import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -520,7 +521,7 @@ public class XMIImportProcessor
 		if (attrColl != null)
 		{
 			for (Attribute umlAttribute : attrColl)
-			{//Not showing id attribute on UI
+			{//Not showing id attribute on UI				
 				if (!(umlAttribute.getName().equalsIgnoreCase(Constants.ID) || umlAttribute
 						.getName().equalsIgnoreCase(Constants.IDENTIFIER)))
 				{
@@ -534,7 +535,7 @@ public class XMIImportProcessor
 						AttributeInterface originalAttribute = getAttributeByName(umlAttribute
 								.getName(), originalAttrColl);
 						if (originalAttribute == null)
-						{
+						{							
 							AttributeInterface attribute = dataType.createAttribute(umlAttribute);
 							if (attribute != null)
 							{ // to bypass attributes of invalid datatypes
@@ -544,6 +545,14 @@ public class XMIImportProcessor
 								entity.addAttribute(attribute);
 							}
 						}
+//						else
+//						{//Data Type has been changed						
+//							if(!originalAttribute.getAttributeTypeInformation().getDataType().equalsIgnoreCase(umlAttribute.getType().getName()))
+//							{								
+//								AttributeTypeInformationInterface attrTypeInfo = createAttributeTypeInformation(umlAttribute.getType().getName());
+//								originalAttribute.setAttributeTypeInformation(attrTypeInfo);
+//							}							
+//						}
 					}
 					//				else
 					//				{//Temporary solution for unsupported datatypes. Not adding attributes having unsupported datatypes.
@@ -552,6 +561,77 @@ public class XMIImportProcessor
 				}
 			}
 		}
+	}
+	/**
+	 * @param attributeType
+	 * @return
+	 */
+	private AttributeTypeInformationInterface createAttributeTypeInformation(
+			String attributeType)			
+	{
+		AttributeTypeInformationInterface attributeTypeInformation = null;
+		if (attributeType != null && !attributeType.equals(""))
+		{			
+			
+			DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+			if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.STRING_ATTRIBUTE_TYPE))
+			{
+				attributeTypeInformation = domainObjectFactory
+						.createStringAttributeTypeInformation();
+			}
+			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.DATE_ATTRIBUTE_TYPE))
+			{
+				attributeTypeInformation = domainObjectFactory
+						.createDateAttributeTypeInformation();
+			}
+			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.BOOLEAN_ATTRIBUTE_TYPE))
+			{
+				attributeTypeInformation = domainObjectFactory
+						.createBooleanAttributeTypeInformation();
+			}
+			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.BYTE_ARRAY_ATTRIBUTE_TYPE))
+			{
+				attributeTypeInformation = domainObjectFactory
+						.createByteArrayAttributeTypeInformation();
+			}
+			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.FILE_ATTRIBUTE_TYPE))
+			{
+				attributeTypeInformation = domainObjectFactory
+						.createFileAttributeTypeInformation();
+			}
+			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.INTEGER_ATTRIBUTE_TYPE))
+			{				
+				attributeTypeInformation = domainObjectFactory
+				.createIntegerAttributeTypeInformation();
+			}
+			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.FLOAT_ATTRIBUTE_TYPE))
+			{				
+				attributeTypeInformation = domainObjectFactory
+				.createFloatAttributeTypeInformation();
+			}
+			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.LONG_ATTRIBUTE_TYPE))
+			{				
+				attributeTypeInformation = domainObjectFactory
+				.createLongAttributeTypeInformation();
+			}
+			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.DOUBLE_ATTRIBUTE_TYPE))
+			{				
+				attributeTypeInformation = domainObjectFactory
+				.createDoubleAttributeTypeInformation();
+			}
+			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.SHORT_ATTRIBUTE_TYPE))
+			{				
+				attributeTypeInformation = domainObjectFactory
+				.createShortAttributeTypeInformation();
+			}
+			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.OBJECT_ATTRIBUTE_TYPE))
+			{				
+				attributeTypeInformation = domainObjectFactory
+				.createObjectAttributeTypeInformation();
+			}
+		}
+		
+		return attributeTypeInformation;
 	}
 
 	/**
@@ -566,7 +646,7 @@ public class XMIImportProcessor
 		{
 			for (AttributeInterface originalAttr : originalAttrColl)
 			{
-				if (originalAttr.getName().equals(attrName))
+				if (originalAttr.getName().equalsIgnoreCase(attrName))
 				{
 					return originalAttr;
 				}
@@ -742,7 +822,7 @@ public class XMIImportProcessor
 			RoleInterface targetRole)
 	{
 		for (AssociationInterface existingAsso : existingAssociationColl)
-		{
+		{			
 			if (umlAssociationName != null
 					&& umlAssociationName.equalsIgnoreCase(existingAsso.getName()))
 			{//Since name is present, edit this association
@@ -973,7 +1053,7 @@ public class XMIImportProcessor
 					boolean isInherited = false;
 					for (AttributeInterface attributeFromParent : parentAttributeCollection)
 					{
-						if (attributeFromChild.getName().equals(attributeFromParent.getName()))
+						if (attributeFromChild.getName().equalsIgnoreCase(attributeFromParent.getName()))
 						{
 							isInherited = true;
 							duplicateAttrColl.add(attributeFromChild);
@@ -992,7 +1072,7 @@ public class XMIImportProcessor
 	 * @return A assocition attached to given entity.
 	 */
 	private AssociationInterface getAssociation(EntityInterface sourceEntity, String associationName)
-	{
+	{		
 		AssociationInterface association = deFactory.createAssociation();
 		//remove it after getting DE fix,association name should not be compulsory
 		if (associationName == null || associationName.equals(""))
@@ -1212,7 +1292,7 @@ public class XMIImportProcessor
 	 */
 	private void removeRedundantAssociation(AbstractAttributeInterface editedAttribute,
 			Collection<AbstractAttributeInterface> attributesToRemove)
-	{
+	{		
 		AssociationInterface association = (AssociationInterface) editedAttribute;
 		Collection<AssociationInterface> targetEntityAssociationColl = association
 				.getTargetEntity().getAssociationCollection();
@@ -1241,7 +1321,7 @@ public class XMIImportProcessor
 							Constants.AssociationDirection.SRC_DESTINATION) && originalTargetAssociation != null 
 							&& originalTargetAssociation.getAssociationDirection().equals(
 									Constants.AssociationDirection.BI_DIRECTIONAL))
-					{//We need to remove system generated association if direction has been changed from bi directional to source destination
+					{//We need to remove system generated association if direction has been changed from bi directional to source destination						
 						attributesToRemove.add(editedAttribute);
 					}
 				}
@@ -1380,7 +1460,7 @@ public class XMIImportProcessor
 			AbstractAttributeInterface editedAttribute)
 	{
 		if (editedAttribute instanceof AssociationInterface)
-		{
+		{			
 			controlModel.setDisplayChoice(ProcessorConstants.DISPLAY_CHOICE_LOOKUP);
 		}
 		else

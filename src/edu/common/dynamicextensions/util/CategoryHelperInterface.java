@@ -61,9 +61,10 @@ public interface CategoryHelperInterface
 	/**
 	 * Create category with the given name.
 	 * @param name name by which we wish to create the category.
-	 * @return category
+	 * @return category 
+	 * @throws DynamicExtensionsSystemException
 	 */
-	public CategoryInterface createCategory(String name);
+	public CategoryInterface createCategory(String name)throws DynamicExtensionsSystemException;
 
 	/**
 	 * Saves a category.
@@ -77,9 +78,11 @@ public interface CategoryHelperInterface
 	 * Create category container and category entity from given entity.
 	 * @param entity entity used to create a category entity and category container.
 	 * @param containerCaption container name on UI.
+	 * @param categoryEntityName
 	 * @return container.
 	 */
-	public ContainerInterface createCategoryEntityAndContainer(EntityInterface entity, String containerCaption);
+	public ContainerInterface createCategoryEntityAndContainer(EntityInterface entity,
+			String containerCaption, String... categoryEntityName);
 
 	/**
 	 * Set the root category entity of this category.

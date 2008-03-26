@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.common.dynamicextensions.domain.Category;
 import edu.common.dynamicextensions.domain.CategoryAttribute;
 import edu.common.dynamicextensions.domain.CategoryEntity;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
@@ -33,6 +34,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterfa
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
+import edu.common.dynamicextensions.entitymanager.AbstractMetadataManager;
 import edu.common.dynamicextensions.entitymanager.CategoryManager;
 import edu.common.dynamicextensions.entitymanager.CategoryManagerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
@@ -48,14 +50,23 @@ import edu.common.dynamicextensions.processor.ProcessorConstants;
  */
 public class CategoryHelper implements CategoryHelperInterface
 {
+	CategoryManagerInterface categoryManager = CategoryManager.getInstance();
 
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.categoryManager.CategoryHelperInterface#createCtaegory(java.lang.String)
 	 */
-	public CategoryInterface createCategory(String name)
+	public CategoryInterface createCategory(String name) throws DynamicExtensionsSystemException
 	{
-		CategoryInterface category = DomainObjectFactory.getInstance().createCategory();
-		category.setName(name);
+		
+		CategoryInterface category = (CategoryInterface) ((AbstractMetadataManager)categoryManager).getObjectByName
+			(Category.class.getName(), name);
+		
+		if(category == null)
+		{
+			category = DomainObjectFactory.getInstance().createCategory();
+			category.setName(name);	
+		}
+		
 		return category;
 	}
 
@@ -84,10 +95,13 @@ public class CategoryHelper implements CategoryHelperInterface
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.categoryManager.CategoryHelperInterface#createCategoryEntity(java.lang.String, edu.common.dynamicextensions.domaininterface.CategoryInterface[])
 	 */
-	public ContainerInterface createCategoryEntityAndContainer(EntityInterface entity, String containerCaption)
+	public ContainerInterface createCategoryEntityAndContainer(EntityInterface entity,
+			String containerCaption, String... categoryEntityName)
 	{
 		CategoryEntityInterface categoryEntity = DomainObjectFactory.getInstance().createCategoryEntity();
-		categoryEntity.setName(entity.getName() + " Category Entity");
+		String categroyEntityNameI =  (categoryEntityName.length==0?entity.getName() + " Category Entity":
+			categoryEntityName[0]);
+		categoryEntity.setName(categroyEntityNameI);
 		categoryEntity.setEntity(entity);
 
 		ContainerInterface container = createContainer(categoryEntity, containerCaption);

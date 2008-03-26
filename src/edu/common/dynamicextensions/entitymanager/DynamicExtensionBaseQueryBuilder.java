@@ -1555,18 +1555,12 @@ class DynamicExtensionBaseQueryBuilder implements EntityManagerConstantsInterfac
 			try
 			{
 				transaction.commit();
-				connection.close();
 				session.close();
 			}
 			catch (HibernateException e)
 			{
 	            throw new DynamicExtensionsSystemException(
 	                    "Exception occured while commiting trasaction", e, DYEXTN_S_002);
-			}
-			catch (SQLException e)
-			{
-	            throw new DynamicExtensionsSystemException(
-	                    "Exception occured while closing the connection", e, DYEXTN_S_002);
 			}
 		}
         return rollbackQueryStack;

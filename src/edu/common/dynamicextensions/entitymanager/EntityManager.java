@@ -5010,7 +5010,6 @@ public class EntityManager
 				try
 				{
 					rsltSet.close();
-					conn.close();
 					DBUtil.closeConnection();
 				}
 				catch (SQLException e)

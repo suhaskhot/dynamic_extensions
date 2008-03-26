@@ -245,7 +245,6 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 			{
 				resultSet.close();
 				statement.close();
-				con.close();
 				session.close();
 			}
 			catch (SQLException e)

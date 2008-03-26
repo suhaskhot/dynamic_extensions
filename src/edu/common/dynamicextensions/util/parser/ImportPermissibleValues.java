@@ -1,11 +1,7 @@
 package edu.common.dynamicextensions.util.parser;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
@@ -20,7 +16,6 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.CategoryHelper;
 import edu.common.dynamicextensions.util.CategoryHelperInterface;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.FileReader;
 
 /**
  * @author kunal_kamble
@@ -29,13 +24,9 @@ import edu.common.dynamicextensions.util.FileReader;
  */
 public class ImportPermissibleValues {
 	
-	private CSVFileReader reader;
+	private CategoryCSVFileParser categoryCSVFileParser;
 
 	private static final String ENTITY_GROUP = "Entity_Group";
-
-	private static final String PERMISSIBLE_VALUES = "Permissible_Values";
-
-	private static final String PERMISSIBLE_VALUES_FILE = "Permissible_Values_File";
 
 	/**
 	 * 
@@ -46,7 +37,7 @@ public class ImportPermissibleValues {
 	public ImportPermissibleValues(String filePath)
 			throws DynamicExtensionsSystemException, FileNotFoundException {
 		
-		this.reader = new CSVFileReader(filePath); 
+		this.categoryCSVFileParser = new CategoryCSVFileParser(filePath); 
 	}
 
 	/**
@@ -58,36 +49,36 @@ public class ImportPermissibleValues {
 	public void importValues() throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException {
 
-		String[] nextLine = null;
 		CategoryHelperInterface categoryHelper = new CategoryHelper();
 
 		try {
-			while ((nextLine = reader.getNextLine()) != null) {
+			while (categoryCSVFileParser.readNext()) {
 				//first line in the categopry file is Category_Definition
-				if (ENTITY_GROUP.equals(nextLine[0])) {
+				if (ENTITY_GROUP.equals(categoryCSVFileParser.readLine()[0])) {
 					continue;
 				}
 				//1:read the entity group
 				EntityGroupInterface entityGroup = DynamicExtensionsUtility
-						.retrieveEntityGroup(nextLine[0].trim());
+						.retrieveEntityGroup(categoryCSVFileParser.getEntityGroupName());
 
 				EntityInterface currentEntity = null;
-				while ((nextLine = reader.getNextLine()) != null) {
-					if (ENTITY_GROUP.equals(nextLine[0])) {
+				while (categoryCSVFileParser.readNext()) {
+					if (ENTITY_GROUP.equals(categoryCSVFileParser.readLine()[0])) {
 						break;
 					}
-
-					String entityName = getEntityName(nextLine);
+					String entityName = categoryCSVFileParser.getEntityName();
 					currentEntity = entityGroup.getEntityByName(entityName);
 			
-					String attributeName = getAttributeName(nextLine);
-					List<String> pvList = getPermissibleValues(nextLine);
+					String attributeName = categoryCSVFileParser.getAttributeName();
+					
+					List<String> pvList = categoryCSVFileParser.getPermissibleValues();
 					List<PermissibleValueInterface> list = categoryHelper.createPermissibleValuesList
 					(currentEntity,attributeName, pvList);
+					
 					AttributeTypeInformationInterface attributeTypeInformation = currentEntity.getAttributeByName
-					(attributeName).getAttributeTypeInformation();
+						(attributeName).getAttributeTypeInformation();
 					UserDefinedDEInterface userDefinedDE = (UserDefinedDEInterface) attributeTypeInformation.
-					getDataElement();
+						getDataElement();
 					
 					if(userDefinedDE == null)
 					{
@@ -109,84 +100,21 @@ public class ImportPermissibleValues {
 				
 			}
 		} catch (IOException e) {
-			throw new DynamicExtensionsSystemException("Line number:"+ reader.getLineNumber()+"Error while reading csv file " 
-					+ reader.getFilePath(), e);
+			throw new DynamicExtensionsSystemException("Line number:"+ categoryCSVFileParser.getLineNumber()+"Error while reading csv file " 
+					+ categoryCSVFileParser.getFilePath(), e);
 		}
 
 	}
 
-	private String getAttributeName(String[] nextLine) {
-		return nextLine[0].split(":")[1].trim();
-	}
-
-	private String getEntityName(String[] nextLine) {
-		return nextLine[0].split(":")[0].trim();
-	}
-
-	/**
-	 * @param nextLine
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 */
-	private List<String> getPermissibleValues(String[] nextLine)
-			throws DynamicExtensionsSystemException {
-		//counter for to locate the start of the permissible values
-		int i;
-		boolean permissibleValuesPresent = false;
-		for (i = 0; i < nextLine.length; i++) {
-			if (nextLine[i].startsWith(PERMISSIBLE_VALUES)
-					|| nextLine[i].startsWith(PERMISSIBLE_VALUES_FILE)) {
-				permissibleValuesPresent = true;
-				break;
-			}
-		}
-		if (!permissibleValuesPresent) {
-			return null;
-		}
-
-		String[] tempString = nextLine[i].split("~");
-		String permissibleValueKey = tempString[0];
-
-		List<String> permissibleValues = new ArrayList<String>();
-		if (PERMISSIBLE_VALUES.equals(permissibleValueKey)) {
-			String[] pv = tempString[1].split(":");
-			for (i = 0; i < pv.length; i++) {
-				permissibleValues.add(pv[i]);
-			}
-		} else if (PERMISSIBLE_VALUES_FILE.equals(permissibleValueKey)) {
-			String filePath = tempString[1];
-			try {
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(new FileInputStream(
-								FileReader.getSystemIndependantFilePath(filePath))));
-				String line = null;
-				while ((line = reader.readLine()) != null) {
-					permissibleValues.add(line.trim());
-				}
-			} catch (FileNotFoundException e) {
-				throw new DynamicExtensionsSystemException(
-						"Error while reading permissible values file "
-								+ filePath, e);
-			} catch (IOException e) {
-				throw new DynamicExtensionsSystemException(
-						"Error while reading permissible values file "
-								+ filePath, e);
-			}
-
-		}
-		return permissibleValues;
-	}
-	
-	
 	public static void main(String args[]) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		try
 		{
-			if (args.length == 0)
+			/*if (args.length == 0)
 			{
 				throw new Exception("Please Specify the path for .csv file");
-			}
-			String filePath = args[0];
+			}*/
+			String filePath = "E:/ClinPortal/models/3-24-08/referringinfo_pv.csv";//args[0];
 			System.out.println("---- The .csv file path is " + filePath + " ----");
 			ImportPermissibleValues importPermissibleValues = new ImportPermissibleValues(filePath);
 			importPermissibleValues.importValues();

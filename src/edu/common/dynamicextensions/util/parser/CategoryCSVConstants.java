@@ -35,5 +35,14 @@ public interface CategoryCSVConstants
 	 * This keyword used to define the lable for the form
 	 */
 	String DISPLAY_LABLE = "Display_Label";
+	
+	/**
+	 * This keyword used to define the lable for the form
+	 */
+	String SINGLE = "single";
+	/**
+	 * This keyword used to define the lable for the form
+	 */
+	String MULTILINE = "multiline";
 
 }

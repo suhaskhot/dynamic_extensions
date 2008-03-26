@@ -88,7 +88,7 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
      * @param objectName objectName
      * @return DynamicExtensionBaseDomainObjectInterface
      */
-    protected DynamicExtensionBaseDomainObjectInterface getObjectByName(String className, String objectName) throws DynamicExtensionsSystemException
+    public DynamicExtensionBaseDomainObjectInterface getObjectByName(String className, String objectName) throws DynamicExtensionsSystemException
     {
         DynamicExtensionBaseDomainObjectInterface object = null;
 

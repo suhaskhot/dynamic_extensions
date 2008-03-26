@@ -16,6 +16,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -257,9 +258,9 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 				AttributeTypeInformationInterface attributeTypeInformationInterface = ((AttributeInterface) currentAttribute)
 						.getAttributeTypeInformation();
 
-				if (attributeTypeInformationInterface instanceof DoubleAttributeTypeInformation)
+				if (attributeTypeInformationInterface instanceof NumericAttributeTypeInformation)
 				{
-					int decimalPlaces = ((DoubleAttributeTypeInformation) attributeTypeInformationInterface).getDecimalPlaces();
+					int decimalPlaces = ((NumericAttributeTypeInformation) attributeTypeInformationInterface).getDecimalPlaces();
 					String value = (String) recordMap.get(currentAttribute);
 					int placesAfterDecimal = value.length() - (value.indexOf(".") + 1);
 

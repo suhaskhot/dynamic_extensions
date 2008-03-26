@@ -27,6 +27,7 @@ import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.FileExtension;
+import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.userinterface.AbstractContainmentControl;
 import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
@@ -562,10 +563,10 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			{
 				AttributeTypeInformationInterface attributeTypeInformationInterface = ((AttributeMetadataInterface) abstractAttribute)
 						.getAttributeTypeInformation();
-				if (attributeTypeInformationInterface instanceof DoubleAttributeTypeInformation)
+				if (attributeTypeInformationInterface instanceof NumericAttributeTypeInformation)
 				{
 					value = rectifyNumberPrecision(
-							(DoubleAttributeTypeInformation) attributeTypeInformationInterface,
+							(NumericAttributeTypeInformation) attributeTypeInformationInterface,
 							value.trim());
 				}
 			}
@@ -582,11 +583,11 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @return
 	 */
 	private String rectifyNumberPrecision(
-			DoubleAttributeTypeInformation doubleAttributeTypeInformation, String value)
+			NumericAttributeTypeInformation numericAttributeTypeInformation, String value)
 	{
 		if (DynamicExtensionsUtility.isNumeric(value) && (value.indexOf(".") != -1))
 		{
-			Integer decimalPlaces = doubleAttributeTypeInformation.getDecimalPlaces();
+			Integer decimalPlaces = numericAttributeTypeInformation.getDecimalPlaces();
 			StringBuffer decimalFormat = new StringBuffer("#");
 			if (decimalPlaces > 0)
 			{

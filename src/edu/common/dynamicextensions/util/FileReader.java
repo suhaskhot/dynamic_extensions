@@ -13,7 +13,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 public class FileReader
 {
 
-	protected String filePath;
+	private String filePath;
 	
 	/**
 	 * @param filePath file path

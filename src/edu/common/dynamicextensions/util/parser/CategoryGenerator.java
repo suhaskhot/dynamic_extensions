@@ -201,8 +201,8 @@ public class CategoryGenerator
 		ContainerInterface containerInterface = null;
 		CategoryHelperInterface categoryHelper = new CategoryHelper();
 
-		containerInterface = categoryHelper.createCategoryEntityAndContainer(entityInterface,categoryEntityName,
-				displayLable);
+		containerInterface = categoryHelper.createCategoryEntityAndContainer(entityInterface,displayLable,
+				categoryEntityName);
 
 		containerInterface.setAddCaption(showCaption);
 
@@ -384,13 +384,14 @@ public class CategoryGenerator
 	public static void main(String args[]) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, URISyntaxException,
 			IOException
 	{
-		CategoryGenerator categoryFileParser = new CategoryGenerator("E:/ClinPortal/models/3-24-08/category_referringInfo_ver2_single_entity.csv");
+		CategoryGenerator categoryFileParser = new CategoryGenerator(
+				"E:/ClinPortal/models/3-24-08/category_referringInfo_ver2_single_entity.csv");
 		CategoryHelper categoryHelper = new CategoryHelper();
 
 		List<CategoryInterface> list = categoryFileParser.getCategoryList();
 		for (CategoryInterface category : list)
 		{
-		//	categoryHelper.saveCategory(category);
+			//categoryHelper.saveCategory(category);
 			System.out.println("saved category " + category.getName());
 		}
 

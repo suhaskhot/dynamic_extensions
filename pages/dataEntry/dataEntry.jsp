@@ -27,6 +27,12 @@
 <script src="<%=request.getContextPath()%>/jss/calendarComponent.js"></script>
 <script src="<%=request.getContextPath()%>/jss/ajax.js"></script>
 
+<script language="JavaScript" type="text/javascript" src="<%=request.getContextPath()%>/jss/prototype.js"></script>
+<script language="JavaScript" type="text/javascript" src="<%=request.getContextPath()%>/jss/scriptaculous.js"></script>
+<script language="JavaScript" type="text/javascript" src="<%=request.getContextPath()%>/jss/scr.js"></script>
+<script language="JavaScript" type="text/javascript" src="<%=request.getContextPath()%>/jss/combobox.js"></script>
+
+
 <c:set var="containerInterface" value="${dataEntryForm.containerInterface}"/>
 <jsp:useBean id="containerInterface" type="edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface"/>
 

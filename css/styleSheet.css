@@ -272,15 +272,7 @@ FORM BEGINS
   border-left:1px solid #5C5C5C; /* constant: dark gray */
   border-bottom:1px solid #5C5C5C; /* constant: dark gray */
 }
-.formRequiredNoticeWithTopBorder{ /* for the asterisk cell */
-  font-family:arial,helvetica,verdana,sans-serif;
-  font-size:1em;
-  background-color:#F4F4F5; /* constant: light gray */
-  color:#000000; /* constant: black */
-  border-left:1px solid #5C5C5C; /* constant: dark gray */
-  border-top:1px solid #5C5C5C; /* constant: dark gray */
-  border-bottom:1px solid #5C5C5C; /* constant: dark gray */
-}
+
 .formRequiredNoticeWithoutBorder{ /* for the asterisk cell */
   font-family:arial,helvetica,verdana,sans-serif;
   font-size:1em;
@@ -377,17 +369,6 @@ FORM BEGINS
   font-weight:bold;
   background-color:#F4F4F5; /* constant: light gray */
   color:#000000; /* constant: black */
-  border-left:1px solid #5C5C5C; /* constant: dark gray */
-  border-bottom:1px solid #5C5C5C; /* constant: dark gray */
-  border-right:1px solid #5C5C5C; /* constant: dark gray */
-}
-.formFieldContainerWithTopBorder{ /* for the Container as a field during Containment */
-  font-family:arial,helvetica,verdana,sans-serif;
-  font-size:0.7em;
-  font-weight:bold;
-  background-color:#F4F4F5; /* constant: light gray */
-  color:#000000; /* constant: black */
-  border-top:1px solid #5C5C5C; /* constant: dark gray */
   border-left:1px solid #5C5C5C; /* constant: dark gray */
   border-bottom:1px solid #5C5C5C; /* constant: dark gray */
   border-right:1px solid #5C5C5C; /* constant: dark gray */
@@ -536,17 +517,6 @@ td.formSerialNumberField{ /* for the cell that contains the Serial Number */
   text-align:left;
 }
 
-.formLabelWithTopBorder{ /* for the non-required form labels */
-  font-family:arial,helvetica,verdana,sans-serif;
-  font-size:0.7em;
-  background-color:#F4F4F5; /* constant: light gray */
-  color:#000000; /* constant: black */
-  border-right:1px solid #5C5C5C; /* constant: dark gray */
-  border-top:1px solid #5C5C5C; /* constant: dark gray */
-  border-bottom:1px solid #5C5C5C; /* constant: dark gray */
-  text-align:left;
-}
-
 .formLabelBorderless
 { 
 	border-top:1px solid #00000; /* constant: dark gray */
@@ -562,6 +532,30 @@ td.formSerialNumberField{ /* for the cell that contains the Serial Number */
   border-bottom:1px solid #5C5C5C; /* constant: dark gray */
   text-align:left;
 }
+
+div.autocomplete {
+      position:absolute;
+      width:250px;
+      background-color:white;
+      border:1px solid #888;
+      margin:0px;
+      padding:0px;
+      overflow:auto; 
+    }
+    div.autocomplete ul {
+      list-style-type:none;
+      margin:0px;
+      padding:0px;
+    }
+    div.autocomplete ul li.selected { background-color: #ffb;}
+    div.autocomplete ul li {
+      list-style-type:none;
+      margin:0;
+      padding:2px;
+	  cursor:pointer;
+	  overflow:auto;
+    }
+
 .formLabelLeftBorderless{ /* for the non-required form labels */
   font-family:arial,helvetica,verdana,sans-serif;
   font-size:0.7em;

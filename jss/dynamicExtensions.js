@@ -1331,6 +1331,7 @@ function addRow(containerId)
     var div = document.getElementById(divName);
 
     var tab = div.childNodes[0];
+    
     tableId = containerId + "_table";
     var table = document.getElementById (tableId);
     var rows = table.rows;
@@ -1343,7 +1344,7 @@ function addRow(containerId)
     {
         var newCell = newRow.insertCell(i);
         newCell.className = cells[i].className;
-
+		
         newCell.innerHTML = cells[i].innerHTML;
         newCell = setDefaultValues(tableId, newCell);
     }
@@ -1355,6 +1356,17 @@ function addRow(containerId)
 
     currentRowCounter1 = currentRowCounter.value;
     document.getElementById(hiddenVar).value = parseInt(currentRowCounter1) + 1;
+    
+    //Added by Prashant for autocomplete drop down
+    var x = document.getElementsByTagName("script"); 
+    for(var i=0;i<x.length;i++)
+    {
+	  if(x[i].text!='')
+	  {
+       		eval(x[i].text);
+	  }
+    }
+   
 }
 
 function removeCheckedRow(containerId)

@@ -110,11 +110,11 @@ public class ImportPermissibleValues {
 	{
 		try
 		{
-			/*if (args.length == 0)
+			if (args.length == 0)
 			{
 				throw new Exception("Please Specify the path for .csv file");
-			}*/
-			String filePath = "E:/ClinPortal/models/3-24-08/referringinfo_pv.csv";//args[0];
+			}
+			String filePath = args[0];
 			System.out.println("---- The .csv file path is " + filePath + " ----");
 			ImportPermissibleValues importPermissibleValues = new ImportPermissibleValues(filePath);
 			importPermissibleValues.importValues();

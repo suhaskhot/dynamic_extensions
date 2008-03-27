@@ -163,5 +163,12 @@
 			   		where association.entity.id = ?
 	</query>
 	
+	<query name="getAllEntityInformationObjectsForGroup">
+			select entity.id,entity.name
+			   from edu.common.dynamicextensions.domain.Entity entity
+			   		join entity.entityGroupCollection entityGroup
+                         where entityGroup.name = ?
+	</query>
+	
 	
 </hibernate-mapping>

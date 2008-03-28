@@ -156,6 +156,10 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 		return null;
 	}
 
+	public void clearDataElementCollection()
+	{
+		dataElementCollection = null;
+	}
 	/**
 	 * 
 	 * @param dataElementInterface

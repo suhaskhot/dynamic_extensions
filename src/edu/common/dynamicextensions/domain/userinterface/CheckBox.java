@@ -4,7 +4,6 @@ package edu.common.dynamicextensions.domain.userinterface;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 
 /**
@@ -43,7 +42,7 @@ public class CheckBox extends Control implements CheckBoxInterface
         }
 
         String htmlComponentName = getHTMLComponentName();
-        if (checked.equals("true"))
+        if (checked != null && checked.equals("true"))
         {
             htmlString = "<input type='checkbox' class='" + this.cssClass + "' name='"
                     + htmlComponentName + "' checkedValue='"

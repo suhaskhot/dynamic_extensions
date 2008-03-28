@@ -7,10 +7,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
-import edu.common.dynamicextensions.ui.webui.taglib.AutoCompleteTag;
 import edu.wustl.common.beans.NameValueBean;
-
-
 
 /**
  * @version 1.0
@@ -45,11 +42,8 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 	 */
 	public String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
-		AutoCompleteTag autoCompleteTag = new AutoCompleteTag();
-		autoCompleteTag.setProperty(getHTMLComponentName());
-		
-		/*String htmlString = "<SELECT class='" + cssClass + "' name='" + getHTMLComponentName()
-				+ "' " + "id='" + getHTMLComponentName() + "'>";*/
+		String htmlString = "<SELECT class='" + cssClass + "' name='" + getHTMLComponentName()
+				+ "' " + "id='" + getHTMLComponentName() + "'>";
 
 		String defaultValue = "";
 		if (this.value != null)
@@ -85,7 +79,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 			nameValueBeanList = ControlsUtility.populateListOfValues(this);
 		}
 
-		/*if (nameValueBeanList != null && nameValueBeanList.size() > 0)
+		if (nameValueBeanList != null && nameValueBeanList.size() > 0)
 		{
 			for (NameValueBean nameValueBean : nameValueBeanList)
 			{
@@ -101,11 +95,8 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 				}
 			}
 		}
-		htmlString += "</SELECT>";*/
-		
-		autoCompleteTag.setInitialValue(defaultValue);
-		autoCompleteTag.setOptionsList(nameValueBeanList);
-		String htmlString = autoCompleteTag.getAutocompleteHTML();
+		htmlString += "</SELECT>";
+
 		return htmlString;
 	}
 

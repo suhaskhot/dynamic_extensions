@@ -10,6 +10,7 @@ import java.util.Set;
 
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -55,8 +56,9 @@ public class CategoryGenerationUtil
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public static ContainerInterface getRootContainer(List<ContainerInterface> containerCollection, Map<String, List<String>> paths,
-			Map<String, List<String>> absolutePath) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public static void setRootContainer(CategoryInterface category, List<ContainerInterface> containerCollection, 
+			Map<String, List<String>> paths,Map<String, List<String>> absolutePath) 
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 
 		ContainerInterface rootContainer = null;
@@ -70,6 +72,7 @@ public class CategoryGenerationUtil
 			}
 		}
 
+		CategoryHelperInterface categoryHelper = new CategoryHelper();
 		for (String entityName : absolutePath.keySet())
 		{
 			if (absolutePath.get(entityName).size() == 1)
@@ -79,9 +82,9 @@ public class CategoryGenerationUtil
 				{
 					EntityGroupInterface entityGroup = categoryEntityInterface.getEntity().getEntityGroup();
 					EntityInterface entity = entityGroup.getEntityByName(entityName);
-
-					CategoryHelperInterface categoryHelper = new CategoryHelper();
-					ContainerInterface newRootContainer = categoryHelper.createCategoryEntityAndContainer(entity, null);
+					
+					ContainerInterface newRootContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(entity,
+							null,category);
 					newRootContainer.setAddCaption(false);
 
 					categoryHelper.associateCategoryContainers(newRootContainer, rootContainer, paths.get(categoryEntityInterface.getEntity()
@@ -92,7 +95,7 @@ public class CategoryGenerationUtil
 				}
 			}
 		}
-		return rootContainer;
+		categoryHelper.setRootCategoryEntity(rootContainer, category);
 	}
 	
 	/**

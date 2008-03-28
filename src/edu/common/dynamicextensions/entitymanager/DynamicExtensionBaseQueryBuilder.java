@@ -2076,7 +2076,11 @@ class DynamicExtensionBaseQueryBuilder
 		}
 		else
 		{
-			formattedvalue = value.toString();
+			// quick fix.
+			if (value instanceof List)
+				formattedvalue = ((List)value).get(0).toString();
+			else
+				formattedvalue = value.toString();
 		}
 		Logger.out.debug("getFormattedValue The formatted value for attribute " + attribute.getName() + "is " + formattedvalue);
 		return formattedvalue;

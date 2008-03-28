@@ -45,5 +45,40 @@ public class Category extends AbstractMetadata implements CategoryInterface
     public void setRootCategoryElement(CategoryEntityInterface rootCategoryElement) {
         this.rootCategoryElement = (CategoryEntity)rootCategoryElement;
     }
+    
+    /**
+     * @param categoryEntity
+     * @param categoryEntityName
+     * @return
+     */
+    public CategoryEntityInterface getCategoryEntityByName(CategoryEntityInterface categoryEntity,
+    		String categoryEntityName)
+    {
+    	CategoryEntityInterface searchedCategoryEntity = null;
+    	if(categoryEntity == null)
+    	{
+    		return searchedCategoryEntity;
+    	}
+    	if(categoryEntity.getName().equals(categoryEntityName))
+    	{
+    		return categoryEntity;
+    	}
+    	for(CategoryEntityInterface categoryEntityInterface: categoryEntity.getChildCategories())
+    	{
+    		if(categoryEntityInterface.getName().equals(categoryEntityName))
+    		{
+    			searchedCategoryEntity =  categoryEntityInterface;
+    			break;
+    		}
+    		
+    		if(categoryEntityInterface.getChildCategories().size() > 0)
+    		{
+    			searchedCategoryEntity =  getCategoryEntityByName(categoryEntityInterface, categoryEntityName);
+    		}
+    		
+    	}
+    	
+    	return searchedCategoryEntity;
+    }
 
 }

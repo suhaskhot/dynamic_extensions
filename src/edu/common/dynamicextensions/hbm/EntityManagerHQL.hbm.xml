@@ -158,7 +158,7 @@
 	
 	<query name="getAssociationInformationObjectsForEntity">
 			select association.name,association.id,association.sourceRole.name,association.targetRole.name,
-				   association.entity.name,association.targetEntity.name	
+				   association.entity.name,association.targetEntity.name, association.entity.id, association.targetEntity.id
 			   from edu.common.dynamicextensions.domain.Association association
 			   		where association.entity.id = ?
 	</query>

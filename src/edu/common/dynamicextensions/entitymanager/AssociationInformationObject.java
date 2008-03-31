@@ -1,6 +1,6 @@
 package edu.common.dynamicextensions.entitymanager;
 
-public class AssociationInformationObject 
+public class AssociationInformationObject implements NameInformationInterface
 {
 
 	/**
@@ -31,6 +31,16 @@ public class AssociationInformationObject
 	 * 
 	 */
 	String targetEntityName;
+	
+	/**
+	 * 
+	 */
+	protected Long sourceEntityId;
+	
+	/**
+	 * 
+	 */
+	protected Long targetEntityId;
 
 	/**
 	 * 
@@ -41,13 +51,15 @@ public class AssociationInformationObject
 	 * @param sourceEntityName2
 	 * @param targetEntityName2
 	 */
-	public AssociationInformationObject(String name, Long identifier, String sourceRoleName, String targetRoleName, String sourceEntityName, String targetEntityName) {
+	public AssociationInformationObject(String name, Long identifier, String sourceRoleName, String targetRoleName, String sourceEntityName, String targetEntityName, Long sourceEntityIdentifier,  Long targetEntityIdentifier) {
 		this.name = name;
 		this.identifier = identifier;
 		this.sourceRoleName = sourceRoleName;
 		this.targetRoleName = targetRoleName;
 		this.sourceEntityName = sourceEntityName;
 		this.targetEntityName = targetEntityName;
+		this.sourceEntityId = sourceEntityIdentifier;
+		this.targetEntityId = targetEntityIdentifier;
 	}
 
 	/**
@@ -144,5 +156,37 @@ public class AssociationInformationObject
 	 */
 	public void setTargetRoleName(String targetRoleName) {
 		this.targetRoleName = targetRoleName;
+	}
+
+	/**
+	 * @return the sourceEntityId
+	 */
+	public Long getSourceEntityId()
+	{
+		return sourceEntityId;
+	}
+
+	/**
+	 * @param sourceEntityId the sourceEntityId to set
+	 */
+	public void setSourceEntityId(Long sourceEntityId)
+	{
+		this.sourceEntityId = sourceEntityId;
+	}
+
+	/**
+	 * @return the targetEntityId
+	 */
+	public Long getTargetEntityId()
+	{
+		return targetEntityId;
+	}
+
+	/**
+	 * @param targetEntityId the targetEntityId to set
+	 */
+	public void setTargetEntityId(Long targetEntityId)
+	{
+		this.targetEntityId = targetEntityId;
 	}
 }

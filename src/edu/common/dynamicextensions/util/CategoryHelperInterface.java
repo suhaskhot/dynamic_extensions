@@ -59,12 +59,12 @@ public interface CategoryHelperInterface
 	};
 
 	/**
-	 * Create category with the given name.
+	 * Create a new category if category with the given name does not exist.
 	 * @param name name by which we wish to create the category.
 	 * @return category 
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public CategoryInterface createCategory(String name)throws DynamicExtensionsSystemException;
+	public CategoryInterface getCategory(String name)throws DynamicExtensionsSystemException;
 
 	/**
 	 * Saves a category.
@@ -78,12 +78,14 @@ public interface CategoryHelperInterface
 	 * Create category container and category entity from given entity.
 	 * @param entity entity used to create a category entity and category container.
 	 * @param containerCaption container name on UI.
+	 * @param CategoryInterface category
 	 * @param categoryEntityName
 	 * @return container.
 	 */
-	public ContainerInterface createCategoryEntityAndContainer(EntityInterface entity,
-			String containerCaption, String... categoryEntityName);
+	public ContainerInterface createOrUpdateCategoryEntityAndContainer(EntityInterface entity,
+			String containerCaption, CategoryInterface category, String... categoryEntityName);
 
+	
 	/**
 	 * Set the root category entity of this category.
 	 * @param container root category entity's container.
@@ -99,12 +101,12 @@ public interface CategoryHelperInterface
 	 * @param entity used to create a category entity.
 	 * @param attributeName name of the attribute belonging to the entity.
 	 * @param container the container created for category entity to which we wish to add a control.
-	 * @param controlValue type of control to be created. (e.g. ControlEnum.TEXT_FIELD_CONTROL)
+	 * @param controlType type of control to be created. (e.g. ControlEnum.TEXT_FIELD_CONTROL)
 	 * @param permissibleValues in case of radio buttons, lists and combo boxes, the list of permissible values is required, optional otherwise.
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public ControlInterface addControl(EntityInterface entity, String attributeName, ContainerInterface container, ControlEnum controlValue,
+	public ControlInterface addOrUpdateControl(EntityInterface entity, String attributeName, ContainerInterface container, ControlEnum controlType,
 			String controlCaption, List<String>... permissibleValues) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**

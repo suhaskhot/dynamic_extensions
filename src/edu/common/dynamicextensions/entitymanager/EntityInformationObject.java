@@ -3,7 +3,7 @@ package edu.common.dynamicextensions.entitymanager;
 import java.util.Collection;
 import java.util.HashSet;
 
-public class EntityInformationObject {
+public class EntityInformationObject implements NameInformationInterface {
 	
 	/**
 	 * 

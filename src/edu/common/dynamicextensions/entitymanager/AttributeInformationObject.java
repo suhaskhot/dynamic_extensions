@@ -1,6 +1,6 @@
 package edu.common.dynamicextensions.entitymanager;
 
-public class AttributeInformationObject {
+public class AttributeInformationObject implements NameInformationInterface {
 	
 	/**
 	 * 

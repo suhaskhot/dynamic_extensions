@@ -11,6 +11,7 @@ import java.util.List;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
+import edu.common.dynamicextensions.entitymanager.NameInformationInterface;
 
 /**
  * This is an abstract class extended by Entity, Entity group, Attribute.
@@ -22,7 +23,7 @@ import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
  */
 public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 		implements
-			AbstractMetadataInterface
+			AbstractMetadataInterface, NameInformationInterface
 			
 {
 

@@ -5002,9 +5002,12 @@ public class EntityManager
 			String targetRoleName = (String) objectArrayForAssociationBeans[3];
 			String sourceEntityName = (String) objectArrayForAssociationBeans[4];
 			String targetEntityName = (String) objectArrayForAssociationBeans[5];
+			Long sourceEntityId = (Long) objectArrayForAssociationBeans[6];
+			Long targetEntityId = (Long) objectArrayForAssociationBeans[7];
+			
 
 			associationInformationObjectList.add(new AssociationInformationObject(associationName, associationIdentifier, sourceRoleName,
-					targetRoleName, sourceEntityName, targetEntityName));
+					targetRoleName, sourceEntityName, targetEntityName, sourceEntityId, targetEntityId));
 		}
 		return associationInformationObjectList;
 	}

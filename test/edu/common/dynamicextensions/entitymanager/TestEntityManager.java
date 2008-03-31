@@ -3412,19 +3412,19 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		{
 			MockEntityManager mock = new MockEntityManager();
 			entityGroup = (EntityGroup) mock.initializeEntityGroup();
-			
+
 			for (int i = 0; i < 5; i++)
 			{
 				Entity entity = (Entity) mock.initializeEntity();
 				entityGroup.addEntity(entity);
 				entity.addEntityGroupInterface(entityGroup);
 			}
-			
+
 			entityGroup = (EntityGroup) EntityManager.getInstance().persistEntityGroup(entityGroup);
-			
+
 			List<EntityInformationObject> entityInformationObjectList = EntityManager.getInstance().getAllEntityInformationObjectsByGroupName(
 					entityGroup.getName());
-			
+
 			assertNotNull(entityInformationObjectList);
 			assertFalse(entityInformationObjectList.size() == 0);
 		}
@@ -3432,6 +3432,76 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		{
 			fail();
 			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * This test case test for retrieving association information for an entity under a particular entity group. 
+	 */
+	public void testRetrieveAssociationInformationObject()
+	{
+		try
+		{
+			EntityGroupInterface entityGroup = DomainObjectFactory.getInstance().createEntityGroup();
+			entityGroup.setName("EG1");
+			entityGroup.setShortName("E1");
+			entityGroup.setLongName("ENTITY GROUP 1");
+			
+			EntityInterface person = DomainObjectFactory.getInstance().createEntity();
+			person.setName("Person");
+			
+			AttributeInterface name = DomainObjectFactory.getInstance().createStringAttribute();
+			name.setName("XYZ");
+			person.addAbstractAttribute(name);
+			name.setEntity(person);
+			
+			EntityInterface address = DomainObjectFactory.getInstance().createEntity();
+			address.setName("Address");
+			
+			AttributeInterface postalCode = DomainObjectFactory.getInstance().createStringAttribute();
+			postalCode.setName("Postal Code");
+			address.addAbstractAttribute(postalCode);
+			postalCode.setEntity(address);
+			
+			AssociationInterface association = DomainObjectFactory.getInstance().createAssociation();
+			association.setTargetEntity(address);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("PersonalInformation");
+			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "person", Cardinality.ONE, Cardinality.ONE));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "personalInformation", Cardinality.ONE, Cardinality.MANY));
+
+			person.addAssociation(association);
+			
+			entityGroup.addEntity(person);
+			entityGroup.addEntity(address);
+			person.addEntityGroupInterface(entityGroup);
+			address.addEntityGroupInterface(entityGroup);
+			
+			entityGroup = (EntityGroup) EntityManager.getInstance().persistEntityGroup(entityGroup);
+
+			List<EntityInformationObject> entityInformationObjectList = EntityManager.getInstance().getAllEntityInformationObjectsByGroupName(
+					entityGroup.getName());
+
+			assertNotNull(entityInformationObjectList);
+			assertFalse(entityInformationObjectList.size() == 0);
+
+			EntityInformationObject entityInformationObject = entityInformationObjectList.get(1);
+
+			List<AssociationInformationObject> associationInformationObjectList = new ArrayList(entityInformationObject
+					.getAssociationInformationObjectCollection());
+
+			assertNotNull(associationInformationObjectList);
+			assertFalse(associationInformationObjectList.size() == 0);
+			
+			AssociationInformationObject associationInformationObject = associationInformationObjectList.get(0);
+			assertEquals(associationInformationObject.getName(), "PersonalInformation");
+			assertEquals(associationInformationObject.getSourceEntityName(), "Person");
+			assertEquals(associationInformationObject.getTargetEntityName(), "Address");
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
 		}
 	}
 

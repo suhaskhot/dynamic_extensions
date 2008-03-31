@@ -118,7 +118,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	 */
 	public String getDisplyLable()
 	{
-		return readLine()[0].split(":")[1];
+		return readLine()[0].split(":")[1].trim();
 	}
 
 	/**
@@ -269,12 +269,12 @@ public class CategoryCSVFileParser extends CategoryFileParser
 
 	public String getTargetContainerCaption()
 	{
-		return readLine()[0].split(":")[1];
+		return readLine()[0].split(":")[1].trim();
 	}
 
 	public String getMultiplicity()
 	{
-		return readLine()[0].split(":")[2];
+		return readLine()[0].split(":")[2].trim();
 	}
 
 	public Map<String, String> getControlOptions()

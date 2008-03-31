@@ -125,16 +125,16 @@ public class TestCategoryDemo extends DynamicExtensionsBaseTestCase
 			UserDefinedDEInterface userDefinedDE = factory.createUserDefinedDE();
 
 			PermissibleValueInterface permissibleValue1 = factory.createStringValue();
-			((StringValue) permissibleValue1).setValue("Underweight: 18.5 or below");
+			((StringValue) permissibleValue1).setValue("Underweight 18.5 or below");
 
 			PermissibleValueInterface permissibleValue2 = factory.createStringValue();
-			((StringValue) permissibleValue2).setValue("Healthy Weight: 18.5 - 24.9");
+			((StringValue) permissibleValue2).setValue("Healthy Weight 18.5 - 24.9");
 
 			PermissibleValueInterface permissibleValue3 = factory.createStringValue();
-			((StringValue) permissibleValue3).setValue("Overweight: 25.0 - 29.9");
+			((StringValue) permissibleValue3).setValue("Overweight 25.0 - 29.9");
 
 			PermissibleValueInterface permissibleValue4 = factory.createStringValue();
-			((StringValue) permissibleValue4).setValue("Obese: 30.0 and above");
+			((StringValue) permissibleValue4).setValue("Obese 30.0 and above");
 
 			userDefinedDE.addPermissibleValue(permissibleValue1);
 			userDefinedDE.addPermissibleValue(permissibleValue2);
@@ -222,6 +222,12 @@ public class TestCategoryDemo extends DynamicExtensionsBaseTestCase
 			PermissibleValueInterface permissibleValue10 = factory.createStringValue();
 			((StringValue) permissibleValue10).setValue("other");
 
+			PermissibleValueInterface permissibleValue21 = factory.createStringValue();
+			((StringValue) permissibleValue21).setValue("African-American");
+
+			PermissibleValueInterface permissibleValue22 = factory.createStringValue();
+			((StringValue) permissibleValue22).setValue("Caucasian");
+
 			userDefinedDE2.addPermissibleValue(permissibleValue4);
 			userDefinedDE2.addPermissibleValue(permissibleValue5);
 			userDefinedDE2.addPermissibleValue(permissibleValue6);
@@ -229,6 +235,8 @@ public class TestCategoryDemo extends DynamicExtensionsBaseTestCase
 			userDefinedDE2.addPermissibleValue(permissibleValue8);
 			userDefinedDE2.addPermissibleValue(permissibleValue9);
 			userDefinedDE2.addPermissibleValue(permissibleValue10);
+			userDefinedDE2.addPermissibleValue(permissibleValue21);
+			userDefinedDE2.addPermissibleValue(permissibleValue22);
 
 			StringAttributeTypeInformation ethnicityTypeInfo = (StringAttributeTypeInformation) ethnicity.getAttributeTypeInformation();
 			ethnicityTypeInfo.setDataElement(userDefinedDE2);
@@ -391,21 +399,21 @@ public class TestCategoryDemo extends DynamicExtensionsBaseTestCase
 			// Create category.
 			CategoryHelperInterface categoryHelper = new CategoryHelper();
 
-			CategoryInterface category = categoryHelper.createCategory("Vitals Category");
+			CategoryInterface category = categoryHelper.getCategory("Vitals Category");
 
 			// Create category entity from VitalSigns entity.
-			ContainerInterface vitalsContainer = categoryHelper.createCategoryEntityAndContainer(vitals, "Vitals");
+			ContainerInterface vitalsContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(vitals, "Vitals", category);
 
 			// Set the root category entity.
 			categoryHelper.setRootCategoryEntity(vitalsContainer, category);
 
 			// Create category attribute(s) for VitalSigns category entity.
-			categoryHelper.addControl(vitals, "heartRate", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Pulse");
-			categoryHelper.addControl(vitals, "diastolicBloodPressure", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Diastolic BP");
-			categoryHelper.addControl(vitals, "systolicBloodPressure", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Systolic BP");
-			categoryHelper.addControl(vitals, "weight", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Weight (kg)");
-			categoryHelper.addControl(vitals, "height", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Height (cm)");
-			categoryHelper.addControl(vitals, "respiratoryRate", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Respiration");
+			categoryHelper.addOrUpdateControl(vitals, "heartRate", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Pulse");
+			categoryHelper.addOrUpdateControl(vitals, "diastolicBloodPressure", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Diastolic BP");
+			categoryHelper.addOrUpdateControl(vitals, "systolicBloodPressure", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Systolic BP");
+			categoryHelper.addOrUpdateControl(vitals, "weight", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Weight (kg)");
+			categoryHelper.addOrUpdateControl(vitals, "height", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Height (cm)");
+			categoryHelper.addOrUpdateControl(vitals, "respiratoryRate", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Respiration");
 
 			// Save the category.
 			categoryHelper.saveCategory(category);
@@ -439,10 +447,10 @@ public class TestCategoryDemo extends DynamicExtensionsBaseTestCase
 			// Create category.
 			CategoryHelperInterface categoryHelper = new CategoryHelper();
 
-			CategoryInterface category = categoryHelper.createCategory("Vitals Category with permissible values");
+			CategoryInterface category = categoryHelper.getCategory("Vitals Category with permissible values");
 
 			// Create category entity from VitalSigns entity.
-			ContainerInterface vitalsContainer = categoryHelper.createCategoryEntityAndContainer(vitals, "Vitals");
+			ContainerInterface vitalsContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(vitals, "Vitals", category);
 
 			// Set the root category entity.
 			categoryHelper.setRootCategoryEntity(vitalsContainer, category);
@@ -454,13 +462,13 @@ public class TestCategoryDemo extends DynamicExtensionsBaseTestCase
 			desiredPermissibleValues.add("Obese: 30.0 and above");
 
 			// Create category attribute(s) for VitalSigns category entity.
-			categoryHelper.addControl(vitals, "heartRate", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Pulse");
-			categoryHelper.addControl(vitals, "diastolicBloodPressure", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Diastolic BP");
-			categoryHelper.addControl(vitals, "systolicBloodPressure", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Systolic BP");
-			categoryHelper.addControl(vitals, "weight", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Weight (kg)");
-			categoryHelper.addControl(vitals, "height", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Height (cm)");
-			categoryHelper.addControl(vitals, "respiratoryRate", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Respiration");
-			categoryHelper.addControl(vitals, "BMI", vitalsContainer, ControlEnum.LIST_BOX_CONTROL, "BMI", desiredPermissibleValues);
+			categoryHelper.addOrUpdateControl(vitals, "heartRate", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Pulse");
+			categoryHelper.addOrUpdateControl(vitals, "diastolicBloodPressure", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Diastolic BP");
+			categoryHelper.addOrUpdateControl(vitals, "systolicBloodPressure", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Systolic BP");
+			categoryHelper.addOrUpdateControl(vitals, "weight", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Weight (kg)");
+			categoryHelper.addOrUpdateControl(vitals, "height", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Height (cm)");
+			categoryHelper.addOrUpdateControl(vitals, "respiratoryRate", vitalsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Respiration");
+			categoryHelper.addOrUpdateControl(vitals, "BMI", vitalsContainer, ControlEnum.LIST_BOX_CONTROL, "BMI", desiredPermissibleValues);
 
 			// Save the category.
 			categoryHelper.saveCategory(category);
@@ -494,19 +502,20 @@ public class TestCategoryDemo extends DynamicExtensionsBaseTestCase
 			// Create category.
 			CategoryHelper categoryHelper = new CategoryHelper();
 
-			CategoryInterface category = categoryHelper.createCategory("ClinicalDX Category");
+			CategoryInterface category = categoryHelper.getCategory("ClinicalDX Category");
 
 			// Create category entity from visit entity.
-			ContainerInterface visitContainer = categoryHelper.createCategoryEntityAndContainer(visit, "Clinical Diagnosis");
+			ContainerInterface visitContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(visit, "Clinical Diagnosis", category);
 
 			// Set the root category entity of the category.
 			categoryHelper.setRootCategoryEntity(visitContainer, category);
 
 			// Create category entity from clinicalDiagnosis entity.
-			ContainerInterface otherDiagnosisContainer = categoryHelper.createCategoryEntityAndContainer(clinicalDiagnosis, "Other diagnosis");
+			ContainerInterface otherDiagnosisContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(clinicalDiagnosis,
+					"Other diagnosis", category);
 
 			// Create category attribute(s) for clinicalDiagnosis category entity.
-			categoryHelper.addControl(clinicalDiagnosis, "value", otherDiagnosisContainer, ControlEnum.TEXT_FIELD_CONTROL, "Value");
+			categoryHelper.addOrUpdateControl(clinicalDiagnosis, "value", otherDiagnosisContainer, ControlEnum.TEXT_FIELD_CONTROL, "Value");
 
 			List<String> list = new ArrayList<String>();
 			list.add("visit-clinicalDiagnosis");
@@ -544,16 +553,17 @@ public class TestCategoryDemo extends DynamicExtensionsBaseTestCase
 			// Create category.
 			CategoryHelper categoryHelper = new CategoryHelper();
 
-			CategoryInterface category = categoryHelper.createCategory("Body Composition Category");
+			CategoryInterface category = categoryHelper.getCategory("Body Composition Category");
 
 			// Create category entity from visit entity.
-			ContainerInterface visitContainer = categoryHelper.createCategoryEntityAndContainer(visit, "BodyComp");
+			ContainerInterface visitContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(visit, "BodyComp", category);
 
 			// Set the root category entity of the category.
 			categoryHelper.setRootCategoryEntity(visitContainer, category);
 
 			// Create category entity from bodyComposition entity.
-			ContainerInterface bodyCompositionContainer = categoryHelper.createCategoryEntityAndContainer(bodyComposition, "Body composition");
+			ContainerInterface bodyCompositionContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(bodyComposition,
+					"Body composition", category);
 
 			List<String> permissibleValuesList1 = new ArrayList<String>();
 			permissibleValuesList1.add("BMI");
@@ -570,10 +580,10 @@ public class TestCategoryDemo extends DynamicExtensionsBaseTestCase
 			permissibleValuesList2.add("MRI");
 
 			// Create category attribute(s) for bodyComposition category entity.
-			categoryHelper.addControl(bodyComposition, "result", bodyCompositionContainer, ControlEnum.LIST_BOX_CONTROL, "result",
+			categoryHelper.addOrUpdateControl(bodyComposition, "result", bodyCompositionContainer, ControlEnum.LIST_BOX_CONTROL, "result",
 					permissibleValuesList1);
-			categoryHelper.addControl(bodyComposition, "source", bodyCompositionContainer, ControlEnum.TEXT_FIELD_CONTROL, "source");
-			categoryHelper.addControl(bodyComposition, "testName", bodyCompositionContainer, ControlEnum.LIST_BOX_CONTROL, "testName",
+			categoryHelper.addOrUpdateControl(bodyComposition, "source", bodyCompositionContainer, ControlEnum.TEXT_FIELD_CONTROL, "source");
+			categoryHelper.addOrUpdateControl(bodyComposition, "testName", bodyCompositionContainer, ControlEnum.LIST_BOX_CONTROL, "testName",
 					permissibleValuesList2);
 
 			List<String> list = new ArrayList<String>();
@@ -611,24 +621,24 @@ public class TestCategoryDemo extends DynamicExtensionsBaseTestCase
 			// Create category.
 			CategoryHelperInterface categoryHelper = new CategoryHelper();
 
-			CategoryInterface category = categoryHelper.createCategory("API demographics");
+			CategoryInterface category = categoryHelper.getCategory("API demographics");
 
 			// Create category entity from patient entity.
-			ContainerInterface patientContainer = categoryHelper.createCategoryEntityAndContainer(patient, "API2 demographics");
+			ContainerInterface patientContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(patient, "API2 demographics", category);
 
 			// Set the root category entity.
 			categoryHelper.setRootCategoryEntity(patientContainer, category);
 
 			// Create category attribute(s) for patient category entity.
-			categoryHelper.addControl(patient, "firstName", patientContainer, ControlEnum.TEXT_FIELD_CONTROL, "First name");
-			categoryHelper.addControl(patient, "lastName", patientContainer, ControlEnum.TEXT_FIELD_CONTROL, "Last name");
-			categoryHelper.addControl(patient, "dateOfBirth", patientContainer, ControlEnum.DATE_PICKER_CONTROL, "Date of birth");
+			categoryHelper.addOrUpdateControl(patient, "firstName", patientContainer, ControlEnum.TEXT_FIELD_CONTROL, "First name");
+			categoryHelper.addOrUpdateControl(patient, "lastName", patientContainer, ControlEnum.TEXT_FIELD_CONTROL, "Last name");
+			categoryHelper.addOrUpdateControl(patient, "dateOfBirth", patientContainer, ControlEnum.DATE_PICKER_CONTROL, "Date of birth");
 
 			List<String> genderList = new ArrayList<String>();
 			genderList.add("Female");
 			genderList.add("Male");
 
-			categoryHelper.addControl(patient, "gender", patientContainer, ControlEnum.RADIO_BUTTON_CONTROL, "Gneder", genderList);
+			categoryHelper.addOrUpdateControl(patient, "gender", patientContainer, ControlEnum.RADIO_BUTTON_CONTROL, "Gneder", genderList);
 
 			List<String> ethnicityList = new ArrayList<String>();
 			ethnicityList.add("asian");
@@ -638,7 +648,7 @@ public class TestCategoryDemo extends DynamicExtensionsBaseTestCase
 			ethnicityList.add("other");
 			ethnicityList.add("white");
 
-			categoryHelper.addControl(patient, "ethnicity", patientContainer, ControlEnum.LIST_BOX_CONTROL, "Ethnicity", ethnicityList);
+			categoryHelper.addOrUpdateControl(patient, "ethnicity", patientContainer, ControlEnum.LIST_BOX_CONTROL, "Ethnicity", ethnicityList);
 
 			List<String> genotypeList = new ArrayList<String>();
 			genotypeList.add("X");
@@ -646,7 +656,7 @@ public class TestCategoryDemo extends DynamicExtensionsBaseTestCase
 			genotypeList.add("XXY");
 			genotypeList.add("XY");
 
-			categoryHelper.addControl(patient, "genotype", patientContainer, ControlEnum.COMBO_BOX_CONTROL, "Genotype", genotypeList);
+			categoryHelper.addOrUpdateControl(patient, "genotype", patientContainer, ControlEnum.COMBO_BOX_CONTROL, "Genotype", genotypeList);
 
 			// Save the category.
 			categoryHelper.saveCategory(category);
@@ -679,24 +689,26 @@ public class TestCategoryDemo extends DynamicExtensionsBaseTestCase
 			// Create category.
 			CategoryHelperInterface categoryHelper = new CategoryHelper();
 
-			CategoryInterface category = categoryHelper.createCategory("API medical history");
+			CategoryInterface category = categoryHelper.getCategory("API medical history");
 
 			// Create category entity from patient entity.
-			ContainerInterface patientContainer = categoryHelper.createCategoryEntityAndContainer(patient, "API medical history");
+			ContainerInterface patientContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(patient, "API medical history", category);
 
 			//Fetch the Medical_Conditions entity.
 			EntityInterface medicalConditions = entityGroup.getEntityByName("Medical_Conditions");
 
 			// Create category entity from Medical_Conditions entity.
-			ContainerInterface medicalConditionsContainer = categoryHelper.createCategoryEntityAndContainer(medicalConditions, "Medical Conditions");
+			ContainerInterface medicalConditionsContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(medicalConditions,
+					"Medical Conditions", category);
 
 			// Set the root category entity.
 			categoryHelper.setRootCategoryEntity(patientContainer, category);
 
 			// Create category attribute(s) for medicalConditions category entity.
-			categoryHelper.addControl(medicalConditions, "medicalCondition", medicalConditionsContainer, ControlEnum.TEXT_FIELD_CONTROL,
+			categoryHelper.addOrUpdateControl(medicalConditions, "medicalCondition", medicalConditionsContainer, ControlEnum.TEXT_FIELD_CONTROL,
 					"Medical Condition");
-			categoryHelper.addControl(medicalConditions, "yearOfOnset", medicalConditionsContainer, ControlEnum.DATE_PICKER_CONTROL, "Year of onset");
+			categoryHelper.addOrUpdateControl(medicalConditions, "yearOfOnset", medicalConditionsContainer, ControlEnum.DATE_PICKER_CONTROL,
+					"Year of onset");
 
 			List<String> associationNameList = new ArrayList<String>();
 			associationNameList.add("patient-medicalCond");
@@ -734,22 +746,23 @@ public class TestCategoryDemo extends DynamicExtensionsBaseTestCase
 			// Create category.
 			CategoryHelperInterface categoryHelper = new CategoryHelper();
 
-			CategoryInterface category = categoryHelper.createCategory("API demo medications");
+			CategoryInterface category = categoryHelper.getCategory("API demo medications");
 
 			// Create category entity from patient entity.
-			ContainerInterface patientContainer = categoryHelper.createCategoryEntityAndContainer(patient, "API demo medications");
+			ContainerInterface patientContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(patient, "API demo medications", category);
 
 			// Fetch the Medications entity.
 			EntityInterface medications = entityGroup.getEntityByName("Medications");
 
 			// Create category entity from Medications entity.
-			ContainerInterface medicationsContainer = categoryHelper.createCategoryEntityAndContainer(medications, "Medical Conditions");
+			ContainerInterface medicationsContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(medications, "Medical Conditions",
+					category);
 
 			// Set the root category entity.
 			categoryHelper.setRootCategoryEntity(patientContainer, category);
 
-			categoryHelper.addControl(medications, "medication", medicationsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Mediaction");
-			categoryHelper.addControl(medications, "dose", medicationsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Dose");
+			categoryHelper.addOrUpdateControl(medications, "medication", medicationsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Mediaction");
+			categoryHelper.addOrUpdateControl(medications, "dose", medicationsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Dose");
 
 			List<String> associationNameList = new ArrayList<String>();
 			associationNameList.add("patient-medications");

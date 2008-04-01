@@ -44,6 +44,7 @@ import edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeI
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.BooleanValueInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
@@ -1094,18 +1095,28 @@ public class XMIImportProcessor
 			 * Hence a new object for editedAttributeColl is created and the 
 			 * new attribute is removed from the originalAttributeColl on the basis of objects having id as null
 			 */
+			Collection<AbstractAttributeInterface> savedAssociation=new ArrayList<AbstractAttributeInterface>();
 			Collection<AbstractAttributeInterface> editedAttributeColl=new ArrayList<AbstractAttributeInterface>();
 			editedAttributeColl.addAll(entityInterface.getAbstractAttributeCollection());
 			
 			Collection<AbstractAttributeInterface> originalAttributeColl =((EntityInterface) containerInterface
 				.getAbstractEntity()).getAbstractAttributeCollection(); 
-			
+		
 			Iterator<AbstractAttributeInterface> it=originalAttributeColl.iterator();
 			while(it.hasNext())
 			{
 				AbstractAttributeInterface originalAttr = it.next();
 				if(originalAttr.getId()==null)
 				{
+					/*
+					 * Bug Id:7316
+					 * Here the new associations were also getting deleted from the entity object
+					 * Hence, new association objects are saved in a list and then removed from entity
+					 * so that they can be added again to the entity object 
+					 */ 
+					if(originalAttr instanceof AssociationInterface){
+						savedAssociation.add(originalAttr);
+					}
 					it.remove();
 				}
 			}
@@ -1151,6 +1162,12 @@ public class XMIImportProcessor
 					applyFormControlsProcessor.addControlToForm(containerInterface, controlModel,
 							controlModel, entityInterface.getEntityGroup());
 				}
+			}
+			/*Bug id:7316
+			 * new associations are added again to the entity
+			 */
+			for(AbstractAttributeInterface savedAssoc : savedAssociation){
+				entityInterface.addAbstractAttribute(savedAssoc);
 			}
 			//Since we are creating attributes in createAttributes method and also in applyFormControlsProcessor.addControlToForm method
 			//duplicate attributes have been created. Hence removing the duplicate attributes.
@@ -1572,6 +1589,9 @@ public class XMIImportProcessor
 					else if (attributeTypeInformation instanceof BooleanAttributeTypeInformation)
 					{
 						controlInterface = deFactory.createCheckBox();
+						BooleanValueInterface booleanValue = DomainObjectFactory.getInstance().createBooleanValue();
+						booleanValue.setValue(new Boolean(false));
+						((BooleanAttributeTypeInformation)attributeTypeInformation).setDefaultValue(booleanValue);
 						implicitRuleList = configurationsFactory.getAllImplicitRules(
 								ProcessorConstants.CHECKBOX_CONTROL, attributeInterface.getDataType());
 					}

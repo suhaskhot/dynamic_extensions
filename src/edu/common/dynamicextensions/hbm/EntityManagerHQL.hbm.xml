@@ -163,10 +163,12 @@
             where catEntity.containerCollection.id=?
 	</query>
 
-    <query name="getFormsContainerIdFromHookEntiy">
-     select new edu.wustl.common.beans.NameValueBean(container.caption , container.id) 
-	   from edu.common.dynamicextensions.domain.userinterface.Container container   
-		   where container.abstractEntity.id in
+     <query name="getFormsContainerIdFromHookEntiy">
+     select new edu.wustl.common.beans.NameValueBean(entity.entityGroup.name||' -- '||container.caption , container.id) 
+	   from edu.common.dynamicextensions.domain.userinterface.Container container, 
+	   edu.common.dynamicextensions.domain.Entity entity 
+	    
+		   where container.abstractEntity.id = entity.id and container.abstractEntity.id in
 		   (      
 			   select association.targetEntity.id
 			       from Association association

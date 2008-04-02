@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.ui.webui.action;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -11,11 +12,12 @@ import java.util.Stack;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.ehcache.CacheException;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
@@ -31,9 +33,11 @@ import edu.common.dynamicextensions.ui.webui.actionform.DataEntryForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
+import edu.common.dynamicextensions.util.DynamicExtensionsCacheManager;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.actionForm.AbstractActionForm;
+import edu.wustl.common.util.logger.Logger;
 
 /**
  * @author sujay_narkar, chetan_patil
@@ -162,8 +166,35 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 		if (containerIdentifier != null || containerInterface == null)
 		{
 			UserInterfaceiUtility.clearContainerStack(request);
-
-			containerInterface = DynamicExtensionsUtility.getContainerByIdentifier(containerIdentifier);
+				
+			Long containerId = new Long(containerIdentifier);
+			DynamicExtensionsCacheManager deCacheManager;
+			HashMap containerMap = new HashMap();
+				
+			try 
+			{
+				deCacheManager = DynamicExtensionsCacheManager.getInstance();
+				containerMap = (HashMap) deCacheManager.getObjectFromCache("listofContainer");
+			}
+			catch (CacheException e) 
+			{
+				Logger.out.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
+				throw new DynamicExtensionsSystemException(e.getMessage());
+			}
+			if(containerMap.containsKey(containerId))
+			{
+					containerInterface = (ContainerInterface)containerMap.get(containerId);
+					containerInterface.getContainerValueMap().clear();
+					DynamicExtensionsUtility.cleanContainerControlsValue(containerInterface);
+					
+					
+			}
+			else
+			{
+				containerInterface = DynamicExtensionsUtility.getContainerByIdentifier(containerIdentifier);	
+				
+			}			
+			
 			CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
 		}
 

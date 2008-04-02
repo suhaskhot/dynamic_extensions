@@ -6,6 +6,9 @@ import java.io.File;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import net.sf.ehcache.CacheException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.util.DynamicExtensionsCacheManager;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Variables;
 import edu.wustl.common.util.global.ApplicationProperties;
@@ -70,6 +73,17 @@ public class DynamicExtensionsServletContextListener implements ServletContextLi
 		DynamicExtensionsUtility.initialiseApplicationVariables();
 		
 		DynamicExtensionsUtility.initialiseApplicationInfo();
+		
+		try
+		{
+			DynamicExtensionsUtility.updateDynamicExtensionsCache();
+		}
+		catch (DynamicExtensionsSystemException e) 
+		{
+			// TODO Auto-generated catch block
+			Logger.out.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -77,6 +91,16 @@ public class DynamicExtensionsServletContextListener implements ServletContextLi
 	 */
 	public void contextDestroyed(ServletContextEvent sce)
 	{
-
+//	  shutting down the cacheManager
+		try
+		{
+			DynamicExtensionsCacheManager deCacheManager = DynamicExtensionsCacheManager.getInstance();
+			deCacheManager.shutdown();
+		}
+		catch (CacheException e)
+		{
+			Logger.out.debug("Exception occured while shutting instance of DynamicExtensionsCacheManager");
+			e.printStackTrace();
+		}
 	}
 }

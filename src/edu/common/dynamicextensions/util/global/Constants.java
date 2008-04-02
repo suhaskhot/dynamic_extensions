@@ -88,6 +88,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 
 	public static final String ID = "id";
 	public static final String IDENTIFIER = "identifier";
+	public static final String LIST_OF_CONTAINER="listofContainer";
 
 	public enum Cardinality {
 		ZERO(0), ONE(1), MANY(100);

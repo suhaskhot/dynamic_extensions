@@ -9,7 +9,11 @@
         diskPersistent="false"
         />
         	
-
+ <cache name="cacheForDE"
+           maxElementsInMemory="1000"
+           eternal="true"
+           overflowToDisk="false"
+           />
 </ehcache>
 
 

@@ -14,11 +14,13 @@ import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.EntityGroup;
+import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.AssociationTreeObject;
@@ -81,6 +83,18 @@ public class EntityGroupManager extends AbstractMetadataManager implements Entit
 			DynamicExtensionsApplicationException
 	{
 		EntityGroupInterface entityGroupInterface = (EntityGroupInterface) persistDynamicExtensionObject(group);
+	
+		//Update the dynamic extension cache for all containers within entitygroup
+		EntityManagerInterface entityManager = EntityManager.getInstance();		
+		ArrayList containerSet = (ArrayList)entityManager.getAllContainersByEntityGroupId(entityGroupInterface.getId());
+		Iterator itr = containerSet.iterator();
+		while(itr.hasNext())
+		{
+			ContainerInterface  objContainer = (Container) itr.next();
+			DynamicExtensionsUtility.updateDynamicExtensionsCache(objContainer);
+			
+		}
+		
 		return entityGroupInterface;
 	}
 
@@ -96,6 +110,17 @@ public class EntityGroupManager extends AbstractMetadataManager implements Entit
 			DynamicExtensionsApplicationException
 	{
 		EntityGroupInterface entityGroupInterface = (EntityGroupInterface) persistDynamicExtensionObjectMetdata(entityGroup);
+		//Update the dynamic extension cache for all containers within entitygroup
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+		ArrayList containerSet = (ArrayList) entityManager.getAllContainersByEntityGroupId(entityGroupInterface.getId());
+		Iterator itr = containerSet.iterator();
+		while(itr.hasNext())
+		{
+			ContainerInterface  objContainer = (Container) itr.next();
+			DynamicExtensionsUtility.updateDynamicExtensionsCache(objContainer);
+			
+		}
+		
 		return entityGroupInterface;
 	}
 

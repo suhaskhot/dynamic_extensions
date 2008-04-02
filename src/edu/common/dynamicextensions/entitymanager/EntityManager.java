@@ -37,6 +37,7 @@ import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.ObjectAttributeRecordValue;
 import edu.common.dynamicextensions.domain.ObjectAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domain.userinterface.SelectControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
@@ -159,6 +160,17 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			postProcess(queryList, reverseQueryList, rollbackQueryStack);
 
 			hibernateDAO.commit();
+//			Update the dynamic extension cache for all containers within entitygroup
+			EntityGroupInterface entityGroupInterface = entity.getEntityGroup();
+			ArrayList containerSet = (ArrayList) this.getAllContainersByEntityGroupId(entityGroupInterface.getId());
+			Iterator itr = containerSet.iterator();
+			while(itr.hasNext())
+			{
+				ContainerInterface  objContainer = (Container) itr.next();
+				DynamicExtensionsUtility.updateDynamicExtensionsCache(objContainer);
+				
+			}
+			
 		}
 		catch (DAOException e)
 		{
@@ -207,6 +219,17 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			}
 
 			hibernateDAO.commit();
+//			Update the dynamic extension cache for all containers within entitygroup
+			EntityGroupInterface entityGroupInterface = entity.getEntityGroup();
+			
+			ArrayList containerSet = (ArrayList) this.getAllContainersByEntityGroupId(entityGroupInterface.getId());
+			Iterator itr = containerSet.iterator();
+			while(itr.hasNext())
+			{
+				ContainerInterface  objContainer = (Container) itr.next();
+				DynamicExtensionsUtility.updateDynamicExtensionsCache(objContainer);
+				
+			}
 		}
 		catch (DAOException e)
 		{

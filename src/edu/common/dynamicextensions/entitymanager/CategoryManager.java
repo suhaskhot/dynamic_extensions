@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,22 +19,22 @@ import java.util.Map.Entry;
 import edu.common.dynamicextensions.domain.Category;
 import edu.common.dynamicextensions.domain.CategoryAttribute;
 import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
-import edu.common.dynamicextensions.domain.UserDefinedDE;
+import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
+import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PathInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
@@ -100,6 +101,20 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			DynamicExtensionsApplicationException
 	{
 		CategoryInterface category = (CategoryInterface) persistDynamicExtensionObject(categoryInterface);
+
+//		Update the dynamic extension cache for all containers within entitygroup
+		CategoryEntityInterface catEntityInterface = category.getRootCategoryElement();
+		EntityGroupInterface entityGroupInterface = catEntityInterface.getEntity().getEntityGroup();
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+		ArrayList containerSet = (ArrayList) entityManager.getAllContainersByEntityGroupId(entityGroupInterface.getId());
+		Iterator itr = containerSet.iterator();
+		while(itr.hasNext())
+		{
+			ContainerInterface  objContainer = (Container) itr.next();
+			DynamicExtensionsUtility.updateDynamicExtensionsCache(objContainer);
+			
+		}
+		
 		return category;
 	}
 
@@ -112,6 +127,18 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			DynamicExtensionsApplicationException
 	{
 		CategoryInterface category = (CategoryInterface) persistDynamicExtensionObjectMetdata(categoryInterface);
+//		Update the dynamic extension cache for all containers within entitygroup
+		CategoryEntityInterface catEntityInterface = category.getRootCategoryElement();
+		EntityGroupInterface entityGroupInterface = catEntityInterface.getEntity().getEntityGroup();
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+		ArrayList containerSet = (ArrayList) entityManager.getAllContainersByEntityGroupId(entityGroupInterface.getId());
+		Iterator itr = containerSet.iterator();
+		while(itr.hasNext())
+		{
+			ContainerInterface  objContainer = (Container) itr.next();
+			DynamicExtensionsUtility.updateDynamicExtensionsCache(objContainer);
+			
+		}
 		return category;
 	}
 

@@ -20,9 +20,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -31,6 +33,8 @@ import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.userinterface.AbstractContainmentControl;
 import edu.common.dynamicextensions.domain.userinterface.Container;
+import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
+import edu.common.dynamicextensions.domain.userinterface.Control;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
@@ -117,7 +121,7 @@ public class DynamicExtensionsUtility
 	public static ContainerInterface getContainerByIdentifier(String containerIdentifier)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		ContainerInterface containerInterface = null;
+		ContainerInterface containerInterface = null;			
 		containerInterface = (ContainerInterface) getObjectByIdentifier(ContainerInterface.class
 				.getName(), containerIdentifier);
 		return containerInterface;
@@ -173,7 +177,36 @@ public class DynamicExtensionsUtility
 		}
 		return object;
 	}
-
+	/**
+	 * This method clears data value for all controls within container
+	 * @param baseContainer
+	 */
+	public static void cleanContainerControlsValue(ContainerInterface baseContainer)
+	{
+				
+		while(baseContainer !=null)
+		{
+			Collection controlCollection = baseContainer.getControlCollection();
+			
+			for(Iterator iterator = controlCollection.iterator(); iterator.hasNext() ;) 
+			{
+				Control objControl = (Control)iterator.next();
+				if( objControl  instanceof  ContainmentAssociationControl) 
+				{
+					ContainerInterface subContainer = ((ContainmentAssociationControl)objControl).getContainer();
+					if(subContainer!=null)
+					{
+						subContainer.getContainerValueMap().clear();
+						cleanContainerControlsValue(subContainer);
+					}	        	 
+				 
+				}
+				objControl.setValue(null);
+			}
+			baseContainer= baseContainer.getBaseContainer();
+		}
+	        
+	 }
 	/**
 	 * @param controlInterface ControlInterface
 	 * @return String ControlName
@@ -1212,5 +1245,66 @@ public class DynamicExtensionsUtility
 		}
 
 		return entityGroup;
+	}
+	/**
+	 * This method will update the cache on server startup time
+	 */
+	public static void updateDynamicExtensionsCache() 	throws DynamicExtensionsSystemException
+	{
+		
+		Map containerMap = null;
+	    try
+		{
+	    	AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
+	    	List containerList = bizLogic.retrieve(ContainerInterface.class.getName());	    	
+	    	System.out.println("ON Startup caching containers.Size of Container ----------"+containerList.size());
+			containerMap = new HashMap();
+			for(int cnt=0;cnt< containerList.size();cnt++)
+			{
+				ContainerInterface objContainer = (ContainerInterface)containerList.get(cnt);
+				containerMap.put(objContainer.getId(),objContainer);
+				
+			}
+	
+				// getting instance of catissueCoreCacheManager and adding containerMap to cache
+			DynamicExtensionsCacheManager deCacheManager = DynamicExtensionsCacheManager.getInstance();
+			deCacheManager.removeObjectFromCache(Constants.LIST_OF_CONTAINER);
+			deCacheManager.addObjectToCache(Constants.LIST_OF_CONTAINER,(HashMap) containerMap);
+			
+		}
+		catch (Exception e)
+		{
+			Logger.out.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
+			throw new DynamicExtensionsSystemException(e.getMessage());
+			
+		}
+	}
+	
+	/**
+	 * This method updates the DynamicExtensions cache with updated container
+	 * @param updatedContainer
+	 */
+	public static void updateDynamicExtensionsCache(ContainerInterface  updatedContainer)
+	{
+		
+		try
+		{
+	    	// getting instance of catissueCoreCacheManager and adding containerMap to cache
+			DynamicExtensionsCacheManager deCacheManager = DynamicExtensionsCacheManager.getInstance();
+			Map containerMap = new HashMap();
+			containerMap = (HashMap)deCacheManager.getObjectFromCache(Constants.LIST_OF_CONTAINER);
+			if(containerMap!=null)
+			{
+				containerMap.put(updatedContainer.getId(),updatedContainer);
+			}
+			deCacheManager.removeObjectFromCache(Constants.LIST_OF_CONTAINER);
+			deCacheManager.addObjectToCache(Constants.LIST_OF_CONTAINER,(HashMap) containerMap);
+			
+		}
+		catch (Exception e)
+		{
+			Logger.out.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
+			e.printStackTrace();
+		}
 	}
 }

@@ -126,7 +126,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	 */
 	public boolean isShowCaption()
 	{
-		return new Boolean(readLine()[1].split("=")[1]);
+		return new Boolean(readLine()[1].split("=")[1].trim());
 
 	}
 
@@ -142,7 +142,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	 */
 	public String getEntityName()
 	{
-		return readLine()[0].split(":")[0];
+		return readLine()[0].split(":")[0].trim();
 	}
 
 	/**
@@ -150,7 +150,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	 */
 	public String getAttributeName()
 	{
-		return readLine()[0].split(":")[1];
+		return readLine()[0].split(":")[1].trim();
 	}
 
 	/**
@@ -158,7 +158,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	 */
 	public String getControlType()
 	{
-		return readLine()[1];
+		return readLine()[1].trim();
 	}
 
 	/**
@@ -166,7 +166,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	 */
 	public String getControlCaption()
 	{
-		return readLine()[2];
+		return readLine()[2].trim();
 	}
 
 
@@ -202,7 +202,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 			String[] pv = tempString[1].split(":");
 			for (i = 0; i < pv.length; i++)
 			{
-				permissibleValues.add(pv[i]);
+				permissibleValues.add(pv[i].trim());
 			}
 		}
 		else if (PERMISSIBLE_VALUES_FILE.equals(permissibleValueKey))
@@ -232,7 +232,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 
 	public boolean hasDisplayLable()
 	{
-		if (readLine()[0].startsWith(DISPLAY_LABLE))
+		if (readLine()[0].trim().startsWith(DISPLAY_LABLE))
 		{
 			return true;
 		}
@@ -241,7 +241,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 
 	public boolean hasFormDefination()
 	{
-		if (FORM_DEFINITION.equals(readLine()[0]))
+		if (FORM_DEFINITION.equals(readLine()[0].trim()))
 		{
 			return true;
 		}
@@ -250,12 +250,12 @@ public class CategoryCSVFileParser extends CategoryFileParser
 
 	public String getCategoryName()
 	{
-		return readLine()[0];
+		return readLine()[0].trim();
 	}
 
 	public String getEntityGroupName()
 	{
-		return readLine()[0];
+		return readLine()[0].trim();
 	}
 
 	public boolean hasSubcategory()

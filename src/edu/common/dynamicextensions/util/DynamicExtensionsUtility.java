@@ -1257,7 +1257,7 @@ public class DynamicExtensionsUtility
 		{
 	    	AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
 	    	List containerList = bizLogic.retrieve(ContainerInterface.class.getName());	    	
-	    	System.out.println("ON Startup caching containers.Size of Container ----------"+containerList.size());
+	    	
 			containerMap = new HashMap();
 			for(int cnt=0;cnt< containerList.size();cnt++)
 			{
@@ -1270,6 +1270,7 @@ public class DynamicExtensionsUtility
 			DynamicExtensionsCacheManager deCacheManager = DynamicExtensionsCacheManager.getInstance();
 			deCacheManager.removeObjectFromCache(Constants.LIST_OF_CONTAINER);
 			deCacheManager.addObjectToCache(Constants.LIST_OF_CONTAINER,(HashMap) containerMap);
+			System.out.println("ON Startup caching containers.Size of Container ----------"+containerList.size());
 			
 		}
 		catch (Exception e)

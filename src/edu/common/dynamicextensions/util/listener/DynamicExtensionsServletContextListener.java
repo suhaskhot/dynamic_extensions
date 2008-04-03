@@ -91,16 +91,6 @@ public class DynamicExtensionsServletContextListener implements ServletContextLi
 	 */
 	public void contextDestroyed(ServletContextEvent sce)
 	{
-//	  shutting down the cacheManager
-		try
-		{
-			DynamicExtensionsCacheManager deCacheManager = DynamicExtensionsCacheManager.getInstance();
-			deCacheManager.shutdown();
-		}
-		catch (CacheException e)
-		{
-			Logger.out.debug("Exception occured while shutting instance of DynamicExtensionsCacheManager");
-			e.printStackTrace();
-		}
+//	  
 	}
 }

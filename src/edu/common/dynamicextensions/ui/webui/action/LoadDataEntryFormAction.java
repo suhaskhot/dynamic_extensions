@@ -12,8 +12,6 @@ import java.util.Stack;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.ehcache.CacheException;
-
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -37,7 +35,6 @@ import edu.common.dynamicextensions.util.DynamicExtensionsCacheManager;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.actionForm.AbstractActionForm;
-import edu.wustl.common.util.logger.Logger;
 
 /**
  * @author sujay_narkar, chetan_patil
@@ -171,27 +168,19 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 			DynamicExtensionsCacheManager deCacheManager;
 			HashMap containerMap = new HashMap();
 				
-			try 
-			{
-				deCacheManager = DynamicExtensionsCacheManager.getInstance();
-				containerMap = (HashMap) deCacheManager.getObjectFromCache("listofContainer");
-			}
-			catch (CacheException e) 
-			{
-				Logger.out.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
-				throw new DynamicExtensionsSystemException(e.getMessage());
-			}
-			if(containerMap.containsKey(containerId))
+			deCacheManager = DynamicExtensionsCacheManager.getInstance();
+			containerMap = (HashMap) deCacheManager.getObjectFromCache(Constants.LIST_OF_CONTAINER);
+			
+			if(containerMap!=null && containerMap.containsKey(containerId))
 			{
 					containerInterface = (ContainerInterface)containerMap.get(containerId);
 					containerInterface.getContainerValueMap().clear();
-					DynamicExtensionsUtility.cleanContainerControlsValue(containerInterface);
-					
+					DynamicExtensionsUtility.cleanContainerControlsValue(containerInterface);					
 					
 			}
 			else
 			{
-				containerInterface = DynamicExtensionsUtility.getContainerByIdentifier(containerIdentifier);	
+				containerInterface = DynamicExtensionsUtility.getContainerByIdentifier(containerIdentifier);
 				
 			}			
 			

@@ -14,11 +14,9 @@ public interface CategoryInterface extends AbstractMetadataInterface {
     public void setRootCategoryElement(CategoryEntityInterface rootCategoryElement);
     
     /**
-     * @param categoryEntity
      * @param categoryEntityName
      * @return
      */
-    public CategoryEntityInterface getCategoryEntityByName(CategoryEntityInterface categoryEntity,
-    		String categoryEntityName);
+    public CategoryEntityInterface getCategoryEntityByName(String categoryEntityName);
 
 }

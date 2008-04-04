@@ -47,11 +47,21 @@ public class Category extends AbstractMetadata implements CategoryInterface
     }
     
     /**
+     * @param categoryEntityName
+     * @return
+     */
+    public CategoryEntityInterface getCategoryEntityByName(String categoryEntityName)
+    {
+    	return getCategoryEntity(this.getRootCategoryElement(),
+        		categoryEntityName);
+    }
+    
+    /**
      * @param categoryEntity
      * @param categoryEntityName
      * @return
      */
-    public CategoryEntityInterface getCategoryEntityByName(CategoryEntityInterface categoryEntity,
+    private CategoryEntityInterface getCategoryEntity(CategoryEntityInterface categoryEntity,
     		String categoryEntityName)
     {
     	CategoryEntityInterface searchedCategoryEntity = null;
@@ -73,7 +83,7 @@ public class Category extends AbstractMetadata implements CategoryInterface
     		
     		if(categoryEntityInterface.getChildCategories().size() > 0)
     		{
-    			searchedCategoryEntity =  getCategoryEntityByName(categoryEntityInterface, categoryEntityName);
+    			searchedCategoryEntity =  getCategoryEntity(categoryEntityInterface, categoryEntityName);
     		}
     		
     	}

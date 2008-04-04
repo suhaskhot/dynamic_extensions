@@ -132,16 +132,16 @@ function closeWindow()
 function showNextActionConfirmDialog()
 {
     var  url="/dynamicExtensions/pages/confirmNextActionDialog.jsp";
-
-    if (window.showModalDialog)
+	//for bug 5933 
+	if(navigator.userAgent.indexOf("Firefox")!= -1 )
+	{
+		var windowProperties = "height=200,width=350,top=300,left=350,chrome,centerscreen,dependent=YES, dialog=YES,modal=YES,resizable=NO,scrollbars=NO, location=0,status=0,menubar=0,toolbar=0";
+		window.open(url, window, windowProperties);
+	}
+	else 
     {
-        var modalDialogProperties = "dialogHeight: 200px; dialogWidth: 350px; dialogTop: 300px; dialogLeft: 350px; edge: Sunken; center: Yes; resizable: Yes; status: No; help:no";
+        var modalDialogProperties = "dialogHeight: 200px; dialogWidth: 350px; dialogTop: 300px; dialogLeft: 350px;  center: Yes; resizable: 0;  minimize: NO; status: 0; toolbar:0;";
         window.showModalDialog(url,window,modalDialogProperties);
-    }
-    else
-    {
-        var windowProperties = "height=200,width=350,top=300,left=350,toolbar=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=yes ,modal=yes";
-        window.open(url, window, windowProperties);
     }
 }
 
@@ -168,29 +168,90 @@ function showCreateFormJSP()
 //Added by Preeti
 function dataFldDataTypeChanged(datatypeControl)
 {
-    if(datatypeControl!=null)
-    {
-        var selectedDatatype = datatypeControl.value;
-        var divForDataTypeId = selectedDatatype + "DataType";
-        var divForDataType = document.getElementById(divForDataTypeId);
-        if(datatypeControl.value!="Text")
-        {
-            var linesTypeElt = document.getElementById('linesTypeSingleLine');
-            if(linesTypeElt!=null)
-            {
-                linesTypeElt.checked= 'true';
-            }
-        }
+	if(datatypeControl!=null)
+	{
+		var selectedDatatype = datatypeControl.value;
+		var divForDataTypeId = selectedDatatype + "DataType";
+		var divForDataType = document.getElementById(divForDataTypeId);
+		if(datatypeControl.value!="Text")
+		{
+			var linesTypeElt = document.getElementById('linesTypeSingleLine');
+			if(linesTypeElt!=null)
+			{
+				linesTypeElt.checked= 'true';
+				document.getElementById("rowForNumberOfLines").style.display ="none";
+			}
+		}
+		
+		if(divForDataType!=null)
+		{
+			//alert(document.getElementById('controlOperation').value);
+			if(document.getElementById('controlOperation') != null && document.getElementById('controlOperation').value=='Add'){
+				clearFields(selectedDatatype);
+			}
+			if(selectedDatatype == 'Text'){
+				 document.getElementById("TextDataType").style.display="";
+				 document.getElementById("NumberDataType").style.display="none";
+			}else{
+				 document.getElementById("TextDataType").style.display="none";
+				 document.getElementById("NumberDataType").style.display="";
+			}
+		}
+		insertRules(datatypeControl);
+	}
+}
+// Added Method for bug 5371
+function clearFields(datatypeControl)
+{
+	if(datatypeControl=="Text")
+	{
+		clearTextValues();
+	}
+	else
+	{
+		clearNumberValues();
+	}
+}
+function clearTextValues()
+{
+	if(document.getElementById('attributeNoOfRows').value != "")
+	{
+		document.getElementById('attributeNoOfRows').value = "";
+	}
+	if(document.getElementById('attributeSize').value != "")
+	{
+		document.getElementById('attributeSize').value = "";
+	}
+	if(document.forms[0].attributeDefaultValue[0].value != "")
+	{
+		document.forms[0].attributeDefaultValue[0].value = "";
+	}
+	if(document.forms[0].attributeDisplayAsURL.checked == true)
+	{
+		document.forms[0].attributeDisplayAsURL.checked = false;
+	}
+	if(document.forms[0].attributeIsPassword.checked == true)
+	{
+		document.forms[0].attributeIsPassword.checked = false;
+	}
+	
+}
 
-        if(divForDataType!=null)
-        {
-            var substitutionDiv = document.getElementById('substitutionDiv');
-          //  alert(substitutionDiv);
-            substitutionDiv.innerHTML = divForDataType.innerHTML;
-            //alert(substitutionDiv.innerHTML);
-        }
-        insertRules(datatypeControl);
-    }
+function clearNumberValues()
+{
+	if(document.getElementById('attributeDecimalPlaces').value != "")
+	{
+		document.getElementById('attributeDecimalPlaces').value = "";
+	}
+	if(document.forms[0].attributeDefaultValue[1].value != "")
+	{
+		document.forms[0].attributeDefaultValue[1].value = "";
+	}
+	if(document.forms[0].attributeIsPassword.checked == true)
+	{
+		document.forms[0].attributeIsPassword.checked = false;
+	}
+	
 }
 
 function insertRules(datatypeControl)
@@ -854,11 +915,7 @@ function changeGroupSource(groupSrc)
 
         var groupSourceName = groupSrc.value+"Div";
 
-//      alert('divForGrpDetails' + divForGrpDetails);
         var divForGrpSrc = document.getElementById(groupSourceName);
-
-        //alert('divForGrpSrc' + divForGrpSrc );
-        //alert('divForGrpSrc innerhtml ' + divForGrpSrc.innerHTML);
 
         var divForGrpSrcInnerHTML = divForGrpSrc.innerHTML;
         divForGrpSrc.innerHTML = '';
@@ -868,24 +925,19 @@ function changeGroupSource(groupSrc)
 
         if((divForGrpSrc!=null)&&(divForGrpDetails!=null))
         {
-//          alert ('in if');
             var source = divForGrpSrcInnerHTML;
-//          alert('source1' + source);
             while (source.indexOf("temp") != -1)
             {
                 source = source.replace("temp","");
             }
-    //      alert('source2' + source);
             divForGrpDetails.innerHTML = source;
 
         }
         var groupNameTextFld = document.getElementById('groupNameText');
-        //alert('groupNameTextFld1' + groupNameTextFld);
         if(groupNameTextFld!=null)
         {
             groupNameTextFld.value="";
         }
-//      alert('groupNameTextFld2' + groupNameTextFld);
 
         if(groupSourceName=="ExistingGroupDiv")
         {
@@ -1114,17 +1166,19 @@ function groupChangedResponse(formNameListXML)
                         if(formnamenode.childNodes[j].nodeName=="form-id")
                         {
                             optionValue = formnamenode.childNodes[j].firstChild.nodeValue;
-                        }
+                         }
                         if(formnamenode.childNodes[j].nodeName=="form-name")
                         {
                             optionName = formnamenode.childNodes[j].firstChild.nodeValue;
                         }
                     }
-                    if((optionName!=null)&&(optionValue!=null))
+                    if((optionName != null)&&(optionValue != null))
                     {
-                        var oOption = document.createElement("OPTION");
-                        htmlFormNameList.options.add(oOption,htmlFormNameList.options.length+1);
-                        if(window.ActiveXObject)
+                          var oOption = document.createElement("OPTION");
+                           htmlFormNameList.options.add(oOption,htmlFormNameList.options.length+1); 
+                 //       htmlFormNameList.options[htmlFormNameList.options.length] = new Option (optionName,optionValue);
+                                             
+                       if(window.ActiveXObject)
                         {
                             oOption.text=optionName;
                         }
@@ -1204,6 +1258,7 @@ function formChangedResponse(formAttributesListXML)
                     {
                         var oOption = document.createElement("OPTION");
                         htmlFormAttributeList.options.add(oOption,htmlFormAttributeList.options.length+1);
+                     //  htmlFormAttributeList.options[htmlFormAttributeList.options.length] = new Option (optionName,optionValue);
                         if(window.ActiveXObject)
                         {
                             oOption.text = optionName;
@@ -1331,7 +1386,6 @@ function addRow(containerId)
     var div = document.getElementById(divName);
 
     var tab = div.childNodes[0];
-    
     tableId = containerId + "_table";
     var table = document.getElementById (tableId);
     var rows = table.rows;
@@ -1344,7 +1398,7 @@ function addRow(containerId)
     {
         var newCell = newRow.insertCell(i);
         newCell.className = cells[i].className;
-		
+
         newCell.innerHTML = cells[i].innerHTML;
         newCell = setDefaultValues(tableId, newCell);
     }
@@ -1356,17 +1410,6 @@ function addRow(containerId)
 
     currentRowCounter1 = currentRowCounter.value;
     document.getElementById(hiddenVar).value = parseInt(currentRowCounter1) + 1;
-    
-    //Added by Prashant for autocomplete drop down
-    var x = document.getElementsByTagName("script"); 
-    for(var i=0;i<x.length;i++)
-    {
-	  if(x[i].text!='')
-	  {
-       		eval(x[i].text);
-	  }
-    }
-   
 }
 
 function removeCheckedRow(containerId)
@@ -1581,6 +1624,7 @@ function treeNodeSelectedResponse(formNameListXML)
         var htmlOperationMode = document.getElementById('operationMode');
         var htmlOperation = document.getElementById('operation');
         var isAbstract = document.getElementById('isAbstract');
+        var htmlParentEntity = document.getElementById('parentForm');
 
         var documentElt = getDocumentElementForXML(formNameListXML);
         var formname = documentElt.getElementsByTagName('form-name');
@@ -1588,6 +1632,7 @@ function treeNodeSelectedResponse(formNameListXML)
         var formConceptCode = documentElt.getElementsByTagName('form-conceptcode');
         var operationmode = documentElt.getElementsByTagName('operationMode');
         var checkAbstract = documentElt.getElementsByTagName('isAbstract');
+        var parentEntityName = documentElt.getElementsByTagName('parentEntity');
 
         if((htmlFormName!=null)&&(formname!=null))
         {
@@ -1639,26 +1684,37 @@ function treeNodeSelectedResponse(formNameListXML)
 				}
 			}
 		}
-    }
+		
+		if((htmlParentEntity!=null)&&(parentEntityName!=null))
+		{
+			htmlParentEntity.value= getElementText(parentEntityName[0]);
+		}
+		
+	}
 }
 
 function getElementText(element)
 {
-    var elementText = "";
-    if(window.ActiveXObject)
-    {
-        elementText = element.text;
-    }
-    else
-    {
-        elementText = element.textContent;
-    }
-    return elementText;
+	var elementText = "";
+	if(window.ActiveXObject)
+	{	
+		elementText = element.text;
+	}
+	else
+	{	
+		if(element.firstChild != null){
+			elementText = element.firstChild.nodeValue;
+		}else{
+			elementText = "";
+		}
+	}
+	return elementText;
 }
+
 
 function insertDataForContainer(containerId)
 {
-    alert('hi');
+  
     alert("page to insert date for contianerId" + containerId);
 }
 

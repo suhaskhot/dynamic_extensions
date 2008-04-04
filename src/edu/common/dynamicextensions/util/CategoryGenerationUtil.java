@@ -30,6 +30,7 @@ public class CategoryGenerationUtil
 		EntityInterface entityInterface = entityGroup.getEntityByName(entityName);
 		return entityInterface;
 	}
+
 	/**
 	 * @param multiplicity
 	 * @return
@@ -56,9 +57,8 @@ public class CategoryGenerationUtil
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public static void setRootContainer(CategoryInterface category, List<ContainerInterface> containerCollection, 
-			Map<String, List<String>> paths,Map<String, List<String>> absolutePath) 
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public static void setRootContainer(CategoryInterface category, List<ContainerInterface> containerCollection, Map<String, List<String>> paths,
+			Map<String, List<String>> absolutePath) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 
 		ContainerInterface rootContainer = null;
@@ -72,32 +72,36 @@ public class CategoryGenerationUtil
 			}
 		}
 
-		CategoryHelperInterface categoryHelper = new CategoryHelper();
-		for (String entityName : absolutePath.keySet())
+		if (rootContainer != null)
 		{
-			if (absolutePath.get(entityName).size() == 1)
+			CategoryHelperInterface categoryHelper = new CategoryHelper();
+
+			for (String entityName : absolutePath.keySet())
 			{
-				CategoryEntityInterface categoryEntityInterface = (CategoryEntityInterface) rootContainer.getAbstractEntity();
-				if (!entityName.equals(categoryEntityInterface.getEntity().getName()))
+				if (absolutePath.get(entityName).size() == 1)
 				{
-					EntityGroupInterface entityGroup = categoryEntityInterface.getEntity().getEntityGroup();
-					EntityInterface entity = entityGroup.getEntityByName(entityName);
-					
-					ContainerInterface newRootContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(entity,
-							null,category);
-					newRootContainer.setAddCaption(false);
+					CategoryEntityInterface categoryEntityInterface = (CategoryEntityInterface) rootContainer.getAbstractEntity();
+					if (!entityName.equals(categoryEntityInterface.getEntity().getName()))
+					{
+						EntityGroupInterface entityGroup = categoryEntityInterface.getEntity().getEntityGroup();
+						EntityInterface entity = entityGroup.getEntityByName(entityName);
 
-					categoryHelper.associateCategoryContainers(newRootContainer, rootContainer, paths.get(categoryEntityInterface.getEntity()
-							.getName()), 1);
+						ContainerInterface newRootContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(entity, null, category,
+								entityName + "[1]");
+						newRootContainer.setAddCaption(false);
 
-					rootContainer = newRootContainer;
+						categoryHelper.associateCategoryContainers(newRootContainer, rootContainer, paths.get(categoryEntityInterface.getEntity()
+								.getName()), 1);
 
+						rootContainer = newRootContainer;
+
+					}
 				}
 			}
+			categoryHelper.setRootCategoryEntity(rootContainer, category);
 		}
-		categoryHelper.setRootCategoryEntity(rootContainer, category);
 	}
-	
+
 	/**
 	 * @param containerCollection
 	 * @param containerCaption
@@ -117,14 +121,13 @@ public class CategoryGenerationUtil
 		}
 		return container;
 	}
-	
+
 	/**
 	 * @param containerCollection
 	 * @param entityName
 	 * @return
 	 */
-	public static ContainerInterface getContainerWithEntityName(List<ContainerInterface> containerCollection, 
-			String entityName)
+	public static ContainerInterface getContainerWithEntityName(List<ContainerInterface> containerCollection, String entityName)
 	{
 		ContainerInterface container = null;
 		for (ContainerInterface containerInterface : containerCollection)
@@ -139,14 +142,13 @@ public class CategoryGenerationUtil
 		}
 		return container;
 	}
-	
+
 	/**
 	 * @param containerCollection
 	 * @param categoryEntityName
 	 * @return
 	 */
-	public static ContainerInterface getContainerWithCategoryEntityName(List<ContainerInterface> containerCollection, 
-			String categoryEntityName)
+	public static ContainerInterface getContainerWithCategoryEntityName(List<ContainerInterface> containerCollection, String categoryEntityName)
 	{
 		ContainerInterface container = null;
 		for (ContainerInterface containerInterface : containerCollection)
@@ -160,14 +162,13 @@ public class CategoryGenerationUtil
 		}
 		return container;
 	}
-	
+
 	/**
 	 * @param paths
 	 * @param entityGroup
 	 * @return
 	 */
-	public static Map<String, List<String>> getAssociationList(Map<String, List<String>> paths, 
-			EntityGroupInterface entityGroup)
+	public static Map<String, List<String>> getAssociationList(Map<String, List<String>> paths, EntityGroupInterface entityGroup)
 	{
 		Map<String, List<String>> listOfPath = new HashMap<String, List<String>>();
 
@@ -227,8 +228,7 @@ public class CategoryGenerationUtil
 
 		return newEntityNameList;
 	}
-	
-	
+
 	/**
 	 * @param associationNamesMap
 	 * @param containerInterface
@@ -239,5 +239,16 @@ public class CategoryGenerationUtil
 		CategoryEntityInterface categoryEntityInterface = (CategoryEntityInterface) containerInterface.getAbstractEntity();
 		return associationNamesMap.get(categoryEntityInterface.getEntity().getName());
 
+	}
+	
+	public static EntityGroupInterface getEntityGroup(CategoryInterface category, String entityGroupName)
+	{
+		if(category.getRootCategoryElement() != null)
+		{
+		return category.getRootCategoryElement().getEntity().getEntityGroup();
+		}
+		
+		return DynamicExtensionsUtility.retrieveEntityGroup(entityGroupName);
+		
 	}
 }

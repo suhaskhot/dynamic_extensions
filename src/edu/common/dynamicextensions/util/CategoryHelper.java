@@ -104,8 +104,7 @@ public class CategoryHelper implements CategoryHelperInterface
 		if(categoryEntityName.length > 0)
 		{
 			newCategoryEntityName = categoryEntityName[0]; 
-			categoryEntity = category.getCategoryEntityByName(category.getRootCategoryElement(), 
-					newCategoryEntityName);
+			categoryEntity = category.getCategoryEntityByName(newCategoryEntityName);
 		}
 		
 		

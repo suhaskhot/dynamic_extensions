@@ -19,14 +19,16 @@ PUBLIC
 	</global-forwards>
 	
 	<action-mappings>
-		<action path="/DynamicExtensionHomePage" 
+		
+		<!--<action path="/DynamicExtensionHomePage" 
 			type="edu.common.dynamicextensions.ui.webui.action.LoadFormsIndexAction"
 			name="formsIndexForm"
 			validate="false"
 			input="/LoadFormsIndexAction.do"
 			scope="request">
 			<forward name="showDynamicExtensionsHomePage" path="/pages/DynamicExtensionHomePage.jsp" />
-		</action>
+		</action>-->
+		
 		<action path="/DisplayContainer" 
 			type="edu.common.dynamicextensions.ui.webui.action.DisplayContainerAction"
 			name="groupForm"

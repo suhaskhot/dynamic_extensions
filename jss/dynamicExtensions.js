@@ -1410,6 +1410,21 @@ function addRow(containerId)
 
     currentRowCounter1 = currentRowCounter.value;
     document.getElementById(hiddenVar).value = parseInt(currentRowCounter1) + 1;
+    
+     //Added by Prashant for autocomplete drop down
+    var script = document.getElementsByTagName("script"); 
+    for(var i=0;i<script.length;i++)
+    {
+		var myRegExp = /printCalendar|printTimeCalendar|printMonthYearCalendar|printYearCalendar/;
+        var matchPos1 = (script[i].text).search(myRegExp);
+        if(matchPos1 == -1)
+		{
+			if(script[i].text!='')
+        	{
+       	   		eval(script[i].text);
+        	}
+		}
+    }
 }
 
 function removeCheckedRow(containerId)

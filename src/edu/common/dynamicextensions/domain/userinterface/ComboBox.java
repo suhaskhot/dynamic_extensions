@@ -1,4 +1,3 @@
-
 package edu.common.dynamicextensions.domain.userinterface;
 
 import java.util.List;
@@ -7,6 +6,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
+import edu.common.dynamicextensions.ui.webui.taglib.AutoCompleteTag;
 import edu.wustl.common.beans.NameValueBean;
 
 /**
@@ -15,8 +15,7 @@ import edu.wustl.common.beans.NameValueBean;
  * @hibernate.joined-subclass table="DYEXTN_COMBOBOX" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class ComboBox extends SelectControl implements ComboBoxInterface
-{
+public class ComboBox extends SelectControl implements ComboBoxInterface {
 
 	/**
 	 * Serial Version Unique Identifier. 
@@ -31,8 +30,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 	/**
 	 * Empty Constructor
 	 */
-	public ComboBox()
-	{
+	public ComboBox() {
 	}
 
 	/**
@@ -40,46 +38,41 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 	 * @return HTML code for ComboBox
 	 * @throws DynamicExtensionsSystemException if HTMLComponentName() fails.
 	 */
-	public String generateEditModeHTML() throws DynamicExtensionsSystemException
-	{
-		String htmlString = "<SELECT class='" + cssClass + "' name='" + getHTMLComponentName()
-				+ "' " + "id='" + getHTMLComponentName() + "'>";
+	public String generateEditModeHTML()
+			throws DynamicExtensionsSystemException {
+		AutoCompleteTag autoCompleteTag = new AutoCompleteTag();
+		autoCompleteTag.setProperty(getHTMLComponentName());
+
+		/*String htmlString = "<SELECT class='" + cssClass + "' name='" + getHTMLComponentName()
+				+ "' " + "id='" + getHTMLComponentName() + "'>";*/
 
 		String defaultValue = "";
-		if (this.value != null)
-		{
-			if (this.value instanceof String)
-			{
+		if (this.value != null) {
+			if (this.value instanceof String) {
 				defaultValue = (String) this.value;
-			}
-			else if (this.value instanceof List)
-			{
+			} else if (this.value instanceof List) {
 				List valueList = (List) this.value;
-				if (!valueList.isEmpty())
-				{
+				if (!valueList.isEmpty()) {
 					defaultValue = valueList.get(0).toString();
 				}
 			}
-		}
-		else
-		{
-			if(this.getBaseAbstractAttribute() instanceof AttributeMetadataInterface){
-				defaultValue = this.getAttibuteMetadataInterface().getDefaultValue();	
+		} else {
+			if (this.getBaseAbstractAttribute() instanceof AttributeMetadataInterface) {
+				defaultValue = this.getAttibuteMetadataInterface()
+						.getDefaultValue();
 			}
-			if (defaultValue == null || defaultValue.length() == 0)
-			{
+			if (defaultValue == null || defaultValue.length() == 0) {
 				defaultValue = "";
 			}
 		}
 
 		List<NameValueBean> nameValueBeanList = null;
 
-		if (listOfValues == null)
-		{
+		if (listOfValues == null) {
 			nameValueBeanList = ControlsUtility.populateListOfValues(this);
 		}
 
-		if (nameValueBeanList != null && nameValueBeanList.size() > 0)
+		/*if (nameValueBeanList != null && nameValueBeanList.size() > 0)
 		{
 			for (NameValueBean nameValueBean : nameValueBeanList)
 			{
@@ -95,8 +88,11 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 				}
 			}
 		}
-		htmlString += "</SELECT>";
+		htmlString += "</SELECT>";*/
 
+		autoCompleteTag.setInitialValue(defaultValue);
+		autoCompleteTag.setOptionsList(nameValueBeanList);
+		String htmlString = autoCompleteTag.getAutocompleteHTML();
 		return htmlString;
 	}
 
@@ -104,8 +100,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 	 * This method returns the list of values that are displayed as choices.
 	 * @return the list of values that are displayed as choices.
 	 */
-	public List getChoiceList()
-	{
+	public List getChoiceList() {
 		return listOfValues;
 	}
 
@@ -113,50 +108,41 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 	 * This method sets the list of values that are displayed as choices.
 	 * @param choiceList the List of values that is to set as ChoiceList.
 	 */
-	public void setChoiceList(List choiceList)
-	{
+	public void setChoiceList(List choiceList) {
 		listOfValues = choiceList;
 	}
 
-	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
-	{
+	protected String generateViewModeHTML()
+			throws DynamicExtensionsSystemException {
 		String htmlString = "&nbsp;";
-		
+
 		String defaultValue = "";
-		if (this.value != null)
-		{
-			if (this.value instanceof String)
-			{
+		if (this.value != null) {
+			if (this.value instanceof String) {
 				defaultValue = (String) this.value;
-			}
-			else if (this.value instanceof List)
-			{
+			} else if (this.value instanceof List) {
 				List valueList = (List) this.value;
-				if (!valueList.isEmpty())
-				{
+				if (!valueList.isEmpty()) {
 					defaultValue = valueList.get(0).toString();
 				}
 			}
 		}
-		
+
 		List<NameValueBean> nameValueBeanList = null;
-		if (listOfValues == null)
-		{
+		if (listOfValues == null) {
 			nameValueBeanList = ControlsUtility.populateListOfValues(this);
 		}
-		
-		if (nameValueBeanList != null && nameValueBeanList.size() > 0)
-		{
-			for (NameValueBean nameValueBean : nameValueBeanList)
-			{
-				if (nameValueBean.getValue().equals(defaultValue))
-				{
-					htmlString = "<span class='" + cssClass + "'> " + nameValueBean.getName() + "</span>";
+
+		if (nameValueBeanList != null && nameValueBeanList.size() > 0) {
+			for (NameValueBean nameValueBean : nameValueBeanList) {
+				if (nameValueBean.getValue().equals(defaultValue)) {
+					htmlString = "<span class='" + cssClass + "'> "
+							+ nameValueBean.getName() + "</span>";
 					break;
 				}
 			}
 		}
-		
+
 		return htmlString;
 	}
 

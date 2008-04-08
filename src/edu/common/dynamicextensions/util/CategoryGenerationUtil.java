@@ -19,12 +19,19 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.parser.CategoryCSVConstants;
 
 /**
+ * 
  * @author kunal_kamble
  *
  */
 public class CategoryGenerationUtil
 {
 
+	/**
+	 * This method returns the entity from the entity group.
+	 * @param entityName
+	 * @param entityGroup
+	 * @return
+	 */
 	public static EntityInterface getEntity(String entityName, EntityGroupInterface entityGroup)
 	{
 		EntityInterface entityInterface = entityGroup.getEntityByName(entityName);
@@ -32,6 +39,7 @@ public class CategoryGenerationUtil
 	}
 
 	/**
+	 * Returns the multiplicity in number for the give string
 	 * @param multiplicity
 	 * @return
 	 */
@@ -50,6 +58,7 @@ public class CategoryGenerationUtil
 	}
 
 	/**
+	 * Sets the root category entity for the category.
 	 * @param containerCollection
 	 * @param paths
 	 * @param absolutePath
@@ -103,6 +112,7 @@ public class CategoryGenerationUtil
 	}
 
 	/**
+	 * Retunrs the container having container caption as one passed to this method.
 	 * @param containerCollection
 	 * @param containerCaption
 	 * @return
@@ -144,6 +154,7 @@ public class CategoryGenerationUtil
 	}
 
 	/**
+	 * Returns the container with given category entity name.
 	 * @param containerCollection
 	 * @param categoryEntityName
 	 * @return
@@ -241,6 +252,12 @@ public class CategoryGenerationUtil
 
 	}
 	
+	/**
+	 * Returns the entity group used for careting this category 
+	 * @param category
+	 * @param entityGroupName
+	 * @return
+	 */
 	public static EntityGroupInterface getEntityGroup(CategoryInterface category, String entityGroupName)
 	{
 		if(category.getRootCategoryElement() != null)
@@ -250,5 +267,38 @@ public class CategoryGenerationUtil
 		
 		return DynamicExtensionsUtility.retrieveEntityGroup(entityGroupName);
 		
+	}
+	
+	/**
+	 * This method finds the main category entity.
+	 * @param categoryPaths
+	 * @return
+	 */
+	public static String getMainCategoryEntityName(String[] categoryPaths)
+	{
+		int minimumNumberOfCategoryEntityNames = categoryPaths[0].split("->").length;
+		for(String string:categoryPaths)
+		{
+			if(minimumNumberOfCategoryEntityNames > string.split("->").length)
+			{
+				minimumNumberOfCategoryEntityNames = string.split("->").length;
+			}
+		}
+		String categoryEntityName = categoryPaths[0].split("->")[0];
+		
+		a: for(int i = 0; i< minimumNumberOfCategoryEntityNames; i++)
+		{
+			String temp = categoryPaths[0].split("->")[i];
+			for(String string:categoryPaths)
+			{
+				if(!string.split("->")[i].equals(temp))
+				{
+					break a;
+				}
+			}
+			categoryEntityName = categoryPaths[0].split("->")[i];
+		}
+		
+		return categoryEntityName;
 	}
 }

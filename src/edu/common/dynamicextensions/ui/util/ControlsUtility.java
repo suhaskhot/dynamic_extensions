@@ -2,7 +2,7 @@
 package edu.common.dynamicextensions.ui.util;
 
 /**
- * This class defines miscellaneous methods that are commonly used by many Control objects. * 
+ * This class defines miscellaneous methods that are commonly used by many Control objects. *
  * @author chetan_patil
  */
 import java.text.SimpleDateFormat;
@@ -51,14 +51,13 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.webui.util.ControlInformationObject;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.beans.NameValueBean;
 
 public class ControlsUtility
 {
 
 	/**
-	 * This method returns the default value of the PrimitiveAttribute for displaying in corresponding controls on UI. 
+	 * This method returns the default value of the PrimitiveAttribute for displaying in corresponding controls on UI.
 	 * @param abstractAttribute the PrimitiveAttribute
 	 * @return the Default Value of the PrimitiveAttribute
 	 */
@@ -267,7 +266,18 @@ public class ControlsUtility
 	 */
 	public static String getDateFormat(AttributeTypeInformationInterface dateAttribute)
 	{
-		String dateFormat = ((DateTypeInformationInterface) dateAttribute).getFormat();
+		String dateFormat = null;
+		/*
+		 * While creating a categoy of type date if original attribute 
+		 * is of type String then line
+		 * ((DateTypeInformationInterface) dateAttribute).getFormat();
+		 * will throw a class cast exception
+		 * In this case use DATE_ONLY_FORMAT as a date format
+		 * Fixed by: Rajesh
+		 * Revied by : Sujay
+		 */
+		if (dateAttribute instanceof DateTypeInformationInterface)
+			dateFormat = ((DateTypeInformationInterface) dateAttribute).getFormat();
 		if (dateFormat == null)
 		{
 			dateFormat = ProcessorConstants.DATE_ONLY_FORMAT;
@@ -276,7 +286,7 @@ public class ControlsUtility
 	}
 
 	/**
-	 * 
+	 *
 	 * @param nameValueList
 	 */
 	public static void sortNameValueList(List nameValueList)
@@ -540,7 +550,7 @@ public class ControlsUtility
 	}
 
 	/**
-	 *	Added by Preeti  
+	 *	Added by Preeti
 	 * @param entityInterface
 	 * @param sequenceNumbers
 	 */
@@ -566,7 +576,7 @@ public class ControlsUtility
 	}
 
 	/**
-	 *  
+	 *
 	 * @param containerInterface containerInterface
 	 * @return List ChildList
 	 * @throws DynamicExtensionsSystemException DynamicExtensionsSystemException
@@ -612,7 +622,7 @@ public class ControlsUtility
 	}
 
 	/**
-	 * 
+	 *
 	 * @param captionKey String captionKey
 	 * @return String ControlCaption
 	 */

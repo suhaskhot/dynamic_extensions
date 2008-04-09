@@ -214,7 +214,10 @@ public class CategoryCSVFileParser extends CategoryFileParser
 				String line = null;
 				while ((line = reader.readLine()) != null)
 				{
-					permissibleValues.add(line.trim());
+					if(line.trim().length() != 0)//skip the line if it is blank 
+					{
+						permissibleValues.add(line.trim());
+					}
 				}
 			}
 			catch (FileNotFoundException e)

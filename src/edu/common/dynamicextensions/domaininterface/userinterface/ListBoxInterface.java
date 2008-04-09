@@ -6,7 +6,7 @@ package edu.common.dynamicextensions.domaininterface.userinterface;
  * dynamically generated user interface.  
  * @author geetika_bangard
  */
-public interface ListBoxInterface extends ControlInterface
+public interface ListBoxInterface extends SelectInterface
 {
 
 	/**

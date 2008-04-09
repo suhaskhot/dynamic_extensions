@@ -8,7 +8,7 @@ import java.util.List;
  * dynamically generated user interface.  
  * @author geetika_bangard
  */
-public interface ComboBoxInterface extends ControlInterface
+public interface ComboBoxInterface extends SelectInterface
 {
 	/**
 	 * This method returns the list of values that are displayed as choices.

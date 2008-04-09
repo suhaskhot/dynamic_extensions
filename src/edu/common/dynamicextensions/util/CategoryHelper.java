@@ -458,7 +458,10 @@ public class CategoryHelper implements CategoryHelperInterface
 		((CategoryAttribute) baseAbstractAttribute).setDataElement(userDefinedDE);
 		AttributeTypeInformationInterface attributeTypeInformation = ((CategoryAttribute) baseAbstractAttribute).getAttribute()
 				.getAttributeTypeInformation();
-		((CategoryAttribute) baseAbstractAttribute).setDefaultValue(attributeTypeInformation.getDefaultValue());
+		if(attributeTypeInformation.getDefaultValue() != null)
+		{
+			((CategoryAttribute) baseAbstractAttribute).setDefaultValue(attributeTypeInformation.getDefaultValue());
+		}
 		return listBox;
 	}
 

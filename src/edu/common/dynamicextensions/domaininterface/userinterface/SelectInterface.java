@@ -1,7 +1,7 @@
 
 package edu.common.dynamicextensions.domaininterface.userinterface;
 
-public interface SelectInterface
+public interface SelectInterface extends ControlInterface
 {
 
 }

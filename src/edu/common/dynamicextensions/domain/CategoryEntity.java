@@ -36,17 +36,16 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	 *
 	 */
 	protected Collection<CategoryEntityInterface> childCategories = new HashSet<CategoryEntityInterface>();
-	
+
 	/**
 	 * 
 	 */
 	protected CategoryEntityInterface parentCategoryEntity;
-	
+
 	/**
 	 * 
 	 */
 	//protected Collection<CategoryEntityInterface> parentCategoryEntityCollection = new HashSet<CategoryEntityInterface>();
-
 	/**
 	 *
 	 */
@@ -142,13 +141,14 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	{
 		this.childCategories = childCategories;
 	}
+
 	/**
 	 * 
 	 * @param categoryEntityInterface
 	 */
 	public void addChildCategory(CategoryEntityInterface categoryEntityInterface)
 	{
-		if(this.childCategories == null)
+		if (this.childCategories == null)
 		{
 			childCategories = new HashSet<CategoryEntityInterface>();
 		}
@@ -223,7 +223,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	 */
 	public void addCategoryAttribute(CategoryAttributeInterface categoryAttributeInterface)
 	{
-		categoryAttributeCollection.add(categoryAttributeInterface); 
+		categoryAttributeCollection.add(categoryAttributeInterface);
 	}
 
 	/**
@@ -338,9 +338,9 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	}
 
 	/**
-     * @hibernate.many-to-one column="OWN_PARENT_CATEGORY_ENTITY_ID" cascade="all" class="edu.common.dynamicextensions.domain.CategoryEntity"
+	 * @hibernate.many-to-one column="OWN_PARENT_CATEGORY_ENTITY_ID" cascade="all" class="edu.common.dynamicextensions.domain.CategoryEntity"
 	 * @return the parentCategoryEntity
-     */
+	 */
 	public CategoryEntityInterface getParentCategoryEntity()
 	{
 		return parentCategoryEntity;
@@ -353,7 +353,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	{
 		this.parentCategoryEntity = parentCategoryEntity;
 	}
-	
+
 	/**
 	 * Fetch self plus all parents' category attributes for a category entity.
 	 * @return allCategoryAttributesCollection
@@ -368,9 +368,9 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 			allCategoryAttributesCollection.addAll(parent.getCategoryAttributeCollection());
 			parent = parent.getParentCategoryEntity();
 		}
-		return allCategoryAttributesCollection;		
+		return allCategoryAttributesCollection;
 	}
-	
+
 	/* (non-Javadoc)
 	 * Incase of CategoryEntity this method will alwas return false, 
 	 * since category entity cannot be abstract. 
@@ -380,8 +380,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	{
 		return false;
 	}
-	
-	
+
 	/* (non-Javadoc)
 	 * Clears the categoryAttributeCollection
 	 * @see edu.common.dynamicextensions.domaininterface.AbstractEntityInterface#removeAllAttributes()
@@ -392,6 +391,25 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 		{
 			categoryAttributeCollection.clear();
 		}
+	}
+
+	/**
+	 * 
+	 * @param attributeName
+	 * @return
+	 */
+	public CategoryAssociationInterface getAssociationByName(String attributeName)
+	{
+		CategoryAssociationInterface association = null;
+		for (CategoryAssociationInterface attr : this.getCategoryAssociationCollection())
+		{
+			if (attr.getName().trim().equals(attributeName))
+			{
+				association = attr;
+			}
+		}
+
+		return association;
 	}
 
 }

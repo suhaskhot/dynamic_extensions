@@ -173,17 +173,17 @@ public class AutoCompleteTag extends TagSupport
 	    
 	    if (optionsList instanceof List) {
 			List nvbList = (List) optionsList;
-			System.out.println("nvbList.size()"  + nvbList.size()) ;
+			//System.out.println("nvbList.size()"  + nvbList.size()) ;
 			if (nvbList != null && nvbList.size() > 0) {
 					
 		    			// TODO other than NVB
 						for (int i = 0; i < nvbList.size(); i++) {
-							System.out.println("Creating options");
+						//	System.out.println("Creating options");
 							
 						NameValueBean nvb = (NameValueBean) nvbList.get(i);
 						autoCompleteResult += "valuesInList[" + i + "] = \""
 								+ nvb.getName() + "\";";
-						System.out.println("Name = "  + nvb.getName() + " Value = " + nvb.getValue());
+						//System.out.println("Name = "  + nvb.getName() + " Value = " + nvb.getValue());
 					}
 				}
 		}
@@ -199,7 +199,7 @@ public class AutoCompleteTag extends TagSupport
 		 autoCompleteResult += "new Autocompleter.Combobox(\"" + property + "\",\"" + div + "\",\"" + nameOfArrow + "\"" + ",valuesInList,  { tokens: new Array(), fullSearch: true, partialSearch: true,defaultArray:" + "valuesInList" + ",choices: " + numberOfResults + ",autoSelect:true, minChars: "+ numberOfCharacters +" });";
 		 
 	   autoCompleteResult += "</script>";	  
-	   System.out.println("Autocomplete result "  +autoCompleteResult);
+	   //System.out.println("Autocomplete result "  +autoCompleteResult);
        return autoCompleteResult;
 	}
 	

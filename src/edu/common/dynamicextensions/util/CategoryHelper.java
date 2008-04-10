@@ -312,8 +312,8 @@ public class CategoryHelper implements CategoryHelperInterface
 	}
 
 	/**
-	 * @param sourceCategoryEntity source category entity 
-	 * @param targetCategoryEntity target category entity 
+	 * @param sourceCategoryEntity source category entity
+	 * @param targetCategoryEntity target category entity
 	 * @param path path information between the category entities
 	 */
 	private void addPathBetweenCategoryEntities(CategoryEntityInterface sourceCategoryEntity, CategoryEntityInterface targetCategoryEntity,
@@ -326,8 +326,8 @@ public class CategoryHelper implements CategoryHelperInterface
 
 	/**
 	 * Method associates the source and the target category entity
-	 * @param sourceCategoryEntity source category entity 
-	 * @param targetCategoryEntity target category entity 
+	 * @param sourceCategoryEntity source category entity
+	 * @param targetCategoryEntity target category entity
 	 * @param name name of the category association
 	 * @return CategoryAssociationInterface category association object
 	 */
@@ -345,7 +345,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	}
 
 	/**
-	 * Method creates the association between the given parent and the target container 
+	 * Method creates the association between the given parent and the target container
 	 * @param parentContainer main form
 	 * @param targetContainer sub form
 	 * @param categoryAssociation association between category entities
@@ -399,7 +399,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	}
 
 	/**
-	 * 
+	 *
 	 * @param container category entity container
 	 * @param baseAbstractAttribute category attribute
 	 * @return text field object
@@ -598,8 +598,8 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @param attributeName name of the attribute
 	 * @param desiredPermissibleValues subset of permissible values for this category attribute
 	 * @return list of permissible values for category attribute
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public List<PermissibleValueInterface> createPermissibleValuesList(EntityInterface entity, String attributeName,
 			List<String> desiredPermissibleValues) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
@@ -630,11 +630,11 @@ public class CategoryHelper implements CategoryHelperInterface
 	}
 
 	/**
-	 * 
+	 *
 	 * @param attributeTypeInformation
 	 * @param desiredPermissibleValues
 	 * @return
-	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsApplicationException
 	 */
 	private List<PermissibleValueInterface> getSubsetOfPermissibleValues(AttributeInterface attributeInterface, List<String> desiredPermissibleValues)
 			throws DynamicExtensionsApplicationException
@@ -646,7 +646,7 @@ public class CategoryHelper implements CategoryHelperInterface
 
 		CategoryManagerInterface categoryManager = CategoryManager.getInstance();
 
-		//if no prmissible values are defined, copy  the all the permissible values 
+		//if no prmissible values are defined, copy  the all the permissible values
 		//of the original attribute
 		if (desiredPermissibleValues == null)
 		{
@@ -674,24 +674,29 @@ public class CategoryHelper implements CategoryHelperInterface
 	}
 
 	/**
-	 * 
+	 *
 	 * @param attributeTypeInformation
 	 * @param desiredPermissibleValues
 	 * @return
-	 * @throws DynamicExtensionsSystemException 
-	 * @throws ParseException 
+	 * @throws DynamicExtensionsSystemException
+	 * @throws ParseException
 	 */
 	private List<PermissibleValueInterface> addNewPermissibleValues(AttributeTypeInformationInterface attributeTypeInformation,
 			List<String> desiredPermissibleValues) throws DynamicExtensionsSystemException, ParseException
 	{
 
 		List<PermissibleValueInterface> permissibleValues = new ArrayList<PermissibleValueInterface>();
-		PermissibleValueInterface permissibleValueInterface = null;
-
-		for (String value : desiredPermissibleValues)
+		//Added by Rajesh for fixing NullPointerException when permissible values are not specified for the original attribute.
+		if (desiredPermissibleValues != null)
 		{
-			permissibleValueInterface = attributeTypeInformation.getPermissibleValueForString(value);
-			permissibleValues.add(permissibleValueInterface);
+			PermissibleValueInterface permissibleValueInterface = null;
+
+			for (String value : desiredPermissibleValues)
+			{
+				permissibleValueInterface = attributeTypeInformation
+						.getPermissibleValueForString(value);
+				permissibleValues.add(permissibleValueInterface);
+			}
 		}
 		return permissibleValues;
 	}

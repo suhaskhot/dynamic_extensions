@@ -1207,11 +1207,11 @@ public class EntityManager
 	{
 		//Getting the sys.generated association for the given original association.
 		if (association.getIsSystemGenerated())
-		{
+		{			
 			return;
 		}
 		else
-		{
+		{			
 			Association systemGeneratedAssociation = getSystemGeneratedAssociation(association);
 			boolean isTargetEntityChanged = false;
 			if (association.getAssociationDirection() == AssociationDirection.BI_DIRECTIONAL)
@@ -1219,7 +1219,7 @@ public class EntityManager
 				ConstraintPropertiesInterface constraintPropertiesSysGen = new ConstraintProperties();
 				if (systemGeneratedAssociation == null)
 				{
-					systemGeneratedAssociation = new Association();
+					systemGeneratedAssociation = new Association();					
 				}
 				else
 				{
@@ -4856,6 +4856,51 @@ public class EntityManager
 		return null;
 	}
 
+	/**
+	 * @param entityGroupId
+	 * @param containerCaption
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public  Long getContainerIdForEntityGroup(Long entityGroupId,String containerCaption) throws DynamicExtensionsSystemException
+	{
+		ResultSet rsltSet = null;
+		String tableName = "dyextn_container";
+    	String ENTITY_GROUP_ID_FIELD_NAME = "ENTITY_GROUP_ID";
+    	StringBuffer query = new StringBuffer();
+    	query.append(SELECT_KEYWORD + WHITESPACE + IDENTIFIER);
+        query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName + WHITESPACE);
+        query.append(WHERE_KEYWORD  + WHITESPACE + ENTITY_GROUP_ID_FIELD_NAME +  WHITESPACE + EQUAL + "'"+entityGroupId+"' and caption = '"+containerCaption+"'");
+        System.out.println("Query = "  +query.toString());
+        try {
+            rsltSet = EntityManagerUtil.executeQuery(query.toString());
+            if(rsltSet!=null)
+            {
+            	rsltSet.next();
+	            Long identifier = rsltSet.getLong(IDENTIFIER);
+	            return identifier;
+            }
+        }
+        catch(Exception e)
+        {
+        	e.printStackTrace();
+        }
+        finally
+		{
+			if (rsltSet != null)
+			{
+				try
+				{
+					rsltSet.close();
+				}
+				catch (SQLException e)
+				{
+					throw new DynamicExtensionsSystemException(e.getMessage(), e);
+				}
+			}
+		}
+        return null;
+	}
 	/**
 	 * Get next identifier for an entity from entity table when a record is to be inserted to the entity table.
 	 * @param entityName :  Name of the entity

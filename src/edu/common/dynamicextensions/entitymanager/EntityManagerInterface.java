@@ -558,4 +558,11 @@ public interface EntityManagerInterface
 	 */
 	public List<EntityInformationObject> getAllEntityInformationObjectsByGroupName(String entityGroupName) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException;
+	/**
+	 * @param entityGroupId
+	 * @param containerCaption
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public  Long getContainerIdForEntityGroup(Long entityGroupId,String containerCaption) throws DynamicExtensionsSystemException;
 }

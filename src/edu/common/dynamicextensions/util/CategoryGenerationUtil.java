@@ -19,19 +19,12 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.parser.CategoryCSVConstants;
 
 /**
- * 
  * @author kunal_kamble
  *
  */
 public class CategoryGenerationUtil
 {
 
-	/**
-	 * This method returns the entity from the entity group.
-	 * @param entityName
-	 * @param entityGroup
-	 * @return
-	 */
 	public static EntityInterface getEntity(String entityName, EntityGroupInterface entityGroup)
 	{
 		EntityInterface entityInterface = entityGroup.getEntityByName(entityName);
@@ -39,7 +32,6 @@ public class CategoryGenerationUtil
 	}
 
 	/**
-	 * Returns the multiplicity in number for the give string
 	 * @param multiplicity
 	 * @return
 	 */
@@ -58,7 +50,6 @@ public class CategoryGenerationUtil
 	}
 
 	/**
-	 * Sets the root category entity for the category.
 	 * @param containerCollection
 	 * @param paths
 	 * @param absolutePath
@@ -81,38 +72,34 @@ public class CategoryGenerationUtil
 			}
 		}
 
-		if (rootContainer != null)
+		CategoryHelperInterface categoryHelper = new CategoryHelper();
+
+		for (String entityName : absolutePath.keySet())
 		{
-			CategoryHelperInterface categoryHelper = new CategoryHelper();
-
-			for (String entityName : absolutePath.keySet())
+			if (absolutePath.get(entityName).size() == 1)
 			{
-				if (absolutePath.get(entityName).size() == 1)
+				CategoryEntityInterface categoryEntityInterface = (CategoryEntityInterface) rootContainer.getAbstractEntity();
+				if (!entityName.equals(categoryEntityInterface.getEntity().getName()))
 				{
-					CategoryEntityInterface categoryEntityInterface = (CategoryEntityInterface) rootContainer.getAbstractEntity();
-					if (!entityName.equals(categoryEntityInterface.getEntity().getName()))
-					{
-						EntityGroupInterface entityGroup = categoryEntityInterface.getEntity().getEntityGroup();
-						EntityInterface entity = entityGroup.getEntityByName(entityName);
+					EntityGroupInterface entityGroup = categoryEntityInterface.getEntity().getEntityGroup();
+					EntityInterface entity = entityGroup.getEntityByName(entityName);
 
-						ContainerInterface newRootContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(entity, null, category,
-								entityName + "[1]");
-						newRootContainer.setAddCaption(false);
+					ContainerInterface newRootContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(entity, null, category, entityName
+							+ "[1]");
+					newRootContainer.setAddCaption(false);
 
-						categoryHelper.associateCategoryContainers(newRootContainer, rootContainer, paths.get(categoryEntityInterface.getEntity()
-								.getName()), 1);
+					categoryHelper.associateCategoryContainers(category, newRootContainer, rootContainer, paths.get(categoryEntityInterface
+							.getEntity().getName()), 1);
 
-						rootContainer = newRootContainer;
+					rootContainer = newRootContainer;
 
-					}
 				}
 			}
-			categoryHelper.setRootCategoryEntity(rootContainer, category);
 		}
+		categoryHelper.setRootCategoryEntity(rootContainer, category);
 	}
 
 	/**
-	 * Retunrs the container having container caption as one passed to this method.
 	 * @param containerCollection
 	 * @param containerCaption
 	 * @return
@@ -154,7 +141,6 @@ public class CategoryGenerationUtil
 	}
 
 	/**
-	 * Returns the container with given category entity name.
 	 * @param containerCollection
 	 * @param categoryEntityName
 	 * @return
@@ -251,24 +237,23 @@ public class CategoryGenerationUtil
 		return associationNamesMap.get(categoryEntityInterface.getEntity().getName());
 
 	}
-	
+
 	/**
-	 * Returns the entity group used for careting this category 
 	 * @param category
 	 * @param entityGroupName
 	 * @return
 	 */
 	public static EntityGroupInterface getEntityGroup(CategoryInterface category, String entityGroupName)
 	{
-		if(category.getRootCategoryElement() != null)
+		if (category.getRootCategoryElement() != null)
 		{
-		return category.getRootCategoryElement().getEntity().getEntityGroup();
+			return category.getRootCategoryElement().getEntity().getEntityGroup();
 		}
-		
+
 		return DynamicExtensionsUtility.retrieveEntityGroup(entityGroupName);
-		
+
 	}
-	
+
 	/**
 	 * This method finds the main category entity.
 	 * @param categoryPaths
@@ -277,28 +262,29 @@ public class CategoryGenerationUtil
 	public static String getMainCategoryEntityName(String[] categoryPaths)
 	{
 		int minimumNumberOfCategoryEntityNames = categoryPaths[0].split("->").length;
-		for(String string:categoryPaths)
+		for (String string : categoryPaths)
 		{
-			if(minimumNumberOfCategoryEntityNames > string.split("->").length)
+			if (minimumNumberOfCategoryEntityNames > string.split("->").length)
 			{
 				minimumNumberOfCategoryEntityNames = string.split("->").length;
 			}
 		}
 		String categoryEntityName = categoryPaths[0].split("->")[0];
-		
-		a: for(int i = 0; i< minimumNumberOfCategoryEntityNames; i++)
+
+		a : for (int i = 0; i < minimumNumberOfCategoryEntityNames; i++)
 		{
 			String temp = categoryPaths[0].split("->")[i];
-			for(String string:categoryPaths)
+			for (String string : categoryPaths)
 			{
-				if(!string.split("->")[i].equals(temp))
+				if (!string.split("->")[i].equals(temp))
 				{
 					break a;
 				}
 			}
 			categoryEntityName = categoryPaths[0].split("->")[i];
 		}
-		
+
 		return categoryEntityName;
 	}
+
 }

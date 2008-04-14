@@ -53,7 +53,7 @@ public class CategoryAssociation extends BaseAbstractAttribute implements Catego
 
 	/**
 	 * @hibernate.set name="targetCategoryEntityCollection" table="DYEXTN_CATEGORY_ENTITY"
-	 * cascade="all-delete-orphan" inverse="false" lazy="false"
+	 * cascade="none" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="CATEGORY_ASSOCIATION_ID"
 	 * @hibernate.cache usage="read-write"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.CategoryEntity"

@@ -123,7 +123,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 
 	/**
 	 * @hibernate.set name="childCategories" table="DYEXTN_CATEGORY_ENTITY"
-	 * cascade="all-delete-orphan" inverse="false" lazy="false"
+	 * cascade="none" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="PARENT_CATEGORY_ENTITY_ID"
 	 * @hibernate.cache  usage="read-write"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.CategoryEntity"

@@ -700,6 +700,13 @@ class DynamicExtensionBaseQueryBuilder
 		}
 		else if (sourceMaxCardinality == Cardinality.MANY && targetMaxCardinality == Cardinality.ONE)
 		{
+			query.append(UPDATE_KEYWORD);
+			query.append(WHITESPACE + tableName);
+			query.append(WHITESPACE + SET_KEYWORD + WHITESPACE + sourceKey + EQUAL + WHITESPACE + "null" + WHITESPACE);
+			query.append(WHERE_KEYWORD + WHITESPACE + sourceKey + EQUAL + recordId);
+		}
+		else
+		{
 			//for one to many and one to one: update  target entities records(set value in target column key = null)
 			//that are reffering to  this redord by setting it to null.
 			query.append(UPDATE_KEYWORD);

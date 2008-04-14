@@ -13,7 +13,6 @@ import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
 import edu.common.dynamicextensions.domain.UserDefinedDE;
 import edu.common.dynamicextensions.domain.userinterface.Container;
-import edu.common.dynamicextensions.domain.userinterface.SelectControl;
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
@@ -26,12 +25,14 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PathInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CategoryAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.SelectInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
@@ -113,7 +114,11 @@ public class CategoryHelper implements CategoryHelperInterface
 			categoryEntity.setName(newCategoryEntityName);
 			categoryEntity.setEntity(entity);
 		}
+		if (containerCaption == null)
+		{
+			containerCaption = entity.getName() + "_category_entity_container";
 
+		}
 		ContainerInterface container = createContainer(categoryEntity, containerCaption);
 		return container;
 	}
@@ -158,6 +163,16 @@ public class CategoryHelper implements CategoryHelperInterface
 		return control;
 	}
 
+	/**
+	 * @param controlType
+	 * @param controlCaption
+	 * @param container
+	 * @param categoryAttribute
+	 * @param permissibleValueNameList
+	 * @return
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
+	 */
 	private ControlInterface createOrUpdateControl(ControlEnum controlType, String controlCaption, ContainerInterface container,
 			CategoryAttributeInterface categoryAttribute, List<String> permissibleValueNameList) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException
@@ -201,6 +216,11 @@ public class CategoryHelper implements CategoryHelperInterface
 
 	}
 
+	/**
+	 * @param attributeName
+	 * @param container
+	 * @return
+	 */
 	private BaseAbstractAttributeInterface getCategoryAttribute(String attributeName, ContainerInterface container)
 	{
 		BaseAbstractAttributeInterface categoryAttribute = null;
@@ -238,19 +258,63 @@ public class CategoryHelper implements CategoryHelperInterface
 	/* (non-Javadoc)
 	 * @see edu.wustl.catissuecore.test.CategoryHelperInterface#associateCategoryContainers(edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface, edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface, java.util.List, int)
 	 */
-	public CategoryAssociationControlInterface associateCategoryContainers(ContainerInterface sourceContainer, ContainerInterface targetContainer,
-			List<String> associationNamesList, int noOfEntries) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public CategoryAssociationControlInterface associateCategoryContainers(CategoryInterface category, ContainerInterface sourceContainer,
+			ContainerInterface targetContainer, List<String> associationNamesList, int noOfEntries) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
-		ControlInterface controlInterface = getControl(sourceContainer, targetContainer.getCaption());
-		if (controlInterface != null)
+		CategoryAssociationControlInterface associationControl = null;
+		CategoryAssociationInterface oldAssociation = null;
+
+		ContainerInterface rootContainer = null;
+
+		if (category.getRootCategoryElement() != null)
 		{
-			return (CategoryAssociationControlInterface) controlInterface;
+			rootContainer = (new ArrayList<ContainerInterface>(category.getRootCategoryElement().getContainerCollection())).get(0);
 		}
+
+		associationControl = (CategoryAssociationControlInterface) getAssociationControl(rootContainer, targetContainer.getCaption());
+
+		CategoryEntityInterface sourceCategoryEntity = (CategoryEntityInterface) sourceContainer.getAbstractEntity();
+		CategoryEntityInterface targetCategoryEntity = (CategoryEntityInterface) targetContainer.getAbstractEntity();
+		if (associationControl != null)
+		{
+			if (associationControl.getParentContainer().equals(sourceContainer))
+			{
+				return associationControl;
+			}
+			else
+			{
+				removeControl(associationControl.getParentContainer(), associationControl);
+				oldAssociation = (CategoryAssociationInterface) associationControl.getBaseAbstractAttribute();
+				removeCategoryAssociation(oldAssociation);
+				associationControl.setBaseAbstractAttribute(null);
+
+			}
+		}
+
+		PathInterface path = addPathBetweenCategoryEntities(sourceCategoryEntity, targetCategoryEntity);
+
+		updatePath(path, associationNamesList);
+		targetCategoryEntity.setNumberOfEntries(noOfEntries);
+
+		CategoryAssociationInterface categoryAssociation = associateCategoryEntities(sourceCategoryEntity, targetCategoryEntity, sourceCategoryEntity
+				.getName()
+				+ " to " + targetCategoryEntity.getName() + " category association");
+
+		CategoryAssociationControlInterface categoryAssociationControl = createCategoryAssociationControl(sourceContainer, targetContainer,
+				categoryAssociation, targetContainer.getCaption());
+
+		return categoryAssociationControl;
+	}
+
+	private void updatePath(PathInterface path, List<String> associationNamesList) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-
-		PathInterface path = factory.createPath();
-
 		EntityManagerInterface entityManager = EntityManager.getInstance();
+
+		//clear old path
+		path.setPathAssociationRelationCollection(null);
 
 		int pathSequenceNumber = 1;
 
@@ -264,36 +328,6 @@ public class CategoryHelper implements CategoryHelperInterface
 			path.addPathAssociationRelation(pathAssociationRelation);
 		}
 
-		CategoryEntityInterface sourceCategoryEntity = (CategoryEntityInterface) sourceContainer.getAbstractEntity();
-		CategoryEntityInterface targetCategoryEntity = (CategoryEntityInterface) targetContainer.getAbstractEntity();
-
-		// Add path information.
-		addPathBetweenCategoryEntities(sourceCategoryEntity, targetCategoryEntity, path);
-		targetCategoryEntity.setNumberOfEntries(noOfEntries);
-
-		CategoryAssociationInterface categoryAssociation = associateCategoryEntities(sourceCategoryEntity, targetCategoryEntity, sourceCategoryEntity
-				.getName()
-				+ " to " + targetCategoryEntity.getName() + " category association");
-
-		CategoryAssociationControlInterface categoryAssociationControl = createCategoryAssociationControl(sourceContainer, targetContainer,
-				categoryAssociation, targetContainer.getCaption());
-
-		return categoryAssociationControl;
-	}
-
-	private ControlInterface getControl(ContainerInterface sourceContainer, String caption)
-	{
-		ControlInterface control = null;
-
-		for (ControlInterface controlInterface : sourceContainer.getControlCollection())
-		{
-			if (caption.equals(controlInterface.getCaption()))
-			{
-				control = controlInterface;
-				break;
-			}
-		}
-		return control;
 	}
 
 	/* (non-Javadoc)
@@ -303,31 +337,30 @@ public class CategoryHelper implements CategoryHelperInterface
 	{
 		int nextSequenceNumber = 1;
 
-		if (container.getAllControls() != null)
+		if (container.getControlCollection() != null)
 		{
-			nextSequenceNumber = container.getAllControls().size() + 1;
+			nextSequenceNumber = container.getControlCollection().size() + 1;
 		}
 
 		return nextSequenceNumber;
 	}
 
 	/**
-	 * @param sourceCategoryEntity source category entity
-	 * @param targetCategoryEntity target category entity
+	 * @param sourceCategoryEntity source category entity 
+	 * @param targetCategoryEntity target category entity 
 	 * @param path path information between the category entities
 	 */
-	private void addPathBetweenCategoryEntities(CategoryEntityInterface sourceCategoryEntity, CategoryEntityInterface targetCategoryEntity,
-			PathInterface path)
+	private PathInterface addPathBetweenCategoryEntities(CategoryEntityInterface sourceCategoryEntity, CategoryEntityInterface targetCategoryEntity)
 	{
+		PathInterface path = DomainObjectFactory.getInstance().createPath();
 		targetCategoryEntity.setPath(path);
-		sourceCategoryEntity.addChildCategory(targetCategoryEntity);
-		targetCategoryEntity.setParentCategoryEntity(sourceCategoryEntity);
+		return path;
 	}
 
 	/**
 	 * Method associates the source and the target category entity
-	 * @param sourceCategoryEntity source category entity
-	 * @param targetCategoryEntity target category entity
+	 * @param sourceCategoryEntity source category entity 
+	 * @param targetCategoryEntity target category entity 
 	 * @param name name of the category association
 	 * @return CategoryAssociationInterface category association object
 	 */
@@ -336,33 +369,29 @@ public class CategoryHelper implements CategoryHelperInterface
 	{
 		CategoryAssociationInterface categoryAssociation = DomainObjectFactory.getInstance().createCategoryAssociation();
 		categoryAssociation.setName(name);
-		categoryAssociation.setTargetCategoryEntity(targetCategoryEntity);
+
+		targetCategoryEntity.setParentCategoryEntity(sourceCategoryEntity);
+		sourceCategoryEntity.addChildCategory(targetCategoryEntity);
+
 		categoryAssociation.setCategoryEntity(sourceCategoryEntity);
+		categoryAssociation.setTargetCategoryEntity(targetCategoryEntity);
 
 		sourceCategoryEntity.getCategoryAssociationCollection().add(categoryAssociation);
 
 		return categoryAssociation;
 	}
 
-	/**
-	 * Method creates the association between the given parent and the target container
-	 * @param parentContainer main form
-	 * @param targetContainer sub form
-	 * @param categoryAssociation association between category entities
-	 * @param caption name to be displayed on UI
-	 * @return CategoryAssociationControlInterface category association control object
-	 */
 	private CategoryAssociationControlInterface createCategoryAssociationControl(ContainerInterface parentContainer,
 			ContainerInterface targetContainer, CategoryAssociationInterface categoryAssociation, String caption)
 	{
+
 		CategoryAssociationControlInterface categoryAssociationControl = DomainObjectFactory.getInstance().createCategoryAssociationControl();
+		categoryAssociationControl.setSequenceNumber(getNextSequenceNumber(parentContainer));
 		categoryAssociationControl.setCaption(caption);
 		categoryAssociationControl.setContainer(targetContainer);
 		categoryAssociationControl.setBaseAbstractAttribute(categoryAssociation);
-		categoryAssociationControl.setSequenceNumber(getNextSequenceNumber(parentContainer));
-		categoryAssociationControl.setParentContainer((Container) parentContainer);
-
 		parentContainer.addControl(categoryAssociationControl);
+		categoryAssociationControl.setParentContainer((Container) parentContainer);
 
 		return categoryAssociationControl;
 	}
@@ -399,14 +428,24 @@ public class CategoryHelper implements CategoryHelperInterface
 	}
 
 	/**
-	 *
+	 * 
 	 * @param container category entity container
 	 * @param baseAbstractAttribute category attribute
 	 * @return text field object
 	 */
 	private TextFieldInterface createOrUpdateTextFieldControl(ContainerInterface container, BaseAbstractAttributeInterface baseAbstractAttribute)
 	{
-		TextFieldInterface textField = (TextFieldInterface) getControl(container, baseAbstractAttribute);
+		ControlInterface control = getControl(container, baseAbstractAttribute);
+		TextFieldInterface textField = null;
+		if (control != null && !(control instanceof TextFieldInterface))
+		{
+			removeControl(container, control);
+		}
+		else
+		{
+			textField = (TextFieldInterface) control;
+		}
+
 		if (textField == null)
 		{
 			textField = DomainObjectFactory.getInstance().createTextField();
@@ -440,7 +479,17 @@ public class CategoryHelper implements CategoryHelperInterface
 	private SelectInterface createOrUpdateSelectControl(ContainerInterface container, BaseAbstractAttributeInterface baseAbstractAttribute,
 			List<PermissibleValueInterface> permissibleValues, ControlEnum controlType)
 	{
-		SelectInterface selectControl = (SelectControl) getControl(container, baseAbstractAttribute);
+		ControlInterface control = getControl(container, baseAbstractAttribute);
+		SelectInterface selectControl = null;
+		if (control != null && !(control instanceof SelectInterface))
+		{
+			removeControl(container, control);
+		}
+		else
+		{
+			selectControl = (ListBoxInterface) control;
+		}
+
 		if (selectControl == null)
 		{
 			if (controlType.equals(controlType.LIST_BOX_CONTROL))
@@ -451,7 +500,6 @@ public class CategoryHelper implements CategoryHelperInterface
 			{
 				selectControl = DomainObjectFactory.getInstance().createComboBox();
 			}
-
 			selectControl.setSequenceNumber(getNextSequenceNumber(container));
 			updateContainerAndControl(container, selectControl, baseAbstractAttribute);
 		}
@@ -468,11 +516,39 @@ public class CategoryHelper implements CategoryHelperInterface
 		((CategoryAttribute) baseAbstractAttribute).setDataElement(userDefinedDE);
 		AttributeTypeInformationInterface attributeTypeInformation = ((CategoryAttribute) baseAbstractAttribute).getAttribute()
 				.getAttributeTypeInformation();
+
 		if (attributeTypeInformation.getDefaultValue() != null)
 		{
 			((CategoryAttribute) baseAbstractAttribute).setDefaultValue(attributeTypeInformation.getDefaultValue());
 		}
 		return selectControl;
+	}
+
+	/**
+	 * @param container
+	 * @param control
+	 */
+	private void removeControl(ContainerInterface container, ControlInterface control)
+	{
+		control.setParentContainer(null);
+		container.getControlCollection().remove(control);
+
+	}
+
+	/**
+	 * @param categoryAssociation
+	 */
+	private void removeCategoryAssociation(CategoryAssociationInterface categoryAssociation)
+	{
+		CategoryEntityInterface sourceCategoryEntity = categoryAssociation.getCategoryEntity();
+		CategoryEntityInterface targetCategoryEntity = categoryAssociation.getTargetCategoryEntity();
+
+		targetCategoryEntity.setPath(null);
+		sourceCategoryEntity.getChildCategories().remove(targetCategoryEntity);
+		sourceCategoryEntity.getCategoryAssociationCollection().remove(categoryAssociation);
+		categoryAssociation.setCategoryEntity(null);
+
+		targetCategoryEntity.setParentCategoryEntity(null);
 	}
 
 	/**
@@ -495,7 +571,17 @@ public class CategoryHelper implements CategoryHelperInterface
 	 */
 	private DatePickerInterface createOrUpdateDatePickerControl(ContainerInterface container, BaseAbstractAttributeInterface baseAbstractAttribute)
 	{
-		DatePickerInterface datePicker = (DatePickerInterface) getControl(container, baseAbstractAttribute);
+		ControlInterface control = getControl(container, baseAbstractAttribute);
+		DatePickerInterface datePicker = null;
+		if (control != null && !(control instanceof DatePickerInterface))
+		{
+			removeControl(container, control);
+		}
+		else
+		{
+			datePicker = (DatePickerInterface) control;
+		}
+
 		if (datePicker == null)
 		{
 			datePicker = DomainObjectFactory.getInstance().createDatePicker();
@@ -515,7 +601,17 @@ public class CategoryHelper implements CategoryHelperInterface
 	 */
 	private FileUploadInterface createOrUpdateFileUploadControl(ContainerInterface container, BaseAbstractAttributeInterface baseAbstractAttribute)
 	{
-		FileUploadInterface fileUpload = (FileUploadInterface) getControl(container, baseAbstractAttribute);
+		ControlInterface control = getControl(container, baseAbstractAttribute);
+		FileUploadInterface fileUpload = null;
+		if (control != null && !(control instanceof FileUploadInterface))
+		{
+			removeControl(container, control);
+		}
+		else
+		{
+			fileUpload = (FileUploadInterface) control;
+		}
+
 		if (fileUpload == null)
 		{
 			fileUpload = DomainObjectFactory.getInstance().createFileUploadControl();
@@ -533,7 +629,17 @@ public class CategoryHelper implements CategoryHelperInterface
 	 */
 	private TextAreaInterface createOrUpdateTextAreaControl(ContainerInterface container, BaseAbstractAttributeInterface baseAbstractAttribute)
 	{
-		TextAreaInterface textArea = (TextAreaInterface) getControl(container, baseAbstractAttribute);
+		ControlInterface control = getControl(container, baseAbstractAttribute);
+		TextAreaInterface textArea = null;
+		if (control != null && !(control instanceof TextAreaInterface))
+		{
+			removeControl(container, control);
+		}
+		else
+		{
+			textArea = (TextAreaInterface) control;
+		}
+
 		if (textArea == null)
 		{
 			textArea = DomainObjectFactory.getInstance().createTextArea();
@@ -555,7 +661,17 @@ public class CategoryHelper implements CategoryHelperInterface
 	private RadioButtonInterface createOrUpdateRadioButtonControl(ContainerInterface container, BaseAbstractAttributeInterface baseAbstractAttribute,
 			List<PermissibleValueInterface> permissibleValues)
 	{
-		RadioButtonInterface radioButton = (RadioButtonInterface) getControl(container, baseAbstractAttribute);
+		ControlInterface control = getControl(container, baseAbstractAttribute);
+		RadioButtonInterface radioButton = null;
+		if (control != null && !(control instanceof RadioButtonInterface))
+		{
+			removeControl(container, control);
+		}
+		else
+		{
+			radioButton = (RadioButtonInterface) control;
+		}
+
 		if (radioButton == null)
 		{
 			radioButton = DomainObjectFactory.getInstance().createRadioButton();
@@ -581,7 +697,17 @@ public class CategoryHelper implements CategoryHelperInterface
 	 */
 	private CheckBoxInterface createOrUpdateCheckBoxControl(ContainerInterface container, BaseAbstractAttributeInterface baseAbstractAttribute)
 	{
-		CheckBoxInterface checkBox = (CheckBoxInterface) getControl(container, baseAbstractAttribute);
+		ControlInterface control = getControl(container, baseAbstractAttribute);
+		CheckBoxInterface checkBox = null;
+		if (control != null && !(control instanceof CheckBoxInterface))
+		{
+			removeControl(container, control);
+		}
+		else
+		{
+			checkBox = (CheckBoxInterface) control;
+		}
+
 		if (checkBox == null)
 		{
 			checkBox = DomainObjectFactory.getInstance().createCheckBox();
@@ -598,8 +724,8 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @param attributeName name of the attribute
 	 * @param desiredPermissibleValues subset of permissible values for this category attribute
 	 * @return list of permissible values for category attribute
-	 * @throws DynamicExtensionsApplicationException
-	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	public List<PermissibleValueInterface> createPermissibleValuesList(EntityInterface entity, String attributeName,
 			List<String> desiredPermissibleValues) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
@@ -630,11 +756,11 @@ public class CategoryHelper implements CategoryHelperInterface
 	}
 
 	/**
-	 *
+	 * 
 	 * @param attributeTypeInformation
 	 * @param desiredPermissibleValues
 	 * @return
-	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsApplicationException 
 	 */
 	private List<PermissibleValueInterface> getSubsetOfPermissibleValues(AttributeInterface attributeInterface, List<String> desiredPermissibleValues)
 			throws DynamicExtensionsApplicationException
@@ -646,7 +772,7 @@ public class CategoryHelper implements CategoryHelperInterface
 
 		CategoryManagerInterface categoryManager = CategoryManager.getInstance();
 
-		//if no prmissible values are defined, copy  the all the permissible values
+		//if no prmissible values are defined, copy  the all the permissible values 
 		//of the original attribute
 		if (desiredPermissibleValues == null)
 		{
@@ -674,31 +800,58 @@ public class CategoryHelper implements CategoryHelperInterface
 	}
 
 	/**
-	 *
+	 * 
 	 * @param attributeTypeInformation
 	 * @param desiredPermissibleValues
 	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 * @throws ParseException
+	 * @throws DynamicExtensionsSystemException 
+	 * @throws ParseException 
 	 */
 	private List<PermissibleValueInterface> addNewPermissibleValues(AttributeTypeInformationInterface attributeTypeInformation,
 			List<String> desiredPermissibleValues) throws DynamicExtensionsSystemException, ParseException
 	{
 
 		List<PermissibleValueInterface> permissibleValues = new ArrayList<PermissibleValueInterface>();
-		//Added by Rajesh for fixing NullPointerException when permissible values are not specified for the original attribute.
-		if (desiredPermissibleValues != null)
-		{
-			PermissibleValueInterface permissibleValueInterface = null;
+		PermissibleValueInterface permissibleValueInterface = null;
 
-			for (String value : desiredPermissibleValues)
-			{
-				permissibleValueInterface = attributeTypeInformation
-						.getPermissibleValueForString(value);
-				permissibleValues.add(permissibleValueInterface);
-			}
+		for (String value : desiredPermissibleValues)
+		{
+			permissibleValueInterface = attributeTypeInformation.getPermissibleValueForString(value);
+			permissibleValues.add(permissibleValueInterface);
 		}
 		return permissibleValues;
+	}
+
+	/**
+	 * @param rootContainer
+	 * @param associationName
+	 * @return
+	 */
+	private AbstractContainmentControlInterface getAssociationControl(ContainerInterface rootContainer, String associationName)
+	{
+		AbstractContainmentControlInterface associationControl = null;
+		if (rootContainer == null)
+		{
+			return associationControl;
+		}
+
+		for (ControlInterface controlInterface : rootContainer.getControlCollection())
+		{
+			if (controlInterface instanceof AbstractContainmentControlInterface)
+			{
+				if (controlInterface.getCaption().equals(associationName))
+				{
+					associationControl = (AbstractContainmentControlInterface) controlInterface;
+					break;
+				}
+				else
+				{
+					associationControl = getAssociationControl(((AbstractContainmentControlInterface) controlInterface).getContainer(),
+							associationName);
+				}
+			}
+		}
+		return associationControl;
 	}
 
 }

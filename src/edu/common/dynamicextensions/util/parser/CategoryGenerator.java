@@ -20,7 +20,6 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.CategoryGenerationUtil;
 import edu.common.dynamicextensions.util.CategoryHelper;
 import edu.common.dynamicextensions.util.CategoryHelperInterface;
-import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.CategoryHelperInterface.ControlEnum;
 
 /**
@@ -69,7 +68,7 @@ public class CategoryGenerator
 
 				//2:read the entity group
 				categoryFileParser.readNext();
-				EntityGroupInterface entityGroup = DynamicExtensionsUtility.retrieveEntityGroup(categoryFileParser.getEntityGroupName());
+				EntityGroupInterface entityGroup = CategoryGenerationUtil.getEntityGroup(category, categoryFileParser.getEntityGroupName());
 
 				checkForNullRefernce(entityGroup, "Entity group with name " + categoryFileParser.getEntityGroupName() + " at line number "
 						+ categoryFileParser.getLineNumber() + " does not exist");
@@ -89,6 +88,8 @@ public class CategoryGenerator
 				//5: get the selected attributes and create the controls for them 
 				String displayLabel = null;
 				String categoryEntityName = null;
+				int sequenceNumber = 1;
+				ControlInterface lastControl = null;
 
 				while (categoryFileParser.readNext())
 				{
@@ -119,15 +120,18 @@ public class CategoryGenerator
 						String targetContainerCaption = categoryFileParser.getTargetContainerCaption();
 						ContainerInterface targetContainer = CategoryGenerationUtil.getContainer(containerCollection, targetContainerCaption);
 
+						checkForNullRefernce(targetContainer, "Error at Error at line No:" + categoryFileParser.getLineNumber()
+								+ " Does not found subcategory with name  " + targetContainerCaption);
+
 						String multiplicity = categoryFileParser.getMultiplicity();
 
 						List<String> associationNameList = CategoryGenerationUtil.getAssociationNameList(associationNamesMap, CategoryGenerationUtil
 								.getContainer(containerCollection, targetContainerCaption));
-						checkForNullRefernce(associationNameList, "Line No:" + categoryFileParser.getLineNumber()
+						checkForNullRefernce(associationNameList, "Error at line No:" + categoryFileParser.getLineNumber()
 								+ " Does not found entities in the path " + "for the category entity " + targetContainerCaption);
 
-						categoryHelper.associateCategoryContainers(sourceContainer, targetContainer, associationNameList, CategoryGenerationUtil
-								.getMultiplicityInNumbers(multiplicity));
+						lastControl = categoryHelper.associateCategoryContainers(category, sourceContainer, targetContainer, associationNameList,
+								CategoryGenerationUtil.getMultiplicityInNumbers(multiplicity));
 
 					}
 					else
@@ -136,7 +140,6 @@ public class CategoryGenerator
 						//add control to the container
 						List<String> permissibleValues = categoryFileParser.getPermissibleValues();
 
-						ControlInterface control;
 						String attributeName = categoryFileParser.getAttributeName();
 
 						entityInterface = entityGroup.getEntityByName(categoryFileParser.getEntityName());
@@ -148,20 +151,22 @@ public class CategoryGenerator
 
 						if (permissibleValues != null)
 						{
-							control = categoryHelper.addOrUpdateControl(entityInterface, attributeName, containerInterface, ControlEnum
+							lastControl = categoryHelper.addOrUpdateControl(entityInterface, attributeName, containerInterface, ControlEnum
 									.get(categoryFileParser.getControlType()), categoryFileParser.getControlCaption(), permissibleValues);
 						}
 						else
 						{
-							checkForNullRefernce(ControlEnum.get(categoryFileParser.getControlType()), "Line No:"
+							checkForNullRefernce(ControlEnum.get(categoryFileParser.getControlType()), "Error at line No:"
 									+ categoryFileParser.getLineNumber() + " Illegal control type " + categoryFileParser.getControlType());
-							control = categoryHelper.addOrUpdateControl(entityInterface, attributeName, containerInterface, ControlEnum
+							lastControl = categoryHelper.addOrUpdateControl(entityInterface, attributeName, containerInterface, ControlEnum
 									.get(categoryFileParser.getControlType()), categoryFileParser.getControlCaption());
 						}
 
-						setControlsOptions(control);
+						setControlsOptions(lastControl);
 
 					}
+
+					lastControl.setSequenceNumber(sequenceNumber++);
 				}
 
 				CategoryGenerationUtil.setRootContainer(category, containerCollection, associationNamesMap, paths);
@@ -366,7 +371,7 @@ public class CategoryGenerator
 					ContainerInterface container = createCategoryEntityAndContainer(entityGroup.getEntityByName(entityName), categoryEntityName,
 							null, false, containerCollection, category);
 
-					categoryHelper.associateCategoryContainers(mainContainer, container, associationNamesMap.get(entityName), 1);
+					categoryHelper.associateCategoryContainers(category, mainContainer, container, associationNamesMap.get(entityName), 1);
 
 				}
 

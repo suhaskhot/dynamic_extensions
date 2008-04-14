@@ -130,7 +130,7 @@ public interface CategoryHelperInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public CategoryAssociationControlInterface associateCategoryContainers(ContainerInterface sourceContainer, ContainerInterface targetContainer,
+	public CategoryAssociationControlInterface associateCategoryContainers(CategoryInterface category, ContainerInterface sourceContainer, ContainerInterface targetContainer,
 			List<String> associationNameList, int noOfEntries) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**

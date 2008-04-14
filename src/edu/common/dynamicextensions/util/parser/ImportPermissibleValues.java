@@ -23,28 +23,28 @@ import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
  *
  */
 public class ImportPermissibleValues {
-	
+
 	private CategoryCSVFileParser categoryCSVFileParser;
 
 	private static final String ENTITY_GROUP = "Entity_Group";
 
 	/**
-	 * 
+	 *
 	 * @param filePath
 	 * @throws DynamicExtensionsSystemException
-	 * @throws FileNotFoundException 
+	 * @throws FileNotFoundException
 	 */
 	public ImportPermissibleValues(String filePath)
 			throws DynamicExtensionsSystemException, FileNotFoundException {
-		
-		this.categoryCSVFileParser = new CategoryCSVFileParser(filePath); 
+
+		this.categoryCSVFileParser = new CategoryCSVFileParser(filePath);
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
-	 * @throws DynamicExtensionsSystemException 
-	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
 	 */
 	public void importValues() throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException {
@@ -68,39 +68,41 @@ public class ImportPermissibleValues {
 					}
 					String entityName = categoryCSVFileParser.getEntityName();
 					currentEntity = entityGroup.getEntityByName(entityName);
-			
+
 					String attributeName = categoryCSVFileParser.getAttributeName();
-					
+
 					List<String> pvList = categoryCSVFileParser.getPermissibleValues();
 					List<PermissibleValueInterface> list = categoryHelper.createPermissibleValuesList
 					(currentEntity,attributeName, pvList);
-					
+
 					AttributeTypeInformationInterface attributeTypeInformation = currentEntity.getAttributeByName
 						(attributeName).getAttributeTypeInformation();
 					UserDefinedDEInterface userDefinedDE = (UserDefinedDEInterface) attributeTypeInformation.
 						getDataElement();
-					
+
 					if(userDefinedDE == null)
 					{
 						userDefinedDE = DomainObjectFactory.getInstance().createUserDefinedDE();
 						attributeTypeInformation.setDataElement(userDefinedDE);
-						
-					}
-					
-					for(PermissibleValueInterface pv: list)
-					{
-							userDefinedDE.addPermissibleValue(pv);	
+
 					}
 
-					//set the first value in the list as the default value
-					attributeTypeInformation.setDefaultValue(list.get(0));
-					
+					for(PermissibleValueInterface pv: list)
+					{
+							userDefinedDE.addPermissibleValue(pv);
+					}
+					if (list != null && !list.isEmpty())
+					{
+						//set the first value in the list as the default value
+						attributeTypeInformation.setDefaultValue(list.get(0));
+					}
+
 				}
 				EntityGroupManager.getInstance().persistEntityGroup(entityGroup);
-				
+
 			}
 		} catch (IOException e) {
-			throw new DynamicExtensionsSystemException("Line number:"+ categoryCSVFileParser.getLineNumber()+"Error while reading csv file " 
+			throw new DynamicExtensionsSystemException("Line number:"+ categoryCSVFileParser.getLineNumber()+"Error while reading csv file "
 					+ categoryCSVFileParser.getFilePath(), e);
 		}
 

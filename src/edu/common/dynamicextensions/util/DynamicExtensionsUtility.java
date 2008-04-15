@@ -33,7 +33,6 @@ import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.userinterface.AbstractContainmentControl;
 import edu.common.dynamicextensions.domain.userinterface.Container;
-import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domain.userinterface.Control;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
@@ -191,9 +190,9 @@ public class DynamicExtensionsUtility
 			for(Iterator iterator = controlCollection.iterator(); iterator.hasNext() ;) 
 			{
 				Control objControl = (Control)iterator.next();
-				if( objControl  instanceof  ContainmentAssociationControl) 
+				if( objControl  instanceof  AbstractContainmentControl) 
 				{
-					ContainerInterface subContainer = ((ContainmentAssociationControl)objControl).getContainer();
+					ContainerInterface subContainer = ((AbstractContainmentControl)objControl).getContainer();
 					if(subContainer!=null)
 					{
 						subContainer.getContainerValueMap().clear();

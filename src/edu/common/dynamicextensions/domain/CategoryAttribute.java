@@ -120,7 +120,7 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	}
 
 	/**
-	 * @hibernate.set name="dataElementCollection" table="DYEXTN_DATA_ELEMENT" cascade="all" inverse="false" lazy="false"
+	 * @hibernate.set name="dataElementCollection" table="DYEXTN_DATA_ELEMENT" cascade="save-update" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="CATEGORY_ATTRIBUTE_ID"
 	 * @hibernate.cache  usage="read-write"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.DataElement"

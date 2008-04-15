@@ -438,7 +438,10 @@ class DynamicExtensionBaseQueryBuilder
 			return queryList;
 		}
 		Association association = (Association) associationInterface;
-		verifyCardinalityConstraints(associationInterface, sourceRecordId);
+		if (association.getSourceRole().getAssociationsType().equals(AssociationType.CONTAINTMENT))
+		{
+			verifyCardinalityConstraints(associationInterface, sourceRecordId);
+		}
 		String sourceKey = association.getConstraintProperties().getSourceEntityKey();
 		String targetKey = association.getConstraintProperties().getTargetEntityKey();
 		StringBuffer query = new StringBuffer();

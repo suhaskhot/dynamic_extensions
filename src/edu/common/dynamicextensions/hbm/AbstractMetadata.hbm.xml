@@ -491,7 +491,7 @@
             table="DYEXTN_DATA_ELEMENT"
             lazy="false"
             inverse="false"
-            cascade="all"
+            cascade="save-update"
             sort="unsorted"
         >
             <cache 
@@ -595,7 +595,7 @@
             table="DYEXTN_CATEGORY_ENTITY"
             lazy="false"
             inverse="false"
-            cascade="all-delete-orphan"
+            cascade="none"
             sort="unsorted"
         >
             <cache 
@@ -800,7 +800,7 @@
             table="DYEXTN_CATEGORY_ENTITY"
             lazy="false"
             inverse="false"
-            cascade="all-delete-orphan"
+            cascade="none"
             sort="unsorted"
         >
             <cache 

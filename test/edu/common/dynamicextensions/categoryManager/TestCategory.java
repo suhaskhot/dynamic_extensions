@@ -670,7 +670,7 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 
 			List<String> associationNames = new ArrayList<String>();
 			associationNames.add("visit-clinicalDiagnosis");
-			categoryHelper.associateCategoryContainers(visitContainer, otherDiagnosisContainer, associationNames, -1);
+			categoryHelper.associateCategoryContainers(category, visitContainer, otherDiagnosisContainer, associationNames, -1);
 
 			// Save the category.
 			categoryHelper.saveCategory(category);
@@ -738,7 +738,7 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 
 			List<String> associationNames = new ArrayList<String>();
 			associationNames.add("visit-bodyComposition");
-			categoryHelper.associateCategoryContainers(visitContainer, bodyCompositionContainer, associationNames, -1);
+			categoryHelper.associateCategoryContainers(category, visitContainer, bodyCompositionContainer, associationNames, -1);
 
 			// Save the category.
 			categoryHelper.saveCategory(category);
@@ -861,7 +861,7 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 			List<String> associationNames = new ArrayList<String>();
 			associationNames.add("patient-medicalCond");
 
-			categoryHelper.associateCategoryContainers(patientContainer, medicalConditionsContainer, associationNames, -1);
+			categoryHelper.associateCategoryContainers(category, patientContainer, medicalConditionsContainer, associationNames, -1);
 
 			// Save the category.
 			categoryHelper.saveCategory(category);
@@ -914,7 +914,7 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 			List<String> associationNames = new ArrayList<String>();
 			associationNames.add("patient-medications");
 
-			categoryHelper.associateCategoryContainers(patientContainer, medicationsContainer, associationNames, -1);
+			categoryHelper.associateCategoryContainers(category, patientContainer, medicationsContainer, associationNames, -1);
 
 			// Save the category.
 			categoryHelper.saveCategory(category);
@@ -969,12 +969,12 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 			List<String> associationNames1 = new ArrayList<String>();
 			associationNames1.add("contact-address");
 
-			categoryHelper.associateCategoryContainers(contactInfoContainer, addressContainer, associationNames1, 1);
+			categoryHelper.associateCategoryContainers(category, contactInfoContainer, addressContainer, associationNames1, 1);
 
 			List<String> associationNames2 = new ArrayList<String>();
 			associationNames2.add("contact-phone");
 
-			categoryHelper.associateCategoryContainers(contactInfoContainer, phoneNumbersContainer, associationNames2, -1);
+			categoryHelper.associateCategoryContainers(category, contactInfoContainer, phoneNumbersContainer, associationNames2, -1);
 
 			// Save the category.
 			categoryHelper.saveCategory(category);
@@ -1114,33 +1114,33 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 
 			List<String> list = new ArrayList<String>();
 			list.add("base-histology");
-			CategoryAssociationControlInterface associationControlInterface = categoryHelper.associateCategoryContainers(baseAnnotationContainer,
+			CategoryAssociationControlInterface associationControlInterface = categoryHelper.associateCategoryContainers(category, baseAnnotationContainer,
 					histologyContainer, list, -1);
 			associationControlInterface.setSequenceNumber(categoryHelper.getNextSequenceNumber(prostateAnnotationContainer));
 
 			list = new ArrayList<String>();
 			list.add("base-add");
-			CategoryAssociationControlInterface associationControlInterface2 = categoryHelper.associateCategoryContainers(baseAnnotationContainer,
+			CategoryAssociationControlInterface associationControlInterface2 = categoryHelper.associateCategoryContainers(category, baseAnnotationContainer,
 					additionalFindingContainer, list, -1);
 			associationControlInterface2.setSequenceNumber(categoryHelper.getNextSequenceNumber(prostateAnnotationContainer));
 
 			list = new ArrayList<String>();
 			list.add("btissue-invasion");
-			CategoryAssociationControlInterface associationControlInterface3 = categoryHelper.associateCategoryContainers(
+			CategoryAssociationControlInterface associationControlInterface3 = categoryHelper.associateCategoryContainers(category, 
 					baseTissuePathoAnnoContainer, invasionContainer, list, 1);
 			associationControlInterface3.setSequenceNumber(categoryHelper.getNextSequenceNumber(prostateAnnotationContainer));
 
 			list = new ArrayList<String>();
 			list.add("pro-gle");
-			categoryHelper.associateCategoryContainers(prostateAnnotationContainer, gleasonContainer, list, 1);
+			categoryHelper.associateCategoryContainers(category, prostateAnnotationContainer, gleasonContainer, list, 1);
 
 			list = new ArrayList<String>();
 			list.add("pro-tum");
-			categoryHelper.associateCategoryContainers(prostateAnnotationContainer, tumorQuantContainer, list, 1);
+			categoryHelper.associateCategoryContainers(category, prostateAnnotationContainer, tumorQuantContainer, list, 1);
 
 			list = new ArrayList<String>();
 			list.add("hist-varHist");
-			categoryHelper.associateCategoryContainers(histologyContainer, variantHistologicContainer, list, -1);
+			categoryHelper.associateCategoryContainers(category, histologyContainer, variantHistologicContainer, list, -1);
 
 			// Save the category.
 			categoryHelper.saveCategory(category);

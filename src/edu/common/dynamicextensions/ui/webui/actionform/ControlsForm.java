@@ -1531,7 +1531,7 @@ public class ControlsForm extends AbstractActionForm
 		}
 
 		//Check errors if datatype is number
-		if ((dataType != null) && (dataType.equals(ProcessorConstants.DATATYPE_NUMBER)))
+		if ((dataType != null) && DynamicExtensionsUtility.isDataTypeNumeric(dataType))
 		{
 			getErrorsForNumericDatatype(validator, errors);
 		}

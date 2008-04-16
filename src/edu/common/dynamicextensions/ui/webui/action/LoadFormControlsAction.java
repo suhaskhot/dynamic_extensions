@@ -22,6 +22,7 @@ import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.util.logger.Logger;
 
@@ -76,7 +77,7 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 				request.setAttribute("controlsList", controlsForm.getChildList());
 				actionForwardString = Constants.SHOW_BUILD_FORM_JSP;
 			}
-			if ((controlsForm.getDataType() != null) && (controlsForm.getDataType().equals(ProcessorConstants.DATATYPE_NUMBER)))
+			if ((controlsForm.getDataType() != null) && DynamicExtensionsUtility.isDataTypeNumeric(controlsForm.getDataType()))
 			{
 				initializeMeasurementUnits(controlsForm);
 			}

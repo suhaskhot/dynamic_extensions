@@ -65,8 +65,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 			{
 				controlOperation = ProcessorConstants.OPERATION_ADD;
 			}
-
-			if ((attrUIBean.getDataType() != null) && (attrUIBean.getDataType().equals(ProcessorConstants.DATATYPE_NUMBER)))
+			if ((attrUIBean.getDataType() != null) && DynamicExtensionsUtility.isDataTypeNumeric(attrUIBean.getDataType()))	
 			{
 				initializeMeasurementUnits(attrUIBean);
 			}

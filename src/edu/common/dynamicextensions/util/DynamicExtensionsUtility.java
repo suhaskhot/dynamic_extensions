@@ -33,6 +33,7 @@ import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.userinterface.AbstractContainmentControl;
 import edu.common.dynamicextensions.domain.userinterface.Container;
+import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domain.userinterface.Control;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
@@ -1307,4 +1308,22 @@ public class DynamicExtensionsUtility
 			e.printStackTrace();
 		}
 	}
+	/**
+	 * Method to check if data type is numeric i.e long,integer,short,float,double
+	 */
+	public static boolean isDataTypeNumeric(String dataType){
+		boolean isDataTypeNumber=false;
+		if(dataType.equals(ProcessorConstants.DATATYPE_SHORT)
+			||dataType.equals(ProcessorConstants.DATATYPE_INTEGER)
+			||dataType.equals(ProcessorConstants.DATATYPE_LONG)
+			||dataType.equals(ProcessorConstants.DATATYPE_FLOAT)
+			||dataType.equals(ProcessorConstants.DATATYPE_DOUBLE)
+			||dataType.equals(ProcessorConstants.DATATYPE_NUMBER))
+		{
+			isDataTypeNumber=true;
+		}
+		
+		return isDataTypeNumber;
+	}
+
 }

@@ -32,6 +32,11 @@ public class ProcessorConstants
 	public static final String DATATYPE_NUMBER = "Number";
 	public static final String DATATYPE_BYTEARRAY = "ByteArray";
 	public static final String DATATYPE_FILE = "File";
+	public static final String DATATYPE_INTEGER = "Integer";
+	public static final String DATATYPE_SHORT = "Short";
+	public static final String DATATYPE_LONG = "Long";
+	public static final String DATATYPE_FLOAT = "Float";
+	public static final String DATATYPE_DOUBLE = "Double";
 
 	//Max number of digits/decimals for various datatypes
 	public static final int MAX_NO_OF_DIGITS_SHORT = 5;

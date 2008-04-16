@@ -1154,6 +1154,7 @@ public class XMIImportProcessor
 				}
 				controlModel.setCaption(editedAttribute.getName());
 				controlModel.setName(editedAttribute.getName());
+				setTaggedValue(controlModel, editedAttribute);
 				//Not for Containment Association Control
 				if (!(editedAttribute instanceof AssociationInterface))
 				{
@@ -1295,32 +1296,39 @@ public class XMIImportProcessor
 
 				controlModel
 						.setSelectedControlId(originalControlObj.getSequenceNumber().toString());
-				// max length of string from tagged value		
-				Integer maxLen = attrNameVsMaxLen.get(editedAttribute);
-				if(maxLen==null)
-				{
-					maxLen=100;
-				}
-				controlModel.setAttributeSize(maxLen.toString());
-				//date format tagged value
-				String format = attrNameVsDateFormat.get(editedAttribute);
-				if(format==null)
-				{
-					format=Constants.DATE_PATTERN_MM_DD_YYYY;
-				}
-				controlModel.setFormat(format);
-				String dateFormat =DynamicExtensionsUtility.getDateFormat(format); 
-				controlModel.setDateValueType(dateFormat);
-				// precision tagged value
-				Integer precision = attrNameVsPrecision.get(editedAttribute);
-				if(precision==null)
-				{
-					precision=0;
-				}
-				controlModel.setAttributeDecimalPlaces(precision.toString());
+				
 			}
 			//controlModel.setCaption(originalControlObj.getCaption());
 		}
+	}
+	/**
+	 * Method to set tagged values(max length, precision, date format) in control model
+	 */
+	private void setTaggedValue(ControlsModel controlModel,
+			AbstractAttributeInterface editedAttribute) {
+		// max length of string from tagged value		
+		Integer maxLen = attrNameVsMaxLen.get(editedAttribute);
+		if(maxLen==null)
+		{
+			maxLen=265;
+		}
+		controlModel.setAttributeSize(maxLen.toString());
+		//date format tagged value
+		String format = attrNameVsDateFormat.get(editedAttribute);
+		if(format==null)
+		{
+			format=Constants.DATE_PATTERN_MM_DD_YYYY;
+		}
+		controlModel.setFormat(format);
+		String dateFormat =DynamicExtensionsUtility.getDateFormat(format); 
+		controlModel.setDateValueType(dateFormat);
+		// precision tagged value
+		Integer precision = attrNameVsPrecision.get(editedAttribute);
+		if(precision==null)
+		{
+			precision=0;
+		}
+		controlModel.setAttributeDecimalPlaces(precision.toString());
 	}
 
 	/**
@@ -1399,13 +1407,25 @@ public class XMIImportProcessor
 			{
 				controlModel.setDataType(ProcessorConstants.DATATYPE_BOOLEAN);
 			}
-			else if (attributeTypeInfo instanceof ShortAttributeTypeInformation
-					|| attributeTypeInfo instanceof IntegerAttributeTypeInformation
-					|| attributeTypeInfo instanceof LongAttributeTypeInformation
-					|| attributeTypeInfo instanceof FloatAttributeTypeInformation
-					|| attributeTypeInfo instanceof DoubleAttributeTypeInformation)
+			else if (attributeTypeInfo instanceof ShortAttributeTypeInformation)
 			{
-				controlModel.setDataType(ProcessorConstants.DATATYPE_NUMBER);
+				controlModel.setDataType(ProcessorConstants.DATATYPE_SHORT);
+			}
+			else if(attributeTypeInfo instanceof IntegerAttributeTypeInformation)
+			{
+				controlModel.setDataType(ProcessorConstants.DATATYPE_INTEGER);
+			}
+			else if(attributeTypeInfo instanceof LongAttributeTypeInformation)
+			{
+				controlModel.setDataType(ProcessorConstants.DATATYPE_LONG);
+			}
+			else if(attributeTypeInfo instanceof FloatAttributeTypeInformation)
+			{
+				controlModel.setDataType(ProcessorConstants.DATATYPE_FLOAT);
+			}
+			else if(attributeTypeInfo instanceof DoubleAttributeTypeInformation)
+			{
+				controlModel.setDataType(ProcessorConstants.DATATYPE_DOUBLE);
 			}
 		}
 	}

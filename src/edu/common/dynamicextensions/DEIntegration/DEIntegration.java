@@ -92,8 +92,21 @@ public class DEIntegration implements IntegrationInterface
                     .toString());
             columnName = (String) entityMap
                     .get(hookEntityId + "_" + enitityContainerId);
-            catTableName = (String) entityMap.get(categoryContainerId
-                    .toString());
+            /*
+             * Checked for categoryContainerId in the entityMap if present then get the Category Table Name from the Map
+             * else get it from DB.
+             */
+            if (entityMap.containsKey(categoryContainerId.toString()))
+            {
+            	catTableName = (String) entityMap.get(categoryContainerId
+                        .toString());
+            }
+            else
+            {   
+            	catTableName = EntityManager.getInstance().getDynamicTableName(
+                        categoryContainerId);
+                entityMap.put(categoryContainerId.toString(), catTableName);
+             }
         }
 
         else

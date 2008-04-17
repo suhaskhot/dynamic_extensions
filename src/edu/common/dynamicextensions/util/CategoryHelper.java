@@ -32,7 +32,6 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInter
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface;
-import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.SelectInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
@@ -487,7 +486,7 @@ public class CategoryHelper implements CategoryHelperInterface
 		}
 		else
 		{
-			selectControl = (ListBoxInterface) control;
+			selectControl = (SelectInterface) control;
 		}
 
 		if (selectControl == null)
@@ -731,6 +730,12 @@ public class CategoryHelper implements CategoryHelperInterface
 			List<String> desiredPermissibleValues) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		List<PermissibleValueInterface> permissibleValues = null;
+
+		//if permissible values are not povided return empty list. 
+		if (desiredPermissibleValues == null)
+		{
+			return permissibleValues;
+		}
 
 		try
 		{

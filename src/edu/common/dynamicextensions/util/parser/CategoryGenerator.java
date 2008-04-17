@@ -87,7 +87,7 @@ public class CategoryGenerator
 
 				//5: get the selected attributes and create the controls for them 
 				String displayLabel = null;
-				String categoryEntityName = null;
+				List<String> categoryEntityName = null;
 				int sequenceNumber = 1;
 				ControlInterface lastControl = null;
 
@@ -110,7 +110,9 @@ public class CategoryGenerator
 						ContainerInterface sourceContainer = null;
 						if (entityInterface != null)
 						{
-							sourceContainer = CategoryGenerationUtil.getContainerWithCategoryEntityName(containerCollection, categoryEntityName);
+							//always add subcategory to the container
+							sourceContainer = CategoryGenerationUtil.getContainerWithCategoryEntityName(containerCollection, categoryEntityName
+									.get(0));
 						}
 						else
 						{
@@ -143,24 +145,15 @@ public class CategoryGenerator
 						String attributeName = categoryFileParser.getAttributeName();
 
 						entityInterface = entityGroup.getEntityByName(categoryFileParser.getEntityName());
-						containerInterface = CategoryGenerationUtil.getContainerWithEntityName(containerCollection, categoryFileParser
-								.getEntityName());
+
+						containerInterface = CategoryGenerationUtil.getContainerWithCategoryEntityName(containerCollection, getcategoryEntityName(
+								categoryEntityName, categoryFileParser.getEntityName()));
 
 						checkForNullRefernce(entityInterface.getAttributeByName(attributeName), "Line Number:" + categoryFileParser.getLineNumber()
 								+ " attribute with name " + attributeName + " in the entity " + entityInterface.getName() + " does not exist!");
 
-						if (permissibleValues != null)
-						{
-							lastControl = categoryHelper.addOrUpdateControl(entityInterface, attributeName, containerInterface, ControlEnum
-									.get(categoryFileParser.getControlType()), categoryFileParser.getControlCaption(), permissibleValues);
-						}
-						else
-						{
-							checkForNullRefernce(ControlEnum.get(categoryFileParser.getControlType()), "Error at line No:"
-									+ categoryFileParser.getLineNumber() + " Illegal control type " + categoryFileParser.getControlType());
-							lastControl = categoryHelper.addOrUpdateControl(entityInterface, attributeName, containerInterface, ControlEnum
-									.get(categoryFileParser.getControlType()), categoryFileParser.getControlCaption());
-						}
+						lastControl = categoryHelper.addOrUpdateControl(entityInterface, attributeName, containerInterface, ControlEnum
+								.get(categoryFileParser.getControlType()), categoryFileParser.getControlCaption(), permissibleValues);
 
 						setControlsOptions(lastControl);
 
@@ -186,6 +179,25 @@ public class CategoryGenerator
 		}
 		return categoryList;
 
+	}
+
+	/**
+	 * @param categoryEntityNameList
+	 * @param entityName
+	 * @return
+	 */
+	private String getcategoryEntityName(List<String> categoryEntityNameList, String entityName)
+	{
+		String categoryEntityName = null;
+		for (String string : categoryEntityNameList)
+		{
+			if (entityName.equals(string.substring(0, string.indexOf("["))))
+			{
+				categoryEntityName = string;
+			}
+
+		}
+		return categoryEntityName;
 	}
 
 	/**
@@ -322,16 +334,16 @@ public class CategoryGenerator
 		return method.invoke(type, new Object[]{string});
 	}
 
-	private String createForm(EntityGroupInterface entityGroup, List<ContainerInterface> containerCollection,
+	private List<String> createForm(EntityGroupInterface entityGroup, List<ContainerInterface> containerCollection,
 			Map<String, List<String>> associationNamesMap, CategoryInterface category) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
 		String displayLable = categoryFileParser.getDisplyLable();
 		Boolean showCaption = categoryFileParser.isShowCaption();
 
-		String categoryEntityName = null;
+		List<String> categoryEntityName = new ArrayList<String>();
 		String entityName = null;
-		String[] categoryEntityNames;
+		String[] categoryEntitysInPath;
 
 		try
 		{
@@ -340,39 +352,41 @@ public class CategoryGenerator
 
 			if (categoryPaths.length == 1)
 			{
-				categoryEntityNames = categoryPaths[0].split("->");
-				categoryEntityName = categoryEntityNames[categoryEntityNames.length - 1];
-				entityName = categoryEntityName.substring(0, categoryEntityName.indexOf("["));
+				categoryEntitysInPath = categoryPaths[0].split("->");
+				categoryEntityName.add(categoryEntitysInPath[categoryEntitysInPath.length - 1]);
+				entityName = categoryEntityName.get(0).substring(0, categoryEntityName.get(0).indexOf("["));
 
 				EntityInterface entity = entityGroup.getEntityByName(entityName);
-				ContainerInterface container = createCategoryEntityAndContainer(entity, categoryEntityName, displayLable, showCaption,
+				ContainerInterface container = createCategoryEntityAndContainer(entity, categoryEntityName.get(0), displayLable, showCaption,
 						containerCollection, category);
 
 			}
 			else
 			{
-				categoryEntityName = CategoryGenerationUtil.getMainCategoryEntityName(categoryPaths);
-				ContainerInterface mainContainer = CategoryGenerationUtil.getContainerWithCategoryEntityName(containerCollection, categoryEntityName);
+				categoryEntityName.add(CategoryGenerationUtil.getMainCategoryEntityName(categoryPaths));
+				ContainerInterface mainContainer = CategoryGenerationUtil.getContainerWithCategoryEntityName(containerCollection, categoryEntityName
+						.get(0));
 
-				entityName = categoryEntityName.substring(0, categoryEntityName.indexOf("["));
+				entityName = categoryEntityName.get(0).substring(0, categoryEntityName.get(0).indexOf("["));
 				if (mainContainer == null)
 				{
-					mainContainer = createCategoryEntityAndContainer(entityGroup.getEntityByName(entityName), categoryEntityName, displayLable,
-							showCaption, containerCollection, category);
+					mainContainer = createCategoryEntityAndContainer(entityGroup.getEntityByName(entityName), categoryEntityName.get(0),
+							displayLable, showCaption, containerCollection, category);
 				}
 
 				CategoryHelperInterface categoryHelper = new CategoryHelper();
 				for (String categoryPath : categoryPaths)
 				{
-					categoryEntityNames = categoryPath.split("->");
-					categoryEntityName = categoryEntityNames[categoryEntityNames.length - 1];
-					entityName = categoryEntityName.substring(0, categoryEntityName.indexOf("["));
+					categoryEntitysInPath = categoryPath.split("->");
+					String newCategoryEntityName = categoryEntitysInPath[categoryEntitysInPath.length - 1];
+					entityName = newCategoryEntityName.substring(0, newCategoryEntityName.indexOf("["));
 
-					ContainerInterface container = createCategoryEntityAndContainer(entityGroup.getEntityByName(entityName), categoryEntityName,
+					ContainerInterface container = createCategoryEntityAndContainer(entityGroup.getEntityByName(entityName), newCategoryEntityName,
 							null, false, containerCollection, category);
 
 					categoryHelper.associateCategoryContainers(category, mainContainer, container, associationNamesMap.get(entityName), 1);
 
+					categoryEntityName.add(newCategoryEntityName);
 				}
 
 			}
@@ -384,5 +398,4 @@ public class CategoryGenerator
 
 		return categoryEntityName;
 	}
-
 }

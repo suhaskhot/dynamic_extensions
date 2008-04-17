@@ -2038,7 +2038,12 @@ class DynamicExtensionBaseQueryBuilder
 		{
 			// quick fix.
 			if (value instanceof List)
-				formattedvalue = "'" + getEscapedStringValue((String) ((List) value).get(0)) + "'";
+			{
+				if(((List) value).size() >= 0 )
+				{
+					formattedvalue = "'" + getEscapedStringValue((String) ((List) value).get(0)) + "'";	
+				}				
+			}				
 			else
 				formattedvalue = "'" + getEscapedStringValue((String) value) + "'";
 		}
@@ -2088,7 +2093,12 @@ class DynamicExtensionBaseQueryBuilder
 		{
 			// quick fix.
 			if (value instanceof List)
-				formattedvalue = ((List)value).get(0).toString();
+			{
+				if(((List) value).size() >= 0 )
+				{
+					formattedvalue = ((List)value).get(0).toString();		
+				}
+			}				
 			else
 				formattedvalue = value.toString();
 		}

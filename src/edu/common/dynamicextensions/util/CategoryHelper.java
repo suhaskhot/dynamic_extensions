@@ -731,12 +731,6 @@ public class CategoryHelper implements CategoryHelperInterface
 	{
 		List<PermissibleValueInterface> permissibleValues = null;
 
-		//if permissible values are not povided return empty list. 
-		if (desiredPermissibleValues == null)
-		{
-			return permissibleValues;
-		}
-
 		try
 		{
 			AttributeInterface attribute = entity.getAttributeByName(attributeName);

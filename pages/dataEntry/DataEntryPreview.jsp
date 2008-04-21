@@ -16,6 +16,7 @@
 
 <%-- Stylesheet --%>
 <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/styleSheet.css" />
+<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/de_style.css" />
 <link href="<%=request.getContextPath()%>/css/calanderComponent.css" type=text/css rel=stylesheet />
 
 <script src="<%=request.getContextPath()%>/jss/calendarComponent.js"></script>
@@ -92,9 +93,10 @@
 										<tr height="5"></tr>
 										<tr>
 											<td align='right'>						
-												<html:button styleClass="actionButton" property = 'previewBack' onclick="showParentContainerInsertDataPage()">
-													 <bean:message key="buttons.back" />
-												</html:button>
+												<img src="images/b_back.gif" alt="Back" width="62" height="21" hspace="3" align="absmiddle" onClick="showParentContainerInsertDataPage()">
+													<map alt="Back">
+														<area href="javascript:showParentContainerInsertDataPage()" shape="default">
+													</map>
 											</td>
 										</tr>
 									</table>

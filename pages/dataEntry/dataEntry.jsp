@@ -16,6 +16,7 @@
 
 <%-- Stylesheet --%>
 <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/styleSheet.css" />
+<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/de_style.css" />
 <link href="<%=request.getContextPath()%>/css/calanderComponent.css" type=text/css rel=stylesheet />
 
 <script src="<%=request.getContextPath()%>/jss/calendarComponent.js"></script>
@@ -82,7 +83,7 @@
 	 
 				<tr valign="top">
 					<td>
-						<table valign="top" summary="" align='center' width='100%' cellspacing="0" cellpadding="3">
+						<table valign="top" summary="" align='center' width='100%' cellspacing="0" cellpadding="0">
 							<c:if test='${showFormPreview == "true"}'> 
 								<tr valign="top">
 									<td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onclick="alert('This page is still under construction and will be available in the next release');">
@@ -99,49 +100,72 @@
 									</td>
 									<td width="50%" class="tabMenuSeparator" colspan="3">&nbsp;</td>
 								</tr>
-							</c:if>
-							
+						
+							</c:if>	
 							<tr valign="top">
 								<td colspan="7">
-									<table align='center' width='100%'>
+									<table  align='center' width='100%'>
 										<tr>
 											<%
 												if(errorList.size() != 0)
 												{
 											%>
-												<td align="center" class="formTitleError">
+												<table border="0" align="center" cellpadding="1" cellspacing="0" class="td_color_6e81a6">
+                                              		<tr>
+													<td>
+													<table width="100%" height="30"  border="0" cellpadding="4" cellspacing="4" class="td_color_FFFFCC">  
 													<c:forEach items="${errorList}" var="error">
 														<jsp:useBean id="error" type="java.lang.String"/>
+														 <tr>
+														<th align="center" class="font_bl_nor"><img src="images/ic_error.gif" alt="Error" width="28" height="25" hspace="3" align="absmiddle">
 															<c:out value="${error}"/><br />
 													</c:forEach>
+														</th>
+                                                    	</tr>
+                                                	</table>
+													</td>
+													</tr>
+												</table>
 											<%
 												} else {
-											%>
-												<td align="center" class="formTitle">
-											<%
+														
+												
+											%>		<logic:messagesPresent message="true">								
+													<table border="0" align="center" cellpadding="1" cellspacing="0" class="td_color_6e81a6">
+														<tr>
+															<td><table width="100%" height="30"  border="0"		cellpadding="4" cellspacing="4"			class="td_color_FFFFCC">
+																	<tr>
+																		<th align="left" class="font_bl_nor">
+																		<ul>
+																			<html:messages id="msg" message="true"> 
+																			<img src="images/ic_success.gif" alt="Success" width="28" height="25" hspace="3" align="absmiddle"><bean:write name="msg"/>
+																			</html:messages>
+																		</ul>
+																		</th>
+																	</tr>
+																 </table>
+																</td>
+															</tr>
+														</table>
+													    </logic:messagesPresent>
+													<%
+												
 												}
 											%>
-													<logic:messagesPresent message="true">
-														<ul>
-															<html:messages id="msg" message="true"> 
-																<li><bean:write name="msg"/></li>
-															</html:messages>
-														</ul>
-													</logic:messagesPresent>
-											</td>
-										</tr>
+                                          </tr>
+
 										<tr><td>&nbsp;</td></tr>
 										<tr>
-											<td>
+											<td valign="top">
 												<dynamicExtensions:dynamicUIGenerator containerInterface="<%=containerInterface%>" />
 											</td>
 										</tr>
 									</table>
 								</td>
 							</tr>
-							<tr>
+							<tr class="td_bg_bottom">
 								<td valign="top" colspan="7">
-									<table cellpadding="4" cellspacing="5" border="0" align='center'>
+									<table cellpadding="0" cellspacing="5" border="0" align='center'>
 										<tr height="5"></tr>
 										<tr>
 											<td align='center'>						
@@ -155,28 +179,39 @@
 														<html:hidden styleId='isEdit' property="isEdit" value=""/>
 														
 														<c:if test='${(isTopLevelEntity=="false")}'>
-															<html:button styleClass="actionButton" property="ok" onclick="showParentContainerInsertDataPage()" disabled="<%=isTopLevelEntity %>">
-																<bean:message key="buttons.submit" />
-															</html:button>
+														     <img src="images/b_submit.gif" alt="Submit" width="62" height="21" hspace="3" align="absmiddle" onClick="showParentContainerInsertDataPage()" >
+															<map alt="Submit">
+														<area href="javascript:showParentContainerInsertDataPage()" shape="default">
+															</map>
 														</c:if>
 																												
 														<c:if test='${(mode=="edit") && (isTopLevelEntity=="true")}'>
-															<html:submit styleClass="actionButton" onclick="setInsertDataOperation()">
-																<bean:message key="buttons.submit" />
-															</html:submit>
-															
-															<c:if test='${(recordIdentifier123 != "")}'>	
+															<img src="images/b_submit.gif" alt="Submit" width="62" height="21" hspace="3" align="absmiddle" onClick="setInsertDataOperation()">
+															<map alt="Submit">
+																<area href="javascript:setInsertDataOperation()" shape="default">
+															</map>
+
+															<!-- BUG FIXED -->
+
+															<!--
+															<c:if test='${(recordIdentifier123 != "")}'>
 																<html:button styleClass="actionButton" property="cancel" onclick="setDeleteDataOperation()">
+
 																	<bean:message key="buttons.delete1" />
-																</html:button>
-															</c:if>		
+																</html:button> 
+																<img src="images/b_delete2.gif" alt="cancel" width="62" height="21" hspace="3" align="absmiddle" onClick="setDeleteDataOperation()">
+															<map alt="cancel">
+																<area href="javascript:setDeleteDataOperation()" shape="default">
+															</map>
+															</c:if>		-->
 															
 														</c:if>
 														
 														<c:if test='${!((mode=="view") && (isTopLevelEntity=="false"))}'>
-															<html:button styleClass="actionButton" property="cancel" onclick="cancelInsertData()">
-																<bean:message key="buttons.cancel" />
-															</html:button>
+															<img src="images/b_cancel.gif" alt="Cancel" width="62" height="21" hspace="3" align="absmiddle" onclick="cancelInsertData()">
+															<map alt="Cancel">
+																<area href="javascript:cancelInsertData()" shape="default">
+															</map>
 														</c:if>
 														
 													</c:otherwise>

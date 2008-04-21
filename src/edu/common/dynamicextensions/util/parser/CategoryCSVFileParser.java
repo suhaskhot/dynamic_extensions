@@ -22,6 +22,7 @@ import java.util.StringTokenizer;
 
 import au.com.bytecode.opencsv.CSVReader;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.validation.category.CategoryValidator;
 
 /**
  * @author kunal_kamble
@@ -44,7 +45,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	{
 		super(filePath);
 		reader = new CSVReader(new FileReader(filePath));
-
+		categoryValidator = new CategoryValidator(this);
 	}
 
 	/**
@@ -88,7 +89,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	{
 		return line;
 	}
-	
+
 	/**
 	 * @return paths
 	 * @throws DynamicExtensionsSystemException
@@ -136,12 +137,13 @@ public class CategoryCSVFileParser extends CategoryFileParser
 		return readLine();
 	}
 
-	
 	/**
 	 * @return entity name
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	public String getEntityName()
+	public String getEntityName() throws DynamicExtensionsSystemException
 	{
+		this.categoryValidator.validateEntityName(readLine()[0].split(":")[0].trim());
 		return readLine()[0].split(":")[0].trim();
 	}
 
@@ -168,7 +170,6 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	{
 		return readLine()[2].trim();
 	}
-
 
 	/**
 	 * @return permissible values collection
@@ -214,7 +215,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 				String line = null;
 				while ((line = reader.readLine()) != null)
 				{
-					if(line.trim().length() != 0)//skip the line if it is blank 
+					if (line.trim().length() != 0)//skip the line if it is blank 
 					{
 						permissibleValues.add(line.trim());
 					}
@@ -275,8 +276,9 @@ public class CategoryCSVFileParser extends CategoryFileParser
 		return readLine()[0].split(":")[1].trim();
 	}
 
-	public String getMultiplicity()
+	public String getMultiplicity() throws DynamicExtensionsSystemException
 	{
+		this.categoryValidator.validateMultiplicity();
 		return readLine()[0].split(":")[2].trim();
 	}
 
@@ -299,7 +301,5 @@ public class CategoryCSVFileParser extends CategoryFileParser
 
 		return controlOptions;
 	}
-
-	
 
 }

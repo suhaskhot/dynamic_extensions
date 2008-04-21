@@ -1393,6 +1393,14 @@ function addRow(containerId)
     var counter = table.rows.length;
 
     var newRow = table.insertRow(-1);
+    if(counter%2==0)
+	{
+		newRow.className="td_color_f0f2f6";	
+	}
+	else
+	{	
+		newRow.className="formField_withoutBorder";	
+	}
     var cells = rowTobeCopied.cells;
     for(i = 0 ; i < cells.length ; i++)
     {
@@ -1795,6 +1803,7 @@ function showParentContainerInsertDataPage()
 function setInsertDataOperation()
 {
     document.getElementById('dataEntryOperation').value = "";
+	document.dataEntryForm.submit();
 }
 
 function changeValueForCheckBox(checkbox)

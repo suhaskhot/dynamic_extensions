@@ -59,7 +59,7 @@ public class UserInterfaceiUtility
 		// Do not sort the controls list; it jumbles up the attribute order
 		//Collections.sort(controlsList);
 
-		stringBuffer.append("<tr width='100%'><td colspan='3' class='formFieldContainer'>");
+		stringBuffer.append("<tr width='100%'><td colspan='3'");
 		stringBuffer.append("<div style='display:none' id='" + subContainer.getId() + "_substitutionDiv'>");
 		stringBuffer.append("<table>");
 		subContainer.setContainerValueMap(new HashMap<BaseAbstractAttributeInterface, Object>()); //empty hashmap to generate hidden row
@@ -72,7 +72,7 @@ public class UserInterfaceiUtility
 		stringBuffer.append("</td></tr>");
 
 		stringBuffer.append("<tr width='100%'>");
-		stringBuffer.append("<td class='formFieldContainer' colspan='3' align='center'>");
+		stringBuffer.append("<td class='formFieldContainer_withoutBorder' colspan='3' align='center'>");
 		stringBuffer.append("<table cellpadding='3' cellspacing='0' align='center' width='100%'>");
 
 		String tableHeaderClass = "formLabelWithTopBorder";
@@ -81,14 +81,14 @@ public class UserInterfaceiUtility
 		if(subContainer.getAddCaption())
 		{
 			stringBuffer.append("<tr width='100%'>");
-			stringBuffer.append("<td class='formTitle' colspan='3' align='left'>");
+			stringBuffer.append("<td class='td_color_6e81a6' colspan='3' align='left'>");
 			stringBuffer.append(subContainer.getCaption());
 			stringBuffer.append("</td>");
 			stringBuffer.append("</tr>");
 			
-			tableHeaderClass = "formLabel";
-			formFieldContainerClass = "formFieldContainer";
-			formformRequiredNoticeClass = "formRequiredNotice";
+			tableHeaderClass = "formLabel_withoutBorder";
+			formFieldContainerClass = "formFieldContainer_withoutBorder";
+			formformRequiredNoticeClass = "formRequiredNotice_withoutBorder";
 		}
 
 		stringBuffer.append("<tr width='100%'>");
@@ -96,19 +96,27 @@ public class UserInterfaceiUtility
 		stringBuffer.append("<table id='" + subContainer.getId() + "_table' cellpadding='3' cellspacing='0' align='center' width='100%'>");
 
 		stringBuffer.append("<tr width='100%'>");
-		stringBuffer.append("<th class='"+formformRequiredNoticeClass+"' width='1%'>&nbsp;</th>");
+		stringBuffer.append("<th class='formLabel_withoutBorder' width='1%'>&nbsp;</th>");
 		for (ControlInterface control : controlsList)
 		{
 			boolean isControlRequired = isControlRequired(control);
 			if (isControlRequired)
 			{
-				stringBuffer.append("<th class='formRequiredLabel'>");
-				stringBuffer.append(subContainer.getRequiredFieldIndicatior() + "&nbsp;" + control.getCaption());
+				stringBuffer.append("<th class='formLabel_withoutBorder'>");
+				stringBuffer.append("<span class='font_red'>");
+				stringBuffer.append(subContainer.getRequiredFieldIndicatior() + "&nbsp;" );
+				stringBuffer.append("</span>");
+				stringBuffer.append("<span class='font_bl_nor'>");
+				stringBuffer.append(control.getCaption());
+				stringBuffer.append("</span>");
 			}
 			else
 			{
 				stringBuffer.append("<th class='"+tableHeaderClass+"'>");
-				stringBuffer.append("&nbsp;" + control.getCaption());
+				stringBuffer.append("&nbsp;");
+				stringBuffer.append("<span class='font_bl_nor'>");
+				stringBuffer.append(control.getCaption());
+				stringBuffer.append("</span>");
 			}
 			stringBuffer.append("</th>");
 		}
@@ -129,19 +137,31 @@ public class UserInterfaceiUtility
 
 		if (subContainer.getMode().equals("edit"))
 		{
-			stringBuffer.append("<table cellpadding='3' cellspacing='0' align='center' width='100%'><tr>");
+			stringBuffer.append("<table cellpadding='3' cellspacing='0' align='center' width='100%' class='td_color_e3e2e7'><tr>");
 
 			stringBuffer.append("<td align='left'>");
-			stringBuffer.append("<button type='button' class='actionButton' id='removeRow' onclick=\"removeCheckedRow('" + subContainer.getId()
+			stringBuffer.append("<img src='images/b_delete.gif' alt='Delete' width='59' height='20' hspace='3' align='absmiddle' onclick=\"removeCheckedRow('" + subContainer.getId()
 					+ "')\">");
-			stringBuffer.append(ApplicationProperties.getValue("buttons.delete"));
-			stringBuffer.append("</button>");
+			stringBuffer.append("<map alt='Delete'>");
+			stringBuffer.append("<area href='javascript:removeCheckedRow('" + subContainer.getId()
+					+ "')' shape='default'>");
+			stringBuffer.append("</map>");
+			//stringBuffer.append("<button type='button' class='actionButton' id='removeRow' onclick=\"removeCheckedRow('" + subContainer.getId()
+			//		+ "')\">");
+			//stringBuffer.append(ApplicationProperties.getValue("buttons.delete"));
+			//stringBuffer.append("</button>");
 			stringBuffer.append("</td>");
 
 			stringBuffer.append("<td align='right'>");
-			stringBuffer.append("<button type='button' class='actionButton' id='addMore' onclick=\"addRow('" + subContainer.getId() + "')\">");
-			stringBuffer.append(ApplicationProperties.getValue("eav.button.AddRow"));
-			stringBuffer.append("</button>");
+			stringBuffer.append("<img src='images/b_add_more.gif' alt='Add More' width='76' height='20' hspace='3' vspace='2' align='absmiddle' onclick=\"addRow('" + subContainer.getId()
+					+ "')\">");
+			stringBuffer.append("<map alt='Add More'>");
+			stringBuffer.append("<area href='javascript:\"addRow('" + subContainer.getId()
+					+ "')' shape='default'>");
+			stringBuffer.append("</map>");
+			//stringBuffer.append("<button type='button' class='actionButton' id='addMore' onclick=\"addRow('" + subContainer.getId() + "')\">");
+			//stringBuffer.append(ApplicationProperties.getValue("eav.button.AddRow"));
+			//stringBuffer.append("</button>");
 			stringBuffer.append("</td>");
 
 			stringBuffer.append("</tr></table>");
@@ -239,9 +259,14 @@ public class UserInterfaceiUtility
 		// Do not sort the controls list; it jumbles up the attribute order
 		//Collections.sort(controlsList);
 
-		stringBuffer.append("<tr width='100%'>");
+		String rowClass = "formField_withoutBorder";
+		if(rowId % 2 == 0)
+		{
+			rowClass = "td_color_f0f2f6";
+		}
+		stringBuffer.append("<tr width='100%'class='"+rowClass+"'>");
 
-		stringBuffer.append("<td class='formRequiredNotice' width='1%'>");
+		stringBuffer.append("<td width='1%'>");
 		if (container.getMode().equals("edit"))
 		{
 			stringBuffer.append("<input type='checkbox' name='deleteRow' value='' id='1'/>");
@@ -276,7 +301,7 @@ public class UserInterfaceiUtility
 				}
 			}
 
-			stringBuffer.append("<td class='formField'>");
+			stringBuffer.append("<td>");
 			stringBuffer.append(controlHTML);
 			stringBuffer.append("</td>");
 		}
@@ -329,25 +354,25 @@ public class UserInterfaceiUtility
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("<tr>");
 
-		stringBuffer.append("<td class='formRequiredNotice' width='2%'>");
+		stringBuffer.append("<td class='formRequiredNotice_withoutBorder' width='2%'>");
 		if (isControlRequired)
 		{
 			stringBuffer.append(controlInterface.getParentContainer().getRequiredFieldIndicatior() + "&nbsp;");
 			stringBuffer.append("</td>");
 
-			stringBuffer.append("<td class='formRequiredLabel' width='20%'>");
+			stringBuffer.append("<td class='formRequiredLabel_withoutBorder' width='20%'>");
 		}
 		else
 		{
 			stringBuffer.append("&nbsp;");
 			stringBuffer.append("</td>");
 
-			stringBuffer.append("<td class='formLabel' width='20%'>");
+			stringBuffer.append("<td class='formRequiredLabel_withoutBorder' width='20%'>");
 		}
 		stringBuffer.append(controlInterface.getCaption());
 		stringBuffer.append("</td>");
 
-		stringBuffer.append("<td class='formField'>");
+		stringBuffer.append("<td class='formField_withoutBorder'>");
 		stringBuffer.append(htmlString);
 		stringBuffer.append("</td>");
 		stringBuffer.append("</tr>");

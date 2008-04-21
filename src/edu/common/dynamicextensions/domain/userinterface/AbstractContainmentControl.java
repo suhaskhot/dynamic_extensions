@@ -97,7 +97,8 @@ public abstract class AbstractContainmentControl extends Control implements Abst
 	{
 		String detailsString = "Details";
 		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer.append("<a href='#' style='cursor:hand' class='" + cssClass + "' ");
+		stringBuffer.append("<img src='images/ic_det.gif' alt='Details' width='12' height='12' hspace='3' border='0' align='absmiddle'>");
+		stringBuffer.append("<a href='#' style='cursor:hand' class='set1' ");
 		stringBuffer.append("onclick='showChildContainerInsertDataPage(");
 		stringBuffer.append(this.getParentContainer().getIncontextContainer().getId() + ",this");
 		stringBuffer.append(")'>");

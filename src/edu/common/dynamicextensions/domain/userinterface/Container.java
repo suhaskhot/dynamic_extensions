@@ -370,16 +370,19 @@ public class Container extends DynamicExtensionBaseDomainObject
     {
         StringBuffer stringBuffer = new StringBuffer();
 
-        stringBuffer
-                .append("<table summary='' cellpadding='3' cellspacing='0'  align='center' width='100%'>");
+        stringBuffer.append("<table summary='' cellpadding='3' cellspacing='0'  align='center' width='100%'>");
 
         if (this.getMode() != null
                 && this.getMode().equalsIgnoreCase(WebUIManagerConstants.EDIT_MODE))
         {
             stringBuffer.append("<tr>");
             stringBuffer.append("<td class='formMessage' colspan='3'>");
+            stringBuffer.append("<span class='font_red'>");
             stringBuffer.append(this.getRequiredFieldIndicatior() + "&nbsp;");
+            stringBuffer.append("</span>");
+            stringBuffer.append("<span class='font_gr_s'>");
             stringBuffer.append(this.getRequiredFieldWarningMessage());
+            stringBuffer.append("</span>");
             stringBuffer.append("</td>");
             stringBuffer.append("</tr>");
         }
@@ -432,7 +435,7 @@ public class Container extends DynamicExtensionBaseDomainObject
     private void addCaption(StringBuffer stringBuffer)
 	{
     	stringBuffer.append("<tr>");
-        stringBuffer.append("<td class='formTitle' colspan='3' align='left'>");
+        stringBuffer.append("<td class='td_color_6e81a6' colspan='3' align='left'>");
         stringBuffer.append(this.getCaption());
         stringBuffer.append("</td>");
         stringBuffer.append("</tr>");
@@ -516,7 +519,8 @@ public class Container extends DynamicExtensionBaseDomainObject
             }
         }
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append("<a href='#' style='cursor:hand' ");
+        stringBuffer.append("<img src='images/ic_det.gif' alt='Details' width='12' height='12' hspace='3' border='0' align='absmiddle'>");
+        stringBuffer.append("<a href='#' style='cursor:hand' class='set1' ");
         stringBuffer.append("onclick='showChildContainerInsertDataPage(");
         stringBuffer.append(containerInterface.getId() + ",this");
         stringBuffer.append(")'>");

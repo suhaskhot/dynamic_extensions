@@ -237,25 +237,27 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("<tr>");
 
-		stringBuffer.append("<td class='formRequiredNotice' width='2%'>");
+		stringBuffer.append("<td class='formRequiredNotice_withoutBorder' width='2%'>");
 		if (isControlRequired)
 		{
+			stringBuffer.append("<span class='font_red'>");
 			stringBuffer.append(this.getParentContainer().getRequiredFieldIndicatior() + "&nbsp;");
+			stringBuffer.append("</span>");
 			stringBuffer.append("</td>");
 
-			stringBuffer.append("<td class='formRequiredLabel' width='20%'>");
+			stringBuffer.append("<td class='formRequiredLabel_withoutBorder' width='20%'>");
 		}
 		else
 		{
 			stringBuffer.append("&nbsp;");
 			stringBuffer.append("</td>");
 
-			stringBuffer.append("<td class='formLabel' width='20%'>");
+			stringBuffer.append("<td class='formRequiredLabel_withoutBorder' width='20%'>");
 		}
 		stringBuffer.append(this.getCaption());
 		stringBuffer.append("</td>");
 
-		stringBuffer.append("<td class='formField'>");
+		stringBuffer.append("<td class='formField_withoutBorder'>");
 		stringBuffer.append(htmlString);
 		stringBuffer.append("</td>");
 		stringBuffer.append("</tr>");

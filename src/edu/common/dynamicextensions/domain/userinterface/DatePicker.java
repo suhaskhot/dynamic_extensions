@@ -120,9 +120,7 @@ public class DatePicker extends Control implements DatePickerInterface
 		String dateFormat = ControlsUtility.getDateFormat(attributeTypeInformationInterface);
 		if (dateFormat.equals(ProcessorConstants.DATE_ONLY_FORMAT))
 		{
-            output = "<input class='"
-                + cssClass
-                + "' name='"
+            output = "<input class='font_bl_nor' name='"
                 + htmlComponentName
                 + "' id='"
                 + htmlComponentName
@@ -147,13 +145,11 @@ public class DatePicker extends Control implements DatePickerInterface
 					+ DynamicExtensionsUtility.getCurrentDay() + ","
 					+ DynamicExtensionsUtility.getCurrentMonth() + ","
 					+ DynamicExtensionsUtility.getCurrentYear() + ");</SCRIPT>" + "</DIV>"
-					+ "[MM-DD-YYYY]&nbsp;";
+					+ "<span class='font_gr_s'>[MM-DD-YYYY]&nbsp;</span>";
 		}
 		else if (dateFormat.equals(ProcessorConstants.DATE_TIME_FORMAT))
 		{
-            output = "<input class='"
-                + cssClass
-                + "' name='"
+            output = "<input class='font_bl_nor' name='"
                 + htmlComponentName
                 + "' id='"
                 + htmlComponentName
@@ -180,13 +176,11 @@ public class DatePicker extends Control implements DatePickerInterface
 					+ DynamicExtensionsUtility.getCurrentYear() + ","
 					+ DynamicExtensionsUtility.getCurrentHours() + ","
 					+ DynamicExtensionsUtility.getCurrentMinutes() + ");</SCRIPT>" + "</DIV>"
-					+ "[MM-DD-YYYY HH:MM]&nbsp;";
+					+ "<span class='font_gr_s'>[MM-DD-YYYY HH:MM]&nbsp;</span>";
 		}
         else if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
         {
-            output = "<input class='"
-                + cssClass
-                + "' name='"
+            output = "<input class='font_bl_nor' name='"
                 + htmlComponentName
                 + "' id='"
                 + htmlComponentName
@@ -230,7 +224,7 @@ public class DatePicker extends Control implements DatePickerInterface
             + DynamicExtensionsUtility.getCurrentMonth() + ","
             + DynamicExtensionsUtility.getCurrentYear()
             + ");</SCRIPT>" + "</DIV>"
-            + "[MM-YYYY]&nbsp;";
+            + "<span class='font_gr_s'>[MM-YYYY]&nbsp;</span>";
         }
         else if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
         {
@@ -245,9 +239,7 @@ public class DatePicker extends Control implements DatePickerInterface
             + DynamicExtensionsUtility.getCurrentHours() + ","
             + DynamicExtensionsUtility.getCurrentMinutes() + ");</SCRIPT>" + "</DIV>"
             + "[MM-DD-YYYY HH:MM]&nbsp;";*/
-            output = "<input class='"
-                + cssClass
-                + "' name='"
+            output = "<input class='font_bl_nor' name='"
                 + htmlComponentName
                 + "' id='"
                 + htmlComponentName
@@ -271,7 +263,7 @@ public class DatePicker extends Control implements DatePickerInterface
              output += "<SCRIPT>printYearCalendar('" + htmlComponentName + "',"
             + DynamicExtensionsUtility.getCurrentYear()
             + ");</SCRIPT>" + "</DIV>"
-            + "[YYYY]&nbsp;";
+            + "<span class='font_gr_s'>[YYYY]&nbsp;</span>";
         }
 
 		return output;
@@ -305,7 +297,7 @@ public class DatePicker extends Control implements DatePickerInterface
 		String htmlString = "&nbsp;";
 		if (value != null)
 		{
-			htmlString = "<span class = '" + cssClass + "'> " + this.value.toString() + "</span>";
+			htmlString = "<span class = 'font_bl_nor'> " + this.value.toString() + "</span>";
 		}
 
 		return htmlString;

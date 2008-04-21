@@ -73,6 +73,8 @@ public class CategoryGenerator
 				checkForNullRefernce(entityGroup, "Entity group with name " + categoryFileParser.getEntityGroupName() + " at line number "
 						+ categoryFileParser.getLineNumber() + " does not exist");
 
+				categoryFileParser.getCategoryValidator().setEntityGroup(entityGroup);
+
 				//3:get the path represneted by ordered entity names
 				categoryFileParser.readNext();
 				Map<String, List<String>> paths = categoryFileParser.getPaths();
@@ -122,7 +124,7 @@ public class CategoryGenerator
 						String targetContainerCaption = categoryFileParser.getTargetContainerCaption();
 						ContainerInterface targetContainer = CategoryGenerationUtil.getContainer(containerCollection, targetContainerCaption);
 
-						checkForNullRefernce(targetContainer, "Error at Error at line No:" + categoryFileParser.getLineNumber()
+						checkForNullRefernce(targetContainer, "Error at line No:" + categoryFileParser.getLineNumber()
 								+ " Does not found subcategory with name  " + targetContainerCaption);
 
 						String multiplicity = categoryFileParser.getMultiplicity();

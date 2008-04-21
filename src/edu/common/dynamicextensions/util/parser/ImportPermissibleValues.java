@@ -22,7 +22,8 @@ import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
  * This class the imports the permissible values from csv file into the database.
  *
  */
-public class ImportPermissibleValues {
+public class ImportPermissibleValues
+{
 
 	private CategoryCSVFileParser categoryCSVFileParser;
 
@@ -34,9 +35,8 @@ public class ImportPermissibleValues {
 	 * @throws DynamicExtensionsSystemException
 	 * @throws FileNotFoundException
 	 */
-	public ImportPermissibleValues(String filePath)
-			throws DynamicExtensionsSystemException, FileNotFoundException {
-
+	public ImportPermissibleValues(String filePath) throws DynamicExtensionsSystemException, FileNotFoundException
+	{
 		this.categoryCSVFileParser = new CategoryCSVFileParser(filePath);
 	}
 
@@ -46,24 +46,29 @@ public class ImportPermissibleValues {
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public void importValues() throws DynamicExtensionsApplicationException,
-			DynamicExtensionsSystemException {
-
+	public void importValues() throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	{
 		CategoryHelperInterface categoryHelper = new CategoryHelper();
 
-		try {
-			while (categoryCSVFileParser.readNext()) {
+		try
+		{
+			while (categoryCSVFileParser.readNext())
+			{
 				//first line in the categopry file is Category_Definition
-				if (ENTITY_GROUP.equals(categoryCSVFileParser.readLine()[0])) {
+				if (ENTITY_GROUP.equals(categoryCSVFileParser.readLine()[0]))
+				{
 					continue;
 				}
 				//1:read the entity group
-				EntityGroupInterface entityGroup = DynamicExtensionsUtility
-						.retrieveEntityGroup(categoryCSVFileParser.getEntityGroupName());
+				EntityGroupInterface entityGroup = DynamicExtensionsUtility.retrieveEntityGroup(categoryCSVFileParser.getEntityGroupName());
+
+				categoryCSVFileParser.getCategoryValidator().setEntityGroup(entityGroup);
 
 				EntityInterface currentEntity = null;
-				while (categoryCSVFileParser.readNext()) {
-					if (ENTITY_GROUP.equals(categoryCSVFileParser.readLine()[0])) {
+				while (categoryCSVFileParser.readNext())
+				{
+					if (ENTITY_GROUP.equals(categoryCSVFileParser.readLine()[0]))
+					{
 						break;
 					}
 					String entityName = categoryCSVFileParser.getEntityName();
@@ -72,24 +77,22 @@ public class ImportPermissibleValues {
 					String attributeName = categoryCSVFileParser.getAttributeName();
 
 					List<String> pvList = categoryCSVFileParser.getPermissibleValues();
-					List<PermissibleValueInterface> list = categoryHelper.createPermissibleValuesList
-					(currentEntity,attributeName, pvList);
+					List<PermissibleValueInterface> list = categoryHelper.createPermissibleValuesList(currentEntity, attributeName, pvList);
 
-					AttributeTypeInformationInterface attributeTypeInformation = currentEntity.getAttributeByName
-						(attributeName).getAttributeTypeInformation();
-					UserDefinedDEInterface userDefinedDE = (UserDefinedDEInterface) attributeTypeInformation.
-						getDataElement();
+					AttributeTypeInformationInterface attributeTypeInformation = currentEntity.getAttributeByName(attributeName)
+							.getAttributeTypeInformation();
+					UserDefinedDEInterface userDefinedDE = (UserDefinedDEInterface) attributeTypeInformation.getDataElement();
 
-					if(userDefinedDE == null)
+					if (userDefinedDE == null)
 					{
 						userDefinedDE = DomainObjectFactory.getInstance().createUserDefinedDE();
 						attributeTypeInformation.setDataElement(userDefinedDE);
 
 					}
 
-					for(PermissibleValueInterface pv: list)
+					for (PermissibleValueInterface pv : list)
 					{
-							userDefinedDE.addPermissibleValue(pv);
+						userDefinedDE.addPermissibleValue(pv);
 					}
 					if (list != null && !list.isEmpty())
 					{
@@ -101,8 +104,10 @@ public class ImportPermissibleValues {
 				EntityGroupManager.getInstance().persistEntityGroup(entityGroup);
 
 			}
-		} catch (IOException e) {
-			throw new DynamicExtensionsSystemException("Line number:"+ categoryCSVFileParser.getLineNumber()+"Error while reading csv file "
+		}
+		catch (IOException e)
+		{
+			throw new DynamicExtensionsSystemException("Line number:" + categoryCSVFileParser.getLineNumber() + "Error while reading csv file "
 					+ categoryCSVFileParser.getFilePath(), e);
 		}
 

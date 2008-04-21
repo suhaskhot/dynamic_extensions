@@ -42,7 +42,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 	 */
 	public String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
-		String htmlString = "<SELECT class='" + cssClass + "' name='" + getHTMLComponentName() + "' " + "id='" + getHTMLComponentName() + "'>";
+		String htmlString = "<SELECT class='font_bl_s' name='" + getHTMLComponentName() + "' " + "id='" + getHTMLComponentName() + "'>";
 
 		String defaultValue = "";
 		if (this.value != null)
@@ -149,7 +149,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 			{
 				if (nameValueBean.getValue().equals(defaultValue))
 				{
-					htmlString = "<span class='" + cssClass + "'> " + nameValueBean.getName() + "</span>";
+					htmlString = "<span class='font_bl_s'> " + nameValueBean.getName() + "</span>";
 					break;
 				}
 			}

@@ -91,7 +91,7 @@ public class TextArea extends Control implements TextAreaInterface
 
 		String htmlComponentName = getHTMLComponentName();
 
-		String htmlString = "<textarea " + "class='" + this.cssClass + "' " + "name='"
+		String htmlString = "<textarea " + "class='font_bl_nor' " + "name='"
 				+ htmlComponentName + "' " + "id='" + htmlComponentName + "' ";
 
 		int noCols = columns.intValue();
@@ -177,7 +177,7 @@ public class TextArea extends Control implements TextAreaInterface
 		String htmlString = "&nbsp;";
 		if (value != null)
 		{
-			htmlString = "<span class = '" + cssClass + "'> " + this.value.toString() + "</span>";
+			htmlString = "<span class = 'font_bl_nor'> " + this.value.toString() + "</span>";
 		}
 		return htmlString;
 

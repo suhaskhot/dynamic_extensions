@@ -109,7 +109,7 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		{
 			strMultiSelect = "MULTIPLE ";
 		}
-		String htmlString = "<SELECT " + strMultiSelect + " size=" + this.noOfRows + " class='" + cssClass + "' name='"
+		String htmlString = "<SELECT " + strMultiSelect + " size=" + this.noOfRows + " class='font_bl_s' name='"
 				+ getHTMLComponentName() + "' id='" + name + "'>";
 
 		if (valueList == null || valueList.isEmpty())
@@ -169,7 +169,7 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		{
 			htmlString = new StringBuffer();
 			htmlString.append("<span class = '");
-			htmlString.append(cssClass);
+			htmlString.append("font_bl_s");
 			htmlString.append("'>");
 			for (String string : selectedOptions)
 			{

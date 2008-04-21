@@ -98,7 +98,7 @@ public class TextField extends Control implements TextFieldInterface
 		}
 		else
 		{
-			htmlString = "<INPUT " + "class='" + cssClass + "' " + "name='" + htmlComponentName
+			htmlString = "<INPUT " + "class='font_bl_nor' " + "name='" + htmlComponentName
 					+ "' " + "id='" + htmlComponentName + "' value='" + defaultValue + "' ";
 
 			int columnSize = columns.intValue();
@@ -196,7 +196,7 @@ public class TextField extends Control implements TextFieldInterface
 			}
 			else
 			{
-				htmlString = "<span class = '" + cssClass + "'> " + defaultValue + "</span>";
+				htmlString = "<span class = 'font_bl_nor'> " + defaultValue + "</span>";
 			}
 		}
 		return htmlString;

@@ -1585,3 +1585,42 @@ td.rowWithoutPadding {
 margin: 0; 
 padding: 0; 
 } 
+
+.formField_withoutBorder{ /* for the cell that contains the form elements */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.8em;
+  color:#000000; /* constant: black */
+  background-color:#ffffff; /* constant: light gray */
+}
+
+.formLabel_withoutBorder{ /* for the non-required form labels */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.8em;
+  background-color:#F4F4F5; /* constant: light gray */
+  color:#000000; /* constant: black */
+  text-align:left;
+}
+
+.formRequiredNotice_withoutBorder{ /* for the asterisk cell */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:1em;
+  background-color:#ffffff; /* constant: light gray */
+  color:#000000; /* constant: black */
+}
+
+.formRequiredLabel_withoutBorder{ /* for the required form labels */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.8em;
+ /* font-weight:bold;*/
+  background-color:#ffffff; /* constant: light gray */
+  color:#000000; /* constant: black */
+  text-align:left;
+}
+.formFieldContainer_withoutBorder{ /* for the Container as a field during Containment */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.7em;
+  font-weight:bold;
+  background-color:#ffffff; /* constant: light gray */
+  color:#000000; /* constant: black */
+ 
+}

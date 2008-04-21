@@ -61,20 +61,20 @@ public class RadioButton extends Control implements RadioButtonInterface
 				String optionValue = nameValueBean.getValue();
 				if (optionValue.equals(defaultValue))
 				{
-					htmlString += "<input type='radio' " + "class='" + cssClass + "' " + "name='"
+					htmlString += "<input type='radio' " + "class='font_bl_nor' " + "name='"
 							+ htmlComponentName + "' " + "value='" + optionValue + "' " + "id='"
 							+ optionName + "' checked>"  
 							 + "<label for=\"" + htmlComponentName + "\">"
 							+ optionName
-							+ "</label> ";
+							+ "</label> <img src='images/spacer.gif' width='10' height='10'>";
 				}
 				else
 				{
-					htmlString += "<input type='radio' " + "class='" + cssClass + "' " + "name='"
+					htmlString += "<input type='radio' " + "class='font_bl_nor' " + "name='"
 							+ htmlComponentName + "' " + "value='" + optionValue + "' " + "id='"
 							+ optionName + "'>" 
 							+ "<label for=\"" + htmlComponentName + "\">" + optionName
-							+ "</label>";
+							+ "</label><img src='images/spacer.gif' width='10' height='10'>";
 				}
 			}
 		}

@@ -5,6 +5,7 @@
 package edu.common.dynamicextensions.validation;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
@@ -30,6 +31,14 @@ public class TextLengthValidator implements ValidatorRuleInterface
 		AttributeTypeInformationInterface attributeTypeInformation = attribute
 				.getAttributeTypeInformation();
 		String attributeName = attribute.getName();
+		
+		//If control of type TextField is changed to the 
+		//ListBox while creating catgory. These validations should be 
+		//skipped in that case. 
+		if (valueObject instanceof List)
+		{
+			return true;			
+		}
 		if (valueObject != null)
 		{
 			String value = (String) valueObject;

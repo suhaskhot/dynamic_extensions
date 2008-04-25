@@ -179,8 +179,8 @@ class DynamicExtensionBaseQueryBuilder
 				String foreignConstraintRollbackQuery = "";
 				if (databaseCopy.getParentEntity() != null)
 				{
-					String foreignConstraintRemoveQuery = getForeignKeyRemoveConstraintQueryForInheritance(
-							databaseCopy, databaseCopy.getParentEntity());
+					String foreignConstraintRemoveQuery = getForeignKeyRemoveConstraintQueryForInheritance(databaseCopy, databaseCopy
+							.getParentEntity());
 					foreignConstraintRollbackQuery = getForeignKeyConstraintQueryForInheritance(databaseCopy);
 					queryList.add(foreignConstraintRemoveQuery);
 					attributeRollbackQueryList.add(foreignConstraintRollbackQuery);
@@ -190,8 +190,7 @@ class DynamicExtensionBaseQueryBuilder
 				{
 					String foreignConstraintAddQuery = getForeignKeyConstraintQueryForInheritance(entity);
 
-					foreignConstraintRollbackQuery = getForeignKeyRemoveConstraintQueryForInheritance(
-							entity, entity.getParentEntity());
+					foreignConstraintRollbackQuery = getForeignKeyRemoveConstraintQueryForInheritance(entity, entity.getParentEntity());
 					queryList.add(foreignConstraintAddQuery);
 					attributeRollbackQueryList.add(foreignConstraintRollbackQuery);
 				}
@@ -873,8 +872,7 @@ class DynamicExtensionBaseQueryBuilder
 		{
 			String foreignKeyConstraintQueryForInheritance = getForeignKeyConstraintQueryForInheritance(entity);
 			queryList.add(foreignKeyConstraintQueryForInheritance);
-			String foreignKeyRemoveConstraintQueryForInheritance = getForeignKeyRemoveConstraintQueryForInheritance(
-					entity, entity.getParentEntity());
+			String foreignKeyRemoveConstraintQueryForInheritance = getForeignKeyRemoveConstraintQueryForInheritance(entity, entity.getParentEntity());
 			reverseQueryList.add(foreignKeyRemoveConstraintQueryForInheritance);
 		}
 		return queryList;
@@ -891,27 +889,24 @@ class DynamicExtensionBaseQueryBuilder
 		EntityInterface parentEntity = entity.getParentEntity();
 		return getForeignKeyConstraintQueryForInheritance(entity, parentEntity);
 	}
+
 	/**
 	 *
 	 * @param entity
 	 * @param parentEntity
 	 * @return
 	 */
-	protected String getForeignKeyConstraintQueryForInheritance(AbstractEntityInterface entity,
-			AbstractEntityInterface parentEntity)
+	protected String getForeignKeyConstraintQueryForInheritance(AbstractEntityInterface entity, AbstractEntityInterface parentEntity)
 	{
 		StringBuffer foreignKeyConstraint = new StringBuffer();
 		String foreignConstraintName = entity.getTableProperties().getConstraintName() + UNDERSCORE
 				+ parentEntity.getTableProperties().getConstraintName();
 
-		foreignKeyConstraint.append(ALTER_TABLE).append(WHITESPACE).append(
-				entity.getTableProperties().getName()).append(WHITESPACE).append(ADD_KEYWORD)
-				.append(WHITESPACE).append(CONSTRAINT_KEYWORD).append(WHITESPACE).append(
-						foreignConstraintName).append(FOREIGN_KEY_KEYWORD).append(OPENING_BRACKET)
-				.append(IDENTIFIER).append(CLOSING_BRACKET).append(WHITESPACE).append(
-						REFERENCES_KEYWORD).append(WHITESPACE).append(
-						parentEntity.getTableProperties().getName()).append(OPENING_BRACKET)
-				.append(IDENTIFIER).append(CLOSING_BRACKET);
+		foreignKeyConstraint.append(ALTER_TABLE).append(WHITESPACE).append(entity.getTableProperties().getName()).append(WHITESPACE).append(
+				ADD_KEYWORD).append(WHITESPACE).append(CONSTRAINT_KEYWORD).append(WHITESPACE).append(foreignConstraintName).append(
+				FOREIGN_KEY_KEYWORD).append(OPENING_BRACKET).append(IDENTIFIER).append(CLOSING_BRACKET).append(WHITESPACE).append(REFERENCES_KEYWORD)
+				.append(WHITESPACE).append(parentEntity.getTableProperties().getName()).append(OPENING_BRACKET).append(IDENTIFIER).append(
+						CLOSING_BRACKET);
 		return foreignKeyConstraint.toString();
 	}
 
@@ -921,12 +916,11 @@ class DynamicExtensionBaseQueryBuilder
 	 * @param entity
 	 * @return
 	 */
-	protected String getForeignKeyRemoveConstraintQueryForInheritance(AbstractEntityInterface entity,
-			AbstractEntityInterface parentEntity)
+	protected String getForeignKeyRemoveConstraintQueryForInheritance(AbstractEntityInterface entity, AbstractEntityInterface parentEntity)
 	{
 		StringBuffer foreignKeyConstraint = new StringBuffer();
 		String foreignConstraintName = entity.getTableProperties().getConstraintName() + UNDERSCORE
-		+ parentEntity.getTableProperties().getConstraintName();
+				+ parentEntity.getTableProperties().getConstraintName();
 
 		foreignKeyConstraint.append(ALTER_TABLE).append(WHITESPACE).append(entity.getTableProperties().getName()).append(WHITESPACE).append(
 				DROP_KEYWORD).append(WHITESPACE).append(CONSTRAINT_KEYWORD).append(WHITESPACE).append(foreignConstraintName);
@@ -2039,11 +2033,11 @@ class DynamicExtensionBaseQueryBuilder
 			// quick fix.
 			if (value instanceof List)
 			{
-				if(((List) value).size() >= 0 )
+				if (((List) value).size() >= 0)
 				{
-					formattedvalue = "'" + getEscapedStringValue((String) ((List) value).get(0)) + "'";	
-				}				
-			}				
+					formattedvalue = "'" + getEscapedStringValue((String) ((List) value).get(0)) + "'";
+				}
+			}
 			else
 				formattedvalue = "'" + getEscapedStringValue((String) value) + "'";
 		}
@@ -2068,20 +2062,24 @@ class DynamicExtensionBaseQueryBuilder
 			if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
 			{
 				if (str.length() != 0)
-					str = DynamicExtensionsUtility.formatMonthAndYearDate(str);
-				if (Variables.databaseName.equals(Constants.ORACLE_DATABASE))
 				{
-					str = str.substring(0, str.length()-4);
+					str = DynamicExtensionsUtility.formatMonthAndYearDate(str);
+					if (Variables.databaseName.equals(Constants.ORACLE_DATABASE))
+					{
+						str = str.substring(0, str.length() - 4);
+					}
 				}
 			}
 
 			if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
 			{
 				if (str.length() != 0)
-					str = DynamicExtensionsUtility.formatYearDate(str);
-				if (Variables.databaseName.equals(Constants.ORACLE_DATABASE))
 				{
-					str = str.substring(0, str.length()-4);
+					str = DynamicExtensionsUtility.formatYearDate(str);
+					if (Variables.databaseName.equals(Constants.ORACLE_DATABASE))
+					{
+						str = str.substring(0, str.length() - 4);
+					}
 				}
 			}
 
@@ -2094,11 +2092,11 @@ class DynamicExtensionBaseQueryBuilder
 			// quick fix.
 			if (value instanceof List)
 			{
-				if(((List) value).size() >= 0 )
+				if (((List) value).size() >= 0)
 				{
-					formattedvalue = ((List)value).get(0).toString();		
+					formattedvalue = ((List) value).get(0).toString();
 				}
-			}				
+			}
 			else
 				formattedvalue = value.toString();
 		}

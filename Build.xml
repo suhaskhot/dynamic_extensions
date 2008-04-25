@@ -229,6 +229,7 @@
 	    				<include name="**/exception/*.class"/>
 		    			<include name="**/hbm/**/*.*"/>
 		    			<include name="**/dynamicextensions/util/**/*.*"/>
+		    			<include name="**/dynamicextensions/validation/**/*.*"/>
 		    			<include name="**/common/util/**/*.*"/>
 		    			<include name="**/dynamicextensions/bizlogic/**/*.class"/>
 	    				<include name="*.properties"/>

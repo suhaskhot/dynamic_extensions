@@ -17,6 +17,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInter
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.parser.CategoryCSVConstants;
+import edu.common.dynamicextensions.validation.category.CategoryValidator;
 
 /**
  * @author kunal_kamble
@@ -164,8 +165,10 @@ public class CategoryGenerationUtil
 	 * @param paths
 	 * @param entityGroup
 	 * @return
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	public static Map<String, List<String>> getAssociationList(Map<String, List<String>> paths, EntityGroupInterface entityGroup)
+			throws DynamicExtensionsSystemException
 	{
 		Map<String, List<String>> listOfPath = new HashMap<String, List<String>>();
 
@@ -178,18 +181,19 @@ public class CategoryGenerationUtil
 			Iterator<String> entityNamesIterator = list.iterator();
 
 			String sourceEntityName = entityNamesIterator.next();
-			EntityInterface sourcEntity = entityGroup.getEntityByName(sourceEntityName);
+			EntityInterface sourceEntity = entityGroup.getEntityByName(sourceEntityName);
+			CategoryValidator.checkForNullRefernce(sourceEntity, "Entity with name " + sourceEntityName + " does not exist");
 			while (entityNamesIterator.hasNext())
 			{
 				EntityInterface targetEntity = entityGroup.getEntityByName(entityNamesIterator.next());
-				for (AssociationInterface associationInterface : sourcEntity.getAssociationCollection())
+				for (AssociationInterface associationInterface : sourceEntity.getAssociationCollection())
 				{
 					if (associationInterface.getTargetEntity() == targetEntity)
 					{
 						assocaitionList.add(associationInterface.getName());
 					}
 				}
-				sourcEntity = targetEntity;
+				sourceEntity = targetEntity;
 
 			}
 			listOfPath.put(entityName, assocaitionList);

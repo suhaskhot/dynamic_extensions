@@ -14,7 +14,7 @@ public class FileReader
 {
 
 	private String filePath;
-	
+
 	/**
 	 * @param filePath file path
 	 * @throws DynamicExtensionsSystemException
@@ -51,6 +51,7 @@ public class FileReader
 	{
 
 		path = path.replace(" ", "%20");
+		path = path.replaceAll("\\\\", "//");
 		URI uri = null;
 		try
 		{

@@ -812,13 +812,11 @@ public class CategoryHelper implements CategoryHelperInterface
 
 		List<PermissibleValueInterface> permissibleValues = new ArrayList<PermissibleValueInterface>();
 		PermissibleValueInterface permissibleValueInterface = null;
-		if (desiredPermissibleValues != null)
+
+		for (String value : desiredPermissibleValues)
 		{
-			for (String value : desiredPermissibleValues)
-			{
-				permissibleValueInterface = attributeTypeInformation.getPermissibleValueForString(value);
-				permissibleValues.add(permissibleValueInterface);
-			}
+			permissibleValueInterface = attributeTypeInformation.getPermissibleValueForString(value);
+			permissibleValues.add(permissibleValueInterface);
 		}
 		return permissibleValues;
 	}

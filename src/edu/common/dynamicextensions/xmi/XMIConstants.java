@@ -85,6 +85,7 @@ public class XMIConstants
 	public static final String SEPARATOR = "_";
 	public static final String DOT_SEPARATOR = ".";
 	public static final String TAGGED_VALUE_TYPE = "type";
+	public static final String DEFAULT_PACKAGE = "Default";
 	
 	
 	

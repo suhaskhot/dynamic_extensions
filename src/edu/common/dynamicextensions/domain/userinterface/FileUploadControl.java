@@ -42,7 +42,7 @@ public class FileUploadControl extends Control implements FileUploadInterface
 					+ fileAttributeRecordValue.getFileName() + "</A>";
 
 		}
-		htmlString = htmlString + "&nbsp;<input type=\"file\" " + "name=\"value("
+		htmlString = htmlString + "<input type=\"file\" " + "name=\"value("
 				+ getHTMLComponentName() + ")\" " + "id=\"" + getHTMLComponentName() + "\"/>";
 		return htmlString;
 	}

@@ -106,6 +106,7 @@ public class UserInterfaceiUtility
 				stringBuffer.append("<span class='font_red'>");
 				stringBuffer.append(subContainer.getRequiredFieldIndicatior() + "&nbsp;" );
 				stringBuffer.append("</span>");
+				stringBuffer.append("&nbsp;&nbsp;");
 				stringBuffer.append("<span class='font_bl_nor'>");
 				stringBuffer.append(control.getCaption());
 				stringBuffer.append("</span>");
@@ -113,7 +114,7 @@ public class UserInterfaceiUtility
 			else
 			{
 				stringBuffer.append("<th class='"+tableHeaderClass+"'>");
-				stringBuffer.append("&nbsp;");
+				stringBuffer.append("&nbsp;&nbsp;");
 				stringBuffer.append("<span class='font_bl_nor'>");
 				stringBuffer.append(control.getCaption());
 				stringBuffer.append("</span>");
@@ -300,8 +301,10 @@ public class UserInterfaceiUtility
 					controlHTML = controlHTML.replaceAll(oldName, newName);
 				}
 			}
-
 			stringBuffer.append("<td>");
+			stringBuffer.append("</td>");
+			stringBuffer.append("<td>");
+			stringBuffer.append("&nbsp;");
 			stringBuffer.append(controlHTML);
 			stringBuffer.append("</td>");
 		}

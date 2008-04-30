@@ -127,7 +127,7 @@ public class DatePicker extends Control implements DatePickerInterface
                 + "' value='"
                 + defaultValue
                 + "'/>"
-                + "<A onclick=\"showCalendar('"
+                + "&nbsp;<A onclick=\"showCalendar('"
                 + htmlComponentName
                 + "', "
                 + DynamicExtensionsUtility.getCurrentYear()
@@ -137,7 +137,7 @@ public class DatePicker extends Control implements DatePickerInterface
                 + DynamicExtensionsUtility.getCurrentDay()
                 + ", 'MM-dd-yyyy', 'dataEntryForm', '"
                 + htmlComponentName
-                + "', event, 1900, 2020);\" href=\"javascript://\"><IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 /></A>"
+                + "', event, 1900, 2020);\" href=\"javascript://\"><IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 /></A>&nbsp;"
                 + "<DIV id=slcalcod"
                 + htmlComponentName
                 + " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">";
@@ -156,7 +156,7 @@ public class DatePicker extends Control implements DatePickerInterface
                 + "' value='"
                 + defaultValue
                 + "'/>"
-                + "<A onclick=\"showCalendar('"
+                + "&nbsp;<A onclick=\"showCalendar('"
                 + htmlComponentName
                 + "', "
                 + DynamicExtensionsUtility.getCurrentYear()
@@ -166,7 +166,7 @@ public class DatePicker extends Control implements DatePickerInterface
                 + DynamicExtensionsUtility.getCurrentDay()
                 + ", 'MM-dd-yyyy', 'dataEntryForm', '"
                 + htmlComponentName
-                + "', event, 1900, 2020);\" href=\"javascript://\"><IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 /></A>"
+                + "', event, 1900, 2020);\" href=\"javascript://\"><IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 /></A>&nbsp;"
                 + "<DIV id=slcalcod"
                 + htmlComponentName
                 + " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">";
@@ -187,7 +187,7 @@ public class DatePicker extends Control implements DatePickerInterface
                 + "' value='"
                 + defaultValue
                 + "'/>"
-                + "<A onclick=\"showCalendar('"
+                + "&nbsp;<A onclick=\"showCalendar('"
                 + htmlComponentName
                 + "', "
                 + DynamicExtensionsUtility.getCurrentYear()
@@ -197,7 +197,7 @@ public class DatePicker extends Control implements DatePickerInterface
                 + 0
                 + ", 'MM-yyyy', 'dataEntryForm', '"
                 + htmlComponentName
-                + "', event, 1900, 2020);\" href=\"javascript://\"><IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 /></A>"
+                + "', event, 1900, 2020);\" href=\"javascript://\"><IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 /></A>&nbsp;"
                 + "<DIV id=slcalcod"
                 + htmlComponentName
                 + " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">";
@@ -246,7 +246,7 @@ public class DatePicker extends Control implements DatePickerInterface
                 + "' value='"
                 + defaultValue
                 + "'/>"
-                + "<A onclick=\"showCalendar('"
+                + "&nbsp;<A onclick=\"showCalendar('"
                 + htmlComponentName
                 + "', "
                 + DynamicExtensionsUtility.getCurrentYear()
@@ -256,7 +256,7 @@ public class DatePicker extends Control implements DatePickerInterface
                 + 0
                 + ", 'yyyy', 'dataEntryForm', '"
                 + htmlComponentName
-                + "', event, 1900, 2020);\" href=\"javascript://\"><IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 /></A>"
+                + "', event, 1900, 2020);\" href=\"javascript://\"><IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 /></A>&nbsp;"
                 + "<DIV id=slcalcod"
                 + htmlComponentName
                 + " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">";

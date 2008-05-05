@@ -329,6 +329,26 @@ public class CategoryHelper implements CategoryHelperInterface
 
 	}
 
+	/**
+	 * @param path
+	 * @param instance
+	 */
+	public void addInstanceInformationToPath(PathInterface path, String instance)
+	{
+		String[] entityArray = instance.split("->");
+
+		int i = 0;
+		for (PathAssociationRelationInterface associationRelation : path.getSortedPathAssociationRelationCollection())
+		{
+			String sourceEntity = entityArray[i];
+			String targetEntity = entityArray[i + 1];
+			associationRelation.setSourceInstanceId(Long.parseLong(sourceEntity.substring(sourceEntity.indexOf("[") + 1, sourceEntity.indexOf("]"))));
+			associationRelation.setTargetInstanceId(Long.parseLong(targetEntity.substring(targetEntity.indexOf("[") + 1, targetEntity.indexOf("]"))));
+			i++;
+		}
+
+	}
+
 	/* (non-Javadoc)
 	 * @see edu.wustl.catissuecore.test.CategoryHelperInterface#getNextSequenceNumber(edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface)
 	 */

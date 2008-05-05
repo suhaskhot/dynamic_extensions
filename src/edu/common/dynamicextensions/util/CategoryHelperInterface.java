@@ -5,6 +5,7 @@ import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.PathInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CategoryAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -64,7 +65,7 @@ public interface CategoryHelperInterface
 	 * @return category 
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public CategoryInterface getCategory(String name)throws DynamicExtensionsSystemException;
+	public CategoryInterface getCategory(String name) throws DynamicExtensionsSystemException;
 
 	/**
 	 * Saves a category.
@@ -82,10 +83,9 @@ public interface CategoryHelperInterface
 	 * @param categoryEntityName
 	 * @return container.
 	 */
-	public ContainerInterface createOrUpdateCategoryEntityAndContainer(EntityInterface entity,
-			String containerCaption, CategoryInterface category, String... categoryEntityName);
+	public ContainerInterface createOrUpdateCategoryEntityAndContainer(EntityInterface entity, String containerCaption, CategoryInterface category,
+			String... categoryEntityName);
 
-	
 	/**
 	 * Set the root category entity of this category.
 	 * @param container root category entity's container.
@@ -130,8 +130,9 @@ public interface CategoryHelperInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public CategoryAssociationControlInterface associateCategoryContainers(CategoryInterface category, ContainerInterface sourceContainer, ContainerInterface targetContainer,
-			List<String> associationNameList, int noOfEntries) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	public CategoryAssociationControlInterface associateCategoryContainers(CategoryInterface category, ContainerInterface sourceContainer,
+			ContainerInterface targetContainer, List<String> associationNameList, int noOfEntries) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException;
 
 	/**
 	 * Method returns the next sequenceNumber
@@ -139,6 +140,7 @@ public interface CategoryHelperInterface
 	 * @return next sequence number
 	 */
 	public int getNextSequenceNumber(ContainerInterface container);
+
 	/**
 	 * 
 	 * @param entity
@@ -151,4 +153,9 @@ public interface CategoryHelperInterface
 	public List<PermissibleValueInterface> createPermissibleValuesList(EntityInterface entity, String attributeName,
 			List<String> desiredPermissibleValues) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
+	/**
+	 * @param path
+	 * @param instance
+	 */
+	public void addInstanceInformationToPath(PathInterface path, String instance);
 }

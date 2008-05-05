@@ -42,5 +42,29 @@ public interface PathAssociationRelationInterface extends DynamicExtensionBaseDo
 	 * @param pathSequenceNumber
 	 */
 	public void setPathSequenceNumber(int pathSequenceNumber);
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public Long getSourceInstanceId();
+	
+	/**
+	 * 
+	 * @param sourceInstanceId
+	 */
+	public void setSourceInstanceId(Long sourceInstanceId);
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public Long getTargetInstanceId();
+	
+	/**
+	 * 
+	 * @param targetInstanceId
+	 */
+	public void setTargetInstanceId(Long targetInstanceId);
 
 }

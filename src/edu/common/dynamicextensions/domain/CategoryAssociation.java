@@ -8,6 +8,7 @@ import java.util.Iterator;
 import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 
@@ -20,22 +21,27 @@ public class CategoryAssociation extends BaseAbstractAttribute implements Catego
 {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 12345678L;
 
 	/**
-	 * 
+	 *
 	 */
 	protected CategoryEntity categoryEntity;
 
 	/**
-	 * 
+	 *
 	 */
 	protected Collection<CategoryEntity> targetCategoryEntityCollection = new HashSet<CategoryEntity>();
 
 	/**
-	 * @hibernate.many-to-one column="CATEGORY_ENTIY_ID" class="edu.common.dynamicextensions.domain.CategoryEntity" constrained="true" 
+	 *
+	 */
+	protected Collection<ConstraintPropertiesInterface> constraintPropertiesCollection = new HashSet<ConstraintPropertiesInterface>();
+
+	/**
+	 * @hibernate.many-to-one column="CATEGORY_ENTIY_ID" class="edu.common.dynamicextensions.domain.CategoryEntity" constrained="true"
 	 */
 	public CategoryEntityInterface getCategoryEntity()
 	{
@@ -43,7 +49,7 @@ public class CategoryAssociation extends BaseAbstractAttribute implements Catego
 	}
 
 	/**
-	 * 
+	 *
 	 * @param categoryEntity
 	 */
 	public void setCategoryEntity(CategoryEntityInterface categoryEntityInterface)
@@ -100,7 +106,7 @@ public class CategoryAssociation extends BaseAbstractAttribute implements Catego
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public Collection<RuleInterface> getRuleCollection()
 	{
@@ -116,4 +122,61 @@ public class CategoryAssociation extends BaseAbstractAttribute implements Catego
 		return AssociationType.CONTAINTMENT;
 	}
 
+	/**
+	 * This method returns the Collection of the ConstraintProperties of the Association.
+	 *
+	 * @hibernate.set name="constraintPropertiesCollection" table="DYEXTN_CONSTRAINT_PROPERTIES"
+	 * cascade="all-delete-orphan" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="CATEGORY_ASSOCIATION_ID"
+	 * @hibernate.cache  usage="read-write"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties"
+	 *
+	 * @return the Collection of the ConstraintProperties of the Association.
+	 */
+	public Collection<ConstraintPropertiesInterface> getConstraintPropertiesCollection()
+	{
+		return constraintPropertiesCollection;
+	}
+
+	/**
+	 *
+	 * @param constraintPropertiesCollection
+	 */
+	public void setConstraintPropertiesCollection(
+			Collection<ConstraintPropertiesInterface> constraintPropertiesCollection)
+	{
+		this.constraintPropertiesCollection = constraintPropertiesCollection;
+	}
+	/**
+	 * This method returns the ConstraintProperties of the Association.
+	 * @return the ConstraintProperties of the Association.
+	 */
+	public ConstraintPropertiesInterface getConstraintProperties()
+	{
+		ConstraintPropertiesInterface contraintProperties = null;
+		if (constraintPropertiesCollection != null && !constraintPropertiesCollection.isEmpty())
+		{
+			Iterator constraintPropertiesIterator = constraintPropertiesCollection.iterator();
+			contraintProperties = (ConstraintPropertiesInterface) constraintPropertiesIterator
+					.next();
+		}
+		return contraintProperties;
+	}
+
+	/**
+	 * This method sets the constraintProperties to the given ContraintProperties.
+	 * @param constraintProperties the constraintProperties to be set.
+	 */
+	public void setConstraintProperties(ConstraintPropertiesInterface constraintProperties)
+	{
+		if (constraintPropertiesCollection == null)
+		{
+			constraintPropertiesCollection = new HashSet<ConstraintPropertiesInterface>();
+		}
+		else
+		{
+			constraintPropertiesCollection.clear();
+		}
+		this.constraintPropertiesCollection.add(constraintProperties);
+	}
 }

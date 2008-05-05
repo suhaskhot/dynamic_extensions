@@ -31,7 +31,16 @@ public class PathAssociationRelation extends DynamicExtensionBaseDomainObject im
 	 */
 	protected int pathSequenceNumber;
 	
-
+	/**
+	 * 
+	 */
+	protected Long sourceInstanceId;
+	
+	/**
+	 * 
+	 */
+	protected Long targetInstanceId;
+	
 	public PathAssociationRelation()
 	{
 		super();
@@ -108,6 +117,40 @@ public class PathAssociationRelation extends DynamicExtensionBaseDomainObject im
 		Integer thisPathSequenceNumber = this.pathSequenceNumber;
 		Integer otherPathSequenceNumber = pathAssociationRelation.getPathSequenceNumber();
 		return thisPathSequenceNumber.compareTo(otherPathSequenceNumber);
+	}
+
+	/**
+	 * @hibernate.property name="sourceInstanceId" type="long" column="SRC_INSTANCE_ID"
+	 * @return the sourceInstanceId
+	 */
+	public Long getSourceInstanceId()
+	{
+		return sourceInstanceId;
+	}
+
+	/**
+	 * @param sourceInstanceId the sourceInstanceId to set
+	 */
+	public void setSourceInstanceId(Long sourceInstanceId)
+	{
+		this.sourceInstanceId = sourceInstanceId;
+	}
+
+	/**
+	 * @hibernate.property name="targetInstanceId" type="long" column="TGT_INSTANCE_ID"
+	 * @return the targetInstanceId
+	 */
+	public Long getTargetInstanceId()
+	{
+		return targetInstanceId;
+	}
+
+	/**
+	 * @param targetInstanceId the targetInstanceId to set
+	 */
+	public void setTargetInstanceId(Long targetInstanceId)
+	{
+		this.targetInstanceId = targetInstanceId;
 	}
 
 }

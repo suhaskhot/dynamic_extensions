@@ -5,9 +5,9 @@ import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryB
 import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.ASSOCIATION_NAME_PREFIX;
 import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.CATEGORY_TABLE_NAME_PREFIX;
 import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.COLUMN_NAME_PREFIX;
+import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.CONSTRAINT;
 import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.TABLE_NAME_PREFIX;
 import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.UNDERSCORE;
-import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.CONSTRAINT;
 
 import java.util.Date;
 
@@ -190,7 +190,6 @@ public class DomainObjectFactory
 	public ColumnPropertiesInterface createColumnProperties()
 	{
 		ColumnProperties columnProperties = new ColumnProperties();
-
 		columnProperties.setName(COLUMN_NAME_PREFIX + UNDERSCORE + IdGeneratorUtil.getNextUniqeId());
 		return columnProperties;
 	}
@@ -225,6 +224,10 @@ public class DomainObjectFactory
 		constraintProperties.setSourceEntityKey(ASSOCIATION_COLUMN_PREFIX + UNDERSCORE + "S" + UNDERSCORE + IdGeneratorUtil.getNextUniqeId());
 
 		constraintProperties.setTargetEntityKey(ASSOCIATION_COLUMN_PREFIX + UNDERSCORE + "T" + UNDERSCORE + IdGeneratorUtil.getNextUniqeId());
+
+		constraintProperties.setSourceEntityKeyConstraintName(CONSTRAINT + UNDERSCORE + IdGeneratorUtil.getNextUniqeId());
+
+		constraintProperties.setTargetEntityKeyConstraintName(CONSTRAINT + UNDERSCORE + IdGeneratorUtil.getNextUniqeId());
 
 		return constraintProperties;
 	}
@@ -826,7 +829,9 @@ public class DomainObjectFactory
 
 	public CategoryAttributeInterface createCategoryAttribute()
 	{
-		return new CategoryAttribute();
+		CategoryAttribute categoryAttribute = new CategoryAttribute();
+		categoryAttribute.setColumnProperties(createColumnProperties());
+		return categoryAttribute;
 	}
 
 	/**
@@ -849,7 +854,9 @@ public class DomainObjectFactory
 
 	public CategoryAssociationInterface createCategoryAssociation()
 	{
-		return new CategoryAssociation();
+		CategoryAssociation association = new CategoryAssociation();
+		association.setConstraintProperties(createConstraintProperties());
+		return association;
 	}
 
 	/**

@@ -7,9 +7,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -92,6 +94,7 @@ public class CategoryGenerator
 				List<String> categoryEntityName = null;
 				int sequenceNumber = 1;
 				ControlInterface lastControl = null;
+				Map<String, String> containerNameInstanceMap = new HashMap<String, String>();
 
 				while (categoryFileParser.readNext())
 				{
@@ -102,7 +105,7 @@ public class CategoryGenerator
 					if (categoryFileParser.hasDisplayLable())
 					{
 						displayLabel = categoryFileParser.getDisplyLable();
-						categoryEntityName = createForm(entityGroup, containerCollection, associationNamesMap, category);
+						categoryEntityName = createForm(entityGroup, containerCollection, associationNamesMap, category, containerNameInstanceMap);
 						categoryFileParser.readNext();
 					}
 
@@ -137,6 +140,9 @@ public class CategoryGenerator
 						lastControl = categoryHelper.associateCategoryContainers(category, sourceContainer, targetContainer, associationNameList,
 								CategoryGenerationUtil.getMultiplicityInNumbers(multiplicity));
 
+						categoryHelper.addInstanceInformationToPath(((CategoryEntityInterface) targetContainer.getAbstractEntity()).getPath(),
+								containerNameInstanceMap.get(targetContainer.getCaption()));
+
 					}
 					else
 					{
@@ -164,7 +170,7 @@ public class CategoryGenerator
 					lastControl.setSequenceNumber(sequenceNumber++);
 				}
 
-				CategoryGenerationUtil.setRootContainer(category, containerCollection, associationNamesMap, paths);
+				CategoryGenerationUtil.setRootContainer(category, containerCollection, associationNamesMap, paths, containerNameInstanceMap);
 				categoryList.add(category);
 			}
 
@@ -337,8 +343,8 @@ public class CategoryGenerator
 	}
 
 	private List<String> createForm(EntityGroupInterface entityGroup, List<ContainerInterface> containerCollection,
-			Map<String, List<String>> associationNamesMap, CategoryInterface category) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+			Map<String, List<String>> associationNamesMap, CategoryInterface category, Map<String, String> containerNameInstanceMap)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		String displayLable = categoryFileParser.getDisplyLable();
 		Boolean showCaption = categoryFileParser.isShowCaption();
@@ -361,6 +367,7 @@ public class CategoryGenerator
 				EntityInterface entity = entityGroup.getEntityByName(entityName);
 				ContainerInterface container = createCategoryEntityAndContainer(entity, categoryEntityName.get(0), displayLable, showCaption,
 						containerCollection, category);
+				containerNameInstanceMap.put(container.getCaption(), categoryPaths[0]);
 
 			}
 			else
@@ -374,6 +381,7 @@ public class CategoryGenerator
 				{
 					mainContainer = createCategoryEntityAndContainer(entityGroup.getEntityByName(entityName), categoryEntityName.get(0),
 							displayLable, showCaption, containerCollection, category);
+					containerNameInstanceMap.put(mainContainer.getCaption(), categoryPaths[0]);
 				}
 
 				CategoryHelperInterface categoryHelper = new CategoryHelper();
@@ -385,8 +393,11 @@ public class CategoryGenerator
 
 					ContainerInterface container = createCategoryEntityAndContainer(entityGroup.getEntityByName(entityName), newCategoryEntityName,
 							null, false, containerCollection, category);
+					containerNameInstanceMap.put(container.getCaption(), categoryPaths[0]);
 
 					categoryHelper.associateCategoryContainers(category, mainContainer, container, associationNamesMap.get(entityName), 1);
+					categoryHelper.addInstanceInformationToPath(((CategoryEntityInterface) container.getAbstractEntity()).getPath(),
+							containerNameInstanceMap.get(container.getCaption()));
 
 					categoryEntityName.add(newCategoryEntityName);
 				}
@@ -400,4 +411,5 @@ public class CategoryGenerator
 
 		return categoryEntityName;
 	}
+
 }

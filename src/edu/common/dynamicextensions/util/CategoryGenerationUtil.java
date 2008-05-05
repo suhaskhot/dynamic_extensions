@@ -59,7 +59,8 @@ public class CategoryGenerationUtil
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	public static void setRootContainer(CategoryInterface category, List<ContainerInterface> containerCollection, Map<String, List<String>> paths,
-			Map<String, List<String>> absolutePath) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+			Map<String, List<String>> absolutePath, Map<String, String> containerNameInstanceMap) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 
 		ContainerInterface rootContainer = null;
@@ -91,7 +92,8 @@ public class CategoryGenerationUtil
 
 					categoryHelper.associateCategoryContainers(category, newRootContainer, rootContainer, paths.get(categoryEntityInterface
 							.getEntity().getName()), 1);
-
+					categoryHelper.addInstanceInformationToPath(((CategoryEntityInterface) rootContainer.getAbstractEntity()).getPath(),
+							containerNameInstanceMap.get(rootContainer.getCaption()));
 					rootContainer = newRootContainer;
 
 				}
@@ -176,7 +178,8 @@ public class CategoryGenerationUtil
 		for (String entityName : entityNames)
 		{
 
-			List<String> list = getRelativePath(paths.get(entityName), listOfPath);
+			//Path stored is from the root. 
+			List<String> list = paths.get(entityName);
 			List<String> assocaitionList = new ArrayList<String>();
 			Iterator<String> entityNamesIterator = list.iterator();
 

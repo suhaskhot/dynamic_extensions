@@ -118,5 +118,16 @@ public interface CategoryEntityInterface extends AbstractEntityInterface
 	 * @return
 	 */
 	public CategoryAssociationInterface getAssociationByName(String associationName);
+	
+	/**
+	 *
+	 * @param attributeName
+	 * @return
+	 */
+	public CategoryAttributeInterface getAttributeByName(String attributeName);
+	
+	public CategoryEntityInterface getTreeParentCategoryEntity();
+	
+	public void setTreeParentCategoryEntity(CategoryEntityInterface treeParentCategoryEntity);
 
 }

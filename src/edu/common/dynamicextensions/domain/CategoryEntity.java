@@ -41,6 +41,11 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	 * 
 	 */
 	protected CategoryEntityInterface parentCategoryEntity;
+	
+	/**
+	 * 
+	 */
+	protected CategoryEntityInterface treeParentCategoryEntity;
 
 	/**
 	 * 
@@ -410,6 +415,83 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 		}
 
 		return association;
+	}
+	
+	/**
+	 * This method returns the attribute for the given corresponding identifier.
+	 * @param id identifier of the desired AbstractAttribute.
+	 * @return the matched instance of AbstractAttribute.
+	 */
+	public CategoryAttributeInterface getAttributeByIdentifier(Long id)
+	{
+		CategoryAttributeInterface categoryAttribute = null;
+		Collection<CategoryAttributeInterface> attributeCollection = getCategoryAttributeCollection();
+
+		for (CategoryAttributeInterface categoryAttributeInterface : attributeCollection)
+		{
+			if (categoryAttributeInterface.getId() != null && categoryAttributeInterface.getId().equals(id))
+			{
+				categoryAttribute = categoryAttributeInterface;
+				break;
+			}
+		}
+		return categoryAttribute;
+	}
+	/**
+	 * This method returns the attribute for the given corresponding identifier.
+	 * @param id identifier of the desired AbstractAttribute.
+	 * @return the matched instance of AbstractAttribute.
+	 */
+	public CategoryAssociationInterface getAssociationByIdentifier(Long id)
+	{
+		CategoryAssociationInterface association = null;
+		Collection<CategoryAssociationInterface> associationCollection = getCategoryAssociationCollection();
+
+		for (CategoryAssociationInterface categoryAssociationInterface : associationCollection)
+		{
+			if (categoryAssociationInterface.getId() != null && categoryAssociationInterface.getId().equals(id))
+			{
+				association = categoryAssociationInterface;
+				break;
+			}
+		}
+		return association;
+	}
+	/**
+	 *
+	 * @param attributeName
+	 * @return
+	 */
+	public CategoryAttributeInterface getAttributeByName(String attributeName)
+	{
+		CategoryAttributeInterface attribute = null;
+
+		for (CategoryAttributeInterface attr: this.getCategoryAttributeCollection())
+		{
+			if (attr.getName().equals(attributeName))
+			{
+				attribute = attr;
+			}
+		}
+
+		return attribute;
+	}
+
+	/**
+     * @hibernate.many-to-one column="TREE_PARENT_CATEGORY_ENTITY_ID" cascade="all" class="edu.common.dynamicextensions.domain.CategoryEntity"
+	 * @return the parentCategoryEntity
+     */
+	public CategoryEntityInterface getTreeParentCategoryEntity()
+	{
+		return treeParentCategoryEntity;
+	}
+
+	/**
+	 * @param treeParentCategoryEntity the treeParentCategoryEntity to set
+	 */
+	public void setTreeParentCategoryEntity(CategoryEntityInterface treeParentCategoryEntity)
+	{
+		this.treeParentCategoryEntity = treeParentCategoryEntity;
 	}
 
 }

@@ -439,6 +439,10 @@ public class Container extends DynamicExtensionBaseDomainObject
         stringBuffer.append(this.getCaption());
         stringBuffer.append("</td>");
         stringBuffer.append("</tr>");
+        stringBuffer.append("<tr>");
+		stringBuffer.append("<td>");
+		stringBuffer.append("</td>");
+		stringBuffer.append("</tr>");
 	}
 
 	/**
@@ -520,12 +524,16 @@ public class Container extends DynamicExtensionBaseDomainObject
         }
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append("<img src='images/ic_det.gif' alt='Details' width='12' height='12' hspace='3' border='0' align='absmiddle'>");
-        stringBuffer.append("<a href='#' style='cursor:hand' class='set1' ");
+        stringBuffer.append("<a href='#' style='cursor:hand' class='set1'");
         stringBuffer.append("onclick='showChildContainerInsertDataPage(");
         stringBuffer.append(containerInterface.getId() + ",this");
         stringBuffer.append(")'>");
         stringBuffer.append(detailsString);
         stringBuffer.append("</a>");
+        stringBuffer.append("<tr>");
+        stringBuffer.append("<td>");
+        stringBuffer.append("</td>");
+        stringBuffer.append("</tr>");
 
         return stringBuffer.toString();
     }

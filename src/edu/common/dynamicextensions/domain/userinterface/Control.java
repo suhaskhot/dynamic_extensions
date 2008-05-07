@@ -240,10 +240,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 		stringBuffer.append("<td>");
 		stringBuffer.append("</td>");
 		stringBuffer.append("</tr>");
-		stringBuffer.append("<tr>");
-		stringBuffer.append("<td>");
-		stringBuffer.append("</td>");
-		stringBuffer.append("</tr>");
+		
 		stringBuffer.append("<td class='formRequiredNotice_withoutBorder' width='2%'>");
 		if (isControlRequired)
 		{
@@ -269,7 +266,10 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 		stringBuffer.append(htmlString);
 		stringBuffer.append("</td>");
 		stringBuffer.append("</tr>");
-		
+		stringBuffer.append("<tr>");
+		stringBuffer.append("<td>");
+		stringBuffer.append("</td>");
+		stringBuffer.append("</tr>");
 
 		return stringBuffer.toString();
 	}

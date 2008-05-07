@@ -92,17 +92,17 @@ public class UserInterfaceiUtility
 		}
 
 		stringBuffer.append("<tr width='100%'>");
-		stringBuffer.append("<td class='"+formFieldContainerClass+"' colspan='3'>");
+		stringBuffer.append("<td colspan='3'>");
 		stringBuffer.append("<table id='" + subContainer.getId() + "_table' cellpadding='3' cellspacing='0' align='center' width='100%'>");
 
-		stringBuffer.append("<tr width='100%'>");
-		stringBuffer.append("<th class='formLabel_withoutBorder' width='1%'>&nbsp;</th>");
+		stringBuffer.append("<tr width='100%' class='formLabel_withoutBorder'>");
+		stringBuffer.append("<th width='1%'>&nbsp;</th>");
 		for (ControlInterface control : controlsList)
 		{
 			boolean isControlRequired = isControlRequired(control);
 			if (isControlRequired)
 			{
-				stringBuffer.append("<th class='formLabel_withoutBorder'>");
+				stringBuffer.append("<th>");
 				stringBuffer.append("<span class='font_red'>");
 				stringBuffer.append(subContainer.getRequiredFieldIndicatior() + "&nbsp;" );
 				stringBuffer.append("</span>");
@@ -113,7 +113,7 @@ public class UserInterfaceiUtility
 			}
 			else
 			{
-				stringBuffer.append("<th class='"+tableHeaderClass+"'>");
+				stringBuffer.append("<th>");
 				stringBuffer.append("&nbsp;&nbsp;");
 				stringBuffer.append("<span class='font_bl_nor'>");
 				stringBuffer.append(control.getCaption());
@@ -301,8 +301,7 @@ public class UserInterfaceiUtility
 					controlHTML = controlHTML.replaceAll(oldName, newName);
 				}
 			}
-			stringBuffer.append("<td>");
-			stringBuffer.append("</td>");
+			
 			stringBuffer.append("<td>");
 			stringBuffer.append("&nbsp;");
 			stringBuffer.append(controlHTML);
@@ -363,14 +362,14 @@ public class UserInterfaceiUtility
 			stringBuffer.append(controlInterface.getParentContainer().getRequiredFieldIndicatior() + "&nbsp;");
 			stringBuffer.append("</td>");
 
-			stringBuffer.append("<td class='formRequiredLabel_withoutBorder' width='20%'>");
+			stringBuffer.append("<td class='formRequiredLabel_withoutBorder'>");
 		}
 		else
 		{
 			stringBuffer.append("&nbsp;");
 			stringBuffer.append("</td>");
 
-			stringBuffer.append("<td class='formRequiredLabel_withoutBorder' width='20%'>");
+			stringBuffer.append("<td class='formRequiredLabel_withoutBorder'>");
 		}
 		stringBuffer.append(controlInterface.getCaption());
 		stringBuffer.append("</td>");

@@ -16,6 +16,7 @@ import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
@@ -185,6 +186,8 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		association.setName(targetEntity.getName());
 		association.setSourceRole(getRole(associationType, sourceEntity.getName(), Cardinality.ONE, sourceCardinality));
 		association.setTargetRole(getRole(associationType, targetEntity.getName(), Cardinality.ONE, targetCardinality));
+		ConstraintPropertiesInterface constraintProperties = DynamicExtensionsUtility.getConstraintProperties(association);
+		association.setConstraintProperties(constraintProperties);
 		sourceEntity.addAssociation(association);
 		return association;
 	}

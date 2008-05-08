@@ -43,6 +43,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInte
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -1324,6 +1325,19 @@ public class DynamicExtensionsUtility
 		}
 		
 		return isDataTypeNumber;
+	}
+	
+	
+	public static ConstraintPropertiesInterface getConstraintProperties(AssociationInterface association)
+	{
+		ConstraintPropertiesInterface cp = association.getConstraintProperties();
+		if(association.getSourceRole().getMaximumCardinality() == Cardinality.MANY && association.getTargetRole().getMaximumCardinality() == Cardinality.ONE)
+			cp.setTargetEntityKey(null);
+		else if(association.getSourceRole().getMaximumCardinality() == Cardinality.ONE && association.getTargetRole().getMaximumCardinality() == Cardinality.MANY
+				|| association.getSourceRole().getMaximumCardinality() == Cardinality.ONE && association.getTargetRole().getMaximumCardinality() == Cardinality.ONE)
+			cp.setSourceEntityKey(null);
+	
+		return cp;
 	}
 
 }

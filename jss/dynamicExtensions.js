@@ -1418,6 +1418,17 @@ function addRow(containerId)
 
     currentRowCounter1 = currentRowCounter.value;
     document.getElementById(hiddenVar).value = parseInt(currentRowCounter1) + 1;
+
+	var x = document.getElementsByTagName("script"); 
+	var RegularExpression  =  new RegExp("\^print");
+
+    for(var i=0;i<x.length;i++)
+    {
+	  if(x[i].text!='' && x[i].text.search(RegularExpression) == -1)
+	  {
+       		eval(x[i].text);
+	  }
+    }
 }
 
 function removeCheckedRow(containerId)
@@ -1520,20 +1531,21 @@ function ignoreResponseHandler(str)
 function setDefaultValues(tableId, obj)
 {
     var children = obj.childNodes;
+
     var rowIndex = document.getElementById(tableId).rows.length;
     rowIndex = parseInt(rowIndex) - 1 ;
+
 
     for (j = 0 ; j < children.length; j++)
     {
         var childObject = children[j];
         childObjectName = childObject.name;
-
+		
         if (childObjectName != null && childObjectName.indexOf('_')!= -1)
         {
             if (childObjectName.indexOf(')')!= -1)
             {
                 childObjectName = childObjectName.substring(0,childObjectName.indexOf(')'));
-
                 str = childObjectName + "_" + rowIndex;
                 str = str + ")";
             }
@@ -1541,8 +1553,24 @@ function setDefaultValues(tableId, obj)
             {
                 str = childObjectName + "_" + rowIndex;
             }
-            obj.innerHTML = replaceAll(obj.innerHTML,childObjectName,str);
+			obj.innerHTML = replaceAll(obj.innerHTML,childObjectName,str);
+			
         }
+
+		if("auto_complete_dropdown" == childObject.id )
+		{
+			var childNodes2 = 	childObject.childNodes;
+
+			var oldName  = childNodes2[2].childNodes[0].childNodes[0].name;
+			var newName = oldName + "_" +rowIndex;
+		
+			var newScript = replaceAll(childNodes2[1].innerHTML,oldName,newName);
+		
+			obj.innerHTML =replaceAll(childNodes2[2].innerHTML,oldName,newName);
+		
+			eval(newScript);
+
+		}
     }
     return obj;
 }

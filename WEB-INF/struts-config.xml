@@ -218,7 +218,18 @@ PUBLIC
 			scope="request">
 			<forward name="success" path="/LoadRecordListAction.do" />
 		</action>
+		<action path="/ComboDataAction" 
+		type="edu.common.dynamicextensions.util.global.ComboDataAction" 
+		name="recordListForm"
+		validate="false"
+		scope="request">
+		<forward name="success" path="/ComboDataAction.do" />
+	</action>
+		
 	</action-mappings>	
+	
+	
+	
 	
 	<message-resources parameter="ApplicationResources" />
 </struts-config>

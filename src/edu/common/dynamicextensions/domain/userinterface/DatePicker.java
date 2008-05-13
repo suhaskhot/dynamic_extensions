@@ -70,7 +70,7 @@ public class DatePicker extends Control implements DatePickerInterface
 				+ DynamicExtensionsUtility.getCurrentDay()
 				+ ", 'MM-dd-yyyy', 'dataEntryForm', '"
 				+ htmlComponentName
-				+ "', event, 1900, 2020);\" href=\"javascript://\"><IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 /></A>"
+				+ "', event, 1900, 2020);\" href=\"javascript://\">&nbsp;<IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 /></A>"
 				+ "<DIV id=slcalcod"
 				+ htmlComponentName
 				+ " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">";*/
@@ -90,7 +90,7 @@ public class DatePicker extends Control implements DatePickerInterface
         + DynamicExtensionsUtility.getCurrentMonth()
         + ", "
         + DynamicExtensionsUtility.getCurrentYear()
-        + ");\" href=\"javascript://\"><IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 /></A>"
+        + ");\" href=\"javascript://\">&nbsp;<IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 /></A>"
         + "<DIV id=slcalcod"
         + htmlComponentName
         + " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">";*/
@@ -110,7 +110,7 @@ public class DatePicker extends Control implements DatePickerInterface
             + DynamicExtensionsUtility.getCurrentMonth()
             + ", "
             + DynamicExtensionsUtility.getCurrentYear()
-            + ");\" href=\"javascript://\"><IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 /></A>"
+            + ");\" href=\"javascript://\">&nbsp;<IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 /></A>"
             + "<DIV id=slcalcod"
             + htmlComponentName
             + " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">";*/
@@ -127,7 +127,7 @@ public class DatePicker extends Control implements DatePickerInterface
                 + "' value='"
                 + defaultValue
                 + "'/>"
-                + "&nbsp;<A onclick=\"showCalendar('"
+                + "<A onclick=\"showCalendar('"
                 + htmlComponentName
                 + "', "
                 + DynamicExtensionsUtility.getCurrentYear()
@@ -137,7 +137,7 @@ public class DatePicker extends Control implements DatePickerInterface
                 + DynamicExtensionsUtility.getCurrentDay()
                 + ", 'MM-dd-yyyy', 'dataEntryForm', '"
                 + htmlComponentName
-                + "', event, 1900, 2020);\" href=\"javascript://\"><IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 /></A>&nbsp;"
+                + "', event, 1900, 2020);\" href=\"javascript://\">&nbsp;<IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 />&nbsp;<span class='font_gr_s'>[MM-DD-YYYY]</span></A>"
                 + "<DIV id=slcalcod"
                 + htmlComponentName
                 + " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">";
@@ -145,7 +145,7 @@ public class DatePicker extends Control implements DatePickerInterface
 					+ DynamicExtensionsUtility.getCurrentDay() + ","
 					+ DynamicExtensionsUtility.getCurrentMonth() + ","
 					+ DynamicExtensionsUtility.getCurrentYear() + ");</SCRIPT>" + "</DIV>"
-					+ "<span class='font_gr_s'>[MM-DD-YYYY]&nbsp;</span>";
+					;
 		}
 		else if (dateFormat.equals(ProcessorConstants.DATE_TIME_FORMAT))
 		{
@@ -156,7 +156,7 @@ public class DatePicker extends Control implements DatePickerInterface
                 + "' value='"
                 + defaultValue
                 + "'/>"
-                + "&nbsp;<A onclick=\"showCalendar('"
+                + "<A onclick=\"showCalendar('"
                 + htmlComponentName
                 + "', "
                 + DynamicExtensionsUtility.getCurrentYear()
@@ -166,7 +166,7 @@ public class DatePicker extends Control implements DatePickerInterface
                 + DynamicExtensionsUtility.getCurrentDay()
                 + ", 'MM-dd-yyyy', 'dataEntryForm', '"
                 + htmlComponentName
-                + "', event, 1900, 2020);\" href=\"javascript://\"><IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 /></A>&nbsp;"
+                + "', event, 1900, 2020);\" href=\"javascript://\">&nbsp;<IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 />&nbsp;<span class='font_gr_s'>[MM-DD-YYYY HH:MM]</span></A>"
                 + "<DIV id=slcalcod"
                 + htmlComponentName
                 + " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">";
@@ -176,7 +176,7 @@ public class DatePicker extends Control implements DatePickerInterface
 					+ DynamicExtensionsUtility.getCurrentYear() + ","
 					+ DynamicExtensionsUtility.getCurrentHours() + ","
 					+ DynamicExtensionsUtility.getCurrentMinutes() + ");</SCRIPT>" + "</DIV>"
-					+ "<span class='font_gr_s'>[MM-DD-YYYY HH:MM]&nbsp;</span>";
+					;
 		}
         else if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
         {
@@ -187,7 +187,7 @@ public class DatePicker extends Control implements DatePickerInterface
                 + "' value='"
                 + defaultValue
                 + "'/>"
-                + "&nbsp;<A onclick=\"showCalendar('"
+                + "<A onclick=\"showCalendar('"
                 + htmlComponentName
                 + "', "
                 + DynamicExtensionsUtility.getCurrentYear()
@@ -197,7 +197,7 @@ public class DatePicker extends Control implements DatePickerInterface
                 + 0
                 + ", 'MM-yyyy', 'dataEntryForm', '"
                 + htmlComponentName
-                + "', event, 1900, 2020);\" href=\"javascript://\"><IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 /></A>&nbsp;"
+                + "', event, 1900, 2020);\" href=\"javascript://\">&nbsp;<IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 />&nbsp;<span class='font_gr_s'>[MM-YYYY]</span></A>"
                 + "<DIV id=slcalcod"
                 + htmlComponentName
                 + " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">";
@@ -216,7 +216,7 @@ public class DatePicker extends Control implements DatePickerInterface
                 + DynamicExtensionsUtility.getCurrentMonth()
                 + ", "
                 + DynamicExtensionsUtility.getCurrentYear()
-                + ");\" href=\"javascript://\"><IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 /></A>"
+                + ");\" href=\"javascript://\">&nbsp;<IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 /></A>"
                 + "<DIV id=slcalcod"
                 + htmlComponentName
                 + " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">";*/
@@ -224,21 +224,21 @@ public class DatePicker extends Control implements DatePickerInterface
             + DynamicExtensionsUtility.getCurrentMonth() + ","
             + DynamicExtensionsUtility.getCurrentYear()
             + ");</SCRIPT>" + "</DIV>"
-            + "<span class='font_gr_s'>[MM-YYYY]&nbsp;</span>";
+            ;
         }
         else if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
         {
             /*output += "<SCRIPT>printYearCalendar('" + "attributeDefaultValue" + "',"
             + DynamicExtensionsUtility.getCurrentYear() + ","
             + ");</SCRIPT>" + "</DIV>"
-            + "[YYYY]&nbsp;";
+            + "[YYYY]";
             output += "<SCRIPT>printYearCalendar('" + htmlComponentName + "',"
             + DynamicExtensionsUtility.getCurrentDay() + ","
             + DynamicExtensionsUtility.getCurrentMonth() + ","
             + DynamicExtensionsUtility.getCurrentYear() + ","
             + DynamicExtensionsUtility.getCurrentHours() + ","
             + DynamicExtensionsUtility.getCurrentMinutes() + ");</SCRIPT>" + "</DIV>"
-            + "[MM-DD-YYYY HH:MM]&nbsp;";*/
+            + "[MM-DD-YYYY HH:MM]";*/
             output = "<input class='font_bl_nor' name='"
                 + htmlComponentName
                 + "' id='"
@@ -246,7 +246,7 @@ public class DatePicker extends Control implements DatePickerInterface
                 + "' value='"
                 + defaultValue
                 + "'/>"
-                + "&nbsp;<A onclick=\"showCalendar('"
+                + "<A onclick=\"showCalendar('"
                 + htmlComponentName
                 + "', "
                 + DynamicExtensionsUtility.getCurrentYear()
@@ -256,14 +256,14 @@ public class DatePicker extends Control implements DatePickerInterface
                 + 0
                 + ", 'yyyy', 'dataEntryForm', '"
                 + htmlComponentName
-                + "', event, 1900, 2020);\" href=\"javascript://\"><IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 /></A>&nbsp;"
+                + "', event, 1900, 2020);\" href=\"javascript://\">&nbsp;<IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 />&nbsp;<span class='font_gr_s'>[YYYY]</span></A>"
                 + "<DIV id=slcalcod"
                 + htmlComponentName
                 + " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">";
              output += "<SCRIPT>printYearCalendar('" + htmlComponentName + "',"
             + DynamicExtensionsUtility.getCurrentYear()
             + ");</SCRIPT>" + "</DIV>"
-            + "<span class='font_gr_s'>[YYYY]&nbsp;</span>";
+           ;
         }
 
 		return output;
@@ -294,7 +294,7 @@ public class DatePicker extends Control implements DatePickerInterface
 
 	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
 	{
-		String htmlString = "&nbsp;";
+		String htmlString = "";
 		if (value != null)
 		{
 			htmlString = "<span class = 'font_bl_nor'> " + this.value.toString() + "</span>";

@@ -28,7 +28,6 @@ import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterfac
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
-import edu.wustl.common.util.global.ApplicationProperties;
 
 /**
  * @author chetan_patil
@@ -78,14 +77,14 @@ public class UserInterfaceiUtility
 		String tableHeaderClass = "formLabelWithTopBorder";
 		String formFieldContainerClass = "formFieldContainerWithTopBorder";
 		String formformRequiredNoticeClass = "formRequiredNoticeWithTopBorder";
-		if(subContainer.getAddCaption())
+		if (subContainer.getAddCaption())
 		{
 			stringBuffer.append("<tr width='100%'>");
 			stringBuffer.append("<td class='td_color_6e81a6' colspan='3' align='left'>");
 			stringBuffer.append(subContainer.getCaption());
 			stringBuffer.append("</td>");
 			stringBuffer.append("</tr>");
-			
+
 			tableHeaderClass = "formLabel_withoutBorder";
 			formFieldContainerClass = "formFieldContainer_withoutBorder";
 			formformRequiredNoticeClass = "formRequiredNotice_withoutBorder";
@@ -93,18 +92,20 @@ public class UserInterfaceiUtility
 
 		stringBuffer.append("<tr width='100%'>");
 		stringBuffer.append("<td colspan='3'>");
-		stringBuffer.append("<table id='" + subContainer.getId() + "_table' cellpadding='3' cellspacing='0' align='center' width='100%'>");
+		stringBuffer.append("<table id='" + subContainer.getId() + "_table' cellpadding='3' cellspacing='3' border='0' align='center' width='100%'>");
 
 		stringBuffer.append("<tr width='100%' class='formLabel_withoutBorder'>");
 		stringBuffer.append("<th width='1%'>&nbsp;</th>");
 		for (ControlInterface control : controlsList)
 		{
 			boolean isControlRequired = isControlRequired(control);
+
+			stringBuffer.append("<th>");
 			if (isControlRequired)
 			{
-				stringBuffer.append("<th>");
+
 				stringBuffer.append("<span class='font_red'>");
-				stringBuffer.append(subContainer.getRequiredFieldIndicatior() + "&nbsp;" );
+				stringBuffer.append(subContainer.getRequiredFieldIndicatior());
 				stringBuffer.append("</span>");
 				stringBuffer.append("&nbsp;&nbsp;");
 				stringBuffer.append("<span class='font_bl_nor'>");
@@ -113,7 +114,6 @@ public class UserInterfaceiUtility
 			}
 			else
 			{
-				stringBuffer.append("<th>");
 				stringBuffer.append("&nbsp;&nbsp;");
 				stringBuffer.append("<span class='font_bl_nor'>");
 				stringBuffer.append(control.getCaption());
@@ -141,11 +141,11 @@ public class UserInterfaceiUtility
 			stringBuffer.append("<table cellpadding='3' cellspacing='0' align='center' width='100%' class='td_color_e3e2e7'><tr>");
 
 			stringBuffer.append("<td align='left'>");
-			stringBuffer.append("<img src='images/b_delete.gif' alt='Delete' width='59' height='20' hspace='3' align='absmiddle' onclick=\"removeCheckedRow('" + subContainer.getId()
-					+ "')\">");
+			stringBuffer
+					.append("<img src='images/b_delete.gif' alt='Delete' width='59' height='20' hspace='3' align='absmiddle' onclick=\"removeCheckedRow('"
+							+ subContainer.getId() + "')\">");
 			stringBuffer.append("<map alt='Delete'>");
-			stringBuffer.append("<area href='javascript:removeCheckedRow('" + subContainer.getId()
-					+ "')' shape='default'>");
+			stringBuffer.append("<area href='javascript:removeCheckedRow('" + subContainer.getId() + "')' shape='default'>");
 			stringBuffer.append("</map>");
 			//stringBuffer.append("<button type='button' class='actionButton' id='removeRow' onclick=\"removeCheckedRow('" + subContainer.getId()
 			//		+ "')\">");
@@ -154,11 +154,11 @@ public class UserInterfaceiUtility
 			stringBuffer.append("</td>");
 
 			stringBuffer.append("<td align='right'>");
-			stringBuffer.append("<img src='images/b_add_more.gif' alt='Add More' width='76' height='20' hspace='3' vspace='2' align='absmiddle' onclick=\"addRow('" + subContainer.getId()
-					+ "')\">");
+			stringBuffer
+					.append("<img src='images/b_add_more.gif' alt='Add More' width='76' height='20' hspace='3' vspace='2' align='absmiddle' onclick=\"addRow('"
+							+ subContainer.getId() + "')\">");
 			stringBuffer.append("<map alt='Add More'>");
-			stringBuffer.append("<area href='javascript:\"addRow('" + subContainer.getId()
-					+ "')' shape='default'>");
+			stringBuffer.append("<area href='javascript:\"addRow('" + subContainer.getId() + "')' shape='default'>");
 			stringBuffer.append("</map>");
 			//stringBuffer.append("<button type='button' class='actionButton' id='addMore' onclick=\"addRow('" + subContainer.getId() + "')\">");
 			//stringBuffer.append(ApplicationProperties.getValue("eav.button.AddRow"));
@@ -183,10 +183,11 @@ public class UserInterfaceiUtility
 	 */
 	public static boolean isControlRequired(ControlInterface controlInterface)
 	{
-		if(controlInterface.getBaseAbstractAttribute() instanceof AssociationMetadataInterface){
+		if (controlInterface.getBaseAbstractAttribute() instanceof AssociationMetadataInterface)
+		{
 			return false;
 		}
-		AttributeMetadataInterface attributeMetadataInterface= (AttributeMetadataInterface) controlInterface.getBaseAbstractAttribute();
+		AttributeMetadataInterface attributeMetadataInterface = (AttributeMetadataInterface) controlInterface.getBaseAbstractAttribute();
 		Collection<RuleInterface> ruleCollection = attributeMetadataInterface.getRuleCollection();
 		boolean required = false;
 		if (ruleCollection != null && !ruleCollection.isEmpty())
@@ -261,11 +262,11 @@ public class UserInterfaceiUtility
 		//Collections.sort(controlsList);
 
 		String rowClass = "formField_withoutBorder";
-		if(rowId % 2 == 0)
+		if (rowId % 2 == 0)
 		{
 			rowClass = "td_color_f0f2f6";
 		}
-		stringBuffer.append("<tr width='100%'class='"+rowClass+"'>");
+		stringBuffer.append("<tr width='100%'class='" + rowClass + "'>");
 
 		stringBuffer.append("<td width='1%'>");
 		if (container.getMode().equals("edit"))
@@ -301,9 +302,8 @@ public class UserInterfaceiUtility
 					controlHTML = controlHTML.replaceAll(oldName, newName);
 				}
 			}
-			
-			stringBuffer.append("<td>");
-			stringBuffer.append("&nbsp;");
+
+			stringBuffer.append("<td valign='middle' NOWRAP='true'>");
 			stringBuffer.append(controlHTML);
 			stringBuffer.append("</td>");
 		}
@@ -333,7 +333,8 @@ public class UserInterfaceiUtility
 				}
 				else
 				{
-					abstractContainmentControl = (AbstractContainmentControl) getAssociationControl(abstractContainmentControl.getContainer(), childContainerId);
+					abstractContainmentControl = (AbstractContainmentControl) getAssociationControl(abstractContainmentControl.getContainer(),
+							childContainerId);
 					if (abstractContainmentControl != null)
 					{
 						return abstractContainmentControl;
@@ -445,6 +446,5 @@ public class UserInterfaceiUtility
 		}
 		return isDataPresent;
 	}
-	
-	
+
 }

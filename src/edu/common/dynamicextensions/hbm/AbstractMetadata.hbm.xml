@@ -258,6 +258,27 @@
               />
         </set>
 
+        <set
+            name="constraintPropertiesCollection"
+            table="DYEXTN_CONSTRAINT_PROPERTIES"
+            lazy="false"
+            inverse="false"
+            cascade="all-delete-orphan"
+            sort="unsorted"
+        >
+            <cache 
+                usage="read-write" 
+             />
+
+              <key
+                  column="CATEGORY_ASSOCIATION_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties"
+              />
+        </set>
+
         </joined-subclass>
         <joined-subclass
             name="edu.common.dynamicextensions.domain.AbstractAttribute"
@@ -679,6 +700,16 @@
             update="true"
             insert="true"
             column="OWN_PARENT_CATEGORY_ENTITY_ID"
+        />
+
+        <many-to-one
+            name="treeParentCategoryEntity"
+            class="edu.common.dynamicextensions.domain.CategoryEntity"
+            cascade="all"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="TREE_PARENT_CATEGORY_ENTITY_ID"
         />
 
         </joined-subclass>

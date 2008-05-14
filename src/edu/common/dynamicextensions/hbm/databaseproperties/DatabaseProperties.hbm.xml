@@ -47,6 +47,13 @@
         <key
             column="IDENTIFIER"
         />
+        <property
+            name="constraintName"
+            type="string"
+            update="true"
+            insert="true"
+            column="CONSTRAINT_NAME"
+        />
 
         </joined-subclass>
         <joined-subclass
@@ -57,6 +64,13 @@
         >
         <key
             column="IDENTIFIER"
+        />
+        <property
+            name="constraintName"
+            type="string"
+            update="true"
+            insert="true"
+            column="CONSTRAINT_NAME"
         />
 
         </joined-subclass>
@@ -83,6 +97,22 @@
             update="true"
             insert="true"
             column="TARGET_ENTITY_KEY"
+        />
+
+        <property
+            name="sourceEntityKeyConstraintName"
+            type="string"
+            update="true"
+            insert="true"
+            column="SRC_CONSTRAINT_NAME"
+        />
+
+        <property
+            name="targetEntityKeyConstraintName"
+            type="string"
+            update="true"
+            insert="true"
+            column="TARGET_CONSTRAINT_NAME"
         />
 
         </joined-subclass>

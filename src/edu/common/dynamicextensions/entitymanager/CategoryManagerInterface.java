@@ -5,8 +5,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
@@ -63,17 +61,6 @@ public interface CategoryManagerInterface
 	public List<Long> insertData(CategoryInterface category, List<Map<BaseAbstractAttributeInterface, Object>> dataValueMapList)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
-	public Map<AbstractAttributeInterface, Object> generateEntityDataValueMap(Map<BaseAbstractAttributeInterface, Object> categoryDataMap);
-	
-	/**
-	 * @param categoryEntityInterface
-	 * @param categoryDataMap
-	 * @param entityDataMap
-	 */
-	public void populateCategoryDataValueMap(CategoryEntityInterface categoryEntityInterface,
-			Map<BaseAbstractAttributeInterface, Object> categoryDataMap, Map<AbstractAttributeInterface, Object> entityDataMap);
-	
-	
 	/**
 	 * @param rootCategoryEntity
 	 * @param recordId

@@ -14,6 +14,7 @@ public interface DynamicExtensionsQueryBuilderConstantsInterface extends EntityM
 	String TABLE_NAME_PREFIX = "DE_E";
 	String CATEGORY_TABLE_NAME_PREFIX = "DE_C";
 	String UNDERSCORE = "_";
+	String CONSTRAINT = "CONSRT";
 	String COLUMN_NAME_PREFIX = "DE_AT";
 	String ASSOCIATION_NAME_PREFIX = "DE_AS";
 	String ASSOCIATION_COLUMN_PREFIX = "DE_E";
@@ -34,7 +35,7 @@ public interface DynamicExtensionsQueryBuilderConstantsInterface extends EntityM
 	String UPDATE_KEYWORD = " UPDATE ";
 	String JOIN_KEYWORD = " JOIN ";
 	String ON_KEYWORD = " ON ";
-	String CONSTRAINT = "CONSTR";
+
 
 	String CONSTRAINT_KEYWORD = " CONSTRAINT ";
 	String UNIQUE_KEYWORD = " UNIQUE ";
@@ -61,7 +62,7 @@ public interface DynamicExtensionsQueryBuilderConstantsInterface extends EntityM
 
 	String FILE_NAME = "file_name";
 	String CONTENT_TYPE = "content_type";
-	
+
 	String VALUES_KEYWORD = "VALUES";
 
 }

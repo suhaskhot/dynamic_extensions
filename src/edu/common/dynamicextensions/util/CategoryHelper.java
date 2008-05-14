@@ -247,11 +247,24 @@ public class CategoryHelper implements CategoryHelperInterface
 	 */
 	public void setParentContainer(ContainerInterface parentContainer, ContainerInterface childContainer)
 	{
-		CategoryEntityInterface parentCategoryEntity = (CategoryEntity) parentContainer.getAbstractEntity();
-		CategoryEntityInterface childCategoryEntity = (CategoryEntity) childContainer.getAbstractEntity();
-		childCategoryEntity.setParentCategoryEntity(parentCategoryEntity);
-
-		childContainer.setBaseContainer(parentContainer);
+		CategoryEntityInterface parentCategoryEntity = null;
+		CategoryEntityInterface childCategoryEntity = null;
+		if (parentContainer != null)
+		{
+			parentCategoryEntity = (CategoryEntity) parentContainer.getAbstractEntity();
+			if (childContainer != null)
+			{
+				childCategoryEntity = (CategoryEntity) childContainer.getAbstractEntity();
+			}
+		}
+		if (childCategoryEntity != null)
+		{
+			childCategoryEntity.setParentCategoryEntity(parentCategoryEntity);
+		}
+		if (childContainer != null)
+		{
+			childContainer.setBaseContainer(parentContainer);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -332,7 +345,6 @@ public class CategoryHelper implements CategoryHelperInterface
 			pathAssociationRelation.setPath(path);
 			path.addPathAssociationRelation(pathAssociationRelation);
 		}
-
 	}
 
 	/**
@@ -373,7 +385,6 @@ public class CategoryHelper implements CategoryHelperInterface
 			associationRelation.setTargetInstanceId(Long.parseLong(targetEntity.substring(targetEntity.indexOf("[") + 1, targetEntity.indexOf("]"))));
 			counter++;
 		}
-
 	}
 
 	/* (non-Javadoc)
@@ -400,6 +411,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	{
 		PathInterface path = DomainObjectFactory.getInstance().createPath();
 		targetCategoryEntity.setPath(path);
+		targetCategoryEntity.setTreeParentCategoryEntity(sourceCategoryEntity);
 		return path;
 	}
 
@@ -416,7 +428,6 @@ public class CategoryHelper implements CategoryHelperInterface
 		CategoryAssociationInterface categoryAssociation = DomainObjectFactory.getInstance().createCategoryAssociation();
 		categoryAssociation.setName(name);
 
-		targetCategoryEntity.setParentCategoryEntity(sourceCategoryEntity);
 		sourceCategoryEntity.addChildCategory(targetCategoryEntity);
 
 		categoryAssociation.setCategoryEntity(sourceCategoryEntity);
@@ -427,6 +438,14 @@ public class CategoryHelper implements CategoryHelperInterface
 		return categoryAssociation;
 	}
 
+	/**
+	 * Method creates the association between the given parent and the target container 
+	 * @param parentContainer main form
+	 * @param targetContainer sub form
+	 * @param categoryAssociation association between category entities
+	 * @param caption name to be displayed on UI
+	 * @return CategoryAssociationControlInterface category association control object
+	 */
 	private CategoryAssociationControlInterface createCategoryAssociationControl(ContainerInterface parentContainer,
 			ContainerInterface targetContainer, CategoryAssociationInterface categoryAssociation, String caption)
 	{

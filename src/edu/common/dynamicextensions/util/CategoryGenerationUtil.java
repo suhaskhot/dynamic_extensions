@@ -20,6 +20,7 @@ import edu.common.dynamicextensions.util.parser.CategoryCSVConstants;
 import edu.common.dynamicextensions.validation.category.CategoryValidator;
 
 /**
+ * 
  * @author kunal_kamble
  *
  */
@@ -27,6 +28,7 @@ public class CategoryGenerationUtil
 {
 
 	/**
+	 * This method returns the entity from the entity group.
 	 * @param entityName
 	 * @param entityGroup
 	 * @return
@@ -38,6 +40,7 @@ public class CategoryGenerationUtil
 	}
 
 	/**
+	 * Returns the multiplicity in number for the give string
 	 * @param multiplicity
 	 * @return
 	 */
@@ -56,6 +59,7 @@ public class CategoryGenerationUtil
 	}
 
 	/**
+	 * Sets the root category entity for the category.
 	 * @param containerCollection
 	 * @param paths
 	 * @param absolutePath
@@ -72,7 +76,7 @@ public class CategoryGenerationUtil
 		for (ContainerInterface containerInterface : containerCollection)
 		{
 			CategoryEntityInterface categoryEntityInterface = (CategoryEntityInterface) containerInterface.getAbstractEntity();
-			if (categoryEntityInterface.getParentCategoryEntity() == null)
+			if (categoryEntityInterface.getTreeParentCategoryEntity() == null)
 			{
 				rootContainer = containerInterface;
 				break;
@@ -108,6 +112,7 @@ public class CategoryGenerationUtil
 	}
 
 	/**
+	 * Retunrs the container having container caption as one passed to this method.
 	 * @param containerCollection
 	 * @param containerCaption
 	 * @return
@@ -149,6 +154,7 @@ public class CategoryGenerationUtil
 	}
 
 	/**
+	 * Returns the container with given category entity name.
 	 * @param containerCollection
 	 * @param categoryEntityName
 	 * @return
@@ -251,6 +257,7 @@ public class CategoryGenerationUtil
 	}
 
 	/**
+	 * Returns the entity group used for careting this category 
 	 * @param category
 	 * @param entityGroupName
 	 * @return

@@ -33,13 +33,14 @@ import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.userinterface.AbstractContainmentControl;
 import edu.common.dynamicextensions.domain.userinterface.Container;
-import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domain.userinterface.Control;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
@@ -192,7 +193,7 @@ public class DynamicExtensionsUtility
 			for(Iterator iterator = controlCollection.iterator(); iterator.hasNext() ;) 
 			{
 				Control objControl = (Control)iterator.next();
-				if( objControl  instanceof  AbstractContainmentControl) 
+				if(objControl instanceof AbstractContainmentControl) 
 				{
 					ContainerInterface subContainer = ((AbstractContainmentControl)objControl).getContainer();
 					if(subContainer!=null)
@@ -1327,17 +1328,102 @@ public class DynamicExtensionsUtility
 		return isDataTypeNumber;
 	}
 	
+	/**
+	 * getCategoryQueryList.
+	 * @param category
+	 * @param queryList
+	 * @param reverseQueryList
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public static void getUnsavedCategoryEntityList(CategoryEntityInterface categoryEntity,
+			List<CategoryEntityInterface> categoryEntityList)
+			throws DynamicExtensionsSystemException
+	{
+		if (categoryEntity != null)
+		{
+			if (categoryEntity.getParentCategoryEntity() != null)
+			{
+				getUnsavedCategoryEntityList(categoryEntity.getParentCategoryEntity(),
+						categoryEntityList);
+			}
+			if (!categoryEntityList.contains(categoryEntity))
+			{
+				if (categoryEntity.getId() == null)
+				{
+					categoryEntityList.add(categoryEntity);
+				}
+			}
+			else
+			{
+				return;
+			}
+			for (CategoryAssociationInterface categoryAssociationInterface : categoryEntity
+					.getCategoryAssociationCollection())
+			{
+				getUnsavedCategoryEntityList(
+						categoryAssociationInterface.getTargetCategoryEntity(), categoryEntityList);
+			}
+		}
+	}
+	/**
+	 * getCategoryQueryList.
+	 * @param category
+	 * @param queryList
+	 * @param reverseQueryList
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public static void getSavedCategoryEntityList(CategoryEntityInterface categoryEntity,
+			List<CategoryEntityInterface> categoryEntityList)
+			throws DynamicExtensionsSystemException
+	{
+		if (categoryEntity != null)
+		{
+			if (categoryEntity.getParentCategoryEntity() != null)
+			{
+				getSavedCategoryEntityList(categoryEntity.getParentCategoryEntity(),
+						categoryEntityList);
+			}
+			if (!categoryEntityList.contains(categoryEntity))
+			{
+				if (categoryEntity.getId() != null)
+				{
+					categoryEntityList.add(categoryEntity);
+				}
+			}
+			else
+			{
+				return;
+			}
+			for (CategoryAssociationInterface categoryAssociationInterface : categoryEntity
+					.getCategoryAssociationCollection())
+			{
+				getSavedCategoryEntityList(
+						categoryAssociationInterface.getTargetCategoryEntity(), categoryEntityList);
+			}
+		}
+	}
 	
+	/**
+	 * This method sets the source entity key or target entity key as null depending upon 
+	 * whether the association is one-to-one, one-to-many or many-to-one.
+	 * @param association
+	 * @return ConstraintPropertiesInterface
+	 */
 	public static ConstraintPropertiesInterface getConstraintProperties(AssociationInterface association)
 	{
-		ConstraintPropertiesInterface cp = association.getConstraintProperties();
-		if(association.getSourceRole().getMaximumCardinality() == Cardinality.MANY && association.getTargetRole().getMaximumCardinality() == Cardinality.ONE)
-			cp.setTargetEntityKey(null);
-		else if(association.getSourceRole().getMaximumCardinality() == Cardinality.ONE && association.getTargetRole().getMaximumCardinality() == Cardinality.MANY
+		ConstraintPropertiesInterface constraintProperties = association.getConstraintProperties();
+		
+		if (association.getSourceRole().getMaximumCardinality() == Cardinality.MANY && association.getTargetRole().getMaximumCardinality() == Cardinality.ONE)
+		{
+			constraintProperties.setTargetEntityKey(null);
+		}
+		else if (association.getSourceRole().getMaximumCardinality() == Cardinality.ONE && association.getTargetRole().getMaximumCardinality() == Cardinality.MANY
 				|| association.getSourceRole().getMaximumCardinality() == Cardinality.ONE && association.getTargetRole().getMaximumCardinality() == Cardinality.ONE)
-			cp.setSourceEntityKey(null);
+		{
+			constraintProperties.setSourceEntityKey(null);
+		}
 	
-		return cp;
+		return constraintProperties;
 	}
 
 }

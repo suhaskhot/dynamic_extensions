@@ -8,6 +8,7 @@
 
 package edu.common.dynamicextensions.categoryManager;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -25,6 +26,8 @@ import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CategoryAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.entitymanager.CategoryManager;
+import edu.common.dynamicextensions.entitymanager.CategoryManagerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -32,6 +35,9 @@ import edu.common.dynamicextensions.util.CategoryHelper;
 import edu.common.dynamicextensions.util.CategoryHelperInterface;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
 import edu.common.dynamicextensions.util.CategoryHelperInterface.ControlEnum;
+import edu.common.dynamicextensions.util.parser.CategoryGenerator;
+import edu.common.dynamicextensions.util.parser.ImportPermissibleValues;
+import edu.common.dynamicextensions.xmi.importer.XMIImporter;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.util.dbManager.DAOException;
 
@@ -551,8 +557,7 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 			CategoryInterface category = categoryHelper.getCategory("Vitals Category");
 
 			// Create category entity from VitalSigns entity.
-			ContainerInterface vitalsContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(vitals, "Vitals", 
-					category);
+			ContainerInterface vitalsContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(vitals, "Vitals", category);
 
 			// Set the root category entity.
 			categoryHelper.setRootCategoryEntity(vitalsContainer, category);
@@ -600,8 +605,7 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 			CategoryInterface category = categoryHelper.getCategory("Vitals Category with permissible values");
 
 			// Create category entity from VitalSigns entity.
-			ContainerInterface vitalsContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(vitals, 
-					"Vitals", category);
+			ContainerInterface vitalsContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(vitals, "Vitals", category);
 
 			// Set the root category entity.
 			categoryHelper.setRootCategoryEntity(vitalsContainer, category);
@@ -656,21 +660,22 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 			CategoryInterface category = categoryHelper.getCategory("ClinicalDX Category");
 
 			// Create category entity from visit entity.
-			
-			ContainerInterface visitContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(visit, "Clinical Diagnosis",category);
+
+			ContainerInterface visitContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(visit, "Clinical Diagnosis", category);
 
 			// Set the root category entity of the category.
 			categoryHelper.setRootCategoryEntity(visitContainer, category);
 
 			// Create category entity from clinicalDiagnosis entity.
-			ContainerInterface otherDiagnosisContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(clinicalDiagnosis, "Other diagnosis",category);
+			ContainerInterface otherDiagnosisContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(clinicalDiagnosis,
+					"Other diagnosis", category);
 
 			// Create category attribute(s) for clinicalDiagnosis category entity.
 			categoryHelper.addOrUpdateControl(clinicalDiagnosis, "value", otherDiagnosisContainer, ControlEnum.TEXT_FIELD_CONTROL, "Value");
 
 			List<String> associationNames = new ArrayList<String>();
 			associationNames.add("visit-clinicalDiagnosis");
-			categoryHelper.associateCategoryContainers(category, visitContainer, otherDiagnosisContainer, associationNames, -1);
+			categoryHelper.associateCategoryContainers(category, entityGroup, visitContainer, otherDiagnosisContainer, associationNames, -1);
 
 			// Save the category.
 			categoryHelper.saveCategory(category);
@@ -707,13 +712,14 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 			CategoryInterface category = categoryHelper.getCategory("Body Composition Category");
 
 			// Create category entity from visit entity.
-			ContainerInterface visitContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(visit, "BodyComp",category);
+			ContainerInterface visitContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(visit, "BodyComp", category);
 
 			// Set the root category entity of the category.
 			categoryHelper.setRootCategoryEntity(visitContainer, category);
 
 			// Create category entity from bodyComposition entity.
-			ContainerInterface bodyCompositionContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(bodyComposition, "Body composition",category);
+			ContainerInterface bodyCompositionContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(bodyComposition,
+					"Body composition", category);
 
 			List<String> permissibleValues1 = new ArrayList<String>();
 			permissibleValues1.add("BMI");
@@ -730,15 +736,15 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 			permissibleValues2.add("MRI");
 
 			// Create category attribute(s) for bodyComposition category entity.
-			categoryHelper
-					.addOrUpdateControl(bodyComposition, "result", bodyCompositionContainer, ControlEnum.LIST_BOX_CONTROL, "result", permissibleValues1);
+			categoryHelper.addOrUpdateControl(bodyComposition, "result", bodyCompositionContainer, ControlEnum.LIST_BOX_CONTROL, "result",
+					permissibleValues1);
 			categoryHelper.addOrUpdateControl(bodyComposition, "source", bodyCompositionContainer, ControlEnum.TEXT_FIELD_CONTROL, "source");
 			categoryHelper.addOrUpdateControl(bodyComposition, "testName", bodyCompositionContainer, ControlEnum.LIST_BOX_CONTROL, "testName",
 					permissibleValues2);
 
 			List<String> associationNames = new ArrayList<String>();
 			associationNames.add("visit-bodyComposition");
-			categoryHelper.associateCategoryContainers(category, visitContainer, bodyCompositionContainer, associationNames, -1);
+			categoryHelper.associateCategoryContainers(category, entityGroup, visitContainer, bodyCompositionContainer, associationNames, -1);
 
 			// Save the category.
 			categoryHelper.saveCategory(category);
@@ -774,7 +780,7 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 			CategoryInterface category = categoryHelper.getCategory("API demographics");
 
 			// Create category entity from patient entity.
-			ContainerInterface patientContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(patient, "API2 demographics",category);
+			ContainerInterface patientContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(patient, "API2 demographics", category);
 
 			// Set the root category entity.
 			categoryHelper.setRootCategoryEntity(patientContainer, category);
@@ -842,13 +848,14 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 			CategoryInterface category = categoryHelper.getCategory("API medical history");
 
 			// Create category entity from patient entity.
-			ContainerInterface patientContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(patient, "API medical history",category);
+			ContainerInterface patientContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(patient, "API medical history", category);
 
 			//Fetch the Medical_Conditions entity.
 			EntityInterface medicalConditions = entityGroup.getEntityByName("Medical_Conditions");
 
 			// Create category entity from Medical_Conditions entity.
-			ContainerInterface medicalConditionsContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(medicalConditions, "Medical Conditions",category);
+			ContainerInterface medicalConditionsContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(medicalConditions,
+					"Medical Conditions", category);
 
 			// Set the root category entity.
 			categoryHelper.setRootCategoryEntity(patientContainer, category);
@@ -856,12 +863,13 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 			// Create category attribute(s) for medicalConditions category entity.
 			categoryHelper.addOrUpdateControl(medicalConditions, "medicalCondition", medicalConditionsContainer, ControlEnum.TEXT_FIELD_CONTROL,
 					"Medical Condition");
-			categoryHelper.addOrUpdateControl(medicalConditions, "yearOfOnset", medicalConditionsContainer, ControlEnum.DATE_PICKER_CONTROL, "Year of onset");
+			categoryHelper.addOrUpdateControl(medicalConditions, "yearOfOnset", medicalConditionsContainer, ControlEnum.DATE_PICKER_CONTROL,
+					"Year of onset");
 
 			List<String> associationNames = new ArrayList<String>();
 			associationNames.add("patient-medicalCond");
 
-			categoryHelper.associateCategoryContainers(category, patientContainer, medicalConditionsContainer, associationNames, -1);
+			categoryHelper.associateCategoryContainers(category, entityGroup, patientContainer, medicalConditionsContainer, associationNames, -1);
 
 			// Save the category.
 			categoryHelper.saveCategory(category);
@@ -897,13 +905,14 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 			CategoryInterface category = categoryHelper.getCategory("API demo medications");
 
 			// Create category entity from patient entity.
-			ContainerInterface patientContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(patient, "API demo medications",category);
+			ContainerInterface patientContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(patient, "API demo medications", category);
 
 			// Fetch the Medications entity.
 			EntityInterface medications = entityGroup.getEntityByName("Medications");
 
 			// Create category entity from Medications entity.
-			ContainerInterface medicationsContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(medications, "Medical Conditions",category);
+			ContainerInterface medicationsContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(medications, "Medical Conditions",
+					category);
 
 			// Set the root category entity.
 			categoryHelper.setRootCategoryEntity(patientContainer, category);
@@ -914,7 +923,7 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 			List<String> associationNames = new ArrayList<String>();
 			associationNames.add("patient-medications");
 
-			categoryHelper.associateCategoryContainers(category, patientContainer, medicationsContainer, associationNames, -1);
+			categoryHelper.associateCategoryContainers(category, entityGroup, patientContainer, medicationsContainer, associationNames, -1);
 
 			// Save the category.
 			categoryHelper.saveCategory(category);
@@ -951,9 +960,9 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 			CategoryInterface category = categoryHelper.getCategory("Contact details Category");
 
 			// Create category entity from contactInfo, address and phoneNumbers entities.
-			ContainerInterface contactInfoContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(contactInfo, "ContactInfo",category);
-			ContainerInterface addressContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(address, "Address",category);
-			ContainerInterface phoneNumbersContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(phoneNumbers, "Phones",category);
+			ContainerInterface contactInfoContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(contactInfo, "ContactInfo", category);
+			ContainerInterface addressContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(address, "Address", category);
+			ContainerInterface phoneNumbersContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(phoneNumbers, "Phones", category);
 
 			// Set the root category entity.
 			categoryHelper.setRootCategoryEntity(contactInfoContainer, category);
@@ -969,12 +978,12 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 			List<String> associationNames1 = new ArrayList<String>();
 			associationNames1.add("contact-address");
 
-			categoryHelper.associateCategoryContainers(category, contactInfoContainer, addressContainer, associationNames1, 1);
+			categoryHelper.associateCategoryContainers(category, entityGroup, contactInfoContainer, addressContainer, associationNames1, 1);
 
 			List<String> associationNames2 = new ArrayList<String>();
 			associationNames2.add("contact-phone");
 
-			categoryHelper.associateCategoryContainers(category, contactInfoContainer, phoneNumbersContainer, associationNames2, -1);
+			categoryHelper.associateCategoryContainers(category, entityGroup, contactInfoContainer, phoneNumbersContainer, associationNames2, -1);
 
 			// Save the category.
 			categoryHelper.saveCategory(category);
@@ -1018,15 +1027,16 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 			desiredValues1.add("Prostate Gland Needle Biopsy");
 
 			// Create category entity from baseAnnotation entity.
-			ContainerInterface baseAnnotationContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(baseAnnotation, "Base Annotation",category);
+			ContainerInterface baseAnnotationContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(baseAnnotation, "Base Annotation",
+					category);
 
 			// Create category entity from baseTissuePathoAnno entity.
 			ContainerInterface baseTissuePathoAnnoContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(baseTissuePathoAnno,
-					"Base Tissue Patholgy Annotation",category);
+					"Base Tissue Patholgy Annotation", category);
 
 			// Create category entity from prostateAnnotation entity.
 			ContainerInterface prostateAnnotationContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(prostateAnnotation,
-					"Prostate Annotation",category);
+					"Prostate Annotation", category);
 			categoryHelper.setRootCategoryEntity(prostateAnnotationContainer, category);
 
 			// Create category attribute(s) for needleBioProPathAnno category entity.
@@ -1034,12 +1044,12 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 					"specimenProcedoure", desiredValues1);
 			categoryHelper.addOrUpdateControl(prostateAnnotation, "procedureDate", prostateAnnotationContainer, ControlEnum.DATE_PICKER_CONTROL,
 					"procedureDate");
-			categoryHelper.addOrUpdateControl(prostateAnnotation, "procedureDetailsDocument", prostateAnnotationContainer, ControlEnum.TEXT_FIELD_CONTROL,
-					"procedureDetailsDocument");
+			categoryHelper.addOrUpdateControl(prostateAnnotation, "procedureDetailsDocument", prostateAnnotationContainer,
+					ControlEnum.TEXT_FIELD_CONTROL, "procedureDetailsDocument");
 			categoryHelper.addOrUpdateControl(prostateAnnotation, "comments", prostateAnnotationContainer, ControlEnum.TEXT_AREA_CONTROL, "comments");
 
 			// Create category entity from histology entity.
-			ContainerInterface histologyContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(histology, "Histology",category);
+			ContainerInterface histologyContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(histology, "Histology", category);
 
 			List<String> desiredValues2 = new ArrayList<String>();
 			desiredValues2.add("Type 0");
@@ -1049,23 +1059,25 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 			categoryHelper.addOrUpdateControl(histology, "type", histologyContainer, ControlEnum.LIST_BOX_CONTROL, "type", desiredValues2);
 
 			// Create category entity from varHistoType entity.
-			ContainerInterface variantHistologicContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(varHistoType, "Variant Histology Type",category);
+			ContainerInterface variantHistologicContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(varHistoType,
+					"Variant Histology Type", category);
 
 			//  Create category attribute(s) for varHistoType category entity.
 			categoryHelper.addOrUpdateControl(varHistoType, "variantType", variantHistologicContainer, ControlEnum.TEXT_FIELD_CONTROL, "variantType");
 
 			// Create category entity from additionalFinding entity.
-			ContainerInterface additionalFindingContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(additionalFinding, "Additional Finding",category);
+			ContainerInterface additionalFindingContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(additionalFinding,
+					"Additional Finding", category);
 
 			List<String> desiredValues3 = new ArrayList<String>();
 			desiredValues3.add("Atypical adenomatous hyperplasia (adenosis)");
 
 			// Create category attribute(s) for additionalFinding category entity.
-			categoryHelper
-					.addOrUpdateControl(additionalFinding, "Detail", additionalFindingContainer, ControlEnum.LIST_BOX_CONTROL, "Detail", desiredValues3);
+			categoryHelper.addOrUpdateControl(additionalFinding, "Detail", additionalFindingContainer, ControlEnum.LIST_BOX_CONTROL, "Detail",
+					desiredValues3);
 
 			// Create category entity from invasion entity.
-			ContainerInterface invasionContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(invasion, "Invasion",category);
+			ContainerInterface invasionContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(invasion, "Invasion", category);
 
 			// Create category attribute(s) for invasion category entity.
 			List<String> desiredValues4 = new ArrayList<String>();
@@ -1076,8 +1088,8 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 			desiredValues4.add("Present External");
 			desiredValues4.add("Present Internal");
 
-			categoryHelper.addOrUpdateControl(invasion, "lymphaticInvasion", invasionContainer, ControlEnum.RADIO_BUTTON_CONTROL, "lymphaticInvasion",
-					desiredValues4);
+			categoryHelper.addOrUpdateControl(invasion, "lymphaticInvasion", invasionContainer, ControlEnum.RADIO_BUTTON_CONTROL,
+					"lymphaticInvasion", desiredValues4);
 
 			List<String> desiredValues5 = new ArrayList<String>();
 			desiredValues5.add("Absent");
@@ -1085,11 +1097,11 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 			desiredValues5.add("Not Specified");
 			desiredValues5.add("Present");
 
-			categoryHelper.addOrUpdateControl(invasion, "perneuralInvasion", invasionContainer, ControlEnum.RADIO_BUTTON_CONTROL, "perneuralInvasion",
-					desiredValues5);
+			categoryHelper.addOrUpdateControl(invasion, "perneuralInvasion", invasionContainer, ControlEnum.RADIO_BUTTON_CONTROL,
+					"perneuralInvasion", desiredValues5);
 
 			// Create category entity from gleasonScore entity.
-			ContainerInterface gleasonContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(gleasonScore, "Gleason Score",category);
+			ContainerInterface gleasonContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(gleasonScore, "Gleason Score", category);
 
 			// Create category attribute(s) for gleasonScore category entity.
 			categoryHelper.addOrUpdateControl(gleasonScore, "primaryPattern", gleasonContainer, ControlEnum.TEXT_FIELD_CONTROL, "primaryPattern");
@@ -1097,7 +1109,8 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 			categoryHelper.addOrUpdateControl(gleasonScore, "tertiaryPattern", gleasonContainer, ControlEnum.TEXT_FIELD_CONTROL, "tertiaryPattern");
 
 			// Create category entity from tumorQuant entity.
-			ContainerInterface tumorQuantContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(tumorQuant, "Tumor Quantitation",category);
+			ContainerInterface tumorQuantContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(tumorQuant, "Tumor Quantitation",
+					category);
 
 			// Create category attribute(s) for tumorQuant category entity.
 			categoryHelper.addOrUpdateControl(tumorQuant, "totalLengthOfCarcinomaInMilimeters", tumorQuantContainer, ControlEnum.TEXT_FIELD_CONTROL,
@@ -1106,7 +1119,8 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 					"totalLengthOfCoresInMilimeters");
 			categoryHelper.addOrUpdateControl(tumorQuant, "totalNumberOfPositiveCores", tumorQuantContainer, ControlEnum.TEXT_FIELD_CONTROL,
 					"totalNumberOfPositiveCores");
-			categoryHelper.addOrUpdateControl(tumorQuant, "totalNumberOfCores", tumorQuantContainer, ControlEnum.TEXT_FIELD_CONTROL, "totalNumberOfCores");
+			categoryHelper.addOrUpdateControl(tumorQuant, "totalNumberOfCores", tumorQuantContainer, ControlEnum.TEXT_FIELD_CONTROL,
+					"totalNumberOfCores");
 
 			// Set appropriate child category entities.
 			categoryHelper.setParentContainer(baseAnnotationContainer, baseTissuePathoAnnoContainer);
@@ -1114,33 +1128,33 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 
 			List<String> list = new ArrayList<String>();
 			list.add("base-histology");
-			CategoryAssociationControlInterface associationControlInterface = categoryHelper.associateCategoryContainers(category, baseAnnotationContainer,
-					histologyContainer, list, -1);
+			CategoryAssociationControlInterface associationControlInterface = categoryHelper.associateCategoryContainers(category, entityGroup,
+					baseAnnotationContainer, histologyContainer, list, -1);
 			associationControlInterface.setSequenceNumber(categoryHelper.getNextSequenceNumber(prostateAnnotationContainer));
 
 			list = new ArrayList<String>();
 			list.add("base-add");
-			CategoryAssociationControlInterface associationControlInterface2 = categoryHelper.associateCategoryContainers(category, baseAnnotationContainer,
-					additionalFindingContainer, list, -1);
+			CategoryAssociationControlInterface associationControlInterface2 = categoryHelper.associateCategoryContainers(category, entityGroup,
+					baseAnnotationContainer, additionalFindingContainer, list, -1);
 			associationControlInterface2.setSequenceNumber(categoryHelper.getNextSequenceNumber(prostateAnnotationContainer));
 
 			list = new ArrayList<String>();
 			list.add("btissue-invasion");
-			CategoryAssociationControlInterface associationControlInterface3 = categoryHelper.associateCategoryContainers(category, 
+			CategoryAssociationControlInterface associationControlInterface3 = categoryHelper.associateCategoryContainers(category, entityGroup,
 					baseTissuePathoAnnoContainer, invasionContainer, list, 1);
 			associationControlInterface3.setSequenceNumber(categoryHelper.getNextSequenceNumber(prostateAnnotationContainer));
 
 			list = new ArrayList<String>();
 			list.add("pro-gle");
-			categoryHelper.associateCategoryContainers(category, prostateAnnotationContainer, gleasonContainer, list, 1);
+			categoryHelper.associateCategoryContainers(category, entityGroup, prostateAnnotationContainer, gleasonContainer, list, 1);
 
 			list = new ArrayList<String>();
 			list.add("pro-tum");
-			categoryHelper.associateCategoryContainers(category, prostateAnnotationContainer, tumorQuantContainer, list, 1);
+			categoryHelper.associateCategoryContainers(category, entityGroup, prostateAnnotationContainer, tumorQuantContainer, list, 1);
 
 			list = new ArrayList<String>();
 			list.add("hist-varHist");
-			categoryHelper.associateCategoryContainers(category, histologyContainer, variantHistologicContainer, list, -1);
+			categoryHelper.associateCategoryContainers(category, entityGroup, histologyContainer, variantHistologicContainer, list, -1);
 
 			// Save the category.
 			categoryHelper.saveCategory(category);
@@ -1155,6 +1169,82 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 			e.printStackTrace();
 			fail();
 		}
+	}
+
+	/**
+	 *
+	 */
+	public void importXMI(String XMIFileName, String mainContainerList)
+	{
+		try
+		{
+			String[] args = {XMIFileName, mainContainerList};
+			XMIImporter.main(args);
+			System.out.println("--------------- Test Case to import XMI successful ------------");
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+			fail();
+		}
+
+	}
+
+	/**
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
+	 *
+	 */
+	public void importPermissibleValues(String PVFile)
+	{
+		try
+		{
+			String[] args = {PVFile};
+			ImportPermissibleValues.main(args);
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+			fail();
+		}
+
+	}
+
+	/**
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
+	 * @throws FileNotFoundException 
+	 *
+	 */
+	public void createCatgeory(String categoryFile)
+	{
+		try
+		{
+			CategoryGenerator categoryGenerator = new CategoryGenerator(categoryFile);
+			List<CategoryInterface> list = categoryGenerator.getCategoryList();
+
+			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
+			for (CategoryInterface categoryInterface : list)
+			{
+				categoryManager.persistCategory(categoryInterface);
+			}
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+			fail();
+		}
+
+	}
+
+	public void testCreateCategoryReferringInfo()
+	{
+		importXMI("E:\\Projects\\ClinPortal\\models\\from jahangeer 27-3-08\\Referring Info\\referringinfo.xmi",
+				"E:\\Projects\\ClinPortal\\models\\from jahangeer 27-3-08\\Referring Info\\referringinfo.csv");
+
+		importPermissibleValues("E:/Projects/ClinPortal/models/from jahangeer 27-3-08/Referring Info/referringinfo_pv.csv");
+		createCatgeory("E:/Projects/ClinPortal/models/from jahangeer 27-3-08/Referring Info/category_referringInfo_ver2_UI_single_entity.csv");
+
 	}
 
 }

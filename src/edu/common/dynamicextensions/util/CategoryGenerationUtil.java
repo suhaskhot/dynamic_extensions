@@ -26,6 +26,11 @@ import edu.common.dynamicextensions.validation.category.CategoryValidator;
 public class CategoryGenerationUtil
 {
 
+	/**
+	 * @param entityName
+	 * @param entityGroup
+	 * @return
+	 */
 	public static EntityInterface getEntity(String entityName, EntityGroupInterface entityGroup)
 	{
 		EntityInterface entityInterface = entityGroup.getEntityByName(entityName);
@@ -90,10 +95,10 @@ public class CategoryGenerationUtil
 							+ "[1]");
 					newRootContainer.setAddCaption(false);
 
-					categoryHelper.associateCategoryContainers(category, newRootContainer, rootContainer, paths.get(categoryEntityInterface
-							.getEntity().getName()), 1);
+					categoryHelper.associateCategoryContainers(category, entityGroup, newRootContainer, rootContainer, paths
+							.get(categoryEntityInterface.getEntity().getName()), 1);
 					categoryHelper.addInstanceInformationToPath(((CategoryEntityInterface) rootContainer.getAbstractEntity()).getPath(),
-							containerNameInstanceMap.get(rootContainer.getCaption()));
+							containerNameInstanceMap.get(rootContainer.getAbstractEntity().getName()));
 					rootContainer = newRootContainer;
 
 				}

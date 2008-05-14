@@ -519,7 +519,7 @@ public class TestCategoryDemo extends DynamicExtensionsBaseTestCase
 
 			List<String> list = new ArrayList<String>();
 			list.add("visit-clinicalDiagnosis");
-			categoryHelper.associateCategoryContainers(category, visitContainer, otherDiagnosisContainer, list, -1);
+			categoryHelper.associateCategoryContainers(category, entityGroup, visitContainer, otherDiagnosisContainer, list, -1);
 
 			// Save the category.
 			categoryHelper.saveCategory(category);
@@ -588,7 +588,7 @@ public class TestCategoryDemo extends DynamicExtensionsBaseTestCase
 
 			List<String> list = new ArrayList<String>();
 			list.add("visit-bodyComposition");
-			categoryHelper.associateCategoryContainers(category, visitContainer, bodyCompositionContainer, list, -1);
+			categoryHelper.associateCategoryContainers(category, entityGroup, visitContainer, bodyCompositionContainer, list, -1);
 
 			// Save the category.
 			categoryHelper.saveCategory(category);
@@ -713,7 +713,7 @@ public class TestCategoryDemo extends DynamicExtensionsBaseTestCase
 			List<String> associationNameList = new ArrayList<String>();
 			associationNameList.add("patient-medicalCond");
 
-			categoryHelper.associateCategoryContainers(category, patientContainer, medicalConditionsContainer, associationNameList, -1);
+			categoryHelper.associateCategoryContainers(category, entityGroup, patientContainer, medicalConditionsContainer, associationNameList, -1);
 
 			// Save the category.
 			categoryHelper.saveCategory(category);
@@ -767,7 +767,7 @@ public class TestCategoryDemo extends DynamicExtensionsBaseTestCase
 			List<String> associationNameList = new ArrayList<String>();
 			associationNameList.add("patient-medications");
 
-			categoryHelper.associateCategoryContainers(category, patientContainer, medicationsContainer, associationNameList, -1);
+			categoryHelper.associateCategoryContainers(category, entityGroup, patientContainer, medicationsContainer, associationNameList, -1);
 
 			// Save the category.
 			categoryHelper.saveCategory(category);

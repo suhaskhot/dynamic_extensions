@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,6 +30,7 @@ import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.AttributeRecord;
+import edu.common.dynamicextensions.domain.CategoryAttribute;
 import edu.common.dynamicextensions.domain.CollectionAttributeRecordValue;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.Entity;
@@ -45,6 +47,8 @@ import edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeI
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -707,7 +711,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DAOException
 	 * @throws UserNotAuthorizedException
 	 */
-	private Long insertDataForSingleEntity(EntityInterface entity, Map dataValue, HibernateDAO hibernateDAO, Long parentRecordId)
+	public Long insertDataForSingleEntity(EntityInterface entity, Map dataValue, HibernateDAO hibernateDAO, Long parentRecordId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
 			UserNotAuthorizedException
 	{
@@ -746,8 +750,23 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		Object value = null;
 		while (uiColumnSetIter.hasNext())
 		{
-			AbstractAttribute attribute = (AbstractAttribute) uiColumnSetIter.next();
-			value = dataValue.get(attribute);
+			AbstractAttribute attribute  = null;
+			Object attributeKey = uiColumnSetIter.next();
+			value = dataValue.get(attributeKey);
+			if (attributeKey instanceof CategoryAttributeInterface)
+			{
+				attribute = (AbstractAttribute)(AttributeInterface)((CategoryAttribute)attributeKey).getAttribute();
+				
+			}
+			else if (attributeKey instanceof CategoryAssociationInterface) 
+			{
+				continue;
+			}
+			else
+			{	
+				attribute = (AbstractAttribute)attributeKey;
+				
+			}
 
 			if (value == null)
 			{
@@ -998,7 +1017,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private boolean editDataForSingleEntity(EntityInterface entity, Map dataValue, Long recordId, HibernateDAO hibernateDAO)
+	public boolean editDataForSingleEntity(EntityInterface entity, Map dataValue, Long recordId, HibernateDAO hibernateDAO)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
 			UserNotAuthorizedException
 	{
@@ -1018,14 +1037,33 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		Iterator uiColumnSetIter = uiColumnSet.iterator();
 		List associationRemoveDataQueryList = new ArrayList();
 		List associationInsertDataQueryList = new ArrayList();
+		
+		Object value = null;
+		
 		while (uiColumnSetIter.hasNext())
 		{
-			AbstractAttribute attribute = (AbstractAttribute) uiColumnSetIter.next();
-			Object value = dataValue.get(attribute);
+			AbstractAttribute attribute  = null;
+			Object attributeKey = uiColumnSetIter.next();
+			value = dataValue.get(attributeKey);
+			
+			if (attributeKey instanceof CategoryAttributeInterface)
+			{
+				attribute = (AbstractAttribute)(AttributeInterface)((CategoryAttribute)attributeKey).getAttribute();
+			}
+			else if (attributeKey instanceof CategoryAssociationInterface) 
+			{
+				continue;
+			}
+			else
+			{	
+				attribute = (AbstractAttribute)attributeKey;
+			}
+
 			if (value == null)
 			{
 				continue;
 			}
+			
 			if (attribute instanceof AttributeInterface)
 			{
 				AttributeInterface primitiveAttribute = (AttributeInterface) attribute;
@@ -1155,6 +1193,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			query.append(WHITESPACE + EQUAL + WHITESPACE);
 			query.append(recordId);
 			editDataQueryList.add(query.toString());
+			//System.out.println("<------ ENTITY MANAGER EDIT QUERY ------> = "+query.toString());
 		}
 
 		Connection conn = DBUtil.getConnection();
@@ -1213,7 +1252,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 *
 	 *             String                    Other attribute type.
 	 */
-	private Map<AbstractAttributeInterface, Object> getEntityRecordById(EntityInterface entity, Long recordId)
+	public Map<AbstractAttributeInterface, Object> getEntityRecordById(EntityInterface entity, Long recordId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Map<AbstractAttributeInterface, Object> recordValues = new HashMap<AbstractAttributeInterface, Object>();
@@ -1452,20 +1491,37 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			throws DynamicExtensionsSystemException, SQLException
 	{
 		Map<AbstractAttributeInterface, Object> recordValues = new HashMap<AbstractAttributeInterface, Object>();
-		ResultSet resultSet = entityManagerUtil.executeQuery(query);
-
-		if (resultSet.next())
+		
+		Statement statement = null;
+		ResultSet resultSet = null;
+		try
 		{
-			for (int i = 0; i < selectColumnNameList.size(); i++)
-			{
+			Connection conn = DBUtil.getConnection();
+			statement = conn.createStatement();
+			resultSet = statement.executeQuery(query);
 
-				String dbColumnName = selectColumnNameList.get(i);
-				String value = getValueFromResultSet(resultSet, columnNameMap, dbColumnName, i);
-				Attribute attribute = (Attribute) columnNameMap.get(dbColumnName);
-				recordValues.put(attribute, value);
+			if (resultSet.next())
+			{
+				for (int i = 0; i < selectColumnNameList.size(); i++)
+				{
+	
+					String dbColumnName = selectColumnNameList.get(i);
+					String value = getValueFromResultSet(resultSet, columnNameMap, dbColumnName, i);
+					Attribute attribute = (Attribute) columnNameMap.get(dbColumnName);
+					recordValues.put(attribute, value);
+				}
 			}
 		}
-		resultSet.close();
+		catch (Exception e)
+		{
+			throw new SQLException(e.getMessage());
+		}
+		finally
+		{
+			resultSet.close();
+			statement.close();
+		}
+		
 		return recordValues;
 	}
 

@@ -14,6 +14,7 @@ import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
 import edu.common.dynamicextensions.domain.UserDefinedDE;
 import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
@@ -21,6 +22,7 @@ import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
+import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PathInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
@@ -39,8 +41,6 @@ import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInter
 import edu.common.dynamicextensions.entitymanager.AbstractMetadataManager;
 import edu.common.dynamicextensions.entitymanager.CategoryManager;
 import edu.common.dynamicextensions.entitymanager.CategoryManagerInterface;
-import edu.common.dynamicextensions.entitymanager.EntityManager;
-import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
@@ -257,9 +257,9 @@ public class CategoryHelper implements CategoryHelperInterface
 	/* (non-Javadoc)
 	 * @see edu.wustl.catissuecore.test.CategoryHelperInterface#associateCategoryContainers(edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface, edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface, java.util.List, int)
 	 */
-	public CategoryAssociationControlInterface associateCategoryContainers(CategoryInterface category, ContainerInterface sourceContainer,
-			ContainerInterface targetContainer, List<String> associationNamesList, int noOfEntries) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public CategoryAssociationControlInterface associateCategoryContainers(CategoryInterface category, EntityGroupInterface entityGroup,
+			ContainerInterface sourceContainer, ContainerInterface targetContainer, List<String> associationNamesList, int noOfEntries)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		CategoryAssociationControlInterface associationControl = null;
 		CategoryAssociationInterface oldAssociation = null;
@@ -293,7 +293,7 @@ public class CategoryHelper implements CategoryHelperInterface
 
 		PathInterface path = addPathBetweenCategoryEntities(sourceCategoryEntity, targetCategoryEntity);
 
-		updatePath(path, associationNamesList);
+		updatePath(path, associationNamesList, entityGroup);
 		targetCategoryEntity.setNumberOfEntries(noOfEntries);
 
 		CategoryAssociationInterface categoryAssociation = associateCategoryEntities(sourceCategoryEntity, targetCategoryEntity, sourceCategoryEntity
@@ -306,11 +306,17 @@ public class CategoryHelper implements CategoryHelperInterface
 		return categoryAssociationControl;
 	}
 
-	private void updatePath(PathInterface path, List<String> associationNamesList) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	/**
+	 * @param path
+	 * @param associationNamesList
+	 * @param entityGroup
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	private void updatePath(PathInterface path, List<String> associationNamesList, EntityGroupInterface entityGroup)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-		EntityManagerInterface entityManager = EntityManager.getInstance();
 
 		//clear old path
 		path.setPathAssociationRelationCollection(null);
@@ -321,12 +327,33 @@ public class CategoryHelper implements CategoryHelperInterface
 		{
 			PathAssociationRelationInterface pathAssociationRelation = factory.createPathAssociationRelation();
 			pathAssociationRelation.setPathSequenceNumber(pathSequenceNumber++);
-			pathAssociationRelation.setAssociation(entityManager.getAssociationByName(associationName));
+			pathAssociationRelation.setAssociation(getAssociationByName(associationName, entityGroup));
 
 			pathAssociationRelation.setPath(path);
 			path.addPathAssociationRelation(pathAssociationRelation);
 		}
 
+	}
+
+	/**
+	 * @param name
+	 * @param entityGroup
+	 * @return
+	 */
+	private AssociationInterface getAssociationByName(String name, EntityGroupInterface entityGroup)
+	{
+		AssociationInterface association = null;
+		for (EntityInterface entity : entityGroup.getEntityCollection())
+		{
+			for (AssociationInterface associationInterface : entity.getAllAssociations())
+			{
+				if (name.equals(associationInterface.getName()))
+				{
+					association = associationInterface;
+				}
+			}
+		}
+		return association;
 	}
 
 	/**
@@ -337,14 +364,14 @@ public class CategoryHelper implements CategoryHelperInterface
 	{
 		String[] entityArray = instance.split("->");
 
-		int i = 0;
+		int counter = 0;
 		for (PathAssociationRelationInterface associationRelation : path.getSortedPathAssociationRelationCollection())
 		{
-			String sourceEntity = entityArray[i];
-			String targetEntity = entityArray[i + 1];
+			String sourceEntity = entityArray[counter];
+			String targetEntity = entityArray[counter + 1];
 			associationRelation.setSourceInstanceId(Long.parseLong(sourceEntity.substring(sourceEntity.indexOf("[") + 1, sourceEntity.indexOf("]"))));
 			associationRelation.setTargetInstanceId(Long.parseLong(targetEntity.substring(targetEntity.indexOf("[") + 1, targetEntity.indexOf("]"))));
-			i++;
+			counter++;
 		}
 
 	}

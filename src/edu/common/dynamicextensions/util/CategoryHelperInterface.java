@@ -4,6 +4,7 @@ package edu.common.dynamicextensions.util;
 import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
+import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PathInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
@@ -121,6 +122,8 @@ public interface CategoryHelperInterface
 	 * E.G. User (1) ------userstudyassociation------> (*) Study. Here user category entity's container will be sourceContainer,
 	 * study category entity's container will be targetContainer, associationNameList will contain source roles
 	 * for all associations between the containers. noOfEntries indicates multiplicity.
+	 * @param category
+	 * @param entityGroup
 	 * @param sourceContainer equivalent to main form
 	 * @param targetContainer equivalent to sub form
 	 * @param associationNameList names of the association(s) present between two entities involved.
@@ -130,9 +133,9 @@ public interface CategoryHelperInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public CategoryAssociationControlInterface associateCategoryContainers(CategoryInterface category, ContainerInterface sourceContainer,
-			ContainerInterface targetContainer, List<String> associationNameList, int noOfEntries) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException;
+	public CategoryAssociationControlInterface associateCategoryContainers(CategoryInterface category, EntityGroupInterface entityGroup,
+			ContainerInterface sourceContainer, ContainerInterface targetContainer, List<String> associationNameList, int noOfEntries)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * Method returns the next sequenceNumber

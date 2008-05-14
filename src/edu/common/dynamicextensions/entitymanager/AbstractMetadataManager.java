@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.entitymanager;
 
 import java.sql.Connection;
@@ -45,7 +46,7 @@ import edu.wustl.common.util.logger.Logger;
  * @author rajesh_patil
  *
  */
-public abstract class AbstractMetadataManager implements EntityManagerExceptionConstantsInterface,DynamicExtensionsQueryBuilderConstantsInterface
+public abstract class AbstractMetadataManager implements EntityManagerExceptionConstantsInterface, DynamicExtensionsQueryBuilderConstantsInterface
 {
 	/**
 	 * This method creates dynamic table queries for the entities within a group.
@@ -56,10 +57,8 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	protected abstract void preProcess(
-			DynamicExtensionBaseDomainObjectInterface dynamicExtensionBaseDomainObject,
-			List reverseQueryList, HibernateDAO hibernateDAO, List queryList)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	protected abstract void preProcess(DynamicExtensionBaseDomainObjectInterface dynamicExtensionBaseDomainObject, List<String> reverseQueryList,
+			HibernateDAO hibernateDAO, List<String> queryList) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * This method executes dynamic table queries created for all the entities within a group.
@@ -68,117 +67,118 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 	 * @param rollbackQueryStack Stack to undo any changes done beforehand at DB level.
 	 * @throws DynamicExtensionsSystemException
 	 */
-	protected abstract void postProcess(List queryList, List reverseQueryList,
-			Stack rollbackQueryStack) throws DynamicExtensionsSystemException;
+	protected abstract void postProcess(List<String> queryList, List<String> reverseQueryList, Stack rollbackQueryStack)
+			throws DynamicExtensionsSystemException;
+
 	/**
 	 * LogFatalError.
 	 * @param e
 	 * @param abstractMetadata
 	 */
 	protected abstract void LogFatalError(Exception e, AbstractMetadataInterface abstractMetadata);
+
 	/**
 	 * LogFatalError.
 	 * @param e
 	 * @param abstractMetadata
 	 */
 	protected abstract DynamicExtensionBaseQueryBuilder getQueryBuilderInstance();
-    /**
-     * This method takes the class name , criteria for the object and returns the object.
-     * @param className class name
-     * @param objectName objectName
-     * @return DynamicExtensionBaseDomainObjectInterface
-     */
-    public DynamicExtensionBaseDomainObjectInterface getObjectByName(String className, String objectName) throws DynamicExtensionsSystemException
-    {
-        DynamicExtensionBaseDomainObjectInterface object = null;
 
-        if (objectName == null || objectName.equals(""))
-        {
-            return object;
-        }
+	/**
+	 * This method takes the class name , criteria for the object and returns the object.
+	 * @param className class name
+	 * @param objectName objectName
+	 * @return DynamicExtensionBaseDomainObjectInterface
+	 */
+	public DynamicExtensionBaseDomainObjectInterface getObjectByName(String className, String objectName) throws DynamicExtensionsSystemException
+	{
+		DynamicExtensionBaseDomainObjectInterface object = null;
 
-        //Getting the instance of the default biz logic.
-        DefaultBizLogic defaultBizLogic = BizLogicFactory.getDefaultBizLogic();
-        List objectList = new ArrayList();
+		if (objectName == null || objectName.equals(""))
+		{
+			return object;
+		}
 
-        try
-        {
-            objectList = defaultBizLogic.retrieve(className, "name", objectName);
-        }
-        catch (DAOException e)
-        {
-            throw new DynamicExtensionsSystemException(e.getMessage(), e);
-        }
+		//Getting the instance of the default biz logic.
+		DefaultBizLogic defaultBizLogic = BizLogicFactory.getDefaultBizLogic();
+		List objectList = new ArrayList();
 
-        if (objectList != null && objectList.size() > 0)
-        {
-            object = (DynamicExtensionBaseDomainObjectInterface) objectList.get(0);
-        }
+		try
+		{
+			objectList = defaultBizLogic.retrieve(className, "name", objectName);
+		}
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsSystemException(e.getMessage(), e);
+		}
 
-        return object;
-    }
+		if (objectList != null && objectList.size() > 0)
+		{
+			object = (DynamicExtensionBaseDomainObjectInterface) objectList.get(0);
+		}
 
-    /**
-     * Returns all instances in the whole system for a given type of the object
-     * @return Collection of instances of given class
-     * @throws DynamicExtensionsSystemException
-     * @throws DynamicExtensionsApplicationException
-     */
-    protected Collection getAllObjects(String objectName) throws DynamicExtensionsSystemException,
-            DynamicExtensionsApplicationException
-    {
-        AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
-        Collection objectList = new HashSet();
+		return object;
+	}
 
-        try
-        {
-            objectList = bizLogic.retrieve(objectName);
-            if (objectList == null)
-            {
-                objectList = new HashSet();
-            }
-        }
-        catch (DAOException e)
-        {
-            throw new DynamicExtensionsSystemException(e.getMessage(), e);
-        }
-        return objectList;
-    }
-    /**
-     * This method returns object for a given class name and identifer
-     * @param objectName  name of the class of the object
-     * @param identifier identifier of the object
-     * @return  obejct
-     * @throws DynamicExtensionsSystemException
-     * @throws DynamicExtensionsApplicationException
-     */
-    protected DynamicExtensionBaseDomainObject getObjectByIdentifier(String objectName,
-            String identifier) throws DynamicExtensionsSystemException,
-            DynamicExtensionsApplicationException
-    {
-        AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
-        DynamicExtensionBaseDomainObject object;
-        try
-        {
-            List objectList = bizLogic.retrieve(objectName, Constants.ID, identifier);
+	/**
+	 * Returns all instances in the whole system for a given type of the object
+	 * @return Collection of instances of given class
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	protected Collection getAllObjects(String objectName) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
+		Collection objectList = new HashSet();
 
-            if (objectList == null || objectList.size() == 0)
-            {
-                Logger.out.debug("Required Obejct not found: Object Name*" + objectName
-                        + "*   identifier  *" + identifier + "*");
-                System.out.println("Required Obejct not found: Object Name*" + objectName
-                        + "*   identifier  *" + identifier + "*");
-                throw new DynamicExtensionsApplicationException("OBJECT_NOT_FOUND");
-            }
+		try
+		{
+			objectList = bizLogic.retrieve(objectName);
+			if (objectList == null)
+			{
+				objectList = new HashSet();
+			}
+		}
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsSystemException(e.getMessage(), e);
+		}
+		return objectList;
+	}
 
-            object = (DynamicExtensionBaseDomainObject) objectList.get(0);
-        }
-        catch (DAOException e)
-        {
-            throw new DynamicExtensionsSystemException(e.getMessage(), e);
-        }
-        return object;
-    }
+	/**
+	 * This method returns object for a given class name and identifer
+	 * @param objectName  name of the class of the object
+	 * @param identifier identifier of the object
+	 * @return  obejct
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	protected DynamicExtensionBaseDomainObject getObjectByIdentifier(String objectName, String identifier) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+		AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
+		DynamicExtensionBaseDomainObject object;
+		try
+		{
+			List objectList = bizLogic.retrieve(objectName, Constants.ID, identifier);
+
+			if (objectList == null || objectList.size() == 0)
+			{
+				Logger.out.debug("Required Obejct not found: Object Name*" + objectName + "*   identifier  *" + identifier + "*");
+				System.out.println("Required Obejct not found: Object Name*" + objectName + "*   identifier  *" + identifier + "*");
+				throw new DynamicExtensionsApplicationException("OBJECT_NOT_FOUND");
+			}
+
+			object = (DynamicExtensionBaseDomainObject) objectList.get(0);
+		}
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsSystemException(e.getMessage(), e);
+		}
+		return object;
+	}
+
 	/**
 	 * This method is called when there any exception occurs while generating the data table queries
 	 * for the entity. Valid scenario is that if we need to fire Q1 Q2 and Q3 in order to create the
@@ -192,8 +192,8 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 	 * @param dao AbstractDAO
 	 * @throws DynamicExtensionsSystemException
 	 */
-	protected void rollbackQueries(Stack reverseQueryStack, AbstractMetadataInterface abstractMetadata, Exception e,
-			AbstractDAO dao) throws DynamicExtensionsSystemException
+	protected void rollbackQueries(Stack reverseQueryStack, AbstractMetadataInterface abstractMetadata, Exception e, AbstractDAO dao)
+			throws DynamicExtensionsSystemException
 	{
 		String message = "";
 		try
@@ -234,13 +234,13 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 			finally
 			{
 				logDebug("rollbackQueries", DynamicExtensionsUtility.getStackTrace(e));
-				DynamicExtensionsSystemException ex = new DynamicExtensionsSystemException(message,
-						e);
+				DynamicExtensionsSystemException ex = new DynamicExtensionsSystemException(message, e);
 				ex.setErrorCode(DYEXTN_S_000);
 				throw ex;
 			}
 		}
 	}
+
 	/**
 	 *  This method executes the HQL query given the query name and query parameters.
 	 *  The queries are specified in the EntityManagerHQL.hbm.xml file.For each query a name is given.
@@ -250,19 +250,16 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	protected Collection executeHQL(String queryName,
-			Map<String, HQLPlaceHolderObject> substitutionParameterMap)
+	protected Collection executeHQL(String queryName, Map<String, HQLPlaceHolderObject> substitutionParameterMap)
 			throws DynamicExtensionsSystemException
 	{
 		Collection entityCollection = new HashSet();
-		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
-				Constants.HIBERNATE_DAO);
+		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
 		try
 		{
 			hibernateDAO.openSession(null);
 			Session session = DBUtil.currentSession();
-			Query query = substitutionParameterForQuery(session, queryName,
-					substitutionParameterMap);
+			Query query = substitutionParameterForQuery(session, queryName, substitutionParameterMap);
 			entityCollection = query.list();
 			//  hibernateDAO.commit();
 		}
@@ -280,26 +277,24 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 			}
 			catch (DAOException e)
 			{
-				throw new DynamicExtensionsSystemException(
-						"Exception occured while closing the session", e, DYEXTN_S_001);
+				throw new DynamicExtensionsSystemException("Exception occured while closing the session", e, DYEXTN_S_001);
 			}
 
 		}
 		return entityCollection;
 	}
+
 	/**
 	 * This method substitues the parameters from substitutionParameterMap into the input query.
 	 * @param substitutionParameterMap
 	 * @throws HibernateException
 	 */
-	private Query substitutionParameterForQuery(Session session, String queryName,
-			Map substitutionParameterMap) throws HibernateException
+	private Query substitutionParameterForQuery(Session session, String queryName, Map substitutionParameterMap) throws HibernateException
 	{
 		Query q = session.getNamedQuery(queryName);
 		for (int counter = 0; counter < substitutionParameterMap.size(); counter++)
 		{
-			HQLPlaceHolderObject hPlaceHolderObject = (HQLPlaceHolderObject) substitutionParameterMap
-					.get(counter + "");
+			HQLPlaceHolderObject hPlaceHolderObject = (HQLPlaceHolderObject) substitutionParameterMap.get(counter + "");
 			String objectType = hPlaceHolderObject.getType();
 			if (objectType.equals("string"))
 			{
@@ -321,57 +316,57 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 		return q;
 
 	}
-	   /**
-	   *
-	   * @param hibernateDAO
-	   * @param queryName
-	   * @param substitutionParameterMap
-	   * @return
-	   * @throws DynamicExtensionsSystemException
-	   */
-	  protected Collection executeHQL(HibernateDAO hibernateDAO, String queryName,
-	          Map substitutionParameterMap) throws DynamicExtensionsSystemException
-	  {
-	      Collection entityCollection = new HashSet();
 
-	      try
-	      {
-	          Session session = DBUtil.currentSession();
-	          Query query = substitutionParameterForQuery(session,queryName, substitutionParameterMap);
-	          entityCollection = query.list();
-	      }
-	      catch (HibernateException e)
-	      {
-	          throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
-	      }
-	      return entityCollection;
+	/**
+	*
+	* @param hibernateDAO
+	* @param queryName
+	* @param substitutionParameterMap
+	* @return
+	* @throws DynamicExtensionsSystemException
+	*/
+	protected Collection executeHQL(HibernateDAO hibernateDAO, String queryName, Map substitutionParameterMap)
+			throws DynamicExtensionsSystemException
+	{
+		Collection entityCollection = new HashSet();
 
-	  }
-	 /**
-	 * This method persists an entity group and the associated entities and also creates the data table
-	 * for the entities.
-	 * @param entityGroupInterface entity group to be saved.
-	 * @return entityGroupInterface Saved  entity group.
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
-	 */
-	protected AbstractMetadataInterface persistDynamicExtensionObject(
-			AbstractMetadataInterface abstractMetdata) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+		try
+		{
+			Session session = DBUtil.currentSession();
+			Query query = substitutionParameterForQuery(session, queryName, substitutionParameterMap);
+			entityCollection = query.list();
+		}
+		catch (HibernateException e)
+		{
+			throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
+		}
+		return entityCollection;
+
+	}
+
+	/**
+	* This method persists an entity group and the associated entities and also creates the data table
+	* for the entities.
+	* @param entityGroupInterface entity group to be saved.
+	* @return entityGroupInterface Saved  entity group.
+	* @throws DynamicExtensionsSystemException
+	* @throws DynamicExtensionsApplicationException
+	*/
+	protected AbstractMetadataInterface persistDynamicExtensionObject(AbstractMetadataInterface abstractMetdata)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		List reverseQueryList = new LinkedList();
 		List queryList = new ArrayList();
 		Stack rollbackQueryStack = new Stack();
 
-		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
-				Constants.HIBERNATE_DAO);
+		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
 		try
 		{
 			hibernateDAO.openSession(null);
 
 			preProcess(abstractMetdata, reverseQueryList, hibernateDAO, queryList);
 
-			saveDynamicExtensionObject(abstractMetdata,hibernateDAO,rollbackQueryStack);
+			saveDynamicExtensionObject(abstractMetdata, hibernateDAO, rollbackQueryStack);
 
 			postProcess(queryList, reverseQueryList, rollbackQueryStack);
 
@@ -380,14 +375,13 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 		catch (DAOException e)
 		{
 			rollbackQueries(rollbackQueryStack, null, e, hibernateDAO);
-			throw new DynamicExtensionsSystemException(
-					"DAOException occured while opening a session to save the container.", e);
+			throw new DynamicExtensionsSystemException("DAOException occured while opening a session to save the container.", e);
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
-            rollbackQueries(rollbackQueryStack, null, e, hibernateDAO);
-            e.printStackTrace();
-            throw e;
+			rollbackQueries(rollbackQueryStack, null, e, hibernateDAO);
+			e.printStackTrace();
+			throw e;
 		}
 		finally
 		{
@@ -402,6 +396,7 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 		}
 		return abstractMetdata;
 	}
+
 	/**
 	 * This method persists an entity group and the associated entities without creating the data table
 	 * for the entities.
@@ -414,21 +409,19 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Stack rollbackQueryStack = new Stack();
-		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
-				Constants.HIBERNATE_DAO);
+		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
 		try
 		{
 			hibernateDAO.openSession(null);
 
-			saveDynamicExtensionObject(abstractMetdata,hibernateDAO,rollbackQueryStack);
+			saveDynamicExtensionObject(abstractMetdata, hibernateDAO, rollbackQueryStack);
 
 			hibernateDAO.commit();
 		}
 		catch (DAOException e)
 		{
 			rollbackQueries(rollbackQueryStack, null, e, hibernateDAO);
-			throw new DynamicExtensionsSystemException(
-					"DAOException occured while opening a session to save the container.", e);
+			throw new DynamicExtensionsSystemException("DAOException occured while opening a session to save the container.", e);
 		}
 		finally
 		{
@@ -438,12 +431,12 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 			}
 			catch (DAOException e)
 			{
-				throw new DynamicExtensionsSystemException(
-						"DAOException occured while opening a session to save the container.", e);
+				throw new DynamicExtensionsSystemException("DAOException occured while opening a session to save the container.", e);
 			}
 		}
 		return abstractMetdata;
 	}
+
 	/**
 	 * saveDynamicExtensionObject.
 	 * @param abstractMetdata
@@ -452,8 +445,7 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private void saveDynamicExtensionObject(AbstractMetadataInterface abstractMetdata,
-			HibernateDAO hibernateDAO, Stack rollbackQueryStack)
+	private void saveDynamicExtensionObject(AbstractMetadataInterface abstractMetdata, HibernateDAO hibernateDAO, Stack rollbackQueryStack)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 
@@ -471,16 +463,15 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 		catch (DAOException e)
 		{
 			rollbackQueries(rollbackQueryStack, null, e, hibernateDAO);
-			throw new DynamicExtensionsSystemException(
-					"DAOException occured while opening a session to save the container.", e);
+			throw new DynamicExtensionsSystemException("DAOException occured while opening a session to save the container.", e);
 		}
 		catch (UserNotAuthorizedException e)
 		{
 			rollbackQueries(rollbackQueryStack, null, e, hibernateDAO);
-			throw new DynamicExtensionsSystemException(
-					"DAOException occured while opening a session to save the container.", e);
+			throw new DynamicExtensionsSystemException("DAOException occured while opening a session to save the container.", e);
 		}
 	}
+
 	/**
 	 * This method is used to log the messages in a uniform manner. The method takes the string method name and
 	 * string message. Using these parameters the method formats the message and logs it.
@@ -491,14 +482,14 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 	{
 		Logger.out.debug("[AbstractMetadataManager.]" + methodName + "() -- " + message);
 	}
+
 	/**
 	 * @param e
 	 * @param string
 	 * @param hibernateDAO
 	 * @throws DynamicExtensionsSystemException
 	 */
-	protected Exception handleRollback(Exception e, String exceptionMessage, AbstractDAO dao,
-			boolean isExceptionToBeWrapped)
+	protected Exception handleRollback(Exception e, String exceptionMessage, AbstractDAO dao, boolean isExceptionToBeWrapped)
 	{
 		try
 		{
@@ -518,20 +509,18 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 			return e;
 		}
 	}
+
 	/**
 	 * getDynamicQueryList.
 	 */
-	protected List getDynamicQueryList(EntityGroupInterface entityGroupInterface, List reverseQueryList,
-			HibernateDAO hibernateDAO, List queryList) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	protected List getDynamicQueryList(EntityGroupInterface entityGroupInterface, List reverseQueryList, HibernateDAO hibernateDAO, List queryList)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-        List<EntityInterface> entityList = DynamicExtensionsUtility
-				.getUnsavedEntities(entityGroupInterface);
+		List<EntityInterface> entityList = DynamicExtensionsUtility.getUnsavedEntities(entityGroupInterface);
 
 		for (EntityInterface entityObject : entityList)
 		{
-			List createQueryList = getQueryBuilderInstance().getCreateEntityQueryList((Entity) entityObject,
-					reverseQueryList, hibernateDAO);
+			List createQueryList = getQueryBuilderInstance().getCreateEntityQueryList((Entity) entityObject, reverseQueryList, hibernateDAO);
 
 			if (createQueryList != null && !createQueryList.isEmpty())
 			{
@@ -540,24 +529,20 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 		}
 		for (EntityInterface entityObject : entityList)
 		{
-			List createQueryList = getQueryBuilderInstance().getUpdateEntityQueryList((Entity) entityObject,
-					reverseQueryList, hibernateDAO);
+			List createQueryList = getQueryBuilderInstance().getUpdateEntityQueryList((Entity) entityObject, reverseQueryList, hibernateDAO);
 
 			if (createQueryList != null && !createQueryList.isEmpty())
 			{
 				queryList.addAll(createQueryList);
 			}
 		}
-        List<EntityInterface> savedEntityList = DynamicExtensionsUtility
-		.getSavedEntities(entityGroupInterface);
+		List<EntityInterface> savedEntityList = DynamicExtensionsUtility.getSavedEntities(entityGroupInterface);
 
 		for (EntityInterface savedEntity : savedEntityList)
 		{
-			Entity databaseCopy = (Entity) DBUtil.loadCleanObj(Entity.class, savedEntity
-					.getId());
+			Entity databaseCopy = (Entity) DBUtil.loadCleanObj(Entity.class, savedEntity.getId());
 
-			List updateQueryList = getQueryBuilderInstance().getUpdateEntityQueryList((Entity) savedEntity,
-					(Entity) databaseCopy, reverseQueryList);
+			List updateQueryList = getQueryBuilderInstance().getUpdateEntityQueryList((Entity) savedEntity, databaseCopy, reverseQueryList);
 
 			if (updateQueryList != null && !updateQueryList.isEmpty())
 			{
@@ -566,69 +551,68 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 		}
 		return queryList;
 	}
-	
-	/**
-     * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllRecords(edu.common.dynamicextensions.domaininterface.EntityInterface)
-     */
-    public List<EntityRecord> getAllRecords(AbstractEntityInterface entity)
-            throws DynamicExtensionsSystemException
-    {
-        List<EntityRecord> recordList = new ArrayList<EntityRecord>();
-        JDBCDAO jdbcDao = null;
-        List<List> result;
-        try
-        {
-            jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
-            jdbcDao.openSession(null);
-            TablePropertiesInterface tablePropertiesInterface = entity.getTableProperties();
-            String tableName = tablePropertiesInterface.getName();
-            String[] selectColumnName = {IDENTIFIER};
-            String[] whereColumnName = {Constants.ACTIVITY_STATUS_COLUMN};
-            String[] whereColumnCondition = {EQUAL};
-            Object[] whereColumnValue = {"'" + Constants.ACTIVITY_STATUS_ACTIVE + "'"};
-            result = jdbcDao.retrieve(tableName, selectColumnName, whereColumnName,
-                    whereColumnCondition, whereColumnValue, null);
-            recordList = getRecordList(result);
 
-        }
-        catch (DAOException e)
-        {
-            throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
-        }
-        finally
-        {
-            try
-            {
-                jdbcDao.closeSession();
-            }
-            catch (DAOException e)
-            {
-                throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
-            }
-        }
-        return recordList;
-    }
 	/**
-    * @param result
-    * @return
-    */
-   protected List<EntityRecord> getRecordList(List<List> result)
-   {
-       List<EntityRecord> recordList = new ArrayList<EntityRecord>();
-       EntityRecord entityRecord;
-       String id;
-       for (List innnerList : result)
-       {
-           if (innnerList != null && !innnerList.isEmpty())
-           {
-               id = (String) innnerList.get(0);
-               if (id != null)
-               {
-                   entityRecord = new EntityRecord(new Long(id));
-                   recordList.add(entityRecord);
-               }
-           }
-       }
-       return recordList;
-   }
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllRecords(edu.common.dynamicextensions.domaininterface.EntityInterface)
+	 */
+	public List<EntityRecord> getAllRecords(AbstractEntityInterface entity) throws DynamicExtensionsSystemException
+	{
+		List<EntityRecord> recordList = new ArrayList<EntityRecord>();
+		JDBCDAO jdbcDao = null;
+		List<List> result;
+		try
+		{
+			jdbcDao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
+			jdbcDao.openSession(null);
+			TablePropertiesInterface tablePropertiesInterface = entity.getTableProperties();
+			String tableName = tablePropertiesInterface.getName();
+			String[] selectColumnName = {IDENTIFIER};
+			String[] whereColumnName = {Constants.ACTIVITY_STATUS_COLUMN};
+			String[] whereColumnCondition = {EQUAL};
+			Object[] whereColumnValue = {"'" + Constants.ACTIVITY_STATUS_ACTIVE + "'"};
+			result = jdbcDao.retrieve(tableName, selectColumnName, whereColumnName, whereColumnCondition, whereColumnValue, null);
+			recordList = getRecordList(result);
+
+		}
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
+		}
+		finally
+		{
+			try
+			{
+				jdbcDao.closeSession();
+			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
+			}
+		}
+		return recordList;
+	}
+
+	/**
+	* @param result
+	* @return
+	*/
+	protected List<EntityRecord> getRecordList(List<List> result)
+	{
+		List<EntityRecord> recordList = new ArrayList<EntityRecord>();
+		EntityRecord entityRecord;
+		String id;
+		for (List innnerList : result)
+		{
+			if (innnerList != null && !innnerList.isEmpty())
+			{
+				id = (String) innnerList.get(0);
+				if (id != null)
+				{
+					entityRecord = new EntityRecord(new Long(id));
+					recordList.add(entityRecord);
+				}
+			}
+		}
+		return recordList;
+	}
 }

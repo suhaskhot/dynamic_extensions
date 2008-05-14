@@ -52,6 +52,22 @@
             column="PATH_SEQUENCE_NUMBER"
         />
 
+        <property
+            name="sourceInstanceId"
+            type="long"
+            update="true"
+            insert="true"
+            column="SRC_INSTANCE_ID"
+        />
+
+        <property
+            name="targetInstanceId"
+            type="long"
+            update="true"
+            insert="true"
+            column="TGT_INSTANCE_ID"
+        />
+
         <!--
             To add non XDoclet property mappings, create a file named
                 hibernate-properties-PathAssociationRelation.xml

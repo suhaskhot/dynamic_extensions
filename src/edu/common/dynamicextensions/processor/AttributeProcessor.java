@@ -1741,7 +1741,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				{
 					AttributeInterface attributeInformation = (AttributeInterface) attributeInterface;
 					AttributeTypeInformationInterface attributeTypeInformation = createAttributeTypeInformation(attributeUIBeanInformation);
-					attributeInformation.setAttributeTypeInformation(attributeTypeInformation);
+					//Added by Rajesh to check if datatype is changed then only reset attributeTypeInfo (Bug 7677)
+					if (isDataTypeChanged(attributeInformation.getAttributeTypeInformation(),attributeTypeInformation))
+					{
+						attributeInformation.setAttributeTypeInformation(attributeTypeInformation);
+					}
 					populateAttribute(userSelectedControlName, attributeInformation, attributeUIBeanInformation);
 				}
 				else if (attributeInterface instanceof AssociationInterface)
@@ -1763,7 +1767,28 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		}
 		return attributeInterface;
 	}
-
+	/**
+	 * Checks the dataType for the edited and new attributetypeinfo.
+	 * @param originalAttributeTypeInformation
+	 * @param newAttributeTypeInformation
+	 * @return
+	 */
+	private boolean isDataTypeChanged(
+			AttributeTypeInformationInterface originalAttributeTypeInformation,
+			AttributeTypeInformationInterface newAttributeTypeInformation)
+	{
+		boolean isChanged = false;
+		if (originalAttributeTypeInformation.getDataType() != null
+				&& newAttributeTypeInformation.getDataType() != null)
+		{
+			if (!originalAttributeTypeInformation.getDataType().equals(
+					newAttributeTypeInformation.getDataType()))
+			{
+				isChanged = true;
+			}
+		}
+		return isChanged;
+	}
 	/**
 	 * @param attributeUIBeanInformation
 	 * @param abstractAttributeInformation
@@ -1790,7 +1815,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		}
 		return areInstancesOfSameType;
 	}
-	
+
 	/**
 	 * @param attributeUIBeanInformation
 	 * @throws DynamicExtensionsApplicationException
@@ -1875,5 +1900,5 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		}
 		return numberAttribIntf;
 	}
-	
+
 }

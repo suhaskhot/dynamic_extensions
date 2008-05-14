@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.util.parser;
 
 import java.io.FileNotFoundException;
@@ -16,6 +17,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.CategoryHelper;
 import edu.common.dynamicextensions.util.CategoryHelperInterface;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
+import edu.common.dynamicextensions.validation.category.CategoryValidator;
 
 /**
  * @author kunal_kamble
@@ -61,6 +63,9 @@ public class ImportPermissibleValues
 				}
 				//1:read the entity group
 				EntityGroupInterface entityGroup = DynamicExtensionsUtility.retrieveEntityGroup(categoryCSVFileParser.getEntityGroupName());
+
+				CategoryValidator.checkForNullRefernce(entityGroup, "Entity group with name " + entityGroup + " at line number "
+						+ categoryCSVFileParser.getLineNumber() + " does not exist");
 
 				categoryCSVFileParser.getCategoryValidator().setEntityGroup(entityGroup);
 

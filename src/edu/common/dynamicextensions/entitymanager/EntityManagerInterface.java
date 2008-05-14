@@ -1,10 +1,13 @@
 
 package edu.common.dynamicextensions.entitymanager;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import org.hibernate.HibernateException;
 
 import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
@@ -20,6 +23,9 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.AssociationTreeObject;
 import edu.wustl.common.beans.NameValueBean;
+import edu.wustl.common.dao.HibernateDAO;
+import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
+import edu.wustl.common.util.dbManager.DAOException;
 
 /**
  *
@@ -82,7 +88,7 @@ public interface EntityManagerInterface
 			DynamicExtensionsApplicationException;
 
 	/**
-	 * 
+	 *
 	 * @param sourceEntityName
 	 * @param sourceRoleName
 	 * @param targetEntityName
@@ -405,14 +411,14 @@ public interface EntityManagerInterface
 	public Long isCategory(Long containerId) throws DynamicExtensionsSystemException;
 
 	/**
-	* 
+	*
 	* @param hookEntityId
 	* @return the container Id of the DE entities that are associated with given static hook entity
 	*/
 	public Collection<ContainerInterface> getDynamicEntitiesContainerIdFromHookEntity(Long hookEntityId) throws DynamicExtensionsSystemException;
 
 	/**
-	* 
+	*
 	* @param hookEntityId
 	* @return  the container Id of the DE entities/categories that are associated with given static hook entity
 	* @throws DynamicExtensionsSystemException
@@ -420,18 +426,18 @@ public interface EntityManagerInterface
 	public Collection<ContainerInterface> getCategoriesContainerIdFromHookEntity(Long hookEntityId) throws DynamicExtensionsSystemException;
 
 	/**
-	* 
+	*
 	* @param hookEntityRecId
 	* @param containerId
-	* @return the category or form record id based on the containerId and hookentityRecId  
+	* @return the category or form record id based on the containerId and hookentityRecId
 	*/
 	public String getDynamicTableName(Long containerId) throws DynamicExtensionsSystemException;
 
 	/**
-	* 
+	*
 	* @param categoryContainerId
 	* @param staticRecId
-	* @return the record id of the category depending on hook entity record id. 
+	* @return the record id of the category depending on hook entity record id.
 	*/
 	public String getColumnNameForAssociation(Long hookEntityId, Long containerId) throws DynamicExtensionsSystemException;
 
@@ -499,4 +505,42 @@ public interface EntityManagerInterface
 	 */
 	public List<NameValueBean> getAllContainerBeansByEntityGroupId(Long entityGroupId) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException;
+	
+	public Map<AbstractAttributeInterface, Object> getEntityRecordById(EntityInterface entity, Long recordId)
+	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	
+	/**
+	 * @param entity
+	 * @param dataValue
+	 * @param hibernateDAO
+	 * @param parentRecordId
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws HibernateException
+	 * @throws SQLException
+	 * @throws DAOException
+	 * @throws UserNotAuthorizedException
+	 */
+	public Long insertDataForSingleEntity(EntityInterface entity, Map dataValue, HibernateDAO hibernateDAO, Long parentRecordId)
+	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
+	UserNotAuthorizedException;
+	
+	/**
+	 * @param entity
+	 * @param dataValue
+	 * @param recordId
+	 * @param hibernateDAO
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws HibernateException
+	 * @throws SQLException
+	 * @throws DAOException
+	 * @throws UserNotAuthorizedException
+	 */
+	public boolean editDataForSingleEntity(EntityInterface entity, Map dataValue, Long recordId, HibernateDAO hibernateDAO)
+	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
+	UserNotAuthorizedException;
+	
 }

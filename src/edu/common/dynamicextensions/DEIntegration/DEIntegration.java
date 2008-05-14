@@ -149,7 +149,7 @@ public class DEIntegration implements IntegrationInterface
             while (recIt.hasNext())
             {
                 String catSql = "select identifier from " + catTableName
-                        + " where CATEGORY_ROOT_ID= " + recIt.next();
+                        + " where RECORD_ID= " + recIt.next();
                 ResultSet catRecResultSet = null;
                 PreparedStatement preparedStmt = null;
                 try

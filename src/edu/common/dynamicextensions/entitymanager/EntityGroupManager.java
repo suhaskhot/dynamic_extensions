@@ -85,16 +85,7 @@ public class EntityGroupManager extends AbstractMetadataManager implements Entit
 		EntityGroupInterface entityGroupInterface = (EntityGroupInterface) persistDynamicExtensionObject(group);
 	
 		//Update the dynamic extension cache for all containers within entitygroup
-		EntityManagerInterface entityManager = EntityManager.getInstance();		
-		ArrayList containerSet = (ArrayList)entityManager.getAllContainersByEntityGroupId(entityGroupInterface.getId());
-		Iterator itr = containerSet.iterator();
-		while(itr.hasNext())
-		{
-			ContainerInterface  objContainer = (Container) itr.next();
-			DynamicExtensionsUtility.updateDynamicExtensionsCache(objContainer);
-			
-		}
-		
+		DynamicExtensionsUtility.updateDynamicExtensionsCache(entityGroupInterface.getId());
 		return entityGroupInterface;
 	}
 
@@ -111,16 +102,7 @@ public class EntityGroupManager extends AbstractMetadataManager implements Entit
 	{
 		EntityGroupInterface entityGroupInterface = (EntityGroupInterface) persistDynamicExtensionObjectMetdata(entityGroup);
 		//Update the dynamic extension cache for all containers within entitygroup
-		EntityManagerInterface entityManager = EntityManager.getInstance();
-		ArrayList containerSet = (ArrayList) entityManager.getAllContainersByEntityGroupId(entityGroupInterface.getId());
-		Iterator itr = containerSet.iterator();
-		while(itr.hasNext())
-		{
-			ContainerInterface  objContainer = (Container) itr.next();
-			DynamicExtensionsUtility.updateDynamicExtensionsCache(objContainer);
-			
-		}
-		
+		DynamicExtensionsUtility.updateDynamicExtensionsCache(entityGroupInterface.getId());
 		return entityGroupInterface;
 	}
 

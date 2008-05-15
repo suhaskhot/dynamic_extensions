@@ -115,15 +115,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		// Update the dynamic extension cache for all containers within entitygroup
 		CategoryEntityInterface catEntityInterface = category.getRootCategoryElement();
 		EntityGroupInterface entityGroupInterface = catEntityInterface.getEntity().getEntityGroup();
-		EntityManagerInterface entityManager = EntityManager.getInstance();
-		ArrayList containerSet = (ArrayList) entityManager.getAllContainersByEntityGroupId(entityGroupInterface.getId());
-		Iterator itr = containerSet.iterator();
-		while(itr.hasNext())
-		{
-			ContainerInterface  objContainer = (Container) itr.next();
-			DynamicExtensionsUtility.updateDynamicExtensionsCache(objContainer);
-		}
-
+		DynamicExtensionsUtility.updateDynamicExtensionsCache(entityGroupInterface.getId());
 		return category;
 	}
 
@@ -140,15 +132,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		// Update the dynamic extension cache for all containers within entity group
 		CategoryEntityInterface catEntityInterface = category.getRootCategoryElement();
 		EntityGroupInterface entityGroupInterface = catEntityInterface.getEntity().getEntityGroup();
-		EntityManagerInterface entityManager = EntityManager.getInstance();
-		ArrayList containerSet = (ArrayList) entityManager.getAllContainersByEntityGroupId(entityGroupInterface.getId());
-		Iterator itr = containerSet.iterator();
-		while(itr.hasNext())
-		{
-			ContainerInterface  objContainer = (Container) itr.next();
-			DynamicExtensionsUtility.updateDynamicExtensionsCache(objContainer);
-		}
-
+		DynamicExtensionsUtility.updateDynamicExtensionsCache(entityGroupInterface.getId());
 		return category;
 	}
 

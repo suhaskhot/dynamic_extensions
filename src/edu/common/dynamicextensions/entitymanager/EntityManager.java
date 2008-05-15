@@ -166,15 +166,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			hibernateDAO.commit();
 //			Update the dynamic extension cache for all containers within entitygroup
 			EntityGroupInterface entityGroupInterface = entity.getEntityGroup();
-			ArrayList containerSet = (ArrayList) this.getAllContainersByEntityGroupId(entityGroupInterface.getId());
-			Iterator itr = containerSet.iterator();
-			while(itr.hasNext())
-			{
-				ContainerInterface  objContainer = (Container) itr.next();
-				DynamicExtensionsUtility.updateDynamicExtensionsCache(objContainer);
-				
-			}
-			
+			DynamicExtensionsUtility.updateDynamicExtensionsCache(entityGroupInterface.getId());
 		}
 		catch (DAOException e)
 		{
@@ -223,17 +215,9 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			}
 
 			hibernateDAO.commit();
-//			Update the dynamic extension cache for all containers within entitygroup
+			//Update the dynamic extension cache for all containers within entitygroup
 			EntityGroupInterface entityGroupInterface = entity.getEntityGroup();
-			
-			ArrayList containerSet = (ArrayList) this.getAllContainersByEntityGroupId(entityGroupInterface.getId());
-			Iterator itr = containerSet.iterator();
-			while(itr.hasNext())
-			{
-				ContainerInterface  objContainer = (Container) itr.next();
-				DynamicExtensionsUtility.updateDynamicExtensionsCache(objContainer);
-				
-			}
+			DynamicExtensionsUtility.updateDynamicExtensionsCache(entityGroupInterface.getId());
 		}
 		catch (DAOException e)
 		{

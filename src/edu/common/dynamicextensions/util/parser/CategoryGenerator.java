@@ -443,21 +443,4 @@ public class CategoryGenerator
 		}
 		return categoryPath;
 	}
-
-	public static void main(String args[]) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, URISyntaxException,
-			IOException
-	{
-		CategoryGenerator categoryFileParser = new CategoryGenerator(
-				"E:\\Projects\\ClinPortal\\models\\error\\NeuroPathology\\Category_NeuroPathology1.csv");
-		CategoryHelper categoryHelper = new CategoryHelper();
-
-		List<CategoryInterface> list = categoryFileParser.getCategoryList();
-		for (CategoryInterface category : list)
-		{
-			//	categoryHelper.saveCategory(category);
-			System.out.println("saved category " + category.getName());
-		}
-
-	}
-
 }

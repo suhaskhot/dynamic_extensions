@@ -57,6 +57,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterf
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerExceptionConstantsInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
@@ -1284,15 +1285,41 @@ public class DynamicExtensionsUtility
 	}
 	
 	/**
-	 * This method updates the DynamicExtensions cache with updated container
-	 * @param updatedContainer
+	 * This method updates the DynamicExtensions cache of all container within Entitygroup
+	 * 
 	 */
-	public static void updateDynamicExtensionsCache(ContainerInterface  updatedContainer)
+	public static void updateDynamicExtensionsCache(Long entityGroupId)throws DynamicExtensionsSystemException
 	{
 		
 		try
 		{
-	    	// getting instance of catissueCoreCacheManager and adding containerMap to cache
+	    	// getting instance of DynamicExtensionsCacheManager and adding containerMap to cache
+			EntityManagerInterface entityManager = EntityManager.getInstance();
+			ArrayList containerSet = (ArrayList) entityManager.getAllContainersByEntityGroupId(entityGroupId);
+			Iterator itr = containerSet.iterator();
+			while(itr.hasNext())
+			{
+				ContainerInterface  objContainer = (Container) itr.next();
+				DynamicExtensionsUtility.updateDynamicExtensionsCache(objContainer);
+			}
+
+		}
+		catch (Exception e)
+		{
+			Logger.out.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
+			throw new DynamicExtensionsSystemException(e.getMessage());
+		}
+	}
+	/**
+	 * This method updates the DynamicExtensions cache with updated container
+	 * @param updatedContainer
+	 */
+	public static void updateDynamicExtensionsCache(ContainerInterface  updatedContainer) throws DynamicExtensionsSystemException
+	{
+		
+		try
+		{
+	    	// getting instance of DynamicExtensionsCacheManager and adding containerMap to cache
 			DynamicExtensionsCacheManager deCacheManager = DynamicExtensionsCacheManager.getInstance();
 			Map containerMap = new HashMap();
 			containerMap = (HashMap)deCacheManager.getObjectFromCache(Constants.LIST_OF_CONTAINER);
@@ -1307,7 +1334,7 @@ public class DynamicExtensionsUtility
 		catch (Exception e)
 		{
 			Logger.out.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
-			e.printStackTrace();
+			throw new DynamicExtensionsSystemException(e.getMessage());
 		}
 	}
 	/**

@@ -18,6 +18,7 @@ import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.StringValue;
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
@@ -29,6 +30,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInter
 import edu.common.dynamicextensions.entitymanager.CategoryManager;
 import edu.common.dynamicextensions.entitymanager.CategoryManagerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManager;
+import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.CategoryHelper;
@@ -673,8 +675,8 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 			// Create category attribute(s) for clinicalDiagnosis category entity.
 			categoryHelper.addOrUpdateControl(clinicalDiagnosis, "value", otherDiagnosisContainer, ControlEnum.TEXT_FIELD_CONTROL, "Value");
 
-			List<String> associationNames = new ArrayList<String>();
-			associationNames.add("visit-clinicalDiagnosis");
+			List<AssociationInterface> associationNames = new ArrayList<AssociationInterface>();
+			associationNames.add(EntityManager.getInstance().getAssociationByName("visit-clinicalDiagnosis"));
 			categoryHelper.associateCategoryContainers(category, entityGroup, visitContainer, otherDiagnosisContainer, associationNames, -1);
 
 			// Save the category.
@@ -742,8 +744,8 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 			categoryHelper.addOrUpdateControl(bodyComposition, "testName", bodyCompositionContainer, ControlEnum.LIST_BOX_CONTROL, "testName",
 					permissibleValues2);
 
-			List<String> associationNames = new ArrayList<String>();
-			associationNames.add("visit-bodyComposition");
+			List<AssociationInterface> associationNames = new ArrayList<AssociationInterface>();
+			associationNames.add(EntityManager.getInstance().getAssociationByName("visit-bodyComposition"));
 			categoryHelper.associateCategoryContainers(category, entityGroup, visitContainer, bodyCompositionContainer, associationNames, -1);
 
 			// Save the category.
@@ -866,8 +868,8 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 			categoryHelper.addOrUpdateControl(medicalConditions, "yearOfOnset", medicalConditionsContainer, ControlEnum.DATE_PICKER_CONTROL,
 					"Year of onset");
 
-			List<String> associationNames = new ArrayList<String>();
-			associationNames.add("patient-medicalCond");
+			List<AssociationInterface> associationNames = new ArrayList<AssociationInterface>();
+			associationNames.add(EntityManager.getInstance().getAssociationByName("patient-medicalCond"));
 
 			categoryHelper.associateCategoryContainers(category, entityGroup, patientContainer, medicalConditionsContainer, associationNames, -1);
 
@@ -920,8 +922,8 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 			categoryHelper.addOrUpdateControl(medications, "medication", medicationsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Mediaction");
 			categoryHelper.addOrUpdateControl(medications, "dose", medicationsContainer, ControlEnum.TEXT_FIELD_CONTROL, "Dose");
 
-			List<String> associationNames = new ArrayList<String>();
-			associationNames.add("patient-medications");
+			List<AssociationInterface> associationNames = new ArrayList<AssociationInterface>();
+			associationNames.add(EntityManager.getInstance().getAssociationByName("patient-medications"));
 
 			categoryHelper.associateCategoryContainers(category, entityGroup, patientContainer, medicationsContainer, associationNames, -1);
 
@@ -975,13 +977,13 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 			categoryHelper.addOrUpdateControl(address, "zipcode", addressContainer, ControlEnum.TEXT_FIELD_CONTROL, "Zip Code");
 			categoryHelper.addOrUpdateControl(phoneNumbers, "phoneNumber", phoneNumbersContainer, ControlEnum.TEXT_FIELD_CONTROL, "Phone");
 
-			List<String> associationNames1 = new ArrayList<String>();
-			associationNames1.add("contact-address");
+			List<AssociationInterface> associationNames1 = new ArrayList<AssociationInterface>();
+			associationNames1.add(EntityManager.getInstance().getAssociationByName("contact-address"));
 
 			categoryHelper.associateCategoryContainers(category, entityGroup, contactInfoContainer, addressContainer, associationNames1, 1);
 
-			List<String> associationNames2 = new ArrayList<String>();
-			associationNames2.add("contact-phone");
+			List<AssociationInterface> associationNames2 = new ArrayList<AssociationInterface>();
+			associationNames2.add(EntityManager.getInstance().getAssociationByName("contact-phone"));
 
 			categoryHelper.associateCategoryContainers(category, entityGroup, contactInfoContainer, phoneNumbersContainer, associationNames2, -1);
 
@@ -1126,34 +1128,34 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 			categoryHelper.setParentContainer(baseAnnotationContainer, baseTissuePathoAnnoContainer);
 			categoryHelper.setParentContainer(baseTissuePathoAnnoContainer, prostateAnnotationContainer);
 
-			List<String> list = new ArrayList<String>();
-			list.add("base-histology");
+			List<AssociationInterface> list = new ArrayList<AssociationInterface>();
+			list.add(EntityManager.getInstance().getAssociationByName("base-histology"));
 			CategoryAssociationControlInterface associationControlInterface = categoryHelper.associateCategoryContainers(category, entityGroup,
 					baseAnnotationContainer, histologyContainer, list, -1);
 			associationControlInterface.setSequenceNumber(categoryHelper.getNextSequenceNumber(prostateAnnotationContainer));
 
-			list = new ArrayList<String>();
-			list.add("base-add");
+			list = new ArrayList<AssociationInterface>();
+			list.add(EntityManager.getInstance().getAssociationByName("base-add"));
 			CategoryAssociationControlInterface associationControlInterface2 = categoryHelper.associateCategoryContainers(category, entityGroup,
 					baseAnnotationContainer, additionalFindingContainer, list, -1);
 			associationControlInterface2.setSequenceNumber(categoryHelper.getNextSequenceNumber(prostateAnnotationContainer));
 
-			list = new ArrayList<String>();
-			list.add("btissue-invasion");
+			list = new ArrayList<AssociationInterface>();
+			list.add(EntityManager.getInstance().getAssociationByName("btissue-invasion"));
 			CategoryAssociationControlInterface associationControlInterface3 = categoryHelper.associateCategoryContainers(category, entityGroup,
 					baseTissuePathoAnnoContainer, invasionContainer, list, 1);
 			associationControlInterface3.setSequenceNumber(categoryHelper.getNextSequenceNumber(prostateAnnotationContainer));
 
-			list = new ArrayList<String>();
-			list.add("pro-gle");
+			list = new ArrayList<AssociationInterface>();
+			list.add(EntityManager.getInstance().getAssociationByName("pro-gle"));
 			categoryHelper.associateCategoryContainers(category, entityGroup, prostateAnnotationContainer, gleasonContainer, list, 1);
 
-			list = new ArrayList<String>();
-			list.add("pro-tum");
+			list = new ArrayList<AssociationInterface>();
+			list.add(EntityManager.getInstance().getAssociationByName("pro-tum"));
 			categoryHelper.associateCategoryContainers(category, entityGroup, prostateAnnotationContainer, tumorQuantContainer, list, 1);
 
-			list = new ArrayList<String>();
-			list.add("hist-varHist");
+			list = new ArrayList<AssociationInterface>();
+			list.add(EntityManager.getInstance().getAssociationByName("hist-varHist"));
 			categoryHelper.associateCategoryContainers(category, entityGroup, histologyContainer, variantHistologicContainer, list, -1);
 
 			// Save the category.

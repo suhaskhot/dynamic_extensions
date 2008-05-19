@@ -5,13 +5,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
@@ -83,7 +83,7 @@ public class CategoryGenerator
 				Map<String, List<String>> paths = categoryFileParser.getPaths();
 
 				//4:get the association names list
-				Map<String, List<String>> associationNamesMap = CategoryGenerationUtil.getAssociationList(paths, entityGroup);
+				Map<String, List<AssociationInterface>> entityNameAssociationMap = CategoryGenerationUtil.getAssociationList(paths, entityGroup);
 
 				List<ContainerInterface> containerCollection = new ArrayList<ContainerInterface>();
 
@@ -106,7 +106,7 @@ public class CategoryGenerator
 					if (categoryFileParser.hasDisplayLable())
 					{
 						displayLabel = categoryFileParser.getDisplyLable();
-						categoryEntityName = createForm(entityGroup, containerCollection, associationNamesMap, category,
+						categoryEntityName = createForm(entityGroup, containerCollection, entityNameAssociationMap, category,
 								categoryEntityNameInstanceMap);
 						categoryFileParser.readNext();
 					}
@@ -134,10 +134,11 @@ public class CategoryGenerator
 
 						String multiplicity = categoryFileParser.getMultiplicity();
 
-						List<String> associationNameList = CategoryGenerationUtil.getAssociationNameList(associationNamesMap, CategoryGenerationUtil
-								.getContainer(containerCollection, targetContainerCaption));
-						checkForNullRefernce(associationNameList, "Error at line No:" + categoryFileParser.getLineNumber()
-								+ " Does not found entities in the path " + "for the category entity " + targetContainerCaption);
+						List<AssociationInterface> associationNameList = entityNameAssociationMap
+								.get(((CategoryEntityInterface) CategoryGenerationUtil.getContainer(containerCollection, targetContainerCaption)
+										.getAbstractEntity()).getEntity().getName());
+						checkForNullRefernce(associationNameList, "Error at line No:" + categoryFileParser.getLineNumber() + " Does not found path "
+								+ "for the category entity " + targetContainerCaption);
 
 						lastControl = categoryHelper.associateCategoryContainers(category, entityGroup, sourceContainer, targetContainer,
 								associationNameList, CategoryGenerationUtil.getMultiplicityInNumbers(multiplicity));
@@ -172,7 +173,8 @@ public class CategoryGenerator
 					lastControl.setSequenceNumber(sequenceNumber++);
 				}
 
-				CategoryGenerationUtil.setRootContainer(category, containerCollection, associationNamesMap, paths, categoryEntityNameInstanceMap);
+				CategoryGenerationUtil
+						.setRootContainer(category, containerCollection, entityNameAssociationMap, paths, categoryEntityNameInstanceMap);
 				categoryList.add(category);
 			}
 
@@ -355,7 +357,7 @@ public class CategoryGenerator
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	private List<String> createForm(EntityGroupInterface entityGroup, List<ContainerInterface> containerCollection,
-			Map<String, List<String>> associationNamesMap, CategoryInterface category, Map<String, String> categoryEntityNameInstanceMap)
+			Map<String, List<AssociationInterface>> associationNamesMap, CategoryInterface category, Map<String, String> categoryEntityNameInstanceMap)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		String displayLable = categoryFileParser.getDisplyLable();
@@ -443,4 +445,5 @@ public class CategoryGenerator
 		}
 		return categoryPath;
 	}
+
 }

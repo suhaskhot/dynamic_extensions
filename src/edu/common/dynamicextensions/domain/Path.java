@@ -48,7 +48,7 @@ public class Path extends DynamicExtensionBaseDomainObject implements PathInterf
 	}
 
 	/**
-	 * @hibernate.set name="pathAssociationRelationCollection" table="DYEXTN_PATH_ASSOCIATION_RELATION"
+	 * @hibernate.set name="pathAssociationRelationCollection" table="DYEXTN_PATH_ASSO_REL"
 	 * cascade="save-update" inverse="false" lazy="false" order-by="PATH_SEQUENCE_NUMBER desc"
 	 * @hibernate.collection-key column="PATH_ID"
 	 * @hibernate.cache usage="read-write"

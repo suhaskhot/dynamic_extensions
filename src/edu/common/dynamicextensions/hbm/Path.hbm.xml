@@ -26,7 +26,7 @@
 
         <set
             name="pathAssociationRelationCollection"
-            table="DYEXTN_PATH_ASSOCIATION_RELATION"
+            table="DYEXTN_PATH_ASSO_REL"
             lazy="false"
             inverse="false"
             cascade="save-update"

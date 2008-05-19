@@ -3,6 +3,8 @@ package edu.common.dynamicextensions.util.parser;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
@@ -47,8 +49,9 @@ public class ImportPermissibleValues
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
+	 * @throws ParseException 
 	 */
-	public void importValues() throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	public void importValues() throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException, ParseException
 	{
 		CategoryHelperInterface categoryHelper = new CategoryHelper();
 
@@ -72,6 +75,7 @@ public class ImportPermissibleValues
 				EntityInterface currentEntity = null;
 				while (categoryCSVFileParser.readNext())
 				{
+					boolean overridePv = categoryCSVFileParser.isOverridePermissibleValues();
 					if (ENTITY_GROUP.equals(categoryCSVFileParser.readLine()[0]))
 					{
 						break;
@@ -82,7 +86,7 @@ public class ImportPermissibleValues
 					String attributeName = categoryCSVFileParser.getAttributeName();
 
 					List<String> pvList = categoryCSVFileParser.getPermissibleValues();
-					List<PermissibleValueInterface> list = categoryHelper.createPermissibleValuesList(currentEntity, attributeName, pvList);
+					List<String> finalPvList = new ArrayList<String>();
 
 					AttributeTypeInformationInterface attributeTypeInformation = currentEntity.getAttributeByName(attributeName)
 							.getAttributeTypeInformation();
@@ -92,8 +96,31 @@ public class ImportPermissibleValues
 					{
 						userDefinedDE = DomainObjectFactory.getInstance().createUserDefinedDE();
 						attributeTypeInformation.setDataElement(userDefinedDE);
-
 					}
+					else
+					{
+						if (overridePv)
+						{
+							userDefinedDE.clearPermissibleValues();
+						}
+
+						List<String> list = new ArrayList<String>();
+						for (PermissibleValueInterface permissibleValue : userDefinedDE.getPermissibleValueCollection())
+						{
+							list.add(permissibleValue.getValueAsObject().toString());
+						}
+
+						for (String string : pvList)
+						{
+							if (!list.contains(string))
+							{
+								finalPvList.add(string);
+							}
+						}
+					}
+
+					List<PermissibleValueInterface> list = categoryHelper.getPermissibleValueList(currentEntity.getAttributeByName(attributeName)
+							.getAttributeTypeInformation(), finalPvList);
 
 					for (PermissibleValueInterface pv : list)
 					{
@@ -122,10 +149,10 @@ public class ImportPermissibleValues
 	{
 		try
 		{
-			if (args.length == 0)
-			{
-				throw new Exception("Please Specify the path for .csv file");
-			}
+		 if (args.length == 0)
+		 {
+		 throw new Exception("Please Specify the path for .csv file");
+		 }
 			String filePath = args[0];
 			System.out.println("---- The .csv file path is " + filePath + " ----");
 			ImportPermissibleValues importPermissibleValues = new ImportPermissibleValues(filePath);

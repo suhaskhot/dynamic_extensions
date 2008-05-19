@@ -271,7 +271,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @see edu.wustl.catissuecore.test.CategoryHelperInterface#associateCategoryContainers(edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface, edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface, java.util.List, int)
 	 */
 	public CategoryAssociationControlInterface associateCategoryContainers(CategoryInterface category, EntityGroupInterface entityGroup,
-			ContainerInterface sourceContainer, ContainerInterface targetContainer, List<String> associationNamesList, int noOfEntries)
+			ContainerInterface sourceContainer, ContainerInterface targetContainer, List<AssociationInterface> associationNamesList, int noOfEntries)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		CategoryAssociationControlInterface associationControl = null;
@@ -321,12 +321,12 @@ public class CategoryHelper implements CategoryHelperInterface
 
 	/**
 	 * @param path
-	 * @param associationNamesList
+	 * @param associationList
 	 * @param entityGroup
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private void updatePath(PathInterface path, List<String> associationNamesList, EntityGroupInterface entityGroup)
+	private void updatePath(PathInterface path, List<AssociationInterface> associationList, EntityGroupInterface entityGroup)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
@@ -336,11 +336,11 @@ public class CategoryHelper implements CategoryHelperInterface
 
 		int pathSequenceNumber = 1;
 
-		for (String associationName : associationNamesList)
+		for (AssociationInterface association : associationList)
 		{
 			PathAssociationRelationInterface pathAssociationRelation = factory.createPathAssociationRelation();
 			pathAssociationRelation.setPathSequenceNumber(pathSequenceNumber++);
-			pathAssociationRelation.setAssociation(getAssociationByName(associationName, entityGroup));
+			pathAssociationRelation.setAssociation(association);
 
 			pathAssociationRelation.setPath(path);
 			path.addPathAssociationRelation(pathAssociationRelation);
@@ -806,7 +806,7 @@ public class CategoryHelper implements CategoryHelperInterface
 			if (userDefinedDE == null || userDefinedDE.getPermissibleValueCollection() == null
 					|| userDefinedDE.getPermissibleValueCollection().size() == 0)
 			{
-				permissibleValues = addNewPermissibleValues(attributeTypeInformation, desiredPermissibleValues);
+				permissibleValues = getPermissibleValueList(attributeTypeInformation, desiredPermissibleValues);
 			}
 			else
 			{
@@ -872,7 +872,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws ParseException
 	 */
-	private List<PermissibleValueInterface> addNewPermissibleValues(AttributeTypeInformationInterface attributeTypeInformation,
+	public List<PermissibleValueInterface> getPermissibleValueList(AttributeTypeInformationInterface attributeTypeInformation,
 			List<String> desiredPermissibleValues) throws DynamicExtensionsSystemException, ParseException
 	{
 

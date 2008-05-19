@@ -1,8 +1,11 @@
 
 package edu.common.dynamicextensions.util;
 
+import java.text.ParseException;
 import java.util.List;
 
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -126,7 +129,7 @@ public interface CategoryHelperInterface
 	 * @param entityGroup
 	 * @param sourceContainer equivalent to main form
 	 * @param targetContainer equivalent to sub form
-	 * @param associationNameList names of the association(s) present between two entities involved.
+	 * @param associationList association(s) present between two entities involved.
 	 * e.g 'userstudyassociation' as depicted above
 	 * @param noOfEntries indicates multiplicity. e.g. one-to-one (1) or one-to-many (-1) etc.
 	 * @return CategoryAssociationControlInterface 
@@ -134,7 +137,7 @@ public interface CategoryHelperInterface
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	public CategoryAssociationControlInterface associateCategoryContainers(CategoryInterface category, EntityGroupInterface entityGroup,
-			ContainerInterface sourceContainer, ContainerInterface targetContainer, List<String> associationNameList, int noOfEntries)
+			ContainerInterface sourceContainer, ContainerInterface targetContainer, List<AssociationInterface> associationList, int noOfEntries)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
@@ -161,4 +164,14 @@ public interface CategoryHelperInterface
 	 * @param instance
 	 */
 	public void addInstanceInformationToPath(PathInterface path, String instance);
+	
+	/**
+	 * @param attributeTypeInformation
+	 * @param desiredPermissibleValues
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws ParseException
+	 */
+	public List<PermissibleValueInterface> getPermissibleValueList(AttributeTypeInformationInterface attributeTypeInformation,
+			List<String> desiredPermissibleValues) throws DynamicExtensionsSystemException, ParseException;
 }

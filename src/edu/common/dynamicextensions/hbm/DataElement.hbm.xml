@@ -45,7 +45,7 @@
             table="DYEXTN_USERDEF_DE_VALUE_REL"
             lazy="false"
             inverse="false"
-            cascade="save-update"
+            cascade="all"
             sort="unsorted"
         >
             <cache 

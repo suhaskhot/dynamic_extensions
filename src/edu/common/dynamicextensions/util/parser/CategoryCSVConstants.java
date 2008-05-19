@@ -44,5 +44,11 @@ public interface CategoryCSVConstants
 	 * This keyword used to define the lable for the form
 	 */
 	String MULTILINE = "multiline";
+	
+	/**
+	 * This keyword is used to specify whether to overide 
+	 * permissble values
+	 */
+	String OVERRIDE_PV = "override_pv";
 
 }

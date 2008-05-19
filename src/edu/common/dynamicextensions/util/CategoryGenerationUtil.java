@@ -67,9 +67,9 @@ public class CategoryGenerationUtil
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public static void setRootContainer(CategoryInterface category, List<ContainerInterface> containerCollection, Map<String, List<String>> paths,
-			Map<String, List<String>> absolutePath, Map<String, String> containerNameInstanceMap) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public static void setRootContainer(CategoryInterface category, List<ContainerInterface> containerCollection,
+			Map<String, List<AssociationInterface>> paths, Map<String, List<String>> absolutePath, Map<String, String> containerNameInstanceMap)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 
 		ContainerInterface rootContainer = null;
@@ -180,10 +180,10 @@ public class CategoryGenerationUtil
 	 * @return
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public static Map<String, List<String>> getAssociationList(Map<String, List<String>> paths, EntityGroupInterface entityGroup)
+	public static Map<String, List<AssociationInterface>> getAssociationList(Map<String, List<String>> paths, EntityGroupInterface entityGroup)
 			throws DynamicExtensionsSystemException
 	{
-		Map<String, List<String>> listOfPath = new HashMap<String, List<String>>();
+		Map<String, List<AssociationInterface>> listOfPath = new HashMap<String, List<AssociationInterface>>();
 
 		Set<String> entityNames = paths.keySet();
 		for (String entityName : entityNames)
@@ -191,7 +191,7 @@ public class CategoryGenerationUtil
 
 			//Path stored is from the root. 
 			List<String> list = paths.get(entityName);
-			List<String> assocaitionList = new ArrayList<String>();
+			List<AssociationInterface> assocaitionList = new ArrayList<AssociationInterface>();
 			Iterator<String> entityNamesIterator = list.iterator();
 
 			String sourceEntityName = entityNamesIterator.next();
@@ -204,7 +204,7 @@ public class CategoryGenerationUtil
 				{
 					if (associationInterface.getTargetEntity() == targetEntity)
 					{
-						assocaitionList.add(associationInterface.getName());
+						assocaitionList.add(associationInterface);
 					}
 				}
 				sourceEntity = targetEntity;
@@ -242,18 +242,6 @@ public class CategoryGenerationUtil
 		}
 
 		return newEntityNameList;
-	}
-
-	/**
-	 * @param associationNamesMap
-	 * @param containerInterface
-	 * @return
-	 */
-	public static List<String> getAssociationNameList(Map<String, List<String>> associationNamesMap, ContainerInterface containerInterface)
-	{
-		CategoryEntityInterface categoryEntityInterface = (CategoryEntityInterface) containerInterface.getAbstractEntity();
-		return associationNamesMap.get(categoryEntityInterface.getEntity().getName());
-
 	}
 
 	/**

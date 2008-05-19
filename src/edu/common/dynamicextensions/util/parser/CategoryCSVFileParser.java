@@ -6,7 +6,7 @@ import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.FORM
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.OPTIONS;
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.PERMISSIBLE_VALUES;
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.PERMISSIBLE_VALUES_FILE;
-
+import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.OVERRIDE_PV;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -234,6 +234,9 @@ public class CategoryCSVFileParser extends CategoryFileParser
 		return permissibleValues;
 	}
 
+	/**
+	 * @return
+	 */
 	public boolean hasDisplayLable()
 	{
 		if (readLine()[0].trim().startsWith(DISPLAY_LABLE))
@@ -243,6 +246,9 @@ public class CategoryCSVFileParser extends CategoryFileParser
 		return false;
 	}
 
+	/**
+	 * @return
+	 */
 	public boolean hasFormDefination()
 	{
 		if (FORM_DEFINITION.equals(readLine()[0].trim()))
@@ -252,16 +258,25 @@ public class CategoryCSVFileParser extends CategoryFileParser
 		return false;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getCategoryName()
 	{
 		return readLine()[0].trim();
 	}
 
+	/**
+	 * @return
+	 */
 	public String getEntityGroupName()
 	{
 		return readLine()[0].trim();
 	}
 
+	/**
+	 * @return
+	 */
 	public boolean hasSubcategory()
 	{
 		if (readLine()[0].contains("subcategory:"))
@@ -271,17 +286,27 @@ public class CategoryCSVFileParser extends CategoryFileParser
 		return false;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getTargetContainerCaption()
 	{
 		return readLine()[0].split(":")[1].trim();
 	}
 
+	/**
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
 	public String getMultiplicity() throws DynamicExtensionsSystemException
 	{
 		this.categoryValidator.validateMultiplicity();
 		return readLine()[0].split(":")[2].trim();
 	}
 
+	/**
+	 * @return
+	 */
 	public Map<String, String> getControlOptions()
 	{
 		Map<String, String> controlOptions = new HashMap<String, String>();
@@ -302,4 +327,20 @@ public class CategoryCSVFileParser extends CategoryFileParser
 		return controlOptions;
 	}
 
+	/**
+	 * @return showCaption
+	 * @throws IOException 
+	 */
+	public boolean isOverridePermissibleValues() throws IOException
+	{
+		if(OVERRIDE_PV.equals(readLine()[0].split("=")[0].trim()))
+		{
+			String string = readLine()[0].split("=")[1].trim();
+			this.readNext();
+			return new Boolean(string);
+			
+		}
+		return false;
+
+	}
 }

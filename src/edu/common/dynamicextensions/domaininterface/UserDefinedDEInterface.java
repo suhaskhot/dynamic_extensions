@@ -24,4 +24,9 @@ public interface UserDefinedDEInterface extends DataElementInterface
 	 */
 	void addPermissibleValue(PermissibleValueInterface permissibleValue);
 
+	/**
+	 * clears the permissible value collection
+	 */
+	public void clearPermissibleValues();
+
 }

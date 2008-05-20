@@ -6,7 +6,7 @@
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic" %>
-<%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jstl/core" prefix="c" %>
 <%@ taglib uri="/WEB-INF/dynamicExtensions.tld" prefix="dynamicExtensions" %>
 
 <%-- Imports --%>
@@ -197,22 +197,15 @@
 																<area href="javascript:setInsertDataOperation()" shape="default">
 															</map>
 
-															<!-- BUG FIXED -->
-
-															<!--
-															<c:if test='${(recordIdentifier123 != "")}'>
-																<html:button styleClass="actionButton" property="cancel" onclick="setDeleteDataOperation()">
-
-																	<bean:message key="buttons.delete1" />
-																</html:button> 
-																<img src="images/b_delete2.gif" alt="cancel" width="62" height="21" hspace="3" align="absmiddle" onClick="setDeleteDataOperation()">
-															<map alt="cancel">
-																<area href="javascript:setDeleteDataOperation()" shape="default">
-															</map>
-															</c:if>		-->
-															
+														<!-- BUG 7662 FIXED. Each Cancel should take you one level up in the containment hierarchy and finally the Cancel on Main Class should take you to the Add Records page.-->
 														</c:if>
-														
+															<input type="hidden" id="operation_mode" value="insertChildData"/>
+														<c:if test='${(isTopLevelEntity=="true")}'>
+															<script>
+															document.getElementById('operation_mode').value = "insertParentData";
+															</script>
+														</c:if>
+								
 														<c:if test='${!((mode=="view") && (isTopLevelEntity=="false"))}'>
 															<img src="images/b_cancel.gif" alt="Cancel" width="62" height="21" hspace="3" align="absmiddle" onclick="cancelInsertData()">
 															<map alt="Cancel">
@@ -220,6 +213,7 @@
 															</map>
 														</c:if>
 														
+
 													</c:otherwise>
 												</c:choose>	
 											</td>

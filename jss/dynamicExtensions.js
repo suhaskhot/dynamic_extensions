@@ -1851,6 +1851,7 @@ function changeValueForCheckBox(checkbox)
 
 function cancelInsertData()
 {
+    document.getElementById('dataEntryOperation').value = document.getElementById('operation_mode').value;
     document.getElementById('mode').value = "cancel";
     var dataEntryForm = document.getElementById('dataEntryForm');
     dataEntryForm.submit();

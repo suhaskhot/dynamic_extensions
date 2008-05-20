@@ -251,7 +251,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 					dataEntryForm.setDataEntryOperation("insertChildData");
 					actionForward = mapping.findForward("loadChildContainer");
 				}
-				else if ((mode != null) && (mode.equals("cancel") || (mode.equals("delete"))))
+				else if ((mode != null) && (mode.equals("cancel") ))
 				{
 					actionForward = mapping.findForward("showDynamicExtensionsHomePage");
 				}

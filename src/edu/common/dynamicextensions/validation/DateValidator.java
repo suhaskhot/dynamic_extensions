@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.validation;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -51,7 +52,8 @@ public class DateValidator implements ValidatorRuleInterface
 							"dynExtn.validation.Number", placeHolders);
 				}
 			}
-            
+					
+
             if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
             {
             	String month = value.substring(0, 2);
@@ -72,6 +74,11 @@ public class DateValidator implements ValidatorRuleInterface
 				{
 					valid = true;
 				}
+				
+				//Bug 7537-Data entry invalid year causes exception.This exception handled by following code.
+				SimpleDateFormat sf = new SimpleDateFormat(dateFormat);
+				sf.setLenient(false);
+				sf.parse(value);
 			}
 			catch (ParseException parseException)
 			{

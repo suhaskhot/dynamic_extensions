@@ -157,7 +157,7 @@ public interface EntityManagerInterface
 	/**
 	 * This method inserts one record for the entity.
 	 */
-	Long insertData(EntityInterface entity, Map<AbstractAttributeInterface, Object> dataValue) throws DynamicExtensionsApplicationException,
+	Long insertData(EntityInterface entity, Map<AbstractAttributeInterface, Object> dataValue, Long...userId) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException;
 
 	/**
@@ -165,7 +165,7 @@ public interface EntityManagerInterface
 	 * is persisted.
 	 * It returns the record id in the same sequence as that of input maps in dataValueMapList.
 	 */
-	List<Long> insertData(EntityInterface entity, List<Map<AbstractAttributeInterface, Object>> dataValueMapList)
+	List<Long> insertData(EntityInterface entity, List<Map<AbstractAttributeInterface, Object>> dataValueMapList, Long...userId)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
@@ -178,7 +178,7 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	boolean editData(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, Long recordId)
+	boolean editData(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, Long recordId, Long...userId)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
@@ -522,7 +522,7 @@ public interface EntityManagerInterface
 	 * @throws DAOException
 	 * @throws UserNotAuthorizedException
 	 */
-	public Long insertDataForSingleEntity(EntityInterface entity, Map dataValue, HibernateDAO hibernateDAO, Long parentRecordId)
+	public Long insertDataForSingleEntity(EntityInterface entity, Map dataValue, HibernateDAO hibernateDAO, Long parentRecordId, Long...userId)
 	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
 	UserNotAuthorizedException;
 	
@@ -539,7 +539,7 @@ public interface EntityManagerInterface
 	 * @throws DAOException
 	 * @throws UserNotAuthorizedException
 	 */
-	public boolean editDataForSingleEntity(EntityInterface entity, Map dataValue, Long recordId, HibernateDAO hibernateDAO)
+	public boolean editDataForSingleEntity(EntityInterface entity, Map dataValue, Long recordId, HibernateDAO hibernateDAO, Long...userId)
 	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
 	UserNotAuthorizedException;
 	

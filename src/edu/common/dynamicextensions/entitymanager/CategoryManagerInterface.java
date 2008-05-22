@@ -43,22 +43,24 @@ public interface CategoryManagerInterface
 	 * 
 	 * @param category
 	 * @param dataValue
+	 * @param userId
 	 * @return
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Long insertData(CategoryInterface category, Map<BaseAbstractAttributeInterface, Object> dataValue)
+	public Long insertData(CategoryInterface category, Map<BaseAbstractAttributeInterface, Object> dataValue, Long... userId)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
 	 * 
 	 * @param category
 	 * @param dataValueMapList
+	 * @param userId
 	 * @return
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public List<Long> insertData(CategoryInterface category, List<Map<BaseAbstractAttributeInterface, Object>> dataValueMapList)
+	public List<Long> insertData(CategoryInterface category, List<Map<BaseAbstractAttributeInterface, Object>> dataValueMapList, Long...userId)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
@@ -82,7 +84,7 @@ public interface CategoryManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws SQLException
 	 */
-	public boolean editData(CategoryEntityInterface categoryEntity, Map<BaseAbstractAttributeInterface, Object> attributeValueMap, Long recordId)
+	public boolean editData(CategoryEntityInterface categoryEntity, Map<BaseAbstractAttributeInterface, Object> attributeValueMap, Long recordId, Long... userId)
 	throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException, SQLException;
 	
 	/**
@@ -92,5 +94,7 @@ public interface CategoryManagerInterface
 	 * @return true or false depending on valid permissible values subset
 	 */
 	public boolean isPermissibleValuesSubsetValid(UserDefinedDEInterface userDefinedDE, List<String> desiredPermissibleValues);
+	
+	
 
 }

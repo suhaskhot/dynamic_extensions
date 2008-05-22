@@ -33,13 +33,13 @@ import edu.common.dynamicextensions.domain.AttributeRecord;
 import edu.common.dynamicextensions.domain.CategoryAttribute;
 import edu.common.dynamicextensions.domain.CollectionAttributeRecordValue;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.ObjectAttributeRecordValue;
 import edu.common.dynamicextensions.domain.ObjectAttributeTypeInformation;
-import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domain.userinterface.SelectControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
@@ -559,23 +559,27 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#insertData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map)
 	 */
-	public Long insertData(EntityInterface entity, Map<AbstractAttributeInterface, Object> dataValue) throws DynamicExtensionsApplicationException,
+	public Long insertData(EntityInterface entity, Map<AbstractAttributeInterface, Object> dataValue, Long...userId) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException
 	{
 		List<Map<AbstractAttributeInterface, Object>> dataValueMapList = new ArrayList<Map<AbstractAttributeInterface, Object>>();
 		dataValueMapList.add(dataValue);
-		List<Long> recordIdList = insertData(entity, dataValueMapList);
+		Long uId = ((userId != null ||userId.length > 0) ?userId[0]:null);
+		
+		List<Long> recordIdList = insertData(entity, dataValueMapList, uId);
 		return recordIdList.get(0);
 	}
 
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#insertData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map)
 	 */
-	public List<Long> insertData(EntityInterface entity, List<Map<AbstractAttributeInterface, Object>> dataValueMapList)
+	public List<Long> insertData(EntityInterface entity, List<Map<AbstractAttributeInterface, Object>> dataValueMapList, Long...userId)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 
 		List<Long> recordIdList = new ArrayList<Long>();
+		Long uId = ((userId != null ||userId.length > 0) ?userId[0]:null);
+		
 		HibernateDAO hibernateDAO = null;
 		try
 		{
@@ -585,7 +589,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 			for (Map<AbstractAttributeInterface, ?> dataValue : dataValueMapList)
 			{
-				Long recordId = insertDataForHeirarchy(entity, dataValue, hibernateDAO);
+				Long recordId = insertDataForHeirarchy(entity, dataValue, hibernateDAO, uId);
 				recordIdList.add(recordId);
 			}
 
@@ -626,7 +630,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DAOException
 	 * @throws UserNotAuthorizedException
 	 */
-	private Long insertDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, HibernateDAO hibernateDAO)
+	private Long insertDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, HibernateDAO hibernateDAO, Long userId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
 			UserNotAuthorizedException
 	{
@@ -695,10 +699,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DAOException
 	 * @throws UserNotAuthorizedException
 	 */
-	public Long insertDataForSingleEntity(EntityInterface entity, Map dataValue, HibernateDAO hibernateDAO, Long parentRecordId)
+	public Long insertDataForSingleEntity(EntityInterface entity, Map dataValue, HibernateDAO hibernateDAO, Long parentRecordId, Long...userId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
 			UserNotAuthorizedException
 	{
+		Long uId = ((userId != null ||userId.length > 0) ?userId[0]:null);
 		if (entity == null)
 		{
 			throw new DynamicExtensionsSystemException("Input to insert data is null");
@@ -819,7 +824,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 						//                              .getTargetEntity(), valueMapForContainedEntity, hibernateDAO, null);
 
 						Long recordIdForContainedEntity = insertDataForHeirarchy(association.getTargetEntity(), valueMapForContainedEntity,
-								hibernateDAO);
+								hibernateDAO, uId);
 						recordIdList.add(recordIdForContainedEntity);
 					}
 
@@ -846,11 +851,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		Connection conn = DBUtil.getConnection();
 
+		
 		for (String queryString : queryList)
 		{
 			logDebug("insertData", "Query for insert data is : " + queryString);
 			PreparedStatement statement = conn.prepareStatement(queryString);
 			statement.executeUpdate();
+			hibernateDAO.insert(DomainObjectFactory.getInstance().createDESQLAudit(uId, queryString),
+					null, false, false);
 		}
 
 		for (AttributeRecord collectionAttributeRecord : attributeRecords)
@@ -946,12 +954,13 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#editData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map, java.lang.Long)
 	 */
-	public boolean editData(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, Long recordId)
+	public boolean editData(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, Long recordId, Long...userId)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 
 		boolean isSuccess = false;
-
+		Long uId = ((userId != null ||userId.length > 0) ?userId[0]:null);
+		
 		HibernateDAO hibernateDAO = null;
 		try
 		{
@@ -965,7 +974,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			for (EntityInterface entityInterface : entityList)
 			{
 				Map valueMap = entityValueMap.get(entityInterface);
-				isSuccess = editDataForSingleEntity(entityInterface, valueMap, recordId, hibernateDAO);
+				isSuccess = editDataForSingleEntity(entityInterface, valueMap, recordId, hibernateDAO, uId);
 			}
 			hibernateDAO.commit();
 		}
@@ -1001,10 +1010,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public boolean editDataForSingleEntity(EntityInterface entity, Map dataValue, Long recordId, HibernateDAO hibernateDAO)
+	public boolean editDataForSingleEntity(EntityInterface entity, Map dataValue, Long recordId, HibernateDAO hibernateDAO, Long...userId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
 			UserNotAuthorizedException
 	{
+		Long uId = ((userId != null ||userId.length > 0) ?userId[0]:null);
 
 		if (entity == null || dataValue == null || dataValue.isEmpty())
 		{
@@ -1136,7 +1146,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 					{
 						//Long childRecordId = insertDataForSingleEntity(association
 						//.getTargetEntity(), valueMapForContainedEntity, hibernateDAO, null);
-						Long childRecordId = insertDataForHeirarchy(association.getTargetEntity(), valueMapForContainedEntity, hibernateDAO);
+						Long childRecordId = insertDataForHeirarchy(association.getTargetEntity(), valueMapForContainedEntity, hibernateDAO, uId);
 						recordIdList.add(childRecordId);
 					}
 
@@ -1186,6 +1196,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			logDebug("editData", "Query is: " + queryString.toString());
 			PreparedStatement statement = conn.prepareStatement(queryString);
 			statement.executeUpdate();
+			hibernateDAO.insert(DomainObjectFactory.getInstance().createDESQLAudit(uId, queryString),
+					null, false, false);
 		}
 
 		for (AttributeRecord collectionAttributeRecord : collectionRecords)

@@ -93,6 +93,15 @@ public class WebUIManager implements WebUIManagerConstants
 		return OPERATION_STATUS_PARAMETER_NAME;
 	}
 
+	/**
+	 * The parameter to be set in the request which specifies user id
+	 *
+	 */
+	public static String getUserIdParameterName()
+	{
+		return USER_ID;
+	}
+
 	/** 
 	 * returns the current container whose data/controls are to be displayed
 	 *  

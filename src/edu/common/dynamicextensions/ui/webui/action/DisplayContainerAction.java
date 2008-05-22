@@ -35,6 +35,7 @@ public class DisplayContainerAction extends BaseDynamicExtensionsAction
 		String id = request.getParameter("containerIdentifier");
 		String actionForward = "/LoadGroupDefinitionAction.do?operationMode=";
 		String callbackUrl = request.getParameter(WebUIManagerConstants.CALLBACK_URL_PARAM_NAME);
+		String userId = request.getParameter(WebUIManagerConstants.USER_ID);
 		if (id == null)
 		{
 			CacheManager.clearCache(request);
@@ -44,6 +45,7 @@ public class DisplayContainerAction extends BaseDynamicExtensionsAction
 			actionForward = actionForward + "EditForm"+ "&containerIdentifier=" + id;
 		}
 		CacheManager.addObjectToCache(request,Constants.CALLBACK_URL,callbackUrl);
+		CacheManager.addObjectToCache(request,WebUIManagerConstants.USER_ID,userId);
 		return new ActionForward(actionForward);
 	}
 

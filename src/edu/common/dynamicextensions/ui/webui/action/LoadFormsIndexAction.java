@@ -40,10 +40,12 @@ public class LoadFormsIndexAction extends BaseDynamicExtensionsAction
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		String callBackURL = request.getParameter(WebUIManagerConstants.CALLBACK_URL_PARAM_NAME);
+		String userId = request.getParameter(WebUIManagerConstants.USER_ID);
 		if (callBackURL != null && !callBackURL.equals(""))
 		{
 			CacheManager.clearCache(request);
 			CacheManager.addObjectToCache(request, Constants.CALLBACK_URL, callBackURL);
+			CacheManager.addObjectToCache(request, WebUIManagerConstants.USER_ID, userId);
 		}
 		else
 		{

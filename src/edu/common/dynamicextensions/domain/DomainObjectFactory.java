@@ -40,6 +40,7 @@ import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
+import edu.common.dynamicextensions.domaininterface.DESQLAuditInterface;
 import edu.common.dynamicextensions.domaininterface.DateValueInterface;
 import edu.common.dynamicextensions.domaininterface.DoubleValueInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
@@ -865,6 +866,21 @@ public class DomainObjectFactory
 	public CategoryAssociationControlInterface createCategoryAssociationControl()
 	{
 		return new CategoryAssociationControl();
+	}
+	
+	/**
+	 * @param userId
+	 * @param queryExecuted
+	 * @return
+	 */
+	public DESQLAuditInterface createDESQLAudit(Long userId, String queryExecuted)
+	{
+		DESQLAuditInterface audit = new DESQLAudit();
+		audit.setAuditDate(new Date(System.currentTimeMillis()));
+		audit.setUserId(userId);
+		audit.setQueryExecuted(queryExecuted);
+		return audit;
+
 	}
 
 }

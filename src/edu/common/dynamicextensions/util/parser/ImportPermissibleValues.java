@@ -96,6 +96,7 @@ public class ImportPermissibleValues
 					{
 						userDefinedDE = DomainObjectFactory.getInstance().createUserDefinedDE();
 						attributeTypeInformation.setDataElement(userDefinedDE);
+						finalPvList = pvList;
 					}
 					else
 					{
@@ -149,10 +150,10 @@ public class ImportPermissibleValues
 	{
 		try
 		{
-		 if (args.length == 0)
-		 {
-		 throw new Exception("Please Specify the path for .csv file");
-		 }
+			if (args.length == 0)
+			{
+				throw new Exception("Please Specify the path for .csv file");
+			}
 			String filePath = args[0];
 			System.out.println("---- The .csv file path is " + filePath + " ----");
 			ImportPermissibleValues importPermissibleValues = new ImportPermissibleValues(filePath);

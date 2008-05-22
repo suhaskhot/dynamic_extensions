@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.processor;
 
 import java.sql.SQLException;
@@ -29,8 +30,12 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	/**
 	 * Default Constructor
 	 */
+
+	private Long userId;
+
 	public ApplyDataEntryFormProcessor()
 	{
+
 	}
 
 	/**
@@ -47,11 +52,9 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	 * @param attributeValueMap
 	 * @return
 	 */
-	public Map<BaseAbstractAttributeInterface, Object> removeNullValueEntriesFormMap(
-			Map<BaseAbstractAttributeInterface, Object> attributeValueMap)
+	public Map<BaseAbstractAttributeInterface, Object> removeNullValueEntriesFormMap(Map<BaseAbstractAttributeInterface, Object> attributeValueMap)
 	{
-		Set<Map.Entry<BaseAbstractAttributeInterface, Object>> attributeValueSet = attributeValueMap
-				.entrySet();
+		Set<Map.Entry<BaseAbstractAttributeInterface, Object>> attributeValueSet = attributeValueMap.entrySet();
 		Iterator attributeValueSetIterator = attributeValueSet.iterator();
 		while (attributeValueSetIterator.hasNext())
 		{
@@ -80,22 +83,25 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsSystemException on System exception
 	 * @return recordIdentifier Record identifier of the last saved record. 
 	 */
-	public String insertDataEntryForm(ContainerInterface container,
-			Map<BaseAbstractAttributeInterface, Object> attributeValueMap)
+	public String insertDataEntryForm(ContainerInterface container, Map<BaseAbstractAttributeInterface, Object> attributeValueMap)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
-		Long recordIdentifier= null;
+		Long recordIdentifier = null;
 		//quick fix: common manager interface should be used here
-		if(container.getAbstractEntity()instanceof CategoryEntityInterface){
-			CategoryInterface categoryInterface= ((CategoryEntityInterface) container.getAbstractEntity()).getCategory();
+		if (container.getAbstractEntity() instanceof CategoryEntityInterface)
+		{
+			CategoryInterface categoryInterface = ((CategoryEntityInterface) container.getAbstractEntity()).getCategory();
 			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
-			recordIdentifier = categoryManager.insertData(categoryInterface, attributeValueMap);	
-		}else{
+
+			recordIdentifier = categoryManager.insertData(categoryInterface, attributeValueMap, userId);
+		}
+		else
+		{
 			Map map = attributeValueMap;
-			EntityManagerInterface entityManagerInterface= EntityManager.getInstance();
+			EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
 			recordIdentifier = entityManagerInterface.insertData((EntityInterface) container.getAbstractEntity(), map);
 		}
-		
+
 		return recordIdentifier.toString();
 	}
 
@@ -109,9 +115,8 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsSystemException
 	 * @throws SQLException 
 	 */
-	public Boolean editDataEntryForm(ContainerInterface container,
-			Map<BaseAbstractAttributeInterface, Object> attributeValueMap, Long recordIdentifier)
-			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException, SQLException
+	public Boolean editDataEntryForm(ContainerInterface container, Map<BaseAbstractAttributeInterface, Object> attributeValueMap,
+			Long recordIdentifier) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException, SQLException
 	{
 		//Quick fix:
 		if (container.getAbstractEntity() instanceof EntityInterface)
@@ -122,11 +127,21 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 			Map map = attributeValueMap;
 			Boolean edited = entityManager.editData(entity, map, recordIdentifier);
 			return edited;
-			
+
 		}
-		return CategoryManager.getInstance().editData((CategoryEntityInterface)container.getAbstractEntity(),
-				attributeValueMap, recordIdentifier);
-		
+		return CategoryManager.getInstance().editData((CategoryEntityInterface) container.getAbstractEntity(), attributeValueMap, recordIdentifier,
+				userId);
+
+	}
+
+	public Long getUserId()
+	{
+		return userId;
+	}
+
+	public void setUserId(Long userId)
+	{
+		this.userId = userId;
 	}
 
 }

@@ -564,7 +564,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	{
 		List<Map<AbstractAttributeInterface, Object>> dataValueMapList = new ArrayList<Map<AbstractAttributeInterface, Object>>();
 		dataValueMapList.add(dataValue);
-		Long uId = ((userId != null ||userId.length > 0) ?userId[0]:null);
+		Long uId = ((userId != null && userId.length != 0) ?userId[0]:null);  
 		
 		List<Long> recordIdList = insertData(entity, dataValueMapList, uId);
 		return recordIdList.get(0);
@@ -578,7 +578,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	{
 
 		List<Long> recordIdList = new ArrayList<Long>();
-		Long uId = ((userId != null ||userId.length > 0) ?userId[0]:null);
+		Long uId = ((userId != null && userId.length != 0) ?userId[0]:null);
 		
 		HibernateDAO hibernateDAO = null;
 		try
@@ -703,7 +703,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
 			UserNotAuthorizedException
 	{
-		Long uId = ((userId != null ||userId.length > 0) ?userId[0]:null);
+		Long uId = ((userId != null && userId.length != 0) ?userId[0]:null);
 		if (entity == null)
 		{
 			throw new DynamicExtensionsSystemException("Input to insert data is null");
@@ -959,7 +959,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	{
 
 		boolean isSuccess = false;
-		Long uId = ((userId != null ||userId.length > 0) ?userId[0]:null);
+		Long uId = ((userId != null && userId.length != 0) ?userId[0]:null);
 		
 		HibernateDAO hibernateDAO = null;
 		try
@@ -1014,7 +1014,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
 			UserNotAuthorizedException
 	{
-		Long uId = ((userId != null ||userId.length > 0) ?userId[0]:null);
+		Long uId = ((userId != null && userId.length != 0) ?userId[0]:null);
 
 		if (entity == null || dataValue == null || dataValue.isEmpty())
 		{

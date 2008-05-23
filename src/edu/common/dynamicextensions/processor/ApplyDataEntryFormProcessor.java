@@ -99,7 +99,7 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 		{
 			Map map = attributeValueMap;
 			EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
-			recordIdentifier = entityManagerInterface.insertData((EntityInterface) container.getAbstractEntity(), map);
+			recordIdentifier = entityManagerInterface.insertData((EntityInterface) container.getAbstractEntity(), map, userId);
 		}
 
 		return recordIdentifier.toString();

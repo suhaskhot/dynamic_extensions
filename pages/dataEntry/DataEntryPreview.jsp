@@ -6,7 +6,7 @@
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic" %>
-<%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jstl/core" prefix="c" %>
 <%@ taglib uri="/WEB-INF/dynamicExtensions.tld" prefix="dynamicExtensions" %>
 
 <%-- Imports --%>
@@ -17,10 +17,13 @@
 <%-- Stylesheet --%>
 <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/styleSheet.css" />
 <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/de_style.css" />
+<link rel="stylesheet" type="text/css" href="css/ext-all.css" />
 <link href="<%=request.getContextPath()%>/css/calanderComponent.css" type=text/css rel=stylesheet />
+<link rel="stylesheet" type="text/css" href="css/xtheme-gray.css" />
 
 <script src="<%=request.getContextPath()%>/jss/calendarComponent.js"></script>
 <script src="<%=request.getContextPath()%>/jss/script.js" type="text/javascript"></script>
+
 <script>var imgsrc="images/";</script>
 <script src="<%=request.getContextPath()%>/jss/dynamicExtensions.js" type="text/javascript"></script>
 <script src="<%=request.getContextPath()%>/jss/overlib_mini.js" type="text/javascript"></script>
@@ -32,6 +35,9 @@
 <script language="JavaScript" type="text/javascript" src="<%=request.getContextPath()%>/jss/scriptaculous.js"></script>
 <script language="JavaScript" type="text/javascript" src="<%=request.getContextPath()%>/jss/scr.js"></script>
 <script language="JavaScript" type="text/javascript" src="<%=request.getContextPath()%>/jss/combobox.js"></script>
+<script language="JavaScript" type="text/javascript" src="<%=request.getContextPath()%>/jss/ext-base.js"></script>
+<script language="JavaScript" type="text/javascript" src="<%=request.getContextPath()%>/jss/ext-all.js"></script>
+<script language="JavaScript" type="text/javascript" src="<%=request.getContextPath()%>/jss/combos.js"></script>
 
 <c:set var="containerInterface" value="${dataEntryForm.containerInterface}"/>
 <jsp:useBean id="containerInterface" type="edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface"/>

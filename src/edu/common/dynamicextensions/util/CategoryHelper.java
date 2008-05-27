@@ -303,8 +303,8 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @see edu.wustl.catissuecore.test.CategoryHelperInterface#associateCategoryContainers(edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface, edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface, java.util.List, int)
 	 */
 	public CategoryAssociationControlInterface associateCategoryContainers(CategoryInterface category, EntityGroupInterface entityGroup,
-			ContainerInterface sourceContainer, ContainerInterface targetContainer, List<AssociationInterface> associationList, int noOfEntries)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+			ContainerInterface sourceContainer, ContainerInterface targetContainer, List<AssociationInterface> associationList, int noOfEntries,
+			String instance) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		CategoryAssociationControlInterface associationControl = null;
 		CategoryAssociationInterface oldAssociation = null;
@@ -338,7 +338,7 @@ public class CategoryHelper implements CategoryHelperInterface
 
 		CategoryAssociationInterface categoryAssociation = associateCategoryEntities(sourceCategoryEntity, targetCategoryEntity, sourceCategoryEntity
 				.getName()
-				+ " to " + targetCategoryEntity.getName() + " category association", noOfEntries, entityGroup, associationList);
+				+ " to " + targetCategoryEntity.getName() + " category association", noOfEntries, entityGroup, associationList, instance);
 
 		CategoryAssociationControlInterface categoryAssociationControl = createCategoryAssociationControl(sourceContainer, targetContainer,
 				categoryAssociation, targetContainer.getCaption());
@@ -453,7 +453,8 @@ public class CategoryHelper implements CategoryHelperInterface
 	 */
 	public CategoryAssociationInterface associateCategoryEntities(CategoryEntityInterface sourceCategoryEntity,
 			CategoryEntityInterface targetCategoryEntity, String name, int numberOfentries, EntityGroupInterface entityGroup,
-			List<AssociationInterface> associationList) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+			List<AssociationInterface> associationList, String instance) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 
 		PathInterface path = addPathBetweenCategoryEntities(sourceCategoryEntity, targetCategoryEntity);
@@ -469,6 +470,8 @@ public class CategoryHelper implements CategoryHelperInterface
 		categoryAssociation.setTargetCategoryEntity(targetCategoryEntity);
 
 		sourceCategoryEntity.getCategoryAssociationCollection().add(categoryAssociation);
+
+		addInstanceInformationToPath(path, instance);
 
 		return categoryAssociation;
 	}

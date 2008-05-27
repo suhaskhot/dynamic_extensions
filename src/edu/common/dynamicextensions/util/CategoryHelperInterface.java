@@ -135,13 +135,14 @@ public interface CategoryHelperInterface
 	 * @param associationList association(s) present between two entities involved.
 	 * e.g 'userstudyassociation' as depicted above
 	 * @param noOfEntries indicates multiplicity. e.g. one-to-one (1) or one-to-many (-1) etc.
+	 * @param string 
 	 * @return CategoryAssociationControlInterface 
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	public CategoryAssociationControlInterface associateCategoryContainers(CategoryInterface category, EntityGroupInterface entityGroup,
-			ContainerInterface sourceContainer, ContainerInterface targetContainer, List<AssociationInterface> associationList, int noOfEntries)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+			ContainerInterface sourceContainer, ContainerInterface targetContainer, List<AssociationInterface> associationList, int noOfEntries,
+			String string) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * Method returns the next sequenceNumber
@@ -167,7 +168,7 @@ public interface CategoryHelperInterface
 	 * @param instance
 	 */
 	public void addInstanceInformationToPath(PathInterface path, String instance);
-	
+
 	/**
 	 * @param attributeTypeInformation
 	 * @param desiredPermissibleValues
@@ -177,25 +178,23 @@ public interface CategoryHelperInterface
 	 */
 	public List<PermissibleValueInterface> getPermissibleValueList(AttributeTypeInformationInterface attributeTypeInformation,
 			List<String> desiredPermissibleValues) throws DynamicExtensionsSystemException, ParseException;
-	
+
 	/**
 	 * @param category
 	 * @param entity
 	 * @param categoryEntityName
 	 * @return
 	 */
-	public CategoryEntityInterface createOrUpdateCategoryEntity(CategoryInterface category, EntityInterface entity, 
-			String categoryEntityName);
-	
+	public CategoryEntityInterface createOrUpdateCategoryEntity(CategoryInterface category, EntityInterface entity, String categoryEntityName);
+
 	/**
 	 * @param entity
 	 * @param attributeName
 	 * @param categoryEntity
 	 * @return
 	 */
-	public CategoryAttributeInterface createCategoryAttribute(EntityInterface entity, 
-			String attributeName, CategoryEntityInterface categoryEntity);
-	
+	public CategoryAttributeInterface createCategoryAttribute(EntityInterface entity, String attributeName, CategoryEntityInterface categoryEntity);
+
 	/**
 	 * @param sourceCategoryEntity
 	 * @param targetCategoryEntity
@@ -203,11 +202,13 @@ public interface CategoryHelperInterface
 	 * @param numberOfentries
 	 * @param entityGroup
 	 * @param associationList
+	 * @param insatnce
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	public CategoryAssociationInterface associateCategoryEntities(CategoryEntityInterface sourceCategoryEntity,
-			CategoryEntityInterface targetCategoryEntity, String name, int numberOfentries, 
-			EntityGroupInterface  entityGroup, List<AssociationInterface> associationList) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+			CategoryEntityInterface targetCategoryEntity, String name, int numberOfentries, EntityGroupInterface entityGroup,
+			List<AssociationInterface> associationList, String instance) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException;
 }

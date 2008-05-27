@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
@@ -50,8 +52,9 @@ public class CategoryGenerator
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
+	 * @throws ParseException 
 	 */
-	public List<CategoryInterface> getCategoryList() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public List<CategoryInterface> getCategoryList() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, ParseException
 	{
 		CategoryHelperInterface categoryHelper = new CategoryHelper();
 		List<CategoryInterface> categoryList = new ArrayList<CategoryInterface>();
@@ -96,6 +99,7 @@ public class CategoryGenerator
 				int sequenceNumber = 1;
 				ControlInterface lastControl = null;
 				Map<String, String> categoryEntityNameInstanceMap = new HashMap<String, String>();
+				boolean hasRelatedAttributes = false;
 
 				while (categoryFileParser.readNext())
 				{
@@ -103,6 +107,12 @@ public class CategoryGenerator
 					{
 						break;
 					}
+					if (categoryFileParser.hasRelatedAttributes())
+					{
+						hasRelatedAttributes = true;
+						break;
+					}
+
 					if (categoryFileParser.hasDisplayLable())
 					{
 						displayLabel = categoryFileParser.getDisplyLable();
@@ -175,6 +185,10 @@ public class CategoryGenerator
 
 				CategoryGenerationUtil
 						.setRootContainer(category, containerCollection, entityNameAssociationMap, paths, categoryEntityNameInstanceMap);
+				if (hasRelatedAttributes)
+				{
+					handleRelatedAttributes(entityGroup, category, entityNameAssociationMap);
+				}
 				categoryList.add(category);
 			}
 
@@ -190,6 +204,57 @@ public class CategoryGenerator
 					+ categoryFileParser.getLineNumber(), e);
 		}
 		return categoryList;
+
+	}
+
+	/**
+	 * @param entityGroup
+	 * @param category
+	 * @param entityNameAssociationMap
+	 * @throws IOException
+	 * @throws ParseException
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	private void handleRelatedAttributes(EntityGroupInterface entityGroup, CategoryInterface category,
+			Map<String, List<AssociationInterface>> entityNameAssociationMap) throws IOException, ParseException, DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+		while (categoryFileParser.readNext())
+		{
+			String[] categoryPaths = categoryFileParser.getCategoryPaths();
+			String[] categoryEntitysInPath = categoryPaths[0].split("->");
+			String categoryEntityName = categoryEntitysInPath[categoryEntitysInPath.length - 1];
+
+			String entityName = categoryEntityName.substring(0, categoryEntityName.indexOf("["));
+			EntityInterface entity = entityGroup.getEntityByName(entityName);
+
+			CategoryHelperInterface categoryHelper = new CategoryHelper();
+			boolean newCategoryCreated = false;
+			if (category.getCategoryEntityByName(categoryEntityName) == null)
+			{
+				newCategoryCreated = true;
+			}
+			CategoryEntityInterface categoryEntity = categoryHelper.createOrUpdateCategoryEntity(category, entity, categoryEntityName);
+
+			categoryFileParser.readNext();
+
+			String attributeName = categoryFileParser.getRelatedAttributeName();
+			CategoryAttributeInterface categoryAttribute = categoryHelper.createCategoryAttribute(entity, attributeName, categoryEntity);
+
+			String defaultValue = categoryFileParser.getDefaultValueForRelatedAttribute();
+			categoryAttribute.setDefaultValue(entity.getAttributeByName(attributeName).getAttributeTypeInformation().getPermissibleValueForString(
+					defaultValue));
+			categoryAttribute.setIsVisible(false);
+			category.addRelatedAttributeCategoryEntity(categoryEntity);
+
+			if (newCategoryCreated)
+			{
+				String associationName = category.getRootCategoryElement() + " to " + categoryEntity.getName() + " association";
+				categoryHelper.associateCategoryEntities(category.getRootCategoryElement(), categoryEntity, associationName, 1, entityGroup,
+						entityNameAssociationMap.get(entityName));
+			}
+		}
 
 	}
 
@@ -445,5 +510,4 @@ public class CategoryGenerator
 		}
 		return categoryPath;
 	}
-
 }

@@ -67,8 +67,8 @@ public class ImportPermissibleValues
 				//1:read the entity group
 				EntityGroupInterface entityGroup = DynamicExtensionsUtility.retrieveEntityGroup(categoryCSVFileParser.getEntityGroupName());
 
-				CategoryValidator.checkForNullRefernce(entityGroup, "Entity group with name " + entityGroup + " at line number "
-						+ categoryCSVFileParser.getLineNumber() + " does not exist");
+				CategoryValidator.checkForNullRefernce(entityGroup, "Entity group with name " + categoryCSVFileParser.getEntityGroupName()
+						+ " at line number " + categoryCSVFileParser.getLineNumber() + " does not exist");
 
 				categoryCSVFileParser.getCategoryValidator().setEntityGroup(entityGroup);
 

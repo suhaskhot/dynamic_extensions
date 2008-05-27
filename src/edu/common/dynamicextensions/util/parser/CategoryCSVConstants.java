@@ -50,5 +50,12 @@ public interface CategoryCSVConstants
 	 * permissble values
 	 */
 	String OVERRIDE_PV = "override_pv";
+	
+	/**
+	 * This keyword used to define the lable for the form
+	 */
+	String RELATED_ATTIBUTE = "RelatedAttribute:";
+	
+	String INSTANCE = "instance:";
 
 }

@@ -6,6 +6,9 @@ import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -174,4 +177,37 @@ public interface CategoryHelperInterface
 	 */
 	public List<PermissibleValueInterface> getPermissibleValueList(AttributeTypeInformationInterface attributeTypeInformation,
 			List<String> desiredPermissibleValues) throws DynamicExtensionsSystemException, ParseException;
+	
+	/**
+	 * @param category
+	 * @param entity
+	 * @param categoryEntityName
+	 * @return
+	 */
+	public CategoryEntityInterface createOrUpdateCategoryEntity(CategoryInterface category, EntityInterface entity, 
+			String categoryEntityName);
+	
+	/**
+	 * @param entity
+	 * @param attributeName
+	 * @param categoryEntity
+	 * @return
+	 */
+	public CategoryAttributeInterface createCategoryAttribute(EntityInterface entity, 
+			String attributeName, CategoryEntityInterface categoryEntity);
+	
+	/**
+	 * @param sourceCategoryEntity
+	 * @param targetCategoryEntity
+	 * @param name
+	 * @param numberOfentries
+	 * @param entityGroup
+	 * @param associationList
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public CategoryAssociationInterface associateCategoryEntities(CategoryEntityInterface sourceCategoryEntity,
+			CategoryEntityInterface targetCategoryEntity, String name, int numberOfentries, 
+			EntityGroupInterface  entityGroup, List<AssociationInterface> associationList) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 }

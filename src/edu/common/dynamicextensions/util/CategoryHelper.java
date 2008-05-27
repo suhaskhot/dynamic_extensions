@@ -99,20 +99,9 @@ public class CategoryHelper implements CategoryHelperInterface
 	public ContainerInterface createOrUpdateCategoryEntityAndContainer(EntityInterface entity, String containerCaption, CategoryInterface category,
 			String... categoryEntityName)
 	{
-		CategoryEntityInterface categoryEntity = null;
-		String newCategoryEntityName = null;
-		if (categoryEntityName.length > 0)
-		{
-			newCategoryEntityName = categoryEntityName[0];
-			categoryEntity = category.getCategoryEntityByName(newCategoryEntityName);
-		}
+		String newCategoryEntityName = (categoryEntityName.length > 0 ? categoryEntityName[0] : null);
+		CategoryEntityInterface categoryEntity = createOrUpdateCategoryEntity(category, entity, newCategoryEntityName);
 
-		if (categoryEntity == null)
-		{
-			categoryEntity = DomainObjectFactory.getInstance().createCategoryEntity();
-			categoryEntity.setName(newCategoryEntityName);
-			categoryEntity.setEntity(entity);
-		}
 		if (containerCaption == null)
 		{
 			containerCaption = entity.getName() + "_category_entity_container";
@@ -120,6 +109,25 @@ public class CategoryHelper implements CategoryHelperInterface
 		}
 		ContainerInterface container = createContainer(categoryEntity, containerCaption);
 		return container;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.util.CategoryHelperInterface#createOrUpdateCategoryEntity(edu.common.dynamicextensions.domaininterface.CategoryInterface, edu.common.dynamicextensions.domaininterface.EntityInterface, java.lang.String)
+	 */
+	public CategoryEntityInterface createOrUpdateCategoryEntity(CategoryInterface category, EntityInterface entity, String categoryEntityName)
+	{
+		CategoryEntityInterface categoryEntity = null;
+		if (categoryEntityName != null)
+		{
+			categoryEntity = category.getCategoryEntityByName(categoryEntityName);
+		}
+		if (categoryEntity == null)
+		{
+			categoryEntity = DomainObjectFactory.getInstance().createCategoryEntity();
+			categoryEntity.setName(categoryEntityName);
+			categoryEntity.setEntity(entity);
+		}
+		return categoryEntity;
 	}
 
 	/* (non-Javadoc)
@@ -138,20 +146,7 @@ public class CategoryHelper implements CategoryHelperInterface
 			String controlCaption, List<String>... permissibleValueList) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException
 	{
-		CategoryAttributeInterface categoryAttribute = (CategoryAttributeInterface) getCategoryAttribute(attributeName, container);
-		if (categoryAttribute == null)
-		{
-			categoryAttribute = DomainObjectFactory.getInstance().createCategoryAttribute();
-			categoryAttribute.setName(attributeName + " Category Attribute");
-			categoryAttribute.setAttribute(entity.getAttributeByName(attributeName));
-
-			CategoryEntity categoryEntity = (CategoryEntity) container.getAbstractEntity();
-			categoryEntity.addCategoryAttribute(categoryAttribute);
-			categoryAttribute.setCategoryEntity(categoryEntity);
-
-			categoryEntity.addCategoryAttribute(categoryAttribute);
-			categoryAttribute.setCategoryEntity(categoryEntity);
-		}
+		CategoryAttributeInterface categoryAttribute = createOrupdateCategoryAttribute(entity, attributeName, container);
 
 		ControlInterface control = null;
 		List<String> permissibleValueNameList = (permissibleValueList.length == 0 ? null : permissibleValueList[0]);
@@ -160,6 +155,43 @@ public class CategoryHelper implements CategoryHelperInterface
 		control.setCaption(controlCaption);
 
 		return control;
+	}
+
+	/**
+	 * @param entity
+	 * @param attributeName
+	 * @param container
+	 * @return
+	 */
+	public CategoryAttributeInterface createOrupdateCategoryAttribute(EntityInterface entity, String attributeName, ContainerInterface container)
+	{
+		CategoryAttributeInterface categoryAttribute = (CategoryAttributeInterface) getCategoryAttribute(attributeName, container);
+		if (categoryAttribute == null)
+		{
+			CategoryEntity categoryEntity = (CategoryEntity) container.getAbstractEntity();
+			categoryAttribute = createCategoryAttribute(entity, attributeName, categoryEntity);
+		}
+
+		return categoryAttribute;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.util.CategoryHelperInterface#createCategoryAttribute(edu.common.dynamicextensions.domaininterface.EntityInterface, java.lang.String, edu.common.dynamicextensions.domaininterface.CategoryEntityInterface)
+	 */
+	public CategoryAttributeInterface createCategoryAttribute(EntityInterface entity, String attributeName, CategoryEntityInterface categoryEntity)
+	{
+		CategoryAttributeInterface categoryAttribute = DomainObjectFactory.getInstance().createCategoryAttribute();
+		categoryAttribute.setName(attributeName + " Category Attribute");
+		categoryAttribute.setAttribute(entity.getAttributeByName(attributeName));
+
+		categoryEntity.addCategoryAttribute(categoryAttribute);
+		categoryAttribute.setCategoryEntity(categoryEntity);
+
+		categoryEntity.addCategoryAttribute(categoryAttribute);
+		categoryAttribute.setCategoryEntity(categoryEntity);
+
+		return categoryAttribute;
+
 	}
 
 	/**
@@ -271,7 +303,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @see edu.wustl.catissuecore.test.CategoryHelperInterface#associateCategoryContainers(edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface, edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface, java.util.List, int)
 	 */
 	public CategoryAssociationControlInterface associateCategoryContainers(CategoryInterface category, EntityGroupInterface entityGroup,
-			ContainerInterface sourceContainer, ContainerInterface targetContainer, List<AssociationInterface> associationNamesList, int noOfEntries)
+			ContainerInterface sourceContainer, ContainerInterface targetContainer, List<AssociationInterface> associationList, int noOfEntries)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		CategoryAssociationControlInterface associationControl = null;
@@ -304,14 +336,9 @@ public class CategoryHelper implements CategoryHelperInterface
 			}
 		}
 
-		PathInterface path = addPathBetweenCategoryEntities(sourceCategoryEntity, targetCategoryEntity);
-
-		updatePath(path, associationNamesList, entityGroup);
-		targetCategoryEntity.setNumberOfEntries(noOfEntries);
-
 		CategoryAssociationInterface categoryAssociation = associateCategoryEntities(sourceCategoryEntity, targetCategoryEntity, sourceCategoryEntity
 				.getName()
-				+ " to " + targetCategoryEntity.getName() + " category association");
+				+ " to " + targetCategoryEntity.getName() + " category association", noOfEntries, entityGroup, associationList);
 
 		CategoryAssociationControlInterface categoryAssociationControl = createCategoryAssociationControl(sourceContainer, targetContainer,
 				categoryAssociation, targetContainer.getCaption());
@@ -421,10 +448,18 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @param targetCategoryEntity target category entity
 	 * @param name name of the category association
 	 * @return CategoryAssociationInterface category association object
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	private CategoryAssociationInterface associateCategoryEntities(CategoryEntityInterface sourceCategoryEntity,
-			CategoryEntityInterface targetCategoryEntity, String name)
+	public CategoryAssociationInterface associateCategoryEntities(CategoryEntityInterface sourceCategoryEntity,
+			CategoryEntityInterface targetCategoryEntity, String name, int numberOfentries, EntityGroupInterface entityGroup,
+			List<AssociationInterface> associationList) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
+
+		PathInterface path = addPathBetweenCategoryEntities(sourceCategoryEntity, targetCategoryEntity);
+		updatePath(path, associationList, entityGroup);
+		targetCategoryEntity.setNumberOfEntries(numberOfentries);
+
 		CategoryAssociationInterface categoryAssociation = DomainObjectFactory.getInstance().createCategoryAssociation();
 		categoryAssociation.setName(name);
 

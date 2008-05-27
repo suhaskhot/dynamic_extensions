@@ -41,8 +41,8 @@ public class DateValidator implements ValidatorRuleInterface
 			DateAttributeTypeInformation dateAttributeTypeInformation = (DateAttributeTypeInformation) attributeTypeInformation;
 			String dateFormat = dateAttributeTypeInformation.getFormat();
 			String value = (String) valueObject;
-			
-			for (int i=0; i<value.length(); i++)
+
+			for (int i = 0; i < value.length(); i++)
 			{
 				if (Character.isLetter(value.charAt(i)))
 				{
@@ -52,19 +52,18 @@ public class DateValidator implements ValidatorRuleInterface
 							"dynExtn.validation.Number", placeHolders);
 				}
 			}
-					
 
-            if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
-            {
-            	String month = value.substring(0, 2);
+			if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
+			{
+				String month = value.substring(0, 2);
 				String year = value.substring(3, value.length());
-                value = month + "-01-" + year;
-            }
-            if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
-            {
-                value = DynamicExtensionsUtility.formatYearDate(value);
-                value = value.substring(0, value.length()-4);
-            }
+				value = month + "-01-" + year;
+			}
+			if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
+			{
+				value = DynamicExtensionsUtility.formatYearDate(value);
+				value = value.substring(3, value.length() - 4);
+			}
 
 			try
 			{
@@ -74,7 +73,7 @@ public class DateValidator implements ValidatorRuleInterface
 				{
 					valid = true;
 				}
-				
+
 				//Bug 7537-Data entry invalid year causes exception.This exception handled by following code.
 				SimpleDateFormat sf = new SimpleDateFormat(dateFormat);
 				sf.setLenient(false);
@@ -88,6 +87,7 @@ public class DateValidator implements ValidatorRuleInterface
 				throw new DynamicExtensionsValidationException("Validation failed", null,
 						"dynExtn.validation.Date", placeHolders);
 			}
+
 		}
 		return valid;
 	}

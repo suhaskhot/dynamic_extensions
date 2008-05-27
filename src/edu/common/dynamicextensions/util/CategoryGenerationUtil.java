@@ -100,9 +100,9 @@ public class CategoryGenerationUtil
 					newRootContainer.setAddCaption(false);
 
 					categoryHelper.associateCategoryContainers(category, entityGroup, newRootContainer, rootContainer, paths
-							.get(categoryEntityInterface.getEntity().getName()), 1);
-					categoryHelper.addInstanceInformationToPath(((CategoryEntityInterface) rootContainer.getAbstractEntity()).getPath(),
+							.get(categoryEntityInterface.getEntity().getName()), 1, 
 							containerNameInstanceMap.get(rootContainer.getAbstractEntity().getName()));
+					
 					rootContainer = newRootContainer;
 
 				}

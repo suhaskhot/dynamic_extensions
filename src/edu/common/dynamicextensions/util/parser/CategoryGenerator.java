@@ -151,10 +151,8 @@ public class CategoryGenerator
 								+ "for the category entity " + targetContainerCaption);
 
 						lastControl = categoryHelper.associateCategoryContainers(category, entityGroup, sourceContainer, targetContainer,
-								associationNameList, CategoryGenerationUtil.getMultiplicityInNumbers(multiplicity));
-
-						categoryHelper.addInstanceInformationToPath(((CategoryEntityInterface) targetContainer.getAbstractEntity()).getPath(),
-								categoryEntityNameInstanceMap.get(targetContainer.getAbstractEntity().getName()));
+								associationNameList, CategoryGenerationUtil.getMultiplicityInNumbers(multiplicity), categoryEntityNameInstanceMap
+										.get(targetContainer.getAbstractEntity().getName()));
 
 					}
 					else
@@ -252,7 +250,7 @@ public class CategoryGenerator
 			{
 				String associationName = category.getRootCategoryElement() + " to " + categoryEntity.getName() + " association";
 				categoryHelper.associateCategoryEntities(category.getRootCategoryElement(), categoryEntity, associationName, 1, entityGroup,
-						entityNameAssociationMap.get(entityName));
+						entityNameAssociationMap.get(entityName), categoryPaths[0]);
 			}
 		}
 
@@ -464,6 +462,7 @@ public class CategoryGenerator
 				}
 
 				CategoryHelperInterface categoryHelper = new CategoryHelper();
+				boolean firstCategoryEntity = true;
 				for (String categoryPath : categoryPaths)
 				{
 					categoryEntitysInPath = categoryPath.split("->");
@@ -477,9 +476,7 @@ public class CategoryGenerator
 								newCategoryEntityName));
 
 						categoryHelper.associateCategoryContainers(category, entityGroup, mainContainer, container, associationNamesMap
-								.get(entityName), 1);
-						categoryHelper.addInstanceInformationToPath(((CategoryEntityInterface) container.getAbstractEntity()).getPath(),
-								categoryEntityNameInstanceMap.get(container.getAbstractEntity().getName()));
+								.get(entityName), 1, categoryEntityNameInstanceMap.get(container.getAbstractEntity().getName()));
 
 						categoryEntityName.add(newCategoryEntityName);
 					}
@@ -510,4 +507,5 @@ public class CategoryGenerator
 		}
 		return categoryPath;
 	}
+
 }

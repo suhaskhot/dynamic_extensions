@@ -148,4 +148,24 @@ public abstract class CategoryFileParser extends FileReader
 		this.categoryValidator = categoryValidator;
 	}
 
+	/**
+	 * @return
+	 */
+	public abstract boolean hasRelatedAttributes();
+
+	/**
+	 * @return
+	 */
+	public abstract boolean hasInsatanceInformation();
+
+	/**
+	 * @return
+	 */
+	public abstract String getDefaultValueForRelatedAttribute();
+
+	/**
+	 * @return
+	 */
+	public abstract String getRelatedAttributeName();
+
 }

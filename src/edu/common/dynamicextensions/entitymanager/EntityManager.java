@@ -139,12 +139,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public EntityInterface persistEntity(EntityInterface entity) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public EntityInterface persistEntity(EntityInterface entity)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		List reverseQueryList = new LinkedList();
 		List queryList = new ArrayList();
 		Stack rollbackQueryStack = new Stack();
-		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
+		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
+				Constants.HIBERNATE_DAO);
 		try
 		{
 			hibernateDAO.openSession(null);
@@ -164,20 +166,22 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			postProcess(queryList, reverseQueryList, rollbackQueryStack);
 
 			hibernateDAO.commit();
-//			Update the dynamic extension cache for all containers within entitygroup
+			//			Update the dynamic extension cache for all containers within entitygroup
 			EntityGroupInterface entityGroupInterface = entity.getEntityGroup();
 			DynamicExtensionsUtility.updateDynamicExtensionsCache(entityGroupInterface.getId());
 		}
 		catch (DAOException e)
 		{
 			rollbackQueries(rollbackQueryStack, entity, e, hibernateDAO);
-			throw new DynamicExtensionsSystemException("DAOException occured while opening a session to save the container.", e);
+			throw new DynamicExtensionsSystemException(
+					"DAOException occured while opening a session to save the container.", e);
 		}
 		catch (UserNotAuthorizedException e)
 		{
 			rollbackQueries(rollbackQueryStack, entity, e, hibernateDAO);
 			e.printStackTrace();
-			throw new DynamicExtensionsSystemException("DAOException occured while opening a session to save the container.", e);
+			throw new DynamicExtensionsSystemException(
+					"DAOException occured while opening a session to save the container.", e);
 		}
 		finally
 		{
@@ -187,7 +191,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			}
 			catch (DAOException e)
 			{
-				throw new DynamicExtensionsSystemException("DAOException occured while opening a session to save the container.", e);
+				throw new DynamicExtensionsSystemException(
+						"DAOException occured while opening a session to save the container.", e);
 			}
 		}
 		return entity;
@@ -196,11 +201,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#persistEntityMetadata(edu.common.dynamicextensions.domaininterface.EntityInterface)
 	 */
-	public EntityInterface persistEntityMetadata(EntityInterface entity) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public EntityInterface persistEntityMetadata(EntityInterface entity)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Stack rollbackQueryStack = new Stack();
-		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
+		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
+				Constants.HIBERNATE_DAO);
 		try
 		{
 			hibernateDAO.openSession(null);
@@ -222,12 +228,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		catch (DAOException e)
 		{
 			rollbackQueries(rollbackQueryStack, entity, e, hibernateDAO);
-			throw new DynamicExtensionsSystemException("DAOException occured while opening a session to save the container.", e);
+			throw new DynamicExtensionsSystemException(
+					"DAOException occured while opening a session to save the container.", e);
 		}
 		catch (UserNotAuthorizedException e)
 		{
 			rollbackQueries(rollbackQueryStack, entity, e, hibernateDAO);
-			throw new DynamicExtensionsSystemException("DAOException occured while opening a session to save the container.", e);
+			throw new DynamicExtensionsSystemException(
+					"DAOException occured while opening a session to save the container.", e);
 		}
 		finally
 		{
@@ -237,7 +245,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			}
 			catch (DAOException e)
 			{
-				throw new DynamicExtensionsSystemException("DAOException occured while opening a session to save the container.", e);
+				throw new DynamicExtensionsSystemException(
+						"DAOException occured while opening a session to save the container.", e);
 			}
 		}
 		return entity;
@@ -252,8 +261,10 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	protected void preProcess(DynamicExtensionBaseDomainObjectInterface dynamicExtensionBaseDomainObject, List reverseQueryList,
-			HibernateDAO hibernateDAO, List queryList) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	protected void preProcess(
+			DynamicExtensionBaseDomainObjectInterface dynamicExtensionBaseDomainObject,
+			List reverseQueryList, HibernateDAO hibernateDAO, List queryList)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		EntityInterface entityObject = (EntityInterface) dynamicExtensionBaseDomainObject;
 		createDynamicQueries(entityObject, reverseQueryList, hibernateDAO, queryList);
@@ -264,12 +275,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private void checkParentChangeAllowed(Entity entity) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private void checkParentChangeAllowed(Entity entity) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		String tableName = entity.getTableProperties().getName();
 		if (queryBuilder.isDataPresent(tableName))
 		{
-			throw new DynamicExtensionsApplicationException("Can not change the data type of the attribute", null, DYEXTN_A_010);
+			throw new DynamicExtensionsApplicationException(
+					"Can not change the data type of the attribute", null, DYEXTN_A_010);
 		}
 	}
 
@@ -280,7 +293,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @param rollbackQueryStack Stack to undo any changes done beforehand at DB level.
 	 * @throws DynamicExtensionsSystemException
 	 */
-	protected void postProcess(List queryList, List reverseQueryList, Stack rollbackQueryStack) throws DynamicExtensionsSystemException
+	protected void postProcess(List queryList, List reverseQueryList, Stack rollbackQueryStack)
+			throws DynamicExtensionsSystemException
 	{
 		queryBuilder.executeQueries(queryList, reverseQueryList, rollbackQueryStack);
 	}
@@ -295,10 +309,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private List createDynamicQueries(EntityInterface entityInterface, List reverseQueryList, HibernateDAO hibernateDAO, List queryList)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private List createDynamicQueries(EntityInterface entityInterface, List reverseQueryList,
+			HibernateDAO hibernateDAO, List queryList) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
-		return getDynamicQueryList(entityInterface.getEntityGroup(), reverseQueryList, hibernateDAO, queryList);
+		return getDynamicQueryList(entityInterface.getEntityGroup(), reverseQueryList,
+				hibernateDAO, queryList);
 	}
 
 	/**
@@ -314,8 +330,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @param dao AbstractDAO
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private void rollbackQueries(Stack reverseQueryStack, EntityInterface entity, Exception e, AbstractDAO dao)
-			throws DynamicExtensionsSystemException
+	private void rollbackQueries(Stack reverseQueryStack, EntityInterface entity, Exception e,
+			AbstractDAO dao) throws DynamicExtensionsSystemException
 	{
 		String message = "";
 		try
@@ -356,7 +372,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			finally
 			{
 				logDebug("rollbackQueries", DynamicExtensionsUtility.getStackTrace(e));
-				DynamicExtensionsSystemException ex = new DynamicExtensionsSystemException(message, e);
+				DynamicExtensionsSystemException ex = new DynamicExtensionsSystemException(message,
+						e);
 				ex.setErrorCode(DYEXTN_S_000);
 				throw ex;
 			}
@@ -381,7 +398,9 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			entity.getTableProperties().getName();
 			name = entity.getName();
 		}
-		Logger.out.error("***Fatal Error.. Incosistent data table and metadata information for the entity -" + name + "***");
+		Logger.out
+				.error("***Fatal Error.. Incosistent data table and metadata information for the entity -"
+						+ name + "***");
 		Logger.out.error("Please check the table -" + table);
 		Logger.out.error("The cause of the exception is - " + e.getMessage());
 		Logger.out.error("The detailed log is : ");
@@ -391,8 +410,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAssociations(java.lang.Long, java.lang.Long)
 	 */
-	public Collection<AssociationInterface> getAssociations(Long sourceEntityId, Long targetEntityId) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public Collection<AssociationInterface> getAssociations(Long sourceEntityId, Long targetEntityId)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Map substitutionParameterMap = new HashMap();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", sourceEntityId));
@@ -408,9 +427,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @param entityGroupShortName
 	 * @return
 	 */
-	public EntityInterface getEntityByName(String entityName) throws DynamicExtensionsSystemException
+	public EntityInterface getEntityByName(String entityName)
+			throws DynamicExtensionsSystemException
 	{
-		EntityInterface entityInterface = (EntityInterface) getObjectByName(Entity.class.getName(), entityName);
+		EntityInterface entityInterface = (EntityInterface) getObjectByName(Entity.class.getName(),
+				entityName);
 		return entityInterface;
 	}
 
@@ -423,8 +444,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsApplicationException
 	 */
 
-	public Collection<AssociationInterface> getAssociation(String entityName, String sourceRoleName) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public Collection<AssociationInterface> getAssociation(String entityName, String sourceRoleName)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Map substitutionParameterMap = new HashMap();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("string", entityName));
@@ -432,7 +453,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		//Following method is called to execute the stored HQL , the name of which is given as the first parameter.
 		//The second parameter is the map which contains the actual values that are replaced for the placeholders.
 
-		Collection<AssociationInterface> associationCollection = executeHQL("getAssociation", substitutionParameterMap);
+		Collection<AssociationInterface> associationCollection = executeHQL("getAssociation",
+				substitutionParameterMap);
 
 		return associationCollection;
 	}
@@ -446,8 +468,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsApplicationException
 	 */
 
-	public AssociationInterface getAssociationByName(String asociationName) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public AssociationInterface getAssociationByName(String asociationName)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Map substitutionParameterMap = new HashMap();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("string", asociationName));
@@ -455,7 +477,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		//Following method is called to execute the stored HQL , the name of which is given as the first parameter.
 		//The second parameter is the map which contains the actual values that are replaced for the placeholders.
 
-		Collection<AssociationInterface> associationCollection = executeHQL("getAssociationByName", substitutionParameterMap);
+		Collection<AssociationInterface> associationCollection = executeHQL("getAssociationByName",
+				substitutionParameterMap);
 		AssociationInterface associationInterface = null;
 		if (associationCollection != null && associationCollection.size() != 0)
 		{
@@ -465,8 +488,9 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 	}
 
-	public AssociationInterface getAssociation(String sourceEntityName, String asociationName, String targetEntityName)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public AssociationInterface getAssociation(String sourceEntityName, String asociationName,
+			String targetEntityName) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		Map substitutionParameterMap = new HashMap();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("string", sourceEntityName));
@@ -476,7 +500,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		//Following method is called to execute the stored HQL , the name of which is given as the first parameter.
 		//The second parameter is the map which contains the actual values that are replaced for the placeholders.
 
-		Collection<AssociationInterface> associationCollection = executeHQL("getAssociationBySourceTargetEntity", substitutionParameterMap);
+		Collection<AssociationInterface> associationCollection = executeHQL(
+				"getAssociationBySourceTargetEntity", substitutionParameterMap);
 		AssociationInterface associationInterface = null;
 		if (associationCollection != null && associationCollection.size() != 0)
 		{
@@ -493,14 +518,15 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Collection<EntityInterface> getEntitiesByConceptCode(String entityConceptCode) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public Collection<EntityInterface> getEntitiesByConceptCode(String entityConceptCode)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Map substitutionParameterMap = new HashMap();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("string", entityConceptCode));
 		//Following method is called to execute the stored HQL , the name of which is given as the first parameter.
 		//The second parameter is the map which contains the actual values that are replaced for the placeholders.
-		Collection entityCollection = executeHQL("getEntitiesByConceptCode", substitutionParameterMap);
+		Collection entityCollection = executeHQL("getEntitiesByConceptCode",
+				substitutionParameterMap);
 		return entityCollection;
 	}
 
@@ -510,7 +536,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Collection<EntityInterface> getAllEntities() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public Collection<EntityInterface> getAllEntities() throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		//CAlling generic method to return all stored instances of the object, the class name of which is passed as
 		//the parameter.
@@ -520,17 +547,20 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getEntityByIdentifier(java.lang.Long)
 	 */
-	public EntityInterface getEntityByIdentifier(Long id) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public EntityInterface getEntityByIdentifier(Long id) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		//      CAlling generic method to return all stored instances of the object, the identifier of which is passed as
 		//the parameter.
-		return (EntityInterface) getObjectByIdentifier(EntityInterface.class.getName(), id.toString());
+		return (EntityInterface) getObjectByIdentifier(EntityInterface.class.getName(), id
+				.toString());
 	}
 
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getEntityByIdentifier(java.lang.String)
 	 */
-	public EntityInterface getEntityByIdentifier(String identifier) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public EntityInterface getEntityByIdentifier(String identifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		//      CAlling generic method to return all stored instances of the object, the identifier of which is passed as
 		//the parameter.
@@ -540,15 +570,16 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllContainers()
 	 */
-	public Collection<ContainerInterface> getAllContainers() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public Collection<ContainerInterface> getAllContainers()
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		//CAlling generic method to return all stored instances of the object, the class name of which is passed as
 		//the parameter.
 		return getAllObjects(ContainerInterface.class.getName());
 	}
 
-	public Collection<ContainerInterface> getAllContainersByEntityGroupId(Long entityGroupIdentifier) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public Collection<ContainerInterface> getAllContainersByEntityGroupId(Long entityGroupIdentifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 
 	{
 		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
@@ -559,13 +590,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#insertData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map)
 	 */
-	public Long insertData(EntityInterface entity, Map<AbstractAttributeInterface, Object> dataValue, Long...userId) throws DynamicExtensionsApplicationException,
-			DynamicExtensionsSystemException
+	public Long insertData(EntityInterface entity,
+			Map<AbstractAttributeInterface, Object> dataValue, Long... userId)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		List<Map<AbstractAttributeInterface, Object>> dataValueMapList = new ArrayList<Map<AbstractAttributeInterface, Object>>();
 		dataValueMapList.add(dataValue);
-		Long uId = ((userId != null && userId.length != 0) ?userId[0]:null);  
-		
+		Long uId = ((userId != null && userId.length != 0) ? userId[0] : null);
+
 		List<Long> recordIdList = insertData(entity, dataValueMapList, uId);
 		return recordIdList.get(0);
 	}
@@ -573,13 +605,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#insertData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map)
 	 */
-	public List<Long> insertData(EntityInterface entity, List<Map<AbstractAttributeInterface, Object>> dataValueMapList, Long...userId)
+	public List<Long> insertData(EntityInterface entity,
+			List<Map<AbstractAttributeInterface, Object>> dataValueMapList, Long... userId)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 
 		List<Long> recordIdList = new ArrayList<Long>();
-		Long uId = ((userId != null && userId.length != 0) ?userId[0]:null);
-		
+		Long uId = ((userId != null && userId.length != 0) ? userId[0] : null);
+
 		HibernateDAO hibernateDAO = null;
 		try
 		{
@@ -597,11 +630,13 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{
-			throw (DynamicExtensionsApplicationException) handleRollback(e, "Error while inserting data", hibernateDAO, false);
+			throw (DynamicExtensionsApplicationException) handleRollback(e,
+					"Error while inserting data", hibernateDAO, false);
 		}
 		catch (Exception e)
 		{
-			throw (DynamicExtensionsSystemException) handleRollback(e, "Error while inserting data", hibernateDAO, true);
+			throw (DynamicExtensionsSystemException) handleRollback(e,
+					"Error while inserting data", hibernateDAO, true);
 		}
 		finally
 		{
@@ -611,7 +646,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			}
 			catch (DAOException e)
 			{
-				throw (DynamicExtensionsSystemException) handleRollback(e, "Error while closing", hibernateDAO, true);
+				throw (DynamicExtensionsSystemException) handleRollback(e, "Error while closing",
+						hibernateDAO, true);
 			}
 		}
 
@@ -630,9 +666,10 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DAOException
 	 * @throws UserNotAuthorizedException
 	 */
-	private Long insertDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, HibernateDAO hibernateDAO, Long userId)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
-			UserNotAuthorizedException
+	private Long insertDataForHeirarchy(EntityInterface entity,
+			Map<AbstractAttributeInterface, ?> dataValue, HibernateDAO hibernateDAO, Long userId)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException,
+			HibernateException, SQLException, DAOException, UserNotAuthorizedException
 	{
 		List<EntityInterface> entityList = getParentEntityList(entity);
 		Map<EntityInterface, Map> entityValueMap = initialiseEntityValueMap(entity, dataValue);
@@ -640,7 +677,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		for (EntityInterface entityInterface : entityList)
 		{
 			Map valueMap = entityValueMap.get(entityInterface);
-			parentRecordId = insertDataForSingleEntity(entityInterface, valueMap, hibernateDAO, parentRecordId);
+			parentRecordId = insertDataForSingleEntity(entityInterface, valueMap, hibernateDAO,
+					parentRecordId);
 		}
 
 		return parentRecordId;
@@ -667,7 +705,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @param dataValue
 	 * @return
 	 */
-	private Map<EntityInterface, Map> initialiseEntityValueMap(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue)
+	private Map<EntityInterface, Map> initialiseEntityValueMap(EntityInterface entity,
+			Map<AbstractAttributeInterface, ?> dataValue)
 	{
 		Map<EntityInterface, Map> entityMap = new HashMap<EntityInterface, Map>();
 
@@ -676,7 +715,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			EntityInterface attributeEntity = abstractAttributeInterface.getEntity();
 			Object value = dataValue.get(abstractAttributeInterface);
 
-			Map<AbstractAttributeInterface, Object> entityDataValueMap = (Map) entityMap.get(attributeEntity);
+			Map<AbstractAttributeInterface, Object> entityDataValueMap = (Map) entityMap
+					.get(attributeEntity);
 			if (entityDataValueMap == null)
 			{
 				entityDataValueMap = new HashMap<AbstractAttributeInterface, Object>();
@@ -699,11 +739,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DAOException
 	 * @throws UserNotAuthorizedException
 	 */
-	public Long insertDataForSingleEntity(EntityInterface entity, Map dataValue, HibernateDAO hibernateDAO, Long parentRecordId, Long...userId)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
-			UserNotAuthorizedException
+	public Long insertDataForSingleEntity(EntityInterface entity, Map dataValue,
+			HibernateDAO hibernateDAO, Long parentRecordId, Long... userId)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException,
+			HibernateException, SQLException, DAOException, UserNotAuthorizedException
 	{
-		Long uId = ((userId != null && userId.length != 0) ?userId[0]:null);
+		Long uId = ((userId != null && userId.length != 0) ? userId[0] : null);
 		if (entity == null)
 		{
 			throw new DynamicExtensionsSystemException("Input to insert data is null");
@@ -739,22 +780,23 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		Object value = null;
 		while (uiColumnSetIter.hasNext())
 		{
-			AbstractAttribute attribute  = null;
+			AbstractAttribute attribute = null;
 			Object attributeKey = uiColumnSetIter.next();
 			value = dataValue.get(attributeKey);
 			if (attributeKey instanceof CategoryAttributeInterface)
 			{
-				attribute = (AbstractAttribute)(AttributeInterface)((CategoryAttribute)attributeKey).getAttribute();
-				
+				attribute = (AbstractAttribute) (AttributeInterface) ((CategoryAttribute) attributeKey)
+						.getAttribute();
+
 			}
-			else if (attributeKey instanceof CategoryAssociationInterface) 
+			else if (attributeKey instanceof CategoryAssociationInterface)
 			{
 				continue;
 			}
 			else
-			{	
-				attribute = (AbstractAttribute)attributeKey;
-				
+			{
+				attribute = (AbstractAttribute) attributeKey;
+
 			}
 
 			if (value == null)
@@ -769,8 +811,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				//				 populate FileAttributeRecordValue HO
 				if (primitiveAttribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
 				{
-					AttributeRecord fileRecord = populateFileAttributeRecord(null, entity, primitiveAttribute, identifier,
-							(FileAttributeRecordValue) value);
+					AttributeRecord fileRecord = populateFileAttributeRecord(null, entity,
+							primitiveAttribute, identifier, (FileAttributeRecordValue) value);
 					attributeRecords.add(fileRecord);
 					continue;
 				}
@@ -778,8 +820,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				// populate ObjectAttributeRecordValue HO
 				if (primitiveAttribute.getAttributeTypeInformation() instanceof ObjectAttributeTypeInformation)
 				{
-					AttributeRecord objectRecord = populateObjectAttributeRecord(null, entity, primitiveAttribute, identifier,
-							(ObjectAttributeRecordValue) value);
+					AttributeRecord objectRecord = populateObjectAttributeRecord(null, entity,
+							primitiveAttribute, identifier, (ObjectAttributeRecordValue) value);
 					attributeRecords.add(objectRecord);
 					continue;
 				}
@@ -787,8 +829,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				//	 For collection type attribute, populate CollectionAttributeRecordValue HO
 				if (primitiveAttribute.getIsCollection())
 				{
-					AttributeRecord collectionRecord = populateCollectionAttributeRecord(null, entity, primitiveAttribute, identifier,
-							(List<String>) value);
+					AttributeRecord collectionRecord = populateCollectionAttributeRecord(null,
+							entity, primitiveAttribute, identifier, (List<String>) value);
 					attributeRecords.add(collectionRecord);
 				}
 				else
@@ -812,7 +854,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				AssociationInterface association = (AssociationInterface) attribute;
 				List<Long> recordIdList = null;
 
-				if (association.getSourceRole().getAssociationsType().equals(AssociationType.CONTAINTMENT))
+				if (association.getSourceRole().getAssociationsType().equals(
+						AssociationType.CONTAINTMENT))
 				{
 					List<Map> listOfMapsForContainedEntity = (List) value;
 					recordIdList = new ArrayList<Long>();
@@ -823,8 +866,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 						//                      Long recordIdForContainedEntity = insertDataForSingleEntity(association
 						//                              .getTargetEntity(), valueMapForContainedEntity, hibernateDAO, null);
 
-						Long recordIdForContainedEntity = insertDataForHeirarchy(association.getTargetEntity(), valueMapForContainedEntity,
-								hibernateDAO, uId);
+						Long recordIdForContainedEntity = insertDataForHeirarchy(association
+								.getTargetEntity(), valueMapForContainedEntity, hibernateDAO, uId);
 						recordIdList.add(recordIdForContainedEntity);
 					}
 
@@ -834,7 +877,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 					recordIdList = (List<Long>) value;
 				}
 
-				queryList.addAll(queryBuilder.getAssociationInsertDataQuery(association, recordIdList, identifier));
+				queryList.addAll(queryBuilder.getAssociationInsertDataQuery(association,
+						recordIdList, identifier));
 
 			}
 		}
@@ -851,14 +895,13 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		Connection conn = DBUtil.getConnection();
 
-		
 		for (String queryString : queryList)
 		{
 			logDebug("insertData", "Query for insert data is : " + queryString);
 			PreparedStatement statement = conn.prepareStatement(queryString);
 			statement.executeUpdate();
-			hibernateDAO.insert(DomainObjectFactory.getInstance().createDESQLAudit(uId, queryString),
-					null, false, false);
+			hibernateDAO.insert(DomainObjectFactory.getInstance()
+					.createDESQLAudit(uId, queryString), null, false, false);
 		}
 
 		for (AttributeRecord collectionAttributeRecord : attributeRecords)
@@ -881,8 +924,9 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @param values List of values for this multiselect attribute
 	 * @return  list of AttributeRecord
 	 */
-	private AttributeRecord populateCollectionAttributeRecord(AttributeRecord collectionRecord, EntityInterface entity,
-			AttributeInterface primitiveAttribute, Long identifier, List<String> values)
+	private AttributeRecord populateCollectionAttributeRecord(AttributeRecord collectionRecord,
+			EntityInterface entity, AttributeInterface primitiveAttribute, Long identifier,
+			List<String> values)
 	{
 		if (collectionRecord == null)
 		{
@@ -893,7 +937,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		{
 			collectionRecord.getValueCollection().clear();
 		}
-		Collection<CollectionAttributeRecordValue> valueCollection = collectionRecord.getValueCollection();
+		Collection<CollectionAttributeRecordValue> valueCollection = collectionRecord
+				.getValueCollection();
 
 		collectionRecord.setEntity(entity);
 		collectionRecord.setAttribute(primitiveAttribute);
@@ -908,8 +953,9 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return collectionRecord;
 	}
 
-	private AttributeRecord populateObjectAttributeRecord(AttributeRecord objectRecord, EntityInterface entity,
-			AttributeInterface primitiveAttribute, Long identifier, ObjectAttributeRecordValue value)
+	private AttributeRecord populateObjectAttributeRecord(AttributeRecord objectRecord,
+			EntityInterface entity, AttributeInterface primitiveAttribute, Long identifier,
+			ObjectAttributeRecordValue value)
 	{
 		if (objectRecord == null)
 		{
@@ -934,8 +980,9 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @param value the new values for the file type attribute
 	 * @return
 	 */
-	private AttributeRecord populateFileAttributeRecord(AttributeRecord fileRecord, EntityInterface entity, AttributeInterface primitiveAttribute,
-			Long identifier, FileAttributeRecordValue value)
+	private AttributeRecord populateFileAttributeRecord(AttributeRecord fileRecord,
+			EntityInterface entity, AttributeInterface primitiveAttribute, Long identifier,
+			FileAttributeRecordValue value)
 	{
 		if (fileRecord == null)
 		{
@@ -954,13 +1001,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#editData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map, java.lang.Long)
 	 */
-	public boolean editData(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, Long recordId, Long...userId)
-			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	public boolean editData(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue,
+			Long recordId, Long... userId) throws DynamicExtensionsApplicationException,
+			DynamicExtensionsSystemException
 	{
 
 		boolean isSuccess = false;
-		Long uId = ((userId != null && userId.length != 0) ?userId[0]:null);
-		
+		Long uId = ((userId != null && userId.length != 0) ? userId[0] : null);
+
 		HibernateDAO hibernateDAO = null;
 		try
 		{
@@ -974,17 +1022,20 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			for (EntityInterface entityInterface : entityList)
 			{
 				Map valueMap = entityValueMap.get(entityInterface);
-				isSuccess = editDataForSingleEntity(entityInterface, valueMap, recordId, hibernateDAO, uId);
+				isSuccess = editDataForSingleEntity(entityInterface, valueMap, recordId,
+						hibernateDAO, uId);
 			}
 			hibernateDAO.commit();
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{
-			throw (DynamicExtensionsApplicationException) handleRollback(e, "Error while inserting data", hibernateDAO, false);
+			throw (DynamicExtensionsApplicationException) handleRollback(e,
+					"Error while inserting data", hibernateDAO, false);
 		}
 		catch (Exception e)
 		{
-			throw (DynamicExtensionsSystemException) handleRollback(e, "Error while updating", hibernateDAO, true);
+			throw (DynamicExtensionsSystemException) handleRollback(e, "Error while updating",
+					hibernateDAO, true);
 		}
 		finally
 		{
@@ -994,7 +1045,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			}
 			catch (DAOException e)
 			{
-				throw (DynamicExtensionsSystemException) handleRollback(e, "Error while closing", hibernateDAO, true);
+				throw (DynamicExtensionsSystemException) handleRollback(e, "Error while closing",
+						hibernateDAO, true);
 			}
 
 		}
@@ -1010,11 +1062,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public boolean editDataForSingleEntity(EntityInterface entity, Map dataValue, Long recordId, HibernateDAO hibernateDAO, Long...userId)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
+	public boolean editDataForSingleEntity(EntityInterface entity, Map dataValue, Long recordId,
+			HibernateDAO hibernateDAO, Long... userId) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
 			UserNotAuthorizedException
 	{
-		Long uId = ((userId != null && userId.length != 0) ?userId[0]:null);
+		Long uId = ((userId != null && userId.length != 0) ? userId[0] : null);
 
 		if (entity == null || dataValue == null || dataValue.isEmpty())
 		{
@@ -1031,33 +1084,34 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		Iterator uiColumnSetIter = uiColumnSet.iterator();
 		List associationRemoveDataQueryList = new ArrayList();
 		List associationInsertDataQueryList = new ArrayList();
-		
+
 		Object value = null;
-		
+
 		while (uiColumnSetIter.hasNext())
 		{
-			AbstractAttribute attribute  = null;
+			AbstractAttribute attribute = null;
 			Object attributeKey = uiColumnSetIter.next();
 			value = dataValue.get(attributeKey);
-			
+
 			if (attributeKey instanceof CategoryAttributeInterface)
 			{
-				attribute = (AbstractAttribute)(AttributeInterface)((CategoryAttribute)attributeKey).getAttribute();
+				attribute = (AbstractAttribute) (AttributeInterface) ((CategoryAttribute) attributeKey)
+						.getAttribute();
 			}
-			else if (attributeKey instanceof CategoryAssociationInterface) 
+			else if (attributeKey instanceof CategoryAssociationInterface)
 			{
 				continue;
 			}
 			else
-			{	
-				attribute = (AbstractAttribute)attributeKey;
+			{
+				attribute = (AbstractAttribute) attributeKey;
 			}
 
 			if (value == null)
 			{
 				continue;
 			}
-			
+
 			if (attribute instanceof AttributeInterface)
 			{
 				AttributeInterface primitiveAttribute = (AttributeInterface) attribute;
@@ -1065,13 +1119,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				if (primitiveAttribute.getIsCollection())
 				{
 					// get previous values for multi select attributes
-					AttributeRecord collectionRecord = getAttributeRecord(entity.getId(), primitiveAttribute.getId(), recordId, hibernateDAO);
+					AttributeRecord collectionRecord = getAttributeRecord(entity.getId(),
+							primitiveAttribute.getId(), recordId, hibernateDAO);
 					List<String> listOfValues = (List<String>) value;
 
 					if (!listOfValues.isEmpty())
 					{ //if some values are provided,set these values clearing previous ones.
-						collectionRecord = populateCollectionAttributeRecord(collectionRecord, entity, primitiveAttribute, recordId,
-								(List<String>) value);
+						collectionRecord = populateCollectionAttributeRecord(collectionRecord,
+								entity, primitiveAttribute, recordId, (List<String>) value);
 						collectionRecords.add(collectionRecord);
 					}
 
@@ -1087,14 +1142,16 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 					//For file type attribute,FileAttributeRecordValue needs to be updated for that record.
 
 					FileAttributeRecordValue fileRecordValue = (FileAttributeRecordValue) value;
-					AttributeRecord fileRecord = getAttributeRecord(entity.getId(), primitiveAttribute.getId(), recordId, hibernateDAO);
+					AttributeRecord fileRecord = getAttributeRecord(entity.getId(),
+							primitiveAttribute.getId(), recordId, hibernateDAO);
 					if (fileRecord != null)
 					{
 						fileRecord.getFileRecord().copyValues(fileRecordValue);
 					}
 					else
 					{
-						fileRecord = populateFileAttributeRecord(null, entity, primitiveAttribute, recordId, (FileAttributeRecordValue) value);
+						fileRecord = populateFileAttributeRecord(null, entity, primitiveAttribute,
+								recordId, (FileAttributeRecordValue) value);
 					}
 
 					//		fileRecord.getFileRecord().copyValues(fileRecordValue);
@@ -1105,7 +1162,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 					//For object type attribute,ObjectAttributeRecordValue needs to be updated for that record.
 
 					ObjectAttributeRecordValue objectRecordValue = (ObjectAttributeRecordValue) value;
-					AttributeRecord objectRecord = getAttributeRecord(entity.getId(), primitiveAttribute.getId(), recordId, hibernateDAO);
+					AttributeRecord objectRecord = getAttributeRecord(entity.getId(),
+							primitiveAttribute.getId(), recordId, hibernateDAO);
 					objectRecord.getObjectRecord().copyValues(objectRecordValue);
 					objectRecords.add(objectRecord);
 				}
@@ -1130,12 +1188,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				AssociationInterface association = (AssociationInterface) attribute;
 				List<Long> recordIdList = new ArrayList<Long>();
 
-				if (association.getSourceRole().getAssociationsType().equals(AssociationType.CONTAINTMENT))
+				if (association.getSourceRole().getAssociationsType().equals(
+						AssociationType.CONTAINTMENT))
 				{
 					List<String> removeContainmentRecordQuery = new ArrayList<String>();
 					recordIdList.add(recordId);
 
-					queryBuilder.getContenmentAssociationRemoveDataQueryList(((Association) attribute), recordIdList, removeContainmentRecordQuery,
+					queryBuilder.getContenmentAssociationRemoveDataQueryList(
+							((Association) attribute), recordIdList, removeContainmentRecordQuery,
 							false);
 
 					entityManagerUtil.executeDML(removeContainmentRecordQuery);
@@ -1146,7 +1206,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 					{
 						//Long childRecordId = insertDataForSingleEntity(association
 						//.getTargetEntity(), valueMapForContainedEntity, hibernateDAO, null);
-						Long childRecordId = insertDataForHeirarchy(association.getTargetEntity(), valueMapForContainedEntity, hibernateDAO, uId);
+						Long childRecordId = insertDataForHeirarchy(association.getTargetEntity(),
+								valueMapForContainedEntity, hibernateDAO, uId);
 						recordIdList.add(childRecordId);
 					}
 
@@ -1154,7 +1215,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				else
 				{
 					// for association need to remove previously associated target reocrd first.
-					String removeQuery = queryBuilder.getAssociationRemoveDataQuery(((Association) attribute), recordId);
+					String removeQuery = queryBuilder.getAssociationRemoveDataQuery(
+							((Association) attribute), recordId);
 
 					if (removeQuery != null && removeQuery.trim().length() != 0)
 					{
@@ -1165,7 +1227,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				}
 
 				//then add new associated target records.
-				List insertQuery = queryBuilder.getAssociationInsertDataQuery(((Association) attribute), recordIdList, recordId);
+				List insertQuery = queryBuilder.getAssociationInsertDataQuery(
+						((Association) attribute), recordIdList, recordId);
 				if (insertQuery != null && insertQuery.size() != 0)
 				{
 					associationInsertDataQueryList.addAll(insertQuery);
@@ -1196,25 +1259,28 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			logDebug("editData", "Query is: " + queryString.toString());
 			PreparedStatement statement = conn.prepareStatement(queryString);
 			statement.executeUpdate();
-			hibernateDAO.insert(DomainObjectFactory.getInstance().createDESQLAudit(uId, queryString),
-					null, false, false);
+			hibernateDAO.insert(DomainObjectFactory.getInstance()
+					.createDESQLAudit(uId, queryString), null, false, false);
 		}
 
 		for (AttributeRecord collectionAttributeRecord : collectionRecords)
 		{
-			logDebug("editData", "updating multi select: " + collectionAttributeRecord.getValueCollection());
+			logDebug("editData", "updating multi select: "
+					+ collectionAttributeRecord.getValueCollection());
 			hibernateDAO.update(collectionAttributeRecord, null, false, false, false);
 		}
 
 		for (AttributeRecord collectionAttributeRecord : deleteCollectionRecords)
 		{
-			logDebug("editData", "deleting multi select: " + collectionAttributeRecord.getValueCollection());
+			logDebug("editData", "deleting multi select: "
+					+ collectionAttributeRecord.getValueCollection());
 			hibernateDAO.update(collectionAttributeRecord, null, false, false, false);
 		}
 
 		for (AttributeRecord fileRecord : fileRecords)
 		{
-			logDebug("editData", "updating filereocrd : " + fileRecord.getFileRecord().getFileName());
+			logDebug("editData", "updating filereocrd : "
+					+ fileRecord.getFileRecord().getFileName());
 			if (fileRecord.getId() != null)
 			{
 				hibernateDAO.update(fileRecord, null, false, false, false);
@@ -1227,7 +1293,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		for (AttributeRecord objectRecord : objectRecords)
 		{
-			logDebug("editData", "updating object : " + objectRecord.getObjectRecord().getClassName());
+			logDebug("editData", "updating object : "
+					+ objectRecord.getObjectRecord().getClassName());
 			hibernateDAO.update(objectRecord, null, false, false, false);
 		}
 
@@ -1248,8 +1315,9 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 *
 	 *             String                    Other attribute type.
 	 */
-	public Map<AbstractAttributeInterface, Object> getEntityRecordById(EntityInterface entity, Long recordId)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public Map<AbstractAttributeInterface, Object> getEntityRecordById(EntityInterface entity,
+			Long recordId) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		Map<AbstractAttributeInterface, Object> recordValues = new HashMap<AbstractAttributeInterface, Object>();
 
@@ -1313,11 +1381,13 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 					query.append(selectColumnNameList.get(i));
 				}
 
-				query.append(WHITESPACE).append(FROM_KEYWORD).append(WHITESPACE).append(tableName).append(WHITESPACE).append(WHERE_KEYWORD).append(
-						WHITESPACE).append(IDENTIFIER).append(EQUAL).append(recordId);
+				query.append(WHITESPACE).append(FROM_KEYWORD).append(WHITESPACE).append(tableName)
+						.append(WHITESPACE).append(WHERE_KEYWORD).append(WHITESPACE).append(
+								IDENTIFIER).append(EQUAL).append(recordId);
 				/*get values for simple attributes*/
 
-				recordValues.putAll(getAttributeValues(selectColumnNameList, query.toString(), columnNameMap));
+				recordValues.putAll(getAttributeValues(selectColumnNameList, query.toString(),
+						columnNameMap));
 			}
 
 			/*
@@ -1325,7 +1395,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			 */
 			for (AttributeInterface attribute : collectionAttributes)
 			{
-				List<String> valueList = getCollectionAttributeRecordValues(entity.getId(), attribute.getId(), recordId);
+				List<String> valueList = getCollectionAttributeRecordValues(entity.getId(),
+						attribute.getId(), recordId);
 				//put the value multi select attributes
 				recordValues.put(attribute, valueList);
 			}
@@ -1334,7 +1405,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			 */
 			for (AttributeInterface attribute : fileAttributes)
 			{
-				FileAttributeRecordValue fileRecordValue = getFileAttributeRecordValue(entity.getId(), attribute.getId(), recordId);
+				FileAttributeRecordValue fileRecordValue = getFileAttributeRecordValue(entity
+						.getId(), attribute.getId(), recordId);
 				//put the value file attributes
 				recordValues.put(attribute, fileRecordValue);
 			}
@@ -1344,7 +1416,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			 */
 			for (AttributeInterface attribute : objectAttributes)
 			{
-				ObjectAttributeRecordValueInterface objectRecordValue = getObjectAttributeRecordValue(entity.getId(), attribute.getId(), recordId);
+				ObjectAttributeRecordValueInterface objectRecordValue = getObjectAttributeRecordValue(
+						entity.getId(), attribute.getId(), recordId);
 				//put the value file attributes
 				recordValues.put(attribute, objectRecordValue);
 			}
@@ -1371,14 +1444,17 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private List<String> getCollectionAttributeRecordValues(Long entityId, Long attributeId, Long recordId) throws DynamicExtensionsSystemException
+	private List<String> getCollectionAttributeRecordValues(Long entityId, Long attributeId,
+			Long recordId) throws DynamicExtensionsSystemException
 
 	{
 		List<String> valueList = null;
-		AttributeRecord collectionAttributeRecord = getAttributeRecord(entityId, attributeId, recordId, null);
+		AttributeRecord collectionAttributeRecord = getAttributeRecord(entityId, attributeId,
+				recordId, null);
 		if (collectionAttributeRecord != null)
 		{
-			Collection<CollectionAttributeRecordValue> recordValueCollection = collectionAttributeRecord.getValueCollection();
+			Collection<CollectionAttributeRecordValue> recordValueCollection = collectionAttributeRecord
+					.getValueCollection();
 
 			valueList = new ArrayList<String>();
 			for (CollectionAttributeRecordValue recordValue : recordValueCollection)
@@ -1396,8 +1472,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private ObjectAttributeRecordValueInterface getObjectAttributeRecordValue(Long entityId, Long attributeId, Long recordId)
-			throws DynamicExtensionsSystemException
+	private ObjectAttributeRecordValueInterface getObjectAttributeRecordValue(Long entityId,
+			Long attributeId, Long recordId) throws DynamicExtensionsSystemException
 
 	{
 		AttributeRecord record = getAttributeRecord(entityId, attributeId, recordId, null);
@@ -1421,8 +1497,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private FileAttributeRecordValue getFileAttributeRecordValue(Long entityId, Long attributeId, Long recordId)
-			throws DynamicExtensionsSystemException
+	private FileAttributeRecordValue getFileAttributeRecordValue(Long entityId, Long attributeId,
+			Long recordId) throws DynamicExtensionsSystemException
 
 	{
 		AttributeRecord record = getAttributeRecord(entityId, attributeId, recordId, null);
@@ -1444,8 +1520,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @param recordId
 	 * @return
 	 */
-	private AttributeRecord getAttributeRecord(Long entityId, Long attributeId, Long recordId, HibernateDAO hibernateDao)
-			throws DynamicExtensionsSystemException
+	private AttributeRecord getAttributeRecord(Long entityId, Long attributeId, Long recordId,
+			HibernateDAO hibernateDao) throws DynamicExtensionsSystemException
 
 	{
 
@@ -1465,7 +1541,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		{
 			//Required HQL is stored in the hbm file. The following method takes the name of the query and
 			// the actual values for the placeholders as the parameters.
-			recordCollection = executeHQL(hibernateDao, "getCollectionAttributeRecord", substitutionParameterMap);
+			recordCollection = executeHQL(hibernateDao, "getCollectionAttributeRecord",
+					substitutionParameterMap);
 		}
 		if (recordCollection != null && !recordCollection.isEmpty())
 		{
@@ -1483,11 +1560,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsSystemException
 	 * @throws SQLException
 	 */
-	private Map<AbstractAttributeInterface, Object> getAttributeValues(List<String> selectColumnNameList, String query, Map columnNameMap)
+	private Map<AbstractAttributeInterface, Object> getAttributeValues(
+			List<String> selectColumnNameList, String query, Map columnNameMap)
 			throws DynamicExtensionsSystemException, SQLException
 	{
 		Map<AbstractAttributeInterface, Object> recordValues = new HashMap<AbstractAttributeInterface, Object>();
-		
+
 		Statement statement = null;
 		ResultSet resultSet = null;
 		try
@@ -1500,7 +1578,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			{
 				for (int i = 0; i < selectColumnNameList.size(); i++)
 				{
-	
+
 					String dbColumnName = selectColumnNameList.get(i);
 					String value = getValueFromResultSet(resultSet, columnNameMap, dbColumnName, i);
 					Attribute attribute = (Attribute) columnNameMap.get(dbColumnName);
@@ -1517,11 +1595,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			resultSet.close();
 			statement.close();
 		}
-		
+
 		return recordValues;
 	}
 
-	private String getValueFromResultSet(ResultSet resultSet, Map columnNameMap, String dbColumnName, int index) throws SQLException
+	private String getValueFromResultSet(ResultSet resultSet, Map columnNameMap,
+			String dbColumnName, int index) throws SQLException
 	{
 		Attribute attribute = (Attribute) columnNameMap.get(dbColumnName);
 
@@ -1533,7 +1612,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			if (valueObj instanceof java.util.Date)
 			{
 
-				DateAttributeTypeInformation dateAttributeTypeInf = (DateAttributeTypeInformation) attribute.getAttributeTypeInformation();
+				DateAttributeTypeInformation dateAttributeTypeInf = (DateAttributeTypeInformation) attribute
+						.getAttributeTypeInformation();
 
 				String format = dateAttributeTypeInf.getFormat();
 				if (format == null)
@@ -1564,7 +1644,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	public EntityRecordResultInterface getEntityRecords(EntityInterface entity,
-			List<? extends AbstractAttributeInterface> abstractAttributeCollection, List<Long> recordIds) throws DynamicExtensionsSystemException
+			List<? extends AbstractAttributeInterface> abstractAttributeCollection,
+			List<Long> recordIds) throws DynamicExtensionsSystemException
 	{
 		if (abstractAttributeCollection == null || abstractAttributeCollection.isEmpty())
 		{
@@ -1643,12 +1724,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 			if (recordIds != null && !recordIds.isEmpty())
 			{
-				query.append(WHERE_KEYWORD).append(IDENTIFIER).append(IN_KEYWORD).append(EntityManagerUtil.getListToString(recordIds));
+				query.append(WHERE_KEYWORD).append(IDENTIFIER).append(IN_KEYWORD).append(
+						EntityManagerUtil.getListToString(recordIds));
 			}
 
 			/*get values for simple attributes*/
 
-			List<EntityRecordInterface> entityRecordList = getEntityRecordList(selectColumnNameList, query.toString(), columnNameMap, recordMetadata);
+			List<EntityRecordInterface> entityRecordList = getEntityRecordList(
+					selectColumnNameList, query.toString(), columnNameMap, recordMetadata);
 
 			entityRecordResult.setEntityRecordList(entityRecordList);
 			/*
@@ -1697,7 +1780,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			for (EntityRecordInterface entityRecord : entityRecordList)
 			{
 				Long recordId = entityRecord.getRecordId();
-				queryBuilder.putAssociationValues(associationCollection, entityRecordResult, entityRecord, recordId);
+				queryBuilder.putAssociationValues(associationCollection, entityRecordResult,
+						entityRecord, recordId);
 			}
 
 		}
@@ -1719,8 +1803,9 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsSystemException
 	 * @throws SQLException
 	 */
-	private List<EntityRecordInterface> getEntityRecordList(List<String> selectColumnNameList, String query, Map columnNameMap,
-			EntityRecordMetadata recordMetadata) throws DynamicExtensionsSystemException, SQLException
+	private List<EntityRecordInterface> getEntityRecordList(List<String> selectColumnNameList,
+			String query, Map columnNameMap, EntityRecordMetadata recordMetadata)
+			throws DynamicExtensionsSystemException, SQLException
 	{
 		ResultSet resultSet = entityManagerUtil.executeQuery(query);
 		List<EntityRecordInterface> entityRecordList = new ArrayList<EntityRecordInterface>();
@@ -1752,8 +1837,10 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @param attributesCollection
 	 * @param associationCollection
 	 */
-	private void filterAttributes(List<? extends AbstractAttributeInterface> abstractAttributeCollection,
-			Collection<AttributeInterface> attributesCollection, Collection<AssociationInterface> associationCollection)
+	private void filterAttributes(
+			List<? extends AbstractAttributeInterface> abstractAttributeCollection,
+			Collection<AttributeInterface> attributesCollection,
+			Collection<AssociationInterface> associationCollection)
 	{
 		for (AbstractAttributeInterface abstractAttributeInterface : abstractAttributeCollection)
 		{
@@ -1775,7 +1862,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 *
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getRecordById(edu.common.dynamicextensions.domaininterface.EntityInterface, java.lang.Long)
 	 */
-	public Map<AbstractAttributeInterface, Object> getRecordById(EntityInterface entity, Long recordId) throws DynamicExtensionsSystemException,
+	public Map<AbstractAttributeInterface, Object> getRecordById(EntityInterface entity,
+			Long recordId) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
 
@@ -1788,7 +1876,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		do
 		{
-			Map<AbstractAttributeInterface, Object> recordValuesForSingleEntity = getEntityRecordById(entity, recordId);
+			Map<AbstractAttributeInterface, Object> recordValuesForSingleEntity = getEntityRecordById(
+					entity, recordId);
 			recordValues.putAll(recordValuesForSingleEntity);
 			entity = entity.getParentEntity();
 		}
@@ -1800,7 +1889,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#deleteRecord(edu.common.dynamicextensions.domaininterface.EntityInterface, java.lang.Long)
 	 */
-	public boolean deleteRecord(EntityInterface entity, Long recordId) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	public boolean deleteRecord(EntityInterface entity, Long recordId)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		boolean isRecordDeleted = false;
 
@@ -1824,12 +1914,15 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				while (iterator.hasNext())
 				{
 					AttributeInterface attribute = (AttributeInterface) iterator.next();
-					AttributeTypeInformationInterface typeInfo = attribute.getAttributeTypeInformation();
+					AttributeTypeInformationInterface typeInfo = attribute
+							.getAttributeTypeInformation();
 					// remove AttributeRecord objects for multi select and file type attributes
-					if (attribute.getIsCollection() || typeInfo instanceof FileAttributeTypeInformation
+					if (attribute.getIsCollection()
+							|| typeInfo instanceof FileAttributeTypeInformation
 							|| typeInfo instanceof ObjectAttributeTypeInformation)
 					{
-						AttributeRecord collectionAttributeRecord = getAttributeRecord(entity.getId(), attribute.getId(), recordId, hibernateDAO);
+						AttributeRecord collectionAttributeRecord = getAttributeRecord(entity
+								.getId(), attribute.getId(), recordId, hibernateDAO);
 						hibernateDAO.delete(collectionAttributeRecord);
 					}
 				}
@@ -1841,12 +1934,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				{
 					Association association = (Association) iterator.next();
 
-					if (association.getSourceRole().getAssociationsType().equals(AssociationType.CONTAINTMENT))
+					if (association.getSourceRole().getAssociationsType().equals(
+							AssociationType.CONTAINTMENT))
 					{
 						List<Long> recordIdList = new ArrayList<Long>();
 						recordIdList.add(recordId);
-						QueryBuilderFactory.getQueryBuilder().getContenmentAssociationRemoveDataQueryList(association, recordIdList,
-								associationRemoveQueryList, true);
+						QueryBuilderFactory.getQueryBuilder()
+								.getContenmentAssociationRemoveDataQueryList(association,
+										recordIdList, associationRemoveQueryList, true);
 
 					}
 					//					else
@@ -1867,8 +1962,10 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			//					+ WHITESPACE + recordId.toString());
 
 			query.append(UPDATE_KEYWORD + WHITESPACE + entity.getTableProperties().getName());
-			query.append(SET_KEYWORD + Constants.ACTIVITY_STATUS_COLUMN + EQUAL + " '" + Constants.ACTIVITY_STATUS_DISABLED + "' ");
-			query.append(WHERE_KEYWORD + WHITESPACE + IDENTIFIER + WHITESPACE + EQUAL + WHITESPACE + recordId.toString());
+			query.append(SET_KEYWORD + Constants.ACTIVITY_STATUS_COLUMN + EQUAL + " '"
+					+ Constants.ACTIVITY_STATUS_DISABLED + "' ");
+			query.append(WHERE_KEYWORD + WHITESPACE + IDENTIFIER + WHITESPACE + EQUAL + WHITESPACE
+					+ recordId.toString());
 
 			List<String> deleteRecordQueryList = new ArrayList<String>(associationRemoveQueryList);
 			deleteRecordQueryList.add(0, query.toString());
@@ -1924,10 +2021,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return isRecordDeleted;
 	}
 
-	public void deleteRecords(Long containerId, List<Long> recordIdList) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public void deleteRecords(Long containerId, List<Long> recordIdList)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		ContainerInterface container = DynamicExtensionsUtility.getContainerByIdentifier(containerId.toString());
+		ContainerInterface container = DynamicExtensionsUtility
+				.getContainerByIdentifier(containerId.toString());
 
 		EntityInterface entityInterface = (EntityInterface) container.getAbstractEntity();
 		for (Long recordId : recordIdList)
@@ -1947,8 +2045,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getRecordsForAssociationControl(edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface)
 	 */
-	public Map<Long, List<String>> getRecordsForAssociationControl(AssociationControlInterface associationControl)
-			throws DynamicExtensionsSystemException
+	public Map<Long, List<String>> getRecordsForAssociationControl(
+			AssociationControlInterface associationControl) throws DynamicExtensionsSystemException
 	{
 		Map<Long, List<String>> outputMap = new HashMap<Long, List<String>>();
 		List<String> tableNames = new ArrayList<String>();
@@ -1960,11 +2058,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		int counter = 0;
 		boolean containsMultipleAttributes = false;
 
-		Collection associationAttributesCollection = associationControl.getAssociationDisplayAttributeCollection();
+		Collection associationAttributesCollection = associationControl
+				.getAssociationDisplayAttributeCollection();
 
 		if (associationControl instanceof SelectControl)
-			targetEntityTable = ((AssociationInterface) ((SelectControl) associationControl).getBaseAbstractAttribute()).getTargetEntity()
-					.getTableProperties().getName();
+			targetEntityTable = ((AssociationInterface) ((SelectControl) associationControl)
+					.getBaseAbstractAttribute()).getTargetEntity().getTableProperties().getName();
 
 		String selectClause = SELECT_KEYWORD + targetEntityTable + "." + IDENTIFIER;
 		String fromClause = FROM_KEYWORD + targetEntityTable + ", ";
@@ -1984,7 +2083,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			tableName = displayAttribute.getAttribute().getEntity().getTableProperties().getName();
 
 			if (associationControl instanceof SelectControl
-					&& ((AssociationInterface) ((SelectControl) associationControl).getBaseAbstractAttribute()).getTargetEntity().getParentEntity() != null)
+					&& ((AssociationInterface) ((SelectControl) associationControl)
+							.getBaseAbstractAttribute()).getTargetEntity().getParentEntity() != null)
 			{
 				selectClause = selectClause + ", " + tableName + "." + columnName;
 
@@ -1998,17 +2098,20 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				}
 				else if (counter > 0 && associationAttributesCollection.size() > 1)
 				{
-					whereClause = whereClause + tableName + "." + IDENTIFIER + " AND " + tableName + ".ACTIVITY_STATUS <> 'Disabled' AND "
-							+ tableName + "." + IDENTIFIER + " = ";
+					whereClause = whereClause + tableName + "." + IDENTIFIER + " AND " + tableName
+							+ ".ACTIVITY_STATUS <> 'Disabled' AND " + tableName + "." + IDENTIFIER
+							+ " = ";
 				}
 				else if (associationAttributesCollection.size() == 1)
 				{
 					if (!(fromClause.contains(targetEntityTable)))
 						fromClause = fromClause + targetEntityTable + ", ";
 
-					whereClause = whereClause + targetEntityTable + ".ACTIVITY_STATUS <> 'Disabled' AND ";
-					whereClause = whereClause + tableName + "." + IDENTIFIER + " = " + targetEntityTable + "." + IDENTIFIER + " AND "
-							+ targetEntityTable + "." + IDENTIFIER + " = ";
+					whereClause = whereClause + targetEntityTable
+							+ ".ACTIVITY_STATUS <> 'Disabled' AND ";
+					whereClause = whereClause + tableName + "." + IDENTIFIER + " = "
+							+ targetEntityTable + "." + IDENTIFIER + " AND " + targetEntityTable
+							+ "." + IDENTIFIER + " = ";
 				}
 
 				counter++;
@@ -2047,8 +2150,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			fromClause = fromClause.substring(0, fromClause.length() - 2);
 		}
 
-		if (((AssociationInterface) ((SelectControl) associationControl).getBaseAbstractAttribute()).getTargetEntity().getParentEntity() == null)
-			multipleColumnsClause = multipleColumnsClause.substring(0, multipleColumnsClause.length() - 2) + FROM_KEYWORD + targetEntityTable;
+		if (((AssociationInterface) ((SelectControl) associationControl).getBaseAbstractAttribute())
+				.getTargetEntity().getParentEntity() == null)
+			multipleColumnsClause = multipleColumnsClause.substring(0, multipleColumnsClause
+					.length() - 2)
+					+ FROM_KEYWORD + targetEntityTable;
 
 		StringBuffer query = new StringBuffer();
 
@@ -2059,7 +2165,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		else
 		{
 			query.append(multipleColumnsClause);
-			query.append(WHERE_KEYWORD + queryBuilder.getRemoveDisbledRecordsQuery(tableNames.get(0)));
+			query.append(WHERE_KEYWORD
+					+ queryBuilder.getRemoveDisbledRecordsQuery(tableNames.get(0)));
 		}
 
 		JDBCDAO jdbcDao = null;
@@ -2093,10 +2200,13 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 						{
 							List<String> tempStringList = new ArrayList<String>();
 
-							String existingString = outputMap.get(recordId).toString().replace("[", " ");
+							String existingString = outputMap.get(recordId).toString().replace("[",
+									" ");
 							existingString = existingString.replace("]", " ");
 
-							tempStringList.add(existingString.trim() + associationControl.getSeparator() + (String) innerList.get(1));
+							tempStringList
+									.add(existingString.trim() + associationControl.getSeparator()
+											+ (String) innerList.get(1));
 							outputMap.put(recordId, tempStringList);
 						}
 						else
@@ -2131,10 +2241,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllContainerBeans()
 	 */
-	public List<NameValueBean> getAllContainerBeans() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public List<NameValueBean> getAllContainerBeans() throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
-		Collection containersBeansCollection = executeHQL("getAllContainerBeans", substitutionParameterMap);
+		Collection containersBeansCollection = executeHQL("getAllContainerBeans",
+				substitutionParameterMap);
 		Iterator containerBeansIterator = containersBeansCollection.iterator();
 		Object[] objectArrayForContainerBeans;
 		List<NameValueBean> list = new ArrayList<NameValueBean>();
@@ -2143,7 +2255,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			objectArrayForContainerBeans = (Object[]) containerBeansIterator.next();
 			//In case of category creation form caption is optional.
 			if ((String) objectArrayForContainerBeans[1] != null)
-				list.add(new NameValueBean((String) objectArrayForContainerBeans[1], (Long) objectArrayForContainerBeans[0]));
+				list.add(new NameValueBean((String) objectArrayForContainerBeans[1],
+						(Long) objectArrayForContainerBeans[0]));
 		}
 		return list;
 	}
@@ -2151,12 +2264,13 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllContainerBeansByEntityGroupId(java.lang.Long)
 	 */
-	public List<NameValueBean> getAllContainerBeansByEntityGroupId(Long entityGroupId) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public List<NameValueBean> getAllContainerBeansByEntityGroupId(Long entityGroupId)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entityGroupId));
-		Collection containersBeansCollection = executeHQL("getAllContainersBeansByEntityGroupId", substitutionParameterMap);
+		Collection containersBeansCollection = executeHQL("getAllContainersBeansByEntityGroupId",
+				substitutionParameterMap);
 		Iterator containerBeansIterator = containersBeansCollection.iterator();
 		Object[] objectArrayForContainerBeans;
 		List<NameValueBean> list = new ArrayList<NameValueBean>();
@@ -2165,7 +2279,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			objectArrayForContainerBeans = (Object[]) containerBeansIterator.next();
 			//In case of category creation form caption is optional.
 			if ((String) objectArrayForContainerBeans[1] != null)
-				list.add(new NameValueBean((String) objectArrayForContainerBeans[1], (Long) objectArrayForContainerBeans[0]));
+				list.add(new NameValueBean((String) objectArrayForContainerBeans[1],
+						(Long) objectArrayForContainerBeans[0]));
 		}
 		return list;
 	}
@@ -2173,19 +2288,24 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllContainerBeans()
 	 */
-	public List<ContainerInformationObject> getAllContainerInformationObjects() throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public List<ContainerInformationObject> getAllContainerInformationObjects()
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
-		Collection containerInformationObjectCollection = executeHQL("getAllContainerInformationObjects", substitutionParameterMap);
-		Iterator containerInformationObjectIterator = containerInformationObjectCollection.iterator();
+		Collection containerInformationObjectCollection = executeHQL(
+				"getAllContainerInformationObjects", substitutionParameterMap);
+		Iterator containerInformationObjectIterator = containerInformationObjectCollection
+				.iterator();
 		Object[] objectArrayForContainerInformationObject;
 		List<ContainerInformationObject> list = new ArrayList<ContainerInformationObject>();
 		while (containerInformationObjectIterator.hasNext())
 		{
-			objectArrayForContainerInformationObject = (Object[]) containerInformationObjectIterator.next();
-			list.add(new ContainerInformationObject((String) objectArrayForContainerInformationObject[1],
-					((Long) objectArrayForContainerInformationObject[0]).toString(), (String) objectArrayForContainerInformationObject[2]));
+			objectArrayForContainerInformationObject = (Object[]) containerInformationObjectIterator
+					.next();
+			list.add(new ContainerInformationObject(
+					(String) objectArrayForContainerInformationObject[1],
+					((Long) objectArrayForContainerInformationObject[0]).toString(),
+					(String) objectArrayForContainerInformationObject[2]));
 		}
 		return list;
 	}
@@ -2196,10 +2316,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Map<String, String> getAllContainerBeansMap() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public Map<String, String> getAllContainerBeansMap() throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
-		Collection containersBeansCollection = executeHQL("getAllContainerBeans", substitutionParameterMap);
+		Collection containersBeansCollection = executeHQL("getAllContainerBeans",
+				substitutionParameterMap);
 		Iterator containerBeansIterator = containersBeansCollection.iterator();
 		Object[] objectArrayForContainerBeans;
 		//List<NameValueBean> list = new ArrayList<NameValueBean>();
@@ -2222,7 +2344,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsSystemException
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getChildrenEntities(edu.common.dynamicextensions.domaininterface.EntityInterface)
 	 */
-	public Collection<EntityInterface> getChildrenEntities(EntityInterface entity) throws DynamicExtensionsSystemException
+	public Collection<EntityInterface> getChildrenEntities(EntityInterface entity)
+			throws DynamicExtensionsSystemException
 	{
 		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entity.getId()));
@@ -2233,15 +2356,17 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAssociationByIdentifier(java.lang.Long)
 	 */
-	public AssociationInterface getAssociationByIdentifier(Long associationId) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public AssociationInterface getAssociationByIdentifier(Long associationId)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", associationId));
-		Collection assocationCollection = executeHQL("getAssociationByIdentifier", substitutionParameterMap);
+		Collection assocationCollection = executeHQL("getAssociationByIdentifier",
+				substitutionParameterMap);
 		if (assocationCollection.isEmpty())
 		{
-			throw new DynamicExtensionsApplicationException("Object Not Found : id" + associationId, null, DYEXTN_A_008);
+			throw new DynamicExtensionsApplicationException(
+					"Object Not Found : id" + associationId, null, DYEXTN_A_008);
 		}
 		return (AssociationInterface) assocationCollection.iterator().next();
 	}
@@ -2249,22 +2374,26 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAssociationsForTargetEntity(edu.common.dynamicextensions.domaininterface.EntityInterface)
 	 */
-	public Collection<AssociationInterface> getIncomingAssociations(EntityInterface entity) throws DynamicExtensionsSystemException
+	public Collection<AssociationInterface> getIncomingAssociations(EntityInterface entity)
+			throws DynamicExtensionsSystemException
 	{
 		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entity.getId()));
-		Collection<AssociationInterface> assocationCollection = executeHQL(null, "getAssociationsForTargetEntity", substitutionParameterMap);
+		Collection<AssociationInterface> assocationCollection = executeHQL(null,
+				"getAssociationsForTargetEntity", substitutionParameterMap);
 		return assocationCollection;
 	}
 
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAssociationsForTargetEntity(edu.common.dynamicextensions.domaininterface.EntityInterface)
 	 */
-	public Collection<Long> getIncomingAssociationIds(EntityInterface entity) throws DynamicExtensionsSystemException
+	public Collection<Long> getIncomingAssociationIds(EntityInterface entity)
+			throws DynamicExtensionsSystemException
 	{
 		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entity.getId()));
-		Collection<Long> assocationCollection = executeHQL(null, "getAssociationIdsForTargetEntity", substitutionParameterMap);
+		Collection<Long> assocationCollection = executeHQL(null,
+				"getAssociationIdsForTargetEntity", substitutionParameterMap);
 		return assocationCollection;
 	}
 
@@ -2285,7 +2414,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	/** (non-Javadoc)
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#addAssociationColumn(edu.common.dynamicextensions.domaininterface.AssociationInterface)
 	 */
-	public void addAssociationColumn(AssociationInterface association) throws DynamicExtensionsSystemException
+	public void addAssociationColumn(AssociationInterface association)
+			throws DynamicExtensionsSystemException
 	{
 		List list = new ArrayList();
 		String query;
@@ -2302,7 +2432,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		{
 			if (!stack.isEmpty())
 			{
-				rollbackQueries(stack, (Entity) association.getEntity(), e, DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO));
+				rollbackQueries(stack, (Entity) association.getEntity(), e, DAOFactory
+						.getInstance().getDAO(Constants.HIBERNATE_DAO));
 			}
 		}
 	}
@@ -2310,10 +2441,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#associateEntityRecords(edu.common.dynamicextensions.domaininterface.AssociationInterface, java.lang.Long, java.lang.Long)
 	 */
-	public void associateEntityRecords(AssociationInterface associationInterface, Long sourceEntityRecordId, Long TargetEntityRecordId)
+	public void associateEntityRecords(AssociationInterface associationInterface,
+			Long sourceEntityRecordId, Long TargetEntityRecordId)
 			throws DynamicExtensionsSystemException
 	{
-		queryBuilder.associateRecords(associationInterface, sourceEntityRecordId, TargetEntityRecordId);
+		queryBuilder.associateRecords(associationInterface, sourceEntityRecordId,
+				TargetEntityRecordId);
 	}
 
 	/**
@@ -2339,12 +2472,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Map<Long, Date> getEntityCreatedDateByContainerId() throws DynamicExtensionsSystemException
+	public Map<Long, Date> getEntityCreatedDateByContainerId()
+			throws DynamicExtensionsSystemException
 	{
 		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
 		Map<Long, Date> map = new HashMap<Long, Date>();
 		Collection containersBeansCollection;
-		containersBeansCollection = executeHQL("getAllEntityCreatedDateByContainerId", substitutionParameterMap);
+		containersBeansCollection = executeHQL("getAllEntityCreatedDateByContainerId",
+				substitutionParameterMap);
 
 		if (containersBeansCollection != null && !containersBeansCollection.isEmpty())
 		{
@@ -2367,13 +2502,15 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Long checkContainerForAbstractEntity(Long entityIdentifier, boolean isAbstarct) throws DynamicExtensionsSystemException
+	public Long checkContainerForAbstractEntity(Long entityIdentifier, boolean isAbstarct)
+			throws DynamicExtensionsSystemException
 	{
 		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entityIdentifier));
 		substitutionParameterMap.put("1", new HQLPlaceHolderObject("boolean", isAbstarct));
 
-		Collection containerCollection = executeHQL("checkContainerForAbstractEntity", substitutionParameterMap);
+		Collection containerCollection = executeHQL("checkContainerForAbstractEntity",
+				substitutionParameterMap);
 
 		Long contId = null;
 
@@ -2393,7 +2530,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		StringBuffer query = new StringBuffer();
 		query.append(SELECT_KEYWORD + WHITESPACE + IDENTIFIER);
 		query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + entityTableName + WHITESPACE);
-		query.append(WHERE_KEYWORD + WHITESPACE + NAME + WHITESPACE + EQUAL + "'" + entityName + "'");
+		query.append(WHERE_KEYWORD + WHITESPACE + NAME + WHITESPACE + EQUAL + "'" + entityName
+				+ "'");
 		System.out.println("Query = " + query.toString());
 		try
 		{
@@ -2438,7 +2576,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		StringBuffer query = new StringBuffer();
 		query.append(SELECT_KEYWORD + WHITESPACE + IDENTIFIER);
 		query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName + WHITESPACE);
-		query.append(WHERE_KEYWORD + WHITESPACE + ENTITY_ID_FIELD_NAME + WHITESPACE + EQUAL + "'" + entityId + "'");
+		query.append(WHERE_KEYWORD + WHITESPACE + ENTITY_ID_FIELD_NAME + WHITESPACE + EQUAL + "'"
+				+ entityId + "'");
 		System.out.println("Query = " + query.toString());
 		try
 		{
@@ -2479,7 +2618,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @return :  Next identifier that can be assigned to a entity record
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Long getNextIdentifierForEntity(String entityName) throws DynamicExtensionsSystemException
+	public Long getNextIdentifierForEntity(String entityName)
+			throws DynamicExtensionsSystemException
 	{
 		ResultSet rsltSet = null;
 		String tableName = "dyextn_database_properties";
@@ -2490,12 +2630,15 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		query.append(WHERE_KEYWORD + WHITESPACE + IDENTIFIER + WHITESPACE + EQUAL);
 		query.append(OPENING_BRACKET);
 		query.append(SELECT_KEYWORD + WHITESPACE + IDENTIFIER);
-		query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + "dyextn_table_properties" + WHITESPACE);
+		query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + "dyextn_table_properties"
+				+ WHITESPACE);
 		query.append(WHERE_KEYWORD + WHITESPACE + "ENTITY_ID" + WHITESPACE + EQUAL);
 		query.append(OPENING_BRACKET);
 		query.append(SELECT_KEYWORD + WHITESPACE + IDENTIFIER);
-		query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + "dyextn_abstract_metadata" + WHITESPACE);
-		query.append(WHERE_KEYWORD + WHITESPACE + "NAME" + WHITESPACE + EQUAL + "'" + entityName + "'");
+		query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + "dyextn_abstract_metadata"
+				+ WHITESPACE);
+		query.append(WHERE_KEYWORD + WHITESPACE + "NAME" + WHITESPACE + EQUAL + "'" + entityName
+				+ "'");
 		query.append(CLOSING_BRACKET);
 		query.append(CLOSING_BRACKET);
 		System.out.println("Query = " + query.toString());
@@ -2544,13 +2687,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public AttributeInterface getAttribute(String entityName, String attributeName) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public AttributeInterface getAttribute(String entityName, String attributeName)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		AttributeInterface attributeInterface = null;
 		AbstractAttributeInterface abstractAttributeInterface;
 		String name;
-		if (entityName == null || entityName.equals("") || attributeName == null || attributeName.equals(""))
+		if (entityName == null || entityName.equals("") || attributeName == null
+				|| attributeName.equals(""))
 		{
 			return attributeInterface;
 		}
@@ -2558,14 +2702,16 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		EntityInterface entityInterface = getEntityByName(entityName);
 		if (entityInterface != null)
 		{
-			Collection abstractAttributeCollection = entityInterface.getAbstractAttributeCollection();
+			Collection abstractAttributeCollection = entityInterface
+					.getAbstractAttributeCollection();
 			if (abstractAttributeCollection != null)
 			{
 				Iterator abstractAttributeIterator = abstractAttributeCollection.iterator();
 
 				while (abstractAttributeIterator.hasNext())
 				{
-					abstractAttributeInterface = (AbstractAttributeInterface) abstractAttributeIterator.next();
+					abstractAttributeInterface = (AbstractAttributeInterface) abstractAttributeIterator
+							.next();
 					if (abstractAttributeInterface instanceof AttributeInterface)
 					{
 						attributeInterface = (AttributeInterface) abstractAttributeInterface;
@@ -2587,7 +2733,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @return Collection Entity group Beans Collection
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Collection<NameValueBean> getAllEntityGroupBeans() throws DynamicExtensionsSystemException
+	public Collection<NameValueBean> getAllEntityGroupBeans()
+			throws DynamicExtensionsSystemException
 	{
 		Collection<NameValueBean> entityGroupBeansCollection = new ArrayList<NameValueBean>();
 		Collection groupBeansCollection = executeHQL("getAllGroupBeans", new HashMap());
@@ -2609,9 +2756,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	/**
 	 * validateEntity.
 	 */
-	public boolean validateEntity(EntityInterface entityInterface) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	public boolean validateEntity(EntityInterface entityInterface)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
-		Collection<EntityInterface> entityCollection = entityInterface.getEntityGroup().getEntityCollection();
+		Collection<EntityInterface> entityCollection = entityInterface.getEntityGroup()
+				.getEntityCollection();
 		for (EntityInterface entity : entityCollection)
 		{
 			Entity entityObject = (Entity) entityInterface;
@@ -2640,7 +2789,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @param attributeId
 	 * @return
 	 */
-	public Collection<Integer> getAttributeRecordsCount(Long entityId, Long attributeId) throws DynamicExtensionsSystemException
+	public Collection<Integer> getAttributeRecordsCount(Long entityId, Long attributeId)
+			throws DynamicExtensionsSystemException
 
 	{
 		Map substitutionParameterMap = new HashMap();
@@ -2650,7 +2800,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		//Required HQL is stored in the hbm file. The following method takes the name of the query and
 		// the actual values for the placeholders as the parameters.
-		Collection recordCollection = executeHQLWithCleanSession("getAttributeRecords", substitutionParameterMap);
+		Collection recordCollection = executeHQLWithCleanSession("getAttributeRecords",
+				substitutionParameterMap);
 
 		return recordCollection;
 	}
@@ -2664,7 +2815,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private Collection executeHQLWithCleanSession(String queryName, Map<String, HQLPlaceHolderObject> substitutionParameterMap)
+	private Collection executeHQLWithCleanSession(String queryName,
+			Map<String, HQLPlaceHolderObject> substitutionParameterMap)
 			throws DynamicExtensionsSystemException
 	{
 		Collection entityCollection = new HashSet();
@@ -2672,7 +2824,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		try
 		{
 			session = DBUtil.getCleanSession();
-			Query query = substitutionParameterForQuery(session, queryName, substitutionParameterMap);
+			Query query = substitutionParameterForQuery(session, queryName,
+					substitutionParameterMap);
 			entityCollection = query.list();
 
 		}
@@ -2688,7 +2841,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			}
 			catch (HibernateException e)
 			{
-				throw new DynamicExtensionsSystemException("Exception occured while closing the session", e, DYEXTN_S_001);
+				throw new DynamicExtensionsSystemException(
+						"Exception occured while closing the session", e, DYEXTN_S_001);
 			}
 
 		}
@@ -2700,12 +2854,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @param substitutionParameterMap
 	 * @throws HibernateException
 	 */
-	private Query substitutionParameterForQuery(Session session, String queryName, Map substitutionParameterMap) throws HibernateException
+	private Query substitutionParameterForQuery(Session session, String queryName,
+			Map substitutionParameterMap) throws HibernateException
 	{
 		Query q = session.getNamedQuery(queryName);
 		for (int counter = 0; counter < substitutionParameterMap.size(); counter++)
 		{
-			HQLPlaceHolderObject hPlaceHolderObject = (HQLPlaceHolderObject) substitutionParameterMap.get(counter + "");
+			HQLPlaceHolderObject hPlaceHolderObject = (HQLPlaceHolderObject) substitutionParameterMap
+					.get(counter + "");
 			String objectType = hPlaceHolderObject.getType();
 			if (objectType.equals("string"))
 			{
@@ -2743,12 +2899,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public ContainerInterface getContainerByEntityIdentifier(Long entityIdentifier) throws DynamicExtensionsSystemException
+	public ContainerInterface getContainerByEntityIdentifier(Long entityIdentifier)
+			throws DynamicExtensionsSystemException
 	{
 		ContainerInterface containerInterface = null;
 		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entityIdentifier));
-		Collection containerCollection = executeHQL("getContainerOfEntity", substitutionParameterMap);
+		Collection containerCollection = executeHQL("getContainerOfEntity",
+				substitutionParameterMap);
 		if (containerCollection != null && containerCollection.size() > 0)
 		{
 			containerInterface = (ContainerInterface) containerCollection.iterator().next();
@@ -2766,7 +2924,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Collection<AssociationTreeObject> getAssociationTree() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public Collection<AssociationTreeObject> getAssociationTree()
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Collection associationTreeObjectCollection = new HashSet();
 
@@ -2790,15 +2949,18 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private AssociationTreeObject processGroupBean(NameValueBean groupBean) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	private AssociationTreeObject processGroupBean(NameValueBean groupBean)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		AssociationTreeObject associationTreeObjectForGroup = new AssociationTreeObject(new Long(groupBean.getValue()), groupBean.getName());
+		AssociationTreeObject associationTreeObjectForGroup = new AssociationTreeObject(new Long(
+				groupBean.getValue()), groupBean.getName());
 
 		Map substitutionParameterMap = new HashMap();
-		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", associationTreeObjectForGroup.getId()));
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long",
+				associationTreeObjectForGroup.getId()));
 
-		Collection containersBeansCollection = executeHQL("getAllContainersBeansByEntityGroupId", substitutionParameterMap);
+		Collection containersBeansCollection = executeHQL("getAllContainersBeansByEntityGroupId",
+				substitutionParameterMap);
 
 		Iterator containerBeansIterator = containersBeansCollection.iterator();
 		Object[] objectArrayForContainerBeans;
@@ -2807,10 +2969,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		while (containerBeansIterator.hasNext())
 		{
 			objectArrayForContainerBeans = (Object[]) containerBeansIterator.next();
-			associationTreeObjectForContainer = new AssociationTreeObject((Long) objectArrayForContainerBeans[0],
+			associationTreeObjectForContainer = new AssociationTreeObject(
+					(Long) objectArrayForContainerBeans[0],
 					(String) objectArrayForContainerBeans[1]);
 			//processForChildContainer(associationTreeObjectForContainer);
-			associationTreeObjectForGroup.addAssociationTreeObject(associationTreeObjectForContainer);
+			associationTreeObjectForGroup
+					.addAssociationTreeObject(associationTreeObjectForContainer);
 
 		}
 
@@ -2825,11 +2989,13 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public FileAttributeRecordValue getFileAttributeRecordValueByRecordId(AttributeInterface attribute, Long recordId)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public FileAttributeRecordValue getFileAttributeRecordValueByRecordId(
+			AttributeInterface attribute, Long recordId) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		EntityInterface entity = attribute.getEntity();
-		FileAttributeRecordValue fileRecordValue = getFileAttributeRecordValue(entity.getId(), attribute.getId(), recordId);
+		FileAttributeRecordValue fileRecordValue = getFileAttributeRecordValue(entity.getId(),
+				attribute.getId(), recordId);
 		return fileRecordValue;
 	}
 
@@ -2839,11 +3005,13 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @return  the container Id of the DE entities/categories that are associated with given static hook entity
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Collection<ContainerInterface> getCategoriesContainerIdFromHookEntity(Long hookEntityId) throws DynamicExtensionsSystemException
+	public Collection<ContainerInterface> getCategoriesContainerIdFromHookEntity(Long hookEntityId)
+			throws DynamicExtensionsSystemException
 	{
 		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", hookEntityId));
-		Collection containerCollection = executeHQL("getCategoryContainerIdFromHookEntiy", substitutionParameterMap);
+		Collection containerCollection = executeHQL("getCategoryContainerIdFromHookEntiy",
+				substitutionParameterMap);
 		return containerCollection;
 	}
 
@@ -2869,11 +3037,13 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @param hookEntityId
 	 * @return the container Id of the DE entities that are associated with given static hook entity
 	 */
-	public Collection<ContainerInterface> getDynamicEntitiesContainerIdFromHookEntity(Long hookEntityId) throws DynamicExtensionsSystemException
+	public Collection<ContainerInterface> getDynamicEntitiesContainerIdFromHookEntity(
+			Long hookEntityId) throws DynamicExtensionsSystemException
 	{
 		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", hookEntityId));
-		Collection containerCollection = executeHQL("getFormsContainerIdFromHookEntiy", substitutionParameterMap);
+		Collection containerCollection = executeHQL("getFormsContainerIdFromHookEntiy",
+				substitutionParameterMap);
 		return containerCollection;
 	}
 
@@ -2898,12 +3068,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	/**
 	 * This method returns container id for the root entity for the given category conatainer id
 	 */
-	public Long getCategoryRootContainerId(Long containerId) throws DynamicExtensionsSystemException
+	public Long getCategoryRootContainerId(Long containerId)
+			throws DynamicExtensionsSystemException
 	{
 		Long containerIdentifier = null;
 		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", containerId));
-		Collection containerCollection = executeHQL("getCategoryRootContainerId", substitutionParameterMap);
+		Collection containerCollection = executeHQL("getCategoryRootContainerId",
+				substitutionParameterMap);
 		if (containerCollection != null && containerCollection.size() > 0)
 		{
 			containerIdentifier = (Long) containerCollection.iterator().next();
@@ -2914,13 +3086,15 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	/**
 	 * this method returns the column name for the assocation  
 	 */
-	public String getColumnNameForAssociation(Long hookEntityId, Long containerId) throws DynamicExtensionsSystemException
+	public String getColumnNameForAssociation(Long hookEntityId, Long containerId)
+			throws DynamicExtensionsSystemException
 	{
 		String colName = null;
 		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", hookEntityId));
 		substitutionParameterMap.put("1", new HQLPlaceHolderObject("long", containerId));
-		Collection containerCollection = executeHQL("getColumnNameForAssociation", substitutionParameterMap);
+		Collection containerCollection = executeHQL("getColumnNameForAssociation",
+				substitutionParameterMap);
 
 		if (containerCollection != null && containerCollection.size() > 0)
 		{
@@ -2929,9 +3103,9 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return colName;
 	}
 
-	public EntityInterface persistEntityMetadataForAnnotation(EntityInterface entityInterface, boolean isDataTablePresent,
-			boolean copyDataTableState, AssociationInterface association) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public EntityInterface persistEntityMetadataForAnnotation(EntityInterface entityInterface,
+			boolean isDataTablePresent, boolean copyDataTableState, AssociationInterface association)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Entity entity = (Entity) entityInterface;
 		if (isDataTablePresent)
@@ -2950,7 +3124,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		//          isEntitySaved = false;
 		//      }
 
-		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
+		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(
+				Constants.HIBERNATE_DAO);
 		//      Stack stack = new Stack();
 
 		try
@@ -3012,8 +3187,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getMainContainer(java.lang.Long)
 	 */
-	public Collection<NameValueBean> getMainContainer(Long entityGroupIdentifier) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public Collection<NameValueBean> getMainContainer(Long entityGroupIdentifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entityGroupIdentifier));
@@ -3025,16 +3200,19 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @param entityGroupShortName
 	 * @return
 	 */
-	public EntityGroupInterface getEntityGroupByName(String entityGroupName) throws DynamicExtensionsSystemException
+	public EntityGroupInterface getEntityGroupByName(String entityGroupName)
+			throws DynamicExtensionsSystemException
 	{
-		EntityGroupInterface entityGroupInterface = (EntityGroupInterface) getObjectByName(EntityGroup.class.getName(), entityGroupName);
+		EntityGroupInterface entityGroupInterface = (EntityGroupInterface) getObjectByName(
+				EntityGroup.class.getName(), entityGroupName);
 		return entityGroupInterface;
 	}
 
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getEntityGroupByShortName(java.lang.String)
 	 */
-	public EntityGroupInterface getEntityGroupByShortName(String entityGroupShortName) throws DynamicExtensionsSystemException
+	public EntityGroupInterface getEntityGroupByShortName(String entityGroupShortName)
+			throws DynamicExtensionsSystemException
 	{
 		EntityGroupInterface entityGroupInterface = null;
 		Collection entityGroupCollection = new HashSet();
@@ -3051,10 +3229,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			//Calling retrieve method to  get the entity group object based on the given value of short name.
 			//Passed parameters are the class name of the entity group class, the name of the hibernate object member variable
 			// and the value of that member variable.
-			entityGroupCollection = defaultBizLogic.retrieve(EntityGroup.class.getName(), "shortName", entityGroupShortName);
+			entityGroupCollection = defaultBizLogic.retrieve(EntityGroup.class.getName(),
+					"shortName", entityGroupShortName);
 			if (entityGroupCollection != null && entityGroupCollection.size() > 0)
 			{
-				entityGroupInterface = (EntityGroupInterface) entityGroupCollection.iterator().next();
+				entityGroupInterface = (EntityGroupInterface) entityGroupCollection.iterator()
+						.next();
 			}
 		}
 		catch (DAOException e)
@@ -3071,7 +3251,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Collection<EntityGroupInterface> getAllEntitiyGroups() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public Collection<EntityGroupInterface> getAllEntitiyGroups()
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		return getAllObjects(EntityGroupInterface.class.getName());
 	}
@@ -3083,13 +3264,15 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public ControlInterface getControlByAbstractAttributeIdentifier(Long abstractAttributeIdentifier) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public ControlInterface getControlByAbstractAttributeIdentifier(Long abstractAttributeIdentifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ControlInterface controlInterface = null;
 		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
-		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", abstractAttributeIdentifier));
-		Collection controlCollection = executeHQL("getControlOfAbstractAttribute", substitutionParameterMap);
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long",
+				abstractAttributeIdentifier));
+		Collection controlCollection = executeHQL("getControlOfAbstractAttribute",
+				substitutionParameterMap);
 		if (controlCollection != null && controlCollection.size() > 0)
 		{
 			controlInterface = (ControlInterface) controlCollection.iterator().next();

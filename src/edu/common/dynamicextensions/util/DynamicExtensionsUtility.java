@@ -124,7 +124,7 @@ public class DynamicExtensionsUtility
 	public static ContainerInterface getContainerByIdentifier(String containerIdentifier)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		ContainerInterface containerInterface = null;			
+		ContainerInterface containerInterface = null;
 		containerInterface = (ContainerInterface) getObjectByIdentifier(ContainerInterface.class
 				.getName(), containerIdentifier);
 		return containerInterface;
@@ -180,36 +180,39 @@ public class DynamicExtensionsUtility
 		}
 		return object;
 	}
+
 	/**
 	 * This method clears data value for all controls within container
 	 * @param baseContainer
 	 */
 	public static void cleanContainerControlsValue(ContainerInterface baseContainer)
 	{
-				
-		while(baseContainer !=null)
+
+		while (baseContainer != null)
 		{
 			Collection controlCollection = baseContainer.getControlCollection();
-			
-			for(Iterator iterator = controlCollection.iterator(); iterator.hasNext() ;) 
+
+			for (Iterator iterator = controlCollection.iterator(); iterator.hasNext();)
 			{
-				Control objControl = (Control)iterator.next();
-				if(objControl instanceof AbstractContainmentControl) 
+				Control objControl = (Control) iterator.next();
+				if (objControl instanceof AbstractContainmentControl)
 				{
-					ContainerInterface subContainer = ((AbstractContainmentControl)objControl).getContainer();
-					if(subContainer!=null)
+					ContainerInterface subContainer = ((AbstractContainmentControl) objControl)
+							.getContainer();
+					if (subContainer != null)
 					{
 						subContainer.getContainerValueMap().clear();
 						cleanContainerControlsValue(subContainer);
-					}	        	 
-				 
+					}
+
 				}
 				objControl.setValue(null);
 			}
-			baseContainer= baseContainer.getBaseContainer();
+			baseContainer = baseContainer.getBaseContainer();
 		}
-	        
-	 }
+
+	}
+
 	/**
 	 * @param controlInterface ControlInterface
 	 * @return String ControlName
@@ -319,7 +322,7 @@ public class DynamicExtensionsUtility
 		try
 		{
 			DBUtil.currentSession();
-//			DBUtil.closeSession();
+			//			DBUtil.closeSession();
 		}
 		catch (Exception e)
 		{
@@ -602,16 +605,16 @@ public class DynamicExtensionsUtility
 		EntityGroupInterface entityGroup = null;
 		if (entity != null)
 		{
-//			Collection<EntityGroupInterface> entityGroupCollection = entity
-//					.getEntityGroupCollection();
-//			if (entityGroupCollection != null)
-//			{
-//				Iterator<EntityGroupInterface> entityGroupIter = entityGroupCollection.iterator();
-//				if (entityGroupIter.hasNext())
-//				{
-					entityGroup = entity.getEntityGroup();
-//				}
-//			}
+			//			Collection<EntityGroupInterface> entityGroupCollection = entity
+			//					.getEntityGroupCollection();
+			//			if (entityGroupCollection != null)
+			//			{
+			//				Iterator<EntityGroupInterface> entityGroupIter = entityGroupCollection.iterator();
+			//				if (entityGroupIter.hasNext())
+			//				{
+			entityGroup = entity.getEntityGroup();
+			//				}
+			//			}
 		}
 		return entityGroup;
 	}
@@ -707,15 +710,15 @@ public class DynamicExtensionsUtility
 		return;
 	}
 
-	public static void validateDuplicateNamesWithinEntity(EntityInterface entity, String attributeName)
-			throws DynamicExtensionsApplicationException
+	public static void validateDuplicateNamesWithinEntity(EntityInterface entity,
+			String attributeName) throws DynamicExtensionsApplicationException
 	{
 		Collection<AbstractAttributeInterface> collection = entity.getAbstractAttributeCollection();
 		if (collection != null || !collection.isEmpty())
 		{
-			for(AbstractAttributeInterface attribute : collection)
+			for (AbstractAttributeInterface attribute : collection)
 			{
-				if(attribute.getName().equals(attributeName))
+				if (attribute.getName().equals(attributeName))
 				{
 					throw new DynamicExtensionsApplicationException(
 							"Attribute names should be unique for the entity ", null,
@@ -725,8 +728,6 @@ public class DynamicExtensionsUtility
 			}
 		}
 	}
-
-
 
 	/**
 	 * @param name
@@ -803,6 +804,7 @@ public class DynamicExtensionsUtility
 			}
 		}
 	}
+
 	/**
 	 * @param entity
 	 * @param entitySet
@@ -820,6 +822,7 @@ public class DynamicExtensionsUtility
 		}
 		return entityList;
 	}
+
 	/**
 	 * @param entity
 	 * @param entitySet
@@ -837,23 +840,24 @@ public class DynamicExtensionsUtility
 		}
 		return entityList;
 	}
-    /**
-     * @param processedEntityList
-     * @param entity
-     * @return
-     */
-    private static boolean isEntityPresent(List<EntityInterface> entityList,
-            EntityInterface entity)
-    {
-        for (EntityInterface entityInterface : entityList)
-        {
-            if (entityInterface.getName().equalsIgnoreCase(entity.getName()))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
+
+	/**
+	 * @param processedEntityList
+	 * @param entity
+	 * @return
+	 */
+	private static boolean isEntityPresent(List<EntityInterface> entityList, EntityInterface entity)
+	{
+		for (EntityInterface entityInterface : entityList)
+		{
+			if (entityInterface.getName().equalsIgnoreCase(entity.getName()))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * This method checks if the date string is as per the given format or not.
 	 * @param dateFormat Format of the date (e.g. dd/mm/yyyy)
@@ -865,16 +869,16 @@ public class DynamicExtensionsUtility
 		boolean isDateValid = false;
 		Date date = null;
 
-        if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
-        {
-            strDate = formatMonthAndYearDate(strDate);
-            //09-12-2007 0:0
-        }
-        if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
-        {
-            strDate = formatYearDate(strDate);
-            //09-12-2007 0:0
-        }
+		if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
+		{
+			strDate = formatMonthAndYearDate(strDate);
+			//09-12-2007 0:0
+		}
+		if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
+		{
+			strDate = formatYearDate(strDate);
+			//09-12-2007 0:0
+		}
 
 		try
 		{
@@ -892,18 +896,18 @@ public class DynamicExtensionsUtility
 		return isDateValid;
 	}
 
-    public static String formatMonthAndYearDate(String strDate)
-    {
-        String month = strDate.substring(0, 2);
-        String year = strDate.substring(3, strDate.length());
-        return month+"-"+"01"+"-"+year+" 0:0";
-    }
+	public static String formatMonthAndYearDate(String strDate)
+	{
+		String month = strDate.substring(0, 2);
+		String year = strDate.substring(3, strDate.length());
+		return month + "-" + "01" + "-" + year + " 0:0";
+	}
 
-    public static String formatYearDate(String strDate)
-    {
-        String year = strDate;
-        return "01"+"-"+"01"+"-"+year+" 0:0";
-    }
+	public static String formatYearDate(String strDate)
+	{
+		String year = strDate;
+		return "01" + "-" + "01" + "-" + year + " 0:0";
+	}
 
 	/**
 	 * This method determines whether the checkbox is to be checked or not.
@@ -992,35 +996,36 @@ public class DynamicExtensionsUtility
 	{
 		int result = 0;
 
-        if (areBothDatesOfSameFormat(date1, date2))
-        {
-            result = 1;
-            return result;
-        }
+		if (areBothDatesOfSameFormat(date1, date2))
+		{
+			result = 1;
+			return result;
+		}
 
-        if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
-        {
-            if (Integer.parseInt(date1.substring(3, date1.length()).trim()) > Integer.parseInt(date2.substring(3, date2.length()).trim()))
-            {
-                result = 1;
-                return result;
-            }
-            date1 = formatMonthAndYearDate(date1);
-            date2 = formatMonthAndYearDate(date2);
-            //09-12-2007 0:0
-        }
+		if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
+		{
+			if (Integer.parseInt(date1.substring(3, date1.length()).trim()) > Integer
+					.parseInt(date2.substring(3, date2.length()).trim()))
+			{
+				result = 1;
+				return result;
+			}
+			date1 = formatMonthAndYearDate(date1);
+			date2 = formatMonthAndYearDate(date2);
+			//09-12-2007 0:0
+		}
 
-        if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
-        {
-            //date1 = formatYearDate(date1);
-            //date2 = formatYearDate(date2);
-            if (Integer.parseInt(date1) > Integer.parseInt(date2))
-            {
-                result = 1;
-                return result;
-            }
-            //09-12-2007 0:0
-        }
+		if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
+		{
+			//date1 = formatYearDate(date1);
+			//date2 = formatYearDate(date2);
+			if (Integer.parseInt(date1) > Integer.parseInt(date2))
+			{
+				result = 1;
+				return result;
+			}
+			//09-12-2007 0:0
+		}
 
 		try
 		{
@@ -1043,13 +1048,13 @@ public class DynamicExtensionsUtility
 		return result;
 	}
 
-    public static boolean areBothDatesOfSameFormat(String date1, String date2)
-    {
-        if (date1.length() != date2.length())
-            return true;
-        else
-            return false;
-    }
+	public static boolean areBothDatesOfSameFormat(String date1, String date2)
+	{
+		if (date1.length() != date2.length())
+			return true;
+		else
+			return false;
+	}
 
 	/**
 	 * This method returns the format of the date depending upon the the type of the format selected on UI.
@@ -1063,14 +1068,14 @@ public class DynamicExtensionsUtility
 		{
 			dateFormat = ProcessorConstants.DATE_TIME_FORMAT;
 		}
-        if (format != null && format.equals(ProcessorConstants.DATE_FORMAT_OPTION_MONTHANDYEAR))
-        {
-            dateFormat = ProcessorConstants.MONTH_YEAR_FORMAT;
-        }
-        if (format != null && format.equals(ProcessorConstants.DATE_FORMAT_OPTION_YEARONLY))
-        {
-            dateFormat = ProcessorConstants.YEAR_ONLY_FORMAT;
-        }
+		if (format != null && format.equals(ProcessorConstants.DATE_FORMAT_OPTION_MONTHANDYEAR))
+		{
+			dateFormat = ProcessorConstants.MONTH_YEAR_FORMAT;
+		}
+		if (format != null && format.equals(ProcessorConstants.DATE_FORMAT_OPTION_YEARONLY))
+		{
+			dateFormat = ProcessorConstants.YEAR_ONLY_FORMAT;
+		}
 
 		return dateFormat;
 	}
@@ -1095,7 +1100,8 @@ public class DynamicExtensionsUtility
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public static ContainerInterface getContainerByCaption(String caption) throws DynamicExtensionsSystemException
+	public static ContainerInterface getContainerByCaption(String caption)
+			throws DynamicExtensionsSystemException
 	{
 		DefaultBizLogic defaultBizLogic = BizLogicFactory.getDefaultBizLogic();
 		List objectList = new ArrayList();
@@ -1113,114 +1119,121 @@ public class DynamicExtensionsUtility
 			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
 
-		if(objectList.size() > 0)
+		if (objectList.size() > 0)
 		{
-			containerInterface = (ContainerInterface)objectList.get(0);
+			containerInterface = (ContainerInterface) objectList.get(0);
 		}
 
 		return containerInterface;
 	}
+
 	/**
 	 * @param containerColl
 	 * @return
 	 */
-	public static List<String> getMainContainerNamesList(Collection<ContainerInterface> containerColl)
+	public static List<String> getMainContainerNamesList(
+			Collection<ContainerInterface> containerColl)
 	{
 		List<String> mainContainerNames = new ArrayList<String>();
-		for(ContainerInterface container : containerColl)
+		for (ContainerInterface container : containerColl)
 		{
 			mainContainerNames.add(container.getCaption());
 		}
 		return mainContainerNames;
 	}
-    /**
-     * This method corrects cardinalities such that max cardinality  < minimum cardinality ,otherwise it throws exception
-     * @param entity
-     */
-    private static void correctCardinalities(EntityInterface entity)
-            throws DynamicExtensionsApplicationException
-    {
-        Collection associationCollection = entity.getAssociationCollection();
-        if (associationCollection != null && !associationCollection.isEmpty())
-        {
-            Iterator iterator = associationCollection.iterator();
-            while (iterator.hasNext())
-            {
-                Association association = (Association) iterator.next();
-                swapCardinality(association.getSourceRole());
-                swapCardinality(association.getTargetRole());
-            }
-        }
-    }
-    /**
-     * @param role
-     * @throws DynamicExtensionsApplicationException
-     */
-    private static void swapCardinality(RoleInterface role) throws DynamicExtensionsApplicationException
-    {
-        // make Min cardinality < Max cardinality
-        if (role.getMinimumCardinality().equals(Cardinality.MANY)
-                || role.getMaximumCardinality().equals(Cardinality.ZERO))
-        {
-            Cardinality e = role.getMinimumCardinality();
-            role.setMinimumCardinality(role.getMaximumCardinality());
-            role.setMaximumCardinality(e);
-        }
 
-        if (role.getMaximumCardinality().equals(Cardinality.ZERO))
-        {
-            throw new DynamicExtensionsApplicationException("Cardinality constraint violated",
-                    null, EntityManagerExceptionConstantsInterface.DYEXTN_A_005);
-        }
-    }
-    /**
-     * This method processes entity before saving it to databse.
-     * <li> It validates entity for duplicate name of entity,attributes and association
-     * <li> It sets created and updated date-time.
-     *
-     * @param entity entity
-     */
-    public static void validateEntity(EntityInterface entity)
-            throws DynamicExtensionsApplicationException
-    {
-        validateEntityForSaving(entity);// chk if entity is valid or not.
+	/**
+	 * This method corrects cardinalities such that max cardinality  < minimum cardinality ,otherwise it throws exception
+	 * @param entity
+	 */
+	private static void correctCardinalities(EntityInterface entity)
+			throws DynamicExtensionsApplicationException
+	{
+		Collection associationCollection = entity.getAssociationCollection();
+		if (associationCollection != null && !associationCollection.isEmpty())
+		{
+			Iterator iterator = associationCollection.iterator();
+			while (iterator.hasNext())
+			{
+				Association association = (Association) iterator.next();
+				swapCardinality(association.getSourceRole());
+				swapCardinality(association.getTargetRole());
+			}
+		}
+	}
 
-        correctCardinalities(entity); // correct the cardinality if max cardinality  < min cardinality
+	/**
+	 * @param role
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	private static void swapCardinality(RoleInterface role)
+			throws DynamicExtensionsApplicationException
+	{
+		// make Min cardinality < Max cardinality
+		if (role.getMinimumCardinality().equals(Cardinality.MANY)
+				|| role.getMaximumCardinality().equals(Cardinality.ZERO))
+		{
+			Cardinality e = role.getMinimumCardinality();
+			role.setMinimumCardinality(role.getMaximumCardinality());
+			role.setMaximumCardinality(e);
+		}
 
-//        if (entity.getId() != null)
-//        {
-//            entity.setLastUpdated(new Date());
-//        }
-//        else
-//        {
-//            entity.setCreatedDate(new Date());
-//            entity.setLastUpdated(entity.getCreatedDate());
-//        }
-    }
-    public static String getTableName(AssociationInterface association)
-    {
-    	String tableName = "";
-        RoleInterface sourceRole = association.getSourceRole();
-        RoleInterface targetRole = association.getTargetRole();
-        Cardinality sourceMaxCardinality = sourceRole.getMaximumCardinality();
-        Cardinality targetMaxCardinality = targetRole.getMaximumCardinality();
-        if (sourceMaxCardinality == Cardinality.MANY && targetMaxCardinality == Cardinality.MANY)
-        {
-        	tableName = association.getConstraintProperties().getName();
-        }
-        else if (sourceMaxCardinality == Cardinality.MANY
-                && targetMaxCardinality == Cardinality.ONE)
-        {
-        	tableName = association.getEntity().getTableProperties().getName();
-        }
-        else
-        {
-        	tableName = association.getTargetEntity().getTableProperties().getName();
-        }
-    	return tableName;
-    }
-    
-    /**
+		if (role.getMaximumCardinality().equals(Cardinality.ZERO))
+		{
+			throw new DynamicExtensionsApplicationException("Cardinality constraint violated",
+					null, EntityManagerExceptionConstantsInterface.DYEXTN_A_005);
+		}
+	}
+
+	/**
+	 * This method processes entity before saving it to databse.
+	 * <li> It validates entity for duplicate name of entity,attributes and association
+	 * <li> It sets created and updated date-time.
+	 *
+	 * @param entity entity
+	 */
+	public static void validateEntity(EntityInterface entity)
+			throws DynamicExtensionsApplicationException
+	{
+		validateEntityForSaving(entity);// chk if entity is valid or not.
+
+		correctCardinalities(entity); // correct the cardinality if max cardinality  < min cardinality
+
+		//        if (entity.getId() != null)
+		//        {
+		//            entity.setLastUpdated(new Date());
+		//        }
+		//        else
+		//        {
+		//            entity.setCreatedDate(new Date());
+		//            entity.setLastUpdated(entity.getCreatedDate());
+		//        }
+	}
+
+	public static String getTableName(AssociationInterface association)
+	{
+		String tableName = "";
+		RoleInterface sourceRole = association.getSourceRole();
+		RoleInterface targetRole = association.getTargetRole();
+		Cardinality sourceMaxCardinality = sourceRole.getMaximumCardinality();
+		Cardinality targetMaxCardinality = targetRole.getMaximumCardinality();
+		if (sourceMaxCardinality == Cardinality.MANY && targetMaxCardinality == Cardinality.MANY)
+		{
+			tableName = association.getConstraintProperties().getName();
+		}
+		else if (sourceMaxCardinality == Cardinality.MANY
+				&& targetMaxCardinality == Cardinality.ONE)
+		{
+			tableName = association.getEntity().getTableProperties().getName();
+		}
+		else
+		{
+			tableName = association.getTargetEntity().getTableProperties().getName();
+		}
+		return tableName;
+	}
+
+	/**
 	 * Retrieve entity group by its name from database.
 	 * @param name name of category
 	 * @return entity group
@@ -1234,7 +1247,8 @@ public class DynamicExtensionsUtility
 		try
 		{
 			// Fetch the entity group from the database.
-			entityGroupCollection = bizlogic.retrieve(EntityGroup.class.getName(), "shortName", name);
+			entityGroupCollection = bizlogic.retrieve(EntityGroup.class.getName(), "shortName",
+					name);
 
 			if (entityGroupCollection != null && entityGroupCollection.size() > 0)
 			{
@@ -1244,117 +1258,130 @@ public class DynamicExtensionsUtility
 		catch (DAOException e)
 		{
 			e.printStackTrace();
-		
+
 		}
 
 		return entityGroup;
 	}
+
 	/**
 	 * This method will update the cache on server startup time
 	 */
-	public static void updateDynamicExtensionsCache() 	throws DynamicExtensionsSystemException
+	public static void updateDynamicExtensionsCache() throws DynamicExtensionsSystemException
 	{
-		
+
 		Map containerMap = null;
-	    try
+		try
 		{
-	    	AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
-	    	List containerList = bizLogic.retrieve(ContainerInterface.class.getName());	    	
-	    	
+			AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
+			List containerList = bizLogic.retrieve(ContainerInterface.class.getName());
+
 			containerMap = new HashMap();
-			for(int cnt=0;cnt< containerList.size();cnt++)
+			for (int cnt = 0; cnt < containerList.size(); cnt++)
 			{
-				ContainerInterface objContainer = (ContainerInterface)containerList.get(cnt);
-				containerMap.put(objContainer.getId(),objContainer);
-				
+				ContainerInterface objContainer = (ContainerInterface) containerList.get(cnt);
+				containerMap.put(objContainer.getId(), objContainer);
+
 			}
-	
-				// getting instance of catissueCoreCacheManager and adding containerMap to cache
-			DynamicExtensionsCacheManager deCacheManager = DynamicExtensionsCacheManager.getInstance();
+
+			// getting instance of catissueCoreCacheManager and adding containerMap to cache
+			DynamicExtensionsCacheManager deCacheManager = DynamicExtensionsCacheManager
+					.getInstance();
 			deCacheManager.removeObjectFromCache(Constants.LIST_OF_CONTAINER);
-			deCacheManager.addObjectToCache(Constants.LIST_OF_CONTAINER,(HashMap) containerMap);
-			System.out.println("ON Startup caching containers.Size of Container ----------"+containerList.size());
-			
+			deCacheManager.addObjectToCache(Constants.LIST_OF_CONTAINER, (HashMap) containerMap);
+			System.out.println("ON Startup caching containers.Size of Container ----------"
+					+ containerList.size());
+
 		}
 		catch (Exception e)
 		{
-			Logger.out.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
+			Logger.out
+					.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
 			throw new DynamicExtensionsSystemException(e.getMessage());
-			
+
 		}
 	}
-	
+
 	/**
 	 * This method updates the DynamicExtensions cache of all container within Entitygroup
 	 * 
 	 */
-	public static void updateDynamicExtensionsCache(Long entityGroupId)throws DynamicExtensionsSystemException
+	public static void updateDynamicExtensionsCache(Long entityGroupId)
+			throws DynamicExtensionsSystemException
 	{
-		
+
 		try
 		{
-	    	// getting instance of DynamicExtensionsCacheManager and adding containerMap to cache
+			// getting instance of DynamicExtensionsCacheManager and adding containerMap to cache
 			EntityManagerInterface entityManager = EntityManager.getInstance();
-			ArrayList containerSet = (ArrayList) entityManager.getAllContainersByEntityGroupId(entityGroupId);
+			ArrayList containerSet = (ArrayList) entityManager
+					.getAllContainersByEntityGroupId(entityGroupId);
 			Iterator itr = containerSet.iterator();
-			while(itr.hasNext())
+			while (itr.hasNext())
 			{
-				ContainerInterface  objContainer = (Container) itr.next();
+				ContainerInterface objContainer = (Container) itr.next();
 				DynamicExtensionsUtility.updateDynamicExtensionsCache(objContainer);
 			}
 
 		}
 		catch (Exception e)
 		{
-			Logger.out.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
+			Logger.out
+					.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
 			throw new DynamicExtensionsSystemException(e.getMessage());
 		}
 	}
+
 	/**
 	 * This method updates the DynamicExtensions cache with updated container
 	 * @param updatedContainer
 	 */
-	public static void updateDynamicExtensionsCache(ContainerInterface  updatedContainer) throws DynamicExtensionsSystemException
+	public static void updateDynamicExtensionsCache(ContainerInterface updatedContainer)
+			throws DynamicExtensionsSystemException
 	{
-		
+
 		try
 		{
-	    	// getting instance of DynamicExtensionsCacheManager and adding containerMap to cache
-			DynamicExtensionsCacheManager deCacheManager = DynamicExtensionsCacheManager.getInstance();
+			// getting instance of DynamicExtensionsCacheManager and adding containerMap to cache
+			DynamicExtensionsCacheManager deCacheManager = DynamicExtensionsCacheManager
+					.getInstance();
 			Map containerMap = new HashMap();
-			containerMap = (HashMap)deCacheManager.getObjectFromCache(Constants.LIST_OF_CONTAINER);
-			if(containerMap!=null)
+			containerMap = (HashMap) deCacheManager.getObjectFromCache(Constants.LIST_OF_CONTAINER);
+			if (containerMap != null)
 			{
-				containerMap.put(updatedContainer.getId(),updatedContainer);
+				containerMap.put(updatedContainer.getId(), updatedContainer);
 			}
 			deCacheManager.removeObjectFromCache(Constants.LIST_OF_CONTAINER);
-			deCacheManager.addObjectToCache(Constants.LIST_OF_CONTAINER,(HashMap) containerMap);
-			
+			deCacheManager.addObjectToCache(Constants.LIST_OF_CONTAINER, (HashMap) containerMap);
+
 		}
 		catch (Exception e)
 		{
-			Logger.out.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
+			Logger.out
+					.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
 			throw new DynamicExtensionsSystemException(e.getMessage());
 		}
 	}
+
 	/**
 	 * Method to check if data type is numeric i.e long,integer,short,float,double
 	 */
-	public static boolean isDataTypeNumeric(String dataType){
-		boolean isDataTypeNumber=false;
-		if(dataType.equals(ProcessorConstants.DATATYPE_SHORT)
-			||dataType.equals(ProcessorConstants.DATATYPE_INTEGER)
-			||dataType.equals(ProcessorConstants.DATATYPE_LONG)
-			||dataType.equals(ProcessorConstants.DATATYPE_FLOAT)
-			||dataType.equals(ProcessorConstants.DATATYPE_DOUBLE)
-			||dataType.equals(ProcessorConstants.DATATYPE_NUMBER))
+	public static boolean isDataTypeNumeric(String dataType)
+	{
+		boolean isDataTypeNumber = false;
+		if (dataType.equals(ProcessorConstants.DATATYPE_SHORT)
+				|| dataType.equals(ProcessorConstants.DATATYPE_INTEGER)
+				|| dataType.equals(ProcessorConstants.DATATYPE_LONG)
+				|| dataType.equals(ProcessorConstants.DATATYPE_FLOAT)
+				|| dataType.equals(ProcessorConstants.DATATYPE_DOUBLE)
+				|| dataType.equals(ProcessorConstants.DATATYPE_NUMBER))
 		{
-			isDataTypeNumber=true;
+			isDataTypeNumber = true;
 		}
-		
+
 		return isDataTypeNumber;
 	}
-	
+
 	/**
 	 * getCategoryQueryList.
 	 * @param category
@@ -1392,6 +1419,7 @@ public class DynamicExtensionsUtility
 			}
 		}
 	}
+
 	/**
 	 * getCategoryQueryList.
 	 * @param category
@@ -1424,32 +1452,36 @@ public class DynamicExtensionsUtility
 			for (CategoryAssociationInterface categoryAssociationInterface : categoryEntity
 					.getCategoryAssociationCollection())
 			{
-				getSavedCategoryEntityList(
-						categoryAssociationInterface.getTargetCategoryEntity(), categoryEntityList);
+				getSavedCategoryEntityList(categoryAssociationInterface.getTargetCategoryEntity(),
+						categoryEntityList);
 			}
 		}
 	}
-	
+
 	/**
 	 * This method sets the source entity key or target entity key as null depending upon 
 	 * whether the association is one-to-one, one-to-many or many-to-one.
 	 * @param association
 	 * @return ConstraintPropertiesInterface
 	 */
-	public static ConstraintPropertiesInterface getConstraintProperties(AssociationInterface association)
+	public static ConstraintPropertiesInterface getConstraintProperties(
+			AssociationInterface association)
 	{
 		ConstraintPropertiesInterface constraintProperties = association.getConstraintProperties();
-		
-		if (association.getSourceRole().getMaximumCardinality() == Cardinality.MANY && association.getTargetRole().getMaximumCardinality() == Cardinality.ONE)
+
+		if (association.getSourceRole().getMaximumCardinality() == Cardinality.MANY
+				&& association.getTargetRole().getMaximumCardinality() == Cardinality.ONE)
 		{
 			constraintProperties.setTargetEntityKey(null);
 		}
-		else if (association.getSourceRole().getMaximumCardinality() == Cardinality.ONE && association.getTargetRole().getMaximumCardinality() == Cardinality.MANY
-				|| association.getSourceRole().getMaximumCardinality() == Cardinality.ONE && association.getTargetRole().getMaximumCardinality() == Cardinality.ONE)
+		else if (association.getSourceRole().getMaximumCardinality() == Cardinality.ONE
+				&& association.getTargetRole().getMaximumCardinality() == Cardinality.MANY
+				|| association.getSourceRole().getMaximumCardinality() == Cardinality.ONE
+				&& association.getTargetRole().getMaximumCardinality() == Cardinality.ONE)
 		{
 			constraintProperties.setSourceEntityKey(null);
 		}
-	
+
 		return constraintProperties;
 	}
 

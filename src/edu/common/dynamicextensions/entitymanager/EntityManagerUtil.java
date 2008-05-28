@@ -23,6 +23,7 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.dao.HibernateDAO;
 import edu.wustl.common.exception.BizLogicException;
@@ -294,8 +295,9 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	/**
 	 * @return
 	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsValidationException 
 	 */
-	public static boolean isValuePresent(AttributeInterface attribute, Object value) throws DynamicExtensionsSystemException
+	public static boolean isValuePresent(AttributeInterface attribute, Object value) throws DynamicExtensionsSystemException, DynamicExtensionsValidationException
 	{
 		return new DynamicExtensionBaseQueryBuilder().isValuePresent(attribute, value);
 	}

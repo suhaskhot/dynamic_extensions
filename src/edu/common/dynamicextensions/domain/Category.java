@@ -1,5 +1,8 @@
 package edu.common.dynamicextensions.domain;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 
@@ -21,6 +24,11 @@ public class Category extends AbstractMetadata implements CategoryInterface
      * rootCategoryElement.
      */
     protected CategoryEntity rootCategoryElement;
+    
+    /**
+     * 
+     */
+    protected Collection<CategoryEntityInterface> relatedAttributeCategoryEntityCollection = new HashSet<CategoryEntityInterface>();
 
     /**
      *
@@ -90,5 +98,34 @@ public class Category extends AbstractMetadata implements CategoryInterface
     	
     	return searchedCategoryEntity;
     }
+
+	/**
+	 * @hibernate.set name="relAttrCategoryEntity" table="DYEXTN_CATEGORY_ENTITY"
+	 * cascade="all" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="REL_ATTR_CAT_ENTITY_ID"
+	 * @hibernate.cache usage="read-write"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.CategoryEntity"
+	 * @return the relatedAttributeCategoryEntityCollection
+	 */
+	public Collection<CategoryEntityInterface> getRelatedAttributeCategoryEntityCollection()
+	{
+		return relatedAttributeCategoryEntityCollection;
+	}
+
+	/**
+	 * @param relatedAttributeCategoryEntityCollection the relatedAttributeCategoryEntityCollection to set
+	 */
+	public void setRelatedAttributeCategoryEntityCollection(Collection<CategoryEntityInterface> relatedAttributeCategoryEntityCollection)
+	{
+		this.relatedAttributeCategoryEntityCollection = relatedAttributeCategoryEntityCollection;
+	}
+	
+	/**
+	 * @param categoryEntity
+	 */
+	public void addRelatedAttributeCategoryEntity(CategoryEntityInterface categoryEntity)
+	{
+		this.relatedAttributeCategoryEntityCollection.add(categoryEntity);
+	}
 
 }

@@ -61,5 +61,15 @@ public interface CategoryAttributeInterface extends BaseAbstractAttributeInterfa
 	 * @param columnProperties the ColumnProperties to be set.
 	 */
 	public void setColumnProperties(ColumnPropertiesInterface columnProperties);
+	
+	/**
+	 * 
+	 */
+	public Boolean getIsVisible();
+	
+	/**
+	 * 
+	 */
+	public void setIsVisible(Boolean isVisible);
 
 }

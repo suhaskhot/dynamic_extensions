@@ -59,6 +59,11 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	 * 
 	 */
 	protected Collection<PermissibleValueInterface> defaultPermissibleValuesCollection = new HashSet<PermissibleValueInterface>();
+	
+	/**
+	 * 
+	 */
+	protected Boolean isVisible;
 
 	public CategoryAttribute()
 	{
@@ -312,6 +317,22 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	public AttributeTypeInformationInterface getAttributeTypeInformation()
 	{
 		return ((AttributeMetadataInterface) this.attribute).getAttributeTypeInformation();
+	}
+
+	/**
+	* @hibernate.property name="isVisible" type="boolean" column="IS_VISIBLE"
+	*/
+	public Boolean getIsVisible()
+	{
+		return isVisible;
+	}
+
+	/**
+	 * @param isVisible the isVisible to set
+	 */
+	public void setIsVisible(Boolean isVisible)
+	{
+		this.isVisible = isVisible;
 	}
 
 }

@@ -28,6 +28,7 @@ public interface ValidatorRuleInterface
 	 * @return  boolean if no error it return true
 	 * @throws DynamicExtensionsValidationException : Validation Exception
 	 */
-	boolean validate(AttributeMetadataInterface attribute, Object valueObject, Map<String, String> parameterMap)
-			throws DynamicExtensionsValidationException,DynamicExtensionsSystemException;
+	boolean validate(AttributeMetadataInterface attribute, Object valueObject,
+			Map<String, String> parameterMap) throws DynamicExtensionsValidationException,
+			DynamicExtensionsSystemException;
 }

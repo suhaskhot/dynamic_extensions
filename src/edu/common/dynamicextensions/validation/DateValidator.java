@@ -4,7 +4,6 @@ package edu.common.dynamicextensions.validation;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -12,9 +11,6 @@ import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
-import edu.common.dynamicextensions.processor.ProcessorConstants;
-import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.wustl.common.util.Utility;
 
 /**
  * @author chetan_patil
@@ -30,7 +26,8 @@ public class DateValidator implements ValidatorRuleInterface
 	public boolean validate(AttributeMetadataInterface attribute, Object valueObject,
 			Map<String, String> parameterMap) throws DynamicExtensionsValidationException
 	{
-		boolean valid = false;
+		boolean valid = true;
+
 		String attributeName = attribute.getName();
 		AttributeTypeInformationInterface attributeTypeInformation = attribute
 				.getAttributeTypeInformation();
@@ -41,46 +38,29 @@ public class DateValidator implements ValidatorRuleInterface
 			DateAttributeTypeInformation dateAttributeTypeInformation = (DateAttributeTypeInformation) attributeTypeInformation;
 			String dateFormat = dateAttributeTypeInformation.getFormat();
 			String value = (String) valueObject;
-			
-			for (int i=0; i<value.length(); i++)
-			{
-				if (Character.isLetter(value.charAt(i)))
-				{
-					List<String> placeHolders = new ArrayList<String>();
-					placeHolders.add(attributeName);
-					throw new DynamicExtensionsValidationException("Validation failed", null,
-							"dynExtn.validation.Number", placeHolders);
-				}
-			}
-					
-
-            if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
-            {
-            	String month = value.substring(0, 2);
-				String year = value.substring(3, value.length());
-                value = month + "-01-" + year;
-            }
-            if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
-            {
-                value = DynamicExtensionsUtility.formatYearDate(value);
-                value = value.substring(0, value.length()-4);
-            }
 
 			try
 			{
-				Date date = null;
-				date = Utility.parseDate(value, "MM-dd-yyyy");
-				if (date != null)
-				{
-					valid = true;
-				}
-				
-				//Bug 7537-Data entry invalid year causes exception.This exception handled by following code.
 				SimpleDateFormat sf = new SimpleDateFormat(dateFormat);
 				sf.setLenient(false);
 				sf.parse(value);
 			}
 			catch (ParseException parseException)
+			{
+				valid = false;
+			}
+			//Validate if year is equal to '0000' or contains '.' symbol
+			if (value.endsWith("0000") || value.contains("."))
+			{
+				valid = false;
+			}
+			//Validate length of entered date
+			if (dateFormat.length() != value.length())
+			{
+				valid = false;
+			}
+
+			if (!valid)
 			{
 				List<String> placeHolders = new ArrayList<String>();
 				placeHolders.add(attributeName);

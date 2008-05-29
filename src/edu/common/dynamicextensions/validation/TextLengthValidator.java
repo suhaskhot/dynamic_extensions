@@ -31,13 +31,13 @@ public class TextLengthValidator implements ValidatorRuleInterface
 		AttributeTypeInformationInterface attributeTypeInformation = attribute
 				.getAttributeTypeInformation();
 		String attributeName = attribute.getName();
-		
+
 		//If control of type TextField is changed to the 
 		//ListBox while creating catgory. These validations should be 
 		//skipped in that case. 
 		if (valueObject instanceof List)
 		{
-			return true;			
+			return true;
 		}
 		if (valueObject != null)
 		{
@@ -49,16 +49,27 @@ public class TextLengthValidator implements ValidatorRuleInterface
 
 				StringAttributeTypeInformation stringAttributeTypeInformation = (StringAttributeTypeInformation) attributeTypeInformation;
 				Integer size = stringAttributeTypeInformation.getSize();
-				if ((size > 0) && (value.length() > size))
+				//bug id :7778
+				//Fixed by : prashant
+				//reviewed by : kunal
+				int length = value.length();
+				for (int i = 0; i < value.length(); i++)
+				{
+					if (value.charAt(i) == '\n')
+					{
+						length -= 2;
+					}
+				}
+				if ((size > 0) && (length <= size))
+				{
+					isValid = true;
+				}
+				else
 				{
 					placeHolders.add(attributeName);
 					placeHolders.add((new Long(size)).toString());
 					throw new DynamicExtensionsValidationException("Validation failed", null,
 							"dynExtn.validation.TextLength", placeHolders);
-				}
-				else
-				{
-					isValid = true;
 				}
 			}
 		}

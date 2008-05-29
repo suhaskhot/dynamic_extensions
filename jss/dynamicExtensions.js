@@ -2039,11 +2039,27 @@ function trim( value )
 
 //for textArea Max length
 function textCounter( field,  maxlimit )
-{
-  if ( field.value.length > maxlimit )
+{	
+  //bug id :7778
+  //Fixed by : prashant
+  //reviewed by : kunal
+  var length=field.value.length;
+  var n=0;
+  var i=0;
+  while(i<length)
   {
-    field.value = field.value.substring( 0, maxlimit );
+  	if(field.value.charAt(i)=="\n")
+  	{
+		n++;
+  	}
+    i++;
+  }
+  if ( length-n > maxlimit )
+  {
+    field.value = field.value.substring( 0, maxlimit + n);
     alert( 'Textarea value can only be '+  maxlimit + ' characters in length.' );
 
   }
  }
+
+

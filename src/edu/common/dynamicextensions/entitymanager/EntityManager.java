@@ -1177,9 +1177,16 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 						updateColumnString.append(WHITESPACE + COMMA + WHITESPACE);
 					}
 
+					value = queryBuilder.getFormattedValue(attribute, value);
+					//Bug id : 7777 
+					//Fixed by : Prashant 
+					//Reviewed by : Kunal
+					if (value.toString().isEmpty())
+					{
+						value = "'" + value + "'";
+					}
 					updateColumnString.append(dbColumnName);
 					updateColumnString.append(WHITESPACE + EQUAL + WHITESPACE);
-					value = queryBuilder.getFormattedValue(attribute, value);
 					updateColumnString.append(value);
 				}
 			}

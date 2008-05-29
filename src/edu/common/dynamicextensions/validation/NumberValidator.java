@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.LongAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
@@ -35,21 +36,22 @@ public class NumberValidator implements ValidatorRuleInterface
 	public boolean validate(AttributeMetadataInterface attribute, Object valueObject,
 			Map<String, String> parameterMap) throws DynamicExtensionsValidationException
 	{
-		boolean isValid = false;
+		boolean isValid = true;
 		AttributeTypeInformationInterface attributeTypeInformation = attribute
 				.getAttributeTypeInformation();
 		String attributeName = attribute.getName();
 
 		String value = (String) valueObject;
-		if (value == null || value.equals(""))
-		{
-			isValid = true;
-		}
-		else if ((DynamicExtensionsUtility.isNumeric((String) valueObject))
-				&& (attributeTypeInformation != null))
+		value = value.trim();
+		
+		if (attributeTypeInformation != null)
 		{
 			try
 			{
+				if (!(DynamicExtensionsUtility.isNumeric((String) valueObject)) )
+						{
+					isValid=false;
+						}
 				if (attributeTypeInformation instanceof LongAttributeTypeInformation)
 				{
 					checkIntegerNumberValidity(attributeName, value.trim());
@@ -61,11 +63,14 @@ public class NumberValidator implements ValidatorRuleInterface
 			}
 			catch (NumberFormatException numberFormatException)
 			{
-				throw new DynamicExtensionsValidationException("Validation failed", null,
-						"dynExtn.validation.Number", attributeName);
+				isValid = false;
 			}
 		}
-		else
+		if(value.isEmpty())
+		{
+			isValid = true;
+		}
+		if(!isValid)
 		{
 			throw new DynamicExtensionsValidationException("Validation failed", null,
 					"dynExtn.validation.Number", attributeName);

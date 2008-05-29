@@ -61,7 +61,7 @@ public class LoadDataEntryFormProcessor
 	{
 		DataEntryForm dataEntryForm = (DataEntryForm) actionForm;
 
-		if (mode != null && mode.equalsIgnoreCase(WebUIManagerConstants.VIEW_MODE))
+		if (mode != null)// && mode.equalsIgnoreCase(WebUIManagerConstants.VIEW_MODE))
 		{
 			containerInterface.setMode(mode);
 		}

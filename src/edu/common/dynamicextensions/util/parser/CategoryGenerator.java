@@ -218,40 +218,60 @@ public class CategoryGenerator
 			Map<String, List<AssociationInterface>> entityNameAssociationMap) throws IOException, ParseException, DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
-		while (categoryFileParser.readNext())
+		CategoryHelperInterface categoryHelper = new CategoryHelper();
+		categoryFileParser.readNext();
+
+		while (true)
 		{
-			String[] categoryPaths = categoryFileParser.getCategoryPaths();
-			String[] categoryEntitysInPath = categoryPaths[0].split("->");
-			String categoryEntityName = categoryEntitysInPath[categoryEntitysInPath.length - 1];
-
-			String entityName = categoryEntityName.substring(0, categoryEntityName.indexOf("["));
-			EntityInterface entity = entityGroup.getEntityByName(entityName);
-
-			CategoryHelperInterface categoryHelper = new CategoryHelper();
+			EntityInterface entity = null;
+			CategoryEntityInterface categoryEntity = null;
 			boolean newCategoryCreated = false;
-			if (category.getCategoryEntityByName(categoryEntityName) == null)
+			String entityName = null;
+			String[] categoryPaths = null;
+			if (categoryFileParser.hasInsatanceInformation())
 			{
-				newCategoryCreated = true;
+				categoryPaths = categoryFileParser.getCategoryPaths();
+				String[] categoryEntitysInPath = categoryPaths[0].split("->");
+				String categoryEntityName = categoryEntitysInPath[categoryEntitysInPath.length - 1];
+
+				entityName = categoryEntityName.substring(0, categoryEntityName.indexOf("["));
+				entity = entityGroup.getEntityByName(entityName);
+
+				if (category.getCategoryEntityByName(categoryEntityName) == null)
+				{
+					newCategoryCreated = true;
+				}
+				categoryEntity = categoryHelper.createOrUpdateCategoryEntity(category, entity, categoryEntityName);
+
 			}
-			CategoryEntityInterface categoryEntity = categoryHelper.createOrUpdateCategoryEntity(category, entity, categoryEntityName);
-
-			categoryFileParser.readNext();
-
-			String attributeName = categoryFileParser.getRelatedAttributeName();
-			CategoryAttributeInterface categoryAttribute = categoryHelper.createCategoryAttribute(entity, attributeName, categoryEntity);
-
-			String defaultValue = categoryFileParser.getDefaultValueForRelatedAttribute();
-			categoryAttribute.setDefaultValue(entity.getAttributeByName(attributeName).getAttributeTypeInformation().getPermissibleValueForString(
-					defaultValue));
-			categoryAttribute.setIsVisible(false);
-			category.addRelatedAttributeCategoryEntity(categoryEntity);
-
-			if (newCategoryCreated)
+			else
 			{
-				String associationName = category.getRootCategoryElement() + " to " + categoryEntity.getName() + " association";
-				categoryHelper.associateCategoryEntities(category.getRootCategoryElement(), categoryEntity, associationName, 1, entityGroup,
-						entityNameAssociationMap.get(entityName), categoryPaths[0]);
+				break;
 			}
+
+			while (categoryFileParser.readNext())
+			{
+				if (categoryFileParser.hasInsatanceInformation())
+				{
+					break;
+				}
+				String attributeName = categoryFileParser.getRelatedAttributeName();
+				CategoryAttributeInterface categoryAttribute = categoryHelper.createCategoryAttribute(entity, attributeName, categoryEntity);
+
+				String defaultValue = categoryFileParser.getDefaultValueForRelatedAttribute();
+				categoryAttribute.setDefaultValue(entity.getAttributeByName(attributeName).getAttributeTypeInformation()
+						.getPermissibleValueForString(defaultValue));
+				categoryAttribute.setIsVisible(false);
+				category.addRelatedAttributeCategoryEntity(categoryEntity);
+
+				if (newCategoryCreated)
+				{
+					String associationName = category.getRootCategoryElement() + " to " + categoryEntity.getName() + " association";
+					categoryHelper.associateCategoryEntities(category.getRootCategoryElement(), categoryEntity, associationName, 1, entityGroup,
+							entityNameAssociationMap.get(entityName), categoryPaths[0]);
+				}
+			}
+
 		}
 
 	}
@@ -507,5 +527,4 @@ public class CategoryGenerator
 		}
 		return categoryPath;
 	}
-
 }

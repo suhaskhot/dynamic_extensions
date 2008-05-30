@@ -64,5 +64,6 @@ public interface DynamicExtensionsQueryBuilderConstantsInterface extends EntityM
 	String CONTENT_TYPE = "content_type";
 
 	String VALUES_KEYWORD = "VALUES";
+	String RECORD_ID = "RECORD_ID";
 
 }

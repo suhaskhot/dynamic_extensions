@@ -224,7 +224,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 	{
 		String dataEntryOperation = dataEntryForm.getDataEntryOperation();
 
-		if (dataEntryOperation != null && dataEntryOperation.equalsIgnoreCase("insertChildData"))// && (dataEntryForm.getErrorList().isEmpty()))
+		if (dataEntryOperation != null && dataEntryOperation.equalsIgnoreCase("insertChildData") && (dataEntryForm.getErrorList().isEmpty()))
 		{
 			String childContainerId = dataEntryForm.getChildContainerId();
 			AbstractContainmentControlInterface associationControl = UserInterfaceiUtility.getAssociationControl(

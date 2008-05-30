@@ -52,7 +52,7 @@ public class NumberValidator implements ValidatorRuleInterface
 						{
 					isValid=false;
 						}
-				if (attributeTypeInformation instanceof LongAttributeTypeInformation)
+				else if (attributeTypeInformation instanceof LongAttributeTypeInformation)
 				{
 					checkIntegerNumberValidity(attributeName, value.trim());
 				}

@@ -168,7 +168,7 @@
 	   from edu.common.dynamicextensions.domain.userinterface.Container container, 
 	   edu.common.dynamicextensions.domain.Entity entity 
 	    
-		   where container.abstractEntity.id = entity.id and container.abstractEntity.id in
+		   where container.abstractEntity.id = entity.id and entity.abstract = false and container.abstractEntity.id in
 		   (      
 			   select association.targetEntity.id
 			       from Association association

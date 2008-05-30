@@ -1494,10 +1494,25 @@ function removeCheckedRow(containerId)
                         {
                             str = str + ")";
                         }
-
-                      		 var controlValue = document.getElementById(childObjectName).value;
-							cell.innerHTML = replaceAll(cell.innerHTML,childObjectName,str);
+						
+						if (document.getElementById(childObjectName) == null)
+						{
+							var controlValue = childNode.value;
+						}
+						else
+						{
+							var controlValue = document.getElementById(childObjectName).value;
+						}
+						 
+						cell.innerHTML = replaceAll(cell.innerHTML,childObjectName,str);
+						if (document.getElementById(childObjectName) == null)
+						{
+							str = controlValue;
+						}
+						else
+						{
 							document.getElementById(str).value  = controlValue;
+						}
 
                         break;
                     }
@@ -2058,8 +2073,5 @@ function textCounter( field,  maxlimit )
   {
     field.value = field.value.substring( 0, maxlimit + n);
     alert( 'Textarea value can only be '+  maxlimit + ' characters in length.' );
-
   }
  }
-
-

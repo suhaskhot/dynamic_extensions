@@ -23,7 +23,6 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.dao.HibernateDAO;
 import edu.wustl.common.exception.BizLogicException;
@@ -208,19 +207,20 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	}
 
 	/**
-	 * This method is used in case result of the query is miltiple records.
-	 *
-	 * @param query query to be executed.
-	 * @return List of records.
+	 * This method is used in case result of the query is multiple records.
+	 * @param query
+	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public List getResultInList(String query) throws DynamicExtensionsSystemException
+	public List<Long> getResultInList(String query) throws DynamicExtensionsSystemException
 	{
-		List resultList = new ArrayList();
+		List<Long> resultList = new ArrayList<Long>();
+		
 		Session session = null;
 		Connection con = null;
 		Statement statement = null;
 		ResultSet resultSet = null;
+		
 		try
 		{
 			session = DBUtil.getCleanSession();
@@ -236,10 +236,12 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 		catch (SQLException e)
 		{
 			e.printStackTrace();
+			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
 		catch (BizLogicException e)
 		{
 			e.printStackTrace();
+			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
 		finally
 		{
@@ -252,6 +254,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 			catch (SQLException e)
 			{
 				e.printStackTrace();
+				throw new DynamicExtensionsSystemException(e.getMessage(), e);
 			}
 		}
 		
@@ -295,9 +298,8 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	/**
 	 * @return
 	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsValidationException 
 	 */
-	public static boolean isValuePresent(AttributeInterface attribute, Object value) throws DynamicExtensionsSystemException, DynamicExtensionsValidationException
+	public static boolean isValuePresent(AttributeInterface attribute, Object value) throws DynamicExtensionsSystemException
 	{
 		return new DynamicExtensionBaseQueryBuilder().isValuePresent(attribute, value);
 	}

@@ -3,12 +3,12 @@ package edu.common.dynamicextensions.util.parser;
 
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.DISPLAY_LABLE;
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.FORM_DEFINITION;
+import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.INSTANCE;
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.OPTIONS;
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.OVERRIDE_PV;
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.PERMISSIBLE_VALUES;
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.PERMISSIBLE_VALUES_FILE;
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.RELATED_ATTIBUTE;
-import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.INSTANCE;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -336,17 +336,17 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	 */
 	public boolean isOverridePermissibleValues() throws IOException
 	{
-		if(OVERRIDE_PV.equals(readLine()[0].split("=")[0].trim()))
+		if (OVERRIDE_PV.equals(readLine()[0].split("=")[0].trim()))
 		{
 			String string = readLine()[0].split("=")[1].trim();
 			this.readNext();
 			return new Boolean(string);
-			
+
 		}
 		return false;
 
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.util.parser.CategoryFileParser#hasRelatedAttributes()
 	 */
@@ -359,19 +359,18 @@ public class CategoryCSVFileParser extends CategoryFileParser
 		return false;
 	}
 
-	
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.util.parser.CategoryFileParser#hasInsatanceInformation()
 	 */
 	public boolean hasInsatanceInformation()
 	{
-		if (readLine()[0].trim().startsWith(INSTANCE))
+		if (readLine() != null && readLine()[0].trim().startsWith(INSTANCE))
 		{
 			return true;
 		}
 		return false;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.util.parser.CategoryFileParser#getDefaultValueForRelatedAttribute()
 	 */
@@ -379,7 +378,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	{
 		return readLine()[0].split("=")[1].trim();
 	}
-	
+
 	public String getRelatedAttributeName()
 	{
 		return readLine()[0].split("=")[0].split(":")[1].trim();

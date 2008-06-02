@@ -12,7 +12,9 @@ import edu.common.dynamicextensions.domain.CategoryEntity;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
 import edu.common.dynamicextensions.domain.UserDefinedDE;
+import edu.common.dynamicextensions.domain.userinterface.ComboBox;
 import edu.common.dynamicextensions.domain.userinterface.Container;
+import edu.common.dynamicextensions.domain.userinterface.ListBox;
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -590,7 +592,17 @@ public class CategoryHelper implements CategoryHelperInterface
 		}
 		else
 		{
-			selectControl = (SelectInterface) control;
+			if ((control instanceof ComboBox && controlType.equals(controlType.COMBO_BOX_CONTROL))
+					|| (control instanceof ListBox && controlType.equals(controlType.LIST_BOX_CONTROL)))
+
+			{
+				selectControl = (SelectInterface) control;
+			}
+			else if (control != null)
+			{
+				removeControl(container, control);
+			}
+
 		}
 
 		if (selectControl == null)

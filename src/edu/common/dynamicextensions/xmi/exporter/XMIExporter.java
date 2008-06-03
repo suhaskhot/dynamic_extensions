@@ -206,7 +206,7 @@ public class XMIExporter implements XMIExportInterface
 				EntityInterface entity = (EntityInterface)entityCollnIter.next();
 				if(entity!=null)
 				{
-					Collection<AssociationInterface> entityAssociations = entity.getAllAssociations();
+					Collection<AssociationInterface> entityAssociations = entity.getAssociationCollection();
 					if(entityAssociations!=null)
 					{
 						Iterator entityAssocnCollnIter = entityAssociations.iterator();
@@ -306,7 +306,7 @@ public class XMIExporter implements XMIExportInterface
 		if(entity!=null)
 		{
 			//Association relationships
-			Collection<AssociationInterface> entityAssociations = entity.getAllAssociations();
+			Collection<AssociationInterface> entityAssociations = entity.getAssociationCollection();
 			if(entityAssociations!=null)
 			{
 				Iterator<AssociationInterface> entityAssociationsIter = entityAssociations.iterator();
@@ -997,7 +997,7 @@ public class XMIExporter implements XMIExportInterface
 		if(entity!=null)
 		{
 			//Association relationships
-			Collection<AssociationInterface> entityAssociations = entity.getAllAssociations();
+			Collection<AssociationInterface> entityAssociations = entity.getAssociationCollection();
 			if(entityAssociations!=null)
 			{
 				Iterator<AssociationInterface> entityAssociationsIter = entityAssociations.iterator();

@@ -24,12 +24,11 @@ public class TextLengthValidator implements ValidatorRuleInterface
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.validation.ValidatorRuleInterface#validate(edu.common.dynamicextensions.domaininterface.AttributeInterface, java.lang.Object, java.util.Map)
 	 */
-	public boolean validate(AttributeMetadataInterface attribute, Object valueObject,
-			Map<String, String> parameterMap) throws DynamicExtensionsValidationException
+	public boolean validate(AttributeMetadataInterface attribute, Object valueObject, Map<String, String> parameterMap)
+			throws DynamicExtensionsValidationException
 	{
 		boolean isValid = false;
-		AttributeTypeInformationInterface attributeTypeInformation = attribute
-				.getAttributeTypeInformation();
+		AttributeTypeInformationInterface attributeTypeInformation = attribute.getAttributeTypeInformation();
 		String attributeName = attribute.getName();
 
 		//If control of type TextField is changed to the 
@@ -42,17 +41,13 @@ public class TextLengthValidator implements ValidatorRuleInterface
 		if (valueObject != null)
 		{
 			String value = (String) valueObject;
-			if (attributeTypeInformation != null
-					&& attributeTypeInformation instanceof StringAttributeTypeInformation)
+			if (attributeTypeInformation != null && attributeTypeInformation instanceof StringAttributeTypeInformation)
 			{
 				ArrayList<String> placeHolders = new ArrayList<String>();
 
 				StringAttributeTypeInformation stringAttributeTypeInformation = (StringAttributeTypeInformation) attributeTypeInformation;
 				Integer size = stringAttributeTypeInformation.getSize();
-				//bug id :7778
-				//Fixed by : prashant
-				//reviewed by : kunal
-				int length = value.length();
+				Integer length = value.length();
 				for (int i = 0; i < value.length(); i++)
 				{
 					if (value.charAt(i) == '\n')
@@ -60,16 +55,16 @@ public class TextLengthValidator implements ValidatorRuleInterface
 						length -= 2;
 					}
 				}
-				if ((size > 0) && (length <= size))
-				{
-					isValid = true;
-				}
-				else
+				//skip the maxlength validation if maxlength for the text field is not defined
+				if ((size > 0) && length > size)
 				{
 					placeHolders.add(attributeName);
 					placeHolders.add((new Long(size)).toString());
-					throw new DynamicExtensionsValidationException("Validation failed", null,
-							"dynExtn.validation.TextLength", placeHolders);
+					throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.TextLength", placeHolders);
+				}
+				else
+				{
+					isValid = true;
 				}
 			}
 		}

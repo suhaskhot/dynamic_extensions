@@ -9,6 +9,8 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -285,9 +287,11 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		valueMap = generateAttributeValueMap(containerInterface, request, dataEntryForm, "", valueMap, true);
 
 		List<String> errorList = ValidatorUtil.validateEntity(valueMap, dataEntryForm.getErrorList());
-		//List<String> errorList = new ArrayList<String>();
-		//saveErrors(request, getErrorMessages(errorList));
-		dataEntryForm.setErrorList(errorList);
+
+		//Remove duplicate error messages by converting an error message list to hashset.
+		HashSet<String> hashSet = new HashSet<String>(errorList);
+
+		dataEntryForm.setErrorList(new LinkedList<String>(hashSet));
 	}
 
 	/**
@@ -628,7 +632,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		}
 		return recordIdentifier;
 	}
-	
+
 	/**
 	 * This method is used to check for the valid File Extensions. 
 	 * @param dataEntryForm

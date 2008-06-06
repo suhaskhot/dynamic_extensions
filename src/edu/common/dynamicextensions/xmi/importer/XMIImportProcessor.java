@@ -322,6 +322,8 @@ public class XMIImportProcessor
 			Collection ownedElementColl = model.getOwnedElement();
 			System.out.println("MODEL OWNED ELEMENT SIZE: " + ownedElementColl.size());
 			Iterator iter = ownedElementColl.iterator();
+			// added to import classes in default package
+			processPackageForModel(model,umlClassColl,umlAssociationColl,umlGeneralisationColl);
 			while (iter.hasNext())
 			{
 				Object obj = iter.next();
@@ -331,10 +333,50 @@ public class XMIImportProcessor
 					processPackage(umlPackageObj, umlClassColl, umlAssociationColl,
 							umlGeneralisationColl , packageName);
 				}
-			}
+			}	
+			
 		}
 	}
+	private void processPackageForModel(Model parentPkg,
+			List<UmlClass> umlClasses, List<UmlAssociation> associations,
+			List<Generalization> generalizations)
+	{
+     	for (Iterator i = parentPkg.getOwnedElement().iterator(); i.hasNext();)
+		{
+			Object o = i.next();
+		/*	if (o instanceof org.omg.uml.modelmanagement.UmlPackage && !(packageName.equals(parentPkg.getName())))
+			{
+				org.omg.uml.modelmanagement.UmlPackage subPkg = (org.omg.uml.modelmanagement.UmlPackage) o;
+				processPackage(subPkg, umlClasses, associations, generalizations,packageName);
+			}
+			else*/
+				
+			if (o instanceof UmlAssociation)
+			{
+				associations.add((UmlAssociation) o);
+			}
+			else if (o instanceof Generalization)
+			{
+				generalizations.add((Generalization) o);
+			}
+			else if (o instanceof UmlClass)
+			{
+				UmlClass umlClass = (UmlClass) o;
+				boolean isEntityADatatype = checkEntityWithDataTypeEntities(umlClass.getName());
+				if (isEntityADatatype)
+				{//Skipping classes having datatype names eg Integer,String etc.
+					continue;
+				}
 
+				Collection<Generalization> generalizationColl = umlClass.getGeneralization();
+				if (generalizationColl != null && generalizationColl.size() > 0)
+				{
+					generalizations.addAll(generalizationColl);
+				}
+				umlClasses.add(umlClass);
+			} 
+		}
+	}
 	/**
 	 * @param parentPkg
 	 * @param pkgName
@@ -398,7 +440,7 @@ public class XMIImportProcessor
 		EntityProcessor entityProcessor = EntityProcessor.getInstance();
 		EntityInterface entity = entityProcessor.createEntity();
 		entity.setName(name);
-		entity.setDescription(umlClass.getName());
+		entity.setDescription(entityGroup.getName()+"--"+umlClass.getName());
 		entity.setAbstract(umlClass.isAbstract());
 		Collection<Attribute> attrColl = XMIUtilities.getAttributes(umlClass, false);
 
@@ -1310,29 +1352,32 @@ public class XMIImportProcessor
 	 */
 	private void setTaggedValue(ControlsModel controlModel,
 			AbstractAttributeInterface editedAttribute) {
-		// max length of string from tagged value		
-		Integer maxLen = attrNameVsMaxLen.get(editedAttribute);
-		if(maxLen==null)
+		if(!(editedAttribute instanceof AssociationInterface))
 		{
-			maxLen=265;
+			// max length of string from tagged value		
+			Integer maxLen = attrNameVsMaxLen.get(editedAttribute);
+			if(maxLen==null)
+			{
+				maxLen=255;
+			}
+			controlModel.setAttributeSize(maxLen.toString());
+			//date format tagged value
+			String format = attrNameVsDateFormat.get(editedAttribute);
+			if(format==null)
+			{
+				format=Constants.DATE_PATTERN_MM_DD_YYYY;
+			}
+			controlModel.setFormat(format);
+			String dateFormat =DynamicExtensionsUtility.getDateFormat(format); 
+			controlModel.setDateValueType(dateFormat);
+			// precision tagged value
+			Integer precision = attrNameVsPrecision.get(editedAttribute);
+			if(precision==null)
+			{
+				precision=0;
+			}
+			controlModel.setAttributeDecimalPlaces(precision.toString());
 		}
-		controlModel.setAttributeSize(maxLen.toString());
-		//date format tagged value
-		String format = attrNameVsDateFormat.get(editedAttribute);
-		if(format==null)
-		{
-			format=Constants.DATE_PATTERN_MM_DD_YYYY;
-		}
-		controlModel.setFormat(format);
-		String dateFormat =DynamicExtensionsUtility.getDateFormat(format); 
-		controlModel.setDateValueType(dateFormat);
-		// precision tagged value
-		Integer precision = attrNameVsPrecision.get(editedAttribute);
-		if(precision==null)
-		{
-			precision=0;
-		}
-		controlModel.setAttributeDecimalPlaces(precision.toString());
 	}
 
 	/**
@@ -1352,6 +1397,8 @@ public class XMIImportProcessor
 		//Setting Edited entity name as caption for container.
 		//Also not setting parentform to avoid unncessary DB call as base container is already present in the container object
 		containerModel.setFormName(entityInterface.getName());
+		if(entityInterface.isAbstract())
+			containerModel.setIsAbstract("true");
 		//Container Object is now populated
 		containerProcessor.populateContainerInterface(containerInterface, containerModel);
 
@@ -1628,7 +1675,7 @@ public class XMIImportProcessor
 							Integer maxLen = attrNameVsMaxLen.get(attributeInterface);
 							if(maxLen==null)
 							{
-								maxLen=100;
+								maxLen=255;
 							}
 							
 							((StringAttributeTypeInformation) attributeTypeInformation)

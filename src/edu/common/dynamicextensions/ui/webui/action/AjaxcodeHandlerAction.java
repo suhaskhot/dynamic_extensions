@@ -27,17 +27,21 @@ import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.GroupProcessor;
+import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.util.SemanticPropertyBuilderUtil;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
+import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.beans.NameValueBean;
@@ -196,71 +200,64 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 
 	/**
 	 * @param request
-	 * @param gridControlsIds
+	 * @param controlsSeqNumbers
 	 * @return
 	 */
 	private String updateControlsSequence(HttpServletRequest request, String controlsSeqNumbers)
 	{
-		/*System.out.println("ControlsId " + controlsSeqNumbers);
-		ContainerInterface containerInterface = WebUIManager.getCurrentContainer(request);
-		if (containerInterface != null)
+		ContainerInterface container = WebUIManager.getCurrentContainer(request);
+		if (container != null)
 		{
-			Collection<ControlInterface> oldControlsCollection = containerInterface
-					.getControlCollection();
+			Collection<ControlInterface> oldControlsCollection = container.getControlCollection();
+			
 			if (oldControlsCollection != null)
 			{
-				Integer[] sequenceNumbers = DynamicExtensionsUtility.convertToIntegerArray(
-						controlsSeqNumbers, ProcessorConstants.CONTROLS_SEQUENCE_NUMBER_SEPARATOR);
-				ControlInterface[] oldControlsArray = oldControlsCollection
-						.toArray(new ControlInterface[oldControlsCollection.size()]);
+				Integer [] sequenceNumbers = DynamicExtensionsUtility.convertToIntegerArray(controlsSeqNumbers, ProcessorConstants.CONTROLS_SEQUENCE_NUMBER_SEPARATOR);
+				ControlInterface [] oldControls = oldControlsCollection.toArray(new ControlInterface[oldControlsCollection.size()]);
 
-				//adding id attribute to attributecollection
+				// Adding id attribute to attribute collection.
 				AttributeInterface idAttribute = null;
-				Collection<AttributeInterface> attributeCollection = ((AbstractEntityInterface) containerInterface.getAbstractEntity())
-						.getAttributeCollection();
+				Collection<AttributeInterface> attributeCollection = ((EntityInterface) container.getAbstractEntity()).getAllAttributes();
 				for (AttributeInterface attributeIterator : attributeCollection)
 				{
-					if (attributeIterator.getColumnProperties().getName() != null
-							&& attributeIterator.getColumnProperties().getName().equals(
-									DynamicExtensionsQueryBuilderConstantsInterface.IDENTIFIER))
+					if (attributeIterator.getColumnProperties().getName() != null && attributeIterator.getColumnProperties().getName().equals(DynamicExtensionsQueryBuilderConstantsInterface.IDENTIFIER))
 					{
 						idAttribute = attributeIterator;
 						break;
 					}
 				}
 
-				//remove old controls from collection
-				containerInterface.removeAllControls();
-				((AbstractEntityInterface) containerInterface.getAbstractEntity()).removeAllAttributes();
+				// Remove old controls from collection.
+				container.removeAllControls();
+				((AbstractEntityInterface) container.getAbstractEntity()).removeAllAttributes();
+				
 				ControlInterface control = null;
 				if (sequenceNumbers != null)
 				{
 					for (int i = 0; i < sequenceNumbers.length; i++)
 					{
-						control = DynamicExtensionsUtility.getControlBySequenceNumber(
-								oldControlsArray, sequenceNumbers[i].intValue());
-						System.out.println(control);
+						control = DynamicExtensionsUtility.getControlBySequenceNumber(oldControls, sequenceNumbers[i].intValue());
 						if (control != null)
 						{
-							containerInterface.addControl(control);
-							((AbstractEntityInterface) containerInterface.getAbstractEntity()).addAbstractAttribute(
-									(AbstractAttributeInterface) control.getBaseAbstractAttribute());
+							container.addControl(control);
+							((EntityInterface) container.getAbstractEntity()).addAbstractAttribute((AbstractAttributeInterface) control.getBaseAbstractAttribute());
 						}
 					}
 				}
+				
 				if (idAttribute != null)
 				{
-					((AbstractEntityInterface)containerInterface.getAbstractEntity()).addAbstractAttribute(idAttribute);
+					((EntityInterface)container.getAbstractEntity()).addAbstractAttribute(idAttribute);
 				}
 			}
 		}
-		System.out.println("Coontrols Colln : ");
-		Collection<ControlInterface> controlCollection = containerInterface.getControlCollection();
+		
+		Collection<ControlInterface> controlCollection = container.getControlCollection();
 		for (ControlInterface control : controlCollection)
 		{
-			System.out.println("[" + control.getSequenceNumber() + "] = [" + control.getCaption()
-					+ "]");
-		}*/
+			System.out.println("[" + control.getSequenceNumber() + "] = [" + control.getCaption()+ "]");
+		}
+		
 		return "";
 	}
 
@@ -282,8 +279,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 
 		AssociationMetadataInterface association = (AssociationMetadataInterface) associationControl.getBaseAbstractAttribute();
 
-		List<Map<AbstractAttributeInterface, Object>> associationValueMapList = (List<Map<AbstractAttributeInterface, Object>>) valueMap
-				.get(association);
+		List<Map<AbstractAttributeInterface, Object>> associationValueMapList = (List<Map<AbstractAttributeInterface, Object>>) valueMap.get(association);
 
 		String[] deletedRows = deletedRowIds.split(",");
 

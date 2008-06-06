@@ -87,25 +87,46 @@ public class CategoryGenerationUtil
 
 		for (String entityName : absolutePath.keySet())
 		{
-			if (absolutePath.get(entityName).size() == 1)
+
+			if (absolutePath.get(entityName).size() == 1 && rootContainer != null)
 			{
 				CategoryEntityInterface categoryEntityInterface = (CategoryEntityInterface) rootContainer.getAbstractEntity();
 				if (!entityName.equals(categoryEntityInterface.getEntity().getName()))
 				{
-					EntityGroupInterface entityGroup = categoryEntityInterface.getEntity().getEntityGroup();
-					EntityInterface entity = entityGroup.getEntityByName(entityName);
+					ContainerInterface containerInterface = getContainerWithEntityName(containerCollection, entityName);
+					if (containerInterface == null)
+					{
+						EntityGroupInterface entityGroup = categoryEntityInterface.getEntity().getEntityGroup();
+						EntityInterface entity = entityGroup.getEntityByName(entityName);
 
-					ContainerInterface newRootContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(entity, null, category, entityName
-							+ "[1]");
-					newRootContainer.setAddCaption(false);
+						ContainerInterface newRootContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(entity, null, category,
+								entityName + "[1]");
+						newRootContainer.setAddCaption(false);
 
-					categoryHelper.associateCategoryContainers(category, entityGroup, newRootContainer, rootContainer, paths
-							.get(categoryEntityInterface.getEntity().getName()), 1, 
-							containerNameInstanceMap.get(rootContainer.getAbstractEntity().getName()));
-					
-					rootContainer = newRootContainer;
+						categoryHelper.associateCategoryContainers(category, entityGroup, newRootContainer, rootContainer, paths
+								.get(categoryEntityInterface.getEntity().getName()), 1, containerNameInstanceMap.get(rootContainer
+								.getAbstractEntity().getName()));
+
+						rootContainer = newRootContainer;
+
+					}
+					else
+					{
+						rootContainer = containerInterface;
+					}
 
 				}
+			}
+		}
+
+		for (ContainerInterface containerInterface : containerCollection)
+		{
+			CategoryEntityInterface categoryEntity = ((CategoryEntityInterface) containerInterface.getAbstractEntity());
+			if (rootContainer != containerInterface && categoryEntity.getTreeParentCategoryEntity() == null)
+			{
+				categoryHelper.associateCategoryContainers(category, categoryEntity.getEntity().getEntityGroup(), rootContainer, containerInterface,
+						paths.get(categoryEntity.getEntity().getName()), 1, containerNameInstanceMap.get(containerInterface.getAbstractEntity()
+								.getName()));
 			}
 		}
 		categoryHelper.setRootCategoryEntity(rootContainer, category);

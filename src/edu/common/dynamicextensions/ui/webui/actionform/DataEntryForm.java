@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.ui.webui.actionform;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -194,6 +195,10 @@ public class DataEntryForm extends AbstractActionForm
 	 */
 	public List<String> getErrorList()
 	{
+		if(errorList == null)
+		{
+			errorList = new ArrayList<String>();
+		}
 		return errorList;
 	}
 

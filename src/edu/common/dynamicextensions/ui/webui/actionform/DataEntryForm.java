@@ -195,10 +195,6 @@ public class DataEntryForm extends AbstractActionForm
 	 */
 	public List<String> getErrorList()
 	{
-		if(errorList == null)
-		{
-			errorList = new ArrayList<String>();
-		}
 		return errorList;
 	}
 

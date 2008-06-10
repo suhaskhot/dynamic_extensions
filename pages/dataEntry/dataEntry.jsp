@@ -61,6 +61,18 @@
 <c:set var="isTopLevelEntity" value="${dataEntryForm.isTopLevelEntity}" />
 <jsp:useBean id="isTopLevelEntity" type="java.lang.Boolean"/>
 
+<script language="JavaScript" >
+		//Set last refresh time
+		if(window.parent!=null)
+		{
+			if(window.parent.lastRefreshTime!=null)
+			{
+				window.parent.lastRefreshTime = new Date().getTime();
+				alert(new Date().getTime());
+			}
+		}	
+</script>
+
 <html>
 	<head>
 		<title><bean:message key="table.heading" /></title>

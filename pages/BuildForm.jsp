@@ -32,6 +32,8 @@
 		<!--Java Script Function Start -->
 		<script language="JavaScript" type="text/javascript">
 		
+			resetTimeoutCounter();
+			
 			function initCancelOperation()
 			{
 				var addControlBtnCaption = '<bean:message  key="buttons.addControlToForm"/>';
@@ -100,6 +102,8 @@
 	<c:set var="selectedControlCaption" value="${controlsForm.selectedControlCaption}"/>
  	<jsp:useBean id="selectedControlCaption" type="java.lang.String"/>
 
+
+	
 	<!-- Main HTML Code -->
   	<body onload="initBuildForm();initGridView()">
 		<html:form styleId="controlsForm" action="/LoadFormControlsAction" method="post" enctype="multipart/form-data">

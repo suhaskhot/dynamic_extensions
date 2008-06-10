@@ -15,7 +15,7 @@
 	
 	<c:set var="definedEntitiesTreeXML" value="${formDefinitionForm.definedEntitiesTreeXML}"/>
 	<jsp:useBean id="definedEntitiesTreeXML" type="java.lang.String"/>
-	
+
 	<head>
 		<title>Dynamic Extensions</title>
 		<link rel="stylesheet" type="text/css" href="css/styleSheet.css"/>
@@ -26,8 +26,9 @@
 		<script src="jss/ajax.js" type="text/javascript"></script>
 		<script src="dhtml_comp/jss/dhtmlXCommon.js"></script>
 		<script src="dhtml_comp/jss/dhtmlXTree.js"></script>
-		
+
 		<script>
+			resetTimeoutCounter();
 			var currentEntityTree = null,definedEntitiesTree = null;
 			function loadDefineFormPage()
 			{

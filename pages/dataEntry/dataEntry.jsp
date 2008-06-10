@@ -68,7 +68,6 @@
 			if(window.parent.lastRefreshTime!=null)
 			{
 				window.parent.lastRefreshTime = new Date().getTime();
-				alert(new Date().getTime());
 			}
 		}	
 </script>

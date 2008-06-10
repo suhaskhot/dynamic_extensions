@@ -98,10 +98,10 @@ public class TextField extends Control implements TextFieldInterface
 		}
 		else
 		{
-			htmlString = "<INPUT " + "class='font_bl_nor' " + "name='" + htmlComponentName
-					+ "' " + "id='" + htmlComponentName + "' value='" + defaultValue + "' ";
+			htmlString = "<INPUT " + "class='font_bl_nor' " + "name='" + htmlComponentName + "' " + "id='" + htmlComponentName + "' value='"
+					+ defaultValue + "' ";
 
-			int columnSize = columns.intValue()-2;
+			int columnSize = columns.intValue() - 2;
 			if (columnSize > 0)
 			{
 				htmlString += "size='" + columnSize + "' ";
@@ -121,7 +121,7 @@ public class TextField extends Control implements TextFieldInterface
 			}
 
 			int maxChars = 0;
-			AttributeMetadataInterface attibute =  this.getAttibuteMetadataInterface();
+			AttributeMetadataInterface attibute = this.getAttibuteMetadataInterface();
 			if (attibute != null)
 			{
 				maxChars = attibute.getMaxSize();
@@ -131,7 +131,7 @@ public class TextField extends Control implements TextFieldInterface
 			//the max char size is -1
 			if (maxChars > 0)
 			{
-				htmlString += "maxlength='" + maxChars + "'>";
+				htmlString += " onblur='textCounter(this," + maxChars + ")'  ";
 			}
 			else
 			{
@@ -159,8 +159,6 @@ public class TextField extends Control implements TextFieldInterface
 	public void setAttribute(AbstractAttributeInterface abstractAttributeInterface)
 	{
 	}
-
-	
 
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface#getIsUrl()

@@ -2069,10 +2069,9 @@ function textCounter( field,  maxlimit )
   	}
     i++;
   }
-  if ( length-n > maxlimit )
+   if ( length-n > maxlimit )
   {
-    field.value = field.value.substring( 0, maxlimit + n);
-    alert( 'Textarea value can only be '+  maxlimit + ' characters in length.' );
+     alert( 'Input value can be '+  maxlimit + ' characters maximum in length.' );
   }
  }
  

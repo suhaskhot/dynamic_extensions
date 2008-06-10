@@ -2075,3 +2075,17 @@ function textCounter( field,  maxlimit )
     alert( 'Textarea value can only be '+  maxlimit + ' characters in length.' );
   }
  }
+ 
+//for resetting the parent timeout counter
+
+function resetTimeoutCounter()
+{
+	//Set last refresh time
+	if(window.parent!=null)
+	{
+		if(window.parent.lastRefreshTime!=null)
+		{
+			window.parent.lastRefreshTime = new Date().getTime();
+		}
+	}	
+}

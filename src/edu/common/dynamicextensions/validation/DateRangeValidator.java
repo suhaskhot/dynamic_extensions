@@ -30,13 +30,13 @@ public class DateRangeValidator implements ValidatorRuleInterface
 	 * @throws DynamicExtensionsSystemException 
 	 */
 	public boolean validate(AttributeMetadataInterface attribute, Object valueObject,
-			Map<String, String> parameterMap) throws DynamicExtensionsValidationException, DynamicExtensionsSystemException
+			Map<String, String> parameterMap,String controlCaption) throws DynamicExtensionsValidationException, DynamicExtensionsSystemException
 	{
 		boolean valid = true;
 
 		/* Check for the validity of the date */
 		DateValidator dateValidator = new DateValidator();
-		dateValidator.validate(attribute, valueObject, parameterMap);
+		dateValidator.validate(attribute, valueObject, parameterMap,controlCaption);
 
 		AttributeTypeInformationInterface attributeTypeInformation = attribute
 				.getAttributeTypeInformation();
@@ -86,7 +86,7 @@ public class DateRangeValidator implements ValidatorRuleInterface
 				catch (ParseException ParseException)
 				{
 					List<String> placeHolders = new ArrayList<String>();
-					placeHolders.add(attributeName);
+					placeHolders.add(controlCaption);
 					placeHolders.add(dateFormat);
 					throw new DynamicExtensionsValidationException("Validation failed", null,
 							"dynExtn.validation.Date", placeHolders);
@@ -94,24 +94,24 @@ public class DateRangeValidator implements ValidatorRuleInterface
 
 				if (parameterName.equals("min"))
 				{
-					checkMinDate(parameterDate, valueDate, attributeName, parameterValue);
+					checkMinDate(parameterDate, valueDate, attributeName, parameterValue,controlCaption);
 				}
 				else if (parameterName.equals("max"))
 				{
-					checkMaxDate(parameterDate, valueDate, attributeName, parameterValue);
+					checkMaxDate(parameterDate, valueDate, attributeName, parameterValue,controlCaption);
 				}
 			}
 		}
 		return valid;
 	}
 
-	private void checkMinDate(Date parameterDate, Date valueDate, String attributeName, String parameterValue)
+	private void checkMinDate(Date parameterDate, Date valueDate, String attributeName, String parameterValue, String controlCaption)
 			throws DynamicExtensionsValidationException
 	{
 		if (valueDate.before(parameterDate))
 		{
 			List<String> placeHolders = new ArrayList<String>();
-			placeHolders.add(attributeName);
+			placeHolders.add(controlCaption);
 
 			placeHolders.add(parameterValue);
 			throw new DynamicExtensionsValidationException("Validation failed", null,
@@ -119,13 +119,13 @@ public class DateRangeValidator implements ValidatorRuleInterface
 		}
 	}
 
-	private void checkMaxDate(Date parameterDate, Date valueDate, String attributeName, String parameterValue)
+	private void checkMaxDate(Date parameterDate, Date valueDate, String attributeName, String parameterValue, String controlCaption)
 			throws DynamicExtensionsValidationException
 	{
 		if (valueDate.after(parameterDate))
 		{
 			List<String> placeHolders = new ArrayList<String>();
-			placeHolders.add(attributeName);
+			placeHolders.add(controlCaption);
 
 			placeHolders.add(parameterValue);
 			throw new DynamicExtensionsValidationException("Validation failed", null,

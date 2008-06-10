@@ -24,7 +24,7 @@ public class TextLengthValidator implements ValidatorRuleInterface
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.validation.ValidatorRuleInterface#validate(edu.common.dynamicextensions.domaininterface.AttributeInterface, java.lang.Object, java.util.Map)
 	 */
-	public boolean validate(AttributeMetadataInterface attribute, Object valueObject, Map<String, String> parameterMap)
+	public boolean validate(AttributeMetadataInterface attribute, Object valueObject, Map<String, String> parameterMap,String controlCaption)
 			throws DynamicExtensionsValidationException
 	{
 		boolean isValid = false;
@@ -58,7 +58,7 @@ public class TextLengthValidator implements ValidatorRuleInterface
 				//skip the maxlength validation if maxlength for the text field is not defined
 				if ((size > 0) && length > size)
 				{
-					placeHolders.add(attributeName);
+					placeHolders.add(controlCaption);
 					placeHolders.add((new Long(size)).toString());
 					throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.TextLength", placeHolders);
 				}

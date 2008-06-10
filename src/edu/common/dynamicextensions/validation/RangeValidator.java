@@ -31,13 +31,13 @@ public class RangeValidator implements ValidatorRuleInterface
 	 * @throws DynamicExtensionsValidationException if the value is not following the range Rule. 
 	 */
 	public boolean validate(AttributeMetadataInterface attribute, Object valueObject,
-			Map<String, String> parameterMap) throws DynamicExtensionsValidationException
+			Map<String, String> parameterMap,String controlCaption) throws DynamicExtensionsValidationException
 	{
 		boolean valid = true;
 
 		/* Check for the validity of the number */
 		NumberValidator numberValidator = new NumberValidator();
-		numberValidator.validate(attribute, valueObject, parameterMap);
+		numberValidator.validate(attribute, valueObject, parameterMap,controlCaption);
 
 		/* Check for the validity of the range of the number against the pre-defined range*/
 		if (valueObject != null)
@@ -56,11 +56,11 @@ public class RangeValidator implements ValidatorRuleInterface
 					{
 						if (attributeTypeInformation instanceof LongAttributeTypeInformation)
 						{
-							checkLongValidation(parameter, attributeName, value);
+							checkLongValidation(parameter, controlCaption, value);
 						}
 						else if (attributeTypeInformation instanceof DoubleAttributeTypeInformation)
 						{
-							checkDoubleValidation(parameter, attributeName, value);
+							checkDoubleValidation(parameter, controlCaption, value);
 						}
 					}
 				}
@@ -76,7 +76,7 @@ public class RangeValidator implements ValidatorRuleInterface
 	 * @param value the value to be verified.
 	 * @throws DynamicExtensionsValidationException
 	 */
-	private void checkLongValidation(Map.Entry<String, String> parameter, String attributeName,
+	private void checkLongValidation(Map.Entry<String, String> parameter, String controlCaption,
 			String value) throws DynamicExtensionsValidationException
 	{
 		String parameterName = parameter.getKey();
@@ -88,7 +88,7 @@ public class RangeValidator implements ValidatorRuleInterface
 			if (Long.parseLong(value) < Long.parseLong(parameterValue))
 			{
 				placeHolders = new ArrayList<String>();
-				placeHolders.add(attributeName);
+				placeHolders.add(controlCaption);
 				placeHolders.add(parameterValue);
 
 				throw new DynamicExtensionsValidationException("Validation failed", null,
@@ -100,7 +100,7 @@ public class RangeValidator implements ValidatorRuleInterface
 			if (Long.parseLong(value) > Long.parseLong(parameterValue))
 			{
 				placeHolders = new ArrayList<String>();
-				placeHolders.add(attributeName);
+				placeHolders.add(controlCaption);
 				placeHolders.add(parameterValue);
 
 				throw new DynamicExtensionsValidationException("Validation failed", null,
@@ -116,7 +116,7 @@ public class RangeValidator implements ValidatorRuleInterface
 	 * @param value the value to be verified.
 	 * @throws DynamicExtensionsValidationException
 	 */
-	private void checkDoubleValidation(Map.Entry<String, String> parameter, String attributeName,
+	private void checkDoubleValidation(Map.Entry<String, String> parameter, String controlCaption,
 			String value) throws DynamicExtensionsValidationException
 	{
 		String parameterName = parameter.getKey();
@@ -128,7 +128,7 @@ public class RangeValidator implements ValidatorRuleInterface
 			if (Double.parseDouble(value) < Double.parseDouble(parameterValue))
 			{
 				placeHolders = new ArrayList<String>();
-				placeHolders.add(attributeName);
+				placeHolders.add(controlCaption);
 				placeHolders.add(parameterValue);
 
 				throw new DynamicExtensionsValidationException("Validation failed", null,
@@ -140,7 +140,7 @@ public class RangeValidator implements ValidatorRuleInterface
 			if (Double.parseDouble(value) > Double.parseDouble(parameterValue))
 			{
 				placeHolders = new ArrayList<String>();
-				placeHolders.add(attributeName);
+				placeHolders.add(controlCaption);
 				placeHolders.add(parameterValue);
 
 				throw new DynamicExtensionsValidationException("Validation failed", null,

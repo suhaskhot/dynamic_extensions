@@ -11,6 +11,9 @@ import java.util.Set;
 import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -33,36 +36,42 @@ public class ValidatorUtil
 	 * @return errorList if any
 	 * @throws DynamicExtensionsSystemException : Exception 
 	 */
-	public static List<String> validateEntity(
-			Map<BaseAbstractAttributeInterface, Object> attributeValueMap, List<String> errorList)
-			throws DynamicExtensionsSystemException
+	public static List<String> validateEntity(Map<BaseAbstractAttributeInterface, Object> attributeValueMap, List<String> errorList,
+			ContainerInterface containerInterface) throws DynamicExtensionsSystemException
 	{
 		if (errorList == null)
 		{
 			errorList = new ArrayList<String>();
 		}
-		Set<Map.Entry<BaseAbstractAttributeInterface, Object>> attributeSet = attributeValueMap
-				.entrySet();
+		Set<Map.Entry<BaseAbstractAttributeInterface, Object>> attributeSet = attributeValueMap.entrySet();
 		if (attributeSet != null || !attributeSet.isEmpty())
 		{
 			for (Map.Entry<BaseAbstractAttributeInterface, Object> attributeValueNode : attributeSet)
 			{
 				BaseAbstractAttributeInterface abstractAttribute = attributeValueNode.getKey();
+
 				if (abstractAttribute instanceof AttributeMetadataInterface)
 				{
-					errorList.addAll(validateAttributes(attributeValueNode));
+					ControlInterface control = getControlOfGivenAbstractAttribute(abstractAttribute, containerInterface);
+					errorList.addAll(validateAttributes(attributeValueNode, control.getCaption()));
 				}
 				else if (abstractAttribute instanceof AssociationMetadataInterface)
 				{
+
 					AssociationMetadataInterface associationInterface = (AssociationMetadataInterface) abstractAttribute;
-					if (AssociationType.CONTAINTMENT.equals(associationInterface
-							.getAssociationType()))
+					if (AssociationType.CONTAINTMENT.equals(associationInterface.getAssociationType()))
 					{
 						List<Map<BaseAbstractAttributeInterface, Object>> valueObject = (List<Map<BaseAbstractAttributeInterface, Object>>) attributeValueMap
 								.get(abstractAttribute);
 						for (Map<BaseAbstractAttributeInterface, Object> subAttributeValueMap : valueObject)
 						{
-							errorList.addAll(validateEntityAttributes(subAttributeValueMap));
+							for (ControlInterface controlInterface : containerInterface.getControlCollection())
+							{
+								if (controlInterface instanceof AbstractContainmentControlInterface)
+								{
+									errorList.addAll(validateEntityAttributes(subAttributeValueMap, containerInterface));
+								}
+							}
 						}
 					}
 				}
@@ -74,18 +83,53 @@ public class ValidatorUtil
 
 	/**
 	 * 
+	 * @param abstractAttribute
+	 * @param containerInterface
+	 * @return
+	 */
+	public static ControlInterface getControlOfGivenAbstractAttribute(BaseAbstractAttributeInterface abstractAttribute,
+			ContainerInterface containerInterface)
+	{
+		ControlInterface control = null;
+		Collection<ControlInterface> controlCollection = containerInterface.getAllControls();
+		for (ControlInterface controlInterface : controlCollection)
+		{
+			if (control != null)
+			{
+				break;
+			}
+			if (controlInterface instanceof AbstractContainmentControlInterface)
+			{
+				control = getControlOfGivenAbstractAttribute(abstractAttribute, ((AbstractContainmentControlInterface) controlInterface)
+						.getContainer());
+			}
+			else
+			{
+				if (controlInterface.getBaseAbstractAttribute().equals(abstractAttribute))
+				{
+					control = controlInterface;
+					break;
+				}
+			}
+		}
+		return control;
+
+	}
+
+	/**
+	 * 
 	 * @param attributeValueMap
+	 * @param containerInterface 
+	 * @param abstractContainmentControlInterface 
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private static List<String> validateEntityAttributes(
-			Map<BaseAbstractAttributeInterface, Object> attributeValueMap)
-			throws DynamicExtensionsSystemException
+	private static List<String> validateEntityAttributes(Map<BaseAbstractAttributeInterface, Object> attributeValueMap,
+			ContainerInterface containerInterface) throws DynamicExtensionsSystemException
 	{
 		List<String> errorList = new ArrayList<String>();
 
-		Set<Map.Entry<BaseAbstractAttributeInterface, Object>> attributeSet = attributeValueMap
-				.entrySet();
+		Set<Map.Entry<BaseAbstractAttributeInterface, Object>> attributeSet = attributeValueMap.entrySet();
 		if (attributeSet == null || attributeSet.isEmpty())
 		{
 			return errorList;
@@ -96,15 +140,16 @@ public class ValidatorUtil
 			BaseAbstractAttributeInterface abstractAttribute = attributeValueNode.getKey();
 			if (abstractAttribute instanceof AttributeMetadataInterface)
 			{
-				errorList.addAll(validateAttributes(attributeValueNode));
+				ControlInterface control = getControlOfGivenAbstractAttribute(abstractAttribute, (ContainerInterface) containerInterface);
+
+				errorList.addAll(validateAttributes(attributeValueNode, control.getCaption()));
 			}
 		}
 
 		return errorList;
 	}
 
-	private static List<String> validateAttributes(
-			Map.Entry<BaseAbstractAttributeInterface, Object> attributeValueNode)
+	private static List<String> validateAttributes(Map.Entry<BaseAbstractAttributeInterface, Object> attributeValueNode, String controlCaption)
 			throws DynamicExtensionsSystemException
 	{
 		List<String> errorList = new ArrayList<String>();
@@ -129,12 +174,11 @@ public class ValidatorUtil
 					Map<String, String> parameterMap = getParamMap(rule);
 					try
 					{
-						checkValidation(attribute, valueObject, rule, parameterMap);
+						checkValidation(attribute, valueObject, rule, parameterMap, controlCaption);
 					}
 					catch (DynamicExtensionsValidationException e)
 					{
-						errorMessage = ApplicationProperties.getValue(e.getErrorCode(), e
-								.getPlaceHolderList());
+						errorMessage = ApplicationProperties.getValue(e.getErrorCode(), e.getPlaceHolderList());
 						errorList.add(errorMessage);
 					}
 				}
@@ -144,10 +188,10 @@ public class ValidatorUtil
 		return errorList;
 	}
 
-	public static void checkUniqueValidationForAttribute(AttributeMetadataInterface attribute,
-			Object valueObject, Long recordId) throws DynamicExtensionsValidationException,
-			DynamicExtensionsSystemException
+	public static void checkUniqueValidationForAttribute(AttributeMetadataInterface attribute, Object valueObject, Long recordId,
+			String controlCaption) throws DynamicExtensionsValidationException, DynamicExtensionsSystemException
 	{
+
 		Collection<RuleInterface> attributeRuleCollection = attribute.getRuleCollection();
 
 		if (attributeRuleCollection != null || !attributeRuleCollection.isEmpty())
@@ -162,21 +206,19 @@ public class ValidatorUtil
 					{
 						parameterMap.put("recordId", recordId.toString());
 					}
-					checkValidation(attribute, valueObject, rule, parameterMap);
+					checkValidation(attribute, valueObject, rule, parameterMap, controlCaption);
 					break;
 				}
 			}
 		}
 	}
 
-	private static void checkValidation(AttributeMetadataInterface attribute, Object valueObject,
-			RuleInterface rule, Map<String, String> parameterMap)
-			throws DynamicExtensionsSystemException, DynamicExtensionsValidationException
+	private static void checkValidation(AttributeMetadataInterface attribute, Object valueObject, RuleInterface rule,
+			Map<String, String> parameterMap, String controlCaption) throws DynamicExtensionsSystemException, DynamicExtensionsValidationException
 	{
 		String ruleName = rule.getName();
-		ValidatorRuleInterface validatorRule = ControlConfigurationsFactory.getInstance()
-				.getValidatorRule(ruleName);
-		validatorRule.validate(attribute, valueObject, parameterMap);
+		ValidatorRuleInterface validatorRule = ControlConfigurationsFactory.getInstance().getValidatorRule(ruleName);
+		validatorRule.validate(attribute, valueObject, parameterMap, controlCaption);
 	}
 
 	/**

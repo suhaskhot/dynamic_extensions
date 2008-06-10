@@ -28,7 +28,7 @@ public class UniqueValidator implements ValidatorRuleInterface
 	 * @throws DynamicExtensionsValidationException
 	 */
 	public boolean validate(AttributeMetadataInterface attribute, Object valueObject,
-			Map<String, String> parameterMap) throws DynamicExtensionsValidationException,
+			Map<String, String> parameterMap,String controlCaption) throws DynamicExtensionsValidationException,
 			DynamicExtensionsSystemException
 	{
 		boolean isValid = true;
@@ -42,14 +42,14 @@ public class UniqueValidator implements ValidatorRuleInterface
 		{
 			/* Check for the validity of the number */
 			NumberValidator numberValidator = new NumberValidator();
-			numberValidator.validate(attribute, valueObject, parameterMap);			
+			numberValidator.validate(attribute, valueObject, parameterMap,controlCaption);			
 		}
 		
 		//if (EntityManagerUtil.isValuePresent(attribute, valueObject))
 		if(false)
 		{
 			List<String> placeHolders = new ArrayList<String>();
-			placeHolders.add(attribute.getName());
+			placeHolders.add(controlCaption);
 			placeHolders.add((String) valueObject);
 
 			throw new DynamicExtensionsValidationException("Validation failed", null,

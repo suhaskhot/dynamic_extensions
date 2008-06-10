@@ -22,6 +22,7 @@ public interface ValidatorRuleInterface
 	 * 
 	 * @param attribute  attribute to be validated
 	 * @param valueObject  value of the object 
+	 * @param controlCaption 
 	 * @param paramMap RuleConfigurations.xml defines parameter for particular rule.
 	 *                               key = parameter name
 	 *                               value = parameter value
@@ -29,6 +30,6 @@ public interface ValidatorRuleInterface
 	 * @throws DynamicExtensionsValidationException : Validation Exception
 	 */
 	boolean validate(AttributeMetadataInterface attribute, Object valueObject,
-			Map<String, String> parameterMap) throws DynamicExtensionsValidationException,
+			Map<String, String> parameterMap, String controlCaption) throws DynamicExtensionsValidationException,
 			DynamicExtensionsSystemException;
 }

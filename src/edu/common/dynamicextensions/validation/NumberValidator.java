@@ -34,7 +34,7 @@ public class NumberValidator implements ValidatorRuleInterface
 	 * @throws DynamicExtensionsValidationException if the value is not following the Numeric Rule. 
 	 */
 	public boolean validate(AttributeMetadataInterface attribute, Object valueObject,
-			Map<String, String> parameterMap) throws DynamicExtensionsValidationException
+			Map<String, String> parameterMap,String controlCaption) throws DynamicExtensionsValidationException
 	{
 		boolean isValid = true;
 		AttributeTypeInformationInterface attributeTypeInformation = attribute
@@ -54,11 +54,11 @@ public class NumberValidator implements ValidatorRuleInterface
 						}
 				else if (attributeTypeInformation instanceof LongAttributeTypeInformation)
 				{
-					checkIntegerNumberValidity(attributeName, value.trim());
+					checkIntegerNumberValidity(controlCaption, value.trim());
 				}
 				else if (attributeTypeInformation instanceof DoubleAttributeTypeInformation)
 				{
-					checkRealNumberValidity(attributeName, value.trim());
+					checkRealNumberValidity(controlCaption, value.trim());
 				}
 			}
 			catch (NumberFormatException numberFormatException)
@@ -73,7 +73,7 @@ public class NumberValidator implements ValidatorRuleInterface
 		if(!isValid)
 		{
 			throw new DynamicExtensionsValidationException("Validation failed", null,
-					"dynExtn.validation.Number", attributeName);
+					"dynExtn.validation.Number", controlCaption);
 		}
 
 		return isValid;
@@ -86,7 +86,7 @@ public class NumberValidator implements ValidatorRuleInterface
 	 * @throws DynamicExtensionsValidationException if the value is not in the numeric range of Long.
 	 * @throws NumberFormatException if the value is not of numeric nature.
 	 */
-	private void checkIntegerNumberValidity(String attributeName, String value)
+	private void checkIntegerNumberValidity(String controlCaption, String value)
 			throws DynamicExtensionsValidationException, NumberFormatException
 	{
         if (value.contains("."))
@@ -109,7 +109,7 @@ public class NumberValidator implements ValidatorRuleInterface
 		if (numberValue.compareTo(longMin) < 0 || numberValue.compareTo(longMax) > 0)
 		{
 			List<String> placeHolders = new ArrayList<String>();
-			placeHolders.add(attributeName);
+			placeHolders.add(controlCaption);
 			placeHolders.add(strLongMin);
 			placeHolders.add(strLongMax);
 			throw new DynamicExtensionsValidationException("Validation failed", null,
@@ -124,7 +124,7 @@ public class NumberValidator implements ValidatorRuleInterface
 	 * @throws DynamicExtensionsValidationException if the value is not in the numeric range of Double.
 	 * @throws NumberFormatException if the value is not of numeric nature. 
 	 */
-	private void checkRealNumberValidity(String attributeName, String value)
+	private void checkRealNumberValidity(String controlCaption, String value)
 			throws DynamicExtensionsValidationException, NumberFormatException
 	{
 		BigDecimal numberValue = new BigDecimal(value);
@@ -136,7 +136,7 @@ public class NumberValidator implements ValidatorRuleInterface
 		if (numberValue.compareTo(doubleMin) < 0 || numberValue.compareTo(doubleMax) > 0)
 		{
 			List<String> placeHolders = new ArrayList<String>();
-			placeHolders.add(attributeName);
+			placeHolders.add(controlCaption);
 			placeHolders.add(strDoubleMin);
 			placeHolders.add(strDoubleMax);
 			throw new DynamicExtensionsValidationException("Validation failed", null,

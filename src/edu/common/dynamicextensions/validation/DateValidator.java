@@ -24,7 +24,7 @@ public class DateValidator implements ValidatorRuleInterface
 	 * @throws DynamicExtensionsValidationException
 	 */
 	public boolean validate(AttributeMetadataInterface attribute, Object valueObject,
-			Map<String, String> parameterMap) throws DynamicExtensionsValidationException
+			Map<String, String> parameterMap,String controlCaption) throws DynamicExtensionsValidationException
 	{
 		boolean valid = true;
 
@@ -63,7 +63,7 @@ public class DateValidator implements ValidatorRuleInterface
 			if (!valid)
 			{
 				List<String> placeHolders = new ArrayList<String>();
-				placeHolders.add(attributeName);
+				placeHolders.add(controlCaption);
 				placeHolders.add(dateFormat);
 				throw new DynamicExtensionsValidationException("Validation failed", null,
 						"dynExtn.validation.Date", placeHolders);

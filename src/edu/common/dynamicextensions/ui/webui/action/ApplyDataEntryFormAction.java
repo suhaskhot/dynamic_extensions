@@ -286,7 +286,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		Map<BaseAbstractAttributeInterface, Object> valueMap = (Map<BaseAbstractAttributeInterface, Object>) valueMapStack.peek();
 		valueMap = generateAttributeValueMap(containerInterface, request, dataEntryForm, "", valueMap, true);
 
-		List<String> errorList = ValidatorUtil.validateEntity(valueMap, dataEntryForm.getErrorList());
+		List<String> errorList = ValidatorUtil.validateEntity(valueMap, dataEntryForm.getErrorList(),containerInterface);
 
 		//Remove duplicate error messages by converting an error message list to hashset.
 		HashSet<String> hashSet = new HashSet<String>(errorList);

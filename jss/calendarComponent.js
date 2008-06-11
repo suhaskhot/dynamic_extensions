@@ -632,9 +632,13 @@ function formatDate(day, month, year, id) {
     
     var selectedHrs = document.getElementById('timeHrs'+id);
     var selectedMin = document.getElementById('timeMin'+id);
+    
     if(selectedHrs!= null && selectedMin !=null && selectedHrs.style.visibility!="hidden" && selectedMin.style.visibility!="hidden")
     {
-        date += " " + selectedHrs.value + ":" + selectedMin.value;
+	   var selHours = padNumber(selectedHrs.value, 2);
+	   var selMin = padNumber(selectedMin.value, 2);
+       // date += " " + selectedHrs.value + ":" + selectedMin.value;
+       date += " " + selHours + ":" + selMin;
     }
     return date;
 }

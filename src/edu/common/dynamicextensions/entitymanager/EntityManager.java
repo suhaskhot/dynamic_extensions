@@ -315,17 +315,17 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			throws DynamicExtensionsSystemException
 	{
 		String message = "";
-		try
-		{
+		/*try
+		{*/
 			dao.rollback();
-		}
+		/*}
 		catch (DAOException e2)
 		{
 			logDebug("rollbackQueries", DynamicExtensionsUtility.getStackTrace(e));
 			DynamicExtensionsSystemException ex = new DynamicExtensionsSystemException(message, e);
 			ex.setErrorCode(DYEXTN_S_000);
 			throw ex;
-		}
+		}*/
 
 		if (reverseQueryStack != null && !reverseQueryStack.isEmpty())
 		{
@@ -1094,7 +1094,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 					//Bug id : 7777 
 					//Fixed by : Prashant 
 					//Reviewed by : Kunal
-					if (value.toString().isEmpty())
+					//if (value.toString().isEmpty())
+					if (value.toString().length() == 0)
 					{
 						value = "'" + value + "'";
 					}
@@ -1863,27 +1864,27 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{
-			try
-			{
+			/*try
+			{*/
 				hibernateDAO.rollback();
-			}
+			/*}
 			catch (DAOException e1)
 			{
 				throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
-			}
+			}*/
 
 			throw e;
 		}
 		catch (Exception e)
 		{
-			try
-			{
+			/*try
+			{*/
 				hibernateDAO.rollback();
-			}
+			/*}
 			catch (DAOException e1)
 			{
 				throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
-			}
+			}*/
 			throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
 		}
 		finally

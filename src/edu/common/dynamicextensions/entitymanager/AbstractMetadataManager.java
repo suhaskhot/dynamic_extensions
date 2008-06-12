@@ -196,17 +196,17 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 			throws DynamicExtensionsSystemException
 	{
 		String message = "";
-		try
-		{
+		/*try
+		{*/
 			dao.rollback();
-		}
+		/*}
 		catch (DAOException e2)
 		{
 			logDebug("rollbackQueries", DynamicExtensionsUtility.getStackTrace(e));
 			DynamicExtensionsSystemException ex = new DynamicExtensionsSystemException(message, e);
 			ex.setErrorCode(DYEXTN_S_000);
 			throw ex;
-		}
+		}*/
 
 		if (reverseQueryStack != null && !reverseQueryStack.isEmpty())
 		{
@@ -491,14 +491,14 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 	 */
 	protected Exception handleRollback(Exception e, String exceptionMessage, AbstractDAO dao, boolean isExceptionToBeWrapped)
 	{
-		try
-		{
+		/*try
+		{*/
 			dao.rollback();
-		}
+		/*}
 		catch (DAOException e1)
 		{
 			return new DynamicExtensionsSystemException("error while rollback", e);
-		}
+		}*/
 
 		if (isExceptionToBeWrapped)
 		{

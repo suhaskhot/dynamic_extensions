@@ -66,7 +66,8 @@ public class NumberValidator implements ValidatorRuleInterface
 				isValid = false;
 			}
 		}
-		if(value.isEmpty())
+		//if(value.isEmpty())
+		if(value.length() == 0)
 		{
 			isValid = true;
 		}

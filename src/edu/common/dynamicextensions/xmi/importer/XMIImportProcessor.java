@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.Map.Entry;
 
 import org.omg.uml.UmlPackage;
@@ -48,6 +49,7 @@ import edu.common.dynamicextensions.domaininterface.BooleanValueInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
+import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
@@ -60,6 +62,7 @@ import edu.common.dynamicextensions.domaininterface.validationrules.RuleParamete
 import edu.common.dynamicextensions.entitymanager.EntityGroupManager;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManagerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
+import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -90,6 +93,8 @@ import edu.wustl.common.util.dbManager.DAOException;
 public class XMIImportProcessor
 {
 	public boolean isEditedXmi = false;
+	
+	public boolean isPackagePresent = false;
 	/**
 	 * Instance of Domain object factory, which will be used to create  dynamic extension's objects.
 	 */
@@ -136,19 +141,16 @@ public class XMIImportProcessor
 
 		processModel(umlPackage, umlClassColl, umlAssociationColl, umlGeneralisationColl,packageName);
 
+		if(!isPackagePresent)
+		{
+			throw new Exception("Specified package is not present in the XMI.");
+		}	
 		List<EntityGroupInterface> entityGroupColl = retrieveEntityGroup(entityGroupName,packageName);
 
 		if (entityGroupColl == null || entityGroupColl.size() == 0)
 		{//Add
 			entityGroup = DomainObjectFactory.getInstance().createEntityGroup();
-			if(packageName.equals(""))
-			{
-				setEntityGroupName(entityGroupName);
-			}
-			else
-			{
-				setEntityGroupName(packageName);
-			}
+			setEntityGroupName(entityGroupName);
 			entityGroup.setIsSystemGenerated(false);
 		}
 		else
@@ -156,7 +158,7 @@ public class XMIImportProcessor
 			isEditedXmi = true;
 			entityGroup = entityGroupColl.get(0);
 		}
-
+		addTaggedValue(packageName);	
 		int noOfClasses = umlClassColl.size();
 		umlClassIdVsEntity = new HashMap<String, EntityInterface>(noOfClasses);
 
@@ -244,16 +246,10 @@ public class XMIImportProcessor
 	{
 		List<EntityGroupInterface> entityGroupColl = null;
 		DefaultBizLogic defaultBizLogic = BizLogicFactory.getDefaultBizLogic();
-		if(packageName.equals(""))
-		{
+		
 			entityGroupColl = defaultBizLogic.retrieve(EntityGroup.class
 					.getName(), edu.common.dynamicextensions.ui.util.Constants.NAME, entityGroupName);
-		}
-		else
-		{
-			entityGroupColl = defaultBizLogic.retrieve(EntityGroup.class
-					.getName(), edu.common.dynamicextensions.ui.util.Constants.NAME, packageName);
-		}
+		
 		return entityGroupColl;
 	}
 	/**
@@ -265,6 +261,23 @@ public class XMIImportProcessor
 		entityGroup.setName(entityGroupName);
 		entityGroup.setLongName(entityGroupName);
 		entityGroup.setDescription(entityGroupName);
+	}
+		/**
+	 * @param packageName
+	 */
+	private void addTaggedValue(String packageName)
+	{
+		TaggedValueInterface tv = DomainObjectFactory.getInstance().createTaggedValue();
+		tv.setKey("PackageName");
+		tv.setValue(packageName);
+		
+		Collection<TaggedValueInterface> tvColl = entityGroup.getTaggedValueCollection();
+		if(tvColl == null)
+		{
+			tvColl = new HashSet<TaggedValueInterface>();
+		}
+		tvColl.add(tv);
+		entityGroup.setTaggedValueCollection(tvColl);
 	}
 	/**
 	 * @param entityGroupName
@@ -291,17 +304,14 @@ public class XMIImportProcessor
 	private boolean checkEntityWithDataTypeEntities(String umlClassName)
 	{
 		DatatypeMappings dataType = DatatypeMappings.get(umlClassName);
-		if (dataType == null)
-		{
-			return false;
-		}
-		if(umlClassName.equalsIgnoreCase(edu.common.dynamicextensions.ui.util.Constants.COLLECTION) ||
+
+		if(dataType != null || umlClassName.equalsIgnoreCase(edu.common.dynamicextensions.ui.util.Constants.COLLECTION) ||
 			umlClassName.equalsIgnoreCase(edu.common.dynamicextensions.ui.util.Constants.DATE) ||
 			umlClassName.equalsIgnoreCase(edu.common.dynamicextensions.ui.util.Constants.TIME))
 		{
 			return true;
 		}
-		return true;
+		return false;
 	}
 
 	/**
@@ -312,7 +322,7 @@ public class XMIImportProcessor
 	 */
 	private void processModel(UmlPackage umlPackage, List<UmlClass> umlClassColl,
 			List<UmlAssociation> umlAssociationColl, List<Generalization> umlGeneralisationColl, String packageName)
-	{
+	{		
 		ModelManagementPackage modelManagementPackage = umlPackage.getModelManagement();
 		ModelClass modelClass = modelManagementPackage.getModel();
 		Collection<Model> modelColl = modelClass.refAllOfClass();
@@ -322,26 +332,85 @@ public class XMIImportProcessor
 			Collection ownedElementColl = model.getOwnedElement();
 			System.out.println("MODEL OWNED ELEMENT SIZE: " + ownedElementColl.size());
 			Iterator iter = ownedElementColl.iterator();
-			// added to import classes in default package
-			processPackageForModel(model,umlClassColl,umlAssociationColl,umlGeneralisationColl);
-			while (iter.hasNext())
-			{
-				Object obj = iter.next();
-				if (obj instanceof org.omg.uml.modelmanagement.UmlPackage)
-				{
-					org.omg.uml.modelmanagement.UmlPackage umlPackageObj = (org.omg.uml.modelmanagement.UmlPackage) obj;
-					processPackage(umlPackageObj, umlClassColl, umlAssociationColl,
-							umlGeneralisationColl , packageName);
-				}
-			}	
 			
+			StringTokenizer tokens = new StringTokenizer(packageName,XMIConstants.DOT_SEPARATOR);
+			String token = "";
+			if(tokens.hasMoreTokens())
+			{
+				token = tokens.nextToken();
+			}
+			if(token.trim().equalsIgnoreCase(XMIConstants.DEFAULT_PACKAGE))
+			{
+				processPackageForModel(model,umlClassColl,umlAssociationColl,umlGeneralisationColl);				
+			}
+			else
+			{
+				
+				while (iter.hasNext())
+				{
+					StringTokenizer initializedTokens = new StringTokenizer(packageName,XMIConstants.DOT_SEPARATOR);
+					Object obj = iter.next();
+							
+					if (obj instanceof org.omg.uml.modelmanagement.UmlPackage)
+					{
+						org.omg.uml.modelmanagement.UmlPackage umlPackageObj = (org.omg.uml.modelmanagement.UmlPackage) obj;
+						
+						processSelectedPackage(umlPackageObj,initializedTokens,umlClassColl,umlAssociationColl,umlGeneralisationColl);
+											
+	//					processPackage(umlPackageObj, umlClassColl, umlAssociationColl,
+	//							umlGeneralisationColl , packageName);
+					}
+				}
+			}
 		}
+	}
+	/**
+	 * @param parentPkg
+	 * @param tokens
+	 * @param umlClassColl
+	 * @param umlAssociationColl
+	 * @param umlGeneralisationColl
+	 */
+	private void processSelectedPackage(org.omg.uml.modelmanagement.UmlPackage parentPkg,StringTokenizer tokens, List<UmlClass> umlClassColl,
+			List<UmlAssociation> umlAssociationColl, List<Generalization> umlGeneralisationColl)
+	{	
+		String token = "";
+		if(tokens.hasMoreTokens())
+		{
+			token = tokens.nextToken();
+		}
+		
+		//If no package is present in the XMI take package name as "Default"
+//		if(token.trim().equalsIgnoreCase(XMIConstants.DEFAULT_PACKAGE))
+//		{
+//			processPackage(parentPkg,umlClassColl,umlAssociationColl,umlGeneralisationColl);
+//		}
+//		else
+		if(parentPkg.getName().equalsIgnoreCase(token))
+		{
+			int temp = 0;
+			for (Iterator i = parentPkg.getOwnedElement().iterator(); i.hasNext();)
+			{
+				Object o = i.next();//				
+				if (o instanceof org.omg.uml.modelmanagement.UmlPackage)
+				{
+					org.omg.uml.modelmanagement.UmlPackage subPkg = (org.omg.uml.modelmanagement.UmlPackage) o;
+					processSelectedPackage(subPkg,tokens,umlClassColl,umlAssociationColl,umlGeneralisationColl);
+					temp++;
+				}			
+			}
+			if(temp == 0)
+			{//if package name is present, import only that package.
+				processPackage(parentPkg,umlClassColl,umlAssociationColl,umlGeneralisationColl);
+			}
+		}		
 	}
 	private void processPackageForModel(Model parentPkg,
 			List<UmlClass> umlClasses, List<UmlAssociation> associations,
 			List<Generalization> generalizations)
 	{
-     	for (Iterator i = parentPkg.getOwnedElement().iterator(); i.hasNext();)
+		isPackagePresent = true;
+		for (Iterator i = parentPkg.getOwnedElement().iterator(); i.hasNext();)
 		{
 			Object o = i.next();
 		/*	if (o instanceof org.omg.uml.modelmanagement.UmlPackage && !(packageName.equals(parentPkg.getName())))
@@ -351,7 +420,7 @@ public class XMIImportProcessor
 			}
 			else*/
 				
-			if (o instanceof UmlAssociation)
+				if (o instanceof UmlAssociation)
 			{
 				associations.add((UmlAssociation) o);
 			}
@@ -384,17 +453,20 @@ public class XMIImportProcessor
 	 */
 	private void processPackage(org.omg.uml.modelmanagement.UmlPackage parentPkg,
 			List<UmlClass> umlClasses, List<UmlAssociation> associations,
-			List<Generalization> generalizations ,String packageName)
-	{//TODO if package name is present, import only that package.
+			List<Generalization> generalizations)
+	{
+		isPackagePresent = true;
 		for (Iterator i = parentPkg.getOwnedElement().iterator(); i.hasNext();)
 		{
 			Object o = i.next();
-			if (o instanceof org.omg.uml.modelmanagement.UmlPackage && !(packageName.equals(parentPkg.getName())))
+		/*	if (o instanceof org.omg.uml.modelmanagement.UmlPackage && !(packageName.equals(parentPkg.getName())))
 			{
 				org.omg.uml.modelmanagement.UmlPackage subPkg = (org.omg.uml.modelmanagement.UmlPackage) o;
 				processPackage(subPkg, umlClasses, associations, generalizations,packageName);
 			}
-			else if (o instanceof UmlAssociation)
+			else*/
+				
+				if (o instanceof UmlAssociation)
 			{
 				associations.add((UmlAssociation) o);
 			}
@@ -420,7 +492,6 @@ public class XMIImportProcessor
 			}
 		}
 	}
-
 	/**
 	 * Creates a Dynamic Exension Entity from given UMLClass.<br>
 	 * It also assigns all the attributes of the UMLClass to the Entity as the
@@ -517,6 +588,12 @@ public class XMIImportProcessor
 							{
 								attrNameVsPrecision.put(originalAttribute,Integer.parseInt(precision));
 							}
+							//Data Type has been changed						
+//							if(!originalAttribute.getAttributeTypeInformation().getDataType().equalsIgnoreCase(umlAttribute.getType().getName()))
+//							{								
+//								AttributeTypeInformationInterface attrTypeInfo = createAttributeTypeInformation(umlAttribute.getType().getName());
+//								originalAttribute.setAttributeTypeInformation(attrTypeInfo);
+//							}
 						}
 					}
 					//				else
@@ -527,7 +604,77 @@ public class XMIImportProcessor
 			}
 		}
 	}
-
+/**
+	 * @param attributeType
+	 * @return
+	 */
+	private AttributeTypeInformationInterface createAttributeTypeInformation(
+			String attributeType)			
+	{
+		AttributeTypeInformationInterface attributeTypeInformation = null;
+		if (attributeType != null && !attributeType.equals(""))
+		{			
+			
+			DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
+			if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.STRING_ATTRIBUTE_TYPE))
+			{
+				attributeTypeInformation = domainObjectFactory
+						.createStringAttributeTypeInformation();
+			}
+			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.DATE_ATTRIBUTE_TYPE))
+			{
+				attributeTypeInformation = domainObjectFactory
+						.createDateAttributeTypeInformation();
+			}
+			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.BOOLEAN_ATTRIBUTE_TYPE))
+			{
+				attributeTypeInformation = domainObjectFactory
+						.createBooleanAttributeTypeInformation();
+			}
+			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.BYTE_ARRAY_ATTRIBUTE_TYPE))
+			{
+				attributeTypeInformation = domainObjectFactory
+						.createByteArrayAttributeTypeInformation();
+			}
+			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.FILE_ATTRIBUTE_TYPE))
+			{
+				attributeTypeInformation = domainObjectFactory
+						.createFileAttributeTypeInformation();
+			}
+			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.INTEGER_ATTRIBUTE_TYPE))
+			{				
+				attributeTypeInformation = domainObjectFactory
+				.createIntegerAttributeTypeInformation();
+			}
+			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.FLOAT_ATTRIBUTE_TYPE))
+			{				
+				attributeTypeInformation = domainObjectFactory
+				.createFloatAttributeTypeInformation();
+			}
+			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.LONG_ATTRIBUTE_TYPE))
+			{				
+				attributeTypeInformation = domainObjectFactory
+				.createLongAttributeTypeInformation();
+			}
+			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.DOUBLE_ATTRIBUTE_TYPE))
+			{				
+				attributeTypeInformation = domainObjectFactory
+				.createDoubleAttributeTypeInformation();
+			}
+			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.SHORT_ATTRIBUTE_TYPE))
+			{				
+				attributeTypeInformation = domainObjectFactory
+				.createShortAttributeTypeInformation();
+			}
+			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.OBJECT_ATTRIBUTE_TYPE))
+			{				
+				attributeTypeInformation = domainObjectFactory
+				.createObjectAttributeTypeInformation();
+			}
+		}
+		
+		return attributeTypeInformation;
+	}
 	/**
 	 * @param attrName
 	 * @param originalAttrColl
@@ -540,7 +687,7 @@ public class XMIImportProcessor
 		{
 			for (AttributeInterface originalAttr : originalAttrColl)
 			{
-				if (originalAttr.getName().equals(attrName))
+				if (originalAttr.getName().equalsIgnoreCase(attrName))
 				{
 					return originalAttr;
 				}
@@ -667,7 +814,7 @@ public class XMIImportProcessor
 		Collection<AssociationInterface> existingAssociationColl = srcEntity
 				.getAssociationCollection();
 		if (existingAssociationColl != null && existingAssociationColl.size() > 0)
-		{
+		{//EDIT Case
 			association = isAssociationPresent(umlAssociation.getName(), existingAssociationColl,
 					srcEntity.getName(), tgtEntity.getName(), direction, sourceRole, targetRole);
 		}
@@ -949,7 +1096,7 @@ public class XMIImportProcessor
 					boolean isInherited = false;
 					for (AttributeInterface attributeFromParent : parentAttributeCollection)
 					{
-						if (attributeFromChild.getName().equals(attributeFromParent.getName()))
+						if (attributeFromChild.getName().equalsIgnoreCase(attributeFromParent.getName()))
 						{
 							isInherited = true;
 							duplicateAttrColl.add(attributeFromChild);
@@ -1237,9 +1384,11 @@ public class XMIImportProcessor
 				.getTargetEntity().getAssociationCollection();
 
 		EntityInterface originalTargetEntity = getEntity(association.getTargetEntity().getName());
-		//Removing redundant association
-		for (AssociationInterface targetAsso : targetEntityAssociationColl)
+		if(originalTargetEntity != null)
 		{
+		 //Removing redundant association
+		 for (AssociationInterface targetAsso : targetEntityAssociationColl)
+		 {
 			if (targetAsso.getTargetEntity().getName().equalsIgnoreCase(
 					association.getEntity().getName()))
 			{
@@ -1255,14 +1404,15 @@ public class XMIImportProcessor
 				}
 
 				if (targetAsso.getAssociationDirection().equals(
-						Constants.AssociationDirection.SRC_DESTINATION)
-						&& originalTargetAssociation.getAssociationDirection().equals(
-								Constants.AssociationDirection.BI_DIRECTIONAL))
-				{//We need to remove system generated association if direction has been changed from bi directional to source destination
-					attributesToRemove.add(editedAttribute);
-				}
+							Constants.AssociationDirection.SRC_DESTINATION) && originalTargetAssociation != null 
+							&& originalTargetAssociation.getAssociationDirection().equals(
+									Constants.AssociationDirection.BI_DIRECTIONAL))
+					{//We need to remove system generated association if direction has been changed from bi directional to source destination						
+						attributesToRemove.add(editedAttribute);
+					}
 			}
 		}
+	 }
 	}
 
 	/**
@@ -1801,6 +1951,11 @@ public class XMIImportProcessor
 		for(String containerName : containerNames)
 		{
 			List containerList = (ArrayList) entityNameVsContainers.get(containerName);
+			if(containerList == null || containerList.size() < 1)
+			{
+				throw new DynamicExtensionsApplicationException("The container name " + containerName + " does " +
+						"not match with the container name in the Model.");
+			}
 			ContainerInterface containerInterface = (ContainerInterface) containerList.get(0);
 			mainContainerList.add(containerInterface);
 		}
@@ -1815,7 +1970,6 @@ public class XMIImportProcessor
 //			containerColl.add(containerInterface);
 //		}
 		EntityGroupManagerInterface entityManagerInterface = EntityGroupManager.getInstance();
-
 		try
 		{
 		//	entityManagerInterface.persistEntityGroupWithAllContainers(entityGroup, mainContainerList);

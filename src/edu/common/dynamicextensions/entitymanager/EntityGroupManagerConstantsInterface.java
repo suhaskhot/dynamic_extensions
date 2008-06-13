@@ -14,4 +14,6 @@ public interface EntityGroupManagerConstantsInterface
 
     String CAB2B_ENTITY_GROUP = "caB2BEntityGroup";
     String PACKAGE_NAME = "PackageName";
+    String METADATA_ENTITY_GROUP = "MetadataEntityGroup";
+    
 }

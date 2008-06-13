@@ -131,6 +131,7 @@ public class EntityGroupManager extends AbstractMetadataManager implements Entit
 	{
 		addTaggedValue(entityGroup, CAB2B_ENTITY_GROUP, CAB2B_ENTITY_GROUP);
 		addTaggedValue(entityGroup, PACKAGE_NAME, entityGroup.getName());
+		addTaggedValue(entityGroup, METADATA_ENTITY_GROUP, METADATA_ENTITY_GROUP);
 		return entityGroup;
 	}
 

@@ -2,9 +2,8 @@
 package edu.common.dynamicextensions.domaininterface.userinterface;
 
 import edu.common.dynamicextensions.domain.userinterface.Container;
-import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
+import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
@@ -13,7 +12,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
  * to the Container on dynamically generated User Interface.
  * @author geetika_bangard
  */
-public interface ControlInterface extends DynamicExtensionBaseDomainObjectInterface,  Comparable
+public interface ControlInterface extends DynamicExtensionBaseDomainObjectInterface, Comparable
 {
 
 	/**
@@ -21,6 +20,7 @@ public interface ControlInterface extends DynamicExtensionBaseDomainObjectInterf
 	 * @return id
 	 */
 	Long getId();
+
 	/**
 	 * This can be a primitive type or derived type.
 	 * @return Returns the attribute.
@@ -32,11 +32,11 @@ public interface ControlInterface extends DynamicExtensionBaseDomainObjectInterf
 	 */
 	void setBaseAbstractAttribute(BaseAbstractAttributeInterface abstractAttributeInterface);
 
-	
 	/**
 	 * @param abstractAttributeInterface The attribute to set.
 	 */
 	public AttributeMetadataInterface getAttibuteMetadataInterface();
+
 	/**
 	 * Caption/Title for the control.
 	 * @return Returns the caption.
@@ -140,7 +140,6 @@ public interface ControlInterface extends DynamicExtensionBaseDomainObjectInterf
 	 */
 	Container getParentContainer();
 
-
 	/**
 	 * @param parentContainer parentContainer
 	 */
@@ -155,5 +154,15 @@ public interface ControlInterface extends DynamicExtensionBaseDomainObjectInterf
 	 * @param isSubControl the isSubControl to set
 	 */
 	void setIsSubControl(boolean isSubControl);
+
+	/**
+	 * @return 
+	 */
+	public Boolean getIsReadOnly();
+
+	/**
+	 * @param isReadOnly
+	 */
+	public void setIsReadOnly(Boolean isReadOnly);
 
 }

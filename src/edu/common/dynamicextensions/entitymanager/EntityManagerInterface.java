@@ -323,6 +323,12 @@ public interface EntityManagerInterface
 	public Long checkContainerForAbstractEntity(Long entityIdentifier, boolean isAbstarct) throws DynamicExtensionsSystemException;
 
 	/**
+	 * @param entityIdentifier
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public Long checkContainerForAbstractCategoryEntity(Long entityIdentifier) throws DynamicExtensionsSystemException;
+	/**
 	 * Get entity id for entity. This method fires direct SQL query and does not use hibernate for
 	 * performance reasons.
 	 *

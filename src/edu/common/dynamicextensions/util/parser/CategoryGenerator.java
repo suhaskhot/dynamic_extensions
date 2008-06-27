@@ -176,6 +176,13 @@ public class CategoryGenerator
 
 						setControlsOptions(lastControl);
 
+						setDefaultValue(lastControl);
+
+						if (lastControl.getIsReadOnly())
+						{
+							category.addRelatedAttributeCategoryEntity((CategoryEntityInterface) containerInterface.getAbstractEntity());
+						}
+
 					}
 
 					lastControl.setSequenceNumber(sequenceNumber++);
@@ -202,6 +209,24 @@ public class CategoryGenerator
 					+ categoryFileParser.getLineNumber(), e);
 		}
 		return categoryList;
+
+	}
+
+	/**
+	 * @param control
+	 * @throws ParseException
+	 */
+	private void setDefaultValue(ControlInterface control) throws ParseException
+	{
+
+		if (categoryFileParser.getDefaultValue() == null)
+		{
+			return;
+		}
+
+		CategoryAttributeInterface categoryAttribute = (CategoryAttributeInterface) control.getAttibuteMetadataInterface();
+		categoryAttribute.setDefaultValue(categoryAttribute.getAttribute().getAttributeTypeInformation().getPermissibleValueForString(
+				categoryFileParser.getDefaultValue()));
 
 	}
 

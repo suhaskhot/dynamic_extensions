@@ -2362,6 +2362,32 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 		return contId;
 	}
+	
+	/**
+	 *
+	 * 
+	 * @param entityIdentifier
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public Long checkContainerForAbstractCategoryEntity(Long entityIdentifier) throws DynamicExtensionsSystemException
+	{
+		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entityIdentifier));
+		
+
+		Collection containerCollection = executeHQL("checkContainerForAbstractCategoryEntity", substitutionParameterMap);
+
+		Long contId = null;
+
+		if (containerCollection != null && containerCollection.size() > 0)
+		{
+			contId = (Long) containerCollection.iterator().next();
+
+		}
+		return contId;
+	}
+
 
 	public Long getEntityId(String entityName) throws DynamicExtensionsSystemException
 	{

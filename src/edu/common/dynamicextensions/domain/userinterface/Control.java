@@ -3,12 +3,10 @@ package edu.common.dynamicextensions.domain.userinterface;
 
 import java.io.Serializable;
 
-import com.sun.org.apache.regexp.internal.recompile;
-
 import edu.common.dynamicextensions.domain.BaseAbstractAttribute;
 import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
-import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
+import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -20,10 +18,7 @@ import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
  * @created 28-Sep-2006 12:20:07 PM
  * @hibernate.class table="DYEXTN_CONTROL"
  */
-public abstract class Control extends DynamicExtensionBaseDomainObject
-		implements
-			Serializable,
-			ControlInterface
+public abstract class Control extends DynamicExtensionBaseDomainObject implements Serializable, ControlInterface
 {
 
 	/**
@@ -51,6 +46,11 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	 * whether this attribute should be displayed on screen.
 	 */
 	protected Boolean isHidden = null;
+
+	/**
+	 * Decides whether the control should be desabled or not
+	 */
+	protected Boolean isReadOnly = false;
 
 	/**
 	 * Name of the control.
@@ -208,8 +208,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 		String htmlString = "";
 
 		String innerHTML = "";
-		if (getParentContainer().getMode() != null
-				&& getParentContainer().getMode().equalsIgnoreCase(WebUIManagerConstants.VIEW_MODE))
+		if (getParentContainer().getMode() != null && getParentContainer().getMode().equalsIgnoreCase(WebUIManagerConstants.VIEW_MODE))
 		{
 			innerHTML = generateViewModeHTML();
 		}
@@ -240,7 +239,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 		stringBuffer.append("<td>");
 		stringBuffer.append("</td>");
 		stringBuffer.append("</tr>");
-		
+
 		stringBuffer.append("<td class='formRequiredNotice_withoutBorder' width='2%'>");
 		if (isControlRequired)
 		{
@@ -260,7 +259,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 		}
 		stringBuffer.append(this.getCaption());
 		stringBuffer.append("</td>");
-		
+
 		stringBuffer.append("<td class='formField_withoutBorder' valign='top'>");
 		stringBuffer.append("&nbsp;");
 		stringBuffer.append(htmlString);
@@ -302,21 +301,21 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 		this.value = value;
 	}
 
-//	/**
-//	 * @hibernate.many-to-one  cascade="save-update" column="ABSTRACT_ATTRIBUTE_ID" class="edu.common.dynamicextensions.domain.AbstractAttribute" constrained="true"
-//	 */
-//	public AbstractAttributeInterface getAbstractAttribute()
-//	{
-//		return this.abstractAttribute;
-//	}
-//
-//	/**
-//	 * @param abstractAttribute The abstractAttribute to set.
-//	 */
-//	public void setAbstractAttribute(AbstractAttributeInterface abstractAttributeInterface)
-//	{
-//		this.abstractAttribute = abstractAttributeInterface;
-//	}
+	//	/**
+	//	 * @hibernate.many-to-one  cascade="save-update" column="ABSTRACT_ATTRIBUTE_ID" class="edu.common.dynamicextensions.domain.AbstractAttribute" constrained="true"
+	//	 */
+	//	public AbstractAttributeInterface getAbstractAttribute()
+	//	{
+	//		return this.abstractAttribute;
+	//	}
+	//
+	//	/**
+	//	 * @param abstractAttribute The abstractAttribute to set.
+	//	 */
+	//	public void setAbstractAttribute(AbstractAttributeInterface abstractAttributeInterface)
+	//	{
+	//		this.abstractAttribute = abstractAttributeInterface;
+	//	}
 
 	/**
 	 * @return String
@@ -324,20 +323,20 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	 */
 	public String getHTMLComponentName() throws DynamicExtensionsSystemException
 	{
-//		AbstractAttributeInterface abstractAttributeInterface = this.getAbstractAttribute();
-//		EntityInterface entity = abstractAttributeInterface.getEntity();
-//		Long entityIdentifier = entity.getId();
-//		EntityManagerInterface entityManager = EntityManager.getInstance();
-//		ContainerInterface container = null;
-//		if (entityIdentifier != null)
-//		{
-//			container = entityManager.getContainerByEntityIdentifier(entityIdentifier);
-//		}
+		//		AbstractAttributeInterface abstractAttributeInterface = this.getAbstractAttribute();
+		//		EntityInterface entity = abstractAttributeInterface.getEntity();
+		//		Long entityIdentifier = entity.getId();
+		//		EntityManagerInterface entityManager = EntityManager.getInstance();
+		//		ContainerInterface container = null;
+		//		if (entityIdentifier != null)
+		//		{
+		//			container = entityManager.getContainerByEntityIdentifier(entityIdentifier);
+		//		}
 
 		ContainerInterface parentContainer = this.getParentContainer();
 		if (this.getSequenceNumber() != null)
 		{
-			return "Control_" + parentContainer.getIncontextContainer().getId() + "_" +  parentContainer.getId() + "_" + this.getSequenceNumber();
+			return "Control_" + parentContainer.getIncontextContainer().getId() + "_" + parentContainer.getId() + "_" + this.getSequenceNumber();
 		}
 		return null;
 	}
@@ -425,9 +424,27 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	{
 		this.baseAbstractAttribute = (BaseAbstractAttribute) baseAbstractAttribute;
 	}
-	
-	public AttributeMetadataInterface getAttibuteMetadataInterface(){
+
+	public AttributeMetadataInterface getAttibuteMetadataInterface()
+	{
 		return (AttributeMetadataInterface) baseAbstractAttribute;
+	}
+
+	/**
+	 * @hibernate.property name="isReadOnly" type="boolean" column="READ_ONLY"
+	 * @return
+	 */
+	public Boolean getIsReadOnly()
+	{
+		return isReadOnly;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface#setIsReadOnly(java.lang.Boolean)
+	 */
+	public void setIsReadOnly(Boolean isReadOnly)
+	{
+		this.isReadOnly = isReadOnly;
 	}
 
 }

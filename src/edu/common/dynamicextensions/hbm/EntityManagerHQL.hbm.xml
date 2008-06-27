@@ -135,11 +135,15 @@
 	<query name="checkContainerForAbstractEntity">
       select container.id
             from edu.common.dynamicextensions.domain.userinterface.Container container,edu.common.dynamicextensions.domain.AbstractEntity abstractEntity,
-            edu.common.dynamicextensions.domain.Entity entity
-                        where container.id = ?
-                        AND container.abstractEntity.id = entity.id AND entity.abstract = ?
+            edu.common.dynamicextensions.domain.Entity entity 
+                        where container.id = ?   AND container.abstractEntity.id = entity.id AND entity.abstract = ?      
   	</query>
-
+	<query name="checkContainerForAbstractCategoryEntity">
+      select container.id
+            from edu.common.dynamicextensions.domain.userinterface.Container container,edu.common.dynamicextensions.domain.AbstractEntity abstractEntity,
+			edu.common.dynamicextensions.domain.CategoryEntity categoryentity
+                        where container.id = ?   AND container.abstractEntity.id = categoryentity.id
+  	</query>
 	<query name="getAssociationIdsForTargetEntity">
 	   select association.id
 	   	from edu.common.dynamicextensions.domain.Association association

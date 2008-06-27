@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.util.parser;
 
 /**
@@ -24,18 +25,18 @@ public interface CategoryCSVConstants
 	 * file name, where permissible values are line seperated.
 	 */
 	String PERMISSIBLE_VALUES_FILE = "Permissible_Values_File";
-	
+
 	/**
 	 * This keyword is used before defining the options available for 
 	 * a control. 
 	 */
 	String OPTIONS = "options";
-	
+
 	/**
 	 * This keyword used to define the lable for the form
 	 */
 	String DISPLAY_LABLE = "Display_Label";
-	
+
 	/**
 	 * This keyword used to define the lable for the form
 	 */
@@ -44,18 +45,26 @@ public interface CategoryCSVConstants
 	 * This keyword used to define the lable for the form
 	 */
 	String MULTILINE = "multiline";
-	
+
 	/**
 	 * This keyword is used to specify whether to overide 
 	 * permissble values
 	 */
 	String OVERRIDE_PV = "override_pv";
-	
+
 	/**
 	 * This keyword used to define the lable for the form
 	 */
 	String RELATED_ATTIBUTE = "RelatedAttribute:";
-	
+
+	/**
+	 * 
+	 */
 	String INSTANCE = "instance:";
+
+	/**
+	 * default value of the attribute
+	 */
+	String DEFAULT_VALUE = "defaultValue";
 
 }

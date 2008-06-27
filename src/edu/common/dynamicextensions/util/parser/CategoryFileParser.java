@@ -168,4 +168,10 @@ public abstract class CategoryFileParser extends FileReader
 	 */
 	public abstract String getRelatedAttributeName();
 
+	/**
+	 * @return
+	 */
+	public abstract String getDefaultValue();
+	
+
 }

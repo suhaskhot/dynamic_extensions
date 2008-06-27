@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.util.parser;
 
+import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.DEFAULT_VALUE;
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.DISPLAY_LABLE;
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.FORM_DEFINITION;
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.INSTANCE;
@@ -382,5 +383,21 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	public String getRelatedAttributeName()
 	{
 		return readLine()[0].split("=")[0].split(":")[1].trim();
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.util.parser.CategoryFileParser#getDefaultValue()
+	 */
+	public String getDefaultValue()
+	{
+		String defaultValue = null;
+		for (String string : readLine())
+		{
+			if (string.startsWith(DEFAULT_VALUE))
+			{
+				defaultValue = string.split("=")[1];
+			}
+		}
+		return defaultValue;
 	}
 }

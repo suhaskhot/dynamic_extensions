@@ -89,6 +89,8 @@ public class TextField extends Control implements TextFieldInterface
 
 		String htmlComponentName = getHTMLComponentName();
 		String htmlString = "";
+		String isDisabled = (this.isReadOnly ? "true" : "false");
+
 		if (isUrl != null && isUrl.booleanValue() == true)
 		{
 			htmlString = "<a href='javascript:void(0)' onclick=\"window.open('"
@@ -120,6 +122,9 @@ public class TextField extends Control implements TextFieldInterface
 				htmlString += " type='text' ";
 			}
 
+			//set isdisabled property
+
+			htmlString += " isDisabled='" + isDisabled + "' ";
 			int maxChars = 0;
 			AttributeMetadataInterface attibute = this.getAttibuteMetadataInterface();
 			if (attibute != null)

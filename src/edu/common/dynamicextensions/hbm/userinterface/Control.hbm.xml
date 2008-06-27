@@ -92,6 +92,14 @@
             column="BASE_ABST_ATR_ID"
         />
 
+        <property
+            name="isReadOnly"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="READ_ONLY"
+        />
+
         <!--
             To add non XDoclet property mappings, create a file named
                 hibernate-properties-Control.xml
@@ -225,6 +233,14 @@
         >
         <key
             column="IDENTIFIER"
+        />
+
+        <property
+            name="dateValueType"
+            type="string"
+            update="true"
+            insert="true"
+            column="DATE_VALUE_TYPE"
         />
 
         </joined-subclass>

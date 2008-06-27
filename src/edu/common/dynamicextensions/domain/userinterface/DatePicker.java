@@ -1,6 +1,8 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
+import java.util.Date;
+
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
@@ -9,6 +11,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
+import edu.wustl.common.util.Utility;
 
 /**
  * @version 1.0
@@ -39,16 +42,27 @@ public class DatePicker extends Control implements DatePickerInterface
 	 */
 	protected String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
+		AttributeTypeInformationInterface attributeTypeInformationInterface = ((AttributeMetadataInterface) this
+				.getBaseAbstractAttribute()).getAttributeTypeInformation();
+		String dateFormat = ControlsUtility.getDateFormat(attributeTypeInformationInterface);
+		
 		String defaultValue = (String) this.value;
 		if (value == null)
 		{
 			defaultValue = this.getAttibuteMetadataInterface().getDefaultValue();
 			if (defaultValue == null)
 			{
-				defaultValue = "";
+				if(this.getDateValueType() != null && this.getDateValueType().equals((ProcessorConstants.DATE_VALUE_TODAY)))
+				{
+					defaultValue = Utility.parseDateToString(new Date(), dateFormat);
+				}
+				else
+				{
+					defaultValue = "";
+				}
 			}
 		}
-
+		
 		String htmlComponentName = getHTMLComponentName();
         String output=null;
 		/*String output = "<input class='"
@@ -115,9 +129,7 @@ public class DatePicker extends Control implements DatePickerInterface
             + htmlComponentName
             + " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">";*/
 		/* Obtain the date format */
-		AttributeTypeInformationInterface attributeTypeInformationInterface = ((AttributeMetadataInterface) this
-				.getBaseAbstractAttribute()).getAttributeTypeInformation();
-		String dateFormat = ControlsUtility.getDateFormat(attributeTypeInformationInterface);
+		
 		if (dateFormat.equals(ProcessorConstants.DATE_ONLY_FORMAT))
 		{
             output = "<input class='font_bl_nor' name='"
@@ -276,9 +288,10 @@ public class DatePicker extends Control implements DatePickerInterface
 	{
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface#getDateValueType()
-	 */
+	 /**This method returns the dateValueType of the DatePicker.
+     * @hibernate.property name="dateValueType" type="string" column="DATE_VALUE_TYPE"
+     * @return Returns the dateValueType.
+     */
 	public String getDateValueType()
 	{
 		return dateValueType;

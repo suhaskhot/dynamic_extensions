@@ -19,6 +19,10 @@ import edu.common.dynamicextensions.util.global.Variables;
  * and Database DataTypes and generates the Map of the same. 
  * @author chetan_patil
  */
+/**
+ * @author mandar_shidhore
+ *
+ */
 public class DataTypeFactory
 {
 
@@ -30,7 +34,7 @@ public class DataTypeFactory
 	/**
 	 * 
 	 */
-	private Map<String, String> dataTypeMap;
+	private Map<String, Object> dataTypeMap;
 
 	/**
 	 * Empty constructor
@@ -44,16 +48,15 @@ public class DataTypeFactory
 	 * @return DataTypeFactory instance
 	 * @throws DataTypeFactoryInitializationException on Exception
 	 */
-	public static synchronized DataTypeFactory getInstance()
-			throws DataTypeFactoryInitializationException
+	public static synchronized DataTypeFactory getInstance() throws DataTypeFactoryInitializationException
 	{
 		if (dataTypeFactory == null)
 		{
 			dataTypeFactory = new DataTypeFactory();
-			String dataTypeMappingFileName = "PrimitiveAttributeDataTypes" + "_"
-					+ Variables.databaseName + ".xml";
+			String dataTypeMappingFileName = "PrimitiveAttributeDataTypes" + "_" + Variables.databaseName + ".xml";
 			dataTypeFactory.populateDataTypeMap(dataTypeMappingFileName);
 		}
+		
 		return dataTypeFactory;
 	}
 
@@ -63,10 +66,9 @@ public class DataTypeFactory
 	 * @return dataType Map
 	 * @throws DataTypeFactoryInitializationException on Exception
 	 */
-	public final Map populateDataTypeMap(String xmlFileName)
-			throws DataTypeFactoryInitializationException
+	public final Map<String, Object> populateDataTypeMap(String xmlFileName) throws DataTypeFactoryInitializationException
 	{
-		dataTypeMap = new HashMap<String, String>();
+		dataTypeMap = new HashMap<String, Object>();
 
 		SAXReader saxReader = new SAXReader();
 		InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(xmlFileName);
@@ -78,10 +80,11 @@ public class DataTypeFactory
 			document = saxReader.read(inputStream);
 			Element name = null;
 			Element databaseDataType = null;
+			Element digitsBeforeDecimal = null;
+			Element digitsAfterDecimal = null;
 
 			Element primitiveAttributesElement = document.getRootElement();
-			Iterator primitiveAttributeElementIterator = primitiveAttributesElement
-					.elementIterator("Primitive-Attribute");
+			Iterator primitiveAttributeElementIterator = primitiveAttributesElement.elementIterator("Primitive-Attribute");
 
 			Element primitiveAttributeElement = null;
 
@@ -91,8 +94,20 @@ public class DataTypeFactory
 
 				name = primitiveAttributeElement.element("name");
 				databaseDataType = primitiveAttributeElement.element("database-datatype");
+				digitsBeforeDecimal = primitiveAttributeElement.element("digits-before-decimal");
+				digitsAfterDecimal = primitiveAttributeElement.element("digits-after-decimal");
+				
+				DataTypeInformation dataTypeInfo = new DataTypeInformation();
+				dataTypeInfo.setName(name.getStringValue());
+				dataTypeInfo.setDatabaseDataType(databaseDataType.getStringValue());
+				
+				if (digitsBeforeDecimal != null && digitsAfterDecimal != null)
+				{
+					dataTypeInfo.setDigitsBeforeDecimal(digitsBeforeDecimal.getStringValue());
+					dataTypeInfo.setDigitsAfterDecimal(digitsAfterDecimal.getStringValue());
+				}
 
-				dataTypeMap.put(name.getStringValue(), databaseDataType.getStringValue());
+				dataTypeMap.put(name.getStringValue(), dataTypeInfo);
 			}
 		}
 		catch (DocumentException documentException)
@@ -104,25 +119,38 @@ public class DataTypeFactory
 	}
 
 	/**
-	 * This method returns the name of the Database Datatype given the name
+	 * This method returns the name of the Database Data type given the name
 	 * of the corresponding Primitive attribute.
 	 * @param primitiveAttribute The name of the primitive attribute
-	 * @return String The name of Database datatype
-	 * @throws DataTypeFactoryInitializationException If dataTypeMap is unpopulated
+	 * @return String The name of Database data type
+	 * @throws DataTypeFactoryInitializationException If dataTypeMap is not populated
 	 */
-	public String getDatabaseDataType(String primitiveAttribute)
-			throws DataTypeFactoryInitializationException
+	public String getDatabaseDataType(String primitiveAttribute) throws DataTypeFactoryInitializationException
 	{
 		String databaseDataType = null;
 		if (dataTypeMap != null)
 		{
-			databaseDataType = (String) dataTypeMap.get(primitiveAttribute);
+			DataTypeInformation dataTypeInfo = (DataTypeInformation) dataTypeMap.get(primitiveAttribute);
+			databaseDataType = (dataTypeInfo != null) ? dataTypeInfo.getDatabaseDataType() : null;
 		}
 		else
 		{
 			throw new DataTypeFactoryInitializationException("Cannot find populated dataType Map.");
 		}
+		
 		return databaseDataType;
+	}
+
+	/**
+	 * @param dataType
+	 * @return
+	 */
+	public DataTypeInformation getDataTypePrecisionScaleInformation(String dataType)
+	{
+		DataTypeInformation dataTypeInfo = null;
+		dataTypeInfo = (dataTypeMap != null) ? (DataTypeInformation) dataTypeMap.get(dataType) : null;
+		
+		return dataTypeInfo;
 	}
 
 }

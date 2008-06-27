@@ -881,12 +881,12 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		{
 			try
 			{
-				if (dateValueType.equalsIgnoreCase(ProcessorConstants.DATE_VALUE_TODAY))
-				{
-					String todaysDate = Utility.parseDateToString(new Date(), dateFormat);
-					defaultValue = Utility.parseDate(todaysDate, dateFormat);
-				}
-				else if (dateValueType.equalsIgnoreCase(ProcessorConstants.DATE_VALUE_SELECT))
+//				if (dateValueType.equalsIgnoreCase(ProcessorConstants.DATE_VALUE_TODAY))
+//				{
+//					String todaysDate = Utility.parseDateToString(new Date(), dateFormat);
+//					defaultValue = Utility.parseDate(todaysDate, dateFormat);
+//				}
+				if (dateValueType.equalsIgnoreCase(ProcessorConstants.DATE_VALUE_SELECT))
 				{
 					if (attributeUIBeanInformationIntf.getAttributeDefaultValue() != null)
 					{

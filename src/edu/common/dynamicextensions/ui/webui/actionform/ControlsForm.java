@@ -28,10 +28,7 @@ import edu.wustl.common.util.global.Validator;
  * @author deepti_shelar
  *
  */
-public class ControlsForm extends AbstractActionForm
-		implements
-			ControlUIBeanInterface,
-			AbstractAttributeUIBeanInterface
+public class ControlsForm extends AbstractActionForm implements ControlUIBeanInterface, AbstractAttributeUIBeanInterface
 {
 
 	/**
@@ -712,8 +709,7 @@ public class ControlsForm extends AbstractActionForm
 		this.attributeMultiSelect = attributeMultiSelect;
 		if (attributeMultiSelect != null)
 		{
-			isMultiSelect = new Boolean(attributeMultiSelect
-					.equals(ProcessorConstants.LIST_TYPE_MULTI_SELECT));
+			isMultiSelect = new Boolean(attributeMultiSelect.equals(ProcessorConstants.LIST_TYPE_MULTI_SELECT));
 		}
 	}
 
@@ -1143,8 +1139,8 @@ public class ControlsForm extends AbstractActionForm
 	 }
 
 	 *//**
-	 * @param showPreview The showPreview to set.
-	 */
+		 * @param showPreview The showPreview to set.
+		 */
 	/*
 	 public void setShowPreview(String showPreview)
 	 {
@@ -1303,14 +1299,12 @@ public class ControlsForm extends AbstractActionForm
 
 		if (caption == null || validator.isEmpty(String.valueOf(caption)))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
-					ApplicationProperties.getValue("eav.att.Label")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.Label")));
 		}
-        
-        if (caption.contains(","))
-            errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.label.containsComma",
-                    ApplicationProperties.getValue("eav.att.Label")));
-        
+
+		if (caption.contains(","))
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.label.containsComma", ApplicationProperties.getValue("eav.att.Label")));
+
 		validateControlFields(validator, errors);
 		return errors;
 	}
@@ -1344,29 +1338,28 @@ public class ControlsForm extends AbstractActionForm
 				//Special case for File upload Control
 				getErrorsForFileUploadControl(validator, errors);
 			}
-            else if (userSelectedTool.equalsIgnoreCase((ProcessorConstants.CHECKBOX_CONTROL)))
-            {
-                //Special case for Check box control
-                getErrorsForCheckBoxControl(validator, errors);
-            }
+			else if (userSelectedTool.equalsIgnoreCase((ProcessorConstants.CHECKBOX_CONTROL)))
+			{
+				//Special case for Check box control
+				getErrorsForCheckBoxControl(validator, errors);
+			}
 		}
 	}
-    
-    /**
-     * @param validator :validator
-     * @param errors : action errors
-     */
-    private void getErrorsForCheckBoxControl(Validator validator, ActionErrors errors)
-    {
-        // Radio button checked status 
-        if (attributeDefaultValue == null)
-        {
-            errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-                    "errors.item.required", ApplicationProperties
-                            .getValue("dynExtn.validation.radio.notChecked")));
-        }
 
-    }
+	/**
+	 * @param validator :validator
+	 * @param errors : action errors
+	 */
+	private void getErrorsForCheckBoxControl(Validator validator, ActionErrors errors)
+	{
+		// Radio button checked status 
+		if (attributeDefaultValue == null)
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties
+					.getValue("dynExtn.validation.radio.notChecked")));
+		}
+
+	}
 
 	/**
 	 * @param validator :validator
@@ -1377,15 +1370,13 @@ public class ControlsForm extends AbstractActionForm
 		//Numeric default value
 		if (!(isNaturalNumber(attributeSize, validator) || (validator.isDouble(attributeSize))))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-					"errors.item.naturalNumericField", ApplicationProperties
-							.getValue("eav.att.MaximumFileSize")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.naturalNumericField", ApplicationProperties
+					.getValue("eav.att.MaximumFileSize")));
 		}
 		if (!isNaturalNumber(attributenoOfCols, validator))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-					"errors.item.naturalNumericField", ApplicationProperties
-							.getValue("eav.att.TextFieldWidth")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.naturalNumericField", ApplicationProperties
+					.getValue("eav.att.TextFieldWidth")));
 		}
 	}
 
@@ -1403,18 +1394,16 @@ public class ControlsForm extends AbstractActionForm
 		{
 			if (dateValueType.trim().equalsIgnoreCase(ProcessorConstants.DATE_VALUE_SELECT))
 			{
-				if ((attributeDefaultValue == null)
-						|| (DynamicExtensionsUtility.isDateValid(dateFormat, attributeDefaultValue) == false))
+				if ((attributeDefaultValue == null) || (DynamicExtensionsUtility.isDateValid(dateFormat, attributeDefaultValue) == false))
 				{
-					errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.date.format",
-							ApplicationProperties.getValue("eav.att.DefaultValue")));
+					errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.date.format", ApplicationProperties
+							.getValue("eav.att.DefaultValue")));
 				}
 			}
 		}
 		else
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
-					ApplicationProperties.getValue("eav.att.DefaultValue")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.DefaultValue")));
 		}
 
 		// Perform validation checks on date range
@@ -1433,29 +1422,27 @@ public class ControlsForm extends AbstractActionForm
 				{
 					if ((DynamicExtensionsUtility.isDateValid(dateFormat, this.min) == false))
 					{
-						errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.date.format",
-								ApplicationProperties.getValue("eav.att.Minimum")));
+						errors.add(ActionErrors.GLOBAL_ERROR,
+								new ActionError("errors.date.format", ApplicationProperties.getValue("eav.att.Minimum")));
 						isValid = false;
 					}
 
 					if ((DynamicExtensionsUtility.isDateValid(dateFormat, this.max) == false))
 					{
-						errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.date.format",
-								ApplicationProperties.getValue("eav.att.Maximum")));
+						errors.add(ActionErrors.GLOBAL_ERROR,
+								new ActionError("errors.date.format", ApplicationProperties.getValue("eav.att.Maximum")));
 						isValid = false;
 					}
 
-					if (DynamicExtensionsUtility.compareDates(this.min, this.max, dateFormat) > 0
-							&& isValid)
+					if (DynamicExtensionsUtility.compareDates(this.min, this.max, dateFormat) > 0 && isValid)
 					{
-						errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.date.range",
-								ApplicationProperties.getValue("eav.att.Range")));
+						errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.date.range", ApplicationProperties.getValue("eav.att.Range")));
 					}
 				}
 				else
 				{
-					errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
-							ApplicationProperties.getValue("eav.att.DateRange")));
+					errors.add(ActionErrors.GLOBAL_ERROR,
+							new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.DateRange")));
 				}
 				break;
 			}
@@ -1470,23 +1457,19 @@ public class ControlsForm extends AbstractActionForm
 	{
 		if (attributeMultiSelect == null || validator.isEmpty(String.valueOf(attributeMultiSelect)))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
-					ApplicationProperties.getValue("eav.att.ListBoxType")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.ListBoxType")));
 		}
 		if (dataType == null || validator.isEmpty(String.valueOf(dataType)))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
-					ApplicationProperties.getValue("eav.att.DataInput")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.DataInput")));
 		}
 		//NUMBER OF ROWS SHLD BE NUMERIC
-		if ((attributeMultiSelect != null)
-				&& (attributeMultiSelect.equals(ProcessorConstants.LIST_TYPE_MULTI_SELECT)))
+		if ((attributeMultiSelect != null) && (attributeMultiSelect.equals(ProcessorConstants.LIST_TYPE_MULTI_SELECT)))
 		{
 			if (!isNaturalNumber(attributeNoOfRows, validator))
 			{
-				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-						"errors.item.naturalNumericField", ApplicationProperties
-								.getValue("eav.att.ListBoxDisplayLines")));
+				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.naturalNumericField", ApplicationProperties
+						.getValue("eav.att.ListBoxDisplayLines")));
 			}
 		}
 	}
@@ -1503,25 +1486,20 @@ public class ControlsForm extends AbstractActionForm
 		//1. Check for text field width
 		if (!isNaturalNumber(attributenoOfCols, validator))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-					"errors.item.naturalNumericField", ApplicationProperties
-							.getValue("eav.att.TextFieldWidth")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.naturalNumericField", ApplicationProperties
+					.getValue("eav.att.TextFieldWidth")));
 		}
 		//Text field width cannot be more than 3 characters i.e 999
-		if ((attributenoOfCols != null)
-				&& (attributenoOfCols.length() > ProcessorConstants.MAX_LENGTH_DISPLAY_WIDTH))
+		if ((attributenoOfCols != null) && (attributenoOfCols.length() > ProcessorConstants.MAX_LENGTH_DISPLAY_WIDTH))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.maxlength.exceeded",
-					ApplicationProperties.getValue("eav.att.Description"),
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.maxlength.exceeded", ApplicationProperties.getValue("eav.att.Description"),
 					ProcessorConstants.MAX_LENGTH_DISPLAY_WIDTH));
 		}
 
 		//max number of characters cannot be more than 3 digits long : max value 999
-		if ((attributeSize != null)
-				&& (attributeSize.length() > ProcessorConstants.MAX_LENGTH_MAX_CHARACTERS))
+		if ((attributeSize != null) && (attributeSize.length() > ProcessorConstants.MAX_LENGTH_MAX_CHARACTERS))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.maxlength.exceeded",
-					ApplicationProperties.getValue("eav.att.Description"),
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.maxlength.exceeded", ApplicationProperties.getValue("eav.att.Description"),
 					ProcessorConstants.MAX_LENGTH_MAX_CHARACTERS));
 		}
 		//check errors if datatype is String
@@ -1542,54 +1520,58 @@ public class ControlsForm extends AbstractActionForm
 	 */
 	private void getErrorsForNumericDatatype(Validator validator, ActionErrors errors)
 	{
+		if (this.attributeDecimalPlaces.trim().length() == 0)
+		{
+			this.attributeDecimalPlaces = "0";
+		}
+
+		if (Integer.parseInt(this.attributeDecimalPlaces) > edu.common.dynamicextensions.ui.util.Constants.DOUBLE_PRECISION)
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.maximumPrecision", String
+					.valueOf(edu.common.dynamicextensions.ui.util.Constants.DOUBLE_PRECISION)));
+		}
+
 		/*
-		 *	For number datatype validate:
+		 *	For number data type validate:
 		 *	1) Precision : numeric
 		 *	2) Default value is numeric
 		 */
-        if (attributeDecimalPlaces.contains("."))
-        {
-            errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-                    "errors.item.precisionNotInteger", ApplicationProperties
-                            .getValue("eav.att.AttributeDecimalPlaces")));
-        }
-        
+		if (attributeDecimalPlaces.contains("."))
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.precisionNotInteger", ApplicationProperties
+					.getValue("eav.att.AttributeDecimalPlaces")));
+		}
+
 		if (!isNaturalNumber(attributeDecimalPlaces, validator))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-					"errors.item.naturalNumericField", ApplicationProperties
-							.getValue("eav.att.AttributeDecimalPlaces")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.naturalNumericField", ApplicationProperties
+					.getValue("eav.att.AttributeDecimalPlaces")));
 		}
 
 		//Numeric default value
-		if (!(isNumeric(attributeDefaultValue, validator) || (validator
-				.isDouble(attributeDefaultValue))))
+		if (!(isNumeric(attributeDefaultValue, validator) || (validator.isDouble(attributeDefaultValue))))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-					"errors.item.naturalNumericField", ApplicationProperties
-							.getValue("eav.att.DefaultValue")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.naturalNumericField", ApplicationProperties
+					.getValue("eav.att.DefaultValue")));
 		}
 
 		boolean isMinValid = isNumeric(min, validator);
 		if (!isMinValid)
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.numericField",
-					ApplicationProperties.getValue("eav.att.Minimum")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.numericField", ApplicationProperties.getValue("eav.att.Minimum")));
 		}
 
 		boolean isMaxValid = isNumeric(max, validator);
 		if (!isMaxValid)
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.numericField",
-					ApplicationProperties.getValue("eav.att.Maximum")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.numericField", ApplicationProperties.getValue("eav.att.Maximum")));
 		}
 
 		if (isMinValid && isMaxValid)
 		{
 			if (!isRangeValid(min, max))
 			{
-				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.numericRange",
-						ApplicationProperties.getValue("eav.att.Range")));
+				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.numericRange", ApplicationProperties.getValue("eav.att.Range")));
 			}
 		}
 	}
@@ -1610,16 +1592,14 @@ public class ControlsForm extends AbstractActionForm
 		//Atleast one of singleline/ multiline should be selected
 		if (linesType == null || validator.isEmpty(String.valueOf(linesType)))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
-					ApplicationProperties.getValue("eav.control.type")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.control.type")));
 		}
 
 		//Size : maximum characters shld be numeric
 		if (!isNaturalNumber(attributeSize, validator))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-					"errors.item.naturalNumericField", ApplicationProperties
-							.getValue("eav.att.MaxCharacters")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.naturalNumericField", ApplicationProperties
+					.getValue("eav.att.MaxCharacters")));
 		}
 
 		//Number of lines for multiline textbox shld be numeric
@@ -1627,9 +1607,8 @@ public class ControlsForm extends AbstractActionForm
 		{
 			if (!isNaturalNumber(attributeNoOfRows, validator))
 			{
-				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
-						"errors.item.naturalNumericField", ApplicationProperties
-								.getValue("eav.text.noOfLines")));
+				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.naturalNumericField", ApplicationProperties
+						.getValue("eav.text.noOfLines")));
 			}
 		}
 	}
@@ -1639,19 +1618,19 @@ public class ControlsForm extends AbstractActionForm
 	 */
 	private void checkRequiredFieldsForTextControl(Validator validator, ActionErrors errors)
 	{
-		//Datatype either numeric or string shld be selected
+		//Data type either numeric or string should be selected
 		if (dataType == null || validator.isEmpty(String.valueOf(dataType)))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
-					ApplicationProperties.getValue("eav.att.DataInput")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.DataInput")));
 		}
 		//If displayasURL is checked then default value is mandatory
 		if (attributeDisplayAsURL != null && attributeDisplayAsURL.equals("true"))
 		{
 			if (attributeDefaultValue == null || validator.isEmpty(attributeDefaultValue))
 			{
-				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
-						ApplicationProperties.getValue("eav.att.defaultValue")));
+				errors
+						.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties
+								.getValue("eav.att.defaultValue")));
 			}
 		}
 
@@ -1659,21 +1638,20 @@ public class ControlsForm extends AbstractActionForm
 		{
 			if (!DynamicExtensionsUtility.isNumeric(attributeDefaultValue))
 			{
-				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.numericField",
-						ApplicationProperties.getValue("eav.att.DefaultValue")));
+				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.numericField", ApplicationProperties
+						.getValue("eav.att.DefaultValue")));
 			}
 			else
 			{
-				if (min != null 
+				if (min != null
 						&& !min.equals("")
 						&& max != null
 						&& !max.equals("")
-						
-						&& (Float.parseFloat(attributeDefaultValue) < Float.parseFloat(min) || Float
-								.parseFloat(attributeDefaultValue) > Float.parseFloat(max)))
+						&& (Float.parseFloat(attributeDefaultValue) < Float.parseFloat(min) || Float.parseFloat(attributeDefaultValue) > Float
+								.parseFloat(max)))
 				{
-					errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item",
-							ApplicationProperties.getValue("eav.att.defaultValueExceedsRange")));
+					errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item", ApplicationProperties
+							.getValue("eav.att.defaultValueExceedsRange")));
 				}
 			}
 		}
@@ -1691,7 +1669,7 @@ public class ControlsForm extends AbstractActionForm
 		{
 			if (stringFld.trim().equals(""))
 			{
-				return true; //Blank fields are considered valid. Assume thier value as 0
+				return true; //Blank fields are considered valid. Assume their value as 0
 			}
 			else
 			{
@@ -1707,7 +1685,7 @@ public class ControlsForm extends AbstractActionForm
 		{
 			if (stringFld.trim().equals(""))
 			{
-				return true; //Blank fields are considered valid. Assume thier value as 0
+				return true; //Blank fields are considered valid. Assume their value as 0
 			}
 			else
 			{

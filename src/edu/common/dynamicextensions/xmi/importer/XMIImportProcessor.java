@@ -11,6 +11,8 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Map.Entry;
 
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
 import org.omg.uml.UmlPackage;
 import org.omg.uml.foundation.core.AssociationEnd;
 import org.omg.uml.foundation.core.Attribute;
@@ -51,7 +53,6 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
-import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
@@ -61,9 +62,7 @@ import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterfac
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManager;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManagerInterface;
-import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
-import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ApplyFormControlsProcessor;
@@ -133,6 +132,7 @@ public class XMIImportProcessor
 	{
 		super();
 	}
+	
 	public List<ContainerInterface> processXmi(UmlPackage umlPackage, String entityGroupName, String packageName, List<String> containerNames) throws Exception
 	{
 		List<UmlClass> umlClassColl = new ArrayList<UmlClass>();
@@ -1499,9 +1499,10 @@ public class XMIImportProcessor
 	}
 	/**
 	 * Method to set tagged values(max length, precision, date format) in control model
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	private void setTaggedValue(ControlsModel controlModel,
-			AbstractAttributeInterface editedAttribute) {
+	private void setTaggedValue(ControlsModel controlModel, AbstractAttributeInterface editedAttribute) throws DynamicExtensionsSystemException 
+	{
 		if(!(editedAttribute instanceof AssociationInterface))
 		{
 			// max length of string from tagged value		
@@ -1522,9 +1523,28 @@ public class XMIImportProcessor
 			controlModel.setDateValueType(dateFormat);
 			// precision tagged value
 			Integer precision = attrNameVsPrecision.get(editedAttribute);
-			if(precision==null)
+			
+			if (precision!= null && precision > edu.common.dynamicextensions.ui.util.Constants.DOUBLE_PRECISION)
 			{
-				precision=0;
+				throw new DynamicExtensionsSystemException("Precision can at maximum be 15 owing to database constraints.");
+			}
+			
+			if (precision == null)
+			{
+				AttributeTypeInformationInterface attrTypeInfo = ((AttributeInterface) editedAttribute).getAttributeTypeInformation();
+				
+				if (attrTypeInfo instanceof FloatAttributeTypeInformation)
+				{
+					precision = edu.common.dynamicextensions.ui.util.Constants.FLOAT_PRECISION;
+				}
+				else if (attrTypeInfo instanceof DoubleAttributeTypeInformation)
+				{
+					precision = edu.common.dynamicextensions.ui.util.Constants.DOUBLE_PRECISION;
+				}
+				else
+				{
+					precision = edu.common.dynamicextensions.ui.util.Constants.ZERO;
+				}
 			}
 			controlModel.setAttributeDecimalPlaces(precision.toString());
 		}
@@ -1633,7 +1653,7 @@ public class XMIImportProcessor
 
 	/**
 	 * @param parentIdVsChildrenIds
-	 * This method add the parent container to the child container for Generalisation.
+	 * This method add the parent container to the child container for Generalization.
 	 */
 	protected void postProcessInheritence(Map<String, List<String>> parentIdVsChildrenIds)
 			throws Exception
@@ -1828,17 +1848,35 @@ public class XMIImportProcessor
 								maxLen=255;
 							}
 							
-							((StringAttributeTypeInformation) attributeTypeInformation)
-									.setSize(new Integer(maxLen));
+							((StringAttributeTypeInformation) attributeTypeInformation).setSize(new Integer(maxLen));
 							implicitRuleList = configurationsFactory.getAllImplicitRules(
 									ProcessorConstants.TEXT_CONTROL, ProcessorConstants.DATATYPE_STRING);
 						}
 						else
 						{
 							Integer precision = attrNameVsPrecision.get(attributeInterface);
-							if(precision==null)
+							
+							if (precision!= null && precision > edu.common.dynamicextensions.ui.util.Constants.DOUBLE_PRECISION)
 							{
-								precision=0;
+								throw new DynamicExtensionsSystemException("Precision can at maximum be 15 owing to database constraints.");
+							}
+							
+							if (precision == null)
+							{
+								AttributeTypeInformationInterface attrTypeInfo = attributeInterface.getAttributeTypeInformation();
+								
+								if (attrTypeInfo instanceof FloatAttributeTypeInformation)
+								{
+									precision = edu.common.dynamicextensions.ui.util.Constants.FLOAT_PRECISION;
+								}
+								else if (attrTypeInfo instanceof DoubleAttributeTypeInformation)
+								{
+									precision = edu.common.dynamicextensions.ui.util.Constants.DOUBLE_PRECISION;
+								}
+								else
+								{
+									precision = edu.common.dynamicextensions.ui.util.Constants.ZERO;
+								}
 							}
 							
 							((NumericAttributeTypeInformation) attributeTypeInformation)

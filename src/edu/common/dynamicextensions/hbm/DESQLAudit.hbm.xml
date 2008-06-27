@@ -39,6 +39,7 @@
             update="true"
             insert="true"
             column="QUERY_EXECUTED"
+            length="4000"
         />
 
         <property

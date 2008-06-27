@@ -69,7 +69,7 @@ public class DESQLAudit extends DynamicExtensionBaseDomainObject implements DESQ
 
 
     /**
-     * @hibernate.property name="queryExecuted" type="string" column="QUERY_EXECUTED"
+     * @hibernate.property name="queryExecuted" type="string" column="QUERY_EXECUTED" length="4000"
      * @return Returns the last query excuted.
      */
 	public String getQueryExecuted()

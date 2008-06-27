@@ -16,6 +16,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.FloatAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
@@ -267,32 +269,53 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 	{
 		// If the value is 1.48 and precision entered for it is 3, make it appear as 1.480
 		Set<BaseAbstractAttributeInterface> recordMapKeySet = recordMap.keySet();
-		Iterator iter = recordMapKeySet.iterator();
+		Iterator<BaseAbstractAttributeInterface> iter = recordMapKeySet.iterator();
 
 		while (iter.hasNext())
 		{
-			Object tempObject = iter.next();
+			Object object = iter.next();
 
-			if (tempObject instanceof AttributeInterface)
+			if (object instanceof AttributeInterface)
 			{
-				AttributeInterface currentAttribute = (AttributeInterface) tempObject;
+				AttributeInterface currentAttribute = (AttributeInterface) object;
 
-				AttributeTypeInformationInterface attributeTypeInformationInterface = ((AttributeInterface) currentAttribute)
-						.getAttributeTypeInformation();
+				AttributeTypeInformationInterface attributeTypeInformation = ((AttributeInterface) currentAttribute).getAttributeTypeInformation();
 
-				if (attributeTypeInformationInterface instanceof NumericAttributeTypeInformation)
+				if (attributeTypeInformation instanceof NumericAttributeTypeInformation)
 				{
-					int decimalPlaces = ((NumericAttributeTypeInformation) attributeTypeInformationInterface).getDecimalPlaces();
+					int decimalPlaces = ((NumericAttributeTypeInformation) attributeTypeInformation).getDecimalPlaces();
 					String value = (String) recordMap.get(currentAttribute);
-					int placesAfterDecimal = value.length() - (value.indexOf(".") + 1);
-
-					if (placesAfterDecimal != decimalPlaces)
+					if (value.contains(".") && !value.contains("E"))
 					{
-						for (int j = decimalPlaces; j > placesAfterDecimal; j--)
+						int placesAfterDecimal = value.length() - (value.indexOf(".") + 1);
+	
+						if (placesAfterDecimal != decimalPlaces)
 						{
-							value = value + "0";
+							for (int j = decimalPlaces; j > placesAfterDecimal; j--)
+							{
+								value = value + "0";
+							}
+							recordMap.put(currentAttribute, value);
 						}
-						recordMap.put(currentAttribute, value);
+					}
+					else
+					{
+						if (attributeTypeInformation instanceof DoubleAttributeTypeInformation || attributeTypeInformation instanceof FloatAttributeTypeInformation)
+						{
+							if (value.length() != 0 && !value.contains("E"))
+							{
+								if (decimalPlaces != 0)
+								{
+									value = value + ".";
+								}
+	
+								for (int i = 0; i<decimalPlaces; i++)
+								{
+									value = value + "0";
+								}
+								recordMap.put(currentAttribute, value);
+							}
+						}
 					}
 				}
 			}

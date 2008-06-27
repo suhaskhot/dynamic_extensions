@@ -4,8 +4,6 @@ package edu.common.dynamicextensions.ui.webui.action;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -29,7 +27,6 @@ import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.FileExtension;
-import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.userinterface.AbstractContainmentControl;
 import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
@@ -43,7 +40,6 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterfa
 import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.SelectInterface;
-import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
@@ -358,8 +354,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			FileNotFoundException, IOException
 	{
 		BaseAbstractAttributeInterface abstractAttribute = (BaseAbstractAttributeInterface) control.getBaseAbstractAttribute();
-		List<Map<BaseAbstractAttributeInterface, Object>> associationValueMapList = (List<Map<BaseAbstractAttributeInterface, Object>>) attributeValueMap
-				.get(abstractAttribute);
+		List<Map<BaseAbstractAttributeInterface, Object>> associationValueMapList = (List<Map<BaseAbstractAttributeInterface, Object>>) attributeValueMap.get(abstractAttribute);
 
 		if (associationValueMapList == null)
 		{
@@ -412,12 +407,13 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			else if (control instanceof ComboBoxInterface)
 			{
 				String selectedValue = request.getParameter("Control_" + sequence);
-				//if (selectedValue != null && !selectedValue.trim().isEmpty())
+				
 				if (selectedValue != null && selectedValue.trim().length() != 0)
 				{
 					valueList.add(new Long(selectedValue.trim()));
 				}
 			}
+			
 			if (!valueList.isEmpty())
 			{
 				attributeValueMap.put(abstractAttribute, valueList);
@@ -539,48 +535,10 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 					value = DynamicExtensionsUtility.getValueForCheckBox(false);
 				}
 			}
-			else if (control instanceof TextFieldInterface)
-			{
-				AttributeTypeInformationInterface attributeTypeInformationInterface = ((AttributeMetadataInterface) abstractAttribute)
-						.getAttributeTypeInformation();
-				if (attributeTypeInformationInterface instanceof NumericAttributeTypeInformation)
-				{
-					value = rectifyNumberPrecision((NumericAttributeTypeInformation) attributeTypeInformationInterface, value.trim());
-				}
-			}
+
 			attributeValue = value;
 			attributeValueMap.put(abstractAttribute, attributeValue);
 		}
-
-	}
-
-	/**
-	 * This method returns the String representaion of a number as per the given format of the corresponding Number Control.
-	 * @param doubleAttributeTypeInformation
-	 * @param value
-	 * @return
-	 */
-	private String rectifyNumberPrecision(NumericAttributeTypeInformation numericAttributeTypeInformation, String value)
-	{
-		if (DynamicExtensionsUtility.isNumeric(value) && (value.indexOf(".") != -1))
-		{
-			Integer decimalPlaces = numericAttributeTypeInformation.getDecimalPlaces();
-			StringBuffer decimalFormat = new StringBuffer("#");
-			if (decimalPlaces > 0)
-			{
-				decimalFormat.append(".");
-				while (decimalPlaces > 0)
-				{
-					decimalFormat.append("#");
-					decimalPlaces--;
-				}
-			}
-
-			NumberFormat numberFormat = new DecimalFormat(decimalFormat.toString());
-			value = numberFormat.format(Double.parseDouble(value));
-		}
-
-		return value;
 	}
 
 	/**

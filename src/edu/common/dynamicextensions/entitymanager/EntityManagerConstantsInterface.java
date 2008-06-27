@@ -33,5 +33,6 @@ public interface EntityManagerConstantsInterface
     String OBJECT_ATTRIBUTE_TYPE = "Object"; 
     String BYTE_ARRAY_ATTRIBUTE_TYPE = "ByteArray";
     String ACTIVITY_STATUS_ATTRIBUTE_NAME = "activityStatus";
+    String REAL_ATTRIBUTE_TYPE = "Real";
 
 }

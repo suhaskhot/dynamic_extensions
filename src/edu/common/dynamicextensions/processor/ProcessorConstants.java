@@ -150,5 +150,8 @@ public class ProcessorConstants
 	public static final int MAX_LENGTH_DESCRIPTION = 1000;
 	public static final int MAX_LENGTH_DISPLAY_WIDTH = 3;//i.e max value 999
 	public static final int MAX_LENGTH_MAX_CHARACTERS = 3; //i.e max value 999
+	
+	public static final String TRUE = "true";
+	public static final String FALSE = "false";
 
 }

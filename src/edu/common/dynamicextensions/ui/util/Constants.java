@@ -45,6 +45,9 @@ public class Constants
     public static final String COLLECTION = "Collection";
     public static final String TIME = "Time";
     public static final String DATE = "Date";
-   
-
+	public static final String MIN_VALUE = "min";
+	public static final String MAX_VALUE = "max";
+	public static final int FLOAT_PRECISION = 6;
+	public static final int DOUBLE_PRECISION = 15;
+	public static final int ZERO = 0;
 }

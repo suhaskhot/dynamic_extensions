@@ -5,6 +5,7 @@ import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.util.Constants;
 
 /**
@@ -89,7 +90,7 @@ public class TextField extends Control implements TextFieldInterface
 
 		String htmlComponentName = getHTMLComponentName();
 		String htmlString = "";
-		String isDisabled = (this.isReadOnly ? "true" : "false");
+		String isDisabled = ((this.isReadOnly != null && this.isReadOnly)? ProcessorConstants.TRUE : ProcessorConstants.FALSE);
 
 		if (isUrl != null && isUrl.booleanValue() == true)
 		{

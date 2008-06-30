@@ -632,7 +632,8 @@ public class CategoryHelper implements CategoryHelperInterface
 		AttributeTypeInformationInterface attributeTypeInformation = ((CategoryAttribute) baseAbstractAttribute).getAttribute()
 				.getAttributeTypeInformation();
 
-		if (attributeTypeInformation.getDefaultValue() != null)
+		if (attributeTypeInformation.getDefaultValue() != null
+				&& !attributeTypeInformation.getDefaultValue().equals(((CategoryAttribute) baseAbstractAttribute).getDefaultValue()))
 		{
 			((CategoryAttribute) baseAbstractAttribute).setDefaultValue(attributeTypeInformation.getDefaultValue());
 		}

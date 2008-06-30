@@ -5,6 +5,7 @@ import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.wustl.common.beans.NameValueBean;
 
@@ -43,6 +44,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 	{
 
 		String defaultValue = "";
+		this.value = this.getAttibuteMetadataInterface().getDefaultValue();
 		if (this.value != null)
 		{
 			if (this.value instanceof String)
@@ -63,24 +65,26 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 			defaultValue = "";
 		}
 
+		String isDisabled = ((this.isReadOnly != null && this.isReadOnly) ? ProcessorConstants.TRUE : ProcessorConstants.FALSE);
+
 		String htmlString = "<script>Ext.onReady(function(){ " + "var myUrl= 'ComboDataAction.do?controlId= " + this.getId()
 				+ "~containerIdentifier=" + +this.getParentContainer().getId() + "';" + "var ds = new Ext.data.Store({"
 				+ "proxy: new Ext.data.HttpProxy({url: myUrl}),"
 				+ "reader: new Ext.data.JsonReader({root: 'row',totalProperty: 'totalCount',id: 'id'}, "
 				+ "[{name: 'excerpt', mapping: 'field'}])});" + "var combo = new Ext.form.ComboBox({store: ds,displayField:'excerpt',"
 				+ "typeAhead: true,width:200,pageSize:15,forceSelection: true,queryParam : 'query',"
-				+ "mode: 'remote',triggerAction: 'all',minChars : 1,emptyText:'" + defaultValue + "'," + "selectOnFocus:true,applyTo: '"
-				+ getHTMLComponentName() + "'});});" + "</script>" + "<div id='auto_complete_dropdown'>" + "<input type='text' id='"
-				+ getHTMLComponentName() + "' " + " name='" + getHTMLComponentName() + "' size='20'/>"
+				+ "mode: 'remote',triggerAction: 'all',minChars : 1,disabled:'" + isDisabled + "',emptyText:'" + defaultValue + "',"
+				+ "selectOnFocus:true,applyTo: '" + getHTMLComponentName() + "'});});" + "</script>" + "<div id='auto_complete_dropdown'>"
+				+ "<input type='text' id='" + getHTMLComponentName() + "' " + " name='" + getHTMLComponentName() + "' size='20'/>"
 				+ "<div name='comboScript' style='display:none'>" + "Ext.onReady(function(){ " + "var myUrl='ComboDataAction.do?controlId= "
 				+ this.getId() + "~containerIdentifier=" + this.getParentContainer().getId() + "';var ds = new Ext.data.Store({"
 				+ "proxy: new Ext.data.HttpProxy({url: myUrl}),"
 				+ "reader: new Ext.data.JsonReader({root: 'row',totalProperty: 'totalCount',id: 'id'}, "
 				+ "[{name: 'excerpt', mapping: 'field'}])});" + "var combo = new Ext.form.ComboBox({store: ds,displayField:'excerpt',"
 				+ "typeAhead: true,width:200,pageSize:15,forceSelection: true,queryParam : 'query',"
-				+ "mode: 'remote',triggerAction: 'all',minChars : 1,emptyText:'" + defaultValue + "'," + "selectOnFocus:true,applyTo: '"
-				+ getHTMLComponentName() + "'});});" + "</div>" + "<div name=\"comboHtml\" style='display:none'>" + "<div>"
-				+ "<input type='text' id='" + getHTMLComponentName() + "' " + " name='" + getHTMLComponentName()
+				+ "mode: 'remote',triggerAction: 'all',minChars : 1,disabled:'" + isDisabled + "',emptyText:'" + defaultValue + "',"
+				+ "selectOnFocus:true,applyTo: '" + getHTMLComponentName() + "'});});" + "</div>" + "<div name=\"comboHtml\" style='display:none'>"
+				+ "<div>" + "<input type='text' id='" + getHTMLComponentName() + "' " + " name='" + getHTMLComponentName()
 				+ "' size='20' class='font_bl_nor' />" + "</div>" + "</div>" + "</div>";
 
 		return htmlString;

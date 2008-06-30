@@ -1,15 +1,12 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
-import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.util.Constants;
-import edu.common.dynamicextensions.ui.util.ControlsUtility;
 
 /**
  * @version 1.0
@@ -84,6 +81,7 @@ public class TextArea extends Control implements TextAreaInterface
 	public String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
 		String defaultValue = (String) this.value;
+
 		if (this.value == null)
 		{
 			defaultValue = this.getAttibuteMetadataInterface().getDefaultValue();
@@ -91,8 +89,10 @@ public class TextArea extends Control implements TextAreaInterface
 
 		String htmlComponentName = getHTMLComponentName();
 
-		String htmlString = "<textarea " + "class='font_bl_nor' " + "name='"
-				+ htmlComponentName + "' " + "id='" + htmlComponentName + "' ";
+		String htmlString = "<textarea " + "class='font_bl_nor' " + "name='" + htmlComponentName + "' " + "id='" + htmlComponentName + "' ";
+
+		//set isdisabled property
+		htmlString += " isDisabled='" + (this.isReadOnly != null && this.isReadOnly ? ProcessorConstants.TRUE : ProcessorConstants.FALSE) + "' ";
 
 		int noCols = columns.intValue();
 		int noRows = rows.intValue();
@@ -114,19 +114,19 @@ public class TextArea extends Control implements TextAreaInterface
 		{
 			htmlString += "rows='" + Constants.DEFAULT_ROW_SIZE + "' ";
 		}
-		
+
 		int maxChars = 0;
-		AttributeMetadataInterface attibute =  this.getAttibuteMetadataInterface();
+		AttributeMetadataInterface attibute = this.getAttibuteMetadataInterface();
 		if (attibute != null)
 		{
 			maxChars = attibute.getMaxSize();
 		}
-		
-		if(maxChars > 0)
+
+		if (maxChars > 0)
 		{
 			htmlString += " onblur='textCounter(this," + maxChars + ")'  ";
 		}
-		
+
 		htmlString += " wrap='virtual'>";
 
 		if (defaultValue == null || (defaultValue.length() == 0))

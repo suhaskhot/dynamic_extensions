@@ -6,6 +6,7 @@ import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.wustl.common.beans.NameValueBean;
 
@@ -91,7 +92,7 @@ public class ListBox extends SelectControl implements ListBoxInterface
 	{
 		List<NameValueBean> nameValueBeanList = null;
 		List<String> valueList = null;
-		
+
 		// quick fix. 
 		if (!(value instanceof List) && value != null)
 		{
@@ -109,8 +110,14 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		{
 			strMultiSelect = "MULTIPLE ";
 		}
-		String htmlString = "<SELECT " + strMultiSelect + " size=" + this.noOfRows + " class='font_bl_s' name='"
-				+ getHTMLComponentName() + "' id='" + name + "'>";
+		String htmlString = "<SELECT " + strMultiSelect + " size=" + this.noOfRows + " class='font_bl_s' name='" + getHTMLComponentName() + "' id='"
+				+ name + "' ";
+
+		if (this.isReadOnly != null && this.isReadOnly)
+		{
+			htmlString += " disabled='" + ProcessorConstants.TRUE + "' ";
+		}
+		htmlString += ">";
 
 		if (valueList == null || valueList.isEmpty())
 		{
@@ -150,7 +157,7 @@ public class ListBox extends SelectControl implements ListBoxInterface
 	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
 	{
 		List<String> selectedOptions = null;
-		
+
 		// quick fix. 
 		if (!(value instanceof List) && value != null)
 		{

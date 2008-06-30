@@ -180,6 +180,7 @@ public class CategoryGenerator
 
 						if (lastControl.getIsReadOnly())
 						{
+							((CategoryAttributeInterface) lastControl.getAttibuteMetadataInterface()).setIsVisible(false);
 							category.addRelatedAttributeCategoryEntity((CategoryEntityInterface) containerInterface.getAbstractEntity());
 						}
 
@@ -225,8 +226,11 @@ public class CategoryGenerator
 		}
 
 		CategoryAttributeInterface categoryAttribute = (CategoryAttributeInterface) control.getAttibuteMetadataInterface();
-		categoryAttribute.setDefaultValue(categoryAttribute.getAttribute().getAttributeTypeInformation().getPermissibleValueForString(
-				categoryFileParser.getDefaultValue()));
+		if (!categoryFileParser.getDefaultValue().equals(categoryAttribute.getDefaultValue()))
+		{
+			categoryAttribute.setDefaultValue(categoryAttribute.getAttribute().getAttributeTypeInformation().getPermissibleValueForString(
+					categoryFileParser.getDefaultValue()));
+		}
 
 	}
 
@@ -359,6 +363,11 @@ public class CategoryGenerator
 
 				Class[] types = getParameterType(methodName, control);
 				List<Object> values = new ArrayList<Object>();
+				if (types.length == 0)
+				{
+					throw new DynamicExtensionsSystemException("Error at Line number:" + categoryFileParser.getLineNumber()
+							+ " Incorrect control option =" + optionString);
+				}
 				values.add(getFormattedValues(types[0], controlOptions.get(optionString)));
 
 				Method method;

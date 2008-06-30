@@ -90,7 +90,7 @@ public class TextField extends Control implements TextFieldInterface
 
 		String htmlComponentName = getHTMLComponentName();
 		String htmlString = "";
-		String isDisabled = ((this.isReadOnly != null && this.isReadOnly)? ProcessorConstants.TRUE : ProcessorConstants.FALSE);
+		
 
 		if (isUrl != null && isUrl.booleanValue() == true)
 		{
@@ -124,8 +124,11 @@ public class TextField extends Control implements TextFieldInterface
 			}
 
 			//set isdisabled property
-
-			htmlString += " isDisabled='" + isDisabled + "' ";
+	
+			if(this.isReadOnly != null && this.isReadOnly)
+			{
+				htmlString += " disabled='" + ProcessorConstants.TRUE + "' ";
+			}
 			int maxChars = 0;
 			AttributeMetadataInterface attibute = this.getAttibuteMetadataInterface();
 			if (attibute != null)
@@ -133,16 +136,14 @@ public class TextField extends Control implements TextFieldInterface
 				maxChars = attibute.getMaxSize();
 			}
 			//Changed by: Kunal
-			//Incase of input type is chose as number 
+			//Incase of input type is chosen as number 
 			//the max char size is -1
 			if (maxChars > 0)
 			{
 				htmlString += " onblur='textCounter(this," + maxChars + ")'  ";
 			}
-			else
-			{
-				htmlString += "/>";
-			}
+
+			htmlString += "/>";
 
 			//String measurementUnit = getMeasurementUnit(this.getAbstractAttribute());
 			String measurementUnit = this.getAttibuteMetadataInterface().getMeasurementUnit();

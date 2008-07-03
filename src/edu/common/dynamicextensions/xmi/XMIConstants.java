@@ -87,7 +87,8 @@ public class XMIConstants
 	public static final String TAGGED_VALUE_TYPE = "type";
 	public static final String DEFAULT_PACKAGE = "Default";
 	
-	
+	public static final String CATISSUE_PACKAGE = "edu.wustl.catissuecore.domain.";
+		
 	
 	
 	

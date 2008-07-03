@@ -100,7 +100,8 @@ public class EntityGroupManager extends AbstractMetadataManager implements Entit
 	public EntityGroupInterface persistEntityGroupMetadata(EntityGroupInterface entityGroup) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
-		EntityGroupInterface entityGroupInterface = (EntityGroupInterface) persistDynamicExtensionObjectMetdata(entityGroup);
+		addTaggedValue(entityGroup);
+		EntityGroupInterface entityGroupInterface = (EntityGroupInterface) persistDynamicExtensionObjectMetdata(entityGroup);		
 		//Update the dynamic extension cache for all containers within entitygroup
 		DynamicExtensionsUtility.updateDynamicExtensionsCache(entityGroupInterface.getId());
 		return entityGroupInterface;

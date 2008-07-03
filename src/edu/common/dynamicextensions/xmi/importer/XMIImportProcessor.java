@@ -11,8 +11,6 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Map.Entry;
 
-import org.apache.struts.action.ActionError;
-import org.apache.struts.action.ActionErrors;
 import org.omg.uml.UmlPackage;
 import org.omg.uml.foundation.core.AssociationEnd;
 import org.omg.uml.foundation.core.Attribute;
@@ -133,7 +131,7 @@ public class XMIImportProcessor
 		super();
 	}
 	
-	public List<ContainerInterface> processXmi(UmlPackage umlPackage, String entityGroupName, String packageName, List<String> containerNames) throws Exception
+	public List<ContainerInterface> processXmi(UmlPackage umlPackage, String entityGroupName, String packageName, List<String> containerNames, boolean isEntityGroupSystemGenerated) throws Exception
 	{
 		List<UmlClass> umlClassColl = new ArrayList<UmlClass>();
 		List<UmlAssociation> umlAssociationColl = new ArrayList<UmlAssociation>();
@@ -158,6 +156,9 @@ public class XMIImportProcessor
 			isEditedXmi = true;
 			entityGroup = entityGroupColl.get(0);
 		}
+		//Static models of caTissue and Clinportal are system generated entity groups		
+		entityGroup.setIsSystemGenerated(isEntityGroupSystemGenerated);
+		
 		addTaggedValue(packageName);	
 		int noOfClasses = umlClassColl.size();
 		umlClassIdVsEntity = new HashMap<String, EntityInterface>(noOfClasses);
@@ -165,7 +166,7 @@ public class XMIImportProcessor
 		//Creating entities and entity group.
 		for (UmlClass umlClass : umlClassColl)
 		{
-			EntityInterface entity = entityGroup.getEntityByName(umlClass.getName());
+			EntityInterface entity = entityGroup.getEntityByName(umlClass.getName());			
 			if (entity == null)
 			{//Add
 				entity = createEntity(umlClass);
@@ -176,6 +177,14 @@ public class XMIImportProcessor
 			{//Edit
 				Collection<Attribute> attrColl = XMIUtilities.getAttributes(umlClass, false);
 				createAttributes(attrColl, entity);
+			}
+			//For static models
+			if(isEntityGroupSystemGenerated)
+			{
+				if(!entity.getName().startsWith(XMIConstants.CATISSUE_PACKAGE))
+				{
+					entity.setName(XMIConstants.CATISSUE_PACKAGE + entity.getName());
+				}
 			}
 			umlClassIdVsEntity.put(umlClass.refMofId(), entity);
 		}
@@ -221,7 +230,7 @@ public class XMIImportProcessor
 			EntityInterface entity = umlClassIdVsEntity.get(umlClass.refMofId());
 			//In memory operation
 			createContainer(entity);
-		}
+		}		
 		if (umlGeneralisationColl.size() > 0)
 		{//setting base container in child container.
 			postProcessInheritence(parentIdVsChildrenIds);
@@ -231,7 +240,7 @@ public class XMIImportProcessor
 			postProcessAssociation();
 		}
 		//Persist container in DB
-		processPersistence(containerNames);
+		processPersistence(containerNames,isEntityGroupSystemGenerated);
 
 		return mainContainerList;
 	}
@@ -1523,33 +1532,41 @@ public class XMIImportProcessor
 			controlModel.setDateValueType(dateFormat);
 			// precision tagged value
 			Integer precision = attrNameVsPrecision.get(editedAttribute);
-			
-			if (precision!= null && precision > edu.common.dynamicextensions.ui.util.Constants.DOUBLE_PRECISION)
-			{
-				throw new DynamicExtensionsSystemException("Precision can at maximum be 15 owing to database constraints.");
-			}
-			
-			if (precision == null)
-			{
-				AttributeTypeInformationInterface attrTypeInfo = ((AttributeInterface) editedAttribute).getAttributeTypeInformation();
-				
-				if (attrTypeInfo instanceof FloatAttributeTypeInformation)
-				{
-					precision = edu.common.dynamicextensions.ui.util.Constants.FLOAT_PRECISION;
-				}
-				else if (attrTypeInfo instanceof DoubleAttributeTypeInformation)
-				{
-					precision = edu.common.dynamicextensions.ui.util.Constants.DOUBLE_PRECISION;
-				}
-				else
-				{
-					precision = edu.common.dynamicextensions.ui.util.Constants.ZERO;
-				}
-			}
+						
+			setPrescision(precision, editedAttribute);
 			controlModel.setAttributeDecimalPlaces(precision.toString());
 		}
 	}
-
+	/**
+	 * @param precision
+	 * @param editedAttribute
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	private void setPrescision(Integer precision, AbstractAttributeInterface editedAttribute) throws DynamicExtensionsSystemException
+	{
+		if (precision!= null && precision > edu.common.dynamicextensions.ui.util.Constants.DOUBLE_PRECISION)
+		{
+			throw new DynamicExtensionsSystemException("Precision can at maximum be 15 owing to database constraints.");
+		}
+		
+		if (precision == null)
+		{
+			AttributeTypeInformationInterface attrTypeInfo = ((AttributeInterface) editedAttribute).getAttributeTypeInformation();
+			
+			if (attrTypeInfo instanceof FloatAttributeTypeInformation)
+			{
+				precision = new Integer(edu.common.dynamicextensions.ui.util.Constants.FLOAT_PRECISION);
+			}
+			else if (attrTypeInfo instanceof DoubleAttributeTypeInformation)
+			{
+				precision = new Integer(edu.common.dynamicextensions.ui.util.Constants.DOUBLE_PRECISION);
+			}
+			else
+			{
+				precision = new Integer(edu.common.dynamicextensions.ui.util.Constants.ZERO);				
+			}			
+		}
+	}
 	/**
 	 * @param containerInterface
 	 * @param entityInterface
@@ -1854,33 +1871,11 @@ public class XMIImportProcessor
 						}
 						else
 						{
-							Integer precision = attrNameVsPrecision.get(attributeInterface);
+							Integer precision = attrNameVsPrecision.get(attributeInterface);					
 							
-							if (precision!= null && precision > edu.common.dynamicextensions.ui.util.Constants.DOUBLE_PRECISION)
-							{
-								throw new DynamicExtensionsSystemException("Precision can at maximum be 15 owing to database constraints.");
-							}
+							setPrescision(precision, attributeInterface);							
 							
-							if (precision == null)
-							{
-								AttributeTypeInformationInterface attrTypeInfo = attributeInterface.getAttributeTypeInformation();
-								
-								if (attrTypeInfo instanceof FloatAttributeTypeInformation)
-								{
-									precision = edu.common.dynamicextensions.ui.util.Constants.FLOAT_PRECISION;
-								}
-								else if (attrTypeInfo instanceof DoubleAttributeTypeInformation)
-								{
-									precision = edu.common.dynamicextensions.ui.util.Constants.DOUBLE_PRECISION;
-								}
-								else
-								{
-									precision = edu.common.dynamicextensions.ui.util.Constants.ZERO;
-								}
-							}
-							
-							((NumericAttributeTypeInformation) attributeTypeInformation)
-									.setDecimalPlaces(new Integer(precision));
+							((NumericAttributeTypeInformation) attributeTypeInformation).setDecimalPlaces(precision);
 							implicitRuleList = configurationsFactory.getAllImplicitRules(
 									ProcessorConstants.TEXT_CONTROL, ProcessorConstants.DATATYPE_NUMBER);
 						}
@@ -1980,7 +1975,7 @@ public class XMIImportProcessor
 	 * @param umlClasses
 	 * This method creates all containers.
 	 */
-	protected void processPersistence(List<String> containerNames) throws Exception
+	protected void processPersistence(List<String> containerNames, boolean isEntityGroupSystemGenerated) throws Exception
 	{
 		//Collection<ContainerInterface> containerColl = new HashSet<ContainerInterface>();
 
@@ -1988,6 +1983,17 @@ public class XMIImportProcessor
 
 		for(String containerName : containerNames)
 		{
+////		For static models
+			String temp = "";
+			if(isEntityGroupSystemGenerated)
+			{				
+				if(!containerName.startsWith(XMIConstants.CATISSUE_PACKAGE))
+				{
+					temp = containerName;
+					containerName = new String();
+					containerName = XMIConstants.CATISSUE_PACKAGE + temp;
+				}				
+			}
 			List containerList = (ArrayList) entityNameVsContainers.get(containerName);
 			if(containerList == null || containerList.size() < 1)
 			{
@@ -2017,7 +2023,14 @@ public class XMIImportProcessor
 			{
 				entityGroup.addMainContainer(container);
 			}
-			entityManagerInterface.persistEntityGroup(entityGroup);
+			if(isEntityGroupSystemGenerated)
+			{//Static Model. Hence saving only metadata
+				entityManagerInterface.persistEntityGroupMetadata(entityGroup);
+			}
+			else
+			{//Dynamic model
+				entityManagerInterface.persistEntityGroup(entityGroup);
+			}
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{

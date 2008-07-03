@@ -82,8 +82,8 @@ public class XMIImporter
 			reader.read(in, null, uml);
 			XMIImportProcessor xmiImportProcessor = new XMIImportProcessor();
 			
-			 List<String> containerNames = new ArrayList<String>();
-			xmiImportProcessor.processXmi(uml, domainModelName,packageName,containerNames);			
+			List<String> containerNames = new ArrayList<String>();
+			xmiImportProcessor.processXmi(uml, domainModelName,packageName,containerNames,false);			
 			System.out.println("--------------- Done ------------");
 		
 		}

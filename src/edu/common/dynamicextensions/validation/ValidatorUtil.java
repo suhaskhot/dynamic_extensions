@@ -50,9 +50,9 @@ public class ValidatorUtil
 			{
 				BaseAbstractAttributeInterface abstractAttribute = attributeValueNode.getKey();
 
-				if (abstractAttribute instanceof AttributeMetadataInterface)
+				ControlInterface control = getControlOfGivenAbstractAttribute(abstractAttribute, containerInterface);
+				if (control != null && abstractAttribute instanceof AttributeMetadataInterface)
 				{
-					ControlInterface control = getControlOfGivenAbstractAttribute(abstractAttribute, containerInterface);
 					errorList.addAll(validateAttributes(attributeValueNode, control.getCaption()));
 				}
 				else if (abstractAttribute instanceof AssociationMetadataInterface)

@@ -1533,7 +1533,7 @@ public class XMIImportProcessor
 			// precision tagged value
 			Integer precision = attrNameVsPrecision.get(editedAttribute);
 						
-			setPrescision(precision, editedAttribute);
+			precision = setPrescision(precision, editedAttribute);
 			controlModel.setAttributeDecimalPlaces(precision.toString());
 		}
 	}
@@ -1542,9 +1542,9 @@ public class XMIImportProcessor
 	 * @param editedAttribute
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private void setPrescision(Integer precision, AbstractAttributeInterface editedAttribute) throws DynamicExtensionsSystemException
+	private Integer setPrescision(Integer precision, AbstractAttributeInterface editedAttribute) throws DynamicExtensionsSystemException
 	{
-		if (precision!= null && precision > edu.common.dynamicextensions.ui.util.Constants.DOUBLE_PRECISION)
+		if (precision!= null && precision.intValue() > edu.common.dynamicextensions.ui.util.Constants.DOUBLE_PRECISION)
 		{
 			throw new DynamicExtensionsSystemException("Precision can at maximum be 15 owing to database constraints.");
 		}
@@ -1566,6 +1566,7 @@ public class XMIImportProcessor
 				precision = new Integer(edu.common.dynamicextensions.ui.util.Constants.ZERO);				
 			}			
 		}
+		return precision;
 	}
 	/**
 	 * @param containerInterface
@@ -1873,7 +1874,7 @@ public class XMIImportProcessor
 						{
 							Integer precision = attrNameVsPrecision.get(attributeInterface);					
 							
-							setPrescision(precision, attributeInterface);							
+							precision = setPrescision(precision, attributeInterface);							
 							
 							((NumericAttributeTypeInformation) attributeTypeInformation).setDecimalPlaces(precision);
 							implicitRuleList = configurationsFactory.getAllImplicitRules(

@@ -285,14 +285,47 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		List<CategoryEntityInterface> categoryEntityList = getParentEntityList(categoryEntity);
 		Map<CategoryEntityInterface, Map> entityValueMap = initialiseEntityValueMap(dataValue);
 		Long parentRecordId = null;
+		Long parentCategoryRecordId = null;
 		Map testdatamap = new HashMap();
 		Long id = ((userId != null || userId.length > 0) ? userId[0] : null);
 		for (CategoryEntityInterface categoryEntityInterface : categoryEntityList)
 		{
 			Map valueMap = entityValueMap.get(categoryEntityInterface);
 			parentRecordId = insertDataForSingleCategoryEntity(categoryEntityInterface, valueMap, hibernateDAO, parentRecordId, testdatamap, id);
+			parentCategoryRecordId = getRootCategoryRecordId(categoryEntityInterface,parentRecordId);
 		}
-		return parentRecordId;
+		
+		
+		return parentCategoryRecordId;
+	}
+
+	/**
+	 * @param categoryEntity
+	 * @param parentRecordId
+	 * @return
+	 * @throws SQLException
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private Long getRootCategoryRecordId(CategoryEntityInterface categoryEntity, Long parentRecordId) throws SQLException,
+	DynamicExtensionsSystemException
+	{
+		CategoryInterface category = categoryEntity.getCategory();
+		CategoryEntityInterface rootCategoryEntity = category.getRootCategoryElement();
+		
+		StringBuffer query = new StringBuffer();
+		query.append(SELECT_KEYWORD + WHITESPACE + IDENTIFIER + WHITESPACE + FROM_KEYWORD + WHITESPACE
+				+ rootCategoryEntity.getTableProperties().getName() + WHITESPACE + WHERE_KEYWORD + WHITESPACE + RECORD_ID + EQUAL
+				+ parentRecordId);
+
+		Long rootCategoryRecordId = null;
+
+		List<Long> resultList = getResultIDList(query.toString(), IDENTIFIER);
+		if (resultList.size() > 0)
+		{
+			rootCategoryRecordId = (Long) resultList.get(0);
+		}
+		
+		return rootCategoryRecordId;
 	}
 
 	/**

@@ -44,6 +44,9 @@ public class XMIConstants
 	public static final String TAGGED_VALUE_DATE_FORMAT = "Format";
 	public static final String TAGGED_VALUE_PRECISION = "Precision";
 	
+	public static final String TAGGED_VALUE_CONCEPT_CODE = "ConceptCode";
+	public static final String TAGGED_VALUE_CONCEPT_DEFINITION = "ConceptDefinition";
+	
 	//Package & model name
 	public static final String PACKAGE_NAME_LOGICAL_VIEW ="Logical View";
 	public static final String PACKAGE_NAME_LOGICAL_MODEL ="Logical Model";
@@ -88,6 +91,8 @@ public class XMIConstants
 	public static final String DEFAULT_PACKAGE = "Default";
 	
 	public static final String CATISSUE_PACKAGE = "edu.wustl.catissuecore.domain.";
+
+	public static final String DEFAULT_TEXT_FIELD_MAX_LENGTH = "255";
 		
 	
 	

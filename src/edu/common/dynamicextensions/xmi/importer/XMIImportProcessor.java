@@ -49,6 +49,7 @@ import edu.common.dynamicextensions.domaininterface.BooleanValueInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
+import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
@@ -70,6 +71,7 @@ import edu.common.dynamicextensions.processor.LoadFormControlsProcessor;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
 import edu.common.dynamicextensions.ui.util.RuleConfigurationObject;
+import edu.common.dynamicextensions.ui.util.SemanticPropertyBuilderUtil;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
@@ -118,9 +120,9 @@ public class XMIImportProcessor
 
 	private List<ContainerInterface> mainContainerList = new ArrayList<ContainerInterface>();
 	
-	private Map<AttributeInterface, Integer> attrNameVsMaxLen = new HashMap<AttributeInterface,Integer>();
-	private Map<AttributeInterface, String> attrNameVsDateFormat = new HashMap<AttributeInterface,String>();
-	private Map<AttributeInterface, Integer> attrNameVsPrecision = new HashMap<AttributeInterface,Integer>();
+	private Map<AttributeInterface, Map<String,String>> attrVsMapTagValues = new HashMap<AttributeInterface, Map<String,String>>();
+	
+	private Map<EntityInterface, Map<String,String>> entityVsMapTagValues = new HashMap<EntityInterface, Map<String,String>>();
 
 	/**
 	 * Default constructor
@@ -139,10 +141,8 @@ public class XMIImportProcessor
 
 		processModel(umlPackage, umlClassColl, umlAssociationColl, umlGeneralisationColl,packageName);
 
-		if(!isPackagePresent)
-		{
-			throw new Exception("Specified package is not present in the XMI.");
-		}	
+		validate();
+		
 		List<EntityGroupInterface> entityGroupColl = retrieveEntityGroup(entityGroupName,packageName);
 
 		if (entityGroupColl == null || entityGroupColl.size() == 0)
@@ -211,14 +211,8 @@ public class XMIImportProcessor
 
 		//Retriving all containers corresponding to the given entity group.
 		if (entityGroup.getId() != null)
-		{
-			//retrievedContainerList = null;
-			/*EntityManager.getInstance().getAllContainersByEntityGroupId(
-					entityGroup.getId());*/
-			/*
-			 *  retrievedContainerList populated by containerCollection of each entity
-			 */
-			
+		{			
+			//retrievedContainerList populated by containerCollection of each entity			
 			Collection<EntityInterface> entityCollection = entityGroup.getEntityCollection();
 			for(EntityInterface entity: entityCollection){
 				retrievedContainerList.addAll(entity.getContainerCollection());
@@ -245,6 +239,16 @@ public class XMIImportProcessor
 		return mainContainerList;
 	}
 
+	/**
+	 * @throws Exception
+	 */
+	private void validate() throws Exception
+	{
+		if(!isPackagePresent)
+		{
+			throw new Exception("Specified package is not present in the XMI.");
+		}
+	}
 	/**
 	 * @param entityGroupName
 	 * @param packageName
@@ -288,23 +292,7 @@ public class XMIImportProcessor
 		tvColl.add(tv);
 		entityGroup.setTaggedValueCollection(tvColl);
 	}
-	/**
-	 * @param entityGroupName
-	 * @return
-	 * @throws DAOException
-	 * @throws ClassNotFoundException
-	 */
-	//	private List<ContainerInterface> retrieveAllContainers(String entityGroupName) throws DAOException, ClassNotFoundException
-	//	{
-	//		HibernateDAO dao = (HibernateDAO) DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
-	//		dao.openSession(null);
-	//
-	//		String hql ="Select c from " + Container.class.getName() + " c join c.entity.entityGroupCollection as eg where eg.name = '"+ entityGroupName +"'";
-	//		List<ContainerInterface> list = dao.executeQuery(hql, null, false, null);
-	//
-	//		dao.closeSession();
-	//		return list;
-	//	}
+	
 	/**
 	 * This method checks the entity name if it matches with the data type names like Integer, String etc.
 	 * @param umlClassName
@@ -414,6 +402,12 @@ public class XMIImportProcessor
 			}
 		}		
 	}
+	/**
+	 * @param parentPkg
+	 * @param umlClasses
+	 * @param associations
+	 * @param generalizations
+	 */
 	private void processPackageForModel(Model parentPkg,
 			List<UmlClass> umlClasses, List<UmlAssociation> associations,
 			List<Generalization> generalizations)
@@ -553,7 +547,7 @@ public class XMIImportProcessor
 						AttributeInterface originalAttribute = getAttributeByName(umlAttribute
 								.getName(), originalAttrColl);
 						if (originalAttribute == null)
-						{
+						{//New attribute has been created
 							AttributeInterface attribute = dataType.createAttribute(umlAttribute);
 							if (attribute != null)
 							{ // to bypass attributes of invalid datatypes
@@ -561,42 +555,16 @@ public class XMIImportProcessor
 								//					attribute.setDescription(umlAttribute.getTaggedValue().getDescription());
 								//					setSemanticMetadata(attribute, umlAttribute.getSemanticMetadata());
 								Collection<TaggedValue> taggedValueColl = umlAttribute.getTaggedValue();
-								String max_length = getTaggedValue(taggedValueColl, XMIConstants.TAGGED_VALUE_MAX_LENGTH);
-								if(max_length!=null && !max_length.equals(""))
-								{
-									attrNameVsMaxLen.put(attribute, Integer.parseInt(max_length));
-								}
-								String format = getTaggedValue(taggedValueColl, XMIConstants.TAGGED_VALUE_DATE_FORMAT);
-								if(format!=null && !format.equals(""))
-								{
-									attrNameVsDateFormat.put(attribute,format);
-								}
-								String precision = getTaggedValue(taggedValueColl, XMIConstants.TAGGED_VALUE_PRECISION);
-								if(precision!=null && !precision.equals(""))
-								{
-									attrNameVsPrecision.put(attribute,Integer.parseInt(precision));
-								}
+								populateUIAttributeMap(attribute,taggedValueColl);
+								addSemanticProperty(attribute);
 								entity.addAttribute(attribute);
 							}
 						}
 						else
-						{
+						{//Attribute has been edited
 							Collection<TaggedValue> taggedValueColl = umlAttribute.getTaggedValue();
-							String max_length = getTaggedValue(taggedValueColl, XMIConstants.TAGGED_VALUE_MAX_LENGTH);
-							if(max_length!=null && !max_length.equals(""))
-							{
-								attrNameVsMaxLen.put(originalAttribute, Integer.parseInt(max_length));
-							}
-							String format = getTaggedValue(taggedValueColl, XMIConstants.TAGGED_VALUE_DATE_FORMAT);
-							if(format!=null && !format.equals(""))
-							{
-								attrNameVsDateFormat.put(originalAttribute,format);
-							}
-							String precision = getTaggedValue(taggedValueColl, XMIConstants.TAGGED_VALUE_PRECISION);
-							if(precision!=null && !precision.equals(""))
-							{
-								attrNameVsPrecision.put(originalAttribute,Integer.parseInt(precision));
-							}
+							populateUIAttributeMap(originalAttribute,taggedValueColl);
+							addSemanticProperty(originalAttribute);
 							//Data Type has been changed						
 //							if(!originalAttribute.getAttributeTypeInformation().getDataType().equalsIgnoreCase(umlAttribute.getType().getName()))
 //							{								
@@ -611,6 +579,59 @@ public class XMIImportProcessor
 					//				}
 				}
 			}
+		}
+	}
+	
+	/**
+	 * @param attribute
+	 * @param taggedValueColl
+	 */
+	private void populateUIAttributeMap(AttributeInterface attribute, Collection<TaggedValue> taggedValueColl)
+	{
+		Map<String, String> tagNameVsTagValue = populateTagValueMap(taggedValueColl);
+		attrVsMapTagValues.put(attribute, tagNameVsTagValue);
+	}
+	
+	/**
+	 * @param taggedValueColl
+	 * @return
+	 */
+	private Map<String, String> populateTagValueMap(Collection<TaggedValue> taggedValueColl)
+	{
+		Map<String, String> tagNameVsTagValue = new HashMap<String, String>();
+		for (TaggedValue taggedValue : taggedValueColl)
+		{
+			if (taggedValue.getType() != null)
+			{				
+				Collection<String> dataValueColl = taggedValue.getDataValue();
+				for (String value : dataValueColl)
+				{
+					tagNameVsTagValue.put(taggedValue.getType().getName(), value);
+				}				
+			}
+		}
+		
+		return tagNameVsTagValue;
+	}
+	
+	/**
+	 * @param attribute
+	 */
+	private void addSemanticProperty(AttributeInterface attribute)
+	{
+//		Concept codes
+		Map<String, String> taggedValueMap = attrVsMapTagValues.get(attribute);
+		String conceptCodes = taggedValueMap.get(XMIConstants.TAGGED_VALUE_CONCEPT_CODE);
+		Collection<SemanticPropertyInterface> semanticPropertyColl = SemanticPropertyBuilderUtil.getSymanticPropertyCollection(conceptCodes);
+		
+		if(semanticPropertyColl != null)
+		{
+			for(SemanticPropertyInterface semanticProperty : semanticPropertyColl)
+			{
+				String conceptDefinition = taggedValueMap.get(XMIConstants.TAGGED_VALUE_CONCEPT_DEFINITION + "_" + semanticProperty.getConceptCode());
+				semanticProperty.setConceptDefinition(conceptDefinition);		
+			}
+			attribute.setSemanticPropertyCollection(semanticPropertyColl);
 		}
 	}
 /**
@@ -1514,59 +1535,86 @@ public class XMIImportProcessor
 	{
 		if(!(editedAttribute instanceof AssociationInterface))
 		{
-			// max length of string from tagged value		
-			Integer maxLen = attrNameVsMaxLen.get(editedAttribute);
-			if(maxLen==null)
-			{
-				maxLen=255;
-			}
-			controlModel.setAttributeSize(maxLen.toString());
-			//date format tagged value
-			String format = attrNameVsDateFormat.get(editedAttribute);
-			if(format==null)
-			{
-				format=Constants.DATE_PATTERN_MM_DD_YYYY;
-			}
-			controlModel.setFormat(format);
-			String dateFormat =DynamicExtensionsUtility.getDateFormat(format); 
-			controlModel.setDateValueType(dateFormat);
-			// precision tagged value
-			Integer precision = attrNameVsPrecision.get(editedAttribute);
+			Map<String, String> taggedValueMap = attrVsMapTagValues.get(editedAttribute);
 						
-			precision = setPrescision(precision, editedAttribute);
-			controlModel.setAttributeDecimalPlaces(precision.toString());
+			// max length of string from tagged value		
+			String maxLen = getMaxLengthTagValue(taggedValueMap);
+			controlModel.setAttributeSize(maxLen);
+			
+			//date format tagged value
+			String format = getDateFormatTagValue(taggedValueMap);
+			controlModel.setFormat(format);
+			String dateFormat = DynamicExtensionsUtility.getDateFormat(format); 
+			controlModel.setDateValueType(dateFormat);
+			
+			// precision tagged value
+			Integer precision = getPrecisionTagValue(taggedValueMap,((AttributeInterface) editedAttribute).getAttributeTypeInformation());
+			controlModel.setAttributeDecimalPlaces(precision.toString());						
 		}
+	}
+	
+	/**
+	 * @param taggedValueMap
+	 * @return
+	 */
+	private String getMaxLengthTagValue(Map<String,String> taggedValueMap)
+	{
+		String maxLen = taggedValueMap.get(XMIConstants.TAGGED_VALUE_MAX_LENGTH);
+		if(maxLen == null || maxLen.trim().equals(""))
+		{
+			maxLen = XMIConstants.DEFAULT_TEXT_FIELD_MAX_LENGTH;
+		}
+		return maxLen;
+	}
+	/**
+	 * @param taggedValueMap
+	 * @return
+	 */
+	private String getDateFormatTagValue(Map<String,String> taggedValueMap)
+	{
+		String format = taggedValueMap.get(XMIConstants.TAGGED_VALUE_DATE_FORMAT);
+		if(format == null || format.trim().equals(""))
+		{
+			format = Constants.DATE_PATTERN_MM_DD_YYYY;
+		}
+		
+		return format;
 	}
 	/**
 	 * @param precision
 	 * @param editedAttribute
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private Integer setPrescision(Integer precision, AbstractAttributeInterface editedAttribute) throws DynamicExtensionsSystemException
+	private Integer getPrecisionTagValue(Map<String,String> taggedValueMap, AttributeTypeInformationInterface attrTypeInfo) throws DynamicExtensionsSystemException
 	{
-		if (precision!= null && precision.intValue() > edu.common.dynamicextensions.ui.util.Constants.DOUBLE_PRECISION)
-		{
-			throw new DynamicExtensionsSystemException("Precision can at maximum be 15 owing to database constraints.");
-		}
+		String precision = taggedValueMap.get(XMIConstants.TAGGED_VALUE_PRECISION);
+		Integer precisionDigits = null;
 		
-		if (precision == null)
-		{
-			AttributeTypeInformationInterface attrTypeInfo = ((AttributeInterface) editedAttribute).getAttributeTypeInformation();
-			
+		if (precision == null || precision.trim().equals(""))
+		{			
 			if (attrTypeInfo instanceof FloatAttributeTypeInformation)
 			{
-				precision = new Integer(edu.common.dynamicextensions.ui.util.Constants.FLOAT_PRECISION);
+				precisionDigits = new Integer(edu.common.dynamicextensions.ui.util.Constants.FLOAT_PRECISION);
 			}
 			else if (attrTypeInfo instanceof DoubleAttributeTypeInformation)
 			{
-				precision = new Integer(edu.common.dynamicextensions.ui.util.Constants.DOUBLE_PRECISION);
+				precisionDigits = new Integer(edu.common.dynamicextensions.ui.util.Constants.DOUBLE_PRECISION);
 			}
 			else
 			{
-				precision = new Integer(edu.common.dynamicextensions.ui.util.Constants.ZERO);				
+				precisionDigits = new Integer(edu.common.dynamicextensions.ui.util.Constants.ZERO);				
 			}			
 		}
-		return precision;
+		else 
+		{
+			precisionDigits = Integer.parseInt(precision);
+			if (precisionDigits.intValue() > edu.common.dynamicextensions.ui.util.Constants.DOUBLE_PRECISION)
+			{
+				throw new DynamicExtensionsSystemException("Precision can at maximum be 15 owing to database constraints.");
+			}
+		}
+		
+		return precisionDigits;
 	}
 	/**
 	 * @param containerInterface
@@ -1815,6 +1863,7 @@ public class XMIImportProcessor
 			if (!(attributeInterface.getName().equalsIgnoreCase(Constants.ID) || attributeInterface
 					.getName().equalsIgnoreCase(Constants.IDENTIFIER)))
 			{
+				Map<String, String> taggedValueMap = attrVsMapTagValues.get(attributeInterface);
 					if (userDefinedDEInterface != null
 							&& userDefinedDEInterface.getPermissibleValueCollection() != null
 							&& userDefinedDEInterface.getPermissibleValueCollection().size() > 0)
@@ -1830,11 +1879,7 @@ public class XMIImportProcessor
 					}
 					else if (attributeTypeInformation instanceof DateAttributeTypeInformation)
 					{
-						String format = attrNameVsDateFormat.get(attributeInterface);
-						if(format==null)
-						{
-							format=Constants.DATE_PATTERN_MM_DD_YYYY;
-						}
+						String format = getDateFormatTagValue(taggedValueMap);
 						String dateFormat =DynamicExtensionsUtility.getDateFormat(format); 
 						((DateAttributeTypeInformation) attributeTypeInformation)
 								.setFormat(dateFormat);
@@ -1859,12 +1904,8 @@ public class XMIImportProcessor
 						controlInterface = deFactory.createTextField();
 						((TextFieldInterface) controlInterface).setColumns(10);
 						if (attributeTypeInformation instanceof StringAttributeTypeInformation)
-						{
-							Integer maxLen = attrNameVsMaxLen.get(attributeInterface);
-							if(maxLen==null)
-							{
-								maxLen=255;
-							}
+						{							
+							String maxLen = getMaxLengthTagValue(taggedValueMap);
 							
 							((StringAttributeTypeInformation) attributeTypeInformation).setSize(new Integer(maxLen));
 							implicitRuleList = configurationsFactory.getAllImplicitRules(
@@ -1872,9 +1913,7 @@ public class XMIImportProcessor
 						}
 						else
 						{
-							Integer precision = attrNameVsPrecision.get(attributeInterface);					
-							
-							precision = setPrescision(precision, attributeInterface);							
+							Integer precision = getPrecisionTagValue(taggedValueMap,attributeTypeInformation);					
 							
 							((NumericAttributeTypeInformation) attributeTypeInformation).setDecimalPlaces(precision);
 							implicitRuleList = configurationsFactory.getAllImplicitRules(
@@ -2005,21 +2044,10 @@ public class XMIImportProcessor
 			mainContainerList.add(containerInterface);
 		}
 
-
-
-
-//		for (String entityId : entityIdKeySet)
-//		{
-//			List containerList = (ArrayList) entityNameVsContainers.get(entityId);
-//			ContainerInterface containerInterface = (ContainerInterface) containerList.get(0);
-//			containerColl.add(containerInterface);
-//		}
 		EntityGroupManagerInterface entityManagerInterface = EntityGroupManager.getInstance();
 		try
 		{
-		//	entityManagerInterface.persistEntityGroupWithAllContainers(entityGroup, mainContainerList);
-		
-			
+		//	entityManagerInterface.persistEntityGroupWithAllContainers(entityGroup, mainContainerList);			
 			for(ContainerInterface container : mainContainerList)
 			{
 				entityGroup.addMainContainer(container);

@@ -103,5 +103,10 @@ public interface AbstractMetadataInterface extends SemanticAnnotatableInterface
 	 * @param publicId the publicId to set
 	 */
 	public void setPublicId(String publicId);
+	
+	/**
+	 * @param semanticPropertyCollection
+	 */
+	public void setSemanticPropertyCollection(Collection<SemanticPropertyInterface> semanticPropertyCollection);
 
 }

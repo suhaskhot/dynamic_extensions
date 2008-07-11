@@ -41,6 +41,7 @@ import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domain.userinterface.SelectControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -178,6 +179,10 @@ public class XMIImportProcessor
 				Collection<Attribute> attrColl = XMIUtilities.getAttributes(umlClass, false);
 				createAttributes(attrColl, entity);
 			}
+			
+			populateEntityUIAttributes(entity, umlClass.getTaggedValue());
+			addSemanticProperty(entity, entityVsMapTagValues.get(entity));
+			
 			//For static models
 			if(isEntityGroupSystemGenerated)
 			{
@@ -556,7 +561,7 @@ public class XMIImportProcessor
 								//					setSemanticMetadata(attribute, umlAttribute.getSemanticMetadata());
 								Collection<TaggedValue> taggedValueColl = umlAttribute.getTaggedValue();
 								populateUIAttributeMap(attribute,taggedValueColl);
-								addSemanticProperty(attribute);
+								addSemanticProperty(attribute, attrVsMapTagValues.get(attribute));
 								entity.addAttribute(attribute);
 							}
 						}
@@ -564,7 +569,7 @@ public class XMIImportProcessor
 						{//Attribute has been edited
 							Collection<TaggedValue> taggedValueColl = umlAttribute.getTaggedValue();
 							populateUIAttributeMap(originalAttribute,taggedValueColl);
-							addSemanticProperty(originalAttribute);
+							addSemanticProperty(originalAttribute, attrVsMapTagValues.get(originalAttribute));
 							//Data Type has been changed						
 //							if(!originalAttribute.getAttributeTypeInformation().getDataType().equalsIgnoreCase(umlAttribute.getType().getName()))
 //							{								
@@ -593,6 +598,16 @@ public class XMIImportProcessor
 	}
 	
 	/**
+	 * @param entity
+	 * @param taggedValueColl
+	 */
+	private void populateEntityUIAttributes(EntityInterface entity, Collection<TaggedValue> taggedValueColl)
+	{
+		Map<String, String> tagNameVsTagValue = populateTagValueMap(taggedValueColl);
+		entityVsMapTagValues.put(entity, tagNameVsTagValue);
+	}
+	
+	/**
 	 * @param taggedValueColl
 	 * @return
 	 */
@@ -617,10 +632,9 @@ public class XMIImportProcessor
 	/**
 	 * @param attribute
 	 */
-	private void addSemanticProperty(AttributeInterface attribute)
+	private void addSemanticProperty(AbstractMetadataInterface abstractMetadataInterface, Map<String, String> taggedValueMap)
 	{
-//		Concept codes
-		Map<String, String> taggedValueMap = attrVsMapTagValues.get(attribute);
+		//		Concept codes		
 		String conceptCodes = taggedValueMap.get(XMIConstants.TAGGED_VALUE_CONCEPT_CODE);
 		Collection<SemanticPropertyInterface> semanticPropertyColl = SemanticPropertyBuilderUtil.getSymanticPropertyCollection(conceptCodes);
 		
@@ -631,7 +645,7 @@ public class XMIImportProcessor
 				String conceptDefinition = taggedValueMap.get(XMIConstants.TAGGED_VALUE_CONCEPT_DEFINITION + "_" + semanticProperty.getConceptCode());
 				semanticProperty.setConceptDefinition(conceptDefinition);		
 			}
-			attribute.setSemanticPropertyCollection(semanticPropertyColl);
+			abstractMetadataInterface.setSemanticPropertyCollection(semanticPropertyColl);
 		}
 	}
 /**
@@ -1638,7 +1652,7 @@ public class XMIImportProcessor
 		//Container Object is now populated
 		containerProcessor.populateContainerInterface(containerInterface, containerModel);
 
-		containerModel.setFormDescription(entityInterface.getDescription());
+		containerModel.setFormDescription(entityInterface.getDescription());		
 		//Entity Object is now populated
 		entityProcessor.populateEntity(containerModel, (EntityInterface) containerInterface.getAbstractEntity());
 	}

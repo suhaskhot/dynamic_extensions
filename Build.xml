@@ -241,6 +241,7 @@
 		    			<include name="**/ui/webui/util/*.class"/>
 	    				<include name="**/processor/**/*.class"/>
 		    			<exclude name="**/*Test*.class"/>
+	    				<exclude name="**/ApplicationResources.properties"/>
 
 	   		    </fileset>    	  
 	        	 <manifest>
@@ -295,6 +296,9 @@
 				<exclude name="**/jboss-common-jdbc-wrapper.jar"/>
 				<exclude name="**/jboss.jar"/>
 				<exclude name="**/jta.jar"/>
+				<exclude name="**/cglib-2.1.jar"/>
+				<exclude name="**/ehcache-1.1.jar"/>
+				<exclude name="**/log4*.jar"/>
 				<include name="ApplicationVersionInfo.txt"/>
 			</fileset>
  		</war>

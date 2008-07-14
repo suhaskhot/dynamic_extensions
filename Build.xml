@@ -291,6 +291,10 @@
 				<include name="runtime/**/*"/>
 				<include name="WEB-INF/**/*"/>
 				<include name="error.jsp"/>
+				<exclude name="**/dom4j-1.6.jar"/>
+				<exclude name="**/jboss-common-jdbc-wrapper.jar"/>
+				<exclude name="**/jboss.jar"/>
+				<exclude name="**/jta.jar"/>
 				<include name="ApplicationVersionInfo.txt"/>
 			</fileset>
  		</war>

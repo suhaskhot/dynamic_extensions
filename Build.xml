@@ -232,7 +232,7 @@
 		    			<include name="**/dynamicextensions/validation/**/*.*"/>
 		    			<include name="**/common/util/**/*.*"/>
 		    			<include name="**/dynamicextensions/bizlogic/**/*.class"/>
-	    				<include name="*.properties"/>
+	    				<exclude name="*.properties"/>
 	    				<include name="*.xml"/>
 		    			<include name="**/xmi/**/*.*"/>
 	    				<include name="*.xsl"/>
@@ -241,7 +241,7 @@
 		    			<include name="**/ui/webui/util/*.class"/>
 	    				<include name="**/processor/**/*.class"/>
 		    			<exclude name="**/*Test*.class"/>
-	    				<exclude name="**/ApplicationResources.properties"/>
+	    				
 
 	   		    </fileset>    	  
 	        	 <manifest>
@@ -292,13 +292,13 @@
 				<include name="runtime/**/*"/>
 				<include name="WEB-INF/**/*"/>
 				<include name="error.jsp"/>
-				<exclude name="**/dom4j-1.6.jar"/>
+				<!--<exclude name="**/dom4j-1.6.jar"/>
 				<exclude name="**/jboss-common-jdbc-wrapper.jar"/>
 				<exclude name="**/jboss.jar"/>
 				<exclude name="**/jta.jar"/>
 				<exclude name="**/cglib-2.1.jar"/>
 				<exclude name="**/ehcache-1.1.jar"/>
-				<exclude name="**/log4*.jar"/>
+				<exclude name="**/log4*.jar"/> -->
 				<include name="ApplicationVersionInfo.txt"/>
 			</fileset>
  		</war>

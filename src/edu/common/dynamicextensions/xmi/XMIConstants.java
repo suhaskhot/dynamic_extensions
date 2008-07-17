@@ -34,7 +34,7 @@ public class XMIConstants
 	public static final String TAGGED_VALUE_GEN_TYPE = "gentype";
 	public static final String TAGGED_VALUE_PRODUCT_NAME = "product_name";
 	public static final String TAGGED_VALUE_DESCRIPTION = "description";
-	public static final String TAGGED_VALUE_CONCEPT_CODES = "conceptCodes";
+	public static final String TAGGED_VALUE_CONCEPT_CODE = "ConceptCode";
 	public static final String TAGGED_VALUE_DOCUMENTATION = "documentation";
 	
 	public static final String TAGGED_VALUE_DATASOURCE ="DataSource";
@@ -43,8 +43,7 @@ public class XMIConstants
 	public static final String TAGGED_VALUE_MAX_LENGTH = "MaxLength";
 	public static final String TAGGED_VALUE_DATE_FORMAT = "Format";
 	public static final String TAGGED_VALUE_PRECISION = "Precision";
-	
-	public static final String TAGGED_VALUE_CONCEPT_CODE = "ConceptCode";
+
 	public static final String TAGGED_VALUE_CONCEPT_DEFINITION = "ConceptDefinition";
 	
 	//Package & model name

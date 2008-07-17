@@ -942,7 +942,7 @@ public class XMIExporter implements XMIExportInterface
 		/*taggedValues.add(createTaggedValue("publicId",abstractMetadataObj.getPublicId()));
 		taggedValues.add(createTaggedValue("createdDate",Utility.parseDateToString(abstractMetadataObj.getCreatedDate(), Constants.DATE_PATTERN_MM_DD_YYYY)));
 		taggedValues.add(createTaggedValue("lastUpdated",Utility.parseDateToString(abstractMetadataObj.getLastUpdated(), Constants.DATE_PATTERN_MM_DD_YYYY)));*/
-		taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_CONCEPT_CODES,SemanticPropertyBuilderUtil.getConceptCodeString(abstractMetadataObj.getOrderedSemanticPropertyCollection())));
+		taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_CONCEPT_CODE,SemanticPropertyBuilderUtil.getConceptCodeString(abstractMetadataObj.getOrderedSemanticPropertyCollection())));
 
 		Collection<TaggedValueInterface> taggedValueCollection = abstractMetadataObj.getTaggedValueCollection();
 		if(taggedValueCollection!=null)
@@ -952,7 +952,7 @@ public class XMIExporter implements XMIExportInterface
 			{
 				taggedValues.add(createTaggedValue(taggedValueCollnIter.next()));
 			}
-		}
+		}		
 		return taggedValues;
 	}
 
@@ -1259,7 +1259,7 @@ public class XMIExporter implements XMIExportInterface
 			typeClass = getOrCreateDataType(DatatypeMappings.get(entityAttribute.getDataType()).getJavaClassMapping());
 			umlAttribute.setType(typeClass) ;
 			//Tagged Values
-			Collection<TaggedValue> attributeTaggedValues = getTaggedValues(entityAttribute);
+			Collection<TaggedValue> attributeTaggedValues = getTaggedValues(entityAttribute);			
 			umlAttribute.getTaggedValue().addAll(attributeTaggedValues);
 			umlAttribute.getTaggedValue().add(createTaggedValue(XMIConstants.TAGGED_VALUE_TYPE, entityAttribute.getDataType()));
 			umlAttribute.getTaggedValue().add(createTaggedValue(XMIConstants.TAGGED_VALUE_DESCRIPTION, entityAttribute.getDescription()));

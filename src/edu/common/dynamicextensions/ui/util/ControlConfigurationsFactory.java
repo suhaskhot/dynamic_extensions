@@ -369,20 +369,21 @@ public final class ControlConfigurationsFactory
 
 		ControlsConfigurationObject controlsConfiguration = (ControlsConfigurationObject) controlsConfigurationMap
 				.get(controlName);
-
-		Map dataTypeImplicitRulesMap = controlsConfiguration.getDataTypeImplicitRules();
-		List<String> dataTypeImplicitRuleList = (List) dataTypeImplicitRulesMap.get(dataType);
-		if (dataTypeImplicitRuleList != null && dataTypeImplicitRuleList.size() > 0)
+		if(controlsConfiguration != null)
 		{
-			allImplicitRules.addAll(dataTypeImplicitRuleList);
+			Map dataTypeImplicitRulesMap = controlsConfiguration.getDataTypeImplicitRules();
+			List<String> dataTypeImplicitRuleList = (List) dataTypeImplicitRulesMap.get(dataType);
+			if (dataTypeImplicitRuleList != null && dataTypeImplicitRuleList.size() > 0)
+			{
+				allImplicitRules.addAll(dataTypeImplicitRuleList);
+			}
+	
+			List<String> commonImplicitRuleList = controlsConfiguration.getCommonImplicitRules();
+			if (commonImplicitRuleList != null || commonImplicitRuleList.size() > 0)
+			{
+				allImplicitRules.addAll(commonImplicitRuleList);
+			}
 		}
-
-		List<String> commonImplicitRuleList = controlsConfiguration.getCommonImplicitRules();
-		if (commonImplicitRuleList != null || commonImplicitRuleList.size() > 0)
-		{
-			allImplicitRules.addAll(commonImplicitRuleList);
-		}
-
 		return allImplicitRules;
 	}
 

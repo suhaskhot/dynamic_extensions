@@ -31,6 +31,7 @@ import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.EntityGroup;
+import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.FloatAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.IntegerAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.LongAttributeTypeInformation;
@@ -56,6 +57,7 @@ import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
@@ -124,7 +126,7 @@ public class XMIImportProcessor
 	private Map<AttributeInterface, Map<String,String>> attrVsMapTagValues = new HashMap<AttributeInterface, Map<String,String>>();
 	
 	private Map<EntityInterface, Map<String,String>> entityVsMapTagValues = new HashMap<EntityInterface, Map<String,String>>();
-
+	
 	/**
 	 * Default constructor
 	 *
@@ -167,7 +169,15 @@ public class XMIImportProcessor
 		//Creating entities and entity group.
 		for (UmlClass umlClass : umlClassColl)
 		{
-			EntityInterface entity = entityGroup.getEntityByName(umlClass.getName());			
+			if(isEntityGroupSystemGenerated)
+			{
+				if(!umlClass.getName().startsWith(XMIConstants.CATISSUE_PACKAGE))
+				{
+					umlClass.setName(XMIConstants.CATISSUE_PACKAGE + umlClass.getName());
+				}
+			}
+			EntityInterface entity = entityGroup.getEntityByName(umlClass.getName());
+						
 			if (entity == null)
 			{//Add
 				entity = createEntity(umlClass);
@@ -183,14 +193,14 @@ public class XMIImportProcessor
 			populateEntityUIAttributes(entity, umlClass.getTaggedValue());
 			addSemanticProperty(entity, entityVsMapTagValues.get(entity));
 			
-			//For static models
+//			For static models
 			if(isEntityGroupSystemGenerated)
 			{
 				if(!entity.getName().startsWith(XMIConstants.CATISSUE_PACKAGE))
 				{
 					entity.setName(XMIConstants.CATISSUE_PACKAGE + entity.getName());
 				}
-			}
+			}						
 			umlClassIdVsEntity.put(umlClass.refMofId(), entity);
 		}
 
@@ -229,7 +239,7 @@ public class XMIImportProcessor
 			EntityInterface entity = umlClassIdVsEntity.get(umlClass.refMofId());
 			//In memory operation
 			createContainer(entity);
-		}		
+		}	
 		if (umlGeneralisationColl.size() > 0)
 		{//setting base container in child container.
 			postProcessInheritence(parentIdVsChildrenIds);
@@ -1307,7 +1317,7 @@ public class XMIImportProcessor
 	 * @return
 	 */
 	protected void createContainer(EntityInterface entityInterface) throws Exception
-	{
+	{		
 		ContainerInterface containerInterface = getContainer(entityInterface.getName());
 		/*DynamicExtensionsUtility.getContainerByCaption(entityInterface.getName()); */
 		if (containerInterface == null)//Add
@@ -1849,8 +1859,11 @@ public class XMIImportProcessor
 				//if source maxcardinality or target  maxcardinality or both == -1, then control is listbox.
 				//int  sourceMaxCardinality = associationInterface.getSourceRole().getMaximumCardinality().getValue().intValue();
 
-				int targetMaxCardinality = associationInterface.getTargetRole()
-						.getMaximumCardinality().getValue().intValue();
+				int targetMaxCardinality = 0;
+				if(associationInterface.getTargetRole() != null && associationInterface.getTargetRole().getMaximumCardinality() != null)
+				{
+					targetMaxCardinality = associationInterface.getTargetRole().getMaximumCardinality().getValue().intValue();
+				}
 				if (targetMaxCardinality == -1)
 				{//List box for 1 to many or many to many relationship
 					controlInterface = deFactory.createListBox();
@@ -1912,6 +1925,12 @@ public class XMIImportProcessor
 						((BooleanAttributeTypeInformation)attributeTypeInformation).setDefaultValue(booleanValue);
 						implicitRuleList = configurationsFactory.getAllImplicitRules(
 								ProcessorConstants.CHECKBOX_CONTROL, attributeInterface.getDataType());
+					}
+					//Creating File upload for byte array attributes
+					else if (attributeTypeInformation instanceof FileAttributeTypeInformation)
+					{
+						controlInterface = deFactory.createFileUploadControl();	
+						((FileUploadInterface)controlInterface).setColumns(10);
 					}
 					else
 					{
@@ -2037,7 +2056,7 @@ public class XMIImportProcessor
 
 		for(String containerName : containerNames)
 		{
-////		For static models
+//		For static models
 			String temp = "";
 			if(isEntityGroupSystemGenerated)
 			{				
@@ -2047,7 +2066,7 @@ public class XMIImportProcessor
 					containerName = new String();
 					containerName = XMIConstants.CATISSUE_PACKAGE + temp;
 				}				
-			}
+			}			
 			List containerList = (ArrayList) entityNameVsContainers.get(containerName);
 			if(containerList == null || containerList.size() < 1)
 			{
@@ -2055,7 +2074,7 @@ public class XMIImportProcessor
 						"not match with the container name in the Model.");
 			}
 			ContainerInterface containerInterface = (ContainerInterface) containerList.get(0);
-			mainContainerList.add(containerInterface);
+			mainContainerList.add(containerInterface);			
 		}
 
 		EntityGroupManagerInterface entityManagerInterface = EntityGroupManager.getInstance();

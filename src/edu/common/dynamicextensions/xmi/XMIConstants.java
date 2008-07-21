@@ -45,6 +45,7 @@ public class XMIConstants
 	public static final String TAGGED_VALUE_PRECISION = "Precision";
 
 	public static final String TAGGED_VALUE_CONCEPT_DEFINITION = "ConceptDefinition";
+	public static final String TAGGED_VALUE_RULE = "Rule";
 	
 	//Package & model name
 	public static final String PACKAGE_NAME_LOGICAL_VIEW ="Logical View";

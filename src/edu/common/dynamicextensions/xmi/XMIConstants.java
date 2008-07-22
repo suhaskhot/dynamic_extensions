@@ -44,6 +44,10 @@ public class XMIConstants
 	public static final String TAGGED_VALUE_DATE_FORMAT = "Format";
 	public static final String TAGGED_VALUE_PRECISION = "Precision";
 
+	public static final String TAGGED_VALUE_PASSWORD = "Password";
+	public static final String TAGGED_VALUE_MULTILINE = "Multiline";
+	public static final String TAGGED_VALUE_DEFAULT_VALUE = "DefaultValue";
+	public static final String TAGGED_VALUE_URL = "URL";
 	public static final String TAGGED_VALUE_CONCEPT_DEFINITION = "ConceptDefinition";
 	public static final String TAGGED_VALUE_RULE = "Rule";
 	
@@ -93,8 +97,4 @@ public class XMIConstants
 	public static final String CATISSUE_PACKAGE = "edu.wustl.catissuecore.domain.";
 
 	public static final String DEFAULT_TEXT_FIELD_MAX_LENGTH = "255";
-		
-	
-	
-	
 }

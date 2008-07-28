@@ -262,6 +262,29 @@ enum DataType {
             return attribute;
         }
     },
+    BYTEARRAY("ByteArray") {
+        /**
+         * @see DataType#createAttribute(Attribute)
+         */
+        public AttributeInterface createAttribute(Attribute umlAttribute) {
+            AttributeInterface attribute = domainObjectFactory.createFileAttribute();
+            attribute.setName(umlAttribute.getName());
+//            ValueDomain valueDomain = umlAttribute.getValueDomain();
+//
+//            Enumeration[] arr = valueDomain.getEnumerationCollection().getEnumeration();
+//            if (arr != null) {
+//                UserDefinedDEInterface userDefinedDE = DomainObjectFactory.getInstance().createUserDefinedDE();
+//                for (Enumeration e : arr) {
+//                    DoubleValueInterface value = domainObjectFactory.createDoubleValue();
+//                    value.setValue(new Double(e.getPermissibleValue()));
+//                    XMIImporterUtil.setSemanticMetadata(value, e.getSemanticMetadata());
+//                    userDefinedDE.addPermissibleValue(value);
+//                }
+//                attribute.getAttributeTypeInformation().setDataElement(userDefinedDE);
+//            }
+            return attribute;
+        }
+    },
     OBJECT("Object"), COLLECTION("Collection"), VECTOR("Vector"), ARRAY_LIST(
             "ArrayList"), HASH_SET("HashSet");
 

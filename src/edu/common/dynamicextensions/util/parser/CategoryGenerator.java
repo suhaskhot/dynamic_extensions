@@ -1,4 +1,3 @@
-
 package edu.common.dynamicextensions.util.parser;
 
 import java.io.FileNotFoundException;
@@ -26,6 +25,7 @@ import edu.common.dynamicextensions.util.CategoryGenerationUtil;
 import edu.common.dynamicextensions.util.CategoryHelper;
 import edu.common.dynamicextensions.util.CategoryHelperInterface;
 import edu.common.dynamicextensions.util.CategoryHelperInterface.ControlEnum;
+import edu.common.dynamicextensions.validation.category.CategoryValidator;
 
 /**
  * @author kunal_kamble
@@ -76,8 +76,8 @@ public class CategoryGenerator
 				categoryFileParser.readNext();
 				EntityGroupInterface entityGroup = CategoryGenerationUtil.getEntityGroup(category, categoryFileParser.getEntityGroupName());
 
-				checkForNullRefernce(entityGroup, "Entity group with name " + categoryFileParser.getEntityGroupName() + " at line number "
-						+ categoryFileParser.getLineNumber() + " does not exist");
+				CategoryValidator.checkForNullRefernce(entityGroup, "ERROR AT LINE:" + categoryFileParser.getLineNumber() + "ENTITY GROUP WITH NAME "
+						+ categoryFileParser.getEntityGroupName() + " DOES NOT EXIST");
 
 				categoryFileParser.getCategoryValidator().setEntityGroup(entityGroup);
 
@@ -127,6 +127,7 @@ public class CategoryGenerator
 						ContainerInterface sourceContainer = null;
 						if (entityInterface != null)
 						{
+
 							//always add subcategory to the container
 							sourceContainer = CategoryGenerationUtil.getContainerWithCategoryEntityName(containerCollection, categoryEntityName
 									.get(0));
@@ -139,16 +140,16 @@ public class CategoryGenerator
 						String targetContainerCaption = categoryFileParser.getTargetContainerCaption();
 						ContainerInterface targetContainer = CategoryGenerationUtil.getContainer(containerCollection, targetContainerCaption);
 
-						checkForNullRefernce(targetContainer, "Error at line No:" + categoryFileParser.getLineNumber()
-								+ " Does not found subcategory with name  " + targetContainerCaption);
+						CategoryValidator.checkForNullRefernce(targetContainer, "ERROR AT LINE:" + categoryFileParser.getLineNumber()
+								+ " DOES NOT FOUND THE SUBCATEGORY WITH THE NAME " + targetContainerCaption);
 
 						String multiplicity = categoryFileParser.getMultiplicity();
 
 						List<AssociationInterface> associationNameList = entityNameAssociationMap
 								.get(((CategoryEntityInterface) CategoryGenerationUtil.getContainer(containerCollection, targetContainerCaption)
 										.getAbstractEntity()).getEntity().getName());
-						checkForNullRefernce(associationNameList, "Error at line No:" + categoryFileParser.getLineNumber() + " Does not found path "
-								+ "for the category entity " + targetContainerCaption);
+						CategoryValidator.checkForNullRefernce(associationNameList, "ERROR AT LINE:" + categoryFileParser.getLineNumber()
+								+ " DOES NOT FOUND PATH " + "FOR THE CATEGORY ENTITY " + targetContainerCaption);
 
 						lastControl = categoryHelper.associateCategoryContainers(category, entityGroup, sourceContainer, targetContainer,
 								associationNameList, CategoryGenerationUtil.getMultiplicityInNumbers(multiplicity), categoryEntityNameInstanceMap
@@ -165,24 +166,19 @@ public class CategoryGenerator
 
 						entityInterface = entityGroup.getEntityByName(categoryFileParser.getEntityName());
 
+						CategoryValidator.checkForNullRefernce(getcategoryEntityName(categoryEntityName, categoryFileParser.getEntityName()),
+								"ERROR: INSTANCE INFORMATION IS NOT " + "IN THE CORRECT FORMAT" + categoryEntityName);
 						containerInterface = CategoryGenerationUtil.getContainerWithCategoryEntityName(containerCollection, getcategoryEntityName(
 								categoryEntityName, categoryFileParser.getEntityName()));
 
-						checkForNullRefernce(entityInterface.getAttributeByName(attributeName), "Line Number:" + categoryFileParser.getLineNumber()
-								+ " attribute with name " + attributeName + " in the entity " + entityInterface.getName() + " does not exist!");
+						CategoryValidator.checkForNullRefernce(entityInterface.getAttributeByName(attributeName), "ERROR AT LINE:"
+								+ categoryFileParser.getLineNumber() + " ATTRIBUTE WITH NAME " + attributeName + " DOES NOT FOUND IN THE ENTITY "
+								+ entityInterface.getName());
 
 						lastControl = categoryHelper.addOrUpdateControl(entityInterface, attributeName, containerInterface, ControlEnum
 								.get(categoryFileParser.getControlType()), categoryFileParser.getControlCaption(), permissibleValues);
 
 						setControlsOptions(lastControl);
-
-						setDefaultValue(lastControl);
-
-						if (lastControl.getIsReadOnly())
-						{
-							((CategoryAttributeInterface) lastControl.getAttibuteMetadataInterface()).setIsVisible(false);
-							category.addRelatedAttributeCategoryEntity((CategoryEntityInterface) containerInterface.getAbstractEntity());
-						}
 
 					}
 
@@ -206,31 +202,10 @@ public class CategoryGenerator
 		}
 		catch (IOException e)
 		{
-			throw new DynamicExtensionsSystemException("Error redaring CSV file " + categoryFileParser.getFilePath() + " at line "
+			throw new DynamicExtensionsSystemException("FATAL ERROR READING FILE" + categoryFileParser.getFilePath() + " AT LINE "
 					+ categoryFileParser.getLineNumber(), e);
 		}
 		return categoryList;
-
-	}
-
-	/**
-	 * @param control
-	 * @throws ParseException
-	 */
-	private void setDefaultValue(ControlInterface control) throws ParseException
-	{
-
-		if (categoryFileParser.getDefaultValue() == null)
-		{
-			return;
-		}
-
-		CategoryAttributeInterface categoryAttribute = (CategoryAttributeInterface) control.getAttibuteMetadataInterface();
-		if (!categoryFileParser.getDefaultValue().equals(categoryAttribute.getDefaultValue()))
-		{
-			categoryAttribute.setDefaultValue(categoryAttribute.getAttribute().getAttributeTypeInformation().getPermissibleValueForString(
-					categoryFileParser.getDefaultValue()));
-		}
 
 	}
 
@@ -330,19 +305,6 @@ public class CategoryGenerator
 	}
 
 	/**
-	 * @param object
-	 * @param message
-	 * @throws DynamicExtensionsSystemException
-	 */
-	private void checkForNullRefernce(Object object, String message) throws DynamicExtensionsSystemException
-	{
-		if (object == null)
-		{
-			throw new DynamicExtensionsSystemException(message);
-		}
-	}
-
-	/**
 	 * @param control
 	 * @param nextLine
 	 * @throws DynamicExtensionsSystemException
@@ -363,11 +325,6 @@ public class CategoryGenerator
 
 				Class[] types = getParameterType(methodName, control);
 				List<Object> values = new ArrayList<Object>();
-				if (types.length == 0)
-				{
-					throw new DynamicExtensionsSystemException("Error at Line number:" + categoryFileParser.getLineNumber()
-							+ " Incorrect control option =" + optionString);
-				}
 				values.add(getFormattedValues(types[0], controlOptions.get(optionString)));
 
 				Method method;

@@ -1,4 +1,3 @@
-
 package edu.common.dynamicextensions.util.parser;
 
 /**
@@ -57,14 +56,6 @@ public interface CategoryCSVConstants
 	 */
 	String RELATED_ATTIBUTE = "RelatedAttribute:";
 
-	/**
-	 * 
-	 */
 	String INSTANCE = "instance:";
-
-	/**
-	 * default value of the attribute
-	 */
-	String DEFAULT_VALUE = "defaultValue";
 
 }

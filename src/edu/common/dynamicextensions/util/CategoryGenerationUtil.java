@@ -43,17 +43,23 @@ public class CategoryGenerationUtil
 	 * Returns the multiplicity in number for the give string
 	 * @param multiplicity
 	 * @return
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	public static int getMultiplicityInNumbers(String multiplicity)
+	public static int getMultiplicityInNumbers(String multiplicity) throws DynamicExtensionsSystemException
 	{
 		int multiplicityI = 1;
 		if (multiplicity.equalsIgnoreCase(CategoryCSVConstants.MULTILINE))
 		{
 			multiplicityI = -1;
 		}
-		if (multiplicity.equalsIgnoreCase(CategoryCSVConstants.SINGLE))
+		else if (multiplicity.equalsIgnoreCase(CategoryCSVConstants.SINGLE))
 		{
 			multiplicityI = 1;
+		}
+		else
+		{
+			throw new DynamicExtensionsSystemException("ERROR: WRONG KEYWORD USED FOR MULTIPLICITY " + multiplicity
+					+ ". VALID KEY WORDS ARE: 1- single 2-multiline");
 		}
 		return multiplicityI;
 	}
@@ -183,6 +189,7 @@ public class CategoryGenerationUtil
 	public static ContainerInterface getContainerWithCategoryEntityName(List<ContainerInterface> containerCollection, String categoryEntityName)
 	{
 		ContainerInterface container = null;
+
 		for (ContainerInterface containerInterface : containerCollection)
 		{
 			if (categoryEntityName.equals(containerInterface.getAbstractEntity().getName()))
@@ -217,7 +224,8 @@ public class CategoryGenerationUtil
 
 			String sourceEntityName = entityNamesIterator.next();
 			EntityInterface sourceEntity = entityGroup.getEntityByName(sourceEntityName);
-			CategoryValidator.checkForNullRefernce(sourceEntity, "Entity with name " + sourceEntityName + " does not exist");
+			CategoryValidator.checkForNullRefernce(sourceEntity, "ERROR IN DEFINING PATH FOR THE ENTITY " + entityName + ": ENTITY WITH NAME "
+					+ sourceEntityName + " DOES NOT EXIST");
 			while (entityNamesIterator.hasNext())
 			{
 				EntityInterface targetEntity = entityGroup.getEntityByName(entityNamesIterator.next());
@@ -232,7 +240,12 @@ public class CategoryGenerationUtil
 
 			}
 			listOfPath.put(entityName, assocaitionList);
+			if (list.size() > 1 && assocaitionList.size() == 0)
+			{
+				CategoryValidator.checkForNullRefernce(null, "ERROR: PATH DEFINED FOR THE ENTITY " + entityName + " IS NOT CORRECT");
+			}
 		}
+
 		return listOfPath;
 	}
 

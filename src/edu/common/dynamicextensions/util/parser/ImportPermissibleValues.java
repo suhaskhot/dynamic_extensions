@@ -67,8 +67,8 @@ public class ImportPermissibleValues
 				//1:read the entity group
 				EntityGroupInterface entityGroup = DynamicExtensionsUtility.retrieveEntityGroup(categoryCSVFileParser.getEntityGroupName());
 
-				CategoryValidator.checkForNullRefernce(entityGroup, "Entity group with name " + categoryCSVFileParser.getEntityGroupName()
-						+ " at line number " + categoryCSVFileParser.getLineNumber() + " does not exist");
+				CategoryValidator.checkForNullRefernce(entityGroup," ERROR AT LINE:" + categoryCSVFileParser.getLineNumber() + " ENTITY GROUP WITH NAME " + categoryCSVFileParser.getEntityGroupName()
+						+ " DOES NOT");
 
 				categoryCSVFileParser.getCategoryValidator().setEntityGroup(entityGroup);
 
@@ -83,10 +83,15 @@ public class ImportPermissibleValues
 					String entityName = categoryCSVFileParser.getEntityName();
 					currentEntity = entityGroup.getEntityByName(entityName);
 
+					CategoryValidator.checkForNullRefernce(currentEntity," ERROR AT LINE:" + categoryCSVFileParser.getLineNumber() + " ENTITY WITH NAME " + entityName
+							+ " DOES NOT EXIST");
+
 					String attributeName = categoryCSVFileParser.getAttributeName();
 
 					List<String> pvList = categoryCSVFileParser.getPermissibleValues();
 					List<String> finalPvList = new ArrayList<String>();
+
+					CategoryValidator.checkForNullRefernce(currentEntity.getAttributeByName(attributeName)," ERROR AT LINE:" + categoryCSVFileParser.getLineNumber() + " ATTRIBUTE WITH NAME " + attributeName + " DOES NOT EXIST");
 
 					AttributeTypeInformationInterface attributeTypeInformation = currentEntity.getAttributeByName(attributeName)
 							.getAttributeTypeInformation();
@@ -140,9 +145,8 @@ public class ImportPermissibleValues
 		}
 		catch (IOException e)
 		{
-			throw new DynamicExtensionsSystemException("Line number:" + categoryCSVFileParser.getLineNumber() + "Error while reading csv file "
-					+ categoryCSVFileParser.getFilePath(), e);
-		}
+			throw new DynamicExtensionsSystemException("FATAL ERROR AT LINE:" + categoryCSVFileParser.getLineNumber() , e);
+		}	
 
 	}
 

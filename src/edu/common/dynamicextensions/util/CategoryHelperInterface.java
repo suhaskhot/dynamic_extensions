@@ -166,8 +166,9 @@ public interface CategoryHelperInterface
 	/**
 	 * @param path
 	 * @param instance
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	public void addInstanceInformationToPath(PathInterface path, String instance);
+	public void addInstanceInformationToPath(PathInterface path, String instance) throws DynamicExtensionsSystemException;
 
 	/**
 	 * @param attributeTypeInformation

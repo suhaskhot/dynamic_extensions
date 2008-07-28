@@ -148,12 +148,16 @@ public class CategoryHelper implements CategoryHelperInterface
 			String controlCaption, List<String>... permissibleValueList) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException
 	{
+		if (controlType == null)
+		{
+			throw new DynamicExtensionsSystemException("INVALID CONTROL TYPE FOR:" + controlCaption);
+		}
+
 		CategoryAttributeInterface categoryAttribute = createOrupdateCategoryAttribute(entity, attributeName, container);
 
 		ControlInterface control = null;
 		List<String> permissibleValueNameList = (permissibleValueList.length == 0 ? null : permissibleValueList[0]);
 		control = createOrUpdateControl(controlType, controlCaption, container, categoryAttribute, permissibleValueNameList);
-
 		control.setCaption(controlCaption);
 
 		return control;
@@ -400,8 +404,9 @@ public class CategoryHelper implements CategoryHelperInterface
 	/**
 	 * @param path
 	 * @param instance
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	public void addInstanceInformationToPath(PathInterface path, String instance)
+	public void addInstanceInformationToPath(PathInterface path, String instance) throws DynamicExtensionsSystemException
 	{
 		String[] entityArray = instance.split("->");
 
@@ -410,6 +415,11 @@ public class CategoryHelper implements CategoryHelperInterface
 		{
 			String sourceEntity = entityArray[counter];
 			String targetEntity = entityArray[counter + 1];
+			if (sourceEntity.indexOf("[") == -1 || sourceEntity.indexOf("]") == -1)
+			{
+				throw new DynamicExtensionsSystemException("ERROR: INSTANCE INFORMATION IS NOT IN THE CORRECT FORMAT" + instance);
+			}
+
 			associationRelation.setSourceInstanceId(Long.parseLong(sourceEntity.substring(sourceEntity.indexOf("[") + 1, sourceEntity.indexOf("]"))));
 			associationRelation.setTargetInstanceId(Long.parseLong(targetEntity.substring(targetEntity.indexOf("[") + 1, targetEntity.indexOf("]"))));
 			counter++;
@@ -632,8 +642,7 @@ public class CategoryHelper implements CategoryHelperInterface
 		AttributeTypeInformationInterface attributeTypeInformation = ((CategoryAttribute) baseAbstractAttribute).getAttribute()
 				.getAttributeTypeInformation();
 
-		if (attributeTypeInformation.getDefaultValue() != null
-				&& !attributeTypeInformation.getDefaultValue().equals(((CategoryAttribute) baseAbstractAttribute).getDefaultValue()))
+		if (attributeTypeInformation.getDefaultValue() != null)
 		{
 			((CategoryAttribute) baseAbstractAttribute).setDefaultValue(attributeTypeInformation.getDefaultValue());
 		}

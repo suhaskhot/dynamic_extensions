@@ -1,7 +1,6 @@
 
 package edu.common.dynamicextensions.util.parser;
 
-import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.DEFAULT_VALUE;
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.DISPLAY_LABLE;
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.FORM_DEFINITION;
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.INSTANCE;
@@ -187,7 +186,8 @@ public class CategoryCSVFileParser extends CategoryFileParser
 		boolean permissibleValuesPresent = false;
 		for (i = 0; i < nextLine.length; i++)
 		{
-			if (nextLine[i].startsWith(PERMISSIBLE_VALUES) || nextLine[i].startsWith(PERMISSIBLE_VALUES_FILE))
+			if (nextLine[i].toLowerCase().startsWith(PERMISSIBLE_VALUES)
+					|| nextLine[i].toLowerCase().startsWith(PERMISSIBLE_VALUES_FILE.toLowerCase()))
 			{
 				permissibleValuesPresent = true;
 				break;
@@ -202,7 +202,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 		String permissibleValueKey = tempString[0];
 
 		List<String> permissibleValues = new ArrayList<String>();
-		if (PERMISSIBLE_VALUES.equals(permissibleValueKey))
+		if (PERMISSIBLE_VALUES.equalsIgnoreCase(permissibleValueKey))
 		{
 			String[] pv = tempString[1].split(":");
 			for (i = 0; i < pv.length; i++)
@@ -210,7 +210,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 				permissibleValues.add(pv[i].trim());
 			}
 		}
-		else if (PERMISSIBLE_VALUES_FILE.equals(permissibleValueKey))
+		else if (PERMISSIBLE_VALUES_FILE.equalsIgnoreCase(permissibleValueKey))
 		{
 			String filePath = getSystemIndependantFilePath(tempString[1]);
 			try
@@ -243,7 +243,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	 */
 	public boolean hasDisplayLable()
 	{
-		if (readLine()[0].trim().startsWith(DISPLAY_LABLE))
+		if (readLine()[0].trim().toLowerCase().startsWith(DISPLAY_LABLE.toLowerCase()))
 		{
 			return true;
 		}
@@ -255,7 +255,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	 */
 	public boolean hasFormDefination()
 	{
-		if (FORM_DEFINITION.equals(readLine()[0].trim()))
+		if (FORM_DEFINITION.equalsIgnoreCase(readLine()[0].trim()))
 		{
 			return true;
 		}
@@ -283,7 +283,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	 */
 	public boolean hasSubcategory()
 	{
-		if (readLine()[0].contains("subcategory:"))
+		if (readLine()[0].toLowerCase().contains("subcategory:"))
 		{
 			return true;
 		}
@@ -316,7 +316,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 		Map<String, String> controlOptions = new HashMap<String, String>();
 		for (String string : readLine())
 		{
-			if (string.startsWith(OPTIONS + "~"))
+			if (string.toLowerCase().startsWith(OPTIONS.toLowerCase() + "~"))
 			{
 				String[] controlOptionsValue = string.split("~")[1].split(":");
 
@@ -353,7 +353,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	 */
 	public boolean hasRelatedAttributes()
 	{
-		if (readLine()[0].trim().startsWith(RELATED_ATTIBUTE))
+		if (readLine()[0].trim().toLowerCase().startsWith(RELATED_ATTIBUTE.toLowerCase()))
 		{
 			return true;
 		}
@@ -365,7 +365,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	 */
 	public boolean hasInsatanceInformation()
 	{
-		if (readLine() != null && readLine()[0].trim().startsWith(INSTANCE))
+		if (readLine() != null && readLine()[0].trim().toLowerCase().startsWith(INSTANCE.toLowerCase()))
 		{
 			return true;
 		}
@@ -383,21 +383,5 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	public String getRelatedAttributeName()
 	{
 		return readLine()[0].split("=")[0].split(":")[1].trim();
-	}
-
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.util.parser.CategoryFileParser#getDefaultValue()
-	 */
-	public String getDefaultValue()
-	{
-		String defaultValue = null;
-		for (String string : readLine())
-		{
-			if (string.startsWith(DEFAULT_VALUE))
-			{
-				defaultValue = string.split("=")[1];
-			}
-		}
-		return defaultValue;
 	}
 }

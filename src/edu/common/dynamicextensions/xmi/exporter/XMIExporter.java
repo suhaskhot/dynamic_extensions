@@ -57,30 +57,36 @@ import org.omg.uml.modelmanagement.ModelManagementPackage;
 import org.openide.util.Lookup;
 
 import edu.common.dynamicextensions.domain.Association;
+import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
+import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
+import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
+import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
+import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
 import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.ui.util.SemanticPropertyBuilderUtil;
 import edu.common.dynamicextensions.util.global.Variables;
 import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.common.dynamicextensions.xmi.XMIConstants;
 import edu.common.dynamicextensions.xmi.XMIUtilities;
-import edu.common.dynamicextensions.xmi.exporter.DatatypeMappings;
-import edu.common.dynamicextensions.xmi.exporter.XMIExportInterface;
 import edu.wustl.common.util.dbManager.DAOException;
 
 /**
@@ -942,7 +948,19 @@ public class XMIExporter implements XMIExportInterface
 		/*taggedValues.add(createTaggedValue("publicId",abstractMetadataObj.getPublicId()));
 		taggedValues.add(createTaggedValue("createdDate",Utility.parseDateToString(abstractMetadataObj.getCreatedDate(), Constants.DATE_PATTERN_MM_DD_YYYY)));
 		taggedValues.add(createTaggedValue("lastUpdated",Utility.parseDateToString(abstractMetadataObj.getLastUpdated(), Constants.DATE_PATTERN_MM_DD_YYYY)));*/
-		taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_CONCEPT_CODE,SemanticPropertyBuilderUtil.getConceptCodeString(abstractMetadataObj.getOrderedSemanticPropertyCollection())));
+			
+		addConceptCodeTaggedValues(abstractMetadataObj, taggedValues);
+		
+		if(abstractMetadataObj instanceof AttributeInterface)
+		{
+			AttributeInterface attribute = (AttributeInterface)abstractMetadataObj;
+			//Tag values for Validation rules like mandatory, unique, range(min, max)
+			addRuleTagVaues(taggedValues, attribute);
+			
+			AttributeTypeInformationInterface attrTypeInfo = attribute.getAttributeTypeInformation();
+			//setting UI properties tag values
+			setUIPropertiesTagValues(taggedValues, attrTypeInfo);			
+		}
 
 		Collection<TaggedValueInterface> taggedValueCollection = abstractMetadataObj.getTaggedValueCollection();
 		if(taggedValueCollection!=null)
@@ -954,6 +972,122 @@ public class XMIExporter implements XMIExportInterface
 			}
 		}		
 		return taggedValues;
+	}
+	/**
+	 * @param abstractMetadataObj
+	 * @return
+	 */
+	private void addConceptCodeTaggedValues(AbstractMetadataInterface abstractMetadataObj, ArrayList<TaggedValue> taggedValues)
+	{
+		Collection<SemanticPropertyInterface> semanticPropertyCollection = abstractMetadataObj.getOrderedSemanticPropertyCollection();
+		if(abstractMetadataObj instanceof EntityInterface)
+		{		
+			for(SemanticPropertyInterface semanticProperty : semanticPropertyCollection)
+			{
+				if(semanticProperty.getSequenceNumber() == 0)
+				{
+					taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_OBJECT_CLASS_CONCEPT_CODE, semanticProperty.getConceptCode()));
+					taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_OBJECT_CLASS_CONCEPT_DEFINITION, semanticProperty.getConceptDefinition()));
+					taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_OBJECT_CLASS_CONCEPT_DEFINITION_SOURCE, semanticProperty.getTerm()));
+					taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_OBJECT_CLASS_CONCEPT_PREFERRED_NAME, semanticProperty.getThesaurasName()));
+				}
+				else
+				{
+					taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_OBJECT_CLASS_QUALIFIER_CONCEPT_CODE + semanticProperty.getSequenceNumber(), semanticProperty.getConceptCode()));
+					taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_OBJECT_CLASS_QUALIFIER_CONCEPT_DEFINITION + semanticProperty.getSequenceNumber(), semanticProperty.getConceptDefinition()));
+					taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_OBJECT_CLASS_QUALIFIER_CONCEPT_DEFINITION_SOURCE + semanticProperty.getSequenceNumber(), semanticProperty.getTerm()));
+					taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_OBJECT_CLASS_QUALIFIER_CONCEPT_PREFERRED_NAME + semanticProperty.getSequenceNumber(), semanticProperty.getThesaurasName()));
+				}
+			}
+		}
+		else if(abstractMetadataObj instanceof AttributeInterface)
+		{
+			for(SemanticPropertyInterface semanticProperty : semanticPropertyCollection)
+			{
+				if(semanticProperty.getSequenceNumber() == 0)
+				{
+					taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_PROPERTY_CONCEPT_CODE, semanticProperty.getConceptCode()));
+					taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_PROPERTY_CONCEPT_DEFINITION, semanticProperty.getConceptDefinition()));
+					taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_PROPERTY_CONCEPT_DEFINITION_SOURCE, semanticProperty.getTerm()));
+					taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_PROPERTY_CONCEPT_PREFERRED_NAME, semanticProperty.getThesaurasName()));
+				}
+				else
+				{
+					taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_PROPERTY_QUALIFIER_CONCEPT_CODE + semanticProperty.getSequenceNumber(), semanticProperty.getConceptCode()));
+					taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_PROPERTY_QUALIFIER_CONCEPT_DEFINITION + semanticProperty.getSequenceNumber(), semanticProperty.getConceptDefinition()));
+					taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_PROPERTY_QUALIFIER_CONCEPT_DEFINITION_SOURCE + semanticProperty.getSequenceNumber(), semanticProperty.getTerm()));
+					taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_PROPERTY_QUALIFIER_CONCEPT_PREFERRED_NAME + semanticProperty.getSequenceNumber(), semanticProperty.getThesaurasName()));
+				}
+			}
+		}
+		
+	}
+	/**
+	 * @param taggedValues
+	 * @param attrTypeInfo
+	 */
+	private void setUIPropertiesTagValues(ArrayList<TaggedValue> taggedValues, AttributeTypeInformationInterface attributeTypeInformation)
+	{
+		if(attributeTypeInformation instanceof DateAttributeTypeInformation)
+		{
+			taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_DATE_FORMAT, ((DateAttributeTypeInformation) attributeTypeInformation).getFormat()));
+		}		
+		else if(attributeTypeInformation instanceof BooleanAttributeTypeInformation)
+		{
+			
+		}
+		else if(attributeTypeInformation instanceof FileAttributeTypeInformation)
+		{
+			
+		}
+		else 
+		{// String attribute type information
+			if(attributeTypeInformation instanceof StringAttributeTypeInformation)
+			{//String attribute
+				Integer maxLength = ((StringAttributeTypeInformation) attributeTypeInformation).getSize();
+				if(maxLength != null)
+				{
+					taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_MAX_LENGTH, maxLength.toString()));
+				}
+			}
+			else
+			{//Number attribute
+				Integer precision = ((NumericAttributeTypeInformation) attributeTypeInformation).getDecimalPlaces();
+				if(precision != null)
+				{
+					taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_PRECISION, precision.toString()));
+				}				
+			}			
+		}		
+	}
+	
+	/**
+	 * @param taggedValues
+	 * @param attributeInterface
+	 */
+	private void addRuleTagVaues(ArrayList<TaggedValue> taggedValues, AttributeInterface attributeInterface)
+	{
+		Collection<RuleInterface> ruleColl = attributeInterface.getRuleCollection();
+		for(RuleInterface rule : ruleColl)
+		{
+			String ruleTag = XMIConstants.TAGGED_VALUE_RULE + XMIConstants.SEPARATOR + rule.getName();
+			String ruleValue = "";
+						
+			Collection<RuleParameterInterface> ruleParamColl = rule.getRuleParameterCollection();
+			if(ruleParamColl == null || ruleParamColl.isEmpty())
+			{
+				taggedValues.add(createTaggedValue(ruleTag,ruleValue));
+			}
+			else
+			{
+				for(RuleParameterInterface ruleParam : ruleParamColl)
+				{
+					ruleTag = ruleTag + XMIConstants.SEPARATOR + ruleParam.getName();
+					ruleValue = ruleParam.getValue();
+					taggedValues.add(createTaggedValue(ruleTag,ruleValue));
+				}
+			}
+		}
 	}
 
 	/**

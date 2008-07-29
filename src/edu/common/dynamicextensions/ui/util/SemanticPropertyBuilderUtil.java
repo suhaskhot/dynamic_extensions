@@ -38,32 +38,28 @@ public class SemanticPropertyBuilderUtil
 	{
 		if (conceptCodes == null || conceptCodes.trim().length() == 0)
 		{
-			return null;
+			conceptCodes = " ";
 		}
-		else
-		{
-			Collection<SemanticPropertyInterface> semanticPropertyCollection = new HashSet<SemanticPropertyInterface>();
-			String[] individualConceptCodes = conceptCodes.split("[,]");
-			DomainObjectFactory factory = DomainObjectFactory.getInstance();
-			
-			SemanticPropertyInterface semanticPropertyInterface = null;
-			for (int index = 0; index < individualConceptCodes.length; index++)
-			{
-				String conceptCode = individualConceptCodes[index];
-				if (conceptCode != null && conceptCode.trim().length() != 0)
-				{
-					semanticPropertyInterface = factory.createSemanticProperty();
-					semanticPropertyInterface.setConceptCode(conceptCode.trim());
-					//TODO Check how to fetch the thesauras name and term for the semantic property.
-					semanticPropertyInterface.setTerm(Constants.DEFAULT_TERM);
-					semanticPropertyInterface.setThesaurasName(Constants.DEFAULT_THESAURAS_NAME);
-					semanticPropertyInterface.setSequenceNumber(index + 1);
-					semanticPropertyCollection.add(semanticPropertyInterface);
-				}
-			}
-			return semanticPropertyCollection;
-		}
+		Collection<SemanticPropertyInterface> semanticPropertyCollection = new HashSet<SemanticPropertyInterface>();
+		String[] individualConceptCodes = conceptCodes.split("[,]");
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
+		SemanticPropertyInterface semanticPropertyInterface = null;
+		for (int index = 0; index < individualConceptCodes.length; index++)
+		{
+			String conceptCode = individualConceptCodes[index];
+			if (conceptCode != null && conceptCode.length() != 0)
+			{
+				semanticPropertyInterface = factory.createSemanticProperty();
+				semanticPropertyInterface.setConceptCode(conceptCode);
+				//TODO Check how to fetch the thesauras name and term for the semantic property.
+				semanticPropertyInterface.setTerm(Constants.DEFAULT_TERM);
+				semanticPropertyInterface.setThesaurasName(Constants.DEFAULT_THESAURAS_NAME);
+				semanticPropertyInterface.setSequenceNumber(index + 1);
+				semanticPropertyCollection.add(semanticPropertyInterface);
+			}
+		}
+		return semanticPropertyCollection;
 	}
 
 	/**

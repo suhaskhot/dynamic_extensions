@@ -50,6 +50,26 @@ public class XMIConstants
 	public static final String TAGGED_VALUE_URL = "URL";
 	public static final String TAGGED_VALUE_CONCEPT_DEFINITION = "ConceptDefinition";
 	public static final String TAGGED_VALUE_RULE = "Rule";
+	public static final String TAGGED_VALUE_MULTISELECT = "Multiselect";
+	
+	public static final String TAGGED_VALUE_OBJECT_CLASS_CONCEPT_CODE = "ObjectClassConceptCode";
+	public static final String TAGGED_VALUE_OBJECT_CLASS_CONCEPT_DEFINITION = "ObjectClassConceptDefinition";
+	public static final String TAGGED_VALUE_OBJECT_CLASS_CONCEPT_PREFERRED_NAME = "ObjectClassConceptPreferredName";
+	public static final String TAGGED_VALUE_OBJECT_CLASS_CONCEPT_DEFINITION_SOURCE = "ObjectClassConceptDefinitionSource";
+	public static final String TAGGED_VALUE_OBJECT_CLASS_QUALIFIER_CONCEPT_CODE = "ObjectClassQualifierConceptCode";
+	public static final String TAGGED_VALUE_OBJECT_CLASS_QUALIFIER_CONCEPT_DEFINITION = "ObjectClassQualifierConceptDefinition";
+	public static final String TAGGED_VALUE_OBJECT_CLASS_QUALIFIER_CONCEPT_DEFINITION_SOURCE = "ObjectClassQualifierConceptDefinitionSource";
+	public static final String TAGGED_VALUE_OBJECT_CLASS_QUALIFIER_CONCEPT_PREFERRED_NAME = "ObjectClassQualifierConceptPreferredName";
+
+	public static final String TAGGED_VALUE_PROPERTY_CONCEPT_CODE = "PropertyConceptCode";
+	public static final String TAGGED_VALUE_PROPERTY_CONCEPT_DEFINITION = "PropertyConceptDefinition";
+	public static final String TAGGED_VALUE_PROPERTY_CONCEPT_PREFERRED_NAME = "PropertyConceptPreferredName";
+	public static final String TAGGED_VALUE_PROPERTY_CONCEPT_DEFINITION_SOURCE = "PropertyConceptDefinitionSource";
+	public static final String TAGGED_VALUE_PROPERTY_QUALIFIER_CONCEPT_CODE = "PropertyQualifierConceptCode";
+	public static final String TAGGED_VALUE_PROPERTY_QUALIFIER_CONCEPT_DEFINITION = "PropertyQualifierConceptDefinition";
+	public static final String TAGGED_VALUE_PROPERTY_QUALIFIER_CONCEPT_DEFINITION_SOURCE = "PropertyQualifierConceptDefinitionSource";
+	public static final String TAGGED_VALUE_PROPERTY_QUALIFIER_CONCEPT_PREFERRED_NAME = "PropertyQualifierConceptPreferredName";
+
 	
 	//Package & model name
 	public static final String PACKAGE_NAME_LOGICAL_VIEW ="Logical View";

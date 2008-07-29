@@ -36,6 +36,7 @@ import edu.common.dynamicextensions.domain.FloatAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.IntegerAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.LongAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.SemanticProperty;
 import edu.common.dynamicextensions.domain.ShortAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.userinterface.Container;
@@ -127,6 +128,8 @@ public class XMIImportProcessor
 	
 	private Map<EntityInterface, Map<String,String>> entityVsMapTagValues = new HashMap<EntityInterface, Map<String,String>>();
 	
+	private Map<AssociationInterface, Map<String,String>> associationVsMapTagValues = new HashMap<AssociationInterface, Map<String,String>>();
+	
 	/**
 	 * Default constructor
 	 *
@@ -190,8 +193,8 @@ public class XMIImportProcessor
 				createAttributes(attrColl, entity);
 			}
 			
-			populateEntityUIAttributes(entity, umlClass.getTaggedValue());
-			addSemanticProperty(entity, entityVsMapTagValues.get(entity));
+			populateEntityUIProperties(entity, umlClass.getTaggedValue());
+			addSemanticPropertyForEntities(entity, entityVsMapTagValues.get(entity));
 			
 //			For static models
 			if(isEntityGroupSystemGenerated)
@@ -214,7 +217,7 @@ public class XMIImportProcessor
 		if (umlAssociationColl != null)
 		{
 			for (UmlAssociation umlAssociation : umlAssociationColl)
-			{
+			{				
 				addAssociation(umlAssociation, parentIdVsChildrenIds);
 			}
 		}
@@ -570,16 +573,16 @@ public class XMIImportProcessor
 								//					attribute.setDescription(umlAttribute.getTaggedValue().getDescription());
 								//					setSemanticMetadata(attribute, umlAttribute.getSemanticMetadata());
 								Collection<TaggedValue> taggedValueColl = umlAttribute.getTaggedValue();
-								populateUIAttributeMap(attribute,taggedValueColl);
-								addSemanticProperty(attribute, attrVsMapTagValues.get(attribute));
+								populateAttributeUIProperties(attribute,taggedValueColl);
+								addSemanticPropertyForAttributes(attribute, attrVsMapTagValues.get(attribute));
 								entity.addAttribute(attribute);
 							}
 						}
 						else
 						{//Attribute has been edited
 							Collection<TaggedValue> taggedValueColl = umlAttribute.getTaggedValue();
-							populateUIAttributeMap(originalAttribute,taggedValueColl);
-							addSemanticProperty(originalAttribute, attrVsMapTagValues.get(originalAttribute));
+							populateAttributeUIProperties(originalAttribute,taggedValueColl);
+							addSemanticPropertyForAttributes(originalAttribute, attrVsMapTagValues.get(originalAttribute));
 							//Data Type has been changed						
 //							if(!originalAttribute.getAttributeTypeInformation().getDataType().equalsIgnoreCase(umlAttribute.getType().getName()))
 //							{								
@@ -601,7 +604,7 @@ public class XMIImportProcessor
 	 * @param attribute
 	 * @param taggedValueColl
 	 */
-	private void populateUIAttributeMap(AttributeInterface attribute, Collection<TaggedValue> taggedValueColl)
+	private void populateAttributeUIProperties(AttributeInterface attribute, Collection<TaggedValue> taggedValueColl)
 	{
 		Map<String, String> tagNameVsTagValue = populateTagValueMap(taggedValueColl);
 		attrVsMapTagValues.put(attribute, tagNameVsTagValue);
@@ -611,10 +614,20 @@ public class XMIImportProcessor
 	 * @param entity
 	 * @param taggedValueColl
 	 */
-	private void populateEntityUIAttributes(EntityInterface entity, Collection<TaggedValue> taggedValueColl)
+	private void populateEntityUIProperties(EntityInterface entity, Collection<TaggedValue> taggedValueColl)
 	{
 		Map<String, String> tagNameVsTagValue = populateTagValueMap(taggedValueColl);
 		entityVsMapTagValues.put(entity, tagNameVsTagValue);
+	}
+	
+	/**
+	 * @param association
+	 * @param taggedValueColl
+	 */
+	private void populateAssociationUIProperties(AssociationInterface association, Collection<TaggedValue> taggedValueColl)
+	{
+		Map<String, String> tagNameVsTagValue = populateTagValueMap(taggedValueColl);
+		associationVsMapTagValues.put(association, tagNameVsTagValue);
 	}
 	
 	/**
@@ -640,23 +653,102 @@ public class XMIImportProcessor
 	}
 	
 	/**
-	 * @param attribute
+	 * @param entityInterface
+	 * @param taggedValueMap
 	 */
-	private void addSemanticProperty(AbstractMetadataInterface abstractMetadataInterface, Map<String, String> taggedValueMap)
+	private void addSemanticPropertyForEntities(EntityInterface entityInterface, Map<String, String> taggedValueMap)
 	{
+		Collection<SemanticPropertyInterface> semanticPropertyColl = new HashSet<SemanticPropertyInterface>();
 		//		Concept codes		
-		String conceptCodes = taggedValueMap.get(XMIConstants.TAGGED_VALUE_CONCEPT_CODE);
-		Collection<SemanticPropertyInterface> semanticPropertyColl = SemanticPropertyBuilderUtil.getSymanticPropertyCollection(conceptCodes);
-		
-		if(semanticPropertyColl != null)
+		String conceptCode = taggedValueMap.get(XMIConstants.TAGGED_VALUE_OBJECT_CLASS_CONCEPT_CODE);
+		if(conceptCode != null)
 		{
-			for(SemanticPropertyInterface semanticProperty : semanticPropertyColl)
+			String conceptDefinition = taggedValueMap.get(XMIConstants.TAGGED_VALUE_OBJECT_CLASS_CONCEPT_DEFINITION);
+			String term = taggedValueMap.get(XMIConstants.TAGGED_VALUE_OBJECT_CLASS_CONCEPT_DEFINITION_SOURCE);
+			String thesarausName = taggedValueMap.get(XMIConstants.TAGGED_VALUE_OBJECT_CLASS_CONCEPT_PREFERRED_NAME);
+			SemanticPropertyInterface semanticPropertyInterface = getSemanticProperty(conceptCode, conceptDefinition, term ,thesarausName ,0);
+			semanticPropertyColl.add(semanticPropertyInterface);
+			
+			Set<String> tagNames = taggedValueMap.keySet();
+			for(String tagName : tagNames)
 			{
-				String conceptDefinition = taggedValueMap.get(XMIConstants.TAGGED_VALUE_CONCEPT_DEFINITION + "_" + semanticProperty.getConceptCode());
-				semanticProperty.setConceptDefinition(conceptDefinition);		
-			}
-			abstractMetadataInterface.setSemanticPropertyCollection(semanticPropertyColl);
+				if(tagName.startsWith(XMIConstants.TAGGED_VALUE_OBJECT_CLASS_QUALIFIER_CONCEPT_CODE))
+				{
+					int beginIndex = XMIConstants.TAGGED_VALUE_OBJECT_CLASS_QUALIFIER_CONCEPT_CODE.length();
+					String qualifierNumber = tagName.substring(beginIndex);
+					
+					conceptCode = taggedValueMap.get(XMIConstants.TAGGED_VALUE_OBJECT_CLASS_QUALIFIER_CONCEPT_CODE + qualifierNumber);
+					conceptDefinition = taggedValueMap.get(XMIConstants.TAGGED_VALUE_OBJECT_CLASS_QUALIFIER_CONCEPT_DEFINITION + qualifierNumber);
+					term = taggedValueMap.get(XMIConstants.TAGGED_VALUE_OBJECT_CLASS_QUALIFIER_CONCEPT_DEFINITION_SOURCE + qualifierNumber);
+					thesarausName = taggedValueMap.get(XMIConstants.TAGGED_VALUE_OBJECT_CLASS_QUALIFIER_CONCEPT_PREFERRED_NAME + qualifierNumber);	
+					
+					semanticPropertyInterface = getSemanticProperty(conceptCode, conceptDefinition, term, thesarausName, Integer.parseInt(qualifierNumber));
+					semanticPropertyColl.add(semanticPropertyInterface);
+				}
+			}			
 		}
+		
+		entityInterface.setSemanticPropertyCollection(semanticPropertyColl);		
+	}
+	
+	/**
+	 * @param conceptCode
+	 * @param conceptDefinition
+	 * @param term
+	 * @param thesaurasName
+	 * @param seqNo
+	 * @return
+	 */
+	private SemanticPropertyInterface getSemanticProperty(String conceptCode, String conceptDefinition, String term, String thesaurasName, int seqNo)
+	{
+		SemanticPropertyInterface semanticProperty = DomainObjectFactory.getInstance().createSemanticProperty();
+		semanticProperty.setConceptCode(conceptCode);
+		semanticProperty.setConceptDefinition(conceptDefinition);
+		semanticProperty.setTerm(term);
+		semanticProperty.setThesaurasName(thesaurasName);
+		semanticProperty.setSequenceNumber(seqNo);
+		
+		return semanticProperty;
+	}
+	
+	/**
+	 * @param abstractMetadataInterface
+	 * @param taggedValueMap
+	 * @param tag
+	 */
+	private void addSemanticPropertyForAttributes(AttributeInterface attributeInterface, Map<String, String> taggedValueMap)
+	{
+		Collection<SemanticPropertyInterface> semanticPropertyColl = new HashSet<SemanticPropertyInterface>();
+		//		Concept codes		
+		String conceptCode = taggedValueMap.get(XMIConstants.TAGGED_VALUE_PROPERTY_CONCEPT_CODE);
+		if(conceptCode != null)
+		{
+			String conceptDefinition = taggedValueMap.get(XMIConstants.TAGGED_VALUE_PROPERTY_CONCEPT_DEFINITION);
+			String term = taggedValueMap.get(XMIConstants.TAGGED_VALUE_PROPERTY_CONCEPT_DEFINITION_SOURCE);
+			String thesarausName = taggedValueMap.get(XMIConstants.TAGGED_VALUE_PROPERTY_CONCEPT_PREFERRED_NAME);
+			SemanticPropertyInterface semanticPropertyInterface = getSemanticProperty(conceptCode, conceptDefinition, term ,thesarausName ,0);
+			semanticPropertyColl.add(semanticPropertyInterface);
+			
+			Set<String> tagNames = taggedValueMap.keySet();
+			for(String tagName : tagNames)
+			{
+				if(tagName.startsWith(XMIConstants.TAGGED_VALUE_PROPERTY_QUALIFIER_CONCEPT_CODE))
+				{
+					int beginIndex = XMIConstants.TAGGED_VALUE_PROPERTY_QUALIFIER_CONCEPT_CODE.length();
+					String qualifierNumber = tagName.substring(beginIndex);
+					
+					conceptCode = taggedValueMap.get(XMIConstants.TAGGED_VALUE_PROPERTY_QUALIFIER_CONCEPT_CODE + qualifierNumber);
+					conceptDefinition = taggedValueMap.get(XMIConstants.TAGGED_VALUE_PROPERTY_QUALIFIER_CONCEPT_DEFINITION + qualifierNumber);
+					term = taggedValueMap.get(XMIConstants.TAGGED_VALUE_PROPERTY_QUALIFIER_CONCEPT_DEFINITION_SOURCE + qualifierNumber);
+					thesarausName = taggedValueMap.get(XMIConstants.TAGGED_VALUE_PROPERTY_QUALIFIER_CONCEPT_PREFERRED_NAME + qualifierNumber);	
+					
+					semanticPropertyInterface = getSemanticProperty(conceptCode, conceptDefinition, term, thesarausName, Integer.parseInt(qualifierNumber));
+					semanticPropertyColl.add(semanticPropertyInterface);
+				}
+			}			
+		}
+		
+		attributeInterface.setSemanticPropertyCollection(semanticPropertyColl);	
 	}
 /**
 	 * @param attributeType
@@ -893,7 +985,7 @@ public class XMIImportProcessor
 		}
 		ConstraintPropertiesInterface constraintProperties = DynamicExtensionsUtility.getConstraintProperties(association);
 		association.setConstraintProperties(constraintProperties);
-		
+		populateAssociationUIProperties(association, taggedValueColl);
 	}
 
 	/**
@@ -1560,21 +1652,42 @@ public class XMIImportProcessor
 		if(!(editedAttribute instanceof AssociationInterface))
 		{
 			Map<String, String> taggedValueMap = attrVsMapTagValues.get(editedAttribute);
-						
-			// max length of string from tagged value		
-			String maxLen = getMaxLengthTagValue(taggedValueMap);
-			controlModel.setAttributeSize(maxLen);
-			
-			//date format tagged value
-			String format = getDateFormatTagValue(taggedValueMap);
-			controlModel.setFormat(format);
-			String dateFormat = DynamicExtensionsUtility.getDateFormat(format); 
-			controlModel.setDateValueType(dateFormat);
-			
-			// precision tagged value
-			Integer precision = getPrecisionTagValue(taggedValueMap,((AttributeInterface) editedAttribute).getAttributeTypeInformation());
-			controlModel.setAttributeDecimalPlaces(precision.toString());						
+				
+			if(taggedValueMap != null)
+			{
+				// max length of string from tagged value		
+				String maxLen = getMaxLengthTagValue(taggedValueMap);
+				controlModel.setAttributeSize(maxLen);
+				
+				//date format tagged value
+				String format = getDateFormatTagValue(taggedValueMap);
+				controlModel.setFormat(format);
+				String dateFormat = DynamicExtensionsUtility.getDateFormat(format); 
+				controlModel.setDateValueType(dateFormat);
+				
+				// precision tagged value
+				Integer precision = getPrecisionTagValue(taggedValueMap,((AttributeInterface) editedAttribute).getAttributeTypeInformation());
+				controlModel.setAttributeDecimalPlaces(precision.toString());	
+				
+				//For list box or combo box
+				boolean isMultiselect = getMultiselectTagValue(taggedValueMap );
+				controlModel.setIsMultiSelect(isMultiselect);
+			}
 		}
+	}
+	/**
+	 * @param taggedValueMap
+	 * @return
+	 */
+	private boolean getMultiselectTagValue(Map<String,String> taggedValueMap)
+	{		
+		String isMultiselect = taggedValueMap.get(XMIConstants.TAGGED_VALUE_MULTISELECT);
+		if(isMultiselect == null || isMultiselect.equals("") )
+		{
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/**
@@ -1845,6 +1958,7 @@ public class XMIImportProcessor
 		if (abstractAttributeInterface instanceof AssociationInterface)
 		{
 			AssociationInterface associationInterface = (AssociationInterface) abstractAttributeInterface;
+			Map<String, String> taggedValueMap = associationVsMapTagValues.get(associationInterface);
 			if (associationInterface.getSourceRole().getAssociationsType().compareTo(
 					AssociationType.CONTAINTMENT) == 0)
 			{//This line is for containment association.
@@ -1864,7 +1978,9 @@ public class XMIImportProcessor
 				{
 					targetMaxCardinality = associationInterface.getTargetRole().getMaximumCardinality().getValue().intValue();
 				}
-				if (targetMaxCardinality == -1)
+//				if (targetMaxCardinality == -1)
+								
+				if(getMultiselectTagValue(taggedValueMap))
 				{//List box for 1 to many or many to many relationship
 					controlInterface = deFactory.createListBox();
 					((ListBoxInterface) controlInterface).setIsMultiSelect(true);

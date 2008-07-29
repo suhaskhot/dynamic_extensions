@@ -293,7 +293,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param attributeInterface
 	 * @param attributeUIBeanInformationIntf
 	 */
-	private void populateIsIdentifiedInfo(AbstractAttributeInterface attributeInterface, String strIsIdentified)
+	public void populateIsIdentifiedInfo(AbstractAttributeInterface attributeInterface, String strIsIdentified)
 	{
 		if (attributeInterface instanceof AttributeInterface)
 		{
@@ -378,7 +378,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param information
 	 * @param attributeUIBeanInformationIntf
 	 */
-	private void populateFileAttributeInterface(FileAttributeTypeInformation fileAttributeInformation,
+	public void populateFileAttributeInterface(FileAttributeTypeInformation fileAttributeInformation,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
 	{
 		if ((fileAttributeInformation != null) && (attributeUIBeanInformationIntf != null))
@@ -488,7 +488,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		}
 
 		Collection<RuleInterface> attributeRuleCollection = abstractAttributeInterface.getRuleCollection();
-		if (attributeRuleCollection != null)
+		if (attributeRuleCollection != null && !(attributeRuleCollection.isEmpty()))
 		{
 			HashSet<RuleInterface> obsoleteRules = new HashSet<RuleInterface>();
 			HashSet<RuleInterface> newRules = new HashSet<RuleInterface>();
@@ -867,7 +867,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param attributeUIBeanInformationIntf : UI Bean containing attribute information entered by user on UI
 	 * @throws DynamicExtensionsApplicationException : Exception
 	 */
-	private void populateDateAttributeInterface(DateAttributeTypeInformation dateAttributeIntf,
+	public void populateDateAttributeInterface(DateAttributeTypeInformation dateAttributeIntf,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsApplicationException
 	{
 		// Set Date format based on the UI selection : DATE ONLY or DATE And TIME
@@ -912,7 +912,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param attributeUIBeanInformationIntf  : UI Bean containing attribute information entered by user on UI
 	 * @throws DynamicExtensionsApplicationException : Exception
 	 */
-	private void populateStringAttributeInterface(StringAttributeTypeInformation stringAttributeIntf,
+	public void populateStringAttributeInterface(StringAttributeTypeInformation stringAttributeIntf,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsApplicationException
 	{
 		//Default Value
@@ -978,7 +978,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param attributeUIBeanInformationIntf  : UI Bean containing attribute information entered by user on UI
 	 * @throws DynamicExtensionsApplicationException : Excpetion
 	 */
-	private void populateIntegerAttributeInterface(IntegerAttributeTypeInformation integerAttributeInterface,
+	public void populateIntegerAttributeInterface(IntegerAttributeTypeInformation integerAttributeInterface,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsApplicationException
 	{
 		//Set default value
@@ -1025,7 +1025,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param longAttributeInterface : Long attribute object
 	 * @param attributeUIBeanInformationIntf : UI Bean containing attribute information entered by user on UI
 	 */
-	private void populateLongAttributeInterface(LongAttributeTypeInformation longAttributeInterface,
+	public void populateLongAttributeInterface(LongAttributeTypeInformation longAttributeInterface,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
 	{
 		//Set Default Value
@@ -1057,7 +1057,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param floatAttributeInterface : Float attribute
 	 * @param attributeUIBeanInformationIntf  : UI Bean containing attribute information entered by user on UI
 	 */
-	private void populateFloatAttributeInterface(FloatAttributeTypeInformation floatAttributeInterface,
+	public void populateFloatAttributeInterface(FloatAttributeTypeInformation floatAttributeInterface,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
 	{
 		if ((attributeUIBeanInformationIntf.getAttributeDefaultValue() != null)
@@ -1088,7 +1088,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param doubleAttributeInterface : Double attribute
 	 * @param attributeUIBeanInformationIntf : UI Bean containing attribute information entered by user on UI
 	 */
-	private void populateDoubleAttributeInterface(DoubleAttributeTypeInformation doubleAttributeInterface,
+	public void populateDoubleAttributeInterface(DoubleAttributeTypeInformation doubleAttributeInterface,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
 	{
 		if ((attributeUIBeanInformationIntf.getAttributeDefaultValue() != null)

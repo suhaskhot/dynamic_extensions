@@ -1,11 +1,15 @@
 
 package edu.common.dynamicextensions.xmi.importer;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.jmi.model.ModelPackage;
 import javax.jmi.model.MofPackage;
@@ -16,6 +20,7 @@ import org.netbeans.api.mdr.MDRepository;
 import org.omg.uml.UmlPackage;
 import org.openide.util.Lookup;
 
+import edu.common.dynamicextensions.xmi.XMIConstants;
 import edu.common.dynamicextensions.xmi.XMIUtilities;
 
 
@@ -52,17 +57,28 @@ public class XMIImporter
 	//		Fully qualified Name of the xmi file to be imported
 			String fileName = args[0];
 //				"C://Documents and Settings//ashish_gupta//Desktop//XMLs//roundtrip_1.4.xmi";	
-			fileName = fileName.replaceAll("\\\\", "//");		
-			System.out.println("Filename = " +fileName);
+		//	fileName = fileName.replaceAll("\\\\", "//");	
+			
+			File file = new File(fileName);
+			System.out.println("Filename = " +file.getName());
 			
 			String packageName = "";
 			if(args.length > 1)
 			{
 				packageName = args[1];
 			}
-			int beginIndex = fileName.lastIndexOf("//");
-			int endIndex = fileName.lastIndexOf(".");
-			String domainModelName = fileName.substring(beginIndex+2, endIndex);
+			int indexOfExtension = file.getName().lastIndexOf(".");
+			String domainModelName = "";
+
+			if(indexOfExtension == -1)
+			{
+				domainModelName = file.getName();
+			}
+			else
+			{
+				domainModelName = file.getName().substring(0,indexOfExtension);
+			}
+			
 			System.out.println("Package name = " +packageName);
 			System.out.println("Name of the file = " +domainModelName);
 			
@@ -73,7 +89,7 @@ public class XMIImporter
 			
 			init();
 	
-			in = new FileInputStream(fileName);
+			in = new FileInputStream(file);
 	
 			// start a read-only transaction
 			rep.beginTrans(true);
@@ -82,8 +98,8 @@ public class XMIImporter
 			reader.read(in, null, uml);
 			XMIImportProcessor xmiImportProcessor = new XMIImportProcessor();
 			
-			List<String> containerNames = new ArrayList<String>();
-			xmiImportProcessor.processXmi(uml, domainModelName,packageName,containerNames,false);			
+			List<String> containerNames = readFile(args[2]);
+			xmiImportProcessor.processXmi(uml, domainModelName,packageName,containerNames,true);			
 			System.out.println("--------------- Done ------------");
 		
 		}
@@ -108,6 +124,32 @@ public class XMIImporter
 			XMIUtilities.cleanUpRepository();
 		
 		}
+	}
+	
+	/**
+	 * @param path
+	 * @return
+	 * @throws IOException
+	 */
+	private static  List<String> readFile(String path) throws IOException
+	{
+		 List<String> containerNames = new ArrayList<String>();
+		File file = new File(path);
+	 
+		BufferedReader bufRdr  = new BufferedReader(new FileReader(file));
+		String line = null;
+		 
+		//read each line of text file
+		while((line = bufRdr.readLine()) != null)
+		{	
+			StringTokenizer st = new StringTokenizer(line,",");
+			while (st.hasMoreTokens())
+			{
+				//get next token and store it in the array
+				containerNames.add(st.nextToken());
+			}		
+		}
+		return containerNames;
 	}
 
 	private static void init() throws Exception

@@ -406,7 +406,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @param controlUIBeanInterface : Control UI Information interface containing information added by user on UI
 	 * @return : Control interface populated with required information for Text area(Multiline textbox)
 	 */
-	private ControlInterface getMultiLineControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
+	public ControlInterface getMultiLineControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
 	{
 		TextAreaInterface textAreaIntf = null;
 		if (controlInterface == null) //If does not exist create it 
@@ -436,7 +436,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @param controlUIBeanInterface : Control UI Information interface containing information added by user on UI
 	 * @return : Control interface populated with required information for text box
 	 */
-	private ControlInterface getTextControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
+	public ControlInterface getTextControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
 	{
 		TextFieldInterface textFldIntf = null;
 		if (controlInterface == null) //If does not exist create it 

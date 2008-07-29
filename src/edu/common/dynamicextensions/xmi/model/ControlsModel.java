@@ -25,8 +25,6 @@ public class ControlsModel implements
 ControlUIBeanInterface,
 AbstractAttributeUIBeanInterface
 {
-
-	
 	/**
 	 * Attribute Name
 	 */
@@ -865,7 +863,7 @@ AbstractAttributeUIBeanInterface
 
 	public Integer getColumns()
 	{
-		if ((attributenoOfCols != null) && (attributenoOfCols.trim().equals("")))
+		if ((attributenoOfCols == null) || (attributenoOfCols.trim().equals("")))
 		{
 			columns = new Integer(0); //blank values will be considered as 0
 		}
@@ -900,7 +898,7 @@ AbstractAttributeUIBeanInterface
 	 */
 	public Integer getRows()
 	{
-		if ((attributeNoOfRows != null) && (attributeNoOfRows.trim().equals("")))
+		if ((attributeNoOfRows == null) || (attributeNoOfRows.trim().equals("")))
 		{
 			rows = new Integer(0); //blank values will be considered as 0
 		}

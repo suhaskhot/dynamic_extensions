@@ -35,15 +35,12 @@ import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.FloatAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.IntegerAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.LongAttributeTypeInformation;
-import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
-import edu.common.dynamicextensions.domain.SemanticProperty;
 import edu.common.dynamicextensions.domain.ShortAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domain.userinterface.SelectControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -61,21 +58,19 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterfa
 import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
-import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
-import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManager;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManagerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ApplyFormControlsProcessor;
+import edu.common.dynamicextensions.processor.AttributeProcessor;
 import edu.common.dynamicextensions.processor.ContainerProcessor;
+import edu.common.dynamicextensions.processor.ControlProcessor;
 import edu.common.dynamicextensions.processor.EntityProcessor;
 import edu.common.dynamicextensions.processor.LoadFormControlsProcessor;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
-import edu.common.dynamicextensions.ui.util.RuleConfigurationObject;
-import edu.common.dynamicextensions.ui.util.SemanticPropertyBuilderUtil;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
@@ -86,6 +81,7 @@ import edu.common.dynamicextensions.xmi.model.ContainerModel;
 import edu.common.dynamicextensions.xmi.model.ControlsModel;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.util.dbManager.DAOException;
+
 
 /**
  *
@@ -1333,19 +1329,21 @@ public class XMIImportProcessor
 
 	/**
 	 * @param entityInterface
+	 * @param controlModel 
 	 * @return
 	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException 
 	 */
-	private ContainerInterface createNewContainer(EntityInterface entityInterface)
-			throws DynamicExtensionsSystemException
+	private ContainerInterface createNewContainer(EntityInterface entityInterface, ControlsModel controlModel)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ContainerInterface containerInterface = deFactory.createContainer();
 		containerInterface.setCaption(entityInterface.getName());
 		containerInterface.setAbstractEntity(entityInterface);
 
 		//Adding Required field indicator
-		containerInterface.setRequiredFieldIndicatior(" ");
-		containerInterface.setRequiredFieldWarningMessage(" ");
+		containerInterface.setRequiredFieldIndicatior("*");
+		containerInterface.setRequiredFieldWarningMessage("indicates required fields.");
 
 		Collection<AbstractAttributeInterface> abstractAttributeCollection = entityInterface
 				.getAbstractAttributeCollection();
@@ -1353,7 +1351,7 @@ public class XMIImportProcessor
 		ControlInterface controlInterface;
 		for (AbstractAttributeInterface abstractAttributeInterface : abstractAttributeCollection)
 		{
-			controlInterface = getControlForAttribute(abstractAttributeInterface);
+			controlInterface = getControlForAttribute(abstractAttributeInterface,controlModel);
 			if(controlInterface!=null)  //no control created for id attribute
 			{
 				sequenceNumber++;
@@ -1411,10 +1409,11 @@ public class XMIImportProcessor
 	protected void createContainer(EntityInterface entityInterface) throws Exception
 	{		
 		ContainerInterface containerInterface = getContainer(entityInterface.getName());
+		ControlsModel controlModel = new ControlsModel();
 		/*DynamicExtensionsUtility.getContainerByCaption(entityInterface.getName()); */
 		if (containerInterface == null)//Add
 		{
-			containerInterface = createNewContainer(entityInterface);
+			containerInterface = createNewContainer(entityInterface,controlModel);
 		}
 		else
 		{//Edit
@@ -1467,7 +1466,6 @@ public class XMIImportProcessor
 					continue;
 				}
 
-				ControlsModel controlModel = new ControlsModel();
 				if (editedAttribute instanceof AssociationInterface)
 				{
 					//When association direction is changed from bi-directional to src-destination, this method removes
@@ -1566,13 +1564,14 @@ public class XMIImportProcessor
 	 * @param editedAttribute
 	 * @param containerInterface
 	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException 
 	 */
 	private void addAttributeAndControl(ControlsModel controlModel,
 			AbstractAttributeInterface editedAttribute, ContainerInterface containerInterface)
-			throws DynamicExtensionsSystemException
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		controlModel.setControlOperation(ProcessorConstants.OPERATION_ADD);
-		ControlInterface newcontrol = getControlForAttribute(editedAttribute);
+		ControlInterface newcontrol = getControlForAttribute(editedAttribute,controlModel);
 		if(newcontrol != null){  //no control created for id attribute
 			int sequenceNumber = containerInterface.getControlCollection().size() + 1;
 			newcontrol.setSequenceNumber(sequenceNumber);
@@ -1652,7 +1651,6 @@ public class XMIImportProcessor
 		if(!(editedAttribute instanceof AssociationInterface))
 		{
 			Map<String, String> taggedValueMap = attrVsMapTagValues.get(editedAttribute);
-				
 			if(taggedValueMap != null)
 			{
 				// max length of string from tagged value		
@@ -1667,13 +1665,81 @@ public class XMIImportProcessor
 				
 				// precision tagged value
 				Integer precision = getPrecisionTagValue(taggedValueMap,((AttributeInterface) editedAttribute).getAttributeTypeInformation());
-				controlModel.setAttributeDecimalPlaces(precision.toString());	
+				controlModel.setAttributeDecimalPlaces(precision.toString());		
 				
+				//Added by Prashant
+				//password tagged value
+				String password = getPasswordTagValue(taggedValueMap);
+				controlModel.setIsPassword(Boolean.parseBoolean(password));
+	
+				//Single/Multiline(Number of Lines) tagged Value
+				setMultilineTaggedValue(taggedValueMap,controlModel);
+
+				//NoOfColumns tagged Value
+				String width = getDisplayWidthTagValue(taggedValueMap);
+				controlModel.setColumns(Integer.parseInt(width.toString()));
+				
+				//defaultValue tagged Value
+				String defaultValue = getDefaultValueTagValue(taggedValueMap);
+				controlModel.setAttributeDefaultValue(defaultValue);
+	
+				//URL tagged value
+				String url = getUrlTagValue(taggedValueMap);
+				controlModel.setIsUrl(Boolean.parseBoolean(url));
+				
+				//PHI Attribute tagged value
+				String PHIAttribute = getPHIAttributeTagValue(taggedValueMap);
+				controlModel.setAttributeIdentified(PHIAttribute);
+				
+				//FileFormats tagged value
+				String[] fileFormats = getFileFormatsTagValue(taggedValueMap);			
+				controlModel.setFileFormats(fileFormats);
 				//For list box or combo box
 				boolean isMultiselect = getMultiselectTagValue(taggedValueMap );
 				controlModel.setIsMultiSelect(isMultiselect);
+				
+				//set Explicit validation Rules	
+				setExplicitValidationRules(taggedValueMap, (AttributeInterface) editedAttribute, controlModel);
 			}
+
 		}
+	}
+	/**
+	 * 
+	 * @param taggedValueMap
+	 * @param controlModel
+	 */
+	private void setMultilineTaggedValue(Map<String, String> taggedValueMap, ControlsModel controlModel)
+	{
+		if(taggedValueMap.containsKey(XMIConstants.TAGGED_VALUE_MULTILINE))
+		{
+			controlModel.setLinesType(XMIConstants.MULTILINE);
+			String noOFLines = getNoOfRowsTagValue(taggedValueMap);
+			controlModel.setRows(Integer.parseInt(noOFLines.toString()));
+		}
+	}
+
+	/**
+	 * 
+	 * @param taggedValueMap
+	 * @return
+	 */
+	private String[] getFileFormatsTagValue(Map<String, String> taggedValueMap)
+	{
+		String fileFormat = taggedValueMap.get(XMIConstants.TAGGED_VALUE_FILE_FORMATS);
+		if(fileFormat != null)
+		{
+			StringTokenizer st = new StringTokenizer(fileFormat, ",");
+			int size = st.countTokens();
+		    
+		    String[] fileformats = new String[size];
+		    
+		    fileformats = fileFormat.split(",");
+			
+		    return fileformats;			
+			
+		}
+		return null;
 	}
 	/**
 	 * @param taggedValueMap
@@ -1686,9 +1752,39 @@ public class XMIImportProcessor
 		{
 			return false;
 		}
-		
 		return true;
 	}
+
+	/**
+	 * 
+	 * @param taggedValueMap
+	 * @return
+	 */
+	private String getPHIAttributeTagValue(Map<String, String> taggedValueMap)
+	{
+		String PHIAttribute = taggedValueMap.get(XMIConstants.TAGGED_VALUE_PHI_ATTRIBUTE);
+		if(PHIAttribute == null || PHIAttribute.trim().equals(""))
+		{
+			return "false";
+		}
+		return PHIAttribute;	
+	}
+	
+	/**
+	 * 
+	 * @param taggedValueMap
+	 * @return
+	 */
+	private String getDisplayWidthTagValue(Map<String, String> taggedValueMap)
+	{
+		String width = taggedValueMap.get(XMIConstants.TAGGED_VALUE_DISPLAY_WIDTH );
+		if(width == null || width.trim().equals(""))
+		{
+			width = ""+(edu.common.dynamicextensions.ui.util.Constants.DEFAULT_COLUMN_SIZE);
+		}
+		return width;
+	}
+
 	
 	/**
 	 * @param taggedValueMap
@@ -1716,6 +1812,64 @@ public class XMIImportProcessor
 		}
 		
 		return format;
+	}
+	/**
+	 * 
+	 * @param taggedValueMap
+	 * @return
+	*/
+	private String getNoOfRowsTagValue(Map<String, String> taggedValueMap)
+	{
+		String noOFRows = taggedValueMap.get(XMIConstants.TAGGED_VALUE_MULTILINE);
+		if(noOFRows == null || noOFRows.trim().equals(""))
+		{
+			noOFRows = "" + edu.common.dynamicextensions.ui.util.Constants.DEFAULT_ROW_SIZE;
+		}
+		return noOFRows;
+	}
+	/**
+	 * 
+	 * @param taggedValueMap
+	 * @return
+	 */
+	private String getDefaultValueTagValue(Map<String, String> taggedValueMap)
+	{
+		String defaultValue = taggedValueMap.get(XMIConstants.TAGGED_VALUE_DEFAULT_VALUE);
+		if (defaultValue == null || defaultValue.trim().equals(""))
+		{
+			return "";
+		}
+		return defaultValue;
+	}
+
+	/**
+	 * By Prashant
+	 * @param taggedValueMap
+	 * @param attributeTypeInformation
+	 * @return
+	 */
+	private String getPasswordTagValue(Map<String, String> taggedValueMap)
+	{
+		String password = taggedValueMap.get(XMIConstants.TAGGED_VALUE_PASSWORD);
+		if(password == null || password.trim().equals(""))
+		{
+			return "false";
+		}
+		return password;
+	}
+	/**
+	 * 
+	 * @param taggedValueMap
+	 * @return
+	 */
+	private String getUrlTagValue(Map<String, String> taggedValueMap)
+	{
+		String url = taggedValueMap.get(XMIConstants.TAGGED_VALUE_URL);
+		if(url == null || url.trim().equals(""))
+		{
+			return "false";
+		}
+		return url;
 	}
 	/**
 	 * @param precision
@@ -1943,12 +2097,14 @@ public class XMIImportProcessor
 	/**
 	 *
 	 * @param abstractAttributeInterface
+	 * @param controlModel 
 	 * @return
 	 * This method creates a control for the attribute.
+	 * @throws DynamicExtensionsApplicationException 
 	 */
 	private ControlInterface getControlForAttribute(
-			AbstractAttributeInterface abstractAttributeInterface)
-			throws DynamicExtensionsSystemException
+			AbstractAttributeInterface abstractAttributeInterface, ControlsModel controlModel)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ControlInterface controlInterface = null;
 		ControlConfigurationsFactory configurationsFactory = ControlConfigurationsFactory
@@ -2022,13 +2178,31 @@ public class XMIImportProcessor
 					}
 					else if (attributeTypeInformation instanceof DateAttributeTypeInformation)
 					{
+						AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
+						String userSelectedControlName = ProcessorConstants.DATEPICKER_CONTROL;
 						String format = getDateFormatTagValue(taggedValueMap);
-						String dateFormat =DynamicExtensionsUtility.getDateFormat(format); 
+						controlModel.setFormat(format);
+						/*String dateFormat =DynamicExtensionsUtility.getDateFormat(format); 
 						((DateAttributeTypeInformation) attributeTypeInformation)
-								.setFormat(dateFormat);
+								.setFormat(dateFormat);*/
 						//((DateAttributeTypeInformation) attributeTypeInformation)
 							//	.setFormat(Constants.DATE_PATTERN_MM_DD_YYYY);
 						controlInterface = deFactory.createDatePicker();
+						String defaultValue = getDefaultValueTagValue(taggedValueMap);
+						controlModel.setAttributeDefaultValue(defaultValue);
+						attributeProcessor.populateDateAttributeInterface((DateAttributeTypeInformation) attributeTypeInformation, controlModel);
+						
+						//PHI
+						String strIsIdentified = getPHIAttributeTagValue(taggedValueMap);
+						if(strIsIdentified !=null && !strIsIdentified.equalsIgnoreCase(""))
+						{
+							attributeProcessor.populateIsIdentifiedInfo(attributeInterface, strIsIdentified);
+						}
+						//Set Explicit Validation Rules
+						setExplicitValidationRules(taggedValueMap, attributeInterface, controlModel);
+						//populate rules
+						attributeProcessor.populateRules(userSelectedControlName, attributeInterface, controlModel);
+					
 						implicitRuleList = configurationsFactory.getAllImplicitRules(
 								ProcessorConstants.DATEPICKER_CONTROL, attributeInterface.getDataType());
 					}
@@ -2047,27 +2221,109 @@ public class XMIImportProcessor
 					{
 						controlInterface = deFactory.createFileUploadControl();	
 						((FileUploadInterface)controlInterface).setColumns(10);
+						//Setting MaxLength
+						String maxLen = getMaxLengthTagValue(taggedValueMap);
+						controlModel.setAttributeSize(maxLen);
+						//Setting fileformats
+						String[] fileFormats = getFileFormatsTagValue(taggedValueMap);
+						controlModel.setFileFormats(fileFormats);
+						
+						AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
+						attributeProcessor.populateFileAttributeInterface((FileAttributeTypeInformation) attributeTypeInformation, controlModel);
+						
+						//PHI
+						String strIsIdentified = getPHIAttributeTagValue(taggedValueMap);
+						if(strIsIdentified !=null && !strIsIdentified.equalsIgnoreCase(""))
+						{
+							attributeProcessor.populateIsIdentifiedInfo(attributeInterface, strIsIdentified);
+						}
 					}
 					else
 					{
+						String userSelectedControlName = ProcessorConstants.DEFAULT_SELECTED_CONTROL;
 						controlInterface = deFactory.createTextField();
 						((TextFieldInterface) controlInterface).setColumns(10);
+						//Creating Text Control
 						if (attributeTypeInformation instanceof StringAttributeTypeInformation)
-						{							
+						{
+							String defaultValue = getDefaultValueTagValue(taggedValueMap);
+							controlModel.setAttributeDefaultValue(defaultValue);
 							String maxLen = getMaxLengthTagValue(taggedValueMap);
+							controlModel.setAttributeSize(maxLen);
+							AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
+							attributeProcessor.populateStringAttributeInterface((StringAttributeTypeInformation) attributeTypeInformation, controlModel);
+							//Password
+							String password = getPasswordTagValue(taggedValueMap);
+							controlModel.setIsPassword(Boolean.parseBoolean(password));	
+							//URL
+							String url = getUrlTagValue(taggedValueMap);
+							controlModel.setIsUrl(Boolean.parseBoolean(url));
 							
-							((StringAttributeTypeInformation) attributeTypeInformation).setSize(new Integer(maxLen));
-							implicitRuleList = configurationsFactory.getAllImplicitRules(
-									ProcessorConstants.TEXT_CONTROL, ProcessorConstants.DATATYPE_STRING);
+							//NoOfColumns
+							String width = getDisplayWidthTagValue(taggedValueMap);
+							controlModel.setColumns(Integer.parseInt(width.toString()));
+							
+							//Single/Multiline(Number of Lines) tagged Value
+							setMultilineTaggedValue(taggedValueMap,controlModel);
+							//PHI
+							String strIsIdentified = getPHIAttributeTagValue(taggedValueMap);		
+							attributeProcessor.populateIsIdentifiedInfo(attributeInterface, strIsIdentified);
+							
+							ControlProcessor controlProcessor=ControlProcessor.getInstance();
+							if (controlModel.getLinesType() != null && controlModel.getLinesType().equalsIgnoreCase("MultiLine"))
+							{
+								controlInterface = controlProcessor.getMultiLineControl(controlInterface, controlModel);
+							}
+							else
+							{
+								controlInterface =controlProcessor.getTextControl(controlInterface, controlModel);
+							}
+							
+							implicitRuleList = configurationsFactory.getAllImplicitRules(ProcessorConstants.TEXT_CONTROL,
+									ProcessorConstants.DATATYPE_STRING);
+							//Set Explicite validation Rules
+							setExplicitValidationRules(taggedValueMap, attributeInterface, controlModel);
+							//populate rules
+							attributeProcessor.populateRules(userSelectedControlName, attributeInterface, controlModel);
 						}
+						//Number Attribute
 						else
 						{
-							Integer precision = getPrecisionTagValue(taggedValueMap,attributeTypeInformation);					
+							String defaultValue = getDefaultValueTagValue(taggedValueMap);
+							controlModel.setAttributeDefaultValue(defaultValue);
 							
-							((NumericAttributeTypeInformation) attributeTypeInformation).setDecimalPlaces(precision);
-							implicitRuleList = configurationsFactory.getAllImplicitRules(
-									ProcessorConstants.TEXT_CONTROL, ProcessorConstants.DATATYPE_NUMBER);
+							Integer precision = getPrecisionTagValue(taggedValueMap, attributeTypeInformation);
+							controlModel.setAttributeDecimalPlaces(precision.toString());
+							AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
+
+							if (attributeTypeInformation instanceof LongAttributeTypeInformation)
+							{
+								attributeProcessor.populateLongAttributeInterface((LongAttributeTypeInformation) attributeTypeInformation, controlModel);
+							}
+							else if (attributeTypeInformation instanceof IntegerAttributeTypeInformation)
+							{
+								attributeProcessor.populateIntegerAttributeInterface((IntegerAttributeTypeInformation) attributeTypeInformation,
+										controlModel);
+							}
+							else if (attributeTypeInformation instanceof FloatAttributeTypeInformation)
+							{
+								attributeProcessor
+										.populateFloatAttributeInterface((FloatAttributeTypeInformation) attributeTypeInformation, controlModel);
+							}
+							else if (attributeTypeInformation instanceof DoubleAttributeTypeInformation)
+							{
+								attributeProcessor.populateDoubleAttributeInterface((DoubleAttributeTypeInformation) attributeTypeInformation,
+										controlModel);
+							}
+
+							implicitRuleList = configurationsFactory.getAllImplicitRules(ProcessorConstants.TEXT_CONTROL,
+									ProcessorConstants.DATATYPE_NUMBER);
+							//Set Explicite validation Rules
+							setExplicitValidationRules(taggedValueMap, attributeInterface, controlModel);
+							//populate rules
+							attributeProcessor.populateRules(userSelectedControlName, attributeInterface, controlModel);
 						}
+
 					}
 			}
 			else
@@ -2076,49 +2332,100 @@ public class XMIImportProcessor
 		controlInterface.setName(abstractAttributeInterface.getName());
 		controlInterface.setCaption(abstractAttributeInterface.getName());
 		controlInterface.setBaseAbstractAttribute(abstractAttributeInterface);
-
-		if (implicitRuleList != null && implicitRuleList.size() > 0)
-		{
-			for (String validationRule : implicitRuleList)
-			{
-				RuleInterface rule = instantiateRule(validationRule);
-				abstractAttributeInterface.addRule(rule);
-			}
-		}
 		return controlInterface;
 	}
 
-	/**
-	 * @param validationRule
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 */
-	private RuleInterface instantiateRule(String validationRule)
-
-	throws DynamicExtensionsSystemException
+/**
+ * 
+ * @param taggedValueMap
+ * @param attributeInterface
+ * @param controlModel 
+ * @throws DynamicExtensionsSystemException
+ */
+private void setExplicitValidationRules(Map<String, String> taggedValueMap, AttributeInterface attributeInterface, ControlsModel controlModel)
+		throws DynamicExtensionsSystemException
+{
+	Map<String, String> taggedValueRuleMap = new HashMap<String, String>();
+	if (taggedValueMap != null)
 	{
-		RuleConfigurationObject ruleConfigurationObject = null;
-		RuleInterface rule = null;
-
-		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
-		ControlConfigurationsFactory configurationsFactory = ControlConfigurationsFactory
-				.getInstance();
-		Collection<RuleParameterInterface> ruleParameterCollection = new HashSet<RuleParameterInterface>();
-
-		ruleConfigurationObject = configurationsFactory.getRuleObject(validationRule);
-		//		ruleParameterCollection = getRuleParameterCollection(ruleConfigurationObject,
-		//				attributeUIBeanInformationIntf);
-
-		rule = domainObjectFactory.createRule();
-		rule.setName(ruleConfigurationObject.getRuleName());
-
-		if (ruleParameterCollection != null && !(ruleParameterCollection.isEmpty()))
+		Set<String> keySetForTaggedValue = taggedValueMap.keySet();
+		//Grouping Rule Tagged Values
+		for (String key : keySetForTaggedValue)
 		{
-			rule.setRuleParameterCollection(ruleParameterCollection);
+			if (key.startsWith(XMIConstants.TAGGED_VALUE_RULE + XMIConstants.SEPARATOR))
+			{
+				taggedValueRuleMap.put(key, taggedValueMap.get(key));
+			}
 		}
-
-		return rule;
+		//Seting Rule Tagged Values to ControlsModel
+		if (taggedValueRuleMap != null && !(taggedValueRuleMap.isEmpty()))
+		{
+			populateValidationRule(taggedValueRuleMap, attributeInterface, controlModel);
+		}
 	}
+}
+/**
+ * 
+ * @param taggedValueMapRule
+ * @param attributeInterface
+ * @param controlModel 
+ * @throws DynamicExtensionsSystemException
+ */
+private void populateValidationRule(Map<String, String> taggedValueRuleMap, AttributeInterface attributeInterface, ControlsModel controlModel)
+		throws DynamicExtensionsSystemException
+{
+	ArrayList<String> ruleNames = new ArrayList<String>();
+	String ruleName = new String();
+	int i = 0;
+	Set<String> keySetForRuleTaggedValueMap = taggedValueRuleMap.keySet();
+	for (String key : keySetForRuleTaggedValueMap)
+	{
+		StringTokenizer st = new StringTokenizer(key, XMIConstants.SEPARATOR);
+		int token = 0;
+		int count = st.countTokens();
+		//Seting Rule Tagged Values and parameter values to ControlsModel 
+		if (count <= 3)
+		{
+			while (st.hasMoreTokens())
+			{
+				token++;
+				String tokenName = st.nextToken();
+				//Finding Rule name
+				if (token == 2)
+				{
+					ruleName = tokenName;
+				}
+				//Setting Parameter values 
+				if (token == 3)
+				{
+					if (tokenName.equalsIgnoreCase("min"))
+					{
+						controlModel.setMin(taggedValueRuleMap.get(key));
+						controlModel.setMinTemp(taggedValueRuleMap.get(key));
+					}
+					else if (tokenName.equalsIgnoreCase("max"))
+					{
+						controlModel.setMax(taggedValueRuleMap.get(key));
+						controlModel.setMaxTemp(taggedValueRuleMap.get(key));
+					}
+				}
+				if (!(ruleNames.contains(ruleName)))
+				{
+					ruleNames.add(ruleName);
+				}
+			}
+		}
+	}
+	String[] ruleNamesString = new String[ruleNames.size()];
+	for (String ruleStringName : ruleNames)
+	{
+		ruleNamesString[i++] = ruleStringName;
+	}
+	controlModel.setValidationRules(ruleNamesString);
+	controlModel.setTempValidationRules(ruleNamesString);
+}
+
+
 
 	/**
 	 * @param associationInterface

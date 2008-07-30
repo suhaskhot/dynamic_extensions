@@ -165,7 +165,8 @@ public class DynamicExtensionsUtility
 		}
 		try
 		{
-			List objectList = bizLogic.retrieve(objectName, Constants.ID, identifier);
+//			After moving to MYSQL 5.2 the type checking is strict so changing the identifier to Long
+			List objectList = bizLogic.retrieve(objectName, Constants.ID, new Long(identifier));
 
 			if (objectList == null || objectList.isEmpty())
 			{
@@ -1304,7 +1305,7 @@ public class DynamicExtensionsUtility
 
 	/**
 	 * This method updates the DynamicExtensions cache of all container within Entitygroup
-	 * 
+	 *
 	 */
 	public static void updateDynamicExtensionsCache(Long entityGroupId)
 			throws DynamicExtensionsSystemException
@@ -1459,7 +1460,7 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * This method sets the source entity key or target entity key as null depending upon 
+	 * This method sets the source entity key or target entity key as null depending upon
 	 * whether the association is one-to-one, one-to-many or many-to-one.
 	 * @param association
 	 * @return ConstraintPropertiesInterface

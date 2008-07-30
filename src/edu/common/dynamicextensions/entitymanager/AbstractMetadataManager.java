@@ -161,7 +161,8 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 		DynamicExtensionBaseDomainObject object;
 		try
 		{
-			List objectList = bizLogic.retrieve(objectName, Constants.ID, identifier);
+			//After moving to MYSQL 5.2 the type checking is strict so changing the identifier to Long
+			List objectList = bizLogic.retrieve(objectName, Constants.ID, new Long(identifier));
 
 			if (objectList == null || objectList.size() == 0)
 			{

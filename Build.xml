@@ -241,9 +241,9 @@
 		    			<include name="**/ui/webui/util/*.class"/>
 	    				<include name="**/processor/**/*.class"/>
 		    			<exclude name="**/*Test*.class"/>
-	    				
 
-	   		    </fileset>    	  
+
+	   		    </fileset>
 	        	 <manifest>
 	        	      <attribute name="Built-By" value="${DynamicExtensions.jar.creator}"/>
 
@@ -292,13 +292,10 @@
 				<include name="runtime/**/*"/>
 				<include name="WEB-INF/**/*"/>
 				<include name="error.jsp"/>
-				<!--<exclude name="**/dom4j-1.6.jar"/>
+				<exclude name="**/dom4j.jar"/>
 				<exclude name="**/jboss-common-jdbc-wrapper.jar"/>
 				<exclude name="**/jboss.jar"/>
-				<exclude name="**/jta.jar"/>
-				<exclude name="**/cglib-2.1.jar"/>
-				<exclude name="**/ehcache-1.1.jar"/>
-				<exclude name="**/log4*.jar"/> -->
+				<exclude name="**/log4j.jar"/>
 				<include name="ApplicationVersionInfo.txt"/>
 			</fileset>
  		</war>
@@ -403,7 +400,7 @@
             <replacefilter token="readonly=" value="inverse="/>
             <replacefilter token="role=" value="name="/>
             <replacefilter token="hibernate-mapping-2.0.dtd" value="hibernate-mapping-3.0.dtd"/>
-            <replacefilter token="&lt;hibernate-mapping&gt;" value="&lt;hibernate-mapping default-lazy=&quot;false&quot;&gt;"/>      
+            <replacefilter token="&lt;hibernate-mapping&gt;" value="&lt;hibernate-mapping default-lazy=&quot;false&quot;&gt;"/>
         </replace>
 
   	  <replaceregexp byline="true" flags="g">
@@ -674,10 +671,10 @@
        	<copy file="${javadoc.dir}/${javadoc.zip}" todir="${de_release_dir}" />
        	<copy file="${base.dir}/query.sql" todir="${de_release_dir}" />
 	</target>
-	
+
 	<property name="filename" value="" />
 	<property name="package" value="" />
-	<target name="import_xmi" depends="compile" >			
+	<target name="import_xmi" depends="compile" >
 			<java classname="edu.common.dynamicextensions.xmi.importer.XMIImporter" fork="true">
 				<arg value="${filename}"/>
 				<arg value="${package}"/>
@@ -686,11 +683,11 @@
 	            	<fileset dir="${lib.dir}">
 	                  <include name="*.jar"/>
 	              </fileset>
-	            </classpath> 			
+	            </classpath>
 			</java>
 	</target>
 
-	<target name="export_xmi" depends="compile" >			
+	<target name="export_xmi" depends="compile" >
 				<java classname="edu.common.dynamicextensions.xmi.exporter.XMIExporter" fork="true">
 					<arg value="${groupname}"/>
 					<arg value="${filename}"/>
@@ -700,7 +697,7 @@
 		            	<fileset dir="${lib.dir}">
 		                  <include name="*.jar"/>
 		              </fileset>
-		            </classpath> 			
+		            </classpath>
 				</java>
 		</target>
 </project>

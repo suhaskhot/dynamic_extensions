@@ -64,7 +64,9 @@ import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties;
+import edu.common.dynamicextensions.domain.userinterface.SelectControl;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
@@ -76,8 +78,14 @@ import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManager;
+import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -936,8 +944,10 @@ public class XMIExporter implements XMIExportInterface
 	/**
 	 * @param taggedValueCollection
 	 * @return
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	private Collection<TaggedValue> getTaggedValues(AbstractMetadataInterface abstractMetadataObj)
+	private Collection<TaggedValue> getTaggedValues(AbstractMetadataInterface abstractMetadataObj) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ArrayList<TaggedValue> taggedValues = new ArrayList<TaggedValue>();
 		taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_DESCRIPTION,abstractMetadataObj.getDescription()));
@@ -950,7 +960,7 @@ public class XMIExporter implements XMIExportInterface
 		taggedValues.add(createTaggedValue("lastUpdated",Utility.parseDateToString(abstractMetadataObj.getLastUpdated(), Constants.DATE_PATTERN_MM_DD_YYYY)));*/
 			
 		addConceptCodeTaggedValues(abstractMetadataObj, taggedValues);
-		
+		EntityManagerInterface entityManager = EntityManager.getInstance();
 		if(abstractMetadataObj instanceof AttributeInterface)
 		{
 			AttributeInterface attribute = (AttributeInterface)abstractMetadataObj;
@@ -958,8 +968,15 @@ public class XMIExporter implements XMIExportInterface
 			addRuleTagVaues(taggedValues, attribute);
 			
 			AttributeTypeInformationInterface attrTypeInfo = attribute.getAttributeTypeInformation();
-			//setting UI properties tag values
-			setUIPropertiesTagValues(taggedValues, attrTypeInfo);			
+			//setting UI properties tag values			
+			ControlInterface control = entityManager.getControlByAbstractAttributeIdentifier(attribute.getId());
+			setUIPropertiesTagValues(taggedValues, attrTypeInfo, control, attribute);								
+		}
+		else if(abstractMetadataObj instanceof AssociationInterface)
+		{//Association tag values
+			AssociationInterface association = (AssociationInterface)abstractMetadataObj;
+			ControlInterface control = entityManager.getControlByAbstractAttributeIdentifier(association.getId());
+			setAssociationTagValues(control, taggedValues);
 		}
 
 		Collection<TaggedValueInterface> taggedValueCollection = abstractMetadataObj.getTaggedValueCollection();
@@ -972,6 +989,39 @@ public class XMIExporter implements XMIExportInterface
 			}
 		}		
 		return taggedValues;
+	}
+	/**
+	 * @param control
+	 * @param taggedValues
+	 */
+	private void setAssociationTagValues(ControlInterface control, ArrayList<TaggedValue> taggedValues)
+	{
+		if(control != null)
+		{
+			SelectControl selectControl = (SelectControl)control;
+			if(selectControl.getSeparator() != null)
+			{//Seperator
+				taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_SEPARATOR, selectControl.getSeparator()));
+			}
+			Collection<AssociationDisplayAttributeInterface> associationDisplayAttributeColl = selectControl.getAssociationDisplayAttributeCollection();
+			if(associationDisplayAttributeColl != null && !associationDisplayAttributeColl.isEmpty())
+			{// Attributes to be displayed in drop down
+				String attributeNames = "";
+				for(AssociationDisplayAttributeInterface associationDisplayAttribute : associationDisplayAttributeColl)
+				{
+					attributeNames = attributeNames + XMIConstants.COMMA + associationDisplayAttribute.getAttribute().getName();
+				}
+				taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_ATTRIBUTES_IN_ASSOCIATION_DROP_DOWN, attributeNames));
+			}
+			if(selectControl instanceof ListBoxInterface)
+			{
+				ListBoxInterface listBox = (ListBoxInterface)control;
+				if(listBox.getIsMultiSelect() != null && listBox.getNoOfRows() != null && listBox.getIsMultiSelect().booleanValue() != false)
+				{//Multiselect
+					taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_MULTISELECT, listBox.getNoOfRows().toString()));
+				}				
+			}
+		}
 	}
 	/**
 	 * @param abstractMetadataObj
@@ -1020,14 +1070,18 @@ public class XMIExporter implements XMIExportInterface
 				}
 			}
 		}
+		//So that user added concept codes are not over written while running the SIW process through caDSR
+		taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_OWNER_REVIEWED , "1"));
+		taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_CURATOR_REVIEWED , "1"));
+		
 		
 	}
 	/**
 	 * @param taggedValues
 	 * @param attrTypeInfo
 	 */
-	private void setUIPropertiesTagValues(ArrayList<TaggedValue> taggedValues, AttributeTypeInformationInterface attributeTypeInformation)
-	{
+	private void setUIPropertiesTagValues(ArrayList<TaggedValue> taggedValues, AttributeTypeInformationInterface attributeTypeInformation, ControlInterface control, AttributeInterface attribute)
+	{		
 		if(attributeTypeInformation instanceof DateAttributeTypeInformation)
 		{
 			taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_DATE_FORMAT, ((DateAttributeTypeInformation) attributeTypeInformation).getFormat()));
@@ -1044,11 +1098,22 @@ public class XMIExporter implements XMIExportInterface
 		{// String attribute type information
 			if(attributeTypeInformation instanceof StringAttributeTypeInformation)
 			{//String attribute
-				Integer maxLength = ((StringAttributeTypeInformation) attributeTypeInformation).getSize();
+				StringAttributeTypeInformation stringAttributeTypeInformation = (StringAttributeTypeInformation) attributeTypeInformation;
+				Integer maxLength = stringAttributeTypeInformation.getSize();
 				if(maxLength != null)
 				{
 					taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_MAX_LENGTH, maxLength.toString()));
 				}
+				if(control instanceof TextFieldInterface)
+				{
+					TextFieldInterface textField = (TextFieldInterface)control;					
+					addTextFieldTagValues(textField, taggedValues);				
+				}
+				else
+				{
+					TextAreaInterface textArea = (TextAreaInterface)control;
+					addTextAreaTagValues(textArea, taggedValues);
+				}				
 			}
 			else
 			{//Number attribute
@@ -1058,9 +1123,50 @@ public class XMIExporter implements XMIExportInterface
 					taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_PRECISION, precision.toString()));
 				}				
 			}			
-		}		
+		}
+		if(attribute.getIsIdentified() != null && attribute.getIsIdentified().booleanValue() != false)
+		{// PHI attribute
+			taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_PHI_ATTRIBUTE, attribute.getIsIdentified().toString()));
+		}
+		if(attributeTypeInformation.getDefaultValue() != null && attributeTypeInformation.getDefaultValue().getValueAsObject() != null)
+		{//Default value
+			taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_DEFAULT_VALUE, attributeTypeInformation.getDefaultValue().getValueAsObject().toString()));
+		}
 	}
-	
+	/**
+	 * @param textField
+	 * @param taggedValues
+	 */
+	private void addTextFieldTagValues(TextFieldInterface textField, ArrayList<TaggedValue> taggedValues)
+	{
+		Integer width = textField.getColumns();
+		if(width != null)
+		{
+			taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_DISPLAY_WIDTH, width.toString()));
+		}
+		Boolean isPassword = textField.getIsPassword();
+		if(isPassword != null && isPassword.booleanValue() == true)
+		{
+			taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_PASSWORD, isPassword.toString()));
+		}
+		Boolean isUrl = textField.getIsUrl();
+		if(isUrl != null && isUrl.booleanValue() == true)
+		{
+			taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_URL, isUrl.toString()));
+		}	
+	}
+	/**
+	 * @param textArea
+	 * @param taggedValues
+	 */
+	private void addTextAreaTagValues(TextAreaInterface textArea, ArrayList<TaggedValue> taggedValues)
+	{
+		Integer noOfRows = textArea.getRows();
+		if(noOfRows != null && noOfRows.intValue() > 0)
+		{
+			taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_MULTILINE, noOfRows.toString()));						
+		}
+	}
 	/**
 	 * @param taggedValues
 	 * @param attributeInterface
@@ -1302,8 +1408,10 @@ public class XMIExporter implements XMIExportInterface
 	/**
 	 * @param entityCollection
 	 * @return
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	private Collection<UmlClass> createUMLClasses(Collection<EntityInterface> entityCollection)
+	private Collection<UmlClass> createUMLClasses(Collection<EntityInterface> entityCollection) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ArrayList<UmlClass> umlEntityClasses = new ArrayList<UmlClass>();
 		if(entityCollection!=null)
@@ -1326,9 +1434,11 @@ public class XMIExporter implements XMIExportInterface
 	/**
 	 * @param entity
 	 * @return
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	@SuppressWarnings("unchecked")
-	private UmlClass createUMLClass(EntityInterface entity)
+	private UmlClass createUMLClass(EntityInterface entity) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		UmlClass umlEntityClass = null;
 		if(entity!=null)
@@ -1352,8 +1462,10 @@ public class XMIExporter implements XMIExportInterface
 	/**
 	 * @param entity
 	 * @return
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	private Collection<Attribute> createUMLAttributes(Collection<AttributeInterface> entityAttributes)
+	private Collection<Attribute> createUMLAttributes(Collection<AttributeInterface> entityAttributes) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ArrayList<Attribute> umlAttributes =  new ArrayList<Attribute>();
 		if(entityAttributes!=null)
@@ -1372,9 +1484,11 @@ public class XMIExporter implements XMIExportInterface
 	/**
 	 * @param entityAttribute
 	 * @return
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	@SuppressWarnings("unchecked")
-	private Attribute createUMLAttribute(AttributeInterface entityAttribute)
+	private Attribute createUMLAttribute(AttributeInterface entityAttribute) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Attribute umlAttribute = null;
 		if(entityAttribute!=null)

@@ -1038,9 +1038,9 @@ class DynamicExtensionBaseQueryBuilder
 	private List<String> getForeignKeyConstraintQuery(CategoryEntityInterface categoryEntity, List<String> reverseQueryList)
 	{
 		List<String> queryList = new ArrayList<String>();
-		CategoryEntityInterface parentCategoryEntity = categoryEntity.getParentCategoryEntity();
+		CategoryEntity parentCategoryEntity = (CategoryEntity) categoryEntity.getParentCategoryEntity();
 		//    	 add foerfign key query for inheritance
-		if (parentCategoryEntity != null)
+		if (parentCategoryEntity != null && parentCategoryEntity.isCreateTable())
 		{
 			categoryEntity.getAttributeByName(IDENTIFIER);
 			String foreignKeyConstraintQueryForInheritance = getForeignKeyConstraintQueryForInheritance(categoryEntity, parentCategoryEntity);

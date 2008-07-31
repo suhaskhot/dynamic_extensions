@@ -30,6 +30,7 @@ import java.util.StringTokenizer;
 
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domain.Association;
+import edu.common.dynamicextensions.domain.CategoryEntity;
 import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.userinterface.AbstractContainmentControl;
 import edu.common.dynamicextensions.domain.userinterface.Container;
@@ -1405,6 +1406,9 @@ public class DynamicExtensionsUtility
 			{
 				if (categoryEntity.getId() == null)
 				{
+					CategoryEntity objCategoryEntity = (CategoryEntity) categoryEntity;
+					//Only includes those category entity for which table is required to be created 
+					if(objCategoryEntity.isCreateTable())
 					categoryEntityList.add(categoryEntity);
 				}
 			}

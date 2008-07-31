@@ -75,7 +75,8 @@ public class XMIConstants
 	public static final String TAGGED_VALUE_PROPERTY_QUALIFIER_CONCEPT_DEFINITION = "PropertyQualifierConceptDefinition";
 	public static final String TAGGED_VALUE_PROPERTY_QUALIFIER_CONCEPT_DEFINITION_SOURCE = "PropertyQualifierConceptDefinitionSource";
 	public static final String TAGGED_VALUE_PROPERTY_QUALIFIER_CONCEPT_PREFERRED_NAME = "PropertyQualifierConceptPreferredName";
-	
+	public static final String TAGGED_VALUE_OWNER_REVIEWED = "OWNER_REVIEWED";
+	public static final String TAGGED_VALUE_CURATOR_REVIEWED = "CURATOR_REVIEWED";	
 	
 	//Package & model name
 	public static final String PACKAGE_NAME_LOGICAL_VIEW ="Logical View";

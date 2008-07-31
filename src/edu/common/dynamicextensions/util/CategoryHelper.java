@@ -411,18 +411,21 @@ public class CategoryHelper implements CategoryHelperInterface
 		String[] entityArray = instance.split("->");
 
 		int counter = 0;
-		for (PathAssociationRelationInterface associationRelation : path.getSortedPathAssociationRelationCollection())
+		if(path.getPathAssociationRelationCollection()!=null)
 		{
-			String sourceEntity = entityArray[counter];
-			String targetEntity = entityArray[counter + 1];
-			if (sourceEntity.indexOf("[") == -1 || sourceEntity.indexOf("]") == -1)
+			for (PathAssociationRelationInterface associationRelation : path.getSortedPathAssociationRelationCollection())
 			{
-				throw new DynamicExtensionsSystemException("ERROR: INSTANCE INFORMATION IS NOT IN THE CORRECT FORMAT" + instance);
+				String sourceEntity = entityArray[counter];
+				String targetEntity = entityArray[counter + 1];
+				if (sourceEntity.indexOf("[") == -1 || sourceEntity.indexOf("]") == -1)
+				{
+					throw new DynamicExtensionsSystemException("ERROR: INSTANCE INFORMATION IS NOT IN THE CORRECT FORMAT" + instance);
+	
+				}
+				associationRelation.setSourceInstanceId(Long.parseLong(sourceEntity.substring(sourceEntity.indexOf("[") + 1, sourceEntity.indexOf("]"))));
+				associationRelation.setTargetInstanceId(Long.parseLong(targetEntity.substring(targetEntity.indexOf("[") + 1, targetEntity.indexOf("]"))));
+				counter++;
 			}
-
-			associationRelation.setSourceInstanceId(Long.parseLong(sourceEntity.substring(sourceEntity.indexOf("[") + 1, sourceEntity.indexOf("]"))));
-			associationRelation.setTargetInstanceId(Long.parseLong(targetEntity.substring(targetEntity.indexOf("[") + 1, targetEntity.indexOf("]"))));
-			counter++;
 		}
 	}
 

@@ -938,6 +938,14 @@
             column="TREE_PARENT_CATEGORY_ENTITY_ID"
         />
 
+        <property
+            name="createTable"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="IS_CREATETABLE"
+        />
+
         </joined-subclass>
 
         </joined-subclass>

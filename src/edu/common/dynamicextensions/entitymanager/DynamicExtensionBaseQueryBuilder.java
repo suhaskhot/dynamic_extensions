@@ -2656,7 +2656,9 @@ class DynamicExtensionBaseQueryBuilder
 					}
 				}
 			}
-
+			//for mysql5 if user not enter any value for date field its getting saved as 00-00-0000 ,which is throwing exception
+			//So to avoid it store null value in database
+			if(str.trim().length() != 0)
 			formattedvalue = Variables.strTodateFunction + "('" + str.trim() + "','" + DynamicExtensionsUtility.getSQLDateFormat(dateFormat) + "')";
 		}
 		else

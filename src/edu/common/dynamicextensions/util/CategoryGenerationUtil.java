@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import edu.common.dynamicextensions.domain.CategoryEntity;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
@@ -128,7 +129,8 @@ public class CategoryGenerationUtil
 		for (ContainerInterface containerInterface : containerCollection)
 		{
 			CategoryEntityInterface categoryEntity = ((CategoryEntityInterface) containerInterface.getAbstractEntity());
-			if (rootContainer != containerInterface && categoryEntity.getTreeParentCategoryEntity() == null)
+			boolean isTableCreated =((CategoryEntity)categoryEntity).isCreateTable();
+			if (rootContainer != containerInterface && categoryEntity.getTreeParentCategoryEntity() == null && isTableCreated)
 			{
 				categoryHelper.associateCategoryContainers(category, categoryEntity.getEntity().getEntityGroup(), rootContainer, containerInterface,
 						paths.get(categoryEntity.getEntity().getName()), 1, containerNameInstanceMap.get(containerInterface.getAbstractEntity()
@@ -236,6 +238,22 @@ public class CategoryGenerationUtil
 						assocaitionList.add(associationInterface);
 					}
 				}
+				//Add all parententity association also to the list
+				
+				EntityInterface parentEntity = sourceEntity.getParentEntity();
+				while(parentEntity!=null)
+				{
+					for(AssociationInterface associationInterface : parentEntity.getAssociationCollection())
+					{
+						if (associationInterface.getTargetEntity() == targetEntity)
+						{
+							assocaitionList.add(associationInterface);
+						}
+						
+					}
+					parentEntity = parentEntity.getParentEntity();
+				}
+				//end
 				sourceEntity = targetEntity;
 
 			}

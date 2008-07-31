@@ -55,6 +55,8 @@ public class XMIConstants
 	public static final String TAGGED_VALUE_DISPLAY_WIDTH = "DisplayWidth";
 	public static final String TAGGED_VALUE_PHI_ATTRIBUTE = "PHI";
 	public static final String TAGGED_VALUE_FILE_FORMATS = "FileFormats";
+	public static final String TAGGED_VALUE_SEPARATOR = "Separator";
+	public static final String TAGGED_VALUE_ATTRIBUTES_IN_ASSOCIATION_DROP_DOWN = "AttributesInAssociationDropDown";
 		
 	public static final String TAGGED_VALUE_OBJECT_CLASS_CONCEPT_CODE = "ObjectClassConceptCode";
 	public static final String TAGGED_VALUE_OBJECT_CLASS_CONCEPT_DEFINITION = "ObjectClassConceptDefinition";

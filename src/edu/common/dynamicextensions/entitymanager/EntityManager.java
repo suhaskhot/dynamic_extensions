@@ -627,7 +627,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DAOException
 	 * @throws UserNotAuthorizedException
 	 */
-	private Long insertDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, HibernateDAO hibernateDAO, Long userId)
+	public Long insertDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, HibernateDAO hibernateDAO, Long userId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
 			UserNotAuthorizedException
 	{
@@ -984,7 +984,41 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		return isSuccess;
 	}
-
+	/**
+	 * @param entity
+	 * @param dataValue
+	 * @param recordId
+	 * @param hibernateDAO
+	 * @param userId
+	 * @return
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public boolean editDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, Long recordId,HibernateDAO hibernateDAO, Long... userId)
+	throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	{
+		boolean isSuccess = false;
+		Long uId = ((userId != null && userId.length != 0) ? userId[0] : null);
+		List<EntityInterface> entityList = getParentEntityList(entity);
+		Map<EntityInterface, Map> entityValueMap = initialiseEntityValueMap(entity, dataValue);
+		try
+		{
+			for (EntityInterface entityInterface : entityList)
+			{
+				Map valueMap = entityValueMap.get(entityInterface);
+				isSuccess = editDataForSingleEntity(entityInterface, valueMap, recordId, hibernateDAO, uId);
+			}
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			throw (DynamicExtensionsApplicationException) handleRollback(e, "Error while inserting data", hibernateDAO, false);
+		}
+		catch (Exception e)
+		{
+			throw (DynamicExtensionsSystemException) handleRollback(e, "Error while updating", hibernateDAO, true);
+		}
+		return isSuccess;
+	}
 	/**
 	 * @param entity
 	 * @param dataValue

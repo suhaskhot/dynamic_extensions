@@ -549,4 +549,33 @@ public interface EntityManagerInterface
 	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
 	UserNotAuthorizedException;
 	
+	/**
+	 * @param entity
+	 * @param dataValue
+	 * @param hibernateDAO
+	 * @param userId
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws HibernateException
+	 * @throws SQLException
+	 * @throws DAOException
+	 * @throws UserNotAuthorizedException
+	 */
+	public Long insertDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, HibernateDAO hibernateDAO, Long userId)
+	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
+	UserNotAuthorizedException;
+	/**
+	 * @param entity
+	 * @param dataValue
+	 * @param recordId
+	 * @param hibernateDAO
+	 * @param userId
+	 * @return
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public boolean editDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, Long recordId,HibernateDAO hibernateDAO, Long... userId)
+	throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
+	
 }

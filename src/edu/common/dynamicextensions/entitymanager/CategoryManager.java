@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -291,6 +292,16 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		for (CategoryEntityInterface categoryEntityInterface : categoryEntityList)
 		{
 			Map valueMap = entityValueMap.get(categoryEntityInterface);
+			//if parent category entity table not created ,then add its attributemap  to valuemap
+			CategoryEntity  objParentCategoryEntity = (CategoryEntity) categoryEntityInterface.getParentCategoryEntity() ; 
+			while(objParentCategoryEntity!=null &&  !objParentCategoryEntity.isCreateTable())
+			{
+				Map innerValueMap = entityValueMap.get(objParentCategoryEntity);
+				if(innerValueMap!=null)
+				valueMap.putAll(innerValueMap);
+				objParentCategoryEntity = (CategoryEntity) objParentCategoryEntity.getParentCategoryEntity();
+				
+			}
 			parentRecordId = insertDataForSingleCategoryEntity(categoryEntityInterface, valueMap, hibernateDAO, parentRecordId, testdatamap, id);
 			parentCategoryRecordId = getRootCategoryRecordId(categoryEntityInterface,parentRecordId);
 		}
@@ -369,20 +380,33 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		// insert this identifier as record identifier in category entity table.
 		if (rootCategoryEntity.getCategoryAttributeCollection().size() == 0 || isAllRelatedCategoryAttributesCollection(rootCategoryEntity))
 		{
-			Long entityIdentifier = entityManagerUtil.getNextIdentifier(rootCategoryEntity.getEntity().getTableProperties().getName());
-			String entityTableInsertQuery = "INSERT INTO " + rootCategoryEntity.getEntity().getTableProperties().getName()
-					+ " (IDENTIFIER, ACTIVITY_STATUS) VALUES (" + entityIdentifier + ", 'ACTIVE')";
-
-			executeUpdateQuery(entityTableInsertQuery, id, hibernateDAO);
-			logDebug("insertData", "entityTableInsertQuery is : " + entityTableInsertQuery.toString());
-
+			///--insert blank record in all parent entity of rootcategoryentity  so use insertDataForHeirarchy and add all keys to  keymap,recordmap,fullkeymap
+			Map<AbstractAttributeInterface, Object> attributeMap = new HashMap<AbstractAttributeInterface, Object>();
+			EntityManagerInterface entityManager = EntityManager.getInstance();
+			Long  entityIdentifier = entityManager.insertDataForHeirarchy(categoryEntity.getEntity(), attributeMap, hibernateDAO, id);
 			keyMap.put(rootCategoryEntityName, entityIdentifier);
 			fullKeyMap.put(rootCategoryEntityName, entityIdentifier);
 
 			List<Long> idList = new ArrayList<Long>();
 			idList.add(entityIdentifier);
 			recordsMap.put(rootCategoryEntityName, idList);
+			
+			while(categoryEntity.getParentCategoryEntity()!=null)
+			{
+				keyMap.put(categoryEntity.getParentCategoryEntity().getName(),entityIdentifier);
+				fullKeyMap.put(categoryEntity.getParentCategoryEntity().getName(),entityIdentifier);
 
+				List<Long> recoIdList	 = recordsMap.get(categoryEntity.getParentCategoryEntity().getName());
+				if (recoIdList == null)
+				{
+					recoIdList = new ArrayList<Long>();
+				}
+				recoIdList.add(entityIdentifier);
+				recordsMap.put(categoryEntity.getParentCategoryEntity().getName(), recoIdList);
+				categoryEntity = categoryEntity.getParentCategoryEntity();
+				
+			}
+			//
 			Long categoryIdentifier = entityManagerUtil.getNextIdentifier(rootCategoryEntity.getTableProperties().getName());
 			String categoryEntityTableInsertQuery = "INSERT INTO " + rootCategoryEntity.getTableProperties().getName()
 					+ " (IDENTIFIER, ACTIVITY_STATUS, " + RECORD_ID + ") VALUES (" + categoryIdentifier + ", 'ACTIVE', " + entityIdentifier + ")";
@@ -398,9 +422,31 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		String categoryEntityForeignKeyColumnName = null;
 		Long sourceCategoryEntityId = null;
 		Long sourceEntityId = null;
+		//Separate out cat. attribute and cat. association ,as from UI map it can contains both in anyorder but we requires to insert attribute first for rootcatgoryentity
+		Map<CategoryAttributeInterface, Object> categoryAttributeMap = new HashMap<CategoryAttributeInterface, Object>();
+		Map<CategoryAssociationInterface, Object> categoryAssociationMap = new HashMap<CategoryAssociationInterface, Object>();
+			
+		Set<BaseAbstractAttributeInterface> keySet = dataValue.keySet();
+		Iterator<BaseAbstractAttributeInterface> iter = keySet.iterator();
 
+		while (iter.hasNext())
+		{
+			Object obj = iter.next();
+			if (obj instanceof CategoryAttributeInterface)
+			{
+				categoryAttributeMap.put((CategoryAttributeInterface) obj, dataValue.get(obj));
+			}
+			else
+			{
+				categoryAssociationMap.put((CategoryAssociationInterface) obj, dataValue.get(obj));
+			}
+		}
 		insertRecordsForCategoryEntityTree(entityForeignKeyColumnName, categoryEntityForeignKeyColumnName, sourceCategoryEntityId, sourceEntityId,
-				categoryEntity, dataValue, keyMap, fullKeyMap, recordsMap, isMultipleRecords, isNoCategoryAttributePresent, hibernateDAO, id);
+					categoryEntity, categoryAttributeMap, keyMap, fullKeyMap, recordsMap, isMultipleRecords, isNoCategoryAttributePresent, hibernateDAO, id);
+	    
+		
+		insertRecordsForCategoryEntityTree(entityForeignKeyColumnName, categoryEntityForeignKeyColumnName, sourceCategoryEntityId, sourceEntityId,
+				categoryEntity, categoryAssociationMap, keyMap, fullKeyMap, recordsMap, isMultipleRecords, isNoCategoryAttributePresent, hibernateDAO, id);
 
 		Long rootCategoryEntityRecordId = getRootCategoryEntityRecordId(category.getRootCategoryElement(), (Long) fullKeyMap.get(rootCategoryEntity
 				.getName()));
@@ -426,7 +472,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 */
 	private boolean isAllRelatedCategoryAttributesCollection(CategoryEntityInterface categoryEntity)
 	{
-		Collection<CategoryAttributeInterface> categoryAttributes = categoryEntity.getCategoryAttributeCollection();
+		Collection<CategoryAttributeInterface> categoryAttributes = categoryEntity.getAllCategoryAttributes(); //.getCategoryAttributeCollection();
 
 		for (CategoryAttributeInterface categoryAttribute : categoryAttributes)
 		{
@@ -468,7 +514,8 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 
 			if (categoryAssociation == null)
 			{
-				insertRelatedAttributeRecordsForRootCategoryEntity(rootCategoryeEntity, columnNamesValues, recordsMap, hibernateDAO, id);
+				//pass the category entity this is  parent category entity of root categoryentity so we have to insertinto parent entity table
+				insertRelatedAttributeRecordsForRootCategoryEntity(categoryEntity, columnNamesValues, recordsMap, hibernateDAO, id);
 			}
 			else
 			{
@@ -488,27 +535,29 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	private void getColumnNamesAndValuesForRelatedCategoryAttributes(CategoryEntityInterface categoryEntity, StringBuffer columnNames,
 			StringBuffer columnValues, StringBuffer columnNamesValues)
 	{
-		Collection<CategoryAttributeInterface> categoryAttributes = categoryEntity.getCategoryAttributeCollection();
-
+		Collection<CategoryAttributeInterface> categoryAttributes = new HashSet<CategoryAttributeInterface>();
+	
+		categoryAttributes = categoryEntity.getCategoryAttributeCollection();		
 		for (CategoryAttributeInterface categoryAttribute : categoryAttributes)
-		{
-			if (categoryAttribute.getIsVisible() != null && categoryAttribute.getIsVisible() == false)
 			{
-				String columnName = categoryAttribute.getAttribute().getColumnProperties().getName();
-
-				if (columnNames.toString().length() > 0)
+				if (categoryAttribute.getIsVisible() != null && categoryAttribute.getIsVisible() == false)
 				{
-					columnNames.append(", ");
-					columnValues.append(", ");
-					columnNamesValues.append(", ");
+					String columnName = categoryAttribute.getAttribute().getColumnProperties().getName();
+	
+					if (columnNames.toString().length() > 0)
+					{
+						columnNames.append(", ");
+						columnValues.append(", ");
+						columnNamesValues.append(", ");
+					}
+					columnNames.append(columnName);
+					columnValues.append("'" + categoryAttribute.getDefaultValue() + "'");
+					columnNamesValues.append(columnName);
+					columnNamesValues.append(" = ");
+					columnNamesValues.append("'" + categoryAttribute.getDefaultValue() + "'");
 				}
-				columnNames.append(columnName);
-				columnValues.append("'" + categoryAttribute.getDefaultValue() + "'");
-				columnNamesValues.append(columnName);
-				columnNamesValues.append(" = ");
-				columnNamesValues.append("'" + categoryAttribute.getDefaultValue() + "'");
 			}
-		}
+		
 	}
 
 	/**
@@ -778,7 +827,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 
 			// Clear all records from entity table.
 			EntityManagerInterface entityManager = EntityManager.getInstance();
-			isEdited = entityManager.editDataForSingleEntity(rootcategoryEntity.getEntity(), rootEntityRecordsMap, entityRecordId, hibernateDAO, id);
+			isEdited = entityManager.editDataForHeirarchy(rootcategoryEntity.getEntity(), rootEntityRecordsMap, entityRecordId, hibernateDAO, id);
 
 			// Clear all records from category entity table.
 			clearCategoryEntityData(rootcategoryEntity, recordId, categoryEntityReverseQueryStack, id, hibernateDAO);
@@ -791,12 +840,30 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 
 				keyMap.put(rootcategoryEntity.getName(), entityRecordId);
 				fullKeyMap.put(rootcategoryEntity.getName(), entityRecordId);
-
 				List<Long> idList = new ArrayList<Long>();
 				idList.add(entityRecordId);
 				recordsMap.put(rootcategoryEntity.getName(), idList);
+				
+				CategoryEntityInterface catEntity = rootcategoryEntity;
+				//add parent's record id also as parent entiy tables are edited in editDataForHeirarchy
+				while(catEntity.getParentCategoryEntity()!=null)
+				{
+					keyMap.put(catEntity.getParentCategoryEntity().getName(),entityRecordId);
+					fullKeyMap.put(catEntity.getParentCategoryEntity().getName(),entityRecordId);
 
-				for (CategoryAttributeInterface categoryAttribute : rootcategoryEntity.getCategoryAttributeCollection())
+					List<Long> recoIdList	 = recordsMap.get(catEntity.getParentCategoryEntity().getName());
+					if (recoIdList == null)
+					{
+						recoIdList = new ArrayList<Long>();
+					}
+					recoIdList.add(entityRecordId);
+					recordsMap.put(catEntity.getParentCategoryEntity().getName(), recoIdList);
+					catEntity = catEntity.getParentCategoryEntity();
+					
+				}
+				
+
+				for (CategoryAttributeInterface categoryAttribute : rootcategoryEntity.getAllCategoryAttributes())
 				{
 					attributeValueMap.remove(categoryAttribute);
 				}
@@ -874,7 +941,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	{
 		Object value = null;
 		boolean isCategoryEntityRecordInserted = false;
-		Map<BaseAbstractAttributeInterface, Object> attributeMap = null;
+		Map<AbstractAttributeInterface, Object> attributeMap = null;
 
 		Set uiColumnSet = dataValue.keySet();
 		Iterator uiColumnSetIter = uiColumnSet.iterator();
@@ -891,7 +958,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 
 			if (attribute instanceof CategoryAttributeInterface && !isCategoryEntityRecordInserted)
 			{
-				String categoryEntityTableName = ((CategoryAttribute) attribute).getCategoryEntity().getTableProperties().getName();
+				String categoryEntityTableName = categoryEntity.getTableProperties().getName();//((CategoryAttribute) attribute).getCategoryEntity().getTableProperties().getName();
 
 				Long entityIdentifier = null;
 				EntityManagerInterface entityManager = EntityManager.getInstance();
@@ -908,44 +975,66 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 				if (keyMap.get(((CategoryAttribute) attribute).getCategoryEntity().getName()) != null && !isMultipleRecords)
 				{
 					entityIdentifier = (Long) keyMap.get(((CategoryAttribute) attribute).getCategoryEntity().getName());
-					entityManager.editDataForSingleEntity(((CategoryAttribute) attribute).getCategoryEntity().getEntity(), attributeMap,
-							entityIdentifier, hibernateDAO);
+					//Edit data for entity heirarchy 
+					entityManager.editDataForHeirarchy(categoryEntity.getEntity(), attributeMap,entityIdentifier,hibernateDAO,userId);
 				}
 				else
 				{
-					entityIdentifier = entityManager.insertDataForSingleEntity(((CategoryAttribute) attribute).getCategoryEntity().getEntity(),
-							attributeMap, hibernateDAO, null, userId);
+					entityIdentifier = entityManager.insertDataForHeirarchy(categoryEntity.getEntity(), attributeMap, hibernateDAO, userId);
+				
 				}
-
-				Long categoryEntityidentifier = entityManagerUtil.getNextIdentifier(categoryEntity.getTableProperties().getName());
-				String insertQueryForCategoryEntity = "INSERT INTO " + categoryEntityTableName + " (IDENTIFIER, ACTIVITY_STATUS, " + RECORD_ID
-						+ ") VALUES (" + categoryEntityidentifier + ", 'ACTIVE', " + entityIdentifier + ")";
-
-				executeUpdateQuery(insertQueryForCategoryEntity, userId, hibernateDAO);
+				Long categoryEntityidentifier = null;
+				//Check whether table is created for categoryentity 
+				if(((CategoryEntity)categoryEntity).isCreateTable())
+				{
+					categoryEntityidentifier = entityManagerUtil.getNextIdentifier(categoryEntity.getTableProperties().getName());	
+					String insertQueryForCategoryEntity = "INSERT INTO " + categoryEntityTableName + " (IDENTIFIER, ACTIVITY_STATUS, " + RECORD_ID
+					+ ") VALUES (" + categoryEntityidentifier + ", 'ACTIVE', " + entityIdentifier + ")";
+					executeUpdateQuery(insertQueryForCategoryEntity, userId, hibernateDAO);
+				}				
 
 				if (categoryEntityForeignKeyColumnName != null && entityForeignKeyColumnName != null)
 				{
-					String updateCategoryEntityQuery = "UPDATE " + categoryEntityTableName + " SET " + categoryEntityForeignKeyColumnName + " = "
-							+ sourceCategoryEntityIdentifier + " WHERE IDENTIFIER = " + categoryEntityidentifier;
-					executeUpdateQuery(updateCategoryEntityQuery, userId, hibernateDAO);
-
+					if(((CategoryEntity)categoryEntity).isCreateTable())
+					{
+						String updateCategoryEntityQuery = "UPDATE " + categoryEntityTableName + " SET " + categoryEntityForeignKeyColumnName + " = "
+						+ sourceCategoryEntityIdentifier + " WHERE IDENTIFIER = " + categoryEntityidentifier;
+						executeUpdateQuery(updateCategoryEntityQuery, userId, hibernateDAO);
+					}
+						
 					String updateEntityQuery = "UPDATE "
 							+ ((CategoryAttribute) attribute).getCategoryEntity().getEntity().getTableProperties().getName() + " SET "
 							+ entityForeignKeyColumnName + " = " + sourceEntityIdentifier + " WHERE IDENTIFIER = " + entityIdentifier;
 					executeUpdateQuery(updateEntityQuery, userId, hibernateDAO);
 				}
 
-				keyMap.put(((CategoryAttribute) attribute).getCategoryEntity().getName(), entityIdentifier);
-				fullKeyMap.put(((CategoryAttribute) attribute).getCategoryEntity().getName(), entityIdentifier);
+				CategoryEntityInterface catEntity = 	categoryEntity;
+				keyMap.put(catEntity.getName(),entityIdentifier);
+				fullKeyMap.put(catEntity.getName(),entityIdentifier);
 
-				List<Long> recIdList = recordsMap.get(((CategoryAttribute) attribute).getCategoryEntity().getName());
+				List<Long> recIdList = recordsMap.get(catEntity.getName());
 				if (recIdList == null)
 				{
 					recIdList = new ArrayList<Long>();
 				}
 				recIdList.add(entityIdentifier);
-				recordsMap.put(((CategoryAttribute) attribute).getCategoryEntity().getName(), recIdList);
+				recordsMap.put(catEntity.getName(), recIdList);
+				while(catEntity.getParentCategoryEntity()!=null)
+				{
+					keyMap.put(catEntity.getParentCategoryEntity().getName(),entityIdentifier);
+					fullKeyMap.put(catEntity.getParentCategoryEntity().getName(),entityIdentifier);
 
+					List<Long> recoIdList	 = recordsMap.get(catEntity.getParentCategoryEntity().getName());
+					if (recoIdList == null)
+					{
+						recoIdList = new ArrayList<Long>();
+					}
+					recoIdList.add(entityIdentifier);
+					recordsMap.put(catEntity.getParentCategoryEntity().getName(), recoIdList);
+					catEntity = catEntity.getParentCategoryEntity();
+					
+				}
+			
 				isCategoryEntityRecordInserted = true;
 			}
 			else if (attribute instanceof CategoryAssociationInterface)
@@ -1167,6 +1256,17 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 
 		Map<AbstractAttributeInterface, Object> entityRecordsMap = new HashMap<AbstractAttributeInterface, Object>();
 		entityRecordsMap.putAll(EntityManager.getInstance().getEntityRecordById(categoryEntity.getEntity(), recordId));
+		
+		//If root catentity has parent entity then get data from parent entitytable  with same record id
+		CategoryEntityInterface objParentCatEntity = categoryEntity.getParentCategoryEntity();
+		while(objParentCatEntity!=null)
+		{
+			Map<AbstractAttributeInterface, Object> innerValueMap = EntityManager.getInstance().getEntityRecordById(objParentCatEntity.getEntity(), recordId);
+			if(innerValueMap!=null)
+			entityRecordsMap.putAll(innerValueMap);
+			objParentCatEntity = objParentCatEntity.getParentCategoryEntity();
+			
+		}
 
 		if (!isAllRelatedCategoryAttributesCollection(categoryEntity))
 		{
@@ -1182,7 +1282,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		for (CategoryAssociationInterface categoryAssociation : categoryAssociationCollection)
 		{
 			CategoryEntityInterface targetCategoryEntity = categoryAssociation.getTargetCategoryEntity();
-			if (!isAllRelatedCategoryAttributesCollection(targetCategoryEntity))
+			if (!isAllRelatedCategoryAttributesCollection(targetCategoryEntity) && (((CategoryEntity)targetCategoryEntity).isCreateTable()))
 			{
 				categoryEntityTableName = targetCategoryEntity.getTableProperties().getName();
 
@@ -1258,9 +1358,12 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 */
 	private List<CategoryEntityInterface> getParentEntityList(CategoryEntityInterface categoryEntity)
 	{
+
+		//As here the parent category entity whose table is not created  is blocked so its not added in list 
 		List<CategoryEntityInterface> categoryEntityList = new ArrayList<CategoryEntityInterface>();
 		categoryEntityList.add(categoryEntity);
-		while (categoryEntity.getParentCategoryEntity() != null)
+		CategoryEntity objCategoryEntity = (CategoryEntity) categoryEntity.getParentCategoryEntity();
+		while (objCategoryEntity != null && objCategoryEntity.isCreateTable())
 		{
 			categoryEntityList.add(0, categoryEntity.getParentCategoryEntity());
 			categoryEntity = categoryEntity.getParentCategoryEntity();
@@ -1296,18 +1399,38 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 				categoryAttribute = (CategoryAttributeInterface) baseAbstractAttribute;
 				abstractAttribute = categoryAttribute.getAttribute();
 				entityValue = categoryValue;
-				if (categoryAttribute.getCategoryEntity().getCategory() != null && categoryAttribute.getIsVisible() == null)
+				
+				//add root cat entity and its parent category entity's attribute
+				for (CategoryAttributeInterface rootcategoryAttribute : rootCategoryEntity.getAllCategoryAttributes())
 				{
-					rootEntityRecordsMap.put(abstractAttribute, entityValue);
+					if((categoryAttribute == rootcategoryAttribute) && categoryAttribute.getIsVisible() == null)
+					{
+						rootEntityRecordsMap.put(abstractAttribute, entityValue);
+					}
+					
 				}
 			}
 		}
 
 		for (CategoryAssociationInterface categoryAssociation : rootCategoryEntity.getCategoryAssociationCollection())
 		{
+			//add all root catentity's association
 			for (AssociationInterface association : categoryAssociation.getCategoryEntity().getEntity().getAssociationCollection())
 			{
 				rootEntityRecordsMap.put(association, new ArrayList());
+			}
+			//also add any association which are related to parent entity's association--association between rootcategoryentity's parententity and another class whose category association is created   
+			EntityInterface entity = categoryAssociation.getCategoryEntity().getEntity();
+			while(entity.getParentEntity()!=null)
+			{
+				for (AssociationInterface association : entity.getParentEntity().getAssociationCollection())
+				{
+					if(association.getTargetEntity() == categoryAssociation.getTargetCategoryEntity().getEntity())
+					 {
+						rootEntityRecordsMap.put(association, new ArrayList());
+					 }
+				}
+				entity = entity.getParentEntity();
 			}
 		}
 	}
@@ -1503,9 +1626,9 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @param dataValueMap
 	 * @return
 	 */
-	private Map<BaseAbstractAttributeInterface, Object> createAttributeMap(Map<BaseAbstractAttributeInterface, Object> dataValueMap)
+	private Map<AbstractAttributeInterface, Object> createAttributeMap(Map<BaseAbstractAttributeInterface, Object> dataValueMap)
 	{
-		Map<BaseAbstractAttributeInterface, Object> attributeMap = new HashMap<BaseAbstractAttributeInterface, Object>();
+		Map<AbstractAttributeInterface, Object> attributeMap = new HashMap<AbstractAttributeInterface, Object>();
 
 		Iterator<BaseAbstractAttributeInterface> attributeIterator = dataValueMap.keySet().iterator();
 

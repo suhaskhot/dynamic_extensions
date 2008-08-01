@@ -596,10 +596,13 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	{
 		String entityTableName = rootCategoryeEntity.getEntity().getTableProperties().getName();
 		List<Long> recordIdList = recordsMap.get(rootCategoryeEntity.getName());
-		for (Long identifer : recordIdList)
+		if(recordIdList!=null)
 		{
-			String updateEntityQuery = "UPDATE " + entityTableName + " SET " + columnNamesValues + " WHERE IDENTIFIER = " + identifer;
-			executeUpdateQuery(updateEntityQuery, userId, hibernateDAO);
+			for (Long identifer : recordIdList)
+			{
+				String updateEntityQuery = "UPDATE " + entityTableName + " SET " + columnNamesValues + " WHERE IDENTIFIER = " + identifer;
+				executeUpdateQuery(updateEntityQuery, userId, hibernateDAO);
+			}
 		}
 	}
 

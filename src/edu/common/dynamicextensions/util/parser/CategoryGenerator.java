@@ -242,7 +242,8 @@ public class CategoryGenerator
 								.get(categoryFileParser.getControlType()), categoryFileParser.getControlCaption(), permissibleValues);
 
 						setControlsOptions(lastControl);
-						//Check fo isreadonly option
+						setDefaultValue(lastControl);
+						//Check for isreadonly option
 						if (lastControl.getIsReadOnly())
 						{
 							((CategoryAttributeInterface) lastControl.getAttibuteMetadataInterface()).setIsVisible(false);
@@ -622,6 +623,27 @@ public class CategoryGenerator
 				categoryPath = string;
 		}
 		return categoryPath;
+	}
+	
+	/**
+	 * @param control
+	 * @throws ParseException
+	 */
+	private void setDefaultValue(ControlInterface control) throws ParseException
+	{
+
+		if (categoryFileParser.getDefaultValue() == null)
+		{
+			return;
+		}
+
+		CategoryAttributeInterface categoryAttribute = (CategoryAttributeInterface) control.getAttibuteMetadataInterface();
+		if (!categoryFileParser.getDefaultValue().equals(categoryAttribute.getDefaultValue()))
+		{
+			categoryAttribute.setDefaultValue(categoryAttribute.getAttribute().getAttributeTypeInformation().getPermissibleValueForString(
+					categoryFileParser.getDefaultValue()));
+		}
+
 	}
 
 }

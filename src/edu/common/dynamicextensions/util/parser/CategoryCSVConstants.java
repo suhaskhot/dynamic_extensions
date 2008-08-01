@@ -58,4 +58,9 @@ public interface CategoryCSVConstants
 
 	String INSTANCE = "instance:";
 
+	/**
+	 * default value of the attribute
+	 */
+	String DEFAULT_VALUE = "defaultValue";
+
 }

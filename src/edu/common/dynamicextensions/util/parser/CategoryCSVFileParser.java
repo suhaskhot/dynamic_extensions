@@ -9,6 +9,7 @@ import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.OVER
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.PERMISSIBLE_VALUES;
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.PERMISSIBLE_VALUES_FILE;
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.RELATED_ATTIBUTE;
+import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.DEFAULT_VALUE;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -383,5 +384,21 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	public String getRelatedAttributeName()
 	{
 		return readLine()[0].split("=")[0].split(":")[1].trim();
+	}
+	
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.util.parser.CategoryFileParser#getDefaultValue()
+	 */
+	public String getDefaultValue()
+	{
+		String defaultValue = null;
+		for (String string : readLine())
+		{
+			if (string.startsWith(DEFAULT_VALUE))
+			{
+				defaultValue = string.split("=")[1];
+			}
+		}
+		return defaultValue;
 	}
 }

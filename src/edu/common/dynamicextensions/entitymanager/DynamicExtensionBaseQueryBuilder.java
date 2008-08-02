@@ -2792,6 +2792,22 @@ class DynamicExtensionBaseQueryBuilder
 					formattedvalue = null;
 				}
 			}
+			else if (Variables.databaseName.equals(Constants.MYSQL_DATABASE) && attributeInformation instanceof ShortAttributeTypeInformation)
+			{
+				
+				if (formattedvalue.trim().length() == 0)
+				{
+					formattedvalue = null;
+				}
+			}
+			else if (Variables.databaseName.equals(Constants.MYSQL_DATABASE) && attributeInformation instanceof LongAttributeTypeInformation)
+			{
+				
+				if (formattedvalue.trim().length() == 0)
+				{
+					formattedvalue = null;
+				}
+			}
 			
 			if(formattedvalue!=null)
 			{

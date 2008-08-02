@@ -159,8 +159,8 @@ class DynamicExtensionBaseQueryBuilder
 	{
 		List<String> queryList = new ArrayList<String>();
 
-		// Get queries for foreign key constraint for inheritance and to create associations, 
-		// it involves altering source/target table or creating middle table depending upon the 
+		// Get queries for foreign key constraint for inheritance and to create associations,
+		// it involves altering source/target table or creating middle table depending upon the
 		// cardinalities.
 		queryList.addAll(getForeignKeyConstraintQuery(categoryEntity, reverseQueryList));
 		queryList.addAll(getCreateAssociationsQueryList(categoryEntity, reverseQueryList, hibernateDAO));
@@ -529,9 +529,10 @@ class DynamicExtensionBaseQueryBuilder
 			String srcEntityName = manyToOneAssociationList.get(0).getEntity().getTableProperties().getName();
 			manyToOneAssociationsGetReocrdQuery.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + srcEntityName + WHITESPACE);
 			manyToOneAssociationsGetReocrdQuery.append(WHITESPACE + WHERE_KEYWORD + WHITESPACE + IDENTIFIER + EQUAL + recordId);
+			ResultSet resultSet = null;
 			try
 			{
-				ResultSet resultSet = EntityManagerUtil.executeQuery(manyToOneAssociationsGetReocrdQuery.toString());
+				resultSet = EntityManagerUtil.executeQuery(manyToOneAssociationsGetReocrdQuery.toString());
 				resultSet.next();
 				for (int i = 0; i < manyToOneAssociationList.size(); i++)
 				{
@@ -546,6 +547,21 @@ class DynamicExtensionBaseQueryBuilder
 			catch (SQLException e)
 			{
 				throw new DynamicExtensionsSystemException("Exception in query execution", e);
+			}
+			finally
+			{
+				if (resultSet != null)
+				{
+					try
+					{
+						resultSet.close();
+					}
+					catch (SQLException e)
+					{
+						throw new DynamicExtensionsSystemException(e
+								.getMessage(), e);
+					}
+				}
 			}
 		}
 	}
@@ -2040,21 +2056,35 @@ class DynamicExtensionBaseQueryBuilder
 							savedAttribute.getColumnProperties().getName()).append(WHITESPACE).append(NOT_KEYWORD).append(WHITESPACE).append(
 							LIKE_KEYWORD).append(WHITESPACE).append("''");
 
-			ResultSet resultSet = entityManagerUtil.executeQuery(queryBuffer.toString());
+			ResultSet resultSet = null;
 			try
 			{
+				resultSet = entityManagerUtil.executeQuery(queryBuffer.toString());
 				resultSet.next();
 				Long count = resultSet.getLong(1);
-				resultSet.close();
 				if (count > 0)
 				{
 					dataPresent = true;
 				}
-
 			}
 			catch (SQLException e)
 			{
 				throw new DynamicExtensionsSystemException("Can not check the availability of data", e);
+			}
+			finally
+			{
+				if (resultSet != null)
+				{
+					try
+					{
+						resultSet.close();
+					}
+					catch (SQLException e)
+					{
+						throw new DynamicExtensionsSystemException(e
+								.getMessage(), e);
+					}
+				}
 			}
 		}
 		else
@@ -2092,12 +2122,12 @@ class DynamicExtensionBaseQueryBuilder
 							savedAttribute.getColumnProperties().getName()).append(WHITESPACE).append(NOT_KEYWORD).append(WHITESPACE).append(
 							LIKE_KEYWORD).append(WHITESPACE).append("''");
 
-			ResultSet resultSet = entityManagerUtil.executeQuery(queryBuffer.toString());
+			ResultSet resultSet = null;
 			try
 			{
+				resultSet = entityManagerUtil.executeQuery(queryBuffer.toString());
 				resultSet.next();
 				Long count = resultSet.getLong(1);
-				resultSet.close();
 				if (count > 0)
 				{
 					dataPresent = true;
@@ -2107,6 +2137,21 @@ class DynamicExtensionBaseQueryBuilder
 			catch (SQLException e)
 			{
 				throw new DynamicExtensionsSystemException("Can not check the availability of data", e);
+			}
+			finally
+			{
+				if (resultSet != null)
+				{
+					try
+					{
+						resultSet.close();
+					}
+					catch (SQLException e)
+					{
+						throw new DynamicExtensionsSystemException(e
+								.getMessage(), e);
+					}
+				}
 			}
 		}
 		return dataPresent;
@@ -2118,13 +2163,12 @@ class DynamicExtensionBaseQueryBuilder
 		queryBuffer.append(SELECT_KEYWORD).append(WHITESPACE).append("COUNT").append(OPENING_BRACKET).append("*").append(CLOSING_BRACKET).append(
 				WHITESPACE).append(FROM_KEYWORD).append(WHITESPACE).append(tableName);
 
-		ResultSet resultSet = entityManagerUtil.executeQuery(queryBuffer.toString());
-
+		ResultSet resultSet = null;
 		try
 		{
+			resultSet = entityManagerUtil.executeQuery(queryBuffer.toString());
 			resultSet.next();
 			Long count = resultSet.getLong(1);
-			resultSet.close();
 			if (count > 0)
 			{
 				return true;
@@ -2133,11 +2177,25 @@ class DynamicExtensionBaseQueryBuilder
 			{
 				return false;
 			}
-
 		}
 		catch (SQLException e)
 		{
 			throw new DynamicExtensionsSystemException("Can not check the availability of data", e);
+		}
+		finally
+		{
+			if (resultSet != null)
+			{
+				try
+				{
+					resultSet.close();
+				}
+				catch (SQLException e)
+				{
+					throw new DynamicExtensionsSystemException(e
+							.getMessage(), e);
+				}
+			}
 		}
 	}
 
@@ -2450,10 +2508,10 @@ class DynamicExtensionBaseQueryBuilder
 			String query = SELECT_KEYWORD + WHITESPACE + COUNT_KEYWORD + OPENING_BRACKET + "*" + CLOSING_BRACKET + WHITESPACE + FROM_KEYWORD
 					+ WHITESPACE + tableName + WHITESPACE + WHERE_KEYWORD + WHITESPACE + columnName + WHITESPACE + EQUAL + WHITESPACE
 					+ sourceRecordId;
-			ResultSet resultSet = entityManagerUtil.executeQuery(query);
-
+			ResultSet resultSet = null;
 			try
 			{
+				resultSet = entityManagerUtil.executeQuery(query);
 				resultSet.next();
 				// if another source record is already using target record , throw exception.
 				if (resultSet.getInt(1) != 0)
@@ -2465,7 +2523,21 @@ class DynamicExtensionBaseQueryBuilder
 			{
 				throw new DynamicExtensionsSystemException(e.getMessage(), e);
 			}
-
+			finally
+			{
+				if (resultSet != null)
+				{
+					try
+					{
+						resultSet.close();
+					}
+					catch (SQLException e)
+					{
+						throw new DynamicExtensionsSystemException(e
+								.getMessage(), e);
+					}
+				}
+			}
 		}
 	}
 
@@ -2498,10 +2570,10 @@ class DynamicExtensionBaseQueryBuilder
 			String query = SELECT_KEYWORD + WHITESPACE + COUNT_KEYWORD + OPENING_BRACKET + "*" + CLOSING_BRACKET + WHITESPACE + FROM_KEYWORD
 					+ WHITESPACE + tableName + WHITESPACE + WHERE_KEYWORD + WHITESPACE + columnName + WHITESPACE + EQUAL + WHITESPACE
 					+ sourceRecordId;
-			ResultSet resultSet = entityManagerUtil.executeQuery(query);
-
+			ResultSet resultSet = null;
 			try
 			{
+				entityManagerUtil.executeQuery(query);
 				resultSet.next();
 				// if another source record is already using target record , throw exception.
 				if (resultSet.getInt(1) != 0)
@@ -2513,7 +2585,21 @@ class DynamicExtensionBaseQueryBuilder
 			{
 				throw new DynamicExtensionsSystemException(e.getMessage(), e);
 			}
-
+			finally
+			{
+				if (resultSet != null)
+				{
+					try
+					{
+						resultSet.close();
+					}
+					catch (SQLException e)
+					{
+						throw new DynamicExtensionsSystemException(e
+								.getMessage(), e);
+					}
+				}
+			}
 		}
 	}
 
@@ -2707,21 +2793,35 @@ class DynamicExtensionBaseQueryBuilder
 				.append(WHITESPACE).append(FROM_KEYWORD).append(WHITESPACE).append(tableName).append(WHITESPACE).append(WHERE_KEYWORD).append(
 						WHITESPACE).append(columnName).append(EQUAL).append(formattedValue).append(" and " + getRemoveDisbledRecordsQuery(""));
 
-		ResultSet resultSet = EntityManagerUtil.executeQuery(queryBuffer.toString());
-
+		ResultSet resultSet = null;
 		try
 		{
+			resultSet = EntityManagerUtil.executeQuery(queryBuffer.toString());
 			resultSet.next();
 			Long count = resultSet.getLong(1);
 			if (count > 0)
 			{
 				present = true;
 			}
-			resultSet.close();
 		}
 		catch (SQLException e)
 		{
 			throw new DynamicExtensionsSystemException("Can not check the availability of value", e);
+		}
+		finally
+		{
+			if (resultSet != null)
+			{
+				try
+				{
+					resultSet.close();
+				}
+				catch (SQLException e)
+				{
+					throw new DynamicExtensionsSystemException(e
+							.getMessage(), e);
+				}
+			}
 		}
 		return present;
 	}

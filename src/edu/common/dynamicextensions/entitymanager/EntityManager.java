@@ -1125,8 +1125,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 					}
 
 					value = queryBuilder.getFormattedValue(attribute, value);
-					//Bug id : 7777 
-					//Fixed by : Prashant 
+					//Bug id : 7777
+					//Fixed by : Prashant
 					//Reviewed by : Kunal
 					//if (value.toString().isEmpty())
 					if (value.toString().length() == 0)
@@ -1734,27 +1734,44 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	private List<EntityRecordInterface> getEntityRecordList(List<String> selectColumnNameList, String query, Map columnNameMap,
 			EntityRecordMetadata recordMetadata) throws DynamicExtensionsSystemException, SQLException
 	{
-		ResultSet resultSet = entityManagerUtil.executeQuery(query);
 		List<EntityRecordInterface> entityRecordList = new ArrayList<EntityRecordInterface>();
-
-		while (resultSet.next())
+		ResultSet resultSet = null;
+		try
 		{
-			EntityRecordInterface entityRecord = new EntityRecord();
-			Long id = resultSet.getLong(1);
-			entityRecord.setRecordId(id);
-			Object[] values = new Object[recordMetadata.getAttributeList().size()];
-			for (int i = 1; i <= selectColumnNameList.size(); i++)
+			resultSet = entityManagerUtil.executeQuery(query);
+			while (resultSet.next())
 			{
-				String dbColumnName = selectColumnNameList.get(i - 1);
-				String value = getValueFromResultSet(resultSet, columnNameMap, dbColumnName, i);
-				AttributeInterface attribute = (AttributeInterface) columnNameMap.get(dbColumnName);
-				int indexOfAttribute = recordMetadata.getAttributeList().indexOf(attribute);
-				values[indexOfAttribute] = value;
+				EntityRecordInterface entityRecord = new EntityRecord();
+				Long id = resultSet.getLong(1);
+				entityRecord.setRecordId(id);
+				Object[] values = new Object[recordMetadata.getAttributeList().size()];
+				for (int i = 1; i <= selectColumnNameList.size(); i++)
+				{
+					String dbColumnName = selectColumnNameList.get(i - 1);
+					String value = getValueFromResultSet(resultSet, columnNameMap, dbColumnName, i);
+					AttributeInterface attribute = (AttributeInterface) columnNameMap.get(dbColumnName);
+					int indexOfAttribute = recordMetadata.getAttributeList().indexOf(attribute);
+					values[indexOfAttribute] = value;
+				}
+				entityRecord.setRecordValueList(Arrays.asList(values));
+				entityRecordList.add(entityRecord);
 			}
-			entityRecord.setRecordValueList(Arrays.asList(values));
-			entityRecordList.add(entityRecord);
 		}
-		resultSet.close();
+		finally
+		{
+			if (resultSet != null)
+			{
+				try
+				{
+					resultSet.close();
+				}
+				catch (SQLException e)
+				{
+					throw new DynamicExtensionsSystemException(e
+							.getMessage(), e);
+				}
+			}
+		}
 		return entityRecordList;
 	}
 
@@ -1790,22 +1807,44 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	public Map<AbstractAttributeInterface, Object> getRecordById(EntityInterface entity, Long recordId) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
-
-		if (entity == null || entity.getId() == null || recordId == null)
-		{
-			throw new DynamicExtensionsSystemException("Invalid Input");
-		}
-
 		Map<AbstractAttributeInterface, Object> recordValues = new HashMap<AbstractAttributeInterface, Object>();
-
-		do
+		HibernateDAO hibernateDAO = null;
+		try
 		{
-			Map<AbstractAttributeInterface, Object> recordValuesForSingleEntity = getEntityRecordById(entity, recordId);
-			recordValues.putAll(recordValuesForSingleEntity);
-			entity = entity.getParentEntity();
+			DAOFactory factory = DAOFactory.getInstance();
+			hibernateDAO = (HibernateDAO) factory.getDAO(Constants.HIBERNATE_DAO);
+			hibernateDAO.openSession(null);
+			if (entity == null || entity.getId() == null || recordId == null)
+			{
+				throw new DynamicExtensionsSystemException("Invalid Input");
+			}
+			do
+			{
+				Map<AbstractAttributeInterface, Object> recordValuesForSingleEntity = getEntityRecordById(entity, recordId);
+				recordValues.putAll(recordValuesForSingleEntity);
+				entity = entity.getParentEntity();
+			}
+			while (entity != null);
 		}
-		while (entity != null);
-
+		catch (DynamicExtensionsApplicationException e)
+		{
+			throw (DynamicExtensionsApplicationException) handleRollback(e, "Error while retriving data", hibernateDAO, false);
+		}
+		catch (Exception e)
+		{
+			throw (DynamicExtensionsSystemException) handleRollback(e, "Error while retriving data", hibernateDAO, true);
+		}
+		finally
+		{
+			try
+			{
+				hibernateDAO.closeSession();
+			}
+			catch (DAOException e)
+			{
+				throw (DynamicExtensionsSystemException) handleRollback(e, "Error while closing", hibernateDAO, true);
+			}
+		}
 		return recordValues;
 	}
 
@@ -2396,10 +2435,10 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 		return contId;
 	}
-	
+
 	/**
 	 *
-	 * 
+	 *
 	 * @param entityIdentifier
 	 * @return
 	 * @throws DynamicExtensionsSystemException
@@ -2408,7 +2447,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	{
 		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entityIdentifier));
-		
+
 
 		Collection containerCollection = executeHQL("checkContainerForAbstractCategoryEntity", substitutionParameterMap);
 
@@ -2425,7 +2464,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 	public Long getEntityId(String entityName) throws DynamicExtensionsSystemException
 	{
-		ResultSet rsltSet = null;
+		ResultSet resultSet = null;
 		String entityTableName = "dyextn_abstract_metadata";
 		String NAME = "name";
 		StringBuffer query = new StringBuffer();
@@ -2435,9 +2474,9 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		System.out.println("Query = " + query.toString());
 		try
 		{
-			rsltSet = EntityManagerUtil.executeQuery(query.toString());
-			rsltSet.next();
-			Long identifier = rsltSet.getLong(IDENTIFIER);
+			resultSet = EntityManagerUtil.executeQuery(query.toString());
+			resultSet.next();
+			Long identifier = resultSet.getLong(IDENTIFIER);
 			return identifier;
 		}
 		catch (Exception e)
@@ -2446,15 +2485,16 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 		finally
 		{
-			if (rsltSet != null)
+			if (resultSet != null)
 			{
 				try
 				{
-					rsltSet.close();
+					resultSet.close();
 				}
 				catch (SQLException e)
 				{
-					throw new DynamicExtensionsSystemException(e.getMessage(), e);
+					throw new DynamicExtensionsSystemException(e
+							.getMessage(), e);
 				}
 			}
 		}
@@ -2470,7 +2510,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 */
 	public Long getContainerIdForEntity(Long entityId) throws DynamicExtensionsSystemException
 	{
-		ResultSet rsltSet = null;
+		ResultSet resultSet = null;
 		String tableName = "dyextn_container";
 		String ENTITY_ID_FIELD_NAME = "ENTITY_ID";
 		StringBuffer query = new StringBuffer();
@@ -2480,11 +2520,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		System.out.println("Query = " + query.toString());
 		try
 		{
-			rsltSet = EntityManagerUtil.executeQuery(query.toString());
-			if (rsltSet != null)
+			resultSet = EntityManagerUtil.executeQuery(query.toString());
+			if (resultSet != null)
 			{
-				rsltSet.next();
-				Long identifier = rsltSet.getLong(IDENTIFIER);
+				resultSet.next();
+				Long identifier = resultSet.getLong(IDENTIFIER);
 				return identifier;
 			}
 		}
@@ -2494,17 +2534,16 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 		finally
 		{
-			if (rsltSet != null)
+			if (resultSet != null)
 			{
 				try
 				{
-
-					rsltSet.close();
-
+					resultSet.close();
 				}
 				catch (SQLException e)
 				{
-					throw new DynamicExtensionsSystemException(e.getMessage(), e);
+					throw new DynamicExtensionsSystemException(e
+							.getMessage(), e);
 				}
 			}
 		}
@@ -2519,7 +2558,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 */
 	public Long getNextIdentifierForEntity(String entityName) throws DynamicExtensionsSystemException
 	{
-		ResultSet rsltSet = null;
+		ResultSet resultSet = null;
 		String tableName = "dyextn_database_properties";
 		String NAME = "NAME";
 		StringBuffer query = new StringBuffer();
@@ -2539,11 +2578,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		System.out.println("Query = " + query.toString());
 		try
 		{
-			rsltSet = EntityManagerUtil.executeQuery(query.toString());
-			if (rsltSet != null)
+			resultSet = EntityManagerUtil.executeQuery(query.toString());
+			if (resultSet != null)
 			{
-				rsltSet.next();
-				String entityTableName = rsltSet.getString(NAME);
+				resultSet.next();
+				String entityTableName = resultSet.getString(NAME);
 				if (entityTableName != null)
 				{
 					EntityManagerUtil entityManagerUtil = new EntityManagerUtil();
@@ -2557,17 +2596,16 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 		finally
 		{
-			if (rsltSet != null)
+			if (resultSet != null)
 			{
 				try
 				{
-
-					rsltSet.close();
-
+					resultSet.close();
 				}
 				catch (SQLException e)
 				{
-					throw new DynamicExtensionsSystemException(e.getMessage(), e);
+					throw new DynamicExtensionsSystemException(e
+							.getMessage(), e);
 				}
 			}
 		}
@@ -2872,7 +2910,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	}
 
 	/**
-	 * 
+	 *
 	 * @param hookEntityId
 	 * @return  the container Id of the DE entities/categories that are associated with given static hook entity
 	 * @throws DynamicExtensionsSystemException
@@ -2903,7 +2941,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	}
 
 	/**
-	 * 
+	 *
 	 * @param hookEntityId
 	 * @return the container Id of the DE entities that are associated with given static hook entity
 	 */
@@ -2916,9 +2954,9 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	}
 
 	/**
-	 * 
+	 *
 	 * @param containerId
-	 * @return whether this entity is simple DE form /category. 
+	 * @return whether this entity is simple DE form /category.
 	 */
 	public Long isCategory(Long containerId) throws DynamicExtensionsSystemException
 	{
@@ -2950,7 +2988,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	}
 
 	/**
-	 * this method returns the column name for the assocation  
+	 * this method returns the column name for the assocation
 	 */
 	public String getColumnNameForAssociation(Long hookEntityId, Long containerId) throws DynamicExtensionsSystemException
 	{

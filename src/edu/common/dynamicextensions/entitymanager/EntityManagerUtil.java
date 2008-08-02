@@ -114,13 +114,12 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 			{
 				try
 				{
-
 					resultSet.close();
-
 				}
 				catch (SQLException e)
 				{
-					throw new DynamicExtensionsSystemException(e.getMessage(), e);
+					throw new DynamicExtensionsSystemException(e
+							.getMessage(), e);
 				}
 			}
 		}
@@ -192,10 +191,30 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 			}
 			else
 			{
-				ResultSet resultSet = executeQuery(queryToGetNextIdentifier.toString());
-				resultSet.next();
-				identifier = resultSet.getLong(1);
-				identifier = identifier + 1;
+				ResultSet resultSet = null;
+				try
+				{
+					resultSet = executeQuery(queryToGetNextIdentifier
+							.toString());
+					resultSet.next();
+					identifier = resultSet.getLong(1);
+					identifier = identifier + 1;
+				}
+				finally
+				{
+					if (resultSet != null)
+					{
+						try
+						{
+							resultSet.close();
+						}
+						catch (SQLException e)
+						{
+							throw new DynamicExtensionsSystemException(e
+									.getMessage(), e);
+						}
+					}
+				}
 			}
 			idMap.put(entityTableName, identifier);
 			return identifier;
@@ -215,12 +234,12 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	public List<Long> getResultInList(String query) throws DynamicExtensionsSystemException
 	{
 		List<Long> resultList = new ArrayList<Long>();
-		
+
 		Session session = null;
 		Connection con = null;
 		Statement statement = null;
 		ResultSet resultSet = null;
-		
+
 		try
 		{
 			session = DBUtil.getCleanSession();
@@ -257,7 +276,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 				throw new DynamicExtensionsSystemException(e.getMessage(), e);
 			}
 		}
-		
+
 		return resultList;
 	}
 

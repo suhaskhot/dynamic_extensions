@@ -2744,9 +2744,16 @@ class DynamicExtensionBaseQueryBuilder
 			}
 			//for mysql5 if user not enter any value for date field its getting saved as 00-00-0000 ,which is throwing exception
 			//So to avoid it store null value in database
-			if(str.trim().length() != 0)
-			formattedvalue = Variables.strTodateFunction + "('" + str.trim() + "','" + DynamicExtensionsUtility.getSQLDateFormat(dateFormat) + "')";
-		}
+			if(Variables.databaseName.equals(Constants.MYSQL_DATABASE) && str.trim().length() == 0)
+			{
+				formattedvalue = null;
+				
+			}
+			else
+			{
+				formattedvalue = Variables.strTodateFunction + "('" + str.trim() + "','" + DynamicExtensionsUtility.getSQLDateFormat(dateFormat) + "')";
+			}
+		}		
 		else
 		{
 			// quick fix.
@@ -2759,7 +2766,34 @@ class DynamicExtensionBaseQueryBuilder
 			}
 			else
 				formattedvalue = value.toString();
-			if (formattedvalue.trim().length() == 0)
+			
+			//In case of Mysql 5 ,if the column datatype double ,float ,integer then its not possible to pass '' as  in insert-update query
+			//so instead pass null as value.
+			if (Variables.databaseName.equals(Constants.MYSQL_DATABASE) && attributeInformation instanceof DoubleAttributeTypeInformation)
+			{
+				if (formattedvalue.trim().length() == 0)
+				{
+					formattedvalue = null;
+				}
+			}
+			else if (Variables.databaseName.equals(Constants.MYSQL_DATABASE) && attributeInformation instanceof IntegerAttributeTypeInformation)
+			{
+				
+				if (formattedvalue.trim().length() == 0)
+				{
+					formattedvalue = null;
+				}
+			}
+			else if (Variables.databaseName.equals(Constants.MYSQL_DATABASE) && attributeInformation instanceof FloatAttributeTypeInformation)
+			{
+				
+				if (formattedvalue.trim().length() == 0)
+				{
+					formattedvalue = null;
+				}
+			}
+			
+			if(formattedvalue!=null)
 			{
 				formattedvalue = "'" + formattedvalue + "'";
 			}
@@ -2767,6 +2801,7 @@ class DynamicExtensionBaseQueryBuilder
 		Logger.out.debug("getFormattedValue The formatted value for attribute " + attribute.getName() + "is " + formattedvalue);
 		return formattedvalue;
 	}
+
 
 	/**
 	 * @param value

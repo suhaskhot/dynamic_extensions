@@ -1129,7 +1129,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 					//Fixed by : Prashant
 					//Reviewed by : Kunal
 					//if (value.toString().isEmpty())
-					if (value.toString().length() == 0)
+					if (value!=null && value.toString().length() == 0)
 					{
 						value = "'" + value + "'";
 					}

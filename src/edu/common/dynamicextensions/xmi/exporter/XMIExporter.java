@@ -1188,9 +1188,10 @@ public class XMIExporter implements XMIExportInterface
 			{
 				for(RuleParameterInterface ruleParam : ruleParamColl)
 				{
-					ruleTag = ruleTag + XMIConstants.SEPARATOR + ruleParam.getName();
+					String temp = ruleTag;
+					temp = temp + XMIConstants.SEPARATOR + ruleParam.getName();
 					ruleValue = ruleParam.getValue();
-					taggedValues.add(createTaggedValue(ruleTag,ruleValue));
+					taggedValues.add(createTaggedValue(temp,ruleValue));
 				}
 			}
 		}

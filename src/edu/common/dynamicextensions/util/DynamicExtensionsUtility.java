@@ -1385,31 +1385,34 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * getCategoryQueryList.
-	 * @param category
-	 * @param queryList
-	 * @param reverseQueryList
+	 * @param categoryEntity
+	 * @param objCategoryMap
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public static void getUnsavedCategoryEntityList(CategoryEntityInterface categoryEntity,
-			List<CategoryEntityInterface> categoryEntityList)
+			HashMap<String, CategoryEntityInterface> objCategoryMap)
 			throws DynamicExtensionsSystemException
 	{
-		if (categoryEntity != null)
+				
+		if (categoryEntity != null )
 		{
-			if (categoryEntity.getParentCategoryEntity() != null)
+			if(objCategoryMap.containsKey(categoryEntity.getName()))
 			{
-				getUnsavedCategoryEntityList(categoryEntity.getParentCategoryEntity(),
-						categoryEntityList);
+				return;
 			}
-			if (!categoryEntityList.contains(categoryEntity))
+			CategoryEntity objCategoryEntity = (CategoryEntity) categoryEntity;
+			if (objCategoryEntity.getParentCategoryEntity() != null &&  !objCategoryMap.containsKey(objCategoryEntity.getParentCategoryEntity().getName()))
 			{
-				if (categoryEntity.getId() == null)
+				if( ((CategoryEntity)objCategoryEntity.getParentCategoryEntity()).isCreateTable()) 
+				getUnsavedCategoryEntityList(objCategoryEntity.getParentCategoryEntity(),objCategoryMap);
+			}
+			if (!objCategoryMap.containsKey(categoryEntity.getName())  && objCategoryEntity.isCreateTable())
+			{
+				if (objCategoryEntity.getId() == null)
 				{
-					CategoryEntity objCategoryEntity = (CategoryEntity) categoryEntity;
 					//Only includes those category entity for which table is required to be created 
 					if(objCategoryEntity.isCreateTable())
-					categoryEntityList.add(categoryEntity);
+					objCategoryMap.put(categoryEntity.getName(),objCategoryEntity);
 				}
 			}
 			else
@@ -1419,46 +1422,54 @@ public class DynamicExtensionsUtility
 			for (CategoryAssociationInterface categoryAssociationInterface : categoryEntity
 					.getCategoryAssociationCollection())
 			{
-				getUnsavedCategoryEntityList(
-						categoryAssociationInterface.getTargetCategoryEntity(), categoryEntityList);
+				CategoryEntity objCEntity = (CategoryEntity) categoryAssociationInterface.getTargetCategoryEntity();
+				if(objCEntity.isCreateTable())
+				if(!objCategoryMap.containsKey(categoryAssociationInterface.getTargetCategoryEntity().getName()))
+				getUnsavedCategoryEntityList(categoryAssociationInterface.getTargetCategoryEntity(), objCategoryMap);
 			}
 		}
 	}
 
+	
 	/**
-	 * getCategoryQueryList.
-	 * @param category
-	 * @param queryList
-	 * @param reverseQueryList
+	 * @param categoryEntity
+	 * @param objCategoryMap
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public static void getSavedCategoryEntityList(CategoryEntityInterface categoryEntity,
-			List<CategoryEntityInterface> categoryEntityList)
+			HashMap<String, CategoryEntityInterface> objCategoryMap)
 			throws DynamicExtensionsSystemException
 	{
+		
 		if (categoryEntity != null)
 		{
-			if (categoryEntity.getParentCategoryEntity() != null)
+			if(objCategoryMap.containsKey(categoryEntity.getName()))
 			{
-				getSavedCategoryEntityList(categoryEntity.getParentCategoryEntity(),
-						categoryEntityList);
+				return;
 			}
-			if (!categoryEntityList.contains(categoryEntity))
+			CategoryEntity objCategoryEntity = (CategoryEntity) categoryEntity;
+			if (categoryEntity.getParentCategoryEntity() != null &&  !objCategoryMap.containsKey(categoryEntity.getParentCategoryEntity().getName()))
 			{
-				if (categoryEntity.getId() != null)
+				if(( (CategoryEntity)objCategoryEntity.getParentCategoryEntity()).isCreateTable())
+				getSavedCategoryEntityList(categoryEntity.getParentCategoryEntity(),objCategoryMap);
+			}
+			if (!objCategoryMap.containsKey(categoryEntity.getName()))
+			{
+				if (objCategoryEntity.getId() != null && objCategoryEntity.isCreateTable())
 				{
-					categoryEntityList.add(categoryEntity);
+					objCategoryMap.put(categoryEntity.getName(),categoryEntity);
 				}
 			}
 			else
 			{
 				return;
 			}
-			for (CategoryAssociationInterface categoryAssociationInterface : categoryEntity
-					.getCategoryAssociationCollection())
+			for (CategoryAssociationInterface categoryAssociationInterface : categoryEntity.getCategoryAssociationCollection())
 			{
-				getSavedCategoryEntityList(categoryAssociationInterface.getTargetCategoryEntity(),
-						categoryEntityList);
+				CategoryEntity objCEntity = (CategoryEntity) categoryAssociationInterface.getTargetCategoryEntity();
+				if(objCEntity.isCreateTable() && objCEntity.getId()!=null)
+				if(!objCategoryMap.containsKey(categoryAssociationInterface.getTargetCategoryEntity().getName()))
+				getSavedCategoryEntityList(categoryAssociationInterface.getTargetCategoryEntity(),objCategoryMap);
 			}
 		}
 	}

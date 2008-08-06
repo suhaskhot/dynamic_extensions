@@ -160,7 +160,15 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			List<String> queryList) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		List<CategoryEntityInterface> categoryEntityList = new ArrayList<CategoryEntityInterface>();
-		DynamicExtensionsUtility.getUnsavedCategoryEntityList(category.getRootCategoryElement(), categoryEntityList);
+		//Use HashMap instead of List to ensure entitylist contains unique entity only
+		HashMap<String, CategoryEntityInterface> objCategoryMap = new HashMap<String, CategoryEntityInterface>();
+		DynamicExtensionsUtility.getUnsavedCategoryEntityList(category.getRootCategoryElement(), objCategoryMap);
+		Iterator keyIterator = objCategoryMap.keySet().iterator();
+		while(keyIterator.hasNext())
+		{
+			categoryEntityList.add(objCategoryMap.get(keyIterator.next()));
+		}	
+		
 		for (CategoryEntityInterface categoryEntityInterface : categoryEntityList)
 		{
 			List<String> createQueryList = queryBuilder.getCreateCategoryQueryList(categoryEntityInterface, reverseQueryList, hibernateDAO);
@@ -177,19 +185,28 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 				queryList.addAll(createQueryList);
 			}
 		}
-
+		//Use HashMap instead of List to ensure entitylist contains unique entity only
 		List<CategoryEntityInterface> savedCategoryEntityList = new ArrayList<CategoryEntityInterface>();
-		DynamicExtensionsUtility.getSavedCategoryEntityList(category.getRootCategoryElement(), savedCategoryEntityList);
+		objCategoryMap = new HashMap<String, CategoryEntityInterface>();
+		DynamicExtensionsUtility.getSavedCategoryEntityList(category.getRootCategoryElement(), objCategoryMap);
+	    keyIterator = objCategoryMap.keySet().iterator();
+		while(keyIterator.hasNext())
+		{
+			savedCategoryEntityList.add(objCategoryMap.get(keyIterator.next()));
+		}
 		for (CategoryEntityInterface savedCategoryEntity : savedCategoryEntityList)
 		{
 			CategoryEntity databaseCopy = (CategoryEntity) DBUtil.loadCleanObj(CategoryEntity.class, savedCategoryEntity.getId());
-
-			List<String> updateQueryList = queryBuilder
-					.getUpdateEntityQueryList((CategoryEntity) savedCategoryEntity, databaseCopy, reverseQueryList);
-
-			if (updateQueryList != null && !updateQueryList.isEmpty())
-			{
-				queryList.addAll(updateQueryList);
+			//Only for category entity for which table is getting created
+			if(databaseCopy.isCreateTable())
+			{	
+				List<String> updateQueryList = queryBuilder
+						.getUpdateEntityQueryList((CategoryEntity) savedCategoryEntity, databaseCopy, reverseQueryList);
+	
+				if (updateQueryList != null && !updateQueryList.isEmpty())
+				{
+					queryList.addAll(updateQueryList);
+				}
 			}
 		}
 

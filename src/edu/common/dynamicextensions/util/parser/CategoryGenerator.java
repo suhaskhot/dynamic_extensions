@@ -200,7 +200,7 @@ public class CategoryGenerator
 							CategoryEntityInterface childCategoryEntity = (CategoryEntityInterface)containerInterface.getAbstractEntity();
 							CategoryEntityInterface parentCategoryEntity = childCategoryEntity.getParentCategoryEntity();
 													
-							while(!isAttributeCategoryMatched && childEntity.getParentEntity()!=null)
+							while(childEntity.getParentEntity()!=null)
 							{
 								parentEntity =childEntity.getParentEntity();
 								//check whether the given cat.entity's parent ce is created or not if not create it 
@@ -216,7 +216,7 @@ public class CategoryGenerator
 									
 								//Iterate over parent entity's attribute ,check whether its present in parententity
 								Iterator parentattrIterator = parentEntity.getAttributeCollection().iterator();
-								while(!isAttributeCategoryMatched && parentattrIterator.hasNext())
+								while(parentattrIterator.hasNext())
 								{									
 									AttributeInterface objParentAttribute =  (AttributeInterface)  parentattrIterator.next();													
 									if(attributeName.equals(objParentAttribute.getName()))
@@ -231,13 +231,15 @@ public class CategoryGenerator
 								childEntity =childEntity.getParentEntity();
 								childCategoryEntity = parentCategoryEntity;
 								parentCategoryEntity = parentCategoryEntity.getParentCategoryEntity();
+								//If attribute found in parent categoryentity ,break out of loop
+								if(isAttributeCategoryMatched)
+									break;
 									
 							}
 							entityInterface = childEntity;
 							containerInterface =(ContainerInterface) (childCategoryEntity.getContainerCollection()).iterator().next();
 							
 						}
-						
 						lastControl = categoryHelper.addOrUpdateControl(entityInterface, attributeName, containerInterface, ControlEnum
 								.get(categoryFileParser.getControlType()), categoryFileParser.getControlCaption(), permissibleValues);
 
@@ -341,6 +343,10 @@ public class CategoryGenerator
 				categoryHelper.associateCategoryEntities(category.getRootCategoryElement(), categoryEntity, associationName, 1, entityGroup,
 						entityNameAssociationMap.get(entityName), categoryPaths[0]);
 			}
+			CategoryValidator.checkForNullRefernce(entity.getAttributeByName(attributeName), "ERROR AT LINE:"
+					+ categoryFileParser.getLineNumber() + " ATTRIBUTE WITH NAME " + attributeName + " DOES NOT FOUND IN THE ENTITY "
+					+ entity.getName());
+			
 			//Added for category inheritance
 			boolean isParentAttribute = true;
 			Iterator attrIterator = entity.getAttributeCollection().iterator();
@@ -364,8 +370,9 @@ public class CategoryGenerator
 				CategoryEntityInterface childCategoryEntity = categoryEntity;
 				CategoryEntityInterface parentCategoryEntity = childCategoryEntity.getParentCategoryEntity();
 			
-				while(!isAttributeCategoryMatched && parentEntity!=null)
+				while(childEntity.getParentEntity()!=null)
 				{
+					parentEntity =childEntity.getParentEntity();
 					//check whether the given cat.entity's parent ce is created or not if not create it 
 					if(parentCategoryEntity == null)
 					{
@@ -379,7 +386,7 @@ public class CategoryGenerator
 						
 					//Iterate over parent entity's attribute ,check whether its present in parententity
 					Iterator parentattrIterator = parentEntity.getAttributeCollection().iterator();
-					while(!isAttributeCategoryMatched && parentattrIterator.hasNext())
+					while(parentattrIterator.hasNext())
 					{									
 						AttributeInterface objParentAttribute =  (AttributeInterface)  parentattrIterator.next();													
 						if(attributeName.equals(objParentAttribute.getName()))
@@ -390,9 +397,14 @@ public class CategoryGenerator
 						}
 																	
 					}
-					parentEntity = childEntity.getParentEntity();
+					childEntity = childEntity.getParentEntity();
 					childCategoryEntity = parentCategoryEntity;
-						
+					parentCategoryEntity = parentCategoryEntity.getParentCategoryEntity();
+					//If attribute found in parent categoryentity ,break out of loop
+					if(isAttributeCategoryMatched)
+						break;
+					
+					
 				}
 				entity = childEntity;
 				categoryEntity= childCategoryEntity;

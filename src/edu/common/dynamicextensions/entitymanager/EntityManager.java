@@ -667,7 +667,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	private Map<EntityInterface, Map> initialiseEntityValueMap(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue)
 	{
 		Map<EntityInterface, Map> entityMap = new HashMap<EntityInterface, Map>();
-
+		//Ensuring Null check in case of Category Inheritance
+		if (dataValue == null)
+		{
+			dataValue = new HashMap();
+		}
 		for (AbstractAttributeInterface abstractAttributeInterface : dataValue.keySet())
 		{
 			EntityInterface attributeEntity = abstractAttributeInterface.getEntity();

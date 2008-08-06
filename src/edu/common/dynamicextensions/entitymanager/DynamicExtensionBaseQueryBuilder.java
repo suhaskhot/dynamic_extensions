@@ -2808,6 +2808,13 @@ class DynamicExtensionBaseQueryBuilder
 					formattedvalue = null;
 				}
 			}
+			else if ( Variables.databaseName.equals(Constants.MYSQL_DATABASE) &&  attributeInformation instanceof BooleanAttributeTypeInformation)
+			{
+				if(formattedvalue.equals("false"))
+					formattedvalue ="0";
+				else
+					formattedvalue ="1";
+			}
 			
 			if(formattedvalue!=null)
 			{

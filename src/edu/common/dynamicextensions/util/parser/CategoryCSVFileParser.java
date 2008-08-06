@@ -187,7 +187,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 		boolean permissibleValuesPresent = false;
 		for (i = 0; i < nextLine.length; i++)
 		{
-			if (nextLine[i].toLowerCase().startsWith(PERMISSIBLE_VALUES)
+			if (nextLine[i].toLowerCase().startsWith(PERMISSIBLE_VALUES.toLowerCase())
 					|| nextLine[i].toLowerCase().startsWith(PERMISSIBLE_VALUES_FILE.toLowerCase()))
 			{
 				permissibleValuesPresent = true;

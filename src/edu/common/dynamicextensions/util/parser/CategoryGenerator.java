@@ -248,7 +248,8 @@ public class CategoryGenerator
 						//Check for isreadonly option
 						if (lastControl.getIsReadOnly())
 						{
-							((CategoryAttributeInterface) lastControl.getAttibuteMetadataInterface()).setIsVisible(false);
+							((CategoryAttributeInterface) lastControl.getAttibuteMetadataInterface()).setIsRelatedAttribute(true);
+							((CategoryAttributeInterface) lastControl.getAttibuteMetadataInterface()).setIsVisible(true);
 							category.addRelatedAttributeCategoryEntity((CategoryEntityInterface) containerInterface.getAbstractEntity());
 						}						
 
@@ -416,6 +417,7 @@ public class CategoryGenerator
 			categoryAttribute.setDefaultValue(entity.getAttributeByName(attributeName).getAttributeTypeInformation().getPermissibleValueForString(
 					defaultValue));
 			categoryAttribute.setIsVisible(false);
+			categoryAttribute.setIsRelatedAttribute(true);
 			category.addRelatedAttributeCategoryEntity(categoryEntity);
 
 			if (newCategoryCreated)

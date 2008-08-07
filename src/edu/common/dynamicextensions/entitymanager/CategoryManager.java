@@ -21,11 +21,13 @@ import org.hibernate.HibernateException;
 import edu.common.dynamicextensions.domain.BaseAbstractAttribute;
 import edu.common.dynamicextensions.domain.CategoryAttribute;
 import edu.common.dynamicextensions.domain.CategoryEntity;
+import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
@@ -493,9 +495,34 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 
 		for (CategoryAttributeInterface categoryAttribute : categoryAttributes)
 		{
-			if (categoryAttribute.getIsVisible() == null)
+			if (categoryAttribute.getIsRelatedAttribute()== null || categoryAttribute.getIsRelatedAttribute() == false)
 			{
 				return false;
+			}
+		}
+
+		return true;
+	}
+	
+	/**
+	 * This method is used to check whether all attributes are  invisible type related attribute or any one is related and visible or all are normal attribute
+	 * @param categoryEntity
+	 * @return
+	 */
+	private boolean isAllRelatedInvisibleCategoryAttributesCollection(CategoryEntityInterface categoryEntity)
+	{
+		Collection<CategoryAttributeInterface> categoryAttributes = categoryEntity.getAllCategoryAttributes(); 
+
+		for (CategoryAttributeInterface categoryAttribute : categoryAttributes)
+		{
+			if (categoryAttribute.getIsRelatedAttribute()== null || categoryAttribute.getIsRelatedAttribute() == false)
+			{
+				return false;
+			}
+			else if(categoryAttribute.getIsRelatedAttribute()== true && (categoryAttribute.getIsVisible()!=null && categoryAttribute.getIsVisible() == true))
+			{
+				return false;
+				
 			}
 		}
 
@@ -557,21 +584,26 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		categoryAttributes = categoryEntity.getCategoryAttributeCollection();		
 		for (CategoryAttributeInterface categoryAttribute : categoryAttributes)
 			{
-				if (categoryAttribute.getIsVisible() != null && categoryAttribute.getIsVisible() == false)
+				if (categoryAttribute.getIsRelatedAttribute() != null && categoryAttribute.getIsRelatedAttribute() == true)
 				{
 					String columnName = categoryAttribute.getAttribute().getColumnProperties().getName();
-	
-					if (columnNames.toString().length() > 0)
+					AttributeTypeInformationInterface attributeInformation = categoryAttribute.getAttribute().getAttributeTypeInformation();
+					//If attribute is  datetype whose default value is not getting set as  if its readonly so skip it,dont set in query 
+					if(!(attributeInformation instanceof DateAttributeTypeInformation && categoryAttribute.getDefaultValue() == null))
 					{
-						columnNames.append(", ");
-						columnValues.append(", ");
-						columnNamesValues.append(", ");
+						
+						if (columnNames.toString().length() > 0)
+						{
+							columnNames.append(", ");
+							columnValues.append(", ");
+							columnNamesValues.append(", ");
+						}
+						columnNames.append(columnName);
+						columnValues.append("'" + categoryAttribute.getDefaultValue() + "'");
+						columnNamesValues.append(columnName);
+						columnNamesValues.append(" = ");
+						columnNamesValues.append("'" + categoryAttribute.getDefaultValue() + "'");
 					}
-					columnNames.append(columnName);
-					columnValues.append("'" + categoryAttribute.getDefaultValue() + "'");
-					columnNamesValues.append(columnName);
-					columnNamesValues.append(" = ");
-					columnNamesValues.append("'" + categoryAttribute.getDefaultValue() + "'");
 				}
 			}
 		
@@ -1288,7 +1320,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			
 		}
 
-		if (!isAllRelatedCategoryAttributesCollection(categoryEntity))
+		if (!isAllRelatedInvisibleCategoryAttributesCollection(categoryEntity))
 		{
 			for (CategoryAttributeInterface categoryAttribute : categoryEntity.getAllCategoryAttributes())
 			{
@@ -1302,7 +1334,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		for (CategoryAssociationInterface categoryAssociation : categoryAssociationCollection)
 		{
 			CategoryEntityInterface targetCategoryEntity = categoryAssociation.getTargetCategoryEntity();
-			if (!isAllRelatedCategoryAttributesCollection(targetCategoryEntity) && (((CategoryEntity)targetCategoryEntity).isCreateTable()))
+			if (!isAllRelatedInvisibleCategoryAttributesCollection(targetCategoryEntity) && (((CategoryEntity)targetCategoryEntity).isCreateTable()))
 			{
 				categoryEntityTableName = targetCategoryEntity.getTableProperties().getName();
 
@@ -1423,7 +1455,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 				//add root cat entity and its parent category entity's attribute
 				for (CategoryAttributeInterface rootcategoryAttribute : rootCategoryEntity.getAllCategoryAttributes())
 				{
-					if((categoryAttribute == rootcategoryAttribute) && categoryAttribute.getIsVisible() == null)
+					if((categoryAttribute == rootcategoryAttribute) && (categoryAttribute.getIsRelatedAttribute() == null || categoryAttribute.getIsRelatedAttribute() == false))
 					{
 						rootEntityRecordsMap.put(abstractAttribute, entityValue);
 					}

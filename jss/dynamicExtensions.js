@@ -1954,6 +1954,11 @@ function listEltMoveDown(element)
 
 function setDateTimeControl(showTime, value)
 {
+	// Bugzilla Bug 8682 Date format mismatch in forms created from UI and forms are not getting saved.
+	// 'shouldUseTime' is variable in 'calendarComponent.js' file. It should be same as showTime when
+	// calendar changes from date only calendar to date&time calendar. 
+	shouldUseTime = showTime;
+	
     showDateTimeControl(showTime, '', 'attributeDefaultValue', value);
     showDateTimeControl(showTime, 'Min', 'min', value);
     showDateTimeControl(showTime, 'Max', 'max', value);

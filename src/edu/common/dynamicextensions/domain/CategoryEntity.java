@@ -78,7 +78,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	/**
 	 * 
 	 */
-	protected boolean isCreateTable = true;
+	protected Boolean isCreateTable = new Boolean(true);
 	/**
 	 *
 	 *
@@ -498,17 +498,17 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	}
 	/**
 	 * This method returns the create table
-	 * @hibernate.property name="isCreateTable" type="integer" column="IS_CREATETABLE"
+	 * @hibernate.property name="isCreateTable" type="boolean" column="IS_CREATETABLE"
 	 * @return the isCreateTable 
 	 */
-	public boolean isCreateTable()
+	public Boolean isCreateTable()
 	{
 		return isCreateTable;
 	}
 	/**
 	 * @param isTableCreated The isTableCreated to set.
 	 */
-	public void setCreateTable(boolean isTableCreated)
+	public void setCreateTable(Boolean isTableCreated)
 	{
 		this.isCreateTable = isTableCreated;
 	}

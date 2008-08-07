@@ -65,7 +65,11 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 			defaultValue = "";
 		}
 
-		String isDisabled = ((this.isReadOnly != null && this.isReadOnly) ? ",disabled:'"+ProcessorConstants.TRUE+"'" :	"");
+		String isDisabled = "";
+		if((this.isReadOnly != null && this.isReadOnly))
+		{
+			isDisabled =",disabled:'"+ProcessorConstants.TRUE+"'"; 
+		}
 
 		String htmlString = "<script>Ext.onReady(function(){ " + "var myUrl= 'ComboDataAction.do?controlId= " + this.getId()
 				+ "~containerIdentifier=" + +this.getParentContainer().getId() + "';" + "var ds = new Ext.data.Store({"
@@ -82,7 +86,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 				+ "reader: new Ext.data.JsonReader({root: 'row',totalProperty: 'totalCount',id: 'id'}, "
 				+ "[{name: 'excerpt', mapping: 'field'}])});" + "var combo = new Ext.form.ComboBox({store: ds,displayField:'excerpt',"
 				+ "typeAhead: true,width:200,pageSize:15,forceSelection: true,queryParam : 'query',"
-				+ "mode: 'remote',triggerAction: 'all',minChars : 1," + isDisabled + ",emptyText:'" + defaultValue + "',"
+				+ "mode: 'remote',triggerAction: 'all',minChars : 1" + isDisabled + ",emptyText:'" + defaultValue + "',"
 				+ "selectOnFocus:true,applyTo: '" + getHTMLComponentName() + "'});});" + "</div>" + "<div name=\"comboHtml\" style='display:none'>"
 				+ "<div>" + "<input type='text' id='" + getHTMLComponentName() + "' " + " name='" + getHTMLComponentName()
 				+ "' size='20' class='font_bl_nor' />" + "</div>" + "</div>" + "</div>";

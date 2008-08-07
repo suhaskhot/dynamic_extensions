@@ -71,5 +71,16 @@ public interface CategoryAttributeInterface extends BaseAbstractAttributeInterfa
 	 * 
 	 */
 	public void setIsVisible(Boolean isVisible);
+	
+	/**
+	 * 
+	 */
+	public Boolean getIsRelatedAttribute();
+	
+	/**
+	 * 
+	 */
+	public void setIsRelatedAttribute(Boolean isRelatedAttribute);
 
+	
 }

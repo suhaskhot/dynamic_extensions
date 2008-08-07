@@ -64,6 +64,11 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	 * 
 	 */
 	protected Boolean isVisible;
+	/**
+	 * 
+	 */
+	protected Boolean isRelatedAttribute;
+
 
 	public CategoryAttribute()
 	{
@@ -334,5 +339,23 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	{
 		this.isVisible = isVisible;
 	}
+	/**
+	* @hibernate.property name="isRelatedAttribute" type="boolean" column="IS_RELATTRIBUTE"
+	*/
+	public Boolean getIsRelatedAttribute()
+	{
+		return isRelatedAttribute;
+	}
+
+	/**
+	 * @param isRelatedAttribute the isRelatedAttribute to set
+	 */
+	public void setIsRelatedAttribute(Boolean isRelatedAttribute)
+	{
+		this.isRelatedAttribute = isRelatedAttribute;
+	}
+
 
 }
+
+

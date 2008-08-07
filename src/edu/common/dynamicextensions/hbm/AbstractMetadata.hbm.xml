@@ -576,6 +576,13 @@
             insert="true"
             column="IS_VISIBLE"
         />
+        <property
+            name="isRelatedAttribute"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="IS_RELATTRIBUTE"
+        />
 
         </joined-subclass>
         <joined-subclass

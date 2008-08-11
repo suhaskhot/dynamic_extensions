@@ -36,7 +36,7 @@ public class DateRangeValidator implements ValidatorRuleInterface
 
 		/* Check for the validity of the date */
 		DateValidator dateValidator = new DateValidator();
-		dateValidator.validate(attribute, valueObject, parameterMap,controlCaption);
+		dateValidator.validate(attribute, valueObject, parameterMap,controlCaption, true);
 
 		AttributeTypeInformationInterface attributeTypeInformation = attribute
 				.getAttributeTypeInformation();

@@ -486,6 +486,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				allValidationRules.add(validationRules[i]);
 			}
 		}
+		
+		if (allValidationRules.contains("date") && allValidationRules.contains("dateRange"))
+		{
+			allValidationRules.remove("date");
+		}
 
 		Collection<RuleInterface> attributeRuleCollection = abstractAttributeInterface.getRuleCollection();
 		if (attributeRuleCollection != null && !(attributeRuleCollection.isEmpty()))

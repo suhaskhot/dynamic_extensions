@@ -102,6 +102,7 @@ public class DatePicker extends Control implements DatePickerInterface
 					+ htmlComponentName
 					+ "' value='"
 					+ defaultValue
+					+"'"
 					+ ((this.isReadOnly != null && this.isReadOnly) ? " disabled='" + ProcessorConstants.TRUE : "")
 					+ "/>"
 					+ "<A onclick=\"showCalendar('"

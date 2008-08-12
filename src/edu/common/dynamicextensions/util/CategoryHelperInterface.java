@@ -212,4 +212,11 @@ public interface CategoryHelperInterface
 			CategoryEntityInterface targetCategoryEntity, String name, int numberOfentries, EntityGroupInterface entityGroup,
 			List<AssociationInterface> associationList, String instance) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException;
+	
+	/**
+	 * @param control
+	 * @param controlType
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public void setDefaultControlsOptions(ControlInterface control,ControlEnum controlType) throws DynamicExtensionsSystemException;
 }

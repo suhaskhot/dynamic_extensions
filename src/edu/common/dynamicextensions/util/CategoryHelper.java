@@ -46,6 +46,7 @@ import edu.common.dynamicextensions.entitymanager.CategoryManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
+import edu.common.dynamicextensions.util.CategoryHelperInterface.ControlEnum;
 
 /**
  * @author kunal_kamble
@@ -981,5 +982,73 @@ public class CategoryHelper implements CategoryHelperInterface
 		}
 		return associationControl;
 	}
+	/**
+	 * @param control
+	 * @param controlType
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public void setDefaultControlsOptions(ControlInterface control,ControlEnum controlType) throws DynamicExtensionsSystemException
+	{
+		try
+		{
+			
+			switch (controlType)
+			{
+				case TEXT_FIELD_CONTROL :
+					TextFieldInterface textField = (TextFieldInterface) control;
+					textField.setIsHidden(false);
+					textField.setIsPassword(false);
+					textField.setIsReadOnly(false);
+					textField.setIsUrl(false);
+					break;
+				case LIST_BOX_CONTROL :
+					SelectInterface selectControl = (SelectInterface) control;
+					selectControl.setIsHidden(false);
+					selectControl.setIsReadOnly(false);
+					break;					
+				case COMBO_BOX_CONTROL :
+					SelectInterface comboControl = (SelectInterface) control;
+					comboControl.setIsHidden(false);
+					comboControl.setIsReadOnly(false);
+					break;
+				case DATE_PICKER_CONTROL :
+					DatePickerInterface datePickerControl = (DatePickerInterface)control;
+					datePickerControl.setIsHidden(false);
+					datePickerControl.setIsReadOnly(false);
+					datePickerControl.setDateValueType(null);
+					break;
+				case FILE_UPLOAD_CONTROL :
+					FileUploadInterface fileUploadControl = (FileUploadInterface) control;
+					fileUploadControl.setIsHidden(false);
+					fileUploadControl.setIsReadOnly(false);
+					break;
+				case TEXT_AREA_CONTROL :
+					TextAreaInterface textAreaControl = (TextAreaInterface)control;
+					textAreaControl.setIsHidden(false);
+					textAreaControl.setIsReadOnly(false);
+					textAreaControl.setIsPassword(false);
+					break;
+				case RADIO_BUTTON_CONTROL :
+					RadioButtonInterface radioButtonControl = (RadioButtonInterface)control;
+					radioButtonControl.setIsReadOnly(false);
+					radioButtonControl.setIsHidden(false);
+					break;
+				case CHECK_BOX_CONTROL :
+					CheckBoxInterface checkboxControl = (CheckBoxInterface)control;
+					checkboxControl.setIsReadOnly(false);
+					checkboxControl.setIsHidden(false);
+					break;
+			
+			
+			}
+		}
+		catch (Exception e)
+		{
+			throw new DynamicExtensionsSystemException("Please conatct administartor", e);
+		}
+		
+
+	}
+
 
 }

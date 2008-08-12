@@ -1423,7 +1423,7 @@ public class DynamicExtensionsUtility
 					.getCategoryAssociationCollection())
 			{
 				CategoryEntity objCEntity = (CategoryEntity) categoryAssociationInterface.getTargetCategoryEntity();
-				if(objCEntity.isCreateTable())
+				if(objCEntity!=null && objCEntity.isCreateTable())
 				if(!objCategoryMap.containsKey(categoryAssociationInterface.getTargetCategoryEntity().getName()))
 				getUnsavedCategoryEntityList(categoryAssociationInterface.getTargetCategoryEntity(), objCategoryMap);
 			}
@@ -1467,7 +1467,7 @@ public class DynamicExtensionsUtility
 			for (CategoryAssociationInterface categoryAssociationInterface : categoryEntity.getCategoryAssociationCollection())
 			{
 				CategoryEntity objCEntity = (CategoryEntity) categoryAssociationInterface.getTargetCategoryEntity();
-				if(objCEntity.isCreateTable() && objCEntity.getId()!=null)
+				if(objCEntity!=null && objCEntity.isCreateTable() && objCEntity.getId()!=null)
 				if(!objCategoryMap.containsKey(categoryAssociationInterface.getTargetCategoryEntity().getName()))
 				getSavedCategoryEntityList(categoryAssociationInterface.getTargetCategoryEntity(),objCategoryMap);
 			}

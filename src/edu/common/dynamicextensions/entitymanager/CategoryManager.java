@@ -622,7 +622,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 
 		for (CategoryAssociationInterface categoryAssociation : categoryAssociations)
 		{
-			if (categoryAssociation.getTargetCategoryEntity().equals(categoryEntity))
+			if (categoryAssociation.getTargetCategoryEntity()!=null && categoryAssociation.getTargetCategoryEntity().equals(categoryEntity))
 			{
 				return categoryAssociation;
 			}
@@ -1334,7 +1334,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		for (CategoryAssociationInterface categoryAssociation : categoryAssociationCollection)
 		{
 			CategoryEntityInterface targetCategoryEntity = categoryAssociation.getTargetCategoryEntity();
-			if (!isAllRelatedInvisibleCategoryAttributesCollection(targetCategoryEntity) && (((CategoryEntity)targetCategoryEntity).isCreateTable()))
+			if (targetCategoryEntity!=null && !isAllRelatedInvisibleCategoryAttributesCollection(targetCategoryEntity) && (((CategoryEntity)targetCategoryEntity).isCreateTable()))
 			{
 				categoryEntityTableName = targetCategoryEntity.getTableProperties().getName();
 

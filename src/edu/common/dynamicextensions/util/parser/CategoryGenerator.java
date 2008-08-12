@@ -242,7 +242,12 @@ public class CategoryGenerator
 						}
 						lastControl = categoryHelper.addOrUpdateControl(entityInterface, attributeName, containerInterface, ControlEnum
 								.get(categoryFileParser.getControlType()), categoryFileParser.getControlCaption(), permissibleValues);
-
+						
+						//set default value to attribute's IsRelatedAttribute and IsVisible property-Its required incase of CategoryEntity Edit
+						((CategoryAttributeInterface) lastControl.getAttibuteMetadataInterface()).setIsRelatedAttribute(false);
+						((CategoryAttributeInterface) lastControl.getAttibuteMetadataInterface()).setIsVisible(true);
+						//Set default value to control's option -Its required incase of CategoryEntity Edit
+						categoryHelper.setDefaultControlsOptions(lastControl,ControlEnum.get(categoryFileParser.getControlType()));
 						setControlsOptions(lastControl);
 						setDefaultValue(lastControl);
 						//Check for isreadonly option
@@ -474,7 +479,7 @@ public class CategoryGenerator
 
 		return containerInterface;
 	}
-
+	
 	/**
 	 * @param control
 	 * @param nextLine

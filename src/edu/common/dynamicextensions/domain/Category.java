@@ -85,13 +85,15 @@ public class Category extends AbstractMetadata implements CategoryInterface
     	{
     		if(categoryEntityInterface.getName().equals(categoryEntityName))
     		{
-    			searchedCategoryEntity =  categoryEntityInterface;
-    			break;
+    			return categoryEntityInterface;
     		}
     		
     		if(categoryEntityInterface.getChildCategories().size() > 0)
     		{
     			searchedCategoryEntity =  getCategoryEntity(categoryEntityInterface, categoryEntityName);
+    			if(searchedCategoryEntity!=null)
+    				break;
+    			
     		}
     		
     	}

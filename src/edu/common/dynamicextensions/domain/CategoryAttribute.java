@@ -43,7 +43,7 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	/**
 	 *
 	 */
-	protected Set<RuleInterface> ruleCollection = null;
+	protected Set<RuleInterface> ruleCollection = new HashSet<RuleInterface>();
 
 	/**
 	 *
@@ -184,15 +184,17 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 		this.dataElementCollection.add(dataElementInterface);
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface#getRuleCollection()
+	/**
+	 * This method returns the Collection of rules.
+	 * @hibernate.set name="ruleCollection" table="DYEXTN_RULE"
+	 * cascade="save-update" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="CATEGORY_ATTR_ID"
+	 * @hibernate.cache usage="read-write"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.validationrules.Rule"
+	 * @return Collection the ruleCollection associated with the Attribute.
 	 */
 	public Set<RuleInterface> getRuleCollection()
 	{
-		if (ruleCollection == null)
-		{
-			return (Set<RuleInterface>) this.attribute.getRuleCollection();
-		}
 		return ruleCollection;
 	}
 
@@ -355,7 +357,4 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 		this.isRelatedAttribute = isRelatedAttribute;
 	}
 
-
 }
-
-

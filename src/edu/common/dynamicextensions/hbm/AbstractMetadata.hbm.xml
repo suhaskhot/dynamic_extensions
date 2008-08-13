@@ -527,6 +527,27 @@
                   class="edu.common.dynamicextensions.domain.DataElement"
               />
         </set>
+        
+        <set
+            name="ruleCollection"
+            table="DYEXTN_RULE"
+            lazy="false"
+            inverse="false"
+            cascade="save-update"
+            sort="unsorted"
+        >
+            <cache 
+                usage="read-write" 
+             />
+
+              <key
+                  column="CATEGORY_ATTR_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.validationrules.Rule"
+              />
+        </set>
 
         <many-to-one
             name="attribute"

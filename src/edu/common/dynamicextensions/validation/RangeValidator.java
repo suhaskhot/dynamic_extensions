@@ -44,6 +44,8 @@ public class RangeValidator implements ValidatorRuleInterface
 
 		/* Check for the validity of the number */
 		NumberValidator numberValidator = new NumberValidator();
+		//Quick fix 
+		if(valueObject!=null)
 		numberValidator.validate(attribute, valueObject, parameterMap, controlCaption);
 
 		/* Check for the validity of the range of the number against the predefined range*/

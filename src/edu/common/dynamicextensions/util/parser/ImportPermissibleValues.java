@@ -5,13 +5,18 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
+import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
@@ -88,8 +93,8 @@ public class ImportPermissibleValues
 
 					String attributeName = categoryCSVFileParser.getAttributeName();
 
-					List<String> pvList = categoryCSVFileParser.getPermissibleValues();
-					List<String> finalPvList = new ArrayList<String>();
+					Map<String,Collection<SemanticPropertyInterface>> pvList = categoryCSVFileParser.getPermissibleValues();
+					Map<String,Collection<SemanticPropertyInterface>> finalPvList = new HashMap<String,Collection<SemanticPropertyInterface>>();
 
 					CategoryValidator.checkForNullRefernce(currentEntity.getAttributeByName(attributeName)," ERROR AT LINE:" + categoryCSVFileParser.getLineNumber() + " ATTRIBUTE WITH NAME " + attributeName + " DOES NOT EXIST");
 
@@ -115,12 +120,12 @@ public class ImportPermissibleValues
 						{
 							list.add(permissibleValue.getValueAsObject().toString());
 						}
-
-						for (String string : pvList)
+						Set<String> pvListKeySet = pvList.keySet();
+						for (String string : pvListKeySet)
 						{
 							if (!list.contains(string))
 							{
-								finalPvList.add(string);
+								finalPvList.put(string, pvList.get(string));
 							}
 						}
 					}

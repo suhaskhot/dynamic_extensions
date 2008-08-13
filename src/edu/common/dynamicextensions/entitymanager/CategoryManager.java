@@ -39,6 +39,7 @@ import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PathInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
+import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -1565,7 +1566,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.entitymanager.CategoryManagerInterface#isPermissibleValuesSubsetValid(edu.common.dynamicextensions.domaininterface.AttributeInterface, java.util.List)
 	 */
-	public boolean isPermissibleValuesSubsetValid(UserDefinedDEInterface userDefinedDE, List<String> desiredPermissibleValues)
+	public boolean isPermissibleValuesSubsetValid(UserDefinedDEInterface userDefinedDE, Map<String,Collection<SemanticPropertyInterface>> desiredPermissibleValues)
 	{
 		boolean arePermissibleValuesCorrect = true;
 
@@ -1577,12 +1578,15 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			{
 				attributePermissibleValues.add(pv.getValueAsObject().toString());
 			}
-
-			for (String s : desiredPermissibleValues)
+			if(desiredPermissibleValues != null)
 			{
-				if (!attributePermissibleValues.contains(s))
+				Set<String> permissibleValueString = desiredPermissibleValues.keySet();
+				for (String s : permissibleValueString)
 				{
-					arePermissibleValuesCorrect = false;
+					if (!attributePermissibleValues.contains(s))
+					{
+						arePermissibleValuesCorrect = false;
+					}
 				}
 			}
 		}

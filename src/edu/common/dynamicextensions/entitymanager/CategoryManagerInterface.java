@@ -2,12 +2,14 @@
 package edu.common.dynamicextensions.entitymanager;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
+import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -93,7 +95,7 @@ public interface CategoryManagerInterface
 	 * @param desiredPermissibleValues
 	 * @return true or false depending on valid permissible values subset
 	 */
-	public boolean isPermissibleValuesSubsetValid(UserDefinedDEInterface userDefinedDE, List<String> desiredPermissibleValues);
+	public boolean isPermissibleValuesSubsetValid(UserDefinedDEInterface userDefinedDE, Map<String,Collection<SemanticPropertyInterface>> desiredPermissibleValues);
 	
 	
 

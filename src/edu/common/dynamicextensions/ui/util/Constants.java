@@ -50,4 +50,9 @@ public class Constants
 	public static final int FLOAT_PRECISION = 6;
 	public static final int DOUBLE_PRECISION = 15;
 	public static final int ZERO = 0;
+	
+	public static final String CONCEPT_CODE = "Concept_Code";
+	public static final String CONCEPT_DEFINITION = "Concept_Definition";
+	public static final String DEFINITION_SOURCE = "Definition_Source";
+	public static final String PREFERRED_NAME = "Preferred_Name";
 }

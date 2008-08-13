@@ -2,7 +2,9 @@
 package edu.common.dynamicextensions.util;
 
 import java.text.ParseException;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
@@ -14,6 +16,7 @@ import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PathInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
+import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CategoryAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
@@ -114,7 +117,7 @@ public interface CategoryHelperInterface
 	 * @throws DynamicExtensionsSystemException 
 	 */
 	public ControlInterface addOrUpdateControl(EntityInterface entity, String attributeName, ContainerInterface container, ControlEnum controlType,
-			String controlCaption, List<String>... permissibleValues) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
+			String controlCaption, Map<String,Collection<SemanticPropertyInterface>>... permissibleValues) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
 	 * This method is used when there is inheritance between two entities.
@@ -161,7 +164,7 @@ public interface CategoryHelperInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public List<PermissibleValueInterface> createPermissibleValuesList(EntityInterface entity, String attributeName,
-			List<String> desiredPermissibleValues) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
+			Map<String,Collection<SemanticPropertyInterface>> desiredPermissibleValues) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
 	 * @param path
@@ -178,7 +181,7 @@ public interface CategoryHelperInterface
 	 * @throws ParseException
 	 */
 	public List<PermissibleValueInterface> getPermissibleValueList(AttributeTypeInformationInterface attributeTypeInformation,
-			List<String> desiredPermissibleValues) throws DynamicExtensionsSystemException, ParseException;
+			Map<String,Collection<SemanticPropertyInterface>> desiredPermissibleValues) throws DynamicExtensionsSystemException, ParseException;
 
 	/**
 	 * @param category

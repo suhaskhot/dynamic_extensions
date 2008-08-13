@@ -2,9 +2,11 @@
 package edu.common.dynamicextensions.util.parser;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.FileReader;
 import edu.common.dynamicextensions.validation.category.CategoryValidator;
@@ -96,7 +98,7 @@ public abstract class CategoryFileParser extends FileReader
 	 * @return list of prmissible values
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public abstract List<String> getPermissibleValues() throws DynamicExtensionsSystemException;
+	public abstract Map<String,Collection<SemanticPropertyInterface>> getPermissibleValues() throws DynamicExtensionsSystemException;
 
 	/**
 	 * @return 

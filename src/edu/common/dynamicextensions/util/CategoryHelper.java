@@ -3,7 +3,10 @@ package edu.common.dynamicextensions.util;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import edu.common.dynamicextensions.domain.Category;
 import edu.common.dynamicextensions.domain.CategoryAssociation;
@@ -11,6 +14,7 @@ import edu.common.dynamicextensions.domain.CategoryAttribute;
 import edu.common.dynamicextensions.domain.CategoryEntity;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
+import edu.common.dynamicextensions.domain.PermissibleValue;
 import edu.common.dynamicextensions.domain.UserDefinedDE;
 import edu.common.dynamicextensions.domain.userinterface.ComboBox;
 import edu.common.dynamicextensions.domain.userinterface.Container;
@@ -28,6 +32,7 @@ import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PathInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
+import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CategoryAssociationControlInterface;
@@ -146,7 +151,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @see edu.common.dynamicextensions.categoryManager.CategoryHelperInterface#addControl(edu.common.dynamicextensions.domaininterface.AttributeInterface, edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface, edu.common.dynamicextensions.categoryManager.CategoryHelperInterface.ControlEnum, java.util.List<edu.common.dynamicextensions.domaininterface.PermissibleValueInterface>[])
 	 */
 	public ControlInterface addOrUpdateControl(EntityInterface entity, String attributeName, ContainerInterface container, ControlEnum controlType,
-			String controlCaption, List<String>... permissibleValueList) throws DynamicExtensionsApplicationException,
+			String controlCaption, Map<String,Collection<SemanticPropertyInterface>>... permissibleValueList) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException
 	{
 		if (controlType == null)
@@ -157,7 +162,7 @@ public class CategoryHelper implements CategoryHelperInterface
 		CategoryAttributeInterface categoryAttribute = createOrupdateCategoryAttribute(entity, attributeName, container);
 
 		ControlInterface control = null;
-		List<String> permissibleValueNameList = (permissibleValueList.length == 0 ? null : permissibleValueList[0]);
+		Map<String,Collection<SemanticPropertyInterface>> permissibleValueNameList = (permissibleValueList.length == 0 ? null : permissibleValueList[0]);
 		control = createOrUpdateControl(controlType, controlCaption, container, categoryAttribute, permissibleValueNameList);
 		control.setCaption(controlCaption);
 
@@ -212,7 +217,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
 	private ControlInterface createOrUpdateControl(ControlEnum controlType, String controlCaption, ContainerInterface container,
-			CategoryAttributeInterface categoryAttribute, List<String> permissibleValueNameList) throws DynamicExtensionsApplicationException,
+			CategoryAttributeInterface categoryAttribute, Map<String,Collection<SemanticPropertyInterface>> permissibleValueNameList) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException
 	{
 		ControlInterface control = null;
@@ -857,7 +862,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public List<PermissibleValueInterface> createPermissibleValuesList(EntityInterface entity, String attributeName,
-			List<String> desiredPermissibleValues) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+			Map<String,Collection<SemanticPropertyInterface>> desiredPermissibleValues) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		List<PermissibleValueInterface> permissibleValues = null;
 
@@ -891,7 +896,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @return
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private List<PermissibleValueInterface> getSubsetOfPermissibleValues(AttributeInterface attributeInterface, List<String> desiredPermissibleValues)
+	private List<PermissibleValueInterface> getSubsetOfPermissibleValues(AttributeInterface attributeInterface, Map<String,Collection<SemanticPropertyInterface>> desiredPermissibleValues)
 			throws DynamicExtensionsApplicationException
 	{
 		List<PermissibleValueInterface> permissibleValues = new ArrayList<PermissibleValueInterface>();
@@ -912,9 +917,13 @@ public class CategoryHelper implements CategoryHelperInterface
 			permissibleValues = new ArrayList<PermissibleValueInterface>();
 			for (PermissibleValueInterface pv : userDefinedDE.getPermissibleValueCollection())
 			{
-				if (desiredPermissibleValues.contains(pv.getValueAsObject().toString()))
+				if(desiredPermissibleValues != null)
 				{
-					permissibleValues.add(pv);
+					Set<String> permissibleValueString = desiredPermissibleValues.keySet();
+					if (permissibleValueString.contains(pv.getValueAsObject().toString()))
+					{
+						permissibleValues.add(pv);
+					}
 				}
 			}
 		}
@@ -937,16 +946,23 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @throws ParseException
 	 */
 	public List<PermissibleValueInterface> getPermissibleValueList(AttributeTypeInformationInterface attributeTypeInformation,
-			List<String> desiredPermissibleValues) throws DynamicExtensionsSystemException, ParseException
+			Map<String,Collection<SemanticPropertyInterface>> desiredPermissibleValues) throws DynamicExtensionsSystemException, ParseException
 	{
 
 		List<PermissibleValueInterface> permissibleValues = new ArrayList<PermissibleValueInterface>();
-		PermissibleValueInterface permissibleValueInterface = null;
-
-		for (String value : desiredPermissibleValues)
+		PermissibleValue permissibleValueInterface = null;
+		if(desiredPermissibleValues != null)
 		{
-			permissibleValueInterface = attributeTypeInformation.getPermissibleValueForString(value);
-			permissibleValues.add(permissibleValueInterface);
+			Set<String> permissibleValuString = desiredPermissibleValues.keySet();
+			
+			for (String value : permissibleValuString)
+			{
+				permissibleValueInterface = (PermissibleValue)attributeTypeInformation.getPermissibleValueForString(value);
+				
+				permissibleValueInterface.setSemanticPropertyCollection(desiredPermissibleValues.get(value));
+				
+				permissibleValues.add(permissibleValueInterface);
+			}
 		}
 		return permissibleValues;
 	}

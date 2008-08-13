@@ -23,10 +23,18 @@ function showBuildFormJSP()
 function saveFormDetails()
 {
     document.getElementById('operation').value='saveForm';
+    setWaitCursorforAllObjectHierarchy();
     var formDefinitionForm = document.getElementById('formDefinitionForm');
     formDefinitionForm.submit();
 }
-
+function saveFormDetailsOnKeyDown(evt)
+{
+	var evt = evt || window.event;
+	if(evt && evt.keyCode == 13)
+	{
+		saveFormDetails();
+	}
+}
 function controlSelectedAction()
 {
     clearControlAttributes();
@@ -132,13 +140,13 @@ function closeWindow()
 function showNextActionConfirmDialog()
 {
     var  url="/dynamicExtensions/pages/confirmNextActionDialog.jsp";
-	//for bug 5933 
+	//for bug 5933
 	if(navigator.userAgent.indexOf("Firefox")!= -1 )
 	{
 		var windowProperties = "height=200,width=350,top=300,left=350,chrome,centerscreen,dependent=YES, dialog=YES,modal=YES,resizable=NO,scrollbars=NO, location=0,status=0,menubar=0,toolbar=0";
 		window.open(url, window, windowProperties);
 	}
-	else 
+	else
     {
         var modalDialogProperties = "dialogHeight: 200px; dialogWidth: 350px; dialogTop: 300px; dialogLeft: 350px;  center: Yes; resizable: 0;  minimize: NO; status: 0; toolbar:0;";
         window.showModalDialog(url,window,modalDialogProperties);
@@ -182,7 +190,7 @@ function dataFldDataTypeChanged(datatypeControl)
 				document.getElementById("rowForNumberOfLines").style.display ="none";
 			}
 		}
-		
+
 		if(divForDataType!=null)
 		{
 			//alert(document.getElementById('controlOperation').value);
@@ -234,7 +242,7 @@ function clearTextValues()
 	{
 		document.forms[0].attributeIsPassword.checked = false;
 	}
-	
+
 }
 
 function clearNumberValues()
@@ -251,7 +259,7 @@ function clearNumberValues()
 	{
 		document.forms[0].attributeIsPassword.checked = false;
 	}
-	
+
 }
 
 function insertRules(datatypeControl)
@@ -577,7 +585,29 @@ function clearControlAttributes()
 
     clearSelectedAttributesList();
 }
+function setWaitCursorforAllObjectHierarchy()
+{
+	var dv = document.getElementById('waitcursorDiv');
+	if (dv == null) {
+		dv = document.createElement('DIV');
+		dv.setAttribute('name','waitcursorDiv');
+		dv.setAttribute('id','waitcursorDiv');
+		dv.setAttribute('className','transparent');
+		document.body.appendChild(dv);
+	}
+	//var elem = doc.getElementById('waitcursorDiv');
+	//elem.style.display = "block";
+	dv.style.display = "block";
+}
 
+function resetWaitCursor()
+{
+	var dv = document.getElementById('waitcursorDiv');
+	 if (dv!= null)
+	 {
+		dv.style.display = "none";
+	 }
+}
 function saveEntity()
 {
 	var entitySaved = document.getElementById('entitySaved');
@@ -588,6 +618,7 @@ function saveEntity()
 	var controlsForm = document.getElementById('controlsForm');
 	if(controlsForm!=null)
 	{
+	    setWaitCursorforAllObjectHierarchy();
 		controlsForm.action="/dynamicExtensions/SaveEntityAction.do";
 		controlsForm.submit();
 	}
@@ -1009,6 +1040,7 @@ function saveGroup()
 	}
 	if(groupForm!=null)
 	{
+		setWaitCursorforAllObjectHierarchy();
 		groupForm.action = "/dynamicExtensions/ApplyGroupDefinitionAction.do";
 		groupForm.submit();
 	}
@@ -1175,9 +1207,9 @@ function groupChangedResponse(formNameListXML)
                     if((optionName != null)&&(optionValue != null))
                     {
                           var oOption = document.createElement("OPTION");
-                           htmlFormNameList.options.add(oOption,htmlFormNameList.options.length+1); 
+                           htmlFormNameList.options.add(oOption,htmlFormNameList.options.length+1);
                  //       htmlFormNameList.options[htmlFormNameList.options.length] = new Option (optionName,optionValue);
-                                             
+
                        if(window.ActiveXObject)
                         {
                             oOption.text=optionName;
@@ -1395,11 +1427,11 @@ function addRow(containerId)
     var newRow = table.insertRow(-1);
     if(counter%2==0)
 	{
-		newRow.className="td_color_f0f2f6";	
+		newRow.className="td_color_f0f2f6";
 	}
 	else
-	{	
-		newRow.className="formField_withoutBorder";	
+	{
+		newRow.className="formField_withoutBorder";
 	}
     var cells = rowTobeCopied.cells;
     for(i = 0 ; i < cells.length ; i++)
@@ -1419,7 +1451,7 @@ function addRow(containerId)
     currentRowCounter1 = currentRowCounter.value;
     document.getElementById(hiddenVar).value = parseInt(currentRowCounter1) + 1;
 
-	var x = document.getElementsByTagName("script"); 
+	var x = document.getElementsByTagName("script");
 	var RegularExpression  =  new RegExp("\^print");
 
     for(var i=0;i<x.length;i++)
@@ -1494,7 +1526,7 @@ function removeCheckedRow(containerId)
                         {
                             str = str + ")";
                         }
-						
+
 						if (document.getElementById(childObjectName) == null)
 						{
 							var controlValue = childNode.value;
@@ -1503,7 +1535,7 @@ function removeCheckedRow(containerId)
 						{
 							var controlValue = document.getElementById(childObjectName).value;
 						}
-						 
+
 						cell.innerHTML = replaceAll(cell.innerHTML,childObjectName,str);
 						if (document.getElementById(childObjectName) == null)
 						{
@@ -1555,7 +1587,7 @@ function setDefaultValues(tableId, obj)
     {
         var childObject = children[j];
         childObjectName = childObject.name;
-		
+
         if (childObjectName != null && childObjectName.indexOf('_')!= -1)
         {
             if (childObjectName.indexOf(')')!= -1)
@@ -1569,7 +1601,7 @@ function setDefaultValues(tableId, obj)
                 str = childObjectName + "_" + rowIndex;
             }
 			obj.innerHTML = replaceAll(obj.innerHTML,childObjectName,str);
-			
+
         }
 
 		if("auto_complete_dropdown" == childObject.id )
@@ -1578,11 +1610,11 @@ function setDefaultValues(tableId, obj)
 
 			var oldName  = childNodes2[2].childNodes[0].childNodes[0].name;
 			var newName = oldName + "_" +rowIndex;
-		
+
 			var newScript = replaceAll(childNodes2[1].innerHTML,oldName,newName);
-		
+
 			obj.innerHTML =replaceAll(childNodes2[2].innerHTML,oldName,newName);
-		
+
 			eval(newScript);
 
 		}
@@ -1735,12 +1767,12 @@ function treeNodeSelectedResponse(formNameListXML)
 				}
 			}
 		}
-		
+
 		if((htmlParentEntity!=null)&&(parentEntityName!=null))
 		{
 			htmlParentEntity.value= getElementText(parentEntityName[0]);
 		}
-		
+
 	}
 }
 
@@ -1748,11 +1780,11 @@ function getElementText(element)
 {
 	var elementText = "";
 	if(window.ActiveXObject)
-	{	
+	{
 		elementText = element.text;
 	}
 	else
-	{	
+	{
 		if(element.firstChild != null){
 			elementText = element.firstChild.nodeValue;
 		}else{
@@ -1765,7 +1797,7 @@ function getElementText(element)
 
 function insertDataForContainer(containerId)
 {
-  
+
     alert("page to insert date for contianerId" + containerId);
 }
 
@@ -1956,9 +1988,9 @@ function setDateTimeControl(showTime, value)
 {
 	// Bugzilla Bug 8682 Date format mismatch in forms created from UI and forms are not getting saved.
 	// 'shouldUseTime' is variable in 'calendarComponent.js' file. It should be same as showTime when
-	// calendar changes from date only calendar to date&time calendar. 
+	// calendar changes from date only calendar to date&time calendar.
 	shouldUseTime = showTime;
-	
+
     showDateTimeControl(showTime, '', 'attributeDefaultValue', value);
     showDateTimeControl(showTime, 'Min', 'min', value);
     showDateTimeControl(showTime, 'Max', 'max', value);
@@ -2059,7 +2091,7 @@ function trim( value )
 
 //for textArea Max length
 function textCounter( field,  maxlimit )
-{	
+{
   //bug id :7778
   //Fixed by : prashant
   //reviewed by : kunal
@@ -2079,7 +2111,7 @@ function textCounter( field,  maxlimit )
      alert( 'Input value can be '+  maxlimit + ' characters maximum in length.' );
   }
  }
- 
+
 //for resetting the parent timeout counter
 
 function resetTimeoutCounter()
@@ -2091,5 +2123,5 @@ function resetTimeoutCounter()
 		{
 			window.parent.lastRefreshTime = new Date().getTime();
 		}
-	}	
+	}
 }

@@ -12,7 +12,7 @@
 <html>
 	<c:set var="currentEntityXML" value="${formDefinitionForm.currentEntityTreeXML}"/>
 	<jsp:useBean id="currentEntityXML" type="java.lang.String"/>
-	
+
 	<c:set var="definedEntitiesTreeXML" value="${formDefinitionForm.definedEntitiesTreeXML}"/>
 	<jsp:useBean id="definedEntitiesTreeXML" type="java.lang.String"/>
 
@@ -20,7 +20,7 @@
 		<title>Dynamic Extensions</title>
 		<link rel="stylesheet" type="text/css" href="css/styleSheet.css"/>
 		<link rel="STYLESHEET" type="text/css" href="dhtml_comp/css/dhtmlXTree.css"/>
-	
+
 		<script src="jss/dynamicExtensions.js" type="text/javascript"></script>
 		<script src="jss/script.js" type="text/javascript"></script>
 		<script src="jss/ajax.js" type="text/javascript"></script>
@@ -69,10 +69,10 @@
 		<html:form styleId="formDefinitionForm" action="/ApplyFormDefinitionAction">
 			<c:set var="groupName" value="${formDefinitionForm.groupName}"/>
 			<jsp:useBean id="groupName" type="java.lang.String"/>
-			
+
 			<c:set var="formList" value="${formDefinitionForm.formList}"/>
 			<jsp:useBean id="formList" type="java.util.List"/>
-			
+
 			<table border='1' valign="top" align='right' width='100%' height="100%" cellspacing="0" cellpadding="0">
 			<!-- Main Page heading -->
 				<tr style = "border-bottom:0px">
@@ -93,7 +93,7 @@
 								<td height="20" class="tabMenuItem" >
 								 <bean:message key="app.title.BuildFormTabTitle" />
 								</td>
-		
+
 							   <td height="20" class="tabMenuItem"  >
 								 <bean:message key="app.title.PreviewTabTitle" />
 							   </td>
@@ -180,14 +180,14 @@
 														<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
 														<td width="20%"></td>
 														<td class="formMessage"  valign="top">
-															<html:checkbox property="isAbstract" styleId="isAbstract" value="true"/>	
+															<html:checkbox property="isAbstract" styleId="isAbstract" value="true"/>
 															<bean:message key="eav.form.abstract"/>
 														</td>
 													</tr>
 													<tr valign="top">
 														<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
 														<td class="formRequiredLabelWithoutBorder" width="20%">
-															<bean:message key="eav.form.inheritform"/> 
+															<bean:message key="eav.form.inheritform"/>
 														</td>
 														<td>
 															<html:select styleId="parentForm" styleClass="formFieldSmallSized" property="parentForm" >
@@ -195,8 +195,8 @@
 															</html:select>
 														</td>
 													</tr>
-													
-												
+
+
 													<c:if test='${formDefinitionForm.operationMode != "EditSubForm"}'>
 														<tr valign = "top">
 															<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
@@ -207,7 +207,7 @@
 																<table border='0'>
 																	<tr class="formMessage">
 																		<td>
-																	
+
 																<c:choose>
 																		<c:when test='${formDefinitionForm.operationMode=="EditForm"}'>
 																			<html:radio styleId= 'createAsNew' property="createAs"  value="NewForm" disabled="true" onclick="createFormAsChanged()">
@@ -220,9 +220,9 @@
 																			</html:radio>
 																		</c:otherwise>
 																</c:choose>
-																		
-																				
-																		
+
+
+
 																			<c:choose>
 																				<c:when test='${formDefinitionForm.operationMode=="AddSubForm"}'>
 																					<html:radio styleId = 'createAsExisting' property="createAs" value="ExistingForm" onclick="createFormAsChanged()" >
@@ -274,14 +274,14 @@
 										</tr>
 										<tr height="5%" valign="top">
 											<td align="left" >
-												<html:button styleClass="actionButton" property="saveButton" onclick="saveFormDetails()">
+												<html:button styleClass="actionButton" property="saveButton" onclick="saveFormDetails()" onkeydown="saveFormDetailsOnKeyDown(event)">
 													<bean:message key="buttons.save" />
 												</html:button>
 												<html:button styleClass="actionButton" property="cancelButton" onclick="showHomePageFromCreateForm()">
 													<bean:message  key="buttons.cancel" />
 												</html:button>
 											</td>
-			
+
 											<td align="right">
 												<html:button styleClass="actionButton" property="nextButton" onclick="showBuildFormJSP()" >
 													<bean:message  key="buttons.next" />
@@ -295,13 +295,13 @@
 					</td>
 				</tr>
 			</table>
-			
+
 			<html:hidden styleId='operation' property="operation" value=""/>
 			<html:hidden styleId='operationMode' property="operationMode"/>
 			<html:hidden styleId='entityIdentifier' property="entityIdentifier" value=""/>
 			<html:hidden styleId='selectedObjectId' property="selectedObjectId" value=""/>
 			<html:hidden styleId='currentContainerName' property="currentContainerName"/>
-			<html:hidden styleId='viewAs' property="viewAs"/>	
+			<html:hidden styleId='viewAs' property="viewAs"/>
 		</html:form>
 	</body>
 </html>

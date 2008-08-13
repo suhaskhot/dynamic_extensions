@@ -11,20 +11,20 @@ For example using the blue color sheme, darker means use the darker blue and lig
 /*########## GREEN COLOR SCHEME ##########
  #6A8989 = darker green
  #98B7B7 = lighter green
- 
+
 /*########## PURPLE COLOR SCHEME ##########
  #797C9C = darker purple
  #9FA2BA = lighter purple
- 
+
 /*########## TAN COLOR SCHEME ##########
  #706C60 = darker tan
  #B3AE9C = lighter tan
- 
+
 /*########## GRAY COLOR SCHEME ##########
  #838386 = darker gray
  #AAAAAB = lighter gray
 
-/*########## COMMON AMONG ALL COLOR SCHEMES ########## 
+/*########## COMMON AMONG ALL COLOR SCHEMES ##########
  #A90101 = red
  #5C5C5C = dark gray
  #CCCCCC = medium gray
@@ -34,12 +34,12 @@ For example using the blue color sheme, darker means use the darker blue and lig
 */
 
 /*body{
-  margin:0; 
+  margin:0;
   padding:0;
 }*/
 
 /*###############
-HDR AND FTR BEGINS 
+HDR AND FTR BEGINS
 ###############*/
 .hdrBG{ /* for the cell that contains the required cancer.gov header */
   background-color:#A90101; /* constant: red */
@@ -55,7 +55,7 @@ HDR AND FTR BEGINS
 }
 
 /*###############
-MENU BEGINS 
+MENU BEGINS
 ###############*/
 td.mainMenu{
   background-color:#5C5C5C; /* constant: dark gray */
@@ -186,12 +186,12 @@ td.subMenuPrimaryItemsSelected{ /* for the items under the sub-menu title elemen
   border-bottom:1px solid #CCCCCC; /* constant: medium gray */
 }
 
-/*############### 
-LINKS BEGIN 
+/*###############
+LINKS BEGIN
 ###############*/
 a:link,a:visited,a:active{ /* default links */
 	color:#000000; /* constant: black */
-	text-decoration:underline;	
+	text-decoration:underline;
 	white-space: nowrap;
 }
 a:hover{
@@ -199,19 +199,19 @@ a:hover{
 }
 a:link.subMenuPrimary,a:visited.subMenuPrimary,a:active.subMenuPrimary{ /* for the text links in the primary submenu */
 	color:#FFFFFF; /* constant: dark gray */
-	
-	text-decoration:underline;	
+
+	text-decoration:underline;
     white-space: nowrap;
-	
+
 }
 a:hover.subMenuPrimary{
 	color:#FFFFFF; /* constant: red */
 }
 a:link.loginSignup,a:visited.loginSignup,a:active.loginSignup{ /* for the text links in the primary submenu */
 	color:#5C5C5C; /* constant: dark gray */
-	text-decoration:underline;	
+	text-decoration:underline;
         white-space: nowrap;
-	font-size:0.6em;	
+	font-size:0.6em;
 }
 a:hover.loginSignup{
 	color:#A90101; /* constant: red */
@@ -219,9 +219,9 @@ a:hover.loginSignup{
 
 a:link.contentLink,a:visited.contentLink,a:active.contentLink{ /* for the text links in the Content Part*/
 	color:#5C5C5C; /* constant: dark gray */
-	text-decoration:underline;	
+	text-decoration:underline;
         white-space: nowrap;
-	font-size:0.8em;	
+	font-size:0.8em;
 }
 a:hover.contentLink{
 	color:#A90101; /* constant: red */
@@ -229,7 +229,7 @@ a:hover.contentLink{
 
 a:link.subMenuSecondary,a:visited.subMenuSecondary,a:active.subMenuSecondary{ /* for the text links under the secondary submenu (quick links area) */
 	color:#FFFFFF; /* constant: white */
-	text-decoration:none;	
+	text-decoration:none;
   white-space: nowrap;
 }
 a:hover.subMenuSecondary{
@@ -261,8 +261,8 @@ a:hover.dataPagingLink{
 	text-decoration:underline;
 }
 
-/*############### 
-FORM BEGINS 
+/*###############
+FORM BEGINS
 ###############*/
 .formRequiredNotice{ /* for the asterisk cell */
   font-family:arial,helvetica,verdana,sans-serif;
@@ -475,7 +475,7 @@ td.formFieldBottom{ /* for the cell with only bottom border needed */
   font-size:0.7em;
   color:#000000; /* constant: black */
   border-bottom:1px solid #5C5C5C; /* constant: dark gray */
- 
+
 }
 
 td.customFormField{ /* for the cell that contains the form elements */
@@ -518,7 +518,7 @@ td.formSerialNumberField{ /* for the cell that contains the Serial Number */
 }
 
 .formLabelBorderless
-{ 
+{
 	border-top:1px solid #00000; /* constant: dark gray */
   background-color:#F4F4F5; /* constant: light gray */
 }
@@ -540,7 +540,7 @@ div.autocomplete {
       border:1px solid #888;
       margin:0px;
       padding:0px;
-      overflow:auto; 
+      overflow:auto;
     }
     div.autocomplete ul {
       list-style-type:none;
@@ -655,8 +655,8 @@ td.formFieldWithNoTopBorder{ /* for the cell that contains the form elements */
   border:1px solid #5C5C5C; /* constant: dark gray */
   font-size:1em;
   width:10em;
-  
-  
+
+
 }
 .formFieldSized15{ /* for the form elements themselves and with a constant width (on elements) */
   font-family:arial,helvetica,verdana,sans-serif;
@@ -698,10 +698,10 @@ input.formButton{ /* optional style for form and action buttons */
    font-family:arial,helvetica,verdana,sans-serif;
    font-size:0.8em;
    text-align:center;
-   
+
   color:#00000;
   padding:0;
-   
+
    border:1px solid;
    border-top-color:#646464;
    border-left-color:#646464;
@@ -715,10 +715,10 @@ input.subFormButton{ /* optional style for form and action buttons */
    font-family:arial,helvetica,verdana,sans-serif;
    font-size:0.75em;
    text-align:center;
-   
+
   color:#00000;
   padding:0;
-   
+
    border:1px solid;
    border-top-color:#646464;
    border-left-color:#646464;
@@ -754,7 +754,7 @@ input.groupButton{ /* optional style for form and action buttons */
    width:42px;
   color:#00000;
   padding:0.01em;
-   
+
    border:1px solid;
    border-top-color:#646464;
    border-left-color:#646464;
@@ -762,7 +762,7 @@ input.groupButton{ /* optional style for form and action buttons */
    border-bottom-color:#1E1E1E;
    filter:progid:DXImageTransform.Microsoft.Gradient
     (GradientType=0,StartColorStr='#ffffff',EndColorStr='#e1e1e1');
-   
+
 }
 
 input.groupButtonMainForm{ /* optional style for form and action buttons */
@@ -772,7 +772,7 @@ input.groupButtonMainForm{ /* optional style for form and action buttons */
    width:60px;
   color:#00000;
   padding:0.01em;
-   
+
    border:1px solid;
    border-top-color:#646464;
    border-left-color:#646464;
@@ -795,8 +795,8 @@ input.groupButtonMainForm{ /* optional style for form and action buttons */
   border:1px solid #5C5C5C; /* constant: dark gray */
 }
 
-/*############### 
-SIDEBAR BEGINS 
+/*###############
+SIDEBAR BEGINS
 ###############*/
 .sidebarSection{ /* for the individual sidebar sections */
   background-color:#F4F4F5; /* constant: light gray */
@@ -822,7 +822,7 @@ SIDEBAR BEGINS
 }
 
 /*###############
-DATA TABLE BEGINS 
+DATA TABLE BEGINS
 ###############*/
 .dataTablePrimaryLabel{ /* for the first row */
   font-family:arial,helvetica,verdana,sans-serif;
@@ -937,7 +937,7 @@ DATA TABLE BEGINS
 }
 
 /*###############
-STANDARD CONTENT BEGINS 
+STANDARD CONTENT BEGINS
 ###############*/
 table.contentPage{ /* for overall top style for a content page */
   font-family:arial,helvetica,verdana,sans-serif;
@@ -995,7 +995,7 @@ img.img{ /* for images that need a border */
   color:#000000; /* constant: black */
   border-right:1px solid #5C5C5C; /* constant: dark gray */
   border-bottom:1px solid #5C5C5C; /* constant: dark gray */
-  background-color:#F4F4F5; /* //constant: light gray */ 
+  background-color:#F4F4F5; /* //constant: light gray */
   border-left:1px solid #5C5C5C; /* constant: dark gray */
  }
 td.onlyBottomBorder{ /* for the cell that contains the form elements */
@@ -1054,16 +1054,16 @@ td.onlyBottomBorder{ /* for the cell that contains the form elements */
 /*###############
 DATA GRID CLASS
 ###############*/
-.active-controls-grid 
+.active-controls-grid
 {
-	height: 100%; 
+	height: 100%;
 	font: menu;
 }
-.active-grid-column 
+.active-grid-column
 {
 	border-right: 1px solid threedlightshadow;
 }
-.active-grid-row 
+.active-grid-row
 {
 	border-bottom: 1px solid threedlightshadow;
 }
@@ -1105,7 +1105,7 @@ input.formDateSized15{ /* for the form elements themselves and with a constant w
   border-bottom:1px solid #5C5C5C; /* constant: dark gray */
   border-left:1px solid #5C5C5C; /* constant: dark gray */
   border-top:1px solid #5C5C5C; /* constant: dark gray */
-  
+
  }
 
  .formRequiredNoticeAddMore{ /* for the asterisk cell */
@@ -1197,11 +1197,11 @@ td.formFieldNoBorders{ /* for the cell that contains the form elements */
   font-family:arial,helvetica,verdana,sans-serif;
   font-size:0.8em;
   color:#000000; /* constant: black */
-} 
+}
 
 td.subMenuPrimaryItemsHover{ /* SubMenu Hover effect */
   font-size:0.6em;
-  background-color:#475B82; 
+  background-color:#475B82;
   color:#FFFFFF;
   font-weight:normal;
   padding-top:0.3em;
@@ -1297,10 +1297,10 @@ td.mainMenuItemSelected{ /* for the selected main menu (top) cells */
   font-family:arial,helvetica,verdana,sans-serif;
   font-size:0.7em;
   color:#000000; /* constant: black */
-	
+
 }
 
-  
+
 
 .mapTdred{
 	background-color:#F1F1F1; /* constant: medium gray */
@@ -1310,7 +1310,7 @@ td.mainMenuItemSelected{ /* for the selected main menu (top) cells */
   	border-style: ridge;
   	border-right:1px solid #5C5C5C; /* constant: dark gray */
     border-bottom:1px solid #5C5C5C; /* constant: dark gray */
-   text-align:center;	
+   text-align:center;
 }
 .mapTdblue{
 	background-color:#9FA2BA;
@@ -1320,7 +1320,7 @@ td.mainMenuItemSelected{ /* for the selected main menu (top) cells */
   	border-style: ridge;
   	border-right:1px solid #5C5C5C; /* constant: dark gray */
     border-bottom:1px solid #5C5C5C; /* constant: dark gray */
-    text-align:center;	
+    text-align:center;
 }
 .mapTdspe{
 	background-color:#FFFFFF;
@@ -1330,12 +1330,12 @@ td.mainMenuItemSelected{ /* for the selected main menu (top) cells */
   	border-style: ridge;
   	border-right:1px solid #5C5C5C; /* constant: dark gray */
     border-bottom:1px solid #5C5C5C; /* constant: dark gray */
-    text-align:center;	
+    text-align:center;
 }
 tdDesc{
 	font-family:arial,helvetica,verdana,sans-serif;
 	font-size:0.6em;
-	text-align:left;	
+	text-align:left;
 }
 /*  classes For map end*/
 
@@ -1353,13 +1353,13 @@ td.tabMenuItemSelected{ /* for the selected tab menu (top) cells */
   border-left:1px solid #5C5C5C; /* constant: dark gray */
   border-top:1px solid #5C5C5C; /* constant: dark gray */
   color:#14559C;  /* constant: white */
-  
+
 }
 
 td.tabMenuItem{ /* for the off state of the tab menu (top) cells */
  font-family:arial,helvetica,verdana,sans-serif;
   font-size:0.7em;
-  
+
   background-color:#BDDBF3; /*#9FA2BA;  constant: light purple */
   padding-left:1em;
   padding-right:1em;
@@ -1406,7 +1406,7 @@ td.tabMenuSeparator{ /* for the over state of the tab menu (top) cells */
   border-bottom:1px solid #5C5C5C; /* constant: dark gray */
   background-color:#BDDBF3; /*#9FA2BA;  constant: light purple */
     color:#000000;  /* constant: white */
-  
+
 }
 
 input.tabFieldSized,textarea.tabFieldSized,select.tabFieldSized{ /* for the form elements themselves and with a constant width (on elements) */
@@ -1437,7 +1437,7 @@ td.columnHeading{
   font-family:arial,helvetica,verdana,sans-serif;
   border:1px solid #5C5C5C; /* constant: dark gray */
   font-size:0.8em;
-  background-color:#C9C9CD; 
+  background-color:#C9C9CD;
   text-align:center;
   font-weight:bold;
   color:#000000;  /* constant: black */
@@ -1533,7 +1533,7 @@ textarea.formFieldSized20{ /* Used by Mandar for the comments used in autoevents
   font-size:0.7em;
   font-weight:bold;
   padding-left:0.5em;
-  background-color:#BDDBF3; 
+  background-color:#BDDBF3;
   color:#000000; /* constant: white */
   border-top:1px solid #5C5C5C; /* constant: dark gray */
   border-left:1px solid #5C5C5C; /* constant: dark gray */
@@ -1557,12 +1557,12 @@ input.formParamSized
   font-family:arial,helvetica,verdana,sans-serif;
   background-color:#FFFFFF; /*#797C9C;  darker */
   color:#000000;  /* constant: white */
-  
+
 }
 .tableItemUnselected
 {
   font-family:arial,helvetica,verdana,sans-serif;
-  background-color:#C9C9CD; 
+  background-color:#C9C9CD;
   color:#000000;  /* constant: white */
 }
 .cellWithNoLeftBottomPadding
@@ -1581,10 +1581,10 @@ label.formFieldWithoutBorder{ /* for the cell that contains the form elements */
   color:#000000; /* constant: black */
 }
 
-td.rowWithoutPadding { 
-margin: 0; 
-padding: 0; 
-} 
+td.rowWithoutPadding {
+margin: 0;
+padding: 0;
+}
 
 .formField_withoutBorder{ /* for the cell that contains the form elements */
   font-family:arial,helvetica,verdana,sans-serif;
@@ -1622,5 +1622,17 @@ padding: 0;
   font-weight:bold;
   background-color:#ffffff; /* constant: light gray */
   color:#000000; /* constant: black */
- 
+
+}
+.transparent {
+    filter:alpha(opacity=1);
+	background-color:white;
+    display:none;
+    position:absolute;
+	cursor: wait;
+	color:white;
+	top:0;
+	left:0;
+	height:expression(parent.document.body.clientHeight);
+	width:expression(parent.document.body.clientWidth);
 }

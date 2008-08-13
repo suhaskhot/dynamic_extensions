@@ -427,7 +427,12 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 
 	public AttributeMetadataInterface getAttibuteMetadataInterface()
 	{
-		return (AttributeMetadataInterface) baseAbstractAttribute;
+		if(baseAbstractAttribute instanceof AttributeMetadataInterface)
+		{
+			return (AttributeMetadataInterface) baseAbstractAttribute;
+		}
+		return null;
+			
 	}
 
 	/**

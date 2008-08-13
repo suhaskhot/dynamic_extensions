@@ -239,7 +239,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private ControlInterface getListBoxControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
+	public ControlInterface getListBoxControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ListBoxInterface listBoxIntf = null;
@@ -280,7 +280,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private ControlInterface getComboBoxControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface,
+	public ControlInterface getComboBoxControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface,
 			EntityGroupInterface... entityGroup) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ComboBoxInterface comboBoxIntf = null;

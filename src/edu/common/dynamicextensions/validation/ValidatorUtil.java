@@ -35,9 +35,10 @@ public class ValidatorUtil
 	 *                           value - value that user has entred for this attribute
 	 * @return errorList if any
 	 * @throws DynamicExtensionsSystemException : Exception 
+	 * @throws DynamicExtensionsValidationException 
 	 */
 	public static List<String> validateEntity(Map<BaseAbstractAttributeInterface, Object> attributeValueMap, List<String> errorList,
-			ContainerInterface containerInterface) throws DynamicExtensionsSystemException
+			ContainerInterface containerInterface) throws DynamicExtensionsSystemException, DynamicExtensionsValidationException
 	{
 		if (errorList == null)
 		{
@@ -123,9 +124,10 @@ public class ValidatorUtil
 	 * @param abstractContainmentControlInterface 
 	 * @return
 	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsValidationException 
 	 */
 	private static List<String> validateEntityAttributes(Map<BaseAbstractAttributeInterface, Object> attributeValueMap,
-			ContainerInterface containerInterface) throws DynamicExtensionsSystemException
+			ContainerInterface containerInterface) throws DynamicExtensionsSystemException, DynamicExtensionsValidationException
 	{
 		List<String> errorList = new ArrayList<String>();
 
@@ -141,8 +143,7 @@ public class ValidatorUtil
 			if (abstractAttribute instanceof AttributeMetadataInterface)
 			{
 				ControlInterface control = getControlOfGivenAbstractAttribute(abstractAttribute, (ContainerInterface) containerInterface);
-				
-				if(control!=null)
+
 				errorList.addAll(validateAttributes(attributeValueNode, control.getCaption()));
 			}
 		}
@@ -151,7 +152,7 @@ public class ValidatorUtil
 	}
 
 	private static List<String> validateAttributes(Map.Entry<BaseAbstractAttributeInterface, Object> attributeValueNode, String controlCaption)
-			throws DynamicExtensionsSystemException
+			throws DynamicExtensionsSystemException, DynamicExtensionsValidationException
 	{
 		List<String> errorList = new ArrayList<String>();
 
@@ -160,6 +161,7 @@ public class ValidatorUtil
 		Collection<RuleInterface> attributeRuleCollection = attribute.getRuleCollection();
 		if (attributeRuleCollection != null || !attributeRuleCollection.isEmpty())
 		{
+			Long recordId = attribute.getId();
 			String errorMessage = null;
 			for (RuleInterface rule : attributeRuleCollection)
 			{
@@ -183,6 +185,24 @@ public class ValidatorUtil
 						errorList.add(errorMessage);
 					}
 				}
+				else
+				{
+					Object valueObject = attributeValueNode.getValue();
+					if (valueObject instanceof List)
+					{
+						valueObject = ((List) valueObject).get(0);
+
+					}
+					try
+					{
+						checkUniqueValidationForAttribute( attribute, valueObject, recordId, controlCaption);
+					}
+					catch (DynamicExtensionsValidationException e)
+					{
+						errorMessage = ApplicationProperties.getValue(e.getErrorCode(), e.getPlaceHolderList());
+						errorList.add(errorMessage);
+					}
+				}
 			}
 		}
 
@@ -192,7 +212,6 @@ public class ValidatorUtil
 	public static void checkUniqueValidationForAttribute(AttributeMetadataInterface attribute, Object valueObject, Long recordId,
 			String controlCaption) throws DynamicExtensionsValidationException, DynamicExtensionsSystemException
 	{
-
 		Collection<RuleInterface> attributeRuleCollection = attribute.getRuleCollection();
 
 		if (attributeRuleCollection != null || !attributeRuleCollection.isEmpty())

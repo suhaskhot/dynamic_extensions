@@ -4,6 +4,8 @@ package edu.common.dynamicextensions.util;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -45,13 +47,15 @@ import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInt
 import edu.common.dynamicextensions.domaininterface.userinterface.SelectInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
+import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
+import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
 import edu.common.dynamicextensions.entitymanager.AbstractMetadataManager;
 import edu.common.dynamicextensions.entitymanager.CategoryManager;
 import edu.common.dynamicextensions.entitymanager.CategoryManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
-import edu.common.dynamicextensions.util.CategoryHelperInterface.ControlEnum;
+import edu.common.dynamicextensions.util.parser.CategoryCSVConstants;
 
 /**
  * @author kunal_kamble
@@ -116,6 +120,7 @@ public class CategoryHelper implements CategoryHelperInterface
 
 		}
 		ContainerInterface container = createContainer(categoryEntity, containerCaption);
+
 		return container;
 	}
 
@@ -135,6 +140,7 @@ public class CategoryHelper implements CategoryHelperInterface
 			categoryEntity.setName(categoryEntityName);
 			categoryEntity.setEntity(entity);
 		}
+
 		return categoryEntity;
 	}
 
@@ -151,8 +157,8 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @see edu.common.dynamicextensions.categoryManager.CategoryHelperInterface#addControl(edu.common.dynamicextensions.domaininterface.AttributeInterface, edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface, edu.common.dynamicextensions.categoryManager.CategoryHelperInterface.ControlEnum, java.util.List<edu.common.dynamicextensions.domaininterface.PermissibleValueInterface>[])
 	 */
 	public ControlInterface addOrUpdateControl(EntityInterface entity, String attributeName, ContainerInterface container, ControlEnum controlType,
-			String controlCaption, Map<String,Collection<SemanticPropertyInterface>>... permissibleValueList) throws DynamicExtensionsApplicationException,
-			DynamicExtensionsSystemException
+			String controlCaption, Map<String, Object> rulesMap, Map<String, Collection<SemanticPropertyInterface>>... permissibleValueList)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		if (controlType == null)
 		{
@@ -161,12 +167,124 @@ public class CategoryHelper implements CategoryHelperInterface
 
 		CategoryAttributeInterface categoryAttribute = createOrupdateCategoryAttribute(entity, attributeName, container);
 
+		AttributeInterface attribute = entity.getAttributeByName(attributeName);
+
+		applyRulesInCSVFile(categoryAttribute, attribute, rulesMap);
+
 		ControlInterface control = null;
-		Map<String,Collection<SemanticPropertyInterface>> permissibleValueNameList = (permissibleValueList.length == 0 ? null : permissibleValueList[0]);
+		Map<String, Collection<SemanticPropertyInterface>> permissibleValueNameList = (permissibleValueList.length == 0
+				? null
+				: permissibleValueList[0]);
 		control = createOrUpdateControl(controlType, controlCaption, container, categoryAttribute, permissibleValueNameList);
 		control.setCaption(controlCaption);
 
 		return control;
+	}
+
+	/**
+	 * This method applies the explicit rules mentioned in CSV file to a category attribute.
+	 * @param categoryAttribute
+	 * @param attribute
+	 * @param rulesMap
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private void applyRulesInCSVFile(CategoryAttributeInterface categoryAttribute, AttributeInterface attribute, Map<String, Object> rulesMap)
+			throws DynamicExtensionsSystemException
+	{
+		Set<RuleInterface> rules = new HashSet<RuleInterface>();
+
+		//ControlConfigurationsFactory factory = ControlConfigurationsFactory.getInstance();
+		//List<String> implicitRules = factory.getImplicitRules(controlCaption, attribute.getAttributeTypeInformation().getDataType());
+
+		//List<String> implicitRules = new ArrayList<String>();
+		//implicitRules.add("textLength");
+
+		//addImplicitRules(implicitRules, rules, attribute.getRuleCollection());
+		addExplicitRules(rules, rulesMap);
+
+		categoryAttribute.setRuleCollection(rules);
+	}
+
+	/**
+	 * Add any implicit rules of attribute to a category attribute.
+	 * @param implicitRules
+	 * @param rules
+	 * @param attributeRules
+	 */
+	private void addImplicitRules(List<String> implicitRules, Set<RuleInterface> rules, Collection<RuleInterface> attributeRules)
+	{
+		if (attributeRules != null && implicitRules != null && !implicitRules.isEmpty())
+		{
+			for (RuleInterface rule : attributeRules)
+			{
+				if (implicitRules.contains(rule.getName()))
+				{
+					rules.add(rule);
+				}
+			}
+		}
+	}
+
+	/**
+	 * @param rules
+	 * @param rulesMap
+	 */
+	private void addExplicitRules(Set<RuleInterface> rules, Map<String, Object> rulesMap)
+	{
+		if (rulesMap != null && !rulesMap.isEmpty())
+		{
+			Iterator<String> rulesIterator = rulesMap.keySet().iterator();
+
+			while (rulesIterator.hasNext())
+			{
+				Object obj = rulesIterator.next();
+				RuleInterface rule = null;
+				DomainObjectFactory factory = DomainObjectFactory.getInstance();
+				String ruleName = obj.toString();
+
+				if (ruleName.equalsIgnoreCase(CategoryCSVConstants.UNIQUE) || ruleName.equalsIgnoreCase(CategoryCSVConstants.REQUIRED))
+				{
+					rule = factory.createRule();
+					rule.setName(ruleName);
+				}
+				else if (ruleName.equalsIgnoreCase(CategoryCSVConstants.RANGE) || ruleName.equalsIgnoreCase(CategoryCSVConstants.DATE_RANGE))
+				{
+					Map<String, Object> valuesMap = (Map<String, Object>) rulesMap.get(obj);
+
+					rule = factory.createRule();
+					rule.setName(ruleName);
+
+					RuleParameterInterface minValue = factory.createRuleParameter();
+					minValue.setName(CategoryCSVConstants.MIN);
+					minValue.setValue((String) valuesMap.get(CategoryCSVConstants.MIN));
+
+					RuleParameterInterface maxValue = factory.createRuleParameter();
+					maxValue.setName(CategoryCSVConstants.MAX);
+					maxValue.setValue((String) valuesMap.get(CategoryCSVConstants.MAX));
+
+					rule.getRuleParameterCollection().add(minValue);
+					rule.getRuleParameterCollection().add(maxValue);
+				}
+
+				if (rule != null)
+				{
+					rules.add(rule);
+				}
+			}
+		}
+	}
+
+	private RuleInterface getPreviousRule(String ruleName, Set<RuleInterface> rules)
+	{
+		for (RuleInterface rule : rules)
+		{
+			if (rule.getName().equalsIgnoreCase(ruleName))
+			{
+				return rule;
+			}
+		}
+
+		return null;
 	}
 
 	/**
@@ -203,7 +321,6 @@ public class CategoryHelper implements CategoryHelperInterface
 		categoryAttribute.setCategoryEntity(categoryEntity);
 
 		return categoryAttribute;
-
 	}
 
 	/**
@@ -217,8 +334,8 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
 	private ControlInterface createOrUpdateControl(ControlEnum controlType, String controlCaption, ContainerInterface container,
-			CategoryAttributeInterface categoryAttribute, Map<String,Collection<SemanticPropertyInterface>> permissibleValueNameList) throws DynamicExtensionsApplicationException,
-			DynamicExtensionsSystemException
+			CategoryAttributeInterface categoryAttribute, Map<String, Collection<SemanticPropertyInterface>> permissibleValueNameList)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		ControlInterface control = null;
 		EntityInterface entity = categoryAttribute.getCategoryEntity().getEntity();
@@ -255,8 +372,8 @@ public class CategoryHelper implements CategoryHelperInterface
 		}
 
 		control.setCaption(controlCaption);
-		return control;
 
+		return control;
 	}
 
 	/**
@@ -283,6 +400,7 @@ public class CategoryHelper implements CategoryHelperInterface
 			}
 
 		}
+
 		return categoryAttribute;
 	}
 
@@ -404,6 +522,7 @@ public class CategoryHelper implements CategoryHelperInterface
 				}
 			}
 		}
+
 		return association;
 	}
 
@@ -417,7 +536,7 @@ public class CategoryHelper implements CategoryHelperInterface
 		String[] entityArray = instance.split("->");
 
 		int counter = 0;
-		if(path.getPathAssociationRelationCollection()!=null)
+		if (path.getPathAssociationRelationCollection() != null)
 		{
 			for (PathAssociationRelationInterface associationRelation : path.getSortedPathAssociationRelationCollection())
 			{
@@ -426,10 +545,12 @@ public class CategoryHelper implements CategoryHelperInterface
 				if (sourceEntity.indexOf("[") == -1 || sourceEntity.indexOf("]") == -1)
 				{
 					throw new DynamicExtensionsSystemException("ERROR: INSTANCE INFORMATION IS NOT IN THE CORRECT FORMAT" + instance);
-	
+
 				}
-				associationRelation.setSourceInstanceId(Long.parseLong(sourceEntity.substring(sourceEntity.indexOf("[") + 1, sourceEntity.indexOf("]"))));
-				associationRelation.setTargetInstanceId(Long.parseLong(targetEntity.substring(targetEntity.indexOf("[") + 1, targetEntity.indexOf("]"))));
+				associationRelation.setSourceInstanceId(Long.parseLong(sourceEntity.substring(sourceEntity.indexOf("[") + 1, sourceEntity
+						.indexOf("]"))));
+				associationRelation.setTargetInstanceId(Long.parseLong(targetEntity.substring(targetEntity.indexOf("[") + 1, targetEntity
+						.indexOf("]"))));
 				counter++;
 			}
 		}
@@ -460,6 +581,7 @@ public class CategoryHelper implements CategoryHelperInterface
 		PathInterface path = DomainObjectFactory.getInstance().createPath();
 		targetCategoryEntity.setPath(path);
 		targetCategoryEntity.setTreeParentCategoryEntity(sourceCategoryEntity);
+
 		return path;
 	}
 
@@ -591,6 +713,7 @@ public class CategoryHelper implements CategoryHelperInterface
 				controlInterface = control;
 			}
 		}
+
 		return controlInterface;
 	}
 
@@ -655,6 +778,7 @@ public class CategoryHelper implements CategoryHelperInterface
 		{
 			((CategoryAttribute) baseAbstractAttribute).setDefaultValue(attributeTypeInformation.getDefaultValue());
 		}
+
 		return selectControl;
 	}
 
@@ -666,7 +790,6 @@ public class CategoryHelper implements CategoryHelperInterface
 	{
 		control.setParentContainer(null);
 		container.getControlCollection().remove(control);
-
 	}
 
 	/**
@@ -862,7 +985,8 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public List<PermissibleValueInterface> createPermissibleValuesList(EntityInterface entity, String attributeName,
-			Map<String,Collection<SemanticPropertyInterface>> desiredPermissibleValues) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+			Map<String, Collection<SemanticPropertyInterface>> desiredPermissibleValues) throws DynamicExtensionsApplicationException,
+			DynamicExtensionsSystemException
 	{
 		List<PermissibleValueInterface> permissibleValues = null;
 
@@ -886,6 +1010,7 @@ public class CategoryHelper implements CategoryHelperInterface
 		{
 			throw new DynamicExtensionsSystemException("Parse Exception", parseException);
 		}
+
 		return permissibleValues;
 	}
 
@@ -896,8 +1021,8 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @return
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private List<PermissibleValueInterface> getSubsetOfPermissibleValues(AttributeInterface attributeInterface, Map<String,Collection<SemanticPropertyInterface>> desiredPermissibleValues)
-			throws DynamicExtensionsApplicationException
+	private List<PermissibleValueInterface> getSubsetOfPermissibleValues(AttributeInterface attributeInterface,
+			Map<String, Collection<SemanticPropertyInterface>> desiredPermissibleValues) throws DynamicExtensionsApplicationException
 	{
 		List<PermissibleValueInterface> permissibleValues = new ArrayList<PermissibleValueInterface>();
 
@@ -917,7 +1042,7 @@ public class CategoryHelper implements CategoryHelperInterface
 			permissibleValues = new ArrayList<PermissibleValueInterface>();
 			for (PermissibleValueInterface pv : userDefinedDE.getPermissibleValueCollection())
 			{
-				if(desiredPermissibleValues != null)
+				if (desiredPermissibleValues != null)
 				{
 					Set<String> permissibleValueString = desiredPermissibleValues.keySet();
 					if (permissibleValueString.contains(pv.getValueAsObject().toString()))
@@ -933,8 +1058,8 @@ public class CategoryHelper implements CategoryHelperInterface
 					"Invalid subset of persmissible values. Original set of permissible values for the attribute " + attributeInterface.getName()
 							+ " of the entity " + attributeInterface.getEntity().getName() + "is different.");
 		}
-		return permissibleValues;
 
+		return permissibleValues;
 	}
 
 	/**
@@ -946,24 +1071,25 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @throws ParseException
 	 */
 	public List<PermissibleValueInterface> getPermissibleValueList(AttributeTypeInformationInterface attributeTypeInformation,
-			Map<String,Collection<SemanticPropertyInterface>> desiredPermissibleValues) throws DynamicExtensionsSystemException, ParseException
+			Map<String, Collection<SemanticPropertyInterface>> desiredPermissibleValues) throws DynamicExtensionsSystemException, ParseException
 	{
 
 		List<PermissibleValueInterface> permissibleValues = new ArrayList<PermissibleValueInterface>();
 		PermissibleValue permissibleValueInterface = null;
-		if(desiredPermissibleValues != null)
+		if (desiredPermissibleValues != null)
 		{
 			Set<String> permissibleValuString = desiredPermissibleValues.keySet();
-			
+
 			for (String value : permissibleValuString)
 			{
-				permissibleValueInterface = (PermissibleValue)attributeTypeInformation.getPermissibleValueForString(value);
-				
+				permissibleValueInterface = (PermissibleValue) attributeTypeInformation.getPermissibleValueForString(value);
+
 				permissibleValueInterface.setSemanticPropertyCollection(desiredPermissibleValues.get(value));
-				
+
 				permissibleValues.add(permissibleValueInterface);
 			}
 		}
+
 		return permissibleValues;
 	}
 
@@ -996,18 +1122,19 @@ public class CategoryHelper implements CategoryHelperInterface
 				}
 			}
 		}
+
 		return associationControl;
 	}
+
 	/**
 	 * @param control
 	 * @param controlType
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public void setDefaultControlsOptions(ControlInterface control,ControlEnum controlType) throws DynamicExtensionsSystemException
+	public void setDefaultControlsOptions(ControlInterface control, ControlEnum controlType) throws DynamicExtensionsSystemException
 	{
 		try
 		{
-			
 			switch (controlType)
 			{
 				case TEXT_FIELD_CONTROL :
@@ -1021,14 +1148,14 @@ public class CategoryHelper implements CategoryHelperInterface
 					SelectInterface selectControl = (SelectInterface) control;
 					selectControl.setIsHidden(false);
 					selectControl.setIsReadOnly(false);
-					break;					
+					break;
 				case COMBO_BOX_CONTROL :
 					SelectInterface comboControl = (SelectInterface) control;
 					comboControl.setIsHidden(false);
 					comboControl.setIsReadOnly(false);
 					break;
 				case DATE_PICKER_CONTROL :
-					DatePickerInterface datePickerControl = (DatePickerInterface)control;
+					DatePickerInterface datePickerControl = (DatePickerInterface) control;
 					datePickerControl.setIsHidden(false);
 					datePickerControl.setIsReadOnly(false);
 					datePickerControl.setDateValueType(null);
@@ -1039,32 +1166,27 @@ public class CategoryHelper implements CategoryHelperInterface
 					fileUploadControl.setIsReadOnly(false);
 					break;
 				case TEXT_AREA_CONTROL :
-					TextAreaInterface textAreaControl = (TextAreaInterface)control;
+					TextAreaInterface textAreaControl = (TextAreaInterface) control;
 					textAreaControl.setIsHidden(false);
 					textAreaControl.setIsReadOnly(false);
 					textAreaControl.setIsPassword(false);
 					break;
 				case RADIO_BUTTON_CONTROL :
-					RadioButtonInterface radioButtonControl = (RadioButtonInterface)control;
+					RadioButtonInterface radioButtonControl = (RadioButtonInterface) control;
 					radioButtonControl.setIsReadOnly(false);
 					radioButtonControl.setIsHidden(false);
 					break;
 				case CHECK_BOX_CONTROL :
-					CheckBoxInterface checkboxControl = (CheckBoxInterface)control;
+					CheckBoxInterface checkboxControl = (CheckBoxInterface) control;
 					checkboxControl.setIsReadOnly(false);
 					checkboxControl.setIsHidden(false);
 					break;
-			
-			
 			}
 		}
 		catch (Exception e)
 		{
 			throw new DynamicExtensionsSystemException("Please conatct administartor", e);
 		}
-		
-
 	}
-
 
 }

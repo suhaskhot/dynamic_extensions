@@ -95,10 +95,16 @@ public abstract class CategoryFileParser extends FileReader
 	public abstract Map<String, String> getControlOptions();
 
 	/**
-	 * @return list of prmissible values
+	 * Return a map of rules belonging to a category attribute.
+	 * @return
+	 */
+	public abstract Map<String, Object> getRules();
+
+	/**
+	 * @return list of permissible values
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public abstract Map<String,Collection<SemanticPropertyInterface>> getPermissibleValues() throws DynamicExtensionsSystemException;
+	public abstract Map<String, Collection<SemanticPropertyInterface>> getPermissibleValues() throws DynamicExtensionsSystemException;
 
 	/**
 	 * @return 
@@ -169,13 +175,9 @@ public abstract class CategoryFileParser extends FileReader
 	 * @return
 	 */
 	public abstract String getRelatedAttributeName();
-	
+
 	/**
 	 * @return
 	 */
 	public abstract String getDefaultValue();
-	
-
-
-
 }

@@ -1,6 +1,8 @@
 
 package edu.common.dynamicextensions.util.parser;
 
+import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.DATE_RANGE;
+import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.DEFAULT_VALUE;
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.DISPLAY_LABLE;
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.FORM_DEFINITION;
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.INSTANCE;
@@ -8,8 +10,9 @@ import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.OPTI
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.OVERRIDE_PV;
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.PERMISSIBLE_VALUES;
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.PERMISSIBLE_VALUES_FILE;
+import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.RANGE;
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.RELATED_ATTIBUTE;
-import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.DEFAULT_VALUE;
+import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.RULES;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -28,7 +31,6 @@ import java.util.StringTokenizer;
 
 import au.com.bytecode.opencsv.CSVReader;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
-import edu.common.dynamicextensions.domain.SemanticProperty;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.Constants;
@@ -138,7 +140,6 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	public boolean isShowCaption()
 	{
 		return new Boolean(readLine()[1].split("=")[1].trim());
-
 	}
 
 	public String[] getCategoryPaths()
@@ -185,7 +186,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	 * @return permissible values collection
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Map<String,Collection<SemanticPropertyInterface>> getPermissibleValues() throws DynamicExtensionsSystemException
+	public Map<String, Collection<SemanticPropertyInterface>> getPermissibleValues() throws DynamicExtensionsSystemException
 	{
 		//counter for to locate the start of the permissible values
 		String[] nextLine = readLine();
@@ -201,69 +202,69 @@ public class CategoryCSVFileParser extends CategoryFileParser
 			}
 		}
 		if (!permissibleValuesPresent)
-		{ 
+		{
 			return null;
 		}
-		
-		Map<String,Collection<SemanticPropertyInterface>> pvVsSemanticPropertyCollection = new HashMap<String,Collection<SemanticPropertyInterface>>();
-				
+
+		Map<String, Collection<SemanticPropertyInterface>> pvVsSemanticPropertyCollection = new HashMap<String, Collection<SemanticPropertyInterface>>();
+
 		int indexOfTilda = nextLine[i].indexOf("~");
-		String permissibleValueKey = nextLine[i].substring(0,indexOfTilda);
-		
+		String permissibleValueKey = nextLine[i].substring(0, indexOfTilda);
+
 		if (PERMISSIBLE_VALUES.equalsIgnoreCase(permissibleValueKey))
-		{		
-			String pvString = nextLine[i].substring(indexOfTilda+1);
+		{
+			String pvString = nextLine[i].substring(indexOfTilda + 1);
 			String originalPVString = pvString;
 			int pvStringLength = 1;
-			while(pvStringLength <= originalPVString.trim().length())
+			while (pvStringLength <= originalPVString.trim().length())
 			{
-				int indexOFColon = pvString.indexOf(":");				
+				int indexOFColon = pvString.indexOf(":");
 				int indexOfConceptCodeStart = pvString.indexOf("<");
-				if(indexOFColon < indexOfConceptCodeStart || (indexOFColon == -1 && indexOfConceptCodeStart == -1))
+				if (indexOFColon < indexOfConceptCodeStart || (indexOFColon == -1 && indexOfConceptCodeStart == -1))
 				{
 					indexOfConceptCodeStart = -1;
 				}
 				String permiValue = "";
-				Collection<SemanticPropertyInterface> semanticPropertyCollection = new HashSet<SemanticPropertyInterface>();				 
-				
-				if(indexOfConceptCodeStart != -1)
+				Collection<SemanticPropertyInterface> semanticPropertyCollection = new HashSet<SemanticPropertyInterface>();
+
+				if (indexOfConceptCodeStart != -1)
 				{//Concept code is present
-					permiValue = pvString.substring(0,indexOfConceptCodeStart);
+					permiValue = pvString.substring(0, indexOfConceptCodeStart);
 					pvStringLength = pvStringLength + permiValue.length();
-					
+
 					int conceptCodeEnd = pvString.indexOf(">");
-					if(pvString.charAt(conceptCodeEnd+1) == ':')
+					if (pvString.charAt(conceptCodeEnd + 1) == ':')
 					{
 						pvStringLength = pvStringLength + 1;
 					}
-					String tempCodesString = pvString.substring(indexOfConceptCodeStart+1 , conceptCodeEnd);
+					String tempCodesString = pvString.substring(indexOfConceptCodeStart + 1, conceptCodeEnd);
 					pvStringLength = pvStringLength + 2;
-					
+
 					String[] conceptString = tempCodesString.split(":");
 					pvStringLength = pvStringLength + conceptString.length - 1;
-					for(String conceptAttrString : conceptString)
+					for (String conceptAttrString : conceptString)
 					{//All concept codes for the pv
-						int seqNo = 1;						
+						int seqNo = 1;
 						SemanticPropertyInterface semanticProperty = DomainObjectFactory.getInstance().createSemanticProperty();
 						String[] conceptAttributes = conceptAttrString.split("#");
 						pvStringLength = pvStringLength + conceptAttributes.length - 1;
-						for(String conceptAttr : conceptAttributes)
-						{							
+						for (String conceptAttr : conceptAttributes)
+						{
 							String[] conceptCodeKeyValue = conceptAttr.split("~");
-							populateSemanticProperty(semanticProperty , conceptCodeKeyValue[0], conceptCodeKeyValue[1]);						
+							populateSemanticProperty(semanticProperty, conceptCodeKeyValue[0], conceptCodeKeyValue[1]);
 							pvStringLength = pvStringLength + conceptCodeKeyValue[0].length() + conceptCodeKeyValue[1].length() + 1;
 						}
 						semanticProperty.setSequenceNumber(seqNo);
-						seqNo ++;
+						seqNo++;
 						semanticPropertyCollection.add(semanticProperty);
 					}
 				}
 				else
 				{//Concept Code not defined
 					int indexOfColon = pvString.indexOf(":");
-					if(indexOfColon != -1)
+					if (indexOfColon != -1)
 					{
-						permiValue = pvString.substring(0,indexOfColon);
+						permiValue = pvString.substring(0, indexOfColon);
 						pvStringLength = pvStringLength + permiValue.length() + 1;
 					}
 					else
@@ -272,14 +273,14 @@ public class CategoryCSVFileParser extends CategoryFileParser
 						pvStringLength = pvStringLength + permiValue.length();
 					}
 				}
-				pvVsSemanticPropertyCollection.put(permiValue, semanticPropertyCollection);								
-				pvString = originalPVString.substring(pvStringLength - 1);				
+				pvVsSemanticPropertyCollection.put(permiValue, semanticPropertyCollection);
+				pvString = originalPVString.substring(pvStringLength - 1);
 			}
-		}		
-		
+		}
+
 		else if (PERMISSIBLE_VALUES_FILE.equalsIgnoreCase(permissibleValueKey))
 		{//PV from File
-			String filePath = getSystemIndependantFilePath(nextLine[i].substring(indexOfTilda+1));
+			String filePath = getSystemIndependantFilePath(nextLine[i].substring(indexOfTilda + 1));
 			try
 			{
 				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
@@ -293,25 +294,25 @@ public class CategoryCSVFileParser extends CategoryFileParser
 						int indexOfConceptCodeStart = pvString.indexOf("<");
 						int conceptCodeEnd = pvString.indexOf(">");
 						String pv = "";
-						if(indexOfConceptCodeStart != -1 && conceptCodeEnd != -1)
+						if (indexOfConceptCodeStart != -1 && conceptCodeEnd != -1)
 						{
-							pv = pvString.substring(0,indexOfConceptCodeStart);
-							String tempCodesString = pvString.substring(indexOfConceptCodeStart+1 , conceptCodeEnd);
-							String[] conceptString = tempCodesString.split(":");							
-							for(String conceptAttrString : conceptString)
+							pv = pvString.substring(0, indexOfConceptCodeStart);
+							String tempCodesString = pvString.substring(indexOfConceptCodeStart + 1, conceptCodeEnd);
+							String[] conceptString = tempCodesString.split(":");
+							for (String conceptAttrString : conceptString)
 							{//All concept codes for the pv
-								int seqNo = 1;						
+								int seqNo = 1;
 								SemanticPropertyInterface semanticProperty = DomainObjectFactory.getInstance().createSemanticProperty();
-								String[] conceptAttributes = conceptAttrString.split("#");								
-								for(String conceptAttr : conceptAttributes)
-								{							
+								String[] conceptAttributes = conceptAttrString.split("#");
+								for (String conceptAttr : conceptAttributes)
+								{
 									String[] conceptCodeKeyValue = conceptAttr.split("~");
-									populateSemanticProperty(semanticProperty , conceptCodeKeyValue[0], conceptCodeKeyValue[1]);								
+									populateSemanticProperty(semanticProperty, conceptCodeKeyValue[0], conceptCodeKeyValue[1]);
 								}
 								semanticProperty.setSequenceNumber(seqNo);
-								seqNo ++;
+								seqNo++;
 								semanticPropertyCollection.add(semanticProperty);
-							}							
+							}
 						}
 						else
 						{
@@ -331,10 +332,10 @@ public class CategoryCSVFileParser extends CategoryFileParser
 			}
 
 		}
-		
+
 		return pvVsSemanticPropertyCollection;
 	}
-	
+
 	/**
 	 * @param semanticProperty
 	 * @param key
@@ -342,22 +343,22 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	 */
 	private void populateSemanticProperty(SemanticPropertyInterface semanticProperty, String key, String value)
 	{
-		if(key.equalsIgnoreCase(Constants.CONCEPT_CODE))
+		if (key.equalsIgnoreCase(Constants.CONCEPT_CODE))
 		{
 			semanticProperty.setConceptCode(value);
 		}
-		else if(key.equalsIgnoreCase(Constants.CONCEPT_DEFINITION))
+		else if (key.equalsIgnoreCase(Constants.CONCEPT_DEFINITION))
 		{
 			semanticProperty.setConceptDefinition(value);
 		}
-		else if(key.equalsIgnoreCase(Constants.PREFERRED_NAME))
+		else if (key.equalsIgnoreCase(Constants.PREFERRED_NAME))
 		{
 			semanticProperty.setThesaurasName(value);
 		}
-		else if(key.equalsIgnoreCase(Constants.DEFINITION_SOURCE))
+		else if (key.equalsIgnoreCase(Constants.DEFINITION_SOURCE))
 		{
 			semanticProperty.setTerm(value);
-		}		
+		}
 	}
 
 	/**
@@ -454,6 +455,66 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	}
 
 	/**
+	 * @return
+	 */
+	public Map<String, Object> getRules()
+	{
+		Map<String, Object> rules = new HashMap<String, Object>();
+
+		for (String string : readLine())
+		{
+			if (string.toLowerCase().startsWith(RULES.toLowerCase() + "~"))
+			{
+				String[] rulesValues = string.split("~")[1].split(":");
+
+				for (String ruleValue : rulesValues)
+				{
+					if (ruleValue.toLowerCase().startsWith(RANGE.toLowerCase()))
+					{
+						String[] rangeValues = ruleValue.split("-");
+						for (String rangeValue : rangeValues)
+						{
+							if (!(rangeValue.toLowerCase().startsWith(RANGE.toLowerCase())))
+							{
+								String[] minMaxValues = rangeValue.split("&");
+								boolean isDateRange = false;
+								Map<String, Object> valuesMap = new HashMap<String, Object>();
+								for (String value : minMaxValues)
+								{
+									if (value.split("=")[1].contains("/"))
+									{
+										valuesMap.put(value.split("=")[0], value.split("=")[1].replace("/", "-"));
+										isDateRange = true;
+									}
+									else
+									{
+										valuesMap.put(value.split("=")[0], value.split("=")[1]);
+									}
+								}
+
+								if (isDateRange)
+								{
+									rules.put(DATE_RANGE, valuesMap);
+								}
+								else
+								{
+									rules.put(RANGE.toLowerCase(), valuesMap);
+								}
+							}
+						}
+					}
+					else
+					{
+						rules.put(ruleValue.split("=")[0], null);
+					}
+				}
+			}
+		}
+
+		return rules;
+	}
+
+	/**
 	 * @return showCaption
 	 * @throws IOException 
 	 */
@@ -506,7 +567,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	{
 		return readLine()[0].split("=")[0].split(":")[1].trim();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.util.parser.CategoryFileParser#getDefaultValue()
 	 */

@@ -7,6 +7,7 @@
 package edu.common.dynamicextensions.ui.webui.action;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -109,7 +110,7 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * This method gets the Callback URL from cahce, reforms it and redirect the response to it. 
+	 * This method gets the Callback URL from cahce, reforms it and redirect the response to it.
 	 * @param request HttpServletRequest to obtain session
 	 * @param response HttpServletResponse to redirect the CallbackURL
 	 * @param recordIdentifier Identifier of the record to reconstruct the CallbackURL
@@ -122,7 +123,23 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 		String calllbackURL = (String) CacheManager.getObjectFromCache(request, Constants.CALLBACK_URL);
 		if (calllbackURL != null && !calllbackURL.equals(""))
 		{
-			calllbackURL = calllbackURL + "?" + WebUIManager.getOperationStatusParameterName() + "=" + webUIManagerConstant;
+			List<Long> deletedIdList = (List<Long>) CacheManager.getObjectFromCache(request,
+					WebUIManagerConstants.DELETED_ASSOCIATION_IDS);
+			String associationIds = "";
+			if (deletedIdList != null)
+			{
+				for (int i = 0; i < deletedIdList.size(); i++)
+				{
+					associationIds += deletedIdList.get(i);
+					if (i < deletedIdList.size() - 1)
+					{
+						associationIds += "_";
+					}
+				}
+			}
+			calllbackURL = calllbackURL + "?" + WebUIManager.getOperationStatusParameterName()
+			+ "=" + webUIManagerConstant + "&"
+			+ WebUIManagerConstants.DELETED_ASSOCIATION_IDS + "=" + associationIds;
 			CacheManager.clearCache(request);
 			response.sendRedirect(calllbackURL);
 			isCallbackURL = true;

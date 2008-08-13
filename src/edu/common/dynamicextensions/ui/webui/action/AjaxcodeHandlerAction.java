@@ -42,6 +42,7 @@ import edu.common.dynamicextensions.ui.util.SemanticPropertyBuilderUtil;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
+import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.beans.NameValueBean;
@@ -209,7 +210,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 		if (container != null)
 		{
 			Collection<ControlInterface> oldControlsCollection = container.getControlCollection();
-			
+
 			if (oldControlsCollection != null)
 			{
 				Integer [] sequenceNumbers = DynamicExtensionsUtility.convertToIntegerArray(controlsSeqNumbers, ProcessorConstants.CONTROLS_SEQUENCE_NUMBER_SEPARATOR);
@@ -230,7 +231,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 				// Remove old controls from collection.
 				container.removeAllControls();
 				((AbstractEntityInterface) container.getAbstractEntity()).removeAllAttributes();
-				
+
 				ControlInterface control = null;
 				if (sequenceNumbers != null)
 				{
@@ -244,20 +245,36 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 						}
 					}
 				}
-				
+
 				if (idAttribute != null)
 				{
 					((EntityInterface)container.getAbstractEntity()).addAbstractAttribute(idAttribute);
 				}
+				//Added by Rajesh for removing deleted associations and it's path from path tables.
+				List<Long> deletedIdList = (List<Long>) CacheManager.getObjectFromCache(request,
+						WebUIManagerConstants.DELETED_ASSOCIATION_IDS);
+				List<Long> listOfIds = DynamicExtensionsUtility.getDeletedAssociationIds(
+						oldControls, sequenceNumbers);
+				if (deletedIdList == null)
+				{
+					deletedIdList = listOfIds;
+				}
+				else
+				{
+					deletedIdList.addAll(listOfIds);
+				}
+				CacheManager.addObjectToCache(request,
+						WebUIManagerConstants.DELETED_ASSOCIATION_IDS, deletedIdList);
+//				System.out.println("deletedIdList : " + deletedIdList.size());
 			}
 		}
-		
+
 		Collection<ControlInterface> controlCollection = container.getControlCollection();
 		for (ControlInterface control : controlCollection)
 		{
 			System.out.println("[" + control.getSequenceNumber() + "] = [" + control.getCaption()+ "]");
 		}
-		
+
 		return "";
 	}
 
@@ -484,7 +501,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 	private List<NameValueBean> getFormNamesForGroup(String groupId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ArrayList<NameValueBean> formNames = new ArrayList<NameValueBean>();
-		
+
 		if (groupId != null)
 		{
 			EntityManagerInterface entityManager = EntityManager.getInstance();
@@ -492,7 +509,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 			try
 			{
 				groupIdentifier = Long.parseLong(groupId);
-				
+
 				Collection<ContainerInterface> containersCollection = entityManager.getAllContainersByEntityGroupId(groupIdentifier);
 				if (containersCollection != null)
 				{

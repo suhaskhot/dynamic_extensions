@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.ui.webui.action;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,12 +34,12 @@ import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.global.Constants;
 
 /**
- * This Action class handles two situations , 
+ * This Action class handles two situations ,
  * 1. When user selects 'Next' from createForm.jsp. This time a call to ApplyFormDefinitionProcessor
  * will just create an entity and populate it with actionform's data. This entity is then saved to cache.
- * 2. When user selects 'Save' from createForm.jsp. This time a call to ApplyFormDefinitionProcessor 
+ * 2. When user selects 'Save' from createForm.jsp. This time a call to ApplyFormDefinitionProcessor
  * will create an entity and will save it to database. This entity is then saved to cache.
- * The exception thrown can be of 'Application' type ,in this case the same Screen will be displayed  
+ * The exception thrown can be of 'Application' type ,in this case the same Screen will be displayed
  * added with error messages .
  * And The exception thrown can be of 'System' type, in this case user will be directed to Error Page.
  * @author deepti_shelar
@@ -55,9 +56,9 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	 * @param  request HttpServletRequest request
 	 * @param response HttpServletResponse response
 	 * @return ActionForward forward to next action
-	 * @throws Exception 
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws Exception
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
@@ -142,7 +143,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * @param mapping 
+	 * @param mapping
 	 * @param operation
 	 * @return
 	 */
@@ -163,7 +164,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * 
+	 *
 	 * @param request
 	 * @param formDefinitionForm
 	 * @throws DynamicExtensionsSystemException
@@ -200,9 +201,9 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	/**
 	 * @param parentContainer
 	 * @param childContainer
-	 * @param formDefinitionForm 
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @param formDefinitionForm
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private void updateAssociation(ContainerInterface parentContainer, ContainerInterface childContainer, FormDefinitionForm formDefinitionForm)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -229,8 +230,8 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	/**
 	 * @param request
 	 * @param formDefinitionForm
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private void addSubForm(HttpServletRequest request, FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
@@ -269,7 +270,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * @param formDefinitionForm 
+	 * @param formDefinitionForm
 	 * @return
 	 */
 	private boolean isNewEnityCreated(FormDefinitionForm formDefinitionForm)
@@ -287,8 +288,8 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	/**
 	 * @param request
 	 * @param formDefinitionForm
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private void applyFormDefinition(HttpServletRequest request, FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
@@ -306,7 +307,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * 
+	 *
 	 * @param formDefinitionForm actionform
 	 * @return ActionMessages Messages
 	 */
@@ -319,7 +320,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * This method gets the Callback URL from cahce, reforms it and redirect the response to it. 
+	 * This method gets the Callback URL from cahce, reforms it and redirect the response to it.
 	 * @param request HttpServletRequest to obtain session
 	 * @param response HttpServletResponse to redirect the CallbackURL
 	 * @param recordIdentifier Identifier of the record to reconstruct the CallbackURL
@@ -331,8 +332,25 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 		String calllbackURL = (String) CacheManager.getObjectFromCache(request, Constants.CALLBACK_URL);
 		if (calllbackURL != null && !calllbackURL.equals(""))
 		{
-			ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-			calllbackURL = calllbackURL + "?" + WebUIManager.getOperationStatusParameterName() + "=" + webUIManagerConstant;
+			List<Long> deletedIdList = (List<Long>) CacheManager.getObjectFromCache(request,
+					WebUIManagerConstants.DELETED_ASSOCIATION_IDS);
+			String associationIds = "";
+			if (deletedIdList != null)
+			{
+				for (int i = 0; i < deletedIdList.size(); i++)
+				{
+					associationIds += deletedIdList.get(i);
+					if (i < deletedIdList.size() - 1)
+					{
+						associationIds += "_";
+					}
+				}
+			}
+			ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(
+					request, Constants.CONTAINER_INTERFACE);
+			calllbackURL = calllbackURL + "?" + WebUIManager.getOperationStatusParameterName()
+					+ "=" + webUIManagerConstant + "&"
+					+ WebUIManagerConstants.DELETED_ASSOCIATION_IDS + "=" + associationIds;
 			//Fix for bug 5176
 			if (containerInterface != null && containerInterface.getId() != null)
 			{

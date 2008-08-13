@@ -34,6 +34,7 @@ import edu.common.dynamicextensions.domain.CategoryEntity;
 import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.userinterface.AbstractContainmentControl;
 import edu.common.dynamicextensions.domain.userinterface.Container;
+import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domain.userinterface.Control;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
@@ -1393,7 +1394,7 @@ public class DynamicExtensionsUtility
 			HashMap<String, CategoryEntityInterface> objCategoryMap)
 			throws DynamicExtensionsSystemException
 	{
-				
+
 		if (categoryEntity != null )
 		{
 			if(objCategoryMap.containsKey(categoryEntity.getName()))
@@ -1403,14 +1404,14 @@ public class DynamicExtensionsUtility
 			CategoryEntity objCategoryEntity = (CategoryEntity) categoryEntity;
 			if (objCategoryEntity.getParentCategoryEntity() != null &&  !objCategoryMap.containsKey(objCategoryEntity.getParentCategoryEntity().getName()))
 			{
-				if( ((CategoryEntity)objCategoryEntity.getParentCategoryEntity()).isCreateTable()) 
+				if( ((CategoryEntity)objCategoryEntity.getParentCategoryEntity()).isCreateTable())
 				getUnsavedCategoryEntityList(objCategoryEntity.getParentCategoryEntity(),objCategoryMap);
 			}
 			if (!objCategoryMap.containsKey(categoryEntity.getName())  && objCategoryEntity.isCreateTable())
 			{
 				if (objCategoryEntity.getId() == null)
 				{
-					//Only includes those category entity for which table is required to be created 
+					//Only includes those category entity for which table is required to be created
 					if(objCategoryEntity.isCreateTable())
 					objCategoryMap.put(categoryEntity.getName(),objCategoryEntity);
 				}
@@ -1430,7 +1431,7 @@ public class DynamicExtensionsUtility
 		}
 	}
 
-	
+
 	/**
 	 * @param categoryEntity
 	 * @param objCategoryMap
@@ -1440,7 +1441,7 @@ public class DynamicExtensionsUtility
 			HashMap<String, CategoryEntityInterface> objCategoryMap)
 			throws DynamicExtensionsSystemException
 	{
-		
+
 		if (categoryEntity != null)
 		{
 			if(objCategoryMap.containsKey(categoryEntity.getName()))
@@ -1500,5 +1501,46 @@ public class DynamicExtensionsUtility
 
 		return constraintProperties;
 	}
-
+	/**
+	 *
+	 * @param controlCollection
+	 * @param sequenceNumber
+	 * @return
+	 */
+	public static List<Long> getDeletedAssociationIds(ControlInterface[] controlCollection,
+			Integer[] sequenceNumbers)
+	{
+		List<Long> listOfIds = new ArrayList<Long>();
+		boolean isPresent = false;
+		if (controlCollection != null)
+		{
+			for (ControlInterface control : controlCollection)
+			{
+				isPresent = false;
+				if (control instanceof ContainmentAssociationControl)
+				{
+					ContainmentAssociationControl containmentAssociationControl = (ContainmentAssociationControl) control;
+					if (sequenceNumbers != null)
+					{
+						for (Integer sequenceNumber : sequenceNumbers)
+						{
+							if (containmentAssociationControl.getSequenceNumber() != null
+									&& containmentAssociationControl.getSequenceNumber().equals(
+											sequenceNumber))
+							{
+								isPresent = true;
+							}
+						}
+						if (!isPresent)
+						{
+							AssociationInterface associationInterface = (AssociationInterface) containmentAssociationControl
+									.getAbstractAttribute();
+							listOfIds.add(associationInterface.getId());
+						}
+					}
+				}
+			}
+		}
+		return listOfIds;
+	}
 }

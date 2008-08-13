@@ -2278,7 +2278,9 @@ public class XMIImportProcessor
 						setExplicitValidationRules(taggedValueMap, attributeInterface, controlModel);
 						//populate rules
 						attributeProcessor.populateRules(userSelectedControlName, attributeInterface, controlModel);
-					
+						String[] ruleNamesString = new String[0];
+						controlModel.setValidationRules(ruleNamesString);
+						controlModel.setTempValidationRules(ruleNamesString);
 						implicitRuleList = configurationsFactory.getAllImplicitRules(
 								ProcessorConstants.DATEPICKER_CONTROL, attributeInterface.getDataType());
 					}
@@ -2295,6 +2297,7 @@ public class XMIImportProcessor
 					//Creating File upload for byte array attributes
 					else if (attributeTypeInformation instanceof FileAttributeTypeInformation)
 					{
+						String userSelectedControlName = ProcessorConstants.FILEUPLOAD_CONTROL;
 						controlInterface = deFactory.createFileUploadControl();	
 						((FileUploadInterface)controlInterface).setColumns(10);
 						//Setting MaxLength
@@ -2311,6 +2314,13 @@ public class XMIImportProcessor
 						{
 							attributeProcessor.populateIsIdentifiedInfo(attributeInterface, strIsIdentified);
 						}
+						//Set Explicite validation Rules
+						setExplicitValidationRules(taggedValueMap, attributeInterface, controlModel);
+						//populate rules
+						attributeProcessor.populateRules(userSelectedControlName, attributeInterface, controlModel);
+						String[] ruleNamesString = new String[0];
+						controlModel.setValidationRules(ruleNamesString);
+						controlModel.setTempValidationRules(ruleNamesString);
 					}
 					else
 					{
@@ -2357,6 +2367,9 @@ public class XMIImportProcessor
 							setExplicitValidationRules(taggedValueMap, attributeInterface, controlModel);
 							//populate rules
 							attributeProcessor.populateRules(userSelectedControlName, attributeInterface, controlModel);
+							String[] ruleNamesString = new String[0];
+							controlModel.setValidationRules(ruleNamesString);
+							controlModel.setTempValidationRules(ruleNamesString);
 						}
 						//Number Attribute
 						else
@@ -2393,6 +2406,9 @@ public class XMIImportProcessor
 							setExplicitValidationRules(taggedValueMap, attributeInterface, controlModel);
 							//populate rules
 							attributeProcessor.populateRules(userSelectedControlName, attributeInterface, controlModel);
+							String[] ruleNamesString = new String[0];
+							controlModel.setValidationRules(ruleNamesString);
+							controlModel.setTempValidationRules(ruleNamesString);
 						}
 
 					}

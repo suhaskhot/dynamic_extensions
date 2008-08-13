@@ -645,7 +645,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	{
 		String entityTableName = rootCategoryeEntity.getEntity().getTableProperties().getName();
 		List<Long> recordIdList = recordsMap.get(rootCategoryeEntity.getName());
-		if(recordIdList!=null)
+		if(recordIdList!=null && columnNamesValues.length() > 0)
 		{
 			for (Long identifer : recordIdList)
 			{
@@ -680,24 +680,27 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 
 		List<Long> sourceEntityId = recordsMap.get(categoryAssociation.getCategoryEntity().getName());
 
-		if (recordsMap.get(categoryEntity.getName()) != null)
+		if (recordsMap.get(categoryEntity.getName()) != null )
 		{
 			//insertRelatedAttributesRecordForCategoryEntitiesOnUI(recordsMap, categoryEntity, entityTableName, relatedAttributeUpdateQuery, userId, hibernateDAO, categoryEntityTableName, categoryEntityForeignKey, rootRecordId);
-			List<Long> recordIdList = recordsMap.get(categoryEntity.getName());
-			for (Long id : recordIdList)
+			if(relatedAttributeUpdateQuery.length() >0 )
 			{
-				String updateEntityQuery = "UPDATE " + entityTableName + " SET " + relatedAttributeUpdateQuery + " WHERE IDENTIFIER = " + id;
-				executeUpdateQuery(updateEntityQuery, userId, hibernateDAO);
-
-				String selectQuery = "SELECT IDENTIFIER FROM " + categoryEntityTableName + " WHERE " + RECORD_ID + " = " + id;
-				List<Long> resultIdList = getResultIDList(selectQuery, "IDENTIFIER");
-
-				if (resultIdList.size() == 0)
+				List<Long> recordIdList = recordsMap.get(categoryEntity.getName());
+				for (Long id : recordIdList)
 				{
-					Long categoryIdentifier = entityManagerUtil.getNextIdentifier(categoryEntityTableName);
-					String insertCategoryEntityQuery = "INSERT INTO " + categoryEntityTableName + " (IDENTIFIER, ACTIVITY_STATUS, " + RECORD_ID
-							+ ", " + categoryEntityForeignKey + ") VALUES (" + categoryIdentifier + ", 'ACTIVE', " + id + ", " + rootRecordId + ")";
-					executeUpdateQuery(insertCategoryEntityQuery, userId, hibernateDAO);
+					String updateEntityQuery = "UPDATE " + entityTableName + " SET " + relatedAttributeUpdateQuery + " WHERE IDENTIFIER = " + id;
+					executeUpdateQuery(updateEntityQuery, userId, hibernateDAO);
+	
+					String selectQuery = "SELECT IDENTIFIER FROM " + categoryEntityTableName + " WHERE " + RECORD_ID + " = " + id;
+					List<Long> resultIdList = getResultIDList(selectQuery, "IDENTIFIER");
+	
+					if (resultIdList.size() == 0)
+					{
+						Long categoryIdentifier = entityManagerUtil.getNextIdentifier(categoryEntityTableName);
+						String insertCategoryEntityQuery = "INSERT INTO " + categoryEntityTableName + " (IDENTIFIER, ACTIVITY_STATUS, " + RECORD_ID
+								+ ", " + categoryEntityForeignKey + ") VALUES (" + categoryIdentifier + ", 'ACTIVE', " + id + ", " + rootRecordId + ")";
+						executeUpdateQuery(insertCategoryEntityQuery, userId, hibernateDAO);
+					}
 				}
 			}
 		}

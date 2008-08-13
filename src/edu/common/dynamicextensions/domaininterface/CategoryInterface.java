@@ -35,4 +35,6 @@ public interface CategoryInterface extends AbstractMetadataInterface {
      * @param categoryEntity
      */
     public void addRelatedAttributeCategoryEntity(CategoryEntityInterface categoryEntity);
+    
+    public void removeRelatedAttributeCategoryEntity(CategoryEntityInterface categoryEntity);
 }

@@ -129,5 +129,12 @@ public class Category extends AbstractMetadata implements CategoryInterface
 	{
 		this.relatedAttributeCategoryEntityCollection.add(categoryEntity);
 	}
+	/**
+	 * @param categoryEntity
+	 */
+	public void removeRelatedAttributeCategoryEntity(CategoryEntityInterface categoryEntity)
+	{
+		this.relatedAttributeCategoryEntityCollection.remove(categoryEntity);
+	}
 
 }

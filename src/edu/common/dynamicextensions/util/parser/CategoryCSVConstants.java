@@ -4,55 +4,84 @@ package edu.common.dynamicextensions.util.parser;
  * @author kunal_kamble
  * This interface defines all the keywords used in the 
  * csv file used for the category creation.
- *
  */
 public interface CategoryCSVConstants
 {
 	/**
-	 * This keyword used to mark the begining of 
-	 * the new category defination. 
+	 * This keyword used to mark the beginning of the new category definition. 
 	 */
 	String FORM_DEFINITION = "Form_Definition";
 
 	/**
-	 * This keyword is used before specifing the permissible values.
+	 * This keyword is used before specifying the permissible values.
 	 */
 	String PERMISSIBLE_VALUES = "Permissible_Values";
 
 	/**
-	 * This keyword is used before specifing the permissible values 
-	 * file name, where permissible values are line seperated.
+	 * This keyword is used before specifying the permissible values 
+	 * file name, where permissible values are line separated.
 	 */
 	String PERMISSIBLE_VALUES_FILE = "Permissible_Values_File";
 
 	/**
-	 * This keyword is used before defining the options available for 
-	 * a control. 
+	 * This keyword is used before defining the options available for a control. 
 	 */
 	String OPTIONS = "options";
+	
+	/**
+	 * Defines rules for a particular category attribute.
+	 */
+	String RULES = "Rules";
+	
+	/**
+	 * Defines range for a particular category attribute.
+	 */
+	String RANGE = "range";
+	
+	String DATE_RANGE = "dateRange";
+	
+	/**
+	 * Defines minimum value of the range.
+	 */
+	String MIN = "min";
+	
+	/**
+	 * Defines maximum value of the range.
+	 */
+	String MAX = "max";
+	
+	/**
+	 * Defines Uniqueness for a particular category attribute value.
+	 */
+	String UNIQUE = "unique";
+	
+	/**
+	 * Defines mandatory condition for a particular category attribute value.
+	 */
+	String REQUIRED = "required";
 
 	/**
-	 * This keyword used to define the lable for the form
+	 * This keyword used to define the label for the form
 	 */
 	String DISPLAY_LABLE = "Display_Label";
 
 	/**
-	 * This keyword used to define the lable for the form
+	 * This keyword used to define the label for the form
 	 */
 	String SINGLE = "single";
+	
 	/**
-	 * This keyword used to define the lable for the form
+	 * This keyword used to define the label for the form
 	 */
 	String MULTILINE = "multiline";
 
 	/**
-	 * This keyword is used to specify whether to overide 
-	 * permissble values
+	 * This keyword is used to specify whether to override permissible values
 	 */
 	String OVERRIDE_PV = "override_pv";
 
 	/**
-	 * This keyword used to define the lable for the form
+	 * This keyword used to define the label for the form
 	 */
 	String RELATED_ATTIBUTE = "RelatedAttribute:";
 
@@ -62,5 +91,4 @@ public interface CategoryCSVConstants
 	 * default value of the attribute
 	 */
 	String DEFAULT_VALUE = "defaultValue";
-
 }

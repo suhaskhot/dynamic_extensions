@@ -1582,26 +1582,36 @@ function setDefaultValues(tableId, obj)
     var rowIndex = document.getElementById(tableId).rows.length;
     rowIndex = parseInt(rowIndex) - 1 ;
 
-
+    var i = 0;
     for (j = 0 ; j < children.length; j++)
     {
+		
         var childObject = children[j];
         childObjectName = childObject.name;
-
         if (childObjectName != null && childObjectName.indexOf('_')!= -1)
         {
             if (childObjectName.indexOf(')')!= -1)
             {
                 childObjectName = childObjectName.substring(0,childObjectName.indexOf(')'));
-                str = childObjectName + "_" + rowIndex;
+                i++;
+				//In case of control having multiple options, setting str only once
+				if(i==1)
+				{
+					str = childObjectName + "_" + rowIndex;
+				}
                 str = str + ")";
+				
             }
             else
             {
-                str = childObjectName + "_" + rowIndex;
+				i++;
+				//In case of control having multiple options, setting str only once
+				if(i==1)
+				{
+					str = childObjectName + "_" + rowIndex;
+				}
             }
 			obj.innerHTML = replaceAll(obj.innerHTML,childObjectName,str);
-
         }
 
 		if("auto_complete_dropdown" == childObject.id )
@@ -1610,11 +1620,11 @@ function setDefaultValues(tableId, obj)
 
 			var oldName  = childNodes2[2].childNodes[0].childNodes[0].name;
 			var newName = oldName + "_" +rowIndex;
-
+		
 			var newScript = replaceAll(childNodes2[1].innerHTML,oldName,newName);
-
+		
 			obj.innerHTML =replaceAll(childNodes2[2].innerHTML,oldName,newName);
-
+		
 			eval(newScript);
 
 		}

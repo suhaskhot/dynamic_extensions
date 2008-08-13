@@ -117,7 +117,8 @@ public interface CategoryHelperInterface
 	 * @throws DynamicExtensionsSystemException 
 	 */
 	public ControlInterface addOrUpdateControl(EntityInterface entity, String attributeName, ContainerInterface container, ControlEnum controlType,
-			String controlCaption, Map<String,Collection<SemanticPropertyInterface>>... permissibleValues) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
+			String controlCaption, Map<String, Object> rulesMap, Map<String, Collection<SemanticPropertyInterface>>... permissibleValues)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
 	 * This method is used when there is inheritance between two entities.
@@ -164,7 +165,8 @@ public interface CategoryHelperInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public List<PermissibleValueInterface> createPermissibleValuesList(EntityInterface entity, String attributeName,
-			Map<String,Collection<SemanticPropertyInterface>> desiredPermissibleValues) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
+			Map<String, Collection<SemanticPropertyInterface>> desiredPermissibleValues) throws DynamicExtensionsApplicationException,
+			DynamicExtensionsSystemException;
 
 	/**
 	 * @param path
@@ -181,7 +183,7 @@ public interface CategoryHelperInterface
 	 * @throws ParseException
 	 */
 	public List<PermissibleValueInterface> getPermissibleValueList(AttributeTypeInformationInterface attributeTypeInformation,
-			Map<String,Collection<SemanticPropertyInterface>> desiredPermissibleValues) throws DynamicExtensionsSystemException, ParseException;
+			Map<String, Collection<SemanticPropertyInterface>> desiredPermissibleValues) throws DynamicExtensionsSystemException, ParseException;
 
 	/**
 	 * @param category
@@ -215,11 +217,11 @@ public interface CategoryHelperInterface
 			CategoryEntityInterface targetCategoryEntity, String name, int numberOfentries, EntityGroupInterface entityGroup,
 			List<AssociationInterface> associationList, String instance) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException;
-	
+
 	/**
 	 * @param control
 	 * @param controlType
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public void setDefaultControlsOptions(ControlInterface control,ControlEnum controlType) throws DynamicExtensionsSystemException;
+	public void setDefaultControlsOptions(ControlInterface control, ControlEnum controlType) throws DynamicExtensionsSystemException;
 }

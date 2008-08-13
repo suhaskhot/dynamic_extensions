@@ -204,7 +204,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 	 * Create a category from vitals entity and its attributes.
 	 *
 	 */
-	public void testCreateVitalsCategory()
+	/*public void testCreateVitalsCategory()
 	{
 		try
 		{
@@ -245,7 +245,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			e.printStackTrace();
 			fail();
 		}
-	}
+	}*/
 
 	/**
 	 * Entities : user (1)------>(*) study

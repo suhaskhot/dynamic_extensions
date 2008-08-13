@@ -248,6 +248,9 @@ public class CategoryGenerator
 						((CategoryAttributeInterface) lastControl.getAttibuteMetadataInterface()).setIsVisible(true);
 						//Set default value to control's option -Its required incase of CategoryEntity Edit
 						categoryHelper.setDefaultControlsOptions(lastControl,ControlEnum.get(categoryFileParser.getControlType()));
+						//Clear categoryentity from relatedattribute collection of root category entity
+						category.removeRelatedAttributeCategoryEntity((CategoryEntityInterface) containerInterface.getAbstractEntity());
+						
 						setControlsOptions(lastControl);
 						setDefaultValue(lastControl);
 						//Check for isreadonly option

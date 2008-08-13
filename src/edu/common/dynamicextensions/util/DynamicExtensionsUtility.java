@@ -1534,7 +1534,7 @@ public class DynamicExtensionsUtility
 						if (!isPresent)
 						{
 							AssociationInterface associationInterface = (AssociationInterface) containmentAssociationControl
-									.getAbstractAttribute();
+									.getBaseAbstractAttribute();
 							listOfIds.add(associationInterface.getId());
 						}
 					}

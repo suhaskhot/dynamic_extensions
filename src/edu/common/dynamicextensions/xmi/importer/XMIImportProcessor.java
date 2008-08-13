@@ -1679,10 +1679,16 @@ public class XMIImportProcessor
 				String width = getDisplayWidthTagValue(taggedValueMap);
 				controlModel.setColumns(Integer.parseInt(width.toString()));
 				
+				
 				//defaultValue tagged Value
 				String defaultValue = getDefaultValueTagValue(taggedValueMap);
 				controlModel.setAttributeDefaultValue(defaultValue);
-	
+				
+				if(defaultValue!=null && !defaultValue.equalsIgnoreCase(""))
+				{
+					//dateValueType  value
+					controlModel.setDateValueType(ProcessorConstants.DATE_VALUE_SELECT);
+				}
 				//URL tagged value
 				String url = getUrlTagValue(taggedValueMap);
 				controlModel.setIsUrl(Boolean.parseBoolean(url));
@@ -1694,15 +1700,63 @@ public class XMIImportProcessor
 				//FileFormats tagged value
 				String[] fileFormats = getFileFormatsTagValue(taggedValueMap);			
 				controlModel.setFileFormats(fileFormats);
+				
 				//For list box or combo box
-				boolean isMultiselect = getMultiselectTagValue(taggedValueMap );
-				controlModel.setIsMultiSelect(isMultiselect);
+				setMultiselectTaggedValue(taggedValueMap,controlModel);
+				
+				//For combo box,separator tagged value
+				String separator = getSeparatorTagValue(taggedValueMap);
+				controlModel.setSeparator(separator);
 				
 				//set Explicit validation Rules	
 				setExplicitValidationRules(taggedValueMap, (AttributeInterface) editedAttribute, controlModel);
 			}
 
 		}
+	}
+	/**
+	 * 
+	 * @param taggedValueMap
+	 * @param controlModel
+	 */
+	private  void setMultiselectTaggedValue(Map<String, String> taggedValueMap, ControlsModel controlModel)
+	{
+		if(taggedValueMap.containsKey(XMIConstants.TAGGED_VALUE_MULTISELECT))
+		{
+			controlModel.setIsMultiSelect(true);
+			String listBoxHeight = getListBoxHeightTagValue(taggedValueMap);
+			controlModel.setAttributeNoOfRows(listBoxHeight);
+		}	
+		
+	}
+
+	/**
+	 * 
+	 * @param taggedValueMap
+	 * @return
+	 */
+	private String getListBoxHeightTagValue(Map<String, String> taggedValueMap)
+	{
+		String listBoxHeight = taggedValueMap.get(XMIConstants.TAGGED_VALUE_MULTISELECT);
+		if(listBoxHeight == null || listBoxHeight.trim().equals(""))
+		{
+			listBoxHeight = "" + edu.common.dynamicextensions.ui.util.Constants.DEFAULT_ROW_SIZE;
+		}
+		return listBoxHeight;
+	}
+	/**
+	 * 
+	 * @param taggedValueMap
+	 * @return
+	 */
+	private String getSeparatorTagValue(Map<String, String> taggedValueMap)
+	{
+		String separator = taggedValueMap.get(XMIConstants.TAGGED_VALUE_SEPARATOR);
+		if (separator == null || separator.trim().equals(""))
+		{
+			return null;
+		}
+		return separator;
 	}
 	/**
 	 * 
@@ -1745,14 +1799,13 @@ public class XMIImportProcessor
 	 * @param taggedValueMap
 	 * @return
 	 */
-	private boolean getMultiselectTagValue(Map<String,String> taggedValueMap)
-	{		
-		String isMultiselect = taggedValueMap.get(XMIConstants.TAGGED_VALUE_MULTISELECT);
-		if(isMultiselect == null || isMultiselect.equals("") )
+	private boolean isMultiselectTagValue(Map<String,String> taggedValueMap)
+	{	
+		if(taggedValueMap.containsKey(XMIConstants.TAGGED_VALUE_MULTISELECT))
 		{
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	/**
@@ -2109,6 +2162,8 @@ public class XMIImportProcessor
 		ControlInterface controlInterface = null;
 		ControlConfigurationsFactory configurationsFactory = ControlConfigurationsFactory
 				.getInstance();
+		AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
+		ControlProcessor controlProcessor = ControlProcessor.getInstance();
 		// Collect all the applicable Rule names
 		List<String> implicitRuleList = null;
 		if (abstractAttributeInterface instanceof AssociationInterface)
@@ -2136,18 +2191,20 @@ public class XMIImportProcessor
 				}
 //				if (targetMaxCardinality == -1)
 								
-				if(getMultiselectTagValue(taggedValueMap))
+				if(isMultiselectTagValue(taggedValueMap))
 				{//List box for 1 to many or many to many relationship
 					controlInterface = deFactory.createListBox();
-					((ListBoxInterface) controlInterface).setIsMultiSelect(true);
+					setMultiselectTaggedValue(taggedValueMap,controlModel);
+					((ListBoxInterface) controlInterface).setIsMultiSelect(controlModel.getIsMultiSelect());
+					((ListBoxInterface) controlInterface).setNoOfRows(controlModel.getRows());
 				}
 				else
 				{//Combo box for the rest
 					controlInterface = deFactory.createComboBox();
 				}
-
-				((SelectControl) controlInterface).setSeparator(",");
-				addAssociationDisplayAttributes(associationInterface, controlInterface);
+				String separator = getSeparatorTagValue(taggedValueMap);
+				((SelectControl) controlInterface).setSeparator(separator);
+				addAssociationDisplayAttributes(associationInterface, taggedValueMap, controlInterface);
 				implicitRuleList = configurationsFactory.getAllImplicitRules(
 						ProcessorConstants.COMBOBOX_CONTROL, "Text");
 			}
@@ -2167,18 +2224,33 @@ public class XMIImportProcessor
 							&& userDefinedDEInterface.getPermissibleValueCollection() != null
 							&& userDefinedDEInterface.getPermissibleValueCollection().size() > 0)
 					{
-						controlInterface = deFactory.createListBox();
 		
 						// multiselect for permisible values
-						((ListBoxInterface) controlInterface).setIsMultiSelect(true);
 						attributeInterface.setIsCollection(new Boolean(true));
+						if(isMultiselectTagValue(taggedValueMap))
+						{
+							controlInterface = deFactory.createListBox();
+							setMultiselectTaggedValue(taggedValueMap,controlModel);
+						}
+						else
+						{//Combo box for the rest
+							controlInterface = deFactory.createComboBox();
+						}
+						if ((controlModel.getIsMultiSelect() != null) && (controlModel.getIsMultiSelect().booleanValue() == true))
+						{
+							controlInterface = controlProcessor.getListBoxControl(controlInterface, controlModel);
+						}
+						else
+						{
+							controlInterface = controlProcessor.getComboBoxControl(controlInterface, controlModel, entityGroup);
+						}
 						implicitRuleList = configurationsFactory.getAllImplicitRules(
 								ProcessorConstants.LISTBOX_CONTROL, attributeInterface.getDataType());
 		
 					}
 					else if (attributeTypeInformation instanceof DateAttributeTypeInformation)
 					{
-						AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
+						
 						String userSelectedControlName = ProcessorConstants.DATEPICKER_CONTROL;
 						String format = getDateFormatTagValue(taggedValueMap);
 						controlModel.setFormat(format);
@@ -2190,6 +2262,10 @@ public class XMIImportProcessor
 						controlInterface = deFactory.createDatePicker();
 						String defaultValue = getDefaultValueTagValue(taggedValueMap);
 						controlModel.setAttributeDefaultValue(defaultValue);
+						if(defaultValue !=null && !defaultValue.equalsIgnoreCase(""))
+						{
+							controlModel.setDateValueType(ProcessorConstants.DATE_VALUE_SELECT);
+						}
 						attributeProcessor.populateDateAttributeInterface((DateAttributeTypeInformation) attributeTypeInformation, controlModel);
 						
 						//PHI
@@ -2227,8 +2303,6 @@ public class XMIImportProcessor
 						//Setting fileformats
 						String[] fileFormats = getFileFormatsTagValue(taggedValueMap);
 						controlModel.setFileFormats(fileFormats);
-						
-						AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
 						attributeProcessor.populateFileAttributeInterface((FileAttributeTypeInformation) attributeTypeInformation, controlModel);
 						
 						//PHI
@@ -2250,7 +2324,6 @@ public class XMIImportProcessor
 							controlModel.setAttributeDefaultValue(defaultValue);
 							String maxLen = getMaxLengthTagValue(taggedValueMap);
 							controlModel.setAttributeSize(maxLen);
-							AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
 							attributeProcessor.populateStringAttributeInterface((StringAttributeTypeInformation) attributeTypeInformation, controlModel);
 							//Password
 							String password = getPasswordTagValue(taggedValueMap);
@@ -2269,8 +2342,7 @@ public class XMIImportProcessor
 							String strIsIdentified = getPHIAttributeTagValue(taggedValueMap);		
 							attributeProcessor.populateIsIdentifiedInfo(attributeInterface, strIsIdentified);
 							
-							ControlProcessor controlProcessor=ControlProcessor.getInstance();
-							if (controlModel.getLinesType() != null && controlModel.getLinesType().equalsIgnoreCase("MultiLine"))
+							if (controlModel.getLinesType() != null && controlModel.getLinesType().equalsIgnoreCase(XMIConstants.MULTILINE))
 							{
 								controlInterface = controlProcessor.getMultiLineControl(controlInterface, controlModel);
 							}
@@ -2294,7 +2366,6 @@ public class XMIImportProcessor
 							
 							Integer precision = getPrecisionTagValue(taggedValueMap, attributeTypeInformation);
 							controlModel.setAttributeDecimalPlaces(precision.toString());
-							AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
 
 							if (attributeTypeInformation instanceof LongAttributeTypeInformation)
 							{
@@ -2335,104 +2406,13 @@ public class XMIImportProcessor
 		return controlInterface;
 	}
 
-/**
- * 
- * @param taggedValueMap
- * @param attributeInterface
- * @param controlModel 
- * @throws DynamicExtensionsSystemException
- */
-private void setExplicitValidationRules(Map<String, String> taggedValueMap, AttributeInterface attributeInterface, ControlsModel controlModel)
-		throws DynamicExtensionsSystemException
-{
-	Map<String, String> taggedValueRuleMap = new HashMap<String, String>();
-	if (taggedValueMap != null)
-	{
-		Set<String> keySetForTaggedValue = taggedValueMap.keySet();
-		//Grouping Rule Tagged Values
-		for (String key : keySetForTaggedValue)
-		{
-			if (key.startsWith(XMIConstants.TAGGED_VALUE_RULE + XMIConstants.SEPARATOR))
-			{
-				taggedValueRuleMap.put(key, taggedValueMap.get(key));
-			}
-		}
-		//Seting Rule Tagged Values to ControlsModel
-		if (taggedValueRuleMap != null && !(taggedValueRuleMap.isEmpty()))
-		{
-			populateValidationRule(taggedValueRuleMap, attributeInterface, controlModel);
-		}
-	}
-}
-/**
- * 
- * @param taggedValueMapRule
- * @param attributeInterface
- * @param controlModel 
- * @throws DynamicExtensionsSystemException
- */
-private void populateValidationRule(Map<String, String> taggedValueRuleMap, AttributeInterface attributeInterface, ControlsModel controlModel)
-		throws DynamicExtensionsSystemException
-{
-	ArrayList<String> ruleNames = new ArrayList<String>();
-	String ruleName = new String();
-	int i = 0;
-	Set<String> keySetForRuleTaggedValueMap = taggedValueRuleMap.keySet();
-	for (String key : keySetForRuleTaggedValueMap)
-	{
-		StringTokenizer st = new StringTokenizer(key, XMIConstants.SEPARATOR);
-		int token = 0;
-		int count = st.countTokens();
-		//Seting Rule Tagged Values and parameter values to ControlsModel 
-		if (count <= 3)
-		{
-			while (st.hasMoreTokens())
-			{
-				token++;
-				String tokenName = st.nextToken();
-				//Finding Rule name
-				if (token == 2)
-				{
-					ruleName = tokenName;
-				}
-				//Setting Parameter values 
-				if (token == 3)
-				{
-					if (tokenName.equalsIgnoreCase("min"))
-					{
-						controlModel.setMin(taggedValueRuleMap.get(key));
-						controlModel.setMinTemp(taggedValueRuleMap.get(key));
-					}
-					else if (tokenName.equalsIgnoreCase("max"))
-					{
-						controlModel.setMax(taggedValueRuleMap.get(key));
-						controlModel.setMaxTemp(taggedValueRuleMap.get(key));
-					}
-				}
-				if (!(ruleNames.contains(ruleName)))
-				{
-					ruleNames.add(ruleName);
-				}
-			}
-		}
-	}
-	String[] ruleNamesString = new String[ruleNames.size()];
-	for (String ruleStringName : ruleNames)
-	{
-		ruleNamesString[i++] = ruleStringName;
-	}
-	controlModel.setValidationRules(ruleNamesString);
-	controlModel.setTempValidationRules(ruleNamesString);
-}
-
-
 
 	/**
 	 * @param associationInterface
 	 * @param controlInterface
 	 * In case of linking association, this method adds the association display attributes.
 	 */
-	private void addAssociationDisplayAttributes(AssociationInterface associationInterface,
+	private void addAssociationDisplayAttributes(AssociationInterface associationInterface,Map<String, String> taggedValueMap,
 			ControlInterface controlInterface)
 	{
 		EntityInterface targetEntity = associationInterface.getTargetEntity();
@@ -2440,18 +2420,121 @@ private void populateValidationRule(Map<String, String> taggedValueRuleMap, Attr
 		//		This method returns all attributes and not associations
 		Collection<AttributeInterface> targetEntityAttrColl = targetEntity.getAttributeCollection();
 		int seqNo = 1;
-		for (AttributeInterface attr : targetEntityAttrColl)
+		String attributesInAssociationDropDownTagValue = taggedValueMap.get(XMIConstants.TAGGED_VALUE_ATTRIBUTES_IN_ASSOCIATION_DROP_DOWN);
+		if(attributesInAssociationDropDownTagValue != null)
 		{
-			AssociationDisplayAttributeInterface associationDisplayAttribute = domainObjectFactory
-					.createAssociationDisplayAttribute();
-			associationDisplayAttribute.setSequenceNumber(seqNo);
-			associationDisplayAttribute.setAttribute(attr);
-			//This method adds to the associationDisplayAttributeCollection
-			((SelectControl) controlInterface)
-					.addAssociationDisplayAttribute(associationDisplayAttribute);
-			seqNo++;
+			StringTokenizer st = new StringTokenizer(attributesInAssociationDropDownTagValue, ",");
+			while (st.hasMoreTokens())
+			{
+				String attributeName = st.nextToken();
+				for (AttributeInterface attr : targetEntityAttrColl)
+				{
+					if(attributeName.equals(attr.getName()))
+					{
+						AssociationDisplayAttributeInterface associationDisplayAttribute = domainObjectFactory
+								.createAssociationDisplayAttribute();
+						associationDisplayAttribute.setSequenceNumber(seqNo);
+						associationDisplayAttribute.setAttribute(attr);
+						//This method adds to the associationDisplayAttributeCollection
+						((SelectControl) controlInterface)
+								.addAssociationDisplayAttribute(associationDisplayAttribute);
+						seqNo++;
+					}
+				}
+			}
 		}
 	}
+	
+	/**
+	 * 
+	 * @param taggedValueMap
+	 * @param attributeInterface
+	 * @param controlModel 
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private void setExplicitValidationRules(Map<String, String> taggedValueMap, AttributeInterface attributeInterface, ControlsModel controlModel)
+			throws DynamicExtensionsSystemException
+	{
+		Map<String, String> taggedValueRuleMap = new HashMap<String, String>();
+		if (taggedValueMap != null)
+		{
+			Set<String> keySetForTaggedValue = taggedValueMap.keySet();
+			//Grouping Rule Tagged Values
+			for (String key : keySetForTaggedValue)
+			{
+				if (key.startsWith(XMIConstants.TAGGED_VALUE_RULE + XMIConstants.SEPARATOR))
+				{
+					taggedValueRuleMap.put(key, taggedValueMap.get(key));
+				}
+			}
+			//Seting Rule Tagged Values to ControlsModel
+			if (taggedValueRuleMap != null && !(taggedValueRuleMap.isEmpty()))
+			{
+				populateValidationRule(taggedValueRuleMap, attributeInterface, controlModel);
+			}
+		}
+	}
+	/**
+	 * 
+	 * @param taggedValueMapRule
+	 * @param attributeInterface
+	 * @param controlModel 
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private void populateValidationRule(Map<String, String> taggedValueRuleMap, AttributeInterface attributeInterface, ControlsModel controlModel)
+			throws DynamicExtensionsSystemException
+	{
+		ArrayList<String> ruleNames = new ArrayList<String>();
+		String ruleName = new String();
+		int i = 0;
+		Set<String> keySetForRuleTaggedValueMap = taggedValueRuleMap.keySet();
+		for (String key : keySetForRuleTaggedValueMap)
+		{
+			StringTokenizer st = new StringTokenizer(key, XMIConstants.SEPARATOR);
+			int token = 0;
+			int count = st.countTokens();
+			//Seting Rule Tagged Values and parameter values to ControlsModel 
+			if (count <= 3)
+			{
+				while (st.hasMoreTokens())
+				{
+					token++;
+					String tokenName = st.nextToken();
+					//Finding Rule name
+					if (token == 2)
+					{
+						ruleName = tokenName;
+					}
+					//Setting Parameter values 
+					if (token == 3)
+					{
+						if (tokenName.equalsIgnoreCase("min"))
+						{
+							controlModel.setMin(taggedValueRuleMap.get(key));
+							controlModel.setMinTemp(taggedValueRuleMap.get(key));
+						}
+						else if (tokenName.equalsIgnoreCase("max"))
+						{
+							controlModel.setMax(taggedValueRuleMap.get(key));
+							controlModel.setMaxTemp(taggedValueRuleMap.get(key));
+						}
+					}
+					if (!(ruleNames.contains(ruleName)))
+					{
+						ruleNames.add(ruleName);
+					}
+				}
+			}
+		}
+		String[] ruleNamesString = new String[ruleNames.size()];
+		for (String ruleStringName : ruleNames)
+		{
+			ruleNamesString[i++] = ruleStringName;
+		}
+		controlModel.setValidationRules(ruleNamesString);
+		controlModel.setTempValidationRules(ruleNamesString);
+	}
+
 
 	/**
 	 * @param entity

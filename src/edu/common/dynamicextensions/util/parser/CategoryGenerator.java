@@ -248,7 +248,7 @@ public class CategoryGenerator
 						{
 							CategoryValidator.checkRangeAgainstAttributeValueRange(attribute, rulesMap);
 						}
-						
+
 						lastControl = categoryHelper.addOrUpdateControl(entityInterface, attributeName, containerInterface, ControlEnum
 								.get(categoryFileParser.getControlType()), categoryFileParser.getControlCaption(), rulesMap, permissibleValues);
 
@@ -271,7 +271,6 @@ public class CategoryGenerator
 						}
 					}
 
-					lastControl.setSequenceNumber(sequenceNumber++);
 				}
 
 				CategoryGenerationUtil
@@ -293,7 +292,15 @@ public class CategoryGenerator
 			throw new DynamicExtensionsSystemException("FATAL ERROR READING FILE" + categoryFileParser.getFilePath() + " AT LINE "
 					+ categoryFileParser.getLineNumber(), e);
 		}
-
+		catch (Exception e)
+		{
+			if (!(e instanceof DynamicExtensionsSystemException))
+			{
+				throw new DynamicExtensionsSystemException("FATAL ERROR AT LINE: " + categoryFileParser.getLineNumber() + "READING FILE "
+						+ categoryFileParser.getFilePath(), e);
+			}
+			throw new DynamicExtensionsSystemException("", e);
+		}
 		return categoryList;
 	}
 
@@ -509,6 +516,11 @@ public class CategoryGenerator
 				String methodName = SET + optionString;
 
 				Class[] types = getParameterType(methodName, control);
+				if (types.length < 1)
+				{
+					throw new DynamicExtensionsSystemException("ERROR AT LINE:" + categoryFileParser.getLineNumber() + " INVALID CONTROL OPTION "
+							+ optionString);
+				}
 				List<Object> values = new ArrayList<Object>();
 				values.add(getFormattedValues(types[0], controlOptions.get(optionString)));
 

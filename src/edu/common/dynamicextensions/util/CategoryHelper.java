@@ -1113,12 +1113,13 @@ public class CategoryHelper implements CategoryHelperInterface
 				if (controlInterface.getCaption().equals(associationName))
 				{
 					associationControl = (AbstractContainmentControlInterface) controlInterface;
-					break;
+					return associationControl;
 				}
 				else
 				{
-					associationControl = getAssociationControl(((AbstractContainmentControlInterface) controlInterface).getContainer(),
-							associationName);
+					associationControl = getAssociationControl(((AbstractContainmentControlInterface) controlInterface).getContainer(),associationName);
+					if(associationControl!=null)
+						break;
 				}
 			}
 		}

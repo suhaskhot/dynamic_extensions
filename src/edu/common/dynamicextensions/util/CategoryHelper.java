@@ -446,7 +446,7 @@ public class CategoryHelper implements CategoryHelperInterface
 			rootContainer = (new ArrayList<ContainerInterface>(category.getRootCategoryElement().getContainerCollection())).get(0);
 		}
 
-		associationControl = (CategoryAssociationControlInterface) getAssociationControl(rootContainer, targetContainer.getCaption());
+		associationControl = (CategoryAssociationControlInterface) getAssociationControl(rootContainer, targetContainer.getId());
 
 		CategoryEntityInterface sourceCategoryEntity = (CategoryEntityInterface) sourceContainer.getAbstractEntity();
 		CategoryEntityInterface targetCategoryEntity = (CategoryEntityInterface) targetContainer.getAbstractEntity();
@@ -1098,7 +1098,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @param associationName
 	 * @return
 	 */
-	private AbstractContainmentControlInterface getAssociationControl(ContainerInterface rootContainer, String associationName)
+	private AbstractContainmentControlInterface getAssociationControl(ContainerInterface rootContainer, Long associationContainerId)
 	{
 		AbstractContainmentControlInterface associationControl = null;
 		if (rootContainer == null)
@@ -1110,14 +1110,14 @@ public class CategoryHelper implements CategoryHelperInterface
 		{
 			if (controlInterface instanceof AbstractContainmentControlInterface)
 			{
-				if (controlInterface.getCaption().equals(associationName))
+				if (((AbstractContainmentControlInterface)controlInterface).getContainer().getId().equals(associationContainerId))
 				{
 					associationControl = (AbstractContainmentControlInterface) controlInterface;
 					return associationControl;
 				}
 				else
 				{
-					associationControl = getAssociationControl(((AbstractContainmentControlInterface) controlInterface).getContainer(),associationName);
+					associationControl = getAssociationControl(((AbstractContainmentControlInterface) controlInterface).getContainer(),associationContainerId);
 					if(associationControl!=null)
 						break;
 				}

@@ -344,19 +344,18 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 		ContainerInterface baseContainer = this.baseContainer;
 		while (baseContainer != null)
 		{
-			baseControlsList = new ArrayList(baseContainer.getControlCollection());
-			Collections.sort(baseControlsList);
+			 baseControlsList = new ArrayList(baseContainer.getControlCollection());
+            Collections.sort(baseControlsList);
+            Collections.reverse(baseControlsList);
 
-			baseContainer.setIncontextContainer(this);
-			baseContainer = baseContainer.getBaseContainer();
+            controlsList.addAll(baseControlsList);
 
+            baseContainer.setIncontextContainer(this);
+            baseContainer = baseContainer.getBaseContainer();
 		}
-		List<ControlInterface> controls = new ArrayList<ControlInterface>();
-
-		controls.addAll(baseControlsList);
-		controls.addAll(controlsList);
-
-		return controls;
+		Collections.sort(controlsList);
+		Collections.reverse(controlsList);
+        return controlsList;
 	}
 
 	/**

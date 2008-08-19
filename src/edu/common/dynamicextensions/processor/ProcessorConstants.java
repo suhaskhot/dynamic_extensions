@@ -153,5 +153,8 @@ public class ProcessorConstants
 	
 	public static final String TRUE = "true";
 	public static final String FALSE = "false";
+	
+	// disabled keyword
+	public static final String DISABLED = " disabled ";
 
 }

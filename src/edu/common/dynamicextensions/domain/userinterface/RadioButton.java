@@ -6,6 +6,7 @@ import java.util.List;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.wustl.common.beans.NameValueBean;
 
@@ -49,7 +50,13 @@ public class RadioButton extends Control implements RadioButtonInterface
 				defaultValue = "";
 			}
 		}
-
+		String disabled = "";
+		//If control is defined as readonly through category CSV file,make it Disabled
+		if(this.isReadOnly!=null && getIsReadOnly())
+		{
+			disabled = ProcessorConstants.DISABLED;
+		}
+		
 		nameValueBeanList = ControlsUtility.populateListOfValues(this);
 
 		String htmlComponentName = getHTMLComponentName();
@@ -63,7 +70,7 @@ public class RadioButton extends Control implements RadioButtonInterface
 				{
 					htmlString += "<input type='radio' " + "class='font_bl_nor' " + "name='"
 							+ htmlComponentName + "' " + "value='" + optionValue + "' " + "id='"
-							+ optionName + "' checked>"  
+							+ optionName + "' checked "+ disabled + "  >"  
 							 + "<label for=\"" + htmlComponentName + "\">"
 							+ optionName
 							+ "</label> <img src='images/spacer.gif' width='10' height='10'>";
@@ -72,7 +79,7 @@ public class RadioButton extends Control implements RadioButtonInterface
 				{
 					htmlString += "<input type='radio' " + "class='font_bl_nor' " + "name='"
 							+ htmlComponentName + "' " + "value='" + optionValue + "' " + "id='"
-							+ optionName + "'>" 
+							+ optionName + "' " +disabled +" >" 
 							+ "<label for=\"" + htmlComponentName + "\">" + optionName
 							+ "</label><img src='images/spacer.gif' width='10' height='10'>";
 				}

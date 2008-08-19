@@ -92,11 +92,12 @@ public class TextArea extends Control implements TextAreaInterface
 		String htmlString = "<textarea " + "class='font_bl_nor' " + "name='" + htmlComponentName + "' " + "id='" + htmlComponentName + "' ";
 
 		//set isdisabled property
-		htmlString += " isDisabled='" + (this.isReadOnly != null && this.isReadOnly ? ProcessorConstants.TRUE : ProcessorConstants.FALSE) + "' ";
-
+		//htmlString += " isDisabled='" + (this.isReadOnly != null && this.isReadOnly ? ProcessorConstants.TRUE : ProcessorConstants.FALSE) + "' ";
+		if(this.isReadOnly != null && getIsReadOnly())
+			htmlString += ProcessorConstants.DISABLED;
 		int noCols = columns.intValue();
 		int noRows = rows.intValue();
-
+		
 		if (noCols > 0)
 		{
 			htmlString += "cols='" + noCols + "' ";

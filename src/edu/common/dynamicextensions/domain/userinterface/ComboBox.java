@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.domain.userinterface;
 
 import java.util.List;
 
+import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
@@ -42,9 +43,12 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 	 */
 	public String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
-
 		String defaultValue = "";
-		this.value = this.getAttibuteMetadataInterface().getDefaultValue();
+		AttributeMetadataInterface attributeMetadataInterface = this.getAttibuteMetadataInterface();
+		if (attributeMetadataInterface != null)
+		{
+			this.value = this.getAttibuteMetadataInterface().getDefaultValue();
+		}
 		if (this.value != null)
 		{
 			if (this.value instanceof String)
@@ -76,7 +80,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 				+ "proxy: new Ext.data.HttpProxy({url: myUrl}),"
 				+ "reader: new Ext.data.JsonReader({root: 'row',totalProperty: 'totalCount',id: 'id'}, "
 				+ "[{name: 'excerpt', mapping: 'field'}])});" + "var combo = new Ext.form.ComboBox({store: ds,displayField:'excerpt',"
-				+ "typeAhead: true,width:400,pageSize:15,forceSelection: true,queryParam : 'query',"
+				+ "typeAhead: true,width:200,pageSize:15,forceSelection: true,queryParam : 'query',"
 				+ "mode: 'remote',triggerAction: 'all',minChars : 1" + isDisabled + ",emptyText:'" + defaultValue + "',"
 				+ "selectOnFocus:true,applyTo: '" + getHTMLComponentName() + "'});});" + "</script>" + "<div id='auto_complete_dropdown'>"
 				+ "<input type='text' id='" + getHTMLComponentName() + "' " + " name='" + getHTMLComponentName() + "' size='20'/>"
@@ -85,7 +89,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 				+ "proxy: new Ext.data.HttpProxy({url: myUrl}),"
 				+ "reader: new Ext.data.JsonReader({root: 'row',totalProperty: 'totalCount',id: 'id'}, "
 				+ "[{name: 'excerpt', mapping: 'field'}])});" + "var combo = new Ext.form.ComboBox({store: ds,displayField:'excerpt',"
-				+ "typeAhead: true,width:400,pageSize:15,forceSelection: true,queryParam : 'query',"
+				+ "typeAhead: true,width:200,pageSize:15,forceSelection: true,queryParam : 'query',"
 				+ "mode: 'remote',triggerAction: 'all',minChars : 1" + isDisabled + ",emptyText:'" + defaultValue + "',"
 				+ "selectOnFocus:true,applyTo: '" + getHTMLComponentName() + "'});});" + "</div>" + "<div name=\"comboHtml\" style='display:none'>"
 				+ "<div>" + "<input type='text' id='" + getHTMLComponentName() + "' " + " name='" + getHTMLComponentName()

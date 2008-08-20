@@ -1104,8 +1104,8 @@ public class CategoryHelper implements CategoryHelperInterface
 		if (rootContainer == null)
 		{
 			return associationControl;
-		}
-
+		}	
+		
 		for (ControlInterface controlInterface : rootContainer.getControlCollection())
 		{
 			if (controlInterface instanceof AbstractContainmentControlInterface)
@@ -1115,11 +1115,12 @@ public class CategoryHelper implements CategoryHelperInterface
 					associationControl = (AbstractContainmentControlInterface) controlInterface;
 					return associationControl;
 				}
-				else
+				
+				associationControl =  getAssociationControl(((AbstractContainmentControlInterface) controlInterface).getContainer(),associationContainerId);
+				if(associationControl!=null)
 				{
-					associationControl = getAssociationControl(((AbstractContainmentControlInterface) controlInterface).getContainer(),associationContainerId);
-					if(associationControl!=null)
-						break;
+					return associationControl;
+						
 				}
 			}
 		}

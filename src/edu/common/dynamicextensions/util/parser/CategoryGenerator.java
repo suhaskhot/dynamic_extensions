@@ -631,9 +631,11 @@ public class CategoryGenerator
 				{
 					entityName = newCategoryEntityName.substring(0, newCategoryEntityName.indexOf("["));
 					ContainerInterface container = null;
+					container = SearchExistingCategoryEntityAndContainer(newCategoryEntityName,containerCollection); 
+					if(container == null)
 					container = createCategoryEntityAndContainer(entityGroup.getEntityByName(entityName), newCategoryEntityName, displayLable,
 							showCaption, containerCollection, category);
-
+				
 					categoryEntityNameInstanceMap.put(container.getAbstractEntity().getName(), getCategoryPath(categoryPaths, newCategoryEntityName));
 
 					categoryEntityName.add(newCategoryEntityName);
@@ -647,6 +649,28 @@ public class CategoryGenerator
 		}
 
 		return categoryEntityName;
+	}
+
+	/**
+	 * @param newCategoryEntityName
+	 * @param containerCollection
+	 * @return
+	 */
+	private ContainerInterface SearchExistingCategoryEntityAndContainer(String newCategoryEntityName, List<ContainerInterface> containerCollection)
+	{
+		//Check whether container is already created for categoryentity ,if yes return it.
+		Iterator itrContainer = containerCollection.iterator();
+		while(itrContainer.hasNext())
+		{
+			ContainerInterface objContainer = (ContainerInterface) itrContainer.next();
+			if(objContainer.getAbstractEntity().getName().equals(newCategoryEntityName))
+			{
+				return objContainer;
+				
+			}
+			
+		}
+		return null;
 	}
 
 	/**
